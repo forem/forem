@@ -22,7 +22,7 @@ RSpec.describe Podcasts::GetEpisode do
       ep = create(:podcast_episode, published_at: Time.current, reachable: true, https: false, podcast: podcast)
       allow(podcast).to receive(:existing_episode).and_return(ep)
       expect do
-        get_episode.call(item)
+        get_episode.call(item: item)
       end.to have_enqueued_job.on_queue("podcast_episode_update")
     end
 
@@ -30,7 +30,7 @@ RSpec.describe Podcasts::GetEpisode do
       ep = create(:podcast_episode, published_at: Time.current, reachable: false, https: true, podcast: podcast)
       allow(podcast).to receive(:existing_episode).and_return(ep)
       expect do
-        get_episode.call(item)
+        get_episode.call(item: item)
       end.to have_enqueued_job.on_queue("podcast_episode_update")
     end
 
@@ -38,14 +38,23 @@ RSpec.describe Podcasts::GetEpisode do
       ep = create(:podcast_episode, published_at: nil, reachable: true, https: true, podcast: podcast)
       allow(podcast).to receive(:existing_episode).and_return(ep)
       expect do
-        get_episode.call(item)
+        get_episode.call(item: item)
+      end.not_to have_enqueued_job.on_queue("podcast_episode_update")
+    end
+
+    it "doesn't schedule a job when an episode was created long ago" do
+      ep = create(:podcast_episode, published_at: Time.current, reachable: true, https: false, podcast: podcast)
+      ep.update_columns(created_at: 2.days.ago)
+      allow(podcast).to receive(:existing_episode).and_return(ep)
+      expect do
+        get_episode.call(item: item)
       end.not_to have_enqueued_job.on_queue("podcast_episode_update")
     end
 
     it "updates published_at when it was nil" do
       ep = create(:podcast_episode, published_at: nil, podcast: podcast)
       allow(podcast).to receive(:existing_episode).and_return(ep)
-      get_episode.call(item)
+      get_episode.call(item: item)
       ep.reload
       expect(ep.published_at.strftime("%Y-%m-%d")).to eq("2019-06-19")
     end
@@ -54,16 +63,24 @@ RSpec.describe Podcasts::GetEpisode do
       item2 = build(:podcast_episode_rss_item, pubDate: "hello, robot")
       ep = create(:podcast_episode, published_at: nil, podcast: podcast)
       allow(podcast).to receive(:existing_episode).and_return(ep)
-      get_episode.call(item2)
+      get_episode.call(item: item2)
       ep.reload
       expect(ep.published_at).to eq(nil)
+    end
+
+    it "schedules a job when force_update is passed" do
+      ep = create(:podcast_episode, published_at: Time.current, reachable: true, https: true, podcast: podcast)
+      allow(podcast).to receive(:existing_episode).and_return(ep)
+      expect do
+        get_episode.call(item: item, force_update: true)
+      end.to have_enqueued_job.on_queue("podcast_episode_update")
     end
   end
 
   it "schedules a Create job when an episode doesn't exist" do
     allow(podcast).to receive(:existing_episode).and_return(nil)
     expect do
-      described_class.new(podcast).call(item)
+      described_class.new(podcast).call(item: item)
     end.to have_enqueued_job.on_queue("podcast_episode_create") # .with(podcast.id)
   end
 end

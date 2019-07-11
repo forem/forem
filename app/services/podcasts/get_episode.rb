@@ -4,14 +4,15 @@ module Podcasts
       @podcast = podcast
     end
 
-    def call(item)
+    def call(item:, force_update: false)
       item_data = item.is_a?(EpisodeRssItem) ? item : Podcasts::EpisodeRssItem.from_item(item)
       episode = podcast.existing_episode(item_data)
       if episode
         if !episode.published_at? && item_data.pubDate
           update_published_at(episode, item_data)
         end
-        need_url_update = !(episode.https? && episode.reachable?)
+        unreachable = !(episode.https? && episode.reachable?)
+        need_url_update = (unreachable && episode.created_at > 12.hours.ago) || force_update
         PodcastEpisodes::UpdateMediaUrlJob.perform_later(episode.id, item_data.enclosure_url) if need_url_update
       else
         PodcastEpisodes::CreateJob.perform_later(podcast.id, item_data.to_h)

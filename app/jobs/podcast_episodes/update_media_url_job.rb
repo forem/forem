@@ -4,9 +4,9 @@ module PodcastEpisodes
 
     # @param episode_id [Integer] - episode id
     # @param enclosure_url [String] enclosure url from podcast RSS
-    def perform(episode_id, enclosure_url)
+    def perform(episode_id, enclosure_url, update = Podcasts::UpdateEpisodeMediaUrl)
       episode = PodcastEpisode.find_by(id: episode_id)
-      Podcasts::UpdateEpisodeMediaUrl.call(episode, enclosure_url) if episode
+      update.call(episode, enclosure_url) if episode
     end
   end
 end
