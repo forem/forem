@@ -83,7 +83,7 @@ RSpec.describe "Pages", type: :request do
       # to the high amount of required credits
 
       context "when purchasing a silver sponsorship" do
-        let(:params) { { sponsorship_level: :silver, organization_id: org.id } }
+        let(:params) { { level: :silver, organization_id: org.id } }
 
         before do
           Credit.add_to_org(org, Sponsorship::CREDITS[:silver])
@@ -118,7 +118,7 @@ RSpec.describe "Pages", type: :request do
       end
 
       context "when purchasing a bronze sponsorship" do
-        let(:params) { { sponsorship_level: :bronze, organization_id: org.id } }
+        let(:params) { { level: :bronze, organization_id: org.id } }
 
         before do
           Credit.add_to_org(org, Sponsorship::CREDITS[:bronze])
@@ -153,7 +153,7 @@ RSpec.describe "Pages", type: :request do
       end
 
       context "when purchasing a devrel sponsorship" do
-        let(:params) { { sponsorship_level: :devrel, organization_id: org.id } }
+        let(:params) { { level: :devrel, organization_id: org.id } }
 
         before do
           Credit.add_to_org(org, Sponsorship::CREDITS[:devrel])
@@ -189,11 +189,11 @@ RSpec.describe "Pages", type: :request do
 
       context "when purchasing a media sponsorship" do
         let(:params) do
-          { sponsorship_level: :media, organization_id: org.id, sponsorship_amount: 10 }
+          { level: :media, organization_id: org.id, amount: 10 }
         end
 
         before do
-          Credit.add_to_org(org, params[:sponsorship_amount])
+          Credit.add_to_org(org, params[:amount])
         end
 
         it "creates a new sponsorship" do
@@ -218,7 +218,7 @@ RSpec.describe "Pages", type: :request do
         it "detracts the correct amount of credits" do
           expect do
             post "/partnerships", params: params
-          end.to change(org.credits.spent, :size).by(params[:sponsorship_amount])
+          end.to change(org.credits.spent, :size).by(params[:amount])
           credit = org.credits.spent.last
           expect(credit.purchase.is_a?(Sponsorship)).to be(true)
         end
@@ -226,7 +226,7 @@ RSpec.describe "Pages", type: :request do
 
       context "when purchasing a tag sponsorship" do
         let(:tag) { create(:tag) }
-        let(:params) { { sponsorship_level: :tag, organization_id: org.id, tag_name: tag.name } }
+        let(:params) { { level: :tag, organization_id: org.id, tag_name: tag.name } }
 
         before do
           Credit.add_to_org(org, Sponsorship::CREDITS[:tag])
@@ -264,9 +264,9 @@ RSpec.describe "Pages", type: :request do
         Credit.add_to_org(org, Sponsorship::CREDITS[:bronze])
 
         post "/partnerships", params: {
-          sponsorship_level: :bronze,
+          level: :bronze,
           organization_id: org.id,
-          sponsorship_instructions: "hello there"
+          instructions: "hello there"
         }
         sponsorship = org.sponsorships.bronze.last
         expect(sponsorship.instructions).to include("hello there")
@@ -284,7 +284,7 @@ RSpec.describe "Pages", type: :request do
       it "does not subscribe to a bronze sponsorship" do
         expect do
           post "/partnerships", params: {
-            sponsorship_level: "bronze",
+            level: "bronze",
             organization_id: org.id
           }
         end.to raise_error(Pundit::NotAuthorizedError)

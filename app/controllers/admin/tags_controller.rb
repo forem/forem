@@ -36,7 +36,6 @@ module Admin
         text_color_hex
         keywords_for_search
         buffer_profile_id_code
-        sponsor_organization_id
       ]
       convert_empty_string_to_nil
       params.require(:tag).permit(accessible)

@@ -18,7 +18,6 @@ class Tag < ActsAsTaggableOn::Tag
   attr_accessor :tag_moderator_id, :remove_moderator_id
 
   belongs_to :badge, optional: true
-  belongs_to :sponsor_organization, class_name: "Organization", optional: true
   has_one :sponsorship, as: :sponsorable, inverse_of: :sponsorable, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
@@ -29,7 +28,6 @@ class Tag < ActsAsTaggableOn::Tag
   validates :bg_color_hex,
             format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
   validates :category, inclusion: { in: ALLOWED_CATEGORIES }
-  validates :sponsorship_status, inclusion: { in: %w[none pending live] }
 
   validate :validate_alias
   before_validation :evaluate_markdown

@@ -18,10 +18,10 @@ class PartnershipsController < ApplicationController
     @organization = Organization.find(sponsorship_params[:organization_id])
     authorize @organization, :admin_of_org?
 
-    @level = sponsorship_params[:sponsorship_level]
+    @level = sponsorship_params[:level]
     @number_of_credits_needed = Sponsorship::CREDITS[@level]
     if @level == "media" && @number_of_credits_needed.nil?
-      @number_of_credits_needed = sponsorship_params[:sponsorship_amount].to_i
+      @number_of_credits_needed = sponsorship_params[:amount].to_i
     end
     @available_org_credits = @organization.credits.unspent
 
@@ -47,7 +47,7 @@ class PartnershipsController < ApplicationController
   private
 
   def sponsorship_params
-    allowed_params = %i[organization_id sponsorship_level sponsorship_amount tag_name sponsorship_instructions]
+    allowed_params = %i[organization_id level amount tag_name instructions]
     params.permit(allowed_params)
   end
 
@@ -62,8 +62,8 @@ class PartnershipsController < ApplicationController
     }
     create_params[:sponsorable] = sponsorable if sponsorable
 
-    if sponsorship_params[:sponsorship_instructions]
-      create_params[:instructions] = sponsorship_params[:sponsorship_instructions]
+    if sponsorship_params[:instructions]
+      create_params[:instructions] = sponsorship_params[:instructions]
       # NOTE: why are we storing the updated_at of the instructions?
       create_params[:instructions_updated_at] = Time.current
     end
