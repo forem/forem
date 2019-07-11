@@ -194,7 +194,6 @@ Rails.application.routes.draw do
   post "/chat_channels/create_chat" => "chat_channels#create_chat"
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
   get "/live/:username" => "twitch_live_streams#show"
-  get "/pro" => "pro_accounts#index"
 
   post "/pusher/auth" => "pusher#auth"
 

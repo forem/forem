@@ -37,7 +37,7 @@ module ApplicationHelper
       classified_listings
       credits
       partnerships
-      pro_accounts
+      pro_memberships
     ].include?(controller_name)
   end
 

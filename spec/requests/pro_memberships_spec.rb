@@ -1,6 +1,13 @@
 require "rails_helper"
 
 RSpec.describe "Pro Memberships", type: :request do
+  describe "GET /pro" do
+    it "returns pro lander" do
+      get "/pro"
+      expect(response.body).to include("Like a Pro")
+    end
+  end
+
   describe "POST /pro" do
     let(:user) { create(:user) }
 
@@ -82,4 +89,3 @@ RSpec.describe "Pro Memberships", type: :request do
     end
   end
 end
-# rubocop:enable RSpec/NestedGroups
