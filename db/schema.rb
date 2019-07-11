@@ -793,6 +793,8 @@ ActiveRecord::Schema.define(version: 2019_08_27_163358) do
 
   create_table "pro_memberships", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.datetime "expiration_notification_at"
+    t.integer "expiration_notifications_count", default: 0, null: false
     t.datetime "expires_at", null: false
     t.string "status", default: "active"
     t.datetime "updated_at", null: false

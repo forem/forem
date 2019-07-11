@@ -4,6 +4,8 @@ class CreateProMemberships < ActiveRecord::Migration[5.2]
       t.references :user, foreign_key: true
       t.string :status, default: "active"
       t.datetime :expires_at, null: false
+      t.datetime :expiration_notification_at
+      t.integer :expiration_notifications_count, null: false, default: 0
 
       t.timestamps
     end
