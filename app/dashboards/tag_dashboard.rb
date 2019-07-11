@@ -22,8 +22,6 @@ class TagDashboard < Administrate::BaseDashboard
     pretty_name: Field::String,
     profile_image: CarrierwaveField,
     social_image: CarrierwaveField,
-    sponsor_organization: Field::BelongsTo.with_options(class_name: "Organization"),
-    sponsorship_status: Field::String,
     bg_color_hex: Field::String,
     text_color_hex: Field::String,
     keywords_for_search: Field::String,
@@ -41,7 +39,6 @@ class TagDashboard < Administrate::BaseDashboard
     name
     supported
     taggings_count
-    sponsor_organization
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -65,7 +62,6 @@ class TagDashboard < Administrate::BaseDashboard
     text_color_hex
     keywords_for_search
     buffer_profile_id_code
-    sponsor_organization
   ].freeze
 
   # FORM_ATTRIBUTES
@@ -85,8 +81,6 @@ class TagDashboard < Administrate::BaseDashboard
     social_image
     bg_color_hex
     text_color_hex
-    sponsor_organization
-    sponsorship_status
     keywords_for_search
     buffer_profile_id_code
   ].freeze
