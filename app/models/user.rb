@@ -44,6 +44,7 @@ class User < ApplicationRecord
   has_many    :classified_listings
   has_many    :poll_votes
   has_many    :poll_skips
+  has_many    :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user, class_name: "BackupData"
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -131,6 +132,7 @@ class User < ApplicationRecord
             length: { maximum: 500 }
   validates :inbox_type, inclusion: { in: %w[open private] }
   validates :currently_streaming_on, inclusion: { in: %w[twitch] }, allow_nil: true
+  validates :feed_referential_link, inclusion: [true, false]
   validate  :conditionally_validate_summary
   validate  :validate_mastodon_url
   validate  :validate_feed_url, if: :feed_url_changed?

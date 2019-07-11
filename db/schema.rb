@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_28_123548) do
+ActiveRecord::Schema.define(version: 2019_07_09_192214) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -144,6 +144,15 @@ ActiveRecord::Schema.define(version: 2019_06_28_123548) do
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
 
+  create_table "backup_data", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "instance_id", null: false
+    t.string "instance_type", null: false
+    t.bigint "instance_user_id"
+    t.jsonb "json_data", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "badge_achievements", force: :cascade do |t|
     t.bigint "badge_id", null: false
     t.datetime "created_at", null: false
@@ -245,6 +254,7 @@ ActiveRecord::Schema.define(version: 2019_06_28_123548) do
     t.boolean "contact_via_connect", default: false
     t.datetime "created_at", null: false
     t.datetime "last_buffered"
+    t.string "location"
     t.bigint "organization_id"
     t.text "processed_html"
     t.boolean "published"
@@ -302,10 +312,14 @@ ActiveRecord::Schema.define(version: 2019_06_28_123548) do
     t.float "cost", default: 0.0
     t.datetime "created_at", null: false
     t.bigint "organization_id"
+    t.bigint "purchase_id"
+    t.string "purchase_type"
     t.boolean "spent", default: false
-    t.string "spent_on"
+    t.datetime "spent_at"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.index ["purchase_id", "purchase_type"], name: "index_credits_on_purchase_id_and_purchase_type"
+    t.index ["spent"], name: "index_credits_on_spent"
   end
 
   create_table "delayed_jobs", id: :serial, force: :cascade do |t|
@@ -951,6 +965,7 @@ ActiveRecord::Schema.define(version: 2019_06_28_123548) do
     t.boolean "feed_admin_publish_permission", default: true
     t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
     t.boolean "feed_mark_canonical", default: false
+    t.boolean "feed_referential_link", default: true, null: false
     t.string "feed_url"
     t.integer "following_orgs_count", default: 0, null: false
     t.integer "following_tags_count", default: 0, null: false

@@ -6,10 +6,11 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
   let!(:podcast) { create(:podcast) }
 
   context "when item has an https media_url" do
-    let!(:item) { RSS::Parser.parse("spec/support/fixtures/podcasts/developertea.rss", false).items.first }
+    let(:rss_item) { RSS::Parser.parse("spec/support/fixtures/podcasts/developertea.rss", false).items.first }
+    let!(:item) { Podcasts::EpisodeRssItem.from_item(rss_item) }
 
     before do
-      stub_request(:head, item.enclosure.url).to_return(status: 200)
+      stub_request(:head, item.enclosure_url).to_return(status: 200)
     end
 
     it "creates an episode" do
@@ -35,8 +36,9 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
   end
 
   context "when item has an http media url" do
-    let!(:item) { RSS::Parser.parse("spec/support/fixtures/podcasts/awayfromthekeyboard.rss", false).items.first }
-    let(:https_url) {  "https://awayfromthekeyboard.com/wp-content/uploads/2018/02/Episode_075_Lara_Hogan_Demystifies_Public_Speaking.mp3" }
+    let(:rss_item) { RSS::Parser.parse("spec/support/fixtures/podcasts/awayfromthekeyboard.rss", false).items.first }
+    let!(:item) { Podcasts::EpisodeRssItem.from_item(rss_item) }
+    let(:https_url) { "https://awayfromthekeyboard.com/wp-content/uploads/2018/02/Episode_075_Lara_Hogan_Demystifies_Public_Speaking.mp3" }
 
     it "sets media_url to https version when it is available" do
       stub_request(:head, https_url).to_return(status: 200)
@@ -47,7 +49,7 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
     it "keeps an http media url when https version is not available" do
       stub_request(:head, https_url).to_return(status: 404)
       episode = described_class.call(podcast.id, item)
-      expect(episode.media_url).to eq(item.enclosure.url)
+      expect(episode.media_url).to eq(item.enclosure_url)
     end
 
     # enable when the logic will not rely solely on exception

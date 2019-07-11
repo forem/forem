@@ -34,16 +34,23 @@ export const SingleListing = ({
         ・report abuse
       </a>
     );
+
+  const locationText = listing.location ? (
+    <a href={`/listings/${listing.location}`}>
+・
+      {listing.location}
+    </a>
+  ) : (
+    ''
+  );
+
   const definedClass = isOpen
     ? 'single-classified-listing single-classified-listing--opened'
     : 'single-classified-listing';
 
   const listingCard = () => {
     return (
-      <div
-        className={definedClass}
-        id={`single-classified-listing-${listing.id}`}
-      >
+      <div className={definedClass} id={`single-classified-listing-${listing.id}`}>
         <div className="listing-content">
           <h3>
             <a
@@ -56,19 +63,13 @@ export const SingleListing = ({
             </a>
           </h3>
           <div
-            className="single-classified-listing-body"
-            dangerouslySetInnerHTML={{ __html: listing.processed_html }}
+            className="single-classified-listing-body" dangerouslySetInnerHTML={{ __html: listing.processed_html }}
           />
           <div className="single-classified-listing-tags">{tagLinks}</div>
           <div className="single-classified-listing-author-info">
-            <a
-              href={`/listings/${listing.category}`}
-              onClick={e => onChangeCategory(e, listing.category)}
-              data-no-instant
-            >
-              {listing.category}
-            </a>
-            ・<a href={`/${listing.author.username}`}>{listing.author.name}</a>
+            <a href={`/listings/${listing.category}`} onClick={e => onChangeCategory(e, listing.category)} data-no-instant>{listing.category}</a>
+            {locationText}・
+            <a href={`/${listing.author.username}`}>{listing.author.name}</a>
             {editButton}
           </div>
         </div>

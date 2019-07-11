@@ -22,25 +22,7 @@ class Message < ApplicationRecord
   end
 
   def send_push
-    receiver_ids = chat_channel.chat_channel_memberships.
-      where.not(user_id: user.id).pluck(:user_id)
-
-    PushNotificationSubscription.where(user_id: receiver_ids).find_each do |sub|
-      break if no_push_necessary?(sub)
-
-      Webpush.payload_send(
-        endpoint: sub.endpoint,
-        message: ActionView::Base.full_sanitizer.sanitize(message_html),
-        p256dh: sub.p256dh_key,
-        auth: sub.auth_key,
-        ttl: 24 * 60 * 60,
-        vapid: {
-          subject: "https://dev.to",
-          public_key: ApplicationConfig["VAPID_PUBLIC_KEY"],
-          private_key: ApplicationConfig["VAPID_PRIVATE_KEY"]
-        },
-      )
-    end
+    Messages::SendPushJob.perform_later(user.id, chat_channel.id, message_html)
   end
 
   def direct_receiver
@@ -94,11 +76,6 @@ class Message < ApplicationRecord
     return if channel.open?
 
     errors.add(:base, "You are not a participant of this chat channel.") unless channel.has_member?(user)
-  end
-
-  def no_push_necessary?(sub)
-    membership = sub.user.chat_channel_memberships.order("last_opened_at DESC").first
-    membership.last_opened_at > 40.seconds.ago
   end
 
   def rich_link_article(link)

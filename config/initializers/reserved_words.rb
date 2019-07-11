@@ -33,6 +33,7 @@ class ReservedWords
     rly
     connect
     chat_channels
+    challenge
     email_subscriptions
     social_previews
     code-of-conduct
