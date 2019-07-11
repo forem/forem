@@ -18,11 +18,11 @@
     <%= render "tag_sponsor_copy" %>
   <% elsif params[:option] == "media-sponsor" %>
     <%= render "media_sponsor_copy" %>
-  <% elsif params[:option] == "editorial-consult" %>
-    <%= render "editorial_consult_copy" %>
+  <% elsif params[:option] == "devrel-consult" %>
+    <%= render "devrel_consult_copy" %>
   <% end %>
   <% if user_signed_in? %>
-    <%= render "form", level: params[:option].split("-")[0] %>
+    <%= render "form", level: params[:option].split("-")[0], organizations: @organizations %>
   <% else %>
     <div class="partner-credits-explainer">
       <a href="/enter">Sign in to get started</a>

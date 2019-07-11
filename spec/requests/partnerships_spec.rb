@@ -1,3 +1,4 @@
+# rubocop:disable RSpec/NestedGroups
 require "rails_helper"
 
 RSpec.describe "Pages", type: :request do
@@ -70,88 +71,225 @@ RSpec.describe "Pages", type: :request do
 
   describe "POST /partnerships" do
     let(:user) { create(:user) }
-    let(:organization) { create(:organization) }
+    let(:org) { create(:organization) }
 
     context "when user is logged in as an admin and has enough credits" do
       before do
-        OrganizationMembership.create(user_id: user.id, organization_id: organization.id, type_of_user: "admin")
-        Credit.add_to_org(organization, 2000)
+        create(:organization_membership, user: user, organization: org, type_of_user: "admin")
         sign_in user
       end
 
-      it "subscribes to bronze sponsorship" do
-        post "/partnerships", params: {
-          sponsorship_level: "bronze",
-          organization_id: organization.id
-        }
-        expect(organization.reload.sponsorship_level).to eq("bronze")
+      # context "when purchasing a gold sponsorship" is skipped due
+      # to the high amount of required credits
+
+      context "when purchasing a silver sponsorship" do
+        let(:params) { { sponsorship_level: :silver, organization_id: org.id } }
+
+        before do
+          Credit.add_to_org(org, Sponsorship::CREDITS[:silver])
+        end
+
+        it "creates a new sponsorship" do
+          expect do
+            post "/partnerships", params: params
+            expect(response).to redirect_to(partnerships_path)
+          end.to change(org.sponsorships, :count).by(1)
+        end
+
+        it "subscribes with the correct info" do
+          Timecop.freeze(Time.current) do
+            post "/partnerships", params: params
+            sponsorship = org.sponsorships.silver.last
+            expect(sponsorship.status).to eq("pending")
+            expect(sponsorship.expires_at.to_i).to eq(1.month.from_now.to_i)
+            expect(sponsorship.sponsorable).to be(nil)
+            expect(sponsorship.instructions).to be_blank
+            expect(sponsorship.instructions_updated_at).to be(nil)
+          end
+        end
+
+        it "detracts the correct amount of credits" do
+          expect do
+            post "/partnerships", params: params
+          end.to change(org.credits.spent, :size).by(Sponsorship::CREDITS[:silver])
+          credit = org.credits.spent.last
+          expect(credit.purchase.is_a?(Sponsorship)).to be(true)
+        end
       end
-      it "subscribes to silver sponsorship" do
-        post "/partnerships", params: {
-          sponsorship_level: "silver",
-          organization_id: organization.id
-        }
-        expect(organization.reload.sponsorship_level).to eq("silver")
+
+      context "when purchasing a bronze sponsorship" do
+        let(:params) { { sponsorship_level: :bronze, organization_id: org.id } }
+
+        before do
+          Credit.add_to_org(org, Sponsorship::CREDITS[:bronze])
+        end
+
+        it "creates a new sponsorship" do
+          expect do
+            post "/partnerships", params: params
+            expect(response).to redirect_to(partnerships_path)
+          end.to change(org.sponsorships, :count).by(1)
+        end
+
+        it "subscribes with the correct info" do
+          Timecop.freeze(Time.current) do
+            post "/partnerships", params: params
+            sponsorship = org.sponsorships.bronze.last
+            expect(sponsorship.status).to eq("pending")
+            expect(sponsorship.expires_at.to_i).to eq(1.month.from_now.to_i)
+            expect(sponsorship.sponsorable).to be(nil)
+            expect(sponsorship.instructions).to be_blank
+            expect(sponsorship.instructions_updated_at).to be(nil)
+          end
+        end
+
+        it "detracts the correct amount of credits" do
+          expect do
+            post "/partnerships", params: params
+          end.to change(org.credits.spent, :size).by(Sponsorship::CREDITS[:bronze])
+          credit = org.credits.spent.last
+          expect(credit.purchase.is_a?(Sponsorship)).to be(true)
+        end
       end
-      xit "subscribes to gold sponsorship" do # skipped for now do to high credit need (not sure making this self serve makes sense)
-        post "/partnerships", params: {
-          sponsorship_level: "gold",
-          organization_id: organization.id
-        }
-        expect(organization.reload.sponsorship_level).to eq("gold")
+
+      context "when purchasing a devrel sponsorship" do
+        let(:params) { { sponsorship_level: :devrel, organization_id: org.id } }
+
+        before do
+          Credit.add_to_org(org, Sponsorship::CREDITS[:devrel])
+        end
+
+        it "creates a new sponsorship" do
+          expect do
+            post "/partnerships", params: params
+            expect(response).to redirect_to(partnerships_path)
+          end.to change(org.sponsorships, :count).by(1)
+        end
+
+        it "subscribes with the correct info" do
+          Timecop.freeze(Time.current) do
+            post "/partnerships", params: params
+            sponsorship = org.sponsorships.devrel.last
+            expect(sponsorship.status).to eq("pending")
+            expect(sponsorship.expires_at).to be(nil)
+            expect(sponsorship.sponsorable).to be(nil)
+            expect(sponsorship.instructions).to be_blank
+            expect(sponsorship.instructions_updated_at).to be(nil)
+          end
+        end
+
+        it "detracts the correct amount of credits" do
+          expect do
+            post "/partnerships", params: params
+          end.to change(org.credits.spent, :size).by(Sponsorship::CREDITS[:devrel])
+          credit = org.credits.spent.last
+          expect(credit.purchase.is_a?(Sponsorship)).to be(true)
+        end
       end
-      it "subscribes to editorial subscription" do
-        post "/partnerships", params: {
-          sponsorship_level: "editorial",
-          organization_id: organization.id
-        }
-        expect(organization.reload.credits.where(spent: false).size).to eq(1500)
+
+      context "when purchasing a media sponsorship" do
+        let(:params) do
+          { sponsorship_level: :media, organization_id: org.id, sponsorship_amount: 10 }
+        end
+
+        before do
+          Credit.add_to_org(org, params[:sponsorship_amount])
+        end
+
+        it "creates a new sponsorship" do
+          expect do
+            post "/partnerships", params: params
+            expect(response).to redirect_to(partnerships_path)
+          end.to change(org.sponsorships, :count).by(1)
+        end
+
+        it "subscribes with the correct info" do
+          Timecop.freeze(Time.current) do
+            post "/partnerships", params: params
+            sponsorship = org.sponsorships.media.last
+            expect(sponsorship.status).to eq("pending")
+            expect(sponsorship.expires_at).to be(nil)
+            expect(sponsorship.sponsorable).to be(nil)
+            expect(sponsorship.instructions).to be_blank
+            expect(sponsorship.instructions_updated_at).to be(nil)
+          end
+        end
+
+        it "detracts the correct amount of credits" do
+          expect do
+            post "/partnerships", params: params
+          end.to change(org.credits.spent, :size).by(params[:sponsorship_amount])
+          credit = org.credits.spent.last
+          expect(credit.purchase.is_a?(Sponsorship)).to be(true)
+        end
       end
-      it "subscribes to media sponsorship" do
-        post "/partnerships", params: {
-          sponsorship_level: "media",
-          organization_id: organization.id,
-          sponsorship_amount: 900
-        }
-        expect(organization.reload.credits.where(spent: false).size).to eq(1100)
+
+      context "when purchasing a tag sponsorship" do
+        let(:tag) { create(:tag) }
+        let(:params) { { sponsorship_level: :tag, organization_id: org.id, tag_name: tag.name } }
+
+        before do
+          Credit.add_to_org(org, Sponsorship::CREDITS[:tag])
+        end
+
+        it "creates a new sponsorship" do
+          expect do
+            post "/partnerships", params: params
+            expect(response).to redirect_to(partnerships_path)
+          end.to change(org.sponsorships, :count).by(1)
+        end
+
+        it "subscribes with the correct info" do
+          Timecop.freeze(Time.current) do
+            post "/partnerships", params: params
+            sponsorship = org.sponsorships.tag.last
+            expect(sponsorship.status).to eq("pending")
+            expect(sponsorship.expires_at).to be(nil)
+            expect(sponsorship.sponsorable).not_to be(nil)
+            expect(sponsorship.instructions).to be_blank
+            expect(sponsorship.instructions_updated_at).to be(nil)
+          end
+        end
+
+        it "detracts the correct amount of credits" do
+          expect do
+            post "/partnerships", params: params
+          end.to change(org.credits.spent, :size).by(Sponsorship::CREDITS[:tag])
+          credit = org.credits.spent.last
+          expect(credit.purchase.is_a?(Sponsorship)).to be(true)
+        end
       end
-      it "subscribes to tag sponsorship" do
-        tag = create(:tag)
+
+      it "updates sponsorship instructions if present" do
+        Credit.add_to_org(org, Sponsorship::CREDITS[:bronze])
+
         post "/partnerships", params: {
-          sponsorship_level: "tag",
-          organization_id: organization.id,
-          sponsorship_amount: 900,
-          tag_name: tag.name
-        }
-        expect(organization.reload.credits.where(spent: false).size).to eq(1500)
-        expect(tag.reload.sponsor_organization_id).to eq(organization.id)
-      end
-      it "updates sponsorship instructions if new instructions" do
-        post "/partnerships", params: {
-          sponsorship_level: "bronze",
-          organization_id: organization.id,
+          sponsorship_level: :bronze,
+          organization_id: org.id,
           sponsorship_instructions: "hello there"
         }
-        expect(organization.reload.sponsorship_instructions).to include("hello there")
-        expect(organization.reload.sponsorship_instructions_updated_at).to be > 30.seconds.ago
+        sponsorship = org.sponsorships.bronze.last
+        expect(sponsorship.instructions).to include("hello there")
+        expect(sponsorship.instructions_updated_at).not_to be(nil)
       end
     end
 
-    context "when user is logged in as a non-admin" do
+    context "when user is logged in as a non organization admin but has enough credits" do
       before do
-        OrganizationMembership.create(user_id: user.id, organization_id: organization.id, type_of_user: "member")
-        Credit.add_to_org(organization, 2000)
+        create(:organization_membership, user: user, organization: org, type_of_user: "member")
+        Credit.add_to_org(org, Sponsorship::CREDITS[:bronze])
         sign_in user
       end
 
-      it "subscribes to bronze sponsorship" do
+      it "does not subscribe to a bronze sponsorship" do
         expect do
           post "/partnerships", params: {
             sponsorship_level: "bronze",
-            organization_id: organization.id
+            organization_id: org.id
           }
         end.to raise_error(Pundit::NotAuthorizedError)
       end
     end
   end
 end
+# rubocop:enable RSpec/NestedGroups

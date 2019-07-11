@@ -16,7 +16,7 @@ const PublishToggle = ({
   <div className="articleform__buttons">
     <button
       onClick={onHelp}
-      type='button'
+      type="button"
       className={
         helpShowing
           ? 'articleform__buttons--small active'
@@ -27,22 +27,32 @@ const PublishToggle = ({
     </button>
     <button
       onClick={onPreview}
-      type='button'
+      type="button"
       className={previewShowing ? 'active' : 'inactive'}
     >
-      PREVIEW
+      {previewShowing ? 'EDIT' : 'PREVIEW'}
     </button>
-    {(published || version === 'v1') ? '' : <button onClick={onSaveDraft} type='button'>SAVE DRAFT</button>}
+    {published || version === 'v1' ? (
+      ''
+    ) : (
+      <button onClick={onSaveDraft} type="button">
+        SAVE DRAFT
+      </button>
+    )}
     <span>
       <p style={!edited && { visibility: 'hidden' }}>
         New Changes (
-        <button onClick={onClearChanges} className="clear-button" type='button'>
+        <button onClick={onClearChanges} className="clear-button" type="button">
           clear
         </button>
         )
       </p>
-      <button onClick={onPublish} className="articleform__buttons--publish" type='button'>
-        {(published || version === 'v1') ? 'SAVE CHANGES' : 'PUBLISH'}
+      <button
+        onClick={onPublish}
+        className="articleform__buttons--publish"
+        type="button"
+      >
+        {published || version === 'v1' ? 'SAVE CHANGES' : 'PUBLISH'}
       </button>
     </span>
   </div>
