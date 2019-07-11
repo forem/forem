@@ -32,7 +32,7 @@ module Credits
       %w[ClassifiedListing]
     end
 
-    def load_purchases(credits)
+    def load_credits_purchases(credits)
       credits.spent.select(
         :purchase_id,
         :purchase_type,
@@ -42,25 +42,32 @@ module Credits
     end
 
     def build_ledger_for(credits)
-      purchases = load_purchases(credits)
+      credits_purchases = load_credits_purchases(credits)
+      credits_purchases_with_purchase = credits_purchases.select(&:purchase_type)
+      credits_purchases_without_purchase = credits_purchases.reject(&:purchase_type)
       items = []
 
-      # to avoid N+1 on purchases, we load them by type separately
-      listings_purchases = purchases.select { |row| row.purchase_type == "ClassifiedListing" }
-      listings = ClassifiedListing.where(id: listings_purchases.map(&:purchase_id))
-      listings_purchases.each do |purchase|
-        listing = listings.detect { |l| l.id == purchase.purchase_id }
-        items << Item.new(
-          purchase: listing,
-          cost: purchase.cost.to_i,
-          purchased_at: purchase.purchased_at,
-        )
+      if credits_purchases_with_purchase.present?
+        # to avoid N+1 on purchases, we load them by type separately
+        purchase_types = credits_purchases_with_purchase.map(&:purchase_type).uniq.compact
+        purchase_types.each do |purchase_type|
+          credits_purchases_by_type = credits_purchases_with_purchase.select { |row| row.purchase_type == purchase_type }
+          purchases = purchase_type.constantize.where(id: credits_purchases_by_type.map(&:purchase_id))
+          credits_purchases_by_type.each do |credit_purchase|
+            purchase = purchases.detect { |p| p.id == credit_purchase.purchase_id }
+            items << Item.new(
+              purchase: purchase,
+              cost: credit_purchase.cost.to_i,
+              purchased_at: credit_purchase.purchased_at,
+            )
+          end
+        end
       end
 
-      # add items without a purchase association at the bottom
-      unassociated_purchase = purchases.reject(&:purchase_type).first
-      if unassociated_purchase
-        items << Item.new(cost: unassociated_purchase.cost.to_i)
+      # add items without a purchase association lumped at the bottom
+      if credits_purchases_without_purchase.present?
+        total_cost = credits_purchases_without_purchase.sum(&:cost)
+        items << Item.new(cost: total_cost.to_i)
       end
 
       items

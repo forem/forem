@@ -11,9 +11,7 @@
     <div class="existing-credits-status">You have <%= @user_unspent_credits_count %> personal credits to spend</div>
     <a href="<%= purchase_credits_path %>" data-no-instant>Purchase additional credits</a>
 
-    <% if @user_unspent_credits_count.positive? %>
-      <%= render "ledger", items: @ledger[["User", current_user.id]] %>
-    <% end %>
+    <%= render "ledger", items: @ledger[["User", current_user.id]] %>
   </div>
 
   <% if @organizations.present? %>
@@ -26,9 +24,7 @@
           Purchase additional credits
         </a>
 
-        <% if org.unspent_credits_count.positive? %>
-          <%= render "ledger", items: @ledger[["Organization", org.id]] %>
-        <% end %>
+        <%= render "ledger", items: @ledger[["Organization", org.id]] %>
       </div>
     <% end %>
   <% end %>
