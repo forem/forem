@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_10_081915) do
+ActiveRecord::Schema.define(version: 2019_07_11_070019) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -575,7 +575,6 @@ ActiveRecord::Schema.define(version: 2019_07_10_081915) do
     t.string "dark_nav_image"
     t.string "email"
     t.string "github_username"
-    t.boolean "is_gold_sponsor", default: false
     t.string "jobs_email"
     t.string "jobs_url"
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
@@ -590,15 +589,6 @@ ActiveRecord::Schema.define(version: 2019_07_10_081915) do
     t.string "secret"
     t.string "slug"
     t.integer "spent_credits_count", default: 0, null: false
-    t.text "sponsorship_blurb_html"
-    t.datetime "sponsorship_expires_at"
-    t.integer "sponsorship_featured_number", default: 0
-    t.text "sponsorship_instructions", default: ""
-    t.datetime "sponsorship_instructions_updated_at"
-    t.string "sponsorship_level"
-    t.string "sponsorship_status", default: "none"
-    t.string "sponsorship_tagline"
-    t.string "sponsorship_url"
     t.string "state"
     t.string "story"
     t.text "summary"
@@ -891,8 +881,6 @@ ActiveRecord::Schema.define(version: 2019_07_10_081915) do
     t.text "rules_markdown"
     t.string "short_summary"
     t.string "social_image"
-    t.integer "sponsor_organization_id"
-    t.string "sponsorship_status", default: "none"
     t.string "submission_rules_headsup"
     t.text "submission_template"
     t.boolean "supported", default: false

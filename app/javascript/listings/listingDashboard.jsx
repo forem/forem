@@ -59,6 +59,20 @@ export class ListingDashboard extends Component {
         ),
       );
     };
+    
+    const sortListings = (event) => {
+      const sortedListings = listings.sort((a,b) => (a[event.target.value] > b[event.target.value]) ? -1 : 1)
+      this.setState({listings: sortedListings});
+    }
+
+    const sortingDropdown = (
+      <div class="dashboard-listings-sorting">
+        <select onChange={sortListings} >
+          <option value="created_at" selected="selected">Recently Created</option>
+          <option value="bumped_at">Recently Bumped</option>
+        </select>
+      </div>
+    );
 
     const filterButtons = (
       <div className="listings-dashboard-filter-buttons">
@@ -161,6 +175,7 @@ export class ListingDashboard extends Component {
           </div>
         </div>
         {filterButtons}
+        {sortingDropdown}
         <div className="dashboard-listings-view">
           {showListings(selectedListings, listings, orgListings, filter)}
         </div>

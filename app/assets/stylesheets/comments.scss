@@ -322,6 +322,9 @@ a.header-link {
       kbd {
         @extend %kbd;
       }
+      code {
+        word-wrap: break-word;
+      }
     }
     .actions {
       text-align: right;
@@ -643,7 +646,6 @@ a.header-link {
     }
     code {
       margin: auto;
-      white-space: nowrap;
       padding: 1px 5px 0px;
       border-radius: 2px;
       font-size: 0.8em;
