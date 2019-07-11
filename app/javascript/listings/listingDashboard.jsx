@@ -143,6 +143,8 @@ export class ListingDashboard extends Component {
           className={`rounded-btn ${
             selectedListings === 'user' ? 'active' : ''
           }`}
+          role="button" 
+          tabIndex="0"
         >
           Personal
         </span>
