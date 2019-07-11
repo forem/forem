@@ -9,6 +9,13 @@ RSpec.describe ProMembership, type: :model do
   it { is_expected.to have_db_index(:status) }
   it { is_expected.to have_db_index(:expires_at) }
 
+  describe "constants" do
+    it "has the correct values for constants" do
+      expect(Sponsorship::STATUSES).to eq(%w[active expired])
+      expect(Sponsorship::MONTHLY_COST).to eq(5)
+    end
+  end
+
   describe "creation" do
     it "sets expires_at to a month from now" do
       Timecop.freeze(Time.current) do

@@ -1,7 +1,7 @@
 # rubocop:disable RSpec/NestedGroups
 require "rails_helper"
 
-RSpec.describe "Pages", type: :request do
+RSpec.describe "Partnerships", type: :request do
   describe "GET /partnerships" do
     context "when user is logged in" do
       before do

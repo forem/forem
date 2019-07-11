@@ -170,7 +170,7 @@ Rails.application.routes.draw do
   resources :profile_pins, only: %i[create update]
   resources :partnerships, only: %i[index create show], param: :option
   resources :display_ad_events, only: [:create]
-  resource :pro_membership, path: :pro
+  resource :pro_membership, path: :pro#, only: %i[create show]
 
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/listings/dashboard" => "classified_listings#dashboard"
