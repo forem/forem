@@ -30,6 +30,7 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
     it { is_expected.to have_many(:push_notification_subscriptions).dependent(:destroy) }
     it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
+    it { is_expected.to have_one(:pro_membership).dependent(:destroy) }
     it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
     it { is_expected.to validate_uniqueness_of(:github_username).allow_nil }
     it { is_expected.to validate_uniqueness_of(:twitter_username).allow_nil }
@@ -655,9 +656,19 @@ RSpec.describe User, type: :model do
       expect(user.pro?).to be(false)
     end
 
-    it "returns true if the user is a pro" do
+    it "returns true if the user has the pro role" do
       user.add_role(:pro)
       expect(user.pro?).to be(true)
+    end
+
+    it "returns true if the user has an active pro membership" do
+      create(:pro_membership, user: user)
+      expect(user.pro?).to be(true)
+    end
+
+    it "returns false if the user has an expired pro membership" do
+      create(:pro_membership, :expired, user: user)
+      expect(user.pro?).to be(false)
     end
   end
 

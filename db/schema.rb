@@ -791,6 +791,17 @@ ActiveRecord::Schema.define(version: 2019_08_27_163358) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "pro_memberships", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "expires_at", null: false
+    t.string "status", default: "active"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["expires_at"], name: "index_pro_memberships_on_expires_at"
+    t.index ["status"], name: "index_pro_memberships_on_status"
+    t.index ["user_id"], name: "index_pro_memberships_on_user_id"
+  end
+
   create_table "profile_pins", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "pinnable_id"

@@ -1,0 +1,13 @@
+class CreateProMemberships < ActiveRecord::Migration[5.2]
+  def change
+    create_table :pro_memberships do |t|
+      t.references :user, foreign_key: true
+      t.string :status, default: "active"
+      t.datetime :expires_at, null: false
+
+      t.timestamps
+    end
+    add_index :pro_memberships, :status
+    add_index :pro_memberships, :expires_at
+  end
+end
