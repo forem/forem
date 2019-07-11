@@ -1,4 +1,5 @@
 class HistoryController < ApplicationController
+  before_action :authenticate_user!
   before_action :generate_algolia_search_key
 
   def index
