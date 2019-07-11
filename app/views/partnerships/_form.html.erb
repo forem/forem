@@ -57,9 +57,9 @@
             <h2><%= level.capitalize %> Sponsor Subscription</h2>
             <%= form_tag "/partnerships" do %>
               <%= hidden_field_tag(:organization_id, org.id) %>
-              <%= hidden_field_tag(:sponsorship_level, level) %>
+              <%= hidden_field_tag(:level, level) %>
               <h4>Sponsorship message/brand instructions:</h4>
-              <%= text_area_tag(:sponsorship_instructions, nil, placeholder: "Include brand guideline links and detailed instructions about the message you are trying to get across. DEV editors will use these guidelines contextually depending on sponsorship.") %>
+              <%= text_area_tag(:instructions, nil, placeholder: "Include brand guideline links and detailed instructions about the message you are trying to get across. DEV editors will use these guidelines contextually depending on sponsorship.") %>
               <button>Subscribe for <%= Sponsorship::CREDITS[level] %> credits</button>
               <p style="font-size: 0.88em;">
                 <em>
@@ -74,9 +74,9 @@
           <br />
           <%= form_tag "/partnerships" do %>
             <%= hidden_field_tag(:organization_id, org.id) %>
-            <%= hidden_field_tag(:sponsorship_level, level) %>
+            <%= hidden_field_tag(:level, level) %>
             <h4>Sponsorship message/brand instructions:</h4>
-            <%= text_area_tag(:sponsorship_instructions, nil, placeholder: "Include brand guideline links and detailed instructions about the message you are trying to get across. DEV editors will use these guidelines contextually depending on sponsorship.") %>
+            <%= text_area_tag(:instructions, nil, placeholder: "Include brand guideline links and detailed instructions about the message you are trying to get across. DEV editors will use these guidelines contextually depending on sponsorship.") %>
             <% org.sponsorships.where(level: :tag).find_each do |sponsorship| %>
               <div class="partner-explainer-notice">
                 🎉 You are Subscribed as the sponsor of #<%= sponsorship.sponsorable.name %>.
@@ -102,8 +102,8 @@
           <br />
           <%= form_tag "/partnerships" do %>
             <%= hidden_field_tag(:organization_id, org.id) %>
-            <%= hidden_field_tag(:sponsorship_level, level) %>
-            <%= number_field_tag(:sponsorship_amount, nil, placeholder: "Number of credits") %>
+            <%= hidden_field_tag(:level, level) %>
+            <%= number_field_tag(:amount, nil, placeholder: "Number of credits") %>
             <button>Add spend to your media sponsorship</button>
             <p style="font-size: 0.88em;">
               <em>
@@ -118,7 +118,7 @@
           <br />
           <%= form_tag "/partnerships" do %>
             <%= hidden_field_tag(:organization_id, org.id) %>
-            <%= hidden_field_tag(:sponsorship_level, level) %>
+            <%= hidden_field_tag(:level, level) %>
             <button>Sign Up for DevRel Consulting</button>
             <p style="font-size: 1.1em;">
               You will be contacted by the DEV team within one day of signing up for this service.
