@@ -669,6 +669,43 @@ form.listings-contact-via-connect {
     }
   }
 
+  .dashboard-listings-sorting {
+    padding-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    @media screen and (max-width: 426px) {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    select {
+      display: block;
+      font-size: 19px;
+      padding: 12px;
+      border: 1px solid rgb(222, 230, 233);
+      border-radius: 3px;
+      background-color: white;
+      outline: none;
+      font-weight: bold;
+      color: #333333;
+      font-family: 'HelveticaNeue-CondensedBold', 'HelveticaNeueBoldCondensed',
+        'HelveticaNeue-Bold-Condensed', 'Helvetica Neue Bold Condensed',
+        'HelveticaNeueBold', 'HelveticaNeue-Bold', 'Helvetica Neue Bold',
+        'HelveticaNeue', 'Helvetica Neue', 'TeXGyreHerosCnBold', 'Helvetica',
+        'Tahoma', 'Geneva', 'Arial Narrow', 'Arial', sans-serif;
+
+      @media screen and (max-width: 426px) {
+        text-align-last: center;
+        text-align: center;
+        -ms-text-align-last: center;
+        -moz-text-align-last: center;
+        text-align-last: center;
+      }
+    }
+  }
+  
   .dashboard-listings-view {
 
     .dashboard-listing-row {

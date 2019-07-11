@@ -37,6 +37,7 @@ module ApplicationHelper
       classified_listings
       credits
       partnerships
+      pro_accounts
     ].include?(controller_name)
   end
 
@@ -193,21 +194,5 @@ module ApplicationHelper
 
   def community_qualified_name
     "The #{ApplicationConfig['COMMUNITY_NAME']} Community"
-  end
-
-  def sponsorship_credits_price(level)
-    if level == "bronze"
-      50
-    elsif level == "silver"
-      300
-    elsif level == "gold"
-      4000
-    elsif level == "tag"
-      500
-    elsif level == "media"
-      25
-    elsif level == "editorial"
-      500
-    end
   end
 end
