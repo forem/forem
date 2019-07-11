@@ -25,7 +25,7 @@ module Podcasts
     def update_published_at(episode, item_data)
       episode.published_at = item_data.pubDate.to_date
       episode.save
-    rescue StandardError => e
+    rescue ArgumentError, NoMethodError => e
       Rails.logger.error("not a valid date: #{e}")
     end
   end
