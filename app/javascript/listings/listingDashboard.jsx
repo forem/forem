@@ -9,6 +9,7 @@ export class ListingDashboard extends Component {
     orgs: [],
     userCredits: 0,
     selectedListings: 'user',
+    filter: 'All',
   };
 
   componentDidMount() {
@@ -33,40 +34,56 @@ export class ListingDashboard extends Component {
       userCredits,
       orgs,
       selectedListings,
+      filter,
     } = this.state;
 
-    const showListings = (selected, userListings, organizationListings) => {
-      return selected === 'user'
-        ? userListings.map(listing => <ListingRow listing={listing} />)
-        : organizationListings.map(listing =>
-            listing.organization_id === selected ? (
-              <ListingRow listing={listing} />
-            ) : (
-              ''
-            ),
-          );
-    };
-
-    const filterListings = (condition) => {
-      let filteredListings;
-      if (condition === "Expired") {
-        filteredListings = listings.filter(listing => listing.published === false)
-      } else {
-        filteredListings = listingsMirror
+    const showListings = (selected, userListings, organizationListings, listingsCopy, selectedFilter) => {
+      let displayedListings;
+      if (selected === 'user') {
+        displayedListings = userListings;
+        if (selectedFilter === "Expired") {
+          displayedListings = userListings.filter(listing => listing.published === false)
+        } else if (selectedFilter === "Active") {
+          displayedListings = userListings.filter(listing => listing.published === true)
+        }
+        return displayedListings.map(listing => <ListingRow listing={listing} />)
       }
-      this.setState({listings: filteredListings})
+      displayedListings = organizationListings;
+      if (selectedFilter === "Expired") {
+        displayedListings = organizationListings.filter(listing => listing.published === false)
+      } else if (selectedFilter === "Active") {
+        displayedListings = organizationListings.filter(listing => listing.published === true)
+      }
+      return displayedListings.map(listing =>
+        listing.organization_id === selected ? (
+          <ListingRow listing={listing} />
+        ) : (
+          ''
+        ),
+      );
     };
 
     const filterButtons = (
       <div className="listings-dashboard-filter-buttons">
         <span
-          onClick={(event) => {filterListings(event.target.textContent)}}
-          className="filter-active">
+          onClick={(event) => {this.setState( {filter:event.target.textContent} )}}
+          className={`rounded-btn ${filter === 'All' ? 'active' : ''}`}
+          role="button" 
+          tabIndex="0">
           All
         </span>
         <span
-          onClick={(event) => {filterListings(event.target.textContent)}}
-          className="filter-expired">
+          onClick={(event) => {this.setState( {filter:event.target.textContent} )}}
+          className={`rounded-btn ${filter === 'Active' ? 'active' : ''}`}
+          role="button" 
+          tabIndex="0">
+          Active
+        </span>
+        <span
+          onClick={(event) => {this.setState( {filter:event.target.textContent} )}}
+          className={`rounded-btn ${filter === 'Expired' ? 'active' : ''}`}
+          role="button" 
+          tabIndex="0">
           Expired
         </span>
       </div>
@@ -76,6 +93,8 @@ export class ListingDashboard extends Component {
       <span
         onClick={() => this.setState({ selectedListings: org.id })}
         className={`rounded-btn ${selectedListings === org.id ? 'active' : ''}`}
+        role="button" 
+        tabIndex="0"
       >
         {org.name}
       </span>
@@ -144,7 +163,7 @@ export class ListingDashboard extends Component {
         </div>
         {filterButtons}
         <div className="dashboard-listings-view">
-          {showListings(selectedListings, listings, orgListings)}
+          {showListings(selectedListings, listings, orgListings, listingsMirror, filter)}
         </div>
       </div>
     );
