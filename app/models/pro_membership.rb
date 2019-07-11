@@ -4,7 +4,7 @@ class ProMembership < ApplicationRecord
 
   belongs_to :user
 
-  validates :user, :status, presence: true
+  validates :user, :status, :expiration_notifications_count, presence: true
   validates :expires_at, presence: true, on: :save
   validates :status, inclusion: { in: STATUSES }
 
@@ -26,7 +26,12 @@ class ProMembership < ApplicationRecord
   end
 
   def renew!
-    update_columns(expires_at: 1.month.from_now, status: :active)
+    update_columns(
+      expires_at: 1.month.from_now,
+      status: :active,
+      expiration_notification_at: nil,
+      expiration_notifications_count: 0,
+    )
   end
 
   private

@@ -5,14 +5,15 @@ RSpec.describe ProMembership, type: :model do
   it { is_expected.to validate_presence_of(:user) }
   it { is_expected.to validate_presence_of(:status) }
   it { is_expected.to validate_presence_of(:expires_at).on(:save) }
+  it { is_expected.to validate_presence_of(:expiration_notifications_count) }
   it { is_expected.to validate_inclusion_of(:status).in_array(ProMembership::STATUSES) }
   it { is_expected.to have_db_index(:status) }
   it { is_expected.to have_db_index(:expires_at) }
 
   describe "constants" do
     it "has the correct values for constants" do
-      expect(Sponsorship::STATUSES).to eq(%w[active expired])
-      expect(Sponsorship::MONTHLY_COST).to eq(5)
+      expect(ProMembership::STATUSES).to eq(%w[active expired])
+      expect(ProMembership::MONTHLY_COST).to eq(5)
     end
   end
 
@@ -96,6 +97,22 @@ RSpec.describe ProMembership, type: :model do
       Timecop.freeze(Time.current) do
         pro_membership.renew!
         expect(pro_membership.reload.status).to eq("active")
+      end
+    end
+
+    it "sets expiration_notification_at to nil" do
+      Timecop.freeze(Time.current) do
+        pro_membership.update_column(:expiration_notification_at, Time.current)
+        pro_membership.renew!
+        expect(pro_membership.reload.expiration_notification_at).to be(nil)
+      end
+    end
+
+    it "sets expiration_notifications_count to 0" do
+      Timecop.freeze(Time.current) do
+        pro_membership.update_column(:expiration_notifications_count, 1)
+        pro_membership.renew!
+        expect(pro_membership.reload.expiration_notifications_count).to eq(0)
       end
     end
 

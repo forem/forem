@@ -11,6 +11,9 @@ module ProMemberships
     def call
       if purchase_pro_membership
         ProMemberships::PopulateHistoryJob.perform_later(user.id)
+
+        # TODO: subscribe user to relevant channels?
+
         true
       else
         false
