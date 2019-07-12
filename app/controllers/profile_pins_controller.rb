@@ -13,11 +13,13 @@ class ProfilePinsController < ApplicationController
       flash[:pins_error] = "You can only have five pins"
     end
     redirect_back(fallback_location: "/dashboard")
+    bust_user_profile
   end
 
   def update
     # for removing pinnable
     current_user.profile_pins.where(id: params[:id]).first&.destroy
+    bust_user_profile
     flash[:pins_success] = "🗑 Pin removed"
     redirect_back(fallback_location: "/dashboard")
   end
@@ -26,5 +28,10 @@ class ProfilePinsController < ApplicationController
 
   def profile_pin_params
     params.require(:profile_pin).permit(:pinnable_id)
+  end
+
+  def bust_user_profile
+    CacheBuster.new.bust(current_user.path)
+    CacheBuster.new.bust(current_user.path + "?i=i")
   end
 end
