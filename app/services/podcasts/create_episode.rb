@@ -21,7 +21,7 @@ module Podcasts
       get_media_url(ep)
       begin
         ep.published_at = item.pubDate.to_date
-      rescue StandardError => e
+      rescue ArgumentError, NoMethodError => e
         Rails.logger.error("not a valid date: #{e}")
       end
       ep.body = item.body
@@ -33,17 +33,11 @@ module Podcasts
 
     attr_reader :podcast_id, :item
 
-    # checking url when it is https is useless, the url is set to the enclosure url anyway
     def get_media_url(episode)
-      episode.media_url = if HTTParty.head(item.enclosure_url.gsub(/http:/, "https:")).code == 200
-                            item.enclosure_url.gsub(/http:/, "https:")
-                          else
-                            item.enclosure_url
-                          end
-    rescue StandardError
-      # podcast episode must have a media_url
-      episode.media_url = item.enclosure_url
-      episode.podcast.update(status_notice: I18n.t(:unplayable, scope: "podcasts.statuses")) if episode.podcast.status_notice.empty?
+      result = GetMediaUrl.call(item.enclosure_url)
+      episode.reachable = result.reachable
+      episode.media_url = result.url
+      episode.https = result.https
     end
   end
 end
