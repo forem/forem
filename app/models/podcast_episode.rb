@@ -25,6 +25,8 @@ class PodcastEpisode < ApplicationRecord
 
   before_validation :prefix_all_images
 
+  scope :reachable, -> { joins(:podcast).where(reachable: true, podcasts: { reachable: true }) }
+
   algoliasearch per_environment: true do
     attribute :id
     add_index "searchables",
