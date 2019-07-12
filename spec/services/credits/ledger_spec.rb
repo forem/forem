@@ -5,6 +5,7 @@ RSpec.describe Credits::Ledger do
   let(:org) { create(:organization) }
   let(:user_listing) { create(:classified_listing, user: user) }
   let(:org_listing) { create(:classified_listing, organization: org) }
+  let(:sponsorship) { create(:sponsorship, user: user, organization: org) }
 
   def buy(purchaser, purchase, cost)
     params = {
@@ -43,5 +44,14 @@ RSpec.describe Credits::Ledger do
     buy(org, org_listing, 3)
     items = described_class.call(user)[[Organization.name, org.id]]
     expect(items).to be(nil)
+  end
+
+  it "returns sponsorships purchases" do
+    create(:organization_membership, user_id: user.id, organization_id: org.id, type_of_user: "admin")
+    buy(org, sponsorship, 3)
+    items = described_class.call(user)[[Organization.name, org.id]]
+    expect(items.length).to be(1)
+    item = items.first
+    expect(item.purchase.is_a?(Sponsorship)).to be(true)
   end
 end

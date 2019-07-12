@@ -34,14 +34,7 @@ class OrganizationDashboard < Administrate::BaseDashboard
     approved: Field::Boolean,
     cta_button_text: Field::String,
     cta_button_url: Field::String,
-    cta_body_markdown: Field::Text,
-    sponsorship_url: Field::Text,
-    sponsorship_tagline: Field::Text,
-    sponsorship_status: Field::Text,
-    sponsorship_level: Field::Text,
-    sponsorship_instructions: Field::Text,
-    sponsorship_blurb_html: Field::Text,
-    sponsorship_featured_number: Field::Number
+    cta_body_markdown: Field::Text
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -88,12 +81,6 @@ class OrganizationDashboard < Administrate::BaseDashboard
     cta_button_text
     cta_button_url
     cta_body_markdown
-    sponsorship_url
-    sponsorship_tagline
-    sponsorship_blurb_html
-    sponsorship_level
-    sponsorship_status
-    sponsorship_featured_number
   ].freeze
 
   def display_resource(organization)

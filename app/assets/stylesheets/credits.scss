@@ -251,7 +251,7 @@
   .existing-credits {
     background: $dark-purple;
     color: white;
-    width: 600px;
+    width: 800px;
     margin: 100px auto;
     padding: 30px;
     border-radius: 3px;
@@ -279,7 +279,7 @@
   .ledger {
     margin: 2rem auto;
     text-align: right;
-    width: 600px;
+    width: 700px;
 
     caption {
       font-size: 1.2rem;
@@ -293,7 +293,7 @@
     .misc {
       td {
         padding-top: 1.5rem;
-        &:first-child { font-style: italic; }
+        &:nth-child(2) { font-style: italic; }
       }
     }
 
