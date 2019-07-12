@@ -1,7 +1,7 @@
 module Podcasts
   class GetMediaUrl
     def initialize(enclosure_url)
-      @enclosure_url = enclosure_url.to_s.downcase
+      @enclosure_url = enclosure_url.to_s
     end
 
     def self.call(*args)
@@ -9,8 +9,8 @@ module Podcasts
     end
 
     def call
-      was_http = !enclosure_url.starts_with?("https")
-      https_url = enclosure_url.sub(/http:/, "https:")
+      was_http = !enclosure_url.starts_with?(/https/i)
+      https_url = enclosure_url.sub(/http:/i, "https:")
 
       # check https url first
       if url_reachable?(https_url)
@@ -21,7 +21,7 @@ module Podcasts
         reachable = was_http ? url_reachable?(enclosure_url) : false
         url = enclosure_url
       end
-      result_struct.new(https: url.starts_with?("https"), reachable: reachable, url: url)
+      result_struct.new(https: url.starts_with?(/https/i), reachable: reachable, url: url)
     end
 
     private
