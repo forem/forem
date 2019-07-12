@@ -1,4 +1,5 @@
 require "rails_helper"
+require "rss"
 
 RSpec.describe Podcasts::EpisodeRssItem do
   let(:enclosure) { instance_double("RSS::Rss::Channel::Item::Enclosure", url: "https://audio.simplecast.com/2330f132.mp3") }
@@ -38,6 +39,12 @@ RSpec.describe Podcasts::EpisodeRssItem do
       expect(data.guid).to eq(guid)
       expect(data.enclosure_url).to eq("https://audio.simplecast.com/2330f132.mp3")
       expect(data.link).to eq(item.link)
+    end
+
+    it "sets url to nil when no enclosure" do
+      item = RSS::Parser.parse("spec/support/fixtures/podcasts/arresteddevops.xml", false).items.first
+      data = described_class.from_item(item)
+      expect(data.enclosure_url).to be nil
     end
   end
 end
