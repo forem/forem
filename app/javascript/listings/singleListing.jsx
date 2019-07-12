@@ -36,7 +36,7 @@ export const SingleListing = ({
     );
 
   const locationText = listing.location ? (
-    <a href={`/listings/${listing.location}`}>
+    <a href={`/listings/?q=${listing.location}`}>
 ・
       {listing.location}
     </a>
