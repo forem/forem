@@ -12,7 +12,7 @@ class BlackBox
       if usable_date < 10.days.ago
         reaction_points /= 2 # Older posts should fade
       end
-      if article.cached_tagged_with("watercooler")
+      if article.decorate.cached_tag_list_array.include?("watercooler")
         reaction_points = (reaction_points * 0.8).to_i # watercooler posts shouldn't get as much love in feed
       end
       function_caller.call("blackbox-production-articleHotness",
