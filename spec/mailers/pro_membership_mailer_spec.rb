@@ -56,12 +56,12 @@ RSpec.describe ProMembershipMailer, type: :mailer do
 
       it "includes credits path" do
         email = described_class.expiring_membership(pro_membership, 1.week.from_now)
-        expect(email.html_part.body).to include(CGI.escapeHTML(credits_path))
+        expect(email.html_part.body).to include(CGI.escape(credits_path))
       end
 
       it "includes pro membership path" do
         email = described_class.expiring_membership(pro_membership, 1.week.from_now)
-        expect(email.html_part.body).to include(CGI.escapeHTML(pro_membership_path))
+        expect(email.html_part.body).to include(CGI.escape(pro_membership_path))
       end
     end
   end

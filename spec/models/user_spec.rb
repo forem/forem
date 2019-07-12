@@ -652,6 +652,8 @@ RSpec.describe User, type: :model do
   end
 
   describe "#pro?" do
+    let(:user) { create(:user) }
+
     it "returns false if the user is not a pro" do
       expect(user.pro?).to be(false)
     end
@@ -667,8 +669,11 @@ RSpec.describe User, type: :model do
     end
 
     it "returns false if the user has an expired pro membership" do
-      create(:pro_membership, :expired, user: user)
-      expect(user.pro?).to be(false)
+      Timecop.freeze(Time.current) do
+        membership = create(:pro_membership, user: user)
+        membership.expire!
+        expect(user.pro?).to be(false)
+      end
     end
   end
 
