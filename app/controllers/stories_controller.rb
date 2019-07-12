@@ -23,8 +23,8 @@ class StoriesController < ApplicationController
     elsif (@article = Article.find_by(slug: params[:slug])&.decorate)
       handle_possible_redirect
     else
-      @podcast = Podcast.reachable.find_by(slug: params[:username]) || not_found
-      @episode = PodcastEpisode.reachable.find_by(slug: params[:slug]) || not_found
+      @podcast = Podcast.reachable.find_by!(slug: params[:username])
+      @episode = PodcastEpisode.reachable.find_by!(slug: params[:slug])
       handle_podcast_show
     end
   end
