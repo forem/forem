@@ -1,4 +1,5 @@
 require "rails_helper"
+require "rss"
 
 RSpec.describe Podcasts::GetEpisode do
   let(:podcast) { create(:podcast) }
@@ -28,5 +29,27 @@ RSpec.describe Podcasts::GetEpisode do
     expect do
       described_class.new(podcast).call(item)
     end.to have_enqueued_job.on_queue("podcast_episode_create") # .with(podcast.id)
+  end
+
+  context "when feed doesn't contain enclosure urls" do
+    let!(:item) { RSS::Parser.parse("spec/support/fixtures/podcasts/arresteddevops.xml", false).items.first }
+
+    before do
+      allow(podcast).to receive(:existing_episode).and_return(nil)
+    end
+
+    it "doesn't create invalid episodes" do
+      perform_enqueued_jobs do
+        expect do
+          described_class.new(podcast).call(item)
+        end.not_to change(PodcastEpisode, :count)
+      end
+    end
+
+    it "doesn't schedule jobs" do
+      expect do
+        described_class.new(podcast).call(item)
+      end.not_to have_enqueued_job
+    end
   end
 end

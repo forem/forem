@@ -18,7 +18,7 @@ module Podcasts
       ep.summary = item.itunes_summary
       ep.website_url = item.link
       ep.guid = item.guid
-      get_media_url(ep)
+      get_media_url(ep) if item.enclosure_url
       begin
         ep.published_at = item.pubDate.to_date
       rescue ArgumentError, NoMethodError => e
