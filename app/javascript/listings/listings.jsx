@@ -117,7 +117,7 @@ export class Listings extends Component {
   handleCloseModal = e => {
     const { openedListing } = this.state;
     if (
-      openedListing !== null && e.key === 'Escape' ||
+      (openedListing !== null && e.key === 'Escape') ||
       e.target.id === 'single-classified-listing-container__inner' ||
       e.target.id === 'classified-filters' ||
       e.target.id === 'classified-listings-modal-background'
@@ -453,6 +453,12 @@ abide by the
               isOpen
             />
             {messageModal}
+            <a
+              href="/about-listings"
+              className="single-classified-listing-info-link"
+            >
+              About DEV Listings
+            </a>
             <div className="single-classified-listing-container__spacer" />
           </div>
         </div>
