@@ -31,10 +31,14 @@ RSpec.describe "Pro Memberships", type: :request do
       end
 
       it "does not authorize creation if it has an expired membership" do
-        create(:pro_membership, :expired, user: user)
-        expect do
-          post pro_membership_path
-        end.to raise_error(Pundit::NotAuthorizedError)
+        Timecop.freeze(Time.current) do
+          membership = create(:pro_membership, user: user)
+          membership.expire!
+
+          expect do
+            post pro_membership_path
+          end.to raise_error(Pundit::NotAuthorizedError)
+        end
       end
     end
 
