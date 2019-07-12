@@ -10,4 +10,9 @@ namespace :pro_memberships do
     num_notified = ProMemberships::ExpirationNotifier.call(1.day.from_now)
     Rails.logger.info("Notified #{num_notified} Pro users...")
   end
+
+  desc "Bill pro users and optionally charge their cards"
+  task bill_users: :environment do
+    ProMemberships::Biller.call
+  end
 end
