@@ -4,13 +4,16 @@ class BlackBox
       usable_date = article.crossposted_at || article.published_at
       reaction_points = article.score
       super_super_recent_bonus = usable_date > 1.hour.ago ? 28 : 0
-      super_recent_bonus = usable_date > 8.hours.ago ? 31 : 0
-      recency_bonus = usable_date > 12.hours.ago ? 80 : 0
-      today_bonus = usable_date > 26.hours.ago ? 395 : 0
-      two_day_bonus = usable_date > 48.hours.ago ? 330 : 0
-      four_day_bonus = usable_date > 96.hours.ago ? 330 : 0
+      super_recent_bonus = usable_date > 8.hours.ago ? 81 : 0
+      recency_bonus = usable_date > 12.hours.ago ? 280 : 0
+      today_bonus = usable_date > 26.hours.ago ? 495 : 0
+      two_day_bonus = usable_date > 48.hours.ago ? 430 : 0
+      four_day_bonus = usable_date > 96.hours.ago ? 430 : 0
       if usable_date < 10.days.ago
         reaction_points /= 2 # Older posts should fade
+      end
+      if article.decorate.cached_tag_list_array.include?("watercooler")
+        reaction_points = (reaction_points * 0.8).to_i # watercooler posts shouldn't get as much love in feed
       end
       function_caller.call("blackbox-production-articleHotness",
                            { article: article, user: article.user }.to_json).to_i +
