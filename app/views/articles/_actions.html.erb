@@ -59,7 +59,8 @@
         </div>
         <web-share-wrapper shareurl="https://dev.to<%= @article.path %>" sharetext="<%= @article.title %>" template="web-share-button">
           <div class="dropdown-link-row">
-            <a target="_blank" href='https://twitter.com/intent/tweet?text="<%= @article.title %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>
+            <a target="_blank"
+               href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>
               Share to Twitter
             </a>
           </div>
