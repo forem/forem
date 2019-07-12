@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 
 class KeyboardShortcutsHandler extends Component {
   componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyDowm());
+    document.addEventListener('keydown', this.handleKeyDown());
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.globalKeysListener);
   }
 
-  handleKeyDowm = () => {
+  handleKeyDown = () => {
     this.globalKeysListener = event => {
       const controlOrCommandKey = event.ctrlKey || event.metaKey;
       if (
