@@ -1,7 +1,7 @@
 module Podcasts
   class GetMediaUrl
     def initialize(enclosure_url)
-      @enclosure_url = enclosure_url
+      @enclosure_url = enclosure_url.to_s.downcase
     end
 
     def self.call(*args)
