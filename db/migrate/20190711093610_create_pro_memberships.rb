@@ -6,10 +6,12 @@ class CreateProMemberships < ActiveRecord::Migration[5.2]
       t.datetime :expires_at, null: false
       t.datetime :expiration_notification_at
       t.integer :expiration_notifications_count, null: false, default: 0
+      t.boolean :auto_recharge, null: false, default: false
 
       t.timestamps
     end
     add_index :pro_memberships, :status
     add_index :pro_memberships, :expires_at
+    add_index :pro_memberships, :auto_recharge
   end
 end

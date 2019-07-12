@@ -13,7 +13,10 @@ module ProMemberships
       count = 0
 
       # NOTE: naive implementation because this is supposed to be called every 24hrs
-      relation = ProMembership.includes(user: [:credits]).where("DATE(expires_at) = ?", expiration_date)
+      relation = ProMembership.
+        includes(user: [:credits]).
+        where("DATE(expires_at) = ?", expiration_date).
+        where(auto_recharge: false)
       relation.find_each do |membership|
         next if membership.user.credits.unspent.size >= ProMembership::MONTHLY_COST
 

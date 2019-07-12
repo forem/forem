@@ -17,6 +17,17 @@ RSpec.describe ProMembership, type: :model do
     end
   end
 
+  describe "defaults" do
+    it "has the correct defaults" do
+      pm = ProMembership.new
+      expect(pm.status).to eq("active")
+      expect(pm.expires_at).to be(nil)
+      expect(pm.expiration_notification_at).to be(nil)
+      expect(pm.expiration_notifications_count).to eq(0)
+      expect(pm.auto_recharge).to be(false)
+    end
+  end
+
   describe "creation" do
     it "sets expires_at to a month from now" do
       Timecop.freeze(Time.current) do

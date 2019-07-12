@@ -49,4 +49,18 @@ RSpec.describe ProMemberships::ExpirationNotifier, type: :service do
       end
     end
   end
+
+  context "when there are expiring memberships with insufficient credits and auto recharge" do
+    let(:pro_membership) { create(:pro_membership) }
+    let(:user) { pro_membership.user }
+
+    it "does not deliver an email to the user" do
+      pro_membership.update_columns(auto_recharge: true)
+      Timecop.travel(pro_membership.expires_at - 1.week) do
+        assert_emails 0 do
+          described_class.call(1.week.from_now)
+        end
+      end
+    end
+  end
 end
