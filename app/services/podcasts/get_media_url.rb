@@ -21,14 +21,14 @@ module Podcasts
         reachable = was_http ? url_reachable?(enclosure_url) : false
         url = enclosure_url
       end
-      result_sctruct.new(https: url.starts_with?("https"), reachable: reachable, url: url)
+      result_struct.new(https: url.starts_with?("https"), reachable: reachable, url: url)
     end
 
     private
 
     attr_reader :enclosure_url
 
-    def result_sctruct
+    def result_struct
       Struct.new(:https, :reachable, :url, keyword_init: true)
     end
 
