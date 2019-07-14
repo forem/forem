@@ -28,7 +28,7 @@ module ProMemberships
       cost = ProMembership::MONTHLY_COST
 
       ActiveRecord::Base.transaction do
-        raise ActiveRecord::Rollback if user.credits.unspent.size < cost
+        raise ActiveRecord::Rollback if user.has_enough_credits?(cost)
 
         pro_membership = ProMembership.create!(user: user)
         Credits::Buyer.call(

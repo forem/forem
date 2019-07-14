@@ -92,6 +92,10 @@ class Organization < ApplicationRecord
     ProfileImage.new(self).get(90)
   end
 
+  def has_enough_credits?(num_credits_needed)
+    credits.unspent.size >= num_credits_needed
+  end
+
   private
 
   def evaluate_markdown

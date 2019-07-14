@@ -11,7 +11,7 @@ module Credits
     end
 
     def call
-      return false unless has_available_credits?
+      return false unless purchaser.has_enough_credits?(cost)
 
       purchaser.credits.unspent.limit(cost).update_all(
         spent: true,
@@ -25,9 +25,5 @@ module Credits
     private
 
     attr_reader :purchaser, :purchase, :cost
-
-    def has_available_credits?
-      purchaser.credits.unspent.size >= cost
-    end
   end
 end

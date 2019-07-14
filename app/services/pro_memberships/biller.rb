@@ -11,7 +11,7 @@ module ProMemberships
         user = membership.user
         cost = ProMembership::MONTHLY_COST
 
-        if user.credits.unspent.size >= cost
+        if user.has_enough_credits?(cost)
           renewed = renew_membership(membership, cost)
           unless renewed
             # TODO: notify admins that something went wrong

@@ -168,4 +168,20 @@ RSpec.describe Organization, type: :model do
       expect(article.cached_organization.slug).to eq new_slug
     end
   end
+
+  describe "#has_enough_credits?" do
+    it "returns false if the user has less unspent credits than neeed" do
+      expect(organization.has_enough_credits?(1)).to be(false)
+    end
+
+    it "returns true if the user has the exact amount of unspent credits" do
+      create(:credit, organization: organization, spent: false)
+      expect(organization.has_enough_credits?(1)).to be(true)
+    end
+
+    it "returns true if the user has more unspent credits than needed" do
+      create_list(:credit, 2, organization: organization, spent: false)
+      expect(organization.has_enough_credits?(1)).to be(true)
+    end
+  end
 end

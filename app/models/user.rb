@@ -440,6 +440,10 @@ class User < ApplicationRecord
     currently_streaming_on == "twitch"
   end
 
+  def has_enough_credits?(num_credits_needed)
+    credits.unspent.size >= num_credits_needed
+  end
+
   private
 
   def set_default_language
