@@ -16,7 +16,7 @@ class CreditsController < ApplicationController
                    current_user
                  end
     @organizations = current_user.admin_organizations
-    @customer = Stripe::Customer.retrieve(current_user.stripe_id_code) if current_user.stripe_id_code
+    @customer = Payments::Customer.get(current_user.stripe_id_code) if current_user.stripe_id_code
   end
 
   def create
@@ -43,13 +43,15 @@ class CreditsController < ApplicationController
     redirect_to credits_path, notice: "#{@number_to_purchase} new credits purchased!"
   end
 
+  private
+
   def make_payment
     find_or_create_customer
     find_or_create_card
     update_user_stripe_info
     create_charge
     true
-  rescue Stripe::CardError => e
+  rescue Payments::PaymentsError => e
     flash[:error] = e.message
     redirect_to purchase_credits_path
     false
@@ -57,22 +59,17 @@ class CreditsController < ApplicationController
 
   def find_or_create_customer
     @customer = if current_user.stripe_id_code
-                  Stripe::Customer.retrieve(current_user.stripe_id_code)
+                  Payments::Customer.get(current_user.stripe_id_code)
                 else
-                  Stripe::Customer.create(
-                    email: current_user.email,
-                  )
+                  Payments::Customer.create(email: current_user.email)
                 end
   end
 
   def find_or_create_card
     @card = if params[:stripe_token]
-              Stripe::Customer.create_source(
-                @customer.id,
-                source: params[:stripe_token],
-              )
+              Payments::Customer.create_source(@customer.id, params[:stripe_token])
             else
-              @customer.sources.retrieve(params[:selected_card])
+              Payments::Customer.get_source(@customer, params[:selected_card])
             end
   end
 
@@ -81,14 +78,11 @@ class CreditsController < ApplicationController
   end
 
   def create_charge
-    @amount = generate_cost
-    source = Rails.env.test? ? @card.id : (@card || @customer.default_source)
-    Stripe::Charge.create(
-      customer: @customer.id,
-      source: source,
-      amount: @amount,
+    Payments::Customer.charge(
+      customer: @customer,
+      amount: generate_cost,
       description: "Purchase of #{@number_to_purchase} credits.",
-      currency: "usd",
+      card_id: @card&.id,
     )
   end
 
