@@ -39,7 +39,7 @@ class ClassifiedListingsController < ApplicationController
     @classified_listing = ClassifiedListing.new(listing_params)
 
     # this will 500 for now if they don't belong in the org
-    authorize @classified_listing
+    authorize @classified_listing, :authorized_organization_poster? if @classified_listing.organization_id.present?
 
     @classified_listing.user_id = current_user.id
     cost = ClassifiedListing.cost_by_category(@classified_listing.category)
@@ -60,7 +60,7 @@ class ClassifiedListingsController < ApplicationController
   end
 
   def update
-    authorize @classified_listing, :authorized_organization_poster? if @classified_listing.organization_id.present?
+    authorize @classified_listing
 
     # NOTE: this should probably be split in three different actions: bump, unpublish, publish
     if listing_params[:action] == "bump"
@@ -72,20 +72,11 @@ class ClassifiedListingsController < ApplicationController
       available_user_credits = current_user.credits.unspent
 
       if org && available_org_credits.size >= cost
-        purchaser = org
+        charge_credits_before_bump(org, cost)
       elsif available_user_credits.size >= cost
-        purchaser = current_user
+        charge_credits_before_bump(current_user, cost)
       else
         redirect_to(credits_path, notice: "Not enough available credits") && return
-      end
-      ActiveRecord::Base.transaction do
-        Credits::Buyer.call(
-          purchaser: purchaser,
-          purchase: @classified_listing,
-          cost: cost,
-        )
-
-        raise ActiveRecord::Rollback unless bump_listing
       end
     elsif listing_params[:action] == "unpublish"
       unpublish_listing
@@ -144,6 +135,18 @@ class ClassifiedListingsController < ApplicationController
       @classified_listing.cached_tag_list = listing_params[:tag_list]
       @organizations = current_user.organizations
       render :new
+    end
+  end
+
+  def charge_credits_before_bump(purchaser, cost)
+    ActiveRecord::Base.transaction do
+      Credits::Buyer.call(
+        purchaser: purchaser,
+        purchase: @classified_listing,
+        cost: cost,
+      )
+
+      raise ActiveRecord::Rollback unless bump_listing
     end
   end
 
