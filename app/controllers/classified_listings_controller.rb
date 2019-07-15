@@ -60,21 +60,30 @@ class ClassifiedListingsController < ApplicationController
   end
 
   def update
-    authorize @classified_listing
+    authorize @classified_listing, :authorized_organization_poster? if @classified_listing.organization_id.present?
 
     # NOTE: this should probably be split in three different actions: bump, unpublish, publish
     if listing_params[:action] == "bump"
       cost = ClassifiedListing.cost_by_category(@classified_listing.category)
-      if current_user.credits.unspent.size >= cost
-        ActiveRecord::Base.transaction do
-          Credits::Buyer.call(
-            purchaser: current_user,
-            purchase: @classified_listing,
-            cost: cost,
-          )
 
-          raise ActiveRecord::Rollback unless bump_listing
-        end
+      org = Organization.find_by(id: @classified_listing.organization_id)
+
+      available_org_credits = org.credits.unspent if org
+      available_user_credits = current_user.credits.unspent
+
+      if org && available_org_credits.size >= cost
+        purchaser = org
+      elsif available_user_credits.size >= cost
+        purchaser = current_user
+      end
+      ActiveRecord::Base.transaction do
+        Credits::Buyer.call(
+          purchaser: purchaser,
+          purchase: @classified_listing,
+          cost: cost,
+        )
+
+        raise ActiveRecord::Rollback unless bump_listing
       end
     elsif listing_params[:action] == "unpublish"
       unpublish_listing
