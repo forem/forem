@@ -37,12 +37,12 @@ class Comment < ApplicationRecord
 
   alias touch_by_reaction save
 
-  algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
+  algoliasearch per_environment: true, enqueue: :trigger_index do
     attribute :id
     add_index "ordered_comments",
               id: :index_id,
               per_environment: true,
-              enqueue: :trigger_delayed_index do
+              enqueue: :trigger_index do
       attributes :id, :user_id, :commentable_id, :commentable_type, :id_code_generated, :path,
                  :id_code, :readable_publish_date, :parent_id, :positive_reactions_count, :created_at
       attribute :body_html do
@@ -95,13 +95,13 @@ class Comment < ApplicationRecord
     end
   end
 
-  def self.trigger_delayed_index(record, remove)
+  def self.trigger_index(record, remove)
     if remove
-      record.delay.remove_from_index! if record&.persisted?
+      AlgoliaSearch::AlgoliaJob.perform_later(record, "remove_from_index!")
     elsif record.deleted == false
-      record.delay.index!
+      AlgoliaSearch::AlgoliaJob.perform_later(record, "index!")
     else
-      record.remove_algolia_index
+      AlgoliaSearch::AlgoliaJob.perform_later(record, "remove_algolia_index")
     end
   end
 
