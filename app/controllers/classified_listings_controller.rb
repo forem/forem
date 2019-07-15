@@ -75,6 +75,8 @@ class ClassifiedListingsController < ApplicationController
         purchaser = org
       elsif available_user_credits.size >= cost
         purchaser = current_user
+      else
+        redirect_to credits_path, notice: "Not enough available credits"
       end
       ActiveRecord::Base.transaction do
         Credits::Buyer.call(
