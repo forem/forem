@@ -4969,10 +4969,10 @@ focus-lock@^0.6.3:
   resolved "https://registry.yarnpkg.com/focus-lock/-/focus-lock-0.6.5.tgz#f6eb37832a9b1b205406175f5277396a28c0fce1"
   integrity sha512-i/mVBOoa9o+tl+u9owOJUF8k8L85odZNIsctB+JAK2HFT8jckiBwmk+3uydlm6FN8czgnkIwQtBv6yyAbrzXjw==
 
-focus-visible@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/focus-visible/-/focus-visible-5.0.1.tgz#8bbe2d938bf88f067a252d72ac3a1cb2c3cb4767"
-  integrity sha512-xmuzsbC+LsF8iHlbBUvLsM6sfqyeUCAJTq3GK9JboFAdCqdDt/d4XoeE9jWT3cct2NFs/BKZ8IM8Yjkk1wgO3Q==
+focus-visible@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/focus-visible/-/focus-visible-5.0.2.tgz#4fae9cf40458b73c10701c9774c462e3ccd53caf"
+  integrity sha512-zT2fj/bmOgEBjqGbURGlowTmCwsIs3bRDMr/sFZz8Ly7VkEiwuCn9swNTL3pPuf8Oua2de7CLuKdnuNajWdDsQ==
 
 follow-redirects@^1.0.0:
   version "1.7.0"
