@@ -130,7 +130,7 @@ RSpec.describe ProMemberships::Biller, type: :service do
           # we cannot use "expect.to change" because of how activerecord-import works
           old_num_credits = user.reload.credits.spent.size
           described_class.call
-          expect(user.reload.credits.spent.size).to be(old_num_credits + ProMembership::MONTHLY_COST)
+          expect(user.reload.credits.spent.size).to eq(old_num_credits + ProMembership::MONTHLY_COST)
         end
       end
     end

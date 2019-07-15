@@ -64,7 +64,8 @@ module ProMemberships
 
       # add credits
       credits = Array.new(cost) { Credit.new(user: user) }
-      Credit.import!(credits)
+      user.credits << credits
+      user.save!
     end
 
     def charge_user_and_renew_membership(membership, cost)

@@ -19,6 +19,8 @@ module Credits
         purchase_type: purchase.class.name,
         purchase_id: purchase.id,
       )
+      purchaser.touch
+
       true
     end
 
