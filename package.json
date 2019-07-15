@@ -91,7 +91,7 @@
     "babel-preset-preact": "^1.1.0",
     "chart.js": "^2.8.0",
     "codemirror": "^5.48.0",
-    "focus-visible": "^5.0.1",
+    "focus-visible": "^5.0.2",
     "intersection-observer": "^0.7.0",
     "linkstate": "^1.1.1",
     "lodash.debounce": "4.0.8",
