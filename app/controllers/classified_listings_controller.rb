@@ -39,7 +39,7 @@ class ClassifiedListingsController < ApplicationController
     @classified_listing = ClassifiedListing.new(listing_params)
 
     # this will 500 for now if they don't belong in the org
-    authorize @classified_listing, :authorized_organization_poster? if @classified_listing.organization_id.present?
+    authorize @classified_listing
 
     @classified_listing.user_id = current_user.id
     cost = ClassifiedListing.cost_by_category(@classified_listing.category)
@@ -76,7 +76,7 @@ class ClassifiedListingsController < ApplicationController
       elsif available_user_credits.size >= cost
         purchaser = current_user
       else
-        redirect_to credits_path, notice: "Not enough available credits"
+        redirect_to(credits_path, notice: "Not enough available credits") && return
       end
       ActiveRecord::Base.transaction do
         Credits::Buyer.call(
