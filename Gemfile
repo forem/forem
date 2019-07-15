@@ -84,7 +84,7 @@ gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sail", "~> 1.5" # Sail is a lightweight Rails engine that brings an admin panel for managing configuration settings on a live Rails app
 gem "sass-rails", "~> 5.0" # Sass adapter for the Rails asset pipeline
 gem "scout_apm", "~> 2.5" # Monitors Ruby apps and reports detailed metrics on performance to Scout
-gem "serviceworker-rails", "~> 0.5" # Integrates ServiceWorker into the Rails asset pipeline
+gem "serviceworker-rails", "~> 0.6" # Integrates ServiceWorker into the Rails asset pipeline
 gem "sitemap_generator", "~> 6.0" # SitemapGenerator is a framework-agnostic XML Sitemap generator
 gem "skylight", "~> 4.1" # Skylight is a smart profiler for Rails, Sinatra, and other Ruby apps
 gem "slack-notifier", "~> 2.3" # A slim ruby wrapper for posting to slack webhooks
