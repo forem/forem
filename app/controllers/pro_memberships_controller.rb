@@ -21,12 +21,8 @@ class ProMembershipsController < ApplicationController
     end
   end
 
-  # this is probably where the auto recharge top up configuration could go
+  # these two should contain the logic to activate or disable the auto recharge feature
   def edit; end
 
-  # this is to update stuff, don't know what yet
   def update; end
-
-  # probably we don't need this
-  def destroy; end
 end
