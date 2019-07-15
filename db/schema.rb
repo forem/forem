@@ -646,6 +646,7 @@ ActiveRecord::Schema.define(version: 2019_07_11_070019) do
     t.boolean "featured", default: true
     t.integer "featured_number"
     t.string "guid", null: false
+    t.boolean "https", default: true
     t.string "image"
     t.string "itunes_url"
     t.string "media_url", null: false
@@ -654,9 +655,11 @@ ActiveRecord::Schema.define(version: 2019_07_11_070019) do
     t.text "processed_html"
     t.datetime "published_at"
     t.text "quote"
+    t.boolean "reachable", default: true
     t.integer "reactions_count", default: 0, null: false
     t.string "slug", null: false
     t.string "social_image"
+    t.string "status_notice"
     t.string "subtitle"
     t.text "summary"
     t.string "title", null: false
