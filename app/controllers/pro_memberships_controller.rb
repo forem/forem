@@ -1,5 +1,5 @@
 class ProMembershipsController < ApplicationController
-  before_action :authenticate_user!, only: %i[create]
+  before_action :authenticate_user!, except: %i[show]
   after_action :verify_authorized, except: %i[show]
 
   def show
