@@ -13,12 +13,13 @@
   .preview-div {
     border: 0.25vw solid <%= @cat_color %>;
     box-shadow: 0.75vw .75vw 0px <%= @cat_color %>;
-    width: 88vw;
-    height: 42vw;
-    margin: 2.5vw auto 5vw;
+    width: 94vw;
+    height: 46vw;
+    margin: 1.2vw auto 1vw;
     overflow: hidden;
     position: relative;
     background-image: linear-gradient(to bottom, transparent 40%, <%= @cat_color %>);
+    border-radius: 0.4vw;
   }
 
   .preview-info-header {
@@ -34,7 +35,7 @@
   }
 
   h1 {
-    color: <%= @cat_color %>;
+    color: <%= HexComparer.new([@cat_color]).brightness(0.70)  %>;
     width: 92%;
     margin: 0;
     padding: 1vw;
@@ -42,10 +43,10 @@
   }
 
   .preview-body {
-    font-size: 2vw;
+    font-size: 3.1vw;
     padding: 0 4vw;
     font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", "Roboto", sans-serif;
-    color: <%= @cat_color %>;
+    color: <%= HexComparer.new([@cat_color]).brightness(0.77)  %>;
   }
 
   .preview-category {
@@ -70,8 +71,8 @@
 <div class="preview-div-wrapper">
   <div class="preview-div">
     <div class="preview-title">
-      <% font_size = @listing.title.length > 65 ? 3 : 4 %>
-      <h1 style="font-size:<%= font_size %>vw;"><%= @listing.title %></h1>
+      <% font_size = @listing.title.length > 65 ? 4 : 5 %>
+      <h1 style="font-size:<%= font_size %>vw;"><%= @listing.title %> </h1>
     </div>
     <div class="preview-body">
       <%= sanitize_rendered_markdown(@listing.processed_html) %>

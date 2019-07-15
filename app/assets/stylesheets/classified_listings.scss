@@ -394,7 +394,7 @@
 }
 
 .single-classified-listing-container {
-  width: 90%;
+  width: 100%;
   z-index: 20;
   position: fixed;
   left: 0;
@@ -411,10 +411,12 @@
     box-sizing: content-box;
     padding-right: 17px;
     -webkit-overflow-scrolling: touch;
-    padding-top: 110px;
+    padding-top: 95px;
     margin-bottom: 150px;
     @media screen and (min-width: 950px) {
-      padding-top: calc( 50px + 15vh);
+      left: 0;
+      right: 0;
+      box-sizing: border-box;  
     }
     .single-classified-listing-container__spacer {
       height: 150px;
@@ -425,15 +427,11 @@
     // width: 0 !important;
     display: none;
   }
-  @media screen and (min-width: 950px) {
-    left: 50%;
-    width: 600px;
-    margin-left: -300px; /* Negative half of width. */
-  }
 }
 
 .single-classified-listing {
-  width: 100%;
+  width: 94%;
+  max-width: 600px;
   display: inline-block;
   border: 1px solid $light-medium-gray;
   margin: 0px auto;
@@ -517,7 +515,7 @@
   }
   &.single-classified-listing--opened {
     z-index: 20;
-    display: inline-block;
+    display: block;
     position: relative;
     left: 0px;
     right: 0px;
@@ -530,6 +528,29 @@
     }
   }
 }
+.single-classified-listing-info-link {
+  display: block;
+  width: 320px;
+  max-width: 92%;
+  margin: auto;
+  padding: 14px 0px;
+  text-align: center;
+  border-radius: 100px;
+  font-weight: bold;
+  margin: 40px auto 10px;
+  @include themeable(
+    color,
+    theme-color,
+    $white
+  );
+  border: 3px solid white;
+  @include themeable(
+    border-color,
+    theme-color,
+    $white
+  );
+}
+
 
 form.listings-contact-via-connect {
   border-radius: 3px;
@@ -543,9 +564,8 @@ form.listings-contact-via-connect {
   max-width: 100%;
   text-align: right;
   p {text-align: left}
-  @media screen and (min-width: 950px) {
-    max-width: 600px;
-  }
+  width: 94%;
+  max-width: 600px;
   textarea#new-message {
     height: 100px;
     margin: 5px auto 10px auto;

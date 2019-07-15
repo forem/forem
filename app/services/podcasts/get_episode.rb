@@ -6,6 +6,8 @@ module Podcasts
 
     def call(item:, force_update: false)
       item_data = item.is_a?(EpisodeRssItem) ? item : Podcasts::EpisodeRssItem.from_item(item)
+      return unless item_data.enclosure_url
+
       episode = podcast.existing_episode(item_data)
       if episode
         if !episode.published_at? && item_data.pubDate
