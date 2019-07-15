@@ -7,6 +7,17 @@
 </style>
 
 <div class="partnerships-container">
+  <% if flash[:notice].present? %>
+    <div class="notice" id="notice">
+      <%= flash[:notice] %>
+    </div>
+  <% elsif flash[:error].present? %>
+    <div class="notice error-notice" id="notice" style="text-align:center;color:red">
+      ERROR
+      <%= flash[:error] %>
+    </div>
+  <% end %>
+
   <h1><img src="<%= asset_path "rainbowdev.svg" %>" /> Like a Pro</h1>
   <p>
     <strong><em>Pro is coming soon. This page is a work in progress. Since we're open source and transparently working on this, no sense in keeping it private eh?</em></strong>
@@ -28,17 +39,39 @@
   <h3>🙌 Always Improving</h3>
   <p>Because this will be the landing destination for experimental and low scale features, you will always have the best and most interesting DEV features. We also plan to connect for exclusive deals on new and upcoming features on other platforms.
 
-  <div class="partner-credits-explainer">
-    <h1>$25/mo</h1>
-    <h2 style="text-align: center">(or 5 credits/mo)</h2>
-  </div>
-
   <% if @user && @pro_membership %>
-    <div class="existing-membership">
-      Hi <strong><%= @user.name %>!</strong>, you already have a Pro Membership:
+    <div class="partner-credits-explainer">
+      <h3>You already have a Pro Membership</h3>
 
-      <p>STATUS: <%= @pro_membership.status.titleize %></p>
-      <p>EXPIRATION DATE: <time datetime="<%= @pro_membership.expires_at.iso8601 %>"><%= @pro_membership.expires_at %></time></p>
+      <dl class="membership-status">
+        <dt>Status</dt>
+        <dd class="status">
+          <% if @pro_membership.active? %>
+            <%= image_tag("checkmark-green.svg", class: "icon-img", alt: "check mark", title: "active", width: 30) %>
+          <% else %>
+            <span class="no">expired</span>
+          <% end %>
+        </dd>
+        <dt>Expiration date</dt>
+        <dd class="expiration-date"><time datetime="<%= @pro_membership.expires_at.iso8601 %>"><%= @pro_membership.expires_at.to_date.to_s(:long) %></time></dd>
+        <dt>Recharges automatically?</dt>
+        <dd class="auto-recharge">
+          <% if @pro_membership.auto_recharge %>
+            <%= image_tag("checkmark-green.svg", class: "icon-img", alt: "check mark", width: 30) %>
+          <% else %>
+            <span class="no">no</span>
+          <% end %>
+        </dd>
+      </dl>
+
+      <a class="partnership-option-cta" href="edit_pro_membership_path">Edit your pro membership</a>
+    </div>
+  <% else %>
+    <div class="partner-credits-options">
+      <div class="partnership-option-card">
+        <h2>$25/mo (or 5 credits/mo)</h2>
+        <a class="partnership-option-cta" href="new_pro_membership_path">Become a Pro</a>
+      </div>
     </div>
   <% end %>
 </div>

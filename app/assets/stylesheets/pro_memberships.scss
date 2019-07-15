@@ -1,3 +1,32 @@
-// Place all the styles related to the pro_memberships controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+@import 'variables';
+@import 'mixins';
+
+.pro_memberships {
+  .membership-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-flow: row wrap;
+
+    dt {
+      flex-basis: 20%;
+      font-size: 1.1rem;
+      font-weight: bold;
+
+      margin-top: 0.3rem;
+      padding: 0.2rem;
+    }
+
+    dd {
+      flex-basis: 70%;
+      flex-grow: 1;
+
+      margin-top: 0.3rem;
+      padding: 0.2rem;
+
+      .no {
+        color: darken($red, 10%);
+      }
+    }
+  }
+}
