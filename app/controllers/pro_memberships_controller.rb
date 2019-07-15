@@ -24,5 +24,23 @@ class ProMembershipsController < ApplicationController
   # these two should contain the logic to activate or disable the auto recharge feature
   def edit; end
 
-  def update; end
+  def update
+    pro_membership = current_user.pro_membership
+
+    raise Pundit::NotAuthorizedError unless pro_membership
+
+    authorize pro_membership
+
+    if pro_membership.update(update_params)
+      redirect_to pro_membership_path, notice: "Your membership has been updated!"
+    else
+      render :new
+    end
+  end
+
+  private
+
+  def update_params
+    params.require(:pro_membership).permit(:auto_recharge)
+  end
 end

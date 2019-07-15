@@ -102,4 +102,51 @@ RSpec.describe "Pro Memberships", type: :request do
       end
     end
   end
+
+  describe "PUT /pro" do
+    let(:user) { create(:user) }
+
+    context "when the user is not logged in" do
+      it "redirects to the sign up page" do
+        put pro_membership_path
+        expect(response).to redirect_to(sign_up_path)
+      end
+    end
+
+    context "when the user is logged in without a pro membership" do
+      before do
+        sign_in user
+      end
+
+      it "does not authorize the operation" do
+        expect do
+          put pro_membership_path
+        end.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+
+    context "when the user is logged in with a pro membership" do
+      before do
+        sign_in user
+      end
+
+      it "works correctly" do
+        create(:pro_membership, user: user)
+        put pro_membership_path, params: { pro_membership: { auto_recharge: true } }
+        expect(response).to redirect_to(pro_membership_path)
+      end
+
+      it "activates auto recharge" do
+        pro_membership = create(:pro_membership, user: user)
+        put pro_membership_path, params: { pro_membership: { auto_recharge: true } }
+        expect(pro_membership.reload.auto_recharge).to be(true)
+      end
+
+      it "deactivates auto recharge" do
+        pro_membership = create(:pro_membership, user: user, auto_recharge: true)
+        put pro_membership_path, params: { pro_membership: { auto_recharge: false } }
+        expect(pro_membership.reload.auto_recharge).to be(false)
+      end
+    end
+  end
 end
