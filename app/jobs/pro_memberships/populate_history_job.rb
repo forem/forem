@@ -4,7 +4,7 @@ module ProMemberships
 
     def perform(user_id)
       user = User.find_by(id: user_id)
-      return unless user
+      return unless user&.pro?
 
       user.page_views.reindex!
     end
