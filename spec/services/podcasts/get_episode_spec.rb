@@ -95,14 +95,14 @@ RSpec.describe Podcasts::GetEpisode do
     it "doesn't create invalid episodes" do
       perform_enqueued_jobs do
         expect do
-          described_class.new(podcast).call(item)
+          described_class.new(podcast).call(item: item)
         end.not_to change(PodcastEpisode, :count)
       end
     end
 
     it "doesn't schedule jobs" do
       expect do
-        described_class.new(podcast).call(item)
+        described_class.new(podcast).call(item: item)
       end.not_to have_enqueued_job
     end
   end
