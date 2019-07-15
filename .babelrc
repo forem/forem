@@ -1,21 +1,39 @@
 {
   "presets": [
-    ["env", { "modules": false, "targets": { "browsers": "> 1%", "uglify": true }, "useBuiltIns": true }],
-    "preact",
+    [
+      "@babel/preset-env",
+      {
+        "modules": false,
+        "targets": {
+          "browsers": "> 1%",
+          "uglify": true
+        },
+        "useBuiltIns": "entry"
+      }
+    ],
+    "preact"
   ],
-
   "env": {
     "test": {
       "plugins": [
-        "transform-es2015-modules-commonjs",
+        "@babel/plugin-transform-modules-commonjs"
       ]
     }
   },
-
   "plugins": [
-    "syntax-dynamic-import",
-    "transform-object-rest-spread",
-    ["transform-class-properties", { "spec": true }],
-    [ "transform-react-jsx", { "pragma": "h" }]
+    "@babel/plugin-syntax-dynamic-import",
+    "@babel/plugin-proposal-object-rest-spread",
+    [
+      "@babel/plugin-proposal-class-properties",
+      {
+        "spec": true
+      }
+    ],
+    [
+      "@babel/plugin-transform-react-jsx",
+      {
+        "pragma": "h"
+      }
+    ]
   ]
 }
