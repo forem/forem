@@ -88,7 +88,7 @@
     "@github/clipboard-copy-element": "^1.0.1",
     "@rails/webpacker": "^3.5.5",
     "babel-plugin-transform-react-jsx": "^6.24.1",
-    "babel-preset-preact": "^1.1.0",
+    "babel-preset-preact": "^2.0.0",
     "chart.js": "^2.8.0",
     "codemirror": "^5.48.0",
     "focus-visible": "^5.0.2",
