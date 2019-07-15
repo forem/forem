@@ -25,6 +25,36 @@ RSpec.describe ProMemberships::Biller, type: :service do
         end.to change(user.credits.spent, :size).by(ProMembership::MONTHLY_COST)
       end
     end
+
+    context "when an error occurs" do
+      it "does not renew the membership" do
+        Timecop.travel(pro_membership.expires_at) do
+          pro_membership.expire!
+          allow(Credits::Buyer).to receive(:call).and_raise(StandardError)
+          described_class.call
+          expect(pro_membership.expires_at.to_i).to be(Time.current.to_i)
+          expect(pro_membership.status).to eq("expired")
+        end
+      end
+
+      it "does not subtract credits" do
+        Timecop.travel(pro_membership.expires_at) do
+          allow(Credits::Buyer).to receive(:call).and_raise(StandardError)
+          expect do
+            described_class.call
+          end.to change(user.credits.spent, :size).by(0)
+        end
+      end
+
+      it "notifies the admins about the error" do
+        Timecop.travel(pro_membership.expires_at) do
+          allow(Credits::Buyer).to receive(:call).and_raise(StandardError)
+          assert_enqueued_with(job: SlackBotPingJob) do
+            described_class.call
+          end
+        end
+      end
+    end
   end
 
   context "when there are expiring memberships with insufficient credits" do
@@ -38,8 +68,90 @@ RSpec.describe ProMemberships::Biller, type: :service do
         expect(pro_membership.status).to eq("expired")
       end
     end
+
+    it "notifies the admins about the expiration" do
+      Timecop.travel(pro_membership.expires_at) do
+        assert_enqueued_with(job: SlackBotPingJob) do
+          described_class.call
+        end
+      end
+    end
   end
 
-  # context "when there are expiring memberships with insufficient credits and auto recharge" do
-  # end
+  context "when there are expiring memberships with insufficient credits and auto recharge" do
+    let(:pro_membership) { create(:pro_membership, auto_recharge: true) }
+    let(:user) { pro_membership.user }
+
+    context "when the user has an associated customer" do
+      before do
+        StripeMock.start
+        customer = Payments::Customer.create
+        user.update_columns(stripe_id_code: customer.id)
+      end
+
+      after do
+        StripeMock.stop
+      end
+
+      it "charges the customer" do
+        customer = Payments::Customer.get(user.stripe_id_code)
+        allow(Payments::Customer).to receive(:charge)
+        Timecop.travel(pro_membership.expires_at) do
+          described_class.call
+        end
+
+        expect(Payments::Customer).to have_received(:charge).with(
+          customer: customer,
+          amount: ProMembership::MONTHLY_COST_USD,
+          description: "Purchase of 5 credits.",
+        )
+      end
+
+      it "adds the correct amount of credits" do
+        Timecop.travel(pro_membership.expires_at) do
+          # we cannot use "expect.to change" because of how activerecord-import works
+          old_num_credits = user.credits.size
+          described_class.call
+          expect(user.reload.credits.size).to be(old_num_credits + ProMembership::MONTHLY_COST)
+        end
+      end
+
+      it "renews the membership" do
+        Timecop.travel(pro_membership.expires_at) do
+          described_class.call
+          pro_membership.reload
+          expect(pro_membership.expires_at.to_i).to eq(1.month.from_now.to_i)
+          expect(pro_membership.status).to eq("active")
+        end
+      end
+
+      it "spends the correct amount of credits" do
+        Timecop.travel(pro_membership.expires_at) do
+          # we cannot use "expect.to change" because of how activerecord-import works
+          old_num_credits = user.reload.credits.spent.size
+          described_class.call
+          expect(user.reload.credits.spent.size).to be(old_num_credits + ProMembership::MONTHLY_COST)
+        end
+      end
+    end
+
+    context "when the user has no associated customer" do
+      it "notifies the admins about the problem" do
+        allow(user).to receive(:stripe_id_code).and_return(nil)
+        Timecop.travel(pro_membership.expires_at) do
+          assert_enqueued_with(job: SlackBotPingJob) do
+            described_class.call
+          end
+        end
+      end
+
+      it "does not change the number of credits" do
+        Timecop.travel(pro_membership.expires_at) do
+          expect do
+            described_class.call
+          end.to change(user.credits, :size).by(0)
+        end
+      end
+    end
+  end
 end

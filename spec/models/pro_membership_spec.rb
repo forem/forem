@@ -14,6 +14,7 @@ RSpec.describe ProMembership, type: :model do
     it "has the correct values for constants" do
       expect(ProMembership::STATUSES).to eq(%w[active expired])
       expect(ProMembership::MONTHLY_COST).to eq(5)
+      expect(ProMembership::MONTHLY_COST_USD).to eq(25)
     end
   end
 

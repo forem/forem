@@ -1,6 +1,7 @@
 class ProMembership < ApplicationRecord
   STATUSES = %w[active expired].freeze
   MONTHLY_COST = 5
+  MONTHLY_COST_USD = 25
 
   belongs_to :user
 

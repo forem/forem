@@ -1,3 +1,4 @@
+# All of these tasks need to be scheduled daily
 namespace :pro_memberships do
   desc "Notify pro users with insufficient credits that their membership is about to expire in a week"
   task notify_expirations_one_week_before: :environment do

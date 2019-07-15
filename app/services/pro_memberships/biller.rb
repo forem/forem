@@ -6,20 +6,23 @@ module ProMemberships
     end
 
     def call
-      relation = ProMembership.includes(user: [:credits]).where("DATE(expires_at) = ?", Time.zone.today)
+      relation = ProMembership.includes(user: [:credits]).
+        where("DATE(expires_at) = ?", Time.zone.today)
       relation.find_each do |membership|
         user = membership.user
         cost = ProMembership::MONTHLY_COST
 
         if user.has_enough_credits?(cost)
-          renewed = renew_membership(membership, cost)
-          unless renewed
-            # TODO: notify admins that something went wrong
-          end
+          renew_membership(membership, cost)
         elsif membership.auto_recharge
-          # TODO: add Stripe code to charge and then buy membership
+          if user.stripe_id_code
+            charge_user_and_renew_membership(membership, cost)
+          else
+            notify_admins(user, "auto recharge error: missing Stripe customer ID!")
+          end
         else
           membership.expire!
+          notify_admins(user, "pro membership expired!")
         end
       end
     end
@@ -30,12 +33,62 @@ module ProMemberships
       ActiveRecord::Base.transaction do
         membership.renew!
 
-        Credits::Buyer.call(
+        success = Credits::Buyer.call(
           purchaser: membership.user,
           purchase: membership,
           cost: cost,
         )
+
+        unless success
+          notify_admins("#{user.name}'s pro membership could not be renewed with enough credits!")
+          raise ActiveRecord::Rollback
+        end
+
+        success
       end
+    rescue StandardError => e
+      Rails.logger.error(e)
+      notify_admins(membership.user, "error: #{e.message}")
+    end
+
+    def recharge(membership, cost)
+      user = membership.user
+
+      # charge customer for credits
+      customer = Payments::Customer.get(user.stripe_id_code)
+      Payments::Customer.charge(
+        customer: customer,
+        amount: ProMembership::MONTHLY_COST_USD,
+        description: "Purchase of #{cost} credits.",
+      )
+
+      # add credits
+      credits = Array.new(cost) { Credit.new(user: user) }
+      Credit.import!(credits)
+    end
+
+    def charge_user_and_renew_membership(membership, cost)
+      user = membership.user
+      recharge(membership, cost)
+      renew_membership(membership, cost)
+    rescue Payments::PaymentsError => e
+      Rails.logger.error(e)
+      notify_admins(user, "payment error: #{e.message}")
+    rescue ActiveRecord::RecordInvalid => e
+      Rails.logger.error(e)
+      notify_admins(user, "credits creation error: #{e.message}")
+    rescue StandardError => e
+      Rails.logger.error(e)
+      notify_admins(user, "error: #{e.message}")
+    end
+
+    def notify_admins(user, message)
+      SlackBotPingJob.perform_later(
+        message: "ProMemberships::Biller: #{user.username}: #{message}",
+        channel: "pro-memberships",
+        username: "pro-memberships",
+        icon_emoji: ":fire:",
+      )
     end
   end
 end
