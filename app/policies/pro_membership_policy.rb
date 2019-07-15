@@ -1,6 +1,6 @@
 class ProMembershipPolicy < ApplicationPolicy
   def create?
-    !(user.pro_membership&.expired? || user.pro?)
+    user.pro_membership.nil? && !user.has_role?(:pro)
   end
 
   def update?

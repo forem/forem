@@ -40,6 +40,13 @@ RSpec.describe "Pro Memberships", type: :request do
           end.to raise_error(Pundit::NotAuthorizedError)
         end
       end
+
+      it "does not authorize creation if the user as a pro role" do
+        user.add_role(:pro)
+        expect do
+          post pro_membership_path
+        end.to raise_error(Pundit::NotAuthorizedError)
+      end
     end
 
     context "when the user is logged in without a pro membership and enough credits" do
