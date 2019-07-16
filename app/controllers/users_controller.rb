@@ -96,31 +96,31 @@ class UsersController < ApplicationController
   end
 
   def onboarding_update
-    current_user.update(params[:user].permit(:summary, :location, :employment_title, :employer_name)) if params[:user]
+    current_user.assign_attributes(params[:user].permit(:summary, :location, :employment_title, :employer_name)) if params[:user]
     current_user.saw_onboarding = true
     authorize User
     if current_user.save
       respond_to do |format|
-        format.json { render json: { outcome: "onboarding closed" } }
+        format.json { render json: { outcome: "updated successfully" } }
       end
     else
       respond_to do |format|
-        format.json { render json: { outcome: "onboarding opened" } }
+        format.json { render json: { outcome: "update failed" } }
       end
     end
   end
 
   def onboarding_checkbox_update
-    current_user.update(params[:user].permit(:checked_code_of_conduct, :location, :employment_title, :employer_name)) if params[:user]
+    current_user.assign_attributes(params[:user].permit(:checked_code_of_conduct, :location, :employment_title, :employer_name)) if params[:user]
     current_user.saw_onboarding = true
     authorize User
-    if current_user.save!
+    if current_user.save
       respond_to do |format|
-        format.json { render json: { outcome: "onboarding closed" } }
+        format.json { render json: { outcome: "updated successfully" } }
       end
     else
       respond_to do |format|
-        format.json { render json: { outcome: "onboarding opened" } }
+        format.json { render json: { outcome: "update failed" } }
       end
     end
   end
