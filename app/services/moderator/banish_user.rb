@@ -41,7 +41,8 @@ module Moderator
         location: "", education: "", employer_name: "", employer_url: "", employment_title: "",
         mostly_work_with: "", currently_learning: "", currently_hacking_on: "", available_for: "",
         email_public: false, facebook_url: nil, dribbble_url: nil, medium_url: nil, stackoverflow_url: nil,
-        behance_url: nil, linkedin_url: nil, gitlab_url: nil, instagram_url: nil, mastodon_url: nil, twitch_url: nil
+        behance_url: nil, linkedin_url: nil, gitlab_url: nil, instagram_url: nil, mastodon_url: nil,
+        twitch_url: nil, feed_url: nil
       )
 
       user.update_columns(profile_image: "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png")
