@@ -7,10 +7,6 @@ class ProMembershipsController < ApplicationController
     @pro_membership = current_user&.pro_membership
   end
 
-  # form to let the user subscribe?
-  # probably it can be done embedding a form the show page with a confirmation
-  def new; end
-
   def create
     authorize ProMembership
 

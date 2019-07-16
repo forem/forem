@@ -3,7 +3,11 @@ class ProMembershipPolicy < ApplicationPolicy
     user.pro_membership.nil? && !user.has_role?(:pro)
   end
 
+  def edit?
+    user.pro_membership.present?
+  end
+
   def update?
-    user.pro?
+    edit?
   end
 end

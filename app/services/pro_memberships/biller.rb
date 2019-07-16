@@ -63,7 +63,7 @@ module ProMemberships
       )
 
       # add credits
-      credits = Array.new(cost) { Credit.new(user: user) }
+      credits = Array.new(cost) { Credit.new(user: user, cost: 1) }
       user.credits << credits
       user.save!
     end

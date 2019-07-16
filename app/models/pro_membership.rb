@@ -6,6 +6,7 @@ class ProMembership < ApplicationRecord
   belongs_to :user
 
   validates :user, :status, :expiration_notifications_count, presence: true
+  validates :user, uniqueness: true
   validates :expires_at, presence: true, on: :save
   validates :status, inclusion: { in: STATUSES }
 

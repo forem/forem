@@ -2,6 +2,22 @@
 @import 'mixins';
 
 .pro_memberships {
+  #notice {
+    background: $green;
+    color: black;
+    padding: 40px 0px 40px;
+    text-align: center;
+    position: relative;
+    top: 60px;
+    left: 0px;
+    right: 0px;
+
+    &.error-notice {
+      background: rgba(255, 80, 80, 0.7);
+      color: white;
+    }
+  }
+
   .membership-status {
     display: flex;
     align-items: center;
@@ -27,6 +43,13 @@
       .no {
         color: darken($red, 10%);
       }
+    }
+  }
+
+  .new_pro_membership {
+    input[type='submit'] {
+      padding-left: 1rem;
+      padding-right: 1rem;
     }
   }
 }
