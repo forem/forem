@@ -18,9 +18,9 @@ export default class Onboarding extends Component {
 
     const slides = [
       WelcomeSlide,
+      EmailListTermsConditionsForm,
       BioForm,
       PersonalInfoForm,
-      EmailListTermsConditionsForm,
       FollowTags,
       FollowUsers,
       ClosingSlide,

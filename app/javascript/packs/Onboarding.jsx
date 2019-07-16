@@ -21,7 +21,6 @@ function isUserSignedIn() {
 function renderPage() {
   import('../onboarding/Onboarding')
     .then(({ default: Onboarding }) => {
-      console.log('here');
       render(<Onboarding />, document.getElementById('onboarding-container'));
     })
     .catch(error => {
