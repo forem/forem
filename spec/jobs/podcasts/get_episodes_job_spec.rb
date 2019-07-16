@@ -12,12 +12,12 @@ RSpec.describe Podcasts::GetEpisodesJob, type: :job do
     end
 
     it "calls the service" do
-      described_class.perform_now(podcast.id, 5, feed)
-      expect(feed).to have_received(:get_episodes).with(podcast, 5).once
+      described_class.perform_now(podcast_id: podcast.id, limit: 5, feed: feed, force_update: true)
+      expect(feed).to have_received(:get_episodes).with(podcast: podcast, limit: 5, force_update: true).once
     end
 
     it "doesn't call the service when the podcast is not found" do
-      described_class.perform_now(Podcast.maximum(:id).to_i + 1, 5, feed)
+      described_class.perform_now(podcast_id: Podcast.maximum(:id).to_i + 1, limit: 5, feed: feed)
       expect(feed).not_to have_received(:get_episodes)
     end
   end

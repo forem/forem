@@ -40,8 +40,4 @@ class Podcast < ApplicationRecord
 
     Podcasts::BustCacheJob.perform_later(path)
   end
-
-  def pull_all_episodes
-    Podcasts::GetEpisodesJob.perform_later(id)
-  end
 end

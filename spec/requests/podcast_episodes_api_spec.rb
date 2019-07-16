@@ -13,7 +13,7 @@ RSpec.describe "ArticlesApi", type: :request, vcr: vcr_option do
     stub_request(:head, "https://traffic.libsyn.com/sedaily/IFTTT.mp3").to_return(status: 200)
 
     perform_enqueued_jobs do
-      Podcasts::Feed.new.get_episodes(podcast, 2)
+      Podcasts::Feed.new.get_episodes(podcast: podcast, limit: 2)
     end
   end
 
