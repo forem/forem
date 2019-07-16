@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Pro Memberships", type: :request do
   describe "GET /pro" do
-    it "returns pro lander" do
+    it "returns Pro landing page" do
       get pro_membership_path
       expect(response.body).to include("Like a Pro")
     end
@@ -106,6 +106,28 @@ RSpec.describe "Pro Memberships", type: :request do
         post pro_membership_path
         expect(response).to redirect_to(pro_membership_path)
         expect(flash[:error]).to eq("You don't have enough credits!")
+      end
+    end
+  end
+
+  describe "GET /pro/edit" do
+    let(:user) { create(:user) }
+
+    context "when the user is not logged in" do
+      it "redirects to the sign up page" do
+        get edit_pro_membership_path
+        expect(response).to redirect_to(sign_up_path)
+      end
+    end
+
+    context "when the user is logged in without a pro membership" do
+      before do
+        sign_in user
+      end
+
+      it "redirects to the pro membership page" do
+        get edit_pro_membership_path
+        expect(response).to redirect_to(pro_membership_path)
       end
     end
   end

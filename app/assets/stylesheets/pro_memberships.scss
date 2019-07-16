@@ -24,7 +24,7 @@
     justify-content: space-between;
     flex-flow: row wrap;
 
-    dt {
+    dt, label {
       flex-basis: 20%;
       font-size: 1.1rem;
       font-weight: bold;
@@ -43,6 +43,18 @@
       .no {
         color: darken($red, 10%);
       }
+    }
+  }
+
+  .field {
+    font-weight: bold;
+    padding-left: 3px;
+    margin-bottom: 1rem;
+
+    input[type='checkbox'] {
+      display: inline-block;
+      margin-left: 1.3rem;
+      width: 100px;
     }
   }
 

@@ -1,0 +1,26 @@
+<dl class="membership-status">
+  <dt>Status</dt>
+  <dd class="status">
+    <% if pro_membership.active? %>
+      <%= image_tag("checkmark-green.svg", class: "icon-img", alt: "check mark", title: "active", width: 30) %>
+    <% else %>
+      <span class="no">expired</span>
+    <% end %>
+  </dd>
+  <dt>Expiration date</dt>
+  <dd class="expiration-date">
+    <time datetime="<%= pro_membership.expires_at.iso8601 %>">
+      <%= pro_membership.expires_at.to_date.to_s(:long) %>
+    </time>
+  </dd>
+  <% if !defined?(auto_recharge) || auto_recharge != false %>
+    <dt>Top up from credit card?</dt>
+    <dd class="auto-recharge">
+      <% if pro_membership.auto_recharge %>
+        <%= image_tag("checkmark-green.svg", class: "icon-img", alt: "check mark", width: 30) %>
+      <% else %>
+        <span class="no">no</span>
+      <% end %>
+    </dd>
+  <% end %>
+</dl>

@@ -1,0 +1,38 @@
+<% title "Pro Membership - Edit" %>
+
+<style>
+  <% cache "partnership-org-section-credits-#{ApplicationConfig['DEPLOYMENT_SIGNATURE']}", expires_in: 10.hours do %>
+    <%= Rails.application.assets["partnerships.css"].to_s.html_safe %>
+  <% end %>
+</style>
+
+<% if @pro_membership.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@pro_membership.errors.count, "error") %> prohibited this from being saved:</h2>
+    <ul>
+      <% @pro_membership.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+  <br><br><br><br>
+<% end %>
+
+<div class="partnerships-container">
+  <div class="partner-credits-explainer">
+    <h2>Edit your Pro Membership</h2>
+
+    <%= render "pro_membership", pro_membership: @pro_membership, auto_recharge: false %>
+
+    <%= form_for(@pro_membership) do |f| %>
+      <div class="field">
+        <%= f.label :auto_recharge do %>
+          Top up from credit card?
+          <%= f.check_box :auto_recharge %>
+        <% end %>
+      </div>
+
+      <%= f.submit "Update your Membership", class: "cta" %>
+    <% end %>
+  </div>
+</div>

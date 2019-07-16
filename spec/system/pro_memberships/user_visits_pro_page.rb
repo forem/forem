@@ -95,7 +95,7 @@ RSpec.describe "Visits Pro Memberships page", type: :system do
       visit "/pro"
       expect(page).to have_content(user.pro_membership.expires_at.to_date.to_s(:long))
       expect(page).to have_content("Recharges automatically?")
-      expect(page).to have_content("Update your Pro Membership")
+      expect(page).to have_content("Edit your Pro Membership")
     end
   end
 end
