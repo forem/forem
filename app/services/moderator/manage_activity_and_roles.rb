@@ -38,6 +38,7 @@ module Moderator
         end
         article.remove_algolia_index
         article.delete
+        article.purge
       end
       virtual_articles.each do |article|
         cachebuster.bust_article(article)
