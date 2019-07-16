@@ -26,8 +26,11 @@ export default class Onboarding extends Component {
       ClosingSlide,
     ];
 
+    const url = new URL(window.location);
+    const previousLocation = url.searchParams.get('referrer');
+
     this.slides = slides.map(SlideComponent => (
-      <SlideComponent next={this.nextSlide} prev={this.prevSlide} />
+      <SlideComponent next={this.nextSlide} prev={this.prevSlide} previousLocation={previousLocation} />
     ));
 
     this.state = {
