@@ -33,13 +33,11 @@ RSpec.describe Podcasts::UpdateEpisodeMediaUrl, type: :service do
   it "does fine when there's nothing to update" do
     url = "https://audio.simplecast.com/100.mp3"
     stub_request(:head, url).to_return(status: 200)
-    published_at = Time.current - 1.day
-    episode = create(:podcast_episode, podcast: podcast, media_url: url, published_at: published_at)
+    episode = create(:podcast_episode, podcast: podcast, media_url: url)
     described_class.call(episode, url)
     episode.reload
     expect(episode.media_url).to eq(url)
     expect(episode.reachable).to be true
     expect(episode.https).to be true
-    # expect(episode.published_at.strftime("%Y-%m-%d")).to eq(published_at.strftime("%Y-%m-%d"))
   end
 end
