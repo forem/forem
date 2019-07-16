@@ -1,13 +1,17 @@
 import { getUserDataAndCsrfToken } from '../chat/util';
 
+function redirectableLocation() {
+  return (
+    window.location.pathname !== '/onboarding' &&
+    window.location.pathname !== '/signout_confirm'
+  );
+}
+
 document.onreadystatechange = () => {
   if (document.readyState === 'complete') {
     getUserDataAndCsrfToken()
       .then(({ currentUser }) => {
-        if (
-          window.location.pathname !== '/onboarding' &&
-          !currentUser.saw_onboarding
-        ) {
+        if (redirectableLocation() && !currentUser.saw_onboarding) {
           window.location = `${window.location.origin}/onboarding`;
         }
       })
