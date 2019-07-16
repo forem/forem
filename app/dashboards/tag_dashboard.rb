@@ -22,8 +22,6 @@ class TagDashboard < Administrate::BaseDashboard
     pretty_name: Field::String,
     profile_image: CarrierwaveField,
     social_image: CarrierwaveField,
-    sponsorship_organization_id: Field::Number,
-    sponsorship_status: Field::String,
     bg_color_hex: Field::String,
     text_color_hex: Field::String,
     keywords_for_search: Field::String,
@@ -83,8 +81,6 @@ class TagDashboard < Administrate::BaseDashboard
     social_image
     bg_color_hex
     text_color_hex
-    sponsorship_organization_id
-    sponsorship_status
     keywords_for_search
     buffer_profile_id_code
   ].freeze

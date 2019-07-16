@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_09_192214) do
+ActiveRecord::Schema.define(version: 2019_07_11_070019) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -575,7 +575,6 @@ ActiveRecord::Schema.define(version: 2019_07_09_192214) do
     t.string "dark_nav_image"
     t.string "email"
     t.string "github_username"
-    t.boolean "is_gold_sponsor", default: false
     t.string "jobs_email"
     t.string "jobs_url"
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
@@ -590,15 +589,6 @@ ActiveRecord::Schema.define(version: 2019_07_09_192214) do
     t.string "secret"
     t.string "slug"
     t.integer "spent_credits_count", default: 0, null: false
-    t.text "sponsorship_blurb_html"
-    t.datetime "sponsorship_expires_at"
-    t.integer "sponsorship_featured_number", default: 0
-    t.text "sponsorship_instructions", default: ""
-    t.datetime "sponsorship_instructions_updated_at"
-    t.string "sponsorship_level"
-    t.string "sponsorship_status", default: "none"
-    t.string "sponsorship_tagline"
-    t.string "sponsorship_url"
     t.string "state"
     t.string "story"
     t.text "summary"
@@ -656,6 +646,7 @@ ActiveRecord::Schema.define(version: 2019_07_09_192214) do
     t.boolean "featured", default: true
     t.integer "featured_number"
     t.string "guid", null: false
+    t.boolean "https", default: true
     t.string "image"
     t.string "itunes_url"
     t.string "media_url", null: false
@@ -664,9 +655,11 @@ ActiveRecord::Schema.define(version: 2019_07_09_192214) do
     t.text "processed_html"
     t.datetime "published_at"
     t.text "quote"
+    t.boolean "reachable", default: true
     t.integer "reactions_count", default: 0, null: false
     t.string "slug", null: false
     t.string "social_image"
+    t.string "status_notice"
     t.string "subtitle"
     t.text "summary"
     t.string "title", null: false
@@ -820,6 +813,29 @@ ActiveRecord::Schema.define(version: 2019_07_09_192214) do
     t.index ["google_result_path"], name: "index_search_keywords_on_google_result_path"
   end
 
+  create_table "sponsorships", force: :cascade do |t|
+    t.text "blurb_html"
+    t.datetime "created_at", null: false
+    t.datetime "expires_at"
+    t.integer "featured_number", default: 0, null: false
+    t.text "instructions"
+    t.datetime "instructions_updated_at"
+    t.string "level", null: false
+    t.bigint "organization_id"
+    t.bigint "sponsorable_id"
+    t.string "sponsorable_type"
+    t.string "status", default: "none", null: false
+    t.string "tagline"
+    t.datetime "updated_at", null: false
+    t.string "url"
+    t.bigint "user_id"
+    t.index ["level"], name: "index_sponsorships_on_level"
+    t.index ["organization_id"], name: "index_sponsorships_on_organization_id"
+    t.index ["sponsorable_id", "sponsorable_type"], name: "index_sponsorships_on_sponsorable_id_and_sponsorable_type"
+    t.index ["status"], name: "index_sponsorships_on_status"
+    t.index ["user_id"], name: "index_sponsorships_on_user_id"
+  end
+
   create_table "tag_adjustments", force: :cascade do |t|
     t.string "adjustment_type"
     t.integer "article_id"
@@ -868,8 +884,6 @@ ActiveRecord::Schema.define(version: 2019_07_09_192214) do
     t.text "rules_markdown"
     t.string "short_summary"
     t.string "social_image"
-    t.integer "sponsor_organization_id"
-    t.string "sponsorship_status", default: "none"
     t.string "submission_rules_headsup"
     t.text "submission_template"
     t.boolean "supported", default: false
@@ -1081,4 +1095,6 @@ ActiveRecord::Schema.define(version: 2019_07_09_192214) do
   add_foreign_key "messages", "chat_channels"
   add_foreign_key "messages", "users"
   add_foreign_key "push_notification_subscriptions", "users"
+  add_foreign_key "sponsorships", "organizations"
+  add_foreign_key "sponsorships", "users"
 end

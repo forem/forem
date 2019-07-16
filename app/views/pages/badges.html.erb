@@ -33,7 +33,7 @@
     <% if user_signed_in? %>
       <p>
         <a href="https://dev.to/<%= current_user.username %>">
-          <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= current_user.name %>'s DEV Profile" height="30" width="30">
+          <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= current_user.name %>'s DEV Profile" height="30" width="30" class="dev-badge">
         </a>
       </p>
       <p>
@@ -64,7 +64,7 @@
       </p>
     <% else %>
       <p>
-        <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" height="30" width="30" />
+        <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" height="30" width="30" alt="DEV badge" class="dev-badge">
       </p>
       <h2 style="text-align:center;">
         <a href="/enter">Log in to view your custom embed code</a>

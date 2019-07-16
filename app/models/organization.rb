@@ -15,6 +15,7 @@ class Organization < ApplicationRecord
   has_many :unspent_credits, -> { where spent: false }, class_name: "Credit", inverse_of: :organization
   has_many :classified_listings
   has_many :profile_pins, as: :profile, inverse_of: :profile
+  has_many :sponsorships
 
   validates :name, :summary, :url, :profile_image, presence: true
   validates :name,
@@ -26,7 +27,6 @@ class Organization < ApplicationRecord
   validates :jobs_email, email: true, allow_blank: true
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
-  validates :sponsorship_level, inclusion: { in: %w[gold silver bronze] }, allow_nil: true
   validates :slug,
             presence: true,
             uniqueness: { case_sensitive: false },
@@ -41,7 +41,6 @@ class Organization < ApplicationRecord
                                      message: "Integer only. No sign allowed.",
                                      allow_blank: true }
   validates :tech_stack, :story, length: { maximum: 640 }
-  validates :sponsorship_status, inclusion: { in: %w[none pending live] }
   validates :cta_button_url,
             url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :cta_button_text, length: { maximum: 20 }

@@ -437,6 +437,12 @@ export class Listings extends Component {
               isOpen
             />
             {messageModal}
+            <a
+              href="/about-listings"
+              className="single-classified-listing-info-link"
+            >
+              About DEV Listings
+            </a>
             <div className="single-classified-listing-container__spacer" />
           </div>
         </div>

@@ -23,8 +23,8 @@ class StoriesController < ApplicationController
     elsif (@article = Article.find_by(slug: params[:slug])&.decorate)
       handle_possible_redirect
     else
-      @podcast = Podcast.reachable.find_by(slug: params[:username]) || not_found
-      @episode = PodcastEpisode.find_by(slug: params[:slug]) || not_found
+      @podcast = Podcast.reachable.find_by!(slug: params[:username])
+      @episode = PodcastEpisode.reachable.find_by!(slug: params[:slug])
       handle_podcast_show
     end
   end
@@ -141,7 +141,7 @@ class StoriesController < ApplicationController
     @podcast_index = true
     @article_index = true
     @list_of = "podcast-episodes"
-    @podcast_episodes = @podcast.podcast_episodes.order("published_at DESC").limit(30)
+    @podcast_episodes = @podcast.podcast_episodes.reachable.order("published_at DESC").limit(30)
     set_surrogate_key_header "podcast_episodes"
     render template: "podcast_episodes/index"
   end

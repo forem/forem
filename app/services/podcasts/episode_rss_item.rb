@@ -19,7 +19,7 @@ module Podcasts
         link: item.link,
         guid: item.guid.to_s,
         pubDate: item.pubDate.to_s,
-        enclosure_url: item.enclosure.url,
+        enclosure_url: item.enclosure&.url,
         body: item.content_encoded || item.itunes_summary || item.description,
       )
     end

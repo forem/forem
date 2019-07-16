@@ -153,7 +153,7 @@ Rails.application.routes.draw do
   resources :poll_votes, only: %i[show create]
   resources :poll_skips, only: [:create]
   resources :profile_pins, only: %i[create update]
-  resources :partnerships, only: %i[index create]
+  resources :partnerships, only: %i[index create show], param: :option
 
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/listings/dashboard" => "classified_listings#dashboard"
@@ -175,7 +175,6 @@ Rails.application.routes.draw do
   post "/chat_channels/create_chat" => "chat_channels#create_chat"
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
   get "/live/:username" => "twitch_live_streams#show"
-  get "/partnerships/:option" => "partnerships#show"
   get "/pro" => "pro_accounts#index"
 
   post "/pusher/auth" => "pusher#auth"

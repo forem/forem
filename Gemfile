@@ -78,20 +78,20 @@ gem "recaptcha", "~> 5.0", require: "recaptcha/rails" # Helpers for the reCAPTCH
 gem "redcarpet", "~> 3.4" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "reverse_markdown", "~> 1.1" # Map simple html back into markdown
 gem "rolify", "~> 5.2" # Very simple Roles library
-gem "rouge", "~> 3.5" # A pure-ruby code highlighter
+gem "rouge", "~> 3.6" # A pure-ruby code highlighter
 gem "rubyzip", "~> 1.2" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sail", "~> 1.5" # Sail is a lightweight Rails engine that brings an admin panel for managing configuration settings on a live Rails app
 gem "sass-rails", "~> 5.0" # Sass adapter for the Rails asset pipeline
 gem "scout_apm", "~> 2.5" # Monitors Ruby apps and reports detailed metrics on performance to Scout
-gem "serviceworker-rails", "~> 0.5" # Integrates ServiceWorker into the Rails asset pipeline
+gem "serviceworker-rails", "~> 0.6" # Integrates ServiceWorker into the Rails asset pipeline
 gem "sitemap_generator", "~> 6.0" # SitemapGenerator is a framework-agnostic XML Sitemap generator
 gem "skylight", "~> 4.1" # Skylight is a smart profiler for Rails, Sinatra, and other Ruby apps
 gem "slack-notifier", "~> 2.3" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets", "~> 3.7" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "storext", "~> 3.0" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
-gem "stripe", "~> 4.19" # Ruby library for the Stripe API
+gem "stripe", "~> 4.21" # Ruby library for the Stripe API
 gem "timber", "~> 3.0" # Great Ruby logging made easy
 gem "timber-rails", "~> 1.0" #  Timber integration for Rails
 gem "twilio-ruby", "~> 5.25" # The official library for communicating with the Twilio REST API
@@ -153,7 +153,7 @@ group :test do
   gem "test-prof", "~> 0.9" # Ruby Tests Profiling Toolbox
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
   gem "vcr", "~> 5.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
-  gem "webdrivers", "~> 4.0" # Run Selenium tests more easily with install and updates for all supported webdrivers
+  gem "webdrivers", "~> 4.1" # Run Selenium tests more easily with install and updates for all supported webdrivers
   gem "webmock", "~> 3.6" # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end

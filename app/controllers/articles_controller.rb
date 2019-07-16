@@ -135,7 +135,9 @@ class ArticlesController < ApplicationController
   def update
     authorize @article
     @user = @article.user || current_user
+
     not_found if @article.user_id != @user.id && !@user.has_role?(:super_admin)
+
     edited_at_date = if @article.user == current_user && @article.published
                        Time.current
                      else
@@ -146,13 +148,16 @@ class ArticlesController < ApplicationController
 
     respond_to do |format|
       format.html do
+        # TODO: JSON should probably not be returned in the format.html section
         if article_params_json[:archived] && @article.archived # just to get archived working
           render json: @article.to_json(only: [:id], methods: [:current_state_path])
           return
         end
-        # NOTE: destination is used by /dashboard/organization when it re-assigns an article
-        # not a great solution but for now it will do
-        redirect_to(params[:destination] || @article.path)
+        if params[:destination]
+          redirect_to(params[:destination])
+          return
+        end
+        render json: { status: 200 }
       end
 
       format.json do
