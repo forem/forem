@@ -52,13 +52,21 @@
     <% else %>
       <div class="partner-credits-options">
         <div class="partnership-option-card" style="width: auto;">
-          <% if @user.has_enough_credits?(ProMembership::MONTHLY_COST) %>
+          <% available_credits = @user.credits.unspent.size %>
+          <% if available_credits >= ProMembership::MONTHLY_COST %>
+            <h3>You currently have <%= available_credits %> credits</h3>
             <%= form_for(ProMembership.new(user: @user)) do |f| %>
               <%= f.submit(
                     "Become a Pro member for #{ProMembership::MONTHLY_COST} credits/mo",
                     class: "partnership-option-cta",
                   ) %>
             <% end %>
+          <% elsif available_credits.positive? %>
+            <h3>You currently have <%= available_credits %> credits, you need <%= ProMembership::MONTHLY_COST %> to become a Pro member</h3>
+            <a
+              class="partnership-option-cta"
+              id="purchase-credits"
+              href="<%= purchase_credits_path %>">Purchase <%= ProMembership::MONTHLY_COST - 1 %> credits</a>
           <% else %>
             <a
               class="partnership-option-cta"
