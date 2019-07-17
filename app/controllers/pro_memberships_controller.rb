@@ -1,7 +1,7 @@
 class ProMembershipsController < ApplicationController
   before_action :authenticate_user!, except: %i[show]
-  before_action :load_pro_membership, only: %i[edit update]
-  after_action :verify_authorized, except: %i[show edit]
+  before_action :load_pro_membership, only: %i[update]
+  after_action :verify_authorized, except: %i[show]
 
   def show
     @user = current_user
@@ -12,17 +12,12 @@ class ProMembershipsController < ApplicationController
     authorize ProMembership
 
     if ProMemberships::Creator.call(current_user)
-      redirect_to pro_membership_path, notice: "You are now a Pro!"
+      flash[:settings_notice] = "You are now a Pro!"
     else
-      redirect_to pro_membership_path, flash: { error: "You don't have enough credits!" }
+      flash[:error] = "You don't have enough credits!"
     end
-  end
 
-  def edit
-    return redirect_to pro_membership_path, notice: "You are already a Pro member" if current_user.has_role?(:pro)
-    return redirect_to pro_membership_path, notice: "You don't have a Pro Membership" unless @pro_membership
-
-    @user = current_user
+    redirect_to user_settings_path("pro-membership")
   end
 
   def update
@@ -31,10 +26,12 @@ class ProMembershipsController < ApplicationController
     authorize @pro_membership
 
     if @pro_membership.update(update_params)
-      redirect_to pro_membership_path, notice: "Your membership has been updated!"
+      flash[:settings_notice] = "Your membership has been updated!"
     else
-      render :edit
+      flash[:error] = "An error has occurred while updating your membership!"
     end
+
+    redirect_to user_settings_path("pro-membership")
   end
 
   private

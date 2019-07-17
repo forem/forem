@@ -40,41 +40,12 @@
   <p>Because this will be the landing destination for experimental and low scale features, you will always have the best and most interesting DEV features. We also plan to connect for exclusive deals on new and upcoming features on other platforms.
 
   <% if @user %>
-    <% if @user.pro? %>
-      <div class="partner-credits-explainer">
-        <h3>You already have a Pro Membership</h3>
-
-        <% if @pro_membership %>
-          <%= render "pro_membership", pro_membership: @pro_membership %>
-          <a class="partnership-option-cta" href="<%= edit_pro_membership_path %>">Edit your Pro Membership</a>
-        <% end %>
-      </div>
-    <% else %>
-      <div class="partner-credits-options">
-        <div class="partnership-option-card" style="width: auto;">
-          <% available_credits = @user.credits.unspent.size %>
-          <% if available_credits >= ProMembership::MONTHLY_COST %>
-            <h3>You currently have <%= available_credits %> credits</h3>
-            <%= form_for(ProMembership.new(user: @user)) do |f| %>
-              <%= f.submit(
-                    "Become a Pro member for #{ProMembership::MONTHLY_COST} credits/mo",
-                    class: "partnership-option-cta",
-                  ) %>
-            <% end %>
-          <% elsif available_credits.positive? %>
-            <h3>You currently have <%= available_credits %> credits, you need <%= ProMembership::MONTHLY_COST %> to become a Pro member</h3>
-            <a
-              class="partnership-option-cta"
-              id="purchase-credits"
-              href="<%= purchase_credits_path %>">Purchase <%= ProMembership::MONTHLY_COST - 1 %> credits</a>
-          <% else %>
-            <a
-              class="partnership-option-cta"
-              id="purchase-credits"
-              href="<%= purchase_credits_path %>">Purchase <%= ProMembership::MONTHLY_COST %> credits</a>
-          <% end %>
-        </div>
-      </div>
-    <% end %>
+    <div class="partner-credits-explainer">
+      <% if @user.pro? %>
+        <%= link_to "View your Pro Membership", user_settings_path("pro-membership") %>
+      <% else %>
+        <%= link_to "Become a Pro member", user_settings_path("pro-membership") %>
+      <% end %>
+    </div>
   <% end %>
 </div>

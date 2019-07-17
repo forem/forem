@@ -409,6 +409,7 @@ class User < ApplicationRecord
       Publishing\ from\ RSS
       Organization
       Billing
+      Pro\ Membership
       Account
       Misc
     ]

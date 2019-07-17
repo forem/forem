@@ -170,7 +170,7 @@ Rails.application.routes.draw do
   resources :profile_pins, only: %i[create update]
   resources :partnerships, only: %i[index create show], param: :option
   resources :display_ad_events, only: [:create]
-  resource :pro_membership, path: :pro, except: %i[new destroy]
+  resource :pro_membership, path: :pro, only: %i[show create update]
   resolve("ProMembership") { [:pro_membership] } # see https://guides.rubyonrails.org/routing.html#using-resolve
 
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
@@ -299,7 +299,7 @@ Rails.application.routes.draw do
     end
   end
 
-  get "/settings/(:tab)" => "users#edit"
+  get "/settings/(:tab)" => "users#edit", as: :user_settings
   get "/settings/:tab/:org_id" => "users#edit"
   get "/signout_confirm" => "users#signout_confirm"
   get "/dashboard" => "dashboards#show"

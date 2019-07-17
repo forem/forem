@@ -6,13 +6,12 @@ RSpec.describe "Visits Pro Memberships page", type: :system do
   context "when not signed in" do
     it "does not say you are a member" do
       visit "/pro"
-      expect(page).not_to have_content("You already have a Pro Membership")
+      expect(page).not_to have_content("View your Pro Membership")
     end
 
-    it "does not ask you to become a member" do
+    it "does not ask to become a pro member" do
       visit "/pro"
-      label = "Become a Pro member for #{ProMembership::MONTHLY_COST} credits/mo"
-      expect(page).not_to have_selector("input[type=submit][value='#{label}']")
+      expect(page).not_to have_content("Become a Pro member")
     end
   end
 
@@ -23,29 +22,12 @@ RSpec.describe "Visits Pro Memberships page", type: :system do
 
     it "does not say you are a member" do
       visit "/pro"
-      expect(page).not_to have_content("You already have a Pro Membership")
+      expect(page).not_to have_content("View your Pro Membership")
     end
 
-    it "asks you to purchase credits if don't have credits" do
+    it "asks to become a pro member" do
       visit "/pro"
-      expect(page).to have_content("Purchase #{ProMembership::MONTHLY_COST} credits")
-    end
-
-    it "asks you to purchase N remaining credits if you don't have enough" do
-      num_credits = ProMembership::MONTHLY_COST - 1
-      create_list(:credit, num_credits, user: user)
-      visit "/pro"
-      expect(page).to have_content(
-        "You currently have #{num_credits} credits, you need #{ProMembership::MONTHLY_COST} to become a Pro member")
-      expect(page).to have_content("Purchase #{ProMembership::MONTHLY_COST - 1} credits")
-    end
-
-    it "asks you to become a member with enough credits" do
-      create_list(:credit, ProMembership::MONTHLY_COST, user: user)
-      visit "/pro"
-      expect(page).to have_content("You currently have #{user.credits.unspent.size} credits")
-      label = "Become a Pro member for #{ProMembership::MONTHLY_COST} credits/mo"
-      expect(page).to have_selector("input[type=submit][value='#{label}']")
+      expect(page).to have_content("Become a Pro member")
     end
   end
 
@@ -57,24 +39,12 @@ RSpec.describe "Visits Pro Memberships page", type: :system do
 
     it "says you are a member" do
       visit "/pro"
-      expect(page).to have_content("You already have a Pro Membership")
+      expect(page).to have_content("View your Pro Membership")
     end
 
-    it "does not ask you to purchase credits if you don't have enough" do
+    it "does not ask to become a pro member" do
       visit "/pro"
-      expect(page).not_to have_content("Purchase #{ProMembership::MONTHLY_COST} credits")
-    end
-
-    it "does not ask you to become a member with enough credits" do
-      create_list(:credit, ProMembership::MONTHLY_COST, user: user)
-      visit "/pro"
-      label = "Become a Pro member for #{ProMembership::MONTHLY_COST} credits/mo"
-      expect(page).not_to have_selector("input[type=submit][value='#{label}']")
-    end
-
-    it "does not show the status of the membership" do
-      visit "/pro"
-      expect(page).not_to have_content("Top up from credit card?")
+      expect(page).not_to have_content("Become a Pro member")
     end
   end
 
@@ -86,26 +56,12 @@ RSpec.describe "Visits Pro Memberships page", type: :system do
 
     it "says you are a member" do
       visit "/pro"
-      expect(page).to have_content("You already have a Pro Membership")
+      expect(page).to have_content("View your Pro Membership")
     end
 
-    it "does not ask you to purchase credits if you don't have enough" do
+    it "does not ask to become a pro member" do
       visit "/pro"
-      expect(page).not_to have_content("Purchase #{ProMembership::MONTHLY_COST} credits")
-    end
-
-    it "does not ask you to become a member with enough credits" do
-      create_list(:credit, ProMembership::MONTHLY_COST, user: user)
-      visit "/pro"
-      label = "Become a Pro member for #{ProMembership::MONTHLY_COST} credits/mo"
-      expect(page).not_to have_selector("input[type=submit][value='#{label}']")
-    end
-
-    it "shows the status of the membership" do
-      visit "/pro"
-      expect(page).to have_content(user.pro_membership.expires_at.to_date.to_s(:long))
-      expect(page).to have_content("Top up from credit card?")
-      expect(page).to have_content("Edit your Pro Membership")
+      expect(page).not_to have_content("Become a Pro member")
     end
   end
 end

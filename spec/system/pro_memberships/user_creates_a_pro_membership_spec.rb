@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Visits Pro Memberships page", type: :system do
+RSpec.describe "Creates a Pro Membership", type: :system do
   let(:user) { create(:user) }
 
   context "when signed in as a regular user with enough credits" do
@@ -10,8 +10,8 @@ RSpec.describe "Visits Pro Memberships page", type: :system do
     end
 
     it "makes the user become a pro" do
-      visit "/pro"
-      label = "Become a Pro member for #{ProMembership::MONTHLY_COST} credits/mo"
+      visit "/settings/pro-membership"
+      label = "Become a Pro member"
       click_on label
       expect(page).to have_content("You are now a Pro!")
     end

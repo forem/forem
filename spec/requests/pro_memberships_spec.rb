@@ -78,10 +78,10 @@ RSpec.describe "Pro Memberships", type: :request do
         end
       end
 
-      it "redirects to the show page with a notice" do
+      it "redirects to the pro membership settings page with a notice" do
         post pro_membership_path
-        expect(response).to redirect_to(pro_membership_path)
-        expect(flash[:notice]).to eq("You are now a Pro!")
+        expect(response).to redirect_to(user_settings_path("pro-membership"))
+        expect(flash[:settings_notice]).to eq("You are now a Pro!")
       end
     end
 
@@ -102,32 +102,10 @@ RSpec.describe "Pro Memberships", type: :request do
         end.to change(user.credits.spent, :count).by(0)
       end
 
-      it "redirects to the show page with an error message" do
+      it "redirects to the pro membership settings page with an error message" do
         post pro_membership_path
-        expect(response).to redirect_to(pro_membership_path)
+        expect(response).to redirect_to(user_settings_path("pro-membership"))
         expect(flash[:error]).to eq("You don't have enough credits!")
-      end
-    end
-  end
-
-  describe "GET /pro/edit" do
-    let(:user) { create(:user) }
-
-    context "when the user is not logged in" do
-      it "redirects to the sign up page" do
-        get edit_pro_membership_path
-        expect(response).to redirect_to(sign_up_path)
-      end
-    end
-
-    context "when the user is logged in without a pro membership" do
-      before do
-        sign_in user
-      end
-
-      it "redirects to the pro membership page" do
-        get edit_pro_membership_path
-        expect(response).to redirect_to(pro_membership_path)
       end
     end
   end
@@ -162,7 +140,8 @@ RSpec.describe "Pro Memberships", type: :request do
       it "works correctly" do
         create(:pro_membership, user: user)
         put pro_membership_path, params: { pro_membership: { auto_recharge: true } }
-        expect(response).to redirect_to(pro_membership_path)
+        expect(flash[:settings_notice]).to eq("Your membership has been updated!")
+        expect(response).to redirect_to(user_settings_path("pro-membership"))
       end
 
       it "activates auto recharge" do
