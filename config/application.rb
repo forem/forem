@@ -37,7 +37,6 @@ module PracticalDeveloper
     config.autoload_paths += Dir["#{config.root}/app/labor/"]
     config.autoload_paths += Dir["#{config.root}/app/decorators/"]
     config.autoload_paths += Dir["#{config.root}/app/services/"]
-    config.autoload_paths += Dir["#{config.root}/app/liquid_tags/"]
     config.autoload_paths += Dir["#{config.root}/app/observers/"]
     config.autoload_paths += Dir["#{config.root}/app/black_box/"]
     config.autoload_paths += Dir["#{config.root}/app/sanitizers"]
