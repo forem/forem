@@ -21,6 +21,7 @@ export const ListingRow = ({ listing }) => {
         day: '2-digit',
         month: 'short',
       });
+
   const orgName = l =>
     l.organization_id ? (
       <span className="listing-org">{l.author.name}</span>
@@ -31,7 +32,7 @@ export const ListingRow = ({ listing }) => {
   return (
     <div className={`dashboard-listing-row ${listing.published ? '' : 'expired'}`}>
       {orgName(listing)}
-      <a href={`${`${listing.category}/${listing.slug}`}`}>
+      <a href={`${listing.category}/${listing.slug}`}>
         <h2>{listing.title + (listing.published ? '' : " (expired)")}</h2>
       </a>
       <span className="dashboard-listing-date">
