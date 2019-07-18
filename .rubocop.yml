@@ -7,21 +7,10 @@ require:
 
 # our custom config
 # TODO: Uncomment it after fix rubocop-todo RSpec/MultipleExpectations
-RSpec/MultipleExpectations:
-  # Max: 1
-  Exclude:
-    - 'spec/features/**/*'
-
 RSpec/DescribeClass:
   Exclude:
-    - spec/features/**/*
     - spec/requests/**/*
     - spec/system/**/*
-
-RSpec/ExampleLength:
-  Max: 10
-  Exclude:
-    - spec/features/**/*
 
 # TODO: Uncomment it after fix rubocop-todo Metrics/LineLength
 # Metrics/LineLength:
