@@ -94,7 +94,10 @@ class PagesController < ApplicationController
   private # helpers
 
   def latest_published_thread(tag_name)
-    Article.published.where(user_id: ApplicationConfig["DEVTO_USER_ID"]).tagged_with(tag_name).last
+    Article.published.
+      where(user_id: ApplicationConfig["DEVTO_USER_ID"]).
+      order("published_at ASC").
+      tagged_with(tag_name).last
   end
 
   def members_for_display
