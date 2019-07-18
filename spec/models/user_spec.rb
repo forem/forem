@@ -38,6 +38,11 @@ RSpec.describe User, type: :model do
     it { is_expected.to validate_length_of(:name).is_at_most(100) }
     it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
 
+    describe "stuff" do
+      it { is_expected.to have_many(:access_grants).class_name("Doorkeeper::AccessGrant").with_foreign_key("resource_owner_id").dependent(:delete_all) }
+      it { is_expected.to have_many(:access_tokens).class_name("Doorkeeper::AccessToken").with_foreign_key("resource_owner_id").dependent(:delete_all) }
+    end
+
     it "validates username against reserved words" do
       user = build(:user, username: "readinglist")
       expect(user).not_to be_valid
