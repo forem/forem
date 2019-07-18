@@ -36,7 +36,7 @@ RSpec.describe ProMembershipMailer, type: :mailer do
 
       it "includes pro membership path" do
         email = described_class.expiring_membership(pro_membership, 1.week.from_now)
-        expect(email.text_part.body).to include(pro_membership_path)
+        expect(email.text_part.body).to include(user_settings_path("pro-membership"))
       end
     end
 
@@ -61,7 +61,7 @@ RSpec.describe ProMembershipMailer, type: :mailer do
 
       it "includes pro membership path" do
         email = described_class.expiring_membership(pro_membership, 1.week.from_now)
-        expect(email.html_part.body).to include(CGI.escape(pro_membership_path))
+        expect(email.html_part.body).to include(CGI.escape(user_settings_path("pro-membership")))
       end
     end
   end
