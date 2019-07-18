@@ -17,7 +17,7 @@ export class ListingDashboard extends Component {
     let listings = [];
     let orgs = [];
     let orgListings = [];
-    listings = JSON.parse(container.dataset.listings);
+    listings = JSON.parse(container.dataset.listings).sort((a,b) => (a.created_at > b.created_at) ? -1 : 1);
     orgs = JSON.parse(container.dataset.orgs);
     orgListings = JSON.parse(container.dataset.orglistings);
     const userCredits = container.dataset.usercredits;
@@ -34,23 +34,22 @@ export class ListingDashboard extends Component {
       filter,
     } = this.state;
 
+    const filterListings = (listingsToFilter, selectedFilter) => {
+      if (selectedFilter === "Expired") {
+        return listingsToFilter.filter(listing => listing.published === false)
+      } if (selectedFilter === "Active") {
+        return listingsToFilter.filter(listing => listing.published === true)
+      }
+      return listingsToFilter
+    }
+
     const showListings = (selected, userListings, organizationListings, selectedFilter) => {
       let displayedListings;
       if (selected === 'user') {
-        displayedListings = userListings;
-        if (selectedFilter === "Expired") {
-          displayedListings = userListings.filter(listing => listing.published === false)
-        } else if (selectedFilter === "Active") {
-          displayedListings = userListings.filter(listing => listing.published === true)
-        }
+        displayedListings = filterListings(userListings, selectedFilter)
         return displayedListings.map(listing => <ListingRow listing={listing} />)
       }
-      displayedListings = organizationListings;
-      if (selectedFilter === "Expired") {
-        displayedListings = organizationListings.filter(listing => listing.published === false)
-      } else if (selectedFilter === "Active") {
-        displayedListings = organizationListings.filter(listing => listing.published === true)
-      }
+      displayedListings = filterListings(organizationListings, selectedFilter)
       return displayedListings.map(listing =>
         listing.organization_id === selected ? (
           <ListingRow listing={listing} />
@@ -65,35 +64,22 @@ export class ListingDashboard extends Component {
       this.setState({listings: sortedListings});
     }
 
-    const filterButtons = (
-      <div className="listings-dashboard-filter-buttons">
-        <span
-          onClick={(event) => {this.setState( {filter:event.target.textContent} )}}
-          className={`rounded-btn ${filter === 'All' ? 'active' : ''}`}
-          role="button" 
-          tabIndex="0">
-          All
-        </span>
-        <span
-          onClick={(event) => {this.setState( {filter:event.target.textContent} )}}
-          className={`rounded-btn ${filter === 'Active' ? 'active' : ''}`}
-          role="button" 
-          tabIndex="0">
-          Active
-        </span>
-        <span
-          onClick={(event) => {this.setState( {filter:event.target.textContent} )}}
-          className={`rounded-btn ${filter === 'Expired' ? 'active' : ''}`}
-          role="button" 
-          tabIndex="0">
-          Expired
-        </span>
-      </div>
-    );
+    const filters = ["All", "Active", "Expired"];
+    const filterButtons = filters.map(f => (
+      <span
+        onClick={(event) => {this.setState( {filter:event.target.textContent} )}}
+        className={`rounded-btn ${filter === f ? 'active' : ''}`}
+        role="button" 
+        tabIndex="0">
+        {f}
+      </span>
+    ))
 
     const sortingDropdown = (
       <div class="dashboard-listings-actions">
-        {filterButtons}
+        <div className="listings-dashboard-filter-buttons">
+          {filterButtons}
+        </div>
         <select onChange={sortListings} >
           <option value="created_at" selected="selected">Recently Created</option>
           <option value="bumped_at">Recently Bumped</option>
