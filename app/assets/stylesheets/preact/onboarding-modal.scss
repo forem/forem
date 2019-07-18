@@ -158,7 +158,7 @@
 
   .scroll {
     max-height: 200px;
-    overflow: scroll;
+    overflow: auto;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
