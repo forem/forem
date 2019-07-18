@@ -111,7 +111,7 @@ class UsersController < ApplicationController
   end
 
   def onboarding_checkbox_update
-    current_user.assign_attributes(params[:user].permit(:checked_code_of_conduct, :location, :employment_title, :employer_name)) if params[:user]
+    current_user.assign_attributes(params[:user].permit(:checked_code_of_conduct, :checked_terms_and_conditions, :email_membership_newsletter, :email_digest_periodic)) if params[:user]
     current_user.saw_onboarding = true
     authorize User
     if current_user.save

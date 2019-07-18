@@ -89,6 +89,8 @@ class EmailTermsConditionsForm extends Component {
       message,
       checked_code_of_conduct,
       checked_terms_and_conditions,
+      email_membership_newsletter,
+      email_digest_periodic,
     } = this.state;
     const { prev } = this.props;
     return (
@@ -126,7 +128,7 @@ class EmailTermsConditionsForm extends Component {
               <input
                 type="checkbox"
                 name="email_membership_newsletter"
-                checked
+                checked={email_membership_newsletter}
                 onChange={this.handleChange}
               />
               Do you want to receive our weekly newsletter emails?
@@ -135,8 +137,8 @@ class EmailTermsConditionsForm extends Component {
             <label htmlFor="email_digest_periodic">
               <input
                 type="checkbox"
-                name="email_membership_newsletter"
-                checked
+                name="email_digest_periodic"
+                checked={email_digest_periodic}
                 onChange={this.handleChange}
               />
               Do you want to receive a periodic digest with some of the top
