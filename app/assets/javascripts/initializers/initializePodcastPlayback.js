@@ -145,7 +145,8 @@ function initializePodcastPlayback() {
       if (
         event.target.tagName === 'A' &&
         !event.target.href.includes('https://dev.to') &&
-        !event.ctrlKey
+        !event.ctrlKey &&
+        !event.metaKey
       ) {
         event.preventDefault();
         if (window.confirm(message)) {
