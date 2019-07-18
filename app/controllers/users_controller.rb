@@ -96,7 +96,7 @@ class UsersController < ApplicationController
   end
 
   def onboarding_update
-    current_user.assign_attributes(params[:user].permit(:summary, :location, :employment_title, :employer_name)) if params[:user]
+    current_user.assign_attributes(params[:user].permit(:summary, :location, :employment_title, :employer_name, :last_onboarding_page)) if params[:user]
     current_user.saw_onboarding = true
     authorize User
     if current_user.save

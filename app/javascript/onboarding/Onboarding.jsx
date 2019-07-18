@@ -1,7 +1,7 @@
 import 'preact/devtools';
 import { h, Component } from 'preact';
 
-import WelcomeSlide from './components/WelcomeSlide';
+import IntroSlide from './components/IntroSlide';
 import PersonalInfoForm from './components/PersonalInfoForm';
 import EmailListTermsConditionsForm from './components/EmailListTermsConditionsForm';
 import ClosingSlide from './components/ClosingSlide';
@@ -17,7 +17,7 @@ export default class Onboarding extends Component {
     this.prevSlide = this.prevSlide.bind(this);
 
     const slides = [
-      WelcomeSlide,
+      IntroSlide,
       EmailListTermsConditionsForm,
       BioForm,
       PersonalInfoForm,
@@ -30,7 +30,11 @@ export default class Onboarding extends Component {
     const previousLocation = url.searchParams.get('referrer');
 
     this.slides = slides.map(SlideComponent => (
-      <SlideComponent next={this.nextSlide} prev={this.prevSlide} previousLocation={previousLocation} />
+      <SlideComponent
+        next={this.nextSlide}
+        prev={this.prevSlide}
+        previousLocation={previousLocation}
+      />
     ));
 
     this.state = {

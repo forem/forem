@@ -21,6 +21,21 @@ class EmailTermsConditionsForm extends Component {
     };
   }
 
+  componentDidMount() {
+    const csrfToken = getContentOfToken('csrf-token');
+    fetch('/onboarding_update', {
+      method: 'PATCH',
+      headers: {
+        'X-CSRF-Token': csrfToken,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user: { last_onboarding_page: 'emails, COC and T&C form' },
+      }),
+      credentials: 'same-origin',
+    });
+  }
+
   onSubmit() {
     if (!this.checkRequirements()) return;
     const csrfToken = getContentOfToken('csrf-token');

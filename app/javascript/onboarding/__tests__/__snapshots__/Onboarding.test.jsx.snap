@@ -283,6 +283,42 @@ preact-render-spy (1 nodes)
 
 `;
 
+exports[`<Onboarding /> IntroSlide renders properly 1`] = `
+preact-render-spy (1 nodes)
+-------
+<div class="onboarding-body">
+  <div class="onboarding-main">
+    <div class="onboarding-content">
+      <h1>
+        <span>Welcome to the </span>
+        <img
+          src="/assets/purple-dev-logo.png"
+          class="sticker-logo"
+          alt="DEV"
+         />
+        <span>community!</span>
+      </h1>
+      <p>
+        DEV is where programmers share ideas and help each other grow. It’s a global community for contributing and discovering great ideas, having debates, and making friends.
+      </p>
+      <p>
+        A couple quick questions for you before you get started...
+      </p>
+    </div>
+    <nav class="onboarding-navigation">
+      <button
+        onClick={[Function bound onSubmit]}
+        class="next-button"
+        type="button"
+      >
+        Continue
+      </button>
+    </nav>
+  </div>
+</div>
+
+`;
+
 exports[`<Onboarding /> PersonalInformationForm renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
@@ -333,42 +369,6 @@ preact-render-spy (1 nodes)
       </button>
       <button
         onClick={[Function bound onSubmit]}
-        class="next-button"
-        type="button"
-      >
-        Continue
-      </button>
-    </nav>
-  </div>
-</div>
-
-`;
-
-exports[`<Onboarding /> WelcomeSlide renders properly 1`] = `
-preact-render-spy (1 nodes)
--------
-<div class="onboarding-body">
-  <div class="onboarding-main">
-    <div class="onboarding-content">
-      <h1>
-        <span>Welcome to the </span>
-        <img
-          src="/assets/purple-dev-logo.png"
-          class="sticker-logo"
-          alt="DEV"
-         />
-        <span>community!</span>
-      </h1>
-      <p>
-        DEV is where programmers share ideas and help each other grow. It’s a global community for contributing and discovering great ideas, having debates, and making friends.
-      </p>
-      <p>
-        A couple quick questions for you before you get started...
-      </p>
-    </div>
-    <nav class="onboarding-navigation">
-      <button
-        onClick={[Function bound nextSlide]}
         class="next-button"
         type="button"
       >

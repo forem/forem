@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_11_070019) do
+ActiveRecord::Schema.define(version: 2019_07_17_224405) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -997,6 +997,7 @@ ActiveRecord::Schema.define(version: 2019_07_11_070019) do
     t.datetime "last_followed_at"
     t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
     t.datetime "last_notification_activity"
+    t.string "last_onboarding_page"
     t.datetime "last_sign_in_at"
     t.inet "last_sign_in_ip"
     t.string "linkedin_url"

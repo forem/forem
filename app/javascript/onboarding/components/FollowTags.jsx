@@ -23,6 +23,19 @@ class FollowTags extends Component {
       .then(data => {
         this.setState({ allTags: data });
       });
+
+    const csrfToken = getContentOfToken('csrf-token');
+    fetch('/onboarding_update', {
+      method: 'PATCH',
+      headers: {
+        'X-CSRF-Token': csrfToken,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user: { last_onboarding_page: 'follow tags page' },
+      }),
+      credentials: 'same-origin',
+    });
   }
 
   handleClick(tag) {

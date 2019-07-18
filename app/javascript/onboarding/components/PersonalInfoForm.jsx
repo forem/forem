@@ -15,13 +15,33 @@ class PersonalInfoForm extends Component {
       location: '',
       employment_title: '',
       employer_name: '',
+      last_onboarding_page: 'personal info form',
     };
+  }
+
+  componentDidMount() {
+    const csrfToken = getContentOfToken('csrf-token');
+    const { last_onboarding_page } = this.state;
+    fetch('/onboarding_update', {
+      method: 'PATCH',
+      headers: {
+        'X-CSRF-Token': csrfToken,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ user: { last_onboarding_page } }),
+      credentials: 'same-origin',
+    });
   }
 
   onSubmit() {
     const csrfToken = getContentOfToken('csrf-token');
 
-    const { location, employer_name, employment_title } = this.state;
+    const {
+      last_onboarding_page,
+      location,
+      employer_name,
+      employment_title,
+    } = this.state;
 
     fetch('/onboarding_update', {
       method: 'PATCH',
@@ -31,6 +51,7 @@ class PersonalInfoForm extends Component {
       },
       body: JSON.stringify({
         user: {
+          last_onboarding_page,
           location,
           employer_name,
           employment_title,

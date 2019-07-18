@@ -63,7 +63,7 @@ describe('<Onboarding />', () => {
     followed_tag_names: ['javascript'],
   });
 
-  describe('WelcomeSlide', () => {
+  describe('IntroSlide', () => {
     let onboardingSlides;
     beforeEach(() => {
       document.body.setAttribute('data-user', null);
@@ -80,40 +80,69 @@ describe('<Onboarding />', () => {
     });
   });
 
-  describe('BioForm', () => {
+  describe('EmailTermsConditionsForm', () => {
     let onboardingSlides;
-    const meta = document.createElement('meta');
-    meta.setAttribute('name', 'csrf-token');
-    document.body.appendChild(meta);
-
     beforeEach(() => {
+      document.body.setAttribute('data-user', dataUser);
       onboardingSlides = deep(<Onboarding />);
       onboardingSlides.setState({ currentSlide: 1 });
-      document.body.setAttribute('data-user', dataUser);
     });
 
     test('renders properly', () => {
       expect(onboardingSlides).toMatchSnapshot();
     });
 
+    test('should not move if code of conduct is not agreed to', () => {
+      onboardingSlides.find('.next-button').simulate('click');
+      expect(onboardingSlides.state().currentSlide).toBe(1);
+    });
+
+    test('should not move if terms and conditions are not met', () => {
+      const event = {
+        target: {
+          value: 'checked_code_of_conduct',
+          name: 'checked_code_of_conduct',
+        },
+      };
+      onboardingSlides
+        .find('#checked_code_of_conduct')
+        .simulate('change', event);
+      onboardingSlides.find('.next-button').simulate('click');
+      expect(onboardingSlides.state().currentSlide).toBe(1);
+    });
+
+    test('should move to the next slide if code of conduct and terms and conditions are met', async () => {
+      fetch.once({});
+      onboardingSlides.find('#checked_code_of_conduct').simulate('change', {
+        target: {
+          value: 'checked_code_of_conduct',
+          name: 'checked_code_of_conduct',
+        },
+      });
+
+      onboardingSlides
+        .find('#checked_terms_and_conditions')
+        .simulate('change', {
+          target: {
+            value: 'checked_terms_and_conditions',
+            name: 'checked_terms_and_conditions',
+          },
+        });
+
+      const emailTerms = onboardingSlides.find(<EmailTermsConditionsForm />);
+      expect(emailTerms.state('checked_code_of_conduct')).toBe(true);
+      onboardingSlides.find('.next-button').simulate('click');
+      await flushPromises();
+      expect(onboardingSlides.state().currentSlide).toBe(2);
+    });
+
     it('should move to the previous slide upon clicking the back button', () => {
       onboardingSlides.find('.back-button').simulate('click');
       expect(onboardingSlides.state().currentSlide).toBe(0);
     });
-
-    test('forms can be filled and submitted', async () => {
-      fetch.once({});
-      const bioForm = onboardingSlides.find(<BioForm />);
-      const event = { target: { value: 'my bio', name: 'summary' } };
-      onboardingSlides.find('textarea').simulate('change', event);
-      expect(bioForm.state('summary')).toBe('my bio');
-      bioForm.find('.next-button').simulate('click');
-      await flushPromises();
-      expect(onboardingSlides.state().currentSlide).toBe(2);
-    });
   });
 
-  describe('PersonalInformationForm', () => {
+  describe('BioForm', () => {
     let onboardingSlides;
     const meta = document.createElement('meta');
     meta.setAttribute('name', 'csrf-token');
@@ -132,6 +161,39 @@ describe('<Onboarding />', () => {
     it('should move to the previous slide upon clicking the back button', () => {
       onboardingSlides.find('.back-button').simulate('click');
       expect(onboardingSlides.state().currentSlide).toBe(1);
+    });
+
+    test('forms can be filled and submitted', async () => {
+      fetch.once({});
+      const bioForm = onboardingSlides.find(<BioForm />);
+      const event = { target: { value: 'my bio', name: 'summary' } };
+      onboardingSlides.find('textarea').simulate('change', event);
+      expect(bioForm.state('summary')).toBe('my bio');
+      bioForm.find('.next-button').simulate('click');
+      await flushPromises();
+      expect(onboardingSlides.state().currentSlide).toBe(3);
+    });
+  });
+
+  describe('PersonalInformationForm', () => {
+    let onboardingSlides;
+    const meta = document.createElement('meta');
+    meta.setAttribute('name', 'csrf-token');
+    document.body.appendChild(meta);
+
+    beforeEach(() => {
+      onboardingSlides = deep(<Onboarding />);
+      onboardingSlides.setState({ currentSlide: 3 });
+      document.body.setAttribute('data-user', dataUser);
+    });
+
+    test('renders properly', () => {
+      expect(onboardingSlides).toMatchSnapshot();
+    });
+
+    it('should move to the previous slide upon clicking the back button', () => {
+      onboardingSlides.find('.back-button').simulate('click');
+      expect(onboardingSlides.state().currentSlide).toBe(2);
     });
 
     test('forms can be filled and submitted', async () => {
@@ -157,71 +219,9 @@ describe('<Onboarding />', () => {
       expect(personalInfoForm.state('employer_name')).toBe('my employer name');
 
       personalInfoForm.find('.next-button').simulate('click');
-      await flushPromises();
-      expect(onboardingSlides.state().currentSlide).toBe(3);
-    });
-  });
-
-  describe('EmailTermsConditionsForm', () => {
-    let onboardingSlides;
-    beforeEach(() => {
-      document.body.setAttribute('data-user', dataUser);
-      onboardingSlides = deep(<Onboarding />);
-      onboardingSlides.setState({ currentSlide: 3 });
-    });
-
-    test('renders properly', () => {
-      expect(onboardingSlides).toMatchSnapshot();
-    });
-
-    test('should not move if code of conduct is not agreed to', () => {
-      onboardingSlides.find('.next-button').simulate('click');
-      expect(onboardingSlides.state().currentSlide).toBe(3);
-    });
-
-    test('should not move if terms and conditions are not met', () => {
-      const event = {
-        target: {
-          value: 'checked_code_of_conduct',
-          name: 'checked_code_of_conduct',
-        },
-      };
-      onboardingSlides
-        .find('#checked_code_of_conduct')
-        .simulate('change', event);
-      onboardingSlides.find('.next-button').simulate('click');
-      expect(onboardingSlides.state().currentSlide).toBe(3);
-    });
-
-    test('should move to the next slide if code of conduct and terms and conditions are met', async () => {
-      fetch.once({});
-      onboardingSlides.find('#checked_code_of_conduct').simulate('change', {
-        target: {
-          value: 'checked_code_of_conduct',
-          name: 'checked_code_of_conduct',
-        },
-      });
-
-      onboardingSlides
-        .find('#checked_terms_and_conditions')
-        .simulate('change', {
-          target: {
-            value: 'checked_terms_and_conditions',
-            name: 'checked_terms_and_conditions',
-          },
-        });
-
-      const emailTerms = onboardingSlides.find(<EmailTermsConditionsForm />);
-      expect(emailTerms.state('checked_code_of_conduct')).toBe(true);
-      onboardingSlides.find('.next-button').simulate('click');
       fetch.once(fakeTagResponse);
       await flushPromises();
       expect(onboardingSlides.state().currentSlide).toBe(4);
-    });
-
-    it('should move to the previous slide upon clicking the back button', () => {
-      onboardingSlides.find('.back-button').simulate('click');
-      expect(onboardingSlides.state().currentSlide).toBe(2);
     });
   });
 
