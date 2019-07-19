@@ -169,9 +169,12 @@ class User < ApplicationRecord
               per_environment: true,
               enqueue: true do
       attribute :user do
-        { username: user.username,
+        {
+          username: user.username,
           name: user.username,
-          profile_image_90: profile_image_90 }
+          profile_image_90: profile_image_90,
+          pro: user.pro?
+        }
       end
       attribute :title, :path, :tag_list, :main_image, :id,
                 :featured, :published, :published_at, :featured_number, :comments_count,

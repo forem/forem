@@ -184,4 +184,10 @@ RSpec.describe Organization, type: :model do
       expect(organization.has_enough_credits?(1)).to be(true)
     end
   end
+
+  describe "#pro?" do
+    it "always returns false" do
+      expect(organization.pro?).to be(false)
+    end
+  end
 end

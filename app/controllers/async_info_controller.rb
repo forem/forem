@@ -53,7 +53,8 @@ class AsyncInfoController < ApplicationController
         preferred_languages_array: @user.preferred_languages_array,
         config_body_class: @user.config_body_class,
         onboarding_variant_version: @user.onboarding_variant_version,
-        pro: @user.pro?
+        pro: @user.pro?,
+        pro_checkmark: ActionController::Base.helpers.asset_path("checkmark-green.svg")
       }
     end
   end
@@ -68,6 +69,7 @@ class AsyncInfoController < ApplicationController
     #{current_user&.saw_onboarding}__
     #{current_user&.checked_code_of_conduct}__
     #{current_user&.articles_count}__
+    #{current_user&.pro?}__
     #{cookies[:remember_user_token]}"
   end
 

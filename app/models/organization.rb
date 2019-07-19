@@ -96,6 +96,10 @@ class Organization < ApplicationRecord
     credits.unspent.size >= num_credits_needed
   end
 
+  def pro?
+    false
+  end
+
   private
 
   def evaluate_markdown

@@ -28,7 +28,7 @@
   </a>
   <h4>
     <a href="/<%= story.cached_user.username %>">
-      <%= story.cached_user.name %>・<time datetime="<%= story.published_timestamp %>"><%= story.readable_publish_date %></time><span class="time-ago-indicator-initial-placeholder" data-seconds="<%= story.published_at_int %>"></span>
+      <%= story.cached_user.name %><%= render "shared/pro_checkmark" if story.cached_user.pro %>・<time datetime="<%= story.published_timestamp %>"><%= story.readable_publish_date %></time><span class="time-ago-indicator-initial-placeholder" data-seconds="<%= story.published_at_int %>"></span>
     </a>
   </h4>
   <div class="tags">

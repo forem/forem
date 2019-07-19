@@ -10,8 +10,8 @@
   max-width:92%;
   margin: 30px auto 20px;
   @include themeable(
-    background, 
-    theme-container-background, 
+    background,
+    theme-container-background,
     #fff
   );
   border-radius: 3px;
@@ -109,6 +109,13 @@
         width: 1.5em;
         vertical-align: -0.22em;
         margin-right: 0.15em;
+
+        &.pro-checkmark {
+          height: 0.5em;
+          width: 0.5em;
+          vertical-align: 0.08em;
+          margin-left: 0;
+        }
       }
     }
     a{
@@ -168,8 +175,8 @@
         margin:0;
         font-style: italic;
         @include themeable(
-          color, 
-          theme-secondary-color, 
+          color,
+          theme-secondary-color,
           $medium-gray
         );
         width: 94%;
@@ -261,8 +268,8 @@
         font-weight: 800;
         margin-bottom: 2px;
         @include themeable(
-          color, 
-          theme-secondary-color, 
+          color,
+          theme-secondary-color,
           $medium-gray
         );
       }
@@ -450,7 +457,7 @@
           margin: 10px 10px 10px 0;
           width: 82px;
           height: 80px;
-        }  
+        }
       }
     }
     p {
