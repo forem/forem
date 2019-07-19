@@ -54,7 +54,7 @@ class AsyncInfoController < ApplicationController
         config_body_class: @user.config_body_class,
         onboarding_variant_version: @user.onboarding_variant_version,
         pro: @user.pro?,
-        pro_checkmark: ActionController::Base.helpers.asset_path("checkmark-green.svg")
+        pro_checkmark: ActionController::Base.helpers.asset_path("pro-checkmark.png")
       }
     end
   end
