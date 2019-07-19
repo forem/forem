@@ -46,7 +46,8 @@ Metrics/AbcSize:
   Description: >-
     A calculated magnitude based on number of assignments,
     branches, and conditions.
-  Enabled: false
+  Enabled: true
+  Max: 50
 
 # TODO: Uncomment it after fix rubocop-todo Metrics/BlockLength
 Metrics/BlockLength:
@@ -60,7 +61,12 @@ Metrics/CyclomaticComplexity:
   Description: >-
     A complexity metric that is strongly correlated to the number
     of test cases needed to validate a method.
-  Enabled: false
+  Enabled: true
+  Max: 13
+
+Metrics/PerceivedComplexity:
+  Enabled: true
+  Max: 14
 
 Metrics/MethodLength:
   Description: 'Avoid methods longer than 10 lines of code.'
