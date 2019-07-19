@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import linkCopyIcon from '../../../assets/images/content-copy.svg';
 import { generateMainImage } from '../actions';
 
 export default class ImageManagement extends Component {
@@ -65,6 +66,35 @@ export default class ImageManagement extends Component {
     });
   };
 
+  copyText = () => {
+    this.imageMarkdownAnnouncer = document.getElementById(
+      'image-markdown-copy-link-announcer',
+    );
+    this.imageMarkdownInput = document.getElementById(
+      'image-markdown-copy-link-input',
+    );
+
+    const isIOSDevice =
+      navigator.userAgent.match(/iPhone|iPad/i) ||
+      navigator.userAgent.match('CriOS') ||
+      navigator.userAgent === 'DEV-Native-ios';
+
+    if (isIOSDevice) {
+      this.imageMarkdownInput.setSelectionRange(
+        0,
+        this.imageMarkdownInput.value.length,
+      );
+      document.execCommand('copy');
+    } else {
+      this.imageMarkdownInput.focus();
+      this.imageMarkdownInput.setSelectionRange(
+        0,
+        this.imageMarkdownInput.value.length,
+      );
+    }
+    this.imageMarkdownAnnouncer.hidden = false;
+  };
+
   render() {
     const { onExit, mainImage, version } = this.props;
     const { insertionImageUrl, uploadError, uploadErrorMessage } = this.state;
@@ -92,9 +122,32 @@ export default class ImageManagement extends Component {
       insertionImageArea = (
         <div>
           <h3>Markdown Image:</h3>
-          <input type="text" value={`![](${insertionImageUrl})`} />
+          <clipboard-copy
+            onClick={this.copyText}
+            for="image-markdown-copy-link-input"
+            aria-live="polite"
+            aria-controls="image-markdown-copy-link-announcer"
+          >
+            <input
+              id="image-markdown-copy-link-input"
+              type="text"
+              value={`![](${insertionImageUrl})`}
+            />
+            <img
+              id="image-markdown-copy-icon"
+              src={linkCopyIcon}
+              alt="Copy to Clipboard"
+            />
+            <span id="image-markdown-copy-link-announcer" role="alert" hidden>
+              Copied to Clipboard
+            </span>
+          </clipboard-copy>
           <h3>Direct URL:</h3>
-          <input type="text" value={insertionImageUrl} />
+          <input
+            id="image-direct-copy-link-input"
+            type="text"
+            value={insertionImageUrl}
+          />
         </div>
       );
     } else {
@@ -111,10 +164,16 @@ export default class ImageManagement extends Component {
           <h2>Upload an Image</h2>
           {insertionImageArea}
           <div>
-            <p><em>To add a cover image for the post, add <code>cover_image: direct_url_to_image.jpg</code> to the frontmatter</em></p>
+            <p>
+              <em>
+                To add a cover image for the post, add
+                <code>cover_image: direct_url_to_image.jpg</code>
+                to the frontmatter
+              </em>
+            </p>
           </div>
         </div>
-      )
+      );
     } else {
       imageOptions = (
         <div>
@@ -123,7 +182,7 @@ export default class ImageManagement extends Component {
           <h2>Body Images</h2>
           {insertionImageArea}
         </div>
-      )
+      );
     }
     return (
       <div className="articleform__overlay">
@@ -157,5 +216,5 @@ ImageManagement.propTypes = {
   onExit: PropTypes.func.isRequired,
   onMainImageUrlChange: PropTypes.func.isRequired,
   mainImage: PropTypes.string.isRequired,
-  version: PropTypes.string.isRequired
+  version: PropTypes.string.isRequired,
 };
