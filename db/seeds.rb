@@ -44,7 +44,12 @@ User.clear_index!
     token: i.to_s,
     secret: i.to_s,
     user: user,
-    auth_data_dump: { "extra" => { "raw_info" => { "lang" => "en" } } },
+    auth_data_dump: {
+      "extra" => {
+        "raw_info" => { "lang" => "en" }
+      },
+      "info" => { "nickname" => user.username }
+    },
   )
 end
 
