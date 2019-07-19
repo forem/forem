@@ -14,6 +14,7 @@ class ProMembership < ApplicationRecord
   scope :expired, -> { where(status: :expired) }
 
   before_create :set_expiration_date
+  after_save :resave_user_articles
 
   def expired?
     expires_at <= Time.current
@@ -24,11 +25,11 @@ class ProMembership < ApplicationRecord
   end
 
   def expire!
-    update_columns(expires_at: Time.current, status: :expired)
+    update!(expires_at: Time.current, status: :expired)
   end
 
   def renew!
-    update_columns(
+    update!(
       expires_at: 1.month.from_now,
       status: :active,
       expiration_notification_at: nil,
@@ -40,5 +41,16 @@ class ProMembership < ApplicationRecord
 
   def set_expiration_date
     self.expires_at = 1.month.from_now
+  end
+
+  # if the membership is new or the user flips from expired to active and viceversa,
+  # we need to resave all of the user's articles to make sure that the pro details
+  # that are cached with them are refreshed
+  def resave_user_articles
+    if saved_change_to_created_at? ||
+        saved_change_to_expires_at? ||
+        saved_change_to_status?
+      Users::ResaveArticlesJob.perform_later(user.id)
+    end
   end
 end

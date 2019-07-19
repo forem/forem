@@ -395,8 +395,10 @@ class User < ApplicationRecord
   def resave_articles
     cache_buster = CacheBuster.new
     articles.find_each do |article|
-      cache_buster.bust(article.path) if article.path
-      cache_buster.bust(article.path + "?i=i") if article.path
+      if article.path
+        cache_buster.bust(article.path)
+        cache_buster.bust(article.path + "?i=i")
+      end
       article.save
     end
   end

@@ -21,7 +21,7 @@ module ProMemberships
             notify_admins(user, "auto recharge error: missing Stripe customer ID!")
           end
         else
-          membership.expire!
+          expire_membership(membership)
           notify_admins(user, "pro membership expired!")
         end
       end
@@ -45,6 +45,16 @@ module ProMemberships
         end
 
         success
+      end
+    rescue StandardError => e
+      Rails.logger.error(e)
+      notify_admins(membership.user, "error: #{e.message}")
+    end
+
+    def expire_membership(membership)
+      ActiveRecord::Base.transaction do
+        membership.expire!
+        membership.user.save
       end
     rescue StandardError => e
       Rails.logger.error(e)

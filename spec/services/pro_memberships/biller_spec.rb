@@ -26,6 +26,31 @@ RSpec.describe ProMemberships::Biller, type: :service do
       end
     end
 
+    it "enqueues a job to bust the users caches" do
+      ActiveJob::Base.queue_adapter.enqueued_jobs.clear # make sure it hasn't been previously queued
+      Timecop.travel(pro_membership.expires_at) do
+        assert_enqueued_with(
+          job: Users::BustCacheJob,
+          args: [user.id],
+          queue: "users_bust_cache",
+        ) do
+          described_class.call
+        end
+      end
+    end
+
+    it "enqueues a job to bust the users articles caches" do
+      Timecop.travel(pro_membership.expires_at) do
+        assert_enqueued_with(
+          job: Users::ResaveArticlesJob,
+          args: [user.id],
+          queue: "users_resave_articles",
+        ) do
+          described_class.call
+        end
+      end
+    end
+
     context "when an error occurs" do
       it "does not renew the membership" do
         Timecop.travel(pro_membership.expires_at) do
@@ -59,6 +84,7 @@ RSpec.describe ProMemberships::Biller, type: :service do
 
   context "when there are expiring memberships with insufficient credits" do
     let(:pro_membership) { create(:pro_membership) }
+    let(:user) { pro_membership.user }
 
     it "expires the membership" do
       Timecop.travel(pro_membership.expires_at) do
@@ -72,6 +98,31 @@ RSpec.describe ProMemberships::Biller, type: :service do
     it "notifies the admins about the expiration" do
       Timecop.travel(pro_membership.expires_at) do
         assert_enqueued_with(job: SlackBotPingJob) do
+          described_class.call
+        end
+      end
+    end
+
+    it "enqueues a job to bust the users caches" do
+      ActiveJob::Base.queue_adapter.enqueued_jobs.clear # make sure it hasn't been previously queued
+      Timecop.travel(pro_membership.expires_at) do
+        assert_enqueued_with(
+          job: Users::BustCacheJob,
+          args: [user.id],
+          queue: "users_bust_cache",
+        ) do
+          described_class.call
+        end
+      end
+    end
+
+    it "enqueues a job to bust the users articles caches" do
+      Timecop.travel(pro_membership.expires_at) do
+        assert_enqueued_with(
+          job: Users::ResaveArticlesJob,
+          args: [user.id],
+          queue: "users_resave_articles",
+        ) do
           described_class.call
         end
       end
@@ -131,6 +182,31 @@ RSpec.describe ProMemberships::Biller, type: :service do
           old_num_credits = user.reload.credits.spent.size
           described_class.call
           expect(user.reload.credits.spent.size).to eq(old_num_credits + ProMembership::MONTHLY_COST)
+        end
+      end
+
+      it "enqueues a job to bust the users caches" do
+        ActiveJob::Base.queue_adapter.enqueued_jobs.clear # make sure it hasn't been previously queued
+        Timecop.travel(pro_membership.expires_at) do
+          assert_enqueued_with(
+            job: Users::BustCacheJob,
+            args: [user.id],
+            queue: "users_bust_cache",
+          ) do
+            described_class.call
+          end
+        end
+      end
+
+      it "enqueues a job to bust the users articles caches" do
+        Timecop.travel(pro_membership.expires_at) do
+          assert_enqueued_with(
+            job: Users::ResaveArticlesJob,
+            args: [user.id],
+            queue: "users_resave_articles",
+          ) do
+            described_class.call
+          end
         end
       end
     end

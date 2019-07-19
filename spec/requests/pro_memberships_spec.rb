@@ -78,6 +78,27 @@ RSpec.describe "Pro Memberships", type: :request do
         end
       end
 
+      it "enqueues a job to bust the user's cache" do
+        ActiveJob::Base.queue_adapter.enqueued_jobs.clear # make sure it hasn't been previously queued
+        assert_enqueued_with(
+          job: Users::BustCacheJob,
+          args: [user.id],
+          queue: "users_bust_cache",
+        ) do
+          post pro_membership_path
+        end
+      end
+
+      it "enqueues a job to bust the user's articles caches" do
+        assert_enqueued_with(
+          job: Users::ResaveArticlesJob,
+          args: [user.id],
+          queue: "users_resave_articles",
+        ) do
+          post pro_membership_path
+        end
+      end
+
       it "redirects to the pro membership settings page with a notice" do
         post pro_membership_path
         expect(response).to redirect_to(user_settings_path("pro-membership"))
