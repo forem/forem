@@ -26,6 +26,27 @@ RSpec.describe ProMemberships::Biller, type: :service do
       end
     end
 
+    it "adds the user back to the pro members chat channel" do
+      create(:chat_channel, slug: "pro-members", channel_type: "invite_only")
+
+      Timecop.travel(pro_membership.expires_at) do
+        described_class.call
+        expect(user.reload.chat_channels.exists?(slug: "pro-members")).to be(true)
+      end
+    end
+
+    it "does not fail if the user is already in the pro members chat channel" do
+      cc = create(:chat_channel, slug: "pro-members", channel_type: "invite_only")
+      cc.add_users(user)
+
+      allow(Rails.logger).to receive(:error)
+      Timecop.travel(pro_membership.expires_at) do
+        described_class.call
+        expect(Rails.logger).not_to have_received(:error)
+        expect(user.reload.chat_channels.exists?(slug: "pro-members")).to be(true)
+      end
+    end
+
     it "enqueues a job to bust the users caches" do
       ActiveJob::Base.queue_adapter.enqueued_jobs.clear # make sure it hasn't been previously queued
       Timecop.travel(pro_membership.expires_at) do
@@ -92,6 +113,16 @@ RSpec.describe ProMemberships::Biller, type: :service do
         pro_membership.reload
         expect(pro_membership.expired?).to be(true)
         expect(pro_membership.status).to eq("expired")
+      end
+    end
+
+    it "removes the user from the pro members chat channel" do
+      cc = create(:chat_channel, slug: "pro-members", channel_type: "invite_only")
+      cc.add_users(user)
+
+      Timecop.travel(pro_membership.expires_at) do
+        described_class.call
+        expect(user.reload.chat_channels.exists?(slug: "pro-members")).to be(false)
       end
     end
 

@@ -31,10 +31,12 @@ module ProMemberships
 
     def renew_membership(membership, cost)
       ActiveRecord::Base.transaction do
+        user = membership.user
+
         membership.renew!
 
         success = Credits::Buyer.call(
-          purchaser: membership.user,
+          purchaser: user,
           purchase: membership,
           cost: cost,
         )
@@ -42,6 +44,11 @@ module ProMemberships
         unless success
           notify_admins("#{user.name}'s pro membership could not be renewed with enough credits!")
           raise ActiveRecord::Rollback
+        end
+
+        chat_channel = ChatChannel.find_by(slug: "pro-members")
+        if chat_channel && !chat_channel.chat_channel_memberships.exists?(user_id: user.id)
+          chat_channel.add_users(user)
         end
 
         success
@@ -53,8 +60,14 @@ module ProMemberships
 
     def expire_membership(membership)
       ActiveRecord::Base.transaction do
+        user = membership.user
+
         membership.expire!
-        membership.user.save
+
+        chat_channel = ChatChannel.find_by(slug: "pro-members")
+        chat_channel&.remove_user(user)
+
+        user.save
       end
     rescue StandardError => e
       Rails.logger.error(e)

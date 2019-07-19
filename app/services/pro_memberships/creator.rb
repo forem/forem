@@ -12,7 +12,8 @@ module ProMemberships
       if purchase_pro_membership
         ProMemberships::PopulateHistoryJob.perform_later(user.id)
 
-        # TODO: subscribe user to relevant channels?
+        channel = ChatChannel.find_by(slug: "pro-members")
+        channel&.add_users(user)
 
         true
       else

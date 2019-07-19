@@ -98,6 +98,10 @@ class ChatChannel < ApplicationRecord
     end
   end
 
+  def remove_user(user)
+    chat_channel_memberships.where(user: user).destroy_all
+  end
+
   def pusher_channels
     if invite_only?
       "presence-channel-#{id}"

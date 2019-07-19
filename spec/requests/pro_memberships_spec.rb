@@ -99,6 +99,12 @@ RSpec.describe "Pro Memberships", type: :request do
         end
       end
 
+      it "adds the user to the pro members channel" do
+        create(:chat_channel, channel_type: "invite_only", slug: "pro-members")
+        post pro_membership_path
+        expect(user.reload.chat_channels.exists?(slug: "pro-members")).to be(true)
+      end
+
       it "redirects to the pro membership settings page with a notice" do
         post pro_membership_path
         expect(response).to redirect_to(user_settings_path("pro-membership"))
