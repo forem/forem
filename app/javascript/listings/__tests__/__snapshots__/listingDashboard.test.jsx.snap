@@ -84,30 +84,18 @@ preact-render-spy (1 nodes)
   </div>
   <div class="dashboard-listings-view">
     <div class="dashboard-listing-row expired">
-      <a href="cfp/asdfasdf-2ea8">
-        <h2>asdfasdf (expired)</h2>
+      <span class="listing-org">Infotrode</span>
+      <a href="cfp/hehhehe-5hld">
+        <h2>hehhehe (expired)</h2>
       </a>
       <span class="dashboard-listing-date">Jun 11</span>
       <span class="dashboard-listing-category">
         <a href="/listings/cfp/">cfp</a>
       </span>
-      <span class="dashboard-listing-tags">
-        <a
-          href="/listings?t=computerscience"
-          data-no-instant={true}
-        >
-          #computerscience 
-        </a>
-        <a
-          href="/listings?t=career"
-          data-no-instant={true}
-        >
-          #career 
-        </a>
-      </span>
+      <span class="dashboard-listing-tags"></span>
       <div class="listing-row-actions">
         <a
-          href="/listings/23/edit"
+          href="/listings/25/edit"
           class="dashboard-listing-edit-button cta pill green"
         >
           EDIT
@@ -153,18 +141,30 @@ preact-render-spy (1 nodes)
       </div>
     </div>
     <div class="dashboard-listing-row expired">
-      <span class="listing-org">Infotrode</span>
-      <a href="cfp/hehhehe-5hld">
-        <h2>hehhehe (expired)</h2>
+      <a href="cfp/asdfasdf-2ea8">
+        <h2>asdfasdf (expired)</h2>
       </a>
       <span class="dashboard-listing-date">Jun 11</span>
       <span class="dashboard-listing-category">
         <a href="/listings/cfp/">cfp</a>
       </span>
-      <span class="dashboard-listing-tags"></span>
+      <span class="dashboard-listing-tags">
+        <a
+          href="/listings?t=computerscience"
+          data-no-instant={true}
+        >
+          #computerscience 
+        </a>
+        <a
+          href="/listings?t=career"
+          data-no-instant={true}
+        >
+          #career 
+        </a>
+      </span>
       <div class="listing-row-actions">
         <a
-          href="/listings/25/edit"
+          href="/listings/23/edit"
           class="dashboard-listing-edit-button cta pill green"
         >
           EDIT
