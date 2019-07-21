@@ -208,7 +208,7 @@ COPY Dockerfile [(docker-)]* /usr/src/app/
 # Execution environment variables
 #
 
-# timeout extension requried to ensure
+# timeout extension required to ensure
 # system work properly on first time load
 ENV RACK_TIMEOUT_WAIT_TIMEOUT=10000 \
   RACK_TIMEOUT_SERVICE_TIMEOUT=10000 \

@@ -59,7 +59,7 @@ Rails.application.configure do
   # yet still be able to expire them through the digest params.
   config.assets.digest = false
 
-  # Supress logger output for asset requests.
+  # Suppress logger output for asset requests.
   config.assets.quiet = true
 
   # Adds additional error checking when serving assets at runtime.
