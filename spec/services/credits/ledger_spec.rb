@@ -20,16 +20,18 @@ RSpec.describe Credits::Ledger do
   end
 
   it "returns a list of user purchases with their costs" do
-    start = Time.current
-    buy(user, user_listing, 3)
+    Timecop.freeze(Time.current) do
+      start = Time.current
+      buy(user, user_listing, 3)
 
-    items = described_class.call(user)[[User.name, user.id]]
-    expect(items.length).to be(1)
+      items = described_class.call(user)[[User.name, user.id]]
+      expect(items.length).to be(1)
 
-    item = items.first
-    expect(item.purchase.is_a?(ClassifiedListing)).to be(true)
-    expect(item.cost).to eq(3)
-    expect(item.purchased_at >= start).to eq(true)
+      item = items.first
+      expect(item.purchase.is_a?(ClassifiedListing)).to be(true)
+      expect(item.cost).to eq(3)
+      expect(item.purchased_at.to_i >= start.to_i).to eq(true)
+    end
   end
 
   it "returns a list of purchases for the org the user is an admin for" do
