@@ -20,7 +20,7 @@ gem "acts-as-taggable-on", "~> 6.0" # A tagging plugin for Rails applications th
 gem "acts_as_follower", github: "thepracticaldev/acts_as_follower", branch: "master" # Allow any model to follow any other model
 gem "addressable", "~> 2.6" # A replacement for the URI implementation that is part of Ruby's standard library
 gem "administrate", "~> 0.11" # A Rails engine that helps you put together a super-flexible admin dashboard
-gem "ahoy_email", "~> 1.0" # Email analytics for Rails
+gem "ahoy_email", "~> 1.1" # Email analytics for Rails
 gem "airbrake", "~> 9.3" # Airbrake is an online tool that provides robust exception tracking in any of your Ruby applications
 gem "algoliasearch-rails", "~> 1.23" # Algolia Search is a hosted search engine capable of delivering real-time results from the first keystroke
 gem "algorithmia", "~> 1.1" # Ruby Client for Algorithmia Algorithms and Data API

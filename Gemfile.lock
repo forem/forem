@@ -87,8 +87,8 @@ GEM
     after_commit_action (1.1.0)
       activerecord (>= 3.0.0)
       activesupport (>= 3.0.0)
-    ahoy_email (1.0.3)
-      actionmailer (>= 4.2)
+    ahoy_email (1.1.0)
+      actionmailer (>= 5)
       addressable (>= 2.3.2)
       nokogiri
       safely_block (>= 0.1.1)
@@ -839,7 +839,7 @@ DEPENDENCIES
   acts_as_follower!
   addressable (~> 2.6)
   administrate (~> 0.11)
-  ahoy_email (~> 1.0)
+  ahoy_email (~> 1.1)
   airbrake (~> 9.3)
   algoliasearch-rails (~> 1.23)
   algorithmia (~> 1.1)
