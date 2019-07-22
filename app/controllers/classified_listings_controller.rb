@@ -105,7 +105,7 @@ class ClassifiedListingsController < ApplicationController
   def create_listing(purchaser, cost)
     successful_transaction = false
     ActiveRecord::Base.transaction do
-      # substract credits
+      # subtract credits
       Credits::Buyer.call(
         purchaser: purchaser,
         purchase: @classified_listing,

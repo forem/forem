@@ -105,7 +105,7 @@ class MailchimpBot
     return false unless a_sustaining_member?
 
     success = false
-    # !!! user.monthly_due = 0 ? unsubscibe
+    # !!! user.monthly_due = 0 ? unsubscribe
     tiers = %i[ triple_unicorn_member
                 level_4_member
                 level_3_member
