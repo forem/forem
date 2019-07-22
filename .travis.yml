@@ -20,6 +20,7 @@ branches:
   only:
     - master
 before_install:
+  - date
   - nvm install
 install:
   - bundle install --path vendor/bundle
