@@ -12,7 +12,7 @@ RSpec.describe LinkTag, type: :liquid_template do
            organization_id: org.id)
   end
   let(:escaped_article) do
-      create(:article, user_id: user.id, title: "Hello & Hi <3", tags: "tag")
+      create(:article, user_id: user.id, title: "Hello & Hi <3 <script>", tags: "tag")
   end
 
   def generate_new_liquid(slug)
@@ -97,6 +97,6 @@ RSpec.describe LinkTag, type: :liquid_template do
   it "escapes title" do
     liquid = generate_new_liquid("/#{user.username}/#{escaped_article.slug}/")
     render = liquid.render
-    expect(render).to include("Hello &amp; Hi &lt;")
+    expect(render).to include("Hello &amp; Hi &lt; &lt;script&gt;")
   end
 end
