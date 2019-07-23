@@ -20,7 +20,7 @@ RSpec.describe LinkTag, type: :liquid_template do
     Liquid::Template.parse("{% link #{slug} %}")
   end
 
-  def correct_link_html(article) # Note: strip_tags also escapes '&'
+  def correct_link_html(article)
     tags = article.tag_list.map { |t| "<span class='ltag__link__tag'>##{t}</span>" }.reverse.join
     <<~HTML
       <div class='ltag__link'>
@@ -94,7 +94,7 @@ RSpec.describe LinkTag, type: :liquid_template do
     expect(liquid.render).to eq(correct_link_html(article))
   end
 
-  it "escapes title and tags" do
+  it "escapes title" do
     liquid = generate_new_liquid("/#{user.username}/#{escaped_article.slug}/")
     render = liquid.render
     expect(render).to include("Hello &amp; Hi &lt;")
