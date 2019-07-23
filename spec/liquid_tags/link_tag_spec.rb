@@ -96,7 +96,6 @@ RSpec.describe LinkTag, type: :liquid_template do
 
   it "escapes title" do
     liquid = generate_new_liquid("/#{user.username}/#{escaped_article.slug}/")
-    render = liquid.render
-    expect(render).to include("Hello &amp; Hi &lt; &lt;script&gt;")
+    expect(liquid.render).to eq(correct_link_html(escaped_article))
   end
 end
