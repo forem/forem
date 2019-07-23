@@ -31,7 +31,7 @@ RSpec.describe LinkTag, type: :liquid_template do
         </a>
         <a href='#{article.path}' class='ltag__link__link'>
           <div class='ltag__link__content'>
-            <h2>#{ActionController::Base.helpers.sanitize(article.title)}</h2>
+            <h2>#{"".html_safe+article.title}</h2>
             <h3>#{article.user.name} ・ #{article.readable_publish_date} ・ #{article.reading_time} min read</h3>
             <div class='ltag__link__taglist'>
               #{tags}
