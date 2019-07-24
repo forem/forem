@@ -15,9 +15,7 @@ class Podcast < ApplicationRecord
 
   after_save :bust_cache
 
-  scope :reachable, lambda {
-    where("EXISTS(SELECT 1 from podcast_episodes WHERE podcast_episodes.podcast_id = podcasts.id AND podcast_episodes.reachable = true)")
-  }
+  scope :reachable, -> { where(id: PodcastEpisode.reachable.select(:podcast_id)) }
 
   alias_attribute :path, :slug
   alias_attribute :profile_image_url, :image_url
