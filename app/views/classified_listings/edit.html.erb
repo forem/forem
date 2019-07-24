@@ -56,9 +56,9 @@
         Published: <%= @classified_listing.published %>
       </h2>
       <% if @classified_listing.published == false %>
-        <%# <input type="hidden" name="classified_listing[action]" value="publish" />
+        <input type="hidden" name="classified_listing[action]" value="publish" />
         <%= f.submit "Publish Listing", class: "classified-listings-publish cta-main-listing-form" %>
-      <%# <% else %>
+      <% else %>
         <input type="hidden" name="classified_listing[action]" value="unpublish" />
         <%= f.submit "Unpublish Listing", class: "classified-listings-unpublish cta-main-listing-form" %>
       <% end %>

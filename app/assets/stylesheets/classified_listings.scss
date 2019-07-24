@@ -737,6 +737,10 @@ form.listings-contact-via-connect {
       position: relative;
       background: var(--theme-container-background, #fff);
 
+      &.draft {
+        background: var(--theme-container-accent-background, #fffeec)
+      }
+
       .listing-org {
         @include themeable(
           background,

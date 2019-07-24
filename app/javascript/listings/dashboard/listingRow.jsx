@@ -12,8 +12,12 @@ export const ListingRow = ({ listing }) => {
 
   const listingLocation = listing.location ? (` ・ ${listing.location}`) : '';
 
+  const bumpedAt = listing.bumped_at.toString();
+  // const isExpired = ((Date.now() - new Date(bumpedAt).getTime()) / (1000 * 60 * 60 * 24)) > 30 && (!listing.published)
+  const isDraft = ((Date.now() - new Date(bumpedAt).getTime()) / (1000 * 60 * 60 * 24)) < 30 && (!listing.published)
+
   const listingDate = listing.bumped_at
-    ? new Date(listing.bumped_at.toString()).toLocaleDateString('default', {
+    ? new Date(bumpedAt).toLocaleDateString('default', {
         day: '2-digit',
         month: 'short',
       })
@@ -29,7 +33,7 @@ export const ListingRow = ({ listing }) => {
     );
 
   return (
-    <div className="dashboard-listing-row">
+    <div className={`dashboard-listing-row ${isDraft ? 'draft' : ''}`}>
       {orgName(listing)}
       <a href={`${`${listing.category}/${listing.slug}`}`}>
         <h2>{listing.title}</h2>

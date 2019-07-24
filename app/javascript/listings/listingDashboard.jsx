@@ -92,7 +92,7 @@ export class ListingDashboard extends Component {
         <h4>
           Credits Available:
           {' '}
-          {userCredits}
+          {userCreds}
         </h4>
       ) : (
         <h4>
