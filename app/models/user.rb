@@ -45,6 +45,7 @@ class User < ApplicationRecord
   has_many    :poll_votes
   has_many    :poll_skips
   has_many    :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user, class_name: "BackupData"
+  has_many    :display_ad_events
 
   mount_uploader :profile_image, ProfileImageUploader
 

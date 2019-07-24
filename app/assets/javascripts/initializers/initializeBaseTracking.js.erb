@@ -141,7 +141,19 @@ function trackCustomImpressions() {
         }
       }, 15000)
     }
-  }, 1500)
+
+    // display add
+    var adBox = document.getElementById('sponsorship-arbitrary-display-widget')
+    if (adBox
+      && tokenMeta
+      && !isBot
+      && windowBigEnough
+      && checkUserLoggedIn()) {
+        var csrfToken = tokenMeta.getAttribute('content');
+        trackAdImpression(csrfToken)
+        adBox.addEventListener('click', function() { trackAdClick(csrfToken) });
+      }
+  }, 1800)
 }
 
 function trackHTMLVariantTrial(dataBody, csrfToken) {
@@ -192,5 +204,14 @@ function trackFifteenSecondsOnPage(articleId, csrfToken) {
     },
     credentials: 'same-origin',
   })
+}
 
+function trackAdImpression(token) {
+  console.log('impression')
+  console.log(token);
+}
+
+function trackAdClick(token) {
+  console.log('click')
+  console.log(token);
 }

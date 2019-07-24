@@ -23,4 +23,13 @@ RSpec.describe DisplayAd, type: :model do
     display_ad.placement_area = "sidebar_left"
     expect(display_ad).to be_valid
   end
+
+  it "displays published and approved posts" do
+    create(:display_ad, organization_id: organization.id, published: true, approved: true)
+    create(:display_ad, organization_id: organization.id, published: true, approved: true)
+    create(:display_ad, organization_id: organization.id, published: false, approved: true)
+    create(:display_ad, organization_id: organization.id, published: true, approved: false)
+    expect(DisplayAd.for_display(DisplayAd.last.placement_area).published).to eq(true)
+    expect(DisplayAd.for_display(DisplayAd.last.placement_area).approved).to eq(true)
+  end
 end
