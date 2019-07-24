@@ -15,6 +15,17 @@ export const ListingRow = ({ listing }) => {
   const bumpedAt = listing.bumped_at.toString();
   // const isExpired = ((Date.now() - new Date(bumpedAt).getTime()) / (1000 * 60 * 60 * 24)) > 30 && (!listing.published)
   const isDraft = ((Date.now() - new Date(bumpedAt).getTime()) / (1000 * 60 * 60 * 24)) < 30 && (!listing.published)
+  const draftButton = isDraft
+    ? (
+      <a
+        href={`${`${listing.category}/${listing.slug}`}`}
+        className="dashboard-listing-edit-button cta pill yellow"
+      >
+        DRAFT
+      </a>
+    ) : (
+      ''
+    );
 
   const listingDate = listing.bumped_at
     ? new Date(bumpedAt).toLocaleDateString('default', {
@@ -48,6 +59,7 @@ export const ListingRow = ({ listing }) => {
       <span className="dashboard-listing-tags">{tagLinks}</span>
       <div className="listing-row-actions">
         {/* <a className="dashboard-listing-bump-button cta pill black">BUMP</a> */}
+        {draftButton}
         <a
           href={`/listings/${listing.id}/edit`}
           className="dashboard-listing-edit-button cta pill green"
