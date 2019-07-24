@@ -8,7 +8,12 @@ RSpec.describe Messages::SendPush do
 
   before do
     create(:chat_channel_membership, user_id: user2.id, chat_channel_id: chat_channel.id)
-    PushNotificationSubscription.create(user_id: user2.id, endpoint: "http://nowhere.togo", p256dh_key: "BBoN_OkTfE_0uObue", auth_key: "aW1hcm    thcmF", notification_type: "browser")
+    PushNotificationSubscription.create(
+      user_id: user2.id,
+      endpoint: "http://nowhere.togo", p256dh_key: "BBoN_OkTfE_0uObue",
+      auth_key: "aW1hcm    thcmF",
+      notification_type: "browser"
+    )
     allow(Webpush).to receive(:payload_send).and_return(true)
   end
 
@@ -21,7 +26,8 @@ RSpec.describe Messages::SendPush do
 
   context "when push is not necessary" do
     before do
-      PushNotificationSubscription.last.user.chat_channel_memberships.order("last_opened_at DESC").first.update(last_opened_at: 3.seconds.ago)
+      membership = PushNotificationSubscription.last.user.chat_channel_memberships.order("last_opened_at DESC").first
+      membership.update(last_opened_at: 3.seconds.ago)
     end
 
     it "does not push subscription message" do
