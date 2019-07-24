@@ -14,7 +14,7 @@ module Suggester
             where("positive_reactions_count > ?", reaction_count).
             where("published_at > ?", 4.months.ago).
             where("user_id != ?", user.id).
-            where.not(user_id: user.following_by_type("User").pluck(:id)).
+            where.not(user_id: user.following_by_type("User")).
             pluck(:user_id)
           group_one = User.select(:id, :name, :username, :profile_image, :summary).
             where(id: user_ids).
