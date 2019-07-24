@@ -306,7 +306,7 @@ GEM
     et-orbi (1.1.6)
       tzinfo
     eventmachine (1.2.5)
-    excon (0.64.0)
+    excon (0.65.0)
     execjs (2.7.0)
     factory_bot (4.11.1)
       activesupport (>= 3.0.0)
@@ -334,7 +334,7 @@ GEM
       thor (~> 0.14)
     fix-db-schema-conflicts (3.0.3)
       rubocop (>= 0.38.0)
-    fog-aws (3.5.1)
+    fog-aws (3.5.2)
       fog-core (~> 2.1)
       fog-json (~> 1.1)
       fog-xml (~> 0.1)
