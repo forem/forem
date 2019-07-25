@@ -27,7 +27,7 @@ document.ready.then(
   getUserDataAndCsrfToken()
     .then(({ currentUser }) => {
       if (redirectableLocation() && !onboardingSkippable(currentUser)) {
-        window.location = `${window.location.origin}/onboarding`;
+        window.location = `${window.location.origin}/onboarding?referrer=${window.location}`;
       }
     })
     .catch(error => {
@@ -35,3 +35,16 @@ document.ready.then(
       console.error('Error getting user and CSRF Token', error);
     }),
 );
+
+window.InstantClick.on('change', () => {
+  getUserDataAndCsrfToken()
+    .then(({ currentUser }) => {
+      if (redirectableLocation() && !onboardingSkippable(currentUser)) {
+        window.location = `${window.location.origin}/onboarding?referrer=${window.location}`;
+      }
+    })
+    .catch(error => {
+      // eslint-disable-next-line no-console
+      console.error('Error getting user and CSRF Token', error);
+    });
+});
