@@ -9,7 +9,10 @@ RSpec.describe LinkTag, type: :liquid_template do
   let(:org_user) { create(:user, organization_id: org.id) }
   let(:org_article) do
     create(:article, user_id: org_user.id, title: "test this please", tags: "tag1 tag2 tag3",
-                     organization_id: org.id)
+           organization_id: org.id)
+  end
+  let(:escaped_article) do
+      create(:article, user_id: user.id, title: "Hello & Hi <3 <script>", tags: "tag")
   end
 
   def generate_new_liquid(slug)
@@ -28,7 +31,7 @@ RSpec.describe LinkTag, type: :liquid_template do
         </a>
         <a href='#{article.path}' class='ltag__link__link'>
           <div class='ltag__link__content'>
-            <h2>#{ActionController::Base.helpers.strip_tags(article.title)}</h2>
+            <h2>#{CGI.escapeHTML(article.title)}</h2>
             <h3>#{article.user.name} ・ #{article.readable_publish_date} ・ #{article.reading_time} min read</h3>
             <div class='ltag__link__taglist'>
               #{tags}
@@ -89,5 +92,10 @@ RSpec.describe LinkTag, type: :liquid_template do
   it "renders with a full link with a trailing slash" do
     liquid = generate_new_liquid("https://dev.to/#{user.username}/#{article.slug}/")
     expect(liquid.render).to eq(correct_link_html(article))
+  end
+
+  it "escapes title" do
+    liquid = generate_new_liquid("/#{user.username}/#{escaped_article.slug}/")
+    expect(liquid.render).to eq(correct_link_html(escaped_article))
   end
 end
