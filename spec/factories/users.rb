@@ -20,6 +20,8 @@ FactoryBot.define do
     website_url        { Faker::Internet.url }
     confirmed_at       { Time.current }
     saw_onboarding { true }
+    checked_code_of_conduct { true }
+    checked_terms_and_conditions { true }
     signup_cta_variant { "navbar_basic" }
     email_digest_periodic { false }
 
