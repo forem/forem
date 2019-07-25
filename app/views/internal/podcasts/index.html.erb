@@ -27,7 +27,7 @@
 <% @podcasts.each do |podcast| %>
   <div style="border-bottom: 1px solid grey; padding: 10px; display: grid; grid-template-columns: 5% 15% 25% 10% 10% 20% 15%;">
     <div class="grid-item"><%= podcast.id %></div>
-    <div class="grid-item"><a href="<%= internal_podcast_path(podcast) %>"><%= podcast.title %></a></div>
+    <div class="grid-item"><a href="<%= edit_internal_podcast_path(podcast) %>"><%= podcast.title %></a></div>
     <div class="grid-item"><a href="<%= podcast.feed_url %>"><%= podcast.feed_url %></a></div>
     <div class="grid-item"><%= podcast.podcast_episodes.count %></div>
     <div class="grid-item"><%= podcast.reachable %></div>
