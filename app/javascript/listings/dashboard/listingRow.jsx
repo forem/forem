@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
+import ListingDate from './rowElements/listingDate';
 
 export const ListingRow = ({ listing }) => {
   const tagLinks = listing.tag_list.map(tag => (
@@ -26,16 +27,7 @@ export const ListingRow = ({ listing }) => {
     ) : (
       ''
     );
-
-  const listingDate = listing.bumped_at
-    ? new Date(bumpedAt).toLocaleDateString('default', {
-        day: '2-digit',
-        month: 'short',
-      })
-    : new Date(listing.updated_at.toString()).toLocaleDateString('default', {
-        day: '2-digit',
-        month: 'short',
-      });
+  
   const orgName = l =>
     l.organization_id ? (
       <span className="listing-org">{l.author.name}</span>
@@ -49,10 +41,7 @@ export const ListingRow = ({ listing }) => {
       <a href={`${`${listing.category}/${listing.slug}`}`}>
         <h2>{listing.title}</h2>
       </a>
-      <span className="dashboard-listing-date">
-        {listingDate} 
-        {listingLocation}
-      </span>
+      <ListingDate bumpedAt={listing.bumped_at} updatedAt={listing.updated_at} />
       <span className="dashboard-listing-category">
         <a href={`/listings/${listing.category}/`}>{listing.category}</a>
       </span>
