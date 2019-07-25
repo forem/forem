@@ -2934,10 +2934,10 @@ code-point-at@^1.0.0:
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
-codemirror@^5.48.0:
-  version "5.48.0"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.48.0.tgz#66e6dae6ca79b955e34b322881ebb7b5512f3cc5"
-  integrity sha512-3Ter+tYtRlTNtxtYdYNPxGxBL/b3cMcvPdPm70gvmcOO2Rauv/fUEewWa0tT596Hosv6ea2mtpx28OXBy1mQCg==
+codemirror@^5.48.2:
+  version "5.48.2"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.48.2.tgz#a9dd3d426dea4cd59efd59cd98e20a9152a30922"
+  integrity sha512-i9VsmC8AfA5ji6EDIZ+aoSe4vt9FcwPLdHB1k1ItFbVyuOFRrcfvnoKqwZlC7EVA2UmTRiNEypE4Uo7YvzVY8Q==
 
 collection-visit@^1.0.0:
   version "1.0.0"
@@ -4298,10 +4298,10 @@ eslint-plugin-ignore-erb@^0.1.1:
   dependencies:
     requireindex "~1.1.0"
 
-eslint-plugin-import@^2.18.0:
-  version "2.18.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-import/-/eslint-plugin-import-2.18.0.tgz#7a5ba8d32622fb35eb9c8db195c2090bd18a3678"
-  integrity sha512-PZpAEC4gj/6DEMMoU2Df01C5c50r7zdGIN52Yfi7CvvWaYssG7Jt5R9nFG5gmqodxNOz9vQS87xk6Izdtpdrig==
+eslint-plugin-import@^2.18.2:
+  version "2.18.2"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-import/-/eslint-plugin-import-2.18.2.tgz#02f1180b90b077b33d447a17a2326ceb400aceb6"
+  integrity sha512-5ohpsHAiUBRNaBWAF08izwUGlbrJoJJ+W9/TBwsGoR1MnlgfwMIKrFeSjWbt6moabiXW9xNvtFz+97KHRfI4HQ==
   dependencies:
     array-includes "^3.0.3"
     contains-path "^0.1.0"
@@ -4310,8 +4310,8 @@ eslint-plugin-import@^2.18.0:
     eslint-import-resolver-node "^0.3.2"
     eslint-module-utils "^2.4.0"
     has "^1.0.3"
-    lodash "^4.17.11"
     minimatch "^3.0.4"
+    object.values "^1.1.0"
     read-pkg-up "^2.0.0"
     resolve "^1.11.0"
 
@@ -4769,13 +4769,6 @@ fault@^1.0.2:
   integrity sha512-sfFuP4X0hzrbGKjAUNXYvNqsZ5F6ohx/dZ9I0KQud/aiZNwg263r5L9yGB0clvXHCkzXh5W3t7RSHchggYIFmA==
   dependencies:
     format "^0.2.2"
-
-faye-websocket@0.9.4:
-  version "0.9.4"
-  resolved "https://registry.yarnpkg.com/faye-websocket/-/faye-websocket-0.9.4.tgz#885934c79effb0409549e0c0a3801ed17a40cdad"
-  integrity sha1-iFk0x57/sECVSeDAo4Ae0XpAza0=
-  dependencies:
-    websocket-driver ">=0.5.1"
 
 faye-websocket@^0.10.0:
   version "0.10.0"
@@ -5718,11 +5711,12 @@ https-browserify@^1.0.0:
   resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-1.0.0.tgz#ec06c10e0a34c0f2faf199f7fd7fc78fffd03c73"
   integrity sha1-7AbBDgo0wPL68Zn3/X/Hj//QPHM=
 
-husky@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/husky/-/husky-3.0.0.tgz#de63821a7049dc412b1afd753c259e2f6e227562"
-  integrity sha512-lKMEn7bRK+7f5eWPNGclDVciYNQt0GIkAQmhKl+uHP1qFzoN0h92kmH9HZ8PCwyVA2EQPD8KHf0FYWqnTxau+Q==
+husky@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/husky/-/husky-3.0.1.tgz#06152c28e129622b05fa09c494209de8cf2dfb59"
+  integrity sha512-PXBv+iGKw23GHUlgELRlVX9932feFL407/wHFwtsGeArp0dDM4u+/QusSQwPKxmNgjpSL+ustbOdQ2jetgAZbA==
   dependencies:
+    chalk "^2.4.2"
     cosmiconfig "^5.2.1"
     execa "^1.0.0"
     get-stdin "^7.0.0"
@@ -9831,15 +9825,10 @@ punycode@^2.1.0, punycode@^2.1.1:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
-pusher-js@^4.4.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/pusher-js/-/pusher-js-4.4.0.tgz#c52e758c418f8ff9b3221b22291865ffbbc56e32"
-  integrity sha512-oxSEG764hqeGAqW9Ryq5KdGQrbM/2sBy5L6Jsh62GyRbRO4z0qI9EjQ6IfQSDhR59b/tY0ANuXD8+ZOZY9AOyg==
-  dependencies:
-    faye-websocket "0.9.4"
-    tweetnacl "^1.0.0"
-    tweetnacl-util "^0.15.0"
-    xmlhttprequest "^1.8.0"
+pusher-js@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/pusher-js/-/pusher-js-5.0.0.tgz#db4132187c314153f3dc68500a615b836b10bd29"
+  integrity sha512-en/ec9ls/1/tY1qFKNddggYzrJtLy3FUoW8mD35S1Fx/MWwlImHluOgrpLvFtEUPy8Wdg95yEJC82NNb2KUtzw==
 
 q@^1.1.2:
   version "1.5.1"
@@ -11852,20 +11841,10 @@ tunnel-agent@^0.6.0:
   dependencies:
     safe-buffer "^5.0.1"
 
-tweetnacl-util@^0.15.0:
-  version "0.15.0"
-  resolved "https://registry.yarnpkg.com/tweetnacl-util/-/tweetnacl-util-0.15.0.tgz#4576c1cee5e2d63d207fee52f1ba02819480bc75"
-  integrity sha1-RXbBzuXi1j0gf+5S8boCgZSAvHU=
-
 tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
-
-tweetnacl@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.1.tgz#2594d42da73cd036bd0d2a54683dd35a6b55ca17"
-  integrity sha512-kcoMoKTPYnoeS50tzoqjPY3Uv9axeuuFAZY9M/9zFnhoVvRfxz9K29IMPD7jGmt2c8SW7i3gT9WqDl2+nV7p4A==
 
 twilio-video@^1.18.2:
   version "1.18.2"
