@@ -50,6 +50,7 @@ class EmailTermsConditionsForm extends Component {
       credentials: 'same-origin',
     }).then(response => {
       if (response.ok) {
+        localStorage.setItem('shouldRedirectToOnboarding', false);
         const { next } = this.props;
         next();
       }

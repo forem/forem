@@ -39,7 +39,11 @@ document.ready.then(
 window.InstantClick.on('change', () => {
   getUserDataAndCsrfToken()
     .then(({ currentUser }) => {
-      if (redirectableLocation() && !onboardingSkippable(currentUser)) {
+      if (
+        redirectableLocation() &&
+        localStorage.getItem('shouldRedirectToOnboarding') === null &&
+        !onboardingSkippable(currentUser)
+      ) {
         window.location = `${window.location.origin}/onboarding?referrer=${window.location}`;
       }
     })
