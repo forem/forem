@@ -131,7 +131,7 @@ en:
       admin:
         title: 'Doorkeeper'
         nav:
-          oauth2_provider: 'OAuth2 Provider'
+          oauth2_provider: 'DEV OAuth2 Provider'
           applications: 'Applications'
           home: 'Home'
       application:
