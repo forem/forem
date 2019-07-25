@@ -59,11 +59,9 @@
       <%= form.label "location", "Location (If applicable for events, etc.)" %>
       <%= form.text_field "location", placeholder: "32 characters max, plain text" %>
     </div>
-    <div class="field">
-      <%= form.label "contact_via_connect", "Allow Users to Message Me Via In-App Chat (DEV Connect)" %>
-      <%= form.check_box "contact_via_connect", checked: true %>
-    </div>
+
     <div class="actions">
+      <%# SAVE DRAFT BUTTON HERE %>
       <% if @credits.size > 0 || (@organizations.present? && @organizations.sum(:unspent_credits_count) > 0) %>
         <%= form.submit "CREATE LISTING", class: "cta cta-main-listing-form" %>
       <% else %>
