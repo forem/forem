@@ -1,5 +1,5 @@
 # This eagerload our custom ReverseMarkdown::Converters and allows it to be autoreloaded
-# in develpment.
+# in development.
 #
 # Because files are eagerloaded in production, this fix is only
 # applicable in development (and test, when needed)

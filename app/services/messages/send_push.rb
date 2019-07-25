@@ -11,10 +11,8 @@ module Messages
     end
 
     def call
-      receiver_ids = chat_channel.chat_channel_memberships.
-        where.not(user_id: user.id).pluck(:user_id)
-
-      PushNotificationSubscription.where(user_id: receiver_ids).find_each do |sub|
+      receivers = chat_channel.chat_channel_memberships.where.not(user_id: user.id).select(:user_id)
+      PushNotificationSubscription.where(user_id: receivers).find_each do |sub|
         break if no_push_necessary?(sub)
 
         Webpush.payload_send(

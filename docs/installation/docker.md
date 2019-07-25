@@ -1,6 +1,6 @@
 # Installing DEV with Docker [Beta]
 
-## Installing prerequites
+## Installing prerequisites
 
 _These prerequisites assume you're working on an operating system supported by Docker._
 
