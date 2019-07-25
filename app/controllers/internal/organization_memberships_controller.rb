@@ -6,7 +6,7 @@ class Internal::OrganizationMembershipsController < Internal::ApplicationControl
     if organization_membership.update(organization_membership_params)
       flash[:success] = "User was successfully updated to #{organization_membership.type_of_user}"
     else
-      flash[:error] = organization_membership.errors.full_messages
+      flash[:danger] = organization_membership.errors.full_messages
     end
     redirect_to "/internal/users/#{organization_membership.user_id}"
   end
@@ -17,9 +17,9 @@ class Internal::OrganizationMembershipsController < Internal::ApplicationControl
     if organization && organization_membership.save
       flash[:success] = "User was successfully added to #{organization.name}"
     elsif organization.blank?
-      flash[:error] = "Organization ##{organization_membership_params[:organization_id]} does not exist. Perhaps a typo?"
+      flash[:danger] = "Organization ##{organization_membership_params[:organization_id]} does not exist. Perhaps a typo?"
     else
-      flash[:error] = organization_membership.errors.full_messages
+      flash[:danger] = organization_membership.errors.full_messages
     end
     redirect_to "/internal/users/#{organization_membership.user_id}"
   end
@@ -29,7 +29,7 @@ class Internal::OrganizationMembershipsController < Internal::ApplicationControl
     if organization_membership.destroy
       flash[:success] = "User was successfully removed from org ##{organization_membership.organization_id}"
     else
-      flash[:error] = "Something wen wrong with removing the user from org ##{organization_membership.organization_id}"
+      flash[:danger] = "Something wen wrong with removing the user from org ##{organization_membership.organization_id}"
     end
     redirect_to "/internal/users/#{organization_membership.user_id}"
   end
