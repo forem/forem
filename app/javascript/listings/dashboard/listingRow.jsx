@@ -37,5 +37,18 @@ export const ListingRow = ({ listing }) => {
 };
 
 ListingRow.propTypes = {
-  listing: PropTypes.object.isRequired,
+  listing: PropTypes.PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    tag_list: PropTypes.arrayOf(PropTypes.string),
+    created_at: PropTypes.instanceOf(Date),
+    bumped_at: PropTypes.instanceOf(Date),
+    updated_at: PropTypes.instanceOf(Date),
+    category: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+    user_id: PropTypes.number.isRequired,
+    slug: PropTypes.string.isRequired,
+    organization_id: PropTypes.number,
+    location: PropTypes.string,
+    published: PropTypes.bool.isRequired,
+  }).isRequired,
 };
