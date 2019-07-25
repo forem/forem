@@ -145,10 +145,10 @@ https://dev.to/api/articles</code></pre></div>
     Create an article on behalf an organisation
   </h3>
 
-  <p>Just add <code>publish_under_org</code> as <code>true</code> to the JSON request:</p>
+  <p>Just add <code>organization_id: your_org_id</code> to the JSON request:</p>
   <div class="highlight"><pre class="highlight plaintext"><code class="language-bash">curl -X POST -H "Content-Type: application/json" \
 -H "api-key: ACCESS_TOKEN" \
--d '{"article": {"title": "Title", "body_markdown": "Body", "published": false, "publish_under_org": true}}' \
+-d '{"article": {"title": "Title", "body_markdown": "Body", "published": false, "organization_id": 99999}}' \
 https://dev.to/api/articles</code></pre></div>
   <h3>
     <a name="using-the-front-matter" href="#using-the-front-matter" class="anchor">
@@ -172,7 +172,7 @@ This is an intro about JavaScript</code></pre></div>
 
   <div class="highlight"><pre class="highlight plaintext"><code class="language-bash">curl -X POST -H "Content-Type: application/json" \
 -H "api-key: ACCESS_TOKEN" \
--d '{"article": {"body_markdown": "---\ntitle: A sample article about...\npublished: false\n...", "publish_under_org": true}}' \
+-d '{"article": {"body_markdown": "---\ntitle: A sample article about...\npublished: false\n---\n..."}}' \
 https://dev.to/api/articles</code></pre></div>
 
   <p>The front matter will take precedence on other JSON params with the same name.</p>
@@ -189,7 +189,7 @@ body_markdown: The Markdown body, with or without a front matter (string, requir
 published: True if the article should be published right away, defaults to false (boolean, optional)
 tags: A list of tags for the article (array, optional)
 series: The name of the series the article should be published within (string, optional)
-publish_under_org: True if the article should be placed under the organization belonging to the user creating the article, defaults to false (boolean, optional)
+organization_id: Your organization's ID, if you wish to create an article under an organization (string, optional)
 main_image: URL of the image to use as the cover (string, optional)
 canonical_url: canonical URL of the article (string, optional)</code></pre></div>
   <h3>
@@ -285,7 +285,7 @@ description: Description of the article (optional)
 body_markdown: The Markdown body, with or without a front matter (required)
 published: True if the article should be published right away, defaults to false (optional)
 series: The name of the series the article should be published within (optional)
-publish_under_org: True if the article should be placed under the organization belonging to the user creating the article, defaults to false (optional)
+organization_id: Your organization's ID, if you wish to create an article under an organization (string, optional)
 main_image: URL of the image to use as the cover (optional)
 canonical_url: canonical URL of the article (optional)</code></pre></div>
   <h3>
