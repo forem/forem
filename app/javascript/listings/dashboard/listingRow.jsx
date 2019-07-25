@@ -2,10 +2,9 @@ import PropTypes from 'prop-types';
 import { h } from 'preact';
 import ListingDate from './rowElements/listingDate';
 import Tags from './rowElements/tags';
+import Location from './rowElements/location';
 
 export const ListingRow = ({ listing }) => {
-  const listingLocation = listing.location ? (` ・ ${listing.location}`) : '';
-
   const bumpedAt = listing.bumped_at.toString();
   // const isExpired = ((Date.now() - new Date(bumpedAt).getTime()) / (1000 * 60 * 60 * 24)) > 30 && (!listing.published)
   const isDraft = ((Date.now() - new Date(bumpedAt).getTime()) / (1000 * 60 * 60 * 24)) < 30 && (!listing.published)
@@ -35,6 +34,7 @@ export const ListingRow = ({ listing }) => {
         <h2>{listing.title}</h2>
       </a>
       <ListingDate bumpedAt={listing.bumped_at} updatedAt={listing.updated_at} />
+      <Location location={listing.location} />
       <span className="dashboard-listing-category">
         <a href={`/listings/${listing.category}/`}>{listing.category}</a>
       </span>
