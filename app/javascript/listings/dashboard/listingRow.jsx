@@ -34,7 +34,7 @@ export const ListingRow = ({ listing }) => {
         <h2>{listing.title}</h2>
       </a>
       <ListingDate bumpedAt={listing.bumped_at} updatedAt={listing.updated_at} />
-      <Location location={listing.location} />
+      {listing.location && <Location location={listing.location} />}
       <span className="dashboard-listing-category">
         <a href={`/listings/${listing.category}/`}>{listing.category}</a>
       </span>
