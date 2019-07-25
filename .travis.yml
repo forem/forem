@@ -20,6 +20,7 @@ branches:
   only:
     - master
 before_install:
+  - date --rfc-3339=seconds
   - nvm install
 install:
   - bundle install --path vendor/bundle

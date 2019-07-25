@@ -14,7 +14,7 @@ class TwitchStreamUpdatesController < ApplicationController
     head :no_content
 
     unless secret_verified?
-      airbrake_logger.warn("Twitch Webhook Recieved for which the webhook could not be verified")
+      airbrake_logger.warn("Twitch Webhook Received for which the webhook could not be verified")
       return
     end
 

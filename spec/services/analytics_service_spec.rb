@@ -5,7 +5,18 @@ RSpec.describe AnalyticsService, type: :service do
   let(:organization) { create(:organization) }
   let(:article) { create(:article, user: user, published: true) }
 
-  before { Timecop.freeze(Time.current.utc) }
+  before do
+    # We use Zonebie to fortify the code and spot time zone related problems but in this
+    # particular case it can make these tests fail because,
+    # for example, "2019-07-21T23:57:12-12:00" is the 22th in UTC, and since
+    # the code delegates to DATE() in PostgreSQL which runs on UTC without time zone
+    # info, there's no easy way for these tests to work correctly in a time zone on
+    # the day line like "International Date Line West".
+    # For this reason data created on "2019-07-21T23:57:12-12:00" will appear on the 22nd in the DB
+    # and hence never be selected by the Analytics engine
+    # In the meantime for a lack of a better solution, we force this tests to run at midday in UTC
+    Timecop.freeze("2019-04-01T12:00:00Z")
+  end
 
   after { Timecop.return }
 
