@@ -385,7 +385,7 @@ export default class Chat extends Component {
   };
 
   handleMessageSubmit = message => {
-    // should check if user has the priviledge
+    // should check if user has the privilege
     if (message.startsWith('/code')) {
       const newActiveContent = this.state.activeContent;
       newActiveContent[this.state.activeChannelId] = { type_of: 'code_editor' };

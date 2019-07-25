@@ -5,7 +5,7 @@ RSpec.describe "TwitchStramUpdates", type: :request do
   let(:currently_streaming_on) { nil }
 
   describe "GET /users/:user_id/twitch_stream_updates" do
-    context "when the subscription was successfull" do
+    context "when the subscription was successful" do
       let(:challenge) { "FAKE_CHALLENGE" }
       let(:twitch_webhook_subscription_params) do
         {
