@@ -15,10 +15,18 @@ function redirectableLocation() {
   );
 }
 
+function onboardingSkippable(currentUser) {
+  return (
+    currentUser.saw_onboarding &&
+    currentUser.checked_code_of_conduct &&
+    currentUser.checked_terms_and_conditions
+  );
+}
+
 document.ready.then(
   getUserDataAndCsrfToken()
     .then(({ currentUser }) => {
-      if (redirectableLocation() && !currentUser.saw_onboarding) {
+      if (redirectableLocation() && !onboardingSkippable(currentUser)) {
         window.location = `${window.location.origin}/onboarding`;
       }
     })
