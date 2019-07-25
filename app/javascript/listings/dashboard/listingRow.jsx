@@ -1,16 +1,9 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
 import ListingDate from './rowElements/listingDate';
+import Tags from './rowElements/tags';
 
 export const ListingRow = ({ listing }) => {
-  const tagLinks = listing.tag_list.map(tag => (
-    <a href={`/listings?t=${tag}`} data-no-instant>
-      #
-      {tag}
-      {' '}
-    </a>
-  ));
-
   const listingLocation = listing.location ? (` ・ ${listing.location}`) : '';
 
   const bumpedAt = listing.bumped_at.toString();
@@ -45,7 +38,7 @@ export const ListingRow = ({ listing }) => {
       <span className="dashboard-listing-category">
         <a href={`/listings/${listing.category}/`}>{listing.category}</a>
       </span>
-      <span className="dashboard-listing-tags">{tagLinks}</span>
+      <Tags tagList={listing.tag_list} />
       <div className="listing-row-actions">
         {/* <a className="dashboard-listing-bump-button cta pill black">BUMP</a> */}
         {draftButton}
