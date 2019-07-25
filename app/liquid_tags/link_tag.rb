@@ -4,7 +4,7 @@ class LinkTag < LiquidTagBase
 
   def initialize(_tag_name, slug_or_path_or_url, _tokens)
     @article = get_article(slug_or_path_or_url)
-    @title = strip_tags(@article.title)
+    @title = @article.title
   end
 
   def render(_context)
