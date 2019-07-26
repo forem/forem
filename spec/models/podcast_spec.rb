@@ -65,6 +65,27 @@ RSpec.describe Podcast, type: :model do
     end
   end
 
+  describe "#reachable" do
+    let(:podcast) { create(:podcast, reachable: false) }
+    let!(:unpodcast) { create(:podcast, reachable: false) }
+    let!(:unpodcast2) { create(:podcast, reachable: false) }
+    let!(:cool_podcast) { create(:podcast, reachable: true) }
+
+    before do
+      create(:podcast_episode, reachable: true, podcast: podcast)
+      create(:podcast_episode, reachable: false, podcast: unpodcast2)
+      create(:podcast_episode, reachable: true, podcast: cool_podcast)
+    end
+
+    it "is reachable when the feed is unreachable but the podcast has reachable podcasts" do
+      reachable_ids = Podcast.reachable.pluck(:id)
+      expect(reachable_ids).to include(podcast.id)
+      expect(reachable_ids).to include(cool_podcast.id)
+      expect(reachable_ids).not_to include(unpodcast.id)
+      expect(reachable_ids).not_to include(unpodcast2.id)
+    end
+  end
+
   describe "#existing_episode" do
     let(:podcast) { create(:podcast) }
     let(:guid) { "<guid isPermaLink=\"false\">http://podcast.example/file.mp3</guid>" }
