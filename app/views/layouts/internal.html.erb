@@ -143,6 +143,7 @@
         <% controller_names.each do |name| %>
           <li class="<%= "active" if controller_name == name %>"><a href="/internal/<%= name %>"><%= name %></a></li>
         <% end %>
+        <li class="<%= "active" if controller_name == "podcasts" %>"><a href="/internal/podcasts">pod</a></li>
       </ul>
     </div><!--/.nav-collapse -->
   </div>
