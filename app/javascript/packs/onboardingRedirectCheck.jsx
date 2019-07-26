@@ -25,7 +25,10 @@ function onboardingSkippable(currentUser) {
 
 document.ready.then(
   getUserDataAndCsrfToken()
-    .then(({ currentUser }) => {
+    .then(({ currentUser, csrfToken }) => {
+      window.currentUser = currentUser;
+      window.csrfToken = csrfToken;
+
       if (redirectableLocation() && !onboardingSkippable(currentUser)) {
         window.location = `${window.location.origin}/onboarding?referrer=${window.location}`;
       }
