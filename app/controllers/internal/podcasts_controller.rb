@@ -16,7 +16,7 @@ class Internal::PodcastsController < Internal::ApplicationController
 
   def update
     if @podcast.update(podcast_params)
-      redirect_to internal_podcast_path(@podcast), notice: "Всё супер-ок"
+      redirect_to internal_podcasts_path, notice: "Podcast updated"
     else
       render :edit
     end

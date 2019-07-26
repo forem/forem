@@ -22,7 +22,7 @@
 <%= form_for @podcast, url: add_admin_internal_podcast_path(@podcast.id), html: { method: :post } do |f| %>
   <div>
     <%= f.label "Add Admin (by user_id) " %>
-    <%= f.text_field :user_id %>
+    <%= f.text_field :user_id, value: "" %>
     <%= f.submit "Add Admin" %>
   </div>
 <% end %>
