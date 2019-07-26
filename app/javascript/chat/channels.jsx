@@ -18,13 +18,13 @@ const Channels = ({
     const isUnopened =
       new Date(channel.channel_last_message_at) > new Date(lastOpened) &&
       channel.channel_messages_count > 0;
-    let newMessagesIndicator =  isUnopened ? 'new' : 'old';
+    let newMessagesIndicator = isUnopened ? 'new' : 'old';
     if (incomingVideoCallChannelIds.indexOf(channel.chat_channel_id) > -1) {
       newMessagesIndicator = 'video';
     }
     const otherClassname = isActive
-    ? 'chatchanneltab--active'
-    : 'chatchanneltab--inactive';
+      ? 'chatchanneltab--active'
+      : 'chatchanneltab--inactive';
     return (
       <button
         type="button"
@@ -48,13 +48,17 @@ const Channels = ({
             className={`chatchanneltabindicator chatchanneltabindicator--${newMessagesIndicator}`}
             data-channel-id={channel.chat_channel_id}
           >
-            <img src={channel.channel_image} alt='pic' className='chatchanneltabindicatordirectimage' />
+            <img
+              src={channel.channel_image}
+              alt="pic"
+              className="chatchanneltabindicatordirectimage"
+            />
           </span>
           {channel.channel_name}
         </span>
       </button>
-    )
-  })
+    );
+  });
   let topNotice = '';
   if (
     expanded &&
@@ -66,11 +70,9 @@ const Channels = ({
       <div className="chatchannels__channelslistheader">
         <span role="img" aria-label="emoji">
           👋
-        </span>
-        {' '}
+        </span>{' '}
         Welcome to
-        <b> DEV Connect</b>
-        ! You may message anyone you mutually follow.
+        <b> DEV Connect</b>! You may message anyone you mutually follow.
       </div>
     );
   }
@@ -105,7 +107,7 @@ const Channels = ({
       {configFooter}
     </div>
   );
-}
+};
 
 Channels.propTypes = {
   activeChannelId: PropTypes.number.isRequired,

@@ -4,9 +4,7 @@ import { h } from 'preact';
 export const ListingRow = ({ listing }) => {
   const tagLinks = listing.tag_list.map(tag => (
     <a href={`/listings?t=${tag}`} data-no-instant>
-      #
-      {tag}
-      {' '}
+      #{tag}{' '}
     </a>
   ));
 
