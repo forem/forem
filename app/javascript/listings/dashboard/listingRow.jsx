@@ -6,9 +6,9 @@ import Location from './rowElements/location';
 import ActionButtons from './rowElements/actionButtons';
 
 export const ListingRow = ({ listing }) => {
-  const bumpedAt = listing.bumped_at.toString();
+  const bumpedAt = listing.bumped_at ? listing.bumped_at.toString() : null;
   // const isExpired = ((Date.now() - new Date(bumpedAt).getTime()) / (1000 * 60 * 60 * 24)) > 30 && (!listing.published)
-  const isDraft = ((Date.now() - new Date(bumpedAt).getTime()) / (1000 * 60 * 60 * 24)) < 30 && (!listing.published)
+  const isDraft = (((Date.now() - new Date(bumpedAt).getTime()) / (1000 * 60 * 60 * 24)) < 30 || bumpedAt == null) && (!listing.published)
   const listingUrl = `${`${listing.category}/${listing.slug}`}`
   const editUrl = `/listings/${listing.id}/edit`;
 

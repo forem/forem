@@ -1,31 +1,33 @@
 <div class="classifieds-container">
-  <%= form_for(@classified_listing) do |f| %>
-    <div class="classified-form-inner">
-      <p>
-        You can bump your listing for the same price as the original listing
-      </p>
-      <h2>
-        Last Published or Bumped: <%= time_ago_in_words @classified_listing.bumped_at %> ago
-      </h2>
-      <% if (@classified_listing.bumped_at + 30.days) < Date.today %>
-        <h4>
-          (Expired <%= time_ago_in_words (@classified_listing.bumped_at + 30.days) %> ago)
-        </h4>
-      <% else %>
-        <h4>
-          (Expires in <%= time_ago_in_words (@classified_listing.bumped_at + 30.days) %>)
-        </h4>
-      <% end %>
-      <input type="hidden" name="classified_listing[action]" value="bump" />
-      <%= f.submit "Bump Listing", class: "cta cta-main-listing-form" %>
-    </div>
+  <% if @classified_listing.bumped_at %>
+    <%= form_for(@classified_listing) do |f| %>
+      <div class="classified-form-inner">
+        <p>
+          You can bump your listing for the same price as the original listing
+        </p>
+        <h2>
+          Last Published or Bumped: <%= time_ago_in_words @classified_listing.bumped_at %> ago
+        </h2>
+        <% if (@classified_listing.bumped_at + 30.days) < Date.today %>
+          <h4>
+            (Expired <%= time_ago_in_words (@classified_listing.bumped_at + 30.days) %> ago)
+          </h4>
+        <% else %>
+          <h4>
+            (Expires in <%= time_ago_in_words (@classified_listing.bumped_at + 30.days) %>)
+          </h4>
+        <% end %>
+        <input type="hidden" name="classified_listing[action]" value="bump" />
+        <%= f.submit "Bump Listing", class: "cta cta-main-listing-form" %>
+      </div>
+    <% end %>
   <% end %>
   <%= form_for(@classified_listing) do |f| %>
     <div class="classified-form-inner">
       <h2>
         <em>You can only edit title/body/tags within the first 24 hours of listing or bumping</em>
       </h2>
-      <% if @classified_listing.bumped_at > 24.hours.ago %>
+      <% if (@classified_listing.bumped_at && @classified_listing.bumped_at > 24.hours.ago) || @classified_listing.updated_at && !@classified_listing.published %>
         <div class="field">
           <%= f.label "title", "Title" %>
           <%= f.text_field "title", maxlength: 128, placeholder: "128 characters max, plain text" %>

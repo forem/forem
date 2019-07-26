@@ -43,8 +43,13 @@ class ClassifiedListingsController < ApplicationController
 
     @classified_listing.user_id = current_user.id
     cost = ClassifiedListing.cost_by_category(@classified_listing.category)
-
     org = Organization.find_by(id: @classified_listing.organization_id)
+
+    if listing_params[:action] == "draft"
+      @classified_listing.published = false
+      @classified_listing.save
+      redirect_to "/listings/dashboard"
+    end
 
     available_org_credits = org.credits.unspent if org
     available_user_credits = current_user.credits.unspent
@@ -79,13 +84,18 @@ class ClassifiedListingsController < ApplicationController
     elsif listing_params[:action] == "unpublish"
       unpublish_listing
     elsif listing_params[:action] == "publish"
+      if @classified_listing.bumped_at.nil?
+        cost = ClassifiedListing.cost_by_category(@classified_listing.category)
+        create_listing(@classified_listing.author, cost)
+      end
       publish_listing
-    elsif listing_params[:body_markdown].present? && @classified_listing.bumped_at > 24.hours.ago
+      redirect_to "/listings"
+    elsif listing_params[:body_markdown].present? && ((@classified_listing.bumped_at && @classified_listing.bumped_at > 24.hours.ago) || !@classified_listing.published)
       update_listing_details
+      redirect_to "/listings"
     end
 
     clear_listings_cache
-    redirect_to "/listings"
   end
 
   def dashboard
