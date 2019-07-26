@@ -166,6 +166,7 @@ Rails.application.routes.draw do
   get "/notification_subscriptions/:notifiable_type/:notifiable_id" => "notification_subscriptions#show"
   post "/notification_subscriptions/:notifiable_type/:notifiable_id" => "notification_subscriptions#upsert"
   patch "/onboarding_update" => "users#onboarding_update"
+  patch "/onboarding_checkbox_update" => "users#onboarding_checkbox_update"
   get "email_subscriptions/unsubscribe"
   post "/chat_channels/:id/moderate" => "chat_channels#moderate"
   post "/chat_channels/:id/open" => "chat_channels#open"
@@ -249,6 +250,7 @@ Rails.application.routes.draw do
   get "/welcome" => "pages#welcome"
   get "/challenge" => "pages#challenge"
   get "/badge" => "pages#badge"
+  get "/onboarding" => "pages#onboarding"
   get "/shecoded" => "pages#shecoded"
   get "/💸", to: redirect("t/hiring")
   get "/security", to: "pages#bounty"

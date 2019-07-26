@@ -15,21 +15,21 @@ function initializePWAFunctionality() {
       e.preventDefault();
       window.location.reload();
     };
-    var isTouchDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|DEV-Native-ios/i.test(navigator.userAgent);
+    var isTouchDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|DEV-Native-ios/i.test(
+      navigator.userAgent,
+    );
     if (!isTouchDevice) {
-      var domain = window.location.protocol + '//' + window.location.host
-      var links = document.getElementsByTagName("a");
-      for(var i=0, max=links.length; i<max; i++) {
+      var domain = window.location.protocol + '//' + window.location.host;
+      var links = document.getElementsByTagName('a');
+      for (var i = 0, max = links.length; i < max; i++) {
         var a = links[i];
-        if (a.href.indexOf(domain + '/') === 0
-          || a.href.indexOf('/') === 0
-          ) {
-            // Is internal link. Do nothing right now.
+        if (a.href.indexOf(domain + '/') === 0 || a.href.indexOf('/') === 0) {
+          // Is internal link. Do nothing right now.
         } else {
           a.setAttribute('target', '_blank');
           a.setAttribute('rel', 'noopener noreferrer');
         }
-      }  
+      }
     }
   }
 }

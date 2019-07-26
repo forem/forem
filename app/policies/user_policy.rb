@@ -7,6 +7,10 @@ class UserPolicy < ApplicationPolicy
     true
   end
 
+  def onboarding_checkbox_update?
+    true
+  end
+
   def update?
     current_user?
   end
