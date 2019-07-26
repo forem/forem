@@ -24,9 +24,10 @@ class ClosingSlide extends Component {
     const previousLocationListElement = () => {
       if (previousLocation !== 'none' && previousLocation !== null) {
         return (
-          <li>
-            <a href={previousLocation}>Go back to before onboarding</a>
-          </li>
+          <a className="onboarding-previous-location" href={previousLocation}>
+            <div>Or go back to the page you were on before you signed up</div>
+            <code>{previousLocation}</code>
+          </a>
         );
       }
       return null;
@@ -36,30 +37,32 @@ class ClosingSlide extends Component {
       <div className="onboarding-main">
         <div className="onboarding-content">
           <h1>
-            Congrats{' '}
+            You&lsquo;re part of the community!
             <span role="img" aria-label="tada">
-              🎉
-            </span>{' '}
-            you&lsquo;re officially part of the DEV community!
+              {' '} 🎉
+            </span>
           </h1>
-          <ul>
-            <li>
-              Join the <a href="/welcome">Welcome Thread</a>
-            </li>
-            <li>
-              <a href="/new">Write</a> your own DEV post
-            </li>
-            <li>
-              <a href="/top/infinity">Read</a> some of the most popular all time
-              posts
-            </li>
-            <li>
-              <a href="/settings">Customize</a> your profile
-            </li>
-            {previousLocationListElement()}
-          </ul>
+          <h2 style={{textAlign: 'center'}}>What next?</h2>
+          <div className="onboarding-what-next">
+            <a href="/welcome">
+              Join the Welcome Thread
+              <p className="whatnext-emoji"><span role="img" aria-label="tada">😊</span></p>
+            </a>
+            <a href="/new">
+              Write your first DEV post
+              <p className="whatnext-emoji"><span role="img" aria-label="tada">✍️</span></p>
+            </a>
+            <a href="/top/infinity">
+              Read all-time top posts
+              <p className="whatnext-emoji"><span role="img" aria-label="tada">🤓</span></p>
+            </a>
+            <a href="/settings">
+              Customize your profile
+              <p className="whatnext-emoji"><span role="img" aria-label="tada">💅</span></p>
+            </a>
+          </div>
+          {previousLocationListElement()}
         </div>
-        <Navigation prev={prev} next={next} hideNext />
       </div>
     );
   }

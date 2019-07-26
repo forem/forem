@@ -61,7 +61,7 @@ class BioForm extends Component {
     return (
       <div className="onboarding-main">
         <div className="onboarding-content about">
-          <h1>About You!</h1>
+          <h2>About You!</h2>
           <form>
             <label htmlFor="summary">
               Tell the community about yourself! Write a quick bio about what

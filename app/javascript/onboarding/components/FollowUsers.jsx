@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import Navigation from './Navigation';
 import { getContentOfToken } from '../utilities';
+import { userInfo } from 'os';
 
 class FollowUsers extends Component {
   constructor(props) {
@@ -27,7 +28,7 @@ class FollowUsers extends Component {
     })
       .then(response => response.json())
       .then(data => {
-        this.setState({ users: data });
+        this.setState({ users: data, selectedUsers: data });
       });
 
     const csrfToken = getContentOfToken('csrf-token');
@@ -68,6 +69,19 @@ class FollowUsers extends Component {
     next();
   }
 
+  handleSelectAll() {
+    let { selectedUsers, users } = this.state;
+    if (selectedUsers.length == users.length) {
+      this.setState({
+        selectedUsers: []
+      });  
+    } else {
+      this.setState({
+        selectedUsers: users
+      });  
+    }
+  }
+
   handleClick(user) {
     let { selectedUsers } = this.state;
 
@@ -91,21 +105,28 @@ class FollowUsers extends Component {
     return (
       <div className="onboarding-main">
         <div className="onboarding-content">
-          <h2>Follow some users!</h2>
+          <h2>Ok, here are some people we picked for you</h2>
           <div className="scroll">
+            <div className="select-all-button-wrapper">
+              <button type="button" onClick={() => this.handleSelectAll()} >Select All {selectedUsers.length === users.length ? '✅' : ''}</button>
+            </div>
             {users.map(user => (
               <button
                 type="button"
                 style={{
                   backgroundColor: selectedUsers.includes(user)
-                    ? '#ddd'
+                    ? '#c7ffe8'
                     : 'white',
                 }}
                 onClick={() => this.handleClick(user)}
                 className="user"
               >
+                <div className="onboarding-user-follow-status">{selectedUsers.includes(user) ? 'selected' : ''}</div>
                 <img src={user.profile_image_url} alt="" />
-                {user.name}
+                <span>
+                  {user.name}
+                </span>
+                <p>{user.summary}</p>
               </button>
             ))}
           </div>

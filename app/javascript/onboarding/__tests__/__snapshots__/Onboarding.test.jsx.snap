@@ -6,7 +6,7 @@ preact-render-spy (1 nodes)
 <div class="onboarding-body">
   <div class="onboarding-main">
     <div class="onboarding-content about">
-      <h1>About You!</h1>
+      <h2>About You!</h2>
       <form>
         <label htmlFor="summary">
           Tell the community about yourself! Write a quick bio about what you do, what you're interested in, or anything else!
@@ -47,43 +47,62 @@ preact-render-spy (1 nodes)
   <div class="onboarding-main">
     <div class="onboarding-content">
       <h1>
-        Congrats 
+        You‘re part of the community!
         <span
           role="img"
           aria-label="tada"
         >
-          🎉
+            🎉
         </span>
-         you‘re officially part of the DEV community!
       </h1>
-      <ul>
-        <li>
-          Join the 
-          <a href="/welcome">Welcome Thread</a>
-        </li>
-        <li>
-          <a href="/new">Write</a>
-           your own DEV post
-        </li>
-        <li>
-          <a href="/top/infinity">Read</a>
-           some of the most popular all time posts
-        </li>
-        <li>
-          <a href="/settings">Customize</a>
-           your profile
-        </li>
-      </ul>
+      <h2 style="text-align: center;">What next?</h2>
+      <div class="onboarding-what-next">
+        <a href="/welcome">
+          Join the Welcome Thread
+          <p class="whatnext-emoji">
+            <span
+              role="img"
+              aria-label="tada"
+            >
+              😊
+            </span>
+          </p>
+        </a>
+        <a href="/new">
+          Write your first DEV post
+          <p class="whatnext-emoji">
+            <span
+              role="img"
+              aria-label="tada"
+            >
+              ✍️
+            </span>
+          </p>
+        </a>
+        <a href="/top/infinity">
+          Read all-time top posts
+          <p class="whatnext-emoji">
+            <span
+              role="img"
+              aria-label="tada"
+            >
+              🤓
+            </span>
+          </p>
+        </a>
+        <a href="/settings">
+          Customize your profile
+          <p class="whatnext-emoji">
+            <span
+              role="img"
+              aria-label="tada"
+            >
+              💅
+            </span>
+          </p>
+        </a>
+      </div>
     </div>
-    <nav class="onboarding-navigation">
-      <button
-        onClick={[Function bound prevSlide]}
-        class="back-button"
-        type="button"
-      >
-        BACK
-      </button>
-    </nav>
   </div>
 </div>
 
@@ -106,7 +125,13 @@ preact-render-spy (1 nodes)
             onChange={[Function bound handleChange]}
            />
           You agree to uphold our 
-          <a href="/code-of-conduct">Code of Conduct</a>
+          <a
+            href="/code-of-conduct"
+            data-no-instant={true}
+            onClick={[Function onClick]}
+          >
+            Code of Conduct
+          </a>
         </label>
         <label htmlFor="checked_terms_and_conditions">
           <input
@@ -117,7 +142,13 @@ preact-render-spy (1 nodes)
             onChange={[Function bound handleChange]}
            />
           You agree to our 
-          <a href="/terms">Terms and Conditions</a>
+          <a
+            href="/terms"
+            data-no-instant={true}
+            onClick={[Function onClick]}
+          >
+            Terms and Conditions
+          </a>
         </label>
         <h3>Email Preferences</h3>
         <label htmlFor="email_membership_newsletter">
@@ -167,31 +198,34 @@ preact-render-spy (1 nodes)
 <div class="onboarding-body">
   <div class="onboarding-main">
     <div class="onboarding-content">
-      <h2>Follow some tags!</h2>
+      <h2>Follow tags to customize your feed</h2>
       <div class="scroll">
         <button
           type="button"
           onClick={[Function onClick]}
-          style="background-color: #000000; color: #ffffff; opacity: 1;"
+          style="background-color: #000000; color: #ffffff;"
           class="tag"
         >
           #discuss
+          <div class="onboarding-tag-follow-indicator"></div>
         </button>
         <button
           type="button"
           onClick={[Function onClick]}
-          style="background-color: #f7df1e; color: #000000; opacity: 1;"
+          style="background-color: #f7df1e; color: #000000;"
           class="tag"
         >
           #javascript
+          <div class="onboarding-tag-follow-indicator"></div>
         </button>
         <button
           type="button"
           onClick={[Function onClick]}
-          style="background-color: #2a2566; color: #ffffff; opacity: 1;"
+          style="background-color: #2a2566; color: #ffffff;"
           class="tag"
         >
           #career
+          <div class="onboarding-tag-follow-indicator"></div>
         </button>
       </div>
     </div>
@@ -222,43 +256,59 @@ preact-render-spy (1 nodes)
 <div class="onboarding-body">
   <div class="onboarding-main">
     <div class="onboarding-content">
-      <h2>Follow some users!</h2>
+      <h2>
+        Ok, here are some people we picked for you
+      </h2>
       <div class="scroll">
+        <div class="select-all-button-wrapper">
+          <button
+            type="button"
+            onClick={[Function onClick]}
+          >
+            Select All ✅
+          </button>
+        </div>
         <button
           type="button"
-          style="background-color: white;"
+          style="background-color: #c7ffe8;"
           onClick={[Function onClick]}
           class="user"
         >
+          <div class="onboarding-user-follow-status">selected</div>
           <img
             src="ben.jpg"
             alt=""
            />
-          Ben Halpern
+          <span>Ben Halpern</span>
+          <p></p>
         </button>
         <button
           type="button"
-          style="background-color: white;"
+          style="background-color: #c7ffe8;"
           onClick={[Function onClick]}
           class="user"
         >
+          <div class="onboarding-user-follow-status">selected</div>
           <img
             src="clown.jpg"
             alt=""
            />
-          Krusty the Clown
+          <span>Krusty the Clown</span>
+          <p></p>
         </button>
         <button
           type="button"
-          style="background-color: white;"
+          style="background-color: #c7ffe8;"
           onClick={[Function onClick]}
           class="user"
         >
+          <div class="onboarding-user-follow-status">selected</div>
           <img
             src="dev.jpg"
             alt=""
            />
-          dev.to staff
+          <span>dev.to staff</span>
+          <p></p>
         </button>
       </div>
     </div>
@@ -325,7 +375,7 @@ preact-render-spy (1 nodes)
 <div class="onboarding-body">
   <div class="onboarding-main">
     <div class="onboarding-content about">
-      <h1>About You!</h1>
+      <h2>About You!</h2>
       <form>
         <label htmlFor="location">
           Where are you located?

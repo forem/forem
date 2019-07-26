@@ -281,14 +281,14 @@ describe('<Onboarding />', () => {
       expect(onboardingSlides.find('.user').length).toBe(3);
     });
 
-    test('adding a tag and submitting works', async () => {
+    test('adding a user and submitting works', async () => {
       fetch.once({});
       const followUsers = onboardingSlides.find(<FollowUsers />);
       onboardingSlides
         .find('.user')
         .first()
         .simulate('click');
-      expect(followUsers.state('selectedUsers').length).toBe(1);
+      expect(followUsers.state('selectedUsers').length).toBe(2);
       onboardingSlides.find('.next-button').simulate('click');
       await flushPromises();
       expect(onboardingSlides.state().currentSlide).toBe(6);
@@ -312,13 +312,6 @@ describe('<Onboarding />', () => {
 
     test('renders properly', () => {
       expect(onboardingSlides).toMatchSnapshot();
-    });
-
-    test('should move to the previous slide upon clicking the back button', async () => {
-      fetch.once(fakeUsersToFollowResponse);
-      onboardingSlides.find('.back-button').simulate('click');
-      await flushPromises();
-      expect(onboardingSlides.state().currentSlide).toBe(5);
     });
   });
 });

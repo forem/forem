@@ -79,7 +79,7 @@ class PersonalInfoForm extends Component {
     return (
       <div className="onboarding-main">
         <div className="onboarding-content about">
-          <h1>About You!</h1>
+          <h2>About You!</h2>
           <form>
             <label htmlFor="location">
               Where are you located?

@@ -86,7 +86,7 @@ class FollowTags extends Component {
     return (
       <div className="onboarding-main">
         <div className="onboarding-content">
-          <h2>Follow some tags!</h2>
+          <h2>Follow tags to customize your feed</h2>
           <div className="scroll">
             {allTags.map(tag => (
               <button
@@ -95,11 +95,12 @@ class FollowTags extends Component {
                 style={{
                   backgroundColor: tag.bg_color_hex,
                   color: tag.text_color_hex,
-                  opacity: selectedTags.includes(tag) ? 0.7 : 1,
                 }}
-                className="tag"
+                className={selectedTags.includes(tag) ? 'tag tag-selected' : 'tag'}
+
               >
                 #{tag.name}
+                <div className="onboarding-tag-follow-indicator">{selectedTags.includes(tag) ? '✓ following ': ''}</div>
               </button>
             ))}
           </div>
