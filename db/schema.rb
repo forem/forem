@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_11_070019) do
+ActiveRecord::Schema.define(version: 2019_07_23_094834) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -667,6 +667,7 @@ ActiveRecord::Schema.define(version: 2019_07_11_070019) do
     t.string "website_url"
     t.index ["guid"], name: "index_podcast_episodes_on_guid", unique: true
     t.index ["media_url"], name: "index_podcast_episodes_on_media_url", unique: true
+    t.index ["podcast_id"], name: "index_podcast_episodes_on_podcast_id"
   end
 
   create_table "podcasts", id: :serial, force: :cascade do |t|

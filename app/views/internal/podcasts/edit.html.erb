@@ -19,11 +19,11 @@
   <p>There are no admins for this podcast.</p>
 <% end %>
 
-<%= form_tag add_admin_internal_podcast_path(@podcast.id) do %>
+<%= form_for @podcast, url: add_admin_internal_podcast_path(@podcast.id), html: { method: :post } do |f| %>
   <div>
-    <%= label_tag "Add Admin (by user_id) " %>
-    <%= text_field_tag :user_id %>
-    <%= submit_tag "Add Admin" %>
+    <%= f.label "Add Admin (by user_id) " %>
+    <%= f.text_field :user_id %>
+    <%= f.submit "Add Admin" %>
   </div>
 <% end %>
 

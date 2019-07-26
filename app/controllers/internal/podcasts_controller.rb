@@ -2,9 +2,13 @@ class Internal::PodcastsController < Internal::ApplicationController
   layout "internal"
 
   before_action :find_podcast, only: %i[edit update remove_admin add_admin]
+  before_action :find_user, only: %i[remove_admin add_admin]
 
   def index
-    @podcasts = Podcast.order("created_at DESC").page(params[:page]).per(50)
+    @podcasts = Podcast.joins(:podcast_episodes).
+      select("podcasts.*, count(podcast_episodes) as count").
+      group("podcasts.id").order("podcasts.created_at DESC").
+      page(params[:page]).per(50)
     @podcasts = @podcasts.where("podcasts.title ILIKE :search", search: "%#{params[:search]}%") if params[:search].present?
   end
 
@@ -19,30 +23,20 @@ class Internal::PodcastsController < Internal::ApplicationController
   end
 
   def remove_admin
-    user = User.find_by(id: params[:podcast][:user_id])
-    unless user
-      redirect_to edit_internal_podcast_path(@podcast), notice: "No such user"
-      return
-    end
-    removed_roles = user.remove_role(:podcast_admin, @podcast)
+    removed_roles = @user.remove_role(:podcast_admin, @podcast)
     if removed_roles.empty?
-      redirect_to internal_podcast_path(@podcast), notice: "Error"
+      redirect_to edit_internal_podcast_path(@podcast), notice: "Error"
     else
-      redirect_to internal_podcasts_path, notice: "Removed roles"
+      redirect_to internal_podcasts_path, notice: "Removed admin"
     end
   end
 
   def add_admin
-    user = User.find_by(id: params[:user_id])
-    unless user
-      redirect_to edit_internal_podcast_path(@podcast), notice: "No such user"
-      return
-    end
-    role = user.add_role(:podcast_admin, @podcast)
+    role = @user.add_role(:podcast_admin, @podcast)
     if role.persisted?
-      redirect_to internal_podcasts_path, notice: "Added role"
+      redirect_to internal_podcasts_path, notice: "Added admin"
     else
-      redirect_to internal_podcast_path(@podcast), notice: "Error"
+      redirect_to edit_internal_podcast_path(@podcast), notice: "Error"
     end
   end
 
@@ -50,6 +44,11 @@ class Internal::PodcastsController < Internal::ApplicationController
 
   def find_podcast
     @podcast = Podcast.find(params[:id])
+  end
+
+  def find_user
+    @user = User.find_by(id: params[:podcast][:user_id])
+    redirect_to edit_internal_podcast_path(@podcast), notice: "No such user" unless @user
   end
 
   def podcast_params
