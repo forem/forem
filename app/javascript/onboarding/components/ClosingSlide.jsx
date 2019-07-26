@@ -39,26 +39,43 @@ class ClosingSlide extends Component {
           <h1>
             You&lsquo;re part of the community!
             <span role="img" aria-label="tada">
-              {' '} 🎉
+              {' '}
+              🎉
             </span>
           </h1>
-          <h2 style={{textAlign: 'center'}}>What next?</h2>
+          <h2 style={{ textAlign: 'center' }}>What next?</h2>
           <div className="onboarding-what-next">
             <a href="/welcome">
               Join the Welcome Thread
-              <p className="whatnext-emoji"><span role="img" aria-label="tada">😊</span></p>
+              <p className="whatnext-emoji">
+                <span role="img" aria-label="tada">
+                  😊
+                </span>
+              </p>
             </a>
             <a href="/new">
               Write your first DEV post
-              <p className="whatnext-emoji"><span role="img" aria-label="tada">✍️</span></p>
+              <p className="whatnext-emoji">
+                <span role="img" aria-label="tada">
+                  ✍️
+                </span>
+              </p>
             </a>
             <a href="/top/infinity">
               Read all-time top posts
-              <p className="whatnext-emoji"><span role="img" aria-label="tada">🤓</span></p>
+              <p className="whatnext-emoji">
+                <span role="img" aria-label="tada">
+                  🤓
+                </span>
+              </p>
             </a>
             <a href="/settings">
               Customize your profile
-              <p className="whatnext-emoji"><span role="img" aria-label="tada">💅</span></p>
+              <p className="whatnext-emoji">
+                <span role="img" aria-label="tada">
+                  💅
+                </span>
+              </p>
             </a>
           </div>
           {previousLocationListElement()}

@@ -88,11 +88,11 @@ class EmailTermsConditionsForm extends Component {
 
   handleShowText(event, id) {
     event.preventDefault();
-    this.setState({textShowing: document.getElementById(id).innerHTML});
+    this.setState({ textShowing: document.getElementById(id).innerHTML });
   }
 
   backToSlide() {
-    this.setState({textShowing: null});
+    this.setState({ textShowing: null });
   }
 
   render() {
@@ -102,20 +102,21 @@ class EmailTermsConditionsForm extends Component {
       checked_terms_and_conditions,
       email_membership_newsletter,
       email_digest_periodic,
-      textShowing
+      textShowing,
     } = this.state;
     const { prev } = this.props;
     if (textShowing) {
-      return  (
+      return (
         <div className="onboarding-main">
           <div className="onboarding-content checkbox-slide">
-            <button onClick={() => this.backToSlide()}>
-              BACK
-            </button>
-            <div dangerouslySetInnerHTML={{ __html: textShowing }} style={{height: '360px', overflow: 'scroll'}} />
+            <button onClick={() => this.backToSlide()}>BACK</button>
+            <div
+              dangerouslySetInnerHTML={{ __html: textShowing }}
+              style={{ height: '360px', overflow: 'scroll' }}
+            />
           </div>
         </div>
-      )
+      );
     }
     return (
       <div className="onboarding-main">
@@ -133,7 +134,13 @@ class EmailTermsConditionsForm extends Component {
               />
               You agree to uphold our
               {' '}
-              <a href="/code-of-conduct" data-no-instant onClick={(e) => this.handleShowText(e, 'coc')}>Code of Conduct</a>
+              <a
+                href="/code-of-conduct"
+                data-no-instant
+                onClick={e => this.handleShowText(e, 'coc')}
+              >
+                Code of Conduct
+              </a>
             </label>
             <label htmlFor="checked_terms_and_conditions">
               <input
@@ -143,9 +150,15 @@ class EmailTermsConditionsForm extends Component {
                 checked={checked_terms_and_conditions}
                 onChange={this.handleChange}
               />
-              You agree to our 
+              You agree to our
               {' '}
-              <a href="/terms" data-no-instant onClick={(e) => this.handleShowText(e, 'terms')}>Terms and Conditions</a>
+              <a
+                href="/terms"
+                data-no-instant
+                onClick={e => this.handleShowText(e, 'terms')}
+              >
+                Terms and Conditions
+              </a>
             </label>
             <h3>Email Preferences</h3>
             <label htmlFor="email_membership_newsletter">

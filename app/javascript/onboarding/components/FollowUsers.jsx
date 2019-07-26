@@ -1,9 +1,9 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
+import { userInfo } from 'os';
 import Navigation from './Navigation';
 import { getContentOfToken } from '../utilities';
-import { userInfo } from 'os';
 
 class FollowUsers extends Component {
   constructor(props) {
@@ -70,15 +70,15 @@ class FollowUsers extends Component {
   }
 
   handleSelectAll() {
-    let { selectedUsers, users } = this.state;
+    const { selectedUsers, users } = this.state;
     if (selectedUsers.length == users.length) {
       this.setState({
-        selectedUsers: []
-      });  
+        selectedUsers: [],
+      });
     } else {
       this.setState({
-        selectedUsers: users
-      });  
+        selectedUsers: users,
+      });
     }
   }
 
@@ -108,7 +108,11 @@ class FollowUsers extends Component {
           <h2>Ok, here are some people we picked for you</h2>
           <div className="scroll">
             <div className="select-all-button-wrapper">
-              <button type="button" onClick={() => this.handleSelectAll()} >Select All {selectedUsers.length === users.length ? '✅' : ''}</button>
+              <button type="button" onClick={() => this.handleSelectAll()}>
+                Select All 
+                {' '}
+                {selectedUsers.length === users.length ? '✅' : ''}
+              </button>
             </div>
             {users.map(user => (
               <button
@@ -121,11 +125,11 @@ class FollowUsers extends Component {
                 onClick={() => this.handleClick(user)}
                 className="user"
               >
-                <div className="onboarding-user-follow-status">{selectedUsers.includes(user) ? 'selected' : ''}</div>
+                <div className="onboarding-user-follow-status">
+                  {selectedUsers.includes(user) ? 'selected' : ''}
+                </div>
                 <img src={user.profile_image_url} alt="" />
-                <span>
-                  {user.name}
-                </span>
+                <span>{user.name}</span>
                 <p>{user.summary}</p>
               </button>
             ))}

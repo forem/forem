@@ -96,11 +96,15 @@ class FollowTags extends Component {
                   backgroundColor: tag.bg_color_hex,
                   color: tag.text_color_hex,
                 }}
-                className={selectedTags.includes(tag) ? 'tag tag-selected' : 'tag'}
-
+                className={
+                  selectedTags.includes(tag) ? 'tag tag-selected' : 'tag'
+                }
               >
-                #{tag.name}
-                <div className="onboarding-tag-follow-indicator">{selectedTags.includes(tag) ? '✓ following ': ''}</div>
+                #
+                {tag.name}
+                <div className="onboarding-tag-follow-indicator">
+                  {selectedTags.includes(tag) ? '✓ following ' : ''}
+                </div>
               </button>
             ))}
           </div>
