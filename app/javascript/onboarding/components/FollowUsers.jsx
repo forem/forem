@@ -50,28 +50,22 @@ class FollowUsers extends Component {
     const { selectedUsers } = this.state;
     const { next } = this.props;
 
-    selectedUsers.forEach(user => {
-      fetch('/follows', {
-        method: 'POST',
-        headers: {
-          'X-CSRF-Token': csrfToken,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          followable_type: 'User',
-          followable_id: user.id,
-          verb: 'follow',
-        }),
-        credentials: 'same-origin',
-      });
-    });
+    fetch('/api/follows', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': csrfToken,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({users:selectedUsers}),
+      credentials: 'same-origin',
+    })
 
     next();
   }
 
   handleSelectAll() {
     const { selectedUsers, users } = this.state;
-    if (selectedUsers.length == users.length) {
+    if (selectedUsers.length === users.length) {
       this.setState({
         selectedUsers: [],
       });

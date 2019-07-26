@@ -52,7 +52,7 @@ preact-render-spy (1 nodes)
           role="img"
           aria-label="tada"
         >
-            🎉
+           🎉
         </span>
       </h1>
       <h2 style="text-align: center;">What next?</h2>
