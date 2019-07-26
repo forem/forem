@@ -35,7 +35,7 @@
       <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="golden badge">
     </h4>
     <div id="gold-sponsors">
-      <% Sponsorship.gold.includes(:organization).order(featured_number: :asc).find_each do |sponsorship| %>
+      <% Sponsorship.gold.includes(:organization).order(featured_number: :asc).each do |sponsorship| %>
         <a href="<%= sponsorship.url %>"><img src="<%= cloudinary(sponsorship.organization.nav_image_url, 250) %>"></a>
         <p>
           <%= sponsorship.blurb_html.html_safe %>
@@ -50,7 +50,7 @@
       <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="silver badge">
     </h4>
     <div id="silver-sponsors">
-      <% Sponsorship.silver.includes(:organization).order(featured_number: :asc).find_each do |sponsorship| %>
+      <% Sponsorship.silver.includes(:organization).order(featured_number: :asc).each do |sponsorship| %>
         <a href="<%= sponsorship.url %>"><img src="<%= cloudinary(sponsorship.organization.nav_image_url, 250) %>"></a>
         <p>
           <%= sponsorship.blurb_html.html_safe %>
