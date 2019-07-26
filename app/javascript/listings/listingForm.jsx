@@ -29,7 +29,7 @@ export default class ListingForm extends Component {
       categoriesForDetails: this.categoriesForDetails,
       organizations,
       organizationId: null, // change this for /edit later
-      contactViaConnect: this.listing.contact_via_connect,
+      contactViaConnect: this.listing.contact_via_connect || 'checked',
     }
   }
 
@@ -71,7 +71,7 @@ export default class ListingForm extends Component {
         <BodyMarkdown defaultValue={bodyMarkdown} onChange={linkState(this, 'bodyMarkdown')} />
         <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
         {(organizations && organizations.length > 0) && <OrgSettings organizations={organizations} organizationId={organizationId} onToggle={this.handleOrgIdChange} />}
-        <ContactViaConnect defaultValue={contactViaConnect} onChange={linkState(this, 'contactViaConnect')} />
+        <ContactViaConnect checked={contactViaConnect} onChange={linkState(this, 'contactViaConnect')} />
       </div>
       )
   }
