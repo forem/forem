@@ -57,7 +57,10 @@ preact-render-spy (1 nodes)
       </h1>
       <h2 style="text-align: center;">What next?</h2>
       <div class="onboarding-what-next">
-        <a href="/welcome">
+        <a
+          href="/welcome"
+          data-no-instant={true}
+        >
           Join the Welcome Thread
           <p class="whatnext-emoji">
             <span
@@ -349,10 +352,15 @@ preact-render-spy (1 nodes)
         <span>community!</span>
       </h1>
       <p>
-        DEV is where programmers share ideas and help each other grow. It’s a global community for contributing and discovering great ideas, having debates, and making friends.
+        DEV is where programmers share ideas and help each other grow. 🤓
       </p>
       <p>
-        A couple quick questions for you before you get started...
+        Ask questions, leave helpful comments, encourage others, and have fun! 🙌
+      </p>
+      <p>
+        A few 
+        <strong>quick questions</strong>
+         for you before you get started...
       </p>
     </div>
     <nav class="onboarding-navigation">

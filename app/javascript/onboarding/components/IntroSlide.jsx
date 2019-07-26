@@ -44,11 +44,10 @@ class IntroSlide extends Component {
             <span>community!</span>
           </h1>
           <p>
-            DEV is where programmers share ideas and help each other grow. It’s
-            a global community for contributing and discovering great ideas,
-            having debates, and making friends.
+            DEV is where programmers share ideas and help each other grow. 🤓
           </p>
-          <p>A couple quick questions for you before you get started...</p>
+          <p>Ask questions, leave helpful comments, encourage others, and have fun! 🙌</p>
+          <p>A few <strong>quick questions</strong> for you before you get started...</p>
         </div>
         <Navigation prev={prev} next={this.onSubmit} hidePrev />
       </div>
