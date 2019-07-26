@@ -45,7 +45,7 @@ class ClosingSlide extends Component {
           </h1>
           <h2 style={{ textAlign: 'center' }}>What next?</h2>
           <div className="onboarding-what-next">
-            <a href="/welcome">
+            <a href="/welcome" data-no-instant>
               Join the Welcome Thread
               <p className="whatnext-emoji">
                 <span role="img" aria-label="tada">
