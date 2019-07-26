@@ -129,7 +129,7 @@ echo "# 4) Deploy the postgres container, mounting '_docker-storage/postgres' wi
 echo "# 5) Deploy the dev-to container, with the name of 'dev-to-app', and sets up its port to 3000"
 echo "#"
 echo "# To run this script properly, execute with the following (inside the dev.to repository folder)..."
-echo "# './docker-run.sh [RUN_MODE] [Additional docker envrionment arguments]'"
+echo "# './docker-run.sh [RUN_MODE] [Additional docker environment arguments]'"
 echo "#"
 echo "# Alternatively to run this script in 'interactive mode' simply run"
 echo "# './docker-run.sh INTERACTIVE-DEMO'"
@@ -477,7 +477,7 @@ echo "#"
 echo "# this commonly takes 2 ~ 10 minutes, basically, a very long time .... =[ "
 
 # Side note, looped to give 4 set of distinct lines
-# espeially if long wait times occur (to make it more managable)
+# espeially if long wait times occur (to make it more manageable)
 for i in 1 2 3 4
 do
 	RETRIES=30

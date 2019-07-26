@@ -16,6 +16,6 @@ class ProfilePin < ApplicationRecord
   end
 
   def pinnable_belongs_to_profile
-    errors.add(:pinnable_id, "must have proper premissions for pin") if pinnable.user_id != profile_id
+    errors.add(:pinnable_id, "must have proper permissions for pin") if pinnable.user_id != profile_id
   end
 end

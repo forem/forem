@@ -542,6 +542,31 @@
   text-align: center;
   border-radius: 3px;
   overflow-y: scroll;
+  clipboard-copy {
+    cursor: pointer;
+    img {
+      display: inline-block;
+      height: initial;
+      max-width: 24px;
+      margin: -10px 5px;
+      position: relative;
+    }
+    input {
+      cursor: pointer;
+    }
+    
+    #image-markdown-copy-link-input {
+      margin-left: 24px;
+    }
+    #image-markdown-copy-link-announcer {
+      display: block;
+      padding-top: 10px;
+      
+      &[hidden] {
+        display: none;
+      }
+    }
+  }
   h2 {
     color: $green;
     font-size: 1.9em;

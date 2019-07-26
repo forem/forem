@@ -18,14 +18,6 @@ RSpec.describe "User visits podcast show page", type: :system do
   end
 
   context "when episode may not be playable" do
-    it "displays the status_notice" do
-      podcast = create(:podcast, status_notice: "This podcast may not be playable in the browser")
-      podcast_episode = create(:podcast_episode, podcast_id: podcast.id)
-      visit podcast_episode.path.to_s
-      expect(page).to have_text(I18n.t("podcasts.statuses.unplayable"))
-      expect(page).to have_text("Click here to download")
-    end
-
     it "displays status when episode is not reachable by https" do
       podcast_episode = create(:podcast_episode, https: false)
       visit podcast_episode.path.to_s

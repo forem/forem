@@ -1,5 +1,5 @@
 ---
-title: Configure Enviroment Variables
+title: Configure Environment Variables
 ---
 
 # Configure environment variables/secrets
