@@ -4,7 +4,7 @@ RSpec.describe "User visits /pod page", type: :system do
   let!(:podcast_episode) { create(:podcast_episode) }
   let!(:podcast_episode2) { create(:podcast_episode) }
   let(:podcast) { create(:podcast, reachable: false) }
-  let!(:un_podcast_episode) { create(:podcast_episode, podcast: podcast) }
+  let!(:un_podcast_episode) { create(:podcast_episode, podcast: podcast, reachable: false) }
 
   before { visit "/pod" }
 
