@@ -30,7 +30,7 @@ module Mentions
     def delete_removed_mentions(usernames)
       users = User.where(username: usernames)
       mentions = @notifiable.mentions.where.not(user_id: users).destroy_all
-      Notification.remove_each(mentions) if mentions.present?
+      Notification.remove_all(mentions) if mentions.present?
     end
 
     def create_mention(user)

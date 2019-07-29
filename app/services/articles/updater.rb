@@ -37,6 +37,12 @@ module Articles
       send_notification = article.published && article.saved_change_to_published_at.present?
       Notification.send_to_followers(article, "Published") if send_notification
 
+      # remove related notifications if unpublished
+      if article.saved_changes["published"] == [true, false]
+        Notification.remove_all_by_action_without_delay(notifiable: article, action: "Published")
+        Notification.remove_all(article.comments)
+      end
+
       article.decorate
     end
 
