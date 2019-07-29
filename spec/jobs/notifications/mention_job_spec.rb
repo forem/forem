@@ -5,7 +5,7 @@ RSpec.describe Notifications::MentionJob, type: :job do
 
   describe "#perform_now" do
     let(:new_mention_service) { double }
-    let(:mention) { create(:mention, mentionable: create(:user)) }
+    let(:mention) { create(:mention, mentionable: create(:comment, commentable: create(:article))) }
 
     before do
       allow(new_mention_service).to receive(:call)
