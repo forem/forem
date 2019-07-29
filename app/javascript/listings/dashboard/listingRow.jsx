@@ -20,10 +20,10 @@ export const ListingRow = ({ listing }) => {
     );
 
   return (
-    <div className={`dashboard-listing-row ${isDraft ? 'draft' : ''}`}>
+    <div className={`dashboard-listing-row ${isDraft ? 'draft' : ''} ${listing.published ? '' : 'expired'}`}>
       {orgName(listing)}
       <a href={listingUrl}>
-        <h2>{listing.title}</h2>
+        <h2>{listing.title + (listing.published ? '' : " (expired)")}</h2>
       </a>
       <ListingDate bumpedAt={listing.bumped_at} updatedAt={listing.updated_at} />
       {listing.location && <Location location={listing.location} />}
