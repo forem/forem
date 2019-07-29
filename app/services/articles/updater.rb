@@ -40,7 +40,7 @@ module Articles
       # remove related notifications if unpublished
       if article.saved_changes["published"] == [true, false]
         Notification.remove_all_by_action_without_delay(notifiable: article, action: "Published")
-        Notification.remove_all(article.comments)
+        Notification.remove_all(article.comments.to_a)
       end
 
       article.decorate
