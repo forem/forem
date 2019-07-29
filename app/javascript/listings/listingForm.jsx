@@ -51,7 +51,9 @@ export default class ListingForm extends Component {
       organizationId,
       contactViaConnect,
     } = this.state;
-    
+  
+    const selectOrg = ((organizations && organizations.length > 0) ? <OrgSettings organizations={organizations} organizationId={organizationId} onToggle={this.handleOrgIdChange} /> : '');
+
     if (id === null) {
       return (
         <div>
@@ -59,7 +61,7 @@ export default class ListingForm extends Component {
           <BodyMarkdown defaultValue={bodyMarkdown} onChange={linkState(this, 'bodyMarkdown')} />
           <Categories categoriesForSelect={categoriesForSelect} categoriesForDetails={categoriesForDetails} onChange={linkState(this, 'category')} category={category} />
           <Tags defaultValue={tagList} category={category} onInput={linkState(this, 'tagList')} />
-          {(organizations && organizations.length > 0) && <OrgSettings organizations={organizations} organizationId={organizationId} onToggle={this.handleOrgIdChange} />}
+          {selectOrg}
           <ContactViaConnect defaultValue={contactViaConnect} onChange={linkState(this, 'contactViaConnect')} />
         </div>
       );
@@ -73,7 +75,7 @@ export default class ListingForm extends Component {
           onChange={linkState(this, 'bodyMarkdown')}
         />
         <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
-        {(organizations && organizations.length > 0) && <OrgSettings organizations={organizations} organizationId={organizationId} onToggle={this.handleOrgIdChange} />}
+        {selectOrg}
         <ContactViaConnect checked={contactViaConnect} onChange={linkState(this, 'contactViaConnect')} />
       </div>
     );

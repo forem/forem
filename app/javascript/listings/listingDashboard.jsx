@@ -34,9 +34,14 @@ export class ListingDashboard extends Component {
       filter,
     } = this.state;
 
+    const isExpired = (listing) => listing.bumped_at ? ((Date.now() - new Date(listing.bumped_at.toString()).getTime()) / (1000 * 60 * 60 * 24)) > 30 && (!listing.published) : false
+    const isDraft = (listing) => (listing.bumped_at == null || ((Date.now() - new Date(listing.bumped_at.toString()).getTime()) / (1000 * 60 * 60 * 24)) < 30) && (!listing.published)
+
     const filterListings = (listingsToFilter, selectedFilter) => {
-      if (selectedFilter === "Expired") {
-        return listingsToFilter.filter(listing => listing.published === false)
+      if (selectedFilter === "Draft") {
+        return listingsToFilter.filter(listing => isDraft(listing))
+      } if (selectedFilter === "Expired") {
+        return listingsToFilter.filter(listing => isExpired(listing))
       } if (selectedFilter === "Active") {
         return listingsToFilter.filter(listing => listing.published === true)
       }
@@ -64,7 +69,7 @@ export class ListingDashboard extends Component {
       this.setState({listings: sortedListings});
     }
 
-    const filters = ["All", "Active", "Expired"];
+    const filters = ["All", "Active", "Draft", "Expired"];
     const filterButtons = filters.map(f => (
       <span
         onClick={(event) => {this.setState( {filter:event.target.textContent} )}}
