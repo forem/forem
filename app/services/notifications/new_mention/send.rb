@@ -1,48 +1,36 @@
 module Notifications
-  class Send
+  module NewMention
+    class Send
+      delegate :user_data, to: Notifications
+      delegate :comment_data, to: Notifications
 
-    delegate :user_data, to: Notifications
-    delegate :comment_data, to: Notifications
-    attr_reader :mention
-
-    def initialize(mention)
-      @mention = mention
-    end
-
-    def self.call(*args)
-      new(*args).call
-    end
-
-    def call
-      Notification.create(
-        user_id: mention.user_id,
-        notifiable_id: mention.id,
-        notifiable_type: "Mention",
-        action: nil,
-        json_data: json_data
-      )
-    end
-
-    private 
-
-    def json_data
-      if mention.mentionable_type == "Comment"
-        return {
-          comment: comment,
-          user: user
-        }
-
-      else
-        return { user: user }
+      def initialize(mention)
+        @mention = mention
       end
-    end
 
-    def comment
-      comment_data(mention.mentionable)
-    end
+      def self.call(*args)
+        new(*args).call
+      end
 
-    def user
-      user_data(mention.user_id)
+      def call
+        Notification.create(
+          user_id: mention.user_id,
+          notifiable_id: mention.id,
+          notifiable_type: "Mention",
+          action: nil,
+          json_data: json_data,
+        )
+      end
+
+      private
+
+      attr_reader :mention
+
+      def json_data
+        data = { user: user_data(mention.user) }
+        data[:comment] = comment_data(mention.mentionable) if mention.mentionable_type == "Comment"
+        data
+      end
     end
   end
 end

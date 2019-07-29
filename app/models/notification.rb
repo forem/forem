@@ -73,7 +73,11 @@ class Notification < ApplicationRecord
     end
 
     def send_mention_notification(mention)
-      Notifications::MentionJob.perform_later(mention)
+      Notifications::MentionJob.perform_later(mention.id)
+    end
+
+    def send_mention_notification_without_delay(mention)
+      Notifications::MentionJob.perform_now(mention.id)
     end
 
     def send_welcome_notification(receiver_id)
