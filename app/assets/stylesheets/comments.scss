@@ -663,6 +663,7 @@ a.header-link {
       padding-top: 6%;
       padding-bottom: 6%;
       overflow-wrap: normal;
+      overflow-x: auto;
       code {
         background: #29292e;
         color: #eff0f9;
@@ -698,7 +699,6 @@ a.header-link {
   }
   .details {
     padding: 0px;
-    border-top-left-radius: 3px;
     border-top-left-radius: 3px;
     @include themeable(color, theme-secondary-color, $dark-gray);
     position: relative;

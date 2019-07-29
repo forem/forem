@@ -27,6 +27,7 @@ class Role < ApplicationRecord
                 chatroom_beta_tester
                 comment_banned
                 pro
+                podcast_admin
               ]
             }
   scopify

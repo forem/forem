@@ -30,13 +30,13 @@ export default class ListingForm extends Component {
       organizations,
       organizationId: null, // change this for /edit later
       contactViaConnect: this.listing.contact_via_connect || 'checked',
-    }
+    };
   }
 
   handleOrgIdChange = e => {
     const organizationId = e.target.selectedOptions[0].value;
-    this.setState({ organizationId })
-  }
+    this.setState({ organizationId });
+  };
 
   render() {
     const {
@@ -51,9 +51,9 @@ export default class ListingForm extends Component {
       organizationId,
       contactViaConnect,
     } = this.state;
-
+    
     if (id === null) {
-      return(
+      return (
         <div>
           <Title defaultValue={title} onChange={linkState(this, 'title')} />
           <BodyMarkdown defaultValue={bodyMarkdown} onChange={linkState(this, 'bodyMarkdown')} />
@@ -62,17 +62,20 @@ export default class ListingForm extends Component {
           {(organizations && organizations.length > 0) && <OrgSettings organizations={organizations} organizationId={organizationId} onToggle={this.handleOrgIdChange} />}
           <ContactViaConnect defaultValue={contactViaConnect} onChange={linkState(this, 'contactViaConnect')} />
         </div>
-      )
+      );
     }
     // WIP code for edit
-    return(
+    return (
       <div>
         <Title defaultValue={title} onChange={linkState(this, 'title')} />
-        <BodyMarkdown defaultValue={bodyMarkdown} onChange={linkState(this, 'bodyMarkdown')} />
+        <BodyMarkdown
+          defaultValue={bodyMarkdown}
+          onChange={linkState(this, 'bodyMarkdown')}
+        />
         <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
         {(organizations && organizations.length > 0) && <OrgSettings organizations={organizations} organizationId={organizationId} onToggle={this.handleOrgIdChange} />}
         <ContactViaConnect checked={contactViaConnect} onChange={linkState(this, 'contactViaConnect')} />
       </div>
-      )
+    );
   }
 }

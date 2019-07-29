@@ -70,12 +70,8 @@ export default class MoreConfig extends Component {
           />
         </div>
         <small>
-          Change meta tag
-          {' '}
-          <code>canonical_url</code>
-          {' '}
-if this post was first published elsewhere
-          (like your own blog)
+          Change meta tag <code>canonical_url</code> if this post was first
+          published elsewhere (like your own blog)
         </small>
         <div>
           <label>Series Name</label>

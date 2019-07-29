@@ -25,6 +25,7 @@ class ReservedWords
     contact
     merch
     onboarding_update
+    onboarding_checkbox_update
     rlygenerator
     orlygenerator
     rlyslack

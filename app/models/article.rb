@@ -134,9 +134,9 @@ class Article < ApplicationRecord
     order(column => dir.to_sym)
   }
 
-  algoliasearch per_environment: true, auto_remove: false, enqueue: :trigger_delayed_index do
+  algoliasearch per_environment: true, auto_remove: false, enqueue: :trigger_index do
     attribute :title
-    add_index "searchables", id: :index_id, per_environment: true, enqueue: :trigger_delayed_index do
+    add_index "searchables", id: :index_id, per_environment: true, enqueue: :trigger_index do
       attributes :title, :tag_list, :main_image, :id, :reading_time, :score,
                  :featured, :published, :published_at, :featured_number,
                  :comments_count, :reactions_count, :positive_reactions_count,
@@ -165,7 +165,7 @@ class Article < ApplicationRecord
       customRanking ["desc(search_score)", "desc(hotness_score)"]
     end
 
-    add_index "ordered_articles", id: :index_id, per_environment: true, enqueue: :trigger_delayed_index do
+    add_index "ordered_articles", id: :index_id, per_environment: true, enqueue: :trigger_index do
       attributes :title, :path, :class_name, :comments_count, :reading_time, :language,
                  :tag_list, :positive_reactions_count, :id, :hotness_score, :score, :readable_publish_date, :flare_tag, :user_id,
                  :organization_id, :cloudinary_video_url, :video_duration_in_minutes, :experience_level_rating, :experience_level_rating_distribution
@@ -247,27 +247,27 @@ class Article < ApplicationRecord
     "articles-#{id}"
   end
 
-  def self.trigger_delayed_index(record, remove)
+  def self.trigger_index(record, remove)
     # on destroy an article is removed from index in a before_destroy callback #before_destroy_actions
     return if remove
 
-    record.index_or_remove_from_index_where_appropriate
+    AlgoliaSearch::AlgoliaJob.perform_later(record, "index_or_remove_from_index_where_appropriate")
   end
 
   def index_or_remove_from_index_where_appropriate
     if published && tag_list.exclude?("hiring")
-      delay.index!
+      index!
     else
-      delay.remove_from_index!
-      index = Algolia::Index.new("searchables_#{Rails.env}")
-      index.delay.delete_object("articles-#{id}")
-      index = Algolia::Index.new("ordered_articles_#{Rails.env}")
-      index.delay.delete_object("articles-#{id}")
+      remove_algolia_index
     end
   end
 
   def remove_algolia_index
     remove_from_index!
+    delete_related_objects
+  end
+
+  def delete_related_objects
     index = Algolia::Index.new("searchables_#{Rails.env}")
     index.delete_object("articles-#{id}")
     index = Algolia::Index.new("ordered_articles_#{Rails.env}")

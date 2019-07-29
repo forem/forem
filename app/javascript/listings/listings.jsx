@@ -369,13 +369,7 @@ export class Listings extends Component {
             onSubmit={this.handleSubmitMessage}
           >
             <p>
-              <b>
-                Contact
-                {' '}
-                {openedListing.author.name}
-                {' '}
-                via DEV Connect
-              </b>
+              <b>Contact {openedListing.author.name} via DEV Connect</b>
             </p>
             <textarea
               value={this.state.message}
@@ -391,12 +385,7 @@ export class Listings extends Component {
             <p>
               <em>
                 Message must be relevant and on-topic with the listing. All
-                private interactions 
-                {' '}
-                <b>must</b>
-                {' '}
-abide by the
-                {' '}
+                private interactions <b>must</b> abide by the{' '}
                 <a href="/code-of-conduct">code of conduct</a>
               </em>
             </p>
@@ -425,12 +414,7 @@ abide by the
             </button>
             <p>
               <em>
-                All private interactions 
-                {' '}
-                <b>must</b>
-                {' '}
-abide by the
-                {' '}
+                All private interactions <b>must</b> abide by the{' '}
                 <a href="/code-of-conduct">code of conduct</a>
               </em>
             </p>

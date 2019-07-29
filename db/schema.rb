@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_11_070019) do
+ActiveRecord::Schema.define(version: 2019_07_23_094834) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -667,6 +667,7 @@ ActiveRecord::Schema.define(version: 2019_07_11_070019) do
     t.string "website_url"
     t.index ["guid"], name: "index_podcast_episodes_on_guid", unique: true
     t.index ["media_url"], name: "index_podcast_episodes_on_media_url", unique: true
+    t.index ["podcast_id"], name: "index_podcast_episodes_on_podcast_id"
   end
 
   create_table "podcasts", id: :serial, force: :cascade do |t|
@@ -936,6 +937,7 @@ ActiveRecord::Schema.define(version: 2019_07_11_070019) do
     t.string "bg_color_hex"
     t.text "cached_chat_channel_memberships"
     t.boolean "checked_code_of_conduct", default: false
+    t.boolean "checked_terms_and_conditions", default: false
     t.integer "comments_count", default: 0, null: false
     t.string "config_font", default: "default"
     t.string "config_theme", default: "default"
@@ -996,6 +998,7 @@ ActiveRecord::Schema.define(version: 2019_07_11_070019) do
     t.datetime "last_followed_at"
     t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
     t.datetime "last_notification_activity"
+    t.string "last_onboarding_page"
     t.datetime "last_sign_in_at"
     t.inet "last_sign_in_ip"
     t.string "linkedin_url"
@@ -1011,6 +1014,7 @@ ActiveRecord::Schema.define(version: 2019_07_11_070019) do
     t.string "name"
     t.string "old_old_username"
     t.string "old_username"
+    t.string "onboarding_checklist", default: [], array: true
     t.datetime "onboarding_package_form_submmitted_at"
     t.boolean "onboarding_package_fulfilled", default: false
     t.boolean "onboarding_package_requested", default: false

@@ -64,7 +64,7 @@ export default class Chat extends Component {
       nonChatView: null,
       inviteChannels: [],
       soundOn: true,
-      videoOn: true
+      videoOn: true,
     };
   }
 
@@ -198,7 +198,10 @@ export default class Chat extends Component {
         scrolled: false,
       });
       const channel = channels[0];
-      this.triggerSwitchChannel(channel.chat_channel_id, channel.channel_modified_slug);
+      this.triggerSwitchChannel(
+        channel.chat_channel_id,
+        channel.channel_modified_slug,
+      );
     } else {
       this.setState({ channelsLoaded: true });
     }
@@ -272,13 +275,13 @@ export default class Chat extends Component {
 
   receiveNewMessage = message => {
     const receivedChatChannelId = message.chat_channel_id;
-    let newMessages = []
+    let newMessages = [];
     if (this.state.messages[receivedChatChannelId]) {
       newMessages = this.state.messages[receivedChatChannelId].slice();
       newMessages.push(message);
       if (newMessages.length > 150) {
         newMessages.shift();
-      }  
+      }
     }
     const newShowAlert =
       this.state.activeChannelId === receivedChatChannelId
@@ -450,17 +453,17 @@ export default class Chat extends Component {
     });
   };
 
-  handleVideoParticipantChange = (participants) => {
-    this.setState({videoCallParticipants: participants})
-  }
+  handleVideoParticipantChange = participants => {
+    this.setState({ videoCallParticipants: participants });
+  };
 
   toggleVideoSound = () => {
-    this.setState({soundOn: !this.state.soundOn})
-  }
+    this.setState({ soundOn: !this.state.soundOn });
+  };
 
   toggleVideoVideo = () => {
-    this.setState({videoOn: !this.state.videoOn})
-  }
+    this.setState({ videoOn: !this.state.videoOn });
+  };
 
   triggerSwitchChannel = (id, slug) => {
     this.setState({
@@ -644,23 +647,15 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You and 
-              {' '}
+              You and{' '}
               <a href={`/${activeChannel.channel_modified_slug}`}>
                 {activeChannel.channel_modified_slug}
-              </a>
-              {' '}
-are
-              connected because you both follow each other. All interactions
-              {' '}
+              </a>{' '}
+              are connected because you both follow each other. All interactions{' '}
               <em>
                 <b>must</b>
-              </em>
-              {' '}
-              abide by the 
-              {' '}
-              <a href="/code-of-conduct">code of conduct</a>
-.
+              </em>{' '}
+              abide by the <a href="/code-of-conduct">code of conduct</a>.
             </div>
           </div>
         );
@@ -669,19 +664,11 @@ are
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You have joined 
-              {' '}
-              {activeChannel.channel_name}
-! All interactions
-              {' '}
+              You have joined {activeChannel.channel_name}! All interactions{' '}
               <em>
                 <b>must</b>
-              </em>
-              {' '}
-              abide by the 
-              {' '}
-              <a href="/code-of-conduct">code of conduct</a>
-.
+              </em>{' '}
+              abide by the <a href="/code-of-conduct">code of conduct</a>.
             </div>
           </div>
         );
@@ -885,7 +872,7 @@ are
         : '';
     let channelHeader = <div className="activechatchannel__header">&nbsp;</div>;
     const currentChannel = this.state.activeChannel;
-    let channelConfigImage = ''
+    let channelConfigImage = '';
     if (currentChannel) {
       let channelHeaderInner = '';
       if (currentChannel.channel_type === 'direct') {
@@ -898,7 +885,13 @@ are
             {currentChannel.channel_modified_slug}
           </a>
         );
-        channelConfigImage = <img src={ConfigImage} onClick={this.triggerActiveContent} data-content={`users/by_username?url=${currentChannel.channel_username}`} />;
+        channelConfigImage = (
+          <img
+            src={ConfigImage}
+            onClick={this.triggerActiveContent}
+            data-content={`users/by_username?url=${currentChannel.channel_username}`}
+          />
+        );
       } else {
         channelHeaderInner = (
           <a
@@ -909,16 +902,23 @@ are
             {currentChannel.channel_name}
           </a>
         );
-        channelConfigImage = <img src={ConfigImage} onClick={this.triggerActiveContent} data-content={`chat_channels/${this.state.activeChannelId}`} />;
+        channelConfigImage = (
+          <img
+            src={ConfigImage}
+            onClick={this.triggerActiveContent}
+            data-content={`chat_channels/${this.state.activeChannelId}`}
+          />
+        );
       }
-      if (this.state.activeContent[this.state.activeChannelId] && this.state.activeContent[this.state.activeChannelId].type_of) {
+      if (
+        this.state.activeContent[this.state.activeChannelId] &&
+        this.state.activeContent[this.state.activeChannelId].type_of
+      ) {
         channelConfigImage = '';
       }
       channelHeader = (
         <div className="activechatchannel__header">
-          {channelHeaderInner} 
-          {' '}
-          {channelConfigImage}
+          {channelHeaderInner} {channelConfigImage}
         </div>
       );
     }
@@ -946,8 +946,7 @@ are
           className="activechatchannel__incomingcall"
           onClick={this.answerVideoCall}
         >
-          👋 Incoming Video Call
-          {' '}
+          👋 Incoming Video Call{' '}
         </div>
       );
     }
