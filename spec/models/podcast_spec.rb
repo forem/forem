@@ -128,4 +128,30 @@ RSpec.describe Podcast, type: :model do
       expect(podcast.existing_episode(item)).to eq(nil)
     end
   end
+
+  describe "#admins" do
+    let(:podcast) { create(:podcast) }
+    let(:podcast2) { create(:podcast) }
+    let(:podcast3) { create(:podcast) }
+    let(:user) { create(:user) }
+    let(:user2) { create(:user) }
+    let(:user3) { create(:user) }
+
+    before do
+      user.add_role(:podcast_admin, podcast)
+      user2.add_role(:podcast_admin, podcast)
+      user.add_role(:podcast_admin, podcast3)
+      user3.add_role(:podcast_admin, podcast2)
+      user3.add_role(:podcast_admin, podcast2)
+      [user, user2, user3].each(&:save)
+    end
+
+    it "returns proper admins" do
+      expect(podcast.admins.sort).to eq([user, user2].sort)
+    end
+
+    it "returns proper admins for podcast3" do
+      expect(podcast3.admins).to eq([user])
+    end
+  end
 end
