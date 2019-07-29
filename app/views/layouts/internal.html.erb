@@ -42,6 +42,12 @@
     padding: 2px;
   }
 
+  .wrapper-7 {
+    display: grid;
+    grid-template-columns: 5% 15% 25% 10% 10% 20% 15%;
+    padding: 2px;
+  }
+
   .wrapper-3 {
     display: grid;
     grid-template-columns: 25% 40% 25%%;
@@ -137,6 +143,7 @@
         <% controller_names.each do |name| %>
           <li class="<%= "active" if controller_name == name %>"><a href="/internal/<%= name %>"><%= name %></a></li>
         <% end %>
+        <li class="<%= "active" if controller_name == "podcasts" %>"><a href="/internal/podcasts">pod</a></li>
       </ul>
     </div><!--/.nav-collapse -->
   </div>

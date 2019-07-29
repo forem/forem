@@ -39,8 +39,7 @@ RSpec.describe "Authenticating with twitter" do
       visit root_path
       click_link "Sign In With Twitter"
 
-      expect(page).to have_link("Write your first post now")
-      expect(page).to have_link("Welcome Thread")
+      expect(page.html).to include("onboarding-container")
     end
 
     it "logging in with twitter using invalid credentials" do

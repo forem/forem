@@ -544,5 +544,22 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe "when algolia auto-indexing/removal is triggered" do
+    context "when article is saved" do
+      it "process background auto-indexing" do
+        expect { build(:article, user_id: user.id).save }.to have_enqueued_job.with(kind_of(Article), "index_or_remove_from_index_where_appropriate").on_queue("algoliasearch")
+      end
+    end
+
+    context "when article is to be deleted" do
+      it "does nothing" do
+        # So that job triggered at creation outside of scope
+        # And test only on destroy, and nothing should be triggered
+        current_article = article
+        expect { current_article.destroy }.not_to have_enqueued_job.with(kind_of(Hash), "index_or_remove_from_index_where_appropriate").on_queue("algoliasearch")
+      end
+    end
+  end
+
   include_examples "#sync_reactions_count", :article
 end

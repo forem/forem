@@ -1,13 +1,6 @@
 source "https://rubygems.org"
 ruby "2.6.3"
 
-# Enforce git to transmitted via https.
-# workaround until bundler 2.0 is released.
-git_source(:github) do |repo_name|
-  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
-  "https://github.com/#{repo_name}.git"
-end
-
 group :production do
   gem "nakayoshi_fork", "~> 0.0.4" # solves CoW friendly problem on MRI 2.2 and later
   gem "rack-host-redirect", "~> 1.3" # Lean and simple host redirection via Rack middleware
@@ -79,7 +72,7 @@ gem "recaptcha", "~> 5.0", require: "recaptcha/rails" # Helpers for the reCAPTCH
 gem "redcarpet", "~> 3.4" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "reverse_markdown", "~> 1.1" # Map simple html back into markdown
 gem "rolify", "~> 5.2" # Very simple Roles library
-gem "rouge", "~> 3.6" # A pure-ruby code highlighter
+gem "rouge", "~> 3.7" # A pure-ruby code highlighter
 gem "rubyzip", "~> 1.2" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sail", "~> 1.5" # Sail is a lightweight Rails engine that brings an admin panel for managing configuration settings on a live Rails app
@@ -147,7 +140,7 @@ group :test do
   gem "pundit-matchers", "~> 1.6" # A set of RSpec matchers for testing Pundit authorisation policies
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples
   gem "ruby-prof", "~> 0.18", require: false # ruby-prof is a fast code profiler for Ruby
-  gem "shoulda-matchers", "4.1.0", require: false # Simple one-liner tests for common Rails functionality
+  gem "shoulda-matchers", "4.1.1", require: false # Simple one-liner tests for common Rails functionality
   gem "simplecov", "~> 0.17", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers
   gem "stripe-ruby-mock", "~> 2.5", require: "stripe_mock" # A drop-in library to test stripe without hitting their servers

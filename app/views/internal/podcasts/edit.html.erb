@@ -1,0 +1,43 @@
+<h1>
+  <%= link_to @podcast.title, "/#{@podcast.slug}" %>
+</h1>
+<% if @podcast.admins.any? %>
+  <p><strong>Admins: </strong></p>
+  <ul>
+    <% @podcast.admins.each do |admin| %>
+      <%= form_for @podcast, url: remove_admin_internal_podcast_path(@podcast.id), html: { method: :delete } do |f| %>
+        <li>
+          <%= link_to "@#{admin.username}", "/#{admin.username}" %>
+          <%= f.hidden_field :user_id, value: admin.id %>
+          <%= f.submit "Remove" %>
+        </li>
+        <br>
+      <% end %>
+    <% end %>
+  </ul>
+<% else %>
+  <p>There are no admins for this podcast.</p>
+<% end %>
+
+<%= form_for @podcast, url: add_admin_internal_podcast_path(@podcast.id), html: { method: :post } do |f| %>
+  <div>
+    <%= f.label "Add Admin (by user_id) " %>
+    <%= f.text_field :user_id, value: "" %>
+    <%= f.submit "Add Admin" %>
+  </div>
+<% end %>
+
+<%= form_for [:internal, @podcast] do |f| %>
+  <hr>
+  <div>
+    <%= f.label :title %>
+    <%= f.text_field :title %>
+  </div>
+  <div>
+    <%= f.label :feed_url %>
+    <%= f.text_field :feed_url %>
+  </div>
+  <div>
+    <%= f.submit %>
+  </div>
+<% end %>

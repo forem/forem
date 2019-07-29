@@ -65,16 +65,18 @@ class ClassifiedListingsController < ApplicationController
     # NOTE: this should probably be split in three different actions: bump, unpublish, publish
     if listing_params[:action] == "bump"
       cost = ClassifiedListing.cost_by_category(@classified_listing.category)
-      if current_user.credits.unspent.size >= cost
-        ActiveRecord::Base.transaction do
-          Credits::Buyer.call(
-            purchaser: current_user,
-            purchase: @classified_listing,
-            cost: cost,
-          )
 
-          raise ActiveRecord::Rollback unless bump_listing
-        end
+      org = Organization.find_by(id: @classified_listing.organization_id)
+
+      available_org_credits = org.credits.unspent if org
+      available_user_credits = current_user.credits.unspent
+
+      if org && available_org_credits.size >= cost
+        charge_credits_before_bump(org, cost)
+      elsif available_user_credits.size >= cost
+        charge_credits_before_bump(current_user, cost)
+      else
+        redirect_to(credits_path, notice: "Not enough available credits") && return
       end
     elsif listing_params[:action] == "unpublish"
       unpublish_listing
@@ -133,6 +135,18 @@ class ClassifiedListingsController < ApplicationController
       @classified_listing.cached_tag_list = listing_params[:tag_list]
       @organizations = current_user.organizations
       render :new
+    end
+  end
+
+  def charge_credits_before_bump(purchaser, cost)
+    ActiveRecord::Base.transaction do
+      Credits::Buyer.call(
+        purchaser: purchaser,
+        purchase: @classified_listing,
+        cost: cost,
+      )
+
+      raise ActiveRecord::Rollback unless bump_listing
     end
   end
 

@@ -28,7 +28,11 @@ function loadForm() {
     const { article, organizations, version } = root.dataset;
 
     render(
-      <ArticleForm article={article} organizations={organizations} version={version} />,
+      <ArticleForm
+        article={article}
+        organizations={organizations}
+        version={version}
+      />,
       root,
       root.firstElementChild,
     );

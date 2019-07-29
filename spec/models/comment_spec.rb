@@ -259,5 +259,27 @@ RSpec.describe Comment, type: :model do
     end
   end
 
+  describe "when algolia auto-indexing/removal is triggered" do
+    context "when record.deleted == false" do
+      it "checks auto-indexing" do
+        expect { build(:comment, user_id: user2.id, commentable_id: article.id).save }.to have_enqueued_job.with(kind_of(Comment), "index!").on_queue("algoliasearch")
+      end
+    end
+
+    context "when record.deleted == true" do
+      before do
+        comment.deleted = true
+      end
+
+      it "checks auto-indexing" do
+        expect { comment.save! }.to have_enqueued_job.with(kind_of(Comment), "remove_algolia_index").on_queue("algoliasearch")
+      end
+    end
+
+    it "checks auto-removing background process" do
+      expect { comment.destroy }.to have_enqueued_job.with({ "_aj_globalid" => "gid://practical-developer/Comment/#{comment.id}" }, "remove_from_index!").on_queue("algoliasearch")
+    end
+  end
+
   include_examples "#sync_reactions_count", :article_comment
 end
