@@ -733,7 +733,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    staccato (0.5.1)
+    staccato (0.5.2)
     stackprof (0.2.12)
     storext (3.0.0)
       activerecord (>= 4.0, < 6.0)
