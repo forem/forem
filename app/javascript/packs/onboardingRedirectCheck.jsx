@@ -1,4 +1,5 @@
 import { getUserDataAndCsrfToken } from '../chat/util';
+import getUnopenedChannels from '../src/utils/getUnopenedChannels';
 
 HTMLDocument.prototype.ready = new Promise(resolve => {
   if (document.readyState !== 'loading') {
@@ -28,6 +29,7 @@ document.ready.then(
     .then(({ currentUser, csrfToken }) => {
       window.currentUser = currentUser;
       window.csrfToken = csrfToken;
+      getUnopenedChannels();
 
       if (redirectableLocation() && !onboardingSkippable(currentUser)) {
         window.location = `${window.location.origin}/onboarding?referrer=${window.location}`;
