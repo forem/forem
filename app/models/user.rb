@@ -157,12 +157,12 @@ class User < ApplicationRecord
   before_destroy :destroy_follows
   before_destroy :unsubscribe_from_newsletters
 
-  algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
+  algoliasearch per_environment: true, enqueue: true do
     attribute :name
     add_index "searchables",
               id: :index_id,
               per_environment: true,
-              enqueue: :trigger_delayed_index do
+              enqueue: true do
       attribute :user do
         { username: user.username,
           name: user.username,
@@ -187,14 +187,6 @@ class User < ApplicationRecord
 
   def estimated_default_language
     language_settings["estimated_default_language"]
-  end
-
-  def self.trigger_delayed_index(record, remove)
-    if remove
-      record.delay.remove_from_index! if record&.persisted?
-    else
-      record.delay.index!
-    end
   end
 
   def tag_line
