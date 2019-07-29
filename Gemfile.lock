@@ -289,8 +289,7 @@ GEM
     email_validator (2.0.1)
       activemodel
     emoji_regex (2.0.0)
-    envied (0.9.1)
-      coercible (~> 1.0)
+    envied (0.9.3)
       thor (~> 0.15)
     environs (1.1.0)
     equalizer (0.0.11)
