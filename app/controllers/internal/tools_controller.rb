@@ -22,13 +22,14 @@ class Internal::ToolsController < Internal::ApplicationController
   end
 
   def handle_article_cache
-    article = User.find(params[:bust_artice].to_i)
+    article = User.find(params[:bust_article].to_i)
     article.touch(:last_commented_at)
     CacheBuster.new.bust_article(article)
   end
 
   def bust_link(link)
     cb = CacheBuster.new
+    link.sub!("https://dev.to", "") if link.starts_with?("https://dev.to")
     cb.bust(link)
     cb.bust(link + "/")
     cb.bust(link + "?i=i")

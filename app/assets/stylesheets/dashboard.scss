@@ -36,11 +36,7 @@
     display: inline-block;
     width: fit-content;
     margin-bottom: 10px;
-    @include themeable(
-      color,
-      theme-color,
-      $black
-    );
+    @include themeable(color, theme-color, $black);
     @include themeable(
       background,
       theme-container-background,
@@ -55,16 +51,8 @@
     }
 
     &.active {
-      @include themeable(
-        background,
-        theme-secondary-color,
-        $dark-gray
-      );
-      @include themeable(
-        color,
-        theme-container-background,
-        white
-      );
+      @include themeable(background, theme-secondary-color, $dark-gray);
+      @include themeable(color, theme-container-background, white);
     }
 
     &.back-nav {
@@ -402,7 +390,7 @@
 
         & li.ellipsis-menu-item {
           list-style: none;
-          
+
           & form * {
             background-color: transparent;
           }
@@ -513,13 +501,13 @@
 
     .dashboard-actions {
       padding: 7px 0px 10px;
-
-      .mute-form {
+      
+      form {
         margin: 0;
         padding: 0;
         display: inline;
 
-        input[type='submit'] {
+        input[type='submit'], button {
           height: 30.4px;
           border: 2px solid transparent;
         }
@@ -721,6 +709,7 @@
   padding: 20px;
   margin: 5px;
   @include themeable(background-color, theme-container-background, #fff);
+
   h4 {
     font-size: 0.8em;
     margin: 0px;
@@ -729,6 +718,28 @@
 
   .stat-percentage {
     font-size: 0.8em;
+  }
+
+  table {
+    margin: 1rem auto;
+    text-align: left;
+    width: 50%;
+
+    thead {
+      line-height: 3rem;
+
+      th:last-child {
+        text-align: right;
+      }
+    }
+
+    tbody {
+      line-height: 2rem;
+
+      td:last-child {
+        text-align: right;
+      }
+    }
   }
 }
 
@@ -747,6 +758,19 @@
   padding: 50px 0px 120px;
   margin-bottom: -160px;
   line-height: 1.3em;
+  .manage-page-error {
+    background:$red;
+    color:white;
+    padding:20px 10px;
+    line-height: 1.4em;
+    border-radius: 3px;
+  }
+  .manage-page-success {
+    background:$green;
+    padding:20px 10px;
+    line-height: 1.4em;
+    border-radius: 3px;
+  }
   li {
     margin: 20px auto;
   }

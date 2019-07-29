@@ -3,12 +3,14 @@
 
 .credits-container {
   margin: 50px auto;
+
   .notice {
     background: $green;
     padding: 30px 0px;
     margin-top: 68px;
     text-align: center;
   }
+
   .credits-banner {
     background-color: $dark-purple;
     background-image: linear-gradient(141deg, $dark-purple 0%, #1f89db 51%, #2981e5 75%);
@@ -33,7 +35,7 @@
       font-size: 1.8em;
     }
   }
-  
+
 
   form#new_credit {
     width: 500px;
@@ -44,13 +46,13 @@
 
   .InputElement {
     @include themeable(
-      background-color, 
-      theme-container-background, 
+      background-color,
+      theme-container-background,
       white
     );
     @include themeable(
-      color, 
-      theme-color, 
+      color,
+      theme-color,
       $black
     );
   }
@@ -62,13 +64,13 @@
     border: 1px solid transparent;
     border-radius: 4px;
     @include themeable(
-      background-color, 
-      theme-container-background, 
+      background-color,
+      theme-container-background,
       white
     );
     @include themeable(
-      color, 
-      theme-color, 
+      color,
+      theme-color,
       $black
     );
 
@@ -196,13 +198,13 @@
   }
   button#add-new-card {
     @include themeable(
-      background-color, 
-      theme-container-background, 
+      background-color,
+      theme-container-background,
       $light-gray
     );
     @include themeable(
-      color, 
-      theme-color, 
+      color,
+      theme-color,
       $black
     );
     font-size: 15px;
@@ -221,8 +223,8 @@
     }
     .credit-card-component {
       @include themeable(
-        background, 
-        theme-container-accent-background, 
+        background,
+        theme-container-accent-background,
         $lightest-gray
       );
       border-radius: 3px;
@@ -235,8 +237,8 @@
   label.main-form-label {
     margin-bottom: 4px;
     @include themeable(
-      background, 
-      theme-container-accent-background, 
+      background,
+      theme-container-accent-background,
       $light-gray
     );
     border-radius: 3px;
@@ -249,11 +251,12 @@
   .existing-credits {
     background: $dark-purple;
     color: white;
-    width: 600px;
+    width: 800px;
     margin: 100px auto;
     padding: 30px;
     border-radius: 3px;
     text-align: center;
+
     .existing-credits-status {
       font-size: 1.8em;
       font-weight: bold;
@@ -263,12 +266,37 @@
         font-size: initial;
       }
     }
-    a {
+
+    > a {
       color: white;
       border: 3px solid white;
       padding: 10px 30px;
       border-radius: 100px;
       font-weight: bold;
     }
+  }
+
+  .ledger {
+    margin: 2rem auto;
+    text-align: right;
+    width: 700px;
+
+    caption {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    td {
+      padding-top: 1.1rem;
+    }
+
+    .misc {
+      td {
+        padding-top: 1.5rem;
+        &:nth-child(2) { font-style: italic; }
+      }
+    }
+
+    a { color: #fff; }
   }
 }

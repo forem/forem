@@ -1,79 +1,85 @@
 import { h, Component } from 'preact';
+import { PropTypes } from 'preact-compat';
+import debounce from 'lodash.debounce';
+
+import {
+  defaultState,
+  loadNextPage,
+  onSearchBoxType,
+  performInitialSearch,
+  search,
+  toggleTag,
+} from '../searchableItemList/searchableItemList';
+import { ItemListItem } from '../src/components/ItemList/ItemListItem';
+import { ItemListItemArchiveButton } from '../src/components/ItemList/ItemListItemArchiveButton';
+import { ItemListLoadMoreButton } from '../src/components/ItemList/ItemListLoadMoreButton';
+import { ItemListTags } from '../src/components/ItemList/ItemListTags';
+
+const STATUS_VIEW_VALID = 'valid';
+const STATUS_VIEW_ARCHIVED = 'archived';
+const READING_LIST_ARCHIVE_PATH = '/readinglist/archive';
+const READING_LIST_PATH = '/readinglist';
 
 export class ReadingList extends Component {
-  state = {
-    readingListItems: [],
-    query: '',
-    index: '',
-    availableTags: [],
-    selectedTags: [],
-    itemsLoaded: false,
-    archiving: false,
-    statusView: document.getElementById('reading-list').dataset.view,
-  };
+  constructor(props) {
+    super(props);
 
-  componentDidMount() {
-    const algoliaId = document.querySelector("meta[name='algolia-public-id']")
-      .content;
-    const algoliaKey = document.getElementById('reading-list').dataset.algolia;
-    const env = document.querySelector("meta[name='environment']").content;
-    const client = algoliasearch(algoliaId, algoliaKey);
-    const index = client.initIndex(`SecuredReactions_${env}`);
-    const t = this;
-    index
-      .search('', { hitsPerPage: 64, filters: `status:${t.state.statusView}` })
-      .then(content => {
-        t.setState({
-          readingListItems: content.hits,
-          index,
-          itemsLoaded: true,
-        });
-      });
-    const waitingOnUser = setInterval(() => {
-      if (window.currentUser) {
-        t.setState({ availableTags: window.currentUser.followed_tag_names });
-        clearInterval(waitingOnUser);
-      }
-    }, 1);
+    const { availableTags, statusView } = this.props;
+    this.state = defaultState({ availableTags, archiving: false, statusView });
+
+    // bind and initialize all shared functions
+    this.onSearchBoxType = debounce(onSearchBoxType.bind(this), 300, {
+      leading: true,
+    });
+    this.loadNextPage = loadNextPage.bind(this);
+    this.performInitialSearch = performInitialSearch.bind(this);
+    this.search = search.bind(this);
+    this.toggleTag = toggleTag.bind(this);
   }
 
-  handleTyping = e => {
-    const query = e.target.value;
-    const { selectedTags, statusView } = this.state;
-    this.listSearch(query, selectedTags, statusView);
+  componentDidMount() {
+    const { hitsPerPage, statusView } = this.state;
+
+    this.performInitialSearch({
+      containerId: 'reading-list',
+      indexName: 'SecuredReactions',
+      searchOptions: {
+        hitsPerPage,
+        filters: `status:${statusView}`,
+      },
+    });
+  }
+
+  toggleStatusView = event => {
+    event.preventDefault();
+
+    const { query, selectedTags } = this.state;
+
+    const isStatusViewValid = this.statusViewValid();
+    const newStatusView = isStatusViewValid
+      ? STATUS_VIEW_ARCHIVED
+      : STATUS_VIEW_VALID;
+    const newPath = isStatusViewValid
+      ? READING_LIST_ARCHIVE_PATH
+      : READING_LIST_PATH;
+
+    // empty items so that changing the view will start from scratch
+    this.setState({ statusView: newStatusView, items: [] });
+
+    this.search(query, {
+      page: 0,
+      tags: selectedTags,
+      statusView: newStatusView,
+    });
+
+    // change path in the address bar
+    window.history.replaceState(null, null, newPath);
   };
 
-  toggleTag = (e, tag) => {
-    e.preventDefault();
-    const { query, selectedTags, statusView } = this.state;
-    const newTags = selectedTags;
-    if (newTags.indexOf(tag) === -1) {
-      newTags.push(tag);
-    } else {
-      newTags.splice(newTags.indexOf(tag), 1);
-    }
-    this.setState({ selectedTags: newTags });
-    this.listSearch(query, newTags, statusView);
-  };
+  toggleArchiveStatus = (event, item) => {
+    event.preventDefault();
 
-  toggleStatusView = e => {
-    e.preventDefault();
-    const { statusView, query, selectedTags } = this.state;
-    if (statusView === 'valid') {
-      this.setState({ statusView: 'archived' });
-      this.listSearch(query, selectedTags, 'archived');
-      window.history.replaceState(null, null, '/readinglist/archive');
-    } else {
-      this.setState({ statusView: 'valid' });
-      this.listSearch(query, selectedTags, 'valid');
-      window.history.replaceState(null, null, '/readinglist');
-    }
-  };
-
-  archive = (e, item) => {
-    e.preventDefault();
-    const { statusView, readingListItems } = this.state;
-    const t = this;
+    const { statusView, items, totalCount } = this.state;
     window.fetch(`/reading_list_items/${item.id}`, {
       method: 'PUT',
       headers: {
@@ -83,156 +89,153 @@ export class ReadingList extends Component {
       body: JSON.stringify({ current_status: statusView }),
       credentials: 'same-origin',
     });
-    const newItems = readingListItems;
+
+    const t = this;
+    const newItems = items;
     newItems.splice(newItems.indexOf(item), 1);
-    t.setState({ archiving: true, readingListItems: newItems });
+    t.setState({
+      archiving: true,
+      items: newItems,
+      totalCount: totalCount - 1,
+    });
+
+    // hide the snackbar in a few moments
     setTimeout(() => {
       t.setState({ archiving: false });
-    }, 1800);
+    }, 1000);
   };
 
-  listSearch(query, tags, statusView) {
-    const t = this;
-    const { index } = this.state;
-    const filters = { hitsPerPage: 256, filters: `status:${statusView}` };
-    if (tags.length > 0) {
-      filters.tagFilters = tags;
+  statusViewValid() {
+    const { statusView } = this.state;
+    return statusView === STATUS_VIEW_VALID;
+  }
+
+  renderEmptyItems() {
+    const { itemsLoaded, selectedTags, query } = this.state;
+
+    if (itemsLoaded && this.statusViewValid()) {
+      return (
+        <div className="items-empty">
+          <h1>
+            {selectedTags.length === 0 && query.length === 0
+              ? 'Your Reading List is Lonely'
+              : 'Nothing with this filter 🤔'}
+          </h1>
+
+          <h3>
+            Hit the
+            <span className="highlight">SAVE</span>
+            or
+            <span className="highlight">
+              Bookmark
+              <span role="img" aria-label="Bookmark">
+                🔖
+              </span>
+            </span>
+            to start your Collection
+          </h3>
+        </div>
+      );
     }
-    index.search(query, filters).then(content => {
-      t.setState({ readingListItems: content.hits, query });
-    });
+
+    return (
+      <div className="items-empty">
+        <h1>
+          {selectedTags.length === 0 && query.length === 0
+            ? 'Your Archive List is Lonely'
+            : 'Nothing with this filter 🤔'}
+        </h1>
+      </div>
+    );
   }
 
   render() {
     const {
-      readingListItems,
+      items,
+      itemsLoaded,
+      totalCount,
       availableTags,
       selectedTags,
-      itemsLoaded,
-      query,
-      statusView,
+      showLoadMoreButton,
       archiving,
     } = this.state;
-    let allItems = readingListItems.map(item => (
-      <div className="readinglist-item-wrapper">
-        <a className="readinglist-item" href={item.searchable_reactable_path}>
-          <div className="readinglist-item-title">
-            {item.searchable_reactable_title}
-          </div>
-          <div className="readinglist-item-details">
-            <a
-              className="readinglist-item-user"
-              href={`/${item.reactable_user.username}`}
-            >
-              <img
-                src={item.reactable_user.profile_image_90}
-                alt="Profile Pic"
-              />
-              {item.reactable_user.name}・{item.reactable_published_date}・
-              {item.reading_time} min read・
-            </a>
-            <span className="readinglist-item-tag-collection">
-              {item.reactable_tags.map(tag => (
-                <a className="readinglist-item-tag" href={`/t/${tag}`}>
-                  #{tag}
-                </a>
-              ))}
-            </span>
-          </div>
-        </a>
-        <button
-          className="readinglist-archive-butt"
-          onClick={e => this.archive(e, item)}
-          type="button"
-        >
-          {statusView === 'valid' ? 'archive' : 'unarchive'}
-        </button>
-      </div>
-    ));
-    if (readingListItems.length === 0 && itemsLoaded) {
-      if (statusView === 'valid') {
-        allItems = (
-          <div className="readinglist-empty">
-            <h1>
-              {selectedTags.length === 0 && query.length === 0
-                ? 'Your Reading List is Lonely'
-                : 'Nothing with this filter 🤔'}
-            </h1>
-            <h3>
-              Hit the
-              <span class="highlight">SAVE</span>
-              or
-              <span class="highlight">
-                Bookmark
-                <span role="img" aria-label="Bookmark">
-                  🔖
-                </span>
-              </span>
-              to start your Collection
-            </h3>
-          </div>
-        );
-      } else {
-        allItems = (
-          <div className="readinglist-empty">
-            <h1>
-              {selectedTags.length === 0 && query.length === 0
-                ? 'Your Archive List is Lonely'
-                : 'Nothing with this filter 🤔'}
-            </h1>
-          </div>
-        );
-      }
-    }
-    const allTags = availableTags.map(tag => (
-      <a
-        className={`readinglist-tag ${
-          selectedTags.indexOf(tag) > -1 ? 'selected' : ''
-        }`}
-        href={`/t/${tag}`}
-        data-no-instant
-        onClick={e => this.toggleTag(e, tag)}
-      >
-        #{tag}
-      </a>
-    ));
+
+    const isStatusViewValid = this.statusViewValid();
+
+    const archiveButtonLabel = isStatusViewValid ? 'archive' : 'unarchive';
+    const itemsToRender = items.map(item => {
+      return (
+        <ItemListItem item={item}>
+          <ItemListItemArchiveButton
+            text={archiveButtonLabel}
+            onClick={e => this.toggleArchiveStatus(e, item)}
+          />
+        </ItemListItem>
+      );
+    });
+
     const snackBar = archiving ? (
       <div className="snackbar">
-        {statusView === 'valid' ? 'Archiving' : 'Unarchiving'}
-        (async)
+        {isStatusViewValid ? 'Archiving...' : 'Unarchiving...'}
       </div>
     ) : (
       ''
     );
     return (
-      <div className="home readinglist-home">
+      <div className="home item-list">
         <div className="side-bar">
-          <div className="widget readinglist-filters">
-            <input onKeyUp={this.handleTyping} placeHolder="search your list" />
-            <div className="readinglist-tags">{allTags}</div>
-            <div className="readinglist-view-toggle">
+          <div className="widget filters">
+            <input
+              onKeyUp={this.onSearchBoxType}
+              placeHolder="search your list"
+            />
+
+            <ItemListTags
+              availableTags={availableTags}
+              selectedTags={selectedTags}
+              onClick={this.toggleTag}
+            />
+
+            <div className="status-view-toggle">
               <a
-                href="/readinglist/archive"
+                href={READING_LIST_ARCHIVE_PATH}
                 onClick={e => this.toggleStatusView(e)}
                 data-no-instant
               >
-                {statusView === 'valid' ? 'View Archive' : 'View Reading List'}
+                {isStatusViewValid ? 'View Archive' : 'View Reading List'}
               </a>
             </div>
           </div>
         </div>
-        <div
-          className={`readinglist-results ${
-            itemsLoaded ? 'readinglist-results--loaded' : ''
-          }`}
-        >
-          <div className="readinglist-results-header">
-            {statusView === 'valid' ? 'Reading List' : 'Archive'}
+
+        <div className="items-container">
+          <div className={`results ${itemsLoaded ? 'results--loaded' : ''}`}>
+            <div className="results-header">
+              {isStatusViewValid ? 'Reading List' : 'Archive'}
+              {` (${totalCount > 0 ? totalCount : 'empty'})`}
+            </div>
+            <div>
+              {items.length > 0 ? itemsToRender : this.renderEmptyItems()}
+            </div>
           </div>
-          <div>{allItems}</div>
+
+          <ItemListLoadMoreButton
+            show={showLoadMoreButton}
+            onClick={this.loadNextPage}
+          />
         </div>
+
         {snackBar}
       </div>
     );
   }
 }
+
+ReadingList.defaultProps = {
+  statusView: STATUS_VIEW_VALID,
+};
+
+ReadingList.propTypes = {
+  availableTags: PropTypes.arrayOf(PropTypes.string).isRequired,
+  statusView: PropTypes.oneOf([STATUS_VIEW_VALID, STATUS_VIEW_ARCHIVED]),
+};

@@ -41,23 +41,32 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).not_to include(ad.processed_html)
     end
 
-    it "has sponsors displayed" do
-      org = create(:organization, is_gold_sponsor: true, sponsorship_tagline: "Oh Yeah!!!")
+    it "has gold sponsors displayed" do
+      org = create(:organization)
+      sponsorship = create(:sponsorship, level: "gold", tagline: "Oh Yeah!!!", status: "live", organization: org)
       get "/"
-      expect(response.body).to include(org.sponsorship_tagline)
+      expect(response.body).to include(sponsorship.tagline)
     end
 
-    it "does not display non-sponsor org" do
-      org = create(:organization, is_gold_sponsor: false, sponsorship_tagline: "Oh Yeah!!!")
+    it "does not display silver sponsors" do
+      org = create(:organization)
+      sponsorship = create(:sponsorship, level: "silver", tagline: "Oh Yeah!!!", status: "live", organization: org)
       get "/"
-      expect(response.body).not_to include(org.sponsorship_tagline)
+      expect(response.body).not_to include(sponsorship.tagline)
+    end
+
+    it "does not display non live gold sponsorships" do
+      org = create(:organization)
+      sponsorship = create(:sponsorship, level: "gold", tagline: "Oh Yeah!!!", status: "pending", organization: org)
+      get "/"
+      expect(response.body).not_to include(sponsorship.tagline)
     end
 
     it "shows listings" do
       user = create(:user)
       listing = create(:classified_listing, user_id: user.id)
       get "/"
-      expect(response.body).to include(listing.title)
+      expect(response.body).to include(CGI.escapeHTML(listing.title))
     end
   end
 
@@ -71,20 +80,21 @@ RSpec.describe "StoriesIndex", type: :request do
   describe "GET podcast index" do
     it "renders page with proper header" do
       podcast = create(:podcast)
+      create(:podcast_episode, podcast: podcast)
       get "/" + podcast.slug
       expect(response.body).to include(podcast.title)
     end
   end
 
   describe "GET tag index" do
+    let(:tag) { create(:tag) }
+
     it "renders page with proper header" do
-      tag = create(:tag)
       get "/t/#{tag.name}"
       expect(response.body).to include(tag.name)
     end
 
     it "renders page with top/week etc." do
-      tag = create(:tag)
       get "/t/#{tag.name}/top/week"
       expect(response.body).to include(tag.name)
       get "/t/#{tag.name}/top/month"
@@ -96,10 +106,27 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     it "renders tag after alias change" do
-      tag = create(:tag)
       tag2 = create(:tag, alias_for: tag.name)
       get "/t/#{tag2.name}"
       expect(response.body).to redirect_to "/t/#{tag.name}"
+    end
+
+    it "does not render sponsor if not live" do
+      org = create(:organization)
+      sponsorship = create(:sponsorship, level: :tag, tagline: "Oh Yeah!!!", status: "pending", organization: org, sponsorable: tag)
+
+      get "/t/#{tag.name}"
+      expect(response.body).not_to include("is sponsored by")
+      expect(response.body).not_to include(sponsorship.tagline)
+    end
+
+    it "renders live sponsor" do
+      org = create(:organization)
+      sponsorship = create(:sponsorship, level: :tag, tagline: "Oh Yeah!!!", status: "live", organization: org, sponsorable: tag)
+
+      get "/t/#{tag.name}"
+      expect(response.body).to include("is sponsored by")
+      expect(response.body).to include(sponsorship.tagline)
     end
   end
 end

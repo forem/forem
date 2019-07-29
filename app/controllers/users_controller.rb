@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   def edit
     unless current_user
       skip_authorization
-      return redirect_to "/enter"
+      return redirect_to sign_up_path
     end
     set_user
     set_tabs(params["tab"] || "profile")
@@ -18,7 +18,7 @@ class UsersController < ApplicationController
     set_user
     set_tabs(params["user"]["tab"])
     if @user.update(permitted_attributes(@user))
-      RssReader.new.delay.fetch_user(@user) if @user.feed_url.present?
+      RssReaderFetchUserJob.perform_later(@user.id)
       notice = "Your profile was successfully updated."
       if @user.export_requested?
         notice += " The export will be emailed to you shortly."
@@ -96,16 +96,31 @@ class UsersController < ApplicationController
   end
 
   def onboarding_update
-    current_user.update(JSON.parse(params[:user]).to_h) if params[:user]
+    current_user.assign_attributes(params[:user].permit(:summary, :location, :employment_title, :employer_name, :last_onboarding_page)) if params[:user]
     current_user.saw_onboarding = true
     authorize User
-    if current_user.save!
+    if current_user.save
       respond_to do |format|
-        format.json { render json: { outcome: "onboarding closed" } }
+        format.json { render json: { outcome: "updated successfully" } }
       end
     else
       respond_to do |format|
-        format.json { render json: { outcome: "onboarding opened" } }
+        format.json { render json: { outcome: "update failed" } }
+      end
+    end
+  end
+
+  def onboarding_checkbox_update
+    current_user.assign_attributes(params[:user].permit(:checked_code_of_conduct, :checked_terms_and_conditions, :email_membership_newsletter, :email_digest_periodic)) if params[:user]
+    current_user.saw_onboarding = true
+    authorize User
+    if current_user.save
+      respond_to do |format|
+        format.json { render json: { outcome: "updated successfully" } }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: { outcome: "update failed" } }
       end
     end
   end

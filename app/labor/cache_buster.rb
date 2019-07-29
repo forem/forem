@@ -42,6 +42,7 @@ class CacheBuster
 
   def bust_article(article)
     bust("/" + article.user.username)
+    bust(article.path)
     bust(article.path + "/")
     bust(article.path + "?i=i")
     bust(article.path + "/?i=i")
@@ -110,5 +111,63 @@ class CacheBuster
         bust("/t/#{tag}?i=i")
       end
     end
+  end
+
+  def bust_page(slug)
+    bust "/page/#{slug}"
+    bust "/page/#{slug}?i=i"
+    bust "/#{slug}"
+    bust "/#{slug}?i=i"
+  end
+
+  def bust_tag(name)
+    bust("/t/#{name}")
+    bust("/t/#{name}?i=i")
+    bust("/t/#{name}/?i=i")
+    bust("/t/#{name}/")
+    bust("/tags")
+  end
+
+  def bust_events
+    bust("/events")
+    bust("/events?i=i")
+  end
+
+  def bust_podcast(path)
+    bust("/" + path)
+  end
+
+  def bust_organization(organization, slug)
+    bust("/#{slug}")
+    begin
+      organization.articles.find_each do |article|
+        bust(article.path)
+      end
+    rescue StandardError => e
+      Rails.logger.error("Tag issue: #{e}")
+    end
+  end
+
+  def bust_podcast_episode(podcast_episode, path, podcast_slug)
+    podcast_episode.purge
+    podcast_episode.purge_all
+    begin
+      bust(path)
+      bust("/" + podcast_slug)
+      bust("/pod")
+      bust(path)
+    rescue StandardError => e
+      Rails.logger.warn(e)
+    end
+    podcast_episode.purge
+    podcast_episode.purge_all
+  end
+
+  def bust_classified_listings(classified_listing)
+    bust("/listings")
+    bust("/listings?i=i")
+    bust("/listings/#{classified_listing.category}/#{classified_listing.slug}")
+    bust("/listings/#{classified_listing.category}/#{classified_listing.slug}?i=i")
+    bust("/listings/#{classified_listing.category}")
   end
 end

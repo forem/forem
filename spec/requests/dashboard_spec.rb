@@ -4,7 +4,9 @@ RSpec.describe "Dashboards", type: :request do
   let(:user)          { create(:user) }
   let(:second_user)   { create(:user) }
   let(:super_admin)   { create(:user, :super_admin) }
-  let(:article)       { create(:article, user_id: user.id) }
+  let(:pro_user)      { create(:user, :pro) }
+  let(:article)       { create(:article, user: user) }
+  let(:unpublished_article) { create(:article, user: user, published: false) }
 
   describe "GET /dashboard" do
     context "when not logged in" do
@@ -15,11 +17,25 @@ RSpec.describe "Dashboards", type: :request do
     end
 
     context "when logged in" do
-      it "renders user's articles" do
+      before do
         sign_in user
         article
+      end
+
+      it "renders user's articles" do
         get "/dashboard"
-        expect(response.body).to include CGI.escapeHTML(article.title)
+        expect(response.body).to include(CGI.escapeHTML(article.title))
+      end
+
+      it 'does not show "STATS" for articles' do
+        get "/dashboard"
+        expect(response.body).not_to include("STATS")
+      end
+
+      it "renders the delete button for drafts" do
+        unpublished_article
+        get "/dashboard"
+        expect(response.body).to include "DELETE"
       end
     end
 
@@ -29,7 +45,17 @@ RSpec.describe "Dashboards", type: :request do
         user
         sign_in super_admin
         get "/dashboard/#{user.username}"
-        expect(response.body).to include CGI.escapeHTML(article.title)
+        expect(response.body).to include(CGI.escapeHTML(article.title))
+      end
+    end
+
+    context "when logged in as a pro user" do
+      it 'shows "STATS" for articles' do
+        article = create(:article, user: pro_user)
+        sign_in pro_user
+        get "/dashboard"
+        expect(response.body).to include("STATS")
+        expect(response.body).to include("#{article.path}/stats")
       end
     end
   end
@@ -49,8 +75,18 @@ RSpec.describe "Dashboards", type: :request do
         create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
         article.update(organization_id: organization.id)
         sign_in user
-        get "/dashboard/organization"
-        expect(response.body).to include "#{CGI.escapeHTML(organization.name)} ("
+        get "/dashboard/organization/#{organization.id}"
+        expect(response.body).to include "dashboard-collection-org-details"
+      end
+
+      it "does not render the delete button for other org member's drafts" do
+        create(:organization_membership, user: user, organization: organization, type_of_user: "member")
+        create(:organization_membership, user: second_user, organization: organization, type_of_user: "admin")
+        unpublished_article.update(organization_id: organization.id)
+        sign_in second_user
+        get "/dashboard/organization/#{organization.id}"
+        expect(response.body).not_to include "DELETE"
+        expect(response.body).to include unpublished_article.title
       end
     end
   end

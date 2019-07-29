@@ -40,9 +40,6 @@ class Page < ApplicationRecord
   end
 
   def bust_cache
-    CacheBuster.new.bust "/page/#{slug}"
-    CacheBuster.new.bust "/page/#{slug}?i=i"
-    CacheBuster.new.bust "/#{slug}"
-    CacheBuster.new.bust "/#{slug}?i=i"
+    Pages::BustCacheJob.perform_later(slug)
   end
 end

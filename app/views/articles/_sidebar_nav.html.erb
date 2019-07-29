@@ -19,17 +19,20 @@
         navigation
       </div>
       <div class="sidebar-nav-element">
-        <a class="sidebar-nav-link" href="/readinglist?we-hope-you-like-the-new-and-improved-reading-list---more-positive-changes-coming=woohoo">
+        <a class="sidebar-nav-link" href="<%= readinglist_path %>">
           <img class="nav-emoji" src="<%= asset_path("emoji/emoji-one-bookmark.png") %>" alt="reading list icon" /> Reading List
           <span id="reading-list-count"></span>
         </a>
-        <a class="sidebar-nav-link" href="/listings">
+        <a class="sidebar-nav-link pro-visible-block" href="<%= history_path %>">
+          <img class="nav-emoji" src="<%= asset_path("emoji/emoji-one-filmstrip.png") %>" alt="history icon" /> History
+        </a>
+        <a class="sidebar-nav-link" href="<%= classified_listings_path %>">
           <img class="nav-emoji" src="<%= asset_path("emoji/emoji-one-clipboard.png") %>" alt="listings icon" /> Listings
         </a>
-        <a class="sidebar-nav-link" href="/videos">
+        <a class="sidebar-nav-link" href="<%= videos_path %>">
           <img class="nav-emoji" src="<%= asset_path("emoji/emoji-one-videocamera.png") %>" alt="videos icon" /> Videos
         </a>
-        <a class="sidebar-nav-link" href="/pod">
+        <a class="sidebar-nav-link" href="<%= pod_path %>">
           <img class="nav-emoji" src="<%= asset_path("emoji/emoji-one-headphones.png") %>" alt="podcasts icon" /> Podcasts
         </a>
       </div>
@@ -49,7 +52,7 @@
         <% end %>
         <% Tag.where(supported: true).order("hotness_score DESC").limit(30).pluck(:id, :name).each do |tag_array| %>
           <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
-            <a class="sidebar-nav-link" href="/t/<%= tag_array.second %>">
+            <a class="sidebar-nav-link" href="<%= tag_path(tag_array.second) %>">
               <span class="sidebar-nav-tag-text">
                 #<%= tag_array.second %>
               </span>
@@ -64,7 +67,7 @@
       </div>
     </div>
     <div class="sidebar-nav-subheader">
-      <a href="/tags">View all-time top tags</a>
+      <a href="<%= tags_path %>">View all-time top tags</a>
     </div>
   </div>
 </div>

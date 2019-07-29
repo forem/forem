@@ -1,6 +1,6 @@
 class ChatChannel < ApplicationRecord
   include AlgoliaSearch
-  attr_accessor :current_user
+  attr_accessor :current_user, :usernames_string
 
   has_many :messages
   has_many :chat_channel_memberships, dependent: :destroy
@@ -108,9 +108,9 @@ class ChatChannel < ApplicationRecord
     end
   end
 
-  def adjusted_slug(user = nil, caller_type = "reciever")
+  def adjusted_slug(user = nil, caller_type = "receiver")
     user ||= current_user
-    if direct? && caller_type == "reciever"
+    if direct? && caller_type == "receiver"
       "@" + slug.gsub("/#{user.username}", "").gsub("#{user.username}/", "")
     elsif caller_type == "sender"
       "@" + user.username
@@ -138,8 +138,8 @@ class ChatChannel < ApplicationRecord
     # Purely for algolia indexing
     obj = {}
     active_memberships.
-      order("last_opened_at DESC").limit(100).includes(:user).each_with_index do |m, i|
-      obj[m.user.username] = user_obj(m, i)
+      order("last_opened_at DESC").includes(:user).each do |membership|
+      obj[membership.user.username] = user_obj(membership)
     end
     obj
   end
@@ -148,9 +148,9 @@ class ChatChannel < ApplicationRecord
     mod_users.pluck(:id)
   end
 
-  def user_obj(membership, index)
+  def user_obj(membership)
     {
-      profile_image: index < 25 ? ProfileImage.new(membership.user).get(90) : nil,
+      profile_image: ProfileImage.new(membership.user).get(90),
       darker_color: membership.user.decorate.darker_color,
       name: membership.user.name,
       last_opened_at: membership.last_opened_at,

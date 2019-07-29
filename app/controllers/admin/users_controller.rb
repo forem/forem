@@ -50,6 +50,7 @@ module Admin
         gitlab_url
         linkedin_url
         twitch_url
+        instagram_url
       ]
       accessible << %i[password password_confirmation] if params[:user][:password].present?
       verify_usernames params.require(:user).permit(accessible)

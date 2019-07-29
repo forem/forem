@@ -1,6 +1,6 @@
 <%= form_with(model: classified_listing, local: true) do |form| %>
   <header>
-    <a href="/listings" class="listings-back-button">&lt; go back to listings</a>
+    <a href="/listings/dashboard" class="listings-back-button">&lt; return to listings dashboard</a>
     <h2>Create a Community Listing</h2>
   </header>
   <div class="classified-form-inner">
@@ -56,6 +56,10 @@
     </div>
       <%= javascript_pack_tag "listingForm", defer: true %>
     <div class="field">
+      <%= form.label "location", "Location (If applicable for events, etc.)" %>
+      <%= form.text_field "location", placeholder: "32 characters max, plain text" %>
+    </div>
+    <div class="field">
       <%= form.label "contact_via_connect", "Allow Users to Message Me Via In-App Chat (DEV Connect)" %>
       <%= form.check_box "contact_via_connect", checked: true %>
     </div>
@@ -74,7 +78,7 @@
         <h3>Listings Require Credits</h3>
       <% end %>
       <div class="listings-current-credits-inner">
-        You have <%= pluralize @credits.size, "credit" %> available — <a href="/credits/purchase" data-no-instant>Buy More</a>
+        You have <%= pluralize @credits.size, "credit" %> available — <a target="_blank" rel="noopener noreferrer" href="/credits/purchase" data-no-instant>Buy More</a>
       </div>
       <% if @organizations.present? %>
         <div class="listings-current-credits-inner">
@@ -84,7 +88,7 @@
           <% end %>
         </select>
         has <span id="org-credits-number"><%= @organizations.first.unspent_credits_count %></span> credits -
-          <a id="org-credits-purchase-link" href="/credits/purchase?organization_id=<%= @organizations.first.id %>" data-no-instant>Buy More</a>
+          <a id="org-credits-purchase-link" target="_blank" rel="noopener noreferrer" href="/credits/purchase?organization_id=<%= @organizations.first.id %>" data-no-instant>Buy More</a>
         </div>
         <%= javascript_pack_tag "orgCreditsSelector", defer: true %>
       <% end %>

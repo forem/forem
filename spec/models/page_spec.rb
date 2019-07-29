@@ -22,6 +22,10 @@ RSpec.describe Page, type: :model do
       page.body_markdown = nil
       expect(page).not_to be_valid
     end
+
+    it "triggers cache busting on save" do
+      expect { build(:page).save }.to have_enqueued_job.on_queue("pages_bust_cache")
+    end
   end
 
   describe "#validations" do

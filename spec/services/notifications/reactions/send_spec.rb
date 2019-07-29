@@ -41,7 +41,7 @@ RSpec.describe Notifications::Reactions::Send, type: :service do
 
   context "when a reaction is persisted and has siblings" do
     before do
-      create(:reaction, reactable: article, user: user3)
+      create(:reaction, reactable: article, user: user3, created_at: Time.current - 1.day)
     end
 
     it "creates a notification" do
@@ -87,10 +87,10 @@ RSpec.describe Notifications::Reactions::Send, type: :service do
       end
 
       it "updates the notification" do
-        now = Time.current
+        old_notified_at = old_notification.notified_at
         described_class.call(reaction_data(article_reaction), user)
         old_notification.reload
-        expect(old_notification.notified_at).to be > now
+        expect(old_notification.notified_at).to be > old_notified_at
       end
 
       it "updates the notification json" do

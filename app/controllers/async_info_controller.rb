@@ -45,6 +45,7 @@ class AsyncInfoController < ApplicationController
         reading_list_ids: ReadingList.new(@user).cached_ids_of_articles,
         saw_onboarding: @user.saw_onboarding,
         checked_code_of_conduct: @user.checked_code_of_conduct,
+        checked_terms_and_conditions: @user.checked_terms_and_conditions,
         number_of_comments: @user.comments.count,
         display_sponsors: @user.display_sponsors,
         trusted: @user.trusted,

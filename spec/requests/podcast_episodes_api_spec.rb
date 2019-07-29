@@ -9,7 +9,12 @@ RSpec.describe "ArticlesApi", type: :request, vcr: vcr_option do
   let(:podcast) { create(:podcast, feed_url: "http://softwareengineeringdaily.com/feed/podcast/") }
 
   before do
-    PodcastFeed.new.get_episodes(podcast, 2)
+    stub_request(:head, "https://traffic.libsyn.com/sedaily/AnalyseAsia.mp3").to_return(status: 200)
+    stub_request(:head, "https://traffic.libsyn.com/sedaily/IFTTT.mp3").to_return(status: 200)
+
+    perform_enqueued_jobs do
+      Podcasts::Feed.new(podcast).get_episodes(limit: 2)
+    end
   end
 
   describe "GET /api/articles" do

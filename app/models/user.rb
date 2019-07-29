@@ -1,7 +1,10 @@
 class User < ApplicationRecord
   include CloudinaryHelper
 
-  attr_accessor :scholar_email, :new_note, :quick_match, :mentorship_note, :note_for_current_role, :add_mentor, :add_mentee, :user_status, :toggle_mentorship, :pro, :merge_user_id, :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ghostify
+  attr_accessor(
+    :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
+    :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ghostify
+  )
 
   rolify
   include AlgoliaSearch
@@ -24,6 +27,7 @@ class User < ApplicationRecord
   has_many    :mentions, dependent: :destroy
   has_many    :messages, dependent: :destroy
   has_many    :notes, as: :noteable, inverse_of: :noteable
+  has_many    :profile_pins, as: :profile, inverse_of: :profile
   has_many    :authored_notes, as: :author, inverse_of: :author, class_name: "Note"
   has_many    :notifications, dependent: :destroy
   has_many    :reactions, dependent: :destroy
@@ -40,16 +44,7 @@ class User < ApplicationRecord
   has_many    :classified_listings
   has_many    :poll_votes
   has_many    :poll_skips
-  has_many :mentor_relationships_as_mentee,
-           class_name: "MentorRelationship", foreign_key: "mentee_id", inverse_of: :mentee
-  has_many :mentor_relationships_as_mentor,
-           class_name: "MentorRelationship", foreign_key: "mentor_id", inverse_of: :mentor
-  has_many :mentors,
-           through: :mentor_relationships_as_mentee,
-           source: :mentor
-  has_many :mentees,
-           through: :mentor_relationships_as_mentor,
-           source: :mentee
+  has_many    :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user, class_name: "BackupData"
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -80,7 +75,7 @@ class User < ApplicationRecord
   validates :stackoverflow_url,
             allow_blank: true,
             format:
-            /\A(http(s)?:\/\/)?(www.stackoverflow.com|stackoverflow.com|www.stackexchange.com|stackexchange.com)\/.*\Z/
+            /\A(http(s)?:\/\/)?(((www|pt|ru|es|ja).)?stackoverflow.com|(www.)?stackexchange.com)\/.*\Z/
   validates :behance_url,
             allow_blank: true,
             format: /\A(http(s)?:\/\/)?(www.behance.net|behance.net)\/.*\Z/
@@ -97,6 +92,9 @@ class User < ApplicationRecord
   validates :gitlab_url,
             allow_blank: true,
             format: /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\Z/
+  validates :instagram_url,
+            allow_blank: true,
+            format: /\A(http(s)?:\/\/)?(?:www.)?instagram.com\/(?=.{1,30}\/?$)([a-zA-Z\d_]\.?)*[a-zA-Z\d_]+\/?\Z/
   validates :twitch_url,
             allow_blank: true,
             format: /\A(http(s)?:\/\/)?(www.twitch.tv|twitch.tv)\/.*\Z/
@@ -132,10 +130,9 @@ class User < ApplicationRecord
   validates :mostly_work_with, :currently_learning,
             :currently_hacking_on, :available_for,
             length: { maximum: 500 }
-  validates :mentee_description, :mentor_description,
-            length: { maximum: 1000 }
   validates :inbox_type, inclusion: { in: %w[open private] }
   validates :currently_streaming_on, inclusion: { in: %w[twitch] }, allow_nil: true
+  validates :feed_referential_link, inclusion: [true, false]
   validate  :conditionally_validate_summary
   validate  :validate_mastodon_url
   validate  :validate_feed_url, if: :feed_url_changed?
@@ -149,7 +146,6 @@ class User < ApplicationRecord
   after_save  :conditionally_resave_articles
   after_create :estimate_default_language!
   before_create :set_default_language
-  before_update :mentorship_status_update
   before_validation :set_username
   # make sure usernames are not empty, to be able to use the database unique index
   before_validation :verify_twitter_username, :verify_github_username, :verify_email, :verify_twitch_username
@@ -314,14 +310,6 @@ class User < ApplicationRecord
 
   def warned
     has_role? :warned
-  end
-
-  def banished?
-    user.notes.where(reason: "banned", content: "spam account").any? && user.banned && user.comments.none? && user.articles.none?
-  end
-
-  def banned_from_mentorship
-    has_role? :banned_from_mentorship
   end
 
   def admin?
@@ -642,11 +630,5 @@ class User < ApplicationRecord
     follower_relationships = Follow.where(followable_id: id, followable_type: "User")
     follower_relationships.destroy_all
     follows.destroy_all
-  end
-
-  def mentorship_status_update
-    self.mentor_form_updated_at = Time.current if mentor_description_changed? || offering_mentorship_changed?
-
-    self.mentee_form_updated_at = Time.current if mentee_description_changed? || seeking_mentorship_changed?
   end
 end

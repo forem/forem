@@ -79,11 +79,15 @@ export default class Article extends Component {
       .catch(this.handleNewReactionFailure);
   };
 
-  actionButton = (props) => {
+  actionButton = props => {
     const types = {
-      "heart": ["heart-reaction-button", "like", heartImage],
-      "unicorn": ["unicorn-reaction-button", "unicorn", unicornImage],
-      "readinglist": ["readinglist-reaction-button", "readinglist", bookmarkImage]
+      heart: ['heart-reaction-button', 'like', heartImage],
+      unicorn: ['unicorn-reaction-button', 'unicorn', unicornImage],
+      readinglist: [
+        'readinglist-reaction-button',
+        'readinglist',
+        bookmarkImage,
+      ],
     };
 
     const curType = types[props.reaction];
@@ -94,11 +98,14 @@ export default class Article extends Component {
         onClick={this.handleReactionClick}
         data-category={curType[1]}
       >
-        <img src={curType[2]} data-category={curType[1]} alt={`${curType[1]} reaction`} />
+        <img
+          src={curType[2]}
+          data-category={curType[1]}
+          alt={`${curType[1]} reaction`}
+        />
       </button>
-    )
+    );
   };
-
 
   render() {
     const article = this.props.resource;
@@ -161,15 +168,10 @@ export default class Article extends Component {
                   src={article.user.profile_image_90}
                   alt={article.user.username}
                 />
-                <span>
-                  {article.user.name}
-                  {' '}
-                </span>
+                <span>{article.user.name} </span>
                 <span className="published-at">
                   {' '}
-                  |
-                  {' '}
-                  {article.readable_publish_date}
+                  | {article.readable_publish_date}
                 </span>
               </a>
             </h3>
@@ -179,9 +181,18 @@ export default class Article extends Component {
           </div>
         </div>
         <div className="activechatchannel__activeArticleActions">
-          <this.actionButton reaction="heart" reactedClass={heartReactedClass} />
-          <this.actionButton reaction="unicorn" reactedClass={unicornReactedClass} />
-          <this.actionButton reaction="readinglist" reactedClass={bookmarkReactedClass} />
+          <this.actionButton
+            reaction="heart"
+            reactedClass={heartReactedClass}
+          />
+          <this.actionButton
+            reaction="unicorn"
+            reactedClass={unicornReactedClass}
+          />
+          <this.actionButton
+            reaction="readinglist"
+            reactedClass={bookmarkReactedClass}
+          />
         </div>
       </div>
     );

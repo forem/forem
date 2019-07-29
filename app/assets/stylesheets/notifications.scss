@@ -175,13 +175,27 @@
           border-radius: 3px;
           @include themeable(color, theme-color, $black);
           position: relative;
+          .comment-text-header {
+            display: block;
+            padding: 5px 10px;
+            margin-left: -10px;
+            margin-top: -10px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid lighten($dark-gray, 18%);
+            width: 100%;
+            font-weight: bold;
+            font-size: 0.76em;
+            position: relative;
+            z-index:6;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            @include themeable(background, theme-container-accent-background, lighten($lightest-gray, 1%));
+          }
           &:hover {
             border: 1px solid $black;
-            @include themeable(
-              background,
-              theme-container-background-hover,
-              #fff
-            );
           }
           h1,
           h2,
@@ -347,6 +361,9 @@
             appearance: none;
           }
         }
+      }
+      .single-notification {
+        cursor: default;
       }
       .unseen {
         @include themeable(

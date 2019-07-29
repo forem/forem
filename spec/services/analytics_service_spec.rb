@@ -5,9 +5,25 @@ RSpec.describe AnalyticsService, type: :service do
   let(:organization) { create(:organization) }
   let(:article) { create(:article, user: user, published: true) }
 
-  before { Timecop.freeze(Time.current.utc) }
+  before do
+    # We use Zonebie to fortify the code and spot time zone related problems but in this
+    # particular case it can make these tests fail because,
+    # for example, "2019-07-21T23:57:12-12:00" is the 22th in UTC, and since
+    # the code delegates to DATE() in PostgreSQL which runs on UTC without time zone
+    # info, there's no easy way for these tests to work correctly in a time zone on
+    # the day line like "International Date Line West".
+    # For this reason data created on "2019-07-21T23:57:12-12:00" will appear on the 22nd in the DB
+    # and hence never be selected by the Analytics engine
+    # In the meantime for a lack of a better solution, we force this tests to run at midday in UTC
+    Timecop.freeze("2019-04-01T12:00:00Z")
+  end
 
   after { Timecop.return }
+
+  def format_date(datetime)
+    # PostgreSQL DATE(..) function uses UTC.
+    datetime.utc.to_date.iso8601
+  end
 
   describe "initialization" do
     it "raises an error if start date is invalid" do
@@ -165,16 +181,11 @@ RSpec.describe AnalyticsService, type: :service do
   end
 
   describe "#grouped_by_day" do
-    def format_date(datetime)
-      # Postgre's DATE(..) method uses UTC.
-      datetime.utc.to_date.iso8601
-    end
-
     it "returns stats grouped by day" do
       stats = described_class.new(
         user, start_date: "2019-04-01", end_date: "2019-04-04"
       ).grouped_by_day
-      expect(stats.keys).to eq(["2019-04-01", "2019-04-02", "2019-04-03", "2019-04-04"])
+      expect(stats.keys).to eq(%w[2019-04-01 2019-04-02 2019-04-03 2019-04-04])
     end
 
     it "returns stats for comments, reactions, follows and page views for a specific day" do
@@ -186,7 +197,7 @@ RSpec.describe AnalyticsService, type: :service do
       stats = described_class.new(
         organization, start_date: "2019-04-01", end_date: "2019-04-04"
       ).grouped_by_day
-      expect(stats.keys).to eq(["2019-04-01", "2019-04-02", "2019-04-03", "2019-04-04"])
+      expect(stats.keys).to eq(%w[2019-04-01 2019-04-02 2019-04-03 2019-04-04])
       expect(stats["2019-04-01"].keys.to_set).to eq(%i[comments reactions page_views follows].to_set)
     end
 
@@ -367,6 +378,65 @@ RSpec.describe AnalyticsService, type: :service do
         expect(analytics_service.grouped_by_day[date][:page_views][:total]).to eq(2)
         expect(analytics_service.grouped_by_day[date][:page_views][:average_read_time_in_seconds]).to eq(0)
         expect(analytics_service.grouped_by_day[date][:page_views][:total_read_time_in_seconds]).to eq(0)
+      end
+    end
+  end
+
+  describe "#referrers" do
+    let(:analytics_service) { described_class.new(user) }
+
+    context "when working on domains" do
+      before { PageView.where(article: article).delete_all }
+
+      it "returns unique domains with a count" do
+        url = Faker::Internet.url
+        create(:page_view, user: user, article: article, referrer: url)
+        create(:page_view, user: user, article: article, referrer: url)
+        domains = analytics_service.referrers[:domains]
+        expect(domains.first).to eq(domain: Addressable::URI.parse(url).domain, count: 2)
+      end
+
+      it "returns unique domains with a count when there is a date range" do
+        url = Faker::Internet.url
+        create(:page_view, user: user, article: article, referrer: url)
+        create(:page_view, user: user, article: article, referrer: url)
+        date = format_date(article.created_at)
+        analytics_service = described_class.new(user, start_date: date)
+        domains = analytics_service.referrers[:domains]
+        expect(domains.first).to eq(domain: Addressable::URI.parse(url).domain, count: 2)
+      end
+
+      it "returns nothing if there is no data" do
+        expect(analytics_service.referrers[:domains]).to be_empty
+      end
+
+      it "returns the domains ordered by count" do
+        other_url = Faker::Internet.url
+        create_list(:page_view, 2, user: user, article: article, referrer: other_url)
+        top_url = Faker::Internet.url
+        create_list(:page_view, 3, user: user, article: article, referrer: top_url)
+
+        expected_result = [
+          { domain: Addressable::URI.parse(top_url).domain, count: 3 },
+          { domain: Addressable::URI.parse(other_url).domain, count: 2 },
+        ]
+        expect(analytics_service.referrers[:domains]).to eq(expected_result)
+      end
+
+      it "returns 20 domains at most by default" do
+        21.times { create(:page_view, user: user, article: article, referrer: Faker::Internet.url) } # rubocop:disable FactoryBot/CreateList
+        expect(analytics_service.referrers[:domains].size).to eq(20)
+      end
+
+      it "returns the most visited domain if asked for only one result" do
+        top_url = Faker::Internet.url
+        create_list(:page_view, 3, user: user, article: article, referrer: top_url)
+        other_url = Faker::Internet.url
+        create_list(:page_view, 2, user: user, article: article, referrer: other_url)
+
+        top_domain = Addressable::URI.parse(top_url).domain
+        result = analytics_service.referrers(top: 1)[:domains]
+        expect(result).to eq([{ domain: top_domain, count: 3 }])
       end
     end
   end

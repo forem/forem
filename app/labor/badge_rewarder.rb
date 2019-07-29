@@ -44,12 +44,17 @@ module BadgeRewarder
   def self.award_tag_badges
     Tag.where.not(badge_id: nil).find_each do |tag|
       past_winner_user_ids = BadgeAchievement.where(badge_id: tag.badge_id).pluck(:user_id)
-      winning_article = Article.where("score > 100").where.not(user_id: past_winner_user_ids).order("score DESC").cached_tagged_with(tag).first
+      winning_article = Article.where("score > 100").
+        published.
+        where.not(user_id: past_winner_user_ids).
+        order("score DESC").
+        where("published_at > ?", 7.5.days.ago). # More than seven days, to have some wiggle room.
+        cached_tagged_with(tag).first
       if winning_article
         award_badges(
           [winning_article.user.username],
           tag.badge.slug,
-          "Congratulations on posting the most beloved [##{tag.name}](#{ApplicationConfig['APP_PROTOCOL'] + ApplicationConfig['APP_DOMAIN']}/t/#{tag.name}) post from the past week! 🙌",
+          "Congratulations on posting the most beloved [##{tag.name}](#{ApplicationConfig['APP_PROTOCOL'] + ApplicationConfig['APP_DOMAIN']}/t/#{tag.name}) post from the past seven days! Your winning post was [#{winning_article.title}](#{ApplicationConfig['APP_PROTOCOL'] + ApplicationConfig['APP_DOMAIN'] + winning_article.path}). (You can only win once per badge-eligible tag)",
         )
       end
     end

@@ -4,6 +4,8 @@ RSpec.describe Organization, type: :model do
   let(:user)         { create(:user) }
   let(:organization) { create(:organization) }
 
+  it { is_expected.to have_many(:sponsorships) }
+
   describe "#name" do
     it "rejects names with over 50 characters" do
       organization.name = Faker::Lorem.characters(51)
@@ -100,6 +102,10 @@ RSpec.describe Organization, type: :model do
       organization = build(:organization, slug: "needed_info_for_site")
       expect(organization).not_to be_valid
       expect(organization.errors[:slug].to_s.include?("taken")).to be true
+    end
+
+    it "triggers cache busting on save" do
+      expect { build(:organization).save }.to have_enqueued_job.on_queue("organizations_bust_cache")
     end
   end
 

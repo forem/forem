@@ -25,7 +25,6 @@ class Role < ApplicationRecord
                 level_1_member
                 workshop_pass
                 chatroom_beta_tester
-                banned_from_mentorship
                 comment_banned
                 pro
               ]

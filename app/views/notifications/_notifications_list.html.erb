@@ -2,7 +2,7 @@
 <% @notifications.each do |notification| %>
   <% next if notification.notified_at < 24.hours.ago && notification.aggregated? %>
   <% notification_count += 1 %>
-  <div class="single-article single-article-small-pic <%= "unseen" unless notification.read? %>" data-notification-id="<%= notification.id %>">
+  <div class="single-article single-article-small-pic single-notification <%= "unseen" unless notification.read? %>" data-notification-id="<%= notification.id %>">
     <%= render notification.notifiable_type.downcase.to_s, notification: notification %>
   </div>
 <% rescue => e %>

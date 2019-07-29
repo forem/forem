@@ -18,6 +18,7 @@ class Tag < ActsAsTaggableOn::Tag
   attr_accessor :tag_moderator_id, :remove_moderator_id
 
   belongs_to :badge, optional: true
+  has_one :sponsorship, as: :sponsorable, inverse_of: :sponsorable, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
@@ -77,12 +78,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def bust_cache
-    cache_buster = CacheBuster.new
-    cache_buster.bust("/t/#{name}")
-    cache_buster.bust("/t/#{name}?i=i")
-    cache_buster.bust("/t/#{name}/?i=i")
-    cache_buster.bust("/t/#{name}/")
-    cache_buster.bust("/tags")
+    Tags::BustCacheJob.perform_later(name)
   end
 
   def validate_alias

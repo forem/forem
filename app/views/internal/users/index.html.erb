@@ -5,8 +5,6 @@
 </style>
 <h3 class="top-nav" style="font-weight:400;font-size:0.9em;">
   <a href="/internal/users" style="<%= "font-weight:bold" if params[:state].blank? %>">All</a> |
-  <a href="/internal/users?state=mentors" style="<%= "font-weight:bold" if params[:state] == "mentors" %>">Mentors </a> |
-  <a href="/internal/users?state=mentees" style="<%= "font-weight:bold" if params[:state] == "mentees" %>">Mentees</a> |
   <a href="/internal/users?state=role-admin" style="<%= "font-weight:bold" if params[:state] == "role-admin" %>">Admins</a> |
   <a href="/internal/users?state=role-super_admin" style="<%= "font-weight:bold" if params[:state] == "role-super_admin" %>">Super Admins</a> |
   <a href="/internal/users?state=role-trusted" style="<%= "font-weight:bold" if params[:state] == "role-trusted" %>">Trusted</a> |

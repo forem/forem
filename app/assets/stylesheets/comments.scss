@@ -181,7 +181,7 @@ a.header-link {
   }
 
   .top-level-actions {
-    margin: 0px 8px 85px;
+    margin: 0px 0px 85px;
     padding: 3px 0px;
     z-index: 4;
     position: relative;
@@ -194,6 +194,7 @@ a.header-link {
         background: $black;
         color: white;
         margin: 2px 0px 2px;
+        margin-right: 5px;
         vertical-align: 2px;
       }
     }
@@ -210,8 +211,8 @@ a.header-link {
       color: $black;
       font-family: $helvetica-condensed;
       font-stretch: condensed;
-      padding: 4px 12px;
-      font-size: 0.8em;
+      padding: 4px 8px;
+      font-size: 0.77em;
       vertical-align: 1px;
       margin: 8px 0px 2px;
     }
@@ -320,6 +321,9 @@ a.header-link {
       }
       kbd {
         @extend %kbd;
+      }
+      code {
+        word-wrap: break-word;
       }
     }
     .actions {
@@ -450,6 +454,17 @@ a.header-link {
     }
     .root-comment {
       margin-top: -80px;
+      .comment-parent-link {
+        @include themeable(background, theme-container-background, white);
+        @include themeable(border, theme-container-border, 1px solid $medium-gray);
+        display: block;
+        padding: 9px 12px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 0.8em;
+        @include themeable(background, theme-container-accent-background, lighten($lightest-gray, 1%));
+      }
     }
   }
   .comment-view-parent {
@@ -631,7 +646,6 @@ a.header-link {
     }
     code {
       margin: auto;
-      white-space: nowrap;
       padding: 1px 5px 0px;
       border-radius: 2px;
       font-size: 0.8em;
@@ -684,7 +698,6 @@ a.header-link {
   }
   .details {
     padding: 0px;
-    border-top-left-radius: 3px;
     border-top-left-radius: 3px;
     @include themeable(color, theme-secondary-color, $dark-gray);
     position: relative;
@@ -787,6 +800,7 @@ a.header-link {
         font-family: $helvetica-condensed;
         font-stretch: condensed;
         font-size: 0.78em;
+        border-radius: 3px;
       }
     }
     a {

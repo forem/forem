@@ -194,6 +194,18 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
+    it "accepts valid stackoverflow sub community url" do
+      %w[pt ru es ja].each do |subcommunity|
+        user.stackoverflow_url = "https://#{subcommunity}.stackoverflow.com/users/7381391/mazen"
+        expect(user).to be_valid
+      end
+    end
+
+    it "does not accept invalid stackoverflow sub community url" do
+      user.stackoverflow_url = "https://fr.stackoverflow.com/users/7381391/mazen"
+      expect(user).not_to be_valid
+    end
+
     it "accepts valid https linkedin url" do
       %w[jessleenyc jessleenyc/ jess-lee-nyc].each do |username|
         user.linkedin_url = "https://linkedin.com/in/#{username}"
@@ -245,6 +257,18 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
+    it "does not accept invalid instagram url" do
+      user.instagram_url = "ben.com"
+      expect(user).not_to be_valid
+    end
+
+    it "accepts valid instagram url" do
+      %w[jess je_ss je_ss.tt A.z.E.r.T.y].each do |username|
+        user.instagram_url = "https://instagram.com/#{username}"
+        expect(user).to be_valid
+      end
+    end
+
     it "accepts valid https gitlab url" do
       %w[jess jess/ je-ss je_ss].each do |username|
         user.gitlab_url = "https://gitlab.com/#{username}"
@@ -267,42 +291,6 @@ RSpec.describe User, type: :model do
       user.update(username: "username_#{rand(100_000_000)}")
       expect(user.old_username).to eq(new_username)
       expect(user.old_old_username).to eq(old_username)
-    end
-
-    it "updates mentor_form_updated_at at appropriate time" do
-      user.mentor_description = "hello"
-      user.save
-      expect(user.mentor_form_updated_at).not_to eq(nil)
-    end
-
-    it "updates mentee_form_updated_at at appropriate time" do
-      user.mentee_description = "hello"
-      user.save
-      expect(user.mentee_form_updated_at).not_to eq(nil)
-    end
-
-    it "does not allow mentee description to be too long" do
-      user.mentee_description = Faker::Lorem.paragraph_by_chars(1001)
-      user.save
-      expect(user.mentee_form_updated_at).to eq(nil)
-    end
-
-    it "does not allow mentor description to be too long" do
-      user.mentor_description = Faker::Lorem.paragraph_by_chars(1001)
-      user.save
-      expect(user.mentor_form_updated_at).to eq(nil)
-    end
-
-    it "allow mentee description to be the max length" do
-      user.mentee_description = Faker::Lorem.paragraph_by_chars(1000)
-      user.save
-      expect(user.mentee_form_updated_at).not_to eq(nil)
-    end
-
-    it "allow mentor description to be the max length" do
-      user.mentor_description = Faker::Lorem.paragraph_by_chars(1000)
-      user.save
-      expect(user.mentor_form_updated_at).not_to eq(nil)
     end
 
     it "does not allow too short or too long name" do
@@ -538,27 +526,32 @@ RSpec.describe User, type: :model do
   end
 
   it "creates proper body class with defaults" do
-    expect(user.decorate.config_body_class).to eq("default default-article-body")
+    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?}")
   end
 
   it "creates proper body class with sans serif config" do
     user.config_font = "sans_serif"
-    expect(user.decorate.config_body_class).to eq("default sans-serif-article-body")
+    expect(user.decorate.config_body_class).to eq("default sans-serif-article-body pro-status-#{user.pro?}")
   end
 
   it "creates proper body class with night theme" do
     user.config_theme = "night_theme"
-    expect(user.decorate.config_body_class).to eq("night-theme default-article-body")
+    expect(user.decorate.config_body_class).to eq("night-theme default-article-body pro-status-#{user.pro?}")
   end
 
   it "creates proper body class with pink theme" do
     user.config_theme = "pink_theme"
-    expect(user.decorate.config_body_class).to eq("pink-theme default-article-body")
+    expect(user.decorate.config_body_class).to eq("pink-theme default-article-body pro-status-#{user.pro?}")
   end
 
-  it "creates proper body class with pink theme" do
+  it "creates proper body class with minimal light theme" do
     user.config_theme = "minimal_light_theme"
-    expect(user.decorate.config_body_class).to eq("minimal-light-theme default-article-body")
+    expect(user.decorate.config_body_class).to eq("minimal-light-theme default-article-body pro-status-#{user.pro?}")
+  end
+
+  it "creates proper body class with pro user" do
+    user.add_role(:pro)
+    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?}")
   end
 
   it "inserts into mailchimp" do

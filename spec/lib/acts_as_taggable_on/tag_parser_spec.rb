@@ -29,7 +29,7 @@ RSpec.describe ActsAsTaggableOn::TagParser do
       tags = %w[Optimización Καλημέρα Français]
       expect(create_tag_parser(tags)).to eq(%w[optimización καλημέρα français])
     end
-    it "returns nothing if nothing is recieved" do
+    it "returns nothing if nothing is received" do
       expect(create_tag_parser([])).to eq([])
     end
     it "uses tag alias if one exists" do

@@ -24,7 +24,7 @@
   <a href="<%= article.current_state_path %>"><h2><%= "[Archived] " if article.archived %><%= article.title %></h2></a>
   <div class="dashboard-meta-details">
     <% if article.published %>
-      <%= article.readable_publish_date %>
+      <time datetime="<%= article.published_timestamp %>"><%= article.readable_publish_date %></time>
       <% article.cached_tag_list_array.each do |tag| %>
         <a href="/t/<%= tag %>"><span class="tag">#<%= tag %></span></a>
       <% end %>
@@ -37,11 +37,25 @@
     <a href="<%= article.path %>/edit" class="pill cta green">EDIT</a>
     <% if manage_view %>
       <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
+      <% if article.profile_pins.any? %>
+        <%= form_for(article.profile_pins.first) do |f| %>
+          <button class="pill cta">UNPIN</button>
+        <% end %>
+      <% else %>
+        <%= form_for(ProfilePin.new) do |f| %>
+          <%= f.hidden_field :pinnable_id, value: article.id %>
+          <button class="pill cta">PIN TO PROFILE</button>
+        <% end %>
+      <% end %>
     <% elsif article.published %>
       <a href="<%= article.path %>/manage" class="cta pill black">MANAGE</a>
-    <% else %>
+    <% elsif @user == article.user %>
       <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
     <% end %>
+    <% if @current_user_pro %>
+      <a href="<%= article.path %>/stats" data-no-instant class="cta pill blue">STATS</a>
+    <% end %>
+
     <% if article.published %>
       <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">
         <span class="page-views-count">

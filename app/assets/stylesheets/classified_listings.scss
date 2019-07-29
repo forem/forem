@@ -394,7 +394,7 @@
 }
 
 .single-classified-listing-container {
-  width: 90%;
+  width: 100%;
   z-index: 20;
   position: fixed;
   left: 0;
@@ -411,10 +411,12 @@
     box-sizing: content-box;
     padding-right: 17px;
     -webkit-overflow-scrolling: touch;
-    padding-top: 110px;
+    padding-top: 95px;
     margin-bottom: 150px;
     @media screen and (min-width: 950px) {
-      padding-top: calc( 50px + 15vh);
+      left: 0;
+      right: 0;
+      box-sizing: border-box;  
     }
     .single-classified-listing-container__spacer {
       height: 150px;
@@ -425,15 +427,11 @@
     // width: 0 !important;
     display: none;
   }
-  @media screen and (min-width: 950px) {
-    left: 50%;
-    width: 600px;
-    margin-left: -300px; /* Negative half of width. */
-  }
 }
 
 .single-classified-listing {
-  width: 100%;
+  width: 94%;
+  max-width: 600px;
   display: inline-block;
   border: 1px solid $light-medium-gray;
   margin: 0px auto;
@@ -517,7 +515,7 @@
   }
   &.single-classified-listing--opened {
     z-index: 20;
-    display: inline-block;
+    display: block;
     position: relative;
     left: 0px;
     right: 0px;
@@ -530,6 +528,29 @@
     }
   }
 }
+.single-classified-listing-info-link {
+  display: block;
+  width: 320px;
+  max-width: 92%;
+  margin: auto;
+  padding: 14px 0px;
+  text-align: center;
+  border-radius: 100px;
+  font-weight: bold;
+  margin: 40px auto 10px;
+  @include themeable(
+    color,
+    theme-color,
+    $white
+  );
+  border: 3px solid white;
+  @include themeable(
+    border-color,
+    theme-color,
+    $white
+  );
+}
+
 
 form.listings-contact-via-connect {
   border-radius: 3px;
@@ -543,9 +564,8 @@ form.listings-contact-via-connect {
   max-width: 100%;
   text-align: right;
   p {text-align: left}
-  @media screen and (min-width: 950px) {
-    max-width: 600px;
-  }
+  width: 94%;
+  max-width: 600px;
   textarea#new-message {
     height: 100px;
     margin: 5px auto 10px auto;
@@ -573,4 +593,244 @@ form.listings-contact-via-connect {
   left: 0; top: 0; right: 0; bottom: 0;
   background: rgba(0, 0, 0, 0.8);
   user-select: none;
+}
+
+.dashboard-listings-container {
+  padding-top: 80px;
+  padding-bottom: 80px;
+  width: 800px;
+  max-width: 96%;
+  margin: auto;
+
+  .rounded-btn {
+    font-size: calc(15px + 0.2vw);
+    font-family: $helvetica-condensed;
+    font-stretch: condensed;
+    padding: 4px 20px;
+    border-radius: 100px;
+    margin-right: 5px;
+    display: inline-block;
+    width: fit-content;
+    margin-bottom: 10px;
+    @include themeable(
+      color,
+      theme-color,
+      $black
+    );
+    @include themeable(
+      background,
+      theme-container-background,
+      lighten($light-medium-gray, 5%)
+    );
+    &:hover {
+      @include themeable(
+        background,
+        theme-container-background-hover,
+        $light-medium-gray
+      );
+    }
+
+    &.active {
+      @include themeable(
+        background,
+        theme-secondary-color,
+        $dark-gray
+      );
+      @include themeable(
+        color,
+        theme-container-background,
+        white
+      );
+    }
+  }
+
+  .dashboard-listings-header-wrapper {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    background: $dark-gray;
+    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
+    padding: 15px 0px;
+
+    @media screen and (max-width: 768px) {
+      flex-direction: column;
+    }
+
+    .dashboard-listings-header {
+      width: 43%;
+      text-align: center;
+      color: white;
+      margin: 5px auto;
+      font-size: calc(1.1em + 0.1vw);
+      padding: 18px 0px 7px;
+      padding-left: 10px;
+      font-family: $monospace;
+      border: 1px solid $light-gray;
+      display: block;
+      text-align: center;
+      margin: 1.2%;
+      padding: 1.2%;
+      padding-bottom: 30px;
+
+      @media screen and (max-width: 768px) {
+        width: 90%; 
+      }
+      a {
+        font-size: 0.9em;
+        border: 2px solid #2ad7c5;
+        color: #25c2b2;
+        padding: 6px 16px;
+        margin-top: 6px;
+        border-radius: 100px;
+      }
+    }
+  }
+
+  .dashboard-listings-sorting {
+    padding-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    @media screen and (max-width: 426px) {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    select {
+      display: block;
+      font-size: 19px;
+      padding: 12px;
+      border: 1px solid rgb(222, 230, 233);
+      border-radius: 3px;
+      background-color: white;
+      outline: none;
+      font-weight: bold;
+      color: #333333;
+      font-family: 'HelveticaNeue-CondensedBold', 'HelveticaNeueBoldCondensed',
+        'HelveticaNeue-Bold-Condensed', 'Helvetica Neue Bold Condensed',
+        'HelveticaNeueBold', 'HelveticaNeue-Bold', 'Helvetica Neue Bold',
+        'HelveticaNeue', 'Helvetica Neue', 'TeXGyreHerosCnBold', 'Helvetica',
+        'Tahoma', 'Geneva', 'Arial Narrow', 'Arial', sans-serif;
+
+      @media screen and (max-width: 426px) {
+        text-align-last: center;
+        text-align: center;
+        -ms-text-align-last: center;
+        -moz-text-align-last: center;
+        text-align-last: center;
+      }
+    }
+  }
+  
+  .dashboard-listings-view {
+
+    .dashboard-listing-row {
+      border: var(--theme-container-border, 1px solid #dbdbdb);
+      box-shadow: var(--theme-container-box-shadow, 1px 1px 0px #c2c2c2);
+      padding: 5px 15px;
+      margin-bottom: 13px;
+      border-radius: 3px;
+      position: relative;
+      background: var(--theme-container-background, #fff);
+
+      .listing-org {
+        @include themeable(
+          background,
+          theme-secondary-color,
+          darken($light-gray, 6%)
+        );
+        @include themeable(color, theme-container-background, #fff);
+        margin-right: 5px;
+        padding: 3px 10px;
+        border-radius: 100px;
+        margin-top: 10px;
+        display: inline-block;
+        font-size: 0.9em;
+      }
+
+      h2 {
+        color: var(--theme-container-color, #0a0a0a);
+        font-weight: 500;
+        margin-bottom: 10px;
+        margin-top: 8px;
+        font-size: 22px;
+        width: 100%;
+        @media screen and (min-width: 800px) {
+          font-size: 34px;
+        }
+      }
+
+      .dashboard-listing-date {
+        font-size: 0.85em;
+        padding: 3px 0px 6px;
+        color: var(--theme-secondary-color, #666666);
+      }
+
+      .dashboard-listing-category {
+        padding: 10px 15px;
+        a {
+          @include themeable(
+            color,
+            theme-secondary-color,
+            $dark-medium-gray
+          );
+          @include themeable(
+            background,
+            theme-container-accent-background,
+            $light-medium-gray
+          );
+          display: inline-block;
+          margin: 2px;
+          padding: 2px 7px;
+          font-size: 0.77em;
+          border-radius: 3px;
+          font-weight: bold;
+        }
+      }
+
+      .dashboard-listing-tags {
+        font-size: 0.85em;
+        padding: 3px 0px 6px;
+        a {
+          color: var(--theme-container-color, #0a0a0a);
+        }
+      }
+
+      .listing-row-actions {
+        padding: 7px 0px 10px;
+
+        .pill {
+          background: $bold-blue;
+          padding: 4px 20px;
+          border-radius: 100px;
+          color: white;
+          margin-right: 5px;
+          font-size: 14px;
+          border: 2px solid transparent;
+          margin-top: 6px;
+          display: inline-block;
+    
+          &.green {
+            background: $green;
+            color: $black;
+          }
+    
+          &.red {
+            background: $red;
+          }
+    
+          &.black {
+            background: $dark-gray;
+          }
+        }
+      }
+
+    }
+
+
+  }
 }

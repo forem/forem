@@ -58,17 +58,23 @@ function handleFormSubmit(e) {
   var values = getFormValues(form);
   var data = JSON.stringify(values);
 
+  var formData = new FormData(form);
+  var method = formData.get('_method') || 'post';
+
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', form.action);
+  xhr.open(method.toUpperCase(), form.action);
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.send(data);
 
-  xhr.onload = function() {
+  xhr.onload = function onload() {
     var article = form.closest('div.single-article');
 
     if (xhr.status === 200) {
       onXhrSuccess(form, article, values);
-      var message = values.commit === 'Mute Notifications' ? 'Notifications Muted' : 'Notifications Restored';
+      var message =
+        values.commit === 'Mute Notifications'
+          ? 'Notifications Muted'
+          : 'Notifications Restored';
       article.querySelector('.dashboard-meta-details').innerHTML = message;
     } else {
       article.querySelector('.dashboard-meta-details').innerHTML =
@@ -141,9 +147,10 @@ function initializeEllipsisMenuToggle() {
   }
 
   // Hide ellipsis menus when you click outside of the ellipsis menu parent div
-  document
-    .getElementsByTagName('BODY')[0]
-    .addEventListener('click', hideEllipsisMenus);
+  const body = document.getElementsByTagName('body')[0];
+  if (body) {
+    body.addEventListener('click', hideEllipsisMenus);
+  }
 }
 
 function initializeEllipsisMenu() {

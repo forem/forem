@@ -72,10 +72,11 @@
       </div>
     </div>
   </div>
-  <% if !@episode.podcast.status_notice.empty? %>
+  <%# checking both podcast_episode and podcast status for now  %>
+  <% unless @episode.https? %>
     <center>
       <h1 style="color: #e05252;">
-        <%= @episode.podcast.status_notice %>
+        <%= I18n.t "podcasts.statuses.unplayable" %>
       </h1>
       <p>
         <a href="<%= @episode.media_url %>">Click here to download/listen</a>

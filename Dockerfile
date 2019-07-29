@@ -138,7 +138,7 @@ RUN mkdir -p "$GEM_HOME" && chmod 777 "$GEM_HOME"
 #
 #------------------------------------------------------------------------------------------
 
-# Install alpine eqivalent for "build-essential"
+# Install alpine equivalent for "build-essential"
 #
 # and other dependencies required by dev.to various
 # ruby dependencies (postgresql-dev, tzdata)
@@ -147,27 +147,27 @@ RUN apk add --no-cache alpine-sdk postgresql-dev tzdata
 # Im installing bash, as im a bash addict (not that great with sh)
 RUN apk add bash
 
-# Lets setup the rails directory
+# Let's setup the rails directory
 # (@TODO - consider a production version?)
 WORKDIR /usr/src/app
 ENV RAILS_ENV development
 
 #####################################################
 #
-# Lets prepare the dev.to source code files
+# Let's prepare the dev.to source code files
 # WITHOUT docker related files
 #
 # This allow us to modify the docker
 # entrypoint / run file without recompiling
 # the entire application
-# (especially when creating this buidl script =| )
+# (especially when creating this build script =| )
 #
-# (@TODO - improve and review ignore to blacklist unneded items)
+# (@TODO - improve and review ignore to blacklist unneeded items)
 #
 #####################################################
 
 #
-# Prepare the source code and remove any uneeded files
+# Prepare the source code and remove any unneeded files
 #
 FROM alpine-ruby-node AS source-code-repo
 
@@ -193,7 +193,7 @@ RUN yarn install && yarn check --integrity
 
 #####################################################
 #
-# Lets build the DEMO dev.to image
+# Let's build the DEMO dev.to image
 #
 #####################################################
 FROM alpine-ruby-node
@@ -208,7 +208,7 @@ COPY Dockerfile [(docker-)]* /usr/src/app/
 # Execution environment variables
 #
 
-# timeout extension requried to ensure
+# timeout extension required to ensure
 # system work properly on first time load
 ENV RACK_TIMEOUT_WAIT_TIMEOUT=10000 \
   RACK_TIMEOUT_SERVICE_TIMEOUT=10000 \
@@ -226,7 +226,7 @@ ENV DB_SETUP="true" \
   DB_MIGRATE="true"
 
 #
-# Lets setup the public uploads folder volume
+# Let's setup the public uploads folder volume
 #
 RUN mkdir -p /usr/src/app/public/uploads
 VOLUME /usr/src/app/public/uploads

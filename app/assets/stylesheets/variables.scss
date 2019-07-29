@@ -70,5 +70,12 @@ body.comic-sans-article-body {
     font-family: "Comic Sans MS", cursive, sans-serif;
     font-size: 0.98em;
   }
+}
 
+.pro-visible-block {
+  display: none !important;
+}
+
+body.pro-status-true .pro-visible-block {
+  display: block !important;;
 }

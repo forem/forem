@@ -3,26 +3,28 @@ class ClassifiedListing < ApplicationRecord
 
   attr_accessor :action
 
-  belongs_to :user, optional: true
+  belongs_to :user
   belongs_to :organization, optional: true
   before_save :evaluate_markdown
   before_create :create_slug
   before_validation :modify_inputs
   acts_as_taggable_on :tags
+  has_many :credits, as: :purchase, inverse_of: :purchase, dependent: :nullify
 
-  validates :user_id, presence: true, unless: :organization_id?
+  validates :user_id, presence: true
   validates :organization_id, presence: true, unless: :user_id?
 
   validates :title, presence: true,
                     length: { maximum: 128 }
   validates :body_markdown, presence: true,
                             length: { maximum: 400 }
+  validates :location, length: { maximum: 32 }
   validate :restrict_markdown_input
   validate :validate_tags
   validate :validate_category
 
   algoliasearch per_environment: true do
-    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug, :contact_via_connect
+    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug, :contact_via_connect, :location
     attribute :author do
       { username: author.username,
         name: author.name,
@@ -35,7 +37,7 @@ class ClassifiedListing < ApplicationRecord
     end
     attributesForFaceting [:category]
     customRanking ["desc(bumped_at)"]
-    searchableAttributes %w[title processed_html tag_list slug]
+    searchableAttributes %w[title processed_html tag_list slug location]
   end
 
   def self.cost_by_category(category = "education")
@@ -71,7 +73,7 @@ class ClassifiedListing < ApplicationRecord
       "forsale" => { cost: 1, name: "Stuff for Sale", rules: "Personally owned physical items for sale." },
       "events" => { cost: 1, name: "Upcoming Events", rules: "In-person or online events with date included." },
       "misc" => { cost: 1, name: "Miscellaneous", rules: "Must not fit in any other category." }
-    }
+    }.with_indifferent_access
   end
 
   def path

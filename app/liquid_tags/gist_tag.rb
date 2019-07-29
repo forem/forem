@@ -15,17 +15,6 @@ class GistTag < LiquidTagBase
     )
   end
 
-  def self.special_script
-    <<~JAVASCRIPT
-      if (postscribe) {
-        var els = document.getElementsByClassName("ltag_gist-liquid-tag")
-        for (i = 0; i < els.length; i++) {
-            postscribe(els[i], els[i].firstElementChild.outerHTML);
-        }
-      }
-    JAVASCRIPT
-  end
-
   private
 
   def build_uri(link)
@@ -53,16 +42,16 @@ class GistTag < LiquidTagBase
     option_no_space = option.strip
     return "?#{option_no_space}" if valid_option?(option_no_space)
 
-    raise StandardError, "Invalid Options"
+    raise StandardError, "Invalid Filename"
   end
 
   def valid_link?(link)
-    (link =~ /\Ahttps\:\/\/gist\.github\.com\/([a-zA-Z0-9](-?[a-zA-Z0-9]){0,38})\/([a-zA-Z0-9]){1,32}\Z/)&.
+    (link =~ /\Ahttps\:\/\/gist\.github\.com\/([a-zA-Z0-9](-?[a-zA-Z0-9]){0,38})\/([a-zA-Z0-9]){1,32}(\/[a-zA-Z0-9]+)?\Z/)&.
       zero?
   end
 
   def valid_option?(option)
-    (option =~ /\Afile\=[^\\]*\.(\w+)\Z/)&.zero?
+    (option =~ /\Afile\=[^\\]*(\.(\w+))?\Z/)&.zero?
   end
 end
 

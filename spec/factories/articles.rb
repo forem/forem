@@ -12,6 +12,7 @@ FactoryBot.define do
       with_hr_issue { false }
       with_tweet_tag { false }
       with_title { true }
+      with_collection { nil }
     end
     association :user, factory: :user, strategy: :create
     description   { Faker::Hipster.paragraph(1)[0..100] }
@@ -25,6 +26,7 @@ FactoryBot.define do
         published: #{published}
         tags: #{tags if with_tags}
         date: #{date if with_date}
+        series: #{with_collection&.slug if with_collection}
         canonical_url: #{canonical_url if with_canonical_url}
         ---
 

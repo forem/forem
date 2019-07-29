@@ -1,0 +1,13 @@
+<% organization = sponsorship.organization %>
+<div class="sidebar-sponsor">
+  <a class="partner-link" href="<%= sponsorship.url %>" target="_blank" data-details="<%= organization.slug %>__image">
+    <img src="<%= cloudinary(organization.nav_image_url) %>" style="margin-bottom:8px;" alt="<%= organization.name %> logo" loading="lazy" class="partner-image-light-mode" />
+    <img src="<%= cloudinary(organization.dark_nav_image_url || organization.nav_image_url) %>" style="margin-bottom:8px;" alt="<%= organization.name %> logo" loading="lazy" class="partner-image-dark-mode" />
+  </a>
+  <div class="sponsor-tagline" style="display:inline;">
+    <%= sponsorship.tagline %>
+    <a class="partner-link sponsor-learn-more" href="<%= sponsorship.url %>" target="_blank" data-details="<%= organization.slug %>__learn-more">
+      Learn More
+    </a>
+  </div>
+</div>

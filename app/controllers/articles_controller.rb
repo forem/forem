@@ -135,25 +135,29 @@ class ArticlesController < ApplicationController
   def update
     authorize @article
     @user = @article.user || current_user
+
     not_found if @article.user_id != @user.id && !@user.has_role?(:super_admin)
+
     edited_at_date = if @article.user == current_user && @article.published
                        Time.current
                      else
                        @article.edited_at
                      end
-
     updated = @article.update(article_params_json.merge(edited_at: edited_at_date))
-    Notification.send_to_followers(@article, "Published") if updated && @article.published && @article.saved_changes["published_at"]&.include?(nil)
+    handle_notifications(updated)
 
     respond_to do |format|
       format.html do
+        # TODO: JSON should probably not be returned in the format.html section
         if article_params_json[:archived] && @article.archived # just to get archived working
           render json: @article.to_json(only: [:id], methods: [:current_state_path])
           return
         end
-        # NOTE: destination is used by /dashboard/organization when it re-assigns an article
-        # not a great solution but for now it will do
-        redirect_to(params[:destination] || @article.path)
+        if params[:destination]
+          redirect_to(params[:destination])
+          return
+        end
+        render json: { status: 200 }
       end
 
       format.json do
@@ -185,6 +189,7 @@ class ArticlesController < ApplicationController
   def stats
     authorize current_user, :pro_user?
     authorize @article
+    @organization_id = @article.organization_id
   end
 
   private
@@ -265,6 +270,15 @@ class ArticlesController < ApplicationController
     end
 
     params.require(:article).permit(allowed_params)
+  end
+
+  def handle_notifications(updated)
+    if updated && @article.published && @article.saved_changes["published"] == [false, true]
+      Notification.send_to_followers(@article, "Published")
+    elsif @article.saved_changes["published"] == [true, false]
+      Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
+      Notification.remove_all(notifiable_id: @article.id, notifiable_type: "Article", action: "Reaction")
+    end
   end
 
   def redirect_after_creation

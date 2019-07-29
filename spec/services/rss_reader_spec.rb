@@ -73,6 +73,17 @@ RSpec.describe RssReader, vcr: vcr_option do
     end
   end
 
+  context "when feed_referential_link is false" do
+    it "does not self-reference links for user" do
+      # Article.find_by is used by find_and_replace_possible_links!
+      # checking it's invocation s a shortcut to testing the functionality.
+      allow(Article).to receive(:find_by).and_call_original
+      create(:user, feed_url: nonpermanent_link, feed_referential_link: false)
+      described_class.get_all_articles
+      expect(Article).not_to have_received(:find_by)
+    end
+  end
+
   describe "#fetch_user" do
     before do
       [link, nonmedium_link, nonpermanent_link].each do |feed_url|

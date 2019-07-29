@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:slash="http://purl.org/rss/1.0/modules/slash/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:georss="http://www.georss.org/georss" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+<channel>
+  <title>Away From The Keyboard</title>
+  <atom:link href="http://awayfromthekeyboard.com/?feed=awayfromthekeyboard" rel="self" type="application/rss+xml"/>
+  <link>http://awayfromthekeyboard.com</link>
+  <description>Away From The Keyboard is where technologists tell their stories of how they started, how they grew, how they learned, and how they unwind. Hosted by software developers Cecil Phillip and Richie Rump, Away From The Keyboard looks at the human side of technology in a fun and informative way. New episodes are released every Tuesday.</description>
+  <lastBuildDate>Sun, 30 Sep 2018 10:00:52 +0000</lastBuildDate>
+  <language>en-us</language>
+  <copyright>℗ &amp; © 2019 Away From The Keyboard</copyright>
+  <itunes:subtitle>A podcast exploring the other side of the technical community</itunes:subtitle>
+  <itunes:author>Away From The Keyboard</itunes:author>
+  <itunes:owner>
+          <itunes:name>Away From The Keyboard</itunes:name>
+          <itunes:email>jorriss@gmail.com</itunes:email>
+  </itunes:owner>
+  <itunes:image href="http://awayfromthekeyboard.com/wp-content/uploads/2015/04/Away_from_the_Keyboard_iTunes.jpg"/>
+  <image>
+    <url>http://awayfromthekeyboard.com/wp-content/uploads/2015/04/Away_from_the_Keyboard_iTunes.jpg</url>
+    <title>Away From The Keyboard</title>
+    <link>http://awayfromthekeyboard.com</link>
+  </image>
+  <itunes:explicit>no</itunes:explicit>
+  <itunes:category text="Technology">
+  <itunes:category text="Software How-To"/>
+  </itunes:category>
+  <sy:updatePeriod>hourly</sy:updatePeriod>
+  <sy:updateFrequency>1</sy:updateFrequency>
+  <generator>https://wordpress.org/?v=5.1.1</generator>
+  <site xmlns="com-wordpress:feed-additions:1">89028513</site>
+  <item>
+    <title>Episode 75: Lara Hogan Demystifies Public Speaking</title>
+    <itunes:summary>The conversation starts with Lara discussing her start in technology which believe it or not started with Lord of the Rings, international studies, a semester in Prague, and photography. Lara then goes in and discusses how she started speaking publicly, how she prepares to for a presentation, and why she wrote the book &quot;Demystifying Public Speaking&quot;. The panel then talks travel and their tips for traveling. Lara then shares about her trip to New Zealand and what she does when she&#039;s away from the keyboard.
+    </itunes:summary>
+    <itunes:image href="http://awayfromthekeyboard.com/wp-content/uploads/2018/02/Lara_Hogan_Front-400x400.png"/>
+    <link>http://awayfromthekeyboard.com/2018/02/28/episode-75-lara-hogan-demystifies-public-speaking/</link>
+    <pubDate>Wed, 28 Feb 2018 11:00:41 +0000</pubDate>
+    <dc:creator>Richie Rump</dc:creator>
+    <guid isPermaLink="false">http://awayfromthekeyboard.com/?p=1092</guid>
+    <description>The conversation starts with Lara discussing her start in technology which believe it or not started with Lord of the Rings, international studies, a semester in Prague, and photography. Lara then goes in and discusses how she started speaking publicly, how she prepares to for a presentation, and why she wrote the book "Demystifying Public Speaking". The panel then talks travel and their tips for traveling. Lara then shares about her trip to New Zealand and what she does when she's away from the keyboard.
+    </description>
+    <content:encoded>The conversation starts with Lara discussing her start in technology which believe it or not started with Lord of the Rings, international studies, a semester in Prague, and photography. Lara then goes in and discusses how she started speaking publicly, how she prepares to for a presentation, and why she wrote the book "Demystifying Public Speaking". The panel then talks travel and their tips for traveling. Lara then shares about her trip to New Zealand and what she does when she's away from the keyboard.
+    </content:encoded>
+    <enclosure url="http://awayfromthekeyboard.com/wp-content/uploads/2018/02/Episode_075_Lara_Hogan_Demystifies_Public_Speaking.mp3" length="46704556" type="audio/mpeg"/>
+    <itunes:duration>43:09</itunes:duration>
+    <itunes:explicit>No</itunes:explicit>
+    <itunes:author>Richie Rump</itunes:author>
+    <post-id>1092</post-id>
+  </item>
+</channel>
+</rss>

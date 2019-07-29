@@ -7,6 +7,7 @@ RSpec.describe ClassifiedListing, type: :model do
 
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_presence_of(:body_markdown) }
+  it { is_expected.to have_many(:credits) }
 
   describe "valid associations" do
     it "is not valid w/o user and org" do
@@ -16,13 +17,13 @@ RSpec.describe ClassifiedListing, type: :model do
       expect(cl.errors[:organization_id]).to be_truthy
     end
 
-    it "is valid with user_id" do
+    it "is valid with user_id and without organization_id" do
       cl = build(:classified_listing, user_id: user.id, organization_id: nil)
       expect(cl).to be_valid
     end
 
-    it "is valid with organization_id" do
-      cl = build(:classified_listing, user_id: nil, organization_id: organization.id)
+    it "is valid with user_id and organization_id" do
+      cl = build(:classified_listing, user_id: user.id, organization_id: organization.id)
       expect(cl).to be_valid
     end
   end
@@ -53,6 +54,17 @@ RSpec.describe ClassifiedListing, type: :model do
       classified_listing.tag_list = "the best, tag list"
       classified_listing.save
       expect(classified_listing.tag_list).to eq(%w[thebest taglist])
+    end
+  end
+
+  describe "credits" do
+    it "does not destroy associated credits if destroyed" do
+      credit = create(:credit)
+      classified_listing.credits << credit
+      classified_listing.save!
+
+      expect { classified_listing.destroy }.not_to change(Credit, :count)
+      expect(credit.reload.purchase).to be_nil
     end
   end
 end

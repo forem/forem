@@ -1,5 +1,5 @@
 var bigDev =
-'                                                     \n \
+  '                                                     \n \
                                                      \n \
   -oooooooo/-      .+ooooooooo:  +ooo+        oooo/  \n \
   +MMMMMMMMMMm+   -NMMMMMMMMMMs  +MMMM:      /MMMM/  \n \
@@ -19,5 +19,5 @@ var bigDev =
 console.log(
   bigDev,
   "Hey there! Interested in the code behind dev.to? Well you're in luck - we're open source! Come say hi, tell us what you're debugging, or even lend a hand in our repo - https://github.com/thepracticaldev/dev.to/ \n",
-  "Did you find a bug or vulnerability? Check out our bug bounty info here: https://dev.to/security"
+  'Did you find a bug or vulnerability? Check out our bug bounty info here: https://dev.to/security',
 );

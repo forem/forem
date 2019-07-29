@@ -14,6 +14,8 @@ class Organization < ApplicationRecord
   has_many :credits
   has_many :unspent_credits, -> { where spent: false }, class_name: "Credit", inverse_of: :organization
   has_many :classified_listings
+  has_many :profile_pins, as: :profile, inverse_of: :profile
+  has_many :sponsorships
 
   validates :name, :summary, :url, :profile_image, presence: true
   validates :name,
@@ -119,17 +121,8 @@ class Organization < ApplicationRecord
   end
 
   def bust_cache
-    cache_buster = CacheBuster.new
-    cache_buster.bust("/#{slug}")
-    begin
-      articles.find_each do |article|
-        cache_buster.bust(article.path)
-      end
-    rescue StandardError => e
-      Rails.logger.error("Tag issue: #{e}")
-    end
+    Organizations::BustCacheJob.perform_later(id, slug)
   end
-  handle_asynchronously :bust_cache
 
   def unique_slug_including_users_and_podcasts
     errors.add(:slug, "is taken.") if User.find_by(username: slug) || Podcast.find_by(slug: slug) || Page.find_by(slug: slug)

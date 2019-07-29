@@ -59,7 +59,8 @@
         </div>
         <web-share-wrapper shareurl="https://dev.to<%= @article.path %>" sharetext="<%= @article.title %>" template="web-share-button">
           <div class="dropdown-link-row">
-            <a target="_blank" href='https://twitter.com/intent/tweet?text="<%= @article.title %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>
+            <a target="_blank"
+               href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>
               Share to Twitter
             </a>
           </div>
@@ -71,6 +72,11 @@
           <div class="dropdown-link-row">
             <a target='_blank' href='https://www.reddit.com/submit?url=https://dev.to<%= @article.path %>&title=<%= @article.title %>'>
               Share to Reddit
+            </a>
+          </div>
+          <div class="dropdown-link-row">
+            <a target='_blank' href='https://news.ycombinator.com/submitlink?u=https://dev.to<%= @article.path %>&t=<%= @article.title %>'>
+              Share to Hacker News
             </a>
           </div>
           <div class="dropdown-link-row">

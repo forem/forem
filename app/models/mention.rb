@@ -31,6 +31,6 @@ class Mention < ApplicationRecord
   end
 
   def permission
-    errors.add(:mentionable_id, "is not valid.") unless mentionable.valid?
+    errors.add(:mentionable_id, "is not valid.") unless mentionable&.valid?
   end
 end

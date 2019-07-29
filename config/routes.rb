@@ -13,7 +13,7 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     delete "/sign_out" => "devise/sessions#destroy"
-    get "/enter" => "registrations#new", as: :new_user_registration_path
+    get "/enter" => "registrations#new", as: :sign_up
   end
 
   namespace :admin do
@@ -37,6 +37,7 @@ Rails.application.routes.draw do
     resources :listings, only: %i[index edit update destroy], controller: "classified_listings"
     resources :pages, only: %i[index new create edit update destroy]
     resources :reactions, only: [:update]
+    resources :chat_channels, only: %i[index create update]
     resources :reports, only: %i[index show], controller: "feedback_messages" do
       collection do
         post "send_email"
@@ -44,13 +45,15 @@ Rails.application.routes.draw do
         post "save_status"
       end
     end
-    resources :tags, only: %i[index show edit update]
+    resources :tags, only: %i[index update show]
     resources :users, only: %i[index show edit update] do
       member do
         post "banish"
         post "full_delete"
         patch "user_status"
         post "merge"
+        delete "remove_identity"
+        post "recover_identity"
       end
     end
     resources :welcome, only: %i[index create]
@@ -90,9 +93,11 @@ Rails.application.routes.draw do
           post "/update_or_create", to: "github_repos#update_or_create"
         end
       end
+
       get "/analytics/totals", to: "analytics#totals"
       get "/analytics/historical", to: "analytics#historical"
       get "/analytics/past_day", to: "analytics#past_day"
+      get "/analytics/referrers", to: "analytics#referrers"
     end
   end
 
@@ -139,17 +144,21 @@ Rails.application.routes.draw do
   resources :tag_adjustments, only: [:create]
   resources :rating_votes, only: [:create]
   resources :page_views, only: %i[create update]
-  resources :classified_listings, path: :listings, only: %i[index new create edit update delete]
-  resources :credits, only: %i[index new create]
+  resources :classified_listings, path: :listings, only: %i[index new create edit update delete dashboard]
+  resources :credits, only: %i[index new create] do
+    get "purchase", on: :collection, to: "credits#new"
+  end
   resources :buffer_updates, only: [:create]
   resources :reading_list_items, only: [:update]
   resources :poll_votes, only: %i[show create]
   resources :poll_skips, only: [:create]
+  resources :profile_pins, only: %i[create update]
+  resources :partnerships, only: %i[index create show], param: :option
 
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
-  get "/credits/purchase" => "credits#new"
+  get "/listings/dashboard" => "classified_listings#dashboard"
   get "/listings/:category" => "classified_listings#index"
-  get "/listings/:category/:slug" => "classified_listings#index"
+  get "/listings/:category/:slug" => "classified_listings#index", as: :classified_listing_slug
   get "/listings/:category/:slug/:view" => "classified_listings#index",
       constraints: { view: /moderate/ }
   get "/notifications/:filter" => "notifications#index"
@@ -157,6 +166,7 @@ Rails.application.routes.draw do
   get "/notification_subscriptions/:notifiable_type/:notifiable_id" => "notification_subscriptions#show"
   post "/notification_subscriptions/:notifiable_type/:notifiable_id" => "notification_subscriptions#upsert"
   patch "/onboarding_update" => "users#onboarding_update"
+  patch "/onboarding_checkbox_update" => "users#onboarding_checkbox_update"
   get "email_subscriptions/unsubscribe"
   post "/chat_channels/:id/moderate" => "chat_channels#moderate"
   post "/chat_channels/:id/open" => "chat_channels#open"
@@ -165,6 +175,7 @@ Rails.application.routes.draw do
   post "/chat_channels/create_chat" => "chat_channels#create_chat"
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
   get "/live/:username" => "twitch_live_streams#show"
+  get "/pro" => "pro_accounts#index"
 
   post "/pusher/auth" => "pusher#auth"
 
@@ -237,7 +248,9 @@ Rails.application.routes.draw do
   get "/live" => "pages#live"
   get "/swagnets" => "pages#swagnets"
   get "/welcome" => "pages#welcome"
+  get "/challenge" => "pages#challenge"
   get "/badge" => "pages#badge"
+  get "/onboarding" => "pages#onboarding"
   get "/shecoded" => "pages#shecoded"
   get "/💸", to: redirect("t/hiring")
   get "/security", to: "pages#bounty"
@@ -297,6 +310,7 @@ Rails.application.routes.draw do
   get "/pod" => "podcast_episodes#index"
   get "/readinglist" => "reading_list_items#index"
   get "/readinglist/:view" => "reading_list_items#index", constraints: { view: /archive/ }
+  get "/history", to: "history#index", as: :history
 
   get "/feed" => "articles#feed", as: "feed", defaults: { format: "rss" }
   get "/feed/tag/:tag" => "articles#feed",
@@ -306,7 +320,7 @@ Rails.application.routes.draw do
   get "/rss" => "articles#feed", defaults: { format: "rss" }
 
   get "/tag/:tag" => "stories#index"
-  get "/t/:tag" => "stories#index"
+  get "/t/:tag", to: "stories#index", as: :tag
   get "/t/:tag/edit", to: "tags#edit"
   get "/t/:tag/admin", to: "tags#admin"
   patch "/tag/:id", to: "tags#update"

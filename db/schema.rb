@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_16_024727) do
+ActiveRecord::Schema.define(version: 2019_07_23_094834) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -144,6 +144,15 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
 
+  create_table "backup_data", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "instance_id", null: false
+    t.string "instance_type", null: false
+    t.bigint "instance_user_id"
+    t.jsonb "json_data", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "badge_achievements", force: :cascade do |t|
     t.bigint "badge_id", null: false
     t.datetime "created_at", null: false
@@ -245,6 +254,7 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.boolean "contact_via_connect", default: false
     t.datetime "created_at", null: false
     t.datetime "last_buffered"
+    t.string "location"
     t.bigint "organization_id"
     t.text "processed_html"
     t.boolean "published"
@@ -302,10 +312,14 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.float "cost", default: 0.0
     t.datetime "created_at", null: false
     t.bigint "organization_id"
+    t.bigint "purchase_id"
+    t.string "purchase_type"
     t.boolean "spent", default: false
-    t.string "spent_on"
+    t.datetime "spent_at"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.index ["purchase_id", "purchase_type"], name: "index_credits_on_purchase_id_and_purchase_type"
+    t.index ["spent"], name: "index_credits_on_spent"
   end
 
   create_table "delayed_jobs", id: :serial, force: :cascade do |t|
@@ -381,6 +395,7 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.integer "follower_id", null: false
     t.string "follower_type", null: false
     t.float "points", default: 1.0
+    t.string "subscription_status", default: "all_articles", null: false
     t.datetime "updated_at"
     t.index ["created_at"], name: "index_follows_on_created_at"
     t.index ["followable_id", "followable_type"], name: "fk_followables"
@@ -480,17 +495,6 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.integer "user_id"
   end
 
-  create_table "mentor_relationships", force: :cascade do |t|
-    t.boolean "active", default: true
-    t.datetime "created_at", null: false
-    t.integer "mentee_id", null: false
-    t.integer "mentor_id", null: false
-    t.datetime "updated_at", null: false
-    t.index ["mentee_id", "mentor_id"], name: "index_mentor_relationships_on_mentee_id_and_mentor_id", unique: true
-    t.index ["mentee_id"], name: "index_mentor_relationships_on_mentee_id"
-    t.index ["mentor_id"], name: "index_mentor_relationships_on_mentor_id"
-  end
-
   create_table "messages", force: :cascade do |t|
     t.bigint "chat_channel_id", null: false
     t.datetime "created_at", null: false
@@ -571,7 +575,6 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.string "dark_nav_image"
     t.string "email"
     t.string "github_username"
-    t.boolean "is_gold_sponsor", default: false
     t.string "jobs_email"
     t.string "jobs_url"
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
@@ -586,10 +589,6 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.string "secret"
     t.string "slug"
     t.integer "spent_credits_count", default: 0, null: false
-    t.text "sponsorship_blurb_html"
-    t.integer "sponsorship_featured_number", default: 0
-    t.string "sponsorship_tagline"
-    t.string "sponsorship_url"
     t.string "state"
     t.string "story"
     t.text "summary"
@@ -608,6 +607,8 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.bigint "article_id"
     t.integer "counts_for_number_of_views", default: 1
     t.datetime "created_at", null: false
+    t.string "domain"
+    t.string "path"
     t.string "referrer"
     t.integer "time_tracked_in_seconds", default: 15
     t.datetime "updated_at", null: false
@@ -615,6 +616,7 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.bigint "user_id"
     t.index ["article_id"], name: "index_page_views_on_article_id"
     t.index ["created_at"], name: "index_page_views_on_created_at"
+    t.index ["domain"], name: "index_page_views_on_domain"
     t.index ["user_id"], name: "index_page_views_on_user_id"
   end
 
@@ -644,6 +646,7 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.boolean "featured", default: true
     t.integer "featured_number"
     t.string "guid", null: false
+    t.boolean "https", default: true
     t.string "image"
     t.string "itunes_url"
     t.string "media_url", null: false
@@ -652,9 +655,11 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.text "processed_html"
     t.datetime "published_at"
     t.text "quote"
+    t.boolean "reachable", default: true
     t.integer "reactions_count", default: 0, null: false
     t.string "slug", null: false
     t.string "social_image"
+    t.string "status_notice"
     t.string "subtitle"
     t.text "summary"
     t.string "title", null: false
@@ -662,6 +667,7 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.string "website_url"
     t.index ["guid"], name: "index_podcast_episodes_on_guid", unique: true
     t.index ["media_url"], name: "index_podcast_episodes_on_media_url", unique: true
+    t.index ["podcast_id"], name: "index_podcast_episodes_on_podcast_id"
   end
 
   create_table "podcasts", id: :serial, force: :cascade do |t|
@@ -674,6 +680,7 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.string "main_color_hex", null: false
     t.string "overcast_url"
     t.string "pattern_image"
+    t.boolean "reachable", default: true
     t.string "slug", null: false
     t.string "soundcloud_url"
     t.text "status_notice", default: ""
@@ -723,6 +730,17 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.string "prompt_html"
     t.string "prompt_markdown"
     t.datetime "updated_at", null: false
+  end
+
+  create_table "profile_pins", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "pinnable_id"
+    t.string "pinnable_type"
+    t.bigint "profile_id"
+    t.string "profile_type"
+    t.datetime "updated_at", null: false
+    t.index ["pinnable_id"], name: "index_profile_pins_on_pinnable_id"
+    t.index ["profile_id"], name: "index_profile_pins_on_profile_id"
   end
 
   create_table "push_notification_subscriptions", force: :cascade do |t|
@@ -794,6 +812,29 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.string "keyword"
     t.datetime "updated_at", null: false
     t.index ["google_result_path"], name: "index_search_keywords_on_google_result_path"
+  end
+
+  create_table "sponsorships", force: :cascade do |t|
+    t.text "blurb_html"
+    t.datetime "created_at", null: false
+    t.datetime "expires_at"
+    t.integer "featured_number", default: 0, null: false
+    t.text "instructions"
+    t.datetime "instructions_updated_at"
+    t.string "level", null: false
+    t.bigint "organization_id"
+    t.bigint "sponsorable_id"
+    t.string "sponsorable_type"
+    t.string "status", default: "none", null: false
+    t.string "tagline"
+    t.datetime "updated_at", null: false
+    t.string "url"
+    t.bigint "user_id"
+    t.index ["level"], name: "index_sponsorships_on_level"
+    t.index ["organization_id"], name: "index_sponsorships_on_organization_id"
+    t.index ["sponsorable_id", "sponsorable_type"], name: "index_sponsorships_on_sponsorable_id_and_sponsorable_type"
+    t.index ["status"], name: "index_sponsorships_on_status"
+    t.index ["user_id"], name: "index_sponsorships_on_user_id"
   end
 
   create_table "tag_adjustments", force: :cascade do |t|
@@ -896,6 +937,7 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.string "bg_color_hex"
     t.text "cached_chat_channel_memberships"
     t.boolean "checked_code_of_conduct", default: false
+    t.boolean "checked_terms_and_conditions", default: false
     t.integer "comments_count", default: 0, null: false
     t.string "config_font", default: "default"
     t.string "config_theme", default: "default"
@@ -938,6 +980,7 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.boolean "feed_admin_publish_permission", default: true
     t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
     t.boolean "feed_mark_canonical", default: false
+    t.boolean "feed_referential_link", default: true, null: false
     t.string "feed_url"
     t.integer "following_orgs_count", default: 0, null: false
     t.integer "following_tags_count", default: 0, null: false
@@ -948,12 +991,14 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.string "gitlab_url"
     t.string "inbox_guidelines"
     t.string "inbox_type", default: "private"
+    t.string "instagram_url"
     t.jsonb "language_settings", default: {}, null: false
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
     t.datetime "last_followed_at"
     t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
     t.datetime "last_notification_activity"
+    t.string "last_onboarding_page"
     t.datetime "last_sign_in_at"
     t.inet "last_sign_in_ip"
     t.string "linkedin_url"
@@ -963,17 +1008,13 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.string "mastodon_url"
     t.string "medium_url"
     t.datetime "membership_started_at"
-    t.text "mentee_description"
-    t.datetime "mentee_form_updated_at"
-    t.text "mentor_description"
-    t.datetime "mentor_form_updated_at"
     t.boolean "mobile_comment_notifications", default: true
     t.integer "monthly_dues", default: 0
     t.string "mostly_work_with"
     t.string "name"
-    t.boolean "offering_mentorship"
     t.string "old_old_username"
     t.string "old_username"
+    t.string "onboarding_checklist", default: [], array: true
     t.datetime "onboarding_package_form_submmitted_at"
     t.boolean "onboarding_package_fulfilled", default: false
     t.boolean "onboarding_package_requested", default: false
@@ -995,7 +1036,6 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.boolean "saw_onboarding", default: true
     t.integer "score", default: 0
     t.string "secret"
-    t.boolean "seeking_mentorship"
     t.string "shipping_address"
     t.string "shipping_address_line_2"
     t.string "shipping_city"
@@ -1057,4 +1097,6 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
   add_foreign_key "messages", "chat_channels"
   add_foreign_key "messages", "users"
   add_foreign_key "push_notification_subscriptions", "users"
+  add_foreign_key "sponsorships", "organizations"
+  add_foreign_key "sponsorships", "users"
 end

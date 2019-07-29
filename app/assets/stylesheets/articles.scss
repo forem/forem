@@ -82,7 +82,7 @@
         width: 27%;
         padding: 9px 0px;
         text-align: center;
-        color: $black;
+        @include themeable(color, theme-secondary-color, $medium-gray);
         margin: 1%;
       }
       .query-filter-button {
@@ -111,7 +111,11 @@
             theme-container-accent-background,
             lighten($bold-blue, 8%)
           );
-          color: white;
+          @include themeable(
+            color,
+            theme-color,
+            white
+          );
         }
       }
     }
@@ -209,6 +213,44 @@
           font-stretch: condensed;
           font-weight: 600;
           cursor: pointer;
+        }
+      }
+    }
+    .pinned-articles {
+      @include themeable(background, theme-container-background, $white);
+      @include themeable(
+        border,
+        theme-container-border,
+        1px solid $outline-color
+      );
+      padding: 8px 0px;
+      margin: auto;
+      margin-top: 8px;
+      @media screen and (min-width: 750px) {
+        border-radius: 3px;
+        box-sizing: border-box;
+        padding: 8px 8px;
+        padding-right: 9px;
+        width: calc(100% + 2px);
+        max-width: 722px;
+      }
+      .pinned-articles-indicator {
+        text-align: left;
+        font-size: 15px;
+        font-weight: bold;
+        padding-top: 8px;
+        padding-left: 2.8%;
+        @media screen and (min-width: 750px) {
+          padding-left: 22px;
+        }
+        @media screen and (min-width: 950px) {
+          padding-left: 2px;
+        }
+        img {
+          width: 20px;
+          transform: rotate(-8deg);
+          vertical-align: -5px;
+          @include themeable(filter, theme-social-icon-invert, invert(0));
         }
       }
     }
@@ -1055,7 +1097,7 @@
             display: inline-block;
             width: calc(100% - 10px);
             font-weight: 500;
-            padding: 4px 9px;
+            padding: 7px 9px;
             font-size: 1em;
             &:hover {
               @include themeable(
@@ -1078,6 +1120,23 @@
           }
         }
       }
+    }
+    .sidebar-sponsorship-level {
+      text-align: center;
+      font-weight: bold;
+      width: calc(100% - 6px);
+      padding: 26px 0px;
+      border-radius: 3px;
+      margin-bottom: 10px;
+      font-family: $helvetica-condensed;
+      font-stretch: condensed;
+      font-size: 1.1em;
+      @include themeable(
+        border,
+        theme-container-border,
+        1px solid $outline-color
+      );
+      @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
     }
     .widget {
       width: calc(100% - 30px);
@@ -1365,6 +1424,10 @@
             display: inline;
             border: 0;
           }
+        }
+        .widget-subtext {
+          text-align: center;
+          font-size: 0.9em;
         }
         .widget-events-single-link {
           color: $black;
