@@ -429,7 +429,10 @@ class Article < ApplicationRecord
     minutes = (video_duration_in_seconds.to_i / 60) % 60
     seconds = video_duration_in_seconds.to_i % 60
     seconds = "0#{seconds}" if seconds.to_s.size == 1
-    "#{minutes}:#{seconds}"
+
+    hours = (video_duration_in_seconds.to_i / 3600)
+    minutes = "0#{minutes}" if hours.positive? && minutes < 10
+    hours < 1 ? "#{minutes}:#{seconds}" : "#{hours}:#{minutes}:#{seconds}"
   end
 
   def fetch_video_duration
