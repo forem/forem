@@ -401,6 +401,11 @@ a.header-link {
       .comment-deep-2 {
         margin-top: -123px;
       }
+      _:-ms-lang(x),
+      .comment-deep-1,
+      .comment-deep-2 {
+        margin-top: 0px; //hack for MS Edge and IE to fix comments overlapping, because they not supporting <details>
+      }
       summary {
         z-index: 15;
         position: relative;
