@@ -759,7 +759,7 @@ GEM
       timber (~> 3.0)
       timber-rack (~> 1.0)
     timecop (0.9.1)
-    twilio-ruby (5.25.1)
+    twilio-ruby (5.25.2)
       faraday (~> 0.9)
       jwt (>= 1.5, <= 2.5)
       nokogiri (>= 1.6, < 2.0)
