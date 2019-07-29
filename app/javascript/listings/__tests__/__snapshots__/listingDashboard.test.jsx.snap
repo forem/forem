@@ -7,18 +7,24 @@ preact-render-spy (1 nodes)
   <span
     onClick={[Function onClick]}
     class="rounded-btn active"
+    role="button"
+    tabIndex="0"
   >
     Personal
   </span>
   <span
     onClick={[Function onClick]}
     class="rounded-btn "
+    role="button"
+    tabIndex="0"
   >
     Yoyodyne
   </span>
   <span
     onClick={[Function onClick]}
     class="rounded-btn "
+    role="button"
+    tabIndex="0"
   >
     Infotrode
   </span>
@@ -39,7 +45,33 @@ preact-render-spy (1 nodes)
       </a>
     </div>
   </div>
-  <div class="dashboard-listings-sorting">
+  <div class="dashboard-listings-actions">
+    <div class="listings-dashboard-filter-buttons">
+      <span
+        onClick={[Function onClick]}
+        class="rounded-btn active"
+        role="button"
+        tabIndex="0"
+      >
+        All
+      </span>
+      <span
+        onClick={[Function onClick]}
+        class="rounded-btn "
+        role="button"
+        tabIndex="0"
+      >
+        Active
+      </span>
+      <span
+        onClick={[Function onClick]}
+        class="rounded-btn "
+        role="button"
+        tabIndex="0"
+      >
+        Expired
+      </span>
+    </div>
     <select onChange={[Function sortListings]}>
       <option
         value="created_at"
@@ -51,41 +83,29 @@ preact-render-spy (1 nodes)
     </select>
   </div>
   <div class="dashboard-listings-view">
-    <div class="dashboard-listing-row">
-      <a href="cfp/asdfasdf-2ea8">
-        <h2>asdfasdf</h2>
+    <div class="dashboard-listing-row expired">
+      <span class="listing-org">Infotrode</span>
+      <a href="cfp/hehhehe-5hld">
+        <h2>hehhehe (expired)</h2>
       </a>
       <span class="dashboard-listing-date">Jun 11</span>
       <span class="dashboard-listing-category">
         <a href="/listings/cfp/">cfp</a>
       </span>
-      <span class="dashboard-listing-tags">
-        <a
-          href="/listings?t=computerscience"
-          data-no-instant={true}
-        >
-          #computerscience 
-        </a>
-        <a
-          href="/listings?t=career"
-          data-no-instant={true}
-        >
-          #career 
-        </a>
-      </span>
+      <span class="dashboard-listing-tags"></span>
       <div class="listing-row-actions">
         <a
-          href="/listings/23/edit"
+          href="/listings/25/edit"
           class="dashboard-listing-edit-button cta pill green"
         >
           EDIT
         </a>
       </div>
     </div>
-    <div class="dashboard-listing-row">
+    <div class="dashboard-listing-row expired">
       <span class="listing-org">Yoyodyne</span>
       <a href="events/yoyoyoyoyoooooooo-4jcb">
-        <h2>YOYOYOYOYOOOOOOOO</h2>
+        <h2>YOYOYOYOYOOOOOOOO (expired)</h2>
       </a>
       <span class="dashboard-listing-date">Jun 11</span>
       <span class="dashboard-listing-category">
@@ -120,19 +140,31 @@ preact-render-spy (1 nodes)
         </a>
       </div>
     </div>
-    <div class="dashboard-listing-row">
-      <span class="listing-org">Infotrode</span>
-      <a href="cfp/hehhehe-5hld">
-        <h2>hehhehe</h2>
+    <div class="dashboard-listing-row expired">
+      <a href="cfp/asdfasdf-2ea8">
+        <h2>asdfasdf (expired)</h2>
       </a>
       <span class="dashboard-listing-date">Jun 11</span>
       <span class="dashboard-listing-category">
         <a href="/listings/cfp/">cfp</a>
       </span>
-      <span class="dashboard-listing-tags"></span>
+      <span class="dashboard-listing-tags">
+        <a
+          href="/listings?t=computerscience"
+          data-no-instant={true}
+        >
+          #computerscience 
+        </a>
+        <a
+          href="/listings?t=career"
+          data-no-instant={true}
+        >
+          #career 
+        </a>
+      </span>
       <div class="listing-row-actions">
         <a
-          href="/listings/25/edit"
+          href="/listings/23/edit"
           class="dashboard-listing-edit-button cta pill green"
         >
           EDIT
