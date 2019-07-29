@@ -8,7 +8,8 @@ RSpec.describe "ClassifiedListings", type: :request do
         title: "something",
         body_markdown: "something else",
         category: "cfp",
-        tag_list: ""
+        tag_list: "",
+        contact_via_connect: true
       }
     }
   end
@@ -160,6 +161,8 @@ RSpec.describe "ClassifiedListings", type: :request do
 
   describe "PUT /listings/:id" do
     let(:listing) { create(:classified_listing, user: user) }
+    let(:organization) { create(:organization) }
+    let(:org_listing) { create(:classified_listing, user: user, organization: organization) }
 
     before do
       sign_in user
@@ -168,10 +171,11 @@ RSpec.describe "ClassifiedListings", type: :request do
     context "when the bump action is called" do
       let(:params) { { classified_listing: { action: "bump" } } }
 
-      it "does not bump the listing if the use has not enough credits" do
+      it "does not bump the user listing and redirects to credits if the user has not enough credits" do
         previous_bumped_at = listing.bumped_at
         put "/listings/#{listing.id}", params: params
         expect(listing.reload.bumped_at.to_i).to eq(previous_bumped_at.to_i)
+        expect(response.body).to redirect_to("/credits")
       end
 
       it "does not subtract spent credits if the user has not enough credits" do
@@ -197,6 +201,27 @@ RSpec.describe "ClassifiedListings", type: :request do
           put "/listings/#{listing.id}", params: params
         end.to change(user.credits.spent, :size).by(cost)
         expect(listing.reload.bumped_at >= previous_bumped_at).to eq(true)
+      end
+
+      it "bumps the org listing using org credits before user credits" do
+        cost = ClassifiedListing.cost_by_category(org_listing.category)
+        create_list(:credit, cost, organization: organization)
+        create_list(:credit, cost, user: user)
+        previous_bumped_at = org_listing.bumped_at
+        expect do
+          put "/listings/#{org_listing.id}", params: params
+        end.to change(organization.credits.spent, :size).by(cost)
+        expect(org_listing.reload.bumped_at >= previous_bumped_at).to eq(true)
+      end
+
+      it "bumps the org listing using user credits if org credits insufficient and user credits are" do
+        cost = ClassifiedListing.cost_by_category(org_listing.category)
+        create_list(:credit, cost, user: user)
+        previous_bumped_at = org_listing.bumped_at
+        expect do
+          put "/listings/#{org_listing.id}", params: params
+        end.to change(user.credits.spent, :size).by(cost)
+        expect(org_listing.reload.bumped_at >= previous_bumped_at).to eq(true)
       end
     end
   end
