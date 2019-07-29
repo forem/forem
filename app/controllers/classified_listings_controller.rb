@@ -49,6 +49,7 @@ class ClassifiedListingsController < ApplicationController
       @classified_listing.published = false
       @classified_listing.save
       redirect_to "/listings/dashboard"
+      return
     end
 
     available_org_credits = org.credits.unspent if org
@@ -84,18 +85,23 @@ class ClassifiedListingsController < ApplicationController
     elsif listing_params[:action] == "unpublish"
       unpublish_listing
     elsif listing_params[:action] == "publish"
-      if @classified_listing.bumped_at.nil?
-        cost = ClassifiedListing.cost_by_category(@classified_listing.category)
+      available_author_credits = @classified_listing.author.credits.unspent
+      cost = ClassifiedListing.cost_by_category(@classified_listing.category)
+      if @classified_listing.bumped_at.nil? && available_author_credits.size >= cost
         create_listing(@classified_listing.author, cost)
+        return
+      elsif @classified_listing.bumped_at.nil? && available_author_credits.size < cost
+        redirect_to credits_path, notice: "Not enough available credits"
+        return
+      elsif @classified_listing.bumped_at.nil? == false
+        publish_listing
       end
-      publish_listing
-      redirect_to "/listings"
     elsif listing_params[:body_markdown].present? && ((@classified_listing.bumped_at && @classified_listing.bumped_at > 24.hours.ago) || !@classified_listing.published)
       update_listing_details
-      redirect_to "/listings"
     end
 
     clear_listings_cache
+    redirect_to "/listings"
   end
 
   def dashboard
