@@ -6,7 +6,7 @@ RSpec.describe TweetTag, type: :liquid_template do
   let(:name) { "The Practical Dev" }
   let(:body) { "When GitHub goes down" }
 
-  setup { Liquid::Template.register_tag("tweet", TweetTag) }
+  setup { Liquid::Template.register_tag("tweet", described_class) }
 
   def generate_tweet_liquid_tag(id)
     Liquid::Template.parse("{% tweet #{id} %}")

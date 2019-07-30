@@ -3,9 +3,9 @@ require "rails_helper"
 RSpec.describe PushNotificationSubscription, type: :model do
   describe "validation" do
     subject do
-      PushNotificationSubscription.create(user: create(:user),
-                                          auth_key: "asdf123",
-                                          endpoint: "asdf123")
+      described_class.create(user: create(:user),
+                             auth_key: "asdf123",
+                             endpoint: "asdf123")
     end
 
     it { is_expected.to validate_presence_of(:endpoint) }

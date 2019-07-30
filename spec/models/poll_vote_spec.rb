@@ -6,13 +6,13 @@ RSpec.describe PollVote, type: :model do
   let(:poll) { create(:poll, article_id: article.id) }
 
   it "is not valid as a new object" do
-    expect(PollVote.new.valid?).to be(false)
+    expect(described_class.new.valid?).to be(false)
   end
 
   it "limits one vote per user per poll" do
     create(:poll_vote, poll_option_id: poll.poll_options.last.id, user_id: user.id, poll_id: poll.id)
-    PollVote.create(poll_option_id: poll.poll_options.first.id, user_id: user.id, poll_id: poll.id)
-    PollVote.create(poll_option_id: poll.poll_options.last.id, user_id: user.id, poll_id: poll.id)
+    described_class.create(poll_option_id: poll.poll_options.first.id, user_id: user.id, poll_id: poll.id)
+    described_class.create(poll_option_id: poll.poll_options.last.id, user_id: user.id, poll_id: poll.id)
     expect(user.poll_votes.size).to eq(1)
   end
 
@@ -39,7 +39,7 @@ RSpec.describe PollVote, type: :model do
 
   it "disallows a vote after skipping" do
     PollSkip.create(poll_id: poll.id, user_id: user.id)
-    PollVote.create(poll_option_id: poll.poll_options.last.id, user_id: user.id, poll_id: poll.id)
+    described_class.create(poll_option_id: poll.poll_options.last.id, user_id: user.id, poll_id: poll.id)
     expect(user.poll_votes.size).to eq(0)
   end
 

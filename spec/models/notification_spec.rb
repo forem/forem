@@ -17,24 +17,24 @@ RSpec.describe Notification, type: :model do
       create(:notification, user: user, notifiable: article, action: "Reaction")
       duplicate_notification = build(:notification, user: user, notifiable: article, action: "Reaction")
       expect do
-        Notification.import([duplicate_notification],
-                            on_duplicate_key_update: {
-                              conflict_target: %i[notifiable_id notifiable_type user_id action],
-                              index_predicate: "action IS NOT NULL",
-                              columns: %i[json_data notified_at read]
-                            })
-      end.not_to change(Notification, :count)
+        described_class.import([duplicate_notification],
+                               on_duplicate_key_update: {
+                                 conflict_target: %i[notifiable_id notifiable_type user_id action],
+                                 index_predicate: "action IS NOT NULL",
+                                 columns: %i[json_data notified_at read]
+                               })
+      end.not_to change(described_class, :count)
     end
 
     it "updates when trying to create a duplicate notification via import" do
       notification = create(:notification, user: user, notifiable: article, action: "Reaction", json_data: { "user_id" => 1 })
       duplicate_notification = build(:notification, user: user, notifiable: article, action: "Reaction", json_data: { "user_id" => 2 })
-      Notification.import([duplicate_notification],
-                          on_duplicate_key_update: {
-                            conflict_target: %i[notifiable_id notifiable_type user_id action],
-                            index_predicate: "action IS NOT NULL",
-                            columns: %i[json_data notified_at read]
-                          })
+      described_class.import([duplicate_notification],
+                             on_duplicate_key_update: {
+                               conflict_target: %i[notifiable_id notifiable_type user_id action],
+                               index_predicate: "action IS NOT NULL",
+                               columns: %i[json_data notified_at read]
+                             })
       notification.reload
       expect(notification.json_data["user_id"]).to eq(2)
     end
@@ -43,13 +43,13 @@ RSpec.describe Notification, type: :model do
       create(:notification, organization: organization, notifiable: article, action: "Reaction")
       duplicate_notification = build(:notification, organization: organization, notifiable: article, action: "Reaction")
       expect do
-        Notification.import([duplicate_notification],
-                            on_duplicate_key_update: {
-                              conflict_target: %i[notifiable_id notifiable_type organization_id action],
-                              index_predicate: "action IS NOT NULL",
-                              columns: %i[json_data notified_at read]
-                            })
-      end.not_to change(Notification, :count)
+        described_class.import([duplicate_notification],
+                               on_duplicate_key_update: {
+                                 conflict_target: %i[notifiable_id notifiable_type organization_id action],
+                                 index_predicate: "action IS NOT NULL",
+                                 columns: %i[json_data notified_at read]
+                               })
+      end.not_to change(described_class, :count)
     end
 
     describe "when notifiable is a Comment" do
@@ -61,13 +61,13 @@ RSpec.describe Notification, type: :model do
         create(:notification, notification_attributes)
         duplicate_notification = build(:notification, notification_attributes)
         expect do
-          Notification.import([duplicate_notification],
-                              on_duplicate_key_update: {
-                                conflict_target: %i[notifiable_id notifiable_type user_id],
-                                index_predicate: "action IS NULL",
-                                columns: %i[json_data notified_at read]
-                              })
-        end.not_to change(Notification, :count)
+          described_class.import([duplicate_notification],
+                                 on_duplicate_key_update: {
+                                   conflict_target: %i[notifiable_id notifiable_type user_id],
+                                   index_predicate: "action IS NULL",
+                                   columns: %i[json_data notified_at read]
+                                 })
+        end.not_to change(described_class, :count)
       end
 
       it "doesn't allow to create a duplicate org notification via import when action is nil" do
@@ -75,13 +75,13 @@ RSpec.describe Notification, type: :model do
         create(:notification, notification_attributes)
         duplicate_notification = build(:notification, notification_attributes)
         expect do
-          Notification.import([duplicate_notification],
-                              on_duplicate_key_update: {
-                                conflict_target: %i[notifiable_id notifiable_type organization_id],
-                                index_predicate: "action IS NULL",
-                                columns: %i[json_data notified_at read]
-                              })
-        end.not_to change(Notification, :count)
+          described_class.import([duplicate_notification],
+                                 on_duplicate_key_update: {
+                                   conflict_target: %i[notifiable_id notifiable_type organization_id],
+                                   index_predicate: "action IS NULL",
+                                   columns: %i[json_data notified_at read]
+                                 })
+        end.not_to change(described_class, :count)
       end
       # rubocop:enable RSpec/ExampleLength
     end
@@ -93,15 +93,15 @@ RSpec.describe Notification, type: :model do
 
     it "runs fine" do
       run_background_jobs_immediately do
-        Notification.send_new_follower_notification(tag_follow)
+        described_class.send_new_follower_notification(tag_follow)
       end
     end
 
     it "doesn't create a notification" do
       run_background_jobs_immediately do
         expect do
-          Notification.send_new_follower_notification(tag_follow)
-        end.not_to change(Notification, :count)
+          described_class.send_new_follower_notification(tag_follow)
+        end.not_to change(described_class, :count)
       end
     end
   end
@@ -109,21 +109,21 @@ RSpec.describe Notification, type: :model do
   describe "#send_new_follower_notification" do
     before do
       perform_enqueued_jobs do
-        Notification.send_new_follower_notification(follow_instance)
+        described_class.send_new_follower_notification(follow_instance)
       end
     end
 
     it "sets the notifiable_at column upon creation" do
-      expect(Notification.last.notified_at).not_to eq nil
+      expect(described_class.last.notified_at).not_to eq nil
     end
 
     context "when a user follows another user" do
       it "creates a notification belonging to the person being followed" do
-        expect(Notification.first.user_id).to eq user2.id
+        expect(described_class.first.user_id).to eq user2.id
       end
 
       it "creates a notification from the follow instance" do
-        notifiable_data = { notifiable_id: Notification.first.notifiable_id, notifiable_type: Notification.first.notifiable_type }
+        notifiable_data = { notifiable_id: described_class.first.notifiable_id, notifiable_type: described_class.first.notifiable_type }
         follow_data = { notifiable_id: follow_instance.id, notifiable_type: follow_instance.class.name }
         expect(notifiable_data).to eq follow_data
       end
@@ -133,15 +133,15 @@ RSpec.describe Notification, type: :model do
       let(:follow_instance) { user.follow(organization) }
 
       it "creates a notification belonging to the organization" do
-        expect(Notification.first.organization_id).to eq organization.id
+        expect(described_class.first.organization_id).to eq organization.id
       end
 
       it "does not create a notification belonging to a user" do
-        expect(Notification.first.user_id).to eq nil
+        expect(described_class.first.user_id).to eq nil
       end
 
       it "creates a notification from the follow instance" do
-        notifiable_data = { notifiable_id: Notification.first.notifiable_id, notifiable_type: Notification.first.notifiable_type }
+        notifiable_data = { notifiable_id: described_class.first.notifiable_id, notifiable_type: described_class.first.notifiable_type }
         follow_data = { notifiable_id: follow_instance.id, notifiable_type: follow_instance.class.name }
         expect(notifiable_data).to eq follow_data
       end
@@ -151,9 +151,9 @@ RSpec.describe Notification, type: :model do
       it "destroys the follow notification" do
         follow_instance = user.stop_following(user2)
         perform_enqueued_jobs do
-          Notification.send_new_follower_notification(follow_instance)
+          described_class.send_new_follower_notification(follow_instance)
         end
-        expect(Notification.count).to eq 0
+        expect(described_class.count).to eq 0
       end
     end
   end
@@ -162,26 +162,26 @@ RSpec.describe Notification, type: :model do
     context "when all commenters are subscribed" do
       it "sends a notification to the author of the article" do
         comment = create(:comment, user: user2, commentable: article)
-        Notification.send_new_comment_notifications_without_delay(comment)
+        described_class.send_new_comment_notifications_without_delay(comment)
         expect(user.notifications.count).to eq 1
       end
 
       it "does not send a notification to the author of the article if the commenter is the author" do
         comment = create(:comment, user: user, commentable: article)
-        Notification.send_new_comment_notifications_without_delay(comment)
+        described_class.send_new_comment_notifications_without_delay(comment)
         expect(user.notifications.count).to eq 0
       end
 
       it "does not send a notification to the author of the comment" do
         comment = create(:comment, user: user2, commentable: article)
-        Notification.send_new_comment_notifications_without_delay(comment)
+        described_class.send_new_comment_notifications_without_delay(comment)
         expect(user2.notifications.count).to eq 0
       end
 
       it "sends a notification to the author of the article about the child comment" do
         parent_comment = create(:comment, user: user2, commentable: article)
         child_comment = create(:comment, user: user3, commentable: article, ancestry: parent_comment.id.to_s)
-        Notification.send_new_comment_notifications_without_delay(child_comment)
+        described_class.send_new_comment_notifications_without_delay(child_comment)
         expect(user.notifications.count).to eq(1)
       end
 
@@ -190,7 +190,7 @@ RSpec.describe Notification, type: :model do
         create(:organization_membership, user: user, organization: org)
         article.update(organization: org)
         comment = create(:comment, user: user2, commentable: article)
-        Notification.send_new_comment_notifications_without_delay(comment)
+        described_class.send_new_comment_notifications_without_delay(comment)
         expect(org.notifications.count).to eq 1
       end
     end
@@ -204,13 +204,13 @@ RSpec.describe Notification, type: :model do
       end
 
       it "does not send a notification to the author of the article" do
-        Notification.send_new_comment_notifications_without_delay(comment)
+        described_class.send_new_comment_notifications_without_delay(comment)
         expect(user.notifications.count).to eq 0
       end
 
       it "doesn't send a notification to the author of the article about the child comment" do
         child_comment = create(:comment, user: user3, commentable: article, ancestry: comment.id.to_s)
-        Notification.send_new_comment_notifications_without_delay(child_comment)
+        described_class.send_new_comment_notifications_without_delay(child_comment)
         expect(user.notifications.count).to eq 0
       end
     end
@@ -224,12 +224,12 @@ RSpec.describe Notification, type: :model do
       end
 
       it "does not send a notification to the author of the comment" do
-        Notification.send_new_comment_notifications_without_delay(child_comment)
+        described_class.send_new_comment_notifications_without_delay(child_comment)
         expect(user2.notifications.count).to eq 0
       end
 
       it "sends a notification to the author of the article" do
-        Notification.send_new_comment_notifications_without_delay(child_comment)
+        described_class.send_new_comment_notifications_without_delay(child_comment)
         expect(user.notifications.count).to eq(1)
       end
     end
@@ -241,7 +241,7 @@ RSpec.describe Notification, type: :model do
         comment = create(:comment, user: user2, commentable: article)
         reaction = create(:reaction, reactable: comment, user: user)
         perform_enqueued_jobs do
-          Notification.send_reaction_notification(reaction, reaction.reactable.user)
+          described_class.send_reaction_notification(reaction, reaction.reactable.user)
           expect(user2.notifications.count).to eq 1
         end
       end
@@ -249,7 +249,7 @@ RSpec.describe Notification, type: :model do
       it "sends a notification to the author of an article" do
         reaction = create(:reaction, reactable: article, user: user2)
         perform_enqueued_jobs do
-          Notification.send_reaction_notification(reaction, reaction.reactable.user)
+          described_class.send_reaction_notification(reaction, reaction.reactable.user)
           expect(user.notifications.count).to eq 1
         end
       end
@@ -262,15 +262,15 @@ RSpec.describe Notification, type: :model do
       it "destroys the notification if it exists" do
         reaction = create(:reaction, reactable: comment, user: user)
         reaction.destroy
-        Notification.send_reaction_notification_without_delay(reaction, article.user)
-        expect(Notification.where(id: notification.id)).not_to be_any
+        described_class.send_reaction_notification_without_delay(reaction, article.user)
+        expect(described_class.where(id: notification.id)).not_to be_any
       end
 
       it "keeps the notification if siblings exist" do
         reaction = create(:reaction, reactable: comment, user: user)
         create(:reaction, reactable: comment, user: user3)
         reaction.destroy
-        Notification.send_reaction_notification_without_delay(reaction, article.user)
+        described_class.send_reaction_notification_without_delay(reaction, article.user)
         notification.reload
         expect(notification).to be_persisted
       end
@@ -279,7 +279,7 @@ RSpec.describe Notification, type: :model do
         reaction = create(:reaction, reactable: comment, user: user)
         create(:reaction, reactable: comment, user: user3)
         reaction.destroy
-        Notification.send_reaction_notification_without_delay(reaction, article.user)
+        described_class.send_reaction_notification_without_delay(reaction, article.user)
         notification.reload
         expect(notification.json_data["reaction"]["aggregated_siblings"].map { |s| s["user"]["id"] }).to eq([user3.id])
         # not the user of the destroyed reaction!
@@ -292,14 +292,14 @@ RSpec.describe Notification, type: :model do
         comment = create(:comment, user: user2, commentable: article)
         comment.update(receive_notifications: false)
         reaction = create(:reaction, reactable: comment, user: user)
-        Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
+        described_class.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
         expect(user2.notifications.count).to eq 0
       end
 
       it "does not send a notification to the author of an article" do
         article.update(receive_notifications: false)
         reaction = create(:reaction, reactable: article, user: user2)
-        Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
+        described_class.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
         expect(user.notifications.count).to eq 0
       end
     end
@@ -314,7 +314,7 @@ RSpec.describe Notification, type: :model do
 
       it "creates a notification with the organization's ID" do
         reaction = create(:reaction, reactable: article, user: user2)
-        Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization)
+        described_class.send_reaction_notification_without_delay(reaction, reaction.reactable.organization)
         expect(org.notifications.count).to eq 1
       end
     end
@@ -326,8 +326,8 @@ RSpec.describe Notification, type: :model do
       )
       perform_enqueued_jobs do
         expect do
-          Notification.send_reaction_notification(reaction, reaction.reactable.user)
-        end.to change(Notification, :count).by(1)
+          described_class.send_reaction_notification(reaction, reaction.reactable.user)
+        end.to change(described_class, :count).by(1)
       end
     end
 
@@ -339,18 +339,18 @@ RSpec.describe Notification, type: :model do
       )
       perform_enqueued_jobs do
         expect do
-          Notification.send_reaction_notification(reaction, reaction.reactable.user)
-        end.not_to change(Notification, :count)
+          described_class.send_reaction_notification(reaction, reaction.reactable.user)
+        end.not_to change(described_class, :count)
       end
     end
 
     it "destroys the notification properly" do
       reaction = create(:reaction, user: user2, reactable: article, category: "like")
       perform_enqueued_jobs do
-        Notification.send_reaction_notification(reaction, reaction.reactable.user)
+        described_class.send_reaction_notification(reaction, reaction.reactable.user)
         reaction.destroy!
-        Notification.send_reaction_notification(reaction, reaction.reactable.user)
-        expect(Notification.count).to eq 0
+        described_class.send_reaction_notification(reaction, reaction.reactable.user)
+        expect(described_class.count).to eq 0
       end
     end
   end
@@ -359,11 +359,11 @@ RSpec.describe Notification, type: :model do
     context "when the notifiable is an article from a user" do
       before do
         user2.follow(user)
-        perform_enqueued_jobs { Notification.send_to_followers(article, "Published") }
+        perform_enqueued_jobs { described_class.send_to_followers(article, "Published") }
       end
 
       it "sends a notification to the author's followers" do
-        expect(Notification.first.user_id).to eq user2.id
+        expect(described_class.first.user_id).to eq user2.id
       end
     end
 
@@ -373,7 +373,7 @@ RSpec.describe Notification, type: :model do
       before do
         user2.follow(user)
         user3.follow(organization)
-        perform_enqueued_jobs { Notification.send_to_followers(article, "Published") }
+        perform_enqueued_jobs { described_class.send_to_followers(article, "Published") }
       end
 
       it "sends a notification to author's followers" do
@@ -390,7 +390,7 @@ RSpec.describe Notification, type: :model do
     context "when there are article notifications to update" do
       before do
         user2.follow(user)
-        Notification.send_to_followers_without_delay(article, "Published")
+        described_class.send_to_followers_without_delay(article, "Published")
       end
 
       it "updates the notification with the new article title" do
@@ -398,8 +398,8 @@ RSpec.describe Notification, type: :model do
         article.update_column(:title, new_title)
         article.reload
         perform_enqueued_jobs do
-          Notification.update_notifications(article, "Published")
-          first_notification_article_title = Notification.first.json_data["article"]["title"]
+          described_class.update_notifications(article, "Published")
+          first_notification_article_title = described_class.first.json_data["article"]["title"]
           expect(first_notification_article_title).to eq new_title
         end
       end
@@ -408,8 +408,8 @@ RSpec.describe Notification, type: :model do
         article.update_column(:organization_id, organization.id)
         article.reload
         perform_enqueued_jobs do
-          Notification.update_notifications(article.reload, "Published")
-          first_notification_organization_id = Notification.first.json_data["organization"]["id"]
+          described_class.update_notifications(article.reload, "Published")
+          first_notification_organization_id = described_class.first.json_data["organization"]["id"]
           expect(first_notification_organization_id).to eq organization.id
         end
       end
@@ -436,7 +436,7 @@ RSpec.describe Notification, type: :model do
   describe "#send_new_badge_achievement_notification" do
     it "enqueues a new badge achievement job" do
       assert_enqueued_with(job: Notifications::NewBadgeAchievementJob, args: [badge_achievement.id]) do
-        Notification.send_new_badge_achievement_notification(badge_achievement)
+        described_class.send_new_badge_achievement_notification(badge_achievement)
       end
     end
   end
@@ -444,7 +444,7 @@ RSpec.describe Notification, type: :model do
   describe "#send_new_badge_notification (deprecated)" do
     it "enqueues a new badge achievement job" do
       assert_enqueued_with(job: Notifications::NewBadgeAchievementJob, args: [badge_achievement.id]) do
-        Notification.send_new_badge_notification(badge_achievement)
+        described_class.send_new_badge_notification(badge_achievement)
       end
     end
   end
@@ -452,8 +452,8 @@ RSpec.describe Notification, type: :model do
   describe "#send_new_badge_notification_without_delay (deprecated)" do
     it "creates a notification" do
       expect do
-        Notification.send_new_badge_notification_without_delay(badge_achievement)
-      end.to change(Notification, :count).by(1)
+        described_class.send_new_badge_notification_without_delay(badge_achievement)
+      end.to change(described_class, :count).by(1)
     end
   end
 
@@ -469,8 +469,8 @@ RSpec.describe Notification, type: :model do
     it "removes each mention related notifiable" do
       perform_enqueued_jobs do
         expect do
-          Notification.remove_each(notifiable_collection)
-        end.to change(Notification, :count).by(-1)
+          described_class.remove_each(notifiable_collection)
+        end.to change(described_class, :count).by(-1)
       end
     end
   end

@@ -83,7 +83,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       get "/api/articles/#{article.id}"
       expect(json_response["title"]).to eq(article.title)
     end
-    
+
     it "contains article markdown content" do
       get "/api/articles/#{article.id}"
       expect(json_response["body_markdown"]).to eq(article.body_markdown)

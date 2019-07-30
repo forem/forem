@@ -78,7 +78,7 @@ RSpec.describe Podcast, type: :model do
     end
 
     it "is reachable when the feed is unreachable but the podcast has reachable podcasts" do
-      reachable_ids = Podcast.reachable.pluck(:id)
+      reachable_ids = described_class.reachable.pluck(:id)
       expect(reachable_ids).to include(podcast.id)
       expect(reachable_ids).to include(cool_podcast.id)
       expect(reachable_ids).not_to include(unpodcast.id)

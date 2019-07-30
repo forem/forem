@@ -13,7 +13,7 @@ RSpec.describe Comment, type: :model do
   end
 
   describe "validations" do
-    subject { Comment.new(commentable: article) }
+    subject { described_class.new(commentable: article) }
 
     let(:article) { Article.new }
 
@@ -36,7 +36,7 @@ RSpec.describe Comment, type: :model do
   end
 
   it "gets proper generated ID code" do
-    comment = Comment.new(id: 1)
+    comment = described_class.new(id: 1)
     expect(comment.id_code_generated).to eq(comment.id.to_s(26))
   end
 
@@ -273,7 +273,7 @@ RSpec.describe Comment, type: :model do
       it "checks auto-indexing" do
         expect do
           create(:comment, user_id: user2.id, commentable_id: article.id)
-        end.to have_enqueued_job.with(kind_of(Comment), "index!").on_queue("algoliasearch")
+        end.to have_enqueued_job.with(kind_of(described_class), "index!").on_queue("algoliasearch")
       end
     end
 
@@ -282,7 +282,7 @@ RSpec.describe Comment, type: :model do
         comment.deleted = true
         expect do
           comment.save!
-        end.to have_enqueued_job.with(kind_of(Comment), "remove_algolia_index").on_queue("algoliasearch")
+        end.to have_enqueued_job.with(kind_of(described_class), "remove_algolia_index").on_queue("algoliasearch")
       end
     end
   end
