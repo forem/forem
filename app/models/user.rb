@@ -342,7 +342,7 @@ class User < ApplicationRecord
   end
 
   def workshop_eligible?
-    has_any_role?(:workshop_pass, :level_3_member, :level_4_member, :triple_unicorn_member)
+    has_any_role?(:workshop_pass)
   end
 
   def admin_organizations

@@ -95,22 +95,12 @@ class PagesController < ApplicationController
     set_surrogate_key_header "shecoded_page"
   end
 
-  private # helpers
+  private
 
   def latest_published_thread(tag_name)
     Article.published.
       where(user_id: ApplicationConfig["DEVTO_USER_ID"]).
       order("published_at ASC").
       tagged_with(tag_name).last
-  end
-
-  def members_for_display
-    Rails.cache.fetch("members-for-display-on-membership-page", expires_in: 6.hours) do
-      roles = %i[level_1_member level_2_member level_3_member level_4_member triple_unicorn_member
-                 workshop_pass]
-      members = User.select(:id, :username, :profile_image).with_any_role(*roles)
-      team_ids = [1, 264, 6, 3, 31_047, 510, 560, 1075, 48_943, 13_962]
-      members.reject { |user| team_ids.include?(user.id) }.shuffle
-    end
   end
 end
