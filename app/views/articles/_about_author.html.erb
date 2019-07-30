@@ -6,7 +6,7 @@
   </div>
   <div class="main-content">
     <h4><a href="/<%= @user.username %>"><%= @user.name %></a><%= follow_button(@user) %></h4>
-      <p><%= @user.summary_html.present? ? @user.summary_html.html_safe : @user.summary %></p>
+    <p><%= @user.summary_html.present? ? @user.summary_html.html_safe : @user.summary %></p>
     <p class="social">
       <a href="/<%= @user.username %>">
         @<%= @user.username %>

@@ -203,21 +203,4 @@ module ApplicationHelper
 
     Nokogiri::HTML::DocumentFragement.parse(html.truncate(length + tags_length)).to_xml
   end
-
-  def sponsorship_credits_price(level)
-    case level
-    when "bronze"
-      50
-    when "silver"
-      300
-    when "gold"
-      4000
-    when "tag"
-      500
-    when "media"
-      25
-    when "editorial"
-      500
-    end
-  end
 end
