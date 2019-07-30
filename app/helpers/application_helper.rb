@@ -205,17 +205,18 @@ module ApplicationHelper
   end
 
   def sponsorship_credits_price(level)
-    if level == "bronze"
+    case level
+    when "bronze"
       50
-    elsif level == "silver"
+    when "silver"
       300
-    elsif level == "gold"
+    when "gold"
       4000
-    elsif level == "tag"
+    when "tag"
       500
-    elsif level == "media"
+    when "media"
       25
-    elsif level == "editorial"
+    when "editorial"
       500
     end
   end
