@@ -13,13 +13,13 @@ RSpec.describe Credit, type: :model do
     # See https://github.com/magnusvk/counter_culture/issues/259
 
     create_list(:credit, random_number, user: user)
-    Credit.counter_culture_fix_counts
+    described_class.counter_culture_fix_counts
     expect(user.reload.credits_count).to eq(random_number)
   end
 
   it "counts credits for organization" do
     create_list(:credit, random_number, organization: organization)
-    Credit.counter_culture_fix_counts
+    described_class.counter_culture_fix_counts
     expect(organization.reload.credits_count).to eq(random_number)
   end
 

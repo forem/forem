@@ -9,12 +9,12 @@ RSpec.describe Tweet, type: :model, vcr: vcr_option do
   let(:tweet_id) { "1018911886862057472" }
 
   it "fetches a tweet" do
-    tweet = Tweet.fetch(tweet_id)
+    tweet = described_class.fetch(tweet_id)
     expect(tweet.class).to eq(described_class)
   end
 
   it "renders processed text" do
-    tweet = Tweet.fetch(tweet_id)
+    tweet = described_class.fetch(tweet_id)
     expect(tweet.processed_text).not_to be_nil
   end
 end
