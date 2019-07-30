@@ -1,5 +1,5 @@
 GIT
-  remote: https://github.com/thepracticaldev/acts_as_follower.git
+  remote: git://github.com/thepracticaldev/acts_as_follower.git
   revision: 288690cd99bc470eaee493fce5bfa9fe23157692
   branch: master
   specs:
@@ -7,7 +7,7 @@ GIT
       activerecord (>= 4.0)
 
 GIT
-  remote: https://github.com/thepracticaldev/foreman.git
+  remote: git://github.com/thepracticaldev/foreman.git
   revision: b64e4019a8ed3cfae7216c3219dc91833845d9c7
   ref: b64e401
   specs:
