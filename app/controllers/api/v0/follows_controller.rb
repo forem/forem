@@ -3,7 +3,7 @@ module Api
     class FollowsController < ApplicationController
       def create
         return unless user_signed_in?
-        
+
         user_ids = params[:users].map { |h| h["id"] }
         users = User.where(id: user_ids)
         users.each do |user|
