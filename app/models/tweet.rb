@@ -104,8 +104,8 @@ class Tweet < ApplicationRecord
     def random_identity
       iden = Identity.where(provider: "twitter").last(250).sample
       {
-        token: iden&.token || ApplicationConfig["TWITTER_KEY"],
-        secret: iden&.secret || ApplicationConfig["TWITTER_SECRET"]
+        token: iden&.token || ApplicationConfig["TWITTER_ACCESS_TOKEN"],
+        secret: iden&.secret || ApplicationConfig["TWITTER_ACCESS_TOKEN_SECRET"]
       }
     end
   end
