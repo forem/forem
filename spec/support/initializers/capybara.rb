@@ -14,6 +14,13 @@ Capybara.register_driver :headless_chrome do |app|
   Capybara::Selenium::Driver.new(app, browser: :chrome, desired_capabilities: capabilities)
 end
 
+Capybara.register_driver :chrome do |app|
+  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
+    chromeOptions: { args: %w[no-sandbox window-size=1400,2000] },
+  )
+  Capybara::Selenium::Driver.new(app, browser: :chrome, desired_capabilities: capabilities)
+end
+
 RSpec.configure do |config|
   config.before(:all, type: :system) do
     Capybara.server = :puma, { Silent: true }
