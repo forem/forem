@@ -19,19 +19,6 @@ class Tweet < ApplicationRecord
     find_by(twitter_id_code: twitter_id_code) || fetch(twitter_id_code)
   end
 
-  def self.fetch(twitter_id_code)
-    tries = 0
-    tweet = nil
-    until tries > 4 || tweet
-      begin
-        return tweet = try_to_get_tweet(twitter_id_code)
-      rescue StandardError => e
-        Rails.logger.error(e)
-        tries += 1
-      end
-    end
-  end
-
   def processed_text
     urls_serialized.each do |url|
       text.gsub!(url[:url], "<a href='#{url[:url]}'>#{url[:display_url]}</a>")
@@ -63,13 +50,21 @@ class Tweet < ApplicationRecord
       make_tweet_from_api_object(tweet)
     end
 
-    def make_tweet_from_api_object(tweeted)
-      twitter_bot = TwitterBot.new(random_identity)
-      tweeted = if tweeted.attrs[:retweeted_status]
-                  twitter_bot.client.status(tweeted.attrs[:retweeted_status][:id_str])
-                else
-                  tweeted
-                end
+    def fetch(twitter_id_code)
+      make_tweet(TwitterBot.fetch(twitter_id_code))
+    end
+
+    def make_tweet(tweeted)
+      return unless tweeted
+
+      if tweeted.attrs[:retweeted_status]
+        make_from(TwitterBot.get(tweeted.attrs.dig(:retweeted_status, :id_str)))
+      else
+        make_from(tweeted)
+      end
+    end
+
+    def make_from(tweeted)
       tweet = Tweet.where(twitter_id_code: tweeted.attrs[:id_str]).first_or_initialize
       tweet.twitter_uid = tweeted.user.id.to_s
       tweet.twitter_username = tweeted.user.screen_name.downcase
@@ -99,14 +94,6 @@ class Tweet < ApplicationRecord
       tweet.is_quote_status = tweeted.attrs[:is_quote_status]
       tweet.save!
       tweet
-    end
-
-    def random_identity
-      iden = Identity.where(provider: "twitter").last(250).sample
-      {
-        token: iden&.token || ApplicationConfig["TWITTER_ACCESS_TOKEN"],
-        secret: iden&.secret || ApplicationConfig["TWITTER_ACCESS_TOKEN_SECRET"]
-      }
     end
   end
 end
