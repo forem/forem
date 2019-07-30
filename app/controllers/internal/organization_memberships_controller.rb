@@ -8,7 +8,7 @@ class Internal::OrganizationMembershipsController < Internal::ApplicationControl
     else
       flash[:danger] = organization_membership.errors.full_messages
     end
-    redirect_to "/internal/users/#{organization_membership.user_id}"
+    redirect_to internal_user_path(organization_membership.user_id)
   end
 
   def create
@@ -21,7 +21,7 @@ class Internal::OrganizationMembershipsController < Internal::ApplicationControl
     else
       flash[:danger] = organization_membership.errors.full_messages
     end
-    redirect_to "/internal/users/#{organization_membership.user_id}"
+    redirect_to internal_user_path(organization_membership.user_id)
   end
 
   def destroy
@@ -31,7 +31,7 @@ class Internal::OrganizationMembershipsController < Internal::ApplicationControl
     else
       flash[:danger] = "Something wen wrong with removing the user from org ##{organization_membership.organization_id}"
     end
-    redirect_to "/internal/users/#{organization_membership.user_id}"
+    redirect_to internal_user_path(organization_membership.user_id)
   end
 
   private
