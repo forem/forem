@@ -316,6 +316,7 @@ Rails.application.routes.draw do
   get "/new/:template" => "articles#new"
 
   get "/pod" => "podcast_episodes#index"
+  get "/podcasts" => "podcast_episodes#index"
   get "/readinglist" => "reading_list_items#index"
   get "/readinglist/:view" => "reading_list_items#index", constraints: { view: /archive/ }
   get "/history", to: "history#index", as: :history

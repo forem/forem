@@ -14,5 +14,16 @@ RSpec.describe "PodcastEpisodesSpec", type: :request do
       expect(response.body).to include("SuperMario")
       expect(response.body).not_to include("unreachable")
     end
+
+    it "sets proper surrogate key" do
+      pe = create(:podcast_episode)
+      get "/pod"
+      expect(response.headers["Surrogate-Key"]).to eq("podcast_episodes_all podcast_episodes/#{pe.id}")
+    end
+
+    it "renders page using /podcasts" do
+      get "/podcasts"
+      expect(response.body).to include("If you know of a great dev podcast")
+    end
   end
 end

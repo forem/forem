@@ -4,15 +4,21 @@ class PodcastEpisodesController < ApplicationController
 
   def index
     @podcast_index = true
+
     @podcasts = Podcast.available.order("title asc")
-    @podcast_episodes = PodcastEpisode.available.order("published_at desc").first(20)
+    @podcast_episodes = PodcastEpisode.
+      available.
+      includes(:podcast).order("published_at desc").first(20)
+
     if params[:q].blank?
-      set_surrogate_key_header("podcast_episodes_all " + params[:q].to_s,
-                               @podcast_episodes.map { |e| e["record_key"] })
+      surrogate_keys = ["podcast_episodes_all"] + @podcast_episodes.map(&:record_key)
+      set_surrogate_key_header(surrogate_keys)
     end
+
     @featured_story = Article.new
     @article_index = true
     @list_of = "podcast-episodes"
+
     render template: "podcast_episodes/index"
   end
 
