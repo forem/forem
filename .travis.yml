@@ -9,7 +9,6 @@ rvm:
   - 2.6.3
 addons:
   postgresql: '9.6'
-  chrome: stable
 env:
   global:
     - RAILS_ENV=test
