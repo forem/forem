@@ -251,6 +251,16 @@ RSpec.describe Article, type: :model do
       article.video_duration_in_seconds = 1161
       expect(article.video_duration_in_minutes).to eq("19:21")
     end
+
+    it "has video_duration_in_minutes display hour when video is an hour or longer" do
+      article.video_duration_in_seconds = 3600
+      expect(article.video_duration_in_minutes).to eq("1:00:00")
+    end
+
+    it "has correctly non-padded minutes with hour in video_duration_in_minutes" do
+      article.video_duration_in_seconds = 5000
+      expect(article.video_duration_in_minutes).to eq("1:23:20")
+    end
   end
 
   describe ".seo_boostable" do
