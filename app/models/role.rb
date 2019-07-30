@@ -18,11 +18,6 @@ class Role < ApplicationRecord
                 trusted
                 banned
                 warned
-                triple_unicorn_member
-                level_4_member
-                level_3_member
-                level_2_member
-                level_1_member
                 workshop_pass
                 chatroom_beta_tester
                 comment_banned
