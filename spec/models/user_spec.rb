@@ -655,11 +655,11 @@ RSpec.describe User, type: :model do
 
   describe "when agolia auto-indexing/removal is triggered" do
     it "process background auto-indexing when user is saved" do
-      expect { user.save }.to have_enqueued_job.with(kind_of(User), "algolia_index!").on_queue("algoliasearch")
+      expect { user.save }.to have_enqueued_job.with(user, "index!").on_queue("algoliasearch")
     end
 
-    it "process background auto-removal on deletion" do
-      expect { user.destroy }.to have_enqueued_job.with({ "_aj_globalid" => "gid://practical-developer/User/#{user.id}" }, "algolia_remove_from_index!").on_queue("algoliasearch")
+    it "doesn't schedule a job on destroy" do
+      expect { user.destroy }.not_to have_enqueued_job.on_queue("algoliasearch")
     end
   end
 end
