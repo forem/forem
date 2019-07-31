@@ -500,16 +500,36 @@ RSpec.describe Article, type: :model do
     expect(article.class_name).to eq("Article")
   end
 
-  it "does not show year in readable time if not current year" do
-    time_now = Time.current
-    article.published_at = time_now
-    expect(article.readable_publish_date).to eq(time_now.strftime("%b %e"))
+  describe "readable_edit_date" do
+    it "returns nil if article is not edited" do
+      expect(article.readable_edit_date).to be_nil
+    end
+
+    it "does not show year in readable time if not current year" do
+      time_now = Time.current
+      article.edited_at = time_now
+      expect(article.readable_edit_date).to eq(time_now.strftime("%b %e"))
+    end
+
+    it "shows year in readable time if not current year" do
+      article.edited_at = 1.year.ago
+      last_year = 1.year.ago.year % 100
+      expect(article.readable_edit_date.include?("'#{last_year}")).to eq(true)
+    end
   end
 
-  it "shows year in readable time if not current year" do
-    article.published_at = 1.year.ago
-    last_year = 1.year.ago.year % 100
-    expect(article.readable_publish_date.include?("'#{last_year}")).to eq(true)
+  describe "readable_publish_date" do
+    it "does not show year in readable time if not current year" do
+      time_now = Time.current
+      article.published_at = time_now
+      expect(article.readable_publish_date).to eq(time_now.strftime("%b %e"))
+    end
+
+    it "shows year in readable time if not current year" do
+      article.published_at = 1.year.ago
+      last_year = 1.year.ago.year % 100
+      expect(article.readable_publish_date.include?("'#{last_year}")).to eq(true)
+    end
   end
 
   it "is valid as part of a collection" do
