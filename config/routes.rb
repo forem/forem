@@ -36,6 +36,12 @@ Rails.application.routes.draw do
     resources :feedback_messages, only: %i[index show]
     resources :listings, only: %i[index edit update destroy], controller: "classified_listings"
     resources :pages, only: %i[index new create edit update destroy]
+    resources :podcasts, only: %i[index edit update destroy] do
+      member do
+        post :add_admin
+        delete :remove_admin
+      end
+    end
     resources :reactions, only: [:update]
     resources :chat_channels, only: %i[index create update]
     resources :reports, only: %i[index show], controller: "feedback_messages" do
@@ -128,7 +134,6 @@ Rails.application.routes.draw do
   resources :notifications, only: [:index]
   resources :tags, only: [:index]
   resources :stripe_active_cards, only: %i[create update destroy]
-  resources :stripe_cancellations, only: [:create]
   resources :live_articles, only: [:index]
   resources :github_repos, only: %i[create update]
   resources :buffered_articles, only: [:index]
@@ -167,6 +172,7 @@ Rails.application.routes.draw do
   get "/notification_subscriptions/:notifiable_type/:notifiable_id" => "notification_subscriptions#show"
   post "/notification_subscriptions/:notifiable_type/:notifiable_id" => "notification_subscriptions#upsert"
   patch "/onboarding_update" => "users#onboarding_update"
+  patch "/onboarding_checkbox_update" => "users#onboarding_checkbox_update"
   get "email_subscriptions/unsubscribe"
   post "/chat_channels/:id/moderate" => "chat_channels#moderate"
   post "/chat_channels/:id/open" => "chat_channels#open"
@@ -250,6 +256,7 @@ Rails.application.routes.draw do
   get "/welcome" => "pages#welcome"
   get "/challenge" => "pages#challenge"
   get "/badge" => "pages#badge"
+  get "/onboarding" => "pages#onboarding"
   get "/shecoded" => "pages#shecoded"
   get "/💸", to: redirect("t/hiring")
   get "/security", to: "pages#bounty"

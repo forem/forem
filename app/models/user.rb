@@ -163,7 +163,7 @@ class User < ApplicationRecord
     add_index "searchables",
               id: :index_id,
               per_environment: true,
-              enqueue: :trigger_delayed_index do
+              enqueue: true do
       attribute :user do
         { username: user.username,
           name: user.username,
@@ -191,11 +191,9 @@ class User < ApplicationRecord
   end
 
   def self.trigger_delayed_index(record, remove)
-    if remove
-      record.delay.remove_from_index! if record&.persisted?
-    else
-      record.delay.index!
-    end
+    return if remove
+
+    AlgoliaSearch::AlgoliaJob.perform_later(record, "index!")
   end
 
   def tag_line
@@ -345,7 +343,7 @@ class User < ApplicationRecord
   end
 
   def workshop_eligible?
-    has_any_role?(:workshop_pass, :level_3_member, :level_4_member, :triple_unicorn_member)
+    has_any_role?(:workshop_pass)
   end
 
   def admin_organizations

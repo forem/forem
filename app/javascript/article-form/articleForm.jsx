@@ -17,6 +17,7 @@ import ImageManagement from './elements/imageManagement';
 import MoreConfig from './elements/moreConfig';
 import OrgSettings from './elements/orgSettings';
 import Errors from './elements/errors';
+import KeyboardShortcutsHandler from './elements/keyboardShortcutsHandler';
 
 export default class ArticleForm extends Component {
   static handleGistPreview() {
@@ -431,9 +432,7 @@ export default class ArticleForm extends Component {
             onClick={this.toggleImageManagement}
             type="button"
           >
-            <img src={ImageUploadIcon} alt="upload images" />
-            {' '}
-IMAGES
+            <img src={ImageUploadIcon} alt="upload images" /> IMAGES
           </button>
           {moreConfigBottomButton}
         </div>
@@ -459,6 +458,7 @@ IMAGES
           edited={this.state.edited}
           onChange={linkState(this, 'published')}
         />
+        <KeyboardShortcutsHandler togglePreview={this.fetchPreview} />
         {notice}
         {imageManagement}
         {moreConfig}

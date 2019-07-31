@@ -42,6 +42,7 @@ class CacheBuster
 
   def bust_article(article)
     bust("/" + article.user.username)
+    bust(article.path)
     bust(article.path + "/")
     bust(article.path + "?i=i")
     bust(article.path + "/?i=i")

@@ -144,24 +144,16 @@ class ChannelDetails extends Component {
           if (this.userInList(channel.channel_users, user)) {
             invite = (
               <span className="channel__member">
-                is already in 
-                {' '}
-                <em>{channel.channel_name}</em>
+                is already in <em>{channel.channel_name}</em>
               </span>
             );
           }
           return (
             <div className="channeldetails__searchedusers">
               <a href={user.path} target="_blank" rel="noopener noreferrer">
-                <img src={user.user.profile_image_90} alt="profile_image" />
-                @
-                {user.user.username}
-                {' '}
-                -
-                {' '}
-                {user.title}
-              </a>
-              {' '}
+                <img src={user.user.profile_image_90} alt="profile_image" />@
+                {user.user.username} - {user.title}
+              </a>{' '}
               {invite}
             </div>
           );
@@ -175,12 +167,7 @@ class ChannelDetails extends Component {
             rel="noopener noreferrer"
             data-content={`users/${user.id}`}
           >
-            @
-            {user.username}
-            {' '}
-            -
-            {' '}
-            {user.name}
+            @{user.username} - {user.name}
           </a>
         </div>
       ));
@@ -201,8 +188,7 @@ class ChannelDetails extends Component {
         <div className="channeldetails__leftchannel">
           <h2>Danger Zone</h2>
           <h3>
-            You have left this channel
-            {' '}
+            You have left this channel{' '}
             <span role="img" aria-label="emoji">
               😢😢😢
             </span>

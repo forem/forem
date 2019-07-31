@@ -5,7 +5,7 @@ RSpec.describe PodcastTag, type: :liquid_template do
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
   let(:valid_long_slug) { "/#{podcast.slug}/#{podcast_episode.slug}" }
 
-  before { Liquid::Template.register_tag("podcast", PodcastTag) }
+  before { Liquid::Template.register_tag("podcast", described_class) }
 
   def generate_podcast_liquid_tag(link)
     Liquid::Template.parse("{% podcast #{link} %}")

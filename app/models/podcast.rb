@@ -1,4 +1,6 @@
 class Podcast < ApplicationRecord
+  resourcify
+
   has_many :podcast_episodes
 
   mount_uploader :image, ProfileImageUploader
@@ -15,7 +17,7 @@ class Podcast < ApplicationRecord
 
   after_save :bust_cache
 
-  scope :reachable, -> { where(reachable: true) }
+  scope :reachable, -> { where(id: PodcastEpisode.reachable.select(:podcast_id)) }
 
   alias_attribute :path, :slug
   alias_attribute :profile_image_url, :image_url
@@ -29,6 +31,10 @@ class Podcast < ApplicationRecord
     episode.to_a.first
   end
 
+  def admins
+    User.with_role(:podcast_admin, self)
+  end
+
   private
 
   def unique_slug_including_users_and_orgs
@@ -39,9 +45,5 @@ class Podcast < ApplicationRecord
     return unless path
 
     Podcasts::BustCacheJob.perform_later(path)
-  end
-
-  def pull_all_episodes
-    Podcasts::GetEpisodesJob.perform_later(id)
   end
 end

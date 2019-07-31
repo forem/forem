@@ -18,7 +18,7 @@
       commented on
       <% end %>
       <a href="<%= json_data["comment"]["commentable"]["path"] %>">
-        <%= sanitize(json_data["comment"]["commentable"]["title"]) %>
+        <%= h(json_data["comment"]["commentable"]["title"]) %>
       </a>
       <div>
         <small><%= time_ago_in_words notification.notifiable.created_at %> ago</small>
@@ -30,7 +30,7 @@
       <br /><br>
       <b>Here's the article for context:
         <a href="<%= json_data["comment"]["commentable"]["path"] %>">
-          <%= sanitize(json_data["comment"]["commentable"]["title"]) %>
+          <%= h(json_data["comment"]["commentable"]["title"]) %>
         </a></b>
       <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "moderation" %>
       <br>
@@ -39,7 +39,7 @@
       <a href="<%= json_data["user"]["path"] %>"><%= json_data["user"]["name"] %></a>
       wrote their first comment on:
       <a href="<%= json_data["comment"]["commentable"]["path"] %>">
-        <%= sanitize(json_data["comment"]["commentable"]["title"]) %>
+        <%= h(json_data["comment"]["commentable"]["title"]) %>
       </a>
       <div>
         <small><%= time_ago_in_words notification.created_at %> ago</small>
