@@ -3,6 +3,8 @@ class TweetTag < LiquidTagBase
   PARTIAL = "liquids/tweet".freeze
   ID_REGEXP = /\A\d{10,20}\z/.freeze # id must be all numbers between 10 and 20 chars
 
+  attr_reader :tweet
+
   def initialize(tag_name, id, tokens)
     super
     @id = parse_id(id)
