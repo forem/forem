@@ -11,5 +11,6 @@ FactoryBot.define do
     slug            { "slug-#{rand(10_000)}" }
     feed_url        { Faker::Internet.url }
     main_color_hex  { "ffffff" }
+    published       { true }
   end
 end
