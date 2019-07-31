@@ -63,7 +63,7 @@ class RssReader
 
   def fetch_rss(url)
     xml = HTTParty.get(url).body
-    Feedjira::Feed.parse xml
+    Feedjira.parse xml
   end
 
   def make_from_rss_item(item, user, feed)

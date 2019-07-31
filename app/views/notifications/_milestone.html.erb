@@ -2,7 +2,7 @@
 <div class="content notification-content badge-content">
   <div class="badge-title">
     Your post
-    <a href="<%= json_data["article"]["path"] %>"><%= json_data["article"]["title"] %></a> passed <%= notification.milestone_count %> <%= notification.milestone_type.pluralize.downcase %>!
+    <a href="<%= json_data["article"]["path"] %>"><%= h(json_data["article"]["title"]) %></a> passed <%= notification.milestone_count %> <%= notification.milestone_type.pluralize.downcase %>!
   </div>
   <p class="badge-description milestone-emojis">🎉🎉🎉🎉🎉🎉🎉🎉</p>
 

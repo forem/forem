@@ -28,3 +28,8 @@
 <p>
   As a Bronze sponsor, you will receive special flair that lives on your organization page.  This visual cue will show the DEV Community and broader ecosystem that you are an important community supporter, providing a natural draw for increased engagement on the platform.  And, of course, you’ll have bragging rights and company pride knowing that you’re supporting a wonderful community.
 </p>
+<% if user_signed_in? %>
+  <h3>Bronze sponsorship costs 100 credits/mo ($250 when purchased in bulk)</h3>
+<% else %>
+  <h2>Bronze sponsorship prices start at $250/mo</h2>
+<% end %>
