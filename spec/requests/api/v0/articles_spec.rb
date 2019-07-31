@@ -58,7 +58,6 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
 
     it "returns not tag articles if article and tag are not approved" do
-      # article = create(:article, approved: false)
       article.update_column(:approved, false)
       tag = Tag.find_by(name: article.tag_list.first)
       tag.update(requires_approval: true)
