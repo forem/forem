@@ -374,6 +374,20 @@ class Article < ApplicationRecord
     tags.pluck(:keywords_for_search).join
   end
 
+  def edited?
+    edited_at.present?
+  end
+
+  def readable_edit_date
+    return unless edited?
+
+    if edited_at.year == Time.current.year
+      edited_at.strftime("%b %e")
+    else
+      edited_at.strftime("%b %e '%y")
+    end
+  end
+
   def readable_publish_date
     relevant_date = crossposted_at.presence || published_at
     if relevant_date && relevant_date.year == Time.current.year
