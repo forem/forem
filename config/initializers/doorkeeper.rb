@@ -25,7 +25,7 @@ Doorkeeper.configure do
     if current_user
       head :forbidden unless current_user.admin?
     else
-      redirect_to sign_in_url
+      warden.authenticate!(scope: :user)
     end
   end
 
@@ -74,7 +74,7 @@ Doorkeeper.configure do
   # Defaults to ActionController::Base.
   # See https://doorkeeper.gitbook.io/guides/configuration/other-configurations#custom-base-controller
   #
-  # base_controller 'ApplicationController'
+  base_controller "ApplicationController"
 
   # Reuse access token for the same resource owner within an application (disabled by default).
   #
