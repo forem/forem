@@ -160,6 +160,7 @@ Rails.application.routes.draw do
   resources :poll_skips, only: [:create]
   resources :profile_pins, only: %i[create update]
   resources :partnerships, only: %i[index create show], param: :option
+  resources :display_ad_events, only: [:create]
 
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/listings/dashboard" => "classified_listings#dashboard"
