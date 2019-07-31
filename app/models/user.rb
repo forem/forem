@@ -45,6 +45,8 @@ class User < ApplicationRecord
   has_many    :poll_votes
   has_many    :poll_skips
   has_many    :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user, class_name: "BackupData"
+  has_many    :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
+  has_many    :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
 
   mount_uploader :profile_image, ProfileImageUploader
 
