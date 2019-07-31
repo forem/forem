@@ -150,8 +150,9 @@ function trackCustomImpressions() {
       && windowBigEnough
       && checkUserLoggedIn()) {
         var csrfToken = tokenMeta.getAttribute('content');
-        trackAdImpression(csrfToken)
-        adBox.addEventListener('click', function() { trackAdClick(csrfToken) });
+        trackAdImpression(csrfToken, adBox)
+        adBox.removeEventListener('click', trackAdClick, false );
+        adBox.addEventListener('click', function() { trackAdClick(csrfToken, adBox) });
       }
   }, 1800)
 }
@@ -206,12 +207,43 @@ function trackFifteenSecondsOnPage(articleId, csrfToken) {
   })
 }
 
-function trackAdImpression(token) {
-  console.log('impression')
-  console.log(token);
+function trackAdImpression(token, adBox) {
+  var dataBody = {
+    display_ad_event: {
+      display_ad_id: adBox.dataset.id,
+      context_type: "home",
+      category: "impression",
+    }
+  }
+  window.fetch('/display_ad_events', {
+    method: 'POST',
+    headers: {
+      'X-CSRF-Token': token,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(dataBody),
+    credentials: 'same-origin',
+  })
 }
 
-function trackAdClick(token) {
-  console.log('click')
-  console.log(token);
+function trackAdClick(token, adBox) {
+  if (!adClicked) {
+    var dataBody = {
+      display_ad_event: {
+        display_ad_id: adBox.dataset.id,
+        context_type: "home",
+        category: "click",
+      }
+    }
+    window.fetch('/display_ad_events', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dataBody),
+      credentials: 'same-origin',
+    })
+  }
+  adClicked = true;
 }
