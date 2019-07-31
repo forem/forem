@@ -677,19 +677,4 @@ RSpec.describe User, type: :model do
       expect { user.destroy }.not_to have_enqueued_job.on_queue("algoliasearch")
     end
   end
-
-  describe "#summary_html" do
-    it "contains value with markdown if summary present and markdown used" do
-      user.update(summary: "**Hello**")
-      expect(user.summary_html.present?).to be true
-      expect(user.summary_html.include?("<strong")).to be(true)
-    end
-
-    it "contains no value if no value in summary or summary is not blank" do
-      user.update(summary: nil)
-      expect(user.summary_html.present?).to be false
-      user.update(summary: " ")
-      expect(user.summary_html.present?).to be false
-    end
-  end
 end
