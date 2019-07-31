@@ -20,16 +20,12 @@ export default class GithubRepo extends Component {
   componentDidMount() {
     if (this.state.token) {
       getJSONContents(
-        `https://api.github.com/repos/${
-          this.props.resource.args
-        }/contents?access_token=${this.state.token}`,
+        `https://api.github.com/repos/${this.props.resource.args}/contents?access_token=${this.state.token}`,
         this.loadContent,
         this.loadFailure,
       );
       getJSONContents(
-        `https://api.github.com/repos/${
-          this.props.resource.args
-        }/readme?access_token=${this.state.token}`,
+        `https://api.github.com/repos/${this.props.resource.args}/readme?access_token=${this.state.token}`,
         this.loadContent,
         this.loadFailure,
       );
@@ -91,9 +87,7 @@ export default class GithubRepo extends Component {
           <div className="activecontent__githubrepoheader">
             <em>Authentication required</em>
           </div>
-          <p>
-            This feature is in internal alpha testing mode.
-          </p>
+          <p>This feature is in internal alpha testing mode.</p>
         </div>
       );
     }
@@ -115,9 +109,7 @@ export default class GithubRepo extends Component {
           data-path={item.path}
           onClick={this.handleItemClick}
         >
-          📁 
-          {' '}
-          {item.name}
+          📁 {item.name}
         </a>
       </div>
     ));

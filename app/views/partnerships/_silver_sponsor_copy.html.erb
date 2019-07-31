@@ -27,3 +27,8 @@
 <p>
   As a Silver sponsor, you will receive special flair that lives on your organization page.  This visual cue will show the DEV Community and broader ecosystem that you are an important community supporter, providing a natural draw for increased engagement on the platform.  And, of course, you’ll have bragging rights and company pride knowing that you’re supporting a wonderful community.
 </p>
+<% if user_signed_in? %>
+  <h3>Silver sponsorship costs 500 credits/mo ($1,250 when purchased in bulk)</h3>
+<% else %>
+  <h2>Silver sponsorship prices start at $1,250/month</h2>
+<% end %>

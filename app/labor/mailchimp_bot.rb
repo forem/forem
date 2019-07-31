@@ -10,7 +10,6 @@ class MailchimpBot
   def upsert
     return true unless Rails.env.production? || Rails.env.test?
 
-    upsert_to_membership_newsletter
     manage_community_moderator_list
     manage_tag_moderator_list
     upsert_to_newsletter
@@ -91,41 +90,6 @@ class MailchimpBot
             GITHUB: user.github_username.to_s,
             IMAGE_URL: user.profile_image_url.to_s,
             TAGS: tags.join(", ")
-          }
-        },
-      )
-      success = true
-    rescue Gibbon::MailChimpError => e
-      report_error(e)
-    end
-    success
-  end
-
-  def upsert_to_membership_newsletter
-    return false unless a_sustaining_member?
-
-    success = false
-    # !!! user.monthly_due = 0 ? unsubscribe
-    tiers = %i[ triple_unicorn_member
-                level_4_member
-                level_3_member
-                level_2_member
-                level_1_member]
-    membership = tiers.each { |t| break t if user.has_role?(t) }
-    status = user.email_membership_newsletter ? "subscribed" : "unsubscribed"
-
-    begin
-      gibbon.lists(ApplicationConfig["MAILCHIMP_SUSTAINING_MEMBERS_ID"]).members(target_md5_email).upsert(
-        body: {
-          email_address: user.email,
-          status: status,
-          merge_fields: {
-            NAME: user.name.to_s,
-            USERNAME: user.username.to_s,
-            TWITTER: user.twitter_username.to_s,
-            GITHUB: user.github_username.to_s,
-            IMAGE_URL: user.profile_image_url.to_s,
-            MEMBERSHIP: membership.to_s
           }
         },
       )

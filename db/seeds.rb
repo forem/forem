@@ -19,8 +19,7 @@ end
 
 Rails.logger.info "2. Creating Users"
 
-roles = %i[level_1_member level_2_member level_3_member level_4_member
-           workshop_pass]
+roles = %i[trusted chatroom_beta_tester workshop_pass]
 User.clear_index!
 10.times do |i|
   user = User.create!(
@@ -36,7 +35,7 @@ User.clear_index!
     password: "password",
   )
 
-  user.add_role(roles[rand(0..5)]) # includes chance of having no role
+  user.add_role(roles[rand(0..3)]) # includes chance of having no role
 
   Identity.create!(
     provider: "twitter",

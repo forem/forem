@@ -53,7 +53,12 @@ export const SingleListing = ({
       <div className={definedClass} id={`single-classified-listing-${listing.id}`}>
         <div className="listing-content">
           <h3>
-            <a href={`/listings/${listing.category}/${listing.slug}`} data-no-instant onClick={e => onOpenModal(e, listing)} data-listing-id={listing.id}>
+            <a
+              href={`/listings/${listing.category}/${listing.slug}`}
+              data-no-instant
+              onClick={e => onOpenModal(e, listing)}
+              data-listing-id={listing.id}
+            >
               {listing.title}
             </a>
           </h3>

@@ -85,8 +85,8 @@ RSpec.describe "Dashboards", type: :request do
         unpublished_article.update(organization_id: organization.id)
         sign_in second_user
         get "/dashboard/organization/#{organization.id}"
-        expect(response.body).not_to include "DELETE"
-        expect(response.body).to include unpublished_article.title
+        expect(response.body).not_to include("DELETE")
+        expect(response.body).to include(ERB::Util.html_escape(unpublished_article.title))
       end
     end
   end

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Views an article", type: :system do
+RSpec.describe "Views an article", type: :system, js: true do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user) }
 

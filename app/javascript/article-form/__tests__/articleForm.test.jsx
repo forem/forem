@@ -64,7 +64,7 @@ describe('<ArticleForm />', () => {
 
 const getArticleForm = () => (
   <ArticleForm
-    version='v2'
+    version="v2"
     article={
       '{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null }'
     }

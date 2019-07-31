@@ -5,11 +5,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -90,7 +91,7 @@ preact-render-spy (1 nodes)
           type="button"
           onClick={[Function bound handleBackButton]}
         >
-           BACK 
+          BACK
         </button>
       </div>
       <div class="modal-footer-center">
@@ -122,11 +123,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -169,7 +171,7 @@ preact-render-spy (1 nodes)
           type="button"
           onClick={[Function bound handleBackButton]}
         >
-           BACK 
+          BACK
         </button>
       </div>
       <div class="modal-footer-center">
@@ -199,7 +201,7 @@ preact-render-spy (1 nodes)
 exports[`<Onboarding /> Final page special next button exists and should reroute user 1`] = `
 preact-render-spy (1 nodes)
 -------
-{undefined}
+{null}
 
 `;
 
@@ -208,11 +210,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -320,7 +323,7 @@ preact-render-spy (1 nodes)
           type="button"
           onClick={[Function bound handleBackButton]}
         >
-           BACK 
+          BACK
         </button>
       </div>
       <div class="modal-footer-center">
@@ -352,11 +355,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -437,7 +441,7 @@ preact-render-spy (1 nodes)
           type="button"
           onClick={[Function bound handleBackButton]}
         >
-           BACK 
+          BACK
         </button>
       </div>
       <div class="modal-footer-center">
@@ -469,11 +473,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -588,7 +593,7 @@ preact-render-spy (1 nodes)
           type="button"
           onClick={[Function bound handleBackButton]}
         >
-           BACK 
+          BACK
         </button>
       </div>
       <div class="modal-footer-center">
@@ -620,11 +625,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -693,11 +699,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -812,7 +819,7 @@ preact-render-spy (1 nodes)
           type="button"
           onClick={[Function bound handleBackButton]}
         >
-           BACK 
+          BACK
         </button>
       </div>
       <div class="modal-footer-center">
@@ -844,11 +851,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -956,7 +964,7 @@ preact-render-spy (1 nodes)
           type="button"
           onClick={[Function bound handleBackButton]}
         >
-           BACK 
+          BACK
         </button>
       </div>
       <div class="modal-footer-center">
@@ -988,11 +996,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -1073,7 +1082,7 @@ preact-render-spy (1 nodes)
           type="button"
           onClick={[Function bound handleBackButton]}
         >
-           BACK 
+          BACK
         </button>
       </div>
       <div class="modal-footer-center">
@@ -1105,11 +1114,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -1217,7 +1227,7 @@ preact-render-spy (1 nodes)
           type="button"
           onClick={[Function bound handleBackButton]}
         >
-           BACK 
+          BACK
         </button>
       </div>
       <div class="modal-footer-center">
@@ -1249,11 +1259,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -1320,6 +1331,6 @@ preact-render-spy (1 nodes)
 exports[`<Onboarding /> when user is not logged in nothing should be rendered 1`] = `
 preact-render-spy (1 nodes)
 -------
-{undefined}
+{null}
 
 `;

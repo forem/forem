@@ -689,11 +689,15 @@ form.listings-contact-via-connect {
     }
   }
 
-  .dashboard-listings-sorting {
+  .dashboard-listings-actions {
     padding-bottom: 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    
+    .listings-dashboard-filter-buttons {
+      margin-bottom: -10px;
+    }
 
     @media screen and (max-width: 426px) {
       flex-direction: column;
@@ -736,7 +740,9 @@ form.listings-contact-via-connect {
       border-radius: 3px;
       position: relative;
       background: var(--theme-container-background, #fff);
-
+      &.expired {
+        opacity: 0.7;
+      }
       .listing-org {
         @include themeable(
           background,

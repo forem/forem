@@ -9,10 +9,10 @@ RSpec.describe LinkTag, type: :liquid_template do
   let(:org_user) { create(:user, organization_id: org.id) }
   let(:org_article) do
     create(:article, user_id: org_user.id, title: "test this please", tags: "tag1 tag2 tag3",
-           organization_id: org.id)
+                     organization_id: org.id)
   end
   let(:escaped_article) do
-      create(:article, user_id: user.id, title: "Hello & Hi <3 <script>", tags: "tag")
+    create(:article, user_id: user.id, title: "Hello & Hi <3 <script>", tags: "tag")
   end
 
   def generate_new_liquid(slug)

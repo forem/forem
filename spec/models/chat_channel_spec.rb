@@ -14,19 +14,19 @@ RSpec.describe ChatChannel, type: :model do
   end
 
   it "creates channel with users" do
-    chat_channel = ChatChannel.create_with_users([create(:user), create(:user)])
+    chat_channel = described_class.create_with_users([create(:user), create(:user)])
     expect(chat_channel.users.size).to eq(2)
     expect(chat_channel.has_member?(User.first)).to eq(true)
   end
 
   it "lists active memberships" do
-    chat_channel = ChatChannel.create_with_users([create(:user), create(:user)])
+    chat_channel = described_class.create_with_users([create(:user), create(:user)])
     expect(chat_channel.active_users.size).to eq(2)
     expect(chat_channel.channel_users.size).to eq(2)
   end
 
   it "decreases active users if one leaves" do
-    chat_channel = ChatChannel.create_with_users([create(:user), create(:user)])
+    chat_channel = described_class.create_with_users([create(:user), create(:user)])
     ChatChannelMembership.last.update(status: "left_channel")
     expect(chat_channel.active_users.size).to eq(1)
     expect(chat_channel.channel_users.size).to eq(1)
