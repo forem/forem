@@ -1,10 +1,23 @@
 class DisplayAd < ApplicationRecord
   belongs_to :organization
+  has_many :display_ad_events
+
   validates :organization_id, presence: true
   validates :placement_area, presence: true,
                              inclusion: { in: %w[sidebar_left sidebar_right] }
   validates :body_markdown, presence: true
   before_save :process_markdown
+
+  scope :approved_and_published, -> { where(approved: true, published: true) }
+
+
+  def self.for_display(area)
+    if rand(8) == 1
+      approved_and_published.where(placement_area: area).order("success_rate DESC").sample
+    else
+      approved_and_published.where(placement_area: area).order("success_rate DESC").limit(rand(1..15)).sample
+    end
+  end
 
   private
 

@@ -338,6 +338,19 @@ ActiveRecord::Schema.define(version: 2019_07_23_094834) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
+  create_table "display_ad_events", force: :cascade do |t|
+    t.string "category"
+    t.bigint "context_id"
+    t.string "context_type"
+    t.integer "counts_for", default: 1
+    t.datetime "created_at", null: false
+    t.integer "display_ad_id"
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.index ["display_ad_id"], name: "index_display_ad_events_on_display_ad_id"
+    t.index ["user_id"], name: "index_display_ad_events_on_user_id"
+  end
+
   create_table "display_ads", force: :cascade do |t|
     t.boolean "approved", default: false
     t.text "body_markdown"
@@ -350,6 +363,7 @@ ActiveRecord::Schema.define(version: 2019_07_23_094834) do
     t.string "placement_area"
     t.text "processed_html"
     t.boolean "published", default: false
+    t.float "success_rate", default: 0.0
     t.datetime "updated_at", null: false
   end
 
