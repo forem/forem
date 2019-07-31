@@ -13,7 +13,7 @@ class MarkdownParser
     renderer = Redcarpet::Render::HTMLRouge.new(options)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
     catch_xss_attempts(@content)
-    escaped_content = escape_liquid_tags_in_codeblock(@content)
+    escaped_content = escape_liquid_tags_in_code_block
     html = markdown.render(escaped_content)
     sanitized_content = sanitize_rendered_markdown(html)
     begin
@@ -90,12 +90,13 @@ class MarkdownParser
   def tags_used
     return [] if @content.blank?
 
-    cleaned_parsed = escape_liquid_tags_in_codeblock(@content)
-    tags = []
-    Liquid::Template.parse(cleaned_parsed).root.nodelist.each do |node|
-      tags << node.class if node.class.superclass.to_s == LiquidTagBase.to_s
-    end
-    tags.uniq
+    liquid_nodes.reduce(Set.new) do |memo, node|
+      node.class.superclass.to_s == LiquidTagBase.to_s ? memo << node.class : memo
+    end.to_a
+  end
+
+  def liquid_nodes
+    @liquid_nodes ||= Liquid::Template.parse(escape_liquid_tags_in_code_block).root.nodelist
   end
 
   def prefix_all_images(html, width = 880)
@@ -162,7 +163,7 @@ class MarkdownParser
     html_doc.to_html
   end
 
-  def escape_liquid_tags_in_codeblock(content)
+  def escape_liquid_tags_in_code_block
     # Escape codeblocks, code spans, and inline code
     content.gsub(/[[:space:]]*`{3}.*?`{3}|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
       codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
