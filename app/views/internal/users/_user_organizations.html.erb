@@ -1,0 +1,38 @@
+<div class="row">
+  <h3><u>Organization Memberships</u></h3>
+  <% if @user.organization_memberships.size.positive? %>
+    <ul>
+      <% @user.organization_memberships.includes(:organization).each do |org_membership| %>
+        <li>
+          <u><b><%= org_membership.type_of_user.capitalize %> of:</b></u>
+          <a href="<%= org_membership.organization.path %>" target="_blank" rel="noopener">
+            <%= org_membership.organization.name %>
+          </a>
+          <%= form_for [:internal, org_membership] do |f| %>
+            <%= f.label "Change permission level:" %>
+            <%= f.select("type_of_user", options_for_select(%w[member admin], selected: org_membership.type_of_user)) %>
+            <%= f.submit "Submit", class: "btn btn-primary" %>
+          <% end %>
+          <%= form_for([:internal, org_membership], html: { method: :delete, onsubmit: "return confirm('Are you sure you want to remove them from #{org_membership.organization.name}?)" }) do |f| %>
+            <%= f.submit "Remove from org", class: "btn btn-danger" %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+  <h4>Add to New Organization</h4>
+  <ul>
+  <%= form_for [:internal, OrganizationMembership.new] do |f| %>
+    <%= f.hidden_field :user_id, value: @user.id %>
+    <li>
+      Organization ID:
+      <%= f.text_field :organization_id %>
+    </li>
+    <li>
+      Membership Level:
+      <%= f.select(:type_of_user, options_for_select(%w[member admin])) %>
+      <%= f.submit "Add to Org", class: "btn btn-primary" %>
+    </li>
+  <% end %>
+  </ul>
+</div>

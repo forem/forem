@@ -193,7 +193,7 @@ RSpec.describe "Internal::Users", type: :request do
 
     it "expect flash message" do
       post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
-      expect(request.flash.notice).to include("fully deleted")
+      expect(request.flash["success"]).to include("fully deleted")
     end
   end
 
