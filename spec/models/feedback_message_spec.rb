@@ -6,7 +6,7 @@ RSpec.describe FeedbackMessage, type: :model do
 
   describe "validations for an abuse report" do
     subject(:feedback_message) do
-      FeedbackMessage.new(
+      described_class.new(
         feedback_type: "abuse-reports",
         reported_url: "https://dev.to",
         category: "spam",
@@ -26,7 +26,7 @@ RSpec.describe FeedbackMessage, type: :model do
 
   describe "validations for a bug report" do
     subject(:feedback_message) do
-      FeedbackMessage.new(
+      described_class.new(
         feedback_type: "bug-reports",
         category: "bug",
         message: "something",

@@ -31,6 +31,7 @@ gem "dalli", "~> 2.7" # High performance memcached client for Ruby
 gem "delayed_job_active_record", "~> 4.1" # ActiveRecord backend for Delayed::Job
 gem "delayed_job_web", "~> 1.4" # Web interface for delayed_job
 gem "devise", "~> 4.6" # Flexible authentication solution for Rails
+gem "doorkeeper", "~> 5.1" # Oauth 2 provider
 gem "draper", "~> 3.1" # Draper adds an object-oriented layer of presentation logic to your Rails apps
 gem "dry-struct", "~> 1.0" # Typed structs and value objects
 gem "email_validator", "~> 2.0" # Email validator for Rails and ActiveModel
@@ -38,7 +39,7 @@ gem "emoji_regex", "~> 2.0" # A pair of Ruby regular expressions for matching Un
 gem "envied", "~> 0.9" # Ensure presence and type of your app's ENV-variables
 gem "fastly", "~> 1.15" # Client library for the Fastly acceleration system
 gem "fastly-rails", "~> 0.8" # Fastly dynamic caching integration for Rails
-gem "feedjira", "~> 2.2" # A feed fetching and parsing library
+gem "feedjira", "~> 3.0" # A feed fetching and parsing library
 gem "figaro", "~> 1.1" # Simple, Heroku-friendly Rails app configuration using ENV and a single YAML file
 gem "fog-aws", "~> 3.5" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically correct strings or files
@@ -59,7 +60,7 @@ gem "omniauth", "~> 1.9" # A generalized Rack framework for multiple-provider au
 gem "omniauth-github", "~> 1.3" # OmniAuth strategy for GitHub
 gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter
 gem "pg", "~> 1.1" # Pg is the Ruby interface to the PostgreSQL RDBMS
-gem "puma", "~> 3.12" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
+gem "puma", "~> 4.0" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.0" # Object oriented authorization for Rails applications
 gem "pusher", "~> 1.3" # Ruby library for Pusher Channels HTTP API
 gem "pusher-push-notifications", "~> 1.1" # Pusher Push Notifications Ruby server SDK
@@ -119,7 +120,7 @@ end
 group :development, :test do
   gem "awesome_print", "~> 1.8" # Great Ruby dubugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.0" # help to kill N+1 queries and unused eager loading
-  gem "capybara", "~> 3.26" # Capybara is an integration testing tool for rack based web applications
+  gem "capybara", "~> 3.27" # Capybara is an integration testing tool for rack based web applications
   gem "faker", "~> 1.9" # A library for generating fake data such as names, addresses, and phone numbers
   gem "parallel_tests", "~> 2.29" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry-byebug", "~> 3.7" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution

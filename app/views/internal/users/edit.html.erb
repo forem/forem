@@ -39,8 +39,11 @@
   <% end %>
 </div>
 <%= render "notes" %>
-<div class="row">
+<header class="internal-edit-header">
   <h2>Remove Identity</h2>
+  <button type="button" data-toggle="collapse" data-target="#identity-row">Toggle</button>
+</header>
+<div class="row collapse" id="identity-row">
   <p>Removing a social account identity can solve certain sign in issues, for example:</p>
   <ul>
     <li>
@@ -66,13 +69,13 @@
       <%= form_for(@user, url: remove_identity_internal_user_path(@user), html: { method: :delete, onsubmit: "return confirm('Are you sure? This should only be done as a solution for the listed example(s).)" }) do |f| %>
         <%= f.hidden_field :identity_id, value: identity.id %>
         <p><b><%= identity.provider.capitalize %> UID: <%= identity.uid %> - Username: <%= identity.auth_data_dump["info"]["nickname"] %></b></p>
-        <%= f.submit "Delete #{identity.provider.capitalize} Identity" %>
+        <%= f.submit "Delete #{identity.provider.capitalize} Identity", class: "btn btn-danger" %>
       <% end %>
     <% end %>
     <h3>This should be done only do this if you are certain the user is having the specific problem(s) listed above.</h3>
-    <hr>
-    <h2>Recover a deleted identity:</h2>
-    <% if @user.backup_data %>
+    <% if @user.backup_data.any? %>
+      <hr>
+      <h2>Recover a deleted identity:</h2>
       <ul>
         <% @user.backup_data.where(instance_type: "Identity").each do |data| %>
           <li>

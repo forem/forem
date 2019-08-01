@@ -96,9 +96,10 @@ class Comment < ApplicationRecord
   end
 
   def self.trigger_index(record, remove)
-    if remove
-      AlgoliaSearch::AlgoliaJob.perform_later(record, "remove_from_index!")
-    elsif record.deleted == false
+    # record is removed from index synchronously in before_destroy_actions
+    return if remove
+
+    if record.deleted == false
       AlgoliaSearch::AlgoliaJob.perform_later(record, "index!")
     else
       AlgoliaSearch::AlgoliaJob.perform_later(record, "remove_algolia_index")

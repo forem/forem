@@ -40,7 +40,7 @@ RSpec.describe Tag, type: :model do
   end
 
   it "knows class valid categories" do
-    expect(Tag.valid_categories).to include("tool")
+    expect(described_class.valid_categories).to include("tool")
   end
 
   it "triggers cache busting on save" do

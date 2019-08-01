@@ -33,6 +33,22 @@ RSpec.describe PodcastEpisode, type: :model do
     end
   end
 
+  describe "#available" do
+    let(:podcast) { create(:podcast) }
+    let(:unpodcast) { create(:podcast, published: false) }
+    let!(:episode) { create(:podcast_episode, podcast: podcast) }
+
+    before do
+      create(:podcast_episode, podcast: unpodcast)
+      create(:podcast_episode, podcast: podcast, reachable: false)
+    end
+
+    it "is available when reachable and published" do
+      available_ids = described_class.available.pluck(:id)
+      expect(available_ids).to eq([episode.id])
+    end
+  end
+
   describe "#description" do
     it "strips tags from the body" do
       podcast_episode.body = "<h1>Body with HTML tags</h1>"
