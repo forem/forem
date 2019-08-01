@@ -9,7 +9,9 @@ class SponsorshipDashboard < Administrate::BaseDashboard
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
     user: Field::BelongsTo,
+    user_id: UserIdField,
     organization: Field::BelongsTo,
+    organization_id: Field::Number,
     id: Field::Number,
     level: Field::String,
     status: Field::String,
@@ -63,8 +65,8 @@ class SponsorshipDashboard < Administrate::BaseDashboard
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = %i[
-    user
-    organization
+    user_id
+    organization_id
     level
     status
     expires_at

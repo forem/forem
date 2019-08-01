@@ -63,6 +63,7 @@ Rails.application.routes.draw do
         post "recover_identity"
       end
     end
+    resources :organization_memberships, only: %i[update destroy create]
     resources :welcome, only: %i[index create]
     resources :tools, only: %i[index create] do
       collection do

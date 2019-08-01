@@ -15,6 +15,7 @@ RSpec.describe "Admin::Podcasts", type: :request do
         description: "Super Podcast",
         feed_url: "http://feeds.feedburner.com/developertea",
         slug: "devtea",
+        published: true,
         main_color_hex: "333333",
         image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
       }
@@ -30,6 +31,13 @@ RSpec.describe "Admin::Podcasts", type: :request do
       expect do
         post "/admin/podcasts", params: { podcast: valid_attributes }
       end.to have_enqueued_job(Podcasts::GetEpisodesJob).exactly(:once)
+    end
+
+    it "doesn't enqueue a job when creating an unpublished podcast" do
+      valid_attributes[:published] = false
+      expect do
+        post "/admin/podcasts", params: { podcast: valid_attributes }
+      end.not_to have_enqueued_job(Podcasts::GetEpisodesJob)
     end
   end
 end
