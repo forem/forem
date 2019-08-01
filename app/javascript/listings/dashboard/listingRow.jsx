@@ -8,9 +8,8 @@ import ActionButtons from './rowElements/actionButtons';
 export const ListingRow = ({ listing }) => {
   const bumpedAt = listing.bumped_at ? listing.bumped_at.toString() : null;
   const isExpired = bumpedAt ? ((Date.now() - new Date(bumpedAt).getTime()) / (1000 * 60 * 60 * 24)) > 30 && (!listing.published) : false
-  const isDraft = bumpedAt ? (((Date.now() - new Date(bumpedAt).getTime()) / (1000 * 60 * 60 * 24)) < 30) && (!listing.published) : true
+  const isDraft = bumpedAt ? !isExpired && (!listing.published) : true
   const listingUrl = `${listing.category}/${listing.slug}`
-  const editUrl = `/listings/${listing.id}/edit`;
 
   const orgName = l =>
     l.organization_id ? (
@@ -31,7 +30,7 @@ export const ListingRow = ({ listing }) => {
         <a href={`/listings/${listing.category}/`}>{listing.category}</a>
       </span>
       <Tags tagList={listing.tag_list} />
-      <ActionButtons isDraft={isDraft} listingUrl={listingUrl} editUrl={editUrl} />
+      <ActionButtons isDraft={isDraft} listingUrl={`${listing.category}/${listing.slug}`} editUrl={`/listings/${listing.id}/edit`} />
     </div>
   );
 };
