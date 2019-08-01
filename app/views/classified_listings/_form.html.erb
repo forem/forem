@@ -83,10 +83,10 @@
         <div class="listings-current-credits-inner">
         <select id="org-credits-select" class="org-credits-select">
           <% @organizations.each do |org| %>
-            <option value="<%= org.id %>" data-credits="<%= org.unspent_credits_count %>"><%= org.name %></option>
+            <option value="<%= org.id %>" data-credits="<%= org.credits.unspent.size %>"><%= org.name %></option>
           <% end %>
         </select>
-        has <span id="org-credits-number"><%= @organizations.first.unspent_credits_count %></span> credits -
+        has <span id="org-credits-number"><%= @organizations.first.credits.unspent.size %></span> credits -
           <a id="org-credits-purchase-link" target="_blank" rel="noopener noreferrer" href="/credits/purchase?organization_id=<%= @organizations.first.id %>" data-no-instant>Buy More</a>
         </div>
         <%= javascript_pack_tag "orgCreditsSelector", defer: true %>
