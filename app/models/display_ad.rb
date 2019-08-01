@@ -10,7 +10,6 @@ class DisplayAd < ApplicationRecord
 
   scope :approved_and_published, -> { where(approved: true, published: true) }
 
-
   def self.for_display(area)
     if rand(8) == 1
       approved_and_published.where(placement_area: area).order("success_rate DESC").sample
