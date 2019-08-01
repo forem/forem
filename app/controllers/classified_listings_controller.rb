@@ -68,36 +68,18 @@ class ClassifiedListingsController < ApplicationController
   def update
     authorize @classified_listing
 
+    cost = ClassifiedListing.cost_by_category(@classified_listing.category)
+
     # NOTE: this should probably be split in three different actions: bump, unpublish, publish
     if listing_params[:action] == "bump"
-      cost = ClassifiedListing.cost_by_category(@classified_listing.category)
-
-      org = Organization.find_by(id: @classified_listing.organization_id)
-
-      available_org_credits = org.credits.unspent if org
-      available_user_credits = current_user.credits.unspent
-
-      if org && available_org_credits.size >= cost
-        charge_credits_before_bump(org, cost)
-      elsif available_user_credits.size >= cost
-        charge_credits_before_bump(current_user, cost)
-      else
-        redirect_to(credits_path, notice: "Not enough available credits") && return
-      end
+      bump_listing(cost)
     elsif listing_params[:action] == "unpublish"
       unpublish_listing
     elsif listing_params[:action] == "publish"
-      available_author_credits = @classified_listing.author.credits.unspent
-      cost = ClassifiedListing.cost_by_category(@classified_listing.category)
-      if @classified_listing.bumped_at.nil? && available_author_credits.size >= cost
-        create_listing(@classified_listing.author, cost)
-        return
-      elsif @classified_listing.bumped_at.nil? && available_author_credits.size < cost
-        redirect_to credits_path, notice: "Not enough available credits"
-        return
-      elsif @classified_listing.bumped_at.nil? == false
-        publish_listing
+      if @classified_listing.bumped_at.nil?
+        first_publish(cost)
       end
+      publish_listing
     elsif listing_params[:body_markdown].present? && ((@classified_listing.bumped_at && @classified_listing.bumped_at > 24.hours.ago) || !@classified_listing.published)
       update_listing_details
     end
@@ -154,6 +136,32 @@ class ClassifiedListingsController < ApplicationController
     end
   end
 
+  def first_publish(cost)
+    available_author_credits = @classified_listing.author.credits.unspent
+    if @classified_listing.bumped_at.nil? && available_author_credits.size >= cost
+      create_listing(@classified_listing.author, cost)
+      return
+    elsif @classified_listing.bumped_at.nil? && available_author_credits.size < cost
+      redirect_to credits_path, notice: "Not enough available credits"
+      return
+    end
+  end
+
+  def bump_listing(cost)
+    org = Organization.find_by(id: @classified_listing.organization_id)
+
+    available_org_credits = org.credits.unspent if org
+    available_user_credits = current_user.credits.unspent
+
+    if org && available_org_credits.size >= cost
+      charge_credits_before_bump(org, cost)
+    elsif available_user_credits.size >= cost
+      charge_credits_before_bump(current_user, cost)
+    else
+      redirect_to(credits_path, notice: "Not enough available credits") && return
+    end
+  end
+
   def charge_credits_before_bump(purchaser, cost)
     ActiveRecord::Base.transaction do
       Credits::Buyer.call(
@@ -162,7 +170,7 @@ class ClassifiedListingsController < ApplicationController
         cost: cost,
       )
 
-      raise ActiveRecord::Rollback unless bump_listing
+      raise ActiveRecord::Rollback unless bump_listing_success
     end
   end
 
