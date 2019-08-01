@@ -21,9 +21,9 @@ RSpec.describe "PodcastEpisodesSpec", type: :request do
       expect(response.headers["Surrogate-Key"]).to eq("podcast_episodes_all podcast_episodes/#{pe.id}")
     end
 
-    it "renders page using /podcasts" do
+    it "redirects /podcasts to /pod" do
       get "/podcasts"
-      expect(response.body).to include("If you know of a great dev podcast")
+      expect(response.body).to redirect_to(pod_path)
     end
   end
 end
