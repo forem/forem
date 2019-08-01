@@ -206,7 +206,7 @@ export default class ArticleForm extends Component {
 
   handleMainImageUrlChange = payload => {
     this.setState({
-      mainImage: payload.link,
+      mainImage: payload.links[0],
       imageManagementShowing: false,
     });
   };
@@ -432,7 +432,9 @@ export default class ArticleForm extends Component {
             onClick={this.toggleImageManagement}
             type="button"
           >
-            <img src={ImageUploadIcon} alt="upload images" /> IMAGES
+            <img src={ImageUploadIcon} alt="upload images" />
+            {' '}
+IMAGES
           </button>
           {moreConfigBottomButton}
         </div>
