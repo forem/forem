@@ -5,7 +5,7 @@ module Audit
       # Definition of Event payload.
       #
       # New instance object is used as block parameter in Audit::Notification.notify method.
-      attr_accessor :user_id, :roles
+      attr_accessor :user_id, :roles, :slug
 
       ##
       # Use the initializer to define default values for the payload.
@@ -14,6 +14,7 @@ module Audit
 
         @user_id = data[:user_id]
         @roles = data[:roles] || []
+        @slug = data[:slug] || :undefined
       end
 
       class << self
