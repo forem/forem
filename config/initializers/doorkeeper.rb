@@ -105,7 +105,7 @@ Doorkeeper.configure do
   # in your installation, they will be invalid without enabling the additional
   # setting `fallback_to_plain_secrets` below.
   #
-  # hash_token_secrets
+  hash_token_secrets
   # By default, token secrets will be hashed using the
   # +Doorkeeper::Hashing::SHA256+ strategy.
   #
