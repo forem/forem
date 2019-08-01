@@ -260,8 +260,10 @@ export class Listings extends Component {
     index.search(query, filterObject).then(function searchDone(content) {
       const fullListings = listings;
       content.hits.forEach(listing => {
-        if (!listings.map(l => l.id).includes(listing.id)) {
-          fullListings.push(listing);
+        if (listing.bumped_at) {
+          if (!listings.map(l => l.id).includes(listing.id)) {
+            fullListings.push(listing);
+          }
         }
       });
       t.setState({
