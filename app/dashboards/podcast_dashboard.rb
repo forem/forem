@@ -24,6 +24,7 @@ class PodcastDashboard < Administrate::BaseDashboard
     pattern_image: CarrierwaveField,
     slug: Field::String,
     reachable: Field::Boolean,
+    published: Field::Boolean,
     status_notice: Field::Text,
     created_at: Field::DateTime,
     updated_at: Field::DateTime
@@ -38,6 +39,7 @@ class PodcastDashboard < Administrate::BaseDashboard
     podcast_episodes
     id
     reachable
+    published
     status_notice
     title
     description
@@ -63,6 +65,7 @@ class PodcastDashboard < Administrate::BaseDashboard
     pattern_image
     slug
     reachable
+    published
     created_at
     updated_at
   ].freeze
@@ -87,6 +90,7 @@ class PodcastDashboard < Administrate::BaseDashboard
     image
     slug
     reachable
+    published
   ].freeze
 
   # Overwrite this method to customize how podcasts are displayed

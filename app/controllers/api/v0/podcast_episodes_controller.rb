@@ -13,7 +13,7 @@ module Api
         @page = params[:page]
 
         if params[:username]
-          @podcast = Podcast.reachable.find_by!(slug: params[:username])
+          @podcast = Podcast.available.find_by!(slug: params[:username])
           @podcast_episodes = @podcast.
             podcast_episodes.reachable.order("published_at desc").
             page(@page).
