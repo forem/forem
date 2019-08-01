@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_23_094834) do
+ActiveRecord::Schema.define(version: 2019_08_01_083510) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -737,6 +737,7 @@ ActiveRecord::Schema.define(version: 2019_07_23_094834) do
     t.string "main_color_hex", null: false
     t.string "overcast_url"
     t.string "pattern_image"
+    t.boolean "published", default: false
     t.boolean "reachable", default: true
     t.string "slug", null: false
     t.string "soundcloud_url"
