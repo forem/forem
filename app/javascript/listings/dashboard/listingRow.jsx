@@ -8,7 +8,7 @@ import ActionButtons from './rowElements/actionButtons';
 export const ListingRow = ({ listing }) => {
   const bumpedAt = listing.bumped_at ? listing.bumped_at.toString() : null;
   const isExpired = bumpedAt && (!listing.published) ? ((Date.now() - new Date(bumpedAt).getTime()) / (1000 * 60 * 60 * 24)) > 30 : false;
-  const isDraft = bumpedAt && (!listing.published) ? !isExpired : true;
+  const isDraft = bumpedAt ? !isExpired && (!listing.published) : true;
   const listingUrl = `${listing.category}/${listing.slug}`
 
   return (
