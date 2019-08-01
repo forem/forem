@@ -19,4 +19,10 @@ RSpec.describe PageView, type: :model do
       expect(pv.reload.path).to eq("/page")
     end
   end
+
+  describe "after create" do
+    it "calls TweetStatAdjustmentJob" do
+      expect { create(:page_view, article: article) }.to have_enqueued_job.on_queue("tweet_stat_adjustment").with(article.id)
+    end
+  end
 end

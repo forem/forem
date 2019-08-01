@@ -5,6 +5,7 @@ class PageView < ApplicationRecord
   belongs_to :article
 
   before_create :extract_domain_and_path
+  after_create :adjust_tweet_stat_on_article
 
   algoliasearch index_name: "UserHistory", per_environment: true, if: :belongs_to_pro_user? do
     attributes :referrer, :user_agent, :article_tags
@@ -70,5 +71,9 @@ class PageView < ApplicationRecord
 
   def article_tags
     article.decorate.cached_tag_list_array
+  end
+
+  def adjust_tweet_stat_on_article
+    TweetStatAdjustmentJob.perform_later(article.id)
   end
 end
