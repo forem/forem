@@ -7,20 +7,13 @@ import ActionButtons from './rowElements/actionButtons';
 
 export const ListingRow = ({ listing }) => {
   const bumpedAt = listing.bumped_at ? listing.bumped_at.toString() : null;
-  const isExpired = bumpedAt ? ((Date.now() - new Date(bumpedAt).getTime()) / (1000 * 60 * 60 * 24)) > 30 && (!listing.published) : false
-  const isDraft = bumpedAt ? !isExpired && (!listing.published) : true
+  const isExpired = bumpedAt && (!listing.published) ? ((Date.now() - new Date(bumpedAt).getTime()) / (1000 * 60 * 60 * 24)) > 30 : false;
+  const isDraft = bumpedAt && (!listing.published) ? !isExpired : true;
   const listingUrl = `${listing.category}/${listing.slug}`
-
-  const orgName = l =>
-    l.organization_id ? (
-      <span className="listing-org">{l.author.name}</span>
-    ) : (
-      ''
-    );
 
   return (
     <div className={`dashboard-listing-row ${isDraft ? 'draft' : ''} ${isExpired ? 'expired' : ''}`}>
-      {orgName(listing)}
+      {listing.organization_id && <span className="listing-org">{listing.author.name}</span>}
       <a href={listingUrl}>
         <h2>{listing.title + (isExpired ? ' (expired)' : '')}</h2>
       </a>
@@ -49,5 +42,6 @@ ListingRow.propTypes = {
     organization_id: PropTypes.number,
     location: PropTypes.string,
     published: PropTypes.bool.isRequired,
+    author: PropTypes.object,
   }).isRequired,
 };
