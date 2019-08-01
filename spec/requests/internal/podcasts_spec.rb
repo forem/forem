@@ -12,12 +12,12 @@ RSpec.describe "/internal/podcasts", type: :request do
   describe "GET /internal/podcasts" do
     before do
       create_list(:podcast, 3)
-      user.add_role(:podcast_admin, Podcast.order("random()").first)
+      user.add_role(:podcast_admin, Podcast.order(Arel.sql("RANDOM()")).first)
     end
 
     it "renders success" do
       get internal_podcasts_path
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 
