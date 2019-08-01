@@ -29,7 +29,7 @@ RSpec.describe DisplayAd, type: :model do
     create(:display_ad, organization_id: organization.id, published: true, approved: true)
     create(:display_ad, organization_id: organization.id, published: false, approved: true)
     create(:display_ad, organization_id: organization.id, published: true, approved: false)
-    expect(DisplayAd.for_display(DisplayAd.last.placement_area).published).to eq(true)
-    expect(DisplayAd.for_display(DisplayAd.last.placement_area).approved).to eq(true)
+    expect(described_class.for_display(described_class.last.placement_area).published).to eq(true)
+    expect(described_class.for_display(described_class.last.placement_area).approved).to eq(true)
   end
 end

@@ -14,6 +14,7 @@ class DisplayAdEventsController < ApplicationController
 
   def update_display_ads_data
     return if Rails.env.production? && rand(20) != 1 # We need to do this operation only once in a while.
+
     @display_ad = DisplayAd.find(display_ad_event_params[:display_ad_id])
     num_impressions = @display_ad.display_ad_events.where(category: "impression").size
     num_clicks = @display_ad.display_ad_events.where(category: "click").size
