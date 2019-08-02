@@ -336,10 +336,6 @@ RSpec.describe "NotificationsIndex", type: :request do
       it "does not render the reaction as reacted if it was not reacted on" do
         expect(response.body).not_to include "reaction-button reacted"
       end
-
-      it "renders the article's published at" do
-        expect(response.body).to include time_ago_in_words(article.published_at)
-      end
     end
   end
 end

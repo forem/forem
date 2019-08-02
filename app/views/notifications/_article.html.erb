@@ -32,9 +32,9 @@
       <% end %>
       <div>
         <% if json_data["article"]["published_at"] %>
-          <small><%= time_ago_in_words json_data["article"]["published_at"] %> ago</small>
+          <span class="time-ago-indicator-initial-placeholder" data-seconds="<%= json_data["article"]["published_at"].to_time.to_i %>">
         <% else %>
-          <small><%= time_ago_in_words notification.notifiable.published_at %> ago</small>
+          <span class="time-ago-indicator-initial-placeholder" data-seconds="<%= notification.notifiable.published_at.to_i %>">
         <% end %>
       </div>
       <a href="<%= json_data["article"]["path"] %>">
