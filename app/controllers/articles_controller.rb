@@ -246,8 +246,9 @@ class ArticlesController < ApplicationController
 
     # handle series/collections
     if params["article"]["series"].present?
-      params["article"]["collection_id"] = Collection.find_series(params["article"]["series"], @user)&.id
-    elsif params["article"]["series"] == ""
+      collection = Collection.find_series(params["article"]["series"], @user)
+      params["article"]["collection_id"] = collection.id
+    elsif params["article"]["series"] == "" # reset collection?
       params["article"]["collection_id"] = nil
     end
 
