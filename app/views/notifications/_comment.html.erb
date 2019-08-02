@@ -21,7 +21,7 @@
         <%= h(json_data["comment"]["commentable"]["title"]) %>
       </a>
       <div>
-        <span class="time-ago-indicator-initial-placeholder" data-seconds="<%= notification.notifiable.created_at.to_i %>">
+        <span class="time-ago-indicator-initial-placeholder" data-seconds="<%= notification.notifiable.created_at.to_i %>"></span>
       </div>
       <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "default" %>
     <% elsif notification.action == "Moderation" %>
@@ -42,7 +42,7 @@
         <%= h(json_data["comment"]["commentable"]["title"]) %>
       </a>
       <div>
-        <span><span class="time-ago-indicator-initial-placeholder" data-seconds="<%= notification.created_at.to_i %>"></span>
+        <span class="time-ago-indicator-initial-placeholder" data-seconds="<%= notification.created_at.to_i %>"></span>
       </div>
       <%= render "notifications/shared/comment_box", activity: activity, context: "moderation" %>
       Give them their first reply! 🎉
