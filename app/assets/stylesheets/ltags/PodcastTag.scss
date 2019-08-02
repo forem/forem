@@ -61,10 +61,11 @@
       display: flex;
       flex-direction: row;
       font-size: 14px;
+
       a {
         margin-right: 10px;
         background-color: #292e34;
-        color: white;
+        color: var(--theme-color, white);
         border-radius: 3px;
         font-size: 13px;
         font-weight: 400;
@@ -80,15 +81,15 @@
 
         img {
           display: inline;
-          width: 16px;
-          height: 16px;
           left: 0;
           margin-right: 5px;
           vertical-align: middle;
         }
+
         .service-name{
           display:none;
         }
+
         @media screen and (min-width: 630px) {
           .service-name{
             display:inline-block;
