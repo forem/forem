@@ -109,10 +109,8 @@ class ClassifiedListingsController < ApplicationController
   def destroy
     authorize @classified_listing
     @classified_listing.destroy!
-    # Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
-    # Notification.remove_all(notifiable_id: @article.id, notifiable_type: "Article", action: "Reaction")
     respond_to do |format|
-      format.html { redirect_to "/listings/dashboard", notice: "Article was successfully deleted." }
+      format.html { redirect_to "/listings/dashboard", notice: "Listing was successfully deleted." }
       format.json { head :no_content }
     end
   end
