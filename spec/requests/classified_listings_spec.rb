@@ -13,9 +13,26 @@ RSpec.describe "ClassifiedListings", type: :request do
       }
     }
   end
+  let(:draft_params) do
+    {
+      classified_listing: {
+        title: "this a draft",
+        body_markdown: "something draft",
+        category: "cfp",
+        tag_list: "",
+        contact_via_connect: true,
+        action: "draft"
+      }
+    }
+  end
 
   describe "GET /listings/new" do
     before { sign_in user }
+
+    it "shows the option to create draft" do
+      get "/listings/new"
+      expect(response.body).to include "You will not be charged credits to save a draft."
+    end
 
     context "when the user has no credits" do
       it "shows the proper messages" do
