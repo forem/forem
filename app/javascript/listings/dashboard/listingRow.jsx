@@ -23,7 +23,7 @@ export const ListingRow = ({ listing }) => {
         <a href={`/listings/${listing.category}/`}>{listing.category}</a>
       </span>
       <Tags tagList={listing.tag_list} />
-      <ActionButtons isDraft={isDraft} listingUrl={`${listing.category}/${listing.slug}`} editUrl={`/listings/${listing.id}/edit`} />
+      <ActionButtons isDraft={isDraft} listingUrl={`${listing.category}/${listing.slug}`} editUrl={`/listings/${listing.id}/edit`} deleteConfirmUrl={`/listings/${listing.category}/${listing.slug}/delete_confirm`} />
     </div>
   );
 };

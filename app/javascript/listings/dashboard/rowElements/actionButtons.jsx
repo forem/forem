@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
 
-const ActionButtons = ({ isDraft, listingUrl, editUrl }) => {
+const ActionButtons = ({ isDraft, listingUrl, editUrl, deleteConfirmUrl }) => {
   return (
     <div className="listing-row-actions">
       {/* <a className="dashboard-listing-bump-button cta pill black">BUMP</a> */}
@@ -19,7 +19,12 @@ const ActionButtons = ({ isDraft, listingUrl, editUrl }) => {
       >
         EDIT
       </a>
-      {/* <a className="dashboard-listing-delete-button cta pill red">DELETE</a> */}
+      <a 
+        href={deleteConfirmUrl} 
+        className="dashboard-listing-delete-button cta pill black"
+      >
+        DELETE
+      </a>
     </div>
   )
 }
@@ -28,6 +33,7 @@ ActionButtons.propTypes = {
   isDraft: PropTypes.bool.isRequired,
   listingUrl: PropTypes.string.isRequired,
   editUrl: PropTypes.string.isRequired,
+  deleteConfirmUrl: PropTypes.string.isRequired,
 }
 
 export default ActionButtons;

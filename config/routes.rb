@@ -151,7 +151,7 @@ Rails.application.routes.draw do
   resources :tag_adjustments, only: [:create]
   resources :rating_votes, only: [:create]
   resources :page_views, only: %i[create update]
-  resources :classified_listings, path: :listings, only: %i[index new create edit update delete dashboard]
+  resources :classified_listings, path: :listings, only: %i[index new create edit update destroy dashboard]
   resources :credits, only: %i[index new create] do
     get "purchase", on: :collection, to: "credits#new"
   end
@@ -169,6 +169,8 @@ Rails.application.routes.draw do
   get "/listings/:category/:slug" => "classified_listings#index", as: :classified_listing_slug
   get "/listings/:category/:slug/:view" => "classified_listings#index",
       constraints: { view: /moderate/ }
+  get "/listings/:category/:slug/delete_confirm" => "classified_listings#delete_confirm"
+  delete "/listings/:category/:slug" => "classified_listings#destroy"
   get "/notifications/:filter" => "notifications#index"
   get "/notifications/:filter/:org_id" => "notifications#index"
   get "/notification_subscriptions/:notifiable_type/:notifiable_id" => "notification_subscriptions#show"

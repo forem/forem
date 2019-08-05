@@ -1,6 +1,6 @@
 class ClassifiedListingsController < ApplicationController
   include ClassifiedListingsToolkit
-  before_action :set_classified_listing, only: %i[edit update]
+  before_action :set_classified_listing, only: %i[edit update destroy]
   before_action :set_cache_control_headers, only: %i[index]
   after_action :verify_authorized, only: %i[edit update]
   before_action :authenticate_user!, only: %i[edit update new dashboard]
@@ -99,6 +99,22 @@ class ClassifiedListingsController < ApplicationController
     @orgs = Organization.where(id: organizations_ids)
     @org_listings = ClassifiedListing.where(organization_id: organizations_ids)
     @user_credits = current_user.unspent_credits_count
+  end
+
+  def delete_confirm
+    @classified_listing = ClassifiedListing.find_by(slug: params[:slug])
+    authorize @classified_listing
+  end
+
+  def destroy
+    authorize @classified_listing
+    @classified_listing.destroy!
+    # Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
+    # Notification.remove_all(notifiable_id: @article.id, notifiable_type: "Article", action: "Reaction")
+    respond_to do |format|
+      format.html { redirect_to "/listings/dashboard", notice: "Article was successfully deleted." }
+      format.json { head :no_content }
+    end
   end
 
   private
