@@ -61,7 +61,7 @@ class StackexchangeTag < LiquidTagBase
     @post_type = post_response["items"][0]["post_type"]
     final_response = HTTParty.get("https://api.stackexchange.com/2.2/#{@post_type.pluralize}/#{id}?site=#{@site}&filter=#{FILTERS[@post_type]}&key=#{ApplicationConfig['STACKEXCHANGE_APP_KEY']}")
 
-    raise StandardError, "Calling the StackExchange API failed. Perhaps https://api.stackexchange.com is down?" if post_response.code != "200" || final_response.code != "200"
+    raise StandardError, "Calling the StackExchange API failed. Perhaps https://api.stackexchange.com is down?" if post_response.code.to_i != 200 || final_response.code.to_i != 200
 
     final_response["items"][0]
   end
