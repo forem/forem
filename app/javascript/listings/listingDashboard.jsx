@@ -115,10 +115,15 @@ export class ListingDashboard extends Component {
 
     const listingLength = (selected, userListings, organizationListings) => {
       return selected === 'user' ? (
-        <h4>Listings Made: {userListings.length}</h4>
+        <h4>
+          Listings Made:
+          {' '}
+          {userListings.length}
+        </h4>
       ) : (
         <h4>
-          Listings Made:{' '}
+          Listings Made:
+          {' '}
           {
             organizationListings.filter(
               listing => listing.organization_id === selected,
@@ -137,7 +142,8 @@ export class ListingDashboard extends Component {
         </h4>
       ) : (
         <h4>
-          Credits Available:{' '}
+          Credits Available:
+          {' '}
           {organizations.find(org => org.id === selected).unspent_credits_count}
         </h4>
       );
