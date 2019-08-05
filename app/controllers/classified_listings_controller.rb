@@ -77,8 +77,9 @@ class ClassifiedListingsController < ApplicationController
       unpublish_listing
     elsif listing_params[:action] == "publish"
       if @classified_listing.bumped_at.nil?
-        first_publish(cost)
+        return first_publish(cost)
       end
+
       publish_listing
     elsif listing_params[:body_markdown].present? && ((@classified_listing.bumped_at && @classified_listing.bumped_at > 24.hours.ago) || !@classified_listing.published)
       update_listing_details
@@ -138,12 +139,18 @@ class ClassifiedListingsController < ApplicationController
 
   def first_publish(cost)
     available_author_credits = @classified_listing.author.credits.unspent
-    if @classified_listing.bumped_at.nil? && available_author_credits.size >= cost
+    available_user_credits = 0
+    if @classified_listing.author.is_a?(Organization)
+      user = User.find_by(id: @classified_listing.user_id)
+      available_user_credits = user.credits.unspent
+    end
+
+    if available_author_credits.size >= cost
       create_listing(@classified_listing.author, cost)
-      return
-    elsif @classified_listing.bumped_at.nil? && available_author_credits.size < cost
+    elsif available_user_credits.size >= cost
+      create_listing(user, cost)
+    else
       redirect_to credits_path, notice: "Not enough available credits"
-      return
     end
   end
 
