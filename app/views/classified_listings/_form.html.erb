@@ -61,8 +61,8 @@
     </div>
 
     <div class="actions">
-      <input type="hidden" name="classified_listing[action]" value="draft" />
-      <%= form.submit "SAVE DRAFT", class: "cta cta-main-listing-form" %>
+      <%= form.button "SAVE DRAFT", type: "submit", name: "classified_listing[action]", class: "cta cta-main-listing-form", value: "draft" %>
+      <p>You will not be charged credits to save a draft.</p>
       <% if @credits.size > 0 || (@organizations.present? && @organizations.sum(:unspent_credits_count) > 0) %>
         <%= form.submit "CREATE LISTING", class: "cta cta-main-listing-form" %>
       <% else %>
