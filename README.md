@@ -241,7 +241,7 @@ Like many open source projects, we require that contributors provide us with a C
 
 Our version of the CLA was adapted from the Microsoft Contributor License Agreement, which they generously made available to the public domain under Creative Commons CC0 1.0 Universal.
 
-Any questions, please refer to our [license FAQ](http://docs.dev.to/license-faq/) doc or email yo@dev.to
+Any questions, please refer to our [license FAQ](https://docs.dev.to/licensing/) doc or email yo@dev.to
 
 <br>
 
