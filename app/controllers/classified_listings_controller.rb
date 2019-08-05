@@ -141,14 +141,13 @@ class ClassifiedListingsController < ApplicationController
     available_author_credits = @classified_listing.author.credits.unspent
     available_user_credits = 0
     if @classified_listing.author.is_a?(Organization)
-      user = User.find_by(id: @classified_listing.user_id)
-      available_user_credits = user.credits.unspent
+      available_user_credits = current_user.credits.unspent
     end
 
     if available_author_credits.size >= cost
       create_listing(@classified_listing.author, cost)
     elsif available_user_credits.size >= cost
-      create_listing(user, cost)
+      create_listing(current_user, cost)
     else
       redirect_to credits_path, notice: "Not enough available credits"
     end
