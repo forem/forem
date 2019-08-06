@@ -1,24 +1,10 @@
 require "rails_helper"
 
-RSpec.describe TweetStatAdjustmentService do
-  let(:travel_time) { TweetStatAdjustmentService::ADVANCE_IN_HOURS }
+RSpec.describe TweetTags::RefreshStats do
+  let(:travel_time) { TweetTags::RefreshStats::ADVANCE_IN_HOURS }
 
   def build_article(*args)
     create(:article, *args)
-  end
-
-  def travel(distance, &block)
-    Timecop.travel(distance)
-    value = yield block
-    Timecop.return
-
-    value
-  end
-
-  def freeze(&block)
-    Timecop.freeze
-    yield block
-    Timecop.return
   end
 
   describe "validation of eligible tweet nodes", :vcr do
@@ -28,19 +14,22 @@ RSpec.describe TweetStatAdjustmentService do
       it "is valid when node is an instance of TweetTag Class" do
         VCR.use_cassette("twitter_gem") do
           # Uses Timecop to modify the created_at attribute of the Tweet
-          service = travel(travel_time.hours.ago) do
+          service = Timecop.travel(travel_time.hours.ago) do
             described_class.new(article.body_markdown.to_s)
           end
 
-          expect(service.tweet_nodes.map(&:class)).to eq([TweetTag])
+          tweet_nodes = service.send(:tweet_nodes)
+
+          expect(tweet_nodes.map(&:class)).to eq([TweetTag])
         end
       end
 
       it "is invalid when tweet object is not old enough" do
         VCR.use_cassette("twitter_gem") do
           service = described_class.new(article.body_markdown.to_s)
+          tweet_nodes = service.send(:tweet_nodes)
 
-          expect(service.tweet_nodes.map(&:class)).to eq([])
+          expect(tweet_nodes.map(&:class)).to eq([])
         end
       end
     end
@@ -50,8 +39,9 @@ RSpec.describe TweetStatAdjustmentService do
 
       it "is invalid" do
         service = described_class.new(article.body_markdown.to_s)
+        tweet_nodes = service.send(:tweet_nodes)
 
-        expect(service.tweet_nodes.map(&:class)).to eq([])
+        expect(tweet_nodes.map(&:class)).to eq([])
       end
     end
   end
@@ -62,13 +52,13 @@ RSpec.describe TweetStatAdjustmentService do
     it "makes update on Twitter last_fetched_at attribute" do
       VCR.use_cassette("twitter_gem", allow_playback_repeats: true) do
         # Uses Timecop to modify the created_at attribute of the Tweet
-        service = travel(travel_time.hours.ago) do
+        service = Timecop.travel(travel_time.hours.ago) do
           described_class.new(article.body_markdown.to_s)
         end
 
-        nodes = service.tweet_nodes
+        nodes = service.send(:tweet_nodes)
 
-        freeze do
+        Timecop.freeze do
           service.call
           expect(nodes.sample.tweet.last_fetched_at).to eq(Time.zone.now)
         end

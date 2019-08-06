@@ -44,12 +44,6 @@ class Tweet < ApplicationRecord
   end
 
   class << self
-    def try_to_get_tweet(twitter_id_code)
-      client = TwitterBot.new(random_identity).client
-      tweet = client.status(twitter_id_code, tweet_mode: "extended")
-      make_tweet_from_api_object(tweet)
-    end
-
     def fetch(twitter_id_code)
       make_tweet(TwitterBot.fetch(twitter_id_code))
     end

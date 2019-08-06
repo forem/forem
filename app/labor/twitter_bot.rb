@@ -45,11 +45,11 @@ class TwitterBot
       if retry_count.positive?
         sleep 0.2
         retry_count -= 1
-        Rails.logger.error(e)
         Rails.logger.info "Retry reading tweet status. (#{retry_count} retry left) .."
         retry
       else
         Rails.logger.warn "Failed to read tweet status"
+        Rails.logger.error(e)
         nil
       end
     end

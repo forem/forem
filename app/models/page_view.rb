@@ -5,7 +5,12 @@ class PageView < ApplicationRecord
   belongs_to :article
 
   before_create :extract_domain_and_path
-  after_create :adjust_tweet_stat_on_article
+
+  ##
+  # Call TweetTagRefreshStatsJob with probability of 1/N
+  # Not something we need to perform for every time a PageView is created.
+  # If we find we want refresh this more often, we can lower what N is
+  after_create :tweet_tag_refresh_stats, if: proc { rand(30).eql?(1) }
 
   algoliasearch index_name: "UserHistory", per_environment: true, if: :belongs_to_pro_user? do
     attributes :referrer, :user_agent, :article_tags
@@ -73,7 +78,7 @@ class PageView < ApplicationRecord
     article.decorate.cached_tag_list_array
   end
 
-  def adjust_tweet_stat_on_article
-    TweetStatAdjustmentJob.perform_later(article.id)
+  def tweet_tag_refresh_stats
+    TweetTagRefreshStatsJob.perform_later(article.id)
   end
 end
