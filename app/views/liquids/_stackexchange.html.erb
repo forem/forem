@@ -6,9 +6,9 @@
         <h1>
           <img src="<%= ActionController::Base.helpers.asset_path(logo_to_use) %>" alt="">
           <% if post_type == "question" %>
-            <a href="<%= post_url %>"><%= title %></a>
+            <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer"><%= title %></a>
           <% else %>
-            <a href="<%= post_url %>">Answer to: <%= title %></a>
+            <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer">Answer to: <%= title %></a>
           <% end %>
         </h1>
         <div class="ltag__stackexchange--post-metadata">
