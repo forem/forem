@@ -102,6 +102,33 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
   end
 
+  describe "GET /api/articles/me" do
+    context "when request is unauthenticated" do
+      it "return unauthorized" do
+        get me_api_articles_path
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when request is authenticated" do
+      let_it_be(:article) { create(:article) }
+      let_it_be(:access_token) { create :doorkeeper_access_token, resource_owner_id: article.user.id }
+
+      it "return proper response specification" do
+        get me_api_articles_path, params: { access_token: access_token.token }
+        expect(response.content_type).to eq("application/json")
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "return only user's articles including markdown" do
+        create(:article)
+        get me_api_articles_path, params: { access_token: access_token.token }
+        expect(json_response.length).to eq(1)
+        expect(json_response[0]["markdown"]).not_to be_nil
+      end
+    end
+  end
+
   describe "POST /api/articles" do
     let!(:api_secret) { create(:api_secret) }
     let!(:user) { api_secret.user }
