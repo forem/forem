@@ -308,6 +308,14 @@ RSpec.describe Article, type: :model do
     expect(article.decorate.liquid_tags_used).to eq([])
   end
 
+  it "returns error message with malformed liquid tags" do
+    body = "{% github /thepracticaldev/dev.to %}"
+    article = build(:article, body_markdown: body, title: "Hello")
+    article.save
+    expect(article.persisted?).to eq(false)
+    expect(article.errors[:base]).to eq(["Invalid Github Repo link"])
+  end
+
   it "returns article title length classification" do
     article.title = "0" * 106
     expect(article.decorate.title_length_classification).to eq("longest")
