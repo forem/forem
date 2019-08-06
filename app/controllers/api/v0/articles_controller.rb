@@ -3,7 +3,7 @@ module Api
     class ArticlesController < ApiController
       respond_to :json
 
-      before_action :authenticate_with_api_key!, only: %i[create update]
+      before_action :authenticate!, only: %i[create update]
 
       before_action :set_cache_control_headers, only: [:index]
       caches_action :show,
