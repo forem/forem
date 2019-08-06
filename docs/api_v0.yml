@@ -19,7 +19,18 @@ servers:
 
 components:
   schemas:
-    Article:
+    ErrorNotFound:
+      type: object
+      required:
+        - error
+        - status
+      properties:
+        error:
+          type: string
+        status:
+          type: integer
+          format: int32
+    ArticleIndex:
       type: object
       required:
         - type_of
@@ -76,24 +87,7 @@ components:
           format: date-time
         user:
           type: object
-          properties:
-            name:
-              type: string
-            username:
-              type: string
-            twitter_username:
-              type: string
-            github_username:
-              type: string
-            website_url:
-              type: string
-              format: url
-            profile_image:
-              description: Profile image (640x640)
-              type: string
-            profile_image_90:
-              description: Profile image (90x90)
-              type: string
+          $ref: '#/components/schemas/User'
         organization:
           description: Organization the article belongs to
           type: object
@@ -122,11 +116,120 @@ components:
             text_color_hex:
               description: Text color (hexadecimal)
               type: string
+    ArticleShow:
+      type: object
+      required:
+        - type_of
+        - id
+        - title
+        - description
+        - cover_image
+        - readable_publish_date
+        - social_image
+        - tag_list
+        - tags
+        - slug
+        - path
+        - url
+        - canonical_url
+        - comments_count
+        - positive_reactions_count
+        - created_at
+        - edited_at
+        - crossposted_at
+        - published_at
+        - last_comment_at
+        - body_html
+        - body_markdown
+        - user
+      properties:
+        type_of:
+          type: string
+        id:
+          type: integer
+          format: int32
+        title:
+          type: string
+        description:
+          type: string
+        cover_image:
+          type: string
+          format: url
+        readable_publish_date:
+          type: string
+        social_image:
+          type: string
+          format: url
+        tag_list:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        slug:
+          type: string
+        path:
+          type: string
+          format: path
+        url:
+          type: string
+          format: url
+        canonical_url:
+          type: string
+          format: url
+        comments_count:
+          type: integer
+          format: int32
+        positive_reactions_count:
+          type: integer
+          format: int32
+        created_at:
+          type: string
+          format: date-time
+        edited_at:
+          type: string
+          format: date-time
+        crossposted_at:
+          type: string
+          format: date-time
+        published_at:
+          type: string
+          format: date-time
+        last_comment_at:
+          type: string
+          format: date-time
+        body_html:
+          type: string
+        body_markdown:
+          type: string
+        user:
+          type: object
+          $ref: '#/components/schemas/User'
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+        username:
+          type: string
+        twitter_username:
+          type: string
+        github_username:
+          type: string
+        website_url:
+          type: string
+          format: url
+        profile_image:
+          description: Profile image (640x640)
+          type: string
+        profile_image_90:
+          description: Profile image (90x90)
+          type: string
 
 paths:
   /articles:
     get:
-      summary: Returns published articles
+      summary: Published articles
       description: |
         This endpoint allows the client to retrieve a list of articles.
 
@@ -198,7 +301,6 @@ paths:
             type: integer
             format: int32
           example: 2
-
       responses:
         '200':
           description: A list of articles
@@ -207,13 +309,13 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Article'
+                  $ref: '#/components/schemas/ArticleIndex'
               examples:
                 articles-success:
                   summary: Successful response
                   value:
                   - type_of: article
-                    id: 12345
+                    id: 150589
                     title: 'Byte Sized Episode 2: The Creation of Graph Theory'
                     description: The full story of Leonhard Euler and the creation of this fundamental
                       computer science principle, delivered in a few minutes.
@@ -245,3 +347,92 @@ paths:
                       slug: bytesized
                       profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--sq0DrZfn--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/organization/profile_image/865/652f7998-32a8-4fd9-85ca-dd697d2a9ee9.png
                       profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--1Pt_ICL---/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/organization/profile_image/865/652f7998-32a8-4fd9-85ca-dd697d2a9ee9.png
+  /articles/{id}:
+    get:
+      summary: A published article
+      description: |
+        This endpoint allows the client to retrieve a single article given its `id`.
+
+        Responses are cached for 5 minutes.
+      tags:
+        - articles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Id of the article
+          schema:
+            type: integer
+            format: int32
+          example: 150589
+      responses:
+        '200':
+          description: An article
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ArticleShow'
+              examples:
+                article-success:
+                  summary: Successful response
+                  value:
+                    type_of: article
+                    id: 150589
+                    title: 'Byte Sized Episode 2: The Creation of Graph Theory '
+                    description: The full story of Leonhard Euler and the creation of this fundamental
+                      computer science principle, delivered in a few minutes.
+                    cover_image: https://res.cloudinary.com/practicaldev/image/fetch/s--qgutBUrH--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://thepracticaldev.s3.amazonaws.com/i/88e62fzblbluz1dm7xjf.png
+                    readable_publish_date: Aug  1
+                    social_image: https://res.cloudinary.com/practicaldev/image/fetch/s--6wSHHfwd--/c_imagga_scale,f_auto,fl_progressive,h_500,q_auto,w_1000/https://thepracticaldev.s3.amazonaws.com/i/88e62fzblbluz1dm7xjf.png
+                    tag_list: computerscience, graphtheory, bytesized, history
+                    tags:
+                    - computerscience
+                    - graphtheory
+                    - bytesized
+                    - history
+                    slug: byte-sized-episode-2-the-creation-of-graph-theory-34g1
+                    path: "/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1"
+                    url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
+                    canonical_url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
+                    comments_count: 19
+                    positive_reactions_count: 276
+                    created_at: '2019-07-31T11:15:06Z'
+                    edited_at:
+                    crossposted_at:
+                    published_at: '2019-08-01T15:47:54Z'
+                    last_comment_at: '2019-08-06T09:12:45Z'
+                    body_html: |+
+                      <p>Today's episode of Byte Sized is about Leonhard Euler and the creation of <a href="https://en.wikipedia.org/wiki/Graph_theory">Graph Theory</a>.</p>
+
+                      <p>For more about how Graph Theory works, check out this video from BaseCS!</p>...
+                    body_markdown: "---\r\ntitle: Byte Sized Episode 2: The Creation of Graph Theory \r\npublished:
+                      true\r\ndescription: The full story of Leonhard Euler and the creation of this fundamental
+                      computer science principle, delivered in a few minutes.\r\ntags: computerscience,
+                      graphtheory, bytesized, history\r\ncover_image: https://thepracticaldev.s3.amazonaws.com/i/88e62fzblbluz1dm7xjf.png\r\nseries:
+                      Byte Sized Season 1\r\n---\r\n\r\nToday's episode of Byte Sized is about Leonhard
+                      Euler and the creation of [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory).\r\n\r\nFor
+                      more about how Graph Theory works, check out this video from BaseCS!..."
+                    user:
+                      name: Vaidehi Joshi
+                      username: vaidehijoshi
+                      twitter_username: vaidehijoshi
+                      github_username: vaidehijoshi
+                      website_url: http://www.vaidehi.com
+                      profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--eDGAYAoK--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2882/K2evUksb.jpg
+                      profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--htZnqMn3--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2882/K2evUksb.jpg
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorNotFound'
+              examples:
+                article-not-found:
+                  summary: Article not found
+                  value:
+                    error: not found
+                    status: 404
