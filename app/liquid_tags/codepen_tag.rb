@@ -47,7 +47,7 @@ class CodepenTag < LiquidTagBase
   def valid_link?(link)
     link_no_space = link.delete(" ")
     (link_no_space =~
-      /^(http|https):\/\/(codepen\.io|codepen\.io\/team)\/[a-zA-Z0-9_\-]{1,20}\/pen\/([a-zA-Z]{5,7})\/{0,1}\z/)&.zero?
+      /^(http|https):\/\/(codepen\.io|codepen\.io\/team)\/[a-zA-Z0-9_\-]{1,30}\/pen\/([a-zA-Z]{5,7})\/{0,1}\z/)&.zero?
   end
 
   def raise_error
