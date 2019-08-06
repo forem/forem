@@ -53,6 +53,12 @@ class StackexchangeTag < LiquidTagBase
     (input =~ /\A\d{1,10}\Z/i)&.zero?
   end
 
+  def handle_response_errors(responses_array)
+    responses_array.map do |response|
+      raise StandardError, "Calling StackExchange API failed: #{response&.error_message}" if response.code != 200
+    end
+  end
+
   def get_data(input)
     id = input.match(/\d+/i)[0]
     raise StandardError, "Invalid Stack Exchange ID: {% #{tag_name} #{input} %}" unless valid_id?(id)
@@ -61,7 +67,7 @@ class StackexchangeTag < LiquidTagBase
     @post_type = post_response["items"][0]["post_type"]
     final_response = HTTParty.get("https://api.stackexchange.com/2.2/#{@post_type.pluralize}/#{id}?site=#{@site}&filter=#{FILTERS[@post_type]}&key=#{ApplicationConfig['STACKEXCHANGE_APP_KEY']}")
 
-    raise StandardError, "Calling the StackExchange API failed. Perhaps https://api.stackexchange.com is down?" if post_response.code.to_i != 200 || final_response.code.to_i != 200
+    handle_response_errors([post_response, final_response])
 
     final_response["items"][0]
   end
