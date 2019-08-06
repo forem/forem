@@ -598,7 +598,7 @@ GEM
     rdoc (6.1.1)
     recaptcha (5.0.0)
       json
-    redcarpet (3.4.0)
+    redcarpet (3.5.0)
     regexp_parser (1.6.0)
     representable (3.0.4)
       declarative (< 0.1.0)
@@ -921,7 +921,7 @@ DEPENDENCIES
   rails-assets-airbrake-js-client (~> 1.6)!
   rails-observers (~> 0.1)
   recaptcha (~> 5.0)
-  redcarpet (~> 3.4)
+  redcarpet (~> 3.5)
   reverse_markdown (~> 1.1)
   rolify (~> 5.2)
   rouge (~> 3.7)
