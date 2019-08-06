@@ -1,5 +1,7 @@
 class StackexchangeTag < LiquidTagBase
   PARTIAL = "liquids/stackexchange".freeze
+  # Filter codes come from the example tools in the docs. For example: https://api.stackexchange.com/docs/posts-by-ids
+  API_URL = "https://api.stackexchange.com/2.2/".freeze
   FILTERS = {
     "post" => "!3tz1WbZW5JxrG-f99",
     "answer" => "!Fcb(61J.xH9ZW2D7KF1bbM_J7X",
@@ -63,9 +65,9 @@ class StackexchangeTag < LiquidTagBase
     id = input.match(/\d+/i)[0]
     raise StandardError, "Invalid Stack Exchange ID: {% #{tag_name} #{input} %}" unless valid_id?(id)
 
-    post_response = HTTParty.get("https://api.stackexchange.com/2.2/posts/#{id}?site=#{@site}&filter=#{FILTERS['post']}")
+    post_response = HTTParty.get("#{API_URL}posts/#{id}?site=#{@site}&filter=#{FILTERS['post']}")
     @post_type = post_response["items"][0]["post_type"]
-    final_response = HTTParty.get("https://api.stackexchange.com/2.2/#{@post_type.pluralize}/#{id}?site=#{@site}&filter=#{FILTERS[@post_type]}&key=#{ApplicationConfig['STACKEXCHANGE_APP_KEY']}")
+    final_response = HTTParty.get("#{API_URL}#{@post_type.pluralize}/#{id}?site=#{@site}&filter=#{FILTERS[@post_type]}&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}")
 
     handle_response_errors([post_response, final_response])
 
@@ -75,7 +77,7 @@ class StackexchangeTag < LiquidTagBase
   def pretty_site_name
     return "Stack Overflow" if @site == "stackoverflow"
 
-    response = HTTParty.get("https://api.stackexchange.com/2.2/info?site=#{@site}&filter=#{FILTERS['site']}")
+    response = HTTParty.get("#{API_URL}info?site=#{@site}&filter=#{FILTERS['site']}")
     response["items"][0]["site"]["name"]
   end
 end

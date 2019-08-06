@@ -156,7 +156,7 @@ variable :TWITCH_WEBHOOK_SECRET, :String, default: "Optional"
 variable :TRENDING_TAGS, :String, default: "git,beginners"
 
 # For calling the Stack Exchange API
-variable :STACKEXCHANGE_APP_KEY, :String, default: ""
+variable :STACK_EXCHANGE_APP_KEY, :String, default: ""
 
 ##### Legacy test related env vars ######
 variable :FACEBOOK_PIXEL_ID, :String, default: "Optional"
