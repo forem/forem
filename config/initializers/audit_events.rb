@@ -6,4 +6,4 @@
 # Example:
 # Audit::Subscribe.listen :admin, :quest_user
 
-Audit::Subscribe.listen :moderator unless Rails.env.test?
+Audit::Subscribe.listen(:moderator, :internal) unless Rails.env.test?
