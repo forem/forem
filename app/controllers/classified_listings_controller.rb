@@ -6,14 +6,16 @@ class ClassifiedListingsController < ApplicationController
   before_action :authenticate_user!, only: %i[edit update new dashboard]
 
   def index
-    @displayed_classified_listing = ClassifiedListing.find_by!(slug: params[:slug]) if params[:slug]
+    published_listings = ClassifiedListing.where(published: true)
+    display_listing = published_listings.find_by(slug: params[:slug]) if params[:slug]
+    @displayed_classified_listing = display_listing unless display_listing.nil?
 
     if params[:view] == "moderate"
       return redirect_to "/internal/listings/#{@displayed_classified_listing.id}/edit"
     end
 
     @classified_listings = if params[:category].blank?
-                             ClassifiedListing.where(published: true).
+                             published_listings.
                                order("bumped_at DESC").
                                includes(:user, :organization, :taggings).
                                limit(12)
