@@ -53,7 +53,6 @@ class CacheBuster
     bust_home_pages(article)
     bust_tag_pages(article)
     bust("/api/articles/#{article.id}")
-    bust("/api/articles/by_path?url=#{article.path}")
     return unless article.collection_id
 
     article.collection&.articles&.find_each do |a|
