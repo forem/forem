@@ -8,6 +8,7 @@ module Constants
     "cmx.im",
     "framapiaf.org",
     "friends.nico",
+    "hackers.town",
     "hearthtodon.com",
     "hex.bz",
     "horiedon.com",
