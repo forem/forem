@@ -9,18 +9,12 @@ module Audit
 
       ##
       # Use the initializer to define default values for the payload.
-      def initialize(data = {})
-        data.to_options!
 
-        @user_id = data[:user_id]
-        @roles = data[:roles] || []
-        @slug = data[:slug] || :undefined
-      end
+      def initialize
+        @roles = []
+        @slug = :undefined
 
-      class << self
-        def empty
-          Payload.new
-        end
+        yield(self)
       end
     end
   end

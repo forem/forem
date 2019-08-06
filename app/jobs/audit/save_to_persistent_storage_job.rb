@@ -10,9 +10,9 @@ module Audit
 
     def build_params(event)
       {
-        user_id: event.dig(:payload, :user_id),
-        roles: event.dig(:payload, :roles),
-        slug: event.dig(:payload, :slug),
+        user_id: event.payload[:user_id],
+        roles: event.payload[:roles],
+        slug: event.payload[:slug],
         category: event.name
       }
     end

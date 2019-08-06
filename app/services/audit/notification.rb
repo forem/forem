@@ -21,14 +21,12 @@ module Audit
       # Audit::Notification.notify('listener_name') do |payload|
       #   payload.user_id = current_user.id
       #   payload.roles = current_user.roles.pluck(:name)
-
-      #   payload
       # end
 
-      def notify(listener)
+      def notify(listener, &block)
         return unless block_given?
 
-        ActiveSupport::Notifications.instrument(instrument_name(listener), yield(Audit::Event::Payload.empty))
+        ActiveSupport::Notifications.instrument(instrument_name(listener), Audit::Event::Payload.new(&block))
       end
 
       ##
