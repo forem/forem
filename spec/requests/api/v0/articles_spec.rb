@@ -114,6 +114,14 @@ RSpec.describe "Api::V0::Articles", type: :request do
       let_it_be(:article) { create(:article) }
       let_it_be(:access_token) { create :doorkeeper_access_token, resource_owner_id: article.user.id }
 
+      it "works with bearer authorization" do
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        get me_api_articles_path, headers: headers
+        expect(response.content_type).to eq("application/json")
+        expect(response).to have_http_status(:ok)
+      end
+
       it "return proper response specification" do
         get me_api_articles_path, params: { access_token: access_token.token }
         expect(response.content_type).to eq("application/json")
@@ -156,6 +164,14 @@ RSpec.describe "Api::V0::Articles", type: :request do
       def post_article(**params)
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
         post api_articles_path, params: { article: params }.to_json, headers: headers
+      end
+
+      it "supports oauth's access_token" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        post api_articles_path, params: { article: { title: Faker::Book.title } }.to_json, headers: headers
+        expect(response).to have_http_status(:created)
       end
 
       it "fails if no params are given" do
@@ -398,6 +414,19 @@ RSpec.describe "Api::V0::Articles", type: :request do
       def put_article(**params)
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
         put path, params: { article: params }.to_json, headers: headers
+      end
+
+      it "supports oauth's access_token" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        title = Faker::Book.title + rand(100).to_s
+        body_markdown = "foobar"
+        params = { title: title, body_markdown: body_markdown }
+        put path, params: { article: params }.to_json, headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.title).to eq(title)
+        expect(article.body_markdown).to eq(body_markdown)
       end
 
       it "returns not found if the article does not belong to the user" do
