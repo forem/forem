@@ -13,7 +13,7 @@
         <% @sponsorships = Sponsorship.gold.live.includes(:organization).order(featured_number: :asc) %>
         <% if @sponsorships.any? %>
           <div class="widget-body">
-            <% @sponsorships.find_each do |sponsorship| %>
+            <% @sponsorships.each do |sponsorship| %>
               <%= render "articles/single_sponsor", sponsorship: sponsorship %>
             <% end %>
             <div class="sponsors-love-message">
@@ -51,9 +51,9 @@
       </div>
     <% end %>
     <% cache("display-area-left-#{rand(5)}", expires_in: 5.minutes) do %>
-      <% @left_sidebar_ad = DisplayAd.where(approved: true, published: true, placement_area: "sidebar_left").order(Arel.sql("RANDOM()")).first %>
+      <% @left_sidebar_ad = DisplayAd.for_display("sidebar_left") %>
       <% if @left_sidebar_ad %>
-        <div class="widget">
+        <div class="widget" id="sponsorship-arbitrary-display-widget" data-id="<%= @left_sidebar_ad.id %>">
           <div class="widget-body" style="margin-top:-6px">
             <%= @left_sidebar_ad.processed_html.html_safe %>
           </div>

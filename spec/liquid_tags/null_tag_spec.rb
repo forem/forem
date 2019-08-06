@@ -4,7 +4,7 @@ RSpec.describe NullTag, type: :liquid_template do
   describe "#initialize" do
     tags = %w[assign capture case comment cycle for if ifchanged include unless]
 
-    setup { tags.each { |tag| Liquid::Template.register_tag(tag, NullTag) } }
+    setup { tags.each { |tag| Liquid::Template.register_tag(tag, described_class) } }
 
     def generate_given_tag(tag)
       Liquid::Template.parse("{% #{tag} %}")

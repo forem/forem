@@ -5,6 +5,7 @@ RSpec.describe Organization, type: :model do
   let(:organization) { create(:organization) }
 
   it { is_expected.to have_many(:sponsorships) }
+  it { is_expected.to have_many(:organization_memberships).dependent(:delete_all) }
 
   describe "#name" do
     it "rejects names with over 50 characters" do

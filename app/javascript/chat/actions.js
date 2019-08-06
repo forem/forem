@@ -98,16 +98,19 @@ export function getChannels(
     ) {
       successCb(channels, query);
     } else {
-      fetch(`/chat_channel_memberships/find_by_chat_channel_id?chat_channel_id=${retrievalID}`, {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        credentials: 'same-origin',
-      })
-      .then(response => response.json())
-      .then(json => {
-        channels.unshift(json);
-        successCb(channels, query);  
-    })    
+      fetch(
+        `/chat_channel_memberships/find_by_chat_channel_id?chat_channel_id=${retrievalID}`,
+        {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          credentials: 'same-origin',
+        },
+      )
+        .then(response => response.json())
+        .then(json => {
+          channels.unshift(json);
+          successCb(channels, query);
+        });
     }
   });
 }

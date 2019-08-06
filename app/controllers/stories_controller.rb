@@ -23,8 +23,8 @@ class StoriesController < ApplicationController
     elsif (@article = Article.find_by(slug: params[:slug])&.decorate)
       handle_possible_redirect
     else
-      @podcast = Podcast.reachable.find_by!(slug: params[:username])
-      @episode = PodcastEpisode.reachable.find_by!(slug: params[:slug])
+      @podcast = Podcast.available.find_by!(slug: params[:username])
+      @episode = PodcastEpisode.available.find_by!(slug: params[:slug])
       handle_podcast_show
     end
   end
@@ -64,7 +64,7 @@ class StoriesController < ApplicationController
   end
 
   def handle_user_or_organization_or_podcast_or_page_index
-    @podcast = Podcast.reachable.find_by(slug: params[:username].downcase)
+    @podcast = Podcast.available.find_by(slug: params[:username].downcase)
     @organization = Organization.find_by(slug: params[:username].downcase)
     @page = Page.find_by(slug: params[:username].downcase, is_top_level_path: true)
     if @podcast
@@ -164,7 +164,7 @@ class StoriesController < ApplicationController
       return
     end
     assign_user_comments
-    @pinned_stories = Article.published.where(id: @user.profile_pins.pluck(:pinnable_id)).
+    @pinned_stories = Article.published.where(id: @user.profile_pins.select(:pinnable_id)).
       limited_column_select.
       order("published_at DESC").decorate
     @stories = ArticleDecorator.decorate_collection(@user.articles.published.

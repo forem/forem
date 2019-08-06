@@ -1,0 +1,44 @@
+<style>
+  .alert {
+    border: 2px red solid;
+  }
+</style>
+
+<h1>Podcasts</h1>
+
+<%= form_tag("/internal/podcasts", method: "get") do %>
+  <%= label_tag(:search, "Find by title:") %>
+  <%= text_field_tag(:search, params[:search]) %>
+  <%= submit_tag("Search") %>
+<% end %>
+
+<%= paginate @podcasts %>
+<br>
+<div class="wrapper-8" style="font-weight: 600; border-bottom: 2px solid black;">
+  <div>ID</div>
+  <div>Title</div>
+  <div>Feed URL</div>
+  <div>Eps</div>
+  <div>Reach</div>
+  <div>Pub</div>
+  <div>Status Notice</div>
+  <div>Admins</div>
+</div>
+
+<% @podcasts.each do |podcast| %>
+  <div class="wrapper-8" style="border-bottom: 1px solid grey; padding: 10px;">
+    <div class="grid-item"><%= podcast.id %></div>
+    <div class="grid-item"><a href="<%= edit_internal_podcast_path(podcast) %>"><%= podcast.title %></a></div>
+    <div class="grid-item"><a href="<%= podcast.feed_url %>"><%= podcast.feed_url %></a></div>
+    <div class="grid-item"><%= podcast.podcast_episodes.count %></div>
+    <div class="grid-item"><%= podcast.reachable %></div>
+    <div class="grid-item"><%= podcast.published %></div>
+    <div class="grid-item"><%= podcast.status_notice %></div>
+    <div class="grid-item">
+      <% podcast.admins.pluck(:username).each do |username| %>
+        <%= link_to "@#{username}", "/#{username}" %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+<%= paginate @podcasts %>

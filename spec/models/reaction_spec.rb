@@ -7,7 +7,7 @@ RSpec.describe Reaction, type: :model do
   let(:reaction) { build(:reaction, reactable: comment) }
 
   describe "actual validation" do
-    subject { Reaction.new(reactable: article, reactable_type: "Article", user: user) }
+    subject { described_class.new(reactable: article, reactable_type: "Article", user: user) }
 
     before { user.add_role(:trusted) }
 

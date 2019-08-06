@@ -12,13 +12,12 @@ RSpec.describe "StripeSubscriptions", type: :request do
 
   after { StripeMock.stop }
 
-  def valid_instance(user = user_one, amount = 1200)
+  def valid_instance(user)
     customer = Stripe::Customer.create(
       email: "stripe_tester@dev.to",
       source: stripe_helper.generate_card_token,
     )
     user.update(stripe_id_code: customer.id)
-    MembershipService.new(Stripe::Customer.retrieve(user.stripe_id_code), user, amount)
   end
 
   describe "POST StripeActiveCards#create" do

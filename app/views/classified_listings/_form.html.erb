@@ -78,7 +78,7 @@
         <h3>Listings Require Credits</h3>
       <% end %>
       <div class="listings-current-credits-inner">
-        You have <%= pluralize @credits.size, "credit" %> available — <a href="/credits/purchase" data-no-instant>Buy More</a>
+        You have <%= pluralize @credits.size, "credit" %> available — <a target="_blank" rel="noopener noreferrer" href="/credits/purchase" data-no-instant>Buy More</a>
       </div>
       <% if @organizations.present? %>
         <div class="listings-current-credits-inner">
@@ -88,7 +88,7 @@
           <% end %>
         </select>
         has <span id="org-credits-number"><%= @organizations.first.unspent_credits_count %></span> credits -
-          <a id="org-credits-purchase-link" href="/credits/purchase?organization_id=<%= @organizations.first.id %>" data-no-instant>Buy More</a>
+          <a id="org-credits-purchase-link" target="_blank" rel="noopener noreferrer" href="/credits/purchase?organization_id=<%= @organizations.first.id %>" data-no-instant>Buy More</a>
         </div>
         <%= javascript_pack_tag "orgCreditsSelector", defer: true %>
       <% end %>

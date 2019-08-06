@@ -432,9 +432,7 @@ export default class ArticleForm extends Component {
             onClick={this.toggleImageManagement}
             type="button"
           >
-            <img src={ImageUploadIcon} alt="upload images" />
-            {' '}
-IMAGES
+            <img src={ImageUploadIcon} alt="upload images" /> IMAGES
           </button>
           {moreConfigBottomButton}
         </div>

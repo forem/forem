@@ -1,21 +1,18 @@
 function loadFunctionality() {
-  if (!document.getElementById(
-    'notification-subscriptions-area',
-  )) {
+  if (!document.getElementById('notification-subscriptions-area')) {
     return;
   }
-  const {notifiableId} = document.getElementById(
+  const { notifiableId } = document.getElementById(
     'notification-subscriptions-area',
   ).dataset;
-  const {notifiableType} = document.getElementById(
+  const { notifiableType } = document.getElementById(
     'notification-subscriptions-area',
   ).dataset;
-  
-  
+
   const userStatus = document
     .getElementsByTagName('body')[0]
     .getAttribute('data-user-status');
-  
+
   if (userStatus === 'logged-in') {
     fetch(`/notification_subscriptions/${notifiableType}/${notifiableId}`, {
       headers: {
@@ -27,13 +24,15 @@ function loadFunctionality() {
     })
       .then(response => response.json())
       .then(result => {
-        document.getElementById(`notification-subscription-label_${result.config}`).classList.add('selected');
+        document
+          .getElementById(`notification-subscription-label_${result.config}`)
+          .classList.add('selected');
         // checkbox.checked = result;
       });
   }
-  
+
   let updateStatus = () => {};
-  
+
   if (userStatus === 'logged-out') {
     updateStatus = () => {
       // Disabled because showModal() is globally defined in asset pipeline
@@ -41,10 +40,12 @@ function loadFunctionality() {
       showModal('notification-subscription');
     };
   } else {
-    updateStatus = (target) => {
-      const allButtons = document.getElementsByClassName('notification-subscription-label');
-      for(let i = 0; i < allButtons.length; i += 1) {
-        allButtons[i].classList.remove('selected')
+    updateStatus = target => {
+      const allButtons = document.getElementsByClassName(
+        'notification-subscription-label',
+      );
+      for (let i = 0; i < allButtons.length; i += 1) {
+        allButtons[i].classList.remove('selected');
       }
       target.classList.add('selected');
       fetch(`/notification_subscriptions/${notifiableType}/${notifiableId}`, {
@@ -59,17 +60,19 @@ function loadFunctionality() {
           config: target.dataset.payload,
           // notifiable params are passed via URL
         }),
-      })
+      });
     };
   }
-  
-  const subscriptionButtons = document.getElementsByClassName('notification-subscription-label');
-  
-  for(let i = 0; i < subscriptionButtons.length; i += 1) {
+
+  const subscriptionButtons = document.getElementsByClassName(
+    'notification-subscription-label',
+  );
+
+  for (let i = 0; i < subscriptionButtons.length; i += 1) {
     subscriptionButtons[i].addEventListener('click', e => {
       e.preventDefault();
       updateStatus(e.target);
-      if (typeof sendHapticMessage !== "undefined") {
+      if (typeof sendHapticMessage !== 'undefined') {
         sendHapticMessage('medium');
       }
     });
@@ -77,7 +80,7 @@ function loadFunctionality() {
       if (e.key === 'Enter') {
         updateStatus(e.target);
       }
-    });  
+    });
   }
 }
 

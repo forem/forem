@@ -62,7 +62,7 @@ We expect contributors to abide by our underlying [code of conduct](CODE_OF_COND
 
 ### Where to contribute
 
-All [issues](https://github.com/thepracticaldev/dev.to/issues) labeled with `approved` are up for grabs. For clarification on how we label issues, check out their definitions [here](https://github.com/thepracticaldev/dev.to/labels).
+All [issues](https://github.com/thepracticaldev/dev.to/issues) labeled with `help wanted` are up for grabs. For clarification on how we label issues, check out their definitions [here](https://github.com/thepracticaldev/dev.to/labels).
 
 When in doubt, ask a [core team member](#core-team)! You can mention us in any issues or ask on the [DEV Contributor thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45). Any issue with the `good first issue` tag is typically a good place to start for anyone new to the project. For newer developers, try 'entry-level' issues.
 
@@ -225,7 +225,6 @@ Caveat: `bin/rspec` is not equipped with Spring because it affects Simplecov's r
 - [@peterkimfrank](https://dev.to/peter)
 - [@maestromac](https://dev.to/maestromac)
 - [@zhao-andy](https://dev.to/andy)
-- [@aspittel](https://dev.to/aspittel)
 - [@lightalloy](https://dev.to/lightalloy)
 - [@mariocsee](https://dev.to/mariocsee)
 - [@rhymes](https://dev.to/rhymes)
@@ -242,7 +241,7 @@ Like many open source projects, we require that contributors provide us with a C
 
 Our version of the CLA was adapted from the Microsoft Contributor License Agreement, which they generously made available to the public domain under Creative Commons CC0 1.0 Universal.
 
-Any questions, please refer to our [license FAQ](http://docs.dev.to/license-faq/) doc or email yo@dev.to
+Any questions, please refer to our [license FAQ](https://docs.dev.to/licensing/) doc or email yo@dev.to
 
 <br>
 

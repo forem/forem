@@ -43,7 +43,7 @@ RSpec.describe "User visits podcast show page", type: :system do
     let(:comment) { create(:comment, user_id: user.id, commentable: podcast_episode) }
     let!(:comment2) { create(:comment, user_id: user.id, commentable: podcast_episode, parent: comment) }
 
-    it "sees the comments" do
+    it "sees the comments", js: true do
       visit podcast_episode.path.to_s
       expect(page).to have_selector(".comment-deep-0#comment-node-#{comment.id}", visible: true, count: 1)
       expect(page).to have_selector(".comment-deep-1#comment-node-#{comment2.id}", visible: true, count: 1)
