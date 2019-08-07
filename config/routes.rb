@@ -90,7 +90,11 @@ Rails.application.routes.draw do
           post "/onboarding", to: "reactions#onboarding"
         end
       end
-      resources :users, only: %i[index show]
+      resources :users, only: %i[index show] do
+        collection do
+          get :me
+        end
+      end
       resources :tags, only: [:index] do
         collection do
           get "/onboarding", to: "tags#onboarding"
