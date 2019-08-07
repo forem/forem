@@ -612,6 +612,14 @@ paths:
         "Articles" are all the posts that users create on DEV that typically
         show up in the feed. They can be a blog post, a discussion question,
         a help thread etc. but is referred to as article within the code.
+
+        ### Rate limiting
+
+        There is a limit of 10 articles created each 30 seconds by the same user.
+
+        ### Additional resources
+
+        - [Rails tests for Articles API](https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/articles_spec.rb)
       tags:
         - articles
       requestBody:
@@ -665,6 +673,13 @@ paths:
               -H "api-key: ACCESS_TOKEN" \
               -d '{"article":{"title":"Title","body_markdown":"Body","published":false,"tags":["discuss", "javascript"]}}' \
               https://dev.to/api/articles
+        - lang: Shell
+          label: curl (with front matter)
+          source: |
+            curl -X POST -H "Content-Type: application/json" \
+            -H "api-key: ACCESS_TOKEN" \
+            -d '{"article":{"body_markdown":"---\ntitle:A sample article about...\npublished:false\n---\n..."}}' \
+            https://dev.to/api/articles
 
   /articles/{id}:
     get:
@@ -719,6 +734,14 @@ paths:
         "Articles" are all the posts that users create on DEV that typically
         show up in the feed. They can be a blog post, a discussion question,
         a help thread etc. but is referred to as article within the code.
+
+        ### Rate limiting
+
+        There are no limits on the amount of updates.
+
+        ### Additional resources
+
+        - [Rails tests for Articles API](https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/articles_spec.rb)
       tags:
         - articles
       parameters:
@@ -779,7 +802,7 @@ paths:
             curl -X PUT -H "Content-Type: application/json" \
               -H "api-key: ACCESS_TOKEN" \
               -d '{"article":{"title":"Title"}' \
-              https://dev.to/api/articles/1234
+              https://dev.to/api/articles/{id}
 
 security:
   - api_key: []
