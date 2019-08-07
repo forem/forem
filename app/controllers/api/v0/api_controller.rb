@@ -47,8 +47,12 @@ class Api::V0::ApiController < ApplicationController
     if doorkeeper_token
       @user = User.find(doorkeeper_token.resource_owner_id)
       return error_unauthorized unless @user
-    else
+    elsif request.headers["api-key"]
       authenticate_with_api_key!
+    elsif current_user
+      @user = current_user
+    else
+      error_unauthorized
     end
   end
 
