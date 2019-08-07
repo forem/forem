@@ -21,7 +21,21 @@ components:
   securitySchemes:
     api_key:
       type: apiKey
-      description: API Key authentication
+      description: |
+        API Key authentication.
+
+        ### Getting an API key
+
+        Authentication for the Articles API requires an API key (DEV API access token).
+        To obtain one, please follow these steps:
+
+          - visit https://dev.to/settings/account
+          - in the "DEV API Access Tokens" section create a new token by adding a
+            description and clicking on "Generate Token"
+
+            ![obtain a DEV API access token](https://res.cloudinary.com/practicaldev/image/fetch/s--F4Ya4WgC--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/4zm0cbutj9o9eau0jm9t.png)
+          - You'll see the newly generated token in the same view
+            ![generated DEV API access token](https://res.cloudinary.com/practicaldev/image/fetch/s--kp5L6-9G--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/ra01mo6fp1es261db2ho.png)
       name: api-key
       in: header
 
@@ -216,128 +230,134 @@ components:
           $ref: '#/components/schemas/User'
     ArticleCreate:
       type: object
-      required:
-        - title
       properties:
-        title:
-          type: string
-        body_markdown:
-          description: |
-            The body of the article.
+        article:
+          type: object
+          required:
+            - title
+          properties:
+            title:
+              type: string
+            body_markdown:
+              description: |
+                The body of the article.
 
-            It can contain an optional front matter. For example
+                It can contain an optional front matter. For example
 
-            ```markdown
-            ---
-            title: Hello, World!
-            published: true
-            tags: discuss, help
-            date: 20190701T10:00Z
-            series: Hello series
-            canonical_url: https://example.com/blog/hello
-            cover_image: article_published_cover_image
-            ---
-            ```
+                ```markdown
+                ---
+                title: Hello, World!
+                published: true
+                tags: discuss, help
+                date: 20190701T10:00Z
+                series: Hello series
+                canonical_url: https://example.com/blog/hello
+                cover_image: article_published_cover_image
+                ---
+                ```
 
-            `date`, `series` and `canonical_url` are optional.
-            `date` is the publication date-time
-            `series` is the name of the series the article belongs to
-            `canonical_url` is the canonical URL of the article
-            `cover_image` is the main image of the article
+                `date`, `series` and `canonical_url` are optional.
+                `date` is the publication date-time
+                `series` is the name of the series the article belongs to
+                `canonical_url` is the canonical URL of the article
+                `cover_image` is the main image of the article
 
-            *If the markdown contains a front matter, it will take precedence
-            on the equivalent params given in the JSON payload.*
-          type: string
-        published:
-          description: |
-            True to create a published article, false otherwise. Defaults to false
-          type: boolean
-        series:
-          description: |
-            Article series name.
+                *If the markdown contains a front matter, it will take precedence
+                on the equivalent params given in the JSON payload.*
+              type: string
+            published:
+              description: |
+                True to create a published article, false otherwise. Defaults to false
+              type: boolean
+            series:
+              description: |
+                Article series name.
 
-            All articles belonging to the same series need to have the same name
-            in this parameter.
-          type: string
-        main_image:
-          type: string
-          format: url
-        canonical_url:
-          type: string
-          format: url
-        description:
-          type: string
-        tags:
-          type: array
-          items:
-            type: string
-        organization_id:
-          description: |
-            Only users belonging to an organization can assign the article to it
-          type: integer
-          format: int32
+                All articles belonging to the same series need to have the same name
+                in this parameter.
+              type: string
+            main_image:
+              type: string
+              format: url
+            canonical_url:
+              type: string
+              format: url
+            description:
+              type: string
+            tags:
+              type: array
+              items:
+                type: string
+            organization_id:
+              description: |
+                Only users belonging to an organization can assign the article to it
+              type: integer
+              format: int32
     ArticleUpdate:
       type: object
       properties:
-        title:
-          type: string
-        body_markdown:
-          description: |
-            The body of the article.
+        article:
+          type: object
+          properties:
+            title:
+              type: string
+            body_markdown:
+              description: |
+                The body of the article.
 
-            It can contain an optional front matter. For example
+                It can contain an optional front matter. For example
 
-            ```markdown
-            ---
-            title: Hello, World!
-            published: true
-            tags: discuss, help
-            date: 20190701T10:00Z
-            series: Hello series
-            canonical_url: https://example.com/blog/hello
-            cover_image: article_published_cover_image
-            ---
-            ```
+                ```markdown
+                ---
+                title: Hello, World!
+                published: true
+                tags: discuss, help
+                date: 20190701T10:00Z
+                series: Hello series
+                canonical_url: https://example.com/blog/hello
+                cover_image: article_published_cover_image
+                ---
+                ```
 
-            `date`, `series` and `canonical_url` are optional.
-            `date` is the publication date-time
-            `series` is the name of the series the article belongs to
-            `canonical_url` is the canonical URL of the article
-            `cover_image` is the main image of the article
+                `date`, `series` and `canonical_url` are optional.
+                `date` is the publication date-time
+                `series` is the name of the series the article belongs to
+                `canonical_url` is the canonical URL of the article
+                `cover_image` is the main image of the article
 
-            *If the markdown contains a front matter, it will take precedence
-            on the equivalent params given in the JSON payload.*
-          type: string
-        published:
-          description: |
-            True to create a published article, false otherwise. Defaults to false
-          type: boolean
-        series:
-          description: |
-            Article series name.
+                *If the markdown contains a front matter, it will take precedence
+                on the equivalent params given in the JSON payload.*
+              type: string
+            published:
+              description: |
+                True to create a published article, false otherwise. Defaults to false
+              type: boolean
+            series:
+              description: |
+                Article series name.
 
-            All articles belonging to the same series need to have the same name
-            in this parameter.
+                All articles belonging to the same series need to have the same name
+                in this parameter.
 
-            To remove an article from a series, the `null` value can be used.
-          type: string
-        main_image:
-          type: string
-          format: url
-        canonical_url:
-          type: string
-          format: url
-        description:
-          type: string
-        tags:
-          type: array
-          items:
-            type: string
-        organization_id:
-          description: |
-            Only users belonging to an organization can assign the article to it
-          type: integer
-          format: int32
+                To remove an article from a series, the `null` value can be used.
+              type: string
+            main_image:
+              type: string
+              format: url
+            canonical_url:
+              type: string
+              format: url
+            description:
+              type: string
+            tags:
+              type: array
+              items:
+                type: string
+            organization_id:
+              description: |
+                Only users belonging to an organization can assign the article to it
+              type: integer
+              format: int32
 
     User:
       type: object
@@ -417,34 +437,37 @@ components:
           profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--htZnqMn3--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2882/K2evUksb.jpg
     ArticleCreateTitleBody:
       value:
-        title: Hello, World!
-        published: true
-        body_markdown: Hello DEV, this is my first post
-        tags: discuss, help
-        series: Hello series
-        canonical_url: https://example.com/blog/hello
-    ArticleCreateFrontMatter:
-      value:
-        body_markdown: |
-          ---
+        article:
           title: Hello, World!
           published: true
+          body_markdown: Hello DEV, this is my first post
           tags: discuss, help
-          date: 20190701T10:00Z
           series: Hello series
           canonical_url: https://example.com/blog/hello
-          ---
+    ArticleCreateFrontMatter:
+      value:
+        article:
+          body_markdown: |
+            ---
+            title: Hello, World!
+            published: true
+            tags: discuss, help
+            date: 20190701T10:00Z
+            series: Hello series
+            canonical_url: https://example.com/blog/hello
+            ---
 
-          Hello DEV, this is my first post
+            Hello DEV, this is my first post
     ArticleCreateOrganization:
       value:
-        title: Hello, World!
-        published: true
-        body_markdown: Hello DEV, this is my first post
-        tags: discuss, help
-        series: Hello series
-        canonical_url: https://example.com/blog/hello
-        organization_id: 1234
+        article:
+          title: Hello, World!
+          published: true
+          body_markdown: Hello DEV, this is my first post
+          tags: discuss, help
+          series: Hello series
+          canonical_url: https://example.com/blog/hello
+          organization_id: 1234
 
 
 paths:
@@ -572,6 +595,15 @@ paths:
                       slug: bytesized
                       profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--sq0DrZfn--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/organization/profile_image/865/652f7998-32a8-4fd9-85ca-dd697d2a9ee9.png
                       profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--1Pt_ICL---/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/organization/profile_image/865/652f7998-32a8-4fd9-85ca-dd697d2a9ee9.png
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl (all articles)
+          source: |
+            curl https://dev.to/api/articles
+        - lang: Shell
+          label: curl (user's articles)
+          source: |
+            curl https://dev.to/api/articles?username=ben
     post:
       summary: Create a new article
       description: |
@@ -625,6 +657,15 @@ paths:
                   $ref: '#/components/examples/ErrorUnauthorized'
       security:
         - api_key: []
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl
+          source: |
+            curl -X POST -H "Content-Type: application/json" \
+              -H "api-key: ACCESS_TOKEN" \
+              -d '{"article":{"title":"Title","body_markdown":"Body","published":false,"tags":["discuss", "javascript"]}}' \
+              https://dev.to/api/articles
+
   /articles/{id}:
     get:
       summary: A published article
@@ -665,6 +706,11 @@ paths:
               examples:
                 article-not-found:
                   $ref: '#/components/examples/ErrorNotFound'
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl
+          source: |
+            curl https://dev.to/api/articles/150589
     put:
       summary: Update an existing article
       description: |
@@ -726,5 +772,14 @@ paths:
                   $ref: '#/components/examples/ErrorUnauthorized'
       security:
         - api_key: []
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl
+          source: |
+            curl -X PUT -H "Content-Type: application/json" \
+              -H "api-key: ACCESS_TOKEN" \
+              -d '{"article":{"title":"Title"}' \
+              https://dev.to/api/articles/1234
+
 security:
   - api_key: []
