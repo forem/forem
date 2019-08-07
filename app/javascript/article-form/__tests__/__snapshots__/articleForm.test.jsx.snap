@@ -89,7 +89,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
         alt="upload images"
         src=""
       />
-       IMAGES
+      IMAGES
     </button>
     <button
       class="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
