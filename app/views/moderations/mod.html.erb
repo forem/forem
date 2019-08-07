@@ -145,7 +145,7 @@
         <b>Removed tags: </b>
         <% adjustments.each do |adjustment| %>
           <% if current_user.any_admin? %>
-              <%= form_for(adjustment, url: "/tag_adjustments/#{adjustment.id}", html: { method: :delete, onsubmit: "return confirm('Are you sure you want to undo the removal of #{adjustment.tag_name}?)" }) do |f| %>
+              <%= form_for(adjustment, url: "/tag_adjustments/#{adjustment.id}", html: { method: :delete, onsubmit: "return confirm('Are you sure you want to undo the removal of the #{adjustment.tag_name} tag?')" }) do |f| %>
                 <%= adjustment.tag_name %>
                 <%= f.submit "X", id: "undo" %>
               <% end %>
