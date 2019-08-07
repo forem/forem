@@ -4,7 +4,7 @@ title: Contributing to API spec docs
 
 # Contributing to API spec docs
 
-The API docs follow the [OpenAPI 3 specification](https://swagger.io/specification/).
+The API docs follow the [OpenAPI 3 specification](http://spec.openapis.org/oas/v3.0.2).
 
 ## Where The Docs Are Located
 
