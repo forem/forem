@@ -400,7 +400,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "does not update title if only given a title" do
+      it "does not update title if only given a title because the article has a front matter" do
         put_article(title: Faker::Book.title + rand(100).to_s)
         expect(response).to have_http_status(:ok)
         expect(article.reload.title).to eq(article.title)

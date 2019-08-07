@@ -216,6 +216,8 @@ components:
           $ref: '#/components/schemas/User'
     ArticleCreate:
       type: object
+      required:
+        - title
       properties:
         title:
           type: string
@@ -256,6 +258,68 @@ components:
 
             All articles belonging to the same series need to have the same name
             in this parameter.
+          type: string
+        main_image:
+          type: string
+          format: url
+        canonical_url:
+          type: string
+          format: url
+        description:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        organization_id:
+          description: |
+            Only users belonging to an organization can assign the article to it
+          type: integer
+          format: int32
+    ArticleUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        body_markdown:
+          description: |
+            The body of the article.
+
+            It can contain an optional front matter. For example
+
+            ```markdown
+            ---
+            title: Hello, World!
+            published: true
+            tags: discuss, help
+            date: 20190701T10:00Z
+            series: Hello series
+            canonical_url: https://example.com/blog/hello
+            cover_image: article_published_cover_image
+            ---
+            ```
+
+            `date`, `series` and `canonical_url` are optional.
+            `date` is the publication date-time
+            `series` is the name of the series the article belongs to
+            `canonical_url` is the canonical URL of the article
+            `cover_image` is the main image of the article
+
+            *If the markdown contains a front matter, it will take precedence
+            on the equivalent params given in the JSON payload.*
+          type: string
+        published:
+          description: |
+            True to create a published article, false otherwise. Defaults to false
+          type: boolean
+        series:
+          description: |
+            Article series name.
+
+            All articles belonging to the same series need to have the same name
+            in this parameter.
+
+            To remove an article from a series, the `null` value can be used.
           type: string
         main_image:
           type: string
@@ -601,6 +665,66 @@ paths:
               examples:
                 article-not-found:
                   $ref: '#/components/examples/ErrorNotFound'
+    put:
+      summary: Update an existing article
+      description: |
+        This endpoint allows the client to updated an existing article.
 
+        "Articles" are all the posts that users create on DEV that typically
+        show up in the feed. They can be a blog post, a discussion question,
+        a help thread etc. but is referred to as article within the code.
+      tags:
+        - articles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Id of the article
+          schema:
+            type: integer
+            format: int32
+          example: 150589
+      requestBody:
+        description: |
+          Article params to update.
+
+          *Note: if the article contains a front matter in its body, its front
+          matter properties will still take precedence over any JSON equivalent
+          params, which means that the full body_markdown with the modified
+          front matter params needs to be provided for an update to be successful*
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleUpdate'
+            examples:
+              article-update-title-body:
+                $ref: '#/components/examples/ArticleCreateTitleBody'
+              article-update-front-matter:
+                $ref: '#/components/examples/ArticleCreateFrontMatter'
+              article-update-organization:
+                $ref: '#/components/examples/ArticleCreateOrganization'
+      responses:
+        200:
+          description: The updated article
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ArticleShow'
+              examples:
+                article-success:
+                  $ref: '#/components/examples/ArticleShow'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/APIError'
+              examples:
+                article-unauthorized:
+                  $ref: '#/components/examples/ErrorUnauthorized'
+      security:
+        - api_key: []
 security:
   - api_key: []
