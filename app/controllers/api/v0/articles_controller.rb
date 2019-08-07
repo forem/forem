@@ -16,8 +16,6 @@ module Api
       # skip CSRF checks for create and update
       skip_before_action :verify_authenticity_token, only: %i[create update]
 
-      PER_PAGE = 30
-
       def index
         @articles = ArticleApiIndexService.new(params).get
 
@@ -68,9 +66,10 @@ module Api
       end
 
       def me
-        num = params[:state] == "all" ? 1000 : PER_PAGE
+        per_page = (params[:per_page] || 30).to_i
+        num = [per_page, 1000].min
         @articles = @user.articles.order("published_at DESC").
-          page(params[:page] || 1).
+          page(params[:page]).
           per(num).
           decorate
       end
