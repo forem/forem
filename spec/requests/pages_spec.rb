@@ -26,9 +26,9 @@ RSpec.describe "Pages", type: :request do
   end
 
   describe "GET /api" do
-    it "has proper headline" do
+    it "redirects to the API docs" do
       get "/api"
-      expect(response.body).to include("DEV Articles API")
+      expect(response.body).to redirect_to("https://docs.dev.to/api")
     end
   end
 
