@@ -122,6 +122,6 @@ RSpec.configure do |config|
 end
 
 Doorkeeper.configure do
-  # hash_token_secrets on it's on won't work in test
+  # hash_token_secrets on its own won't work in test
   hash_token_secrets fallback: :plain
 end
