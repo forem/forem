@@ -4,6 +4,7 @@ build: api-doc ruby-doc gitdocs
 
 api-doc:
   	# docs/.static/api will let gitdocs serve the API doc as static content
+	cd .. && \
 	npm install -g redoc-cli@latest && \
 	redoc-cli bundle docs/api_v0.yml --options.suppressWarnings --options.pathInMiddlePanel --options.jsonSampleExpandLevel=all --options.menuToggle -t docs/api_template.hbs && \
 	mkdir -p docs/.static/api/ && \
