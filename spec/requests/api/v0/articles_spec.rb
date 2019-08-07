@@ -111,8 +111,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
 
     context "when request is authenticated" do
-      let_it_be(:article) { create(:article) }
-      let_it_be(:access_token) { create :doorkeeper_access_token, resource_owner_id: article.user.id }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:access_token) { create :doorkeeper_access_token, resource_owner: user }
 
       it "works with bearer authorization" do
         headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
@@ -129,10 +129,18 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "return only user's articles including markdown" do
+        create(:article, user: user)
         create(:article)
         get me_api_articles_path, params: { access_token: access_token.token }
         expect(json_response.length).to eq(1)
         expect(json_response[0]["markdown"]).not_to be_nil
+      end
+
+      it "supports pagination" do
+        stub_const("#{Api::V0::ArticlesController}::PER_PAGE", 2)
+        create_list(:article, 3, user: user)
+        get me_api_articles_path, params: { access_token: access_token.token, page: 2 }
+        expect(json_response.length).to eq(1)
       end
     end
   end
