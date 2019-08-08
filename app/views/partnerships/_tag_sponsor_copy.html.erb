@@ -23,3 +23,8 @@ Target your messaging with a tag sponsorship.  This is a great way to increase y
 <p>
   On the organization profile page, you will receive special flair that highlights your support of each tag.  This acknowledgment shows off the languages and topics that your company cares about most.
 </p>
+<% if user_signed_in? %>
+  <h3>Tag sponsorship costs 300 credits/mo ($750 when purchased in bulk)</h3>
+<% else %>
+  <h2>Tag sponsorship prices start at $750/mo</h2>
+<% end %>

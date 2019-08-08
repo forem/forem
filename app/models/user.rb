@@ -45,6 +45,9 @@ class User < ApplicationRecord
   has_many    :poll_votes
   has_many    :poll_skips
   has_many    :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user, class_name: "BackupData"
+  has_many    :display_ad_events
+  has_many    :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
+  has_many    :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -162,7 +165,7 @@ class User < ApplicationRecord
     add_index "searchables",
               id: :index_id,
               per_environment: true,
-              enqueue: :trigger_delayed_index do
+              enqueue: true do
       attribute :user do
         { username: user.username,
           name: user.username,
@@ -190,11 +193,9 @@ class User < ApplicationRecord
   end
 
   def self.trigger_delayed_index(record, remove)
-    if remove
-      record.delay.remove_from_index! if record&.persisted?
-    else
-      record.delay.index!
-    end
+    return if remove
+
+    AlgoliaSearch::AlgoliaJob.perform_later(record, "index!")
   end
 
   def tag_line
@@ -344,7 +345,7 @@ class User < ApplicationRecord
   end
 
   def workshop_eligible?
-    has_any_role?(:workshop_pass, :level_3_member, :level_4_member, :triple_unicorn_member)
+    has_any_role?(:workshop_pass)
   end
 
   def admin_organizations

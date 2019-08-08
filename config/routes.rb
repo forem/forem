@@ -1,6 +1,7 @@
 # rubocop:disable Metrics/BlockLength
 
 Rails.application.routes.draw do
+  use_doorkeeper
   devise_for :users, controllers: {
     omniauth_callbacks: "omniauth_callbacks",
     session: "sessions",
@@ -36,6 +37,12 @@ Rails.application.routes.draw do
     resources :feedback_messages, only: %i[index show]
     resources :listings, only: %i[index edit update destroy], controller: "classified_listings"
     resources :pages, only: %i[index new create edit update destroy]
+    resources :podcasts, only: %i[index edit update destroy] do
+      member do
+        post :add_admin
+        delete :remove_admin
+      end
+    end
     resources :reactions, only: [:update]
     resources :chat_channels, only: %i[index create update]
     resources :reports, only: %i[index show], controller: "feedback_messages" do
@@ -56,6 +63,7 @@ Rails.application.routes.draw do
         post "recover_identity"
       end
     end
+    resources :organization_memberships, only: %i[update destroy create]
     resources :welcome, only: %i[index create]
     resources :tools, only: %i[index create] do
       collection do
@@ -128,7 +136,6 @@ Rails.application.routes.draw do
   resources :notifications, only: [:index]
   resources :tags, only: [:index]
   resources :stripe_active_cards, only: %i[create update destroy]
-  resources :stripe_cancellations, only: [:create]
   resources :live_articles, only: [:index]
   resources :github_repos, only: %i[create update]
   resources :buffered_articles, only: [:index]
@@ -154,6 +161,7 @@ Rails.application.routes.draw do
   resources :poll_skips, only: [:create]
   resources :profile_pins, only: %i[create update]
   resources :partnerships, only: %i[index create show], param: :option
+  resources :display_ad_events, only: [:create]
 
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/listings/dashboard" => "classified_listings#dashboard"
@@ -307,7 +315,8 @@ Rails.application.routes.draw do
   get "/new" => "articles#new"
   get "/new/:template" => "articles#new"
 
-  get "/pod" => "podcast_episodes#index"
+  get "/pod", to: "podcast_episodes#index"
+  get "/podcasts", to: redirect("pod")
   get "/readinglist" => "reading_list_items#index"
   get "/readinglist/:view" => "reading_list_items#index", constraints: { view: /archive/ }
   get "/history", to: "history#index", as: :history
@@ -335,8 +344,6 @@ Rails.application.routes.draw do
   get "/:timeframe" => "stories#index", constraints: { timeframe: /latest/ }
 
   # Legacy comment format (might still be floating around app, and external links)
-  get "/:username/:slug/comments/new/:parent_id_code" => "comments#new"
-  get "/:username/:slug/comments/new" => "comments#new"
   get "/:username/:slug/comments" => "comments#index"
   get "/:username/:slug/comments/:id_code" => "comments#index"
   get "/:username/:slug/comments/:id_code/edit" => "comments#edit"

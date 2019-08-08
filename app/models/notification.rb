@@ -73,20 +73,12 @@ class Notification < ApplicationRecord
     end
 
     def send_mention_notification(mention)
-      mentioner = mention.mentionable.user
-      json_data = {
-        user: user_data(mentioner)
-      }
-      json_data[:comment] = comment_data(mention.mentionable) if mention.mentionable_type == "Comment"
-      Notification.create(
-        user_id: mention.user_id,
-        notifiable_id: mention.id,
-        notifiable_type: "Mention",
-        action: nil,
-        json_data: json_data,
-      )
+      Notifications::MentionJob.perform_later(mention.id)
     end
-    handle_asynchronously :send_mention_notification
+
+    def send_mention_notification_without_delay(mention)
+      Notifications::MentionJob.perform_now(mention.id)
+    end
 
     def send_welcome_notification(receiver_id)
       Notifications::WelcomeNotificationJob.perform_later(receiver_id)

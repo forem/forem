@@ -37,6 +37,8 @@ RSpec.describe User, type: :model do
     it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
     it { is_expected.to validate_length_of(:name).is_at_most(100) }
     it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
+    it { is_expected.to have_many(:access_grants).class_name("Doorkeeper::AccessGrant").with_foreign_key("resource_owner_id").dependent(:delete_all) }
+    it { is_expected.to have_many(:access_tokens).class_name("Doorkeeper::AccessToken").with_foreign_key("resource_owner_id").dependent(:delete_all) }
 
     it "validates username against reserved words" do
       user = build(:user, username: "readinglist")
@@ -296,7 +298,7 @@ RSpec.describe User, type: :model do
     it "does not allow too short or too long name" do
       user.name = ""
       expect(user).not_to be_valid
-      user.name = Faker::Lorem.paragraph_by_chars(200)
+      user.name = Faker::Lorem.paragraph_by_chars(number: 200)
       expect(user).not_to be_valid
     end
 
@@ -650,6 +652,16 @@ RSpec.describe User, type: :model do
     it "returns true if the user is a pro" do
       user.add_role(:pro)
       expect(user.pro?).to be(true)
+    end
+  end
+
+  describe "when agolia auto-indexing/removal is triggered" do
+    it "process background auto-indexing when user is saved" do
+      expect { user.save }.to have_enqueued_job.with(user, "index!").on_queue("algoliasearch")
+    end
+
+    it "doesn't schedule a job on destroy" do
+      expect { user.destroy }.not_to have_enqueued_job.on_queue("algoliasearch")
     end
   end
 end

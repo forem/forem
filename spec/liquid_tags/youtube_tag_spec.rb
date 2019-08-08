@@ -4,7 +4,7 @@ RSpec.describe YoutubeTag, type: :liquid_template do
   describe "#id" do
     let(:valid_id_no_time) { "dQw4w9WgXcQ" }
     let(:valid_ids_with_time) { "QASbw8_0meM?t=8h12m26s" }
-    let(:invalid_id) { Faker::Lorem.characters(rand(12..100)) }
+    let(:invalid_id) { Faker::Lorem.characters(number: rand(12..100)) }
 
     def parsed_id(id)
       return id unless id.include?("?t=")

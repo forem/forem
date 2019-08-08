@@ -129,35 +129,6 @@ RSpec.describe MailchimpBot do
     end
   end
 
-  describe "#upsert_to_membership_newsletter" do
-    it "returns false if user isn't a sustaining member" do
-      expect(described_class.new(user).upsert_to_membership_newsletter).to be(false)
-    end
-
-    context "when user is a sustaining member" do
-      it "send proper information" do
-        user.update(monthly_dues: 2500, email_membership_newsletter: true)
-        user.add_role(:level_2_member)
-        described_class.new(user).upsert_to_membership_newsletter
-        expect(my_gibbon_client).to have_received(:upsert).
-          with(hash_including(
-                 body: hash_including(
-                   status: "subscribed",
-                   merge_fields: hash_including(MEMBERSHIP: "level_2_member"),
-                 ),
-               ))
-      end
-
-      it "unsubscribes if monthly due become 0" do
-        user.update(monthly_dues: 2500)
-        user.update(monthly_dues: 0)
-        described_class.new(user).upsert_to_membership_newsletter
-        expect(my_gibbon_client).to have_received(:upsert).
-          with(hash_including(body: hash_including(status: "unsubscribed")))
-      end
-    end
-  end
-
   describe "#unsubscribe_all_newsletters" do
     context "when called" do
       before { allow(my_gibbon_client).to receive(:update).and_return(true) }
