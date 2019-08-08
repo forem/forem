@@ -3,7 +3,7 @@ module Api
     class ArticlesController < ApiController
       respond_to :json
 
-      before_action :authenticate_with_api_key, only: %i[create update]
+      before_action :authenticate!, only: %i[create update me]
 
       before_action :set_cache_control_headers, only: [:index]
       caches_action :show,
@@ -63,6 +63,15 @@ module Api
       def update
         @article = Articles::Updater.call(@user, params[:id], article_params)
         render "show", status: :ok
+      end
+
+      def me
+        per_page = (params[:per_page] || 30).to_i
+        num = [per_page, 1000].min
+        @articles = @user.articles.order("published_at DESC").
+          page(params[:page]).
+          per(num).
+          decorate
       end
 
       private
