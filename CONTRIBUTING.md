@@ -16,9 +16,14 @@ We expect contributors to abide by our underlying [code of conduct](https://dev.
 
 ### Where to contribute
 
-All [issues](https://github.com/thepracticaldev/dev.to/issues) labeled with `approved` are up for grabs. For clarification on how we label issues, check out their definitions [here](https://github.com/thepracticaldev/dev.to/labels).
+All [issues](https://github.com/thepracticaldev/dev.to/issues) labeled with `help wanted` are up for grabs.
 
-When in doubt, ask a [core team member](https://github.com/thepracticaldev/dev.to/#core-team)! You can mention us in any issues or ask on the [DEV Contributor thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45). Any issue with the `good first issue` tag is typically a good place to start for anyone new to the project. For newer developers, try `entry-level` issues.
+- `good first issue` are issues meant for newer developers.
+- `type: discussion` are issues we haven't decided to move forward with, or need more information before proceeding.
+
+While PRs without an associated `help wanted` issue may still be merged, please note that the core team will prioritize PRs that solve existing issues first. We strongly encourage creating an issue before working on a PR!
+
+When in doubt, ask a [core team member](https://github.com/thepracticaldev/dev.to/#core-team) by mentioning us on the issue.
 
 **Refactoring** code, e.g. improving the code without modifying the behavior is an area that can probably be done based on intuition and may not require much communication to be merged.
 
@@ -38,29 +43,24 @@ When in doubt, ask a [core team member](https://github.com/thepracticaldev/dev.t
 
 ### Create an issue
 
-Nobody's perfect. Something doesn't work? Or could be done better? Let us know by creating an issue.
+Nobody's perfect. Something doesn't work? Or could be done better? Check to see if the issue already exists and if it does, leave a comment to get our attention! And if the issue doesn't exist already, feel free to create a new one. A core team member will triage incoming issues.
 
-PS: a clear and detailed issue gets lots of love, all you have to do is follow the issue template!
+_Please note: core team members may update the title of an issue to more accurately reflect the request/bug._
 
 #### Clean code with tests
 
-Some existing code may be poorly written or untested, so we must have more scrutiny going forward. We test with [rspec](http://rspec.info/), let us know if you have any questions about this!
+Some existing code may be poorly written or untested, so we must have more scrutiny going forward. We test with [rspec](http://rspec.info/).
 
-#### Create a pull request
+#### Pull requests
 
 - Try to keep the pull requests small. A pull request should try its very best to address only a single concern.
-- Make sure all tests pass and add additional tests for the code you submit. [More info here](https://docs.dev.to/tests/)
+- Make sure all tests pass and add additional tests for the code you submit. [More info here](https://docs.dev.to/tests/).
 - Document your reasoning behind the changes. Explain why you wrote the code in the way you did. The code should explain what it does.
-- If there's an existing issue related to the pull request, reference to it by adding something like `References/Closes/Fixes/Resolves #305`, where 305 is the issue number. [More info here](https://github.com/blog/1506-closing-issues-via-pull-requests)
-- If you follow the pull request template, you can't go wrong.
+- If there's an existing issue related to the pull request, reference to it by adding something like `References/Closes/Fixes/Resolves #305`, where 305 is the issue number. [More info here](https://github.com/blog/1506-closing-issues-via-pull-requests).
+- Please fill out the PR Template when making a PR.
+- All commits in a pull request will be squashed when merged, but when your PR is approved and passes our CI, it will be live on production!
 
-_Please note: all commits in a pull request will be squashed when merged, but when your PR is approved and passes our CI, it will be live on production!_
-
-### How to get help
-
-Whether you are stuck with feature implementation, first-time setup, or you just want to tell us something could be done better, check out our [OSS thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45) or create an issue. You can also mention any [core team member](https://github.com/thepracticaldev/dev.to/#core-team) in an issue and we'll respond as soon as possible.
-
-### 👉 [OSS Help/Discussion Thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45) 👈
+_Please note: a core team member may close your PR if it has gone stale or if we don't plan to merge the code._
 
 ### The bottom line
 
