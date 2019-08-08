@@ -43,15 +43,28 @@ class Api::V0::ApiController < ApplicationController
     render json: { error: "not found", status: 404 }, status: :not_found
   end
 
-  def authenticate_with_api_key_or_current_user
+  def authenticate!
+    if doorkeeper_token
+      @user = User.find(doorkeeper_token.resource_owner_id)
+      return error_unauthorized unless @user
+    elsif request.headers["api-key"]
+      authenticate_with_api_key!
+    elsif current_user
+      @user = current_user
+    else
+      error_unauthorized
+    end
+  end
+
+  def authenticate_with_api_key_or_current_user!
     if request.headers["api-key"]
-      authenticate_with_api_key
+      authenticate_with_api_key!
     else
       @user = current_user
     end
   end
 
-  def authenticate_with_api_key
+  def authenticate_with_api_key!
     api_key = request.headers["api-key"]
     return error_unauthorized unless api_key
 
