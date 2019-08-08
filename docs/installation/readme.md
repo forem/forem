@@ -22,7 +22,7 @@ Installing to your local machine can be troublesome for many reasons such as a c
 
 Another way you can get a development environment up and running is with Docker. Docker will install everything you need in an isolated container, and you need not concern about the details. We have instructions for installing with [Docker](/installation/docker).
 
-## GitPod
+## GitPod _- beginner friendly!_
 
 If you are having trouble with local installation and Docker confuses you, then you can launch a **development environment** with the press of a button with GitPod.
 
