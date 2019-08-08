@@ -64,25 +64,11 @@ We encourage you to contribute to dev.to! Please check out the [Contributing to 
 
 We run on a Rails backend with mostly vanilla JavaScript on the front end, and some Preact sprinkled in. One of our goals is to move to mostly Preact for our front end.
 
-Additional technologies and services are listed on [our docs](https://docs.dev.to).
-
-### Engineering standards
-
-#### Style Guide
-
-This project follows [thoughtbot's Ruby Style Guide](https://github.com/thoughtbot/guides/blob/master/style/ruby/.rubocop.yml), using [Rubocop](https://github.com/bbatsov/rubocop) along with [Rubocop-Rspec](https://github.com/backus/rubocop-rspec) as the code analyzer. If you have Rubocop installed with your text editor of choice, you should be up and running.
-
-For Javascript, we follow [Airbnb's JS Style Guide](https://github.com/airbnb/javascript), using [ESLint](https://eslint.org) and [prettier](https://github.com/prettier/prettier). If you have ESLint installed with your text editor of choice, you should be up and running.
-
-#### Husky hooks
-
-When commits are made, a git precommit hook runs via [husky](https://github.com/typicode/husky) and [lint-staged](https://github.com/okonet/lint-staged). ESLint, prettier, and Rubocop will run on your code before it's committed. If there are linting errors that can't be automatically fixed, the commit will not happen. You will need to fix the issue manually then attempt to commit again.
-
-Note: if you've already installed the [husky](https://github.com/typicode/husky) package at least once (used for precommit npm script), you will need to run `yarn --force` or `npm install --no-cache`. For some reason, the post-install script of husky does not run when the package is pulled from yarn or npm's cache. This is not husky specific, but rather a cached package issue.
+Additional technologies and services are listed on [our docs](https://docs.dev.to/technical-overview/).
 
 ## Getting Started
 
-This section provides a high-level requirement & quick start guide. For detailed installations, please check out our [docs](http://docs.dev.to/installation).
+This section provides a high-level requirement & quick start guide. **For detailed installations, such as getting started with GitPod, Docker, or specific operating systems, please check out our [docs](http://docs.dev.to).**
 
 ### Prerequisites
 
@@ -113,25 +99,6 @@ This section provides a high-level requirement & quick start guide. For detailed
 1. That's it! Run `bin/startup` to start the application and head to `http://localhost:3000/`
 
 [View Full Installation Documentation](https://docs.dev.to/installation/)
-
-### Docker Installation (BETA)
-
-Our docker implementation is incomplete and may not work smoothly. Please kindly report any issues and any contribution is welcomed!
-
-1. Install `docker` and `docker-compose`
-1. `git clone git@github.com:thepracticaldev/dev.to.git`
-1. Set environment variables above as described in the ["Standard Installation"](#standard-installation)
-1. run `docker-compose build`
-1. run `docker-compose run web rails db:setup`
-1. run `docker-compose run web yarn install`
-1. run `docker-compose up`
-1. That's it! Navigate to `localhost:3000`
-
-### Gitpod Installation
-
-Simply open dev.to in Gitpod, a free online dev environment for GitHub:
-
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/thepracticaldev/dev.to)
 
 #### Starting the application
 
