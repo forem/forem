@@ -344,8 +344,6 @@ Rails.application.routes.draw do
   get "/:timeframe" => "stories#index", constraints: { timeframe: /latest/ }
 
   # Legacy comment format (might still be floating around app, and external links)
-  get "/:username/:slug/comments/new/:parent_id_code" => "comments#new"
-  get "/:username/:slug/comments/new" => "comments#new"
   get "/:username/:slug/comments" => "comments#index"
   get "/:username/:slug/comments/:id_code" => "comments#index"
   get "/:username/:slug/comments/:id_code/edit" => "comments#edit"
