@@ -62,6 +62,21 @@ Some existing code may be poorly written or untested, so we must have more scrut
 
 _Please note: a core team member may close your PR if it has gone stale or if we don't plan to merge the code._
 
+#### Pull requests reviews and "force pushing"
+
+After you submit your pull request (PR) one of the members of the core team or core contributors will likely do a review of the code accepting it or giving feedback.
+
+If feedback or suggestions are provided, any following modifications on your part should happen in separate commits added to the existing ones.
+
+Force pushing, though understandable for reasons of wanting to keep the history clean, has some drawbacks:
+
+- it removes the review history of the code
+- forces the reviewer to start from scratch when adding possible further comments
+
+PRs will be squashed and merged into master so there's no need to use force push.
+
+Please avoid force pushing unless you are in need to do a rebase from master.
+
 ### The bottom line
 
 We are all humans trying to work together to improve the community. Always be kind and appreciate the need for tradeoffs. ❤️

@@ -1,5 +1,7 @@
 <!--- Prepend PR title with [WIP] if work in progress. Remove when ready for review. -->
 
+<!--- Please review our contributing guide: https://github.com/thepracticaldev/dev.to/blob/master/CONTRIBUTING.md -->
+
 ## What type of PR is this? (check all applicable)
 
 - [ ] Refactor
