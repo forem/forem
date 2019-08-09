@@ -38,7 +38,7 @@
       <% Sponsorship.gold.includes(:organization).order(featured_number: :asc).each do |sponsorship| %>
         <a href="<%= sponsorship.url %>"><img src="<%= cloudinary(sponsorship.organization.nav_image_url, 250) %>"></a>
         <p>
-          <%= sponsorship.blurb_html.html_safe %>
+          <%= sponsorship.blurb_html&.html_safe %>
         </p>
         <hr />
       <% end %>
@@ -53,7 +53,7 @@
       <% Sponsorship.silver.includes(:organization).order(featured_number: :asc).each do |sponsorship| %>
         <a href="<%= sponsorship.url %>"><img src="<%= cloudinary(sponsorship.organization.nav_image_url, 250) %>"></a>
         <p>
-          <%= sponsorship.blurb_html.html_safe %>
+          <%= sponsorship.blurb_html&.html_safe %>
         </p>
         <hr />
       <% end %>
@@ -67,9 +67,6 @@
     <div id="bronze-sponsors">
       <% Sponsorship.bronze.includes(:organization).order(featured_number: :asc).find_each do |sponsorship| %>
         <a href="<%= sponsorship.url %>"><img src="<%= cloudinary(sponsorship.organization.nav_image_url, 250) %>"></a>
-        <p>
-          <%= sponsorship.blurb_html.html_safe %>
-        </p>
         <hr />
       <% end %>
     </div>
