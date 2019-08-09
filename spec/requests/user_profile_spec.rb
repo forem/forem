@@ -62,6 +62,23 @@ RSpec.describe "UserProfiles", type: :request do
         expect(response.body).to include "Gold Community Sponsor"
       end
     end
+
+    context "when github repo" do
+      before do
+        repo = build(:github_repo, user: user)
+        params = { name: Faker::Book.title, user_id: user.id, github_id_code: repo.github_id_code,
+                   url: Faker::Internet.url, description: "A book bot :robot:", featured: true,
+                   stargazers_count: 1 }
+        updated_repo = GithubRepo.find_or_create(params)
+
+        user.github_repos = [updated_repo]
+      end
+
+      it "renders emoji in description of pinned github repo" do
+        get "/#{user.username}"
+        expect(response.body).to include "A book bot 🤖"
+      end
+    end
   end
 
   describe "GET /user" do
