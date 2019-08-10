@@ -4,7 +4,7 @@ title: Algolia
 
 # Algolia for Search
 
-Algolia is a third party service which powers the search. When working with the API is very likely would need to utilize Algolia. You will need to sign up for a free-tier account, retrieve the keys and provide those keys to the Rails application.
+Algolia is a third party service which powers the search. When working with the API it is very likely that you will need to utilize Algolia. You will need to sign up for a free-tier account, retrieve the keys and provide those keys to the Rails application.
 
 ## Sign up
 
