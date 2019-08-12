@@ -131,7 +131,7 @@ export default class ImageManagement extends Component {
             <input
               id="image-markdown-copy-link-input"
               type="text"
-              value={`![](${insertionImageUrl})`}
+              value={`![Alt Text](${insertionImageUrl})`}
             />
             <img
               id="image-markdown-copy-icon"
