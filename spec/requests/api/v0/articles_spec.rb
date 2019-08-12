@@ -65,6 +65,16 @@ RSpec.describe "Api::V0::Articles", type: :request do
       get api_articles_path(tag: tag.name)
       expect(JSON.parse(response.body).size).to eq(0)
     end
+
+    it "returns flare tag in the response" do
+      create(:article, featured: true, tags: "discuss")
+
+      get api_articles_path
+      response_article = JSON.parse(response.body)[0]
+      expect(response_article["flare_tag"]).to be_present
+      expect(response_article["flare_tag"].keys).to eq(%w[name bg_color_hex text_color_hex])
+      expect(response_article["flare_tag"]["name"]).to eq("discuss")
+    end
   end
 
   describe "GET /api/articles/:id" do
@@ -453,7 +463,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "does not update title if only given a title" do
+      it "does not update title if only given a title because the article has a front matter" do
         put_article(title: Faker::Book.title + rand(100).to_s)
         expect(response).to have_http_status(:ok)
         expect(article.reload.title).to eq(article.title)

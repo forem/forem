@@ -14,31 +14,36 @@ json.array! @articles do |article|
   json.positive_reactions_count article.positive_reactions_count
   json.published_timestamp article.published_timestamp
 
+  user = article.user
+  user_profile_image = ProfileImage.new(article.user)
   json.user do
-    json.name             article.user.name
-    json.username         article.user.username
-    json.twitter_username article.user.twitter_username
-    json.github_username  article.user.github_username
-    json.website_url      article.user.processed_website_url
-    json.profile_image    ProfileImage.new(article.user).get(640)
-    json.profile_image_90 ProfileImage.new(article.user).get(90)
+    json.name             user.name
+    json.username         user.username
+    json.twitter_username user.twitter_username
+    json.github_username  user.github_username
+    json.website_url      user.processed_website_url
+    json.profile_image    user_profile_image.get(640)
+    json.profile_image_90 user_profile_image.get(90)
   end
 
   if article.organization
+    organization = article.organization
+    organization_profile_image = ProfileImage.new(article.organization)
     json.organization do
-      json.name             article.organization.name
-      json.username         article.organization.username
-      json.slug             article.organization.slug
-      json.profile_image    ProfileImage.new(article.organization).get(640)
-      json.profile_image_90 ProfileImage.new(article.organization).get(90)
+      json.name             organization.name
+      json.username         organization.username
+      json.slug             organization.slug
+      json.profile_image    organization_profile_image.get(640)
+      json.profile_image_90 organization_profile_image.get(90)
     end
   end
 
-  if FlareTag.new(article).tag
+  flare_tag = FlareTag.new(article).tag
+  if flare_tag
     json.flare_tag do
-      json.name             FlareTag.new(article).tag.name
-      json.bg_color_hex     FlareTag.new(article).tag.bg_color_hex
-      json.text_color_hex   FlareTag.new(article).tag.text_color_hex
+      json.name             flare_tag.name
+      json.bg_color_hex     flare_tag.bg_color_hex
+      json.text_color_hex   flare_tag.text_color_hex
     end
   end
 end
