@@ -129,7 +129,7 @@ group :development, :test do
   gem "rubocop", "~> 0.74", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.4", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.2", require: false # Automatic Rails code style checking tool
-  gem "rubocop-rspec", "~> 1.33", require: false # Code style checking for RSpec files
+  gem "rubocop-rspec", "~> 1.35", require: false # Code style checking for RSpec files
   gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
 end
