@@ -108,7 +108,7 @@ class ClassifiedListingsController < ApplicationController
 
   def destroy
     authorize @classified_listing
-    @classified_listing.destroy!
+    @classified_listing.destroy
     respond_to do |format|
       format.html { redirect_to "/listings/dashboard", notice: "Listing was successfully deleted." }
       format.json { head :no_content }
