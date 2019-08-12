@@ -19,6 +19,12 @@
   from = "http://docs.dev.to/ruby-doc/"
   to = "https://docs.dev.to/ruby-doc/index.html"
 [[redirects]]
+  from = "http://docs.dev.to/api"
+  to = "https://docs.dev.to/api/index.html"
+[[redirects]]
+  from = "http://docs.dev.to/api/"
+  to = "https://docs.dev.to/api/index.html"
+[[redirects]]
   from = "http://docs.dev.to/*"
   to = "https://docs.dev.to/:splat"
   status = 301
