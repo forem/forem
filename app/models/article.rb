@@ -465,6 +465,8 @@ class Article < ApplicationRecord
 
   def liquid_tags_used
     MarkdownParser.new(body_markdown.to_s + comments_blob.to_s).tags_used
+  rescue StandardError
+    []
   end
 
   private

@@ -7,7 +7,7 @@ FactoryBot.define do
   factory :podcast do
     title           { Faker::Beer.name }
     image           { image }
-    description     { Faker::Hipster.paragraph(1) }
+    description     { Faker::Hipster.paragraph(sentence_count: 1) }
     slug            { "slug-#{rand(10_000)}" }
     feed_url        { Faker::Internet.url }
     main_color_hex  { "ffffff" }

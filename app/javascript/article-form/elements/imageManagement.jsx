@@ -96,7 +96,7 @@ export default class ImageManagement extends Component {
   };
 
   linksToMarkdownForm = imageLinks => {
-    return imageLinks.map(imageLink => `![](${imageLink})`).join('\n');
+    return imageLinks.map(imageLink => `![Alt Text](${imageLink})`).join('\n');
   };
 
   linksToDirectForm = imageLinks => {

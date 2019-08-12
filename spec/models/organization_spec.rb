@@ -9,7 +9,7 @@ RSpec.describe Organization, type: :model do
 
   describe "#name" do
     it "rejects names with over 50 characters" do
-      organization.name = Faker::Lorem.characters(51)
+      organization.name = Faker::Lorem.characters(number: 51)
       expect(organization).not_to be_valid
     end
 
@@ -20,7 +20,7 @@ RSpec.describe Organization, type: :model do
 
   describe "#summary" do
     it "rejects summaries with over 1000 characters" do
-      organization.summary = Faker::Lorem.characters(1001)
+      organization.summary = Faker::Lorem.characters(number: 1001)
       expect(organization).not_to be_valid
     end
 
@@ -46,7 +46,7 @@ RSpec.describe Organization, type: :model do
     end
 
     it "rejects wrong color format" do
-      organization.text_color_hex = "##{Faker::Lorem.words(4)}"
+      organization.text_color_hex = "##{Faker::Lorem.words(number: 4)}"
       expect(organization).not_to be_valid
     end
   end

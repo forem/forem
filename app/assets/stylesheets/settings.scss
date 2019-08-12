@@ -572,6 +572,7 @@
     width: 100%;
     border-radius: 3px;
     font-size: 1.1em;
+    cursor: pointer;
   }
   .settings-generate-new-secret {
     margin-top: 10px;
@@ -584,6 +585,23 @@
     cursor: pointer;
     &:hover {
       background: lighten($black, 14%);
+    }
+  }
+  clipboard-copy {
+    cursor: pointer;
+    display: flex;
+    img {
+      max-width: 26px;
+      margin-left: 8px;
+    }
+
+  }
+  .copy-text-announcer {
+    display: block;
+    text-align: center;
+    padding-top: 10px;
+    &[hidden] {
+      display: none;
     }
   }
 }

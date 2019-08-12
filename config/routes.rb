@@ -78,6 +78,7 @@ Rails.application.routes.draw do
       resources :articles, only: %i[index show create update] do
         collection do
           get "/onboarding", to: "articles#onboarding"
+          get :me
         end
       end
       resources :comments, only: %i[index show]
@@ -89,7 +90,11 @@ Rails.application.routes.draw do
           post "/onboarding", to: "reactions#onboarding"
         end
       end
-      resources :users, only: %i[index show]
+      resources :users, only: %i[index show] do
+        collection do
+          get :me
+        end
+      end
       resources :tags, only: [:index] do
         collection do
           get "/onboarding", to: "tags#onboarding"
@@ -241,7 +246,7 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root
   get "/about" => "pages#about"
-  get "/api", to: "pages#api"
+  get "/api", to: redirect("https://docs.dev.to/api")
   get "/privacy" => "pages#privacy"
   get "/terms" => "pages#terms"
   get "/contact" => "pages#contact"
@@ -344,8 +349,6 @@ Rails.application.routes.draw do
   get "/:timeframe" => "stories#index", constraints: { timeframe: /latest/ }
 
   # Legacy comment format (might still be floating around app, and external links)
-  get "/:username/:slug/comments/new/:parent_id_code" => "comments#new"
-  get "/:username/:slug/comments/new" => "comments#new"
   get "/:username/:slug/comments" => "comments#index"
   get "/:username/:slug/comments/:id_code" => "comments#index"
   get "/:username/:slug/comments/:id_code/edit" => "comments#edit"
