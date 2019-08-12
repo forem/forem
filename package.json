@@ -74,7 +74,7 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.14.3",
     "faker": "^4.1.0",
-    "husky": "^3.0.2",
+    "husky": "^3.0.3",
     "jest": "^23.5.0",
     "jest-fetch-mock": "^2.1.2",
     "jsdom": "^15.1.1",
