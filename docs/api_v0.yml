@@ -1,0 +1,808 @@
+openapi: '3.0.2'
+info:
+  title: DEV API
+  description: Access DEV articles, comments and other resources via API
+  version: '0.5.0'
+  termsOfService: https://dev.to/terms
+  contact:
+    name: DEV Team
+    url: https://dev.to/contact
+    email: yo@dev.to
+  x-logo: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-logo
+    url: https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-128-1a9016906487b8ba17f2d3d3c28f9d1cb3ae9b45d685cc2711e20f6b3c6730df.png
+    backgroundColor: "#000"
+    altText: "DEV logo"
+
+servers:
+  - url: https://dev.to/api
+    description: Production server
+
+components:
+  securitySchemes:
+    api_key:
+      type: apiKey
+      description: |
+        API Key authentication.
+
+        ### Getting an API key
+
+        Authentication for the Articles API requires an API key (DEV API access token).
+        To obtain one, please follow these steps:
+
+          - visit https://dev.to/settings/account
+          - in the "DEV API Access Tokens" section create a new token by adding a
+            description and clicking on "Generate Token"
+
+            ![obtain a DEV API access token](https://res.cloudinary.com/practicaldev/image/fetch/s--F4Ya4WgC--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/4zm0cbutj9o9eau0jm9t.png)
+          - You'll see the newly generated token in the same view
+            ![generated DEV API access token](https://res.cloudinary.com/practicaldev/image/fetch/s--kp5L6-9G--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/ra01mo6fp1es261db2ho.png)
+      name: api-key
+      in: header
+
+  schemas:
+    APIError:
+      type: object
+      required:
+        - error
+        - status
+      properties:
+        error:
+          type: string
+        status:
+          type: integer
+          format: int32
+    ArticleIndex:
+      type: object
+      required:
+        - type_of
+        - id
+        - title
+        - description
+        - cover_image
+        - published_at
+        - tag_list
+        - slug
+        - path
+        - url
+        - canonical_url
+        - positive_reactions_count
+        - published_timestamp
+        - user
+      properties:
+        type_of:
+          type: string
+        id:
+          type: integer
+          format: int32
+        title:
+          type: string
+        description:
+          type: string
+        cover_image:
+          type: string
+          format: url
+        published_at:
+          type: string
+          format: date-time
+        tag_list:
+          type: array
+          items:
+            type: string
+        slug:
+          type: string
+        path:
+          type: string
+          format: path
+        url:
+          type: string
+          format: url
+        canonical_url:
+          type: string
+          format: url
+        positive_reactions_count:
+          type: integer
+          format: int32
+        published_timestamp:
+          description: Crossposting or published date time
+          type: string
+          format: date-time
+        user:
+          type: object
+          $ref: '#/components/schemas/User'
+        organization:
+          description: Organization the article belongs to
+          type: object
+          properties:
+            name:
+              type: string
+            username:
+              type: string
+            slug:
+              type: string
+            profile_image:
+              description: Profile image (640x640)
+              type: string
+              format: url
+            profile_image_90:
+              description: Profile image (90x90)
+              type: string
+              format: url
+        flare_tag:
+          description: Flare tag of the article
+          type: object
+          properties:
+            name:
+              type: string
+            bg_color_hex:
+              description: Background color (hexadecimal)
+              type: string
+            text_color_hex:
+              description: Text color (hexadecimal)
+              type: string
+    ArticleShow:
+      type: object
+      required:
+        - type_of
+        - id
+        - title
+        - description
+        - cover_image
+        - readable_publish_date
+        - social_image
+        - tag_list
+        - tags
+        - slug
+        - path
+        - url
+        - canonical_url
+        - comments_count
+        - positive_reactions_count
+        - created_at
+        - edited_at
+        - crossposted_at
+        - published_at
+        - last_comment_at
+        - body_html
+        - body_markdown
+        - user
+      properties:
+        type_of:
+          type: string
+        id:
+          type: integer
+          format: int32
+        title:
+          type: string
+        description:
+          type: string
+        cover_image:
+          type: string
+          format: url
+        readable_publish_date:
+          type: string
+        social_image:
+          type: string
+          format: url
+        tag_list:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        slug:
+          type: string
+        path:
+          type: string
+          format: path
+        url:
+          type: string
+          format: url
+        canonical_url:
+          type: string
+          format: url
+        comments_count:
+          type: integer
+          format: int32
+        positive_reactions_count:
+          type: integer
+          format: int32
+        created_at:
+          type: string
+          format: date-time
+        edited_at:
+          type: string
+          format: date-time
+        crossposted_at:
+          type: string
+          format: date-time
+        published_at:
+          type: string
+          format: date-time
+        last_comment_at:
+          type: string
+          format: date-time
+        body_html:
+          type: string
+        body_markdown:
+          type: string
+        user:
+          type: object
+          $ref: '#/components/schemas/User'
+    ArticleCreate:
+      type: object
+      properties:
+        article:
+          type: object
+          required:
+            - title
+          properties:
+            title:
+              type: string
+            body_markdown:
+              description: |
+                The body of the article.
+
+                It can contain an optional front matter. For example
+
+                ```markdown
+                ---
+                title: Hello, World!
+                published: true
+                tags: discuss, help
+                date: 20190701T10:00Z
+                series: Hello series
+                canonical_url: https://example.com/blog/hello
+                cover_image: article_published_cover_image
+                ---
+                ```
+
+                `date`, `series` and `canonical_url` are optional.
+                `date` is the publication date-time
+                `series` is the name of the series the article belongs to
+                `canonical_url` is the canonical URL of the article
+                `cover_image` is the main image of the article
+
+                *If the markdown contains a front matter, it will take precedence
+                on the equivalent params given in the JSON payload.*
+              type: string
+            published:
+              description: |
+                True to create a published article, false otherwise. Defaults to false
+              type: boolean
+            series:
+              description: |
+                Article series name.
+
+                All articles belonging to the same series need to have the same name
+                in this parameter.
+              type: string
+            main_image:
+              type: string
+              format: url
+            canonical_url:
+              type: string
+              format: url
+            description:
+              type: string
+            tags:
+              type: array
+              items:
+                type: string
+            organization_id:
+              description: |
+                Only users belonging to an organization can assign the article to it
+              type: integer
+              format: int32
+    ArticleUpdate:
+      type: object
+      properties:
+        article:
+          type: object
+          properties:
+            title:
+              type: string
+            body_markdown:
+              description: |
+                The body of the article.
+
+                It can contain an optional front matter. For example
+
+                ```markdown
+                ---
+                title: Hello, World!
+                published: true
+                tags: discuss, help
+                date: 20190701T10:00Z
+                series: Hello series
+                canonical_url: https://example.com/blog/hello
+                cover_image: article_published_cover_image
+                ---
+                ```
+
+                `date`, `series` and `canonical_url` are optional.
+                `date` is the publication date-time
+                `series` is the name of the series the article belongs to
+                `canonical_url` is the canonical URL of the article
+                `cover_image` is the main image of the article
+
+                *If the markdown contains a front matter, it will take precedence
+                on the equivalent params given in the JSON payload.*
+              type: string
+            published:
+              description: |
+                True to create a published article, false otherwise. Defaults to false
+              type: boolean
+            series:
+              description: |
+                Article series name.
+
+                All articles belonging to the same series need to have the same name
+                in this parameter.
+
+                To remove an article from a series, the `null` value can be used.
+              type: string
+            main_image:
+              type: string
+              format: url
+            canonical_url:
+              type: string
+              format: url
+            description:
+              type: string
+            tags:
+              type: array
+              items:
+                type: string
+            organization_id:
+              description: |
+                Only users belonging to an organization can assign the article to it
+              type: integer
+              format: int32
+
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+        username:
+          type: string
+        twitter_username:
+          type: string
+        github_username:
+          type: string
+        website_url:
+          type: string
+          format: url
+        profile_image:
+          description: Profile image (640x640)
+          type: string
+        profile_image_90:
+          description: Profile image (90x90)
+          type: string
+
+  examples:
+    ErrorNotFound:
+      value:
+        error: not found
+        status: 404
+    ErrorUnauthorized:
+      value:
+        error: unauthorized
+        status: 401
+    ArticleShow:
+      value:
+        type_of: article
+        id: 150589
+        title: 'Byte Sized Episode 2: The Creation of Graph Theory '
+        description: The full story of Leonhard Euler and the creation of this fundamental
+          computer science principle, delivered in a few minutes.
+        cover_image: https://res.cloudinary.com/practicaldev/image/fetch/s--qgutBUrH--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://thepracticaldev.s3.amazonaws.com/i/88e62fzblbluz1dm7xjf.png
+        readable_publish_date: Aug  1
+        social_image: https://res.cloudinary.com/practicaldev/image/fetch/s--6wSHHfwd--/c_imagga_scale,f_auto,fl_progressive,h_500,q_auto,w_1000/https://thepracticaldev.s3.amazonaws.com/i/88e62fzblbluz1dm7xjf.png
+        tag_list: computerscience, graphtheory, bytesized, history
+        tags:
+        - computerscience
+        - graphtheory
+        - bytesized
+        - history
+        slug: byte-sized-episode-2-the-creation-of-graph-theory-34g1
+        path: "/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1"
+        url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
+        canonical_url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
+        comments_count: 19
+        positive_reactions_count: 276
+        created_at: '2019-07-31T11:15:06Z'
+        edited_at:
+        crossposted_at:
+        published_at: '2019-08-01T15:47:54Z'
+        last_comment_at: '2019-08-06T09:12:45Z'
+        body_html: |+
+          <p>Today's episode of Byte Sized is about Leonhard Euler and the creation of <a href="https://en.wikipedia.org/wiki/Graph_theory">Graph Theory</a>.</p>
+
+          <p>For more about how Graph Theory works, check out this video from BaseCS!</p>...
+        body_markdown: "---\r\ntitle: Byte Sized Episode 2: The Creation of Graph Theory \r\npublished:
+          true\r\ndescription: The full story of Leonhard Euler and the creation of this fundamental
+          computer science principle, delivered in a few minutes.\r\ntags: computerscience,
+          graphtheory, bytesized, history\r\ncover_image: https://thepracticaldev.s3.amazonaws.com/i/88e62fzblbluz1dm7xjf.png\r\nseries:
+          Byte Sized Season 1\r\n---\r\n\r\nToday's episode of Byte Sized is about Leonhard
+          Euler and the creation of [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory).\r\n\r\nFor
+          more about how Graph Theory works, check out this video from BaseCS!..."
+        user:
+          name: Vaidehi Joshi
+          username: vaidehijoshi
+          twitter_username: vaidehijoshi
+          github_username: vaidehijoshi
+          website_url: http://www.vaidehi.com
+          profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--eDGAYAoK--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2882/K2evUksb.jpg
+          profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--htZnqMn3--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2882/K2evUksb.jpg
+    ArticleCreateTitleBody:
+      value:
+        article:
+          title: Hello, World!
+          published: true
+          body_markdown: Hello DEV, this is my first post
+          tags: discuss, help
+          series: Hello series
+          canonical_url: https://example.com/blog/hello
+    ArticleCreateFrontMatter:
+      value:
+        article:
+          body_markdown: |
+            ---
+            title: Hello, World!
+            published: true
+            tags: discuss, help
+            date: 20190701T10:00Z
+            series: Hello series
+            canonical_url: https://example.com/blog/hello
+            ---
+
+            Hello DEV, this is my first post
+    ArticleCreateOrganization:
+      value:
+        article:
+          title: Hello, World!
+          published: true
+          body_markdown: Hello DEV, this is my first post
+          tags: discuss, help
+          series: Hello series
+          canonical_url: https://example.com/blog/hello
+          organization_id: 1234
+
+
+paths:
+  /articles:
+    get:
+      summary: Published articles
+      description: |
+        This endpoint allows the client to retrieve a list of articles.
+
+        "Articles" are all the posts that users create on DEV that typically
+        show up in the feed. They can be a blog post, a discussion question,
+        a help thread etc. but is referred to as article within the code.
+
+        By default it will return featured, published articles ordered
+        by descending popularity.
+
+        Each page will contain `30` articles.
+
+        Responses, according to the combination of params, are cached for 24 hours.
+      tags:
+        - articles
+      parameters:
+        - name: page
+          in: query
+          description: |
+            Pagination page.
+
+            This param can be used in conjuction with all other params
+            (except when asking for fresh and rising articles by themselves).
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: tag
+          in: query
+          description: |
+            Adding this parameter will return articles that contain the
+            requested tag.
+
+            This param can be used by itself, with `page` or with `top`.
+          schema:
+            type: string
+          example: discuss
+        - name: username
+          in: query
+          description: |
+            Adding this parameter will return articles belonging to a User or Organization
+            ordered by descending `published_at`.
+
+            If `state=all` the number of items returned will be `1000` instead of the default `30`.
+
+            This param can be used by itself or only with `page` and `state`.
+          schema:
+            type: string
+          example: ben
+        - name: state
+          in: query
+          description: |
+            Adding this will allow the client to check which articles are fresh or rising.
+
+            If `state=fresh` the server will return published fresh articles.
+            If `state=rising` the server will return published rising articles.
+
+            This param can only be used by itself or with `username` if set to `all`.
+          schema:
+            type: string
+          example: ben
+        - name: top
+          in: query
+          description: |
+            Adding this will allow the client to return the most popular articles
+            in the last `N` days.
+
+            `top` indicates the number of days since publication of the articles
+            returned.
+
+            This param can only be used by itself or with `tag`.
+          schema:
+            type: integer
+            format: int32
+          example: 2
+      responses:
+        200:
+          description: A list of articles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ArticleIndex'
+              examples:
+                articles-success:
+                  summary: Successful response
+                  value:
+                    type_of: article
+                    id: 150589
+                    title: 'Byte Sized Episode 2: The Creation of Graph Theory'
+                    description: The full story of Leonhard Euler and the creation of this fundamental
+                      computer science principle, delivered in a few minutes.
+                    cover_image: https://res.cloudinary.com/practicaldev/image/fetch/s--qgutBUrH--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://thepracticaldev.s3.amazonaws.com/i/88e62fzblbluz1dm7xjf.png
+                    published_at: '2019-08-01T15:47:54.000Z'
+                    tag_list:
+                    - computerscience
+                    - graphtheory
+                    - bytesized
+                    - history
+                    slug: byte-sized-episode-2-the-creation-of-graph-theory-34g1
+                    path: "/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1"
+                    url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
+                    canonical_url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
+                    comments_count: 15
+                    positive_reactions_count: 210
+                    published_timestamp: '2019-08-01T15:47:54Z'
+                    user:
+                      name: Vaidehi Joshi
+                      username: vaidehijoshi
+                      twitter_username: vaidehijoshi
+                      github_username: vaidehijoshi
+                      website_url: http://www.vaidehi.com
+                      profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--eDGAYAoK--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2882/K2evUksb.jpg
+                      profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--htZnqMn3--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2882/K2evUksb.jpg
+                    organization:
+                      name: Byte Sized
+                      username: bytesized
+                      slug: bytesized
+                      profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--sq0DrZfn--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/organization/profile_image/865/652f7998-32a8-4fd9-85ca-dd697d2a9ee9.png
+                      profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--1Pt_ICL---/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/organization/profile_image/865/652f7998-32a8-4fd9-85ca-dd697d2a9ee9.png
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl (all articles)
+          source: |
+            curl https://dev.to/api/articles
+        - lang: Shell
+          label: curl (user's articles)
+          source: |
+            curl https://dev.to/api/articles?username=ben
+    post:
+      summary: Create a new article
+      description: |
+        This endpoint allows the client to create a new article.
+
+        "Articles" are all the posts that users create on DEV that typically
+        show up in the feed. They can be a blog post, a discussion question,
+        a help thread etc. but is referred to as article within the code.
+
+        ### Rate limiting
+
+        There is a limit of 10 articles created each 30 seconds by the same user.
+
+        ### Additional resources
+
+        - [Rails tests for Articles API](https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/articles_spec.rb)
+      tags:
+        - articles
+      requestBody:
+        description: Article to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleCreate'
+            examples:
+              article-create-title-body:
+                $ref: '#/components/examples/ArticleCreateTitleBody'
+              article-create-front-matter:
+                $ref: '#/components/examples/ArticleCreateFrontMatter'
+              article-create-organization:
+                $ref: '#/components/examples/ArticleCreateOrganization'
+
+      responses:
+        201:
+          description: A newly created article
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ArticleShow'
+              examples:
+                article-success:
+                  $ref: '#/components/examples/ArticleShow'
+          headers:
+            Location:
+              description: The URL of the new article
+              schema:
+                type: string
+                format: url
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/APIError'
+              examples:
+                article-unauthorized:
+                  $ref: '#/components/examples/ErrorUnauthorized'
+      security:
+        - api_key: []
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl
+          source: |
+            curl -X POST -H "Content-Type: application/json" \
+              -H "api-key: ACCESS_TOKEN" \
+              -d '{"article":{"title":"Title","body_markdown":"Body","published":false,"tags":["discuss", "javascript"]}}' \
+              https://dev.to/api/articles
+        - lang: Shell
+          label: curl (with front matter)
+          source: |
+            curl -X POST -H "Content-Type: application/json" \
+            -H "api-key: ACCESS_TOKEN" \
+            -d '{"article":{"body_markdown":"---\ntitle:A sample article about...\npublished:false\n---\n..."}}' \
+            https://dev.to/api/articles
+
+  /articles/{id}:
+    get:
+      summary: A published article
+      description: |
+        This endpoint allows the client to retrieve a single
+        published article given its `id`.
+
+        Responses are cached for 5 minutes.
+      tags:
+        - articles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Id of the article
+          schema:
+            type: integer
+            format: int32
+          example: 150589
+      responses:
+        200:
+          description: An article
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ArticleShow'
+              examples:
+                article-success:
+                  $ref: '#/components/examples/ArticleShow'
+        404:
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/APIError'
+              examples:
+                article-not-found:
+                  $ref: '#/components/examples/ErrorNotFound'
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl
+          source: |
+            curl https://dev.to/api/articles/150589
+    put:
+      summary: Update an existing article
+      description: |
+        This endpoint allows the client to updated an existing article.
+
+        "Articles" are all the posts that users create on DEV that typically
+        show up in the feed. They can be a blog post, a discussion question,
+        a help thread etc. but is referred to as article within the code.
+
+        ### Rate limiting
+
+        There are no limits on the amount of updates.
+
+        ### Additional resources
+
+        - [Rails tests for Articles API](https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/articles_spec.rb)
+      tags:
+        - articles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Id of the article
+          schema:
+            type: integer
+            format: int32
+          example: 150589
+      requestBody:
+        description: |
+          Article params to update.
+
+          *Note: if the article contains a front matter in its body, its front
+          matter properties will still take precedence over any JSON equivalent
+          params, which means that the full body_markdown with the modified
+          front matter params needs to be provided for an update to be successful*
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleUpdate'
+            examples:
+              article-update-title-body:
+                $ref: '#/components/examples/ArticleCreateTitleBody'
+              article-update-front-matter:
+                $ref: '#/components/examples/ArticleCreateFrontMatter'
+              article-update-organization:
+                $ref: '#/components/examples/ArticleCreateOrganization'
+      responses:
+        200:
+          description: The updated article
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ArticleShow'
+              examples:
+                article-success:
+                  $ref: '#/components/examples/ArticleShow'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/APIError'
+              examples:
+                article-unauthorized:
+                  $ref: '#/components/examples/ErrorUnauthorized'
+      security:
+        - api_key: []
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl
+          source: |
+            curl -X PUT -H "Content-Type: application/json" \
+              -H "api-key: ACCESS_TOKEN" \
+              -d '{"article":{"title":"Title"}' \
+              https://dev.to/api/articles/{id}
+
+security:
+  - api_key: []

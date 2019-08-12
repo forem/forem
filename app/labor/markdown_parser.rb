@@ -161,8 +161,8 @@ class MarkdownParser
 
   def escape_liquid_tags_in_codeblock(content)
     # Escape codeblocks, code spans, and inline code
-    content.gsub(/`{3}.*?`{3}|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
-      if codeblock[0..2] == "```"
+    content.gsub(/[[:space:]]*`{3}.*?`{3}|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
+      if codeblock.match?(/[[:space:]]*`{3}/)
         "\n{% raw %}\n" + codeblock + "\n{% endraw %}\n"
       else
         "{% raw %}" + codeblock + "{% endraw %}"

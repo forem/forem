@@ -1,6 +1,8 @@
 module Api
   module V0
-    class UsersController < ApplicationController
+    class UsersController < ApiController
+      before_action :authenticate!, only: %i[me]
+
       def index
         if !user_signed_in? || less_than_one_day_old?(current_user)
           usernames = %w[ben jess peter maestromac andy liana]
@@ -22,6 +24,8 @@ module Api
                   User.find(params[:id])
                 end
       end
+
+      def me; end
 
       private
 

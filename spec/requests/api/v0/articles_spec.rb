@@ -65,6 +65,16 @@ RSpec.describe "Api::V0::Articles", type: :request do
       get api_articles_path(tag: tag.name)
       expect(JSON.parse(response.body).size).to eq(0)
     end
+
+    it "returns flare tag in the response" do
+      create(:article, featured: true, tags: "discuss")
+
+      get api_articles_path
+      response_article = JSON.parse(response.body)[0]
+      expect(response_article["flare_tag"]).to be_present
+      expect(response_article["flare_tag"].keys).to eq(%w[name bg_color_hex text_color_hex])
+      expect(response_article["flare_tag"]["name"]).to eq("discuss")
+    end
   end
 
   describe "GET /api/articles/:id" do
@@ -102,6 +112,48 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
   end
 
+  describe "GET /api/articles/me" do
+    context "when request is unauthenticated" do
+      it "return unauthorized" do
+        get me_api_articles_path
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when request is authenticated" do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:access_token) { create :doorkeeper_access_token, resource_owner: user }
+
+      it "works with bearer authorization" do
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        get me_api_articles_path, headers: headers
+        expect(response.content_type).to eq("application/json")
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "return proper response specification" do
+        get me_api_articles_path, params: { access_token: access_token.token }
+        expect(response.content_type).to eq("application/json")
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "return only user's articles including markdown" do
+        create(:article, user: user)
+        create(:article)
+        get me_api_articles_path, params: { access_token: access_token.token }
+        expect(json_response.length).to eq(1)
+        expect(json_response[0]["body_markdown"]).not_to be_nil
+      end
+
+      it "supports pagination" do
+        create_list(:article, 3, user: user)
+        get me_api_articles_path, params: { access_token: access_token.token, page: 2, per_page: 2 }
+        expect(json_response.length).to eq(1)
+      end
+    end
+  end
+
   describe "POST /api/articles" do
     let!(:api_secret) { create(:api_secret) }
     let!(:user) { api_secret.user }
@@ -129,6 +181,14 @@ RSpec.describe "Api::V0::Articles", type: :request do
       def post_article(**params)
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
         post api_articles_path, params: { article: params }.to_json, headers: headers
+      end
+
+      it "supports oauth's access_token" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        post api_articles_path, params: { article: { title: Faker::Book.title } }.to_json, headers: headers
+        expect(response).to have_http_status(:created)
       end
 
       it "fails if no params are given" do
@@ -373,6 +433,19 @@ RSpec.describe "Api::V0::Articles", type: :request do
         put path, params: { article: params }.to_json, headers: headers
       end
 
+      it "supports oauth's access_token" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        title = Faker::Book.title + rand(100).to_s
+        body_markdown = "foobar"
+        params = { title: title, body_markdown: body_markdown }
+        put path, params: { article: params }.to_json, headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.title).to eq(title)
+        expect(article.body_markdown).to eq(body_markdown)
+      end
+
       it "returns not found if the article does not belong to the user" do
         article = create(:article, user: create(:user))
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
@@ -390,7 +463,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "does not update title if only given a title" do
+      it "does not update title if only given a title because the article has a front matter" do
         put_article(title: Faker::Book.title + rand(100).to_s)
         expect(response).to have_http_status(:ok)
         expect(article.reload.title).to eq(article.title)
