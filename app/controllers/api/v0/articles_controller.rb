@@ -64,6 +64,7 @@ module Api
         per_page = (params[:per_page] || 30).to_i
         num = [per_page, 1000].min
         @articles = @user.articles.
+          includes(:organization).
           order(published_at: :desc, created_at: :desc).
           page(params[:page]).
           per(num).
