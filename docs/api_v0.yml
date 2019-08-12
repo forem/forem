@@ -945,6 +945,9 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ArticleMe'
+      security:
+        - api_key: []
+        - oauth2: []
       x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
         - lang: Shell
           label: curl
