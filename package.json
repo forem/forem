@@ -85,7 +85,7 @@
     "webpack-dev-server": "^2.11.3"
   },
   "dependencies": {
-    "@github/clipboard-copy-element": "^1.0.3",
+    "@github/clipboard-copy-element": "^1.0.4",
     "@rails/webpacker": "^3.5.5",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-preact": "^1.1.0",
