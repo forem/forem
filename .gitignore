@@ -58,3 +58,5 @@ _docker-storage/
 
 # YARD generated doc (in the Gitdocs folder)
 docs/.static/ruby-doc/
+# ReDoc generated API doc (in the Gitdocs folder)
+docs/.static/api/

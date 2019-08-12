@@ -1,3 +1,4 @@
+git_source(:github) { |name| "https://github.com/#{name}.git" }
 source "https://rubygems.org"
 ruby "2.6.3"
 
@@ -14,12 +15,12 @@ gem "acts_as_follower", github: "thepracticaldev/acts_as_follower", branch: "mas
 gem "addressable", "~> 2.6" # A replacement for the URI implementation that is part of Ruby's standard library
 gem "administrate", "~> 0.11" # A Rails engine that helps you put together a super-flexible admin dashboard
 gem "ahoy_email", "~> 1.1" # Email analytics for Rails
-gem "airbrake", "~> 9.3" # Airbrake is an online tool that provides robust exception tracking in any of your Ruby applications
+gem "airbrake", "~> 9.4" # Airbrake is an online tool that provides robust exception tracking in any of your Ruby applications
 gem "algoliasearch-rails", "~> 1.23" # Algolia Search is a hosted search engine capable of delivering real-time results from the first keystroke
 gem "algorithmia", "~> 1.1" # Ruby Client for Algorithmia Algorithms and Data API
 gem "ancestry", "~> 3.0" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "autoprefixer-rails", "~> 9.6" # Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website
-gem "aws-sdk-lambda", "~> 1.28" # Official AWS Ruby gem for AWS Lambda
+gem "aws-sdk-lambda", "~> 1.29" # Official AWS Ruby gem for AWS Lambda
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
 gem "carrierwave", "~> 1.3" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
@@ -68,8 +69,8 @@ gem "rack-timeout", "~> 0.5" # Rack middleware which aborts requests that have b
 gem "rails", "~> 5.2", ">= 5.2.3" # Ruby on Rails
 gem "rails-assets-airbrake-js-client", "~> 1.6", source: "https://rails-assets.org" # Airbrake JavaScript Notifier
 gem "rails-observers", "~> 0.1" # Rails observer (removed from core in Rails 4.0)
-gem "recaptcha", "~> 5.0", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
-gem "redcarpet", "~> 3.4" # A fast, safe and extensible Markdown to (X)HTML parser
+gem "recaptcha", "~> 5.1", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
+gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "reverse_markdown", "~> 1.1" # Map simple html back into markdown
 gem "rolify", "~> 5.2" # Very simple Roles library
 gem "rouge", "~> 3.7" # A pure-ruby code highlighter
@@ -85,7 +86,7 @@ gem "slack-notifier", "~> 2.3" # A slim ruby wrapper for posting to slack webhoo
 gem "sprockets", "~> 3.7" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "storext", "~> 3.0" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
-gem "stripe", "~> 4.21" # Ruby library for the Stripe API
+gem "stripe", "~> 4.23" # Ruby library for the Stripe API
 gem "timber", "~> 3.0" # Great Ruby logging made easy
 gem "timber-rails", "~> 1.0" #  Timber integration for Rails
 gem "twilio-ruby", "~> 5.25" # The official library for communicating with the Twilio REST API
@@ -98,7 +99,7 @@ gem "webpush", "~> 0.3" # Encryption Utilities for Web Push payload
 group :development do
   gem "better_errors", "~> 2.5" # Provides a better error page for Rails and other Rack apps
   gem "binding_of_caller", "~> 0.8" # Retrieve the binding of a method's caller
-  gem "brakeman", "~> 4.5", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
+  gem "brakeman", "~> 4.6", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.6" # bundler-audit provides patch-level verification for Bundled apps
   gem "derailed_benchmarks", "~> 1.3", require: false # A series of things you can use to benchmark a Rails or Ruby app
   gem "erb_lint", "~> 0.0", require: false # ERB Linter tool
@@ -120,15 +121,15 @@ end
 group :development, :test do
   gem "awesome_print", "~> 1.8" # Great Ruby dubugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.0" # help to kill N+1 queries and unused eager loading
-  gem "capybara", "~> 3.27" # Capybara is an integration testing tool for rack based web applications
-  gem "faker", "~> 1.9" # A library for generating fake data such as names, addresses, and phone numbers
+  gem "capybara", "~> 3.28" # Capybara is an integration testing tool for rack based web applications
+  gem "faker", "~> 2.1" # A library for generating fake data such as names, addresses, and phone numbers
   gem "parallel_tests", "~> 2.29" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry-byebug", "~> 3.7" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 3.8" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 0.73", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 0.74", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.4", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.2", require: false # Automatic Rails code style checking tool
-  gem "rubocop-rspec", "~> 1.33", require: false # Code style checking for RSpec files
+  gem "rubocop-rspec", "~> 1.35", require: false # Code style checking for RSpec files
   gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
 end
@@ -139,8 +140,8 @@ group :test do
   gem "launchy", "~> 2.4" # Launchy is helper class for launching cross-platform applications in a fire and forget manner.
   gem "pundit-matchers", "~> 1.6" # A set of RSpec matchers for testing Pundit authorisation policies
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples
-  gem "ruby-prof", "~> 0.18", require: false # ruby-prof is a fast code profiler for Ruby
-  gem "shoulda-matchers", "4.1.1", require: false # Simple one-liner tests for common Rails functionality
+  gem "ruby-prof", "~> 1.0", require: false # ruby-prof is a fast code profiler for Ruby
+  gem "shoulda-matchers", "4.1.2", require: false # Simple one-liner tests for common Rails functionality
   gem "simplecov", "~> 0.17", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers
   gem "stripe-ruby-mock", "~> 2.5", require: "stripe_mock" # A drop-in library to test stripe without hitting their servers

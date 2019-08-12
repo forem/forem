@@ -401,6 +401,13 @@ a.header-link {
       .comment-deep-2 {
         margin-top: -123px;
       }
+      // this ms-lang hack (which behaves like a media query) is going to be ignored by all browsers 
+      // except IE and 11 and it fixes indentation on the unsupported <details> tags
+      _:-ms-lang(x),
+      .comment-deep-1,
+      .comment-deep-2 {
+        margin-top: 0px;
+      }
       summary {
         z-index: 15;
         position: relative;
