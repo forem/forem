@@ -50,6 +50,13 @@ module PracticalDeveloper
 
     config.middleware.use Rack::Deflater
 
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins "*"
+        resource "*", headers: :any, methods: %i[get post put delete options]
+      end
+    end
+
     # Globally handle Pundit::NotAuthorizedError by serving 404
     config.action_dispatch.rescue_responses["Pundit::NotAuthorizedError"] = :not_found
 

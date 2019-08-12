@@ -92,7 +92,7 @@ Rails.application.routes.draw do
       end
       resources :users, only: %i[index show] do
         collection do
-          get :me
+          match :me, via: %i[get options]
         end
       end
       resources :tags, only: [:index] do

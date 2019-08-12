@@ -3,6 +3,8 @@ module Api
     class UsersController < ApiController
       before_action :authenticate!, only: %i[me]
 
+      skip_before_action :verify_authenticity_token, only: %i[me]
+
       def index
         if !user_signed_in? || less_than_one_day_old?(current_user)
           usernames = %w[ben jess peter maestromac andy liana]

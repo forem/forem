@@ -11,6 +11,11 @@ RSpec.describe "Api::V0::Users", type: :request do
       expect(response).to have_http_status(:unauthorized)
     end
 
+    it "supports CORS headers" do
+      options me_api_users_path
+      expect(response).to have_http_status(:unauthorized)
+    end
+
     context "when request is authenticated" do
       let_it_be(:user)         { create(:user) }
       let_it_be(:access_token) { create(:doorkeeper_access_token, resource_owner: user) }
