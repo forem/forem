@@ -596,7 +596,7 @@ GEM
       ffi (>= 0.5.0, < 2)
     rbtree3 (0.5.0)
     rdoc (6.1.1)
-    recaptcha (5.0.0)
+    recaptcha (5.1.0)
       json
     redcarpet (3.5.0)
     regexp_parser (1.6.0)
@@ -920,7 +920,7 @@ DEPENDENCIES
   rails (~> 5.2, >= 5.2.3)
   rails-assets-airbrake-js-client (~> 1.6)!
   rails-observers (~> 0.1)
-  recaptcha (~> 5.0)
+  recaptcha (~> 5.1)
   redcarpet (~> 3.5)
   reverse_markdown (~> 1.1)
   rolify (~> 5.2)
