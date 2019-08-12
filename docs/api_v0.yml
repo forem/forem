@@ -2,7 +2,7 @@ openapi: '3.0.2'
 info:
   title: DEV API
   description: Access DEV articles, comments and other resources via API
-  version: '0.5.0'
+  version: '0.5.1'
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -24,9 +24,11 @@ components:
       description: |
         API Key authentication.
 
+        Authentication for some endpoints, like write operations on the
+        Articles API require an API key (DEV API access token).
+
         ### Getting an API key
 
-        Authentication for the Articles API requires an API key (DEV API access token).
         To obtain one, please follow these steps:
 
           - visit https://dev.to/settings/account
@@ -38,7 +40,22 @@ components:
             ![generated DEV API access token](https://res.cloudinary.com/practicaldev/image/fetch/s--kp5L6-9G--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/ra01mo6fp1es261db2ho.png)
       name: api-key
       in: header
+    oauth2:
+      type: oauth2
+      description: |
+        OAuth2 authentication.
 
+        OAuth2 authentication is still in private alpha.
+      flows:
+        authorizationCode:
+          authorizationUrl: https://dev.to/oauth/authorize
+          tokenUrl: https://dev.to/oauth/token
+          refreshUrl: https://dev.to/oauth/token
+          scopes: {}
+        clientCredentials:
+          tokenUrl: https://dev.to/oauth/token
+          refreshUrl: https://dev.to/oauth/token
+          scopes: {}
   schemas:
     APIError:
       type: object
@@ -108,37 +125,13 @@ components:
           format: date-time
         user:
           type: object
-          $ref: '#/components/schemas/User'
+          $ref: '#/components/schemas/ArticleUser'
         organization:
-          description: Organization the article belongs to
           type: object
-          properties:
-            name:
-              type: string
-            username:
-              type: string
-            slug:
-              type: string
-            profile_image:
-              description: Profile image (640x640)
-              type: string
-              format: url
-            profile_image_90:
-              description: Profile image (90x90)
-              type: string
-              format: url
+          $ref: '#/components/schemas/ArticleOrganization'
         flare_tag:
-          description: Flare tag of the article
           type: object
-          properties:
-            name:
-              type: string
-            bg_color_hex:
-              description: Background color (hexadecimal)
-              type: string
-            text_color_hex:
-              description: Text color (hexadecimal)
-              type: string
+          $ref: '#/components/schemas/ArticleFlareTag'
     ArticleShow:
       type: object
       required:
@@ -227,7 +220,7 @@ components:
           type: string
         user:
           type: object
-          $ref: '#/components/schemas/User'
+          $ref: '#/components/schemas/ArticleUser'
     ArticleCreate:
       type: object
       properties:
@@ -358,8 +351,81 @@ components:
                 Only users belonging to an organization can assign the article to it
               type: integer
               format: int32
+    ArticleMe:
+      type: object
+      required:
+        - type_of
+        - id
+        - title
+        - description
+        - cover_image
+        - published
+        - published_at
+        - tag_list
+        - slug
+        - path
+        - url
+        - canonical_url
+        - comments_count
+        - positive_reactions_count
+        - published_timestamp
+        - body_markdown
+        - user
+      properties:
+        type_of:
+          type: string
+        id:
+          type: integer
+          format: int32
+        title:
+          type: string
+        description:
+          type: string
+        cover_image:
+          type: string
+          format: url
+        published:
+          type: boolean
+        published_at:
+          type: string
+          format: date-time
+        tag_list:
+          type: array
+          items:
+            type: string
+        slug:
+          type: string
+        path:
+          type: string
+          format: path
+        url:
+          type: string
+          format: url
+        canonical_url:
+          type: string
+          format: url
+        comments_count:
+          type: integer
+          format: int32
+        positive_reactions_count:
+          type: integer
+          format: int32
+        published_timestamp:
+          description: Crossposting or published date time
+          type: string
+          format: date-time
+        user:
+          type: object
+          $ref: '#/components/schemas/ArticleUser'
+        organization:
+          type: object
+          $ref: '#/components/schemas/ArticleOrganization'
+        flare_tag:
+          type: object
+          $ref: '#/components/schemas/ArticleFlareTag'
 
-    User:
+    ArticleUser:
+      description: The article's creator
       type: object
       properties:
         name:
@@ -378,6 +444,38 @@ components:
           type: string
         profile_image_90:
           description: Profile image (90x90)
+          type: string
+
+    ArticleOrganization:
+      description: The organization the article belongs to
+      type: object
+      properties:
+        name:
+          type: string
+        username:
+          type: string
+        slug:
+          type: string
+        profile_image:
+          description: Profile image (640x640)
+          type: string
+          format: url
+        profile_image_90:
+          description: Profile image (90x90)
+          type: string
+          format: url
+
+    ArticleFlareTag:
+      description: Flare tag of the article
+      type: object
+      properties:
+        name:
+          type: string
+        bg_color_hex:
+          description: Background color (hexadecimal)
+          type: string
+        text_color_hex:
+          description: Text color (hexadecimal)
           type: string
 
   examples:
@@ -562,39 +660,39 @@ paths:
                 articles-success:
                   summary: Successful response
                   value:
-                    type_of: article
-                    id: 150589
-                    title: 'Byte Sized Episode 2: The Creation of Graph Theory'
-                    description: The full story of Leonhard Euler and the creation of this fundamental
-                      computer science principle, delivered in a few minutes.
-                    cover_image: https://res.cloudinary.com/practicaldev/image/fetch/s--qgutBUrH--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://thepracticaldev.s3.amazonaws.com/i/88e62fzblbluz1dm7xjf.png
-                    published_at: '2019-08-01T15:47:54.000Z'
-                    tag_list:
-                    - computerscience
-                    - graphtheory
-                    - bytesized
-                    - history
-                    slug: byte-sized-episode-2-the-creation-of-graph-theory-34g1
-                    path: "/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1"
-                    url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
-                    canonical_url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
-                    comments_count: 15
-                    positive_reactions_count: 210
-                    published_timestamp: '2019-08-01T15:47:54Z'
-                    user:
-                      name: Vaidehi Joshi
-                      username: vaidehijoshi
-                      twitter_username: vaidehijoshi
-                      github_username: vaidehijoshi
-                      website_url: http://www.vaidehi.com
-                      profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--eDGAYAoK--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2882/K2evUksb.jpg
-                      profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--htZnqMn3--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2882/K2evUksb.jpg
-                    organization:
-                      name: Byte Sized
-                      username: bytesized
-                      slug: bytesized
-                      profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--sq0DrZfn--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/organization/profile_image/865/652f7998-32a8-4fd9-85ca-dd697d2a9ee9.png
-                      profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--1Pt_ICL---/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/organization/profile_image/865/652f7998-32a8-4fd9-85ca-dd697d2a9ee9.png
+                    - type_of: article
+                      id: 150589
+                      title: 'Byte Sized Episode 2: The Creation of Graph Theory'
+                      description: The full story of Leonhard Euler and the creation of this fundamental
+                        computer science principle, delivered in a few minutes.
+                      cover_image: https://res.cloudinary.com/practicaldev/image/fetch/s--qgutBUrH--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://thepracticaldev.s3.amazonaws.com/i/88e62fzblbluz1dm7xjf.png
+                      published_at: '2019-08-01T15:47:54.000Z'
+                      tag_list:
+                      - computerscience
+                      - graphtheory
+                      - bytesized
+                      - history
+                      slug: byte-sized-episode-2-the-creation-of-graph-theory-34g1
+                      path: "/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1"
+                      url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
+                      canonical_url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
+                      comments_count: 15
+                      positive_reactions_count: 210
+                      published_timestamp: '2019-08-01T15:47:54Z'
+                      user:
+                        name: Vaidehi Joshi
+                        username: vaidehijoshi
+                        twitter_username: vaidehijoshi
+                        github_username: vaidehijoshi
+                        website_url: http://www.vaidehi.com
+                        profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--eDGAYAoK--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2882/K2evUksb.jpg
+                        profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--htZnqMn3--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2882/K2evUksb.jpg
+                      organization:
+                        name: Byte Sized
+                        username: bytesized
+                        slug: bytesized
+                        profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--sq0DrZfn--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/organization/profile_image/865/652f7998-32a8-4fd9-85ca-dd697d2a9ee9.png
+                        profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--1Pt_ICL---/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/organization/profile_image/865/652f7998-32a8-4fd9-85ca-dd697d2a9ee9.png
       x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
         - lang: Shell
           label: curl (all articles)
@@ -665,6 +763,7 @@ paths:
                   $ref: '#/components/examples/ErrorUnauthorized'
       security:
         - api_key: []
+        - oauth2: []
       x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
         - lang: Shell
           label: curl
@@ -795,6 +894,7 @@ paths:
                   $ref: '#/components/examples/ErrorUnauthorized'
       security:
         - api_key: []
+        - oauth2: []
       x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
         - lang: Shell
           label: curl
@@ -804,5 +904,52 @@ paths:
               -d '{"article":{"title":"Title"}' \
               https://dev.to/api/articles/{id}
 
-security:
-  - api_key: []
+  /articles/me:
+    get:
+      summary: Authenticated user's articles
+      description: |
+        This endpoint allows the client to retrieve a list of its articles.
+
+        "Articles" are all the posts that users create on DEV that typically
+        show up in the feed. They can be a blog post, a discussion question,
+        a help thread etc. but is referred to as article within the code.
+
+        It will return both published and draft articles with pagination.
+        Draft articles will be at the top of the list in reverse chronological creation order.
+        Published articles will follow in reverse chronological publication order.
+
+        By default a page will contain `30` articles.
+      tags:
+        - articles
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page.
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: per_page
+          in: query
+          description: Page size (defaults to 30 with a maximum of 1000).
+          schema:
+            type: integer
+            format: int32
+          example: 30
+      responses:
+        200:
+          description: A list of articles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ArticleMe'
+      security:
+        - api_key: []
+        - oauth2: []
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl
+          source: |
+            curl https://dev.to/api/articles/me
