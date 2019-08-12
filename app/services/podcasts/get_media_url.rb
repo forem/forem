@@ -34,7 +34,7 @@ module Podcasts
 
     def url_reachable?(url)
       HTTParty.head(url).code == 200
-    rescue Net::OpenTimeout, Errno::ECONNREFUSED
+    rescue Net::OpenTimeout, SystemCallError
       false
     end
   end
