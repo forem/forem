@@ -1,8 +1,8 @@
 require "rails_helper"
 require "jobs/shared_examples/enqueues_job"
 
-RSpec.describe Articles::AnalyticsUpdaterJob, type: :job do
-  include_examples "#enqueues_job", "article_analytics_updater_job", 456
+RSpec.describe Articles::UpdateAnalyticsJob, type: :job do
+  include_examples "#enqueues_job", "articles_update_analytics", 456
 
   describe "#perform_now" do
     let(:article_analytics_updater_service) { class_double(Articles::AnalyticsUpdater) }

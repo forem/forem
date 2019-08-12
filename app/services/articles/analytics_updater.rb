@@ -8,12 +8,11 @@ module Articles
       new(*args).call
     end
 
-    def call(user_id)
-      articles_to_check = Article.where(user_id: user_id, published: true)
-      qualified_articles = get_articles_that_qualify(articles_to_check)
+    def call(user)
+      qualified_articles = get_articles_that_qualify(published_articles(user))
       return if qualified_articles.none?
 
-      fetch_and_update_page_views_and_reaction_counts(qualified_articles, user_id)
+      fetch_and_update_page_views_and_reaction_counts(qualified_articles, user.id)
     end
 
     private
@@ -49,6 +48,10 @@ module Articles
 
     def occasionally_force_fetch?
       rand(25) == 1
+    end
+
+    def published_articles(user)
+      user.articles.published
     end
   end
 end
