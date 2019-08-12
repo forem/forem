@@ -71,9 +71,9 @@ class ClassifiedListingsController < ApplicationController
     cost = ClassifiedListing.cost_by_category(@classified_listing.category)
 
     # NOTE: this should probably be split in three different actions: bump, unpublish, publish
-    if listing_params[:action] == "bump"
-      bump_listing(cost)
-    elsif listing_params[:action] == "unpublish"
+    return bump_listing(cost) if listing_params[:action] == "bump"
+
+    if listing_params[:action] == "unpublish"
       unpublish_listing
     elsif listing_params[:action] == "publish"
       if @classified_listing.bumped_at.nil?
