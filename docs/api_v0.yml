@@ -2,7 +2,7 @@ openapi: '3.0.2'
 info:
   title: DEV API
   description: Access DEV articles, comments and other resources via API
-  version: '0.5.0'
+  version: '0.5.1'
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -24,9 +24,11 @@ components:
       description: |
         API Key authentication.
 
+        Authentication for some endpoints, like write operations on the
+        Articles API require an API key (DEV API access token).
+
         ### Getting an API key
 
-        Authentication for the Articles API requires an API key (DEV API access token).
         To obtain one, please follow these steps:
 
           - visit https://dev.to/settings/account
@@ -38,7 +40,22 @@ components:
             ![generated DEV API access token](https://res.cloudinary.com/practicaldev/image/fetch/s--kp5L6-9G--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/ra01mo6fp1es261db2ho.png)
       name: api-key
       in: header
+    oauth2:
+      type: oauth2
+      description: |
+        OAuth2 authentication.
 
+        OAuth2 authentication is still in private alpha.
+      flows:
+        authorizationCode:
+          authorizationUrl: https://dev.to/oauth/authorize
+          tokenUrl: https://dev.to/oauth/token
+          refreshUrl: https://dev.to/oauth/token
+          scopes: {}
+        clientCredentials:
+          tokenUrl: https://dev.to/oauth/token
+          refreshUrl: https://dev.to/oauth/token
+          scopes: {}
   schemas:
     APIError:
       type: object
@@ -665,6 +682,7 @@ paths:
                   $ref: '#/components/examples/ErrorUnauthorized'
       security:
         - api_key: []
+        - oauth2: []
       x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
         - lang: Shell
           label: curl
@@ -795,6 +813,7 @@ paths:
                   $ref: '#/components/examples/ErrorUnauthorized'
       security:
         - api_key: []
+        - oauth2: []
       x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
         - lang: Shell
           label: curl
@@ -803,6 +822,3 @@ paths:
               -H "api-key: ACCESS_TOKEN" \
               -d '{"article":{"title":"Title"}' \
               https://dev.to/api/articles/{id}
-
-security:
-  - api_key: []
