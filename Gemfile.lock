@@ -553,6 +553,7 @@ GEM
     pusher-signature (0.1.8)
     raabro (1.1.6)
     rack (2.0.7)
+    rack-cors (1.0.3)
     rack-host-redirect (1.3.0)
       rack
     rack-protection (2.0.5)
@@ -915,6 +916,7 @@ DEPENDENCIES
   pundit-matchers (~> 1.6)
   pusher (~> 1.3)
   pusher-push-notifications (~> 1.1)
+  rack-cors (~> 1.0)
   rack-host-redirect (~> 1.3)
   rack-timeout (~> 0.5)
   rails (~> 5.2, >= 5.2.3)

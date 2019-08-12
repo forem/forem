@@ -65,6 +65,7 @@ gem "puma", "~> 4.0" # Puma is a simple, fast, threaded, and highly concurrent H
 gem "pundit", "~> 2.0" # Object oriented authorization for Rails applications
 gem "pusher", "~> 1.3" # Ruby library for Pusher Channels HTTP API
 gem "pusher-push-notifications", "~> 1.1" # Pusher Push Notifications Ruby server SDK
+gem "rack-cors", "~> 1.0" # Rack Middleware for handling CORS
 gem "rack-timeout", "~> 0.5" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 5.2", ">= 5.2.3" # Ruby on Rails
 gem "rails-assets-airbrake-js-client", "~> 1.6", source: "https://rails-assets.org" # Airbrake JavaScript Notifier
