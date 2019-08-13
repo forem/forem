@@ -52,8 +52,10 @@ class StackexchangeTag < LiquidTagBase
     site
   end
 
-  def valid_id?(input)
-    (input =~ /\A\d{1,10}\Z/i)&.zero?
+  def valid_input?(match_data)
+    return false if match_data.nil?
+
+    (match_data =~ /\A\d{1,10}\Z/i)&.zero?
   end
 
   def handle_response_error(response)
@@ -62,8 +64,10 @@ class StackexchangeTag < LiquidTagBase
   end
 
   def get_data(input)
-    id = input.match(/\d+/i)[0]
-    raise StandardError, "Invalid Stack Exchange ID: {% #{tag_name} #{input} %}" unless valid_id?(id)
+    match_data = input.match(/\d+/i)
+    raise StandardError, "Invalid Stack Exchange ID: {% #{tag_name} #{input} %}" unless valid_input?(match_data)
+
+    id = match_data[0]
 
     post_response = HTTParty.get("#{API_URL}posts/#{id}?site=#{@site}&filter=#{FILTERS['post']}&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}")
 
