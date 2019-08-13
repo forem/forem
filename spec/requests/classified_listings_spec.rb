@@ -319,4 +319,92 @@ RSpec.describe "ClassifiedListings", type: :request do
       end
     end
   end
+
+  describe "DEL /listings/:id" do
+    let(:listing) { create(:classified_listing, user: user) }
+    let(:listing_draft) { create(:classified_listing, user: user) }
+    let(:organization) { create(:organization) }
+    let(:org_listing) { create(:classified_listing, user: user, organization: organization) }
+    let(:org_listing_draft) { create(:classified_listing, user: user, organization: organization) }
+
+    before do
+      sign_in user
+      listing.save
+      org_listing.save
+      listing_draft.bumped_at = nil
+      listing_draft.published = false
+      listing_draft.save
+      org_listing_draft.bumped_at = nil
+      org_listing_draft.published = false
+      org_listing_draft.save
+    end
+
+    context "when deleting draft" do
+      it "redirect to dashboard" do
+        delete "/listings/#{listing_draft.id}"
+        expect(response).to redirect_to("/listings/dashboard")
+      end
+      it "have status 302 found" do
+        delete "/listings/#{listing_draft.id}"
+        expect(response).to have_http_status(:found)
+      end
+      it "decrease total listings count by 1" do
+        expect do
+          delete "/listings/#{listing_draft.id}"
+        end.to change(ClassifiedListing, :count).by(-1)
+      end
+    end
+
+    context "when deleting listing" do
+      it "redirect to dashboard" do
+        delete "/listings/#{listing.id}"
+        expect(response).to redirect_to("/listings/dashboard")
+      end
+
+      it "have status 302 found" do
+        delete "/listings/#{listing.id}"
+        expect(response).to have_http_status(:found)
+      end
+
+      it "decrease total listings count by 1" do
+        expect do
+          delete "/listings/#{listing.id}"
+        end.to change(ClassifiedListing, :count).by(-1)
+      end
+    end
+
+    context "when deleting org listing" do
+      it "redirect to dashboard" do
+        delete "/listings/#{org_listing_draft.id}"
+        expect(response).to redirect_to("/listings/dashboard")
+      end
+      it "have status 302 found" do
+        delete "/listings/#{org_listing_draft.id}"
+        expect(response).to have_http_status(:found)
+      end
+      it "decrease total listings count by 1" do
+        expect do
+          delete "/listings/#{org_listing_draft.id}"
+        end.to change(ClassifiedListing, :count).by(-1)
+      end
+    end
+
+    context "when deleting org listing" do
+      it "redirect to dashboard" do
+        delete "/listings/#{org_listing.id}"
+        expect(response).to redirect_to("/listings/dashboard")
+      end
+
+      it "have status 302 found" do
+        delete "/listings/#{org_listing.id}"
+        expect(response).to have_http_status(:found)
+      end
+
+      it "decrease total listings count by 1" do
+        expect do
+          delete "/listings/#{org_listing.id}"
+        end.to change(ClassifiedListing, :count).by(-1)
+      end
+    end
+  end
 end
