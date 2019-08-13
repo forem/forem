@@ -7,7 +7,7 @@ class ClassifiedListingsController < ApplicationController
 
   def index
     published_listings = ClassifiedListing.where(published: true)
-    @displayed_classified_listing = published_listings.find_by!(slug: params[:slug]) if params[:slug]
+    @displayed_classified_listing = published_listings.find_by(slug: params[:slug]) if params[:slug]
 
     if params[:view] == "moderate"
       return redirect_to "/internal/listings/#{@displayed_classified_listing.id}/edit"
