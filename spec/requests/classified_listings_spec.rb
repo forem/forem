@@ -308,6 +308,13 @@ RSpec.describe "ClassifiedListings", type: :request do
         end.to change(user.credits.spent, :size).by(0)
         expect(listing.reload.published).to eq(true)
       end
+
+      it "fails to publish draft with insufficient credits" do
+        expect do
+          put "/listings/#{listing_draft.id}", params: params
+        end.to change(user.credits.spent, :size).by(0)
+        expect(listing_draft.reload.published).to eq(false)
+      end
     end
 
     context "when the unpublish action is called" do

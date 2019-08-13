@@ -25,7 +25,7 @@
   <%= form_for(@classified_listing) do |f| %>
     <div class="classified-form-inner">
       <h2>
-        <em>You can only edit title/body/tags within the first 24 hours of listing or bumping</em>
+        <em>You can only edit title/body/tags of drafts or within the first 24 hours of listing or bumping</em>
       </h2>
       <% if (@classified_listing.bumped_at && @classified_listing.bumped_at > 24.hours.ago) || @classified_listing.updated_at && !@classified_listing.published %>
         <div class="field">

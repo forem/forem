@@ -75,6 +75,8 @@ class ClassifiedListingsController < ApplicationController
 
     if listing_params[:action] == "unpublish"
       unpublish_listing
+      redirect_to "/listings/dashboard"
+      return
     elsif listing_params[:action] == "publish"
       if @classified_listing.bumped_at.nil?
         return first_publish(cost)
@@ -153,7 +155,7 @@ class ClassifiedListingsController < ApplicationController
 
   def first_publish(cost)
     available_author_credits = @classified_listing.author.credits.unspent
-    available_user_credits = 0
+    available_user_credits = []
     if @classified_listing.author.is_a?(Organization)
       available_user_credits = current_user.credits.unspent
     end
