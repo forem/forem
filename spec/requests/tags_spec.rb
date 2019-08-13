@@ -8,6 +8,42 @@ RSpec.describe "Tags", type: :request, proper_status: true do
     end
   end
 
+  describe "GET /t/:tag" do
+    let!(:tag)            { create(:tag) }
+    let!(:tag_article)    { create(:article, tags: tag.name) }
+
+    let!(:alias_tag)      { create(:tag, alias_for: tag.name) }
+    let!(:alias_article)  { create(:article, tags: alias_tag.name) }
+
+    let!(:later_alias_tag)      { create(:tag) }
+    let!(:later_alias_article)  { create(:article, tags: later_alias_tag.name) }
+
+    let(:super_admin) { create(:user, :super_admin) }
+
+    it "getting tag page returns tagged article" do
+      get "/t/#{tag}"
+      expect(response.body).to include(tag_article.title)
+    end
+
+    it "getting tag page returns article tagged with aliased tag" do
+      get "/t/#{tag}"
+
+      expect(response.body).to include(alias_article.title)
+    end
+
+    it "getting tag page returns article tagged with aliased tag after updating tag" do
+      get "/t/#{tag}"
+
+      expect(response.body).not_to include(later_alias_article.title)
+
+      sign_in super_admin
+      patch "/tag/#{later_alias_tag.id}", params: { alias_for: tag.name }
+
+      get "/t/#{tag}"
+      expect(response.body).to include(later_alias_article.title)
+    end
+  end
+
   describe "GET /t/:tag/edit" do
     let(:tag)                  { create(:tag) }
     let(:another_tag)          { create(:tag) }

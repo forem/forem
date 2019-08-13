@@ -83,6 +83,21 @@ RSpec.describe "Articles", type: :request do
       end
     end
 
+    context "when :tag param is given and tag exists and has an alias" do
+      include_context "when tagged articles exist"
+
+      let!(:alias_tag)     { create(:tag, alias_for: tag.name) }
+      let!(:alias_article) { create(:article, tags: alias_tag.name) }
+
+      before do
+        get "/feed/tag/#{tag.name}"
+      end
+
+      it "returns all articles for the tag and alias tag" do
+        expect(response.body).to include(alias_article.title)
+      end
+    end
+
     context "when :tag param is given and tag does not exist" do
       include_context "when tagged articles exist"
       before { get "/feed/tag/unknown" }
