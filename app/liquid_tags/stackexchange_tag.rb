@@ -1,7 +1,8 @@
 class StackexchangeTag < LiquidTagBase
   PARTIAL = "liquids/stackexchange".freeze
-  # Filter codes come from the example tools in the docs. For example: https://api.stackexchange.com/docs/posts-by-ids
+  # update API version here and in stackexchange_tag_spec when a new version is out
   API_URL = "https://api.stackexchange.com/2.2/".freeze
+  # Filter codes come from the example tools in the docs. For example: https://api.stackexchange.com/docs/posts-by-ids
   FILTERS = {
     "post" => "!3tz1WbZW5JxrG-f99",
     "answer" => "!Fcb(61J.xH9ZW2D7KF1bbM_J7X",
@@ -55,10 +56,9 @@ class StackexchangeTag < LiquidTagBase
     (input =~ /\A\d{1,10}\Z/i)&.zero?
   end
 
-  def handle_response_errors(responses_array)
-    responses_array.map do |response|
-      raise StandardError, "Calling StackExchange API failed: #{response&.error_message}" if response.code != 200
-    end
+  def handle_response_error(response)
+    raise StandardError, "Calling StackExchange API failed: #{response&.error_message}" if response.code != 200
+    raise StandardError, "Couldn't find a post with that ID: {% #{tag_name} #{input} %}" if response["items"].length.zero?
   end
 
   def get_data(input)
@@ -66,10 +66,13 @@ class StackexchangeTag < LiquidTagBase
     raise StandardError, "Invalid Stack Exchange ID: {% #{tag_name} #{input} %}" unless valid_id?(id)
 
     post_response = HTTParty.get("#{API_URL}posts/#{id}?site=#{@site}&filter=#{FILTERS['post']}&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}")
+
+    handle_response_error(post_response)
+
     @post_type = post_response["items"][0]["post_type"]
     final_response = HTTParty.get("#{API_URL}#{@post_type.pluralize}/#{id}?site=#{@site}&filter=#{FILTERS[@post_type]}&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}")
 
-    handle_response_errors([post_response, final_response])
+    handle_response_error(final_response)
 
     final_response["items"][0]
   end
@@ -78,6 +81,8 @@ class StackexchangeTag < LiquidTagBase
     return "Stack Overflow" if @site == "stackoverflow"
 
     response = HTTParty.get("#{API_URL}info?site=#{@site}&filter=#{FILTERS['site']}&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}")
+    handle_response_error(response)
+
     response["items"][0]["site"]["name"]
   end
 end
