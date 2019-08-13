@@ -1,5 +1,4 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js"
-  integrity="sha256-CJWfUCeP3jLdUMVNUll6yQx37gh9AKmXTRxvRf7jzro=" crossorigin="anonymous"></script>
+<%= javascript_pack_tag "colorPicker", defer: true %>
 
 <%= javascript_include_tag "https://unpkg.com/@webcomponents/webcomponentsjs@2.2.10/webcomponents-loader.js", defer: true %>
 <%= javascript_pack_tag "clipboardCopy", defer: true %>
@@ -105,11 +104,13 @@
   </div>
   <div class="field">
     <%= f.label :text_color_hex, "Text color (hex)" %>
-    <%= f.text_field :text_color_hex, placeholder: "#ffffff", class: "jscolor {hash:true, required:false}" %>
+    <%= f.text_field :text_color_hex, placeholder: "#ffffff", class: "color-picker" %>
+    <div class="color-palette"></div>
   </div>
   <div class="field">
     <%= f.label :bg_color_hex, "Background color (hex)" %>
-    <%= f.text_field :bg_color_hex, placeholder: "#000000", class: "jscolor {hash:true, required:false}" %>
+    <%= f.text_field :bg_color_hex, placeholder: "#000000", class: "color-picker" %>
+    <div class="color-palette"></div>
   </div>
   <div class="field">
     <%= f.label :url, "Site url" %>
