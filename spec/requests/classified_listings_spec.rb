@@ -14,6 +14,45 @@ RSpec.describe "ClassifiedListings", type: :request do
     }
   end
 
+  describe "GET /listings" do
+    let(:listing) { create(:classified_listing, user: user) }
+    let(:expired_listing) { create(:classified_listing, user: user) }
+
+    before do
+      sign_in user
+      create_list(:credit, 25, user: user)
+    end
+
+    it "returns text/html and has status 200" do
+      get "/listings"
+      expect(response.content_type).to eq("text/html")
+      expect(response).to have_http_status(:ok)
+    end
+
+    context "when the user has no params" do
+      it "shows all active listings" do
+        get "/listings"
+        expect(response.body).to include("classifieds-container")
+      end
+    end
+
+    context "when the user has category and slug params for active listing" do
+      it "shows that direct listing" do
+        get "/listings", params: { category: `#{listing.category}`, slug: `#{listing.slug}` }
+        expect(response.body).to include(listing.title)
+      end
+    end
+
+    context "when the user has category and slug params for expired listing" do
+      it "shows only active listings from that category" do
+        expired_listing.published = false
+        expired_listing.save
+        get "/listings", params: { category: `#{expired_listing.category}`, slug: `#{expired_listing.slug}` }
+        expect(response.body).not_to include(expired_listing.title)
+      end
+    end
+  end
+
   describe "GET /listings/new" do
     before { sign_in user }
 
