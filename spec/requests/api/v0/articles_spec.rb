@@ -151,6 +151,25 @@ RSpec.describe "Api::V0::Articles", type: :request do
         get me_api_articles_path, params: { access_token: access_token.token, page: 2, per_page: 2 }
         expect(json_response.length).to eq(1)
       end
+
+      it "puts unpublished articles at the top" do
+        create(:article, user: user)
+        create(:article, published: false, published_at: nil, user: user)
+        get me_api_articles_path, params: { access_token: access_token.token }
+        expected_order = json_response.map { |resp| resp["published"] }
+        expect(expected_order).to eq([false, true])
+      end
+
+      it "orders unpublished articles by reverse order" do
+        older = create(:article, published: false, published_at: nil, user: user)
+        newer = nil
+        Timecop.travel(1.day.from_now) do
+          newer = create(:article, published: false, published_at: nil, user: user)
+        end
+        get me_api_articles_path, params: { access_token: access_token.token }
+        expected_order = json_response.map { |resp| resp["id"] }
+        expect(expected_order).to eq([newer.id, older.id])
+      end
     end
   end
 
