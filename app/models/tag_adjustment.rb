@@ -6,7 +6,8 @@ class TagAdjustment < ApplicationRecord
   validates :reason_for_adjustment, presence: true
   validates :adjustment_type, inclusion: { in: %w[removal addition] }, presence: true
   validates :status, inclusion: { in: %w[committed pending committed_and_resolvable resolved] }, presence: true
-  validate  :user_permissions
+  has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
+  validate :user_permissions
 
   belongs_to :user
   belongs_to :tag

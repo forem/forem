@@ -57,6 +57,15 @@
     display: block;
   }
 
+  #undo {
+    background: #ff0000;
+    width: 2rem;
+    height: 2rem;
+    font-size: small;
+    display: inline-block;
+    padding-bottom: 2em;
+  }
+
   .tag-mod-form form textarea {
     width: 100%;
     padding: 5px;
@@ -76,6 +85,10 @@
 
   .level-rating-button.selected {
     background: #9bebff;
+  }
+
+  input.undo {
+    background: #ff0000; /* $red */
   }
 </style>
 
@@ -125,13 +138,18 @@
         <%= f.text_field :tag_name, placeholder: "Tag Name" %>
         <%= f.text_area :reason_for_adjustment, placeholder: "Reason for Removal (Be super kind) - Only the reason is needed, the notification will take care of the rest." %>
         <%= f.submit "Remove Tag" %>
-        <% adjustments = TagAdjustment.where(article_id: @moderatable.id, adjustment_type: "removal") %>
-        <% if adjustments.any? %>
-          <br /><br />
-          <b>Removed tags: </b>
-          <% adjustments.each do |adjustment| %>
-            <%= adjustment.tag_name %>
-          <% end %>
+      <% end %>
+      <% adjustments = TagAdjustment.where(article_id: @moderatable.id, adjustment_type: "removal") %>
+      <% if adjustments.any? %>
+        <br /><br />
+        <b>Removed tags: </b>
+        <% adjustments.each do |adjustment| %>
+          <% if current_user.any_admin? %>
+              <%= form_for(adjustment, url: "/tag_adjustments/#{adjustment.id}", html: { method: :delete, onsubmit: "return confirm('Are you sure you want to undo the removal of the #{adjustment.tag_name} tag?')" }) do |f| %>
+                <%= adjustment.tag_name %>
+                <%= f.submit "X", id: "undo" %>
+              <% end %>
+            <% end %>
         <% end %>
       <% end %>
     </div>

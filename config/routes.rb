@@ -152,7 +152,7 @@ Rails.application.routes.draw do
   resources :html_variant_trials, only: [:create]
   resources :html_variant_successes, only: [:create]
   resources :push_notification_subscriptions, only: [:create]
-  resources :tag_adjustments, only: [:create]
+  resources :tag_adjustments, only: %i[create destroy]
   resources :rating_votes, only: [:create]
   resources :page_views, only: %i[create update]
   resources :classified_listings, path: :listings, only: %i[index new create edit update delete dashboard]
