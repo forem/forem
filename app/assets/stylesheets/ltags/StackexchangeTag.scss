@@ -22,40 +22,50 @@
           margin-left: 5px;
           margin-bottom: 0;
           margin-top: 8px;
-          font-size: 1.5em;
+          font-size: 1.4em;
           padding-bottom: 0;
-        img {
-          height: 38px;
-          width: 38px;
-          display: inline-block;
-          vertical-align: bottom;
+          .title-flare {
+            background: $sky-blue;
+            color: white;
+            padding: 0px 7px;
+            border-radius: 3px;
+          }
+          img {
+            height: 44px;
+            width: 44px;
+            display: inline-block;
+            vertical-align: -9px;
+          }
         }
       }
-      }
       .ltag__stackexchange--post-metadata {
-        display: flex;
         font-size: 0.6em;
-        margin-left: 10px;
-        justify-content: space-evenly;
+        span {
+          display: inline-block;
+          padding: 7px 6px;
+          margin-left: 6px;
+        }
       }
       .ltag__stackexchange--score-container {
-        margin-right: 10px;
+        margin-right: 15px;
         display: flex;
-        width: 25px;
+        width: 50px;
         flex-direction: column;
         flex-wrap: nowrap;
         color: gray;
-        font-size: 0.9em;
+        font-size: 0.85em;
         align-self: center;
         img {
           position: initial;
-          width: 25px;
+          width: 16px;
+          height: 16px;
         }
         .ltag__stackexchange--score-number {
           width: 100%;
-          height: 25px;
+          height: 20px;
           text-align: center;
-          padding-bottom: 5px;
+          padding-bottom: 10px;
+          font-size: 0.8em;
         }
       }
     }
@@ -93,7 +103,7 @@
     pre {
       width: 100%;
       margin: 0px;
-      padding: 0;
+      padding: 0.2em 0.6em;
       code {
         background-color: #F6F8FA;
         color: black;

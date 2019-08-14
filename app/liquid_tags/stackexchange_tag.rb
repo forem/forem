@@ -24,14 +24,13 @@ class StackexchangeTag < LiquidTagBase
       partial: PARTIAL,
       locals: {
         site: @site,
-        pretty_site_name: pretty_site_name,
         title: @json_content["title"],
         created_at: @json_content["creation_date"],
         score: @json_content["score"],
         comment_count: @json_content["comment_count"],
         answer_count: @json_content["answer_count"],
         post_type: @post_type,
-        post_url: @json_content["link"],
+        post_url: @json_content["link"] || "https://stackoverflow.com/a/#{@json_content['answer_id'] || @json_content['question_id']}",
         body: @json_content["body"]
       },
     )
@@ -52,10 +51,9 @@ class StackexchangeTag < LiquidTagBase
     site
   end
 
-  def valid_input?(match_data)
-    return false if match_data.nil?
-
-    (match_data =~ /\A\d{1,10}\Z/i)&.zero?
+  def valid_input?(input)
+    return false if input.nil?
+    /^\d{1,20}$/.match?(input.split(" ")[0])
   end
 
   def handle_response_error(response)
@@ -64,30 +62,21 @@ class StackexchangeTag < LiquidTagBase
   end
 
   def get_data(input)
-    match_data = input.match(/\d+/i)
-    raise StandardError, "Invalid Stack Exchange ID: {% #{tag_name} #{input} %}" unless valid_input?(match_data)
+    raise StandardError, "Invalid Stack Exchange ID: {% #{tag_name} #{input} %}" unless valid_input?(input)
 
-    id = match_data[0]
+    id = input.split(" ")[0]
 
     post_response = HTTParty.get("#{API_URL}posts/#{id}?site=#{@site}&filter=#{FILTERS['post']}&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}")
 
     handle_response_error(post_response)
 
     @post_type = post_response["items"][0]["post_type"]
+
     final_response = HTTParty.get("#{API_URL}#{@post_type.pluralize}/#{id}?site=#{@site}&filter=#{FILTERS[@post_type]}&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}")
 
     handle_response_error(final_response)
 
     final_response["items"][0]
-  end
-
-  def pretty_site_name
-    return "Stack Overflow" if @site == "stackoverflow"
-
-    response = HTTParty.get("#{API_URL}info?site=#{@site}&filter=#{FILTERS['site']}&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}")
-    handle_response_error(response)
-
-    response["items"][0]["site"]["name"]
   end
 end
 

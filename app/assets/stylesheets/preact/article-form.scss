@@ -511,6 +511,9 @@
       background: $green;
       color: $black;
     }
+    &.previewbutt {
+      min-width: 95px;
+    }
     &.articleform__buttons--small {
       width: 45px;
       border: white;

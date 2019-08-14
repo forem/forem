@@ -5,20 +5,16 @@
       <% logo_to_use = site == "stackoverflow" ? "stackoverflow-logo.svg" : "stackexchange-logo.svg" %>
         <h1>
           <img src="<%= ActionController::Base.helpers.asset_path(logo_to_use) %>" alt="">
-          <% if post_type == "question" %>
-            <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer"><%= title %></a>
-          <% else %>
-            <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer">Answer to: <%= title %></a>
-          <% end %>
+            <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer">
+              <%= post_type == "question" ? "" : "<span class='title-flare'>answer</span> re: ".html_safe %> <%= CGI::unescapeHTML title %>
+            </a>
         </h1>
         <div class="ltag__stackexchange--post-metadata">
-        <% if post_type == "question" %>
-          <span>Asked <%= time_ago_in_words(created_at) %> ago</span>
-        <% else %>
-          <span>Answered <%= time_ago_in_words(created_at) %> ago</span>
-        <% end %>
-        <span>Comments: <%= comment_count %></span>
-        <span>Answers: <%= 0 %></span>
+          <span><%= Time.at(created_at).strftime("%b %e '%y") %></span>
+          <% if post_type == "question" %>
+            <span>Comments: <%= comment_count %></span>
+            <span>Answers: <%= answer_count %></span>
+          <% end %>
         </div>
       </div>
       <a class="ltag__stackexchange--score-container" href="<%= post_url %>" target="_blank" rel="noopener noreferrer">
@@ -37,7 +33,7 @@
   </div>
   <div class="ltag__stackexchange--btn--container">
     <button class="ltag__stackexchange--btn" type="button">
-      <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer">View on <%= pretty_site_name %></a>
+      <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer">Open Full <%= post_type.capitalize %></a>
     </button>
   </div>
 </div>
