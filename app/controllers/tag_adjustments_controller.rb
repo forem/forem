@@ -12,4 +12,13 @@ class TagAdjustmentsController < ApplicationController
     @article = Article.find(params[:tag_adjustment][:article_id])
     redirect_to "#{@article.path}/mod"
   end
+
+  def destroy
+    authorize User, :moderation_routes?
+    tag_adjustment = TagAdjustment.find(params[:id])
+    tag_adjustment.destroy
+    @article = Article.find(tag_adjustment.article_id)
+    @article.update!(tag_list: @article.tag_list.add(tag_adjustment.tag_name))
+    redirect_to "#{@article.path}/mod"
+  end
 end
