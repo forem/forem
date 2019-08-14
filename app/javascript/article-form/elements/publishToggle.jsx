@@ -28,7 +28,7 @@ const PublishToggle = ({
     <button
       onClick={onPreview}
       type="button"
-      className={previewShowing ? 'active' : 'inactive'}
+      className={previewShowing ? 'active previewbutt' : 'inactive previewbutt'}
     >
       {previewShowing ? 'EDIT' : 'PREVIEW'}
     </button>
