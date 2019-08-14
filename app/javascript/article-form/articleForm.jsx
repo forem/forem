@@ -7,7 +7,6 @@ import ThreeDotsIcon from 'images/three-dots.svg';
 import { submitArticle, previewArticle } from './actions';
 import BodyMarkdown from './elements/bodyMarkdown';
 import BodyPreview from './elements/bodyPreview';
-// import Description from './elements/description';
 import PublishToggle from './elements/publishToggle';
 import Notice from './elements/notice';
 import Tags from './elements/tags';
@@ -95,14 +94,6 @@ export default class ArticleForm extends Component {
     }
 
     window.addEventListener('beforeunload', this.localStoreContent);
-
-    // const editor = document.getElementById('article_body_markdown');
-    // const myCodeMirror = CodeMirror(editor, {
-    //   mode: 'markdown',
-    //   theme: 'material',
-    //   highlightFormatting: true,
-    // });
-    // myCodeMirror.setSize('100%', '100%');
   }
 
   componentDidUpdate() {
