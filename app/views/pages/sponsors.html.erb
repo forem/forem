@@ -36,7 +36,7 @@
     </h4>
     <div id="gold-sponsors">
       <% Sponsorship.gold.live.includes(:organization).order(featured_number: :asc).each do |sponsorship| %>
-        <a href="<%= sponsorship.url %>"><img src="<%= cloudinary(sponsorship.organization.nav_image_url, 250) %>"></a>
+        <a href="<%= sponsorship.url %>"><%= render "sponsor_image", sponsorship: sponsorship %></a>
         <p>
           <%= sponsorship.blurb_html&.html_safe %>
         </p>
@@ -51,7 +51,7 @@
     </h4>
     <div id="silver-sponsors">
       <% Sponsorship.where(status: "live", level: "silver").where("expires_at > ?", Time.current).includes(:organization).order(featured_number: :asc).each do |sponsorship| %>
-        <a href="<%= sponsorship.url %>"><img src="<%= cloudinary(sponsorship.organization.nav_image_url, 250) %>"></a>
+        <a href="<%= sponsorship.url %>"><%= render "sponsor_image", sponsorship: sponsorship %></a>
         <p>
           <%= sponsorship.blurb_html&.html_safe %>
         </p>
@@ -66,7 +66,7 @@
     </h4>
     <div id="bronze-sponsors">
       <% Sponsorship.bronze.live.where("expires_at > ?", Time.current).includes(:organization).order(featured_number: :asc).find_each do |sponsorship| %>
-        <a href="<%= sponsorship.url %>"><img src="<%= cloudinary(sponsorship.organization.nav_image_url, 250) %>"></a>
+        <a href="<%= sponsorship.url %>"><%= render "sponsor_image", sponsorship: sponsorship %></a>
         <hr />
       <% end %>
     </div>
