@@ -113,7 +113,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
       ?
     </button>
     <button
-      class="inactive"
+      class="inactive previewbutt"
       onClick={[Function]}
       type="button"
     >
