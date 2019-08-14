@@ -1,9 +1,9 @@
 <%= content_for :page_meta do %>
   <%= render "podcast_episodes/meta" %>
 <% end %>
-<div class="home podcasts-form-page">
+<div class="home">
   <%= render "podcast_episodes/sidebar" %>
-  <div class="podcast-form" id="podcast-form">
+  <div class="podcasts-form" id="podcasts-form">
     <%= render "form", podcast: @podcast %>
   </div>
   <%= render "podcast_episodes/sidebar_additional" %>

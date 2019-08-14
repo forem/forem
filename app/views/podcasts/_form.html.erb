@@ -1,12 +1,12 @@
 <%= form_with(model: podcast, local: true) do |form| %>
-  <div class="classified-form-inner">
+  <div>
     <header>
-      <a href="/pod" class="listings-back-button">&lt; return to podcasts</a>
+      <a href="/pod" class="podcast-back-button">&lt; return to podcasts</a>
       <h2>Suggest a Podcast</h2>
     </header>
     <% if podcast.errors.any? %>
-      <div class="classified-errors">
-        <h2><%= pluralize(podcast.errors.count, "error") %> prohibited a podcast from being saved:</h2>
+      <div class="podcast-errors">
+        <h2><%= pluralize(podcast.errors.count, "error") %> while creating a podcast:</h2>
         <ul>
         <% podcast.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -14,7 +14,7 @@
         </ul>
       </div>
     <% end %>
-    <div id="listingform-data">
+    <div id="podcast-form-data">
       <div class="field">
         <%= form.label :title %>
         <%= form.text_field :title, placeholder: "" %>
