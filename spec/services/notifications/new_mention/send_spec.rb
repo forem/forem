@@ -17,4 +17,9 @@ RSpec.describe Notifications::NewMention::Send, type: :service do
     expect(notification.notifiable).to eq(mention)
     expect(notification.json_data["comment"]["path"]).to eq(comment.path)
   end
+
+  it "sends from proper mentioner" do
+    notification = described_class.call(mention)
+    expect(notification.json_data["user"]["id"]).to eq(comment.user_id)
+  end
 end
