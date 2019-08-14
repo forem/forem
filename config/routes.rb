@@ -77,7 +77,6 @@ Rails.application.routes.draw do
           constraints: ApiConstraints.new(version: 0, default: true) do
       resources :articles, only: %i[index show create update] do
         collection do
-          get "/onboarding", to: "articles#onboarding"
           get :me
         end
       end

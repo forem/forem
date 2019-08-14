@@ -34,22 +34,6 @@ module Api
         @article = Article.published.includes(:user).find(params[:id]).decorate
       end
 
-      def onboarding
-        tag_list = if params[:tag_list].present?
-                     params[:tag_list].split(",")
-                   else
-                     %w[career discuss productivity]
-                   end
-        @articles = Array.new(4) { Suggester::Articles::Classic.new.get(tag_list) }
-        Article.tagged_with(tag_list, any: true).
-          order("published_at DESC").
-          where("positive_reactions_count > ? OR comments_count > ? AND published = ?", 10, 3, true).
-          limit(15).each do |article|
-            @articles << article
-          end
-        @articles = @articles.uniq.sample(6)
-      end
-
       def create
         @article = ArticleCreationService.new(@user, article_params).create!
         render "show", status: :created, location: @article.url
