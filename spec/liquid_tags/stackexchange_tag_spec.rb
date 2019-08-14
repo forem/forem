@@ -17,7 +17,7 @@ RSpec.describe StackexchangeTag, type: :liquid_template, vcr: vcr_option do
     end
 
     def generate_exchange_liquid(id)
-      Liquid::Template.register_tag("stackoverflow", StackexchangeTag)
+      Liquid::Template.register_tag("stackexchange", StackexchangeTag)
       Liquid::Template.parse("{% stackexchange #{id} askubuntu %}")
     end
 
