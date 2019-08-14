@@ -1,6 +1,6 @@
 class Sponsorship < ApplicationRecord
   LEVELS = %w[gold silver bronze tag media devrel].freeze
-  LEVELS_WITH_EXPIRATION = %w[gold silver bronze tag].freeze
+  LEVELS_WITH_EXPIRATION = %w[gold silver bronze].freeze
   STATUSES = %w[none pending live].freeze
   # media has no fixed amount of credits
   CREDITS = {
