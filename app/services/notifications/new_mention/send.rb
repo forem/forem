@@ -27,7 +27,7 @@ module Notifications
       attr_reader :mention
 
       def json_data
-        data = { user: user_data(mention.user) }
+        data = { user: user_data(mention.mentionable.user) }
         data[:comment] = comment_data(mention.mentionable) if mention.mentionable_type == "Comment"
         data
       end

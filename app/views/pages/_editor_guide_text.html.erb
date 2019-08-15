@@ -266,7 +266,44 @@
         <p>Enter the full url of the Parler.io audio file you want to embed. </p>
         <pre>
       {% parler https://www.parler.io/audio/73240183203/d53cff009eac2ab1bc9dd8821a638823c39cbcea.7dd28611-b7fc-4cf8-9977-b6e3aaf644a1.mp3 %}
-    </pre>
+        </pre>
+        <h3><strong>Stack Exchange / Stack Overflow Tag</strong></h3>
+        <p>
+          You'll need the question or answer's ID code, and the site. When using <code>{% stackoverflow %}</code> as the tag, the site will default to Stack Overflow.
+          For example:
+          <br>
+          <a href="https://stackoverflow.com/questions/24789130/colors-in-irb-rails-console">https://stackoverflow.com/questions/24789130/colors-in-irb-rails-console</a>
+          <ul>
+              <li>The question ID is: <code style="color: aquamarine; background-color: black;">24789130</code></li>
+          </ul>
+          <pre>
+{% stackoverflow <span style="color: aquamarine;">24789130</span> %}
+          </pre>
+        </p>
+        <p>
+          For other Stack Exchange network sites, you'll need to provide the site's name and use <code>{% stackexchange %}</code> as the tag. For example:
+          <br>
+          <a href="https://diy.stackexchange.com/questions/169988/base-for-refrigerator-wine-shelf">https://diy.stackexchange.com/questions/169988/base-for-refrigerator-wine-shelf</a>
+          <ul>
+            <li>The question ID is: <code style="color: aquamarine; background-color: black;">169988</code></li>
+          <li>The site is <code style="color: orange; background-color: black;">diy</code></li>
+          </ul>
+          <pre>
+{% stackexchange <span style="color: aquamarine;">169988</span> <span style="color: orange;">diy</span> %}
+          </pre>
+        </p>
+        <p>
+        For answers, you can get the answer's ID code by from the answer's "Share" link. For example:
+        <br>
+        <a href="https://diy.stackexchange.com/a/170185">https://diy.stackexchange.com/a/170185</a>
+        <ul>
+          <li>The answer ID is: <code style="color: aquamarine; background-color: black;">170185</code></li>
+          <li>The site is <code style="color: orange; background-color: black;">diy</code></li>
+        </ul>
+        <pre>
+{% stackexchange <span style="color: aquamarine;">170185</span> <span style="color: orange;">diy</span> %}
+        </pre>
+        </p>
         <h3><strong>Parsing Liquid Tags as a Code Example</strong></h3>
         <p>To parse Liquid tags as code, simply wrap it with a single backtick or triple backticks.</p>
         <p><code>`{% mytag %}{{ site.SOMETHING }}{% endmytag %}`</code></p>

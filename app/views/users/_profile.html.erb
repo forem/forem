@@ -1,5 +1,4 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js"
-  integrity="sha256-CJWfUCeP3jLdUMVNUll6yQx37gh9AKmXTRxvRf7jzro=" crossorigin="anonymous"></script>
+<%= javascript_pack_tag "colorPicker", defer: true %>
 
 <% unless @user.identities.exists?(provider: 'github') %>
   <div class="field">
@@ -75,12 +74,14 @@
   <div class="field">
     <% @user.bg_color_hex = user_colors(@user)[:bg] if @user.bg_color_hex.blank? %>
     <%= f.label :bg_color_hex, "background color" %>
-    <%= f.text_field :bg_color_hex, placeholder: "#000000", class: "jscolor {hash:true}" %>
+    <%= f.text_field :bg_color_hex, placeholder: "#000000", class: "color-picker" %>
+    <div class="color-palette"></div>
   </div>
   <div class="field">
     <% @user.bg_color_hex = user_colors(@user)[:text] if @user.text_color_hex.blank? %>
     <%= f.label :text_color_hex, "text color" %>
-    <%= f.text_field :text_color_hex, placeholder: "#ffffff", class: "jscolor {hash:true}" %>
+    <%= f.text_field :text_color_hex, placeholder: "#ffffff", class: "color-picker" %>
+    <div class="color-palette"></div>
   </div>
   <div class="field">
     <%= f.label :location %>
