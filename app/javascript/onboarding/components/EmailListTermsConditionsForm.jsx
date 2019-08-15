@@ -164,6 +164,7 @@ class EmailTermsConditionsForm extends Component {
             <label htmlFor="email_membership_newsletter">
               <input
                 type="checkbox"
+                id="email_membership_newsletter"
                 name="email_membership_newsletter"
                 checked={email_membership_newsletter}
                 onChange={this.handleChange}
@@ -174,6 +175,7 @@ class EmailTermsConditionsForm extends Component {
             <label htmlFor="email_digest_periodic">
               <input
                 type="checkbox"
+                id="email_digest_periodic"
                 name="email_digest_periodic"
                 checked={email_digest_periodic}
                 onChange={this.handleChange}
