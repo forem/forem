@@ -37,7 +37,7 @@ export class ListingDashboard extends Component {
     } = this.state;
 
     const isExpired = (listing) => listing.bumped_at && (!listing.published) ? ((Date.now() - new Date(listing.bumped_at.toString()).getTime()) / (1000 * 60 * 60 * 24)) > 30 : false;
-    const isDraft = (listing) => listing.bumped_at ? !isExpired && (!listing.published) : true;
+    const isDraft = (listing) => listing.bumped_at ? !isExpired(listing) && (!listing.published) : true;
 
     const filterListings = (listingsToFilter, selectedFilter) => {
       if (selectedFilter === "Draft") {
