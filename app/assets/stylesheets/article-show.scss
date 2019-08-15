@@ -351,8 +351,11 @@ article {
       a {
         color: $black;
         padding: calc(0.3vw + 14px);
-        background: darken($lightest-gray, 12%);
-        background: var(--theme-series-article-background, darken($lightest-gray, 12%));
+        @include themeable (
+          background,
+          theme-series-article-background,
+          darken($lightest-gray, 12%)
+        );
         display: inline-block;
         position: relative;
         z-index: 4;
@@ -365,13 +368,19 @@ article {
         }
 
         &:hover {
-          background: darken($lightest-gray, 18%);
-          background: var(--theme-series-article-hover, darken($lightest-gray, 18%));
+          @include themeable (
+            background,
+            theme-series-article-hover,
+            darken($lightest-gray, 18%)
+          );
         }
 
         &.current-article {
-          background: $black;
-          background: var(--theme-current-article-background, $black);
+          @include themeable (
+            background,
+            theme-current-article-background,
+            $black
+          );
           color: white;
         }
 
