@@ -244,7 +244,7 @@ RSpec.describe "Pages", type: :request do
             post "/partnerships", params: params
             sponsorship = org.sponsorships.tag.last
             expect(sponsorship.status).to eq("pending")
-            expect(sponsorship.expires_at).to be(nil)
+            expect(sponsorship.expires_at.to_i).to eq(1.month.from_now.to_i)
             expect(sponsorship.sponsorable).not_to be(nil)
             expect(sponsorship.instructions).to be_blank
             expect(sponsorship.instructions_updated_at).to be(nil)
