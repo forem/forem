@@ -7,7 +7,7 @@ class Podcast < ApplicationRecord
   mount_uploader :pattern_image, ProfileImageUploader
 
   validates :main_color_hex, :title, :feed_url, :image, presence: true
-  validates :feed_url, uniqueness: true
+  validates :feed_url, uniqueness: true, url: { schemes: %w[https http] }
   validates :slug,
             presence: true,
             uniqueness: true,

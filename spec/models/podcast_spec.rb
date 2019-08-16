@@ -35,6 +35,13 @@ RSpec.describe Podcast, type: :model do
       expect(podcast2.errors[:feed_url]).to be_present
     end
 
+    it "validates feed_url format" do
+      podcast2 = build(:podcast, feed_url: "example.com")
+
+      expect(podcast2).not_to be_valid
+      expect(podcast2.errors[:feed_url]).to be_present
+    end
+
     it "doesn't allow to create a podcast with a reserved word slug" do
       enter_podcast = build(:podcast, slug: "enter")
       expect(enter_podcast).not_to be_valid
