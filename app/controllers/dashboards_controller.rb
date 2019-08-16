@@ -21,7 +21,7 @@ class DashboardsController < ApplicationController
     @articles = target.articles.includes(:organization).sorting(params[:sort]).decorate
 
     # Updates analytics in background if appropriate
-    ArticleAnalyticsFetcher.new.delay.update_analytics(current_user.id) if @articles && ApplicationConfig["GA_FETCH_RATE"] < 50 # Rate limit concerned, sometimes we throttle down.
+    Articles::UpdateAnalyticsJob.perform_later(current_user.id) if @articles && ApplicationConfig["GA_FETCH_RATE"] < 50 # Rate limit concerned, sometimes we throttle down.
   end
 
   def following
