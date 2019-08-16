@@ -18,7 +18,7 @@ RSpec.describe "Podcast Create", type: :request do
         twitter_username: "hello-pod",
         image: fixture_file_upload("files/podcast.png", "image/png"),
         slug: "hello-pod",
-        main_color_hex: "#ffffff",
+        main_color_hex: "ffffff",
         website_url: Faker::Internet.url,
         feed_url: Faker::Internet.url
       }
