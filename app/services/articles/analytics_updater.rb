@@ -1,25 +1,28 @@
 module Articles
   class AnalyticsUpdater
-    def initialize(context = "default")
+    def initialize(user, context = "default")
       @context = context
+      @user = user
     end
 
     def self.call(*args)
       new(*args).call
     end
 
-    def call(user)
-      qualified_articles = get_articles_that_qualify(published_articles(user))
+    def call
+      qualified_articles = get_articles_that_qualify(published_articles)
       return if qualified_articles.none?
 
-      fetch_and_update_page_views_and_reaction_counts(qualified_articles, user.id)
+      fetch_and_update_page_views_and_reaction_counts(qualified_articles)
     end
 
     private
 
-    def fetch_and_update_page_views_and_reaction_counts(qualified_articles, user_id)
+    attr_reader :user
+
+    def fetch_and_update_page_views_and_reaction_counts(qualified_articles)
       qualified_articles.each_slice(15).to_a.each do |chunk|
-        pageviews = GoogleAnalytics.new(chunk.pluck(:id), user_id).get_pageviews
+        pageviews = GoogleAnalytics.new(chunk.pluck(:id), user.id).get_pageviews
         page_views_obj = pageviews.to_h
         chunk.each do |article|
           article.update_columns(previous_positive_reactions_count: article.positive_reactions_count)
@@ -50,7 +53,7 @@ module Articles
       rand(25) == 1
     end
 
-    def published_articles(user)
+    def published_articles
       user.articles.published
     end
   end

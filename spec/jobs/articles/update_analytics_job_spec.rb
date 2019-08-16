@@ -18,7 +18,7 @@ RSpec.describe Articles::UpdateAnalyticsJob, type: :job do
 
       it "calls the service" do
         described_class.perform_now(456, article_analytics_updater_service)
-        expect(article_analytics_updater_service).to have_received(:call)
+        expect(article_analytics_updater_service).to have_received(:call).with(456)
       end
     end
 

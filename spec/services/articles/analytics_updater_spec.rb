@@ -14,7 +14,7 @@ RSpec.describe Articles::AnalyticsUpdater do
     context "when positive_reactions_count is LOWER than previous_positive_reactions_count" do
       it "does nothing " do
         build_stubbed(:article, positive_reactions_count: 2, previous_positive_reactions_count: 3, user: user)
-        described_class.new.call(user)
+        described_class.call(user)
         expect(Notification).not_to have_received(:send_milestone_notification)
       end
     end
@@ -24,14 +24,14 @@ RSpec.describe Articles::AnalyticsUpdater do
       let(:pageview) { {} }
       let(:counts) { 1000 }
       let(:user_articles) { double }
-      let(:instance_class) { described_class.new }
+      let(:analytics_updater_service) { described_class.new(user) }
 
       before do
         pageview[article.id] = counts
         allow(stubbed_ga).to receive(:get_pageviews).and_return(pageview)
         allow(article).to receive(:update_columns)
-        allow(instance_class).to receive(:published_articles).with(user).and_return([article])
-        instance_class.call(user)
+        allow(analytics_updater_service).to receive(:published_articles).and_return([article])
+        analytics_updater_service.call
       end
 
       it "sends send_milestone_notification for Reaction and View" do
