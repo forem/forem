@@ -2,7 +2,6 @@ require "rails_helper"
 
 RSpec.describe EdgeCache::Commentable::Bust, type: :service do
   let(:commentable) { create(:article) }
-  let(:username) { create(:user).username }
   let(:cache_buster) { double }
 
   before do
@@ -11,14 +10,14 @@ RSpec.describe EdgeCache::Commentable::Bust, type: :service do
   end
 
   it "busts the cache" do
-    described_class.call(commentable, username, cache_buster)
-    expect(cache_buster).to have_received(:bust_comment).with(commentable, username).once
+    described_class.call(commentable, cache_buster)
+    expect(cache_buster).to have_received(:bust_comment).with(commentable).once
     expect(cache_buster).to have_received(:bust).with("#{commentable.path}/comments").once
   end
 
   it "indexes the commentable" do
     allow(commentable).to receive(:index!)
-    described_class.call(commentable, username, cache_buster)
+    described_class.call(commentable, cache_buster)
     expect(commentable).to have_received(:index!).once
   end
 end

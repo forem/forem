@@ -287,5 +287,23 @@ RSpec.describe Comment, type: :model do
     end
   end
 
+  describe "when a comment is destroyed" do
+    it "updates user last comment date" do
+      expect do
+        comment.destroy
+        user2.reload
+      end.to change(user2, :last_comment_at)
+    end
+  end
+
+  describe "when a comment is created" do
+    it "updates user last comment date" do
+      expect do
+        comment.save
+        user2.reload
+      end.to change(user2, :last_comment_at)
+    end
+  end
+
   include_examples "#sync_reactions_count", :article_comment
 end
