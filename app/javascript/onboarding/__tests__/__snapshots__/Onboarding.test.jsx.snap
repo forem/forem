@@ -157,6 +157,7 @@ preact-render-spy (1 nodes)
         <label htmlFor="email_membership_newsletter">
           <input
             type="checkbox"
+            id="email_membership_newsletter"
             name="email_membership_newsletter"
             checked={true}
             onChange={[Function bound handleChange]}
@@ -166,6 +167,7 @@ preact-render-spy (1 nodes)
         <label htmlFor="email_digest_periodic">
           <input
             type="checkbox"
+            id="email_digest_periodic"
             name="email_digest_periodic"
             checked={true}
             onChange={[Function bound handleChange]}
