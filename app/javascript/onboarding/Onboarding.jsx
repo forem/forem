@@ -9,14 +9,30 @@ import FollowTags from './components/FollowTags';
 import FollowUsers from './components/FollowUsers';
 import BioForm from './components/BioForm';
 
+// Current Onboarding Variants
+// 0) Original intro slide: three explainer paragraphs, left adjusted.
+// 1) Modified intro slide: Cat gif, let's get started.
+// 2) Modified intro slide: Cat gif, We have a few quick questions to fill out your profile
+// 3) Modified intro slide: Skull gif, The more you get involved in community, the better developer you will be.
+// 4) Modified intro slide: Skull gif, You just made a great choice for your dev career
+// 5) No intro slide.
+// 6) Last slide challenge: Leave three constructive comments today
+
 export default class Onboarding extends Component {
   constructor(props) {
     super(props);
 
+    const url = new URL(window.location);
+    const previousLocation = url.searchParams.get('referrer');
+    let variant = '0'; 
+    if (url.searchParams.get('variant') || window.currentUser) {
+      variant = url.searchParams.get('variant') || window.currentUser.onboarding_variant_version || '0';
+    };
+
     this.nextSlide = this.nextSlide.bind(this);
     this.prevSlide = this.prevSlide.bind(this);
-
-    const slides = [
+    
+    let slides = [
       IntroSlide,
       EmailListTermsConditionsForm,
       BioForm,
@@ -26,14 +42,24 @@ export default class Onboarding extends Component {
       ClosingSlide,
     ];
 
-    const url = new URL(window.location);
-    const previousLocation = url.searchParams.get('referrer');
+    if (variant === '5') {
+      slides = [
+        EmailListTermsConditionsForm,
+        BioForm,
+        PersonalInfoForm,
+        FollowTags,
+        FollowUsers,
+        ClosingSlide,
+      ];
+    }
+
 
     this.slides = slides.map(SlideComponent => (
       <SlideComponent
         next={this.nextSlide}
         prev={this.prevSlide}
         previousLocation={previousLocation}
+        variant={variant}
       />
     ));
 

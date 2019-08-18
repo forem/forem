@@ -32,6 +32,7 @@ class HtmlVariantDashboard < Administrate::BaseDashboard
     user
     html_variant_trials
     html_variant_successes
+    success_rate
     id
   ].freeze
 
