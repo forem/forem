@@ -300,6 +300,8 @@
       }
       @media screen and (min-width: 1250px) {
         position: absolute;
+        border-right: 1px solid rgb(219, 222, 225);
+        border-bottom-right-radius: 5px;
         right: 4px;
       }
       .header {
