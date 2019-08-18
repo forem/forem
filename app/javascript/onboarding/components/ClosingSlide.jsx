@@ -19,10 +19,14 @@ class ClosingSlide extends Component {
   }
 
   render() {
-    const { previousLocation, prev, next } = this.props;
+    const { previousLocation, prev, next, variant } = this.props;
 
     const previousLocationListElement = () => {
-      if (previousLocation !== 'none' && previousLocation !== null) {
+      if (variant === '6') {
+        return (
+            <div className="onboarding-previous-location" >✨ <em>Challenge: Leave 3 constructive comments today</em> ✨</div>
+        );
+      } else if (previousLocation !== 'none' && previousLocation !== null) {
         return (
           <a className="onboarding-previous-location" href={previousLocation}>
             <div>Or go back to the page you were on before you signed up</div>
@@ -89,6 +93,7 @@ ClosingSlide.propTypes = {
   prev: PropTypes.func.isRequired,
   next: PropTypes.string.isRequired,
   previousLocation: PropTypes.string.isRequired,
+  variant: PropTypes.string.isRequired,
 };
 
 export default ClosingSlide;

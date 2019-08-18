@@ -353,17 +353,19 @@ preact-render-spy (1 nodes)
          />
         <span>community!</span>
       </h1>
-      <p>
-        DEV is where programmers share ideas and help each other grow. 🤓
-      </p>
-      <p>
-        Ask questions, leave helpful comments, encourage others, and have fun! 🙌
-      </p>
-      <p>
-        A few 
-        <strong>quick questions</strong>
-         for you before you get started...
-      </p>
+      <div>
+        <p>
+          DEV is where programmers share ideas and help each other grow. 🤓
+        </p>
+        <p>
+          Ask questions, leave helpful comments, encourage others, and have fun! 🙌
+        </p>
+        <p>
+          A few 
+          <strong>quick questions</strong>
+           for you before you get started...
+        </p>
+      </div>
     </div>
     <nav class="onboarding-navigation">
       <button

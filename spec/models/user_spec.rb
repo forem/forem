@@ -111,6 +111,12 @@ RSpec.describe User, type: :model do
       user.reload
       expect(user.email).to eq("anna@example.com")
     end
+
+    it "sets onboarding_variant_version" do
+      user = create(:user, email: "anna@example.com")
+      user.reload
+      expect(%w[0 1 2 3 4 5 6]).to include(user.onboarding_variant_version)
+    end
   end
 
   describe "validations" do

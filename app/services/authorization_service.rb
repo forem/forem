@@ -63,6 +63,7 @@ class AuthorizationService
       add_social_identity_data(user)
       user.saw_onboarding = false
       user.editor_version = "v2"
+      user.onboarding_variant_version = %w[0 0 0 0 0 0 1 2 3 4 5 6].sample # 6/12 chance of getting version zero (current dominant)
       user.save!
     end
     user
