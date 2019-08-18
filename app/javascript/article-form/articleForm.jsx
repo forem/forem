@@ -212,7 +212,7 @@ export default class ArticleForm extends Component {
 
   handleMainImageUrlChange = payload => {
     this.setState({
-      mainImage: payload.link,
+      mainImage: payload.links[0],
       imageManagementShowing: false,
     });
   };
