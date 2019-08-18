@@ -7,6 +7,7 @@
     <meta itemprop="contentUrl" content="<%= article.video_source_url %>" />
     <% minutes, seconds = article.video_duration_in_minutes.split(":") %>
     <meta itemprop="duration" content="<%= format("PT%<minutes>sM%<seconds>sS", minutes: minutes, seconds: seconds) %>" />
+    <div id="video-player-source" data-source="<%= article.video_source_url %>"></div>
   <% end %>
   <script src="//content.jwplatform.com/libraries/b1zWy2iv.js" async></script>
   <div id="video-player-<%= article.id %>" class="video-player"></div>
