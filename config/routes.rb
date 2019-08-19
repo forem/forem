@@ -65,6 +65,7 @@ Rails.application.routes.draw do
     end
     resources :organization_memberships, only: %i[update destroy create]
     resources :welcome, only: %i[index create]
+    resources :growth, only: %i[index]
     resources :tools, only: %i[index create] do
       collection do
         post "bust_cache"
