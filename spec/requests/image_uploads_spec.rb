@@ -43,6 +43,12 @@ RSpec.describe "ImageUploads", type: :request do
         expect(response.body).to match("\/i\/.+\.")
       end
 
+      it "supports for uploading a single image not in an array" do
+        post "/image_uploads", headers: headers, params: { image: image }
+        expect(JSON.parse(response.body)["links"].length).to eq(1)
+        expect(response.body).to match("\/i\/.+\.")
+      end
+
       it "supports upload of more than one image at a time" do
         image2 = Rack::Test::UploadedFile.new(
           Rails.root.join("spec", "support", "fixtures", "images", "image2.jpeg"),
