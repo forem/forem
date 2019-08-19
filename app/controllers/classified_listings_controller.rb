@@ -157,7 +157,7 @@ class ClassifiedListingsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow a specific list through.
   def listing_params
-    accessible = %i[title body_markdown category tag_list contact_via_connect location organization_id action]
+    accessible = %i[title body_markdown category tag_list expire_on contact_via_connect location organization_id action]
     params.require(:classified_listing).permit(accessible)
   end
 end
