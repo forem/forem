@@ -13,9 +13,9 @@ RSpec.describe Comment, type: :model do
   end
 
   describe "validations" do
-    subject { described_class.new(commentable: article) }
+    subject { described_class.new(user: user, commentable: article) }
 
-    let(:article) { Article.new }
+    let(:article) { Article.new(user: user2) }
 
     before do
       allow(article).to receive(:touch).and_return(true)
