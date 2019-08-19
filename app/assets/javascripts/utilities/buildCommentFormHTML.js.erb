@@ -26,7 +26,7 @@ function buildCommentFormHTML(commentableId, commentableType, parentId) {
               <img alt="markdown guide" class="icon-image" src="<%= asset_path('info.svg') %>" />\
             </a>\
             <div class="editor-image-upload">\
-              <input type="file" multiple="" id="image-upload-' + randomIdNumber + '"  name="file" accept="image/*" style="display:none">\
+              <input type="file" id="image-upload-' + randomIdNumber + '"  name="file" accept="image/*" style="display:none">\
               <button title="Upload Image" class="image-upload-button" id="image-upload-button-' + randomIdNumber + '" onclick="handleImageUpload(event,'+ randomIdNumber + ')">\
                 <img alt="upload image" class="icon-image" src="<%= asset_path("image-upload.svg") %>" />\
               </button>\
