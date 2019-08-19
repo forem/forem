@@ -94,7 +94,7 @@ gem "twitter", "~> 6.2" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.1" # Uglifier minifies JavaScript files
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "webpacker", "~> 3.5" # Use webpack to manage app-like JavaScript modules in Rails
-gem "webpush", "~> 0.3" # Encryption Utilities for Web Push payload
+gem "webpush", "~> 1.0" # Encryption Utilities for Web Push payload
 
 group :development do
   gem "better_errors", "~> 2.5" # Provides a better error page for Rails and other Rack apps
