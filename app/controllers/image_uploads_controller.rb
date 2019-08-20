@@ -43,11 +43,18 @@ class ImageUploadsController < ApplicationController
   private
 
   def image_upload(images)
-    images.map do |image|
+    if images.is_a? Array
+      images.map do |image|
+        uploader = ArticleImageUploader.new
+        uploader.store!(image)
+        RateLimitChecker.new(current_user).track_image_uploads
+        uploader
+      end
+    else
       uploader = ArticleImageUploader.new
-      uploader.store!(image)
+      uploader.store!(images)
       RateLimitChecker.new(current_user).track_image_uploads
-      uploader
+      [uploader]
     end
   end
 end
