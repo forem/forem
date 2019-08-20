@@ -145,7 +145,6 @@ class ArticlesController < ApplicationController
                      end
     updated = @article.update(article_params_json.merge(edited_at: edited_at_date))
     handle_notifications(updated)
-
     respond_to do |format|
       format.html do
         # TODO: JSON should probably not be returned in the format.html section
@@ -155,6 +154,10 @@ class ArticlesController < ApplicationController
         end
         if params[:destination]
           redirect_to(params[:destination])
+          return
+        end
+        if params[:article][:video_thumbnail_url]
+          redirect_to(@article.path + "/edit")
           return
         end
         render json: { status: 200 }
@@ -256,7 +259,7 @@ class ArticlesController < ApplicationController
                        %i[body_markdown]
                      else
                        %i[
-                         title body_markdown main_image published description
+                         title body_markdown main_image published description video_thumbnail_url
                          tag_list canonical_url series collection_id archived
                        ]
                      end
