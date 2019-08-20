@@ -8,7 +8,18 @@
 
 # Offense count: 9
 Metrics/AbcSize:
-  Max: 83
+  Enabled: true
+  Max: 50
+  Exclude:
+    - 'app/controllers/articles_controller.rb'
+    - 'app/controllers/comments_controller.rb'
+    - 'app/controllers/follows_controller.rb'
+    - 'app/controllers/internal/articles_controller.rb'
+    - 'app/controllers/omniauth_callbacks_controller.rb'
+    - 'app/labor/hex_comparer.rb'
+    - 'app/models/tweet.rb'
+    - 'app/services/notifications/new_comment/send.rb'
+    - 'app/services/notifications/reactions/send.rb'
 
 # Offense count: 13
 # Configuration parameters: CountComments, ExcludedMethods.
@@ -19,6 +30,7 @@ Metrics/BlockLength:
 # Offense count: 1
 # Configuration parameters: Max.
 RSpec/ExampleLength:
+  Max: 10
   Exclude:
     - 'spec/system/**/*'
     - 'spec/requests/display_ad_events_spec.rb'
