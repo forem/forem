@@ -24,4 +24,10 @@ RSpec.describe Webhook::Endpoint, type: :model do
   it "belongs to user" do
     expect(user.webhook_endpoints.pluck(:id).sort).to eq([endpoint, epoint2].map(&:id).sort)
   end
+
+  it "sets events according to the list" do
+    webhook = create(:webhook_endpoint, events: %w[article_updated other_updated cool article_created])
+    webhook.reload
+    expect(webhook.events.sort).to eq(%w[article_created article_updated])
+  end
 end

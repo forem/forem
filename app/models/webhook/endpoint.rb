@@ -12,5 +12,10 @@ module Webhook
     def self.table_name_prefix
       "webhook_"
     end
+
+    def events=(events)
+      events = Array(events).map { |event| event.to_s.underscore }
+      super(Webhook::Event::EVENT_TYPES & events)
+    end
   end
 end
