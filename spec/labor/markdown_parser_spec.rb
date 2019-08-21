@@ -17,6 +17,24 @@ RSpec.describe MarkdownParser do
     expect(generate_and_parse_markdown(code_block)).to include("{% what %}")
   end
 
+  it "escapes the `raw` Liquid tag in codeblocks" do
+    code_block = "```\n{% raw %}some text{% endraw %}\n```"
+    expect(generate_and_parse_markdown(code_block)).to include("{% raw %}")
+    expect(generate_and_parse_markdown(code_block)).to include("{% endraw %}")
+  end
+
+  it "escapes the `raw` Liquid tag in inline code" do
+    code_block = "`{% raw %}some text{% endraw %}`"
+    expect(generate_and_parse_markdown(code_block)).to include("{% raw %}")
+    expect(generate_and_parse_markdown(code_block)).to include("{% endraw %}")
+  end
+
+  it "escapes the `raw` Liquid tag in codespans" do
+    code_block = "``{% raw %}some text{% endraw %}``"
+    expect(generate_and_parse_markdown(code_block)).to include("{% raw %}")
+    expect(generate_and_parse_markdown(code_block)).to include("{% endraw %}")
+  end
+
   it "escapes codeblocks in numbered lists" do
     code_block = "1. Define your hooks in config file `lefthook.yml`\n
     ```yaml

@@ -26,6 +26,7 @@ class MarkdownParser
     html = wrap_all_tables(html)
     html = remove_empty_paragraphs(html)
     html = escape_colon_emojis_in_codeblock(html)
+    html = unescape_raw_tag_in_codeblocks(html)
     wrap_mentions_with_links!(html)
   end
 
@@ -162,6 +163,8 @@ class MarkdownParser
   def escape_liquid_tags_in_codeblock(content)
     # Escape codeblocks, code spans, and inline code
     content.gsub(/[[:space:]]*`{3}.*?`{3}|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
+      codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
+      codeblock.gsub!("{% raw %}", "{----% raw %----}")
       if codeblock.match?(/[[:space:]]*`{3}/)
         "\n{% raw %}\n" + codeblock + "\n{% endraw %}\n"
       else
@@ -172,6 +175,12 @@ class MarkdownParser
       #   liquid_tag.gsub(/{%/, '{{ "{%').gsub(/%}/, '" }}%}')
       # end
     end
+  end
+
+  def unescape_raw_tag_in_codeblocks(html)
+    html.gsub!("{----% raw %----}", "{% raw %}")
+    html.gsub!("{----% endraw %----}", "{% endraw %}")
+    html
   end
 
   def wrap_mentions_with_links!(html)
