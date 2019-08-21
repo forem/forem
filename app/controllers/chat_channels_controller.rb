@@ -16,8 +16,7 @@ class ChatChannelsController < ApplicationController
   end
 
   def show
-    @chat_channel = ChatChannel.find_by(id: params[:id]) || not_found
-    authorize @chat_channel
+    set_channel
   end
 
   def create
@@ -33,8 +32,7 @@ class ChatChannelsController < ApplicationController
   end
 
   def update
-    @chat_channel = ChatChannel.find(params[:id])
-    authorize @chat_channel
+    set_channel
     ChatChannelUpdateService.new(@chat_channel, chat_channel_params).update
     if @chat_channel.valid?
       render json: { status: "success",
@@ -46,8 +44,7 @@ class ChatChannelsController < ApplicationController
   end
 
   def open
-    @chat_channel = ChatChannel.find(params[:id])
-    authorize @chat_channel
+    set_channel
     membership = @chat_channel.chat_channel_memberships.where(user_id: current_user.id).first
     membership.update(last_opened_at: 1.second.from_now, has_unopened_messages: false)
     @chat_channel.index!
@@ -56,8 +53,7 @@ class ChatChannelsController < ApplicationController
   end
 
   def moderate
-    @chat_channel = ChatChannel.find(params[:id])
-    authorize @chat_channel
+    set_channel
     command = chat_channel_params[:command].split
     case command[0]
     when "/ban"
@@ -117,6 +113,11 @@ class ChatChannelsController < ApplicationController
   end
 
   private
+
+  def set_channel
+    @chat_channel = ChatChannel.find_by(id: params[:id]) || not_found
+    authorize @chat_channel
+  end
 
   def chat_channel_params
     params.require(:chat_channel).permit(policy(ChatChannel).permitted_attributes)
