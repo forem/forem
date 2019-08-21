@@ -196,6 +196,15 @@ RSpec.describe "ClassifiedListings", type: :request do
           and change(user.credits.spent, :size).by(0)
       end
     end
+
+    context "when user is banned" do
+      it "raises error" do
+        user.add_role(:banned)
+        expect do
+          post "/listings", params: listing_params
+        end.to raise_error("BANNED")
+      end
+    end
   end
 
   describe "PUT /listings/:id" do
