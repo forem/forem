@@ -145,6 +145,19 @@
       </div>
     </div>
     <%= render "articles/user_metadata", context: "profile" %>
+    <div class="profile-dropdown">
+      <button id="user-profile-dropdown">
+        <%= image_tag("three-dots.svg", class: "dropdown-icon", alt: "Toggle dropdown menu") %>
+      </button>
+      <div id="user-profile-dropdownmenu" class="profile-dropdownmenu">
+        <a href="/report-abuse?url=https://dev.to/<%= @user.username %>">Report Abuse</a>
+      </div>
+    </div>
+    <script>
+      document.getElementById("user-profile-dropdown").onclick = function() {
+        document.getElementById("user-profile-dropdownmenu").classList.toggle("showing")
+      }
+    </script>
   </div>
 <% end %>
 
