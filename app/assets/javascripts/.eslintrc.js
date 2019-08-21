@@ -14,5 +14,6 @@ module.exports = {
   globals: {
     getCsrfToken: false,
     sendFetch: false,
+    preventDefaultAction: false,
   },
 };
