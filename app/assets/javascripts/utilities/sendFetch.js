@@ -1,7 +1,9 @@
+'use strict';
+
 function sendFetch(switchStatement, body) {
   switch (switchStatement) {
     case 'article-preview':
-      return function(csrfToken) {
+      return csrfToken => {
         return window.fetch('/articles/preview', {
           method: 'POST',
           headers: {
@@ -14,7 +16,7 @@ function sendFetch(switchStatement, body) {
         });
       };
     case 'reaction-creation':
-      return function(csrfToken) {
+      return csrfToken => {
         body.append('authenticity_token', csrfToken);
         return window.fetch('/reactions', {
           method: 'POST',
@@ -26,7 +28,7 @@ function sendFetch(switchStatement, body) {
         });
       };
     case 'image-upload':
-      return function(csrfToken) {
+      return csrfToken => {
         body.append('authenticity_token', csrfToken);
         return window.fetch('/image_uploads', {
           method: 'POST',
@@ -38,7 +40,7 @@ function sendFetch(switchStatement, body) {
         });
       };
     case 'follow-creation':
-      return function(csrfToken) {
+      return csrfToken => {
         body.append('authenticity_token', csrfToken);
         return window.fetch('/follows', {
           method: 'POST',
@@ -50,7 +52,7 @@ function sendFetch(switchStatement, body) {
         });
       };
     case 'chat-creation':
-      return function(csrfToken) {
+      return csrfToken => {
         body.append('authenticity_token', csrfToken);
         return window.fetch('/chat_channels/create_chat', {
           method: 'POST',
@@ -62,7 +64,7 @@ function sendFetch(switchStatement, body) {
         });
       };
     case 'block-chat':
-      return function(csrfToken) {
+      return csrfToken => {
         body.append('authenticity_token', csrfToken);
         return window.fetch('/chat_channels/block_chat', {
           method: 'POST',
@@ -74,7 +76,7 @@ function sendFetch(switchStatement, body) {
         });
       };
     case 'comment-creation':
-      return function(csrfToken) {
+      return csrfToken => {
         return window.fetch('/comments', {
           method: 'POST',
           headers: {
@@ -86,7 +88,7 @@ function sendFetch(switchStatement, body) {
         });
       };
     case 'comment-preview':
-      return function(csrfToken) {
+      return csrfToken => {
         return window.fetch('/comments/preview', {
           method: 'POST',
           headers: {
@@ -98,7 +100,7 @@ function sendFetch(switchStatement, body) {
         });
       };
     default:
-      console.log('A wrong switchStatement was used.');
+      console.log('A wrong switchStatement was used.'); // eslint-disable-line no-console
       break;
   }
   return true;
