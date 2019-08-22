@@ -60,7 +60,10 @@ class PartnershipsController < ApplicationController
       status: :pending,
       expires_at: expires_at
     }
-    create_params[:sponsorable] = sponsorable if sponsorable
+    if sponsorable
+      create_params[:sponsorable] = sponsorable
+      create_params[:expires_at] = 1.month.from_now
+    end
 
     if sponsorship_params[:instructions]
       create_params[:instructions] = sponsorship_params[:instructions]

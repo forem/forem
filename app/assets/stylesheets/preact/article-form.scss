@@ -549,7 +549,6 @@
     cursor: pointer;
     img {
       display: inline-block;
-      height: initial;
       max-width: 24px;
       margin: -10px 5px;
       position: relative;
@@ -593,7 +592,7 @@
     display: block;
     cursor: pointer;
   }
-  input[type='text'] {
+  input[type='text'], textarea {
     width: calc(80% - 20px);
     padding: 10px 20px;
     border-radius: 3px;

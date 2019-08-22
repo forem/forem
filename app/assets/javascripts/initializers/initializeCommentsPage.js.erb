@@ -465,7 +465,7 @@ function handleImageUpload(event, randomIdNumber) {
                 var messageContainer = document.getElementById("image-upload-file-label-" + randomIdNumber)
                 // button.style.display = "none";
                 messageContainer.style.display = "none";
-                address.value = json.link;
+                address.value = json.links[0];
                 address.classList.add("showing");
                 address.select();
 

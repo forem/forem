@@ -7,7 +7,7 @@ export default class ImageManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      insertionImageUrl: null,
+      insertionImageUrls: [],
       uploadError: false,
       uploadErrorMessage: null,
     };
@@ -37,7 +37,7 @@ export default class ImageManagement extends Component {
 
   handleInsertImageUploadSuccess = response => {
     this.setState({
-      insertionImageUrl: response.link,
+      insertionImageUrls: response.links,
     });
   };
 
@@ -47,7 +47,7 @@ export default class ImageManagement extends Component {
     const { onMainImageUrlChange } = this.props;
 
     onMainImageUrlChange({
-      link: null,
+      links: [],
     });
   };
 
@@ -60,7 +60,7 @@ export default class ImageManagement extends Component {
 
   onUploadError = error => {
     this.setState({
-      insertionImageUrl: null,
+      insertionImageUrls: [],
       uploadError: true,
       uploadErrorMessage: error.message,
     });
@@ -95,9 +95,17 @@ export default class ImageManagement extends Component {
     this.imageMarkdownAnnouncer.hidden = false;
   };
 
+  linksToMarkdownForm = imageLinks => {
+    return imageLinks.map(imageLink => `![Alt Text](${imageLink})`).join('\n');
+  };
+
+  linksToDirectForm = imageLinks => {
+    return imageLinks.join('\n');
+  };
+
   render() {
     const { onExit, mainImage, version } = this.props;
-    const { insertionImageUrl, uploadError, uploadErrorMessage } = this.state;
+    const { insertionImageUrls, uploadError, uploadErrorMessage } = this.state;
     let mainImageArea;
 
     if (mainImage) {
@@ -118,7 +126,7 @@ export default class ImageManagement extends Component {
     }
 
     let insertionImageArea;
-    if (insertionImageUrl) {
+    if (insertionImageUrls.length > 0) {
       insertionImageArea = (
         <div>
           <h3>Markdown Image:</h3>
@@ -128,10 +136,9 @@ export default class ImageManagement extends Component {
             aria-live="polite"
             aria-controls="image-markdown-copy-link-announcer"
           >
-            <input
+            <textarea
               id="image-markdown-copy-link-input"
-              type="text"
-              value={`![Alt Text](${insertionImageUrl})`}
+              value={this.linksToMarkdownForm(insertionImageUrls)}
             />
             <img
               id="image-markdown-copy-icon"
@@ -143,17 +150,20 @@ export default class ImageManagement extends Component {
             </span>
           </clipboard-copy>
           <h3>Direct URL:</h3>
-          <input
+          <textarea
             id="image-direct-copy-link-input"
-            type="text"
-            value={insertionImageUrl}
+            value={this.linksToDirectForm(insertionImageUrls)}
           />
         </div>
       );
     } else {
       insertionImageArea = (
         <div>
-          <input type="file" onChange={this.handleInsertionImageUpload} />
+          <input
+            type="file"
+            onChange={this.handleInsertionImageUpload}
+            multiple
+          />
         </div>
       );
     }

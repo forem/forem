@@ -53,6 +53,7 @@ class StackexchangeTag < LiquidTagBase
 
   def valid_input?(input)
     return false if input.nil?
+
     /^\d{1,20}$/.match?(input.split(" ")[0])
   end
 

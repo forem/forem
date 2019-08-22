@@ -1,5 +1,7 @@
+'use strict';
+
 function insertAfter(newNode, referenceNode) {
-    if (referenceNode && referenceNode.parentNode){
-      referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
-    }
+  if (referenceNode && referenceNode.parentNode) {
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+  }
 }

@@ -35,7 +35,7 @@
           </div>
         </div>
       <% end %>
-      <% if @tag_model.sponsorship && @tag_model.sponsorship.status == "live" %>
+      <% if @tag_model.sponsorship && @tag_model.sponsorship.status == "live" && @tag_model.sponsorship.expires_at > Time.current %>
         <div class="widget">
           <header>
             <h4><%= @tag %> is sponsored by</h4>

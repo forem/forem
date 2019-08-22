@@ -1,3 +1,5 @@
+'use strict';
+
 function browserStoreCache(action, userData) {
   try {
     switch (action) {
@@ -19,4 +21,5 @@ function browserStoreCache(action, userData) {
       browserStoreCache('remove');
     }
   }
+  return undefined;
 }
