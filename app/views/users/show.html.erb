@@ -183,7 +183,7 @@
     <div class="substories" id="substories">
       <% if params[:view] == "comments" %>
         <%= render "users/comments_section" %>
-      <% elsif @stories.any? || @comments.any? %>
+      <% elsif @stories.any? || @comments.any? || @pinned_stories.any? %>
         <%= render "users/main_feed" %>
       <% end %>
     </div>
