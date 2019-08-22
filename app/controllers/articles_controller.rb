@@ -123,7 +123,7 @@ class ArticlesController < ApplicationController
     authorize Article
 
     @user = current_user
-    @article = ArticleCreationService.new(@user, article_params_json).create!
+    @article = Articles::Creator.call(@user, article_params_json)
 
     render json: if @article.persisted?
                    @article.to_json(only: [:id], methods: [:current_state_path])
