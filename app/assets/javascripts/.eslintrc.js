@@ -15,5 +15,9 @@ module.exports = {
     getCsrfToken: false,
     sendFetch: false,
     preventDefaultAction: false,
+    userData: false,
+    ga: false, // Google Analytics
+    handleOptimisticButtRender: false,
+    handleFollowButtPress: false,
   },
 };
