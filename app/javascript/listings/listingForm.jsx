@@ -29,7 +29,7 @@ export default class ListingForm extends Component {
       categoriesForDetails: this.categoriesForDetails,
       organizations,
       organizationId: null, // change this for /edit later
-      expireDate: this.listing.expire_on || '',
+      expireDate: this.listing.expires_at || '',
     };
   }
 

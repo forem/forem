@@ -43,8 +43,8 @@
           <%= f.text_field "location", maxlength: 32, placeholder: "32 characters max, plain text" %>
         </div>
         <div class="field">
-          <%= f.label "expire_on", "Custom Expire Date" %>
-          <%= f.date_field "expire_on", min: Date.tomorrow, max: @classified_listing.bumped_at + 30.days %>
+          <%= f.label "expires_at", "Custom Expire Date" %>
+          <%= f.date_field "expires_at", min: Date.tomorrow, max: @classified_listing.bumped_at + 30.days %>
         </div>
         <div class="field">
           <%= f.label "contact_via_connect", "Allow Users to Message Me Via In-App Chat (DEV Connect)" %>

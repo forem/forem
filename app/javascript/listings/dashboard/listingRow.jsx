@@ -26,8 +26,8 @@ export const ListingRow = ({ listing }) => {
     ''
   );
 
-  const expiryDate = listing.expire_on ? 
-    new Date(listing.expire_on.toString()).toLocaleDateString('default', {
+  const expiryDate = listing.expires_at ? 
+    new Date(listing.expires_at.toString()).toLocaleDateString('default', {
       day: '2-digit',
       month: 'short',
     }) : '' ;

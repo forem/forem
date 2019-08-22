@@ -11,12 +11,12 @@ const ExpireDate = ({ onChange, defaultValue }) => {
   
   return (
     <div className="field">
-      <label className="listingform__label" htmlFor="expire_on">Custom Expire Date (if applicable for time sensitive events, deadlines, etc.)</label>
+      <label className="listingform__label" htmlFor="expires_at">Custom Expire Date (if applicable for time sensitive events, deadlines, etc.)</label>
       <input
         type="date"
         className="listingform__input"
-        id="expire_on"
-        name="classified_listing[expire_on]"
+        id="expires_at"
+        name="classified_listing[expires_at]"
         value={defaultValue}
         onInput={onChange}
         min={tomorrow}
