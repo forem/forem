@@ -1,3 +1,5 @@
+'use strict';
+
 function checkUserLoggedIn() {
   const body = document.getElementsByTagName('body')[0];
   if (!body) {
