@@ -2,6 +2,8 @@ class MarkdownParser
   include ApplicationHelper
   include CloudinaryHelper
 
+  WORDS_READ_PER_MINUTE = 275.0
+
   def initialize(content)
     @content = content
   end
@@ -31,7 +33,7 @@ class MarkdownParser
 
   def calculate_reading_time
     word_count = @content.split(/\W+/).count
-    (word_count / 275.0).ceil
+    (word_count / WORDS_READ_PER_MINUTE).ceil
   end
 
   def evaluate_markdown
