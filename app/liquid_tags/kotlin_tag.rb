@@ -10,8 +10,7 @@ class KotlinTag < LiquidTagBase
     ActionController::Base.new.render_to_string(
       partial: PARTIAL,
       locals: {
-        link: @link,
-        height: 600
+        link: @link
       },
     )
   end
