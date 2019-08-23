@@ -318,6 +318,8 @@ Rails.application.routes.draw do
     get "/rails/mailers/*path" => "rails/mailers#preview"
   end
 
+  get "/embed/:embeddable" => "liquid_embeds#show"
+
   get "/new" => "articles#new"
   get "/new/:template" => "articles#new"
 
