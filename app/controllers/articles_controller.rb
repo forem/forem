@@ -180,9 +180,7 @@ class ArticlesController < ApplicationController
 
   def destroy
     authorize @article
-    @article.destroy!
-    Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
-    Notification.remove_all(notifiable_id: @article.id, notifiable_type: "Article", action: "Reaction")
+    Articles::Destroyer.call(@article)
     respond_to do |format|
       format.html { redirect_to "/dashboard", notice: "Article was successfully deleted." }
       format.json { head :no_content }

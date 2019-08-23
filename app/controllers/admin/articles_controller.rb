@@ -16,5 +16,15 @@ module Admin
         }
       end
     end
+
+    def destroy
+      Articles::Destroyer.call(requested_resource)
+      if requested_resource.destroyed?
+        flash[:notice] = translate_with_resource("destroy.success")
+      else
+        flash[:error] = requested_resource.errors.full_messages.join("<br/>")
+      end
+      redirect_to action: :index
+    end
   end
 end

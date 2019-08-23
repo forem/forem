@@ -34,7 +34,6 @@ module Articles
 
     private
 
-    attr_reader :user
-    attr_accessor :article_params
+    attr_reader :user, :article_params
   end
 end
