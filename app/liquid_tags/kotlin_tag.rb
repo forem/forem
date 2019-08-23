@@ -11,8 +11,7 @@ class KotlinTag < LiquidTagBase
       partial: PARTIAL,
       locals: {
         link: @link,
-        height: 600,
-        theme: "dracula"
+        height: 600
       },
     )
   end
@@ -29,7 +28,7 @@ class KotlinTag < LiquidTagBase
   def valid_link?(link)
     link_no_space = link.delete(" ")
     (link_no_space =~
-      /^(http|https):\/\/(pl.kotl.in)\/[a-zA-Z0-9_\-]{1,30}/)&.zero?
+      /^(http|https):\/\/(pl.kotl.in)\/[a-zA-Z0-9_\-]{1,30}.*/)&.zero?
   end
 
   def raise_error

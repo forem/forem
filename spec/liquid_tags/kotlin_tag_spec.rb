@@ -2,7 +2,8 @@ require "rails_helper"
 
 RSpec.describe KotlinTag, type: :liquid_template do
   describe "#link" do
-    let(:kotlin_link) { "https://pl.kotl.in/zYp4eGLeP" }
+    # Edit at https://pl.kotl.in/zYp4eGLeP
+    let(:kotlin_link) { "https://pl.kotl.in/owreUFFUG?theme=darcula&from=3&to=6&readOnly=true" }
 
     def generate_new_liquid(link)
       Liquid::Template.register_tag("kotlin", KotlinTag)
