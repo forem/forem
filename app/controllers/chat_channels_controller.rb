@@ -1,6 +1,6 @@
 class ChatChannelsController < ApplicationController
-  before_action :authenticate_user!, only: [:moderate]
-  before_action :set_channel, only: [:show, :update, :open, :moderate]
+  before_action :authenticate_user!, only: %i[moderate]
+  before_action :set_channel, only: %i[show update open moderate]
   after_action :verify_authorized
 
   def index
