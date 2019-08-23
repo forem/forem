@@ -6,7 +6,7 @@ title: GitHub Authentication
 
 DEV allows you to authenticate using GitHub. To use this authentication method in local development, you will need to set up a GitHub App and retrieve its keys. Then you'll need to provide these keys to the Rails application.
 
-1. [Sign in](https://github.com/settings/applications/new) in your GitHub account.
+1. [Click this link to create a new OAuth application in your Github account](https://github.com/settings/applications/new) - you will be redirected to sign in to Github account if you have not already.
 
 2. Fill in the form with an application name, description and the URL `http://localhost:3000/`. Replace the port `3000` if you run DEV on another port.
 
