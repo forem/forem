@@ -34,6 +34,13 @@ task expire_old_listings: :environment do
   end
 end
 
+task expire_old_listings: :environment do
+  ClassifiedListing.where("expires_at = ?", Time.zone.today).each do |listing|
+    listing.update(published: false)
+    listing.remove_from_index!
+  end
+end
+
 task clear_memory_if_too_high: :environment do
   Rails.cache.clear if Rails.cache.stats.flatten[1]["bytes"].to_i > 9_650_000_000
 end
