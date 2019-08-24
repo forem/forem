@@ -22,7 +22,7 @@ class VideosController < ApplicationController
 
   private
 
-  def autorize_video
+  def authorize_video
     authorize :video
   end
 
