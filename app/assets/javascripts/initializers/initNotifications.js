@@ -17,9 +17,7 @@ function markNotificationsAsRead() {
         xmlhttp = new window.ActiveXObject('Microsoft.XMLHTTP');
       }
       xmlhttp.onreadystatechange = () => {};
-
       var csrfToken = document.querySelector("meta[name='csrf-token']").content;
-
       if (Number.isInteger(parsedLastParam)) {
         xmlhttp.open(
           'Post',
