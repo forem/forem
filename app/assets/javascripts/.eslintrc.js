@@ -24,5 +24,8 @@ module.exports = {
     initializeReadingListIcons: false,
     initializeAllFollowButts: false,
     initializeSponsorshipVisibility: false,
+    sendHapticMessage: false,
+    checkUserLoggedIn: false,
+    showModal: false,
   },
 };
