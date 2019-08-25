@@ -25,5 +25,8 @@ module.exports = {
     initializeAllFollowButts: false,
     initializeSponsorshipVisibility: false,
     ActiveXObject: false,
+    sendHapticMessage: false,
+    checkUserLoggedIn: false,
+    showModal: false,
   },
 };

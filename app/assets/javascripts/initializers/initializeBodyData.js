@@ -1,5 +1,12 @@
-function initializeBodyData() {
-  fetchBaseData();
+'use strict';
+
+function removeExistingCSRF() {
+  var csrfTokenMeta = document.querySelector("meta[name='csrf-token']");
+  var csrfParamMeta = document.querySelector("meta[name='csrf-param']");
+  if (csrfTokenMeta && csrfParamMeta) {
+    csrfTokenMeta.parentNode.removeChild(csrfTokenMeta);
+    csrfParamMeta.parentNode.removeChild(csrfParamMeta);
+  }
 }
 
 function fetchBaseData() {
@@ -7,10 +14,10 @@ function fetchBaseData() {
   if (window.XMLHttpRequest) {
     xmlhttp = new XMLHttpRequest();
   } else {
-    xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+    xmlhttp = new window.ActiveXObject('Microsoft.XMLHTTP');
   }
-  xmlhttp.onreadystatechange = function() {
-    if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+  xmlhttp.onreadystatechange = () => {
+    if (xmlhttp.readyState === XMLHttpRequest.DONE) {
       var json = JSON.parse(xmlhttp.responseText);
       if (json.token) {
         removeExistingCSRF();
@@ -20,7 +27,7 @@ function fetchBaseData() {
       meta.name = 'csrf-param';
       meta.content = json.param;
       document.getElementsByTagName('head')[0].appendChild(meta);
-      var meta = document.createElement('meta');
+      meta = document.createElement('meta');
       meta.name = 'csrf-token';
       meta.content = json.token;
       document.getElementsByTagName('head')[0].appendChild(meta);
@@ -28,7 +35,7 @@ function fetchBaseData() {
       if (checkUserLoggedIn()) {
         document.getElementsByTagName('body')[0].dataset.user = json.user;
         browserStoreCache('set', json.user);
-        setTimeout(function() {
+        setTimeout(() => {
           if (typeof ga === 'function') {
             ga('set', 'userId', JSON.parse(json.user).id);
           }
@@ -41,11 +48,6 @@ function fetchBaseData() {
   xmlhttp.send();
 }
 
-function removeExistingCSRF() {
-  var csrfTokenMeta = document.querySelector("meta[name='csrf-token']");
-  var csrfParamMeta = document.querySelector("meta[name='csrf-param']");
-  if (csrfTokenMeta && csrfParamMeta) {
-    csrfTokenMeta.parentNode.removeChild(csrfTokenMeta);
-    csrfParamMeta.parentNode.removeChild(csrfParamMeta);
-  }
+function initializeBodyData() {
+  fetchBaseData();
 }
