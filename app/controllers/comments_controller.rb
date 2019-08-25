@@ -125,7 +125,7 @@ class CommentsController < ApplicationController
       @comment.deleted = true
       @comment.save!
     end
-    redirect_to @commentable_path, notice: "Comment was successfully deleted."
+    redirect_to URI.parse(@commentable_path).path, notice: "Comment was successfully deleted."
   end
 
   def delete_confirm
