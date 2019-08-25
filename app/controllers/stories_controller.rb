@@ -54,10 +54,10 @@ class StoriesController < ApplicationController
     potential_username = params[:username].tr("@", "").downcase
     @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
     if @user&.articles&.find_by(slug: params[:slug])
-      redirect_to "/#{@user.username}/#{params[:slug]}"
+      redirect_to URI.parse("/#{@user.username}/#{params[:slug]}").path
       return
     elsif (@organization = @article.organization)
-      redirect_to "/#{@organization.slug}/#{params[:slug]}"
+      redirect_to URI.parse("/#{@organization.slug}/#{params[:slug]}").path
       return
     end
     not_found
