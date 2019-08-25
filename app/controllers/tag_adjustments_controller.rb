@@ -10,7 +10,7 @@ class TagAdjustmentsController < ApplicationController
       reason_for_adjustment: params[:tag_adjustment][:reason_for_adjustment],
     ).create
     @article = Article.find(params[:tag_adjustment][:article_id])
-    redirect_to "#{@article.path}/mod"
+    redirect_to "#{URI.parse(@article.path).path}/mod"
   end
 
   def destroy
