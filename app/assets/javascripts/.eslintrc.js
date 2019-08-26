@@ -24,5 +24,6 @@ module.exports = {
     initializeReadingListIcons: false,
     initializeAllFollowButts: false,
     initializeSponsorshipVisibility: false,
+    ActiveXObject: false,
   },
 };
