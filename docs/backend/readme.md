@@ -10,7 +10,7 @@ items:
   - pusher.md
   - admin.md
   - previewing-emails.md
-  - notifications.md
+  - notification.md
 ---
 
 # Backend Guide
