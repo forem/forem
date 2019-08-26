@@ -17,6 +17,8 @@ import BioForm from './components/BioForm';
 // 4) Modified intro slide: Skull gif, You just made a great choice for your dev career
 // 5) No intro slide.
 // 6) Last slide challenge: Leave three constructive comments today
+// 7) Last slide: Only display cue for welcome thread
+// 8) Last slide: Only display cue for welcome thread, and also the leave three constructive comments challenge
 
 export default class Onboarding extends Component {
   constructor(props) {
@@ -24,14 +26,17 @@ export default class Onboarding extends Component {
 
     const url = new URL(window.location);
     const previousLocation = url.searchParams.get('referrer');
-    let variant = '0'; 
+    let variant = '0';
     if (url.searchParams.get('variant') || window.currentUser) {
-      variant = url.searchParams.get('variant') || window.currentUser.onboarding_variant_version || '0';
-    };
+      variant =
+        url.searchParams.get('variant') ||
+        window.currentUser.onboarding_variant_version ||
+        '0';
+    }
 
     this.nextSlide = this.nextSlide.bind(this);
     this.prevSlide = this.prevSlide.bind(this);
-    
+
     let slides = [
       IntroSlide,
       EmailListTermsConditionsForm,
@@ -52,7 +57,6 @@ export default class Onboarding extends Component {
         ClosingSlide,
       ];
     }
-
 
     this.slides = slides.map(SlideComponent => (
       <SlideComponent

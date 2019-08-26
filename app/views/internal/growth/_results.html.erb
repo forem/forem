@@ -1,4 +1,16 @@
 <h3>Past <%= num_days %> day new users (<%= User.where("created_at > ?", num_days.day.ago).count %>)</h3>
+<h4>Overall data:</h4>
+<ul>
+  <li>
+    Average comments: <%= User.where("created_at > ?", num_days.day.ago).average(:comments_count) %>
+  </li>
+  <li>
+    Average articles: <%= User.where("created_at > ?", num_days.day.ago).average(:articles_count) %>
+  </li>
+  <li>
+    Average reactions: <%= User.where("created_at > ?", num_days.day.ago).average(:reactions_count) %>
+  </li>
+</ul>
 <% @variants.each do |var| %>
   <h4>Variant: <%= var %></h4>
   <ul>

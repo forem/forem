@@ -115,7 +115,7 @@ RSpec.describe User, type: :model do
     it "sets onboarding_variant_version" do
       user = create(:user, email: "anna@example.com")
       user.reload
-      expect(user.onboarding_variant_version).to be_in(%w[0 1 2 3 4 5 6])
+      expect(user.onboarding_variant_version).to be_in(%w[0 1 2 3 4 5 6 7 8])
     end
   end
 
