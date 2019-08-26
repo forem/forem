@@ -63,7 +63,7 @@
     "@storybook/addon-links": "^5.1.9",
     "@storybook/addons": "^5.1.8",
     "@storybook/react": "^3.4.11",
-    "babel-eslint": "^10.0.2",
+    "babel-eslint": "^10.0.3",
     "babel-jest": "^23.4.2",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.1",
