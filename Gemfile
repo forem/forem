@@ -73,7 +73,7 @@ gem "recaptcha", "~> 5.1", require: "recaptcha/rails" # Helpers for the reCAPTCH
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "reverse_markdown", "~> 1.1" # Map simple html back into markdown
 gem "rolify", "~> 5.2" # Very simple Roles library
-gem "rouge", "~> 3.8" # A pure-ruby code highlighter
+gem "rouge", "~> 3.9" # A pure-ruby code highlighter
 gem "rubyzip", "~> 1.2" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sail", "~> 1.5" # Sail is a lightweight Rails engine that brings an admin panel for managing configuration settings on a live Rails app
