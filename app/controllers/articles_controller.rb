@@ -123,7 +123,7 @@ class ArticlesController < ApplicationController
     authorize Article
 
     @user = current_user
-    @article = Articles::Creator.call(@user, article_params_json)
+    @article = ArticleCreationService.new(@user, article_params_json).create!
 
     render json: if @article.persisted?
                    @article.to_json(only: [:id], methods: [:current_state_path])
@@ -180,7 +180,9 @@ class ArticlesController < ApplicationController
 
   def destroy
     authorize @article
-    Articles::Destroyer.call(@article)
+    @article.destroy!
+    Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
+    Notification.remove_all(notifiable_id: @article.id, notifiable_type: "Article", action: "Reaction")
     respond_to do |format|
       format.html { redirect_to "/dashboard", notice: "Article was successfully deleted." }
       format.json { head :no_content }

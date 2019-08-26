@@ -20,7 +20,8 @@ class OrganizationsController < ApplicationController
     @user = current_user
     @tab = "organization"
     @tab_list = @user.settings_tab_list
-    set_organization
+    @organization = Organization.find_by(id: organization_params[:id])
+    authorize @organization
 
     if @organization.update(organization_params.merge(profile_updated_at: Time.current))
       flash[:settings_notice] = "Your organization was successfully updated."
@@ -31,7 +32,8 @@ class OrganizationsController < ApplicationController
   end
 
   def generate_new_secret
-    set_organization
+    @organization = Organization.find_by(id: organization_params[:id])
+    authorize @organization
     @organization.secret = @organization.generated_random_secret
     @organization.save
     flash[:settings_notice] = "Your org secret was updated"
@@ -70,15 +72,10 @@ class OrganizationsController < ApplicationController
     params.require(:organization).permit(permitted_params).
       transform_values do |value|
         if value.class.name == "String"
-          Loofah.scrub_fragment(value, :prune).text(encode_special_chars: false)
+          ActionController::Base.helpers.strip_tags(value)
         else
           value
         end
       end
-  end
-
-  def set_organization
-    @organization = Organization.find_by(id: organization_params[:id])
-    authorize @organization
   end
 end

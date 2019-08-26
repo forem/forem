@@ -1,5 +1,3 @@
-'use strict';
-
 function initializeFooterMod() {
   var footerContainer = document.getElementById('footer-container');
   if (

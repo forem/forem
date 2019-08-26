@@ -10,30 +10,70 @@ class SocialPreviewsController < ApplicationController
 
     template = (@article.decorate.cached_tag_list_array & SHE_CODED_TAGS).any? ? "shecoded" : "article"
 
-    set_respond template
+    respond_to do |format|
+      format.html do
+        render template, layout: false
+      end
+      format.png do
+        html = render_to_string(template, formats: :html, layout: false)
+        redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS, google_fonts: "Roboto|Roboto+Condensed"), status: :found
+      end
+    end
   end
 
   def user
     @user = User.find(params[:id]) || not_found
-    set_respond
+    respond_to do |format|
+      format.html do
+        render layout: false
+      end
+      format.png do
+        html = render_to_string(formats: :html, layout: false)
+        redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS, google_fonts: "Roboto|Roboto+Condensed"), status: :found
+      end
+    end
   end
 
   def listing
     @listing = ClassifiedListing.find(params[:id]) || not_found
     define_categories
-    set_respond
+    respond_to do |format|
+      format.html do
+        render layout: false
+      end
+      format.png do
+        html = render_to_string(formats: :html, layout: false)
+        redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS, google_fonts: "Roboto|Roboto+Condensed"), status: :found
+      end
+    end
   end
 
   def organization
     @user = Organization.find(params[:id]) || not_found
 
-    set_respond "user"
+    respond_to do |format|
+      format.html do
+        render "user", layout: false
+      end
+      format.png do
+        html = render_to_string("user", formats: :html, layout: false)
+        redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS, google_fonts: "Roboto"), status: :found
+      end
+    end
   end
 
   def tag
     @tag = Tag.find(params[:id]) || not_found
 
-    set_respond
+    respond_to do |format|
+      format.html do
+        render layout: false
+      end
+      format.png do
+        html = render_to_string(formats: :html, layout: false)
+        redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS, google_fonts: "Roboto"), status: :found
+      end
+    end
   end
 
   private
@@ -54,17 +94,5 @@ class SocialPreviewsController < ApplicationController
     }
     @category = cat_info[@listing.category.to_sym][0]
     @cat_color = cat_info[@listing.category.to_sym][1]
-  end
-
-  def set_respond(template = nil)
-    respond_to do |format|
-      format.html do
-        render template, layout: false
-      end
-      format.png do
-        html = render_to_string(template, formats: :html, layout: false)
-        redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS, google_fonts: "Roboto|Roboto+Condensed"), status: :found
-      end
-    end
   end
 end

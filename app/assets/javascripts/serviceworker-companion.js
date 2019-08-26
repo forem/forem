@@ -1,21 +1,16 @@
-'use strict';
-
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker
-    .register('/serviceworker.js', { scope: '/' })
+  navigator.serviceWorker.register('/serviceworker.js', { scope: '/' })
     .then(function swStart(registration) {
       // registered!
-    })
-    .catch(error => {
-      // eslint-disable-next-line no-console
+    }).catch(function (error) {
       console.log('ServiceWorker registration failed: ', error);
     });
 }
 
-window.addEventListener('beforeinstallprompt', e => {
+window.addEventListener('beforeinstallprompt', function (e) {
   // beforeinstallprompt Event fired
   // e.userChoice will return a Promise.
-  e.userChoice.then(choiceResult => {
+  e.userChoice.then(function (choiceResult) {
     ga('send', 'event', 'PWA-install', choiceResult.outcome);
   });
 });

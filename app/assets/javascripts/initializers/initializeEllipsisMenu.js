@@ -1,5 +1,3 @@
-'use strict';
-
 // SUBMITTING FORM //
 
 function getFormValues(form) {
