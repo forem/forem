@@ -71,7 +71,7 @@ gem "rails-assets-airbrake-js-client", "~> 1.6", source: "https://rails-assets.o
 gem "rails-observers", "~> 0.1" # Rails observer (removed from core in Rails 4.0)
 gem "recaptcha", "~> 5.1", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
-gem "reverse_markdown", "~> 1.1" # Map simple html back into markdown
+gem "reverse_markdown", "~> 1.2" # Map simple html back into markdown
 gem "rolify", "~> 5.2" # Very simple Roles library
 gem "rouge", "~> 3.9" # A pure-ruby code highlighter
 gem "rubyzip", "~> 1.2" # Rubyzip is a ruby library for reading and writing zip files
