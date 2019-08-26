@@ -11,6 +11,18 @@ export const ListingRow = ({ listing }) => {
   const isDraft = bumpedAt ? !isExpired && (!listing.published) : true;
   const listingUrl = `${listing.category}/${listing.slug}`
 
+  const expiryDate = listing.expires_at ? 
+    new Date(listing.expires_at.toString()).toLocaleDateString('default', {
+      day: '2-digit',
+      month: 'short',
+    }) : '' ;
+  
+  const listingExpiry = expiryDate !== '' ? (
+    ` | Expires on: ${expiryDate}`
+  ) : (
+    ''
+  );
+
   return (
     <div className={`dashboard-listing-row ${isDraft ? 'draft' : ''} ${isExpired ? 'expired' : ''}`}>
       {listing.organization_id && <span className="listing-org">{listing.author.name}</span>}
@@ -18,6 +30,7 @@ export const ListingRow = ({ listing }) => {
         <h2>{listing.title + (isExpired ? ' (expired)' : '')}</h2>
       </a>
       <ListingDate bumpedAt={listing.bumped_at} updatedAt={listing.updated_at} />
+      {listingExpiry}
       {listing.location && <Location location={listing.location} />}
       <span className="dashboard-listing-category">
         <a href={`/listings/${listing.category}/`}>{listing.category}</a>

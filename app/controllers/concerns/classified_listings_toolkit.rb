@@ -19,6 +19,7 @@ module ClassifiedListingsToolkit
     @classified_listing.tag_list = listing_params[:tag_list] if listing_params[:tag_list]
     @classified_listing.category = listing_params[:category] if listing_params[:category]
     @classified_listing.location = listing_params[:location] if listing_params[:location]
+    @classified_listing.expires_at = listing_params[:expires_at] if listing_params[:expires_at]
     @classified_listing.contact_via_connect = listing_params[:contact_via_connect] if listing_params[:contact_via_connect]
     @classified_listing.save
   end

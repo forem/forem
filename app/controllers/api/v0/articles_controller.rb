@@ -35,7 +35,7 @@ module Api
       end
 
       def create
-        @article = ArticleCreationService.new(@user, article_params).create!
+        @article = Articles::Creator.call(@user, article_params)
         render "show", status: :created, location: @article.url
       end
 

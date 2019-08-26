@@ -1,0 +1,188 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.twitter.com/1.1/statuses/show/1018911886862057472.json?tweet_mode=extended
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      User-Agent:
+      - TwitterRubyGem/6.2.0
+      Connection:
+      - close
+  response:
+    status:
+      code: 401
+      message: Unauthorized
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - '62'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 23 Aug 2019 20:06:12 GMT
+      Server:
+      - tsa_b
+      Strict-Transport-Security:
+      - max-age=631138519
+      X-Connection-Hash:
+      - 666a51edec1438cd31154ecddd54b880
+      X-Response-Time:
+      - '6'
+    body:
+      encoding: UTF-8
+      string: '{"errors":[{"code":89,"message":"Invalid or expired token."}]}'
+    http_version: 
+  recorded_at: Fri, 23 Aug 2019 20:06:12 GMT
+- request:
+    method: get
+    uri: https://api.twitter.com/1.1/statuses/show/1018911886862057472.json?tweet_mode=extended
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      User-Agent:
+      - TwitterRubyGem/6.2.0
+      Connection:
+      - close
+  response:
+    status:
+      code: 401
+      message: Unauthorized
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - '62'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 23 Aug 2019 20:06:13 GMT
+      Server:
+      - tsa_b
+      Strict-Transport-Security:
+      - max-age=631138519
+      X-Connection-Hash:
+      - 91bec65cb6604873963e0a48ee18db53
+      X-Response-Time:
+      - '5'
+    body:
+      encoding: UTF-8
+      string: '{"errors":[{"code":89,"message":"Invalid or expired token."}]}'
+    http_version: 
+  recorded_at: Fri, 23 Aug 2019 20:06:13 GMT
+- request:
+    method: get
+    uri: https://api.twitter.com/1.1/statuses/show/1018911886862057472.json?tweet_mode=extended
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      User-Agent:
+      - TwitterRubyGem/6.2.0
+      Connection:
+      - close
+  response:
+    status:
+      code: 401
+      message: Unauthorized
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - '62'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 23 Aug 2019 20:06:13 GMT
+      Server:
+      - tsa_b
+      Strict-Transport-Security:
+      - max-age=631138519
+      X-Connection-Hash:
+      - e3813b53c3d63444d30cfb448d3c13f7
+      X-Response-Time:
+      - '5'
+    body:
+      encoding: UTF-8
+      string: '{"errors":[{"code":89,"message":"Invalid or expired token."}]}'
+    http_version: 
+  recorded_at: Fri, 23 Aug 2019 20:06:13 GMT
+- request:
+    method: get
+    uri: https://api.twitter.com/1.1/statuses/show/1018911886862057472.json?tweet_mode=extended
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      User-Agent:
+      - TwitterRubyGem/6.2.0
+      Connection:
+      - close
+  response:
+    status:
+      code: 401
+      message: Unauthorized
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - '62'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 23 Aug 2019 20:06:13 GMT
+      Server:
+      - tsa_b
+      Strict-Transport-Security:
+      - max-age=631138519
+      X-Connection-Hash:
+      - 98b85e3a31de3c7c5b1f102e1d1d5406
+      X-Response-Time:
+      - '5'
+    body:
+      encoding: UTF-8
+      string: '{"errors":[{"code":89,"message":"Invalid or expired token."}]}'
+    http_version: 
+  recorded_at: Fri, 23 Aug 2019 20:06:14 GMT
+- request:
+    method: get
+    uri: https://api.twitter.com/1.1/statuses/show/1018911886862057472.json?tweet_mode=extended
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      User-Agent:
+      - TwitterRubyGem/6.2.0
+      Connection:
+      - close
+  response:
+    status:
+      code: 401
+      message: Unauthorized
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - '62'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 23 Aug 2019 20:06:14 GMT
+      Server:
+      - tsa_b
+      Strict-Transport-Security:
+      - max-age=631138519
+      X-Connection-Hash:
+      - 682620a7423aab82a4cba8ec60ed8eff
+      X-Response-Time:
+      - '5'
+    body:
+      encoding: UTF-8
+      string: '{"errors":[{"code":89,"message":"Invalid or expired token."}]}'
+    http_version: 
+  recorded_at: Fri, 23 Aug 2019 20:06:14 GMT
+recorded_with: VCR 5.0.0

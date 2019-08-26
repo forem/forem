@@ -140,6 +140,7 @@ Rails.application.routes.draw do
   resources :blocks
   resources :notifications, only: [:index]
   resources :tags, only: [:index]
+  resources :downloads, only: [:index]
   resources :stripe_active_cards, only: %i[create update destroy]
   resources :live_articles, only: [:index]
   resources :github_repos, only: %i[create update]
@@ -274,7 +275,6 @@ Rails.application.routes.draw do
   get "/events" => "events#index"
   get "/workshops", to: redirect("events")
   get "/sponsorship-info" => "pages#sponsorship_faq"
-  get "/organization-info" => "pages#org_info"
   get "/sponsors" => "pages#sponsors"
   get "/search" => "stories#search"
   post "articles/preview" => "articles#preview"
@@ -318,6 +318,8 @@ Rails.application.routes.draw do
     get "/rails/mailers" => "rails/mailers#index"
     get "/rails/mailers/*path" => "rails/mailers#preview"
   end
+
+  get "/embed/:embeddable" => "liquid_embeds#show"
 
   get "/new" => "articles#new"
   get "/new/:template" => "articles#new"

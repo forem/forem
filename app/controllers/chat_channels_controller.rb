@@ -1,5 +1,6 @@
 class ChatChannelsController < ApplicationController
-  before_action :authenticate_user!, only: [:moderate]
+  before_action :authenticate_user!, only: %i[moderate]
+  before_action :set_channel, only: %i[show update open moderate]
   after_action :verify_authorized
 
   def index
@@ -15,9 +16,7 @@ class ChatChannelsController < ApplicationController
     end
   end
 
-  def show
-    set_channel
-  end
+  def show; end
 
   def create
     authorize ChatChannel
@@ -32,7 +31,6 @@ class ChatChannelsController < ApplicationController
   end
 
   def update
-    set_channel
     ChatChannelUpdateService.new(@chat_channel, chat_channel_params).update
     if @chat_channel.valid?
       render json: { status: "success",
@@ -44,7 +42,6 @@ class ChatChannelsController < ApplicationController
   end
 
   def open
-    set_channel
     membership = @chat_channel.chat_channel_memberships.where(user_id: current_user.id).first
     membership.update(last_opened_at: 1.second.from_now, has_unopened_messages: false)
     @chat_channel.index!
@@ -53,7 +50,6 @@ class ChatChannelsController < ApplicationController
   end
 
   def moderate
-    set_channel
     command = chat_channel_params[:command].split
     case command[0]
     when "/ban"

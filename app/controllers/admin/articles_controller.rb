@@ -1,19 +1,30 @@
 module Admin
   class ArticlesController < Admin::ApplicationController
-    # To customize the behavior of this controller,
-    # simply overwrite any of the RESTful actions. For example:
-    #
-    # def index
-    #   super
-    #   @resources = Article.all.paginate(10, params[:page])
-    # end
+    def create
+      resource = resource_class.new(resource_params)
+      authorize_resource(resource)
+      user = User.find(resource_params[:user_id])
+      resource = Articles::Creator.call(user, resource_params)
+      if resource.persisted?
+        redirect_to(
+          [namespace, resource],
+          notice: translate_with_resource("create.success"),
+        )
+      else
+        render :new, locals: {
+          page: Administrate::Page::Form.new(dashboard, resource)
+        }
+      end
+    end
 
-    # Define a custom finder by overriding the `find_resource` method:
-    # def find_resource(param)
-    #   Article.find_by!(slug: param)
-    # end
-
-    # See https://administrate-docs.herokuapp.com/customizing_controller_actions
-    # for more information
+    def destroy
+      Articles::Destroyer.call(requested_resource)
+      if requested_resource.destroyed?
+        flash[:notice] = translate_with_resource("destroy.success")
+      else
+        flash[:error] = requested_resource.errors.full_messages.join("<br/>")
+      end
+      redirect_to action: :index
+    end
   end
 end
