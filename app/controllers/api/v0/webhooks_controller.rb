@@ -2,10 +2,7 @@ module Api
   module V0
     class WebhooksController < ApiController
       respond_to :json
-
       before_action :authenticate!
-      # before_action :cors_preflight_check
-      # after_action :cors_set_access_control_headers
 
       def create
         @webhook = current_user.webhook_endpoints.create!(webhook_params)
