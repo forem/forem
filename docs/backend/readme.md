@@ -11,6 +11,7 @@ items:
   - admin.md
   - previewing-emails.md
   - notification.md
+  - scheduled-jobs.md
 ---
 
 # Backend Guide
