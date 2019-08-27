@@ -262,12 +262,8 @@ RSpec.describe "ClassifiedListings", type: :request do
 
     before do
       sign_in user
-      listing_draft.bumped_at = nil
-      listing_draft.published = false
-      listing_draft.save
-      org_listing_draft.bumped_at = nil
-      org_listing_draft.published = false
-      org_listing_draft.save
+      listing_draft.update_columns(bumped_at: nil, published: false)
+      org_listing_draft.update_columns(bumped_at: nil, published: false)
     end
 
     context "when the bump action is called" do
@@ -349,8 +345,7 @@ RSpec.describe "ClassifiedListings", type: :request do
       end
 
       it "publishes a draft that has already been charged and is within 30 days of bump date" do
-        listing.published = false
-        listing.save
+        listing.update_column(:published, false)
         expect do
           put "/listings/#{listing.id}", params: params
         end.to change(user.credits.spent, :size).by(0)
@@ -376,22 +371,16 @@ RSpec.describe "ClassifiedListings", type: :request do
   end
 
   describe "DEL /listings/:id" do
-    let(:listing) { create(:classified_listing, user: user) }
+    let!(:listing) { create(:classified_listing, user: user) }
     let(:listing_draft) { create(:classified_listing, user: user) }
     let(:organization) { create(:organization) }
-    let(:org_listing) { create(:classified_listing, user: user, organization: organization) }
+    let!(:org_listing) { create(:classified_listing, user: user, organization: organization) }
     let(:org_listing_draft) { create(:classified_listing, user: user, organization: organization) }
 
     before do
       sign_in user
-      listing.save
-      org_listing.save
-      listing_draft.bumped_at = nil
-      listing_draft.published = false
-      listing_draft.save
-      org_listing_draft.bumped_at = nil
-      org_listing_draft.published = false
-      org_listing_draft.save
+      listing_draft.update_columns(bumped_at: nil, published: false)
+      org_listing_draft.update_columns(bumped_at: nil, published: false)
     end
 
     context "when deleting draft" do
