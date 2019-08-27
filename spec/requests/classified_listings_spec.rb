@@ -344,18 +344,26 @@ RSpec.describe "ClassifiedListings", type: :request do
         expect(org_listing_draft.reload.published).to eq(true)
       end
 
-      it "publishes a draft that has already been charged and is within 30 days of bump date" do
+      it "publishes a draft that was charged and is within 30 days of bump doesn't charge credits" do
         listing.update_column(:published, false)
         expect do
           put "/listings/#{listing.id}", params: params
         end.to change(user.credits.spent, :size).by(0)
-        expect(listing.reload.published).to eq(true)
       end
 
-      it "fails to publish draft with insufficient credits" do
+      it "publishes a draft that was charged and is within 30 days of bump and successfully sets published as true" do
+        listing.update_column(:published, false)
+        put "/listings/#{listing.id}", params: params
+        expect(listing.reload.published).to eq(true)
+      end
+      it "fails to publish draft and doesn't charge credits" do
         expect do
           put "/listings/#{listing_draft.id}", params: params
         end.to change(user.credits.spent, :size).by(0)
+      end
+
+      it "fails to publish draft and published remains false" do
+        put "/listings/#{listing_draft.id}", params: params
         expect(listing_draft.reload.published).to eq(false)
       end
     end
@@ -372,15 +380,13 @@ RSpec.describe "ClassifiedListings", type: :request do
 
   describe "DEL /listings/:id" do
     let!(:listing) { create(:classified_listing, user: user) }
-    let(:listing_draft) { create(:classified_listing, user: user) }
+    let!(:listing_draft) { create(:classified_listing, user: user, bumped_at: nil, published: false) }
     let(:organization) { create(:organization) }
     let!(:org_listing) { create(:classified_listing, user: user, organization: organization) }
-    let(:org_listing_draft) { create(:classified_listing, user: user, organization: organization) }
+    let!(:org_listing_draft) { create(:classified_listing, user: user, organization: organization, bumped_at: nil, published: false) }
 
     before do
       sign_in user
-      listing_draft.update_columns(bumped_at: nil, published: false)
-      org_listing_draft.update_columns(bumped_at: nil, published: false)
     end
 
     context "when deleting draft" do
