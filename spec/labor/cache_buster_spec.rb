@@ -12,15 +12,7 @@ RSpec.describe CacheBuster do
 
   describe "#bust_comment" do
     it "busts comment" do
-      cache_buster.bust_comment(comment.commentable, user.username)
-    end
-
-    it "works if commentable is missing" do
-      cache_buster.bust_comment(nil, user.username)
-    end
-
-    it "works if username is missing" do
-      cache_buster.bust_comment(comment.commentable, "")
+      cache_buster.bust_comment(comment.commentable)
     end
   end
 
@@ -92,6 +84,16 @@ RSpec.describe CacheBuster do
   describe "#bust_classified_listings" do
     it "busts classified listings" do
       cache_buster.bust_classified_listings(listing)
+    end
+  end
+
+  describe "#bust_user" do
+    it "busts a user" do
+      allow(cache_buster).to receive(:bust)
+      cache_buster.bust_user(user)
+      expect(cache_buster).to have_received(:bust).with("/" + user.username.to_s)
+      expect(cache_buster).to have_received(:bust).with("/" + user.username.to_s + "/comments?i=i")
+      expect(cache_buster).to have_received(:bust).with("/feed/" + user.username.to_s)
     end
   end
 end

@@ -7,14 +7,11 @@ RSpec.describe Users::BustCacheJob, type: :job do
     let(:user) { FactoryBot.create(:user) }
 
     it "busts cache" do
-      path = user.path
-
       cache_buster = double
-      allow(cache_buster).to receive(:bust)
+      allow(cache_buster).to receive(:bust_user)
 
       described_class.perform_now(user.id, cache_buster) do
-        expect(cache_buster).to have_received(:bust).with(path)
-        expect(cache_buster).to have_received(:bust).with("/feed#{path}")
+        expect(cache_buster).to have_received(:bust_user).with(user)
       end
     end
   end

@@ -23,6 +23,7 @@ class Comment < ApplicationRecord
   after_save     :calculate_score
   after_save     :bust_cache
   after_save     :synchronous_bust
+  after_destroy  :after_destroy_actions
   before_destroy :before_destroy_actions
   after_create   :send_email_notification, if: :should_send_email_notification?
   after_create   :create_first_reaction
@@ -264,6 +265,11 @@ class Comment < ApplicationRecord
     Comments::CreateFirstReactionJob.perform_later(id)
   end
 
+  def after_destroy_actions
+    Users::BustCacheJob.perform_now(user_id)
+    user.touch(:last_comment_at)
+  end
+
   def before_destroy_actions
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     ancestors.update_all(updated_at: Time.current)
@@ -282,6 +288,7 @@ class Comment < ApplicationRecord
 
   def synchronous_bust
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
+    user.touch(:last_comment_at)
     cache_buster = CacheBuster.new
     cache_buster.bust(commentable.path.to_s) if commentable
     expire_root_fragment

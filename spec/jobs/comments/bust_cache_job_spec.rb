@@ -14,7 +14,7 @@ RSpec.describe Comments::BustCacheJob, type: :job do
     it "calls the service" do
       described_class.perform_now(comment.id, edge_cache_commentable_bust_service)
       expect(edge_cache_commentable_bust_service).to have_received(:call).
-        with(comment.commentable, comment.user.username).once
+        with(comment.commentable).once
     end
 
     it "doesn't call the service with a non existent comment" do
