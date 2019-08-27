@@ -1,0 +1,51 @@
+<style>
+  textarea {
+    height: 140px;
+  }
+</style>
+<h1><%= params[:state] || "community" %> mods</h1>
+<%= form_tag("/internal/mods", method: "get") do %>
+  <%= label_tag(:search, "Find by tag name:") %>
+  <%= text_field_tag(:search, params[:search]) %>
+  <% if params[:state].present? %>
+    <%= hidden_field_tag(:state, params[:state]) %>
+  <% end %>
+  <%= submit_tag("Search") %>
+<% end %>
+
+<h3>
+  <a href="/internal/mods"
+     style="<%= "background: yellow" if params[:state].blank? %>">General Community</a> |
+  <a href="/internal/mods?state=tag"
+     style="<%= "background: yellow" if params[:state] == "tag" %>">Tag Mods</a> |
+  <a href="/internal/mods?state=potential"
+     style="<%= "background: yellow" if params[:state] == "potential" %>">Potential Mods</a>
+</h3>
+
+<%= paginate @mods %>
+<div class="wrapper" style="font-weight: 600; border-bottom: 2px solid black; grid-template-columns: 14% 28% 19% 19% 15%;">
+  <div>ID</div>
+  <div>Username</div>
+  <div>Comments count</div>
+  <div>Reactions count</div>
+  <% if params[:state] == "potential" %>
+    <div>Action</div>
+  <% end %>
+</div>
+<% @mods.each do |user| %>
+  <div class="wrapper" style="border-bottom: 1px solid grey; padding: 10px; grid-template-columns: 14% 28% 19% 19% 15%;">
+    <div><%= user.id %></div>
+    <div><a href="/internal/users/<%= user.id %>">@<%= user.username %></a></div>
+    <div><%= user.comments_count %></div>
+    <div><%= user.reactions_count %></div>
+    <% if params[:state] == "potential" %>
+      <div>
+        <%= form_for([:internal, user], url: "/internal/mods/#{user.id}", method: :patch) do |f| %>
+          <%#= f.hidden_field :id, value: user.id %>
+          <%= f.submit "Make Trusted Mod" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+<%= paginate @mods %>

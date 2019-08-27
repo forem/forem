@@ -35,6 +35,10 @@ class NotifyMailerPreview < ActionMailer::Preview
     NotifyMailer.tag_moderator_confirmation_email(User.first, "discuss")
   end
 
+  def trusted_role_email
+    NotifyMailer.trusted_role_email(User.first)
+  end
+
   def feedback_message_resolution_email
     # change email_body text when you need to see a different version
     @user = User.first

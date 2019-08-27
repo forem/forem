@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_22_162434) do
+ActiveRecord::Schema.define(version: 2019_08_27_163358) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -1067,6 +1067,7 @@ ActiveRecord::Schema.define(version: 2019_08_22_162434) do
     t.string "medium_url"
     t.datetime "membership_started_at"
     t.boolean "mobile_comment_notifications", default: true
+    t.boolean "mod_roundrobin_notifications", default: true
     t.integer "monthly_dues", default: 0
     t.string "mostly_work_with"
     t.string "name"
