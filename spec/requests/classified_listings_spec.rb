@@ -332,15 +332,27 @@ RSpec.describe "ClassifiedListings", type: :request do
         expect do
           put "/listings/#{listing_draft.id}", params: params
         end.to change(user.credits.spent, :size).by(cost)
+      end
+
+      it "publishes a draft and ensures published column is true" do
+        cost = ClassifiedListing.cost_by_category(listing_draft.category)
+        create_list(:credit, cost, user: user)
+        put "/listings/#{listing_draft.id}", params: params
         expect(listing_draft.reload.published).to eq(true)
       end
 
-      it "publishes a draft and charges org credits before user credits if first publish" do
+      it "publishes an org draft and charges org credits if first publish" do
         cost = ClassifiedListing.cost_by_category(org_listing_draft.category)
         create_list(:credit, cost, organization: organization)
         expect do
           put "/listings/#{org_listing_draft.id}", params: params
         end.to change(organization.credits.spent, :size).by(cost)
+      end
+
+      it "publishes an org draft and ensures published column is true" do
+        cost = ClassifiedListing.cost_by_category(org_listing_draft.category)
+        create_list(:credit, cost, organization: organization)
+        put "/listings/#{org_listing_draft.id}", params: params
         expect(org_listing_draft.reload.published).to eq(true)
       end
 
@@ -356,6 +368,7 @@ RSpec.describe "ClassifiedListings", type: :request do
         put "/listings/#{listing.id}", params: params
         expect(listing.reload.published).to eq(true)
       end
+
       it "fails to publish draft and doesn't charge credits" do
         expect do
           put "/listings/#{listing_draft.id}", params: params
@@ -394,10 +407,12 @@ RSpec.describe "ClassifiedListings", type: :request do
         delete "/listings/#{listing_draft.id}"
         expect(response).to redirect_to("/listings/dashboard")
       end
+
       it "have status 302 found" do
         delete "/listings/#{listing_draft.id}"
         expect(response).to have_http_status(:found)
       end
+
       it "decrease total listings count by 1" do
         expect do
           delete "/listings/#{listing_draft.id}"
@@ -428,10 +443,12 @@ RSpec.describe "ClassifiedListings", type: :request do
         delete "/listings/#{org_listing_draft.id}"
         expect(response).to redirect_to("/listings/dashboard")
       end
+
       it "have status 302 found" do
         delete "/listings/#{org_listing_draft.id}"
         expect(response).to have_http_status(:found)
       end
+
       it "decrease total listings count by 1" do
         expect do
           delete "/listings/#{org_listing_draft.id}"
