@@ -4,7 +4,7 @@ title: Scheduled Jobs
 
 # Scheduled Jobs
 
-As in the [Technical Overview](/../technical-overview/), We use [Heroku Scheduler](https://devcenter.heroku.com/articles/scheduler) for scheduled jobs. As the name suggests, this is for regularly recurring tasks that need to be run every day, week, month, year, decade, and century.
+As in the [Technical Overview](/technical-overview), We use [Heroku Scheduler](https://devcenter.heroku.com/articles/scheduler) for scheduled jobs. As the name suggests, this is for regularly recurring tasks that need to be run every day, week, month, year, decade, and century.
 
 Tasks are implemented in `dev.to/lib/tasks/fetch.rake`, typically in the form of:
 
