@@ -80,8 +80,9 @@ class ClassifiedListingsController < ApplicationController
       redirect_to "/listings/dashboard"
       return
     elsif listing_params[:action] == "publish"
-      if @classified_listing.bumped_at.nil?
-        return first_publish(cost)
+      unless @classified_listing.bumped_at?
+        first_publish(cost)
+        return
       end
 
       publish_listing
