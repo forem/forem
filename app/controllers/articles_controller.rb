@@ -153,7 +153,7 @@ class ArticlesController < ApplicationController
           return
         end
         if params[:destination]
-          redirect_to(params[:destination])
+          redirect_to(URI.parse(params[:destination]).path)
           return
         end
         if params[:article][:video_thumbnail_url]
