@@ -1,8 +1,10 @@
+'use strict';
+
 /* global timestampToLocalDateTime */
 
 function initializeSettings() {
   if (document.getElementById('settings-org-secret')) {
-    document.getElementById('settings-org-secret').onclick = function(event) {
+    document.getElementById('settings-org-secret').onclick = event => {
       event.target.select();
     };
   }

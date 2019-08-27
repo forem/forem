@@ -71,9 +71,9 @@ gem "rails-assets-airbrake-js-client", "~> 1.6", source: "https://rails-assets.o
 gem "rails-observers", "~> 0.1" # Rails observer (removed from core in Rails 4.0)
 gem "recaptcha", "~> 5.1", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
-gem "reverse_markdown", "~> 1.1" # Map simple html back into markdown
+gem "reverse_markdown", "~> 1.2" # Map simple html back into markdown
 gem "rolify", "~> 5.2" # Very simple Roles library
-gem "rouge", "~> 3.8" # A pure-ruby code highlighter
+gem "rouge", "~> 3.9" # A pure-ruby code highlighter
 gem "rubyzip", "~> 1.2" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sail", "~> 1.5" # Sail is a lightweight Rails engine that brings an admin panel for managing configuration settings on a live Rails app
@@ -128,7 +128,7 @@ group :development, :test do
   gem "rspec-rails", "~> 3.8" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 0.74", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.4", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
-  gem "rubocop-rails", "~> 2.2", require: false # Automatic Rails code style checking tool
+  gem "rubocop-rails", "~> 2.3", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 1.35", require: false # Code style checking for RSpec files
   gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
@@ -145,7 +145,7 @@ group :test do
   gem "simplecov", "~> 0.17", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers
   gem "stripe-ruby-mock", "~> 2.5", require: "stripe_mock" # A drop-in library to test stripe without hitting their servers
-  gem "test-prof", "~> 0.9" # Ruby Tests Profiling Toolbox
+  gem "test-prof", "~> 0.10" # Ruby Tests Profiling Toolbox
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
   gem "vcr", "~> 5.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
   gem "webdrivers", "~> 4.1" # Run Selenium tests more easily with install and updates for all supported webdrivers

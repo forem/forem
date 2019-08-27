@@ -26,6 +26,18 @@ export const ListingRow = ({ listing }) => {
     ''
   );
 
+  const expiryDate = listing.expires_at ? 
+    new Date(listing.expires_at.toString()).toLocaleDateString('default', {
+      day: '2-digit',
+      month: 'short',
+    }) : '' ;
+  
+  const listingExpiry = expiryDate !== '' ? (
+    ` | Expires on: ${expiryDate}`
+  ) : (
+    ''
+  );
+
   return (
     <div className={`dashboard-listing-row ${listing.published ? '' : 'expired'}`}>
       {orgName}
@@ -34,6 +46,7 @@ export const ListingRow = ({ listing }) => {
       </a>
       <span className="dashboard-listing-date">
         {listingDate} 
+        {listingExpiry}
         {listingLocation}
       </span>
       <span className="dashboard-listing-category">

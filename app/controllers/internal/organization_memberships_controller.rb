@@ -29,7 +29,7 @@ class Internal::OrganizationMembershipsController < Internal::ApplicationControl
     if organization_membership.destroy
       flash[:success] = "User was successfully removed from org ##{organization_membership.organization_id}"
     else
-      flash[:danger] = "Something wen wrong with removing the user from org ##{organization_membership.organization_id}"
+      flash[:danger] = "Something went wrong with removing the user from org ##{organization_membership.organization_id}"
     end
     redirect_to internal_user_path(organization_membership.user_id)
   end

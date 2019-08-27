@@ -1,11 +1,10 @@
 class DashboardsController < ApplicationController
   before_action :set_no_cache_header
   before_action :authenticate_user!
+  before_action :fetch_and_authorize_user, only: %i[show following followers]
   after_action :verify_authorized
 
   def show
-    fetch_and_authorize_user
-
     @current_user_pro = current_user.pro?
 
     target = @user
@@ -25,7 +24,6 @@ class DashboardsController < ApplicationController
   end
 
   def following
-    fetch_and_authorize_user
     @follows = @user.follows_by_type("User").
       order("created_at DESC").includes(:followable).limit(80)
     @followed_tags = @user.follows_by_type("ActsAsTaggableOn::Tag").
@@ -37,7 +35,6 @@ class DashboardsController < ApplicationController
   end
 
   def followers
-    fetch_and_authorize_user
     if params[:which] == "user_followers"
       @follows = Follow.where(followable_id: @user.id, followable_type: "User").
         includes(:follower).order("created_at DESC").limit(80)

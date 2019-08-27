@@ -5,6 +5,7 @@ import BodyMarkdown from './elements/bodyMarkdown';
 import Categories from './elements/categories';
 import Tags from './elements/tags';
 import OrgSettings from './elements/orgSettings';
+import ExpireDate from './elements/expireDate';
 
 export default class ListingForm extends Component {
   constructor(props) {
@@ -28,6 +29,7 @@ export default class ListingForm extends Component {
       categoriesForDetails: this.categoriesForDetails,
       organizations,
       organizationId: null, // change this for /edit later
+      expireDate: this.listing.expires_at || '',
     };
   }
 
@@ -47,6 +49,7 @@ export default class ListingForm extends Component {
       categoriesForSelect,
       organizations,
       organizationId,
+      expireDate,
     } = this.state;
     const orgArea =
       organizations && organizations.length > 0 ? (
@@ -77,6 +80,7 @@ export default class ListingForm extends Component {
             category={category}
             onInput={linkState(this, 'tagList')}
           />
+          <ExpireDate defaultValue={expireDate} onChange={linkState(this, 'expireDate')} />
           {orgArea}
           {/* add contact via connect checkbox later */}
         </div>

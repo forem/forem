@@ -131,4 +131,17 @@ Pay attention to the username and password you setup during installation of Post
 sudo apt-get install libpq-dev
 ```
 
+3. If the command `bin/setup` fails at installing `cld-0.8.0` with the warnings `'aclocal-1.10' is missing on your system` and `'automake-1.10' is missing on your system`. Please install `automake-1.10` using the commands below.
+
+```shell
+cd
+sudo apt-get update
+sudo apt-get install autoconf
+wget https://ftp.gnu.org/gnu/automake/automake-1.10.tar.gz
+tar xf automake-1.10.tar.gz
+cd automake-1.10/
+./configure --prefix=/usr/local
+make
+```
+
 > If you encountered any errors that you subsequently resolved, **please consider updating this section** with your errors and their solutions.
