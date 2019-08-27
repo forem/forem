@@ -1,5 +1,6 @@
 class RateLimitChecker
-  attr_accessor :user
+  attr_accessor :user, :situation
+
   def initialize(user = nil)
     @user = user
   end
@@ -17,6 +18,10 @@ class RateLimitChecker
              else
                false
              end
+    if result
+      @situation = situation
+      ping_admins
+    end
     ping_admins if result == true
     result
   end
@@ -34,10 +39,10 @@ class RateLimitChecker
   end
 
   def ping_admins
-    RateLimitCheckerJob.perform_later(user.id)
+    RateLimitCheckerJob.perform_later(user.id, situation)
   end
 
   def ping_admins_without_delay
-    RateLimitCheckerJob.perform_now(user.id)
+    RateLimitCheckerJob.perform_now(user.id, situation)
   end
 end
