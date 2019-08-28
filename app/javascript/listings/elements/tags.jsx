@@ -44,13 +44,38 @@ class Tags extends Component {
 
   componentDidMount() {
     this.setState({
-      additionalTags: {jobs: ['remote', 'remoteoptional', 'lgbtbenefits', 'greencard', 'senior', 'junior', 'intermediate', '401k', 'fulltime', 'contract', 'temp'],
-                       forhire: ['remote', 'remoteoptional', 'lgbtbenefits', 'greencard', 'senior', 'junior', 'intermediate', '401k', 'fulltime', 'contract', 'temp'],
-                       forsale: ['laptop', 'desktopcomputer', 'new', 'used'],
-                       events: ['conference', 'meetup'],
-                       collabs: ['paid', 'temp']
-                      }
-    })
+      additionalTags: {
+        jobs: [
+          'remote',
+          'remoteoptional',
+          'lgbtbenefits',
+          'greencard',
+          'senior',
+          'junior',
+          'intermediate',
+          '401k',
+          'fulltime',
+          'contract',
+          'temp',
+        ],
+        forhire: [
+          'remote',
+          'remoteoptional',
+          'lgbtbenefits',
+          'greencard',
+          'senior',
+          'junior',
+          'intermediate',
+          '401k',
+          'fulltime',
+          'contract',
+          'temp',
+        ],
+        forsale: ['laptop', 'desktopcomputer', 'new', 'used'],
+        events: ['conference', 'meetup'],
+        collabs: ['paid', 'temp'],
+      },
+    });
   }
 
   componentDidUpdate() {
@@ -190,15 +215,17 @@ class Tags extends Component {
         filters: 'supported:true',
       })
       .then(content => {
-        const { additionalTags } = this.state
-        const { category } = this.props
-        const additionalItems = (additionalTags[category] || []).filter(t => (t.indexOf(query) > -1))
+        const { additionalTags } = this.state;
+        const { category } = this.props;
+        const additionalItems = (additionalTags[category] || []).filter(
+          t => t.indexOf(query) > -1,
+        );
         const resultsArray = content.hits;
         additionalItems.forEach(t => {
           if (resultsArray.indexOf(t) === -1) {
-            resultsArray.push({name: t});
+            resultsArray.push({ name: t });
           }
-        })
+        });
         this.setState({
           searchResults: content.hits.filter(
             hit => !this.selected.includes(hit.name),

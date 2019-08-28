@@ -148,23 +148,24 @@ function reactToArticle(articleId, reaction) {
     });
 }
 
-
 function setCollectionFunctionality() {
   if (document.getElementById('collection-link-inbetween')) {
-    var inbetweenLinks = document.getElementsByClassName('collection-link-inbetween');
-    var inbetweenLinksLength = inbetweenLinks.length
+    var inbetweenLinks = document.getElementsByClassName(
+      'collection-link-inbetween',
+    );
+    var inbetweenLinksLength = inbetweenLinks.length;
     for (var i = 0; i < inbetweenLinks.length; i++) {
       inbetweenLinks[i].onclick = function(e) {
         e.preventDefault();
         var els = document.getElementsByClassName('collection-link-hidden');
-        var elsLength = els.length
+        var elsLength = els.length;
         for (var i = 0; i < elsLength; i++) {
           els[0].classList.remove('collection-link-hidden');
         }
         for (var i = 0; i < inbetweenLinksLength; i++) {
-          inbetweenLinks[0].className = 'collection-link-hidden'
+          inbetweenLinks[0].className = 'collection-link-hidden';
         }
-      }
-    }  
+      };
+    }
   }
 }

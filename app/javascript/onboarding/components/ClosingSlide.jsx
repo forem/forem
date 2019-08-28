@@ -27,10 +27,8 @@ class ClosingSlide extends Component {
           <div className="onboarding-previous-location">
             <span role="img" aria-label="sparkle">
               ✨
-            </span>
-            {' '}
-            <em>Challenge: Leave 3 constructive comments today</em>
-            {' '}
+            </span>{' '}
+            <em>Challenge: Leave 3 constructive comments today</em>{' '}
             <span role="img" aria-label="sparkle">
               ✨
             </span>

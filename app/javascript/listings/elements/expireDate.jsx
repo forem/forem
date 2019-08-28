@@ -8,10 +8,13 @@ const ExpireDate = ({ onChange, defaultValue }) => {
   tomorrow = tomorrow.toISOString().split('T')[0];
   monthFromToday.setDate(new Date().getDate() + 30);
   monthFromToday = monthFromToday.toISOString().split('T')[0];
-  
+
   return (
     <div className="field">
-      <label className="listingform__label" htmlFor="expires_at">Custom Expire Date (if applicable for time sensitive events, deadlines, etc.)</label>
+      <label className="listingform__label" htmlFor="expires_at">
+        Custom Expire Date (if applicable for time sensitive events, deadlines,
+        etc.)
+      </label>
       <input
         type="date"
         className="listingform__input"
@@ -24,11 +27,11 @@ const ExpireDate = ({ onChange, defaultValue }) => {
       />
     </div>
   );
-}
+};
 
 ExpireDate.propTypes = {
   onChange: PropTypes.func.isRequired,
   defaultValue: PropTypes.string.isRequired,
-}
-  
+};
+
 export default ExpireDate;

@@ -100,8 +100,7 @@ class FollowTags extends Component {
                   selectedTags.includes(tag) ? 'tag tag-selected' : 'tag'
                 }
               >
-                #
-                {tag.name}
+                #{tag.name}
                 <div className="onboarding-tag-follow-indicator">
                   {selectedTags.includes(tag) ? '✓ following ' : ''}
                 </div>

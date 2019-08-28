@@ -880,7 +880,9 @@ export default class Chat extends Component {
           <a
             href={`/${currentChannel.channel_username}`}
             onClick={this.triggerActiveContent}
-            data-content={`users/by_username?url=${currentChannel.channel_username}`}
+            data-content={`users/by_username?url=${
+              currentChannel.channel_username
+            }`}
           >
             {currentChannel.channel_modified_slug}
           </a>
@@ -889,7 +891,9 @@ export default class Chat extends Component {
           <img
             src={ConfigImage}
             onClick={this.triggerActiveContent}
-            data-content={`users/by_username?url=${currentChannel.channel_username}`}
+            data-content={`users/by_username?url=${
+              currentChannel.channel_username
+            }`}
           />
         );
       } else {

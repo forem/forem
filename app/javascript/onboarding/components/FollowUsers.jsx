@@ -56,9 +56,9 @@ class FollowUsers extends Component {
         'X-CSRF-Token': csrfToken,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({users:selectedUsers}),
+      body: JSON.stringify({ users: selectedUsers }),
       credentials: 'same-origin',
-    })
+    });
 
     next();
   }
@@ -103,9 +103,7 @@ class FollowUsers extends Component {
           <div className="scroll">
             <div className="select-all-button-wrapper">
               <button type="button" onClick={() => this.handleSelectAll()}>
-                Select All 
-                {' '}
-                {selectedUsers.length === users.length ? '✅' : ''}
+                Select All {selectedUsers.length === users.length ? '✅' : ''}
               </button>
             </div>
             {users.map(user => (

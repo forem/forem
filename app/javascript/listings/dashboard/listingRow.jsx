@@ -8,7 +8,7 @@ export const ListingRow = ({ listing }) => {
     </a>
   ));
 
-  const listingLocation = listing.location ? (` ・ ${listing.location}`) : '';
+  const listingLocation = listing.location ? ` ・ ${listing.location}` : '';
 
   const listingDate = listing.bumped_at
     ? new Date(listing.bumped_at.toString()).toLocaleDateString('default', {
@@ -26,26 +26,25 @@ export const ListingRow = ({ listing }) => {
     ''
   );
 
-  const expiryDate = listing.expires_at ? 
-    new Date(listing.expires_at.toString()).toLocaleDateString('default', {
-      day: '2-digit',
-      month: 'short',
-    }) : '' ;
-  
-  const listingExpiry = expiryDate !== '' ? (
-    ` | Expires on: ${expiryDate}`
-  ) : (
-    ''
-  );
+  const expiryDate = listing.expires_at
+    ? new Date(listing.expires_at.toString()).toLocaleDateString('default', {
+        day: '2-digit',
+        month: 'short',
+      })
+    : '';
+
+  const listingExpiry = expiryDate !== '' ? ` | Expires on: ${expiryDate}` : '';
 
   return (
-    <div className={`dashboard-listing-row ${listing.published ? '' : 'expired'}`}>
+    <div
+      className={`dashboard-listing-row ${listing.published ? '' : 'expired'}`}
+    >
       {orgName}
       <a href={`${listing.category}/${listing.slug}`}>
-        <h2>{listing.title + (listing.published ? '' : " (expired)")}</h2>
+        <h2>{listing.title + (listing.published ? '' : ' (expired)')}</h2>
       </a>
       <span className="dashboard-listing-date">
-        {listingDate} 
+        {listingDate}
         {listingExpiry}
         {listingLocation}
       </span>

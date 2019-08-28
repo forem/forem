@@ -32,7 +32,9 @@ document.ready.then(
       getUnopenedChannels();
 
       if (redirectableLocation() && !onboardingSkippable(currentUser)) {
-        window.location = `${window.location.origin}/onboarding?referrer=${window.location}`;
+        window.location = `${window.location.origin}/onboarding?referrer=${
+          window.location
+        }`;
       }
     })
     .catch(error => {
@@ -49,7 +51,9 @@ window.InstantClick.on('change', () => {
         localStorage.getItem('shouldRedirectToOnboarding') === null &&
         !onboardingSkippable(currentUser)
       ) {
-        window.location = `${window.location.origin}/onboarding?referrer=${window.location}`;
+        window.location = `${window.location.origin}/onboarding?referrer=${
+          window.location
+        }`;
       }
     })
     .catch(error => {

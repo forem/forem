@@ -20,7 +20,7 @@ function hideArchivedPosts() {
 
 function toggleArchivedPosts(e) {
   var link = e.target;
-  
+
   if (link.innerHTML.match(/Show/)) {
     link.innerHTML = 'Hide Archived';
     showArchivedPosts();

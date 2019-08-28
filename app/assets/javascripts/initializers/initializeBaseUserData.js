@@ -66,16 +66,22 @@ function addRelevantButtonsToArticle(user) {
   if (articleContainer) {
     if (parseInt(articleContainer.dataset.authorId, 10) === user.id) {
       let actions = [
-        `<a href="${articleContainer.dataset.path}/edit" rel="nofollow">EDIT</a>`,
+        `<a href="${
+          articleContainer.dataset.path
+        }/edit" rel="nofollow">EDIT</a>`,
       ];
       if (JSON.parse(articleContainer.dataset.published) === true) {
         actions.push(
-          `<a href="${articleContainer.dataset.path}/manage" rel="nofollow">MANAGE</a>`,
+          `<a href="${
+            articleContainer.dataset.path
+          }/manage" rel="nofollow">MANAGE</a>`,
         );
       }
       if (user.pro) {
         actions.push(
-          `<a href="${articleContainer.dataset.path}/stats" rel="nofollow">STATS</a>`,
+          `<a href="${
+            articleContainer.dataset.path
+          }/stats" rel="nofollow">STATS</a>`,
         );
       }
       document.getElementById('action-space').innerHTML = actions.join('');

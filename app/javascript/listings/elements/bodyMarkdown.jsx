@@ -16,11 +16,11 @@ const BodyMarkdown = ({ onChange, defaultValue }) => (
       />
     </label>
   </div>
-)
+);
 
 BodyMarkdown.propTypes = {
   onChange: PropTypes.func.isRequired,
   defaultValue: PropTypes.string.isRequired,
-}
+};
 
 export default BodyMarkdown;

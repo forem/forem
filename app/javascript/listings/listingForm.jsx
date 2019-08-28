@@ -80,7 +80,10 @@ export default class ListingForm extends Component {
             category={category}
             onInput={linkState(this, 'tagList')}
           />
-          <ExpireDate defaultValue={expireDate} onChange={linkState(this, 'expireDate')} />
+          <ExpireDate
+            defaultValue={expireDate}
+            onChange={linkState(this, 'expireDate')}
+          />
           {orgArea}
           {/* add contact via connect checkbox later */}
         </div>

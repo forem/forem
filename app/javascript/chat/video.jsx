@@ -95,9 +95,9 @@ export default class Video extends Component {
         trackDiv.className = `chat__videocalltrackdiv--${track.kind}`;
         trackDiv.appendChild(track.attach());
         document.getElementById('videoremotescreen').appendChild(trackDiv);
-        document.getElementById(
-          'videoremotescreen',
-        ).lastChild.id = `${track.kind}-${track.id}`;
+        document.getElementById('videoremotescreen').lastChild.id = `${
+          track.kind
+        }-${track.id}`;
       }
     });
     participant.on('trackRemoved', track => {
@@ -187,7 +187,9 @@ export default class Video extends Component {
       >
         <div
           id="videoremotescreen"
-          className={`chat__remotevideoscreen-${this.state.participants.length}`}
+          className={`chat__remotevideoscreen-${
+            this.state.participants.length
+          }`}
         />
         <div className="chat__localvideoscren" id="videolocalscreen" />
         <button

@@ -20,12 +20,16 @@ export default class GithubRepo extends Component {
   componentDidMount() {
     if (this.state.token) {
       getJSONContents(
-        `https://api.github.com/repos/${this.props.resource.args}/contents?access_token=${this.state.token}`,
+        `https://api.github.com/repos/${
+          this.props.resource.args
+        }/contents?access_token=${this.state.token}`,
         this.loadContent,
         this.loadFailure,
       );
       getJSONContents(
-        `https://api.github.com/repos/${this.props.resource.args}/readme?access_token=${this.state.token}`,
+        `https://api.github.com/repos/${
+          this.props.resource.args
+        }/readme?access_token=${this.state.token}`,
         this.loadContent,
         this.loadFailure,
       );

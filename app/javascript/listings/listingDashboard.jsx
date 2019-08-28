@@ -17,7 +17,9 @@ export class ListingDashboard extends Component {
     let listings = [];
     let orgs = [];
     let orgListings = [];
-    listings = JSON.parse(container.dataset.listings).sort((a,b) => (a.created_at > b.created_at) ? -1 : 1);
+    listings = JSON.parse(container.dataset.listings).sort((a, b) =>
+      a.created_at > b.created_at ? -1 : 1,
+    );
     orgs = JSON.parse(container.dataset.orgs);
     orgListings = JSON.parse(container.dataset.orglistings);
     const userCredits = container.dataset.usercredits;
@@ -35,21 +37,29 @@ export class ListingDashboard extends Component {
     } = this.state;
 
     const filterListings = (listingsToFilter, selectedFilter) => {
-      if (selectedFilter === "Expired") {
-        return listingsToFilter.filter(listing => listing.published === false)
-      } if (selectedFilter === "Active") {
-        return listingsToFilter.filter(listing => listing.published === true)
+      if (selectedFilter === 'Expired') {
+        return listingsToFilter.filter(listing => listing.published === false);
       }
-      return listingsToFilter
-    }
+      if (selectedFilter === 'Active') {
+        return listingsToFilter.filter(listing => listing.published === true);
+      }
+      return listingsToFilter;
+    };
 
-    const showListings = (selected, userListings, organizationListings, selectedFilter) => {
+    const showListings = (
+      selected,
+      userListings,
+      organizationListings,
+      selectedFilter,
+    ) => {
       let displayedListings;
       if (selected === 'user') {
-        displayedListings = filterListings(userListings, selectedFilter)
-        return displayedListings.map(listing => <ListingRow listing={listing} />)
+        displayedListings = filterListings(userListings, selectedFilter);
+        return displayedListings.map(listing => (
+          <ListingRow listing={listing} />
+        ));
       }
-      displayedListings = filterListings(organizationListings, selectedFilter)
+      displayedListings = filterListings(organizationListings, selectedFilter);
       return displayedListings.map(listing =>
         listing.organization_id === selected ? (
           <ListingRow listing={listing} />
@@ -58,30 +68,35 @@ export class ListingDashboard extends Component {
         ),
       );
     };
-    
-    const sortListings = (event) => {
-      const sortedListings = listings.sort((a,b) => (a[event.target.value] > b[event.target.value]) ? -1 : 1)
-      this.setState({listings: sortedListings});
-    }
 
-    const filters = ["All", "Active", "Expired"];
+    const sortListings = event => {
+      const sortedListings = listings.sort((a, b) =>
+        a[event.target.value] > b[event.target.value] ? -1 : 1,
+      );
+      this.setState({ listings: sortedListings });
+    };
+
+    const filters = ['All', 'Active', 'Expired'];
     const filterButtons = filters.map(f => (
       <span
-        onClick={(event) => {this.setState( {filter:event.target.textContent} )}}
+        onClick={event => {
+          this.setState({ filter: event.target.textContent });
+        }}
         className={`rounded-btn ${filter === f ? 'active' : ''}`}
-        role="button" 
-        tabIndex="0">
+        role="button"
+        tabIndex="0"
+      >
         {f}
       </span>
-    ))
+    ));
 
     const sortingDropdown = (
       <div class="dashboard-listings-actions">
-        <div className="listings-dashboard-filter-buttons">
-          {filterButtons}
-        </div>
-        <select onChange={sortListings} >
-          <option value="created_at" selected="selected">Recently Created</option>
+        <div className="listings-dashboard-filter-buttons">{filterButtons}</div>
+        <select onChange={sortListings}>
+          <option value="created_at" selected="selected">
+            Recently Created
+          </option>
           <option value="bumped_at">Recently Bumped</option>
         </select>
       </div>
@@ -91,7 +106,7 @@ export class ListingDashboard extends Component {
       <span
         onClick={() => this.setState({ selectedListings: org.id })}
         className={`rounded-btn ${selectedListings === org.id ? 'active' : ''}`}
-        role="button" 
+        role="button"
         tabIndex="0"
       >
         {org.name}
@@ -131,7 +146,7 @@ export class ListingDashboard extends Component {
           className={`rounded-btn ${
             selectedListings === 'user' ? 'active' : ''
           }`}
-          role="button" 
+          role="button"
           tabIndex="0"
         >
           Personal
