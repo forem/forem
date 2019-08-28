@@ -3,34 +3,46 @@ class KotlinTag < LiquidTagBase
 
   def initialize(tag_name, link, tokens)
     super
-    @link = parse_link(link)
+    stripped_link = ActionController::Base.helpers.strip_tags(link)
+    the_link = stripped_link.split(" ").first
+    @locals = KotlinTag.parse_link(the_link)
   end
 
   def render(_context)
     ActionController::Base.new.render_to_string(
       partial: PARTIAL,
-      locals: {
-        link: @link
-      },
+      locals: @locals,
     )
   end
 
-  private
-
-  def parse_link(link)
-    stripped_link = ActionController::Base.helpers.strip_tags(link)
-    the_link = stripped_link.split(" ").first
-    raise_error unless valid_link?(the_link)
-    the_link
+  def self.parse_link(link)
+    begin
+      url = URI(link)
+    rescue
+      raise_error
+    end
+    hostname_ok = url.hostname == "pl.kotl.in"
+    short = url.path.delete("/")
+    raise_error unless hostname_ok && is_valid_param(short)
+    self.parse_params(url, short)
   end
 
-  def valid_link?(link)
-    link_no_space = link.delete(" ")
-    (link_no_space =~
-      /^(http|https):\/\/(pl.kotl.in)\/[a-zA-Z0-9_\-]{1,30}.*/)&.zero?
+  def self.parse_params(url, short)
+    query = url.query.nil? ?  [] : URI.decode_www_form(url.query)
+    result = {:short => short}
+    [:from, :to, :theme, :readOnly].each { |param|
+      value = query.assoc(param.id2name)&.last
+      result[param] = is_valid_param(value) ? value : ""
+    }
+    result
   end
 
-  def raise_error
+  def self.is_valid_param(value)
+    return false if value.nil?
+    value.match(/^[a-zA-Z0-9]+$/) != nil
+  end
+
+  def self.raise_error
     raise StandardError, "Invalid Kotlin Playground URL"
   end
 end
