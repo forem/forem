@@ -105,7 +105,6 @@ function initReactionButtonEvent(event) {
       }
     });
 }
-
 function initReactions() {
   setTimeout(() => {
     if (document.getElementById('notifications-container')) {
