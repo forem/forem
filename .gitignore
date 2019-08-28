@@ -55,3 +55,6 @@ package-lock.json
 
 # Development Docker storage location
 _docker-storage/
+
+# AWS Cloud9 specific folder for user settings
+.c9

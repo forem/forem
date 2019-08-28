@@ -11,6 +11,8 @@ enable_defaults! { ENV["RACK_ENV"] != "production" }
 variable :APP_DOMAIN, :String, default: "localhost:3000"
 variable :APP_PROTOCOL, :String, default: "http://"
 variable :COMMUNITY_NAME, :String, default: "DEV(local)"
+variable :MAIN_SOCIAL_IMAGE, :String, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
+variable :SITE_TWITTER_HANDLE, :String, default: "tbd"
 
 # Logo
 variable :LOGO_SVG, :String, default: ""
@@ -78,6 +80,7 @@ variable :BUFFER_FACEBOOK_ID, :String, default: "Optional"
 variable :BUFFER_LINKEDIN_ID, :String, default: "Optional"
 variable :BUFFER_PROFILE_ID, :Integer, default: 0
 variable :BUFFER_TWITTER_ID, :String, default: "Optional"
+variable :BUFFER_LISTINGS_PROFILE, :String, default: "Optional"
 
 # Cloudinary for image resizing and cache??
 variable :CLOUDINARY_API_KEY, :String, default: "Optional"
@@ -102,9 +105,6 @@ variable :GA_TRACKING_ID, :String, default: "Optional"
 variable :GA_OPTIMIZE_ID, :String, default: "Optional"
 variable :GA_VIEW_ID, :String, default: "Optional"
 variable :GA_FETCH_RATE, :Integer, default: 25
-
-# Honeycomb
-variable :HONEYCOMB_API_KEY, :String, default: "Optional"
 
 # Mailchimp for mails
 variable :MAILCHIMP_API_KEY, :String, default: "Optional-valid"
@@ -147,8 +147,16 @@ variable :TWILIO_ACCOUNT_SID, :String, default: "Optional"
 variable :TWILIO_VIDEO_API_KEY, :String, default: "Optional"
 variable :TWILIO_VIDEO_API_SECRET, :String, default: "Optional"
 
+# For Twitch live stream integration
+variable :TWITCH_CLIENT_ID, :String, default: "Optional"
+variable :TWITCH_CLIENT_SECRET, :String, default: "Optional"
+variable :TWITCH_WEBHOOK_SECRET, :String, default: "Optional"
+
 # Trending tags on home page
 variable :TRENDING_TAGS, :String, default: "git,beginners"
+
+# For calling the Stack Exchange API
+variable :STACK_EXCHANGE_APP_KEY, :String, default: ""
 
 ##### Legacy test related env vars ######
 variable :FACEBOOK_PIXEL_ID, :String, default: "Optional"
