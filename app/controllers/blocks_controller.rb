@@ -1,5 +1,6 @@
 class BlocksController < ApplicationController
   before_action :set_block, only: %i[show edit update destroy]
+  before_action :authorize_block, only: %i[show edit update destroy]
 
   after_action :verify_authorized
 
@@ -12,9 +13,7 @@ class BlocksController < ApplicationController
 
   # GET /blocks/1
   # GET /blocks/1.json
-  def show
-    authorize @block
-  end
+  def show; end
 
   # GET /blocks/new
   def new
@@ -23,9 +22,7 @@ class BlocksController < ApplicationController
   end
 
   # GET /blocks/1/edit
-  def edit
-    authorize @block
-  end
+  def edit; end
 
   # POST /blocks
   # POST /blocks.json
@@ -47,7 +44,6 @@ class BlocksController < ApplicationController
   # PATCH/PUT /blocks/1
   # PATCH/PUT /blocks/1.json
   def update
-    authorize @block
     respond_to do |format|
       if @block.update(permitted_attributes(@block))
         @block.publish! if permitted_attributes(@block)[:publish_now]
@@ -63,7 +59,6 @@ class BlocksController < ApplicationController
   # DELETE /blocks/1
   # DELETE /blocks/1.json
   def destroy
-    authorize @block
     @block.destroy
     respond_to do |format|
       format.html { redirect_to blocks_url, notice: "Block was successfully destroyed." }
@@ -76,5 +71,9 @@ class BlocksController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_block
     @block = Block.find(params[:id])
+  end
+
+  def authorize_block
+    authorize @block
   end
 end
