@@ -44,6 +44,7 @@
         }
         .content {
           padding-bottom: 18px;
+          line-height: 1.35em;
           &.notification-content {
             a {
               color: $sky-blue;
@@ -82,10 +83,25 @@
               border-radius: 8px;
               width: 300px;
             }
+            hr.minimal-divider {
+              width: 90px;
+              opacity: 0.4;
+              margin: 18px auto 22px;
+            }
             p.badge-reward-message {
               margin: 8px auto;
               width: 90%;
               @include themeable(color, theme-color, $black);
+            }
+            p.badge-credit-message{
+              margin: 8px auto;
+              width: 100%;
+              @include themeable(color, theme-color, $dark-gray);
+              font-size: 0.94em;
+              line-height: 1.35em;
+              strong a {
+                font-weight: 700
+              }
             }
           }
           .follow-action-button {
@@ -146,6 +162,7 @@
             .notification-new-post-title {
               font-size: 1.7em;
               word-wrap: break-word;
+              line-height: 1.06em;
             }
             .notification-new-post-tags {
               margin-top: 6px;

@@ -13,9 +13,9 @@ RSpec.describe Comment, type: :model do
   end
 
   describe "validations" do
-    subject { described_class.new(commentable: article) }
+    subject { described_class.new(user: user, commentable: article) }
 
-    let(:article) { Article.new }
+    let(:article) { Article.new(user: user2) }
 
     before do
       allow(article).to receive(:touch).and_return(true)
@@ -284,6 +284,24 @@ RSpec.describe Comment, type: :model do
           comment.save!
         end.to have_enqueued_job.with(kind_of(described_class), "remove_algolia_index").on_queue("algoliasearch")
       end
+    end
+  end
+
+  describe "when a comment is destroyed" do
+    it "updates user last comment date" do
+      expect do
+        comment.destroy
+        user2.reload
+      end.to change(user2, :last_comment_at)
+    end
+  end
+
+  describe "when a comment is created" do
+    it "updates user last comment date" do
+      expect do
+        comment.save
+        user2.reload
+      end.to change(user2, :last_comment_at)
     end
   end
 

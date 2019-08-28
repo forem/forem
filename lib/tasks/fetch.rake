@@ -32,9 +32,6 @@ task expire_old_listings: :environment do
     listing.update(published: false)
     listing.remove_from_index!
   end
-end
-
-task expire_old_listings: :environment do
   ClassifiedListing.where("expires_at = ?", Time.zone.today).each do |listing|
     listing.update(published: false)
     listing.remove_from_index!

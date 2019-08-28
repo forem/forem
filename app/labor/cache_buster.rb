@@ -12,32 +12,24 @@ class CacheBuster
                   headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
   end
 
-  def bust_comment(commentable, username)
-    if commentable
-      bust("/") if Article.published.order("hotness_score DESC").limit(3).pluck(:id).include?(commentable.id)
-      if commentable.decorate.cached_tag_list_array.include?("discuss") &&
-          commentable.featured_number.to_i > 35.hours.ago.to_i
-        bust("/")
-        bust("/?i=i")
-        bust("?i=i")
-      end
-      commentable.touch(:last_comment_at)
-      bust("#{commentable.path}/comments/")
-      bust(commentable.path.to_s)
-      commentable.comments.includes(:user).find_each do |c|
-        bust(c.path)
-        bust(c.path + "?i=i")
-      end
-      bust("#{commentable.path}/comments/*")
+  def bust_comment(commentable)
+    return unless commentable
+
+    bust("/") if Article.published.order("hotness_score DESC").limit(3).pluck(:id).include?(commentable.id)
+    if commentable.decorate.cached_tag_list_array.include?("discuss") &&
+        commentable.featured_number.to_i > 35.hours.ago.to_i
+      bust("/")
+      bust("/?i=i")
+      bust("?i=i")
     end
-
-    return unless username
-
-    paths = [
-      "/#{username}", "/#{username}/comments",
-      "/#{username}/comments?i=i", "/#{username}/comments/?i=i"
-    ]
-    paths.each { |path| bust(path) }
+    commentable.touch(:last_comment_at)
+    bust("#{commentable.path}/comments/")
+    bust(commentable.path.to_s)
+    commentable.comments.includes(:user).find_each do |c|
+      bust(c.path)
+      bust(c.path + "?i=i")
+    end
+    bust("#{commentable.path}/comments/*")
   end
 
   def bust_article(article)
@@ -168,5 +160,17 @@ class CacheBuster
     bust("/listings/#{classified_listing.category}/#{classified_listing.slug}")
     bust("/listings/#{classified_listing.category}/#{classified_listing.slug}?i=i")
     bust("/listings/#{classified_listing.category}")
+  end
+
+  def bust_user(user)
+    username = user.username
+    paths = [
+      "/#{username}", "/#{username}?i=i",
+      "/#{username}/comments",
+      "/#{username}/comments?i=i", "/#{username}/comments/?i=i",
+      "/live/#{username}", "/live/#{username}?i=i",
+      "/feed/#{username}"
+    ]
+    paths.each { |path| bust(path) }
   end
 end

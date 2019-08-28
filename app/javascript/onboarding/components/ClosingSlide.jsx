@@ -76,6 +76,56 @@ class ClosingSlide extends Component {
           </div>
         );
       }
+      if (variant === '9') {
+        return (
+          <div className="onboarding-what-next">
+            <a
+              href="/welcome"
+              data-no-instant
+              style={{
+                width: 'calc(100% - 4px)',
+                textAlign: 'center',
+                maxWidth: '500px',
+                height: '190px',
+                margin: 'auto',
+                padding: '0px 0px',
+                borderRadius: '5px',
+                paddingTop: 'calc(10px + 2vw)',
+                fontSize: '1.4em',
+                boxShadow: '3px 3px 0px #5779b9',
+              }}
+            >
+              <div style={{ maxWidth: '90%', margin: 'auto' }}>
+                Join the Welcome Thread
+                <span
+                  role="img"
+                  aria-label="tada"
+                  style={{ marginLeft: '0.3em' }}
+                >
+                  🚀
+                </span>
+              </div>
+              <br />
+              <p style={{ fontSize: '0.7em', maxWidth: '88%', margin: 'auto' }}>
+                Challenge: Leave 3 constructive comments
+              </p>
+              <p
+                style={{
+                  fontSize: '0.50em',
+                  maxWidth: '66%',
+                  margin: 'auto',
+                  marginTop: '1.5em',
+                }}
+              >
+                <em>
+                  Ask questions, offer encouragement and participate in
+                  discussion threads.
+                </em>
+              </p>
+            </a>
+          </div>
+        );
+      }
       return (
         <div className="onboarding-what-next">
           <a href="/welcome" data-no-instant>

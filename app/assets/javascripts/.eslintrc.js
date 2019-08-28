@@ -27,5 +27,6 @@ module.exports = {
     sendHapticMessage: false,
     checkUserLoggedIn: false,
     showModal: false,
+    ActiveXObject: false,
   },
 };

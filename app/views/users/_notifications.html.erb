@@ -62,6 +62,15 @@
       <%= f.label :mobile_comment_notifications, "Notify me when someone replies to me in a comment thread" %>
     </div>
   </div>
+  <% if current_user.trusted %>
+    <h3>Mod Notification Settings</h3>
+    <div class="checkbox-field">
+      <div class="sub-field">
+        <%= f.check_box :mod_roundrobin_notifications %>
+        <%= f.label :mod_roundrobin_notifications, "Send me occasional community-success mod notifications" %>
+      </div>
+    </div>
+  <% end %>
   <div class="field">
     <label></label>
     <%= f.hidden_field :tab, value: @tab %>
