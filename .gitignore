@@ -18,6 +18,7 @@ vendor/bundle
 .torus.json
 coverage
 /tags
+.ruby-gemset
 
 # Ignore public uploads
 /public/uploads/*

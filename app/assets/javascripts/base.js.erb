@@ -1,6 +1,7 @@
 //= require_tree ./initializers
 //= require_tree ./utilities
 //= require lib/xss
+//= require lib/Luminous
 //= require initializePage
 //= require utilities/getImageForLink
 //= require airbrake-js-client
@@ -717,3 +718,7 @@ var instantClick
       }
     },1);
   }
+
+////////// Preview images in articles //////////
+
+new Luminous(document.querySelector(".article-body-image-wrapper"));

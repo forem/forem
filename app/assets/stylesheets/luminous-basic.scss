@@ -1,0 +1,279 @@
+@keyframes lum-fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes lum-fadeZoom {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes lum-loader-rotate {
+  0% {
+    transform: translate(-50%, -50%) rotate(0);
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(-180deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(-360deg);
+  }
+}
+
+@keyframes lum-loader-before {
+  0% {
+    transform: scale(1);
+  }
+  10% {
+    transform: scale(1.2) translateX(6px);
+  }
+  25% {
+    transform: scale(1.3) translateX(8px);
+  }
+  40% {
+    transform: scale(1.2) translateX(6px);
+  }
+  50% {
+    transform: scale(1);
+  }
+  60% {
+    transform: scale(0.8) translateX(6px);
+  }
+  75% {
+    transform: scale(0.7) translateX(8px);
+  }
+  90% {
+    transform: scale(0.8) translateX(6px);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes lum-loader-after {
+  0% {
+    transform: scale(1);
+  }
+  10% {
+    transform: scale(1.2) translateX(-6px);
+  }
+  25% {
+    transform: scale(1.3) translateX(-8px);
+  }
+  40% {
+    transform: scale(1.2) translateX(-6px);
+  }
+  50% {
+    transform: scale(1);
+  }
+  60% {
+    transform: scale(0.8) translateX(-6px);
+  }
+  75% {
+    transform: scale(0.7) translateX(-8px);
+  }
+  90% {
+    transform: scale(0.8) translateX(-6px);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.lum-lightbox {
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+}
+
+.lum-lightbox-inner {
+  top: 2.5%;
+  right: 2.5%;
+  bottom: 2.5%;
+  left: 2.5%;
+}
+
+.lum-lightbox-inner img {
+  position: relative;
+}
+
+.lum-lightbox-inner .lum-lightbox-caption {
+  margin: 0 auto;
+  color: #fff;
+  max-width: 700px;
+  text-align: center;
+}
+
+.lum-loading .lum-lightbox-loader {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 66px;
+  height: 20px;
+  animation: lum-loader-rotate 1800ms infinite linear;
+}
+
+.lum-lightbox-loader:before,
+.lum-lightbox-loader:after {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 50%;
+  margin-top: -10px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.lum-lightbox-loader:before {
+  left: 0;
+  animation: lum-loader-before 1800ms infinite linear;
+}
+
+.lum-lightbox-loader:after {
+  right: 0;
+  animation: lum-loader-after 1800ms infinite linear;
+  animation-delay: -900ms;
+}
+
+.lum-lightbox.lum-opening {
+  animation: lum-fade 180ms ease-out;
+}
+
+.lum-lightbox.lum-opening .lum-lightbox-inner {
+  animation: lum-fadeZoom 180ms ease-out;
+}
+
+.lum-lightbox.lum-closing {
+  animation: lum-fade 300ms ease-in;
+  animation-direction: reverse;
+}
+
+.lum-lightbox.lum-closing .lum-lightbox-inner {
+  animation: lum-fadeZoom 300ms ease-in;
+  animation-direction: reverse;
+}
+
+.lum-img {
+  transition: opacity 120ms ease-out;
+}
+
+.lum-loading .lum-img {
+  opacity: 0;
+}
+
+.lum-gallery-button {
+  overflow: hidden;
+  text-indent: 150%;
+  white-space: nowrap;
+  background: transparent;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 100px;
+  max-height: 100%;
+  width: 60px;
+  cursor: pointer;
+}
+
+.lum-close-button {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  width: 32px;
+  height: 32px;
+  opacity: 0.3;
+}
+.lum-close-button:hover {
+  opacity: 1;
+}
+.lum-close-button:before,
+.lum-close-button:after {
+  position: absolute;
+  left: 15px;
+  content: " ";
+  height: 33px;
+  width: 2px;
+  background-color: #fff;
+}
+.lum-close-button:before {
+  transform: rotate(45deg);
+}
+.lum-close-button:after {
+  transform: rotate(-45deg);
+}
+
+.lum-previous-button {
+  left: 12px;
+}
+
+.lum-next-button {
+  right: 12px;
+}
+
+.lum-gallery-button:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 50%;
+  width: 36px;
+  height: 36px;
+  border-top: 4px solid rgba(255, 255, 255, 0.8);
+}
+
+.lum-previous-button:after {
+  transform: translateY(-50%) rotate(-45deg);
+  border-left: 4px solid rgba(255, 255, 255, 0.8);
+  box-shadow: -2px 0 rgba(0, 0, 0, 0.2);
+  left: 12%;
+  border-radius: 3px 0 0 0;
+}
+
+.lum-next-button:after {
+  transform: translateY(-50%) rotate(45deg);
+  border-right: 4px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 2px 0 rgba(0, 0, 0, 0.2);
+  right: 12%;
+  border-radius: 0 3px 0 0;
+}
+
+/* This media query makes screens less than 460px wide display in a "fullscreen"-esque mode. Users can then scroll around inside the lightbox to see the entire image. */
+@media (max-width: 460px) {
+  .lum-lightbox-image-wrapper {
+    display: flex;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .lum-lightbox-caption {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+  }
+
+  /* Used to centre the image in the container, respecting overflow: https://stackoverflow.com/a/33455342/515634 */
+  .lum-lightbox-position-helper {
+    margin: auto;
+  }
+
+  .lum-lightbox-inner img {
+    max-width: none;
+    max-height: none;
+  }
+}
