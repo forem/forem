@@ -24,6 +24,7 @@
               padding: 5px 0px;
               font-size: 18px;
               color: $black;
+              color: var(--theme-color, $black);
               &:hover {
                 text-decoration: underline;
               }

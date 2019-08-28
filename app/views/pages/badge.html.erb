@@ -88,7 +88,7 @@
         document.getElementsByTagName('body')[0].dataset.loaded = "true";
       }
     };
-    var timeString = (Date.now()).toString();
+
     xmlhttp.open("GET", "/async_info/base_data", true);
     xmlhttp.send();
   }
@@ -116,6 +116,7 @@
   })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
   ga('create', '<%= ApplicationConfig["GA_TRACKING_ID"] %>', 'auto');
+  ga('set', 'anonymizeIp', true);
   ga('send', 'pageview');
   ga('send', 'event', 'view', '/badge version impression', '<%= @html_variant.name %>', null);
 </script>

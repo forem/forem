@@ -1,15 +1,21 @@
 <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right">
   <div class="sidebar-bg" id="sidebar-bg-right"></div>
   <div class="side-bar sidebar-additional showing" id="sidebar-additional">
+    <% @organization.sponsorships.live.find_each do |sponsorship| %>
+      <div class="sidebar-sponsorship-level" style="background:<%= sponsorship.decorate.level_color_hex %>">
+        <%= sponsorship.level.capitalize %> Community Sponsor ❤️
+      </div>
+    <% end %>
+
     <% if @organization.users.present? %>
       <div class="widget">
         <div class="widget-suggested-follows-container">
           <header><h4>meet the team</h4></header>
           <div class="widget-body">
-            <% @organization.users.each do |user| %>
+            <% @organization.users.find_each do |user| %>
               <div class="widget-user-pic">
                 <a href="/<%= user.username %>">
-                  <img src="<%= ProfileImage.new(user).get(90) %>" />
+                  <img src="<%= ProfileImage.new(user).get(90) %>" alt="<%= user.username %> profile image">
                 </a>
               </div>
             <% end %>

@@ -45,6 +45,11 @@ Rails.application.configure do
   # Highlight code that triggered database queries in logs.
   config.active_record.verbose_query_logs = true
 
+  # Allows setting a warning threshold for query result size.
+  # If the number of records returned by a query exceeds the threshold, a warning is logged.
+  # This can be used to identify queries which might be causing a memory bloat.
+  config.active_record.warn_on_records_fetched_greater_than = 1500
+
   # Debug mode disables concatenation and preprocessing of assets.
   # This option may cause significant delays in view rendering with a large
   # number of complex assets.
@@ -54,7 +59,7 @@ Rails.application.configure do
   # yet still be able to expire them through the digest params.
   config.assets.digest = false
 
-  # Supress logger output for asset requests.
+  # Suppress logger output for asset requests.
   config.assets.quiet = true
 
   # Adds additional error checking when serving assets at runtime.
@@ -99,5 +104,6 @@ Rails.application.configure do
   config.after_initialize do
     Bullet.enable = true
     Bullet.console = true
+    Bullet.rails_logger = true
   end
 end

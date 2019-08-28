@@ -1,5 +1,6 @@
+<% if articles %>
 <div class="more-articles container">
-  <% ArticleSuggester.new(@article).articles(4).each do |article| %>
+  <% articles.each do |article| %>
     <a href="<%= article.path %>" data-preload-image="<%= cloud_cover_url(article.main_image) %>">
       <div class="single-other-article">
         <div class="picture">
@@ -11,16 +12,18 @@
                            quality: "auto",
                            flags: "progressive",
                            fetch_format: "auto",
-                           sign_url: true) %>
+                           loading: "lazy",
+                           sign_url: true,
+                           alt: "#{article.user.username} profile image") %>
         </div>
         <div class="content">
           <h3><%= article.title %></h3>
           <h4>
-            <%= article.user.name %>
-            <span class="published-at">- <%= article.readable_publish_date if article.published_at %></span>
+            <%= article.user.name %> - <time datetime="<%= article.published_timestamp %>"><%= article.readable_publish_date %></time>
           </h4>
         </div>
       </div>
     </a>
   <% end %>
 </div>
+<% end %>

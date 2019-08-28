@@ -1,6 +1,7 @@
 module Notifications
   class NewReactionJob < ApplicationJob
     queue_as :send_new_reaction_notification
+
     # @param reaction_data [Hash]
     #   * :reactable_id [Integer] - article or comment id
     #   * :reactable_type [String] - "Article" or "Comment"

@@ -8,7 +8,11 @@ module ApplicationHelper
   end
 
   def view_class
-    "#{controller_name} #{controller_name}-#{controller.action_name}"
+    if @story_show # custom due to edge cases
+      "stories stories-show"
+    else
+      "#{controller_name} #{controller_name}-#{controller.action_name}"
+    end
   end
 
   def core_pages?
@@ -30,6 +34,10 @@ module ApplicationHelper
       notifications
       reading_list_items
       html_variants
+      classified_listings
+      credits
+      partnerships
+      pro_accounts
     ].include?(controller_name)
   end
 
@@ -67,7 +75,7 @@ module ApplicationHelper
   end
 
   def icon(name, pixels = "20")
-    image_tag icon_url(name), alt: name, class: "icon-img", height: pixels, width: pixels
+    image_tag(icon_url(name), alt: name, class: "icon-img", height: pixels, width: pixels)
   end
 
   def icon_url(name)
@@ -118,25 +126,6 @@ module ApplicationHelper
                   sign_url: true)
   end
 
-  def cloud_social_image(article)
-    cache_key = "article-social-img-#{article}-#{article.updated_at}-#{article.comments_count}"
-
-    Rails.cache.fetch(cache_key, expires_in: 1.hour) do
-      src = GeneratedImage.new(article).social_image
-      return src if src.start_with? "https://res.cloudinary.com/"
-
-      cl_image_path(src,
-                    type: "fetch",
-                    width: "1000",
-                    height: "500",
-                    crop: "imagga_scale",
-                    quality: "auto",
-                    flags: "progressive",
-                    fetch_format: "auto",
-                    sign_url: true)
-    end
-  end
-
   def tag_colors(tag)
     Rails.cache.fetch("view-helper-#{tag}/tag_colors", expires_in: 5.hours) do
       if (found_tag = Tag.select(%i[bg_color_hex text_color_hex]).find_by(name: tag))
@@ -165,10 +154,6 @@ module ApplicationHelper
   def sanitized_sidebar(text)
     ActionController::Base.helpers.sanitize simple_format(text),
                                             tags: %w[p b i em strike strong u br]
-  end
-
-  def track_split_version(url, version)
-    "trackOutboundLink('#{url}','#{version}'); return false;"
   end
 
   def follow_button(followable, style = "full")
@@ -200,12 +185,11 @@ module ApplicationHelper
   end
 
   def logo_svg
-    logo = if ApplicationConfig["LOGO_SVG"].present?
-             ApplicationConfig["LOGO_SVG"].html_safe
-           else
-             inline_svg("devplain.svg", class: "logo", size: "20% * 20%")
-           end
-    logo
+    if ApplicationConfig["LOGO_SVG"].present?
+      ApplicationConfig["LOGO_SVG"].html_safe
+    else
+      inline_svg("devplain.svg", class: "logo", size: "20% * 20%", aria: true, title: "App logo")
+    end
   end
 
   def community_qualified_name

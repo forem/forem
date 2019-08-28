@@ -1,11 +1,12 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import Textarea from 'preact-textarea-autosize';
 
 const BodyMarkdown = ({ onChange, defaultValue }) => (
-  <textarea
+  <Textarea
     className="articleform__body"
     id="article_body_markdown"
-    placeholder="Body"
+    placeholder="Body Markdown"
     value={defaultValue}
     onInput={onChange}
     name="body_markdown"

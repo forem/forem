@@ -72,7 +72,7 @@ RSpec.describe EmailLogic do
   end
 
   describe "#should_receive_email?" do
-    it "refelcts @ready_to_receive_email" do
+    it "reflects @ready_to_receive_email" do
       author = create(:user)
       user.follow(author)
       create_list(:article, 3, user_id: author.id, positive_reactions_count: 20, score: 20)

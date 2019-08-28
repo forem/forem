@@ -20,10 +20,12 @@ class ReservedWords
     videos
     video_states
     twilio_tokens
+    twitter
     latest
     contact
     merch
     onboarding_update
+    onboarding_checkbox_update
     rlygenerator
     orlygenerator
     rlyslack
@@ -31,6 +33,7 @@ class ReservedWords
     rly
     connect
     chat_channels
+    challenge
     email_subscriptions
     social_previews
     code-of-conduct
@@ -138,6 +141,7 @@ class ReservedWords
     hack
     started
     push_notification_subscriptions
+    notification_subscriptions
     getting-started
     hackers
     podcast
@@ -188,7 +192,6 @@ class ReservedWords
     yes
     social
     rails
-    angular
     script
     work
     1024

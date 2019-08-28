@@ -22,10 +22,12 @@ module ArticlesHelper
   end
 
   def image_tag_or_inline_svg(service_name)
+    name = "#{service_name}-logo.svg"
+
     if internal_navigation?
-      image_tag("#{service_name}-logo.svg", class: "icon-img")
+      image_tag(name, class: "icon-img", alt: "#{service_name} logo")
     else
-      inline_svg("#{service_name}-logo.svg", class: "icon-img")
+      inline_svg(name, class: "icon-img", aria: true, title: "#{service_name} logo")
     end
   end
 
@@ -49,9 +51,5 @@ module ArticlesHelper
     host = URI.parse(url).host.downcase
     host.gsub!("medium.com", "Medium") if host.include?("medium.com")
     host.start_with?("www.") ? host[4..-1] : host
-  end
-
-  def hiring_form?(tag, article)
-    tag.to_s == "hiring" || article.tag_list.include?("hiring")
   end
 end

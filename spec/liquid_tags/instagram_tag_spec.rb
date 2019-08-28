@@ -12,8 +12,9 @@ RSpec.describe InstagramTag, type: :liquid_template do
 
     it "checks that the tag is properly parsed" do
       valid_id = "BXgGcAUjM39"
-      html = "<div class=\"instagram-position\"> <iframe id=\"instagram-liquid-tag\" src=\"https://www.instagram.com/p/#{valid_id}/embed/captioned\" allowtransparency=\"true\" frameborder=\"0\" data-instgrm-payload-id=\"instagram-media-payload-0\" scrolling=\"no\"> </iframe> <script async defer src=\"https://platform.instagram.com/en_US/embeds.js\"></script> </div>" # rubocop:disable Metrics/LineLength
-      expect(generate_instagram_tag(valid_id).render).to eq(html.chomp("\n"))
+      liquid = generate_instagram_tag(valid_id)
+      rendered_instagram = liquid.render
+      Approvals.verify(rendered_instagram, name: "instagram_liquid_tag", format: :html)
     end
 
     it "rejects invalid ids" do

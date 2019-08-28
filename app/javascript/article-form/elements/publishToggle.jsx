@@ -10,11 +10,13 @@ const PublishToggle = ({
   published,
   helpShowing,
   edited,
+  version,
   onClearChanges,
 }) => (
   <div className="articleform__buttons">
     <button
       onClick={onHelp}
+      type="button"
       className={
         helpShowing
           ? 'articleform__buttons--small active'
@@ -25,28 +27,48 @@ const PublishToggle = ({
     </button>
     <button
       onClick={onPreview}
-      className={previewShowing ? 'active' : 'inactive'}
+      type="button"
+      className={previewShowing ? 'active previewbutt' : 'inactive previewbutt'}
     >
-      PREVIEW
+      {previewShowing ? 'EDIT' : 'PREVIEW'}
     </button>
-    {published ? '' : <button onClick={onSaveDraft}>SAVE DRAFT</button>}
+    {published || version === 'v1' ? (
+      ''
+    ) : (
+      <button onClick={onSaveDraft} type="button">
+        SAVE DRAFT
+      </button>
+    )}
     <span>
       <p style={!edited && { visibility: 'hidden' }}>
         New Changes (
-        <button onClick={onClearChanges} className="clear-button">
+        <button onClick={onClearChanges} className="clear-button" type="button">
           clear
         </button>
         )
       </p>
-      <button onClick={onPublish} className="articleform__buttons--publish">
-        {published ? 'SAVE CHANGES' : 'PUBLISH'}
+      <button
+        onClick={onPublish}
+        className="articleform__buttons--publish"
+        type="button"
+      >
+        {published || version === 'v1' ? 'SAVE CHANGES' : 'PUBLISH'}
       </button>
     </span>
   </div>
 );
 
 PublishToggle.propTypes = {
-  defaultValue: PropTypes.string.isRequired,
+  previewShowing: PropTypes.bool.isRequired,
+  onPreview: PropTypes.func.isRequired,
+  onSaveDraft: PropTypes.func.isRequired,
+  onPublish: PropTypes.func.isRequired,
+  onHelp: PropTypes.func.isRequired,
+  published: PropTypes.bool.isRequired,
+  helpShowing: PropTypes.bool.isRequired,
+  edited: PropTypes.bool.isRequired,
+  version: PropTypes.string.isRequired,
+  onClearChanges: PropTypes.func.isRequired,
 };
 
 export default PublishToggle;

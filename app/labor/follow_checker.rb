@@ -13,6 +13,8 @@ class FollowChecker
                      Tag.find(followable_id)
                    elsif followable_type == "Organization"
                      Organization.find(followable_id)
+                   elsif followable_type == "Podcast"
+                     Podcast.find(followable_id)
                    else
                      User.find(followable_id)
                    end

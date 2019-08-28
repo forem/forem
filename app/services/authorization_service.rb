@@ -62,6 +62,8 @@ class AuthorizationService
       user.set_remember_fields
       add_social_identity_data(user)
       user.saw_onboarding = false
+      user.editor_version = "v2"
+      user.onboarding_variant_version = %w[0 1 2 2 2 3 4 4 4 5 6 6 6 7 8].sample # 2, 4 and 6 show up more due to success
       user.save!
     end
     user

@@ -1,5 +1,7 @@
 class FlareTag
   FLARES = %w[explainlikeimfive
+              jokes
+              watercooler
               ama
               techtalks
               help
@@ -8,7 +10,6 @@ class FlareTag
               showdev
               challenge
               anonymous
-              hiring
               discuss].freeze
 
   def initialize(article, except_tag = nil)

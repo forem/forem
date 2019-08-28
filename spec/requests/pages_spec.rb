@@ -1,10 +1,34 @@
 require "rails_helper"
 
 RSpec.describe "Pages", type: :request do
+  describe "GET /:slug" do
+    it "has proper headline for non-top-level" do
+      page = create(:page, title: "Edna O'Brien96")
+      get "/page/#{page.slug}"
+      expect(response.body).to include(CGI.escapeHTML(page.title))
+      expect(response.body).to include("/page/#{page.slug}")
+    end
+
+    it "has proper headline for top-level" do
+      page = create(:page, title: "Edna O'Brien96", is_top_level_path: true)
+      get "/#{page.slug}"
+      expect(response.body).to include(CGI.escapeHTML(page.title))
+      expect(response.body).not_to include("/page/#{page.slug}")
+      expect(response.body).to include("stories-show")
+    end
+  end
+
   describe "GET /about" do
     it "has proper headline" do
       get "/about"
       expect(response.body).to include("About dev.to")
+    end
+  end
+
+  describe "GET /api" do
+    it "redirects to the API docs" do
+      get "/api"
+      expect(response.body).to redirect_to("https://docs.dev.to/api")
     end
   end
 
@@ -50,18 +74,27 @@ RSpec.describe "Pages", type: :request do
     end
   end
 
-  describe "GET /membership" do
-    it "has proper headline" do
-      get "/membership"
-      expect(response.body).to include("Sustaining Membership")
+  describe "GET /welcome" do
+    it "redirects to the latest welcome thread" do
+      user = create(:user, id: 1)
+      earlier_welcome_thread = create(:article, user: user, tags: "welcome")
+      earlier_welcome_thread.update(published_at: Time.current - 1.week)
+      latest_welcome_thread = create(:article, user: user, tags: "welcome")
+      get "/welcome"
+
+      expect(response.body).to redirect_to(latest_welcome_thread.path)
     end
   end
 
-  describe "GET /welcome" do
-    it "has proper headline" do
-      get "/welcome"
+  describe "GET /challenge" do
+    it "redirects to the latest challenge thread" do
+      user = create(:user, id: 1)
+      earlier_challenge_thread = create(:article, user: user, tags: "challenge")
+      earlier_challenge_thread.update(published_at: Time.current - 1.week)
+      latest_challenge_thread = create(:article, user: user, tags: "challenge")
+      get "/challenge"
 
-      expect(response.body).to include("You are being <a")
+      expect(response.body).to redirect_to(latest_challenge_thread.path)
     end
   end
 
@@ -74,59 +107,10 @@ RSpec.describe "Pages", type: :request do
   end
 
   describe "GET /live" do
-    let(:user) { create(:user) }
-
     context "when nothing is live" do
       it "shows the correct message" do
         get "/live"
-        expect(response.body).to include("Nothing is live right now")
-      end
-    end
-
-    context "when live is starting soon" do
-      before do
-        test_strategy = Flipflop::FeatureSet.current.test!
-        test_strategy.switch!(:live_starting_soon, true)
-        get "/live"
-      end
-
-      after do
-        test_strategy = Flipflop::FeatureSet.current.test!
-        test_strategy.switch!(:live_starting_soon, false)
-      end
-
-      xit "shows the correct message" do
-        expect(response.body).to include("Our event is starting soon")
-      end
-    end
-
-    context "when live is live" do
-      before do
-        test_strategy = Flipflop::FeatureSet.current.test!
-        test_strategy.switch!(:live_is_live, true)
-        create(:chat_channel, :workshop)
-      end
-
-      after do
-        test_strategy = Flipflop::FeatureSet.current.test!
-        test_strategy.switch!(:live_is_live, false)
-      end
-
-      xit "shows a sign in page for logged out users" do
-        get "/live"
-        expect(response.body).to include("Great to have you")
-      end
-
-      xit "shows the video for logged in users" do
-        login_as user
-        get "/live"
-        expect(response.body).to include("<iframe class=\"live-video\"")
-      end
-
-      xit "shows the chat for logged in users" do
-        login_as user
-        get "/live"
-        expect(response.body).to include("<div id=\"chat\"")
+        expect(response.body).to include("We are working on more ways to bring live coding to the community")
       end
     end
   end

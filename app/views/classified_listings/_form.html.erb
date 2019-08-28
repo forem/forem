@@ -1,0 +1,97 @@
+<%= form_with(model: classified_listing, local: true) do |form| %>
+  <header>
+    <a href="/listings/dashboard" class="listings-back-button">&lt; return to listings dashboard</a>
+    <h2>Create a Community Listing</h2>
+  </header>
+  <div class="classified-form-inner">
+    <% if classified_listing.errors.any? %>
+      <div class="classified-errors">
+        <h2><%= pluralize(classified_listing.errors.count, "error") %> prohibited this listing from being saved:</h2>
+        <ul>
+        <% classified_listing.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+    <div id="listingform-data"
+        data-listing="<%= classified_listing.to_json(only: %i[id title body_markdown category cached_tag_list]) %>"
+        data-organizations="<%= @organizations.to_json(only: %i[id name]) %>"
+        data-categories-for-select="<%= ClassifiedListing.select_options_for_categories.to_json %>"
+        data-categories-for-details="<%= ClassifiedListing.categories_available.transform_values { |value_hash| value_hash.except(:cost) }.values.to_json %>"
+        >
+      <div style="height: 745px;">
+        <div class="field">
+          <%= form.label "title" %>
+          <%= form.text_field "title", placeholder: "128 characters max, plain text" %>
+        </div>
+        <div class="field">
+          <%= form.label "body_markdown", "Body Markdown" %>
+          <%= form.text_area "body_markdown", placeholder: "400 characters max, 12 line break max, no images allowed" %>
+        </div>
+
+        <div class="field" style="padding-top: 9px">
+          <label>Category</label>
+          <select>
+            <option>
+              Conference CFP (1 Credit)
+            </option>
+          </select>
+          <details>
+            <summary>Category details/rules</summary>
+          </details>
+        </div>
+        <div class="field">
+          <%= form.label "tags_list", "Tags" %>
+          <%= form.text_field "tags_list", placeholder: "8 tags max, comma separated, no spaces or special characters" %>
+        </div>
+      <% if @organizations.present? && @organizations.size > 0 %>
+        <div class="field">
+          <%= form.label "organization_id", "Post under an organization:" %>
+          <%= form.select :organization_id, "None" => "None" %>
+          <p><em>Posting on behalf of an organization spends the organization's credits.</em></p>
+        </div>
+        <% end %>
+      </div>
+    </div>
+      <%= javascript_pack_tag "listingForm", defer: true %>
+    <div class="field">
+      <%= form.label "location", "Location (If applicable for events, etc.)" %>
+      <%= form.text_field "location", placeholder: "32 characters max, plain text" %>
+    </div>
+    <div class="field">
+      <%= form.label "contact_via_connect", "Allow Users to Message Me Via In-App Chat (DEV Connect)" %>
+      <%= form.check_box "contact_via_connect", checked: true %>
+    </div>
+    <div class="actions">
+      <% if @credits.size > 0 || (@organizations.present? && @organizations.sum(:unspent_credits_count) > 0) %>
+        <%= form.submit "CREATE LISTING", class: "cta cta-main-listing-form" %>
+      <% else %>
+        <p>You need at least one credit to create a listing.</p>
+        <a href="/credits/new" class="cta cta-main-listing-form" data-no-instant>Purchase Credits Now</a>
+      <% end %>
+    </div>
+    <p><em><%= ApplicationConfig["COMMUNITY_NAME"] %> admins may modify tags and categories to ensure accuracy. We may also take down and refund inappropriate listings.</em></p>
+    <p><em>Listings expire 30 days after they are published or "bumped".</em></p>
+    <div class="listings-current-credits">
+      <% if @credits.size == 0 && (@organizations.blank? || @organizations.sum(:unspent_credits_count).zero?) %>
+        <h3>Listings Require Credits</h3>
+      <% end %>
+      <div class="listings-current-credits-inner">
+        You have <%= pluralize @credits.size, "credit" %> available — <a target="_blank" rel="noopener noreferrer" href="/credits/purchase" data-no-instant>Buy More</a>
+      </div>
+      <% if @organizations.present? %>
+        <div class="listings-current-credits-inner">
+        <select id="org-credits-select" class="org-credits-select">
+          <% @organizations.each do |org| %>
+            <option value="<%= org.id %>" data-credits="<%= org.unspent_credits_count %>"><%= org.name %></option>
+          <% end %>
+        </select>
+        has <span id="org-credits-number"><%= @organizations.first.unspent_credits_count %></span> credits -
+          <a id="org-credits-purchase-link" target="_blank" rel="noopener noreferrer" href="/credits/purchase?organization_id=<%= @organizations.first.id %>" data-no-instant>Buy More</a>
+        </div>
+        <%= javascript_pack_tag "orgCreditsSelector", defer: true %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

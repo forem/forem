@@ -1,19 +1,20 @@
 module Admin
   class PodcastsController < Admin::ApplicationController
-    # To customize the behavior of this controller,
-    # simply overwrite any of the RESTful actions. For example:
-    #
-    # def index
-    #   super
-    #   @resources = Podcast.all.paginate(10, params[:page])
-    # end
+    def create
+      resource = resource_class.new(resource_params)
+      authorize_resource(resource)
 
-    # Define a custom finder by overriding the `find_resource` method:
-    # def find_resource(param)
-    #   Podcast.find_by!(slug: param)
-    # end
-
-    # See https://administrate-docs.herokuapp.com/customizing_controller_actions
-    # for more information
+      if resource.save
+        Podcasts::GetEpisodesJob.perform_later(podcast_id: resource.id) if resource.published
+        redirect_to(
+          [namespace, resource],
+          notice: translate_with_resource("create.success"),
+        )
+      else
+        render :new, locals: {
+          page: Administrate::Page::Form.new(dashboard, resource)
+        }
+      end
+    end
   end
 end

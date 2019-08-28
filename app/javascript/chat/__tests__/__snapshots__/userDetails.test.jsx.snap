@@ -3,6 +3,7 @@
 exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
 <div>
   <img
+    alt="bojackhorseman profile image"
     src="https://media.giphy.com/media/3o7WTHb2WjEXbsmWDS/giphy.gif"
     style={
       Object {
@@ -42,6 +43,7 @@ exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
       target="_blank"
     >
       <img
+        alt="twitter logo"
         src=""
         style={
           Object {
@@ -56,6 +58,7 @@ exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
       target="_blank"
     >
       <img
+        alt="github logo"
         src=""
         style={
           Object {
@@ -70,6 +73,7 @@ exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
       target="_blank"
     >
       <img
+        alt="external link icon"
         class="external-link-img"
         src=""
         style={
@@ -119,11 +123,6 @@ exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
   <div
     class="userdetails__blockreport"
   >
-    <button
-      onClick={[Function]}
-    >
-      Block User
-    </button>
     <button
       onClick={[Function]}
     >
@@ -218,6 +217,7 @@ exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
 exports[`<UserDetails /> for user2 should render and test snapshot 1`] = `
 <div>
   <img
+    alt="mrpeanutbutter profile image"
     src="https://media.giphy.com/media/xThuW6sWCGbpZMpX7a/giphy.gif"
     style={
       Object {
@@ -257,6 +257,7 @@ exports[`<UserDetails /> for user2 should render and test snapshot 1`] = `
       target="_blank"
     >
       <img
+        alt="twitter logo"
         src=""
         style={
           Object {
@@ -271,6 +272,7 @@ exports[`<UserDetails /> for user2 should render and test snapshot 1`] = `
       target="_blank"
     >
       <img
+        alt="github logo"
         src=""
         style={
           Object {
@@ -285,6 +287,7 @@ exports[`<UserDetails /> for user2 should render and test snapshot 1`] = `
       target="_blank"
     >
       <img
+        alt="external link icon"
         class="external-link-img"
         src=""
         style={
@@ -334,11 +337,6 @@ exports[`<UserDetails /> for user2 should render and test snapshot 1`] = `
   <div
     class="userdetails__blockreport"
   >
-    <button
-      onClick={[Function]}
-    >
-      Block User
-    </button>
     <button
       onClick={[Function]}
     >

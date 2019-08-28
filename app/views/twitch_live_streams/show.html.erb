@@ -1,0 +1,21 @@
+<div class="home" id="twitch-embed">
+</div>
+
+<script id="twitch-embed-js" src="https://embed.twitch.tv/embed/v1.js"></script>
+<script type="text/javascript">
+  function load_twitch() {
+    new Twitch.Embed("twitch-embed", {
+      width: "100%",
+      height: "600px",
+      channel: "<%= @user.twitch_username %>"
+    });
+  }
+
+  var scr  = document.createElement('script'),
+      head = document.head || document.getElementsByTagName('head')[0];
+  scr.src = 'https://embed.twitch.tv/embed/v1.js';
+  scr.onload = load_twitch;
+  scr.async = true;
+
+  head.insertBefore(scr, head.firstChild);
+</script>

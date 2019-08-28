@@ -3,13 +3,17 @@ import PropTypes from 'prop-types';
 
 const Errors = ({ errorsList }) => (
   <div className="articleform__errors">
-    <h2>😱 Heads up:</h2>
+    <h2>
+      <span role="img" aria-label="face screaming in fear">
+        😱
+      </span>{' '}
+      Heads up:
+    </h2>
     <ul>
       {Object.keys(errorsList).map(key => {
         return (
           <li>
-            {key}
-:
+            {key}: &nbsp;
             {errorsList[key]}
           </li>
         );
@@ -19,8 +23,7 @@ const Errors = ({ errorsList }) => (
 );
 
 Errors.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  defaultValue: PropTypes.string.isRequired,
+  errorsList: PropTypes.objectOf(PropTypes.string).isRequired,
 };
 
 export default Errors;

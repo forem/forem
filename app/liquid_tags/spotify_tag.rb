@@ -1,38 +1,39 @@
 class SpotifyTag < LiquidTagBase
-  URI_REGEXP = /spotify:(track|user|artist|album|episode):\w{22}/.freeze
+  PARTIAL = "liquids/spotify".freeze
+  URI_REGEXP = /spotify:(track|artist|playlist|album|episode|show):\w{22}/.freeze
+  URI_PLAYLIST_REGEXP = /spotify:(user):([a-zA-Z0-9]+):playlist:\w{22}/.freeze # legacy support
   TYPE_HEIGHT = {
     track: 80,
-    user: 330,
-    artist: 240,
-    album: 240,
-    episode: 80
+    user: 380,
+    artist: 380,
+    album: 380,
+    playlist: 380,
+    episode: 232,
+    show: 232
   }.freeze
 
   def initialize(tag_name, uri, tokens)
     super
     @parsed_uri = parse_uri(uri)
-    @height = TYPE_HEIGHT[@parsed_uri[1].to_sym]
+    @embed_link = generate_embed_link(@parsed_uri)
+    @type = @parsed_uri[1] || @parsed_uri[2]
+    @height = TYPE_HEIGHT[@type.to_sym]
   end
 
   def render(_context)
-    html = <<-HTML
-      <iframe
-        width="100%"
-        height="#{@height}px"
-        scrolling="no"
-        frameborder="0"
-        allowtransparency="true"
-        allow="encrypted-media"
-        src="#{generate_embed_link(@parsed_uri)}">
-      </iframe>
-    HTML
-    finalize_html(html)
+    ActionController::Base.new.render_to_string(
+      partial: PARTIAL,
+      locals: {
+        embed_link: @embed_link,
+        height: @height
+      },
+    )
   end
 
   private
 
   def parse_uri(uri)
-    URI_REGEXP.match(uri) || raise_error
+    Regexp.union(URI_REGEXP, URI_PLAYLIST_REGEXP).match(uri) || raise_error
   end
 
   def generate_embed_link(parsed_uri)

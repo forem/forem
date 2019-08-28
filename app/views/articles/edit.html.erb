@@ -1,11 +1,10 @@
 <% title "Edit Post" %>
 
 <% if @article.video.present? %>
-  <div style="text-align:center;padding-top:60px;margin:auto;max-width:880px;margin-bottom:-50px;">
-
+  <div class="article-form-video-preview">
     <% if @article.video_state == "PROGRESSING" %>
       <h1 style="color:#062144;margin-top:1.1em">⏳ Video Transcoding In Progress ⏳</h1>
-      <img src="https://media.giphy.com/media/tXL4FHPSnVJ0A/giphy.gif" style="border-radius:12px;height:317px" />
+      <img src="https://media.giphy.com/media/tXL4FHPSnVJ0A/giphy.gif" style="border-radius:12px;height:317px" alt="Bored kid incessantly tapping his fingers">
       <div style="max-width:500px;margin:18px auto 0px;font-size:0.8em;">
         <p>
           <strong>You'll get an email when this process finishes.</strong>
@@ -18,22 +17,17 @@
     <% elsif @article.video_state == "COMPLETED" %>
       <br /><br />
       <%= render "articles/video_player", meta_tags: false, article: @article %>
-      <div style="padding-top:15px;">
-
+      <div class="article-form-video-image-url">
         <%= form_for(@article) do |f| %>
-          Change preview image (via URL): <%= f.text_field :video_thumbnail_url, placeholder: "New Thumbnail URL" %>
-          <%= f.submit "Submit Change" %>
+          Preview Image URL: <%= f.text_field :video_thumbnail_url, placeholder: "New Thumbnail URL" %>
+          <%= f.submit "Submit Change", class: "cta" %>
         <% end %>
-        <h5>Video is in beta ❤️</h5>
       </div>
-
     <% end %>
   </div>
 <% end %>
 
-<% unless @article.has_frontmatter? %>
-  <%= javascript_pack_tag "articleForm", defer: true %>
-  <%= render "articles/v2_form" %>
-<% else %>
-  <%= render "articles/markdown_form" %>
-<% end %>
+<%= javascript_include_tag "https://unpkg.com/@webcomponents/webcomponentsjs@2.2.10/webcomponents-loader.js", defer: true %>
+<%= javascript_pack_tag "clipboardCopy", defer: true %>
+<%= javascript_pack_tag "articleForm", defer: true %>
+<%= render "articles/v2_form", article: @article, organizations: @organizations, version: @version %>

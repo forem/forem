@@ -2,23 +2,22 @@ require "uri"
 
 class GlitchTag < LiquidTagBase
   attr_accessor :uri
+  PARTIAL = "liquids/glitch".freeze
+
   def initialize(tag_name, id, tokens)
     super
-    @uri = build_uri(id)
+    @query = parse_options(id)
     @id = parse_id(id)
   end
 
   def render(_context)
-    html = <<-HTML
-      <div class="glitch-embed-wrap" style="height: 450px; width: 100%;margin: 1em auto 1.3em">
-        <iframe
-          sandbox="allow-same-origin allow-scripts allow-forms allow-top-navigation-by-user-activation"
-          src="#{@uri}"
-          alt="#{@id} on glitch"
-          style="height: 100%; width: 100%; border: 0;margin:0;padding:0"></iframe>
-      </div>
-    HTML
-    finalize_html(html)
+    ActionController::Base.new.render_to_string(
+      partial: PARTIAL,
+      locals: {
+        id: @id,
+        query: @query
+      },
+    )
   end
 
   private
@@ -77,12 +76,6 @@ class GlitchTag < LiquidTagBase
     raise StandardError, "Invalid Options" unless options.empty? || !validated_options.empty?
 
     build_options(options)
-  end
-
-  def build_uri(input)
-    id = parse_id(input)
-    query = parse_options(input)
-    "https://glitch.com/embed/#!/embed/#{id}?#{query}"
   end
 end
 

@@ -20,6 +20,6 @@ class RatingVote < ApplicationRecord
   private
 
   def permissions
-    errors.add(:user_id, "is not permitted to take this action.") unless user&.trusted
+    errors.add(:user_id, "is not permitted to take this action.") if !user&.trusted && user_id != article&.user_id
   end
 end

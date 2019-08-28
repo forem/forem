@@ -1,12 +1,11 @@
 <% title "New Post" %>
 
 <% if user_signed_in? %>
-  <% if current_user.editor_version == "v2" %>
-    <%= javascript_pack_tag "articleForm", defer: true %>
-    <%= render "articles/v2_form" %>
-  <% else %>
-    <%= render "articles/markdown_form" %>
-  <% end %>
+  <%= javascript_include_tag "https://unpkg.com/@webcomponents/webcomponentsjs@2.2.10/webcomponents-loader.js", defer: true %>
+  <%= javascript_pack_tag "clipboardCopy", defer: true %>
+  <%= javascript_pack_tag "articleForm", defer: true %>
+  <%= render "articles/v2_form", article: @article, organizations: @organizations, version: @version %>
 <% else %>
+  <% @new_article_not_logged_in = true %>
   <%= render "devise/registrations/registration_form" %>
 <% end %>

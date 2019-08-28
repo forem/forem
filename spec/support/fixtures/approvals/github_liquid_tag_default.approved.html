@@ -1,7 +1,29 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <body>
-    <div class="ltag_github-liquid-tag"> <h1> <a href="https://github.com/facebook/react/issues/9218"><img class="github-logo" src="/assets/github-logo-6a5bca60a4ebf959a6df7f08217acd07ac2bc285164fae041eacb8a148b1bab9.svg" /><span class="issue-title">[Feature] granular forceUpdate </span> <span class="issue-number">#9218</span> </a></h1> <div class="github-thread"> <div class="timeline-comment-header"> <a href="https://github.com/thysultan"> <img class="github-liquid-tag-img" src="https://avatars2.githubusercontent.com/u/810601?v=4" alt="thysultan avatar" /></a> <span class="arrow-left-outer"></span> <span class="arrow-left-inner"></span> <div class="timeline-comment-header-text"> <strong> <a href="https://github.com/thysultan">thysultan</a> </strong> commented on <a href="https://github.com/facebook/react/issues/9218">Mar 19, 2017</a> <span class="timestamp"></span> </div> </div> <div class="ltag-github-body"> <p>When <code>forceUpdate</code> is called on a long list at the very least the whole list must be traversed. For example with the following list <code>arr = [1, 2, 3, 4, 5, 6]</code> and if we where to push 7 <code>arr.push(7)</code> the reconciler will go through elements 1 - 6 and then add a 7 at the end of that list. The suggestion to add support for the following forceUpdate signature.</p>
+    <div class="ltag_github-liquid-tag">
+  <h1>
+    <a href="https://github.com/facebook/react/issues/9218">
+      <img class="github-logo" alt="GitHub logo" src="/assets/github-logo-6a5bca60a4ebf959a6df7f08217acd07ac2bc285164fae041eacb8a148b1bab9.svg" /><span class="issue-title">
+        [Feature] granular forceUpdate 
+      </span>
+      <span class="issue-number">#9218</span>
+    </a>
+  </h1>
+  <div class="github-thread">
+    <div class="timeline-comment-header">
+      <a href="https://github.com/thysultan">
+        <img class="github-liquid-tag-img" src="https://avatars2.githubusercontent.com/u/810601?v=4" alt="thysultan avatar" /></a>
+      <span class="arrow-left-outer"></span>
+      <span class="arrow-left-inner"></span>
+      <div class="timeline-comment-header-text">
+        <strong>
+          <a href="https://github.com/thysultan">thysultan</a>
+        </strong> commented on <a href="https://github.com/facebook/react/issues/9218">Mar 19, 2017</a><span class="timestamp"></span>
+      </div>
+    </div>
+    <div class="ltag-github-body">
+      <p>When <code>forceUpdate</code> is called on a long list at the very least the whole list must be traversed. For example with the following list <code>arr = [1, 2, 3, 4, 5, 6]</code> and if we where to push 7 <code>arr.push(7)</code> the reconciler will go through elements 1 - 6 and then add a 7 at the end of that list. The suggestion to add support for the following forceUpdate signature.</p>
 <div class="highlight highlight-source-js"><pre><span class="pl-en">forceUpdate</span>(a<span class="pl-k">:</span> {<span class="pl-k">function</span>|number}, b: number?)</pre></div>
 <p>Where when passed as an integer <code>a</code> is the start index and <code>b</code> the number of items to traverse similar to how <code>str.substr()</code> works.</p>
 <p>When the function encounters a number as the <code>a</code> argument it changes the start index of where to start when reconciling the components children and when the <code>b</code> argument is set it changes the end index of where to end the traversal of the components children. So with the above mentioned example if i wanted to optimize the reconciliation process for append updates i could do the following.</p>
@@ -13,6 +35,11 @@
 <div class="highlight highlight-source-js"><pre><span class="pl-en">setState</span>(a<span class="pl-k">:</span> {<span class="pl-k">function</span>|Object}, b: (<span class="pl-k">function</span>|number)?, c: {number})
 
 <span class="pl-c"><span class="pl-c">//</span> usage</span>
-setState({arr<span class="pl-k">:</span> [<span class="pl-k">...</span>]}, <span class="pl-c1">this</span>.<span class="pl-smi">state</span>.<span class="pl-smi">arr</span>.<span class="pl-c1">length</span>);</pre></div> </div> <div class="gh-btn-container"><a class="gh-btn" href="https://github.com/facebook/react/issues/9218">View on GitHub</a></div></div> </div>
+setState({arr<span class="pl-k">:</span> [<span class="pl-k">...</span>]}, <span class="pl-c1">this</span>.<span class="pl-smi">state</span>.<span class="pl-smi">arr</span>.<span class="pl-c1">length</span>);</pre></div>
+
+    </div>
+    <div class="gh-btn-container"><a class="gh-btn" href="https://github.com/facebook/react/issues/9218">View on GitHub</a></div>
+  </div>
+</div>
   </body>
 </html>

@@ -1,4 +1,6 @@
 @import 'variables';
+@import 'mixins';
+
 .user-profile-header{
   padding:calc(1.4vw + 8px) 0px;
   font-family: $helvetica;
@@ -7,8 +9,11 @@
   width:1216px;
   max-width:92%;
   margin: 30px auto 20px;
-  background: white;
-  background: var(--theme-container-background, #fff);
+  @include themeable(
+    background, 
+    theme-container-background, 
+    #fff
+  );
   border-radius: 3px;
   @media screen and ( min-width: 950px ){
     max-width:98%;
@@ -35,12 +40,6 @@
         max-height:calc(3vw + 33px);
         max-width:calc(3vw + 33px);
       }
-    }
-  }
-  &.readinglist-header{
-    display: block;
-    @media screen and ( min-width: 950px ){
-      display: none;
     }
   }
   &.podcast-header{
@@ -105,6 +104,12 @@
     overflow-y: auto;
     h1 {
       position:relative;
+      img {
+        height: 1.5em;
+        width: 1.5em;
+        vertical-align: -0.22em;
+        margin-right: 0.15em;
+      }
     }
     a{
       color:rgb(97, 97, 97);
@@ -162,8 +167,11 @@
         padding:0px 0px;
         margin:0;
         font-style: italic;
-        color:$medium-gray;
-        color: var(--theme-secondary-color, $medium-gray);
+        @include themeable(
+          color, 
+          theme-secondary-color, 
+          $medium-gray
+        );
         width: 94%;
         font-size:0.9em;
         margin-top:12px;
@@ -252,8 +260,11 @@
         font-size: 0.7em;
         font-weight: 800;
         margin-bottom: 2px;
-        color: $medium-gray;
-        color: var(--theme-secondary-color, $medium-gray);
+        @include themeable(
+          color, 
+          theme-secondary-color, 
+          $medium-gray
+        );
       }
       .value{
         display: inline-block;
@@ -464,5 +475,41 @@
       }
     }
   }
-
+  .profile-dropdown {
+    position: absolute;
+    top: 0px;
+    right: 6px;
+    button {
+      border: 0px;
+      background: transparent;
+      padding: 8px;
+    }
+    img {
+      height: 22px;
+      width: 22px;
+    }
+    .profile-dropdownmenu {
+      display: none;
+      position: absolute;
+      top: 30px;
+      right: 3px;
+      width: 200px;
+      border: 1px solid $light-medium-gray;
+      border-radius: 3px;
+      background: white;
+      z-index: 20;
+      width: 130px;
+      box-shadow: $shadow;
+      a {
+        font-size: 0.75em;
+        color: $black;
+        display: block;
+        padding: 6px 10px;
+        font-weight: bold;
+      }
+      &.showing {
+        display: block;
+      }
+    }
+  }
 }

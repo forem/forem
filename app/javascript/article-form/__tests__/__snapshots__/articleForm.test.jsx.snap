@@ -2,78 +2,102 @@
 
 exports[`<ArticleForm /> renders properly 1`] = `
 <form
-  class="articleform__form"
+  class="articleform__form articleform__form--v2"
   onInput={[Function]}
 >
   <div>
-    <input
-      autoComplete="off"
-      class="articleform__title"
-      id="article-form-title"
-      onInput={[Function]}
-      placeholder="Title"
-      type="text"
-      value=""
-    />
-    <div
-      class="articleform__detailfields"
-    >
+    <div>
+      <textarea
+        autoComplete="off"
+        class="articleform__title"
+        id="article-form-title"
+        onChange={[Function]}
+        onInput={[Function]}
+        onKeyDown={[Function]}
+        placeholder="Title"
+        ref={[Function]}
+        style={
+          Object {
+            "height": 0,
+          }
+        }
+        type="text"
+        value=""
+      />
       <div
-        class="articleform__tagswrapper"
+        class="articleform__detailfields"
       >
-        <textarea
-          class="articleform__tags"
-          id="tag-input"
-          onBlur={[Function]}
-          onFocus={[Function]}
-          onInput={[Function]}
-          onKeyDown={[Function]}
-          placeholder="tags"
-          ref={[Function]}
-          type="text"
-          value=""
-        />
+        <div
+          class="articleform__tagswrapper"
+        >
+          <textarea
+            class="articleform__tags"
+            id="tag-input"
+            onBlur={[Function]}
+            onFocus={[Function]}
+            onInput={[Function]}
+            onKeyDown={[Function]}
+            placeholder="tags"
+            ref={[Function]}
+            type="text"
+            value=""
+          />
+        </div>
+        <button
+          class="articleform__detailsButton articleform__detailsButton--image"
+          onClick={[Function]}
+          type="button"
+        >
+          <img
+            alt="Upload an image"
+            src=""
+          />
+        </button>
+        <button
+          class="articleform__detailsButton articleform__detailsButton--moreconfig"
+          onClick={[Function]}
+          type="button"
+        >
+          <img
+            alt="Menu"
+            src=""
+          />
+        </button>
       </div>
-      <button
-        class="articleform__detailsButton articleform__detailsButton--image"
-        onClick={[Function]}
-      >
-        <img
-          src=""
-        />
-         IMAGES
-      </button>
-      <button
-        class="articleform__detailsButton articleform__detailsButton--moreconfig"
-        onClick={[Function]}
-      >
-        <img
-          src=""
-        />
-      </button>
     </div>
     <textarea
       class="articleform__body"
       id="article_body_markdown"
       name="body_markdown"
+      onChange={[Function]}
       onInput={[Function]}
-      placeholder="Body"
+      placeholder="Body Markdown"
+      ref={[Function]}
+      style={
+        Object {
+          "height": 0,
+        }
+      }
       value=""
     />
     <button
       class="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
       onClick={[Function]}
+      type="button"
     >
       <img
+        alt="upload images"
         src=""
       />
-       IMAGES
+      IMAGES
     </button>
     <button
       class="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
       onClick={[Function]}
+      type="button"
     >
       <img
+        alt="menu dots"
         src=""
       />
     </button>
@@ -84,17 +108,20 @@ exports[`<ArticleForm /> renders properly 1`] = `
     <button
       class="articleform__buttons--small inactive"
       onClick={[Function]}
+      type="button"
     >
       ?
     </button>
     <button
-      class="inactive"
+      class="inactive previewbutt"
       onClick={[Function]}
+      type="button"
     >
       PREVIEW
     </button>
     <button
       onClick={[Function]}
+      type="button"
     >
       SAVE DRAFT
     </button>
@@ -110,6 +137,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
         <button
           class="clear-button"
           onClick={[Function]}
+          type="button"
         >
           clear
         </button>
@@ -118,6 +146,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
       <button
         class="articleform__buttons--publish"
         onClick={[Function]}
+        type="button"
       >
         PUBLISH
       </button>

@@ -1,18 +1,22 @@
 class BlackBox
   class << self
-    def article_hotness_score(article)
-      return (article.featured_number || 10_000) / 10_000 unless Rails.env.production?
-
+    def article_hotness_score(article, function_caller = FunctionCaller)
       usable_date = article.crossposted_at || article.published_at
       reaction_points = article.score
       super_super_recent_bonus = usable_date > 1.hour.ago ? 28 : 0
-      super_recent_bonus = usable_date > 8.hours.ago ? 31 : 0
-      recency_bonus = usable_date > 12.hours.ago ? 80 : 0
-      today_bonus = usable_date > 26.hours.ago ? 395 : 0
-      two_day_bonus = usable_date > 48.hours.ago ? 330 : 0
-      four_day_bonus = usable_date > 96.hours.ago ? 330 : 0
-      FunctionCaller.new("blackbox-production-articleHotness",
-                         { article: article, user: article.user }.to_json).call +
+      super_recent_bonus = usable_date > 8.hours.ago ? 81 : 0
+      recency_bonus = usable_date > 12.hours.ago ? 280 : 0
+      today_bonus = usable_date > 26.hours.ago ? 495 : 0
+      two_day_bonus = usable_date > 48.hours.ago ? 430 : 0
+      four_day_bonus = usable_date > 96.hours.ago ? 430 : 0
+      if usable_date < 10.days.ago
+        reaction_points /= 2 # Older posts should fade
+      end
+      if article.decorate.cached_tag_list_array.include?("watercooler")
+        reaction_points = (reaction_points * 0.8).to_i # watercooler posts shouldn't get as much love in feed
+      end
+      function_caller.call("blackbox-production-articleHotness",
+                           { article: article, user: article.user }.to_json).to_i +
         reaction_points + recency_bonus + super_recent_bonus + super_super_recent_bonus + today_bonus + two_day_bonus + four_day_bonus
     end
 
@@ -24,13 +28,12 @@ class BlackBox
       (rep_points + descendants_points + bonus_points - spaminess_rating).to_i
     end
 
-    def calculate_spaminess(story)
+    def calculate_spaminess(story, function_caller = FunctionCaller)
       # accepts comment or article as story
-      return 0 unless Rails.env.production?
       return 100 unless story.user
 
-      FunctionCaller.new("blackbox-production-spamScore",
-                         { story: story, user: story.user }.to_json).call
+      function_caller.call("blackbox-production-spamScore",
+                           { story: story, user: story.user }.to_json).to_i
     end
 
     private

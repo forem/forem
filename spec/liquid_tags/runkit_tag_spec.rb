@@ -17,23 +17,14 @@ RSpec.describe RunkitTag, type: :liquid_template do
       CODE
     end
 
-    def generate_new_liquid(preamble_str, block)
+    def generate_runkit_liquid(preamble_str, block)
       Liquid::Template.register_tag("runkit", described_class)
       Liquid::Template.parse("{% runkit #{preamble_str}%}#{block}{% endrunkit %}")
     end
 
-    def generate_script(preamble_str, block)
-      <<~HTML
-        <div class="runkit-element">
-          <code style="display: none">#{preamble_str}</code>
-          <code>#{block}</code>
-        </div>
-      HTML
-    end
-
     it "generates proper div with content" do
-      liquid = generate_new_liquid(preamble, content)
-      expect(liquid.render).to eq(generate_script(preamble, content))
+      rendered = generate_runkit_liquid(preamble, content).render
+      Approvals.verify(rendered, name: "runkit_liquid_tag_spec", format: :html)
     end
   end
 end

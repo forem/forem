@@ -3,7 +3,12 @@ require "rails_helper"
 RSpec.describe "RssFeed", type: :request do
   let(:user) { FactoryBot.create(:user) }
   let(:organization) { FactoryBot.create(:organization) }
-  let(:article) { FactoryBot.create(:article, user_id: user.id, featured: true) }
+  let(:tag) { FactoryBot.create(:tag) }
+
+  before do
+    FactoryBot.create(:article, user_id: user.id, featured: true)
+    FactoryBot.create(:article, tags: tag.name, featured: true)
+  end
 
   describe "GET query page" do
     it "renders feed" do
@@ -17,6 +22,10 @@ RSpec.describe "RssFeed", type: :request do
     it "renders organization feed" do
       get "/feed/#{organization.slug}"
       expect(response.body).to include("<link>https://dev.to/#{organization.slug}</link>")
+    end
+    it "renders tag feed" do
+      get "/feed/tag/#{tag.name}"
+      expect(response.body).to include("<link>https://dev.to</link>")
     end
   end
 end

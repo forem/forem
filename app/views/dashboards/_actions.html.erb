@@ -9,6 +9,11 @@
   </a>
   <a class="action <%= "active" if params[:action] == "following" %>" href="/dashboard/following">
     <span>FOLLOWING</span>
-    <span>(<%= @user.following_users_count + @user.following_tags_count %>)</span>
+    <span>(<%= @user.following_users_count + @user.following_tags_count + @user.following_organizations_count + @user.following_podcasts_count %>)</span>
   </a>
+  <% if @user.has_role? :pro %>
+    <a class="action" href="/dashboard/pro">
+      <span>PRO ANALYTICS</span>
+    </a>
+  <% end %>
 </div>

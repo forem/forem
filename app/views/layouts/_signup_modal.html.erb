@@ -1,7 +1,7 @@
 <div class="global-signup-modal" id="global-signup-modal" style="display:none">
   <div class="global-signup-modal--bg" id="global-signup-modal-bg">
     <button class="close-modal-button">
-      <img src="<%= asset_path("cancel.svg") %>" class="search-img" alt="close-button" />
+      <img src="<%= asset_path("cancel.svg") %>" class="search-img" alt="Close modal button" />
     </button>
   </div>
   <div class="global-signup-modal--inner-a">
@@ -12,16 +12,16 @@
                                 quality: "auto",
                                 flags: "progressive",
                                 fetch_format: "auto",
-                                sign_url: true), class: "sloan", alt: "sloth-mascot") %>
+                                sign_url: true), class: "sloan", alt: "Sloan, the sloth mascot") %>
     <h1>Join our <%= ApplicationConfig["COMMUNITY_NAME"] %> Community :)</h1>
     <p>
       We're a place where coders share, stay up-to-date and grow their careers.
     </p>
     <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="sign-up-link cta" data-no-instant>
-      <img src="<%= asset_path("twitter-logo.svg") %>" class="icon-img" alt="Twitter" /> Auth With Twitter
+      <img src="<%= asset_path("twitter-logo.svg") %>" class="icon-img" alt="Twitter logo" /> Auth With Twitter
     </a>
     <a href="/users/auth/github?state=signup-modal" class="sign-up-link cta" data-no-instant>
-      <img src="<%= asset_path("github-logo.svg") %>" class="icon-img" alt="GitHub" /> Auth With GitHub
+      <img src="<%= asset_path("github-logo.svg") %>" class="icon-img" alt="GitHub logo" /> Auth With GitHub
     </a>
     <p>
       <em>We strive for transparency and don't collect excess data.</em>

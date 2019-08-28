@@ -2,7 +2,8 @@
   <%= render "articles/tags/meta" %>
 <% end %>
 <% params.delete(:i) %>
-<% cache("tag-stories-index-#{params.to_s}-#{user_signed_in?}", expires_in: 4.minutes) do %>
+<% expiry_minutes = params[:timeframe].blank? || params[:timeframe] == "latest" ? 4 : 20 %>
+<% cache("tag-stories-index-#{params}-#{true}-#{@tag_model.updated_at}", expires_in: expiry_minutes.minutes) do %>
   <style>
     .tag-header {
       border: 2px solid<%= HexComparer.new([@tag_model.bg_color_hex || "#0000000", @tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>;
@@ -12,6 +13,9 @@
   <div class="user-profile-header tag-header">
     <div class="tag-or-query-header-container">
       <h1>
+        <% if @tag_model.badge_id && @tag_model.badge %>
+            <img src="<%= cloudinary @tag_model.badge.badge_image_url, 180 %>" style="transform: rotate(<%= -25 + (@tag_model.id.digits.first * 5) %>deg" />
+        <% end %>
         <% if @tag_model && @tag_model.pretty_name.present? %>
           <%= @tag_model.pretty_name %>
         <% else %>
@@ -34,7 +38,7 @@
     <div class="articles-list" id="articles-list">
       <% if @tag_model && @tag_model.supported %>
         <style>
-          .nav-chronofiter-link.selected {
+          .nav-chronofiter-link.selected, .nav-chronofiter-link:hover {
             background: <%= @tag_model.bg_color_hex %> !important;
             color: <%= @tag_model.text_color_hex %> !important;
             box-shadow: 3px 4px 0px <%= HexComparer.new([@tag_model.bg_color_hex || "#ffffff"], 4).accent %> !important;

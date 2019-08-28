@@ -1,23 +1,22 @@
 class VimeoTag < LiquidTagBase
+  PARTIAL = "liquids/vimeo".freeze
+
   def initialize(tag_name, token, tokens)
     super
-    @id     = id_for token
+    @id     = id_for(token)
     @width  = 710
     @height = 399
   end
 
   def render(_context)
-    finalize_html <<~HTML
-      <iframe
-        src="https://player.vimeo.com/video/#{@id}"
-        width="#{@width}"
-        height="#{@height}"
-        frameborder="0"
-        webkitallowfullscreen
-        mozallowfullscreen
-        allowfullscreen>
-      </iframe>
-    HTML
+    ActionController::Base.new.render_to_string(
+      partial: PARTIAL,
+      locals: {
+        id: @id,
+        width: @width,
+        height: @height
+      },
+    )
   end
 
   private

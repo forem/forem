@@ -12,6 +12,7 @@ RSpec.describe TagAdjustmentUpdateService do
       status: "committed",
       tag_name: tag.name,
       article_id: article.id,
+      reason_for_adjustment: "reasons",
     ).create
   end
 
@@ -19,20 +20,12 @@ RSpec.describe TagAdjustmentUpdateService do
     user.add_role(:tag_moderator, tag)
   end
 
-  xit "creates tag adjustment" do
+  it "creates tag adjustment" do
     tag_adjustment = create_tag_adjustment
     described_class.new(tag_adjustment, status: "resolved").update
 
     expect(tag_adjustment).to be_valid
     expect(tag_adjustment.tag_id).to eq(tag.id)
     expect(tag_adjustment.status).to eq("resolved")
-  end
-
-  xit "updates notification" do
-    tag_adjustment = create_tag_adjustment
-    described_class.new(tag_adjustment, status: "resolved").update
-
-    expect(Notification.last.user_id).to eq(article.user_id)
-    expect(Notification.last.json_data["status"]).to eq("resolved")
   end
 end

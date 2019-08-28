@@ -1,0 +1,29 @@
+<div class="ltag_github-liquid-tag">
+  <h1>
+    <a href="<%= date_link %>">
+      <img class="github-logo" alt="GitHub logo" src="<%= ActionController::Base.helpers.asset_path('github-logo.svg') %>">
+      <span class="issue-title">
+        <%= title %>
+      </span>
+      <span class="issue-number">#<%= issue_number %></span>
+    </a>
+  </h1>
+  <div class="github-thread">
+    <div class="timeline-comment-header">
+      <a href="<%= user_html_url %>">
+        <img class="github-liquid-tag-img" src="<%= user_avatar_url %>" alt="<%= username %> avatar">
+      </a>
+      <span class="arrow-left-outer"></span>
+      <span class="arrow-left-inner"></span>
+      <div class="timeline-comment-header-text">
+        <strong>
+          <a href="<%= user_html_url %>"><%= username %></a>
+        </strong> commented on <a href="<%= date_link %>"><%= date %></a><span class="timestamp"></span>
+      </div>
+    </div>
+    <div class="ltag-github-body">
+      <%= body %>
+    </div>
+    <div class="gh-btn-container"><a class="gh-btn" href="<%= date_link %>">View on GitHub</a></div>
+  </div>
+</div>

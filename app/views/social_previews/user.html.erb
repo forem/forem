@@ -86,11 +86,11 @@
   <div class="circle circle3"></div>
   <div class="preview-div">
     <h1>
-      <img src="<%= ProfileImage.new(@user).get(640) %>" />
+      <img src="<%= ProfileImage.new(@user).get(640) %>" alt="<%= @user.name %> profile image">
       <%= @user.name %>
     </h1>
     <div class="preview-dev-logo">
-      <%= inline_svg("devplain.svg", class: "logo", size: "9vw * 9vw") %>
+      <%= inline_svg("devplain.svg", class: "logo", size: "9vw * 9vw", aria: false, title: "DEV logo") %>
     </div>
   </div>
 </div>

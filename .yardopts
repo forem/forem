@@ -1,0 +1,1 @@
+--no-cache --no-save --protected --private --charset utf-8 --plugin yard-activerecord --plugin yard-activesupport-concern

@@ -1,6 +1,8 @@
 module Api
   module V0
-    class UsersController < ApplicationController
+    class UsersController < ApiController
+      before_action :authenticate!, only: %i[me]
+
       def index
         if !user_signed_in? || less_than_one_day_old?(current_user)
           usernames = %w[ben jess peter maestromac andy liana]
@@ -23,10 +25,13 @@ module Api
                 end
       end
 
+      def me; end
+
+      private
+
       def less_than_one_day_old?(user)
         range = 1.day.ago.beginning_of_day..Time.current
-        user_identity_age = user.github_created_at ||
-          user.twitter_created_at || 8.days.ago
+        user_identity_age = user.github_created_at || user.twitter_created_at || 8.days.ago
         # last one is a fallback in case both are nil
         range.cover? user_identity_age
       end

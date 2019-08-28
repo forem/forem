@@ -1,0 +1,23 @@
+<h1>General Purpose URL Purge</h1>
+<p>For a page that should 404. This will purge the page via Fastly.</p>
+<p>Use the full path (https://dev.to/xyz) or the relative path: (/xyz)</p>
+<%= form_tag "/internal/tools/bust_cache" do %>
+  <%= label_tag("Link:") %>
+  <%= text_field_tag :dead_link, nil, placeholder: "/devteam/page" %>
+  <%= submit_tag("Clear Cache") %>
+<% end %>
+<hr>
+<h1>Bust Cache For Specific Content</h1>
+<p>This clears both the Rails cache & the Fastly cache.</p>
+
+<%= form_tag "/internal/tools/bust_cache" do %>
+  <%= label_tag("Article ID: ") %>
+  <%= text_field_tag :bust_article, nil, placeholder: "12345" %>
+  <%= submit_tag("Clear Cache") %>
+<% end %>
+<br>
+<%= form_tag "/internal/tools/bust_cache" do %>
+  <%= label_tag("User ID: ") %>
+  <%= text_field_tag :bust_user, nil, placeholder: "12345" %>
+  <%= submit_tag("Clear Cache") %>
+<% end %>

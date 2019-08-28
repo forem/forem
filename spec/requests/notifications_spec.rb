@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "NotificationsIndex", type: :request do
+  include ActionView::Helpers::DateHelper
+
   let(:dev_account) { create(:user) }
   let(:user) { create(:user) }
 
@@ -21,7 +23,7 @@ RSpec.describe "NotificationsIndex", type: :request do
     context "when signed out" do
       it "renders the signup cue" do
         get "/notifications"
-        expect(response.body).to include "signup-cue"
+        expect(response.body).to include "Great to have you"
       end
     end
 
@@ -61,12 +63,12 @@ RSpec.describe "NotificationsIndex", type: :request do
         expect(response.body).to include follow_message
       end
 
-      xit "does not group notifications that occur on different days" do
+      it "does group notifications that occur on different days" do
         mock_follow_notifications(2)
         Notification.last.update(created_at: Notification.last.created_at - 1.day)
         get "/notifications"
         notifications = controller.instance_variable_get(:@notifications)
-        expect(notifications.count).to eq 2
+        expect(notifications.count).to eq 1
       end
     end
 
@@ -110,12 +112,12 @@ RSpec.describe "NotificationsIndex", type: :request do
         expect(response.body).to include CGI.escapeHTML("and #{random_amount - 1} others")
       end
 
-      xit "does not group notifications that are on different days but have the same reactable" do
+      it "does group notifications that are on different days but have the same reactable" do
         mock_heart_reaction_notifications(2, %w[unicorn like readinglist])
         Notification.last.update(created_at: Notification.last.created_at - 1.day)
         get "/notifications"
         notifications = controller.instance_variable_get(:@notifications)
-        expect(notifications.count).to eq 2
+        expect(notifications.count).to eq 1
       end
 
       it "does not group notifications that are on the same day but have different reactables" do
@@ -129,20 +131,20 @@ RSpec.describe "NotificationsIndex", type: :request do
       it "properly renders reactable titles" do
         mock_heart_reaction_notifications(1, %w[unicorn like readinglist], special_characters_article)
         get "/notifications"
-        expect(response.body).to include special_characters_article.title
+        expect(response.body).to include ERB::Util.html_escape(special_characters_article.title)
       end
 
       it "properly renders reactable titles for multiple reactions" do
         amount = rand(3..10)
         mock_heart_reaction_notifications(amount, %w[unicorn like readinglist], special_characters_article)
         get "/notifications"
-        expect(response.body).to include special_characters_article.title
+        expect(response.body).to include ERB::Util.html_escape(special_characters_article.title)
       end
     end
 
     context "when a user has a new comment notification" do
       let(:user2)    { create(:user) }
-      let(:article)  { create(:article, user_id: user.id) }
+      let(:article)  { create(:article, :with_notification_subscription, user_id: user.id) }
       let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
 
       before do
@@ -153,6 +155,10 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "renders the correct message" do
         expect(response.body).to include "commented on"
+      end
+
+      it "does not render incorrect message" do
+        expect(response.body).not_to include "replied to a thread in"
       end
 
       it "does not render the moderation message" do
@@ -178,6 +184,30 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
     end
 
+    context "when a user has a new second level comment notification" do
+      let(:user2)    { create(:user) }
+      let(:article)  { create(:article, :with_notification_subscription, user_id: user.id) }
+      let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
+      let(:second_comment) { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article", parent_id: comment.id) }
+      let(:third_comment) { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article", parent_id: second_comment.id) }
+
+      before do
+        sign_in user
+        Notification.send_new_comment_notifications_without_delay(comment)
+        Notification.send_new_comment_notifications_without_delay(second_comment)
+        Notification.send_new_comment_notifications_without_delay(third_comment)
+        get "/notifications"
+      end
+
+      it "contextualize comment notification text properly" do
+        expect(response.body).to include "replied to a thread in"
+      end
+
+      it "contextualize comment title properly" do
+        expect(response.body).to include CGI.escapeHTML("re: #{comment.title}")
+      end
+    end
+
     context "when a user has a new moderation notification" do
       let(:user2)    { create(:user) }
       let(:article)  { create(:article, user_id: user.id) }
@@ -191,7 +221,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
 
       it "renders the proper message" do
-        expect(response.body).to include "As a trusted member"
+        expect(response.body).to include "Since they are new to the community, could you leave a nice reply"
       end
 
       it "renders the article's path" do
@@ -200,6 +230,56 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "renders the comment's processed HTML" do
         expect(response.body).to include comment.processed_html
+      end
+    end
+
+    context "when a user should not receive moderation notification" do
+      let(:user2)    { create(:user) }
+      let(:article)  { create(:article, user_id: user.id) }
+      let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
+
+      before do
+        sign_in user
+        Notification.send_moderation_notification_without_delay(comment)
+        get "/notifications"
+      end
+
+      it "renders the proper message" do
+        expect(response.body).not_to include "Since they are new to the community, could you leave a nice reply"
+      end
+
+      it "renders the article's path" do
+        expect(response.body).not_to include article.path
+      end
+
+      it "renders the comment's processed HTML" do
+        expect(response.body).not_to include comment.processed_html
+      end
+    end
+
+    context "when a user has unsubscribed from mod roundrobin notifications" do
+      let(:user2)    { create(:user) }
+      let(:article)  { create(:article, user_id: user.id) }
+      let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
+
+      before do
+        user.add_role :trusted
+        user.update(mod_roundrobin_notifications: false)
+        sign_in user
+        Notification.send_moderation_notification_without_delay(comment)
+        get "/notifications"
+      end
+
+      it "renders the proper message" do
+        expect(response.body).not_to include "Since they are new to the community, could you leave a nice reply"
+      end
+
+      it "renders the article's path" do
+        expect(response.body).not_to include article.path
+      end
+
+      it "renders the comment's processed HTML" do
+        expect(response.body).not_to include comment.processed_html
       end
     end
 
@@ -221,7 +301,9 @@ RSpec.describe "NotificationsIndex", type: :request do
         sign_in user
         badge = create(:badge)
         badge_achievement = create(:badge_achievement, user: user, badge: badge)
-        Notification.send_new_badge_notification_without_delay(badge_achievement)
+        perform_enqueued_jobs do
+          Notification.send_new_badge_achievement_notification(badge_achievement)
+        end
         get "/notifications"
       end
 
@@ -303,6 +385,10 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "does not render the reaction as reacted if it was not reacted on" do
         expect(response.body).not_to include "reaction-button reacted"
+      end
+
+      it "renders the article's published at" do
+        expect(response.body).to include time_ago_in_words(article.published_at)
       end
     end
   end

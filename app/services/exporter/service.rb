@@ -5,8 +5,8 @@ module Exporter
     attr_reader :user
 
     EXPORTERS = [
-      Articles,
-      Comments,
+      Exporter::Articles,
+      Exporter::Comments,
     ].freeze
 
     def initialize(user)
@@ -18,7 +18,7 @@ module Exporter
 
       # export content with filenames
       EXPORTERS.each do |exporter|
-        files = exporter.new(user).export(config.fetch(exporter.name.to_sym, {}))
+        files = exporter.new(user).export(config.fetch(exporter.name.demodulize.downcase.to_sym, {}))
         files.each do |name, content|
           exports[name] = content
         end

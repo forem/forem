@@ -3,7 +3,7 @@
     Congratulations, <%= @user.name %>! You received the <b><%= @badge.title %></b> badge!
   </p>
   <p style="text-align:center;padding:20px 0px">
-    <img src="<%= @badge.badge_image_url %>" style="height:200px" />
+    <img src="<%= @badge.badge_image_url %>" style="height:200px" alt="<%= @badge.title %> badge">
   </p>
   <p>
     <%= @badge.description %>
@@ -18,5 +18,13 @@
     <a href="https://dev.to/<%= @user.username %>" style="font-weight:bold;color:white;background:#4e57ef;padding: 5px 10px;border-radius:3px;text-decoration:none">
       Check out your profile
     </a>
+  </p>
+  <hr style="opacity:0.4;width: 150px;margin: 30px auto;" />
+  <p>
+    You also get <strong><a href="/credits">5 new credits</a></strong> to use for <strong><a href="/listings">community listings</a></strong><br />
+    if you have anything you'd like to promote. 🎉
+  </p>
+  <p>
+    <strong><a href="/about-listings">More information about listings<a></strong>
   </p>
 </center>

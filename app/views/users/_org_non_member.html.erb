@@ -1,5 +1,4 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js"
-  integrity="sha256-CJWfUCeP3jLdUMVNUll6yQx37gh9AKmXTRxvRf7jzro=" crossorigin="anonymous"></script>
+<%= javascript_pack_tag "colorPicker", defer: true %>
 
 <h3>Join An Organization</h3>
 <h5>Do you have the secret code?</h5>
@@ -20,7 +19,7 @@
 
 <%= form_for @organization do |f| %>
   <div class="field">
-    <%= f.label "Name *" %>
+    <%= f.label :name, "Name *" %>
     <%= f.text_field :name %>
   </div>
   <div class="field">
@@ -29,7 +28,7 @@
     <sub><em>Your organization URL will be dev.to/{username}</em></sub>
   </div>
   <div class="field">
-    <%= f.label "Profile Image *" %>
+    <%= f.label :profile_image, "Profile Image *" %>
     <%= f.file_field :profile_image %>
   </div>
   <div class="field">
@@ -42,11 +41,13 @@
   </div>
   <div class="field">
     <%= f.label :text_color_hex, "Text color (hex)" %>
-    <%= text_field_tag "organization[text_color_hex]", "#000000", placeholder: "Click for color picker", class: "jscolor {hash:true, required:false}" %>
+    <%= text_field_tag "organization[text_color_hex]", "#000000", placeholder: "Click for color picker", class: "color-picker" %>
+    <div class="color-palette"></div>
   </div>
   <div class="field">
     <%= f.label :bg_color_hex, "Background color (hex)" %>
-    <%= text_field_tag "organization[bg_color_hex]", "#FFFFFF", placeholder: "Click for color picker", class: "jscolor {hash:true, required:false}" %>
+    <%= text_field_tag "organization[bg_color_hex]", "#FFFFFF", placeholder: "Click for color picker", class: "color-picker" %>
+    <div class="color-palette"></div>
   </div>
   <div class="field">
     <%= f.label :url, "Website url *" %>
@@ -54,11 +55,11 @@
   </div>
 
   <div class="field">
-    <%= f.label "Summary *" %>
+    <%= f.label :summary, "Summary *" %>
     <%= f.text_area :summary %>
   </div>
   <div class="field">
-    <%= f.label "Proof *" %>
+    <%= f.label :proof, "Proof *" %>
     <%= f.text_area :proof, placeholder: "This is just a quick blurb indicating or link that shows that you clearly are associated with this organization." %>
     <div style="width:560px;max-width:90%;">
       You must have your organization's permission to submit this form. Dishonesty may result in a permanent ban.

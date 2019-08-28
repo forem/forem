@@ -1,6 +1,6 @@
-var CACHE_VERSION = 'v2.6.4';
+var CACHE_VERSION = 'v2.7.1';
 var CACHE_NAME = CACHE_VERSION + ':sw-cache::';
-var REQUESTS_LIMIT = 70;
+var REQUESTS_LIMIT = 40;
 
 function onInstall(event) {
   event.waitUntil(
@@ -13,7 +13,6 @@ function onInstall(event) {
         '<%= asset_path "wires.png" %>',
         '<%= asset_path "comments-bubble.png" %>',
         '<%= asset_path "reactions-stack.png" %>',
-        '<%= asset_path "readinglist-button.png" %>',
         '<%= asset_path "emoji/emoji-one-heart.png" %>',
         '<%= asset_path "emoji/emoji-one-unicorn.png" %>',
         '<%= asset_path "emoji/emoji-one-bookmark.png" %>',
@@ -50,7 +49,8 @@ function onFetch(event) {
       }
       return fetch(event.request)
         .then(fetchedFromNetwork)
-        .catch(function fallback() {
+        .catch(function fallback(err) {
+           console.log(err)
            return cached || caches.match('/offline.html');
          })
       }
@@ -72,7 +72,6 @@ function onFetch(event) {
                 url === "<%= asset_path "minimal.css" %>" ||
                 url.indexOf(".self-") > -1 ||
                 (url.indexOf("search?") > -1 && url.indexOf("&i=i") > -1) ||
-                url.indexOf("readinglist?i=i") > -1 ||
                 url.indexOf("freetls.fastly.net") > -1)
   }
 
@@ -117,7 +116,7 @@ function onPush(event) {
   var title = 'DEV Connect 👋 ';
   var body = event.data.text();
   var icon = '<%= image_path "devlogo-pwa-128.png" %>';
-  var tag = 'default-tag' + body;  
+  var tag = 'default-tag' + body;
   event.waitUntil(
     self.registration.showNotification(title, {
       body: body,

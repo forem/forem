@@ -1,0 +1,26 @@
+<h2>Languages</h2>
+<h3>Select which languages you'd prefer to see in your feed <span style="color:#8c3434">(beta)</span></h3>
+<h4 style="font-weight:400">
+  This setting controls which languages you are more likely to see throughout the site, but you may still see other languages, especially English.
+</h4>
+
+<%= form_tag users_update_language_settings_path do |f| %>
+  <div class="checkbox-field">
+    <% Languages::LIST.each do |code, name| %>
+      <div class="sub-field">
+        <label>
+          <%= check_box_tag "user[preferred_languages][]", code, @user.preferred_languages_array.include?(code) %>
+          <%= name %>
+        </label>
+      </div>
+    <% end %>
+  </div>
+  <div class="field">
+    <label></label>
+    <%= hidden_field_tag :tab, value: @tab %>
+    <%= submit_tag "SUBMIT", class: "cta" %>
+  </div>
+<% end %>
+<h3>
+  This feature is in beta and will improve over time. Another way to tailor your feed is to discover and follow members who write in your preferred language.
+</h3>

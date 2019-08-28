@@ -1,5 +1,6 @@
 @import 'variables';
 @import 'connect/_channel-details';
+@import 'mixins';
 
 // High level classes
 .chat-page-wrapper{
@@ -53,8 +54,11 @@
   background: lighten($green,30%);
   margin-bottom: 5px;
   &:hover{
-    background: lighten($green, 20%);
-    background: var(--theme-container-background-hover, lighten($green, 20%))
+    @include themeable(
+      background, 
+      theme-container-background-hover, 
+      lighten($green, 20%)
+    );
   }
 }
 
@@ -81,13 +85,21 @@
     min-width: calc(280px);
   }
   &.chat__channels--placeholder{
+    .chat__channelstogglebutt--placeholderunexpanded {
+      display: none;
+    }
     @media screen and ( max-width: 599px ){
       width: 45px;
+      min-width: 45px;
       input{
         display: none;
       }
       .chat__channelstogglebutt{
-        visibility: hidden;
+        display: none;
+      }
+      .chat__channelstogglebutt--placeholderunexpanded {
+        display: block;
+        width: 100%;
       }
     }
   }
@@ -109,16 +121,25 @@
   border: 1px solid $light-medium-gray;
   box-sizing: border-box;
   padding: 8px;
-  margin-left: 2px;
   font-size: 14px;
   -webkit-appearance: none;
+  @include themeable(
+    background, 
+    theme-container-background, 
+    white
+  );
+  @include themeable(
+    color, 
+    theme-color, 
+    $black
+  );
   @media screen and ( min-width: 1000px ){
     width: calc(100% - 13px);
   }
 }
 
 .chat__channeltypefilter{
-  padding: 4px 0px 4px;
+  padding: 4px 0px 0px;
   width: calc(100% - 13px);
 }
 
@@ -126,21 +147,37 @@
   background: transparent;
   border: 0px;
   font-size: 15px;
-  padding: 9px 15px 4px;
-  font-family: $monospace;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-  display: inline-block;
-  border-bottom: 1px solid $light-medium-gray;
+  font-weight: bold;
+  padding: 5px 15px;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  border-bottom: 1px solid darken($light-medium-gray, 5%);
+  @media screen and ( min-width: 1300px ){
+    width: 33%;
+    display: inline-block;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+  }
 }
 
 .chat__channeltypefilterbutton--active {
-  background: lighten($green, 18%);
+  @include themeable(
+    color, 
+    theme-anchor-color, 
+    darken($sky-blue, 5%)
+  );
+  @media screen and ( min-width: 1300px ){
+    border: 1px solid darken($light-medium-gray, 5%);
+  }
 }
 
 .chat__channeltypefilterbutton--inactive {
-  color: black;
-  color: var(--theme-container-color, black);
+  @include themeable(
+    color, 
+    theme-secondary-color, 
+    lighten($medium-gray, 5%),
+  );
 }
 
 .chat_chatconfig{
@@ -152,8 +189,11 @@
   padding: 3px 12px;
   display: inline-block;
   border-radius: 3px;
-  background: $lightest-gray;
-  background: var(--theme-background, $lightest-gray);
+  @include themeable(
+    background, 
+    theme-background, 
+    $lightest-gray
+  );
   border: 1px solid $light-medium-gray;
   font-weight: bold;
   cursor: default;
@@ -181,15 +221,22 @@
 }
 
 .chat__videocall{
-  height: 480px;
-  width: 640px;
+  height: calc(75vw - 60px);
+  width: calc(100% - 60px);
   position:fixed;
   background: $black;
-  border-radius: 12px;
-  left: 250px;
-  top: 200px;
+  left: 0px;
+  top: 0px;
   text-align: center;
   cursor: grab;
+  border-radius: 12px;
+  z-index: 10000;
+  @media screen and ( min-width: 640px ){
+    width: 640px;
+    height: 480px;
+    left: 250px;
+    top: 150px;
+  }
   &:active{
     cursor: grabbing;
   }
@@ -248,7 +295,12 @@
   bottom: 0;
   top: 0;
   padding: 80px 7%;
-  background: white;
+  z-index:10;
+  @include themeable(
+    background, 
+    theme-background, 
+    white
+  );
 }
 
 .chatNonChatView_exitbutton{
@@ -256,9 +308,14 @@
   left: 4%;
   top: 60px;
   font-size:25px;
-  background: white;
+  background: transparent;
   border:0px;
   font-size:1.8em;
+  @include themeable(
+    color, 
+    theme-color, 
+    $black
+  );
 }
 
 .chatNonChatView_contentblock{
@@ -266,8 +323,11 @@
   padding: 20px;
   margin-bottom: 10px;
   max-width: 900px;
-  box-shadow: $bold-shadow;
-  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
+  @include themeable(
+    box-shadow, 
+    theme-container-box-shadow, 
+    $bold-shadow
+  );
   h2{
     margin:5px auto 5px;
   }
@@ -293,24 +353,60 @@
   top: 3px;
 }
 
+.chat__videocallcontrolbutton {
+  border:  0px;
+  font-size: 14px;
+  color: $light-medium-gray;
+  padding:3px 0px 4px;
+  border-radius:6px;
+  background: rgba(0, 0, 0, 0.7);
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: 125px;
+  &.chat__videocallcontrolbutton--videoonoff {
+    left: 140px;
+  }
+}
+
+.chat__videocalltrackdiv--audio {
+  display: none;
+}
+
+.chat__videocalltrackdiv--video {
+  display: inline;
+}
+
 .activechatchannel {
   height: inherit;
   max-height: inherit;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  border: 1px solid $outline-color;
-  border: var(--theme-container-border, 1px solid $outline-color);
-  box-shadow: $bold-shadow;
-  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
-  background: white;
-  background: var(--theme-container-background, white);
+  @include themeable(
+    border, 
+    theme-container-border, 
+    1px solid $outline-color
+  );
+  @include themeable(
+    box-shadow, 
+    theme-container-box-shadow, 
+    $bold-shadow
+  );
+  @include themeable(
+    background, 
+    theme-container-background, 
+    white
+  );
   flex-flow: row nowrap;
 }
 
 .activechatchannel__conversation{
-  border-top: 1px solid $outline-color;
-  border-top: var(--theme-container-border, 1px solid $outline-color);
+  @include themeable(
+    border-top, 
+    theme-container-border, 
+    1px solid $outline-color
+  );
   order: 1;
   display: flex;
   flex-direction: column;
@@ -323,16 +419,39 @@
 }
 
 .activechatchannel__header{
-  border-bottom: 1px solid $light-medium-gray;
-  border-bottom: var(--theme-container-border, 1px solid $light-medium-gray);
+  @include themeable(
+    border-bottom, 
+    theme-container-border, 
+    1px solid $light-medium-gray
+  );
   padding: 10px 12px;
   font-weight: bold;
   font-size:14px;
-  background: $light-gray;
-  background: var(--theme-container-accent-background, $light-gray);
+  @include themeable(
+    background, 
+    theme-container-accent-background, 
+    $light-gray
+  );
+  position: relative;
   a {
-    color: $black;
-    color: var(--theme-color, $black);
+    @include themeable(
+      color, 
+      theme-color, 
+      $black
+    );
+  }
+
+  img {
+    height: 17px;
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    cursor: pointer;
+    @include themeable(
+      filter, 
+      theme-social-icon-invert, 
+      invert(0)
+    );  
   }
 }
 
@@ -370,10 +489,16 @@
 }
 
 .activechatchannel__form {
-  border-top: 1px solid $outline-color;
-  border-top: var(--theme-container-border, 1px solid $outline-color);
-  background: #ededed;
-  background: var(--theme-container-accent-background, #ededed);
+  @include themeable(
+    border-top, 
+    theme-container-border, 
+    1px solid $outline-color
+  );
+  @include themeable(
+    background, 
+    theme-container-accent-background, 
+    #ededed
+  );
   width: 100%;
   height: 70px;
 }
@@ -397,9 +522,13 @@
   border-left: 2px solid $outline-color;
   padding: 13px;
   min-width: 45%;
+  -webkit-overflow-scrolling: touch;
   // margin-left: -50%;
-  background: white;
-  background: var(--theme-container-accent-background, white);
+  @include themeable(
+    background, 
+    theme-container-accent-background, 
+    white
+  );
   // flex-basis: 80%;
   z-index: 200;
   position: relative;
@@ -434,14 +563,17 @@
 
 .activechatchannel__activecontentexitbutton{
   border:  0px;
-  font-size: 36px;
-  color: $medium-gray;
-  color: var(--theme-container-color, $medium-gray);
+  font-size: 30px;
+  @include themeable(
+    color, 
+    theme-container-color, 
+    $medium-gray
+  );
   padding:0px;
   background: transparent;
   position: absolute;
   left: 6px;
-  top:-5px;
+  top:-3px;
 }
 
 .activechatchannel__activeArticle{
@@ -452,18 +584,21 @@
 
 .activechatchannel__activeArticleDetails{
   position: absolute;
-  top: -25px;
+  top: -26px;
   right: 2px;
-  left: 42px;
+  left: 35px;
   font-family: $monospace;
-  font-size:0.85em;
+  font-size:0.8em;
   a{
-    color: $dark-gray;
-    color: var(--theme-container-color, $dark-gray);
+    @include themeable(
+      color, 
+      theme-container-color, 
+      $dark-gray
+    );
   }
   .activechatchannel__activeArticleDetailsPath{
     display: inline-block;
-    max-width: calc(100% - 20px);
+    max-width: calc(100% - 15px);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -550,9 +685,12 @@
   bottom:0;
   left:0px;
   right:0px;
-  padding: 19px;
-  background: white;
-  background: var(--theme-container-accent-background, white);
+  padding: 17px;
+  @include themeable(
+    background, 
+    theme-container-accent-background, 
+    white
+  );
   z-index: 20;
   border-top: 1px solid $light-medium-gray;
   border-bottom: 1px solid $light-medium-gray;
@@ -560,8 +698,11 @@
   button {
     margin-right: 15px;
     width: 54px;
-    background: #f2f3f5;
-    background: var(--theme-container-background, #f2f3f5);
+    @include themeable(
+      background, 
+      theme-container-background, 
+      #f2f3f5
+    );
     border-radius: 100px !important;
     border-width: 0;
     padding: 5px 10px;
@@ -589,15 +730,28 @@
   padding-left: 30px;
   padding-bottom: 3px;
   min-height: 30px;
-  margin-top:-2px;
+  margin-top:-9px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 0.9em;
 }
 
 .activecontent__githubrepofiles{
   border-bottom: 1px solid $light-medium-gray;
   font-size:0.8em;
+  overflow: auto;
+  &.activecontent__githubrepofiles--root {
+    height: 280px;
+    max-height: 40vh;
+  }
+}
+
+.activecontent__githubreporeadme {
+  font-size: 0.8em;
+  img {
+    max-width: 100%;
+  }
 }
 
 .activecontent__githubrepofilerow{
@@ -631,8 +785,11 @@
   background: transparent;
   padding:3px 0px;
   margin-bottom: -5px 0;
-  color: $black;
-  color: var(--theme-color, $black);
+  @include themeable(
+    color, 
+    theme-color, 
+    $black
+  );
   &:hover {
     .chatchanneltab--inactive {
       border: 1px solid $outline-color;
@@ -662,14 +819,23 @@
 }
 
 .chatchanneltab--active {
-  background: white;
-  background: var(--theme-container-background, white);
+  @include themeable(
+    background, 
+    theme-container-background, 
+    white
+  );
   border: 1px solid $dark-purple;
   box-shadow: 3px 3px 0px $dark-purple;
 }
 
 .chatchanneltab--new {
   background: lighten($yellow, 10%);
+  color: $black;
+}
+
+.chatchanneltab--video {
+  background: lighten($green, 10%);
+  animation: small-pulser 0.5s linear infinite;
 }
 
 .chatchanneltabindicator{
@@ -718,6 +884,7 @@
   overflow: scroll;
   padding-bottom: 9vw;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 .chatchannels__channelslistheader{
@@ -744,8 +911,11 @@
   bottom: -14px;
   left: 0;
   right: 0;
-  background: $lightest-gray;
-  background: var(--theme-background, $lightest-gray);
+  @include themeable(
+    background, 
+    theme-background, 
+    $lightest-gray
+  );
   border-top: 1px solid $light-medium-gray;
   padding: 8px 10px 20px;
   font-weight: bold;
@@ -790,11 +960,17 @@
   // justify-content: space-between;
   max-width: 100%;
   &:hover {
-    background: $light-gray;
-    background: var(--theme-container-background-hover, $light-gray);
+    @include themeable(
+      background, 
+      theme-container-background-hover, 
+      $light-gray
+    );
     .chatmessagebody__username--link {
-      background: transparent;
-      background: var(--theme-container-background-hover, transparent);
+      @include themeable(
+        background, 
+        theme-container-background-hover, 
+        transparent
+      );
     }
 
   }
@@ -862,8 +1038,11 @@
   padding: 0px 2px;
   display: inline-block;
   &:hover {
-    background: transparent;
-    background: var(--theme-container-background-hover, transparent);
+    @include themeable(
+      background, 
+      theme-container-background-hover, 
+      transparent
+    );
   }
 }
 
@@ -885,10 +1064,16 @@
     padding-left: 8px;
   }
   a h1 {
-    color: $black;
-    color: var(--theme-container-color, $black);
-    border-color: #0a0a0a !important;
-    border-color: var(--theme-container-color, #0a0a0a) !important;
+    @include themeable(
+      color, 
+      theme-container-color, 
+      $black
+    );
+    @include themeable-important(
+      border-color, 
+      theme-container-color, 
+      #0a0a0a
+    );
   }
 }
 
@@ -908,23 +1093,42 @@
 
 .messagecomposer__input {
   border-radius: 3px;
-  border: 1px solid $outline-color;
   font-size: 14px;
-  margin: 10px;
+  margin: 6px 2px 6px 6px;
   padding: 5px;
   resize: none;
   flex-grow: 1;
+  @include themeable(
+    background, 
+    theme-container-background, 
+    white
+  );
+  @include themeable(
+    border, 
+    theme-border, 
+    1px solid $outline-color
+  );
+  @include themeable(
+    color, 
+    theme-color, 
+    $black
+  );
 }
 
 .messagecomposer__submit {
-  margin: 10px 10px 10px 0;
+  margin: 6px 6px 6px 0;
   border-radius: 3px;
   background: $dark-purple;
   font-weight: 600px;
   font-family: $helvetica-condensed;
-  width: 80px;
   color: white;
   font-size: 18px;
+  @media screen and ( min-width: 500px ){
+    width: 80px;
+  }
+  @media screen and ( min-width: 1500px ){
+    width: 100px;
+  }
 }
 
 .messagelist__sentinel {
@@ -943,8 +1147,11 @@
   top: -27px;
   left: 35px;
   font-family: $monospace;
-  color: $dark-gray;
-  color: var(--theme-color, $dark-gray);
+  @include themeable(
+    color, 
+    theme-color, 
+    $dark-gray
+  );
 }
 
 .CodeMirror{
@@ -970,6 +1177,13 @@
     opacity: 0.8;
     box-shadow: 2px 2px 0px $green;
     padding: 18px;
+  }
+}
+
+@keyframes small-pulser {
+  50% {
+    opacity: 0.6;
+    box-shadow: 2px 2px 0px $green;
   }
 }
 

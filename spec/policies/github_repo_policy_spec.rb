@@ -13,7 +13,7 @@ RSpec.describe GithubRepoPolicy do
   end
 
   context "when user is not the owner" do
-    let(:user) { build(:user) }
+    let(:user) { create(:user) }
 
     it { is_expected.to permit_actions(%i[create]) }
     it { is_expected.to forbid_actions(%i[update]) }

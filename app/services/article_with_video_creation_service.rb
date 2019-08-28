@@ -11,16 +11,7 @@ class ArticleWithVideoCreationService
 
   def create!
     Article.create! do |article|
-      article.body_markdown = <<~BODY
-        ---
-        title: Unpublished Video ~ #{rand(100_000).to_s(26)}
-        published: false
-        description:
-        tags:
-        ---
-        
-      BODY
-
+      article = initial_article_with_params(article)
       article.processed_html = ""
       article.user_id = @current_user.id
       article.show_comments = true
@@ -37,6 +28,25 @@ class ArticleWithVideoCreationService
         article.video_thumbnail_url = "#{VIDEO_SERVICE_URL}/#{video_code}/#{thumb_name}.png"
       end
     end
+  end
+
+  def initial_article_with_params(article)
+    if @current_user.editor_version == "v1"
+      article.body_markdown = <<~BODY
+        ---
+        title: Unpublished Video ~ #{rand(100_000).to_s(26)}
+        published: false
+        description:
+        tags:
+        ---
+        
+      BODY
+    else
+      article.body_markdown = ""
+      article.title = "Unpublished Video ~ #{rand(100_000).to_s(26)}"
+      article.published = false
+    end
+    article
   end
 end
 # rubocop:enable Layout/TrailingWhitespace

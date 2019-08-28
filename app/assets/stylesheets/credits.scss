@@ -1,0 +1,302 @@
+@import 'variables';
+@import 'mixins';
+
+.credits-container {
+  margin: 50px auto;
+
+  .notice {
+    background: $green;
+    padding: 30px 0px;
+    margin-top: 68px;
+    text-align: center;
+  }
+
+  .credits-banner {
+    background-color: $dark-purple;
+    background-image: linear-gradient(141deg, $dark-purple 0%, #1f89db 51%, #2981e5 75%);
+    padding: 70px 5px;
+    margin-top: 60px;
+    h1 {
+      font-size: calc(1.4em + 0.5vw);
+    }
+    a {
+      color: white;
+      border: 3px solid white;
+      padding: 15px 4px;
+      border-radius: 100px;
+      font-weight: bold;
+      display: block;
+      margin: 10px auto;
+      text-align: center;
+      font-size: 14px;
+      width: 320px;
+    }
+    @media screen and ( min-width:950px ){
+      font-size: 1.8em;
+    }
+  }
+
+
+  form#new_credit {
+    width: 500px;
+    max-width: 96%;
+    margin: 40px auto;
+    overflow: hidden;
+  }
+
+  .InputElement {
+    @include themeable(
+      background-color,
+      theme-container-background,
+      white
+    );
+    @include themeable(
+      color,
+      theme-color,
+      $black
+    );
+  }
+
+  .StripeElement, input[type="number"], button, .existing-card {
+    box-sizing: border-box;
+    height: 40px;
+    padding: 10px 12px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    @include themeable(
+      background-color,
+      theme-container-background,
+      white
+    );
+    @include themeable(
+      color,
+      theme-color,
+      $black
+    );
+
+    box-shadow: 0 1px 3px 0 #e6ebf1;
+    -webkit-transition: box-shadow 150ms ease;
+    transition: box-shadow 150ms ease;
+    margin-bottom: 20px;
+  }
+
+  .StripeElement--focus {
+    box-shadow: 0 1px 3px 0 #cfd7df;
+  }
+
+  .StripeElement--invalid {
+    border-color: #fa755a;
+  }
+
+  .StripeElement--webkit-autofill {
+    background-color: #fefde5 !important;
+  }
+
+  h1 {
+    text-align: center;
+    margin: 20px auto;
+    font-size: 2.5em;
+    border-radius: 3px;
+    padding: 30px 0px;
+    color: white;
+  }
+  .hook-description {
+    @include themeable(color, theme-secondary-color, #32325d);
+    text-align: center;
+    font-size: 1.2em;
+    padding: 10px 5px;
+    a {
+      text-decoration: underline;
+      @include themeable(color, theme-anchor-color, #50c176);
+    }
+    @media screen and ( min-width:950px ){
+      font-size: 1.4em;
+      padding: 20px 5px;
+    }
+  }
+  .bulk-description {
+    text-align: center;
+    @include themeable(color, theme-secondary-color, $medium-gray);
+    padding: 25px 12px;
+    font-size: 0.8em;
+    @include themeable(border-top, theme-container-border, 1px solid lighten($light-medium-gray, 7%));
+    @include themeable(border-bottom, theme-container-border, 1px solid lighten($light-medium-gray, 7%));
+  }
+  .credit-price {
+    box-shadow: 0 2px 4px 0 #dce2ea;
+    border-radius: 8px;
+    width: 80%;
+    margin: 3px auto;
+    padding: 10px 0px;
+    border: 1px solid $light-gray;
+    @include themeable(background, theme-container-background, white);
+    font-weight: bold;
+    display: inline-block;
+    font-size: 15px;
+    cursor: pointer;
+    .credit-amount {
+      font-size: 45px;
+      color: $dark-purple;
+      margin-bottom: 15px;
+    }
+    @media screen and ( min-width:950px ){
+      width: 230px;
+      padding: 80px 0px;
+      margin: 12px 3px;
+      transition: 0.2s;
+      &:hover {
+        box-shadow: 0 4px 6px 0 #d5dce5;
+      }
+    }
+  }
+
+  details {
+    width: 500px;
+    max-width: 96%;
+    margin: 20px auto 0px;
+    cursor: pointer;
+    font-size: 0.8em;
+    user-select: none;
+    @include themeable(color, theme-secondary-color, $dark-gray);
+    div {
+      margin-top: 5px;
+      @include themeable(background, theme-container-background, white);
+      padding: 10px 15px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px 0 #cfd7df;
+      border: 1px solid $light-gray;
+    }
+  }
+
+
+  input[type="number"] {
+    width: calc(100% - 160px);
+    font-size: 18px;
+    display: inline-block;
+  }
+
+  #calculated-price {
+    width: 140px;
+    padding-left: 10px;
+    color: $green;
+    font-size: 13px;
+    display: inline-block;
+  }
+
+  input[type="radio"] {
+    vertical-align: 2px;
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  button {
+    width: 100%;
+    background-color: $dark-purple;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  button#add-new-card {
+    @include themeable(
+      background-color,
+      theme-container-background,
+      $light-gray
+    );
+    @include themeable(
+      color,
+      theme-color,
+      $black
+    );
+    font-size: 15px;
+  }
+
+  .existing-card {
+    margin-bottom: 5px;
+    font-size: 0.7em;
+    padding: 0px;
+    padding-left: 10px;
+    label {
+      cursor: pointer;
+      display: inline-block;
+      width: calc(100% - 50px);
+      padding: 10px 0px;
+    }
+    .credit-card-component {
+      @include themeable(
+        background,
+        theme-container-accent-background,
+        $lightest-gray
+      );
+      border-radius: 3px;
+      margin: 0px 5px;
+      display: inline-block;
+      font-weight: bold;
+    }
+  }
+
+  label.main-form-label {
+    margin-bottom: 4px;
+    @include themeable(
+      background,
+      theme-container-accent-background,
+      $light-gray
+    );
+    border-radius: 3px;
+    padding: 2px 8px;
+    display: inline-block;
+    font-size: 0.7em;
+    font-weight: bold;
+  }
+
+  .existing-credits {
+    background: $dark-purple;
+    color: white;
+    width: 800px;
+    margin: 100px auto;
+    padding: 30px;
+    border-radius: 3px;
+    text-align: center;
+
+    .existing-credits-status {
+      font-size: 1.8em;
+      font-weight: bold;
+      padding: 30px 0px 50px;
+      .org-credits-select {
+        vertical-align: middle;
+        font-size: initial;
+      }
+    }
+
+    > a {
+      color: white;
+      border: 3px solid white;
+      padding: 10px 30px;
+      border-radius: 100px;
+      font-weight: bold;
+    }
+  }
+
+  .ledger {
+    margin: 2rem auto;
+    text-align: right;
+    width: 700px;
+
+    caption {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    td {
+      padding-top: 1.1rem;
+    }
+
+    .misc {
+      td {
+        padding-top: 1.5rem;
+        &:nth-child(2) { font-style: italic; }
+      }
+    }
+
+    a { color: #fff; }
+  }
+}

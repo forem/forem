@@ -1,20 +1,20 @@
 class ParlerTag < LiquidTagBase
+  PARTIAL = "liquids/parler".freeze
+
   def initialize(tag_name, id, tokens)
     super
     @id = parse_id(id)
-    @width = 710
-    @height = 120
   end
 
   def render(_context)
-    html = <<-HTML
-    <iframe
-      width="#{@width}"
-      height="#{@height}"
-      src="https://api.parler.io/ss/player?url=#{@id}">
-    </iframe>
-    HTML
-    finalize_html(html)
+    ActionController::Base.new.render_to_string(
+      partial: PARTIAL,
+      locals: {
+        id: @id,
+        height: 120,
+        width: 710
+      },
+    )
   end
 
   private

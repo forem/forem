@@ -43,7 +43,7 @@
 <% elsif false %>
   <div class="live-upcoming-info">
     <h1 style="text-align: center">
-      <span style="display: inline-block">DEV LIVE <%= image_tag "emoji/emoji-one-television.png", style: "width: 55px; height: 50px; vertical-align: text-top;" %></span>
+      <span style="display: inline-block">DEV LIVE <%= image_tag("emoji/emoji-one-television.png", style: "width: 55px; height: 50px; vertical-align: text-top;", alt: "television emoji") %></span>
     </h1>
     <h4 style="text-align: center">
       <i>Our event is starting soon! Check back very shortly.</i>
@@ -57,13 +57,14 @@
 <% elsif false %>
   <div class="live-upcoming-info">
     <h1 style="text-align: center;font-size:3.5em;margin:-100px auto">DEV IS
-      <span style="display: inline-block">LIVE <%= image_tag "emoji/emoji-one-television.png", style: "width: 60px;" %></span>
+      <span style="display: inline-block">LIVE <%= image_tag("emoji/emoji-one-television.png", style: "width: 60px;", alt: "television emoji") %></span>
     </h1>
     <%= render "devise/registrations/registration_form" %>
 
   </div>
 <% else %>
   <div class="live-upcoming-info">
-    <h1>Nothing is live right now. Check out the <a href="/events">Events Page</a> for a full schedule.</h1>
+    <h1>We are working on more ways to bring live coding to the community.</h1>
+    <h2>Check out <a href="/settings/integrations">the integrations tab in your settings</a>.</h2>
   </div>
 <% end %>

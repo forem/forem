@@ -20,8 +20,18 @@ FactoryBot.define do
     website_url        { Faker::Internet.url }
     confirmed_at       { Time.current }
     saw_onboarding { true }
+    checked_code_of_conduct { true }
+    checked_terms_and_conditions { true }
     signup_cta_variant { "navbar_basic" }
     email_digest_periodic { false }
+
+    after(:create) do |user|
+      create(:identity, user_id: user.id)
+    end
+
+    trait :two_identities do
+      after(:create) { |user| create(:identity, user_id: user.id, provider: "twitter") }
+    end
 
     trait :super_admin do
       after(:build) { |user| user.add_role(:super_admin) }
@@ -50,35 +60,22 @@ FactoryBot.define do
       end
     end
 
-    trait :analytics do
-      after(:build) { |user| user.add_role(:analytics_beta_tester) }
-    end
-
     trait :pro do
       after(:build) { |user| user.add_role :pro }
     end
 
     trait :org_member do
-      after(:build) do |user|
+      after(:create) do |user|
         org = create(:organization)
-        user.organization_id = org.id
+        create(:organization_membership, user_id: user.id, organization_id: org.id, type_of_user: "member")
       end
     end
 
     trait :org_admin do
-      after(:build) do |user|
+      after(:create) do |user|
         org = create(:organization)
-        user.organization_id = org.id
-        user.org_admin = true
+        create(:organization_membership, user_id: user.id, organization_id: org.id, type_of_user: "admin")
       end
-    end
-
-    after(:create) do |user|
-      create(:identity, user_id: user.id)
-    end
-
-    trait :two_identities do
-      after(:create) { |user| create(:identity, user_id: user.id, provider: "twitter") }
     end
 
     trait :with_article do

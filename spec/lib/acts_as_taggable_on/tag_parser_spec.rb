@@ -25,7 +25,11 @@ RSpec.describe ActsAsTaggableOn::TagParser do
       tags = ["w0rd", "app|3", "&!tes4@#$%^&*"]
       expect(create_tag_parser(tags)).to eq(%w[w0rd app3 tes4])
     end
-    it "returns nothing if nothing is recieved" do
+    it "allows non-english characters" do
+      tags = %w[Optimización Καλημέρα Français]
+      expect(create_tag_parser(tags)).to eq(%w[optimización καλημέρα français])
+    end
+    it "returns nothing if nothing is received" do
       expect(create_tag_parser([])).to eq([])
     end
     it "uses tag alias if one exists" do

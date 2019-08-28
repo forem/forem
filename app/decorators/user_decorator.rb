@@ -34,7 +34,7 @@ class UserDecorator < ApplicationDecorator
   def config_body_class
     body_class = ""
     body_class += config_theme.tr("_", "-")
-    body_class = body_class + " " + config_font.tr("_", "-") + "-article-body"
+    body_class = body_class + " " + config_font.tr("_", "-") + "-article-body" + " pro-status-#{pro?}"
     body_class
   end
 
@@ -82,13 +82,5 @@ class UserDecorator < ApplicationDecorator
       },
     ]
     colors[id % 10]
-  end
-
-  def preferred_languages_array
-    languages = []
-    language_settings.keys.each do |setting|
-      languages << setting.split("prefer_language_")[1] if language_settings[setting] && setting.include?("prefer_language_")
-    end
-    languages
   end
 end

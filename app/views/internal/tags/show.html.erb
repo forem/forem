@@ -32,6 +32,15 @@
     <%= f.check_box :supported %>
   </div>
   <div>
+    <%= f.label :badge_id %>
+    <% badges_array = Badge.pluck(:title, :id) %>
+    <%= f.select(:badge_id, options_for_select([["None", nil]] + badges_array, @tag.badge_id)) %>
+  </div>
+  <div>
+    <%= f.label :category %>
+    <%= f.select(:category, options_for_select(Tag.valid_categories, @tag.category)) %>
+  </div>
+  <div>
     <%= f.label :alias_for %>
     <%= f.text_field :alias_for %>
   </div>
@@ -55,11 +64,11 @@
   </div>
   <div>
     <%= f.label :bg_color_hex %>
-    <%= f.text_field :bg_color_hex, class: "jscolor {hash:true}", required: true %>
+    <%= f.text_field :bg_color_hex, class: "color-picker", required: true %>
   </div>
   <div>
     <%= f.label :text_color_hex %>
-    <%= f.text_field :text_color_hex, class: "jscolor {hash:true}", required: true %>
+    <%= f.text_field :text_color_hex, class: "color-picker", required: true %>
   </div>
   <div>
     <%= f.submit %>

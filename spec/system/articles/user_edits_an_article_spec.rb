@@ -1,37 +1,40 @@
 require "rails_helper"
 
-RSpec.describe "Editing with an editor", type: :system do
-  let(:user) { create(:user) }
-  let(:dir) { "../../support/fixtures/sample_article.txt" }
-  let(:template) { File.read(File.join(File.dirname(__FILE__), dir)) }
-  let(:article) do
-    create(:article,
-           user_id: user.id,
-           body_markdown: template.gsub("false", "true"),
-           body_html: "")
-  end
+RSpec.describe "Editing with an editor", type: :system, js: true do
+  let_it_be(:template) { file_fixture("article_published.txt").read }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:article, reload: true) { create(:article, user: user, body_markdown: template) }
 
   before do
     sign_in user
   end
 
-  it "user click the edit-post button", js: true, retry: 3 do
+  it "user clicks the edit button" do
     link = "/#{user.username}/#{article.slug}"
     visit link
-    find("#action-space").click
+    click_on("EDIT")
     expect(page).to have_current_path(link + "/edit")
   end
 
-  it "user preview their edit post" do
+  it "user previews their changes" do
     visit "/#{user.username}/#{article.slug}/edit"
-    click_button("previewbutt")
-    expect(page).to have_text(template[-200..-1])
+    fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
+    click_button("PREVIEW")
+    expect(page).to have_text("Yooo")
+    expect(find(".active").text).to have_text("EDIT")
   end
 
-  it "user update their post", retry: 3 do
+  it "user updates their post" do
+    visit "/#{user.username}/#{article.slug}/edit"
+    fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
+    click_button("SAVE CHANGES")
+    expect(page).to have_text("Yooo")
+  end
+
+  it "user unpublishes their post" do
     visit "/#{user.username}/#{article.slug}/edit"
     fill_in "article_body_markdown", with: template.gsub("true", "false")
-    click_button("article-submit")
+    click_button("SAVE CHANGES")
     expect(page).to have_text("Unpublished Post.")
   end
 end

@@ -2,7 +2,7 @@
 <style>
   .primary-sticky-nav-author, .primary-sticky-nav-author-element {
     border: 1px solid <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
-    box-shadow: 3px 4px 0px <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
+    box-shadow: 1px 1px 0px <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
   }
 
   .primary-sticky-nav-author button {
@@ -36,7 +36,7 @@
 
 <div class="primary-sticky-nav" id="article-show-primary-sticky-nav">
   <div class="primary-sticky-nav-element primary-sticky-nav-author">
-    <a href="<%= @actor.path %>"><img src="<%= ProfileImage.new(@actor).get(90) %>" class="primary-sticky-nav-author-top-profile-image" /></a>
+    <a href="<%= @actor.path %>"><img src="<%= ProfileImage.new(@actor).get(90) %>" class="primary-sticky-nav-author-top-profile-image" alt="<%= @actor.name %> profile image"></a>
     <div style="display:inline-block">
       <div class="primary-sticky-nav-author-name">
         <a href="<%= @actor.path %>">
@@ -73,7 +73,7 @@
     <% end %>
   </div>
   <% if @variant_number.to_i == 1 %>
-    <% cache("html-variant-sidebar#{rand(50)}", expires_in: 8.hours) do %>
+    <% cache("html-variant-sidebar#{rand(300)}", expires_in: 2.hours) do %>
       <% @html_variant = HtmlVariant.find_for_test(@article.cached_tag_list_array) %>
       <% if @html_variant %>
         <div class="html-variant-wrapper" id="html-variant-article-show-sidebar" data-variant-id="<%= @html_variant.id %>">
@@ -99,7 +99,7 @@
               </div>
             <% end %>
             <a class="primary-sticky-nav-element primary-sticky-nav-author-element" href="<%= article.path %>">
-              <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" />
+              <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" loading="lazy" alt="<%= article.user.name %> profile image">
               <%= article.title %>
               <div class="primary-sticky-nav-element-details">
                 <% article.decorate.cached_tag_list_array.each do |tag| %>
@@ -115,11 +115,11 @@
           <div class="primary-sticky-nav-element-wrapper">
             <% if index == 0 %>
               <div class="primary-sticky-nav-title">
-                <img src="<%= asset_path "emoji/apple-fire.png" %>" /> Trending on <a href="https://dev.to">dev.to</a>
+                <img src="<%= asset_path "emoji/apple-fire.png" %>" alt="Fire emoji" loading="lazy"> Trending on <a href="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>"><%= ApplicationConfig["COMMUNITY_NAME"] %></a>
               </div>
             <% end %>
             <a class="primary-sticky-nav-element" href="<%= article.path %>">
-              <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" />
+              <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image"  loading="lazy" alt="<%= article.user.name %> profile image">
               <%= article.title %>
               <div class="primary-sticky-nav-element-details">
                 <% article.decorate.cached_tag_list_array.each do |tag| %>

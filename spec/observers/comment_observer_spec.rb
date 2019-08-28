@@ -17,6 +17,6 @@ RSpec.describe CommentObserver, type: :observer do
         end
       end
     end
-    expect(SlackBot).to have_received(:ping).twice
+    expect(SlackBot).to have_received(:ping).once
   end
 end

@@ -26,7 +26,7 @@
           margin: auto;
           max-width: 1250px;
         }
-        
+
         @media screen and (min-width: 950px) {
           .home {
             margin-top: 26px;
@@ -39,7 +39,7 @@
       <% if core_pages? %>
         <%= javascript_include_tag "base", defer: true %>
         <% if user_signed_in? %>
-          <%= javascript_pack_tag "Onboarding", defer: true %>
+          <%= javascript_pack_tag "onboardingRedirectCheck", defer: true %>
         <% end %>
       <% end %>
       <% if !core_pages? %>
@@ -97,8 +97,8 @@
         <%= render "layouts/signup_modal" unless user_signed_in? %>
       <% end %>
       <div id="live-article-indicator" class="live-article-indicator"></div>
-      <%= image_tag("twitter-logo.svg", class: "icon-img", style: "display:none") %>
-      <%= image_tag("github-logo.svg", class: "icon-img", style: "display:none") %>
+      <%= image_tag("twitter-logo.svg", class: "icon-img", style: "display:none", alt: "twitter logo") %>
+      <%= image_tag("github-logo.svg", class: "icon-img", style: "display:none", alt: "github logo") %>
     <% end %>
   </body>
 </html>

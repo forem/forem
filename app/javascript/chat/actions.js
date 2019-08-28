@@ -79,7 +79,7 @@ export function getChannels(
   paginationNumber,
   additionalFilters,
   successCb,
-  failureCb,
+  _failureCb,
 ) {
   const client = algoliasearch(props.algoliaId, props.algoliaKey);
   const index = client.initIndex(props.algoliaIndex);
@@ -90,18 +90,27 @@ export function getChannels(
     },
     ...additionalFilters,
   };
-  index.search(query, filters).then(function(content) {
+  index.search(query, filters).then(content => {
     const channels = content.hits;
     if (
       retrievalID === null ||
-      content.hits.filter(e => e.id === retrievalID).length === 1
+      content.hits.filter(e => e.chat_channel_id === retrievalID).length === 1
     ) {
       successCb(channels, query);
     } else {
-      index.getObjects([`${retrievalID}`], function(err, content) {
-        channels.unshift(content.results[0]);
-        successCb(channels, query);
-      });
+      fetch(
+        `/chat_channel_memberships/find_by_chat_channel_id?chat_channel_id=${retrievalID}`,
+        {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          credentials: 'same-origin',
+        },
+      )
+        .then(response => response.json())
+        .then(json => {
+          channels.unshift(json);
+          successCb(channels, query);
+        });
     }
   });
 }

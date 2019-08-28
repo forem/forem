@@ -13,7 +13,8 @@ class NotifyMailerPreview < ActionMailer::Preview
   end
 
   def new_mention_email
-    NotifyMailer.new_mention_email(Mention.last)
+    mention = Mention.find_or_create_by(user: User.find(1), mentionable: Comment.find(1))
+    NotifyMailer.new_mention_email(mention)
   end
 
   def video_upload_complete_email
@@ -21,23 +22,21 @@ class NotifyMailerPreview < ActionMailer::Preview
   end
 
   def new_badge_email
-    NotifyMailer.new_badge_email(BadgeAchievement.first)
-  end
-
-  def new_report_email
-    NotifyMailer.new_report_email(FeedbackMessage.first)
-  end
-
-  def mentee_email
-    NotifyMailer.mentee_email(User.first, User.second)
-  end
-
-  def mentor_email
-    NotifyMailer.mentor_email(User.first, User.second)
+    badge_achievement = BadgeAchievement.find_or_create_by(
+      user: User.find(1),
+      badge: Badge.find(1),
+      rewarder: User.find(2),
+      rewarding_context_message: "You made it!",
+    )
+    NotifyMailer.new_badge_email(badge_achievement)
   end
 
   def tag_moderator_confirmation_email
     NotifyMailer.tag_moderator_confirmation_email(User.first, "discuss")
+  end
+
+  def trusted_role_email
+    NotifyMailer.trusted_role_email(User.first)
   end
 
   def feedback_message_resolution_email
@@ -57,7 +56,9 @@ class NotifyMailerPreview < ActionMailer::Preview
     params = {
       email_to: @user.email,
       email_subject: "Courtesy notice from dev.to",
-      email_body: email_body
+      email_body: email_body,
+      email_type: "Reporter",
+      feedback_message_id: rand(100)
     }
     NotifyMailer.feedback_message_resolution_email(params)
   end
@@ -68,5 +69,9 @@ class NotifyMailerPreview < ActionMailer::Preview
 
   def account_deleted_email
     NotifyMailer.account_deleted_email(User.last)
+  end
+
+  def export_email
+    NotifyMailer.export_email(User.last, "attachment")
   end
 end

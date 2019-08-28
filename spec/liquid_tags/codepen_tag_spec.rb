@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe CodepenTag, type: :liquid_template do
   describe "#link" do
     let(:codepen_link) { "https://codepen.io/twhite96/pen/XKqrJX" }
+    let(:codepen_team_link) { "https://codepen.io/team/keyframers/pen/ZMRMEw" }
     let(:codepen_link_with_default_tab) { "https://codepen.io/twhite96/pen/XKqrJX default-tab=js,result" }
 
     xss_links = %w(
@@ -29,9 +30,30 @@ RSpec.describe CodepenTag, type: :liquid_template do
       end.not_to raise_error
     end
 
+    it "accepts codepen team link" do
+      codepen_link = codepen_team_link
+      expect do
+        generate_new_liquid(codepen_link)
+      end.not_to raise_error
+    end
+
+    it "accepts codepen link with an underscore in the username" do
+      codepen_link = "https://codepen.io/t_white96/pen/XKqrJX/"
+      expect do
+        generate_new_liquid(codepen_link)
+      end.not_to raise_error
+    end
+
     it "rejects invalid codepen link" do
       expect do
         generate_new_liquid("invalid_codepen_link")
+      end.to raise_error(StandardError)
+    end
+
+    it "rejects codepen link with more than 30 characters in the username" do
+      codepen_link = "https://codepen.io/t_white96_this_is_31_characters/pen/XKqrJX/"
+      expect do
+        generate_new_liquid(codepen_link)
       end.to raise_error(StandardError)
     end
 

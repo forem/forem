@@ -12,6 +12,7 @@ require "pundit/matchers"
 require "pundit/rspec"
 require "webmock/rspec"
 require "test_prof/recipes/rspec/before_all"
+require "test_prof/recipes/rspec/let_it_be"
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -57,11 +58,14 @@ VCR.configure do |config|
   )
 end
 
+RSpec::Matchers.define_negated_matcher :not_change, :change
+
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
   config.include ApplicationHelper
+  config.include ActionMailer::TestHelper
   config.include ActiveJob::TestHelper
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::IntegrationHelpers, type: :system
@@ -107,6 +111,7 @@ RSpec.configure do |config|
   end
 
   OmniAuth.config.test_mode = true
+  OmniAuth.config.logger = Rails.logger
 
   config.infer_spec_type_from_file_location!
 
@@ -114,4 +119,9 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+end
+
+Doorkeeper.configure do
+  # hash_token_secrets on its own won't work in test
+  hash_token_secrets fallback: :plain
 end

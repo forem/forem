@@ -57,6 +57,15 @@
     display: block;
   }
 
+  #undo {
+    background: #ff0000;
+    width: 2rem;
+    height: 2rem;
+    font-size: small;
+    display: inline-block;
+    padding-bottom: 2em;
+  }
+
   .tag-mod-form form textarea {
     width: 100%;
     padding: 5px;
@@ -77,18 +86,22 @@
   .level-rating-button.selected {
     background: #9bebff;
   }
+
+  input.undo {
+    background: #ff0000; /* $red */
+  }
 </style>
 
 <div class="container" style="text-align: center">
   <h2>MODERATE: <a href="<%= @moderatable.path %>" rel="nofollow"><%= @moderatable.title %></a></h2>
 
   <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>" data-reactable-id="<%= @moderatable.id %>" data-category="thumbsdown" data-reactable-type="<%= @moderatable.class.name %>">
-    <%= image_tag "emoji/emoji-one-thumbs-down-gray.png" %>
-    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" />
+    <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji") %>
+    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
   </button>
   <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>" data-reactable-id="<%= @moderatable.id %>" data-category="vomit" data-reactable-type="<%= @moderatable.class.name %>">
-    <%= image_tag "emoji/emoji-one-nausea-face-gray.png" %>
-    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" />
+    <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji") %>
+    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
   </button>
   <% if current_user.has_role?(:super_admin) && @moderatable.class.name == "Article" %>
     <h1> Admin: <a href="<%= @moderatable.path %>/edit">Edit</a> |
@@ -125,13 +138,18 @@
         <%= f.text_field :tag_name, placeholder: "Tag Name" %>
         <%= f.text_area :reason_for_adjustment, placeholder: "Reason for Removal (Be super kind) - Only the reason is needed, the notification will take care of the rest." %>
         <%= f.submit "Remove Tag" %>
-        <% adjustments = TagAdjustment.where(article_id: @moderatable.id, adjustment_type: "removal") %>
-        <% if adjustments.any? %>
-          <br /><br />
-          <b>Removed tags: </b>
-          <% adjustments.each do |adjustment| %>
-            <%= adjustment.tag_name %>
-          <% end %>
+      <% end %>
+      <% adjustments = TagAdjustment.where(article_id: @moderatable.id, adjustment_type: "removal") %>
+      <% if adjustments.any? %>
+        <br /><br />
+        <b>Removed tags: </b>
+        <% adjustments.each do |adjustment| %>
+          <% if current_user.any_admin? %>
+              <%= form_for(adjustment, url: "/tag_adjustments/#{adjustment.id}", html: { method: :delete, onsubmit: "return confirm('Are you sure you want to undo the removal of the #{adjustment.tag_name} tag?')" }) do |f| %>
+                <%= adjustment.tag_name %>
+                <%= f.submit "X", id: "undo" %>
+              <% end %>
+            <% end %>
         <% end %>
       <% end %>
     </div>

@@ -1,7 +1,10 @@
 class User < ApplicationRecord
   include CloudinaryHelper
 
-  attr_accessor :scholar_email, :new_note, :quick_match, :mentorship_note, :note_for_current_role, :add_mentor, :add_mentee, :user_status, :toggle_mentorship, :pro, :merge_user_id
+  attr_accessor(
+    :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
+    :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ghostify
+  )
 
   rolify
   include AlgoliaSearch
@@ -10,7 +13,8 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
-  belongs_to  :organization, optional: true
+  has_many    :organization_memberships, dependent: :destroy
+  has_many    :organizations, through: :organization_memberships
   has_many    :api_secrets, dependent: :destroy
   has_many    :articles, dependent: :destroy
   has_many    :badge_achievements, dependent: :destroy
@@ -23,27 +27,27 @@ class User < ApplicationRecord
   has_many    :mentions, dependent: :destroy
   has_many    :messages, dependent: :destroy
   has_many    :notes, as: :noteable, inverse_of: :noteable
+  has_many    :profile_pins, as: :profile, inverse_of: :profile
   has_many    :authored_notes, as: :author, inverse_of: :author, class_name: "Note"
   has_many    :notifications, dependent: :destroy
   has_many    :reactions, dependent: :destroy
   has_many    :tweets, dependent: :destroy
   has_many    :chat_channel_memberships, dependent: :destroy
   has_many    :chat_channels, through: :chat_channel_memberships
+  has_many    :notification_subscriptions, dependent: :destroy
   has_many    :push_notification_subscriptions, dependent: :destroy
   has_many    :feedback_messages
   has_many    :rating_votes
   has_many    :html_variants, dependent: :destroy
   has_many    :page_views
-  has_many :mentor_relationships_as_mentee,
-           class_name: "MentorRelationship", foreign_key: "mentee_id", inverse_of: :mentee
-  has_many :mentor_relationships_as_mentor,
-           class_name: "MentorRelationship", foreign_key: "mentor_id", inverse_of: :mentor
-  has_many :mentors,
-           through: :mentor_relationships_as_mentee,
-           source: :mentor
-  has_many :mentees,
-           through: :mentor_relationships_as_mentor,
-           source: :mentee
+  has_many    :credits
+  has_many    :classified_listings
+  has_many    :poll_votes
+  has_many    :poll_skips
+  has_many    :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user, class_name: "BackupData"
+  has_many    :display_ad_events
+  has_many    :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
+  has_many    :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -74,7 +78,7 @@ class User < ApplicationRecord
   validates :stackoverflow_url,
             allow_blank: true,
             format:
-            /\A(http(s)?:\/\/)?(www.stackoverflow.com|stackoverflow.com|www.stackexchange.com|stackexchange.com)\/.*\Z/
+            /\A(http(s)?:\/\/)?(((www|pt|ru|es|ja).)?stackoverflow.com|(www.)?stackexchange.com)\/.*\Z/
   validates :behance_url,
             allow_blank: true,
             format: /\A(http(s)?:\/\/)?(www.behance.net|behance.net)\/.*\Z/
@@ -91,6 +95,12 @@ class User < ApplicationRecord
   validates :gitlab_url,
             allow_blank: true,
             format: /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\Z/
+  validates :instagram_url,
+            allow_blank: true,
+            format: /\A(http(s)?:\/\/)?(?:www.)?instagram.com\/(?=.{1,30}\/?$)([a-zA-Z\d_]\.?)*[a-zA-Z\d_]+\/?\Z/
+  validates :twitch_url,
+            allow_blank: true,
+            format: /\A(http(s)?:\/\/)?(www.twitch.tv|twitch.tv)\/.*\Z/
   validates :shirt_gender,
             inclusion: { in: %w[unisex womens],
                          message: "%{value} is not a valid shirt style" },
@@ -108,8 +118,8 @@ class User < ApplicationRecord
                          message: "%{value} must be either v1 or v2" }
 
   validates :config_theme,
-            inclusion: { in: %w[default night_theme pink_theme],
-                         message: "%{value} must be either default, pink theme, or night theme" }
+            inclusion: { in: %w[default night_theme pink_theme minimal_light_theme],
+                         message: "%{value} is not a valid theme" }
   validates :config_font,
             inclusion: { in: %w[default sans_serif comic_sans],
                          message: "%{value} must be either default or sans serif" }
@@ -123,13 +133,13 @@ class User < ApplicationRecord
   validates :mostly_work_with, :currently_learning,
             :currently_hacking_on, :available_for,
             length: { maximum: 500 }
-  validates :mentee_description, :mentor_description,
-            length: { maximum: 1000 }
   validates :inbox_type, inclusion: { in: %w[open private] }
+  validates :currently_streaming_on, inclusion: { in: %w[twitch] }, allow_nil: true
+  validates :feed_referential_link, inclusion: [true, false]
   validate  :conditionally_validate_summary
   validate  :validate_mastodon_url
   validate  :validate_feed_url, if: :feed_url_changed?
-  validate  :unique_including_orgs, if: :username_changed?
+  validate  :unique_including_orgs_and_podcasts, if: :username_changed?
 
   scope :dev_account, -> { find_by(id: ApplicationConfig["DEVTO_USER_ID"]) }
 
@@ -138,10 +148,10 @@ class User < ApplicationRecord
   after_save  :subscribe_to_mailchimp_newsletter
   after_save  :conditionally_resave_articles
   after_create :estimate_default_language!
-  before_update :mentorship_status_update
+  before_create :set_default_language
   before_validation :set_username
   # make sure usernames are not empty, to be able to use the database unique index
-  before_validation :verify_twitter_username, :verify_github_username, :verify_email
+  before_validation :verify_twitter_username, :verify_github_username, :verify_email, :verify_twitch_username
   before_validation :set_config_input
   before_validation :downcase_email
   before_validation :check_for_username_change
@@ -155,7 +165,7 @@ class User < ApplicationRecord
     add_index "searchables",
               id: :index_id,
               per_environment: true,
-              enqueue: :trigger_delayed_index do
+              enqueue: true do
       attribute :user do
         { username: user.username,
           name: user.username,
@@ -178,23 +188,14 @@ class User < ApplicationRecord
     end
   end
 
-  # Via https://github.com/G5/storext
-  store_attributes :language_settings do
-    estimated_default_language String
-    prefer_language_en Boolean, default: true
-    prefer_language_ja Boolean, default: false
-    prefer_language_es Boolean, default: false
-    prefer_language_fr Boolean, default: false
-    prefer_language_it Boolean, default: false
-    prefer_language_pt Boolean, default: false
+  def estimated_default_language
+    language_settings["estimated_default_language"]
   end
 
   def self.trigger_delayed_index(record, remove)
-    if remove
-      record.delay.remove_from_index! if record&.persisted?
-    else
-      record.delay.index!
-    end
+    return if remove
+
+    AlgoliaSearch::AlgoliaJob.perform_later(record, "index!")
   end
 
   def tag_line
@@ -251,16 +252,36 @@ class User < ApplicationRecord
     end
   end
 
+  def cached_following_podcasts_ids
+    Rails.cache.fetch(
+      "user-#{id}-#{updated_at}-#{last_followed_at}/following_podcasts_ids",
+      expires_in: 120.hours,
+    ) do
+      Follow.where(follower_id: id, followable_type: "Podcast").pluck(:followable_id)
+    end
+  end
+
   def cached_preferred_langs
     Rails.cache.fetch("user-#{id}-#{updated_at}/cached_preferred_langs", expires_in: 24.hours) do
-      langs = []
-      langs << "en" if prefer_language_en
-      langs << "ja" if prefer_language_ja
-      langs << "es" if prefer_language_es
-      langs << "fr" if prefer_language_fr
-      langs << "it" if prefer_language_it
-      langs
+      preferred_languages_array
     end
+  end
+
+  # handles both old (prefer_language_*) and new (Array of language codes) formats
+  def preferred_languages_array
+    # return @prefer_languages_array if defined? @preferred_languages_array
+    return @preferred_languages_array if defined?(@preferred_languages_array)
+
+    if language_settings["preferred_languages"].present?
+      @preferred_languages_array = language_settings["preferred_languages"].to_a
+    else
+      languages = []
+      language_settings.each_key do |setting|
+        languages << setting.split("prefer_language_")[1] if language_settings[setting] && setting.include?("prefer_language_")
+      end
+      @preferred_languages_array = languages
+    end
+    @preferred_languages_array
   end
 
   def processed_website_url
@@ -292,14 +313,6 @@ class User < ApplicationRecord
     has_role? :warned
   end
 
-  def banished?
-    user.notes.where(reason: "banned", content: "spam account").any? && user.banned && user.comments.none? && user.articles.none?
-  end
-
-  def banned_from_mentorship
-    has_role? :banned_from_mentorship
-  end
-
   def admin?
     has_role?(:super_admin)
   end
@@ -310,6 +323,10 @@ class User < ApplicationRecord
 
   def tech_admin?
     has_role?(:tech_admin) || has_role?(:super_admin)
+  end
+
+  def pro?
+    has_role?(:pro)
   end
 
   def trusted
@@ -323,24 +340,42 @@ class User < ApplicationRecord
     has_role?(:workshop_pass) && valid_pass
   end
 
-  def analytics
-    has_role? :analytics_beta_tester
-  end
-
   def comment_banned
     has_role? :comment_banned
   end
 
   def workshop_eligible?
-    has_any_role?(:workshop_pass, :level_3_member, :level_4_member, :triple_unicorn_member)
+    has_any_role?(:workshop_pass)
+  end
+
+  def admin_organizations
+    org_ids = organization_memberships.where(type_of_user: "admin").pluck(:organization_id)
+    organizations.where(id: org_ids)
+  end
+
+  def member_organizations
+    org_ids = organization_memberships.where(type_of_user: %w[admin member]).pluck(:organization_id)
+    organizations.where(id: org_ids)
+  end
+
+  def org_member?(organization)
+    OrganizationMembership.exists?(user: user, organization: organization, type_of_user: %w[admin member])
   end
 
   def org_admin?(organization)
-    user.org_admin && user.organization_id == organization.id
+    OrganizationMembership.exists?(user: user, organization: organization, type_of_user: "admin")
   end
 
-  def unique_including_orgs
-    errors.add(:username, "is taken.") if Organization.find_by(slug: username)
+  def unique_including_orgs_and_podcasts
+    errors.add(:username, "is taken.") if Organization.find_by(slug: username) || Podcast.find_by(slug: username) || Page.find_by(slug: username)
+  end
+
+  def subscribe_to_mailchimp_newsletter_without_delay
+    return unless email.present? && email.include?("@")
+
+    return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
+
+    Users::SubscribeToMailchimpNewsletterJob.perform_now(id)
   end
 
   def subscribe_to_mailchimp_newsletter
@@ -348,14 +383,7 @@ class User < ApplicationRecord
 
     return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
 
-    # This is when user is updating their email. There
-    # is no need to update mailchimp until email is confirmed.
-    MailchimpBot.new(self).upsert
-  end
-  handle_asynchronously :subscribe_to_mailchimp_newsletter
-
-  def can_view_analytics?
-    has_any_role?(:super_admin, :analytics_beta_tester)
+    Users::SubscribeToMailchimpNewsletterJob.perform_later(id)
   end
 
   def a_sustaining_member?
@@ -372,18 +400,16 @@ class User < ApplicationRecord
   end
 
   def settings_tab_list
-    tab_list = %w[
+    %w[
       Profile
-      Mentorship
       Integrations
       Notifications
       Publishing\ from\ RSS
       Organization
       Billing
+      Account
+      Misc
     ]
-    tab_list << "Membership" if monthly_dues&.positive? && stripe_id_code
-    tab_list << "Switch Organizations" if has_role?(:switch_between_orgs)
-    tab_list.push("Account", "Misc")
   end
 
   def profile_image_90
@@ -404,7 +430,19 @@ class User < ApplicationRecord
     roles.where(name: "tag_moderator").any?
   end
 
+  def currently_streaming?
+    currently_streaming_on.present?
+  end
+
+  def currently_streaming_on_twitch?
+    currently_streaming_on == "twitch"
+  end
+
   private
+
+  def set_default_language
+    language_settings["preferred_languages"] ||= ["en"]
+  end
 
   def send_welcome_notification
     Notification.send_welcome_notification(id)
@@ -420,6 +458,10 @@ class User < ApplicationRecord
 
   def verify_email
     self.email = nil if email == ""
+  end
+
+  def verify_twitch_username
+    self.twitch_username = nil if twitch_username == ""
   end
 
   def set_username
@@ -476,10 +518,8 @@ class User < ApplicationRecord
   end
 
   def bust_cache
-    CacheBuster.new.bust("/#{username}")
-    CacheBuster.new.bust("/feed/#{username}")
+    Users::BustCacheJob.perform_later(id)
   end
-  handle_asynchronously :bust_cache
 
   def core_profile_details_changed?
     saved_change_to_username? ||
@@ -591,11 +631,5 @@ class User < ApplicationRecord
     follower_relationships = Follow.where(followable_id: id, followable_type: "User")
     follower_relationships.destroy_all
     follows.destroy_all
-  end
-
-  def mentorship_status_update
-    self.mentor_form_updated_at = Time.current if mentor_description_changed? || offering_mentorship_changed?
-
-    self.mentee_form_updated_at = Time.current if mentee_description_changed? || seeking_mentorship_changed?
   end
 end

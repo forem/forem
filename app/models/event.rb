@@ -45,8 +45,6 @@ class Event < ApplicationRecord
   end
 
   def bust_cache
-    cache_buster = CacheBuster.new
-    cache_buster.bust("/events")
-    cache_buster.bust("/events?i=i")
+    Events::BustCacheJob.perform_later
   end
 end

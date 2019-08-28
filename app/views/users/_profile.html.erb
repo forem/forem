@@ -1,10 +1,9 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js"
-  integrity="sha256-CJWfUCeP3jLdUMVNUll6yQx37gh9AKmXTRxvRf7jzro=" crossorigin="anonymous"></script>
+<%= javascript_pack_tag "colorPicker", defer: true %>
 
 <% unless @user.identities.exists?(provider: 'github') %>
   <div class="field">
     <a href="/users/auth/github" class="big-button cta" data-no-instant>
-      <img src="<%= asset_path("github-logo.svg") %>" /> CONNECT GITHUB ACCOUNT
+      <img src="<%= asset_path("github-logo.svg") %>" alt="github logo" /> CONNECT GITHUB ACCOUNT
     </a>
   </div>
 <% end %>
@@ -12,12 +11,17 @@
 <% unless @user.identities.exists?(provider: 'twitter') %>
   <div class="field">
     <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="big-button cta" data-no-instant>
-      <img src="<%= asset_path("twitter-logo.svg") %>" /> CONNECT TWITTER ACCOUNT
+      <img src="<%= asset_path("twitter-logo.svg") %>" alt="twitter logo" /> CONNECT TWITTER ACCOUNT
     </a>
   </div>
 <% end %>
 <h4>
-  <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/<%= current_user.username %>"><img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" height="28" width="28" style="vertical-align:-7px;margin-right:4px;" class="dev-badge" /></a>
+  <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/<%= current_user.username %>" aria-label="Go to your profile page">
+    <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg"
+         alt="DEV badge"
+         height="28" width="28"
+         style="vertical-align:-7px;margin-right:4px;" class="dev-badge" />
+  </a>
   Add the DEV badge to your personal site. <a href="/p/badges">Click here for the code</a>
 </h4>
 <%= form_for(@user) do |f| %>
@@ -61,7 +65,7 @@
   </div>
   <div class="field">
     <%= f.label :website_url %>
-    <%= f.url_field :website_url, maxlength: 100, placeholder: "http://yoursite.com" %>
+    <%= f.url_field :website_url, maxlength: 100, placeholder: "https://yoursite.com" %>
   </div>
   <div class="field">
     <%= f.label :summary %>
@@ -70,12 +74,14 @@
   <div class="field">
     <% @user.bg_color_hex = user_colors(@user)[:bg] if @user.bg_color_hex.blank? %>
     <%= f.label :bg_color_hex, "background color" %>
-    <%= f.text_field :bg_color_hex, placeholder: "#000000", class: "jscolor {hash:true}" %>
+    <%= f.text_field :bg_color_hex, placeholder: "#000000", class: "color-picker" %>
+    <div class="color-palette"></div>
   </div>
   <div class="field">
     <% @user.bg_color_hex = user_colors(@user)[:text] if @user.text_color_hex.blank? %>
     <%= f.label :text_color_hex, "text color" %>
-    <%= f.text_field :text_color_hex, placeholder: "#ffffff", class: "jscolor {hash:true}" %>
+    <%= f.text_field :text_color_hex, placeholder: "#ffffff", class: "color-picker" %>
+    <div class="color-palette"></div>
   </div>
   <div class="field">
     <%= f.label :location %>
@@ -103,7 +109,7 @@
   </div>
   <div class="field">
     <%= f.label :currently_learning, "I'm getting into" %>
-    <%= f.text_area :currently_learning, placeholder: "What are you learning right now? what are the new tools and languages you're picking up in #{Time.new.year}?", maxlength: 500 %>
+    <%= f.text_area :currently_learning, placeholder: "What are you learning right now? what are the new tools and languages you're picking up in #{Time.zone.now.year}?", maxlength: 500 %>
   </div>
   <div class="field">
     <%= f.label :currently_hacking_on, "My projects and hacks" %>
@@ -143,8 +149,16 @@
     <%= f.url_field :gitlab_url %>
   </div>
   <div class="field">
+    <%= f.label :instagram_url, "Instagram URL" %>
+    <%= f.url_field :instagram_url %>
+  </div>
+  <div class="field">
     <%= f.label :mastodon_url, "Mastodon URL" %>
     <%= f.url_field :mastodon_url %>
+  </div>
+   <div class="field">
+    <%= f.label :twitch_url, "Twitch URL" %>
+    <%= f.url_field :twitch_url %>
   </div>
   <div class="field">
     <label></label>

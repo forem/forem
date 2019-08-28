@@ -8,7 +8,7 @@ exports[`<OnboardingSingleTag /> when given a following tag renders correctly 1`
 >
   <a
     class="onboarding-tag-link"
-    href="#"
+    href="#0"
     onClick={[Function]}
     style="color:undefined"
   >
@@ -16,7 +16,7 @@ exports[`<OnboardingSingleTag /> when given a following tag renders correctly 1`
   </a>
   <a
     class="onboarding-tag-link-follow"
-    href="#"
+    href="#0"
     id="onboarding-tag-link-follow-undefined"
     onClick={[Function]}
     style="color:undefined"
@@ -34,7 +34,7 @@ exports[`<OnboardingSingleTag /> when given a non-following tag renders correctl
 >
   <a
     class="onboarding-tag-link"
-    href="#"
+    href="#0"
     onClick={[Function]}
     style="color:"
   >
@@ -42,7 +42,7 @@ exports[`<OnboardingSingleTag /> when given a non-following tag renders correctl
   </a>
   <a
     class="onboarding-tag-link-follow"
-    href="#"
+    href="#0"
     id="onboarding-tag-link-follow-undefined"
     onClick={[Function]}
     style="color:"

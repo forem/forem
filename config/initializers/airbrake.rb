@@ -4,6 +4,8 @@
 # changes. Airbrake enables for easy categorization, searching, and prioritization
 # of exceptions so that when errors occur, your team can quickly determine the
 # root cause.
+require "airbrake/delayed_job"
+
 #
 # Configuration details:
 # https://github.com/airbrake/airbrake-ruby#configuration
@@ -29,16 +31,14 @@ Airbrake.configure do |c|
 
   # Configures the environment the application is running in. Helps the Airbrake
   # dashboard to distinguish between exceptions occurring in different
-  # environments. By default, it's not set.
+  # environments.
   # NOTE: This option must be set in order to make the 'ignore_environments'
   # option work.
   # https://github.com/airbrake/airbrake-ruby#environment
   c.environment = Rails.env
 
   # Setting this option allows Airbrake to filter exceptions occurring in
-  # unwanted environments such as :test. By default, it is equal to an empty
-  # Array, which means Airbrake Ruby sends exceptions occurring in all
-  # environments.
+  # unwanted environments such as :test.
   # NOTE: This option *does not* work if you don't set the 'environment' option.
   # https://github.com/airbrake/airbrake-ruby#ignore_environments
   c.ignore_environments = %w[test development]
@@ -47,13 +47,29 @@ Airbrake.configure do |c|
   # Airbrake. By default, all "password" attributes will have their contents
   # replaced.
   # https://github.com/airbrake/airbrake-ruby#blacklist_keys
-  c.blacklist_keys = [/password/i]
+  c.blacklist_keys = [/password/i, /authorization/i]
+
+  # Alternatively, you can integrate with Rails' filter_parameters.
+  # Read more: https://goo.gl/gqQ1xS
+  # c.blacklist_keys = Rails.application.config.filter_parameters
 end
 
-# If Airbrake doesn't send any expected exceptions, we suggest to uncomment the
-# line below. It might simplify debugging of background Airbrake workers, which
-# can silently die.
-# Thread.abort_on_exception = ['test', 'development'].include?(Rails.env)
+# A filter that collects request body information. Enable it if you are sure you
+# don't send sensitive information to Airbrake in your body (such as passwords).
+# https://github.com/airbrake/airbrake#requestbodyfilter
+# Airbrake.add_filter(Airbrake::Rack::RequestBodyFilter.new)
+
+# Attaches thread & fiber local variables along with general thread information.
+# Airbrake.add_filter(Airbrake::Filters::ThreadFilter.new)
+
+# Attaches loaded dependencies to the notice object
+# (under context/versions/dependencies).
+# Airbrake.add_filter(Airbrake::Filters::DependencyFilter.new)
+
+# If you want to convert your log messages to Airbrake errors, we offer an
+# integration with the Logger class from stdlib.
+# https://github.com/airbrake/airbrake#logger
+# Rails.logger = Airbrake::AirbrakeLogger.new(Rails.logger)
 
 Airbrake.add_filter do |notice|
   notice.ignore! if notice[:errors].any? { |error| error[:type] == "Pundit::NotAuthorizedError" }

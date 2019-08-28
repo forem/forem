@@ -1,13 +1,15 @@
 require "rails_helper"
 
 RSpec.describe "Internal::Users", type: :request do
-  let!(:user) { create(:user, twitter_username: nil) }
+  let!(:user) { create(:user, twitter_username: nil, old_username: "username") }
   let!(:user2) { create(:user, twitter_username: "Twitter") }
   let(:user3) { create(:user) }
   let(:super_admin) { create(:user, :super_admin) }
   let(:article) { create(:article, user: user) }
   let(:article2) { create(:article, user: user2) }
   let(:badge) { create(:badge, title: "one-year-club") }
+  let(:ghost) { create(:user, username: "ghost", github_username: "Ghost") }
+  let(:organization) { create(:organization) }
 
   before do
     sign_in super_admin
@@ -61,6 +63,12 @@ RSpec.describe "Internal::Users", type: :request do
     Delayed::Worker.new(quiet: true).work_off
   end
 
+  def call_ghost
+    ghost
+    post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "true" } }
+    Delayed::Worker.new(quiet: true).work_off
+  end
+
   context "when merging users" do
     before do
       full_profile
@@ -111,7 +119,7 @@ RSpec.describe "Internal::Users", type: :request do
     end
   end
 
-  context "when managing activty and roles" do
+  context "when managing activity and roles" do
     it "adds comment ban role" do
       patch "/internal/users/#{user.id}/user_status", params: { user: { user_status: "Comment Ban", note_for_current_role: "comment ban this user" } }
       expect(user.roles.first.name).to eq("comment_banned")
@@ -129,6 +137,28 @@ RSpec.describe "Internal::Users", type: :request do
     it "creates a general note on the user" do
       put "/internal/users/#{user.id}", params: { user: { new_note: "general note about whatever" } }
       expect(Note.last.content).to eq("general note about whatever")
+    end
+
+    it "remove credits from account" do
+      create_list(:credit, 5, user: user)
+      put "/internal/users/#{user.id}", params: { user: { remove_credits: "3" } }
+      expect(user.credits.size).to eq(2)
+    end
+  end
+
+  context "when deleting user and converting content to ghost" do
+    it "raises a 'record not found' error after deletion" do
+      call_ghost
+      expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
+    end
+
+    it "reassigns comment and article content to ghost account" do
+      create(:article, user: user)
+      call_ghost
+      expect(ghost.articles.count).to eq(2)
+      expect(ghost.comments.count).to eq(1)
+      expect(ghost.comments.last.path).to include("ghost")
+      expect(ghost.articles.last.path).to include("ghost")
     end
   end
 
@@ -157,29 +187,13 @@ RSpec.describe "Internal::Users", type: :request do
     end
 
     it "raises a 'record not found' error after deletion" do
-      post "/internal/users/#{user.id}/full_delete"
+      post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
       expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
 
     it "expect flash message" do
-      post "/internal/users/#{user.id}/full_delete"
-      expect(request.flash.notice).to include("fully deleted")
-    end
-  end
-
-  context "when banning from mentorship" do
-    before do
-      user.update(offering_mentorship: true, mentor_description: "I want to be a mentor")
-    end
-
-    it "adds banned from mentorship role" do
-      patch "/internal/users/#{user.id}/user_status", params: { user: { toggle_mentorship: "1", mentorship_note: "banned" } }
-      expect(user.roles.first.name).to eq("banned_from_mentorship")
-    end
-
-    it "returns user to good standing if unbanned" do
-      put "/internal/users/#{user.id}", params: { user: { good_standing_user: "1" } }
-      expect(user.roles.count).to eq(0)
+      post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
+      expect(request.flash["success"]).to include("fully deleted")
     end
   end
 
@@ -215,6 +229,56 @@ RSpec.describe "Internal::Users", type: :request do
       user.follow(user2)
       banish_user
       expect(user.follows.count).to eq(0)
+    end
+  end
+
+  context "when handling credits" do
+    before do
+      create(:organization_membership, user: super_admin, organization: organization, type_of_user: "admin")
+    end
+
+    it "adds the proper amount of credits for organizations" do
+      put "/internal/users/#{super_admin.id}", params: {
+        user: {
+          add_org_credits: 5,
+          organization_id: organization.id
+        }
+      }
+      expect(organization.reload.credits_count).to eq 5
+      expect(organization.reload.unspent_credits_count).to eq 5
+    end
+
+    it "removes the proper amount of credits for organizations" do
+      Credit.add_to_org(organization, 10)
+      put "/internal/users/#{super_admin.id}", params: {
+        user: {
+          remove_org_credits: 5,
+          organization_id: organization.id
+        }
+      }
+      expect(organization.reload.credits_count).to eq 5
+      expect(organization.reload.unspent_credits_count).to eq 5
+    end
+
+    it "add the proper amount of credits to a user" do
+      put "/internal/users/#{super_admin.id}", params: {
+        user: {
+          add_credits: 5
+        }
+      }
+      expect(super_admin.reload.credits_count).to eq 5
+      expect(super_admin.reload.unspent_credits_count).to eq 5
+    end
+
+    it "removes the proper amount of credits from a user" do
+      Credit.add_to(super_admin, 10)
+      put "/internal/users/#{super_admin.id}", params: {
+        user: {
+          remove_credits: 5
+        }
+      }
+      expect(super_admin.reload.credits_count).to eq 5
+      expect(super_admin.reload.unspent_credits_count).to eq 5
     end
   end
 end

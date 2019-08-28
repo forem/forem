@@ -1,0 +1,177 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ListingDashboard /> should load listing dashboard 1`] = `
+preact-render-spy (1 nodes)
+-------
+<div class="dashboard-listings-container">
+  <span
+    onClick={[Function onClick]}
+    class="rounded-btn active"
+    role="button"
+    tabIndex="0"
+  >
+    Personal
+  </span>
+  <span
+    onClick={[Function onClick]}
+    class="rounded-btn "
+    role="button"
+    tabIndex="0"
+  >
+    Yoyodyne
+  </span>
+  <span
+    onClick={[Function onClick]}
+    class="rounded-btn "
+    role="button"
+    tabIndex="0"
+  >
+    Infotrode
+  </span>
+  <div class="dashboard-listings-header-wrapper">
+    <div class="dashboard-listings-header">
+      <h3>Listings</h3>
+      <h4>Listings Made: 3</h4>
+      <a href="/listings/new">Create a Listing</a>
+    </div>
+    <div class="dashboard-listings-header">
+      <h3>Credits</h3>
+      <h4>Credits Available: 3</h4>
+      <a
+        href="/credits/purchase"
+        data-no-instant={true}
+      >
+        Buy Credits
+      </a>
+    </div>
+  </div>
+  <div class="dashboard-listings-actions">
+    <div class="listings-dashboard-filter-buttons">
+      <span
+        onClick={[Function onClick]}
+        class="rounded-btn active"
+        role="button"
+        tabIndex="0"
+      >
+        All
+      </span>
+      <span
+        onClick={[Function onClick]}
+        class="rounded-btn "
+        role="button"
+        tabIndex="0"
+      >
+        Active
+      </span>
+      <span
+        onClick={[Function onClick]}
+        class="rounded-btn "
+        role="button"
+        tabIndex="0"
+      >
+        Expired
+      </span>
+    </div>
+    <select onChange={[Function sortListings]}>
+      <option
+        value="created_at"
+        selected="selected"
+      >
+        Recently Created
+      </option>
+      <option value="bumped_at">Recently Bumped</option>
+    </select>
+  </div>
+  <div class="dashboard-listings-view">
+    <div class="dashboard-listing-row expired">
+      <span class="listing-org">Infotrode</span>
+      <a href="cfp/hehhehe-5hld">
+        <h2>hehhehe (expired)</h2>
+      </a>
+      <span class="dashboard-listing-date">Jun 11</span>
+      <span class="dashboard-listing-category">
+        <a href="/listings/cfp/">cfp</a>
+      </span>
+      <span class="dashboard-listing-tags"></span>
+      <div class="listing-row-actions">
+        <a
+          href="/listings/25/edit"
+          class="dashboard-listing-edit-button cta pill green"
+        >
+          EDIT
+        </a>
+      </div>
+    </div>
+    <div class="dashboard-listing-row expired">
+      <span class="listing-org">Yoyodyne</span>
+      <a href="events/yoyoyoyoyoooooooo-4jcb">
+        <h2>YOYOYOYOYOOOOOOOO (expired)</h2>
+      </a>
+      <span class="dashboard-listing-date">Jun 11</span>
+      <span class="dashboard-listing-category">
+        <a href="/listings/events/">events</a>
+      </span>
+      <span class="dashboard-listing-tags">
+        <a
+          href="/listings?t=computerscience"
+          data-no-instant={true}
+        >
+          #computerscience 
+        </a>
+        <a
+          href="/listings?t=conference"
+          data-no-instant={true}
+        >
+          #conference 
+        </a>
+        <a
+          href="/listings?t=career"
+          data-no-instant={true}
+        >
+          #career 
+        </a>
+      </span>
+      <div class="listing-row-actions">
+        <a
+          href="/listings/24/edit"
+          class="dashboard-listing-edit-button cta pill green"
+        >
+          EDIT
+        </a>
+      </div>
+    </div>
+    <div class="dashboard-listing-row expired">
+      <a href="cfp/asdfasdf-2ea8">
+        <h2>asdfasdf (expired)</h2>
+      </a>
+      <span class="dashboard-listing-date">Jun 11</span>
+      <span class="dashboard-listing-category">
+        <a href="/listings/cfp/">cfp</a>
+      </span>
+      <span class="dashboard-listing-tags">
+        <a
+          href="/listings?t=computerscience"
+          data-no-instant={true}
+        >
+          #computerscience 
+        </a>
+        <a
+          href="/listings?t=career"
+          data-no-instant={true}
+        >
+          #career 
+        </a>
+      </span>
+      <div class="listing-row-actions">
+        <a
+          href="/listings/23/edit"
+          class="dashboard-listing-edit-button cta pill green"
+        >
+          EDIT
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+`;

@@ -17,8 +17,26 @@ tasks:
             [ -z "${ALGOLIASEARCH_API_KEY:=$(cat config/application.yml | grep ALGOLIASEARCH_API_KEY | sed 's/.*:\s*//')}" ] ; do
         gp open config/application.yml 2>/dev/null &&
         printf "\n❗ Dev.to requires free Algolia credentials.\n" &&
-        printf "❗ To get them, please follow https://docs.dev.to/get-api-keys-dev-env/#algolia\n\n" &&
+        printf "❗ To get them, please follow https://docs.dev.to/backend/algolia/#get-api-keys\n\n" &&
         read -p "Add them to config/application.yml, save the file, and press any key to continue... " -n 1 -r
       done ;
       bin/setup &&
       bin/startup
+github:
+  prebuilds:
+    # enable for the master/default branch (defaults to true)
+    master: true
+    # enable for all branches in this repo (defaults to false)
+    branches: true
+    # enable for pull requests coming from this repo (defaults to true)
+    pullRequests: true
+    # enable for pull requests coming from forks (defaults to false)
+    pullRequestsFromForks: true
+    # add a "Review in Gitpod" button as a comment to pull requests (defaults to true)
+    addComment: false
+    # add a "Review in Gitpod" button to pull requests (defaults to false)
+    addBadge: false
+    # add a label once the prebuild is ready to pull requests (defaults to false)
+    addLabel: false
+    # add a check to pull requests (defaults to true)
+    addCheck: true

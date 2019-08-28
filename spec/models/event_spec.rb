@@ -4,7 +4,7 @@ RSpec.describe Event, type: :model do
   let(:event) { create(:event) }
 
   it "rejects title with over 90 characters" do
-    event.title = Faker::Lorem.characters(100)
+    event.title = Faker::Lorem.characters(number: 100)
     expect(event).not_to be_valid
   end
 
@@ -21,5 +21,9 @@ RSpec.describe Event, type: :model do
   it "creates slug for published events" do
     event.published = true
     expect(event).to be_valid
+  end
+
+  it "triggers cache busting on save" do
+    expect { build(:event).save }.to have_enqueued_job.on_queue("events_bust_cache")
   end
 end

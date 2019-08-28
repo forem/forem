@@ -17,6 +17,18 @@ RSpec.describe MarkdownParser do
     expect(generate_and_parse_markdown(code_block)).to include("{% what %}")
   end
 
+  it "escapes codeblocks in numbered lists" do
+    code_block = "1. Define your hooks in config file `lefthook.yml`\n
+    ```yaml
+     pre-push:\n        parallel: true\n        commands:\n        rubocop:
+     run: bundle exec rspec --fail-fast\n
+    ```"
+    escaped_codeblock = generate_and_parse_markdown(code_block)
+    expect(escaped_codeblock).not_to include("```")
+    expect(escaped_codeblock).not_to include("`")
+    expect(escaped_codeblock).to include("bundle exec rspec --fail-fast")
+  end
+
   it "escapes liquid tags in code spans" do
     code_span = "``{% what %}``"
     expect(generate_and_parse_markdown(code_span)).to include("{% what %}")
@@ -35,6 +47,10 @@ RSpec.describe MarkdownParser do
   it "escapes liquid tags in inline code" do
     inline_code = "`{% what %}`"
     expect(generate_and_parse_markdown(inline_code)).to include(inline_code[1..-2])
+  end
+
+  it "raises an error if it detects a XSS attempt" do
+    expect { generate_and_parse_markdown("data:text/html") }.to raise_error(ArgumentError)
   end
 
   context "when provided with an @username" do

@@ -2,6 +2,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 @import 'variables';
+@import '_mixins';
 
 .home {
   position: relative;
@@ -23,13 +24,14 @@
   .query-results-nothing {
     padding: 40px 0px;
     font-size: 1.2em;
-    background: white;
-    background: var(--theme-container-background, white);
-    box-shadow: $bold-shadow;
-    box-shadow: var(--theme-container-box-shadow, $bold-shadow);
+    @include themeable(background, theme-container-background, white);
+    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
     border-radius: 3px;
-    border: 1px solid $outline-color;
-    border: var(--theme-container-border, 1px solid $outline-color);
+    @include themeable(
+      border,
+      theme-container-border,
+      1px solid $outline-color
+    );
     width: 94%;
     margin: auto;
     margin-top: 12px;
@@ -80,7 +82,7 @@
         width: 27%;
         padding: 9px 0px;
         text-align: center;
-        color: $black;
+        @include themeable(color, theme-secondary-color, $medium-gray);
         margin: 1%;
       }
       .query-filter-button {
@@ -93,18 +95,27 @@
         padding: 9px 0px;
         text-align: left;
         border-radius: 100px;
-        color: $black;
-        color: var(--theme-color, $black);
+        @include themeable(color, theme-color, $black);
         text-align: center;
         margin: 1%;
         &:hover {
-          background: lighten($bold-blue, 38%);
-          background: var(--theme-container-background-hover, lighten($bold-blue, 38%));
+          @include themeable(
+            background,
+            theme-container-background-hover,
+            lighten($bold-blue, 38%)
+          );
         }
         &.selected {
-          background: lighten($bold-blue, 8%);
-          background: var(--theme-container-accent-background, lighten($bold-blue, 8%));
-          color: white;
+          @include themeable(
+            background,
+            theme-container-accent-background,
+            lighten($bold-blue, 8%)
+          );
+          @include themeable(
+            color,
+            theme-color,
+            white
+          );
         }
       }
     }
@@ -187,6 +198,10 @@
         }
         &:hover {
           opacity: 1;
+          background: $dark-purple;
+          color: white;
+          border: 1px solid $purple;
+          box-shadow: 3px 4px 0px $purple;
         }
       }
       .narrow-nav-select {
@@ -201,9 +216,46 @@
         }
       }
     }
+    .pinned-articles {
+      @include themeable(background, theme-container-background, $white);
+      @include themeable(
+        border,
+        theme-container-border,
+        1px solid $outline-color
+      );
+      padding: 8px 0px;
+      margin: auto;
+      margin-top: 8px;
+      @media screen and (min-width: 750px) {
+        border-radius: 3px;
+        box-sizing: border-box;
+        padding: 8px 8px;
+        padding-right: 9px;
+        width: calc(100% + 2px);
+        max-width: 722px;
+      }
+      .pinned-articles-indicator {
+        text-align: left;
+        font-size: 15px;
+        font-weight: bold;
+        padding-top: 8px;
+        padding-left: 2.8%;
+        @media screen and (min-width: 750px) {
+          padding-left: 22px;
+        }
+        @media screen and (min-width: 950px) {
+          padding-left: 2px;
+        }
+        img {
+          width: 20px;
+          transform: rotate(-8deg);
+          vertical-align: -5px;
+          @include themeable(filter, theme-social-icon-invert, invert(0));
+        }
+      }
+    }
     a {
-      color: $black;
-      color: var(--theme-container-color, $black);
+      @include themeable(color, theme-container-color, $black);
     }
     a.small-pic-link-wrapper,
     .placeholder-div {
@@ -212,14 +264,17 @@
     }
     .single-article {
       text-align: left;
-      background: $white;
-      background: var(--theme-container-background, $white);
+      @include themeable(background, theme-container-background, $white);
       transition: opacity 0.35s ease-in;
       border: 1px solid $outline-color;
-      border: var(--theme-container-border, 1px solid $outline-color);
-      box-shadow: $bold-shadow;
-      box-shadow: var(--theme-container-box-shadow, $bold-shadow);
+      @include themeable(
+        border,
+        theme-container-border,
+        1px solid $outline-color
+      );
+      @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
       border-radius: 3px;
+      cursor: pointer;
       width: 96%;
       margin: auto;
       position: relative;
@@ -245,6 +300,51 @@
           margin-top: 12px;
         }
       }
+      &.single-article-single-podcast {
+        h4 {
+          bottom: 10px;
+        }
+        .content {
+          padding-bottom: 40px;
+        }
+      }
+      &.single-article-podcast-div {
+        margin-top: 8px;
+        padding: 8px 0px 15px;
+        font-size: 0.8em;
+        h3 {
+          font-size: 1.5em;
+          margin-left: 13px;
+          font-weight: 800;
+        }
+        a.individual-podcast-link {
+          strong {
+            display: block;
+            margin-bottom: 4px;
+          }
+          display: block;
+          padding: 4px 14px 7px;
+          &:hover {
+            @include themeable(
+              background,
+              theme-container-background-hover,
+              $light-gray
+            );
+          }
+        }
+        p {
+          margin-left: 14px;
+        }
+        @media screen and (min-width: 430px) {
+          margin-top: 12px;
+          a.individual-podcast-link {
+            strong {
+              margin-bottom: 5px;
+            }
+            padding: 5px 14px 9px;
+          }
+        }
+      }
       h4 {
         white-space: nowrap;
         overflow: hidden;
@@ -266,7 +366,7 @@
           position: absolute;
           bottom: 8px;
           right: 7px;
-          background: rgba(0,0,0,0.8);
+          background: rgba(0, 0, 0, 0.8);
           color: white;
           border-radius: 3px;
           padding: 2px 5px 3px;
@@ -285,10 +385,12 @@
         margin-bottom: calc(-1px - 0.6vw);
         display: flex;
         .article-organization-headline-inner {
-          background: darken($light-gray, 6%);
-          background: var(--theme-container-accent-background, darken($light-gray, 6%));
-          color: $black;
-          color: var(--theme-color, $black);
+          @include themeable(
+            background,
+            theme-container-accent-background,
+            darken($light-gray, 6%)
+          );
+          @include themeable(color, theme-color, $black);
           padding: 6px 12px;
           border-radius: 100px;
           font-weight: 600;
@@ -393,8 +495,7 @@
         }
       }
       .time-ago-indicator {
-        color: $medium-gray;
-        color: var(--theme-secondary-color, $medium-gray);
+        @include themeable(color, theme-secondary-color, $medium-gray);
         display: inline-block;
         margin-left: 4px;
         font-weight: 400;
@@ -420,8 +521,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
         a {
-          color: #666666;
-          color: var(--theme-secondary-color, #666666);
+          @include themeable(color, theme-secondary-color, #666666);
         }
         @media screen and (min-width: 430px) {
           bottom: 90px;
@@ -515,20 +615,19 @@
           background-size: cover;
         }
         .content-wrapper {
-          background: white;
-          background: var(--theme-container-background, #fff);
-          color: $black;
-          color: var(--theme-container-color, $black);
+          @include themeable(background, theme-container-background, #fff);
+          @include themeable(color, theme-container-color, $black);
           position: relative;
           z-index: 5;
           border-top: 1px solid darken($lightest-gray, 4%);
-          border-bottom: 1px solid darken($lightest-gray, 4%);
-          border-top: var(
-            --theme-container-border,
+          @include themeable(
+            border-top,
+            theme-container-border,
             1px solid darken($lightest-gray, 4%)
           );
-          border-bottom: var(
-            --theme-container-border,
+          @include themeable(
+            border-bottom,
+            theme-container-border,
             1px solid darken($lightest-gray, 4%)
           );
           padding-bottom: 105px;
@@ -588,8 +687,7 @@
       left: 62px;
       font-size: 14px;
       a {
-        color: #666666;
-        color: var(--theme-secondary-color, #666666);
+        @include themeable(color, theme-secondary-color, #666666);
       }
       &:hover {
         opacity: 0.9;
@@ -615,8 +713,7 @@
         opacity: 0.9;
       }
       .tag {
-        color: $black;
-        color: var(--theme-color, $black);
+        @include themeable(color, theme-color, $black);
         margin-right: 3px;
       }
       left: 62px;
@@ -629,14 +726,17 @@
     }
     .article-reading-time {
       position: absolute;
-      right: 75px;
+      right: 82px;
       bottom: 12px;
       font-size: 13px;
       padding: 6px 0px;
       font-weight: 600;
       z-index: 8;
-      color: darken($medium-gray, 5%);
-      color: var(--theme-secondary-color, darken($medium-gray, 5%));
+      @include themeable(
+        color,
+        theme-secondary-color,
+        darken($medium-gray, 5%)
+      );
     }
     .article-engagement-count {
       font-size: 13px;
@@ -649,14 +749,12 @@
       border: 0;
       -webkit-appearance: none;
       font-family: $helvetica-condensed;
-      color: $medium-gray;
-      color: var(--theme-secondary-color, $medium-gray);
+      @include themeable(color, theme-secondary-color, $medium-gray);
       a {
         &:hover {
           opacity: 1;
         }
-        color: $medium-gray;
-        color: var(--theme-secondary-color, $medium-gray);
+        @include themeable(color, theme-secondary-color, $medium-gray);
       }
       img {
         height: 18px;
@@ -688,6 +786,8 @@
         }
         .bm-success {
           display: none;
+          position: relative;
+          top: 1px;
         }
         &.selected {
           color: darken($purple, 33%);
@@ -697,7 +797,7 @@
             display: none;
           }
           .bm-success {
-            display: block;
+            display: inline-block;
           }
         }
         &.following-butt {
@@ -780,8 +880,7 @@
         .side-bar {
           padding-top: 2px;
           display: block;
-          background: white;
-          background: var(--theme-container-background, white);
+          @include themeable(background, theme-container-background, white);
           height: calc(100% - 2px);
           overflow-y: auto;
           .widget,
@@ -820,7 +919,7 @@
     width: 280px;
     margin: auto;
     text-align: left;
-    font-size: 0.9em;
+    font-size: 0.92em;
     line-height: 1.35em;
     margin-left: 0.786vw;
     min-height: 5px;
@@ -849,23 +948,34 @@
     .sidebar-nav {
       .sidebar-profile-snapshot {
         overflow: hidden;
-        background: white;
-        background: var(--theme-container-background, #fff);
+        @include themeable(background, theme-container-background, #fff);
         margin-bottom: 14px;
         border-radius: 3px;
-        width: calc(100% - 4px);
-        border: 1px solid $outline-color;
-        border: var(--theme-container-border, 1px solid $outline-color);
-        box-shadow: $bold-shadow;
-        box-shadow: var(--theme-container-box-shadow, $bold-shadow);
+        width: calc(100% - 6px);
+        @include themeable(
+          border,
+          theme-container-border,
+          1px solid $outline-color
+        );
+        @include themeable(
+          box-shadow,
+          theme-container-box-shadow,
+          $bold-shadow
+        );
+        &:hover {
+          @include themeable(
+            background,
+            theme-container-background-hover,
+            $light-gray
+          );
+        }
         // background:red;
         .sidebar-profile-snapshot-inner {
           display: inline-block;
           vertical-align: middle;
           width: 100%;
           line-height: 20px;
-          color: $black;
-          color: var(--theme-container-color, $black);
+          @include themeable(color, theme-container-color, $black);
           &:hover {
             opacity: 0.9;
           }
@@ -896,8 +1006,7 @@
             font-size: 17px;
           }
           .sidebar-profile-username {
-            color: $medium-gray;
-            color: var(--theme-secondary-color, $medium-gray);
+            @include themeable(color, theme-secondary-color, $medium-gray);
           }
         }
       }
@@ -905,9 +1014,18 @@
       .sidebar-nav-block {
         padding: 0px;
         width: calc(100% - 4px);
+        box-sizing: border-box;
+        &.principle-sidebar-nav-block {
+          padding: 9px 0px;
+          .sidebar-nav-element {
+            .sidebar-nav-link {
+              padding: 5px 8px;
+            }
+          }
+        }
         @media screen and (min-width: 950px) {
           .sidebar-nav-block-inner {
-            height: 400px;
+            height: 420px;
             overflow-y: scroll;
             overflow-x: hidden;
           }
@@ -917,7 +1035,9 @@
           font-size: 0.9em;
           font-family: $monospace;
           &.sidebar-nav-header-middle {
-            padding-top: 10px;
+            padding: 10px 10px;
+            text-decoration: underline;
+            @include themeable(color, theme-secondary-color, $medium-gray);
           }
           img {
             width: 15px;
@@ -928,11 +1048,13 @@
           padding: 10px;
           font-weight: 500;
           font-size: 0.9em;
-          background: darken($light-gray, 4%);
-          background: var(--theme-background, darken($light-gray, 4%));
+          @include themeable(
+            background,
+            theme-background,
+            darken($light-gray, 4%)
+          );
           a {
-            color: $black;
-            color: var(--theme-secondary-color, $black);
+            @include themeable(color, theme-secondary-color, $black);
           }
         }
         .sidebar-nav-default-tags {
@@ -946,48 +1068,6 @@
           display: block;
           // font-family: "Lucida Console", Monaco, monospace, sans-serif;
           position: relative;
-          &.sidebar-nav-readinglist {
-            font-family: $helvetica-condensed;
-            font-stretch: condensed;
-            font-size: 1.1em;
-            .sidebar-nav-link {
-              padding-top: 14px;
-              padding-bottom: 14px;
-              padding-left: 18px;
-              display: block;
-              &:hover {
-                background: $light-purple;
-                background: var(--theme-container-background, $light-purple);
-              }
-            }
-            &:hover {
-              background: white;
-              background: var(--theme-background, white);
-            }
-            .readinglist-sidebar-subcat {
-              font-weight: bold;
-              font-size: 0.78em;
-              font-family: $helvetica;
-              padding-bottom: 10px;
-              padding-left: 8px;
-
-              a {
-                color: $medium-gray;
-                color: var(--theme-secondary-color, $medium-gray);
-                padding: 7px 12px;
-                display: inline-block;
-                &:hover {
-                  background: darken($light-green, 5%);
-                  color: $dark-gray;
-                }
-              }
-              .separator {
-                border-left: 2px solid $light-medium-gray;
-                padding: 4px 0px;
-                margin: 0px 4px;
-              }
-            }
-          }
           @media screen and (min-width: 950px) {
             .sidebar-nav-link-follow {
               display: none;
@@ -1005,16 +1085,26 @@
             vertical-align: -8px;
             margin-right: 4px;
           }
+          img.nav-emoji {
+            height: 19px;
+            width: 19px;
+            vertical-align: -2px;
+          }
+
           a.sidebar-nav-link {
-            color: $black;
-            color: var(--theme-container-color, $black);
+            @include themeable(color, theme-container-color, $black);
             padding: 5px;
             display: inline-block;
             width: calc(100% - 10px);
             font-weight: 500;
-            .sidebar-nav-tag-text {
-              border-radius: 3px;
-              padding: 3px 8px;
+            padding: 7px 9px;
+            font-size: 1em;
+            &:hover {
+              @include themeable(
+                background,
+                theme-container-background-hover,
+                $light-gray
+              );
             }
           }
           a.sidebar-nav-link-follow {
@@ -1028,12 +1118,25 @@
             font-size: 0.8em;
             padding: 2px 8px;
           }
-          &:hover {
-            background: $light-gray;
-            background: var(--theme-container-background-hover, $light-gray);
-          }
         }
       }
+    }
+    .sidebar-sponsorship-level {
+      text-align: center;
+      font-weight: bold;
+      width: calc(100% - 6px);
+      padding: 26px 0px;
+      border-radius: 3px;
+      margin-bottom: 10px;
+      font-family: $helvetica-condensed;
+      font-stretch: condensed;
+      font-size: 1.1em;
+      @include themeable(
+        border,
+        theme-container-border,
+        1px solid $outline-color
+      );
+      @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
     }
     .widget {
       width: calc(100% - 30px);
@@ -1041,16 +1144,16 @@
       margin-bottom: 15px;
       position: relative;
       overflow: hidden;
-      background: white;
-      background: var(--theme-container-background, #fff);
+      @include themeable(background, theme-container-background, #fff);
       display: block;
-      color: $black;
-      color: var(--theme-container-color, $black);
+      @include themeable(color, theme-container-color, $black);
       border-radius: 3px;
-      border: 1px solid $outline-color;
-      border: var(--theme-container-border, 1px solid $outline-color);
-      box-shadow: $bold-shadow;
-      box-shadow: var(--theme-container-box-shadow, $bold-shadow);
+      @include themeable(
+        border,
+        theme-container-border,
+        1px solid $outline-color
+      );
+      @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
       &.fixed-widget {
         position: fixed;
         width: 254px;
@@ -1087,43 +1190,42 @@
       }
       &.podcast-pic-widget {
         a {
-          &:hover {
-            text-decoration: none;
-          }
+          @include themeable(color, theme-color, $black);
         }
         .widget-body {
-          text-align: center;
           padding-bottom: 10px;
         }
         .podcast-pic {
           position: relative;
-          display: inline-block;
+          padding: 5px 0px;
+          border-top-left-radius: 100px;
+          border-bottom-left-radius: 100px;
+          border-top-right-radius: 5px;
+          border-bottom-right-radius: 5px;
           img {
-            width: 100px;
-            height: 100px;
+            width: 23px;
+            height: 23px;
+            border-radius: 100px;
+            vertical-align: -7px;
+            margin-left: 3px;
           }
           .podcast-name {
-            bottom: 12px;
-            display: none;
-            position: absolute;
-            width: 90%;
-            left: 5%;
-            z-index: 15;
-            text-align: left;
-            height: 54px;
+            width: calc(100% - 55px);
+            display: inline-block;
+            padding-left: 4px;
+            font-weight: bold;
             .podcast-name-inner {
-              font-size: 12px;
+              font-size: 14px;
               line-height: 15px;
-              padding: 2px;
-              color: white;
-              background: rgba(0, 0, 0, 0.89);
               display: block;
             }
           }
           &:hover {
-            .podcast-name {
-              display: block;
-            }
+            @include themeable(
+              background,
+              theme-container-background-hover,
+              $light-gray
+            );
           }
         }
       }
@@ -1138,8 +1240,7 @@
         font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo,
           Courier, monospace;
         a {
-          color: $black;
-          color: var(--theme-container-color, $black);
+          @include themeable(color, theme-container-color, $black);
           h4 {
             display: inline-block;
             margin: 0;
@@ -1158,6 +1259,32 @@
             cursor: default;
           }
         }
+        .widget-listing-live-count {
+          @include themeable(background, theme-secondary-color, $green);
+          @include themeable(color, theme-opposite-color, white);
+          border-radius: 3px;
+          display: inline-block;
+          font-size: 0.8em;
+          padding: 1px 5px 0px;
+          line-height: 1.4em;
+        }
+        &.widget-header-listings {
+          @include themeable(background, theme-container-accent-background, $light-gray);
+          padding: 10px 12px;
+          margin: -10px -12px;
+        }
+        .widget-minimize-button {
+          position: absolute;
+          right: 8px;
+          top: 15px;
+          background: transparent;
+          padding: 0px 5px 1px;
+          border-radius: 3px;
+          font-size: 1.2em;
+          line-height: 0.6em;
+          @include themeable(border, theme-secondary-color-border, 1px solid $light-medium-gray);
+          @include themeable(color, theme-secondary-color, darken($light-medium-gray, 10%));
+        }
       }
       .widget-body {
         margin-top: 9px;
@@ -1169,6 +1296,11 @@
           height: calc(100vh - 300px);
           max-height: 390px;
           overflow-y: scroll;
+        }
+        &.widget-body-listings {
+          .cta-button {
+            margin-top: 15px;
+          }
         }
         &.signup-cta-widget-body {
           ul {
@@ -1189,6 +1321,7 @@
           img {
             border: 0;
             margin: auto;
+            margin-bottom: 8px;
             width: 98%;
             min-height: 35px;
             border-radius: 8px;
@@ -1196,8 +1329,7 @@
           .sponsor-tagline {
             margin: 10px auto;
             width: 92%;
-            color: $dark-gray;
-            color: var(--theme-secondary-color, $dark-gray);
+            @include themeable(color, theme-secondary-color, $dark-gray);
             .sponsor-learn-more {
               display: block;
               margin: 8px auto;
@@ -1208,8 +1340,7 @@
         .sponsors-love-message {
           border-top: 2px solid $light-gray;
           font-size: 0.84em;
-          color: $medium-gray;
-          color: var(--theme-secondary-color, $medium-gray);
+          @include themeable(color, theme-secondary-color, $medium-gray);
           padding-top: 18px;
         }
         .sponsor-footer {
@@ -1229,8 +1360,7 @@
         .widget-podcast-ep {
           padding-bottom: 8px;
           a {
-            color: $black;
-            color: var(--theme-color, $black);
+            @include themeable(color, theme-color, $black);
             font-weight: 500;
           }
         }
@@ -1240,6 +1370,37 @@
             color: $medium-gray;
             font-size: 0.83em;
             opacity: 0.86;
+          }
+        }
+        .widget-listing-link {
+          display: block;
+          padding: 6px 12px 4px;
+          font-size: 0.92em;
+          width: 100%;
+          margin-left: -12px;
+          @include themeable(color, theme-color, $black);
+          @include themeable(border-bottom, theme-subtle-border, 1px solid $light-medium-gray);
+          &:first-child {
+            @include themeable(border-top, theme-subtle-border, 1px solid $light-medium-gray);
+          }
+          .widget-listing-link-title {
+            display: block;
+            font-weight: 600;
+          }
+          .widget-listing-link-category {
+            display: inline-block;
+            @include themeable(border, theme-container-border, 1px solid darken($light-medium-gray, 10%));
+            @include themeable(color, theme-secondary-color, lighten($medium-gray, 5%));
+
+            padding: 0px 5px;
+            font-size: 0.77em;
+            border-radius: 3px;
+            margin-bottom: 3px;
+            line-height: 1.3em;
+          }
+          &:hover {
+            background: $lightest-gray;
+            @include themeable(background, theme-container-background-hover, $lightest-gray);
           }
         }
         .widget-accent {
@@ -1261,8 +1422,12 @@
             border: 0;
           }
         }
+        .widget-subtext {
+          text-align: center;
+          font-size: 0.9em;
+        }
         .widget-events-single-link {
-          color: #000000;
+          color: $black;
           font-weight: 500;
         }
         .widget-user-pic {
@@ -1285,6 +1450,14 @@
           display: inline-block;
           text-align: center;
         }
+        .widget-listing-category {
+          color: $medium-gray;
+        }
+        .widget-listing-title {
+          font-family: $helvetica;
+          font-weight: 500;
+          margin-bottom: 8px;
+        }
       }
       .query-filter-button {
         font-size: 15px;
@@ -1296,27 +1469,37 @@
         width: calc(100% - 16px);
         text-align: left;
         border-radius: 0px;
-        color: $black;
-        color: var(--theme-color, $black);
+        @include themeable(color, theme-color, $black);
         cursor: pointer;
         &:hover {
-          background: lighten($bold-blue, 38%);
-          background: var(--theme-container-background-hover, lighten($bold-blue, 38%));
+          @include themeable(
+            background,
+            theme-container-background-hover,
+            lighten($bold-blue, 38%)
+          );
         }
         &.selected {
-          background: lighten($bold-blue, 10%);
-          background: var(--theme-container-accent-background, lighten($bold-blue, 10%));
-          color: white;
-          color: var(--theme-container-color, white);
+          @include themeable(
+            background,
+            theme-container-accent-background,
+            lighten($bold-blue, 10%)
+          );
+          @include themeable(color, theme-container-color, #fff);
         }
         &.query-type-filter-button {
           &:hover {
-            background: $light-green;
-            background: var(--theme-container-background-hover, $light-green);
+            @include themeable(
+              background,
+              theme-container-background-hover,
+              $light-green
+            );
           }
           &.selected {
-            background: darken($light-green, 10%);
-            background: var(--theme-container-accent-background, darken($light-green, 10%));
+            @include themeable(
+              background,
+              theme-container-accent-background,
+              darken($light-green, 10%)
+            );
           }
         }
       }
@@ -1360,8 +1543,7 @@
         border: none;
         padding-left: 12px;
         margin-right: 3px;
-        filter: invert(0);
-        filter: var(--theme-social-icon-invert, invert(0));
+        @include themeable(filter, theme-social-icon-invert, invert(0));
       }
       .row {
         position: relative;
@@ -1384,12 +1566,10 @@
         margin: 8px auto 0px;
         padding: 10px 0px;
         font-size: 0.93em;
-        color: darken($sky-blue, 17%);
-        color: var(--theme-color, darken($sky-blue, 17%));
-        background: white;
-        background: var(--theme-container-background, #fff);
-        border: 2px solid darken($sky-blue, 17%);
-        border: 2px solid var(--theme-color, darken($sky-blue, 17%));
+        @include themeable(color, theme-color, darken($sky-blue, 17%));
+        @include themeable(background, theme-container-background, #fff);
+        border: 2px solid;
+        @include themeable(border-color, theme-color, darken($sky-blue, 17%));
         display: block;
         width: 85%;
         text-align: center;
@@ -1412,8 +1592,7 @@
       margin-bottom: 12px;
       padding-left: 20px;
       a {
-        color: $black;
-        color: var(--theme-container-color, $black);
+        @include themeable(color, theme-container-color, $black);
         font-weight: 500;
         line-height: 1em;
         // display:inline-block;
@@ -1422,8 +1601,7 @@
       }
       .discuss-list-comment-count {
         font-size: 0.8em;
-        color: $medium-gray;
-        color: var(--theme-container-color, $medium-gray);
+        @include themeable(color, theme-container-color, $medium-gray);
         margin-top: 2px;
         img {
           width: 20px;
@@ -1448,8 +1626,7 @@
       a {
         display: block;
         margin: 10px 10px;
-        color: $black;
-        color: var(--theme-container-color, $black);
+        @include themeable(color, theme-container-color, $black);
       }
     }
     .search-partner-mention {
@@ -1469,7 +1646,7 @@
   .loading-articles {
     padding: calc(3vw + 15px) 0px 60px;
     text-align: center;
-    opacity: 0.5;
+    opacity: 0.7;
     display: none;
   }
 }
@@ -1509,7 +1686,7 @@
 }
 
 .feed-cta {
-  background: lighten($purple, 3%) !important;
+  background: lighten($purple, 6%) !important;
   border: 1px solid darken($bold-blue, 5%) !important;
   box-shadow: 5px 6px 0px darken($bold-blue, 15%) !important;
   .cta-container {
@@ -1520,28 +1697,45 @@
     text-align: center;
     margin-right: 9px;
     padding-right: 9px;
-    font-size: 1.3em;
+    font-size: 1.5em;
   }
-
+  h3 {
+    text-align: center;
+    margin-right: 9px;
+    padding-right: 9px;
+    font-size: 17px !important;
+  }
   .button-container {
     margin-top: 40px;
     text-align: center;
     margin-right: 9px;
     padding-right: 9px;
   }
+  img.rainbowdevimage {
+    width: 190px;
+    height: 190px;
+    margin: 18px auto 35px;
+    border-radius: 22px;
+    display: block;
+    transform: rotate(6deg);
+  }
   .cta-button {
     text-align: center;
     margin: 5px;
-    width: 95px;
-    padding: 3px 8px;
-    font-size: 1.15em;
+    padding: 12px 5px;
+    min-width: 230px;
+    font-size: 1.1em;
     display: inline-block;
     height: auto;
     text-align: center;
     font-weight: bold;
-    border-radius: 3px;
-    border: 2px solid $black;
-    background-color: rgb(102, 226, 213);
+    border-radius: 100px;
+    background-color: $bold-blue;
+    color: white !important;
+  }
+  .feed-cta-sub {
+    margin-top: 20px;
+    font-size: 15px;
   }
 }
 
@@ -1559,18 +1753,14 @@
   padding: 5px 0px 15px;
   display: none;
   font-size: 1.1em;
-  background: white;
-  background: var(--theme-container-background, white);
+  @include themeable(background, theme-container-background, #fff);
   a {
     display: block;
     text-align: center;
-    color: $black;
-    color: var(--theme-container-color, $black);
+    @include themeable(color, theme-container-color, $black);
     padding: 20px 0px;
     &.selected {
-      background: $purple;
-      background: var(--theme-container-background-hover, $purple);
-
+      @include themeable(background, theme-container-background-hover, $purple);
     }
   }
   &.showing {
@@ -1611,8 +1801,11 @@
   animation-name: placeHolderShimmer;
   animation-timing-function: linear;
   background: #f6f6f6;
-  background: linear-gradient(to right, #f6f6f6 8%, #f0f0f0 18%, #f6f6f6 33%);
-  background: var(--theme-gradient-background, linear-gradient(to right, #f6f6f6 8%, #f0f0f0 18%, #f6f6f6 33%));
+  @include themeable(
+    background,
+    theme-gradient-background,
+    linear-gradient(to right, #f6f6f6 8%, #f0f0f0 18%, #f6f6f6 33%)
+  );
   background-size: 800px 104px;
   position: relative;
 }

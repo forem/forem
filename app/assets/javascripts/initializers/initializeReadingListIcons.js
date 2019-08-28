@@ -1,3 +1,5 @@
+'use strict';
+
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-undef */
 /* eslint-disable func-names */
@@ -7,12 +9,13 @@
 function initializeReadingListIcons() {
   setReadingListButtonsState();
   addReadingListCountToHomePage();
+  addHoverEffectToReadingListButtons();
 }
 
 // set SAVE or SAVED articles buttons
 function setReadingListButtonsState() {
   var readingListButtons = document.getElementsByClassName('bookmark-engage');
-  Array.from(readingListButtons).forEach(button => highlightButton(button));
+  Array.from(readingListButtons).forEach(highlightButton);
 }
 
 // private
@@ -33,7 +36,7 @@ function addReadingListCountToHomePage() {
   var readingListCount;
   if (user && document.getElementById('reading-list-count')) {
     readingListCount =
-      user.reading_list_ids.length > 0 ? user.reading_list_ids.length : 'EMPTY';
+      user.reading_list_ids.length > 0 ? user.reading_list_ids.length : 'empty';
     document.getElementById('reading-list-count').innerHTML =
       '(' + readingListCount + ')';
     document.getElementById('reading-list-count').dataset.count =
@@ -75,6 +78,7 @@ function reactToReadingListButtonClick(event) {
 function renderButtonState(button, json) {
   if (json.result === 'create') {
     button.classList.add('selected');
+    addHoverEffectToReadingListButtons(button);
   } else {
     button.classList.remove('selected');
   }
@@ -114,6 +118,60 @@ function properButtonFromEvent(event) {
     properElement = event.target.parentElement;
   }
   return properElement;
+}
+
+/*
+  Add the hover effect to reading list buttons.
+
+  This function makes use of mouseover/mouseevent bubbling behaviors to attach
+  only two event handlers to the articles container for performance reasons.
+*/
+function addHoverEffectToReadingListButtons() {
+  var articlesList = document.getElementsByClassName('articles-list');
+  Array.from(articlesList).forEach(function(container) {
+    // we use `bind` so that the event handler will have the correct text in its
+    // `this` local variable
+    container.addEventListener(
+      'mouseover',
+      readingListButtonMouseHandler.bind('UNSAVE'),
+    );
+    container.addEventListener(
+      'mouseout',
+      readingListButtonMouseHandler.bind('SAVED'),
+    );
+  });
+}
+
+/*
+  Determines if the element is the target of the reading list button hover.
+*/
+function isReadingListButtonHoverTarget(element) {
+  var classList = element.classList;
+
+  return (
+    (element.tagName === 'BUTTON' &&
+      classList.contains('bookmark-engage') &&
+      classList.contains('selected')) ||
+    (element.tagName === 'SPAN' && classList.contains('bm-success'))
+  );
+}
+
+function readingListButtonMouseHandler(event) {
+  var target = event.target;
+
+  if (isReadingListButtonHoverTarget(target)) {
+    event.preventDefault();
+
+    var textReplacement = this; // `this` is the text to be replaced
+    var textSpan;
+    if (target.tagName === 'BUTTON') {
+      textSpan = target.getElementsByClassName('bm-success')[0];
+    } else {
+      textSpan = target;
+    }
+
+    textSpan.innerHTML = textReplacement;
+  }
 }
 
 /* eslint-enable no-use-before-define */

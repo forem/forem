@@ -2,15 +2,18 @@
 
 <div class="dashboard-container" id="user-dashboard">
   <%= render "actions" %>
-  <% if @user.org_admin && @user.organization %>
+  <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
     <h1>
-      <a href="/dashboard/user_followers" class="rounded-btn <%= "active" if params[:which] == "user_followers" %>">Personal</a>
-      <a href="/dashboard/organization_user_followers" class="rounded-btn <%= "active" if params[:which] == "organization_user_followers" %>"><%= @user.organization.name %> (<%= @user.organization.followers_count %>)</a>
-      <% if @user.has_role? :pro %>
-        <a class="rounded-btn" href="/dashboard/pro">Pro Analytics</a>
+      <a href="/dashboard" class="rounded-btn <%= "active" if params[:which].blank? %>">Personal</a>
+      <% @organizations.each do |org| %>
+        <a href="/dashboard/organization/<%= org.id %>" class="rounded-btn <%= "active" if params[:org_id].to_i == org.id %>"><%= org.name %> (<%= org.articles.size %>)</a>
       <% end %>
-      <% if @user.has_role?(:pro) && @user.organization_id %>
-        <a class="rounded-btn" href="/dashboard/pro/org/<%= @user.organization_id %>">Pro Analytics for <%= @user.organization.name %></a>
+      <% if @user.has_role? :pro %>
+      <br>
+        <a class="rounded-btn" href="/dashboard/pro">Pro Analytics</a>
+        <% @organizations.each do |org| %>
+          <a class="rounded-btn" href="/dashboard/pro/org/<%= org.id %>">Pro Analytics for <%= org.name %></a>
+        <% end %>
       <% end %>
     </h1>
   <% end %>

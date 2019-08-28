@@ -1,6 +1,6 @@
 <div class="small-pic">
   <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--LnVw15KE--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg"
-       alt="">
+       alt="Sloan, the sloth mascot">
 </div>
 <div class="content notification-content comment-content">
   <% data = notification.json_data %>
@@ -8,7 +8,7 @@
   <br /><br />
   Moderators removed the
   <b><a href="/t/<%= data["tag_name"] %>" style="font-weight: 900">#<%= data["tag_name"] %></a></b> tag from your post
-  <a href="<%= data["article"]["path"] %>"><%= data["article"]["title"] %></a>.
+  <a href="<%= data["article"]["path"] %>"><%= h(data["article"]["title"]) %></a>.
   <br /><br />
   Certain tags have special submission guidelines, and mods need to adjust tags to best fit the community.
   <br /><br />

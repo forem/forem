@@ -8,7 +8,7 @@ class Notification < ApplicationRecord
 
   before_create :mark_notified_at_time
 
-  validates :user_id, uniqueness: { scope: %i[notifiable_id notifiable_type action] }
+  validates :user_id, uniqueness: { scope: %i[organization_id notifiable_id notifiable_type action] }
 
   class << self
     def send_new_follower_notification(follow, is_read = false)
@@ -19,34 +19,19 @@ class Notification < ApplicationRecord
     end
 
     def send_new_follower_notification_without_delay(follow, is_read = false)
+      return unless Follow.need_new_follower_notification_for?(follow.followable_type)
+
       follow_data = follow.attributes.slice("follower_id", "followable_id", "followable_type").symbolize_keys
       Notifications::NewFollowerJob.perform_now(follow_data, is_read)
     end
 
     def send_to_followers(notifiable, action = nil)
-      # for now, arguments are always: notifiable = article, action = "Published"
-      json_data = {
-        user: user_data(notifiable.user),
-        article: article_data(notifiable)
-      }
-      followers = if notifiable.organization_id
-                    json_data[:organization] = organization_data(notifiable.organization)
-                    (notifiable.user.followers + notifiable.organization.followers).uniq
-                  else
-                    notifiable.user.followers
-                  end
-      # followers is an array and not an activerecord object
-      followers.sort_by(&:updated_at).reverse[0..10_000].each do |follower|
-        Notification.create(
-          user_id: follower.id,
-          notifiable_id: notifiable.id,
-          notifiable_type: notifiable.class.name,
-          action: action,
-          json_data: json_data,
-        )
-      end
+      Notifications::NotifiableActionJob.perform_later(notifiable.id, notifiable.class.name, action)
     end
-    handle_asynchronously :send_to_followers
+
+    def send_to_followers_without_delay(notifiable, action = nil)
+      Notifications::NotifiableActionJob.perform_now(notifiable.id, notifiable.class.name, action)
+    end
 
     def send_new_comment_notifications(comment)
       return if comment.commentable_type == "PodcastEpisode"
@@ -60,28 +45,20 @@ class Notification < ApplicationRecord
       Notifications::NewCommentJob.perform_now(comment.id)
     end
 
-    def send_new_badge_notification(badge_achievement)
-      json_data = {
-        user: user_data(badge_achievement.user),
-        badge_achievement: {
-          badge_id: badge_achievement.badge_id,
-          rewarding_context_message: badge_achievement.rewarding_context_message,
-          badge: {
-            title: badge_achievement.badge.title,
-            description: badge_achievement.badge.description,
-            badge_image_url: badge_achievement.badge.badge_image_url
-          }
-        }
-      }
-      Notification.create(
-        user_id: badge_achievement.user.id,
-        notifiable_id: badge_achievement.id,
-        notifiable_type: "BadgeAchievement",
-        action: nil,
-        json_data: json_data,
-      )
+    def send_new_badge_achievement_notification(badge_achievement)
+      Notifications::NewBadgeAchievementJob.perform_later(badge_achievement.id)
     end
-    handle_asynchronously :send_new_badge_notification
+    # NOTE: this alias is temporary until the transition to ActiveJob is completed
+    # and all old DelayedJob jobs are processed by the queue workers.
+    # It can be removed after pre-existing jobs are done
+    alias send_new_badge_notification send_new_badge_achievement_notification
+
+    # NOTE: this method is temporary until the transition to ActiveJob is completed
+    # and all old DelayedJob jobs are processed by the queue workers.
+    # It can be removed after pre-existing jobs are done
+    def send_new_badge_notification_without_delay(badge_achievement)
+      Notifications::NewBadgeAchievementJob.perform_now(badge_achievement.id)
+    end
 
     def send_reaction_notification(reaction, receiver)
       return if reaction.skip_notification_for?(receiver)
@@ -96,144 +73,68 @@ class Notification < ApplicationRecord
     end
 
     def send_mention_notification(mention)
-      mentioner = mention.mentionable.user
-      json_data = {
-        user: user_data(mentioner)
-      }
-      json_data[:comment] = comment_data(mention.mentionable) if mention.mentionable_type == "Comment"
-      Notification.create(
-        user_id: mention.user_id,
-        notifiable_id: mention.id,
-        notifiable_type: "Mention",
-        action: nil,
-        json_data: json_data,
-      )
+      Notifications::MentionJob.perform_later(mention.id)
     end
-    handle_asynchronously :send_mention_notification
+
+    def send_mention_notification_without_delay(mention)
+      Notifications::MentionJob.perform_now(mention.id)
+    end
 
     def send_welcome_notification(receiver_id)
-      welcome_broadcast = Broadcast.find_by(title: "Welcome Notification")
-      return if welcome_broadcast.nil?
-
-      dev_account = User.dev_account
-      json_data = {
-        user: user_data(dev_account),
-        broadcast: {
-          processed_html: welcome_broadcast.processed_html
-        }
-      }
-      Notification.create(
-        user_id: receiver_id,
-        notifiable_id: welcome_broadcast.id,
-        notifiable_type: "Broadcast",
-        action: welcome_broadcast.type_of,
-        json_data: json_data,
-      )
+      Notifications::WelcomeNotificationJob.perform_later(receiver_id)
     end
-    handle_asynchronously :send_welcome_notification
+
+    def send_welcome_notification_without_delay(receiver_id)
+      Notifications::WelcomeNotificationJob.perform_now(receiver_id)
+    end
 
     def send_moderation_notification(notifiable)
-      # notifiable is currently only comment
-      available_moderators = User.with_role(:trusted).where("last_moderation_notification < ?", 28.hours.ago)
-      return if available_moderators.empty?
-
-      moderator = available_moderators.sample
-      dev_account = User.dev_account
-      json_data = {
-        user: user_data(dev_account)
-      }
-      json_data[notifiable.class.name.downcase] = send "#{notifiable.class.name.downcase}_data", notifiable
-      Notification.create(
-        user_id: moderator.id,
-        notifiable_id: notifiable.id,
-        notifiable_type: notifiable.class.name,
-        action: "Moderation",
-        json_data: json_data,
-      )
-      moderator.update_column(:last_moderation_notification, Time.current)
+      Notifications::ModerationNotificationJob.perform_later(notifiable.id)
     end
-    handle_asynchronously :send_moderation_notification
+
+    def send_moderation_notification_without_delay(notifiable)
+      Notifications::ModerationNotificationJob.perform_now(notifiable.id)
+    end
 
     def send_tag_adjustment_notification(tag_adjustment)
-      article = tag_adjustment.article
-      json_data = {
-        article: { title: article.title, path: article.path },
-        adjustment_type: tag_adjustment.adjustment_type,
-        status: tag_adjustment.status,
-        reason_for_adjustment: tag_adjustment.reason_for_adjustment,
-        tag_name: tag_adjustment.tag_name
-      }
-      Notification.create(
-        user_id: article.user_id,
-        notifiable_id: tag_adjustment.id,
-        notifiable_type: tag_adjustment.class.name,
-        json_data: json_data,
-      )
-      article.user.update_column(:last_moderation_notification, Time.current)
+      Notifications::TagAdjustmentNotificationJob.perform_later(tag_adjustment.id)
     end
-    handle_asynchronously :send_tag_adjustment_notification
 
-    def send_milestone_notification(milestone_hash)
-      milestone_hash[:next_milestone] = next_milestone(milestone_hash)
-      return unless should_send_milestone?(milestone_hash)
-
-      json_data = { article: article_data(milestone_hash[:article]), gif_id: RandomGif.new.random_id }
-
-      Notification.create!(
-        user_id: milestone_hash[:article].user_id,
-        notifiable_id: milestone_hash[:article].id,
-        notifiable_type: "Article",
-        json_data: json_data,
-        action: "Milestone::#{milestone_hash[:type]}::#{milestone_hash[:next_milestone]}",
-      )
-      return unless milestone_hash[:article].organization_id
-
-      Notification.create!(
-        organization_id: milestone_hash[:article].organization_id,
-        notifiable_id: milestone_hash[:article].id,
-        notifiable_type: "Article",
-        json_data: json_data,
-        action: "Milestone::#{milestone_hash[:type]}::#{milestone_hash[:next_milestone]}",
-      )
+    def send_tag_adjustment_notification_without_delay(tag_adjustment)
+      Notifications::TagAdjustmentNotificationJob.perform_now(tag_adjustment.id)
     end
-    handle_asynchronously :send_milestone_notification
 
-    def remove_all(notifiable_hash)
-      Notification.where(
-        notifiable_id: notifiable_hash[:notifiable_id],
-        notifiable_type: notifiable_hash[:notifiable_type],
-        action: notifiable_hash[:action],
-      ).delete_all
+    def send_milestone_notification(type:, article_id:)
+      Notifications::MilestoneJob.perform_later(type, article_id)
     end
-    handle_asynchronously :remove_all
 
-    def remove_each(notifiable_collection, action = nil)
-      # only used for mentions since it's an array
-      notifiable_collection.each do |notifiable|
-        Notification.where(
-          notifiable_id: notifiable.id,
-          notifiable_type: notifiable.class.name,
-          action: action,
-        ).destroy_all
-      end
+    def send_milestone_notification_without_delay(type:, article_id:)
+      Notifications::MilestoneJob.perform_now(type, article_id)
     end
-    handle_asynchronously :remove_each
+
+    def remove_all(notifiable_id:, notifiable_type:, action: nil)
+      Notifications::RemoveAllJob.perform_later(notifiable_id, notifiable_type, action)
+    end
+
+    def remove_all_without_delay(notifiable_id:, notifiable_type:, action: nil)
+      Notifications::RemoveAllJob.perform_now(notifiable_id, notifiable_type, action)
+    end
+
+    def remove_each(notifiable_collection)
+      Notifications::RemoveEachJob.perform_later(notifiable_collection.pluck(:id))
+    end
+
+    def remove_each_without_delay(notifiable_collection)
+      Notifications::RemoveEachJob.perform_now(notifiable_collection.pluck(:id))
+    end
 
     def update_notifications(notifiable, action = nil)
-      notifications = Notification.where(
-        notifiable_id: notifiable.id,
-        notifiable_type: notifiable.class.name,
-        action: action,
-      )
-      return if notifications.blank?
-
-      new_json_data = notifications.first.json_data
-      new_json_data[notifiable.class.name.downcase] = send("#{notifiable.class.name.downcase}_data", notifiable)
-      new_json_data[:user] = user_data(notifiable.user)
-      new_json_data[:organization] = organization_data(notifiable.organization) if notifiable.is_a?(Article) && notifiable.organization_id
-      notifications.update_all(json_data: new_json_data)
+      Notifications::UpdateJob.perform_later(notifiable.id, notifiable.class.name, action)
     end
-    handle_asynchronously :update_notifications
+
+    def update_notifications_without_delay(notifiable, action = nil)
+      Notifications::UpdateJob.perform_now(notifiable.id, notifiable.class.name, action)
+    end
 
     private
 
@@ -243,6 +144,10 @@ class Notification < ApplicationRecord
 
     def comment_data(comment)
       Notifications.comment_data(comment)
+    end
+
+    def article_data(article)
+      Notifications.article_data(article)
     end
 
     def reaction_notification_attributes(reaction, receiver)
@@ -256,60 +161,7 @@ class Notification < ApplicationRecord
     end
 
     def organization_data(organization)
-      {
-        id: organization.id,
-        class: { name: "Organization" },
-        name: organization.name,
-        slug: organization.slug,
-        path: organization.path,
-        profile_image_90: organization.profile_image_90
-      }
-    end
-
-    def article_data(article)
-      {
-        id: article.id,
-        cached_tag_list_array: article.decorate.cached_tag_list_array,
-        class: { name: "Article" },
-        title: article.title,
-        path: article.path,
-        updated_at: article.updated_at
-      }
-    end
-
-    def should_send_milestone?(milestone_hash)
-      return if milestone_hash[:article].published_at < Time.zone.local(2019, 2, 25)
-
-      last_milestone_notification = Notification.find_by(
-        user_id: milestone_hash[:article].user_id,
-        notifiable_type: "Article",
-        notifiable_id: milestone_hash[:article].id,
-        action: "Milestone::#{milestone_hash[:type]}::#{milestone_hash[:next_milestone]}",
-      )
-
-      if milestone_hash[:type] == "View"
-        last_milestone_notification.blank? && milestone_hash[:article].page_views_count > milestone_hash[:next_milestone]
-      elsif milestone_hash[:type] == "Reaction"
-        last_milestone_notification.blank? && milestone_hash[:article].positive_reactions_count > milestone_hash[:next_milestone]
-      end
-    end
-
-    def next_milestone(milestone_hash)
-      case milestone_hash[:type]
-      when "View"
-        milestones = [1024, 2048, 4096, 8192, 16_384, 32_768, 65_536, 131_072, 262_144, 524_288, 1_048_576]
-        milestone_count = milestone_hash[:article].page_views_count
-      when "Reaction"
-        milestones = [64, 128, 256, 512, 1024, 2048, 4096, 8192]
-        milestone_count = milestone_hash[:article].positive_reactions_count
-      end
-
-      closest_number = milestones.min_by { |num| (milestone_count - num).abs }
-      if milestone_count > closest_number
-        closest_number
-      else
-        milestones[milestones.index(closest_number) - 1]
-      end
+      Notifications.organization_data(organization)
     end
   end
 

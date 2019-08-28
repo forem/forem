@@ -1,0 +1,38 @@
+<div class="row">
+  <h3><u>Credits</u></h3>
+  <p>Available User Credits: <%= @user.unspent_credits_count %></p>
+  <%= form_for [:internal, @user] do |f| %>
+    <%= f.label "Add Credit(s): " %>
+    <br>
+    <%= f.text_field :add_credits, placeholder: "#", size: 5 %>
+    <%= f.text_field :new_note, placeholder: "Why are you adding these credits?", size: 50, required: true %>
+    <%= f.submit "Add Credits" %>
+  <% end %>
+  <%= form_for [:internal, @user] do |f| %>
+    <%= f.label "Remove Credits(s)" %>
+    <br>
+    <%= f.text_field :remove_credits, placeholder: "#", size: 5 %>
+    <%= f.text_field :new_note, placeholder: "Why are you removing these credits?", size: 50, required: true %>
+    <%= f.submit "Remove Credits"%>
+  <% end %>
+  <br>
+  <% @organizations.each do |org| %>
+    <p>Available <%= org.name %> Credits: <%= org.unspent_credits_count %></p>
+    <%= form_for [:internal, @user] do |f| %>
+      <%= f.label "Add Org Credit(s): " %>
+      <br>
+      <%= f.hidden_field :organization_id, value: org.id %>
+      <%= f.text_field :add_org_credits, placeholder: "#", size: 5 %>
+      <%= f.text_field :new_note, placeholder: "Why are you adding these credits?", size: 50, required: true %>
+      <%= f.submit "Add Org Credits" %>
+    <% end %>
+    <%= form_for [:internal, @user] do |f| %>
+      <%= f.label "Remove Org Credits(s)" %>
+      <br>
+      <%= f.hidden_field :organization_id, value: org.id %>
+      <%= f.text_field :remove_org_credits, placeholder: "#", size: 5 %>
+      <%= f.text_field :new_note, placeholder: "Why are you removing these credits?", size: 50, required: true %>
+      <%= f.submit "Remove Org Credits"%>
+    <% end %>
+  <% end %>
+</div>

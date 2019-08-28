@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe User, type: :model do
-  let(:user)            { create(:user) }
+  let!(:user)           { create(:user) }
   let(:returning_user)  { create(:user, signup_cta_variant: nil) }
   let(:second_user)     { create(:user) }
   let(:article)         { create(:article, user_id: user.id) }
@@ -29,6 +29,7 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
     it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
     it { is_expected.to have_many(:push_notification_subscriptions).dependent(:destroy) }
+    it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
     it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
     it { is_expected.to validate_uniqueness_of(:github_username).allow_nil }
     it { is_expected.to validate_uniqueness_of(:twitter_username).allow_nil }
@@ -36,6 +37,35 @@ RSpec.describe User, type: :model do
     it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
     it { is_expected.to validate_length_of(:name).is_at_most(100) }
     it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
+    it { is_expected.to have_many(:access_grants).class_name("Doorkeeper::AccessGrant").with_foreign_key("resource_owner_id").dependent(:delete_all) }
+    it { is_expected.to have_many(:access_tokens).class_name("Doorkeeper::AccessToken").with_foreign_key("resource_owner_id").dependent(:delete_all) }
+
+    it "validates username against reserved words" do
+      user = build(:user, username: "readinglist")
+      expect(user).not_to be_valid
+      expect(user.errors[:username].to_s.include?("reserved")).to be true
+    end
+
+    it "takes organization slug into account" do
+      create(:organization, slug: "lightalloy")
+      user = build(:user, username: "lightalloy")
+      expect(user).not_to be_valid
+      expect(user.errors[:username].to_s.include?("taken")).to be true
+    end
+
+    it "takes podcast slug into account" do
+      create(:podcast, slug: "lightpodcast")
+      user = build(:user, username: "lightpodcast")
+      expect(user).not_to be_valid
+      expect(user.errors[:username].to_s.include?("taken")).to be true
+    end
+
+    it "takes page slug into account" do
+      create(:page, slug: "page_yo")
+      user = build(:user, username: "page_yo")
+      expect(user).not_to be_valid
+      expect(user.errors[:username].to_s.include?("taken")).to be true
+    end
   end
 
   # the followings are failing
@@ -80,6 +110,12 @@ RSpec.describe User, type: :model do
       user = create(:user, email: "anna@example.com")
       user.reload
       expect(user.email).to eq("anna@example.com")
+    end
+
+    it "sets onboarding_variant_version" do
+      user = create(:user, email: "anna@example.com")
+      user.reload
+      expect(user.onboarding_variant_version).to be_in(%w[0 1 2 3 4 5 6 7 8])
     end
   end
 
@@ -142,6 +178,18 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
+    it "does not accept invalid twitch url" do
+      user.twitch_url = "ben.com"
+      expect(user).not_to be_valid
+    end
+
+    it "accepts valid https twitch url" do
+      %w[pandyzhao pandyzhao/ PandyZhao_ pandy_Zhao].each do |username|
+        user.twitch_url = "https://twitch.tv/#{username}"
+        expect(user).to be_valid
+      end
+    end
+
     it "accepts valid https stackoverflow url" do
       %w[pandyzhao pandyzhao/ pandy-zhao].each do |username|
         user.stackoverflow_url = "https://stackoverflow.com/users/7381391/#{username}"
@@ -151,6 +199,18 @@ RSpec.describe User, type: :model do
 
     it "does not accept invalid stackoverflow url" do
       user.stackoverflow_url = "ben.com"
+      expect(user).not_to be_valid
+    end
+
+    it "accepts valid stackoverflow sub community url" do
+      %w[pt ru es ja].each do |subcommunity|
+        user.stackoverflow_url = "https://#{subcommunity}.stackoverflow.com/users/7381391/mazen"
+        expect(user).to be_valid
+      end
+    end
+
+    it "does not accept invalid stackoverflow sub community url" do
+      user.stackoverflow_url = "https://fr.stackoverflow.com/users/7381391/mazen"
       expect(user).not_to be_valid
     end
 
@@ -205,6 +265,18 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
+    it "does not accept invalid instagram url" do
+      user.instagram_url = "ben.com"
+      expect(user).not_to be_valid
+    end
+
+    it "accepts valid instagram url" do
+      %w[jess je_ss je_ss.tt A.z.E.r.T.y].each do |username|
+        user.instagram_url = "https://instagram.com/#{username}"
+        expect(user).to be_valid
+      end
+    end
+
     it "accepts valid https gitlab url" do
       %w[jess jess/ je-ss je_ss].each do |username|
         user.gitlab_url = "https://gitlab.com/#{username}"
@@ -229,46 +301,10 @@ RSpec.describe User, type: :model do
       expect(user.old_old_username).to eq(old_username)
     end
 
-    it "updates mentor_form_updated_at at appropriate time" do
-      user.mentor_description = "hello"
-      user.save
-      expect(user.mentor_form_updated_at).not_to eq(nil)
-    end
-
-    it "updates mentee_form_updated_at at appropriate time" do
-      user.mentee_description = "hello"
-      user.save
-      expect(user.mentee_form_updated_at).not_to eq(nil)
-    end
-
-    it "does not allow mentee description to be too long" do
-      user.mentee_description = Faker::Lorem.paragraph_by_chars(1001)
-      user.save
-      expect(user.mentee_form_updated_at).to eq(nil)
-    end
-
-    it "does not allow mentor description to be too long" do
-      user.mentor_description = Faker::Lorem.paragraph_by_chars(1001)
-      user.save
-      expect(user.mentor_form_updated_at).to eq(nil)
-    end
-
-    it "allow mentee description to be the max length" do
-      user.mentee_description = Faker::Lorem.paragraph_by_chars(1000)
-      user.save
-      expect(user.mentee_form_updated_at).not_to eq(nil)
-    end
-
-    it "allow mentor description to be the max length" do
-      user.mentor_description = Faker::Lorem.paragraph_by_chars(1000)
-      user.save
-      expect(user.mentor_form_updated_at).not_to eq(nil)
-    end
-
     it "does not allow too short or too long name" do
       user.name = ""
       expect(user).not_to be_valid
-      user.name = Faker::Lorem.paragraph_by_chars(200)
+      user.name = Faker::Lorem.paragraph_by_chars(number: 200)
       expect(user).not_to be_valid
     end
 
@@ -380,6 +416,18 @@ RSpec.describe User, type: :model do
     end
 
     context "when estimating the default language" do
+      it "sets correct language_settings by default" do
+        user2 = create(:user, email: nil)
+        expect(user2.language_settings).to eq("preferred_languages" => %w[en])
+      end
+
+      it "sets correct language_settings by default after the callbacks" do
+        perform_enqueued_jobs do
+          user2 = create(:user, email: nil)
+          expect(user2.language_settings).to eq("preferred_languages" => %w[en])
+        end
+      end
+
       it "estimates default language to be nil" do
         perform_enqueued_jobs do
           user.estimate_default_language!
@@ -399,6 +447,7 @@ RSpec.describe User, type: :model do
         perform_enqueued_jobs do
           new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
           new_user.estimate_default_language!
+          expect(user.reload.estimated_default_language).to eq(nil)
         end
       end
 
@@ -407,8 +456,20 @@ RSpec.describe User, type: :model do
           user.update_column(:email, "ben@hello.jp")
           user.estimate_default_language!
         end
-        expect(user.reload.decorate.preferred_languages_array).to include("ja")
+        expect(user.reload.preferred_languages_array).to include("ja")
       end
+    end
+  end
+
+  describe "#preferred_languages_array" do
+    it "returns a correct array when language settings are in a new format" do
+      user.update_columns(language_settings: { estimated_default_language: "en", preferred_languages: %w[en ru it] })
+      expect(user.preferred_languages_array).to eq(%w[en ru it])
+    end
+
+    it "returns a correct array when language settings are in the old format" do
+      user.update_columns(language_settings: { estimated_default_language: "en", prefer_language_en: true, prefer_language_ja: false, prefer_language_es: true })
+      expect(user.preferred_languages_array).to eq(%w[en es])
     end
   end
 
@@ -473,22 +534,32 @@ RSpec.describe User, type: :model do
   end
 
   it "creates proper body class with defaults" do
-    expect(user.decorate.config_body_class).to eq("default default-article-body")
+    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?}")
   end
 
   it "creates proper body class with sans serif config" do
     user.config_font = "sans_serif"
-    expect(user.decorate.config_body_class).to eq("default sans-serif-article-body")
+    expect(user.decorate.config_body_class).to eq("default sans-serif-article-body pro-status-#{user.pro?}")
   end
 
   it "creates proper body class with night theme" do
     user.config_theme = "night_theme"
-    expect(user.decorate.config_body_class).to eq("night-theme default-article-body")
+    expect(user.decorate.config_body_class).to eq("night-theme default-article-body pro-status-#{user.pro?}")
   end
 
   it "creates proper body class with pink theme" do
     user.config_theme = "pink_theme"
-    expect(user.decorate.config_body_class).to eq("pink-theme default-article-body")
+    expect(user.decorate.config_body_class).to eq("pink-theme default-article-body pro-status-#{user.pro?}")
+  end
+
+  it "creates proper body class with minimal light theme" do
+    user.config_theme = "minimal_light_theme"
+    expect(user.decorate.config_body_class).to eq("minimal-light-theme default-article-body pro-status-#{user.pro?}")
+  end
+
+  it "creates proper body class with pro user" do
+    user.add_role(:pro)
+    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?}")
   end
 
   it "inserts into mailchimp" do
@@ -531,62 +602,6 @@ RSpec.describe User, type: :model do
     expect(new_user.github_created_at).to be_kind_of(ActiveSupport::TimeWithZone)
   end
 
-  describe "onboarding checklist" do
-    it "returns onboarding checklist made first article if made first published article" do
-      article.update(published: true)
-      checklist = UserStates.new(user).cached_onboarding_checklist[:write_your_first_article]
-      expect(checklist).to eq(true)
-    end
-
-    it "returns onboarding checklist made first article false if hasn't written article" do
-      article.update(published: false)
-      checklist = UserStates.new(user).cached_onboarding_checklist[:write_your_first_article]
-      expect(checklist).to eq(true)
-    end
-
-    it "returns onboarding checklist follow_your_first_tag if has followed tag" do
-      user.follow(tag)
-      expect(UserStates.new(user).cached_onboarding_checklist[:follow_your_first_tag]).to eq(true)
-    end
-
-    it "returns onboarding checklist follow_your_first_tag false if has not followed tag" do
-      expect(UserStates.new(user).cached_onboarding_checklist[:follow_your_first_tag]).to eq(false)
-    end
-
-    it "returns onboarding checklist fill_out_your_profile if has filled out summary" do
-      user.update(summary: "Hello")
-      expect(UserStates.new(user).cached_onboarding_checklist[:fill_out_your_profile]).to eq(true)
-    end
-
-    it "returns onboarding checklist fill_out_your_profile false if has not filled out summary" do
-      user.update(summary: "")
-      expect(UserStates.new(user).cached_onboarding_checklist[:fill_out_your_profile]).to eq(false)
-    end
-
-    it "returns onboarding checklist leave_your_first_reaction if has reacted to a post" do
-      create(:reaction, user_id: user.id, reactable_id: article.id)
-      checklist = UserStates.new(user).cached_onboarding_checklist[:leave_your_first_reaction]
-      expect(checklist).to eq(true)
-    end
-
-    it "returns onboarding checklist leave_your_first_reaction false if hasn't reacted to a post" do
-      checklist = UserStates.new(user).cached_onboarding_checklist[:leave_your_first_reaction]
-      expect(checklist).to eq(false)
-    end
-
-    it "returns onboarding checklist leave_your_first_comment if has left comment" do
-      create(:comment, user_id: user.id, commentable_id: article.id, commentable_type: "Article")
-      user.reload
-      checklist = UserStates.new(user).cached_onboarding_checklist[:leave_your_first_comment]
-      expect(checklist).to eq(true)
-    end
-
-    it "returns onboarding checklist leave_your_first_comment false if has not left comment" do
-      checklist = UserStates.new(user).cached_onboarding_checklist[:leave_your_first_comment]
-      expect(checklist).to eq(false)
-    end
-  end
-
   describe "cache counts" do
     it "has an accurate tag follow count" do
       user.follow(tag)
@@ -606,12 +621,12 @@ RSpec.describe User, type: :model do
 
   describe "organization admin privileges" do
     it "recognizes an org admin" do
-      user.update(organization: org, org_admin: true)
+      create(:organization_membership, user: user, organization: org, type_of_user: "admin")
       expect(user.org_admin?(org)).to be true
     end
 
     it "forbids an incorrect org admin" do
-      user.update(organization: org, org_admin: true)
+      create(:organization_membership, user: user, organization: org, type_of_user: "admin")
       expect(user.org_admin?(second_org)).to be false
       expect(second_user.org_admin?(org)).to be false
     end
@@ -622,22 +637,37 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "#can_view_analytics?" do
-    it "returns true for users with :super_admin role" do
-      user.add_role(:super_admin)
-      expect(user.can_view_analytics?).to be true
-    end
-
-    it "returns true for users with :analytics_beta_tester role" do
-      user.add_role(:analytics_beta_tester)
-      expect(user.can_view_analytics?).to be true
-    end
-  end
-
   describe "#destroy" do
     it "successfully destroys a user" do
       user.destroy
       expect(user.persisted?).to be false
+    end
+
+    it "destroys associated organization memberships" do
+      organization_membership = create(:organization_membership, user_id: user.id, organization_id: org.id)
+      user.destroy
+      expect { organization_membership.reload }.to raise_error ActiveRecord::RecordNotFound
+    end
+  end
+
+  describe "#pro?" do
+    it "returns false if the user is not a pro" do
+      expect(user.pro?).to be(false)
+    end
+
+    it "returns true if the user is a pro" do
+      user.add_role(:pro)
+      expect(user.pro?).to be(true)
+    end
+  end
+
+  describe "when agolia auto-indexing/removal is triggered" do
+    it "process background auto-indexing when user is saved" do
+      expect { user.save }.to have_enqueued_job.with(user, "index!").on_queue("algoliasearch")
+    end
+
+    it "doesn't schedule a job on destroy" do
+      expect { user.destroy }.not_to have_enqueued_job.on_queue("algoliasearch")
     end
   end
 end

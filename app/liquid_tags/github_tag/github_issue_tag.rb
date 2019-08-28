@@ -7,45 +7,30 @@
 #   https://api.github.com/repos/facebook/react/issues/comments/287635042
 class GithubTag
   class GithubIssueTag
+    PARTIAL = "liquids/github_issue".freeze
+
     def initialize(link)
       @orig_link = link
       @link = parse_link(link)
       @content = GithubIssue.find_or_fetch(@link)
+      @content_json = @content.issue_serialized
+      @body = @content.processed_html.html_safe
     end
 
     def render
-      content_json = @content.issue_serialized
-      body = @content.processed_html
-      username = content_json[:user][:login]
-      user_html_url = content_json[:user][:html_url]
-      user_avatar_url = content_json[:user][:avatar_url]
-      date = Time.zone.parse(content_json[:created_at].to_s).utc.strftime("%b %d, %Y")
-      date_link = content_json[:html_url]
-      title = generate_title
-      html = "" \
-      "<div class=\"ltag_github-liquid-tag\"> "\
-        "#{title}" \
-        "<div class=\"github-thread\"> " \
-          "<div class=\"timeline-comment-header\"> " \
-            "<a href=\"#{user_html_url}\"> " \
-              "<img class=\"github-liquid-tag-img\" src=\"#{user_avatar_url}\" alt=\"#{username} avatar\"> " \
-            "</a> " \
-            "<span class=\"arrow-left-outer\"></span> " \
-            "<span class=\"arrow-left-inner\"></span> " \
-            "<div class=\"timeline-comment-header-text\"> " \
-              "<strong> " \
-                "<a href=\"#{user_html_url}\">#{username}</a> " \
-              "</strong> commented on <a href=\"#{date_link}\">#{date}</a> <span class=\"timestamp\"></span> " \
-            "</div> " \
-          "</div> " \
-          "<div class=\"ltag-github-body\"> " \
-            "#{body.chomp} " \
-          "</div> " \
-          "<div class=\"gh-btn-container\"><a class=\"gh-btn\" href=\"#{date_link}\">View on GitHub</a></div>"\
-        "</div> " \
-      "</div>"
-
-      finalize_html(html)
+      ActionController::Base.new.render_to_string(
+        partial: PARTIAL,
+        locals: {
+          title: @content_json[:title],
+          issue_number: @content_json[:number],
+          user_html_url: @content_json[:user][:html_url],
+          user_avatar_url: @content_json[:user][:avatar_url],
+          username: @content_json[:user][:login],
+          date_link: @content_json[:html_url],
+          date: Time.zone.parse(@content_json[:created_at].to_s).utc.strftime("%b %d, %Y"),
+          body: @body
+        },
+      )
     end
 
     private
@@ -64,20 +49,6 @@ class GithubTag
       input = input.gsub(/\?.*/, "")
       input = input.gsub(/\d{1,}#issuecomment-/, "comments/") if input.include?("#issuecomment-")
       "https://api.github.com/repos/#{input.gsub(/.*github\.com\//, '')}"
-    end
-
-    def generate_title
-      content_json = @content.issue_serialized
-      title = content_json[:title]
-      number = content_json[:number]
-      link = content_json[:html_url]
-      return unless title
-
-      "<h1> " \
-        "<a href=\"#{link}\">" \
-          "<img class=\"github-logo\" src=\"#{ActionController::Base.helpers.asset_path('github-logo.svg')}\" /><span class=\"issue-title\">#{title}</span> <span class=\"issue-number\">##{number}</span> " \
-        "</a>" \
-      "</h1> "
     end
 
     def finalize_html(input)

@@ -25,6 +25,7 @@ class Follow < ApplicationRecord
   before_destroy :modify_chat_channel_status
 
   validates :followable_id, uniqueness: { scope: %i[followable_type follower_id] }
+  validates :subscription_status, inclusion: { in: %w[all_articles none] }
 
   def self.need_new_follower_notification_for?(followable_type)
     %w[User Organization].include?(followable_type)

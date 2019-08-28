@@ -1,4 +1,5 @@
 <script>
+console.log('its rendering!')
   function timeNow(objectID) {
     var seconds = new Date().getTime() / 1000;
     document.getElementById("featured_number_" + objectID).value = Math.round(seconds);
@@ -9,7 +10,7 @@
     document.getElementById("featured_number_" + objectID).value = Math.round(seconds);
   }
 
-  $('.row').on("submit", "form", function () {
+  function submitForms() {
     var form = $(this);
     var valuesToSubmit = $(this).serialize();
     $.ajax({
@@ -19,47 +20,54 @@
       // dataType: "JSON" // you want a difference between normal and ajax-calls, and json is standard
     }).success(function (json) {
       console.log("success")
-      form.parents(".row").addClass("highlighted-bg")
-      form.parents(".row").addClass("highlighted-border")
+      form.parents(".row, .single-internal-listing").addClass("highlighted-bg")
+      form.parents(".row, .single-internal-listing").addClass("highlighted-border")
       setTimeout(function () {
-        form.parents(".row").removeClass("highlighted-bg")
+        form.parents(".row, .single-internal-listing").removeClass("highlighted-bg")
       }, 350)
     });
     return false; // prevents normal behaviour
-  });
+  }
+
+  $('.row').on("submit", "form", submitForms)
+  $('.buffering-area-for-single-listing').on("submit", "form", submitForms)
 
   $(".toggle-buffering-butt").click(function (e) {
     e.preventDefault()
-    console.log($(this).closest(".single-internal-article").find(".buffering-area-for-single-article").toggle());
+    console.log($(this).closest(".single-internal-article, .buffer-area").find(".buffering-area-for-single-article, .buffering-area-for-single-listing").toggle());
   })
 
-  document.getElementById('image-upload-button').onclick = function (e) {
-    e.preventDefault();
-    document.getElementById('image-upload').click();
-  }
+  imageUploadButt = document.getElementById('image-upload-button')
+  imageUpload = document.getElementById('image-upload')
+  imageUploadSubmit = document.getElementById('image-upload-submit')
 
-  document.getElementById('image-upload').onchange = function (e) {
-    var image = document.getElementById('image-upload').files;
-    if (image.length > 0) {
-      document.getElementById('image-upload-file-label').style = 'color:#888888';
-      document.getElementById('image-upload-file-label').innerHTML = "Uploading...";
-      document.getElementById('uploaded-image').style = 'display:none';
-      document.getElementById('image-upload-submit').value = "uploading";
-      setTimeout(function () {
-        document.getElementById('image-upload-submit').click(function () {
-        });
-      }, 50)
+  if (imageUploadButt && imageUpload && imageUploadSubmit) {
+    imageUploadButt.onclick = function (e) {
+      e.preventDefault();
+      document.getElementById('image-upload').click();
     }
-  }
-
-  document.getElementById('image-upload-submit').onclick = function (e) {
-    e.preventDefault();
-    var image = document.getElementById('image-upload').files;
-    if (image.length > 0) {
-      var ajaxReq = createAjaxReq();
-      ajaxReq.onreadystatechange = uploadImageCb.bind(this, ajaxReq);
-      ajaxReq.open('POST', '/image_uploads', true);
-      ajaxReq.send(generateUploadFormdata(image));
+    imageUpload.onchange = function (e) {
+      var image = document.getElementById('image-upload').files;
+      if (image.length > 0) {
+        document.getElementById('image-upload-file-label').style = 'color:#888888';
+        document.getElementById('image-upload-file-label').innerHTML = "Uploading...";
+        document.getElementById('uploaded-image').style = 'display:none';
+        document.getElementById('image-upload-submit').value = "uploading";
+        setTimeout(function () {
+          document.getElementById('image-upload-submit').click(function () {
+          });
+        }, 50)
+      }
+    }
+    imageUploadSubmit.onclick = function (e) {
+      e.preventDefault();
+      var image = document.getElementById('image-upload').files;
+      if (image.length > 0) {
+        var ajaxReq = createAjaxReq();
+        ajaxReq.onreadystatechange = uploadImageCb.bind(this, ajaxReq);
+        ajaxReq.open('POST', '/image_uploads', true);
+        ajaxReq.send(generateUploadFormdata(image));
+      }
     }
   }
 

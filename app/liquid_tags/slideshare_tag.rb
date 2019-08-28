@@ -1,22 +1,19 @@
 class SlideshareTag < LiquidTagBase
+  PARTIAL = "liquids/slideshare".freeze
+
   def initialize(tag_name, key, tokens)
     super
-    @key    = validate key.strip
-    @height = 450
+    @key = validate(key.strip)
   end
 
   def render(_context)
-    finalize_html <<-HTML
-      <iframe
-        src="//www.slideshare.net/slideshow/embed_code/key/#{@key}"
-        alt="#{@key} on slideshare.net"
-        width="100%"
-        height="#{@height}"
-        frameborder="0"
-        scrolling="no"
-        allowfullscreen>
-      </iframe>
-    HTML
+    ActionController::Base.new.render_to_string(
+      partial: PARTIAL,
+      locals: {
+        key: @key,
+        height: 450
+      },
+    )
   end
 
   private

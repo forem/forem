@@ -12,26 +12,28 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://dev.to<%= request.path %>" />
   <meta property="og:title" content="<%= title_with_timeframe(page_title: community_qualified_name, timeframe: params[:timeframe]) %>" />
-  <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png">
+  <meta property="og:image" content="<%= ApplicationConfig["MAIN_SOCIAL_IMAGE"] %>">
   <meta property="og:description" content="Where programmers share ideas and help each other grow." />
   <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
-  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:site" content="@<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %>">
   <meta name="twitter:title" content="<%= title_with_timeframe(page_title: community_qualified_name, timeframe: params[:timeframe]) %>">
   <meta name="twitter:description" content="Where programmers share ideas, experiences, and help each other grow.">
-  <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png">
+  <meta name="twitter:image:src" content="<%= ApplicationConfig["MAIN_SOCIAL_IMAGE"] %>">
   <meta name="twitter:card" content="summary_large_image">
   <%= auto_discovery_link_tag(:rss, "https://dev.to/feed", title: "#{ApplicationConfig['COMMUNITY_NAME']} RSS Feed") %>
 <% end %>
-
+<%= javascript_pack_tag "homePage", defer: true %>
 <% params.delete(:i) %>
-<% cache("main-stories-index-#{params}-#{user_signed_in?}", expires_in: 4.minutes) do %>
+<% cache("main-stories-index-#{params}-#{user_signed_in?}", expires_in: 3.minutes) do %>
   <div class="home" id="index-container"
       data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
       data-algolia-tag=""
       data-feed="<%= params[:timeframe] || "base-feed" %>"
       data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>">
+
     <%= render "articles/sidebar" %>
+
     <div class="articles-list" id="articles-list">
       <div class="on-page-nav-controls" id="on-page-nav-controls">
         <div class="on-page-nav-label">
@@ -80,10 +82,12 @@
           <img src="<%= asset_path "lightning.svg" %>" alt="right-sidebar-nav">
         </button>
       </div>
+
       <% if @home_page %>
         <% @featured_story ||= @stories.where.not(main_image: nil).first&.decorate || Article.new %>
         <% @stories = @stories.decorate %>
-        <% end %>
+      <% end %>
+
       <% if @featured_story.id %>
         <div id="featured-story-marker" data-featured-article="articles-<%= @featured_story.id %>"></div>
         <img src="<%= cloud_cover_url(@featured_story.main_image) %>" style="display:none" alt="<%= @featured_story.title %>" />
@@ -95,11 +99,15 @@
                 <%= @featured_story.title %>
               </h3>
             </div>
-            <a href="<%= @featured_story.user.path %>" class="featured-profile-button">
-              <img class="featured-profile-pic" src="<%= ProfileImage.new(@featured_story.user).get(90) %>" alt="<%= @featured_story.title %>" />
+            <a href="/<%= @featured_story.cached_user.username %>" class="featured-profile-button">
+              <img class="featured-profile-pic" src="<%= ProfileImage.new(@featured_story.cached_user).get(90) %>" alt="<%= @featured_story.title %>" />
             </a>
-            <div class="featured-user-name"><a href="<%= @featured_story.user.path %>"><%= @featured_story.user.name %>
-              ・<%= @featured_story.readable_publish_date %><span class="time-ago-indicator-initial-placeholder" data-seconds="<%= @featured_story.published_at_int %>"></span></a></div>
+            <div class="featured-user-name">
+              <a href="/<%= @featured_story.cached_user.username %>">
+                <%= @featured_story.cached_user.name %>・<time datetime="<%= @featured_story.published_timestamp %>"><%= @featured_story.readable_publish_date %></time>
+                <span class="time-ago-indicator-initial-placeholder" data-seconds="<%= @featured_story.published_at_int %>"></span>
+              </a>
+            </div>
             <div class="featured-tags tags">
               <% @featured_story.cached_tag_list_array.each do |tag| %>
                 <a href="/t/<%= tag %>"><span class="tag">#<%= tag %></span></a>
@@ -130,21 +138,26 @@
               data-reactable-id="<%= @featured_story.id %>"
               aria-label="Add to reading list"
               title="Add to reading list">
-              <span class="bm-success">SAVED</span>
               <span class="bm-initial">SAVE</span>
+              <span class="bm-success">SAVED</span>
             </button>
           </div>
         </a>
       <% end %>
+
+      <div id="article-index-podcast-div"></div>
+
       <div class="substories" id="substories">
         <% if @stories.any? %>
           <%= render "stories/main_stories_feed" %>
         <% end %>
       </div>
+
       <div class="loading-articles" id="loading-articles">
         loading...
       </div>
     </div>
+
     <%= render "articles/sidebar_additional" %>
   </div>
 

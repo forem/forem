@@ -11,22 +11,13 @@ module Moderator
       new(user: user, admin: admin).banish
     end
 
-    def self.call_full_delete(admin:, user:)
-      new(user: user, admin: admin).full_delete
-    end
-
-    def full_delete
-      user.unsubscribe_from_newsletters
-      delete_user_activity
-      CacheBuster.new.bust("/#{user.old_username}")
-      user.delete
-    end
-
     def banish
-      user.unsubscribe_from_newsletters
+      user.unsubscribe_from_newsletters if user.email?
       remove_profile_info
       handle_user_status("Ban", "spam account")
       delete_user_activity
+      delete_comments
+      delete_articles
       user.remove_from_algolia_index
       reassign_and_bust_username
     end
@@ -50,7 +41,8 @@ module Moderator
         location: "", education: "", employer_name: "", employer_url: "", employment_title: "",
         mostly_work_with: "", currently_learning: "", currently_hacking_on: "", available_for: "",
         email_public: false, facebook_url: nil, dribbble_url: nil, medium_url: nil, stackoverflow_url: nil,
-        behance_url: nil, linkedin_url: nil, gitlab_url: nil, mastodon_url: nil
+        behance_url: nil, linkedin_url: nil, gitlab_url: nil, instagram_url: nil, mastodon_url: nil,
+        twitch_url: nil, feed_url: nil
       )
 
       user.update_columns(profile_image: "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png")

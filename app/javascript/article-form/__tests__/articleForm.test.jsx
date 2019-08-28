@@ -27,7 +27,6 @@ describe('<ArticleForm />', () => {
         },
       };
     };
-    global.window.initEditorResize = jest.fn();
 
     global.document.body.innerHTML = "<div id='editor-help-guide'></div>";
 
@@ -49,7 +48,7 @@ describe('<ArticleForm />', () => {
 
   it('loads text from sessionstorage when available', () => {
     localStorage.setItem(
-      'http://localhost/',
+      'editor-v2-http://localhost/',
       JSON.stringify({ bodyMarkdown: 'hello, world' }),
     );
     const form = shallow(getArticleForm());
@@ -65,6 +64,7 @@ describe('<ArticleForm />', () => {
 
 const getArticleForm = () => (
   <ArticleForm
+    version="v2"
     article={
       '{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null }'
     }

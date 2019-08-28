@@ -23,6 +23,8 @@ class PodcastDashboard < Administrate::BaseDashboard
     image: CarrierwaveField,
     pattern_image: CarrierwaveField,
     slug: Field::String,
+    reachable: Field::Boolean,
+    published: Field::Boolean,
     status_notice: Field::Text,
     created_at: Field::DateTime,
     updated_at: Field::DateTime
@@ -36,6 +38,9 @@ class PodcastDashboard < Administrate::BaseDashboard
   COLLECTION_ATTRIBUTES = %i[
     podcast_episodes
     id
+    reachable
+    published
+    status_notice
     title
     description
   ].freeze
@@ -59,6 +64,8 @@ class PodcastDashboard < Administrate::BaseDashboard
     image
     pattern_image
     slug
+    reachable
+    published
     created_at
     updated_at
   ].freeze
@@ -82,6 +89,8 @@ class PodcastDashboard < Administrate::BaseDashboard
     main_color_hex
     image
     slug
+    reachable
+    published
   ].freeze
 
   # Overwrite this method to customize how podcasts are displayed

@@ -17,11 +17,6 @@ exports[`<Article /> should load article 1`] = `
       >
         /princesscarolyn/your-approval-means-nothing-to-me-42640
       </span>
-      <img
-        alt="External Link Icon"
-        class="external-link-img"
-        src=""
-      />
     </a>
   </div>
   <div
@@ -86,6 +81,7 @@ exports[`<Article /> should load article 1`] = `
       onClick={[Function]}
     >
       <img
+        alt="like reaction"
         data-category="like"
         src=""
       />
@@ -96,6 +92,7 @@ exports[`<Article /> should load article 1`] = `
       onClick={[Function]}
     >
       <img
+        alt="unicorn reaction"
         data-category="unicorn"
         src=""
       />
@@ -106,6 +103,7 @@ exports[`<Article /> should load article 1`] = `
       onClick={[Function]}
     >
       <img
+        alt="readinglist reaction"
         data-category="readinglist"
         src=""
       />

@@ -3,11 +3,12 @@
 <% end %>
 <% if @podcast %>
   <div class="user-profile-header tag-header podcast-header" style="background:#<%= @podcast.main_color_hex %> url(<%= cl_image_path(@podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png",
-                                                                       type: "fetch",
-                                                                       quality: "auto",
-                                                                       sign_url: true,
-                                                                       flags: "progressive",
-                                                                       fetch_format: "jpg") %>);color:white;">
+                                                                                                                    type: "fetch",
+                                                                                                                    quality: "auto",
+                                                                                                                    sign_url: true,
+                                                                                                                    flags: "progressive",
+                                                                                                                    fetch_format: "jpg")
+                                                                                                                  %>);">
     <div class="tag-or-query-header-container">
       <h1><img class="record" src="<%= cl_image_path(@podcast.image_url,
                                                      type: "fetch",
@@ -19,15 +20,11 @@
                                                      flags: "progressive",
                                                      fetch_format: "auto",
                                                      class: "main-image") %>"
-               alt="<%= @podcast.title %>" /> <%= @podcast.title %></h1>
+               alt="<%= @podcast.title %>" /> <%= @podcast.title %>
+               <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" data-info='{"id":<%= @podcast.id %>,"className":"<%= @podcast.class.name %>"}'>&nbsp;</button>
+</h1>
     </div>
     <%= render "podcast_episodes/subscribe_buttons" %>
-  </div>
-<% else %>
-  <div class="user-profile-header tag-header">
-    <div class="tag-or-query-header-container">
-      <h1>Podcasts</h1>
-    </div>
   </div>
 <% end %>
 

@@ -2,12 +2,15 @@ class MarkdownParser
   include ApplicationHelper
   include CloudinaryHelper
 
+  WORDS_READ_PER_MINUTE = 275.0
+
   def initialize(content)
     @content = content
   end
 
-  def finalize
-    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
+  def finalize(link_attributes: {})
+    options = { hard_wrap: true, filter_html: false, link_attributes: link_attributes }
+    renderer = Redcarpet::Render::HTMLRouge.new(options)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
     catch_xss_attempts(@content)
     escaped_content = escape_liquid_tags_in_codeblock(@content)
@@ -30,7 +33,7 @@ class MarkdownParser
 
   def calculate_reading_time
     word_count = @content.split(/\W+/).count
-    (word_count / 275.0).ceil
+    (word_count / WORDS_READ_PER_MINUTE).ceil
   end
 
   def evaluate_markdown
@@ -58,6 +61,31 @@ class MarkdownParser
                                             attributes: allowed_attributes
   end
 
+  def evaluate_inline_limited_markdown
+    return if @content.blank?
+
+    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
+    markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
+    allowed_tags = %w[strong i u b em code]
+    allowed_attributes = %w[href strong em ref rel src title alt class]
+    ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
+                                            tags: allowed_tags,
+                                            attributes: allowed_attributes
+  end
+
+  def evaluate_listings_markdown
+    return if @content.blank?
+
+    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
+    markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
+    allowed_tags = %w[strong abbr aside em p h1 h2 h3 h4 h5 h6 i u b code pre
+                      br ul ol li small sup sub a span hr blockquote kbd]
+    allowed_attributes = %w[href strong em ref rel src title alt class]
+    ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
+                                            tags: allowed_tags,
+                                            attributes: allowed_attributes
+  end
+
   def tags_used
     return [] if @content.blank?
 
@@ -78,6 +106,7 @@ class MarkdownParser
       # allow image to render as-is
       next if allowed_image_host?(src)
 
+      img["loading"] = "lazy"
       img["src"] = if giphy_img?(src)
                      src.gsub("https://media.", "https://i.")
                    else
@@ -107,13 +136,13 @@ class MarkdownParser
   def catch_xss_attempts(markdown)
     bad_xss = ['src="data', "src='data", "src='&", 'src="&', "data:text/html"]
     bad_xss.each do |xss_attempt|
-      raise if markdown.include?(xss_attempt)
+      raise ArgumentError, "Invalid markdown detected" if markdown.include?(xss_attempt)
     end
   end
 
   def allowed_image_host?(src)
     # GitHub camo image won't parse but should be safe to host direct
-    src.start_with?("https://camo.githubusercontent.com/", "https://cdn-images-1.medium.com")
+    src.start_with?("https://camo.githubusercontent.com/")
   end
 
   def giphy_img?(source)
@@ -134,8 +163,8 @@ class MarkdownParser
 
   def escape_liquid_tags_in_codeblock(content)
     # Escape codeblocks, code spans, and inline code
-    content.gsub(/`{3}.*?`{3}|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
-      if codeblock[0..2] == "```"
+    content.gsub(/[[:space:]]*`{3}.*?`{3}|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
+      if codeblock.match?(/[[:space:]]*`{3}/)
         "\n{% raw %}\n" + codeblock + "\n{% endraw %}\n"
       else
         "{% raw %}" + codeblock + "{% endraw %}"
@@ -159,7 +188,11 @@ class MarkdownParser
         end
       end
     end
-    html_doc.to_html
+    if html_doc.at_css("body")
+      html_doc.at_css("body").inner_html
+    else
+      html_doc.to_html
+    end
   end
 
   def user_link_if_exists(mention)

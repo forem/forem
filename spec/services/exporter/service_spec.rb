@@ -59,6 +59,15 @@ RSpec.describe Exporter::Service do
       expect(exports.length).to eq(described_class::EXPORTERS.size)
     end
 
+    it "fetches the passed config" do
+      service = valid_instance(article.user)
+      config = double
+      allow(config).to receive(:fetch).with(:articles, {}).and_return(slug: article.slug)
+      allow(config).to receive(:fetch).with(:comments, {}).and_return({})
+      service.export(config: config)
+      expect(config).to have_received(:fetch).with(:articles, {})
+    end
+
     context "when emailing the user" do
       it "delivers one email" do
         service = valid_instance(article.user)

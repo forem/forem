@@ -20,16 +20,12 @@ export default class GithubRepo extends Component {
   componentDidMount() {
     if (this.state.token) {
       getJSONContents(
-        `https://api.github.com/repos/${
-          this.props.resource.args
-        }/contents?access_token=${this.state.token}`,
+        `https://api.github.com/repos/${this.props.resource.args}/contents?access_token=${this.state.token}`,
         this.loadContent,
         this.loadFailure,
       );
       getJSONContents(
-        `https://api.github.com/repos/${
-          this.props.resource.args
-        }/readme?access_token=${this.state.token}`,
+        `https://api.github.com/repos/${this.props.resource.args}/readme?access_token=${this.state.token}`,
         this.loadContent,
         this.loadFailure,
       );
@@ -91,15 +87,7 @@ export default class GithubRepo extends Component {
           <div className="activecontent__githubrepoheader">
             <em>Authentication required</em>
           </div>
-          <p>
-            You must
-            {' '}
-            <a href="/users/auth/github" data-no-instant>
-              authenticate with GitHub
-            </a>
-            {' '}
-            to use this feature.
-          </p>
+          <p>This feature is in internal alpha testing mode.</p>
         </div>
       );
     }
@@ -121,9 +109,7 @@ export default class GithubRepo extends Component {
           data-path={item.path}
           onClick={this.handleItemClick}
         >
-          📁 
-          {' '}
-          {item.name}
+          📁 {item.name}
         </a>
       </div>
     ));
@@ -143,8 +129,9 @@ export default class GithubRepo extends Component {
     if (this.state.readme) {
       readme = (
         <div
+          className="activecontent__githubreporeadme"
           dangerouslySetInnerHTML={{
-            __html: marked(this.state.readme, { sanitize: true }),
+            __html: marked(this.state.readme),
           }}
         />
       );
@@ -156,7 +143,7 @@ export default class GithubRepo extends Component {
             <a href="/Users/benhalpern/dev/dev.to_core/app" />
             {this.state.path}
           </div>
-          <div className="activecontent__githubrepofiles">
+          <div className="activecontent__githubrepofiles activecontent__githubrepofiles--root">
             {directories}
             {files}
           </div>

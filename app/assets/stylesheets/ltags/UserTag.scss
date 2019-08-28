@@ -1,31 +1,32 @@
 @import 'variables';
+@import 'mixins';
 .ltag__user__link {
-  color: #111111 !important;
+  color: $black;
+  color: var(--theme-color, $black);
   &:active {
     opacity: 0.7;
   }
-  &.profile-image-link{
+  &.profile-image-link {
     &:hover {
-      opacity: 1.0;
+      opacity: 1;
     }
     &:active {
-      opacity: 1.0;
+      opacity: 1;
     }
   }
 }
 .ltag__user {
   font-family: $helvetica;
-  border:1px solid $light-medium-gray;
-  box-shadow: $bold-shadow;
-  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
-  border-radius:3px;
+  border: 1px solid $light-medium-gray;
+  @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
+  border-radius: 3px;
   display: block;
   margin: 0.95em 0 1.2em;
-  position:relative;
-  overflow:hidden;
+  position: relative;
+  overflow: hidden;
   @media screen and (min-width: 760px) {
     margin: 0.95em auto;
-    width:620px;
+    width: 620px;
   }
   .ltag__user__pic {
     display: inline-block;
@@ -56,9 +57,10 @@
         background: $green;
         border-radius: 5px;
         font-size: 0.6em;
-        vertical-align: 0.1em;
+        vertical-align: 0.3em;
         padding: 2px 20px;
         border: 1px solid $green;
+        margin: 0.2em 0.5em;
         cursor: pointer;
         &.following-butt {
           background: $green;
@@ -69,8 +71,31 @@
         }
       }
     }
+    .ltag__user__social {
+      margin: 2px 0px;
+      padding-left: 0px;
+      line-height: 22px;
+      font-size: 0.75em;
+      a {
+        color: $medium-gray;
+        color: var(--theme-secondary-color, $medium-gray);
+        margin-right: 10px;
+        display: inline-block;
+        .icon-img {
+          float: left;
+          width: 15px;
+          height: 15px;
+          border-radius: 3px;
+          vertical-align: -2px;
+          margin: 3px 0;
+          opacity: 0.7;
+          background: transparent;
+          background: var(--theme-secondary-color, transparent);
+        }
+      }
+    }
     .ltag__user__summary {
-      margin: 0.5em 0;
+      margin: 0.3em 0;
       padding: 0;
       font-size: 0.889em;
       margin-bottom: 0;

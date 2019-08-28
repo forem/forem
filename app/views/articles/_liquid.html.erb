@@ -1,0 +1,25 @@
+<div class='ltag__link'>
+  <% if article.video && article.cloudinary_video_url %>
+    <a href='<%= article.path %>' class="video-image" style="background-image: url(<%= article.cloudinary_video_url %>)">
+      <span class="video-timestamp">
+        <img src="<%= asset_path("video-camera.svg") %>" alt="video camera">
+        <%= article.video_duration_in_minutes %></span>
+    </a>
+  <% end %>
+  <a href='<%= article.user.path %>' class='ltag__link__link'>
+    <div class='ltag__link__pic'>
+      <img src='<%= ProfileImage.new(article.user).get(150) %>' alt='<%= article.user.username + " " + "image"%>'/>
+    </div>
+  </a>
+  <a href='<%= article.path %>' class='ltag__link__link'>
+    <div class='ltag__link__content'>
+      <h2><%= title %></h2>
+      <h3><%= article.user.name %> ・ <%= article.readable_publish_date %> ・ <%= article.reading_time < 2 ? 1 : article.reading_time %> min read</h3>
+      <div class='ltag__link__taglist'>
+      <% article.tag_list.each do |t| %>
+        <span class='ltag__link__tag'>#<%= t %></span>
+      <% end %>
+      </div>
+    </div>
+  </a>
+</div>

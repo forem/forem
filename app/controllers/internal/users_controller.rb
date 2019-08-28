@@ -3,10 +3,6 @@ class Internal::UsersController < Internal::ApplicationController
 
   def index
     @users = case params[:state]
-             when "mentors"
-               User.where(offering_mentorship: true).page(params[:page]).per(50)
-             when "mentees"
-               User.where(seeking_mentorship: true).page(params[:page]).per(50)
              when /role\-/
                User.with_role(params[:state].split("-")[1], :any).page(params[:page]).per(50)
              else
@@ -26,26 +22,92 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def show
-    @user = if params[:id] == "unmatched_mentee"
-              MentorRelationship.unmatched_mentees.order(Arel.sql("RANDOM()")).first
-            else
-              User.find(params[:id])
-            end
-    @user_mentee_relationships = MentorRelationship.where(mentor_id: @user.id)
-    @user_mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
+    @user = User.find(params[:id])
+    @organizations = @user.organizations
   end
 
   def update
     @user = User.find(params[:id])
-    @new_mentee = user_params[:add_mentee]
-    @new_mentor = user_params[:add_mentor]
-    make_matches
+    manage_credits
     add_note if user_params[:new_note]
-    if user_params[:quick_match]
-      redirect_to "/internal/users/unmatched_mentee"
-    else
-      redirect_to "/internal/users/#{params[:id]}"
+    redirect_to "/internal/users/#{params[:id]}"
+  end
+
+  def user_status
+    @user = User.find(params[:id])
+    begin
+      Moderator::ManageActivityAndRoles.handle_user_roles(admin: current_user, user: @user, user_params: user_params)
+      flash[:success] = "User has been updated"
+    rescue StandardError => e
+      flash[:danger] = e.message
     end
+    redirect_to "/internal/users/#{@user.id}/edit"
+  end
+
+  def banish
+    @user = User.find(params[:id])
+    begin
+      Moderator::BanishUser.call_banish(admin: current_user, user: @user)
+    rescue StandardError => e
+      flash[:danger] = e.message
+    end
+    redirect_to "/internal/users/#{@user.id}/edit"
+  end
+
+  def full_delete
+    @user = User.find(params[:id])
+    begin
+      Moderator::DeleteUser.call_deletion(admin: current_user, user: @user, user_params: user_params)
+      flash[:success] = "@" + @user.username + " (email: " + @user.email + ", user_id: " + @user.id.to_s + ") has been fully deleted. If requested, old content may have been ghostified. If this is a GDPR delete, delete them from Mailchimp & Google Analytics."
+    rescue StandardError => e
+      flash[:danger] = e.message
+    end
+    redirect_to "/internal/users"
+  end
+
+  def merge
+    @user = User.find(params[:id])
+    begin
+      Moderator::MergeUser.call_merge(admin: current_user, keep_user: @user, delete_user_id: user_params["merge_user_id"])
+    rescue StandardError => e
+      flash[:danger] = e.message
+    end
+    redirect_to "/internal/users/#{@user.id}/edit"
+  end
+
+  def remove_identity
+    identity = Identity.find(user_params[:identity_id])
+    @user = identity.user
+    begin
+      BackupData.backup!(identity)
+      identity.delete
+      @user.update("#{identity.provider}_username" => nil)
+      flash[:success] = "The #{identity.provider.capitalize} identity was successfully deleted and backed up."
+    rescue StandardError => e
+      flash[:danger] = e.message
+    end
+    redirect_to "/internal/users/#{@user.id}/edit"
+  end
+
+  def recover_identity
+    backup = BackupData.find(user_params[:backup_data_id])
+    @user = backup.instance_user
+    begin
+      identity = backup.recover!
+      flash[:success] = "The #{identity.provider} identity was successfully recovered, and the backup was removed."
+    rescue StandardError => e
+      flash[:danger] = e.message
+    end
+    redirect_to "/internal/users/#{@user.id}/edit"
+  end
+
+  private
+
+  def manage_credits
+    add_credits if user_params[:add_credits]
+    add_org_credits if user_params[:add_org_credits]
+    remove_org_credits if user_params[:remove_org_credits]
+    remove_credits if user_params[:remove_credits]
   end
 
   def add_note
@@ -58,75 +120,35 @@ class Internal::UsersController < Internal::ApplicationController
     )
   end
 
-  def user_status
-    @user = User.find(params[:id])
-    begin
-      Moderator::ManageActivityAndRoles.handle_user_roles(admin: current_user, user: @user, user_params: user_params)
-      flash[:notice] = "User has been udated"
-    rescue StandardError => e
-      flash[:error] = e.message
-    end
-    redirect_to "/internal/users/#{@user.id}/edit"
+  def add_credits
+    amount = user_params[:add_credits].to_i
+    Credit.add_to(@user, amount)
   end
 
-  def make_matches
-    return if @new_mentee.blank? && @new_mentor.blank?
-
-    if @new_mentee.present?
-      mentee = User.find(@new_mentee)
-      MentorRelationship.new(mentee_id: mentee.id, mentor_id: @user.id).save!
-    end
-    return if @new_mentor.blank?
-
-    mentor = User.find(@new_mentor)
-    MentorRelationship.new(mentee_id: @user.id, mentor_id: mentor.id).save!
+  def remove_credits
+    amount = user_params[:remove_credits].to_i
+    Credit.remove_from(@user, amount)
   end
 
-  def banish
-    @user = User.find(params[:id])
-    begin
-      Moderator::BanishUser.call_banish(admin: current_user, user: @user)
-    rescue StandardError => e
-      flash[:error] = e.message
-    end
-    redirect_to "/internal/users/#{@user.id}/edit"
+  def add_org_credits
+    org = Organization.find(user_params[:organization_id])
+    amount = user_params[:add_org_credits].to_i
+    Credit.add_to_org(org, amount)
   end
 
-  def full_delete
-    @user = User.find(params[:id])
-    begin
-      Moderator::BanishUser.call_full_delete(admin: current_user, user: @user)
-      flash[:notice] = "@" + @user.username + " (email: " + @user.email + ", user_id: " + @user.id.to_s + ") has been fully deleted. If this is a GDPR delete, remember to delete them from Mailchimp and Google Analytics."
-    rescue StandardError => e
-      flash[:error] = e.message
-    end
-    redirect_to "/internal/users"
+  def remove_org_credits
+    org = Organization.find(user_params[:organization_id])
+    amount = user_params[:remove_org_credits].to_i
+    Credit.remove_from_org(org, amount)
   end
-
-  def merge
-    @user = User.find(params[:id])
-    begin
-      Moderator::MergeUser.call_merge(admin: current_user, keep_user: @user, delete_user_id: user_params["merge_user_id"])
-    rescue StandardError => e
-      flash[:error] = e.message
-    end
-    redirect_to "/internal/users/#{@user.id}/edit"
-  end
-
-  private
 
   def user_params
-    params.require(:user).permit(:seeking_mentorship,
-                                 :offering_mentorship,
-                                 :quick_match,
-                                 :new_note,
-                                 :add_mentor,
-                                 :add_mentee,
-                                 :note_for_current_role,
-                                 :mentorship_note,
-                                 :user_status,
-                                 :toggle_mentorship,
-                                 :pro,
-                                 :merge_user_id)
+    allowed_params = %i[
+      new_note note_for_current_role user_status
+      pro merge_user_id add_credits remove_credits
+      add_org_credits remove_org_credits ghostify
+      organization_id identity_id backup_data_id
+    ]
+    params.require(:user).permit(allowed_params)
   end
 end

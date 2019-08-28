@@ -1,0 +1,138 @@
+<% if !organizations.any? %>
+  <div class="partner-credits-explainer">
+    <h4>What next?</h4>
+    <h3>Create an Organization</h3>
+    <p>
+      <em>Organizations act as a publication and a way for your team to interact with DEV on behalf of the company</em>
+    </p>
+    <p>
+      Come back to this page once you have created an organization. Only organization <em>admins</em> may purchase sponsorships.
+    </p>
+    <a href="/settings/organization">Create Organization</a>
+  </div>
+<% elsif %w[silver bronze tag].include?(level) %>
+  <% organizations.find_each do |org| %>
+    <% if org.credits.unspent.size < Sponsorship::CREDITS[level] %>
+      <div class="partner-credits-explainer">
+        <h4>What next?</h4>
+        <h3><img src="<%= ProfileImage.new(org).get(90) %>" /> Purchase Credits for @<%= org.slug %></h3>
+        <% if org.credits.unspent.size > 0 %>
+          <div style="font-size: 0.88em;">
+            <em>This organization account has <%= org.credits.unspent.size %> credits available</em>
+          </div>
+        <% end %>
+        <p>
+          <em>Credits are your wallet for flexibly managing all your DEV partnerships.</em>
+        </p>
+        <p>
+          Credits can be purchased via company credit card, and once in your account you can use them for different promotions.
+        </p>
+        <p>
+          Credits can be purchased in bulk for discounts on all future sponsorships and partnerships, or in small batches to test the waters.
+        </p>
+        <a href="/credits/purchase?organization_id=<%= org.id %>" data-no-instant>Get Credits</a>
+      </div>
+    <% else %>
+      <div class="partner-credits-explainer">
+        <% if Sponsorship::LEVELS_WITH_EXPIRATION.include?(level) %>
+          <h3><img src="<%= ProfileImage.new(org).get(90) %>" />@<%= org.slug %></h3>
+          <div style="font-size: 0.88em;"><em>This organization account has <%= org.credits.unspent.size %> credits available</em></div>
+          <% sponsorships = org.sponsorships.where(level: Sponsorship::LEVELS_WITH_EXPIRATION) %>
+          <% level_sponsorship = sponsorships.where(level: level).take %>
+          <% if level_sponsorship %>
+            <div class="partner-explainer-notice">
+              🎉 You are Subscribed as a <%= level.capitalize %> Sponsor.
+              <% if level_sponsorship.status == "pending" %>
+                <br /><br />Your placement is <em>pending</em>.
+              <% end %>
+            </div>
+          <% elsif sponsorships.any? %>
+            <div class="partner-explainer-notice">
+              <%# this should never happen but better safe than sorry %>
+              <% sponsorships.each do |sponsorship| %>
+              🛑 You are already subscribed as a <%= sponsorship.level %> sponsor. Contact partnerships@dev.to to change plans.
+              <% end %>
+            </div>
+          <% else %>
+            <h2><%= level.capitalize %> Sponsor Subscription</h2>
+            <%= form_tag "/partnerships" do %>
+              <%= hidden_field_tag(:organization_id, org.id) %>
+              <%= hidden_field_tag(:level, level) %>
+              <h4>Sponsorship message/brand instructions:</h4>
+              <%= text_area_tag(:instructions, nil, placeholder: "Include brand guideline links and detailed instructions about the message you are trying to get across. DEV editors will use these guidelines contextually depending on sponsorship.") %>
+              <button>Subscribe for <%= Sponsorship::CREDITS[level] %> credits</button>
+              <p style="font-size: 0.88em;">
+                <em>
+                  This subscription will renew every month with credits in your account. If there are no credits, 50 credits will be purchased at the appropriate price. You can cancel this automatic sponsorship subscription at any time.
+                </em>
+              </p>
+            <% end %>
+          <% end %>
+        <% elsif level == "tag" %>
+          <h3><img src="<%= ProfileImage.new(org).get(90) %>" />@<%= org.slug %></h3>
+          <div style="font-size: 0.88em;"><em>This organization account has <%= org.credits.unspent.size %> credits available</em></div>
+          <br />
+          <%= form_tag "/partnerships" do %>
+            <%= hidden_field_tag(:organization_id, org.id) %>
+            <%= hidden_field_tag(:level, level) %>
+            <h4>Sponsorship message/brand instructions:</h4>
+            <%= text_area_tag(:instructions, nil, placeholder: "Include brand guideline links and detailed instructions about the message you are trying to get across. DEV editors will use these guidelines contextually depending on sponsorship.") %>
+            <% org.sponsorships.where(level: :tag).find_each do |sponsorship| %>
+              <div class="partner-explainer-notice">
+                🎉 You are Subscribed as the sponsor of #<%= sponsorship.sponsorable.name %>.
+              </div>
+            <% end %>
+            <% if org.sponsorships.where(level: :tag).any? %>
+              <h4>Sponsor another tag:</h4>
+            <% end %>
+            <% sponsored_tags = org.sponsorships.includes(:sponsorable).where(level: :tag).map { |sp| sp.sponsorable.name } %>
+            <% tag_names = Tag.where(supported: true).where.not(name: sponsored_tags).pluck(:name) %>
+            <%= select_tag "tag_name", options_for_select(tag_names) %>
+            <button>Sponsor Tag for <%= Sponsorship::CREDITS[:tag] %> credits</button>
+            <p style="font-size: 0.88em;">
+              <em>
+                This subscription will renew every month with credits in your account. If there are no credits, 50 credits will be purchased at the appropriate price. You can cancel this automatic sponsorship subscription at any time.
+              </em>
+            </p>
+          <% end %>
+        <%# NOTE: this currently can't be reached %>
+        <% elsif level == "media" %>
+          <h3><img src="<%= ProfileImage.new(org).get(90) %>" />@<%= org.slug %></h3>
+          <div style="font-size: 0.88em;"><em>This organization account has <%= org.credits.unspent.size %> credits available</em></div>
+          <br />
+          <%= form_tag "/partnerships" do %>
+            <%= hidden_field_tag(:organization_id, org.id) %>
+            <%= hidden_field_tag(:level, level) %>
+            <%= number_field_tag(:amount, nil, placeholder: "Number of credits") %>
+            <button>Add spend to your media sponsorship</button>
+            <p style="font-size: 0.88em;">
+              <em>
+                Credits will be allotted flexibly use in DEV-produced podcasts, videos and other media content. You will be notified as it is being distributed.
+              </em>
+            </p>
+          <% end %>
+        <%# NOTE: this currently can't be reached %>
+        <% elsif level == "devrel" %>
+          <h3><img src="<%= ProfileImage.new(org).get(90) %>" />@<%= org.slug %></h3>
+          <div style="font-size: 0.88em;"><em>This organization account has <%= org.credits.unspent.size %> credits available</em></div>
+          <br />
+          <%= form_tag "/partnerships" do %>
+            <%= hidden_field_tag(:organization_id, org.id) %>
+            <%= hidden_field_tag(:level, level) %>
+            <button>Sign Up for DevRel Consulting</button>
+            <p style="font-size: 1.1em;">
+              You will be contacted by the DEV team within one day of signing up for this service.
+            </p>
+            <p style="font-size: 0.88em;">
+              <em>
+                This subscription will renew every month with credits in your account. If there are no credits, 50 credits will be purchased at the appropriate price. You can cancel this automatic sponsorship subscription at any time.
+              </em>
+            </p>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+<% else %>
+<h2>Contact <a href="mailto:partners@dev.to">partners@dev.to</a> to sign up</h1>
+<% end %>

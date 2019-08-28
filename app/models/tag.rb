@@ -8,12 +8,17 @@ class Tag < ActsAsTaggableOn::Tag
   NAMES = %w[
     beginners career computerscience git go java javascript react vue webassembly
     linux productivity python security webdev css php laravel opensource npm a11y
-    ruby cpp dotnet swift testing devops vim kotlin rust elixir graphql blockchain
+    ruby cpp dotnet swift testing devops vim kotlin rust elixir graphql blockchain sre
     scala vscode docker kubernetes aws android ios angular csharp typescript django rails
     clojure ubuntu elm gamedev flutter dart bash machinelearning sql
   ].freeze
 
+  ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
+
   attr_accessor :tag_moderator_id, :remove_moderator_id
+
+  belongs_to :badge, optional: true
+  has_one :sponsorship, as: :sponsorable, inverse_of: :sponsorable, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
@@ -22,6 +27,7 @@ class Tag < ActsAsTaggableOn::Tag
             format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
   validates :bg_color_hex,
             format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
+  validates :category, inclusion: { in: ALLOWED_CATEGORIES }
 
   validate :validate_alias
   before_validation :evaluate_markdown
@@ -51,6 +57,10 @@ class Tag < ActsAsTaggableOn::Tag
     end
   end
 
+  def self.valid_categories
+    ALLOWED_CATEGORIES
+  end
+
   private
 
   def evaluate_markdown
@@ -68,12 +78,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def bust_cache
-    cache_buster = CacheBuster.new
-    cache_buster.bust("/t/#{name}")
-    cache_buster.bust("/t/#{name}?i=i")
-    cache_buster.bust("/t/#{name}/?i=i")
-    cache_buster.bust("/t/#{name}/")
-    cache_buster.bust("/tags")
+    Tags::BustCacheJob.perform_later(name)
   end
 
   def validate_alias

@@ -1,5 +1,19 @@
 @import 'variables';
-@import 'shared';
+@import 'mixins';
+
+%kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font-size: 11px;
+  line-height: 10px;
+  color: #444d56;
+  vertical-align: middle;
+  background-color: #fafbfc;
+  border: solid 1px #c6cbd1;
+  border-bottom-color: #959da5;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 #959da5;
+}
 
 $indent-distance: calc(1.1vw + 13px);
 
@@ -13,18 +27,15 @@ $indent-distance: calc(1.1vw + 13px);
 }
 
 a.header-link {
-  color: $black;
-  color: var(--theme-color, $black);
+  @include themeable(color, theme-color, $black);
   display: block;
   &:hover {
-    color: $black;
-    color: var(--theme-color, $black);
+    @include themeable(color, theme-color, $black);
   }
 }
 
 .comments {
-  background: $light-gray;
-  background: var(--theme-background, $light-gray);
+  @include themeable(background, theme-background, $light-gray);
   .picture {
     height: 180px;
     max-width: 900px;
@@ -54,15 +65,17 @@ a.header-link {
     max-width: 100%;
     margin: 50px auto 10px;
     padding: 0px 0px 90px;
-    background: white;
-    background: var(--theme-container-background, white);
+    @include themeable(background, theme-container-background, #fff);
     z-index: 3;
     position: relative;
     @media screen and (min-width: 820px) {
       margin: 72px auto 10px;
       border-radius: 5px;
-      border: 1px solid darken($lightest-gray, 4%);
-      border: var(--theme-container-border, 1px solid darken($lightest-gray, 4%));
+      @include themeable(
+        border,
+        theme-container-border,
+        1px solid darken($lightest-gray, 4%)
+      );
     }
     h3 {
       width: 94%;
@@ -89,8 +102,7 @@ a.header-link {
       margin: auto;
       margin-bottom: -35px;
       .read-more {
-        color: $sky-blue;
-        color: var(--theme-anchor-color, $sky-blue);
+        @include themeable(color, theme-anchor-color, $sky-blue);
         display: inline-block;
         &:hover {
           opacity: 0.96;
@@ -182,7 +194,7 @@ a.header-link {
   }
 
   .top-level-actions {
-    margin: 0px 8px 85px;
+    margin: 0px 0px 85px;
     padding: 3px 0px;
     z-index: 4;
     position: relative;
@@ -195,6 +207,7 @@ a.header-link {
         background: $black;
         color: white;
         margin: 2px 0px 2px;
+        margin-right: 5px;
         vertical-align: 2px;
       }
     }
@@ -211,8 +224,8 @@ a.header-link {
       color: $black;
       font-family: $helvetica-condensed;
       font-stretch: condensed;
-      padding: 4px 12px;
-      font-size: 0.8em;
+      padding: 4px 8px;
+      font-size: 0.77em;
       vertical-align: 1px;
       margin: 8px 0px 2px;
     }
@@ -223,20 +236,29 @@ a.header-link {
   }
   form {
     width: 104%;
-    background: $light-gray;
-    background: var(--theme-container-accent-background, $light-gray);
+    @include themeable(
+      background,
+      theme-container-accent-background,
+      $light-gray
+    );
     overflow: auto;
     position: relative;
     margin-bottom: 4px;
     z-index: 4;
     margin-left: -2%;
-    border-top: 1px solid $light-medium-gray;
-    border-top: var(--theme-container-border, 1px solid $light-medium-gray);
+    @include themeable(
+      border-top,
+      theme-container-border,
+      1px solid $light-medium-gray
+    );
     @media screen and (min-width: 820px) {
       width: calc(100% - 2px);
       margin-left: 0%;
-      border: 1px solid $light-medium-gray;
-      border: var(--theme-container-border, 1px solid $light-medium-gray);
+      @include themeable(
+        border,
+        theme-container-border,
+        1px solid $light-medium-gray
+      );
     }
 
     .field {
@@ -254,19 +276,20 @@ a.header-link {
       display: block;
       resize: vertical;
       border-radius: 3px;
-      border: 1px solid rgb(232, 229, 229);
-      border: var(--theme-container-background, 1px solid rgb(232, 229, 229));
+      @include themeable(
+        border,
+        theme-container-background,
+        1px solid rgb(232, 229, 229)
+      );
       height: 125px;
       font-size: 16px;
       padding: 6px;
       cursor: text;
-      background: white;
-      background: var(--theme-container-background, white);
-      color: $black;
-      color: var(--theme-color, $black);
-      &::placeholder{
-        color:#8f949c;
-      }  
+      @include themeable(background, theme-container-background, #fff);
+      @include themeable(color, theme-color, $black);
+      &::placeholder {
+        color: #8f949c;
+      }
       &.embiggened {
         height: calc(2vw + 115px);
       }
@@ -279,8 +302,9 @@ a.header-link {
       &.preview-loading {
         background: white url(image_path('loading-ellipsis.svg')) no-repeat
           center center;
-        background-color: var(--theme-container-background, white);
-        color: var(--theme-container-background, white);
+        @include themeable(background-color, theme-container-background, white);
+        @include themeable(color, theme-container-background, white);
+
         background-size: 50px;
       }
     }
@@ -293,8 +317,11 @@ a.header-link {
       text-align: left;
       font-size: 19px;
       font-family: $helvetica;
-      background: lighten($yellow, 19%);
-      background: var(--theme-container-accent-background, lighten($yellow, 19%));
+      @include themeable(
+        background,
+        theme-container-accent-background,
+        lighten($yellow, 19%)
+      );
       box-shadow: $shadow;
       width: calc(100% - 80px);
       margin: 19px auto 8px;
@@ -307,6 +334,9 @@ a.header-link {
       }
       kbd {
         @extend %kbd;
+      }
+      code {
+        word-wrap: break-word;
       }
     }
     .actions {
@@ -347,8 +377,7 @@ a.header-link {
       text-align: right;
       font-size: 0.9em;
       font-weight: 500;
-      color: $dark-gray;
-      color: var(--theme-secondary-color, $dark-gray);
+      @include themeable(color, theme-secondary-color, $dark-gray);
       &.sub-comment-code-of-conduct {
         font-size: 1em;
       }
@@ -358,8 +387,7 @@ a.header-link {
         margin: 5px 0px;
       }
       a {
-        color: $sky-blue;
-        color: var(--theme-anchor-color, $sky-blue);
+        @include themeable(color, theme-anchor-color, $sky-blue);
       }
     }
     input[type='submit'] {
@@ -386,6 +414,13 @@ a.header-link {
       .comment-deep-2 {
         margin-top: -123px;
       }
+      // this ms-lang hack (which behaves like a media query) is going to be ignored by all browsers 
+      // except IE and 11 and it fixes indentation on the unsupported <details> tags
+      _:-ms-lang(x),
+      .comment-deep-1,
+      .comment-deep-2 {
+        margin-top: 0px;
+      }
       summary {
         z-index: 15;
         position: relative;
@@ -409,7 +444,7 @@ a.header-link {
         outline: 0;
         box-shadow: 0px 0px 0px $light-medium-gray !important;
       }
-      &:focus {
+      &:focus-visible {
         outline: 0;
         &:not(:active) {
           box-shadow: 0px 0px 6px $light-medium-gray !important;
@@ -439,6 +474,17 @@ a.header-link {
     }
     .root-comment {
       margin-top: -80px;
+      .comment-parent-link {
+        @include themeable(background, theme-container-background, white);
+        @include themeable(border, theme-container-border, 1px solid $medium-gray);
+        display: block;
+        padding: 9px 12px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 0.8em;
+        @include themeable(background, theme-container-accent-background, lighten($lightest-gray, 1%));
+      }
     }
   }
   .comment-view-parent {
@@ -518,7 +564,11 @@ a.header-link {
   .low-quality-comment-marker {
     font-size: 0.66em;
     padding: 6px 13px;
-    background: $light-gray;
+    @include themeable(
+      background,
+      theme-container-accent-background,
+      $light-gray
+    );
     font-weight: bold;
     border-bottom: 1px solid $light-medium-gray;
     a {
@@ -616,12 +666,8 @@ a.header-link {
     }
     code {
       margin: auto;
-      white-space: nowrap;
-      background: $lightest-gray;
-      background: var(--theme-background, $lightest-gray);
       padding: 1px 5px 0px;
       border-radius: 2px;
-      color: #333842;
       font-size: 0.8em;
       display: inline-block;
       vertical-align: 0.1em;
@@ -637,6 +683,7 @@ a.header-link {
       padding-top: 6%;
       padding-bottom: 6%;
       overflow-wrap: normal;
+      overflow-x: auto;
       code {
         background: #29292e;
         color: #eff0f9;
@@ -673,21 +720,18 @@ a.header-link {
   .details {
     padding: 0px;
     border-top-left-radius: 3px;
-    border-top-left-radius: 3px;
-    color: $dark-gray;
-    color: var(--theme-secondary-color, $dark-gray);
+    @include themeable(color, theme-secondary-color, $dark-gray);
     position: relative;
     // background:$light-gray;
     .comment-date {
       border: none;
       position: absolute;
-      top: calc(16px - 0.25vw);
+      top: calc(14px - 0.25vw);
       right: calc(35px + 0.2vw);
       font-size: 12px;
       text-align: right;
       a {
-        color: $medium-gray;
-        color: var(--theme-secondary-color, $dark-gray);
+        @include themeable(color, theme-secondary-color, $medium-gray);
       }
     }
     .dropbtn {
@@ -777,11 +821,11 @@ a.header-link {
         font-family: $helvetica-condensed;
         font-stretch: condensed;
         font-size: 0.78em;
+        border-radius: 3px;
       }
     }
     a {
-      color: lighten($dark-gray, 3%);
-      color: var(--theme-secondary-color, $dark-gray);
+      @include themeable(color, theme-secondary-color, lighten($dark-gray, 3%));
     }
   }
   .reaction-button,
@@ -953,8 +997,7 @@ a.header-link {
   .inner-comment {
     padding: 0px;
     border: 1px solid $light-medium-gray;
-    background: white;
-    background: var(--theme-container-background, #fff);
+    @include themeable(background, theme-container-background, #fff);
     &.comment-created-via-fetch {
       animation: comment-create 1.2s;
       .body {
@@ -996,7 +1039,6 @@ a.header-link {
     background-color: $light-green;
   }
   to {
-    background-color: white;
-    background-color: var(--theme-container-background, #fff);
+    @include themeable(background-color, theme-container-background, #fff);
   }
 }

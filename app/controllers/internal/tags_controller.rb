@@ -16,10 +16,6 @@ class Internal::TagsController < Internal::ApplicationController
     @tag = Tag.find(params[:id])
   end
 
-  def edit
-    @tag = Tag.find(params[:id])
-  end
-
   def update
     @tag = Tag.find(params[:id])
     @add_user_id = params[:tag][:tag_moderator_id]
@@ -44,14 +40,10 @@ class Internal::TagsController < Internal::ApplicationController
   end
 
   def tag_params
-    params.require(:tag).permit(:supported,
-                                :rules_markdown,
-                                :short_summary,
-                                :pretty_name,
-                                :bg_color_hex,
-                                :text_color_hex,
-                                :tag_moderator_id,
-                                :remove_moderator_id,
-                                :alias_for)
+    allowed_params = %i[
+      supported rules_markdown short_summary pretty_name bg_color_hex
+      text_color_hex tag_moderator_id remove_moderator_id alias_for badge_id category
+    ]
+    params.require(:tag).permit(allowed_params)
   end
 end

@@ -220,7 +220,7 @@
   <body>
     <div class="content">
       <h1>Nevertheless, She Coded</h1>
-      <img src="<%= asset_path "SheCodedLogo.png" %>" alt="shecoded logo" />
+      <img src="<%= asset_path "SheCodedLogo.png" %>" alt="shecoded logo">
       <div class="text">
         <b>
           It's International Women's Day!!
@@ -257,7 +257,7 @@
       <div class="posts">
         <% @top_articles.each do |article| %>
           <a href="<%= article.path %>" class="single-post">
-            <img src="<%= ProfileImage.new(article.user).get(150) %>">
+            <img src="<%= ProfileImage.new(article.user).get(150) %>" alt="<%= article.user.name %> profile image">
             <h3>
               <%= article.title %>
             </h3>
@@ -265,13 +265,13 @@
               <%= article.user.name %>
             </h4>
             <h5>
-              #<%= (article.cached_tag_list_array & ["shecoded", "theycoded", "shecodedally"]).first %>
+              #<%= (article.cached_tag_list_array & %w[shecoded theycoded shecodedally]).first %>
             </h5>
           </a>
         <% end %>
         <% @articles.each do |article| %>
           <a href="<%= article.path %>" class="single-post">
-            <img src="<%= ProfileImage.new(article.user).get(150) %>">
+            <img src="<%= ProfileImage.new(article.user).get(150) %>" alt="<%= article.user.name %> profile image">
             <h3>
               <%= article.title %>
             </h3>
@@ -279,7 +279,7 @@
               <%= article.user.name %>
             </h4>
             <h5>
-              #<%= (article.cached_tag_list_array & ["shecoded", "theycoded", "shecodedally"]).first %>
+              #<%= (article.cached_tag_list_array & %w[shecoded theycoded shecodedally]).first %>
             </h5>
           </a>
         <% end %>

@@ -1,9 +1,12 @@
 require "rails_helper"
 
 RSpec.describe TweetTag, type: :liquid_template do
-  let(:twitter_id)  { "1018911886862057472" }
+  let(:twitter_id) { "1018911886862057472" }
+  let(:handle) { "thepracticaldev" }
+  let(:name) { "The Practical Dev" }
+  let(:body) { "When GitHub goes down" }
 
-  setup             { Liquid::Template.register_tag("tweet", TweetTag) }
+  setup { Liquid::Template.register_tag("tweet", described_class) }
 
   def generate_tweet_liquid_tag(id)
     Liquid::Template.parse("{% tweet #{id} %}")
@@ -12,7 +15,9 @@ RSpec.describe TweetTag, type: :liquid_template do
   it "accepts valid tweet id", :vcr do
     VCR.use_cassette("twitter_gem") do
       liquid = generate_tweet_liquid_tag(twitter_id)
-      expect(liquid.root.nodelist[0].tweet.text).not_to eq(nil)
+      expect(liquid.render).to include(handle)
+      expect(liquid.render).to include(name)
+      expect(liquid.render).to include(body)
     end
   end
 

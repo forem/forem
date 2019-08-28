@@ -3,8 +3,50 @@ require "rails_helper"
 RSpec.describe PodcastEpisode, type: :model do
   let(:podcast_episode) { create(:podcast_episode) }
 
-  it "accepts valid podcast episode" do
-    expect(podcast_episode).to be_valid
+  it { is_expected.to validate_presence_of(:title) }
+  it { is_expected.to validate_presence_of(:slug) }
+  it { is_expected.to validate_presence_of(:media_url) }
+  it { is_expected.to validate_presence_of(:guid) }
+
+  describe "validations" do
+    # Couldn't use shoulda matchers for these tests because:
+    # Shoulda uses `save(validate: false)` which skips validations, but runs callbacks
+    # So an invalid record is saved and the algolia callback fails to run because there's no associated podcast
+    # https://git.io/fjg2g
+
+    it "validates guid uniqueness" do
+      ep2 = build(:podcast_episode, guid: podcast_episode.guid)
+
+      expect(ep2).not_to be_valid
+      expect(ep2.errors[:guid]).to be_present
+    end
+
+    it "validates media_url uniqueness" do
+      ep2 = build(:podcast_episode, media_url: podcast_episode.media_url)
+
+      expect(ep2).not_to be_valid
+      expect(ep2.errors[:media_url]).to be_present
+    end
+
+    it "accepts valid podcast episode" do
+      expect(podcast_episode).to be_valid
+    end
+  end
+
+  describe "#available" do
+    let(:podcast) { create(:podcast) }
+    let(:unpodcast) { create(:podcast, published: false) }
+    let!(:episode) { create(:podcast_episode, podcast: podcast) }
+
+    before do
+      create(:podcast_episode, podcast: unpodcast)
+      create(:podcast_episode, podcast: podcast, reachable: false)
+    end
+
+    it "is available when reachable and published" do
+      available_ids = described_class.available.pluck(:id)
+      expect(available_ids).to eq([episode.id])
+    end
   end
 
   describe "#description" do
@@ -55,5 +97,9 @@ RSpec.describe PodcastEpisode, type: :model do
         expect(podcast_episode.processed_html.include?("q_66")).to be(true)
       end
     end
+  end
+
+  it "triggers cache busting on save" do
+    expect { build(:podcast_episode).save }.to have_enqueued_job.on_queue("podcast_episodes_bust_cache")
   end
 end

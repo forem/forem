@@ -1,23 +1,23 @@
-<% unless @user.identities.exists?(provider: 'github') %>
+<% unless @user.identities.exists?(provider: "github") %>
   <div class="field">
     <a href="/users/auth/github" class="big-button cta" data-no-instant>
-      <img src="<%= asset_path("github-logo.svg") %>" /> CONNECT GITHUB ACCOUNT
+      <img src="<%= asset_path("github-logo.svg") %>" alt="github logo"> CONNECT GITHUB ACCOUNT
     </a>
   </div>
   <hr />
 <% end %>
 
-<% unless @user.identities.exists?(provider: 'twitter') %>
+<% unless @user.identities.exists?(provider: "twitter") %>
   <div class="field">
     <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="big-button cta" data-no-instant>
-      <img src="<%= asset_path("twitter-logo.svg") %>" /> CONNECT TWITTER ACCOUNT
+      <img src="<%= asset_path("twitter-logo.svg") %> " alt="twitter logo"> CONNECT TWITTER ACCOUNT
     </a>
   </div>
   <hr />
 <% end %>
 
 <h2>DEV API Access Tokens</h2>
-<p>You can generate personal access tokens to use for authentication with the DEV API. The API is still in early beta though.</p>
+<p>You can generate personal access tokens to use for authentication with the DEV API. The API is still in early beta though. The <a href="/api">DEV API documentation</a> contains further information.</a></p>
 <h3>Generate an access token</h3>
 <%= form_tag users_api_secrets_path, method: :post do %>
   <%= fields_for :api_secret do |api_secret| %>
@@ -35,16 +35,18 @@
 <% if @user.api_secrets.empty? %>
   <p>None yet!</p>
 <% end %>
+
 <% @user.api_secrets.order(created_at: :desc).each do |api_secret| %>
-  <div class='api__secret__container'>
-    <div class='api__secret__desc'>
-      <p class='title'><%= api_secret.description %></p>
-      <p class='content'><%= api_secret.secret %></p>
-      <p class='subtitle'>Created <%= api_secret.created_at.to_date.to_s %></p>
+  <div class="api__secret__container">
+    <div class="api__secret__desc">
+      <p class="title"><%= api_secret.description %></p>
+      <p class="content"><%= api_secret.secret %></p>
+      <p class="subtitle">Created <%= api_secret.created_at.to_date.to_s %></p>
     </div>
-    <div class='api__secret__revoke'>
-      <%= form_tag users_api_secrets_path(id: api_secret.id), method: :delete do %>
-        <%= button_tag("Revoke", class: "big-action danger-button") %>
+
+    <div class="api__secret__revoke">
+      <%= form_tag users_api_secret_path(api_secret.id), method: :delete do %>
+        <%= button_tag "Revoke", class: "big-action danger-button" %>
       <% end %>
     </div>
   </div>
@@ -72,14 +74,14 @@
     <%= form_tag "/users/remove_association", method: :delete, onsubmit: "return confirm('Are you absolutely sure you want to remove your Twitter account?');" do %>
       <%= hidden_field_tag :provider, "twitter" %>
       <button class="big-action danger-button small-button" type="submit">
-        <img src="<%= asset_path("twitter-logo.svg") %>" /> REMOVE TWITTER
+        <img src="<%= asset_path("twitter-logo.svg") %>" alt="twitter logo"> REMOVE TWITTER
       </button>
     <% end %>
     <br />
     <%= form_tag "/users/remove_association", method: :delete, onsubmit: "return confirm('Are you absolutely sure you want to remove your GitHub account?');" do %>
       <%= hidden_field_tag :provider, "github" %>
       <button class="big-action danger-button small-button" type="submit">
-        <img src="<%= asset_path("github-logo.svg") %>" /> REMOVE GITHUB
+        <img src="<%= asset_path("github-logo.svg") %>" alt="github logo"> REMOVE GITHUB
       </button>
     <% end %>
   </h4>
@@ -98,13 +100,17 @@
         <li>delete any and all content you have, such as your reading list or chat messages.</li>
         <li>allow your username to become available to anyone.</li>
       </ul>
-      <b>To delete your account, type in your username:</b>
       <div class="field">
-        <input type="text" id="delete__account__username__field">
+        <label for="delete__account__username__field">
+          <b>To delete your account, type in your username:</b>
+        </label>
+        <input type="text" name="delete__account__username__field" id="delete__account__username__field">
       </div>
-      <b>For verification, type the words:</b> <i>delete my account</i>
       <div class="field">
-        <input type="text" id="delete__account__verification__field">
+        <label for="delete__account__verification__field">
+          <b>For verification, type the words:</b><i> delete my account</i>
+        </label>
+        <input type="text" name="delete__account__verification__field" id="delete__account__verification__field">
       </div>
       <button class="big-action danger-button small-button" id="delete__account__btn" type="submit" disabled="true">
         DELETE ACCOUNT

@@ -22,14 +22,15 @@
     reacted to
     <a href="<%= reactable_data["path"] %>" class="notification-comment-reacted-link">
       <%# your article/comment or the actual title of the article/comment %>
-      <%= reactable_data["title"].blank? ? "your #{reactable_data['class']['name'].downcase}" : sanitize(reactable_data["title"]) %>
+      <%= reactable_data["title"].blank? ? "your #{reactable_data['class']['name'].downcase}" : h(reactable_data["title"]) %>
     </a>
     <span class="reaction-images">
           with
       <% reaction_categories = siblings.map { |n| n["category"] } %>
       <% reaction_categories.each do |cat| %>
-          <% if ReactionImage.new(cat).path.present? %>
-            <%= image_tag ReactionImage.new(cat).path, class: "reaction-image", alt: cat.to_s %>
+          <% image_path = ReactionImage.new(cat).path %>
+          <% if image_path.present? %>
+            <%= image_tag(image_path, class: "reaction-image", alt: cat.to_s.humanize) %>
           <% end %>
         <% end %>
       </span>

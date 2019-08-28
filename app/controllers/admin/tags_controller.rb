@@ -21,6 +21,8 @@ module Admin
     def tag_params
       accessible = %i[
         name
+        category
+        badge_id
         supported
         alias_for
         wiki_body_markdown

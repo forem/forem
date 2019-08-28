@@ -22,7 +22,7 @@ then
 	echo "| For this container to work, we will need at minimum ALGOLIA API keys"
 	echo "| For logins to work, we will need either GITHUB or TWITTER API keys"
 	echo "|"
-	echo "| See ( https://docs.dev.to/get-api-keys-dev-env/ ) "
+	echo "| See ( https://docs.dev.to/getting-started/config-env/ ) "
 	echo "| for instructions on how to get the various API keys "
 	echo "|"
 	echo "| Once you got your various API keys, please proceed to the next step"
@@ -114,7 +114,7 @@ fi
 
 ###########################################
 #
-# Script header guide 
+# Script header guide
 #
 ###########################################
 
@@ -129,7 +129,7 @@ echo "# 4) Deploy the postgres container, mounting '_docker-storage/postgres' wi
 echo "# 5) Deploy the dev-to container, with the name of 'dev-to-app', and sets up its port to 3000"
 echo "#"
 echo "# To run this script properly, execute with the following (inside the dev.to repository folder)..."
-echo "# './docker-run.sh [RUN_MODE] [Additional docker envrionment arguments]'"
+echo "# './docker-run.sh [RUN_MODE] [Additional docker environment arguments]'"
 echo "#"
 echo "# Alternatively to run this script in 'interactive mode' simply run"
 echo "# './docker-run.sh INTERACTIVE-DEMO'"
@@ -140,12 +140,12 @@ echo "#"
 echo "# RUN_MODE can either be the following"
 echo "#"
 echo "# - 'DEV'  : Start up the container into bash, with a quick start guide"
-echo "# - 'DEMO' : Start up the container, and run dev.to (requries ALGOLIA environment variables)"
+echo "# - 'DEMO' : Start up the container, and run dev.to (requires ALGOLIA environment variables)"
 echo "# - 'RESET-DEV'   : Resets postgresql and upload data directory for a clean deployment, before running as DEV mode"
 echo "# - 'RESET-DEMO'  : Resets postgresql and upload data directory for a clean deployment, before running as DEMO mode"
 echo "# - 'INTERACTIVE-DEMO' : Runs this script in 'interactive' mode to setup the 'DEMO'"
 echo "#"
-echo "# So for example to run a development container in bash its simply"
+echo "# So for example to run a development container in bash it's simply"
 echo "# './docker-run.sh DEV'"
 echo "#"
 echo "# To run a simple demo, with some dummy data (replace <?> with the actual keys)"
@@ -439,7 +439,7 @@ mkdir -p "$UPLOAD_DIR"
 #
 # in DEV mode - lets run in interactive mode
 #
-if [ "$RUN_MODE" = "DEV" ] 
+if [ "$RUN_MODE" = "DEV" ]
 then
 	docker run -it -p 3000:3000 \
 	--name dev-to-app \
@@ -472,12 +472,12 @@ dev-to:demo
 # this waits up to ~20*30 seconds
 #
 echo "#---"
-echo "# Waiting for dev.to server... " 
+echo "# Waiting for dev.to server... "
 echo "#"
 echo "# this commonly takes 2 ~ 10 minutes, basically, a very long time .... =[ "
 
 # Side note, looped to give 4 set of distinct lines
-# espeially if long wait times occur (to make it more managable)
+# espeially if long wait times occur (to make it more manageable)
 for i in 1 2 3 4
 do
 	RETRIES=30
@@ -506,7 +506,7 @@ echo "$DOCKER_INFO" | grep dev-to-
 # Finishing message
 #
 echo "#---"
-echo "# Container deployed on port ( http://localhost:3000 )"
+echo "# Container deployed on address ( http://localhost:3000 )"
 echo "# "
 echo "# Time to dev.to(gether)"
 echo "#---"

@@ -18,18 +18,11 @@ class Role < ApplicationRecord
                 trusted
                 banned
                 warned
-                analytics_beta_tester
-                switch_between_orgs
-                triple_unicorn_member
-                level_4_member
-                level_3_member
-                level_2_member
-                level_1_member
                 workshop_pass
                 chatroom_beta_tester
-                banned_from_mentorship
                 comment_banned
                 pro
+                podcast_admin
               ]
             }
   scopify

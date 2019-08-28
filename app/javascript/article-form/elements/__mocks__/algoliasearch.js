@@ -4,8 +4,8 @@ global.document.head.innerHTML =
   "<meta name='environment' content='test' />";
 
 const mockIndex = {
-  search: (query, options) =>
-    new Promise((resolve, reject) => {
+  search: (query, _options) =>
+    new Promise((resolve, _reject) => {
       process.nextTick(() => {
         const searchResults = {
           gi: {
@@ -56,7 +56,7 @@ const mockIndex = {
     }),
 };
 const client = {
-  initIndex: index => mockIndex,
+  initIndex: _index => mockIndex,
 };
 
-export default jest.fn().mockImplementation((id, key) => client);
+export default jest.fn().mockImplementation((_id, _key) => client);

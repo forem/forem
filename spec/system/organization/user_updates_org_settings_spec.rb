@@ -15,13 +15,34 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :syste
     expect(page).to have_text("Your organization was successfully created and you are an admin.")
   end
 
+  it "promotes a member to an admin" do
+    create(:organization_membership, user_id: user.id, organization_id: organization.id, type_of_user: "admin")
+    user2 = create(:user, username: "newuser")
+    create(:organization_membership, user_id: user2.id, organization_id: organization.id)
+    visit "settings/organization"
+    click_button("make admin")
+    page.driver.browser.switch_to.alert.accept
+    expect(page).to have_text("#{user2.name} is now an admin.")
+  end
+
+  it "revokes an admin's privileges" do
+    create(:organization_membership, user_id: user.id, organization_id: organization.id, type_of_user: "admin")
+    user2 = create(:user, username: "newuser")
+    create(:organization_membership, user_id: user2.id, organization_id: organization.id, type_of_user: "admin")
+    visit "settings/organization"
+    click_button("revoke admin status")
+    page.driver.browser.switch_to.alert.accept
+    expect(page).to have_text("#{user2.name} is no longer an admin.")
+  end
+
   it "remove user from organization" do
-    user.update(organization_id: organization.id, org_admin: true)
-    user2 = create(:user, username: "newuser", organization_id: organization.id)
+    create(:organization_membership, user_id: user.id, organization_id: organization.id, type_of_user: "admin")
+    user2 = create(:user, username: "newuser")
+    create(:organization_membership, user_id: user2.id, organization_id: organization.id)
     visit "settings/organization"
     click_button("Remove from org")
     page.driver.browser.switch_to.alert.accept
-    expect(page).not_to have_text(user2.name)
+    expect(page).to have_text("#{user2.name} is no longer part of your organization.")
   end
 
   def fill_in_org_form

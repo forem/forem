@@ -1,24 +1,21 @@
 class JSFiddleTag < LiquidTagBase
+  PARTIAL = "liquids/jsfiddle".freeze
+
   def initialize(tag_name, link, tokens)
     super
     @link = parse_link(link)
     @build_options = parse_options(link)
-    @height = 600
   end
 
   def render(_context)
-    html = <<-HTML
-      <iframe
-        src="#{@link}/embedded/#{@build_options}/dark"
-        width="100%"
-        height="#{@height}"
-        scrolling="no"
-        frameborder="no"
-        allowfullscreen
-        allowtransparency="true">
-      </iframe>
-    HTML
-    finalize_html(html)
+    ActionController::Base.new.render_to_string(
+      partial: PARTIAL,
+      locals: {
+        link: @link,
+        build_options: @build_options,
+        height: 600
+      },
+    )
   end
 
   private

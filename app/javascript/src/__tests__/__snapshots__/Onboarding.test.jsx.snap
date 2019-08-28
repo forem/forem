@@ -5,11 +5,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -30,6 +31,7 @@ preact-render-spy (1 nodes)
         <img
           src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
           class="sloan-img"
+          alt="Sloan, the sloth mascot"
          />
       </div>
       <div class="body-message">
@@ -89,7 +91,7 @@ preact-render-spy (1 nodes)
           type="button"
           onClick={[Function bound handleBackButton]}
         >
-           BACK 
+          BACK
         </button>
       </div>
       <div class="modal-footer-center">
@@ -121,11 +123,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -146,6 +149,7 @@ preact-render-spy (1 nodes)
         <img
           src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
           class="sloan-img"
+          alt="Sloan, the sloth mascot"
          />
       </div>
       <div class="body-message">
@@ -167,7 +171,7 @@ preact-render-spy (1 nodes)
           type="button"
           onClick={[Function bound handleBackButton]}
         >
-           BACK 
+          BACK
         </button>
       </div>
       <div class="modal-footer-center">
@@ -197,7 +201,7 @@ preact-render-spy (1 nodes)
 exports[`<Onboarding /> Final page special next button exists and should reroute user 1`] = `
 preact-render-spy (1 nodes)
 -------
-{undefined}
+{null}
 
 `;
 
@@ -206,11 +210,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -231,6 +236,7 @@ preact-render-spy (1 nodes)
         <img
           src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
           class="sloan-img"
+          alt="Sloan, the sloth mascot"
          />
       </div>
       <div class="body-message">
@@ -244,7 +250,7 @@ preact-render-spy (1 nodes)
             >
               <a
                 class="onboarding-tag-link"
-                href="#"
+                href="#0"
                 style="color:"
                 onClick={[Function bound onClick]}
               >
@@ -252,7 +258,7 @@ preact-render-spy (1 nodes)
               </a>
               <a
                 class="onboarding-tag-link-follow"
-                href="#"
+                href="#0"
                 id="onboarding-tag-link-follow-discuss"
                 style="color:"
                 onClick={[Function bound onClick]}
@@ -267,7 +273,7 @@ preact-render-spy (1 nodes)
             >
               <a
                 class="onboarding-tag-link"
-                href="#"
+                href="#0"
                 style="color:#000000"
                 onClick={[Function bound onClick]}
               >
@@ -275,7 +281,7 @@ preact-render-spy (1 nodes)
               </a>
               <a
                 class="onboarding-tag-link-follow"
-                href="#"
+                href="#0"
                 id="onboarding-tag-link-follow-javascript"
                 style="color:#000000"
                 onClick={[Function bound onClick]}
@@ -290,7 +296,7 @@ preact-render-spy (1 nodes)
             >
               <a
                 class="onboarding-tag-link"
-                href="#"
+                href="#0"
                 style="color:"
                 onClick={[Function bound onClick]}
               >
@@ -298,7 +304,7 @@ preact-render-spy (1 nodes)
               </a>
               <a
                 class="onboarding-tag-link-follow"
-                href="#"
+                href="#0"
                 id="onboarding-tag-link-follow-career"
                 style="color:"
                 onClick={[Function bound onClick]}
@@ -317,7 +323,7 @@ preact-render-spy (1 nodes)
           type="button"
           onClick={[Function bound handleBackButton]}
         >
-           BACK 
+          BACK
         </button>
       </div>
       <div class="modal-footer-center">
@@ -349,11 +355,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -374,6 +381,7 @@ preact-render-spy (1 nodes)
         <img
           src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
           class="sloan-img"
+          alt="Sloan, the sloth mascot"
          />
       </div>
       <div class="body-message">
@@ -433,7 +441,7 @@ preact-render-spy (1 nodes)
           type="button"
           onClick={[Function bound handleBackButton]}
         >
-           BACK 
+          BACK
         </button>
       </div>
       <div class="modal-footer-center">
@@ -465,11 +473,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -490,6 +499,7 @@ preact-render-spy (1 nodes)
         <img
           src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
           class="sloan-img"
+          alt="Sloan, the sloth mascot"
          />
       </div>
       <div class="body-message">
@@ -583,7 +593,7 @@ preact-render-spy (1 nodes)
           type="button"
           onClick={[Function bound handleBackButton]}
         >
-           BACK 
+          BACK
         </button>
       </div>
       <div class="modal-footer-center">
@@ -615,11 +625,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -640,6 +651,7 @@ preact-render-spy (1 nodes)
         <img
           src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
           class="sloan-img"
+          alt="Sloan, the sloth mascot"
          />
       </div>
       <div class="body-message">
@@ -687,11 +699,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -712,6 +725,7 @@ preact-render-spy (1 nodes)
         <img
           src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
           class="sloan-img"
+          alt="Sloan, the sloth mascot"
          />
       </div>
       <div class="body-message">
@@ -805,7 +819,7 @@ preact-render-spy (1 nodes)
           type="button"
           onClick={[Function bound handleBackButton]}
         >
-           BACK 
+          BACK
         </button>
       </div>
       <div class="modal-footer-center">
@@ -837,11 +851,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -862,6 +877,7 @@ preact-render-spy (1 nodes)
         <img
           src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
           class="sloan-img"
+          alt="Sloan, the sloth mascot"
          />
       </div>
       <div class="body-message">
@@ -875,7 +891,7 @@ preact-render-spy (1 nodes)
             >
               <a
                 class="onboarding-tag-link"
-                href="#"
+                href="#0"
                 style="color:"
                 onClick={[Function bound onClick]}
               >
@@ -883,7 +899,7 @@ preact-render-spy (1 nodes)
               </a>
               <a
                 class="onboarding-tag-link-follow"
-                href="#"
+                href="#0"
                 id="onboarding-tag-link-follow-discuss"
                 style="color:"
                 onClick={[Function bound onClick]}
@@ -898,7 +914,7 @@ preact-render-spy (1 nodes)
             >
               <a
                 class="onboarding-tag-link"
-                href="#"
+                href="#0"
                 style="color:#000000"
                 onClick={[Function bound onClick]}
               >
@@ -906,7 +922,7 @@ preact-render-spy (1 nodes)
               </a>
               <a
                 class="onboarding-tag-link-follow"
-                href="#"
+                href="#0"
                 id="onboarding-tag-link-follow-javascript"
                 style="color:#000000"
                 onClick={[Function bound onClick]}
@@ -921,7 +937,7 @@ preact-render-spy (1 nodes)
             >
               <a
                 class="onboarding-tag-link"
-                href="#"
+                href="#0"
                 style="color:"
                 onClick={[Function bound onClick]}
               >
@@ -929,7 +945,7 @@ preact-render-spy (1 nodes)
               </a>
               <a
                 class="onboarding-tag-link-follow"
-                href="#"
+                href="#0"
                 id="onboarding-tag-link-follow-career"
                 style="color:"
                 onClick={[Function bound onClick]}
@@ -948,7 +964,7 @@ preact-render-spy (1 nodes)
           type="button"
           onClick={[Function bound handleBackButton]}
         >
-           BACK 
+          BACK
         </button>
       </div>
       <div class="modal-footer-center">
@@ -980,11 +996,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -1005,6 +1022,7 @@ preact-render-spy (1 nodes)
         <img
           src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
           class="sloan-img"
+          alt="Sloan, the sloth mascot"
          />
       </div>
       <div class="body-message">
@@ -1064,7 +1082,7 @@ preact-render-spy (1 nodes)
           type="button"
           onClick={[Function bound handleBackButton]}
         >
-           BACK 
+          BACK
         </button>
       </div>
       <div class="modal-footer-center">
@@ -1096,11 +1114,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -1121,6 +1140,7 @@ preact-render-spy (1 nodes)
         <img
           src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
           class="sloan-img"
+          alt="Sloan, the sloth mascot"
          />
       </div>
       <div class="body-message">
@@ -1134,7 +1154,7 @@ preact-render-spy (1 nodes)
             >
               <a
                 class="onboarding-tag-link"
-                href="#"
+                href="#0"
                 style="color:"
                 onClick={[Function bound onClick]}
               >
@@ -1142,7 +1162,7 @@ preact-render-spy (1 nodes)
               </a>
               <a
                 class="onboarding-tag-link-follow"
-                href="#"
+                href="#0"
                 id="onboarding-tag-link-follow-discuss"
                 style="color:"
                 onClick={[Function bound onClick]}
@@ -1157,7 +1177,7 @@ preact-render-spy (1 nodes)
             >
               <a
                 class="onboarding-tag-link"
-                href="#"
+                href="#0"
                 style="color:#000000"
                 onClick={[Function bound onClick]}
               >
@@ -1165,7 +1185,7 @@ preact-render-spy (1 nodes)
               </a>
               <a
                 class="onboarding-tag-link-follow"
-                href="#"
+                href="#0"
                 id="onboarding-tag-link-follow-javascript"
                 style="color:#000000"
                 onClick={[Function bound onClick]}
@@ -1180,7 +1200,7 @@ preact-render-spy (1 nodes)
             >
               <a
                 class="onboarding-tag-link"
-                href="#"
+                href="#0"
                 style="color:"
                 onClick={[Function bound onClick]}
               >
@@ -1188,7 +1208,7 @@ preact-render-spy (1 nodes)
               </a>
               <a
                 class="onboarding-tag-link-follow"
-                href="#"
+                href="#0"
                 id="onboarding-tag-link-follow-career"
                 style="color:"
                 onClick={[Function bound onClick]}
@@ -1207,7 +1227,7 @@ preact-render-spy (1 nodes)
           type="button"
           onClick={[Function bound handleBackButton]}
         >
-           BACK 
+          BACK
         </button>
       </div>
       <div class="modal-footer-center">
@@ -1239,11 +1259,12 @@ preact-render-spy (1 nodes)
 -------
 <div
   class="global-modal"
-  style="display:none"
+  style="display: none;"
 >
   <div class="global-modal-bg">
     <button
       class="close-button"
+      type="button"
       onClick={[Function bound closeOnboarding]}
     >
       <img
@@ -1264,6 +1285,7 @@ preact-render-spy (1 nodes)
         <img
           src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
           class="sloan-img"
+          alt="Sloan, the sloth mascot"
          />
       </div>
       <div class="body-message">
@@ -1309,6 +1331,6 @@ preact-render-spy (1 nodes)
 exports[`<Onboarding /> when user is not logged in nothing should be rendered 1`] = `
 preact-render-spy (1 nodes)
 -------
-{undefined}
+{null}
 
 `;

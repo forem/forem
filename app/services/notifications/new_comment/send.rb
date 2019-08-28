@@ -13,8 +13,13 @@ module Notifications
       end
 
       def call
-        user_ids = comment.ancestors.select(:user_id).where(receive_notifications: true).pluck(:user_id).to_set
-        user_ids.add(comment.commentable.user_id) if comment.commentable.receive_notifications
+        comment_user_ids = comment.ancestors.where(receive_notifications: true).pluck(:user_id)
+        subscribed_user_ids = NotificationSubscription.where(notifiable_id: comment.commentable_id, notifiable_type: "Article", config: "all_comments").pluck(:user_id)
+        top_level_user_ids = NotificationSubscription.where(notifiable_id: comment.commentable_id, notifiable_type: "Article", config: "top_level_comments").pluck(:user_id) if comment.ancestry.blank?
+        author_subscriber_user_ids = NotificationSubscription.where(notifiable_id: comment.commentable_id, notifiable_type: "Article", config: "only_author_comments").pluck(:user_id) if comment.user_id == comment.commentable.user_id
+        user_ids = (comment_user_ids + subscribed_user_ids).to_set
+        user_ids += top_level_user_ids.to_set if top_level_user_ids
+        user_ids += author_subscriber_user_ids.to_set if author_subscriber_user_ids
         json_data = {
           user: user_data(comment.user),
           comment: comment_data(comment)
@@ -28,7 +33,7 @@ module Notifications
             json_data: json_data,
           )
           # Be careful with this basic first implementation of push notification. Has dependency of Pusher/iPhone sort of tough to test reliably.
-          send_push_notifications(user_id, "@#{comment.user.username} replied to you:", comment.title, "/notifications/comments") if User.find_by(id: user_id)&.mobile_comment_notifications
+          send_push_notifications(user_id, "@#{comment.user.username}", "re: #{comment.parent_or_root_article.title.strip}", comment.title, "/notifications/comments") if User.find_by(id: user_id)&.mobile_comment_notifications
         end
         return unless comment.commentable.organization_id
 
@@ -46,7 +51,7 @@ module Notifications
 
       attr_reader :comment
 
-      def send_push_notifications(user_id, title, body, path)
+      def send_push_notifications(user_id, title, subtitle, body, path)
         return unless ApplicationConfig["PUSHER_BEAMS_KEY"] && ApplicationConfig["PUSHER_BEAMS_KEY"].size == 64
 
         payload = {
@@ -54,7 +59,8 @@ module Notifications
             aps: {
               alert: {
                 title: title,
-                body: CGI.unescapeHTML(body.strip!)
+                subtitle: subtitle,
+                body: CGI.unescapeHTML(body.strip)
               }
             },
             data: {

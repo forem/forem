@@ -17,7 +17,8 @@
       </a>
     </strong>
     <span class="reaction-images">
-        with <%= image_tag ReactionImage.new(notification.json_data["reaction"]["category"]).path, class: "reaction-image", alt: "a #{notification.json_data['reaction']['category']}" %>
+        <% category = notification.json_data["reaction"]["category"] %>
+        with <%= image_tag(ReactionImage.new(category).path, class: "reaction-image", alt: "a #{category.humanize}") %>
       </span>
   </div>
 <% else %>

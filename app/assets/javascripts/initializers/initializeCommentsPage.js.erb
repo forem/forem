@@ -5,61 +5,67 @@ function initializeCommentsPage() {
     toggleCodeOfConduct();
     var commentableId = document.getElementById('comments-container').dataset.commentableId;
     var commentableType = document.getElementById('comments-container').dataset.commentableType;
-    var ajaxReq;
-    if (window.XMLHttpRequest) {
-      ajaxReq = new XMLHttpRequest();
-    } else {
-      ajaxReq = new ActiveXObject('Microsoft.XMLHTTP');
-    }
-    ajaxReq.onreadystatechange = function () {
-      if (ajaxReq.readyState === XMLHttpRequest.DONE) {
-        var responseObj = JSON.parse(ajaxReq.response);
-        var reactions = responseObj.reactions;
-        var allNodes = document.getElementsByClassName('single-comment-node');
-        var positiveReactionCounts = responseObj.positive_reaction_counts;
-        for (var i = 0; i < reactions.length; i++) {
-          var buttForComment = document.getElementById('button-for-comment-' + reactions[i].reactable_id);
-          if (buttForComment) {
-            buttForComment.classList.add('reacted');
+    commentableIdList = commentableId.split(",");
+    var f = (function() {
+      for (var i = 0; i < commentableIdList.length; i++) {
+        (function(i){
+          var ajaxReq;
+          if (window.XMLHttpRequest) {
+            ajaxReq = new XMLHttpRequest();
+          } else {
+            ajaxReq = new ActiveXObject('Microsoft.XMLHTTP');
           }
-        }
-        for (var i = 0; i < positiveReactionCounts.length; i++) {
-          var buttForComment = document.getElementById('button-for-comment-' + positiveReactionCounts[i].id);
-          if (buttForComment) {
-            if (positiveReactionCounts[i].count > 0) {
-              if (!document.getElementById('reactions-count-' + positiveReactionCounts[i].id)) {
-                buttForComment.innerHTML = buttForComment.innerHTML + "<span class='reactions-count' id='reactions-count-" + positiveReactionCounts[i].id + "'>" + positiveReactionCounts[i].count + '</span>';
-              } else {
-                document.getElementById('reactions-count-' + positiveReactionCounts[i].id).innerHTML = positiveReactionCounts[i].count;
+          ajaxReq.onreadystatechange = function () {
+            if (ajaxReq.readyState === XMLHttpRequest.DONE) {
+              var responseObj = JSON.parse(ajaxReq.response);
+              var reactions = responseObj.reactions;
+              var allNodes = document.getElementsByClassName('single-comment-node');
+              var positiveReactionCounts = responseObj.positive_reaction_counts;
+              for (var i = 0; i < reactions.length; i++) {
+                var buttForComment = document.getElementById('button-for-comment-' + reactions[i].reactable_id);
+                if (buttForComment) {
+                  buttForComment.classList.add('reacted');
+                }
+              }
+              for (var i = 0; i < positiveReactionCounts.length; i++) {
+                var buttForComment = document.getElementById('button-for-comment-' + positiveReactionCounts[i].id);
+                if (buttForComment) {
+                  if (positiveReactionCounts[i].count > 0) {
+                    if (!document.getElementById('reactions-count-' + positiveReactionCounts[i].id)) {
+                      buttForComment.innerHTML = buttForComment.innerHTML + "<span class='reactions-count' id='reactions-count-" + positiveReactionCounts[i].id + "'>" + positiveReactionCounts[i].count + '</span>';
+                    } else {
+                      document.getElementById('reactions-count-' + positiveReactionCounts[i].id).innerHTML = positiveReactionCounts[i].count;
+                    }
+                  }
+                }
+              }
+
+              for (var i = 0; i < allNodes.length; i++) {
+                if (allNodes[i].dataset.commentAuthorId == responseObj.current_user.id) {
+                  allNodes[i].dataset.currentUserComment = "true";
+                  var userActionsEl = allNodes[i].children[0].children[2].children[0];
+                  var buttEl = document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId);
+                  if (userActionsEl && buttEl) {
+                    userActionsEl.className = 'current-user-actions';
+                    userActionsEl.style.display = 'inline-block';
+                    document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId).classList.add('reacted');
+                  }
+                }
               }
             }
-          }
-        }
+          };
 
-        for (var i = 0; i < allNodes.length; i++) {
-          if (allNodes[i].dataset.commentAuthorId == responseObj.current_user.id) {
-            allNodes[i].dataset.currentUserComment = "true";
-            var userActionsEl = allNodes[i].children[0].children[2].children[0];
-            var buttEl = document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId);
-            if (userActionsEl && buttEl) {
-              userActionsEl.className = 'current-user-actions';
-              userActionsEl.style.display = 'inline-block';
-              document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId).classList.add('reacted');
-            }
-          }
-        }
+          ajaxReq.open("GET", "/reactions?commentable_id=" + commentableIdList[i] + "&commentable_type=" + commentableType, true);
+          ajaxReq.send();
+        })(i);
       }
-    };
-    var timeString = (Date.now()).toString();
-    ajaxReq.open("GET", "/reactions?commentable_id=" + commentableId + "&commentable_type=" + commentableType, true);
-    ajaxReq.send();
+    })();
 
     var butts = document.getElementsByClassName('reaction-button');
     for (var i = 0; i < butts.length; i++) {
       var butt = butts[i];
       butt.onclick = function (event) {
         var thisButt = this;
-        thisButt.blur();
         event.preventDefault();
         sendHapticMessage('medium');
         var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
@@ -459,7 +465,7 @@ function handleImageUpload(event, randomIdNumber) {
                 var messageContainer = document.getElementById("image-upload-file-label-" + randomIdNumber)
                 // button.style.display = "none";
                 messageContainer.style.display = "none";
-                address.value = json.link;
+                address.value = json.links[0];
                 address.classList.add("showing");
                 address.select();
 

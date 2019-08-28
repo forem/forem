@@ -36,7 +36,7 @@ const mockIndex = {
     }),
 };
 const client = {
-  initIndex: index => mockIndex, // eslint-ignore-line
+  initIndex: _index => mockIndex, // eslint-ignore-line
 };
 
-export default jest.fn().mockImplementation((id, key) => client); // eslint-ignore-line
+export default jest.fn().mockImplementation((_id_, _key) => client); // eslint-ignore-line

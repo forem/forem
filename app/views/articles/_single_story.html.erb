@@ -2,26 +2,21 @@
   <% if story.video.present? && story.video_thumbnail_url.present? %>
     <a class="single-article-video-preview" style="background-image:url(<%= story.cloudinary_video_url %>)" href="<%= story.path %>">
       <div class="single-article-video-duration">
-        <img src="<%= asset_path("video-camera.svg") %>" /><%= story.video_duration_in_minutes %></div>
+        <img src="<%= asset_path("video-camera.svg") %>" alt="video camera"><%= story.video_duration_in_minutes %></div>
     </a>
   <% end %>
-  <% if story.organization && !@organization_article_index %>
+  <% if story.cached_organization && !@organization_article_index %>
     <div class="article-organization-headline">
-      <a class="org-headline-filler" href="/<%= story.organization.slug %>">
+      <a class="org-headline-filler" href="/<%= story.cached_organization.slug %>">
         <span class="article-organization-headline-inner">
-          <img alt="<%= story.organization.name %> logo" src="<%= story.organization.profile_image_90 %>">
-          <%= story.organization.name %>
+          <img alt="<%= story.cached_organization.name %> logo" src="<%= story.cached_organization.profile_image_90 %>"><%= story.cached_organization.name %>
         </span>
       </a>
     </div>
   <% end %>
-  <a href="<%= story.user.path %>" class="small-pic-link-wrapper">
+  <a href="/<%= story.cached_user.username %>" class="small-pic-link-wrapper">
     <div class="small-pic">
-      <% if story.cached_tag_list_array.include?("hiring") && story.organization_id.present? && !@organization_article_index %>
-        <img src="<%= ProfileImage.new(story.organization).get(90) %>" alt="<%= story.organization.username %> profile" />
-      <% else %>
-        <img src="<%= ProfileImage.new(story.user).get(90) %>" alt="<%= story.user.username %> profile" />
-      <% end %>
+      <img src="<%= ProfileImage.new(story.cached_user).get(90) %>" alt="<%= story.cached_user.username %> profile" />
     </div>
   </a>
   <a href="<%= story.path %>" class="small-pic-link-wrapper index-article-link" data-preload-image="<%= cloud_cover_url(story.main_image) %>" id="article-link-<%= story.id %>">
@@ -32,8 +27,9 @@
     </div>
   </a>
   <h4>
-    <a href="<%= story.user.path %>"><%= story.user.name %>・<%= story.readable_publish_date %><span class="time-ago-indicator-initial-placeholder" data-seconds="<%= story.published_at_int %>"></span></a>
-
+    <a href="/<%= story.cached_user.username %>">
+      <%= story.cached_user.name %>・<time datetime="<%= story.published_timestamp %>"><%= story.readable_publish_date %></time><span class="time-ago-indicator-initial-placeholder" data-seconds="<%= story.published_at_int %>"></span>
+    </a>
   </h4>
   <div class="tags">
     <% story.cached_tag_list_array.each do |tag| %>
@@ -64,7 +60,7 @@
     data-reactable-id="<%= story.id %>"
     aria-label="Save to reading list"
     title="Save to reading list">
-    <span class="bm-success">SAVED</span>
     <span class="bm-initial">SAVE</span>
+    <span class="bm-success">SAVED</span>
   </button>
 </div>

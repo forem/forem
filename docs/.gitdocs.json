@@ -9,8 +9,18 @@
       "target": "_blank"
     },
     {
-      "title": "dev.to",
+      "title": "DEV",
       "href": "https://dev.to",
+      "target": "_blank"
+    },
+    {
+      "title": "Ruby doc",
+      "href": "http://docs.dev.to/ruby-doc",
+      "target": "_blank"
+    },
+    {
+      "title": "API doc",
+      "href": "http://docs.dev.to/api",
       "target": "_blank"
     }
   ]

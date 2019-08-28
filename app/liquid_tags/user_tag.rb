@@ -1,82 +1,30 @@
 class UserTag < LiquidTagBase
   include ApplicationHelper
   include ActionView::Helpers::TagHelper
-  attr_reader :user
+  PARTIAL = "users/liquid".freeze
 
   def initialize(_tag_name, user, _tokens)
-    @user = parse_username_to_user(user)
+    @user = parse_username_to_user(user.delete(" "))
+    @follow_button = follow_button(@user)
+    @user_colors = user_colors(@user)
   end
 
   def render(_context)
-    # looks like link liquid tag
-    <<-HTML
-    <div class="ltag__user ltag__user__id__#{@user.id}" style="border-color:#{@user.decorate.darker_color};box-shadow: 3px 3px 0px #{@user.decorate.darker_color}">
-      <style>
-        .ltag__user__id__#{@user.id} .follow-action-button{
-          background-color: #{user_colors(@user)[:bg]} !important;
-          color: #{user_colors(@user)[:text]} !important;
-          border-color: #{user_colors(@user)[:bg].casecmp('#ffffff').zero? ? user_colors(@user)[:text] : user_colors(@user)[:bg]} !important;
-        }
-      </style>
-      <a href="/#{@user.username}" class="ltag__user__link profile-image-link">
-        <div class="ltag__user__pic">
-          <img src="#{ProfileImage.new(@user).get(150)}" alt="#{@user.username} image"/>
-        </div>
-      </a>
-        <div class="ltag__user__content">
-          <h2><a href="#{@user.path}" class="ltag__user__link">#{@user.name}</a> #{follow_button(@user)}</h2>
-          <div class="ltag__user__summary">
-            <a href="/#{@user.username}" class="ltag__user__link">
-              #{@user.summary}
-            </a>
-          </div>
-        </div>
-    </div>
-    HTML
+    ActionController::Base.new.render_to_string(
+      partial: PARTIAL,
+      locals: {
+        user: @user,
+        follow_button: @follow_button,
+        user_colors: @user_colors
+      },
+    )
   end
 
-  private
-
-  def accent_color
-    HexComparer.new([ApplicationController.helpers.user_colors(@user)[:bg]]).accent
-  end
-
-  def parse_username_to_user(input)
-    input_no_space = input.delete(" ")
-    user = User.find_by(username: input_no_space)
-    raise StandardError, "invalid username" if user.nil?
+  def parse_username_to_user(user)
+    user = User.find_by(username: user)
+    raise StandardError, "Invalid username" if user.nil?
 
     user
-  end
-
-  def twitter_link
-    return if @user.twitter_username.blank?
-
-    <<-HTML
-    <a href="https://twitter.com/#{@user.twitter_username}" target="_blank" rel="noopener">
-      #{image_tag('/assets/twitter-logo.svg', class: 'icon-img', alt: 'twitter')} #{@user.twitter_username}
-    </a>
-    HTML
-  end
-
-  def github_link
-    return if @user.github_username.blank?
-
-    <<-HTML
-    <a href="https://github.com/#{@user.github_username}" target="_blank" rel="noopener">
-      #{image_tag('/assets/github-logo.svg', class: 'icon-img', alt: 'github')} #{@user.github_username}
-    </a>
-    HTML
-  end
-
-  def website_link
-    return if @user.website_url.blank?
-
-    <<-HTML
-    <a href="#{@user.website_url}" target="_blank" rel="noopener">
-      #{image_tag('/assets/link.svg', class: 'icon-img', alt: 'website link')} #{beautified_url(@user.website_url)}
-    </a>
-    HTML
   end
 end
 

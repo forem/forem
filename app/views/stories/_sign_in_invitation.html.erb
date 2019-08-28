@@ -1,19 +1,22 @@
 <div class="single-article single-article-small-pic feed-cta" id="in-feed-cta">
   <div class="cta-container" id="cta-content">
+    <img class="rainbowdevimage" src="<%= asset_path "rainbowdev.svg" %>" /> 
     <h2>
-      <% if @tag.blank? %>
-        Need more relevant posts?<br />Sign in to customize your feed:
-      <% else %>
-        <a href="/">dev.to</a> is a community of <br /><%= number_with_delimiter User.count %> amazing humans who code.
-      <% end %>
+      <a href="/">DEV</a> is a community of <br /><%= number_with_delimiter User.count %> amazing humans who code.
     </h2>
+    <h3>
+      Create your profile to customize your experience and get involved.
+    </h3>
     <div class="button-container">
       <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="cta cta-button" aria-label="Sign in with Twitter." data-no-instant>
-        TWITTER
+        Sign In with Twitter 
       </a>
       <a href="/users/auth/github?state=in-feed-cta" class="cta cta-button" aria-label="Sign in with GitHub." data-no-instant>
-        GITHUB
+        Sign In with GitHub
       </a>
+      <div class="feed-cta-sub">
+        <em>We require social login to prevent abuse.</em>
+      </div>
     </div>
   </div>
 </div>

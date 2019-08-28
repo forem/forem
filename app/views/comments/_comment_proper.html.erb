@@ -20,7 +20,7 @@
                                       quality: "auto",
                                       flags: "progressive",
                                       fetch_format: "auto",
-                                      sign_url: true), class: "sloan", alt: "sloth-mascot") %>
+                                      sign_url: true), class: "sloan", alt: "Sloan, the sloth mascot") %>
           Comment marked as low quality/non-constructive by the community
           <a href="/code-of-conduct">View code of conduct</a>
         </div>
@@ -28,7 +28,7 @@
 
       <div class="details <%= "low-quality-comment" if decorated_comment.low_quality %>">
         <a href="/<%= comment.user.username %>">
-          <img class="profile-pic" src="<%= ProfileImage.new(comment.user).get(50) %>" />
+          <img class="profile-pic" src="<%= ProfileImage.new(comment.user).get(50) %>" alt="<%= comment.user.username %> profile image" />
           <span class="comment-username">
             <span class="comment-username-inner">
               <%= comment.user.name %>
@@ -37,21 +37,19 @@
         </a>
         <% if comment.user.twitter_username.present? %>
           <a href="https://twitter.com/<%= comment.user.twitter_username %>" rel="noopener noreferrer" target="_blank">
-            <%= image_tag("twitter-logo.svg", class: "icon-img") %></a>
+            <%= image_tag("twitter-logo.svg", class: "icon-img", alt: "twitter logo") %></a>
         <% end %>
         <% if comment.user.github_username.present? %>
           <a href="https://github.com/<%= comment.user.github_username %>" rel="noopener noreferrer" target="_blank">
-            <%= image_tag("github-logo.svg", class: "icon-img") %>
+            <%= image_tag("github-logo.svg", class: "icon-img", alt: "github logo") %>
           </a>
         <% end %>
         <% if commentable_author_is_op?(commentable, comment) %>
           <span class="op-marker"><%= get_ama_or_op_banner(commentable) %></span>
         <% end %>
-        <div class="comment-date" data-published-timestamp="<%= decorated_comment.published_timestamp %>">
-          <a href="<%= comment.path %>"><%= comment.readable_publish_date %></a>
-        </div>
-        <button class="dropbtn">
-          <%= image_tag("three-dots.svg", class: "dropdown-icon") %>
+        <%= render "comments/comment_date", decorated_comment: decorated_comment %>
+        <button class="dropbtn" aria-label="Toggle dropdown menu">
+          <%= image_tag("three-dots.svg", class: "dropdown-icon", alt: "Dropdown menu icon") %>
         </button>
         <div class="dropdown">
           <div class="dropdown-content">
@@ -72,8 +70,8 @@
       <div class="body <%= "low-quality-comment" if decorated_comment.low_quality %>">
         <%= comment.processed_html.html_safe %>
         <button class="reaction-button" id="button-for-comment-<%= comment.id %>" data-comment-id="<%= comment.id %>" title="heart">
-          <%= image_tag "favorite-heart-outline-button.svg" %>
-          <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" />
+          <%= image_tag("favorite-heart-outline-button.svg", alt: "Favorite heart outline button") %>
+          <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button" />
         </button>
       </div>
       <div class="actions" data-comment-id="<%= comment.id %>" data-path="<%= commentable.path %>/comments/<%= comment.id_code_generated %>">

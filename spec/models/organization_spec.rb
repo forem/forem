@@ -4,9 +4,12 @@ RSpec.describe Organization, type: :model do
   let(:user)         { create(:user) }
   let(:organization) { create(:organization) }
 
+  it { is_expected.to have_many(:sponsorships) }
+  it { is_expected.to have_many(:organization_memberships).dependent(:delete_all) }
+
   describe "#name" do
     it "rejects names with over 50 characters" do
-      organization.name = Faker::Lorem.characters(51)
+      organization.name = Faker::Lorem.characters(number: 51)
       expect(organization).not_to be_valid
     end
 
@@ -17,7 +20,7 @@ RSpec.describe Organization, type: :model do
 
   describe "#summary" do
     it "rejects summaries with over 1000 characters" do
-      organization.summary = Faker::Lorem.characters(1001)
+      organization.summary = Faker::Lorem.characters(number: 1001)
       expect(organization).not_to be_valid
     end
 
@@ -43,7 +46,7 @@ RSpec.describe Organization, type: :model do
     end
 
     it "rejects wrong color format" do
-      organization.text_color_hex = "##{Faker::Lorem.words(4)}"
+      organization.text_color_hex = "##{Faker::Lorem.words(number: 4)}"
       expect(organization).not_to be_valid
     end
   end
@@ -73,6 +76,37 @@ RSpec.describe Organization, type: :model do
       organization.slug = "HaHaHa"
       organization.save
       expect(organization.slug).to eq("hahaha")
+    end
+
+    it "rejects reserved slug" do
+      organization = build(:organization, slug: "settings")
+      expect(organization).not_to be_valid
+      expect(organization.errors[:slug].to_s.include?("reserved")).to be true
+    end
+
+    it "takes organization slug into account " do
+      create(:user, username: "lightalloy")
+      organization = build(:organization, slug: "lightalloy")
+      expect(organization).not_to be_valid
+      expect(organization.errors[:slug].to_s.include?("taken")).to be true
+    end
+
+    it "takes podcast slug into account" do
+      create(:podcast, slug: "devpodcast")
+      organization = build(:organization, slug: "devpodcast")
+      expect(organization).not_to be_valid
+      expect(organization.errors[:slug].to_s.include?("taken")).to be true
+    end
+
+    it "takes page slug into account" do
+      create(:page, slug: "needed_info_for_site")
+      organization = build(:organization, slug: "needed_info_for_site")
+      expect(organization).not_to be_valid
+      expect(organization.errors[:slug].to_s.include?("taken")).to be true
+    end
+
+    it "triggers cache busting on save" do
+      expect { build(:organization).save }.to have_enqueued_job.on_queue("organizations_bust_cache")
     end
   end
 
@@ -124,6 +158,14 @@ RSpec.describe Organization, type: :model do
       organization.update(slug: new_slug)
       article = Article.find_by(organization_id: organization.id)
       expect(article.path).to include new_slug
+    end
+
+    it "updates article cached_organizations" do
+      create_article_for_organization
+      new_slug = "slug_#{rand(10_000)}"
+      organization.update(slug: new_slug)
+      article = Article.find_by(organization_id: organization.id)
+      expect(article.cached_organization.slug).to eq new_slug
     end
   end
 end

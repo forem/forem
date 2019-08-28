@@ -1,0 +1,38 @@
+<% title @page.title %>
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="https://dev.to<%= @page.path %>" />
+  <meta name="description" content="<%= @page.title %> — <%= community_qualified_name %>">
+  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://dev.to<%= request.path %>" />
+  <meta property="og:title" content="<%= @page.title %> — <%= community_qualified_name %>" />
+  <meta property="og:image" content="<%= @page.social_image_url || "https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" %>" />
+  <meta property="og:description" content="<%= @page.description %>" />
+  <meta property="og:site_name" content="<%= community_qualified_name %>" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:title" content="<%= @page.title %> — <%= community_qualified_name %>">
+  <meta name="twitter:description" content="<%= @page.description %>">
+  <meta name="twitter:image:src" content="<%= @page.social_image_url || "https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" %>">
+<% end %>
+
+<!-- <p id="notice"><%#= notice %></p> -->
+
+<% if @page.template == "contained" %>
+  <div class="blank-space"></div>
+  <div class="container article">
+    <div class="title">
+      <h1>
+        <%= @page.title %>
+      </h1>
+    </div>
+    <div class="body">
+      <%= @page.processed_html.html_safe %>
+    </div>
+  </div>
+<% else %>
+  <%= @page.processed_html.html_safe %>
+<% end %>
+<div id="IS_CENTERED_PAGE"></div>

@@ -6,7 +6,6 @@
 @import 'articles';
 @import 'index-comments';
 @import 'article-show';
-@import 'article_form';
 @import 'shared';
 @import 'dashboard';
 @import 'settings';
@@ -16,23 +15,27 @@
 @import 'user-profile-header';
 @import 'comments';
 @import 'leaderboard';
-@import 'onboarding';
 @import 'notifications';
 @import 'syntax';
 @import 'signup-modal';
 @import 'tags';
 @import 'live';
 @import 'delete-confirm';
-@import 'preact/onboarding-modal';
 @import 'preact/sidebar-widget';
 @import 'preact/article-form';
 @import 'tag-edit';
 @import 'sticky-nav';
 @import 'sidebar-data';
 @import 'video-collection';
+@import 'classified_listings';
+@import 'credits';
+@import 'item-list';
+@import 'color-picker';
 
 @import 'ltags/LiquidTags';
 
 @import 'chat';
 
 @import 'email_subscriptions';
+
+@import 'article-form-needed-legacy';

@@ -62,8 +62,8 @@ function fetchNotificationsCount() {
         }
       }
     };
-    var timeString = (Date.now()).toString();
-    xmlhttp.open('Get', '/notifications/counts', true);
+
+    xmlhttp.open('GET', '/notifications/counts', true);
     xmlhttp.send();
   }
 }

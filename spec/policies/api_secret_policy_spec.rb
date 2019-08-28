@@ -20,7 +20,7 @@ RSpec.describe ApiSecretPolicy do
   end
 
   context "when user does not own the secret" do
-    let(:user) { build(:user) }
+    let(:user) { create(:user) }
 
     it { is_expected.to permit_actions %i[create] }
     it { is_expected.to forbid_actions %i[destroy] }

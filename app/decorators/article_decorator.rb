@@ -25,10 +25,6 @@ class ArticleDecorator < ApplicationDecorator
     "https://#{ApplicationConfig['APP_DOMAIN']}#{path}"
   end
 
-  def liquid_tags_used
-    MarkdownParser.new(body_markdown.to_s + comments_blob.to_s).tags_used
-  end
-
   def title_length_classification
     if article.title.size > 105
       "longest"

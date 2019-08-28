@@ -35,6 +35,16 @@
           </div>
         </div>
       <% end %>
+      <% if @tag_model.sponsorship && @tag_model.sponsorship.status == "live" && @tag_model.sponsorship.expires_at > Time.current %>
+        <div class="widget">
+          <header>
+            <h4><%= @tag %> is sponsored by</h4>
+          </header>
+          <div class="widget-body">
+            <%= render "articles/single_sponsor", sponsorship: @tag_model.sponsorship %>
+          </div>
+        </div>
+      <% end %>
       <% if @moderators.present? %>
         <div class="widget">
           <header>
@@ -44,7 +54,7 @@
             <% @moderators.each do |user| %>
               <div class="widget-user-pic">
                 <a href="/<%= user.username %>" title="<%= user.username %>">
-                  <img src="<%= ProfileImage.new(user).get(90) %>" />
+                  <img src="<%= ProfileImage.new(user).get(90) %>" alt="<%= user.username %> profile image">
                 </a>
               </div>
             <% end %>

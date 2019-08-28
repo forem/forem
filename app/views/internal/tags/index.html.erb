@@ -1,5 +1,3 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js"
-  integrity="sha256-CJWfUCeP3jLdUMVNUll6yQx37gh9AKmXTRxvRf7jzro=" crossorigin="anonymous"></script>
 <style>
   textarea {
     height: 140px;
@@ -30,6 +28,7 @@
   <div>ID</div>
   <div>Alias For</div>
   <div>Taggings Count</div>
+  <div>Category</div>
   <div>Is Moderated?</div>
 </div>
 <% @tags.each do |tag| %>
@@ -38,6 +37,7 @@
     <div><%= tag.id %></div>
     <div><%= tag.alias_for %></div>
     <div><%= tag.taggings_count %></div>
+    <div><%= tag.category %></div>
     <div><%= tag.tag_moderator_ids.any? %></div>
   </div>
 <% end %>

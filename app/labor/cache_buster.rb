@@ -12,7 +12,9 @@ class CacheBuster
                   headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
   end
 
-  def bust_comment(commentable, username)
+  def bust_comment(commentable)
+    return unless commentable
+
     bust("/") if Article.published.order("hotness_score DESC").limit(3).pluck(:id).include?(commentable.id)
     if commentable.decorate.cached_tag_list_array.include?("discuss") &&
         commentable.featured_number.to_i > 35.hours.ago.to_i
@@ -20,21 +22,19 @@ class CacheBuster
       bust("/?i=i")
       bust("?i=i")
     end
+    commentable.touch(:last_comment_at)
     bust("#{commentable.path}/comments/")
     bust(commentable.path.to_s)
-    commentable.comments.find_each do |c|
+    commentable.comments.includes(:user).find_each do |c|
       bust(c.path)
       bust(c.path + "?i=i")
     end
     bust("#{commentable.path}/comments/*")
-    bust("/#{username}")
-    bust("/#{username}/comments")
-    bust("/#{username}/comments?i=i")
-    bust("/#{username}/comments/?i=i")
   end
 
   def bust_article(article)
     bust("/" + article.user.username)
+    bust(article.path)
     bust(article.path + "/")
     bust(article.path + "?i=i")
     bust(article.path + "/?i=i")
@@ -45,7 +45,6 @@ class CacheBuster
     bust_home_pages(article)
     bust_tag_pages(article)
     bust("/api/articles/#{article.id}")
-    bust("/api/articles/by_path?url=#{article.path}")
     return unless article.collection_id
 
     article.collection&.articles&.find_each do |a|
@@ -103,5 +102,75 @@ class CacheBuster
         bust("/t/#{tag}?i=i")
       end
     end
+  end
+
+  def bust_page(slug)
+    bust "/page/#{slug}"
+    bust "/page/#{slug}?i=i"
+    bust "/#{slug}"
+    bust "/#{slug}?i=i"
+  end
+
+  def bust_tag(name)
+    bust("/t/#{name}")
+    bust("/t/#{name}?i=i")
+    bust("/t/#{name}/?i=i")
+    bust("/t/#{name}/")
+    bust("/tags")
+  end
+
+  def bust_events
+    bust("/events")
+    bust("/events?i=i")
+  end
+
+  def bust_podcast(path)
+    bust("/" + path)
+  end
+
+  def bust_organization(organization, slug)
+    bust("/#{slug}")
+    begin
+      organization.articles.find_each do |article|
+        bust(article.path)
+      end
+    rescue StandardError => e
+      Rails.logger.error("Tag issue: #{e}")
+    end
+  end
+
+  def bust_podcast_episode(podcast_episode, path, podcast_slug)
+    podcast_episode.purge
+    podcast_episode.purge_all
+    begin
+      bust(path)
+      bust("/" + podcast_slug)
+      bust("/pod")
+      bust(path)
+    rescue StandardError => e
+      Rails.logger.warn(e)
+    end
+    podcast_episode.purge
+    podcast_episode.purge_all
+  end
+
+  def bust_classified_listings(classified_listing)
+    bust("/listings")
+    bust("/listings?i=i")
+    bust("/listings/#{classified_listing.category}/#{classified_listing.slug}")
+    bust("/listings/#{classified_listing.category}/#{classified_listing.slug}?i=i")
+    bust("/listings/#{classified_listing.category}")
+  end
+
+  def bust_user(user)
+    username = user.username
+    paths = [
+      "/#{username}", "/#{username}?i=i",
+      "/#{username}/comments",
+      "/#{username}/comments?i=i", "/#{username}/comments/?i=i",
+      "/live/#{username}", "/live/#{username}?i=i",
+      "/feed/#{username}"
+    ]
+    paths.each { |path| bust(path) }
   end
 end

@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe MediumTag, type: :liquid_template do
-  setup { Liquid::Template.register_tag("medium", MediumTag) }
+  setup { Liquid::Template.register_tag("medium", described_class) }
 
   subject { Liquid::Template.parse("{% medium #{link} %}") }
 

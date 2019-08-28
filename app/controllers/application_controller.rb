@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
 
     respond_to do |format|
       format.html { redirect_to "/enter" }
-      format.json { render json: { error: "Please sign in" }, status: 401 }
+      format.json { render json: { error: "Please sign in" }, status: :unauthorized }
     end
   end
 
@@ -36,9 +36,9 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    location = request.env["omniauth.origin"] || stored_location_for(resource) || "/dashboard"
-    context_param = resource.created_at > 40.seconds.ago ? "?newly-registered-user=true" : "?returning-user=true"
-    location + context_param
+    return "/onboarding?referrer=#{request.env['omniauth.origin'] || 'none'}" unless current_user.saw_onboarding
+
+    request.env["omniauth.origin"] || stored_location_for(resource) || "/dashboard"
   end
 
   def raise_banned

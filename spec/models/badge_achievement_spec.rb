@@ -14,4 +14,9 @@ RSpec.describe BadgeAchievement, type: :model do
     achievement = create(:badge_achievement)
     expect(achievement.rewarding_context_message).to include("</a>")
   end
+
+  it "awards credits after create" do
+    achievement = create(:badge_achievement)
+    expect(achievement.user.credits.size).to eq(5)
+  end
 end

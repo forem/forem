@@ -1,13 +1,16 @@
 require "rails_helper"
 
-RSpec.describe "ArticlesApi", type: :request do
+RSpec.describe "Api::V0::Users", type: :request do
   let(:user) { create(:user) }
   let(:tag) { create(:tag) }
 
   describe "GET /api/users" do
-    xit "returns user objects" do
-      other_user = create(:user, tag_list: tag.name)
+    it "returns user objects" do
       user.follow(tag)
+
+      other_user = create(:user)
+      create(:article, user: other_user, tags: [tag.name])
+
       sign_in user
       get "/api/users?state=follow_suggestions"
       expect(response.body).to include(other_user.name)

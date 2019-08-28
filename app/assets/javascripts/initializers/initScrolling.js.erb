@@ -92,10 +92,12 @@ function insertVideos(video_articles) {
 
 function buildVideoArticleHTML(video_article) {
   return '<a class="single-video-article single-article" href="'+video_article.path+'" id="video-article-'+video_article.id+'">\
-    <img src="'+video_article.cloudinary_video_url+'">\
-    <p><strong>'+video_article.title+'</strong></p>\
-    <p>'+video_article.user.name+'</p>\
-    <span class="video-timestamp">'+video_article.video_duration_in_minutes+'</span></a>';
+            <div class="video-image" style="background-image: url('+video_article.cloudinary_video_url+')">\
+              <span class="video-timestamp">'+video_article.video_duration_in_minutes+'</span>\
+            </div>\
+            <p><strong>'+video_article.title+'</strong></p>\
+           <p>'+video_article.user.name+'</p>\
+          </a>';
 }
 
 
