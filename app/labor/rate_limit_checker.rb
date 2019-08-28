@@ -1,5 +1,5 @@
 class RateLimitChecker
-  attr_accessor :user, :situation
+  attr_reader :user, :situation
 
   def initialize(user = nil)
     @user = user
@@ -22,7 +22,6 @@ class RateLimitChecker
       @situation = situation
       ping_admins
     end
-    ping_admins if result == true
     result
   end
 
