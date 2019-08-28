@@ -180,7 +180,13 @@ class MarkdownParser
   def unescape_raw_tag_in_codeblocks(html)
     html.gsub!("{----% raw %----}", "{% raw %}")
     html.gsub!("{----% endraw %----}", "{% endraw %}")
-    html
+    html_doc = Nokogiri::HTML(html)
+    html_doc.xpath("//body/div/pre/code").each do |codeblock|
+      children_content = codeblock.children.map(&:content)
+      indices = children_content.size.times.select { |i| children_content[i].include?("----") }
+      indices.each { |i| codeblock.children[i].content = codeblock.children[i].content.delete("----") }
+    end
+    html_doc.to_html
   end
 
   def wrap_mentions_with_links!(html)
