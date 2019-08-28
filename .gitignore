@@ -57,4 +57,4 @@ package-lock.json
 _docker-storage/
 
 # AWS Cloud9 specific folder for user settings
-.c9
+.c9/
