@@ -23,21 +23,21 @@
 </h3>
 
 <%= paginate @mods %>
-<div class="wrapper" style="font-weight: 600; border-bottom: 2px solid black; grid-template-columns: 14% 28% 19% 19% 15%;">
+<div class="wrapper" style="font-weight: 600; border-bottom: 2px solid black; grid-template-columns: 15% 30% 15% 15% 22%;">
   <div>ID</div>
   <div>Username</div>
-  <div>Comments count</div>
-  <div>Reactions count</div>
+  <div>Comments</div>
+  <div>Badges</div>
   <% if params[:state] == "potential" %>
     <div>Action</div>
   <% end %>
 </div>
 <% @mods.each do |user| %>
-  <div class="wrapper" style="border-bottom: 1px solid grey; padding: 10px; grid-template-columns: 14% 28% 19% 19% 15%;">
+  <div class="wrapper" style="border-bottom: 1px solid grey; padding: 10px; grid-template-columns: 15% 30% 15% 15% 22%;">
     <div><%= user.id %></div>
     <div><a href="/internal/users/<%= user.id %>">@<%= user.username %></a></div>
     <div><%= user.comments_count %></div>
-    <div><%= user.reactions_count %></div>
+    <div><%= user.badge_achievements_count %></div>
     <% if params[:state] == "potential" && !user.trusted %>
       <div>
         <%= form_for([:internal, user], url: "/internal/mods/#{user.id}", method: :patch) do |f| %>
