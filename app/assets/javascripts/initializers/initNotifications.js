@@ -32,6 +32,20 @@ function markNotificationsAsRead() {
   }, 450);
 }
 
+function showNotificationCount(xmlhttp) {
+  document.getElementById('notifications-number').innerHTML = xmlhttp.response;
+  document.getElementById('notifications-number').classList.add('showing');
+  if (window.instantClick) {
+    window.InstantClick.removeExpiredKeys('force');
+    setTimeout(() => {
+      window.InstantClick.preload(
+        document.getElementById('notifications-link').href,
+        'force',
+      );
+    }, 30);
+  }
+}
+
 function fetchNotificationsCount() {
   if (
     document.getElementById('notifications-container') == null &&
@@ -51,20 +65,7 @@ function fetchNotificationsCount() {
             .getElementById('notifications-number')
             .classList.remove('showing');
         } else if (count !== '0' && count !== undefined && count !== '') {
-          document.getElementById('notifications-number').innerHTML =
-            xmlhttp.response;
-          document
-            .getElementById('notifications-number')
-            .classList.add('showing');
-          if (window.instantClick) {
-            window.InstantClick.removeExpiredKeys('force');
-            setTimeout(() => {
-              window.InstantClick.preload(
-                document.getElementById('notifications-link').href,
-                'force',
-              );
-            }, 30);
-          }
+          showNotificationCount(xmlhttp);
         } else {
           document
             .getElementById('notifications-number')
@@ -72,7 +73,6 @@ function fetchNotificationsCount() {
         }
       }
     };
-
     xmlhttp.open('GET', '/notifications/counts', true);
     xmlhttp.send();
   }
