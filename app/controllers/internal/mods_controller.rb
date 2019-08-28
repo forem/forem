@@ -3,9 +3,9 @@ class Internal::ModsController < Internal::ApplicationController
 
   def index
     @mods = if params[:state] == "tag"
-              User.with_role(:tag_moderator).page(params[:page]).per(50)
+              User.with_role(:tag_moderator, :any).page(params[:page]).per(50)
             elsif params[:state] == "potential"
-              User.without_role(:trusted).order("comments_count DESC").page(params[:page]).per(50)
+              User.order("comments_count DESC").page(params[:page]).per(100)
             else
               User.with_role(:trusted).page(params[:page]).per(50)
             end
