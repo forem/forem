@@ -12,8 +12,28 @@ module Articles
     def call
       raise if RateLimitChecker.new(user).limit_by_situation("published_article_creation")
 
-      tags = article_params[:tags]
+      article = save_article
+
+      if article.persisted?
+        NotificationSubscription.create(user: user, notifiable_id: article.id, notifiable_type: "Article", config: "all_comments")
+        Notification.send_to_followers(article, "Published") if article.published
+
+        dispatch_event
+      end
+      article.decorate
+    end
+
+    private
+
+    attr_reader :user, :article_params
+
+    def dispatch_event(article)
+      Webhooks::DispatchEvent.call("article_created", article)
+    end
+
+    def save_article
       series = article_params[:series]
+      tags = article_params[:tags]
 
       # convert tags from array to a string
       if tags.present?
@@ -25,15 +45,8 @@ module Articles
       article.user_id = user.id
       article.show_comments = true
       article.collection = Collection.find_series(series, user) if series.present?
-      if article.save
-        NotificationSubscription.create(user: user, notifiable_id: article.id, notifiable_type: "Article", config: "all_comments")
-        Notification.send_to_followers(article, "Published") if article.published
-      end
-      article.decorate
+      article.save
+      article
     end
-
-    private
-
-    attr_reader :user, :article_params
   end
 end

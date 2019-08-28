@@ -6,13 +6,16 @@ module Webhook
       article_destroyed
     ].freeze
 
-    def initialize(event_name, payload = {})
-      @event_name = event_name
+    attr_reader :event_type, :payload, :timestamp
+
+    def initialize(event_type:, payload: {})
+      @event_type = event_type
       @payload = payload
+      @timestamp = Time.current.rfc3339
     end
 
-    private
-
-    attr_reader :event_name, :payload
+    def as_json(*_args)
+      WebhookEventSerializer.new(self).serializable_hash
+    end
   end
 end
