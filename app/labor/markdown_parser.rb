@@ -188,7 +188,11 @@ class MarkdownParser
         codeblock.children[i].content = codeblock.children[i].content.delete("----")
       end
     end
-    html_doc.to_html
+    if html_doc.at_css("body")
+      html_doc.at_css("body").inner_html
+    else
+      html_doc.to_html
+    end
   end
 
   def wrap_mentions_with_links!(html)
