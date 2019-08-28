@@ -1,13 +1,12 @@
 class BlocksController < ApplicationController
   before_action :set_block, only: %i[show edit update destroy]
-  before_action :authorize_block, only: %i[show edit update destroy]
+  before_action :authorize_block
 
   after_action :verify_authorized
 
   # GET /blocks
   # GET /blocks.json
   def index
-    authorize Block
     @blocks = Block.order("index_position ASC")
   end
 
@@ -17,7 +16,6 @@ class BlocksController < ApplicationController
 
   # GET /blocks/new
   def new
-    authorize Block
     @block = Block.new
   end
 
@@ -27,7 +25,6 @@ class BlocksController < ApplicationController
   # POST /blocks
   # POST /blocks.json
   def create
-    authorize Block
     @block = Block.new(permitted_attributes(Block))
     @block.user_id = current_user.id
     respond_to do |format|
@@ -74,6 +71,6 @@ class BlocksController < ApplicationController
   end
 
   def authorize_block
-    authorize @block
+    authorize %i[index new create].include?(params[:action].to_sym) ? Block : @block
   end
 end
