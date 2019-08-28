@@ -23,7 +23,7 @@ class Bufferizer
 
   def facebook_post!
     BufferUpdate.buff!(@article.id, fb_buffer_text, ApplicationConfig["BUFFER_FACEBOOK_ID"], "facebook")
-    BufferUpdate.buff!(@article.id, fb_buffer_text, ApplicationConfig["BUFFER_LINKEDIN_ID"], "linkedin")
+    BufferUpdate.buff!(@article.id, fb_buffer_text + social_tags, ApplicationConfig["BUFFER_LINKEDIN_ID"], "linkedin")
     @article.update(facebook_last_buffered: Time.current)
   end
 
@@ -41,6 +41,11 @@ class Bufferizer
 
   def fb_buffer_text
     "#{text} https://dev.to#{@article.path}"
+  end
+
+  def social_tags
+    # for linkedin's followable tags
+    " #programming #softwareengineering " + (@article.tag_list.map { |t| "#" + t }).join(" ")
   end
 
   def listings_twitter_text

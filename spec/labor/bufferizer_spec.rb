@@ -22,4 +22,11 @@ RSpec.describe Bufferizer do
     described_class.new("listing", listing, text).listings_tweet!
     expect(listing.last_buffered).not_to be(nil)
   end
+
+  it "adds linkedin social tags" do
+    post = "test facebook post"
+    described_class.new("article", article, post).facebook_post!
+    expect(BufferUpdate.last.body_text).to include(" #programming")
+    expect(BufferUpdate.last.body_text).to include(" #" + article.tag_list.first)
+  end
 end
