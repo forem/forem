@@ -184,7 +184,9 @@ class MarkdownParser
     html_doc.xpath("//body/div/pre/code").each do |codeblock|
       children_content = codeblock.children.map(&:content)
       indices = children_content.size.times.select { |i| children_content[i].include?("----") }
-      indices.each { |i| codeblock.children[i].content = codeblock.children[i].content.delete("----") }
+      indices.each do |i|
+        codeblock.children[i].content = codeblock.children[i].content.delete("----")
+      end
     end
     html_doc.to_html
   end
