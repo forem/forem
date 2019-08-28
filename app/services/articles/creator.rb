@@ -1,8 +1,9 @@
 module Articles
   class Creator
-    def initialize(user, article_params)
+    def initialize(user, article_params, event_dispatcher = Webhook::DispatchEvent)
       @user = user
       @article_params = article_params
+      @event_dispatcher = event_dispatcher
     end
 
     def self.call(*args)
@@ -18,17 +19,17 @@ module Articles
         NotificationSubscription.create(user: user, notifiable_id: article.id, notifiable_type: "Article", config: "all_comments")
         Notification.send_to_followers(article, "Published") if article.published
 
-        dispatch_event
+        dispatch_event(article)
       end
       article.decorate
     end
 
     private
 
-    attr_reader :user, :article_params
+    attr_reader :user, :article_params, :event_dispatcher
 
     def dispatch_event(article)
-      Webhooks::DispatchEvent.call("article_created", article)
+      event_dispatcher.call("article_created", article)
     end
 
     def save_article
