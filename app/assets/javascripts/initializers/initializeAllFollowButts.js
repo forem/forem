@@ -53,6 +53,24 @@ function handleFollowButtPress(butt) {
   getCsrfToken().then(sendFetch('follow-creation', formData));
 }
 
+function findFollowButts(fab, evFabUserId, requestVerb) {
+  try {
+    // lets check they have info data attributes
+    if (fab.dataset.info) {
+      // and attempt to parse those, to grab that buttons info user id
+      var fabUserId = JSON.parse(fab.dataset.info).id;
+      // now does that user id match our event buttons user id?
+      if (fabUserId && fabUserId === evFabUserId) {
+        // yes - time to assign the same state!
+        assignState(fab, requestVerb);
+      }
+    }
+  } catch (err) {
+    return undefined;
+  }
+  return undefined;
+}
+
 function handleOptimisticButtRender(butt) {
   if (butt.dataset.verb === 'self') {
     window.location.href = '/settings';
@@ -66,21 +84,7 @@ function handleOptimisticButtRender(butt) {
       var requestVerb = butt.dataset.verb;
       // now for all follow action buttons
       document.querySelectorAll('.follow-action-button').forEach(fab => {
-        try {
-          // lets check they have info data attributes
-          if (fab.dataset.info) {
-            // and attempt to parse those, to grab that buttons info user id
-            var fabUserId = JSON.parse(fab.dataset.info).id;
-            // now does that user id match our event buttons user id?
-            if (fabUserId && fabUserId === evFabUserId) {
-              // yes - time to assign the same state!
-              assignState(fab, requestVerb);
-            }
-          }
-        } catch (err) {
-          return undefined;
-        }
-        return undefined;
+        findFollowButts(fab, evFabUserId, requestVerb);
       });
     } catch (err) {
       return;

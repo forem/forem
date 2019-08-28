@@ -10,7 +10,6 @@ function markNotificationsAsRead() {
         locationAsArray[locationAsArray.length - 1].replace(/[^0-9]/g, ''),
         10,
       );
-
       if (window.XMLHttpRequest) {
         xmlhttp = new XMLHttpRequest();
       } else {
