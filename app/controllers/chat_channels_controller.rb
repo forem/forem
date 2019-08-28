@@ -21,24 +21,12 @@ class ChatChannelsController < ApplicationController
   def create
     authorize ChatChannel
     @chat_channel = ChatChannelCreationService.new(current_user, params[:chat_channel]).create
-    if @chat_channel.valid?
-      render json: { status: "success",
-                     chat_channel: @chat_channel.to_json(only: %i[channel_name slug]) },
-             status: :ok
-    else
-      render json: { errors: @chat_channel.errors.full_messages }
-    end
+    chat_channel_valid?
   end
 
   def update
     ChatChannelUpdateService.new(@chat_channel, chat_channel_params).update
-    if @chat_channel.valid?
-      render json: { status: "success",
-                     chat_channel: @chat_channel.to_json(only: %i[channel_name slug]) },
-             status: :ok
-    else
-      render json: { errors: @chat_channel.errors.full_messages }
-    end
+    chat_channel_valid?
   end
 
   def open
@@ -172,6 +160,16 @@ class ChatChannelsController < ApplicationController
   def generate_github_token
     Rails.cache.fetch("user-github-token-#{current_user.id}", expires_in: 48.hours) do
       Identity.where(user_id: current_user.id, provider: "github").first&.token
+    end
+  end
+
+  def chat_channel_valid?
+    if @chat_channel.valid?
+      render json: { status: "success",
+                     chat_channel: @chat_channel.to_json(only: %i[channel_name slug]) },
+             status: :ok
+    else
+      render json: { errors: @chat_channel.errors.full_messages }
     end
   end
 end
