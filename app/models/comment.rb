@@ -207,7 +207,7 @@ class Comment < ApplicationRecord
   end
 
   def send_to_moderator
-    return if user && user.comments_count > 10
+    return if user && user.comments_count > 2
 
     Notification.send_moderation_notification(self)
   end

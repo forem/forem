@@ -133,8 +133,11 @@ module Moderator
     end
 
     def add_trusted_role
+      return if user.has_role?(:trusted)
+
       user.add_role :trusted
       user.update(email_community_mod_newsletter: true)
+      NotifyMailer.trusted_role_email(user).deliver
       MailchimpBot.new(user).manage_community_moderator_list
     end
 

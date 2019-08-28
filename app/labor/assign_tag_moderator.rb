@@ -1,8 +1,12 @@
 module AssignTagModerator
   def self.add_trusted_role(user)
+    return if user.has_role?(:trusted)
+
     user.add_role :trusted
     user.update(email_community_mod_newsletter: true)
     MailchimpBot.new(user).manage_community_moderator_list
+    Rails.cache.delete("user-#{user.id}/has_trusted_role")
+    NotifyMailer.trusted_role_email(user).deliver
   end
 
   def self.add_to_chat_channel(user)
