@@ -38,7 +38,7 @@
     <div><a href="/internal/users/<%= user.id %>">@<%= user.username %></a></div>
     <div><%= user.comments_count %></div>
     <div><%= user.reactions_count %></div>
-    <% if params[:state] == "potential" %>
+    <% if params[:state] == "potential" && !user.trusted %>
       <div>
         <%= form_for([:internal, user], url: "/internal/mods/#{user.id}", method: :patch) do |f| %>
           <%#= f.hidden_field :id, value: user.id %>
