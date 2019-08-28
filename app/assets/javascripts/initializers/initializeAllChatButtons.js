@@ -1,7 +1,14 @@
-function initModal() {
-  var modal = document.querySelector('.modal');
-  modal.querySelector('.close-modal').addEventListener('click', toggleModal);
-  modal.querySelector('.overlay').addEventListener('click', toggleModal);
+'use strict';
+
+function showChatModal(modal) {
+  // eslint-disable-next-line no-param-reassign
+  modal.style.display = 'block';
+  document.getElementById('new-message').focus();
+}
+
+function hideChatModal(modal) {
+  // eslint-disable-next-line no-param-reassign
+  modal.style.display = 'none';
 }
 
 function toggleModal() {
@@ -15,13 +22,10 @@ function toggleModal() {
   }
 }
 
-function showChatModal(modal) {
-  modal.style.display = 'block';
-  document.getElementById('new-message').focus();
-}
-
-function hideChatModal(modal) {
-  modal.style.display = 'none';
+function initModal() {
+  var modal = document.querySelector('.modal');
+  modal.querySelector('.close-modal').addEventListener('click', toggleModal);
+  modal.querySelector('.overlay').addEventListener('click', toggleModal);
 }
 
 function handleChatButtonPress(form) {
@@ -45,17 +49,22 @@ function handleChatButtonPress(form) {
 }
 
 function addButtonClickHandle(response, button, modalInfo) {
-  var linkWrap = document.getElementById("user-connect-redirect");
+  var linkWrap = document.getElementById('user-connect-redirect');
   var form = document.getElementById('new-message-form');
   button.classList.add('showing');
-  if (modalInfo.showChat === "open" && response !== "mutual") {
-    linkWrap.removeAttribute("href") // remove link
+  if (modalInfo.showChat === 'open' && response !== 'mutual') {
+    linkWrap.removeAttribute('href'); // remove link
     button.addEventListener('click', toggleModal);
+    // eslint-disable-next-line no-param-reassign
     button.style.display = 'initial'; // show button
     linkWrap.style.display = 'initial'; // show button
-    form.onsubmit = function() {handleChatButtonPress(form); return false;};
+    form.onsubmit = () => {
+      handleChatButtonPress(form);
+      return false;
+    };
   } else if (response === 'mutual') {
     button.removeEventListener('click', toggleModal);
+    // eslint-disable-next-line no-param-reassign
     button.style.display = 'initial'; // show button
     linkWrap.style.display = 'initial'; // show button
   }
@@ -65,16 +74,22 @@ function fetchButton(button, modalInfo) {
   var dataRequester;
   // button.dataset.fetched = 'fetched'; // telling initialize that this button has been fetched
   if (window.XMLHttpRequest) {
-      dataRequester = new XMLHttpRequest();
+    dataRequester = new XMLHttpRequest();
   } else {
-      dataRequester = new ActiveXObject('Microsoft.XMLHTTP');
+    dataRequester = new ActiveXObject('Microsoft.XMLHTTP');
   }
-  dataRequester.onreadystatechange = function() {
-    if (dataRequester.readyState === XMLHttpRequest.DONE && dataRequester.status === 200) {
+  dataRequester.onreadystatechange = () => {
+    if (
+      dataRequester.readyState === XMLHttpRequest.DONE &&
+      dataRequester.status === 200
+    ) {
       addButtonClickHandle(dataRequester.response, button, modalInfo);
     }
-  }
-  dataRequester.open('GET', '/follows/' + modalInfo.id + '?followable_type=' + modalInfo.className);
+  };
+  dataRequester.open(
+    'GET',
+    '/follows/' + modalInfo.id + '?followable_type=' + modalInfo.className,
+  );
   dataRequester.send();
 }
 

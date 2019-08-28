@@ -358,7 +358,19 @@
       background-color: white;
     }
   }
-  @media screen and (max-width: 400px) {
+  
+  @media screen and (max-width: 650px) {
+    .onboarding-main {
+      font-size: 18px;
+    }
+
+    button {
+      width: 100px;
+      font-size: 20px;
+    }
+  }
+
+  @media screen and (max-width: 450px) {
     .onboarding-main {
       font-size: 16px;
     }

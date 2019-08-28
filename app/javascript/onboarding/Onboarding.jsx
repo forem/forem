@@ -19,6 +19,7 @@ import BioForm from './components/BioForm';
 // 6) Last slide challenge: Leave three constructive comments today
 // 7) Last slide: Only display cue for welcome thread
 // 8) Last slide: Only display cue for welcome thread, and also the leave three constructive comments challenge
+// 9) Last slide: Only display cue for welcome thread, display challenge right in link body
 
 export default class Onboarding extends Component {
   constructor(props) {

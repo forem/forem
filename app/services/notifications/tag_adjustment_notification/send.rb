@@ -25,7 +25,6 @@ module Notifications
           notifiable_type: tag_adjustment.class.name,
           json_data: json_data,
         )
-        article.user.update_column(:last_moderation_notification, Time.current)
         notification
       end
 

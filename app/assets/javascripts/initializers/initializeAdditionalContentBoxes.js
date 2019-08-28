@@ -1,3 +1,5 @@
+'use strict';
+
 function initializeAdditionalContentBoxes() {
   var el = document.getElementById('additional-content-area');
   if (el) {
@@ -24,9 +26,9 @@ function initializeAdditionalContentBoxes() {
           credentials: 'same-origin',
         },
       )
-      .then(function(response) {
+      .then(response => {
         if (response.status === 200) {
-          response.text().then(function(html) {
+          response.text().then(html => {
             el.innerHTML = html;
             initializeReadingListIcons();
             initializeAllFollowButts();
