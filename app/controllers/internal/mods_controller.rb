@@ -3,11 +3,11 @@ class Internal::ModsController < Internal::ApplicationController
 
   def index
     @mods = if params[:state] == "tag"
-              User.with_role(:tag_moderator, :any).page(params[:page]).per(50)
+              User.with_role(:tag_moderator, :any).page(params[:page]).per(50).includes(:notes)
             elsif params[:state] == "potential"
-              User.order("comments_count DESC").page(params[:page]).per(100)
+              User.order("comments_count DESC").page(params[:page]).per(100).includes(:notes)
             else
-              User.with_role(:trusted).page(params[:page]).per(50)
+              User.with_role(:trusted).page(params[:page]).per(50).includes(:notes)
             end
     @mods = @mods.where("users.username ILIKE :search OR users.name ILIKE :search", search: "%#{params[:search]}%") if params[:search].present?
   end
