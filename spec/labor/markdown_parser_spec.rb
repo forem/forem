@@ -39,6 +39,30 @@ RSpec.describe MarkdownParser do
     expect(generate_and_parse_markdown(code_span)).to include random_word
   end
 
+  describe "mentions" do
+    let!(:user) { create(:user) }
+
+    it "works normally" do
+      mention = "@#{user.username}"
+      result = generate_and_parse_markdown(mention)
+      expect(result).to include "<a"
+    end
+
+    it "works with undescore" do
+      mention = "what was found here _@#{user.username}_ let see"
+      result = generate_and_parse_markdown(mention)
+      expect(result).to include "<a"
+      expect(result).to include "<em"
+    end
+
+    it "won't work in code tag" do
+      mention = "this is a chunk of text `@#{user.username}`"
+      result = generate_and_parse_markdown(mention)
+      expect(result).to include "<code"
+      expect(result).not_to include "<a"
+    end
+  end
+
   it "renders a double backtick codespan with a word wrapped in single backticks properly" do
     code_span = "`` `#{random_word}` ``"
     expect(generate_and_parse_markdown(code_span)).to include "`#{random_word}`"
