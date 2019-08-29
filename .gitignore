@@ -60,3 +60,6 @@ _docker-storage/
 docs/.static/ruby-doc/
 # ReDoc generated API doc (in the Gitdocs folder)
 docs/.static/api/
+
+# AWS Cloud9 specific folder for user settings
+.c9/
