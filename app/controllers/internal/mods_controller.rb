@@ -15,6 +15,6 @@ class Internal::ModsController < Internal::ApplicationController
   def update
     @user = User.find(params[:id])
     AssignTagModerator.add_trusted_role(@user)
-    redirect_to "/internal/mods"
+    render body: nil # No response needed at the moment
   end
 end

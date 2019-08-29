@@ -119,8 +119,16 @@
     border: 20px solid black;
   }
 
+  .submitting-no-border {
+    background: #96f2cc !important;
+  }
+
   .highlighted-no-border {
     background: #2effa8 !important;
+  }
+
+  .highlighted-no-border input[type="submit"] {
+    display: none;
   }
 
   .highlighted-border {
@@ -139,11 +147,10 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Internal DEV</a>
     </div>
     <div id="navbar" class="collapse navbar-collapse">
-      <ul class="nav navbar-nav">
-        <% controller_names = %w[comments articles users tags welcome broadcasts reports pages classified_listings tools chat_channels] %>
+      <ul class="nav navbar-nav" style="font-size: 0.97em;">
+        <% controller_names = %w[comments articles users tags welcome broadcasts reports pages classified_listings tools chat_channels growth mods] %>
         <% controller_names.each do |name| %>
           <li class="<%= "active" if controller_name == name %>"><a href="/internal/<%= name %>"><%= name %></a></li>
         <% end %>
