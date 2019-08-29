@@ -1,6 +1,7 @@
 module AssignTagModerator
   def self.add_trusted_role(user)
     return if user.has_role?(:trusted)
+    return if user.has_role?(:banned)
 
     user.add_role :trusted
     user.update(email_community_mod_newsletter: true)

@@ -23,23 +23,25 @@
 </h3>
 
 <%= paginate @mods %>
-<div class="wrapper" style="font-weight: 600; border-bottom: 2px solid black; grid-template-columns: 15% 30% 15% 15% 22%;">
+<div class="wrapper" style="font-weight: 600; border-bottom: 2px solid black; grid-template-columns: 15% 25% 13% 13% 20% 14%;">
   <div>ID</div>
-  <div>Username</div>
+  <div>Profile</div>
   <div>Comments</div>
   <div>Badges</div>
+  <div>Last Comment</div>
   <% if params[:state] == "potential" %>
     <div>Action</div>
   <% end %>
 </div>
 <% @mods.each do |user| %>
-  <div class="wrapper" style="border-bottom: 1px solid grey; padding: 10px; grid-template-columns: 15% 30% 15% 15% 22%;">
-    <div><%= user.id %></div>
-    <div><a href="/internal/users/<%= user.id %>">@<%= user.username %></a></div>
+  <div class="wrapper" style="border-top: 1px solid grey; padding: 10px; grid-template-columns: 15% 25% 13% 13% 20% 14%; font-size: 0.9em">
+    <div><a href="/internal/users/<%= user.id %>"><%= user.id %></a></div>
+    <div><a href="<%= user.path %>">@<%= user.username %></a></div>
     <div><%= user.comments_count %></div>
     <div><%= user.badge_achievements_count %></div>
+    <div><%= time_ago_in_words user.last_comment_at %> ago</div>
     <% if params[:state] == "potential" && !user.trusted %>
-      <div>
+      <div style="font-size: 0.8em;">
         <%= form_for([:internal, user], url: "/internal/mods/#{user.id}", method: :patch) do |f| %>
           <%#= f.hidden_field :id, value: user.id %>
           <%= f.submit "Make Trusted Mod" %>
@@ -47,5 +49,38 @@
       </div>
     <% end %>
   </div>
+  <% if user.notes.any? %>
+    <details closed>
+      <summary style="cursor: pointer; font-weight: bold; padding: 7px 12px; background: #f0f3f7"><%= pluralize user.notes.size, "Note" %></summary>
+      <ul>
+        <% user.notes.each do |note| %>
+          <li>
+            <b><%= note.reason %>:</b> <%= note.content %> <em>—<%= note.created_at.strftime("%B %e, %Y") %></em>
+          </li>
+        <% end %>
+      </ul>
+    </details>
+  <% end %>
 <% end %>
 <%= paginate @mods %>
+<br /><br />
+
+<script>
+function submitForms() {
+  var form = $(this);
+  var valuesToSubmit = $(this).serialize();
+  $.ajax({
+    type: "POST",
+    url: $(this).attr('action'), //sumbits it to the given url of the form
+    data: valuesToSubmit,
+    // dataType: "JSON" // you want a difference between normal and ajax-calls, and json is standard
+  }).success(function (json) {
+    console.log("success")
+    form.parents(".wrapper").addClass("highlighted-no-border")
+  });
+  return false; // prevents normal behaviour
+}
+
+$('.wrapper').on("submit", "form", submitForms)
+
+</script>
