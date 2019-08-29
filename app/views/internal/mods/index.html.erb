@@ -69,6 +69,7 @@
 function submitForms() {
   var form = $(this);
   var valuesToSubmit = $(this).serialize();
+  form.parents(".wrapper").addClass("submitting-no-border")
   $.ajax({
     type: "POST",
     url: $(this).attr('action'), //sumbits it to the given url of the form
