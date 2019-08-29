@@ -1149,6 +1149,17 @@ ActiveRecord::Schema.define(version: 2019_08_27_163358) do
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
   end
 
+  create_table "webhook_endpoints", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "events", null: false, array: true
+    t.string "source"
+    t.string "target_url", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["events"], name: "index_webhook_endpoints_on_events"
+    t.index ["user_id"], name: "index_webhook_endpoints_on_user_id"
+  end
+
   add_foreign_key "badge_achievements", "badges"
   add_foreign_key "badge_achievements", "users"
   add_foreign_key "chat_channel_memberships", "chat_channels"
@@ -1162,4 +1173,5 @@ ActiveRecord::Schema.define(version: 2019_08_27_163358) do
   add_foreign_key "push_notification_subscriptions", "users"
   add_foreign_key "sponsorships", "organizations"
   add_foreign_key "sponsorships", "users"
+  add_foreign_key "webhook_endpoints", "users"
 end

@@ -107,6 +107,7 @@ Rails.application.routes.draw do
           post "/update_or_create", to: "github_repos#update_or_create"
         end
       end
+      resources :webhooks, only: %i[create show destroy]
 
       get "/analytics/totals", to: "analytics#totals"
       get "/analytics/historical", to: "analytics#historical"
