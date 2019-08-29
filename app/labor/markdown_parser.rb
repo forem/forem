@@ -178,8 +178,8 @@ class MarkdownParser
 
   def wrap_mentions_with_links!(html)
     html_doc = Nokogiri::HTML(html)
-    # looks for node that isn't <code> and contains "@"
-    html_doc.xpath('//*[not (self::code) and contains(text(), "@")]').each do |node|
+    # looks for node that isn't <code>, <a>, and contains "@"
+    html_doc.xpath('//*[not (self::code) and not(self::a) and contains(text(), "@")]').each do |node|
       # if the target node is a <p>, <ul>, or <li>, it will have more than 1 child
       # otherwise inner_html can be use when there's only 1 child
       if node.children.count > 1
