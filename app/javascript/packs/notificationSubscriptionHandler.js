@@ -41,13 +41,25 @@ function loadFunctionality() {
     };
   } else {
     updateStatus = target => {
+      let payload = '';
+      const shouldUnsubscribeToNotifications = target.classList.contains('selected')
+        || target.classList.contains('selected-emoji');
       const allButtons = document.getElementsByClassName(
         'notification-subscription-label',
       );
       for (let i = 0; i < allButtons.length; i += 1) {
         allButtons[i].classList.remove('selected');
       }
-      target.classList.add('selected');
+      if (shouldUnsubscribeToNotifications) {
+        const unsubscribeButton = allButtons.namedItem(
+          'unsubscribe',
+        );
+        unsubscribeButton.classList.add('selected');
+        payload = unsubscribeButton.dataset.payload;
+      } else {
+        target.classList.add('selected');
+        payload = target.dataset.payload;
+      }
       fetch(`/notification_subscriptions/${notifiableType}/${notifiableId}`, {
         method: 'POST',
         headers: {
@@ -57,7 +69,7 @@ function loadFunctionality() {
         },
         credentials: 'same-origin',
         body: JSON.stringify({
-          config: target.dataset.payload,
+          config: payload,
           // notifiable params are passed via URL
         }),
       });
