@@ -42,28 +42,15 @@ class ReactionsController < ApplicationController
     authorize Reaction
     Rails.cache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
     category = params[:category] || "like"
-    reaction = Reaction.where(
-      user_id: current_user.id,
-      reactable_id: params[:reactable_id],
-      reactable_type: params[:reactable_type],
-      category: category,
-    ).first
-    if reaction
+    if (reaction = Reaction.where(set_reaction_args).first)
       reaction.user.touch
       reaction.destroy
-      Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
-      Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) if organization_article?(reaction)
+      send_reaction_notification(reaction, without_delay: true)
       @result = "destroy"
     else
-      reaction = Reaction.create!(
-        user_id: current_user.id,
-        reactable_id: params[:reactable_id],
-        reactable_type: params[:reactable_type],
-        category: category,
-      )
+      reaction = Reaction.create!(set_reaction_args)
+      send_reaction_notification reaction
       @result = "create"
-      Notification.send_reaction_notification(reaction, reaction.reactable.user)
-      Notification.send_reaction_notification(reaction, reaction.reactable.organization) if organization_article?(reaction)
     end
     render json: { result: @result, category: category }
   end
@@ -79,5 +66,22 @@ class ReactionsController < ApplicationController
 
   def organization_article?(reaction)
     reaction.reactable_type == "Article" && reaction.reactable.organization_id
+  end
+
+  def set_reaction_args
+    { user_id: current_user.id,
+      reactable_id: params[:reactable_id],
+      reactable_type: params[:reactable_type],
+      category: params[:category] || "like" }
+  end
+
+  def send_reaction_notification(reaction, without_delay = false)
+    if without_delay
+      Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
+      Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) if organization_article?(reaction)
+    else
+      Notification.send_reaction_notification(reaction, reaction.reactable.user)
+      Notification.send_reaction_notification(reaction, reaction.reactable.organization) if organization_article?(reaction)
+    end
   end
 end
