@@ -263,7 +263,8 @@ class Article < ApplicationRecord
   end
 
   def webhook_data
-    ArticleForWebhooksSerializer.new(self).serializable_hash
+    serializer = destroyed? ? DestroyedArticleSerializer : ArticleForWebhooksSerializer
+    serializer.new(self).serializable_hash
   end
 
   def remove_algolia_index
