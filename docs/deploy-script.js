@@ -1,10 +1,5 @@
 const exec = require('child_process').exec;
 const site = process.env.URL;
-console.log('site is:');
-console.log('site is:');
-console.log('site is:');
-console.log('site is:');
-console.log(site);
 const subdomain = site.split('/')[site.split('/').length - 1];
 
 let buildCommand;
