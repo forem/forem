@@ -13,7 +13,7 @@ switch (subdomain) {
     buildCommand = 'npm install -g gitdocs@latest && gitdocs build';
     break;
   case 'storybook':
-    buildCommand = 'cd .. && npm run build-storybook';
+    buildCommand = 'cd .. && npm install && npm run build-storybook';
     break;
   default:
     throw `Domain ${subdomain} is invalid`;
