@@ -9,10 +9,10 @@ const subdomain = site.split('/')[site.split('/').length - 1];
 
 let buildCommand;
 switch (subdomain) {
-  case 'docs.dev.to':
+  case 'docs':
     buildCommand = 'npm install -g gitdocs@latest && gitdocs build';
     break;
-  case 'storybook.dev.to':
+  case 'storybook':
     buildCommand = 'npm run build-storybook';
     break;
   default:
