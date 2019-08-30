@@ -37,6 +37,7 @@ Rails.application.routes.draw do
     resources :feedback_messages, only: %i[index show]
     resources :listings, only: %i[index edit update destroy], controller: "classified_listings"
     resources :pages, only: %i[index new create edit update destroy]
+    resources :mods, only: %i[index update]
     resources :podcasts, only: %i[index edit update destroy] do
       member do
         post :add_admin
@@ -274,7 +275,6 @@ Rails.application.routes.draw do
   get "/events" => "events#index"
   get "/workshops", to: redirect("events")
   get "/sponsorship-info" => "pages#sponsorship_faq"
-  get "/organization-info" => "pages#org_info"
   get "/sponsors" => "pages#sponsors"
   get "/search" => "stories#search"
   post "articles/preview" => "articles#preview"

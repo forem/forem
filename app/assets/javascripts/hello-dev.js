@@ -1,3 +1,5 @@
+'use strict';
+
 /* eslint-disable-next-line no-console */
 console.log(`
 -oooooooo/-      .+ooooooooo:  +ooo+        oooo/

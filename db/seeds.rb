@@ -246,6 +246,7 @@ Rails.logger.info "12. Creating Classified listings"
 users = User.order(Arel.sql("RANDOM()")).to_a
 users.each { |user| Credit.add_to(user, rand(100)) }
 
+ClassifiedListing.clear_index!
 listings_categories = ClassifiedListing.categories_available.keys
 listings_categories.each_with_index do |category, index|
   # rotate users if they are less than the categories
