@@ -177,13 +177,23 @@ class MarkdownParser
     end
   end
 
+  def possibly_raw_tag_syntax?(array)
+    array.each do |string|
+      return true if ["{", "}", "raw", "endraw", "----"].include?(string)
+    end
+  end
+
   def unescape_raw_tag_in_codeblocks(html)
     html.gsub!("{----% raw %----}", "{% raw %}")
     html.gsub!("{----% endraw %----}", "{% endraw %}")
     html_doc = Nokogiri::HTML(html)
     html_doc.xpath("//body/div/pre/code").each do |codeblock|
+      next unless codeblock.content.include?("{----% raw %----}") || codeblock.content.include?("{----% endraw %----}")
+
       children_content = codeblock.children.map(&:content)
-      indices = children_content.size.times.select { |i| children_content[i].include?("----") }
+      indices = children_content.size.times.select do |i|
+        possibly_raw_tag_syntax?(children_content[i..i + 2])
+      end
       indices.each do |i|
         codeblock.children[i].content = codeblock.children[i].content.delete("----")
       end

@@ -28,6 +28,11 @@ RSpec.describe MarkdownParser do
     expect(generate_and_parse_markdown(code_block)).not_to include("----")
   end
 
+  it "does not remove the non-'raw tag related' four dashes" do
+    code_block = "```\n----\n```"
+    expect(generate_and_parse_markdown(code_block)).to include("----")
+  end
+
   it "escapes the `raw` Liquid tag in codespans" do
     code_block = "``{% raw %}some text{% endraw %}``"
     expect(generate_and_parse_markdown(code_block)).to include("{% raw %}")
