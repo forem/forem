@@ -19,8 +19,7 @@ RSpec.describe MarkdownParser do
 
   it "escapes the `raw` Liquid tag in codeblocks" do
     code_block = "```\n{% raw %}some text{% endraw %}\n```"
-    expect(generate_and_parse_markdown(code_block)).to include("{% raw %}")
-    expect(generate_and_parse_markdown(code_block)).to include("{% endraw %}")
+    expect(generate_and_parse_markdown(code_block)).to include("{% raw %}", "{% endraw %}")
   end
 
   it "does not render the escaped dashes when using a `raw` Liquid tag in codeblocks with syntax highlighting" do
@@ -35,14 +34,12 @@ RSpec.describe MarkdownParser do
 
   it "escapes the `raw` Liquid tag in codespans" do
     code_block = "``{% raw %}some text{% endraw %}``"
-    expect(generate_and_parse_markdown(code_block)).to include("{% raw %}")
-    expect(generate_and_parse_markdown(code_block)).to include("{% endraw %}")
+    expect(generate_and_parse_markdown(code_block)).to include("{% raw %}", "{% endraw %}")
   end
 
   it "escapes the `raw` Liquid tag in inline code" do
     code_block = "`{% raw %}some text{% endraw %}`"
-    expect(generate_and_parse_markdown(code_block)).to include("{% raw %}")
-    expect(generate_and_parse_markdown(code_block)).to include("{% endraw %}")
+    expect(generate_and_parse_markdown(code_block)).to include("{% raw %}", "{% endraw %}")
   end
 
   it "escapes codeblocks in numbered lists" do
