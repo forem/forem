@@ -109,7 +109,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
     expect(article.reload.video_thumbnail_url).to include "https://i.imgur.com/HPiu7N4.jpg"
   end
 
-  it "schedule dispatching event job" do
+  it "schedules a dispatching event job" do
     create(:webhook_endpoint, events: %w[article_created article_updated])
     expect do
       put "/articles/#{article.id}", params: {
