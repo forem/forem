@@ -1,5 +1,9 @@
 const exec = require('child_process').exec;
 const site = process.env.URL;
+console.log('site is:');
+console.log('site is:');
+console.log('site is:');
+console.log('site is:');
 console.log(site);
 const subdomain = site.split('/')[site.split('/').length - 1];
 
@@ -12,7 +16,7 @@ switch (subdomain) {
     buildCommand = 'npm run build-storybook';
     break;
   default:
-    throw `Domain ${domain} is invalid`;
+    throw `Domain ${subdomain} is invalid`;
 }
 
 async function execute(command) {
@@ -21,7 +25,7 @@ async function execute(command) {
       throw error;
     }
     console.log(`site: ${site}`);
-    console.log(`domain: ${domain}`);
+    console.log(`domain: ${subdomain}`);
     console.log(stdout);
   });
 }
