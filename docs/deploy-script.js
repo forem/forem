@@ -1,8 +1,4 @@
-console.log("deploying via custom script")
-console.log("deploying via custom script")
-console.log("deploying via custom script")
-console.log("deploying via custom script")
-import { exec } from 'child_process';
+const exec = require('child_process').exec;
 const site = process.env.URL;
 console.log(site);
 const subdomain = site.split('/')[site.split('/').length - 1];
