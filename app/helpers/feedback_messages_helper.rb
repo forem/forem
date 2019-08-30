@@ -1,14 +1,15 @@
 module FeedbackMessagesHelper
   def offender_email_details
     body = <<~HEREDOC
-      Hi,
+      Hello,
 
-      All DEV members are expected to help foster a welcoming environment for the community. It's been brought to our attention that you have violated our code of conduct and/or terms of use. If this behavior continues, we will need to ban your posting privileges on dev.to.
+      It has been brought to our attention that you have violated the DEV Code of Conduct and/or Terms of Use.
 
-      If you think there's been a mistake, please reply to this email and we'll sort it out.
+      If this behavior continues, we may need to suspend your DEV account.
 
-      Thanks,
-      DEV team
+      If you think that there's been a mistake, please reply to this email and we will take another look.
+
+      DEV Team
     HEREDOC
 
     { subject: "DEV Code of Conduct Violation", body: body }.freeze
@@ -16,11 +17,11 @@ module FeedbackMessagesHelper
 
   def reporter_email_details
     body = <<~HEREDOC
-      Hi!,
+      Hi there,
 
-      We wanted to say thank you for flagging content that may be in violation of the DEV code of conduct and/or terms of use. We'll be looking into your report.
+      Thank you for flagging content that may be in violation of the DEV Code of Conduct and/or our Terms of Use. We are looking into your report and will take appropriate action.
 
-      Thank you for the support.
+      We appreciate your help as we work to foster a positive and inclusive environment for all!
 
       DEV Team
     HEREDOC
@@ -30,11 +31,11 @@ module FeedbackMessagesHelper
 
   def affected_email_details
     body = <<~HEREDOC
-      Hi,
+      Hi there,
 
-      We noticed some comments (made by others) on your post that violated the DEV code of conduct and/or terms of use. We want you to know that we have zero tolerance for such behavior and are taking appropriate action.
+      We noticed some comments (made by others) on your post that violate the DEV Code of Conduct and/or our Terms of Use. We have zero tolerance for such behavior and are taking appropriate action.
 
-      Thanks for being awesome and please don't hesitate to email us with any questions.  We welcome all feedback and ideas as we continue our work of fostering an open and welcoming community.
+      Thanks for being awesome, and please don't hesitate to email us with any questions!  We welcome all feedback and ideas as we continue working to foster an open and inclusive community.
 
       DEV Team
     HEREDOC
