@@ -92,7 +92,7 @@ preact-render-spy (1 nodes)
   </div>
   <div class="dashboard-listings-view">
     <div class="dashboard-listing-row  expired">
-      <a href="cfp/asdfasdf-2ea8">
+      <a href="23/edit">
         <h2>asdfasdf (expired)</h2>
       </a>
       <span class="dashboard-listing-date">Jun 11</span>
@@ -123,6 +123,7 @@ preact-render-spy (1 nodes)
         <a
           href="/listings/cfp/asdfasdf-2ea8/delete_confirm"
           class="dashboard-listing-delete-button cta pill black"
+          data-no-instant={true}
         >
           DELETE
         </a>
@@ -130,7 +131,7 @@ preact-render-spy (1 nodes)
     </div>
     <div class="dashboard-listing-row  expired">
       <span class="listing-org">Yoyodyne</span>
-      <a href="events/yoyoyoyoyoooooooo-4jcb">
+      <a href="24/edit">
         <h2>YOYOYOYOYOOOOOOOO (expired)</h2>
       </a>
       <span class="dashboard-listing-date">Jun 11</span>
@@ -167,6 +168,7 @@ preact-render-spy (1 nodes)
         <a
           href="/listings/events/yoyoyoyoyoooooooo-4jcb/delete_confirm"
           class="dashboard-listing-delete-button cta pill black"
+          data-no-instant={true}
         >
           DELETE
         </a>
@@ -174,7 +176,7 @@ preact-render-spy (1 nodes)
     </div>
     <div class="dashboard-listing-row  expired">
       <span class="listing-org">Infotrode</span>
-      <a href="cfp/hehhehe-5hld">
+      <a href="25/edit">
         <h2>hehhehe (expired)</h2>
       </a>
       <span class="dashboard-listing-date">Jun 11</span>
@@ -192,6 +194,7 @@ preact-render-spy (1 nodes)
         <a
           href="/listings/cfp/hehhehe-5hld/delete_confirm"
           class="dashboard-listing-delete-button cta pill black"
+          data-no-instant={true}
         >
           DELETE
         </a>

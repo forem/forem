@@ -49,8 +49,14 @@ class ClassifiedListingsController < ApplicationController
 
     if listing_params[:action] == "draft"
       @classified_listing.published = false
-      @classified_listing.save
-      redirect_to "/listings/dashboard"
+      if @classified_listing.save
+        redirect_to "/listings/dashboard"
+      else
+        @credits = current_user.credits.unspent
+        @classified_listing.cached_tag_list = listing_params[:tag_list]
+        @organizations = current_user.organizations
+        render :new
+      end
       return
     end
 
@@ -113,11 +119,8 @@ class ClassifiedListingsController < ApplicationController
 
   def destroy
     authorize @classified_listing
-    @classified_listing.destroy
-    respond_to do |format|
-      format.html { redirect_to "/listings/dashboard", notice: "Listing was successfully deleted." }
-      format.json { head :no_content }
-    end
+    @classified_listing.destroy!
+    redirect_to "/listings/dashboard", notice: "Listing was successfully deleted."
   end
 
   private

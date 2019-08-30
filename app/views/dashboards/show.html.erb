@@ -23,6 +23,9 @@
           Upload a Video 🎥
         </a>
       <% end %>
+        <a class="video-upload-cta cta" href="/listings/dashboard" data-no-instant>
+          Create/Manage Listings
+        </a>
       <%= select_tag "dashhboard_sort", options_for_select(sort_options, params[:sort]) %>
       <% if @articles.any? {|article| article.archived } %>
         <%= link_to "Show archived", "javascript:;", id: "toggleArchivedLink" %>

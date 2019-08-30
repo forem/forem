@@ -7,36 +7,52 @@ import ActionButtons from './rowElements/actionButtons';
 
 export const ListingRow = ({ listing }) => {
   const bumpedAt = listing.bumped_at ? listing.bumped_at.toString() : null;
-  const isExpired = bumpedAt && (!listing.published) ? ((Date.now() - new Date(bumpedAt).getTime()) / (1000 * 60 * 60 * 24)) > 30 : false;
-  const isDraft = bumpedAt ? !isExpired && (!listing.published) : true;
-  const listingUrl = `${listing.category}/${listing.slug}`
+  const isExpired =
+    bumpedAt && !listing.published
+      ? (Date.now() - new Date(bumpedAt).getTime()) / (1000 * 60 * 60 * 24) > 30
+      : false;
+  const isDraft = bumpedAt ? !isExpired && !listing.published : true;
+  const listingUrl = listing.published
+    ? `${listing.category}/${listing.slug}`
+    : `${listing.id}/edit`;
 
-  const expiryDate = listing.expires_at ? 
-    new Date(listing.expires_at.toString()).toLocaleDateString('default', {
-      day: '2-digit',
-      month: 'short',
-    }) : '' ;
-  
-  const listingExpiry = expiryDate !== '' ? (
-    ` | Expires on: ${expiryDate}`
-  ) : (
-    ''
-  );
+  const expiryDate = listing.expires_at
+    ? new Date(listing.expires_at.toString()).toLocaleDateString('default', {
+        day: '2-digit',
+        month: 'short',
+      })
+    : '';
+
+  const listingExpiry = expiryDate !== '' ? ` | Expires on: ${expiryDate}` : '';
 
   return (
-    <div className={`dashboard-listing-row ${isDraft ? 'draft' : ''} ${isExpired ? 'expired' : ''}`}>
-      {listing.organization_id && <span className="listing-org">{listing.author.name}</span>}
+    <div
+      className={`dashboard-listing-row ${isDraft ? 'draft' : ''} ${
+        isExpired ? 'expired' : ''
+      }`}
+    >
+      {listing.organization_id && (
+        <span className="listing-org">{listing.author.name}</span>
+      )}
       <a href={listingUrl}>
         <h2>{listing.title + (isExpired ? ' (expired)' : '')}</h2>
       </a>
-      <ListingDate bumpedAt={listing.bumped_at} updatedAt={listing.updated_at} />
+      <ListingDate
+        bumpedAt={listing.bumped_at}
+        updatedAt={listing.updated_at}
+      />
       {listingExpiry}
       {listing.location && <Location location={listing.location} />}
       <span className="dashboard-listing-category">
         <a href={`/listings/${listing.category}/`}>{listing.category}</a>
       </span>
       <Tags tagList={listing.tag_list} />
-      <ActionButtons isDraft={isDraft} listingUrl={`${listing.category}/${listing.slug}`} editUrl={`/listings/${listing.id}/edit`} deleteConfirmUrl={`/listings/${listing.category}/${listing.slug}/delete_confirm`} />
+      <ActionButtons
+        isDraft={isDraft}
+        listingUrl={`${listing.category}/${listing.slug}`}
+        editUrl={`/listings/${listing.id}/edit`}
+        deleteConfirmUrl={`/listings/${listing.category}/${listing.slug}/delete_confirm`}
+      />
     </div>
   );
 };
@@ -54,6 +70,7 @@ ListingRow.propTypes = {
     slug: PropTypes.string.isRequired,
     organization_id: PropTypes.number,
     location: PropTypes.string,
+    expires_at: PropTypes.bool,
     published: PropTypes.bool.isRequired,
     author: PropTypes.object,
   }).isRequired,
