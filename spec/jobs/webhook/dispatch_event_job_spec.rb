@@ -9,11 +9,15 @@ RSpec.describe Webhook::DispatchEventJob, type: :job do
     let(:url) { Faker::Internet.url }
 
     it "posts an event" do
-      stub_request(:post, url).to_return(status: 200)
       client = double
       allow(client).to receive(:post)
       described_class.perform_now(endpoint_url: url, payload: json, client: client)
       expect(client).to have_received(:post).once.with(URI.parse(url), headers: { "Content-Type" => "application/json" }, body: json)
+    end
+
+    it "doesn't fail" do
+      stub_request(:post, url).to_return(status: 200)
+      described_class.perform_now(endpoint_url: url, payload: json)
     end
   end
 end
