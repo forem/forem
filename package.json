@@ -59,10 +59,15 @@
   },
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.5.0",
     "@storybook/addon-actions": "^5.1.9",
     "@storybook/addon-links": "^5.1.9",
     "@storybook/addons": "^5.1.8",
     "@storybook/react": "^3.4.11",
+    "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^23.4.2",
     "eslint": "^5.16.0",
@@ -87,9 +92,10 @@
     "webpack-dev-server": "^2.11.3"
   },
   "dependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-transform-react-jsx": "^7.0.0",
     "@github/clipboard-copy-element": "^1.0.5",
     "@rails/webpacker": "^3.5.5",
-    "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-preact": "^1.1.0",
     "chart.js": "^2.8.0",
     "codemirror": "^5.48.4",
