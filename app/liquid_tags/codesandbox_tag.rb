@@ -33,7 +33,7 @@ class CodesandboxTag < LiquidTagBase
   def parse_options(input)
     _, *options = input.split(" ")
 
-    options.map { |o| valid_option(o) }.reject(&:nil?)
+    options.map { |option| valid_option(option) }.reject(&:nil?)
 
     query = options.join("&")
 

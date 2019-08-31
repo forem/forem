@@ -29,7 +29,7 @@ class JSFiddleTag < LiquidTagBase
     _, *options = stripped_link.split(" ")
 
     # Validation
-    validated_options = options.map { |o| valid_option(o) }.reject(&:nil?)
+    validated_options = options.map { |option| valid_option(option) }.reject(&:nil?)
     raise StandardError, "Invalid Options" unless options.empty? || !validated_options.empty?
 
     validated_options.length.zero? ? "" : validated_options.join(",").concat("/")
