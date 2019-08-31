@@ -89,14 +89,14 @@
     "preact-render-to-json": "^3.6.6",
     "prettier": "^1.18.2",
     "redoc-cli": "0.8.6",
-    "webpack-dev-server": "^2.11.3"
+    "webpack-cli": "^3.3.7",
+    "webpack-dev-server": "^3.8.0"
   },
   "dependencies": {
     "@babel/core": "^7.0.0",
     "@babel/plugin-transform-react-jsx": "^7.0.0",
     "@github/clipboard-copy-element": "^1.0.5",
-    "@rails/webpacker": "^3.5.5",
-    "babel-preset-preact": "^1.1.0",
+    "@rails/webpacker": "^4.0.7",
     "chart.js": "^2.8.0",
     "codemirror": "^5.48.4",
     "focus-visible": "^5.0.2",

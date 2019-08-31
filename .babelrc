@@ -8,16 +8,13 @@
           "browsers": "> 1%",
           "uglify": true
         },
-        "useBuiltIns": true
+        "useBuiltIns": "entry"
       }
-    ],
-    "preact"
+    ]
   ],
   "env": {
     "test": {
-      "plugins": [
-        "@babel/plugin-transform-modules-commonjs"
-      ]
+      "plugins": ["@babel/plugin-transform-modules-commonjs"]
     }
   },
   "plugins": [
@@ -29,11 +26,6 @@
         "spec": true
       }
     ],
-    [
-      "@babel/plugin-transform-react-jsx",
-      {
-        "pragma": "h"
-      }
-    ]
+    ["@babel/plugin-transform-react-jsx", { "pragma": "h" }]
   ]
 }
