@@ -169,10 +169,6 @@ class MarkdownParser
       else
         "{% raw %}" + codeblock + "{% endraw %}"
       end
-      # Below is the old implementation that replaces all liquid tag.
-      # codeblock.gsub(/{%.{1,}[^}]{2}%}/) do |liquid_tag|
-      #   liquid_tag.gsub(/{%/, '{{ "{%').gsub(/%}/, '" }}%}')
-      # end
     end
   end
 
