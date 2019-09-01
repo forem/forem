@@ -620,6 +620,7 @@ form.listings-contact-via-connect {
     width: fit-content;
     cursor: pointer;
     margin-bottom: 10px;
+    user-select: none;
     @include themeable(
       color,
       theme-color,
