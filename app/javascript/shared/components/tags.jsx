@@ -12,6 +12,9 @@ const KEYS = {
   DELETE: 8,
 };
 
+/* TODO: Remove all instances of this.props.listing
+   and refactor this component to be more generic */
+
 class Tags extends Component {
   constructor(props) {
     super(props);
@@ -41,15 +44,40 @@ class Tags extends Component {
   }
 
   componentDidMount() {
-    if (this.props.listingTags === true) {
+    if (this.props.listing === true) {
       this.setState({
-        additionalTags: {jobs: ['remote', 'remoteoptional', 'lgbtbenefits', 'greencard', 'senior', 'junior', 'intermediate', '401k', 'fulltime', 'contract', 'temp'],
-                        forhire: ['remote', 'remoteoptional', 'lgbtbenefits', 'greencard', 'senior', 'junior', 'intermediate', '401k', 'fulltime', 'contract', 'temp'],
-                        forsale: ['laptop', 'desktopcomputer', 'new', 'used'],
-                        events: ['conference', 'meetup'],
-                        collabs: ['paid', 'temp']
-                        }
-      })
+        additionalTags: {
+          jobs: [
+            'remote',
+            'remoteoptional',
+            'lgbtbenefits',
+            'greencard',
+            'senior',
+            'junior',
+            'intermediate',
+            '401k',
+            'fulltime',
+            'contract',
+            'temp',
+          ],
+          forhire: [
+            'remote',
+            'remoteoptional',
+            'lgbtbenefits',
+            'greencard',
+            'senior',
+            'junior',
+            'intermediate',
+            '401k',
+            'fulltime',
+            'contract',
+            'temp',
+          ],
+          forsale: ['laptop', 'desktopcomputer', 'new', 'used'],
+          events: ['conference', 'meetup'],
+          collabs: ['paid', 'temp'],
+        },
+      });
     }
   }
 
@@ -68,7 +96,9 @@ class Tags extends Component {
     const searchResultsRows = this.state.searchResults.map((tag, index) => (
       <div
         tabIndex="-1"
-        className={`${this.props.classPrefix}__tagoptionrow ${this.props.classPrefix}__tagoptionrow--${
+        className={`${this.props.classPrefix}__tagoptionrow ${
+          this.props.classPrefix
+        }__tagoptionrow--${
           this.state.selectedIndex === index ? 'active' : 'inactive'
         }`}
         onClick={this.handleTagClick}
@@ -82,13 +112,16 @@ class Tags extends Component {
       document.activeElement.id === 'tag-input'
     ) {
       searchResultsHTML = (
-        <div className={`${this.props.classPrefix}__tagsoptions`}>{searchResultsRows}</div>
+        <div className={`${this.props.classPrefix}__tagsoptions`}>
+          {searchResultsRows}
+        </div>
       );
     }
 
     return (
       <div className={`${this.props.classPrefix}__tagswrapper`}>
-        <textarea
+        { this.props.listing && <label htmlFor="Tags">Tags</label> }
+        <input
           id="tag-input"
           type="text"
           ref={t => (this.textArea = t)}
@@ -188,16 +221,18 @@ class Tags extends Component {
         filters: 'supported:true',
       })
       .then(content => {
-        if (this.props.listingTags === true) {
-          const { additionalTags } = this.state
-          const { category } = this.props
-          const additionalItems = (additionalTags[category] || []).filter(t => (t.indexOf(query) > -1))
+        if (this.props.listing === true) {
+          const { additionalTags } = this.state;
+          const { category } = this.props;
+          const additionalItems = (additionalTags[category] || []).filter(
+            t => t.indexOf(query) > -1,
+          );
           const resultsArray = content.hits;
           additionalItems.forEach(t => {
             if (resultsArray.indexOf(t) === -1) {
-              resultsArray.push({name: t});
+              resultsArray.push({ name: t });
             }
-          })
+          });
         }
         this.setState({
           searchResults: content.hits.filter(
@@ -216,7 +251,10 @@ class Tags extends Component {
   handleKeyDown = e => {
     const component = this;
 
-    if (component.selected.length === this.props.maxTags && e.keyCode === KEYS.COMMA) {
+    if (
+      component.selected.length === this.props.maxTags &&
+      e.keyCode === KEYS.COMMA
+    ) {
       e.preventDefault();
       return;
     }

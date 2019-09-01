@@ -16,7 +16,7 @@ import MoreConfig from './elements/moreConfig';
 import OrgSettings from './elements/orgSettings';
 import Errors from './elements/errors';
 import KeyboardShortcutsHandler from './elements/keyboardShortcutsHandler';
-import Tags from '../shared/components/tags'
+import Tags from '../shared/components/tags';
 
 export default class ArticleForm extends Component {
   static handleGistPreview() {
