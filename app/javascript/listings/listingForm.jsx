@@ -3,10 +3,10 @@ import linkState from 'linkstate';
 import Title from './elements/title';
 import BodyMarkdown from './elements/bodyMarkdown';
 import Categories from './elements/categories';
-import Tags from './elements/tags';
 import OrgSettings from './elements/orgSettings';
 import ContactViaConnect from './elements/contactViaConnect';
 import ExpireDate from './elements/expireDate';
+import Tags from '../shared/components/tags'
 
 export default class ListingForm extends Component {
   constructor(props) {
@@ -63,7 +63,7 @@ export default class ListingForm extends Component {
           <Title defaultValue={title} onChange={linkState(this, 'title')} />
           <BodyMarkdown defaultValue={bodyMarkdown} onChange={linkState(this, 'bodyMarkdown')} />
           <Categories categoriesForSelect={categoriesForSelect} categoriesForDetails={categoriesForDetails} onChange={linkState(this, 'category')} category={category} />
-          <Tags defaultValue={tagList} category={category} onInput={linkState(this, 'tagList')} />
+          <Tags defaultValue={tagList} category={category} onInput={linkState(this, 'tagList')} classPrefix={`listingform`} maxTags={8} autocomplete={`off`} listing={true} />
           <ExpireDate defaultValue={expireDate} onChange={linkState(this, 'expireDate')} />
           {selectOrg}
           <ContactViaConnect defaultValue={contactViaConnect} onChange={linkState(this, 'contactViaConnect')} />
