@@ -12,7 +12,6 @@ const KEYS = {
   DELETE: 8,
 };
 
-const MAX_TAGS = 4;
 class Tags extends Component {
   constructor(props) {
     super(props);
@@ -191,7 +190,7 @@ class Tags extends Component {
   handleKeyDown = e => {
     const component = this;
 
-    if (component.selected.length === MAX_TAGS && e.keyCode === KEYS.COMMA) {
+    if (component.selected.length === this.props.maxTags && e.keyCode === KEYS.COMMA) {
       e.preventDefault();
       return;
     }
@@ -273,7 +272,7 @@ class Tags extends Component {
 
     const range = this.getRangeBetweenCommas(input.value, input.selectionStart);
     const insertingAtEnd = range[1] === input.value.length;
-    const maxTagsWillBeReached = this.selected.length === MAX_TAGS;
+    const maxTagsWillBeReached = this.selected.length === this.props.maxTags;
     if (insertingAtEnd && !maxTagsWillBeReached) {
       tag += ', ';
     }

@@ -404,6 +404,7 @@ export default class ArticleForm extends Component {
               <Tags
                 defaultValue={tagList}
                 onInput={linkState(this, 'tagList')}
+                maxTags={4}
               />
               <button
                 className="articleform__detailsButton articleform__detailsButton--image"
