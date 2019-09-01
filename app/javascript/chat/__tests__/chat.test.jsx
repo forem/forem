@@ -139,4 +139,6 @@ describe('<Chat />', () => {
       'alldirectgroup',
     );
   });
+
+  it('should render correct header for direct chat channel', () => {});
 });
