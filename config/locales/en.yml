@@ -44,7 +44,6 @@ en:
       new: New
   errors:
     messages: *ref_0
-  hello: Hello world
   podcasts:
     statuses:
       ssl_failed: SSL certificate verify failed while fetching podcast's feed_url
