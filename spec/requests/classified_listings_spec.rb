@@ -13,6 +13,18 @@ RSpec.describe "ClassifiedListings", type: :request do
       }
     }
   end
+  let(:draft_params) do
+    {
+      classified_listing: {
+        title: "this a draft",
+        body_markdown: "something draft",
+        category: "cfp",
+        tag_list: "",
+        contact_via_connect: true,
+        action: "draft"
+      }
+    }
+  end
 
   describe "GET /listings" do
     let(:listing) { create(:classified_listing, user: user) }
@@ -55,6 +67,11 @@ RSpec.describe "ClassifiedListings", type: :request do
 
   describe "GET /listings/new" do
     before { sign_in user }
+
+    it "shows the option to create draft" do
+      get "/listings/new"
+      expect(response.body).to include "You will not be charged credits to save a draft."
+    end
 
     context "when the user has no credits" do
       it "shows the proper messages" do
@@ -154,6 +171,11 @@ RSpec.describe "ClassifiedListings", type: :request do
         expect(response.body).to redirect_to("/credits")
       end
 
+      it "redirects to /listings/dashboard for listing draft" do
+        post "/listings", params: draft_params
+        expect(response).to redirect_to "/listings/dashboard"
+      end
+
       it "redirects to /listings" do
         post "/listings", params: listing_params
         expect(response).to redirect_to "/listings"
@@ -165,6 +187,16 @@ RSpec.describe "ClassifiedListings", type: :request do
         expect(user.credits.spent.size).to eq(listing_cost)
       end
 
+      it "creates a listing draft under the org" do
+        org_admin = create(:user, :org_admin)
+        org_id = org_admin.organizations.first.id
+        Credit.create(organization_id: org_id)
+        draft_params[:classified_listing][:organization_id] = org_id
+        sign_in org_admin
+        post "/listings", params: draft_params
+        expect(ClassifiedListing.first.organization_id).to eq org_id
+      end
+
       it "creates a listing under the org" do
         org_admin = create(:user, :org_admin)
         org_id = org_admin.organizations.first.id
@@ -173,6 +205,12 @@ RSpec.describe "ClassifiedListings", type: :request do
         sign_in org_admin
         post "/listings", params: listing_params
         expect(ClassifiedListing.first.organization_id).to eq org_id
+      end
+
+      it "does not create a listing draft for an org not belonging to the user" do
+        org = create(:organization)
+        draft_params[:classified_listing][:organization_id] = org.id
+        expect { post "/listings", params: draft_params }.to raise_error(Pundit::NotAuthorizedError)
       end
 
       it "does not create a listing for an org not belonging to the user" do
@@ -186,6 +224,14 @@ RSpec.describe "ClassifiedListings", type: :request do
         spent_credit = user.credits.spent.last
         expect(spent_credit.purchase_type).to eq("ClassifiedListing")
         expect(spent_credit.spent_at).not_to be_nil
+      end
+
+      it "creates listing draft and does not subtract credits" do
+        allow(Credits::Buyer).to receive(:call).and_raise(ActiveRecord::Rollback)
+        expect do
+          post "/listings", params: draft_params
+        end.to change(ClassifiedListing, :count).by(1).
+          and change(user.credits.spent, :size).by(0)
       end
 
       it "does not create a listing or subtract credits if the purchase does not go through" do
@@ -209,11 +255,15 @@ RSpec.describe "ClassifiedListings", type: :request do
 
   describe "PUT /listings/:id" do
     let(:listing) { create(:classified_listing, user: user) }
+    let(:listing_draft) { create(:classified_listing, user: user) }
     let(:organization) { create(:organization) }
     let(:org_listing) { create(:classified_listing, user: user, organization: organization) }
+    let(:org_listing_draft) { create(:classified_listing, user: user, organization: organization) }
 
     before do
       sign_in user
+      listing_draft.update_columns(bumped_at: nil, published: false)
+      org_listing_draft.update_columns(bumped_at: nil, published: false)
     end
 
     context "when the bump action is called" do
@@ -270,6 +320,157 @@ RSpec.describe "ClassifiedListings", type: :request do
           put "/listings/#{org_listing.id}", params: params
         end.to change(user.credits.spent, :size).by(cost)
         expect(org_listing.reload.bumped_at >= previous_bumped_at).to eq(true)
+      end
+    end
+
+    context "when the publish action is called" do
+      let(:params) { { classified_listing: { action: "publish" } } }
+
+      it "publishes a draft and charges user credits if first publish" do
+        cost = ClassifiedListing.cost_by_category(listing_draft.category)
+        create_list(:credit, cost, user: user)
+        expect do
+          put "/listings/#{listing_draft.id}", params: params
+        end.to change(user.credits.spent, :size).by(cost)
+      end
+
+      it "publishes a draft and ensures published column is true" do
+        cost = ClassifiedListing.cost_by_category(listing_draft.category)
+        create_list(:credit, cost, user: user)
+        put "/listings/#{listing_draft.id}", params: params
+        expect(listing_draft.reload.published).to eq(true)
+      end
+
+      it "publishes an org draft and charges org credits if first publish" do
+        cost = ClassifiedListing.cost_by_category(org_listing_draft.category)
+        create_list(:credit, cost, organization: organization)
+        expect do
+          put "/listings/#{org_listing_draft.id}", params: params
+        end.to change(organization.credits.spent, :size).by(cost)
+      end
+
+      it "publishes an org draft and ensures published column is true" do
+        cost = ClassifiedListing.cost_by_category(org_listing_draft.category)
+        create_list(:credit, cost, organization: organization)
+        put "/listings/#{org_listing_draft.id}", params: params
+        expect(org_listing_draft.reload.published).to eq(true)
+      end
+
+      it "publishes a draft that was charged and is within 30 days of bump doesn't charge credits" do
+        listing.update_column(:published, false)
+        expect do
+          put "/listings/#{listing.id}", params: params
+        end.to change(user.credits.spent, :size).by(0)
+      end
+
+      it "publishes a draft that was charged and is within 30 days of bump and successfully sets published as true" do
+        listing.update_column(:published, false)
+        put "/listings/#{listing.id}", params: params
+        expect(listing.reload.published).to eq(true)
+      end
+
+      it "fails to publish draft and doesn't charge credits" do
+        expect do
+          put "/listings/#{listing_draft.id}", params: params
+        end.to change(user.credits.spent, :size).by(0)
+      end
+
+      it "fails to publish draft and published remains false" do
+        put "/listings/#{listing_draft.id}", params: params
+        expect(listing_draft.reload.published).to eq(false)
+      end
+    end
+
+    context "when the unpublish action is called" do
+      let(:params) { { classified_listing: { action: "unpublish" } } }
+
+      it "unpublishes a published listing" do
+        put "/listings/#{listing.id}", params: params
+        expect(listing.reload.published).to eq(false)
+      end
+    end
+  end
+
+  describe "DEL /listings/:id" do
+    let!(:listing) { create(:classified_listing, user: user) }
+    let!(:listing_draft) { create(:classified_listing, user: user, bumped_at: nil, published: false) }
+    let(:organization) { create(:organization) }
+    let!(:org_listing) { create(:classified_listing, user: user, organization: organization) }
+    let!(:org_listing_draft) { create(:classified_listing, user: user, organization: organization, bumped_at: nil, published: false) }
+
+    before do
+      sign_in user
+    end
+
+    context "when deleting draft" do
+      it "redirect to dashboard" do
+        delete "/listings/#{listing_draft.id}"
+        expect(response).to redirect_to("/listings/dashboard")
+      end
+
+      it "have status 302 found" do
+        delete "/listings/#{listing_draft.id}"
+        expect(response).to have_http_status(:found)
+      end
+
+      it "decrease total listings count by 1" do
+        expect do
+          delete "/listings/#{listing_draft.id}"
+        end.to change(ClassifiedListing, :count).by(-1)
+      end
+    end
+
+    context "when deleting listing" do
+      it "redirect to dashboard" do
+        delete "/listings/#{listing.id}"
+        expect(response).to redirect_to("/listings/dashboard")
+      end
+
+      it "have status 302 found" do
+        delete "/listings/#{listing.id}"
+        expect(response).to have_http_status(:found)
+      end
+
+      it "decrease total listings count by 1" do
+        expect do
+          delete "/listings/#{listing.id}"
+        end.to change(ClassifiedListing, :count).by(-1)
+      end
+    end
+
+    context "when deleting org listing" do
+      it "redirect to dashboard" do
+        delete "/listings/#{org_listing_draft.id}"
+        expect(response).to redirect_to("/listings/dashboard")
+      end
+
+      it "have status 302 found" do
+        delete "/listings/#{org_listing_draft.id}"
+        expect(response).to have_http_status(:found)
+      end
+
+      it "decrease total listings count by 1" do
+        expect do
+          delete "/listings/#{org_listing_draft.id}"
+        end.to change(ClassifiedListing, :count).by(-1)
+      end
+    end
+
+    context "when deleting org listing" do
+      it "redirect to dashboard" do
+        delete "/listings/#{org_listing.id}"
+        expect(response).to redirect_to("/listings/dashboard")
+      end
+
+      it "have status 302 found" do
+        delete "/listings/#{org_listing.id}"
+        expect(response).to have_http_status(:found)
+      end
+
+      it "decrease total listings count by 1" do
+        expect do
+          delete "/listings/#{org_listing.id}"
+        end.to change(ClassifiedListing, :count).by(-1)
       end
     end
   end
