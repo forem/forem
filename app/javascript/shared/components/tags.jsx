@@ -54,7 +54,7 @@ class Tags extends Component {
     const searchResultsRows = this.state.searchResults.map((tag, index) => (
       <div
         tabIndex="-1"
-        className={`articleform__tagoptionrow articleform__tagoptionrow--${
+        className={`${this.props.classPrefix}__tagoptionrow ${this.props.classPrefix}__tagoptionrow--${
           this.state.selectedIndex === index ? 'active' : 'inactive'
         }`}
         onClick={this.handleTagClick}
@@ -68,17 +68,17 @@ class Tags extends Component {
       document.activeElement.id === 'tag-input'
     ) {
       searchResultsHTML = (
-        <div className="articleform__tagsoptions">{searchResultsRows}</div>
+        <div className={`${this.props.classPrefix}__tagsoptions`}>{searchResultsRows}</div>
       );
     }
 
     return (
-      <div className="articleform__tagswrapper">
+      <div className={`${this.props.classPrefix}__tagswrapper`}>
         <textarea
           id="tag-input"
           type="text"
           ref={t => (this.textArea = t)}
-          className="articleform__tags"
+          className={`${this.props.classPrefix}__tags`}
           placeholder="tags"
           value={this.props.defaultValue}
           onInput={this.handleInput}
