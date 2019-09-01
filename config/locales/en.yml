@@ -30,24 +30,24 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
-  errors: &errors
-    messages:
-       extension_whitelist_error: 'must be one of the following extensions: .jpg, .jpeg, .jpe, .gif, .png, .ico, .bmp, .dng, or .svg'
-       bad_uri: is an invalid url
-       bad_protocol: must start with %{protocols}
   activemodel:
     errors:
-      <<: *errors
+      messages: &ref_0
+        bad_protocol: 'must start with %{protocols}'
+        bad_uri: is an invalid url
+        extension_whitelist_error: 'must be one of the following extensions: .jpg, .jpeg, .jpe, .gif, .png, .ico, .bmp, .dng, or .svg'
   activerecord:
     errors:
-      <<: *errors
+      messages: *ref_0
   administrate:
     actions:
-      new: 'New'
+      new: New
+  errors:
+    messages: *ref_0
+  hello: Hello world
   podcasts:
     statuses:
-      unreachable: Podcast's feed_url is not reachable
+      ssl_failed: SSL certificate verify failed while fetching podcast's feed_url
       unparsable: Podcast's rss couldn't be parsed
       unplayable: This podcast may not be playable in the browser
-      ssl_failed: SSL certificate verify failed while fetching podcast's feed_url
+      unreachable: Podcast's feed_url is not reachable
