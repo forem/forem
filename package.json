@@ -99,6 +99,7 @@
     "@rails/webpacker": "^4.0.7",
     "chart.js": "^2.8.0",
     "codemirror": "^5.48.4",
+    "core-js": "^3.2.1",
     "focus-visible": "^5.0.2",
     "intersection-observer": "^0.7.0",
     "linkstate": "^1.1.1",
