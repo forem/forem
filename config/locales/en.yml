@@ -30,6 +30,16 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  about:
+    description: Where programmers share ideas and help each other grow. It is an online community for sharing and discovering great ideas, having debates, and making friends. Anyone can share articles, questions, discussions, etc. as long as they have the rights to the words they are sharing. Cross-posting from your own blog is welcome.
+    footer: The platform was created in 2016. The Twitter account, <a href="https://twitter.com/thepracticaldev">@ThePracticalDev</a> was around before then. We are based out of New York City.
+    heading: About dev.to
+    leadership:
+      heading: Leadership
+      bios:
+        ben: Ben manages content, is the core maintainer of the dev.to application, and makes jokes on the Internets.
+        jess: Jess leads day-to-day operations, manages content, and contributes to the dev.to codebase.
+        peter: Peter focuses on strategy, investor relations, and sending dev.to swag around the globe.
   activemodel:
     errors:
       messages: &ref_0
