@@ -1,6 +1,5 @@
 const exec = require('child_process').exec;
-const site = process.env.URL;
-const subdomain = site.split('/')[site.split('/').length - 1];
+const subdomain = process.env.URL;
 
 let buildCommand;
 switch (subdomain) {
@@ -19,7 +18,6 @@ async function execute(command) {
     if (error) {
       throw error;
     }
-    console.log(`site: ${site}`);
     console.log(`domain: ${subdomain}`);
     console.log(stdout);
   });
