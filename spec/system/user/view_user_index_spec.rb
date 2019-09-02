@@ -8,7 +8,7 @@ RSpec.describe "User index", type: :system do
 
   context "when user is unauthorized" do
     context "when 1 article" do
-      before { visit "/user3000" }
+      before { visit "/#{user.username}" }
 
       it "shows the header", js: true do
         within("h1") { expect(page).to have_content(user.name) }
@@ -56,13 +56,19 @@ RSpec.describe "User index", type: :system do
           expect(page).to have_selector(timestamp_selector)
         end
       end
+
+      it "renders the report abuse link" do
+        within(".profile-dropdown") do
+          expect(page).to have_link("Report Abuse")
+        end
+      end
     end
   end
 
   context "when visiting own profile" do
     before do
       sign_in user
-      visit "/user3000"
+      visit "/#{user.username}"
     end
 
     it "shows the header", js: true do
@@ -84,6 +90,10 @@ RSpec.describe "User index", type: :system do
         expect(page).to have_content("Recent Comments")
         expect(page).to have_link(nil, href: comment.path)
       end
+    end
+
+    it "renders the report abuse link" do
+      expect(page).not_to have_link("Report Abuse")
     end
   end
 end

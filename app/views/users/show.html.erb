@@ -145,14 +145,16 @@
       </div>
     </div>
     <%= render "articles/user_metadata", context: "profile" %>
-    <div class="profile-dropdown">
-      <button id="user-profile-dropdown">
-        <%= image_tag("three-dots.svg", class: "dropdown-icon", alt: "Toggle dropdown menu") %>
-      </button>
-      <div id="user-profile-dropdownmenu" class="profile-dropdownmenu">
-        <a href="/report-abuse?url=https://dev.to/<%= @user.username %>">Report Abuse</a>
+    <% unless @user == current_user %>
+      <div class="profile-dropdown">
+        <button id="user-profile-dropdown">
+          <%= image_tag("three-dots.svg", class: "dropdown-icon", alt: "Toggle dropdown menu") %>
+        </button>
+        <div id="user-profile-dropdownmenu" class="profile-dropdownmenu">
+          <a href="/report-abuse?url=https://<%= ApplicationConfig["APP_DOMAIN"] %>/<%= @user.username %>">Report Abuse</a>
+        </div>
       </div>
-    </div>
+    <% end %>
   </div>
 <% end %>
 
