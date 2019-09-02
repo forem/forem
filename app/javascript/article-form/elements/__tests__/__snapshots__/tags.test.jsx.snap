@@ -2,6 +2,7 @@
 
 exports[`<Tags /> only allows 4 tags 1`] = `
 Object {
+  "additionalTags": Array [],
   "cursorIdx": 0,
   "prevLen": 0,
   "searchResults": Array [],
@@ -31,6 +32,7 @@ exports[`<Tags /> renders properly 1`] = `
 
 exports[`<Tags /> replaces tag when editing 1`] = `
 Object {
+  "additionalTags": Array [],
   "cursorIdx": 0,
   "prevLen": 0,
   "searchResults": Array [],
@@ -40,6 +42,7 @@ Object {
 
 exports[`<Tags /> selects tag when you click on it 1`] = `
 Object {
+  "additionalTags": Array [],
   "cursorIdx": 0,
   "prevLen": 0,
   "searchResults": Array [],
@@ -49,6 +52,7 @@ Object {
 
 exports[`<Tags /> shows tags as you search 1`] = `
 Object {
+  "additionalTags": Array [],
   "cursorIdx": 2,
   "prevLen": 0,
   "searchResults": Array [
@@ -87,6 +91,7 @@ Object {
 
 exports[`<Tags /> shows tags when editing 1`] = `
 Object {
+  "additionalTags": Array [],
   "cursorIdx": 2,
   "prevLen": 0,
   "searchResults": Array [
