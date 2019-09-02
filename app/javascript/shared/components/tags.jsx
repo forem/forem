@@ -10,6 +10,7 @@ const KEYS = {
   RETURN: 13,
   COMMA: 188,
   DELETE: 8,
+  HYPHEN: 173,
 };
 
 /* TODO: Remove all instances of this.props.listing
@@ -295,7 +296,8 @@ class Tags extends Component {
       e.keyCode != KEYS.DELETE &&
       e.keyCode != KEYS.LEFT &&
       e.keyCode != KEYS.RIGHT &&
-      e.keyCode != KEYS.TAB
+      e.keyCode != KEYS.TAB &&
+      e.keyCode != KEYS.HYPHEN
     ) {
       e.preventDefault();
     }
