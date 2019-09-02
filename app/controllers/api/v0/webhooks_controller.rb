@@ -4,8 +4,10 @@ module Api
       respond_to :json
       before_action :authenticate!
 
+      skip_before_action :verify_authenticity_token, only: %w[create destroy]
+
       def create
-        @webhook = current_user.webhook_endpoints.create!(webhook_params)
+        @webhook = @user.webhook_endpoints.create!(webhook_params)
         render "show", status: :created
       end
 
@@ -14,7 +16,7 @@ module Api
       end
 
       def destroy
-        webhook = current_user.webhook_endpoints.find(params[:id])
+        webhook = @user.webhook_endpoints.find(params[:id])
         webhook.destroy
         render json: { success: webhook.destroyed? }
       end

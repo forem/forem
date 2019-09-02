@@ -24,7 +24,11 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
 
   describe "POST /api/v0/webhooks" do
     let(:webhook_params) do
-      { source: "stackbit", target_url: Faker::Internet.url(scheme: "https"), events: %w[article_created article_updated article_destroyed] }
+      {
+        source: "stackbit",
+        target_url: Faker::Internet.url(scheme: "https"),
+        events: %w[article_created article_updated article_destroyed]
+      }
     end
 
     it "creates a webhook" do
