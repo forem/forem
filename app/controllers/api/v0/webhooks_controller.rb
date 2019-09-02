@@ -12,7 +12,7 @@ module Api
       end
 
       def show
-        @webhook = Webhook::Endpoint.includes(:user).find(params[:id])
+        @webhook = @user.webhook_endpoints.find(params[:id])
       end
 
       def destroy

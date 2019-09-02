@@ -19,6 +19,12 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
       expect(response).to have_http_status(:not_found)
     end
 
+    it "returns 404 if another user webhook is accessed" do
+      other_webhook = create(:webhook_endpoint, user: create(:user))
+      get "/api/webhooks/#{other_webhook.id}"
+      expect(response).to have_http_status(:not_found)
+    end
+
     it "returns json on success" do
       get "/api/webhooks/#{webhook.id}"
       json = JSON.parse(response.body)
@@ -75,8 +81,13 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
       other_webhook = create(:webhook_endpoint, user: create(:user))
       expect do
         delete "/api/webhooks/#{other_webhook.id}"
-        expect(response).to have_http_status(:not_found)
       end.not_to change(Webhook::Endpoint, :count)
+    end
+
+    it "returns 404 if another user webhook is accessed" do
+      other_webhook = create(:webhook_endpoint, user: create(:user))
+      delete "/api/webhooks/#{other_webhook.id}"
+      expect(response).to have_http_status(:not_found)
     end
   end
 end
