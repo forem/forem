@@ -15,6 +15,7 @@ RSpec.describe ClassifiedListingTag, type: :liquid_template do
     )
   end
   let(:expired_listing) do
+    datetime = 40.days.ago
     create(
       :classified_listing,
       user_id: user.id,
@@ -24,9 +25,9 @@ RSpec.describe ClassifiedListingTag, type: :liquid_template do
       category: "cfp",
       tag_list: %w[x y z],
       organization_id: nil,
-      bumped_at: Time.zone.today - 40,
-      created_at: Time.zone.today - 40,
-      updated_at: Time.zone.today - 40,
+      bumped_at: datetime,
+      created_at: datetime,
+      updated_at: datetime,
     )
   end
   let(:org) { create(:organization) }
@@ -60,7 +61,7 @@ RSpec.describe ClassifiedListingTag, type: :liquid_template do
         <div class="ltag__listing-content">
           <h3>
             <a href="/listings/#{listing.category}/#{listing.slug}">
-              #{listing.title}
+              #{CGI.escapeHTML(listing.title)}
             </a>
           </h3>
           <div class="ltag__listing-body">
