@@ -169,10 +169,6 @@ class MarkdownParser
       else
         "{% raw %}" + codeblock + "{% endraw %}"
       end
-      # Below is the old implementation that replaces all liquid tag.
-      # codeblock.gsub(/{%.{1,}[^}]{2}%}/) do |liquid_tag|
-      #   liquid_tag.gsub(/{%/, '{{ "{%').gsub(/%}/, '" }}%}')
-      # end
     end
   end
 
@@ -181,8 +177,8 @@ class MarkdownParser
     html_doc.xpath("//body/*[not (@class='highlight')]").each do |el|
       el.children.each do |child|
         if child.text?
-          new_child = child.text.gsub(/\B@[a-z0-9_-]+/i) do |s|
-            user_link_if_exists(s)
+          new_child = child.text.gsub(/\B@[a-z0-9_-]+/i) do |text|
+            user_link_if_exists(text)
           end
           child.replace(new_child) if new_child != child.text
         end
@@ -224,21 +220,21 @@ class MarkdownParser
 
   def wrap_all_images_in_links(html)
     doc = Nokogiri::HTML.fragment(html)
-    doc.search("p img").each do |i|
-      i.swap("<a href='#{i.attr('src')}' class='article-body-image-wrapper'>#{i}</a>") unless i.parent.name == "a"
+    doc.search("p img").each do |image|
+      image.swap("<a href='#{image.attr('src')}' class='article-body-image-wrapper'>#{image}</a>") unless image.parent.name == "a"
     end
     doc.to_html
   end
 
   def remove_empty_paragraphs(html)
     doc = Nokogiri::HTML.fragment(html)
-    doc.css("p").select { |p| all_children_are_blank?(p) }.each(&:remove)
+    doc.css("p").select { |paragraph| all_children_are_blank?(paragraph) }.each(&:remove)
     doc.to_html
   end
 
   def wrap_all_tables(html)
     doc = Nokogiri::HTML.fragment(html)
-    doc.search("table").each { |i| i.swap("<div class='table-wrapper-paragraph'>#{i}</div>") }
+    doc.search("table").each { |table| table.swap("<div class='table-wrapper-paragraph'>#{table}</div>") }
     doc.to_html
   end
 
