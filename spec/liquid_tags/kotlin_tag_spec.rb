@@ -34,7 +34,7 @@ RSpec.describe KotlinTag, type: :liquid_template do
     end
 
     it "produces a correct final URL" do
-      expect(KotlinTag.embedded_url(input)).to eq(expected)
+      expect(described_class.embedded_url(input)).to eq(expected)
     end
 
     it "renders correctly a Kotlin Playground link" do
