@@ -95,10 +95,6 @@ class IntroSlide extends Component {
   }
 }
 
-// const IntroSlide = ({ prev, next }) => (
-
-// );
-
 IntroSlide.propTypes = {
   prev: PropTypes.func.isRequired,
   next: PropTypes.string.isRequired,
