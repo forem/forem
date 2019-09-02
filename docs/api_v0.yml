@@ -1074,3 +1074,60 @@ paths:
               -H "api-key: ACCESS_TOKEN" \
               -d '{"webhook_endpoint":{"target_url":"https://example.org/webhooks/webhook1","source":"DEV","events":["article_created"]}}' \
               https://dev.to/api/webhooks
+
+  /webhooks/{id}:
+    get:
+      summary: A webhook endpoint
+      description: |
+        This endpoint allows the client to retrieve a single
+        webhook given its `id`.
+      tags:
+        - webhooks
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Id of the webhook
+          schema:
+            type: integer
+            format: int32
+          example: 123
+      responses:
+        200:
+          description: A webhook endpoint
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/WebhookShow"
+              examples:
+                webhook-success:
+                  $ref: "#/components/examples/WebhookShow"
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/APIError"
+              examples:
+                article-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
+        404:
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/APIError"
+              examples:
+                article-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      security:
+        - api_key: []
+        - oauth2: []
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl
+          source: |
+            curl https://dev.to/api/webhooks/123

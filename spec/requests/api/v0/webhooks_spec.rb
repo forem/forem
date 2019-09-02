@@ -14,6 +14,11 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
       expect(response).to have_http_status(:ok)
     end
 
+    it "returns 404 if the webhook does not exist" do
+      get "/api/webhooks/9999"
+      expect(response).to have_http_status(:not_found)
+    end
+
     it "returns json on success" do
       get "/api/webhooks/#{webhook.id}"
       json = JSON.parse(response.body)
