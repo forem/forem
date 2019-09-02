@@ -15,7 +15,7 @@ module Webhook
     end
 
     def as_json(*_args)
-      WebhookEventSerializer.new(self).serializable_hash
+      Webhook::EventSerializer.new(self).serializable_hash
     end
   end
 end

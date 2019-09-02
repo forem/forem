@@ -263,7 +263,7 @@ class Article < ApplicationRecord
   end
 
   def webhook_data
-    serializer = destroyed? ? DestroyedArticleSerializer : ArticleForWebhooksSerializer
+    serializer = destroyed? ? Webhook::ArticleDestroyedSerializer : Webhook::ArticleSerializer
     serializer.new(self).serializable_hash
   end
 
