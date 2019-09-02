@@ -362,6 +362,8 @@
   resize: none;
   padding: 20px 6px;
   font-family: $monospace;
+  // scrollbars not needed because the preact-textarea-autosize package
+  // automatically resizes the article form
   overflow: hidden;
   background: white;
   background: var(--theme-container-background, white);
