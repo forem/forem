@@ -4,11 +4,14 @@ class ImageUploadsController < ApplicationController
 
   def create
     authorize :image_upload
+
+    rate_limiter = RateLimitChecker.new(current_user)
+
     begin
-      raise RateLimitChecker::UploadRateLimitReached if RateLimitChecker.new(current_user).limit_by_action("image_upload")
+      raise RateLimitChecker::UploadRateLimitReached if rate_limiter.limit_by_action("image_upload")
       raise CarrierWave::IntegrityError if params[:image].blank?
 
-      uploaders = image_upload(params[:image])
+      uploaders = upload_images(params[:image], rate_limiter)
     rescue RateLimitChecker::UploadRateLimitReached
       respond_to do |format|
         format.json { render json: { error: "Upload limit reached!" } }
@@ -42,19 +45,12 @@ class ImageUploadsController < ApplicationController
 
   private
 
-  def image_upload(images)
-    if images.is_a? Array
-      images.map do |image|
-        uploader = ArticleImageUploader.new
+  def upload_images(images, rate_limiter)
+    Array.wrap(images).map do |image|
+      ArticleImageUploader.new.tap do |uploader|
         uploader.store!(image)
-        RateLimitChecker.new(current_user).track_image_uploads
-        uploader
+        rate_limiter.track_image_uploads
       end
-    else
-      uploader = ArticleImageUploader.new
-      uploader.store!(images)
-      RateLimitChecker.new(current_user).track_image_uploads
-      [uploader]
     end
   end
 end
