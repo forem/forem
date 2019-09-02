@@ -32,7 +32,7 @@ class MarkdownFixer
     # because --- messes with front matter
     def modify_hr_tags(markdown)
       markdown.gsub(/-{3}.*?-{3}/m) do |front_matter|
-        front_matter.gsub(/^---/).with_index { |m, i| i > 1 ? "#{m}-----" : m }
+        front_matter.gsub(/^---/).with_index { |match, i| i > 1 ? "#{match}-----" : match }
       end
     end
 

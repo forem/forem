@@ -3,8 +3,8 @@ class Notification < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :organization, optional: true
 
-  validates :user_id, presence: true, if: proc { |n| n.organization_id.nil? }
-  validates :organization_id, presence: true, if: proc { |n| n.user_id.nil? }
+  validates :user_id, presence: true, if: proc { |notifcation| notifcation.organization_id.nil? }
+  validates :organization_id, presence: true, if: proc { |notifcation| notifcation.user_id.nil? }
 
   before_create :mark_notified_at_time
 
