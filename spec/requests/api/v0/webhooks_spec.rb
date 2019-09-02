@@ -66,18 +66,16 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
       end.to change(Webhook::Endpoint, :count).by(-1)
     end
 
-    it "returns 200 on success" do
+    it "returns 204 on success" do
       delete "/api/webhooks/#{webhook.id}"
-      expect(response).to have_http_status(:ok)
-      expect(response.content_type).to eq("application/json")
-      json = JSON.parse(response.body)
-      expect(json["success"]).to be true
+      expect(response).to have_http_status(:no_content)
     end
 
     it "doesn't allow to destroy other user webhook" do
       other_webhook = create(:webhook_endpoint, user: create(:user))
       expect do
         delete "/api/webhooks/#{other_webhook.id}"
+        expect(response).to have_http_status(:not_found)
       end.not_to change(Webhook::Endpoint, :count)
     end
   end

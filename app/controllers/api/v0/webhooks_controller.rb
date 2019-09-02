@@ -17,8 +17,8 @@ module Api
 
       def destroy
         webhook = @user.webhook_endpoints.find(params[:id])
-        webhook.destroy
-        render json: { success: webhook.destroyed? }
+        webhook.destroy!
+        head :no_content
       end
 
       private

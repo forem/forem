@@ -507,17 +507,23 @@ components:
       properties:
         type_of:
           type: string
+        id:
+          type: integer
+          format: int64
+        source:
+          description: The name of the requester, eg. "DEV"
+          type: string
+        target_url:
+          type: string
+          format: url
         events:
           description: An array of events identifiers
           type: array
           items:
             type: string
-        target_url:
+        created_at:
           type: string
-          format: url
-        source:
-          description: The name of the requester, eg. "DEV"
-          type: string
+          format: date-time
         user:
           type: object
           $ref: "#/components/schemas/ArticleUser"
@@ -622,10 +628,12 @@ components:
     WebhookShow:
       value:
         type_of: webhook_endpoint
+        id: 1
+        source: DEV
+        target_url: https://example.com/webhooks/webhook1
         events:
           - article_created
-        target_url: https://example.com/webhooks/webhook1
-        source: DEV
+        created_at: "2019-09-02T09:47:39.230Z"
         user:
           name: bob
           username: bob
@@ -1131,3 +1139,52 @@ paths:
           label: curl
           source: |
             curl https://dev.to/api/webhooks/123
+    delete:
+      summary: A webhook endpoint
+      description: |
+        This endpoint allows the client to delete a single
+        webhook given its `id`.
+      tags:
+        - webhooks
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Id of the webhook
+          schema:
+            type: integer
+            format: int32
+          example: 123
+      responses:
+        204:
+          description: A successful deletion
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/APIError"
+              examples:
+                article-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
+        404:
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/APIError"
+              examples:
+                article-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      security:
+        - api_key: []
+        - oauth2: []
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl
+          source: |
+            curl -X DELETE \
+              -H "api-key: ACCESS_TOKEN" \
+              https://dev.to/api/webhooks/1
