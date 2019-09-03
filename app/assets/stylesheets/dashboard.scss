@@ -143,7 +143,7 @@
     justify-content: space-between;
     align-items: center;
 
-    @media screen and (max-width: 426px) {
+    @media screen and (max-width: 600px) {
       flex-direction: column;
       align-items: stretch;
     }
@@ -152,7 +152,7 @@
       display: inline-block;
       padding: 14px;
 
-      @media screen and (max-width: 426px) {
+      @media screen and (max-width: 600px) {
         margin-bottom: 15px;
         text-align: center;
       }

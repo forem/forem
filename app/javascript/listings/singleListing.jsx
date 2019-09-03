@@ -68,7 +68,8 @@ export const SingleListing = ({
           <div className="single-classified-listing-tags">{tagLinks}</div>
           <div className="single-classified-listing-author-info">
             <a href={`/listings/${listing.category}`} onClick={e => onChangeCategory(e, listing.category)} data-no-instant>{listing.category}</a>
-            {locationText}・
+            {locationText}
+            ・
             <a href={`/${listing.author.username}`}>{listing.author.name}</a>
             {editButton}
           </div>

@@ -58,9 +58,9 @@ class Tweet < ApplicationRecord
 
   class << self
     def try_to_get_tweet(twitter_id_code)
-      c = TwitterBot.new(random_identity).client
-      t = c.status(twitter_id_code, tweet_mode: "extended")
-      make_tweet_from_api_object(t)
+      client = TwitterBot.new(random_identity).client
+      tweet = client.status(twitter_id_code, tweet_mode: "extended")
+      make_tweet_from_api_object(tweet)
     end
 
     def make_tweet_from_api_object(tweeted)

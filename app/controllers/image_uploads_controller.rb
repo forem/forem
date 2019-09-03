@@ -5,7 +5,7 @@ class ImageUploadsController < ApplicationController
   def create
     authorize :image_upload
     begin
-      raise RateLimitChecker::UploadRateLimitReached if RateLimitChecker.new(current_user).limit_by_situation("image_upload")
+      raise RateLimitChecker::UploadRateLimitReached if RateLimitChecker.new(current_user).limit_by_action("image_upload")
       raise CarrierWave::IntegrityError if params[:image].blank?
 
       uploaders = image_upload(params[:image])
