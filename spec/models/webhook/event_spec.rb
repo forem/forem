@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe Webhook::Event, type: :model do
   let(:article) { create(:article) }
+  let!(:payload) { Webhook::PayloadAdapter.new(article).hash }
 
   describe "#as_json" do
     it "provides correct json (sample)" do
@@ -16,7 +17,7 @@ RSpec.describe Webhook::Event, type: :model do
     end
 
     it "provides correct json including article" do
-      event = described_class.new(event_type: "article_updated", payload: article.webhook_data)
+      event = described_class.new(event_type: "article_updated", payload: payload)
       hash = event.as_json
       attributes = hash[:data][:attributes]
       expect(attributes[:event_type]).to eq("article_updated")
@@ -26,7 +27,7 @@ RSpec.describe Webhook::Event, type: :model do
 
   describe "#to_json" do
     it "provides correct json including article" do
-      event = described_class.new(event_type: "article_updated", payload: article.webhook_data)
+      event = described_class.new(event_type: "article_updated", payload: payload)
       json = event.to_json
       hash = JSON.parse(json)
       attributes = hash["data"]["attributes"]

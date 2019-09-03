@@ -599,24 +599,5 @@ RSpec.describe Article, type: :model do
     end
   end
 
-  describe "#webhook_data" do
-    it "returns a hash for a persisted article" do
-      article = create(:article, title: "I'm super")
-      data = article.webhook_data
-      expect(data).to be_kind_of(Hash)
-      expect(data[:data][:attributes][:title]).to eq(article.title)
-      expect(data[:data][:attributes][:body_markdown]).to be_truthy
-    end
-
-    it "returns a hash for a destroyed article" do
-      article = create(:article, title: "hello")
-      article.destroy
-      data = article.webhook_data
-      expect(data).to be_kind_of(Hash)
-      expect(data[:data][:attributes][:title]).to eq("hello")
-      expect(data[:data][:attributes][:body_markdown]).to be_falsey
-    end
-  end
-
   include_examples "#sync_reactions_count", :article
 end
