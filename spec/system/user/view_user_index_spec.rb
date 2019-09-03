@@ -92,7 +92,7 @@ RSpec.describe "User index", type: :system do
       end
     end
 
-    it "renders the report abuse link" do
+    it "does not render the report abuse link" do
       expect(page).not_to have_link("Report Abuse")
     end
   end

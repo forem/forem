@@ -145,6 +145,7 @@
       </div>
     </div>
     <%= render "articles/user_metadata", context: "profile" %>
+    <%# TODO: move the following condition down to the "Report Abuse" link if other options are added to the menu %>
     <% unless @user == current_user %>
       <div class="profile-dropdown">
         <button id="user-profile-dropdown">
