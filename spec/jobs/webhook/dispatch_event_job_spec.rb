@@ -5,14 +5,15 @@ RSpec.describe Webhook::DispatchEventJob, type: :job do
 
   describe "#perform_now" do
     let(:article) { create(:article) }
-    let(:json) { Webhook::Event.new(event_type: "article_updated", payload: article.webhook_data).to_json }
+    let(:payload) { Webhook::PayloadAdapter.new(article).hash }
+    let(:json) { Webhook::Event.new(event_type: "article_updated", payload: payload).to_json }
     let(:url) { Faker::Internet.url }
 
     it "posts an event" do
       client = double
       allow(client).to receive(:post)
       described_class.perform_now(endpoint_url: url, payload: json, client: client)
-      expect(client).to have_received(:post).once.with(URI.parse(url), headers: { "Content-Type" => "application/json" }, body: json)
+      expect(client).to have_received(:post).once.with(Addressable::URI.parse(url), headers: { "Content-Type" => "application/json" }, body: json)
     end
 
     it "doesn't fail" do
