@@ -40,7 +40,9 @@ RSpec.describe MarkdownParser do
   end
 
   describe "mentions" do
-    let!(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
+
+    before { allow(User).to receive(:find_by).with(username: user.username).and_return(user) }
 
     it "works normally" do
       mention = "@#{user.username}"
@@ -51,11 +53,10 @@ RSpec.describe MarkdownParser do
     it "works with undescore" do
       mention = "what was found here _@#{user.username}_ let see"
       result = generate_and_parse_markdown(mention)
-      expect(result).to include "<a"
-      expect(result).to include "<em"
+      expect(result).to include "<a", "<em"
     end
 
-    it "won't work in code tag" do
+    it "will not work in code tag" do
       mention = "this is a chunk of text `@#{user.username}`"
       result = generate_and_parse_markdown(mention)
       expect(result).to include "<code"
