@@ -178,9 +178,7 @@ class MarkdownParser
   end
 
   def possibly_raw_tag_syntax?(array)
-    array.each do |string|
-      return true if ["{", "}", "raw", "endraw", "----"].include?(string)
-    end
+    array.any? { |string| ["{", "}", "raw", "endraw", "----"].include?(string) }
   end
 
   def unescape_raw_tag_in_codeblocks(html)
