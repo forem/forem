@@ -26,19 +26,20 @@ A new user starts without a any roles and there is no administrative way of addi
 rails console
 ```
 
-1. After verifying the user `test_user_name` is missing the `pro` role we proceed to add and then verify the role has been added.
+- after verifying the user `test_user_name` is missing the `pro` role we proceed to add it and then verify the role has been added:
 
 ```ruby
-User.find_by(username: 'test_user_name').has_role? :pro
+> user = User.find_by(username: "test_user_name")
+> user.has_role? :pro
 => false
 
-User.find_by(username: 'test_user_name').add_role :pro
+> user.add_role :pro
 => #<Role:
 ...
 name: "pro"
 .. >
 
-User.find_by(username: 'test_user_name').has_role? :pro
+> user.has_role? :pro
 => true
 ```
 
@@ -49,7 +50,7 @@ Another common requirement is changing to the administrative role and an example
 A more complex query to list all the users and their roles:
 
 ```ruby
-User.joins(:roles).order(:id).group(:id).pluck(:id, :username,'array_agg(roles.name)')
+User.joins(:roles).order(:id).group(:id).pluck(:id, :username, Arel.sql("array_agg(roles.name)"))
 ```
 
 ## Further Reading
