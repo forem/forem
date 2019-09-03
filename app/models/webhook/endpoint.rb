@@ -2,8 +2,8 @@ module Webhook
   class Endpoint < ApplicationRecord
     belongs_to :user, inverse_of: :webhook_endpoints
 
-    validates :target_url, uniqueness: true, url: { schemes: %w[https] }
-    validates :events, presence: true
+    validates :target_url, presence: true, uniqueness: true, url: { schemes: %w[https] }
+    validates :source, :events, presence: true
 
     attribute :events, :string, array: true, default: []
 

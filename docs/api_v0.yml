@@ -1,8 +1,8 @@
-openapi: '3.0.2'
+openapi: "3.0.2"
 info:
   title: DEV API
   description: Access DEV articles, comments and other resources via API
-  version: '0.5.1'
+  version: "0.5.3"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -125,13 +125,13 @@ components:
           format: date-time
         user:
           type: object
-          $ref: '#/components/schemas/ArticleUser'
+          $ref: "#/components/schemas/ArticleUser"
         organization:
           type: object
-          $ref: '#/components/schemas/ArticleOrganization'
+          $ref: "#/components/schemas/ArticleOrganization"
         flare_tag:
           type: object
-          $ref: '#/components/schemas/ArticleFlareTag'
+          $ref: "#/components/schemas/ArticleFlareTag"
     ArticleShow:
       type: object
       required:
@@ -220,7 +220,7 @@ components:
           type: string
         user:
           type: object
-          $ref: '#/components/schemas/ArticleUser'
+          $ref: "#/components/schemas/ArticleUser"
     ArticleCreate:
       type: object
       properties:
@@ -416,13 +416,13 @@ components:
           format: date-time
         user:
           type: object
-          $ref: '#/components/schemas/ArticleUser'
+          $ref: "#/components/schemas/ArticleUser"
         organization:
           type: object
-          $ref: '#/components/schemas/ArticleOrganization'
+          $ref: "#/components/schemas/ArticleOrganization"
         flare_tag:
           type: object
-          $ref: '#/components/schemas/ArticleFlareTag'
+          $ref: "#/components/schemas/ArticleFlareTag"
 
     ArticleUser:
       description: The article's creator
@@ -478,6 +478,56 @@ components:
           description: Text color (hexadecimal)
           type: string
 
+    WebhookCreate:
+      description: Webhook creation payload
+      type: object
+      properties:
+        webhook_endpoint:
+          type: object
+          required:
+            - source
+            - target_url
+            - events
+          properties:
+            source:
+              description: The name of the requester, eg. "DEV"
+              type: string
+            target_url:
+              type: string
+              format: url
+            events:
+              description: An array of events identifiers
+              type: array
+              items:
+                type: string
+
+    WebhookShow:
+      description: Webhook
+      type: object
+      properties:
+        type_of:
+          type: string
+        id:
+          type: integer
+          format: int64
+        source:
+          description: The name of the requester, eg. "DEV"
+          type: string
+        target_url:
+          type: string
+          format: url
+        events:
+          description: An array of events identifiers
+          type: array
+          items:
+            type: string
+        created_at:
+          type: string
+          format: date-time
+        user:
+          type: object
+          $ref: "#/components/schemas/ArticleUser"
+
   examples:
     ErrorNotFound:
       value:
@@ -491,34 +541,36 @@ components:
       value:
         type_of: article
         id: 150589
-        title: 'Byte Sized Episode 2: The Creation of Graph Theory '
-        description: The full story of Leonhard Euler and the creation of this fundamental
+        title: "Byte Sized Episode 2: The Creation of Graph Theory "
+        description:
+          The full story of Leonhard Euler and the creation of this fundamental
           computer science principle, delivered in a few minutes.
         cover_image: https://res.cloudinary.com/practicaldev/image/fetch/s--qgutBUrH--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://thepracticaldev.s3.amazonaws.com/i/88e62fzblbluz1dm7xjf.png
         readable_publish_date: Aug  1
         social_image: https://res.cloudinary.com/practicaldev/image/fetch/s--6wSHHfwd--/c_imagga_scale,f_auto,fl_progressive,h_500,q_auto,w_1000/https://thepracticaldev.s3.amazonaws.com/i/88e62fzblbluz1dm7xjf.png
         tag_list: computerscience, graphtheory, bytesized, history
         tags:
-        - computerscience
-        - graphtheory
-        - bytesized
-        - history
+          - computerscience
+          - graphtheory
+          - bytesized
+          - history
         slug: byte-sized-episode-2-the-creation-of-graph-theory-34g1
         path: "/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1"
         url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
         canonical_url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
         comments_count: 19
         positive_reactions_count: 276
-        created_at: '2019-07-31T11:15:06Z'
+        created_at: "2019-07-31T11:15:06Z"
         edited_at:
         crossposted_at:
-        published_at: '2019-08-01T15:47:54Z'
-        last_comment_at: '2019-08-06T09:12:45Z'
+        published_at: "2019-08-01T15:47:54Z"
+        last_comment_at: "2019-08-06T09:12:45Z"
         body_html: |+
           <p>Today's episode of Byte Sized is about Leonhard Euler and the creation of <a href="https://en.wikipedia.org/wiki/Graph_theory">Graph Theory</a>.</p>
 
           <p>For more about how Graph Theory works, check out this video from BaseCS!</p>...
-        body_markdown: "---\r\ntitle: Byte Sized Episode 2: The Creation of Graph Theory \r\npublished:
+        body_markdown:
+          "---\r\ntitle: Byte Sized Episode 2: The Creation of Graph Theory \r\npublished:
           true\r\ndescription: The full story of Leonhard Euler and the creation of this fundamental
           computer science principle, delivered in a few minutes.\r\ntags: computerscience,
           graphtheory, bytesized, history\r\ncover_image: https://thepracticaldev.s3.amazonaws.com/i/88e62fzblbluz1dm7xjf.png\r\nseries:
@@ -566,7 +618,30 @@ components:
           series: Hello series
           canonical_url: https://example.com/blog/hello
           organization_id: 1234
-
+    WebhookCreate:
+      value:
+        webhook_endpoint:
+          target_url: https://example.com/webhooks/webhook1
+          source: DEV
+          events:
+            - article_created
+    WebhookShow:
+      value:
+        type_of: webhook_endpoint
+        id: 1
+        source: DEV
+        target_url: https://example.com/webhooks/webhook1
+        events:
+          - article_created
+        created_at: "2019-09-02T09:47:39.230Z"
+        user:
+          name: bob
+          username: bob
+          twitter_username:
+          github_username: bob
+          website_url:
+          profile_image: "..."
+          profile_image_90: "..."
 
 paths:
   /articles:
@@ -655,30 +730,31 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ArticleIndex'
+                  $ref: "#/components/schemas/ArticleIndex"
               examples:
                 articles-success:
                   summary: Successful response
                   value:
                     - type_of: article
                       id: 150589
-                      title: 'Byte Sized Episode 2: The Creation of Graph Theory'
-                      description: The full story of Leonhard Euler and the creation of this fundamental
+                      title: "Byte Sized Episode 2: The Creation of Graph Theory"
+                      description:
+                        The full story of Leonhard Euler and the creation of this fundamental
                         computer science principle, delivered in a few minutes.
                       cover_image: https://res.cloudinary.com/practicaldev/image/fetch/s--qgutBUrH--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://thepracticaldev.s3.amazonaws.com/i/88e62fzblbluz1dm7xjf.png
-                      published_at: '2019-08-01T15:47:54.000Z'
+                      published_at: "2019-08-01T15:47:54.000Z"
                       tag_list:
-                      - computerscience
-                      - graphtheory
-                      - bytesized
-                      - history
+                        - computerscience
+                        - graphtheory
+                        - bytesized
+                        - history
                       slug: byte-sized-episode-2-the-creation-of-graph-theory-34g1
                       path: "/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1"
                       url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
                       canonical_url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
                       comments_count: 15
                       positive_reactions_count: 210
-                      published_timestamp: '2019-08-01T15:47:54Z'
+                      published_timestamp: "2019-08-01T15:47:54Z"
                       user:
                         name: Vaidehi Joshi
                         username: vaidehijoshi
@@ -725,14 +801,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ArticleCreate'
+              $ref: "#/components/schemas/ArticleCreate"
             examples:
               article-create-title-body:
-                $ref: '#/components/examples/ArticleCreateTitleBody'
+                $ref: "#/components/examples/ArticleCreateTitleBody"
               article-create-front-matter:
-                $ref: '#/components/examples/ArticleCreateFrontMatter'
+                $ref: "#/components/examples/ArticleCreateFrontMatter"
               article-create-organization:
-                $ref: '#/components/examples/ArticleCreateOrganization'
+                $ref: "#/components/examples/ArticleCreateOrganization"
 
       responses:
         201:
@@ -741,10 +817,10 @@ paths:
             application/json:
               schema:
                 type: object
-                $ref: '#/components/schemas/ArticleShow'
+                $ref: "#/components/schemas/ArticleShow"
               examples:
                 article-success:
-                  $ref: '#/components/examples/ArticleShow'
+                  $ref: "#/components/examples/ArticleShow"
           headers:
             Location:
               description: The URL of the new article
@@ -757,10 +833,10 @@ paths:
             application/json:
               schema:
                 type: object
-                $ref: '#/components/schemas/APIError'
+                $ref: "#/components/schemas/APIError"
               examples:
                 article-unauthorized:
-                  $ref: '#/components/examples/ErrorUnauthorized'
+                  $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
         - oauth2: []
@@ -806,20 +882,20 @@ paths:
             application/json:
               schema:
                 type: object
-                $ref: '#/components/schemas/ArticleShow'
+                $ref: "#/components/schemas/ArticleShow"
               examples:
                 article-success:
-                  $ref: '#/components/examples/ArticleShow'
+                  $ref: "#/components/examples/ArticleShow"
         404:
           description: Resource not found
           content:
             application/json:
               schema:
                 type: object
-                $ref: '#/components/schemas/APIError'
+                $ref: "#/components/schemas/APIError"
               examples:
                 article-not-found:
-                  $ref: '#/components/examples/ErrorNotFound'
+                  $ref: "#/components/examples/ErrorNotFound"
       x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
         - lang: Shell
           label: curl
@@ -863,14 +939,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ArticleUpdate'
+              $ref: "#/components/schemas/ArticleUpdate"
             examples:
               article-update-title-body:
-                $ref: '#/components/examples/ArticleCreateTitleBody'
+                $ref: "#/components/examples/ArticleCreateTitleBody"
               article-update-front-matter:
-                $ref: '#/components/examples/ArticleCreateFrontMatter'
+                $ref: "#/components/examples/ArticleCreateFrontMatter"
               article-update-organization:
-                $ref: '#/components/examples/ArticleCreateOrganization'
+                $ref: "#/components/examples/ArticleCreateOrganization"
       responses:
         200:
           description: The updated article
@@ -878,20 +954,20 @@ paths:
             application/json:
               schema:
                 type: object
-                $ref: '#/components/schemas/ArticleShow'
+                $ref: "#/components/schemas/ArticleShow"
               examples:
                 article-success:
-                  $ref: '#/components/examples/ArticleShow'
+                  $ref: "#/components/examples/ArticleShow"
         401:
           description: Unauthorized
           content:
             application/json:
               schema:
                 type: object
-                $ref: '#/components/schemas/APIError'
+                $ref: "#/components/schemas/APIError"
               examples:
                 article-unauthorized:
-                  $ref: '#/components/examples/ErrorUnauthorized'
+                  $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
         - oauth2: []
@@ -944,7 +1020,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ArticleMe'
+                  $ref: "#/components/schemas/ArticleMe"
       security:
         - api_key: []
         - oauth2: []
@@ -953,3 +1029,162 @@ paths:
           label: curl
           source: |
             curl https://dev.to/api/articles/me
+
+  /webhooks:
+    post:
+      summary: Create a new webhook
+      description: |
+        This endpoint allows the client to create a new webhook.
+
+        "Webhooks" are used to register HTTP endpoints that will be called once a relevant event is
+        triggered inside the web application, events like `article_created`, `article_updated`.
+      tags:
+        - webhooks
+      requestBody:
+        description: Webhook to create
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookCreate"
+            examples:
+              webhook-create:
+                $ref: "#/components/examples/WebhookCreate"
+
+      responses:
+        201:
+          description: A newly created webhook
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/WebhookShow"
+              examples:
+                webhook-success:
+                  $ref: "#/components/examples/WebhookShow"
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/APIError"
+              examples:
+                article-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
+      security:
+        - api_key: []
+        - oauth2: []
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl
+          source: |
+            curl -X POST -H "Content-Type: application/json" \
+              -H "api-key: ACCESS_TOKEN" \
+              -d '{"webhook_endpoint":{"target_url":"https://example.org/webhooks/webhook1","source":"DEV","events":["article_created"]}}' \
+              https://dev.to/api/webhooks
+
+  /webhooks/{id}:
+    get:
+      summary: A webhook endpoint
+      description: |
+        This endpoint allows the client to retrieve a single
+        webhook given its `id`.
+      tags:
+        - webhooks
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Id of the webhook
+          schema:
+            type: integer
+            format: int32
+          example: 123
+      responses:
+        200:
+          description: A webhook endpoint
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/WebhookShow"
+              examples:
+                webhook-success:
+                  $ref: "#/components/examples/WebhookShow"
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/APIError"
+              examples:
+                article-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
+        404:
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/APIError"
+              examples:
+                article-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      security:
+        - api_key: []
+        - oauth2: []
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl
+          source: |
+            curl https://dev.to/api/webhooks/123
+    delete:
+      summary: A webhook endpoint
+      description: |
+        This endpoint allows the client to delete a single
+        webhook given its `id`.
+      tags:
+        - webhooks
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Id of the webhook
+          schema:
+            type: integer
+            format: int32
+          example: 123
+      responses:
+        204:
+          description: A successful deletion
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/APIError"
+              examples:
+                article-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
+        404:
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/APIError"
+              examples:
+                article-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      security:
+        - api_key: []
+        - oauth2: []
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl
+          source: |
+            curl -X DELETE \
+              -H "api-key: ACCESS_TOKEN" \
+              https://dev.to/api/webhooks/1
