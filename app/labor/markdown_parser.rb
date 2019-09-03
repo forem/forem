@@ -186,6 +186,7 @@ class MarkdownParser
           end)
         end
       else
+        # with only 1 child, inner_html can be used update the content
         node.inner_html = node.inner_html.gsub(/\B@[a-z0-9_-]+/i) do |text|
           user_link_if_exists(text)
         end
