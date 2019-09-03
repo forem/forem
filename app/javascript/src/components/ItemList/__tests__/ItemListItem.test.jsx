@@ -12,7 +12,7 @@ describe('<ItemListItem />', () => {
         profile_image_90: 'https://dummyimage.com/90x90',
         name: 'Bob',
       },
-      article_reading_time: '1 min read',
+      article_reading_time: 1,
       readable_visited_at: 'Jun 29',
       article_tags: ['discuss'],
     };
@@ -29,7 +29,7 @@ describe('<ItemListItem />', () => {
         profile_image_90: 'https://dummyimage.com/90x90',
         name: 'Bob',
       },
-      reading_time: '1 min read',
+      reading_time: 1,
       reactable_published_date: 'Jun 29',
       reactable_tags: ['discuss'],
     };

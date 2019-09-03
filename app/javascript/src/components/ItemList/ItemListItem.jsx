@@ -13,6 +13,9 @@ export const ItemListItem = ({ item, children }) => {
     tags: item.article_tags || item.reactable_tags,
   };
 
+  // update readingTime to 1 min if the reading time is less than 1 min
+  adaptedItem.readingTime = Math.max(1, adaptedItem.readingTime || null);
+
   return (
     <div className="item-wrapper">
       <a className="item" href={adaptedItem.path}>
@@ -32,7 +35,8 @@ export const ItemListItem = ({ item, children }) => {
             <span className="item-tags">
               {adaptedItem.tags.map(tag => (
                 <a className="item-tag" href={`/t/${tag}`}>
-                  #{tag}
+                  #
+                  {tag}
                 </a>
               ))}
             </span>
@@ -55,7 +59,7 @@ const historyItemPropTypes = PropTypes.shape({
     profile_image_90: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
   }),
-  article_reading_time: PropTypes.string.isRequired,
+  article_reading_time: PropTypes.number.isRequired,
   readable_visited_at: PropTypes.string.isRequired,
   article_tags: PropTypes.arrayOf(PropTypes.string).isRequired,
 });
@@ -68,7 +72,7 @@ const readingListItemPropTypes = PropTypes.shape({
     profile_image_90: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
   }),
-  reading_time: PropTypes.string.isRequired,
+  reading_time: PropTypes.number.isRequired,
   reactable_published_date: PropTypes.string.isRequired,
   reactable_tags: PropTypes.arrayOf(PropTypes.string).isRequired,
 });
