@@ -116,6 +116,7 @@ group :development do
   gem "yard", "~> 0.9.20" # YARD is a documentation generation tool for the Ruby programming language
   gem "yard-activerecord", "~> 0.0.16" # YARD extension that handles and interprets methods used when developing applications with ActiveRecord
   gem "yard-activesupport-concern", "~> 0.0.1" # YARD extension that brings support for modules making use of ActiveSupport::Concern
+  gem 'quickin', path: 'lib/quickin' # Allow developers to skip auth https://github.com/thepracticaldev/dev.to/pull/3893
 end
 
 group :development, :test do

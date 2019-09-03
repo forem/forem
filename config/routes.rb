@@ -17,6 +17,12 @@ Rails.application.routes.draw do
     get "/enter" => "registrations#new", as: :sign_up
   end
 
+  if Rails.env.development?
+    # This should only be available in a development environment, it allows
+    # a developer to circumvent the auth process.
+    mount Quickin::Engine, at: "/quickin"
+  end
+
   namespace :admin do
     # Check administrate gem docs
     DashboardManifest::DASHBOARDS.each do |dashboard_resource|
