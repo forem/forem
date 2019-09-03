@@ -112,11 +112,11 @@ group :development do
   gem "memory_profiler", "~> 0.9", require: false # Memory profiling routines for Ruby 2.3+
   gem "pry", "~> 0.12" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
+  gem "quickin", path: "lib/quickin" # Allow developers to skip auth https://github.com/thepracticaldev/dev.to/pull/3893
   gem "web-console", "~> 3.7" # Rails Console on the Browser
   gem "yard", "~> 0.9.20" # YARD is a documentation generation tool for the Ruby programming language
   gem "yard-activerecord", "~> 0.0.16" # YARD extension that handles and interprets methods used when developing applications with ActiveRecord
   gem "yard-activesupport-concern", "~> 0.0.1" # YARD extension that brings support for modules making use of ActiveSupport::Concern
-  gem 'quickin', path: 'lib/quickin' # Allow developers to skip auth https://github.com/thepracticaldev/dev.to/pull/3893
 end
 
 group :development, :test do
