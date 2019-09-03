@@ -7,7 +7,6 @@
     - [Clean code with tests](#clean-code-with-tests)
     - [Create a pull request](#create-a-pull-request)
     - [Create an issue](#create-an-issue)
-  - [How to get help](#how-to-get-help)
   - [The bottom line](#the-bottom-line)
 
 ## Contributing
