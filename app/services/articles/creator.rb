@@ -10,7 +10,7 @@ module Articles
     end
 
     def call
-      raise if RateLimitChecker.new(user).limit_by_situation("published_article_creation")
+      raise if RateLimitChecker.new(user).limit_by_action("published_article_creation")
 
       tags = article_params[:tags]
       series = article_params[:series]
