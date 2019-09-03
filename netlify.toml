@@ -7,7 +7,7 @@
 
 [build]
   base = "docs/"
-  command = "make"
+  command = "node deploy-script.js"
 
 [[redirects]]
   from = "http://docs.dev.to"
