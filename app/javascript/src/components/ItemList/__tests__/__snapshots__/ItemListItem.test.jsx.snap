@@ -24,7 +24,7 @@ exports[`<ItemListItem /> renders properly with a history item 1`] = `
           alt="Profile Pic"
           src="https://dummyimage.com/90x90"
         />
-        Bob・visited on Jun 29・1 min read min read・
+        Bob・visited on Jun 29・1 min read・
       </a>
       <span
         class="item-tags"
@@ -65,7 +65,7 @@ exports[`<ItemListItem /> renders properly with a readinglist item 1`] = `
           alt="Profile Pic"
           src="https://dummyimage.com/90x90"
         />
-        Bob・Jun 29・1 min read min read・
+        Bob・Jun 29・1 min read・
       </a>
       <span
         class="item-tags"
