@@ -13,6 +13,9 @@ export const ItemListItem = ({ item, children }) => {
     tags: item.article_tags || item.reactable_tags,
   };
 
+  // update readingTime to 1 min if the reading time is less than 1 min
+  adaptedItem.readingTime = Math.max(1, adaptedItem.readingTime);
+
   return (
     <div className="item-wrapper">
       <a className="item" href={adaptedItem.path}>
@@ -32,7 +35,8 @@ export const ItemListItem = ({ item, children }) => {
             <span className="item-tags">
               {adaptedItem.tags.map(tag => (
                 <a className="item-tag" href={`/t/${tag}`}>
-                  #{tag}
+                  #
+                  {tag}
                 </a>
               ))}
             </span>
