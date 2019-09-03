@@ -11,6 +11,78 @@ class IntroSlide extends Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
 
+  selectVariant(variantId) {
+    const defaultVariant = (
+      <div>
+        <p>DEV is where programmers share ideas and help each other grow. 🤓</p>
+        <p>
+          Ask questions, leave helpful comments, encourage others, and have fun!
+          🙌
+        </p>
+        <p>
+          A few <strong>quick questions</strong> for you before you get
+          started...
+        </p>
+      </div>
+    );
+    const variants = [
+      <div style={{ textAlign: 'center' }}>
+        <img
+          src="https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif"
+          alt="hello cat"
+          style={{ borderRadius: '8px', height: '220px' }}
+        />
+        <br />
+        <strong>
+          <em>Let's get started...</em>
+        </strong>
+      </div>,
+      <div style={{ textAlign: 'center' }}>
+        <img
+          src="https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif"
+          alt="hello cat"
+          style={{ borderRadius: '8px', height: '140px' }}
+        />
+        <p>We have a few quick questions to fill out your profile</p>
+        <p>
+          <strong>
+            <em>Let's get started...</em>
+          </strong>
+        </p>
+      </div>,
+      <div style={{ textAlign: 'center', fontSize: '0.9em' }}>
+        <img
+          src="https://media.giphy.com/media/aWRWTF27ilPzy/giphy.gif"
+          alt="hello"
+          style={{ borderRadius: '8px', height: '140px' }}
+        />
+        <p>
+          The more you get involved in community, the better developer you will
+          be.
+        </p>
+        <p>
+          <strong>
+            <em>Let's get started...</em>
+          </strong>
+        </p>
+      </div>,
+      <div style={{ textAlign: 'center', fontSize: '1.1em' }}>
+        <img
+          src="https://media.giphy.com/media/aWRWTF27ilPzy/giphy.gif"
+          alt="hello"
+          style={{ borderRadius: '8px', height: '140px' }}
+        />
+        <p>You just made a great choice for your dev career.</p>
+        <p>
+          <strong>
+            <em>Let's get started...</em>
+          </strong>
+        </p>
+      </div>,
+    ];
+    return variants[variantId - 1] || defaultVariant;
+  }
+
   componentDidMount() {
     const csrfToken = getContentOfToken('csrf-token');
     fetch('/onboarding_update', {
@@ -30,51 +102,9 @@ class IntroSlide extends Component {
   }
 
   render() {
-    const { prev, variant } = this.props;
-    let onboardingBody = (
-      <div>
-        <p>
-          DEV is where programmers share ideas and help each other grow. 🤓
-        </p>
-        <p>
-          Ask questions, leave helpful comments, encourage others, and have fun! 🙌
-        </p>
-        <p>
-          A few <strong>quick questions</strong> for you before you get started...
-        </p>
-      </div>
-    )
+    const { prev, variantId } = this.props;
+    const onboardingBody = this.selectVariant(variantId);
 
-    if (variant === '1') {
-      onboardingBody = <div style={{textAlign: 'center'}}>
-          <img src='https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif' alt='hello cat' style={{borderRadius: '8px', height: '220px'}} />
-          <br/><strong><em>Let's get started...</em></strong>
-        </div>
-    } else if ( variant === '2') {
-      onboardingBody = <div style={{textAlign: 'center'}}>
-        <img src='https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif' alt='hello cat' style={{borderRadius: '8px', height: '140px'}} />
-        <p>We have a few quick questions to fill out your profile</p>
-        <p>
-          <strong><em>Let's get started...</em></strong>
-        </p>
-      </div>
-    } else if ( variant === '3') {
-      onboardingBody = <div style={{textAlign: 'center', fontSize: '0.9em'}}>
-        <img src='https://media.giphy.com/media/aWRWTF27ilPzy/giphy.gif' alt='hello' style={{borderRadius: '8px', height: '140px'}} />
-        <p>The more you get involved in community, the better developer you will be.</p>
-        <p>
-          <strong><em>Let's get started...</em></strong>
-        </p>
-      </div>
-    } else if ( variant === '4') {
-      onboardingBody = <div style={{textAlign: 'center', fontSize: '1.1em'}}>
-        <img src='https://media.giphy.com/media/aWRWTF27ilPzy/giphy.gif' alt='hello' style={{borderRadius: '8px', height: '140px'}} />
-        <p>You just made a great choice for your dev career.</p>
-        <p>
-          <strong><em>Let's get started...</em></strong>
-        </p>
-      </div>
-    }
     return (
       <div className="onboarding-main">
         <div className="onboarding-content">
