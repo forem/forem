@@ -5,6 +5,7 @@ items:
   - auth-twitter.md
   - auth-github.md
   - authorization.md
+  - commandeering-users.md
   - roles.md
   - algolia.md
   - pusher.md
