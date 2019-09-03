@@ -4,6 +4,12 @@ RSpec.describe Webhook::Event, type: :model do
   let(:article) { create(:article) }
   let!(:payload) { Webhook::PayloadAdapter.new(article).hash }
 
+  it "rases an exception" do
+    expect do
+      described_class.new(event_type: "cool_event")
+    end.to raise_error(Webhook::InvalidEvent)
+  end
+
   describe "#as_json" do
     it "provides correct json (sample)" do
       event = described_class.new(event_type: "article_created", payload: { title: "Hello, world" })

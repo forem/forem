@@ -9,6 +9,8 @@ module Webhook
     attr_reader :event_type, :payload, :timestamp
 
     def initialize(event_type:, payload: {})
+      raise InvalidEvent unless EVENT_TYPES.include?(event_type)
+
       @event_type = event_type
       @payload = payload
       @timestamp = Time.current.rfc3339
@@ -18,4 +20,6 @@ module Webhook
       Webhook::EventSerializer.new(self).serializable_hash
     end
   end
+
+  class InvalidEvent < StandardError; end
 end
