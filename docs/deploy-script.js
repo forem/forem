@@ -4,7 +4,7 @@ const subdomain = process.env.URL;
 let buildCommand;
 switch (subdomain) {
   case 'docs':
-    buildCommand = 'npm install -g gitdocs@latest && gitdocs build';
+    buildCommand = 'make';
     break;
   case 'storybook':
     buildCommand = 'cd .. && npm install && npm run build-storybook';
