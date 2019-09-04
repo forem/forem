@@ -76,7 +76,7 @@ class MailchimpBot
     return false unless user.tag_moderator?
 
     success = false
-    tags = user.roles.where(name: "tag_moderator").map { |t| Tag.find(t.resource_id).name }
+    tags = user.roles.where(name: "tag_moderator").map { |tag| Tag.find(tag.resource_id).name }
     status = user.email_tag_mod_newsletter ? "subscribed" : "unsubscribed"
     begin
       gibbon.lists(ApplicationConfig["MAILCHIMP_TAG_MODERATORS_ID"]).members(target_md5_email).upsert(

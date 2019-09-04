@@ -129,8 +129,8 @@ class ChatChannel < ApplicationRecord
 
   def channel_human_names
     active_memberships.
-      order("last_opened_at DESC").limit(5).includes(:user).map do |m|
-        m.user.name
+      order("last_opened_at DESC").limit(5).includes(:user).map do |membership|
+        membership.user.name
       end
   end
 

@@ -6,8 +6,8 @@ class HtmlCleaner
       img.remove if img.attr("src") && (img.attr("src").include? "medium.com/_/stat")
     end
     # Remove Medium catch phrase
-    doc.css("p").each do |p|
-      p.remove if p.text.include? "where people are continuing the conversation by highlighting"
+    doc.css("p").each do |paragraph|
+      paragraph.remove if paragraph.text.include? "where people are continuing the conversation by highlighting"
     end
 
     doc.css("figure").each do |el|

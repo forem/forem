@@ -51,7 +51,7 @@ class CommentsController < ApplicationController
   # POST /comments.json
   def create
     authorize Comment
-    raise if RateLimitChecker.new(current_user).limit_by_situation("comment_creation")
+    raise if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
 
     @comment = Comment.new(permitted_attributes(Comment))
     @comment.user_id = current_user.id
