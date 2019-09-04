@@ -48,11 +48,16 @@ module Api
         per_page = (params[:per_page] || 30).to_i
         num = [per_page, 1000].min
 
-        @articles = @user.articles.published # defaults to only published articles
-
-        @articles = @user.articles.published if params[:status] == "published"
-        @articles = @user.articles.unpublished if params[:status] == "unpublished"
-        @articles = @user.articles if params[:status] == "all"
+        @articles = case params[:status]
+                    when "published"
+                      @user.articles.published
+                    when "unpublished"
+                      @user.articles.unpublished
+                    when "all"
+                      @user.articles
+                    else
+                      @user.articles.published
+                    end
 
         @articles = @articles.
           includes(:organization).
