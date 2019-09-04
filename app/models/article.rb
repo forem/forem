@@ -75,6 +75,7 @@ class Article < ApplicationRecord
   serialize :cached_organization
 
   scope :published, -> { where(published: true) }
+  scope :unpublished, -> { where(published: false) }
 
   scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
 
