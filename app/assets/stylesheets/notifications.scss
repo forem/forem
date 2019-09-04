@@ -327,6 +327,11 @@
           text-align: right;
           display: none;
           margin-top: 4px;
+          @include themeable(
+            background,
+            theme-container-accent-background,
+            $light-gray
+          );
           &.showing {
             display: block;
           }
@@ -346,7 +351,11 @@
             width: 100%;
             margin-left: 0%;
             border-radius: 3px;
-            border: 1px solid $light-medium-gray;
+            @include themeable(
+              border,
+              theme-container-border,
+              1px solid rgb(232, 229, 229)
+            );
           }
 
           .field {
@@ -358,12 +367,18 @@
             display: block;
             resize: none;
             border-radius: 3px;
-            border: 1px solid rgb(232, 229, 229);
             height: 55px;
             font-size: 16px;
             padding: 6px;
             transition: height 0.3s ease;
             height: calc(2vw + 120px);
+            @include themeable(
+              border,
+              theme-container-background,
+              1px solid rgb(232, 229, 229)
+            );
+            @include themeable(background, theme-container-background, #fff);
+            @include themeable(color, theme-color, $black)
           }
           input[type='submit'] {
             margin-right: 15px;
