@@ -79,8 +79,8 @@ Rails.application.configure do
     address: "smtp.gmail.com",
     port: "587",
     enable_starttls_auto: true,
-    user_name: '<%= ENV["DEVELOPMENT_EMAIL_USERNAME"] %>',
-    password: '<%= ENV["DEVELOPMENT_EMAIL_PASSWORD"] %>',
+    user_name: '<%= ApplicationConfig["DEVELOPMENT_EMAIL_USERNAME"] %>',
+    password: '<%= ApplicationConfig["DEVELOPMENT_EMAIL_PASSWORD"] %>',
     authentication: :plain,
     domain: "localhost:3000"
   }
@@ -95,8 +95,8 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   # Install the Timber.io logger
-  send_logs_to_timber = ENV["SEND_LOGS_TO_TIMBER"] || "false" # <---- set to false to stop sending dev logs to Timber.io
-  log_device = send_logs_to_timber == "true" ? Timber::LogDevices::HTTP.new(ENV["TIMBER"]) : STDOUT
+  send_logs_to_timber = ApplicationConfig["SEND_LOGS_TO_TIMBER"] || "false" # <---- set to false to stop sending dev logs to Timber.io
+  log_device = send_logs_to_timber == "true" ? Timber::LogDevices::HTTP.new(ApplicationConfig["TIMBER"]) : STDOUT
   logger = Timber::Logger.new(log_device)
   logger.level = config.log_level
   config.logger = ActiveSupport::TaggedLogging.new(logger)

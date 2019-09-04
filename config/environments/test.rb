@@ -61,8 +61,8 @@ Rails.application.configure do
 
   # enable Bullet in testing mode only if requested
   config.after_initialize do
-    Bullet.enable = ENV["BULLET"]
-    Bullet.raise = ENV["BULLET"]
+    Bullet.enable = ApplicationConfig["BULLET"]
+    Bullet.raise = ApplicationConfig["BULLET"]
     Bullet.add_whitelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
     # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
     Bullet.add_whitelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)

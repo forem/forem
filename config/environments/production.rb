@@ -26,7 +26,7 @@ Rails.application.configure do
 
   # Disable serving static files from the `/public` folder by default since
   # Apache or NGINX already handles this.
-  config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
+  config.public_file_server.enabled = ApplicationConfig["RAILS_SERVE_STATIC_FILES"].present?
   config.public_file_server.headers = {
     "Cache-Control" => "public, s-maxage=2592000, max-age=86400"
   }
@@ -66,7 +66,7 @@ Rails.application.configure do
   # config.cache_store = :mem_cache_store
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
-  config.action_controller.asset_host = ENV["FASTLY_CDN_URL"]
+  config.action_controller.asset_host = ApplicationConfig["FASTLY_CDN_URL"]
   config.action_mailer.perform_caching = false
 
   # Ignore bad email addresses and do not raise email delivery errors.
@@ -83,15 +83,15 @@ Rails.application.configure do
   # Use default logging formatter so that PID and timestamp are not suppressed.
   # config.log_formatter = ::Logger::Formatter.new
   config.log_formatter = ::Logger::Formatter.new
-  if ENV["RAILS_LOG_TO_STDOUT"].present?
+  if ApplicationConfig["RAILS_LOG_TO_STDOUT"].present?
     logger           = ActiveSupport::Logger.new(STDOUT)
     logger.formatter = config.log_formatter
     config.logger = ActiveSupport::TaggedLogging.new(logger)
   end
 
   # Timber.io logger
-  send_logs_to_timber = ENV["SEND_LOGS_TO_TIMBER"] || "true" # <---- production should send timber logs by default
-  log_device = send_logs_to_timber == "true" ? Timber::LogDevices::HTTP.new(ENV["TIMBER"]) : STDOUT
+  send_logs_to_timber = ApplicationConfig["SEND_LOGS_TO_TIMBER"] || "true" # <---- production should send timber logs by default
+  log_device = send_logs_to_timber == "true" ? Timber::LogDevices::HTTP.new(ApplicationConfig["TIMBER"]) : STDOUT
   logger = Timber::Logger.new(log_device)
   logger.level = config.log_level
   config.logger = ActiveSupport::TaggedLogging.new(logger)
@@ -100,9 +100,9 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   config.cache_store = :dalli_store,
-                       (ENV["MEMCACHIER_SERVERS"] || "").split(","),
-                       { username: ENV["MEMCACHIER_USERNAME"],
-                         password: ENV["MEMCACHIER_PASSWORD"],
+                       (ApplicationConfig["MEMCACHIER_SERVERS"] || "").split(","),
+                       { username: ApplicationConfig["MEMCACHIER_USERNAME"],
+                         password: ApplicationConfig["MEMCACHIER_PASSWORD"],
                          failover: true,
                          socket_timeout: 1.5,
                          socket_failure_delay: 0.2 }
@@ -111,13 +111,13 @@ Rails.application.configure do
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true
-  config.action_mailer.default_url_options = { host: ENV["APP_PROTOCOL"] + ENV["APP_DOMAIN"] }
+  config.action_mailer.default_url_options = { host: ApplicationConfig["APP_PROTOCOL"] + ApplicationConfig["APP_DOMAIN"] }
   ActionMailer::Base.smtp_settings = {
     address: "smtp.sendgrid.net",
     port: "587",
     authentication: :plain,
-    user_name: ENV["SENDGRID_USERNAME_ACCEL"],
-    password: ENV["SENDGRID_PASSWORD_ACCEL"],
+    user_name: ApplicationConfig["SENDGRID_USERNAME_ACCEL"],
+    password: ApplicationConfig["SENDGRID_PASSWORD_ACCEL"],
     domain: "dev.to",
     enable_starttls_auto: true
   }
