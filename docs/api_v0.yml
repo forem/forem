@@ -2,7 +2,7 @@ openapi: "3.0.2"
 info:
   title: DEV API
   description: Access DEV articles, comments and other resources via API
-  version: "0.5.3"
+  version: "0.5.4"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -984,14 +984,162 @@ paths:
     get:
       summary: Authenticated user's articles
       description: |
+        This endpoint allows the client to retrieve a list of its published articles.
+
+        "Articles" are all the posts that users create on DEV that typically
+        show up in the feed. They can be a blog post, a discussion question,
+        a help thread etc. but is referred to as article within the code.
+
+        Published articles will be in reverse chronological publication order.
+
+        It will return published articles with pagination.
+        By default a page will contain `30` articles.
+      tags:
+        - articles
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page.
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: per_page
+          in: query
+          description: Page size (defaults to 30 with a maximum of 1000).
+          schema:
+            type: integer
+            format: int32
+          example: 30
+      responses:
+        200:
+          description: A list of published articles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ArticleMe"
+      security:
+        - api_key: []
+        - oauth2: []
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl
+          source: |
+            curl https://dev.to/api/articles/me
+
+  /articles/me/published:
+    get:
+      summary: Authenticated user's published articles
+      description: |
+        This endpoint allows the client to retrieve a list of its published articles.
+
+        "Articles" are all the posts that users create on DEV that typically
+        show up in the feed. They can be a blog post, a discussion question,
+        a help thread etc. but is referred to as article within the code.
+
+        Published articles will be in reverse chronological publication order.
+
+        It will return published articles with pagination.
+        By default a page will contain `30` articles.
+      tags:
+        - articles
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page.
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: per_page
+          in: query
+          description: Page size (defaults to 30 with a maximum of 1000).
+          schema:
+            type: integer
+            format: int32
+          example: 30
+      responses:
+        200:
+          description: A list of published articles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ArticleMe"
+      security:
+        - api_key: []
+        - oauth2: []
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl
+          source: |
+            curl https://dev.to/api/articles/me/published
+
+  /articles/me/unpublished:
+    get:
+      summary: Authenticated user's unpublished articles
+      description: |
+        This endpoint allows the client to retrieve a list of its unpublished articles.
+
+        "Articles" are all the posts that users create on DEV that typically
+        show up in the feed. They can be a blog post, a discussion question,
+        a help thread etc. but is referred to as article within the code.
+
+        Unpublished articles will be in reverse chronological creation order.
+
+        It will return unpublished articles with pagination.
+        By default a page will contain `30` articles.
+      tags:
+        - articles
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page.
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: per_page
+          in: query
+          description: Page size (defaults to 30 with a maximum of 1000).
+          schema:
+            type: integer
+            format: int32
+          example: 30
+      responses:
+        200:
+          description: A list of articles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ArticleMe"
+      security:
+        - api_key: []
+        - oauth2: []
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl
+          source: |
+            curl https://dev.to/api/articles/me/unpublished
+
+  /articles/me/all:
+    get:
+      summary: Authenticated user's all articles
+      description: |
         This endpoint allows the client to retrieve a list of its articles.
 
         "Articles" are all the posts that users create on DEV that typically
         show up in the feed. They can be a blog post, a discussion question,
         a help thread etc. but is referred to as article within the code.
 
-        It will return both published and draft articles with pagination.
-        Draft articles will be at the top of the list in reverse chronological creation order.
+        It will return both published and unpublished articles with pagination.
+
+        Unpublished articles will be at the top of the list in reverse chronological creation order.
         Published articles will follow in reverse chronological publication order.
 
         By default a page will contain `30` articles.
@@ -1028,7 +1176,7 @@ paths:
         - lang: Shell
           label: curl
           source: |
-            curl https://dev.to/api/articles/me
+            curl https://dev.to/api/articles/me/all
 
   /webhooks:
     post:

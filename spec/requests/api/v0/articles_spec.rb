@@ -112,7 +112,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
   end
 
-  describe "GET /api/articles/me" do
+  describe "GET /api/articles/me(/:status)" do
     context "when request is unauthenticated" do
       it "return unauthorized" do
         get me_api_articles_path
@@ -152,23 +152,41 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(json_response.length).to eq(1)
       end
 
-      it "puts unpublished articles at the top" do
-        create(:article, user: user)
+      it "only includes published articles by default" do
         create(:article, published: false, published_at: nil, user: user)
         get me_api_articles_path, params: { access_token: access_token.token }
-        expected_order = json_response.map { |resp| resp["published"] }
-        expect(expected_order).to eq([false, true])
+        expect(json_response.length).to eq(0)
       end
 
-      it "orders unpublished articles by reverse order" do
+      it "only includes published articles when asking for published articles" do
+        create(:article, published: false, published_at: nil, user: user)
+        get me_api_articles_path(status: :published), params: { access_token: access_token.token }
+        expect(json_response.length).to eq(0)
+      end
+
+      it "only includes unpublished articles when asking for unpublished articles" do
+        create(:article, published: false, published_at: nil, user: user)
+        get me_api_articles_path(status: :unpublished), params: { access_token: access_token.token }
+        expect(json_response.length).to eq(1)
+      end
+
+      it "orders unpublished articles by reverse order when asking for unpublished articles" do
         older = create(:article, published: false, published_at: nil, user: user)
         newer = nil
         Timecop.travel(1.day.from_now) do
           newer = create(:article, published: false, published_at: nil, user: user)
         end
-        get me_api_articles_path, params: { access_token: access_token.token }
+        get me_api_articles_path(status: :unpublished), params: { access_token: access_token.token }
         expected_order = json_response.map { |resp| resp["id"] }
         expect(expected_order).to eq([newer.id, older.id])
+      end
+
+      it "puts unpublished articles at the top when asking for all articles" do
+        create(:article, user: user)
+        create(:article, published: false, published_at: nil, user: user)
+        get me_api_articles_path(status: :all), params: { access_token: access_token.token }
+        expected_order = json_response.map { |resp| resp["published"] }
+        expect(expected_order).to eq([false, true])
       end
     end
   end

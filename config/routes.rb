@@ -79,7 +79,7 @@ Rails.application.routes.draw do
           constraints: ApiConstraints.new(version: 0, default: true) do
       resources :articles, only: %i[index show create update] do
         collection do
-          get :me
+          get "me(/:status)", to: "articles#me", as: :me, constraints: { status: /published|unpublished|all/ }
         end
       end
       resources :comments, only: %i[index show]
