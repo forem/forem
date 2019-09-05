@@ -4,7 +4,7 @@ RSpec.describe Webhook::DispatchEventJob, type: :job do
   include_examples "#enqueues_job", "webhook_dispatch_events", "https://example.com", ""
 
   describe "#perform_now" do
-    let(:article) { create(:article) }
+    let(:article) { create(:article).decorate }
     let(:payload) { Webhook::PayloadAdapter.new(article).hash }
     let(:json) { Webhook::Event.new(event_type: "article_updated", payload: payload).to_json }
     let(:url) { Faker::Internet.url }

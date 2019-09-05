@@ -110,7 +110,7 @@ module ApplicationHelper
 
   def cloud_cover_url(url)
     return if url.blank?
-    # return asset_path("triple-unicorn") if Rails.env.test?
+    return asset_path("triple-unicorn") if Rails.env.test?
     return url if Rails.env.development?
 
     width = 1000

@@ -38,9 +38,10 @@ module Articles
       send_notification = article.published && article.saved_change_to_published_at.present?
       Notification.send_to_followers(article, "Published") if send_notification
 
+      article = article.decorate
       dispatch_event(article)
 
-      article.decorate
+      article
     end
 
     private
