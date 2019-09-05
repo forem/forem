@@ -391,5 +391,9 @@ RSpec.describe "NotificationsIndex", type: :request do
         expect(response.body).to include time_ago_in_words(article.published_at)
       end
     end
+
+    context "when a user is an admin" do
+      it "can view other people's notifications"
+    end
   end
 end

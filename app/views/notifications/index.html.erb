@@ -64,7 +64,7 @@
       <% end %>
       <%= render "notifications_list" %>
       <% if @notifications.any? %>
-        <div id="notifications-pagination" data-pagination-path="/notifications/<%= params[:org_id].present? ? "#{params[:filter]}/#{params[:org_id]}" : params[:filter].to_s %>?page=<%= @notifications.last.id %>"></div>
+        <div id="notifications-pagination" data-pagination-path="/notifications/<%= params[:org_id].present? ? "#{params[:filter]}/#{params[:org_id]}" : params[:filter].to_s %>?offset=<%= @notifications.last.id %>"></div>
       <% end %>
     </div>
     <div class="side-bar sidebar-additional"></div>
