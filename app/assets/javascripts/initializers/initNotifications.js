@@ -1,19 +1,14 @@
-function initNotifications() {
-  fetchNotificationsCount();
-  markNotificationsAsRead();
-  initReactions();
-  listenForNotificationsBellClick();
-  initPagination();
-  initLoadMoreButton();
-}
+'use strict';
+
+/* global checkUserLoggedIn, instantClick, InstantClick, sendHapticMessage */
 
 function markNotificationsAsRead() {
   setTimeout(function() {
     if (document.getElementById('notifications-container')) {
-      var xmlhttp;
-      var locationAsArray = window.location.pathname.split('/');
+      let xmlhttp;
+      const locationAsArray = window.location.pathname.split('/');
       // Use regex to ensure only numbers in the original string are converted to integers
-      var parsedLastParam = parseInt(
+      const parsedLastParam = parseInt(
         locationAsArray[locationAsArray.length - 1].replace(/[^0-9]/g, ''),
         10,
       );
@@ -25,7 +20,8 @@ function markNotificationsAsRead() {
       }
       xmlhttp.onreadystatechange = function() {};
 
-      var csrfToken = document.querySelector("meta[name='csrf-token']").content;
+      const csrfToken = document.querySelector("meta[name='csrf-token']")
+        .content;
 
       if (Number.isInteger(parsedLastParam)) {
         xmlhttp.open(
@@ -47,25 +43,25 @@ function fetchNotificationsCount() {
     document.getElementById('notifications-container') == null &&
     checkUserLoggedIn()
   ) {
-    var xmlhttp;
+    let xmlhttp;
     if (window.XMLHttpRequest) {
       xmlhttp = new XMLHttpRequest();
     } else {
       xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
     }
     xmlhttp.onreadystatechange = function() {
-      if (xmlhttp.readyState == XMLHttpRequest.DONE) {
-        var count = xmlhttp.response;
-        if (isNaN(count)) {
-          document
-            .getElementById('notifications-number')
-            .classList.remove('showing');
-        } else if (count != '0' && count != undefined && count != '') {
-          document.getElementById('notifications-number').innerHTML =
-            xmlhttp.response;
-          document
-            .getElementById('notifications-number')
-            .classList.add('showing');
+      if (xmlhttp.readyState === XMLHttpRequest.DONE) {
+        const count = xmlhttp.response;
+        const notificationsNumber = document.getElementById(
+          'notifications-number',
+        );
+
+        if (Number.isNaN(count)) {
+          notificationsNumber.classList.remove('showing');
+        } else if (count !== '0' && count !== undefined && count !== '') {
+          notificationsNumber.innerHTML = xmlhttp.response;
+          notificationsNumber.classList.add('showing');
+
           if (instantClick) {
             InstantClick.removeExpiredKeys('force');
             setTimeout(function() {
@@ -76,9 +72,7 @@ function fetchNotificationsCount() {
             }, 30);
           }
         } else {
-          document
-            .getElementById('notifications-number')
-            .classList.remove('showing');
+          notificationsNumber.classList.remove('showing');
         }
       }
     };
@@ -91,10 +85,13 @@ function fetchNotificationsCount() {
 function initReactions() {
   setTimeout(function() {
     if (document.getElementById('notifications-container')) {
-      var butts = document.getElementsByClassName('reaction-button');
-      for (var i = 0; i < butts.length; i++) {
-        var butt = butts[i];
-        butt.onclick = function(event) {
+      const reactionButtons = document.getElementsByClassName(
+        'reaction-button',
+      );
+      for (const i = 0; i < reactionButtons.length; i += 1) {
+        const butt = reactionButtons[i];
+
+        butt.addEventListener('click', function(event) {
           event.preventDefault();
           sendHapticMessage('medium');
           var thisButt = this;
@@ -120,12 +117,13 @@ function initReactions() {
                 response.json().then(successCb);
               }
             });
-        };
+        });
       }
-      var butts = document.getElementsByClassName('toggle-reply-form');
-      for (var i = 0; i < butts.length; i++) {
-        var butt = butts[i];
-        butt.onclick = function(event) {
+
+      const replyButtons = document.getElementsByClassName('toggle-reply-form');
+      for (const i = 0; i < replyButtons.length; i += 1) {
+        const butt = replyButtons[i];
+        butt.addEventListener('click', function(event) {
           event.preventDefault();
           var thisButt = this;
           document
@@ -139,7 +137,7 @@ function initReactions() {
               )
               .focus();
           }, 30);
-        };
+        });
       }
     }
   }, 180);
@@ -171,7 +169,6 @@ function initPagination() {
         if (response.status === 200) {
           response.text().then(function(html) {
             const notificationsList = html.trim();
-            console.log(notificationsList);
 
             if (notificationsList) {
               paginator.innerHTML = notificationsList;
@@ -190,4 +187,13 @@ function initPagination() {
 function initLoadMoreButton() {
   const button = document.getElementById('load-more-button');
   button.addEventListener('click', initPagination);
+}
+
+function initNotifications() {
+  fetchNotificationsCount();
+  markNotificationsAsRead();
+  initReactions();
+  listenForNotificationsBellClick();
+  initPagination();
+  initLoadMoreButton();
 }
