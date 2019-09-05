@@ -1,8 +1,8 @@
 class NotificationsController < ApplicationController
-  before_action :authenticate_user!
-
   # No authorization required because we provide authentication on notifications page
   def index
+    return unless user_signed_in?
+
     @notifications_index = true
     @user = user_to_view
 
