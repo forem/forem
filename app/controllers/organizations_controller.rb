@@ -70,7 +70,7 @@ class OrganizationsController < ApplicationController
     params.require(:organization).permit(permitted_params).
       transform_values do |value|
         if value.class.name == "String"
-          Loofah.scrub_fragment(value, :prune).text(encode_special_chars: false)
+          ActionController::Base.helpers.strip_tags(value)
         else
           value
         end
