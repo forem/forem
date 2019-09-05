@@ -24,7 +24,7 @@ module ClassifiedListingsToolkit
     @classified_listing.save
   end
 
-  def bump_listing
+  def bump_listing_success
     @classified_listing.bumped_at = Time.current
     saved = @classified_listing.save
     @classified_listing.index! if saved

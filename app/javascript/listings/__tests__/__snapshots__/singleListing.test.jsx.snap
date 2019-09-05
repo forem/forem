@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<SingeListing /> should load a single user listing 1`] = `
+preact-render-spy (1 nodes)
+-------
+<div
+  class="single-classified-listing"
+  id="single-classified-listing-22"
+>
+  <div class="listing-content">
+    <h3>
+      <a
+        href="/listings/misc/illo-iure-quos-perspiciatis-5hk7"
+        data-no-instant={true}
+        onClick={[Function onClick]}
+        data-listing-id={22}
+      >
+        Illo iure quos perspiciatis.
+      </a>
+    </h3>
+    <div class="single-classified-listing-body">
+      <p>Eius et ullam. Dolores et qui. Quis <strong>qui</strong> omnis.</p>
+      
+    </div>
+    <div class="single-classified-listing-tags">
+      <a
+        href="/listings?t=go"
+        onClick={[Function onClick]}
+        data-no-instant={true}
+      >
+        go
+      </a>
+      <a
+        href="/listings?t=git"
+        onClick={[Function onClick]}
+        data-no-instant={true}
+      >
+        git
+      </a>
+    </div>
+    <div class="single-classified-listing-author-info">
+      <a
+        href="/listings/misc"
+        onClick={[Function onClick]}
+        data-no-instant={true}
+      >
+        misc
+      </a>
+      <a href="/listings/?q=West Refugio">・West Refugio</a>
+      ・
+      <a href="/mrschristiansenyoko">Mrs. Yoko Christiansen</a>
+      <a href="/report-abuse?url=https://dev.to/listings/misc/illo-iure-quos-perspiciatis-5hk7">・report abuse</a>
+    </div>
+  </div>
+</div>
+
+`;

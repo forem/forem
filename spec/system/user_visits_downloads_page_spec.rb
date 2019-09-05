@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe "User visits downloads page", type: :system do
-
   before { visit "/downloads" }
 
   it "shows app links" do
@@ -10,5 +9,4 @@ RSpec.describe "User visits downloads page", type: :system do
       expect(page).to have_link(nil, href: "https://play.google.com/store/apps/details?id=to.dev.dev_android")
     end
   end
-
 end

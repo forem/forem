@@ -504,13 +504,13 @@ class User < ApplicationRecord
 
     self.old_old_username = old_username
     self.old_username = username_was
-    chat_channels.find_each do |c|
-      c.slug = c.slug.gsub(username_was, username)
-      c.save
+    chat_channels.find_each do |channel|
+      channel.slug = channel.slug.gsub(username_was, username)
+      channel.save
     end
-    articles.find_each do |a|
-      a.path = a.path.gsub(username_was, username)
-      a.save
+    articles.find_each do |article|
+      article.path = article.path.gsub(username_was, username)
+      article.save
     end
   end
 
