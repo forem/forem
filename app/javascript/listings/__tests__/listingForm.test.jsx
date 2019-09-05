@@ -41,11 +41,6 @@ const listing = '{}';
 const categoriesForSelect = '[]';
 const categoriesForDetails = '[]';
 
-const doc = new JSDOM('<!doctype html><html><body></body></html>');
-global.document = doc;
-global.document.body.innerHTML = ``;
-global.window = doc.defaultView;
-
 describe('<ListingForm />', () => {
   it('should load listingForm', () => {
     const tree = deep(
