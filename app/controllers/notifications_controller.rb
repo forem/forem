@@ -13,7 +13,7 @@ class NotificationsController < ApplicationController
       num = 30
       notified_at_offset = Notification.find(params[:offset])&.notified_at
     else
-      num = 3
+      num = 8
     end
 
     @notifications = if (params[:org_id].present? || params[:filter] == "org") && allowed_user?

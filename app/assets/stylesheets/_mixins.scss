@@ -25,3 +25,21 @@
   #{$property}: #{$fallback} !important;
   #{$property}: var(--#{$cssVariable}, #{$fallback}) !important;
 }
+
+
+/* Mixin for a load more wrapper, made by a container div and child button */
+@mixin load-more() {
+  text-align: center;
+
+  button {
+    background: transparent;
+    @include themeable(border, theme-border, 1px solid $light-medium-gray);
+    font-size: 17px;
+    padding: 14px 5px;
+    margin: 40px auto 70px;
+    width: 320px;
+    max-width: 80%;
+    border-radius: 100px;
+    font-weight: bold;
+  }
+}
