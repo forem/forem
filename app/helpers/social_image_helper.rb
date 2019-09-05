@@ -32,7 +32,7 @@ module SocialImageHelper
     end
     return legacy_article_social_image(article) unless use_new_social_url?(article)
 
-    article_social_preview_url(article, format: :png)
+    Rails.application.routes.url_helpers.article_social_preview_url(article, format: :png, host: ApplicationConfig["APP_DOMAIN"])
   end
 
   def legacy_article_social_image(article)
