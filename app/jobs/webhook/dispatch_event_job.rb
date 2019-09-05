@@ -1,6 +1,6 @@
 module Webhook
   class DispatchEventJob < ApplicationJob
-    queue_as :dispatch_webhook_events
+    queue_as :webhook_dispatch_events
 
     def perform(endpoint_url:, payload:, client: HTTParty)
       uri = Addressable::URI.parse(endpoint_url)
