@@ -21,12 +21,12 @@ class ChatChannelsController < ApplicationController
   def create
     authorize ChatChannel
     @chat_channel = ChatChannelCreationService.new(current_user, params[:chat_channel]).create
-    chat_channel_valid?
+    render_chat_channel
   end
 
   def update
     ChatChannelUpdateService.new(@chat_channel, chat_channel_params).update
-    chat_channel_valid?
+    render_chat_channel
   end
 
   def open
@@ -163,7 +163,7 @@ class ChatChannelsController < ApplicationController
     end
   end
 
-  def chat_channel_valid?
+  def render_chat_channel
     if @chat_channel.valid?
       render json: { status: "success",
                      chat_channel: @chat_channel.to_json(only: %i[channel_name slug]) },

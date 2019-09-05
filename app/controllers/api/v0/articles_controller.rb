@@ -47,7 +47,19 @@ module Api
       def me
         per_page = (params[:per_page] || 30).to_i
         num = [per_page, 1000].min
-        @articles = @user.articles.
+
+        @articles = case params[:status]
+                    when "published"
+                      @user.articles.published
+                    when "unpublished"
+                      @user.articles.unpublished
+                    when "all"
+                      @user.articles
+                    else
+                      @user.articles.published
+                    end
+
+        @articles = @articles.
           includes(:organization).
           order(published_at: :desc, created_at: :desc).
           page(params[:page]).

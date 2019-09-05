@@ -13,7 +13,7 @@ class KotlinTag < LiquidTagBase
       partial: PARTIAL,
       locals: {
         url: @embedded_url
-      }
+      },
     )
   end
 
@@ -24,7 +24,7 @@ class KotlinTag < LiquidTagBase
   def self.parse_link(link)
     begin
       url = URI(link)
-    rescue
+    rescue StandardError
       raise_error
     end
     hostname_ok = url.hostname == "pl.kotl.in"

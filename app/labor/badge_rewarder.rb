@@ -65,7 +65,7 @@ module BadgeRewarder
     badge = Badge.find_by(slug: "dev-contributor")
     ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios", "thepracticaldev/DEV-Android"].each do |repo|
       commits = client.commits repo, since: since.iso8601
-      authors_uids = commits.map { |c| c.author.id }
+      authors_uids = commits.map { |commit| commit.author.id }
       Identity.where(provider: "github", uid: authors_uids).find_each do |i|
         BadgeAchievement.where(user_id: i.user_id, badge_id: badge.id).first_or_create(
           rewarding_context_message_markdown: message_markdown,

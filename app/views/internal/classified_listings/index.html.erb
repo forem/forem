@@ -28,7 +28,7 @@
       <div class="grid-item"><%= listing.category %></div>
       <div class="grid-item"><%= listing.cached_tag_list %></div>
       <div class="grid-item"><%= listing.published ? "Yes" : "No" %></div>
-      <div class="grid-item"><%= time_ago_in_words(listing.bumped_at) %> ago</div>
+      <div class="grid-item"><%= listing.bumped_at ? time_ago_in_words(listing.bumped_at) + " ago" : "Draft" %></div>
     </div>
     <div class="buffer-area" style="text-align: left">
       <br>
