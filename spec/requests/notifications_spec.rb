@@ -393,7 +393,20 @@ RSpec.describe "NotificationsIndex", type: :request do
     end
 
     context "when a user is an admin" do
-      it "can view other people's notifications"
+      let(:admin) { create(:user, :super_admin) }
+      let(:user2)    { create(:user) }
+      let(:article)  { create(:article, user_id: user.id) }
+
+      before do
+        user2.follow(user)
+        Notification.send_to_followers_without_delay(article, "Published")
+        sign_in admin
+      end
+
+      it "can view other people's notifications" do
+        get "/notifications?username=#{user2.username}"
+        expect(response.body).to include "made a new post:"
+      end
     end
   end
 end
