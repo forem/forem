@@ -8,12 +8,19 @@ RSpec.describe Webhook::PayloadAdapter, type: :service do
   end
 
   describe "#hash" do
+    let(:user) { create(:user) }
+    let!(:article) { create(:article, title: "I'm super", user: user).decorate }
+
     it "returns a hash for a persisted article" do
-      article = create(:article, title: "I'm super").decorate
       data = described_class.new(article).hash
       expect(data).to be_kind_of(Hash)
       expect(data[:data][:attributes][:title]).to eq(article.title)
       expect(data[:data][:attributes][:body_markdown]).to be_truthy
+    end
+
+    it "returns a hash with a user" do
+      data = described_class.new(article).hash
+      expect(data[:data][:attributes][:user][:data][:attributes][:username]).to eq(user.username)
     end
 
     it "returns a hash for a destroyed article" do

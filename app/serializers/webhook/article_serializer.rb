@@ -5,7 +5,6 @@ module Webhook
     include FastJsonapi::ObjectSerializer
 
     set_type :article
-    belongs_to :user
     attributes :title, :description, :readable_publish_date, :cached_tag_list, :cached_tag_list_array,
                :slug, :path, :url, :comments_count, :positive_reactions_count, :body_markdown
 
@@ -31,6 +30,9 @@ module Webhook
     end
     attribute :social_image do |a|
       article_social_image_url(a)
+    end
+    attribute :user do |a|
+      UserSerializer.new(a.user).serializable_hash
     end
   end
 end
