@@ -1,4 +1,6 @@
 module ApplicationHelper
+  include CloudinaryHelper
+
   def user_logged_in_status
     user_signed_in? ? "logged-in" : "logged-out"
   end
@@ -108,7 +110,7 @@ module ApplicationHelper
 
   def cloud_cover_url(url)
     return if url.blank?
-    return asset_path("triple-unicorn") if Rails.env.test?
+    # return asset_path("triple-unicorn") if Rails.env.test?
     return url if Rails.env.development?
 
     width = 1000

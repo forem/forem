@@ -9,7 +9,7 @@ RSpec.describe Webhook::PayloadAdapter, type: :service do
 
   describe "#hash" do
     it "returns a hash for a persisted article" do
-      article = create(:article, title: "I'm super")
+      article = create(:article, title: "I'm super").decorate
       data = described_class.new(article).hash
       expect(data).to be_kind_of(Hash)
       expect(data[:data][:attributes][:title]).to eq(article.title)
