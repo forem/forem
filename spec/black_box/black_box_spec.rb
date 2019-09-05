@@ -28,8 +28,6 @@ RSpec.describe BlackBox do
     end
 
     it "returns the lower correct value if article tagged with watercooler" do
-      # article.update_column(:score, 99)
-      # article.update_column(:cached_tag_list, "hello, discuss, watercooler")
       article = build_stubbed(:article, score: 99, cached_tag_list: "hello, discuss, watercooler", published_at: Time.current)
       allow(function_caller).to receive(:call).and_return(5)
       # recent bonuses (28 + 31 + 80 + 395 + 330 + 330 = 1194)
