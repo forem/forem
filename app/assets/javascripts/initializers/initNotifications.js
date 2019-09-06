@@ -159,35 +159,40 @@ function initPagination() {
   // paginators appear at the end of each block of HTML notifications sent by
   // the server, each time we paginate we're only interested in the last one
   const paginators = document.getElementsByClassName('notifications-paginator');
-  const paginator = paginators[paginators.length - 1];
+  if (paginators && paginators.length > 0) {
+    const paginator = paginators[paginators.length - 1];
 
-  if (paginator) {
-    window
-      .fetch(paginator.dataset.paginationPath, {
-        method: 'GET',
-        credentials: 'same-origin',
-      })
-      .then(function(response) {
-        if (response.status === 200) {
-          response.text().then(function(html) {
-            const notificationsList = html.trim();
-            console.log(notificationsList);
+    if (paginator) {
+      window
+        .fetch(paginator.dataset.paginationPath, {
+          method: 'GET',
+          credentials: 'same-origin',
+        })
+        .then(function(response) {
+          if (response.status === 200) {
+            response.text().then(function(html) {
+              const notificationsList = html.trim();
 
-            if (notificationsList) {
-              paginator.innerHTML = notificationsList;
-              initReactions();
-            } else {
-              // no more notifications to load, we hide the load more wrapper
-              const button = document.getElementById('load-more-button');
-              button.style.display = 'none';
-            }
-          });
-        }
-      });
+              if (notificationsList) {
+                paginator.innerHTML = notificationsList;
+                initReactions();
+              } else {
+                // no more notifications to load, we hide the load more wrapper
+                const button = document.getElementById('load-more-button');
+                if (button) {
+                  button.style.display = 'none';
+                }
+              }
+            });
+          }
+        });
+    }
   }
 }
 
 function initLoadMoreButton() {
   const button = document.getElementById('load-more-button');
-  button.addEventListener('click', initPagination);
+  if (button) {
+    button.addEventListener('click', initPagination);
+  }
 }
