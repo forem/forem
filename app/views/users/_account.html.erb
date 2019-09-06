@@ -16,22 +16,22 @@
   <hr />
 <% end %>
 
-<h2>DEV API Access Tokens</h2>
-<p>You can generate personal access tokens to use for authentication with the DEV API. The API is still in early beta though. The <a href="/api">DEV API documentation</a> contains further information.</a></p>
-<h3>Generate an access token</h3>
+<h2>DEV API Keys</h2>
+<p>You can generate personal API keys to use for authentication with the DEV API. The API is still in early beta though. The <a href="/api">DEV API documentation</a> contains further information.</a></p>
+<h3>Generate a new Key</h3>
 <%= form_tag users_api_secrets_path, method: :post do %>
   <%= fields_for :api_secret do |api_secret| %>
     <div class="field">
-      <%= api_secret.label(:description, "Token Description") %>
-      <%= api_secret.text_field(:description, placeholder: "What's this token for?", required: true) %>
+      <%= api_secret.label(:description, "Description") %>
+      <%= api_secret.text_field(:description, placeholder: "What's this API key for?", required: true) %>
     </div>
   <% end %>
   <button class="big-action cta" id="new__api__secret__btn" type="submit">
-    Generate Token
+    Generate API Key
   </button>
 <% end %>
 
-<h3>Active access tokens (Never share these secrets!)</h3>
+<h3>Active API keys (never share these!)</h3>
 <% if @user.api_secrets.empty? %>
   <p>None yet!</p>
 <% end %>

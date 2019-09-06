@@ -25,19 +25,19 @@ components:
         API Key authentication.
 
         Authentication for some endpoints, like write operations on the
-        Articles API require an API key (DEV API access token).
+        Articles API require a DEV API key.
 
         ### Getting an API key
 
         To obtain one, please follow these steps:
 
           - visit https://dev.to/settings/account
-          - in the "DEV API Access Tokens" section create a new token by adding a
-            description and clicking on "Generate Token"
+          - in the "DEV API Keys" section create a new key by adding a
+            description and clicking on "Generate API Key"
 
-            ![obtain a DEV API access token](https://res.cloudinary.com/practicaldev/image/fetch/s--F4Ya4WgC--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/4zm0cbutj9o9eau0jm9t.png)
-          - You'll see the newly generated token in the same view
-            ![generated DEV API access token](https://res.cloudinary.com/practicaldev/image/fetch/s--kp5L6-9G--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/ra01mo6fp1es261db2ho.png)
+            ![obtain a DEV API Key](https://user-images.githubusercontent.com/146201/64421366-af3f8b00-d0a1-11e9-8ff6-7cc0ca6e854e.png)
+          - You'll see the newly generated key in the same view
+            ![generated DEV API Key](https://user-images.githubusercontent.com/146201/64421367-af3f8b00-d0a1-11e9-9831-73d3bdfdff66.png)
       name: api-key
       in: header
     oauth2:
