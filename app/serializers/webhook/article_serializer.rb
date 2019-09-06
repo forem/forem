@@ -1,7 +1,5 @@
 module Webhook
   class ArticleSerializer
-    extend ApplicationHelper
-    extend SocialImageHelper
     include FastJsonapi::ObjectSerializer
 
     set_type :article
@@ -26,10 +24,10 @@ module Webhook
       a.last_comment_at&.utc&.iso8601
     end
     attribute :cover_image do |a|
-      cloud_cover_url(a.main_image)
+      CloudCoverUrl.new(a.url).call
     end
-    attribute :social_image do |a|
-      article_social_image_url(a)
+    attribute :social_image do |article|
+      Articles::SocialImage.new(article).url
     end
     attribute :user do |a|
       UserSerializer.new(a.user).serializable_hash
