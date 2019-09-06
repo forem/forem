@@ -188,12 +188,6 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expected_order = json_response.map { |resp| resp["published"] }
         expect(expected_order).to eq([false, true])
       end
-
-      it "returns 404 JSON error for an unsupported option" do
-        get me_api_articles_path(status: :foobar), params: { access_token: access_token.token }
-        expect(response).to have_http_status(:not_found)
-        expect(json_response["error"]).to eq("not found")
-      end
     end
   end
 
