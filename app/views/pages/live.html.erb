@@ -32,7 +32,7 @@
         <iframe class="live-video" src="//iframe.dacast.com/b/105417/c/465464" width="1920" height="1080" frameborder="0" scrolling="no" allow="autoplay" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
       </div>
       <div class="live-chat-wrapper">
-        <div id="chat" class="live-chat" data-pusher-key="<%= ENV["PUSHER_KEY"] %>" data-chat-channels="<%= @chat_channels %>" data-chat-options="<%= { showChannelsList: false, showTimestamp: false, activeChannelId: @active_channel.id }.to_json %>">
+        <div id="chat" class="live-chat" data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>" data-chat-channels="<%= @chat_channels %>" data-chat-options="<%= { showChannelsList: false, showTimestamp: false, activeChannelId: @active_channel.id }.to_json %>">
         </div>
       </div>
     </div>
