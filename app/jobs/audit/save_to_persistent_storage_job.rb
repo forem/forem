@@ -13,7 +13,8 @@ module Audit
         user_id: event.payload[:user_id],
         roles: event.payload[:roles],
         slug: event.payload[:slug],
-        category: event.name
+        category: event.name,
+        data: event.payload[:data]
       }
     end
   end

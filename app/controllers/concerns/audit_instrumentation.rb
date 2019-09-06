@@ -7,6 +7,9 @@ module AuditInstrumentation
         payload.user_id = user.id
         payload.roles = user.roles.pluck(:name)
         payload.slug = slug
+        if block_given?
+          payload.data = yield
+        end
       end
     end
   end

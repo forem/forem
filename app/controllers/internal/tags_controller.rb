@@ -24,6 +24,8 @@ class Internal::TagsController < Internal::ApplicationController
     add_moderator if @add_user_id
     remove_moderator if @remove_user_id
     @tag.update!(tag_params)
+
+    notify(:internal, current_user, __method__) { tag_params.dup }
     redirect_to "/internal/tags/#{params[:id]}"
   end
 
@@ -34,14 +36,14 @@ class Internal::TagsController < Internal::ApplicationController
     user.update(email_tag_mod_newsletter: false)
     AssignTagModerator.remove_tag_moderator(user, @tag)
 
-    notify(:internal, current_user, __method__)
+    notify(:internal, current_user, __method__) { tag_params.dup }
   end
 
   def add_moderator
     User.find(@add_user_id).update(email_tag_mod_newsletter: true)
     AssignTagModerator.add_tag_moderators([@add_user_id], [@tag.id])
 
-    notify(:internal, current_user, __method__)
+    notify(:internal, current_user, __method__) { tag_params.dup }
   end
 
   def tag_params
