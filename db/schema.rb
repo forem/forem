@@ -148,10 +148,12 @@ ActiveRecord::Schema.define(version: 2019_09_18_104106) do
   create_table "audit_logs", force: :cascade do |t|
     t.string "category"
     t.datetime "created_at", null: false
+    t.jsonb "data", default: {}, null: false
     t.string "roles", array: true
     t.string "slug"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.index ["data"], name: "index_audit_logs_on_data", using: :gin
     t.index ["user_id"], name: "index_audit_logs_on_user_id"
   end
 
