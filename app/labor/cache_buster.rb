@@ -10,6 +10,8 @@ class CacheBuster
                   headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
     HTTParty.post("https://api.fastly.com/purge/https://dev.to#{path}?i=i",
                   headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
+  rescue URI::InvalidURIError => e
+    Rails.logger.error("Trying to bust cache of an invalid uri: #{e}")
   end
 
   def bust_comment(commentable)
