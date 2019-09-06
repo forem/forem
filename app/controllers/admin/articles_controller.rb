@@ -19,7 +19,7 @@ module Admin
 
     def update
       if requested_resource.update(resource_params)
-        Webhook::DispatchEvent.call("article_updated", requested_resource.decorate)
+        Webhook::DispatchEvent.call("article_updated", requested_resource)
         redirect_to(
           [namespace, requested_resource],
           notice: translate_with_resource("update.success"),

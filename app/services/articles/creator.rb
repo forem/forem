@@ -13,7 +13,7 @@ module Articles
     def call
       raise if RateLimitChecker.new(user).limit_by_action("published_article_creation")
 
-      article = save_article.decorate
+      article = save_article
 
       if article.persisted?
         NotificationSubscription.create(user: user, notifiable_id: article.id, notifiable_type: "Article", config: "all_comments")
@@ -21,7 +21,8 @@ module Articles
 
         dispatch_event(article)
       end
-      article
+
+      article.decorate
     end
 
     private

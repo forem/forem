@@ -9,7 +9,7 @@ RSpec.describe Webhook::PayloadAdapter, type: :service do
 
   describe "#hash" do
     let(:user) { create(:user) }
-    let!(:article) { create(:article, title: "I'm super", user: user).decorate }
+    let!(:article) { create(:article, title: "I'm super", user: user) }
 
     it "returns a hash for a persisted article" do
       data = described_class.new(article).hash

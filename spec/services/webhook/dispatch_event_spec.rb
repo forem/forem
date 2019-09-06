@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Webhook::DispatchEvent, type: :service do
-  let!(:article) { create(:article).decorate }
+  let!(:article) { create(:article) }
 
   it "does nothing if there are no corresponding endpoints" do
     create(:webhook_endpoint, events: %w[article_created])

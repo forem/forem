@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Webhook::Event, type: :model do
   let(:article) { create(:article) }
-  let!(:payload) { Webhook::PayloadAdapter.new(article.decorate).hash }
+  let!(:payload) { Webhook::PayloadAdapter.new(article).hash }
 
   it "rases an exception" do
     expect do

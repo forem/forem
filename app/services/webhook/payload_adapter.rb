@@ -7,12 +7,19 @@ module Webhook
     end
 
     def hash
-      serializer.new(object).serializable_hash
+      serializer.new(prepared_object).serializable_hash
     end
 
     private
 
     attr_reader :object
+
+    # decorate article before serializing
+    def prepared_object
+      return object unless object.is_a?(Article) && !object.decorated?
+
+      object.decorate
+    end
 
     def serializer
       object.destroyed? ? ArticleDestroyedSerializer : ArticleSerializer
