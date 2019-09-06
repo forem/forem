@@ -30,7 +30,7 @@ Algolia is a third party service which powers the search. When working with the 
 
 7. You can skip the tutorial, by clicking on API button.
 
-   ![algolia-up-5](https://user-images.githubusercontent.com/51912296/63769536-ad7f0600-c8f0-11e9-9979-6a5fda17ee72.png)
+   ![algolia-up-5](https://user-images.githubusercontent.com/51912296/63767468-5f1b3880-c8eb-11e9-88c3-7b14774b684d.png)
 
 8. All good! You can get your API keys now.
 
