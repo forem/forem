@@ -8,8 +8,7 @@ class CloudCoverUrl
 
   def call
     return if url.blank?
-    return asset_path("triple-unicorn") if Rails.env.test?
-    return url if Rails.env.development?
+    return url if Rails.env.development? || Rails.env.test?
 
     width = 1000
     height = 420
