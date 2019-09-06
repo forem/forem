@@ -77,12 +77,4 @@ class ApplicationController < ActionController::Base
   def touch_current_user
     current_user.touch
   end
-
-  def routing_error
-    if params[:path].start_with?("api")
-      render json: { error: "not found", status: 404 }, status: :not_found
-    else
-      render "public/404.html", status: :not_found, layout: false
-    end
-  end
 end
