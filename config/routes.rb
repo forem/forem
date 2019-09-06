@@ -381,7 +381,7 @@ Rails.application.routes.draw do
 
   root "stories#index"
 
-  match '*path', :to => 'application#routing_error', via: [:get, :post]
+  match '*path', to: 'application#routing_error', via: [:get, :post]
 end
 
 # rubocop:enable Metrics/BlockLength
