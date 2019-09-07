@@ -62,9 +62,16 @@
           </div>
         <% end %>
       <% end %>
-      <%= render "notifications_list" %>
-      <% if @notifications.any? %>
-        <div id="notifications-pagination" data-pagination-path="/notifications/<%= params[:org_id].present? ? "#{params[:filter]}/#{params[:org_id]}" : params[:filter].to_s %>?page=<%= @notifications.last.id %>"></div>
+
+      <%= render "notifications_list", params: params %>
+
+      <%# not using "any?"" here because "notifications_list" already asks for ".size", a little optimization :) %>
+      <% if @notifications.size > 7 %>
+        <div class="load-more-wrapper">
+          <button id="load-more-button" type="button">
+            Load More
+          </button>
+        </div>
       <% end %>
     </div>
     <div class="side-bar sidebar-additional"></div>
