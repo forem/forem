@@ -24,9 +24,9 @@ While PRs without an associated `help wanted` issue may still be merged, please 
 
 When in doubt, ask a [core team member](https://github.com/thepracticaldev/dev.to/#core-team) by mentioning us on the issue.
 
-**Refactoring** code, e.g. improving the code without modifying the behavior is an area that can probably be done based on intuition and may not require much communication to be merged.
+**Refactoring** code, e.g., improving the code without modifying the behavior is an area that can probably be done based on intuition and may not require much communication to be merged.
 
-**Fixing bugs** may also not require a lot of communication, but the more the better. Please surround bug fixes with ample tests. Bugs are magnets for other bugs. Write tests near bugs!
+**Fixing bugs** may also not require a lot of communication, but the more, the better. Please surround bug fixes with ample tests. Bugs are magnets for other bugs. Write tests near bugs!
 
 **Building features** is the area which will require the most communication and/or negotiation. Every feature is subjective and open for debate. If your feature involves user-facing design changes, please provide a mockup first so we can all get on the same page. As always, when in doubt, ask!
 
@@ -63,7 +63,7 @@ _Please note: a core team member may close your PR if it has gone stale or if we
 
 #### Pull requests reviews and "force pushing"
 
-After you submit your pull request (PR) one of the members of the core team or core contributors will likely do a review of the code accepting it or giving feedback.
+After you submit your pull request (PR), one of the members of the core team or core contributors will likely do a review of the code accepting it or giving feedback.
 
 If feedback or suggestions are provided, any following modifications on your part should happen in separate commits added to the existing ones.
 
@@ -72,7 +72,7 @@ Force pushing, though understandable for reasons of wanting to keep the history 
 - it removes the review history of the code
 - forces the reviewer to start from scratch when adding possible further comments
 
-PRs will be squashed and merged into master so there's no need to use force push.
+PRs will be squashed and merged into master, so there's no need to use force push.
 
 Please avoid force pushing unless you are in need to do a rebase from master.
 
