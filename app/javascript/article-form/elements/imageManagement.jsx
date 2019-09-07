@@ -129,7 +129,7 @@ export default class ImageManagement extends Component {
     if (insertionImageUrls.length > 0) {
       insertionImageArea = (
         <div>
-          <h3>Markdown Image:</h3>
+          <h3>Markdown Images:</h3>
           <clipboard-copy
             onClick={this.copyText}
             for="image-markdown-copy-link-input"
@@ -149,7 +149,7 @@ export default class ImageManagement extends Component {
               Copied to Clipboard
             </span>
           </clipboard-copy>
-          <h3>Direct URL:</h3>
+          <h3>Direct URLs:</h3>
           <textarea
             id="image-direct-copy-link-input"
             value={this.linksToDirectForm(insertionImageUrls)}
@@ -171,14 +171,15 @@ export default class ImageManagement extends Component {
     if (version === 'v1') {
       imageOptions = (
         <div>
-          <h2>Upload an Image</h2>
+          <h2>Upload Images</h2>
           {insertionImageArea}
           <div>
             <p>
               <em>
-                To add a cover image for the post, add
+                To add a cover image for the post, add &nbsp;
                 <code>cover_image: direct_url_to_image.jpg</code>
-                to the frontmatter
+&nbsp; to the
+                frontmatter
               </em>
             </p>
           </div>
