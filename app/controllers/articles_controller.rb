@@ -145,6 +145,7 @@ class ArticlesController < ApplicationController
                      end
     updated = @article.update(article_params_json.merge(edited_at: edited_at_date))
     handle_notifications(updated)
+    Webhook::DispatchEvent.call("article_updated", @article) if updated
     respond_to do |format|
       format.html do
         # TODO: JSON should probably not be returned in the format.html section
