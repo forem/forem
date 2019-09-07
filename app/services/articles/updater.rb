@@ -1,9 +1,10 @@
 module Articles
   class Updater
-    def initialize(user, article_id, article_params)
+    def initialize(user, article_id, article_params, event_dispatcher = Webhook::DispatchEvent)
       @user = user
       @article_id = article_id
       @article_params = article_params
+      @event_dispatcher = event_dispatcher
     end
 
     def self.call(*args)
@@ -37,13 +38,18 @@ module Articles
       send_notification = article.published && article.saved_change_to_published_at.present?
       Notification.send_to_followers(article, "Published") if send_notification
 
+      dispatch_event(article)
+
       article.decorate
     end
 
     private
 
-    attr_reader :user, :article_id
-    attr_accessor :article_params
+    attr_reader :user, :article_id, :article_params, :event_dispatcher
+
+    def dispatch_event(article)
+      event_dispatcher.call("article_updated", article)
+    end
 
     def load_article
       relation = user.has_role?(:super_admin) ? Article.includes(:user) : user.articles

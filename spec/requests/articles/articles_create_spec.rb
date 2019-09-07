@@ -47,4 +47,33 @@ RSpec.describe "ArticlesCreate", type: :request do
     }
     expect(Collection.last.slug).to eq("helloyo")
   end
+
+  context "when scheduling jobs" do
+    let(:url) { Faker::Internet.url(scheme: "https") }
+    let(:article_params) do
+      {
+        article: {
+          title: "NEW TITLE #{rand(100)}",
+          body_markdown: "---\ntitle: hey hey hahuu\npublished: false\nseries: helloyo\n---\nYo ho ho#{rand(100)}"
+        }
+      }
+    end
+
+    before do
+      create(:webhook_endpoint, events: %w[article_created article_updated], target_url: url)
+    end
+
+    it "schedules a dispatching event job" do
+      expect do
+        post "/articles", params: article_params
+      end.to have_enqueued_job(Webhook::DispatchEventJob).once
+    end
+
+    it "doesn't fail when executing jobs" do
+      stub_request(:post, url).to_return(status: 200)
+      perform_enqueued_jobs do
+        post "/articles", params: article_params
+      end
+    end
+  end
 end
