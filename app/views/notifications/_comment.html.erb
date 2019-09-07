@@ -25,9 +25,7 @@
       </div>
       <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "default" %>
     <% elsif notification.action == "Moderation" %>
-      Hey there! <%= image_tag("emoji/apple-hugging-face.png", class: "reaction-image", alt: "Hugging face emoji") %><br /><br />
       <a href="/<%= json_data["comment"]["path"].split("/")[1] %>">@<%= json_data["comment"]["path"].split("/")[1] %></a> just left a comment. Since they are new to the community, could you leave a nice reply to help them feel welcome?
-      <br /><br />
       <b>Thank you!</b>
       <br /><br />
       <em style="font-size: 0.9em">Alternatively, if this comment violates the code of conduct, please downvote/report as appropriate.</em>
@@ -38,7 +36,7 @@
         </a></b>
       <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "moderation" %>
       <br>
-      <div class="footnote">All negative reactions are 100% private. Thank you for being a trusted <%= ApplicationConfig["COMMUNITY_NAME"] %> member.</div>
+      <div class="footnote">All negative reactions are 100% private.</div>
     <% elsif notification.action == "First" %>
       <a href="<%= json_data["user"]["path"] %>"><%= json_data["user"]["name"] %></a>
       wrote their first comment on:

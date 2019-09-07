@@ -1,12 +1,25 @@
-<% notification_count = 0 %>
-<% @notifications.each do |notification| %>
+<% num_notifications = @notifications.size %>
+
+<% @notifications.each_with_index do |notification, index| %>
   <% next if notification.notified_at < 24.hours.ago && notification.aggregated? %>
-  <% notification_count += 1 %>
-  <div class="single-article single-article-small-pic single-notification <%= "unseen" unless notification.read? %>" data-notification-id="<%= notification.id %>">
+
+  <div
+    class="single-article single-article-small-pic single-notification <%= "unseen" unless notification.read? %>"
+    data-notification-id="<%= notification.id %>">
     <%= render notification.notifiable_type.downcase.to_s, notification: notification %>
   </div>
+
+  <%# Since pagination is offset based, the fastest way to retrieve the last known notification id is to %>
+  <%# ask Ruby when it is at the end of the loop %>
+  <% if index == num_notifications - 1 %>
+    <% sub_path = params[:org_id].present? ? "#{params[:filter]}/#{params[:org_id]}" : params[:filter].to_s %>
+    <div
+      class="notifications-paginator"
+      data-pagination-path="/notifications/<%= sub_path %>?offset=<%= notification.id %>"></div>
+  <% end %>
 <% rescue => e %>
-  <% logger.error("Notifification error - #{e.message} - #{notification.id}") %>
+  <% logger.error("Notification error - #{e.message} - #{notification.id}") %>
+
   <div class="small-pic">
     <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--LnVw15KE--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg"
          alt="Sloan, the sloth mascot">

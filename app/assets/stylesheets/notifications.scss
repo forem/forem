@@ -2,6 +2,7 @@
 @import 'mixins';
 .notifications-index {
   @include themeable(background, theme-background, $lightest-gray);
+
   .home {
     .articles-list {
       .signup-cue {
@@ -405,5 +406,9 @@
         );
       }
     }
+  }
+
+  .load-more-wrapper {
+    @include load-more;
   }
 }
