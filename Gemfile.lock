@@ -791,6 +791,7 @@ GEM
     uber (0.1.0)
     uglifier (4.1.20)
       execjs (>= 0.3.0, < 3)
+    ulid (1.1.0)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.6)
@@ -973,6 +974,7 @@ DEPENDENCIES
   twilio-ruby (~> 5.25)
   twitter (~> 6.2)
   uglifier (~> 4.1)
+  ulid (~> 1.1)
   validate_url (~> 1.0)
   vcr (~> 5.0)
   web-console (~> 3.7)

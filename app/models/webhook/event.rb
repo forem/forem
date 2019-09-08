@@ -6,14 +6,17 @@ module Webhook
       article_destroyed
     ].freeze
 
-    attr_reader :event_type, :payload, :timestamp
+    attr_reader :event_type, :payload, :timestamp, :event_id
 
     def initialize(event_type:, payload: {})
       raise InvalidEvent unless EVENT_TYPES.include?(event_type)
 
       @event_type = event_type
       @payload = payload
-      @timestamp = Time.current.rfc3339
+
+      now = Time.current
+      @timestamp = now.rfc3339
+      @event_id = Secrets::Generator.sortable(now)
     end
 
     def as_json(*_args)

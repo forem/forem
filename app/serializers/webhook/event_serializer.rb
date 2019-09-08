@@ -1,10 +1,10 @@
 module Webhook
   class EventSerializer
     include FastJsonapi::ObjectSerializer
+
     set_type :webhook_event
-    set_id do |event|
-      "#{event.event_type}_#{event.timestamp}"
-    end
+    set_id :event_id
+
     attributes :event_type, :timestamp, :payload
   end
 end

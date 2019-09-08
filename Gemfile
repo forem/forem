@@ -94,6 +94,7 @@ gem "timber-rails", "~> 1.0" #  Timber integration for Rails
 gem "twilio-ruby", "~> 5.25" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 6.2" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.1" # Uglifier minifies JavaScript files
+gem "ulid", "~> 1.1" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "webpacker", "~> 3.5" # Use webpack to manage app-like JavaScript modules in Rails
 gem "webpush", "~> 1.0" # Encryption Utilities for Web Push payload
