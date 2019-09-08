@@ -7,13 +7,22 @@ const { environment } = require('@rails/webpacker');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 
 // Enable the default config
-environment.splitChunks(/*config =>
+environment.splitChunks(config =>
   Object.assign({}, config, {
     optimization: {
       runtimeChunk: 'single',
+      splitChunks: {
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all',
+          },
+        },
+      },
     },
   }),
-*/);
+);
 
 // Remove the next lineif you want to transpile node modules
 environment.loaders.delete('nodeModules');
