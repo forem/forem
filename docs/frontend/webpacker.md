@@ -20,7 +20,7 @@ Since DEV is not a Single Page Application (SPA), Preact components are mounted 
 For example:
 
 ```erb
-<%= javascript_pack_tag "webShare", defer: true %>
+<%= javascript_packs_with_chunks_tag "webShare", defer: true %>
 ```
 
 The include statement corresponds to the pack `app/javascripts/packs/webShare.js`

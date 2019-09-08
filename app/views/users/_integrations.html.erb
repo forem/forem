@@ -4,7 +4,7 @@
     <div class="github-repos loading-repos">
     </div>
   </div>
-  <%= javascript_pack_tag "githubRepos", defer: true %>
+  <%= javascript_packs_with_chunks_tag "githubRepos", defer: true %>
 <% end %>
 
 <%= form_tag users_update_twitch_username_path do |f| %>

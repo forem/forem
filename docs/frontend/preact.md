@@ -8,4 +8,4 @@ title: Preact
 
 Preact components are packaged using [Webpacker](/frontend/webpacker) and the Preact code is located in `app/javascript`.
 
-The components are mounted when needed, look for `javascript_pack_tag` in the view pages inside `app/views`.
+The components are mounted when needed, look for `javascript_packs_with_chunks_tag` in the view pages inside `app/views`.

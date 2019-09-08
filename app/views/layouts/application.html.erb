@@ -33,12 +33,11 @@
           }
         }
       </style>
-      <%= javascript_pack_tag "manifest", defer: true %>
-      <%= javascript_pack_tag "Search", defer: true %>
+      <%= javascript_packs_with_chunks_tag "Search", defer: true %>
       <% if core_pages? %>
         <%= javascript_include_tag "base", defer: true %>
         <% if user_signed_in? %>
-          <%= javascript_pack_tag "onboardingRedirectCheck", defer: true %>
+          <%= javascript_packs_with_chunks_tag "onboardingRedirectCheck", defer: true %>
         <% end %>
       <% end %>
       <% if !core_pages? %>

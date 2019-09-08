@@ -10,9 +10,7 @@ const WebpackAssetsManifest = require('webpack-assets-manifest');
 environment.splitChunks(config =>
   Object.assign({}, config, {
     optimization: {
-      runtimeChunk: {
-        name: 'manifest',
-      },
+      runtimeChunk: 'single',
     },
   }),
 );

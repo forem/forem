@@ -47,7 +47,7 @@
             <button for="subscribe_notifications" id="notification-subscription-label_only_author_comments" class="notification-subscription-label" data-payload="only_author_comments">
               Post Author Comments <span class="selected-emoji">✅</span>
             </button>
-            <%= javascript_pack_tag "notificationSubscriptionHandler", defer: true %>
+            <%= javascript_packs_with_chunks_tag "notificationSubscriptionHandler", defer: true %>
           </div>
         <% end %>
         <div class="dropdown-link-row">
