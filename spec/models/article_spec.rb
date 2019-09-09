@@ -389,9 +389,6 @@ RSpec.describe Article, type: :model do
   end
 
   describe "before save" do
-    # before do
-    #   article = create(:article, user_id: user.id)
-    # end
     it "assigns path on save" do
       article = create(:article, user_id: user.id)
       expect(article.path).to eq("/#{article.username}/#{article.slug}")

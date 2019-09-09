@@ -145,7 +145,6 @@ class ChatChannelsController < ApplicationController
       @active_channel = ChatChannel.find_by(slug: slug)
       @active_channel.current_user = current_user if @active_channel
     end
-    # @github_token = generate_github_token Not yet fully baked, not needed.
     generate_algolia_search_key
   end
 

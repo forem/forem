@@ -75,9 +75,7 @@ class Internal::ArticlesController < Internal::ApplicationController
     article.update!(article_params)
     Article.where.not(id: article.id).where(live_now: true).update_all(live_now: false) if article.live_now
     CacheBuster.new.bust "/live_articles"
-    # raise
     render body: nil
-    # redirect_to "/internal/articles"
   end
 
   private
