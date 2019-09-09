@@ -24,7 +24,7 @@
         </span>
       </h1>
       <p class="profile-description" itemprop="description">
-        <%= sanitize @user.summary.presence || ["404 bio not found"].sample %>
+        <%= sanitize(@user.summary.presence || "404 bio not found") %>
       </p>
       <style>
         .profile-details .social .icon-img path {
