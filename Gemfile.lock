@@ -163,7 +163,7 @@ GEM
       yajl-ruby
     buftok (0.2.0)
     builder (3.2.3)
-    bullet (6.0.1)
+    bullet (6.0.2)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     bundler-audit (0.6.1)
