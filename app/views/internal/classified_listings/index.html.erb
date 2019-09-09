@@ -5,9 +5,9 @@
   <% if params[:state].present? %>
     <%= hidden_field_tag(:state, params[:state]) %>
   <% end %>
-  <%= submit_tag("Search") %>
   <%= label_tag(:search, "Filter listings by category") %>
-  <%= select_tag(:filter, options_for_select(["", "cfp", "jobs", "misc", "events", "mentees", "products", "mentors", "education", "collabs", "forhire"], params[:filter]), :onchange => "this.form.submit()") %>
+  <%= select_tag(:filter, options_for_select(["", "cfp", "jobs", "misc", "events", "mentees", "products", "mentors", "education", "collabs", "forhire"], params[:filter])) %>
+  <%= submit_tag("Search & Filter") %>
 <% end %>
 <%= paginate @classified_listings %>
 <div class="wrapper" style="border-bottom: 1px solid black">
