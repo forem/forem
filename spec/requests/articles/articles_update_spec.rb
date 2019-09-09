@@ -108,4 +108,13 @@ RSpec.describe "ArticlesUpdate", type: :request do
     expect(response).to redirect_to "#{article.path}/edit"
     expect(article.reload.video_thumbnail_url).to include "https://i.imgur.com/HPiu7N4.jpg"
   end
+
+  it "schedules a dispatching event job" do
+    create(:webhook_endpoint, events: %w[article_created article_updated])
+    expect do
+      put "/articles/#{article.id}", params: {
+        article: { title: "new_title", body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
+      }
+    end.to have_enqueued_job(Webhook::DispatchEventJob).once
+  end
 end

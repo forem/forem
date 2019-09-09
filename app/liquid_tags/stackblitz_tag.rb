@@ -35,10 +35,10 @@ class StackblitzTag < LiquidTagBase
   end
 
   def parse_input(input, validator)
-    input_split = input.split(" ")
+    inputs = input.split(" ")
 
     # Validation
-    validated_views = input_split.map { |o| validator.call(o) }.reject(&:nil?)
+    validated_views = inputs.map { |input_option| validator.call(input_option) }.reject(&:nil?)
     raise StandardError, "Invalid Options" unless validated_views.length.between?(0, 1)
 
     validated_views.length.zero? ? "" : validated_views.join("").to_s

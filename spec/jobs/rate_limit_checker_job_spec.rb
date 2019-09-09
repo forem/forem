@@ -17,15 +17,15 @@ RSpec.describe RateLimitCheckerJob, type: :job do
 
     it "calls a service" do
       perform_enqueued_jobs do
-        described_class.perform_now(user.id)
+        described_class.perform_now(user.id, "test")
 
-        expect(service).to have_received(:call).with(user).once
+        expect(service).to have_received(:call).with(user, "test").once
       end
     end
 
     it "does nothing for non-existent user" do
       perform_enqueued_jobs do
-        described_class.perform_now(nil)
+        described_class.perform_now(nil, "test")
 
         expect(service).not_to have_received(:call)
       end

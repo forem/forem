@@ -15,16 +15,16 @@
   </p>
   <br />
   <p>
-    <a href="https://dev.to/<%= @user.username %>" style="font-weight:bold;color:white;background:#4e57ef;padding: 5px 10px;border-radius:3px;text-decoration:none">
+    <a href="<%= "#{ApplicationConfig["APP_DOMAIN"]}/#{@user.username}" %>" style="font-weight:bold;color:white;background:#4e57ef;padding: 5px 10px;border-radius:3px;text-decoration:none">
       Check out your profile
     </a>
   </p>
   <hr style="opacity:0.4;width: 150px;margin: 30px auto;" />
   <p>
-    You also get <strong><a href="/credits">5 new credits</a></strong> to use for <strong><a href="/listings">community listings</a></strong><br />
+    You also get <strong><a href="<%= ApplicationConfig["APP_DOMAIN"] %>/credits">5 new credits</a></strong> to use for <strong><a href="<%= ApplicationConfig["APP_DOMAIN"] %>/listings">community listings</a></strong><br />
     if you have anything you'd like to promote. 🎉
   </p>
   <p>
-    <strong><a href="/about-listings">More information about listings<a></strong>
+    <strong><a href="<%= ApplicationConfig["APP_DOMAIN"] %>/about-listings">More information about listings<a></strong>
   </p>
 </center>

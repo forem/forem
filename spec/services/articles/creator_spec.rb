@@ -30,6 +30,13 @@ RSpec.describe Articles::Creator do
         described_class.call(user, valid_attributes)
       end.to change(NotificationSubscription, :count).by(1)
     end
+
+    it "calls an event dispatcher" do
+      event_dispatcher = double
+      allow(event_dispatcher).to receive(:call)
+      article = described_class.call(user, valid_attributes, event_dispatcher)
+      expect(event_dispatcher).to have_received(:call).with("article_created", article.object)
+    end
   end
 
   context "when valid attributes" do
@@ -62,6 +69,13 @@ RSpec.describe Articles::Creator do
       expect do
         described_class.call(user, invalid_attributes)
       end.not_to change(NotificationSubscription, :count)
+    end
+
+    it "doesn't call an event dispatcher" do
+      event_dispatcher = double
+      allow(event_dispatcher).to receive(:call)
+      described_class.call(user, invalid_attributes, event_dispatcher)
+      expect(event_dispatcher).not_to have_received(:call)
     end
   end
 end

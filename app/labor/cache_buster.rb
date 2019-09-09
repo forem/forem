@@ -10,6 +10,8 @@ class CacheBuster
                   headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
     HTTParty.post("https://api.fastly.com/purge/https://dev.to#{path}?i=i",
                   headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
+  rescue URI::InvalidURIError => e
+    Rails.logger.error("Trying to bust cache of an invalid uri: #{e}")
   end
 
   def bust_comment(commentable)
@@ -25,9 +27,9 @@ class CacheBuster
     commentable.touch(:last_comment_at)
     bust("#{commentable.path}/comments/")
     bust(commentable.path.to_s)
-    commentable.comments.includes(:user).find_each do |c|
-      bust(c.path)
-      bust(c.path + "?i=i")
+    commentable.comments.includes(:user).find_each do |comment|
+      bust(comment.path)
+      bust(comment.path + "?i=i")
     end
     bust("#{commentable.path}/comments/*")
   end
@@ -47,8 +49,8 @@ class CacheBuster
     bust("/api/articles/#{article.id}")
     return unless article.collection_id
 
-    article.collection&.articles&.find_each do |a|
-      bust(a.path)
+    article.collection&.articles&.find_each do |collection_article|
+      bust(collection_article.path)
     end
   end
 

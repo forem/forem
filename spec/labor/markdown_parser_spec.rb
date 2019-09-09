@@ -17,6 +17,31 @@ RSpec.describe MarkdownParser do
     expect(generate_and_parse_markdown(code_block)).to include("{% what %}")
   end
 
+  it "escapes the `raw` Liquid tag in codeblocks" do
+    code_block = "```\n{% raw %}some text{% endraw %}\n```"
+    expect(generate_and_parse_markdown(code_block)).to include("{% raw %}", "{% endraw %}")
+  end
+
+  it "does not render the escaped dashes when using a `raw` Liquid tag in codeblocks with syntax highlighting" do
+    code_block = "```js\n{% raw %}some text{% endraw %}\n```"
+    expect(generate_and_parse_markdown(code_block)).not_to include("----")
+  end
+
+  it "does not remove the non-'raw tag related' four dashes" do
+    code_block = "```\n----\n```"
+    expect(generate_and_parse_markdown(code_block)).to include("----")
+  end
+
+  it "escapes the `raw` Liquid tag in codespans" do
+    code_block = "``{% raw %}some text{% endraw %}``"
+    expect(generate_and_parse_markdown(code_block)).to include("{% raw %}", "{% endraw %}")
+  end
+
+  it "escapes the `raw` Liquid tag in inline code" do
+    code_block = "`{% raw %}some text{% endraw %}`"
+    expect(generate_and_parse_markdown(code_block)).to include("{% raw %}", "{% endraw %}")
+  end
+
   it "escapes codeblocks in numbered lists" do
     code_block = "1. Define your hooks in config file `lefthook.yml`\n
     ```yaml
@@ -37,6 +62,31 @@ RSpec.describe MarkdownParser do
   it "renders double backtick code spans properly" do
     code_span = "``#{random_word}``"
     expect(generate_and_parse_markdown(code_span)).to include random_word
+  end
+
+  describe "mentions" do
+    let(:user) { build_stubbed(:user) }
+
+    before { allow(User).to receive(:find_by).with(username: user.username).and_return(user) }
+
+    it "works normally" do
+      mention = "@#{user.username}"
+      result = generate_and_parse_markdown(mention)
+      expect(result).to include "<a"
+    end
+
+    it "works with undescore" do
+      mention = "what was found here _@#{user.username}_ let see"
+      result = generate_and_parse_markdown(mention)
+      expect(result).to include "<a", "<em"
+    end
+
+    it "will not work in code tag" do
+      mention = "this is a chunk of text `@#{user.username}`"
+      result = generate_and_parse_markdown(mention)
+      expect(result).to include "<code"
+      expect(result).not_to include "<a"
+    end
   end
 
   it "renders a double backtick codespan with a word wrapped in single backticks properly" do

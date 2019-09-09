@@ -9,6 +9,7 @@ export class ListingDashboard extends Component {
     userCredits: 0,
     selectedListings: 'user',
     filter: 'All',
+    sort: 'created_at', 
   };
 
   componentDidMount() {
@@ -32,24 +33,43 @@ export class ListingDashboard extends Component {
       orgs,
       selectedListings,
       filter,
+      sort
     } = this.state;
 
+    const isExpired = (listing) => listing.bumped_at && (!listing.published) ? ((Date.now() - new Date(listing.bumped_at.toString()).getTime()) / (1000 * 60 * 60 * 24)) > 30 : false;
+    const isDraft = (listing) => listing.bumped_at ? !isExpired(listing) && (!listing.published) : true;
+
     const filterListings = (listingsToFilter, selectedFilter) => {
-      if (selectedFilter === "Expired") {
-        return listingsToFilter.filter(listing => listing.published === false)
+      if (selectedFilter === "Draft") {
+        return listingsToFilter.filter(listing => isDraft(listing))
+      } if (selectedFilter === "Expired") {
+        return listingsToFilter.filter(listing => isExpired(listing))
       } if (selectedFilter === "Active") {
         return listingsToFilter.filter(listing => listing.published === true)
       }
       return listingsToFilter
     }
 
+    const customSort = (a,b) => {
+      if (a[sort] === null) {
+        return 1
+      } 
+      if (b[sort] === null) {
+        return -1
+      }
+      if (a[sort] > b[sort]) {
+        return -1
+      } 
+      return 1
+    }
+
     const showListings = (selected, userListings, organizationListings, selectedFilter) => {
       let displayedListings;
       if (selected === 'user') {
-        displayedListings = filterListings(userListings, selectedFilter)
+        displayedListings = filterListings(userListings, selectedFilter).sort(customSort)
         return displayedListings.map(listing => <ListingRow listing={listing} />)
       }
-      displayedListings = filterListings(organizationListings, selectedFilter)
+      displayedListings = filterListings(organizationListings, selectedFilter).sort(customSort)
       return displayedListings.map(listing =>
         listing.organization_id === selected ? (
           <ListingRow listing={listing} />
@@ -58,13 +78,8 @@ export class ListingDashboard extends Component {
         ),
       );
     };
-    
-    const sortListings = (event) => {
-      const sortedListings = listings.sort((a,b) => (a[event.target.value] > b[event.target.value]) ? -1 : 1)
-      this.setState({listings: sortedListings});
-    }
 
-    const filters = ["All", "Active", "Expired"];
+    const filters = ["All", "Active", "Draft", "Expired"];
     const filterButtons = filters.map(f => (
       <span
         onClick={(event) => {this.setState( {filter:event.target.textContent} )}}
@@ -80,7 +95,7 @@ export class ListingDashboard extends Component {
         <div className="listings-dashboard-filter-buttons">
           {filterButtons}
         </div>
-        <select onChange={sortListings} >
+        <select onChange={(event) => {this.setState({sort: event.target.value})}}>
           <option value="created_at" selected="selected">Recently Created</option>
           <option value="bumped_at">Recently Bumped</option>
         </select>
@@ -100,10 +115,15 @@ export class ListingDashboard extends Component {
 
     const listingLength = (selected, userListings, organizationListings) => {
       return selected === 'user' ? (
-        <h4>Listings Made: {userListings.length}</h4>
+        <h4>
+          Listings Made:
+          {' '}
+          {userListings.length}
+        </h4>
       ) : (
         <h4>
-          Listings Made:{' '}
+          Listings Made:
+          {' '}
           {
             organizationListings.filter(
               listing => listing.organization_id === selected,
@@ -115,10 +135,15 @@ export class ListingDashboard extends Component {
 
     const creditCount = (selected, userCreds, organizations) => {
       return selected === 'user' ? (
-        <h4>Credits Available: {userCredits}</h4>
+        <h4>
+          Credits Available:
+          {' '}
+          {userCreds}
+        </h4>
       ) : (
         <h4>
-          Credits Available:{' '}
+          Credits Available:
+          {' '}
           {organizations.find(org => org.id === selected).unspent_credits_count}
         </h4>
       );

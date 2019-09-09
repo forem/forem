@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe FeedbackMessagesHelper, type: :helper do
   describe "#offender_email_details" do
     it "have proper subject and body" do
-      expect(helper.offender_email_details).to include(subject: "DEV Code of Conduct Violation", body: a_string_starting_with("Hi"))
+      expect(helper.offender_email_details).to include(subject: "DEV Code of Conduct Violation", body: a_string_starting_with("Hello"))
     end
   end
 

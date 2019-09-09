@@ -1,72 +1,77 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
+import ListingDate from './rowElements/listingDate';
+import Tags from './rowElements/tags';
+import Location from './rowElements/location';
+import ActionButtons from './rowElements/actionButtons';
 
 export const ListingRow = ({ listing }) => {
-  const tagLinks = listing.tag_list.map(tag => (
-    <a href={`/listings?t=${tag}`} data-no-instant>
-      #{tag}{' '}
-    </a>
-  ));
+  const bumpedAt = listing.bumped_at ? listing.bumped_at.toString() : null;
+  const isExpired =
+    bumpedAt && !listing.published
+      ? (Date.now() - new Date(bumpedAt).getTime()) / (1000 * 60 * 60 * 24) > 30
+      : false;
+  const isDraft = bumpedAt ? !isExpired && !listing.published : true;
+  const listingUrl = listing.published
+    ? `${listing.category}/${listing.slug}`
+    : `${listing.id}/edit`;
 
-  const listingLocation = listing.location ? (` ・ ${listing.location}`) : '';
-
-  const listingDate = listing.bumped_at
-    ? new Date(listing.bumped_at.toString()).toLocaleDateString('default', {
+  const expiryDate = listing.expires_at
+    ? new Date(listing.expires_at.toString()).toLocaleDateString('default', {
         day: '2-digit',
         month: 'short',
       })
-    : new Date(listing.updated_at.toString()).toLocaleDateString('default', {
-        day: '2-digit',
-        month: 'short',
-      });
+    : '';
 
-  const orgName = listing.organization_id ? (
-    <span className="listing-org">{listing.author.name}</span>
-  ) : (
-    ''
-  );
-
-  const expiryDate = listing.expires_at ? 
-    new Date(listing.expires_at.toString()).toLocaleDateString('default', {
-      day: '2-digit',
-      month: 'short',
-    }) : '' ;
-  
-  const listingExpiry = expiryDate !== '' ? (
-    ` | Expires on: ${expiryDate}`
-  ) : (
-    ''
-  );
+  const listingExpiry = expiryDate !== '' ? ` | Expires on: ${expiryDate}` : '';
 
   return (
-    <div className={`dashboard-listing-row ${listing.published ? '' : 'expired'}`}>
-      {orgName}
-      <a href={`${listing.category}/${listing.slug}`}>
-        <h2>{listing.title + (listing.published ? '' : " (expired)")}</h2>
+    <div
+      className={`dashboard-listing-row ${isDraft ? 'draft' : ''} ${
+        isExpired ? 'expired' : ''
+      }`}
+    >
+      {listing.organization_id && (
+        <span className="listing-org">{listing.author.name}</span>
+      )}
+      <a href={listingUrl}>
+        <h2>{listing.title + (isExpired ? ' (expired)' : '')}</h2>
       </a>
-      <span className="dashboard-listing-date">
-        {listingDate} 
-        {listingExpiry}
-        {listingLocation}
-      </span>
+      <ListingDate
+        bumpedAt={listing.bumped_at}
+        updatedAt={listing.updated_at}
+      />
+      {listingExpiry}
+      {listing.location && <Location location={listing.location} />}
       <span className="dashboard-listing-category">
         <a href={`/listings/${listing.category}/`}>{listing.category}</a>
       </span>
-      <span className="dashboard-listing-tags">{tagLinks}</span>
-      <div className="listing-row-actions">
-        {/* <a className="dashboard-listing-bump-button cta pill black">BUMP</a> */}
-        <a
-          href={`/listings/${listing.id}/edit`}
-          className="dashboard-listing-edit-button cta pill green"
-        >
-          EDIT
-        </a>
-        {/* <a className="dashboard-listing-delete-button cta pill red">DELETE</a> */}
-      </div>
+      <Tags tagList={listing.tag_list} />
+      <ActionButtons
+        isDraft={isDraft}
+        listingUrl={`${listing.category}/${listing.slug}`}
+        editUrl={`/listings/${listing.id}/edit`}
+        deleteConfirmUrl={`/listings/${listing.category}/${listing.slug}/delete_confirm`}
+      />
     </div>
   );
 };
 
 ListingRow.propTypes = {
-  listing: PropTypes.object.isRequired,
+  listing: PropTypes.PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    tag_list: PropTypes.arrayOf(PropTypes.string),
+    created_at: PropTypes.instanceOf(Date),
+    bumped_at: PropTypes.instanceOf(Date),
+    updated_at: PropTypes.instanceOf(Date),
+    category: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+    user_id: PropTypes.number.isRequired,
+    slug: PropTypes.string.isRequired,
+    organization_id: PropTypes.number,
+    location: PropTypes.string,
+    expires_at: PropTypes.bool,
+    published: PropTypes.bool.isRequired,
+    author: PropTypes.object,
+  }).isRequired,
 };
