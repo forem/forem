@@ -3,12 +3,32 @@ class Notification < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :organization, optional: true
 
-  validates :user_id, presence: true, if: proc { |notifcation| notifcation.organization_id.nil? }
-  validates :organization_id, presence: true, if: proc { |notifcation| notifcation.user_id.nil? }
+  validates :user_id, presence: true, if: proc { |notification| notification.organization_id.nil? }
+  validates :organization_id, presence: true, if: proc { |notification| notification.user_id.nil? }
+  validates :user_id, uniqueness: { scope: %i[organization_id notifiable_id notifiable_type action] }
 
   before_create :mark_notified_at_time
 
-  validates :user_id, uniqueness: { scope: %i[organization_id notifiable_id notifiable_type action] }
+  scope :for_published_articles, -> { where(notifiable_type: "Article", action: "Published") }
+  scope :for_comments, -> { where(notifiable_type: "Comment", action: nil) } # nil action means "not a reaction"
+  scope :for_mentions, -> { where(notifiable_type: "Mention") }
+
+  scope :for_organization, ->(org_id) { where(organization_id: org_id, user_id: nil) }
+  scope :for_organization_comments, lambda { |org_id|
+    # nil action means "not a reaction"
+    where(organization_id: org_id, notifiable_type: "Comment", action: nil, user_id: nil)
+  }
+  scope :for_organization_mentions, lambda { |org_id|
+    where(organization_id: org_id, notifiable_type: "Mention", user_id: nil)
+  }
+
+  scope :with_recently_aggregated_reactions_and_follows, lambda {
+    where("notified_at < ?", 24.hours.ago).
+      where(action: %w[Reaction Follow])
+  }
+  scope :without_recently_aggregated_reactions_and_follows, lambda {
+    where.not(with_recently_aggregated_reactions_and_follows.arel.exists)
+  }
 
   class << self
     def send_new_follower_notification(follow, is_read = false)

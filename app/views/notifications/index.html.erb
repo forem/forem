@@ -64,16 +64,16 @@
       <% end %>
 
       <%= render "notifications_list", params: params %>
-
-      <%# not using "any?"" here because "notifications_list" already asks for ".size", a little optimization :) %>
-      <% if @notifications.size > 7 %>
-        <div class="load-more-wrapper">
-          <button id="load-more-button" type="button">
-            Load More
-          </button>
-        </div>
-      <% end %>
     </div>
+
+    <% if @notifications.size > 7 %>
+      <div class="load-more-wrapper">
+        <button id="load-more-button" type="button">
+          Load More
+        </button>
+      </div>
+    <% end %>
+
     <div class="side-bar sidebar-additional"></div>
   </div>
   <%= render "articles/fitvids" %>

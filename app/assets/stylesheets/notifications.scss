@@ -410,5 +410,9 @@
 
   .load-more-wrapper {
     @include load-more;
+
+    button {
+      margin-top: 0;
+    }
   }
 }
