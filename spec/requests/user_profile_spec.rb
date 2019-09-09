@@ -61,6 +61,30 @@ RSpec.describe "UserProfiles", type: :request do
         get organization.path
         expect(response.body).to include "Gold Community Sponsor"
       end
+
+      it "renders organization name properly encoded" do
+        organization.update(name: "Org & < ' \" 1")
+        get organization.path
+        expect(response.body).to include(ActionController::Base.helpers.sanitize(organization.name))
+      end
+
+      it "renders organization email properly encoded" do
+        organization.update(email: "t&st&mail@dev.to")
+        get organization.path
+        expect(response.body).to include(ActionController::Base.helpers.sanitize(organization.email))
+      end
+
+      it "renders organization summary properly encoded" do
+        organization.update(summary: "Org & < ' \" &quot; 1")
+        get organization.path
+        expect(response.body).to include(ActionController::Base.helpers.sanitize(organization.summary))
+      end
+
+      it "renders organization location properly encoded" do
+        organization.update(location: "123, ave dev & < ' \" &quot; to")
+        get organization.path
+        expect(response.body).to include(ActionController::Base.helpers.sanitize(organization.location))
+      end
     end
 
     context "when github repo" do
