@@ -1,4 +1,4 @@
-<% title @organization.name %>
+<% title sanitize(@organization.name) %>
 
 <%= content_for :page_meta do %>
   <%= render "users/meta" %>
