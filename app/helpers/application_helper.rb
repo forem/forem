@@ -107,23 +107,7 @@ module ApplicationHelper
   end
 
   def cloud_cover_url(url)
-    return if url.blank?
-    return asset_path("triple-unicorn") if Rails.env.test?
-    return url if Rails.env.development?
-
-    width = 1000
-    height = 420
-    quality = "auto"
-
-    cl_image_path(url,
-                  type: "fetch",
-                  width: width,
-                  height: height,
-                  crop: "imagga_scale",
-                  quality: quality,
-                  flags: "progressive",
-                  fetch_format: "auto",
-                  sign_url: true)
+    CloudCoverUrl.new(url).call
   end
 
   def tag_colors(tag)

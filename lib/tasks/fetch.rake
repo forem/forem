@@ -100,3 +100,7 @@ task remove_old_html_variant_data: :environment do
     html_variant.calculate_success_rate! if html_variant.html_variant_successes.any?
   end
 end
+
+task fix_credits_count_cache: :environment do
+  Credit.counter_culture_fix_counts only: %i[user organization]
+end
