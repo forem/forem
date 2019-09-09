@@ -87,7 +87,7 @@ module BadgeRewarder
       count = 0
       num_weeks.times do |i|
         num = i + 1
-        count += 1 if user.articles.where("published_at > ? AND published_at < ?", num.weeks.ago, (num - 1).weeks.ago).any?
+        count += 1 if user.articles.published.where("published_at > ? AND published_at < ?", num.weeks.ago, (num - 1).weeks.ago).any?
       end
       usernames << user.username if count >= num_weeks
     end
