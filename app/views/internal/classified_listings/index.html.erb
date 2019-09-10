@@ -51,7 +51,95 @@
         </div>
       </div>
     </div>
+
+    <h3>Email Form:</h3>
+    <div class="email-area" style="text-align:left">
+      <h3>
+        Send to:
+        <br>
+        <%= email_field_tag :reporter_email_to, listing.user.email, class: "form-control", id: "reporter__emailto__#{listing.id}", required: true %>
+      </h3>
+      <h3>Subject:</h3>
+      <%= text_field_tag :reporter_email_subject, "Regarding your recent DEV Listing", class: "form-control", id: "reporter__subject__#{listing.id}" %>
+      <h3>Body:</h3>
+      <%= text_area_tag :reporter_email_body, listing.title, class: "form-control", style: "height: 200px;", id: "reporter__body__#{listing.id}" %>
+    </div>
+    <br>
+    <button class="btn btn-primary" type="button" id="send__email__btn__<%= listing.id %>">SEND EMAIL ✉️</button>
+    <div class="email__alert alert fade in" id="email__alert__<%= listing.id %>">
+    </div>
   </div>
+
+<script>
+  function successfulEmail(alert) {
+    alert.style.display = 'inline-block';
+    alert.classList.add('alert-success');
+    alert.innerHTML = "Email sent successfully! Refresh to see";
+  }
+
+  function failedEmail(alert) {
+    alert.style.display = 'inline-block';
+    alert.classList.add('alert-danger');
+    alert.innerHTML = "Email failed to send, see console or airbrake for errors";
+  }
+
+  function sendEmail(id) {
+    var alert = document.getElementById('email__alert__' + id);
+    var sendEmailBtn = document.getElementById('send__email__btn__' + id);
+    var emailToAddress = document.getElementById('reporter__emailto__' + id).value;
+    var subjectLine = document.getElementById('reporter__subject__' + id).value;
+    var emailBody = document.getElementById('reporter__body__' + id).value;
+
+    alert.style.display = "none";
+    alert.classList.remove("alert-warning");
+    alert.classList.remove("alert-success");
+    alert.classList.remove("alert-danger");
+
+    if (emailToAddress === "") {
+      alert.style.display = 'inline-block';
+      alert.classList.add("alert-warning");
+      alert.innerHTML = "Email can't be blank!"
+      return
+    }
+
+    var formData = new FormData();
+    formData.append('listing_id', id);
+    formData.append('email_to', emailToAddress);
+    formData.append('email_body', emailBody);
+    formData.append('email_subject', subjectLine);
+    formData.append('email_type', "Listing");
+
+    fetch('/internal/reports/send_email', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content,
+      },
+      body: formData,
+      credentials: 'same-origin'
+    })
+      .then(response => response.json()
+        .then(json => {
+          if (json.outcome === "Success") {
+            successfulEmail(alert);
+          } else {
+            console.log('email failed')
+            failedEmail(alert);
+          }
+        }))
+      .catch(error => {
+        failedEmail(alert);
+        console.log(error);
+      })
+  }
+
+  document.getElementById('send__email__btn__' + <%= listing.id %>).addEventListener('click', function (event) {
+    event.preventDefault();
+    var reportId = <%= listing.id %>;
+    sendEmail(reportId);
+  });
+</script>
 <% end %>
+
+
 <%= paginate @classified_listings %>
 <%= render "internal/articles/article_script" %>
