@@ -6,6 +6,8 @@ class NotificationsController < ApplicationController
     @notifications_index = true
     @user = user_to_view
 
+    @initial_page_size = 8
+
     # NOTE: this controller is using offset based pagination by assuming that
     # the id of the last notification also corresponds to the newest `notified_at`
     # this might not be forever true but it's good enough for now
@@ -13,7 +15,7 @@ class NotificationsController < ApplicationController
       num = 30
       notified_at_offset = Notification.find(params[:offset])&.notified_at
     else
-      num = 8
+      num = @initial_page_size
     end
 
     @notifications = if (params[:org_id].present? || params[:filter] == "org") && allowed_user?
