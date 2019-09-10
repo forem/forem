@@ -1,22 +1,9 @@
-<% num_notifications = @notifications.size %>
-
-<% @notifications.each_with_index do |notification, index| %>
-  <% next if notification.notified_at < 24.hours.ago && notification.aggregated? %>
-
+<% @notifications.each do |notification| %>
   <div
     class="single-article single-article-small-pic single-notification <%= "unseen" unless notification.read? %>"
     data-notification-id="<%= notification.id %>">
     <%= render notification.notifiable_type.downcase.to_s, notification: notification %>
   </div>
-
-  <%# Since pagination is offset based, the fastest way to retrieve the last known notification id is to %>
-  <%# ask Ruby when it is at the end of the loop %>
-  <% if index == num_notifications - 1 %>
-    <% sub_path = params[:org_id].present? ? "#{params[:filter]}/#{params[:org_id]}" : params[:filter].to_s %>
-    <div
-      class="notifications-paginator"
-      data-pagination-path="/notifications/<%= sub_path %>?offset=<%= notification.id %>"></div>
-  <% end %>
 <% rescue => e %>
   <% logger.error("Notification error - #{e.message} - #{notification.id}") %>
 
@@ -29,4 +16,11 @@
     <br>
     If you see too many of these, please report it to <a href="mailto:yo@dev.to">yo@dev.to</a>!
   </div>
+<% end %>
+
+<% if @notifications.any? %>
+  <% sub_path = params[:org_id].present? ? "#{params[:filter]}/#{params[:org_id]}" : params[:filter].to_s %>
+  <div
+    class="notifications-paginator"
+    data-pagination-path="/notifications/<%= sub_path %>?offset=<%= @notifications.last.id %>"></div>
 <% end %>
