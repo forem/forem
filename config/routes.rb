@@ -72,6 +72,7 @@ Rails.application.routes.draw do
         post "bust_cache"
       end
     end
+    resources :webhook_endpoints, only: :index
   end
 
   namespace :api, defaults: { format: "json" } do
