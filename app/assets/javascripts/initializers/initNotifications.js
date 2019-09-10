@@ -156,8 +156,7 @@ function listenForNotificationsBellClick() {
 }
 
 function initPagination() {
-  // paginators appear at the end of each block of HTML notifications sent by
-  // the server, each time we paginate we're only interested in the last one
+  // paginators appear after each block of HTML notifications sent by the server
   const paginators = document.getElementsByClassName('notifications-paginator');
   if (paginators && paginators.length > 0) {
     const paginator = paginators[paginators.length - 1];
@@ -171,10 +170,17 @@ function initPagination() {
         .then(function(response) {
           if (response.status === 200) {
             response.text().then(function(html) {
-              const notificationsList = html.trim();
+              const markup = html.trim();
 
-              if (notificationsList) {
-                paginator.innerHTML = notificationsList;
+              if (markup) {
+                const container = document.getElementById('articles-list');
+
+                const newNotifications = document.createElement('div');
+                newNotifications.innerHTML = markup;
+
+                paginator.remove();
+                container.append(newNotifications);
+
                 initReactions();
               } else {
                 // no more notifications to load, we hide the load more wrapper
@@ -182,6 +188,7 @@ function initPagination() {
                 if (button) {
                   button.style.display = 'none';
                 }
+                paginator.remove();
               }
             });
           }
