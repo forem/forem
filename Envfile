@@ -190,6 +190,12 @@ variable :TRENDING_TAGS, :String, default: "git,beginners"
 # (https://api.stackexchange.com/docs)
 variable :STACK_EXCHANGE_APP_KEY, :String, default: ""
 
+# For Redis session storage
+variable :REDIS_URL, :String, default: "redis://localhost:6379/0"
+variable :SESSION_KEY, :String, default: "DevCommunity_Session"
+variable :SESSION_EXPIRY_SECONDS, :String, default: "1209600" # two weeks
+
+
 ##### Legacy test related env vars ######
 variable :FACEBOOK_PIXEL_ID, :String, default: "Optional"
 variable :SMARTY_STREETS_WEB_KEY, :String, default: "Optional"
