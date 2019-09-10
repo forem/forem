@@ -1,0 +1,11 @@
+<% menu_items = %w[comments articles users tags welcome broadcasts reports pages tools chat_channels growth mods].each_with_object({}) { |v, h| h[v] = v } %>
+<% menu_items[:listings] = "classified_listings" %>
+<% menu_items[:pod] = "podcasts" %>
+<% menu_items[:hooks] = "webhook_endpoints" %>
+<div id="navbar" class="collapse navbar-collapse">
+  <ul class="nav navbar-nav" style="font-size: 0.97em;">
+    <% menu_items.each do |name, controller| %>
+      <li class="<%= "active" if controller_name == controller %>"><a href="/internal/<%= controller %>"><%= name %></a></li>
+    <% end %>
+  </ul>
+</div><!--/.nav-collapse -->
