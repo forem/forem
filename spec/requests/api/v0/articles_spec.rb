@@ -47,10 +47,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
       expect(json_response.size).to eq(1)
     end
 
-    xit "returns top articles if top param is present" do
-      # should we even bother testing this?
-      # 1. there's a service object that can test this
-      # 2. it's already tested on line 52
+    it "only returns fresh top articles if top param is present" do
+      # TODO: slight duplication, test should be removed
       old_article = create(:article)
       old_article.update_column(:published_at, 10.days.ago)
       get api_articles_path(top: "7")
