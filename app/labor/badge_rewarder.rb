@@ -66,7 +66,7 @@ module BadgeRewarder
       commits = client.commits repo, since: since.iso8601
       authors_uids = commits.map { |commit| commit.author.id }
       Identity.where(provider: "github", uid: authors_uids).find_each do |i|
-        user_commits = client.commits repo, author: i.github_username
+        user_commits = client.commits repo, author: i.auth_data_dump.info.nickname
         user_commits_count = user_commits.count
         badge = if user_commits_count >= 64
                   Badge.find_by(slug: "dev-contributor-64") # Badge for 64 PRs
