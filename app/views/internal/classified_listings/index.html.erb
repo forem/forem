@@ -5,7 +5,9 @@
   <% if params[:state].present? %>
     <%= hidden_field_tag(:state, params[:state]) %>
   <% end %>
-  <%= submit_tag("Search") %>
+  <%= label_tag(:search, "Filter listings by category") %>
+  <%= select_tag(:filter, options_for_select( [""] + ClassifiedListing.categories_available.keys, params[:filter])) %>
+  <%= submit_tag("Search & Filter") %>
 <% end %>
 <%= paginate @classified_listings %>
 <div class="wrapper" style="border-bottom: 1px solid black">
