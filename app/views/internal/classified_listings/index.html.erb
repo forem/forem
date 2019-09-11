@@ -44,7 +44,7 @@
           <%= form_tag "/internal/buffer_updates" do %>
             <input type="hidden" name="social_channel" value="listings_twitter" />
             <input type="hidden" name="listing_id" value="<%= listing.id %>" />
-            <textarea cols="37" rows="8" wrap="hard" name="tweet" maxlength="255"><% if User.find(listing.user_id).twitter_username.present? %>📋 New DEV Listing!&#013&#013Category: <%= listing.category %>&#013&#013<%= listing.title %>&#013&#013Posted by @<%= User.find(listing.user_id).twitter_username %><% end %></textarea>
+            <textarea cols="37" rows="8" wrap="hard" name="tweet" maxlength="255">📋 New DEV Listing!&#013&#013Category: <%= listing.category %>&#013&#013<%= listing.title %>&#013&#013<% if listing.user.twitter_username? %>Posted by @<%= listing.user.twitter_username %><% end %></textarea>
             <br>
             <button class="btn-info tweet-listing">🐦 Tweet 🐦</button>
           <% end %>
