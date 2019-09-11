@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :article do
     transient do
-      title { Faker::Book.title + rand(100).to_s }
+      title { Faker::Book.title }
       published { true }
       date { "01/01/2015" }
       tags { Faker::Hipster.words(number: 4).join(", ") }

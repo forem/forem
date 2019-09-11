@@ -213,25 +213,25 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "creates an article belonging to the user" do
-        post_article(title: Faker::Book.title + rand(100).to_s)
+        post_article(title: Faker::Book.title)
         expect(response).to have_http_status(:created)
         expect(Article.find(json_response["id"]).user).to eq(user)
       end
 
       it "creates an unpublished article by default" do
-        post_article(title: Faker::Book.title + rand(100).to_s)
+        post_article(title: Faker::Book.title)
         expect(response).to have_http_status(:created)
         expect(Article.find(json_response["id"]).published).to be(false)
       end
 
       it "returns the location of the article" do
-        post_article(title: Faker::Book.title + rand(100).to_s)
+        post_article(title: Faker::Book.title)
         expect(response).to have_http_status(:created)
         expect(response.location).not_to be_blank
       end
 
       it "creates an article with only a title" do
-        title = Faker::Book.title + rand(100).to_s
+        title = Faker::Book.title
         expect do
           post_article(title: title)
           expect(response).to have_http_status(:created)
@@ -240,7 +240,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "creates a published article" do
-        title = Faker::Book.title + rand(100).to_s
+        title = Faker::Book.title
         expect do
           post_article(title: title, published: true)
           expect(response).to have_http_status(:created)
@@ -249,10 +249,10 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "creates an article with a title and the markdown body" do
-        body_markdown = "Yo ho ho #{rand(100)}"
+        body_markdown = "Yo ho ho"
         expect do
           post_article(
-            title: Faker::Book.title + rand(100).to_s,
+            title: Faker::Book.title,
             body_markdown: body_markdown,
           )
           expect(response).to have_http_status(:created)
@@ -264,8 +264,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
         tags = %w[meta discussion]
         expect do
           post_article(
-            title: Faker::Book.title + rand(100).to_s,
-            body_markdown: "Yo ho ho #{rand(100)}",
+            title: Faker::Book.title,
+            body_markdown: "Yo ho ho",
             tags: tags,
           )
           expect(response).to have_http_status(:created)
@@ -298,8 +298,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
       it "creates an article within a series" do
         series = "a series"
         post_article(
-          title: Faker::Book.title + rand(100).to_s,
-          body_markdown: "Yo ho ho #{rand(100)}",
+          title: Faker::Book.title,
+          body_markdown: "Yo ho ho",
           series: series,
         )
         expect(response).to have_http_status(:created)
@@ -324,7 +324,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         create(:organization_membership, user: user, organization: organization)
         expect do
           post_article(
-            title: Faker::Book.title + rand(100).to_s,
+            title: Faker::Book.title,
             organization_id: organization.id,
           )
           expect(response).to have_http_status(:created)
@@ -336,8 +336,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
         image_url = "https://dummyimage.com/100x100"
         expect do
           post_article(
-            title: Faker::Book.title + rand(100).to_s,
-            body_markdown: "Yo ho ho #{rand(100)}",
+            title: Faker::Book.title,
+            body_markdown: "Yo ho ho",
             main_image: image_url,
           )
           expect(response).to have_http_status(:created)
@@ -359,8 +359,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
         canonical_url = "https://example.com/"
         expect do
           post_article(
-            title: Faker::Book.title + rand(100).to_s,
-            body_markdown: "Yo ho ho #{rand(100)}",
+            title: Faker::Book.title,
+            body_markdown: "Yo ho ho",
             canonical_url: canonical_url,
           )
           expect(response).to have_http_status(:created)
@@ -382,8 +382,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
         description = "this is a very interesting article"
         expect do
           post_article(
-            title: Faker::Book.title + rand(100).to_s,
-            body_markdown: "Yo ho ho #{rand(100)}",
+            title: Faker::Book.title,
+            body_markdown: "Yo ho ho",
             description: description,
           )
           expect(response).to have_http_status(:created)
@@ -407,8 +407,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
       it "creates an article with a part of the body as a description" do
         expect do
           post_article(
-            title: Faker::Book.title + rand(100).to_s,
-            body_markdown: "yooo" * 100 + rand(100).to_s,
+            title: Faker::Book.title,
+            body_markdown: "yooo" * 100,
           )
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
@@ -455,7 +455,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
         headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
 
-        title = Faker::Book.title + rand(100).to_s
+        title = Faker::Book.title
         body_markdown = "foobar"
         params = { title: title, body_markdown: body_markdown }
         put path, params: { article: params }.to_json, headers: headers
@@ -482,14 +482,14 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "does not update title if only given a title because the article has a front matter" do
-        put_article(title: Faker::Book.title + rand(100).to_s)
+        put_article(title: Faker::Book.title)
         expect(response).to have_http_status(:ok)
         expect(article.reload.title).to eq(article.title)
         expect(json_response["title"]).to eq(article.title)
       end
 
       it "updates the title and the body if given a title and a body" do
-        title = Faker::Book.title + rand(100).to_s
+        title = Faker::Book.title
         body_markdown = "foobar"
         put_article(title: title, body_markdown: body_markdown)
         expect(response).to have_http_status(:ok)
@@ -510,8 +510,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
       it "assigns the article to a new series belonging to the user" do
         expect do
           put_article(
-            title: Faker::Book.title + rand(100).to_s,
-            body_markdown: "Yo ho ho #{rand(100)}",
+            title: Faker::Book.title,
+            body_markdown: "Yo ho ho",
             series: "a series",
           )
         end.to change(Collection, :count).by(1)
@@ -523,8 +523,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
         collection = create(:collection, user: user)
         expect do
           put_article(
-            title: Faker::Book.title + rand(100).to_s,
-            body_markdown: "Yo ho ho #{rand(100)}",
+            title: Faker::Book.title,
+            body_markdown: "Yo ho ho",
             series: collection.slug,
           )
         end.to change(Collection, :count).by(0)
@@ -534,12 +534,12 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
       it "does not remove the article from a series" do
         collection = create(:collection, user: user)
-        body_markdown = "Yo ho ho #{rand(100)}"
+        body_markdown = "Yo ho ho"
         article.update!(body_markdown: body_markdown, collection: collection)
         expect(article.collection).not_to be_nil
 
         put_article(
-          title: Faker::Book.title + rand(100).to_s,
+          title: Faker::Book.title,
           body_markdown: body_markdown,
         )
         expect(response).to have_http_status(:ok)
@@ -547,13 +547,13 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "removes the article from a series if asked explicitly" do
-        body_markdown = "Yo ho ho #{rand(100)}"
+        body_markdown = "Yo ho ho"
 
         article.update!(body_markdown: body_markdown, collection: create(:collection, user: user))
         expect(article.collection).not_to be_nil
 
         put_article(
-          title: Faker::Book.title + rand(100).to_s,
+          title: Faker::Book.title,
           body_markdown: body_markdown,
           series: nil, # nil will assign the article to no collections
         )
@@ -564,8 +564,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
       it "assigns the article to a series belonging to the article's owner, not the admin" do
         user.add_role(:super_admin)
         article = create(:article, user: create(:user))
-        params = { article: { title: Faker::Book.title + rand(100).to_s,
-                              body_markdown: "Yo ho ho #{rand(100)}",
+        params = { article: { title: Faker::Book.title,
+                              body_markdown: "Yo ho ho",
                               series: "a series" } }
         expect do
           put "/api/articles/#{article.id}", params: params, headers: { "api-key" => api_secret.secret }
@@ -576,7 +576,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
       it "publishes an article" do
         expect(article.published).to be(false)
-        put_article(body_markdown: "Yo ho ho #{rand(100)}", published: true)
+        put_article(body_markdown: "Yo ho ho", published: true)
         expect(response).to have_http_status(:ok)
         expect(article.reload.published).to be(true)
       end
@@ -584,7 +584,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       it "sends a notification when the article gets published" do
         expect(article.published).to be(false)
         allow(Notification).to receive(:send_to_followers)
-        put_article(body_markdown: "Yo ho ho #{rand(100)}", published: true)
+        put_article(body_markdown: "Yo ho ho", published: true)
         expect(response).to have_http_status(:ok)
         expect(Notification).to have_received(:send_to_followers).with(article, "Published").once
       end
@@ -592,7 +592,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       it "only sends a notification the first time the article gets published" do
         expect(article.published).to be(false)
         allow(Notification).to receive(:send_to_followers)
-        put_article(body_markdown: "Yo ho ho #{rand(100)}", published: true)
+        put_article(body_markdown: "Yo ho ho", published: true)
         expect(response).to have_http_status(:ok)
 
         article.update_columns(published: false)
@@ -606,8 +606,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
         article.update_columns(edited_at: nil)
         expect(article.published).to be(false)
         put_article(
-          title: Faker::Book.title + rand(100).to_s,
-          body_markdown: "Yo ho ho #{rand(100)}",
+          title: Faker::Book.title,
+          body_markdown: "Yo ho ho",
         )
         expect(response).to have_http_status(:ok)
         expect(article.reload.edited_at).to be_nil
@@ -616,8 +616,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
       it "updates the editing time when updated after publication" do
         article.update_columns(published: true)
         put_article(
-          title: Faker::Book.title + rand(100).to_s,
-          body_markdown: "Yo ho ho #{rand(100)}",
+          title: Faker::Book.title,
+          body_markdown: "Yo ho ho",
         )
         expect(response).to have_http_status(:ok)
         expect(article.reload.edited_at).not_to be_nil
@@ -628,8 +628,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(article.published).to be(false)
         user.add_role(:super_admin)
         article = create(:article, user: create(:user))
-        params = { article: { title: Faker::Book.title + rand(100).to_s,
-                              body_markdown: "Yo ho ho #{rand(100)}" } }.to_json
+        params = { article: { title: Faker::Book.title,
+                              body_markdown: "Yo ho ho" } }.to_json
         put "/api/articles/#{article.id}", params: params, headers: headers
         expect(response).to have_http_status(:ok)
         expect(article.reload.edited_at).to be_nil
@@ -649,8 +649,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
         user.add_role(:super_admin)
         article.update_columns(edited_at: nil, published: true)
         put_article(
-          title: Faker::Book.title + rand(100).to_s,
-          body_markdown: "Yo ho ho #{rand(100)}",
+          title: Faker::Book.title,
+          body_markdown: "Yo ho ho",
         )
         expect(response).to have_http_status(:ok)
         expect(article.reload.edited_at).not_to be_nil
