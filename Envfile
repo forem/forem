@@ -192,7 +192,7 @@ variable :STACK_EXCHANGE_APP_KEY, :String, default: ""
 
 # For Redis session storage
 variable :REDIS_URL, :String, default: "redis://localhost:6379/0"
-variable :SESSION_KEY, :String, default: "DevCommunity_Session"
+variable :SESSION_KEY, :String, default: "_Dev_Community_Session"
 variable :SESSION_EXPIRY_SECONDS, :Integer, default: 1209600 # two weeks in seconds
 
 
