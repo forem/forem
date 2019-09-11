@@ -60,7 +60,7 @@ RSpec.describe "ArticlesCreate", type: :request do
     end
 
     before do
-      create(:webhook_endpoint, events: %w[article_created article_updated], target_url: url)
+      create(:webhook_endpoint, events: %w[article_created article_updated], target_url: url, user: user)
     end
 
     it "schedules a dispatching event job" do
