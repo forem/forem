@@ -5,7 +5,7 @@ RSpec.describe Webhook::DispatchEvent, type: :service do
   let!(:article) { create(:article, user: user) }
 
   it "does nothing if there are no corresponding endpoints" do
-    create(:webhook_endpoint, events: %w[article_created])
+    create(:webhook_endpoint, events: %w[article_created], user: user)
     expect do
       described_class.call("article_destroyed", article)
     end.not_to have_enqueued_job(Webhook::DispatchEventJob)
