@@ -50,7 +50,7 @@ RSpec.describe "ClassifiedListings", type: :request do
 
     context "when the user has category and slug params for active listing" do
       it "shows that direct listing" do
-        get "/listings", params: { category: `#{listing.category}`, slug: `#{listing.slug}` }
+        get "/listings", params: { category: listing.category, slug: listing.slug }
         expect(response.body).to include(CGI.escapeHTML(listing.title))
       end
     end
@@ -59,7 +59,7 @@ RSpec.describe "ClassifiedListings", type: :request do
       it "shows only active listings from that category" do
         expired_listing.published = false
         expired_listing.save
-        get "/listings", params: { category: `#{expired_listing.category}`, slug: `#{expired_listing.slug}` }
+        get "/listings", params: { category: expired_listing.category, slug: expired_listing.slug }
         expect(response.body).not_to include(CGI.escapeHTML(expired_listing.title))
       end
     end
