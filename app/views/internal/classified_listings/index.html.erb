@@ -17,6 +17,7 @@
   <div class="grid-item">Last Bumped</div>
 </div>
 <% @classified_listings.each do |listing| %>
+  <% previous_emails = @email_messages.where(listing_id: listing.id) %>
   <div class="single-internal-listing">
     <div class="wrapper">
       <div class="grid-item">
