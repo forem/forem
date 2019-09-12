@@ -12,8 +12,9 @@ function callInitalizers(){
     if (document.getElementsByTagName('body')[0].getAttribute('data-loaded') == "true") {
       clearInterval(waitingForDataLoad);
       if (document.getElementsByTagName('body')[0].getAttribute('data-user-status') == "logged-in") {
-        initializeAllChatButtons();
         initializeBaseUserData();
+        initializeAllChatButtons();
+        initializeAllTagEditButtons();
       }
       initializeAllFollowButts();
       initializeReadingListIcons();
