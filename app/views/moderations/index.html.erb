@@ -1,3 +1,5 @@
+<% title "Moderate" %>
+
 <% if current_user&.trusted %>
   <style>
     .level-rating-button {
@@ -12,54 +14,83 @@
     .level-rating-button.selected {
       background: #9bebff;
     }
-      .tag-mod-form {
-    border-top: 1px solid rgba(255, 255, 255, 0.5);
-    margin: 40px auto;
-  }
+    .tag-mod-form {
+      border-top: 1px solid rgba(255, 255, 255, 0.5);
+      margin: 40px auto;
+    }
 
-  .tag-mod-form ul {
-    text-align: left;
-    font-size: 15px;
-  }
+    .tag-mod-form ul {
+      text-align: left;
+      font-size: 15px;
+    }
 
-  .tag-mod-form form {
-    width: 500px;
-    margin: auto;
-    max-width: 90%;
-  }
+    .tag-mod-form form {
+      width: 500px;
+      margin: auto;
+      max-width: 90%;
+    }
 
-  .tag-mod-form form input {
-    width: 100%;
-    padding: 5px;
-    font-size: 20px;
-    margin-bottom: 5px;
-    border: 1px solid #888;
-  }
+    .tag-mod-form form input {
+      width: 100%;
+      padding: 5px;
+      font-size: 20px;
+      margin-bottom: 5px;
+      border: 1px solid #888;
+    }
 
-  .tag-mod-form form input[type="submit"] {
-    background: #0045ff;
-    color: white;
-    font-weight: bold;
-    padding: 10px;
-    margin: auto;
-    display: block;
-  }
+    .tag-mod-form form input[type="submit"] {
+      background: #0045ff;
+      color: white;
+      font-weight: bold;
+      padding: 10px;
+      margin: auto;
+      display: block;
+    }
 
-  .tag-mod-form form textarea {
-    box-sizing: border-box;
-    width: 100%;
-    padding: 5px;
-    font-size: 17px;
-    height: 100px;
-    border: 1px solid #888;
-  }
+    .tag-mod-form form textarea {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 5px;
+      font-size: 17px;
+      height: 100px;
+      border: 1px solid #888;
+    }
+    .reaction-button {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      background: white;
+      border-color: white;
+      margin: 20px 40px;
+      border-radius: 200px;
+      border: 0px;
+    }
+
+    .reaction-button img {
+      position: absolute;
+      top: 0;
+      width: 40px;
+      left: 0;
+    }
+
+    .reaction-button .reacted-emoji {
+      display: none;
+    }
+
+    .reaction-button.reacted .reacted-emoji {
+      display: block;
+    }
   </style>
 
   <br /><br /><br /><br />
   <center>
-    <h1>Mod Convenience Dashboard</h1>
-    <h2>Add "Experience Level" ratings</h2>
-    <h5>More mod tools will be added as they are created.</h5>
+    <h1>Mod Dashboard (beta)</h1>
+    <% if current_user.moderator_for_tags.any? %>
+      <a href="/mod" style="display: inline-block; font-size: 1.3em; padding: 3px 8px; border-radius: 3px; <%= "background: #c7ffe0" if params[:tag].blank? %>">all recent</a>
+      <% current_user.moderator_for_tags.each do |tag| %>
+        | <a href="/mod?tag=<%= tag %>" style="display: inline-block; font-size: 1.3em; padding: 3px 8px; border-radius: 3px; <%= "background: #c7ffe0" if params[:tag] == tag %>">#<%= tag %></a>
+      <% end %>
+    <% end %>
   </center>
   <div class="container">
     <% @articles.each do |article| %>
@@ -80,7 +111,8 @@
             <%= HTML_Truncator.truncate(
                   article.processed_html,
                   200,
-                  ellipsis: '<a class="comment-read-more" href="' + article.path + '">... Read Entire Post</a>').html_safe %>
+                  ellipsis: '<a class="comment-read-more" href="' + article.path + '">... Read Entire Post</a>').html_safe
+            %>
           </div>
           <center>
             <% if article.last_buffered.nil? %>
@@ -88,17 +120,13 @@
                 <%= form_for(BufferUpdate.new) do |f| %>
                   <h2>Suggest a Tweet</h2>
                   <%= f.hidden_field :article_id, value: article.id %>
-                  <%= f.text_area :body_text, maxlength: 220 %>
+                  <%= f.text_area :body_text, maxlength: 220, placeholder: "Short summary, bullet points, etc." %>
                   <%= f.submit "Share Tweet Suggestion" %>
                 <% end %>
               </div>
-                <p style="width: 90%;margin:50px auto;text-align:left">
-                  <br /><br />Text will be used in the body of a tweet linking to this post.
-                  <br /><br />Tweet suggestion can be a TLDR of the post, an interesting quote from the post, or bullet points from topics covered in the post.
-                </p>
             <% end %>
             <div style="padding: 10px 0px 20px">
-              <h2>Experience Level Target:</h2>
+              <h2>Suggest experience level</h2>
               <% 10.times do |i| %>
                 <%= form_for(RatingVote.new, html: { style: "display: inline-block" }) do |f| %>
                   <%= f.hidden_field :article_id, value: article.id %>
@@ -108,7 +136,8 @@
                 <% end %>
               <% end %>
             </div>
-            <h2><a href="<%= article.path %>/mod">Full Moderation</a></h2>
+            <%= render "moderations/reactions", moderatable: article %>
+            <h2><a href="<%= article.path %>/mod">Full Moderation for Post</a></h2>
             <br /><br /> <br /><br />
           </center>
         </div>
@@ -153,4 +182,36 @@
       });
     }
   }
+  setTimeout(function () {
+    var butts = document.getElementsByClassName('reaction-button');
+    for (var i = 0; i < butts.length; i++) {
+      var butt = butts[i];
+      butt.onclick = function (event) {
+        event.preventDefault();
+        var thisButt = this;
+        thisButt.classList.add('reacted');
+
+        function successCb(response) {
+          if (response.result === 'create') {
+            thisButt.classList.add('reacted');
+          } else {
+            thisButt.classList.remove('reacted');
+          }
+        }
+
+        var formData = new FormData();
+        formData.append('reactable_type', thisButt.dataset.reactableType);
+        formData.append('category', thisButt.dataset.category);
+        formData.append('reactable_id', thisButt.dataset.reactableId);
+
+        getCsrfToken()
+          .then(sendFetch('reaction-creation', formData))
+          .then(function (response) {
+            if (response.status === 200) {
+              response.json().then(successCb);
+            }
+          });
+      };
+    }
+  }, 200)
 </script>
