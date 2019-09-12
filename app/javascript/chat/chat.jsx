@@ -422,11 +422,10 @@ export default class Chat extends Component {
   };
 
   handleMessageSubmit = message => {
-    const { activeChannelId, activeContent } = this.state;
+    const { activeChannelId } = this.state;
     // should check if user has the privilege
     if (message.startsWith('/code')) {
-      activeContent[activeChannelId] = { type_of: 'code_editor' };
-      this.setState({ activeContent });
+      this.setActiveContentState(activeChannelId, { type_of: 'code_editor' });
     } else if (message.startsWith('/call')) {
       this.setState({ activeVideoChannelId: activeChannelId });
       window.pusher
@@ -436,11 +435,7 @@ export default class Chat extends Component {
         });
     } else if (message.startsWith('/github')) {
       const args = message.split('/github ')[1].trim();
-      activeContent[activeChannelId] = {
-        type_of: 'github',
-        args,
-      };
-      this.setState({ activeContent });
+      this.setActiveContentState(activeChannelId, { type_of: 'github', args });
     } else if (message[0] === '/') {
       conductModeration(
         activeChannelId,
@@ -560,46 +555,53 @@ export default class Chat extends Component {
       e.preventDefault();
       e.stopPropagation();
 
-      const { activeContent, activeChannelId } = this.state;
+      const { activeChannelId } = this.state;
       if (target.dataset.content.startsWith('chat_channels/')) {
-        activeContent[activeChannelId] = {
+        this.setActiveContentState(activeChannelId, {
           type_of: 'loading-user',
-        };
+        });
         getContent(
           `/api/${target.dataset.content}`,
           this.setActiveContent,
           null,
         );
       } else if (target.dataset.content.startsWith('users/')) {
-        activeContent[activeChannelId] = {
+        this.setActiveContentState(activeChannelId, {
           type_of: 'loading-user',
-        };
+        });
         getContent(
           `/api/${target.dataset.content}`,
           this.setActiveContent,
           null,
         );
       } else if (target.dataset.content.startsWith('articles/')) {
-        activeContent[activeChannelId] = {
+        this.setActiveContentState(activeChannelId, {
           type_of: 'loading-post',
-        };
+        });
         getContent(
           `/api/${target.dataset.content}`,
           this.setActiveContent,
           null,
         );
       } else if (target.dataset.content === 'exit') {
-        activeContent[activeChannelId] = null;
-        this.setState({ activeContent });
+        this.setActiveContentState(activeChannelId, null);
       }
     }
     return false;
   };
 
+  setActiveContentState = (channelId, state) => {
+    this.setState(prevState => ({
+      activeContent: {
+        ...prevState.activeContent,
+        [channelId]: state,
+      },
+    }));
+  };
+
   setActiveContent = response => {
-    const { activeContent, activeChannelId } = this.state;
-    activeContent[activeChannelId] = response;
-    this.setState({ activeContent });
+    const { activeChannelId } = this.state;
+    this.setActiveContentState(activeChannelId, response);
     setTimeout(() => {
       document.getElementById('chat_activecontent').scrollTop = 0;
       document.getElementById('chat').scrollLeft = 1000;
