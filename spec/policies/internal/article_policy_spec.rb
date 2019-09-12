@@ -1,11 +1,18 @@
 require "rails_helper"
 
 RSpec.describe Internal::ArticlePolicy do
-  subject(:article_policy) { described_class }
+  subject { described_class.new(user, article) }
+
+  let(:article) { build(:article) }
+  let(:user) { build_stubbed(:user) }
 
   context "when regular user" do
-    let(:user) { build(:user) }
+    it { is_expected.to forbid_actions(%i[index show update]) }
+  end
 
-    it { is_expected.to forbid_actions(%i[index]) }
+  context "when user is a dev intern" do
+    before { allow(user).to receive(:has_role?).with(:intern).and_return(true) }
+
+    it { is_expected.to permit_actions(%i[index show update]) }
   end
 end
