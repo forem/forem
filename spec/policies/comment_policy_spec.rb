@@ -1,9 +1,9 @@
 require "rails_helper"
 
-RSpec.describe CommentPolicy do
+RSpec.describe CommentPolicy, type: :policy do
   subject(:comment_policy) { described_class.new(user, comment) }
 
-  let(:comment) { build(:comment) }
+  let(:comment) { build_stubbed(:comment) }
 
   let(:valid_attributes_for_create) do
     %i[body_markdown commentable_id commentable_type parent_id]
@@ -20,7 +20,7 @@ RSpec.describe CommentPolicy do
   end
 
   context "when user is not the author" do
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
 
     it { is_expected.to permit_actions(%i[create]) }
     it { is_expected.to forbid_actions(%i[edit update destroy delete_confirm]) }
@@ -28,13 +28,16 @@ RSpec.describe CommentPolicy do
     it { is_expected.to permit_mass_assignment_of(valid_attributes_for_create).for_action(:create) }
 
     context "with banned status" do
-      before { user.add_role :banned }
+      before { allow(user).to receive(:has_role?).with(:banned).and_return(true) }
 
       it { is_expected.to forbid_actions(%i[create edit update destroy delete_confirm]) }
     end
 
     context "with banned_comment status" do
-      before { user.add_role :comment_banned }
+      before do
+        allow(user).to receive(:has_role?).with(:comment_banned).and_return(true)
+        allow(user).to receive(:has_role?).with(:banned).and_return(false)
+      end
 
       it { is_expected.to forbid_actions(%i[create edit update destroy delete_confirm]) }
     end
@@ -49,7 +52,7 @@ RSpec.describe CommentPolicy do
     it { is_expected.to permit_mass_assignment_of(valid_attributes_for_update).for_action(:update) }
 
     context "with banned status" do
-      before { user.add_role :banned }
+      before { allow(user).to receive(:has_role?).with(:banned).and_return(true) }
 
       it { is_expected.to permit_actions(%i[edit update destroy delete_confirm]) }
       it { is_expected.to forbid_actions(%i[create]) }
@@ -60,7 +63,10 @@ RSpec.describe CommentPolicy do
     end
 
     context "with banned_comment status" do
-      before { user.add_role :comment_banned }
+      before do
+        allow(user).to receive(:has_role?).with(:comment_banned).and_return(true)
+        allow(user).to receive(:has_role?).with(:banned).and_return(false)
+      end
 
       it { is_expected.to permit_actions(%i[edit update destroy delete_confirm]) }
       it { is_expected.to forbid_actions(%i[create]) }
