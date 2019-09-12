@@ -27,7 +27,7 @@
       width: 95%;
       position: relative;
       &:hover {
-        background: $light-gray;
+        background: var(--theme-container-background-hover,$light-gray);
       }
       &.ltag-polloption-justshowmetheresults:hover {
         background: transparent;
