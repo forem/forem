@@ -126,7 +126,7 @@
               </div>
             <% end %>
             <div style="padding: 10px 0px 20px">
-              <h2>Suggested reader experience level:</h2>
+              <h2>Suggest experience level</h2>
               <% 10.times do |i| %>
                 <%= form_for(RatingVote.new, html: { style: "display: inline-block" }) do |f| %>
                   <%= f.hidden_field :article_id, value: article.id %>

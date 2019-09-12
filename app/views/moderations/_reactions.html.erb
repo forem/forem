@@ -1,4 +1,4 @@
-<h2>Reaction:</h2>
+<h2>Add a reaction</h2>
 <button class="reaction-button <%= Reaction.cached_any_reactions_for?(moderatable, current_user, "like") ? "reacted" : "" %>" data-reactable-id="<%= moderatable.id %>" data-category="like" data-reactable-type="Article">
   <%= image_tag("favorite-heart-outline-button.svg", alt: "Thumbs down emoji") %>
   <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Thumbs down emoji" />
