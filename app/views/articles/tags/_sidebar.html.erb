@@ -65,6 +65,18 @@
         <div>
           <%= pluralize Article.published.cached_tagged_with(@tag).size, "Post" %> Published
         </div>
+        <% if user_signed_in? %>
+          <span style="display:none;" id="tag-edit-button" data-tag="<%= @tag_model.name %>">
+            <a class="cta mod-action-button" href="/t/<%= @tag_model.name %>/edit" style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>">
+              EDIT
+            </a>
+          </span>
+          <span style="display:none;" id="tag-mod-button" data-tag="<%= @tag_model.name %>">
+            <a class="cta mod-action-button" href="/t/<%= @tag_model.name %>/edit" style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>">
+              MODERATE
+            </a>
+          </span>
+        <% end %>
       </div>
     </div>
   </div>

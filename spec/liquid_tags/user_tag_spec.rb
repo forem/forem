@@ -12,7 +12,7 @@ RSpec.describe UserTag, type: :liquid_template do
   context "when given valid id_code" do
     it "renders the proper user name" do
       liquid = generate_user_tag(user.username)
-      expect(liquid.render).to include(user.name)
+      expect(liquid.render).to include(CGI.escapeHTML(user.name))
     end
 
     it "renders image html" do

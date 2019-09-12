@@ -336,6 +336,13 @@ class User < ApplicationRecord
     end
   end
 
+  def moderator_for_tags
+    Rails.cache.fetch("user-#{id}/tag_moderators_list", expires_in: 200.hours) do
+      tag_ids = roles.where(name: "tag_moderator").pluck(:resource_id)
+      Tag.where(id: tag_ids).pluck(:name)
+    end
+  end
+
   def scholar
     valid_pass = workshop_expiration.nil? || workshop_expiration > Time.current
     has_role?(:workshop_pass) && valid_pass
