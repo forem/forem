@@ -481,6 +481,24 @@ RSpec.describe User, type: :model do
     expect(user.all_follows.size).to eq(2)
   end
 
+  describe "#moderator_for_tags" do
+    let(:tag1)  { create(:tag) }
+    let(:tag2)  { create(:tag) }
+    let(:tag3)  { create(:tag) }
+
+    it "lists tags user moderates" do
+      user.add_role(:tag_moderator, tag1)
+      user.add_role(:tag_moderator, tag2)
+      expect(user.moderator_for_tags).to include(tag1.name)
+      expect(user.moderator_for_tags).to include(tag2.name)
+      expect(user.moderator_for_tags).not_to include(tag3.name)
+    end
+
+    it "returns empty array if no tags moderated" do
+      expect(user.moderator_for_tags).to eq([])
+    end
+  end
+
   describe "#followed_articles" do
     let(:user2)  { create(:user) }
     let(:user3)  { create(:user) }
@@ -534,32 +552,37 @@ RSpec.describe User, type: :model do
   end
 
   it "creates proper body class with defaults" do
-    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?}")
+    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
   end
 
   it "creates proper body class with sans serif config" do
     user.config_font = "sans_serif"
-    expect(user.decorate.config_body_class).to eq("default sans-serif-article-body pro-status-#{user.pro?}")
+    expect(user.decorate.config_body_class).to eq("default sans-serif-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
   end
 
   it "creates proper body class with night theme" do
     user.config_theme = "night_theme"
-    expect(user.decorate.config_body_class).to eq("night-theme default-article-body pro-status-#{user.pro?}")
+    expect(user.decorate.config_body_class).to eq("night-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
   end
 
   it "creates proper body class with pink theme" do
     user.config_theme = "pink_theme"
-    expect(user.decorate.config_body_class).to eq("pink-theme default-article-body pro-status-#{user.pro?}")
+    expect(user.decorate.config_body_class).to eq("pink-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
   end
 
   it "creates proper body class with minimal light theme" do
     user.config_theme = "minimal_light_theme"
-    expect(user.decorate.config_body_class).to eq("minimal-light-theme default-article-body pro-status-#{user.pro?}")
+    expect(user.decorate.config_body_class).to eq("minimal-light-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
   end
 
   it "creates proper body class with pro user" do
     user.add_role(:pro)
-    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?}")
+    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
+  end
+
+  it "creates proper body class with trusted user" do
+    user.add_role(:trusted)
+    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
   end
 
   it "inserts into mailchimp" do
