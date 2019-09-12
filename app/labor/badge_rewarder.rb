@@ -62,12 +62,16 @@ module BadgeRewarder
 
   def self.award_contributor_badges_from_github(since = 1.day.ago, message_markdown = "Thank you so much for your contributions!")
     client = Octokit::Client.new
-    ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios", "thepracticaldev/DEV-Android"].each do |repo|
+    repos = ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios", "thepracticaldev/DEV-Android"]
+    repos.each do |repo|
       commits = client.commits repo, since: since.iso8601
       authors_uids = commits.map { |commit| commit.author.id }
       Identity.where(provider: "github", uid: authors_uids).find_each do |i|
-        user_commits = client.commits repo, author: i.auth_data_dump["info"]["nickname"]
-        user_commits_count = user_commits.count
+        user_commits_count = 0
+        repos.each do |rep|
+          user_commits = client.commits rep, author: i.auth_data_dump["info"]["nickname"]
+          user_commits_count += user_commits.count
+        end
         badge = if user_commits_count >= 64
                   Badge.find_by(slug: "dev-contributor-64") # Badge for 64 PRs
                 elsif user_commits_count >= 32 && user_commits_count < 64
