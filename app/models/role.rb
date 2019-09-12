@@ -23,6 +23,7 @@ class Role < ApplicationRecord
                 comment_banned
                 pro
                 podcast_admin
+                intern
               ]
             }
   scopify
