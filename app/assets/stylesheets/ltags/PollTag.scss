@@ -27,7 +27,11 @@
       width: 95%;
       position: relative;
       &:hover {
-        background: $light-gray;
+        @include themeable(
+          background, 
+          theme-container-background-hover, 
+          $light-gray
+        );
       }
       &.ltag-polloption-justshowmetheresults:hover {
         background: transparent;
