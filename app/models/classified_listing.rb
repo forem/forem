@@ -10,6 +10,7 @@ class ClassifiedListing < ApplicationRecord
   before_validation :modify_inputs
   acts_as_taggable_on :tags
   has_many :credits, as: :purchase, inverse_of: :purchase, dependent: :nullify
+  has_many :email_messages, class_name: "Ahoy::Message"
 
   validates :user_id, presence: true
   validates :organization_id, presence: true, unless: :user_id?
