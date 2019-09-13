@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_no_cache_header
+  before_action :raise_banned, only: %i[update]
   after_action :verify_authorized, except: %i[signout_confirm add_org_admin remove_org_admin remove_from_org]
 
   # GET /settings/@tab

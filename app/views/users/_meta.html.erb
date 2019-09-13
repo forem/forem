@@ -16,3 +16,8 @@
 <meta name="twitter:description" content="<%= @user.summary %>">
 <meta name="twitter:image:src" content="<%= user_social_image_url(@user) %>">
 <%= auto_discovery_link_tag(:rss, "https://dev.to/feed/#{@user.username}", title: "The Practical Dev RSS Feed") %>
+
+<% if @user.banned %>
+  <meta name="googlebot" content="noindex">
+  <meta name="googlebot" content="nofollow">
+<% end %>
