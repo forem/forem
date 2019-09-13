@@ -16,9 +16,7 @@ RSpec.describe ReactionPolicy do
 
     it { is_expected.to permit_actions(%i[index create]) }
     context "when user is banned" do
-      let(:user) { build_stubbed(:user) }
-
-      before { allow(user).to receive(:has_role?).with(:banned).and_return(true) }
+      before { user.add_role(:banned) }
 
       it { is_expected.to permit_actions(%i[index]) }
       it { is_expected.to forbid_actions(%i[create]) }

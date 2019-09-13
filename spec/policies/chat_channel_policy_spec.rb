@@ -25,10 +25,7 @@ RSpec.describe ChatChannelPolicy, type: :policy do
   end
 
   context "when user is an admin but not part of channel" do
-    before do
-      allow(user).to receive(:has_role?).with(:super_admin).and_return(true)
-      allow(user).to receive(:has_role?).with(:banned).and_return(false)
-    end
+    before { user.add_role(:super_admin) }
 
     it { is_expected.to permit_actions(%i[index moderate update]) }
     it { is_expected.to forbid_actions(%i[show open]) }

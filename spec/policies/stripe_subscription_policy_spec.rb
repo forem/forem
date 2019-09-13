@@ -15,9 +15,7 @@ RSpec.describe StripeSubscriptionPolicy, type: :policy do
     it { is_expected.to permit_actions(%i[create update destroy]) }
 
     context "when user is banned" do
-      let(:user) { build_stubbed(:user) }
-
-      before { allow(user).to receive(:has_role?).with(:banned).and_return(true) }
+      let(:user) { build(:user, :banned) }
 
       it { is_expected.to forbid_actions(%i[create update]) }
     end

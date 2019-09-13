@@ -28,16 +28,13 @@ RSpec.describe CommentPolicy, type: :policy do
     it { is_expected.to permit_mass_assignment_of(valid_attributes_for_create).for_action(:create) }
 
     context "with banned status" do
-      before { allow(user).to receive(:has_role?).with(:banned).and_return(true) }
+      before { user.add_role(:banned) }
 
       it { is_expected.to forbid_actions(%i[create edit update destroy delete_confirm]) }
     end
 
     context "with banned_comment status" do
-      before do
-        allow(user).to receive(:has_role?).with(:comment_banned).and_return(true)
-        allow(user).to receive(:has_role?).with(:banned).and_return(false)
-      end
+      before { user.add_role(:comment_banned) }
 
       it { is_expected.to forbid_actions(%i[create edit update destroy delete_confirm]) }
     end
@@ -52,7 +49,7 @@ RSpec.describe CommentPolicy, type: :policy do
     it { is_expected.to permit_mass_assignment_of(valid_attributes_for_update).for_action(:update) }
 
     context "with banned status" do
-      before { allow(user).to receive(:has_role?).with(:banned).and_return(true) }
+      before { user.add_role(:banned) }
 
       it { is_expected.to permit_actions(%i[edit update destroy delete_confirm]) }
       it { is_expected.to forbid_actions(%i[create]) }
@@ -63,10 +60,7 @@ RSpec.describe CommentPolicy, type: :policy do
     end
 
     context "with banned_comment status" do
-      before do
-        allow(user).to receive(:has_role?).with(:comment_banned).and_return(true)
-        allow(user).to receive(:has_role?).with(:banned).and_return(false)
-      end
+      before { user.add_role(:comment_banned) }
 
       it { is_expected.to permit_actions(%i[edit update destroy delete_confirm]) }
       it { is_expected.to forbid_actions(%i[create]) }

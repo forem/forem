@@ -25,11 +25,7 @@ RSpec.describe ArticlePolicy do
     it { is_expected.to forbid_actions(%i[update edit manage delete_confirm destroy]) }
 
     context "with banned status" do
-      before do
-        allow(user).to receive(:has_role?).with(:banned).and_return(true)
-        allow(user).to receive(:has_role?).with(:super_admin).and_return(false)
-        allow(user).to receive(:has_role?).with(:admin).and_return(false)
-      end
+      before { user.add_role(:banned) }
 
       it { is_expected.to permit_actions(%i[new preview]) }
       it { is_expected.to forbid_actions(%i[create edit manage update delete_confirm destroy]) }
@@ -44,19 +40,14 @@ RSpec.describe ArticlePolicy do
     it { is_expected.to permit_mass_assignment_of(valid_attributes) }
 
     context "with banned status" do
-      before { allow(user).to receive(:has_role?).with(:banned).and_return(true) }
+      before { user.add_role(:banned) }
 
       it { is_expected.to permit_actions(%i[update new delete_confirm destroy preview]) }
     end
   end
 
   context "when user is a super_admin" do
-    let(:user) { build_stubbed(:user) }
-
-    before do
-      allow(user).to receive(:has_role?).with(:super_admin).and_return(true)
-      allow(user).to receive(:has_role?).with(:banned).and_return(false)
-    end
+    let(:user) { build(:user, :super_admin) }
 
     it { is_expected.to permit_actions(%i[update new edit manage create delete_confirm destroy preview]) }
   end

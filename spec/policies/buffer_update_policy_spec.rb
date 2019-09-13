@@ -6,9 +6,7 @@ RSpec.describe BufferUpdatePolicy, type: :policy do
   let(:article) { build_stubbed(:article) }
 
   context "when user is trusted" do
-    let(:user) { build_stubbed(:user) }
-
-    before { allow(user).to receive(:has_role?).with(:trusted).and_return(true) }
+    let(:user) { build(:user, :trusted) }
 
     it { is_expected.to permit_actions(%i[create]) }
   end

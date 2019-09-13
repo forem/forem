@@ -15,7 +15,7 @@ RSpec.describe FollowPolicy, type: :policy do
     it { is_expected.to permit_actions(%i[create]) }
 
     context "when user is banned" do
-      before { allow(user).to receive(:has_role?).with(:banned).and_return(true) }
+      before { user.add_role(:banned) }
 
       it { is_expected.to forbid_actions(%i[create]) }
     end
