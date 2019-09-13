@@ -69,10 +69,15 @@ module BadgeRewarder
       Identity.where(provider: "github", uid: authors_uids).find_each do |i|
         user_commits = repos.map { |rep| client.commits(rep, author: i.auth_data_dump["info"]["nickname"]) } # commits from all DEV repos.
         user_commits_count = user_commits.map(&:count).sum # sum of commits from all DEV repos.
-        milestones = [1, 32, 64] # Note: keep it from low to high
+        milestones = [
+          { count: 1, slug: "dev-contributor" },
+          { count: 32, slug: "dev-contributor-bronze" },
+          { count: 64, slug: "dev-contributor-silver" },
+          { count: 128, slug: "dev-contributor-gold" },
+        ] # Note: keep it from low to high
         milestones.each do |m|
-          if user_commits_count >= m
-            badge = Badge.find_by(slug: "dev-contributor-#{m}")
+          if user_commits_count >= m[:count]
+            badge = Badge.find_by(slug: m[:slug])
             BadgeAchievement.where(user_id: i.user_id, badge_id: badge.id).first_or_create(
               rewarding_context_message_markdown: message_markdown,
             )
