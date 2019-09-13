@@ -107,15 +107,48 @@ RSpec.describe BadgeRewarder do
       [OpenStruct.new(author: OpenStruct.new(id: user.identities.first.uid))]
     end
 
+    let(:stubbed_github_commits_bronze) do
+      Array.new(15, OpenStruct.new(author: OpenStruct.new(id: user.identities.first.uid))) # 15 commits for 3 each repo
+    end
+
+    let(:stubbed_github_commits_silver) do
+      Array.new(30, OpenStruct.new(author: OpenStruct.new(id: user.identities.first.uid))) # 30 commits for 3 each repo
+    end
+
+    let(:stubbed_github_commits_gold) do
+      Array.new(45, OpenStruct.new(author: OpenStruct.new(id: user.identities.first.uid))) # 45 commits for 3 each repo
+    end
+
     before do
       allow(Octokit::Client).to receive(:new).and_return(my_ocktokit_client)
-      allow(my_ocktokit_client).to receive(:commits).and_return(stubbed_github_commit)
       create(:badge, title: "DEV Contributor")
+      create(:badge, title: "DEV Contributor Bronze")
+      create(:badge, title: "DEV Contributor Silver")
+      create(:badge, title: "DEV Contributor Gold")
     end
 
     it "award contributor badge" do
+      allow(my_ocktokit_client).to receive(:commits).and_return(stubbed_github_commit)
       described_class.award_contributor_badges_from_github
       expect(user.badge_achievements.size).to eq(1)
+    end
+
+    it "award bronze contributor badge" do
+      allow(my_ocktokit_client).to receive(:commits).and_return(stubbed_github_commits_bronze)
+      described_class.award_contributor_badges_from_github
+      expect(user.badge_achievements.size).to eq(2)
+    end
+
+    it "award silver contributor badge" do
+      allow(my_ocktokit_client).to receive(:commits).and_return(stubbed_github_commits_silver)
+      described_class.award_contributor_badges_from_github
+      expect(user.badge_achievements.size).to eq(3)
+    end
+
+    it "award gold contributor badge" do
+      allow(my_ocktokit_client).to receive(:commits).and_return(stubbed_github_commits_gold)
+      described_class.award_contributor_badges_from_github
+      expect(user.badge_achievements.size).to eq(4)
     end
   end
 
