@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ImageUploadPolicy do
+RSpec.describe ImageUploadPolicy, type: :policy do
   subject { described_class.new(user, image) }
 
   let(:image) { "📸.jpg" }
@@ -12,12 +12,14 @@ RSpec.describe ImageUploadPolicy do
   end
 
   context "when user is signed in" do
-    let(:user) { build(:user) }
+    let(:user) { build_stubbed(:user) }
 
     it { is_expected.to permit_actions(%i[create]) }
 
     context "when user is banned" do
-      let(:user) { build(:user, :banned) }
+      let(:user) { build_stubbed(:user) }
+
+      before { allow(user).to receive(:has_role?).with(:banned).and_return(true) }
 
       it { is_expected.to forbid_actions(%i[create]) }
     end
