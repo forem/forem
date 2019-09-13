@@ -11,4 +11,19 @@ module.exports = {
     'no-unused-vars': 'off',
     'vars-on-top': 'off',
   },
+  globals: {
+    getCsrfToken: false,
+    sendFetch: false,
+    preventDefaultAction: false,
+    userData: false,
+    ga: false, // Google Analytics
+    handleOptimisticButtRender: false,
+    handleFollowButtPress: false,
+    browserStoreCache: false,
+    initializeBaseUserData: false,
+    initializeReadingListIcons: false,
+    initializeAllFollowButts: false,
+    initializeSponsorshipVisibility: false,
+    ActiveXObject: false,
+  },
 };

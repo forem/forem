@@ -1,8 +1,8 @@
 desc "This task is called by the Heroku scheduler add-on"
 
 task get_podcast_episodes: :environment do
-  Podcast.select(:id).find_each do |podcast|
-    Podcasts::GetEpisodesJob.perform_later(podcast.id, 5)
+  Podcast.published.select(:id).find_each do |podcast|
+    Podcasts::GetEpisodesJob.perform_later(podcast_id: podcast.id, limit: 5)
   end
 end
 
@@ -29,6 +29,10 @@ end
 
 task expire_old_listings: :environment do
   ClassifiedListing.where("bumped_at < ?", 30.days.ago).each do |listing|
+    listing.update(published: false)
+    listing.remove_from_index!
+  end
+  ClassifiedListing.where("expires_at = ?", Time.zone.today).each do |listing|
     listing.update(published: false)
     listing.remove_from_index!
   end
@@ -95,4 +99,8 @@ task remove_old_html_variant_data: :environment do
   HtmlVariant.find_each do |html_variant|
     html_variant.calculate_success_rate! if html_variant.html_variant_successes.any?
   end
+end
+
+task fix_credits_count_cache: :environment do
+  Credit.counter_culture_fix_counts only: %i[user organization]
 end

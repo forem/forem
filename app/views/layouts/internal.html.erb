@@ -42,6 +42,22 @@
     padding: 2px;
   }
 
+  .wrapper-8 {
+    display: grid;
+    grid-template-columns: 4% 15% 25% 7% 7% 7% 20% 15%;
+    padding: 2px;
+  }
+
+  .wrapper-3 {
+    display: grid;
+    grid-template-columns: 25% 40% 25%%;
+    padding: 2px;
+  }
+
+  .wrapper-3 div {
+    padding: 8px;
+  }
+
   .grid-item {
     word-wrap: break-word;
   }
@@ -103,6 +119,18 @@
     border: 20px solid black;
   }
 
+  .submitting-no-border {
+    background: #96f2cc !important;
+  }
+
+  .highlighted-no-border {
+    background: #2effa8 !important;
+  }
+
+  .highlighted-no-border input[type="submit"] {
+    display: none;
+  }
+
   .highlighted-border {
     border: 20px solid black;
   }
@@ -119,16 +147,8 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Internal DEV</a>
     </div>
-    <div id="navbar" class="collapse navbar-collapse">
-      <ul class="nav navbar-nav">
-        <% controller_names = %w[comments articles users members dogfood tags welcome broadcasts reports pages classified_listings] %>
-        <% controller_names.each do |name| %>
-          <li class="<%= "active" if controller_name == name %>"><a href="/internal/<%= name %>"><%= name %></a></li>
-        <% end %>
-      </ul>
-    </div><!--/.nav-collapse -->
+    <%= render "internal/shared/navbar" %>
   </div>
 </nav>
 

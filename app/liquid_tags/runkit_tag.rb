@@ -18,24 +18,6 @@ class RunkitTag < Liquid::Block
     )
   end
 
-  def self.special_script
-    <<~JAVASCRIPT
-      var targets = document.getElementsByClassName("runkit-element");
-      for (var i = 0; i < targets.length; i++) {
-        if (targets[i].children.length > 0) {
-          var preamble = targets[i].children[0].textContent;
-          var content = targets[i].children[1].textContent;
-          targets[i].innerHTML = "";
-          var notebook = RunKit.createNotebook({
-            element: targets[i],
-            source: content,
-            preamble: preamble
-          });
-        }
-      }
-    JAVASCRIPT
-  end
-
   def self.script
     <<~JAVASCRIPT
       var checkRunkit = setInterval(function() {

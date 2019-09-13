@@ -1,12 +1,12 @@
 import 'preact/devtools';
 import { h, Component } from 'preact';
 import linkState from 'linkstate';
+import postscribe from 'postscribe';
 import ImageUploadIcon from 'images/image-upload.svg';
 import ThreeDotsIcon from 'images/three-dots.svg';
 import { submitArticle, previewArticle } from './actions';
 import BodyMarkdown from './elements/bodyMarkdown';
 import BodyPreview from './elements/bodyPreview';
-// import Description from './elements/description';
 import PublishToggle from './elements/publishToggle';
 import Notice from './elements/notice';
 import Tags from './elements/tags';
@@ -16,8 +16,32 @@ import ImageManagement from './elements/imageManagement';
 import MoreConfig from './elements/moreConfig';
 import OrgSettings from './elements/orgSettings';
 import Errors from './elements/errors';
+import KeyboardShortcutsHandler from './elements/keyboardShortcutsHandler';
 
 export default class ArticleForm extends Component {
+  static handleGistPreview() {
+    const els = document.getElementsByClassName('ltag_gist-liquid-tag');
+    for (let i = 0; i < els.length; i += 1) {
+      postscribe(els[i], els[i].firstElementChild.outerHTML);
+    }
+  }
+
+  static handleRunkitPreview() {
+    const targets = document.getElementsByClassName('runkit-element');
+    for (let i = 0; i < targets.length; i += 1) {
+      if (targets[i].children.length > 0) {
+        const preamble = targets[i].children[0].textContent;
+        const content = targets[i].children[1].textContent;
+        targets[i].innerHTML = '';
+        window.RunKit.createNotebook({
+          element: targets[i],
+          source: content,
+          preamble,
+        });
+      }
+    }
+  }
+
   constructor(props) {
     super(props);
     this.article = JSON.parse(this.props.article);
@@ -55,7 +79,7 @@ export default class ArticleForm extends Component {
   }
 
   componentDidMount() {
-    const { version } = this.state
+    const { version } = this.state;
     const previousContent = JSON.parse(
       localStorage.getItem(`editor-${version}-${window.location.href}`),
     );
@@ -70,24 +94,28 @@ export default class ArticleForm extends Component {
     }
 
     window.addEventListener('beforeunload', this.localStoreContent);
-
-    // const editor = document.getElementById('article_body_markdown');
-    // const myCodeMirror = CodeMirror(editor, {
-    //   mode: 'markdown',
-    //   theme: 'material',
-    //   highlightFormatting: true,
-    // });
-    // myCodeMirror.setSize('100%', '100%');
   }
 
-  checkContentChanges = previousContent =>
-    this.state.bodyMarkdown !== previousContent.bodyMarkdown ||
-    this.state.title !== previousContent.title ||
-    this.state.mainImage !== previousContent.mainImage ||
-    this.state.tagList !== previousContent.tagList;
+  componentDidUpdate() {
+    const { previewResponse } = this.state;
+    if (previewResponse) {
+      this.constructor.handleGistPreview();
+      this.constructor.handleRunkitPreview();
+    }
+  }
+
+  checkContentChanges = previousContent => {
+    const { bodyMarkdown, title, mainImage, tagList } = this.state;
+    return (
+      bodyMarkdown !== previousContent.bodyMarkdown ||
+      title !== previousContent.title ||
+      mainImage !== previousContent.mainImage ||
+      tagList !== previousContent.tagList
+    );
+  };
 
   localStoreContent = () => {
-    const { version, title, tagList, mainImage, bodyMarkdown } = this.state
+    const { version, title, tagList, mainImage, bodyMarkdown } = this.state;
     localStorage.setItem(
       `editor-${version}-${this.url}`,
       JSON.stringify({
@@ -100,42 +128,52 @@ export default class ArticleForm extends Component {
   };
 
   toggleHelp = e => {
+    const { helpShowing } = this.state;
     e.preventDefault();
     window.scrollTo(0, 0);
     this.setState({
-      helpShowing: !this.state.helpShowing,
+      helpShowing: !helpShowing,
       previewShowing: false,
+      imageManagementShowing: false,
+      moreConfigShowing: false,
     });
   };
 
   fetchPreview = e => {
+    const { previewShowing, bodyMarkdown } = this.state;
     e.preventDefault();
-    if (this.state.previewShowing) {
+    if (previewShowing) {
       this.setState({
         previewShowing: false,
         helpShowing: false,
+        imageManagementShowing: false,
+        moreConfigShowing: false,
       });
     } else {
-      previewArticle(
-        this.state.bodyMarkdown,
-        this.showPreview,
-        this.failedPreview,
-      );
+      previewArticle(bodyMarkdown, this.showPreview, this.failedPreview);
     }
   };
 
   toggleImageManagement = e => {
+    const { imageManagementShowing } = this.state;
     e.preventDefault();
     window.scrollTo(0, 0);
     this.setState({
-      imageManagementShowing: !this.state.imageManagementShowing,
+      imageManagementShowing: !imageManagementShowing,
+      previewShowing: false,
+      helpShowing: false,
+      moreConfigShowing: false,
     });
   };
 
   toggleMoreConfig = e => {
+    const { moreConfigShowing } = this.state;
     e.preventDefault();
     this.setState({
-      moreConfigShowing: !this.state.moreConfigShowing,
+      moreConfigShowing: !moreConfigShowing,
+      previewShowing: false,
+      helpShowing: false,
+      imageManagementShowing: false,
     });
   };
 
@@ -144,21 +182,22 @@ export default class ArticleForm extends Component {
       this.setState({
         previewShowing: true,
         helpShowing: false,
+        imageManagementShowing: false,
         previewResponse: response,
         errors: null,
-      });  
+      });
     } else {
       this.setState({
         errors: response,
         submitting: false,
-      });  
+      });
     }
   };
 
   handleOrgIdChange = e => {
     const organizationId = e.target.selectedOptions[0].value;
-    this.setState({ organizationId })
-  }
+    this.setState({ organizationId });
+  };
 
   failedPreview = response => {
     console.log(response);
@@ -173,13 +212,13 @@ export default class ArticleForm extends Component {
 
   handleMainImageUrlChange = payload => {
     this.setState({
-      mainImage: payload.link,
+      mainImage: payload.links[0],
       imageManagementShowing: false,
     });
   };
 
   removeLocalStorage = () => {
-    const {version} = this.state
+    const { version } = this.state;
     localStorage.removeItem(`editor-${version}-${this.url}`);
     window.removeEventListener('beforeunload', this.localStoreContent);
   };
@@ -204,11 +243,9 @@ export default class ArticleForm extends Component {
     if (e.keyCode === 13) {
       e.preventDefault();
     }
-  }
+  };
 
-  handleBodyKeyDown = e => {
-
-  }
+  handleBodyKeyDown = _e => {};
 
   onClearChanges = e => {
     e.preventDefault();
@@ -275,14 +312,20 @@ export default class ArticleForm extends Component {
       organizationId,
       mainImage,
       errors,
-      version
+      edited,
+      version,
     } = this.state;
-    const notice = submitting ? <Notice published={published} version={version} /> : '';
-    const imageArea = (mainImage && !previewShowing && version === 'v2') ? (
-      <MainImage mainImage={mainImage} onEdit={this.toggleImageManagement} />
+    const notice = submitting ? (
+      <Notice published={published} version={version} />
     ) : (
       ''
     );
+    const imageArea =
+      mainImage && !previewShowing && version === 'v2' ? (
+        <MainImage mainImage={mainImage} onEdit={this.toggleImageManagement} />
+      ) : (
+        ''
+      );
     const imageManagement = imageManagementShowing ? (
       <ImageManagement
         onExit={this.toggleImageManagement}
@@ -303,15 +346,16 @@ export default class ArticleForm extends Component {
     ) : (
       ''
     );
-    const orgArea = (organizations && organizations.length > 0) ? (
-      <OrgSettings
-        organizations={organizations}
-        organizationId={organizationId}
-        onToggle={this.handleOrgIdChange}
-      />
-    ) : (
-      ''
-    );
+    const orgArea =
+      organizations && organizations.length > 0 ? (
+        <OrgSettings
+          organizations={organizations}
+          organizationId={organizationId}
+          onToggle={this.handleOrgIdChange}
+        />
+      ) : (
+        ''
+      );
     const errorsArea = errors ? <Errors errorsList={errors} /> : '';
     let editorView = '';
     if (previewShowing) {
@@ -328,35 +372,45 @@ export default class ArticleForm extends Component {
         </div>
       );
     } else if (helpShowing) {
-      editorView = <BodyPreview previewResponse={{processed_html: helpHTML}} version="help" />;
+      editorView = (
+        <BodyPreview
+          previewResponse={{ processed_html: helpHTML }}
+          version="help"
+        />
+      );
     } else {
       let controls = '';
       let moreConfigBottomButton = '';
       if (version === 'v2') {
         moreConfigBottomButton = (
           <button
-            type='button'
+            type="button"
             className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
             onClick={this.toggleMoreConfig}
           >
-            <img src={ThreeDotsIcon} alt='menu dots' />
+            <img src={ThreeDotsIcon} alt="menu dots" />
           </button>
-        )
+        );
         controls = (
-          <div className={title.length > 128 ? 'articleform__titleTooLong' : ''}>
+          <div
+            className={title.length > 128 ? 'articleform__titleTooLong' : ''}
+          >
             <Title
               defaultValue={title}
               onKeyDown={this.handleTitleKeyDown}
               onChange={linkState(this, 'title')}
             />
             <div className="articleform__detailfields">
-              <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
+              <Tags
+                defaultValue={tagList}
+                onInput={linkState(this, 'tagList')}
+              />
               <button
                 className="articleform__detailsButton articleform__detailsButton--image"
                 onClick={this.toggleImageManagement}
                 type="button"
               >
-                <img src={ImageUploadIcon} alt="Upload an image" />
+                <img src={ImageUploadIcon} alt="Upload images" />
               </button>
               <button
                 className="articleform__detailsButton articleform__detailsButton--moreconfig"
@@ -367,7 +421,7 @@ export default class ArticleForm extends Component {
               </button>
             </div>
           </div>
-        )
+        );
       }
       editorView = (
         <div>
@@ -386,8 +440,7 @@ export default class ArticleForm extends Component {
             type="button"
           >
             <img src={ImageUploadIcon} alt="upload images" />
-            {' '}
-IMAGES
+            IMAGES
           </button>
           {moreConfigBottomButton}
         </div>
@@ -410,9 +463,10 @@ IMAGES
           onHelp={this.toggleHelp}
           onSaveDraft={this.onSaveDraft}
           onClearChanges={this.onClearChanges}
-          edited={this.state.edited}
+          edited={edited}
           onChange={linkState(this, 'published')}
         />
+        <KeyboardShortcutsHandler togglePreview={this.fetchPreview} />
         {notice}
         {imageManagement}
         {moreConfig}

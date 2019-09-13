@@ -49,7 +49,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
           type="button"
         >
           <img
-            alt="Upload an image"
+            alt="Upload images"
             src=""
           />
         </button>
@@ -89,7 +89,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
         alt="upload images"
         src=""
       />
-       IMAGES
+      IMAGES
     </button>
     <button
       class="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
@@ -113,7 +113,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
       ?
     </button>
     <button
-      class="inactive"
+      class="inactive previewbutt"
       onClick={[Function]}
       type="button"
     >

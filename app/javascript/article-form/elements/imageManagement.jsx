@@ -1,12 +1,13 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import linkCopyIcon from '../../../assets/images/content-copy.svg';
 import { generateMainImage } from '../actions';
 
 export default class ImageManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      insertionImageUrl: null,
+      insertionImageUrls: [],
       uploadError: false,
       uploadErrorMessage: null,
     };
@@ -36,7 +37,7 @@ export default class ImageManagement extends Component {
 
   handleInsertImageUploadSuccess = response => {
     this.setState({
-      insertionImageUrl: response.link,
+      insertionImageUrls: response.links,
     });
   };
 
@@ -46,7 +47,7 @@ export default class ImageManagement extends Component {
     const { onMainImageUrlChange } = this.props;
 
     onMainImageUrlChange({
-      link: null,
+      links: [],
     });
   };
 
@@ -59,15 +60,52 @@ export default class ImageManagement extends Component {
 
   onUploadError = error => {
     this.setState({
-      insertionImageUrl: null,
+      insertionImageUrls: [],
       uploadError: true,
       uploadErrorMessage: error.message,
     });
   };
 
+  copyText = () => {
+    this.imageMarkdownAnnouncer = document.getElementById(
+      'image-markdown-copy-link-announcer',
+    );
+    this.imageMarkdownInput = document.getElementById(
+      'image-markdown-copy-link-input',
+    );
+
+    const isIOSDevice =
+      navigator.userAgent.match(/iPhone|iPad/i) ||
+      navigator.userAgent.match('CriOS') ||
+      navigator.userAgent === 'DEV-Native-ios';
+
+    if (isIOSDevice) {
+      this.imageMarkdownInput.setSelectionRange(
+        0,
+        this.imageMarkdownInput.value.length,
+      );
+      document.execCommand('copy');
+    } else {
+      this.imageMarkdownInput.focus();
+      this.imageMarkdownInput.setSelectionRange(
+        0,
+        this.imageMarkdownInput.value.length,
+      );
+    }
+    this.imageMarkdownAnnouncer.hidden = false;
+  };
+
+  linksToMarkdownForm = imageLinks => {
+    return imageLinks.map(imageLink => `![Alt Text](${imageLink})`).join('\n');
+  };
+
+  linksToDirectForm = imageLinks => {
+    return imageLinks.join('\n');
+  };
+
   render() {
     const { onExit, mainImage, version } = this.props;
-    const { insertionImageUrl, uploadError, uploadErrorMessage } = this.state;
+    const { insertionImageUrls, uploadError, uploadErrorMessage } = this.state;
     let mainImageArea;
 
     if (mainImage) {
@@ -88,19 +126,44 @@ export default class ImageManagement extends Component {
     }
 
     let insertionImageArea;
-    if (insertionImageUrl) {
+    if (insertionImageUrls.length > 0) {
       insertionImageArea = (
         <div>
-          <h3>Markdown Image:</h3>
-          <input type="text" value={`![](${insertionImageUrl})`} />
-          <h3>Direct URL:</h3>
-          <input type="text" value={insertionImageUrl} />
+          <h3>Markdown Images:</h3>
+          <clipboard-copy
+            onClick={this.copyText}
+            for="image-markdown-copy-link-input"
+            aria-live="polite"
+            aria-controls="image-markdown-copy-link-announcer"
+          >
+            <textarea
+              id="image-markdown-copy-link-input"
+              value={this.linksToMarkdownForm(insertionImageUrls)}
+            />
+            <img
+              id="image-markdown-copy-icon"
+              src={linkCopyIcon}
+              alt="Copy to Clipboard"
+            />
+            <span id="image-markdown-copy-link-announcer" role="alert" hidden>
+              Copied to Clipboard
+            </span>
+          </clipboard-copy>
+          <h3>Direct URLs:</h3>
+          <textarea
+            id="image-direct-copy-link-input"
+            value={this.linksToDirectForm(insertionImageUrls)}
+          />
         </div>
       );
     } else {
       insertionImageArea = (
         <div>
-          <input type="file" onChange={this.handleInsertionImageUpload} />
+          <input
+            type="file"
+            onChange={this.handleInsertionImageUpload}
+            multiple
+          />
         </div>
       );
     }
@@ -108,13 +171,20 @@ export default class ImageManagement extends Component {
     if (version === 'v1') {
       imageOptions = (
         <div>
-          <h2>Upload an Image</h2>
+          <h2>Upload Images</h2>
           {insertionImageArea}
           <div>
-            <p><em>To add a cover image for the post, add <code>cover_image: direct_url_to_image.jpg</code> to the frontmatter</em></p>
+            <p>
+              <em>
+                To add a cover image for the post, add &nbsp;
+                <code>cover_image: direct_url_to_image.jpg</code>
+&nbsp; to the
+                frontmatter
+              </em>
+            </p>
           </div>
         </div>
-      )
+      );
     } else {
       imageOptions = (
         <div>
@@ -123,7 +193,7 @@ export default class ImageManagement extends Component {
           <h2>Body Images</h2>
           {insertionImageArea}
         </div>
-      )
+      );
     }
     return (
       <div className="articleform__overlay">
@@ -157,5 +227,5 @@ ImageManagement.propTypes = {
   onExit: PropTypes.func.isRequired,
   onMainImageUrlChange: PropTypes.func.isRequired,
   mainImage: PropTypes.string.isRequired,
-  version: PropTypes.string.isRequired
+  version: PropTypes.string.isRequired,
 };

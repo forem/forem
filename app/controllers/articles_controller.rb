@@ -123,7 +123,7 @@ class ArticlesController < ApplicationController
     authorize Article
 
     @user = current_user
-    @article = ArticleCreationService.new(@user, article_params_json).create!
+    @article = Articles::Creator.call(@user, article_params_json)
 
     render json: if @article.persisted?
                    @article.to_json(only: [:id], methods: [:current_state_path])
@@ -135,25 +135,33 @@ class ArticlesController < ApplicationController
   def update
     authorize @article
     @user = @article.user || current_user
+
     not_found if @article.user_id != @user.id && !@user.has_role?(:super_admin)
+
     edited_at_date = if @article.user == current_user && @article.published
                        Time.current
                      else
                        @article.edited_at
                      end
-
     updated = @article.update(article_params_json.merge(edited_at: edited_at_date))
-    Notification.send_to_followers(@article, "Published") if updated && @article.published && @article.saved_changes["published_at"]&.include?(nil)
-
+    handle_notifications(updated)
+    Webhook::DispatchEvent.call("article_updated", @article) if updated
     respond_to do |format|
       format.html do
+        # TODO: JSON should probably not be returned in the format.html section
         if article_params_json[:archived] && @article.archived # just to get archived working
           render json: @article.to_json(only: [:id], methods: [:current_state_path])
           return
         end
-        # NOTE: destination is used by /dashboard/organization when it re-assigns an article
-        # not a great solution but for now it will do
-        redirect_to(params[:destination] || @article.path)
+        if params[:destination]
+          redirect_to(URI.parse(params[:destination]).path)
+          return
+        end
+        if params[:article][:video_thumbnail_url]
+          redirect_to(@article.path + "/edit")
+          return
+        end
+        render json: { status: 200 }
       end
 
       format.json do
@@ -173,9 +181,7 @@ class ArticlesController < ApplicationController
 
   def destroy
     authorize @article
-    @article.destroy!
-    Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
-    Notification.remove_all(notifiable_id: @article.id, notifiable_type: "Article", action: "Reaction")
+    Articles::Destroyer.call(@article)
     respond_to do |format|
       format.html { redirect_to "/dashboard", notice: "Article was successfully deleted." }
       format.json { head :no_content }
@@ -242,8 +248,9 @@ class ArticlesController < ApplicationController
 
     # handle series/collections
     if params["article"]["series"].present?
-      params["article"]["collection_id"] = Collection.find_series(params["article"]["series"], @user)&.id
-    elsif params["article"]["series"] == ""
+      collection = Collection.find_series(params["article"]["series"], @user)
+      params["article"]["collection_id"] = collection.id
+    elsif params["article"]["series"] == "" # reset collection?
       params["article"]["collection_id"] = nil
     end
 
@@ -251,7 +258,7 @@ class ArticlesController < ApplicationController
                        %i[body_markdown]
                      else
                        %i[
-                         title body_markdown main_image published description
+                         title body_markdown main_image published description video_thumbnail_url
                          tag_list canonical_url series collection_id archived
                        ]
                      end
@@ -266,6 +273,15 @@ class ArticlesController < ApplicationController
     end
 
     params.require(:article).permit(allowed_params)
+  end
+
+  def handle_notifications(updated)
+    if updated && @article.published && @article.saved_changes["published"] == [false, true]
+      Notification.send_to_followers(@article, "Published")
+    elsif @article.saved_changes["published"] == [true, false]
+      Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
+      Notification.remove_all(notifiable_id: @article.id, notifiable_type: "Article", action: "Reaction")
+    end
   end
 
   def redirect_after_creation

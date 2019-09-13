@@ -8,6 +8,8 @@ export class ListingDashboard extends Component {
     orgs: [],
     userCredits: 0,
     selectedListings: 'user',
+    filter: 'All',
+    sort: 'created_at', 
   };
 
   componentDidMount() {
@@ -16,7 +18,7 @@ export class ListingDashboard extends Component {
     let listings = [];
     let orgs = [];
     let orgListings = [];
-    listings = JSON.parse(container.dataset.listings);
+    listings = JSON.parse(container.dataset.listings).sort((a,b) => (a.created_at > b.created_at) ? -1 : 1);
     orgs = JSON.parse(container.dataset.orgs);
     orgListings = JSON.parse(container.dataset.orglistings);
     const userCredits = container.dataset.usercredits;
@@ -30,24 +32,82 @@ export class ListingDashboard extends Component {
       userCredits,
       orgs,
       selectedListings,
+      filter,
+      sort
     } = this.state;
 
-    const showListings = (selected, userListings, organizationListings) => {
-      return selected === 'user'
-        ? userListings.map(listing => <ListingRow listing={listing} />)
-        : organizationListings.map(listing =>
-            listing.organization_id === selected ? (
-              <ListingRow listing={listing} />
-            ) : (
-              ''
-            ),
-          );
+    const isExpired = (listing) => listing.bumped_at && (!listing.published) ? ((Date.now() - new Date(listing.bumped_at.toString()).getTime()) / (1000 * 60 * 60 * 24)) > 30 : false;
+    const isDraft = (listing) => listing.bumped_at ? !isExpired(listing) && (!listing.published) : true;
+
+    const filterListings = (listingsToFilter, selectedFilter) => {
+      if (selectedFilter === "Draft") {
+        return listingsToFilter.filter(listing => isDraft(listing))
+      } if (selectedFilter === "Expired") {
+        return listingsToFilter.filter(listing => isExpired(listing))
+      } if (selectedFilter === "Active") {
+        return listingsToFilter.filter(listing => listing.published === true)
+      }
+      return listingsToFilter
+    }
+
+    const customSort = (a,b) => {
+      if (a[sort] === null) {
+        return 1
+      } 
+      if (b[sort] === null) {
+        return -1
+      }
+      if (a[sort] > b[sort]) {
+        return -1
+      } 
+      return 1
+    }
+
+    const showListings = (selected, userListings, organizationListings, selectedFilter) => {
+      let displayedListings;
+      if (selected === 'user') {
+        displayedListings = filterListings(userListings, selectedFilter).sort(customSort)
+        return displayedListings.map(listing => <ListingRow listing={listing} />)
+      }
+      displayedListings = filterListings(organizationListings, selectedFilter).sort(customSort)
+      return displayedListings.map(listing =>
+        listing.organization_id === selected ? (
+          <ListingRow listing={listing} />
+        ) : (
+          ''
+        ),
+      );
     };
+
+    const filters = ["All", "Active", "Draft", "Expired"];
+    const filterButtons = filters.map(f => (
+      <span
+        onClick={(event) => {this.setState( {filter:event.target.textContent} )}}
+        className={`rounded-btn ${filter === f ? 'active' : ''}`}
+        role="button" 
+        tabIndex="0">
+        {f}
+      </span>
+    ))
+
+    const sortingDropdown = (
+      <div class="dashboard-listings-actions">
+        <div className="listings-dashboard-filter-buttons">
+          {filterButtons}
+        </div>
+        <select onChange={(event) => {this.setState({sort: event.target.value})}}>
+          <option value="created_at" selected="selected">Recently Created</option>
+          <option value="bumped_at">Recently Bumped</option>
+        </select>
+      </div>
+    );
 
     const orgButtons = orgs.map(org => (
       <span
         onClick={() => this.setState({ selectedListings: org.id })}
         className={`rounded-btn ${selectedListings === org.id ? 'active' : ''}`}
+        role="button" 
+        tabIndex="0"
       >
         {org.name}
       </span>
@@ -78,7 +138,7 @@ export class ListingDashboard extends Component {
         <h4>
           Credits Available:
           {' '}
-          {userCredits}
+          {userCreds}
         </h4>
       ) : (
         <h4>
@@ -96,6 +156,8 @@ export class ListingDashboard extends Component {
           className={`rounded-btn ${
             selectedListings === 'user' ? 'active' : ''
           }`}
+          role="button" 
+          tabIndex="0"
         >
           Personal
         </span>
@@ -114,8 +176,9 @@ export class ListingDashboard extends Component {
             </a>
           </div>
         </div>
+        {sortingDropdown}
         <div className="dashboard-listings-view">
-          {showListings(selectedListings, listings, orgListings)}
+          {showListings(selectedListings, listings, orgListings, filter)}
         </div>
       </div>
     );

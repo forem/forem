@@ -1,12 +1,13 @@
 class SpotifyTag < LiquidTagBase
   PARTIAL = "liquids/spotify".freeze
-  URI_REGEXP = /spotify:(track|artist|album|episode|show):\w{22}/.freeze
-  URI_PLAYLIST_REGEXP = /spotify:(user):([a-zA-Z0-9]+):playlist:\w{22}/.freeze
+  URI_REGEXP = /spotify:(track|artist|playlist|album|episode|show):\w{22}/.freeze
+  URI_PLAYLIST_REGEXP = /spotify:(user):([a-zA-Z0-9]+):playlist:\w{22}/.freeze # legacy support
   TYPE_HEIGHT = {
     track: 80,
     user: 380,
     artist: 380,
     album: 380,
+    playlist: 380,
     episode: 232,
     show: 232
   }.freeze

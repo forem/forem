@@ -9,7 +9,7 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
     sign_in user
   end
 
-  it "user clicks the edit button" do
+  xit "user clicks the edit button" do
     link = "/#{user.username}/#{article.slug}"
     visit link
     click_on("EDIT")
@@ -21,6 +21,7 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
     fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
     click_button("PREVIEW")
     expect(page).to have_text("Yooo")
+    expect(find(".active").text).to have_text("EDIT")
   end
 
   it "user updates their post" do

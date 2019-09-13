@@ -51,7 +51,7 @@ RSpec.describe GithubRepo, type: :model do
       old_updated_at = repo.updated_at
       Timecop.freeze(3.days.from_now) do
         described_class.update_to_latest
-        expect(old_updated_at).not_to eq(GithubRepo.find(repo.id).updated_at)
+        expect(old_updated_at).not_to eq(described_class.find(repo.id).updated_at)
       end
     end
   end

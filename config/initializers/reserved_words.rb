@@ -25,6 +25,7 @@ class ReservedWords
     contact
     merch
     onboarding_update
+    onboarding_checkbox_update
     rlygenerator
     orlygenerator
     rlyslack
@@ -32,6 +33,7 @@ class ReservedWords
     rly
     connect
     chat_channels
+    challenge
     email_subscriptions
     social_previews
     code-of-conduct

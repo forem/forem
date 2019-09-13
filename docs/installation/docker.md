@@ -1,6 +1,8 @@
 # Installing DEV with Docker [Beta]
 
-## Installing prerequites
+Our docker implementation is incomplete and may not work smoothly. Please kindly [report any issues](https://github.com/thepracticaldev/dev.to/issues/new/choose)!
+
+## Installing prerequisites
 
 _These prerequisites assume you're working on an operating system supported by Docker._
 

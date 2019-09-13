@@ -18,6 +18,7 @@ module Notifications
         json_data = {
           user: user_data(dev_account),
           broadcast: {
+            title: welcome_broadcast.title,
             processed_html: welcome_broadcast.processed_html
           }
         }

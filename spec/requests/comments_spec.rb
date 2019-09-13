@@ -50,7 +50,7 @@ RSpec.describe "Comments", type: :request do
                        user_id: user.id)
         get child.path
         expect(response.body).to include("TOP OF THREAD")
-        expect(response.body).to include(comment.title(150))
+        expect(response.body).to include(CGI.escapeHTML(comment.title(150)))
         expect(response.body).to include(child.processed_html)
       end
     end

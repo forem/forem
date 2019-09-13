@@ -117,7 +117,7 @@ export class Listings extends Component {
   handleCloseModal = e => {
     const { openedListing } = this.state;
     if (
-      openedListing !== null && e.key === 'Escape' ||
+      (openedListing !== null && e.key === 'Escape') ||
       e.target.id === 'single-classified-listing-container__inner' ||
       e.target.id === 'classified-filters' ||
       e.target.id === 'classified-listings-modal-background'
@@ -260,8 +260,10 @@ export class Listings extends Component {
     index.search(query, filterObject).then(function searchDone(content) {
       const fullListings = listings;
       content.hits.forEach(listing => {
-        if (!listings.map(l => l.id).includes(listing.id)) {
-          fullListings.push(listing);
+        if (listing.bumped_at) {
+          if (!listings.map(l => l.id).includes(listing.id)) {
+            fullListings.push(listing);
+          }
         }
       });
       t.setState({
@@ -369,13 +371,7 @@ export class Listings extends Component {
             onSubmit={this.handleSubmitMessage}
           >
             <p>
-              <b>
-                Contact
-                {' '}
-                {openedListing.author.name}
-                {' '}
-                via DEV Connect
-              </b>
+              <b>Contact {openedListing.author.name} via DEV Connect</b>
             </p>
             <textarea
               value={this.state.message}
@@ -391,12 +387,7 @@ export class Listings extends Component {
             <p>
               <em>
                 Message must be relevant and on-topic with the listing. All
-                private interactions 
-                {' '}
-                <b>must</b>
-                {' '}
-abide by the
-                {' '}
+                private interactions <b>must</b> abide by the{' '}
                 <a href="/code-of-conduct">code of conduct</a>
               </em>
             </p>
@@ -425,12 +416,7 @@ abide by the
             </button>
             <p>
               <em>
-                All private interactions 
-                {' '}
-                <b>must</b>
-                {' '}
-abide by the
-                {' '}
+                All private interactions <b>must</b> abide by the{' '}
                 <a href="/code-of-conduct">code of conduct</a>
               </em>
             </p>
@@ -453,6 +439,12 @@ abide by the
               isOpen
             />
             {messageModal}
+            <a
+              href="/about-listings"
+              className="single-classified-listing-info-link"
+            >
+              About DEV Listings
+            </a>
             <div className="single-classified-listing-container__spacer" />
           </div>
         </div>

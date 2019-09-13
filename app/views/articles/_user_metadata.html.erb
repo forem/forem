@@ -13,7 +13,7 @@
             headquarters
           </div>
           <div class="value">
-            <%= @organization.location %>
+            <%= sanitize @organization.location %>
           </div>
         </div>
       <% end %>
@@ -33,7 +33,7 @@
             support_email
           </div>
           <div class="value">
-            <a href="mailto:<%= @organization.email %>"><%= @organization.email %></a>
+            <a href="mailto:<%= sanitize @organization.email %>"><%= sanitize @organization.email %></a>
           </div>
         </div>
       <% end %>

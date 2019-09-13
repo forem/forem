@@ -88,7 +88,7 @@ RSpec.describe BadgeRewarder do
       expect(user.badges.size).to eq(1)
     end
 
-    it "does not reward beloved comment to non-qualifying comment" do
+    it "does not reward the badge to not qualified users" do
       create(:badge, title: "4 Week Streak", slug: "4-week-streak")
       user = create(:user)
       create(:article, user: user, published: true, published_at: 26.days.ago)

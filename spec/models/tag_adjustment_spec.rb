@@ -18,6 +18,7 @@ RSpec.describe TagAdjustment, type: :model do
   it { is_expected.to validate_presence_of(:tag_name) }
   it { is_expected.to validate_presence_of(:adjustment_type) }
   it { is_expected.to validate_presence_of(:status) }
+  it { is_expected.to have_many(:notifications).dependent(:delete_all) }
 
   describe "privileges" do
     it "allows tag mods to create for their tags" do

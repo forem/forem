@@ -13,4 +13,11 @@
     $dark-medium-gray
   );
   font-family: $monospace;
+  .mod-action-button {
+    padding: 2px 9px;
+    font-size: 1.2em;
+    display: block;
+    margin-top: 5px;
+    border-radius: 3px;
+  }
 }

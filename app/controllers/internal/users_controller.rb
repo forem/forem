@@ -23,6 +23,7 @@ class Internal::UsersController < Internal::ApplicationController
 
   def show
     @user = User.find(params[:id])
+    @organizations = @user.organizations
   end
 
   def update
@@ -36,9 +37,9 @@ class Internal::UsersController < Internal::ApplicationController
     @user = User.find(params[:id])
     begin
       Moderator::ManageActivityAndRoles.handle_user_roles(admin: current_user, user: @user, user_params: user_params)
-      flash[:notice] = "User has been udated"
+      flash[:success] = "User has been updated"
     rescue StandardError => e
-      flash[:error] = e.message
+      flash[:danger] = e.message
     end
     redirect_to "/internal/users/#{@user.id}/edit"
   end
@@ -48,7 +49,7 @@ class Internal::UsersController < Internal::ApplicationController
     begin
       Moderator::BanishUser.call_banish(admin: current_user, user: @user)
     rescue StandardError => e
-      flash[:error] = e.message
+      flash[:danger] = e.message
     end
     redirect_to "/internal/users/#{@user.id}/edit"
   end
@@ -57,9 +58,9 @@ class Internal::UsersController < Internal::ApplicationController
     @user = User.find(params[:id])
     begin
       Moderator::DeleteUser.call_deletion(admin: current_user, user: @user, user_params: user_params)
-      flash[:notice] = "@" + @user.username + " (email: " + @user.email + ", user_id: " + @user.id.to_s + ") has been fully deleted. If requested, old content may have been ghostified. If this is a GDPR delete, delete them from Mailchimp & Google Analytics."
+      flash[:success] = "@" + @user.username + " (email: " + @user.email + ", user_id: " + @user.id.to_s + ") has been fully deleted. If requested, old content may have been ghostified. If this is a GDPR delete, delete them from Mailchimp & Google Analytics."
     rescue StandardError => e
-      flash[:error] = e.message
+      flash[:danger] = e.message
     end
     redirect_to "/internal/users"
   end
@@ -69,7 +70,33 @@ class Internal::UsersController < Internal::ApplicationController
     begin
       Moderator::MergeUser.call_merge(admin: current_user, keep_user: @user, delete_user_id: user_params["merge_user_id"])
     rescue StandardError => e
-      flash[:error] = e.message
+      flash[:danger] = e.message
+    end
+    redirect_to "/internal/users/#{@user.id}/edit"
+  end
+
+  def remove_identity
+    identity = Identity.find(user_params[:identity_id])
+    @user = identity.user
+    begin
+      BackupData.backup!(identity)
+      identity.delete
+      @user.update("#{identity.provider}_username" => nil)
+      flash[:success] = "The #{identity.provider.capitalize} identity was successfully deleted and backed up."
+    rescue StandardError => e
+      flash[:danger] = e.message
+    end
+    redirect_to "/internal/users/#{@user.id}/edit"
+  end
+
+  def recover_identity
+    backup = BackupData.find(user_params[:backup_data_id])
+    @user = backup.instance_user
+    begin
+      identity = backup.recover!
+      flash[:success] = "The #{identity.provider} identity was successfully recovered, and the backup was removed."
+    rescue StandardError => e
+      flash[:danger] = e.message
     end
     redirect_to "/internal/users/#{@user.id}/edit"
   end
@@ -104,13 +131,13 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def add_org_credits
-    org = Organization.find(@user.organization_id)
+    org = Organization.find(user_params[:organization_id])
     amount = user_params[:add_org_credits].to_i
     Credit.add_to_org(org, amount)
   end
 
   def remove_org_credits
-    org = Organization.find(@user.organization_id)
+    org = Organization.find(user_params[:organization_id])
     amount = user_params[:remove_org_credits].to_i
     Credit.remove_from_org(org, amount)
   end
@@ -120,6 +147,7 @@ class Internal::UsersController < Internal::ApplicationController
       new_note note_for_current_role user_status
       pro merge_user_id add_credits remove_credits
       add_org_credits remove_org_credits ghostify
+      organization_id identity_id backup_data_id
     ]
     params.require(:user).permit(allowed_params)
   end

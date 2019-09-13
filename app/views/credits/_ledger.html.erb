@@ -1,0 +1,43 @@
+<table class="ledger">
+  <caption>Purchase history</caption>
+
+  <thead>
+    <tr>
+      <th>Category</th>
+      <th>Item</th>
+      <th>Cost (credits)</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% if items.present? %>
+      <% for item in items %>
+        <% if item.purchase %>
+        <tr>
+        <% else %>
+        <tr class="misc">
+        <% end %>
+          <td>
+            <% if item.purchase %>
+              <%= item.purchase.class.name == "ClassifiedListing" ? "Listing" : item.purchase.class.name %>
+            <% end %>
+          </td>
+          <td>
+            <% if item.purchase %>
+              <%= render "ledger_#{item.purchase.class.name.underscore}", purchase: item.purchase %>
+            <% else %>
+              <span>Miscellaneous items</span>
+            <% end %>
+          </td>
+          <td class="cost"><%= item.cost %></td>
+          <td>
+            <% if item.purchased_at %>
+              <time datetime="<%= item.purchased_at.iso8601 %>"><%= item.purchased_at.iso8601 %></time>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>

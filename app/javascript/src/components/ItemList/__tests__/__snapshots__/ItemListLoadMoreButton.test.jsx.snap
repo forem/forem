@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ItemListLoadMoreButton /> renders nothing if not required 1`] = `""`;
+
+exports[`<ItemListLoadMoreButton /> renders properly 1`] = `
+<div
+  class="load-more-wrapper"
+>
+  <button
+    type="button"
+  >
+    Load More
+  </button>
+</div>
+`;

@@ -8,9 +8,11 @@ about: Create a report to help us improve
 <!-- If you're having trouble updating your profile, it is likely because you logged in separately with GitHub & Twitter. Please check if this is the case before creating a bug report, and email yo@dev.to so we can merge your accounts. -->
 
 **Describe the bug**
+
 <!-- A clear and concise description of what the bug is. -->
 
 **To Reproduce**
+
 <!-- Steps to reproduce the behavior: -->
 
 <!-- 1. Go to '...' -->
@@ -19,9 +21,11 @@ about: Create a report to help us improve
 <!-- 4. See error -->
 
 **Expected behavior**
+
 <!-- A clear and concise description of what you expected to happen. -->
 
 **Screenshots**
+
 <!-- If applicable, add screenshots to help explain your problem. -->
 
 **Desktop (please complete the following information):**
@@ -38,4 +42,5 @@ about: Create a report to help us improve
 - Version:
 
 **Additional context**
+
 <!-- Add any other context about the problem or helpful links here. -->

@@ -4,7 +4,7 @@ class Organization < ApplicationRecord
   acts_as_followable
 
   has_many :job_listings
-  has_many :organization_memberships
+  has_many :organization_memberships, dependent: :delete_all
   has_many :users, through: :organization_memberships
   has_many :api_secrets, through: :users
   has_many :articles
@@ -15,6 +15,7 @@ class Organization < ApplicationRecord
   has_many :unspent_credits, -> { where spent: false }, class_name: "Credit", inverse_of: :organization
   has_many :classified_listings
   has_many :profile_pins, as: :profile, inverse_of: :profile
+  has_many :sponsorships
 
   validates :name, :summary, :url, :profile_image, presence: true
   validates :name,
@@ -68,7 +69,7 @@ class Organization < ApplicationRecord
 
     self.old_old_slug = old_slug
     self.old_slug = slug_was
-    articles.find_each { |a| a.update(path: a.path.gsub(slug_was, slug)) }
+    articles.find_each { |article| article.update(path: article.path.gsub(slug_was, slug)) }
   end
 
   def path
@@ -89,6 +90,10 @@ class Organization < ApplicationRecord
 
   def profile_image_90
     ProfileImage.new(self).get(90)
+  end
+
+  def banned
+    false
   end
 
   private

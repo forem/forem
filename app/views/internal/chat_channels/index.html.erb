@@ -1,0 +1,23 @@
+<h1>Group Connect Channels</h1>
+<%= paginate @group_chat_channels %>
+<% @group_chat_channels.each do |channel| %>
+  <div class="wrapper-3" style="border-bottom: 1px solid grey; padding: 10px;">
+    <div><a href="/connect/<%= channel.slug %>" target="_blank"><%= channel.channel_name %></a></div>
+    <div style="font-size: 0.8em;"><%= channel.users.pluck(:username).join(", ") %></div>
+    <div>
+      <%= form_for [:internal, channel] do |f| %>
+        <%= f.text_field :usernames_string, placeholder: "Usernames to add" %>
+        <%= f.submit %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+<%= paginate @group_chat_channels %>
+
+<h1>Create New Connect Channel</h1>
+<br />
+<%= form_for [:internal, ChatChannel.new] do |f| %>
+  <%= f.text_field :channel_name, placeholder: "Channel Name" %>
+  <%= f.text_field :usernames_string, placeholder: "Usernames to add" %>
+  <%= f.submit %>
+<% end %>

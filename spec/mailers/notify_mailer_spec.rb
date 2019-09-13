@@ -331,4 +331,30 @@ RSpec.describe NotifyMailer, type: :mailer do
       expect(email.html_part.body).to include(CGI.escape("utm_campaign=tag_moderator_confirmation_email"))
     end
   end
+
+  describe "#trusted_role_email" do
+    let(:tag) { create(:tag) }
+
+    it "renders proper subject" do
+      email = described_class.trusted_role_email(user)
+      expect(email.subject).to eq("You've been upgraded to #{ApplicationConfig['COMMUNITY_NAME']} Community mod status!")
+    end
+
+    it "renders proper receiver" do
+      email = described_class.trusted_role_email(user)
+      expect(email.to).to eq([user.email])
+    end
+
+    it "includes the tracking pixel" do
+      email = described_class.trusted_role_email(user)
+      expect(email.html_part.body).to include("open.gif")
+    end
+
+    it "includes UTM params" do
+      email = described_class.trusted_role_email(user)
+      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
+      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
+      expect(email.html_part.body).to include(CGI.escape("utm_campaign=trusted_role_email"))
+    end
+  end
 end

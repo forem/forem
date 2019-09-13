@@ -125,3 +125,5 @@ Rails.application.configure do
   config.middleware.use Rack::HostRedirect,
                         "practicaldev.herokuapp.com" => "dev.to"
 end
+
+Rails.application.routes.default_url_options = { host: Rails.application.config.app_domain }

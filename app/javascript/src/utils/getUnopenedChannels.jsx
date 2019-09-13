@@ -63,9 +63,9 @@ class UnopenedChannelNotice extends Component {
     if (unopenedChannels.length === 0) {
       number.classList.remove('showing');
     } else {
-      document.getElementById('connect-link').href = `/connect/${
-        unopenedChannels[0].adjusted_slug
-      }`;
+      document.getElementById(
+        'connect-link',
+      ).href = `/connect/${unopenedChannels[0].adjusted_slug}`;
     }
     setTimeout(() => {
       component.setState({ visible: false });
@@ -118,9 +118,7 @@ class UnopenedChannelNotice extends Component {
             padding: '19px 5px 14px',
           }}
         >
-          New Message from 
-          {' '}
-          {channels}
+          New Message from {channels}
         </a>
       );
     }
@@ -134,7 +132,9 @@ function manageChannel(json) {
   if (json.length > 0) {
     number.classList.add('showing');
     number.innerHTML = json.length;
-    document.getElementById('connect-link').href = `/connect/${json[0].adjusted_slug}`; // Jump the user directly to the channel where appropriate
+    document.getElementById(
+      'connect-link',
+    ).href = `/connect/${json[0].adjusted_slug}`; // Jump the user directly to the channel where appropriate
   } else {
     number.classList.remove('showing');
   }

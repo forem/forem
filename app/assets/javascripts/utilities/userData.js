@@ -1,3 +1,5 @@
+'use strict';
+
 function userData() {
   const dataUser = document
     .getElementsByTagName('body')[0]

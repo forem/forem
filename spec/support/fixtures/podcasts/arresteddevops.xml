@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Arrested DevOps</title>
+    <link>https://www.arresteddevops.com/</link>
+    <description>Recent content on Arrested DevOps</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 13 Jun 2019 12:47:41 -0500</lastBuildDate>
+	  <atom:link href="https://www.arresteddevops.com/index.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Pushing Left with Tanya Janca</title>
+      <link>https://www.arresteddevops.com/pushing-left/</link>
+      <pubDate>Thu, 13 Jun 2019 12:47:41 -0500</pubDate>
+      <guid>https://www.arresteddevops.com/pushing-left/</guid>
+      <description> Pushing Left, Like a Boss: Part 1 OWASP Serverless Top 10 Project  </description>
+    </item>
+    <item>
+      <title>Catching Up With Steven Murawski</title>
+      <link>https://www.arresteddevops.com/steven-murawski/</link>
+      <pubDate>Thu, 23 May 2019 16:05:33 -0500</pubDate>
+      <guid>https://www.arresteddevops.com/steven-murawski/</guid>
+      <description>Trevor chats with Steven Murawski of Microsoft about Azure DevOps, Windows Terminal and all the cool things from Microsoft Build 2019.</description>
+    </item>
+  </channel>
+</rss>

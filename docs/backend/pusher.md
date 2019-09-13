@@ -6,7 +6,7 @@ title: Pusher
 
 Pusher is a third party service being used to power the [chat system](https://dev.to/connect).
 
-In order to use the chat functionality within you development enviroment
+In order to use the chat functionality within you development environment
 you will need to sign up for a free-tier Pusher account and retrieve
 its keys. Then you'll need to provide those keys to the Rails application.
 

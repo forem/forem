@@ -1,3 +1,5 @@
+'use strict';
+
 /* Local date/time utilities */
 
 /*
@@ -52,6 +54,23 @@ function addLocalizedDateTimeToElementsTitles(elements, timestampAttribute) {
         timeOptions,
       );
       element.setAttribute('title', localDateTime);
+    }
+  }
+}
+
+function localizeTimeElements(elements, timeOptions) {
+  for (let i = 0; i < elements.length; i += 1) {
+    const element = elements[i];
+
+    const timestamp = element.getAttribute('datetime');
+    if (timestamp) {
+      const localDateTime = timestampToLocalDateTime(
+        timestamp,
+        navigator.language,
+        timeOptions,
+      );
+
+      element.textContent = localDateTime;
     }
   }
 }

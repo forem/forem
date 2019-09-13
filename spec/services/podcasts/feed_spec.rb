@@ -13,6 +13,71 @@ RSpec.describe Podcasts::Feed, vcr: vcr_option do
     podcast
   end
 
+  context "when unreachable" do
+    let(:un_feed_url) { "http://podcast.example.com/podcast" }
+    let(:unpodcast) { create(:podcast, feed_url: un_feed_url) }
+
+    it "sets reachable and status" do
+      stub_request(:get, "http://podcast.example.com/podcast").to_return(status: 200, body: "blah")
+      described_class.new(unpodcast).get_episodes(limit: 2)
+      unpodcast.reload
+      expect(unpodcast.reachable).to be false
+      expect(unpodcast.status_notice).to include("rss couldn't be parsed")
+    end
+
+    it "sets reachable" do
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast").and_raise(Errno::ECONNREFUSED)
+      described_class.new(unpodcast).get_episodes(limit: 2)
+      unpodcast.reload
+      expect(unpodcast.reachable).to be false
+      expect(unpodcast.status_notice).to include("is not reachable")
+    end
+
+    it "schedules the update url jobs when setting as unreachable" do
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast").and_raise(Errno::ECONNREFUSED)
+      create_list(:podcast_episode, 2, podcast: unpodcast)
+      expect do
+        described_class.new(unpodcast).get_episodes(limit: 2)
+      end.to have_enqueued_job(PodcastEpisodes::UpdateMediaUrlJob).exactly(2)
+    end
+
+    it "re-checks episodes urls when setting as unreachable" do
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast").and_raise(Errno::ECONNREFUSED)
+      episode = create(:podcast_episode, podcast: unpodcast, reachable: true, media_url: "http://podcast.example.com/ep1.mp3")
+      allow(HTTParty).to receive(:head).with("http://podcast.example.com/ep1.mp3").and_raise(Errno::ECONNREFUSED)
+      allow(HTTParty).to receive(:head).with("https://podcast.example.com/ep1.mp3").and_raise(Errno::ECONNREFUSED)
+
+      perform_enqueued_jobs do
+        described_class.new(unpodcast).get_episodes
+      end
+
+      episode.reload
+      expect(episode.reachable).to be false
+    end
+
+    it "doesn't re-check episodes reachable if the podcast was unreachable" do
+      unpodcast.update_column(:reachable, false)
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast").and_raise(Errno::ECONNREFUSED)
+      create_list(:podcast_episode, 2, podcast: unpodcast)
+      expect do
+        described_class.new(unpodcast).get_episodes(limit: 2)
+      end.not_to have_enqueued_job(PodcastEpisodes::UpdateMediaUrlJob)
+    end
+  end
+
+  context "when ssl certificate is not valid" do
+    let(:un_feed_url) { "http://podcast.example.com/podcast" }
+    let(:unpodcast) { create(:podcast, feed_url: un_feed_url) }
+
+    it "sets ssl_failed" do
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast").and_raise(OpenSSL::SSL::SSLError)
+      described_class.new(unpodcast).get_episodes(limit: 2)
+      unpodcast.reload
+      expect(unpodcast.reachable).to be false
+      expect(unpodcast.status_notice).to include("SSL certificate verify failed")
+    end
+  end
+
   context "when creating" do
     before do
       stub_request(:head, "https://traffic.libsyn.com/sedaily/AnalyseAsia.mp3").to_return(status: 200)
@@ -21,12 +86,16 @@ RSpec.describe Podcasts::Feed, vcr: vcr_option do
 
     it "fetches podcast episodes" do
       expect do
-        described_class.new.get_episodes(podcast, 2)
+        perform_enqueued_jobs do
+          described_class.new(podcast).get_episodes(limit: 2)
+        end
       end.to change(PodcastEpisode, :count).by(2)
     end
 
     it "fetches correct podcasts" do
-      described_class.new.get_episodes(podcast, 2)
+      perform_enqueued_jobs do
+        described_class.new(podcast).get_episodes(limit: 2)
+      end
       episodes = podcast.podcast_episodes
       expect(episodes.pluck(:title).sort).to eq(["Analyse Asia with Bernard Leong", "IFTTT Architecture with Nicky Leach"])
       expect(episodes.pluck(:media_url).sort).to eq(%w[https://traffic.libsyn.com/sedaily/AnalyseAsia.mp3 https://traffic.libsyn.com/sedaily/IFTTT.mp3])
@@ -39,12 +108,12 @@ RSpec.describe Podcasts::Feed, vcr: vcr_option do
 
     it "does not refetch already fetched episodes" do
       expect do
-        described_class.new.get_episodes(podcast, 2)
+        described_class.new(podcast).get_episodes(limit: 2)
       end.not_to change(PodcastEpisode, :count)
     end
 
     it "updates published_at for existing episodes" do
-      described_class.new.get_episodes(podcast, 2)
+      described_class.new(podcast).get_episodes(limit: 2)
       episode.reload
       episode2.reload
       expect(episode.published_at).to be_truthy

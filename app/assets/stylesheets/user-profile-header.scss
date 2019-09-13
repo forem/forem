@@ -475,5 +475,41 @@
       }
     }
   }
-
+  .profile-dropdown {
+    position: absolute;
+    top: 0px;
+    right: 6px;
+    button {
+      border: 0px;
+      background: transparent;
+      padding: 8px;
+    }
+    img {
+      height: 22px;
+      width: 22px;
+    }
+    .profile-dropdownmenu {
+      display: none;
+      position: absolute;
+      top: 30px;
+      right: 3px;
+      width: 200px;
+      border: 1px solid $light-medium-gray;
+      border-radius: 3px;
+      background: white;
+      z-index: 20;
+      width: 130px;
+      box-shadow: $shadow;
+      a {
+        font-size: 0.75em;
+        color: $black;
+        display: block;
+        padding: 6px 10px;
+        font-weight: bold;
+      }
+      &.showing {
+        display: block;
+      }
+    }
+  }
 }

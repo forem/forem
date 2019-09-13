@@ -58,6 +58,12 @@ RSpec.describe "UserSettings", type: :request do
       expect(response.body).to include("Username is too short")
     end
 
+    it "returns error if Profile image is too large" do
+      profile_image = fixture_file_upload("files/large_profile_img.jpg", "image/jpeg")
+      put "/users/#{user.id}", params: { user: { tab: "profile", profile_image: profile_image } }
+      expect(response.body).to include("Profile image File size should be less than 2 MB")
+    end
+
     context "when requesting an export of the articles" do
       def send_request(flag = true)
         put "/users/#{user.id}", params: {

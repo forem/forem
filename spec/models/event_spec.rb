@@ -4,7 +4,7 @@ RSpec.describe Event, type: :model do
   let(:event) { create(:event) }
 
   it "rejects title with over 90 characters" do
-    event.title = Faker::Lorem.characters(100)
+    event.title = Faker::Lorem.characters(number: 100)
     expect(event).not_to be_valid
   end
 

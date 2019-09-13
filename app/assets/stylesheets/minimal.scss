@@ -15,14 +15,11 @@
 @import 'user-profile-header';
 @import 'comments';
 @import 'leaderboard';
-@import 'onboarding';
 @import 'notifications';
 @import 'syntax';
 @import 'signup-modal';
 @import 'tags';
 @import 'live';
-@import 'delete-confirm';
-@import 'preact/onboarding-modal';
 @import 'preact/sidebar-widget';
 @import 'preact/article-form';
 @import 'tag-edit';
@@ -31,7 +28,8 @@
 @import 'video-collection';
 @import 'classified_listings';
 @import 'credits';
-@import 'readinglist';
+@import 'item-list';
+@import 'color-picker';
 
 @import 'ltags/LiquidTags';
 
@@ -39,4 +37,4 @@
 
 @import 'email_subscriptions';
 
-@import 'article-form-needed-legacy'
+@import 'article-form-needed-legacy';

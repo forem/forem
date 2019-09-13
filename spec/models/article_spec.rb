@@ -21,8 +21,8 @@ RSpec.describe Article, type: :model do
   it { is_expected.to belong_to(:organization).optional }
   it { is_expected.to belong_to(:collection).optional }
   it { is_expected.to have_many(:comments) }
-  it { is_expected.to have_many(:reactions) }
-  it { is_expected.to have_many(:notifications) }
+  it { is_expected.to have_many(:reactions).dependent(:destroy) }
+  it { is_expected.to have_many(:notifications).dependent(:destroy) }
   it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
   it { is_expected.to validate_presence_of(:user_id) }
   it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
@@ -58,9 +58,9 @@ RSpec.describe Article, type: :model do
   end
 
   it "does not persist with invalid publish scoped data" do
-    article = Article.create(title: "hey",
-                             body_html: "hey hey hey hey hey hey",
-                             published: true)
+    article = described_class.create(title: "hey",
+                                     body_html: "hey hey hey hey hey hey",
+                                     published: true)
     expect(article.persisted?).to eq(false)
   end
 
@@ -251,6 +251,16 @@ RSpec.describe Article, type: :model do
       article.video_duration_in_seconds = 1161
       expect(article.video_duration_in_minutes).to eq("19:21")
     end
+
+    it "has video_duration_in_minutes display hour when video is an hour or longer" do
+      article.video_duration_in_seconds = 3600
+      expect(article.video_duration_in_minutes).to eq("1:00:00")
+    end
+
+    it "has correctly non-padded minutes with hour in video_duration_in_minutes" do
+      article.video_duration_in_seconds = 5000
+      expect(article.video_duration_in_minutes).to eq("1:23:20")
+    end
   end
 
   describe ".seo_boostable" do
@@ -258,20 +268,20 @@ RSpec.describe Article, type: :model do
       create(:article, score: 30)
       create(:article, score: 30)
       top_article = create(:article, organic_page_views_past_month_count: 20, score: 30)
-      articles = Article.seo_boostable
+      articles = described_class.seo_boostable
       expect(articles.first[0]).to eq(top_article.path)
     end
 
     it "returns articles if within time frame" do
       top_article = create(:article, organic_page_views_past_month_count: 20, score: 30)
-      articles = Article.seo_boostable(nil, 1.month.ago)
+      articles = described_class.seo_boostable(nil, 1.month.ago)
       expect(articles.first[0]).to eq(top_article.path)
     end
 
     it "does not return articles outside of timeframe" do
       top_article = create(:article, organic_page_views_past_month_count: 20, score: 30)
       top_article.update_column(:published_at, 3.months.ago)
-      articles = Article.seo_boostable(nil, 1.month.ago)
+      articles = described_class.seo_boostable(nil, 1.month.ago)
       expect(articles.first).to eq(nil)
     end
 
@@ -280,7 +290,7 @@ RSpec.describe Article, type: :model do
       create(:article, organic_page_views_count: 30, score: 30)
       top_article = create(:article, organic_page_views_past_month_count: 20, score: 30)
       top_article.update_column(:cached_tag_list, "good, greatalicious")
-      articles = Article.seo_boostable("greatalicious")
+      articles = described_class.seo_boostable("greatalicious")
       expect(articles.first[0]).to eq(top_article.path)
     end
 
@@ -289,13 +299,21 @@ RSpec.describe Article, type: :model do
       create(:article, organic_page_views_count: 30)
       top_article = create(:article, organic_page_views_past_month_count: 20, score: 30)
       top_article.update_column(:cached_tag_list, "good, greatalicious")
-      articles = Article.seo_boostable("godsdsdsdsgoo")
+      articles = described_class.seo_boostable("godsdsdsdsgoo")
       expect(articles.size).to eq(0)
     end
   end
 
   it "detects no liquid tag if not used" do
     expect(article.decorate.liquid_tags_used).to eq([])
+  end
+
+  it "returns error message with malformed liquid tags" do
+    body = "{% github /thepracticaldev/dev.to %}"
+    article = build(:article, body_markdown: body, title: "Hello")
+    article.save
+    expect(article.persisted?).to eq(false)
+    expect(article.errors[:base]).to eq(["Invalid Github Repo link"])
   end
 
   it "returns article title length classification" do
@@ -371,9 +389,6 @@ RSpec.describe Article, type: :model do
   end
 
   describe "before save" do
-    # before do
-    #   article = create(:article, user_id: user.id)
-    # end
     it "assigns path on save" do
       article = create(:article, user_id: user.id)
       expect(article.path).to eq("/#{article.username}/#{article.slug}")
@@ -490,16 +505,36 @@ RSpec.describe Article, type: :model do
     expect(article.class_name).to eq("Article")
   end
 
-  it "does not show year in readable time if not current year" do
-    time_now = Time.current
-    article.published_at = time_now
-    expect(article.readable_publish_date).to eq(time_now.strftime("%b %e"))
+  describe "readable_edit_date" do
+    it "returns nil if article is not edited" do
+      expect(article.readable_edit_date).to be_nil
+    end
+
+    it "does not show year in readable time if not current year" do
+      time_now = Time.current
+      article.edited_at = time_now
+      expect(article.readable_edit_date).to eq(time_now.strftime("%b %e"))
+    end
+
+    it "shows year in readable time if not current year" do
+      article.edited_at = 1.year.ago
+      last_year = 1.year.ago.year % 100
+      expect(article.readable_edit_date.include?("'#{last_year}")).to eq(true)
+    end
   end
 
-  it "shows year in readable time if not current year" do
-    article.published_at = 1.year.ago
-    last_year = 1.year.ago.year % 100
-    expect(article.readable_publish_date.include?("'#{last_year}")).to eq(true)
+  describe "readable_publish_date" do
+    it "does not show year in readable time if not current year" do
+      time_now = Time.current
+      article.published_at = time_now
+      expect(article.readable_publish_date).to eq(time_now.strftime("%b %e"))
+    end
+
+    it "shows year in readable time if not current year" do
+      article.published_at = 1.year.ago
+      last_year = 1.year.ago.year % 100
+      expect(article.readable_publish_date.include?("'#{last_year}")).to eq(true)
+    end
   end
 
   it "is valid as part of a collection" do
@@ -520,7 +555,7 @@ RSpec.describe Article, type: :model do
 
   describe "published_timestamp" do
     it "returns empty string if the article is new" do
-      expect(Article.new.published_timestamp).to eq("")
+      expect(described_class.new.published_timestamp).to eq("")
     end
 
     it "returns empty string if the article is not published" do
@@ -541,6 +576,23 @@ RSpec.describe Article, type: :model do
       published_at = 1.day.ago
       article.update_columns(published: true, crossposted_at: nil, published_at: published_at)
       expect(article.published_timestamp).to eq(published_at.utc.iso8601)
+    end
+  end
+
+  describe "when algolia auto-indexing/removal is triggered" do
+    context "when article is saved" do
+      it "process background auto-indexing" do
+        expect { build(:article, user_id: user.id).save }.to have_enqueued_job.with(kind_of(described_class), "index_or_remove_from_index_where_appropriate").on_queue("algoliasearch")
+      end
+    end
+
+    context "when article is to be deleted" do
+      it "does nothing" do
+        # So that job triggered at creation outside of scope
+        # And test only on destroy, and nothing should be triggered
+        current_article = article
+        expect { current_article.destroy }.not_to have_enqueued_job.with(kind_of(Hash), "index_or_remove_from_index_where_appropriate").on_queue("algoliasearch")
+      end
     end
   end
 

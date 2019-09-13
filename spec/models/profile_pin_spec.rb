@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe ProfilePin, type: :model do
   let(:user) { create(:user) }
@@ -26,8 +26,9 @@ RSpec.describe ProfilePin, type: :model do
       create(:profile_pin, pinnable_id: third_article.id, profile_id: user.id)
       create(:profile_pin, pinnable_id: fourth_article.id, profile_id: user.id)
       create(:profile_pin, pinnable_id: fifth_article.id, profile_id: user.id)
-      last_pin = create(:profile_pin, pinnable_id: sixth_article.id, profile_id: user.id)
-      expect(last_pin).not_to be_valid
+      expect do
+        create(:profile_pin, pinnable_id: sixth_article.id, profile_id: user.id)
+      end.to raise_error(ActiveRecord::RecordInvalid)
     end
 
     it "ensures pinnable belongs to profile" do

@@ -18,10 +18,11 @@ module Moderator
       cachebuster = CacheBuster.new
       user.comments.find_each do |comment|
         comment.reactions.delete_all
-        cachebuster.bust_comment(comment.commentable, user.username)
+        cachebuster.bust_comment(comment.commentable)
         comment.delete
         comment.remove_notifications
       end
+      cachebuster.bust_user(user)
     end
 
     def delete_articles
@@ -33,11 +34,13 @@ module Moderator
         article.reactions.delete_all
         article.comments.includes(:user).find_each do |comment|
           comment.reactions.delete_all
-          cachebuster.bust_comment(comment.commentable, comment.user.username)
+          cachebuster.bust_comment(comment.commentable)
+          cachebuster.bust_user(comment.user)
           comment.delete
         end
         article.remove_algolia_index
         article.delete
+        article.purge
       end
       virtual_articles.each do |article|
         cachebuster.bust_article(article)
@@ -130,8 +133,11 @@ module Moderator
     end
 
     def add_trusted_role
+      return if user.has_role?(:trusted)
+
       user.add_role :trusted
       user.update(email_community_mod_newsletter: true)
+      NotifyMailer.trusted_role_email(user).deliver
       MailchimpBot.new(user).manage_community_moderator_list
     end
 

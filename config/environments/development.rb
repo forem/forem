@@ -59,7 +59,7 @@ Rails.application.configure do
   # yet still be able to expire them through the digest params.
   config.assets.digest = false
 
-  # Supress logger output for asset requests.
+  # Suppress logger output for asset requests.
   config.assets.quiet = true
 
   # Adds additional error checking when serving assets at runtime.
@@ -107,3 +107,5 @@ Rails.application.configure do
     Bullet.rails_logger = true
   end
 end
+
+Rails.application.routes.default_url_options = { host: Rails.application.config.app_domain }
