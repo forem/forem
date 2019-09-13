@@ -3,7 +3,7 @@ class EmailMessage < Ahoy::Message
   # which doesn't seem to play nicely with namespaces. But there could be other
   # reasons to define behavior here, similar to how we use the Tag model.
 
-  belongs_to :classified_listings
+  belongs_to :classified_listings, optional: true
 
   def body_html_content
     doctype_index = content.index("<!DOCTYPE")
