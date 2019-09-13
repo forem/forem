@@ -58,6 +58,7 @@ class NotifyMailer < ApplicationMailer
     @email_body = params[:email_body]
     track utm_campaign: params[:email_type]
     track extra: { feedback_message_id: params[:feedback_message_id] }
+    track extra: { listing_id: params[:listing_id] }
     mail(to: params[:email_to], subject: params[:email_subject])
   end
 
