@@ -1,9 +1,9 @@
 require "rails_helper"
 
-RSpec.describe TagPolicy do
+RSpec.describe TagPolicy, type: :policy do
   subject { described_class.new(user, tag) }
 
-  let(:tag) { build(:tag) }
+  let(:tag) { build_stubbed(:tag) }
 
   context "when user is not signed-in" do
     let(:user) { nil }
@@ -12,7 +12,7 @@ RSpec.describe TagPolicy do
   end
 
   context "when user is not a moderator" do
-    let(:user) { build(:user) }
+    let(:user) { build_stubbed(:user) }
 
     it { is_expected.to permit_actions(%i[index]) }
     it { is_expected.to forbid_actions(%i[edit update]) }

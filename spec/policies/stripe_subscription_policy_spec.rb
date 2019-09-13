@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe StripeSubscriptionPolicy do
+RSpec.describe StripeSubscriptionPolicy, type: :policy do
   subject { described_class.new(user, :stripe_subscription) }
 
   context "when user is not signed in" do
@@ -10,7 +10,7 @@ RSpec.describe StripeSubscriptionPolicy do
   end
 
   context "when user is signed in" do
-    let(:user) { build(:user) }
+    let(:user) { build_stubbed(:user) }
 
     it { is_expected.to permit_actions(%i[create update destroy]) }
 

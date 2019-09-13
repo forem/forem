@@ -3,12 +3,14 @@ require "rails_helper"
 RSpec.describe ArticlePolicy do
   subject { described_class.new(user, article) }
 
-  let(:article) { create(:article) }
+  let(:article) { build_stubbed(:article) }
   let(:valid_attributes) do
     %i[title body_html body_markdown main_image published
        description allow_small_edits allow_big_edits tag_list publish_under_org
        video video_code video_source_url video_thumbnail_url receive_notifications]
   end
+
+  before { allow(article).to receive(:published).and_return(true) }
 
   context "when user is not signed-in" do
     let(:user) { nil }
@@ -17,13 +19,13 @@ RSpec.describe ArticlePolicy do
   end
 
   context "when user is not the author" do
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
 
     it { is_expected.to permit_actions(%i[new create preview]) }
     it { is_expected.to forbid_actions(%i[update edit manage delete_confirm destroy]) }
 
     context "with banned status" do
-      before { user.add_role :banned }
+      before { user.add_role(:banned) }
 
       it { is_expected.to permit_actions(%i[new preview]) }
       it { is_expected.to forbid_actions(%i[create edit manage update delete_confirm destroy]) }
@@ -31,13 +33,14 @@ RSpec.describe ArticlePolicy do
   end
 
   context "when user is the author" do
-    let(:user) { article.user }
+    let(:user)    { build_stubbed(:user) }
+    let(:article) { build_stubbed(:article, user: user) }
 
     it { is_expected.to permit_actions(%i[update edit manage new create delete_confirm destroy preview]) }
     it { is_expected.to permit_mass_assignment_of(valid_attributes) }
 
     context "with banned status" do
-      before { user.add_role :banned }
+      before { user.add_role(:banned) }
 
       it { is_expected.to permit_actions(%i[update new delete_confirm destroy preview]) }
     end
