@@ -4,10 +4,6 @@ class Role < ApplicationRecord
   belongs_to :resource,
              polymorphic: true, optional: true
 
-  validates :resource_type,
-            inclusion: { in: Rolify.resource_types },
-            allow_nil: true
-
   validates :name,
             inclusion: {
               in: %w[
@@ -23,7 +19,6 @@ class Role < ApplicationRecord
                 comment_banned
                 pro
                 podcast_admin
-                intern
               ]
             }
   scopify

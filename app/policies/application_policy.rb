@@ -63,8 +63,8 @@ class ApplicationPolicy
     user.has_role?(:super_admin) || user.has_role?(:admin)
   end
 
-  def intern_admin?
-    user.has_role?(:intern) || user.has_role?(:super_admin) || user.has_role?(:admin)
+  def scoped_admin?
+    user.has_role?(:admin, Article) || user.has_role?(:super_admin) || user.has_role?(:admin)
   end
 
   def user_admin?

@@ -10,8 +10,8 @@ RSpec.describe Internal::ArticlePolicy do
     it { is_expected.to forbid_actions(%i[index show update]) }
   end
 
-  context "when user is a dev intern" do
-    before { allow(user).to receive(:has_role?).with(:intern).and_return(true) }
+  context "when user has a scoped article admin role" do
+    before { allow(user).to receive(:has_role?).with(:admin, Article).and_return(true) }
 
     it { is_expected.to permit_actions(%i[index show update]) }
   end
