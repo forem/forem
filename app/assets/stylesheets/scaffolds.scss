@@ -214,12 +214,12 @@ body.comic-sans-article-body {
   }
 }
 
-.pro-visible-block {
+.pro-visible-block, .trusted-visible-block {
   display: none !important;
 }
 
-body.pro-status-true .pro-visible-block {
-  display: block !important;;
+body.pro-status-true .pro-visible-block, body.trusted-status-true .trusted-visible-block {
+  display: block !important;
 }
 
 .delete-confirm{

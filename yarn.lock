@@ -220,10 +220,10 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.2.3.tgz#dfa0c92efe44a1d1a7974fb49ffeb40ef2da5a27"
   integrity sha512-zVgvPwGK7c1aVdUVc9Qv7SqepOGRDrqCw7KZPSZziWGxSlbII3gmvGLPzLX4d0n0BMbamBacUrN22zOMyFFEkQ==
 
-"@github/clipboard-copy-element@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@github/clipboard-copy-element/-/clipboard-copy-element-1.0.5.tgz#843912564abafe667b05095abc800b271d8b25e6"
-  integrity sha512-kbBh9Hccfn3Ae1Ph/vDUIDBtP0YDm4thcW25QBZhu/I2ePFoyYKr4TBxqwo0+dNrrwAIXK8uyceISEmY9ZjZJg==
+"@github/clipboard-copy-element@^1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@github/clipboard-copy-element/-/clipboard-copy-element-1.0.6.tgz#e053f087597edbc01b6c98bbcb699825611eb93f"
+  integrity sha512-tlhPGd/gWtEBi2sSLLkaqlUyY2OjZ1gWP3d93fChqqkSE3rdtmIfNg5vxNXh+kQtYh8HWNbICnD5pi3SFCAu7w==
 
 "@nodelib/fs.scandir@2.1.1":
   version "2.1.1"
@@ -4430,10 +4430,10 @@ eslint-config-airbnb@^17.1.1:
     object.assign "^4.1.0"
     object.entries "^1.1.0"
 
-eslint-config-prettier@^6.2.0:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-6.2.0.tgz#80e0b8714e3f6868c4ac2a25fbf39c02e73527a7"
-  integrity sha512-VLsgK/D+S/FEsda7Um1+N8FThec6LqE3vhcMyp8mlmto97y3fGf3DX7byJexGuOb1QY0Z/zz222U5t+xSfcZDQ==
+eslint-config-prettier@^6.3.0:
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-6.3.0.tgz#e73b48e59dc49d950843f3eb96d519e2248286a3"
+  integrity sha512-EWaGjlDAZRzVFveh2Jsglcere2KK5CJBhkNSa1xs3KfMUGdRiT7lG089eqPdvlzWHpAqaekubOsOMu8W8Yk71A==
   dependencies:
     get-stdin "^6.0.0"
 

@@ -22,12 +22,8 @@ class Notification < ApplicationRecord
     where(organization_id: org_id, notifiable_type: "Mention", user_id: nil)
   }
 
-  scope :with_recently_aggregated_reactions_and_follows, lambda {
-    where("notified_at < ?", 24.hours.ago).
-      where(action: %w[Reaction Follow])
-  }
-  scope :without_recently_aggregated_reactions_and_follows, lambda {
-    where.not(with_recently_aggregated_reactions_and_follows.arel.exists)
+  scope :without_past_aggregations, lambda {
+    where.not("notified_at < ? AND action IN ('Reaction', 'Follow')", 24.hours.ago)
   }
 
   class << self

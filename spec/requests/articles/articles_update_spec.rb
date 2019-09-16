@@ -110,7 +110,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
   end
 
   it "schedules a dispatching event job" do
-    create(:webhook_endpoint, events: %w[article_created article_updated])
+    create(:webhook_endpoint, events: %w[article_created article_updated], user: user)
     expect do
       put "/articles/#{article.id}", params: {
         article: { title: "new_title", body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }

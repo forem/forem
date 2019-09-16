@@ -60,7 +60,7 @@ RSpec.describe "Moderations", type: :request do
     it "grants access to /mod index with articles" do
       create(:article, published: true)
       get "/mod"
-      expect(response.body).to include("Experience Level Target")
+      expect(response.body).to include("Suggest experience level")
     end
   end
 end

@@ -10,7 +10,7 @@ module Webhook
     end
 
     def call
-      endpoint_urls = Endpoint.for_events([event_type]).pluck(:target_url)
+      endpoint_urls = Endpoint.for_events([event_type]).where(user_id: record.user_id).pluck(:target_url)
       return if endpoint_urls.empty?
 
       event_json = Event.new(event_type: event_type, payload: PayloadAdapter.new(record).hash).to_json

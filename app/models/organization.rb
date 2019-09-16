@@ -92,6 +92,10 @@ class Organization < ApplicationRecord
     ProfileImage.new(self).get(90)
   end
 
+  def banned
+    false
+  end
+
   private
 
   def evaluate_markdown
