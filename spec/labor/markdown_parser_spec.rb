@@ -87,7 +87,7 @@ RSpec.describe MarkdownParser do
           - `@#{user.username}`
       DOC
       result = generate_and_parse_markdown(mention)
-      expect(result).to eq("<p><code>@#{user.username}</code> one two, <a class=\"comment-mentioned-user\" href=\"http://localhost:3000/#{user.username}\">@#{user.username}</a>\n three four:</p>\n\n<ul>\n<li><code>@#{user.username}</code></li>\n</ul>\n\n")
+      expect(result).to eq("<p><code>@#{user.username}</code> one two, <a class=\"comment-mentioned-user\" href=\"#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/#{user.username}\">@#{user.username}</a>\n three four:</p>\n\n<ul>\n<li><code>@#{user.username}</code></li>\n</ul>\n\n")
     end
 
     it "will not work in code tag" do
@@ -100,7 +100,7 @@ RSpec.describe MarkdownParser do
     it "works with markdown heavy contents" do
       mention = "test **[link?](https://dev.to/ben/)** thread, @#{user.username} talks :"
       result = generate_and_parse_markdown(mention)
-      expect(result).to include "\"http://localhost:3000/#{user.username}\">"
+      expect(result).to include "<a class=\"comment-mentioned-user\""
     end
   end
 
