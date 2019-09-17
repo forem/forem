@@ -63,7 +63,14 @@ RSpec.describe "ArticlesCreate", type: :request do
       create(:webhook_endpoint, events: %w[article_created article_updated], target_url: url, user: user)
     end
 
-    it "schedules a dispatching event job" do
+    it "doesn't schedule a dispatching event job (unpublished)" do
+      expect do
+        post "/articles", params: article_params
+      end.not_to have_enqueued_job(Webhook::DispatchEventJob).once
+    end
+
+    it "schedules a dispatching event job (published)" do
+      article_params[:article][:body_markdown] = "---\ntitle: hey hey hahuu\npublished: true\nseries: helloyo\n---\nYo ho ho#{rand(100)}"
       expect do
         post "/articles", params: article_params
       end.to have_enqueued_job(Webhook::DispatchEventJob).once

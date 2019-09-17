@@ -6,7 +6,7 @@ module Articles
       article.destroy!
       Notification.remove_all_without_delay(notifiable_id: article.id, notifiable_type: "Article", action: "Published")
       Notification.remove_all(notifiable_id: article.id, notifiable_type: "Article", action: "Reaction")
-      event_dispatcher.call("article_destroyed", article)
+      event_dispatcher.call("article_destroyed", article) if article.published?
     end
   end
 end
