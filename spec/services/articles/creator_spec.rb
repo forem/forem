@@ -37,6 +37,14 @@ RSpec.describe Articles::Creator do
       article = described_class.call(user, valid_attributes, event_dispatcher)
       expect(event_dispatcher).to have_received(:call).with("article_created", article.object)
     end
+
+    it "doesn't call an event dispatcher when an article is unpublished" do
+      attributes = attributes_for(:article, published: false)
+      event_dispatcher = double
+      allow(event_dispatcher).to receive(:call)
+      article = described_class.call(user, attributes, event_dispatcher)
+      expect(event_dispatcher).not_to have_received(:call).with("article_created", article.object)
+    end
   end
 
   context "when valid attributes" do

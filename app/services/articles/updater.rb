@@ -13,6 +13,7 @@ module Articles
 
     def call
       article = load_article
+      was_published = article.published
 
       # the client can change the series the article belongs to
       if article_params.key?(:series)
@@ -38,7 +39,8 @@ module Articles
       send_notification = article.published && article.saved_change_to_published_at.present?
       Notification.send_to_followers(article, "Published") if send_notification
 
-      dispatch_event(article)
+      # don't send only if article keeps being unpublished
+      dispatch_event(article) if article.published || was_published
 
       article.decorate
     end
