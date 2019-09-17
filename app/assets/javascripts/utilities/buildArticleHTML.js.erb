@@ -99,7 +99,7 @@ function buildArticleHTML(article) {
     var readingTimeHTML = '';
     if (article.class_name === "Article") {
       // we have ` ... || null` for the case article.reading_time is undefined
-      readingTimeHTML = '<a href="'+article.path+'" class="article-reading-time">'+ (article.reading_time || null < 1 ? '1 min' : article.reading_time + ' min') +' read</a>'
+      readingTimeHTML = '<a href="'+article.path+'" class="article-reading-time">'+ ((article.reading_time || null) < 1 ? '1 min' : article.reading_time + ' min') +' read</a>'
     }
     var videoHTML = '';
     if (article.cloudinary_video_url) {
