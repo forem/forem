@@ -6,6 +6,10 @@ module Api
 
       skip_before_action :verify_authenticity_token, only: %w[create destroy]
 
+      def index
+        @webhooks = @user.webhook_endpoints.order(:id)
+      end
+
       def create
         @webhook = @user.webhook_endpoints.create!(webhook_params)
         render "show", status: :created
