@@ -54,8 +54,7 @@ class User < ApplicationRecord
 
   mount_uploader :profile_image, ProfileImageUploader
 
-  devise :omniauthable, :rememberable,
-         :registerable, :database_authenticatable, :confirmable
+  devise :omniauthable, :registerable, :database_authenticatable, :confirmable
   validates :email,
             length: { maximum: 50 },
             email: true,

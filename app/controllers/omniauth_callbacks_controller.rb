@@ -28,7 +28,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     cta_variant = request.env["omniauth.params"]["state"].to_s
     @user = AuthorizationService.new(request.env["omniauth.auth"], current_user, cta_variant).get_user
     if persisted_and_valid?
-      remember_me(@user)
       sign_in_and_redirect @user, event: :authentication
       set_flash_message(:notice, :success, kind: provider.to_s.capitalize) if is_navigational_format?
     elsif persisted_but_username_taken?

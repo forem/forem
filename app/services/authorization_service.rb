@@ -59,7 +59,6 @@ class AuthorizationService
       )
       user.name = auth.info.nickname if user.name.blank?
       user.skip_confirmation!
-      user.set_remember_fields
       add_social_identity_data(user)
       user.saw_onboarding = false
       user.editor_version = "v2"
@@ -70,7 +69,6 @@ class AuthorizationService
   end
 
   def update_user(user)
-    user.set_remember_fields
     user.github_username = auth.info.nickname if auth.provider == "github" && auth.info.nickname != user.github_username
     user.twitter_username = auth.info.nickname if auth.provider == "twitter" && auth.info.nickname != user.twitter_username
     add_social_identity_data(user)
