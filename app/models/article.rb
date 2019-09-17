@@ -269,10 +269,8 @@ class Article < ApplicationRecord
   end
 
   def delete_related_objects
-    index = Algolia::Index.new("searchables_#{Rails.env}")
-    index.delete_object("articles-#{id}")
-    index = Algolia::Index.new("ordered_articles_#{Rails.env}")
-    index.delete_object("articles-#{id}")
+    Search::RemoveFromIndexJob.perform_now("searchables_#{Rails.env}", index_id)
+    Search::RemoveFromIndexJob.perform_now("ordered_articles_#{Rails.env}", index_id)
   end
 
   def touch_by_reaction
