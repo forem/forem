@@ -426,7 +426,7 @@ class User < ApplicationRecord
 
   def remove_from_algolia_index
     remove_from_index!
-    Algolia::RemoveFromIndexJob.perform_later("searchables_#{Rails.env}", index_id)
+    Search::RemoveFromIndexJob.perform_later("searchables_#{Rails.env}", index_id)
   end
 
   def unsubscribe_from_newsletters
