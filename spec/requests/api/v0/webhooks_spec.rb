@@ -2,10 +2,32 @@ require "rails_helper"
 
 RSpec.describe "Api::V0::Webhooks", type: :request do
   let(:user) { create(:user) }
-  let!(:webhook) { create(:webhook_endpoint, user: user) }
+  let!(:webhook) { create(:webhook_endpoint, user: user, target_url: "https://api.example.com/go") }
 
   before do
     sign_in user
+  end
+
+  describe "GET /api/v0/webhooks" do
+    let!(:webhook2) { create(:webhook_endpoint, user: user, target_url: "https://api.example.com/webhook") }
+
+    before do
+      create(:webhook_endpoint)
+    end
+
+    it "returns 200 on success" do
+      get "/api/webhooks"
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "returns json on success" do
+      get "/api/webhooks"
+      json = JSON.parse(response.body)
+      ids = json.map { |item| item["id"] }
+      urls = json.map { |item| item["target_url"] }
+      expect(ids).to eq([webhook.id, webhook2.id])
+      expect(urls).to eq(%w[https://api.example.com/go https://api.example.com/webhook])
+    end
   end
 
   describe "GET /api/v0/webhooks/:id" do
