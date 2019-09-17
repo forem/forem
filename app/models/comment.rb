@@ -118,8 +118,7 @@ class Comment < ApplicationRecord
 
   def remove_algolia_index
     remove_from_index!
-    index = Algolia::Index.new("ordered_comments_#{Rails.env}")
-    index.delete_object("comments-#{id}")
+    Search::RemoveFromIndexJob.perform_now("ordered_comments_#{Rails.env}", index_id)
   end
 
   def index_id
