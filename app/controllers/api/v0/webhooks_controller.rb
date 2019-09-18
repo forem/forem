@@ -11,7 +11,9 @@ module Api
       end
 
       def create
-        @webhook = @user.webhook_endpoints.create!(webhook_params)
+        @webhook = @user.webhook_endpoints.new(webhook_params)
+        @webhook.oauth_application_id = doorkeeper_token.application_id if doorkeeper_token
+        @webhook.save!
         render "show", status: :created
       end
 
