@@ -72,6 +72,7 @@ Rails.application.routes.draw do
         post "bust_cache"
       end
     end
+    resources :webhook_endpoints, only: :index
   end
 
   namespace :api, defaults: { format: "json" } do
@@ -79,7 +80,7 @@ Rails.application.routes.draw do
           constraints: ApiConstraints.new(version: 0, default: true) do
       resources :articles, only: %i[index show create update] do
         collection do
-          get :me
+          get "me(/:status)", to: "articles#me", as: :me, constraints: { status: /published|unpublished|all/ }
         end
       end
       resources :comments, only: %i[index show]
@@ -107,7 +108,7 @@ Rails.application.routes.draw do
           post "/update_or_create", to: "github_repos#update_or_create"
         end
       end
-      resources :webhooks, only: %i[create show destroy]
+      resources :webhooks, only: %i[index create show destroy]
 
       get "/analytics/totals", to: "analytics#totals"
       get "/analytics/historical", to: "analytics#historical"
@@ -285,7 +286,7 @@ Rails.application.routes.draw do
   get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
   get "/freestickers" => "giveaways#new"
   get "/shop", to: redirect("https://shop.dev.to/")
-  get "/mod" => "moderations#index"
+  get "/mod" => "moderations#index", as: :mod
 
   post "/fallback_activity_recorder" => "ga_events#create"
 

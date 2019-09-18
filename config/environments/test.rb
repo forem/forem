@@ -68,3 +68,5 @@ Rails.application.configure do
     Bullet.add_whitelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
   end
 end
+
+Rails.application.routes.default_url_options = { host: "test.host" }

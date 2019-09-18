@@ -17,6 +17,20 @@ module Admin
       end
     end
 
+    def update
+      if requested_resource.update(resource_params)
+        Webhook::DispatchEvent.call("article_updated", requested_resource)
+        redirect_to(
+          [namespace, requested_resource],
+          notice: translate_with_resource("update.success"),
+        )
+      else
+        render :edit, locals: {
+          page: Administrate::Page::Form.new(dashboard, requested_resource)
+        }
+      end
+    end
+
     def destroy
       Articles::Destroyer.call(requested_resource)
       if requested_resource.destroyed?

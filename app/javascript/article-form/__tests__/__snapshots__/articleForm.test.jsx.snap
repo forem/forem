@@ -49,7 +49,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
           type="button"
         >
           <img
-            alt="Upload an image"
+            alt="Upload images"
             src=""
           />
         </button>

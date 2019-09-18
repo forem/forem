@@ -2,16 +2,49 @@ require "rails_helper"
 
 RSpec.describe "Api::V0::Webhooks", type: :request do
   let(:user) { create(:user) }
-  let!(:webhook) { create(:webhook_endpoint, user: user) }
+  let!(:webhook) { create(:webhook_endpoint, user: user, target_url: "https://api.example.com/go") }
 
   before do
     sign_in user
+  end
+
+  describe "GET /api/v0/webhooks" do
+    let!(:webhook2) { create(:webhook_endpoint, user: user, target_url: "https://api.example.com/webhook") }
+
+    before do
+      create(:webhook_endpoint)
+    end
+
+    it "returns 200 on success" do
+      get "/api/webhooks"
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "returns json on success" do
+      get "/api/webhooks"
+      json = JSON.parse(response.body)
+      ids = json.map { |item| item["id"] }
+      urls = json.map { |item| item["target_url"] }
+      expect(ids).to eq([webhook.id, webhook2.id])
+      expect(urls).to eq(%w[https://api.example.com/go https://api.example.com/webhook])
+    end
   end
 
   describe "GET /api/v0/webhooks/:id" do
     it "returns 200 on success" do
       get "/api/webhooks/#{webhook.id}"
       expect(response).to have_http_status(:ok)
+    end
+
+    it "returns 404 if the webhook does not exist" do
+      get "/api/webhooks/9999"
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "returns 404 if another user webhook is accessed" do
+      other_webhook = create(:webhook_endpoint, user: create(:user))
+      get "/api/webhooks/#{other_webhook.id}"
+      expect(response).to have_http_status(:not_found)
     end
 
     it "returns json on success" do
@@ -24,7 +57,11 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
 
   describe "POST /api/v0/webhooks" do
     let(:webhook_params) do
-      { source: "stackbit", target_url: Faker::Internet.url(scheme: "https"), events: %w[article_created article_updated article_destroyed] }
+      {
+        source: "stackbit",
+        target_url: Faker::Internet.url(scheme: "https"),
+        events: %w[article_created article_updated article_destroyed]
+      }
     end
 
     it "creates a webhook" do
@@ -57,12 +94,9 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
       end.to change(Webhook::Endpoint, :count).by(-1)
     end
 
-    it "returns 200 on success" do
+    it "returns 204 on success" do
       delete "/api/webhooks/#{webhook.id}"
-      expect(response).to have_http_status(:ok)
-      expect(response.content_type).to eq("application/json")
-      json = JSON.parse(response.body)
-      expect(json["success"]).to be true
+      expect(response).to have_http_status(:no_content)
     end
 
     it "doesn't allow to destroy other user webhook" do
@@ -70,6 +104,12 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
       expect do
         delete "/api/webhooks/#{other_webhook.id}"
       end.not_to change(Webhook::Endpoint, :count)
+    end
+
+    it "returns 404 if another user webhook is accessed" do
+      other_webhook = create(:webhook_endpoint, user: create(:user))
+      delete "/api/webhooks/#{other_webhook.id}"
+      expect(response).to have_http_status(:not_found)
     end
   end
 end

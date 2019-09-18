@@ -4,7 +4,7 @@ RSpec.describe BlackBox do
   let!(:function_caller) { double }
 
   describe "#article_hotness_score" do
-    let!(:article) { create(:article, published_at: Time.current) }
+    let!(:article) { build_stubbed(:article, published_at: Time.current) }
 
     it "calls function caller" do
       allow(function_caller).to receive(:call).and_return(5)
@@ -18,7 +18,7 @@ RSpec.describe BlackBox do
     end
 
     it "returns the correct value" do
-      article.update_column(:score, 99)
+      article = build_stubbed(:article, score: 99, published_at: Time.current)
       allow(function_caller).to receive(:call).and_return(5)
       # recent bonuses (28 + 31 + 80 + 395 + 330 + 330 = 1194)
       # + score (99)
@@ -28,8 +28,7 @@ RSpec.describe BlackBox do
     end
 
     it "returns the lower correct value if article tagged with watercooler" do
-      article.update_column(:score, 99)
-      article.update_column(:cached_tag_list, "hello, discuss, watercooler")
+      article = build_stubbed(:article, score: 99, cached_tag_list: "hello, discuss, watercooler", published_at: Time.current)
       allow(function_caller).to receive(:call).and_return(5)
       # recent bonuses (28 + 31 + 80 + 395 + 330 + 330 = 1194)
       # + score (99)
@@ -40,16 +39,11 @@ RSpec.describe BlackBox do
   end
 
   describe "#comment_quality_score" do
-    let(:comment) { create(:comment, commentable: create(:article), body_markdown: "```#{'hello, world! ' * 20}```") }
-
-    before do
-      reaction = create(:reaction, reactable: comment)
-      reaction.update_column(:points, 20)
-      reaction2 = create(:reaction, reactable: comment)
-      reaction2.update_column(:points, 2)
-    end
-
     it "returns the correct score" do
+      comment = build_stubbed(:comment, body_markdown: "```#{'hello, world! ' * 20}```")
+      reactions = double
+      allow(comment).to receive(:reactions).and_return(reactions)
+      allow(reactions).to receive(:sum).with(:points).and_return(22)
       # rep_points + descendants_points + bonus_points - spaminess_rating
       # rep_points - 22
       # descendants_points - 0
@@ -61,8 +55,8 @@ RSpec.describe BlackBox do
   end
 
   describe "#calculate_spaminess" do
-    let(:user) { build(:user) }
-    let(:comment) { build(:comment, user: user) }
+    let(:user) { build_stubbed(:user) }
+    let(:comment) { build_stubbed(:comment, user: user) }
 
     before do
       allow(function_caller).to receive(:call).and_return(1)

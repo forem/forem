@@ -52,9 +52,9 @@ module Credits
         purchase_types = credits_purchases_with_purchase.map(&:purchase_type).uniq.compact
         purchase_types.each do |purchase_type|
           credits_purchases_by_type = credits_purchases_with_purchase.select { |row| row.purchase_type == purchase_type }
-          purchases = purchase_type.constantize.where(id: credits_purchases_by_type.map(&:purchase_id))
+          purchase_set = purchase_type.constantize.where(id: credits_purchases_by_type.map(&:purchase_id))
           credits_purchases_by_type.each do |credit_purchase|
-            purchase = purchases.detect { |p| p.id == credit_purchase.purchase_id }
+            purchase = purchase_set.detect { |set| set.id == credit_purchase.purchase_id }
             items << Item.new(
               purchase: purchase,
               cost: credit_purchase.cost.to_i,

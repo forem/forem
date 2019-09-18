@@ -340,6 +340,13 @@ class User < ApplicationRecord
     end
   end
 
+  def moderator_for_tags
+    Rails.cache.fetch("user-#{id}/tag_moderators_list", expires_in: 200.hours) do
+      tag_ids = roles.where(name: "tag_moderator").pluck(:resource_id)
+      Tag.where(id: tag_ids).pluck(:name)
+    end
+  end
+
   def scholar
     valid_pass = workshop_expiration.nil? || workshop_expiration > Time.current
     has_role?(:workshop_pass) && valid_pass
@@ -426,8 +433,7 @@ class User < ApplicationRecord
 
   def remove_from_algolia_index
     remove_from_index!
-    index = Algolia::Index.new("searchables_#{Rails.env}")
-    index.delay.delete_object("users-#{id}")
+    Search::RemoveFromIndexJob.perform_later("searchables_#{Rails.env}", index_id)
   end
 
   def unsubscribe_from_newsletters
@@ -515,13 +521,13 @@ class User < ApplicationRecord
 
     self.old_old_username = old_username
     self.old_username = username_was
-    chat_channels.find_each do |c|
-      c.slug = c.slug.gsub(username_was, username)
-      c.save
+    chat_channels.find_each do |channel|
+      channel.slug = channel.slug.gsub(username_was, username)
+      channel.save
     end
-    articles.find_each do |a|
-      a.path = a.path.gsub(username_was, username)
-      a.save
+    articles.find_each do |article|
+      article.path = article.path.gsub(username_was, username)
+      article.save
     end
   end
 

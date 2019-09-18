@@ -28,6 +28,7 @@ class MarkdownParser
     html = wrap_all_tables(html)
     html = remove_empty_paragraphs(html)
     html = escape_colon_emojis_in_codeblock(html)
+    html = unescape_raw_tag_in_codeblocks(html)
     wrap_mentions_with_links!(html)
   end
 
@@ -164,30 +165,63 @@ class MarkdownParser
   def escape_liquid_tags_in_codeblock(content)
     # Escape codeblocks, code spans, and inline code
     content.gsub(/[[:space:]]*`{3}.*?`{3}|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
+      codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
+      codeblock.gsub!("{% raw %}", "{----% raw %----}")
       if codeblock.match?(/[[:space:]]*`{3}/)
         "\n{% raw %}\n" + codeblock + "\n{% endraw %}\n"
       else
         "{% raw %}" + codeblock + "{% endraw %}"
       end
-      # Below is the old implementation that replaces all liquid tag.
-      # codeblock.gsub(/{%.{1,}[^}]{2}%}/) do |liquid_tag|
-      #   liquid_tag.gsub(/{%/, '{{ "{%').gsub(/%}/, '" }}%}')
-      # end
+    end
+  end
+
+  def possibly_raw_tag_syntax?(array)
+    array.any? { |string| ["{", "}", "raw", "endraw", "----"].include?(string) }
+  end
+
+  def unescape_raw_tag_in_codeblocks(html)
+    html.gsub!("{----% raw %----}", "{% raw %}")
+    html.gsub!("{----% endraw %----}", "{% endraw %}")
+    html_doc = Nokogiri::HTML(html)
+    html_doc.xpath("//body/div/pre/code").each do |codeblock|
+      next unless codeblock.content.include?("{----% raw %----}") || codeblock.content.include?("{----% endraw %----}")
+
+      children_content = codeblock.children.map(&:content)
+      indices = children_content.size.times.select do |i|
+        possibly_raw_tag_syntax?(children_content[i..i + 2])
+      end
+      indices.each do |i|
+        codeblock.children[i].content = codeblock.children[i].content.delete("----")
+      end
+    end
+    if html_doc.at_css("body")
+      html_doc.at_css("body").inner_html
+    else
+      html_doc.to_html
     end
   end
 
   def wrap_mentions_with_links!(html)
     html_doc = Nokogiri::HTML(html)
-    html_doc.xpath("//body/*[not (@class='highlight')]").each do |el|
-      el.children.each do |child|
-        if child.text?
-          new_child = child.text.gsub(/\B@[a-z0-9_-]+/i) do |s|
-            user_link_if_exists(s)
-          end
-          child.replace(new_child) if new_child != child.text
+    # looks for node that isn't <code>, <a>, and contains "@"
+    html_doc.xpath('//*[not (self::code) and not(self::a) and contains(text(), "@")]').each do |node|
+      # if the target node is a <p>, <ul>, or <li>, it will have more than 1 child
+      # otherwise inner_html can be use when there's only 1 child
+      if node.children.count > 1
+        # only focus on portion of text with "@"
+        node.xpath("text()[contains(.,'@')]").each do |el|
+          el.replace(el.text.gsub(/\B@[a-z0-9_-]+/i) do |text|
+            user_link_if_exists(text)
+          end)
+        end
+      else
+        # with only 1 child, inner_html can be used update the content
+        node.inner_html = node.inner_html.gsub(/\B@[a-z0-9_-]+/i) do |text|
+          user_link_if_exists(text)
         end
       end
     end
+
     if html_doc.at_css("body")
       html_doc.at_css("body").inner_html
     else
@@ -224,21 +258,21 @@ class MarkdownParser
 
   def wrap_all_images_in_links(html)
     doc = Nokogiri::HTML.fragment(html)
-    doc.search("p img").each do |i|
-      i.swap("<a href='#{i.attr('src')}' class='article-body-image-wrapper'>#{i}</a>") unless i.parent.name == "a"
+    doc.search("p img").each do |image|
+      image.swap("<a href='#{image.attr('src')}' class='article-body-image-wrapper'>#{image}</a>") unless image.parent.name == "a"
     end
     doc.to_html
   end
 
   def remove_empty_paragraphs(html)
     doc = Nokogiri::HTML.fragment(html)
-    doc.css("p").select { |p| all_children_are_blank?(p) }.each(&:remove)
+    doc.css("p").select { |paragraph| all_children_are_blank?(paragraph) }.each(&:remove)
     doc.to_html
   end
 
   def wrap_all_tables(html)
     doc = Nokogiri::HTML.fragment(html)
-    doc.search("table").each { |i| i.swap("<div class='table-wrapper-paragraph'>#{i}</div>") }
+    doc.search("table").each { |table| table.swap("<div class='table-wrapper-paragraph'>#{table}</div>") }
     doc.to_html
   end
 

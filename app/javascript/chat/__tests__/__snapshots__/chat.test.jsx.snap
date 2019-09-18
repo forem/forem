@@ -11,6 +11,7 @@ exports[`<Chat /> should load chat 1`] = `
     <button
       class="chat__channelstogglebutt"
       onClick={[Function]}
+      type="button"
     >
       &lt;
     </button>
@@ -25,6 +26,7 @@ exports[`<Chat /> should load chat 1`] = `
         class="chat__channeltypefilterbutton chat__channeltypefilterbutton--active"
         data-channel-type="all"
         onClick={[Function]}
+        type="button"
       >
         all
       </button>
@@ -32,6 +34,7 @@ exports[`<Chat /> should load chat 1`] = `
         class="chat__channeltypefilterbutton chat__channeltypefilterbutton--inactive"
         data-channel-type="direct"
         onClick={[Function]}
+        type="button"
       >
         direct
       </button>
@@ -39,6 +42,7 @@ exports[`<Chat /> should load chat 1`] = `
         class="chat__channeltypefilterbutton chat__channeltypefilterbutton--inactive"
         data-channel-type="invite_only"
         onClick={[Function]}
+        type="button"
       >
         group
       </button>

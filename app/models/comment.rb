@@ -118,8 +118,7 @@ class Comment < ApplicationRecord
 
   def remove_algolia_index
     remove_from_index!
-    index = Algolia::Index.new("ordered_comments_#{Rails.env}")
-    index.delete_object("comments-#{id}")
+    Search::RemoveFromIndexJob.perform_now("ordered_comments_#{Rails.env}", index_id)
   end
 
   def index_id
@@ -227,14 +226,14 @@ class Comment < ApplicationRecord
   def wrap_timestamps_if_video_present!
     return unless commentable_type != "PodcastEpisode" && commentable.video.present?
 
-    self.processed_html = processed_html.gsub(/(([0-9]:)?)(([0-5][0-9]|[0-9])?):[0-5][0-9]/) { |s| "<a href='#{commentable.path}?t=#{s}'>#{s}</a>" }
+    self.processed_html = processed_html.gsub(/(([0-9]:)?)(([0-5][0-9]|[0-9])?):[0-5][0-9]/) { |string| "<a href='#{commentable.path}?t=#{string}'>#{string}</a>" }
   end
 
   def shorten_urls!
     doc = Nokogiri::HTML.parse(processed_html)
-    doc.css("a").each do |a|
-      unless a.to_s.include?("<img") || a.attr("class")&.include?("ltag")
-        a.content = strip_url(a.content) unless a.to_s.include?("<img")
+    doc.css("a").each do |anchor|
+      unless anchor.to_s.include?("<img") || anchor.attr("class")&.include?("ltag")
+        anchor.content = strip_url(anchor.content) unless anchor.to_s.include?("<img")
       end
     end
     self.processed_html = doc.to_html.html_safe
