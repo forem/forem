@@ -128,17 +128,24 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
   end
 
   describe "authorized with doorkeeper" do
+    let!(:oauth_app) { create(:application) }
     let!(:oauth_app2) { create(:application) }
     let(:access_token) { create :doorkeeper_access_token, resource_owner: user, application: oauth_app2 }
-
-    before do
-      create(:application)
-    end
 
     it "renders index successfully" do
       get "/api/webhooks", params: { access_token: access_token.token }
       expect(response.content_type).to eq("application/json")
       expect(response).to have_http_status(:ok)
+    end
+
+    it "renders only corresponding webhooks" do
+      create(:webhook_endpoint, oauth_application_id: oauth_app.id, user: user)
+      webhook2 = create(:webhook_endpoint, oauth_application_id: oauth_app2.id, user: user)
+      get "/api/webhooks", params: { access_token: access_token.token }
+
+      json = JSON.parse(response.body)
+      ids = json.map { |item| item["id"] }
+      expect(ids).to eq([webhook2.id])
     end
 
     it "sets correct oauth app id for the webhook if needed" do
@@ -150,6 +157,12 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
       post "/api/webhooks", params: { access_token: access_token.token, webhook_endpoint: webhook_params }
       webhook = user.webhook_endpoints.find_by(target_url: webhook_params[:target_url])
       expect(webhook.oauth_application_id).to eq(oauth_app2.id)
+    end
+
+    it "doesn't allow destroying another app webhook" do
+      other_webhook = create(:webhook_endpoint, user: user)
+      delete api_webhook_path(other_webhook.id), params: { access_token: access_token.token }
+      expect(response).to have_http_status(:not_found)
     end
   end
 end

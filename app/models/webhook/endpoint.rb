@@ -13,6 +13,7 @@ module Webhook
     attribute :events, :string, array: true, default: []
 
     scope :for_events, ->(events) { where("events @> ARRAY[?]::varchar[]", Array(events)) }
+    scope :for_app, ->(app_id) { where(oauth_application_id: app_id) }
 
     def self.table_name_prefix
       "webhook_"
