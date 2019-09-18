@@ -13,12 +13,12 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
     end
 
     it "returns 200 on success" do
-      get "/api/webhooks"
+      get api_webhooks_path
       expect(response).to have_http_status(:ok)
     end
 
     it "returns json on success" do
-      get "/api/webhooks"
+      get api_webhooks_path
       json = JSON.parse(response.body)
       ids = json.map { |item| item["id"] }
       urls = json.map { |item| item["target_url"] }
@@ -35,23 +35,23 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
     end
 
     it "returns 200 on success" do
-      get "/api/webhooks/#{webhook.id}"
+      get api_webhook_path(webhook.id)
       expect(response).to have_http_status(:ok)
     end
 
     it "returns 404 if the webhook does not exist" do
-      get "/api/webhooks/9999"
+      get api_webhook_path(9999)
       expect(response).to have_http_status(:not_found)
     end
 
     it "returns 404 if another user webhook is accessed" do
       other_webhook = create(:webhook_endpoint, user: create(:user))
-      get "/api/webhooks/#{other_webhook.id}"
+      get api_webhook_path(other_webhook.id)
       expect(response).to have_http_status(:not_found)
     end
 
     it "returns json on success" do
-      get "/api/webhooks/#{webhook.id}"
+      get api_webhook_path(webhook.id)
       json = JSON.parse(response.body)
       expect(json["target_url"]).to eq(webhook.target_url)
       expect(json["user"]["username"]).to eq(user.username)
@@ -73,12 +73,12 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
 
     it "creates a webhook" do
       expect do
-        post "/api/webhooks", params: { webhook_endpoint: webhook_params }
+        post api_webhooks_path, params: { webhook_endpoint: webhook_params }
       end.to change(Webhook::Endpoint, :count).by(1)
     end
 
     it "creates a webhook with events and data" do
-      post "/api/webhooks", params: { webhook_endpoint: webhook_params }
+      post api_webhooks_path, params: { webhook_endpoint: webhook_params }
       created_webhook = user.webhook_endpoints.last
       expect(created_webhook.events).to eq(%w[article_created article_updated article_destroyed])
       expect(created_webhook.target_url).to eq(webhook_params[:target_url])
@@ -87,7 +87,7 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
     end
 
     it "returns :created and json response on success" do
-      post "/api/webhooks", params: { webhook_endpoint: webhook_params }
+      post api_webhooks_path, params: { webhook_endpoint: webhook_params }
       expect(response).to have_http_status(:created)
       expect(response.content_type).to eq("application/json")
       json = JSON.parse(response.body)
@@ -104,25 +104,25 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
 
     it "deletes the webhook" do
       expect do
-        delete "/api/webhooks/#{webhook.id}"
+        delete api_webhook_path(webhook.id)
       end.to change(Webhook::Endpoint, :count).by(-1)
     end
 
     it "returns 204 on success" do
-      delete "/api/webhooks/#{webhook.id}"
+      delete api_webhook_path(webhook.id)
       expect(response).to have_http_status(:no_content)
     end
 
     it "doesn't allow to destroy other user webhook" do
       other_webhook = create(:webhook_endpoint, user: create(:user))
       expect do
-        delete "/api/webhooks/#{other_webhook.id}"
+        delete api_webhook_path(other_webhook.id)
       end.not_to change(Webhook::Endpoint, :count)
     end
 
     it "returns 404 if another user webhook is accessed" do
       other_webhook = create(:webhook_endpoint, user: create(:user))
-      delete "/api/webhooks/#{other_webhook.id}"
+      delete api_webhook_path(other_webhook.id)
       expect(response).to have_http_status(:not_found)
     end
   end
@@ -133,7 +133,7 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
     let(:access_token) { create :doorkeeper_access_token, resource_owner: user, application: oauth_app2 }
 
     it "renders index successfully" do
-      get "/api/webhooks", params: { access_token: access_token.token }
+      get api_webhooks_path, params: { access_token: access_token.token }
       expect(response.content_type).to eq("application/json")
       expect(response).to have_http_status(:ok)
     end
@@ -141,7 +141,7 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
     it "renders only corresponding webhooks" do
       create(:webhook_endpoint, oauth_application_id: oauth_app.id, user: user)
       webhook2 = create(:webhook_endpoint, oauth_application_id: oauth_app2.id, user: user)
-      get "/api/webhooks", params: { access_token: access_token.token }
+      get api_webhooks_path, params: { access_token: access_token.token }
 
       json = JSON.parse(response.body)
       ids = json.map { |item| item["id"] }
@@ -154,7 +154,7 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
         target_url: Faker::Internet.url(scheme: "https"),
         events: %w[article_created article_updated article_destroyed]
       }
-      post "/api/webhooks", params: { access_token: access_token.token, webhook_endpoint: webhook_params }
+      post api_webhooks_path, params: { access_token: access_token.token, webhook_endpoint: webhook_params }
       webhook = user.webhook_endpoints.find_by(target_url: webhook_params[:target_url])
       expect(webhook.oauth_application_id).to eq(oauth_app2.id)
     end
