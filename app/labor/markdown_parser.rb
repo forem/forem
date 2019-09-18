@@ -203,23 +203,22 @@ class MarkdownParser
 
   def wrap_mentions_with_links!(html)
     html_doc = Nokogiri::HTML(html)
-    # looks for node that isn't <code>, <a>, and contains "@"
-    html_doc.xpath('//*[not (self::code) and not(self::a) and contains(text(), "@")]').each do |node|
-      # if the target node is a <p>, <ul>, or <li>, it will have more than 1 child
-      # otherwise inner_html can be use when there's only 1 child
-      if node.children.count > 1
-        # only focus on portion of text with "@"
-        node.xpath("text()[contains(.,'@')]").each do |el|
-          el.replace(el.text.gsub(/\B@[a-z0-9_-]+/i) do |text|
-            user_link_if_exists(text)
-          end)
-        end
-      else
-        # with only 1 child, inner_html can be used update the content
-        node.inner_html = node.inner_html.gsub(/\B@[a-z0-9_-]+/i) do |text|
-          user_link_if_exists(text)
-        end
+
+    # looks for nodes that isn't <code>, <a>, and contains "@"
+    targets = html_doc.xpath('//html/body/*[not (self::code) and not(self::a) and contains(., "@")]').to_a
+
+    # A Queue system to look for and replace possible usernames
+    until targets.empty?
+      node = targets.shift
+
+      # only focus on portion of text with "@"
+      node.xpath("text()[contains(.,'@')]").each do |el|
+        el.replace(el.text.gsub(/\B@[a-z0-9_-]+/i) { |text| user_link_if_exists(text) })
       end
+
+      # enqueue children that has @ in it's text
+      children = node.xpath('*[not(self::code) and not(self::a) and contains(., "@")]').to_a
+      targets.concat(children)
     end
 
     if html_doc.at_css("body")
