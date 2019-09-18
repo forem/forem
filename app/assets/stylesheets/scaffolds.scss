@@ -222,9 +222,10 @@ body.pro-status-true .pro-visible-block, body.trusted-status-true .trusted-visib
   display: block !important;
 }
 
-.delete-confirm{
+.delete-confirm.container {
   padding:150px 10px;
   min-height:300px;
+  text-align: center;
   h4{
     background:$black;
     padding:5px 8px;
