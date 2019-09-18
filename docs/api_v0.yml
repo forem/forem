@@ -68,6 +68,7 @@ components:
         status:
           type: integer
           format: int32
+
     ArticleIndex:
       type: object
       required:
@@ -132,6 +133,7 @@ components:
         flare_tag:
           type: object
           $ref: "#/components/schemas/ArticleFlareTag"
+
     ArticleShow:
       type: object
       required:
@@ -221,6 +223,7 @@ components:
         user:
           type: object
           $ref: "#/components/schemas/ArticleUser"
+
     ArticleCreate:
       type: object
       properties:
@@ -286,6 +289,7 @@ components:
                 Only users belonging to an organization can assign the article to it
               type: integer
               format: int32
+
     ArticleUpdate:
       type: object
       properties:
@@ -351,6 +355,7 @@ components:
                 Only users belonging to an organization can assign the article to it
               type: integer
               format: int32
+
     ArticleMe:
       type: object
       required:
@@ -527,6 +532,30 @@ components:
         user:
           type: object
           $ref: "#/components/schemas/ArticleUser"
+
+    WebhookIndex:
+      description: Webhook
+      type: object
+      properties:
+        type_of:
+          type: string
+        id:
+          type: integer
+          format: int64
+        source:
+          description: The name of the requester, eg. "DEV"
+          type: string
+        target_url:
+          type: string
+          format: url
+        events:
+          description: An array of events identifiers
+          type: array
+          items:
+            type: string
+        created_at:
+          type: string
+          format: date-time
 
   examples:
     ErrorNotFound:
@@ -1179,6 +1208,46 @@ paths:
             curl https://dev.to/api/articles/me/all
 
   /webhooks:
+    get:
+      summary: Webhooks
+      description: |
+        This endpoint allows the client to retrieve a list of webhooks they have
+        previously registered.
+
+        "Webhooks" are used to register HTTP endpoints that will be called once a relevant event is
+        triggered inside the web application, events like `article_created`, `article_updated`.
+
+        It will return all webhooks, without pagination.
+      tags:
+        - webhooks
+      responses:
+        200:
+          description: A list of webhooks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WebhookIndex"
+              examples:
+                webhooks-success:
+                  summary: Successful response
+                  value:
+                    - type_of: webhook_endpoint
+                      id: 1
+                      source: DEV
+                      target_url: https://example.com/webhooks/webhook1
+                      events:
+                        - article_created
+                      created_at: "2019-09-02T09:47:39.230Z"
+      security:
+        - api_key: []
+        - oauth2: []
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl
+          source: |
+            curl -H "api-key: ACCESS_TOKEN" https://dev.to/api/webhooks
     post:
       summary: Create a new webhook
       description: |
