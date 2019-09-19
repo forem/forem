@@ -18,8 +18,8 @@ RSpec.describe GithubTag::GithubReadmeTag, vcr: vcr_option do
 
     setup { Liquid::Template.register_tag("github", GithubTag) }
 
-    def generate_github_readme(path)
-      Liquid::Template.parse("{% github #{path} %}")
+    def generate_github_readme(path, options = "")
+      Liquid::Template.parse("{% github #{path} #{options} %}")
     end
 
     it "accepts proper github link" do
@@ -36,6 +36,12 @@ RSpec.describe GithubTag::GithubReadmeTag, vcr: vcr_option do
       expect do
         generate_github_readme("/hello/hey/hey/hey")
       end.to raise_error(StandardError)
+    end
+
+    it "handles 'no-readme' option" do
+      template = generate_github_readme(path, "no-readme").render
+      readme_class = "ltag-github-body"
+      expect(template).not_to include(readme_class)
     end
   end
 end
