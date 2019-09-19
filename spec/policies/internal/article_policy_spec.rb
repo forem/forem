@@ -11,7 +11,7 @@ RSpec.describe Internal::ArticlePolicy do
   end
 
   context "when user has a scoped article admin role" do
-    before { allow(user).to receive(:has_role?).with(:admin, Article).and_return(true) }
+    before { allow(user).to receive(:has_role?).with(:single_resource_admin, Article).and_return(true) }
 
     it { is_expected.to permit_actions(%i[index show update]) }
   end

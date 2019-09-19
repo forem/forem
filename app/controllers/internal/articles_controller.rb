@@ -1,6 +1,6 @@
 class Internal::ArticlesController < Internal::ApplicationController
   layout "internal"
-  skip_before_action :authorize_admin
+  skip_before_action :authorize_admin # Instead, specific admin via authorize([:internal, Article])
 
   def index
     authorize([:internal, Article])

@@ -1,13 +1,13 @@
 class Internal::ArticlePolicy < ApplicationPolicy
   def index?
-    scoped_admin?
+    article_admin?
   end
 
   def show?
-    scoped_admin?
+    article_admin?
   end
 
   def update?
-    scoped_admin?
+    article_admin?
   end
 end
