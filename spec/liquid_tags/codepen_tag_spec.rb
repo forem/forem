@@ -68,5 +68,14 @@ RSpec.describe CodepenTag, type: :liquid_template do
         expect { generate_new_liquid(link) }.to raise_error(StandardError)
       end
     end
+
+    it "rejects multiline XSS attempt" do
+      xss_multiline_link = <<~XSS
+        javascript:exploit_code();/*
+        #{codepen_link}
+        */
+      XSS
+      expect { generate_new_liquid(xss_multiline_link) }.to raise_error(StandardError)
+    end
   end
 end
