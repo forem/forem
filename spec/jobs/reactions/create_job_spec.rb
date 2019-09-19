@@ -32,18 +32,19 @@ RSpec.describe Reactions::CreateJob, type: :job do
     end
 
     context "when user + reactable" do
-      let(:user) { instance_double("User", id: 8) }
-      let(:reactable) { instance_double(reactable_type, id: 1) }
+      let(:user) { create(:user) }
+      let(:reactable) { create(:comment, commentable: create(:article)) }
 
-      before do
-        allow(User).to receive(:find_by).and_return(user)
-        allow(reactable_type.constantize).to receive(:find_by).and_return(reactable)
-        allow(Reaction).to receive(:create).with(user_id: user.id, reactable_id: reactable.id, reactable_type: reactable_type, category: "like")
+      it "calls the service" do
+        allow(Reaction).to receive(:create!).with(user: user, reactable: reactable, category: "like")
+        described_class.perform_now(user_id: user.id, reactable_id: reactable.id, reactable_type: reactable_type, category: "like")
+        expect(Reaction).to have_received(:create!).with(user: user, reactable: reactable, category: "like")
       end
 
       it "creates a reaction" do
-        described_class.perform_now(user_id: 8, reactable_id: 1, reactable_type: "Comment", category: "like")
-        expect(Reaction).to have_received(:create).with(user_id: user.id, reactable_id: reactable.id, reactable_type: reactable_type, category: "like")
+        expect do
+          described_class.perform_now(user_id: user.id, reactable_id: reactable.id, reactable_type: reactable_type, category: "like")
+        end.to change(Reaction, :count).by(1)
       end
     end
   end
