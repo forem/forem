@@ -47,7 +47,7 @@ class GithubTag
       _, *options = opts.split(" ")
 
       validated_options = options.map { |option| valid_option(option) }.reject(&:nil?)
-      raise StandardError, "Invalid Options" unless options.empty? || validated_options.any?
+      raise StandardError, "GitHub tag: `#{link}`: Invalid option - did you mean `no-readme`?" unless options.empty? || validated_options.any?
 
       options
     end
