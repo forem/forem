@@ -83,6 +83,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       )
     end
 
+    # rubocop:disable RSpec/ExampleLength
     it "returns all the relevant datetimes" do
       article.update_columns(
         edited_at: 1.minute.from_now, crossposted_at: 2.minutes.ago, last_comment_at: 30.seconds.ago,
@@ -96,6 +97,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         "last_comment_at" => article.last_comment_at.utc.iso8601,
       )
     end
+    # rubocop:enable RSpec/ExampleLength
 
     it "fails with an unpublished article" do
       article.update_columns(published: false)
@@ -119,7 +121,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
     context "when request is authenticated" do
       let_it_be(:user) { create(:user) }
-      let_it_be(:access_token) { create :doorkeeper_access_token, resource_owner: user }
+      let_it_be(:access_token) { create :doorkeeper_access_token, resource_owner: user, scopes: "public" }
 
       it "works with bearer authorization" do
         headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
