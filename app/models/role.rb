@@ -4,15 +4,12 @@ class Role < ApplicationRecord
   belongs_to :resource,
              polymorphic: true, optional: true
 
-  validates :resource_type,
-            inclusion: { in: Rolify.resource_types },
-            allow_nil: true
-
   validates :name,
             inclusion: {
               in: %w[
                 super_admin
                 admin
+                single_resource_admin
                 tech_admin
                 tag_moderator
                 trusted
