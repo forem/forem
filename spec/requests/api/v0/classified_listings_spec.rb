@@ -61,6 +61,17 @@ RSpec.describe "Api::V0::Listings" do
     it "returns listings created" do
       get api_classified_listings_path
       expect(json_response.size).to eq(7)
+      expect(json_response.first["type_of"]).to eq("classified_listing")
+      expect(json_response.first["slug"]).to eq(ClassifiedListing.last.slug)
+      expect(json_response.first["user"]).to include("username")
+      expect(json_response.first["user"]["username"]).not_to be_empty
+    end
+
+    it "supports pagination" do
+      get api_classified_listings_path, params: { page: 2, per_page: 2 }
+      expect(json_response.length).to eq(2)
+      get api_classified_listings_path, params: { page: 4, per_page: 2 }
+      expect(json_response.length).to eq(1)
     end
   end
 
@@ -83,6 +94,8 @@ RSpec.describe "Api::V0::Listings" do
       expect(response).to have_http_status(:ok)
       expect(json_response["type_of"]).to eq("classified_listing")
       expect(json_response["slug"]).to eq(listing.slug)
+      expect(json_response["user"]).to include("username")
+      expect(json_response["user"]["username"]).not_to be_empty
     end
   end
 
@@ -206,6 +219,19 @@ RSpec.describe "Api::V0::Listings" do
         spent_credit = user.credits.spent.last
         expect(spent_credit.purchase_type).to eq("ClassifiedListing")
         expect(spent_credit.spent_at).not_to be_nil
+      end
+
+      it "cannot create a draft due to internal error" do
+        listing = create(:classified_listing, user_id: user.id)
+        allow(ClassifiedListing).to receive_messages(cost_by_category: nil, new: listing)
+        allow(Organization).to receive(:find_by)
+        allow(listing).to receive(:save) do
+          listing.errors.add(:base)
+          false
+        end
+        post_classified_listing(draft_params)
+        expect(json_response["errors"]["base"]).to eq(["is invalid"])
+        expect(response).to have_http_status(:unprocessable_entity)
       end
 
       it "creates listing draft and does not subtract credits" do
@@ -368,7 +394,6 @@ RSpec.describe "Api::V0::Listings" do
 
     context "when the publish action is called" do
       include_context "when user is authorized"
-      # include_context "when user has enough credit"
 
       it "publishes a draft and charges user credits if first publish" do
         cost = ClassifiedListing.cost_by_category(listing_draft.category)
@@ -442,6 +467,14 @@ RSpec.describe "Api::V0::Listings" do
         put_classified_listing(listing.id, title: "This is a new title")
         expect(response).to have_http_status(:ok)
         expect(listing.reload.title).to eq "This is a new title"
+      end
+
+      it "unpublishes the listing" do
+        expect do
+          put_classified_listing(listing.id, action: "unpublish")
+          listing.reload
+        end.to change(listing, :published).from(true).to(false)
+        expect(response).to have_http_status(:ok)
       end
     end
   end

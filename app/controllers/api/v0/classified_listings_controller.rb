@@ -15,13 +15,14 @@ module Api
           order("bumped_at DESC").
           includes(:user, :organization, :taggings)
 
-        @classified_listings = if params[:category].present?
-                                 @classified_listings.where(category: params[:category])
-                               else
-                                 @classified_listings.limit(12)
-                               end
+        @classified_listings = @classified_listings.where(category: params[:category]) if params[:category].present?
 
-        set_surrogate_key_header "classified-listings-#{params[:category]}"
+        per_page = (params[:per_page] || 30).to_i
+        num = [per_page, 100].min
+        page = params[:page] || 1
+        @classified_listings = @classified_listings.page(page).per(num)
+
+        set_surrogate_key_header "classified-listings-#{params[:category]}-#{page}-#{num}"
       end
 
       def show
@@ -44,35 +45,31 @@ module Api
 
       def process_no_credit_left
         msg = "Not enough available credits"
-        render json: [{ error: msg }], status: :payment_required
+        render json: { error: msg, status: 402 }, status: :payment_required
       end
 
       def process_successful_draft
-        json_response(@classified_listing, :created)
+        render "show", status: :created
       end
 
       def process_unsuccessful_draft
-        render json: [{ error: @classified_listing.errors }], status: :unprocessable_entity
+        render json: { errors: @classified_listing.errors }, status: :unprocessable_entity
       end
 
       def process_successful_creation
-        json_response(@classified_listing, :created)
+        render "show", status: :created
       end
 
       def process_unsuccessful_creation
-        render json: [{ error: @classified_listing.errors }], status: :unprocessable_entity
-      end
-
-      def json_response(object, status = :ok)
-        render json: object, status: status
+        render json: { errors: @classified_listing.errors }, status: :unprocessable_entity
       end
 
       def process_after_update
-        json_response(@classified_listing, :ok)
+        render "show", status: :ok
       end
 
       def process_after_unpublish
-        json_response(@classified_listing, :ok)
+        render "show", status: :ok
       end
     end
   end

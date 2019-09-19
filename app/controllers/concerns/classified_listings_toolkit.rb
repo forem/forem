@@ -192,10 +192,10 @@ module ClassifiedListingsToolkit
   end
 
   def listing_updatable?
-    at_leat_one_param_present? && (bumped_in_last_24_hrs? || !@classified_listing.published)
+    at_least_one_param_present? && (bumped_in_last_24_hrs? || !@classified_listing.published)
   end
 
-  def at_leat_one_param_present?
+  def at_least_one_param_present?
     MANDATORY_FIELDS_FOR_UPDATE.any? { |i| listing_params.include? i }
   end
 
