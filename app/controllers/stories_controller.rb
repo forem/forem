@@ -125,7 +125,7 @@ class StoriesController < ApplicationController
         where("score > ? OR featured = ?", 9, true).
         order("hotness_score DESC")
       if user_signed_in?
-        offset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9].sample # random offset, weighted more towards zero
+        offset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11].sample # random offset, weighted more towards zero
         @stories = @stories.offset(offset)
       end
     end
