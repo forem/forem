@@ -6,6 +6,7 @@ class Article < ApplicationRecord
   include Reactable
 
   acts_as_taggable_on :tags
+  resourcify
 
   attr_accessor :publish_under_org
   attr_writer :series
