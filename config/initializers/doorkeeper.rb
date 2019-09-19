@@ -331,3 +331,4 @@ end
 
 Doorkeeper::AccessGrant.belongs_to :resource_owner, class_name: "User"
 Doorkeeper::AccessToken.belongs_to :resource_owner, class_name: "User"
+Doorkeeper::Application.has_many :webhook_endpoints, class_name: "Webhook::Endpoint", inverse_of: :oauth_application

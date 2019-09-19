@@ -10,6 +10,7 @@ RSpec.describe Webhook::Endpoint, type: :model do
 
   describe "validations" do
     it { is_expected.to belong_to(:user).inverse_of(:webhook_endpoints) }
+    it { is_expected.to belong_to(:oauth_application).inverse_of(:webhook_endpoints).optional }
     it { is_expected.to validate_presence_of(:target_url) }
     it { is_expected.to validate_presence_of(:source) }
     it { is_expected.to validate_presence_of(:events) }
