@@ -588,7 +588,7 @@ a.header-link {
       margin-right: 2px;
     }
   }
-  .low-quality-comment {
+  .low-quality-comment > *:not(.dropdown) {
     opacity: 0.5;
   }
   .body {
