@@ -1,5 +1,8 @@
 class StackblitzTag < LiquidTagBase
   PARTIAL = "liquids/stackblitz".freeze
+  ID_REGEXP = /\A[a-zA-Z0-9\-]{0,60}\z/.freeze
+  VIEW_OPTION_REGEXP = /\Aview=(preview|editor|both)\z/.freeze
+  FILE_OPTION_REGEXP = /\Afile=(.*)\z/.freeze
 
   def initialize(tag_name, id, tokens)
     super
@@ -24,7 +27,7 @@ class StackblitzTag < LiquidTagBase
   private
 
   def valid_id?(id)
-    id =~ /\A[a-zA-Z0-9\-]{0,60}\Z/
+    id =~ ID_REGEXP
   end
 
   def parse_id(input)
@@ -45,11 +48,11 @@ class StackblitzTag < LiquidTagBase
   end
 
   def valid_view?(option)
-    option.match(/^view=(preview|editor|both)\z/)
+    option.match(VIEW_OPTION_REGEXP)
   end
 
   def valid_file?(option)
-    option.match(/^file=(.*)\z/)
+    option.match(FILE_OPTION_REGEXP)
   end
 end
 

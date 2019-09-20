@@ -121,7 +121,7 @@ module ApplicationHelper
   end
 
   def beautified_url(url)
-    url.sub(/^((http[s]?|ftp):\/)?\//, "").sub(/\?.*/, "").chomp("/")
+    url.sub(/\A((http[s]?|ftp):\/)?\//, "").sub(/\?.*/, "").chomp("/")
   rescue StandardError
     url
   end
