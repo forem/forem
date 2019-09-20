@@ -39,6 +39,17 @@ RSpec.describe "UserProfiles", type: :request do
       expect(response).to redirect_to("/#{user.username}")
     end
 
+    it "renders noindex meta if banned" do
+      user.add_role(:banned)
+      get "/#{user.username}"
+      expect(response.body).to include("<meta name=\"googlebot\" content=\"noindex\">")
+    end
+
+    it "does not render noindex meta if not banned" do
+      get "/#{user.username}"
+      expect(response.body).not_to include("<meta name=\"googlebot\" content=\"noindex\">")
+    end
+
     context "when organization" do
       it "renders organization page if org" do
         get organization.path
@@ -60,6 +71,47 @@ RSpec.describe "UserProfiles", type: :request do
         create(:sponsorship, level: :gold, status: :live, organization: organization)
         get organization.path
         expect(response.body).to include "Gold Community Sponsor"
+      end
+
+      it "renders organization name properly encoded" do
+        organization.update(name: "Org & < ' \" 1")
+        get organization.path
+        expect(response.body).to include(ActionController::Base.helpers.sanitize(organization.name))
+      end
+
+      it "renders organization email properly encoded" do
+        organization.update(email: "t&st&mail@dev.to")
+        get organization.path
+        expect(response.body).to include(ActionController::Base.helpers.sanitize(organization.email))
+      end
+
+      it "renders organization summary properly encoded" do
+        organization.update(summary: "Org & < ' \" &quot; 1")
+        get organization.path
+        expect(response.body).to include(ActionController::Base.helpers.sanitize(organization.summary))
+      end
+
+      it "renders organization location properly encoded" do
+        organization.update(location: "123, ave dev & < ' \" &quot; to")
+        get organization.path
+        expect(response.body).to include(ActionController::Base.helpers.sanitize(organization.location))
+      end
+    end
+
+    context "when github repo" do
+      before do
+        repo = build(:github_repo, user: user)
+        params = { name: Faker::Book.title, user_id: user.id, github_id_code: repo.github_id_code,
+                   url: Faker::Internet.url, description: "A book bot :robot:", featured: true,
+                   stargazers_count: 1 }
+        updated_repo = GithubRepo.find_or_create(params)
+
+        user.github_repos = [updated_repo]
+      end
+
+      it "renders emoji in description of pinned github repo" do
+        get "/#{user.username}"
+        expect(response.body).to include "A book bot 🤖"
       end
     end
   end

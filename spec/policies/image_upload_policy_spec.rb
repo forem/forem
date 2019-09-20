@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ImageUploadPolicy do
+RSpec.describe ImageUploadPolicy, type: :policy do
   subject { described_class.new(user, image) }
 
   let(:image) { "📸.jpg" }
@@ -12,7 +12,7 @@ RSpec.describe ImageUploadPolicy do
   end
 
   context "when user is signed in" do
-    let(:user) { build(:user) }
+    let(:user) { build_stubbed(:user) }
 
     it { is_expected.to permit_actions(%i[create]) }
 

@@ -37,6 +37,8 @@ RSpec.describe User, type: :model do
     it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
     it { is_expected.to validate_length_of(:name).is_at_most(100) }
     it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
+    it { is_expected.to have_many(:access_grants).class_name("Doorkeeper::AccessGrant").with_foreign_key("resource_owner_id").dependent(:delete_all) }
+    it { is_expected.to have_many(:access_tokens).class_name("Doorkeeper::AccessToken").with_foreign_key("resource_owner_id").dependent(:delete_all) }
 
     it "validates username against reserved words" do
       user = build(:user, username: "readinglist")
@@ -108,6 +110,12 @@ RSpec.describe User, type: :model do
       user = create(:user, email: "anna@example.com")
       user.reload
       expect(user.email).to eq("anna@example.com")
+    end
+
+    it "sets onboarding_variant_version" do
+      user = create(:user, email: "anna@example.com")
+      user.reload
+      expect(user.onboarding_variant_version).to be_in(%w[0 1 2 3 4 5 6 7 8 9])
     end
   end
 
@@ -296,7 +304,7 @@ RSpec.describe User, type: :model do
     it "does not allow too short or too long name" do
       user.name = ""
       expect(user).not_to be_valid
-      user.name = Faker::Lorem.paragraph_by_chars(200)
+      user.name = Faker::Lorem.paragraph_by_chars(number: 200)
       expect(user).not_to be_valid
     end
 
@@ -473,6 +481,24 @@ RSpec.describe User, type: :model do
     expect(user.all_follows.size).to eq(2)
   end
 
+  describe "#moderator_for_tags" do
+    let(:tag1)  { create(:tag) }
+    let(:tag2)  { create(:tag) }
+    let(:tag3)  { create(:tag) }
+
+    it "lists tags user moderates" do
+      user.add_role(:tag_moderator, tag1)
+      user.add_role(:tag_moderator, tag2)
+      expect(user.moderator_for_tags).to include(tag1.name)
+      expect(user.moderator_for_tags).to include(tag2.name)
+      expect(user.moderator_for_tags).not_to include(tag3.name)
+    end
+
+    it "returns empty array if no tags moderated" do
+      expect(user.moderator_for_tags).to eq([])
+    end
+  end
+
   describe "#followed_articles" do
     let(:user2)  { create(:user) }
     let(:user3)  { create(:user) }
@@ -526,32 +552,37 @@ RSpec.describe User, type: :model do
   end
 
   it "creates proper body class with defaults" do
-    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?}")
+    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
   end
 
   it "creates proper body class with sans serif config" do
     user.config_font = "sans_serif"
-    expect(user.decorate.config_body_class).to eq("default sans-serif-article-body pro-status-#{user.pro?}")
+    expect(user.decorate.config_body_class).to eq("default sans-serif-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
   end
 
   it "creates proper body class with night theme" do
     user.config_theme = "night_theme"
-    expect(user.decorate.config_body_class).to eq("night-theme default-article-body pro-status-#{user.pro?}")
+    expect(user.decorate.config_body_class).to eq("night-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
   end
 
   it "creates proper body class with pink theme" do
     user.config_theme = "pink_theme"
-    expect(user.decorate.config_body_class).to eq("pink-theme default-article-body pro-status-#{user.pro?}")
+    expect(user.decorate.config_body_class).to eq("pink-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
   end
 
   it "creates proper body class with minimal light theme" do
     user.config_theme = "minimal_light_theme"
-    expect(user.decorate.config_body_class).to eq("minimal-light-theme default-article-body pro-status-#{user.pro?}")
+    expect(user.decorate.config_body_class).to eq("minimal-light-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
   end
 
   it "creates proper body class with pro user" do
     user.add_role(:pro)
-    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?}")
+    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
+  end
+
+  it "creates proper body class with trusted user" do
+    user.add_role(:trusted)
+    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
   end
 
   it "inserts into mailchimp" do
@@ -655,11 +686,11 @@ RSpec.describe User, type: :model do
 
   describe "when agolia auto-indexing/removal is triggered" do
     it "process background auto-indexing when user is saved" do
-      expect { user.save }.to have_enqueued_job.with(kind_of(User), "algolia_index!").on_queue("algoliasearch")
+      expect { user.save }.to have_enqueued_job.with(user, "index!").on_queue("algoliasearch")
     end
 
-    it "process background auto-removal on deletion" do
-      expect { user.destroy }.to have_enqueued_job.with({ "_aj_globalid" => "gid://practical-developer/User/#{user.id}" }, "algolia_remove_from_index!").on_queue("algoliasearch")
+    it "doesn't schedule a job on destroy" do
+      expect { user.destroy }.not_to have_enqueued_job.on_queue("algoliasearch")
     end
   end
 end

@@ -123,7 +123,7 @@ class ArticlesController < ApplicationController
     authorize Article
 
     @user = current_user
-    @article = ArticleCreationService.new(@user, article_params_json).create!
+    @article = Articles::Creator.call(@user, article_params_json)
 
     render json: if @article.persisted?
                    @article.to_json(only: [:id], methods: [:current_state_path])
@@ -145,7 +145,7 @@ class ArticlesController < ApplicationController
                      end
     updated = @article.update(article_params_json.merge(edited_at: edited_at_date))
     handle_notifications(updated)
-
+    Webhook::DispatchEvent.call("article_updated", @article) if updated
     respond_to do |format|
       format.html do
         # TODO: JSON should probably not be returned in the format.html section
@@ -154,7 +154,11 @@ class ArticlesController < ApplicationController
           return
         end
         if params[:destination]
-          redirect_to(params[:destination])
+          redirect_to(URI.parse(params[:destination]).path)
+          return
+        end
+        if params[:article][:video_thumbnail_url]
+          redirect_to(@article.path + "/edit")
           return
         end
         render json: { status: 200 }
@@ -177,9 +181,7 @@ class ArticlesController < ApplicationController
 
   def destroy
     authorize @article
-    @article.destroy!
-    Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article")
-    Notification.remove_all(notifiable_id: @article.comments.pluck(:id), notifiable_type: "Comment")
+    Articles::Destroyer.call(@article)
     respond_to do |format|
       format.html { redirect_to "/dashboard", notice: "Article was successfully deleted." }
       format.json { head :no_content }
@@ -246,8 +248,9 @@ class ArticlesController < ApplicationController
 
     # handle series/collections
     if params["article"]["series"].present?
-      params["article"]["collection_id"] = Collection.find_series(params["article"]["series"], @user)&.id
-    elsif params["article"]["series"] == ""
+      collection = Collection.find_series(params["article"]["series"], @user)
+      params["article"]["collection_id"] = collection.id
+    elsif params["article"]["series"] == "" # reset collection?
       params["article"]["collection_id"] = nil
     end
 
@@ -255,7 +258,7 @@ class ArticlesController < ApplicationController
                        %i[body_markdown]
                      else
                        %i[
-                         title body_markdown main_image published description
+                         title body_markdown main_image published description video_thumbnail_url
                          tag_list canonical_url series collection_id archived
                        ]
                      end

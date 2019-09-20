@@ -49,7 +49,11 @@ function generateUploadFormdata(payload) {
   const token = window.csrfToken;
   const formData = new FormData();
   formData.append('authenticity_token', token);
-  formData.append('image', payload.image[0]);
+
+  Object.entries(payload.image).forEach(([_, value]) =>
+    formData.append('image[]', value),
+  );
+
   if (payload.wrap_cloudinary) {
     formData.append('wrap_cloudinary', 'true');
   }

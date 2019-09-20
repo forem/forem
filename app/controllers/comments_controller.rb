@@ -35,11 +35,8 @@ class CommentsController < ApplicationController
 
   # GET /comments/1
   # GET /comments/1.json
-  # def show
-  #   @comment = Comment.find_by_id_code(params[:id_code])
-  # end
-
   # GET /comments/1/edit
+
   def edit
     @comment = Comment.find(params[:id_code].to_i(26))
     authorize @comment
@@ -51,7 +48,7 @@ class CommentsController < ApplicationController
   # POST /comments.json
   def create
     authorize Comment
-    raise if RateLimitChecker.new(current_user).limit_by_situation("comment_creation")
+    raise if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
 
     @comment = Comment.new(permitted_attributes(Comment))
     @comment.user_id = current_user.id
@@ -107,7 +104,7 @@ class CommentsController < ApplicationController
     authorize @comment
     if @comment.update(permitted_attributes(@comment).merge(edited_at: Time.zone.now))
       Mention.create_all(@comment)
-      redirect_to @comment.path, notice: "Comment was successfully updated."
+      redirect_to URI.parse(@comment.path).path, notice: "Comment was successfully updated."
     else
       @commentable = @comment.commentable
       render :edit
@@ -125,7 +122,7 @@ class CommentsController < ApplicationController
       @comment.deleted = true
       @comment.save!
     end
-    redirect_to @commentable_path, notice: "Comment was successfully deleted."
+    redirect_to URI.parse(@commentable_path).path, notice: "Comment was successfully deleted."
   end
 
   def delete_confirm

@@ -75,6 +75,7 @@ class Article < ApplicationRecord
   serialize :cached_organization
 
   scope :published, -> { where(published: true) }
+  scope :unpublished, -> { where(published: false) }
 
   scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
 
@@ -268,10 +269,8 @@ class Article < ApplicationRecord
   end
 
   def delete_related_objects
-    index = Algolia::Index.new("searchables_#{Rails.env}")
-    index.delete_object("articles-#{id}")
-    index = Algolia::Index.new("ordered_articles_#{Rails.env}")
-    index.delete_object("articles-#{id}")
+    Search::RemoveFromIndexJob.perform_now("searchables_#{Rails.env}", index_id)
+    Search::RemoveFromIndexJob.perform_now("ordered_articles_#{Rails.env}", index_id)
   end
 
   def touch_by_reaction
@@ -374,6 +373,20 @@ class Article < ApplicationRecord
     tags.pluck(:keywords_for_search).join
   end
 
+  def edited?
+    edited_at.present?
+  end
+
+  def readable_edit_date
+    return unless edited?
+
+    if edited_at.year == Time.current.year
+      edited_at.strftime("%b %e")
+    else
+      edited_at.strftime("%b %e '%y")
+    end
+  end
+
   def readable_publish_date
     relevant_date = crossposted_at.presence || published_at
     if relevant_date && relevant_date.year == Time.current.year
@@ -429,7 +442,10 @@ class Article < ApplicationRecord
     minutes = (video_duration_in_seconds.to_i / 60) % 60
     seconds = video_duration_in_seconds.to_i % 60
     seconds = "0#{seconds}" if seconds.to_s.size == 1
-    "#{minutes}:#{seconds}"
+
+    hours = (video_duration_in_seconds.to_i / 3600)
+    minutes = "0#{minutes}" if hours.positive? && minutes < 10
+    hours < 1 ? "#{minutes}:#{seconds}" : "#{hours}:#{minutes}:#{seconds}"
   end
 
   def fetch_video_duration
@@ -448,6 +464,8 @@ class Article < ApplicationRecord
 
   def liquid_tags_used
     MarkdownParser.new(body_markdown.to_s + comments_blob.to_s).tags_used
+  rescue StandardError
+    []
   end
 
   private
@@ -551,26 +569,22 @@ class Article < ApplicationRecord
 
   def update_cached_user
     if organization
-      cached_org_object = {
-        name: organization.name,
-        username: organization.username,
-        slug: organization.slug,
-        profile_image_90: organization.profile_image_90,
-        profile_image_url: organization.profile_image_url
-      }
-      self.cached_organization = OpenStruct.new(cached_org_object)
+      self.cached_organization = OpenStruct.new(set_cached_object(organization))
     end
 
     if user
-      cached_user_object = {
-        name: user.name,
-        username: user.username,
-        slug: user.username,
-        profile_image_90: user.profile_image_90,
-        profile_image_url: user.profile_image_url
-      }
-      self.cached_user = OpenStruct.new(cached_user_object)
+      self.cached_user = OpenStruct.new(set_cached_object(user))
     end
+  end
+
+  def set_cached_object(object)
+    {
+      name: object.name,
+      username: object.username,
+      slug: object == organization ? object.slug : object.username,
+      profile_image_90: object.profile_image_90,
+      profile_image_url: object.profile_image_url
+    }
   end
 
   def set_all_dates

@@ -23,6 +23,7 @@ class Comment < ApplicationRecord
   after_save     :calculate_score
   after_save     :bust_cache
   after_save     :synchronous_bust
+  after_destroy  :after_destroy_actions
   before_destroy :before_destroy_actions
   after_create   :send_email_notification, if: :should_send_email_notification?
   after_create   :create_first_reaction
@@ -96,9 +97,10 @@ class Comment < ApplicationRecord
   end
 
   def self.trigger_index(record, remove)
-    if remove
-      AlgoliaSearch::AlgoliaJob.perform_later(record, "remove_from_index!")
-    elsif record.deleted == false
+    # record is removed from index synchronously in before_destroy_actions
+    return if remove
+
+    if record.deleted == false
       AlgoliaSearch::AlgoliaJob.perform_later(record, "index!")
     else
       AlgoliaSearch::AlgoliaJob.perform_later(record, "remove_algolia_index")
@@ -116,8 +118,7 @@ class Comment < ApplicationRecord
 
   def remove_algolia_index
     remove_from_index!
-    index = Algolia::Index.new("ordered_comments_#{Rails.env}")
-    index.delete_object("comments-#{id}")
+    Search::RemoveFromIndexJob.perform_now("ordered_comments_#{Rails.env}", index_id)
   end
 
   def index_id
@@ -203,7 +204,7 @@ class Comment < ApplicationRecord
   end
 
   def send_to_moderator
-    return if user && user.comments_count > 10
+    return if user && user.comments_count > 2
 
     Notification.send_moderation_notification(self)
   end
@@ -223,14 +224,14 @@ class Comment < ApplicationRecord
   def wrap_timestamps_if_video_present!
     return unless commentable_type != "PodcastEpisode" && commentable.video.present?
 
-    self.processed_html = processed_html.gsub(/(([0-9]:)?)(([0-5][0-9]|[0-9])?):[0-5][0-9]/) { |s| "<a href='#{commentable.path}?t=#{s}'>#{s}</a>" }
+    self.processed_html = processed_html.gsub(/(([0-9]:)?)(([0-5][0-9]|[0-9])?):[0-5][0-9]/) { |string| "<a href='#{commentable.path}?t=#{string}'>#{string}</a>" }
   end
 
   def shorten_urls!
     doc = Nokogiri::HTML.parse(processed_html)
-    doc.css("a").each do |a|
-      unless a.to_s.include?("<img") || a.attr("class")&.include?("ltag")
-        a.content = strip_url(a.content) unless a.to_s.include?("<img")
+    doc.css("a").each do |anchor|
+      unless anchor.to_s.include?("<img") || anchor.attr("class")&.include?("ltag")
+        anchor.content = strip_url(anchor.content) unless anchor.to_s.include?("<img")
       end
     end
     self.processed_html = doc.to_html.html_safe
@@ -261,6 +262,11 @@ class Comment < ApplicationRecord
     Comments::CreateFirstReactionJob.perform_later(id)
   end
 
+  def after_destroy_actions
+    Users::BustCacheJob.perform_now(user_id)
+    user.touch(:last_comment_at)
+  end
+
   def before_destroy_actions
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     ancestors.update_all(updated_at: Time.current)
@@ -278,6 +284,7 @@ class Comment < ApplicationRecord
 
   def synchronous_bust
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
+    user.touch(:last_comment_at)
     cache_buster = CacheBuster.new
     cache_buster.bust(commentable.path.to_s) if commentable
     expire_root_fragment

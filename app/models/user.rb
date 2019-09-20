@@ -13,38 +13,42 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
-  has_many    :organization_memberships, dependent: :destroy
-  has_many    :organizations, through: :organization_memberships
-  has_many    :api_secrets, dependent: :destroy
-  has_many    :articles, dependent: :destroy
-  has_many    :badge_achievements, dependent: :destroy
-  has_many    :badges, through: :badge_achievements
-  has_many    :collections, dependent: :destroy
-  has_many    :comments, dependent: :destroy
-  has_many    :email_messages, class_name: "Ahoy::Message"
-  has_many    :github_repos, dependent: :destroy
-  has_many    :identities, dependent: :destroy
-  has_many    :mentions, dependent: :destroy
-  has_many    :messages, dependent: :destroy
-  has_many    :notes, as: :noteable, inverse_of: :noteable
-  has_many    :profile_pins, as: :profile, inverse_of: :profile
-  has_many    :authored_notes, as: :author, inverse_of: :author, class_name: "Note"
-  has_many    :notifications, dependent: :destroy
-  has_many    :reactions, dependent: :destroy
-  has_many    :tweets, dependent: :destroy
-  has_many    :chat_channel_memberships, dependent: :destroy
-  has_many    :chat_channels, through: :chat_channel_memberships
-  has_many    :notification_subscriptions, dependent: :destroy
-  has_many    :push_notification_subscriptions, dependent: :destroy
-  has_many    :feedback_messages
-  has_many    :rating_votes
-  has_many    :html_variants, dependent: :destroy
-  has_many    :page_views
-  has_many    :credits
-  has_many    :classified_listings
-  has_many    :poll_votes
-  has_many    :poll_skips
-  has_many    :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user, class_name: "BackupData"
+  has_many :organization_memberships, dependent: :destroy
+  has_many :organizations, through: :organization_memberships
+  has_many :api_secrets, dependent: :destroy
+  has_many :articles, dependent: :destroy
+  has_many :badge_achievements, dependent: :destroy
+  has_many :badges, through: :badge_achievements
+  has_many :collections, dependent: :destroy
+  has_many :comments, dependent: :destroy
+  has_many :email_messages, class_name: "Ahoy::Message"
+  has_many :github_repos, dependent: :destroy
+  has_many :identities, dependent: :destroy
+  has_many :mentions, dependent: :destroy
+  has_many :messages, dependent: :destroy
+  has_many :notes, as: :noteable, inverse_of: :noteable
+  has_many :profile_pins, as: :profile, inverse_of: :profile
+  has_many :authored_notes, as: :author, inverse_of: :author, class_name: "Note"
+  has_many :notifications, dependent: :destroy
+  has_many :reactions, dependent: :destroy
+  has_many :tweets, dependent: :destroy
+  has_many :chat_channel_memberships, dependent: :destroy
+  has_many :chat_channels, through: :chat_channel_memberships
+  has_many :notification_subscriptions, dependent: :destroy
+  has_many :push_notification_subscriptions, dependent: :destroy
+  has_many :feedback_messages
+  has_many :rating_votes
+  has_many :html_variants, dependent: :destroy
+  has_many :page_views
+  has_many :credits
+  has_many :classified_listings
+  has_many :poll_votes
+  has_many :poll_skips
+  has_many :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user, class_name: "BackupData"
+  has_many :display_ad_events
+  has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
+  has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
+  has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -157,7 +161,7 @@ class User < ApplicationRecord
   before_destroy :destroy_follows
   before_destroy :unsubscribe_from_newsletters
 
-  algoliasearch per_environment: true, enqueue: true do
+  algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :name
     add_index "searchables",
               id: :index_id,
@@ -187,6 +191,12 @@ class User < ApplicationRecord
 
   def estimated_default_language
     language_settings["estimated_default_language"]
+  end
+
+  def self.trigger_delayed_index(record, remove)
+    return if remove
+
+    AlgoliaSearch::AlgoliaJob.perform_later(record, "index!")
   end
 
   def tag_line
@@ -326,6 +336,13 @@ class User < ApplicationRecord
     end
   end
 
+  def moderator_for_tags
+    Rails.cache.fetch("user-#{id}/tag_moderators_list", expires_in: 200.hours) do
+      tag_ids = roles.where(name: "tag_moderator").pluck(:resource_id)
+      Tag.where(id: tag_ids).pluck(:name)
+    end
+  end
+
   def scholar
     valid_pass = workshop_expiration.nil? || workshop_expiration > Time.current
     has_role?(:workshop_pass) && valid_pass
@@ -336,7 +353,7 @@ class User < ApplicationRecord
   end
 
   def workshop_eligible?
-    has_any_role?(:workshop_pass, :level_3_member, :level_4_member, :triple_unicorn_member)
+    has_any_role?(:workshop_pass)
   end
 
   def admin_organizations
@@ -409,8 +426,7 @@ class User < ApplicationRecord
 
   def remove_from_algolia_index
     remove_from_index!
-    index = Algolia::Index.new("searchables_#{Rails.env}")
-    index.delay.delete_object("users-#{id}")
+    Search::RemoveFromIndexJob.perform_later("searchables_#{Rails.env}", index_id)
   end
 
   def unsubscribe_from_newsletters
@@ -494,13 +510,13 @@ class User < ApplicationRecord
 
     self.old_old_username = old_username
     self.old_username = username_was
-    chat_channels.find_each do |c|
-      c.slug = c.slug.gsub(username_was, username)
-      c.save
+    chat_channels.find_each do |channel|
+      channel.slug = channel.slug.gsub(username_was, username)
+      channel.save
     end
-    articles.find_each do |a|
-      a.path = a.path.gsub(username_was, username)
-      a.save
+    articles.find_each do |article|
+      article.path = article.path.gsub(username_was, username)
+      article.save
     end
   end
 

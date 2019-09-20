@@ -21,7 +21,7 @@ class ChatChannel < ApplicationRecord
 
   algoliasearch index_name: "SecuredChatChannel_#{Rails.env}" do
     attribute :id, :viewable_by, :slug, :channel_type,
-              :channel_name, :channel_users, :last_message_at, :status,
+              :channel_name, :last_message_at, :status,
               :messages_count, :channel_human_names, :channel_mod_ids, :pending_users_select_fields,
               :description
     searchableAttributes %i[channel_name channel_slug channel_human_names]
@@ -129,8 +129,8 @@ class ChatChannel < ApplicationRecord
 
   def channel_human_names
     active_memberships.
-      order("last_opened_at DESC").limit(5).includes(:user).map do |m|
-        m.user.name
+      order("last_opened_at DESC").limit(5).includes(:user).map do |membership|
+        membership.user.name
       end
   end
 

@@ -12,6 +12,7 @@ function initializeBaseTracking() {
     wait++;
     if (window.ga && ga.create) {
       ga('create', '<%= ApplicationConfig["GA_TRACKING_ID"] %>', 'auto');
+      ga('set', 'anonymizeIp', true);
       ga('send', 'pageview', location.pathname + location.search);
       clearInterval(waitingOnGA);
       logImpressions();
@@ -141,7 +142,20 @@ function trackCustomImpressions() {
         }
       }, 15000)
     }
-  }, 1500)
+
+    // display add
+    var adBox = document.getElementById('sponsorship-arbitrary-display-widget')
+    if (adBox
+      && tokenMeta
+      && !isBot
+      && windowBigEnough
+      && checkUserLoggedIn()) {
+        var csrfToken = tokenMeta.getAttribute('content');
+        trackAdImpression(csrfToken, adBox)
+        adBox.removeEventListener('click', trackAdClick, false );
+        adBox.addEventListener('click', function() { trackAdClick(csrfToken, adBox) });
+      }
+  }, 1800)
 }
 
 function trackHTMLVariantTrial(dataBody, csrfToken) {
@@ -192,5 +206,45 @@ function trackFifteenSecondsOnPage(articleId, csrfToken) {
     },
     credentials: 'same-origin',
   })
+}
 
+function trackAdImpression(token, adBox) {
+  var dataBody = {
+    display_ad_event: {
+      display_ad_id: adBox.dataset.id,
+      context_type: "home",
+      category: "impression",
+    }
+  }
+  window.fetch('/display_ad_events', {
+    method: 'POST',
+    headers: {
+      'X-CSRF-Token': token,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(dataBody),
+    credentials: 'same-origin',
+  })
+}
+
+function trackAdClick(token, adBox) {
+  if (!adClicked) {
+    var dataBody = {
+      display_ad_event: {
+        display_ad_id: adBox.dataset.id,
+        context_type: "home",
+        category: "click",
+      }
+    }
+    window.fetch('/display_ad_events', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dataBody),
+      credentials: 'same-origin',
+    })
+  }
+  adClicked = true;
 }

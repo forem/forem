@@ -27,6 +27,7 @@
   <div>Name</div>
   <div>Twitter</div>
   <div>GitHub</div>
+  <div>Email</div>
 </div>
 
 <% @users.each do |user| %>
@@ -36,6 +37,7 @@
     <div class="grid-item"><%= user.name %></div>
     <div class="grid-item"><%= user.twitter_username %></div>
     <div class="grid-item"><%= user.github_username %></div>
+    <div class="grid-item"><%= user.email %></div>
   </div>
 <% end %>
 <%= paginate @users %>

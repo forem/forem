@@ -1,13 +1,14 @@
 class RateLimitChecker
-  attr_accessor :user
+  attr_reader :user, :action
+
   def initialize(user = nil)
     @user = user
   end
 
   class UploadRateLimitReached < StandardError; end
 
-  def limit_by_situation(situation)
-    result = case situation
+  def limit_by_action(action)
+    result = case action
              when "comment_creation"
                user.comments.where("created_at > ?", 30.seconds.ago).size > 9
              when "published_article_creation"
@@ -17,7 +18,10 @@ class RateLimitChecker
              else
                false
              end
-    ping_admins if result == true
+    if result
+      @action = action
+      ping_admins
+    end
     result
   end
 
@@ -28,16 +32,16 @@ class RateLimitChecker
   end
 
   def limit_by_email_recipient_address(address)
-    # This is related to the recipient, not the "user" initiator, like in situation.
+    # This is related to the recipient, not the "user" initiator, like in action.
     EmailMessage.where(to: address).
       where("sent_at > ?", 2.minutes.ago).size > 5
   end
 
   def ping_admins
-    RateLimitCheckerJob.perform_later(user.id)
+    RateLimitCheckerJob.perform_later(user.id, action)
   end
 
   def ping_admins_without_delay
-    RateLimitCheckerJob.perform_now(user.id)
+    RateLimitCheckerJob.perform_now(user.id, action)
   end
 end

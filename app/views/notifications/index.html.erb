@@ -62,11 +62,20 @@
           </div>
         <% end %>
       <% end %>
-      <%= render "notifications_list" %>
-      <% if @notifications.any? %>
-        <div id="notifications-pagination" data-pagination-path="/notifications/<%= params[:org_id].present? ? "#{params[:filter]}/#{params[:org_id]}" : params[:filter].to_s %>?page=<%= @notifications.last.id %>"></div>
-      <% end %>
+
+      <%= render "notifications_list", params: params %>
     </div>
+
+    <%# new or less active users that don't have a page worth of notifications
+        won't be shown the "load more" button %>
+    <% if @notifications.size >= @initial_page_size %>
+      <div class="load-more-wrapper">
+        <button id="load-more-button" type="button">
+          Load More
+        </button>
+      </div>
+    <% end %>
+
     <div class="side-bar sidebar-additional"></div>
   </div>
   <%= render "articles/fitvids" %>

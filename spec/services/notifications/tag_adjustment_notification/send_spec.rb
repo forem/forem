@@ -39,16 +39,4 @@ RSpec.describe Notifications::TagAdjustmentNotification::Send do
       described_class.call(tag_adjustment)
     end.to change(Notification, :count).by(1)
   end
-
-  it "checks that article user last mod notification updates" do
-    expect do
-      described_class.call(tag_adjustment)
-    end.to change(tag_adjustment.article.user, :last_moderation_notification)
-  end
-
-  it "updates the author's last_moderation_notification" do
-    original_last_moderation_notification_timestamp = user2.last_moderation_notification
-    Notification.send_tag_adjustment_notification_without_delay(tag_adjustment)
-    expect(user2.reload.last_moderation_notification).to be > original_last_moderation_notification_timestamp
-  end
 end

@@ -13,9 +13,9 @@ RSpec.describe Comment, type: :model do
   end
 
   describe "validations" do
-    subject { Comment.new(commentable: article) }
+    subject { described_class.new(user: user, commentable: article) }
 
-    let(:article) { Article.new }
+    let(:article) { Article.new(user: user2) }
 
     before do
       allow(article).to receive(:touch).and_return(true)
@@ -36,7 +36,7 @@ RSpec.describe Comment, type: :model do
   end
 
   it "gets proper generated ID code" do
-    comment = Comment.new(id: 1)
+    comment = described_class.new(id: 1)
     expect(comment.id_code_generated).to eq(comment.id.to_s(26))
   end
 
@@ -260,24 +260,48 @@ RSpec.describe Comment, type: :model do
   end
 
   describe "when algolia auto-indexing/removal is triggered" do
+    context "when destroying" do
+      it "doesn't schedule an ActiveJob on destroy" do
+        comment = create(:comment, commentable: article)
+        expect do
+          comment.destroy
+        end.not_to have_enqueued_job.on_queue("algoliasearch")
+      end
+    end
+
     context "when record.deleted == false" do
       it "checks auto-indexing" do
-        expect { build(:comment, user_id: user2.id, commentable_id: article.id).save }.to have_enqueued_job.with(kind_of(Comment), "index!").on_queue("algoliasearch")
+        expect do
+          create(:comment, user_id: user2.id, commentable_id: article.id)
+        end.to have_enqueued_job.with(kind_of(described_class), "index!").on_queue("algoliasearch")
       end
     end
 
     context "when record.deleted == true" do
-      before do
-        comment.deleted = true
-      end
-
       it "checks auto-indexing" do
-        expect { comment.save! }.to have_enqueued_job.with(kind_of(Comment), "remove_algolia_index").on_queue("algoliasearch")
+        comment.deleted = true
+        expect do
+          comment.save!
+        end.to have_enqueued_job.with(kind_of(described_class), "remove_algolia_index").on_queue("algoliasearch")
       end
     end
+  end
 
-    it "checks auto-removing background process" do
-      expect { comment.destroy }.to have_enqueued_job.with({ "_aj_globalid" => "gid://practical-developer/Comment/#{comment.id}" }, "remove_from_index!").on_queue("algoliasearch")
+  describe "when a comment is destroyed" do
+    it "updates user last comment date" do
+      expect do
+        comment.destroy
+        user2.reload
+      end.to change(user2, :last_comment_at)
+    end
+  end
+
+  describe "when a comment is created" do
+    it "updates user last comment date" do
+      expect do
+        comment.save
+        user2.reload
+      end.to change(user2, :last_comment_at)
     end
   end
 

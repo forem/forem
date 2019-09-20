@@ -4,8 +4,19 @@ class Internal::ToolsController < Internal::ApplicationController
   def index; end
 
   def bust_cache
-    handle_dead_path if params[:dead_link]
-    handle_user_cache if params[:bust_user]
+    flash[:success] = if params[:dead_link]
+                        handle_dead_path
+                        "#{params[:dead_link]} was successfully busted"
+                      elsif params[:bust_user]
+                        handle_user_cache
+                        "User ##{params[:bust_user]} was successfully busted"
+                      elsif params[:bust_article]
+                        handle_article_cache
+                        "Article ##{params[:bust_article]} was successfully busted"
+                      end
+    redirect_to "/internal/tools"
+  rescue StandardError => e
+    flash[:danger] = e
     redirect_to "/internal/tools"
   end
 
@@ -22,7 +33,7 @@ class Internal::ToolsController < Internal::ApplicationController
   end
 
   def handle_article_cache
-    article = User.find(params[:bust_article].to_i)
+    article = Article.find(params[:bust_article].to_i)
     article.touch(:last_commented_at)
     CacheBuster.new.bust_article(article)
   end

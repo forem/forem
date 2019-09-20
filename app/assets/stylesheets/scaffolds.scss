@@ -172,3 +172,88 @@ input[type='email'] {
     left: 20px;
   }
 }
+
+.partner-image-dark-mode {
+  display: none !important;
+}
+
+body.night-theme {
+  .on-page-nav-butt img,
+  .icon-img,
+  .dropdown-icon,
+  .reaction-button:not(.reacted) img,
+  .image-upload-button button,
+  .icon-image,
+  .dev-badge,
+  .chatchannels__config img,
+  .external-link-img,
+  .group-img {
+    -webkit-filter: invert(95%);
+    filter: invert(95%);
+  }
+  .ltag__tag {
+    border-color: white !important;
+    box-shadow: 3px 3px 0px #fff !important;
+  }
+  .partner-image-dark-mode {
+    display: block !important;
+  }
+  .partner-image-light-mode {
+    display: none !important;
+  }
+}
+
+body.sans-serif-article-body {
+  .body {
+    font-family: $helvetica;
+  }
+  .body p {
+    font-family: $helvetica;
+    font-size: 0.98em;
+  }
+}
+body.comic-sans-article-body {
+  .body {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+  }
+  .body p {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-size: 0.98em;
+  }
+}
+
+.pro-visible-block,
+.trusted-visible-block {
+  display: none !important;
+}
+
+body.pro-status-true .pro-visible-block,
+body.trusted-status-true .trusted-visible-block {
+  display: block !important;
+}
+
+.delete-confirm.container {
+  padding: 150px 10px;
+  min-height: 300px;
+  text-align: center;
+  h4 {
+    background: $black;
+    padding: 5px 8px;
+    color: white;
+    display: inline-block;
+    margin-bottom: 0px;
+  }
+  h2 {
+    font-size: 22px;
+    margin-bottom: 40px;
+  }
+  a.delete-link {
+    background: $red;
+    color: white;
+    padding: 10px 15px;
+    &:hover {
+      color: white;
+      opacity: 0.9;
+    }
+  }
+}

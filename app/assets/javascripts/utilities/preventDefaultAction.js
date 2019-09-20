@@ -1,3 +1,5 @@
-function preventDefaultAction(event){
+'use strict';
+
+function preventDefaultAction(event) {
   event.preventDefault();
 }

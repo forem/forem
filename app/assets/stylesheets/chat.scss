@@ -441,17 +441,21 @@
     );
   }
 
-  img {
+  .activechatchannel__channelconfig {
     height: 17px;
     position: absolute;
     right: 15px;
     top: 10px;
     cursor: pointer;
     @include themeable(
-      filter, 
-      theme-social-icon-invert, 
-      invert(0)
-    );  
+        filter,
+        theme-social-icon-invert,
+        invert(0)
+    );
+
+    img {
+      height: 100%;
+    }
   }
 }
 

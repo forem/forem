@@ -17,6 +17,7 @@ class DisplayAdDashboard < Administrate::BaseDashboard
     cost_per_click: Field::Number.with_options(decimals: 2),
     impressions_count: Field::Number,
     clicks_count: Field::Number,
+    success_rate: Field::Number,
     published: Field::Boolean,
     approved: Field::Boolean,
     created_at: Field::DateTime,
@@ -33,6 +34,9 @@ class DisplayAdDashboard < Administrate::BaseDashboard
     id
     placement_area
     body_markdown
+    published
+    approved
+    success_rate
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -47,6 +51,7 @@ class DisplayAdDashboard < Administrate::BaseDashboard
     cost_per_click
     impressions_count
     clicks_count
+    success_rate
     published
     approved
     created_at

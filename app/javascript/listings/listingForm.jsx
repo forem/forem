@@ -5,6 +5,8 @@ import BodyMarkdown from './elements/bodyMarkdown';
 import Categories from './elements/categories';
 import Tags from './elements/tags';
 import OrgSettings from './elements/orgSettings';
+import ContactViaConnect from './elements/contactViaConnect';
+import ExpireDate from './elements/expireDate';
 
 export default class ListingForm extends Component {
   constructor(props) {
@@ -28,6 +30,8 @@ export default class ListingForm extends Component {
       categoriesForDetails: this.categoriesForDetails,
       organizations,
       organizationId: null, // change this for /edit later
+      contactViaConnect: this.listing.contact_via_connect || 'checked',
+      expireDate: this.listing.expires_at || '',
     };
   }
 
@@ -47,38 +51,22 @@ export default class ListingForm extends Component {
       categoriesForSelect,
       organizations,
       organizationId,
+      contactViaConnect,
+      expireDate,
     } = this.state;
-    const orgArea =
-      organizations && organizations.length > 0 ? (
-        <OrgSettings
-          organizations={organizations}
-          organizationId={organizationId}
-          onToggle={this.handleOrgIdChange}
-        />
-      ) : (
-        ''
-      );
+  
+    const selectOrg = ((organizations && organizations.length > 0) ? <OrgSettings organizations={organizations} organizationId={organizationId} onToggle={this.handleOrgIdChange} /> : '');
+
     if (id === null) {
       return (
         <div>
           <Title defaultValue={title} onChange={linkState(this, 'title')} />
-          <BodyMarkdown
-            defaultValue={bodyMarkdown}
-            onChange={linkState(this, 'bodyMarkdown')}
-          />
-          <Categories
-            categoriesForSelect={categoriesForSelect}
-            categoriesForDetails={categoriesForDetails}
-            onChange={linkState(this, 'category')}
-            category={category}
-          />
-          <Tags
-            defaultValue={tagList}
-            category={category}
-            onInput={linkState(this, 'tagList')}
-          />
-          {orgArea}
-          {/* add contact via connect checkbox later */}
+          <BodyMarkdown defaultValue={bodyMarkdown} onChange={linkState(this, 'bodyMarkdown')} />
+          <Categories categoriesForSelect={categoriesForSelect} categoriesForDetails={categoriesForDetails} onChange={linkState(this, 'category')} category={category} />
+          <Tags defaultValue={tagList} category={category} onInput={linkState(this, 'tagList')} />
+          <ExpireDate defaultValue={expireDate} onChange={linkState(this, 'expireDate')} />
+          {selectOrg}
+          <ContactViaConnect defaultValue={contactViaConnect} onChange={linkState(this, 'contactViaConnect')} />
         </div>
       );
     }
@@ -91,8 +79,8 @@ export default class ListingForm extends Component {
           onChange={linkState(this, 'bodyMarkdown')}
         />
         <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
-        {orgArea}
-        {/* add contact via connect checkbox later */}
+        {selectOrg}
+        <ContactViaConnect checked={contactViaConnect} onChange={linkState(this, 'contactViaConnect')} />
       </div>
     );
   }

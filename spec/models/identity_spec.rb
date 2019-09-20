@@ -11,10 +11,10 @@ RSpec.describe Identity, type: :model do
 
   describe ".find_for_oauth" do
     it "works" do
-      allow(Identity).to receive(:find_or_create_by)
+      allow(described_class).to receive(:find_or_create_by)
       auth = { uid: 0, provider: "github" }
       described_class.find_for_oauth(instance_double("request", auth))
-      expect(Identity).to have_received(:find_or_create_by).with(auth)
+      expect(described_class).to have_received(:find_or_create_by).with(auth)
     end
   end
 end

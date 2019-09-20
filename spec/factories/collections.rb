@@ -1,5 +1,6 @@
 FactoryBot.define do
   factory :collection do
+    user
     slug { "word-#{rand(10_000)}" }
   end
 

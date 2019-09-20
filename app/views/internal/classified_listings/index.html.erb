@@ -5,7 +5,9 @@
   <% if params[:state].present? %>
     <%= hidden_field_tag(:state, params[:state]) %>
   <% end %>
-  <%= submit_tag("Search") %>
+  <%= label_tag(:search, "Filter listings by category") %>
+  <%= select_tag(:filter, options_for_select( [""] + ClassifiedListing.categories_available.keys, params[:filter])) %>
+  <%= submit_tag("Search & Filter") %>
 <% end %>
 <%= paginate @classified_listings %>
 <div class="wrapper" style="border-bottom: 1px solid black">
@@ -28,7 +30,7 @@
       <div class="grid-item"><%= listing.category %></div>
       <div class="grid-item"><%= listing.cached_tag_list %></div>
       <div class="grid-item"><%= listing.published ? "Yes" : "No" %></div>
-      <div class="grid-item"><%= time_ago_in_words(listing.bumped_at) %> ago</div>
+      <div class="grid-item"><%= listing.bumped_at ? time_ago_in_words(listing.bumped_at) + " ago" : "Draft" %></div>
     </div>
     <div class="buffer-area" style="text-align: left">
       <br>
@@ -44,7 +46,7 @@
           <%= form_tag "/internal/buffer_updates" do %>
             <input type="hidden" name="social_channel" value="listings_twitter" />
             <input type="hidden" name="listing_id" value="<%= listing.id %>" />
-            <textarea cols="37" rows="8" wrap="hard" name="tweet" maxlength="255"><% if User.find(listing.user_id).twitter_username.present? %>📋 New DEV Listing!&#013&#013Category: <%= listing.category %>&#013&#013<%= listing.title %>&#013&#013Posted by @<%= User.find(listing.user_id).twitter_username %><% end %></textarea>
+            <textarea cols="37" rows="8" wrap="hard" name="tweet" maxlength="255">📋 New DEV Listing!&#013&#013Category: <%= listing.category %>&#013&#013<%= listing.title %>&#013&#013<% if listing.user.twitter_username? %>Posted by @<%= listing.user.twitter_username %><% end %></textarea>
             <br>
             <button class="btn-info tweet-listing">🐦 Tweet 🐦</button>
           <% end %>

@@ -11,13 +11,5 @@ RSpec.describe "PusherAuth", type: :request do
       }
       expect(response.body).to include("Forbidden")
     end
-
-    # it "returns forbidden with invalid channel" do
-    #   sign_in user
-    #   post "/pusher/auth", params: {
-    #     channel_name: "private-message-notifications-#{user.id}"
-    #   }
-    #   expect(response.body).to include("Forbidden")
-    # end
   end
 end

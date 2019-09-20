@@ -131,14 +131,14 @@ RSpec.describe "NotificationsIndex", type: :request do
       it "properly renders reactable titles" do
         mock_heart_reaction_notifications(1, %w[unicorn like readinglist], special_characters_article)
         get "/notifications"
-        expect(response.body).to include special_characters_article.title
+        expect(response.body).to include ERB::Util.html_escape(special_characters_article.title)
       end
 
       it "properly renders reactable titles for multiple reactions" do
         amount = rand(3..10)
         mock_heart_reaction_notifications(amount, %w[unicorn like readinglist], special_characters_article)
         get "/notifications"
-        expect(response.body).to include special_characters_article.title
+        expect(response.body).to include ERB::Util.html_escape(special_characters_article.title)
       end
     end
 
@@ -221,7 +221,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
 
       it "renders the proper message" do
-        expect(response.body).to include "As a trusted member"
+        expect(response.body).to include "Since they are new to the community, could you leave a nice reply"
       end
 
       it "renders the article's path" do
@@ -230,6 +230,56 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "renders the comment's processed HTML" do
         expect(response.body).to include comment.processed_html
+      end
+    end
+
+    context "when a user should not receive moderation notification" do
+      let(:user2)    { create(:user) }
+      let(:article)  { create(:article, user_id: user.id) }
+      let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
+
+      before do
+        sign_in user
+        Notification.send_moderation_notification_without_delay(comment)
+        get "/notifications"
+      end
+
+      it "renders the proper message" do
+        expect(response.body).not_to include "Since they are new to the community, could you leave a nice reply"
+      end
+
+      it "renders the article's path" do
+        expect(response.body).not_to include article.path
+      end
+
+      it "renders the comment's processed HTML" do
+        expect(response.body).not_to include comment.processed_html
+      end
+    end
+
+    context "when a user has unsubscribed from mod roundrobin notifications" do
+      let(:user2)    { create(:user) }
+      let(:article)  { create(:article, user_id: user.id) }
+      let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
+
+      before do
+        user.add_role :trusted
+        user.update(mod_roundrobin_notifications: false)
+        sign_in user
+        Notification.send_moderation_notification_without_delay(comment)
+        get "/notifications"
+      end
+
+      it "renders the proper message" do
+        expect(response.body).not_to include "Since they are new to the community, could you leave a nice reply"
+      end
+
+      it "renders the article's path" do
+        expect(response.body).not_to include article.path
+      end
+
+      it "renders the comment's processed HTML" do
+        expect(response.body).not_to include comment.processed_html
       end
     end
 
@@ -339,6 +389,23 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "renders the article's published at" do
         expect(response.body).to include time_ago_in_words(article.published_at)
+      end
+    end
+
+    context "when a user is an admin" do
+      let(:admin) { create(:user, :super_admin) }
+      let(:user2)    { create(:user) }
+      let(:article)  { create(:article, user_id: user.id) }
+
+      before do
+        user2.follow(user)
+        Notification.send_to_followers_without_delay(article, "Published")
+        sign_in admin
+      end
+
+      it "can view other people's notifications" do
+        get "/notifications?username=#{user2.username}"
+        expect(response.body).to include "made a new post:"
       end
     end
   end

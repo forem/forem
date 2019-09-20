@@ -11,6 +11,14 @@ class ClassifiedListingPolicy < ApplicationPolicy
     user.org_member?(record.organization_id)
   end
 
+  def delete_confirm?
+    update?
+  end
+
+  def destroy?
+    update?
+  end
+
   private
 
   def user_is_author?

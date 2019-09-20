@@ -1,6 +1,19 @@
 @import 'variables';
-@import 'shared';
 @import 'mixins';
+
+%kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font-size: 11px;
+  line-height: 10px;
+  color: #444d56;
+  vertical-align: middle;
+  background-color: #fafbfc;
+  border: solid 1px #c6cbd1;
+  border-bottom-color: #959da5;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 #959da5;
+}
 
 .stories-show {
   @include themeable(
@@ -325,56 +338,69 @@ article {
   }
 
   .article-collection-wrapper {
-    text-align: center;
     font-family: $helvetica;
     font-size: 16px;
-
+    border-radius: 5px;
+    border: 1px solid $light-medium-gray;
+    width: 92%;
+    max-width: 500px;
+    margin: calc(1.1vw + 5px) auto 1.0vw;
+    box-shadow: $bold-shadow;
     p {
-      max-width: 90%;
-      margin: 35px auto 15px;
-      padding: 2px 0;
+      margin: 0px auto;
+      padding: calc(0.1vw + 9px);
       font-weight: bold;
-      font-style: oblique;
+      font-size: 0.96em;
     }
 
     .article-collection {
-      display: inline-block;
       user-select: none;
       font-size: 16px;
       overflow: hidden;
-      width: 92%;
-      max-width: 718px;
-      margin-bottom: 1.1vw;
       position: relative;
       z-index: 8;
-
       a {
-        color: $black;
-        padding: calc(0.3vw + 14px);
-        background: darken($lightest-gray, 12%);
-        display: inline-block;
+        @include themeable (
+          color,
+          theme-color,
+          $black
+        );
+        padding: calc(0.1vw + 9px);
+        display: block;
         position: relative;
         z-index: 4;
-        max-width: 260px;
-        margin: 0.2vw;
-        border-radius: 100px;
-
-        &:first-child {
-          // margin-left:-5px;
+        border-top: 1px solid $light-medium-gray;
+        font-size: 0.88em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        &:last-child {
+          border-bottom-left-radius: 5px;
+          border-bottom-right-radius: 5px;
         }
 
         &:hover {
-          background: darken($lightest-gray, 18%);
+          @include themeable (
+            background,
+            theme-series-article-hover,
+            $lightest-gray
+          );
         }
 
         &.current-article {
-          background: $black;
-          color: white;
+          @include themeable (
+            background,
+            theme-series-article-background,
+            lighten($sky-blue, 21%)
+          );
         }
 
         &.coming-soon {
           pointer-events: none;
           color: lighten($black, 78%);
+        }
+        &.collection-link-hidden {
+          display: none;
         }
       }
     }
@@ -1170,8 +1196,8 @@ article {
         left: 0;
         z-index: 100;
         @include themeable(
-          background, 
-          theme-top-bar-background, 
+          background,
+          theme-top-bar-background,
           $tan
         );
         font-size: 1em;
@@ -1226,8 +1252,8 @@ article {
           a {
             font-weight: bold;
             @include themeable(
-              color, 
-              theme-color, 
+              color,
+              theme-color,
               $black
             );
             padding: 12px 18px;
@@ -1236,8 +1262,8 @@ article {
             font-size: 0.8em;
             &:hover {
               @include themeable(
-                background, 
-                theme-top-bar-background-hover, 
+                background,
+                theme-top-bar-background-hover,
                 $light-gray
               );
               }
@@ -1246,8 +1272,8 @@ article {
           &.notification-subscriptions-area-row {
             padding: 0px;
             @include themeable(
-              border-bottom, 
-              theme-container-border, 
+              border-bottom,
+              theme-container-border,
               1px solid $medium-gray
             );
           }
@@ -1262,13 +1288,13 @@ article {
               border-top-left-radius: 3px;
             }
             @include themeable-important(
-              background, 
-              theme-container-background, 
+              background,
+              theme-container-background,
               darken($tan, 3%)
             );
             @include themeable-important(
-              border-bottom, 
-              theme-subtle-border, 
+              border-bottom,
+              theme-subtle-border,
               1px solid $light-medium-gray
             );
             button.notification-subscription-label {
@@ -1279,8 +1305,8 @@ article {
               float: right !important;
               padding: 4px 0px !important;
               @include themeable-important(
-                border, 
-                theme-border, 
+                border,
+                theme-border,
                 1px solid $light-medium-gray
               );
               border-radius: 100px;
@@ -1300,14 +1326,14 @@ article {
             margin: auto !important;
             cursor: pointer !important;
             @include themeable-important(
-              color, 
-              theme-color, 
+              color,
+              theme-color,
               $black
             );
             &:hover {
               @include themeable-important(
-                background, 
-                theme-top-bar-background-hover, 
+                background,
+                theme-top-bar-background-hover,
                 $light-gray
               );
             }
@@ -1323,8 +1349,8 @@ article {
                 visibility: visible;
               }
               @include themeable-important(
-                color, 
-                theme-color, 
+                color,
+                theme-color,
                 $black
               );
             }

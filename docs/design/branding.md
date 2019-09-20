@@ -21,7 +21,7 @@ Imagine a developer's face with the DEV heading above them. If we existed in the
 - We have a minimal approach to importing dependencies, so few if any custom fonts on-site for that reason.
 - Refer to the `variables.css` [file in our main repo](https://github.com/thepracticaldev/dev.to/blob/master/app/assets/stylesheets/variables.scss) to reference commonly-used colors and fonts.
 
-## Acknowledgments
+## Design License Info
 
 - We use the [Joystick](http://www.pixelsagas.com/?download=joystick) font by Neale Davidson and [Pixel Sagas](http://www.pixelsagas.com/) for the DEV Logo. We have a commercial license.
-- Thank you to [EmojiOne](https://www.emojione.com/) for providing free emoji icons.
+- We use [EmojiOne](https://www.emojione.com/) icons from JoyPixels.  We have a commercial license.
