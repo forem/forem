@@ -13,7 +13,7 @@ RSpec.describe "Api::V0::Listings" do
         title: "Title",
         body_markdown: "Markdown text",
         category: "cfp",
-        tag_list: "",
+        tags: [],
         contact_via_connect: true
       }
     end
@@ -22,7 +22,7 @@ RSpec.describe "Api::V0::Listings" do
         title: "Title draft",
         body_markdown: "Markdown draft text",
         category: "cfp",
-        tag_list: "",
+        tags: [],
         contact_via_connect: true,
         action: "draft"
       }
@@ -277,8 +277,8 @@ RSpec.describe "Api::V0::Listings" do
         expect(ClassifiedListing.find(json_response["id"]).location).to eq("Frejus")
       end
 
-      it "creates a classified listing with a tag_list and a contact" do
-        params = listing_params.merge(tag_list: "discuss, javascript", contact_via_connect: true)
+      it "creates a classified listing with a list of tags and a contact" do
+        params = listing_params.merge(tags: %w[discuss javascript], contact_via_connect: true)
         expect do
           post_classified_listing(params)
           expect(response).to have_http_status(:created)
@@ -467,6 +467,12 @@ RSpec.describe "Api::V0::Listings" do
         put_classified_listing(listing.id, title: "This is a new title")
         expect(response).to have_http_status(:ok)
         expect(listing.reload.title).to eq "This is a new title"
+      end
+
+      it "updates the tags" do
+        put_classified_listing(listing.id, tags: %w[golang api])
+        expect(response).to have_http_status(:ok)
+        expect(listing.reload.cached_tag_list).to eq "golang, api"
       end
 
       it "unpublishes the listing" do

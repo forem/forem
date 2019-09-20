@@ -71,6 +71,10 @@ module ClassifiedListingsToolkit
 
   # Never trust parameters from the scary internet, only allow a specific list through.
   def listing_params
+    if params["classified_listing"]["tags"].present?
+      params["classified_listing"]["tags"] = params["classified_listing"]["tags"].join(", ")
+      params["classified_listing"]["tag_list"] = params["classified_listing"].delete "tags"
+    end
     accessible = %i[title body_markdown category tag_list expires_at contact_via_connect location organization_id action]
     params.require(:classified_listing).permit(accessible)
   end
