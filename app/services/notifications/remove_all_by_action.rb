@@ -1,7 +1,7 @@
 module Notifications
   class RemoveAllByAction
-    def initialize(notifiable_id, notifiable_type, action)
-      @notifiable_collection = notifiable_type.constantize.where(id: notifiable_id)
+    def initialize(notifiable_ids, notifiable_type, action)
+      @notifiable_collection = notifiable_type.constantize.where(id: notifiable_ids)
       @action = action
     end
 

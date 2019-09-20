@@ -2,8 +2,10 @@ module Notifications
   class RemoveAllJob < ApplicationJob
     queue_as :remove_all_notifications
 
-    def perform(notifiable_id, notifiable_type, service = Notifications::RemoveAll)
-      service.call(notifiable_id, notifiable_type)
+    def perform(notifiable_ids, notifiable_type, service = Notifications::RemoveAll)
+      return unless %w[Article Comment Mention].include?(notifiable_type)
+
+      service.call(Array.wrap(notifiable_ids), notifiable_type)
     end
   end
 end

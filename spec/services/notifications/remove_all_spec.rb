@@ -17,6 +17,6 @@ RSpec.describe Notifications::RemoveAll do
 
   it "checks all notifiables are deleted" do
     notifiables = Mention.all
-    expect { described_class.call(notifiable_id: notifiables.pluck(:id), notifiable_type: "Mention") }.to change(Notification, :count).by(-2)
+    expect { described_class.call(notifiables.pluck(:id), "Mention") }.to change(Notification, :count).by(-2)
   end
 end
