@@ -9,7 +9,6 @@ import BodyMarkdown from './elements/bodyMarkdown';
 import BodyPreview from './elements/bodyPreview';
 import PublishToggle from './elements/publishToggle';
 import Notice from './elements/notice';
-import Tags from './elements/tags';
 import Title from './elements/title';
 import MainImage from './elements/mainImage';
 import ImageManagement from './elements/imageManagement';
@@ -17,6 +16,7 @@ import MoreConfig from './elements/moreConfig';
 import OrgSettings from './elements/orgSettings';
 import Errors from './elements/errors';
 import KeyboardShortcutsHandler from './elements/keyboardShortcutsHandler';
+import Tags from '../shared/components/tags';
 
 export default class ArticleForm extends Component {
   static handleGistPreview() {
@@ -404,6 +404,8 @@ export default class ArticleForm extends Component {
               <Tags
                 defaultValue={tagList}
                 onInput={linkState(this, 'tagList')}
+                maxTags={4}
+                classPrefix={`articleform`}
               />
               <button
                 className="articleform__detailsButton articleform__detailsButton--image"
