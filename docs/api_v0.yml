@@ -2,7 +2,7 @@ openapi: "3.0.2"
 info:
   title: DEV API
   description: Access DEV articles, comments and other resources via API
-  version: "0.5.4"
+  version: "0.5.5"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -620,7 +620,7 @@ components:
           title: Hello, World!
           published: true
           body_markdown: Hello DEV, this is my first post
-          tags: discuss, help
+          tags: ["discuss", "help"]
           series: Hello series
           canonical_url: https://example.com/blog/hello
     ArticleCreateFrontMatter:
@@ -643,7 +643,7 @@ components:
           title: Hello, World!
           published: true
           body_markdown: Hello DEV, this is my first post
-          tags: discuss, help
+          tags: ["discuss", "help"]
           series: Hello series
           canonical_url: https://example.com/blog/hello
           organization_id: 1234
