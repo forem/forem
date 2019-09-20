@@ -1,5 +1,7 @@
 class JSFiddleTag < LiquidTagBase
   PARTIAL = "liquids/jsfiddle".freeze
+  OPTION_REGEXP = /\A(js|html|css|result|,)*\z/.freeze
+  LINK_REGEXP = /\A(http|https):\/\/(jsfiddle\.net)\/[a-zA-Z0-9\-\/]*\z/.freeze
 
   def initialize(tag_name, link, tokens)
     super
@@ -21,7 +23,7 @@ class JSFiddleTag < LiquidTagBase
   private
 
   def valid_option(option)
-    option.match(/^(js|html|css|result|,)*\z/)
+    option.match(OPTION_REGEXP)
   end
 
   def parse_options(input)
@@ -45,7 +47,7 @@ class JSFiddleTag < LiquidTagBase
 
   def valid_link?(link)
     link_no_space = link.delete(" ")
-    (link_no_space =~ /^(http|https):\/\/(jsfiddle\.net)\/[a-zA-Z0-9\-\/]*\z/).zero?
+    (link_no_space =~ LINK_REGEXP).zero?
   end
 end
 
