@@ -25,10 +25,12 @@ RSpec.describe StackexchangeTag, type: :liquid_template, vcr: vcr_option do
       liquid = generate_new_liquid(valid_id)
       expect(liquid.render).to include("ltag__stackexchange")
     end
+
     it "renders basic exchange html" do
       liquid = generate_exchange_liquid(exchange_id)
       expect(liquid.render).to include("stackexchange-logo")
     end
+
     it "rejects invalid id" do
       expect do
         liquid = generate_exchange_liquid(invalid_id)

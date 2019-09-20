@@ -2,8 +2,7 @@ require "rails_helper"
 
 RSpec.describe KotlinTag, type: :liquid_template do
   describe "#link" do
-    input = "https://pl.kotl.in/owreUFFUG?theme=darcula&from=3&to=6&readOnly=true"
-    expected = "https://play.kotlinlang.org/embed?short=owreUFFUG&from=3&to=6&theme=darcula&readOnly=true"
+    let(:valid_link) { "https://pl.kotl.in/owreUFFUG?theme=darcula&from=3&to=6&readOnly=true" }
 
     def generate_new_liquid(link)
       Liquid::Template.register_tag("kotlin", KotlinTag)
@@ -34,11 +33,12 @@ RSpec.describe KotlinTag, type: :liquid_template do
     end
 
     it "produces a correct final URL" do
-      expect(described_class.embedded_url(input)).to eq(expected)
+      expected = "https://play.kotlinlang.org/embed?short=owreUFFUG&from=3&to=6&theme=darcula&readOnly=true"
+      expect(described_class.embedded_url(valid_link)).to eq(expected)
     end
 
     it "renders correctly a Kotlin Playground link" do
-      liquid = generate_new_liquid(input)
+      liquid = generate_new_liquid(valid_link)
       rendered_kotlin_iframe = liquid.render
       Approvals.verify(rendered_kotlin_iframe, name: "kotlin_liquid_tag", format: :html)
     end

@@ -9,6 +9,7 @@ class StackexchangeTag < LiquidTagBase
     "question" => "!*1SgQGDOL9bPBHULz9sKS.y6qv7V9fYNszvdhDuv5",
     "site" => "!mWxO_PNa4i"
   }.freeze
+  ID_REGEXP = /\A\d{1,20}\z/.freeze
 
   attr_reader :site, :post_type
 
@@ -54,7 +55,7 @@ class StackexchangeTag < LiquidTagBase
   def valid_input?(input)
     return false if input.nil?
 
-    /^\d{1,20}$/.match?(input.split(" ")[0])
+    ID_REGEXP.match?(input.split(" ")[0])
   end
 
   def handle_response_error(response)
