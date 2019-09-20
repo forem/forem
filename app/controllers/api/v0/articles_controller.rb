@@ -4,7 +4,9 @@ module Api
       respond_to :json
 
       before_action :authenticate!, only: %i[create update me]
-      before_action -> { doorkeeper_authorize! :public }, only: %w[index show me], if: -> { doorkeeper_token }
+      before_action -> { doorkeeper_authorize! :public }, only: %w[index show], if: -> { doorkeeper_token }
+      before_action -> { doorkeeper_authorize! :read_articles }, only: %w[me], if: -> { doorkeeper_token }
+
       before_action :set_cache_control_headers, only: [:index]
       caches_action :show,
                     cache_path: proc { |c| c.params.permit! },

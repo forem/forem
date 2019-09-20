@@ -117,11 +117,18 @@ RSpec.describe "Api::V0::Articles", type: :request do
         get me_api_articles_path
         expect(response).to have_http_status(:unauthorized)
       end
+
+      it "returns unauthorized when lack of scopes" do
+        user = create(:user)
+        access_token = create :doorkeeper_access_token, resource_owner: user, scopes: "public"
+        get me_api_articles_path, params: { access_token: access_token.token }
+        expect(response).to have_http_status(:forbidden)
+      end
     end
 
     context "when request is authenticated" do
       let_it_be(:user) { create(:user) }
-      let_it_be(:access_token) { create :doorkeeper_access_token, resource_owner: user, scopes: "public" }
+      let_it_be(:access_token) { create :doorkeeper_access_token, resource_owner: user, scopes: "public, read_articles" }
 
       it "works with bearer authorization" do
         headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
