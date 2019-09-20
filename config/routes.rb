@@ -108,7 +108,8 @@ Rails.application.routes.draw do
           post "/update_or_create", to: "github_repos#update_or_create"
         end
       end
-      resources :webhooks, only: %i[create show destroy]
+      resources :webhooks, only: %i[index create show destroy]
+
       resources :classified_listings, path: :listings, only: %i[index show create update]
       get "/listings/category/:category", to: "classified_listings#index", as: :classified_listings_category
       get "/analytics/totals", to: "analytics#totals"
