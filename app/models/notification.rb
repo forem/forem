@@ -120,20 +120,20 @@ class Notification < ApplicationRecord
       Notifications::MilestoneJob.perform_now(type, article_id)
     end
 
-    def remove_all_by_action(notifiable:, action: nil)
-      Notifications::RemoveAllByActionJob.perform_later(notifiable, action)
+    def remove_all_by_action(notifiable_id:, notifiable_type:, action: nil)
+      Notifications::RemoveAllByActionJob.perform_later(notifiable_id, notifiable_type, action)
     end
 
-    def remove_all_by_action_without_delay(notifiable:, action: nil)
-      Notifications::RemoveAllByActionJob.perform_now(notifiable, action)
+    def remove_all_by_action_without_delay(notifiable_id:, notifiable_type:, action: nil)
+      Notifications::RemoveAllByActionJob.perform_now(notifiable_id, notifiable_type, action)
     end
 
-    def remove_all(notifiable_collection)
-      Notifications::RemoveAllJob.perform_later(notifiable_collection)
+    def remove_all(notifiable_id:, notifiable_type:)
+      Notifications::RemoveAllJob.perform_later(notifiable_id, notifiable_type)
     end
 
-    def remove_all_without_delay(notifiable_collection)
-      Notifications::RemoveAllJob.perform_now(notifiable_collection)
+    def remove_all_without_delay(notifiable_id:, notifiable_type:)
+      Notifications::RemoveAllJob.perform_now(notifiable_id, notifiable_type)
     end
 
     def update_notifications(notifiable, action = nil)

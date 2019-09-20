@@ -469,8 +469,8 @@ RSpec.describe Notification, type: :model do
     it "removes all mention related notifications" do
       perform_enqueued_jobs do
         expect do
-          Notification.remove_all(notifiable_collection)
-        end.to change(Notification, :count).by(-1)
+          described_class.remove_all(notifiable_id: mention.id, notifiable_type: "Mention")
+        end.to change(described_class, :count).by(-1)
       end
     end
   end

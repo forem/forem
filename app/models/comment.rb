@@ -185,7 +185,7 @@ class Comment < ApplicationRecord
   end
 
   def remove_notifications
-    Notification.remove_all_without_delay([self])
+    Notification.remove_all_without_delay(notifiable_id: id, notifiable_type: "Comment")
   end
 
   private

@@ -178,8 +178,8 @@ class ArticlesController < ApplicationController
   def destroy
     authorize @article
     @article.destroy!
-    Notification.remove_all_without_delay([@article])
-    Notification.remove_all(@article.comments.to_a)
+    Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article")
+    Notification.remove_all(notifiable_id: @article.comments.pluck(:id), notifiable_type: "Comment")
     respond_to do |format|
       format.html { redirect_to "/dashboard", notice: "Article was successfully deleted." }
       format.json { head :no_content }
@@ -276,8 +276,8 @@ class ArticlesController < ApplicationController
     if updated && @article.published && @article.saved_changes["published"] == [false, true]
       Notification.send_to_followers(@article, "Published")
     elsif @article.saved_changes["published"] == [true, false]
-      Notification.remove_all_by_action_without_delay(notifiable: @article, action: "Published")
-      Notification.remove_all(@article.comments.to_a)
+      Notification.remove_all_by_action_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
+      Notification.remove_all(notifiable_id: @article.comments.pluck(:id), notifiable_type: "Comment")
     end
   end
 

@@ -1,7 +1,7 @@
 module Notifications
   class RemoveAll
-    def initialize(notifiable_collection)
-      @notifiable_collection = notifiable_collection
+    def initialize(notifiable_id, notifiable_type)
+      @notifiable_collection = notifiable_type.constantize.where(id: notifiable_id)
     end
 
     def self.call(*args)
