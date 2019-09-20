@@ -30,14 +30,15 @@ exports[`<ArticleForm /> renders properly 1`] = `
         <div
           class="articleform__tagswrapper"
         >
-          <textarea
+          <input
+            autoComplete="on"
             class="articleform__tags"
             id="tag-input"
             onBlur={[Function]}
             onFocus={[Function]}
             onInput={[Function]}
             onKeyDown={[Function]}
-            placeholder="tags"
+            placeholder="4 tags max, comma separated, no spaces or special characters"
             ref={[Function]}
             type="text"
             value=""

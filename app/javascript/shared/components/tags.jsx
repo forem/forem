@@ -12,7 +12,8 @@ const KEYS = {
   DELETE: 8,
 };
 
-const MAX_TAGS = 8;
+/* TODO: Remove all instances of this.props.listing
+   and refactor this component to be more generic */
 
 class Tags extends Component {
   constructor(props) {
@@ -43,14 +44,41 @@ class Tags extends Component {
   }
 
   componentDidMount() {
-    this.setState({
-      additionalTags: {jobs: ['remote', 'remoteoptional', 'lgbtbenefits', 'greencard', 'senior', 'junior', 'intermediate', '401k', 'fulltime', 'contract', 'temp'],
-                       forhire: ['remote', 'remoteoptional', 'lgbtbenefits', 'greencard', 'senior', 'junior', 'intermediate', '401k', 'fulltime', 'contract', 'temp'],
-                       forsale: ['laptop', 'desktopcomputer', 'new', 'used'],
-                       events: ['conference', 'meetup'],
-                       collabs: ['paid', 'temp']
-                      }
-    })
+    if (this.props.listing === true) {
+      this.setState({
+        additionalTags: {
+          jobs: [
+            'remote',
+            'remoteoptional',
+            'lgbtbenefits',
+            'greencard',
+            'senior',
+            'junior',
+            'intermediate',
+            '401k',
+            'fulltime',
+            'contract',
+            'temp',
+          ],
+          forhire: [
+            'remote',
+            'remoteoptional',
+            'lgbtbenefits',
+            'greencard',
+            'senior',
+            'junior',
+            'intermediate',
+            '401k',
+            'fulltime',
+            'contract',
+            'temp',
+          ],
+          forsale: ['laptop', 'desktopcomputer', 'new', 'used'],
+          events: ['conference', 'meetup'],
+          collabs: ['paid', 'temp'],
+        },
+      });
+    }
   }
 
   componentDidUpdate() {
@@ -68,7 +96,9 @@ class Tags extends Component {
     const searchResultsRows = this.state.searchResults.map((tag, index) => (
       <div
         tabIndex="-1"
-        className={`listingform__tagoptionrow listingform__tagoptionrow--${
+        className={`${this.props.classPrefix}__tagoptionrow ${
+          this.props.classPrefix
+        }__tagoptionrow--${
           this.state.selectedIndex === index ? 'active' : 'inactive'
         }`}
         onClick={this.handleTagClick}
@@ -82,21 +112,22 @@ class Tags extends Component {
       document.activeElement.id === 'tag-input'
     ) {
       searchResultsHTML = (
-        <div className="listingform__tagsoptions">{searchResultsRows}</div>
+        <div className={`${this.props.classPrefix}__tagsoptions`}>
+          {searchResultsRows}
+        </div>
       );
     }
 
     return (
-      <div className="listingform__tagswrapper">
-        <label htmlFor="Tags">Tags</label>
+      <div className={`${this.props.classPrefix}__tagswrapper`}>
+        { this.props.listing && <label htmlFor="Tags">Tags</label> }
         <input
           id="tag-input"
-          name="classified_listing[tag_list]"
           type="text"
           ref={t => (this.textArea = t)}
-          className="listingform__input listingform__tagsinput"
-          placeholder="8 tags max, comma separated, no spaces or special characters"
-          autoComplete="off"
+          className={`${this.props.classPrefix}__tags`}
+          placeholder={`${this.props.maxTags} tags max, comma separated, no spaces or special characters`}
+          autoComplete={this.props.autoComplete || 'on'}
           value={this.props.defaultValue}
           onInput={this.handleInput}
           onKeyDown={this.handleKeyDown}
@@ -190,15 +221,19 @@ class Tags extends Component {
         filters: 'supported:true',
       })
       .then(content => {
-        const { additionalTags } = this.state
-        const { category } = this.props
-        const additionalItems = (additionalTags[category] || []).filter(t => (t.indexOf(query) > -1))
-        const resultsArray = content.hits;
-        additionalItems.forEach(t => {
-          if (resultsArray.indexOf(t) === -1) {
-            resultsArray.push({name: t});
-          }
-        })
+        if (this.props.listing === true) {
+          const { additionalTags } = this.state;
+          const { category } = this.props;
+          const additionalItems = (additionalTags[category] || []).filter(
+            t => t.indexOf(query) > -1,
+          );
+          const resultsArray = content.hits;
+          additionalItems.forEach(t => {
+            if (resultsArray.indexOf(t) === -1) {
+              resultsArray.push({ name: t });
+            }
+          });
+        }
         this.setState({
           searchResults: content.hits.filter(
             hit => !this.selected.includes(hit.name),
@@ -216,7 +251,10 @@ class Tags extends Component {
   handleKeyDown = e => {
     const component = this;
 
-    if (component.selected.length === MAX_TAGS && e.keyCode === KEYS.COMMA) {
+    if (
+      component.selected.length === this.props.maxTags &&
+      e.keyCode === KEYS.COMMA
+    ) {
       e.preventDefault();
       return;
     }
@@ -298,7 +336,7 @@ class Tags extends Component {
 
     const range = this.getRangeBetweenCommas(input.value, input.selectionStart);
     const insertingAtEnd = range[1] === input.value.length;
-    const maxTagsWillBeReached = this.selected.length === MAX_TAGS;
+    const maxTagsWillBeReached = this.selected.length === this.props.maxTags;
     if (insertingAtEnd && !maxTagsWillBeReached) {
       tag += ', ';
     }
@@ -352,7 +390,6 @@ class Tags extends Component {
 
 Tags.propTypes = {
   defaultValue: PropTypes.string.isRequired,
-  category: PropTypes.string.isRequired,
 };
 
 export default Tags;
