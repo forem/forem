@@ -12,7 +12,7 @@ RSpec.describe Notifications::RemoveAllJob, type: :job do
 
     it "calls the service" do
       described_class.perform_now(1, "Article", remove_all_service)
-      expect(remove_all_service).to have_received(:call).with(1, "Article")
+      expect(remove_all_service).to have_received(:call).with([1], "Article")
     end
   end
 end
