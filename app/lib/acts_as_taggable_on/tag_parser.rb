@@ -13,7 +13,7 @@ module ActsAsTaggableOn
       return [] if string.blank?
 
       string.downcase.split(",").map do |t|
-        t.strip.delete(" ").gsub(/[^[:alnum:]]/i, "")
+        t.strip.delete(" ").gsub(/[^[:alnum:]-]/i, "")
       end
     end
 

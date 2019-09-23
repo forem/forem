@@ -17,9 +17,9 @@ RSpec.describe ActsAsTaggableOn::TagParser do
       expect(create_tag_parser(tags)).to eq(%w[word apple])
     end
 
-    it "does not allow dashes" do
+    it "does allow dashes" do
       tags = ["w-o-r-d", "a-pp-le"]
-      expect(create_tag_parser(tags)).to eq(%w[word apple])
+      expect(create_tag_parser(tags)).to eq(%w[w-o-r-d a-pp-le])
     end
     it "allows only alphanumeric characters" do
       tags = ["w0rd", "app|3", "&!tes4@#$%^&*"]
