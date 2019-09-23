@@ -12,14 +12,6 @@ RSpec.describe AuthorizationService do
         service.get_user
       end.to change(User, :count).by(1)
     end
-
-    it "sets remember_me for the new user" do
-      user = service.get_user
-      user.reload
-      expect(user.remember_me).to be_truthy
-      expect(user.remember_token).to be_truthy
-      expect(user.remember_created_at).to be_truthy
-    end
   end
 
   describe "existing user" do
@@ -33,16 +25,6 @@ RSpec.describe AuthorizationService do
       expect do
         service.get_user
       end.not_to change(User, :count)
-    end
-
-    it "sets remember_me for the existing user" do
-      user.update_columns(remember_token: nil, remember_created_at: nil)
-      service = described_class.new(auth)
-      service.get_user
-      user.reload
-      expect(user.remember_me).to be_truthy
-      expect(user.remember_token).to be_truthy
-      expect(user.remember_created_at).to be_truthy
     end
 
     context "when the user has a new Twitter username" do
