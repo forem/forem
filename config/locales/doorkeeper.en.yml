@@ -18,6 +18,10 @@ en:
               not_match_configured: "doesn't match configured on the server."
 
   doorkeeper:
+    scopes:
+      public: 'Access public profile data and published articles'
+      read_articles: 'Access all articles including drafts'
+
     applications:
       confirmations:
         destroy: 'Are you sure?'
