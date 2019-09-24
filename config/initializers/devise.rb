@@ -127,8 +127,8 @@ Devise.setup do |config|
 
   # ==> Configuration for :rememberable
   # The time the user will be remembered without asking for credentials again.
-  # config.remember_for = 15.seconds
-  # config.extend_remember_period = true
+  config.remember_for = 26.weeks
+  config.extend_remember_period = true
   config.timeout_in = 20.weeks
 
   # Invalidates all the remember me tokens when the user signs out.

@@ -13,6 +13,11 @@ class AsyncInfoController < ApplicationController
     end
     @user = current_user.decorate
     # Updates article analytics periodically:
+    if cookies[:remember_user_token].blank?
+      current_user.remember_me = true
+      current_user.remember_me!
+      remember_me(current_user)
+    end
     occasionally_update_analytics
     respond_to do |format|
       format.json do
