@@ -130,7 +130,7 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
   describe "authorized with doorkeeper" do
     let!(:oauth_app) { create(:application) }
     let!(:oauth_app2) { create(:application) }
-    let(:access_token) { create :doorkeeper_access_token, resource_owner: user, application: oauth_app2 }
+    let(:access_token) { create :doorkeeper_access_token, resource_owner: user, application: oauth_app2, scopes: "public" }
 
     it "renders index successfully" do
       get api_webhooks_path, params: { access_token: access_token.token }
