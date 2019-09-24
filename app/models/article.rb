@@ -145,9 +145,8 @@ class Article < ApplicationRecord
                  :path, :class_name, :user_name, :user_username, :comments_blob,
                  :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date, :flare_tag
       attribute :user do
-        { username: user.username,
-          name: user.name,
-          profile_image_90: ProfileImage.new(user).get(90) }
+        { username: user.username, name: user.name,
+          profile_image_90: ProfileImage.new(user).get(90), pro: user.pro? }
       end
       tags do
         [tag_list,
@@ -584,7 +583,8 @@ class Article < ApplicationRecord
       username: object.username,
       slug: object == organization ? object.slug : object.username,
       profile_image_90: object.profile_image_90,
-      profile_image_url: object.profile_image_url
+      profile_image_url: object.profile_image_url,
+      pro: object == user ? user.pro? : false # organizations can't be pro users
     }
   end
 

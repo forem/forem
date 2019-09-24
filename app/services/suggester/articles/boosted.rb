@@ -10,7 +10,7 @@ module Suggester
       end
 
       def suggest
-        base_articles = Article.includes(:user).
+        base_articles = Article.includes(user: [:pro_membership]).
           includes(:organization).
           where.not(id: not_ids, organization_id: nil).
           cached_tagged_with(tag)

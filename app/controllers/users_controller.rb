@@ -203,12 +203,9 @@ class UsersController < ApplicationController
       stripe_code = current_user.stripe_id_code
       return if stripe_code == "special"
 
-      @customer = Stripe::Customer.retrieve(stripe_code) if stripe_code.present?
-    when "membership"
-      if current_user.monthly_dues.zero?
-        redirect_to "/membership"
-        return
-      end
+      @customer = Payments::Customer.get(stripe_code) if stripe_code.present?
+    when "pro-membership"
+      @pro_membership = current_user.pro_membership
     when "account"
       @email_body = <<~HEREDOC
         Hello DEV Team,

@@ -117,7 +117,7 @@
             </a>
             <div class="featured-user-name">
               <a href="/<%= @featured_story.cached_user.username %>">
-                <%= @featured_story.cached_user.name %>・<time datetime="<%= @featured_story.published_timestamp %>"><%= @featured_story.readable_publish_date %></time>
+                <%= @featured_story.cached_user.name %><%= render "shared/pro_checkmark" if @featured_story.cached_user.pro %>・<time datetime="<%= @featured_story.published_timestamp %>"><%= @featured_story.readable_publish_date %></time>
                 <span class="time-ago-indicator-initial-placeholder" data-seconds="<%= @featured_story.published_at_int %>"></span>
               </a>
             </div>

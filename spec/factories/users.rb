@@ -101,5 +101,11 @@ FactoryBot.define do
         user.update(articles_count: 1, comments_count: 1)
       end
     end
+
+    trait :with_pro_membership do
+      after(:create) do |user|
+        create(:pro_membership, user: user)
+      end
+    end
   end
 end
