@@ -1,4 +1,4 @@
-# Preview all emails at http://localhost:3000/rails/mailers/notify_mailer
+# Preview all emails at http://localhost:3000/rails/mailers/digest_mailer
 class DigestMailerPreview < ActionMailer::Preview
   def digest_email
     DigestMailer.digest_email(User.last, Article.all)

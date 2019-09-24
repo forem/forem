@@ -49,6 +49,7 @@ class User < ApplicationRecord
   has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
+  has_one :pro_membership, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -168,9 +169,12 @@ class User < ApplicationRecord
               per_environment: true,
               enqueue: true do
       attribute :user do
-        { username: user.username,
+        {
+          username: user.username,
           name: user.username,
-          profile_image_90: profile_image_90 }
+          profile_image_90: profile_image_90,
+          pro: user.pro?
+        }
       end
       attribute :title, :path, :tag_list, :main_image, :id,
                 :featured, :published, :published_at, :featured_number, :comments_count,
@@ -327,7 +331,7 @@ class User < ApplicationRecord
   end
 
   def pro?
-    has_role?(:pro)
+    pro_membership&.active? || has_role?(:pro)
   end
 
   def trusted
@@ -401,8 +405,10 @@ class User < ApplicationRecord
   def resave_articles
     cache_buster = CacheBuster.new
     articles.find_each do |article|
-      cache_buster.bust(article.path) if article.path
-      cache_buster.bust(article.path + "?i=i") if article.path
+      if article.path
+        cache_buster.bust(article.path)
+        cache_buster.bust(article.path + "?i=i")
+      end
       article.save
     end
   end
@@ -443,6 +449,10 @@ class User < ApplicationRecord
 
   def currently_streaming_on_twitch?
     currently_streaming_on == "twitch"
+  end
+
+  def has_enough_credits?(num_credits_needed)
+    credits.unspent.size >= num_credits_needed
   end
 
   private
@@ -521,7 +531,7 @@ class User < ApplicationRecord
   end
 
   def conditionally_resave_articles
-    delay.resave_articles if core_profile_details_changed? && !user.banned
+    Users::ResaveArticlesJob.perform_later(id) if core_profile_details_changed? && !user.banned
   end
 
   def bust_cache
