@@ -280,7 +280,7 @@ class ArticlesController < ApplicationController
       Notification.send_to_followers(@article, "Published")
     elsif @article.saved_changes["published"] == [true, false]
       Notification.remove_all_by_action_without_delay(notifiable_ids: @article.id, notifiable_type: "Article", action: "Published")
-      Notification.remove_all(notifiable_ids: @article.comments.pluck(:id), notifiable_type: "Comment")
+      Notification.remove_all(notifiable_ids: @article.comments.pluck(:id), notifiable_type: "Comment") if @article.comments.exists?
     end
   end
 
