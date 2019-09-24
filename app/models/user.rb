@@ -331,7 +331,9 @@ class User < ApplicationRecord
   end
 
   def pro?
-    pro_membership&.active? || has_role?(:pro)
+    Rails.cache.fetch("user-#{id}/has_pro_membership", expires_in: 200.hours) do
+      pro_membership&.active? || has_role?(:pro)
+    end
   end
 
   def trusted

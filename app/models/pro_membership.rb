@@ -15,6 +15,7 @@ class ProMembership < ApplicationRecord
 
   before_create :set_expiration_date
   after_save :resave_user_articles
+  after_save :bust_cache
 
   def expired?
     expires_at <= Time.current
@@ -52,5 +53,9 @@ class ProMembership < ApplicationRecord
         saved_change_to_status?
       Users::ResaveArticlesJob.perform_later(user.id)
     end
+  end
+
+  def bust_cache
+    Rails.cache.delete("user-#{user.id}/has_pro_membership")
   end
 end
