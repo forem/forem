@@ -114,6 +114,8 @@ en:
           revoked: "The access token was revoked"
           expired: "The access token expired"
           unknown: "The access token is invalid"
+        revoke:
+          unauthorized: "You are not authorized to revoke this token"
 
     flash:
       applications:

@@ -1,7 +1,10 @@
 # rubocop:disable Metrics/BlockLength
 
 Rails.application.routes.draw do
-  use_doorkeeper
+  use_doorkeeper do
+    controllers tokens: "oauth/tokens"
+  end
+
   devise_for :users, controllers: {
     omniauth_callbacks: "omniauth_callbacks",
     session: "sessions",
