@@ -54,8 +54,7 @@ class AsyncInfoController < ApplicationController
         preferred_languages_array: @user.preferred_languages_array,
         config_body_class: @user.config_body_class,
         onboarding_variant_version: @user.onboarding_variant_version,
-        pro: @user.pro?,
-        pro_checkmark: ActionController::Base.helpers.asset_path("pro-checkmark.png")
+        pro: @user.pro?
       }
     end
   end

@@ -8,21 +8,9 @@ function initializeUserProfileContent(user) {
     user.profile_image_90 +
     '" />';
 
-  let proCheckMark = '';
-  if (user.pro) {
-    proCheckMark = `
-      <img
-        src="${user.pro_checkmark}"
-        alt="pro member check mark"
-        title="Pro member"
-        width="15px"
-        style:"margin-left:3px;">
-    `;
-  }
-
-  document.getElementById('sidebar-profile-name').innerHTML =
-    filterXSS(user.name) + proCheckMark;
-  document.getElementById('sidebar-profile-username').innerHTML =
+    document.getElementById('sidebar-profile-name').innerHTML =
+    filterXSS(user.name);
+    document.getElementById('sidebar-profile-username').innerHTML =
     '@' + user.username;
   document.getElementById('sidebar-profile-snapshot-inner').href =
     '/' + user.username;
