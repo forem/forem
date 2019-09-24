@@ -110,6 +110,8 @@ Rails.application.routes.draw do
       end
       resources :webhooks, only: %i[index create show destroy]
 
+      resources :classified_listings, path: :listings, only: %i[index show create update]
+      get "/listings/category/:category", to: "classified_listings#index", as: :classified_listings_category
       get "/analytics/totals", to: "analytics#totals"
       get "/analytics/historical", to: "analytics#historical"
       get "/analytics/past_day", to: "analytics#past_day"

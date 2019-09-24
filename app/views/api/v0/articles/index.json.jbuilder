@@ -14,10 +14,10 @@ json.array! @articles do |article|
   json.positive_reactions_count article.positive_reactions_count
   json.published_timestamp article.published_timestamp
 
-  json.partial! "user", user: article.user
+  json.partial! "api/v0/shared/user", user: article.user
 
   if article.organization
-    json.partial! "organization", organization: article.organization
+    json.partial! "api/v0/shared/organization", organization: article.organization
   end
 
   flare_tag = FlareTag.new(article).tag
