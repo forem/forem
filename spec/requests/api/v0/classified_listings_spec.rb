@@ -123,13 +123,6 @@ RSpec.describe "Api::V0::Listings" do
         post api_classified_listings_path, headers: { "api-key" => "foobar", "content-type" => "application/json" }
         expect(response). to have_http_status(:unauthorized)
       end
-
-      it "fails with a failing secure compare" do
-        allow(ActiveSupport::SecurityUtils).
-          to receive(:secure_compare).and_return(false)
-        post api_classified_listings_path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
-        expect(response).to have_http_status(:unauthorized)
-      end
     end
 
     describe "user must have enough credit to create a classified listing" do
@@ -296,7 +289,9 @@ RSpec.describe "Api::V0::Listings" do
     end
 
     let(:user) { create(:user) }
+    let(:another_user) { create(:user) }
     let(:listing) { create(:classified_listing, user_id: user.id) }
+    let(:another_user_listing) { create(:classified_listing, user_id: another_user.id) }
     let(:listing_draft) { create(:classified_listing, user: user) }
     let(:organization) { create(:organization) }
     let(:org_listing) { create(:classified_listing, user: user, organization: organization) }
@@ -317,13 +312,6 @@ RSpec.describe "Api::V0::Listings" do
 
       it "fails with the wrong api key" do
         put api_classified_listing_path(listing.id), headers: { "api-key" => "foobar", "content-type" => "application/json" }
-        expect(response).to have_http_status(:unauthorized)
-      end
-
-      it "fails with a failing secure compare" do
-        allow(ActiveSupport::SecurityUtils).
-          to receive(:secure_compare).and_return(false)
-        put api_classified_listing_path(listing.id), headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -481,6 +469,12 @@ RSpec.describe "Api::V0::Listings" do
           listing.reload
         end.to change(listing, :published).from(true).to(false)
         expect(response).to have_http_status(:ok)
+      end
+
+      it "cannot update another user listing" do
+        expect do
+          put_classified_listing(another_user_listing.id, title: "Test for a new title")
+        end.to raise_error(Pundit::NotAuthorizedError)
       end
     end
   end
