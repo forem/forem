@@ -113,6 +113,6 @@ RSpec.describe ClassifiedListingTag, type: :liquid_template do
 
   it "renders a proper listing tag from org listing" do
     liquid = generate_new_liquid("#{org_listing.category}/#{org_listing.slug}")
-    expect(liquid.render).to eq(correct_link_html(org_listing))
+    expect(CGI.unescapeHTML(liquid.render)).to eq(correct_link_html(org_listing))
   end
 end
