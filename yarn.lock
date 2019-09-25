@@ -12550,10 +12550,10 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
 
-twilio-video@^1.19.1:
-  version "1.19.1"
-  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-1.19.1.tgz#d6d58896bd42959ae448060e338c8fdebadf598a"
-  integrity sha512-iEAeOgK0WVc1VQF1FQWoyDwOl1yiuowaqLe+HjeEUxiPR4WeysbThQHu32uNEtxM0v9qy2/ilSs6l1LiSMF+uA==
+twilio-video@^1.19.2:
+  version "1.19.2"
+  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-1.19.2.tgz#ef3d66f6a44ce6675838742335a11fdce21797fb"
+  integrity sha512-OfuFXxjVDH4DpXs0xz6ZfDILTndC2rBeVvXZuUwV/zwyVJGIlFdIRbyY8zfikDBlF173NBIarq5F8p27wJlcQA==
   dependencies:
     "@twilio/sip.js" "^0.7.7"
     "@twilio/webrtc" "2.3.0"
