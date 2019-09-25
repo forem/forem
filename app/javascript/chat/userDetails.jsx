@@ -11,6 +11,29 @@ function blockChat(activeChannelId) {
   getCsrfToken().then(sendFetch('block-chat', formData));
 }
 
+const setUpButton = ({ modalId = '', otherModalId = '', btnName = '' }) => {
+  return (
+    <button
+      onClick={() => {
+        const modal = document.getElementById(`${modalId}`);
+        const otherModal = document.getElementById(
+          `${otherModalId}`,
+        );
+        otherModal.style.display = 'none';
+        if (modal.style.display === 'none') {
+          modal.style.display = 'block';
+          window.location.href = `#${modalId}`;
+        } else {
+          modal.style.display = 'none';
+          window.location.href = `#`;
+        }
+      }}
+    >
+      {btnName}
+    </button>
+  );
+}
+
 export default class UserDetails extends Component {
   render() {
     const { user } = this.props;
@@ -65,26 +88,11 @@ export default class UserDetails extends Component {
     }
     let blockButton = '';
     if (channel.channel_type === 'direct' && window.currentUser.id != user.id) {
-      blockButton = (
-        <button
-          onClick={() => {
-            const modal = document.getElementById('userdetails__blockmsg');
-            const otherModal = document.getElementById(
-              'userdetails__reportabuse',
-            );
-            otherModal.style.display = 'none';
-            if (modal.style.display === 'none') {
-              modal.style.display = 'block';
-              window.location.href = `#userdetails__blockmsg`;
-            } else {
-              modal.style.display = 'none';
-              window.location.href = `#`;
-            }
-          }}
-        >
-          Block User
-        </button>
-      );
+      blockButton = setUpButton({ 
+          modalId: 'userdetails__blockmsg',
+          otherModalId: 'userdetails__reportabuse',
+          btnName: 'Block User'
+      });
     }
     return (
       <div>
@@ -115,24 +123,13 @@ export default class UserDetails extends Component {
         </div>
         <div className="userdetails__blockreport">
           {blockButton}
-          <button
-            onClick={() => {
-              const modal = document.getElementById('userdetails__reportabuse');
-              const otherModal = document.getElementById(
-                'userdetails__blockmsg',
-              );
-              otherModal.style.display = 'none';
-              if (modal.style.display === 'none') {
-                modal.style.display = 'block';
-                window.location.href = `#userdetails__reportabuse`;
-              } else {
-                modal.style.display = 'none';
-                window.location.href = `#`;
-              }
-            }}
-          >
-            Report Abuse
-          </button>
+          {
+            setUpButton({
+              modalId: 'userdetails__reportabuse',
+              otherModalId: 'userdetails__blockmsg',
+              btnName: 'Report Abuse'
+            })
+          }
         </div>
         <div id="userdetails__reportabuse" style="display:none">
           <div className="userdetails__reportabuse">
