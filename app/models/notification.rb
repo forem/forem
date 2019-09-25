@@ -128,20 +128,28 @@ class Notification < ApplicationRecord
       Notifications::MilestoneJob.perform_now(type, article_id)
     end
 
-    def remove_all(notifiable_id:, notifiable_type:, action: nil)
-      Notifications::RemoveAllJob.perform_later(notifiable_id, notifiable_type, action)
+    def remove_all_by_action(notifiable_ids:, notifiable_type:, action: nil)
+      return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
+
+      Notifications::RemoveAllByActionJob.perform_later(notifiable_ids, notifiable_type, action)
     end
 
-    def remove_all_without_delay(notifiable_id:, notifiable_type:, action: nil)
-      Notifications::RemoveAllJob.perform_now(notifiable_id, notifiable_type, action)
+    def remove_all_by_action_without_delay(notifiable_ids:, notifiable_type:, action: nil)
+      return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
+
+      Notifications::RemoveAllByActionJob.perform_now(notifiable_ids, notifiable_type, action)
     end
 
-    def remove_each(notifiable_collection)
-      Notifications::RemoveEachJob.perform_later(notifiable_collection.pluck(:id))
+    def remove_all(notifiable_ids:, notifiable_type:)
+      return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
+
+      Notifications::RemoveAllJob.perform_later(notifiable_ids, notifiable_type)
     end
 
-    def remove_each_without_delay(notifiable_collection)
-      Notifications::RemoveEachJob.perform_now(notifiable_collection.pluck(:id))
+    def remove_all_without_delay(notifiable_ids:, notifiable_type:)
+      return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
+
+      Notifications::RemoveAllJob.perform_now(notifiable_ids, notifiable_type)
     end
 
     def update_notifications(notifiable, action = nil)

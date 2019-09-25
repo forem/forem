@@ -14,10 +14,18 @@ RSpec.describe "ArticlesDestroy", type: :request do
     expect(destroyed_article).to be_nil
   end
 
-  it "schedules a RemoveAllJob" do
+  it "schedules a RemoveAllJob if there are comments" do
+    create(:comment, commentable: article, user: user)
     expect do
       delete "/articles/#{article.id}"
     end.to have_enqueued_job(Notifications::RemoveAllJob).once
+  end
+
+  it "removes all previous published notifications" do
+    create(:notification, notifiable: article, action: "Published", user: user)
+    expect do
+      delete "/articles/#{article.id}"
+    end.to change(Notification, :count).by(-1)
   end
 
   it "doesn't destroy another person's article" do
