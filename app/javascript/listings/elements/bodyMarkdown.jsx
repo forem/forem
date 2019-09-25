@@ -10,17 +10,17 @@ const BodyMarkdown = ({ onChange, defaultValue }) => (
         id="body_markdown"
         name="classified_listing[body_markdown]"
         maxLength="400"
-        placeholder="400 characters max, 12 line break max, no images allowed"
+        placeholder="400 characters max, 12 line break max, no images allowed, *markdown is encouraged*"
         value={defaultValue}
         onInput={onChange}
       />
     </label>
   </div>
-)
+);
 
 BodyMarkdown.propTypes = {
   onChange: PropTypes.func.isRequired,
   defaultValue: PropTypes.string.isRequired,
-}
+};
 
 export default BodyMarkdown;
