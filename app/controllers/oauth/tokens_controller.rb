@@ -10,7 +10,7 @@ module Oauth
       # the access token model.
       if authorized?
         revoke_token
-        Webhook::Endpoint.where(user_id: token.resource_owner_id, oauth_application_id: token.application_id).destroy_all
+        Webhook::DestroyJob.perform_later(user_id: token.resource_owner_id, application_id: token.application_id)
         render json: {}, status: :ok
       else
         error_description = I18n.t(:unauthorized, scope: %i[doorkeeper errors messages revoke])
