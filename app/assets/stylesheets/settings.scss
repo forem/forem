@@ -352,6 +352,24 @@
       margin-top: 20px;
       width: 70%;
     }
+    .single-app-integration {
+      @include themeable(background, theme-container-background, #fff);
+      @include themeable(border, theme-border, 1px solid $light-medium-gray);
+      border-radius: 8px;
+      padding: 10px;
+      h2 {
+        margin: 0;
+        padding: 0;
+        font-size: 1.5em;
+      }
+      sup {
+        @include themeable(color, theme-secondary-color, $medium-gray);
+      }
+      img {
+        height: 1.0em;
+        margin-left: 5px;
+      }
+    }
   }
   .default-billing-message {
     margin: 10px 0px;
