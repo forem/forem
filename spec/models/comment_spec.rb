@@ -25,7 +25,7 @@ RSpec.describe Comment, type: :model do
     it { is_expected.to belong_to(:commentable) }
     it { is_expected.to have_many(:reactions).dependent(:destroy) }
     it { is_expected.to have_many(:mentions).dependent(:destroy) }
-    it { is_expected.to have_many(:notifications).dependent(:destroy) }
+    it { is_expected.to have_many(:notifications).dependent(:delete_all) }
     it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
     it { is_expected.to validate_presence_of(:commentable_id) }
 
