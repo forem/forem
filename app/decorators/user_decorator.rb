@@ -83,4 +83,8 @@ class UserDecorator < ApplicationDecorator
     ]
     colors[id % 10]
   end
+
+  def stackbit_integration?
+    access_tokens.any?
+  end
 end
