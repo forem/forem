@@ -1,6 +1,6 @@
 ::REDCARPET_CONFIG = {
   autolink: true,
-  no_intra_emphasis: true,
+  no_intra_emphasis: false,
   fenced_code_blocks: true,
   lax_html_blocks: true,
   lax_spacing: true,

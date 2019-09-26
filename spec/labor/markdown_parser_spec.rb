@@ -247,4 +247,11 @@ RSpec.describe MarkdownParser do
       expect(result).to include("<aside><abbr title=\"ol korrect\">OK</abbr><aside>")
     end
   end
+
+  context 'with intra emphasis' do
+    it 'renders italic and bold' do
+      code_block = "word_italic_and__bold__"
+      expect(generate_and_parse_markdown(code_block)).to include("word<em>italic</em>and<strong>bold</strong>")
+    end
+  end
 end
