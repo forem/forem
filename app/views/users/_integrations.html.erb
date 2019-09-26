@@ -12,7 +12,9 @@
 <div class="single-app-integration">
   <% if current_user.decorate.stackbit_integration? %>
     <h2>Connected to Stackbit <sup>beta</sup><img src="<%= asset_path("checkmark-green.svg") %>" /></h2>
-    <p style="font-size: 1.1em"><strong><a href="https://app.stackbit.com/create?ref=devto">Go to your Stackbit Dashboard</a></strong></p>
+    <p style="font-size: 1.1em"><strong><a href="https://app.stackbit.com/dashboard">Go To Your Stackbit Dashboard</a></strong></p>
+    <p style="font-size: 1.1em"><strong><a href="https://app.stackbit.com/create?ref=devto">Create New Stackbit Site</a></strong></p>
+    
   <% else %>
     <h2>Connect to Stackbit <sup>beta</sup></h2>
     <p>Automatically generate a self-hosted static blog feed from your DEV posts.</p>
