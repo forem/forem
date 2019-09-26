@@ -40,7 +40,7 @@ RSpec.describe "User edits their integrations", type: :system, js: true do
       click_link "Integrations"
       expect(page).to have_text("Connect to Stackbit")
     end
-    xit "has connected-to-stackbit prompt if already integrated" do
+    it "has connected-to-stackbit prompt if already integrated" do
       create(:doorkeeper_access_token, resource_owner: user)
       visit "/settings"
       expect(page).to have_current_path("/settings")

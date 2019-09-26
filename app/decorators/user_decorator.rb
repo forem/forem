@@ -85,6 +85,6 @@ class UserDecorator < ApplicationDecorator
   end
 
   def stackbit_integration?
-    access_grants.any?
+    access_tokens.any?
   end
 end
