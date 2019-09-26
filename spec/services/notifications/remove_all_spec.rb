@@ -3,18 +3,20 @@ require "rails_helper"
 RSpec.describe Notifications::RemoveAll do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
-  let(:organization) { create(:organization) }
-  let(:article) { create(:article) }
-  let(:article2) { create(:article) }
-  let(:comment) { create(:comment, user_id: user.id, commentable_id: article.id, commentable_type: "Article") }
+  let(:article) { create(:article, user_id: user.id) }
+  let(:comment) { create(:comment, user_id: user.id, commentable_id: article.id) }
+  let(:comment2) { create(:comment, user_id: user2.id, commentable_id: article.id) }
+  let(:mention) { create(:mention, user_id: user.id, mentionable_id: comment.id, mentionable_type: "Comment") }
+  let(:mention2) { create(:mention, user_id: user2.id, mentionable_id: comment2.id, mentionable_type: "Comment") }
+  let(:notifiable_collection_ids) { [mention.id, mention2.id] }
 
   before do
-    create(:notification, user: user, notifiable_id: article.id, notifiable_type: "Article", action: "Published")
-    create(:notification, user: user2, notifiable_id: article.id, notifiable_type: "Article", action: "Published")
-    create(:notification, organization: organization, notifiable_id: comment.id, notifiable_type: "Comment", action: "Reaction")
+    create(:notification, user_id: mention.user.id, notifiable_id: mention.id, notifiable_type: "Mention")
+    create(:notification, user_id: mention2.user.id, notifiable_id: mention2.id, notifiable_type: "Mention")
   end
 
-  it "checks all notifications for an article are deleted and only for an article" do
-    expect { described_class.call(article.id, "Article", "Published") }.to change(Notification, :count).by(-2)
+  it "checks all notifiables are deleted" do
+    notifiables = Mention.all
+    expect { described_class.call(notifiables.pluck(:id), "Mention") }.to change(Notification, :count).by(-2)
   end
 end
