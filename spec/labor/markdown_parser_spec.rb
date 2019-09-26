@@ -247,4 +247,18 @@ RSpec.describe MarkdownParser do
       expect(result).to include("<aside><abbr title=\"ol korrect\">OK</abbr><aside>")
     end
   end
+
+  context 'when word as snake case' do
+    it "doesn't change word" do
+      code_block = "word_italic_"
+      expect(generate_and_parse_markdown(code_block)).to include("word_italic_")
+    end
+
+    context 'when double underline' do
+      it 'renders italic' do
+        code_block = "word__italic__"
+        expect(generate_and_parse_markdown(code_block)).to include("word_<em>italic</em>_")
+      end
+    end
+  end
 end
