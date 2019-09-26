@@ -10,7 +10,7 @@
 <hr />
 <h3>Generate a personal blog from your DEV posts</h3>
 <div class="single-app-integration">
-  <% if true #current_user.decorate.stackbit_integration? %>
+  <% if current_user.decorate.stackbit_integration? %>
     <h2>Connected to Stackbit <sup>beta</sup><img src="<%= asset_path("checkmark-green.svg") %>" /></h2>
     <p style="font-size: 1.1em"><strong><a href="https://app.stackbit.com/dashboard">Go To Your Stackbit Dashboard</a></strong></p>
     <p style="font-size: 1.1em"><strong><a href="https://app.stackbit.com/create?ref=devto">Create New Stackbit Site</a></strong></p>
