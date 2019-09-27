@@ -5,6 +5,10 @@ class MediumArticleRetrievalService
     @url = url
   end
 
+  def self.call(*args)
+    new(*args).call
+  end
+
   def call
     html = HTTParty.get(url)
     page = Nokogiri::HTML(html)
