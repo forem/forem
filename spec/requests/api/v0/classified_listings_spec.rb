@@ -123,6 +123,15 @@ RSpec.describe "Api::V0::Listings" do
         post api_classified_listings_path, headers: { "api-key" => "foobar", "content-type" => "application/json" }
         expect(response). to have_http_status(:unauthorized)
       end
+
+      it "does not support oauth's access_token" do
+        user = create(:user)
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        post api_classified_listings_path, headers: headers
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
 
     describe "user must have enough credit to create a classified listing" do
@@ -167,14 +176,6 @@ RSpec.describe "Api::V0::Listings" do
       include_context "when user is authorized"
       include_context "when param list is valid"
       include_context "when user has enough credit"
-
-      it "supports oauth's access_token" do
-        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
-        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
-
-        post api_classified_listings_path, params: { classified_listing: listing_params }.to_json, headers: headers
-        expect(response).to have_http_status(:created)
-      end
 
       it "properly deducts the amount of credits" do
         post_classified_listing(listing_params)
@@ -302,7 +303,7 @@ RSpec.describe "Api::V0::Listings" do
       org_listing_draft.update_columns(bumped_at: nil, published: false)
     end
 
-    describe "user cannot proceed if not properly unauthorizedœ" do
+    describe "user cannot proceed if not properly unauthorized" do
       let(:api_secret) { create(:api_secret) }
 
       it "fails with no api key" do
@@ -312,6 +313,14 @@ RSpec.describe "Api::V0::Listings" do
 
       it "fails with the wrong api key" do
         put api_classified_listing_path(listing.id), headers: { "api-key" => "foobar", "content-type" => "application/json" }
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "does not support oauth's access_token" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        put api_classified_listing_path(listing.id), headers: headers
         expect(response).to have_http_status(:unauthorized)
       end
     end
