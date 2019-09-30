@@ -18,13 +18,7 @@ class MessagesController < ApplicationController
       rescue Pusher::Error => e
         logger.info "PUSHER ERROR: #{e.message}"
       end
-
-      if success
-        render json: { status: "success", message: "Message created" }, status: :created
-      else
-        error_message = "Message created but could not trigger Pusher"
-        render json: { status: "error", message: error_message }, status: :created
-      end
+      response_message(success)
     else
       render json: {
         status: "error",
@@ -69,6 +63,15 @@ class MessagesController < ApplicationController
           }
         }, status: :unauthorized
       end
+    end
+  end
+
+  def response_message
+    if success
+      render json: { status: "success", message: "Message created" }, status: :created
+    else
+      error_message = "Message created but could not trigger Pusher"
+      render json: { status: "error", message: error_message }, status: :created
     end
   end
 end

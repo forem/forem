@@ -41,19 +41,9 @@ export default class ListingForm extends Component {
   };
 
   render() {
-    const {
-      id,
-      title,
-      bodyMarkdown,
-      tagList,
-      category,
-      categoriesForDetails,
-      categoriesForSelect,
-      organizations,
-      organizationId,
-      contactViaConnect,
-      expireDate,
-    } = this.state;
+    const { id, title, bodyMarkdown, tagList, category, categoriesForDetails,
+            categoriesForSelect, organizations, organizationId, contactViaConnect, expireDate
+          } = this.state;
 
     const selectOrg =
       organizations && organizations.length > 0 ? (
@@ -62,9 +52,7 @@ export default class ListingForm extends Component {
           organizationId={organizationId}
           onToggle={this.handleOrgIdChange}
         />
-      ) : (
-        ''
-      );
+      ) : ('');
 
     if (id === null) {
       return (
