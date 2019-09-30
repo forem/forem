@@ -8,6 +8,7 @@ items:
   - design
   - tests
   - contributing.md
+  - contributing_api.md
   - faqs.md
   - licensing.md
   - self-hosting.md

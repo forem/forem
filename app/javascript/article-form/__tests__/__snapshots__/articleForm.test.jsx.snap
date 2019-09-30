@@ -30,14 +30,15 @@ exports[`<ArticleForm /> renders properly 1`] = `
         <div
           class="articleform__tagswrapper"
         >
-          <textarea
+          <input
+            autoComplete="on"
             class="articleform__tags"
             id="tag-input"
             onBlur={[Function]}
             onFocus={[Function]}
             onInput={[Function]}
             onKeyDown={[Function]}
-            placeholder="tags"
+            placeholder="4 tags max, comma separated, no spaces or special characters"
             ref={[Function]}
             type="text"
             value=""
@@ -49,7 +50,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
           type="button"
         >
           <img
-            alt="Upload an image"
+            alt="Upload images"
             src=""
           />
         </button>
@@ -89,7 +90,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
         alt="upload images"
         src=""
       />
-       IMAGES
+      IMAGES
     </button>
     <button
       class="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
@@ -113,7 +114,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
       ?
     </button>
     <button
-      class="inactive"
+      class="inactive previewbutt"
       onClick={[Function]}
       type="button"
     >

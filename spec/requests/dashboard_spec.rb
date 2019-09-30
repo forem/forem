@@ -85,8 +85,8 @@ RSpec.describe "Dashboards", type: :request do
         unpublished_article.update(organization_id: organization.id)
         sign_in second_user
         get "/dashboard/organization/#{organization.id}"
-        expect(response.body).not_to include "DELETE"
-        expect(response.body).to include unpublished_article.title
+        expect(response.body).not_to include("DELETE")
+        expect(response.body).to include(ERB::Util.html_escape(unpublished_article.title))
       end
     end
   end
@@ -191,6 +191,15 @@ RSpec.describe "Dashboards", type: :request do
     context "when user has pro permission" do
       it "shows page properly" do
         user.add_role(:pro)
+        sign_in user
+        get "/dashboard/pro"
+        expect(response.body).to include("pro")
+      end
+    end
+
+    context "when user has a pro membership" do
+      it "shows page properly" do
+        create(:pro_membership, user: user)
         sign_in user
         get "/dashboard/pro"
         expect(response.body).to include("pro")

@@ -1,9 +1,9 @@
 require "rails_helper"
 
-RSpec.describe OrganizationPolicy do
+RSpec.describe OrganizationPolicy, type: :policy do
   subject(:organization_policy) { described_class.new(user, organization) }
 
-  let(:organization) { build(:organization) }
+  let(:organization) { build_stubbed(:organization) }
 
   context "when user is not signed-in" do
     let(:user) { nil }
@@ -12,7 +12,7 @@ RSpec.describe OrganizationPolicy do
   end
 
   context "when a non-org user" do
-    let(:user) { build(:user) }
+    let(:user) { build_stubbed(:user) }
 
     it { is_expected.to forbid_action(:update) }
     it { is_expected.to permit_action(:create) }
@@ -27,10 +27,12 @@ RSpec.describe OrganizationPolicy do
   context "when user is an org admin of an org" do
     subject(:organization_policy) { described_class.new(user, org) }
 
-    let(:user) { create(:user) }
-    let(:org)  { create(:organization) }
+    let(:user) { build_stubbed(:user) }
+    let(:org)  { build_stubbed(:organization) }
 
-    before { create(:organization_membership, user: user, organization: org, type_of_user: "admin") }
+    before do
+      create(:organization_membership, user: user, organization: org, type_of_user: "admin")
+    end
 
     it "allows the user to update their own org" do
       expect(organization_policy).to permit_action(:update)
@@ -40,9 +42,9 @@ RSpec.describe OrganizationPolicy do
   context "when user is an org admin of another org" do
     subject(:organization_policy) { described_class.new(user, new_org) }
 
-    let(:user) { create(:user) }
-    let(:org)  { create(:organization) }
-    let(:new_org) { create(:organization) }
+    let(:user) { build_stubbed(:user) }
+    let(:org)  { build_stubbed(:organization) }
+    let(:new_org) { build_stubbed(:organization) }
 
     before { create(:organization_membership, user: user, organization: org, type_of_user: "admin") }
 

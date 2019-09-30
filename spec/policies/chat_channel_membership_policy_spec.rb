@@ -1,33 +1,27 @@
 require "rails_helper"
 
-RSpec.describe ChatChannelMembershipPolicy do
+RSpec.describe ChatChannelMembershipPolicy, type: :policy do
   subject { described_class.new(user, chat_channel_membership) }
 
-  let(:chat_channel_membership) { build(:chat_channel_membership) }
+  let(:user)                    { build_stubbed(:user) }
+  let(:chat_channel)            { build_stubbed(:chat_channel) }
 
   context "when user is not signed-in" do
     let(:user) { nil }
+    let(:chat_channel_membership) { build_stubbed(:chat_channel_membership) }
 
     it { within_block_is_expected.to raise_error(Pundit::NotAuthorizedError) }
   end
 
   context "when user belongs to membership" do
-    let(:user) { create(:user) }
-    let(:chat_channel) { create(:chat_channel) }
-    let(:chat_channel_membership) do
-      create(:chat_channel_membership, user_id: user.id, chat_channel_id: chat_channel.id)
-    end
+    let(:chat_channel_membership) { build_stubbed(:chat_channel_membership, user: user, chat_channel: chat_channel) }
 
     it { is_expected.to permit_actions(%i[update destroy]) }
   end
 
   context "when user does not belong to membership" do
-    let(:user) { create(:user) }
-    let(:other_user) { create(:user) }
-    let(:chat_channel) { create(:chat_channel) }
-    let(:chat_channel_membership) do
-      create(:chat_channel_membership, user_id: other_user.id, chat_channel_id: chat_channel.id)
-    end
+    let(:other_user) { build_stubbed(:user) }
+    let(:chat_channel_membership) { build_stubbed(:chat_channel_membership, user: other_user, chat_channel: chat_channel) }
 
     it { is_expected.to forbid_actions(%i[update destroy]) }
   end

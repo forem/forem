@@ -62,9 +62,9 @@ function insertNewArticles(user){
       }
       var rand = Math.random();
       if (rand < 0.3) {
-        articlePoints = articlePoints + 1
-      } else if (rand < 0.6) {
         articlePoints = articlePoints + 3
+      } else if (rand < 0.6) {
+        articlePoints = articlePoints + 6
       }
       articlePoints = articlePoints - (experienceDifference/2);
       article['points'] = articlePoints
@@ -108,9 +108,9 @@ function insertTopArticles(user){
       }
       var rand = Math.random();
       if (rand < 0.3) {
-        articlePoints = articlePoints + 1
-      } else if (rand < 0.6) {
         articlePoints = articlePoints + 3
+      } else if (rand < 0.6) {
+        articlePoints = articlePoints + 6
       }
       if (containsPreferredLanguage) {
         articlePoints = articlePoints + 1

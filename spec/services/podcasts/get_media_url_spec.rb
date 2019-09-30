@@ -47,4 +47,13 @@ RSpec.describe Podcasts::GetMediaUrl do
     expect(result.reachable).to be false
     expect(result.url).to eq(http_url)
   end
+
+  it "http, https unreachable with other exception" do
+    allow(HTTParty).to receive(:head).with(https_url).and_raise(Errno::EINVAL)
+    allow(HTTParty).to receive(:head).with(http_url).and_raise(Errno::EINVAL)
+    result = described_class.call(http_url)
+    expect(result.https).to be false
+    expect(result.reachable).to be false
+    expect(result.url).to eq(http_url)
+  end
 end

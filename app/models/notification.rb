@@ -3,12 +3,28 @@ class Notification < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :organization, optional: true
 
-  validates :user_id, presence: true, if: proc { |n| n.organization_id.nil? }
-  validates :organization_id, presence: true, if: proc { |n| n.user_id.nil? }
+  validates :user_id, presence: true, if: proc { |notification| notification.organization_id.nil? }
+  validates :organization_id, presence: true, if: proc { |notification| notification.user_id.nil? }
+  validates :user_id, uniqueness: { scope: %i[organization_id notifiable_id notifiable_type action] }
 
   before_create :mark_notified_at_time
 
-  validates :user_id, uniqueness: { scope: %i[organization_id notifiable_id notifiable_type action] }
+  scope :for_published_articles, -> { where(notifiable_type: "Article", action: "Published") }
+  scope :for_comments, -> { where(notifiable_type: "Comment", action: nil) } # nil action means "not a reaction"
+  scope :for_mentions, -> { where(notifiable_type: "Mention") }
+
+  scope :for_organization, ->(org_id) { where(organization_id: org_id, user_id: nil) }
+  scope :for_organization_comments, lambda { |org_id|
+    # nil action means "not a reaction"
+    where(organization_id: org_id, notifiable_type: "Comment", action: nil, user_id: nil)
+  }
+  scope :for_organization_mentions, lambda { |org_id|
+    where(organization_id: org_id, notifiable_type: "Mention", user_id: nil)
+  }
+
+  scope :without_past_aggregations, lambda {
+    where.not("notified_at < ? AND action IN ('Reaction', 'Follow')", 24.hours.ago)
+  }
 
   class << self
     def send_new_follower_notification(follow, is_read = false)
@@ -73,20 +89,12 @@ class Notification < ApplicationRecord
     end
 
     def send_mention_notification(mention)
-      mentioner = mention.mentionable.user
-      json_data = {
-        user: user_data(mentioner)
-      }
-      json_data[:comment] = comment_data(mention.mentionable) if mention.mentionable_type == "Comment"
-      Notification.create(
-        user_id: mention.user_id,
-        notifiable_id: mention.id,
-        notifiable_type: "Mention",
-        action: nil,
-        json_data: json_data,
-      )
+      Notifications::MentionJob.perform_later(mention.id)
     end
-    handle_asynchronously :send_mention_notification
+
+    def send_mention_notification_without_delay(mention)
+      Notifications::MentionJob.perform_now(mention.id)
+    end
 
     def send_welcome_notification(receiver_id)
       Notifications::WelcomeNotificationJob.perform_later(receiver_id)
@@ -120,20 +128,28 @@ class Notification < ApplicationRecord
       Notifications::MilestoneJob.perform_now(type, article_id)
     end
 
-    def remove_all(notifiable_id:, notifiable_type:, action: nil)
-      Notifications::RemoveAllJob.perform_later(notifiable_id, notifiable_type, action)
+    def remove_all_by_action(notifiable_ids:, notifiable_type:, action: nil)
+      return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
+
+      Notifications::RemoveAllByActionJob.perform_later(notifiable_ids, notifiable_type, action)
     end
 
-    def remove_all_without_delay(notifiable_id:, notifiable_type:, action: nil)
-      Notifications::RemoveAllJob.perform_now(notifiable_id, notifiable_type, action)
+    def remove_all_by_action_without_delay(notifiable_ids:, notifiable_type:, action: nil)
+      return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
+
+      Notifications::RemoveAllByActionJob.perform_now(notifiable_ids, notifiable_type, action)
     end
 
-    def remove_each(notifiable_collection)
-      Notifications::RemoveEachJob.perform_later(notifiable_collection.pluck(:id))
+    def remove_all(notifiable_ids:, notifiable_type:)
+      return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
+
+      Notifications::RemoveAllJob.perform_later(notifiable_ids, notifiable_type)
     end
 
-    def remove_each_without_delay(notifiable_collection)
-      Notifications::RemoveEachJob.perform_now(notifiable_collection.pluck(:id))
+    def remove_all_without_delay(notifiable_ids:, notifiable_type:)
+      return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
+
+      Notifications::RemoveAllJob.perform_now(notifiable_ids, notifiable_type)
     end
 
     def update_notifications(notifiable, action = nil)

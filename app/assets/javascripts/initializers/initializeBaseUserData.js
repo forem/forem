@@ -7,6 +7,7 @@ function initializeUserProfileContent(user) {
     '" class="sidebar-profile-pic-img" src="' +
     user.profile_image_90 +
     '" />';
+
   document.getElementById('sidebar-profile-name').innerHTML = filterXSS(
     user.name,
   );

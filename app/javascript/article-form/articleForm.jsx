@@ -7,10 +7,8 @@ import ThreeDotsIcon from 'images/three-dots.svg';
 import { submitArticle, previewArticle } from './actions';
 import BodyMarkdown from './elements/bodyMarkdown';
 import BodyPreview from './elements/bodyPreview';
-// import Description from './elements/description';
 import PublishToggle from './elements/publishToggle';
 import Notice from './elements/notice';
-import Tags from './elements/tags';
 import Title from './elements/title';
 import MainImage from './elements/mainImage';
 import ImageManagement from './elements/imageManagement';
@@ -18,6 +16,7 @@ import MoreConfig from './elements/moreConfig';
 import OrgSettings from './elements/orgSettings';
 import Errors from './elements/errors';
 import KeyboardShortcutsHandler from './elements/keyboardShortcutsHandler';
+import Tags from '../shared/components/tags';
 
 export default class ArticleForm extends Component {
   static handleGistPreview() {
@@ -95,14 +94,6 @@ export default class ArticleForm extends Component {
     }
 
     window.addEventListener('beforeunload', this.localStoreContent);
-
-    // const editor = document.getElementById('article_body_markdown');
-    // const myCodeMirror = CodeMirror(editor, {
-    //   mode: 'markdown',
-    //   theme: 'material',
-    //   highlightFormatting: true,
-    // });
-    // myCodeMirror.setSize('100%', '100%');
   }
 
   componentDidUpdate() {
@@ -113,11 +104,15 @@ export default class ArticleForm extends Component {
     }
   }
 
-  checkContentChanges = previousContent =>
-    this.state.bodyMarkdown !== previousContent.bodyMarkdown ||
-    this.state.title !== previousContent.title ||
-    this.state.mainImage !== previousContent.mainImage ||
-    this.state.tagList !== previousContent.tagList;
+  checkContentChanges = previousContent => {
+    const { bodyMarkdown, title, mainImage, tagList } = this.state;
+    return (
+      bodyMarkdown !== previousContent.bodyMarkdown ||
+      title !== previousContent.title ||
+      mainImage !== previousContent.mainImage ||
+      tagList !== previousContent.tagList
+    );
+  };
 
   localStoreContent = () => {
     const { version, title, tagList, mainImage, bodyMarkdown } = this.state;
@@ -133,42 +128,52 @@ export default class ArticleForm extends Component {
   };
 
   toggleHelp = e => {
+    const { helpShowing } = this.state;
     e.preventDefault();
     window.scrollTo(0, 0);
     this.setState({
-      helpShowing: !this.state.helpShowing,
+      helpShowing: !helpShowing,
       previewShowing: false,
+      imageManagementShowing: false,
+      moreConfigShowing: false,
     });
   };
 
   fetchPreview = e => {
+    const { previewShowing, bodyMarkdown } = this.state;
     e.preventDefault();
-    if (this.state.previewShowing) {
+    if (previewShowing) {
       this.setState({
         previewShowing: false,
         helpShowing: false,
+        imageManagementShowing: false,
+        moreConfigShowing: false,
       });
     } else {
-      previewArticle(
-        this.state.bodyMarkdown,
-        this.showPreview,
-        this.failedPreview,
-      );
+      previewArticle(bodyMarkdown, this.showPreview, this.failedPreview);
     }
   };
 
   toggleImageManagement = e => {
+    const { imageManagementShowing } = this.state;
     e.preventDefault();
     window.scrollTo(0, 0);
     this.setState({
-      imageManagementShowing: !this.state.imageManagementShowing,
+      imageManagementShowing: !imageManagementShowing,
+      previewShowing: false,
+      helpShowing: false,
+      moreConfigShowing: false,
     });
   };
 
   toggleMoreConfig = e => {
+    const { moreConfigShowing } = this.state;
     e.preventDefault();
     this.setState({
-      moreConfigShowing: !this.state.moreConfigShowing,
+      moreConfigShowing: !moreConfigShowing,
+      previewShowing: false,
+      helpShowing: false,
+      imageManagementShowing: false,
     });
   };
 
@@ -177,6 +182,7 @@ export default class ArticleForm extends Component {
       this.setState({
         previewShowing: true,
         helpShowing: false,
+        imageManagementShowing: false,
         previewResponse: response,
         errors: null,
       });
@@ -206,7 +212,7 @@ export default class ArticleForm extends Component {
 
   handleMainImageUrlChange = payload => {
     this.setState({
-      mainImage: payload.link,
+      mainImage: payload.links[0],
       imageManagementShowing: false,
     });
   };
@@ -306,6 +312,7 @@ export default class ArticleForm extends Component {
       organizationId,
       mainImage,
       errors,
+      edited,
       version,
     } = this.state;
     const notice = submitting ? (
@@ -397,13 +404,15 @@ export default class ArticleForm extends Component {
               <Tags
                 defaultValue={tagList}
                 onInput={linkState(this, 'tagList')}
+                maxTags={4}
+                classPrefix={`articleform`}
               />
               <button
                 className="articleform__detailsButton articleform__detailsButton--image"
                 onClick={this.toggleImageManagement}
                 type="button"
               >
-                <img src={ImageUploadIcon} alt="Upload an image" />
+                <img src={ImageUploadIcon} alt="Upload images" />
               </button>
               <button
                 className="articleform__detailsButton articleform__detailsButton--moreconfig"
@@ -432,7 +441,8 @@ export default class ArticleForm extends Component {
             onClick={this.toggleImageManagement}
             type="button"
           >
-            <img src={ImageUploadIcon} alt="upload images" /> IMAGES
+            <img src={ImageUploadIcon} alt="upload images" />
+            IMAGES
           </button>
           {moreConfigBottomButton}
         </div>
@@ -455,7 +465,7 @@ export default class ArticleForm extends Component {
           onHelp={this.toggleHelp}
           onSaveDraft={this.onSaveDraft}
           onClearChanges={this.onClearChanges}
-          edited={this.state.edited}
+          edited={edited}
           onChange={linkState(this, 'published')}
         />
         <KeyboardShortcutsHandler togglePreview={this.fetchPreview} />

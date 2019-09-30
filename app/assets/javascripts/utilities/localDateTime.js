@@ -1,3 +1,5 @@
+'use strict';
+
 /* Local date/time utilities */
 
 /*

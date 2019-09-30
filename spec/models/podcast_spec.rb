@@ -65,16 +65,18 @@ RSpec.describe Podcast, type: :model do
     end
   end
 
-  describe "#reachable" do
-    let(:podcast) { create(:podcast, reachable: false) }
-    let!(:unpodcast) { create(:podcast, reachable: false) }
-    let!(:unpodcast2) { create(:podcast, reachable: false) }
-    let!(:cool_podcast) { create(:podcast, reachable: true) }
+  describe "#reachable and #available" do
+    let(:podcast) { create(:podcast, reachable: false, published: true) }
+    let!(:unpodcast) { create(:podcast, reachable: false, published: true) }
+    let!(:unpodcast2) { create(:podcast, reachable: false, published: true) }
+    let!(:cool_podcast) { create(:podcast, reachable: true, published: false) }
+    let!(:reachable_podcast) { create(:podcast, reachable: true, published: true) }
 
     before do
       create(:podcast_episode, reachable: true, podcast: podcast)
       create(:podcast_episode, reachable: false, podcast: unpodcast2)
       create(:podcast_episode, reachable: true, podcast: cool_podcast)
+      create(:podcast_episode, reachable: true, podcast: reachable_podcast)
     end
 
     it "is reachable when the feed is unreachable but the podcast has reachable podcasts" do
@@ -83,6 +85,11 @@ RSpec.describe Podcast, type: :model do
       expect(reachable_ids).to include(cool_podcast.id)
       expect(reachable_ids).not_to include(unpodcast.id)
       expect(reachable_ids).not_to include(unpodcast2.id)
+    end
+
+    it "is available only when reachable and published" do
+      available_ids = described_class.available.pluck(:id)
+      expect(available_ids.sort).to eq([podcast.id, reachable_podcast.id].sort)
     end
   end
 

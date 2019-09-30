@@ -122,11 +122,10 @@ RSpec.describe "StoriesIndex", type: :request do
 
     it "renders live sponsor" do
       org = create(:organization)
-      sponsorship = create(:sponsorship, level: :tag, tagline: "Oh Yeah!!!", status: "live", organization: org, sponsorable: tag)
-
+      sponsorship = create(:sponsorship, level: :tag, blurb_html: "<p>Oh Yeah!!!</p>", status: "live", organization: org, sponsorable: tag, expires_at: 30.days.from_now)
       get "/t/#{tag.name}"
       expect(response.body).to include("is sponsored by")
-      expect(response.body).to include(sponsorship.tagline)
+      expect(response.body).to include(sponsorship.blurb_html)
     end
   end
 end

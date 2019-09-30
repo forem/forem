@@ -3,6 +3,8 @@ require "uri"
 class GlitchTag < LiquidTagBase
   attr_accessor :uri
   PARTIAL = "liquids/glitch".freeze
+  ID_REGEXP = /\A[a-zA-Z0-9\-]{1,110}\z/.freeze
+  OPTION_REGEXP = /(app|code|no-files|preview-first|no-attribution|file\=\w(\.\w)?)/.freeze
 
   def initialize(tag_name, id, tokens)
     super
@@ -23,7 +25,7 @@ class GlitchTag < LiquidTagBase
   private
 
   def valid_id?(input)
-    (input =~ /^[a-zA-Z0-9\-]{1,110}$/)&.zero?
+    (input =~ ID_REGEXP)&.zero?
   end
 
   def parse_id(input)
@@ -34,7 +36,7 @@ class GlitchTag < LiquidTagBase
   end
 
   def valid_option(option)
-    option.match(/(app|code|no-files|preview-first|no-attribution|file\=\w(\.\w)?)/)
+    option.match(OPTION_REGEXP)
   end
 
   def option_to_query_pair(option)
@@ -54,10 +56,10 @@ class GlitchTag < LiquidTagBase
 
   def build_options(options)
     # Convert options to query param pairs
-    params = options.map { |x| option_to_query_pair(x) }.compact
+    params = options.map { |option| option_to_query_pair(option) }.compact
 
     # Deal with the file option if present or use default
-    file_option = options.detect { |x| x.start_with?("file=") }
+    file_option = options.detect { |option| option.start_with?("file=") }
     path = file_option ? (file_option.sub! "file=", "") : "index.html"
     params.push ["path", path]
 
@@ -72,7 +74,7 @@ class GlitchTag < LiquidTagBase
     options -= %w[app code] if (options & %w[app code]) == %w[app code]
 
     # Validation
-    validated_options = options.map { |o| valid_option(o) }.reject(&:nil?)
+    validated_options = options.map { |option| valid_option(option) }.reject(&:nil?)
     raise StandardError, "Invalid Options" unless options.empty? || !validated_options.empty?
 
     build_options(options)

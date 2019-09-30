@@ -13,6 +13,7 @@ class Role < ApplicationRecord
               in: %w[
                 super_admin
                 admin
+                single_resource_admin
                 tech_admin
                 tag_moderator
                 trusted

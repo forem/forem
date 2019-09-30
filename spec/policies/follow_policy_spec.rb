@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe FollowPolicy do
+RSpec.describe FollowPolicy, type: :policy do
   subject { described_class.new(user, Follow) }
 
   context "when user is not signed in" do
@@ -10,12 +10,12 @@ RSpec.describe FollowPolicy do
   end
 
   context "when user is signed in" do
-    let(:user) { build(:user) }
+    let(:user) { build_stubbed(:user) }
 
     it { is_expected.to permit_actions(%i[create]) }
 
     context "when user is banned" do
-      let(:user) { build(:user, :banned) }
+      before { user.add_role(:banned) }
 
       it { is_expected.to forbid_actions(%i[create]) }
     end

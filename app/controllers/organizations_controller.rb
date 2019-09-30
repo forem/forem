@@ -20,8 +20,7 @@ class OrganizationsController < ApplicationController
     @user = current_user
     @tab = "organization"
     @tab_list = @user.settings_tab_list
-    @organization = Organization.find_by(id: organization_params[:id])
-    authorize @organization
+    set_organization
 
     if @organization.update(organization_params.merge(profile_updated_at: Time.current))
       flash[:settings_notice] = "Your organization was successfully updated."
@@ -32,8 +31,7 @@ class OrganizationsController < ApplicationController
   end
 
   def generate_new_secret
-    @organization = Organization.find_by(id: organization_params[:id])
-    authorize @organization
+    set_organization
     @organization.secret = @organization.generated_random_secret
     @organization.save
     flash[:settings_notice] = "Your org secret was updated"
@@ -77,5 +75,10 @@ class OrganizationsController < ApplicationController
           value
         end
       end
+  end
+
+  def set_organization
+    @organization = Organization.find_by(id: organization_params[:id])
+    authorize @organization
   end
 end

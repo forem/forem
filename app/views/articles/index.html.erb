@@ -24,6 +24,19 @@
   <%= auto_discovery_link_tag(:rss, "https://dev.to/feed", title: "#{ApplicationConfig['COMMUNITY_NAME']} RSS Feed") %>
 <% end %>
 <%= javascript_pack_tag "homePage", defer: true %>
+<script defer>
+
+  var DIGITAL_CLIMATE_STRIKE_OPTIONS = {
+    forceFullPageWidget: false,
+    showCloseButtonOnFullPageWidget: true,
+    alwaysShowWidget: false,
+    disableGoogleAnalytics: true,
+    websiteName: 'DEV',
+    language: 'en'
+  };
+</script>
+<script src="https://assets.digitalclimatestrike.net/widget.js" defer></script>
+
 <% params.delete(:i) %>
 <% cache("main-stories-index-#{params}-#{user_signed_in?}", expires_in: 3.minutes) do %>
   <div class="home" id="index-container"
@@ -104,7 +117,7 @@
             </a>
             <div class="featured-user-name">
               <a href="/<%= @featured_story.cached_user.username %>">
-                <%= @featured_story.cached_user.name %>・<time datetime="<%= @featured_story.published_timestamp %>"><%= @featured_story.readable_publish_date %></time>
+                <%= @featured_story.cached_user.name %><%= render "shared/pro_checkmark" if @featured_story.cached_user.pro %>・<time datetime="<%= @featured_story.published_timestamp %>"><%= @featured_story.readable_publish_date %></time>
                 <span class="time-ago-indicator-initial-placeholder" data-seconds="<%= @featured_story.published_at_int %>"></span>
               </a>
             </div>

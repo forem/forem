@@ -50,6 +50,13 @@ RSpec.describe CodepenTag, type: :liquid_template do
       end.to raise_error(StandardError)
     end
 
+    it "rejects codepen link with more than 30 characters in the username" do
+      codepen_link = "https://codepen.io/t_white96_this_is_31_characters/pen/XKqrJX/"
+      expect do
+        generate_new_liquid(codepen_link)
+      end.to raise_error(StandardError)
+    end
+
     it "accepts codepen link with a default-tab parameter" do
       expect do
         generate_new_liquid(codepen_link_with_default_tab)
@@ -60,6 +67,15 @@ RSpec.describe CodepenTag, type: :liquid_template do
       xss_links.each do |link|
         expect { generate_new_liquid(link) }.to raise_error(StandardError)
       end
+    end
+
+    it "rejects multiline XSS attempt" do
+      xss_multiline_link = <<~XSS
+        javascript:exploit_code();/*
+        #{codepen_link}
+        */
+      XSS
+      expect { generate_new_liquid(xss_multiline_link) }.to raise_error(StandardError)
     end
   end
 end

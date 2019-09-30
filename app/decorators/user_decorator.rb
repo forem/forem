@@ -34,7 +34,7 @@ class UserDecorator < ApplicationDecorator
   def config_body_class
     body_class = ""
     body_class += config_theme.tr("_", "-")
-    body_class = body_class + " " + config_font.tr("_", "-") + "-article-body" + " pro-status-#{pro?}"
+    body_class = body_class + " " + config_font.tr("_", "-") + "-article-body" + " pro-status-#{pro?} trusted-status-#{trusted}"
     body_class
   end
 
@@ -82,5 +82,9 @@ class UserDecorator < ApplicationDecorator
       },
     ]
     colors[id % 10]
+  end
+
+  def stackbit_integration?
+    access_tokens.any?
   end
 end

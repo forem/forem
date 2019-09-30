@@ -6,7 +6,7 @@ module Api
       rescue_from ArgumentError, with: :error_unprocessable_entity
       rescue_from UnauthorizedError, with: :error_unauthorized
 
-      before_action :authenticate_with_api_key_or_current_user
+      before_action :authenticate_with_api_key_or_current_user!
       before_action :authorize_pro_user
       before_action :authorize_user_organization
       before_action :load_owner
@@ -47,7 +47,7 @@ module Api
       private
 
       def authorize_pro_user
-        raise UnauthorizedError unless @user&.has_role?(:pro)
+        raise UnauthorizedError unless @user&.pro?
       end
 
       def authorize_user_organization

@@ -7,21 +7,10 @@ require:
 
 # our custom config
 # TODO: Uncomment it after fix rubocop-todo RSpec/MultipleExpectations
-RSpec/MultipleExpectations:
-  # Max: 1
-  Exclude:
-    - 'spec/features/**/*'
-
 RSpec/DescribeClass:
   Exclude:
-    - spec/features/**/*
     - spec/requests/**/*
     - spec/system/**/*
-
-RSpec/ExampleLength:
-  Max: 10
-  Exclude:
-    - spec/features/**/*
 
 # TODO: Uncomment it after fix rubocop-todo Metrics/LineLength
 # Metrics/LineLength:
@@ -53,12 +42,6 @@ Metrics/ModuleLength:
   Description: 'Avoid modules longer than 100 lines of code.'
   Enabled: false
 
-Metrics/AbcSize:
-  Description: >-
-    A calculated magnitude based on number of assignments,
-    branches, and conditions.
-  Enabled: false
-
 # TODO: Uncomment it after fix rubocop-todo Metrics/BlockLength
 Metrics/BlockLength:
   CountComments: false # count full line comments?
@@ -71,7 +54,12 @@ Metrics/CyclomaticComplexity:
   Description: >-
     A complexity metric that is strongly correlated to the number
     of test cases needed to validate a method.
-  Enabled: false
+  Enabled: true
+  Max: 13
+
+Metrics/PerceivedComplexity:
+  Enabled: true
+  Max: 14
 
 Metrics/MethodLength:
   Description: 'Avoid methods longer than 10 lines of code.'

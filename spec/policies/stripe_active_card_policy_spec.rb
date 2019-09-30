@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe StripeActiveCardPolicy do
+RSpec.describe StripeActiveCardPolicy, type: :policy do
   subject { described_class.new(user, :stripe_subscription) }
 
   context "when user is not signed in" do

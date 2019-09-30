@@ -40,4 +40,5 @@ Here is a bunch of liquid tags supported on DEV:
 {% soundcloud https://soundcloud.com/user-261265215/dev-to-review-episode-1 %}
 {% spotify spotify:episode:5V4XZWqZQJvbddd31n56mf %}
 {% blogcast 1234 %}
+{% kotlin https://pl.kotl.in/owreUFFUG %}
 ```

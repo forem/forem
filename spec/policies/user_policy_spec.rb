@@ -1,9 +1,9 @@
 require "rails_helper"
 
-RSpec.describe UserPolicy do
+RSpec.describe UserPolicy, type: :policy do
   subject { described_class.new(user, other_user) }
 
-  let(:other_user) { build(:user) }
+  let(:other_user) { build_stubbed(:user) }
 
   context "when user is not signed-in" do
     let(:user) { nil }
@@ -34,7 +34,7 @@ RSpec.describe UserPolicy do
   end
 
   context "when user is not trusted" do
-    let(:user) { build(:user) }
+    let(:user) { build_stubbed(:user) }
 
     it { is_expected.to forbid_actions(%i[moderation_routes]) }
   end

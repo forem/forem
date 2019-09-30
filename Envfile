@@ -155,6 +155,9 @@ variable :TWITCH_WEBHOOK_SECRET, :String, default: "Optional"
 # Trending tags on home page
 variable :TRENDING_TAGS, :String, default: "git,beginners"
 
+# For calling the Stack Exchange API
+variable :STACK_EXCHANGE_APP_KEY, :String, default: ""
+
 ##### Legacy test related env vars ######
 variable :FACEBOOK_PIXEL_ID, :String, default: "Optional"
 variable :SMARTY_STREETS_WEB_KEY, :String, default: "Optional"

@@ -18,6 +18,8 @@ class Podcast < ApplicationRecord
   after_save :bust_cache
 
   scope :reachable, -> { where(id: PodcastEpisode.reachable.select(:podcast_id)) }
+  scope :published, -> { where(published: true) }
+  scope :available, -> { reachable.published }
 
   alias_attribute :path, :slug
   alias_attribute :profile_image_url, :image_url

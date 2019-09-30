@@ -5,10 +5,11 @@ RSpec.describe Organization, type: :model do
   let(:organization) { create(:organization) }
 
   it { is_expected.to have_many(:sponsorships) }
+  it { is_expected.to have_many(:organization_memberships).dependent(:delete_all) }
 
   describe "#name" do
     it "rejects names with over 50 characters" do
-      organization.name = Faker::Lorem.characters(51)
+      organization.name = Faker::Lorem.characters(number: 51)
       expect(organization).not_to be_valid
     end
 
@@ -19,7 +20,7 @@ RSpec.describe Organization, type: :model do
 
   describe "#summary" do
     it "rejects summaries with over 1000 characters" do
-      organization.summary = Faker::Lorem.characters(1001)
+      organization.summary = Faker::Lorem.characters(number: 1001)
       expect(organization).not_to be_valid
     end
 
@@ -45,7 +46,7 @@ RSpec.describe Organization, type: :model do
     end
 
     it "rejects wrong color format" do
-      organization.text_color_hex = "##{Faker::Lorem.words(4)}"
+      organization.text_color_hex = "##{Faker::Lorem.words(number: 4)}"
       expect(organization).not_to be_valid
     end
   end
@@ -165,6 +166,28 @@ RSpec.describe Organization, type: :model do
       organization.update(slug: new_slug)
       article = Article.find_by(organization_id: organization.id)
       expect(article.cached_organization.slug).to eq new_slug
+    end
+  end
+
+  describe "#has_enough_credits?" do
+    it "returns false if the user has less unspent credits than neeed" do
+      expect(organization.has_enough_credits?(1)).to be(false)
+    end
+
+    it "returns true if the user has the exact amount of unspent credits" do
+      create(:credit, organization: organization, spent: false)
+      expect(organization.has_enough_credits?(1)).to be(true)
+    end
+
+    it "returns true if the user has more unspent credits than needed" do
+      create_list(:credit, 2, organization: organization, spent: false)
+      expect(organization.has_enough_credits?(1)).to be(true)
+    end
+  end
+
+  describe "#pro?" do
+    it "always returns false" do
+      expect(organization.pro?).to be(false)
     end
   end
 end

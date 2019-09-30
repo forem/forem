@@ -107,3 +107,5 @@ Rails.application.configure do
     Bullet.rails_logger = true
   end
 end
+
+Rails.application.routes.default_url_options = { host: Rails.application.config.app_domain }

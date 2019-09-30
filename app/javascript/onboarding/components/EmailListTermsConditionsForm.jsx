@@ -132,8 +132,7 @@ class EmailTermsConditionsForm extends Component {
                 checked={checked_code_of_conduct}
                 onChange={this.handleChange}
               />
-              You agree to uphold our
-              {' '}
+              You agree to uphold our{' '}
               <a
                 href="/code-of-conduct"
                 data-no-instant
@@ -150,8 +149,7 @@ class EmailTermsConditionsForm extends Component {
                 checked={checked_terms_and_conditions}
                 onChange={this.handleChange}
               />
-              You agree to our
-              {' '}
+              You agree to our{' '}
               <a
                 href="/terms"
                 data-no-instant
@@ -164,6 +162,7 @@ class EmailTermsConditionsForm extends Component {
             <label htmlFor="email_membership_newsletter">
               <input
                 type="checkbox"
+                id="email_membership_newsletter"
                 name="email_membership_newsletter"
                 checked={email_membership_newsletter}
                 onChange={this.handleChange}
@@ -174,6 +173,7 @@ class EmailTermsConditionsForm extends Component {
             <label htmlFor="email_digest_periodic">
               <input
                 type="checkbox"
+                id="email_digest_periodic"
                 name="email_digest_periodic"
                 checked={email_digest_periodic}
                 onChange={this.handleChange}

@@ -27,7 +27,7 @@ module Notifications
           includes(:reactable).
           order("created_at DESC")
 
-        aggregated_reaction_siblings = reaction_siblings.map { |r| { category: r.category, created_at: r.created_at, user: user_data(r.user) } }
+        aggregated_reaction_siblings = reaction_siblings.map { |reaction| { category: reaction.category, created_at: reaction.created_at, user: user_data(reaction.user) } }
 
         notification_params = {
           notifiable_type: reaction.reactable_type,

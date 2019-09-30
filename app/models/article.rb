@@ -6,6 +6,7 @@ class Article < ApplicationRecord
   include Reactable
 
   acts_as_taggable_on :tags
+  resourcify
 
   attr_accessor :publish_under_org
   attr_writer :series
@@ -24,7 +25,7 @@ class Article < ApplicationRecord
   has_many :comments, as: :commentable, inverse_of: :commentable
   has_many :profile_pins, as: :pinnable, inverse_of: :pinnable
   has_many :buffer_updates, dependent: :destroy
-  has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
+  has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
   has_many :rating_votes
   has_many :page_views
@@ -75,6 +76,7 @@ class Article < ApplicationRecord
   serialize :cached_organization
 
   scope :published, -> { where(published: true) }
+  scope :unpublished, -> { where(published: false) }
 
   scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
 
@@ -143,9 +145,8 @@ class Article < ApplicationRecord
                  :path, :class_name, :user_name, :user_username, :comments_blob,
                  :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date, :flare_tag
       attribute :user do
-        { username: user.username,
-          name: user.name,
-          profile_image_90: ProfileImage.new(user).get(90) }
+        { username: user.username, name: user.name,
+          profile_image_90: ProfileImage.new(user).get(90), pro: user.pro? }
       end
       tags do
         [tag_list,
@@ -268,10 +269,8 @@ class Article < ApplicationRecord
   end
 
   def delete_related_objects
-    index = Algolia::Index.new("searchables_#{Rails.env}")
-    index.delete_object("articles-#{id}")
-    index = Algolia::Index.new("ordered_articles_#{Rails.env}")
-    index.delete_object("articles-#{id}")
+    Search::RemoveFromIndexJob.perform_now("searchables_#{Rails.env}", index_id)
+    Search::RemoveFromIndexJob.perform_now("ordered_articles_#{Rails.env}", index_id)
   end
 
   def touch_by_reaction
@@ -374,6 +373,20 @@ class Article < ApplicationRecord
     tags.pluck(:keywords_for_search).join
   end
 
+  def edited?
+    edited_at.present?
+  end
+
+  def readable_edit_date
+    return unless edited?
+
+    if edited_at.year == Time.current.year
+      edited_at.strftime("%b %e")
+    else
+      edited_at.strftime("%b %e '%y")
+    end
+  end
+
   def readable_publish_date
     relevant_date = crossposted_at.presence || published_at
     if relevant_date && relevant_date.year == Time.current.year
@@ -451,6 +464,8 @@ class Article < ApplicationRecord
 
   def liquid_tags_used
     MarkdownParser.new(body_markdown.to_s + comments_blob.to_s).tags_used
+  rescue StandardError
+    []
   end
 
   private
@@ -554,26 +569,23 @@ class Article < ApplicationRecord
 
   def update_cached_user
     if organization
-      cached_org_object = {
-        name: organization.name,
-        username: organization.username,
-        slug: organization.slug,
-        profile_image_90: organization.profile_image_90,
-        profile_image_url: organization.profile_image_url
-      }
-      self.cached_organization = OpenStruct.new(cached_org_object)
+      self.cached_organization = OpenStruct.new(set_cached_object(organization))
     end
 
     if user
-      cached_user_object = {
-        name: user.name,
-        username: user.username,
-        slug: user.username,
-        profile_image_90: user.profile_image_90,
-        profile_image_url: user.profile_image_url
-      }
-      self.cached_user = OpenStruct.new(cached_user_object)
+      self.cached_user = OpenStruct.new(set_cached_object(user))
     end
+  end
+
+  def set_cached_object(object)
+    {
+      name: object.name,
+      username: object.username,
+      slug: object == organization ? object.slug : object.username,
+      profile_image_90: object.profile_image_90,
+      profile_image_url: object.profile_image_url,
+      pro: object == user ? user.pro? : false # organizations can't be pro users
+    }
   end
 
   def set_all_dates

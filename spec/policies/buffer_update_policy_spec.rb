@@ -1,9 +1,9 @@
 require "rails_helper"
 
-RSpec.describe BufferUpdatePolicy do
+RSpec.describe BufferUpdatePolicy, type: :policy do
   subject { described_class.new(user, article) }
 
-  let(:article) { build(:article) }
+  let(:article) { build_stubbed(:article) }
 
   context "when user is trusted" do
     let(:user) { build(:user, :trusted) }

@@ -120,3 +120,8 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 end
+
+Doorkeeper.configure do
+  # hash_token_secrets on its own won't work in test
+  hash_token_secrets fallback: :plain
+end

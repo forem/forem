@@ -24,7 +24,7 @@ class ClassifiedListing < ApplicationRecord
   validate :validate_category
 
   algoliasearch per_environment: true do
-    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug, :contact_via_connect, :location
+    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug, :contact_via_connect, :location, :expires_at
     attribute :author do
       { username: author.username,
         name: author.name,
@@ -39,6 +39,8 @@ class ClassifiedListing < ApplicationRecord
     customRanking ["desc(bumped_at)"]
     searchableAttributes %w[title processed_html tag_list slug location]
   end
+
+  scope :published, -> { where(published: true) }
 
   def self.cost_by_category(category = "education")
     categories_available[category][:cost]
@@ -78,6 +80,10 @@ class ClassifiedListing < ApplicationRecord
 
   def path
     "/listings/#{category}/#{slug}"
+  end
+
+  def natural_expiration_date
+    (bumped_at || created_at) + 30.days
   end
 
   private

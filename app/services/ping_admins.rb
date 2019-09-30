@@ -1,6 +1,7 @@
 class PingAdmins
-  def initialize(user)
+  def initialize(user, action = "unknown")
     @user = user
+    @action = action
   end
 
   def self.call(*args)
@@ -11,7 +12,7 @@ class PingAdmins
     return unless user && Rails.env.production?
 
     SlackBot.ping(
-      "Rate limit exceeded. https://dev.to#{user.path}",
+      "Rate limit exceeded (#{action}). https://dev.to#{user.path}",
       channel: "abuse-reports",
       username: "rate_limit",
       icon_emoji: ":hand:",
@@ -20,5 +21,5 @@ class PingAdmins
 
   private
 
-  attr_reader :user
+  attr_reader :user, :action
 end

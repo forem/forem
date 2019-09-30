@@ -18,16 +18,16 @@
     </div>
     <div class="profile-details">
       <h1 style="color:<%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.78) %>">
-        <span itemprop="name"><%= @user.name %></span>
+        <span itemprop="name"><%= sanitize @user.name %></span>
         <span class="user-profile-follow-button-wrapper">
           <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%= user_colors(@user)[:text] %>;background-color:<%= user_colors(@user)[:bg] %>" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>"}'>&nbsp;</button>
         </span>
       </h1>
       <p class="profile-description" itemprop="description">
         <% if @user.has_attribute?(:summary_html) && @user.summary_html.present? %>
-          <%= @user.summary_html.present? ? @user.summary_html.html_safe : "404 bio not found" %>
+          <%= sanitize(@user.summary_html.present? ? @user.summary_html.html_safe : "404 bio not found") %>
         <% else %>
-          <%= @user.summary.presence || "404 bio not found" %>
+          <%= sanitize(@user.summary.presence || "404 bio not found") %>
         <% end %>
       </p>
       <style>

@@ -1,6 +1,10 @@
 # rubocop:disable Metrics/BlockLength
 
 Rails.application.routes.draw do
+  use_doorkeeper do
+    controllers tokens: "oauth/tokens"
+  end
+
   devise_for :users, controllers: {
     omniauth_callbacks: "omniauth_callbacks",
     session: "sessions",
@@ -36,6 +40,7 @@ Rails.application.routes.draw do
     resources :feedback_messages, only: %i[index show]
     resources :listings, only: %i[index edit update destroy], controller: "classified_listings"
     resources :pages, only: %i[index new create edit update destroy]
+    resources :mods, only: %i[index update]
     resources :podcasts, only: %i[index edit update destroy] do
       member do
         post :add_admin
@@ -62,12 +67,15 @@ Rails.application.routes.draw do
         post "recover_identity"
       end
     end
+    resources :organization_memberships, only: %i[update destroy create]
     resources :welcome, only: %i[index create]
+    resources :growth, only: %i[index]
     resources :tools, only: %i[index create] do
       collection do
         post "bust_cache"
       end
     end
+    resources :webhook_endpoints, only: :index
   end
 
   namespace :api, defaults: { format: "json" } do
@@ -75,7 +83,7 @@ Rails.application.routes.draw do
           constraints: ApiConstraints.new(version: 0, default: true) do
       resources :articles, only: %i[index show create update] do
         collection do
-          get "/onboarding", to: "articles#onboarding"
+          get "me(/:status)", to: "articles#me", as: :me, constraints: { status: /published|unpublished|all/ }
         end
       end
       resources :comments, only: %i[index show]
@@ -87,7 +95,11 @@ Rails.application.routes.draw do
           post "/onboarding", to: "reactions#onboarding"
         end
       end
-      resources :users, only: %i[index show]
+      resources :users, only: %i[index show] do
+        collection do
+          get :me
+        end
+      end
       resources :tags, only: [:index] do
         collection do
           get "/onboarding", to: "tags#onboarding"
@@ -99,7 +111,10 @@ Rails.application.routes.draw do
           post "/update_or_create", to: "github_repos#update_or_create"
         end
       end
+      resources :webhooks, only: %i[index create show destroy]
 
+      resources :classified_listings, path: :listings, only: %i[index show create update]
+      get "/listings/category/:category", to: "classified_listings#index", as: :classified_listings_category
       get "/analytics/totals", to: "analytics#totals"
       get "/analytics/historical", to: "analytics#historical"
       get "/analytics/past_day", to: "analytics#past_day"
@@ -133,6 +148,7 @@ Rails.application.routes.draw do
   resources :blocks
   resources :notifications, only: [:index]
   resources :tags, only: [:index]
+  resources :downloads, only: [:index]
   resources :stripe_active_cards, only: %i[create update destroy]
   resources :live_articles, only: [:index]
   resources :github_repos, only: %i[create update]
@@ -146,10 +162,10 @@ Rails.application.routes.draw do
   resources :html_variant_trials, only: [:create]
   resources :html_variant_successes, only: [:create]
   resources :push_notification_subscriptions, only: [:create]
-  resources :tag_adjustments, only: [:create]
+  resources :tag_adjustments, only: %i[create destroy]
   resources :rating_votes, only: [:create]
   resources :page_views, only: %i[create update]
-  resources :classified_listings, path: :listings, only: %i[index new create edit update delete dashboard]
+  resources :classified_listings, path: :listings, only: %i[index new create edit update destroy dashboard]
   resources :credits, only: %i[index new create] do
     get "purchase", on: :collection, to: "credits#new"
   end
@@ -159,6 +175,9 @@ Rails.application.routes.draw do
   resources :poll_skips, only: [:create]
   resources :profile_pins, only: %i[create update]
   resources :partnerships, only: %i[index create show], param: :option
+  resources :display_ad_events, only: [:create]
+  resource :pro_membership, path: :pro, only: %i[show create update]
+  resolve("ProMembership") { [:pro_membership] } # see https://guides.rubyonrails.org/routing.html#using-resolve
 
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/listings/dashboard" => "classified_listings#dashboard"
@@ -166,6 +185,8 @@ Rails.application.routes.draw do
   get "/listings/:category/:slug" => "classified_listings#index", as: :classified_listing_slug
   get "/listings/:category/:slug/:view" => "classified_listings#index",
       constraints: { view: /moderate/ }
+  get "/listings/:category/:slug/delete_confirm" => "classified_listings#delete_confirm"
+  delete "/listings/:category/:slug" => "classified_listings#destroy"
   get "/notifications/:filter" => "notifications#index"
   get "/notifications/:filter/:org_id" => "notifications#index"
   get "/notification_subscriptions/:notifiable_type/:notifiable_id" => "notification_subscriptions#show"
@@ -180,7 +201,6 @@ Rails.application.routes.draw do
   post "/chat_channels/create_chat" => "chat_channels#create_chat"
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
   get "/live/:username" => "twitch_live_streams#show"
-  get "/pro" => "pro_accounts#index"
 
   post "/pusher/auth" => "pusher#auth"
 
@@ -238,7 +258,7 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root
   get "/about" => "pages#about"
-  get "/api", to: "pages#api"
+  get "/api", to: redirect("https://docs.dev.to/api")
   get "/privacy" => "pages#privacy"
   get "/terms" => "pages#terms"
   get "/contact" => "pages#contact"
@@ -264,7 +284,6 @@ Rails.application.routes.draw do
   get "/events" => "events#index"
   get "/workshops", to: redirect("events")
   get "/sponsorship-info" => "pages#sponsorship_faq"
-  get "/organization-info" => "pages#org_info"
   get "/sponsors" => "pages#sponsors"
   get "/search" => "stories#search"
   post "articles/preview" => "articles#preview"
@@ -272,7 +291,7 @@ Rails.application.routes.draw do
   get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
   get "/freestickers" => "giveaways#new"
   get "/shop", to: redirect("https://shop.dev.to/")
-  get "/mod" => "moderations#index"
+  get "/mod" => "moderations#index", as: :mod
 
   post "/fallback_activity_recorder" => "ga_events#create"
 
@@ -286,7 +305,7 @@ Rails.application.routes.draw do
     end
   end
 
-  get "/settings/(:tab)" => "users#edit"
+  get "/settings/(:tab)" => "users#edit", as: :user_settings
   get "/settings/:tab/:org_id" => "users#edit"
   get "/signout_confirm" => "users#signout_confirm"
   get "/dashboard" => "dashboards#show"
@@ -309,10 +328,13 @@ Rails.application.routes.draw do
     get "/rails/mailers/*path" => "rails/mailers#preview"
   end
 
+  get "/embed/:embeddable" => "liquid_embeds#show"
+
   get "/new" => "articles#new"
   get "/new/:template" => "articles#new"
 
-  get "/pod" => "podcast_episodes#index"
+  get "/pod", to: "podcast_episodes#index"
+  get "/podcasts", to: redirect("pod")
   get "/readinglist" => "reading_list_items#index"
   get "/readinglist/:view" => "reading_list_items#index", constraints: { view: /archive/ }
   get "/history", to: "history#index", as: :history
@@ -340,8 +362,6 @@ Rails.application.routes.draw do
   get "/:timeframe" => "stories#index", constraints: { timeframe: /latest/ }
 
   # Legacy comment format (might still be floating around app, and external links)
-  get "/:username/:slug/comments/new/:parent_id_code" => "comments#new"
-  get "/:username/:slug/comments/new" => "comments#new"
   get "/:username/:slug/comments" => "comments#index"
   get "/:username/:slug/comments/:id_code" => "comments#index"
   get "/:username/:slug/comments/:id_code/edit" => "comments#edit"

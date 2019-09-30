@@ -49,9 +49,11 @@ class AsyncInfoController < ApplicationController
         number_of_comments: @user.comments.count,
         display_sponsors: @user.display_sponsors,
         trusted: @user.trusted,
+        moderator_for_tags: @user.moderator_for_tags,
         experience_level: @user.experience_level,
         preferred_languages_array: @user.preferred_languages_array,
         config_body_class: @user.config_body_class,
+        onboarding_variant_version: @user.onboarding_variant_version,
         pro: @user.pro?
       }
     end
@@ -67,12 +69,13 @@ class AsyncInfoController < ApplicationController
     #{current_user&.saw_onboarding}__
     #{current_user&.checked_code_of_conduct}__
     #{current_user&.articles_count}__
+    #{current_user&.pro?}__
     #{cookies[:remember_user_token]}"
   end
 
   private
 
   def occasionally_update_analytics
-    ArticleAnalyticsFetcher.new.delay.update_analytics(@user.id) if Rails.env.production? && rand(ApplicationConfig["GA_FETCH_RATE"]) == 1
+    Articles::UpdateAnalyticsJob.perform_later(@user.id) if Rails.env.production? && rand(ApplicationConfig["GA_FETCH_RATE"]) == 1
   end
 end

@@ -1,0 +1,24 @@
+<h1>Webhook Endpoints</h1>
+
+<%= paginate @endpoints %>
+<br>
+<div class="wrapper" style="font-weight: 600; border-bottom: 2px solid black;">
+  <div>Target URL</div>
+  <div>ID</div>
+  <div>Events</div>
+  <div>Source</div>
+  <div>User</div>
+  <div>Created at</div>
+</div>
+
+<% @endpoints.each do |endpoint| %>
+  <div class="wrapper" style="border-bottom: 1px solid grey; padding: 10px;">
+    <div class="grid-item"><%= endpoint.target_url %></a></div>
+    <div class="grid-item"><%= endpoint.id %></div>
+    <div class="grid-item"><%= endpoint.events.join(", ") %></a></div>
+    <div class="grid-item"><%= endpoint.source %></div>
+    <div class="grid-item"><%= link_to endpoint.user.username, endpoint.user.path %></div>
+    <div class="grid-item"><%= endpoint.created_at.strftime("%H:%M %d %b %Y") %></div>
+  </div>
+<% end %>
+<%= paginate @endpoints %>

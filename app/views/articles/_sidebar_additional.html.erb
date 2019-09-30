@@ -19,7 +19,7 @@
       </div>
     <% end %>
     <% cache("main-article-right-sidebar-discussions-#{params[:timeframe]}", expires_in: (params[:timeframe].blank? ? 120 : 360).seconds) do %>
-      <% @sidebar_ad = DisplayAd.where(approved: true, published: true, placement_area: "sidebar_right").order(Arel.sql("RANDOM()")).first %>
+      <% @sidebar_ad = DisplayAd.for_display("sidebar_right") %>
       <% if @sidebar_ad %>
         <div class="widget">
           <div class="widget-body" style="margin-top:-6px">

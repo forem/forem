@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_23_094834) do
+ActiveRecord::Schema.define(version: 2019_09_18_104106) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -254,6 +254,7 @@ ActiveRecord::Schema.define(version: 2019_07_23_094834) do
     t.string "category"
     t.boolean "contact_via_connect", default: false
     t.datetime "created_at", null: false
+    t.datetime "expires_at"
     t.datetime "last_buffered"
     t.string "location"
     t.bigint "organization_id"
@@ -338,6 +339,19 @@ ActiveRecord::Schema.define(version: 2019_07_23_094834) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
+  create_table "display_ad_events", force: :cascade do |t|
+    t.string "category"
+    t.bigint "context_id"
+    t.string "context_type"
+    t.integer "counts_for", default: 1
+    t.datetime "created_at", null: false
+    t.integer "display_ad_id"
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.index ["display_ad_id"], name: "index_display_ad_events_on_display_ad_id"
+    t.index ["user_id"], name: "index_display_ad_events_on_user_id"
+  end
+
   create_table "display_ads", force: :cascade do |t|
     t.boolean "approved", default: false
     t.text "body_markdown"
@@ -350,6 +364,7 @@ ActiveRecord::Schema.define(version: 2019_07_23_094834) do
     t.string "placement_area"
     t.text "processed_html"
     t.boolean "published", default: false
+    t.float "success_rate", default: 0.0
     t.datetime "updated_at", null: false
   end
 
@@ -541,12 +556,55 @@ ActiveRecord::Schema.define(version: 2019_07_23_094834) do
     t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
     t.index ["notifiable_id"], name: "index_notifications_on_notifiable_id"
     t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
+    t.index ["notified_at"], name: "index_notifications_on_notified_at"
     t.index ["organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_org_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["organization_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_org_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
     t.index ["organization_id"], name: "index_notifications_on_organization_id"
     t.index ["user_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["user_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_user_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
     t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
+  create_table "oauth_access_grants", force: :cascade do |t|
+    t.bigint "application_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "expires_in", null: false
+    t.text "redirect_uri", null: false
+    t.bigint "resource_owner_id", null: false
+    t.datetime "revoked_at"
+    t.string "scopes"
+    t.string "token", null: false
+    t.index ["application_id"], name: "index_oauth_access_grants_on_application_id"
+    t.index ["resource_owner_id"], name: "index_oauth_access_grants_on_resource_owner_id"
+    t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true
+  end
+
+  create_table "oauth_access_tokens", force: :cascade do |t|
+    t.bigint "application_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "expires_in"
+    t.string "previous_refresh_token", default: "", null: false
+    t.string "refresh_token"
+    t.bigint "resource_owner_id"
+    t.datetime "revoked_at"
+    t.string "scopes"
+    t.string "token", null: false
+    t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
+    t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
+    t.index ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id"
+    t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true
+  end
+
+  create_table "oauth_applications", force: :cascade do |t|
+    t.boolean "confidential", default: true, null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.text "redirect_uri", null: false
+    t.string "scopes", default: "", null: false
+    t.string "secret", null: false
+    t.string "uid", null: false
+    t.datetime "updated_at", null: false
+    t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
   create_table "organization_memberships", force: :cascade do |t|
@@ -681,6 +739,7 @@ ActiveRecord::Schema.define(version: 2019_07_23_094834) do
     t.string "main_color_hex", null: false
     t.string "overcast_url"
     t.string "pattern_image"
+    t.boolean "published", default: false
     t.boolean "reachable", default: true
     t.string "slug", null: false
     t.string "soundcloud_url"
@@ -731,6 +790,21 @@ ActiveRecord::Schema.define(version: 2019_07_23_094834) do
     t.string "prompt_html"
     t.string "prompt_markdown"
     t.datetime "updated_at", null: false
+  end
+
+  create_table "pro_memberships", force: :cascade do |t|
+    t.boolean "auto_recharge", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "expiration_notification_at"
+    t.integer "expiration_notifications_count", default: 0, null: false
+    t.datetime "expires_at", null: false
+    t.string "status", default: "active"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["auto_recharge"], name: "index_pro_memberships_on_auto_recharge"
+    t.index ["expires_at"], name: "index_pro_memberships_on_expires_at"
+    t.index ["status"], name: "index_pro_memberships_on_status"
+    t.index ["user_id"], name: "index_pro_memberships_on_user_id"
   end
 
   create_table "profile_pins", force: :cascade do |t|
@@ -1009,6 +1083,7 @@ ActiveRecord::Schema.define(version: 2019_07_23_094834) do
     t.string "medium_url"
     t.datetime "membership_started_at"
     t.boolean "mobile_comment_notifications", default: true
+    t.boolean "mod_roundrobin_notifications", default: true
     t.integer "monthly_dues", default: 0
     t.string "mostly_work_with"
     t.string "name"
@@ -1019,6 +1094,7 @@ ActiveRecord::Schema.define(version: 2019_07_23_094834) do
     t.boolean "onboarding_package_fulfilled", default: false
     t.boolean "onboarding_package_requested", default: false
     t.boolean "onboarding_package_requested_again", default: false
+    t.string "onboarding_variant_version", default: "0"
     t.boolean "org_admin", default: false
     t.integer "organization_id"
     t.boolean "permit_adjacent_sponsors", default: true
@@ -1090,13 +1166,32 @@ ActiveRecord::Schema.define(version: 2019_07_23_094834) do
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
   end
 
+  create_table "webhook_endpoints", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "events", null: false, array: true
+    t.bigint "oauth_application_id"
+    t.string "source"
+    t.string "target_url", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["events"], name: "index_webhook_endpoints_on_events"
+    t.index ["oauth_application_id"], name: "index_webhook_endpoints_on_oauth_application_id"
+    t.index ["user_id"], name: "index_webhook_endpoints_on_user_id"
+  end
+
   add_foreign_key "badge_achievements", "badges"
   add_foreign_key "badge_achievements", "users"
   add_foreign_key "chat_channel_memberships", "chat_channels"
   add_foreign_key "chat_channel_memberships", "users"
   add_foreign_key "messages", "chat_channels"
   add_foreign_key "messages", "users"
+  add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
+  add_foreign_key "oauth_access_grants", "users", column: "resource_owner_id"
+  add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "push_notification_subscriptions", "users"
   add_foreign_key "sponsorships", "organizations"
   add_foreign_key "sponsorships", "users"
+  add_foreign_key "webhook_endpoints", "oauth_applications"
+  add_foreign_key "webhook_endpoints", "users"
 end

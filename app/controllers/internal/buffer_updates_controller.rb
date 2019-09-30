@@ -1,5 +1,8 @@
 class Internal::BufferUpdatesController < Internal::ApplicationController
+  skip_before_action :authorize_admin # Instead, specific admin via authorize([:internal, Article])
+
   def create
+    authorize([:internal, BufferUpdate])
     article_id = params[:article_id]
     article = Article.find(article_id) if article_id.present?
     fb_post = params[:fb_post]
@@ -23,6 +26,7 @@ class Internal::BufferUpdatesController < Internal::ApplicationController
   end
 
   def update
+    authorize([:internal, BufferUpdate])
     BufferUpdate.upbuff!(params[:id], current_user.id, params[:body_text], params[:status])
     render body: nil
   end

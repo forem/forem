@@ -6,7 +6,7 @@ module Comments
       comment = Comment.find_by(id: comment_id)
       return unless comment&.commentable
 
-      service.call(comment.commentable, comment.user.username)
+      service.call(comment.commentable)
     end
   end
 end
