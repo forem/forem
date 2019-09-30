@@ -22,7 +22,7 @@
     </a>
   <% end %>
   <div class="content notification-content article-content">
-    <% cache "activity-published-article-#{json_data['article']['id']}-#{json_data['article']['updated_at']}" do %>
+    <% cache "activity-published-article-user-info-#{json_data['article']['id']}-#{json_data['article']['updated_at']}" do %>
       <a href="<%= json_data["user"]["path"] %>">
         <%= json_data["user"]["name"] %>
       </a>
@@ -30,13 +30,21 @@
       <% if json_data["organization"] %>
         under <a href="<%= json_data["organization"]["path"] %>"><%= json_data["organization"]["name"] %></a>:
       <% end %>
-      <div>
-        <% if json_data["article"]["published_at"] %>
-          <small><%= time_ago_in_words json_data["article"]["published_at"] %> ago</small>
-        <% else %>
-          <small><%= time_ago_in_words notification.notifiable.published_at %> ago</small>
-        <% end %>
-      </div>
+    <% end %>
+
+    <%# keeping this section of out the cache: if the article is never updated
+        the containing cache will likely never expire and this section will be
+        fixed in time until expired randomly by Memcache's algorithm, which can
+        be too late for the freshness of the user experience %>
+    <div>
+      <% if json_data["article"]["published_at"] %>
+        <small><%= time_ago_in_words json_data["article"]["published_at"] %> ago</small>
+      <% else %>
+        <small><%= time_ago_in_words notification.notifiable.published_at %> ago</small>
+      <% end %>
+    </div>
+
+    <% cache "activity-published-article-summary-#{json_data['article']['id']}-#{json_data['article']['updated_at']}" do %>
       <a href="<%= json_data["article"]["path"] %>">
         <div class="notification-new-post">
           <div class="notification-new-post-title">
@@ -50,6 +58,7 @@
         </div>
       </a>
     <% end %>
+
     <% cache "activity-published-article-reactions-#{@last_user_reaction}-#{json_data['article']['updated_at']}-#{json_data['article']['id']}" do %>
       <div class="comment-actions">
         <button class="reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("article"), current_user, "like") ? "reacted" : "" %>" data-reactable-id="<%= json_data["article"]["id"] %>" data-category="like" data-reactable-type="Article">
