@@ -47,7 +47,7 @@ module Api
       private
 
       def authorize_pro_user
-        raise UnauthorizedError unless @user&.has_role?(:pro)
+        raise UnauthorizedError unless @user&.pro?
       end
 
       def authorize_user_organization

@@ -792,6 +792,21 @@ ActiveRecord::Schema.define(version: 2019_09_18_104106) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "pro_memberships", force: :cascade do |t|
+    t.boolean "auto_recharge", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "expiration_notification_at"
+    t.integer "expiration_notifications_count", default: 0, null: false
+    t.datetime "expires_at", null: false
+    t.string "status", default: "active"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["auto_recharge"], name: "index_pro_memberships_on_auto_recharge"
+    t.index ["expires_at"], name: "index_pro_memberships_on_expires_at"
+    t.index ["status"], name: "index_pro_memberships_on_status"
+    t.index ["user_id"], name: "index_pro_memberships_on_user_id"
+  end
+
   create_table "profile_pins", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "pinnable_id"

@@ -13,7 +13,8 @@ RSpec.describe Articles::Destroyer do
     expect(Article.find_by(id: article.id)).to be_nil
   end
 
-  it "schedules removing notifications" do
+  it "schedules removing notifications if there are comments" do
+    create(:comment, commentable: article)
     expect do
       described_class.call(article)
     end.to have_enqueued_job(Notifications::RemoveAllJob).once

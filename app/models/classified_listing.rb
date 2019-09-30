@@ -40,6 +40,8 @@ class ClassifiedListing < ApplicationRecord
     searchableAttributes %w[title processed_html tag_list slug location]
   end
 
+  scope :published, -> { where(published: true) }
+
   def self.cost_by_category(category = "education")
     categories_available[category][:cost]
   end

@@ -4,6 +4,7 @@ module Api
       respond_to :json
 
       before_action :authenticate!, only: %i[create update me]
+      before_action -> { doorkeeper_authorize! :public }, only: %w[index show], if: -> { doorkeeper_token }
 
       before_action :set_cache_control_headers, only: [:index]
       caches_action :show,
@@ -45,6 +46,9 @@ module Api
       end
 
       def me
+        doorkeeper_scope = %w[unpublished all].include?(params[:status]) ? :read_articles : :public
+        doorkeeper_authorize! doorkeeper_scope if doorkeeper_token
+
         per_page = (params[:per_page] || 30).to_i
         num = [per_page, 1000].min
 

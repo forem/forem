@@ -96,19 +96,23 @@ function buildArticleHTML(article) {
         publishDate = '・' + '<time>'+article.readable_publish_date+'</time>';
       }
     }
+
     var readingTimeHTML = '';
     if (article.class_name === "Article") {
       // we have ` ... || null` for the case article.reading_time is undefined
       readingTimeHTML = '<a href="'+article.path+'" class="article-reading-time">'+ ((article.reading_time || null) < 1 ? '1 min' : article.reading_time + ' min') +' read</a>'
     }
+
     var videoHTML = '';
     if (article.cloudinary_video_url) {
       videoHTML = '<a href="'+article.path+'" class="single-article-video-preview" style="background-image:url('+article.cloudinary_video_url+')"><div class="single-article-video-duration"><img src="<%= asset_path("video-camera.svg") %>" alt="video camera">'+article.video_duration_in_minutes+'</div></a>'
     }
+
     var timeAgoInWords = '';
     if (article.published_at_int) {
       timeAgoInWords = timeAgo(article.published_at_int);
     }
+
     return '<div class="single-article single-article-small-pic">\
       '+videoHTML+'\
       '+orgHeadline+'\

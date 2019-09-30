@@ -23,4 +23,4 @@ json.last_comment_at    @article.last_comment_at&.utc&.iso8601
 json.body_html @article.processed_html
 json.body_markdown @article.body_markdown
 
-json.partial! "user", user: @article.user
+json.partial! "api/v0/shared/user", user: @article.user

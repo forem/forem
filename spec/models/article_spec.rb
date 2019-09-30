@@ -22,7 +22,7 @@ RSpec.describe Article, type: :model do
   it { is_expected.to belong_to(:collection).optional }
   it { is_expected.to have_many(:comments) }
   it { is_expected.to have_many(:reactions).dependent(:destroy) }
-  it { is_expected.to have_many(:notifications).dependent(:destroy) }
+  it { is_expected.to have_many(:notifications).dependent(:delete_all) }
   it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
   it { is_expected.to validate_presence_of(:user_id) }
   it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
@@ -393,21 +393,26 @@ RSpec.describe Article, type: :model do
       article = create(:article, user_id: user.id)
       expect(article.path).to eq("/#{article.username}/#{article.slug}")
     end
+
     it "assigns cached_user_name on save" do
       article = create(:article, user_id: user.id)
       expect(article.cached_user_name).to eq(article.cached_user_name)
     end
+
     it "assigns cached_user_username on save" do
       article = create(:article, user_id: user.id)
       expect(article.cached_user_username).to eq(article.user_username)
     end
+
     it "assigns cached_user on save" do
       article = create(:article, user_id: user.id)
       expect(article.cached_user.username).to eq(article.user.username)
       expect(article.cached_user.name).to eq(article.user.name)
       expect(article.cached_user.profile_image_url).to eq(article.user.profile_image_url)
       expect(article.cached_user.profile_image_90).to eq(article.user.profile_image_90)
+      expect(article.cached_user.pro).to eq(article.user.pro?)
     end
+
     it "assigns cached_organization on save" do
       organization = create(:organization)
       article = create(:article, user_id: user.id, organization_id: organization.id)
@@ -416,6 +421,7 @@ RSpec.describe Article, type: :model do
       expect(article.cached_organization.slug).to eq(article.organization.slug)
       expect(article.cached_organization.profile_image_90).to eq(article.organization.profile_image_90)
       expect(article.cached_organization.profile_image_url).to eq(article.organization.profile_image_url)
+      expect(article.cached_organization.pro).to be(false)
     end
   end
 

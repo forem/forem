@@ -1,7 +1,10 @@
 # rubocop:disable Metrics/BlockLength
 
 Rails.application.routes.draw do
-  use_doorkeeper
+  use_doorkeeper do
+    controllers tokens: "oauth/tokens"
+  end
+
   devise_for :users, controllers: {
     omniauth_callbacks: "omniauth_callbacks",
     session: "sessions",
@@ -110,6 +113,8 @@ Rails.application.routes.draw do
       end
       resources :webhooks, only: %i[index create show destroy]
 
+      resources :classified_listings, path: :listings, only: %i[index show create update]
+      get "/listings/category/:category", to: "classified_listings#index", as: :classified_listings_category
       get "/analytics/totals", to: "analytics#totals"
       get "/analytics/historical", to: "analytics#historical"
       get "/analytics/past_day", to: "analytics#past_day"
@@ -171,6 +176,8 @@ Rails.application.routes.draw do
   resources :profile_pins, only: %i[create update]
   resources :partnerships, only: %i[index create show], param: :option
   resources :display_ad_events, only: [:create]
+  resource :pro_membership, path: :pro, only: %i[show create update]
+  resolve("ProMembership") { [:pro_membership] } # see https://guides.rubyonrails.org/routing.html#using-resolve
 
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/listings/dashboard" => "classified_listings#dashboard"
@@ -194,7 +201,6 @@ Rails.application.routes.draw do
   post "/chat_channels/create_chat" => "chat_channels#create_chat"
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
   get "/live/:username" => "twitch_live_streams#show"
-  get "/pro" => "pro_accounts#index"
 
   post "/pusher/auth" => "pusher#auth"
 
@@ -299,7 +305,7 @@ Rails.application.routes.draw do
     end
   end
 
-  get "/settings/(:tab)" => "users#edit"
+  get "/settings/(:tab)" => "users#edit", as: :user_settings
   get "/settings/:tab/:org_id" => "users#edit"
   get "/signout_confirm" => "users#signout_confirm"
   get "/dashboard" => "dashboards#show"

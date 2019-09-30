@@ -83,6 +83,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       )
     end
 
+    # rubocop:disable RSpec/ExampleLength
     it "returns all the relevant datetimes" do
       article.update_columns(
         edited_at: 1.minute.from_now, crossposted_at: 2.minutes.ago, last_comment_at: 30.seconds.ago,
@@ -96,6 +97,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         "last_comment_at" => article.last_comment_at.utc.iso8601,
       )
     end
+    # rubocop:enable RSpec/ExampleLength
 
     it "fails with an unpublished article" do
       article.update_columns(published: false)
@@ -111,15 +113,28 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
   describe "GET /api/articles/me(/:status)" do
     context "when request is unauthenticated" do
+      let(:user) { create(:user) }
+      let(:public_token) { create :doorkeeper_access_token, resource_owner: user, scopes: "public" }
+
       it "return unauthorized" do
         get me_api_articles_path
         expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "returns forbidden when requesting for all with only public scope" do
+        get me_api_articles_path(status: :all), params: { access_token: public_token.token }
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it "returns forbidden status when requesting unpublished with public scope" do
+        get me_api_articles_path(status: :unpublished), params: { access_token: public_token.token }
+        expect(response).to have_http_status(:forbidden)
       end
     end
 
     context "when request is authenticated" do
       let_it_be(:user) { create(:user) }
-      let_it_be(:access_token) { create :doorkeeper_access_token, resource_owner: user }
+      let_it_be(:access_token) { create :doorkeeper_access_token, resource_owner: user, scopes: "public read_articles" }
 
       it "works with bearer authorization" do
         headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
@@ -129,8 +144,15 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "return proper response specification" do
+      it "returns proper response specification" do
         get me_api_articles_path, params: { access_token: access_token.token }
+        expect(response.content_type).to eq("application/json")
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "returns success when requesting publiched articles with public token" do
+        public_token = create(:doorkeeper_access_token, resource_owner: user, scopes: "public")
+        get me_api_articles_path(status: :published), params: { access_token: public_token.token }
         expect(response.content_type).to eq("application/json")
         expect(response).to have_http_status(:ok)
       end

@@ -1,4 +1,4 @@
-<% title "Pro Account" %>
+<% title "Pro Membership" %>
 
 <style>
   <% cache "partnership-org-section-credits-#{ApplicationConfig['DEPLOYMENT_SIGNATURE']}", expires_in: 10.hours do %>
@@ -7,6 +7,17 @@
 </style>
 
 <div class="partnerships-container">
+  <% if flash[:notice].present? %>
+    <div class="notice" id="notice">
+      <%= flash[:notice] %>
+    </div>
+  <% elsif flash[:error].present? %>
+    <div class="notice error-notice" id="notice" style="text-align:center;color:red">
+      ERROR
+      <%= flash[:error] %>
+    </div>
+  <% end %>
+
   <h1><img src="<%= asset_path "rainbowdev.svg" %>" /> Like a Pro</h1>
   <p>
     <strong><em>Pro is coming soon. This page is a work in progress. Since we're open source and transparently working on this, no sense in keeping it private eh?</em></strong>
@@ -28,8 +39,13 @@
   <h3>🙌 Always Improving</h3>
   <p>Because this will be the landing destination for experimental and low scale features, you will always have the best and most interesting DEV features. We also plan to connect for exclusive deals on new and upcoming features on other platforms.
 
-  <div class="partner-credits-explainer">
-    <h1>$25/mo</h1>
-    <h2 style="text-align: center">(or 5 credits/mo)</h2>
-  </div>
+  <% if @user %>
+    <div class="partner-credits-explainer">
+      <% if @user.pro? %>
+        <%= link_to "View your Pro Membership", user_settings_path("pro-membership") %>
+      <% else %>
+        <%= link_to "Become a Pro member", user_settings_path("pro-membership") %>
+      <% end %>
+    </div>
+  <% end %>
 </div>

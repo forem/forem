@@ -30,6 +30,7 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
     it { is_expected.to have_many(:push_notification_subscriptions).dependent(:destroy) }
     it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
+    it { is_expected.to have_one(:pro_membership).dependent(:destroy) }
     it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
     it { is_expected.to validate_uniqueness_of(:github_username).allow_nil }
     it { is_expected.to validate_uniqueness_of(:twitter_username).allow_nil }
@@ -674,13 +675,28 @@ RSpec.describe User, type: :model do
   end
 
   describe "#pro?" do
+    let(:user) { create(:user) }
+
     it "returns false if the user is not a pro" do
       expect(user.pro?).to be(false)
     end
 
-    it "returns true if the user is a pro" do
+    it "returns true if the user has the pro role" do
       user.add_role(:pro)
       expect(user.pro?).to be(true)
+    end
+
+    it "returns true if the user has an active pro membership" do
+      create(:pro_membership, user: user)
+      expect(user.pro?).to be(true)
+    end
+
+    it "returns false if the user has an expired pro membership" do
+      Timecop.freeze(Time.current) do
+        membership = create(:pro_membership, user: user)
+        membership.expire!
+        expect(user.pro?).to be(false)
+      end
     end
   end
 
@@ -691,6 +707,22 @@ RSpec.describe User, type: :model do
 
     it "doesn't schedule a job on destroy" do
       expect { user.destroy }.not_to have_enqueued_job.on_queue("algoliasearch")
+    end
+  end
+
+  describe "#has_enough_credits?" do
+    it "returns false if the user has less unspent credits than neeed" do
+      expect(user.has_enough_credits?(1)).to be(false)
+    end
+
+    it "returns true if the user has the exact amount of unspent credits" do
+      create(:credit, user: user, spent: false)
+      expect(user.has_enough_credits?(1)).to be(true)
+    end
+
+    it "returns true if the user has more unspent credits than needed" do
+      create_list(:credit, 2, user: user, spent: false)
+      expect(user.has_enough_credits?(1)).to be(true)
     end
   end
 end
