@@ -10315,10 +10315,10 @@ punycode@^2.1.0, punycode@^2.1.1:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
-pusher-js@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/pusher-js/-/pusher-js-5.0.1.tgz#450389f51a25638e8d2e6383209a1be6e4115c78"
-  integrity sha512-w5vucT2VjgOWMZgqGCFwrmNp68Qfct3Dd/4eOigx5f1eWEJq3DJTKYygNcENmZmC3DtlVxShq2ybASVg8yH27w==
+pusher-js@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/pusher-js/-/pusher-js-5.0.2.tgz#bb65976d0a093e98a6e222020586ae72e5bd4bc4"
+  integrity sha512-onQui1AwE+Z0ab3kvSruz5TgW+i4qr98fN0jgV/iLlkj2B+LWtqcP+kh9H8sPmHOEnwayhhkNJHaC6jGLHHl7w==
 
 q@^1.1.2:
   version "1.5.1"
