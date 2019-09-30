@@ -66,7 +66,7 @@ class MessagesController < ApplicationController
     end
   end
 
-  def response_message
+  def response_message(success)
     if success
       render json: { status: "success", message: "Message created" }, status: :created
     else
