@@ -2,7 +2,7 @@
 
 ## Installing prerequisites
 
-_These prerequisites assume you're working on a Linux-based operating system but they have only been tested on Ubuntu 18.04._
+_These prerequisites assume you're working on a Linux-based operating system, but they have only been tested on Ubuntu 18.04._
 
 ### Ruby
 
@@ -16,7 +16,7 @@ For very detailed rbenv installation directions on several distros, please visit
 There are two ways to install Yarn.
 
 - Yarn's official [installation guide](https://yarnpkg.com/en/docs/install#debian-stable) (recommended).
-- [DigitalOcean's detailed tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-18-04) describes how to install [Node version Manager](https://github.com/creationix/nvm). By installing NVM you can select a Node version (we recommend either LTS or current), the guide will also explain how to install NPM. This way you'll have Node, NPM, and then you can run `npm install -g yarn` to install Yarn.
+- [DigitalOcean's detailed tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-18-04) describes how to install [Node version Manager](https://github.com/creationix/nvm). By installing NVM you can select a Node version (we recommend either LTS or current); the guide will also explain how to install NPM. This way you'll have Node, NPM, and then you can run `npm install -g yarn` to install Yarn.
 
 ### PostgreSQL
 
@@ -27,8 +27,8 @@ There are more than one ways to setup PostgreSQL. For additional configuration, 
 
 ## Installing DEV
 
-1. Fork DEV's repository, eg. <https://github.com/thepracticaldev/dev.to/fork>
-1. Clone your forked repository, eg. `git clone https://github.com/<your-username>/dev.to.git`
+1. Fork DEV's repository, e.g. <https://github.com/thepracticaldev/dev.to/fork>
+1. Clone your forked repository, e.g. `git clone https://github.com/<your-username>/dev.to.git`
 1. Install bundler with `gem install bundler`
 1. Set up your environment variables/secrets
 
@@ -36,8 +36,8 @@ There are more than one ways to setup PostgreSQL. For additional configuration, 
    - The [backend guide](/backend) will show you how to get free API keys for additional services that may be required to run certain parts of the app.
    - For any key that you wish to enter/replace:
 
-     1. Create `config/application.yml` by copying from the provided template (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
-     1. Obtain the development variable and apply the key you wish to enter/replace. ie:
+     1. Create `config/application.yml` by copying from the provided template (i.e. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
+     1. Obtain the development variable and apply the key you wish to enter/replace. i.e.:
 
      ```shell
      GITHUB_KEY: "SOME_REAL_SECURE_KEY_HERE"

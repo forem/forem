@@ -1,6 +1,6 @@
 # Installing DEV with Docker [Beta]
 
-Our docker implementation is incomplete and may not work smoothly. Please kindly [report any issues](https://github.com/thepracticaldev/dev.to/issues/new/choose)!
+Our docker implementation is incomplete and may not work smoothly. Please, kindly [report any issues](https://github.com/thepracticaldev/dev.to/issues/new/choose)!
 
 ## Installing prerequisites
 
@@ -8,13 +8,13 @@ _These prerequisites assume you're working on an operating system supported by D
 
 ### Docker and Docker Compose
 
-Docker is available for many different operating systems. We recommend you follow the [Docker CE install guide](https://docs.docker.com/install/) which illustrates multiple installation options for each OS.
+Docker is available for many different operating systems. We recommend you follow the [Docker CE install guide](https://docs.docker.com/install/), which illustrates multiple installation options for each OS.
 
 You're also going to need Docker Compose, to start multiple containers. We recommend you follow the [Docker Compose install guide](https://docs.docker.com/compose/install/) as well.
 
 ## Installing DEV
 
-1. Fork DEV's repository, eg. <https://github.com/thepracticaldev/dev.to/fork>
+1. Fork DEV's repository, e.g. <https://github.com/thepracticaldev/dev.to/fork>
 1. Clone your forked repository, eg. `git clone https://github.com/<your-username>/dev.to.git`
 1. Set up your environment variables/secrets
 
@@ -22,8 +22,8 @@ You're also going to need Docker Compose, to start multiple containers. We recom
    - The [backend guide](/backend) will show you how to get free API keys for additional services that may be required to run certain parts of the app.
    - For any key that you wish to enter/replace:
 
-     1. Create `config/application.yml` by copying from the provided template (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
-     1. Obtain the development variable and apply the key you wish to enter/replace. ie:
+     1. Create `config/application.yml` by copying from the provided template (i.e. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
+     1. Obtain the development variable and apply the key you wish to enter/replace. i.e.:
 
      ```shell
      GITHUB_KEY: "SOME_REAL_SECURE_KEY_HERE"

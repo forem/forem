@@ -9,9 +9,9 @@ DEV has two Javascript codebases.
 One is located in the directory
 `app/assets/javascripts` and contains plain Javascript (mostly ES5+) being served using [Sprockets](https://github.com/rails/sprockets-rails) which packages static assets.
 
-The other one is managed by Webpacker and you can read more about [in its own guide](/frontend/webpacker).
+Webpacker manages the other one, and you can read more about [in its own guide](/frontend/webpacker).
 
-This source code is not transpiled, only packaged and minified, and will be limited to whatever flavour of Javascript can run on user's web browser.
+This source code is not transpiled, only packaged and minified, and will be limited to whatever flavour of Javascript can run on the user's web browser.
 
 `app/assets/javascripts/application.js` contains the manifest Javascript file
 which is included globally in the primary template, `app/views/layouts/application.html.erb`.
