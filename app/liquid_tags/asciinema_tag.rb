@@ -25,7 +25,7 @@ class AsciinemaTag < LiquidTagBase
   end
 
   def valid_id?(id)
-    id.match?(/\A\d+\Z/i)
+    id.match?(/\A\d+\Z/)
   end
 end
 
