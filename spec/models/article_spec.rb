@@ -43,7 +43,7 @@ RSpec.describe Article, type: :model do
     expect(build(:article, with_date: true, date: Date.tomorrow).valid?).to be(false)
   end
 
-  xit "reject future dates even when it's published at" do
+  it "reject future dates even when it's published at" do
     expect(build(:article, published_at: Date.tomorrow).valid?).to be(false)
   end
 
