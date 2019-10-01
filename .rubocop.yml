@@ -64,7 +64,8 @@ Metrics/PerceivedComplexity:
 Metrics/MethodLength:
   Description: 'Avoid methods longer than 10 lines of code.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#short-methods'
-  Enabled: false
+  Enabled: true
+  Max: 40
 
 Metrics/ParameterLists:
   Description: 'Avoid parameter lists longer than three or four parameters.'
