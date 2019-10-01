@@ -1,6 +1,7 @@
 ---
 title: Testing RSS Feed
 published: false
+date: 2018-01-02 19:06:30 UTC
 tags: test
 canonical_url: 
 ---
