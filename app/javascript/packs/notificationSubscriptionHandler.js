@@ -84,8 +84,8 @@ function loadFunctionality() {
     subscriptionButtons[i].addEventListener('click', e => {
       e.preventDefault();
       updateStatus(e.target);
-      if (typeof sendHapticMessage !== 'undefined') {
-        sendHapticMessage('medium');
+      if (typeof window.sendHapticMessage !== 'undefined') {
+        window.sendHapticMessage('medium');
       }
     });
     subscriptionButtons[i].addEventListener('keydown', e => {

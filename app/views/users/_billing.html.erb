@@ -1,4 +1,3 @@
-<!-- cached at: <%= Time.current %> -->
 <h3>Billing Details</h3>
 <% if current_user.stripe_id_code.blank? %>
   <%= form_tag "/stripe_active_cards", id: "credit-card-form", method: :post do %>

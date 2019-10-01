@@ -26,7 +26,7 @@ class NotificationsController < ApplicationController
                        @user.notifications
                      end
 
-    @notifications = @notifications.without_past_aggregations.order(notified_at: :desc)
+    @notifications = @notifications.includes(:notifiable).without_past_aggregations.order(notified_at: :desc)
 
     # if offset based pagination is invoked by the frontend code, we filter out all earlier ones
     @notifications = @notifications.where("notified_at < ?", notified_at_offset) if notified_at_offset
