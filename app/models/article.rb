@@ -45,6 +45,7 @@ class Article < ApplicationRecord
   validate :validate_video
   validate :validate_collection_permission
   validate :validate_liquid_tag_permissions
+  validate :past_or_present_date
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :cached_tag_list, length: { maximum: 126 }
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
@@ -497,7 +498,7 @@ class Article < ApplicationRecord
       remove_tag_adjustments_from_tag_list
     end
     self.published = front_matter["published"] if %w[true false].include?(front_matter["published"].to_s)
-    self.published_at = parsed_date(front_matter["date"]) if published
+    self.published_at = parse_date(front_matter["date"]) if published
     self.main_image = front_matter["cover_image"] if front_matter["cover_image"].present?
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
     self.description = front_matter["description"] || description || "#{body_text[0..80]}..."
@@ -506,14 +507,9 @@ class Article < ApplicationRecord
     self.automatically_renew = front_matter["automatically_renew"] if front_matter["automatically_renew"].present? && tag_list.include?("hiring")
   end
 
-  def parsed_date(date)
-    now = Time.current
-    return published_at || now unless date
-
-    error_msg = "must be entered in DD/MM/YYYY format with current or past date"
-    return errors.add(:date_time, error_msg) if date > now
-
-    date
+  def parse_date(date)
+    # once published_at exist, it can not be adjusted
+    published_at || date || Time.current
   end
 
   def validate_tag
@@ -541,6 +537,12 @@ class Article < ApplicationRecord
 
   def validate_collection_permission
     errors.add(:collection_id, "must be one you have permission to post to") if collection && collection.user_id != user_id
+  end
+
+  def past_or_present_date
+    if published_at && published_at > Time.current
+      errors.add(:date_time, "must be entered in DD/MM/YYYY format with current or past date")
+    end
   end
 
   # Admin only beta tags etc.
