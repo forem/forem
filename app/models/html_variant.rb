@@ -1,5 +1,6 @@
 class HtmlVariant < ApplicationRecord
   include CloudinaryHelper
+  include HtmlHelper
 
   validates :html, presence: true
   validates :name, uniqueness: true
@@ -40,34 +41,7 @@ class HtmlVariant < ApplicationRecord
   end
 
   def prefix_all_images
-    # wrap with Cloudinary or allow if from giphy or githubusercontent.com
-    doc = Nokogiri::HTML.fragment(html)
-    doc.css("img").each do |img|
-      src = img.attr("src")
-      next unless src
-      next if allowed_image_host?(src)
-
-      img["src"] = if giphy_img?(src)
-                     src.gsub("https://media.", "https://i.")
-                   else
-                     img_of_size(src, 420)
-                   end
-    end
-    self.html = doc.to_html
-  end
-
-  def giphy_img?(source)
-    uri = URI.parse(source)
-    return false if uri.scheme != "https"
-    return false if uri.userinfo || uri.fragment || uri.query
-    return false if uri.host != "media.giphy.com" && uri.host != "i.giphy.com"
-    return false if uri.port != 443 # I think it has to be this if its https?
-
-    uri.path.ends_with?(".gif")
-  end
-
-  def allowed_image_host?(src)
-    src.start_with?("https://res.cloudinary.com/")
+    self.html = do_prefix_all_images(html, 420)
   end
 
   def img_of_size(source, width = 420)

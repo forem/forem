@@ -1,6 +1,7 @@
 class MarkdownParser
   include ApplicationHelper
   include CloudinaryHelper
+  include HtmlHelper
 
   WORDS_READ_PER_MINUTE = 275.0
 
@@ -99,22 +100,7 @@ class MarkdownParser
   end
 
   def prefix_all_images(html, width = 880)
-    # wrap with Cloudinary or allow if from giphy or githubusercontent.com
-    doc = Nokogiri::HTML.fragment(html)
-    doc.css("img").each do |img|
-      src = img.attr("src")
-      next unless src
-      # allow image to render as-is
-      next if allowed_image_host?(src)
-
-      img["loading"] = "lazy"
-      img["src"] = if giphy_img?(src)
-                     src.gsub("https://media.", "https://i.")
-                   else
-                     img_of_size(src, width)
-                   end
-    end
-    doc.to_html
+    do_prefix_all_images(html, width)
   end
 
   private
@@ -139,21 +125,6 @@ class MarkdownParser
     bad_xss.each do |xss_attempt|
       raise ArgumentError, "Invalid markdown detected" if markdown.include?(xss_attempt)
     end
-  end
-
-  def allowed_image_host?(src)
-    # GitHub camo image won't parse but should be safe to host direct
-    src.start_with?("https://camo.githubusercontent.com/")
-  end
-
-  def giphy_img?(source)
-    uri = URI.parse(source)
-    return false if uri.scheme != "https"
-    return false if uri.userinfo || uri.fragment || uri.query
-    return false if uri.host != "media.giphy.com" && uri.host != "i.giphy.com"
-    return false if uri.port != 443 # I think it has to be this if its https?
-
-    uri.path.ends_with?(".gif")
   end
 
   def remove_nested_linebreak_in_list(html)
