@@ -22,7 +22,7 @@ Install the [GitDocs NodeJs library](https://www.npmjs.com/package/gitdocs)
 npm install gitdocs -g
 ```
 
-Specifying `-g` will install the library globally which is what you want to do.
+Specifying `-g` will install the library globally, which is what you want to do.
 
 If you use yarn you can instead issue:
 

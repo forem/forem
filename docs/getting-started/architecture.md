@@ -2,7 +2,7 @@
 title: Architecture and Concepts
 ---
 
-# A few high level things to know
+# A few high-level things to know
 
 ## We are a Ruby on Rails app
 
@@ -18,13 +18,13 @@ before_action :set_cache_control_headers
 
 We also user server-side caching [Rails caching](https://guides.rubyonrails.org/caching_with_rails.html). Any time you see `Rails.cache` or `<%= cache ... %>`, this is code affected in production by caching. 
 
-## We use inline CSS and defered scripts for usage performance improvements
+## We use inline CSS and deferred scripts for usage performance improvements
 
-To avoid blocking initial render, we put critical path CSS inline in the HTML and we user `defer` so the user is not waiting on extra assets. This means we have some constraints about how we can use JavaScript to affect the layout. In many cases we should not attempt to do this.
+To avoid blocking initial render, we put critical path CSS inline in the HTML and we user `defer` so the user is not waiting on extra assets. This means we have some constraints about how we can use JavaScript to affect the layout. In many cases, we should not attempt to do this.
 
 ## We attempt to reduce our bundle size
 
-We use [PreactJs](https://preactjs.com/), a lightweight alternative to ReactJs, and generally we try to reduce our bundle size with approaches such as [dynamic imports](https://dev.to/goenning/how-we-reduced-our-initial-jscss-size-by-67-3ac0).
+We use [PreactJs](https://preactjs.com/), a lightweight alternative to ReactJs, and generally, we try to reduce our bundle size with approaches such as [dynamic imports](https://dev.to/goenning/how-we-reduced-our-initial-jscss-size-by-67-3ac0).
 
 ## Worst technical debt
 
@@ -36,4 +36,4 @@ We also have a sprawling CSS structure with few consistent rules.
 
 The home feed is based on a combination of collective recent posts that are cached and delivered the same to everyone in the HTML, and additional articles fetched from an Algolia index after page load. To determine which posts a user sees, they are ranked based on the user's followed tags, followed users, and relative weights for each tag. Additional fetched articles also follow this general pattern.
 
-Currently the top post on the home feed, which must have a cover image, is shared among all users.
+Currently, the top post on the home feed, which must have a cover image, is shared among all users.

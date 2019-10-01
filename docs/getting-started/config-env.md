@@ -10,8 +10,8 @@ The [backend guide](/backend) will show you how to get free API keys for additio
 
 For any key that you wish to enter/replace:
 
-1. Create `config/application.yml` by copying from the provided template (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
-1. Obtain the development variable and apply the key you wish to enter/replace. ie:
+1. Create `config/application.yml` by copying from the provided template (i.e. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
+1. Obtain the development variable and apply the key you wish to enter/replace. i.e.:
 
 ```shell
 GITHUB_KEY: "SOME_REAL_SECURE_KEY_HERE"
