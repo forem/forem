@@ -4,7 +4,7 @@ title: Theming Guidelines
 
 # Theming Guidelines
 
-DEV supports different themes such as Default, Night, Pink.
+DEV supports different themes, such as Default, Night, Pink.
 
 You can switch the theme at <http://localhost:3000/settings/misc> in the "Style Customization" section.
 
@@ -62,7 +62,7 @@ div {
 }
 ```
 
-This can be too much work and browser fallback can be forgotten. For a better developer experience, you should use the 2 mixins defined in `app/assets/stylesheets/_mixins.scss` called `themeable` and `themeable-important`. They take 3 arguments. The first argument is the CSS property like `color` or `background`, the second argument is the CSS custom property name (without `--`) like `theme-color` and the third argument is the CSS value like `$black` or `white`.
+This can be too much work and browser fallback can be forgotten. For a better developer experience, you should use the two mixins defined in `app/assets/stylesheets/_mixins.scss` called `themeable` and `themeable-important`. They take three arguments. The first argument is the CSS property like `color` or `background`, the second argument is the CSS custom property name (without `--`) like `theme-color`, and the third argument is the CSS value, i.e., `$black` or `white`.
 
 Make sure to import the mixin in your SCSS file and use it like this:
 
@@ -76,4 +76,4 @@ div {
 }
 ```
 
-`themeable-important` is used when a CSS variable requires `!important` as a postfix of the CSS property's value where the CSS variable is being used. You can use it the same way you would use `themeable` mixin but you should avoid `!important` if possible.
+`themeable-important` is used when a CSS variable requires `!important` as a postfix of the CSS property's value where the CSS variable is being used. You can use it the same way you would use `themeable` mixin, but you should avoid `!important` if possible.
