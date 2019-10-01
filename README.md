@@ -137,8 +137,8 @@ Caveat: `bin/rspec` is not equipped with Spring because it affects Simplecov's r
 - [@maestromac](https://dev.to/maestromac)
 - [@zhao-andy](https://dev.to/andy)
 - [@lightalloy](https://dev.to/lightalloy)
-- [@mariocsee](https://dev.to/mariocsee)
 - [@rhymes](https://dev.to/rhymes)
+- [@jacobherrington](https://dev.to/jacobherrington)
 
 ## Vulnerability disclosure
 
