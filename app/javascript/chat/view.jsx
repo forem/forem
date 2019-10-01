@@ -1,5 +1,17 @@
 import { h, Component } from 'preact';
 
+const setupButton = ({className = '', onClickCallback, dataContent = '', btnLabel = ''}) => {
+  return (
+    <button
+      className={className}
+      onClick={onClickCallback}
+      data-content={dataContent}
+    >
+      {btnLabel}
+    </button>
+  )
+}
+
 export default class View extends Component {
   channel = (props) => {
     return (
@@ -8,20 +20,22 @@ export default class View extends Component {
         <div>
           <em>{props.channel.description}</em>
         </div>
-        <button
-          className="cta"
-          onClick={this.props.onAcceptInvitation}
-          data-content={props.channel.membership_id}
-        >
-          Accept
-        </button>
-        <button
-          className="cta"
-          onClick={this.props.onDeclineInvitation}
-          data-content={props.channel.membership_id}
-        >
-          Decline
-        </button>
+        {
+          setupButton({
+            className: 'cta',
+            onClickCallback: this.props.onAcceptInvitation,
+            dataContent: props.channel.membership_id,
+            btnLabel: 'Accept'
+          })
+        }
+        {
+          setupButton({
+            className: 'cta',
+            onClickCallback: this.props.onDeclineInvitation,
+            dataContent: props.channel.membership_id,
+            btnLabel: 'Decline'
+          })
+        }
       </div>
     );
   };
@@ -33,13 +47,14 @@ export default class View extends Component {
     return (
       <div className="chatNonChatView">
         <div className="container">
-          <button
-            className="chatNonChatView_exitbutton"
-            data-content="exit"
-            onClick={this.props.onViewExit}
-          >
-            ×
-          </button>
+          {
+            setupButton({
+              className: 'chatNonChatView_exitbutton',
+              onClickCallback: this.props.onViewExit,
+              dataContent: 'exit',
+              btnLabel: '×'
+            })
+          }
           <h1>Channel Invitations 🤗</h1>
           {channels}
         </div>
