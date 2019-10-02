@@ -85,7 +85,7 @@
         <% @user.bg_color_hex = user_colors(@user)[:text] if @user.text_color_hex.blank? %>
         <%= f.label :text_color_hex, "text color" %><br>
         <div class="select-field-wrapper">
-          <%= f.text_field :text_color_hex, placeholder: "#ffffff", class: "color-select-textbox", id: "text-color-colorfield" %>
+          <%= f.text_field :text_color_hex, placeholder: "#ffffff", class: "color-select-textbox", id: "text-color-textfield" %>
           <input id="text-color-colorfield" type="color">
         </div>
       </div>
