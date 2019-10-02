@@ -19,7 +19,7 @@ class AsciinemaTag < LiquidTagBase
 
   def parse_id(input)
     input_no_space = input.delete(" ")
-    raise StandardError, "Invalid Asciinema Id" unless valid_id?(input_no_space)
+    raise StandardError, "Invalid Asciinema ID: {% asciinema #{input_no_space} %}" unless valid_id?(input_no_space)
 
     input_no_space
   end
