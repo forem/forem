@@ -44,20 +44,34 @@
           </div>
         </div>
       <% end %>
-        <div class="widget">
-          <header>
-            <a href="/t/help"><h4>#help</h4></a>
-          </header>
-          <div class="widget-body">
-            <div class="widget-link-list">
-              <% Article.active_help.limit(8).pluck(:path, :title, :comments_count, :created_at).each do |plucked_article| %>
-                <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
-              <% end %>
-            </div>
-            <a class="cta cta-button" href="/new/help">ASK FOR HELP</a>
-            <p class="widget-subtext"><em>Let's figure this out together.</em></p>
+      <div class="widget">
+        <header>
+          <a href="/t/hacktoberfest"><h4>#hacktoberfest</h4></a>
+        </header>
+        <div class="widget-body">
+          <div class="widget-link-list">
+            <% Article.active_threads(["hacktoberfest"], Timeframer.new(params[:timeframe]).datetime, 5).each do |plucked_article| %>
+              <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
+            <% end %>
           </div>
+          <a class="cta cta-button" href="/new/hacktoberfest">POST TO #HACKTOBERFEST</a>
+          <p class="widget-subtext"><em>Let's get hacking!</em></p>
         </div>
+      </div>
+      <div class="widget">
+        <header>
+          <a href="/t/help"><h4>#help</h4></a>
+        </header>
+        <div class="widget-body">
+          <div class="widget-link-list">
+            <% Article.active_help.limit(8).pluck(:path, :title, :comments_count, :created_at).each do |plucked_article| %>
+              <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
+            <% end %>
+          </div>
+          <a class="cta cta-button" href="/new/help">ASK FOR HELP</a>
+          <p class="widget-subtext"><em>Let's figure this out together.</em></p>
+        </div>
+      </div>
       <% if Article.active_threads(["ama"], Timeframer.new(params[:timeframe]).datetime).any? %>
         <div class="widget">
           <header>
@@ -74,20 +88,20 @@
           </div>
         </div>
       <% end %>
-        <div class="widget">
-          <header>
-            <a href="/t/challenge"><h4>#challenge</h4></a>
-          </header>
-          <div class="widget-body">
-            <div class="widget-link-list">
-              <% Article.active_threads(["challenge"], Timeframer.new(params[:timeframe]).datetime, 5).each do |plucked_article| %>
-                <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
-              <% end %>
-            </div>
-            <a class="cta cta-button" href="/new/challenge">CREATE A CHALLENGE</a>
-            <p class="widget-subtext"><em>Flex your skills, stay sharp.</em></p>
-            </div>
-        </div>
+      <div class="widget">
+        <header>
+          <a href="/t/challenge"><h4>#challenge</h4></a>
+        </header>
+        <div class="widget-body">
+          <div class="widget-link-list">
+            <% Article.active_threads(["challenge"], Timeframer.new(params[:timeframe]).datetime, 5).each do |plucked_article| %>
+              <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
+            <% end %>
+          </div>
+          <a class="cta cta-button" href="/new/challenge">CREATE A CHALLENGE</a>
+          <p class="widget-subtext"><em>Flex your skills, stay sharp.</em></p>
+          </div>
+      </div>
       <div class="widget">
         <header>
           <a href="/t/discuss"><h4>#discuss</h4></a>

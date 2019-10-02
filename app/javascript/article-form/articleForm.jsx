@@ -18,6 +18,18 @@ import Errors from './elements/errors';
 import KeyboardShortcutsHandler from './elements/keyboardShortcutsHandler';
 import Tags from '../shared/components/tags';
 
+const setupImageButton = ({ className = '', imgSrc, imgAltText = '', onClickCallback }) => {
+  return (
+    <button
+    type="button"
+    className={className}
+    onClick={onClickCallback}
+    >
+      <img src={imgSrc} alt={imgAltText} />
+    </button>
+  )
+}
+
 export default class ArticleForm extends Component {
   static handleGistPreview() {
     const els = document.getElementsByClassName('ltag_gist-liquid-tag');
@@ -383,13 +395,12 @@ export default class ArticleForm extends Component {
       let moreConfigBottomButton = '';
       if (version === 'v2') {
         moreConfigBottomButton = (
-          <button
-            type="button"
-            className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
-            onClick={this.toggleMoreConfig}
-          >
-            <img src={ThreeDotsIcon} alt="menu dots" />
-          </button>
+          setupImageButton({
+            className: 'articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom',
+            imgSrc: ThreeDotsIcon,
+            imgAltText: 'menu dots',
+            onClickCallback: this.toggleMoreConfig
+          })
         );
         controls = (
           <div
@@ -407,20 +418,22 @@ export default class ArticleForm extends Component {
                 maxTags={4}
                 classPrefix={`articleform`}
               />
-              <button
-                className="articleform__detailsButton articleform__detailsButton--image"
-                onClick={this.toggleImageManagement}
-                type="button"
-              >
-                <img src={ImageUploadIcon} alt="Upload images" />
-              </button>
-              <button
-                className="articleform__detailsButton articleform__detailsButton--moreconfig"
-                onClick={this.toggleMoreConfig}
-                type="button"
-              >
-                <img src={ThreeDotsIcon} alt="Menu" />
-              </button>
+              {
+                setupImageButton({
+                  className: 'articleform__detailsButton articleform__detailsButton--image',
+                  imgSrc: ImageUploadIcon,
+                  imgAltText: 'Upload images',
+                  onClickCallback: this.toggleImageManagement
+                })
+              }
+              {
+                setupImageButton({
+                  className: 'articleform__detailsButton articleform__detailsButton--moreconfig',
+                  imgSrc: ThreeDotsIcon,
+                  imgAltText: 'Menu',
+                  onClickCallback: this.toggleMoreConfig
+                })
+              }
             </div>
           </div>
         );

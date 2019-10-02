@@ -10,6 +10,7 @@ items:
   - committing.md
   - pull-request.md
   - syncing.md
+  - architecture.md
 ---
 
 # Getting Started!
