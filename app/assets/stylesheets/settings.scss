@@ -165,6 +165,44 @@
         }
       }
     }
+    .settings-color-select-container{
+      display:flex;
+      width:100%;
+      .color-select-fields{
+        flex:1;
+        width:50%;
+        .select-field-wrapper{
+          display:flex;
+          input[type="color"] {
+            -webkit-appearance: none;
+            border: none;
+            border-radius:0px;
+            padding:10px;
+            height:28px;
+            cursor:pointer;
+          }
+          input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+          }
+          input[type="color"]::-webkit-color-swatch {
+            border: none;
+          }
+        }
+      }
+      .color-select-preview{
+        flex:1;
+        text-align:center;
+        padding:20px;
+        #color-select-preview-logo{
+          background-color:#0099ff;
+          fill:#fff;
+          padding:25px 20px;
+          border-radius:7px;
+          margin-top:20px;
+        }
+      }
+      
+    }
     .checkbox-field {
       display: flex;
       flex-direction: column;
