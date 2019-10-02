@@ -83,7 +83,7 @@ This section provides a high-level requirement & quick start guide. **For detail
 1. Clone your forked repository, ie. `git clone https://github.com/<your-username>/dev.to.git`
 1. Set up your environment variables/secrets
 
-   - Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](https://docs.dev.to/backend/algolia/) to get your development environment running.
+   - Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your free [Algolia credentials](https://docs.dev.to/backend/algolia/) to get your development environment running.
    - This [guide](https://docs.dev.to/backend/) will show you how to get free API keys for additional services that may be required to run certain parts of the app.
    - For any key that you wish to enter/replace:
      1. Create `config/application.yml` by copying from the provided template (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
@@ -110,17 +110,17 @@ We're mostly a Rails app, with a bit of Webpack sprinkled in. **For most cases, 
 
 Here are some singleton commands you may need, usually in a separate instance/tab of your shell.
 
-- Running the job server (if using `bin/rails server`) -- this is mostly for notifications and emails: **`bin/rails jobs:work`**
-- Clearing jobs (in case you don't want to wait for the backlog of jobs): **`bin/rails jobs:clear`**
+- Running the job server (if using `bin/rails server`) -- this is mostly for notifications and emails: **`bin/rails jobs: work`**
+- Clearing jobs (in case you don't want to wait for the backlog of jobs): **`bin/rails jobs: clear`**
 
-Current gotchas: potential environment issues with external services need to be worked out.
+Current gotchas: potential environmental issues with external services need to be worked out.
 
 #### Suggested Workflow
 
 We use [Spring](https://github.com/rails/spring), and it is already included in the project.
 
-1.  Use the provided bin stubs to start Spring automatically, i.e. `bin/rails server`, `bin/rspec spec/models/`, `bin/rails db:migrate`.
-1.  If Spring isn't picking up on new changes, use `spring stop`. For example, Spring should always be restarted if there's a change in environment key.
+1.  Use the provided bin stubs to start Spring automatically, i.e. `bin/rails server`, `bin/rspec spec/models/`, `bin/rails db: migrate`.
+1.  If Spring isn't picking up on new changes, use `spring stop`. For example, Spring should always be restarted if there's a change in the environment key.
 1.  Check Spring's status whenever with `spring status`.
 
 Caveat: `bin/rspec` is not equipped with Spring because it affects Simplecov's result. Instead, use `bin/spring rspec`.
@@ -148,7 +148,7 @@ We welcome security research on DEV under the terms of our [vulnerability disclo
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. Please see the [LICENSE](./LICENSE.md) file in our repository for the full text.
 
-Like many open source projects, we require that contributors provide us with a Contributor License Agreement (CLA). By submitting code to the DEV project, you are granting us a right to use that code under the terms of the CLA.
+Like many open-source projects, we require that contributors provide us with a Contributor License Agreement (CLA). By submitting code to the DEV project, you are granting us a right to use that code under the terms of the CLA.
 
 Our version of the CLA was adapted from the Microsoft Contributor License Agreement, which they generously made available to the public domain under Creative Commons CC0 1.0 Universal.
 
