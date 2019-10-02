@@ -157,10 +157,10 @@ class User < ApplicationRecord
   before_validation :set_config_input
   before_validation :downcase_email
   before_validation :check_for_username_change
-  before_destroy :remove_from_algolia_index
-  before_destroy :destroy_empty_dm_channels
-  before_destroy :destroy_follows
-  before_destroy :unsubscribe_from_newsletters
+  before_destroy :remove_from_algolia_index, prepend: true
+  before_destroy :destroy_empty_dm_channels, prepend: true
+  before_destroy :destroy_follows, prepend: true
+  before_destroy :unsubscribe_from_newsletters, prepend: true
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :name
