@@ -556,6 +556,11 @@
     theme-color,
     $white
   );
+  @include themeable(
+    background-color,
+    theme-container-accent-background,
+    $white
+  );
 }
 
 
