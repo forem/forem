@@ -163,7 +163,7 @@
       cursor: pointer;
     }
     input[type='checkbox']:checked {
-      background: var(--theme-anchor-color, #66e2d5);
+      @include themeable(background, theme-anchor-color, #66e2d5);
     }
   }
 
