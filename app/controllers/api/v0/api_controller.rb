@@ -59,8 +59,10 @@ class Api::V0::ApiController < ApplicationController
   def authenticate_with_api_key_or_current_user!
     if request.headers["api-key"]
       authenticate_with_api_key!
-    else
+    elsif current_user
       @user = current_user
+    else
+      error_unauthorized
     end
   end
 
