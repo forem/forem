@@ -8,14 +8,14 @@ RSpec.describe PingAdmins do
 
     before { allow(SlackBot).to receive(:ping) }
 
-    context "when user isnt nil" do
+    context "when user isn't nil" do
       let(:action) { "unknown" }
-      let(:message_expeted) { "Rate limit exceeded (#{action}). https://dev.to#{user.path}" }
+      let(:message_expected) { "Rate limit exceeded (#{action}). https://dev.to#{user.path}" }
 
       it "calls SlackBot.ping" do
         ping_admin_call
 
-        expect(SlackBot).to have_received(:ping).with(message_expeted,
+        expect(SlackBot).to have_received(:ping).with(message_expected,
                                                       channel: "abuse-reports",
                                                       username: "rate_limit",
                                                       icon_emoji: ":hand:")
@@ -35,12 +35,12 @@ RSpec.describe PingAdmins do
       subject(:ping_admin_call) { described_class.call(user, action) }
 
       let(:action) { "any-action" }
-      let(:message_expeted) { "Rate limit exceeded (#{action}). https://dev.to#{user.path}" }
+      let(:message_expected) { "Rate limit exceeded (#{action}). https://dev.to#{user.path}" }
 
       it "calls SlackBot.ping" do
         ping_admin_call
 
-        expect(SlackBot).to have_received(:ping).with(message_expeted,
+        expect(SlackBot).to have_received(:ping).with(message_expected,
                                                       channel: "abuse-reports",
                                                       username: "rate_limit",
                                                       icon_emoji: ":hand:")
