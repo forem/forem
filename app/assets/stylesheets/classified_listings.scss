@@ -548,13 +548,13 @@
   @include themeable(
     color,
     theme-color,
-    $white
+    $black
   );
   border: 3px solid white;
   @include themeable(
     border-color,
     theme-color,
-    $white
+    $black
   );
   @include themeable(
     background-color,
