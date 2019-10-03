@@ -414,7 +414,7 @@ a.header-link {
       .comment-deep-2 {
         margin-top: -123px;
       }
-      // this ms-lang hack (which behaves like a media query) is going to be ignored by all browsers 
+      // this ms-lang hack (which behaves like a media query) is going to be ignored by all browsers
       // except IE and 11 and it fixes indentation on the unsupported <details> tags
       _:-ms-lang(x),
       .comment-deep-1,
@@ -476,14 +476,22 @@ a.header-link {
       margin-top: -80px;
       .comment-parent-link {
         @include themeable(background, theme-container-background, white);
-        @include themeable(border, theme-container-border, 1px solid $medium-gray);
+        @include themeable(
+          border,
+          theme-container-border,
+          1px solid $medium-gray
+        );
         display: block;
         padding: 9px 12px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         font-size: 0.8em;
-        @include themeable(background, theme-container-accent-background, lighten($lightest-gray, 1%));
+        @include themeable(
+          background,
+          theme-container-accent-background,
+          lighten($lightest-gray, 1%)
+        );
       }
     }
   }
@@ -709,6 +717,13 @@ a.header-link {
     }
     kbd {
       @extend %kbd;
+    }
+    .liquid-comment {
+      .details {
+        .comment-date {
+          top: calc(14px - 0.25vw);
+        }
+      }
     }
   }
   .icon-img {
