@@ -102,12 +102,7 @@ This section provides a high-level requirement & quick start guide. **For detail
 
 #### Docker Installation (BETA)
 
-Navigate to the cloned repo folder and run the following:
-
-```
-sudo docker build -t devto .
-sudo docker run devto -p 3000:3000
-```
+Please refer to the [Installing DEV with Docker [Beta] guide](https://docs.dev.to/installation/docker/).
 
 #### Starting the application
 
