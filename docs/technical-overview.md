@@ -5,8 +5,9 @@ title: Technical Overview
 ## 🔑 Key App tech/services
 
 For the Dev.to tech stack we use:
+
 - [_Puma_](https://github.com/puma/puma) as the web server
-- [_Fastly_](https://www.fastly.com/) for [edge caching](https://dev.to/ben/making-devto-insanely-fast) 
+- [_Fastly_](https://www.fastly.com/) for [edge caching](https://dev.to/ben/making-devto-insanely-fast)
 - [_Cloudinary_](https://cloudinary.com/) for image manipulation/serving
 - [_Airbrake_](https://airbrake.io/) for error monitoring
 - [_Timber_](https://timber.io/) for logging
