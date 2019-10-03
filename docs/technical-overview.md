@@ -20,15 +20,15 @@ For the Dev.to tech stack we use:
 - [_Heroku scheduler_](https://devcenter.heroku.com/articles/scheduler) for scheduled jobs
 - [_Sendgrid_](https://sendgrid.com/) for transactional mailing
 - [_Mailchimp_](https://mailchimp.com/) for marketing/outreach emails
-- [_Figaro_](https://github.com/laserlemon/figaro) for app configuration.
+- [_Figaro_](https://github.com/laserlemon/figaro) for app configuration
 - [_CounterCulture_](https://github.com/magnusvk/counter_culture) to keep track of association counts (counter caches)
-- [_Rolify_](https://github.com/RolifyCommunity/rolify) for role management.
-- [_Pundit_](https://github.com/varvet/pundit) for authorization.
+- [_Rolify_](https://github.com/RolifyCommunity/rolify) for role management
+- [_Pundit_](https://github.com/varvet/pundit) for authorization
 - [_Service Workers_](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers) to proxy traffic
 - [Preact](https://preactjs.com/) for some of the frontend. See [the Frontend Guide](/frontend) for more info
-- [_Pusher_](https://pusher.com) for realtime communication between the application and users' browsers.
+- [_Pusher_](https://pusher.com) for realtime communication between the application and users' browsers
 - [_GitDocs_](https://gitdocs.netlify.com) for beautiful and SEO-friendly documentation
-- [Git](https://git-scm.com/) for version control.
-- [GitHub](https://github.com/) for hosting the source code and issue tracking.
+- [Git](https://git-scm.com/) for version control
+- [GitHub](https://github.com/) for hosting the source code and issue tracking
 
 _This list is non-exhaustive. If you see something that belongs here, feel free to add it._
