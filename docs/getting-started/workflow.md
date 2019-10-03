@@ -2,7 +2,7 @@
 title: Suggested Workflow
 ---
 
-# Suggested Workflow
+# Suggested workflow
 
 We use [Spring](https://github.com/rails/spring), and it is already included in the project.
 
