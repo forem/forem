@@ -32,8 +32,12 @@ variable :RACK_TIMEOUT_SERVICE_TIMEOUT, :Integer, default: 100_000
 # Production related config that can be ignored
 variable :DEPLOYMENT_SIGNATURE, :String, default: "Optional"
 
-# For Redis storage
+# Redis
 variable :REDIS_URL, :String, default: "redis://localhost:6379"
+
+# For Redis session storage
+variable :SESSION_KEY, :String, default: "_Dev_Community_Session"
+variable :SESSION_EXPIRY_SECONDS, :Integer, default: 1209600 # two weeks in seconds
 
 ################################################
 ############## 3rd Party Services ##############
@@ -189,12 +193,6 @@ variable :TRENDING_TAGS, :String, default: "git,beginners"
 # For calling the Stack Exchange API
 # (https://api.stackexchange.com/docs)
 variable :STACK_EXCHANGE_APP_KEY, :String, default: ""
-
-# For Redis session storage
-variable :REDIS_URL, :String, default: "redis://localhost:6379/0"
-variable :SESSION_KEY, :String, default: "_Dev_Community_Session"
-variable :SESSION_EXPIRY_SECONDS, :Integer, default: 1209600 # two weeks in seconds
-
 
 ##### Legacy test related env vars ######
 variable :FACEBOOK_PIXEL_ID, :String, default: "Optional"
