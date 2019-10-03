@@ -24,7 +24,7 @@ RSpec.describe "FollowsApi", type: :request do
 
     it "creates follows" do
       sign_in user
-      run_background_jobs_immediately do
+      perform_enqueued_jobs do
         post "/api/follows", params: { users: users_hash }
       end
       expect(Follow.all.size).to eq(users_hash.size)
