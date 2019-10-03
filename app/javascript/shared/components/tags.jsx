@@ -258,11 +258,11 @@ class Tags extends Component {
       }
     } else if (
       (e.keyCode < 65 || e.keyCode > 90) &&
-      e.keyCode !== KEYS.COMMA &&
-      e.keyCode !== KEYS.DELETE &&
-      e.keyCode !== KEYS.LEFT &&
-      e.keyCode !== KEYS.RIGHT &&
-      e.keyCode !== KEYS.TAB
+      e.keyCode != KEYS.COMMA &&
+      e.keyCode != KEYS.DELETE &&
+      e.keyCode != KEYS.LEFT &&
+      e.keyCode != KEYS.RIGHT &&
+      e.keyCode != KEYS.TAB
     ) {
       e.preventDefault();
     }
