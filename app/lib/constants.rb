@@ -6,6 +6,7 @@ module Constants
     "bsd.network",
     "chaos.social",
     "cmx.im",
+    "cybre.space",
     "framapiaf.org",
     "friends.nico",
     "hackers.town",
