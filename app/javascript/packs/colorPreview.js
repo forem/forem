@@ -39,18 +39,19 @@ function watchColorFields() {
 
 // When text fields change -> updateColorField values and refresh preview
 function watchTextFields(e) {
-  if (e.target.value.match(/[0-9a-f]{6}/gi)) {
+  if (e.target.value.match(/#[0-9a-f]{6}/gi)) {
     updateColorFields();
     updatePreview();
   }
 }
 
 // Event Listeners
-colorField.bgColor.addEventListener('change', watchColorFields);
-colorField.textColor.addEventListener('change', watchColorFields);
+colorField.bgColor.addEventListener('input', watchColorFields);
+colorField.textColor.addEventListener('input', watchColorFields);
 textField.bgColor.addEventListener('keyup', watchTextFields);
 textField.textColor.addEventListener('keyup', watchTextFields);
 
 // on init
 updateColorFields();
 updatePreview();
+preview.style.display = 'inline-block';

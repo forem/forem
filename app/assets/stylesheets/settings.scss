@@ -166,26 +166,25 @@
       }
     }
     .settings-color-select-container{
-      display:flex;
+      display: flex;
       width:100%;
       .color-select-fields{
-        flex:1;
         width:50%;
         .select-field-wrapper{
-          display:flex;
+          display: flex;
+          width:100%;
+          .color-select-textbox{
+            flex:1;
+            min-width:70px;
+          }
           input[type="color"] {
-            -webkit-appearance: none;
+            box-sizing:border-box;
             border: none;
             border-radius:0px;
-            padding:10px;
-            height:28px;
+            padding:3px;
+            width:50px;
+            height:48px;
             cursor:pointer;
-          }
-          input[type="color"]::-webkit-color-swatch-wrapper {
-            padding: 0;
-          }
-          input[type="color"]::-webkit-color-swatch {
-            border: none;
           }
         }
       }
@@ -194,11 +193,10 @@
         text-align:center;
         padding:20px;
         #color-select-preview-logo{
-          background-color:#111111;
-          fill:#fff;
           padding:25px 20px;
           border-radius:7px;
           margin-top:20px;
+          display:none; /* Changes to inline-block when javascript loads preview */
         }
       }
       
