@@ -54,10 +54,10 @@ function loadFunctionality() {
       if (shouldUnsubscribeToNotifications) {
         const unsubscribeButton = allButtons.namedItem('unsubscribe');
         unsubscribeButton.classList.add('selected');
-        ({ dataset: payload } = unsubscribeButton);
+        ({ payload } = unsubscribeButton.dataset);
       } else {
         target.classList.add('selected');
-        ({ dataset: payload } = target);
+        ({ payload } = target.dataset);
       }
       fetch(`/notification_subscriptions/${notifiableType}/${notifiableId}`, {
         method: 'POST',
