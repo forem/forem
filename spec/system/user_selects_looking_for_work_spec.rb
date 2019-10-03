@@ -12,7 +12,7 @@ RSpec.describe "Looking For Work" do
   it "user selects looking for work and autofollows hiring tag" do
     visit "/settings"
     page.check "Looking for work"
-    run_background_jobs_immediately do
+    perform_enqueued_jobs do
       click_button("SUBMIT")
       expect(user.follows.count).to eq(1)
     end
