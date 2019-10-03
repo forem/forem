@@ -13,6 +13,7 @@ json.url                @article.url
 json.canonical_url      @article.processed_canonical_url
 json.comments_count     @article.comments_count
 json.positive_reactions_count @article.positive_reactions_count
+json.collection_id      @article.collection_id
 
 json.created_at         @article.created_at.utc.iso8601
 json.edited_at          @article.edited_at&.utc&.iso8601
