@@ -76,6 +76,7 @@ const BodyPreview = ({ previewResponse, version, articleState }) => (
     {titleArea(previewResponse, version, articleState)}
     <div
       className="body"
+      // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{ __html: previewResponse.processed_html }}
       style={{ width: '90%' }}
     />
