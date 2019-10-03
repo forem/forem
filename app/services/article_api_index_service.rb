@@ -1,5 +1,5 @@
 class ArticleApiIndexService
-  attr_accessor :tag, :username, :page, :state, :top
+  attr_accessor :tag, :username, :page, :state, :top, :collection_id
 
   def initialize(params)
     @page = params[:page]
@@ -7,6 +7,7 @@ class ArticleApiIndexService
     @username = params[:username]
     @state = params[:state]
     @top = params[:top]
+    @collection_id = params[:collection_id]
   end
 
   def get
@@ -18,6 +19,8 @@ class ArticleApiIndexService
                  state_articles(state)
                elsif top.present?
                  top_articles
+               elsif collection_id.present?
+                 collection_articles(collection_id)
                else
                  base_articles
                end
@@ -79,6 +82,15 @@ class ArticleApiIndexService
       Article.published.
         where("positive_reactions_count > ? AND positive_reactions_count < ? AND featured_number > ?", 19, 33, 3.days.ago.to_i)
     end
+  end
+
+  def collection_articles(collection_id)
+    Article.published.
+      where(collection_id: collection_id).
+      includes(:user, :organization).
+      order("published_at").
+      page(page).
+      per(30)
   end
 
   def base_articles

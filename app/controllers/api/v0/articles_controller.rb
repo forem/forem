@@ -28,6 +28,7 @@ module Api
           params[:username],
           params[:signature],
           params[:state],
+          params[:collection_id],
         ]
         set_surrogate_key_header key_headers.join("_")
       end
