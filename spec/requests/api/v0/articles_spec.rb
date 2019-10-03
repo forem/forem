@@ -75,7 +75,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
     it "returns a collection id" do
       collection = create(:collection, user: article.user)
       article.update_columns(collection_id: collection.id)
-      get api_articles_path
+      get api_articles_path(collection_id: collection.id)
       expect(json_response[0]["collection_id"]).to eq collection.id
     end
   end

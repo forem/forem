@@ -88,7 +88,7 @@ class ArticleApiIndexService
     Article.published.
       where(collection_id: collection_id).
       includes(:user, :organization).
-      order("collection_id").
+      order("published_at").
       page(page).
       per(30)
   end
