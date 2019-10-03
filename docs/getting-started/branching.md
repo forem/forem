@@ -13,7 +13,7 @@ denote what kind of code a reviewer can expect to find on the branch.
 For features or improvement, you should create a branch as follows:
 
 ```
-git checkout -b feature/that-new-feature`
+git checkout -b feature/that-new-feature
 ```
 
 For a bug branch, you should do as follows:

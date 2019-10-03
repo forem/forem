@@ -4,7 +4,7 @@ title: Configuring Environment Variables
 
 # Configuring environment variables and secret keys
 
-Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials][agolia] to get your development environment running.
+Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Agolia credentials][agolia] to get your development environment running.
 
 The [backend guide][backend_guide] will show you how to get free API keys for additional services that may be required to run certain parts of the app.
 
