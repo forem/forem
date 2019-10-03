@@ -26,11 +26,10 @@
       <a href="/t/<%= @tag.name %>" style="color: <%= @tag.text_color_hex %>;text-decoration: underline;"><%= @tag.name %></a>
     </h1>
     <p>
-      <code style="background-color: #D2D2D2; color: black; padding: 5px; border-radius: 5px;"><%= @tag.name %></code> is the name of the tag used in Markdown.
+      <code style="background-color: #D2D2D2; color: black; padding: 5px; border-radius: 5px;">#<%= @tag.name %></code> is the name of the tag used in Markdown.
     </p>
   </div>
 </div>
-
 <%= form_tag("/tag/#{@tag.id}", method: :patch, class: "tag-edit-form") do %>
   <div class="tag-edit-container">
     <% if flash[:success] %>
@@ -59,7 +58,6 @@
       <br>
       <%= text_field_tag "tag[bg_color_hex]", @tag.bg_color_hex, placeholder: "Click for color picker", class: "tag-form-text-field color-picker" %>
       <div class="color-palette"></div>
-
     </div>
     <div class="tag-form-field">
       <%= label_tag :text_color_hex %>
@@ -70,12 +68,7 @@
     <div class="tag-form-field">
       <%= label_tag :short_summary %>
       <br>
-      <%= text_area_tag "tag[short_summary]", @tag.short_summary, placeholder: "", class: "tag-form-text-field tag-area-text" %>
-    </div>
-    <div class="tag-form-field">
-      <%= label_tag :rules_markdown %>
-      <br>
-      <%= text_area_tag "tag[rules_markdown]", @tag.rules_markdown, placeholder: "i.e. submission guidelines", class: "tag-form-text-field tag-area-text" %>
+      <%= text_area_tag "tag[short_summary]", @tag.short_summary, placeholder: "Brief overview of what this tag is all about.", class: "tag-form-text-field tag-area-text" %>
     </div>
     <div class="tag-form-field">
       <%= label_tag :wiki_body_markdown %>
@@ -83,7 +76,12 @@
       <%= text_area_tag "tag[wiki_body_markdown]", @tag.wiki_body_markdown, placeholder: "This is an 'about' section. Feel free to add an FAQ, additional resources, etc.", class: "tag-form-text-field tag-area-text" %>
     </div>
     <div class="tag-form-field">
-      <%= submit_tag "Save Changes", class: "tag-edit-submit" %>
+      <%= label_tag :rules_markdown %>
+      <br>
+      <%= text_area_tag "tag[rules_markdown]", @tag.rules_markdown, placeholder: "Optional - Can be used for challenges, i.e. submission guidelines.", class: "tag-form-text-field tag-area-text" %>
+    </div>
+    <div class="tag-form-field">
+      <%= submit_tag "SAVE CHANGES", class: "tag-edit-submit" %>
     </div>
   </div>
 <% end %>

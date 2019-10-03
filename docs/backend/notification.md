@@ -22,4 +22,5 @@ reactable: me.articles.last, # this assumes you have an article written
 Notification.send_reaction_notification_without_delay(rxn, me)
 ```
 
-Notice you have to run these methods `without_delay`, since this is assuming jobs are not running.
+ Notice you have to run these methods `without_delay` since this is assuming jobs are not running.
+

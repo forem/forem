@@ -8,11 +8,11 @@ DEV allows you to authenticate using GitHub. To use this authentication method i
 
 1. [Click this link to create a new OAuth application in your Github account](https://github.com/settings/applications/new) - you will be redirected to sign in to Github account if you have not already.
 
-2. Fill in the form with an application name, description and the URL `http://localhost:3000/`. Replace the port `3000` if you run DEV on another port.
+2. Fill in the form with an application name, description, and the URL `http://localhost:3000/`. Replace the port `3000` if you run DEV on another port.
 
    ![github-1](https://user-images.githubusercontent.com/22895284/51085500-877a6c00-173a-11e9-913a-0dccad234cf3.png)
 
-3. You will be redirected in the app's **Developer settings**. Here you will find the keys. Change them accordingly (name of GitHub key -> name of our `ENV` variable):
+3. You will be redirected to the app's **Developer settings**. Here you will find the keys. Change them accordingly (name of GitHub key -> name of our `ENV` variable):
 
    ```text
    Client ID -> GITHUB_KEY
@@ -27,7 +27,7 @@ DEV allows you to authenticate using GitHub. To use this authentication method i
 
 5. Fill in the token description and generate the token.
 
-6. Be sure that you copy the token right away, because it is the only time you will see it. Change it accordingly.
+6. Be sure that you copy the token right away because it is the only time you will see it. Change it accordingly.
 
    ```shell
    Personal access tokens -> GITHUB_TOKEN

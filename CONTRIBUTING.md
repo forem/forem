@@ -4,9 +4,10 @@
   - [Where to contribute](#where-to-contribute)
   - [How to contribute](#how-to-contribute)
   - [Contribution guideline](#contribution-guideline)
+    - [Create an issue](#create-an-issue)
     - [Clean code with tests](#clean-code-with-tests)
     - [Create a pull request](#create-a-pull-request)
-    - [Create an issue](#create-an-issue)
+    - [Pull requests reviews and "force pushing"](#pull-requests-reviews-and-force-pushing)
   - [The bottom line](#the-bottom-line)
 
 ## Contributing
@@ -46,11 +47,11 @@ Nobody's perfect. Something doesn't work? Or could be done better? Check to see 
 
 _Please note: core team members may update the title of an issue to more accurately reflect the request/bug._
 
-#### Clean code with tests
+### Clean code with tests
 
 Some existing code may be poorly written or untested, so we must have more scrutiny going forward. We test with [rspec](http://rspec.info/).
 
-#### Pull requests
+### Create a pull request
 
 - Try to keep the pull requests small. A pull request should try its very best to address only a single concern.
 - Make sure all tests pass and add additional tests for the code you submit. [More info here](https://docs.dev.to/tests/).
@@ -61,7 +62,7 @@ Some existing code may be poorly written or untested, so we must have more scrut
 
 _Please note: a core team member may close your PR if it has gone stale or if we don't plan to merge the code._
 
-#### Pull requests reviews and "force pushing"
+### Pull requests reviews and "force pushing"
 
 After you submit your pull request (PR), one of the members of the core team or core contributors will likely do a review of the code accepting it or giving feedback.
 
@@ -76,6 +77,6 @@ PRs will be squashed and merged into master, so there's no need to use force pus
 
 Please avoid force pushing unless you are in need to do a rebase from master.
 
-### The bottom line
+## The bottom line
 
 We are all humans trying to work together to improve the community. Always be kind and appreciate the need for tradeoffs. ❤️
