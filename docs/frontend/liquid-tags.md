@@ -42,3 +42,40 @@ Here is a bunch of liquid tags supported on DEV:
 {% blogcast 1234 %}
 {% kotlin https://pl.kotl.in/owreUFFUG %}
 ```
+## How liquid tags are developed
+
+Liquid tags are a matter of parsing the "arguments" and serving relevant JavaScript.
+
+Liquid tags go in the `app/liquid_tags` folder. All liquid tags inheret from the base, like such...
+
+```ruby
+class KotlinTag < LiquidTagBase
+```
+
+Each liquid tag contains an `initialize` method which takes arguments and a `render` method which calls the appropriate view.
+
+```ruby
+  def initialize(tag_name, link, tokens)
+    super
+    stripped_link = ActionController::Base.helpers.strip_tags(link)
+    the_link = stripped_link.split(" ").first
+    @embedded_url = KotlinTag.embedded_url(the_link)
+  end
+
+  def render(_context)
+    ActionController::Base.new.render_to_string(
+      partial: PARTIAL,
+      locals: {
+        url: @embedded_url
+      }
+    )
+  end
+```
+
+View files can be found in `app/views/liquids`
+
+Each new liquid tag should be accompanied by instructions in `app/views/pages/_editor_guide_text.html.erb`
+
+Liquid tags should also be accompanied by tests in `spec/liquid_tags` which confirm expected behavior.
+
+Here is an example of a good liquid tag pull request... https://github.com/thepracticaldev/dev.to/pull/3801

@@ -37,3 +37,29 @@ We also have a sprawling CSS structure with few consistent rules.
 The home feed is based on a combination of collective recent posts that are cached and delivered the same to everyone in the HTML, and additional articles fetched from an Algolia index after page load. To determine which posts a user sees, they are ranked based on the user's followed tags, followed users, and relative weights for each tag. Additional fetched articles also follow this general pattern.
 
 Currently, the top post on the home feed, which must have a cover image, is shared among all users.
+
+# General app concepts
+
+## Articles (or posts)
+
+This is the main high level content a user creates. An Article has many comments, taggings through acts-as-taggable gem, belongs to a user (and possibly an organization), and is generally the central core unit.
+
+## Comments
+
+Comments belong to articles (or podcasts, generally polymorphic). They belong first and foremost to the user in our architecture, which is reflected by the URL (`/username/tag-slug`) but they also fit in communal areas below other content. They are threaded but flatten out so that there is not infinite threading (e.g. once a discussion branch gets going, no more branching after a few)
+
+## Tags
+
+Tags help organize content, with rules for each tag. A tag is a de facto community with one or moder moderators with privileges to determine what is appropriate for the tag. Some tags act as "flare" for posts so they show up more pronounced in the article when viewed from the index. Tags that belong as "flare" are currently defined in the `FlareTag` object. Which flare to show is determined by its hirearchy.
+
+## ClassifiedListings (or listings)
+
+Classified listings are similar to posts in some ways, but with more limitations. They are designed to be categorized into market areas. They do also make use of tags.
+
+## Organization
+
+Users can belong to organizations, which have their own profile pages where posts can be published etc. This can be any group endeavor such as a company, an open source project, or any standalone publication on DEV
+
+***
+
+This is far from a complete view of the app, but it covers a few core concepts.
