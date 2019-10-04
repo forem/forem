@@ -81,6 +81,7 @@ module Api
           :main_image, :canonical_url, :description, tags: []
         ]
         allowed_params << :organization_id if params["article"]["organization_id"] && allowed_to_change_org_id?
+        params["article"]["tags"] = clean_tags(params["article"]["tags"]) if params["article"]["tags"]
         params.require(:article).permit(allowed_params)
       end
 
@@ -91,6 +92,12 @@ module Api
         elsif potential_user == @user
           potential_user.org_admin?(params["article"]["organization_id"]) ||
             @user.any_admin?
+        end
+      end
+
+      def clean_tags(tags)
+        tags.map do |tag|
+          tag.downcase.strip.delete(" ").gsub(/[^[:alnum:]]/i, "")
         end
       end
     end

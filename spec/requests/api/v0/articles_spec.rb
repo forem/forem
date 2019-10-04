@@ -461,6 +461,31 @@ RSpec.describe "Api::V0::Articles", type: :request do
         end.to change(Article, :count).by(1)
         expect(Article.find(json_response["id"]).description).to eq("yooo" * 20 + "y...")
       end
+
+      it "removes special characters from tags" do
+        expected_tags = %w[meta discussion]
+        expect do
+          post_article(
+            title: Faker::Book.title,
+            body_markdown: "yooo" * 100,
+            tags: %w[#meta discussion..],
+          )
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(json_response["id"]).cached_tag_list).to eq(expected_tags.join(", "))
+      end
+
+      it "removes special characters from tags in front matter" do
+        expected_tags = %w[discuss help]
+        body_markdown = "---\ntitle: Hello, World 20!\npublished: true\ntags: #discuss, help..\n---\n\n\nHello DEV, this is my first post\n"
+        expect do
+          post_article(
+            body_markdown: body_markdown,
+          )
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(json_response["id"]).cached_tag_list).to eq(expected_tags.join(", "))
+      end
     end
   end
 
