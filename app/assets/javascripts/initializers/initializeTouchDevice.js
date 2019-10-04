@@ -1,6 +1,14 @@
 'use strict';
 
-/* eslint-disable no-undef */
+function removeShowingMenu() {
+  document.getElementById('navbar-menu-wrapper').classList.remove('showing');
+  setTimeout(() => {
+    document.getElementById('navbar-menu-wrapper').classList.remove('showing');
+  }, 5);
+  setTimeout(() => {
+    document.getElementById('navbar-menu-wrapper').classList.remove('showing');
+  }, 150);
+}
 
 function initializeTouchDevice() {
   var isTouchDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|DEV-Native-ios/i.test(
@@ -26,7 +34,6 @@ function initializeTouchDevice() {
       };
       document.getElementById('last-nav-link').onblur = e => {
         setTimeout(() => {
-          console.log(document.activeElement);
           if (
             document.activeElement !==
             document.getElementById('second-last-nav-link')
@@ -55,14 +62,4 @@ function initializeTouchDevice() {
         .classList.remove('showing');
     };
   }, 10);
-}
-
-function moveShowingMenu() {
-  document.getElementById('navbar-menu-wrapper').classList.remove('showing');
-  setTimeout(() => {
-    document.getElementById('navbar-menu-wrapper').classList.remove('showing');
-  }, 5);
-  setTimeout(() => {
-    document.getElementById('navbar-menu-wrapper').classList.remove('showing');
-  }, 150);
 }

@@ -1,7 +1,6 @@
 'use strict';
 
 /* eslint-disable no-param-reassign */
-/* eslint-disable no-undef */
 
 /**
  * This script hunts for podcast's "Record" for both the podcast_episde's
@@ -28,6 +27,12 @@ function initializePodcastPlayback() {
 
   function recordExist() {
     return getById(`record-${window.activeEpisode}`);
+  }
+
+  function startPodcastBar() {
+    getById('barPlayPause').classList.add('playing');
+    getById('progressBar').classList.add('playing');
+    getById('animated-bars').classList.add('playing');
   }
 
   function pausePodcastBar() {
@@ -64,6 +69,57 @@ function initializePodcastPlayback() {
     stopRotatingActivePodcastIfExist();
     pausePodcastBar();
     removeOnbeforeUnloadWarning();
+  }
+
+  function applyOnbeforeUnloadWarning() {
+    var message =
+      'You are currently playing a podcast. Are you sure you want to leave?';
+    window.onclick = event => {
+      if (
+        event.target.tagName === 'A' &&
+        !event.target.href.includes('https://dev.to') &&
+        !event.ctrlKey &&
+        !event.metaKey
+      ) {
+        event.preventDefault();
+        if (window.confirm(message)) {
+          window.location = event.target.href;
+        }
+      }
+    };
+    window.onbeforeunload = () => {
+      return message;
+    };
+  }
+
+  function spinPodcastRecord(customMessage) {
+    if (audioExistAndIsPlaying() && recordExist()) {
+      getById(`record-${window.activeEpisode}`).classList.add('playing');
+      changeStatusMessage(customMessage || 'playing');
+    }
+  }
+
+  function startAudioPlayback(audio) {
+    audio
+      .play()
+      .then(
+        () => {
+          spinPodcastRecord();
+          startPodcastBar();
+          applyOnbeforeUnloadWarning();
+        },
+        () => {
+          // Handle any pause() failures.
+        },
+      )
+      .catch(error => {
+        audio.play();
+        setTimeout(() => {
+          spinPodcastRecord('loading');
+          startPodcastBar();
+          applyOnbeforeUnloadWarning();
+        }, 300);
+      });
   }
 
   function playPause(audio) {
@@ -166,13 +222,6 @@ function initializePodcastPlayback() {
     removeOnbeforeUnloadWarning();
   }
 
-  function spinPodcastRecord(customMessage) {
-    if (audioExistAndIsPlaying() && recordExist()) {
-      getById(`record-${window.activeEpisode}`).classList.add('playing');
-      changeStatusMessage(customMessage || 'playing');
-    }
-  }
-
   function findRecords() {
     var podcastPageRecords = getByClass('record-wrapper');
     var podcastLiquidTagrecords = getByClass('podcastliquidtag__record');
@@ -253,27 +302,6 @@ function initializePodcastPlayback() {
         }
       };
     });
-  }
-
-  function applyOnbeforeUnloadWarning() {
-    var message =
-      'You are currently playing a podcast. Are you sure you want to leave?';
-    window.onclick = event => {
-      if (
-        event.target.tagName === 'A' &&
-        !event.target.href.includes('https://dev.to') &&
-        !event.ctrlKey &&
-        !event.metaKey
-      ) {
-        event.preventDefault();
-        if (window.confirm(message)) {
-          window.location = event.target.href;
-        }
-      }
-    };
-    window.onbeforeunload = () => {
-      return message;
-    };
   }
 
   spinPodcastRecord();

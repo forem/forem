@@ -1,7 +1,5 @@
 'use strict';
 
-/* eslint-disable no-undef */
-
 function markNotificationsAsRead() {
   setTimeout(() => {
     if (document.getElementById('notifications-container')) {

@@ -1,6 +1,6 @@
 'use strict';
 
-/* eslint-disable no-undef */
+/* eslint-disable no-global-assign */
 
 function handleSwipeLeft(e) {
   if (!document.getElementById('on-page-nav-controls')) {
@@ -85,7 +85,7 @@ function initializeSwipeGestures() {
         },
       };
       Object.keys(touch).forEach(key => {
-        d.addEventListener(a, touch[a], false);
+        d.addEventListener(key, touch[key], false);
       });
     })(document);
     var h = e => {
