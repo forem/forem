@@ -120,7 +120,7 @@ class Tags extends Component {
 
     return (
       <div className={`${this.props.classPrefix}__tagswrapper`}>
-        { this.props.listing && <label htmlFor="Tags">Tags</label> }
+        {this.props.listing && <label htmlFor="Tags">Tags</label>}
         <input
           id="tag-input"
           type="text"
@@ -290,7 +290,8 @@ class Tags extends Component {
         this.clearSelectedSearchResult();
       }
     } else if (
-      (e.keyCode < 65 || e.keyCode > 90) &&
+      !(e.keyCode >= 65 && e.keyCode <= 90) &&
+      !(e.keyCode >= 48 && e.keyCode <= 57) &&
       e.keyCode != KEYS.COMMA &&
       e.keyCode != KEYS.DELETE &&
       e.keyCode != KEYS.LEFT &&
