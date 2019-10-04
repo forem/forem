@@ -2,7 +2,7 @@ openapi: "3.0.2"
 info:
   title: DEV API
   description: Access DEV articles, comments and other resources via API
-  version: "0.5.5"
+  version: "0.5.6"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -85,6 +85,7 @@ components:
         - canonical_url
         - positive_reactions_count
         - published_timestamp
+        - collection_id
         - user
       properties:
         type_of:
@@ -124,6 +125,9 @@ components:
           description: Crossposting or published date time
           type: string
           format: date-time
+        collection_id:
+          type: integer
+          format: int64
         user:
           type: object
           $ref: "#/components/schemas/ArticleUser"
@@ -152,6 +156,7 @@ components:
         - canonical_url
         - comments_count
         - positive_reactions_count
+        - collection_id
         - created_at
         - edited_at
         - crossposted_at
@@ -201,6 +206,9 @@ components:
         positive_reactions_count:
           type: integer
           format: int32
+        collection_id:
+          type: integer
+          format: int64
         created_at:
           type: string
           format: date-time
@@ -374,6 +382,7 @@ components:
         - comments_count
         - positive_reactions_count
         - published_timestamp
+        - collection_id
         - body_markdown
         - user
       properties:
@@ -419,6 +428,11 @@ components:
           description: Crossposting or published date time
           type: string
           format: date-time
+        collection_id:
+          type: integer
+          format: int64
+        body_markdown:
+          type: string
         user:
           type: object
           $ref: "#/components/schemas/ArticleUser"
@@ -566,6 +580,43 @@ components:
       value:
         error: unauthorized
         status: 401
+    ArticleIndex:
+      value:
+        - type_of: article
+          id: 150589
+          title: "Byte Sized Episode 2: The Creation of Graph Theory"
+          description:
+            The full story of Leonhard Euler and the creation of this fundamental
+            computer science principle, delivered in a few minutes.
+          cover_image: https://res.cloudinary.com/practicaldev/image/fetch/s--qgutBUrH--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://thepracticaldev.s3.amazonaws.com/i/88e62fzblbluz1dm7xjf.png
+          published_at: "2019-08-01T15:47:54.000Z"
+          tag_list:
+            - computerscience
+            - graphtheory
+            - bytesized
+            - history
+          slug: byte-sized-episode-2-the-creation-of-graph-theory-34g1
+          path: "/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1"
+          url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
+          canonical_url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
+          comments_count: 15
+          positive_reactions_count: 210
+          published_timestamp: "2019-08-01T15:47:54Z"
+          collection_id: 1693
+          user:
+            name: Vaidehi Joshi
+            username: vaidehijoshi
+            twitter_username: vaidehijoshi
+            github_username: vaidehijoshi
+            website_url: http://www.vaidehi.com
+            profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--eDGAYAoK--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2882/K2evUksb.jpg
+            profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--htZnqMn3--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2882/K2evUksb.jpg
+          organization:
+            name: Byte Sized
+            username: bytesized
+            slug: bytesized
+            profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--sq0DrZfn--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/organization/profile_image/865/652f7998-32a8-4fd9-85ca-dd697d2a9ee9.png
+            profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--1Pt_ICL---/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/organization/profile_image/865/652f7998-32a8-4fd9-85ca-dd697d2a9ee9.png
     ArticleShow:
       value:
         type_of: article
@@ -589,6 +640,7 @@ components:
         canonical_url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
         comments_count: 19
         positive_reactions_count: 276
+        collection_id: 1693
         created_at: "2019-07-31T11:15:06Z"
         edited_at:
         crossposted_at:
@@ -751,6 +803,17 @@ paths:
             type: integer
             format: int32
           example: 2
+        - name: collection_id
+          in: query
+          description: |
+            Adding this will allow the client to return only articles belonging
+            to the Collection.
+
+            This param can only be used by itself.
+          schema:
+            type: integer
+            format: int64
+          example: 1
       responses:
         200:
           description: A list of articles
@@ -762,42 +825,7 @@ paths:
                   $ref: "#/components/schemas/ArticleIndex"
               examples:
                 articles-success:
-                  summary: Successful response
-                  value:
-                    - type_of: article
-                      id: 150589
-                      title: "Byte Sized Episode 2: The Creation of Graph Theory"
-                      description:
-                        The full story of Leonhard Euler and the creation of this fundamental
-                        computer science principle, delivered in a few minutes.
-                      cover_image: https://res.cloudinary.com/practicaldev/image/fetch/s--qgutBUrH--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://thepracticaldev.s3.amazonaws.com/i/88e62fzblbluz1dm7xjf.png
-                      published_at: "2019-08-01T15:47:54.000Z"
-                      tag_list:
-                        - computerscience
-                        - graphtheory
-                        - bytesized
-                        - history
-                      slug: byte-sized-episode-2-the-creation-of-graph-theory-34g1
-                      path: "/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1"
-                      url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
-                      canonical_url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
-                      comments_count: 15
-                      positive_reactions_count: 210
-                      published_timestamp: "2019-08-01T15:47:54Z"
-                      user:
-                        name: Vaidehi Joshi
-                        username: vaidehijoshi
-                        twitter_username: vaidehijoshi
-                        github_username: vaidehijoshi
-                        website_url: http://www.vaidehi.com
-                        profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--eDGAYAoK--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2882/K2evUksb.jpg
-                        profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--htZnqMn3--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2882/K2evUksb.jpg
-                      organization:
-                        name: Byte Sized
-                        username: bytesized
-                        slug: bytesized
-                        profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--sq0DrZfn--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/organization/profile_image/865/652f7998-32a8-4fd9-85ca-dd697d2a9ee9.png
-                        profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--1Pt_ICL---/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/organization/profile_image/865/652f7998-32a8-4fd9-85ca-dd697d2a9ee9.png
+                  $ref: "#/components/examples/ArticleIndex"
       x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
         - lang: Shell
           label: curl (all articles)
