@@ -4,7 +4,7 @@ class BadgesController < ApplicationController
 
   def index
     @badges = Badge.order(:created_at)
-    @earned_badge_achievements = current_user.badge_achievements.pluck(:badge_id)
+    @earned_badge_achievements = user_signed_in? ? current_user.badge_achievements.pluck(:badge_id) : []
   end
 
   def show
