@@ -1,14 +1,9 @@
-function initNotifications() {
-  fetchNotificationsCount();
-  markNotificationsAsRead();
-  initReactions();
-  listenForNotificationsBellClick();
-  initPagination();
-  initLoadMoreButton();
-}
+'use strict';
+
+/* eslint-disable no-undef */
 
 function markNotificationsAsRead() {
-  setTimeout(function() {
+  setTimeout(() => {
     if (document.getElementById('notifications-container')) {
       var xmlhttp;
       var locationAsArray = window.location.pathname.split('/');
@@ -23,7 +18,7 @@ function markNotificationsAsRead() {
       } else {
         xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
       }
-      xmlhttp.onreadystatechange = function() {};
+      xmlhttp.onreadystatechange = () => {};
 
       var csrfToken = document.querySelector("meta[name='csrf-token']").content;
 
@@ -53,14 +48,14 @@ function fetchNotificationsCount() {
     } else {
       xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
     }
-    xmlhttp.onreadystatechange = function() {
-      if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+    xmlhttp.onreadystatechange = () => {
+      if (xmlhttp.readyState === XMLHttpRequest.DONE) {
         var count = xmlhttp.response;
-        if (isNaN(count)) {
+        if (Number.isNaN(count)) {
           document
             .getElementById('notifications-number')
             .classList.remove('showing');
-        } else if (count != '0' && count != undefined && count != '') {
+        } else if (count !== '0' && count !== undefined && count !== '') {
           document.getElementById('notifications-number').innerHTML =
             xmlhttp.response;
           document
@@ -68,7 +63,7 @@ function fetchNotificationsCount() {
             .classList.add('showing');
           if (instantClick) {
             InstantClick.removeExpiredKeys('force');
-            setTimeout(function() {
+            setTimeout(() => {
               InstantClick.preload(
                 document.getElementById('notifications-link').href,
                 'force',
@@ -88,51 +83,55 @@ function fetchNotificationsCount() {
   }
 }
 
+const onClick = event => {
+  event.preventDefault();
+  sendHapticMessage('medium');
+  var thisButt = this;
+  thisButt.classList.add('reacted');
+
+  function successCb(response) {
+    if (response.result === 'create') {
+      thisButt.classList.add('reacted');
+    } else {
+      thisButt.classList.remove('reacted');
+    }
+  }
+
+  var formData = new FormData();
+  formData.append('reactable_type', thisButt.dataset.reactableType);
+  formData.append('category', thisButt.dataset.category);
+  formData.append('reactable_id', thisButt.dataset.reactableId);
+
+  getCsrfToken()
+    .then(sendFetch('reaction-creation', formData))
+    .then(response => {
+      if (response.status === 200) {
+        response.json().then(successCb);
+      }
+    });
+};
+
 function initReactions() {
-  setTimeout(function() {
+  setTimeout(() => {
     if (document.getElementById('notifications-container')) {
       var butts = document.getElementsByClassName('reaction-button');
-      for (var i = 0; i < butts.length; i++) {
-        var butt = butts[i];
-        butt.onclick = function(event) {
-          event.preventDefault();
-          sendHapticMessage('medium');
-          var thisButt = this;
-          thisButt.classList.add('reacted');
-
-          function successCb(response) {
-            if (response.result === 'create') {
-              thisButt.classList.add('reacted');
-            } else {
-              thisButt.classList.remove('reacted');
-            }
-          }
-
-          var formData = new FormData();
-          formData.append('reactable_type', thisButt.dataset.reactableType);
-          formData.append('category', thisButt.dataset.category);
-          formData.append('reactable_id', thisButt.dataset.reactableId);
-
-          getCsrfToken()
-            .then(sendFetch('reaction-creation', formData))
-            .then(function(response) {
-              if (response.status === 200) {
-                response.json().then(successCb);
-              }
-            });
-        };
+      var butt;
+      var i;
+      for (i = 0; i < butts.length; i += 1) {
+        butt = butts[i];
+        butt.onclick = event => onClick(event);
       }
-      var butts = document.getElementsByClassName('toggle-reply-form');
-      for (var i = 0; i < butts.length; i++) {
-        var butt = butts[i];
-        butt.onclick = function(event) {
+      butts = document.getElementsByClassName('toggle-reply-form');
+      for (i = 0; i < butts.length; i += 1) {
+        butt = butts[i];
+        butt.onclick = event => {
           event.preventDefault();
           var thisButt = this;
           document
             .getElementById('comment-form-for-' + thisButt.dataset.reactableId)
             .classList.add('showing');
           thisButt.innerHTML = '';
-          setTimeout(function() {
+          setTimeout(() => {
             document
               .getElementById(
                 'comment-textarea-for-' + thisButt.dataset.reactableId,
@@ -146,8 +145,8 @@ function initReactions() {
 }
 
 function listenForNotificationsBellClick() {
-  setTimeout(function() {
-    document.getElementById('notifications-link').onclick = function() {
+  setTimeout(() => {
+    document.getElementById('notifications-link').onclick = () => {
       document
         .getElementById('notifications-number')
         .classList.remove('showing');
@@ -167,9 +166,9 @@ function initPagination() {
           method: 'GET',
           credentials: 'same-origin',
         })
-        .then(function(response) {
+        .then(response => {
           if (response.status === 200) {
-            response.text().then(function(html) {
+            response.text().then(html => {
               const markup = html.trim();
 
               if (markup) {
@@ -202,4 +201,13 @@ function initLoadMoreButton() {
   if (button) {
     button.addEventListener('click', initPagination);
   }
+}
+
+function initNotifications() {
+  fetchNotificationsCount();
+  markNotificationsAsRead();
+  initReactions();
+  listenForNotificationsBellClick();
+  initPagination();
+  initLoadMoreButton();
 }
