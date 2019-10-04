@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
   authenticated :user, ->(user) { user.tech_admin? } do
     mount DelayedJobWeb, at: "/delayed_job"
+    mount Sail::Engine, at: "/sail"
   end
 
   devise_scope :user do
