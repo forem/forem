@@ -45,5 +45,14 @@ RSpec.describe Messages::SendPushJob, type: :job do
         expect(messages_send_push_service).to have_received(:call).with(user, chat_channel, "<html>")
       end
     end
+
+    context "when 404 gone" do
+      it "rescues an exception" do
+        allow(messages_send_push_service).to receive(:call).and_raise(Net::HTTPGone)
+        expect do
+          described_class.perform_now(456, 789, "<html>", messages_send_push_service)
+        end.not_to raise_error
+      end
+    end
   end
 end

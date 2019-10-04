@@ -9,6 +9,8 @@ module Messages
       return unless user && chat_channel
 
       service.call(user, chat_channel, message_html)
+    rescue Net::HTTPGone => e
+      Rails.logger.error("Sending push failed: #{e}")
     end
   end
 end
