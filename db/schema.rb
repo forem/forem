@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_18_104106) do
+ActiveRecord::Schema.define(version: 2019_10_04_102945) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -867,10 +867,29 @@ ActiveRecord::Schema.define(version: 2019_09_18_104106) do
     t.index ["name"], name: "index_roles_on_name"
   end
 
+  create_table "sail_entries", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "profile_id"
+    t.bigint "setting_id"
+    t.datetime "updated_at", null: false
+    t.string "value", null: false
+    t.index ["profile_id"], name: "index_sail_entries_on_profile_id"
+    t.index ["setting_id"], name: "index_sail_entries_on_setting_id"
+  end
+
+  create_table "sail_profiles", force: :cascade do |t|
+    t.boolean "active", default: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_sail_profiles_on_name", unique: true
+  end
+
   create_table "sail_settings", force: :cascade do |t|
     t.integer "cast_type", limit: 2, null: false
     t.datetime "created_at", null: false
     t.text "description"
+    t.string "group"
     t.string "name", null: false
     t.datetime "updated_at", null: false
     t.string "value", null: false
@@ -1189,6 +1208,8 @@ ActiveRecord::Schema.define(version: 2019_09_18_104106) do
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "push_notification_subscriptions", "users"
+  add_foreign_key "sail_entries", "sail_profiles", column: "profile_id"
+  add_foreign_key "sail_entries", "sail_settings", column: "setting_id"
   add_foreign_key "sponsorships", "organizations"
   add_foreign_key "sponsorships", "users"
   add_foreign_key "webhook_endpoints", "oauth_applications"
