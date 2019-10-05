@@ -10,7 +10,8 @@ export const ItemListTags = ({ availableTags, selectedTags, onClick }) => {
       data-no-instant
       onClick={e => onClick(e, tag)}
     >
-      #{tag}
+      #
+      {tag}
     </a>
   ));
   return <div className="tags">{tagsHTML}</div>;
