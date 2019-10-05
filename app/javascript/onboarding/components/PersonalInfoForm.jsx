@@ -4,6 +4,21 @@ import PropTypes from 'prop-types';
 import Navigation from './Navigation';
 import { getContentOfToken } from '../utilities';
 
+const setupFormTextField = ({ labelText = '', entityName = '', onChangeCallback }) => {
+  return (
+    <label htmlFor={entityName}>
+      {labelText}
+      <input
+        type="text"
+        name={entityName}
+        id={entityName}
+        onChange={onChangeCallback}
+        maxLength="60"
+      />
+    </label>
+  )
+}
+
 class PersonalInfoForm extends Component {
   constructor(props) {
     super(props);
@@ -81,38 +96,27 @@ class PersonalInfoForm extends Component {
         <div className="onboarding-content about">
           <h2>About You!</h2>
           <form>
-            <label htmlFor="location">
-              Where are you located?
-              <input
-                type="text"
-                name="location"
-                id="location"
-                onChange={this.handleChange}
-                maxLength="60"
-              />
-            </label>
-
-            <label htmlFor="employment_title">
-              What is your title?
-              <input
-                type="text"
-                name="employment_title"
-                id="employment_title"
-                onChange={this.handleChange}
-                maxLength="60"
-              />
-            </label>
-
-            <label htmlFor="employer_name">
-              Where do you work?
-              <input
-                type="text"
-                name="employer_name"
-                id="employer_name"
-                onChange={this.handleChange}
-                maxLength="60"
-              />
-            </label>
+            {
+              setupFormTextField({
+                labelText: 'Where are you located?',
+                entityName: 'location',
+                onChangeCallback: this.handleChange
+              })
+            }
+            {
+              setupFormTextField({
+                labelText: 'What is your title?',
+                entityName: 'employment_title',
+                onChangeCallback: this.handleChange
+              })
+            }
+            {
+              setupFormTextField({
+                labelText: 'Where do you work?',
+                entityName: 'employer_name',
+                onChangeCallback: this.handleChange
+              })
+            }
           </form>
         </div>
         <Navigation prev={prev} next={this.onSubmit} />

@@ -36,13 +36,6 @@
       <a href="/t/<%= tag %>"><span class="tag">#<%= tag %></span></a>
     <% end %>
   </div>
-  <% if story.comments_count > 0 %>
-    <div class="article-engagement-count comments-count">
-      <a href="<%= story.path %>#comments">
-        <img src="<%= asset_path("comments-bubble.png") %>" alt="chat" /><span class="engagement-count-number"><%= story.comments_count %></span>
-      </a>
-    </div>
-  <% end %>
   <div class="article-engagement-count reactions-count" data-reaction-count data-reactable-id="<%= story.id %>">
     <a href="<%= story.path %>">
       <img src="<%= asset_path("reactions-stack.png") %>" alt="Reactions" /><span id="engagement-count-number-<%= story.id %>" class="engagement-count-number">
@@ -50,6 +43,13 @@
         </span>
     </a>
   </div>
+  <% if story.comments_count > 0 %>
+    <div class="article-engagement-count comments-count">
+      <a href="<%= story.path %>#comments">
+        <img src="<%= asset_path("comments-bubble.png") %>" alt="chat" /><span class="engagement-count-number"><%= story.comments_count %></span>
+      </a>
+    </div>
+  <% end %>
   <a
     href="<%= story.path %>"
     class="article-reading-time">

@@ -71,6 +71,13 @@ RSpec.describe "Api::V0::Articles", type: :request do
       expect(response_article["flare_tag"].keys).to eq(%w[name bg_color_hex text_color_hex])
       expect(response_article["flare_tag"]["name"]).to eq("discuss")
     end
+
+    it "returns a collection id" do
+      collection = create(:collection, user: article.user)
+      article.update_columns(collection_id: collection.id)
+      get api_articles_path(collection_id: collection.id)
+      expect(json_response[0]["collection_id"]).to eq collection.id
+    end
   end
 
   describe "GET /api/articles/:id" do
