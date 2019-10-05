@@ -162,7 +162,7 @@ a.header-link {
       width: 8.125rem;
       display: none;
 
-      @media screen and (min-width: 31.25rem) {
+      @media screen and (min-width: 500px) {
         & {
           width: calc(94% - 2.25rem);
         }
@@ -934,7 +934,7 @@ a.header-link {
     .uploaded-image {
       width: calc(93% - 3.375rem);
 
-      @media screen and (min-width: 31.25rem) {
+      @media screen and (min-width: 500px) {
         & {
           width: calc(94% - 3.875rem);
         }
