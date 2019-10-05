@@ -80,20 +80,32 @@ const UserLocation = ({ location }) =>
     </div>
   ) : null;
 
+const BlockReportButtons = ({ channel, user }) => (
+  <div className="userdetails__blockreport">
+    {
+      channel.channel_type === 'direct' && window.currentUser.id != user.id
+        ? setUpButton({
+            modalId: 'userdetails__blockmsg',
+            otherModalId: 'userdetails__reportabuse',
+            btnName: 'Block User'
+          })
+        : null
+    }
+    {
+      setUpButton({
+        modalId: 'userdetails__reportabuse',
+        otherModalId: 'userdetails__blockmsg',
+        btnName: 'Report Abuse'
+      })
+    }
+  </div>
+)
 
 export default class UserDetails extends Component {
   render() {
     const { user } = this.props;
     const channelId = this.props.activeChannelId;
     const channel = this.props.activeChannel || {};
-    let blockButton = '';
-    if (channel.channel_type === 'direct' && window.currentUser.id != user.id) {
-      blockButton = setUpButton({ 
-          modalId: 'userdetails__blockmsg',
-          otherModalId: 'userdetails__reportabuse',
-          btnName: 'Block User'
-      });
-    }
     return (
       <div>
         <img
@@ -121,16 +133,7 @@ export default class UserDetails extends Component {
           <div className="key">joined</div>
           <div className="value">{user.joined_at}</div>
         </div>
-        <div className="userdetails__blockreport">
-          {blockButton}
-          {
-            setUpButton({
-              modalId: 'userdetails__reportabuse',
-              otherModalId: 'userdetails__blockmsg',
-              btnName: 'Report Abuse'
-            })
-          }
-        </div>
+        <BlockReportButtons channel={channel} user={user} />      
         <div id="userdetails__reportabuse" style="display:none">
           <div className="userdetails__reportabuse">
             <p>Reporting abuse will: </p>
