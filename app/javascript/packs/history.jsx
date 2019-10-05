@@ -6,11 +6,7 @@ function loadComponent() {
   getUserDataAndCsrfToken().then(({ currentUser }) => {
     const root = document.getElementById('history');
     if (root) {
-      render(
-        <History availableTags={currentUser.followed_tag_names} />,
-        root,
-        root.firstElementChild,
-      );
+      render(<History availableTags={currentUser.followed_tag_names} />, root);
     }
   });
 }

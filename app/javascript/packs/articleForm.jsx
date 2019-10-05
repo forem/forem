@@ -34,7 +34,6 @@ function loadForm() {
         version={version}
       />,
       root,
-      root.firstElementChild,
     );
   });
 }

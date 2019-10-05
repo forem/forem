@@ -12,7 +12,6 @@ function loadElement() {
           statusView={root.dataset.view}
         />,
         root,
-        root.firstElementChild,
       );
     }
   });
