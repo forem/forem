@@ -56,7 +56,7 @@ const userDetailsConfig = {
 const SocialIcons = ({ user }) => {
   const userMeta = Object.keys(userDetailsConfig);
   return (
-    <>
+    <div style={{ height: '50px', margin: 'auto', width: '96%' }}>
       {userMeta.map(metaProp =>
         user[metaProp] ? (
           <a
@@ -72,7 +72,7 @@ const SocialIcons = ({ user }) => {
           </a>
         ) : null
       )}
-    </>
+    </div>
   );
 };
 
@@ -129,9 +129,7 @@ export default class UserDetails extends Component {
             {user.name}
           </a>
         </h1>
-        <div style={{ height: '50px', margin: 'auto', width: '96%' }}>
-          <SocialIcons user={user} />
-        </div>
+        <SocialIcons user={user} />
         <div style={{ fontStyle: 'italic' }}>{user.summary}</div>
         <div className="activechatchannel__activecontentuserdetails">
           <UserLocation location={user.location} />
