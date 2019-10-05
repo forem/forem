@@ -30,8 +30,8 @@ const createWebpackConfig = (storybookBaseConfig, configType) => {
   // Make whatever fine-grained changes you need
   storybookBaseConfig.resolve.alias = {
     ...alias,
-    react: 'preact-compat',
-    'react-dom': 'preact-compat',
+    react: 'preact/compat',
+    'react-dom': 'preact/compat',
   };
   storybookBaseConfig.resolve.extensions = [...extensions, '.scss'];
   storybookBaseConfig.module.rules = [...rules].concat(rulesToAdd);

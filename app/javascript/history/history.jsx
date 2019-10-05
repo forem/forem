@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import { PropTypes } from 'preact-compat';
+import { PropTypes } from 'preact/compat';
 import debounce from 'lodash.debounce';
 
 import {
