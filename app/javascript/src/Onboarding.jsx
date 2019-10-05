@@ -301,8 +301,6 @@ class Onboarding extends Component {
       .then(response => response.json())
       .then(json => {
         this.setState({ showOnboarding: json.outcome === 'onboarding opened' });
-        // console.log('this is special')
-        // console.log(this.state)
       })
       .catch(error => {
         console.log(error);
