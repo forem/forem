@@ -193,7 +193,7 @@ RSpec.describe Article, type: :model do
       end
 
       it "rejects if there are non-alphabetic characters in tag" do
-        tags = "#discuss, help"
+        tags = "discuss1, help"
         expect(build(:article, tags: tags).valid?).to be(false)
       end
     end

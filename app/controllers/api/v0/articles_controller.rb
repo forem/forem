@@ -40,8 +40,8 @@ module Api
       def create
         @article = Articles::Creator.call(@user, article_params)
         render "show", status: :created, location: @article.url
-      rescue StandardError
-        format.json { render json: @article.errors, status: :unprocessable_entity }
+      rescue StandardError => e
+        error_unprocessable_entity(e.message)
       end
 
       def update
