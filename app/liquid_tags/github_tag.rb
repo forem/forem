@@ -1,4 +1,6 @@
 class GithubTag < LiquidTagBase
+  CODE_REGEXP = /#L\d+-L\d+/.freeze
+
   def initialize(_tag_name, link, _parse_context)
     super
     @link = link
@@ -6,7 +8,9 @@ class GithubTag < LiquidTagBase
   end
 
   def issue_or_readme
-    if @link.include?("issues") || @link.include?("pull")
+    if @link.match(CODE_REGEXP)
+      "code"
+    elsif @link.include?("issues") || @link.include?("pull")
       "issue"
     else
       "readme"
@@ -20,6 +24,8 @@ class GithubTag < LiquidTagBase
     when "readme"
       gt = GithubTag::GithubReadmeTag.new(@link)
       gt.render
+    when "code"
+      GithubTag::GithubCodeTag.new(@link).render
     end
   rescue StandardError => e
     raise StandardError, e.message
