@@ -55,22 +55,27 @@ const userDetailsConfig = {
 
 const SocialIcons = ({ user }) => {
   const userMeta = Object.keys(userDetailsConfig);
-  return userMeta.map(metaProp =>
-    user[metaProp] ? (
-      <a
-        href={`${userDetailsConfig[metaProp].hostUrl}${user[metaProp]}`}
-        target="_blank"
-      >
-        <img
-          className={userDetailsConfig[metaProp].className}
-          src={userDetailsConfig[metaProp].srcImage}
-          style={{ width: '30px', margin: '5px 15px 15px 0px' }}
-          alt={userDetailsConfig[metaProp].imageAltText}
-        />
-      </a>
-    ) : null
+  return (
+    <>
+      {userMeta.map(metaProp =>
+        user[metaProp] ? (
+          <a
+            href={`${userDetailsConfig[metaProp].hostUrl}${user[metaProp]}`}
+            target="_blank"
+          >
+            <img
+              className={userDetailsConfig[metaProp].className}
+              src={userDetailsConfig[metaProp].srcImage}
+              style={{ width: '30px', margin: '5px 15px 15px 0px' }}
+              alt={userDetailsConfig[metaProp].imageAltText}
+            />
+          </a>
+        ) : null
+      )}
+    </>
   );
 };
+
 
 const UserLocation = ({ location }) => 
   (location && location.length) ? (
