@@ -72,20 +72,20 @@ const SocialIcons = ({ user }) => {
   );
 };
 
+const UserLocation = ({ location }) => 
+  (location && location.length) ? (
+    <div>
+      <div className="key">location</div>
+      <div className="value">{location}</div>
+    </div>
+  ) : null;
+
+
 export default class UserDetails extends Component {
   render() {
     const { user } = this.props;
     const channelId = this.props.activeChannelId;
     const channel = this.props.activeChannel || {};
-    let userLocation = '';
-    if (user.location && user.location.length > 0) {
-      userLocation = (
-        <div>
-          <div className="key">location</div>
-          <div className="value">{user.location}</div>
-        </div>
-      );
-    }
     let blockButton = '';
     if (channel.channel_type === 'direct' && window.currentUser.id != user.id) {
       blockButton = setUpButton({ 
@@ -117,7 +117,7 @@ export default class UserDetails extends Component {
         </div>
         <div style={{ fontStyle: 'italic' }}>{user.summary}</div>
         <div className="activechatchannel__activecontentuserdetails">
-          {userLocation}
+          <UserLocation location={user.location} />
           <div className="key">joined</div>
           <div className="value">{user.joined_at}</div>
         </div>
