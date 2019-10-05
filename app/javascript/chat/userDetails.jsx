@@ -144,85 +144,82 @@ const UserDetailsModal = ({ id, children, actionText, liTexts, pText }) => (
 );
 
 
-export default class UserDetails extends Component {
-  render() {
-    const { user } = this.props;
-    const channelId = this.props.activeChannelId;
-    const channel = this.props.activeChannel || {};
-    return (
-      <div>
-        <img
-          src={user.profile_image}
-          alt={`${user.username} profile image`}
-          style={{
-            height: '210px',
-            width: '210px',
-            margin: ' 15px auto',
-            display: 'block',
-            borderRadius: '500px',
+export const UserDetails = ({ user, activeChannelId, activeChannel }) => {
+  const channelId = activeChannelId;
+  const channel = activeChannel || {};
+  return (
+    <div>
+      <img
+        src={user.profile_image}
+        alt={`${user.username} profile image`}
+        style={{
+          height: '210px',
+          width: '210px',
+          margin: ' 15px auto',
+          display: 'block',
+          borderRadius: '500px',
+        }}
+      />
+      <h1 style={{ textAlign: 'center' }}>
+        <a href={`/${user.username}`} target="_blank">
+          {user.name}
+        </a>
+      </h1>
+      <SocialIcons user={user} />
+      <div style={{ fontStyle: 'italic' }}>{user.summary}</div>
+      <div className="activechatchannel__activecontentuserdetails">
+        <UserLocation location={user.location} />
+        <div className="key">joined</div>
+        <div className="value">{user.joined_at}</div>
+      </div>
+      <BlockReportButtons channel={channel} user={user} />  
+      <UserDetailsModal
+        id="userdetails__reportabuse"
+        actionText="Reporting abuse"
+        liTexts={[
+          'close this chat and prevent this user from re-opening chat with you',
+          'give the DEV team your consent to read messages in this chat to understand your report and take appropriate action'
+        ]}
+        pText="Blocking is only on Connect right now and has not been implemented across DEV yet."
+      >
+        <a
+          tabIndex="0"
+          href="/report-abuse"
+          onClick={() => {
+            blockChat(channelId);
           }}
-        />
-        <h1 style={{ textAlign: 'center' }}>
-          <a href={`/${user.username}`} target="_blank">
-            {user.name}
-          </a>
-        </h1>
-        <SocialIcons user={user} />
-        <div style={{ fontStyle: 'italic' }}>{user.summary}</div>
-        <div className="activechatchannel__activecontentuserdetails">
-          <UserLocation location={user.location} />
-          <div className="key">joined</div>
-          <div className="value">{user.joined_at}</div>
-        </div>
-        <BlockReportButtons channel={channel} user={user} />  
-        <UserDetailsModal
-          id="userdetails__reportabuse"
-          actionText="Reporting abuse"
-          liTexts={[
-            'close this chat and prevent this user from re-opening chat with you',
-            'give the DEV team your consent to read messages in this chat to understand your report and take appropriate action'
-          ]}
-          pText="Blocking is only on Connect right now and has not been implemented across DEV yet."
         >
-          <a
-            tabIndex="0"
-            href="/report-abuse"
-            onClick={() => {
+          Yes, Report
+        </a>
+      </UserDetailsModal>
+      <UserDetailsModal
+        id="userdetails__blockmsg"
+        actionText="Blocking on connect"
+        liTexts={[
+          'close this chat and prevent this user from re-opening chat with you',
+          'NOT notify the user you will block--this channel will become inaccessible for both users'
+        ]}
+        pText="Blocking is only on Connect right now and has not been implemented
+        across DEV yet. Consider reporting abuse to the DEV team if this
+        user is spamming or harassing elsewhere on dev.to, so we can take
+        further action."
+      >
+        <a
+          tabIndex="0"
+          onClick={() => {
               blockChat(channelId);
+              window.location.href = `/connect`;
             }}
-          >
-            Yes, Report
-          </a>
-        </UserDetailsModal>
-        <UserDetailsModal
-          id="userdetails__blockmsg"
-          actionText="Blocking on connect"
-          liTexts={[
-            'close this chat and prevent this user from re-opening chat with you',
-            'NOT notify the user you will block--this channel will become inaccessible for both users'
-          ]}
-          pText="Blocking is only on Connect right now and has not been implemented
-          across DEV yet. Consider reporting abuse to the DEV team if this
-          user is spamming or harassing elsewhere on dev.to, so we can take
-          further action."
-        >
-          <a
-            tabIndex="0"
-            onClick={() => {
+          onKeyUp={e => {
+              if (e.keyCode === 13) {
                 blockChat(channelId);
                 window.location.href = `/connect`;
-              }}
-            onKeyUp={e => {
-                if (e.keyCode === 13) {
-                  blockChat(channelId);
-                  window.location.href = `/connect`;
-                }
-              }}
-          >
-              Yes, Block
-          </a>
-        </UserDetailsModal>
-      </div>
-    );
-  }
+              }
+            }}
+        >
+            Yes, Block
+        </a>
+      </UserDetailsModal>
+    </div>
+  );
 }
