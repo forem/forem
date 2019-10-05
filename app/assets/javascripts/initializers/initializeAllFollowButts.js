@@ -182,7 +182,5 @@ function initializeFollowButt(butt) {
 
 function initializeAllFollowButts() {
   var followButts = document.getElementsByClassName('follow-action-button');
-  for (var i = 0; i < followButts.length; i += 1) {
-    initializeFollowButt(followButts[i]);
-  }
+  followButts.forEach(initializeFollowButt(followButts));
 }
