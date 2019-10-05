@@ -106,6 +106,44 @@ const BlockReportButtons = ({ channel, user }) => (
   </div>
 )
 
+const UserDetailsModal = ({ id, children, actionText, liTexts, pText }) => (
+  <div id={id} style={{ display: none }}>
+    <div className={id}>
+      <p>
+        {actionText}
+        {' '}
+        will:
+        {' '}
+      </p>
+      <ul>
+        {liTexts.map(text => (
+          <li>{text}</li>
+        ))}
+      </ul>
+      <p>{pText}</p>
+      <h5>Are you sure?</h5>
+      {children}
+      <a
+        tabIndex="0"
+        className="no"
+        onClick={() => {
+          document.getElementById(id).style.display = 'none';
+          window.location.href = `#`;
+        }}
+        onKeyUp={e => {
+          if (e.keyCode === 13) {
+            document.getElementById(id).style.display = 'none';
+            window.location.href = `#`;
+          }
+        }}
+      >
+        No
+      </a>
+    </div>
+  </div>
+);
+
+
 export default class UserDetails extends Component {
   render() {
     const { user } = this.props;
@@ -136,112 +174,54 @@ export default class UserDetails extends Component {
           <div className="key">joined</div>
           <div className="value">{user.joined_at}</div>
         </div>
-        <BlockReportButtons channel={channel} user={user} />      
-        <div id="userdetails__reportabuse" style="display:none">
-          <div className="userdetails__reportabuse">
-            <p>Reporting abuse will: </p>
-            <ul>
-              <li>
-                close this chat and prevent this user from re-opening chat with
-                you
-              </li>
-              <li>
-                give the DEV team your consent to read messages in this chat to
-                understand your report and take appropriate action
-              </li>
-            </ul>
-            <p>
-              Blocking is only on Connect right now and has not been implemented
-              across DEV yet.
-            </p>
-            <h5>Are you sure?</h5>
-            <a
-              tabIndex="0"
-              href="/report-abuse"
-              onClick={() => {
-                blockChat(channelId);
-              }}
-            >
-              Yes, Report
-            </a>
-            <a
-              tabIndex="0"
-              className="no"
-              onClick={() => {
-                document.getElementById(
-                  'userdetails__reportabuse',
-                ).style.display = 'none';
-                window.location.href = `#`;
-              }}
-              onKeyUp={e => {
-                if (e.keyCode === 13) {
-                  document.getElementById(
-                    'userdetails__reportabuse',
-                  ).style.display = 'none';
-                  window.location.href = `#`;
-                }
-              }}
-            >
-              No
-            </a>
-          </div>
-        </div>
-        <div id="userdetails__blockmsg" style="display:none">
-          <div className="userdetails__blockmsg">
-            <p>Blocking on connect will: </p>
-            <ul>
-              <li>
-                close this chat and prevent this user from re-opening chat with
-                you
-              </li>
-              <li>
-                NOT notify the user you will block--this channel will become
-                inaccessible for both users
-              </li>
-            </ul>
-            <p>
-              Blocking is only on Connect right now and has not been implemented
-              across DEV yet. Consider reporting abuse to the DEV team if this
-              user is spamming or harassing elsewhere on dev.to, so we can take
-              further action.
-            </p>
-            <h5>Are you sure?</h5>
-            <a
-              tabIndex="0"
-              onClick={() => {
+        <BlockReportButtons channel={channel} user={user} />  
+        <UserDetailsModal
+          id="userdetails__reportabuse"
+          actionText="Reporting abuse"
+          liTexts={[
+            'close this chat and prevent this user from re-opening chat with you',
+            'give the DEV team your consent to read messages in this chat to understand your report and take appropriate action'
+          ]}
+          pText="Blocking is only on Connect right now and has not been implemented across DEV yet."
+        >
+          <a
+            tabIndex="0"
+            href="/report-abuse"
+            onClick={() => {
+              blockChat(channelId);
+            }}
+          >
+            Yes, Report
+          </a>
+        </UserDetailsModal>
+        <UserDetailsModal
+          id="userdetails__blockmsg"
+          actionText="Blocking on connect"
+          liTexts={[
+            'close this chat and prevent this user from re-opening chat with you',
+            'NOT notify the user you will block--this channel will become inaccessible for both users'
+          ]}
+          pText="Blocking is only on Connect right now and has not been implemented
+          across DEV yet. Consider reporting abuse to the DEV team if this
+          user is spamming or harassing elsewhere on dev.to, so we can take
+          further action."
+        >
+          <a
+            tabIndex="0"
+            onClick={() => {
                 blockChat(channelId);
                 window.location.href = `/connect`;
               }}
-              onKeyUp={e => {
+            onKeyUp={e => {
                 if (e.keyCode === 13) {
                   blockChat(channelId);
                   window.location.href = `/connect`;
                 }
               }}
-            >
+          >
               Yes, Block
-            </a>
-            <a
-              tabIndex="0"
-              className="no"
-              onClick={() => {
-                document.getElementById('userdetails__blockmsg').style.display =
-                  'none';
-                window.location.href = `#`;
-              }}
-              onKeyUp={e => {
-                if (e.keyCode === 13) {
-                  document.getElementById(
-                    'userdetails__blockmsg',
-                  ).style.display = 'none';
-                  window.location.href = `#`;
-                }
-              }}
-            >
-              No
-            </a>
-          </div>
-        </div>
+          </a>
+        </UserDetailsModal>
       </div>
     );
   }
