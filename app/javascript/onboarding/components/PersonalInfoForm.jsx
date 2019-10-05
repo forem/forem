@@ -28,22 +28,22 @@ class PersonalInfoForm extends Component {
 
     this.state = {
       location: '',
-      employment_title: '',
-      employer_name: '',
-      last_onboarding_page: 'personal info form',
+      employmentTitle: '',
+      employerName: '',
+      lastOnboardingPage: 'personal info form',
     };
   }
 
   componentDidMount() {
     const csrfToken = getContentOfToken('csrf-token');
-    const { last_onboarding_page } = this.state;
+    const { lastOnboardingPage } = this.state;
     fetch('/onboarding_update', {
       method: 'PATCH',
       headers: {
         'X-CSRF-Token': csrfToken,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user: { last_onboarding_page } }),
+      body: JSON.stringify({ user: { lastOnboardingPage } }),
       credentials: 'same-origin',
     });
   }
@@ -52,10 +52,10 @@ class PersonalInfoForm extends Component {
     const csrfToken = getContentOfToken('csrf-token');
 
     const {
-      last_onboarding_page,
+      lastOnboardingPage,
       location,
-      employer_name,
-      employment_title,
+      employerName,
+      employmentTitle,
     } = this.state;
 
     fetch('/onboarding_update', {
@@ -66,10 +66,10 @@ class PersonalInfoForm extends Component {
       },
       body: JSON.stringify({
         user: {
-          last_onboarding_page,
+          lastOnboardingPage,
           location,
-          employer_name,
-          employment_title,
+          employerName,
+          employmentTitle,
         },
       }),
       credentials: 'same-origin',
