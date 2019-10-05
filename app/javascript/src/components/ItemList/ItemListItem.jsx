@@ -1,6 +1,6 @@
 // Item list item
 import { h } from 'preact';
-import { PropTypes } from 'preact/compat';
+import PropTypes from 'prop-types';
 
 export const ItemListItem = ({ item, children }) => {
   const adaptedItem = {
@@ -35,7 +35,8 @@ export const ItemListItem = ({ item, children }) => {
             <span className="item-tags">
               {adaptedItem.tags.map(tag => (
                 <a className="item-tag" href={`/t/${tag}`}>
-                  #{tag}
+                  #
+{tag}
                 </a>
               ))}
             </span>
