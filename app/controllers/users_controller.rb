@@ -185,7 +185,8 @@ class UsersController < ApplicationController
   def follow_hiring_tag(user)
     return unless user.looking_for_work?
 
-    user.delay.follow(Tag.find_by(name: "hiring"))
+    hiring_tag = Tag.find_by(name: "hiring")
+    Users::FollowJob.perform_later(user.id, hiring_tag.id, "Tag")
   end
 
   def handle_settings_tab

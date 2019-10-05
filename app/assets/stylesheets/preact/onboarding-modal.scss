@@ -1,11 +1,12 @@
 @import 'variables';
+@import 'mixins';
 
 .pages-onboarding {
   min-height: initial;
 }
 
 .onboarding-body {
-  background-color: white;
+  @include themeable(background-color, theme-background, $white);
   position: fixed;
   margin-top: 50px;
   bottom: 0;
@@ -27,7 +28,7 @@
   background-repeat: no-repeat; /* Do not repeat the image */
 
   a {
-    color: #2e3b9e;
+    @include themeable(color, theme-anchor-color, #2e3b9e);
   }
   .sticker-logo {
     height: 80px;
@@ -43,8 +44,9 @@
     flex-direction: column;
     width: 800px;
     height: 466px;
-    background-color: white;
+    @include themeable(background-color, theme-container-background, $white);
     border: 8px solid #6b55c9;
+    @include themeable(border-color, theme-container-border, #6b55c9);
     padding: 30px;
     border-radius: 3px;
     z-index: 1;
@@ -101,9 +103,9 @@
     font-weight: bold;
     border-radius: 3px;
     border: 2px solid #0a0a0a;
-    border: 2px solid var(--theme-top-bar-write-color, #0a0a0a);
-    color: #0a0a0a;
-    color: var(--theme-top-bar-write-color, #0a0a0a);
+    @include themeable(border-color, theme-color, #0a0a0a);
+    @include themeable(color, theme-color, #0a0a0a);
+    @include themeable(background-color, theme-container-accent-background, $light-gray);
     font-family: 'HelveticaNeue-CondensedBold', 'HelveticaNeueBoldCondensed',
       'HelveticaNeue-Bold-Condensed', 'Helvetica Neue Bold Condensed',
       'HelveticaNeueBold', 'HelveticaNeue-Bold', 'Helvetica Neue Bold',
@@ -115,8 +117,7 @@
   }
 
   .next-button {
-    background: #66e2d5;
-    background: var(--theme-top-bar-write-background, #66e2d5);
+    @include themeable(background, theme-top-bar-write-background, #66e2d5);
     float: right;
   }
 
@@ -154,7 +155,7 @@
       -webkit-appearance: none;
       width: 19px;
       height: 19px;
-      background: white;
+      background: transparent;
       border-radius: 5px;
       border: 2px solid #555;
       vertical-align: middle;
@@ -162,7 +163,7 @@
       cursor: pointer;
     }
     input[type='checkbox']:checked {
-      background: var(--theme-top-bar-write-background, #66e2d5);
+      @include themeable(background, theme-anchor-color, #66e2d5);
     }
   }
 
@@ -242,6 +243,7 @@
     text-align: center;
     margin-right: 5px;
     position: relative;
+    color: $black;
     .onboarding-user-follow-status {
       position: absolute;
       color: #32a99c;
@@ -340,6 +342,7 @@
       background-position: center; /* Center the image */
       background-repeat: no-repeat; /* Do not repeat the image */
       border: none;
+      color: $black;
     }
 
     .onboarding-content {
@@ -352,10 +355,6 @@
 
     span {
       display: block;
-    }
-
-    .back-button {
-      background-color: white;
     }
   }
   

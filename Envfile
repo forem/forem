@@ -130,8 +130,8 @@ variable :RECAPTCHA_SECRET, :String, default: "Optional"
 variable :RECAPTCHA_SITE, :String, default: "Optional"
 
 # Slack for customer alerts
-variable :SLACK_CHANNEL, :String, default: "Optional"
-variable :SLACK_WEBHOOK_URL, :String, default: "Optional"
+variable :SLACK_CHANNEL, :String, default: ""
+variable :SLACK_WEBHOOK_URL, :String, default: ""
 
 # Stripe for payment system
 variable :STRIPE_PUBLISHABLE_KEY, :String, default: "Optional"
