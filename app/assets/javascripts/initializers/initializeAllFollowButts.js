@@ -131,7 +131,7 @@ function handleTagButtAssignment(user, butt, buttInfo) {
       .indexOf(buttInfo.id) !== -1;
   var buttAssignmentBoolText = buttAssignmentBoolean ? 'true' : 'false';
   addButtClickHandle(buttAssignmentBoolText, butt);
-  // shouldNotFetch = true;
+  shouldNotFetch = true;
 }
 
 function fetchButt(butt, buttInfo) {
