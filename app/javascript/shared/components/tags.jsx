@@ -12,6 +12,14 @@ const KEYS = {
   DELETE: 8,
 };
 
+const COMBO_KEYS = [
+  KEYS.COMMA,
+  KEYS.DELETE,
+  KEYS.LEFT,
+  KEYS.RIGHT,
+  KEYS.TAB,
+];
+
 /* TODO: Remove all instances of this.props.listing
    and refactor this component to be more generic */
 
@@ -289,14 +297,7 @@ class Tags extends Component {
       ) {
         this.clearSelectedSearchResult();
       }
-    } else if (
-      (e.keyCode < 65 || e.keyCode > 90) &&
-      e.keyCode != KEYS.COMMA &&
-      e.keyCode != KEYS.DELETE &&
-      e.keyCode != KEYS.LEFT &&
-      e.keyCode != KEYS.RIGHT &&
-      e.keyCode != KEYS.TAB
-    ) {
+    } else if ((e.keyCode < 65 || e.keyCode > 90) && !COMBO_KEYS.includes(e.keyCode)) {
       e.preventDefault();
     }
   };
