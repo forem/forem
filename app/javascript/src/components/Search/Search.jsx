@@ -1,4 +1,4 @@
-import 'preact/devtools';
+import { initDevTools } from 'preact/debug/src/devtools';
 import { Component, h } from 'preact';
 import PropTypes from 'prop-types';
 import {
@@ -8,6 +8,8 @@ import {
   displaySearchResults,
 } from '../../utils/search';
 import { SearchForm } from './SearchForm';
+
+initDevTools();
 
 const GLOBAL_MINIMIZE_KEY = '0';
 const GLOBAL_SEARCH_KEY = '/';

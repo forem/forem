@@ -1,6 +1,8 @@
-import 'preact/devtools';
+import { initDevTools } from 'preact/debug/src/devtools';
 import PropTypes from 'prop-types';
 import { h } from 'preact';
+
+initDevTools();
 
 export const SearchForm = ({
   searchTerm,

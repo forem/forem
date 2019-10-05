@@ -1,4 +1,4 @@
-import 'preact/devtools';
+import { initDevTools } from 'preact/debug/src/devtools';
 import { h, Component } from 'preact';
 
 import IntroSlide from './components/IntroSlide';
@@ -8,6 +8,8 @@ import ClosingSlide from './components/ClosingSlide';
 import FollowTags from './components/FollowTags';
 import FollowUsers from './components/FollowUsers';
 import BioForm from './components/BioForm';
+
+initDevTools()
 
 // Current Onboarding Variants
 // 0) Original intro slide: three explainer paragraphs, left adjusted.

@@ -1,4 +1,4 @@
-import 'preact/devtools';
+import { initDevTools } from 'preact/debug/src/devtools';
 import { h, Component } from 'preact';
 import linkState from 'linkstate';
 import postscribe from 'postscribe';
@@ -18,12 +18,14 @@ import Errors from './elements/errors';
 import KeyboardShortcutsHandler from './elements/keyboardShortcutsHandler';
 import Tags from '../shared/components/tags';
 
+initDevTools();
+
 const setupImageButton = ({ className = '', imgSrc, imgAltText = '', onClickCallback }) => {
   return (
     <button
-    type="button"
-    className={className}
-    onClick={onClickCallback}
+      type="button"
+      className={className}
+      onClick={onClickCallback}
     >
       <img src={imgSrc} alt={imgAltText} />
     </button>
@@ -416,7 +418,7 @@ export default class ArticleForm extends Component {
                 defaultValue={tagList}
                 onInput={linkState(this, 'tagList')}
                 maxTags={4}
-                classPrefix={`articleform`}
+                classPrefix="articleform"
               />
               {
                 setupImageButton({
