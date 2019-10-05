@@ -191,6 +191,11 @@ RSpec.describe Article, type: :model do
         tags = "'testing tag length with more than 30 chars', tag"
         expect(build(:article, tags: tags).valid?).to be(false)
       end
+
+      it "rejects if there are non-alphabetic characters in tag" do
+        tags = "#discuss, help"
+        expect(build(:article, tags: tags).valid?).to be(false)
+      end
     end
 
     describe "#canonical_url" do

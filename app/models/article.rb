@@ -520,8 +520,10 @@ class Article < ApplicationRecord
     return errors.add(:tag_list, "exceed the maximum of 4 tags") if tag_list.size > 4
 
     # check tags names aren't too long
+    # check that tags don't contain non alphabet characters
     tag_list.each do |tag|
       errors.add(:tag, "\"#{tag}\" is too long (maximum is 30 characters)") if tag.length > 30
+      errors.add(:tag, "'#{tag}' contains non-alphabetic characters") unless tag.match?(/\A[[:alpha:]]+\z/) && !tag.empty?
     end
   end
 
