@@ -122,8 +122,8 @@ preact-render-spy (1 nodes)
         <label htmlFor="checked_code_of_conduct">
           <input
             type="checkbox"
-            name="checked_code_of_conduct"
             id="checked_code_of_conduct"
+            name="checkedCodeOfConduct"
             checked={false}
             onChange={[Function bound handleChange]}
            />
@@ -140,7 +140,7 @@ preact-render-spy (1 nodes)
           <input
             type="checkbox"
             id="checked_terms_and_conditions"
-            name="checked_terms_and_conditions"
+            name="checkedTermsAndConditions"
             checked={false}
             onChange={[Function bound handleChange]}
            />
@@ -158,7 +158,7 @@ preact-render-spy (1 nodes)
           <input
             type="checkbox"
             id="email_membership_newsletter"
-            name="email_membership_newsletter"
+            name="emailMembershipNewsletter"
             checked={true}
             onChange={[Function bound handleChange]}
            />
@@ -168,7 +168,7 @@ preact-render-spy (1 nodes)
           <input
             type="checkbox"
             id="email_digest_periodic"
-            name="email_digest_periodic"
+            name="emailDigestPeriodic"
             checked={true}
             onChange={[Function bound handleChange]}
            />
@@ -355,15 +355,27 @@ preact-render-spy (1 nodes)
       </h1>
       <div>
         <p>
-          DEV is where programmers share ideas and help each other grow. 🤓
+          DEV is where programmers share ideas and help each other grow.
+          <span
+            role="img"
+            aria-label="nerd"
+          >
+             🤓
+          </span>
         </p>
         <p>
-          Ask questions, leave helpful comments, encourage others, and have fun! 🙌
+          Ask questions, leave helpful comments, encourage others, and have fun!
+          <span
+            role="img"
+            aria-label="raising hands"
+          >
+             🙌
+          </span>
         </p>
         <p>
-          A few 
-          <strong>quick questions</strong>
-           for you before you get started...
+          A few
+          <strong> quick questions </strong>
+          for you before you get started...
         </p>
       </div>
     </div>
