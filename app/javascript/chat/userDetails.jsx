@@ -106,42 +106,40 @@ const BlockReportButtons = ({ channel, user }) => (
   </div>
 )
 
-const UserDetailsModal = ({ id, children, actionText, liTexts, pText }) => (
-  <div id={id} style="display:none">
-    <div className={id}>
-      <p>
-        {actionText}
-        {' '}
-        will:
-        {' '}
-      </p>
-      <ul>
-        {liTexts.map(text => (
-          <li>{text}</li>
-        ))}
-      </ul>
-      <p>{pText}</p>
-      <h5>Are you sure?</h5>
-      {children}
-      <a
-        tabIndex="0"
-        className="no"
-        onClick={() => {
-          document.getElementById(id).style.display = 'none';
-          window.location.href = `#`;
-        }}
-        onKeyUp={e => {
-          if (e.keyCode === 13) {
-            document.getElementById(id).style.display = 'none';
-            window.location.href = `#`;
-          }
-        }}
-      >
-        No
-      </a>
+const UserDetailsModal = ({ id, children, actionText, liTexts, pText }) => {
+  const hideModal = () => {
+    document.getElementById(id).style.display = 'none';
+    window.location.href = `#`;
+  }
+  return (
+    <div id={id} style="display:none">
+      <div className={id}>
+        <p>
+          {actionText}
+          {' '}
+          will:
+          {' '}
+        </p>
+        <ul>
+          {liTexts.map(text => (
+            <li>{text}</li>
+          ))}
+        </ul>
+        <p>{pText}</p>
+        <h5>Are you sure?</h5>
+        {children}
+        <a
+          tabIndex="0"
+          className="no"
+          onClick={hideModal}
+          onKeyUp={e => (e.keyCode === 13) && hideModal()}
+        >
+          No
+        </a>
+      </div>
     </div>
-  </div>
-);
+  )
+};
 
 
 const UserDetails = ({ user, activeChannelId, activeChannel }) => {
