@@ -14,7 +14,6 @@ function blockChat(activeChannelId) {
 const setUpButton = ({ modalId = '', otherModalId = '', btnName = '' }) => {
   return (
     <button
-      type="button"
       onClick={() => {
         const modal = document.getElementById(`${modalId}`);
         const otherModal = document.getElementById(
@@ -63,7 +62,6 @@ const SocialIcons = ({ user }) => {
           <a
             href={`${userDetailsConfig[metaProp].hostUrl}${user[metaProp]}`}
             target="_blank"
-            rel="noopener noreferrer"
           >
             <img
               className={userDetailsConfig[metaProp].className}
@@ -109,7 +107,7 @@ const BlockReportButtons = ({ channel, user }) => (
 )
 
 const UserDetailsModal = ({ id, children, actionText, liTexts, pText }) => (
-  <div id={id} style={{ display: 'none' }}>
+  <div id={id} style="display:none">
     <div className={id}>
       <p>
         {actionText}
@@ -146,7 +144,7 @@ const UserDetailsModal = ({ id, children, actionText, liTexts, pText }) => (
 );
 
 
-export const UserDetails = ({ user, activeChannelId, activeChannel }) => {
+const UserDetails = ({ user, activeChannelId, activeChannel }) => {
   const channelId = activeChannelId;
   const channel = activeChannel || {};
   return (
@@ -163,7 +161,7 @@ export const UserDetails = ({ user, activeChannelId, activeChannel }) => {
         }}
       />
       <h1 style={{ textAlign: 'center' }}>
-        <a href={`/${user.username}`} target="_blank" rel="noopener noreferrer">
+        <a href={`/${user.username}`} target="_blank">
           {user.name}
         </a>
       </h1>
@@ -225,3 +223,5 @@ export const UserDetails = ({ user, activeChannelId, activeChannel }) => {
     </div>
   );
 }
+
+export default UserDetails
