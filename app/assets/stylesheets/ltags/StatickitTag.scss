@@ -1,0 +1,31 @@
+@import 'variables';
+.ltag__statickit{
+  align-items: center;
+  display: flex;
+  font-family: $helvetica-condensed;
+  font-size: 1.4rem;
+  font-stretch: condensed;
+  padding: 0.2rem;
+  .ltag__statickit__input{
+    flex-grow: 1;
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin: 0 1rem;
+    padding: 5px 12px;
+  }
+  .ltag__statickit__btn{
+    appearance: none;
+    color: white;
+    cursor: pointer;
+    background: $bold-blue;
+    border: 0;
+    border-radius: 3px;
+    font-size: 1.4rem;
+    font-weight: 500;
+    padding: 5px 12px;
+  }
+  .ltag__statickit__error{
+    color: $red;
+    margin-right: 1rem;
+  }
+}

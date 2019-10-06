@@ -1,0 +1,23 @@
+<form id="statickit" class="ltag__statickit">
+  <label for="email" class="ltag__statickit__label">Email</label><br />
+  <input id="email" type="email" name="email" class="ltag__statickit__input" placeholder="Receive updates from the author" required />
+  <div data-sk-error="email" class="ltag__statickit__error"></div>
+  <button type="submit" class="ltag__statickit__btn">Sign up</button>
+</form>
+
+<script>
+    window.sk=window.sk||function(){(sk.q=sk.q||[]).push(arguments)};
+
+    sk('form', 'init', {
+        id: '<%= id %>',
+        element: '#statickit',
+        onSuccess: function(config) {
+            var h = config.h;
+            var form = config.form;
+            var replacement = h('div.ltag__statickit', 'Thank you for subscribing!');
+            form.parentNode.replaceChild(replacement, form);
+        }
+    });
+</script>
+
+<script defer src="https://js.statickit.com/statickit.js"></script>
