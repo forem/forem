@@ -319,7 +319,6 @@ article {
     }
 
     .tags {
-      // margin-top:-2.2vw;
       .tag {
         display: inline-block;
         border-radius: 3px;
@@ -602,11 +601,8 @@ article {
     }
 
     blockquote {
-      // border:1px solid lighten($light-medium-gray,3%);
       border-left: calc(0.2vw + 2px) solid $dark-gray;
       padding: 0.1% 6% 0.1% 4%;
-      // background:lighten($lightest-gray,3%);
-      // border-radius: 3px;
       margin: 1.6em 1vw;
       font-size: 0.92em;
       line-height: 1.4em;
@@ -772,7 +768,6 @@ article {
   .about-the-author {
     margin: auto;
     width: calc(100% - 5px);
-    // max-width:450px;
     position: relative;
     overflow: hidden;
     padding: 0px 0px 5px;
@@ -808,7 +803,6 @@ article {
         display: inline-block;
         background: no-repeat center center;
         background-size: cover;
-        // vertical-align:-9px;
         margin-right: 2px;
         margin-bottom: 12px;
       }
