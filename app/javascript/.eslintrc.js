@@ -23,6 +23,11 @@ module.exports = {
     ],
     'import/prefer-default-export': 'off',
     'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    'jsx-a11y/label-has-associated-control': [2, {
+      required: {
+          some: [ 'nesting', 'id' ]
+      }
+    }]
   },
   globals: {
     InstantClick: false,
