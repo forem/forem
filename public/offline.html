@@ -122,13 +122,18 @@
 </head>
 
 <body>
+    <h3>Press M key on keyboard(Single key)</h3>
+    <h3>Press Ctrl + B shortcut key (Double key combination)</h3>
+    <h3>Press Ctrl + Alt + Y shortcut key (Multiple key combination)</h3>
+    <hr>
+    <h3>Press Ctrl + B shortcut key (Double key combination)</h3>
   <canvas></canvas>
   <div class="content">
     <svg viewBox="0 0 235 234" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="rainbow-logo"
       preserveAspectRatio="xMinYMin meet">
       <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="80K">
-          <polygon id="Shape" fill="#88AEDC" points="234.04 175.67 158.35 233.95 205.53 233.95 234.04 212"></polygon>
+          <polygon id="Shape" fill="#697184" points="234.04 175.67 158.35 233.95 205.53 233.95 234.04 212"></polygon>
           <polygon id="Shape" points="234.04 140.06 112.11 233.95 112.13 233.95 234.04 140.08"></polygon>
           <polygon id="Shape" points="133.25 0.95 0.04 103.51 0.04 103.53 133.27 0.95"></polygon>
           <polygon id="Shape" fill="#F58F8E" fill-rule="nonzero" points="0.04 0.95 0.04 31.11 39.21 0.95"></polygon>
@@ -153,11 +158,18 @@
         </g>
       </g>
     </svg>
-    <h2> So, there's good news and bad news</h2>
+    <h2> So, there's Good news and bad news</h2>
     <h3>Bad news: It looks like you're offline</h3>
     <h3>Good news: You can draw a picture anywhere on this page while you wait to get it back!</h3>
     <h4>(pick a color below && start drawing!)</h4>
   </div>
+  <!--<select>
+    <option value="volvo">Volvo</option>
+    <option value="saab">Saab</option>
+    <option value="opel">Opel</option>
+    <option value="audi">Audi</option>
+  </select>-->
+  <br>
   <div class="colors">
   </div>
   <svg width="75px" height="75px" viewBox="0 0 266 286" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -176,7 +188,7 @@
   <script type="text/javascript">
     const canvas = document.querySelector('canvas')
     const context = canvas.getContext('2d')
-    const colors = ["#F4908E", "#F2F097", "#88B0DC", "#F7B5D1", "#53C4AF", "#FDE38C"]
+    let colors = ["#b1a6a4", "#F2F097", "#413f3d", "#F7B5D1", "#53C4AF", "#FDE38C"]
     const colorDiv = document.querySelector(".colors")
 
     colors.forEach(color => {
@@ -257,6 +269,19 @@
 
     canvas.addEventListener('mousemove', endPaint)
     canvas.addEventListener('touchmove', endPaint)
+
+    document.onkeyup = function(e) {
+  if (e.which == 77) {
+    alert("M key was pressed");
+  } else if (e.ctrlKey && e.which == 66) {
+    alert("Ctrl + B shortcut combination was pressed");
+  } else if (e.ctrlKey && e.altKey && e.which == 89) {
+    alert("Ctrl + Alt + Y shortcut combination was pressed");
+   } //else if (e.ctrlKey && e.altKey && e.shiftKey && e.which == 85)
+    else if (e.ctrlKey && e.which == 66)  {
+    alert.colors(document.innerHTML([""]));
+  }
+};
 
   </script>
 </body>
