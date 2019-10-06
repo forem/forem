@@ -1,0 +1,17 @@
+<% title "Badges" %>
+
+<div class="blank-space"></div>
+<div class="container article">
+  <h1 style="text-align: center;">Badges</h1>
+  <p style="text-align: center; max-width: 96%;">Receive badges for being awesome! Click on a badge to see how you can earn it.</p>
+  <div class="body sticker-book">
+    <% @badges.each do |badge| %>
+    <a href="/badge/<%= badge.slug %>">
+      <img
+        class="badge-image <%= "unearned" unless badge.id.in?(@earned_badge_achievements) %>"
+        src="<%= cloudinary(badge.badge_image_url, 375) %>"
+        alt="<%= badge.title %> badge">
+    </a>
+    <% end %>
+  </div>
+</div>
