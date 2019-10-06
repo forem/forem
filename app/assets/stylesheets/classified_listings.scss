@@ -323,6 +323,11 @@
   .classifieds-load-more-button {
     text-align: center;
     button {
+      @include themeable(
+          color,
+          theme-color,
+          $black
+      );
       background: transparent;
       @include themeable(
         border,
@@ -423,7 +428,7 @@
     @media screen and (min-width: 950px) {
       left: 0;
       right: 0;
-      box-sizing: border-box;  
+      box-sizing: border-box;
     }
     .single-classified-listing-container__spacer {
       height: 150px;
@@ -689,7 +694,7 @@ form.listings-contact-via-connect {
       padding-bottom: 30px;
 
       @media screen and (max-width: 768px) {
-        width: 90%; 
+        width: 90%;
       }
       a {
         font-size: 0.9em;
@@ -707,7 +712,7 @@ form.listings-contact-via-connect {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    
+
     .listings-dashboard-filter-buttons {
       margin-bottom: -10px;
     }
@@ -742,7 +747,7 @@ form.listings-contact-via-connect {
       }
     }
   }
-  
+
   .dashboard-listings-view {
 
     .dashboard-listing-row {
@@ -838,7 +843,7 @@ form.listings-contact-via-connect {
           border: 2px solid transparent;
           margin-top: 6px;
           display: inline-block;
-    
+
           &.green {
             background: $green;
             color: $black;
@@ -848,11 +853,11 @@ form.listings-contact-via-connect {
             background: $yellow;
             color: $black;
           }
-    
+
           &.red {
             background: $red;
           }
-    
+
           &.black {
             background: $dark-gray;
           }
