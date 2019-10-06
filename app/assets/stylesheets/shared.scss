@@ -131,7 +131,7 @@
       bottom: 0;
       cursor: pointer;
       #progress {
-        background-color: #00ffa3; // red
+        background-color: #00ffa3;
         height: 48px;
         display: inline-block;
         position: relative;
@@ -139,7 +139,7 @@
         transition: width 0.25s ease-in-out;
       }
       #buffer {
-        background-color: #96ffd9; // red
+        background-color: #96ffd9;
         height: 48px;
         display: inline-block;
         position: absolute;
@@ -185,7 +185,6 @@
   background: $green;
   z-index: 100;
   height: 43px;
-  // display:none;
   width: 0%;
   &.showing {
     display: block;

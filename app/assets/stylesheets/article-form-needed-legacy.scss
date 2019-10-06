@@ -70,7 +70,6 @@
         cursor: default;
         box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
 
-        // color:white;
         &::before {
           content: "<";
         }
@@ -112,7 +111,6 @@
     margin: auto;
 
     @media screen and (min-width: 900px) {
-      // width:100%;
       width: inherit;
       padding: 0px 10px;
     }
@@ -323,9 +321,6 @@
     }
   }
 
-  // .ap-icon-clear{
-  //   display:none;
-  // }
   .ap-input-icon {
     margin-top: 13px;
     right: 14px;
