@@ -16,7 +16,7 @@ function fetchBaseData() {
   } else {
     xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
   }
-  xmlhttp.onreadystatechange = function() {
+  xmlhttp.onreadystatechange = () => {
     if (xmlhttp.readyState === XMLHttpRequest.DONE) {
       var json = JSON.parse(xmlhttp.responseText);
       if (json.token) {
@@ -35,7 +35,7 @@ function fetchBaseData() {
       if (window.checkUserLoggedIn()) {
         document.getElementsByTagName('body')[0].dataset.user = json.user;
         browserStoreCache('set', json.user);
-        setTimeout(function() {
+        setTimeout(() => {
           if (typeof ga === 'function') {
             ga('set', 'userId', JSON.parse(json.user).id);
           }
