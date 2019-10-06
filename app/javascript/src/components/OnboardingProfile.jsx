@@ -12,7 +12,7 @@ const OnboardingProfile = ({ onChange }) => {
         </span>
       </div>
       <div className="onboarding-profile-question">
-        What&lsquo;s your quick bio?
+        What&rsquo;s your quick bio?
       </div>
       <input
         name="summary"

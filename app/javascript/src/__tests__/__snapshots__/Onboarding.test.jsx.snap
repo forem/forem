@@ -45,7 +45,7 @@ preact-render-spy (1 nodes)
               ❤️
             </span>
           </div>
-          <div class="onboarding-profile-question">What‘s your quick bio?</div>
+          <div class="onboarding-profile-question">What’s your quick bio?</div>
           <input
             name="summary"
             placeholder="e.g. I'm a passionate hacker wizard unicorn ninja"
@@ -164,7 +164,7 @@ preact-render-spy (1 nodes)
         <div class="onboarding-final-message">
           <p>Software is driven by community.</p>
           <p>
-            Don‘t hesitate to find a discussion and jump right in.
+            Don’t hesitate to find a discussion and jump right in.
           </p>
           <p>
             <em class="green">Everyone is welcome!</em>
@@ -403,7 +403,7 @@ preact-render-spy (1 nodes)
               ❤️
             </span>
           </div>
-          <div class="onboarding-profile-question">What‘s your quick bio?</div>
+          <div class="onboarding-profile-question">What’s your quick bio?</div>
           <input
             name="summary"
             placeholder="e.g. I'm a passionate hacker wizard unicorn ninja"
@@ -1060,7 +1060,7 @@ preact-render-spy (1 nodes)
               ❤️
             </span>
           </div>
-          <div class="onboarding-profile-question">What‘s your quick bio?</div>
+          <div class="onboarding-profile-question">What’s your quick bio?</div>
           <input
             name="summary"
             placeholder="e.g. I'm a passionate hacker wizard unicorn ninja"
