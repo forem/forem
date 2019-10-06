@@ -137,7 +137,7 @@ RSpec.describe "SocialPreviews", type: :request do
       expect(first_request_body).to eq second_request_body
     end
 
-    it "renders and image when requested and redirects to iamge url" do
+    it "renders and image when requested and redirects to image url" do
       get "/social_previews/listing/#{listing.id}.png"
       expect(response).to redirect_to(image_url)
     end
@@ -165,7 +165,7 @@ RSpec.describe "SocialPreviews", type: :request do
       expect(first_request_body).to eq second_request_body
     end
 
-    it "renders and image when requested and redirects to iamge url" do
+    it "renders and image when requested and redirects to image url" do
       get "/social_previews/comment/#{comment.id}.png"
       expect(response).to redirect_to(image_url)
     end
