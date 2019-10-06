@@ -36,6 +36,11 @@ module Mentions
     def create_mention(user)
       mention = Mention.create(user_id: user.id, mentionable_id: @notifiable.id, mentionable_type: @notifiable.class.name)
       # mentionable_type = model that created the mention, user = user to be mentioned
+
+      # if parent comment auther is user than dont send Notification
+      # 1. get parrent comment
+      # 2. get auther of parrent comment
+      # 3. check in mentioned user is auther or not
       Notification.send_mention_notification(mention)
       mention
     end
