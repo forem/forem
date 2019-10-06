@@ -6,7 +6,7 @@
 
 <%= content_for :page_meta do %>
   <meta name="description" content="<%= @commentable.description || "An article from the community" %>">
-  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+  <meta name="keywords" content="software development, inclusive, community, engineering, <%= @commentable.cached_tag_list %>">
 
   <meta property="og:type" content="article" />
   <meta property="og:title" content="Discussion of <%= @commentable.title %>" />
