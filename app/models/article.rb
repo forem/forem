@@ -70,7 +70,7 @@ class Article < ApplicationRecord
   after_save        :detect_human_language
   before_save       :update_cached_user
   after_update      :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
-  before_destroy    :before_destroy_actions
+  before_destroy    :before_destroy_actions, prepend: true
 
   serialize :ids_for_suggested_articles
   serialize :cached_user

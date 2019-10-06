@@ -3,7 +3,8 @@ module Api
     class ArticlesController < ApiController
       respond_to :json
 
-      before_action :authenticate!, only: %i[create update me]
+      before_action :authenticate_with_api_key_or_current_user!, only: %i[create update]
+      before_action :authenticate!, only: :me
       before_action -> { doorkeeper_authorize! :public }, only: %w[index show], if: -> { doorkeeper_token }
 
       before_action :set_cache_control_headers, only: [:index]
@@ -27,6 +28,7 @@ module Api
           params[:username],
           params[:signature],
           params[:state],
+          params[:collection_id],
         ]
         set_surrogate_key_header key_headers.join("_")
       end

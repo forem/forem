@@ -13,6 +13,7 @@ json.array! @articles do |article|
   json.comments_count     article.comments_count
   json.positive_reactions_count article.positive_reactions_count
   json.published_timestamp article.published_timestamp
+  json.collection_id      article.collection_id
 
   json.partial! "api/v0/shared/user", user: article.user
 

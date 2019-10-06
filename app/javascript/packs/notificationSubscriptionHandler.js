@@ -42,8 +42,9 @@ function loadFunctionality() {
   } else {
     updateStatus = target => {
       let payload = '';
-      const shouldUnsubscribeToNotifications = target.classList.contains('selected')
-        || target.classList.contains('selected-emoji');
+      const shouldUnsubscribeToNotifications =
+        target.classList.contains('selected') ||
+        target.classList.contains('selected-emoji');
       const allButtons = document.getElementsByClassName(
         'notification-subscription-label',
       );
@@ -51,14 +52,12 @@ function loadFunctionality() {
         allButtons[i].classList.remove('selected');
       }
       if (shouldUnsubscribeToNotifications) {
-        const unsubscribeButton = allButtons.namedItem(
-          'unsubscribe',
-        );
+        const unsubscribeButton = allButtons.namedItem('unsubscribe');
         unsubscribeButton.classList.add('selected');
-        payload = unsubscribeButton.dataset.payload;
+        ({ payload } = unsubscribeButton.dataset);
       } else {
         target.classList.add('selected');
-        payload = target.dataset.payload;
+        ({ payload } = target.dataset);
       }
       fetch(`/notification_subscriptions/${notifiableType}/${notifiableId}`, {
         method: 'POST',
