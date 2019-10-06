@@ -36,6 +36,12 @@ class SocialPreviewsController < ApplicationController
     set_respond
   end
 
+  def comment
+    @comment = Comment.find(params[:id]) || not_found
+
+    set_respond
+  end
+
   private
 
   def define_categories
