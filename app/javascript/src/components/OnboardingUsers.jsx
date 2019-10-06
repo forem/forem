@@ -1,4 +1,4 @@
-import { h, render, Component } from 'preact';
+import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 class OnboardingUsers extends Component {
@@ -8,11 +8,13 @@ class OnboardingUsers extends Component {
   }
 
   handleAllClick() {
-    this.props.handleCheckAllUsers();
+    const { handleCheckAllUsers } = this.props;
+    handleCheckAllUsers();
   }
 
   render() {
-    const followList = this.props.users.map(user => {
+    const { users, handleCheckUser, checkedUsers } = this.props;
+    const followList = users.map(user => {
       return (
         <div className="onboarding-user-list-row" key={user.id}>
           <div className="onboarding-user-list-key">
@@ -24,19 +26,18 @@ class OnboardingUsers extends Component {
           </div>
           <div className="onboarding-user-list-checkbox">
             <button
-              onClick={this.props.handleCheckUser.bind(this, user)}
-              className={
-                this.props.checkedUsers.indexOf(user) > -1 ? 'checked' : ''
-              }
+              type="button"
+              onClick={handleCheckUser.bind(this, user)}
+              className={checkedUsers.indexOf(user) > -1 ? 'checked' : ''}
             >
-              {this.props.checkedUsers.indexOf(user) > -1 ? '✓' : '+'}
+              {checkedUsers.indexOf(user) > -1 ? '✓' : '+'}
             </button>
           </div>
         </div>
       );
     });
     const renderLoadingOrList = () => {
-      if (this.props.users.length === 0) {
+      if (users.length === 0) {
         return <div className="onboarding-user-loading">Loading...</div>;
       }
       return followList;
@@ -52,17 +53,14 @@ class OnboardingUsers extends Component {
             <div className="onboarding-user-list-key">Follow All</div>
             <div className="onboarding-user-list-checkbox">
               <button
+                type="button"
                 id="onboarding-user-follow-all-btn"
                 onClick={this.handleAllClick}
                 className={
-                  this.props.checkedUsers.length === this.props.users.length
-                    ? 'checked'
-                    : ''
+                  checkedUsers.length === users.length ? 'checked' : ''
                 }
               >
-                {this.props.checkedUsers.length === this.props.users.length
-                  ? '✓'
-                  : '+'}
+                {checkedUsers.length === users.length ? '✓' : '+'}
               </button>
             </div>
           </div>
@@ -78,6 +76,15 @@ class OnboardingUsers extends Component {
 OnboardingUsers.propTypes = {
   handleCheckUser: PropTypes.func.isRequired,
   handleCheckAllUsers: PropTypes.func.isRequired,
+  users: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      summary: PropTypes.string,
+      profile_image_url: PropTypes.string,
+    }),
+  ).isRequired,
+  checkedUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default OnboardingUsers;

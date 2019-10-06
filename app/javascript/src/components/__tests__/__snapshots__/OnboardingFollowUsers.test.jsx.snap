@@ -27,6 +27,7 @@ exports[`<OnboardingFollowUsers /> renders properly when given users 1`] = `
           class="checked"
           id="onboarding-user-follow-all-btn"
           onClick={[Function]}
+          type="button"
         >
           ✓
         </button>
@@ -59,6 +60,7 @@ exports[`<OnboardingFollowUsers /> renders properly when given users 1`] = `
         >
           <button
             onClick={[Function]}
+            type="button"
           >
             +
           </button>
@@ -88,6 +90,7 @@ exports[`<OnboardingFollowUsers /> renders properly when given users 1`] = `
         >
           <button
             onClick={[Function]}
+            type="button"
           >
             +
           </button>
@@ -117,6 +120,7 @@ exports[`<OnboardingFollowUsers /> renders properly when given users 1`] = `
         >
           <button
             onClick={[Function]}
+            type="button"
           >
             +
           </button>

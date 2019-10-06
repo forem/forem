@@ -9,7 +9,8 @@ class OnboardingArticles extends Component {
   }
 
   handleAllClick() {
-    this.props.handleSaveAllArticles();
+    const { handleSaveAllArticles } = this.props;
+    handleSaveAllArticles();
   }
 
   render() {
@@ -39,6 +40,7 @@ it. To get started, here are
             <div className="onboarding-user-list-key">Save All</div>
             <div className="onboarding-user-list-checkbox">
               <button
+                type="button"
                 onClick={this.handleAllClick}
                 className={`article save-all ${areAllSaved ? 'saved' : ''}`}
               >

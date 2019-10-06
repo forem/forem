@@ -43,6 +43,7 @@ const OnboardingArticle = ({ article, isSaved, onSaveArticle }) => (
     </div>
     <div className="onboarding-user-list-checkbox article">
       <button
+        type="button"
         onClick={onSaveArticle}
         className={`article save-single ${isSaved ? 'saved' : ''}`}
       >

@@ -35,7 +35,7 @@ class OnboardingSingleTag extends Component {
           style={`color:${textroundColor}`}
           onClick={this.onClick}
         >
-          #{tag.name}
+          {`#${tag.name}`}
         </a>
         <a
           className="onboarding-tag-link-follow"

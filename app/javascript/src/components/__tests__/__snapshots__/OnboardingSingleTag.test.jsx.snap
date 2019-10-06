@@ -3,7 +3,7 @@
 exports[`<OnboardingSingleTag /> when given a following tag renders correctly 1`] = `
 <div
   class="onboarding-tag-container followed-tag"
-  id="onboarding-tag-container-undefined"
+  id="onboarding-tag-container-JavaScript"
   style="background: undefined"
 >
   <a
@@ -12,12 +12,12 @@ exports[`<OnboardingSingleTag /> when given a following tag renders correctly 1`
     onClick={[Function]}
     style="color:undefined"
   >
-    #
+    #JavaScript
   </a>
   <a
     class="onboarding-tag-link-follow"
     href="#0"
-    id="onboarding-tag-link-follow-undefined"
+    id="onboarding-tag-link-follow-JavaScript"
     onClick={[Function]}
     style="color:undefined"
   >
@@ -29,7 +29,7 @@ exports[`<OnboardingSingleTag /> when given a following tag renders correctly 1`
 exports[`<OnboardingSingleTag /> when given a non-following tag renders correctly 1`] = `
 <div
   class="onboarding-tag-container"
-  id="onboarding-tag-container-undefined"
+  id="onboarding-tag-container-Go"
   style="background: "
 >
   <a
@@ -38,12 +38,12 @@ exports[`<OnboardingSingleTag /> when given a non-following tag renders correctl
     onClick={[Function]}
     style="color:"
   >
-    #
+    #Go
   </a>
   <a
     class="onboarding-tag-link-follow"
     href="#0"
-    id="onboarding-tag-link-follow-undefined"
+    id="onboarding-tag-link-follow-Go"
     onClick={[Function]}
     style="color:"
   >

@@ -1,13 +1,19 @@
-import { h, render, Component } from 'preact';
+import { h } from 'preact';
+import PropTypes from 'prop-types';
 
 // page 1
 const OnboardingProfile = ({ onChange }) => {
   return (
     <div className="onboarding-profile-page">
       <div className="onboarding-user-cta">
-        Tell the us a bit about yourself ❤️
+        <span>Tell the us a bit about yourself</span>
+        <span role="img" aria-label="heart">
+          ❤️
+        </span>
       </div>
-      <div className="onboarding-profile-question">What's your quick bio?</div>
+      <div className="onboarding-profile-question">
+        What&lsquo;s your quick bio?
+      </div>
       <input
         name="summary"
         placeholder="e.g. I'm a passionate hacker wizard unicorn ninja"
@@ -55,6 +61,10 @@ const OnboardingProfile = ({ onChange }) => {
       />
     </div>
   );
+};
+
+OnboardingProfile.propTypes = {
+  onChange: PropTypes.func.isRequired,
 };
 
 export default OnboardingProfile;

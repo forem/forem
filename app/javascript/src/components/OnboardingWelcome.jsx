@@ -1,4 +1,4 @@
-import { h, render, Component } from 'preact';
+import { h } from 'preact';
 
 // page 1
 const OnboardingWelcome = () => {
