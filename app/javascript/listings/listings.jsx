@@ -395,23 +395,28 @@ export class Listings extends Component {
           id="classified-listings-modal-background"
         />
       );
-      if (
-        openedListing.contact_via_connect &&
-        openedListing.user_id !== currentUserId
-      ) {
+      if (openedListing.contact_via_connect) {
         messageModal = (
           <form
             id="listings-message-form"
             className="listings-contact-via-connect"
             onSubmit={this.handleSubmitMessage}
           >
-            <p>
-              <b>
-                Contact
-                {` ${openedListing.author.name} `}
-                via DEV Connect
-              </b>
-            </p>
+            {openedListing.contact_via_connect &&
+            openedListing.user_id !== currentUserId ? (
+              <p>
+                <b>
+                  Contact
+                  {` ${openedListing.author.name} `}
+                  via DEV Connect
+                </b>
+              </p>
+            ) : (
+              <p>
+                This is your active listing. Any member can contact you via this
+                form.
+              </p>
+            )}
             <textarea
               value={message}
               onChange={this.handleDraftingMessage}
@@ -424,46 +429,25 @@ export class Listings extends Component {
               SEND
             </button>
             <p>
-              <em>
-                Message must be relevant and on-topic with the listing. All
-                private interactions
-                <b>must</b>
-                abide by the 
-                {' '}
-                <a href="/code-of-conduct">code of conduct</a>
-              </em>
-            </p>
-          </form>
-        );
-      } else if (openedListing.contact_via_connect) {
-        messageModal = (
-          <form
-            id="listings-message-form"
-            className="listings-contact-via-connect"
-          >
-            <p>
-              This is your active listing. Any member can contact you via this
-              form.
-            </p>
-            <textarea
-              value={message}
-              onChange={this.handleDraftingMessage}
-              id="new-message"
-              rows="4"
-              cols="70"
-              placeholder="Enter your message here..."
-            />
-            <button type="submit" value="Submit" className="submit-button cta">
-              SEND
-            </button>
-            <p>
-              <em>
-                All private interactions
-                <b>must</b>
-                abide by the 
-                {' '}
-                <a href="/code-of-conduct">code of conduct</a>
-              </em>
+              {openedListing.contact_via_connect &&
+              openedListing.user_id !== currentUserId ? (
+                <em>
+                  Message must be relevant and on-topic with the listing. All
+                  private interactions
+                  <b>must</b>
+                  abide by the 
+                  {' '}
+                  <a href="/code-of-conduct">code of conduct</a>
+                </em>
+              ) : (
+                <em>
+                  All private interactions
+                  <b>must</b>
+                  abide by the 
+                  {' '}
+                  <a href="/code-of-conduct">code of conduct</a>
+                </em>
+              )}
             </p>
           </form>
         );
