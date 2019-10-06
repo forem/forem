@@ -17,7 +17,7 @@ function fetchBaseData() {
     xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
   }
   xmlhttp.onreadystatechange = function() {
-    if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+    if (xmlhttp.readyState === XMLHttpRequest.DONE) {
       var json = JSON.parse(xmlhttp.responseText);
       if (json.token) {
         removeExistingCSRF();
@@ -32,7 +32,7 @@ function fetchBaseData() {
       meta.content = json.token;
       document.getElementsByTagName('head')[0].appendChild(meta);
       document.getElementsByTagName('body')[0].dataset.loaded = 'true';
-      if (checkUserLoggedIn()) {
+      if (window.checkUserLoggedIn()) {
         document.getElementsByTagName('body')[0].dataset.user = json.user;
         browserStoreCache('set', json.user);
         setTimeout(function() {
