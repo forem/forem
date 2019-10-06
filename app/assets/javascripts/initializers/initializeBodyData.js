@@ -1,7 +1,12 @@
 'use strict';
 
-function initializeBodyData() {
-  fetchBaseData();
+function removeExistingCSRF() {
+  var csrfTokenMeta = document.querySelector("meta[name='csrf-token']");
+  var csrfParamMeta = document.querySelector("meta[name='csrf-param']");
+  if (csrfTokenMeta && csrfParamMeta) {
+    csrfTokenMeta.parentNode.removeChild(csrfTokenMeta);
+    csrfParamMeta.parentNode.removeChild(csrfParamMeta);
+  }
 }
 
 function fetchBaseData() {
@@ -43,11 +48,9 @@ function fetchBaseData() {
   xmlhttp.send();
 }
 
-function removeExistingCSRF() {
-  var csrfTokenMeta = document.querySelector("meta[name='csrf-token']");
-  var csrfParamMeta = document.querySelector("meta[name='csrf-param']");
-  if (csrfTokenMeta && csrfParamMeta) {
-    csrfTokenMeta.parentNode.removeChild(csrfTokenMeta);
-    csrfParamMeta.parentNode.removeChild(csrfParamMeta);
-  }
+function initializeBodyData() {
+  fetchBaseData();
 }
+
+
+
