@@ -27,7 +27,7 @@ function fetchBaseData() {
       meta.name = 'csrf-param';
       meta.content = json.param;
       document.getElementsByTagName('head')[0].appendChild(meta);
-      var meta = document.createElement('meta');
+      var meta = document.createElement('meta'); // eslint-disable-line no-redeclare
       meta.name = 'csrf-token';
       meta.content = json.token;
       document.getElementsByTagName('head')[0].appendChild(meta);
@@ -51,6 +51,3 @@ function fetchBaseData() {
 function initializeBodyData() {
   fetchBaseData();
 }
-
-
-
