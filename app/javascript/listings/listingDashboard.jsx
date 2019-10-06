@@ -153,6 +153,7 @@ export class ListingDashboard extends Component {
       return selected === 'user' ? (
         <h4>
           Listings Made:
+          {' '}
           {userListings.length}
         </h4>
       ) : (
@@ -172,6 +173,7 @@ export class ListingDashboard extends Component {
       return selected === 'user' ? (
         <h4>
           Credits Available:
+          {' '}
           {userCreds}
         </h4>
       ) : (
