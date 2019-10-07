@@ -23,6 +23,7 @@ function resizeMasonryItem(item) {
   // eslint-disable-next-line no-param-reassign
   item.style.gridRowEnd = `span ${rowSpan}`;
 }
+
 function resizeAllMasonryItems() {
   // Get all item class objects in one list
   const allItems = document.getElementsByClassName('single-classified-listing');
