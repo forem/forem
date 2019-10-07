@@ -356,8 +356,10 @@ class Tags extends Component {
             }
           });
         }
+        // updates searchResults array according to what is being typed by user
+        // allows user to choose a tag when they've typed the partial or whole word
         this.setState({
-          searchResults: content.hits
+          searchResults: content.hits,
         });
       });
   }
