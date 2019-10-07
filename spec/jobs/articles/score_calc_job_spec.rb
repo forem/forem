@@ -12,20 +12,13 @@ RSpec.describe Articles::ScoreCalcJob, type: :job do
       allow(BlackBox).to receive(:calculate_spaminess).and_return(2)
     end
 
-    it "updates article scores" do
-      described_class.perform_now(article.id) do
-        expect(article.score).to be(7)
-        expect(article.hotness_score).to be(373)
-        expect(article.spaminess_rating).to be(2)
-      end
-    end
-
-    it "does not update article scores when no article" do
-      described_class.perform_now(article.id) do
-        expect(article.score).not_to be(7)
-        expect(article.hotness_score).not_to be(373)
-        expect(article.spaminess_rating).not_to be(2)
-      end
+    it "updates article scores", :aggregate_failures do
+      allow(Article).to receive(:find_by).and_return(article)
+      described_class.perform_now(article.id)
+      article.reload
+      expect(article.score).to be(7)
+      expect(article.hotness_score).to be(373)
+      expect(article.spaminess_rating).to be(2)
     end
   end
 end

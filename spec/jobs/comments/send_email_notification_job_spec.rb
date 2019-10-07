@@ -6,11 +6,10 @@ RSpec.describe Comments::SendEmailNotificationJob, type: :job do
     let(:comment) { FactoryBot.create(:comment, commentable: article) }
 
     it "sends notify email" do
-      allow(NotifyMailer).to receive(:new_reply_email)
+      allow(NotifyMailer).to receive(:new_reply_email).and_call_original
 
-      described_class.perform_now(comment.id) do
-        expect(NotifyMailer).to have_receive(:new_reply_email).with(comment).and_call_original
-      end
+      described_class.perform_now(comment.id)
+      expect(NotifyMailer).to have_received(:new_reply_email).with(comment)
     end
   end
 end
