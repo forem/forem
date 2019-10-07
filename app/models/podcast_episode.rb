@@ -86,14 +86,6 @@ class PodcastEpisode < ApplicationRecord
     true
   end
 
-  def readable_publish_date
-    published_at.strftime("%b %e")
-  end
-
-  def published_timestamp
-    published_at.utc.iso8601
-  end
-
   def description
     ActionView::Base.full_sanitizer.sanitize(body)
   end
