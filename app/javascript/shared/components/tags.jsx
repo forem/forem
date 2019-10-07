@@ -85,7 +85,6 @@ class Tags extends Component {
     }
   }
 
-  // getter methods must be above render and below componentDidUpdate
   get selected() {
     return this.props.defaultValue
       .split(',')
@@ -195,7 +194,6 @@ class Tags extends Component {
   };
 
   getCurrentTagAtSelectionIndex(value, index) {
-    // console.log(this.props.listing)
     let tagIndex = 0;
     const tagByCharacterIndex = {};
 
@@ -359,11 +357,7 @@ class Tags extends Component {
           });
         }
         this.setState({
-          searchResults: content.hits.filter(
-            hit =>
-              !this.selected.includes(hit.name) ||
-              this.selected.includes(hit.name),
-          ),
+          searchResults: content.hits
         });
       });
   }
