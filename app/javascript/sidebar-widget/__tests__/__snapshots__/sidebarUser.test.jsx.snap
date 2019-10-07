@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<SidebarUser /> renders properly 1`] = `
+<div
+  class="widget-list-item__suggestions"
+>
+  <div
+    class="widget-list-item__content"
+  >
+    <a
+      href="/undefined"
+    >
+      <img
+        class="widget-list-item__profile-pic"
+      />
+    </a>
+    <button
+      class="widget-list-item__follow-button"
+      id="widget-list-item__follow-button-undefined"
+      onClick={[Function]}
+      type="button"
+    >
+      + FOLLOW
+    </button>
+  </div>
+  <hr />
+</div>
+`;
