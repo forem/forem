@@ -17,7 +17,6 @@ footer {
       max-width: 722px;
       margin-left: auto;
       @media screen and (min-width: 950px) and (max-width: 1119px) {
-        margin-left: 310px;
         max-width: calc(100% - 377px);
       }
       @media screen and (min-width: 1120px) {
