@@ -45,13 +45,18 @@ function watchTextFields(e) {
   }
 }
 
-// Event Listeners
-colorField.bgColor.addEventListener('input', watchColorFields);
-colorField.textColor.addEventListener('input', watchColorFields);
-textField.bgColor.addEventListener('keyup', watchTextFields);
-textField.textColor.addEventListener('keyup', watchTextFields);
+function initPreview() {
+  // Event Listeners
+  colorField.bgColor.addEventListener('input', watchColorFields);
+  colorField.textColor.addEventListener('input', watchColorFields);
+  textField.bgColor.addEventListener('keyup', watchTextFields);
+  textField.textColor.addEventListener('keyup', watchTextFields);
 
-// on init
-updateColorFields();
-updatePreview();
-preview.style.display = 'inline-block';
+  // on init
+  updateColorFields();
+  updatePreview();
+  preview.style.display = 'inline-block';
+}
+
+initPreview();
+window.InstantClick.on('change', initPreview);
