@@ -7,7 +7,7 @@ const Errors = ({ errorsList }) => (
       <span role="img" aria-label="face screaming in fear">
         😱
       </span>
-      Heads up:
+      &nbsp; Heads up:
     </h2>
     <ul>
       {Object.keys(errorsList).map(key => {
