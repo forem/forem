@@ -7,7 +7,7 @@ const MainImage = ({ mainImage, onEdit }) => (
     role="presentation"
     onClick={onEdit}
     onKeyUp={e => {
-      if (e.keyCode === 13) {
+      if (e.key === 'Enter') {
         onEdit(e);
       }
     }}
