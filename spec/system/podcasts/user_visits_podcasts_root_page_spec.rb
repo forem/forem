@@ -21,8 +21,7 @@ RSpec.describe "User visits /pod page", type: :system do
 
   it "displays the podcasts with published_at" do
     within "#articles-list" do
-      # TODO: Fix the unpublished get rendered. count should be 2.
-      expect(page).to have_selector("time.published-at", count: 4)
+      expect(page).to have_selector("time.published-at", count: 2)
       expect(page).to have_selector("span.time-ago-indicator-initial-placeholder", count: 1)
     end
   end
