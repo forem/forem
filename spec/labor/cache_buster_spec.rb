@@ -14,6 +14,11 @@ RSpec.describe CacheBuster do
     it "busts comment" do
       cache_buster.bust_comment(comment.commentable)
     end
+
+    it "busts podcast episode comment" do
+      ep_comment = create(:comment, commentable: podcast_episode)
+      cache_buster.bust_comment(ep_comment.commentable)
+    end
   end
 
   describe "#bust_article" do
