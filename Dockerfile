@@ -21,18 +21,14 @@ RUN gem install bundler:2.0.2
 #
 #------------------------------------------------------------------------------
 ENV PATH=/root/.yarn/bin:$PATH
-RUN apk add --virtual build-yarn curl && \
-    touch ~/.bashrc && \
-    curl -o- -L https://yarnpkg.com/install.sh | sh && \
-    apk del build-yarn
-
+RUN apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
+        yarn
 
 #------------------------------------------------------------------------------
 #
 # Define working directory
 #
 #------------------------------------------------------------------------------
-RUN mkdir /usr/src/app
 WORKDIR /usr/src/app
 
 #------------------------------------------------------------------------------
