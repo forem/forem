@@ -40,6 +40,7 @@ class Categories extends Component {
           Category
         </label>
         <select
+          id="category"
           className="listingform__input"
           name="classified_listing[category]"
           onChange={onChange}
