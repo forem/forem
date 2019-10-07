@@ -50,6 +50,7 @@
       <% else %>
         <h1><%= @episode.title %></h1>
       <% end %>
+      <time datetime="<%= @episode.published_timestamp %>"> <%= @episode.readable_publish_date %> </time>
     </div>
     <div id="record-<%= @episode.slug %>" class="record-wrapper" data-podcast="<%= @podcast.slug %>" data-episode="<%= @episode.slug %>">
       <div class="record" id="record">
