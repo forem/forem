@@ -1,8 +1,9 @@
 require "rails_helper"
 
 RSpec.describe "User visits /pod page", type: :system do
-  let!(:podcast_episode) { create(:podcast_episode) }
-  let!(:podcast_episode2) { create(:podcast_episode) }
+  let!(:podcast_episode1) { create(:podcast_episode, published_at: 7.hours.ago) }
+  let!(:podcast_episode2) { create(:podcast_episode, published_at: 7.days.ago) }
+  let!(:podcast_episode3) { create(:podcast_episode) }
   let(:podcast) { create(:podcast, reachable: true, published: false) }
   let(:unpublished_podcast) { create(:podcast, reachable: false) }
   let!(:un_podcast_episode) { create(:podcast_episode, podcast: podcast, reachable: false) }
@@ -12,8 +13,17 @@ RSpec.describe "User visits /pod page", type: :system do
 
   it "displays the podcasts" do
     within "#articles-list" do
-      expect(page).to have_link(nil, href: podcast_episode.path)
+      expect(page).to have_link(nil, href: podcast_episode1.path)
       expect(page).to have_link(nil, href: podcast_episode2.path)
+      expect(page).to have_link(nil, href: podcast_episode3.path)
+    end
+  end
+
+  it "displays the podcasts with published_at" do
+    within "#articles-list" do
+      # TODO: Fix the unpublished get rendered. count should be 2.
+      expect(page).to have_selector("time.published-at", count: 4)
+      expect(page).to have_selector("span.time-ago-indicator-initial-placeholder", count: 1)
     end
   end
 
