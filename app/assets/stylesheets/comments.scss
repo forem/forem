@@ -459,7 +459,6 @@ a.header-link {
   }
 
   .comment-trees {
-    // margin-left:-$indent-distance;
     .comment-hash-marker {
       margin-top: -45px;
       margin-bottom: 45px;
@@ -737,7 +736,6 @@ a.header-link {
     border-top-left-radius: 3px;
     @include themeable(color, theme-secondary-color, $dark-gray);
     position: relative;
-    // background:$light-gray;
     .comment-date {
       border: none;
       position: absolute;

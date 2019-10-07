@@ -17,8 +17,10 @@
         <h3><span class="tag-identifier">podcast</span><%= episode.title %></h3>
       </div>
       <h4>
-        <%= episode.podcast.title %>・<time datetime="<%= episode.published_timestamp %>"> <%= episode.readable_publish_date %> </time>
-        <span class="time-ago-indicator-initial-placeholder" data-seconds="<%= episode.published_at_int %>"></span>
+        <a href="/<%= episode.podcast.slug %>">
+          <%= episode.podcast.title %>・<time datetime="<%= episode.published_timestamp %>"> <%= episode.readable_publish_date %> </time>
+          <span class="time-ago-indicator-initial-placeholder" data-seconds="<%= episode.published_at_int %>"></span>
+        </a>
       </h4>
     </div>
   </a>

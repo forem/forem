@@ -3,54 +3,52 @@ import { h, Component } from 'preact';
 
 class Categories extends Component {
   options = () => {
-    const { categoriesForSelect, category } = this.props
-    return categoriesForSelect.map(array => {
+    const { categoriesForSelect, category } = this.props;
+    return categoriesForSelect.map(([text, value]) => {
       // array example: ["Education/Courses (1 Credit)", "education"]
-      if(category === array[1]) {
-        return(
-          <option value={array[1]} selected>{array[0]}</option>
-        )
+      if (category === value) {
+        return (
+          <option value={value} selected>
+            {text}
+          </option>
+        );
       }
-      return(
-        <option value={array[1]}>{array[0]}</option>
-      )
-    })
-  }
+      return <option value={value}>{text}</option>;
+    });
+  };
 
   details = () => {
-    const { categoriesForDetails } = this.props
+    const { categoriesForDetails } = this.props;
     const rules = categoriesForDetails.map(category => {
-      const paragraphText = `${category.name}: ${category.rules}`
-      return(
-        <p>
-          {paragraphText}
-        </p>
-      )
-    })
+      const paragraphText = `${category.name}: ${category.rules}`;
+      return <p>{paragraphText}</p>;
+    });
 
-    return(
+    return (
       <details>
-        <summary>
-          Category details/rules
-        </summary>
+        <summary>Category details/rules</summary>
         {rules}
       </details>
-    )
-  }
+    );
+  };
 
   render() {
-    const { onChange } = this.props
-    return(
+    const { onChange } = this.props;
+    return (
       <div className="field">
         <label className="listingform__label" htmlFor="category">
           Category
         </label>
-        <select className="listingform__input" name="classified_listing[category]" onChange={onChange} >
+        <select
+          className="listingform__input"
+          name="classified_listing[category]"
+          onChange={onChange}
+        >
           {this.options()}
         </select>
         {this.details()}
       </div>
-    )
+    );
   }
 }
 
@@ -59,6 +57,6 @@ Categories.propTypes = {
   categoriesForDetails: PropTypes.array.isRequired,
   category: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-}
+};
 
 export default Categories;
