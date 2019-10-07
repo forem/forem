@@ -344,7 +344,7 @@ export class Listings extends Component {
             onClick={e => this.removeTag(e, tag)}
             data-no-instant
             role="button"
-            onKeyPress={e => this.removeTag(e, tag)}
+            onKeyPress={e => e.key === 'Enter' && this.removeTag(e, tag)}
             tabIndex="0"
           >
             ×
