@@ -17,7 +17,9 @@
         <h3><span class="tag-identifier">podcast</span><%= episode.title %></h3>
       </div>
       <h4>
-        <%= episode.podcast.title %>
+        <a href="/<%= episode.podcast.slug %>">
+          <%= episode.podcast.title %>
+        </a>
       </h4>
     </div>
   </a>

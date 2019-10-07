@@ -527,13 +527,11 @@
   padding: 13px;
   min-width: 45%;
   -webkit-overflow-scrolling: touch;
-  // margin-left: -50%;
   @include themeable(
     background, 
     theme-container-accent-background, 
     white
   );
-  // flex-basis: 80%;
   z-index: 200;
   position: relative;
   box-sizing: border-box;
@@ -847,7 +845,6 @@
   min-height: 0.3em;
   min-width: 0.3em;
   border-radius: 100px;
-  // vertical-align: -0.05em;
   margin-right: 3px;
 
   img {
@@ -961,7 +958,6 @@
 .chatmessage {
   padding: 3px 10px;
   display: flex;
-  // justify-content: space-between;
   max-width: 100%;
   &:hover {
     @include themeable(
