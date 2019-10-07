@@ -21,6 +21,10 @@ module SocialImageHelper
     Articles::SocialImage.new(article).url
   end
 
+  def comment_social_image_url(comment)
+    comment_social_preview_url(comment, format: :png)
+  end
+
   def use_new_social_url?(resource)
     resource.updated_at > SOCIAL_PREVIEW_MIGRATION_DATETIME
   end
