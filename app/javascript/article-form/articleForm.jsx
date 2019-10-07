@@ -21,6 +21,24 @@ import Errors from './elements/errors';
 import KeyboardShortcutsHandler from './elements/keyboardShortcutsHandler';
 import Tags from '../shared/components/tags';
 
+const SetupImageButton = ({
+  className,
+  imgSrc,
+  imgAltText,
+  onClickCallback,
+}) => (
+  <button type="button" className={className} onClick={onClickCallback}>
+    <img src={imgSrc} alt={imgAltText} />
+  </button>
+);
+
+SetupImageButton.propTypes = {
+  className: PropTypes.string.isRequired,
+  imgSrc: PropTypes.string.isRequired,
+  imgAltText: PropTypes.string.isRequired,
+  onClickCallback: PropTypes.func.isRequired,
+};
+
 export default class ArticleForm extends Component {
   static handleGistPreview() {
     const els = document.getElementsByClassName('ltag_gist-liquid-tag');
@@ -206,7 +224,11 @@ export default class ArticleForm extends Component {
     this.setState({ organizationId });
   };
 
-  failedPreview = () => {};
+  failedPreview = response => {
+    // TODO: console.log should not be part of production code. Remove it!
+    // eslint-disable-next-line no-console
+    console.log(response);
+  };
 
   handleConfigChange = e => {
     e.preventDefault();
@@ -255,7 +277,7 @@ export default class ArticleForm extends Component {
   onClearChanges = e => {
     e.preventDefault();
     // eslint-disable-next-line no-restricted-globals, no-alert
-    const revert = confirm(
+    const revert = window.confirm(
       'Are you sure you want to revert to the previous save?',
     );
     if (!revert && navigator.userAgent !== 'DEV-Native-ios') return;
@@ -383,13 +405,12 @@ export default class ArticleForm extends Component {
       let moreConfigBottomButton = '';
       if (version === 'v2') {
         moreConfigBottomButton = (
-          <button
-            type="button"
+          <SetupImageButton
             className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
-            onClick={this.toggleMoreConfig}
-          >
-            <img src={ThreeDotsIcon} alt="menu dots" />
-          </button>
+            imgSrc={ThreeDotsIcon}
+            imgAltText="menu dots"
+            onClickCallback={this.toggleMoreConfig}
+          />
         );
         controls = (
           <div
@@ -408,20 +429,18 @@ export default class ArticleForm extends Component {
                 autoComplete="off"
                 classPrefix="articleform"
               />
-              <button
+              <SetupImageButton
                 className="articleform__detailsButton articleform__detailsButton--image"
-                onClick={this.toggleImageManagement}
-                type="button"
-              >
-                <img src={ImageUploadIcon} alt="Upload images" />
-              </button>
-              <button
+                imgSrc={ImageUploadIcon}
+                imgAltText="Upload images"
+                onClickCallback={this.toggleImageManagement}
+              />
+              <SetupImageButton
                 className="articleform__detailsButton articleform__detailsButton--moreconfig"
-                onClick={this.toggleMoreConfig}
-                type="button"
-              >
-                <img src={ThreeDotsIcon} alt="Menu" />
-              </button>
+                imgSrc={ThreeDotsIcon}
+                imgAltText="Menu"
+                onClickCallback={this.toggleMoreConfig}
+              />
             </div>
           </div>
         );
