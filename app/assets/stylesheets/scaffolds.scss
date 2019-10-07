@@ -42,6 +42,12 @@ body {
   }
 }
 
+@media print {
+   .top-bar, .article-actions {
+      display: none;
+   }
+}
+
 .config_minimize_newest_listings {
   #sidebar-listings-widget {
     .widget-body {

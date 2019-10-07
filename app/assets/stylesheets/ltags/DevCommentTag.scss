@@ -44,13 +44,6 @@
       opacity: 0.7;
     }
 
-    .comment-username {
-      // vertical-align: calc(0.7vw + 12px);
-    }
-
-    .icon-img{
-      // vertical-align:calc(0.7vw + 9px);
-    }
     .comment-date {
       border: none;
       position: absolute;
@@ -195,9 +188,7 @@
       border-radius:3px;
       display:block;
       padding:0px;
-      // margin-left:1px;
       position:relative;
-      // margin-top:calc(-0.6vw - 4px);
       z-index:6;
       img{
         left: inherit;
