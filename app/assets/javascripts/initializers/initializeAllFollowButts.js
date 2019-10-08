@@ -23,7 +23,7 @@ function addFollowingText(butt, style) {
 }
 
 function assignState(butt, newState) {
-  var style = JSON.parse(butt.dataset.info).style;
+  let style = JSON.parse(butt.dataset.info).style;
   butt.classList.add('showing');
   if (newState === 'follow' || newState === 'follow-back') {
     butt.dataset.verb = 'unfollow';
@@ -47,7 +47,7 @@ function assignState(butt, newState) {
 
 function addModalEventListener(butt) {
   assignState(butt, 'login');
-  butt.onclick = function onClick(e) {
+  butt.onclick = e => {
     e.preventDefault();
     // eslint-disable-next-line no-undef
     showModal('follow-button');
@@ -70,8 +70,8 @@ function assignInitialButtResponse(response, butt) {
 }
 
 function handleFollowButtPress(butt) {
-  var buttonDataInfo = JSON.parse(butt.dataset.info);
-  var formData = new FormData();
+  let buttonDataInfo = JSON.parse(butt.dataset.info);
+  let formData = new FormData();
   formData.append('followable_type', buttonDataInfo.className);
   formData.append('followable_id', buttonDataInfo.id);
   formData.append('verb', butt.dataset.verb);
@@ -88,23 +88,21 @@ function handleOptimisticButtRender(butt) {
     // Handles actual following of tags/users
     try {
       // lets try grab the event buttons info data attribute user id
-      var evFabUserId = JSON.parse(butt.dataset.info).id;
-      var requestVerb = butt.dataset.verb;
+      let evFabUserId = JSON.parse(butt.dataset.info).id;
+      let requestVerb = butt.dataset.verb;
       // now for all follow action buttons
-      document
-        .querySelectorAll('.follow-action-button')
-        .forEach(function checkAndAssignState(fab) {
-          // lets check they have info data attributes
-          if (fab.dataset.info) {
-            // and attempt to parse those, to grab that buttons info user id
-            var fabUserId = JSON.parse(fab.dataset.info).id;
-            // now does that user id match our event buttons user id?
-            if (fabUserId && fabUserId === evFabUserId) {
-              // yes - time to assign the same state!
-              assignState(fab, requestVerb);
-            }
+      document.querySelectorAll('.follow-action-button').forEach(fab => {
+        // lets check they have info data attributes
+        if (fab.dataset.info) {
+          // and attempt to parse those, to grab that buttons info user id
+          let fabUserId = JSON.parse(fab.dataset.info).id;
+          // now does that user id match our event buttons user id?
+          if (fabUserId && fabUserId === evFabUserId) {
+            // yes - time to assign the same state!
+            assignState(fab, requestVerb);
           }
-        });
+        }
+      });
     } catch (err) {
       return;
     }
@@ -114,35 +112,34 @@ function handleOptimisticButtRender(butt) {
 
 function addButtClickHandle(response, butt) {
   // currently lacking error handling
-  var buttInfo = JSON.parse(butt.dataset.info);
+  let buttInfo = JSON.parse(butt.dataset.info);
   assignInitialButtResponse(response, butt);
-  butt.onclick = function onclick(e) {
+  butt.onclick = e => {
     e.preventDefault();
     handleOptimisticButtRender(butt);
   };
 }
 
 function handleTagButtAssignment(user, butt, buttInfo) {
-  var buttAssignmentBoolean =
+  let buttAssignmentBoolean =
     JSON.parse(user.followed_tags)
-      .map(function getId(followedTag) {
-        return followedTag.id;
-      })
+      .map(followedTag => followedTag.id)
       .indexOf(buttInfo.id) !== -1;
-  var buttAssignmentBoolText = buttAssignmentBoolean ? 'true' : 'false';
+  let buttAssignmentBoolText = buttAssignmentBoolean ? 'true' : 'false';
   addButtClickHandle(buttAssignmentBoolText, butt);
+  // eslint-disable-next-line no-undef
   shouldNotFetch = true;
 }
 
 function fetchButt(butt, buttInfo) {
   butt.dataset.fetched = 'fetched';
-  var dataRequester;
+  let dataRequester;
   if (window.XMLHttpRequest) {
     dataRequester = new XMLHttpRequest();
   } else {
     dataRequester = new ActiveXObject('Microsoft.XMLHTTP');
   }
-  dataRequester.onreadystatechange = function onreadystatechange() {
+  dataRequester.onreadystatechange = () => {
     if (
       dataRequester.readyState === XMLHttpRequest.DONE &&
       dataRequester.status === 200
@@ -159,11 +156,11 @@ function fetchButt(butt, buttInfo) {
 }
 
 function initializeFollowButt(butt) {
-  var user = userData();
+  let user = userData();
   // eslint-disable-next-line no-restricted-globals
-  var deviceWidth = window.innerWidth > 0 ? window.innerWidth : screen.width;
-  var buttInfo = JSON.parse(butt.dataset.info);
-  var userStatus = document
+  let deviceWidth = window.innerWidth > 0 ? window.innerWidth : screen.width;
+  let buttInfo = JSON.parse(butt.dataset.info);
+  let userStatus = document
     .getElementsByTagName('body')[0]
     .getAttribute('data-user-status');
   if (userStatus === 'logged-out') {
@@ -181,6 +178,6 @@ function initializeFollowButt(butt) {
 }
 
 function initializeAllFollowButts() {
-  var followButts = document.getElementsByClassName('follow-action-button');
+  let followButts = document.getElementsByClassName('follow-action-button');
   followButts.forEach(initializeFollowButt);
 }
