@@ -11,3 +11,5 @@ title: Preparing a Pull Request
 - If you follow the pull request template, you can't go wrong.
 
 _Please note: all commits in a pull request will be squashed when merged, but when your PR is approved and passes our CI, it will be live on production!_
+
+If the pull request affects the public API in any way, a post on DEV from the DEV Team account should accompany it. This is the duty of the core team to carry out.
