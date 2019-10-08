@@ -13,8 +13,13 @@ class RedditJsonFromUrlService
     {
       author: data["author"],
       title: data["title"],
-      url: @url,
-      thumbnail: data["thumbnail"]
+      post_url: @url,
+      created: data["created_utc"],
+      post_hint: data["post_hint"],
+      image_url: data["url"],
+      thumbnail: data["thumbnail"],
+      selftext: data["selftext"],
+      selftext_html: data["selftext_html"]
     }
   end
 end
