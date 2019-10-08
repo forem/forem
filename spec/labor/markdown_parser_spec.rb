@@ -87,7 +87,9 @@ RSpec.describe MarkdownParser do
     it "renders properly relative paths" do
       code_span = "[career tag](/t/career)"
       test = generate_and_parse_markdown(code_span)
-      expect(test).to eq("<p><a href=\"https://dev.to/t/career\">career tag</a></p>\n\n")
+      app_protocol = ApplicationConfig["APP_PROTOCOL"]
+      app_domain = ApplicationConfig["APP_DOMAIN"]
+      expect(test).to eq("<p><a href=\"#{app_protocol}#{app_domain}/t/career\">career tag</a></p>\n\n")
     end
   end
 
