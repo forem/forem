@@ -19,9 +19,9 @@
       <h4>
         <a href="/<%= episode.podcast.slug %>">
           <%= episode.podcast.title %>
-          <% if episode.published_at.present? %>
-            ・<time class="published-at" datetime="<%= episode.decorate.published_timestamp %>">
-            <%= episode.decorate.readable_publish_date %>
+          <% if episode.published_at? %>
+            ・<time class="published-at" datetime="<%= episode.published_timestamp %>">
+            <%= episode.readable_publish_date %>
             </time>
             <span class="time-ago-indicator-initial-placeholder" data-seconds="<%= episode.published_at_int %>"></span>
           <% end %>

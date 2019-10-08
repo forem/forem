@@ -18,12 +18,6 @@
       </div>
       <h4>
         <%= episode.podcast.title %>
-        <% if episode.published_at.present? %>
-          ・<time class="published-at" datetime="<%= episode.decorator.published_timestamp %>">
-          <%= episode.decorator.readable_publish_date %>
-          </time>
-          <span class="time-ago-indicator-initial-placeholder" data-seconds="<%= episode.published_at_int %>"></span>
-        <% end %>
       </h4>
     </div>
   </a>
