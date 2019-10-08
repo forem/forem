@@ -38,6 +38,21 @@ The home feed is based on a combination of collective recent posts that are cach
 
 Currently, the top post on the home feed, which must have a cover image, is shared among all users.
 
+## Inter-page navigation
+
+DEV uses a variation of "instant click" which swaps out content instead of full page requests. It is similar to the Rails gem Turbolinks, but more lightweight. The library is modified to work specifically with the Rails app, and does not swap the nav bar or footer when a page is changed. The code for this functionality can be found in `app/assets/javascripts/base.js.erb`.
+
+There are gotchas in terms of JavaScript not loading from a fully blank slate. This means that a lot of functionality needs to be loaded on page change, as well as `window.InstantClick.on('change', someFunction)`. This means lines like this exist in the app...
+
+```javascript
+initPreview();
+window.InstantClick.on('change', initPreview);
+```
+
+This can change how variables need to be defined in certain contexts and orders, differently than if they were loaded freshly, or within the context of a truly integrated single page app.
+
+Of course, it would be possible to abstract away some of these gotchas in the future.
+
 # General app concepts
 
 ## Articles (or posts)
