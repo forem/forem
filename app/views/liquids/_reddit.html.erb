@@ -1,18 +1,33 @@
 <!-- app/views/liquids/_reddit.html.erb -->
-<div class='ltag__link'>
-  <a href='<%= url %>' class='ltag__link__link'>
-    <div class='ltag__link__pic'>
-      <img src='<%= thumbnail %>' alt='<%= author %>' />
-    </div>
-  </a>
-
-  <a href='<%= url %>' class='ltag__link__link'>
-    <div class='ltag__link__content'>
-      <h2><%= title %></h2>
-      <h3><%= author %></h3>
-      <div class="ltag__link__servicename">
-        <img src="<%= asset_path("reddit-icon.svg") %>" alt="Reddit Logo" aria-label="Reddit Logo" />
+<div class="ltag__reddit--container">
+  <div class="ltag__reddit--title-container">
+    <header>
+      <div class="ltag__reddit--title">
+        <h1>
+          <img src="<%= asset_path("reddit-icon.svg") %>" alt="Reddit Logo" />
+          <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer">
+            <%= title %>
+          </a>
+        </h1>
+        <div class="ltag__reddit--post-metadata">
+          <span><%#= Time.at(created_at).strftime("%b %e '%y") %></span>
+          <span>Author: <%= author %></span>
+        </div>
       </div>
-    </div>
-  </a>
+    </header>
+  </div>
+  <div class="ltag__reddit--body">
+    <p>
+      <% if post_hint == 'self' %>
+        <%= HTML_Truncator.truncate(markdown_text, 50) %>
+      <% elsif post_hint == 'image' %>
+        <img src="<%= thumbnail %>" alt="<%= title %>">
+      <% end %>
+    </p>
+  </div>
+  <div class="ltag__reddit--btn--container">
+    <button class="ltag__reddit--btn" type="button">
+      <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer">See Full Post</a>
+    </button>
+  </div>
 </div>
