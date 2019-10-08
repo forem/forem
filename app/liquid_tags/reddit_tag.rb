@@ -11,7 +11,11 @@ class RedditTag < LiquidTagBase
     ActionController::Base.new.render_to_string(
       partial: PARTIAL,
       locals: {
-        content: @reddit_content
+        content: @reddit_content,
+        url: @reddit_content[:url],
+        thumbnail: @reddit_content[:thumbnail],
+        author: @reddit_content[:author],
+        title: @reddit_content[:title]
       },
     )
   end
