@@ -1,0 +1,29 @@
+<% if collection.present? && collection.articles.published.size > 1 %>
+  <div class="article-collection-wrapper article-collection-wrapper-top">
+    <% if collection.slug.present? %>
+      <p><%= collection.slug %> (<%= collection.articles.published.size %> Part Series)</p>
+    <% else %>
+      <p><%= collection.articles.published.size %> Part Series</p>
+    <% end %>
+    <div class="article-collection">
+      <% collection.articles.published.order("published_at ASC").each_with_index do |article, i| %>
+        <% if collection.articles.published.size > 5 && i == 2 %>
+          <a
+            href="<%= article.path if article.published %>"
+            class="collection-link-inbetween"
+            id="collection-link-inbetween"
+            data-no-instant
+            title="View more">
+            3 ... <%= collection.articles.published.size - 2 %>
+          </a>
+        <% end %>
+        <a
+          href="<%= article.path if article.published %>"
+          class="<%= "collection-link-hidden" if collection.articles.published.size > 5 && (i > 1 && i < collection.articles.published.size - 2) %>"
+          title="Published <%= article.readable_publish_date %>">
+          <%= i + 1 %>) <%= article.title %>
+        </a>
+      <% end %>
+    </div>
+  </div>
+<% end %>
