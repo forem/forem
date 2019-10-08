@@ -54,10 +54,10 @@ class MarkdownFixer
 
     def add_quotes_to_section(markdown, section:)
       # Only add quotes to front matter, or text between triple dashes
-      markdown.gsub(FRONT_MATTER_DETECTOR) do |front_matter|
-        front_matter.gsub(/#{section}:\s?(.*?)(\r\n|\n)/m) do |target|
-          # 1 is the captured group (.*?)
-          captured_text = Regexp.last_match(1)
+      markdown.sub(FRONT_MATTER_DETECTOR) do |front_matter|
+        front_matter.gsub(/#{section}: ?(?<content>.*?)(\r\n|\n)/m) do |target|
+          # `content` is the captured group (.*?)
+          captured_text = Regexp.last_match('content')
           # The query below checks if the whole text is wrapped in
           # either single or double quotes.
           match = captured_text.scan(/(^".*"$|^'.*'$)/)
