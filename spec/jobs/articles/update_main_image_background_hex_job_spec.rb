@@ -12,5 +12,13 @@ RSpec.describe Articles::UpdateMainImageBackgroundHexJob, type: :job do
       described_class.perform_now(article.id)
       expect(article.reload.main_image_background_hex_color).to eql("#eee")
     end
+
+    context "without article" do
+      let(:article) { nil }
+
+      it "does not error" do
+        expect { described_class.perform_now(nil) }.not_to raise_error
+      end
+    end
   end
 end
