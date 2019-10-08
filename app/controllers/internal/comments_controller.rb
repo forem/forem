@@ -1,7 +1,9 @@
 class Internal::CommentsController < Internal::ApplicationController
   layout "internal"
+  skip_before_action :authorize_admin
 
   def index
+    authorize([:internal, Comment])
     @comments = if params[:state]&.start_with?("toplast-")
                   Comment.
                     includes(:user).
