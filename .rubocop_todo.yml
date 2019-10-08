@@ -53,13 +53,6 @@ Rails/OutputSafety:
 Style/ClassAndModuleChildren:
   Enabled: false
 
-# Offense count: 3
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: annotated, template, unannotated
-Style/FormatStringToken:
-  Exclude:
-    - 'app/labor/hex_comparer.rb'
-
 # Offense count: 2
 # Configuration parameters: MinBodyLength.
 Style/GuardClause:
