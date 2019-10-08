@@ -1,3 +1,5 @@
+'use strict';
+
 // eslint-disable-next-line no-unused-vars
 function initializeCommentDropdown() {
   const announcer = document.getElementById('article-copy-link-announcer');
