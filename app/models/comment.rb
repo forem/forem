@@ -1,5 +1,6 @@
 class Comment < ApplicationRecord
   has_ancestry
+  resourcify
   include AlgoliaSearch
   include Reactable
   belongs_to :commentable, polymorphic: true
