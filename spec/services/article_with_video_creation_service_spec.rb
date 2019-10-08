@@ -14,6 +14,7 @@ RSpec.describe ArticleWithVideoCreationService, type: :service do
       Timecop.return
       test = build_stubbed(:article, user: user, video: link).attributes.symbolize_keys
       article = described_class.new(test, user).create!
+      expect(article.body_markdown.inspect).to include("description: \\ntags: \\n")
       expect(article.video_state).to eq("PROGRESSING")
     end
   end
