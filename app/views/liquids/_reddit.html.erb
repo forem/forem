@@ -1,15 +1,15 @@
 <!-- app/views/liquids/_reddit.html.erb -->
 <div class='ltag__link'>
-  <a href='<%= content[:url] %>' class='ltag__link__link'>
+  <a href='<%= url %>' class='ltag__link__link'>
     <div class='ltag__link__pic'>
-      <img src='<%= content[:thumbnail] %>' alt='<%= content[:author] %>' />
+      <img src='<%= thumbnail %>' alt='<%= author %>' />
     </div>
   </a>
 
-  <a href='<%= content[:url] %>' class='ltag__link__link'>
+  <a href='<%= url %>' class='ltag__link__link'>
     <div class='ltag__link__content'>
-      <h2><%= content[:title] %></h2>
-      <h3><%= content[:author] %></h3>
+      <h2><%= title %></h2>
+      <h3><%= author %></h3>
       <div class="ltag__link__servicename">
         <img src="<%= asset_path("reddit-icon.svg") %>" alt="Reddit Logo" aria-label="Reddit Logo" />
       </div>
