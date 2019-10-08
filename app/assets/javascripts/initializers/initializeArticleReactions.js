@@ -1,3 +1,5 @@
+/* global sendHapticMessage, showModal */
+
 'use strict';
 
 // Set reaction count to correct number
@@ -167,7 +169,7 @@ function initializeArticleReactions() {
       'article-reaction-butt',
     );
     for (var i = 0; i < reactionButts.length; i += 1) {
-      reactionButts[i].onclick = e => {
+      reactionButts[i].onclick = function addReactionOnClick(e) {
         reactToArticle(articleId, this.dataset.category);
       };
     }
