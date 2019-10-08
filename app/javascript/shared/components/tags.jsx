@@ -20,7 +20,7 @@ const NAVIGATION_KEYS = [
   KEYS.TAB,
 ];
 
-const LETTERS = /^[a-z]+$/i;
+const LETTERS = /\w/i;
 
 /* TODO: Remove all instances of this.props.listing
    and refactor this component to be more generic */
