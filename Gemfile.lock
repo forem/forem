@@ -608,7 +608,7 @@ GEM
       ffi (~> 1.0)
     rbtree3 (0.5.0)
     rdoc (6.1.1)
-    recaptcha (5.1.0)
+    recaptcha (5.1.1)
       json
     redcarpet (3.5.0)
     regexp_parser (1.6.0)
