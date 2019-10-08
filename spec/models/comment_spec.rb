@@ -52,7 +52,6 @@ RSpec.describe Comment, type: :model do
     end
   end
 
-  # rubocop:disable RSpec/ExampleLength
   it "adds timestamp url if commentable has video and timestamp" do
     video_comment.body_markdown = "I like the part at 4:30"
     video_comment.save
@@ -71,7 +70,6 @@ RSpec.describe Comment, type: :model do
     expect(video_comment.processed_html.include?(">1:52:30</a>")).to eq(true)
     expect(video_comment.processed_html.include?(">1:20</a>")).to eq(true)
   end
-  # rubocop:enable RSpec/ExampleLength
 
   it "does not add timestamp if commentable does not have video" do
     comment.body_markdown = "I like the part at 1:52:30 and 1:20"

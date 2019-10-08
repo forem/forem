@@ -14,6 +14,7 @@ end
 
 def create_test_channel_notifier
   return create_stubbed_notifier if ApplicationConfig["SLACK_WEBHOOK_URL"].blank?
+
   Slack::Notifier.new(
     ApplicationConfig["SLACK_WEBHOOK_URL"],
     channel: "#test",

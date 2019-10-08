@@ -162,7 +162,6 @@ RSpec.describe BadgeRewarder do
       described_class.award_tag_badges
       expect(user.badge_achievements.size).to eq(0)
     end
-    # rubocop:disable RSpec/ExampleLength
     it "does not award badge to user who has previously won" do
       article.update_columns(cached_tag_list: tag.name, score: 201)
       second_article.update_columns(cached_tag_list: tag.name, score: 150)
@@ -179,6 +178,5 @@ RSpec.describe BadgeRewarder do
       expect(second_user.reload.badge_achievements.size).to eq(1)
       expect(third_user.reload.badge_achievements.size).to eq(1)
     end
-    # rubocop:enable RSpec/ExampleLength
   end
 end
