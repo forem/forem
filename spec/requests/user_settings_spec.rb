@@ -53,6 +53,16 @@ RSpec.describe "UserSettings", type: :request do
       expect(user.reload.profile_updated_at).to be > 2.minutes.ago
     end
 
+    it "enables community-success notifications" do
+      put "/users/#{user.id}", params: { user: { tab: "notifications", mod_roundrobin_notifications: 1 } }
+      expect(user.reload.mod_roundrobin_notifications).to be(true)
+    end
+
+    it "disables community-success notifications" do
+      put "/users/#{user.id}", params: { user: { tab: "notifications", mod_roundrobin_notifications: 0 } }
+      expect(user.reload.mod_roundrobin_notifications).to be(false)
+    end
+
     it "updates username to too short username" do
       put "/users/#{user.id}", params: { user: { tab: "profile", username: "h" } }
       expect(response.body).to include("Username is too short")
