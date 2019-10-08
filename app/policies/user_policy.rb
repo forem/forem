@@ -99,6 +99,7 @@ class UserPolicy < ApplicationPolicy
       mastodon_url
       medium_url
       mobile_comment_notifications
+      mod_roundrobin_notifications
       mostly_work_with
       name
       password
