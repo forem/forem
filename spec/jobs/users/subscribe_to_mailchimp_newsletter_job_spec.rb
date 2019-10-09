@@ -7,13 +7,13 @@ RSpec.describe Users::SubscribeToMailchimpNewsletterJob, type: :job do
     let(:user) { FactoryBot.create(:user) }
 
     it "subscribes user to mailchimp newsletter" do
-      mailchimp_bot = MailchimpBot.new(user)
-
+      mailchimp_bot = double
+      allow(MailchimpBot).to receive(:new).and_return(mailchimp_bot)
       allow(mailchimp_bot).to receive(:upsert)
 
-      described_class.perform_now(user.id) do
-        expect(mailchimp_bot).to have_received(:upsert)
-      end
+      described_class.perform_now(user.id)
+
+      expect(mailchimp_bot).to have_received(:upsert)
     end
   end
 end
