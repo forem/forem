@@ -56,7 +56,6 @@ exclude_patterns:
   - "features/"
   - "node_modules/"
   - "script/"
-  - "spec/"
   - "test/"
   - "tests/"
   - "vendor/"
