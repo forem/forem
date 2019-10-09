@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import linkState from 'linkstate';
+import PropTypes from 'prop-types';
 import Title from './elements/title';
 import BodyMarkdown from './elements/bodyMarkdown';
 import Categories from './elements/categories';
@@ -12,11 +13,18 @@ export default class ListingForm extends Component {
   constructor(props) {
     super(props);
 
-    this.listing = JSON.parse(this.props.listing);
-    this.categoriesForDetails = JSON.parse(this.props.categoriesForDetails);
-    this.categoriesForSelect = JSON.parse(this.props.categoriesForSelect);
+    const {
+      listing,
+      categoriesForDetails,
+      categoriesForSelect,
+      organizationsString,
+    } = this.props;
 
-    const organizations = JSON.parse(this.props.organizations);
+    this.listing = JSON.parse(listing);
+    this.categoriesForDetails = JSON.parse(categoriesForDetails);
+    this.categoriesForSelect = JSON.parse(categoriesForSelect);
+
+    const organizations = JSON.parse(organizationsString);
 
     this.url = window.location.href;
 
@@ -84,10 +92,10 @@ export default class ListingForm extends Component {
             defaultValue={tagList}
             category={category}
             onInput={linkState(this, 'tagList')}
-            classPrefix={`listingform`}
+            classPrefix="listingform"
             maxTags={8}
-            autocomplete={`off`}
-            listing={true}
+            autocomplete="off"
+            listing
           />
           <ExpireDate
             defaultValue={expireDate}
@@ -95,7 +103,7 @@ export default class ListingForm extends Component {
           />
           {selectOrg}
           <ContactViaConnect
-            defaultValue={contactViaConnect}
+            checked={contactViaConnect}
             onChange={linkState(this, 'contactViaConnect')}
           />
         </div>
@@ -119,3 +127,17 @@ export default class ListingForm extends Component {
     );
   }
 }
+
+ListingForm.propTypes = {
+  listing: PropTypes.string,
+  categoriesForDetails: PropTypes.string,
+  categoriesForSelect: PropTypes.string,
+  organizationsString: PropTypes.string,
+};
+
+ListingForm.defaultProps = {
+  listing: '',
+  categoriesForDetails: '',
+  categoriesForSelect: '',
+  organizationsString: '',
+};
