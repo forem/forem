@@ -13,8 +13,6 @@ RSpec.describe Articles::BustCacheJob, type: :job do
     end
 
     context "without article" do
-      let(:article) { nil }
-
       it "does not error" do
         expect { described_class.perform_now(nil, cache_buster) }.not_to raise_error
       end
