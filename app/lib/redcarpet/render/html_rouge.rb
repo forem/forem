@@ -18,6 +18,8 @@ module Redcarpet
           %(<a href="#{link}"#{link_attributes}>#{content}</a>)
         elsif /\.{1}/.match? link
           %(<a href="//#{link}"#{link_attributes}>#{content}</a>)
+        elsif link.start_with?("#")
+          %(<a href="#{link}"#{link_attributes}>#{content}</a>)
         else
           %(<a href="#{app_protocol}#{app_domain}#{link}"#{link_attributes}>#{content}</a>)
         end

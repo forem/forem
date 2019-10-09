@@ -105,6 +105,15 @@ RSpec.describe MarkdownFixer do
       expected_result = front_matter(title: %("#{sample_text}"), description: %("#{sample_text}"))
       expect(result).to eq(expected_result)
     end
+
+    context 'when description is empty' do
+      it "escapes title and description" do
+        result = described_class.
+          fix_all("---\ntitle: #{sample_text}\ndescription:\ntags: \n---\n")
+        expected_result = "---\ntitle: \"#{sample_text}\"\ndescription: \"\"\ntags: \n---\n"
+        expect(result).to eq(expected_result)
+      end
+    end
   end
 
   describe "::fix_for_preview" do

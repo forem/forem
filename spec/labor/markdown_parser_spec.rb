@@ -91,6 +91,12 @@ RSpec.describe MarkdownParser do
       app_domain = ApplicationConfig["APP_DOMAIN"]
       expect(test).to eq("<p><a href=\"#{app_protocol}#{app_domain}/t/career\">career tag</a></p>\n\n")
     end
+
+    it "renders properly anchored links" do
+      code_span = "[Chapter 1](#chapter-1)"
+      test = generate_and_parse_markdown(code_span)
+      expect(test).to eq("<p><a href=\"#chapter-1\">Chapter 1</a></p>\n\n")
+    end
   end
 
   describe "mentions" do
