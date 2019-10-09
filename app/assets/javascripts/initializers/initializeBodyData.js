@@ -1,5 +1,7 @@
 'use strict';
 
+/* global checkUserLoggedIn */
+
 function removeExistingCSRF() {
   var csrfTokenMeta = document.querySelector("meta[name='csrf-token']");
   var csrfParamMeta = document.querySelector("meta[name='csrf-param']");
@@ -22,17 +24,17 @@ function fetchBaseData() {
       if (json.token) {
         removeExistingCSRF();
       }
-      var meta = document.createElement('meta');
+      var newCsrfParamMeta = document.createElement('meta');
       var metaTag = document.querySelector("meta[name='csrf-token']");
-      meta.name = 'csrf-param';
-      meta.content = json.param;
-      document.getElementsByTagName('head')[0].appendChild(meta);
-      var meta = document.createElement('meta'); // eslint-disable-line no-redeclare
-      meta.name = 'csrf-token';
-      meta.content = json.token;
-      document.getElementsByTagName('head')[0].appendChild(meta);
+      newCsrfParamMeta.name = 'csrf-param';
+      newCsrfParamMeta.content = json.param;
+      document.getElementsByTagName('head')[0].appendChild(newCsrfParamMeta);
+      var newCsrfTokenMeta = document.createElement('meta');
+      newCsrfTokenMeta.name = 'csrf-token';
+      newCsrfTokenMeta.content = json.token;
+      document.getElementsByTagName('head')[0].appendChild(newCsrfTokenMeta);
       document.getElementsByTagName('body')[0].dataset.loaded = 'true';
-      if (window.checkUserLoggedIn()) {
+      if (checkUserLoggedIn()) {
         document.getElementsByTagName('body')[0].dataset.user = json.user;
         browserStoreCache('set', json.user);
         setTimeout(() => {
