@@ -16,6 +16,8 @@ module Redcarpet
         end
         if (/\A(https?:\/\/)/.match? link) || link.nil?
           %(<a href="#{link}"#{link_attributes}>#{content}</a>)
+        elsif link.start_with?("#")
+          %(<a href="#{link}"#{link_attributes}>#{content}</a>)
         else
           %(<a href="//#{link}"#{link_attributes}>#{content}</a>)
         end
