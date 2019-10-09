@@ -12,14 +12,6 @@ function convertUtcTime(utcTime) {
   return time;
 }
 
-function updateLocalTime(times) {
-  var localTime;
-  for (var i = 0; i < times.length; i += 1) {
-    localTime = convertUtcTime(times[i].dataset.datetime);
-    times[i].innerHTML = localTime;
-  }
-}
-
 function convertUtcDate(utcDate) {
   var date = new Date(utcDate);
   var options = {
@@ -30,11 +22,11 @@ function convertUtcDate(utcDate) {
   return date;
 }
 
-function updateLocalDate(dates) {
-  var localDate;
-  for (var i = 0; i < dates.length; i += 1) {
-    localDate = convertUtcDate(dates[i].dataset.datetime);
-    dates[i].innerHTML = localDate;
+function updateLocalDateOrTime(property, callBack) {
+  var local;
+  for (var i = 0; i < property.length; i += 1) {
+    local = callBack(property[i].dataset.datetime);
+    property[i].innerHTML = local;
   }
 }
 
@@ -68,7 +60,7 @@ function initializeTimeFixer() {
     return;
   }
 
-  updateLocalTime(utcTime);
-  updateLocalDate(utcDate);
+  updateLocalDateOrTime(utcTime);
+  updateLocalDateOrTime(utcDate);
   updateCalendarTime(utc);
 }

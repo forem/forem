@@ -2,28 +2,15 @@
 
 /* eslint-disable no-global-assign */
 
-function handleSwipeLeft(e) {
-  if (!document.getElementById('on-page-nav-controls')) {
-    return;
-  }
+function handleSwipe(e, direction) {
+  if (!document.getElementById('on-page-nav-controls')) return;
+
   if (swipeState === 'middle') {
-    swipeState = 'right';
-    slideSidebar('right', 'intoView');
+    swipeState = direction;
+    slideSidebar(direction, 'intoView');
   } else {
     swipeState = 'middle';
-    slideSidebar('left', 'outOfView');
-  }
-}
-function handleSwipeRight(e) {
-  if (!document.getElementById('on-page-nav-controls')) {
-    return;
-  }
-  if (swipeState === 'middle') {
-    swipeState = 'left';
-    slideSidebar('left', 'intoView');
-  } else {
-    swipeState = 'middle';
-    slideSidebar('right', 'outOfView');
+    slideSidebar(direction === 'right' ? 'left' : 'right', 'outOfView');
   }
 }
 
@@ -91,7 +78,15 @@ function initializeSwipeGestures() {
     var h = e => {
       console.log(e.type, e);
     };
-    document.body.addEventListener('swl', handleSwipeLeft, false);
-    document.body.addEventListener('swr', handleSwipeRight, false);
+    document.body.addEventListener(
+      'swl',
+      event => handleSwipe(event, 'left'),
+      false,
+    );
+    document.body.addEventListener(
+      'swr',
+      event => handleSwipe(event, 'right'),
+      false,
+    );
   }, 50);
 }
