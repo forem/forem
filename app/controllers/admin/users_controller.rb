@@ -14,28 +14,12 @@ module Admin
 
     def user_params
       accessible = %i[
-        name
-        email
-        username
-        twitter_username
-        github_username
-        profile_image
-        website_url
-        summary
-        email_newsletter
-        email_comment_notifications
-        email_follower_notifications
-        organization_id
-        org_admin
-        bg_color_hex
-        text_color_hex
-        employer_name
-        employer_url
-        employment_title
-        currently_learning
-        available_for
-        mostly_work_with
-        currently_hacking_on
+        name email username twitter_username github_username profile_image summary
+        email_newsletter email_comment_notifications email_follower_notifications
+        organization_id org_admin
+        bg_color_hex text_color_hex
+        employer_name employer_url employment_title
+        currently_learning available_for mostly_work_with currently_hacking_on
         location
         email_public
         education
@@ -43,14 +27,7 @@ module Admin
         reputation_modifier
         saw_onboarding
         scholar_email
-        facebook_url
-        behance_url
-        dribbble_url
-        medium_url
-        gitlab_url
-        linkedin_url
-        twitch_url
-        instagram_url
+        facebook_url behance_url dribbble_url medium_url gitlab_url linkedin_url twitch_url instagram_url website_url
       ]
       accessible << %i[password password_confirmation] if params[:user][:password].present?
       verify_usernames params.require(:user).permit(accessible)
