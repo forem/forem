@@ -89,6 +89,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         "tags" => article.decorate.cached_tag_list_array,
       )
     end
+
     it "returns all the relevant datetimes" do
       article.update_columns(
         edited_at: 1.minute.from_now, crossposted_at: 2.minutes.ago, last_comment_at: 30.seconds.ago,

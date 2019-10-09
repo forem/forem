@@ -135,6 +135,7 @@ RSpec.describe BadgeRewarder do
       expect(user.badge_achievements.size).to eq(1)
       expect(user.badge_achievements.last.badge_id).to eq(badge.id)
     end
+
     it "renders html for message" do
       article.update_columns(cached_tag_list: tag.name, score: 101)
       described_class.award_tag_badges
@@ -162,6 +163,7 @@ RSpec.describe BadgeRewarder do
       described_class.award_tag_badges
       expect(user.badge_achievements.size).to eq(0)
     end
+
     it "does not award badge to user who has previously won" do
       article.update_columns(cached_tag_list: tag.name, score: 201)
       second_article.update_columns(cached_tag_list: tag.name, score: 150)
