@@ -105,7 +105,11 @@ Rails.application.routes.draw do
           get "/onboarding", to: "tags#onboarding"
         end
       end
-      resources :follows, only: [:create]
+      resources :follows, only: [:create] do
+        collection do
+          get :followers
+        end
+      end
       resources :github_repos, only: [:index] do
         collection do
           post "/update_or_create", to: "github_repos#update_or_create"

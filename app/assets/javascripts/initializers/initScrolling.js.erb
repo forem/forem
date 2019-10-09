@@ -29,7 +29,7 @@ function fetchNextPageIfNearBottom() {
   if (!elCheck) {
     return;
   }
-  
+
   var indexWhich = indexContainer.dataset.which;
 
   var fetchCallback;
@@ -57,6 +57,65 @@ function fetchNextPageIfNearBottom() {
     fetching = true;
     fetchCallback();
   }
+}
+
+function fetchNextFollowersPage(el){
+  var indexParams = JSON.parse(el.dataset.params);
+  var urlParams = Object.keys(indexParams).map(function(k) {
+    return encodeURIComponent(k) + '=' + encodeURIComponent(indexParams[k])
+  }).join('&');
+  if (urlParams.indexOf("q=") > -1 ) {
+    return;
+  }
+  var endpoint = '/api/follows/followers'
+  var fetchUrl = (endpoint+'?page='+nextPage+"&"+urlParams+"&signature="+parseInt(Date.now()/400000)).replace("&&","&")
+  window.fetch(fetchUrl)
+  .then(function(response) {
+    response.json().then(function(followers) {
+      nextPage += 1;
+      insertFollowers(followers);
+      if (followers.length == 0) {
+        document.getElementById("loading-articles").style.display = "none"
+        done = true;
+      }
+    });
+  }).catch(function(err) {
+    console.log(err);
+  });
+}
+
+function insertFollowers(followers) {
+  var list = document.getElementById("subfollowers");
+  var newFollowersHTML = "";
+  followers.forEach(function(follower){
+    var existingEl = document.getElementById("follower-"+follower.id);
+    if(!existingEl) {
+      var newHTML = buildFollowerHTML(follower)
+      newFollowersHTML += newHTML
+    }
+  });
+
+  var distanceFromBottom = document.documentElement.scrollHeight - document.body.scrollTop;
+  var newNode = document.createElement("div");
+  newNode.innerHTML = newFollowersHTML;
+  var singleArticles = document.getElementsByClassName("single-article");
+  var lastElement = singleArticles[singleArticles.length - 1];
+  insertAfter(newNode, lastElement);
+  if (nextPage > 0) {
+    fetching = false;
+  }
+}
+
+function buildFollowerHTML(follower) {
+  return '<div id="follower-'+follower.id+'" class="single-article">\
+            <a href="'+ follower.path +'" class="block-link">\
+              <h2>\
+                <img alt="'+ follower.username +' profile image" src="'+ follower.profile_image +'" />\
+                '+  follower.name +'\
+                <span class="dashboard-username">@'+ follower.username +'</span>\
+              </h2>\
+            </a>\
+          </div>';
 }
 
 function fetchNextVideoPage(el){
