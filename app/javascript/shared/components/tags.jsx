@@ -136,6 +136,7 @@ class Tags extends Component {
       searchResultsHTML = (
         <div className={`${this.props.classPrefix}__tagsoptions`}>
           {searchResultsRows}
+          <div className={`${this.props.classPrefix}__tagsoptionsbottomrow`}>Some tags have rules and guidelines determined by community moderators</div>
         </div>
       );
     }

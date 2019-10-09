@@ -279,6 +279,18 @@
   }
 }
 
+.articleform__tagsoptionsbottomrow {
+  padding: 12px 10px 10px;
+  font-weight: bold;
+  cursor: pointer;
+  position: relative;
+  font-size: 0.7em;
+  font-style: italic;
+  border-top: 1px solid $medium-gray;
+  color: var(--theme-secondary-color, $black);
+
+}
+
 .articleform__tagsoptionrulesbutton {
   position: absolute;
   right: 8px;
