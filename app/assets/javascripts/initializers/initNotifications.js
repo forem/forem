@@ -37,7 +37,7 @@ function markNotificationsAsRead() {
 
 function fetchNotificationsCount() {
   if (
-    document.getElementById('notifications-container') == null &&
+    document.getElementById('notifications-container') === null &&
     checkUserLoggedIn()
   ) {
     var xmlhttp;
@@ -81,7 +81,7 @@ function fetchNotificationsCount() {
   }
 }
 
-const onClick = event => {
+const onClickReaction = event => {
   event.preventDefault();
   sendHapticMessage('medium');
   var thisButt = this;
@@ -117,7 +117,7 @@ function initReactions() {
       var i;
       for (i = 0; i < butts.length; i += 1) {
         butt = butts[i];
-        butt.onclick = event => onClick(event);
+        butt.onclick = event => onClickReaction(event);
       }
       butts = document.getElementsByClassName('toggle-reply-form');
       for (i = 0; i < butts.length; i += 1) {
