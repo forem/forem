@@ -56,6 +56,7 @@
     <%= story.reading_time < 1 ? 1 : story.reading_time %> min read
   </a>
   <button
+    type="button"
     class="article-engagement-count bookmark-engage"
     data-reactable-id="<%= story.id %>"
     aria-label="Save to reading list"
