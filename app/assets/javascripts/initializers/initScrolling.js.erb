@@ -59,7 +59,7 @@ function fetchNextPageIfNearBottom() {
   }
 }
 
-function fetchNextFollowersPage(el){
+function fetchNext(el, endpoint, insertCallback){
   var indexParams = JSON.parse(el.dataset.params);
   var urlParams = Object.keys(indexParams).map(function(k) {
     return encodeURIComponent(k) + '=' + encodeURIComponent(indexParams[k])
@@ -67,14 +67,13 @@ function fetchNextFollowersPage(el){
   if (urlParams.indexOf("q=") > -1 ) {
     return;
   }
-  var endpoint = '/api/follows/followers'
   var fetchUrl = (endpoint+'?page='+nextPage+"&"+urlParams+"&signature="+parseInt(Date.now()/400000)).replace("&&","&")
   window.fetch(fetchUrl)
   .then(function(response) {
-    response.json().then(function(followers) {
+    response.json().then(function(entries) {
       nextPage += 1;
-      insertFollowers(followers);
-      if (followers.length == 0) {
+      insertCallback(entries);
+      if (entries.length == 0) {
         document.getElementById("loading-articles").style.display = "none"
         done = true;
       }
@@ -82,6 +81,10 @@ function fetchNextFollowersPage(el){
   }).catch(function(err) {
     console.log(err);
   });
+}
+
+function fetchNextFollowersPage(el){
+  fetchNext(el, '/api/follows/followers', insertFollowers)
 }
 
 function insertFollowers(followers) {
@@ -119,28 +122,7 @@ function buildFollowerHTML(follower) {
 }
 
 function fetchNextVideoPage(el){
-  var indexParams = JSON.parse(el.dataset.params);
-  var urlParams = Object.keys(indexParams).map(function(k) {
-    return encodeURIComponent(k) + '=' + encodeURIComponent(indexParams[k])
-  }).join('&');
-  if (urlParams.indexOf("q=") > -1 ) {
-    return;
-  }
-  var endpoint = '/api/videos'
-  var fetchUrl = (endpoint+'?page='+nextPage+"&"+urlParams+"&signature="+parseInt(Date.now()/400000)).replace("&&","&")
-  window.fetch(fetchUrl)
-  .then(function(response) {
-    response.json().then(function(video_articles) {
-      nextPage += 1;
-      insertVideos(video_articles);
-      if (video_articles.length == 0) {
-        document.getElementById("loading-articles").style.display = "none"
-        done = true;
-      }
-    });
-  }).catch(function(err) {
-    console.log(err);
-  });
+  fetchNext(el, '/api/videos', insertVideos)
 }
 
 function insertVideos(video_articles) {
@@ -178,28 +160,7 @@ function buildVideoArticleHTML(video_article) {
 
 
 function fetchNextPodcastPage(el){
-  var indexParams = JSON.parse(el.dataset.params);
-  var urlParams = Object.keys(indexParams).map(function(k) {
-    return encodeURIComponent(k) + '=' + encodeURIComponent(indexParams[k])
-  }).join('&');
-  if (urlParams.indexOf("q=") > -1 ) {
-    return;
-  }
-  var endpoint = '/api/podcast_episodes'
-  var fetchUrl = (endpoint+'?page='+nextPage+"&"+urlParams+"&signature="+parseInt(Date.now()/400000)).replace("&&","&")
-  window.fetch(fetchUrl)
-  .then(function(response) {
-    response.json().then(function(articles) {
-      nextPage += 1;
-      insertArticles(articles);
-      if (articles.length == 0) {
-        document.getElementById("loading-articles").style.display = "none"
-        done = true;
-      }
-    });
-  }).catch(function(err) {
-    console.log(err);
-  });
+  fetchNext(el, '/api/podcast_episodes', insertArticles)
 }
 
 function insertArticles(articles) {
