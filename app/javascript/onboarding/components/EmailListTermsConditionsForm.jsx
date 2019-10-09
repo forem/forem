@@ -1,3 +1,5 @@
+/* eslint camelcase: "off" */
+
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
@@ -13,10 +15,10 @@ class EmailTermsConditionsForm extends Component {
     this.checkRequirements = this.checkRequirements.bind(this);
 
     this.state = {
-      checkedCodeOfConduct: false,
-      checkedTermsAndConditions: false,
-      emailMembershipNewsletter: true,
-      emailDigestPeriodic: true,
+      checked_code_of_conduct: false,
+      checked_terms_and_conditions: false,
+      email_membership_newsletter: true,
+      email_digest_periodic: true,
       message: '',
       textShowing: null,
     };
@@ -59,14 +61,17 @@ class EmailTermsConditionsForm extends Component {
   }
 
   checkRequirements() {
-    const { checkedCodeOfConduct, checkedTermsAndConditions } = this.state;
-    if (!checkedCodeOfConduct) {
+    const {
+      checked_code_of_conduct,
+      checked_terms_and_conditions,
+    } = this.state;
+    if (!checked_code_of_conduct) {
       this.setState({
         message: 'You must agree to our Code of Conduct before continuing!',
       });
       return false;
     }
-    if (!checkedTermsAndConditions) {
+    if (!checked_terms_and_conditions) {
       this.setState({
         message:
           'You must agree to our Terms and Conditions before continuing!',
@@ -95,10 +100,10 @@ class EmailTermsConditionsForm extends Component {
   render() {
     const {
       message,
-      checkedCodeOfConduct,
-      checkedTermsAndConditions,
-      emailMembershipNewsletter,
-      emailDigestPeriodic,
+      checked_code_of_conduct,
+      checked_terms_and_conditions,
+      email_membership_newsletter,
+      email_digest_periodic,
       textShowing,
     } = this.state;
     const { prev } = this.props;
@@ -129,8 +134,8 @@ class EmailTermsConditionsForm extends Component {
               <input
                 type="checkbox"
                 id="checked_code_of_conduct"
-                name="checkedCodeOfConduct"
-                checked={checkedCodeOfConduct}
+                name="checked_code_of_conduct"
+                checked={checked_code_of_conduct}
                 onChange={this.handleChange}
               />
               You agree to uphold our
@@ -147,8 +152,8 @@ class EmailTermsConditionsForm extends Component {
               <input
                 type="checkbox"
                 id="checked_terms_and_conditions"
-                name="checkedTermsAndConditions"
-                checked={checkedTermsAndConditions}
+                name="checked_terms_and_conditions"
+                checked={checked_terms_and_conditions}
                 onChange={this.handleChange}
               />
               You agree to our
@@ -166,8 +171,8 @@ class EmailTermsConditionsForm extends Component {
               <input
                 type="checkbox"
                 id="email_membership_newsletter"
-                name="emailMembershipNewsletter"
-                checked={emailMembershipNewsletter}
+                name="email_membership_newsletter"
+                checked={email_membership_newsletter}
                 onChange={this.handleChange}
               />
               Do you want to receive our weekly newsletter emails?
@@ -177,8 +182,8 @@ class EmailTermsConditionsForm extends Component {
               <input
                 type="checkbox"
                 id="email_digest_periodic"
-                name="emailDigestPeriodic"
-                checked={emailDigestPeriodic}
+                name="email_digest_periodic"
+                checked={email_digest_periodic}
                 onChange={this.handleChange}
               />
               Do you want to receive a periodic digest with some of the top
