@@ -66,7 +66,7 @@ class CommentsController < ApplicationController
         return
       end
 
-      render :show
+      render "show.json"
     elsif (@comment = Comment.where(body_markdown: @comment.body_markdown,
                                     commentable_id: @comment.commentable.id,
                                     ancestry: @comment.ancestry)[1])
