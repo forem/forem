@@ -100,14 +100,14 @@ class UsersController < ApplicationController
     current_user.assign_attributes(params[:user].permit(:summary, :location, :employment_title, :employer_name, :last_onboarding_page)) if params[:user]
     current_user.saw_onboarding = true
     authorize User
-    update_response
+    render_update_response
   end
 
   def onboarding_checkbox_update
     current_user.assign_attributes(params[:user].permit(:checked_code_of_conduct, :checked_terms_and_conditions, :email_membership_newsletter, :email_digest_periodic)) if params[:user]
     current_user.saw_onboarding = true
     authorize User
-    update_response
+    render_update_response
   end
 
   def join_org
@@ -216,7 +216,7 @@ class UsersController < ApplicationController
 
   private
 
-  def update_response
+  def render_update_response
     if current_user.save
       respond_to do |format|
         format.json { render json: { outcome: "updated successfully" } }
