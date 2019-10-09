@@ -2,15 +2,25 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 const KEYS = {
-  UP: 38,
-  DOWN: 40,
-  LEFT: 37,
-  RIGHT: 39,
-  TAB: 9,
-  RETURN: 13,
-  COMMA: 188,
-  DELETE: 8,
+  UP: 'ArrowUp',
+  DOWN: 'ArrowDown',
+  LEFT: 'ArrowLeft',
+  RIGHT: 'ArrowRight',
+  TAB: 'Tab',
+  RETURN: 'Enter',
+  COMMA: ',',
+  DELETE: 'Backspace',
 };
+
+const NAVIGATION_KEYS = [
+  KEYS.COMMA,
+  KEYS.DELETE,
+  KEYS.LEFT,
+  KEYS.RIGHT,
+  KEYS.TAB,
+];
+
+const LETTERS = /[a-z]/i;
 
 /* TODO: Remove all instances of this.props.listing
    and refactor this component to be more generic */
@@ -218,23 +228,23 @@ class Tags extends Component {
 
     if (
       component.selected.length === this.props.maxTags &&
-      e.keyCode === KEYS.COMMA
+      e.key === KEYS.COMMA
     ) {
       e.preventDefault();
       return;
     }
 
     if (
-      (e.keyCode === KEYS.DOWN || e.keyCode === KEYS.TAB) &&
+      (e.key === KEYS.DOWN || e.key === KEYS.TAB) &&
       !this.isBottomOfSearchResults &&
       component.props.defaultValue !== ''
     ) {
       e.preventDefault();
       this.moveDownInSearchResults();
-    } else if (e.keyCode === KEYS.UP && !this.isTopOfSearchResults) {
+    } else if (e.key === KEYS.UP && !this.isTopOfSearchResults) {
       e.preventDefault();
       this.moveUpInSearchResults();
-    } else if (e.keyCode === KEYS.RETURN && this.isSearchResultSelected) {
+    } else if (e.key === KEYS.RETURN && this.isSearchResultSelected) {
       e.preventDefault();
       this.insertTag(
         component.state.searchResults[component.state.selectedIndex].name,
@@ -243,10 +253,10 @@ class Tags extends Component {
       setTimeout(() => {
         document.getElementById('tag-input').focus();
       }, 10);
-    } else if (e.keyCode === KEYS.COMMA && !this.isSearchResultSelected) {
+    } else if (e.key === KEYS.COMMA && !this.isSearchResultSelected) {
       this.resetSearchResults();
       this.clearSelectedSearchResult();
-    } else if (e.keyCode === KEYS.DELETE) {
+    } else if (e.key === KEYS.DELETE) {
       if (
         component.props.defaultValue[
           component.props.defaultValue.length - 1
@@ -255,13 +265,8 @@ class Tags extends Component {
         this.clearSelectedSearchResult();
       }
     } else if (
-      (e.keyCode < 65 || e.keyCode > 90) &&
-      e.keyCode != KEYS.COMMA &&
-      e.keyCode != KEYS.DELETE &&
-      e.keyCode != KEYS.LEFT &&
-      e.keyCode != KEYS.RIGHT &&
-      e.keyCode != KEYS.TAB
-    ) {
+      !LETTERS.test(e.key) &&
+      !NAVIGATION_KEYS.includes(e.key)) {
       e.preventDefault();
     }
   };
