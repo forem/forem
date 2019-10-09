@@ -66,6 +66,9 @@ Metrics/MethodLength:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#short-methods'
   Enabled: true
   Max: 40
+  Exclude:
+    - 'app/controllers/internal/articles_controller.rb'
+    - 'app/policies/user_policy.rb'
 
 Metrics/ParameterLists:
   Description: 'Avoid parameter lists longer than three or four parameters.'
