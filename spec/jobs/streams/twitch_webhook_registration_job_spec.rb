@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Streams::TwitchWebhookRegistrationJob, type: :job do
+describe Streams::TwitchWebhookRegistrationJob, type: :job do
   let(:user) { create(:user, twitch_username: "test-username") }
 
   let(:service) { double }

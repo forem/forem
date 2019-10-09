@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe PodcastEpisode, type: :model do
+describe PodcastEpisode, type: :model do
   let(:podcast_episode) { create(:podcast_episode) }
 
   it { is_expected.to validate_presence_of(:title) }

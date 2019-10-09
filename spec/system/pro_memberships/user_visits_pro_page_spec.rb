@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Visits Pro Memberships page", type: :system do
+describe "Visits Pro Memberships page", type: :system do
   let(:user) { create(:user) }
 
   context "when not signed in" do

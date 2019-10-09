@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe JSFiddleTag, type: :liquid_template do
+describe JSFiddleTag, type: :liquid_template do
   describe "#link" do
     let(:jsfiddle_link) { "http://jsfiddle.net/link2twenty/v2kx9jcd" }
     let(:jsfiddle_link_with_custom_tabs) { "http://jsfiddle.net/link2twenty/v2kx9jcd result,html,css" }

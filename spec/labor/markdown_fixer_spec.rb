@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe MarkdownFixer do
+describe MarkdownFixer do
   let(:sample_text) { Faker::Book.title }
 
   def front_matter(title: "", description: "")

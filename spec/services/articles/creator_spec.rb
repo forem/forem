@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Articles::Creator do
+describe Articles::Creator do
   let(:user) { create(:user) }
 
   context "when valid attributes" do

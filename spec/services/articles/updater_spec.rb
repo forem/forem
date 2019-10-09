@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Articles::Updater do
+describe Articles::Updater do
   let(:user) { create(:user) }
   let!(:article) { create(:article, user: user) }
   let(:attributes) { { body_markdown: "sample" } }

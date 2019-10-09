@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "/listings", type: :request do
+describe "/listings", type: :request do
   let(:user) { create(:user) }
   let(:organization) { create(:organization) }
 

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "articles/show", type: :view do
+describe "articles/show", type: :view do
   let(:user1) { create(:user) }
   let(:article1) { create(:article, user_id: user1.id, show_comments: true) }
   let(:helper) { Class.new { extend CommentsHelper } }

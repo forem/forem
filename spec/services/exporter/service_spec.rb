@@ -1,7 +1,6 @@
-require "rails_helper"
 require "zip"
 
-RSpec.describe Exporter::Service do
+describe Exporter::Service do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user) }
   let(:other_user) { create(:user) }

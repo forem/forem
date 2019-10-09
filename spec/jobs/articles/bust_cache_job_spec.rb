@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Articles::BustCacheJob, type: :job do
+describe Articles::BustCacheJob, type: :job do
   describe "#perform_now" do
     let(:article) { FactoryBot.create(:article) }
 

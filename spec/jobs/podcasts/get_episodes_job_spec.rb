@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Podcasts::GetEpisodesJob, type: :job do
+describe Podcasts::GetEpisodesJob, type: :job do
   include_examples "#enqueues_job", "podcasts_get_episodes", podcast_id: 10
 
   describe "#perform_now" do

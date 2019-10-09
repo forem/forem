@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "ImageUploads", type: :request do
+describe "ImageUploads", type: :request do
   describe "POST/image_uploads" do
     let(:user) { create(:user) }
     let(:headers) { { "Content-Type": "application/json", Accept: "application/json" } }

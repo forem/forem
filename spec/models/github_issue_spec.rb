@@ -1,11 +1,9 @@
-require "rails_helper"
-
 vcr_option = {
   cassette_name: "github_issue_api",
   allow_playback_repeats: "true"
 }
 
-RSpec.describe GithubIssue, type: :model, vcr: vcr_option do
+describe GithubIssue, type: :model, vcr: vcr_option do
   let(:link) { "https://api.github.com/repos/thepracticaldev/dev.to/issues/510#issue-354483683" }
 
   it "finds or fetches based on URL" do

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe TagPolicy, type: :policy do
+describe TagPolicy, type: :policy do
   subject { described_class.new(user, tag) }
 
   let(:tag) { build_stubbed(:tag) }

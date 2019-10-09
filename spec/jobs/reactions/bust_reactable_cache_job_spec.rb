@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Reactions::BustReactableCacheJob, type: :job do
+describe Reactions::BustReactableCacheJob, type: :job do
   include_examples "#enqueues_job", "bust_reactable_cache", 2
 
   describe "#perform_now" do

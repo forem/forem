@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Notifications::Reads", type: :request do
+describe "Notifications::Reads", type: :request do
   describe "POST /notifications/reads" do
     let(:stubbed_service_object) { double }
     let(:user) { create(:user) }

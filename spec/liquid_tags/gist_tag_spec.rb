@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe GistTag, type: :liquid_template do
+describe GistTag, type: :liquid_template do
   describe "#link" do
     let(:gist_links) do
       [

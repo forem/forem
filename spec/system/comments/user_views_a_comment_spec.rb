@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Viewing a comment", type: :system, js: true do
+describe "Viewing a comment", type: :system, js: true do
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id, show_comments: true) }
   let(:comment) { create(:comment, commentable: article, user: user) }

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Messages::SendPushJob, type: :job do
+describe Messages::SendPushJob, type: :job do
   include_examples "#enqueues_job", "messages_send_push", 456, 789, "<h1>Hello</h1"
 
   describe "#perform_now" do

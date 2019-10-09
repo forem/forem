@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "PageViews", type: :request do
+describe "PageViews", type: :request do
   let(:user) { create(:user, :trusted) }
   let(:article) { create(:article) }
 

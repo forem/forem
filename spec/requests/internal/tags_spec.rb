@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "/internal/tags", type: :request do
+describe "/internal/tags", type: :request do
   let(:super_admin) { create(:user, :super_admin) }
   let(:tag)         { create(:tag) }
 

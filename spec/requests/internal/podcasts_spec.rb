@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "/internal/podcasts", type: :request do
+describe "/internal/podcasts", type: :request do
   let(:admin) { create(:user, :super_admin) }
   let(:podcast) { create(:podcast) }
   let(:user) { create(:user) }

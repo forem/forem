@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Streams::TwitchWebhook::Register, type: :service do
+describe Streams::TwitchWebhook::Register, type: :service do
   describe "::call" do
     let(:twitch_access_token_get) { instance_double(Streams::TwitchAccessToken::Get, call: "FAKE_TWITCH_TOKEN") }
     let(:user) { create(:user, twitch_username: "test-username") }

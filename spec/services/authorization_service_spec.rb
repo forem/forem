@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe AuthorizationService do
+describe AuthorizationService do
   before { mock_auth_hash }
 
   describe "new user" do

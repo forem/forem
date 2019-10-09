@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe ChatChannel, type: :model do
+describe ChatChannel, type: :model do
   let(:chat_channel) { create(:chat_channel) }
   let(:message) { create(:chat_channel, message_id: chat_channel.id) }
 

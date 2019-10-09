@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Webhook::DispatchEvent, type: :service do
+describe Webhook::DispatchEvent, type: :service do
   let!(:user) { create(:user) }
   let!(:article) { create(:article, user: user) }
 

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe CommentPolicy, type: :policy do
+describe CommentPolicy, type: :policy do
   subject(:comment_policy) { described_class.new(user, comment) }
 
   let(:comment) { build_stubbed(:comment) }

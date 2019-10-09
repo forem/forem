@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe ImageUploadPolicy, type: :policy do
+describe ImageUploadPolicy, type: :policy do
   subject { described_class.new(user, image) }
 
   let(:image) { "📸.jpg" }

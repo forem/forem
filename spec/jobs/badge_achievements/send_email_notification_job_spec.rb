@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe BadgeAchievements::SendEmailNotificationJob, type: :job do
+describe BadgeAchievements::SendEmailNotificationJob, type: :job do
   let(:user) { create(:user, email_badge_notifications: true) }
   let(:badge_achievement) { create(:badge_achievement, user: user) }
 

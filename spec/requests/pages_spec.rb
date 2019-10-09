@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Pages", type: :request do
+describe "Pages", type: :request do
   describe "GET /:slug" do
     it "has proper headline for non-top-level" do
       page = create(:page, title: "Edna O'Brien96")

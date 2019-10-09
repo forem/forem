@@ -1,7 +1,6 @@
 # http://localhost:3000/api/comments?a_id=23
-require "rails_helper"
 
-RSpec.describe "ArticlesApi", type: :request do
+describe "ArticlesApi", type: :request do
   let(:user) { create(:user, :super_admin) }
   let(:article) { create(:article) }
 

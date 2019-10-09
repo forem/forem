@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Streams::TwitchAccessToken::Get, type: :service do
+describe Streams::TwitchAccessToken::Get, type: :service do
   describe ".access_token" do
     let(:expected_twitch_token_body) do
       {

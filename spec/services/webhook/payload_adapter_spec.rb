@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Webhook::PayloadAdapter, type: :service do
+describe Webhook::PayloadAdapter, type: :service do
   it "raises an exception when invalid object is passed" do
     expect do
       described_class.new(User.new).hash

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "internal/users", type: :request do
+describe "internal/users", type: :request do
   let!(:user) { create(:user) }
   let(:admin) { create(:user, :super_admin) }
 

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "User visits /pod page", type: :system do
+describe "User visits /pod page", type: :system do
   let!(:podcast_episode) { create(:podcast_episode) }
   let!(:podcast_episode2) { create(:podcast_episode) }
   let(:podcast) { create(:podcast, reachable: true, published: false) }

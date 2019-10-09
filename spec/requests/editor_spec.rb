@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Editor", type: :request do
+describe "Editor", type: :request do
   describe "GET /new" do
     context "when not logged-in" do
       it "asks the stray-user to 'Sign In or Create Your Account'" do

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "ApiSecretsDestroy", type: :request do
+describe "ApiSecretsDestroy", type: :request do
   let(:api_secret) { create(:api_secret) }
   let(:user) { api_secret.user }
 

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe PushNotificationSubscription, type: :model do
+describe PushNotificationSubscription, type: :model do
   describe "validation" do
     subject do
       described_class.create(user: create(:user),

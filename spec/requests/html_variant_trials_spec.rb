@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "HtmlVariantTrials", type: :request do
+describe "HtmlVariantTrials", type: :request do
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id, approved: true) }
   let(:html_variant) { create(:html_variant) }

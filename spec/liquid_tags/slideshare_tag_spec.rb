@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe SlideshareTag, type: :liquid_template do
+describe SlideshareTag, type: :liquid_template do
   describe "#key" do
     let(:valid_key) { "rdOzN9kr1yK5eE" }
 

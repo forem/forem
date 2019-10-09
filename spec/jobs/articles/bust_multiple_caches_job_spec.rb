@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Articles::BustMultipleCachesJob, type: :job do
+describe Articles::BustMultipleCachesJob, type: :job do
   include_examples "#enqueues_job", "articles_bust_multiple_caches", [1, 2]
 
   describe "#perform_now" do

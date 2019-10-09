@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
+describe Moderator::ManageActivityAndRoles, type: :service do
   let(:user) { create(:user) }
   let(:admin) { create(:user, :super_admin) }
 

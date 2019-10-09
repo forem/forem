@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Articles", type: :request do
+describe "Articles", type: :request do
   let(:user) { create(:user) }
   let(:tag)  { create(:tag) }
 

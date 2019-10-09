@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Message, type: :model do
+describe Message, type: :model do
   let(:user) { create(:user) }
   let(:chat_channel) { create(:chat_channel) }
   let(:user2) { create(:user) }

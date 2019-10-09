@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe CommentObserver, type: :observer do
+describe CommentObserver, type: :observer do
   let(:user) { create(:user) }
   let(:article) { create(:article) }
 

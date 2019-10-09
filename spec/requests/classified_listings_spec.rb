@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "ClassifiedListings", type: :request do
+describe "ClassifiedListings", type: :request do
   let(:user) { create(:user) }
   let(:listing_params) do
     {

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe YoutubeTag, type: :liquid_template do
+describe YoutubeTag, type: :liquid_template do
   describe "#id" do
     let(:valid_id_no_time) { "dQw4w9WgXcQ" }
     let(:valid_ids_with_time) { "QASbw8_0meM?t=8h12m26s" }

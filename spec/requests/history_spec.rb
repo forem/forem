@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "History", type: :request do
+describe "History", type: :request do
   let(:user) { create(:user) }
   let(:pro_user) { create(:user, :pro) }
   let(:pro_membership_user) { create(:user, :with_pro_membership) }

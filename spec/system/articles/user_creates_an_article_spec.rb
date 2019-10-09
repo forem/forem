@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Creating an article with the editor", type: :system do
+describe "Creating an article with the editor", type: :system do
   let(:user) { create(:user) }
   let!(:template) { file_fixture("article_published.txt").read }
 

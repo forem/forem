@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Mentions::SendEmailNotificationJob do
+describe Mentions::SendEmailNotificationJob do
   let(:user) { create(:user) }
   let(:mention) { create(:mention, user_id: user.id, mentionable_id: comment.id, mentionable_type: "Comment") }
   let(:comment) { create(:comment, user_id: user.id, commentable: create(:article)) }

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Internal::ArticlePolicy do
+describe Internal::ArticlePolicy do
   subject { described_class.new(user, article) }
 
   let(:article) { build(:article) }

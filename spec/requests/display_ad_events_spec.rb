@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "DisplayAdEvents", type: :request do
+describe "DisplayAdEvents", type: :request do
   let(:user) { create(:user, :trusted) }
   let(:organization) { create(:organization) }
   let(:display_ad) { create(:display_ad, organization_id: organization.id) }

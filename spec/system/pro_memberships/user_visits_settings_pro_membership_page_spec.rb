@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Visits Pro Membership settings page", type: :system do
+describe "Visits Pro Membership settings page", type: :system do
   let(:user) { create(:user) }
   let(:cost) { ProMembership::MONTHLY_COST }
 

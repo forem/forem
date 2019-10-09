@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Organizations::BustCacheJob, type: :job do
+describe Organizations::BustCacheJob, type: :job do
   include_examples "#enqueues_job", "organizations_bust_cache", 789, "SlUg"
 
   describe "#perform_now" do

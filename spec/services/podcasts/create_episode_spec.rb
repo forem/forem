@@ -1,8 +1,7 @@
-require "rails_helper"
 require "rss"
 require "rss/itunes"
 
-RSpec.describe Podcasts::CreateEpisode, type: :service do
+describe Podcasts::CreateEpisode, type: :service do
   let!(:podcast) { create(:podcast) }
 
   context "when item has an https media_url" do

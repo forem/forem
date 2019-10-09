@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Videos", type: :request do
+describe "Videos", type: :request do
   let(:unauthorized_user) { create(:user) }
   let(:authorized_user)   { create(:user, :video_permission) }
 

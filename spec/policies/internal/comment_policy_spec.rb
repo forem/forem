@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Internal::CommentPolicy do
+describe Internal::CommentPolicy do
   subject { described_class.new(user, comment) }
 
   let(:comment) { Comment }

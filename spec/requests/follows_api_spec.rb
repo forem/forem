@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "FollowsApi", type: :request do
+describe "FollowsApi", type: :request do
   describe "POST /api/follows" do
     let(:user) { create(:user) }
     let(:user2) { create(:user) }

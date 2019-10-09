@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "ReadingListItems", type: :request do
+describe "ReadingListItems", type: :request do
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
   let(:reaction) { create(:reaction, reactable_id: article.id, user_id: user.id) }

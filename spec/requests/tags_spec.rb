@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Tags", type: :request, proper_status: true do
+describe "Tags", type: :request, proper_status: true do
   describe "GET /tags" do
     it "returns proper page" do
       get "/tags"

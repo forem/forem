@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Creates a Pro Membership", type: :system do
+describe "Creates a Pro Membership", type: :system do
   let(:user) { create(:user) }
 
   context "when signed in as a regular user with enough credits" do

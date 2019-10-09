@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Api::V0::Listings" do
+describe "Api::V0::Listings" do
   shared_context "when user is authorized" do
     let(:api_secret) { create(:api_secret) }
     let(:user) { api_secret.user }

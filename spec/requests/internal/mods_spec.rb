@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "/internal/mods", type: :request do
+describe "/internal/mods", type: :request do
   let(:super_admin)   { create(:user, :super_admin) }
   let(:regular_user)  { create(:user) }
 

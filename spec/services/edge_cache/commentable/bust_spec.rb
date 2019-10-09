@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe EdgeCache::Commentable::Bust, type: :service do
+describe EdgeCache::Commentable::Bust, type: :service do
   let(:commentable) { create(:article) }
   let(:cache_buster) { double }
 

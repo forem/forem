@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Notifications::NewBadgeAchievementJob, type: :job do
+describe Notifications::NewBadgeAchievementJob, type: :job do
   include_examples "#enqueues_job", "send_new_badge_achievement_notification", 5
 
   describe "#perform_now" do

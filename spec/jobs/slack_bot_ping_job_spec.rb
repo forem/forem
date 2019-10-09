@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe SlackBotPingJob, type: :job do
+describe SlackBotPingJob, type: :job do
   describe "#perform_now" do
     before do
       allow(SlackBot).to receive(:ping)

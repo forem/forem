@@ -1,9 +1,8 @@
-require "rails_helper"
 require "uri"
 
 base_uri = "https://glitch.com/embed/#!/embed/"
 
-RSpec.describe GlitchTag, type: :liquid_template do
+describe GlitchTag, type: :liquid_template do
   describe "#id" do
     let(:valid_id) { "BXgGcAUjM39" }
     let(:id_with_quotes) { 'some-id" onload="alert(42)"' }

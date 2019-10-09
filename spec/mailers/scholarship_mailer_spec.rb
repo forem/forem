@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe ScholarshipMailer, type: :mailer do
+describe ScholarshipMailer, type: :mailer do
   let(:user) { create(:user) }
 
   describe "#scholarship_awarded_email" do

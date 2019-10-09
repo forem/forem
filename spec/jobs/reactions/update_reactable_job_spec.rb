@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Reactions::UpdateReactableJob, type: :job do
+describe Reactions::UpdateReactableJob, type: :job do
   include_examples "#enqueues_job", "update_reactable", 2
 
   describe "#perform_now" do

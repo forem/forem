@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Articles::Destroyer do
+describe Articles::Destroyer do
   let(:article) { create(:article) }
   let(:event_dispatcher) { double }
 

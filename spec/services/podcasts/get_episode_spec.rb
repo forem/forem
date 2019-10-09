@@ -1,7 +1,6 @@
-require "rails_helper"
 require "rss"
 
-RSpec.describe Podcasts::GetEpisode do
+describe Podcasts::GetEpisode do
   let(:podcast) { create(:podcast) }
   let(:episode) { create(:podcast_episode, podcast: podcast) }
   let(:item) do

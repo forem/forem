@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe HexComparer do
+describe HexComparer do
   it "returns biggest hex" do
     expect(described_class.new(["#ffffff", "#000000"]).biggest).to eq("#ffffff")
   end

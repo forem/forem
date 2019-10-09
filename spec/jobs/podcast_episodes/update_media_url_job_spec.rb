@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe PodcastEpisodes::UpdateMediaUrlJob, type: :job do
+describe PodcastEpisodes::UpdateMediaUrlJob, type: :job do
   include_examples "#enqueues_job", "podcast_episode_update", 1, "https://example.com/"
 
   describe "#perform_now" do

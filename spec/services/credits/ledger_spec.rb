@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Credits::Ledger do
+describe Credits::Ledger do
   let(:user) { create(:user) }
   let(:org) { create(:organization) }
   let(:user_listing) { create(:classified_listing, user: user) }

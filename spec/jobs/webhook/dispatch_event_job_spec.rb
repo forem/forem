@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Webhook::DispatchEventJob, type: :job do
+describe Webhook::DispatchEventJob, type: :job do
   include_examples "#enqueues_job", "webhook_dispatch_events", "https://example.com", ""
 
   describe "#perform_now" do

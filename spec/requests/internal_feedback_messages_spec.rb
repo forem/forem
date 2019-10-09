@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "/internal/reports", type: :request do
+describe "/internal/reports", type: :request do
   let(:feedback_message)  { create(:feedback_message, :abuse_report) }
   let(:feedback_message2) { create(:feedback_message, :abuse_report) }
   let(:feedback_message3) { create(:feedback_message, :abuse_report) }

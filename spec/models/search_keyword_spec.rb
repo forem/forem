@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe SearchKeyword, type: :model do
+describe SearchKeyword, type: :model do
   let(:search_keyword) { create(:search_keyword) }
 
   it { is_expected.to validate_presence_of(:keyword) }

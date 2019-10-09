@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "RssFeed", type: :request do
+describe "RssFeed", type: :request do
   let(:user) { FactoryBot.create(:user) }
   let(:organization) { FactoryBot.create(:organization) }
   let(:tag) { FactoryBot.create(:tag) }

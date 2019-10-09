@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "NotificationsIndex", type: :request do
+describe "NotificationsIndex", type: :request do
   include ActionView::Helpers::DateHelper
 
   let(:dev_account) { create(:user) }

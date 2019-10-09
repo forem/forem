@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe ProMembershipMailer, type: :mailer do
+describe ProMembershipMailer, type: :mailer do
   let(:pro_membership) { build_stubbed(:pro_membership) }
   let(:user) { pro_membership.user }
 

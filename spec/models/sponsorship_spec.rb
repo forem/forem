@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Sponsorship, type: :model do
+describe Sponsorship, type: :model do
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:organization).inverse_of(:sponsorships) }
   it { is_expected.to belong_to(:sponsorable).optional }

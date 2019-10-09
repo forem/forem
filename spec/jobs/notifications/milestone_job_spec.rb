@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Notifications::MilestoneJob do
+describe Notifications::MilestoneJob do
   include_examples "#enqueues_job", "send_milestone_notification", {}
 
   describe "#perform_now" do

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe DisplayAd, type: :model do
+describe DisplayAd, type: :model do
   let(:display_ad) { create(:display_ad, organization_id: organization.id) }
   let(:organization) { create(:organization) }
 

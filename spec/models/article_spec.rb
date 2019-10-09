@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Article, type: :model do
+describe Article, type: :model do
   def build_and_validate_article(*args)
     article = build(:article, *args)
     article.validate!

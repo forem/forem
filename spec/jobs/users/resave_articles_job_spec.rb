@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Users::ResaveArticlesJob, type: :job do
+describe Users::ResaveArticlesJob, type: :job do
   include_examples "#enqueues_job", "users_resave_articles", [1, 2]
 
   describe "#perform_now" do

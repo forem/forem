@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Exporter::Articles do
+describe Exporter::Articles do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user) }
   let(:other_user) { create(:user) }

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "AdditionalContentBoxes", type: :request do
+describe "AdditionalContentBoxes", type: :request do
   let(:tag) { create(:tag) }
   let(:user) { create(:user) }
   let(:regular_article) { create(:article, user: user, tags: [tag.name]) }

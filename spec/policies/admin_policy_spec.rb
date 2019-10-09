@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe AdminPolicy, type: :policy do
+describe AdminPolicy, type: :policy do
   let(:admin_policy) { described_class }
 
   permissions :show? do

@@ -1,5 +1,3 @@
-require "rails_helper"
-
 describe SocialImageHelper do
   let(:user) { create(:user) }
   let(:article) { create(:article, main_image: nil) }

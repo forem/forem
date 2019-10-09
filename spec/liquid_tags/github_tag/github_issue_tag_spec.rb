@@ -1,11 +1,9 @@
-require "rails_helper"
-
 vcr_option = {
   cassette_name: "github_api",
   allow_playback_repeats: "true"
 }
 
-RSpec.describe GithubTag::GithubIssueTag, vcr: vcr_option do
+describe GithubTag::GithubIssueTag, vcr: vcr_option do
   describe "#id" do
     let(:github_link) { "https://github.com/facebook/react/issues/9218" }
 

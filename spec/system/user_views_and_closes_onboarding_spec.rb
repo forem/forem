@@ -1,5 +1,3 @@
-# require "rails_helper"
-
 # describe "User views and closes onboarding", type: :system, js: true do
 #   let(:tag) { create(:tag, name: "java") }
 

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe EmojiConverter do
+describe EmojiConverter do
   def convert_emoji(html)
     EmojiConverter.call(html)
   end

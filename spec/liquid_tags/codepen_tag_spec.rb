@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe CodepenTag, type: :liquid_template do
+describe CodepenTag, type: :liquid_template do
   describe "#link" do
     let(:codepen_link) { "https://codepen.io/twhite96/pen/XKqrJX" }
     let(:codepen_team_link) { "https://codepen.io/team/keyframers/pen/ZMRMEw" }

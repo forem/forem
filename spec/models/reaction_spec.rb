@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Reaction, type: :model do
+describe Reaction, type: :model do
   let(:user) { create(:user) }
   let(:article) { create(:article, featured: true) }
   let(:comment) { create(:comment, user: user, commentable: article) }

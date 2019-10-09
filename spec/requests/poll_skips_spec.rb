@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "PollSkips", type: :request do
+describe "PollSkips", type: :request do
   let(:user) { create(:user) }
   let(:article) { create(:article) }
   let(:poll) { create(:poll, article_id: article.id) }

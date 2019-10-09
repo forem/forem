@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Api::V0::Users", type: :request do
+describe "Api::V0::Users", type: :request do
   let(:user) { create(:user) }
   let(:tag) { create(:tag) }
 

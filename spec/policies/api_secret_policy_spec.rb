@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe ApiSecretPolicy, type: :policy do
+describe ApiSecretPolicy, type: :policy do
   subject { described_class.new(user, api_secret) }
 
   let(:valid_attributes) { %i[description] }

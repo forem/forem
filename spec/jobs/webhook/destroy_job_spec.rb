@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Webhook::DestroyJob, type: :job do
+describe Webhook::DestroyJob, type: :job do
   let(:user) { create(:user) }
   let(:oauth_app) { create(:application) }
   let!(:webhook_endpoint) { create(:webhook_endpoint, user: user, oauth_application: oauth_app) }

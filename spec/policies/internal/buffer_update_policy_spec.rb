@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Internal::BufferUpdatePolicy do
+describe Internal::BufferUpdatePolicy do
   subject { described_class.new(user, BufferUpdate) }
 
   let(:user) { build_stubbed(:user) }

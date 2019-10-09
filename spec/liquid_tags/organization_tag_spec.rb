@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe OrganizationTag, type: :liquid_template do
+describe OrganizationTag, type: :liquid_template do
   let(:organization) { create(:organization) }
 
   setup { Liquid::Template.register_tag("organization", described_class) }

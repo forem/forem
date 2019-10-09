@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "ChatChannelMemberships", type: :request do
+describe "ChatChannelMemberships", type: :request do
   let(:user) { create(:user) }
   let(:second_user) { create(:user) }
   let(:chat_channel) { create(:chat_channel) }

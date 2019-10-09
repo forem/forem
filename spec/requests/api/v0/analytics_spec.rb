@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Api::V0::Analytics", type: :request do
+describe "Api::V0::Analytics", type: :request do
   describe "GET /api/analytics/totals" do
     include_examples "GET /api/analytics/:endpoint authorization examples", "totals"
   end

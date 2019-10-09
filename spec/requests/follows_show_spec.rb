@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Follows #show", type: :request do
+describe "Follows #show", type: :request do
   let(:current_user) { create(:user) }
   let(:user) { create(:user) }
   let(:tag) { create(:tag) }

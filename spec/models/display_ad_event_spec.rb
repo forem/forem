@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe DisplayAdEvent, type: :model do
+describe DisplayAdEvent, type: :model do
   let(:user) { create(:user) }
   let(:organization) { create(:organization) }
   let(:display_ad) { create(:display_ad, organization_id: organization.id) }

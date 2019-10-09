@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "ChatChannels", type: :request do
+describe "ChatChannels", type: :request do
   let(:user) { create(:user) }
   let(:user_open_inbox) { create(:user, inbox_type: "open") }
   let(:user_closed_inbox) { create(:user) }

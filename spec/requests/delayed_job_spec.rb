@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Delayed Job web interface", type: :request do
+describe "Delayed Job web interface", type: :request do
   let(:user)          { create(:user) }
   let(:super_admin)   { create(:user, :super_admin) }
   let(:article)       { create(:article, user_id: user.id) }

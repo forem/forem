@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Bufferizer do
+describe Bufferizer do
   let(:user) { create(:user) }
   let(:listing) { create(:classified_listing, user_id: user.id) }
   let(:article) { create(:article, user_id: user.id) }

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe VideoPolicy do
+describe VideoPolicy do
   subject { described_class.new(user, nil) }
 
   let(:user) { User.new }

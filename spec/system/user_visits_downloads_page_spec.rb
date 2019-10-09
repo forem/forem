@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "User visits downloads page", type: :system do
+describe "User visits downloads page", type: :system do
   before { visit "/downloads" }
 
   it "shows app links" do

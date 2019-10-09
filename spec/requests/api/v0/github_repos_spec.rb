@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Api::V0::GithubRepos", type: :request do
+describe "Api::V0::GithubRepos", type: :request do
   let(:user) { create(:user) }
   let(:repo) { build(:github_repo, user: user) }
   let(:my_ocktokit_client) { instance_double(Octokit::Client) }

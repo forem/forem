@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe FlareTag do
+describe FlareTag do
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
 

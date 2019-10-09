@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe PollOption, type: :model do
+describe PollOption, type: :model do
   let(:article) { create(:article, featured: true) }
   let(:poll) { create(:poll, article_id: article.id) }
 

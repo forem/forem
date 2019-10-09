@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe KotlinTag, type: :liquid_template do
+describe KotlinTag, type: :liquid_template do
   describe "#link" do
     let(:valid_link) { "https://pl.kotl.in/owreUFFUG?theme=darcula&from=3&to=6&readOnly=true" }
 

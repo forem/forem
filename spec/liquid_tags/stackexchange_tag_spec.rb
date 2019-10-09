@@ -1,11 +1,9 @@
-require "rails_helper"
-
 vcr_option = {
   cassette_name: "stackexchange_api",
   allow_playback_repeats: "true"
 }
 
-RSpec.describe StackexchangeTag, type: :liquid_template, vcr: vcr_option do
+describe StackexchangeTag, type: :liquid_template, vcr: vcr_option do
   describe "#id" do
     let(:valid_id) { "57496168" }
     let(:exchange_id) { "1163633" }

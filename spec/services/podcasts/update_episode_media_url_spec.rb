@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Podcasts::UpdateEpisodeMediaUrl, type: :service do
+describe Podcasts::UpdateEpisodeMediaUrl, type: :service do
   let(:podcast) { create(:podcast) }
 
   it "updates media_url from http to https" do

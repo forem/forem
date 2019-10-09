@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe EmailLogic do
+describe EmailLogic do
   let(:user) { create(:user) }
 
   # TODO: improve this test suite, and improve it's speed

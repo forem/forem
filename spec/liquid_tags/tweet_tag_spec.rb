@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe TweetTag, type: :liquid_template do
+describe TweetTag, type: :liquid_template do
   let(:twitter_id) { "1018911886862057472" }
   let(:handle) { "thepracticaldev" }
   let(:name) { "The Practical Dev" }

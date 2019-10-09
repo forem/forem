@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "ArticlesCreate", type: :request do
+describe "ArticlesCreate", type: :request do
   let(:user) { create(:user, :org_member) }
 
   before do

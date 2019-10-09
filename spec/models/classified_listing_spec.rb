@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe ClassifiedListing, type: :model do
+describe ClassifiedListing, type: :model do
   let(:classified_listing) { create(:classified_listing, user_id: user.id) }
   let(:user) { create(:user) }
   let(:organization) { create(:organization) }

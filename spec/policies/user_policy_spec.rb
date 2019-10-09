@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe UserPolicy, type: :policy do
+describe UserPolicy, type: :policy do
   subject { described_class.new(user, other_user) }
 
   let(:other_user) { build_stubbed(:user) }

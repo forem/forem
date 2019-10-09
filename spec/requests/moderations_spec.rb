@@ -1,5 +1,3 @@
-require "rails_helper"
-
 RSpec.shared_examples "an elevated privilege required request" do |path|
   context "when not logged-in" do
     it "does not grant acesss", proper_status: true do
@@ -26,7 +24,7 @@ RSpec.shared_examples "an elevated privilege required request" do |path|
   end
 end
 
-RSpec.describe "Moderations", type: :request do
+describe "Moderations", type: :request do
   let(:user) { create(:user, :trusted) }
   let(:article) { create(:article) }
   let(:comment) { create(:comment, commentable: article) }

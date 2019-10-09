@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe ProMemberships::Biller, type: :service do
+describe ProMemberships::Biller, type: :service do
   def format_date(datetime)
     # PostgreSQL DATE(..) function uses UTC.
     datetime.utc.to_date.iso8601

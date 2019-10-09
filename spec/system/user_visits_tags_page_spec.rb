@@ -1,5 +1,3 @@
-# require "rails_helper"
-
 # describe "Tag index page (/tags)", type: :system, js: true do
 #   let(:user) { create(:user) }
 #   let(:tag) { create(:tag) }

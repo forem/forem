@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "ArticlesUpdate", type: :request do
+describe "ArticlesUpdate", type: :request do
   let(:organization) { create(:organization) }
   let(:organization2) { create(:organization) }
   let(:user) { create(:user, :org_admin) }

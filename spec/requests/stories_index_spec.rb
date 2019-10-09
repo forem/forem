@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "StoriesIndex", type: :request do
+describe "StoriesIndex", type: :request do
   describe "GET stories index" do
     it "renders page with proper sidebar" do
       get "/"

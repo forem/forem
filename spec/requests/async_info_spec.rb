@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "AsyncInfo", type: :request do
+describe "AsyncInfo", type: :request do
   describe "GET /async_info/base_data" do
     context "when not logged-in" do
       before { get "/async_info/base_data" }

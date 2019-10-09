@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Notifications::NotifiableActionJob, type: :job do
+describe Notifications::NotifiableActionJob, type: :job do
   include_examples "#enqueues_job", "send_notifiable_action_notification", 5
 
   describe "#perform_now" do

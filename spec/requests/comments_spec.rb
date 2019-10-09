@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Comments", type: :request do
+describe "Comments", type: :request do
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
   let(:podcast) { create(:podcast) }

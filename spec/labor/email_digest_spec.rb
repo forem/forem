@@ -1,5 +1,3 @@
-require "rails_helper"
-
 class FakeDelegator < ActionMailer::MessageDelivery
   # TODO: we should replace all usage of .deliver to .deliver_now
   def deliver(*args)
@@ -7,7 +5,7 @@ class FakeDelegator < ActionMailer::MessageDelivery
   end
 end
 
-RSpec.describe EmailDigest do
+describe EmailDigest do
   let(:user) { create(:user, email_digest_periodic: true) }
   let(:author) { create(:user) }
   let(:mock_delegator) { instance_double("FakeDelegator") }

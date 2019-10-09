@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Deleting Article", type: :system do
+describe "Deleting Article", type: :system do
   let(:article) { create(:article) }
 
   it "author of article deletes own article" do

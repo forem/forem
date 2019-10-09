@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Blocks", type: :request do
+describe "Blocks", type: :request do
   let(:user) { create(:user, :super_admin) }
 
   before { sign_in user }

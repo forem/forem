@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Follows::SendEmailNotificationJob, type: :job do
+describe Follows::SendEmailNotificationJob, type: :job do
   include_examples "#enqueues_job", "send_follow_email_notification", 3
 
   describe "#perform_now" do

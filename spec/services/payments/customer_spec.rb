@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Payments::Customer do
+describe Payments::Customer do
   before do
     StripeMock.start
   end

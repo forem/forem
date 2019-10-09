@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "TwitchStramUpdates", type: :request do
+describe "TwitchStramUpdates", type: :request do
   let(:user) { create(:user, twitch_username: "my-twtich-username", currently_streaming_on: currently_streaming_on) }
   let(:currently_streaming_on) { nil }
 

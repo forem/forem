@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "User visits a homepage", type: :system do
+describe "User visits a homepage", type: :system do
   let!(:article) { create(:article, reactions_count: 12, featured: true) }
   let!(:article2) { create(:article, reactions_count: 20, featured: true) }
   let!(:bad_article) { create(:article, reactions_count: 0) }

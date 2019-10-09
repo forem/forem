@@ -1,5 +1,3 @@
-# require "rails_helper"
-
 # describe "Seeing checklist on home page" do
 #   let(:user) { create(:user) }
 

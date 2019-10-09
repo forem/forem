@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe ArticleWithVideoCreationService, type: :service do
+describe ArticleWithVideoCreationService, type: :service do
   let(:link) { "https://s3.amazonaws.com/dev-to-input-v0/video-upload__2d7dc29e39a40c7059572bca75bb646b" }
 
   before do

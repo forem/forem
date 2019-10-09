@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Dashboards", type: :request do
+describe "Dashboards", type: :request do
   let(:user)          { create(:user) }
   let(:second_user)   { create(:user) }
   let(:super_admin)   { create(:user, :super_admin) }

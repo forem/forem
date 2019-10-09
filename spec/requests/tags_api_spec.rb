@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "ArticlesApi", type: :request do
+describe "ArticlesApi", type: :request do
   describe "GET /api/tags" do
     it "returns tag objects" do
       tag = create(:tag)

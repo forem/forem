@@ -1,13 +1,12 @@
 # Sigh, this is tough to test.
 
-require "rails_helper"
 
 vcr_option = {
   cassette_name: "github_api_readme",
   allow_playback_repeats: "true"
 }
 
-RSpec.describe GithubTag::GithubReadmeTag, vcr: vcr_option do
+describe GithubTag::GithubReadmeTag, vcr: vcr_option do
   describe "#id" do
     let(:path) { "facebook/react" }
     let(:my_ocktokit_client) { instance_double(Octokit::Client) }

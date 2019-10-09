@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "ArticlesDestroy", type: :request do
+describe "ArticlesDestroy", type: :request do
   let(:user) { create(:user, :org_admin) }
   let(:article) { create(:article, user_id: user.id) }
 

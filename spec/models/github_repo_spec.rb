@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe GithubRepo, type: :model do
+describe GithubRepo, type: :model do
   let(:user) { create(:user) }
   let(:repo) { build(:github_repo, user_id: user.id) }
 

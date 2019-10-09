@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe ClassifiedListings::BustCacheJob, type: :job do
+describe ClassifiedListings::BustCacheJob, type: :job do
   include_examples "#enqueues_job", "classified_listings_bust_cache", 789
 
   describe "#perform_now" do

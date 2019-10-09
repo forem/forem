@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Block, type: :model do
+describe Block, type: :model do
   let(:user) { create(:user) }
   let(:block) { described_class.new(user: user, input_html: "hello") }
 

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Organization, type: :model do
+describe Organization, type: :model do
   let(:user)         { create(:user) }
   let(:organization) { create(:organization) }
 

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "InternalBufferUpdates", type: :request do
+describe "InternalBufferUpdates", type: :request do
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
   let(:comment) { create(:comment, user_id: user.id, commentable_id: article.id) }

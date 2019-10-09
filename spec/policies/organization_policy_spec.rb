@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe OrganizationPolicy, type: :policy do
+describe OrganizationPolicy, type: :policy do
   subject(:organization_policy) { described_class.new(user, organization) }
 
   let(:organization) { build_stubbed(:organization) }

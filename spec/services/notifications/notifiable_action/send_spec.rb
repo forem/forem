@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Notifications::NotifiableAction::Send, type: :service do
+describe Notifications::NotifiableAction::Send, type: :service do
   let(:user) { create(:user) }
   let(:organization) { create(:organization) }
   let(:article) { create(:article, user: user, organization: organization) }

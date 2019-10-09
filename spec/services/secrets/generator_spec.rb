@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Secrets::Generator, type: :service do
+describe Secrets::Generator, type: :service do
   describe ".sortable" do
     it "generates unique identifiers" do
       expect(described_class.sortable).not_to eq(described_class.sortable)

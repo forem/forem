@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe SpotifyTag, type: :liquid_template do
+describe SpotifyTag, type: :liquid_template do
   describe "#link" do
     let(:valid_uri) { "spotify:track:0K1UpnetfCKtcNu37rJmCg" }
     let(:valid_playlist_uri) { "spotify:playlist:37i9dQZF1E36t2Deh8frhL" }

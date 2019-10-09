@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Notifications::TagAdjustmentNotificationJob do
+describe Notifications::TagAdjustmentNotificationJob do
   include_examples "#enqueues_job", "send_tag_adjustment_notification", 333
 
   describe "#perform_now" do

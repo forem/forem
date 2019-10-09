@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe BlockPolicy, type: :policy do
+describe BlockPolicy, type: :policy do
   subject { described_class.new(user, block) }
 
   let(:block) { build_stubbed(:block) }

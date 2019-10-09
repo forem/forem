@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Webhook::Endpoint, type: :model do
+describe Webhook::Endpoint, type: :model do
   let!(:endpoint) do
     create(
       :webhook_endpoint, user: user, events: %w[article_created article_updated article_destroyed]

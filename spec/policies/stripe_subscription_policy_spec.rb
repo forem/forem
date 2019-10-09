@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe StripeSubscriptionPolicy, type: :policy do
+describe StripeSubscriptionPolicy, type: :policy do
   subject { described_class.new(user, :stripe_subscription) }
 
   context "when user is not signed in" do

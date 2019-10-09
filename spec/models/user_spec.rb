@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe User, type: :model do
+describe User, type: :model do
   let!(:user)           { create(:user) }
   let(:returning_user)  { create(:user, signup_cta_variant: nil) }
   let(:second_user)     { create(:user) }

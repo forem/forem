@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Notifications::ModerationNotificationJob do
+describe Notifications::ModerationNotificationJob do
   include_examples "#enqueues_job", "send_moderation_notification", 458
 
   describe "#perform_now" do

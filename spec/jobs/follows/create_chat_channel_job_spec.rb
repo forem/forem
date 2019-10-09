@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Follows::CreateChatChannelJob, type: :job do
+describe Follows::CreateChatChannelJob, type: :job do
   include_examples "#enqueues_job", "create_chat_channel_after_follow", 3
 
   describe "#perform_now" do

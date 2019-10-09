@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe BufferUpdatePolicy, type: :policy do
+describe BufferUpdatePolicy, type: :policy do
   subject { described_class.new(user, article) }
 
   let(:article) { build_stubbed(:article) }

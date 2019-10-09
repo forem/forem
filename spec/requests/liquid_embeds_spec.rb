@@ -1,11 +1,9 @@
-require "rails_helper"
-
 vcr_option = {
   cassette_name: "twitter_gem",
   allow_playback_repeats: "true"
 }
 
-RSpec.describe "LiquidEmbeds", type: :request, vcr: vcr_option do
+describe "LiquidEmbeds", type: :request, vcr: vcr_option do
   describe "get /embeds" do
     it "renders proper tweet" do
       get "/embed/tweet?args=1018911886862057472"

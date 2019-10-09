@@ -1,7 +1,6 @@
-require "rails_helper"
 require "jobs/shared_examples/enqueues_job"
 
-RSpec.describe Reactions::CreateJob, type: :job do
+describe Reactions::CreateJob, type: :job do
   include_examples "#enqueues_job", "reaction_create", [{ user_id: 8, reactable_id: 1, reactable_type: "Comment", category: "like" }]
 
   describe "#perform_now" do

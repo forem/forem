@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Api::V0::Articles", type: :request do
+describe "Api::V0::Articles", type: :request do
   let_it_be(:organization) { create(:organization) } # not used by every spec but lower times overall
   let_it_be(:article) { create(:article, featured: true, tags: "discuss") }
 

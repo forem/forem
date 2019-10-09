@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Comments::SendEmailNotificationJob, type: :job do
+describe Comments::SendEmailNotificationJob, type: :job do
   describe "#perform_now" do
     let(:article) { FactoryBot.create(:article) }
     let(:comment) { FactoryBot.create(:comment, commentable: article) }

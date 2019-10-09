@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Badges", type: :request do
+describe "Badges", type: :request do
   let(:user) { create(:user) }
 
   describe "GET /badges" do

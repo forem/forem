@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Mentions::CreateAllJob do
+describe Mentions::CreateAllJob do
   let(:comment) { create(:comment, commentable: create(:article)) }
 
   include_examples "#enqueues_job", "mentions_create_all", 1

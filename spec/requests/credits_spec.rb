@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Credits", type: :request do
+describe "Credits", type: :request do
   describe "GET /credits" do
     let(:user) { create(:user) }
     let(:org_member) { create(:user, :org_member) }

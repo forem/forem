@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Events", type: :request do
+describe "Events", type: :request do
   let(:event) { create(:event) }
 
   describe "GET events" do

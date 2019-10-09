@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Following/Unfollowing", type: :request do
+describe "Following/Unfollowing", type: :request do
   let(:user) { create(:user) }
   let(:user_2) { create(:user) }
   let(:tag) { create(:tag) }

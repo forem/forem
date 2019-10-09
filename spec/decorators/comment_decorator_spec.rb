@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe CommentDecorator, type: :decorator do
+describe CommentDecorator, type: :decorator do
   describe "#low_quality" do
     let(:threshold) { CommentDecorator::LOW_QUALITY_THRESHOLD }
 

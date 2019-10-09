@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Reactions::BustHomepageCacheJob, type: :job do
+describe Reactions::BustHomepageCacheJob, type: :job do
   include_examples "#enqueues_job", "bust_homepage_cache_from_reactions", 2
 
   describe "#perform_now" do

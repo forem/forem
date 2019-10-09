@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Notifications::Milestone::Send do
+describe Notifications::Milestone::Send do
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id, page_views_count: 4000, positive_reactions_count: 70) }
 

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Creating Comment", type: :system, js: true do
+describe "Creating Comment", type: :system, js: true do
   let(:user) { create(:user) }
   let(:raw_comment) { Faker::Lorem.paragraph }
   # the article should be created before signing in

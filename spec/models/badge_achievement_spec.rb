@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe BadgeAchievement, type: :model do
+describe BadgeAchievement, type: :model do
   describe "validations" do
     subject { create(:badge_achievement) }
 

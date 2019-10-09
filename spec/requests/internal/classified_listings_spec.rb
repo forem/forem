@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "/internal/listings", type: :request do
+describe "/internal/listings", type: :request do
   describe "PUT /internal/listings/:id" do
     let(:admin) { create(:user, :super_admin) }
     let(:classified_listing) { create(:classified_listing, user_id: admin.id) }

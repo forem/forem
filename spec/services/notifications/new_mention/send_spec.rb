@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Notifications::NewMention::Send, type: :service do
+describe Notifications::NewMention::Send, type: :service do
   let(:user) { create(:user) }
   let(:comment) { create(:comment, commentable: create(:article)) }
   let(:mention) { create(:mention, mentionable: comment, user: user) }

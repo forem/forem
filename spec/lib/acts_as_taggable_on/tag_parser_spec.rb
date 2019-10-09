@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe ActsAsTaggableOn::TagParser do
+describe ActsAsTaggableOn::TagParser do
   let(:tag0) { create(:tag, name: "things") }
   let(:tag1) { create(:tag, name: "peter") }
 

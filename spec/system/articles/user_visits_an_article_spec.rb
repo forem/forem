@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Views an article", type: :system do
+describe "Views an article", type: :system do
   let_it_be(:user) { create(:user) }
   let_it_be(:article, reload: true) { create(:article, :with_notification_subscription, user: user) }
   let(:timestamp) { "2019-03-04T10:00:00Z" }

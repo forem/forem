@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Organization index", type: :system do
+describe "Organization index", type: :system do
   let!(:org_user) { create(:user, :org_member) }
   let(:organization) { org_user.organizations.first }
 

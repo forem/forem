@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe ChatChannelMembershipPolicy, type: :policy do
+describe ChatChannelMembershipPolicy, type: :policy do
   subject { described_class.new(user, chat_channel_membership) }
 
   let(:user)                    { build_stubbed(:user) }

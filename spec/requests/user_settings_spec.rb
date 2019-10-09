@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "UserSettings", type: :request do
+describe "UserSettings", type: :request do
   let(:user) { create(:user, twitch_username: nil) }
 
   describe "GET /settings/:tab" do

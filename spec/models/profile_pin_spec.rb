@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe ProfilePin, type: :model do
+describe ProfilePin, type: :model do
   let(:user) { create(:user) }
   let(:second_user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }

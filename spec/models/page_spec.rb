@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Page, type: :model do
+describe Page, type: :model do
   let(:page)         { create(:page) }
 
   describe "#processed_html" do

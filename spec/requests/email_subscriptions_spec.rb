@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "EmailSubscriptions", type: :request do
+describe "EmailSubscriptions", type: :request do
   let(:user) { build(:user) }
 
   before do

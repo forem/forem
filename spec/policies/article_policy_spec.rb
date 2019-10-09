@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe ArticlePolicy do
+describe ArticlePolicy do
   subject { described_class.new(user, article) }
 
   let(:article) { build_stubbed(:article) }

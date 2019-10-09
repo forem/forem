@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Notifications::NewBadgeAchievement::Send, type: :service do
+describe Notifications::NewBadgeAchievement::Send, type: :service do
   let(:badge_achievement) { create(:badge_achievement) }
 
   def expected_json_data

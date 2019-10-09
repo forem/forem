@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe TagAdjustmentCreationService do
+describe TagAdjustmentCreationService do
   let(:user) { create(:user) }
   let(:article) { create(:article) }
   let(:tag) { create(:tag) }

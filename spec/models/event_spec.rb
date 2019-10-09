@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Event, type: :model do
+describe Event, type: :model do
   let(:event) { create(:event) }
 
   it "rejects title with over 90 characters" do

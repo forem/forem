@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe ArticleSuggester do
+describe ArticleSuggester do
   let(:user) { create(:user) }
 
   it "returns proper number of articles with post with the same tags" do

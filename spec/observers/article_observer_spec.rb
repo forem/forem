@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe ArticleObserver, type: :observer do
+describe ArticleObserver, type: :observer do
   let(:user) { create(:user) }
 
   before do

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe ProMemberships::ExpirationNotifier, type: :service do
+describe ProMemberships::ExpirationNotifier, type: :service do
   context "when there are expiring memberships with enough credits" do
     let(:pro_membership) { create(:pro_membership) }
     let(:user) { pro_membership.user }

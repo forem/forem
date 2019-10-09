@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe PageView, type: :model do
+describe PageView, type: :model do
   let(:article) { create(:article) }
 
   it { is_expected.to belong_to(:user).optional }

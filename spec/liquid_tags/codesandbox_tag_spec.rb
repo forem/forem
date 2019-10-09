@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe CodesandboxTag, type: :liquid_template do
+describe CodesandboxTag, type: :liquid_template do
   describe "#id" do
     let(:valid_id) { "22qaa1wcxr" }
     let(:valid_id_with_initialpath) { "68jkdlsaie initialpath=/initial/path/file.js" }

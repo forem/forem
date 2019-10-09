@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "feedback_messages", type: :request do
+describe "feedback_messages", type: :request do
   describe "POST /feedback_messages" do
     # rubocop:disable RSpec/AnyInstance
     def verify_captcha_and_slack_ping

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Podcasts::BustCacheJob do
+describe Podcasts::BustCacheJob do
   let(:cache_buster) { instance_double(CacheBuster) }
 
   before do

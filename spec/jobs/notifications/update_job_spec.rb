@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Notifications::UpdateJob do
+describe Notifications::UpdateJob do
   include_examples "#enqueues_job", "update_notifications", 1, "Article"
 
   describe "#perform_now" do

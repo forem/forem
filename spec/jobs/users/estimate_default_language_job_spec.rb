@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Users::EstimateDefaultLanguageJob, type: :job do
+describe Users::EstimateDefaultLanguageJob, type: :job do
   include_examples "#enqueues_job", "users_estimate_language", 2
 
   describe "#perform_now" do

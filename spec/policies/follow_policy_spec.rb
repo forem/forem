@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe FollowPolicy, type: :policy do
+describe FollowPolicy, type: :policy do
   subject { described_class.new(user, Follow) }
 
   context "when user is not signed in" do

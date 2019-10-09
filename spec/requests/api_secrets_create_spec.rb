@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "ApiSecretsCreate", type: :request do
+describe "ApiSecretsCreate", type: :request do
   let(:user) { build(:user) }
 
   before { sign_in user }

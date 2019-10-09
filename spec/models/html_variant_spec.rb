@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe HtmlVariant, type: :model do
+describe HtmlVariant, type: :model do
   let(:html_variant) { create(:html_variant, approved: true, published: true) }
 
   it { is_expected.to validate_uniqueness_of(:name) }

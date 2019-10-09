@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Article, type: :model do
+describe Article, type: :model do
   context "when no organization" do
     let(:article) { create(:article) }
 

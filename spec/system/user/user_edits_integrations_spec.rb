@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "User edits their integrations", type: :system, js: true do
+describe "User edits their integrations", type: :system, js: true do
   let(:user) { create(:user, saw_onboarding: true) }
   let(:github_response_body) do
     [

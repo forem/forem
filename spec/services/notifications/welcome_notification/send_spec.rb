@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Notifications::WelcomeNotification::Send, type: :service do
+describe Notifications::WelcomeNotification::Send, type: :service do
   describe "::call" do
     before do
       allow(User).to receive(:dev_account).and_return(create(:user))

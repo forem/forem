@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Pro Memberships", type: :request do
+describe "Pro Memberships", type: :request do
   describe "GET /pro" do
     it "returns Pro landing page" do
       get pro_membership_path

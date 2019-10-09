@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe HtmlVariantPolicy, type: :policy do
+describe HtmlVariantPolicy, type: :policy do
   subject { described_class.new(user, html_variant) }
 
   context "when user is not an admin" do

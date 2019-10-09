@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Webhook::Event, type: :model do
+describe Webhook::Event, type: :model do
   let(:article) { create(:article) }
   let!(:payload) { Webhook::PayloadAdapter.new(article).hash }
 

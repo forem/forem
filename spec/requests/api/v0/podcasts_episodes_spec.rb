@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
+describe "Api::V0::PodcastEpisodes", type: :request do
   let(:podcast) { create(:podcast) }
 
   describe "GET /api/podcast_episodes" do

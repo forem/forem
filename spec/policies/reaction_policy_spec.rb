@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe ReactionPolicy do
+describe ReactionPolicy do
   subject { described_class.new(user, reaction) }
 
   let(:reaction) { build_stubbed(:reaction) }

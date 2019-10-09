@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Notifications::NewReactionJob, type: :job do
+describe Notifications::NewReactionJob, type: :job do
   let(:reaction_data) { { reactable_type: "Comment", reactable_id: 1, reactable_user_id: 2 } }
   let(:org) { create(:organization) }
   let(:receiver_data) { { klass: "Organization", id: org.id } }

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe RateLimitCheckerJob, type: :job do
+describe RateLimitCheckerJob, type: :job do
   include_examples "#enqueues_job", "rate_limit_checker", 2
 
   describe "#perform_later" do

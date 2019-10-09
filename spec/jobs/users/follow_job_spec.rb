@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Users::FollowJob, type: :job do
+describe Users::FollowJob, type: :job do
   include_examples "#enqueues_job", "users_follow", [1, 2, "User"]
 
   describe "#perform_now" do

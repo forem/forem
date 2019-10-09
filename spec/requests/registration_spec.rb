@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Registrations", type: :request do
+describe "Registrations", type: :request do
   let(:user) { create(:user) }
 
   describe "GET /enter" do

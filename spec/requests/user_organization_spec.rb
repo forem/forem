@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "UserOrganization", type: :request do
+describe "UserOrganization", type: :request do
   let(:user)          { create(:user) }
   let(:organization)  { create(:organization, secret: "SECRET", approved: true) }
 

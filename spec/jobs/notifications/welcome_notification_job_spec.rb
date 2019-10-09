@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Notifications::WelcomeNotificationJob, type: :job do
+describe Notifications::WelcomeNotificationJob, type: :job do
   include_examples "#enqueues_job", "send_welcome_notification"
 
   describe "::perform_now" do

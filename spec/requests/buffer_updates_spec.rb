@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "BufferUpdates", type: :request do
+describe "BufferUpdates", type: :request do
   let(:user) { create(:user) }
   let(:mod_user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }

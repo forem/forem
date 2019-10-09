@@ -1,5 +1,3 @@
-require "rails_helper"
-
 class FakeGibbonRequest < Gibbon::Request
   def lists(*args)
     super
@@ -18,7 +16,7 @@ class FakeGibbonRequest < Gibbon::Request
   end
 end
 
-RSpec.describe MailchimpBot do
+describe MailchimpBot do
   let(:user) { create(:user, :ignore_after_callback) }
   let(:article) { create(:article, user_id: user.id) }
   let(:my_gibbon_client) { instance_double(FakeGibbonRequest) }

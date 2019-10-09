@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Articles::DetectHumanLanguageJob, type: :job do
+describe Articles::DetectHumanLanguageJob, type: :job do
   describe "#perform_now" do
     let(:article) { FactoryBot.create(:article) }
 

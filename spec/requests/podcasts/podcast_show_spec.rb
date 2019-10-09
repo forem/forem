@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "PodcastShow", type: :request do
+describe "PodcastShow", type: :request do
   describe "GET podcast show" do
     it "renders 404 for an unreachable podcast" do
       podcast = create(:podcast, reachable: false)

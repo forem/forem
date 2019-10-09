@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Notifications::Reactions::Send, type: :service do
+describe Notifications::Reactions::Send, type: :service do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user) }
   let(:user2) { create(:user) }

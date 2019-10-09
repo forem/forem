@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Notifications::NewCommentJob, type: :job do
+describe Notifications::NewCommentJob, type: :job do
   include_examples "#enqueues_job", "send_new_comment_notification", 5
 
   describe "#perform_now" do

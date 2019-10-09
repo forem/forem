@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Notifications::NewFollowerJob, type: :job do
+describe Notifications::NewFollowerJob, type: :job do
   let(:follow_data) { { followable_type: "User", followable_id: 1, follower_id: 2 } }
 
   include_examples "#enqueues_job", "send_new_follower_notification", [{}, true]

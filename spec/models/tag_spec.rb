@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Tag, type: :model do
+describe Tag, type: :model do
   let(:tag) { build(:tag) }
 
   it "passes validations if bg_color_hex is valid" do

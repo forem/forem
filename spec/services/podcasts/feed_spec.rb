@@ -1,11 +1,9 @@
-require "rails_helper"
-
 vcr_option = {
   cassette_name: "se_daily_rss_feed",
   allow_playback_repeats: "true"
 }
 
-RSpec.describe Podcasts::Feed, vcr: vcr_option do
+describe Podcasts::Feed, vcr: vcr_option do
   let(:feed_url) { "http://softwareengineeringdaily.com/feed/podcast/" }
   let(:podcast) { create(:podcast, feed_url: feed_url) }
 

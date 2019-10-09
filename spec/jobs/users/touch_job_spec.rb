@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Users::TouchJob, type: :job do
+describe Users::TouchJob, type: :job do
   describe "#perform_later" do
     it "enqueues the job" do
       expect do

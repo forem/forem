@@ -1,8 +1,7 @@
-require "rails_helper"
 require "jobs/shared_examples/enqueues_job"
 require "./app/services/rss_reader"
 
-RSpec.describe RssReaderFetchUserJob, type: :job do
+describe RssReaderFetchUserJob, type: :job do
   include_examples "#enqueues_job", "rss_reader_fetch_user", 456
 
   describe "#perform_now" do

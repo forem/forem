@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Viewing an article stats", type: :system, js: true do
+describe "Viewing an article stats", type: :system, js: true do
   let_it_be(:user) { create(:user) }
   let_it_be(:article, reload: true) { create(:article, user: user) }
 

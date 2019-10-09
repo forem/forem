@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Suggester::Articles::Boosted do
+describe Suggester::Articles::Boosted do
   let(:user) { create(:user) }
   let(:organization) { create(:organization) }
   let(:tag) { create(:tag, supported: true) }

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe ProMemberships::PopulateHistoryJob, type: :job do
+describe ProMemberships::PopulateHistoryJob, type: :job do
   include_examples "#enqueues_job", "pro_memberships_populate_history", 1
 
   describe "#perform_now" do

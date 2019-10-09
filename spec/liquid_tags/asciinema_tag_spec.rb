@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe AsciinemaTag, type: :liquid_template do
+describe AsciinemaTag, type: :liquid_template do
   describe "#id" do
     let(:valid_id)      { "1234" }
     let(:invalid_id)    { "inv@lid" }

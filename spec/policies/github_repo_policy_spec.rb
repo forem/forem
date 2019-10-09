@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe GithubRepoPolicy, type: :policy do
+describe GithubRepoPolicy, type: :policy do
   subject { described_class.new(user, github_repo) }
 
   let(:github_repo)      { build_stubbed(:github_repo) }

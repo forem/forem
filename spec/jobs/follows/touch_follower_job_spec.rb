@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Follows::TouchFollowerJob, type: :job do
+describe Follows::TouchFollowerJob, type: :job do
   include_examples "#enqueues_job", "touch_follower", 3
 
   describe "#perform_now" do

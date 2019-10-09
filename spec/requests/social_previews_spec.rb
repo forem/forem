@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "SocialPreviews", type: :request do
+describe "SocialPreviews", type: :request do
   let(:user) { create(:user) }
   let(:tag) { create(:tag) }
   let(:organization) { create(:organization) }

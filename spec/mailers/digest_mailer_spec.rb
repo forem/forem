@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe DigestMailer, type: :mailer do
+describe DigestMailer, type: :mailer do
   let(:user) { build_stubbed(:user) }
   let(:article) { build_stubbed(:article) }
 

@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Messages::SendPush do
+describe Messages::SendPush do
   let!(:user1) { create(:user) }
   let!(:user2) { create(:user) }
   let!(:chat_channel) { create(:chat_channel) }

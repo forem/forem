@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe JobOpportunity, type: :model do
+describe JobOpportunity, type: :model do
   it "returns remoteness in words for remoteness" do
     jo = described_class.new
     jo.remoteness = "on_premise"

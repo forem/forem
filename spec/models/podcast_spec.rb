@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Podcast, type: :model do
+describe Podcast, type: :model do
   it { is_expected.to validate_presence_of(:image) }
   it { is_expected.to validate_presence_of(:slug) }
   it { is_expected.to validate_presence_of(:title) }

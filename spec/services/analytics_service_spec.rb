@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe AnalyticsService, type: :service do
+describe AnalyticsService, type: :service do
   let(:user) { create(:user) }
   let(:organization) { create(:organization) }
   let(:article) { create(:article, user: user, published: true) }

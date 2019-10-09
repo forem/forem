@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Credit, type: :model do
+describe Credit, type: :model do
   let(:user) { create(:user) }
   let(:organization) { create(:organization) }
   let(:random_number) { rand(100) }

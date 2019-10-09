@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Api::V0::Webhooks", type: :request do
+describe "Api::V0::Webhooks", type: :request do
   let(:user) { create(:user) }
 
   describe "GET /api/v0/webhooks" do

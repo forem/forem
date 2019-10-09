@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Notifications::RemoveAllJob, type: :job do
+describe Notifications::RemoveAllJob, type: :job do
   include_examples "#enqueues_job", "remove_all_notifications", {}
 
   describe "#perform_now" do

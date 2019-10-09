@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "Oauth::Tokens", type: :request do
+describe "Oauth::Tokens", type: :request do
   let(:oauth_app) { create(:application) }
   let(:user) { create(:user) }
   let(:oauth_client) { Doorkeeper::OAuth::Client.new(oauth_app) }

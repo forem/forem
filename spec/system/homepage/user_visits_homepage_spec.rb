@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "User visits a homepage", type: :system do
+describe "User visits a homepage", type: :system do
   let!(:ruby_tag) { create(:tag, name: "ruby") }
 
   before { create(:tag, name: "webdev") }

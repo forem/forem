@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Tags::BustCacheJob do
+describe Tags::BustCacheJob do
   let(:cache_buster) { instance_double(CacheBuster) }
 
   before do

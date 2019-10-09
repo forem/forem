@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe "PusherAuth", type: :request do
+describe "PusherAuth", type: :request do
   let(:user) { build(:user) }
   let(:chat_channel) { build(:chat_channel) }
 

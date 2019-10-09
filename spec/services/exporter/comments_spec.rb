@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe Exporter::Comments do
+describe Exporter::Comments do
   let(:user) { create(:user) }
   let(:article) { create(:article) }
   let(:podcast_episode) { create(:podcast_episode) }

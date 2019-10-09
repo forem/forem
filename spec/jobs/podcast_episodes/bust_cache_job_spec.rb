@@ -1,6 +1,4 @@
-require "rails_helper"
-
-RSpec.describe PodcastEpisodes::BustCacheJob do
+describe PodcastEpisodes::BustCacheJob do
   include_examples "#enqueues_job", "podcast_episodes_bust_cache", 789, "/PodCAst/SlUg", "SlUg"
 
   describe "#perform_now" do
