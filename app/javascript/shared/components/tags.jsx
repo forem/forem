@@ -25,6 +25,7 @@ class Tags extends Component {
       additionalTags: [],
       cursorIdx: 0,
       prevLen: 0,
+      showingRulesForTag: null,
     };
 
     const algoliaId = document.querySelector("meta[name='algolia-public-id']")
@@ -118,11 +119,19 @@ class Tags extends Component {
         data-content={tag.name}
       >
         {tag.name}
+        {(tag.rules_html && tag.rules_html.length > 0) ? <button
+          className={`${this.props.classPrefix}__tagsoptionrulesbutton`}
+          onClick={this.handleRulesClick}
+          data-content={tag.name}
+        >
+        {this.state.showingRulesForTag === tag.name ? 'Hide Rules' : 'View Rules'}
+        </button> : ''}
+        <div className={`${this.props.classPrefix}__tagrules--${this.state.showingRulesForTag === tag.name ? 'active' : 'inactive'}`} dangerouslySetInnerHTML={{ __html: tag.rules_html }} />
       </div>
     ));
     if (
       this.state.searchResults.length > 0 &&
-      document.activeElement.id === 'tag-input'
+      (document.activeElement.id === 'tag-input' || document.activeElement.className === 'articleform__tagsoptionrulesbutton')
     ) {
       searchResultsHTML = (
         <div className={`${this.props.classPrefix}__tagsoptions`}>
@@ -140,7 +149,7 @@ class Tags extends Component {
           ref={t => (this.textArea = t)}
           className={`${this.props.classPrefix}__tags`}
           placeholder={`${this.props.maxTags} tags max, comma separated, no spaces or special characters`}
-          autoComplete={this.props.autoComplete || 'on'}
+          autoComplete='off'
           value={this.props.defaultValue}
           onInput={this.handleInput}
           onKeyDown={this.handleKeyDown}
@@ -152,10 +161,22 @@ class Tags extends Component {
     );
   }
 
+  handleRulesClick = e => {
+    e.preventDefault();
+    if (this.state.showingRulesForTag === e.target.dataset.content) {
+      this.setState({showingRulesForTag: null});
+    } else {
+      this.setState({showingRulesForTag: e.target.dataset.content});
+    }
+    // alert('hey hey')
+  }
+
   handleTagClick = e => {
+    if (e.target.className === 'articleform__tagsoptionrulesbutton') {
+      return;
+    }
     const input = document.getElementById('tag-input');
     input.focus();
-
     this.insertTag(e.target.dataset.content);
   };
 
@@ -189,7 +210,7 @@ class Tags extends Component {
       cursorIdx: e.target.selectionStart,
       prevLen: this.textArea.value.length,
     });
-
+    console.log('handle inputs')
     return this.search(query);
   };
 
@@ -244,6 +265,7 @@ class Tags extends Component {
         document.getElementById('tag-input').focus();
       }, 10);
     } else if (e.keyCode === KEYS.COMMA && !this.isSearchResultSelected) {
+      console.log('handle key down')
       this.resetSearchResults();
       this.clearSelectedSearchResult();
     } else if (e.keyCode === KEYS.DELETE) {
@@ -283,6 +305,7 @@ class Tags extends Component {
       input.value.slice(range[1], input.value.length);
 
     this.props.onInput(newInput);
+    console.log('insert tag')
     this.resetSearchResults();
     this.clearSelectedSearchResult();
   }
@@ -319,7 +342,7 @@ class Tags extends Component {
         return;
       }
       component.forceUpdate();
-    }, 100);
+    }, 250);
   };
 
   insertSpace(value, position) {
@@ -330,6 +353,7 @@ class Tags extends Component {
     if (query === '') {
       return new Promise(resolve => {
         setTimeout(() => {
+          'search query'
           this.resetSearchResults();
           resolve();
         }, 5);
@@ -338,7 +362,7 @@ class Tags extends Component {
 
     return this.index
       .search(query, {
-        hitsPerPage: 10,
+        hitsPerPage: 8,
         attributesToHighlight: [],
         filters: 'supported:true',
       })
@@ -358,6 +382,7 @@ class Tags extends Component {
         }
         // updates searchResults array according to what is being typed by user
         // allows user to choose a tag when they've typed the partial or whole word
+        console.log('return search results')
         this.setState({
           searchResults: content.hits,
         });
