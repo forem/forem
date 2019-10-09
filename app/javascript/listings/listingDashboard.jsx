@@ -109,9 +109,10 @@ export class ListingDashboard extends Component {
         }}
         className={`rounded-btn ${filter === f ? 'active' : ''}`}
         role="button"
-        onKeyPress={event => {
-          event.key === 'Enter' && this.setState({ filter: event.target.textContent });
-        }}
+        onKeyPress={event =>
+          (event.key === 'Enter' || event.key === ' ') &&
+          this.setState({ filter: event.target.textContent })
+        }
         tabIndex="0"
       >
         {f}
@@ -143,7 +144,10 @@ export class ListingDashboard extends Component {
         className={`rounded-btn ${selectedListings === org.id ? 'active' : ''}`}
         role="button"
         tabIndex="0"
-        onKeyPress={(event) => event.key === 'Enter' && this.setState({ selectedListings: org.id })}
+        onKeyPress={event =>
+          (event.key === 'Enter' || event.key === ' ') &&
+          this.setState({ selectedListings: org.id })
+        }
       >
         {org.name}
       </span>
@@ -194,7 +198,10 @@ export class ListingDashboard extends Component {
           }`}
           role="button"
           tabIndex="0"
-          onKeyPress={(event) => event.key === 'Enter' && this.setState({ selectedListings: 'user' })}
+          onKeyPress={event =>
+            (event.key === 'Enter' || event.key === ' ') &&
+            this.setState({ selectedListings: 'user' })
+          }
         >
           Personal
         </span>
