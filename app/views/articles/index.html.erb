@@ -74,24 +74,24 @@
           </div>
           <div class="narrow-nav-select" aria-label="feed-filter-select">
             <% if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %>
-              <button id="narrow-feed-butt">&lt;MY <%= ApplicationConfig["COMMUNITY_NAME"] %> FEED&gt;</button>
+              <button type="button" id="narrow-feed-butt">&lt;MY <%= ApplicationConfig["COMMUNITY_NAME"] %> FEED&gt;</button>
             <% elsif timeframe_check('week') %>
-              <button id="narrow-feed-butt">&lt;PAST WEEK&gt;</button>
+              <button type="button" id="narrow-feed-butt">&lt;PAST WEEK&gt;</button>
             <% elsif timeframe_check('month') %>
-              <button id="narrow-feed-butt">&lt;PAST MONTH&gt;</button>
+              <button type="button" id="narrow-feed-butt">&lt;PAST MONTH&gt;</button>
             <% elsif timeframe_check('year') %>
-              <button id="narrow-feed-butt">&lt;PAST YEAR&gt;</button>
+              <button type="button" id="narrow-feed-butt">&lt;PAST YEAR&gt;</button>
             <% elsif timeframe_check('infinity') %>
-              <button id="narrow-feed-butt">&lt;INFINITY&gt;</button>
+              <button type="button" id="narrow-feed-butt">&lt;INFINITY&gt;</button>
             <% elsif timeframe_check('latest') %>
-              <button id="narrow-feed-butt">&lt;LATEST&gt;</button>
+              <button type="button" id="narrow-feed-butt">&lt;LATEST&gt;</button>
             <% end %>
           </div>
         </div>
-        <button class="on-page-nav-butt on-page-nav-butt-left" id="on-page-nav-butt-left" aria-label="nav-button-left">
+        <button type="button" class="on-page-nav-butt on-page-nav-butt-left" id="on-page-nav-butt-left" aria-label="nav-button-left">
           <img src="<%= asset_path "stack.svg" %>" alt="left-sidebar-nav">
         </button>
-        <button class="on-page-nav-butt on-page-nav-butt-right" id="on-page-nav-butt-right" aria-label="nav-button-right">
+        <button type="button" class="on-page-nav-butt on-page-nav-butt-right" id="on-page-nav-butt-right" aria-label="nav-button-right">
           <img src="<%= asset_path "lightning.svg" %>" alt="right-sidebar-nav">
         </button>
       </div>
@@ -147,10 +147,11 @@
               <%= @featured_story.reading_time < 1 ? 1 : @featured_story.reading_time %> min read
             </a>
             <button
+              type="button"
               class="article-engagement-count bookmark-engage featured-engagement-count"
               data-reactable-id="<%= @featured_story.id %>"
-              aria-label="Add to reading list"
-              title="Add to reading list">
+              aria-label="Save to reading list"
+              title="Save to reading list">
               <span class="bm-initial">SAVE</span>
               <span class="bm-success">SAVED</span>
             </button>
