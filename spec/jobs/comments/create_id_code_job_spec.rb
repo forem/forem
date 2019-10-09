@@ -6,9 +6,8 @@ RSpec.describe Comments::CreateIdCodeJob, type: :job do
     let(:comment) { FactoryBot.create(:comment, commentable: article) }
 
     it "creates an id code" do
-      described_class.perform_now(comment.id) do
-        expect(comment.id_code).to eql(comment.id.to_s(26))
-      end
+      described_class.perform_now(comment.id)
+      expect(comment.reload.id_code).to eql(comment.id.to_s(26))
     end
   end
 end
