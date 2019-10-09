@@ -211,7 +211,6 @@ class Tags extends Component {
       cursorIdx: e.target.selectionStart,
       prevLen: this.textArea.value.length,
     });
-    console.log('handle inputs')
     return this.search(query);
   };
 
@@ -266,7 +265,6 @@ class Tags extends Component {
         document.getElementById('tag-input').focus();
       }, 10);
     } else if (e.keyCode === KEYS.COMMA && !this.isSearchResultSelected) {
-      console.log('handle key down')
       this.resetSearchResults();
       this.clearSelectedSearchResult();
     } else if (e.keyCode === KEYS.DELETE) {
@@ -306,7 +304,6 @@ class Tags extends Component {
       input.value.slice(range[1], input.value.length);
 
     this.props.onInput(newInput);
-    console.log('insert tag')
     this.resetSearchResults();
     this.clearSelectedSearchResult();
   }
