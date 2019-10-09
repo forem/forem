@@ -176,14 +176,20 @@
           .color-select-textbox{
             flex:1;
             min-width:70px;
+            border-radius: 0px;
+            border-top-left-radius: 3px;
+            border-bottom-left-radius: 3px;
           }
           input[type="color"] {
             box-sizing:border-box;
-            border: none;
-            border-radius:0px;
+            border-radius: 0px;
+            border-top-right-radius: 3px;
+            border-bottom-right-radius: 3px;
             padding:3px;
             width:50px;
             height:48px;
+            margin-left: -1px;
+            border: 1px solid rgb(222, 230, 233);
             cursor:pointer;
           }
         }
