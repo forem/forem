@@ -40,46 +40,16 @@ class UserDecorator < ApplicationDecorator
 
   def assigned_color
     colors = [
-      {
-        bg: "#093656",
-        text: "#ffffff"
-      },
-      {
-        bg: "#19063A",
-        text: "#dce9f3"
-      },
-      {
-        bg: "#0D4D4B",
-        text: "#fdf9f3"
-      },
-      {
-        bg: "#61122f",
-        text: "#ffffff"
-      },
-      {
-        bg: "#2e0338",
-        text: " #ffffff"
-      },
-      {
-        bg: "#080E3B",
-        text: "#ffffff"
-      },
-      {
-        bg: "#010C1F",
-        text: "#aebcd5"
-      },
-      {
-        bg: "#d7dee2",
-        text: "#022235"
-      },
-      {
-        bg: "#161616",
-        text: "#66e2d5"
-      },
-      {
-        bg: "#1c0bba",
-        text: "#c9d2dd"
-      },
+      { bg: "#093656", text: "#ffffff" },
+      { bg: "#19063A", text: "#dce9f3" },
+      { bg: "#0D4D4B", text: "#fdf9f3" },
+      { bg: "#61122f", text: "#ffffff" },
+      { bg: "#2e0338", text: " #ffffff" },
+      { bg: "#080E3B", text: "#ffffff" },
+      { bg: "#010C1F", text: "#aebcd5" },
+      { bg: "#d7dee2", text: "#022235" },
+      { bg: "#161616", text: "#66e2d5" },
+      { bg: "#1c0bba", text: "#c9d2dd" },
     ]
     colors[id % 10]
   end
