@@ -44,7 +44,7 @@ class ChatChannelsController < ApplicationController
       banned_user = User.find_by(username: command[1])
       if banned_user
         banned_user.add_role :banned
-        banned_user.messages.each(&:destroy!)
+        banned_user.messages.delete_all
         Pusher.trigger(@chat_channel.pusher_channels,
                        "user-banned",
                        { userId: banned_user.id }.to_json)

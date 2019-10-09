@@ -1,104 +1,77 @@
 'use strict';
 
+const fetchCallback = ({ url, headers = {}, addTokenToBody = false, body }) => {
+  return csrfToken => {
+    addTokenToBody && body.append('authenticity_token', csrfToken);
+    return window.fetch(url, {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': csrfToken,
+        ...headers,
+      },
+      body,
+      credentials: 'same-origin',
+    });
+  };
+};
+
 function sendFetch(switchStatement, body) {
   switch (switchStatement) {
     case 'article-preview':
-      return csrfToken => {
-        return window.fetch('/articles/preview', {
-          method: 'POST',
-          headers: {
-            'X-CSRF-Token': csrfToken,
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: body,
-          credentials: 'same-origin',
-        });
-      };
+      return fetchCallback({
+        url: '/articles/preview',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body
+      });
     case 'reaction-creation':
-      return csrfToken => {
-        body.append('authenticity_token', csrfToken);
-        return window.fetch('/reactions', {
-          method: 'POST',
-          headers: {
-            'X-CSRF-Token': csrfToken,
-          },
-          body: body,
-          credentials: 'same-origin',
-        });
-      };
+      return fetchCallback({
+        url: '/reactions',
+        addTokenToBody: true,
+        body
+      });
     case 'image-upload':
-      return csrfToken => {
-        body.append('authenticity_token', csrfToken);
-        return window.fetch('/image_uploads', {
-          method: 'POST',
-          headers: {
-            'X-CSRF-Token': csrfToken,
-          },
-          body: body,
-          credentials: 'same-origin',
-        });
-      };
+      return fetchCallback({
+        url: '/image_uploads',
+        addTokenToBody: true,
+        body
+      });
     case 'follow-creation':
-      return csrfToken => {
-        body.append('authenticity_token', csrfToken);
-        return window.fetch('/follows', {
-          method: 'POST',
-          headers: {
-            'X-CSRF-Token': csrfToken,
-          },
-          body: body,
-          credentials: 'same-origin',
-        });
-      };
+      return fetchCallback({
+        url: '/follows',
+        addTokenToBody: true,
+        body
+      });
     case 'chat-creation':
-      return csrfToken => {
-        body.append('authenticity_token', csrfToken);
-        return window.fetch('/chat_channels/create_chat', {
-          method: 'POST',
-          headers: {
-            'X-CSRF-Token': csrfToken,
-          },
-          body: body,
-          credentials: 'same-origin',
-        });
-      };
+      return fetchCallback({
+        url: '/chat_channels/create_chat',
+        addTokenToBody: true,
+        body
+      });
     case 'block-chat':
-      return csrfToken => {
-        body.append('authenticity_token', csrfToken);
-        return window.fetch('/chat_channels/block_chat', {
-          method: 'POST',
-          headers: {
-            'X-CSRF-Token': csrfToken,
-          },
-          body: body,
-          credentials: 'same-origin',
-        });
-      };
+      return fetchCallback({
+        url: '/chat_channels/block_chat',
+        addTokenToBody: true,
+        body
+      });
     case 'comment-creation':
-      return csrfToken => {
-        return window.fetch('/comments', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-Token': csrfToken,
-          },
-          body: body,
-          credentials: 'same-origin',
-        });
-      };
+      return fetchCallback({
+        url: '/comments',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body
+      });
     case 'comment-preview':
-      return csrfToken => {
-        return window.fetch('/comments/preview', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-Token': csrfToken,
-          },
-          body: body,
-          credentials: 'same-origin',
-        });
-      };
+      return fetchCallback({
+        url: '/comments/preview',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body
+      });
     default:
       console.log('A wrong switchStatement was used.'); // eslint-disable-line no-console
       break;

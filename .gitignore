@@ -63,3 +63,6 @@ docs/.static/api/
 
 # AWS Cloud9 specific folder for user settings
 .c9/
+
+# rvm
+.ruby-gemset

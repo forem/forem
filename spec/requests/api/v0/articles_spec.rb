@@ -71,6 +71,13 @@ RSpec.describe "Api::V0::Articles", type: :request do
       expect(response_article["flare_tag"].keys).to eq(%w[name bg_color_hex text_color_hex])
       expect(response_article["flare_tag"]["name"]).to eq("discuss")
     end
+
+    it "returns a collection id" do
+      collection = create(:collection, user: article.user)
+      article.update_columns(collection_id: collection.id)
+      get api_articles_path(collection_id: collection.id)
+      expect(json_response[0]["collection_id"]).to eq collection.id
+    end
   end
 
   describe "GET /api/articles/:id" do
@@ -231,20 +238,20 @@ RSpec.describe "Api::V0::Articles", type: :request do
         post api_articles_path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
         expect(response).to have_http_status(:unauthorized)
       end
+
+      it "fails when oauth's access_token" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        post api_articles_path, params: { article: { title: Faker::Book.title } }.to_json, headers: headers
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
 
     describe "when authorized" do
       def post_article(**params)
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
         post api_articles_path, params: { article: params }.to_json, headers: headers
-      end
-
-      it "supports oauth's access_token" do
-        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
-        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
-
-        post api_articles_path, params: { article: { title: Faker::Book.title } }.to_json, headers: headers
-        expect(response).to have_http_status(:created)
       end
 
       it "fails if no params are given" do
@@ -481,6 +488,17 @@ RSpec.describe "Api::V0::Articles", type: :request do
         put path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
         expect(response).to have_http_status(:unauthorized)
       end
+
+      it "fails with oauth's access_token" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        title = Faker::Book.title
+        body_markdown = "foobar"
+        params = { title: title, body_markdown: body_markdown }
+        put path, params: { article: params }.to_json, headers: headers
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
 
     describe "when authorized" do
@@ -489,19 +507,6 @@ RSpec.describe "Api::V0::Articles", type: :request do
       def put_article(**params)
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
         put path, params: { article: params }.to_json, headers: headers
-      end
-
-      it "supports oauth's access_token" do
-        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
-        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
-
-        title = Faker::Book.title
-        body_markdown = "foobar"
-        params = { title: title, body_markdown: body_markdown }
-        put path, params: { article: params }.to_json, headers: headers
-        expect(response).to have_http_status(:ok)
-        expect(article.reload.title).to eq(title)
-        expect(article.body_markdown).to eq(body_markdown)
       end
 
       it "returns not found if the article does not belong to the user" do
