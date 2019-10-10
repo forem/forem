@@ -128,3 +128,10 @@ MoreConfig.propTypes = {
   onSaveDraft: PropTypes.func.isRequired,
   onConfigChange: PropTypes.func.isRequired,
 };
+
+TextField.propTypes = {
+  label: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  onKeyUp: PropTypes.func.isRequired
+}
