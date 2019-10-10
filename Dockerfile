@@ -10,7 +10,7 @@ RUN apk update -qq && apk add git nodejs postgresql-client ruby-dev build-base \
 
 #------------------------------------------------------------------------------
 #
-# Install requiered bundler version
+# Install required bundler version
 #
 #------------------------------------------------------------------------------
 RUN gem install bundler:2.0.2
