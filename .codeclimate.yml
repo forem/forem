@@ -49,6 +49,10 @@ plugins:
   eslint:
     enabled: true
     channel: "eslint-5"
+  duplication:
+    enabled: true
+    config:
+      count_threshold: 3
 exclude_patterns:
   - "config/"
   - "db/"
