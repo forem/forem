@@ -1,20 +1,26 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-const ACTION_KEYS = {
-  UP: 38,
-  DOWN: 40,
-  LEFT: 37,
-  RIGHT: 39,
-  TAB: 9,
-  RETURN: 13,
-  COMMA: 188,
-  DELETE: 8,
+const KEYS = {
+  UP: 'ArrowUp',
+  DOWN: 'ArrowDown',
+  LEFT: 'ArrowLeft',
+  RIGHT: 'ArrowRight',
+  TAB: 'Tab',
+  RETURN: 'Enter',
+  COMMA: ',',
+  DELETE: 'Backspace',
 };
 
-const isNumberOrLetterKeyCode = keyCode => {
-  return (keyCode >= 65 && keyCode <= 90) || (keyCode >= 48 && keyCode <= 57);
-};
+const NAVIGATION_KEYS = [
+  KEYS.COMMA,
+  KEYS.DELETE,
+  KEYS.LEFT,
+  KEYS.RIGHT,
+  KEYS.TAB,
+];
+
+const LETTERS_NUMBERS = /[a-z0-9]/i;
 
 /* TODO: Remove all instances of this.props.listing
    and refactor this component to be more generic */
@@ -222,26 +228,23 @@ class Tags extends Component {
 
     if (
       component.selected.length === this.props.maxTags &&
-      e.keyCode === ACTION_KEYS.COMMA
+      e.key === KEYS.COMMA
     ) {
       e.preventDefault();
       return;
     }
 
     if (
-      (e.keyCode === ACTION_KEYS.DOWN || e.keyCode === ACTION_KEYS.TAB) &&
+      (e.key === KEYS.DOWN || e.key === KEYS.TAB) &&
       !this.isBottomOfSearchResults &&
       component.props.defaultValue !== ''
     ) {
       e.preventDefault();
       this.moveDownInSearchResults();
-    } else if (e.keyCode === ACTION_KEYS.UP && !this.isTopOfSearchResults) {
+    } else if (e.key === KEYS.UP && !this.isTopOfSearchResults) {
       e.preventDefault();
       this.moveUpInSearchResults();
-    } else if (
-      e.keyCode === ACTION_KEYS.RETURN &&
-      this.isSearchResultSelected
-    ) {
+    } else if (e.key === KEYS.RETURN && this.isSearchResultSelected) {
       e.preventDefault();
       this.insertTag(
         component.state.searchResults[component.state.selectedIndex].name,
@@ -250,13 +253,10 @@ class Tags extends Component {
       setTimeout(() => {
         document.getElementById('tag-input').focus();
       }, 10);
-    } else if (
-      e.keyCode === ACTION_KEYS.COMMA &&
-      !this.isSearchResultSelected
-    ) {
+    } else if (e.key === KEYS.COMMA && !this.isSearchResultSelected) {
       this.resetSearchResults();
       this.clearSelectedSearchResult();
-    } else if (e.keyCode === ACTION_KEYS.DELETE) {
+    } else if (e.key === KEYS.DELETE) {
       if (
         component.props.defaultValue[
           component.props.defaultValue.length - 1
@@ -265,14 +265,8 @@ class Tags extends Component {
         this.clearSelectedSearchResult();
       }
     } else if (
-      !isNumberOrLetterKeyCode(e.keyCode) &&
-      ![
-        ACTION_KEYS.COMMA,
-        ACTION_KEYS.DELETE,
-        ACTION_KEYS.LEFT,
-        ACTION_KEYS.RIGHT,
-        ACTION_KEYS.TAB,
-      ].includes(e.keyCode)
+      !LETTERS_NUMBERS.test(e.key) &&
+      !NAVIGATION_KEYS.includes(e.key)
     ) {
       e.preventDefault();
     }

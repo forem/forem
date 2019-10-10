@@ -36,8 +36,8 @@ function initializeSettings() {
     createProForm.addEventListener('submit', event => {
       event.preventDefault();
 
+      // eslint-disable-next-line no-alert
       if (window.confirm('Are you sure?')) {
-        // eslint-disable-line no-alert
         event.target.submit();
         return true;
       }

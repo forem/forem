@@ -1,4 +1,5 @@
-// eslint-disable-next-line no-unused-vars
+'use strict';
+
 function initializeCommentDropdown() {
   const announcer = document.getElementById('article-copy-link-announcer');
 
