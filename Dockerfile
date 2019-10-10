@@ -68,8 +68,8 @@ ENV	RUN_MODE="demo"
 ENV	DATABASE_URL="postgresql://devto:devto@db:5432/PracticalDeveloper_development"
 
 # DB setup / migrate script triggers on boot
-ENV DB_SETUP="true" \
-  DB_MIGRATE="true"
+ENV DB_SETUP="false" \
+  DB_MIGRATE="false"
 
 #
 # Let's setup the public uploads folder volume
@@ -82,7 +82,3 @@ COPY docker-entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/docker-entrypoint.sh
 
 COPY . /usr/src/app
-
-ENTRYPOINT ["docker-entrypoint.sh"]
-
-CMD []
