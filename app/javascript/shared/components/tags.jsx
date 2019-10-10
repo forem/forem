@@ -120,6 +120,7 @@ class Tags extends Component {
       >
         {tag.name}
         {(tag.rules_html && tag.rules_html.length > 0) ? <button
+          type='button'
           className={`${this.props.classPrefix}__tagsoptionrulesbutton`}
           onClick={this.handleRulesClick}
           data-content={tag.name}
