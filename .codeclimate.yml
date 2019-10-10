@@ -12,8 +12,6 @@ checks:
     enabled: true
     config:
       threshold: 250
-    exclude_patterns:
-      - "spec/"
   method-complexity:
     enabled: false
     config:
