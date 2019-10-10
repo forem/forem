@@ -2,15 +2,25 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 const KEYS = {
-  UP: 38,
-  DOWN: 40,
-  LEFT: 37,
-  RIGHT: 39,
-  TAB: 9,
-  RETURN: 13,
-  COMMA: 188,
-  DELETE: 8,
+  UP: 'ArrowUp',
+  DOWN: 'ArrowDown',
+  LEFT: 'ArrowLeft',
+  RIGHT: 'ArrowRight',
+  TAB: 'Tab',
+  RETURN: 'Enter',
+  COMMA: ',',
+  DELETE: 'Backspace',
 };
+
+const NAVIGATION_KEYS = [
+  KEYS.COMMA,
+  KEYS.DELETE,
+  KEYS.LEFT,
+  KEYS.RIGHT,
+  KEYS.TAB,
+];
+
+const LETTERS = /[a-z]/i;
 
 /* TODO: Remove all instances of this.props.listing
    and refactor this component to be more generic */
@@ -34,13 +44,6 @@ class Tags extends Component {
     const env = document.querySelector("meta[name='environment']").content;
     const client = algoliasearch(algoliaId, algoliaKey);
     this.index = client.initIndex(`Tag_${env}`);
-  }
-
-  get selected() {
-    return this.props.defaultValue
-      .split(',')
-      .map(item => item !== undefined && item.trim())
-      .filter(item => item.length > 0);
   }
 
   componentDidMount() {
@@ -87,8 +90,28 @@ class Tags extends Component {
       this.state.cursorIdx < this.textArea.value.length &&
       this.textArea.value.length < this.state.prevLen + 1
     ) {
-      this.textArea.selectionStart = this.textArea.selectionEnd = this.state.cursorIdx;
+      this.textArea.selectionEnd = this.state.cursorIdx;
+      this.textArea.selectionStart = this.textArea.selectionEnd;
     }
+  }
+
+  get selected() {
+    return this.props.defaultValue
+      .split(',')
+      .map(item => item !== undefined && item.trim())
+      .filter(item => item.length > 0);
+  }
+
+  get isTopOfSearchResults() {
+    return this.state.selectedIndex <= 0;
+  }
+
+  get isBottomOfSearchResults() {
+    return this.state.selectedIndex >= this.state.searchResults.length - 1;
+  }
+
+  get isSearchResultSelected() {
+    return this.state.selectedIndex > -1;
   }
 
   render() {
@@ -120,7 +143,7 @@ class Tags extends Component {
 
     return (
       <div className={`${this.props.classPrefix}__tagswrapper`}>
-        { this.props.listing && <label htmlFor="Tags">Tags</label> }
+        {this.props.listing && <label htmlFor="Tags">Tags</label>}
         <input
           id="tag-input"
           type="text"
@@ -180,19 +203,15 @@ class Tags extends Component {
     return this.search(query);
   };
 
-  insertSpace(value, position) {
-    return `${value.slice(0, position)} ${value.slice(position, value.length)}`;
-  }
-
   getCurrentTagAtSelectionIndex(value, index) {
     let tagIndex = 0;
     const tagByCharacterIndex = {};
 
-    value.split('').map((letter, index) => {
+    value.split('').map((letter, letterIndex) => {
       if (letter === ',') {
-        tagIndex++;
+        tagIndex += 1;
       } else {
-        tagByCharacterIndex[index] = tagIndex;
+        tagByCharacterIndex[letterIndex] = tagIndex;
       }
     });
 
@@ -204,72 +223,28 @@ class Tags extends Component {
     return tag.trim();
   }
 
-  search(query) {
-    if (query === '') {
-      return new Promise(resolve => {
-        setTimeout(() => {
-          this.resetSearchResults();
-          resolve();
-        }, 5);
-      });
-    }
-
-    return this.index
-      .search(query, {
-        hitsPerPage: 10,
-        attributesToHighlight: [],
-        filters: 'supported:true',
-      })
-      .then(content => {
-        if (this.props.listing === true) {
-          const { additionalTags } = this.state;
-          const { category } = this.props;
-          const additionalItems = (additionalTags[category] || []).filter(
-            t => t.indexOf(query) > -1,
-          );
-          const resultsArray = content.hits;
-          additionalItems.forEach(t => {
-            if (resultsArray.indexOf(t) === -1) {
-              resultsArray.push({ name: t });
-            }
-          });
-        }
-        this.setState({
-          searchResults: content.hits.filter(
-            hit => !this.selected.includes(hit.name),
-          ),
-        });
-      });
-  }
-
-  resetSearchResults() {
-    this.setState({
-      searchResults: [],
-    });
-  }
-
   handleKeyDown = e => {
     const component = this;
 
     if (
       component.selected.length === this.props.maxTags &&
-      e.keyCode === KEYS.COMMA
+      e.key === KEYS.COMMA
     ) {
       e.preventDefault();
       return;
     }
 
     if (
-      (e.keyCode === KEYS.DOWN || e.keyCode === KEYS.TAB) &&
+      (e.key === KEYS.DOWN || e.key === KEYS.TAB) &&
       !this.isBottomOfSearchResults &&
-      component.props.defaultValue != ''
+      component.props.defaultValue !== ''
     ) {
       e.preventDefault();
       this.moveDownInSearchResults();
-    } else if (e.keyCode === KEYS.UP && !this.isTopOfSearchResults) {
+    } else if (e.key === KEYS.UP && !this.isTopOfSearchResults) {
       e.preventDefault();
       this.moveUpInSearchResults();
-    } else if (e.keyCode === KEYS.RETURN && this.isSearchResultSelected) {
+    } else if (e.key === KEYS.RETURN && this.isSearchResultSelected) {
       e.preventDefault();
       this.insertTag(
         component.state.searchResults[component.state.selectedIndex].name,
@@ -278,10 +253,10 @@ class Tags extends Component {
       setTimeout(() => {
         document.getElementById('tag-input').focus();
       }, 10);
-    } else if (e.keyCode === KEYS.COMMA && !this.isSearchResultSelected) {
+    } else if (e.key === KEYS.COMMA && !this.isSearchResultSelected) {
       this.resetSearchResults();
       this.clearSelectedSearchResult();
-    } else if (e.keyCode === KEYS.DELETE) {
+    } else if (e.key === KEYS.DELETE) {
       if (
         component.props.defaultValue[
           component.props.defaultValue.length - 1
@@ -290,46 +265,11 @@ class Tags extends Component {
         this.clearSelectedSearchResult();
       }
     } else if (
-      (e.keyCode < 65 || e.keyCode > 90) &&
-      e.keyCode != KEYS.COMMA &&
-      e.keyCode != KEYS.DELETE &&
-      e.keyCode != KEYS.LEFT &&
-      e.keyCode != KEYS.RIGHT &&
-      e.keyCode != KEYS.TAB
-    ) {
+      !LETTERS.test(e.key) &&
+      !NAVIGATION_KEYS.includes(e.key)) {
       e.preventDefault();
     }
   };
-
-  moveUpInSearchResults() {
-    this.setState({
-      selectedIndex: this.state.selectedIndex - 1,
-    });
-  }
-
-  moveDownInSearchResults() {
-    this.setState({
-      selectedIndex: this.state.selectedIndex + 1,
-    });
-  }
-
-  get isTopOfSearchResults() {
-    return this.state.selectedIndex <= 0;
-  }
-
-  get isBottomOfSearchResults() {
-    return this.state.selectedIndex >= this.state.searchResults.length - 1;
-  }
-
-  get isSearchResultSelected() {
-    return this.state.selectedIndex > -1;
-  }
-
-  clearSelectedSearchResult() {
-    this.setState({
-      selectedIndex: -1,
-    });
-  }
 
   insertTag(tag) {
     const input = document.getElementById('tag-input');
@@ -386,6 +326,72 @@ class Tags extends Component {
       component.forceUpdate();
     }, 100);
   };
+
+  insertSpace(value, position) {
+    return `${value.slice(0, position)} ${value.slice(position, value.length)}`;
+  }
+
+  search(query) {
+    if (query === '') {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          this.resetSearchResults();
+          resolve();
+        }, 5);
+      });
+    }
+
+    return this.index
+      .search(query, {
+        hitsPerPage: 10,
+        attributesToHighlight: [],
+        filters: 'supported:true',
+      })
+      .then(content => {
+        if (this.props.listing === true) {
+          const { additionalTags } = this.state;
+          const { category } = this.props;
+          const additionalItems = (additionalTags[category] || []).filter(
+            t => t.indexOf(query) > -1,
+          );
+          const resultsArray = content.hits;
+          additionalItems.forEach(t => {
+            if (resultsArray.indexOf(t) === -1) {
+              resultsArray.push({ name: t });
+            }
+          });
+        }
+        // updates searchResults array according to what is being typed by user
+        // allows user to choose a tag when they've typed the partial or whole word
+        this.setState({
+          searchResults: content.hits,
+        });
+      });
+  }
+
+  resetSearchResults() {
+    this.setState({
+      searchResults: [],
+    });
+  }
+
+  moveUpInSearchResults() {
+    this.setState(prevState => ({
+      selectedIndex: prevState.selectedIndex - 1,
+    }));
+  }
+
+  moveDownInSearchResults() {
+    this.setState(prevState => ({
+      selectedIndex: prevState.selectedIndex + 1,
+    }));
+  }
+
+  clearSelectedSearchResult() {
+    this.setState({
+      selectedIndex: -1,
+    });
+  }
 }
 
 Tags.propTypes = {

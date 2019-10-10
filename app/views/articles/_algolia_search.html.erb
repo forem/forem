@@ -63,6 +63,7 @@
   }
 
   function search(query, index, filters) {
+    var hashtags = query.match(/#\w+/g)
     var searchObj = {
       hitsPerPage: 60,
       page: "0",
@@ -84,8 +85,14 @@
       exactOnSingleWordQuery: "none",
       attributesToSnippet: ['body_text:19', 'comments_blob:8'],
     }
+
     if (filters === "MY_POSTS" && userData()) {
       searchObj["tagFilters"] = [['user_' + userData()['id']]]
+    } else if (hashtags != null && hashtags.length > 0) {
+      for(var i = 0; i < hashtags.length; i++){
+        hashtags[i] = hashtags[i].replace(/#/,'')
+      }
+      searchObj["tagFilters"] = hashtags
     } else {
       searchObj["filters"] = filters
     }

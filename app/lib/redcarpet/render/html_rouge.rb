@@ -14,7 +14,13 @@ module Redcarpet
         @options[:link_attributes]&.each do |attribute, value|
           link_attributes += %( #{attribute}="#{value}")
         end
-        %(<a href="#{link}"#{link_attributes}>#{content}</a>)
+        if (/\A(https?:\/\/)/.match? link) || link.nil?
+          %(<a href="#{link}"#{link_attributes}>#{content}</a>)
+        elsif link.start_with?("#")
+          %(<a href="#{link}"#{link_attributes}>#{content}</a>)
+        else
+          %(<a href="//#{link}"#{link_attributes}>#{content}</a>)
+        end
       end
 
       def header(title, header_number)

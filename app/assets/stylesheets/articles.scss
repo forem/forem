@@ -540,7 +540,6 @@
         display: inline-block;
         max-width: 76%;
         z-index: 5;
-        // margin-top:-50px;
         left: 62px;
         white-space: nowrap;
         overflow: hidden;
@@ -777,7 +776,6 @@
         border-radius: 3px;
         text-align: center;
         bottom: 12px;
-        // border: 2px solid darken($purple, 30%);
         background: darken($purple, 38%);
         color: white;
         letter-spacing: 1px;
@@ -969,7 +967,6 @@
             $light-gray
           );
         }
-        // background:red;
         .sidebar-profile-snapshot-inner {
           display: inline-block;
           vertical-align: middle;
@@ -1066,7 +1063,6 @@
         .sidebar-nav-element {
           color: $black;
           display: block;
-          // font-family: "Lucida Console", Monaco, monospace, sans-serif;
           position: relative;
           @media screen and (min-width: 950px) {
             .sidebar-nav-link-follow {
@@ -1595,9 +1591,6 @@
         @include themeable(color, theme-container-color, $black);
         font-weight: 500;
         line-height: 1em;
-        // display:inline-block;
-        // padding:3px;
-        // background:red;
       }
       .discuss-list-comment-count {
         font-size: 0.8em;

@@ -14,24 +14,30 @@ class SocialPreviewsController < ApplicationController
   end
 
   def user
-    @user = User.find(params[:id]) || not_found
+    @user = User.find(params[:id])
     set_respond
   end
 
   def listing
-    @listing = ClassifiedListing.find(params[:id]) || not_found
+    @listing = ClassifiedListing.find(params[:id])
     define_categories
     set_respond
   end
 
   def organization
-    @user = Organization.find(params[:id]) || not_found
+    @user = Organization.find(params[:id])
 
     set_respond "user"
   end
 
   def tag
-    @tag = Tag.find(params[:id]) || not_found
+    @tag = Tag.find(params[:id])
+
+    set_respond
+  end
+
+  def comment
+    @comment = Comment.find(params[:id])
 
     set_respond
   end
