@@ -42,7 +42,7 @@ RUN bundle install --jobs 20 --retry 5
 
 #------------------------------------------------------------------------------
 #
-# Now copy the app directory
+# Copy Package.json and yarn.lock
 #
 #------------------------------------------------------------------------------
 COPY ./package.json ./yarn.lock ./
