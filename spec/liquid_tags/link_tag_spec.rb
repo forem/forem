@@ -42,6 +42,13 @@ RSpec.describe LinkTag, type: :liquid_template do
     HTML
   end
 
+  it 'can use "post" as an alias' do
+    Liquid::Template.register_tag("post", described_class)
+    test_liquid = Liquid::Template.parse("{% post fake_username/fake_article_slug %}")
+    expect { generate_new_liquid("fake_username/fake_article_slug") }.
+      to eq(test_liquid)
+  end
+
   it "raises an error when invalid" do
     expect { generate_new_liquid("fake_username/fake_article_slug") }.
       to raise_error("Invalid link URL or link URL does not exist")
