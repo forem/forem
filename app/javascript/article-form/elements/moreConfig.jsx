@@ -1,9 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-// const ImageManagement = ({ onExit }) => (
-
-const handleInputText = ({ label, id, value, onKeyUp }) => {
+const TextField = ({ label, id, value, onKeyUp }) => {
   return (
     <div>
       <label htmlFor={id}>
@@ -29,7 +27,12 @@ export default class MoreConfig extends Component {
   render() {
     const {
       onExit,
-      passedData: { published, allSeries, canonicalUrl, series },
+      passedData: {
+        published = false,
+        allSeries = [],
+        canonicalUrl = '',
+        series = '',
+      },
       onSaveDraft,
       onConfigChange,
     } = this.props;
@@ -81,7 +84,7 @@ export default class MoreConfig extends Component {
         >
           ×
         </button>
-        {handleInputText({
+        {TextField({
           label: 'Canonical URL',
           id: 'canonicalUrl',
           value: canonicalUrl,
@@ -92,7 +95,7 @@ export default class MoreConfig extends Component {
           <code>canonical_url</code>
           if this post was first published elsewhere (like your own blog)
         </small>
-        {handleInputText({
+        {TextField({
           label: 'Series Name',
           id: 'series',
           value: series,
@@ -116,4 +119,7 @@ export default class MoreConfig extends Component {
 
 MoreConfig.propTypes = {
   onExit: PropTypes.func.isRequired,
+  passedData: PropTypes.objectOf().isRequired,
+  onSaveDraft: PropTypes.func.isRequired,
+  onConfigChange: PropTypes.func.isRequired,
 };
