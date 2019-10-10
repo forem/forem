@@ -66,7 +66,9 @@ class ClassifiedListing < ApplicationRecord
 
   def self.select_options_for_categories
     categories_available.keys.map do |key|
-      ["#{categories_available[key][:name]} (#{ActionController::Base.helpers.pluralize(categories_available[key][:cost], 'Credit')})", key]
+      category = categories_available[key]
+      cost = category[:cost]
+      ["#{category[:name]} (#{cost} #{'Credit'.pluralize(cost)})", key]
     end
   end
 
