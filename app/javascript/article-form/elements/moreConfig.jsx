@@ -119,12 +119,12 @@ export default class MoreConfig extends Component {
 
 MoreConfig.propTypes = {
   onExit: PropTypes.func.isRequired,
-  passedData: PropTypes.objectOf(PropTypes.shape({
+  passedData: PropTypes.shape({
     published: PropTypes.bool.isRequired,
     allSeries: PropTypes.array.isRequired,
     canonicalUrl: PropTypes.string.isRequired,
-    series: PropTypes.string.isRequired
-  })).isRequired,
+    series: PropTypes.string.isRequired,
+  }).isRequired,
   onSaveDraft: PropTypes.func.isRequired,
   onConfigChange: PropTypes.func.isRequired,
 };
