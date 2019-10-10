@@ -7,7 +7,7 @@
     <span>FOLLOWERS</span>
     <span>(<%= @user.followers_count %>)</span>
   </a>
-  <a class="action <%= "active" if params[:action] == "following" %>" href="/dashboard/following">
+  <a class="action <%= "active" if params[:action] == "following" || params[:action].include?("following") %>" href="/dashboard/following">
     <span>FOLLOWING</span>
     <span>(<%= @user.following_users_count + @user.following_tags_count + @user.following_organizations_count + @user.following_podcasts_count %>)</span>
   </a>

@@ -1,0 +1,20 @@
+<% title "Dashboard - DEV" %>
+
+<div class="dashboard-container" id="user-dashboard">
+  <%= render "actions" %>
+
+  <%= render "subactions" %>
+
+  <% @followed_organizations.each do |follow| %>
+    <% organization = follow.followable %>
+    <div class="single-article">
+      <a href="<%= organization.path %>" class="block-link">
+        <h2>
+          <img alt="<%= organization.name %> profile image" src="<%= ProfileImage.new(organization).get(60) %>" />
+          <%= organization.name %>
+          <span class="dashboard-username">@<%= organization.name %></span>
+        </h2>
+      </a>
+    </div>
+  <% end %>
+</div>
