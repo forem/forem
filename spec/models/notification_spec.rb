@@ -55,7 +55,6 @@ RSpec.describe Notification, type: :model do
     describe "when notifiable is a Comment" do
       let!(:comment) { create(:comment, commentable: article) }
 
-      # rubocop:disable RSpec/ExampleLength
       it "doesn't allow to create a duplicate user notification via import when action is nil" do
         notification_attributes = { user: user, notifiable: comment, action: nil }
         create(:notification, notification_attributes)
@@ -83,7 +82,6 @@ RSpec.describe Notification, type: :model do
                                  })
         end.not_to change(described_class, :count)
       end
-      # rubocop:enable RSpec/ExampleLength
     end
   end
 
