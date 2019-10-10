@@ -16,11 +16,14 @@ Browsers ship with their own developer tools. These are amazing tools to help yo
 
 [Visual Studio Code](https://code.visualstudio.com) (VS Code) is a popular editor that allows you to debug many languages including JavaScript. Thanks to remote debugging technologies, we can debug our frontend code in VS Code. When you clone the DEV repository and open the project in VS Code, you will be prompted to install recommended extensions which include the [Chrome Debugger](https://code.visualstudio.com/blogs/2016/02/23/introducing-chrome-debugger-for-vs-code) and the [Edge Debugger](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-edge).
 
-Once you have your local installation of DEV running, you can attach to either the Chrome or Edge Debugger.
+Setup:
 
-![Launch menu for debugger in VS Code](/vscode_launch_debugger.png 'Launch menu for debugger in VS Code')
+- Refer to the repsective debugger extension documentation above to ensure that your browser is running with remote debugging enabled.
+- Once you have your local installation of DEV running, you can attach to either the Chrome or Edge Debugger.
 
-From there you can do all the usual stuff that you would do while debugging JavaScript in the browser: setting breakpoints, setting [logpoints](https://code.visualstudio.com/docs/editor/debugging#_logpoints), watches etc.
+  ![Launch menu for debugger in VS Code](/vscode_launch_debugger.png 'Launch menu for debugger in VS Code')
+
+- From there you can do all the usual stuff that you would do while debugging JavaScript in the browser: setting breakpoints, setting [logpoints](https://code.visualstudio.com/docs/editor/debugging#_logpoints), watches etc.
 
 ## Where is My Editor Debug Configuration?
 
