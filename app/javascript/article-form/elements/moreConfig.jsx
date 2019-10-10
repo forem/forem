@@ -1,8 +1,19 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { generateMainImage } from '../actions';
 
 // const ImageManagement = ({ onExit }) => (
+
+const handleInputText = ({ label, id, value, onKeyUp }) => {
+  return (
+    <div>
+      <label htmlFor={id}>
+        {label}
+        <input type="text" value={value} name={id} onKeyUp={onKeyUp} id={id} />
+      </label>
+    </div>
+  );
+};
+
 export default class MoreConfig extends Component {
   constructor(props) {
     super(props);
@@ -11,11 +22,17 @@ export default class MoreConfig extends Component {
 
   handleSeriesButtonClick = e => {
     e.preventDefault();
-    this.props.onConfigChange(e);
+    const { onConfigChange } = this.props;
+    onConfigChange(e);
   };
 
   render() {
-    const { onExit, passedData, onSaveDraft } = this.props;
+    const {
+      onExit,
+      passedData: { published, allSeries, canonicalUrl, series },
+      onSaveDraft,
+      onConfigChange,
+    } = this.props;
     let publishedField = '';
     let seriesTip = (
       <small>
@@ -23,12 +40,13 @@ export default class MoreConfig extends Component {
         (Series visible once it has multiple posts)
       </small>
     );
-    if (passedData.allSeries.length > 0) {
-      const seriesNames = passedData.allSeries.map(name => {
+    if (allSeries.length > 0) {
+      const seriesNames = allSeries.map(name => {
         return (
           <button
+            type="button"
             name="series"
-            onClick={this.props.onConfigChange}
+            onClick={onConfigChange}
             value={name}
           >
             {name}
@@ -42,11 +60,13 @@ export default class MoreConfig extends Component {
         </small>
       );
     }
-    if (passedData.published) {
+    if (published) {
       publishedField = (
         <div>
           <h4>Danger Zone</h4>
-          <button onClick={onSaveDraft}>Unpublish Post</button>
+          <button type="button" onClick={onSaveDraft}>
+            Unpublish Post
+          </button>
         </div>
       );
     }
@@ -54,37 +74,37 @@ export default class MoreConfig extends Component {
       <div className="articleform__overlay">
         <h3>Additional Config/Settings</h3>
         <button
+          type="button"
           className="articleform__exitbutton"
           data-content="exit"
           onClick={onExit}
         >
           ×
         </button>
-        <div>
-          <label>Canonical URL</label>
-          <input
-            type="text"
-            value={passedData.canonicalUrl}
-            name="canonicalUrl"
-            onKeyUp={this.props.onConfigChange}
-          />
-        </div>
+        {handleInputText({
+          label: 'Canonical URL',
+          id: 'canonicalUrl',
+          value: canonicalUrl,
+          onKeyUp: onConfigChange,
+        })}
         <small>
-          Change meta tag <code>canonical_url</code> if this post was first
-          published elsewhere (like your own blog)
+          Change meta tag
+          <code>canonical_url</code>
+          if this post was first published elsewhere (like your own blog)
         </small>
-        <div>
-          <label>Series Name</label>
-          <input
-            type="text"
-            value={passedData.series}
-            name="series"
-            onKeyUp={this.props.onConfigChange}
-          />
-        </div>
+        {handleInputText({
+          label: 'Series Name',
+          id: 'series',
+          value: series,
+          onKeyUp: onConfigChange,
+        })}
         {seriesTip}
         <div>
-          <button className="articleform__donebutton" onClick={onExit}>
+          <button
+            type="button"
+            className="articleform__donebutton"
+            onClick={onExit}
+          >
             Done
           </button>
         </div>
