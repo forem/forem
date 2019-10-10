@@ -27,7 +27,7 @@ class LinkTag < LiquidTagBase
     path.slice!(0) if path.starts_with?("/") # remove leading slash if present
     path.slice!(-1) if path.ends_with?("/") # remove trailing slash if present
     extracted_hash = Addressable::Template.new("{username}/{slug}").extract(path)&.symbolize_keys
-    raise StandardError, "This URL is not an article link {% link #{slug} %}" unless extracted_hash
+    raise StandardError, "This URL is not an article link: {% link #{slug} %}" unless extracted_hash
 
     extracted_hash
   end
