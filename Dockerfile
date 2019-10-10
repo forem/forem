@@ -37,7 +37,7 @@ WORKDIR /usr/src/app
 #
 #------------------------------------------------------------------------------
 COPY Gemfile /usr/src/app/Gemfile
-COPY Gemfile.lock /usr/src/app/Gemfile.lock
+COPY ./Gemfile ./Gemfile.lock ./
 RUN bundle install --jobs 20 --retry 5
 
 #------------------------------------------------------------------------------
