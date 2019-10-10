@@ -5,7 +5,7 @@ function initializeCommentsPage() {
     toggleCodeOfConduct();
     var commentableId = document.getElementById('comments-container').dataset.commentableId;
     var commentableType = document.getElementById('comments-container').dataset.commentableType;
-    commentableIdList = commentableId.split(",");
+    var commentableIdList = commentableId.split(",");
     var f = (function() {
       for (var i = 0; i < commentableIdList.length; i++) {
         (function(i){
