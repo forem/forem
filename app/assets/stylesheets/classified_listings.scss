@@ -388,36 +388,9 @@
   }
 }
 
-.listingform__tagsoptionsbottomrow {
+.listingform__tagsoptionsbottomrow, .listingform__tagsoptionrulesbutton, .listingform__tagrules--inactive {
   display: none; //not yet fully functional or relevant
 }
-
-.listingform__tagsoptionrulesbutton {
-  position: absolute;
-  right: 8px;
-  top: 9px;
-  border: 0;
-  border-radius: 3px;
-  background: var(--theme-anchor-color, $sky-blue);
-  color: var(--theme-container-background, white);
-  font-size: 0.8em;
-  display: none; //not yet fully functional or relevant
-}
-
-.listingform__tagrules--inactive {
-  display: none
-}
-
-.listingform__tagrules--active {
-  font-size: 0.76em;
-  max-height: 300px;
-  overflow: auto;
-  border: 1px solid $medium-gray;
-  border-radius: 3px;
-  margin-top: 8px;
-  padding: 0px 8px;
-}
-
 
 .listingform__tagoptionrow--active {
   background: $green;

@@ -169,7 +169,6 @@ class Tags extends Component {
     } else {
       this.setState({showingRulesForTag: e.target.dataset.content});
     }
-    // alert('hey hey')
   }
 
   handleTagClick = e => {
@@ -380,7 +379,6 @@ class Tags extends Component {
         }
         // updates searchResults array according to what is being typed by user
         // allows user to choose a tag when they've typed the partial or whole word
-        console.log('return search results')
         this.setState({
           searchResults: content.hits,
         });
