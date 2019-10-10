@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module ChatChannels
-  class IndexingJob < ApplicationJob
-    queue_as :chat_channels_indexing
+  class IndexJob < ApplicationJob
+    queue_as :chat_channels_index
 
     def perform(chat_channel_id:)
       chat_channel = ChatChannel.find_by(id: chat_channel_id)
