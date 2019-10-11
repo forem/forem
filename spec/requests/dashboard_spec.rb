@@ -153,6 +153,25 @@ RSpec.describe "Dashboards", type: :request do
         expect(response.body).to include CGI.escapeHTML(organization.name)
       end
     end
+
+    describe "followed podcasts section" do
+      let(:podcast) { create(:podcast) }
+
+      before do
+        sign_in user
+        user.follow podcast
+        user.reload
+        get "/dashboard/following_podcasts"
+      end
+
+      it "renders followed podcast count" do
+        expect(response.body).to include "podcasts (1)"
+      end
+
+      it "lists followed podcasts" do
+        expect(response.body).to include podcast.name
+      end
+    end
   end
 
   describe "GET /dashboard/user_followers" do
