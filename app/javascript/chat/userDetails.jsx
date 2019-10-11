@@ -162,18 +162,16 @@ export default class UserDetails extends Component {
             <a
               tabIndex="0"
               className="no"
-              onClick={() => {
+              function closeReportAbuseWindow(){
                 document.getElementById(
                   'userdetails__reportabuse',
                 ).style.display = 'none';
                 window.location.href = `#`;
-              }}
+              }
+              onClick="closeReportAbuseWindow()"
               onKeyUp={e => {
                 if (e.keyCode === 13) {
-                  document.getElementById(
-                    'userdetails__reportabuse',
-                  ).style.display = 'none';
-                  window.location.href = `#`;
+                closeReportAbuseWindow();
                 }
               }}
             >
