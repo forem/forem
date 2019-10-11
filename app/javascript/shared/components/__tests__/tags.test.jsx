@@ -38,7 +38,7 @@ describe('<Tags />', () => {
     test('calls preventDefault on unused keyCode', () => {
       tags.find('#tag-input').simulate('keydown', createKeyDown('§'));
       tags.find('#tag-input').simulate('keydown', createKeyDown('\\'));
-      expect(preventDefaultMock).toHaveBeenCalledTimes(3);
+      expect(preventDefaultMock).toHaveBeenCalledTimes(2);
     });
 
     test('does not call preventDefault on used keyCode', () => {
