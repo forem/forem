@@ -2,7 +2,6 @@ import { h, Component } from 'preact';
 import heartImage from 'images/emoji/emoji-one-heart.png';
 import unicornImage from 'images/emoji/emoji-one-unicorn.png';
 import bookmarkImage from 'images/emoji/emoji-one-bookmark.png';
-import openLink from 'images/external-link-logo.svg';
 
 export default class Article extends Component {
   constructor(props) {
