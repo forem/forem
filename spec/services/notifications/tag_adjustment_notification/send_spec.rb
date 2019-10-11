@@ -18,7 +18,9 @@ RSpec.describe Notifications::TagAdjustmentNotification::Send do
   end
 
   it "notifies the author of the article" do
-    Notification.send_tag_adjustment_notification_without_delay(tag_adjustment)
+    perform_enqueued_jobs do
+      Notification.send_tag_adjustment_notification(tag_adjustment)
+    end
     expect(Notification.first.user_id).to eq user2.id
   end
 

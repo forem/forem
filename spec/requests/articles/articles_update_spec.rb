@@ -94,7 +94,6 @@ RSpec.describe "ArticlesUpdate", type: :request do
 
   it "removes all published notifications if unpublished" do
     user2.follow(user)
-    Notification.send_to_followers_without_delay(article, "Published")
     put "/articles/#{article.id}", params: {
       article: { body_markdown: article.body_markdown.gsub("published: true", "published: false") }
     }

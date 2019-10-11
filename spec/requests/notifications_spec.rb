@@ -216,7 +216,9 @@ RSpec.describe "NotificationsIndex", type: :request do
       before do
         user.add_role :trusted
         sign_in user
-        Notification.send_moderation_notification_without_delay(comment)
+        perform_enqueued_jobs do
+          Notification.send_moderation_notification(comment)
+        end
         get "/notifications"
       end
 
@@ -240,7 +242,9 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       before do
         sign_in user
-        Notification.send_moderation_notification_without_delay(comment)
+        perform_enqueued_jobs do
+          Notification.send_moderation_notification(comment)
+        end
         get "/notifications"
       end
 
@@ -266,7 +270,9 @@ RSpec.describe "NotificationsIndex", type: :request do
         user.add_role :trusted
         user.update(mod_roundrobin_notifications: false)
         sign_in user
-        Notification.send_moderation_notification_without_delay(comment)
+        perform_enqueued_jobs do
+          Notification.send_moderation_notification(comment)
+        end
         get "/notifications"
       end
 
@@ -290,7 +296,9 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "renders the welcome notification" do
         broadcast = create(:broadcast, :onboarding)
-        Notification.send_welcome_notification_without_delay(user.id)
+        perform_enqueued_jobs do
+          Notification.send_welcome_notification(user.id)
+        end
         get "/notifications"
         expect(response.body).to include broadcast.processed_html
       end
@@ -339,8 +347,10 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       before do
         comment
-        Mention.create_all_without_delay(comment)
-        Notification.send_mention_notification_without_delay(Mention.first)
+        perform_enqueued_jobs do
+          Mention.create_all(comment)
+          Notification.send_mention_notification(Mention.first)
+        end
         sign_in user
         get "/notifications"
       end
@@ -360,7 +370,9 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       before do
         user2.follow(user)
-        Notification.send_to_followers_without_delay(article, "Published")
+        perform_enqueued_jobs do
+          Notification.send_to_followers(article, "Published")
+        end
         sign_in user2
         get "/notifications"
       end
@@ -399,7 +411,9 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       before do
         user2.follow(user)
-        Notification.send_to_followers_without_delay(article, "Published")
+        perform_enqueued_jobs do
+          Notification.send_to_followers(article, "Published")
+        end
         sign_in admin
       end
 
