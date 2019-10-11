@@ -66,16 +66,30 @@ RSpec.describe MarkdownParser do
 
   context "when rendering links markdown" do
     # the following specs are testing HTMLRouge
-    it "renders properly if protocol is included" do
+    it "renders properly if protocol http is included" do
       code_span = "[github](http://github.com)"
       test = generate_and_parse_markdown(code_span)
       expect(test).to eq("<p><a href=\"http://github.com\">github</a></p>\n\n")
+    end
+
+    it "renders properly if protocol https is included" do
+      code_span = "[github](https://github.com)"
+      test = generate_and_parse_markdown(code_span)
+      expect(test).to eq("<p><a href=\"https://github.com\">github</a></p>\n\n")
     end
 
     it "renders properly if protocol is not included" do
       code_span = "[github](github.com)"
       test = generate_and_parse_markdown(code_span)
       expect(test).to eq("<p><a href=\"//github.com\">github</a></p>\n\n")
+    end
+
+    it "renders properly relative paths" do
+      code_span = "[career tag](/t/career)"
+      test = generate_and_parse_markdown(code_span)
+      app_protocol = ApplicationConfig["APP_PROTOCOL"]
+      app_domain = ApplicationConfig["APP_DOMAIN"]
+      expect(test).to eq("<p><a href=\"#{app_protocol}#{app_domain}/t/career\">career tag</a></p>\n\n")
     end
 
     it "renders properly anchored links" do
