@@ -125,7 +125,7 @@
     <div class="buffering-area-for-single-article" style="display: none">
       <% unless params[:state]&.include?("classic") %>
         <div class="row" style="font-size:15px;">
-          <%= article.processed_html&.html_safe # rubocop:disable Rails/OutputSafety %>
+          <%= article.processed_html&.html_safe %>
         </div>
         <div class="flex-column" style="padding:10px;margin-top:20px;font-weight:800;">
           <div>
