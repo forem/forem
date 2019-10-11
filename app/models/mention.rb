@@ -18,7 +18,6 @@ class Mention < ApplicationRecord
 
   def send_email_notification
     user = User.find(user_id)
-    
     return unless user.email.present? && user.email_mention_notifications
 
     Mentions::SendEmailNotificationJob.perform_later(id)
