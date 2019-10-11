@@ -48,3 +48,4 @@ class LinkTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("link", LinkTag)
+Liquid::Template.register_tag("post", LinkTag)
