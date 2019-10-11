@@ -1,6 +1,5 @@
 class Internal::ArticlesController < Internal::ApplicationController
   layout "internal"
-  before_action :authorize_admin
 
   def index
     @pending_buffer_updates = BufferUpdate.where(status: "pending").includes(:article)
