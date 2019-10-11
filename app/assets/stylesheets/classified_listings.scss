@@ -381,10 +381,15 @@
 .listingform__tagoptionrow {
   padding: 10px;
   cursor: pointer;
+  position: relative;
   &:hover {
     background: lighten($green, 27%);
     color: $black;
   }
+}
+
+.listingform__tagsoptionsbottomrow, .listingform__tagsoptionrulesbutton, .listingform__tagrules--inactive {
+  display: none; //not yet fully functional or relevant
 }
 
 .listingform__tagoptionrow--active {
