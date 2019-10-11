@@ -92,7 +92,7 @@ function insertNext(params, buildCallback) {
     var list = document.getElementById(params.listId || "sublist");
     var newFollowersHTML = "";
     entries.forEach(function(entry){
-      var existingEl = document.getElementById((params.elId || "element") + "-" + entry.id);
+      let existingEl = document.getElementById((params.elId || "element") + "-" + entry.id);
       if(!existingEl) {
         var newHTML = buildCallback(entry)
         newFollowersHTML += newHTML
@@ -117,16 +117,16 @@ function fetchNextFollowingPage(el){
   if (action.includes("users")){
     fetchNext(el, "/api/follows/following_users", insertNext({ elId: "follows" }, buildFollowsHTML));
   } else if (action.includes("podcasts")){
-    fetchNext(el, "/api/follows/following_podcasts", insertNext({ elId: "podcast" }, buildFollowsHTML));
+    fetchNext(el, "/api/follows/following_podcasts", insertNext({ elId: "follows" }, buildFollowsHTML));
   } else if (action.includes("organizations")){
-    fetchNext(el, "/api/follows/following_organizations", insertNext({ elId: "organization" }, buildFollowsHTML));
+    fetchNext(el, "/api/follows/following_organizations", insertNext({ elId: "follows" }, buildFollowsHTML));
   } else {
-    fetchNext(el, "/api/follows/following_tags", insertNext({ elId: "tag" }, buildTagsHTML));
+    fetchNext(el, "/api/follows/following_tags", insertNext({ elId: "follows" }, buildTagsHTML));
   }
 }
 
 function fetchNextFollowersPage(el){
-  fetchNext(el, "/api/follows/followers", insertNext({ listId: "subfollowers", elId: "follower" }, buildFollowsHTML));
+  fetchNext(el, "/api/follows/followers", insertNext({ listId: "subfollowers", elId: "follows" }, buildFollowsHTML));
 }
 
 function buildFollowsHTML(follows) {
@@ -149,7 +149,7 @@ function buildTagsHTML(tag) {
     negativeFollow = 0;
   }
   return tagHTML +
-    `<div id="tag-${tag.id}" class="single-article" style="border-color:${tag.color};box-shadow: 3px 3px 0px ${tag.color}">
+    `<div id="follows-${tag.id}" class="single-article" style="border-color:${tag.color};box-shadow: 3px 3px 0px ${tag.color}">
         <h2>
           <a href="/t/${tag.name}">
             ${tag.name}

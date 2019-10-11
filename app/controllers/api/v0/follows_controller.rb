@@ -18,6 +18,7 @@ module Api
         @follows = Follow.
           where(query).
           includes(:follower).
+          order("created_at DESC").
           page(params[:page]).
           per(80)
       end
