@@ -1,9 +1,6 @@
 'use strict';
 
-/* global checkUserLoggedIn */
-/* global instantClick */
-/* global InstantClick */
-/* global sendHapticMessage */
+/* global checkUserLoggedIn instantClick InstantClick sendHapticMessage */
 
 function markNotificationsAsRead() {
   setTimeout(() => {
@@ -86,10 +83,21 @@ function fetchNotificationsCount() {
   }
 }
 
-function onClickReaction(event) {
+// map over the array of elements and apply a callback function to click event
+function addOnClickHandlerToButtons(className, callBack) {
+  var butts = document.getElementsByClassName(className);
+  var i;
+  var butt;
+  for (i = 0; i < butts.length; i += 1) {
+    butt = butts[i];
+    butt.addEventListener('click', callBack);
+  }
+}
+
+function onClickReactionButton(event) {
   event.preventDefault();
   sendHapticMessage('medium');
-  var thisButt = this;
+  var thisButt = event.target;
   thisButt.classList.add('reacted');
 
   function successCb(response) {
@@ -114,46 +122,38 @@ function onClickReaction(event) {
     });
 }
 
+function onClickReply(event) {
+  event.preventDefault();
+  var thisButt = event.target;
+  document
+    .getElementById('comment-form-for-' + thisButt.dataset.reactableId)
+    .classList.add('showing');
+  thisButt.innerHTML = '';
+  setTimeout(() => {
+    document
+      .getElementById('comment-textarea-for-' + thisButt.dataset.reactableId)
+      .focus();
+  }, 30);
+}
+
 function initReactions() {
   setTimeout(() => {
     if (document.getElementById('notifications-container')) {
-      var butts = document.getElementsByClassName('reaction-button');
-      var i;
-      var butt;
-      for (i = 0; i < butts.length; i += 1) {
-        butt = butts[i];
-        butt.onclick = event => onClickReaction(event);
-      }
-      butts = document.getElementsByClassName('toggle-reply-form');
-      for (i = 0; i < butts.length; i += 1) {
-        butt = butts[i];
-        butt.onclick = event => {
-          event.preventDefault();
-          var thisButt = this;
-          document
-            .getElementById('comment-form-for-' + thisButt.dataset.reactableId)
-            .classList.add('showing');
-          thisButt.innerHTML = '';
-          setTimeout(() => {
-            document
-              .getElementById(
-                'comment-textarea-for-' + thisButt.dataset.reactableId,
-              )
-              .focus();
-          }, 30);
-        };
-      }
+      addOnClickHandlerToButtons('reaction-button', onClickReactionButton);
+      addOnClickHandlerToButtons('toggle-replay-form', onClickReply);
     }
   }, 180);
 }
 
+function removeShowingClass() {
+  document.getElementById('notifications-number').classList.remove('showing');
+}
+
 function listenForNotificationsBellClick() {
   setTimeout(() => {
-    document.getElementById('notifications-link').onclick = () => {
-      document
-        .getElementById('notifications-number')
-        .classList.remove('showing');
-    };
+    document
+      .getElementById('notifications-link')
+      .addEventListener('click', removeShowingClass);
   }, 180);
 }
 
