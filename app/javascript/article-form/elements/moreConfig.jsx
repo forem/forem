@@ -88,7 +88,7 @@ export default class MoreConfig extends Component {
           {' '}
           <code>canonical_url</code>
           {' '}
-if this post was first
+          if this post was first
           published elsewhere (like your own blog)
         </small>
         {TextField({
