@@ -11,7 +11,7 @@ describe ChatChannels::IndexJob, type: :job do
 
     context "when chat_channel is found" do
       before do
-        allow(ChatChannel).to receive(:find).with(chat_channel_id).and_return(chat_channel)
+        allow(ChatChannel).to receive(:find_by).with(id: chat_channel_id).and_return(chat_channel)
         allow(chat_channel).to receive(:index!)
       end
 
@@ -22,10 +22,14 @@ describe ChatChannels::IndexJob, type: :job do
     end
 
     context "when chat_channel is not found" do
-      it "raises an error" do
-        expect do
-          described_class.new.perform(chat_channel_id: chat_channel_id)
-        end.to raise_error(ActiveRecord::RecordNotFound)
+      before do
+        allow(ChatChannel).to receive(:find_by).with(id: chat_channel_id).and_return(nil)
+        allow(chat_channel).to receive(:index!)
+      end
+
+      it "don't calls index" do
+        described_class.new.perform(chat_channel_id: chat_channel_id)
+        expect(chat_channel).not_to have_received(:index!)
       end
     end
   end
