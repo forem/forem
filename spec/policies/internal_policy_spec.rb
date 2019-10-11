@@ -17,14 +17,14 @@ RSpec.describe InternalPolicy, type: :policy do
     end
 
     context "when tied to a resource" do
+      let(:user) { create(:user) }
+
       it "grant access based on permitted resource" do
-        user = create(:user)
         user.add_role(:single_resource_admin, Article)
         expect(internal_policy).to permit(user, Article)
       end
 
       it "does not grant cross resource access" do
-        user = create(:user)
         user.add_role(:single_resource_admin, Article)
         expect(internal_policy).not_to permit(user, Comment)
       end
