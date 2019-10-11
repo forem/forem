@@ -1,9 +1,8 @@
 class Internal::ArticlesController < Internal::ApplicationController
   layout "internal"
-  skip_before_action :authorize_admin # Instead, specific admin via authorize([:internal, Article])
+  before_action :authorize_admin
 
   def index
-    authorize([:internal, Article])
     @pending_buffer_updates = BufferUpdate.where(status: "pending").includes(:article)
 
     case params[:state]
@@ -62,12 +61,10 @@ class Internal::ArticlesController < Internal::ApplicationController
   end
 
   def show
-    authorize([:internal, Article])
     @article = Article.find(params[:id])
   end
 
   def update
-    authorize([:internal, Article])
     article = Article.find(params[:id])
     article.featured = article_params[:featured].to_s == "true"
     article.approved = article_params[:approved].to_s == "true"
@@ -97,5 +94,9 @@ class Internal::ArticlesController < Internal::ApplicationController
                                     :featured_number,
                                     :user_id,
                                     :last_buffered)
+  end
+
+  def authorize_admin
+    authorize Article, :access?, policy_class: InternalPolicy
   end
 end
