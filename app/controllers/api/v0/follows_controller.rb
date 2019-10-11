@@ -22,6 +22,50 @@ module Api
           per(80)
       end
 
+      def following_users
+        return unless user_signed_in?
+
+        @follows = current_user.
+          follows_by_type("User").
+          order("created_at DESC").
+          includes(:followable).
+          page(params[:page]).
+          per(80)
+      end
+
+      def following_tags
+        return unless user_signed_in?
+
+        @followed_tags = current_user.
+          follows_by_type("ActsAsTaggableOn::Tag").
+          order("points DESC").
+          includes(:followable).
+          page(params[:page]).
+          per(80)
+      end
+
+      def following_organizations
+        return unless user_signed_in?
+
+        @followed_organizations = current_user.
+          follows_by_type("Organization").
+          order("created_at DESC").
+          includes(:followable).
+          page(params[:page]).
+          per(80)
+      end
+
+      def following_podcasts
+        return unless user_signed_in?
+
+        @followed_podcasts = current_user.
+          follows_by_type("Podcast").
+          order("created_at DESC").
+          includes(:followable).
+          page(params[:page]).
+          per(80)
+      end
+
       def create
         return unless user_signed_in?
 

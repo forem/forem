@@ -23,7 +23,7 @@
     <% @follows.each do |follow| %>
       <% user = follow.follower %>
       <% if user %>
-        <div id="follower-<%= user.id %>" class="single-article">
+        <div id="follows-<%= user.id %>" class="single-article">
           <a href="<%= user.path %>" class="block-link">
             <h2>
               <img alt="<%= user.username %> profile image" src="<%= ProfileImage.new(user).get(60) %>" />

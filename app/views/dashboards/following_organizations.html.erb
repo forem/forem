@@ -1,20 +1,30 @@
 <% title "Dashboard - DEV" %>
 
-<div class="dashboard-container" id="user-dashboard">
-  <%= render "actions" %>
+<div id="index-container"
+    data-params="<%= params.to_json(only: %i[action]) %>"
+    data-which="following">
+  <div class="dashboard-container" id="user-dashboard">
+    <%= render "actions" %>
 
-  <%= render "subactions" %>
+    <%= render "subactions" %>
 
-  <% @followed_organizations.each do |follow| %>
-    <% organization = follow.followable %>
-    <div class="single-article">
-      <a href="<%= organization.path %>" class="block-link">
-        <h2>
-          <img alt="<%= organization.name %> profile image" src="<%= ProfileImage.new(organization).get(60) %>" />
-          <%= organization.name %>
-          <span class="dashboard-username">@<%= organization.name %></span>
-        </h2>
-      </a>
+    <% @followed_organizations.each do |follow| %>
+      <% organization = follow.followable %>
+      <div id="organization-<%= follow.id %>" class="single-article">
+        <a href="<%= organization.path %>" class="block-link">
+          <h2>
+            <img alt="<%= organization.name %> profile image" src="<%= ProfileImage.new(organization).get(60) %>" />
+            <%= organization.name %>
+            <span class="dashboard-username">@<%= organization.name %></span>
+          </h2>
+        </a>
+      </div>
+    <% end %>
+    <div class="home">
+      <div class="sublist"></div>
+      <div class="loading-articles" id="loading-articles">
+        loading...
+      </div>
     </div>
-  <% end %>
+  </div>
 </div>

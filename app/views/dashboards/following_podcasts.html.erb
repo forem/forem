@@ -1,22 +1,32 @@
 <% title "Dashboard - DEV" %>
 
-<div class="dashboard-container" id="user-dashboard">
-  <%= render "actions" %>
+<div id="index-container"
+    data-params="<%= params.to_json(only: %i[action]) %>"
+    data-which="following">
+  <div class="dashboard-container" id="user-dashboard">
+    <%= render "actions" %>
 
-  <%= render "subactions" %>
+    <%= render "subactions" %>
 
-  <% @followed_podcasts.each do |follow| %>
-    <% podcast = follow.followable %>
-    <% if podcast %>
-      <div class="single-article">
-        <a href="/<%= podcast.path %>" class="block-link">
-          <h2>
-            <img alt="<%= podcast.name %> profile image" src="<%= podcast.image_url %>" />
-            <%= podcast.name %>
-            <span class="dashboard-username">@<%= podcast.name %></span>
-          </h2>
-        </a>
-      </div>
+    <% @followed_podcasts.each do |follow| %>
+      <% podcast = follow.followable %>
+      <% if podcast %>
+        <div id="podcast-<%= follow.id %>" class="single-article">
+          <a href="/<%= podcast.path %>" class="block-link">
+            <h2>
+              <img alt="<%= podcast.name %> profile image" src="<%= podcast.image_url %>" />
+              <%= podcast.name %>
+              <span class="dashboard-username">@<%= podcast.name %></span>
+            </h2>
+          </a>
+        </div>
+      <% end %>
     <% end %>
-  <% end %>
+    <div class="home">
+      <div class="sublist"></div>
+      <div class="loading-articles" id="loading-articles">
+        loading...
+      </div>
+    </div>
+  </div>
 </div>

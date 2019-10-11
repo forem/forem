@@ -44,6 +44,10 @@ function fetchNextPageIfNearBottom() {
     fetchCallback = function() {
       fetchNextVideoPage(indexContainer);
     };
+  } else if (indexWhich == "followers") {
+    fetchNextFollowersPage(el);
+  } else if (indexWhich == "following") {
+    fetchNextFollowingPage(el);
   } else {
     scrollableElemId = "articles-list";
     fetchCallback = function() {
@@ -83,6 +87,69 @@ function fetchNext(el, endpoint, insertCallback){
   });
 }
 
+function fetchNextFollowingPage(el){
+  var indexParams = JSON.parse(el.dataset.params);
+  var action = indexParams.action;
+  if (action.includes("users")){
+    fetchNext(el, '/api/follows/following_users', insertFollowing({ elId: "follows" }, buildFollowsHTML));
+  } else if (action.includes("podcasts")){
+    fetchNext(el, '/api/follows/following_podcasts', insertFollowing({ elId: "podcast" }, buildFollowsHTML));
+  } else if (action.includes("organizations")){
+    fetchNext(el, '/api/follows/following_organizations', insertFollowing({ elId: "organization" }, buildFollowsHTML));
+  } else {
+    fetchNext(el, '/api/follows/following_tags', insertFollowing({ elId: "tag" }, buildTagsHTML));
+  }
+}
+
+function insertFollowing(params, buildCallback) {
+  return function(entries) {
+    var list = document.getElementById(params.listId || "sublist");
+    var newFollowersHTML = "";
+    entries.forEach(function(entry){
+      var existingEl = document.getElementById((params.elId || "element") + "-" + entry.id);
+      if(!existingEl) {
+        var newHTML = buildCallback(entry)
+        newFollowersHTML += newHTML
+      }
+    });
+
+    var distanceFromBottom = document.documentElement.scrollHeight - document.body.scrollTop;
+    var newNode = document.createElement("div");
+    newNode.innerHTML = newFollowersHTML;
+    var singleArticles = document.getElementsByClassName("single-article");
+    var lastElement = singleArticles[singleArticles.length - 1];
+    insertAfter(newNode, lastElement);
+    if (nextPage > 0) {
+      fetching = false;
+    }
+  }
+}
+
+var negativeFollow = -1;
+function buildTagsHTML(tag) {
+  var tagHTML = '';
+  if (tag.points < 0 && negativeFollow === -1){
+    tagHTML += '<h2>Negative Tags (anti-follows)</h2>';
+    negativeFollow = 0;
+  }
+  return tagHTML +
+    '<div id="tag-'+tag.id+'" class="single-article" style="border-color:'+tag.color+';box-shadow: 3px 3px 0px '+tag.color+'">\
+        <h2>\
+          <a href="/t/'+tag.name+'">\
+            '+tag.name+'\
+          </a>\
+          <form class="edit_follow" id="edit_follow_'+tag.id+'" action="/follows/'+tag.id+'" accept-charset="UTF-8" method="post">\
+            <input name="utf8" type="hidden" value="✓">\
+            <input type="hidden" name="_method" value="patch">\
+            <input type="hidden" name="authenticity_token" value="'+tag.token+'">\
+            <label for="follow_points">Follow Weight:</label>\
+            <input step="any" required="required" type="number" value="'+tag.points+'" name="follow[points]" id="follow_points">\
+            <input type="submit" name="commit" value="Submit">\
+          </form>\
+        </h2>\
+      </div>';
+}
+
 function fetchNextFollowersPage(el){
   fetchNext(el, '/api/follows/followers', insertFollowers)
 }
@@ -93,7 +160,7 @@ function insertFollowers(followers) {
   followers.forEach(function(follower){
     var existingEl = document.getElementById("follower-"+follower.id);
     if(!existingEl) {
-      var newHTML = buildFollowerHTML(follower)
+      var newHTML = buildFollowsHTML(follower)
       newFollowersHTML += newHTML
     }
   });
@@ -109,13 +176,13 @@ function insertFollowers(followers) {
   }
 }
 
-function buildFollowerHTML(follower) {
-  return '<div id="follower-'+follower.id+'" class="single-article">\
-            <a href="'+ follower.path +'" class="block-link">\
+function buildFollowsHTML(follows) {
+  return '<div id="follows-'+follows.id+'" class="single-article">\
+            <a href="'+ follows.path +'" class="block-link">\
               <h2>\
-                <img alt="'+ follower.username +' profile image" src="'+ follower.profile_image +'" />\
-                '+  follower.name +'\
-                <span class="dashboard-username">@'+ follower.username +'</span>\
+                <img alt="'+ follows.username +' profile image" src="'+ follows.profile_image +'" />\
+                '+  follows.name +'\
+                <span class="dashboard-username">@'+ follows.username +'</span>\
               </h2>\
             </a>\
           </div>';
@@ -157,7 +224,6 @@ function buildVideoArticleHTML(video_article) {
            <p>'+video_article.user.name+'</p>\
           </a>';
 }
-
 
 function fetchNextPodcastPage(el){
   fetchNext(el, '/api/podcast_episodes', insertArticles)

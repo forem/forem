@@ -108,6 +108,10 @@ Rails.application.routes.draw do
       resources :follows, only: [:create] do
         collection do
           get :followers
+          get :following_users
+          get :following_tags
+          get :following_organizations
+          get :following_podcasts
         end
       end
       resources :github_repos, only: [:index] do
