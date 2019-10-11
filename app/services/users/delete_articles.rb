@@ -2,10 +2,9 @@ module Users
   module DeleteArticles
     module_function
 
-    def call(user)
+    def call(user, cache_buster = CacheBuster.new)
       return unless user.articles.any?
 
-      cache_buster = CacheBuster.new
       virtual_articles = user.articles.map { |article| Article.new(article.attributes) }
       user.articles.find_each do |article|
         article.reactions.delete_all
