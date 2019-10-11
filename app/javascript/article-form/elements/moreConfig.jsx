@@ -4,20 +4,13 @@ import PropTypes from 'prop-types';
 const TextField = ({ label, id, value, onKeyUp }) => {
   return (
     <div>
-      <label htmlFor={id}>
-        {label}
-        <input type="text" value={value} name={id} onKeyUp={onKeyUp} id={id} />
-      </label>
+      <label htmlFor={id}>{label}</label>
+      <input type="text" value={value} name={id} onKeyUp={onKeyUp} id={id} />
     </div>
   );
 };
 
 export default class MoreConfig extends Component {
-  constructor(props) {
-    super(props);
-    // this.state = {insertionImageUrl: null}
-  }
-
   handleSeriesButtonClick = e => {
     e.preventDefault();
     const { onConfigChange } = this.props;
@@ -91,9 +84,12 @@ export default class MoreConfig extends Component {
           onKeyUp: onConfigChange,
         })}
         <small>
-          Change meta tag
+          Change meta tag 
+          {' '}
           <code>canonical_url</code>
-          if this post was first published elsewhere (like your own blog)
+          {' '}
+if this post was first
+          published elsewhere (like your own blog)
         </small>
         {TextField({
           label: 'Series Name',
@@ -133,5 +129,5 @@ TextField.propTypes = {
   label: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
-  onKeyUp: PropTypes.func.isRequired
-}
+  onKeyUp: PropTypes.func.isRequired,
+};
