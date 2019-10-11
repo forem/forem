@@ -26,6 +26,22 @@ const LETTERS = /[a-z]/i;
    and refactor this component to be more generic */
 
 class Tags extends Component {
+  static propTypes = {
+    defaultValue: PropTypes.string.isRequired,
+    onInput: PropTypes.func.isRequired,
+    maxTags: PropTypes.number.isRequired,
+    classPrefix: PropTypes.string.isRequired,
+    listing: PropTypes.bool,
+    category: PropTypes.string,
+    autoComplete: PropTypes.string,
+  };
+
+  static defaultProps = {
+    listing: false,
+    category: '',
+    autoComplete: 'on',
+  };
+
   constructor(props) {
     super(props);
 
@@ -48,7 +64,8 @@ class Tags extends Component {
   }
 
   componentDidMount() {
-    if (this.props.listing === true) {
+    const { listing } = this.props;
+    if (listing === true) {
       this.setState({
         additionalTags: {
           jobs: [
@@ -86,91 +103,56 @@ class Tags extends Component {
   }
 
   componentDidUpdate() {
+    const { cursorIdx, prevLen } = this.state;
+    const { value } = this.textArea;
     // stop cursor jumping if the user goes back to edit previous tags
-    if (
-      this.state.cursorIdx < this.textArea.value.length &&
-      this.textArea.value.length < this.state.prevLen + 1
-    ) {
-      this.textArea.selectionEnd = this.state.cursorIdx;
-      this.textArea.selectionStart = this.textArea.selectionEnd;
+    if (cursorIdx < value.length && value.length < prevLen + 1) {
+      this.textArea.selectionStart = cursorIdx;
+      this.textArea.selectionEnd = cursorIdx;
     }
   }
 
+  getCurrentTagAtSelectionIndex = (value, index) => {
+    let tagIndex = 0;
+    const tagByCharacterIndex = {};
+
+    value.split('').map((letter, valueIndex) => {
+      if (letter === ',') {
+        tagIndex += 1;
+      } else {
+        tagByCharacterIndex[valueIndex] = tagIndex;
+      }
+    });
+
+    const tag = value.split(',')[tagByCharacterIndex[index]];
+
+    if (tag === undefined) {
+      return '';
+    }
+    return tag.trim();
+  };
+
   get selected() {
-    return this.props.defaultValue
+    const { defaultValue } = this.props;
+    return defaultValue
       .split(',')
       .map(item => item !== undefined && item.trim())
       .filter(item => item.length > 0);
   }
 
   get isTopOfSearchResults() {
-    return this.state.selectedIndex <= 0;
+    const { selectedIndex } = this.state;
+    return selectedIndex <= 0;
   }
 
   get isBottomOfSearchResults() {
-    return this.state.selectedIndex >= this.state.searchResults.length - 1;
+    const { selectedIndex, searchResults } = this.state;
+    return selectedIndex >= searchResults.length - 1;
   }
 
   get isSearchResultSelected() {
-    return this.state.selectedIndex > -1;
-  }
-
-  render() {
-    let searchResultsHTML = '';
-    const searchResultsRows = this.state.searchResults.map((tag, index) => (
-      <div
-        tabIndex="-1"
-        className={`${this.props.classPrefix}__tagoptionrow ${
-          this.props.classPrefix
-        }__tagoptionrow--${
-          this.state.selectedIndex === index ? 'active' : 'inactive'
-        }`}
-        onClick={this.handleTagClick}
-        data-content={tag.name}
-      >
-        {tag.name}
-        {(tag.rules_html && tag.rules_html.length > 0) ? <button
-          type='button'
-          className={`${this.props.classPrefix}__tagsoptionrulesbutton`}
-          onClick={this.handleRulesClick}
-          data-content={tag.name}
-        >
-        {this.state.showingRulesForTag === tag.name ? 'Hide Rules' : 'View Rules'}
-        </button> : ''}
-        <div className={`${this.props.classPrefix}__tagrules--${this.state.showingRulesForTag === tag.name ? 'active' : 'inactive'}`} dangerouslySetInnerHTML={{ __html: tag.rules_html }} />
-      </div>
-    ));
-    if (
-      this.state.searchResults.length > 0 &&
-      (document.activeElement.id === 'tag-input' || document.activeElement.className === 'articleform__tagsoptionrulesbutton')
-    ) {
-      searchResultsHTML = (
-        <div className={`${this.props.classPrefix}__tagsoptions`}>
-          {searchResultsRows}
-          <div className={`${this.props.classPrefix}__tagsoptionsbottomrow`}>Some tags have rules and guidelines determined by community moderators</div>
-        </div>
-      );
-    }
-
-    return (
-      <div className={`${this.props.classPrefix}__tagswrapper`}>
-        {this.props.listing && <label htmlFor="Tags">Tags</label>}
-        <input
-          id="tag-input"
-          type="text"
-          ref={t => (this.textArea = t)}
-          className={`${this.props.classPrefix}__tags`}
-          placeholder={`${this.props.maxTags} tags max, comma separated, no spaces or special characters`}
-          autoComplete='off'
-          value={this.props.defaultValue}
-          onInput={this.handleInput}
-          onKeyDown={this.handleKeyDown}
-          onBlur={this.handleFocusChange}
-          onFocus={this.handleFocusChange}
-        />
-        {searchResultsHTML}
-      </div>
-    );
+    const { selectedIndex } = this.state;
+    return selectedIndex > -1;
   }
 
   handleRulesClick = e => {
@@ -209,7 +191,8 @@ class Tags extends Component {
       value += ' ';
     }
 
-    this.props.onInput(value);
+    const { onInput } = this.props;
+    onInput(value);
 
     const query = this.getCurrentTagAtSelectionIndex(
       e.target.value,
@@ -224,33 +207,10 @@ class Tags extends Component {
     return this.search(query);
   };
 
-  getCurrentTagAtSelectionIndex(value, index) {
-    let tagIndex = 0;
-    const tagByCharacterIndex = {};
-
-    value.split('').map((letter, letterIndex) => {
-      if (letter === ',') {
-        tagIndex += 1;
-      } else {
-        tagByCharacterIndex[letterIndex] = tagIndex;
-      }
-    });
-
-    const tag = value.split(',')[tagByCharacterIndex[index]];
-
-    if (tag === undefined) {
-      return '';
-    }
-    return tag.trim();
-  }
-
   handleKeyDown = e => {
     const component = this;
-
-    if (
-      component.selected.length === this.props.maxTags &&
-      e.key === KEYS.COMMA
-    ) {
+    const { maxTags } = this.props;
+    if (component.selected.length === maxTags && e.keyCode === KEYS.COMMA) {
       e.preventDefault();
       return;
     }
@@ -286,37 +246,21 @@ class Tags extends Component {
         this.clearSelectedSearchResult();
       }
     } else if (
-      !LETTERS.test(e.key) &&
-      !NAVIGATION_KEYS.includes(e.key)) {
+      (e.keyCode < 65 || e.keyCode > 90) &&
+      e.keyCode !== KEYS.COMMA &&
+      e.keyCode !== KEYS.DELETE &&
+      e.keyCode !== KEYS.LEFT &&
+      e.keyCode !== KEYS.RIGHT &&
+      e.keyCode !== KEYS.TAB
+    ) {
       e.preventDefault();
     }
   };
 
-  insertTag(tag) {
-    const input = document.getElementById('tag-input');
-
-    const range = this.getRangeBetweenCommas(input.value, input.selectionStart);
-    const insertingAtEnd = range[1] === input.value.length;
-    const maxTagsWillBeReached = this.selected.length === this.props.maxTags;
-    if (insertingAtEnd && !maxTagsWillBeReached) {
-      tag += ', ';
-    }
-
-    // Insert new tag between commas if there are any.
-    const newInput =
-      input.value.slice(0, range[0]) +
-      tag +
-      input.value.slice(range[1], input.value.length);
-
-    this.props.onInput(newInput);
-    this.resetSearchResults();
-    this.clearSelectedSearchResult();
-  }
-
   // Given an index of the String value, finds the range between commas.
   // This is useful when we want to insert a new tag anywhere in the
   // comma separated list of tags.
-  getRangeBetweenCommas(value, index) {
+  getRangeBetweenCommas = (value, index) => {
     let start = 0;
     let end = value.length;
 
@@ -336,27 +280,77 @@ class Tags extends Component {
     }
 
     return [start, end];
-  }
+  };
 
-  handleFocusChange = e => {
+  handleFocusChange = () => {
     const component = this;
     setTimeout(() => {
       if (document.activeElement.id === 'tag-input') {
         return;
       }
       component.forceUpdate();
-    }, 250);
+    }, 100);
   };
 
-  insertSpace(value, position) {
+  insertSpace = (value, position) => {
     return `${value.slice(0, position)} ${value.slice(position, value.length)}`;
+  };
+
+  clearSelectedSearchResult() {
+    this.setState({
+      selectedIndex: -1,
+    });
+  }
+
+  insertTag(tag) {
+    const { maxTags, onInput } = this.props;
+    const input = document.getElementById('tag-input');
+
+    const range = this.getRangeBetweenCommas(input.value, input.selectionStart);
+    const insertingAtEnd = range[1] === input.value.length;
+    const maxTagsWillBeReached = this.selected.length === maxTags;
+    let tagValue = '';
+    if (insertingAtEnd && !maxTagsWillBeReached) {
+      tagValue = `${tag}, `;
+    }
+
+    // Insert new tag between commas if there are any.
+    const newInput =
+      input.value.slice(0, range[0]) +
+      tagValue +
+      input.value.slice(range[1], input.value.length);
+
+    onInput(newInput);
+    this.resetSearchResults();
+    this.clearSelectedSearchResult();
+  }
+
+  moveDownInSearchResults() {
+    const { selectedIndex } = this.state;
+    this.setState({
+      selectedIndex: selectedIndex + 1,
+    });
+  }
+
+  moveUpInSearchResults() {
+    const { selectedIndex } = this.state;
+    this.setState({
+      selectedIndex: selectedIndex - 1,
+    });
+  }
+
+  resetSearchResults() {
+    this.setState({
+      searchResults: [],
+    });
   }
 
   search(query) {
+    const { listing = false } = this.props;
+
     if (query === '') {
       return new Promise(resolve => {
         setTimeout(() => {
-          'search query'
           this.resetSearchResults();
           resolve();
         }, 5);
@@ -365,12 +359,12 @@ class Tags extends Component {
 
     return this.index
       .search(query, {
-        hitsPerPage: 8,
+        hitsPerPage: 10,
         attributesToHighlight: [],
         filters: 'supported:true',
       })
       .then(content => {
-        if (this.props.listing === true) {
+        if (listing === true) {
           const { additionalTags } = this.state;
           const { category } = this.props;
           const additionalItems = (additionalTags[category] || []).filter(
@@ -383,41 +377,63 @@ class Tags extends Component {
             }
           });
         }
-        // updates searchResults array according to what is being typed by user
-        // allows user to choose a tag when they've typed the partial or whole word
         this.setState({
-          searchResults: content.hits,
+          searchResults: content.hits.filter(
+            hit => !this.selected.includes(hit.name),
+          ),
         });
       });
   }
 
-  resetSearchResults() {
-    this.setState({
-      searchResults: [],
-    });
-  }
+  render() {
+    const { searchResults, selectedIndex } = this.state;
+    const {
+      classPrefix,
+      listing,
+      maxTags,
+      autoComplete,
+      defaultValue,
+    } = this.props;
+    let searchResultsHTML = '';
+    const searchResultsRows = searchResults.map((tag, index) => (
+      <div
+        tabIndex="-1"
+        className={`${classPrefix}__tagoptionrow ${classPrefix}__tagoptionrow--${
+          selectedIndex === index ? 'active' : 'inactive'
+        }`}
+        onClick={this.handleTagClick}
+        data-content={tag.name}
+        role="button"
+      >
+        {tag.name}
+      </div>
+    ));
+    if (searchResults.length > 0 && document.activeElement.id === 'tag-input') {
+      searchResultsHTML = (
+        <div className={`${classPrefix}__tagsoptions`}>{searchResultsRows}</div>
+      );
+    }
 
-  moveUpInSearchResults() {
-    this.setState(prevState => ({
-      selectedIndex: prevState.selectedIndex - 1,
-    }));
-  }
-
-  moveDownInSearchResults() {
-    this.setState(prevState => ({
-      selectedIndex: prevState.selectedIndex + 1,
-    }));
-  }
-
-  clearSelectedSearchResult() {
-    this.setState({
-      selectedIndex: -1,
-    });
+    return (
+      <div className={`${classPrefix}__tagswrapper`}>
+        {listing && <label htmlFor="Tags">Tags</label>}
+        <input
+          id="tag-input"
+          type="text"
+          ref={t => (this.textArea = t)}
+          className={`${classPrefix}__tags`}
+          placeholder={`${maxTags} tags max, comma separated, no spaces or special characters`}
+          autoComplete={autoComplete || 'on'}
+          value={defaultValue}
+          onInput={this.handleInput}
+          onKeyDown={this.handleKeyDown}
+          onBlur={this.handleFocusChange}
+          onFocus={this.handleFocusChange}
+        />
+        {searchResultsHTML}
+      </div>
+    );
   }
 }
-
-Tags.propTypes = {
-  defaultValue: PropTypes.string.isRequired,
-};
 
 export default Tags;
