@@ -5,7 +5,7 @@ class FlareTag
                   watercooler
                   ama
                   techtalks
-                  til
+                  todayilearned
                   help
                   news
                   healthydebate
