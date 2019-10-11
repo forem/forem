@@ -6,15 +6,15 @@ function checkIfNearBottomOfPage() {
   var elCheck = document.getElementById("index-container");
 
   if (elCheck) {
-    var publicSearchKey = '<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>'
+    var publicSearchKey = '<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>';
     client = algoliasearch('<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>', publicSearchKey);
 
     initScrolling.called = true;
     if (document.getElementsByClassName("single-article").length < 2 || location.search.indexOf("q=") > -1 ) {
-      document.getElementById("loading-articles").style.display = "none"
+      document.getElementById("loading-articles").style.display = "none";
       done = true;
     } else {
-      document.getElementById("loading-articles").style.display = "block"
+      document.getElementById("loading-articles").style.display = "block";
     }
     fetchNextPageIfNearBottom();
     setInterval(function(){
@@ -66,19 +66,19 @@ function fetchNextPageIfNearBottom() {
 function fetchNext(el, endpoint, insertCallback){
   var indexParams = JSON.parse(el.dataset.params);
   var urlParams = Object.keys(indexParams).map(function(k) {
-    return encodeURIComponent(k) + '=' + encodeURIComponent(indexParams[k])
+    return encodeURIComponent(k) + "=" + encodeURIComponent(indexParams[k])
   }).join('&');
   if (urlParams.indexOf("q=") > -1 ) {
     return;
   }
-  var fetchUrl = (endpoint+'?page='+nextPage+"&"+urlParams+"&signature="+parseInt(Date.now()/400000)).replace("&&","&")
+  var fetchUrl = (endpoint+"?page="+nextPage+"&"+urlParams+"&signature="+parseInt(Date.now()/400000)).replace("&&","&");
   window.fetch(fetchUrl)
   .then(function(response) {
     response.json().then(function(entries) {
       nextPage += 1;
       insertCallback(entries);
       if (entries.length == 0) {
-        document.getElementById("loading-articles").style.display = "none"
+        document.getElementById("loading-articles").style.display = "none";
         done = true;
       }
     });
@@ -87,21 +87,7 @@ function fetchNext(el, endpoint, insertCallback){
   });
 }
 
-function fetchNextFollowingPage(el){
-  var indexParams = JSON.parse(el.dataset.params);
-  var action = indexParams.action;
-  if (action.includes("users")){
-    fetchNext(el, '/api/follows/following_users', insertFollowing({ elId: "follows" }, buildFollowsHTML));
-  } else if (action.includes("podcasts")){
-    fetchNext(el, '/api/follows/following_podcasts', insertFollowing({ elId: "podcast" }, buildFollowsHTML));
-  } else if (action.includes("organizations")){
-    fetchNext(el, '/api/follows/following_organizations', insertFollowing({ elId: "organization" }, buildFollowsHTML));
-  } else {
-    fetchNext(el, '/api/follows/following_tags', insertFollowing({ elId: "tag" }, buildTagsHTML));
-  }
-}
-
-function insertFollowing(params, buildCallback) {
+function insertNext(params, buildCallback) {
   return function(entries) {
     var list = document.getElementById(params.listId || "sublist");
     var newFollowersHTML = "";
@@ -125,6 +111,36 @@ function insertFollowing(params, buildCallback) {
   }
 }
 
+function fetchNextFollowingPage(el){
+  var indexParams = JSON.parse(el.dataset.params);
+  var action = indexParams.action;
+  if (action.includes("users")){
+    fetchNext(el, "/api/follows/following_users", insertNext({ elId: "follows" }, buildFollowsHTML));
+  } else if (action.includes("podcasts")){
+    fetchNext(el, "/api/follows/following_podcasts", insertNext({ elId: "podcast" }, buildFollowsHTML));
+  } else if (action.includes("organizations")){
+    fetchNext(el, "/api/follows/following_organizations", insertNext({ elId: "organization" }, buildFollowsHTML));
+  } else {
+    fetchNext(el, "/api/follows/following_tags", insertNext({ elId: "tag" }, buildTagsHTML));
+  }
+}
+
+function fetchNextFollowersPage(el){
+  fetchNext(el, "/api/follows/followers", insertNext({ listId: "subfollowers", elId: "follower" }, buildFollowsHTML));
+}
+
+function buildFollowsHTML(follows) {
+  return `<div id="follows-${follows.id}" class="single-article">
+            <a href="${follows.path$}" class="block-link">
+              <h2>
+                <img alt="${follows.username} profile image" src="${follows.profile_image}" />
+                ${follows.name}
+                <span class="dashboard-username">@${follows.username}</span>
+              </h2>
+            </a>
+          </div>`;
+}
+
 var negativeFollow = -1;
 function buildTagsHTML(tag) {
   var tagHTML = '';
@@ -133,63 +149,25 @@ function buildTagsHTML(tag) {
     negativeFollow = 0;
   }
   return tagHTML +
-    '<div id="tag-'+tag.id+'" class="single-article" style="border-color:'+tag.color+';box-shadow: 3px 3px 0px '+tag.color+'">\
-        <h2>\
-          <a href="/t/'+tag.name+'">\
-            '+tag.name+'\
-          </a>\
-          <form class="edit_follow" id="edit_follow_'+tag.id+'" action="/follows/'+tag.id+'" accept-charset="UTF-8" method="post">\
-            <input name="utf8" type="hidden" value="✓">\
-            <input type="hidden" name="_method" value="patch">\
-            <input type="hidden" name="authenticity_token" value="'+tag.token+'">\
-            <label for="follow_points">Follow Weight:</label>\
-            <input step="any" required="required" type="number" value="'+tag.points+'" name="follow[points]" id="follow_points">\
-            <input type="submit" name="commit" value="Submit">\
-          </form>\
-        </h2>\
-      </div>';
-}
-
-function fetchNextFollowersPage(el){
-  fetchNext(el, '/api/follows/followers', insertFollowers)
-}
-
-function insertFollowers(followers) {
-  var list = document.getElementById("subfollowers");
-  var newFollowersHTML = "";
-  followers.forEach(function(follower){
-    var existingEl = document.getElementById("follower-"+follower.id);
-    if(!existingEl) {
-      var newHTML = buildFollowsHTML(follower)
-      newFollowersHTML += newHTML
-    }
-  });
-
-  var distanceFromBottom = document.documentElement.scrollHeight - document.body.scrollTop;
-  var newNode = document.createElement("div");
-  newNode.innerHTML = newFollowersHTML;
-  var singleArticles = document.getElementsByClassName("single-article");
-  var lastElement = singleArticles[singleArticles.length - 1];
-  insertAfter(newNode, lastElement);
-  if (nextPage > 0) {
-    fetching = false;
-  }
-}
-
-function buildFollowsHTML(follows) {
-  return '<div id="follows-'+follows.id+'" class="single-article">\
-            <a href="'+ follows.path +'" class="block-link">\
-              <h2>\
-                <img alt="'+ follows.username +' profile image" src="'+ follows.profile_image +'" />\
-                '+  follows.name +'\
-                <span class="dashboard-username">@'+ follows.username +'</span>\
-              </h2>\
-            </a>\
-          </div>';
+    `<div id="tag-${tag.id}" class="single-article" style="border-color:${tag.color};box-shadow: 3px 3px 0px ${tag.color}">
+        <h2>
+          <a href="/t/${tag.name}">
+            ${tag.name}
+          </a>
+          <form class="edit_follow" id="edit_follow_${tag.id}" action="/follows/${tag.id}" accept-charset="UTF-8" method="post">
+            <input name="utf8" type="hidden" value="✓">
+            <input type="hidden" name="_method" value="patch">
+            <input type="hidden" name="authenticity_token" value="${tag.token}">
+            <label for="follow_points">Follow Weight:</label>
+            <input step="any" required="required" type="number" value="${tag.points}" name="follow[points]" id="follow_points">
+            <input type="submit" name="commit" value="Submit">
+          </form>
+        </h2>
+      </div>`;
 }
 
 function fetchNextVideoPage(el){
-  fetchNext(el, '/api/videos', insertVideos)
+  fetchNext(el, "/api/videos", insertVideos)
 }
 
 function insertVideos(video_articles) {
@@ -226,7 +204,7 @@ function buildVideoArticleHTML(video_article) {
 }
 
 function fetchNextPodcastPage(el){
-  fetchNext(el, '/api/podcast_episodes', insertArticles)
+  fetchNext(el, "/api/podcast_episodes", insertArticles)
 }
 
 function insertArticles(articles) {
