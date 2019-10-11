@@ -25,7 +25,6 @@ function fetchBaseData() {
         removeExistingCSRF();
       }
       var newCsrfParamMeta = document.createElement('meta');
-      var metaTag = document.querySelector("meta[name='csrf-token']");
       newCsrfParamMeta.name = 'csrf-param';
       newCsrfParamMeta.content = json.param;
       document.getElementsByTagName('head')[0].appendChild(newCsrfParamMeta);
