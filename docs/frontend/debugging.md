@@ -18,7 +18,7 @@ Browsers ship with their own developer tools. These are amazing tools to help yo
 
 Setup:
 
-- Refer to the repsective debugger extension documentation above to ensure that your browser is running with remote debugging enabled.
+- Refer to the respective debugger extension documentation above to ensure that your browser is running with remote debugging enabled.
 - Once you have your local installation of DEV running, you can attach to either the Chrome or Edge Debugger.
 
   ![Launch menu for debugger in VS Code](/vscode_launch_debugger.png 'Launch menu for debugger in VS Code')
