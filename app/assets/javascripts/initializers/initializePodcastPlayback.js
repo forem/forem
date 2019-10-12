@@ -3,7 +3,7 @@
 /* eslint-disable no-param-reassign */
 /* global time */
 /**
- * This script hunts for podcast's "Record" for both the podcast_episde's
+ * This script hunts for podcast's "Record" for both the podcast_episode's
  * show page and an article page containing podcast liquid tag. It handles
  * playback and makes sure the record will spin when the podcast is currently
  * playing. The high level functions are the following
@@ -74,7 +74,7 @@ function initializePodcastPlayback() {
   function applyOnbeforeUnloadWarning() {
     var message =
       'You are currently playing a podcast. Are you sure you want to leave?';
-    window.onclick = event => {
+    window.addEventListener('click', event => {
       if (
         event.target.tagName === 'A' &&
         !event.target.href.includes('https://dev.to') &&
@@ -82,11 +82,12 @@ function initializePodcastPlayback() {
         !event.metaKey
       ) {
         event.preventDefault();
+        // eslint-disable-next-line no-alert
         if (window.confirm(message)) {
           window.location = event.target.href;
         }
       }
-    };
+    });
     window.onbeforeunload = () => {
       return message;
     };
@@ -246,28 +247,18 @@ function initializePodcastPlayback() {
   }
 
   function applyOnclickToPodcastBar(audio) {
-    getById('barPlayPause').onclick = () => {
-      playPause(audio);
-    };
-    getById('mutebutt').onclick = () => {
-      muteUnmute(audio);
-    };
-    getById('volbutt').onclick = () => {
-      muteUnmute(audio);
-    };
-    getById('bufferwrapper').onclick = e => {
-      goToTime(e, audio);
-    };
+    getById('barPlayPause').addEventListener('click', () => playPause(audio));
+    getById('mutebutt').addEventListener('click', () => muteUnmute(audio));
+    getById('volbutt').addEventListener('click', () => muteUnmute(audio));
+    getById('bufferwrapper').addEventListener('click', e => goToTime(e, audio));
     getById('volumeslider').value = audio.volume * 100;
-    getById('volumeslider').onchange = e => {
+    getById('volumeslider').addEventListener('change', e => {
       audio.volume = e.target.value / 100;
-    };
-    getById('speed').onclick = () => {
-      changePlaybackRate(audio);
-    };
-    getById('closebutt').onclick = () => {
-      terminatePodcastBar(audio);
-    };
+    });
+    getById('speed').addEventListener('click', () => changePlaybackRate(audio));
+    getById('closebutt').addEventListener('click', () =>
+      terminatePodcastBar(audio),
+    );
   }
 
   function podcastBarAlreadyExistAndPlayingTargetEpisode(episodeSlug) {
