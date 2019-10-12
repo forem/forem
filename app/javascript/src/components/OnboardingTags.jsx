@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import tagPropType from './common-prop-types/tag-prop-types';
 import OnboardingSingleTag from './OnboardingSingleTag';
 
 // page 2
@@ -24,7 +25,7 @@ function OnboardingTags({ allTags, handleFollowTag }) {
 
 OnboardingTags.propTypes = {
   handleFollowTag: PropTypes.func.isRequired,
-  allTags: PropTypes.objectOf().isRequired,
+  allTags: PropTypes.arrayOf(tagPropType).isRequired,
 };
 
 export default OnboardingTags;

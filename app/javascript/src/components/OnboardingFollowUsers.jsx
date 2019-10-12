@@ -19,7 +19,7 @@ const OnboardingFollowUsers = ({
 
 OnboardingFollowUsers.propTypes = {
   users: PropTypes.arrayOf(userPropType).isRequired,
-  checkedUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
+  checkedUsers: PropTypes.arrayOf(userPropType).isRequired,
   handleCheckUser: PropTypes.func.isRequired,
   handleCheckAllUsers: PropTypes.func.isRequired,
 };

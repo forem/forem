@@ -1,10 +1,11 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import tagPropType from './common-prop-types/tag-prop-types';
 
 class OnboardingSingleTag extends Component {
   propTypes = {
     onTagClick: PropTypes.func.isRequired,
-    tag: PropTypes.objectOf().isRequired,
+    tag: tagPropType.isRequired,
   };
 
   constructor(props) {

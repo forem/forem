@@ -78,7 +78,7 @@ OnboardingUsers.propTypes = {
   handleCheckUser: PropTypes.func.isRequired,
   handleCheckAllUsers: PropTypes.func.isRequired,
   users: PropTypes.arrayOf(userPropType).isRequired,
-  checkedUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
+  checkedUsers: PropTypes.arrayOf(userPropType).isRequired,
 };
 
 export default OnboardingUsers;
