@@ -514,6 +514,7 @@ preact-render-spy (1 nodes)
                 <button
                   id="onboarding-user-follow-all-btn"
                   onClick={[Function bound handleAllClick]}
+                  type="button"
                   class="checked"
                 >
                   ✓
@@ -535,6 +536,7 @@ preact-render-spy (1 nodes)
                 <div class="onboarding-user-list-checkbox">
                   <button
                     onClick={[Function bound bound handleCheckUser]}
+                    type="button"
                     class="checked"
                   >
                     ✓
@@ -555,6 +557,7 @@ preact-render-spy (1 nodes)
                 <div class="onboarding-user-list-checkbox">
                   <button
                     onClick={[Function bound bound handleCheckUser]}
+                    type="button"
                     class="checked"
                   >
                     ✓
@@ -575,6 +578,7 @@ preact-render-spy (1 nodes)
                 <div class="onboarding-user-list-checkbox">
                   <button
                     onClick={[Function bound bound handleCheckUser]}
+                    type="button"
                     class="checked"
                   >
                     ✓
@@ -740,6 +744,7 @@ preact-render-spy (1 nodes)
                 <button
                   id="onboarding-user-follow-all-btn"
                   onClick={[Function bound handleAllClick]}
+                  type="button"
                   class="checked"
                 >
                   ✓
@@ -761,6 +766,7 @@ preact-render-spy (1 nodes)
                 <div class="onboarding-user-list-checkbox">
                   <button
                     onClick={[Function bound bound handleCheckUser]}
+                    type="button"
                     class="checked"
                   >
                     ✓
@@ -781,6 +787,7 @@ preact-render-spy (1 nodes)
                 <div class="onboarding-user-list-checkbox">
                   <button
                     onClick={[Function bound bound handleCheckUser]}
+                    type="button"
                     class="checked"
                   >
                     ✓
@@ -801,6 +808,7 @@ preact-render-spy (1 nodes)
                 <div class="onboarding-user-list-checkbox">
                   <button
                     onClick={[Function bound bound handleCheckUser]}
+                    type="button"
                     class="checked"
                   >
                     ✓

@@ -8,11 +8,13 @@ class OnboardingUsers extends Component {
   }
 
   handleAllClick() {
-    this.props.handleCheckAllUsers();
+    const { handleCheckAllUsers } = this.props;
+    handleCheckAllUsers();
   }
 
   render() {
-    const followList = this.props.users.map(user => {
+    const { users, checkedUsers, handleCheckUser } = this.props;
+    const followList = users.map(user => {
       return (
         <div className="onboarding-user-list-row" key={user.id}>
           <div className="onboarding-user-list-key">
@@ -24,19 +26,18 @@ class OnboardingUsers extends Component {
           </div>
           <div className="onboarding-user-list-checkbox">
             <button
-              onClick={this.props.handleCheckUser.bind(this, user)}
-              className={
-                this.props.checkedUsers.indexOf(user) > -1 ? 'checked' : ''
-              }
+              onClick={handleCheckUser.bind(this, user)}
+              type='button'
+              className={checkedUsers.indexOf(user) > -1 ? 'checked' : ''}
             >
-              {this.props.checkedUsers.indexOf(user) > -1 ? '✓' : '+'}
+              {checkedUsers.indexOf(user) > -1 ? '✓' : '+'}
             </button>
           </div>
         </div>
       );
     });
     const renderLoadingOrList = () => {
-      if (this.props.users.length === 0) {
+      if (users.length === 0) {
         return <div className="onboarding-user-loading">Loading...</div>;
       }
       return followList;
@@ -54,15 +55,10 @@ class OnboardingUsers extends Component {
               <button
                 id="onboarding-user-follow-all-btn"
                 onClick={this.handleAllClick}
-                className={
-                  this.props.checkedUsers.length === this.props.users.length
-                    ? 'checked'
-                    : ''
-                }
+                type='button'
+                className={checkedUsers.length === users.length ? 'checked' : ''}
               >
-                {this.props.checkedUsers.length === this.props.users.length
-                  ? '✓'
-                  : '+'}
+                {checkedUsers.length === users.length ? '✓' : '+'}
               </button>
             </div>
           </div>
@@ -76,6 +72,8 @@ class OnboardingUsers extends Component {
 }
 
 OnboardingUsers.propTypes = {
+  users: PropTypes.arrayOf(PropTypes.object).isRequired,
+  checkedUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
   handleCheckUser: PropTypes.func.isRequired,
   handleCheckAllUsers: PropTypes.func.isRequired,
 };
