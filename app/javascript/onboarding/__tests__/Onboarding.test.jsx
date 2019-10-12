@@ -100,8 +100,8 @@ describe('<Onboarding />', () => {
     test('should not move if terms and conditions are not met', () => {
       const event = {
         target: {
-          value: 'checkedCodeOfConduct',
-          name: 'checkedCodeOfConduct',
+          value: 'checked_code_of_conduct',
+          name: 'checked_code_of_conduct',
         },
       };
       onboardingSlides
@@ -115,8 +115,8 @@ describe('<Onboarding />', () => {
       fetch.once({});
       onboardingSlides.find('#checked_code_of_conduct').simulate('change', {
         target: {
-          value: 'checkedCodeOfConduct',
-          name: 'checkedCodeOfConduct',
+          value: 'checked_code_of_conduct',
+          name: 'checked_code_of_conduct',
         },
       });
 
@@ -124,13 +124,13 @@ describe('<Onboarding />', () => {
         .find('#checked_terms_and_conditions')
         .simulate('change', {
           target: {
-            value: 'checkedTermsAndConditions',
-            name: 'checkedTermsAndConditions',
+            value: 'checked_terms_and_conditions',
+            name: 'checked_terms_and_conditions',
           },
         });
 
       const emailTerms = onboardingSlides.find(<EmailTermsConditionsForm />);
-      expect(emailTerms.state('checkedCodeOfConduct')).toBe(true);
+      expect(emailTerms.state('checked_code_of_conduct')).toBe(true);
       onboardingSlides.find('.next-button').simulate('click');
       await flushPromises();
       expect(onboardingSlides.state().currentSlide).toBe(2);
