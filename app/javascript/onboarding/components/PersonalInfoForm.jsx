@@ -1,10 +1,16 @@
+/* eslint camelcase: "off" */
+
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import Navigation from './Navigation';
 import { getContentOfToken } from '../utilities';
 
-const setupFormTextField = ({ labelText = '', entityName = '', onChangeCallback }) => {
+const setupFormTextField = ({
+  labelText = '',
+  entityName = '',
+  onChangeCallback,
+}) => {
   return (
     <label htmlFor={entityName}>
       {labelText}
@@ -16,8 +22,8 @@ const setupFormTextField = ({ labelText = '', entityName = '', onChangeCallback 
         maxLength="60"
       />
     </label>
-  )
-}
+  );
+};
 
 class PersonalInfoForm extends Component {
   constructor(props) {
@@ -28,22 +34,22 @@ class PersonalInfoForm extends Component {
 
     this.state = {
       location: '',
-      employmentTitle: '',
-      employerName: '',
-      lastOnboardingPage: 'personal info form',
+      employment_title: '',
+      employer_name: '',
+      last_onboarding_page: 'personal info form',
     };
   }
 
   componentDidMount() {
     const csrfToken = getContentOfToken('csrf-token');
-    const { lastOnboardingPage } = this.state;
+    const { last_onboarding_page } = this.state;
     fetch('/onboarding_update', {
       method: 'PATCH',
       headers: {
         'X-CSRF-Token': csrfToken,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user: { lastOnboardingPage } }),
+      body: JSON.stringify({ user: { last_onboarding_page } }),
       credentials: 'same-origin',
     });
   }
@@ -52,10 +58,10 @@ class PersonalInfoForm extends Component {
     const csrfToken = getContentOfToken('csrf-token');
 
     const {
-      lastOnboardingPage,
+      last_onboarding_page,
       location,
-      employerName,
-      employmentTitle,
+      employer_name,
+      employment_title,
     } = this.state;
 
     fetch('/onboarding_update', {
@@ -66,10 +72,10 @@ class PersonalInfoForm extends Component {
       },
       body: JSON.stringify({
         user: {
-          lastOnboardingPage,
+          last_onboarding_page,
           location,
-          employerName,
-          employmentTitle,
+          employer_name,
+          employment_title,
         },
       }),
       credentials: 'same-origin',
@@ -96,27 +102,21 @@ class PersonalInfoForm extends Component {
         <div className="onboarding-content about">
           <h2>About You!</h2>
           <form>
-            {
-              setupFormTextField({
-                labelText: 'Where are you located?',
-                entityName: 'location',
-                onChangeCallback: this.handleChange
-              })
-            }
-            {
-              setupFormTextField({
-                labelText: 'What is your title?',
-                entityName: 'employment_title',
-                onChangeCallback: this.handleChange
-              })
-            }
-            {
-              setupFormTextField({
-                labelText: 'Where do you work?',
-                entityName: 'employer_name',
-                onChangeCallback: this.handleChange
-              })
-            }
+            {setupFormTextField({
+              labelText: 'Where are you located?',
+              entityName: 'location',
+              onChangeCallback: this.handleChange,
+            })}
+            {setupFormTextField({
+              labelText: 'What is your title?',
+              entityName: 'employment_title',
+              onChangeCallback: this.handleChange,
+            })}
+            {setupFormTextField({
+              labelText: 'Where do you work?',
+              entityName: 'employer_name',
+              onChangeCallback: this.handleChange,
+            })}
           </form>
         </div>
         <Navigation prev={prev} next={this.onSubmit} />
@@ -124,6 +124,12 @@ class PersonalInfoForm extends Component {
     );
   }
 }
+
+setupFormTextField.propTypes = {
+  labelText: PropTypes.string.isRequired,
+  entityName: PropTypes.string.isRequired,
+  onChangeCallback: PropTypes.func.isRequired,
+};
 
 PersonalInfoForm.propTypes = {
   prev: PropTypes.func.isRequired,

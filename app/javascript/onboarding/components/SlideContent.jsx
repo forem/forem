@@ -17,7 +17,7 @@ const SlideContent = ({
     {content}
     <p>
       <strong>
-        <em>Let`&apos;`s get started...</em>
+        <em>Let&apos;s get started...</em>
       </strong>
     </p>
   </div>
