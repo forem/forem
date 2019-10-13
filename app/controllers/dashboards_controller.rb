@@ -1,7 +1,7 @@
 class DashboardsController < ApplicationController
   before_action :set_no_cache_header
   before_action :authenticate_user!
-  before_action :fetch_and_authorize_user, only: %i[show following following_tags following_users following_organizations following_podcasts followers]
+  before_action :fetch_and_authorize_user, only: %i[show following_tags following_users following_organizations following_podcasts followers]
   after_action :verify_authorized
 
   def show
@@ -21,17 +21,6 @@ class DashboardsController < ApplicationController
 
     # Updates analytics in background if appropriate
     Articles::UpdateAnalyticsJob.perform_later(current_user.id) if @articles && ApplicationConfig["GA_FETCH_RATE"] < 50 # Rate limit concerned, sometimes we throttle down.
-  end
-
-  def following
-    @follows = @user.follows_by_type("User").
-      order("created_at DESC").includes(:followable).limit(80)
-    @followed_tags = @user.follows_by_type("ActsAsTaggableOn::Tag").
-      order("points DESC").includes(:followable).limit(80)
-    @followed_organizations = @user.follows_by_type("Organization").
-      order("created_at DESC").includes(:followable).limit(80)
-    @followed_podcasts = @user.follows_by_type("Podcast").
-      order("created_at DESC").includes(:followable).limit(80)
   end
 
   def following_tags
