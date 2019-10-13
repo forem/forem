@@ -586,6 +586,13 @@ RSpec.describe User, type: :model do
     expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
   end
 
+  it "inserts into mailchimp" do
+    perform_enqueued_jobs do
+      expect_any_instance_of(MailchimpBot).to receive(:upsert)
+      user.save
+    end
+  end
+
   it "does not allow to change to username that is taken" do
     user.username = second_user.username
     expect(user).not_to be_valid
