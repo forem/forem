@@ -27,7 +27,3 @@ linters:
         Enabled: false
       Metrics/LineLength:
         Max: 289
-      Rails/OutputSafety:
-        Enabled: true
-        Exclude:
-          - '**/app/views/internal/articles/_individual_article.html.erb'
