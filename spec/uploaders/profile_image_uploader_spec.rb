@@ -1,10 +1,12 @@
 require "rails_helper"
 require "carrierwave/test/matchers"
 
-describe ArticleImageUploader do
+describe ProfileImageUploader do
   include CarrierWave::Test::Matchers
 
-  let_it_be(:uploader) { described_class.new }
+  let_it_be(:mounted_as) { :profile_image }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:uploader) { described_class.new(user, mounted_as) }
   let_it_be(:image_jpg) { fixture_file_upload("files/800x600.jpg", "image/jpeg") }
   let_it_be(:image_png) { fixture_file_upload("files/800x600.png", "image/png") }
   let_it_be(:image_webp) { fixture_file_upload("files/800x600.webp", "image/webp") }
@@ -20,12 +22,18 @@ describe ArticleImageUploader do
   end
 
   it "stores files in the correct directory" do
-    expect(uploader.store_dir).to eq("i/")
+    expect(uploader.store_dir).to eq("uploads/user/profile_image/#{user.id}")
   end
 
   describe "filename" do
     it "defaults to nil" do
       expect(uploader.filename).to be_nil
+    end
+
+    it "contains a secure token" do
+      uploader.store!(image_jpg)
+      token = user.instance_variable_get(:"@#{mounted_as}_secure_token")
+      expect(uploader.filename).to include(token)
     end
 
     it "contains the original file extension when a file is stored" do
