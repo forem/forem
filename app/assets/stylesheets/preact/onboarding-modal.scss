@@ -24,12 +24,15 @@
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-  background-position: center; /* Center the image */
-  background-repeat: no-repeat; /* Do not repeat the image */
+  /* Center the image */
+  background-position: center;
+  /* Do not repeat the image */
+  background-repeat: no-repeat;
 
   a {
     @include themeable(color, theme-anchor-color, #2e3b9e);
   }
+
   .sticker-logo {
     height: 80px;
     width: 80px;
@@ -39,6 +42,7 @@
     top: -10px;
     padding-top: 5px;
   }
+
   .onboarding-main {
     display: flex;
     flex-direction: column;
@@ -61,6 +65,7 @@
     width: 100%;
     height: 440px;
     margin-top: 5px;
+
     h1 {
       margin-top: 15px;
       line-height: 1.1em;
@@ -83,12 +88,15 @@
   h1 {
     text-align: center;
   }
+
   h2 {
     font-size: 15px;
+
     @media screen and (min-width: 600px) {
       font-size: 26px;
     }
   }
+
   p {
     line-height: 1.25em;
   }
@@ -122,6 +130,7 @@
 
   .about {
     width: 100%;
+
     label,
     input,
     textarea {
@@ -161,6 +170,7 @@
       margin: 8px;
       cursor: pointer;
     }
+
     input[type='checkbox']:checked {
       @include themeable(background, theme-anchor-color, #66e2d5);
     }
@@ -200,15 +210,19 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
       Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
       'Segoe UI Symbol';
+
     @media screen and (min-width: 600px) {
       width: 255px;
     }
+
     &.tag-selected {
       opacity: 1;
     }
+
     &:hover {
       opacity: 1;
     }
+
     .onboarding-tag-follow-indicator {
       position: absolute;
       bottom: 22px;
@@ -221,6 +235,7 @@
 
   .select-all-button-wrapper {
     width: 100%;
+
     button {
       width: 300px;
       line-height: 1em;
@@ -243,6 +258,7 @@
     margin-right: 5px;
     position: relative;
     color: $black;
+
     .onboarding-user-follow-status {
       position: absolute;
       color: #32a99c;
@@ -250,17 +266,21 @@
       top: 5px;
       font-size: 0.88em;
     }
+
     span {
       display: block;
       width: 100%;
     }
+
     p {
       font-weight: 400;
       height: 55px;
     }
+
     @media screen and (min-width: 600px) {
       width: 365px;
     }
+
     img {
       height: 80px;
       width: 80px;
@@ -270,9 +290,11 @@
       display: block;
     }
   }
+
   .user:active {
     background-color: red;
   }
+
   .badge-image {
     position: absolute;
   }
@@ -282,9 +304,11 @@
     flex-direction: column;
     height: 250px;
     overflow: auto;
+
     @media screen and (min-width: 600px) {
       flex-direction: row;
     }
+
     a {
       background: #d9e7ff;
       padding: 15px 4px 0px 12px;
@@ -297,12 +321,14 @@
       font-weight: bold;
       position: relative;
       text-align: center;
+
       @media screen and (min-width: 600px) {
         height: 220px;
         margin: 4px 4px;
         text-align: left;
         padding: 20px 4px 0px 12px;
-      }  
+      }
+
       .whatnext-emoji {
         display: none;
         text-align: center;
@@ -311,20 +337,24 @@
         left: 0;
         right: 0;
         font-size: 50px;
+
         @media screen and (min-width: 600px) {
           display: block;
         }
       }
     }
   }
+
   .onboarding-previous-location {
     text-align: center;
     margin-top: 10px;
     font-weight: bold;
     display: none;
+
     @media screen and (min-width: 600px) {
       display: block;
     }
+
     code {
       font-size: 0.6em;
       margin-top: -10px;
@@ -332,14 +362,17 @@
       font-weight: 400;
     }
   }
+
   @media screen and (max-width: 800px) {
     .onboarding-main {
       width: 100%;
       height: 100%;
       background-image: url('/assets/mobile-onboarding-background.png');
       background-size: cover;
-      background-position: center; /* Center the image */
-      background-repeat: no-repeat; /* Do not repeat the image */
+      /* Center the image */
+      background-position: center;
+      /* Do not repeat the image */
+      background-repeat: no-repeat;
       border: none;
       color: $black;
     }
@@ -347,7 +380,8 @@
     .onboarding-content {
       flex: 0 0 auto;
 
-      h1, h2 {
+      h1,
+      h2 {
         margin-top: initial;
       }
     }
@@ -356,7 +390,7 @@
       display: block;
     }
   }
-  
+
   @media screen and (max-width: 650px) {
     .onboarding-main {
       font-size: 18px;
