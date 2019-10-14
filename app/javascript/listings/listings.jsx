@@ -1,12 +1,48 @@
 import { h, Component } from 'preact';
 import { SingleListing } from './singleListing';
 
+function resizeMasonryItem(item) {
+  /* Get the grid object, its row-gap, and the size of its implicit rows */
+  const grid = document.getElementsByClassName('classifieds-columns')[0];
+  const rowGap = parseInt(
+    window.getComputedStyle(grid).getPropertyValue('grid-row-gap'),
+    10,
+  );
+  const rowHeight = parseInt(
+    window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'),
+    10,
+  );
+
+  const rowSpan = Math.ceil(
+    (item.querySelector('.listing-content').getBoundingClientRect().height +
+      rowGap) /
+      (rowHeight + rowGap),
+  );
+
+  /* Set the spanning as calculated above (S) */
+  // eslint-disable-next-line no-param-reassign
+  item.style.gridRowEnd = `span ${rowSpan}`;
+}
+
+function resizeAllMasonryItems() {
+  // Get all item class objects in one list
+  const allItems = document.getElementsByClassName('single-classified-listing');
+
+  /*
+   * Loop through the above list and execute the spanning function to
+   * each list-item (i.e. each masonry item)
+   */
+  // eslint-disable-next-line vars-on-top
+  for (let i = 0; i < allItems.length; i += 1) {
+    resizeMasonryItem(allItems[i]);
+  }
+}
+
 export class Listings extends Component {
   state = {
     listings: [],
     query: '',
     tags: [],
-    index: null,
     category: '',
     allCategories: [],
     initialFetch: true,
@@ -44,7 +80,7 @@ export class Listings extends Component {
     let slug = null;
     if (container.dataset.displayedlisting) {
       openedListing = JSON.parse(container.dataset.displayedlisting);
-      slug = openedListing.slug;
+      ({ slug } = openedListing);
       document.body.classList.add('modal-open');
     }
     t.setState({
@@ -149,7 +185,7 @@ export class Listings extends Component {
   handleSubmitMessage = e => {
     e.preventDefault();
     const { message, openedListing } = this.state;
-    if (this.state.message.replace(/\s/g, '').length === 0) {
+    if (message.replace(/\s/g, '').length === 0) {
       return;
     }
     const formData = new FormData();
@@ -210,12 +246,12 @@ export class Listings extends Component {
 
   setUser = () => {
     const t = this;
-    setTimeout(function() {
+    setTimeout(() => {
       if (window.currentUser && t.state.currentUserId === null) {
         t.setState({ currentUserId: window.currentUser.id });
       }
     }, 300);
-    setTimeout(function() {
+    setTimeout(() => {
       if (window.currentUser && t.state.currentUserId === null) {
         t.setState({ currentUserId: window.currentUser.id });
       }
@@ -224,12 +260,8 @@ export class Listings extends Component {
 
   triggerMasonry = () => {
     resizeAllMasonryItems();
-    setTimeout(function() {
-      resizeAllMasonryItems();
-    }, 1);
-    setTimeout(function() {
-      resizeAllMasonryItems();
-    }, 3);
+    setTimeout(resizeAllMasonryItems, 1);
+    setTimeout(resizeAllMasonryItems, 3);
   };
 
   setLocation = (query, tags, category, slug) => {
@@ -286,6 +318,7 @@ export class Listings extends Component {
       openedListing,
       showNextPageButt,
       initialFetch,
+      message,
     } = this.state;
     const allListings = listings.map(listing => (
       <SingleListing
@@ -310,6 +343,9 @@ export class Listings extends Component {
             className="tag-close"
             onClick={e => this.removeTag(e, tag)}
             data-no-instant
+            role="button"
+            onKeyPress={e => e.key === 'Enter' && this.removeTag(e, tag)}
+            tabIndex="0"
           >
             ×
           </span>
@@ -360,21 +396,30 @@ export class Listings extends Component {
           id="classified-listings-modal-background"
         />
       );
-      if (
-        openedListing.contact_via_connect &&
-        openedListing.user_id !== currentUserId
-      ) {
+      if (openedListing.contact_via_connect) {
         messageModal = (
           <form
             id="listings-message-form"
             className="listings-contact-via-connect"
             onSubmit={this.handleSubmitMessage}
           >
-            <p>
-              <b>Contact {openedListing.author.name} via DEV Connect</b>
-            </p>
+            {openedListing.contact_via_connect &&
+            openedListing.user_id !== currentUserId ? (
+              <p>
+                <b>
+                  Contact
+                  {` ${openedListing.author.name} `}
+                  via DEV Connect
+                </b>
+              </p>
+            ) : (
+              <p>
+                This is your active listing. Any member can contact you via this
+                form.
+              </p>
+            )}
             <textarea
-              value={this.state.message}
+              value={message}
               onChange={this.handleDraftingMessage}
               id="new-message"
               rows="4"
@@ -385,40 +430,25 @@ export class Listings extends Component {
               SEND
             </button>
             <p>
-              <em>
-                Message must be relevant and on-topic with the listing. All
-                private interactions <b>must</b> abide by the{' '}
-                <a href="/code-of-conduct">code of conduct</a>
-              </em>
-            </p>
-          </form>
-        );
-      } else if (openedListing.contact_via_connect) {
-        messageModal = (
-          <form
-            id="listings-message-form"
-            className="listings-contact-via-connect"
-          >
-            <p>
-              This is your active listing. Any member can contact you via this
-              form.
-            </p>
-            <textarea
-              value={this.state.message}
-              onChange={this.handleDraftingMessage}
-              id="new-message"
-              rows="4"
-              cols="70"
-              placeholder="Enter your message here..."
-            />
-            <button type="submit" value="Submit" className="submit-button cta">
-              SEND
-            </button>
-            <p>
-              <em>
-                All private interactions <b>must</b> abide by the{' '}
-                <a href="/code-of-conduct">code of conduct</a>
-              </em>
+              {openedListing.contact_via_connect &&
+              openedListing.user_id !== currentUserId ? (
+                <em>
+                  Message must be relevant and on-topic with the listing. All
+                  private interactions
+                  <b>must</b>
+                  abide by the 
+                  {' '}
+                  <a href="/code-of-conduct">code of conduct</a>
+                </em>
+              ) : (
+                <em>
+                  All private interactions
+                  <b>must</b>
+                  abide by the 
+                  {' '}
+                  <a href="/code-of-conduct">code of conduct</a>
+                </em>
+              )}
             </p>
           </form>
         );
@@ -429,6 +459,9 @@ export class Listings extends Component {
             id="single-classified-listing-container__inner"
             className="single-classified-listing-container__inner"
             onClick={this.handleCloseModal}
+            role="button"
+            onKeyPress={this.handleCloseModal}
+            tabIndex="0"
           >
             <SingleListing
               onAddTag={this.addTag}
@@ -494,40 +527,6 @@ export class Listings extends Component {
         {modal}
       </div>
     );
-  }
-}
-
-function resizeMasonryItem(item) {
-  /* Get the grid object, its row-gap, and the size of its implicit rows */
-  const grid = document.getElementsByClassName('classifieds-columns')[0];
-  const rowGap = parseInt(
-    window.getComputedStyle(grid).getPropertyValue('grid-row-gap'),
-  );
-  const rowHeight = parseInt(
-    window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'),
-  );
-
-  const rowSpan = Math.ceil(
-    (item.querySelector('.listing-content').getBoundingClientRect().height +
-      rowGap) /
-      (rowHeight + rowGap),
-  );
-
-  /* Set the spanning as calculated above (S) */
-  // eslint-disable-next-line no-param-reassign
-  item.style.gridRowEnd = `span ${rowSpan}`;
-}
-function resizeAllMasonryItems() {
-  // Get all item class objects in one list
-  const allItems = document.getElementsByClassName('single-classified-listing');
-
-  /*
-   * Loop through the above list and execute the spanning function to
-   * each list-item (i.e. each masonry item)
-   */
-  // eslint-disable-next-line vars-on-top
-  for (let i = 0; i < allItems.length; i++) {
-    resizeMasonryItem(allItems[i]);
   }
 }
 
