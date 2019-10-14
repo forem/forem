@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import userPropTypes from '../src/components/common-prop-types/user-prop-types';
 
 class SidebarUser extends Component {
   constructor(props) {
@@ -8,31 +9,33 @@ class SidebarUser extends Component {
   }
 
   onClick() {
-    this.props.followUser(this.props.user);
+    const { followUser, user } = this.props;
+    followUser(user);
   }
 
   render() {
+    const { user, index } = this.props;
     return (
       <div className="widget-list-item__suggestions">
         <div className="widget-list-item__content">
-          <a href={`/${this.props.user.username}`}>
+          <a href={`/${user.username}`}>
             <img
-              src={this.props.user.profile_image_url}
-              alt={this.props.user.name}
+              src={user.profile_image_url}
+              alt={user.name}
               className="widget-list-item__profile-pic"
             />
-            {this.props.user.name}
+            {user.name}
           </a>
           <button
             className="widget-list-item__follow-button"
             type="button"
             onClick={this.onClick}
-            id={`widget-list-item__follow-button-${this.props.user.username}`}
+            id={`widget-list-item__follow-button-${user.username}`}
           >
-            {this.props.user.following ? '✓ FOLLOWING' : '+ FOLLOW'}
+            {user.following ? '✓ FOLLOWING' : '+ FOLLOW'}
           </button>
         </div>
-        {this.props.index === 2 ? <br /> : <hr />}
+        {index === 2 ? <br /> : <hr />}
       </div>
     );
   }
@@ -40,7 +43,7 @@ class SidebarUser extends Component {
 
 SidebarUser.propTypes = {
   followUser: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired,
+  user: PropTypes.objectOf(userPropTypes).isRequired,
   index: PropTypes.number.isRequired,
 };
 
