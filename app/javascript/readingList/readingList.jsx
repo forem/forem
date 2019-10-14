@@ -20,7 +20,7 @@ const STATUS_VIEW_ARCHIVED = 'archived';
 const READING_LIST_ARCHIVE_PATH = '/readinglist/archive';
 const READING_LIST_PATH = '/readinglist';
 
-const FilterText = ({ selectedTags, query, value }) => {
+function FilterText({ selectedTags, query, value }) {
   return (
     <h1>
       {selectedTags.length === 0 && query.length === 0
@@ -28,7 +28,7 @@ const FilterText = ({ selectedTags, query, value }) => {
         : 'Nothing with this filter 🤔'}
     </h1>
   );
-};
+}
 
 export class ReadingList extends Component {
   constructor(props) {
@@ -126,11 +126,11 @@ export class ReadingList extends Component {
     if (itemsLoaded && this.statusViewValid()) {
       return (
         <div className="items-empty">
-          <FilterText
-            selectedTags={selectedTags}
-            query={query}
-            value="Your Reading List is Lonely"
-          />
+          {FilterText({
+            selectedTags,
+            query,
+            value: 'Your Reading List is Lonely',
+          })}
           <h3>
             Hit the
             <span className="highlight">SAVE</span>
@@ -149,11 +149,11 @@ export class ReadingList extends Component {
 
     return (
       <div className="items-empty">
-        <FilterText
-          selectedTags={selectedTags}
-          query={query}
-          value="Your Archive List is Lonely"
-        />
+        {FilterText({
+          selectedTags,
+          query,
+          value: 'Your Archive List is Lonely',
+        })}
       </div>
     );
   }
