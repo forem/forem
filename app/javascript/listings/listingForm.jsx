@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import PropTypes from 'prop-types';
 import linkState from 'linkstate';
 import Title from './elements/title';
 import BodyMarkdown from './elements/bodyMarkdown';
@@ -11,12 +12,17 @@ import Tags from '../shared/components/tags';
 export default class ListingForm extends Component {
   constructor(props) {
     super(props);
+    const {
+      listing,
+      categoriesForDetails,
+      categoriesForSelect,
+      organizations: unparsedOrganizations,
+    } = this.props;
+    this.listing = JSON.parse(listing);
+    this.categoriesForDetails = JSON.parse(categoriesForDetails);
+    this.categoriesForSelect = JSON.parse(categoriesForSelect);
 
-    this.listing = JSON.parse(this.props.listing);
-    this.categoriesForDetails = JSON.parse(this.props.categoriesForDetails);
-    this.categoriesForSelect = JSON.parse(this.props.categoriesForSelect);
-
-    const organizations = JSON.parse(this.props.organizations);
+    const organizations = JSON.parse(unparsedOrganizations);
 
     this.url = window.location.href;
 
@@ -84,10 +90,10 @@ export default class ListingForm extends Component {
             defaultValue={tagList}
             category={category}
             onInput={linkState(this, 'tagList')}
-            classPrefix={`listingform`}
+            classPrefix="listingform"
             maxTags={8}
-            autocomplete={`off`}
-            listing={true}
+            autocomplete="off"
+            listing
           />
           <ExpireDate
             defaultValue={expireDate}
@@ -119,3 +125,10 @@ export default class ListingForm extends Component {
     );
   }
 }
+
+ListingForm.propTypes = {
+  listing: PropTypes.string.isRequired,
+  categoriesForDetails: PropTypes.string.isRequired,
+  categoriesForSelect: PropTypes.string.isRequired,
+  organizations: PropTypes.string.isRequired,
+};

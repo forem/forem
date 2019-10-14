@@ -9,7 +9,7 @@ export class ListingDashboard extends Component {
     userCredits: 0,
     selectedListings: 'user',
     filter: 'All',
-    sort: 'created_at', 
+    sort: 'created_at',
   };
 
   componentDidMount() {
@@ -18,7 +18,9 @@ export class ListingDashboard extends Component {
     let listings = [];
     let orgs = [];
     let orgListings = [];
-    listings = JSON.parse(container.dataset.listings).sort((a,b) => (a.created_at > b.created_at) ? -1 : 1);
+    listings = JSON.parse(container.dataset.listings).sort((a, b) =>
+      a.created_at > b.created_at ? -1 : 1,
+    );
     orgs = JSON.parse(container.dataset.orgs);
     orgListings = JSON.parse(container.dataset.orglistings);
     const userCredits = container.dataset.usercredits;
@@ -33,43 +35,63 @@ export class ListingDashboard extends Component {
       orgs,
       selectedListings,
       filter,
-      sort
+      sort,
     } = this.state;
 
-    const isExpired = (listing) => listing.bumped_at && (!listing.published) ? ((Date.now() - new Date(listing.bumped_at.toString()).getTime()) / (1000 * 60 * 60 * 24)) > 30 : false;
-    const isDraft = (listing) => listing.bumped_at ? !isExpired(listing) && (!listing.published) : true;
+    const isExpired = listing =>
+      listing.bumped_at && !listing.published
+        ? (Date.now() - new Date(listing.bumped_at.toString()).getTime()) /
+            (1000 * 60 * 60 * 24) >
+          30
+        : false;
+    const isDraft = listing =>
+      listing.bumped_at ? !isExpired(listing) && !listing.published : true;
 
     const filterListings = (listingsToFilter, selectedFilter) => {
-      if (selectedFilter === "Draft") {
-        return listingsToFilter.filter(listing => isDraft(listing))
-      } if (selectedFilter === "Expired") {
-        return listingsToFilter.filter(listing => isExpired(listing))
-      } if (selectedFilter === "Active") {
-        return listingsToFilter.filter(listing => listing.published === true)
+      if (selectedFilter === 'Draft') {
+        return listingsToFilter.filter(listing => isDraft(listing));
       }
-      return listingsToFilter
-    }
+      if (selectedFilter === 'Expired') {
+        return listingsToFilter.filter(listing => isExpired(listing));
+      }
+      if (selectedFilter === 'Active') {
+        return listingsToFilter.filter(listing => listing.published === true);
+      }
+      return listingsToFilter;
+    };
 
-    const customSort = (a,b) => {
+    const customSort = (a, b) => {
       if (a[sort] === null) {
-        return 1
-      } 
+        return 1;
+      }
       if (b[sort] === null) {
-        return -1
+        return -1;
       }
       if (a[sort] > b[sort]) {
-        return -1
-      } 
-      return 1
-    }
+        return -1;
+      }
+      return 1;
+    };
 
-    const showListings = (selected, userListings, organizationListings, selectedFilter) => {
+    const showListings = (
+      selected,
+      userListings,
+      organizationListings,
+      selectedFilter,
+    ) => {
       let displayedListings;
       if (selected === 'user') {
-        displayedListings = filterListings(userListings, selectedFilter).sort(customSort)
-        return displayedListings.map(listing => <ListingRow listing={listing} />)
+        displayedListings = filterListings(userListings, selectedFilter).sort(
+          customSort,
+        );
+        return displayedListings.map(listing => (
+          <ListingRow listing={listing} />
+        ));
       }
-      displayedListings = filterListings(organizationListings, selectedFilter).sort(customSort)
+      displayedListings = filterListings(
+        organizationListings,
+        selectedFilter,
+      ).sort(customSort);
       return displayedListings.map(listing =>
         listing.organization_id === selected ? (
           <ListingRow listing={listing} />
@@ -79,24 +101,37 @@ export class ListingDashboard extends Component {
       );
     };
 
-    const filters = ["All", "Active", "Draft", "Expired"];
+    const setStateOnKeyPress = (event, state) => (event.key === 'Enter' || event.key === ' ') && this.setState(state)
+
+    const filters = ['All', 'Active', 'Draft', 'Expired'];
     const filterButtons = filters.map(f => (
       <span
-        onClick={(event) => {this.setState( {filter:event.target.textContent} )}}
+        onClick={event => {
+          this.setState({ filter: event.target.textContent });
+        }}
         className={`rounded-btn ${filter === f ? 'active' : ''}`}
-        role="button" 
-        tabIndex="0">
+        role="button"
+        onKeyPress={event => setStateOnKeyPress(event, { filter: event.target.textContent })}
+        tabIndex="0"
+      >
         {f}
       </span>
-    ))
+    ));
 
     const sortingDropdown = (
-      <div class="dashboard-listings-actions">
-        <div className="listings-dashboard-filter-buttons">
-          {filterButtons}
-        </div>
-        <select onChange={(event) => {this.setState({sort: event.target.value})}}>
-          <option value="created_at" selected="selected">Recently Created</option>
+      <div className="dashboard-listings-actions">
+        <div className="listings-dashboard-filter-buttons">{filterButtons}</div>
+        <select
+          onChange={event => {
+            this.setState({ sort: event.target.value });
+          }}
+          onBlur={event => {
+            this.setState({ sort: event.target.value });
+          }}
+        >
+          <option value="created_at" selected="selected">
+            Recently Created
+          </option>
           <option value="bumped_at">Recently Bumped</option>
         </select>
       </div>
@@ -106,8 +141,9 @@ export class ListingDashboard extends Component {
       <span
         onClick={() => this.setState({ selectedListings: org.id })}
         className={`rounded-btn ${selectedListings === org.id ? 'active' : ''}`}
-        role="button" 
+        role="button"
         tabIndex="0"
+        onKeyPress={event => setStateOnKeyPress(event, { selectedListings: org.id })}
       >
         {org.name}
       </span>
@@ -156,8 +192,9 @@ export class ListingDashboard extends Component {
           className={`rounded-btn ${
             selectedListings === 'user' ? 'active' : ''
           }`}
-          role="button" 
+          role="button"
           tabIndex="0"
+          onKeyPress={event =>setStateOnKeyPress(event, { selectedListings: 'user' })}
         >
           Personal
         </span>
