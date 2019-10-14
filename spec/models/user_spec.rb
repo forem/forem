@@ -586,13 +586,6 @@ RSpec.describe User, type: :model do
     expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
   end
 
-  it "inserts into mailchimp" do
-    perform_enqueued_jobs do
-      expect_any_instance_of(MailchimpBot).to receive(:upsert)
-      user.save
-    end
-  end
-
   it "does not allow to change to username that is taken" do
     user.username = second_user.username
     expect(user).not_to be_valid
@@ -726,6 +719,16 @@ RSpec.describe User, type: :model do
     it "returns true if the user has more unspent credits than needed" do
       create_list(:credit, 2, user: user, spent: false)
       expect(user.has_enough_credits?(1)).to be(true)
+    end
+  end
+
+  describe "#subscribe_to_mailchimp_newsletter" do
+    let(:user2) { create :user }
+
+    it "schedules the job" do
+      expect do
+        user2.subscribe_to_mailchimp_newsletter
+      end.to have_enqueued_job(Users::SubscribeToMailchimpNewsletterJob).exactly(:once).with(user2.id)
     end
   end
 end
