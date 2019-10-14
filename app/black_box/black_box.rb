@@ -6,10 +6,10 @@ class BlackBox
       super_super_recent_bonus = usable_date > 1.hour.ago ? 28 : 0
       super_recent_bonus = usable_date > 8.hours.ago ? 81 : 0
       recency_bonus = usable_date > 12.hours.ago ? 280 : 0
-      today_bonus = usable_date > 26.hours.ago ? 695 : 0
-      two_day_bonus = usable_date > 48.hours.ago ? 730 : 0
-      four_day_bonus = usable_date > 96.hours.ago ? 830 : 0
-      if usable_date < 10.days.ago
+      today_bonus = usable_date > 26.hours.ago ? 795 : 0
+      two_day_bonus = usable_date > 48.hours.ago ? 830 : 0
+      four_day_bonus = usable_date > 96.hours.ago ? 930 : 0
+      if usable_date < 4.days.ago
         reaction_points /= 2 # Older posts should fade
       end
       if article.decorate.cached_tag_list_array.include?("watercooler")
