@@ -167,6 +167,7 @@
     }
     .settings-color-select-container{
       display: flex;
+      align-items: center;
       width:100%;
       .color-select-fields{
         width:50%;
@@ -197,7 +198,6 @@
       .color-select-preview{
         flex:1;
         text-align:center;
-        padding:20px;
         #color-select-preview-logo{
           padding:25px 20px;
           border-radius:7px;
