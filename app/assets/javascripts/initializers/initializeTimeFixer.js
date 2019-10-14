@@ -1,9 +1,7 @@
 'use strict';
 
-/* eslint-disable no-param-reassign */
-
-function getFormat(options, formatValue) {
-  return new Intl.DateTimeFormat('en-US', options).format(formatValue);
+function formatDateTime(options, value) {
+  return new Intl.DateTimeFormat('en-US', options).format(value);
 }
 
 function convertUtcTime(utcTime) {
@@ -13,7 +11,7 @@ function convertUtcTime(utcTime) {
     minute: 'numeric',
     timeZoneName: 'short',
   };
-  return getFormat(options, time);
+  return formatDateTime(options, time);
 }
 
 function convertUtcDate(utcDate) {
@@ -22,7 +20,7 @@ function convertUtcDate(utcDate) {
     month: 'short',
     day: 'numeric',
   };
-  return getFormat(options, date);
+  return formatDateTime(options, date);
 }
 
 function convertCalEvent(utc) {
@@ -35,13 +33,18 @@ function convertCalEvent(utc) {
     minute: 'numeric',
   };
 
-  return getFormat(options, date);
+  return formatDateTime(options, date);
 }
 
 function updateLocal(elements, convertCallback) {
   var local;
   for (var i = 0; i < elements.length; i += 1) {
-    local = convertCallback(elements[i].dataset.datetime);
+    const utc =
+      convertCallback.name !== 'convertCalEvent'
+        ? elements[i].dataset.datetime
+        : elements[i].innerHTML;
+    local = convertCallback(utc);
+    // eslint-disable-next-line no-param-reassign
     elements[i].innerHTML = local;
   }
 }
