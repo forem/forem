@@ -202,7 +202,7 @@ article {
 
       &.medium {
         font-size: calc(1.85vw + 25px);
-
+        word-break : break-word;
         @media screen and (min-width: 1600px) {
           font-size: 47px;
         }
