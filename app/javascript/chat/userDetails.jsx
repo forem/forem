@@ -11,6 +11,11 @@ function blockChat(activeChannelId) {
   getCsrfToken().then(sendFetch('block-chat', formData));
 }
 
+function closeReportAbuseWindow(){
+document.getElementById( 'userdetails__reportabuse',).style.display = 'none';
+window.location.href = `#`;
+}
+
 const setUpButton = ({ modalId = '', otherModalId = '', btnName = '' }) => {
   return (
     <button
@@ -89,7 +94,7 @@ export default class UserDetails extends Component {
     }
     let blockButton = '';
     if (channel.channel_type === 'direct' && window.currentUser.id != user.id) {
-      blockButton = setUpButton({ 
+      blockButton = setUpButton({
           modalId: 'userdetails__blockmsg',
           otherModalId: 'userdetails__reportabuse',
           btnName: 'Block User'
@@ -162,12 +167,6 @@ export default class UserDetails extends Component {
             <a
               tabIndex="0"
               className="no"
-              function closeReportAbuseWindow(){
-                document.getElementById(
-                  'userdetails__reportabuse',
-                ).style.display = 'none';
-                window.location.href = `#`;
-              }
               onClick="closeReportAbuseWindow()"
               onKeyUp={e => {
                 if (e.keyCode === 13) {
