@@ -1,0 +1,195 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.stackexchange.com/2.2/posts/24789130?filter=!3tz1WbZW5JxrG-f99&key=&site=stackoverflow
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - private
+      Content-Type:
+      - application/json; charset=utf-8
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST
+      Access-Control-Allow-Credentials:
+      - 'false'
+      X-Content-Type-Options:
+      - nosniff
+      Date:
+      - Thu, 08 Aug 2019 17:12:20 GMT
+      Content-Length:
+      - '135'
+    body:
+      encoding: ASCII-8BIT
+      string: '{"items":[{"last_activity_date":1405546059,"post_type":"question","post_id":24789130}],"has_more":false,"quota_max":300,"quota_remaining":299}'
+    http_version: 
+  recorded_at: Thu, 08 Aug 2019 17:12:21 GMT
+- request:
+    method: get
+    uri: https://api.stackexchange.com/2.2/questions/24789130?filter=!*1SgQGDOL9bPBHULz9sKS.y6qv7V9fYNszvdhDuv5&key=&site=stackoverflow
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - private
+      Content-Type:
+      - application/json; charset=utf-8
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST
+      Access-Control-Allow-Credentials:
+      - 'false'
+      X-Content-Type-Options:
+      - nosniff
+      Date:
+      - Thu, 08 Aug 2019 17:12:21 GMT
+      Content-Length:
+      - '889'
+    body:
+      encoding: ASCII-8BIT
+      string: '{"items":[{"tags":["ruby-on-rails","ruby","rails-console"],"comment_count":1,"view_count":1813,"answer_count":1,"score":2,"last_activity_date":1405546059,"creation_date":1405538957,"question_id":24789130,"link":"https://stackoverflow.com/questions/24789130/colors-in-irb-rails-console","title":"Colors
+        in irb / rails console","body":"<p>I''m testing a gem that outputs color in
+        the terminal:</p>\n\n<pre><code>module Color\n    def self.colorize(text,
+        color_code)\n        \"#{color_code}#{text}e[0m\"\n    end\n\n    def self.red(text)\n        self.colorize(text,
+        \"\\033[1;31;12m\")\n    end\nend\n</code></pre>\n\n<p>I have a testing file
+        in the same directory, called color_test.rb:</p>\n\n<pre><code>require_relative
+        ''color.rb''\n\nputs Color.red(''I should be red'')\n</code></pre>\n\n<p>This
+        results in the following:</p>\n\n<pre><code>$ ruby color_test.rb\nI should
+        be red \n</code></pre>\n\n<p>And the test is actually red. Horray. However,
+        the same is not happening in the rails console:</p>\n\n<pre><code>$ rails
+        c\nLoading development environment (Rails 4.1.1)\n2.0.0-p247 :001 &gt; require
+        ''color''\n =&gt; true \n2.0.0-p247 :003 &gt; Chroma.colourise(''text'',\"\\033[1;31;12m\")\n
+        =&gt; \"\\e[1;31;12mtexte[0m\"\n</code></pre>\n\n<p>So how do I escape it?
+        (If that''s even the term :P) I want to be able to display bold text and other
+        styles in the console as well. </p>\n\n<p>This is just for testing, so I''m
+        okay with downloading some sort of extension for the rails console, however
+        if there''s a way to package this functionality in the gem and give the console
+        colors, that would be pretty cool so if someone could show me how I''d be
+        glad.</p>\n"}],"has_more":false,"quota_max":300,"quota_remaining":299}'
+    http_version: 
+  recorded_at: Thu, 08 Aug 2019 17:12:21 GMT
+- request:
+    method: get
+    uri: https://api.stackexchange.com/2.2/posts/24789130?filter=!3tz1WbZW5JxrG-f99&key=&site=stackoverflow
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - private
+      Content-Type:
+      - application/json; charset=utf-8
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST
+      Access-Control-Allow-Credentials:
+      - 'false'
+      X-Content-Type-Options:
+      - nosniff
+      Date:
+      - Thu, 08 Aug 2019 17:12:31 GMT
+      Content-Length:
+      - '115'
+    body:
+      encoding: ASCII-8BIT
+      string: '{"items":[{"post_type":"question","post_id":24789130}],"has_more":false,"quota_max":300,"quota_remaining":297}'
+    http_version: 
+  recorded_at: Thu, 08 Aug 2019 17:12:31 GMT
+- request:
+    method: get
+    uri: https://api.stackexchange.com/2.2/questions/24789130?filter=!*1SgQGDOL9bPBHULz9sKS.y6qv7V9fYNszvdhDuv5&key=&site=stackoverflow
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - private
+      Content-Type:
+      - application/json; charset=utf-8
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST
+      Access-Control-Allow-Credentials:
+      - 'false'
+      X-Content-Type-Options:
+      - nosniff
+      Date:
+      - Thu, 08 Aug 2019 17:12:31 GMT
+      Content-Length:
+      - '889'
+    body:
+      encoding: ASCII-8BIT
+      string: '{"items":[{"tags":["ruby-on-rails","ruby","rails-console"],"comment_count":1,"view_count":1813,"answer_count":1,"score":2,"last_activity_date":1405546059,"creation_date":1405538957,"question_id":24789130,"link":"https://stackoverflow.com/questions/24789130/colors-in-irb-rails-console","title":"Colors
+        in irb / rails console","body":"<p>I''m testing a gem that outputs color in
+        the terminal:</p>\n\n<pre><code>module Color\n    def self.colorize(text,
+        color_code)\n        \"#{color_code}#{text}e[0m\"\n    end\n\n    def self.red(text)\n        self.colorize(text,
+        \"\\033[1;31;12m\")\n    end\nend\n</code></pre>\n\n<p>I have a testing file
+        in the same directory, called color_test.rb:</p>\n\n<pre><code>require_relative
+        ''color.rb''\n\nputs Color.red(''I should be red'')\n</code></pre>\n\n<p>This
+        results in the following:</p>\n\n<pre><code>$ ruby color_test.rb\nI should
+        be red \n</code></pre>\n\n<p>And the test is actually red. Horray. However,
+        the same is not happening in the rails console:</p>\n\n<pre><code>$ rails
+        c\nLoading development environment (Rails 4.1.1)\n2.0.0-p247 :001 &gt; require
+        ''color''\n =&gt; true \n2.0.0-p247 :003 &gt; Chroma.colourise(''text'',\"\\033[1;31;12m\")\n
+        =&gt; \"\\e[1;31;12mtexte[0m\"\n</code></pre>\n\n<p>So how do I escape it?
+        (If that''s even the term :P) I want to be able to display bold text and other
+        styles in the console as well. </p>\n\n<p>This is just for testing, so I''m
+        okay with downloading some sort of extension for the rails console, however
+        if there''s a way to package this functionality in the gem and give the console
+        colors, that would be pretty cool so if someone could show me how I''d be
+        glad.</p>\n"}],"has_more":false,"quota_max":300,"quota_remaining":297}'
+    http_version: 
+  recorded_at: Thu, 08 Aug 2019 17:12:32 GMT
+recorded_with: VCR 5.0.0

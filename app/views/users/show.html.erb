@@ -151,6 +151,8 @@
       </button>
       <div id="user-profile-dropdownmenu" class="profile-dropdownmenu">
         <a href="/report-abuse?url=https://dev.to/<%= @user.username %>">Report Abuse</a>
+        <button id="user-profile-dropdownmenu-block-button" data-profile-user-id="<%= @user.id %>" class="block-button" type="button">Block</button>
+        <%= javascript_pack_tag "blockButton", defer: true %>
       </div>
     </div>
   </div>
