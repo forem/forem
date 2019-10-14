@@ -20,6 +20,11 @@ RSpec.describe LinkTag, type: :liquid_template do
     Liquid::Template.parse("{% link #{slug} %}")
   end
 
+  def generate_new_liquid_alias(slug)
+    Liquid::Template.register_tag("post", described_class)
+    Liquid::Template.parse("{% post #{slug} %}")
+  end
+
   def correct_link_html(article)
     tags = article.tag_list.map { |t| "<span class='ltag__link__tag'>##{t}</span>" }.reverse.join
     <<~HTML
@@ -40,6 +45,11 @@ RSpec.describe LinkTag, type: :liquid_template do
         </a>
       </div>
     HTML
+  end
+
+  it 'can use "post" as an alias' do
+    liquid = generate_new_liquid_alias("/#{user.username}/#{article.slug}")
+    expect(liquid.render).to eq(correct_link_html(article))
   end
 
   it "raises an error when invalid" do

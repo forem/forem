@@ -25,7 +25,7 @@ DEV allows you to authenticate using GitHub. To use this authentication method i
 
    ![github-3](https://user-images.githubusercontent.com/22895284/51085863-49337b80-173f-11e9-81bf-1c1e38035a7a.png)
 
-5. Fill in the token description and generate the token.
+5. Fill in the token description and generate the token. You don't need to select any of the scopes.
 
 6. Be sure that you copy the token right away because it is the only time you will see it. Change it accordingly.
 

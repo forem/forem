@@ -10,9 +10,8 @@ RSpec.describe Users::BustCacheJob, type: :job do
       cache_buster = double
       allow(cache_buster).to receive(:bust_user)
 
-      described_class.perform_now(user.id, cache_buster) do
-        expect(cache_buster).to have_received(:bust_user).with(user)
-      end
+      described_class.perform_now(user.id, cache_buster)
+      expect(cache_buster).to have_received(:bust_user).with(user)
     end
   end
 end

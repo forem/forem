@@ -28,16 +28,14 @@ class SidebarWidget extends Component {
   }
 
   getSuggestedUsers() {
-    fetch(
-      `/api/users?state=sidebar_suggestions&tag=${this.state.tagInfo.name}`,
-      {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        credentials: 'same-origin',
+    const { tagInfo } = this.state;
+    fetch(`/api/users?state=sidebar_suggestions&tag=${tagInfo.name}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
-    )
+      credentials: 'same-origin',
+    })
       .then(response => response.json())
       .then(json => {
         this.setState({ suggestedUsers: json });
@@ -48,9 +46,10 @@ class SidebarWidget extends Component {
   }
 
   followUser(user) {
+    const { suggestedUsers } = this.state;
     const updatedUser = user;
-    const updatedSuggestedUsers = this.state.suggestedUsers;
-    const userIndex = this.state.suggestedUsers.indexOf(user);
+    const updatedSuggestedUsers = suggestedUsers;
+    const userIndex = suggestedUsers.indexOf(user);
 
     const followBtn = document.getElementById(
       `widget-list-item__follow-button-${updatedUser.username}`,
@@ -66,7 +65,8 @@ class SidebarWidget extends Component {
   }
 
   render() {
-    const users = this.state.suggestedUsers.map((user, index) => (
+    const { suggestedUsers } = this.state;
+    const users = suggestedUsers.map((user, index) => (
       <SidebarUser
         key={user.id}
         user={user}
@@ -75,7 +75,7 @@ class SidebarWidget extends Component {
       />
     ));
 
-    if (this.state.suggestedUsers.length > 0) {
+    if (suggestedUsers.length > 0) {
       return (
         <div className="widget" id="widget-00001">
           <div className="widget-suggested-follows-container">

@@ -12,6 +12,9 @@ RSpec/DescribeClass:
     - spec/requests/**/*
     - spec/system/**/*
 
+RSpec/ExampleLength:
+  Max: 10
+
 # TODO: Uncomment it after fix rubocop-todo Metrics/LineLength
 # Metrics/LineLength:
 #   Description: 'Limit lines to 100 characters.'

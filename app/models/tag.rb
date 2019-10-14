@@ -37,7 +37,7 @@ class Tag < ActsAsTaggableOn::Tag
   before_save :mark_as_updated
 
   algoliasearch per_environment: true do
-    attribute :name, :bg_color_hex, :text_color_hex, :hotness_score, :supported, :short_summary
+    attribute :name, :bg_color_hex, :text_color_hex, :hotness_score, :supported, :short_summary, :rules_html
     attributesForFaceting [:supported]
     customRanking ["desc(hotness_score)"]
     searchableAttributes %w[name short_summary]

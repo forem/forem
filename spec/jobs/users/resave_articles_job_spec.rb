@@ -10,9 +10,8 @@ RSpec.describe Users::ResaveArticlesJob, type: :job do
     it "resaves articles" do
       old_updated_at = article.updated_at
       Timecop.freeze(Time.current) do
-        described_class.perform_now(user.id) do
-          expect(article.reload.updated_at > old_updated_at).to be(true)
-        end
+        described_class.perform_now(user.id)
+        expect(article.reload.updated_at > old_updated_at).to be(true)
       end
     end
   end
