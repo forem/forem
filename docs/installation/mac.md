@@ -47,6 +47,18 @@ For additional configuration options, check our [PostgreSQL setup guide](/instal
 
 ### Possible error messages
 
+**Error:** `__NSPlaceholderDate initialize] may have been in progress in another thread when fork() was called`
+
+**_Solution:_** Run the command `export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES` (or `set -x OBJC_DISABLE_INITIALIZE_FORK_SAFETY YES` in fish shell)
+
+---
+
+**Error:** `User does not have CONNECT privilege.`
+
+**_Solution:_** Complete the steps outlined in the [PostgreSQL setup guide](/installation/postgresql).
+
+---
+
 **Error:** `rbenv: version '<version number>' is not installed (set by /Path/To/Local/Repository/.ruby-version)`
 
 **_Solution:_** Run the command `rbenv install <version number>`
