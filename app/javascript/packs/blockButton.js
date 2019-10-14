@@ -85,7 +85,6 @@ function initBlock() {
 }
 
 window.InstantClick.on('change', () => {
-  debugger
   initBlock();
 });
 
