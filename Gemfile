@@ -1,6 +1,6 @@
 git_source(:github) { |name| "https://github.com/#{name}.git" }
 source "https://rubygems.org"
-ruby "2.6.3"
+ruby "2.6.5"
 
 group :production do
   gem "nakayoshi_fork", "~> 0.0.4" # solves CoW friendly problem on MRI 2.2 and later

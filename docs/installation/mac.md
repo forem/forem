@@ -9,7 +9,7 @@ title: macOS
 ### Ruby
 
 1. If you don't already have a Ruby version manager, we highly recommend [rbenv](https://github.com/rbenv/rbenv). Please follow their [installation guide](https://github.com/rbenv/rbenv#installation).
-2. With the Ruby version manager, install the Ruby version listed on our badge. (i.e. with rbenv: `rbenv install 2.6.3`)
+2. With the Ruby version manager, install the Ruby version listed on our badge. (i.e. with rbenv: `rbenv install 2.6.5`)
 
 ### Yarn
 
@@ -87,7 +87,7 @@ Run the following to update `ruby-build`, `brew update && brew upgrade ruby-buil
     rebuild Ruby with Readline support. If using Ubuntu, try `sudo apt-get
     install libreadline-dev` and then reinstall your Ruby.
 rails aborted!
-LoadError: dlopen(/Users/<username>/.rbenv/versions/2.6.3/lib/ruby/2.6.0/x86_64-darwin18/readline.bundle, 9): Library not loaded: /usr/local/opt/readline/lib/libreadline.<some version number>.dylib
+LoadError: dlopen(/Users/<username>/.rbenv/versions/2.6.5/lib/ruby/2.6.0/x86_64-darwin18/readline.bundle, 9): Library not loaded: /usr/local/opt/readline/lib/libreadline.<some version number>.dylib
 ```
 
 **_Solution:_** Run `ln -s /usr/local/opt/readline/lib/libreadline.dylib /usr/local/opt/readline/lib/libreadline.<some version number>.dylib` from the command line then run `bin/setup` again. You may have a different version or libreadline, so replace `<some version number>` with the version that errored.
