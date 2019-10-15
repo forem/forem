@@ -37,7 +37,7 @@ When in doubt, ask a [core team member](https://github.com/thepracticaldev/dev.t
 2. Create a branch, naming it either a feature or bug: `git checkout -b feature/that-new-feature` or `bug/fixing-that-bug`
 3. Code and commit your changes. Bonus points if you write a [good commit message](https://chris.beams.io/posts/git-commit/): `git commit -m 'Add some feature'`
 4. Push to the branch: `git push origin feature/that-new-feature`
-5. [Create a pull request](https://github.com/thepracticaldev/dev.to/#create-a-pull-request) for your branch 🎉
+5. [Create a pull request](https://docs.dev.to/getting-started/pull-request/) for your branch 🎉
 
 ## Contribution guideline
 
