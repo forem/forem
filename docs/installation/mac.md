@@ -21,6 +21,12 @@ DEV requires PostgreSQL version 9.4 or higher. The easiest way to get started is
 
 For additional configuration options, check our [PostgreSQL setup guide](/installation/postgresql).
 
+### ImageMagick
+
+DEV uses [ImageMagick](https://imagemagick.org/) to manipulate images on upload.
+
+You can install ImageMagick with `brew install imagemagick`.
+
 ## Installing DEV
 
 1. Fork DEV's repository, e.g. <https://github.com/thepracticaldev/dev.to/fork>

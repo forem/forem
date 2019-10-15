@@ -25,6 +25,12 @@ There are two ways to install Yarn.
 
 There are more than one ways to setup PostgreSQL. For additional configuration, check out our [PostgreSQL setup guide](/installation/postgresql) or the official [PostgreSQL](https://www.postgresql.org/) site for further information.
 
+### ImageMagick
+
+DEV uses [ImageMagick](https://imagemagick.org/) to manipulate images on upload.
+
+Please refer to ImageMagick's [instructions](https://imagemagick.org/script/download.php) on how to install it.
+
 ## Installing DEV
 
 1. Fork DEV's repository, e.g. <https://github.com/thepracticaldev/dev.to/fork>
