@@ -1,5 +1,6 @@
 require "rails_helper"
 require "carrierwave/test/matchers"
+require "exifr/jpeg"
 
 describe ArticleImageUploader do
   include CarrierWave::Test::Matchers
@@ -8,6 +9,7 @@ describe ArticleImageUploader do
   let_it_be(:image_jpg) { fixture_file_upload("files/800x600.jpg", "image/jpeg") }
   let_it_be(:image_png) { fixture_file_upload("files/800x600.png", "image/png") }
   let_it_be(:image_webp) { fixture_file_upload("files/800x600.webp", "image/webp") }
+  let_it_be(:image_with_gps) { fixture_file_upload("files/image_gps_data.jpg", "image/jpeg") }
 
   before do
     described_class.include CarrierWave::MiniMagick # needed for processing
@@ -51,6 +53,16 @@ describe ArticleImageUploader do
 
     it "rejects unsupported formats like webp" do
       expect { uploader.store!(image_webp) }.to raise_error(CarrierWave::IntegrityError)
+    end
+  end
+
+  describe "exif removal" do
+    it "removes EXIF and GPS data on upload" do
+      expect(EXIFR::JPEG.new(image_with_gps.path).exif?).to be(true)
+      expect(EXIFR::JPEG.new(image_with_gps.path).gps.present?).to be(true)
+      uploader.store!(image_with_gps)
+      expect(EXIFR::JPEG.new(uploader.file.path).exif?).to be(false)
+      expect(EXIFR::JPEG.new(uploader.file.path).gps.present?).to be(false)
     end
   end
 end
