@@ -92,9 +92,9 @@ GEM
       addressable (>= 2.3.2)
       nokogiri
       safely_block (>= 0.1.1)
-    airbrake (9.4.4)
-      airbrake-ruby (~> 4.6)
-    airbrake-ruby (4.6.0)
+    airbrake (9.4.5)
+      airbrake-ruby (~> 4.7)
+    airbrake-ruby (4.7.1)
       rbtree3 (~> 0.5)
     algoliasearch (1.26.0)
       httpclient (~> 2.8, >= 2.8.3)
