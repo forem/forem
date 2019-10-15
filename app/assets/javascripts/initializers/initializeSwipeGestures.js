@@ -32,30 +32,22 @@ function initializeSwipeGestures(){
   },50)
 }
 
-
-function handleSwipeLeft(e){
+function handleSwipe(e, direction){
   if (!document.getElementById("on-page-nav-controls")){
     return;
   }
   if (swipeState == "middle"){
-    swipeState = "right"
-    slideSidebar("right","intoView");
+    swipeState = direction;
+    slideSidebar(direction,"intoView");
   }
   else{
-    swipeState = "middle"
-    slideSidebar("left","outOfView");
+    swipeState = "middle";
+    slideSidebar(direction,"outOfView");
   }
 }
+function handleSwipeLeft(e){
+  handleSwipe(e, "left")
+}
 function handleSwipeRight(e){
-  if (!document.getElementById("on-page-nav-controls")){
-    return;
-  }
-  if (swipeState == "middle"){
-    swipeState = "left"
-    slideSidebar("left","intoView");
-  }
-  else{
-    swipeState = "middle"
-    slideSidebar("right","outOfView");
-  }
+  handleSwipe(e, "right")
 }
