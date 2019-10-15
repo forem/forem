@@ -7,5 +7,9 @@ class CreateUserBlocks < ActiveRecord::Migration[5.2]
 
       t.timestamps null: false
     end
+
+    add_index :user_blocks, %i[blocked_id blocker_id], unique: true
+    add_foreign_key :user_blocks, :users, column: :blocker_id
+    add_foreign_key :user_blocks, :users, column: :blocked_id
   end
 end
