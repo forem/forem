@@ -36,14 +36,10 @@ function convertCalEvent(utc) {
   return formatDateTime(options, date);
 }
 
-function updateLocal(elements, convertCallback) {
+function updateLocalDateTime(elements, convertCallback, getUtcDateTime) {
   var local;
   for (var i = 0; i < elements.length; i += 1) {
-    const utc =
-      convertCallback.name !== 'convertCalEvent'
-        ? elements[i].dataset.datetime
-        : elements[i].innerHTML;
-    local = convertCallback(utc);
+    local = convertCallback(getUtcDateTime(elements[i]));
     // eslint-disable-next-line no-param-reassign
     elements[i].innerHTML = local;
   }
@@ -58,7 +54,15 @@ function initializeTimeFixer() {
     return;
   }
 
-  updateLocal(utcTime, convertUtcTime);
-  updateLocal(utcDate, convertUtcDate);
-  updateLocal(utc, convertCalEvent);
+  updateLocalDateTime(
+    utcTime,
+    convertUtcTime,
+    element => element.dataset.datetime,
+  );
+  updateLocalDateTime(
+    utcDate,
+    convertUtcDate,
+    element => element.dataset.datetime,
+  );
+  updateLocalDateTime(utc, convertCalEvent, element => element.innerHTML);
 }
