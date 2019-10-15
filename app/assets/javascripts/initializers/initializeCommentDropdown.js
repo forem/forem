@@ -32,7 +32,9 @@ function initializeCommentDropdown() {
   }
 
   function hideAnnouncer() {
-    announcer.hidden = true;
+    if (document.body.contains(announcer)) {
+      announcer.hidden = true; 
+    }
   }
 
   function iOSCopyText() {
@@ -65,7 +67,9 @@ function initializeCommentDropdown() {
       const clipboardCopyElement = document.getElementsByTagName(
         'clipboard-copy',
       )[0];
-      clipboardCopyElement.removeEventListener('click', iOSCopyText);
+      if (document.body.contains(clipboardCopyElement)) {
+        clipboardCopyElement.removeEventListener('click', iOSCopyText);
+      }
     } else {
       document.removeEventListener('clipboard-copy', showAnnouncer);
     }
@@ -102,7 +106,9 @@ function initializeCommentDropdown() {
         )[0];
 
         document.addEventListener('click', outsideClickListener);
-        clipboardCopyElement.addEventListener('click', iOSCopyText);
+        if (document.body.contains(clipboardCopyElement)) {
+          clipboardCopyElement.addEventListener('click', iOSCopyText);          
+        }
       } else {
         document.addEventListener('click', outsideClickListener);
         document.addEventListener('clipboard-copy', showAnnouncer);
