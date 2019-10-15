@@ -49,9 +49,9 @@ class CommentPolicy < ApplicationPolicy
     record.user_id == user.id
   end
 
-   def user_is_blocked?
+  def user_is_blocked?
     return false if user.blocked_by_count.zero?
 
-    UserBlock.exists?(blocker_id: record.commentable.user_id, blocked_id: user.id)
-   end
+    UserBlock.blocking?(record.commentable.user_id, user.id)
+  end
 end

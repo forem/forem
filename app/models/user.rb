@@ -381,7 +381,7 @@ class User < ApplicationRecord
     OrganizationMembership.exists?(user: user, organization: organization, type_of_user: "admin")
   end
 
-  def block;end
+  def block; end
 
   def all_blocking
     UserBlock.where(blocker_id: id)
@@ -392,11 +392,11 @@ class User < ApplicationRecord
   end
 
   def blocking?(blocked_id)
-    UserBlock.exists?(blocker_id: id, blocked_id: blocked_id)
+    UserBlock.blocking?(id, blocked_id)
   end
 
   def blocked_by?(blocker_id)
-    UserBlock.exists?(blocker_id: blocker_id, blocked_id: id)
+    UserBlock.blocking?(blocker_id, id)
   end
 
   def unique_including_orgs_and_podcasts

@@ -29,7 +29,7 @@ class Notification < ApplicationRecord
   class << self
     def send_new_follower_notification(follow, is_read = false)
       return unless Follow.need_new_follower_notification_for?(follow.followable_type)
-      return if follow.followable_type == "User" && UserBlock.exists?(blocker_id: follow.followable_id, blocked_id: follow.follower_id)
+      return if follow.followable_type == "User" && UserBlock.blocking?(follow.followable_id, follow.follower_id)
 
       follow_data = follow.attributes.slice("follower_id", "followable_id", "followable_type").symbolize_keys
       Notifications::NewFollowerJob.perform_later(follow_data, is_read)
@@ -37,7 +37,7 @@ class Notification < ApplicationRecord
 
     def send_new_follower_notification_without_delay(follow, is_read = false)
       return unless Follow.need_new_follower_notification_for?(follow.followable_type)
-      return if follow.followable_type == "User" && UserBlock.exists?(blocker_id: follow.followable_id, blocked_id: follow.follower_id)
+      return if follow.followable_type == "User" && UserBlock.blocking?(follow.followable_id, follow.follower_id)
 
       follow_data = follow.attributes.slice("follower_id", "followable_id", "followable_type").symbolize_keys
       Notifications::NewFollowerJob.perform_now(follow_data, is_read)
@@ -53,14 +53,14 @@ class Notification < ApplicationRecord
 
     def send_new_comment_notifications(comment)
       return if comment.commentable_type == "PodcastEpisode"
-      return if UserBlock.exists?(blocker_id: comment.commentable.user_id, blocked_id: comment.user_id)
+      return if UserBlock.blocking?(comment.commentable.user_id, comment.user_id)
 
       Notifications::NewCommentJob.perform_later(comment.id)
     end
 
     def send_new_comment_notifications_without_delay(comment)
       return if comment.commentable_type == "PodcastEpisode"
-      return if UserBlock.exists?(blocker_id: comment.commentable.user_id, blocked_id: comment.user_id)
+      return if UserBlock.blocking?(comment.commentable.user_id, comment.user_id)
 
       Notifications::NewCommentJob.perform_now(comment.id)
     end
@@ -82,26 +82,26 @@ class Notification < ApplicationRecord
 
     def send_reaction_notification(reaction, receiver)
       return if reaction.skip_notification_for?(receiver)
-      return if UserBlock.exists?(blocker_id: receiver, blocked_id: reaction.user_id)
+      return if UserBlock.blocking?(receiver, reaction.user_id)
 
       Notifications::NewReactionJob.perform_later(*reaction_notification_attributes(reaction, receiver))
     end
 
     def send_reaction_notification_without_delay(reaction, receiver)
       return if reaction.skip_notification_for?(receiver)
-      return if UserBlock.exists?(blocker_id: receiver, blocked_id: reaction.user_id)
+      return if UserBlock.blocking?(receiver, reaction.user_id)
 
       Notifications::NewReactionJob.perform_now(*reaction_notification_attributes(reaction, receiver))
     end
 
     def send_mention_notification(mention)
-      return if mention.mentionable_type == "User" && UserBlock.exists?(blocker_id: mention.mentionable_id, blocked_id: mention.user_id)
+      return if mention.mentionable_type == "User" && UserBlock.blocking?(mention.mentionable_id, mention.user_id)
 
       Notifications::MentionJob.perform_later(mention.id)
     end
 
     def send_mention_notification_without_delay(mention)
-      return if mention.mentionable_type == "User" && UserBlock.exists?(blocker_id: mention.mentionable_id, blocked_id: mention.user_id)
+      return if mention.mentionable_type == "User" && UserBlock.blocking?(mention.mentionable_id, mention.user_id)
 
       Notifications::MentionJob.perform_now(mention.id)
     end
@@ -116,14 +116,14 @@ class Notification < ApplicationRecord
 
     def send_moderation_notification(notifiable)
       # TODO: make this work for articles in the future. only works for comments right now
-      return if UserBlock.exists?(blocker_id: notifiable.commentable.user_id, blocked_id: notifiable.user_id)
+      return if UserBlock.blocking?(notifiable.commentable.user_id, notifiable.user_id)
 
       Notifications::ModerationNotificationJob.perform_later(notifiable.id)
     end
 
     def send_moderation_notification_without_delay(notifiable)
       # TODO: make this work for articles in the future. only works for comments right now
-      return if UserBlock.exists?(blocker_id: notifiable.commentable.user_id, blocked_id: notifiable.user_id)
+      return if UserBlock.blocking?(notifiable.commentable.user_id, notifiable.user_id)
 
       Notifications::ModerationNotificationJob.perform_now(notifiable.id)
     end
