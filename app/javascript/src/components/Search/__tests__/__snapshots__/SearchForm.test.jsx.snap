@@ -1,11 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<SearchForm /> renders properly when given search functions and a search term 1`] = `
-<undefined
-  onSubmitSearch={[Function mockConstructor]}
-  onSearch={[Function mockConstructor]}
-  searchTerm="hello"
-  searchBoxId="nav-search"
+<div
+  class="nav-search-form"
 >
-</undefined>
+  <form
+    acceptCharset="UTF-8"
+    action="/search"
+    method="get"
+    onSubmit={[MockFunction]}
+  >
+    <input
+      name="utf8"
+      type="hidden"
+      value="✓"
+    />
+    <input
+      aria-label="search"
+      autoComplete="off"
+      class="nav-search-form__input"
+      id="nav-search"
+      name="q"
+      onKeyDown={[MockFunction]}
+      placeholder="search"
+      type="text"
+      value="hello"
+    />
+  </form>
+</div>
 `;

@@ -25,6 +25,7 @@ DEV's documentation is built with [GitDocs NodeJS library](https://www.npmjs.com
 The first step to running the documentations it locally is to install the `GitDocs` package globally.
 
 With npm:
+
 ```shell
 npm install gitdocs -g
 ```
