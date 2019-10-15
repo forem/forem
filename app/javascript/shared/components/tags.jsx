@@ -21,7 +21,6 @@ const NAVIGATION_KEYS = [
 ];
 
 const LETTERS = /[a-z]/i;
-
 /* TODO: Remove all instances of this.props.listing
    and refactor this component to be more generic */
 
@@ -155,57 +154,56 @@ class Tags extends Component {
     return selectedIndex > -1;
   }
 
-  handleRulesClick = e => {
-    e.preventDefault();
-    if (this.state.showingRulesForTag === e.target.dataset.content) {
-      this.setState({showingRulesForTag: null});
-    } else {
-      this.setState({showingRulesForTag: e.target.dataset.content});
+  
+
+  getCurrentTagAtSelectionIndex = (value, index) => {
+    let tagIndex = 0;
+    const tagByCharacterIndex = {};
+
+    value.split('').map((letter, letterIndex) => {
+      if (letter === ',') {
+        tagIndex += 1;
+      } else {
+        tagByCharacterIndex[letterIndex] = tagIndex;
+      }
+    });
+
+    const tag = value.split(',')[tagByCharacterIndex[index]];
+
+    if (tag === undefined) {
+      return '';
     }
+    return tag.trim();
   }
 
-  handleTagClick = e => {
-    if (e.target.className === 'articleform__tagsoptionrulesbutton') {
-      return;
-    }
-    const input = document.getElementById('tag-input');
-    input.focus();
-    this.insertTag(e.target.dataset.content);
-  };
+    
 
-  handleInput = e => {
-    let { value } = e.target;
-    // If we start typing immediately after a comma, add a space
-    // before what we typed.
-    // e.g. If value = "javascript," and we type a "p",
-    // the result should be "javascript, p".
-    if (e.inputType === 'insertText') {
-      const isTypingAfterComma =
-        e.target.value[e.target.selectionStart - 2] === ',';
-      if (isTypingAfterComma) {
-        value = this.insertSpace(value, e.target.selectionStart - 1);
-      }
-    }
+  
 
-    if (e.data === ',') {
-      value += ' ';
+  // Given an index of the String value, finds the range between commas.
+  // This is useful when we want to insert a new tag anywhere in the
+  // comma separated list of tags.
+  getRangeBetweenCommas = (value, index) => {
+    let start = 0;
+    let end = value.length;
+
+    const toPreviousComma = value
+      .slice(0, index)
+      .split('')
+      .reverse()
+      .indexOf(',');
+    const toNextComma = value.slice(index).indexOf(',');
+
+    if (toPreviousComma !== -1) {
+      start = index - toPreviousComma + 1;
     }
 
-    const { onInput } = this.props;
-    onInput(value);
+    if (toNextComma !== -1) {
+      end = index + toNextComma;
+    }
 
-    const query = this.getCurrentTagAtSelectionIndex(
-      e.target.value,
-      e.target.selectionStart - 1,
-    );
-
-    this.setState({
-      selectedIndex: 0,
-      cursorIdx: e.target.selectionStart,
-      prevLen: this.textArea.value.length,
-    });
-    return this.search(query);
-  };
+    return [start, end];
+  }
 
   handleKeyDown = e => {
     const component = this;
@@ -257,30 +255,49 @@ class Tags extends Component {
     }
   };
 
-  // Given an index of the String value, finds the range between commas.
-  // This is useful when we want to insert a new tag anywhere in the
-  // comma separated list of tags.
-  getRangeBetweenCommas = (value, index) => {
-    let start = 0;
-    let end = value.length;
-
-    const toPreviousComma = value
-      .slice(0, index)
-      .split('')
-      .reverse()
-      .indexOf(',');
-    const toNextComma = value.slice(index).indexOf(',');
-
-    if (toPreviousComma !== -1) {
-      start = index - toPreviousComma + 1;
+  handleInput = e => {
+    let { value } = e.target;
+    const { onInput } = this.props;
+    // If we start typing immediately after a comma, add a space
+    // before what we typed.
+    // e.g. If value = "javascript," and we type a "p",
+    // the result should be "javascript, p".
+    if (e.inputType === 'insertText') {
+      const isTypingAfterComma =
+        e.target.value[e.target.selectionStart - 2] === ',';
+      if (isTypingAfterComma) {
+        value = this.insertSpace(value, e.target.selectionStart - 1);
+      }
     }
 
-    if (toNextComma !== -1) {
-      end = index + toNextComma;
+    if (e.data === ',') {
+      value += ' ';
     }
 
-    return [start, end];
+    onInput(value);
+
+    const query = this.getCurrentTagAtSelectionIndex(
+      e.target.value,
+      e.target.selectionStart - 1,
+    );
+
+    this.setState({
+      selectedIndex: 0,
+      cursorIdx: e.target.selectionStart,
+      prevLen: this.textArea.value.length,
+    });
+    return this.search(query);
   };
+
+  handleRulesClick = e => {
+    e.preventDefault();
+    const { showingRulesForTag } = this.state;
+    if (showingRulesForTag === e.target.dataset.content) {
+      this.setState({showingRulesForTag: null});
+    } else {
+      this.setState({showingRulesForTag: e.target.dataset.content});
+    }
+  }
 
   handleFocusChange = () => {
     const component = this;
@@ -291,6 +308,17 @@ class Tags extends Component {
       component.forceUpdate();
     }, 100);
   };
+
+  handleTagClick = e => {
+    if (e.target.className === 'articleform__tagsoptionrulesbutton') {
+      return;
+    }
+    const input = document.getElementById('tag-input');
+    input.focus();
+    this.insertTag(e.target.dataset.content);
+  };
+
+  
 
   insertSpace = (value, position) => {
     return `${value.slice(0, position)} ${value.slice(position, value.length)}`;
@@ -345,6 +373,27 @@ class Tags extends Component {
     });
   }
 
+  insertTag(tag) {
+    const input = document.getElementById('tag-input');
+    const { maxTags, onInput } = this.props;
+    const range = this.getRangeBetweenCommas(input.value, input.selectionStart);
+    const insertingAtEnd = range[1] === input.value.length;
+    const maxTagsWillBeReached = this.selected.length === maxTags;
+    if (insertingAtEnd && !maxTagsWillBeReached) {
+      tag += ', ';
+    }
+
+    // Insert new tag between commas if there are any.
+    const newInput =
+      input.value.slice(0, range[0]) +
+      tag +
+      input.value.slice(range[1], input.value.length);
+
+    onInput(newInput);
+    this.resetSearchResults();
+    this.clearSelectedSearchResult();
+  }
+
   search(query) {
     const { listing = false } = this.props;
 
@@ -364,6 +413,7 @@ class Tags extends Component {
         filters: 'supported:true',
       })
       .then(content => {
+        const { listing } = this.props;
         if (listing === true) {
           const { additionalTags } = this.state;
           const { category } = this.props;
@@ -424,6 +474,66 @@ class Tags extends Component {
           className={`${classPrefix}__tags`}
           placeholder={`${maxTags} tags max, comma separated, no spaces or special characters`}
           autoComplete={autoComplete || 'on'}
+          value={defaultValue}
+          onInput={this.handleInput}
+          onKeyDown={this.handleKeyDown}
+          onBlur={this.handleFocusChange}
+          onFocus={this.handleFocusChange}
+        />
+        {searchResultsHTML}
+      </div>
+    );
+  }
+
+  render() {
+    let searchResultsHTML = '';
+    const { searchResults, selectedIndex, showingRulesForTag } = this.state;
+    const { classPrefix, listing, maxTags, defaultValue } = this.props;
+    const searchResultsRows = searchResults.map((tag, index) => (
+      <div
+        tabIndex="-1"
+        className={`${classPrefix}__tagoptionrow ${
+          classPrefix
+        }__tagoptionrow--${
+          selectedIndex === index ? 'active' : 'inactive'
+        }`}
+        onClick={this.handleTagClick}
+        data-content={tag.name}
+      >
+        {tag.name}
+        {(tag.rules_html && tag.rules_html.length > 0) ? <button
+          type='button'
+          className={`${classPrefix}__tagsoptionrulesbutton`}
+          onClick={this.handleRulesClick}
+          data-content={tag.name}
+        >
+        {showingRulesForTag === tag.name ? 'Hide Rules' : 'View Rules'}
+        </button> : ''}
+        <div className={`${classPrefix}__tagrules--${showingRulesForTag === tag.name ? 'active' : 'inactive'}`} dangerouslySetInnerHTML={{ __html: tag.rules_html }} />
+      </div>
+    ));
+    if (
+      searchResults.length > 0 &&
+      (document.activeElement.id === 'tag-input' || document.activeElement.className === 'articleform__tagsoptionrulesbutton')
+    ) {
+      searchResultsHTML = (
+        <div className={`${classPrefix}__tagsoptions`}>
+          {searchResultsRows}
+          <div className={`${classPrefix}__tagsoptionsbottomrow`}>Some tags have rules and guidelines determined by community moderators</div>
+        </div>
+      );
+    }
+
+    return (
+      <div className={`${classPrefix}__tagswrapper`}>
+        {listing && <label htmlFor="Tags">Tags</label>}
+        <input
+          id="tag-input"
+          type="text"
+          ref={t => (this.textArea = t)}
+          className={`${classPrefix}__tags`}
+          placeholder={`${maxTags} tags max, comma separated, no spaces or special characters`}
+          autoComplete='off'
           value={defaultValue}
           onInput={this.handleInput}
           onKeyDown={this.handleKeyDown}
