@@ -43,7 +43,7 @@ module Api
           render "show", status: :created, location: @article.url
         else
           message = @article.errors.full_messages
-          render json: { errorS: message, status: 422 }, status: :unprocessable_entity
+          render json: { errors: message, status: 422 }, status: :unprocessable_entity
         end
       end
 
