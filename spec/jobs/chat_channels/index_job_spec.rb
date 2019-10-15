@@ -17,6 +17,7 @@ RSpec.describe ChatChannels::IndexJob, type: :job do
 
       it "calls index" do
         described_class.perform_now(chat_channel_id: chat_channel_id)
+        expect(chat_channel).to have_received(:index!)
       end
     end
 
@@ -25,7 +26,7 @@ RSpec.describe ChatChannels::IndexJob, type: :job do
         allow(ChatChannel).to receive(:find_by).with(id: chat_channel_id).and_return(nil)
       end
 
-      it "don't calls index" do
+      it "doesn't fail" do
         described_class.perform_now(chat_channel_id: chat_channel_id)
       end
     end
