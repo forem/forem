@@ -23,6 +23,6 @@ class Internal::CommentsController < Internal::ApplicationController
   private
 
   def authorize_admin
-    authorize BufferUpdate, :access?, policy_class: InternalPolicy
+    authorize Comment, :access?, policy_class: InternalPolicy
   end
 end
