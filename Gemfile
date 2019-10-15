@@ -128,7 +128,7 @@ group :development, :test do
   gem "faker", "~> 2.5" # A library for generating fake data such as names, addresses, and phone numbers
   gem "parallel_tests", "~> 2.29" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry-byebug", "~> 3.7" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
-  gem "rspec-rails", "~> 3.8" # rspec-rails is a testing framework for Rails 3+
+  gem "rspec-rails", "~> 3.9" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 0.75", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.5", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.3", require: false # Automatic Rails code style checking tool
