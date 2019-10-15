@@ -48,7 +48,7 @@ module Articles
       article.user_id = user.id
       article.show_comments = true
       article.collection = Collection.find_series(series, user) if series.present?
-      article.save!
+      article.save
       article
     end
   end
