@@ -13,6 +13,8 @@ class BaseUploader < CarrierWave::Uploader::Base
     %w[jpg jpeg jpe gif png ico bmp dng]
   end
 
+  protected
+
   # strip EXIF (and GPS) data
   def strip_exif
     manipulate! do |image|
