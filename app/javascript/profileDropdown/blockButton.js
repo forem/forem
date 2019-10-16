@@ -1,4 +1,4 @@
-function initBlock() {
+export default function initBlock() {
   const blockButton = document.getElementById(
     'user-profile-dropdownmenu-block-button',
   );
@@ -21,9 +21,8 @@ function initBlock() {
       .then(response => response.json())
       .then(response => {
         if (response.outcome === 'unblocked') {
-          blockButton.removeEventListener('click', this);
           blockButton.innerText = 'Block';
-          blockButton.addEventListener('click', block);
+          blockButton.addEventListener('click', block, { once: true });
         }
       })
       .catch(e => {
@@ -33,7 +32,10 @@ function initBlock() {
 
   function block() {
     const confirmBlock = window.confirm(
-      'Are you sure you want to block this person? This will:\n- prevent them from commenting on your posts\n- block all notifications from them\n- prevent them from messaging you via DEV Connect',
+      `Are you sure you want to block this person? This will:
+      - prevent them from commenting on your posts
+      - block all notifications from them
+      - prevent them from messaging you via DEV Connect`,
     );
     if (confirmBlock) {
       fetch(`/user_blocks/${profileUserId}`, {
@@ -52,9 +54,8 @@ function initBlock() {
         .then(response => response.json())
         .then(response => {
           if (response.outcome === 'blocked') {
-            blockButton.removeEventListener('click', this);
             blockButton.innerText = 'Unblock';
-            blockButton.addEventListener('click', unblock);
+            blockButton.addEventListener('click', unblock, { once: true });
           }
         })
         .catch(e => {
@@ -75,17 +76,11 @@ function initBlock() {
         .then(response => {
           if (response === 'blocking') {
             blockButton.innerText = 'Unblock';
-            blockButton.addEventListener('click', unblock);
+            blockButton.addEventListener('click', unblock, { once: true });
           } else {
-            blockButton.addEventListener('click', block);
+            blockButton.addEventListener('click', block, { once: true });
           }
         });
     }
   });
 }
-
-window.InstantClick.on('change', () => {
-  initBlock();
-});
-
-initBlock();
