@@ -28,7 +28,6 @@ const LETTERS = /[a-z]/i;
 class Tags extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       selectedIndex: -1,
       searchResults: [],
@@ -88,7 +87,7 @@ class Tags extends Component {
 
   componentDidUpdate() {
     // stop cursor jumping if the user goes back to edit previous tags
-    const { cursorIdx,prevLen } = this.state;
+    const { cursorIdx, prevLen } = this.state;
     if (
       cursorIdx < this.textArea.value.length &&
       this.textArea.value.length < prevLen + 1
@@ -125,7 +124,7 @@ class Tags extends Component {
     let tagIndex = 0;
     const tagByCharacterIndex = {};
 
-    value.split('').map((letter, letterIndex) => {
+    value.split('').forEach((letter, letterIndex) => {
       if (letter === ',') {
         tagIndex += 1;
       } else {
@@ -139,11 +138,7 @@ class Tags extends Component {
       return '';
     }
     return tag.trim();
-  }
-
-  
-
-  
+  };
 
   // Given an index of the String value, finds the range between commas.
   // This is useful when we want to insert a new tag anywhere in the
@@ -168,15 +163,12 @@ class Tags extends Component {
     }
 
     return [start, end];
-  }
+  };
 
   handleKeyDown = e => {
     const component = this;
     const { maxTags } = this.props;
-    if (
-      component.selected.length === maxTags &&
-      e.key === KEYS.COMMA
-    ) {
+    if (component.selected.length === maxTags && e.key === KEYS.COMMA) {
       e.preventDefault();
       return;
     }
@@ -211,9 +203,7 @@ class Tags extends Component {
       ) {
         this.clearSelectedSearchResult();
       }
-    } else if (
-      !LETTERS.test(e.key) &&
-      !NAVIGATION_KEYS.includes(e.key)) {
+    } else if (!LETTERS.test(e.key) && !NAVIGATION_KEYS.includes(e.key)) {
       e.preventDefault();
     }
   };
@@ -222,11 +212,11 @@ class Tags extends Component {
     e.preventDefault();
     const { showingRulesForTag } = this.state;
     if (showingRulesForTag === e.target.dataset.content) {
-      this.setState({showingRulesForTag: null});
+      this.setState({ showingRulesForTag: null });
     } else {
-      this.setState({showingRulesForTag: e.target.dataset.content});
+      this.setState({ showingRulesForTag: e.target.dataset.content });
     }
-  }
+  };
 
   handleTagClick = e => {
     if (e.target.className === 'articleform__tagsoptionrulesbutton') {
@@ -270,7 +260,7 @@ class Tags extends Component {
     return this.search(query);
   };
 
-  handleFocusChange = e => {
+  handleFocusChange = () => {
     const component = this;
     setTimeout(() => {
       if (document.activeElement.id === 'tag-input') {
@@ -280,11 +270,9 @@ class Tags extends Component {
     }, 250);
   };
 
-  
-
   insertSpace = (value, position) => {
     return `${value.slice(0, position)} ${value.slice(position, value.length)}`;
-  }
+  };
 
   insertTag(tag) {
     const input = document.getElementById('tag-input');
@@ -292,14 +280,15 @@ class Tags extends Component {
     const range = this.getRangeBetweenCommas(input.value, input.selectionStart);
     const insertingAtEnd = range[1] === input.value.length;
     const maxTagsWillBeReached = this.selected.length === maxTags;
+    let tagValue = tag;
     if (insertingAtEnd && !maxTagsWillBeReached) {
-      tag += ', ';
+      tagValue = `${tagValue}, `;
     }
 
     // Insert new tag between commas if there are any.
     const newInput =
       input.value.slice(0, range[0]) +
-      tag +
+      tagValue +
       input.value.slice(range[1], input.value.length);
 
     onInput(newInput);
@@ -311,7 +300,6 @@ class Tags extends Component {
     if (query === '') {
       return new Promise(resolve => {
         setTimeout(() => {
-          'search query'
           this.resetSearchResults();
           resolve();
         }, 5);
@@ -378,9 +366,7 @@ class Tags extends Component {
       <div
         tabIndex="-1"
         role="button"
-        className={`${classPrefix}__tagoptionrow ${
-          classPrefix
-        }__tagoptionrow--${
+        className={`${classPrefix}__tagoptionrow ${classPrefix}__tagoptionrow--${
           selectedIndex === index ? 'active' : 'inactive'
         }`}
         onClick={this.handleTagClick}
@@ -388,25 +374,39 @@ class Tags extends Component {
         data-content={tag.name}
       >
         {tag.name}
-        {(tag.rules_html && tag.rules_html.length > 0) ? <button
-          type='button'
-          className={`${classPrefix}__tagsoptionrulesbutton`}
-          onClick={this.handleRulesClick}
-          data-content={tag.name}
-        >
-        {showingRulesForTag === tag.name ? 'Hide Rules' : 'View Rules'}
-        </button> : ''}
-        <div className={`${classPrefix}__tagrules--${showingRulesForTag === tag.name ? 'active' : 'inactive'}`} dangerouslySetInnerHTML={{ __html: tag.rules_html }} />
+        {tag.rules_html && tag.rules_html.length > 0 ? (
+          <button
+            type="button"
+            className={`${classPrefix}__tagsoptionrulesbutton`}
+            onClick={this.handleRulesClick}
+            data-content={tag.name}
+          >
+            {showingRulesForTag === tag.name ? 'Hide Rules' : 'View Rules'}
+          </button>
+        ) : (
+          ''
+        )}
+        <div
+          className={`${classPrefix}__tagrules--${
+            showingRulesForTag === tag.name ? 'active' : 'inactive'
+          }`}
+          dangerouslySetInnerHTML={{ __html: tag.rules_html }}
+        />
       </div>
     ));
     if (
       searchResults.length > 0 &&
-      (document.activeElement.id === 'tag-input' || document.activeElement.className === 'articleform__tagsoptionrulesbutton')
+      (document.activeElement.id === 'tag-input' ||
+        document.activeElement.className ===
+          'articleform__tagsoptionrulesbutton')
     ) {
       searchResultsHTML = (
         <div className={`${classPrefix}__tagsoptions`}>
           {searchResultsRows}
-          <div className={`${classPrefix}__tagsoptionsbottomrow`}>Some tags have rules and guidelines determined by community moderators</div>
+          <div className={`${classPrefix}__tagsoptionsbottomrow`}>
+            Some tags have rules and guidelines determined by community
+            moderators
+          </div>
         </div>
       );
     }
@@ -417,10 +417,13 @@ class Tags extends Component {
         <input
           id="tag-input"
           type="text"
-          ref={t => (this.textArea = t)}
+          ref={t => {
+            this.textArea = t;
+            return this.textArea;
+          }}
           className={`${classPrefix}__tags`}
           placeholder={`${maxTags} tags max, comma separated, no spaces or special characters`}
-          autoComplete='off'
+          autoComplete="off"
           value={defaultValue}
           onInput={this.handleInput}
           onKeyDown={this.handleKeyDown}
@@ -431,11 +434,15 @@ class Tags extends Component {
       </div>
     );
   }
-
 }
 
 Tags.propTypes = {
   defaultValue: PropTypes.string.isRequired,
+  onInput: PropTypes.func.isRequired,
+  maxTags: PropTypes.number.isRequired,
+  classPrefix: PropTypes.string.isRequired,
+  listing: PropTypes.string.isRequired,
+  category: PropTypes.string.isRequired,
 };
 
 export default Tags;
