@@ -1060,7 +1060,7 @@ paths:
         - lang: Shell
           label: curl
           source: |
-            curl https://dev.to/api/articles/me
+            curl -H "api-key: API_KEY" https://dev.to/api/articles/me
 
   /articles/me/published:
     get:
@@ -1109,7 +1109,7 @@ paths:
         - lang: Shell
           label: curl
           source: |
-            curl https://dev.to/api/articles/me/published
+            curl -H "api-key: API_KEY" https://dev.to/api/articles/me/published
 
   /articles/me/unpublished:
     get:
@@ -1158,7 +1158,7 @@ paths:
         - lang: Shell
           label: curl
           source: |
-            curl https://dev.to/api/articles/me/unpublished
+            curl -H "api-key: API_KEY" https://dev.to/api/articles/me/unpublished
 
   /articles/me/all:
     get:
@@ -1209,7 +1209,7 @@ paths:
         - lang: Shell
           label: curl
           source: |
-            curl https://dev.to/api/articles/me/all
+            curl -H "api-key: API_KEY" https://dev.to/api/articles/me/all
 
   /webhooks:
     get:
