@@ -2,7 +2,7 @@ openapi: "3.0.2"
 info:
   title: DEV API
   description: Access DEV articles, comments and other resources via API
-  version: "0.5.5"
+  version: "0.5.6"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -373,6 +373,7 @@ components:
         - canonical_url
         - comments_count
         - positive_reactions_count
+        - page_views_count
         - published_timestamp
         - body_markdown
         - user
@@ -413,6 +414,9 @@ components:
           type: integer
           format: int32
         positive_reactions_count:
+          type: integer
+          format: int32
+        page_views_count:
           type: integer
           format: int32
         published_timestamp:
