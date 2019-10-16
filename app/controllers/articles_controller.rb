@@ -56,7 +56,7 @@ class ArticlesController < ApplicationController
                elsif @tag.present?
                  skip_authorization
                  Article.new(
-                   body_markdown: "---\ntitle: \npublished: false\ndescription: \ntags: " + @tag.name + "\n---\n\n",
+                   body_markdown: "---\ntitle: \npublished: false\ndescription: \ntags: #{@tag.name}\n---\n\n",
                    processed_html: "", user_id: current_user&.id
                  )
                else

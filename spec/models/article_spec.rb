@@ -196,6 +196,13 @@ RSpec.describe Article, type: :model do
         tags = "discuss1, help"
         expect(build(:article, tags: tags).valid?).to be(false)
       end
+      
+      context 'when description is empty' do
+        it 'parses tags' do
+          body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: one\n---\n\n"
+          expect(build_and_validate_article(body_markdown: body_markdown).tag_list).to eq(['one'])
+        end
+      end
     end
 
     describe "#canonical_url" do

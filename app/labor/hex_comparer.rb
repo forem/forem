@@ -18,7 +18,7 @@ class HexComparer
 
   def brightness(amount = 1)
     rgb = smallest.delete("#").scan(/../).map(&:hex).map { |color| color * amount }.map(&:round)
-    format("#%02x%02x%02x", *rgb)
+    format("#%<r>02x%<g>02x%<b>02x", r: rgb[0], g: rgb[1], b: rgb[2])
   rescue StandardError
     smallest
   end

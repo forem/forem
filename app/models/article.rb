@@ -346,22 +346,10 @@ class Article < ApplicationRecord
     @flare_tag ||= FlareTag.new(self).tag_hash
   end
 
-  def update_main_image_background_hex_without_delay
-    return if main_image.blank? || main_image_background_hex_color != "#dddddd"
-
-    Articles::UpdateMainImageBackgroundHexJob.perform_now(id)
-  end
-
   def update_main_image_background_hex
     return if main_image.blank? || main_image_background_hex_color != "#dddddd"
 
     Articles::UpdateMainImageBackgroundHexJob.perform_later(id)
-  end
-
-  def detect_human_language_without_delay
-    return if language.present?
-
-    Articles::DetectHumanLanguageJob.perform_now(id)
   end
 
   def detect_human_language

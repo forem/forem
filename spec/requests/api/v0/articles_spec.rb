@@ -90,7 +90,6 @@ RSpec.describe "Api::V0::Articles", type: :request do
       )
     end
 
-    # rubocop:disable RSpec/ExampleLength
     it "returns all the relevant datetimes" do
       article.update_columns(
         edited_at: 1.minute.from_now, crossposted_at: 2.minutes.ago, last_comment_at: 30.seconds.ago,
@@ -104,7 +103,6 @@ RSpec.describe "Api::V0::Articles", type: :request do
         "last_comment_at" => article.last_comment_at.utc.iso8601,
       )
     end
-    # rubocop:enable RSpec/ExampleLength
 
     it "fails with an unpublished article" do
       article.update_columns(published: false)
@@ -257,6 +255,13 @@ RSpec.describe "Api::V0::Articles", type: :request do
       it "fails if no params are given" do
         post_article
         expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "fails if missing required params" do
+        tags = %w[meta discussion]
+        post_article(body_markdown: "Yo ho ho", tags: tags)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json_response["error"]).to be_present
       end
 
       it "creates an article belonging to the user" do

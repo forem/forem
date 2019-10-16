@@ -1,4 +1,7 @@
 /* global localizeTimeElements */
+
+'use strict';
+
 function initializeCreditsPage() {
   const datetimes = document.querySelectorAll('.ledger time');
 
