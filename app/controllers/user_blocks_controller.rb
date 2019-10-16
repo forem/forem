@@ -20,7 +20,7 @@ class UserBlocksController < ApplicationController
     @user_block.config = "default"
 
     if @user_block.save
-      block_chat_channel(@user_block.blocked_id)
+      UserBlocks::ChannelHandler.new(@user_block).block_chat_channel
       current_user.stop_following(@user_block.blocked)
       @user_block.blocked.stop_following(current_user)
       render json: { outcome: "blocked" }
@@ -40,7 +40,7 @@ class UserBlocksController < ApplicationController
     authorize @user_block
 
     if @user_block.destroy
-      unblock_chat_channel(@user_block.blocked_id)
+      UserBlocks::ChannelHandler.new(@user_block).unblock_chat_channel
       render json: { outcome: "unblocked" }
     else
       render json: { outcome: "error: #{@user_block&.errors&.full_messages}" }
@@ -55,24 +55,5 @@ class UserBlocksController < ApplicationController
       render plain: "not-logged-in"
       return
     end
-  end
-
-  def get_potential_chat_channel(blocked_id)
-    blocked_user = User.select(:id, :username).find(blocked_id)
-    current_user.chat_channels.find_by("slug LIKE ? AND channel_type = ?", "%#{blocked_user.username}%", "direct")
-  end
-
-  def block_chat_channel(blocked_id)
-    chat_channel = get_potential_chat_channel(blocked_id)
-    return if chat_channel.blank?
-
-    chat_channel.update(status: "blocked")
-  end
-
-  def unblock_chat_channel(blocked_id)
-    chat_channel = get_potential_chat_channel(blocked_id)
-    return if chat_channel.blank?
-
-    chat_channel.update(status: "active")
   end
 end
