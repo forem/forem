@@ -1107,7 +1107,8 @@
             position: absolute;
             color: $black;
             right: 5px;
-            top: 2px;
+            top: 50%;
+            transform: translateY(-50%);
             text-align: center;
             border-radius: 3px;
             font-weight: 900;
