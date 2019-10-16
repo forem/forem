@@ -5,7 +5,7 @@ function initializeCommentDropdown() {
 
   function isIOSDevice() {
     return (
-      /(iPhone)|(CriOS)|(iPad)/i.test(navigator.userAgent) ||
+      /iPhone|CriOS|iPad/i.test(navigator.userAgent) ||
       navigator.userAgent === 'DEV-Native-ios'
     );
   }
@@ -61,7 +61,7 @@ function initializeCommentDropdown() {
   }
 
   function removeCopyListener() {
-    if (isIOSDevice() === true) {
+    if (isIOSDevice()) {
       const clipboardCopyElement = document.getElementsByTagName(
         'clipboard-copy',
       )[0];
@@ -98,7 +98,7 @@ function initializeCommentDropdown() {
     } else {
       removeAllShowing();
       dropdownContent.classList.add('showing');
-      if (isIOSDevice() === true) {
+      if (isIOSDevice()) {
         const clipboardCopyElement = document.getElementsByTagName(
           'clipboard-copy',
         )[0];
