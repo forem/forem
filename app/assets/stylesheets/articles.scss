@@ -459,6 +459,7 @@
           line-height: 25px;
           width: 100%;
           padding: 0px;
+          word-break: break-word;
           .tag-identifier {
             font-size: 14px;
             background: $blue;
@@ -639,6 +640,7 @@
             margin-bottom: 8px;
             margin-top: 8px;
             padding-top: 0px;
+            word-break: break-word;
             @media screen and (min-width: 1600px) {
               font-size: 45px;
             }
