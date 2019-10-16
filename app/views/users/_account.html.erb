@@ -89,8 +89,8 @@
 
 <h3>Delete Account</h3>
 <h4 style="font-weight:400;">
-  <% delete_path = @user.articles_count.zero? && @user.comments_count.zero ? user_destroy_path : user_full_delete_path %>
-  <%= form_tag delete_path, method: :delete, autocomplete: "off" do %>
+  <% delete_path = @user.articles_count.zero? && @user.comments_count.zero? ? user_destroy_path : user_full_delete_path %>
+  <%= form_tag delete_path, method: :delete, autocomplete: "off", id: "delete__account" do %>
     Deleting your account will:
     <ul class="delete__account">
       <li>delete your profile, along with your Twitter and/or GitHub associations.
