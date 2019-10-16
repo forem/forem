@@ -5,6 +5,7 @@ module Constants
     "bitcoinhackers.org",
     "bsd.network",
     "chaos.social",
+    "anarchism.space",
     "cmx.im",
     "cybre.space",
     "framapiaf.org",

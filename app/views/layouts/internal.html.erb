@@ -50,7 +50,7 @@
 
   .wrapper-3 {
     display: grid;
-    grid-template-columns: 25% 40% 25%%;
+    grid-template-columns: 25% 40% 25%;
     padding: 2px;
   }
 
@@ -66,6 +66,17 @@
     display: inline-block;
   }
 
+  .flex-column form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .flex-column textarea {
+    font-size: 12px;
+    width: 45%;
+    margin-bottom: 5px;
+  }
+
   textarea {
     font-size: 12px;
     width: 75%;
@@ -73,6 +84,9 @@
 
   .btn {
     min-width: 100px;
+    width: fit-content;
+    width: -moz-fit-content;
+    width: -webkit-fit-content;
   }
 
   .single-internal-listing {
