@@ -35,8 +35,7 @@ export const ItemListItem = ({ item, children }) => {
             <span className="item-tags">
               {adaptedItem.tags.map(tag => (
                 <a className="item-tag" href={`/t/${tag}`}>
-                  #
-                  {tag}
+                  {`#${tag}`}
                 </a>
               ))}
             </span>
