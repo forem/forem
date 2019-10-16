@@ -45,10 +45,6 @@ class Notification < ApplicationRecord
       Notifications::NotifiableActionJob.perform_later(notifiable.id, notifiable.class.name, action)
     end
 
-    def send_to_followers_without_delay(notifiable, action = nil)
-      Notifications::NotifiableActionJob.perform_now(notifiable.id, notifiable.class.name, action)
-    end
-
     def send_new_comment_notifications(comment)
       return if comment.commentable_type == "PodcastEpisode"
 
@@ -69,13 +65,6 @@ class Notification < ApplicationRecord
     # It can be removed after pre-existing jobs are done
     alias send_new_badge_notification send_new_badge_achievement_notification
 
-    # NOTE: this method is temporary until the transition to ActiveJob is completed
-    # and all old DelayedJob jobs are processed by the queue workers.
-    # It can be removed after pre-existing jobs are done
-    def send_new_badge_notification_without_delay(badge_achievement)
-      Notifications::NewBadgeAchievementJob.perform_now(badge_achievement.id)
-    end
-
     def send_reaction_notification(reaction, receiver)
       return if reaction.skip_notification_for?(receiver)
 
@@ -92,40 +81,20 @@ class Notification < ApplicationRecord
       Notifications::MentionJob.perform_later(mention.id)
     end
 
-    def send_mention_notification_without_delay(mention)
-      Notifications::MentionJob.perform_now(mention.id)
-    end
-
     def send_welcome_notification(receiver_id)
       Notifications::WelcomeNotificationJob.perform_later(receiver_id)
-    end
-
-    def send_welcome_notification_without_delay(receiver_id)
-      Notifications::WelcomeNotificationJob.perform_now(receiver_id)
     end
 
     def send_moderation_notification(notifiable)
       Notifications::ModerationNotificationJob.perform_later(notifiable.id)
     end
 
-    def send_moderation_notification_without_delay(notifiable)
-      Notifications::ModerationNotificationJob.perform_now(notifiable.id)
-    end
-
     def send_tag_adjustment_notification(tag_adjustment)
       Notifications::TagAdjustmentNotificationJob.perform_later(tag_adjustment.id)
     end
 
-    def send_tag_adjustment_notification_without_delay(tag_adjustment)
-      Notifications::TagAdjustmentNotificationJob.perform_now(tag_adjustment.id)
-    end
-
     def send_milestone_notification(type:, article_id:)
       Notifications::MilestoneJob.perform_later(type, article_id)
-    end
-
-    def send_milestone_notification_without_delay(type:, article_id:)
-      Notifications::MilestoneJob.perform_now(type, article_id)
     end
 
     def remove_all_by_action(notifiable_ids:, notifiable_type:, action: nil)
@@ -154,10 +123,6 @@ class Notification < ApplicationRecord
 
     def update_notifications(notifiable, action = nil)
       Notifications::UpdateJob.perform_later(notifiable.id, notifiable.class.name, action)
-    end
-
-    def update_notifications_without_delay(notifiable, action = nil)
-      Notifications::UpdateJob.perform_now(notifiable.id, notifiable.class.name, action)
     end
 
     private
