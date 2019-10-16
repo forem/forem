@@ -878,14 +878,14 @@ paths:
           label: curl
           source: |
             curl -X POST -H "Content-Type: application/json" \
-              -H "api-key: ACCESS_TOKEN" \
+              -H "api-key: API_KEY" \
               -d '{"article":{"title":"Title","body_markdown":"Body","published":false,"tags":["discuss", "javascript"]}}' \
               https://dev.to/api/articles
         - lang: Shell
           label: curl (with front matter)
           source: |
             curl -X POST -H "Content-Type: application/json" \
-            -H "api-key: ACCESS_TOKEN" \
+            -H "api-key: API_KEY" \
             -d '{"article":{"body_markdown":"---\ntitle:A sample article about...\npublished:false\n---\n..."}}' \
             https://dev.to/api/articles
 
@@ -1009,7 +1009,7 @@ paths:
           label: curl
           source: |
             curl -X PUT -H "Content-Type: application/json" \
-              -H "api-key: ACCESS_TOKEN" \
+              -H "api-key: API_KEY" \
               -d '{"article":{"title":"Title"}' \
               https://dev.to/api/articles/{id}
 
@@ -1251,7 +1251,7 @@ paths:
         - lang: Shell
           label: curl
           source: |
-            curl -H "api-key: ACCESS_TOKEN" https://dev.to/api/webhooks
+            curl -H "api-key: API_KEY" https://dev.to/api/webhooks
     post:
       summary: Create a new webhook
       description: |
@@ -1300,7 +1300,7 @@ paths:
           label: curl
           source: |
             curl -X POST -H "Content-Type: application/json" \
-              -H "api-key: ACCESS_TOKEN" \
+              -H "api-key: API_KEY" \
               -d '{"webhook_endpoint":{"target_url":"https://example.org/webhooks/webhook1","source":"DEV","events":["article_created"]}}' \
               https://dev.to/api/webhooks
 
@@ -1407,5 +1407,5 @@ paths:
           label: curl
           source: |
             curl -X DELETE \
-              -H "api-key: ACCESS_TOKEN" \
+              -H "api-key: API_KEY" \
               https://dev.to/api/webhooks/1
