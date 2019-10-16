@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_18_104106) do
+ActiveRecord::Schema.define(version: 2019_10_16_135034) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -1014,6 +1014,7 @@ ActiveRecord::Schema.define(version: 2019_09_18_104106) do
     t.boolean "checked_terms_and_conditions", default: false
     t.integer "comments_count", default: 0, null: false
     t.string "config_font", default: "default"
+    t.string "config_navbar", default: "default"
     t.string "config_theme", default: "default"
     t.datetime "confirmation_sent_at"
     t.string "confirmation_token"

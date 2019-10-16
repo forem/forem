@@ -120,10 +120,10 @@ class User < ApplicationRecord
                          message: "%{value} must be either v1 or v2" }
 
   validates :config_theme,
-            inclusion: { in: %w[default night_theme pink_theme minimal_light_theme],
+            inclusion: { in: %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme],
                          message: "%{value} is not a valid theme" }
   validates :config_font,
-            inclusion: { in: %w[default sans_serif comic_sans],
+            inclusion: { in: %w[default sans_serif monospace comic_sans],
                          message: "%{value} must be either default or sans serif" }
   validates :shipping_country,
             length: { in: 2..2 },
