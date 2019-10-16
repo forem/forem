@@ -526,6 +526,8 @@
         padding-left: 10px;
         display: block;
         border: none;
+        text-overflow: ellipsis;
+        overflow: hidden;
       }
     }
   }
