@@ -41,18 +41,4 @@ RSpec.describe UserBlocks::ChannelHandler, type: :service do
         to change(ChatChannelMembership.where(status: "left-channel"), :count).to 0
     end
   end
-  # describe ".sortable" do
-  #   it "generates unique identifiers" do
-  #     expect(described_class.sortable).not_to eq(described_class.sortable)
-  #   end
-
-  #   it "generates sortable identifiers" do
-  #     now_id = described_class.sortable
-  #     a_month_from_now_id = described_class.sortable(1.month.from_now)
-  #     a_month_ago_id = described_class.sortable(1.month.ago)
-
-  #     expected_ids = [a_month_ago_id, now_id, a_month_from_now_id]
-  #     expect([now_id, a_month_from_now_id, a_month_ago_id].sort).to eq(expected_ids)
-  #   end
-  # end
 end
