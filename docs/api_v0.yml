@@ -876,7 +876,7 @@ paths:
                 type: object
                 $ref: "#/components/schemas/APIError"
               examples:
-                article-bad-request:
+                error-bad-request:
                   $ref: "#/components/examples/ErrorBadRequest"
         401:
           description: Unauthorized
@@ -886,7 +886,7 @@ paths:
                 type: object
                 $ref: "#/components/schemas/APIError"
               examples:
-                article-unauthorized:
+                error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
         422:
           description: Unprocessable Entity
@@ -896,7 +896,7 @@ paths:
                 type: object
                 $ref: "#/components/schemas/APIError"
               examples:
-                article-unprocessable-entity:
+                error-unprocessable-entity:
                   $ref: "#/components/examples/ErrorUnprocessableEntity"
       security:
         - api_key: []
@@ -1027,7 +1027,7 @@ paths:
                 type: object
                 $ref: "#/components/schemas/APIError"
               examples:
-                article-bad-request:
+                error-bad-request:
                   $ref: "#/components/examples/ErrorBadRequest"
         401:
           description: Unauthorized
@@ -1037,7 +1037,7 @@ paths:
                 type: object
                 $ref: "#/components/schemas/APIError"
               examples:
-                article-unauthorized:
+                error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
         422:
           description: Unprocessable Entity
@@ -1047,7 +1047,7 @@ paths:
                 type: object
                 $ref: "#/components/schemas/APIError"
               examples:
-                article-unprocessable-entity:
+                error-unprocessable-entity:
                   $ref: "#/components/examples/ErrorUnprocessableEntity"
       security:
         - api_key: []
@@ -1330,6 +1330,16 @@ paths:
               examples:
                 webhook-success:
                   $ref: "#/components/examples/WebhookShow"
+        400:
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-bad-request:
+                  $ref: "#/components/examples/ErrorBadRequest"
         401:
           description: Unauthorized
           content:
@@ -1338,8 +1348,18 @@ paths:
                 type: object
                 $ref: "#/components/schemas/APIError"
               examples:
-                article-unauthorized:
+                error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
+        422:
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unprocessable-entity:
+                  $ref: "#/components/examples/ErrorUnprocessableEntity"
       security:
         - api_key: []
         - oauth2: []
