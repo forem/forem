@@ -2,7 +2,7 @@
 
 const fetchCallback = ({ url, headers = {}, addTokenToBody = false, body }) => {
   return csrfToken => {
-    addTokenToBody && body.append('authenticity_token', csrfToken);
+    if (addTokenToBody) { body.append('authenticity_token', csrfToken) };
     return window.fetch(url, {
       method: 'POST',
       headers: {

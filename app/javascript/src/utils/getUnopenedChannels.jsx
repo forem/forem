@@ -118,7 +118,9 @@ class UnopenedChannelNotice extends Component {
             padding: '19px 5px 14px',
           }}
         >
-          New Message from {channels}
+          New Message from
+          {' '}
+          {channels}
         </a>
       );
     }

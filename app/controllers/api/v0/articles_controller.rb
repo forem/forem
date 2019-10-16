@@ -39,7 +39,12 @@ module Api
 
       def create
         @article = Articles::Creator.call(@user, article_params)
-        render "show", status: :created, location: @article.url
+        if @article.persisted?
+          render "show", status: :created, location: @article.url
+        else
+          message = @article.errors.full_messages
+          render json: { errors: message, status: 422 }, status: :unprocessable_entity
+        end
       end
 
       def update
