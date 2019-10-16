@@ -37,7 +37,8 @@ class Message < ApplicationRecord
     chat_channel.touch(:last_message_at)
     chat_channel.index!
     chat_channel.chat_channel_memberships.reindex!
-    chat_channel.delay.index!
+
+    ChatChannels::IndexJob.perform_later(chat_channel_id: chat_channel.id)
   end
 
   def update_all_has_unopened_messages_statuses

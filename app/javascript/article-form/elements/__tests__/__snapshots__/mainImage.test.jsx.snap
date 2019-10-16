@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<MainImage /> renders properly 1`] = `
+<div
+  class="articleform__mainimage"
+  onClick={[MockFunction]}
+>
+  <img
+    src="http://lorempixel.com/400/200/"
+  />
+</div>
+`;

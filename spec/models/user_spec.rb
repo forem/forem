@@ -431,7 +431,7 @@ RSpec.describe User, type: :model do
 
       it "estimates default language to be nil" do
         perform_enqueued_jobs do
-          user.estimate_default_language!
+          user.estimate_default_language
         end
         expect(user.reload.estimated_default_language).to eq(nil)
       end
@@ -439,7 +439,7 @@ RSpec.describe User, type: :model do
       it "estimates default language to be japan with jp email" do
         perform_enqueued_jobs do
           user.update_column(:email, "ben@hello.jp")
-          user.estimate_default_language!
+          user.estimate_default_language
         end
         expect(user.reload.estimated_default_language).to eq("ja")
       end
@@ -447,7 +447,7 @@ RSpec.describe User, type: :model do
       it "estimates default language based on ID dump" do
         perform_enqueued_jobs do
           new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-          new_user.estimate_default_language!
+          new_user.estimate_default_language
           expect(user.reload.estimated_default_language).to eq(nil)
         end
       end
@@ -455,7 +455,7 @@ RSpec.describe User, type: :model do
       it "returns proper preferred_languages_array" do
         perform_enqueued_jobs do
           user.update_column(:email, "ben@hello.jp")
-          user.estimate_default_language!
+          user.estimate_default_language
         end
         expect(user.reload.preferred_languages_array).to include("ja")
       end
@@ -584,10 +584,6 @@ RSpec.describe User, type: :model do
   it "creates proper body class with trusted user" do
     user.add_role(:trusted)
     expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
-  end
-
-  it "inserts into mailchimp" do
-    expect(user.subscribe_to_mailchimp_newsletter_without_delay).to eq true
   end
 
   it "does not allow to change to username that is taken" do
@@ -723,6 +719,16 @@ RSpec.describe User, type: :model do
     it "returns true if the user has more unspent credits than needed" do
       create_list(:credit, 2, user: user, spent: false)
       expect(user.has_enough_credits?(1)).to be(true)
+    end
+  end
+
+  describe "#subscribe_to_mailchimp_newsletter" do
+    let(:user2) { create :user }
+
+    it "schedules the job" do
+      expect do
+        user2.subscribe_to_mailchimp_newsletter
+      end.to have_enqueued_job(Users::SubscribeToMailchimpNewsletterJob).exactly(:once).with(user2.id)
     end
   end
 end

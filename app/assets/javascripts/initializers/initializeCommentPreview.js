@@ -1,3 +1,5 @@
+'use strict';
+
 function getAndShowPreview(markdownPreviewPane, markdownEditor) {
   function successCb(body) {
     markdownPreviewPane.classList.toggle('preview-toggle');

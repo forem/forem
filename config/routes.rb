@@ -176,6 +176,7 @@ Rails.application.routes.draw do
   resources :profile_pins, only: %i[create update]
   resources :partnerships, only: %i[index create show], param: :option
   resources :display_ad_events, only: [:create]
+  resources :badges, only: [:index]
   resource :pro_membership, path: :pro, only: %i[show create update]
   resources :user_blocks, param: :blocked_id, only: %i[show destroy] do
     post ":blocked_id", on: :collection, to: "user_blocks#create"
@@ -212,6 +213,7 @@ Rails.application.routes.draw do
   get "/social_previews/organization/:id" => "social_previews#organization", as: :organization_social_preview
   get "/social_previews/tag/:id" => "social_previews#tag", as: :tag_social_preview
   get "/social_previews/listing/:id" => "social_previews#listing", as: :listing_social_preview
+  get "/social_previews/comment/:id" => "social_previews#comment", as: :comment_social_preview
 
   get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
 
@@ -246,7 +248,7 @@ Rails.application.routes.draw do
   post "users/update_language_settings" => "users#update_language_settings"
   post "users/update_twitch_username" => "users#update_twitch_username"
   post "users/join_org" => "users#join_org"
-  post "users/leave_org/:organization_id" => "users#leave_org"
+  post "users/leave_org/:organization_id" => "users#leave_org", as: :users_leave_org
   post "users/add_org_admin" => "users#add_org_admin"
   post "users/remove_org_admin" => "users#remove_org_admin"
   post "users/remove_from_org" => "users#remove_from_org"

@@ -1,6 +1,14 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
+function getCoverImage(imageSrc) {
+  return (
+    <div className="articleform__mainimage articleform__mainimagepreview">
+      <img src={imageSrc} alt="cover" />
+    </div>
+  );
+}
+
 function titleArea(previewResponse, version, articleState) {
   if (version === 'help') {
     // possibly something different here in future.
@@ -12,24 +20,16 @@ function titleArea(previewResponse, version, articleState) {
   if (tagArray.length > 0 && tagArray[0].length > 0) {
     tags = tagArray.map(tag => {
       return (
-        <span>{tag.length > 0 ? <div className="tag">{tag}</div> : ''} </span>
+        <span>{tag.length > 0 ? <div className="tag">{tag}</div> : ''}</span>
       );
     });
   }
 
   let coverImage = '';
   if (previewResponse.cover_image && previewResponse.cover_image.length > 0) {
-    coverImage = (
-      <div className="articleform__mainimage articleform__mainimagepreview">
-        <img src={previewResponse.cover_image} alt="cover" />
-      </div>
-    );
+    coverImage = getCoverImage(previewResponse.cover_image);
   } else if (articleState.mainImage) {
-    coverImage = (
-      <div className="articleform__mainimage articleform__mainimagepreview">
-        <img src={articleState.mainImage} alt="cover" />
-      </div>
-    );
+    coverImage = getCoverImage(articleState.mainImage);
   }
 
   const previewTitle = previewResponse.title || articleState.title || '';

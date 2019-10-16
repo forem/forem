@@ -40,7 +40,11 @@ RSpec.describe Article, type: :model do
   end
 
   it "reject future dates" do
-    expect(build(:article, with_date: true, date: "01/01/2020").valid?).to be(false)
+    expect(build(:article, with_date: true, date: Date.tomorrow).valid?).to be(false)
+  end
+
+  it "reject future dates even when it's published at" do
+    expect(build(:article, published_at: Date.tomorrow).valid?).to be(false)
   end
 
   it "has proper username" do
@@ -186,6 +190,13 @@ RSpec.describe Article, type: :model do
       it "rejects if there are tags with length > 30" do
         tags = "'testing tag length with more than 30 chars', tag"
         expect(build(:article, tags: tags).valid?).to be(false)
+      end
+
+      context 'when description is empty' do
+        it 'parses tags' do
+          body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: one\n---\n\n"
+          expect(build_and_validate_article(body_markdown: body_markdown).tag_list).to eq(['one'])
+        end
       end
     end
 

@@ -55,7 +55,6 @@ RSpec.describe Notification, type: :model do
     describe "when notifiable is a Comment" do
       let!(:comment) { create(:comment, commentable: article) }
 
-      # rubocop:disable RSpec/ExampleLength
       it "doesn't allow to create a duplicate user notification via import when action is nil" do
         notification_attributes = { user: user, notifiable: comment, action: nil }
         create(:notification, notification_attributes)
@@ -83,7 +82,6 @@ RSpec.describe Notification, type: :model do
                                  })
         end.not_to change(described_class, :count)
       end
-      # rubocop:enable RSpec/ExampleLength
     end
   end
 
@@ -390,7 +388,7 @@ RSpec.describe Notification, type: :model do
     context "when there are article notifications to update" do
       before do
         user2.follow(user)
-        described_class.send_to_followers_without_delay(article, "Published")
+        perform_enqueued_jobs { described_class.send_to_followers(article, "Published") }
       end
 
       it "updates the notification with the new article title" do
@@ -446,14 +444,6 @@ RSpec.describe Notification, type: :model do
       assert_enqueued_with(job: Notifications::NewBadgeAchievementJob, args: [badge_achievement.id]) do
         described_class.send_new_badge_notification(badge_achievement)
       end
-    end
-  end
-
-  describe "#send_new_badge_notification_without_delay (deprecated)" do
-    it "creates a notification" do
-      expect do
-        described_class.send_new_badge_notification_without_delay(badge_achievement)
-      end.to change(described_class, :count).by(1)
     end
   end
 

@@ -251,7 +251,6 @@
   .existing-credits {
     background: $dark-purple;
     color: white;
-    width: 800px;
     margin: 100px auto;
     padding: 30px;
     border-radius: 3px;
@@ -274,12 +273,16 @@
       border-radius: 100px;
       font-weight: bold;
     }
+
+    @media screen and ( min-width:950px ){
+      width: 800px;
+    } 
+    
   }
 
   .ledger {
     margin: 2rem auto;
     text-align: right;
-    width: 700px;
 
     caption {
       font-size: 1.2rem;
@@ -298,5 +301,10 @@
     }
 
     a { color: #fff; }
+
+    @media screen and ( min-width:950px ){
+      width: 700px;
+    }
+
   }
 }

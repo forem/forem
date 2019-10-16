@@ -1,6 +1,20 @@
 class ClassifiedListing < ApplicationRecord
   include AlgoliaSearch
 
+  CATEGORIES_AVAILABLE = {
+    cfp: { cost: 1, name: "Conference CFP", rules: "Currently open for proposals, with link to form." },
+    forhire: { cost: 1, name: "Available for Hire", rules: "You are available for hire." },
+    collabs: { cost: 1, name: "Contributors/Collaborators Wanted", rules: "Projects looking for volunteers. Not job listings." },
+    education: { cost: 1, name: "Education/Courses", rules: "Educational material and/or schools/bootcamps." },
+    jobs: { cost: 25, name: "Job Listings", rules: "Companies offering employment right now." },
+    mentors: { cost: 1, name: "Offering Mentorship", rules: "You are available to mentor someone." },
+    products: { cost: 5, name: "Products/Tools", rules: "Must be available right now." },
+    mentees: { cost: 1, name: "Seeking a Mentor", rules: "You are looking for a mentor." },
+    forsale: { cost: 1, name: "Stuff for Sale", rules: "Personally owned physical items for sale." },
+    events: { cost: 1, name: "Upcoming Events", rules: "In-person or online events with date included." },
+    misc: { cost: 1, name: "Miscellaneous", rules: "Must not fit in any other category." }
+  }.with_indifferent_access.freeze
+
   attr_accessor :action
 
   belongs_to :user
@@ -52,7 +66,9 @@ class ClassifiedListing < ApplicationRecord
 
   def self.select_options_for_categories
     categories_available.keys.map do |key|
-      ["#{categories_available[key][:name]} (#{ActionController::Base.helpers.pluralize(categories_available[key][:cost], 'Credit')})", key]
+      category = categories_available[key]
+      cost = category[:cost]
+      ["#{category[:name]} (#{cost} #{'Credit'.pluralize(cost)})", key]
     end
   end
 
@@ -63,19 +79,7 @@ class ClassifiedListing < ApplicationRecord
   end
 
   def self.categories_available
-    {
-      "cfp" => { cost: 1, name: "Conference CFP", rules: "Currently open for proposals, with link to form." },
-      "forhire" => { cost: 1, name: "Available for Hire", rules: "You are available for hire." },
-      "collabs" => { cost: 1, name: "Contributors/Collaborators Wanted", rules: "Projects looking for volunteers. Not job listings." },
-      "education" => { cost: 1, name: "Education/Courses", rules: "Educational material and/or schools/bootcamps." },
-      "jobs" => { cost: 25, name: "Job Listings", rules: "Companies offering employment right now." },
-      "mentors" => { cost: 1, name: "Offering Mentorship", rules: "You are available to mentor someone." },
-      "products" => { cost: 5, name: "Products/Tools", rules: "Must be available right now." },
-      "mentees" => { cost: 1, name: "Seeking a Mentor", rules: "You are looking for a mentor." },
-      "forsale" => { cost: 1, name: "Stuff for Sale", rules: "Personally owned physical items for sale." },
-      "events" => { cost: 1, name: "Upcoming Events", rules: "In-person or online events with date included." },
-      "misc" => { cost: 1, name: "Miscellaneous", rules: "Must not fit in any other category." }
-    }.with_indifferent_access
+    CATEGORIES_AVAILABLE
   end
 
   def path
@@ -100,9 +104,10 @@ class ClassifiedListing < ApplicationRecord
   end
 
   def restrict_markdown_input
-    errors.add(:body_markdown, "has too many linebreaks. No more than 12 allowed.") if body_markdown.to_s.scan(/(?=\n)/).count > 12
-    errors.add(:body_markdown, "is not allowed to include images.") if body_markdown.to_s.include?("![")
-    errors.add(:body_markdown, "is not allowed to include liquid tags.") if body_markdown.to_s.include?("{% ")
+    markdown_string = body_markdown.to_s
+    errors.add(:body_markdown, "has too many linebreaks. No more than 12 allowed.") if markdown_string.scan(/(?=\n)/).count > 12
+    errors.add(:body_markdown, "is not allowed to include images.") if markdown_string.include?("![")
+    errors.add(:body_markdown, "is not allowed to include liquid tags.") if markdown_string.include?("{% ")
   end
 
   def validate_tags
@@ -110,7 +115,7 @@ class ClassifiedListing < ApplicationRecord
   end
 
   def validate_category
-    errors.add(:category, "not a valid category") unless ClassifiedListing.categories_available[category]
+    errors.add(:category, "not a valid category") unless CATEGORIES_AVAILABLE[category]
   end
 
   def create_slug

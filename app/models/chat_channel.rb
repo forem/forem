@@ -29,7 +29,7 @@ class ChatChannel < ApplicationRecord
     ranking ["desc(last_message_at)"]
   end
 
-  before_destroy :remove_from_index!
+  before_destroy :remove_from_index!, prepend: true
 
   def open?
     channel_type == "open"
@@ -44,7 +44,7 @@ class ChatChannel < ApplicationRecord
   end
 
   def clear_channel
-    messages.find_each(&:destroy!)
+    messages.delete_all
     Pusher.trigger(pusher_channels, "channel-cleared", { chat_channel_id: id }.to_json)
     true
   rescue Pusher::Error => e

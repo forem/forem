@@ -1,11 +1,12 @@
 @import 'variables';
+@import 'mixins';
 
 .pages-onboarding {
   min-height: initial;
 }
 
 .onboarding-body {
-  background-color: white;
+  @include themeable(background-color, theme-background, $white);
   position: fixed;
   margin-top: 50px;
   bottom: 0;
@@ -23,12 +24,15 @@
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-  background-position: center; /* Center the image */
-  background-repeat: no-repeat; /* Do not repeat the image */
+  /* Center the image */
+  background-position: center;
+  /* Do not repeat the image */
+  background-repeat: no-repeat;
 
   a {
-    color: #2e3b9e;
+    @include themeable(color, theme-anchor-color, #2e3b9e);
   }
+
   .sticker-logo {
     height: 80px;
     width: 80px;
@@ -38,19 +42,20 @@
     top: -10px;
     padding-top: 5px;
   }
+
   .onboarding-main {
     display: flex;
     flex-direction: column;
     width: 800px;
     height: 466px;
-    background-color: white;
+    @include themeable(background-color, theme-container-background, $white);
     border: 8px solid #6b55c9;
+    @include themeable(border-color, theme-container-border, #6b55c9);
     padding: 30px;
     border-radius: 3px;
     z-index: 1;
     font-size: 20px;
     box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.3), 8px 0px 13px rgba(0, 0, 0, 0.21);
-    // box-shadow: var(--theme-container-box-shadow, 1px 1px 0px #c2c2c2);
     align-items: center;
     justify-content: center;
   }
@@ -60,6 +65,7 @@
     width: 100%;
     height: 440px;
     margin-top: 5px;
+
     h1 {
       margin-top: 15px;
       line-height: 1.1em;
@@ -82,12 +88,15 @@
   h1 {
     text-align: center;
   }
+
   h2 {
     font-size: 15px;
+
     @media screen and (min-width: 600px) {
       font-size: 26px;
     }
   }
+
   p {
     line-height: 1.25em;
   }
@@ -101,9 +110,9 @@
     font-weight: bold;
     border-radius: 3px;
     border: 2px solid #0a0a0a;
-    border: 2px solid var(--theme-top-bar-write-color, #0a0a0a);
-    color: #0a0a0a;
-    color: var(--theme-top-bar-write-color, #0a0a0a);
+    @include themeable(border-color, theme-color, #0a0a0a);
+    @include themeable(color, theme-color, #0a0a0a);
+    @include themeable(background-color, theme-container-accent-background, $light-gray);
     font-family: 'HelveticaNeue-CondensedBold', 'HelveticaNeueBoldCondensed',
       'HelveticaNeue-Bold-Condensed', 'Helvetica Neue Bold Condensed',
       'HelveticaNeueBold', 'HelveticaNeue-Bold', 'Helvetica Neue Bold',
@@ -115,13 +124,13 @@
   }
 
   .next-button {
-    background: #66e2d5;
-    background: var(--theme-top-bar-write-background, #66e2d5);
+    @include themeable(background, theme-top-bar-write-background, #66e2d5);
     float: right;
   }
 
   .about {
     width: 100%;
+
     label,
     input,
     textarea {
@@ -154,15 +163,16 @@
       -webkit-appearance: none;
       width: 19px;
       height: 19px;
-      background: white;
+      background: transparent;
       border-radius: 5px;
       border: 2px solid #555;
       vertical-align: middle;
       margin: 8px;
       cursor: pointer;
     }
+
     input[type='checkbox']:checked {
-      background: var(--theme-top-bar-write-background, #66e2d5);
+      @include themeable(background, theme-anchor-color, #66e2d5);
     }
   }
 
@@ -200,15 +210,19 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
       Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
       'Segoe UI Symbol';
+
     @media screen and (min-width: 600px) {
       width: 255px;
     }
+
     &.tag-selected {
       opacity: 1;
     }
+
     &:hover {
       opacity: 1;
     }
+
     .onboarding-tag-follow-indicator {
       position: absolute;
       bottom: 22px;
@@ -221,6 +235,7 @@
 
   .select-all-button-wrapper {
     width: 100%;
+
     button {
       width: 300px;
       line-height: 1em;
@@ -242,6 +257,8 @@
     text-align: center;
     margin-right: 5px;
     position: relative;
+    color: $black;
+
     .onboarding-user-follow-status {
       position: absolute;
       color: #32a99c;
@@ -249,17 +266,21 @@
       top: 5px;
       font-size: 0.88em;
     }
+
     span {
       display: block;
       width: 100%;
     }
+
     p {
       font-weight: 400;
       height: 55px;
     }
+
     @media screen and (min-width: 600px) {
       width: 365px;
     }
+
     img {
       height: 80px;
       width: 80px;
@@ -269,9 +290,11 @@
       display: block;
     }
   }
+
   .user:active {
     background-color: red;
   }
+
   .badge-image {
     position: absolute;
   }
@@ -281,9 +304,11 @@
     flex-direction: column;
     height: 250px;
     overflow: auto;
+
     @media screen and (min-width: 600px) {
       flex-direction: row;
     }
+
     a {
       background: #d9e7ff;
       padding: 15px 4px 0px 12px;
@@ -296,12 +321,14 @@
       font-weight: bold;
       position: relative;
       text-align: center;
+
       @media screen and (min-width: 600px) {
         height: 220px;
         margin: 4px 4px;
         text-align: left;
         padding: 20px 4px 0px 12px;
-      }  
+      }
+
       .whatnext-emoji {
         display: none;
         text-align: center;
@@ -310,20 +337,24 @@
         left: 0;
         right: 0;
         font-size: 50px;
+
         @media screen and (min-width: 600px) {
           display: block;
         }
       }
     }
   }
+
   .onboarding-previous-location {
     text-align: center;
     margin-top: 10px;
     font-weight: bold;
     display: none;
+
     @media screen and (min-width: 600px) {
       display: block;
     }
+
     code {
       font-size: 0.6em;
       margin-top: -10px;
@@ -331,21 +362,26 @@
       font-weight: 400;
     }
   }
+
   @media screen and (max-width: 800px) {
     .onboarding-main {
       width: 100%;
       height: 100%;
       background-image: url('/assets/mobile-onboarding-background.png');
       background-size: cover;
-      background-position: center; /* Center the image */
-      background-repeat: no-repeat; /* Do not repeat the image */
+      /* Center the image */
+      background-position: center;
+      /* Do not repeat the image */
+      background-repeat: no-repeat;
       border: none;
+      color: $black;
     }
 
     .onboarding-content {
       flex: 0 0 auto;
 
-      h1, h2 {
+      h1,
+      h2 {
         margin-top: initial;
       }
     }
@@ -353,12 +389,8 @@
     span {
       display: block;
     }
-
-    .back-button {
-      background-color: white;
-    }
   }
-  
+
   @media screen and (max-width: 650px) {
     .onboarding-main {
       font-size: 18px;

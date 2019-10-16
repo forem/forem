@@ -150,7 +150,7 @@ class User < ApplicationRecord
   after_save  :bust_cache
   after_save  :subscribe_to_mailchimp_newsletter
   after_save  :conditionally_resave_articles
-  after_create :estimate_default_language!
+  after_create :estimate_default_language
   before_create :set_default_language
   before_validation :set_username
   # make sure usernames are not empty, to be able to use the database unique index
@@ -158,10 +158,10 @@ class User < ApplicationRecord
   before_validation :set_config_input
   before_validation :downcase_email
   before_validation :check_for_username_change
-  before_destroy :remove_from_algolia_index
-  before_destroy :destroy_empty_dm_channels
-  before_destroy :destroy_follows
-  before_destroy :unsubscribe_from_newsletters
+  before_destroy :remove_from_algolia_index, prepend: true
+  before_destroy :destroy_empty_dm_channels, prepend: true
+  before_destroy :destroy_follows, prepend: true
+  before_destroy :unsubscribe_from_newsletters, prepend: true
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :name
@@ -217,12 +217,8 @@ class User < ApplicationRecord
     self.remember_created_at ||= Time.now.utc
   end
 
-  def estimate_default_language!
+  def estimate_default_language
     Users::EstimateDefaultLanguageJob.perform_later(id)
-  end
-
-  def estimate_default_language_without_delay!
-    Users::EstimateDefaultLanguageJob.perform_now(id)
   end
 
   def calculate_score
@@ -403,17 +399,8 @@ class User < ApplicationRecord
     errors.add(:username, "is taken.") if Organization.find_by(slug: username) || Podcast.find_by(slug: username) || Page.find_by(slug: username)
   end
 
-  def subscribe_to_mailchimp_newsletter_without_delay
-    return unless email.present? && email.include?("@")
-
-    return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
-
-    Users::SubscribeToMailchimpNewsletterJob.perform_now(id)
-  end
-
   def subscribe_to_mailchimp_newsletter
     return unless email.present? && email.include?("@")
-
     return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
 
     Users::SubscribeToMailchimpNewsletterJob.perform_later(id)
