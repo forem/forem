@@ -42,8 +42,8 @@ module Api
         if @article.persisted?
           render "show", status: :created, location: @article.url
         else
-          message = @article.errors.full_messages
-          render json: { errors: message, status: 422 }, status: :unprocessable_entity
+          message = @article.errors.full_messages.join(", ")
+          render json: { error: message, status: 422 }, status: :unprocessable_entity
         end
       end
 

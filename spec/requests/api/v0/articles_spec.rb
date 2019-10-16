@@ -261,6 +261,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         tags = %w[meta discussion]
         post_article(body_markdown: "Yo ho ho", tags: tags)
         expect(response).to have_http_status(:unprocessable_entity)
+        expect(json_response["error"]).to be_present
       end
 
       it "creates an article belonging to the user" do
