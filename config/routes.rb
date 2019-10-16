@@ -177,10 +177,8 @@ Rails.application.routes.draw do
   resources :partnerships, only: %i[index create show], param: :option
   resources :display_ad_events, only: [:create]
   resource :pro_membership, path: :pro, only: %i[show create update]
-  resources :user_blocks do
-    get ":blocked_id", on: :collection, to: "user_blocks#show"
+  resources :user_blocks, param: :blocked_id, only: %i[show destroy] do
     post ":blocked_id", on: :collection, to: "user_blocks#create"
-    delete ":blocked_id", on: :collection, to: "user_blocks#destroy"
   end
   resolve("ProMembership") { [:pro_membership] } # see https://guides.rubyonrails.org/routing.html#using-resolve
 

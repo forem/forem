@@ -20,7 +20,7 @@ export default function initBlock() {
     })
       .then(response => response.json())
       .then(response => {
-        if (response.outcome === 'unblocked') {
+        if (response.result === 'unblocked') {
           blockButton.innerText = 'Block';
           blockButton.addEventListener('click', block, { once: true });
         }
@@ -53,7 +53,7 @@ export default function initBlock() {
       })
         .then(response => response.json())
         .then(response => {
-          if (response.outcome === 'blocked') {
+          if (response.result === 'blocked') {
             blockButton.innerText = 'Unblock';
             blockButton.addEventListener('click', unblock, { once: true });
           }
@@ -72,9 +72,9 @@ export default function initBlock() {
       blockButton.style.display = 'none';
     } else {
       fetch(`/user_blocks/${profileUserId}`)
-        .then(response => response.text())
+        .then(response => response.json())
         .then(response => {
-          if (response === 'blocking') {
+          if (response.result === 'blocking') {
             blockButton.innerText = 'Unblock';
             blockButton.addEventListener('click', unblock, { once: true });
           } else {

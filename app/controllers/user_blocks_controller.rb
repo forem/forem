@@ -6,14 +6,13 @@ class UserBlocksController < ApplicationController
     skip_authorization
 
     if current_user.blocking?(params[:blocked_id].to_i)
-      render plain: "blocking"
+      render json: { result: "blocking" }
     else
-      render plain: "not-blocking"
+      render json: { result: "not-blocking" }
     end
   end
 
   def create
-
     authorize UserBlock
     @user_block = UserBlock.new(permitted_attributes(UserBlock))
     @user_block.blocker_id = current_user.id
@@ -23,16 +22,16 @@ class UserBlocksController < ApplicationController
       UserBlocks::ChannelHandler.new(@user_block).block_chat_channel
       current_user.stop_following(@user_block.blocked)
       @user_block.blocked.stop_following(current_user)
-      render json: { outcome: "blocked" }
+      render json: { result: "blocked" }
     else
-      render json: { outcome: "error: #{@user_block&.errors&.full_messages}" }
+      render json: { result: "error: #{@user_block.errors.full_messages}" }
     end
   end
 
   def destroy
     if current_user.blocking_others_count.zero?
       skip_authorization
-      render plain: "not-blocking-anyone"
+      render json: { result: "not-blocking-anyone" }
       return
     end
 
@@ -41,9 +40,9 @@ class UserBlocksController < ApplicationController
 
     if @user_block.destroy
       UserBlocks::ChannelHandler.new(@user_block).unblock_chat_channel
-      render json: { outcome: "unblocked" }
+      render json: { result: "unblocked" }
     else
-      render json: { outcome: "error: #{@user_block&.errors&.full_messages}" }
+      render json: { result: "error: #{@user_block.errors.full_messages}" }
     end
   end
 
@@ -52,7 +51,7 @@ class UserBlocksController < ApplicationController
   def check_sign_in_status
     unless current_user
       skip_authorization
-      render plain: "not-logged-in"
+      render json: { result: "not-logged-in" }
       return
     end
   end
