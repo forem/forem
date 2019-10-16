@@ -323,6 +323,7 @@ RSpec.describe "UserSettings", type: :request do
     it "redirects to root" do
       delete "/users/full_delete"
       expect(response).to redirect_to "/"
+      expect(flash[:settings_notice]).to include("Your account deletion is scheduled")
     end
   end
 end
