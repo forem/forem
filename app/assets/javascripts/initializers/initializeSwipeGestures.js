@@ -32,7 +32,7 @@ function initializeSwipeGestures(){
   },50)
 }
 
-function handleSwipe(e, direction){
+function handleSwipe(e, direction) {
   if (!document.getElementById("on-page-nav-controls")){
     return;
   }
@@ -46,10 +46,11 @@ function handleSwipe(e, direction){
   }
 }
 
-function handleSwipeLeft(e){
+function handleSwipeLeft(e) {
   handleSwipe(e, "left")
 }
 
-function handleSwipeRight(e){
+function handleSwipeRight(e) {
   handleSwipe(e, "right")
 }
+
