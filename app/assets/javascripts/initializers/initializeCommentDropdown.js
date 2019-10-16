@@ -5,9 +5,7 @@ function initializeCommentDropdown() {
 
   function isIOSDevice() {
     return (
-      navigator.userAgent.match(/iPhone/i) ||
-      navigator.userAgent.match('CriOS') ||
-      navigator.userAgent.match(/iPad/i) ||
+      /iPhone|CriOS|iPad/i.test(navigator.userAgent) ||
       navigator.userAgent === 'DEV-Native-ios'
     );
   }
@@ -32,7 +30,9 @@ function initializeCommentDropdown() {
   }
 
   function hideAnnouncer() {
-    announcer.hidden = true;
+    if (announcer) {
+      announcer.hidden = true; 
+    }
   }
 
   function iOSCopyText() {
@@ -61,11 +61,13 @@ function initializeCommentDropdown() {
   }
 
   function removeCopyListener() {
-    if (isIOSDevice) {
+    if (isIOSDevice()) {
       const clipboardCopyElement = document.getElementsByTagName(
         'clipboard-copy',
       )[0];
-      clipboardCopyElement.removeEventListener('click', iOSCopyText);
+      if (clipboardCopyElement) {
+        clipboardCopyElement.removeEventListener('click', iOSCopyText);
+      }
     } else {
       document.removeEventListener('clipboard-copy', showAnnouncer);
     }
@@ -96,13 +98,15 @@ function initializeCommentDropdown() {
     } else {
       removeAllShowing();
       dropdownContent.classList.add('showing');
-      if (isIOSDevice) {
+      if (isIOSDevice()) {
         const clipboardCopyElement = document.getElementsByTagName(
           'clipboard-copy',
         )[0];
 
         document.addEventListener('click', outsideClickListener);
-        clipboardCopyElement.addEventListener('click', iOSCopyText);
+        if (clipboardCopyElement) {
+          clipboardCopyElement.addEventListener('click', iOSCopyText);          
+        }
       } else {
         document.addEventListener('click', outsideClickListener);
         document.addEventListener('clipboard-copy', showAnnouncer);
