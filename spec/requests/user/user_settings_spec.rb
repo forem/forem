@@ -303,4 +303,26 @@ RSpec.describe "UserSettings", type: :request do
       end
     end
   end
+
+  describe "DELETE /users/full_delete" do
+    before do
+      sign_in user
+    end
+
+    it "schedules a user delete job" do
+      expect do
+        delete "/users/full_delete"
+      end.to have_enqueued_job(Users::DeleteJob).with(user.id)
+    end
+
+    it "signs out" do
+      delete "/users/full_delete"
+      expect(controller.current_user).to eq nil
+    end
+
+    it "redirects to root" do
+      delete "/users/full_delete"
+      expect(response).to redirect_to "/"
+    end
+  end
 end
