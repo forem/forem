@@ -140,7 +140,7 @@ function initReactions() {
   setTimeout(() => {
     if (document.getElementById('notifications-container')) {
       addOnClickHandlerToButtons('reaction-button', onClickReactionButton);
-      addOnClickHandlerToButtons('toggle-replay-form', onClickReply);
+      addOnClickHandlerToButtons('toggle-reply-form', onClickReply);
     }
   }, 180);
 }
