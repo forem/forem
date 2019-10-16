@@ -68,4 +68,11 @@ RSpec.describe Mentions::CreateAll do
     described_class.call(comment2)
     expect(Mention.all.size).to eq(0)
   end
+
+  it "cant mention self" do
+    comment.body_markdown = "Me, Myself and I @#{user.username}"
+    comment.save
+    described_class.call(comment)
+    expect(Mention.all.size).to eq(0)
+  end
 end
