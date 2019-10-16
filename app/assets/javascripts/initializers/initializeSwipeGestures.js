@@ -45,9 +45,11 @@ function handleSwipe(e, direction){
     slideSidebar(direction,"outOfView");
   }
 }
+
 function handleSwipeLeft(e){
   handleSwipe(e, "left")
 }
+
 function handleSwipeRight(e){
   handleSwipe(e, "right")
 }
