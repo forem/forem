@@ -1,7 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-import { userInfo } from 'os';
 import Navigation from './Navigation';
 import { getContentOfToken } from '../utilities';
 
@@ -56,9 +55,9 @@ class FollowUsers extends Component {
         'X-CSRF-Token': csrfToken,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({users:selectedUsers}),
+      body: JSON.stringify({ users: selectedUsers }),
       credentials: 'same-origin',
-    })
+    });
 
     next();
   }
