@@ -275,6 +275,12 @@ class Tags extends Component {
     return `${value.slice(0, position)} ${value.slice(position, value.length)}`;
   };
 
+  handleTagEnter = e => {
+    if (e.keyCode === 13) {
+      this.handleTagClick();
+    }
+  };
+
   insertTag(tag) {
     const input = document.getElementById('tag-input');
     const { maxTags } = this.props;
@@ -364,13 +370,14 @@ class Tags extends Component {
     const { searchResults, selectedIndex, showingRulesForTag } = this.state;
     const { classPrefix, defaultValue, maxTags, listing } = this.props;
     const searchResultsRows = searchResults.map((tag, index) => (
-      // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
       <div
         tabIndex="-1"
+        role="button"
         className={`${classPrefix}__tagoptionrow ${classPrefix}__tagoptionrow--${
           selectedIndex === index ? 'active' : 'inactive'
         }`}
         onClick={this.handleTagClick}
+        onKeyDown={this.handleTagEnter}
         data-content={tag.name}
       >
         {tag.name}
