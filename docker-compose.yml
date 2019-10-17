@@ -25,6 +25,6 @@ services:
     build: .
     command: ./bin/webpack-dev-server
   db:
-    image: postgres
+    image: postgres:${POSTGRES_VERSION:-9.6.15-alpine}
     ports:
       - "5432:5432"
