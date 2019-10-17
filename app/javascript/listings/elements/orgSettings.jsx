@@ -1,40 +1,19 @@
 // listings
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-
-const orgOptions = (organizations, organizationId) => {
-  const orgs = organizations.map(organization => {
-    if (organizationId === organization.id) {
-      return (
-        <option value={organization.id} selected>
-          {organization.name}
-        </option>
-      );
-    }
-    return <option value={organization.id}>{organization.name}</option>;
-  });
-  const nullOrgOption =
-    organizationId === null ? (
-      <option value="" selected>
-        None
-      </option>
-    ) : (
-      <option value="">None</option>
-    );
-  orgs.unshift(nullOrgOption); // make first option as "None"
-  return orgs;
-};
+import { OrganizationPicker } from '../../organization/OrgSettings';
+import { organizationPropType } from '../../src/components/common-prop-types';
 
 const OrgSettings = ({ organizations, organizationId, onToggle }) => (
   <div className="field">
     <label htmlFor="organizationId">Post under an organization:</label>
-    <select
+    <OrganizationPicker
       name="classified_listing[organization_id]"
       id="listing_organization_id"
+      organizations={organizations}
+      organizationId={organizationId}
       onBlur={onToggle}
-    >
-      {orgOptions(organizations, organizationId)}
-    </select>
+    />
     <p>
       <em>Posting on behalf of org spends org credits.</em>
     </p>
@@ -44,12 +23,7 @@ const OrgSettings = ({ organizations, organizationId, onToggle }) => (
 OrgSettings.propTypes = {
   onToggle: PropTypes.func.isRequired,
   organizationId: PropTypes.number.isRequired,
-  organizations: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired,
-    }),
-  ).isRequired,
+  organizations: PropTypes.arrayOf(organizationPropType).isRequired,
 };
 
 export default OrgSettings;
