@@ -115,18 +115,18 @@ function fetchNextFollowingPage(el){
   var indexParams = JSON.parse(el.dataset.params);
   var action = indexParams.action;
   if (action.includes("users")){
-    fetchNext(el, "/api/follows/following_users", insertNext({ elId: "follows" }, buildFollowsHTML));
+    fetchNext(el, "/api/followings/users", insertNext({ elId: "follows" }, buildFollowsHTML));
   } else if (action.includes("podcasts")){
-    fetchNext(el, "/api/follows/following_podcasts", insertNext({ elId: "follows" }, buildFollowsHTML));
+    fetchNext(el, "/api/followings/podcasts", insertNext({ elId: "follows" }, buildFollowsHTML));
   } else if (action.includes("organizations")){
-    fetchNext(el, "/api/follows/following_organizations", insertNext({ elId: "follows" }, buildFollowsHTML));
+    fetchNext(el, "/api/followings/organizations", insertNext({ elId: "follows" }, buildFollowsHTML));
   } else {
-    fetchNext(el, "/api/follows/following_tags", insertNext({ elId: "follows" }, buildTagsHTML));
+    fetchNext(el, "/api/followings/tags", insertNext({ elId: "follows" }, buildTagsHTML));
   }
 }
 
 function fetchNextFollowersPage(el){
-  fetchNext(el, "/api/follows/followers", insertNext({ listId: "subfollowers", elId: "follows" }, buildFollowsHTML));
+  fetchNext(el, "/api/followers", insertNext({ listId: "subfollowers", elId: "follows" }, buildFollowsHTML));
 }
 
 function buildFollowsHTML(follows) {
