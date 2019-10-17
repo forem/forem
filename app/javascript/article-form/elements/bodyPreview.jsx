@@ -1,13 +1,11 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-function getCoverImage(imageSrc) {
-  return (
-    <div className="articleform__mainimage articleform__mainimagepreview">
-      <img src={imageSrc} alt="cover" />
-    </div>
-  );
-}
+const CoverImage = ({ className, imageSrc, imageAlt }) => (
+  <div className={className}>
+    <img src={imageSrc} alt={imageAlt} />
+  </div>
+);
 
 function titleArea(previewResponse, version, articleState) {
   if (version === 'help') {
@@ -27,16 +25,20 @@ function titleArea(previewResponse, version, articleState) {
 
   let coverImage = '';
   if (previewResponse.cover_image && previewResponse.cover_image.length > 0) {
-    coverImage = getCoverImage(previewResponse.cover_image);
+    coverImage = previewResponse.cover_image
   } else if (articleState.mainImage) {
-    coverImage = getCoverImage(articleState.mainImage);
+    coverImage = articleState.mainImage;
   }
 
   const previewTitle = previewResponse.title || articleState.title || '';
 
   return (
     <div>
-      {coverImage}
+      <CoverImage
+        className="articleform__mainimage articleform__mainimagepreview"
+        imageSrc={coverImage}
+        imageAlt="cover"
+      />
       <div className="title" style={{ width: '90%', maxWidth: '1000px' }}>
         <h1
           className={
@@ -86,6 +88,12 @@ const previewResponsePropTypes = PropTypes.shape({
   tags: PropTypes.array,
   cover_image: PropTypes.string,
 });
+
+CoverImage.propTypes = {
+  className: PropTypes.string,
+  imageSrc: PropTypes.string.isRequired,
+  imageAlt: PropTypes.string.isRequired
+}
 
 BodyPreview.propTypes = {
   previewResponse: previewResponsePropTypes.isRequired,
