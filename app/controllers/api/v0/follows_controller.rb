@@ -1,10 +1,7 @@
 module Api
   module V0
     class FollowsController < ApplicationController
-      caches_action :followers,
-                    cache_path: proc { |c| c.params.permit! },
-                    expires_in: 10.minutes
-      respond_to :json
+      before_action -> { limit_per_page(default: 80, max: 1000) }, only: %i[following_tags following_users following_organizations following_podcasts followers]
 
       def followers
         return unless user_signed_in?
@@ -20,7 +17,7 @@ module Api
           includes(:follower).
           order("created_at DESC").
           page(params[:page]).
-          per(80)
+          per(@follows_limit)
       end
 
       def following_users
@@ -31,7 +28,7 @@ module Api
           order("created_at DESC").
           includes(:followable).
           page(params[:page]).
-          per(80)
+          per(@follows_limit)
       end
 
       def following_tags
@@ -42,7 +39,7 @@ module Api
           order("points DESC").
           includes(:followable).
           page(params[:page]).
-          per(80)
+          per(@follows_limit)
       end
 
       def following_organizations
@@ -53,7 +50,7 @@ module Api
           order("created_at DESC").
           includes(:followable).
           page(params[:page]).
-          per(80)
+          per(@follows_limit)
       end
 
       def following_podcasts
@@ -64,7 +61,7 @@ module Api
           order("created_at DESC").
           includes(:followable).
           page(params[:page]).
-          per(80)
+          per(@follows_limit)
       end
 
       def create
@@ -75,6 +72,13 @@ module Api
           Users::FollowJob.perform_later(current_user.id, user_id, "User")
         end
         render json: { outcome: "followed 50 users" }
+      end
+
+      private
+
+      def limit_per_page(default:, max:)
+        per_page = (params[:per_page] || default).to_i
+        @follows_limit = [per_page, max].min
       end
     end
   end
