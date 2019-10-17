@@ -9,7 +9,7 @@ class MarkdownParser
   end
 
   def finalize(link_attributes: {})
-    options = { hard_wrap: true, filter_html: false, link_attributes: link_attributes }
+    options = { hard_wrap: false, filter_html: false, link_attributes: link_attributes }
     renderer = Redcarpet::Render::HTMLRouge.new(options)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
     catch_xss_attempts(@content)

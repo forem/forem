@@ -27,6 +27,11 @@ RSpec.describe MarkdownParser do
     expect(generate_and_parse_markdown(code_block)).not_to include("----")
   end
 
+  it "does not render '<br>' when using tildes to delimit codeblocks preceded by a header" do
+    code_block = "~~~\nputs 'hello'\n~~~\n# header\n"
+    expect(generate_and_parse_markdown(code_block)).not_to include("<br>")
+  end
+
   it "does not remove the non-'raw tag related' four dashes" do
     code_block = "```\n----\n```"
     expect(generate_and_parse_markdown(code_block)).to include("----")
