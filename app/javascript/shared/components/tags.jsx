@@ -275,7 +275,7 @@ class Tags extends Component {
 
   insertTag(tag) {
     const input = document.getElementById('tag-input');
-    const { maxTags, onInput } = this.props;
+    const { maxTags } = this.props;
     const range = this.getRangeBetweenCommas(input.value, input.selectionStart);
     const insertingAtEnd = range[1] === input.value.length;
     const maxTagsWillBeReached = this.selected.length === maxTags;
@@ -290,7 +290,7 @@ class Tags extends Component {
       tagValue +
       input.value.slice(range[1], input.value.length);
 
-    onInput(newInput);
+    this.props.onInput(newInput);
     this.resetSearchResults();
     this.clearSelectedSearchResult();
   }
