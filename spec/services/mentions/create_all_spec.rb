@@ -2,18 +2,19 @@ require "rails_helper"
 
 RSpec.describe Mentions::CreateAll do
   let(:user)        { create(:user) }
+  let(:user2)       { create(:user) }
   let(:article)     { create(:article, user_id: user.id) }
-  let(:comment)     { create(:comment, user_id: user.id, commentable_id: article.id) }
+  let(:comment)     { create(:comment, user_id: user2.id, commentable_id: article.id) }
   let(:comment2)    do
     create(
       :comment,
       body_markdown: "Hello @#{user.username}, you are cool.",
-      user_id: user.id,
+      user_id: user2.id,
       commentable_id: article.id,
     )
   end
 
-  it "creates mention if there is a user mentioned" do
+  it "creates mention if there is a user mentioned and if the user doenst own the comment" do
     comment.body_markdown = "Hello @#{user.username}, you are cool."
     comment.save
     described_class.call(comment)
@@ -70,7 +71,7 @@ RSpec.describe Mentions::CreateAll do
   end
 
   it "cant mention self" do
-    comment.body_markdown = "Me, Myself and I @#{user.username}"
+    comment.body_markdown = "Me, Myself and I @#{user2.username}"
     comment.save
     described_class.call(comment)
     expect(Mention.all.size).to eq(0)
