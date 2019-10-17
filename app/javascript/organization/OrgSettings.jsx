@@ -21,8 +21,8 @@ const orgOptions = (organizations, organizationId) => {
     ) : (
       <option value="">None</option>
     );
-  orgs.unshift(nullOrgOption); // make first option as "None"
-  return orgs;
+
+  return [nullOrgOption, ...orgs];
 };
 
 export const OrganizationPicker = ({
