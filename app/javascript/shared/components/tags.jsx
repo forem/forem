@@ -244,8 +244,7 @@ class Tags extends Component {
     if (e.data === ',') {
       value += ' ';
     }
-    const { onInput } = this.props;
-    onInput(value);
+    this.props.onInput(value);
 
     const query = this.getCurrentTagAtSelectionIndex(
       e.target.value,
@@ -365,12 +364,10 @@ class Tags extends Component {
     const searchResultsRows = searchResults.map((tag, index) => (
       <div
         tabIndex="-1"
-        role="button"
         className={`${classPrefix}__tagoptionrow ${classPrefix}__tagoptionrow--${
           selectedIndex === index ? 'active' : 'inactive'
         }`}
         onClick={this.handleTagClick}
-        onKeyDown={this.handleTagClick}
         data-content={tag.name}
       >
         {tag.name}
