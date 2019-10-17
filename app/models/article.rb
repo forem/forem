@@ -511,7 +511,7 @@ class Article < ApplicationRecord
     # check that tags don't contain non alphabet characters
     tag_list.each do |tag|
       errors.add(:tag, "\"#{tag}\" is too long (maximum is 30 characters)") if tag.length > 30
-      errors.add(:tag, "'#{tag}' contains non-alphabetic characters") unless tag.match?(/\A[[:alpha:]]+\z/) && !tag.empty?
+      errors.add(:tag, "'#{tag}' contains non-alphanumeric characters") unless tag.match?(/\A[[:alnum:]]+\z/) && !tag.empty?
     end
   end
 
