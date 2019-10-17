@@ -11,13 +11,35 @@ RSpec.describe Users::DeleteJob, type: :job do
       allow(delete).to receive(:call)
     end
 
-    it "calls the service when a user is found" do
-      described_class.perform_now(user.id, delete)
-      expect(delete).to have_received(:call).with(user)
+    context "when user is found" do
+      it "calls the service when a user is found" do
+        described_class.perform_now(user.id, delete)
+        expect(delete).to have_received(:call).with(user)
+      end
+
+      it "sends the notification" do
+        expect do
+          described_class.perform_now(user.id, delete)
+        end.to change(ActionMailer::Base.deliveries, :count).by(1)
+      end
+
+      it "sends the correct notification" do
+        allow(NotifyMailer).to receive(:account_deleted_email).and_call_original
+        described_class.perform_now(user.id, delete)
+        expect(NotifyMailer).to have_received(:account_deleted_email).with(user)
+      end
     end
 
-    it "doesn't fail when a user is not found" do
-      described_class.perform_now(-1, delete)
+    context "when user is not found" do
+      it "doesn't fail" do
+        described_class.perform_now(-1, delete)
+      end
+
+      it "doesn't send the notification" do
+        expect do
+          described_class.perform_now(-1, delete)
+        end.not_to change(ActionMailer::Base.deliveries, :count)
+      end
     end
   end
 end

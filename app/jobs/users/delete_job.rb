@@ -7,6 +7,7 @@ module Users
       return unless user
 
       service.call(user)
+      NotifyMailer.account_deleted_email(user).deliver
     end
   end
 end
