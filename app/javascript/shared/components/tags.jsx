@@ -244,6 +244,8 @@ class Tags extends Component {
     if (e.data === ',') {
       value += ' ';
     }
+
+    /* eslint-disable-next-line react/destructuring-assignment */
     this.props.onInput(value);
 
     const query = this.getCurrentTagAtSelectionIndex(
@@ -289,7 +291,7 @@ class Tags extends Component {
       input.value.slice(0, range[0]) +
       tagValue +
       input.value.slice(range[1], input.value.length);
-
+    /* eslint-disable-next-line react/destructuring-assignment */
     this.props.onInput(newInput);
     this.resetSearchResults();
     this.clearSelectedSearchResult();
@@ -362,6 +364,7 @@ class Tags extends Component {
     const { searchResults, selectedIndex, showingRulesForTag } = this.state;
     const { classPrefix, defaultValue, maxTags, listing } = this.props;
     const searchResultsRows = searchResults.map((tag, index) => (
+      // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
       <div
         tabIndex="-1"
         className={`${classPrefix}__tagoptionrow ${classPrefix}__tagoptionrow--${
