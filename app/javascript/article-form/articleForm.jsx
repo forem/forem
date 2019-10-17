@@ -139,54 +139,54 @@ export default class ArticleForm extends Component {
     );
   };
 
+  setHelpImgConfigPreviewProps = ({
+    helpShowing = false,
+    previewShowing = false,
+    imageManagementShowing = false,
+    moreConfigShowing = false,
+  }) => {
+    this.setState({
+      helpShowing,
+      previewShowing,
+      imageManagementShowing,
+      moreConfigShowing
+    });
+  };
+
   toggleHelp = e => {
     const { helpShowing } = this.state;
     e.preventDefault();
     window.scrollTo(0, 0);
-    this.setState({
-      helpShowing: !helpShowing,
-      previewShowing: false,
-      imageManagementShowing: false,
-      moreConfigShowing: false,
+    this.setHelpImgConfigPreviewProps({
+      helpShowing: !helpShowing
     });
-  };
-
-  fetchPreview = e => {
-    const { previewShowing, bodyMarkdown } = this.state;
-    e.preventDefault();
-    if (previewShowing) {
-      this.setState({
-        previewShowing: false,
-        helpShowing: false,
-        imageManagementShowing: false,
-        moreConfigShowing: false,
-      });
-    } else {
-      previewArticle(bodyMarkdown, this.showPreview, this.failedPreview);
-    }
   };
 
   toggleImageManagement = e => {
     const { imageManagementShowing } = this.state;
     e.preventDefault();
     window.scrollTo(0, 0);
-    this.setState({
-      imageManagementShowing: !imageManagementShowing,
-      previewShowing: false,
-      helpShowing: false,
-      moreConfigShowing: false,
-    });
+    this.setHelpImgConfigPreviewProps({
+      imageManagementShowing: !imageManagementShowing
+    });    
   };
 
   toggleMoreConfig = e => {
     const { moreConfigShowing } = this.state;
     e.preventDefault();
-    this.setState({
-      moreConfigShowing: !moreConfigShowing,
-      previewShowing: false,
-      helpShowing: false,
-      imageManagementShowing: false,
-    });
+    this.setHelpImgConfigPreviewProps({
+      moreConfigShowing: !moreConfigShowing
+    });    
+  };
+
+  fetchPreview = e => {
+    const { previewShowing, bodyMarkdown } = this.state;
+    e.preventDefault();
+    if (previewShowing) {
+      this.setHelpImgConfigPreviewProps({});
+    } else {
+      previewArticle(bodyMarkdown, this.showPreview, this.failedPreview);
+    }
   };
 
   showPreview = response => {
@@ -235,20 +235,18 @@ export default class ArticleForm extends Component {
     window.removeEventListener('beforeunload', this.localStoreContent);
   };
 
-  onPublish = e => {
+  publishOrSaveDraft = (e, isPublished) => {
     e.preventDefault();
-    this.setState({ submitting: true, published: true });
-    const { state } = this;
-    state.published = true;
-    submitArticle(state, this.removeLocalStorage, this.handleArticleError);
+    this.setState({ submitting: true, published: isPublished });
+    submitArticle(this.state, this.removeLocalStorage, this.handleArticleError);
+  }
+
+  onPublish = e => {
+    this.publishOrSaveDraft(e, true);
   };
 
   onSaveDraft = e => {
-    e.preventDefault();
-    this.setState({ submitting: true, published: false });
-    const { state } = this;
-    state.published = false;
-    submitArticle(state, this.removeLocalStorage, this.handleArticleError);
+    this.publishOrSaveDraft(e, false);
   };
 
   handleTitleKeyDown = e => {
