@@ -83,7 +83,7 @@ class UsersController < ApplicationController
   def full_delete
     set_user
     set_tabs("account")
-    Users::DeleteJob.perform_later(@user.id)
+    Users::SelfDeleteJob.perform_later(@user.id)
     flash[:settings_notice] = "Your account deletion is scheduled. You'll be notified when it's deleted."
     sign_out @user
     redirect_to root_path

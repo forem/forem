@@ -23,6 +23,6 @@ RSpec.describe "User destroys their profile", type: :system, js: true do
     fill_in "delete__account__verification__field", with: "delete my account"
     expect do
       click_button "DELETE ACCOUNT"
-    end.to have_enqueued_job(Users::DeleteJob)
+    end.to have_enqueued_job(Users::SelfDeleteJob)
   end
 end

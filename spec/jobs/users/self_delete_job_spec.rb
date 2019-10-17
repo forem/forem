@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Users::DeleteJob, type: :job do
+RSpec.describe Users::SelfDeleteJob, type: :job do
   include_examples "#enqueues_job", "users_delete", 1
 
   describe "#perform_now" do

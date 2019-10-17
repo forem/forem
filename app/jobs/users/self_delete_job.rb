@@ -1,6 +1,6 @@
 module Users
-  class DeleteJob < ApplicationJob
-    queue_as :users_delete
+  class SelfDeleteJob < ApplicationJob
+    queue_as :users_self_delete
 
     def perform(user_id, service = Users::Delete)
       user = User.find_by(id: user_id)

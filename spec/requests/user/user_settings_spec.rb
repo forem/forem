@@ -312,7 +312,7 @@ RSpec.describe "UserSettings", type: :request do
     it "schedules a user delete job" do
       expect do
         delete "/users/full_delete"
-      end.to have_enqueued_job(Users::DeleteJob).with(user.id)
+      end.to have_enqueued_job(Users::SelfDeleteJob).with(user.id)
     end
 
     it "signs out" do
