@@ -1,5 +1,5 @@
 class ArticleApiIndexService
-  attr_accessor :tag, :username, :page, :state, :top, :collection_id
+  attr_accessor :tag, :username, :page, :state, :top, :collection_id, :per_page
 
   def initialize(params)
     @page = params[:page]
@@ -8,6 +8,7 @@ class ArticleApiIndexService
     @state = params[:state]
     @top = params[:top]
     @collection_id = params[:collection_id]
+    @per_page = params[:per_page]
   end
 
   def get
@@ -25,7 +26,7 @@ class ArticleApiIndexService
                  base_articles
                end
 
-    articles.decorate
+    articles.page(page).per(per_page).decorate
   end
 
   private

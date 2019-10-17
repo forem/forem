@@ -78,6 +78,14 @@ RSpec.describe "Api::V0::Articles", type: :request do
       get api_articles_path(collection_id: collection.id)
       expect(json_response[0]["collection_id"]).to eq collection.id
     end
+
+    it "supports pagination" do
+      create_list(:article, 2, featured: true)
+      get api_articles_path, params: { page: 1, per_page: 2 }
+      expect(json_response.length).to eq(2)
+      get api_articles_path, params: { page: 2, per_page: 2 }
+      expect(json_response.length).to eq(1)
+    end
   end
 
   describe "GET /api/articles/:id" do
