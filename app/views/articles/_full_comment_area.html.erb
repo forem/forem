@@ -1,5 +1,5 @@
 <% cache("whole-comment-area-#{@article.id}-#{@article.last_comment_at}-#{@article.show_comments}", expires_in: 2.hours) do %>
-  <div id="comments" style="margin-top: -56px;padding-bottom:56px;position:relative;z-index:-100" data-updated-at="<%= Time.current %>">
+  <div id="comments" data-updated-at="<%= Time.current %>">
     <% if @article.show_comments %>
       <div class="comments-container-container">
         <div
