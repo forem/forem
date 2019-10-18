@@ -7,7 +7,7 @@ _These prerequisites assume you're working on a Linux-based operating system, bu
 ### Ruby
 
 1. If you don't already have a Ruby version manager, we highly recommend [rbenv](https://github.com/rbenv/rbenv). Please follow their [installation guide](https://github.com/rbenv/rbenv#installation).
-1. With the Ruby version manager, install the Ruby version listed on our badge. (ie with rbenv: `rbenv install 2.6.3`)
+1. With the Ruby version manager, install the Ruby version listed on our badge. (ie with rbenv: `rbenv install 2.6.5`)
 
 For very detailed rbenv installation directions on several distros, please visit [DigitalOcean's guide](https://www.digitalocean.com/community/tutorials/how-to-install-ruby-on-rails-with-rbenv-on-ubuntu-18-04).
 
@@ -57,4 +57,8 @@ Please refer to ImageMagick's [instructions](https://imagemagick.org/script/down
 
 ### Possible error messages
 
-While installing, you might run into an error due to the pg gem requiring PostgreSQL libraries. If so, please run `sudo apt-get install libpq-dev` before retrying.
+While installing, you might run into an error due to the `pg` gem requiring PostgreSQL libraries. If so, please run `sudo apt-get install libpq-dev` before retrying.
+
+While installing, you might run into an error due to the `sass-rails` gem requiring `sassc`, which requires the `g++` compiler.  If so, please run `sudo apt-get install g++` before retrying.
+
+While installing, if you didn't install `node` or `nvm` manually, you might run into an error due to an older system node version being present, which can cause issues while `yarn` is installing packages.  If so, you'll need to [install `nvm`](https://github.com/nvm-sh/nvm#installation-and-update) and then run `nvm install node` to get the most recent node version before retrying.

@@ -134,8 +134,7 @@
               <input type="hidden" name="article_id" value="<%= article.id %>" />
               <p> Twitter MAIN</p>
               <textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="255"><%= article.title %>
-<% if !article.user.twitter_username.blank? %>&#013{ author: @<%= article.user.twitter_username %> } #DEVCommunity<% end %>
-              </textarea>
+<% if article.user.twitter_username? %>&#013{ author: @<%= article.user.twitter_username %> } #DEVCommunity<% end %></textarea>
               <button class="btn btn-info" style="font-size:1em;">🦅 Tweet to @<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %></button>
             <% end %>
             <% if (article.decorate.cached_tag_list_array & Tag.bufferized_tags).any? %>
@@ -144,8 +143,7 @@
                 <input type="hidden" name="article_id" value="<%= article.id %>" />
                 <p> Twitter Satellite</p>
                 <textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="255"><%= article.title %>
-<% if !article.user.twitter_username.blank? %>&#013{ author: @<%= article.user.twitter_username %> }<% end %>
-                </textarea>
+<% if article.user.twitter_username? %>&#013{ author: @<%= article.user.twitter_username %> }<% end %></textarea>
                 <button class="btn btn-info" style="font-size:1em;">🐦 Tweet to satellites</button>
               <% end %>
             <% end %>

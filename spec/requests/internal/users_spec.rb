@@ -29,7 +29,9 @@ RSpec.describe "Internal::Users", type: :request do
     create(:reaction, reactable: comment2, reactable_type: "Comment", user: user2)
     # create user3 reaction to offending article
     create(:reaction, reactable: article, reactable_type: "Article", user: user3, category: "like")
-    Mention.create_all_without_delay(comment2)
+    perform_enqueued_jobs do
+      Mention.create_all(comment2)
+    end
     Delayed::Worker.new(quiet: true).work_off
   end
 
@@ -170,7 +172,9 @@ RSpec.describe "Internal::Users", type: :request do
         user_id: user2.id,
         commentable_id: article2.id,
       )
-      Mention.create_all_without_delay(comment)
+      perform_enqueued_jobs do
+        Mention.create_all(comment)
+      end
     end
 
     def create_mutual_follows
