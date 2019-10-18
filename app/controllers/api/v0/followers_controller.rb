@@ -1,11 +1,10 @@
 module Api
   module V0
-    class FollowersController < ApplicationController
+    class FollowersController < ApiController
+      before_action :authenticate_with_api_key_or_current_user!, only: [:index]
       before_action -> { limit_per_page(default: 80, max: 1000) }, only: [:index]
 
       def index
-        return unless user_signed_in?
-
         query = if params[:which] == "organization_user_followers"
                   { followable_id: current_user.organization_id, followable_type: "Organization" }
                 else

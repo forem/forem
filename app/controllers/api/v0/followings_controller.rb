@@ -1,11 +1,10 @@
 module Api
   module V0
-    class FollowingsController < ApplicationController
+    class FollowingsController < ApiController
+      before_action :authenticate_with_api_key_or_current_user!, only: %i[tags users organizations podcasts]
       before_action -> { limit_per_page(default: 80, max: 1000) }, only: %i[tags users organizations podcasts]
 
       def users
-        return unless user_signed_in?
-
         @follows = current_user.
           follows_by_type("User").
           order("created_at DESC").
@@ -15,8 +14,6 @@ module Api
       end
 
       def tags
-        return unless user_signed_in?
-
         @followed_tags = current_user.
           follows_by_type("ActsAsTaggableOn::Tag").
           order("points DESC").
@@ -26,8 +23,6 @@ module Api
       end
 
       def organizations
-        return unless user_signed_in?
-
         @followed_organizations = current_user.
           follows_by_type("Organization").
           order("created_at DESC").
@@ -37,8 +32,6 @@ module Api
       end
 
       def podcasts
-        return unless user_signed_in?
-
         @followed_podcasts = current_user.
           follows_by_type("Podcast").
           order("created_at DESC").
