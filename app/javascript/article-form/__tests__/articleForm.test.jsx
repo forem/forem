@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { shallow, deep } from 'preact-render-spy';
 import { JSDOM } from 'jsdom';
 import ArticleForm from '../articleForm';
 import algoliasearch from '../elements/__mocks__/algoliasearch';
@@ -74,9 +74,13 @@ describe('<ArticleForm />', () => {
   it('toggles help on help button press', () => {
     const form = deep(getArticleForm());
     global.scrollTo = jest.fn();
-    form.find('.articleform__buttons--small').simulate('click', { preventDefault: () => {} });
+    form
+      .find('.articleform__buttons--small')
+      .simulate('click', { preventDefault: () => {} });
     expect(form.state().helpShowing).toBe(true);
-    form.find('.articleform__buttons--small').simulate('click', { preventDefault: () => {} });
+    form
+      .find('.articleform__buttons--small')
+      .simulate('click', { preventDefault: () => {} });
     expect(form.state().helpShowing).toBe(false);
   });
 });
