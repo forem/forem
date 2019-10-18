@@ -7,6 +7,12 @@ const CoverImage = ({ className, imageSrc, imageAlt }) => (
   </div>
 );
 
+CoverImage.propTypes = {
+  className: PropTypes.string.isRequired,
+  imageSrc: PropTypes.string.isRequired,
+  imageAlt: PropTypes.string.isRequired,
+};
+
 function titleArea(previewResponse, version, articleState) {
   if (version === 'help') {
     // possibly something different here in future.
@@ -25,7 +31,7 @@ function titleArea(previewResponse, version, articleState) {
 
   let coverImage = '';
   if (previewResponse.cover_image && previewResponse.cover_image.length > 0) {
-    coverImage = previewResponse.cover_image
+    coverImage = previewResponse.cover_image;
   } else if (articleState.mainImage) {
     coverImage = articleState.mainImage;
   }
@@ -89,12 +95,6 @@ const previewResponsePropTypes = PropTypes.shape({
   tags: PropTypes.array,
   cover_image: PropTypes.string,
 });
-
-CoverImage.propTypes = {
-  className: PropTypes.string,
-  imageSrc: PropTypes.string.isRequired,
-  imageAlt: PropTypes.string.isRequired
-}
 
 BodyPreview.propTypes = {
   previewResponse: previewResponsePropTypes.isRequired,
