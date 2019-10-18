@@ -106,7 +106,12 @@ Rails.application.routes.draw do
         end
       end
       resources :follows, only: [:create]
-      resources :followers, only: [:index]
+      resources :followers do
+        collection do
+          get :users
+          get :organizations
+        end
+      end
       resources :followings do
         collection do
           get :users

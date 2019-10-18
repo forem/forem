@@ -126,7 +126,13 @@ function fetchNextFollowingPage(el){
 }
 
 function fetchNextFollowersPage(el){
-  fetchNext(el, "/api/followers", insertNext({ listId: "subfollowers", elId: "follows" }, buildFollowsHTML));
+  var indexParams = JSON.parse(el.dataset.params);
+  var whichEndpoint = indexParams.which;
+  if (whichEndpoint.includes("organization")){
+    fetchNext(el, "/api/followers/organizations", insertNext({ listId: "subfollowers", elId: "follows" }, buildFollowsHTML));
+  } else {
+    fetchNext(el, "/api/followers/users", insertNext({ listId: "subfollowers", elId: "follows" }, buildFollowsHTML));
+  }
 }
 
 function buildFollowsHTML(follows) {
