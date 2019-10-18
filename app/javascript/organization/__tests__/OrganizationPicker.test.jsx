@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import render from 'preact-render-to-json';
-import { OrganizationPicker } from '../OrgSettings';
+import { OrganizationPicker } from '../OrganizationPicker';
 
 const commonProps = {
   id: 'someFormElementId',
