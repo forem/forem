@@ -276,7 +276,7 @@ class Tags extends Component {
   };
 
   handleTagEnter = e => {
-    if (e.keyCode === 13) {
+    if (e.key === KEYS.RETURN) {
       this.handleTagClick();
     }
   };
