@@ -23,10 +23,12 @@ export default function initBlock() {
         if (response.result === 'unblocked') {
           blockButton.innerText = 'Block';
           blockButton.addEventListener('click', block, { once: true });
+        } else if (response.status === 422) {
+          window.alert(`Something went wrong: ${e} -- Please refresh the page to try again.`)
         }
       })
       .catch(e => {
-        window.alert(`Something went wrong: ${e}`);
+        window.alert(`Something went wrong: ${e}. -- Please refresh the page to try again.`);
       });
   }
 
@@ -56,10 +58,12 @@ export default function initBlock() {
           if (response.result === 'blocked') {
             blockButton.innerText = 'Unblock';
             blockButton.addEventListener('click', unblock, { once: true });
+          } else if (response.status === 422) {
+            window.alert(`Something went wrong: ${e}. -- Please refresh the page to try again.`)
           }
         })
         .catch(e => {
-          window.alert(`Something went wrong: ${e}`);
+          window.alert(`Something went wrong: ${e}. -- Please refresh the page to try again.`);
         });
     }
   }
