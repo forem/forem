@@ -276,7 +276,7 @@ export default class ArticleForm extends Component {
 
   onClearChanges = e => {
     e.preventDefault();
-    // eslint-disable-next-line no-restricted-globals, no-alert
+    // eslint-disable-next-line no-alert
     const revert = window.confirm(
       'Are you sure you want to revert to the previous save?',
     );
