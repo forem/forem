@@ -258,10 +258,6 @@ class UsersController < ApplicationController
       %0A%0A
       You can keep any comments and discussion posts under the Ghost account.
       %0A
-      ---OR---
-      %0A
-      Please delete all my personal information, including comments and discussion posts.
-      %0A
       %0A
       Regards,
       %0A

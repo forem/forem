@@ -97,7 +97,7 @@
         This does not include app permissions, which you will have to remove yourself on Twitter/GitHub.
       </li>
       <%# TODO: expand the delete messaging later %>
-      <li>delete any and all content you have, such as your reading list or chat messages.</li>
+      <li>delete any and all content you have, such as articles, comments, your reading list or chat messages.</li>
       <li>allow your username to become available to anyone.</li>
     </ul>
     <div class="field">
@@ -144,13 +144,13 @@
     }
   })
 </script>
+If you would like to keep your content under the <%= link_to "@ghost" %> account, please:
 <h3>Request Account Deletion</h3>
 <h4 style="font-weight: 400;">
   <br>
   <a href="mailto:<%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %>?subject=Request Account Deletion&body=<%= @email_body %>">
     Click this link to request account deletion via email.
-  </a> This includes all articles, comments, reactions, etc. as well as any personal information you have.
-  <br>
+  </a>
   <br>
   Be sure to change the email template to fit your needs.
 </h4>
