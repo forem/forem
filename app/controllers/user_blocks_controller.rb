@@ -24,7 +24,7 @@ class UserBlocksController < ApplicationController
       @user_block.blocked.stop_following(current_user)
       render json: { result: "blocked" }
     else
-      render json: { result: "error: #{@user_block.errors.full_messages}" }
+      render json: { error: @user_block.errors.full_messages.join(", ") }, status: :unprocessable_entity
     end
   end
 
@@ -42,7 +42,7 @@ class UserBlocksController < ApplicationController
       UserBlocks::ChannelHandler.new(@user_block).unblock_chat_channel
       render json: { result: "unblocked" }
     else
-      render json: { result: "error: #{@user_block.errors.full_messages}" }
+      render json: { error: @user_block.errors.full_messages.join(", ") }, status: :unprocessable_entity
     end
   end
 
@@ -51,7 +51,7 @@ class UserBlocksController < ApplicationController
   def check_sign_in_status
     unless current_user
       skip_authorization
-      render json: { result: "not-logged-in" }
+      render json: { result: "not-logged-in" }, status: :unauthorized
       return
     end
   end
