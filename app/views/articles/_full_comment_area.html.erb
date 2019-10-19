@@ -10,9 +10,12 @@
         <%= render "/comments/form",
                    commentable: @article,
                    commentable_type: "Article" %>
+        <form action="<%= "#{@article.path}#comments" %>" method="get">
+          <%= select_tag :sort_comments_by, options_for_select(comments_sorting_options, params[:sort_comments_by] || "Oldest"), onchange: "this.form.submit();" %>
+        </form>
         <div class="comment-trees" id="comment-trees-container">
           <% if @article.comments_count > 0 %>
-            <% Comment.tree_for(@article, @comments_to_show_count).each do |comment, sub_comments| %>
+            <% Comment.tree_for(@article, @comments_to_show_count, params[:sort_comments_by]).each do |comment, sub_comments| %>
               <% cache ["comment_root_cached_tree", comment] do %>
                 <%= tree_for(comment, sub_comments, @article) %>
               <% end %>

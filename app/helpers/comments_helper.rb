@@ -28,6 +28,13 @@ module CommentsHelper
     nested_comments(tree: { comment => sub_comments }, commentable: commentable, is_view_root: true)
   end
 
+  def comments_sorting_options
+    [
+      %w[Oldest creation-asc],
+      %w[Latest creation-desc],
+    ]
+  end
+
   private
 
   def nested_comments(tree:, commentable:, is_view_root: false)

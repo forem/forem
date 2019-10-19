@@ -98,7 +98,10 @@
         <% end %>
       </div>
     <% else %>
-      <% Comment.tree_for(@commentable).each do |comment, sub_comments| %>
+      <form action="<%= "#{@commentable.path}/comments" %>" method="get">
+        <%= select_tag :sort_comments_by, options_for_select(comments_sorting_options, params[:sort_comments_by] || "Oldest"), onchange: "this.form.submit();" %>
+      </form>
+      <% Comment.tree_for(@commentable, 0, params[:sort_comments_by]).each do |comment, sub_comments| %>
         <% cache ["comment_root_#{user_signed_in?}", comment] do %>
           <%= tree_for(comment, sub_comments, @commentable) %>
         <% end %>

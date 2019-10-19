@@ -39,6 +39,18 @@ class Comment < ApplicationRecord
 
   alias touch_by_reaction save
 
+  scope :sorting, lambda { |value|
+    value ||= "creation-asc"
+    dir =
+      if value == "creation-desc"
+        :desc
+      else
+        :asc
+      end
+
+    order(created_at: dir)
+  }
+
   algoliasearch per_environment: true, enqueue: :trigger_index do
     attribute :id
     add_index "ordered_comments",
@@ -133,8 +145,8 @@ class Comment < ApplicationRecord
       where(commentable_id: commentable_id, ancestry: nil, commentable_type: commentable_type)
   end
 
-  def self.tree_for(commentable, limit = 0)
-    commentable.comments.includes(:user).arrange(order: "score DESC").to_a[0..limit - 1].to_h
+  def self.tree_for(commentable, limit = 0, sort_by = "asc")
+    commentable.comments.sorting(sort_by).includes(:user).arrange(order: "score DESC").to_a[0..limit - 1].to_h
   end
 
   def path
