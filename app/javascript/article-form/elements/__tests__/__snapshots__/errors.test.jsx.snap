@@ -11,7 +11,7 @@ exports[`<Errors /> renders properly 1`] = `
     >
       😱
     </span>
-     Heads up:
+      Heads up:
   </h2>
   <ul>
     <li>
