@@ -1,5 +1,5 @@
 json.array! @followed_tags do |follow|
-  json.type_of                 "following"
+  json.type_of                 "tag_following"
   json.id                      follow.id
   json.name                    follow.followable.name
   json.points                  follow.points
