@@ -39,6 +39,13 @@ const OrgSettings = ({ organizations, organizationId, onToggle }) => (
 
 OrgSettings.propTypes = {
   onToggle: PropTypes.func.isRequired,
+  organizationId: PropTypes.string.isRequired,
+  organizations: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+    }),
+  ).isRequired,
 };
 
 export default OrgSettings;

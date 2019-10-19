@@ -1,8 +1,11 @@
 import 'preact/devtools';
 import { h, Component } from 'preact';
+import PropTypes from 'prop-types';
 import linkState from 'linkstate';
 import postscribe from 'postscribe';
+// eslint-disable-next-line import/no-unresolved
 import ImageUploadIcon from 'images/image-upload.svg';
+// eslint-disable-next-line import/no-unresolved
 import ThreeDotsIcon from 'images/three-dots.svg';
 import { submitArticle, previewArticle } from './actions';
 import BodyMarkdown from './elements/bodyMarkdown';
@@ -18,17 +21,23 @@ import Errors from './elements/errors';
 import KeyboardShortcutsHandler from './elements/keyboardShortcutsHandler';
 import Tags from '../shared/components/tags';
 
-const setupImageButton = ({ className = '', imgSrc, imgAltText = '', onClickCallback }) => {
-  return (
-    <button
-    type="button"
-    className={className}
-    onClick={onClickCallback}
-    >
-      <img src={imgSrc} alt={imgAltText} />
-    </button>
-  )
-}
+const SetupImageButton = ({
+  className,
+  imgSrc,
+  imgAltText,
+  onClickCallback,
+}) => (
+  <button type="button" className={className} onClick={onClickCallback}>
+    <img src={imgSrc} alt={imgAltText} />
+  </button>
+);
+
+SetupImageButton.propTypes = {
+  className: PropTypes.string.isRequired,
+  imgSrc: PropTypes.string.isRequired,
+  imgAltText: PropTypes.string.isRequired,
+  onClickCallback: PropTypes.func.isRequired,
+};
 
 export default class ArticleForm extends Component {
   static handleGistPreview() {
@@ -54,23 +63,28 @@ export default class ArticleForm extends Component {
     }
   }
 
+  static propTypes = {
+    version: PropTypes.string.isRequired,
+    article: PropTypes.string.isRequired,
+    organizations: PropTypes.string,
+  };
+
+  static defaultProps = {
+    organizations: '',
+  };
+
   constructor(props) {
     super(props);
-    this.article = JSON.parse(this.props.article);
-    const organizations = this.props.organizations
-      ? JSON.parse(this.props.organizations)
-      : null;
+    const { article, version } = this.props;
+    let { organizations } = this.props;
+    this.article = JSON.parse(article);
+    organizations = organizations ? JSON.parse(organizations) : null;
 
     this.url = window.location.href;
 
     this.state = {
-      id: this.article.id || null,
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
-      description: '',
-      canonicalUrl: this.article.canonical_url || '',
-      series: this.article.series || '',
-      allSeries: this.article.all_series || [],
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
@@ -78,7 +92,6 @@ export default class ArticleForm extends Component {
       previewResponse: '',
       helpHTML: document.getElementById('editor-help-guide').innerHTML,
       submitting: false,
-      editing: this.article.id != null,
       imageManagementShowing: false,
       moreConfigShowing: false,
       mainImage: this.article.main_image || null,
@@ -86,7 +99,7 @@ export default class ArticleForm extends Component {
       organizationId: this.article.organization_id,
       errors: null,
       edited: false,
-      version: this.props.version,
+      version,
     };
   }
 
@@ -212,6 +225,8 @@ export default class ArticleForm extends Component {
   };
 
   failedPreview = response => {
+    // TODO: console.log should not be part of production code. Remove it!
+    // eslint-disable-next-line no-console
     console.log(response);
   };
 
@@ -261,18 +276,14 @@ export default class ArticleForm extends Component {
 
   onClearChanges = e => {
     e.preventDefault();
-    // eslint-disable-next-line no-restricted-globals
-    const revert = confirm(
+    // eslint-disable-next-line no-alert
+    const revert = window.confirm(
       'Are you sure you want to revert to the previous save?',
     );
     if (!revert && navigator.userAgent !== 'DEV-Native-ios') return;
     this.setState({
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
-      description: '',
-      canonicalUrl: this.article.canonical_url || '',
-      series: this.article.series || '',
-      allSeries: this.article.all_series || [],
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
@@ -280,7 +291,6 @@ export default class ArticleForm extends Component {
       previewResponse: '',
       helpHTML: document.getElementById('editor-help-guide').innerHTML,
       submitting: false,
-      editing: this.article.id != null,
       imageManagementShowing: false,
       moreConfigShowing: false,
       mainImage: this.article.main_image || null,
@@ -395,12 +405,12 @@ export default class ArticleForm extends Component {
       let moreConfigBottomButton = '';
       if (version === 'v2') {
         moreConfigBottomButton = (
-          setupImageButton({
-            className: 'articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom',
-            imgSrc: ThreeDotsIcon,
-            imgAltText: 'menu dots',
-            onClickCallback: this.toggleMoreConfig
-          })
+          <SetupImageButton
+            className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
+            imgSrc={ThreeDotsIcon}
+            imgAltText="menu dots"
+            onClickCallback={this.toggleMoreConfig}
+          />
         );
         controls = (
           <div
@@ -416,25 +426,21 @@ export default class ArticleForm extends Component {
                 defaultValue={tagList}
                 onInput={linkState(this, 'tagList')}
                 maxTags={4}
-                autoComplete='off'
-                classPrefix='articleform'
+                autoComplete="off"
+                classPrefix="articleform"
               />
-              {
-                setupImageButton({
-                  className: 'articleform__detailsButton articleform__detailsButton--image',
-                  imgSrc: ImageUploadIcon,
-                  imgAltText: 'Upload images',
-                  onClickCallback: this.toggleImageManagement
-                })
-              }
-              {
-                setupImageButton({
-                  className: 'articleform__detailsButton articleform__detailsButton--moreconfig',
-                  imgSrc: ThreeDotsIcon,
-                  imgAltText: 'Menu',
-                  onClickCallback: this.toggleMoreConfig
-                })
-              }
+              <SetupImageButton
+                className="articleform__detailsButton articleform__detailsButton--image"
+                imgSrc={ImageUploadIcon}
+                imgAltText="Upload images"
+                onClickCallback={this.toggleImageManagement}
+              />
+              <SetupImageButton
+                className="articleform__detailsButton articleform__detailsButton--moreconfig"
+                imgSrc={ThreeDotsIcon}
+                imgAltText="Menu"
+                onClickCallback={this.toggleMoreConfig}
+              />
             </div>
           </div>
         );

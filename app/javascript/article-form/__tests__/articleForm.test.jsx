@@ -1,9 +1,18 @@
-import { h, render as preactRender } from 'preact';
+import { h } from 'preact';
 import render from 'preact-render-to-json';
 import { shallow, deep } from 'preact-render-spy';
 import { JSDOM } from 'jsdom';
 import ArticleForm from '../articleForm';
 import algoliasearch from '../elements/__mocks__/algoliasearch';
+
+const getArticleForm = () => (
+  <ArticleForm
+    version="v2"
+    article={
+      '{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null }'
+    }
+  />
+);
 
 describe('<ArticleForm />', () => {
   beforeEach(() => {
@@ -11,7 +20,7 @@ describe('<ArticleForm />', () => {
     global.document = doc;
     global.window = doc.defaultView;
 
-    global.document.body.createTextRange = function() {
+    global.document.body.createTextRange = function createTextRange() {
       return {
         setEnd() {},
         setStart() {},
@@ -33,6 +42,7 @@ describe('<ArticleForm />', () => {
     global.window.algoliasearch = algoliasearch;
 
     localStorage.clear();
+    /* eslint-disable-next-line no-underscore-dangle */
     localStorage.__STORE__ = {};
   });
 
@@ -64,18 +74,13 @@ describe('<ArticleForm />', () => {
   it('toggles help on help button press', () => {
     const form = deep(getArticleForm());
     global.scrollTo = jest.fn();
-    form.find('.articleform__buttons--small').simulate('click', { preventDefault: () => {} });
+    form
+      .find('.articleform__buttons--small')
+      .simulate('click', { preventDefault: () => {} });
     expect(form.state().helpShowing).toBe(true);
-    form.find('.articleform__buttons--small').simulate('click', { preventDefault: () => {} });
+    form
+      .find('.articleform__buttons--small')
+      .simulate('click', { preventDefault: () => {} });
     expect(form.state().helpShowing).toBe(false);
   });
 });
-
-const getArticleForm = () => (
-  <ArticleForm
-    version="v2"
-    article={
-      '{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null }'
-    }
-  />
-);
