@@ -1,22 +1,21 @@
 'use strict';
 
 function initializeUserProfilePage() {
-  if(document.querySelector('.profile-dropdown')){
-    var profileDropdownDiv = document.querySelector('.profile-dropdown');
-    var currentUser = userData();
-    var profileUser = JSON.parse(profileDropdownDiv.getAttribute('data-info'));
-
-    if(currentUser.username == profileUser.username){
+  const profileDropdownDiv = document.getElementsByClassName("profile-dropdown")[0];
+  if(profileDropdownDiv){
+    const currentUser = userData();
+    const profileUser = profileDropdownDiv.getAttribute('data-username');
+    if(currentUser.username === profileUser){
       profileDropdownDiv.hidden = true;
     }
     else{
       profileDropdownDiv.hidden = false;
-      if (document.getElementById('user-profile-dropdown')) {
-        document.getElementById('user-profile-dropdown').onclick = () => {
-          document
-            .getElementById('user-profile-dropdownmenu')
-            .classList.toggle('showing');
-        };
+      const userProfileDropdownButton = document.getElementById('user-profile-dropdown');
+      if (userProfileDropdownButton) {
+        const userProfileDropdownMenu = document.getElementById('user-profile-dropdownmenu');
+        userProfileDropdownButton.addEventListener('click', (e) => {
+          userProfileDropdownMenu.classList.toggle('showing');
+        });
       }
     }
   }
