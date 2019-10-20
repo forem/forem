@@ -50,8 +50,7 @@ class IntroSlide extends Component {
           {' '}
           <strong>quick questions</strong>
           {' '}
-for you before you get
-          started...
+          for you before you get started...
         </p>
       </div>
     );
