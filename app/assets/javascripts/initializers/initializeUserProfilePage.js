@@ -2,13 +2,13 @@
 
 function initializeUserProfilePage() {
   const profileDropdownDiv = document.getElementsByClassName("profile-dropdown")[0];
-  if(profileDropdownDiv){
+  if (profileDropdownDiv) {
     const currentUser = userData();
     const profileUser = profileDropdownDiv.getAttribute('data-username');
-    if(currentUser.username === profileUser){
+    if (currentUser.username === profileUser) {
       profileDropdownDiv.hidden = true;
     }
-    else{
+    else {
       profileDropdownDiv.hidden = false;
       const userProfileDropdownButton = document.getElementById('user-profile-dropdown');
       if (userProfileDropdownButton) {
