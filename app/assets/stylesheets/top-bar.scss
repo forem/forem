@@ -27,7 +27,7 @@
     theme-top-bar-background, 
     $tan
   );
-  // position: fixed;
+  position: fixed;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   &.hidden {
     display: none;

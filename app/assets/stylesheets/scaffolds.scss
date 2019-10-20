@@ -239,6 +239,12 @@ body.monospace-article-body {
   }
 }
 
+body.static-navbar-config {
+  .top-bar {
+    position: static !important;
+  }
+}
+
 .pro-visible-block,
 .trusted-visible-block {
   display: none !important;
