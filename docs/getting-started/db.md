@@ -14,6 +14,8 @@ data:
 rails db:setup
 ```
 
+Note: If you've already run `bin/setup`, this will have already been done for you.
+
 `db:setup` actually runs the following rake commands in order so
 alternatively, you could run each of these to produce the same result:
 
