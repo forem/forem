@@ -10,12 +10,14 @@
         <%= render "/comments/form",
                    commentable: @article,
                    commentable_type: "Article" %>
-        <div class="sorting">
-          <form action="<%= "#{@article.path}#comments" %>" method="get">
-            <%= label_tag "Sort by: " %>
-            <%= select_tag :sort_comments_by, options_for_select(comments_sorting_options, params[:sort_comments_by] || "Oldest"), onchange: "this.form.submit();" %>
-          </form>
-        </div>
+        <% if @article.comments_count > 0 %>
+          <div class="sorting">
+            <form action="<%= "#{@article.path}#comments" %>" method="get">
+              <%= label_tag "Sort by: " %>
+              <%= select_tag :sort_comments_by, options_for_select(comments_sorting_options, params[:sort_comments_by] || "Oldest"), onchange: "this.form.submit();" %>
+            </form>
+          </div>
+        <% end %>
         <div class="comment-trees" id="comment-trees-container">
           <% if @article.comments_count > 0 %>
             <% Comment.tree_for(@article, @comments_to_show_count, params[:sort_comments_by]).each do |comment, sub_comments| %>

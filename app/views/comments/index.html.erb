@@ -85,6 +85,14 @@
                commentable: @commentable,
                commentable_type: "Article" %>
   <% end %>
+  <% if @commentable.comments_count > 0 %>
+    <div class="sorting">
+      <form action="<%= "#{@commentable.path}/comments" %>" method="get">
+        <%= label_tag "Sort by: " %>
+        <%= select_tag :sort_comments_by, options_for_select(comments_sorting_options, params[:sort_comments_by] || "Oldest"), onchange: "this.form.submit();" %>
+      </form>
+    </div>
+  <% end %>
   <div class="comment-trees" id="comment-trees-container">
     <% if @root_comment.present? %>
       <div class="root-comment">
@@ -98,12 +106,6 @@
         <% end %>
       </div>
     <% else %>
-      <div class="sorting">
-        <form action="<%= "#{@commentable.path}/comments" %>" method="get">
-          <%= label_tag "Sort by: " %>
-          <%= select_tag :sort_comments_by, options_for_select(comments_sorting_options, params[:sort_comments_by] || "Oldest"), onchange: "this.form.submit();" %>
-        </form>
-      </div>
       <% Comment.tree_for(@commentable, 0, params[:sort_comments_by]).each do |comment, sub_comments| %>
         <% cache ["comment_root_#{user_signed_in?}", comment] do %>
           <%= tree_for(comment, sub_comments, @commentable) %>
