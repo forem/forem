@@ -4,8 +4,8 @@ title: Preparing the Database
 
 # Preparing the database
 
-The next step is to create and prepare the database. Thankfully, DEV is a
-Rails application, so this is relatively easy.
+The next step is to create and prepare the database. Because DEV is a
+Rails application, we have built-in tools to help us.
 
 We can use Rails to create our database, load the schema, and add some seed
 data:
