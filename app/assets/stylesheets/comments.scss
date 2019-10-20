@@ -133,6 +133,38 @@ a.header-link {
     min-height: calc(97vh - 200px);
   }
 
+  .sorting {
+    padding-top: 15px;
+    justify-content: space-between;
+    align-items: center;
+
+    form {
+      display: flex;
+
+      label {
+        padding: 12px;
+      }
+
+      select {
+        display: block;
+        font-size: 19px;
+        margin: 5px;
+        padding: 12px;
+        border: 1px solid rgb(222, 230, 233);
+        border-radius: 3px;
+        background-color: white;
+        outline: none;
+        font-weight: bold;
+        color: #333333;
+        font-family: 'HelveticaNeue-CondensedBold', 'HelveticaNeueBoldCondensed',
+          'HelveticaNeue-Bold-Condensed', 'Helvetica Neue Bold Condensed',
+          'HelveticaNeueBold', 'HelveticaNeue-Bold', 'Helvetica Neue Bold',
+          'HelveticaNeue', 'Helvetica Neue', 'TeXGyreHerosCnBold', 'Helvetica',
+          'Tahoma', 'Geneva', 'Arial Narrow', 'Arial', sans-serif;
+      }
+    }
+  }
+
   img.icon-image {
     height: 21px;
     opacity: 0.7;

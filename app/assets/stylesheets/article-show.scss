@@ -192,17 +192,17 @@ article {
       min-height: 40px;
       font-size: calc(2vw + 26px);
       word-break: break-word;
-      
+
       @media screen and (min-width: 1600px) {
         font-size: 57px;
       }
 
       .title-block {
         display: inline-block;
-      }    
-      
+      }
+
       &.medium {
-        font-size: calc(1.85vw + 25px);        
+        font-size: calc(1.85vw + 25px);
         @media screen and (min-width: 1600px) {
           font-size: 47px;
         }
@@ -1610,6 +1610,38 @@ article {
   padding-bottom: 20px;
   border-bottom-left-radius: 3px;
   border-bottom-right-radius: 3px;
+
+  .sorting {
+    padding-top: 15px;
+    justify-content: space-between;
+    align-items: center;
+
+    form {
+      display: flex;
+
+      label {
+        padding: 12px;
+      }
+
+      select {
+        display: block;
+        font-size: 19px;
+        margin: 5px;
+        padding: 12px;
+        border: 1px solid rgb(222, 230, 233);
+        border-radius: 3px;
+        background-color: white;
+        outline: none;
+        font-weight: bold;
+        color: #333333;
+        font-family: 'HelveticaNeue-CondensedBold', 'HelveticaNeueBoldCondensed',
+          'HelveticaNeue-Bold-Condensed', 'Helvetica Neue Bold Condensed',
+          'HelveticaNeueBold', 'HelveticaNeue-Bold', 'Helvetica Neue Bold',
+          'HelveticaNeue', 'Helvetica Neue', 'TeXGyreHerosCnBold', 'Helvetica',
+          'Tahoma', 'Geneva', 'Arial Narrow', 'Arial', sans-serif;
+      }
+    }
+  }
 }
 
 @keyframes fade-in {
