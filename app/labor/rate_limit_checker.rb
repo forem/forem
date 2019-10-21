@@ -40,8 +40,4 @@ class RateLimitChecker
   def ping_admins
     RateLimitCheckerJob.perform_later(user.id, action)
   end
-
-  def ping_admins_without_delay
-    RateLimitCheckerJob.perform_now(user.id, action)
-  end
 end

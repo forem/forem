@@ -7,6 +7,7 @@ Object {
   "prevLen": 0,
   "searchResults": Array [],
   "selectedIndex": -1,
+  "showingRulesForTag": null,
 }
 `;
 
@@ -15,7 +16,7 @@ exports[`<Tags /> renders properly 1`] = `
   class="articleform__tagswrapper"
 >
   <input
-    autoComplete="on"
+    autoComplete="off"
     class="articleform__tags"
     id="tag-input"
     onBlur={[Function]}
@@ -37,6 +38,7 @@ Object {
   "prevLen": 0,
   "searchResults": Array [],
   "selectedIndex": -1,
+  "showingRulesForTag": null,
 }
 `;
 
@@ -47,6 +49,7 @@ Object {
   "prevLen": 0,
   "searchResults": Array [],
   "selectedIndex": -1,
+  "showingRulesForTag": null,
 }
 `;
 
@@ -86,6 +89,7 @@ Object {
     },
   ],
   "selectedIndex": 0,
+  "showingRulesForTag": null,
 }
 `;
 
@@ -125,5 +129,6 @@ Object {
     },
   ],
   "selectedIndex": 0,
+  "showingRulesForTag": null,
 }
 `;

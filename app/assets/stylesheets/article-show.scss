@@ -191,18 +191,18 @@ article {
       font-weight: 500;
       min-height: 40px;
       font-size: calc(2vw + 26px);
-
+      word-break: break-word;
+      
       @media screen and (min-width: 1600px) {
         font-size: 57px;
       }
 
       .title-block {
         display: inline-block;
-      }
-
+      }    
+      
       &.medium {
-        font-size: calc(1.85vw + 25px);
-
+        font-size: calc(1.85vw + 25px);        
         @media screen and (min-width: 1600px) {
           font-size: 47px;
         }

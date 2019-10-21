@@ -146,21 +146,28 @@ a.header-link {
     bottom: 3px;
   }
   .editor-image-upload {
+    display: flex;
+    align-items: center;
     font-size: 0.8em;
     position: absolute;
     left: calc(0.2vw + 43px);
     bottom: 0px;
     width: initial;
     text-align: left;
+
     .uploaded-image {
-      vertical-align: 11px;
       border: 1px dashed #888;
-      position: relative;
       padding: 0.2vw 0.4vw;
       font-size: 1em;
-      width: calc(94% - 36px);
-      top: 5px;
+      width: 8.125rem;
       display: none;
+
+      @media screen and (min-width: 500px) {
+        & {
+          width: calc(94% - 2.25rem);
+        }
+      }
+
       &.showing {
         display: inline-block;
       }
@@ -921,17 +928,21 @@ a.header-link {
   .editor-image-upload {
     width: initial;
     text-align: left;
+    z-index: 6;
+
     .uploaded-image {
-      width: calc(93% - 54px);
+      width: calc(93% - 3.375rem);
+
+      @media screen and (min-width: 500px) {
+        & {
+          width: calc(94% - 3.875rem);
+        }
+      }
     }
+
     .image-upload-button {
       padding: 5px 2px 0px;
       margin-left: 3px;
-    }
-    @media screen and (min-width: 500px) {
-      .uploaded-image {
-        width: calc(94% - 62px);
-      }
     }
   }
   .actions {

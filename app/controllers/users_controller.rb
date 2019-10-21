@@ -100,30 +100,14 @@ class UsersController < ApplicationController
     current_user.assign_attributes(params[:user].permit(:summary, :location, :employment_title, :employer_name, :last_onboarding_page)) if params[:user]
     current_user.saw_onboarding = true
     authorize User
-    if current_user.save
-      respond_to do |format|
-        format.json { render json: { outcome: "updated successfully" } }
-      end
-    else
-      respond_to do |format|
-        format.json { render json: { outcome: "update failed" } }
-      end
-    end
+    render_update_response
   end
 
   def onboarding_checkbox_update
     current_user.assign_attributes(params[:user].permit(:checked_code_of_conduct, :checked_terms_and_conditions, :email_membership_newsletter, :email_digest_periodic)) if params[:user]
     current_user.saw_onboarding = true
     authorize User
-    if current_user.save
-      respond_to do |format|
-        format.json { render json: { outcome: "updated successfully" } }
-      end
-    else
-      respond_to do |format|
-        format.json { render json: { outcome: "update failed" } }
-      end
-    end
+    render_update_response
   end
 
   def join_org
@@ -196,41 +180,31 @@ class UsersController < ApplicationController
     when "organization"
       handle_organization_tab
     when "integrations"
-      if current_user.identities.where(provider: "github").any?
-        @client = Octokit::Client.
-          new(access_token: current_user.identities.where(provider: "github").last.token)
-      end
+      handle_integrations_tab
     when "billing"
-      stripe_code = current_user.stripe_id_code
-      return if stripe_code == "special"
-
-      @customer = Payments::Customer.get(stripe_code) if stripe_code.present?
+      handle_billing_tab
     when "pro-membership"
-      @pro_membership = current_user.pro_membership
+      handle_pro_membership_tab
     when "account"
-      @email_body = <<~HEREDOC
-        Hello DEV Team,
-        %0A
-        %0A
-        I would like to delete my dev.to account.
-        %0A%0A
-        You can keep any comments and discussion posts under the Ghost account.
-        %0A
-        ---OR---
-        %0A
-        Please delete all my personal information, including comments and discussion posts.
-        %0A
-        %0A
-        Regards,
-        %0A
-        YOUR-DEV-USERNAME-HERE
-      HEREDOC
+      handle_account_tab
     else
       not_found unless @tab_list.map { |t| t.downcase.tr(" ", "-") }.include? @tab
     end
   end
 
   private
+
+  def render_update_response
+    if current_user.save
+      respond_to do |format|
+        format.json { render json: { outcome: "updated successfully" } }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: { outcome: "update failed" } }
+      end
+    end
+  end
 
   def handle_organization_tab
     @organizations = @current_user.organizations.order("name ASC")
@@ -243,6 +217,44 @@ class UsersController < ApplicationController
       @org_organization_memberships = @organization.organization_memberships.includes(:user)
       @organization_membership = OrganizationMembership.find_by(user_id: current_user.id, organization_id: @organization.id)
     end
+  end
+
+  def handle_integrations_tab
+    return unless current_user.identities.where(provider: "github").any?
+
+    @client = Octokit::Client.
+      new(access_token: current_user.identities.where(provider: "github").last.token)
+  end
+
+  def handle_billing_tab
+    stripe_code = current_user.stripe_id_code
+    return if stripe_code == "special"
+
+    @customer = Payments::Customer.get(stripe_code) if stripe_code.present?
+  end
+
+  def handle_pro_membership_tab
+    @pro_membership = current_user.pro_membership
+  end
+
+  def handle_account_tab
+    @email_body = <<~HEREDOC
+      Hello DEV Team,
+      %0A
+      %0A
+      I would like to delete my dev.to account.
+      %0A%0A
+      You can keep any comments and discussion posts under the Ghost account.
+      %0A
+      ---OR---
+      %0A
+      Please delete all my personal information, including comments and discussion posts.
+      %0A
+      %0A
+      Regards,
+      %0A
+      YOUR-DEV-USERNAME-HERE
+    HEREDOC
   end
 
   def set_user

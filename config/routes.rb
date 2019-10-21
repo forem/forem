@@ -245,7 +245,7 @@ Rails.application.routes.draw do
   post "users/update_language_settings" => "users#update_language_settings"
   post "users/update_twitch_username" => "users#update_twitch_username"
   post "users/join_org" => "users#join_org"
-  post "users/leave_org/:organization_id" => "users#leave_org"
+  post "users/leave_org/:organization_id" => "users#leave_org", as: :users_leave_org
   post "users/add_org_admin" => "users#add_org_admin"
   post "users/remove_org_admin" => "users#remove_org_admin"
   post "users/remove_from_org" => "users#remove_from_org"
