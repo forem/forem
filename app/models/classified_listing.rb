@@ -23,7 +23,10 @@ class ClassifiedListing < ApplicationRecord
   before_create :create_slug
   before_validation :modify_inputs
   acts_as_taggable_on :tags
+
   has_many :credits, as: :purchase, inverse_of: :purchase, dependent: :nullify
+  has_many :endorsements, inverse_of: :classified_listing, dependent: :destroy
+  accepts_nested_attributes_for :endorsements, allow_destroy: true
 
   validates :user_id, presence: true
   validates :organization_id, presence: true, unless: :user_id?
@@ -38,11 +41,23 @@ class ClassifiedListing < ApplicationRecord
   validate :validate_category
 
   algoliasearch per_environment: true do
-    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug, :contact_via_connect, :location, :expires_at
+    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug, :contact_via_connect, :location, :expires_at, :endorsement_list
     attribute :author do
       { username: author.username,
         name: author.name,
         profile_image_90: ProfileImage.new(author).get(90) }
+    end
+    attribute :endorsement_list do
+      endorsement_list.map do |endorsement|
+        {
+          id: endorsement.id,
+          user_id: endorsement.user_id,
+          name: endorsement.name,
+          username: endorsement.username,
+          profile_image_35: endorsement.profile_image_35,
+          message: endorsement.message
+        }
+      end
     end
     tags do
       [tag_list,
@@ -62,6 +77,14 @@ class ClassifiedListing < ApplicationRecord
 
   def author
     organization || user
+  end
+
+  def endorsement_list
+    endorsements.where(approved: true, deleted: false).order("created_at DESC")
+  end
+
+  def endorsement_list_to_approve
+    endorsements.where(deleted: false).order("created_at DESC")
   end
 
   def self.select_options_for_categories

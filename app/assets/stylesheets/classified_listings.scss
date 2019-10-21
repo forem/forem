@@ -167,6 +167,32 @@
       @media screen and (min-width: 580px) {
         padding: 0px 15px 18px;
       }
+      .classified-form-endorsement-section {
+        padding: 15px 0 0;
+        border-bottom: 1.5px solid $light-gray;
+        .classified-form-endorsement {
+          display: flex;
+          align-items: flex-start;
+          a {
+            img {
+              height: 35px;
+              width: 35px;
+            }
+          }
+          .classified-form-endorsement-message {
+            padding: 10px;
+            font-size: 0.8em;
+
+            .classified-form-endorsement-approval {
+              label {
+                font-size: 1em;
+                cursor: pointer;
+              }
+            }
+          }
+        }
+      }
+
     }
     .listings-back-button {
       font-size: 0.8em;
@@ -517,7 +543,7 @@
       $medium-gray
     );
     padding: 0px 15px 4px;
-    a {
+    a, button {
       @include themeable(
         color,
         theme-secondary-color,
@@ -527,6 +553,11 @@
       &.classified-listing-edit-button {
         margin-left: 4px;
       }
+    }
+    button {
+      border-width: 0;
+      padding: 0;
+      background-color: transparent;
     }
   }
   &.single-classified-listing--opened {
@@ -543,6 +574,88 @@
       }
     }
   }
+
+  .single-classified-listing-endorsements {
+    $profile-image-size: 35px;
+
+    .single-classified-listing-endorsement-profile-image {
+      width: $profile-image-size;
+      height: $profile-image-size;
+      border-radius: 100%;
+      overflow: hidden;
+      background-color: $white;
+    }
+
+    .single-classified-listing-endorsements-open-modal-button {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      background-color: transparent;
+      border-width: 0;
+
+      .single-classified-listing-endorsement-profile-images {
+        padding: 5px 20px;
+
+        .single-classified-listing-endorsement-profile-image {
+          margin-left: -10px;
+        }
+
+      }
+
+      .single-classified-listing-endorsement-endorsment-count {
+        @include themeable(
+          color,
+          theme-secondary-color,
+          $medium-gray
+        );
+        font-size: 1.4em;
+        position: relative;
+        left: -10px;
+      }
+
+    }
+
+    .single-classified-listing-endorsements--opened {
+      padding: 10px 10px 0;
+
+      .single-classified-listing-endorsement {
+        display: flex;
+        align-items: flex-start;
+        padding-bottom: 5px;
+
+        .single-classified-listing-endorsement-message-container {
+          padding: 10px 5px;
+
+          .single-classified-listing-endorsement-message {
+            @include themeable(
+              color,
+              theme-secondary-color,
+              $dark-medium-gray
+            );
+            font-size: 0.8em;
+          }
+
+          .single-classified-listing-endorsement-buttons {
+            button {
+              @include themeable(
+                color,
+                theme-secondary-color,
+                $medium-gray
+              );
+              font-size: 0.69em;
+              padding: 0;
+              border-width: 0;
+              background-color: transparent;
+            }
+          }
+
+        }
+      }
+
+    }
+
+  }
+
 }
 .single-classified-listing-info-link {
   display: block;
@@ -573,7 +686,8 @@
 }
 
 
-form.listings-contact-via-connect {
+form.listings-contact-via-connect,
+form.listings-add-endorsement {
   border-radius: 3px;
   z-index: 20;
   position: relative;
@@ -595,7 +709,8 @@ form.listings-contact-via-connect {
       font-size: calc(18px + 0.05vw);
     }
   }
-  .submit-button {
+  .submit-button,
+  .cancel-button {
     margin: none 10px;
     padding: 0.5em;
     height: 2em;
@@ -605,6 +720,17 @@ form.listings-contact-via-connect {
     text-align: center;
     border-radius: 3px;
     border: 0px;
+  }
+  .cancel-button {
+    background: $red;
+    margin-right: 10px;
+  }
+}
+
+form.listings-add-endorsement {
+  textarea {
+    height: 100px;
+    margin-bottom: 7px;
   }
 }
 

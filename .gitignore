@@ -49,6 +49,7 @@ package-lock.json
 
 #Jetbrains Tools
 .idea/
+*.iml
 
 #sitemap
 /public/sitemap.xml.gz

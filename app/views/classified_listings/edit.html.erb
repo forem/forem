@@ -61,6 +61,36 @@
       </div>
     <% end %>
   <% end %>
+  <% if @classified_listing.endorsement_list_to_approve.size > 0 %>
+    <%= form_for(@classified_listing) do |classified_listing_form| %>
+      <header>
+        <h2>Endorsements</h2>
+      </header>
+      <div class="classified-form-inner">
+        <%= classified_listing_form.fields_for :endorsements do |endorsement_fields| %>
+          <% if endorsement_fields.object.deleted == false %>
+            <section class="classified-form-endorsement-section">
+              <div class="classified-form-endorsement">
+                <a href="/<%= endorsement_fields.object.user.username %>">
+                  <img src="<%= endorsement_fields.object.user.profile_image_35 %>" />
+                </a>
+                <span class="classified-form-endorsement-message">
+                  <%= endorsement_fields.object.message %>
+
+                  <div class="classified-form-endorsement-approval">
+                    <%= endorsement_fields.label :approved, "Approved?" %>
+                    <%= endorsement_fields.check_box :approved %>
+                  </div>
+                </span>
+              </div>
+            </section>
+          <% end %>
+        <% end %>
+        <input type="hidden" name="classified_listing[action]" value="approve_endorsements" />
+        <%= classified_listing_form.submit "Update Endorsements", class: "cta cta-main-listing-form" %>
+      </div>
+    <% end %>
+  <% end %>
   <%= form_for(@classified_listing) do |f| %>
     <div class="classified-form-inner">
       <% unless @classified_listing.published %>

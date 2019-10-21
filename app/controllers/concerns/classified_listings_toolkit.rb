@@ -75,7 +75,7 @@ module ClassifiedListingsToolkit
       params["classified_listing"]["tags"] = params["classified_listing"]["tags"].join(", ")
       params["classified_listing"]["tag_list"] = params["classified_listing"].delete "tags"
     end
-    accessible = %i[title body_markdown category tag_list expires_at contact_via_connect location organization_id action]
+    accessible = [:title, :body_markdown, :category, :tag_list, :expires_at, :contact_via_connect, :location, :organization_id, :action, endorsements_attributes: %i[id approved]]
     params.require(:classified_listing).permit(accessible)
   end
 
@@ -144,12 +144,24 @@ module ClassifiedListingsToolkit
       end
 
       publish_listing
+
+    elsif listing_params[:action] == "approve_endorsements"
+      approve_endorsements
     elsif listing_updatable?
       update_listing_details
     end
 
     clear_listings_cache
     process_after_update
+  end
+
+  def approve_endorsements
+    listing_params[:endorsements_attributes].each do |_key, endorsement_field|
+      endorsement = @classified_listing.endorsements.where(id: endorsement_field[:id]).first
+      endorsement.approved = endorsement_field[:approved] == "1"
+      endorsement.save
+    end
+    @classified_listing.index!
   end
 
   def bump_listing(cost)

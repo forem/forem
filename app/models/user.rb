@@ -419,6 +419,10 @@ class User < ApplicationRecord
     ProfileImage.new(self).get(90)
   end
 
+  def profile_image_35
+    ProfileImage.new(self).get(35)
+  end
+
   def remove_from_algolia_index
     remove_from_index!
     Search::RemoveFromIndexJob.perform_later("searchables_#{Rails.env}", index_id)

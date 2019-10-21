@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import { SingleListing } from './singleListing';
+import SingleListing from './singleListing';
 
 function resizeMasonryItem(item) {
   /* Get the grid object, its row-gap, and the size of its implicit rows */

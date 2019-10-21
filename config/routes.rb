@@ -166,6 +166,7 @@ Rails.application.routes.draw do
   resources :rating_votes, only: [:create]
   resources :page_views, only: %i[create update]
   resources :classified_listings, path: :listings, only: %i[index new create edit update destroy dashboard]
+  resources :endorsements, only: %i[create update destroy]
   resources :credits, only: %i[index new create] do
     get "purchase", on: :collection, to: "credits#new"
   end

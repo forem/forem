@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_18_104106) do
+ActiveRecord::Schema.define(version: 2019_10_16_172202) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -366,6 +366,19 @@ ActiveRecord::Schema.define(version: 2019_09_18_104106) do
     t.boolean "published", default: false
     t.float "success_rate", default: 0.0
     t.datetime "updated_at", null: false
+  end
+
+  create_table "endorsements", force: :cascade do |t|
+    t.boolean "approved"
+    t.bigint "classified_listing_id"
+    t.datetime "created_at", null: false
+    t.boolean "deleted"
+    t.boolean "edited"
+    t.text "message"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["classified_listing_id"], name: "index_endorsements_on_classified_listing_id"
+    t.index ["user_id"], name: "index_endorsements_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -1182,6 +1195,8 @@ ActiveRecord::Schema.define(version: 2019_09_18_104106) do
   add_foreign_key "badge_achievements", "users"
   add_foreign_key "chat_channel_memberships", "chat_channels"
   add_foreign_key "chat_channel_memberships", "users"
+  add_foreign_key "endorsements", "classified_listings"
+  add_foreign_key "endorsements", "users"
   add_foreign_key "messages", "chat_channels"
   add_foreign_key "messages", "users"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
