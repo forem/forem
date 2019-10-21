@@ -38,6 +38,7 @@ Here is a bunch of liquid tags supported on Forem:
 {% twitter 834439977220112384 %}
 {% glitch earthy-course %}
 {% github forem/forem %}
+{% github https://github.com/forem/forem/blob/master/docker-compose.yml#L15-L23 %}
 {% youtube dQw4w9WgXcQ %}
 {% vimeo 193110695 %}
 {% slideshare rdOzN9kr1yK5eE %}
