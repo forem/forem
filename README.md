@@ -143,6 +143,7 @@ Caveat: `bin/rspec` is not equipped with Spring because it affects Simplecov's r
 - [@lightalloy](https://dev.to/lightalloy)
 - [@rhymes](https://dev.to/rhymes)
 - [@jacobherrington](https://dev.to/jacobherrington)
+- [@mstruve](https://dev.to/molly_struve)
 
 ## Vulnerability disclosure
 
