@@ -27,6 +27,7 @@ Here is a bunch of liquid tags supported on DEV:
 {% twitter 834439977220112384 %}
 {% glitch earthy-course %}
 {% github thepracticaldev/dev.to %}
+{% github https://github.com/thepracticaldev/dev.to/blob/master/Gemfile#L10-L15 %}
 {% youtube dQw4w9WgXcQ %}
 {% vimeo 193110695 %}
 {% slideshare rdOzN9kr1yK5eE %}
