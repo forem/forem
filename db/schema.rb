@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_01_083510) do
+ActiveRecord::Schema.define(version: 2019_09_18_104106) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -254,6 +254,7 @@ ActiveRecord::Schema.define(version: 2019_08_01_083510) do
     t.string "category"
     t.boolean "contact_via_connect", default: false
     t.datetime "created_at", null: false
+    t.datetime "expires_at"
     t.datetime "last_buffered"
     t.string "location"
     t.bigint "organization_id"
@@ -555,6 +556,7 @@ ActiveRecord::Schema.define(version: 2019_08_01_083510) do
     t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
     t.index ["notifiable_id"], name: "index_notifications_on_notifiable_id"
     t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
+    t.index ["notified_at"], name: "index_notifications_on_notified_at"
     t.index ["organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_org_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["organization_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_org_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
     t.index ["organization_id"], name: "index_notifications_on_organization_id"
@@ -788,6 +790,21 @@ ActiveRecord::Schema.define(version: 2019_08_01_083510) do
     t.string "prompt_html"
     t.string "prompt_markdown"
     t.datetime "updated_at", null: false
+  end
+
+  create_table "pro_memberships", force: :cascade do |t|
+    t.boolean "auto_recharge", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "expiration_notification_at"
+    t.integer "expiration_notifications_count", default: 0, null: false
+    t.datetime "expires_at", null: false
+    t.string "status", default: "active"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["auto_recharge"], name: "index_pro_memberships_on_auto_recharge"
+    t.index ["expires_at"], name: "index_pro_memberships_on_expires_at"
+    t.index ["status"], name: "index_pro_memberships_on_status"
+    t.index ["user_id"], name: "index_pro_memberships_on_user_id"
   end
 
   create_table "profile_pins", force: :cascade do |t|
@@ -1066,6 +1083,7 @@ ActiveRecord::Schema.define(version: 2019_08_01_083510) do
     t.string "medium_url"
     t.datetime "membership_started_at"
     t.boolean "mobile_comment_notifications", default: true
+    t.boolean "mod_roundrobin_notifications", default: true
     t.integer "monthly_dues", default: 0
     t.string "mostly_work_with"
     t.string "name"
@@ -1076,6 +1094,7 @@ ActiveRecord::Schema.define(version: 2019_08_01_083510) do
     t.boolean "onboarding_package_fulfilled", default: false
     t.boolean "onboarding_package_requested", default: false
     t.boolean "onboarding_package_requested_again", default: false
+    t.string "onboarding_variant_version", default: "0"
     t.boolean "org_admin", default: false
     t.integer "organization_id"
     t.boolean "permit_adjacent_sponsors", default: true
@@ -1146,6 +1165,19 @@ ActiveRecord::Schema.define(version: 2019_08_01_083510) do
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
   end
 
+  create_table "webhook_endpoints", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "events", null: false, array: true
+    t.bigint "oauth_application_id"
+    t.string "source"
+    t.string "target_url", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["events"], name: "index_webhook_endpoints_on_events"
+    t.index ["oauth_application_id"], name: "index_webhook_endpoints_on_oauth_application_id"
+    t.index ["user_id"], name: "index_webhook_endpoints_on_user_id"
+  end
+
   add_foreign_key "badge_achievements", "badges"
   add_foreign_key "badge_achievements", "users"
   add_foreign_key "chat_channel_memberships", "chat_channels"
@@ -1159,4 +1191,6 @@ ActiveRecord::Schema.define(version: 2019_08_01_083510) do
   add_foreign_key "push_notification_subscriptions", "users"
   add_foreign_key "sponsorships", "organizations"
   add_foreign_key "sponsorships", "users"
+  add_foreign_key "webhook_endpoints", "oauth_applications"
+  add_foreign_key "webhook_endpoints", "users"
 end

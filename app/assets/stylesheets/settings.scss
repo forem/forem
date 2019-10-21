@@ -165,6 +165,48 @@
         }
       }
     }
+    .settings-color-select-container{
+      display: flex;
+      align-items: center;
+      width:100%;
+      .color-select-fields{
+        width:50%;
+        .select-field-wrapper{
+          display: flex;
+          width:100%;
+          .color-select-textbox{
+            flex:1;
+            min-width:70px;
+            border-radius: 0px;
+            border-top-left-radius: 3px;
+            border-bottom-left-radius: 3px;
+          }
+          input[type="color"] {
+            box-sizing:border-box;
+            border-radius: 0px;
+            border-top-right-radius: 3px;
+            border-bottom-right-radius: 3px;
+            padding:3px;
+            width:50px;
+            height:48px;
+            margin-left: -1px;
+            border: 1px solid rgb(222, 230, 233);
+            cursor:pointer;
+          }
+        }
+      }
+      .color-select-preview{
+        flex:1;
+        text-align:center;
+        #color-select-preview-logo{
+          padding:25px 20px;
+          border-radius:7px;
+          margin-top:20px;
+          display:none; /* Changes to inline-block when javascript loads preview */
+        }
+      }
+      
+    }
     .checkbox-field {
       display: flex;
       flex-direction: column;
@@ -351,6 +393,24 @@
       opacity: 0.3;
       margin-top: 20px;
       width: 70%;
+    }
+    .single-app-integration {
+      @include themeable(background, theme-container-background, #fff);
+      @include themeable(border, theme-border, 1px solid $light-medium-gray);
+      border-radius: 8px;
+      padding: 10px;
+      h2 {
+        margin: 0;
+        padding: 0;
+        font-size: 1.5em;
+      }
+      sup {
+        @include themeable(color, theme-secondary-color, $medium-gray);
+      }
+      img {
+        height: 1.0em;
+        margin-left: 5px;
+      }
     }
   }
   .default-billing-message {
@@ -572,6 +632,7 @@
     width: 100%;
     border-radius: 3px;
     font-size: 1.1em;
+    cursor: pointer;
   }
   .settings-generate-new-secret {
     margin-top: 10px;
@@ -584,6 +645,23 @@
     cursor: pointer;
     &:hover {
       background: lighten($black, 14%);
+    }
+  }
+  clipboard-copy {
+    cursor: pointer;
+    display: flex;
+    img {
+      max-width: 26px;
+      margin-left: 8px;
+    }
+
+  }
+  .copy-text-announcer {
+    display: block;
+    text-align: center;
+    padding-top: 10px;
+    &[hidden] {
+      display: none;
     }
   }
 }
@@ -652,4 +730,40 @@ ul.delete__account {
       width: 30%;
     }
   }
+}
+
+.membership-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-flow: row wrap;
+  @include themeable(background, theme-container-accent-background, $off-white);
+  border-radius: 5px;
+  border: 1px solid $light-medium-gray;
+  padding: 0.5rem 0 0.8rem 0.5rem;
+
+  dt, label {
+    flex-basis: 40%;
+    font-size: 1.1rem;
+    font-weight: bold;
+
+    margin-top: 0.3rem;
+    padding: 0.2rem;
+  }
+
+  dd {
+    flex-basis: 40%;
+    flex-grow: 1;
+
+    margin-top: 0.3rem;
+    padding: 0.2rem;
+
+    .no {
+      color: darken($red, 10%);
+    }
+  }
+}
+
+.membership-purchase-link {
+  font-size: 2rem;
 }

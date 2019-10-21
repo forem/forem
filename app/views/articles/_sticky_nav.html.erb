@@ -41,6 +41,7 @@
       <div class="primary-sticky-nav-author-name">
         <a href="<%= @actor.path %>">
           <%= @actor.name %>
+          <%= render "shared/pro_checkmark" if @actor.pro? %>
         </a>
       </div>
       <div class="primary-sticky-nav-author-username">
@@ -119,7 +120,7 @@
               </div>
             <% end %>
             <a class="primary-sticky-nav-element" href="<%= article.path %>">
-              <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image"  loading="lazy" alt="<%= article.user.name %> profile image">
+              <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" loading="lazy" alt="<%= article.user.name %> profile image">
               <%= article.title %>
               <div class="primary-sticky-nav-element-details">
                 <% article.decorate.cached_tag_list_array.each do |tag| %>

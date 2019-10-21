@@ -10,15 +10,6 @@ HTMLDocument.prototype.ready = new Promise(resolve => {
   return null;
 });
 
-document.ready.then(function() {
-  loadForm();
-  window.InstantClick.on('change', () => {
-    if (document.getElementById('article-form')) {
-      loadForm();
-    }
-  });
-});
-
 function loadForm() {
   getUserDataAndCsrfToken().then(({ currentUser, csrfToken }) => {
     window.currentUser = currentUser;
@@ -38,3 +29,14 @@ function loadForm() {
     );
   });
 }
+
+document.ready.then(() => {
+  loadForm();
+  window.InstantClick.on('change', () => {
+    if (document.getElementById('article-form')) {
+      loadForm();
+    }
+  });
+});
+
+

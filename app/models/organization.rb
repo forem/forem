@@ -69,7 +69,7 @@ class Organization < ApplicationRecord
 
     self.old_old_slug = old_slug
     self.old_slug = slug_was
-    articles.find_each { |a| a.update(path: a.path.gsub(slug_was, slug)) }
+    articles.find_each { |article| article.update(path: article.path.gsub(slug_was, slug)) }
   end
 
   def path
@@ -90,6 +90,18 @@ class Organization < ApplicationRecord
 
   def profile_image_90
     ProfileImage.new(self).get(90)
+  end
+
+  def has_enough_credits?(num_credits_needed)
+    credits.unspent.size >= num_credits_needed
+  end
+
+  def pro?
+    false
+  end
+
+  def banned
+    false
   end
 
   private

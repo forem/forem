@@ -4,12 +4,9 @@ module Users
 
     def perform(user_id, cache_buster = CacheBuster.new)
       user = User.find_by(id: user_id)
+      return unless user
 
-      cache_buster.bust("/#{user.username}") if user
-      cache_buster.bust("/#{user.username}?i=i") if user
-      cache_buster.bust("/live/#{user.username}") if user
-      cache_buster.bust("/live/#{user.username}?i=i") if user
-      cache_buster.bust("/feed/#{user.username}") if user
+      cache_buster.bust_user(user)
     end
   end
 end

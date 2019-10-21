@@ -14,8 +14,6 @@ RSpec/DescribeClass:
 
 RSpec/ExampleLength:
   Max: 10
-  Exclude:
-    - spec/system/**/*
 
 # TODO: Uncomment it after fix rubocop-todo Metrics/LineLength
 # Metrics/LineLength:
@@ -46,13 +44,6 @@ Metrics/ClassLength:
 Metrics/ModuleLength:
   Description: 'Avoid modules longer than 100 lines of code.'
   Enabled: false
-
-Metrics/AbcSize:
-  Description: >-
-    A calculated magnitude based on number of assignments,
-    branches, and conditions.
-  Enabled: true
-  Max: 50
 
 # TODO: Uncomment it after fix rubocop-todo Metrics/BlockLength
 Metrics/BlockLength:

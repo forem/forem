@@ -1,5 +1,6 @@
 class ChatChannelsController < ApplicationController
-  before_action :authenticate_user!, only: [:moderate]
+  before_action :authenticate_user!, only: %i[moderate]
+  before_action :set_channel, only: %i[show update open moderate]
   after_action :verify_authorized
 
   def index
@@ -15,39 +16,20 @@ class ChatChannelsController < ApplicationController
     end
   end
 
-  def show
-    @chat_channel = ChatChannel.find_by(id: params[:id]) || not_found
-    authorize @chat_channel
-  end
+  def show; end
 
   def create
     authorize ChatChannel
     @chat_channel = ChatChannelCreationService.new(current_user, params[:chat_channel]).create
-    if @chat_channel.valid?
-      render json: { status: "success",
-                     chat_channel: @chat_channel.to_json(only: %i[channel_name slug]) },
-             status: :ok
-    else
-      render json: { errors: @chat_channel.errors.full_messages }
-    end
+    render_chat_channel
   end
 
   def update
-    @chat_channel = ChatChannel.find(params[:id])
-    authorize @chat_channel
     ChatChannelUpdateService.new(@chat_channel, chat_channel_params).update
-    if @chat_channel.valid?
-      render json: { status: "success",
-                     chat_channel: @chat_channel.to_json(only: %i[channel_name slug]) },
-             status: :ok
-    else
-      render json: { errors: @chat_channel.errors.full_messages }
-    end
+    render_chat_channel
   end
 
   def open
-    @chat_channel = ChatChannel.find(params[:id])
-    authorize @chat_channel
     membership = @chat_channel.chat_channel_memberships.where(user_id: current_user.id).first
     membership.update(last_opened_at: 1.second.from_now, has_unopened_messages: false)
     @chat_channel.index!
@@ -56,15 +38,13 @@ class ChatChannelsController < ApplicationController
   end
 
   def moderate
-    @chat_channel = ChatChannel.find(params[:id])
-    authorize @chat_channel
     command = chat_channel_params[:command].split
     case command[0]
     when "/ban"
       banned_user = User.find_by(username: command[1])
       if banned_user
         banned_user.add_role :banned
-        banned_user.messages.each(&:destroy!)
+        banned_user.messages.delete_all
         Pusher.trigger(@chat_channel.pusher_channels,
                        "user-banned",
                        { userId: banned_user.id }.to_json)
@@ -118,6 +98,11 @@ class ChatChannelsController < ApplicationController
 
   private
 
+  def set_channel
+    @chat_channel = ChatChannel.find_by(id: params[:id]) || not_found
+    authorize @chat_channel
+  end
+
   def chat_channel_params
     params.require(:chat_channel).permit(policy(ChatChannel).permitted_attributes)
   end
@@ -160,7 +145,6 @@ class ChatChannelsController < ApplicationController
       @active_channel = ChatChannel.find_by(slug: slug)
       @active_channel.current_user = current_user if @active_channel
     end
-    # @github_token = generate_github_token Not yet fully baked, not needed.
     generate_algolia_search_key
   end
 
@@ -175,6 +159,16 @@ class ChatChannelsController < ApplicationController
   def generate_github_token
     Rails.cache.fetch("user-github-token-#{current_user.id}", expires_in: 48.hours) do
       Identity.where(user_id: current_user.id, provider: "github").first&.token
+    end
+  end
+
+  def render_chat_channel
+    if @chat_channel.valid?
+      render json: { status: "success",
+                     chat_channel: @chat_channel.to_json(only: %i[channel_name slug]) },
+             status: :ok
+    else
+      render json: { errors: @chat_channel.errors.full_messages }
     end
   end
 end

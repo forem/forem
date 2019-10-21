@@ -87,4 +87,10 @@ class NotifyMailer < ApplicationMailer
     subject = "Congrats! You're the moderator for ##{tag_name}"
     mail(to: @user.email, subject: subject)
   end
+
+  def trusted_role_email(user)
+    @user = user
+    subject = "You've been upgraded to #{ApplicationConfig['COMMUNITY_NAME']} Community mod status!"
+    mail(to: @user.email, subject: subject)
+  end
 end

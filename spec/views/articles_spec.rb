@@ -47,28 +47,4 @@ RSpec.describe "articles/show", type: :view do
     expect(rendered).to have_css("form#new_comment")
     expect(rendered).to have_css("input#submit-button")
   end
-
-  it "shows user comments of the article" do
-    without_partial_double_verification do
-      allow(view).to receive(:comment_class) { |a, b| helper.comment_class(a, b) }
-    end
-    comment1 = create_comment
-    comment2 = create_comment(comment1.id)
-    render
-    expect(rendered).to have_css("div.comment-trees")
-    expect(rendered).to have_text(comment1.body_html)
-    expect(rendered).to have_text(comment2.body_html)
-  end
 end
-
-# note fully implemented yet
-# require 'approvals/rspec'
-#
-# describe 'articles/index', type: :view do
-#   it 'works' do
-#     assign(:featured_story, Article.new)
-#     render
-#     verify(format: :html) { rendered }
-#   end
-#
-# end

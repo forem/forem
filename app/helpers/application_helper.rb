@@ -37,7 +37,7 @@ module ApplicationHelper
       classified_listings
       credits
       partnerships
-      pro_accounts
+      pro_memberships
     ].include?(controller_name)
   end
 
@@ -107,23 +107,7 @@ module ApplicationHelper
   end
 
   def cloud_cover_url(url)
-    return if url.blank?
-    return asset_path("triple-unicorn") if Rails.env.test?
-    return url if Rails.env.development?
-
-    width = 1000
-    height = 420
-    quality = "auto"
-
-    cl_image_path(url,
-                  type: "fetch",
-                  width: width,
-                  height: height,
-                  crop: "imagga_scale",
-                  quality: quality,
-                  flags: "progressive",
-                  fetch_format: "auto",
-                  sign_url: true)
+    CloudCoverUrl.new(url).call
   end
 
   def tag_colors(tag)
@@ -137,7 +121,7 @@ module ApplicationHelper
   end
 
   def beautified_url(url)
-    url.sub(/^((http[s]?|ftp):\/)?\//, "").sub(/\?.*/, "").chomp("/")
+    url.sub(/\A((http[s]?|ftp):\/)?\//, "").sub(/\?.*/, "").chomp("/")
   rescue StandardError
     url
   end

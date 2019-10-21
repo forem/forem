@@ -37,7 +37,8 @@ class Message < ApplicationRecord
     chat_channel.touch(:last_message_at)
     chat_channel.index!
     chat_channel.chat_channel_memberships.reindex!
-    chat_channel.delay.index!
+
+    ChatChannels::IndexJob.perform_later(chat_channel_id: chat_channel.id)
   end
 
   def update_all_has_unopened_messages_statuses
@@ -58,8 +59,8 @@ class Message < ApplicationRecord
   def append_rich_links(html)
     doc = Nokogiri::HTML(html)
     rich_style = "border: 1px solid #0a0a0a; border-radius: 3px; padding: 8px;"
-    doc.css("a").each do |a|
-      if (article = rich_link_article(a))
+    doc.css("a").each do |anchor|
+      if (article = rich_link_article(anchor))
         html += "<a style='color: #0a0a0a' href='#{article.path}'
           target='_blank' data-content='articles/#{article.id}'>
           <h1 style='#{rich_style}'  data-content='articles/#{article.id}'>

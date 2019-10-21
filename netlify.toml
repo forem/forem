@@ -7,7 +7,7 @@
 
 [build]
   base = "docs/"
-  command = "make"
+  command = "node deploy-script.js"
 
 [[redirects]]
   from = "http://docs.dev.to"
@@ -18,6 +18,12 @@
 [[redirects]]
   from = "http://docs.dev.to/ruby-doc/"
   to = "https://docs.dev.to/ruby-doc/index.html"
+[[redirects]]
+  from = "http://docs.dev.to/api"
+  to = "https://docs.dev.to/api/index.html"
+[[redirects]]
+  from = "http://docs.dev.to/api/"
+  to = "https://docs.dev.to/api/index.html"
 [[redirects]]
   from = "http://docs.dev.to/*"
   to = "https://docs.dev.to/:splat"

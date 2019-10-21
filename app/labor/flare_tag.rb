@@ -1,16 +1,18 @@
 class FlareTag
-  FLARES = %w[explainlikeimfive
-              jokes
-              watercooler
-              ama
-              techtalks
-              help
-              news
-              healthydebate
-              showdev
-              challenge
-              anonymous
-              discuss].freeze
+  FLARE_TAGS = %w[explainlikeimfive
+                  jokes
+                  hacktoberfest
+                  watercooler
+                  ama
+                  techtalks
+                  todayilearned
+                  help
+                  news
+                  healthydebate
+                  showdev
+                  challenge
+                  anonymous
+                  discuss].freeze
 
   def initialize(article, except_tag = nil)
     @article = article.decorate
@@ -19,7 +21,8 @@ class FlareTag
 
   def tag
     @tag ||= Rails.cache.fetch("article_flare_tag-#{article.id}-#{article.updated_at}", expires_in: 12.hours) do
-      flare = FLARES.detect { |f| article.cached_tag_list_array.include?(f) }
+      # Take the first flare tag to show up in the array
+      flare = FLARE_TAGS.detect { |tag| article.cached_tag_list_array.include?(tag) }
       flare && flare != except_tag ? Tag.select(%i[name bg_color_hex text_color_hex]).find_by(name: flare) : nil
     end
   end

@@ -6,6 +6,7 @@ class GithubTag
 
     def initialize(link)
       @link = parse_link(link)
+      @options = parse_options(link)
       @content = get_content(@link)
     end
 
@@ -14,14 +15,15 @@ class GithubTag
         partial: PARTIAL,
         locals: {
           content: @content,
+          show_readme: show_readme?,
           updated_html: @updated_html
         },
       )
     end
 
     def parse_link(link)
-      link = ActionController::Base.helpers.strip_tags(link)
-      link.gsub(/.*github\.com\//, "").delete(" ")
+      link = sanitize_link(link)
+      link.split(" ").first.delete(" ")
     end
 
     def get_content(link)
@@ -36,7 +38,30 @@ class GithubTag
       client.repository(user_name + "/" + repo_name)
     end
 
+    def valid_option(option)
+      option.match(/no-readme/)
+    end
+
+    def parse_options(link)
+      opts = sanitize_link(link)
+      _, *options = opts.split(" ")
+
+      validated_options = options.map { |option| valid_option(option) }.reject(&:nil?)
+      raise StandardError, "GitHub tag: `#{link}`: Invalid option - did you mean `no-readme`?" unless options.empty? || validated_options.any?
+
+      options
+    end
+
+    def show_readme?
+      @options.none? "no-readme"
+    end
+
     private
+
+    def sanitize_link(link)
+      link = ActionController::Base.helpers.strip_tags(link)
+      link.gsub(/.*github\.com\//, "")
+    end
 
     def raise_error
       raise StandardError, "Invalid Github Repo link"

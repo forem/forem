@@ -1,0 +1,39 @@
+<div class="ltag__stackexchange--container">
+  <div class="ltag__stackexchange--title-container">
+    <header>
+      <div class="ltag__stackexchange--title">
+      <% logo_to_use = site == "stackoverflow" ? "stackoverflow-logo.svg" : "stackexchange-logo.svg" %>
+        <h1>
+          <img src="<%= ActionController::Base.helpers.asset_path(logo_to_use) %>" alt="">
+            <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer">
+              <%= post_type == "question" ? "" : "<span class='title-flare'>answer</span> re: ".html_safe %> <%= CGI::unescapeHTML title %>
+            </a>
+        </h1>
+        <div class="ltag__stackexchange--post-metadata">
+          <span><%= Time.at(created_at).strftime("%b %e '%y") %></span>
+          <% if post_type == "question" %>
+            <span>Comments: <%= comment_count %></span>
+            <span>Answers: <%= answer_count %></span>
+          <% end %>
+        </div>
+      </div>
+      <a class="ltag__stackexchange--score-container" href="<%= post_url %>" target="_blank" rel="noopener noreferrer">
+        <img src="<%= ActionController::Base.helpers.asset_path("stackexchange-arrow-up.svg") %>" alt="">
+        <div class="ltag__stackexchange--score-number">
+          <%= score %>
+        </div>
+        <img src="<%= ActionController::Base.helpers.asset_path("stackexchange-arrow-down.svg") %>" alt="">
+      </a>
+    </header>
+  </div>
+  <div class="ltag__stackexchange--body">
+    <p>
+      <%= (HTML_Truncator.truncate body, 50).html_safe %>
+    </p>
+  </div>
+  <div class="ltag__stackexchange--btn--container">
+    <button class="ltag__stackexchange--btn" type="button">
+      <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer">Open Full <%= post_type.capitalize %></a>
+    </button>
+  </div>
+</div>

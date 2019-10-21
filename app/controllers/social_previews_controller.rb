@@ -10,70 +10,36 @@ class SocialPreviewsController < ApplicationController
 
     template = (@article.decorate.cached_tag_list_array & SHE_CODED_TAGS).any? ? "shecoded" : "article"
 
-    respond_to do |format|
-      format.html do
-        render template, layout: false
-      end
-      format.png do
-        html = render_to_string(template, formats: :html, layout: false)
-        redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS, google_fonts: "Roboto|Roboto+Condensed"), status: :found
-      end
-    end
+    set_respond template
   end
 
   def user
-    @user = User.find(params[:id]) || not_found
-    respond_to do |format|
-      format.html do
-        render layout: false
-      end
-      format.png do
-        html = render_to_string(formats: :html, layout: false)
-        redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS, google_fonts: "Roboto|Roboto+Condensed"), status: :found
-      end
-    end
+    @user = User.find(params[:id])
+    set_respond
   end
 
   def listing
-    @listing = ClassifiedListing.find(params[:id]) || not_found
+    @listing = ClassifiedListing.find(params[:id])
     define_categories
-    respond_to do |format|
-      format.html do
-        render layout: false
-      end
-      format.png do
-        html = render_to_string(formats: :html, layout: false)
-        redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS, google_fonts: "Roboto|Roboto+Condensed"), status: :found
-      end
-    end
+    set_respond
   end
 
   def organization
-    @user = Organization.find(params[:id]) || not_found
+    @user = Organization.find(params[:id])
 
-    respond_to do |format|
-      format.html do
-        render "user", layout: false
-      end
-      format.png do
-        html = render_to_string("user", formats: :html, layout: false)
-        redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS, google_fonts: "Roboto"), status: :found
-      end
-    end
+    set_respond "user"
   end
 
   def tag
-    @tag = Tag.find(params[:id]) || not_found
+    @tag = Tag.find(params[:id])
 
-    respond_to do |format|
-      format.html do
-        render layout: false
-      end
-      format.png do
-        html = render_to_string(formats: :html, layout: false)
-        redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS, google_fonts: "Roboto"), status: :found
-      end
-    end
+    set_respond
+  end
+
+  def comment
+    @comment = Comment.find(params[:id])
+
+    set_respond
   end
 
   private
@@ -94,5 +60,17 @@ class SocialPreviewsController < ApplicationController
     }
     @category = cat_info[@listing.category.to_sym][0]
     @cat_color = cat_info[@listing.category.to_sym][1]
+  end
+
+  def set_respond(template = nil)
+    respond_to do |format|
+      format.html do
+        render template, layout: false
+      end
+      format.png do
+        html = render_to_string(template, formats: :html, layout: false)
+        redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS, google_fonts: "Roboto|Roboto+Condensed"), status: :found
+      end
+    end
   end
 end

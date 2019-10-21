@@ -56,7 +56,7 @@ RSpec.describe "HtmlVariants", type: :request do
       post "/html_variants", params: {
         html_variant: {
           name: "New post",
-          html: "Yo ho ho#{rand(100)}", tag_list: "yoyo",
+          html: "Yo ho ho", tag_list: "yoyo",
           published: true,
           group: "article_show_sidebar_cta"
         }
@@ -69,7 +69,7 @@ RSpec.describe "HtmlVariants", type: :request do
       post "/html_variants", params: {
         html_variant: {
           # name: NOTHING HERE
-          html: "Yo ho ho#{rand(100)}", tag_list: "yoyo",
+          html: "Yo ho ho", tag_list: "yoyo",
           published: true
         }
       }
@@ -85,7 +85,7 @@ RSpec.describe "HtmlVariants", type: :request do
     it "updates when appropriate" do
       user.add_role(:super_admin)
       html_variant = create(:html_variant)
-      new_html = "Yo ho ho#{rand(100)}"
+      new_html = "Yo ho ho"
       put "/html_variants/#{html_variant.id}", params: {
         html_variant: {
           html: new_html
@@ -97,7 +97,7 @@ RSpec.describe "HtmlVariants", type: :request do
     it "does not create with invalid params" do
       user.add_role(:super_admin)
       html_variant = create(:html_variant, approved: true, published: true)
-      new_html = "Yo ho ho#{rand(100)}"
+      new_html = "Yo ho ho"
       put "/html_variants/#{html_variant.id}", params: {
         html_variant: {
           html: new_html

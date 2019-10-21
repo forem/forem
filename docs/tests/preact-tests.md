@@ -28,4 +28,4 @@ or
 yarn test
 ```
 
-At the end of the tests execution you will see the code coverage for the Preact components tests.
+At the end of the tests execution, you will see the code coverage for the Preact components tests.

@@ -3,7 +3,9 @@ module Api
     class ArticlesController < ApiController
       respond_to :json
 
-      before_action :authenticate_with_api_key, only: %i[create update]
+      before_action :authenticate_with_api_key_or_current_user!, only: %i[create update]
+      before_action :authenticate!, only: :me
+      before_action -> { doorkeeper_authorize! :public }, only: %w[index show], if: -> { doorkeeper_token }
 
       before_action :set_cache_control_headers, only: [:index]
       caches_action :show,
@@ -26,43 +28,54 @@ module Api
           params[:username],
           params[:signature],
           params[:state],
+          params[:collection_id],
         ]
         set_surrogate_key_header key_headers.join("_")
       end
 
       def show
-        relation = Article.published.includes(:user)
-        @article = if params[:id] == "by_path"
-                     relation.find_by!(path: params[:url]).decorate
-                   else
-                     relation.find(params[:id]).decorate
-                   end
-      end
-
-      def onboarding
-        tag_list = if params[:tag_list].present?
-                     params[:tag_list].split(",")
-                   else
-                     %w[career discuss productivity]
-                   end
-        @articles = Array.new(4) { Suggester::Articles::Classic.new.get(tag_list) }
-        Article.tagged_with(tag_list, any: true).
-          order("published_at DESC").
-          where("positive_reactions_count > ? OR comments_count > ? AND published = ?", 10, 3, true).
-          limit(15).each do |article|
-            @articles << article
-          end
-        @articles = @articles.uniq.sample(6)
+        @article = Article.published.includes(:user).find(params[:id]).decorate
       end
 
       def create
-        @article = ArticleCreationService.new(@user, article_params).create!
-        render "show", status: :created, location: @article.url
+        @article = Articles::Creator.call(@user, article_params)
+        if @article.persisted?
+          render "show", status: :created, location: @article.url
+        else
+          message = @article.errors.full_messages.join(", ")
+          render json: { error: message, status: 422 }, status: :unprocessable_entity
+        end
       end
 
       def update
         @article = Articles::Updater.call(@user, params[:id], article_params)
         render "show", status: :ok
+      end
+
+      def me
+        doorkeeper_scope = %w[unpublished all].include?(params[:status]) ? :read_articles : :public
+        doorkeeper_authorize! doorkeeper_scope if doorkeeper_token
+
+        per_page = (params[:per_page] || 30).to_i
+        num = [per_page, 1000].min
+
+        @articles = case params[:status]
+                    when "published"
+                      @user.articles.published
+                    when "unpublished"
+                      @user.articles.unpublished
+                    when "all"
+                      @user.articles
+                    else
+                      @user.articles.published
+                    end
+
+        @articles = @articles.
+          includes(:organization).
+          order(published_at: :desc, created_at: :desc).
+          page(params[:page]).
+          per(num).
+          decorate
       end
 
       private

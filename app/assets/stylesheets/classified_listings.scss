@@ -6,6 +6,9 @@
   text-align: left;
   max-width: 100%;
   min-height: 100vh;
+  &.classifieds-form-container {
+    margin: 90px auto 150px;
+  }
   @media screen and (min-width: 950px) {
     margin: 40px auto;
   }
@@ -143,7 +146,7 @@
     );
     @media screen and (min-width: 580px) {
       border-radius: 8px;
-      margin: 100px auto 20px;
+      margin: 20px auto 20px;
     }
     * {
       box-sizing: border-box;
@@ -268,6 +271,10 @@
         theme-container-box-shadow,
         2px 2px 8px darken($light-medium-gray, 5%)
       );
+      &.cta-draft {
+        color: $black;
+        background: $yellow;
+      }
     }
     .listings-current-credits {
       position: fixed;
@@ -316,6 +323,11 @@
   .classifieds-load-more-button {
     text-align: center;
     button {
+      @include themeable(
+          color,
+          theme-color,
+          $black
+      );
       background: transparent;
       @include themeable(
         border,
@@ -369,10 +381,15 @@
 .listingform__tagoptionrow {
   padding: 10px;
   cursor: pointer;
+  position: relative;
   &:hover {
     background: lighten($green, 27%);
     color: $black;
   }
+}
+
+.listingform__tagsoptionsbottomrow, .listingform__tagsoptionrulesbutton, .listingform__tagrules--inactive {
+  display: none; //not yet fully functional or relevant
 }
 
 .listingform__tagoptionrow--active {
@@ -416,7 +433,7 @@
     @media screen and (min-width: 950px) {
       left: 0;
       right: 0;
-      box-sizing: border-box;  
+      box-sizing: border-box;
     }
     .single-classified-listing-container__spacer {
       height: 150px;
@@ -424,7 +441,6 @@
     }
   }
   .single-classified-listing-container__inner::-webkit-scrollbar {
-    // width: 0 !important;
     display: none;
   }
 }
@@ -541,12 +557,17 @@
   @include themeable(
     color,
     theme-color,
-    $white
+    $black
   );
   border: 3px solid white;
   @include themeable(
     border-color,
     theme-color,
+    $black
+  );
+  @include themeable(
+    background-color,
+    theme-container-accent-background,
     $white
   );
 }
@@ -611,7 +632,9 @@ form.listings-contact-via-connect {
     margin-right: 5px;
     display: inline-block;
     width: fit-content;
+    cursor: pointer;
     margin-bottom: 10px;
+    user-select: none;
     @include themeable(
       color,
       theme-color,
@@ -676,7 +699,7 @@ form.listings-contact-via-connect {
       padding-bottom: 30px;
 
       @media screen and (max-width: 768px) {
-        width: 90%; 
+        width: 90%;
       }
       a {
         font-size: 0.9em;
@@ -694,7 +717,7 @@ form.listings-contact-via-connect {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    
+
     .listings-dashboard-filter-buttons {
       margin-bottom: -10px;
     }
@@ -729,7 +752,7 @@ form.listings-contact-via-connect {
       }
     }
   }
-  
+
   .dashboard-listings-view {
 
     .dashboard-listing-row {
@@ -740,9 +763,15 @@ form.listings-contact-via-connect {
       border-radius: 3px;
       position: relative;
       background: var(--theme-container-background, #fff);
+
+      &.draft {
+        background: var(--theme-container-accent-background, #fffeec)
+      }
+
       &.expired {
         opacity: 0.7;
       }
+
       .listing-org {
         @include themeable(
           background,
@@ -819,16 +848,21 @@ form.listings-contact-via-connect {
           border: 2px solid transparent;
           margin-top: 6px;
           display: inline-block;
-    
+
           &.green {
             background: $green;
             color: $black;
           }
-    
+
+          &.yellow {
+            background: $yellow;
+            color: $black;
+          }
+
           &.red {
             background: $red;
           }
-    
+
           &.black {
             background: $dark-gray;
           }

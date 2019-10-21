@@ -17,6 +17,11 @@
       "title": "Ruby doc",
       "href": "http://docs.dev.to/ruby-doc",
       "target": "_blank"
+    },
+    {
+      "title": "API doc",
+      "href": "http://docs.dev.to/api",
+      "target": "_blank"
     }
   ]
 }

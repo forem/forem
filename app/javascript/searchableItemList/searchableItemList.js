@@ -8,7 +8,7 @@ export function defaultState(options) {
     index: null,
 
     page: 0,
-    hitsPerPage: 100,
+    hitsPerPage: 80,
     totalCount: 0,
 
     items: [],
@@ -82,7 +82,7 @@ export function search(query, { page, tags, statusView }) {
 
   const { index, hitsPerPage, items } = component.state;
 
-  const filters = { hitsPerPage, page };
+  const filters = { hitsPerPage, page: newPage };
   if (tags && tags.length > 0) {
     filters.tagFilters = tags;
   }
@@ -90,11 +90,9 @@ export function search(query, { page, tags, statusView }) {
   if (statusView) {
     filters.filters = `status:${statusView}`;
   }
-
   index.search(query, filters).then(result => {
     // append new items at the end
     const allItems = [...items, ...result.hits];
-
     component.setState({
       query,
       page: newPage,

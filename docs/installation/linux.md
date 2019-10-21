@@ -2,12 +2,12 @@
 
 ## Installing prerequisites
 
-_These prerequisites assume you're working on a Linux-based operating system but they have only been tested on Ubuntu 18.04._
+_These prerequisites assume you're working on a Linux-based operating system, but they have only been tested on Ubuntu 18.04._
 
 ### Ruby
 
 1. If you don't already have a Ruby version manager, we highly recommend [rbenv](https://github.com/rbenv/rbenv). Please follow their [installation guide](https://github.com/rbenv/rbenv#installation).
-1. With the Ruby version manager, install the Ruby version listed on our badge. (ie with rbenv: `rbenv install 2.6.3`)
+1. With the Ruby version manager, install the Ruby version listed on our badge. (ie with rbenv: `rbenv install 2.6.5`)
 
 For very detailed rbenv installation directions on several distros, please visit [DigitalOcean's guide](https://www.digitalocean.com/community/tutorials/how-to-install-ruby-on-rails-with-rbenv-on-ubuntu-18-04).
 
@@ -16,7 +16,7 @@ For very detailed rbenv installation directions on several distros, please visit
 There are two ways to install Yarn.
 
 - Yarn's official [installation guide](https://yarnpkg.com/en/docs/install#debian-stable) (recommended).
-- [DigitalOcean's detailed tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-18-04) describes how to install [Node version Manager](https://github.com/creationix/nvm). By installing NVM you can select a Node version (we recommend either LTS or current), the guide will also explain how to install NPM. This way you'll have Node, NPM, and then you can run `npm install -g yarn` to install Yarn.
+- [DigitalOcean's detailed tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-18-04) describes how to install [Node version Manager](https://github.com/creationix/nvm). By installing NVM you can select a Node version (we recommend either LTS or current); the guide will also explain how to install NPM. This way you'll have Node, NPM, and then you can run `npm install -g yarn` to install Yarn.
 
 ### PostgreSQL
 
@@ -27,8 +27,8 @@ There are more than one ways to setup PostgreSQL. For additional configuration, 
 
 ## Installing DEV
 
-1. Fork DEV's repository, eg. <https://github.com/thepracticaldev/dev.to/fork>
-1. Clone your forked repository, eg. `git clone https://github.com/<your-username>/dev.to.git`
+1. Fork DEV's repository, e.g. <https://github.com/thepracticaldev/dev.to/fork>
+1. Clone your forked repository, e.g. `git clone https://github.com/<your-username>/dev.to.git`
 1. Install bundler with `gem install bundler`
 1. Set up your environment variables/secrets
 
@@ -36,8 +36,8 @@ There are more than one ways to setup PostgreSQL. For additional configuration, 
    - The [backend guide](/backend) will show you how to get free API keys for additional services that may be required to run certain parts of the app.
    - For any key that you wish to enter/replace:
 
-     1. Create `config/application.yml` by copying from the provided template (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
-     1. Obtain the development variable and apply the key you wish to enter/replace. ie:
+     1. Create `config/application.yml` by copying from the provided template (i.e. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
+     1. Obtain the development variable and apply the key you wish to enter/replace. i.e.:
 
      ```shell
      GITHUB_KEY: "SOME_REAL_SECURE_KEY_HERE"
@@ -51,4 +51,8 @@ There are more than one ways to setup PostgreSQL. For additional configuration, 
 
 ### Possible error messages
 
-While installing, you might run into an error due to the pg gem requiring PostgreSQL libraries. If so, please run `sudo apt-get install libpq-dev` before retrying.
+While installing, you might run into an error due to the `pg` gem requiring PostgreSQL libraries. If so, please run `sudo apt-get install libpq-dev` before retrying.
+
+While installing, you might run into an error due to the `sass-rails` gem requiring `sassc`, which requires the `g++` compiler.  If so, please run `sudo apt-get install g++` before retrying.
+
+While installing, if you didn't install `node` or `nvm` manually, you might run into an error due to an older system node version being present, which can cause issues while `yarn` is installing packages.  If so, you'll need to [install `nvm`](https://github.com/nvm-sh/nvm#installation-and-update) and then run `nvm install node` to get the most recent node version before retrying.

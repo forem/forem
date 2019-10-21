@@ -5,6 +5,7 @@ items:
   - webpacker.md
   - preact.md
   - liquid-tags.md
+  - debugging.md
 ---
 
 # Frontend Guide

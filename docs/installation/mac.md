@@ -9,7 +9,7 @@ title: macOS
 ### Ruby
 
 1. If you don't already have a Ruby version manager, we highly recommend [rbenv](https://github.com/rbenv/rbenv). Please follow their [installation guide](https://github.com/rbenv/rbenv#installation).
-2. With the Ruby version manager, install the Ruby version listed on our badge. (ie with rbenv: `rbenv install 2.6.3`)
+2. With the Ruby version manager, install the Ruby version listed on our badge. (i.e. with rbenv: `rbenv install 2.6.5`)
 
 ### Yarn
 
@@ -23,8 +23,8 @@ For additional configuration options, check our [PostgreSQL setup guide](/instal
 
 ## Installing DEV
 
-1. Fork DEV's repository, eg. <https://github.com/thepracticaldev/dev.to/fork>
-1. Clone your forked repository, eg. `git clone https://github.com/<your-username>/dev.to.git`
+1. Fork DEV's repository, e.g. <https://github.com/thepracticaldev/dev.to/fork>
+1. Clone your forked repository, e.g. `git clone https://github.com/<your-username>/dev.to.git`
 1. Install bundler with `gem install bundler`
 1. Set up your environment variables/secrets
 
@@ -32,8 +32,8 @@ For additional configuration options, check our [PostgreSQL setup guide](/instal
    - The [backend guide](/backend) will show you how to get free API keys for additional services that may be required to run certain parts of the app.
    - For any key that you wish to enter/replace:
 
-     1. Create `config/application.yml` by copying from the provided template (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
-     1. Obtain the development variable and apply the key you wish to enter/replace. ie:
+     1. Create `config/application.yml` by copying from the provided template (i.e. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
+     1. Obtain the development variable and apply the key you wish to enter/replace. i.e.:
 
      ```shell
      GITHUB_KEY: "SOME_REAL_SECURE_KEY_HERE"
@@ -46,6 +46,18 @@ For additional configuration options, check our [PostgreSQL setup guide](/instal
 1. Run `bin/setup`
 
 ### Possible error messages
+
+**Error:** `__NSPlaceholderDate initialize] may have been in progress in another thread when fork() was called`
+
+**_Solution:_** Run the command `export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES` (or `set -x OBJC_DISABLE_INITIALIZE_FORK_SAFETY YES` in fish shell)
+
+---
+
+**Error:** `User does not have CONNECT privilege.`
+
+**_Solution:_** Complete the steps outlined in the [PostgreSQL setup guide](/installation/postgresql).
+
+---
 
 **Error:** `rbenv: version '<version number>' is not installed (set by /Path/To/Local/Repository/.ruby-version)`
 
@@ -75,7 +87,7 @@ Run the following to update `ruby-build`, `brew update && brew upgrade ruby-buil
     rebuild Ruby with Readline support. If using Ubuntu, try `sudo apt-get
     install libreadline-dev` and then reinstall your Ruby.
 rails aborted!
-LoadError: dlopen(/Users/<username>/.rbenv/versions/2.6.3/lib/ruby/2.6.0/x86_64-darwin18/readline.bundle, 9): Library not loaded: /usr/local/opt/readline/lib/libreadline.<some version number>.dylib
+LoadError: dlopen(/Users/<username>/.rbenv/versions/2.6.5/lib/ruby/2.6.0/x86_64-darwin18/readline.bundle, 9): Library not loaded: /usr/local/opt/readline/lib/libreadline.<some version number>.dylib
 ```
 
 **_Solution:_** Run `ln -s /usr/local/opt/readline/lib/libreadline.dylib /usr/local/opt/readline/lib/libreadline.<some version number>.dylib` from the command line then run `bin/setup` again. You may have a different version or libreadline, so replace `<some version number>` with the version that errored.

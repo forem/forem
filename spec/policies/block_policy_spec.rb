@@ -1,9 +1,9 @@
 require "rails_helper"
 
-RSpec.describe BlockPolicy do
+RSpec.describe BlockPolicy, type: :policy do
   subject { described_class.new(user, block) }
 
-  let(:block) { build(:block) }
+  let(:block) { build_stubbed(:block) }
 
   let(:valid_attributes) do
     %i[input_html input_css input_javascript featured index_position publish_now]
@@ -16,7 +16,7 @@ RSpec.describe BlockPolicy do
   end
 
   context "when signed in as a regular user" do
-    let(:user) { build(:user) }
+    let(:user) { build_stubbed(:user) }
 
     it { is_expected.to forbid_actions(%i[index show new edit create update destroy]) }
   end

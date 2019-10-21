@@ -54,10 +54,10 @@ class StoriesController < ApplicationController
     potential_username = params[:username].tr("@", "").downcase
     @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
     if @user&.articles&.find_by(slug: params[:slug])
-      redirect_to "/#{@user.username}/#{params[:slug]}"
+      redirect_to URI.parse("/#{@user.username}/#{params[:slug]}").path
       return
     elsif (@organization = @article.organization)
-      redirect_to "/#{@organization.slug}/#{params[:slug]}"
+      redirect_to URI.parse("/#{@organization.slug}/#{params[:slug]}").path
       return
     end
     not_found
@@ -125,7 +125,7 @@ class StoriesController < ApplicationController
         where("score > ? OR featured = ?", 9, true).
         order("hotness_score DESC")
       if user_signed_in?
-        offset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9].sample # random offset, weighted more towards zero
+        offset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11].sample # random offset, weighted more towards zero
         @stories = @stories.offset(offset)
       end
     end
@@ -141,7 +141,8 @@ class StoriesController < ApplicationController
     @podcast_index = true
     @article_index = true
     @list_of = "podcast-episodes"
-    @podcast_episodes = @podcast.podcast_episodes.reachable.order("published_at DESC").limit(30)
+    @podcast_episodes = @podcast.podcast_episodes.
+      reachable.order("published_at DESC").limit(30).decorate
     set_surrogate_key_header "podcast_episodes"
     render template: "podcast_episodes/index"
   end
@@ -182,6 +183,7 @@ class StoriesController < ApplicationController
 
   def handle_podcast_show
     set_surrogate_key_header @episode.record_key
+    @episode = @episode.decorate
     @podcast_episode_show = true
     @comments_to_show_count = 25
     @comment = Comment.new

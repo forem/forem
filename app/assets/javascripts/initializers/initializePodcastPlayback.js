@@ -234,19 +234,11 @@ function initializePodcastPlayback() {
   }
 
   function muteUnmute(audio) {
-    if (audio.muted) {
-      audio.muted = false;
-      getById('mutebutt').classList.add('hidden');
-      getById('volumeindicator').classList.add('showing');
-      getById('mutebutt').classList.remove('showing');
-      getById('volumeindicator').classList.remove('hidden');
-    } else {
-      audio.muted = true;
-      getById('mutebutt').classList.add('showing');
-      getById('volumeindicator').classList.add('hidden');
-      getById('mutebutt').classList.remove('hidden');
-      getById('volumeindicator').classList.remove('showing');
-    }
+    getById('mutebutt').classList.add(audio.muted ? 'hidden' : 'showing');
+    getById('volumeindicator').classList.add(audio.muted ? 'showing' : 'hidden');
+    getById('mutebutt').classList.remove(audio.muted ? 'showing' : 'hidden');
+    getById('volumeindicator').classList.remove(audio.muted ? 'hidden' : 'showing');
+    audio.muted = !audio.muted;
   }
 
   function updateProgress(e, audio) {

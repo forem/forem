@@ -5,24 +5,43 @@ class NotificationsController < ApplicationController
 
     @notifications_index = true
     @user = user_to_view
-    if params[:page]
-      num = 45
-      notified_at_offset = Notification.find(params[:page])&.notified_at
+
+    @initial_page_size = 8
+
+    # NOTE: this controller is using offset based pagination by assuming that
+    # the id of the last notification also corresponds to the newest `notified_at`
+    # this might not be forever true but it's good enough for now
+    if params[:offset]
+      num = 30
+      notified_at_offset = Notification.find(params[:offset])&.notified_at
     else
-      num = 8
+      num = @initial_page_size
     end
+
     @notifications = if (params[:org_id].present? || params[:filter] == "org") && allowed_user?
                        organization_notifications
                      elsif params[:org_id].blank? && params[:filter].present?
                        filtered_notifications
                      else
-                       Notification.where(user_id: @user.id).order("notified_at DESC")
+                       @user.notifications
                      end
+
+    @notifications = @notifications.includes(:notifiable).without_past_aggregations.order(notified_at: :desc)
+
+    # if offset based pagination is invoked by the frontend code, we filter out all earlier ones
+    @notifications = @notifications.where("notified_at < ?", notified_at_offset) if notified_at_offset
+
+    @notifications = NotificationDecorator.decorate_collection(@notifications.limit(num))
+
     @last_user_reaction = @user.reactions.last&.id
     @last_user_comment = @user.comments.last&.id
-    @notifications = @notifications.where("notified_at < ?", notified_at_offset) if notified_at_offset
-    @notifications = NotificationDecorator.decorate_collection(@notifications.limit(num))
+
     @organizations = @user.member_organizations if @user.organizations
+
+    # The first call, the one coming from the browser URL bar will render the "index" view, which renders
+    # the first few notifications. After that the JS frontend code (see `initNotification.js`)
+    # will call this action again by sending the offset id for the last known notifications, the result
+    # will be the partial rendering of only the list of notifications that will be attached to the DOM by JS
     render partial: "notifications_list" if notified_at_offset
   end
 
@@ -38,23 +57,19 @@ class NotificationsController < ApplicationController
 
   def filtered_notifications
     if params[:filter].to_s.casecmp("posts").zero?
-      Notification.where(user_id: @user.id, notifiable_type: "Article", action: "Published").
-        order("notified_at DESC")
+      @user.notifications.for_published_articles
     elsif params[:filter].to_s.casecmp("comments").zero?
-      Notification.where(user_id: @user.id, notifiable_type: "Comment", action: nil). # Nil action means not reaction in this context
-        or(Notification.where(user_id: @user.id, notifiable_type: "Mention")).
-        order("notified_at DESC")
+      @user.notifications.for_comments.or(@user.notifications.for_mentions)
     end
   end
 
   def organization_notifications
+    org_id = params[:org_id]
+
     if params[:filter].to_s.casecmp("comments").zero?
-      Notification.where(organization_id: params[:org_id], notifiable_type: "Comment", action: nil, user_id: nil). # Nil action means not reaction in this context
-        or(Notification.where(organization_id: params[:org_id], notifiable_type: "Mention", user_id: nil)).
-        order("notified_at DESC")
+      Notification.for_organization_comments(org_id).or(Notification.for_organization_mentions(org_id))
     else
-      Notification.where(organization_id: params[:org_id], user_id: nil).
-        order("notified_at DESC")
+      Notification.for_organization(org_id)
     end
   end
 

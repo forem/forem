@@ -216,12 +216,14 @@ RSpec.describe "NotificationsIndex", type: :request do
       before do
         user.add_role :trusted
         sign_in user
-        Notification.send_moderation_notification_without_delay(comment)
+        perform_enqueued_jobs do
+          Notification.send_moderation_notification(comment)
+        end
         get "/notifications"
       end
 
       it "renders the proper message" do
-        expect(response.body).to include "As a trusted member"
+        expect(response.body).to include "Since they are new to the community, could you leave a nice reply"
       end
 
       it "renders the article's path" do
@@ -233,6 +235,60 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
     end
 
+    context "when a user should not receive moderation notification" do
+      let(:user2)    { create(:user) }
+      let(:article)  { create(:article, user_id: user.id) }
+      let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
+
+      before do
+        sign_in user
+        perform_enqueued_jobs do
+          Notification.send_moderation_notification(comment)
+        end
+        get "/notifications"
+      end
+
+      it "renders the proper message" do
+        expect(response.body).not_to include "Since they are new to the community, could you leave a nice reply"
+      end
+
+      it "renders the article's path" do
+        expect(response.body).not_to include article.path
+      end
+
+      it "renders the comment's processed HTML" do
+        expect(response.body).not_to include comment.processed_html
+      end
+    end
+
+    context "when a user has unsubscribed from mod roundrobin notifications" do
+      let(:user2)    { create(:user) }
+      let(:article)  { create(:article, user_id: user.id) }
+      let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
+
+      before do
+        user.add_role :trusted
+        user.update(mod_roundrobin_notifications: false)
+        sign_in user
+        perform_enqueued_jobs do
+          Notification.send_moderation_notification(comment)
+        end
+        get "/notifications"
+      end
+
+      it "renders the proper message" do
+        expect(response.body).not_to include "Since they are new to the community, could you leave a nice reply"
+      end
+
+      it "renders the article's path" do
+        expect(response.body).not_to include article.path
+      end
+
+      it "renders the comment's processed HTML" do
+        expect(response.body).not_to include comment.processed_html
+      end
+    end
+
     context "when a user has a new welcome notification" do
       before do
         sign_in user
@@ -240,7 +296,9 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "renders the welcome notification" do
         broadcast = create(:broadcast, :onboarding)
-        Notification.send_welcome_notification_without_delay(user.id)
+        perform_enqueued_jobs do
+          Notification.send_welcome_notification(user.id)
+        end
         get "/notifications"
         expect(response.body).to include broadcast.processed_html
       end
@@ -289,8 +347,10 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       before do
         comment
-        Mention.create_all_without_delay(comment)
-        Notification.send_mention_notification_without_delay(Mention.first)
+        perform_enqueued_jobs do
+          Mention.create_all(comment)
+          Notification.send_mention_notification(Mention.first)
+        end
         sign_in user
         get "/notifications"
       end
@@ -310,7 +370,9 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       before do
         user2.follow(user)
-        Notification.send_to_followers_without_delay(article, "Published")
+        perform_enqueued_jobs do
+          Notification.send_to_followers(article, "Published")
+        end
         sign_in user2
         get "/notifications"
       end
@@ -339,6 +401,25 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "renders the article's published at" do
         expect(response.body).to include time_ago_in_words(article.published_at)
+      end
+    end
+
+    context "when a user is an admin" do
+      let(:admin) { create(:user, :super_admin) }
+      let(:user2)    { create(:user) }
+      let(:article)  { create(:article, user_id: user.id) }
+
+      before do
+        user2.follow(user)
+        perform_enqueued_jobs do
+          Notification.send_to_followers(article, "Published")
+        end
+        sign_in admin
+      end
+
+      it "can view other people's notifications" do
+        get "/notifications?username=#{user2.username}"
+        expect(response.body).to include "made a new post:"
       end
     end
   end

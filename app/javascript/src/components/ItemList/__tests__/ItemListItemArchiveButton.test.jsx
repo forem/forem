@@ -15,6 +15,8 @@ describe('<ItemListItemArchiveButton />', () => {
       <ItemListItemArchiveButton text="archive" onClick={onClick} />,
     );
     context.find('a').simulate('keyup', { key: 'Enter' });
-    expect(onClick).toBeCalled();
+    expect(onClick).toHaveBeenCalledTimes(1);
+    context.find('a').simulate('keyup', { key: 'Space' });
+    expect(onClick).toHaveBeenCalledTimes(1);
   });
 });

@@ -58,7 +58,18 @@ _docker-storage/
 
 # YARD generated doc (in the Gitdocs folder)
 docs/.static/ruby-doc/
+<<<<<<< HEAD
 
 # Cypress
 /cypress/screenshots
 /cypress/videos
+=======
+# ReDoc generated API doc (in the Gitdocs folder)
+docs/.static/api/
+
+# AWS Cloud9 specific folder for user settings
+.c9/
+
+# rvm
+.ruby-gemset
+>>>>>>> 0d2506f9ef79a32f7474001337161314d1062134

@@ -18,6 +18,7 @@ class RssReader
         ---
         title: #{@title}
         published: false
+        date: #{@item.published}
         tags: #{get_tags}
         canonical_url: #{@user.feed_mark_canonical ? @feed_source_url : ''}
         ---

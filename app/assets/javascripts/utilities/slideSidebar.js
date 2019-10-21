@@ -1,3 +1,5 @@
+'use strict';
+
 function slideSidebar(side, direction) {
   if (!document.getElementById('sidebar-wrapper-' + side)) {
     return;

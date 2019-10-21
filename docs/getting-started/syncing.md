@@ -6,7 +6,7 @@ title: Keeping Your Fork In Sync
 
 Now that you have a fork of DEV's source code, there is work you will need to do to keep it updated.
 
-## Setup Your upstream
+## Setup your upstream
 
 Inside your DEV directory, add a remote to the official DEV repo:
 
@@ -16,7 +16,7 @@ git remote add upstream https://github.com/thepracticaldev/dev.to.git
 
 ## Rebasing from upstream
 
-Do this prior to every time you create a branch for a PR:
+Do this prior to creating each branch for a PR:
 
 Make sure you are on the master branch:
 
@@ -26,13 +26,13 @@ On branch master
 Your branch is up-to-date with 'origin/master'.
 ```
 
-If your aren't on `master`, finish your work and checkout the `master` branch:
+If you aren't on `master`, finish your work and checkout the `master` branch:
 
 ```shell
 git checkout master
 ```
 
-Do a pull with rebase against `upstream`
+Do a pull with rebase against `upstream`:
 
 ```shell
 git pull --rebase upstream master

@@ -38,8 +38,8 @@ git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
 exec $SHELL
 
-rbenv install 2.6.3
-rbenv global 2.6.3
+rbenv install 2.6.5
+rbenv global 2.6.5
 ruby -v
 ```
 
@@ -93,9 +93,11 @@ Make sure that Yarn is installed with `yarn -v`
 
 If you don't have PostgreSQL installed on your Windows system, you can do so right now. WSL is able to connect to a PostgreSQL instance on your Windows machine. DEV requires PostgreSQL version 9.4 or higher.
 
-Download [PostgreSQL for Windows](https://www.openscg.com/postgresql/installers/) and install it.
+Download [PostgreSQL for Windows](https://www.postgresql.org/download/windows/) and install it.
 
 Pay attention to the username and password you setup during installation of PostgreSQL as you will use this to configure your Rails applications to login to the database later.
+
+For additional configuration options, check our [PostgreSQL setup guide](/installation/postgresql).
 
 ## Installing DEV
 
@@ -129,6 +131,19 @@ Pay attention to the username and password you setup during installation of Post
 
 ```bash
 sudo apt-get install libpq-dev
+```
+
+3. If the command `bin/setup` fails at installing `cld-0.8.0` with the warnings `'aclocal-1.10' is missing on your system` and `'automake-1.10' is missing on your system`. Please install `automake-1.10` using the commands below.
+
+```shell
+cd
+sudo apt-get update
+sudo apt-get install autoconf
+wget https://ftp.gnu.org/gnu/automake/automake-1.10.tar.gz
+tar xf automake-1.10.tar.gz
+cd automake-1.10/
+./configure --prefix=/usr/local
+make
 ```
 
 > If you encountered any errors that you subsequently resolved, **please consider updating this section** with your errors and their solutions.

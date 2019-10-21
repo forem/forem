@@ -48,7 +48,7 @@
   border: 1px solid darken($light-medium-gray, 5%);
   border: var(--theme-container-border, 1px solid darken($light-medium-gray, 5%));
   box-shadow: $bold-shadow;
-  box-shadow: var(--theme-container-box-shadow, $bold-shadow);   
+  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
   border-radius: 3px;
 
   @media screen and (min-width: 500px) {
@@ -182,18 +182,18 @@
     height: 26px;
     margin-bottom: 0px;
     margin-top: -3px;
-    margin-bottom: 1px;  
+    margin-bottom: 1px;
     @media screen and (min-width: 600px) {
       height: 34px;
       margin-top: 0px;
-      margin-bottom: 4px;  
+      margin-bottom: 4px;
     }
   }
 }
 
 .articleform__titleTooLong {
   position: relative;
-  &::before { 
+  &::before {
     content: "Title Too Long";
     top: 5px;
     left: 5px;
@@ -269,14 +269,53 @@
   padding: 10px;
   font-weight: bold;
   cursor: pointer;
+  position: relative;
   &:hover {
     background: lighten($green, 27%);
     background: var(--theme-container-background-hover, lighten($green, 27%));
     color: $black;
     color: var(--theme-color, $black);
-  
+
   }
 }
+
+.articleform__tagsoptionsbottomrow {
+  padding: 12px 10px 10px;
+  font-weight: bold;
+  cursor: pointer;
+  position: relative;
+  font-size: 0.7em;
+  font-style: italic;
+  border-top: 1px solid $medium-gray;
+  color: var(--theme-secondary-color, $black);
+}
+
+.articleform__tagsoptionrulesbutton {
+  position: absolute;
+  right: 8px;
+  top: 9px;
+  border: 0;
+  border-radius: 3px;
+  background: var(--theme-anchor-color, $sky-blue);
+  color: var(--theme-container-background, white);
+  font-size: 0.8em;
+  width: 100px;
+}
+
+.articleform__tagrules--inactive {
+  display: none
+}
+
+.articleform__tagrules--active {
+  font-size: 0.76em;
+  max-height: 270px;
+  overflow: auto;
+  border: 1px solid $medium-gray;
+  border-radius: 3px;
+  margin-top: 8px;
+  padding: 0px 8px;
+}
+
 .articleform__tagoptionrow--active {
   background: $green;
   background: var(--theme-container-accent-background, $green);
@@ -317,8 +356,8 @@
     vertical-align: -4px;
     display: inline-block;
     filter: invert(100);
-    filter: var(--theme-social-icon-invert, invert(0));  
-
+    filter: var(--theme-social-icon-invert, invert(0));
+    margin-right: 0.3rem;
   }
   &.articleform__detailsButton--moreconfig {
     margin-left: 5px;
@@ -362,7 +401,9 @@
   resize: none;
   padding: 20px 6px;
   font-family: $monospace;
-  // overflow: initial;
+  // scrollbars not needed because the preact-textarea-autosize package
+  // automatically resizes the article form
+  overflow: hidden;
   background: white;
   background: var(--theme-container-background, white);
   color: $black;
@@ -382,7 +423,7 @@
     @media screen and (min-width: 600px) {
       font-size: 18px;
       min-height: calc(95vh - 280px);
-    }  
+    }
   }
 }
 
@@ -495,7 +536,7 @@
     white-space: nowrap;
     @media screen and (min-width: 430px) {
       margin-top: 16px;
-      margin-bottom: 16px;  
+      margin-bottom: 16px;
     }
     &:hover {
       background: lighten($green, 24%);
@@ -510,6 +551,9 @@
     &.active {
       background: $green;
       color: $black;
+    }
+    &.previewbutt {
+      min-width: 95px;
     }
     &.articleform__buttons--small {
       width: 45px;
@@ -546,7 +590,6 @@
     cursor: pointer;
     img {
       display: inline-block;
-      height: initial;
       max-width: 24px;
       margin: -10px 5px;
       position: relative;
@@ -554,14 +597,14 @@
     input {
       cursor: pointer;
     }
-    
+
     #image-markdown-copy-link-input {
       margin-left: 24px;
     }
     #image-markdown-copy-link-announcer {
       display: block;
       padding-top: 10px;
-      
+
       &[hidden] {
         display: none;
       }
@@ -590,7 +633,7 @@
     display: block;
     cursor: pointer;
   }
-  input[type='text'] {
+  input[type='text'], textarea {
     width: calc(80% - 20px);
     padding: 10px 20px;
     border-radius: 3px;

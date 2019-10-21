@@ -1,3 +1,5 @@
+'use strict';
+
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-undef */
 /* eslint-disable func-names */
