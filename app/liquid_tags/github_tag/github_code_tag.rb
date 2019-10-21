@@ -31,6 +31,7 @@ class GithubTag
 
       file_info = repo_details[4..-1].join("/").split("#")
       file_path = file_info[0]
+      file_type = file_path[file_path.rindex(".") + 1..-1]
 
       client = Octokit::Client.new(access_token: token)
       file = client.contents("#{user_name}/#{repo_name}",
@@ -43,7 +44,10 @@ class GithubTag
       start_line = Integer(line_info[0][1..-1])
       end_line = Integer(line_info[1][1..-1])
 
-      file_content[(start_line - 1)..(end_line - 1)].join("\n")
+      sliced_file_content = file_content[(start_line - 1)..(end_line - 1)]
+
+      renderer = Redcarpet::Render::HTMLRouge.new
+      renderer.block_code(sliced_file_content.join("\n"), file_type)
     end
 
     private
