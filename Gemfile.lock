@@ -151,7 +151,7 @@ GEM
       debug_inspector (>= 0.0.1)
     bootsnap (1.4.5)
       msgpack (~> 1.0)
-    brakeman (4.6.1)
+    brakeman (4.7.0)
     buffer (0.1.3)
       addressable
       environs
@@ -872,7 +872,7 @@ DEPENDENCIES
   better_errors (~> 2.5)
   binding_of_caller (~> 0.8)
   bootsnap (>= 1.1.0)
-  brakeman (~> 4.6)
+  brakeman (~> 4.7)
   buffer (~> 0.1)
   bullet (~> 6.0)
   bundler-audit (~> 0.6)
