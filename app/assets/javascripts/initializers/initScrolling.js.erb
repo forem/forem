@@ -45,9 +45,15 @@ function fetchNextPageIfNearBottom() {
       fetchNextVideoPage(indexContainer);
     };
   } else if (indexWhich == "followers") {
-    fetchNextFollowersPage(el);
+    scrollableElemId = "user-dashboard";
+    fetchCallback = function() {
+      fetchNextFollowersPage(indexContainer);
+    }
   } else if (indexWhich == "following") {
-    fetchNextFollowingPage(el);
+    scrollableElemId = "user-dashboard";
+    fetchCallback = function() {
+      fetchNextFollowingPage(indexContainer);
+    }
   } else {
     scrollableElemId = "articles-list";
     fetchCallback = function() {
