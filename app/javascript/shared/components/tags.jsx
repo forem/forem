@@ -203,10 +203,7 @@ class Tags extends Component {
       ) {
         this.clearSelectedSearchResult();
       }
-    } else if (
-      !LETTERS_NUMBERS.test(e.key) &&
-      !NAVIGATION_KEYS.includes(e.key)
-    ) {
+    } else if (!LETTERS_NUMBERS.test(e.key) && !NAVIGATION_KEYS.includes(e.key)) {
       e.preventDefault();
     }
   };
