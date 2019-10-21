@@ -83,6 +83,7 @@ export default class ArticleForm extends Component {
     this.url = window.location.href;
 
     this.state = {
+      id: this.article.id || null,
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
       description: '',
