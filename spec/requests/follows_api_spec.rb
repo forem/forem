@@ -13,7 +13,7 @@ RSpec.describe "FollowsApi", type: :request do
   describe "POST /api/follows" do
     it "returns unauthorized if user not signed in" do
       post "/api/follows", params: { users: users_hash }
-      expect(response).to have_http_status(401)
+      expect(response).to have_http_status(:unauthorized)
     end
 
     it "makes successful ping" do
