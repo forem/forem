@@ -83,8 +83,13 @@ export default class ArticleForm extends Component {
     this.url = window.location.href;
 
     this.state = {
+      id: this.article.id || null,
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
+      description: '',
+      canonicalUrl: this.article.canonical_url || '',
+      series:this.state.series || '',
+      allSeries: this.article.all_series || [],
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
@@ -92,6 +97,7 @@ export default class ArticleForm extends Component {
       previewResponse: '',
       helpHTML: document.getElementById('editor-help-guide').innerHTML,
       submitting: false,
+      editing: this.article.id !== null,
       imageManagementShowing: false,
       moreConfigShowing: false,
       mainImage: this.article.main_image || null,
@@ -284,6 +290,10 @@ export default class ArticleForm extends Component {
     this.setState({
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
+      description: '',
+      canonicalUrl: this.article.canonical_url || '',
+      series:this.state.series || '',
+      allSeries: this.article.all_series || [],
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
@@ -291,6 +301,7 @@ export default class ArticleForm extends Component {
       previewResponse: '',
       helpHTML: document.getElementById('editor-help-guide').innerHTML,
       submitting: false,
+      editing: this.artical.id !== null,
       imageManagementShowing: false,
       moreConfigShowing: false,
       mainImage: this.article.main_image || null,
