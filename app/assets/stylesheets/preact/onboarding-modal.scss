@@ -47,7 +47,6 @@
     display: flex;
     flex-direction: column;
     width: 800px;
-    height: 466px;
     @include themeable(background-color, theme-container-background, $white);
     border: 8px solid #6b55c9;
     @include themeable(border-color, theme-container-border, #6b55c9);
@@ -63,7 +62,6 @@
   .onboarding-content {
     flex: 1 0 auto;
     width: 100%;
-    height: 440px;
     margin-top: 5px;
 
     h1 {
