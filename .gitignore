@@ -58,12 +58,10 @@ _docker-storage/
 
 # YARD generated doc (in the Gitdocs folder)
 docs/.static/ruby-doc/
-<<<<<<< HEAD
 
 # Cypress
 /cypress/screenshots
 /cypress/videos
-=======
 # ReDoc generated API doc (in the Gitdocs folder)
 docs/.static/api/
 
@@ -72,4 +70,3 @@ docs/.static/api/
 
 # rvm
 .ruby-gemset
->>>>>>> 0d2506f9ef79a32f7474001337161314d1062134
