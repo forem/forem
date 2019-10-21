@@ -14,7 +14,8 @@
     "storybook": "start-storybook -p 6006 -c app/javascript/.storybook -s app/javascript/.storybook/assets",
     "build-storybook": "build-storybook -c app/javascript/.storybook -s app/javascript/.storybook/assets",
     "cypress:run": "cypress run",
-    "cypress:visual": "server-test dev http-get://localhost:3000/ cypress:run"
+    "cypress:test": "server-test start http-get://localhost:3000/ cypress:run",
+    "start": "bin/startup"
   },
   "husky": {
     "hooks": {
@@ -60,7 +61,6 @@
   },
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "devDependencies": {
-    "@applitools/eyes-cypress": "^3.6.42",
     "@storybook/addon-actions": "^5.1.9",
     "@storybook/addon-links": "^5.1.9",
     "@storybook/addons": "^5.1.8",
