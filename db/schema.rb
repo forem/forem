@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_18_104106) do
+ActiveRecord::Schema.define(version: 2019_10_22_170057) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -1051,6 +1051,7 @@ ActiveRecord::Schema.define(version: 2019_09_18_104106) do
     t.boolean "export_requested", default: false
     t.datetime "exported_at"
     t.string "facebook_url"
+    t.string "fediverse_url"
     t.boolean "feed_admin_publish_permission", default: true
     t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
     t.boolean "feed_mark_canonical", default: false
@@ -1079,7 +1080,6 @@ ActiveRecord::Schema.define(version: 2019_09_18_104106) do
     t.string "location"
     t.boolean "looking_for_work", default: false
     t.boolean "looking_for_work_publicly", default: false
-    t.string "mastodon_url"
     t.string "medium_url"
     t.datetime "membership_started_at"
     t.boolean "mobile_comment_notifications", default: true

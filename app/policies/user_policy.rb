@@ -96,7 +96,7 @@ class UserPolicy < ApplicationPolicy
       location
       looking_for_work
       looking_for_work_publicly
-      mastodon_url
+      fediverse_url
       medium_url
       mobile_comment_notifications
       mod_roundrobin_notifications

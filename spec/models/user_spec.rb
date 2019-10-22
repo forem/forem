@@ -130,18 +130,13 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
-    it "accepts valid https mastodon url" do
-      user.mastodon_url = "https://mastodon.social/@test"
+    it "accepts valid https fediverse url" do
+      user.fediverse_url = "https://mastodon.social/@test"
       expect(user).to be_valid
     end
 
-    it "does not accept a denied mastodon instance" do
-      user.mastodon_url = "https://SpammyMcSpamface.com/"
-      expect(user).not_to be_valid
-    end
-
-    it "does not accept invalid mastodon url" do
-      user.mastodon_url = "mastodon.social/@test"
+    it "does not accept invalid fediverse url" do
+      user.fediverse_url = "mastodon.social/@test"
       expect(user).not_to be_valid
     end
 

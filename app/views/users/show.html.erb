@@ -65,8 +65,8 @@
               <%= inline_svg("github-logo.svg", class: "icon-img", aria: true, title: "GitHub logo") %>
             </a>
           <% end %>
-          <% if @user.mastodon_url? %>
-            <a href="<%= @user.mastodon_url %>" target="_blank" rel="noopener me">
+          <% if @user.fediverse_url? %>
+            <a href="<%= @user.fediverse_url %>" target="_blank" rel="noopener me">
               <%= inline_svg("mastodon-logo.svg", class: "icon-img", aria: true, title: "Mastodon logo") %>
             </a>
           <% end %>

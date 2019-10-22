@@ -72,7 +72,7 @@ class User < ApplicationRecord
   validates :experience_level, numericality: { less_than_or_equal_to: 10 }, allow_blank: true
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
-  validates :website_url, :employer_url, :mastodon_url,
+  validates :website_url, :employer_url, :fediverse_url,
             url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :facebook_url,
             format: /\A(http(s)?:\/\/)?(www.facebook.com|facebook.com)\/.*\Z/,
@@ -139,7 +139,7 @@ class User < ApplicationRecord
   validates :currently_streaming_on, inclusion: { in: %w[twitch] }, allow_nil: true
   validates :feed_referential_link, inclusion: [true, false]
   validate  :conditionally_validate_summary
-  validate  :validate_mastodon_url
+  validate  :validate_fediverse_url
   validate  :validate_feed_url, if: :feed_url_changed?
   validate  :unique_including_orgs_and_podcasts, if: :username_changed?
 
@@ -551,13 +551,12 @@ class User < ApplicationRecord
     errors.add(:feed_url, "is not a valid rss feed") unless RssReader.new.valid_feed_url?(feed_url)
   end
 
-  def validate_mastodon_url
-    return if mastodon_url.blank?
+  def validate_fediverse_url
+    return if fediverse_url.blank?
 
-    uri = URI.parse(mastodon_url)
-    return if uri.host&.in?(Constants::ALLOWED_MASTODON_INSTANCES)
+    return if /\A#{URI.regexp(%w[http https])}\z/.match?(fediverse_url)
 
-    errors.add(:mastodon_url, "is not an allowed Mastodon instance")
+    errors.add(:fediverse_url, "is not an allowed fediverse URL")
   end
 
   def title
