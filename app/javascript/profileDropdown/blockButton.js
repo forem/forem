@@ -65,26 +65,26 @@ export default function initBlock() {
         .catch(e => {
           window.alert(`Something went wrong: ${e}. -- Please refresh the page to try again.`);
         });
+    } else {
+      blockButton.addEventListener('click', block, { once: true });
     }
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    // userData() is a global function
-    const currentUserId = userData().id;
+  // userData() is a global function
+  const currentUserId = userData().id;
 
-    if (currentUserId === parseInt(profileUserId, 10)) {
-      blockButton.style.display = 'none';
-    } else {
-      fetch(`/user_blocks/${profileUserId}`)
-        .then(response => response.json())
-        .then(response => {
-          if (response.result === 'blocking') {
-            blockButton.innerText = 'Unblock';
-            blockButton.addEventListener('click', unblock, { once: true });
-          } else {
-            blockButton.addEventListener('click', block, { once: true });
-          }
-        });
-    }
-  });
+  if (currentUserId === parseInt(profileUserId, 10)) {
+    blockButton.style.display = 'none';
+  } else {
+    fetch(`/user_blocks/${profileUserId}`)
+      .then(response => response.json())
+      .then(response => {
+        if (response.result === 'blocking') {
+          blockButton.innerText = 'Unblock';
+          blockButton.addEventListener('click', unblock, { once: true });
+        } else {
+          blockButton.addEventListener('click', block, { once: true });
+        }
+      });
+  }
 }
