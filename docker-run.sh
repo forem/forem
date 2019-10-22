@@ -419,6 +419,7 @@ RETRIES=12
 until docker exec dev-to-postgres psql -U devto -d PracticalDeveloper_development -c "select 1" > /dev/null 2>&1 || [ $RETRIES -eq 0 ]; do
 	echo -n "."
 	sleep 5
+  RETRIES=$((RETRIES - 1))
 done
 echo ""
 echo "# Wait completed, moving on ... "
@@ -485,6 +486,7 @@ do
 	until docker exec dev-to-app curl -I --max-time 5 -f http://localhost:3000/ > /dev/null 2>&1 || [ $RETRIES -eq 0 ]; do
 		echo -n "."
 		sleep 5
+    RETRIES=$((RETRIES - 1))
 	done
 	echo ""
 done
