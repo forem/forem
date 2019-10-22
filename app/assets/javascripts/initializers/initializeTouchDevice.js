@@ -1,3 +1,30 @@
+'use strict';
+
+function getById(className) {
+  return document.getElementById(className);
+}
+function getClassList(className) {
+  return getById(className).classList;
+}
+
+function blur(event, className) {
+  setTimeout(() => {
+    if (document.activeElement !== getById(className)) {
+      getClassList('navbar-menu-wrapper').remove('showing');
+    }
+  }, 10);
+}
+
+function removeShowingMenu() {
+  getClassList('navbar-menu-wrapper').remove('showing');
+  setTimeout(() => {
+    getClassList('navbar-menu-wrapper').remove('showing');
+  }, 5);
+  setTimeout(() => {
+    getClassList('navbar-menu-wrapper').remove('showing');
+  }, 150);
+}
+
 function initializeTouchDevice() {
   var isTouchDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|DEV-Native-ios/i.test(
     navigator.userAgent,
@@ -7,59 +34,26 @@ function initializeTouchDevice() {
       .getElementsByTagName('body')[0]
       .classList.add('dev-ios-native-body');
   }
-  setTimeout(function() {
+  setTimeout(() => {
     removeShowingMenu();
     if (isTouchDevice) {
-      document.getElementById('navigation-butt').onclick = function(e) {
-        document
-          .getElementById('navbar-menu-wrapper')
-          .classList.toggle('showing');
-      };
+      getById('navigation-butt').addEventListener('click', e =>
+        getClassList('navbar-menu-wrapper').toggle('showing'),
+      );
     } else {
-      document.getElementById('navbar-menu-wrapper').classList.add('desktop');
-      document.getElementById('navigation-butt').onfocus = function(e) {
-        document.getElementById('navbar-menu-wrapper').classList.add('showing');
-      };
-      document.getElementById('last-nav-link').onblur = function(e) {
-        setTimeout(function() {
-          console.log(document.activeElement);
-          if (
-            document.activeElement !=
-            document.getElementById('second-last-nav-link')
-          ) {
-            document
-              .getElementById('navbar-menu-wrapper')
-              .classList.remove('showing');
-          }
-        }, 10);
-      };
-      document.getElementById('navigation-butt').onblur = function(e) {
-        setTimeout(function() {
-          console.log(document.activeElement);
-          if (
-            document.activeElement != document.getElementById('first-nav-link')
-          ) {
-            document
-              .getElementById('navbar-menu-wrapper')
-              .classList.remove('showing');
-          }
-        }, 10);
-      };
+      getClassList('navbar-menu-wrapper').add('desktop');
+      getById('navigation-butt').addEventListener('focus', e =>
+        getClassList('navbar-menu-wrapper').add('showing'),
+      );
+      getById('last-nav-link').addEventListener('blur', e =>
+        blur(e, 'second-last-nav-link'),
+      );
+      getById('navigation-butt').addEventListener('blur', e =>
+        blur(e, 'first-nav-link'),
+      );
     }
-    document.getElementById('menubg').onclick = function(e) {
-      document
-        .getElementById('navbar-menu-wrapper')
-        .classList.remove('showing');
-    };
+    getById('menubg').addEventListener('click', e =>
+      getClassList('navbar-menu-wrapper').remove('showing'),
+    );
   }, 10);
-}
-
-function removeShowingMenu() {
-  document.getElementById('navbar-menu-wrapper').classList.remove('showing');
-  setTimeout(function() {
-    document.getElementById('navbar-menu-wrapper').classList.remove('showing');
-  }, 5);
-  setTimeout(function() {
-    document.getElementById('navbar-menu-wrapper').classList.remove('showing');
-  }, 150);
 }
