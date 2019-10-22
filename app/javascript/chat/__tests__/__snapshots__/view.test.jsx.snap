@@ -11,11 +11,18 @@ exports[`<View /> should render and test snapshot (no channel) 1`] = `
       class="chatNonChatView_exitbutton"
       data-content="exit"
       onClick={[Function]}
+      type="button"
     >
       ×
     </button>
     <h1>
-      Channel Invitations 🤗
+      Channel Invitations 
+      <span
+        aria-label="hugging-emoji"
+        role="img"
+      >
+        🤗
+      </span>
     </h1>
   </div>
 </div>
@@ -27,19 +34,29 @@ preact-render-spy (1 nodes)
 <div class="chatNonChatView">
   <div class="container">
     <button
+      type="button"
       class="chatNonChatView_exitbutton"
       onClick={[Function onViewExitFake]}
       data-content="exit"
     >
       ×
     </button>
-    <h1>Channel Invitations 🤗</h1>
+    <h1>
+      Channel Invitations 
+      <span
+        role="img"
+        aria-label="hugging-emoji"
+      >
+        🤗
+      </span>
+    </h1>
     <div class="chatNonChatView_contentblock">
       <h2>name</h2>
       <div>
         <em>some description</em>
       </div>
       <button
+        type="button"
         class="cta"
         onClick={[Function handleInvitationAcceptFake]}
         data-content="12345"
@@ -47,6 +64,7 @@ preact-render-spy (1 nodes)
         Accept
       </button>
       <button
+        type="button"
         class="cta"
         onClick={[Function handleInvitationDeclineFake]}
         data-content="12345"

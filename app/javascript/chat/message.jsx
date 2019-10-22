@@ -22,6 +22,7 @@ const Message = ({
   const messageArea = (
     <span
       className="chatmessagebody__message"
+      // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{ __html: message }}
     />
   );
@@ -32,10 +33,12 @@ const Message = ({
         <a
           href={`/${user}`}
           target="_blank"
+          rel="noopener noreferrer"
           data-content={`users/${userID}`}
           onClick={onContentTrigger}
         >
           <img
+            role="presentation"
             className="chatmessagebody__profileimage"
             src={profileImageUrl}
             alt={`${user} profile`}
@@ -44,12 +47,17 @@ const Message = ({
           />
         </a>
       </div>
-      <div className="chatmessage__body" onClick={onContentTrigger}>
+      <div
+        role="presentation"
+        className="chatmessage__body"
+        onClick={onContentTrigger}
+      >
         <span className="chatmessagebody__username" style={spanStyle}>
           <a
             className="chatmessagebody__username--link"
             href={`/${user}`}
             target="_blank"
+            rel="noopener noreferrer"
             data-content={`users/${userID}`}
             onClick={onContentTrigger}
           >
@@ -77,7 +85,7 @@ Message.propTypes = {
   type: PropTypes.string,
   timestamp: PropTypes.string,
   profileImageUrl: PropTypes.string,
-  onContentTrigger: PropTypes.func,
+  onContentTrigger: PropTypes.func.isRequired,
 };
 
 Message.defaultProps = {
