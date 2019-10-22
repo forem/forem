@@ -291,11 +291,11 @@ ENV_FORWARDING_DEMO_COMPULSORY_LIST=(
 DEVTO_DOCKER_FLAGS="$ARG_ARRAY_STR"
 
 #
-# Scan for ENV variabels to forward
+# Scan for ENV variables to forward
 #
 echo "#---"
 echo "# Lets scan for dev.to environment variables that will automatically be passed"
-echo "# forward into the continaer if present (very useful for CI testing)"
+echo "# forward into the container if present (very useful for CI testing)"
 echo "#---"
 for i in "${ENV_FORWARDING_LIST[@]}"
 do
@@ -477,7 +477,7 @@ echo "#"
 echo "# this commonly takes 2 ~ 10 minutes, basically, a very long time .... =[ "
 
 # Side note, looped to give 4 set of distinct lines
-# espeially if long wait times occur (to make it more manageable)
+# especially if long wait times occur (to make it more manageable)
 for i in 1 2 3 4
 do
 	RETRIES=30
