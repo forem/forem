@@ -5,6 +5,7 @@ import { OrganizationPicker } from '../OrganizationPicker';
 const commonProps = {
   id: 'someFormElementId',
   name: 'someFormElementName',
+  onToggle: jest.fn(),
 };
 
 const organizations = [

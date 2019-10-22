@@ -4,6 +4,7 @@ exports[`<OrganizationPicker /> renders an organization list with only "None" as
 <select
   id="someFormElementId"
   name="someFormElementName"
+  onBlur={[MockFunction]}
 >
   <option
     value=""
@@ -17,6 +18,7 @@ exports[`<OrganizationPicker /> renders with no organization selected when the o
 <select
   id="someFormElementId"
   name="someFormElementName"
+  onBlur={[MockFunction]}
 >
   <option
     value=""
@@ -40,6 +42,7 @@ exports[`<OrganizationPicker /> renders with the given organization selected fro
 <select
   id="someFormElementId"
   name="someFormElementName"
+  onBlur={[MockFunction]}
 >
   <option
     value=""
