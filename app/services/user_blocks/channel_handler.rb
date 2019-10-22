@@ -8,8 +8,9 @@ module UserBlocks
 
     def get_potential_chat_channel
       blocked_user = User.select(:id, :username).find(user_block.blocked_id)
-      blocker = User.select(:id).find(user_block.blocker_id)
-      blocker.chat_channels.find_by("slug LIKE ? AND channel_type = ?", "%#{blocked_user.username}%", "direct")
+      blocker = User.select(:id, :username).find(user_block.blocker_id)
+      potential_slugs = ["#{blocked_user.username}/#{blocker.username}", "#{blocker.username}/#{blocked_user.username}"]
+      blocker.chat_channels.where(slug: potential_slugs, channel_type: "direct").first
     end
 
     def block_chat_channel
