@@ -178,6 +178,7 @@
     const context = canvas.getContext('2d')
     const colors = ["#F4908E", "#F2F097", "#88B0DC", "#F7B5D1", "#53C4AF", "#FDE38C"]
     const colorDiv = document.querySelector(".colors")
+    let dx = 1, dy = 1
 
     colors.forEach(color => {
       const button = document.createElement("button")
@@ -196,9 +197,15 @@
       context.lineWidth = 5
     }
 
+    const reSize = () => {
+      // set the x and y resizinf factor for cursor position
+      dx = canvas.width / window.innerWidth
+      dy = canvas.height / window.innerHeight
+    }
+
     setSize()
 
-    window.addEventListener("resize", setSize)
+    window.addEventListener("resize", reSize)
 
     let firstX, firstY, secondX, secondY, paint
 
@@ -206,10 +213,10 @@
       // check to see if mobile or desktop
       if (["mousedown", "mousemove"].includes(event.type)) {
         // click events 
-        return [event.pageX - canvas.offsetLeft, event.pageY - canvas.offsetTop]
+        return [event.pageX * dx, event.pageY * dy]
       } else {
         // touch coordinates
-        return [event.touches[0].pageX - canvas.offsetLeft, event.touches[0].pageY - canvas.offsetTop]
+        return [event.touches[0].pageX * dx, event.touches[0].pageY * dy]
       }
     }
 
