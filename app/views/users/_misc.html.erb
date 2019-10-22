@@ -48,6 +48,11 @@
     <%= f.select(:config_font, options_for_select(["default", "sans serif", "monospace", "comic sans"], @user.config_font.tr("_", " "))) %>
     <sub><em>Default is serif style.</em></sub>
   </div>
+  <div class="sub-field">
+    <%= f.label :config_navbar, "Site Navbar" %>
+    <%= f.select(:config_navbar, options_for_select(["default", "static"], @user.config_navbar.tr("_", " "))) %>
+    <sub><em>Default is fixed.</em></sub>
+  </div>
   <div class="field">
     <label></label>
     <%= f.hidden_field :tab, value: @tab, id: nil %>

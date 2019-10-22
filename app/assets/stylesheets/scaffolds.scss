@@ -241,7 +241,9 @@ body.monospace-article-body {
 
 body.static-navbar-config {
   .top-bar {
-    position: static !important;
+    position: relative !important;
+    margin-top: 20px !important;
+    margin-bottom: -66px !important;
   }
 }
 
