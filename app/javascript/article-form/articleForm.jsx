@@ -88,7 +88,7 @@ export default class ArticleForm extends Component {
       tagList: this.article.cached_tag_list || '',
       description: '',
       canonicalUrl: this.article.canonical_url || '',
-      series:this.state.series || '',
+      series: this.state.series || '',
       allSeries: this.article.all_series || [],
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
@@ -292,7 +292,7 @@ export default class ArticleForm extends Component {
       tagList: this.article.cached_tag_list || '',
       description: '',
       canonicalUrl: this.article.canonical_url || '',
-      series:this.state.series || '',
+      series: this.state.series || '',
       allSeries: this.article.all_series || [],
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
@@ -388,7 +388,7 @@ export default class ArticleForm extends Component {
             id="article_publish_under_org"
             organizations={organizations}
             organizationId={organizationId}
-            onBlur={this.handleOrgIdChange}
+            onToggle={this.handleOrgIdChange}
           />
         </div>
       ) : null;

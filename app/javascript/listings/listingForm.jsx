@@ -70,7 +70,7 @@ export default class ListingForm extends Component {
             id="listing_organization_id"
             organizations={organizations}
             organizationId={organizationId}
-            onBlur={this.handleOrgIdChange}
+            onToggle={this.handleOrgIdChange}
           />
           <p>
             <em>Posting on behalf of org spends org credits.</em>
