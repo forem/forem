@@ -391,7 +391,7 @@ echo "#---"
 if [ "$RUN_MODE" = "DEV" ]
 then
 	# Build the DEV mode container
-	docker build --target alpine-ruby-node -t dev-to:dev . || exit $?
+	docker build -t dev-to:dev . || exit $?
 else
 	# Build the DEMO mode container
 	docker build -t dev-to:demo . || exit $?
@@ -419,7 +419,7 @@ RETRIES=12
 until docker exec dev-to-postgres psql -U devto -d PracticalDeveloper_development -c "select 1" > /dev/null 2>&1 || [ $RETRIES -eq 0 ]; do
 	echo -n "."
 	sleep 5
-  RETRIES=$((RETRIES - 1))
+	RETRIES=$((RETRIES - 1))
 done
 echo ""
 echo "# Wait completed, moving on ... "
@@ -448,6 +448,7 @@ then
 	-v "$REPO_DIR:/usr/src/app" \
 	-e RUN_MODE="DEV" \
 	-e DATABASE_URL=postgresql://devto:devto@db:5432/PracticalDeveloper_development \
+	-e APP_SERVER="true" \
 	--entrypoint "/usr/src/app/docker-entrypoint.sh" \
 	$DEVTO_DOCKER_FLAGS \
 	dev-to:dev
@@ -465,6 +466,8 @@ docker run -d -p 3000:3000 \
 -v "$UPLOAD_DIR:/usr/src/app/public/uploads/" \
 -e RUN_MODE="DEMO" \
 -e DATABASE_URL=postgresql://devto:devto@db:5432/PracticalDeveloper_development \
+-e APP_SERVER="true" \
+--entrypoint "/usr/src/app/docker-entrypoint.sh" \
 $DEVTO_DOCKER_FLAGS \
 dev-to:demo
 
@@ -483,10 +486,10 @@ for i in 1 2 3 4
 do
 	RETRIES=30
 	echo -n "# ."
-	until docker exec dev-to-app curl -I --max-time 5 -f http://localhost:3000/ > /dev/null 2>&1 || [ $RETRIES -eq 0 ]; do
+	until docker exec dev-to-app wget --quiet --tries=1 --timeout=5 --spider http://localhost:3000/ > /dev/null 2>&1 || [ $RETRIES -eq 0 ]; do
 		echo -n "."
 		sleep 5
-    RETRIES=$((RETRIES - 1))
+		RETRIES=$((RETRIES - 1))
 	done
 	echo ""
 done

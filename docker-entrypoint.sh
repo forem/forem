@@ -4,10 +4,10 @@
 # Lets setup the alias file
 # @TODO - add as scripts instead within /bin? - this will help auto fill?
 #
-echo "" > ~/.bashrc
-echo "alias devto-setup='cd /usr/src/app/ && gem install bundler && bundle install --jobs 20 --retry 5 && yarn install && yarn check --integrity && bin/setup'" >> ~/.bashrc
-echo "alias devto-migrate='cd /usr/src/app/ && bin/rails db:migrate'" >> ~/.bashrc
-echo "alias devto-start='cd /usr/src/app/ && bundle exec rails server -b 0.0.0.0 -p 3000'" >> ~/.bashrc
+touch /etc/profile.d/aliases.sh
+echo "alias devto-setup='cd /usr/src/app/ && gem install bundler && bundle install --jobs 20 --retry 5 && yarn install && yarn check --integrity && bin/setup'" >> /etc/profile.d/aliases.sh
+echo "alias devto-migrate='cd /usr/src/app/ && bin/rails db:migrate'" >> /etc/profile.d/aliases.sh
+echo "alias devto-start='cd /usr/src/app/ && bundle exec rails server -b 0.0.0.0 -p 3000'" >> /etc/profile.d/aliases.sh
 
 #
 # Lets ensure we are in the correct workspace
@@ -35,7 +35,7 @@ then
 	echo ">---"
 
 	# Lets startup bash for the user to interact with
-	/bin/bash
+	/bin/sh -l
 	exit $?;
 fi
 
