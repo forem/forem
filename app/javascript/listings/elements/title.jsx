@@ -7,19 +7,19 @@ const Title = ({ onChange, defaultValue }) => (
   <div className="field">
     <label className="listingform__label" htmlFor={domId}>
       Title
-      <input
-        type="text"
-        className="listingform__input"
-        id={domId}
-        name="classified_listing[title]"
-        maxLength="128"
-        size="128"
-        placeholder="128 characters max, plain text"
-        autoComplete="off"
-        value={defaultValue}
-        onInput={onChange}
-      />
     </label>
+    <input
+      type="text"
+      className="listingform__input"
+      id={domId}
+      name="classified_listing[title]"
+      maxLength="128"
+      size="128"
+      placeholder="128 characters max, plain text"
+      autoComplete="off"
+      value={defaultValue}
+      onInput={onChange}
+    />
   </div>
 );
 
