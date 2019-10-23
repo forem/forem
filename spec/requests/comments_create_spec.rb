@@ -37,4 +37,17 @@ RSpec.describe "CommentsCreate", type: :request do
       end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
+
+  context "when user is posting on an author that does not block user, but the user has been blocked elsewhere" do
+    it "returns unauthorized" do
+      user.update(blocked_by_count: 1)
+      blocker_article = create(:article, user_id: blocker.id)
+      post "/comments", params: {
+        comment: { body_markdown: "something allowed", commentable_id: blocker_article.id, commentable_type: "Article" }
+      }
+      new_comment = Comment.last
+      expect(new_comment.body_markdown).to eq("something allowed")
+      expect(new_comment.id).not_to eq(nil)
+    end
+  end
 end
