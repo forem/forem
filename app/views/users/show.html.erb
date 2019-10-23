@@ -145,7 +145,7 @@
       </div>
     </div>
     <%= render "articles/user_metadata", context: "profile" %>
-    <div class="profile-dropdown">
+    <div class="profile-dropdown" data-username="<%= @user.username %>">
       <button id="user-profile-dropdown">
         <%= image_tag("three-dots.svg", class: "dropdown-icon", alt: "Toggle dropdown menu") %>
       </button>
