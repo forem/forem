@@ -1,13 +1,4 @@
-#!/bin/sh
-
-#
-# Lets setup the alias file
-# @TODO - add as scripts instead within /bin? - this will help auto fill?
-#
-touch /etc/profile.d/aliases.sh
-echo "alias devto-setup='cd /usr/src/app/ && gem install bundler && bundle install --jobs 20 --retry 5 && yarn install && yarn check --integrity && bin/setup'" >> /etc/profile.d/aliases.sh
-echo "alias devto-migrate='cd /usr/src/app/ && bin/rails db:migrate'" >> /etc/profile.d/aliases.sh
-echo "alias devto-start='cd /usr/src/app/ && bundle exec rails server -b 0.0.0.0 -p 3000'" >> /etc/profile.d/aliases.sh
+#!/bin/ash
 
 #
 # Lets ensure we are in the correct workspace
@@ -25,17 +16,16 @@ then
 	echo "> Welcome to the dev.to, DEVELOPMENT container, for convenience your repository"
 	echo "> should be mounted onto '/usr/src/app/', and port 3000 should be forwarded to your host machine"
 	echo "> "
-	echo "> In addition the following alias commands has been preconfigured to get you up and running quickly"
+	echo "> Everything should be ready, you can use your favorite rails commands:"
 	echo "> "
-	echo ">    devto-setup   : Does the gem/yarn dependency installation, along with database setup"
-	echo ">    devto-migrate : Calls the database migration script"
-	echo ">    devto-start   : Start the rails application server on port 3000"
+	echo ">    migrate : bundle exec rails db:migrate"
+	echo ">    server  : bundle exec rails server -b 0.0.0.0 -p 3000"
 	echo "> "
 	echo "> Finally to exit this container bash terminal (and stop the container), use the command 'exit'"
 	echo ">---"
 
-	# Lets startup bash for the user to interact with
-	/bin/sh -l
+	# Lets startup ash for the user to interact with
+	/bin/ash -l
 	exit $?;
 fi
 
