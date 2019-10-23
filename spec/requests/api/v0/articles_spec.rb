@@ -9,74 +9,132 @@ RSpec.describe "Api::V0::Articles", type: :request do
   end
 
   describe "GET /api/articles" do
-    it "returns json response" do
-      get api_articles_path
-      expect(response.content_type).to eq("application/json")
+    context "without params" do
+      it "returns json response" do
+        get api_articles_path
+        expect(response.content_type).to eq("application/json")
+      end
+
+      it "returns featured articles if no param is given" do
+        article.update_column(:featured, true)
+        get api_articles_path
+        expect(json_response.size).to eq(1)
+      end
+
+      it "supports pagination" do
+        create_list(:article, 2, featured: true)
+        get api_articles_path, params: { page: 1, per_page: 2 }
+        expect(json_response.length).to eq(2)
+        get api_articles_path, params: { page: 2, per_page: 2 }
+        expect(json_response.length).to eq(1)
+      end
+
+      it "returns flare tag in the response" do
+        get api_articles_path
+        response_article = JSON.parse(response.body)[0]
+        expect(response_article["flare_tag"]).to be_present
+        expect(response_article["flare_tag"].keys).to eq(%w[name bg_color_hex text_color_hex])
+        expect(response_article["flare_tag"]["name"]).to eq("discuss")
+      end
     end
 
-    it "returns featured articles if no param is given" do
-      article.update_column(:featured, true)
-      get api_articles_path
-      expect(json_response.size).to eq(1)
+    context "with username param" do
+      it "returns user's articles for the given username" do
+        create(:article, user: article.user)
+        get api_articles_path(username: article.user.username)
+        expect(json_response.size).to eq(2)
+      end
+
+      it "returns nothing if given user is not found" do
+        get api_articles_path(username: "foobar")
+        expect(json_response.size).to eq(0)
+      end
+
+      it "returns org's articles if org's slug is given" do
+        create(:article, user: article.user, organization: organization)
+        get api_articles_path(username: organization.slug)
+        expect(json_response.size).to eq(1)
+      end
+
+      it "supports pagination" do
+        create_list(:article, 2, user: article.user)
+        get api_articles_path(username: article.user.username), params: { page: 1, per_page: 2 }
+        expect(json_response.length).to eq(2)
+        get api_articles_path(username: article.user.username), params: { page: 2, per_page: 2 }
+        expect(json_response.length).to eq(1)
+      end
     end
 
-    it "returns user's articles for the given username" do
-      create(:article, user: article.user)
-      get api_articles_path(username: article.user.username)
-      expect(json_response.size).to eq(2)
+    context "with tag param" do
+      it "returns tag's articles" do
+        get api_articles_path(tag: article.tag_list.first)
+        expect(json_response.size).to eq(1)
+      end
+
+      it "returns top tag articles if tag and top param is present" do
+        get api_articles_path(tag: article.tag_list.first, top: "7")
+        expect(json_response.size).to eq(1)
+      end
+
+      it "returns not tag articles if article and tag are not approved" do
+        article.update_column(:approved, false)
+        tag = Tag.find_by(name: article.tag_list.first)
+        tag.update(requires_approval: true)
+
+        get api_articles_path(tag: tag.name)
+        expect(JSON.parse(response.body).size).to eq(0)
+      end
+
+      it "supports pagination" do
+        create_list(:article, 2, tags: "discuss")
+        get api_articles_path(tag: article.tag_list.first), params: { page: 1, per_page: 2 }
+        expect(json_response.length).to eq(2)
+        get api_articles_path(tag: article.tag_list.first), params: { page: 2, per_page: 2 }
+        expect(json_response.length).to eq(1)
+      end
     end
 
-    it "returns nothing if given user is not found" do
-      get api_articles_path(username: "foobar")
-      expect(json_response.size).to eq(0)
+    context "with top param" do
+      it "only returns fresh top articles if top param is present" do
+        # TODO: slight duplication, test should be removed
+        old_article = create(:article)
+        old_article.update_column(:published_at, 10.days.ago)
+        get api_articles_path(top: "7")
+        expect(json_response.size).to eq(1)
+      end
+
+      it "supports pagination" do
+        old_articles = create_list(:article, 2, featured: true)
+        old_articles.each do |old_article|
+          old_article.update_column(:published_at, 10.days.ago)
+        end
+        get api_articles_path(top: "11"), params: { page: 1, per_page: 2 }
+        expect(json_response.length).to eq(2)
+        get api_articles_path(top: "11"), params: { page: 2, per_page: 2 }
+        expect(json_response.length).to eq(1)
+      end
     end
 
-    it "returns org's articles if org's slug is given" do
-      create(:article, user: article.user, organization: organization)
-      get api_articles_path(username: organization.slug)
-      expect(json_response.size).to eq(1)
-    end
+    context "with collection_id param" do
+      it "returns a collection id" do
+        collection = create(:collection, user: article.user)
+        article.update_columns(collection_id: collection.id)
+        get api_articles_path(collection_id: collection.id)
+        expect(json_response[0]["collection_id"]).to eq collection.id
+      end
 
-    it "returns tag's articles" do
-      get api_articles_path(tag: article.tag_list.first)
-      expect(json_response.size).to eq(1)
-    end
-
-    it "returns top tag articles if tag and top param is present" do
-      get api_articles_path(tag: article.tag_list.first, top: "7")
-      expect(json_response.size).to eq(1)
-    end
-
-    it "only returns fresh top articles if top param is present" do
-      # TODO: slight duplication, test should be removed
-      old_article = create(:article)
-      old_article.update_column(:published_at, 10.days.ago)
-      get api_articles_path(top: "7")
-      expect(json_response.size).to eq(1)
-    end
-
-    it "returns not tag articles if article and tag are not approved" do
-      article.update_column(:approved, false)
-      tag = Tag.find_by(name: article.tag_list.first)
-      tag.update(requires_approval: true)
-
-      get api_articles_path(tag: tag.name)
-      expect(JSON.parse(response.body).size).to eq(0)
-    end
-
-    it "returns flare tag in the response" do
-      get api_articles_path
-      response_article = JSON.parse(response.body)[0]
-      expect(response_article["flare_tag"]).to be_present
-      expect(response_article["flare_tag"].keys).to eq(%w[name bg_color_hex text_color_hex])
-      expect(response_article["flare_tag"]["name"]).to eq("discuss")
-    end
-
-    it "returns a collection id" do
-      collection = create(:collection, user: article.user)
-      article.update_columns(collection_id: collection.id)
-      get api_articles_path(collection_id: collection.id)
-      expect(json_response[0]["collection_id"]).to eq collection.id
+      it "supports pagination" do
+        collection = create(:collection, user: article.user)
+        article.update_columns(collection_id: collection.id)
+        collection_articles = create_list(:article, 2, featured: true)
+        collection_articles.each do |collection_article|
+          collection_article.update_columns(collection_id: collection.id)
+        end
+        get api_articles_path(collection_id: collection.id), params: { page: 1, per_page: 2 }
+        expect(json_response.length).to eq(2)
+        get api_articles_path(collection_id: collection.id), params: { page: 2, per_page: 2 }
+        expect(json_response.length).to eq(1)
+      end
     end
   end
 

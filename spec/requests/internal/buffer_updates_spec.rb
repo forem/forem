@@ -1,16 +1,21 @@
 require "rails_helper"
+require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe "InternalBufferUpdates", type: :request do
+RSpec.describe "/internal/buffer_updates", type: :request do
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
   let(:comment) { create(:comment, user_id: user.id, commentable_id: article.id) }
 
-  before do
-    sign_in user
-    user.add_role(:super_admin)
+  it_behaves_like "an InternalPolicy dependant request", BufferUpdate do
+    let(:request) { post "/internal/buffer_updates" }
   end
 
   describe "POST /internal/buffer_updates" do
+    before do
+      sign_in user
+      user.add_role(:super_admin)
+    end
+
     it "creates buffer update for tweet if tweet params are passed" do
       post "/internal/buffer_updates",
            params:
@@ -45,6 +50,11 @@ RSpec.describe "InternalBufferUpdates", type: :request do
   end
 
   describe "PUT /internal/buffer_updates" do
+    before do
+      sign_in user
+      user.add_role(:super_admin)
+    end
+
     let(:buffer_update) do
       BufferUpdate.create(article_id: article.id,
                           composer_user_id: user.id,

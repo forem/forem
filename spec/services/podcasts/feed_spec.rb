@@ -8,6 +8,7 @@ vcr_option = {
 RSpec.describe Podcasts::Feed, vcr: vcr_option do
   let(:feed_url) { "http://softwareengineeringdaily.com/feed/podcast/" }
   let(:podcast) { create(:podcast, feed_url: feed_url) }
+  let(:httparty_options) { { limit: 7 } }
 
   before do
     podcast
@@ -26,7 +27,7 @@ RSpec.describe Podcasts::Feed, vcr: vcr_option do
     end
 
     it "sets reachable" do
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast").and_raise(Errno::ECONNREFUSED)
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(Errno::ECONNREFUSED)
       described_class.new(unpodcast).get_episodes(limit: 2)
       unpodcast.reload
       expect(unpodcast.reachable).to be false
@@ -34,7 +35,7 @@ RSpec.describe Podcasts::Feed, vcr: vcr_option do
     end
 
     it "schedules the update url jobs when setting as unreachable" do
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast").and_raise(Errno::ECONNREFUSED)
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(Errno::ECONNREFUSED)
       create_list(:podcast_episode, 2, podcast: unpodcast)
       expect do
         described_class.new(unpodcast).get_episodes(limit: 2)
@@ -42,7 +43,7 @@ RSpec.describe Podcasts::Feed, vcr: vcr_option do
     end
 
     it "re-checks episodes urls when setting as unreachable" do
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast").and_raise(Errno::ECONNREFUSED)
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(Errno::ECONNREFUSED)
       episode = create(:podcast_episode, podcast: unpodcast, reachable: true, media_url: "http://podcast.example.com/ep1.mp3")
       allow(HTTParty).to receive(:head).with("http://podcast.example.com/ep1.mp3").and_raise(Errno::ECONNREFUSED)
       allow(HTTParty).to receive(:head).with("https://podcast.example.com/ep1.mp3").and_raise(Errno::ECONNREFUSED)
@@ -57,7 +58,7 @@ RSpec.describe Podcasts::Feed, vcr: vcr_option do
 
     it "doesn't re-check episodes reachable if the podcast was unreachable" do
       unpodcast.update_column(:reachable, false)
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast").and_raise(Errno::ECONNREFUSED)
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(Errno::ECONNREFUSED)
       create_list(:podcast_episode, 2, podcast: unpodcast)
       expect do
         described_class.new(unpodcast).get_episodes(limit: 2)
@@ -70,7 +71,7 @@ RSpec.describe Podcasts::Feed, vcr: vcr_option do
     let(:unpodcast) { create(:podcast, feed_url: un_feed_url) }
 
     it "sets ssl_failed" do
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast").and_raise(OpenSSL::SSL::SSLError)
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(OpenSSL::SSL::SSLError)
       described_class.new(unpodcast).get_episodes(limit: 2)
       unpodcast.reload
       expect(unpodcast.reachable).to be false
