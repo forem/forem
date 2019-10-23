@@ -273,7 +273,7 @@ class StoriesController < ApplicationController
 
   def article_finder(num_articles)
     tag = params[:tag]
-    articles = Article.active_published_articles.limited_column_select.page(@page).per(num_articles)
+    articles = Article.published.not_archived.limited_column_select.page(@page).per(num_articles)
     articles = articles.cached_tagged_with(tag) if tag.present? # More efficient than tagged_with
     articles
   end

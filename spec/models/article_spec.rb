@@ -613,31 +613,15 @@ RSpec.describe Article, type: :model do
     end
   end
 
-  describe "#active_published_articles" do
-    let(:not_archived_not_published_article) { create(:article, archived: false, published: false) }
-    let(:archived_not_published_article) { create(:article, archived: true, published: false) }
-    let(:not_archived_published_article) { create(:article, archived: false, published: true) }
-    let(:archived_published_article) { create(:article, archived: true, published: true) }
-
-    before do
-      not_archived_not_published_article.validate
-      archived_not_published_article.validate
-      not_archived_published_article.validate
-      archived_published_article.validate
-    end
-
-    it "includes only articles which are not archived" do
-      active_articles = described_class.active
-      active_article_ids = active_articles.map(&:id)
-      expect(active_article_ids.count).to eq(2)
-      expect(active_article_ids).to match_array([not_archived_not_published_article.id, not_archived_published_article.id])
-    end
+  describe "#not_archived" do
+    let_it_be(:not_archived) { create(:article, archived: false) }
+    let_it_be(:archived) { create(:article, archived: true) }
 
     it "includes only published articles which are not archived" do
-      active_articles = described_class.active_published_articles
+      active_articles = described_class.not_archived
       active_article_ids = active_articles.map(&:id)
       expect(active_article_ids.count).to eq(1)
-      expect(active_article_ids).to match_array([not_archived_published_article.id])
+      expect(active_article_ids).to match_array([not_archived.id])
     end
   end
 
