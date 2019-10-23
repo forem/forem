@@ -16,12 +16,13 @@ then
 	echo "> Welcome to the dev.to, DEVELOPMENT container, for convenience your repository"
 	echo "> should be mounted onto '/usr/src/app/', and port 3000 should be forwarded to your host machine"
 	echo "> "
-	echo "> Everything should be ready, you can use your favorite rails commands:"
+	echo "> Everything should be ready, here are some example commands you can run:"
 	echo "> "
-	echo ">    migrate : bundle exec rails db:migrate"
-	echo ">    server  : bundle exec rails server -b 0.0.0.0 -p 3000"
+	echo ">    initial setup : bin/setup"
+	echo ">    migrate       : bundle exec rails db:migrate"
+	echo ">    server        : bundle exec rails server -b 0.0.0.0"
 	echo "> "
-	echo "> Finally to exit this container bash terminal (and stop the container), use the command 'exit'"
+	echo "> Finally to exit this container shell (and stop the container), use the command 'exit'"
 	echo ">---"
 
 	# Lets startup ash for the user to interact with
