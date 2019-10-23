@@ -78,6 +78,8 @@ class Article < ApplicationRecord
 
   scope :published, -> { where(published: true) }
   scope :unpublished, -> { where(published: false) }
+  scope :active, -> { where(archived: false) }
+  scope :active_published_articles, -> { published.active }
 
   scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
 
