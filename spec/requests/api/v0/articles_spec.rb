@@ -15,6 +15,11 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response.content_type).to eq("application/json")
       end
 
+      it "returns nothing if params state=all is not found" do
+        get api_articles_path(state: "all")
+        expect(json_response.size).to eq(0)
+      end
+
       it "returns featured articles if no param is given" do
         article.update_column(:featured, true)
         get api_articles_path

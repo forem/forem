@@ -29,7 +29,7 @@ class ArticleApiIndexService
                  base_articles
                end
 
-    articles.decorate
+    articles&.decorate
   end
 
   private
