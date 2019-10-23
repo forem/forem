@@ -26,7 +26,7 @@ gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
 gem "carrierwave", "~> 2.0" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cld", "~> 0.8" # Compact Language Detection for Ruby
-gem "cloudinary", "~> 1.11" # Client library for easily using the Cloudinary service
+gem "cloudinary", "~> 1.12" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.2" # counter_culture provides turbo-charged counter caches that are kept up-to-date
 gem "dalli", "~> 2.7" # High performance memcached client for Ruby
 gem "delayed_job_active_record", "~> 4.1" # ActiveRecord backend for Delayed::Job
@@ -91,7 +91,7 @@ gem "storext", "~> 3.1" # Add type-casting and other features on top of ActiveRe
 gem "stripe", "~> 4.23" # Ruby library for the Stripe API
 gem "timber", "~> 3.0" # Great Ruby logging made easy
 gem "timber-rails", "~> 1.0" #  Timber integration for Rails
-gem "twilio-ruby", "~> 5.27" # The official library for communicating with the Twilio REST API
+gem "twilio-ruby", "~> 5.28" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 6.2" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.1" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
