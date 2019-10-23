@@ -20,6 +20,16 @@ const STATUS_VIEW_ARCHIVED = 'archived';
 const READING_LIST_ARCHIVE_PATH = '/readinglist/archive';
 const READING_LIST_PATH = '/readinglist';
 
+const FilterText = ({ selectedTags, query, value }) => {
+  return (
+    <h1>
+      {selectedTags.length === 0 && query.length === 0
+        ? value
+        : 'Nothing with this filter 🤔'}
+    </h1>
+  );
+};
+
 export class ReadingList extends Component {
   constructor(props) {
     super(props);
@@ -116,12 +126,11 @@ export class ReadingList extends Component {
     if (itemsLoaded && this.statusViewValid()) {
       return (
         <div className="items-empty">
-          <h1>
-            {selectedTags.length === 0 && query.length === 0
-              ? 'Your Reading List is Lonely'
-              : 'Nothing with this filter 🤔'}
-          </h1>
-
+          <FilterText
+            selectedTags={selectedTags}
+            query={query}
+            value="Your Reading List is Lonely"
+          />
           <h3>
             Hit the
             <span className="highlight">SAVE</span>
@@ -140,11 +149,11 @@ export class ReadingList extends Component {
 
     return (
       <div className="items-empty">
-        <h1>
-          {selectedTags.length === 0 && query.length === 0
-            ? 'Your Archive List is Lonely'
-            : 'Nothing with this filter 🤔'}
-        </h1>
+        <FilterText
+          selectedTags={selectedTags}
+          query={query}
+          value="Your Archive List is Lonely"
+        />
       </div>
     );
   }
@@ -238,4 +247,10 @@ ReadingList.defaultProps = {
 ReadingList.propTypes = {
   availableTags: PropTypes.arrayOf(PropTypes.string).isRequired,
   statusView: PropTypes.oneOf([STATUS_VIEW_VALID, STATUS_VIEW_ARCHIVED]),
+};
+
+FilterText.propTypes = {
+  selectedTags: PropTypes.arrayOf(PropTypes.string).isRequired,
+  value: PropTypes.string.isRequired,
+  query: PropTypes.arrayOf(PropTypes.string).isRequired,
 };

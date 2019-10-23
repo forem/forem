@@ -7,4 +7,6 @@
     </div>
   </div>
 </footer>
-<%= javascript_include_tag "hello-dev.js", defer: true %>
+<% if Rails.env.production? %>
+  <%= javascript_include_tag "hello-dev.js", defer: true %>
+<% end %>

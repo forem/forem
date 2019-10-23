@@ -16,6 +16,8 @@ bin/startup
 
 (This just runs `foreman start -f Procfile.dev`)
 
+Then point your browser to http://localhost:3000/ to view the site.
+
 If you're working on DEV regularly, you can use `alias start="bin/startup"` to
 make this even easier. 😊
 
@@ -26,9 +28,9 @@ Here are some singleton commands you may need, usually in a separate
 instance/tab of your shell.
 
 - Running the job server (if using `bin/rails server`) -- this is mostly for
-notifications and emails: **`bin/rails jobs:work`**
+  notifications and emails: **`bin/rails jobs:work`**
 - Clearing jobs (in case you don't want to wait for the backlog of jobs):
-**`bin/rails jobs:clear`**
+  **`bin/rails jobs:clear`**
 
 Current gotchas: potential environment issues with external services need to be
 worked out.

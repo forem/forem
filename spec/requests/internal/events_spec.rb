@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Internal Events", type: :request do
+RSpec.describe "/internal/events", type: :request do
   let(:event) { create(:event) }
   let(:admin) { create(:user, :super_admin) }
 
