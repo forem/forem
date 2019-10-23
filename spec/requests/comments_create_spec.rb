@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe "CommentsCreate", type: :request do
   let(:user) { create(:user) }
+  let(:blocker) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
 
   before do
@@ -22,5 +23,18 @@ RSpec.describe "CommentsCreate", type: :request do
       comment: { body_markdown: new_body, commentable_id: article.id, commentable_type: "Article" }
     }
     expect(NotificationSubscription.last.notifiable).to eq(Comment.last)
+  end
+
+  context "when user is posting on an author that blocks user" do
+    it "returns unauthorized" do
+      create(:user_block, blocker: blocker, blocked: user, config: "default")
+      user.update(blocked_by_count: 1)
+      blocker_article = create(:article, user_id: blocker.id)
+      expect do
+        post "/comments", params: {
+          comment: { body_markdown: "something", commentable_id: blocker_article.id, commentable_type: "Article" }
+        }
+      end.to raise_error(Pundit::NotAuthorizedError)
+    end
   end
 end
