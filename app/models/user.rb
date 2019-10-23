@@ -49,6 +49,7 @@ class User < ApplicationRecord
   has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
+  has_many :user_blocks
   has_one :pro_membership, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
@@ -374,6 +375,24 @@ class User < ApplicationRecord
 
   def org_admin?(organization)
     OrganizationMembership.exists?(user: user, organization: organization, type_of_user: "admin")
+  end
+
+  def block; end
+
+  def all_blocking
+    UserBlock.where(blocker_id: id)
+  end
+
+  def all_blocked_by
+    UserBlock.where(blocked_id: id)
+  end
+
+  def blocking?(blocked_id)
+    UserBlock.blocking?(id, blocked_id)
+  end
+
+  def blocked_by?(blocker_id)
+    UserBlock.blocking?(blocker_id, id)
   end
 
   def unique_including_orgs_and_podcasts
