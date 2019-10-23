@@ -145,6 +145,18 @@ ActiveRecord::Schema.define(version: 2019_09_18_104106) do
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
 
+  create_table "audit_logs", force: :cascade do |t|
+    t.string "category"
+    t.datetime "created_at", null: false
+    t.jsonb "data", default: {}, null: false
+    t.string "roles", array: true
+    t.string "slug"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["data"], name: "index_audit_logs_on_data", using: :gin
+    t.index ["user_id"], name: "index_audit_logs_on_user_id"
+  end
+
   create_table "backup_data", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "instance_id", null: false
@@ -1178,6 +1190,7 @@ ActiveRecord::Schema.define(version: 2019_09_18_104106) do
     t.index ["user_id"], name: "index_webhook_endpoints_on_user_id"
   end
 
+  add_foreign_key "audit_logs", "users"
   add_foreign_key "badge_achievements", "badges"
   add_foreign_key "badge_achievements", "users"
   add_foreign_key "chat_channel_memberships", "chat_channels"
