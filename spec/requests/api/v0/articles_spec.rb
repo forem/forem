@@ -9,6 +9,20 @@ RSpec.describe "Api::V0::Articles", type: :request do
   end
 
   describe "GET /api/articles" do
+    it "has correct keys in the response" do
+      article.update_columns(organization_id: organization.id)
+      get api_articles_path
+
+      index_keys = %w[
+        type_of id title description cover_image readable_publish_date social_image
+        tag_list tags slug path url canonical_url comments_count positive_reactions_count
+        collection_id created_at edited_at crossposted_at published_at last_comment_at
+        published_timestamp user organization flare_tag
+      ]
+
+      expect(json_response.first.keys).to match_array index_keys
+    end
+
     context "without params" do
       it "returns json response" do
         get api_articles_path
@@ -139,6 +153,20 @@ RSpec.describe "Api::V0::Articles", type: :request do
   end
 
   describe "GET /api/articles/:id" do
+    it "has correct keys in the response" do
+      article.update_columns(organization_id: organization.id)
+      get api_article_path(article.id)
+
+      show_keys = %w[
+        type_of id title description cover_image readable_publish_date social_image
+        tag_list tags slug path url canonical_url comments_count positive_reactions_count
+        collection_id created_at edited_at crossposted_at published_at last_comment_at
+        published_timestamp body_html body_markdown user organization flare_tag
+      ]
+
+      expect(json_response.keys).to match_array show_keys
+    end
+
     it "returns proper article" do
       get api_article_path(article.id)
       expect(json_response).to include(
