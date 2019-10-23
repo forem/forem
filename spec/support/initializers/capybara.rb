@@ -2,7 +2,6 @@ require "capybara/rails"
 require "capybara/rspec"
 require "webdrivers/chromedriver"
 
-Webdrivers::Chromedriver.required_version = "78.0.3904.70"
 Webdrivers.cache_time = 86_400
 
 Capybara.default_max_wait_time = 5
