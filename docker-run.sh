@@ -406,7 +406,7 @@ echo "#"
 echo "# POSTGRES_DIR : $POSTGRES_DIR"
 echo "#---"
 mkdir -p "$POSTGRES_DIR"
-docker run -d --name dev-to-postgres -e POSTGRES_PASSWORD=devto -e POSTGRES_USER=devto -e POSTGRES_DB=PracticalDeveloper_development -v "$POSTGRES_DIR:/var/lib/postgresql/data" postgres:10.7-alpine
+docker run -d --name dev-to-postgres -e POSTGRES_PASSWORD=devto -e POSTGRES_USER=devto -e POSTGRES_DB=PracticalDeveloper_development -v "$POSTGRES_DIR:/var/lib/postgresql/data" postgres:9.6.15-alpine
 
 #
 # Wait for postgresql server
