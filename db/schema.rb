@@ -1014,7 +1014,7 @@ ActiveRecord::Schema.define(version: 2019_10_16_135034) do
     t.boolean "checked_terms_and_conditions", default: false
     t.integer "comments_count", default: 0, null: false
     t.string "config_font", default: "default"
-    t.string "config_navbar", default: "default"
+    t.string "config_navbar", default: "default", null: false
     t.string "config_theme", default: "default"
     t.datetime "confirmation_sent_at"
     t.string "confirmation_token"
