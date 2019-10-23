@@ -28,9 +28,9 @@ For additional configuration options, check our [PostgreSQL setup guide](/instal
 1. Install bundler with `gem install bundler`
 1. Set up your environment variables/secrets
 
-   - Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](/backend/algolia) to get your development environment running.
+   - Take a look at `Envfile` to see all the `ENV` variables we use and the fake default provided for any missing keys.
    - The [backend guide](/backend) will show you how to get free API keys for additional services that may be required to run certain parts of the app.
-   - For any key that you wish to enter/replace:
+   - For any key that you wish to enter/replace, follow the steps below. At a minimum, you'll need to get your own free [Algolia credentials](/backend/algolia) to get your development environment running.
 
      1. Create `config/application.yml` by copying from the provided template (i.e. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
      1. Obtain the development variable and apply the key you wish to enter/replace. i.e.:
@@ -90,7 +90,7 @@ rails aborted!
 LoadError: dlopen(/Users/<username>/.rbenv/versions/2.6.5/lib/ruby/2.6.0/x86_64-darwin18/readline.bundle, 9): Library not loaded: /usr/local/opt/readline/lib/libreadline.<some version number>.dylib
 ```
 
-**_Solution:_** Run `ln -s /usr/local/opt/readline/lib/libreadline.dylib /usr/local/opt/readline/lib/libreadline.<some version number>.dylib` from the command line then run `bin/setup` again. You may have a different version or libreadline, so replace `<some version number>` with the version that errored.
+**_Solution:_** Run `ln -s /usr/local/opt/readline/lib/libreadline.dylib /usr/local/opt/readline/lib/libreadline.<some version number>.dylib` from the command line then run `bin/setup` again. You may have a different version of libreadline, so replace `<some version number>` with the version that errored.
 
 ---
 
