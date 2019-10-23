@@ -517,6 +517,18 @@
       &.showing {
         display: block;
       }
+      button {
+        font-size: 0.75em;
+        color: $black;
+        font-weight: bold;
+        width: 100%;
+        text-align: left;
+        padding-left: 10px;
+        display: block;
+        border: none;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
     }
   }
 }

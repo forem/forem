@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_18_104106) do
+ActiveRecord::Schema.define(version: 2019_09_25_193205) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -1015,6 +1015,15 @@ ActiveRecord::Schema.define(version: 2019_09_18_104106) do
     t.boolean "user_is_verified"
   end
 
+  create_table "user_blocks", force: :cascade do |t|
+    t.bigint "blocked_id", null: false
+    t.bigint "blocker_id", null: false
+    t.string "config", default: "default", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blocked_id", "blocker_id"], name: "index_user_blocks_on_blocked_id_and_blocker_id", unique: true
+  end
+
   create_table "users", id: :serial, force: :cascade do |t|
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
@@ -1022,6 +1031,8 @@ ActiveRecord::Schema.define(version: 2019_09_18_104106) do
     t.text "base_cover_letter"
     t.string "behance_url"
     t.string "bg_color_hex"
+    t.bigint "blocked_by_count", default: 0, null: false
+    t.bigint "blocking_others_count", default: 0, null: false
     t.boolean "checked_code_of_conduct", default: false
     t.boolean "checked_terms_and_conditions", default: false
     t.integer "comments_count", default: 0, null: false
@@ -1204,6 +1215,8 @@ ActiveRecord::Schema.define(version: 2019_09_18_104106) do
   add_foreign_key "push_notification_subscriptions", "users"
   add_foreign_key "sponsorships", "organizations"
   add_foreign_key "sponsorships", "users"
+  add_foreign_key "user_blocks", "users", column: "blocked_id"
+  add_foreign_key "user_blocks", "users", column: "blocker_id"
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_endpoints", "users"
 end
