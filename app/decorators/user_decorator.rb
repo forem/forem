@@ -41,6 +41,10 @@ class UserDecorator < ApplicationDecorator
     body_class
   end
 
+  def dark_theme?
+    config_theme == "night_theme" || config_theme == "ten_x_hacker_theme"
+  end
+
   def assigned_color
     colors = [
       {

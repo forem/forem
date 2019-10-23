@@ -566,6 +566,21 @@ end
     expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
   end
 
+  it "determines dark theme if night theme" do
+    user.config_theme = "night_theme"
+    expect(user.decorate.dark_theme?).to eq(true)
+  end
+
+  it "determines dark theme if ten x hacker" do
+    user.config_theme = "ten_x_hacker_theme"
+    expect(user.decorate.dark_theme?).to eq(true)
+  end
+
+  it "determines not dark theme if not one of the dark themes" do
+    user.config_theme = "default"
+    expect(user.decorate.dark_theme?).to eq(false)
+  end
+
   it "creates proper body class with sans serif config" do
     user.config_font = "sans_serif"
     expect(user.decorate.config_body_class).to eq("default sans-serif-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
