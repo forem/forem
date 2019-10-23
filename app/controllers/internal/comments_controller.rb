@@ -1,9 +1,7 @@
 class Internal::CommentsController < Internal::ApplicationController
   layout "internal"
-  skip_before_action :authorize_admin
 
   def index
-    authorize([:internal, Comment])
     @comments = if params[:state]&.start_with?("toplast-")
                   Comment.
                     includes(:user).
@@ -20,5 +18,11 @@ class Internal::CommentsController < Internal::ApplicationController
                     order("created_at DESC").
                     page(params[:page] || 1).per(50)
                 end
+  end
+
+  private
+
+  def authorize_admin
+    authorize Comment, :access?, policy_class: InternalPolicy
   end
 end

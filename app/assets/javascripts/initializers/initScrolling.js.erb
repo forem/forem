@@ -24,21 +24,38 @@ function checkIfNearBottomOfPage() {
 }
 
 function fetchNextPageIfNearBottom() {
-  var elCheck = document.getElementById("index-container") && !document.getElementById("query-wrapper");
+  var indexContainer = document.getElementById("index-container");
+  var elCheck =  indexContainer && !document.getElementById("query-wrapper");
   if (!elCheck) {
     return;
   }
-  if ( !done && !fetching && (window.scrollY) > (document.documentElement.scrollHeight - 3700) ) {
+  
+  var indexWhich = indexContainer.dataset.which;
+
+  var fetchCallback;
+  var scrollableElemId;
+  if (indexWhich == "podcast-episodes") {
+    scrollableElemId = "articles-list";
+    fetchCallback = function() {
+      fetchNextPodcastPage(indexContainer);
+    };
+  } else if (indexWhich == "videos") {
+    scrollableElemId = "video-collection";
+    fetchCallback = function() {
+      fetchNextVideoPage(indexContainer);
+    };
+  } else {
+    scrollableElemId = "articles-list";
+    fetchCallback = function() {
+      algoliaPaginate(indexContainer.dataset.algoliaTag);
+    };
+  }
+
+  var scrollableElem = document.getElementById(scrollableElemId);
+
+  if ( !done && !fetching && (window.scrollY) > (scrollableElem.scrollHeight - 3700) ) {
     fetching = true;
-    var el = document.getElementById("index-container");
-    var indexWhich = el.dataset.which;
-    if (indexWhich == "podcast-episodes") {
-      fetchNextPodcastPage(el);
-    } else if (indexWhich == "videos") {
-      fetchNextVideoPage(el)
-    } else {
-      algoliaPaginate(el.dataset.algoliaTag);
-    }
+    fetchCallback();
   }
 }
 

@@ -1,4 +1,6 @@
 class Broadcast < ApplicationRecord
+  resourcify
+
   has_many :notifications, as: :notifiable, inverse_of: :notifiable
 
   validates :title, :type_of, :processed_html, presence: true

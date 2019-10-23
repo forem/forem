@@ -10,14 +10,6 @@ HTMLDocument.prototype.ready = new Promise(resolve => {
   return null;
 });
 
-function isUserSignedIn() {
-  return (
-    document.head.querySelector(
-      'meta[name="user-signed-in"][content="true"]',
-    ) !== null
-  );
-}
-
 function renderPage() {
   import('../onboarding/Onboarding')
     .then(({ default: Onboarding }) => {
