@@ -164,4 +164,21 @@ variable :SMARTY_STREETS_WEB_KEY, :String, default: "Optional"
 
 group :production do
   variable :SECRET_KEY_BASE, :String
+  
+  # Timber
+  variable: :SEND_LOGS_TO_TIMBER, :String  # Defaults to true in code
+  variable: :TIMBER, :String  # Only required if above is "true" or unset
+
+  # Memcachier
+  variable: :MEMCACHIER_SERVERS, :String
+  variable: :MEMCACHIER_USERNAME, :String
+  variable: :MEMCACHIER_PASSWORD, :String
+
+  # Sendgrid
+  variable: :SENDGRID_USERNAME_ACCEL, :String
+  variable: :SENDGRID_PASSWORD_ACCEL, :String
+
+  # Heroku
+  variable: :HEROKU_APP_URL, :String  # practicaldev.herokuapp.com
+
 end
