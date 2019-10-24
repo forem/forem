@@ -6,7 +6,7 @@ title: Deployment and CI/CD Process
 
 ## Overview
 
-DEV relies on GitHub and Travis to deploy continuously to Heroku. If a Pull Request is merged without the "ci skip" in its title, it will be automatically deployed to production once the build steps complete succesfully. The process currently takes about 20 minutes to complete and will need a few addtional minutes before the change goes live.
+DEV relies on GitHub and Travis to deploy continuously to Heroku. If a Pull Request is merged without the "ci skip" in its title, it will be automatically deployed to production once the build steps complete successfully. The process currently takes about 20 minutes to complete and will need a few additional minutes before the change goes live.
 
 ## Travis steps
 
@@ -18,8 +18,8 @@ The following steps can be explored in our [.travis.yml](https://github.com/thep
 1. `bundle-audit` checks for any known vulnerability
 1. Travis builds Storybook to ensure its integrity.
 1. Travis deploys code to Heroku
-   - Heroku runs the database migrations prior to deployment
-1. `after_deploy` scripts kicks in
+   - Heroku runs the database migrations before deployment
+1. `after_deploy` script kicks in
    - Airbrake Deploy Tracking is notified of the deployment
 1. Travis notifies the team that the process completed
 
