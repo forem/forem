@@ -16,6 +16,7 @@ RSpec.describe RatingVote, type: :model do
       rating = build(:rating_vote, article_id: article.id, user_id: user.id)
       expect(rating).to be_valid
     end
+
     it "does not allow a user to create multiple ratings for one article" do
       create(:rating_vote, article_id: article.id, user_id: user.id)
       rating = build(:rating_vote, article_id: article.id, user_id: user.id)
