@@ -21,6 +21,9 @@ class UsersController < ApplicationController
     if @user.update(permitted_attributes(@user))
       RssReaderFetchUserJob.perform_later(@user.id)
       notice = "Your profile was successfully updated."
+      if config_changed?
+        notice = "Your config has been updated. Refresh to see all changes."
+      end
       if @user.export_requested?
         notice += " The export will be emailed to you shortly."
         ExportContentJob.perform_later(@user.id)
@@ -265,5 +268,9 @@ class UsersController < ApplicationController
   def set_tabs(current_tab = "profile")
     @tab_list = @user.settings_tab_list
     @tab = current_tab
+  end
+
+  def config_changed?
+    params[:user].include?(:config_theme)
   end
 end
