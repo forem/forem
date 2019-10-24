@@ -166,7 +166,7 @@ group :production do
   variable :SECRET_KEY_BASE, :String
   
   # Timber
-  variable :SEND_LOGS_TO_TIMBER, :String  # Defaults to true in code
+  variable :SEND_LOGS_TO_TIMBER, :String  # Defaults to true in production, false in development
   variable :TIMBER, :String  # Only required if above is "true" or unset
 
   # Memcachier
