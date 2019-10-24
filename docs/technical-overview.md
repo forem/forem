@@ -17,6 +17,7 @@ For the Dev.to tech stack we use:
 - [_Redcarpet_](https://github.com/vmg/redcarpet) and [_Rouge_](https://github.com/jneen/rouge) to parse Markdown
 - [_Carrierwave_](https://github.com/carrierwaveuploader/carrierwave), [_Fog_](https://github.com/fog/fog-aws) and [_AWS S3_](https://aws.amazon.com/s3/) for image upload/storage
 - [_InstantClick_](http://instantclick.io/) (a modified version) instead of _Turbolinks_ to accelerate navigation
+- [_ImageMagick_](https://imagemagick.org/) to manipulate images on upload
 - [_Heroku_](https://www.heroku.com) for hosting
 - [_Heroku scheduler_](https://devcenter.heroku.com/articles/scheduler) for scheduled jobs
 - [_Sendgrid_](https://sendgrid.com/) for transactional mailing
