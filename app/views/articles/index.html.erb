@@ -24,18 +24,6 @@
   <%= auto_discovery_link_tag(:rss, "https://dev.to/feed", title: "#{ApplicationConfig['COMMUNITY_NAME']} RSS Feed") %>
 <% end %>
 <%= javascript_pack_tag "homePage", defer: true %>
-<script defer>
-
-  var DIGITAL_CLIMATE_STRIKE_OPTIONS = {
-    forceFullPageWidget: false,
-    showCloseButtonOnFullPageWidget: true,
-    alwaysShowWidget: false,
-    disableGoogleAnalytics: true,
-    websiteName: 'DEV',
-    language: 'en'
-  };
-</script>
-<script src="https://assets.digitalclimatestrike.net/widget.js" defer></script>
 
 <% params.delete(:i) %>
 <% cache("main-stories-index-#{params}-#{user_signed_in?}", expires_in: 3.minutes) do %>
