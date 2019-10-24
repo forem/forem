@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Audit::Notification, type: :service do
-  let!(:listener) { Faker::Alphanumeric.alpha(10) }
+  let!(:listener) { Faker::Alphanumeric.alpha(number: 10) }
   let(:user) { build(:user, :admin) }
   let(:queue_name) { Audit::SaveToPersistentStorageJob.queue_name }
   let(:job_class) { Audit::SaveToPersistentStorageJob }
