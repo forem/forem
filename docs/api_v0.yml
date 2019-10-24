@@ -80,6 +80,7 @@ components:
         - readable_publish_date
         - social_image
         - tag_list
+        - tags
         - slug
         - path
         - url
@@ -115,6 +116,8 @@ components:
           type: array
           items:
             type: string
+        tags:
+          type: string
         slug:
           type: string
         path:
