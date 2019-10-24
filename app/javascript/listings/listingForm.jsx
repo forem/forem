@@ -4,10 +4,10 @@ import linkState from 'linkstate';
 import Title from './elements/title';
 import BodyMarkdown from './elements/bodyMarkdown';
 import Categories from './elements/categories';
-import OrgSettings from './elements/orgSettings';
 import ContactViaConnect from './elements/contactViaConnect';
 import ExpireDate from './elements/expireDate';
 import Tags from '../shared/components/tags';
+import { OrganizationPicker } from '../organization/OrganizationPicker';
 
 export default class ListingForm extends Component {
   constructor(props) {
@@ -63,14 +63,20 @@ export default class ListingForm extends Component {
 
     const selectOrg =
       organizations && organizations.length > 0 ? (
-        <OrgSettings
-          organizations={organizations}
-          organizationId={organizationId}
-          onToggle={this.handleOrgIdChange}
-        />
-      ) : (
-        ''
-      );
+        <div className="field">
+          <label htmlFor="organizationId">Post under an organization:</label>
+          <OrganizationPicker
+            name="classified_listing[organization_id]"
+            id="listing_organization_id"
+            organizations={organizations}
+            organizationId={organizationId}
+            onToggle={this.handleOrgIdChange}
+          />
+          <p>
+            <em>Posting on behalf of org spends org credits.</em>
+          </p>
+        </div>
+      ) : null;
 
     if (id === null) {
       return (
