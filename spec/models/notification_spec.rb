@@ -90,13 +90,13 @@ RSpec.describe Notification, type: :model do
     let(:tag_follow) { user.follow(tag) }
 
     it "runs fine" do
-      run_background_jobs_immediately do
+      perform_enqueued_jobs do
         described_class.send_new_follower_notification(tag_follow)
       end
     end
 
     it "doesn't create a notification" do
-      run_background_jobs_immediately do
+      perform_enqueued_jobs do
         expect do
           described_class.send_new_follower_notification(tag_follow)
         end.not_to change(described_class, :count)
