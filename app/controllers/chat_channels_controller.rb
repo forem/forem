@@ -16,7 +16,9 @@ class ChatChannelsController < ApplicationController
     end
   end
 
-  def show; end
+  def show
+    @chat_messages = @chat_channel.messages.includes(:user).order("created_at DESC").limit(50)
+  end
 
   def create
     authorize ChatChannel

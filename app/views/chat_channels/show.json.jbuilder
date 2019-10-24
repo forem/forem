@@ -1,4 +1,4 @@
-json.messages @chat_channel.messages.order("created_at DESC").limit(50).reverse do |message|
+json.messages @chat_messages.reverse do |message|
   json.user_id message.user_id
   json.username message.user.username
   json.profile_image_url ProfileImage.new(message.user).get(90)
