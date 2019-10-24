@@ -12,16 +12,16 @@ DEV relies on GitHub and Travis to deploy continuously to Heroku. If a Pull Requ
 
 The following steps can be explored in our [.travis.yml](https://github.com/thepracticaldev/dev.to/blob/master/.travis.yml) and [Procfile](https://github.com/thepracticaldev/dev.to/blob/master/Procfile). Some of the steps will be parallelized in the future.
 
-1. Travis runs the test portion of Rails code
-1. Travis runs the test portion of Preact code
+1. Travis runs the test portion of Rails code.
+1. Travis runs the test portion of Preact code.
 1. CodeClimate-test-reporter combines the test result and coverage from Ruby and JavaScript code then uploads it to our CodeClimate dashboard.
-1. `bundle-audit` checks for any known vulnerability
+1. `bundle-audit` checks for any known vulnerability.
 1. Travis builds Storybook to ensure its integrity.
-1. Travis deploys code to Heroku
-   - Heroku runs the database migrations before deployment
-1. `after_deploy` script kicks in
-   - Airbrake Deploy Tracking is notified of the deployment
-1. Travis notifies the team that the process completed
+1. Travis deploys code to Heroku.
+   - Heroku runs the database migrations before deployment.
+1. `after_deploy` script kicks in.
+   - Airbrake Deploy Tracking is notified of the deployment.
+1. Travis notifies the team that the process completed.
 
 ## Deploying to Heroku
 
