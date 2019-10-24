@@ -6,6 +6,7 @@ items:
   - backend
   - frontend
   - design
+  - deployment.md
   - tests
   - contributing.md
   - contributing_api.md
