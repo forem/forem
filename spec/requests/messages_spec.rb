@@ -15,9 +15,8 @@ RSpec.describe "Messages", type: :request do
 
     it "requires user to be signed in" do
       post "/messages", params: { message: {} }
-      expect(response.status).to eq(302)
+      expect(response).to have_http_status(:redirect)
     end
-    # Pusher::Error
 
     context "when user is signed in" do
       before do
@@ -27,7 +26,7 @@ RSpec.describe "Messages", type: :request do
       end
 
       it "returns 201 upon success" do
-        expect(response.status).to eq(201)
+        expect(response).to have_http_status(:created)
       end
 
       it "returns in json" do
@@ -37,25 +36,15 @@ RSpec.describe "Messages", type: :request do
 
     context "when user is blocked" do
       before do
+        allow(Pusher).to receive(:trigger).and_return(true)
         sign_in user
         chat_channel.update(status: "blocked")
       end
 
-      it "raises an error" do
-        expect { post "/messages", params: { message: new_message } }.to raise_error
+      it "is unauthorized" do
+        post "/messages", params: { message: new_message }
+        expect(response).to have_http_status(:unauthorized)
       end
     end
-
-    # context "when Pusher isn't cooperating" do
-    #   before do
-    #     allow(Pusher).to receive(:trigger).and_raise(Pusher::Error)
-    #     sign_in user
-    #     post "/messages", params: { message: new_message }
-    #   end
-
-    #   it "returns proper message" do
-    #     expect(response.body).to include("could not trigger Pusher")
-    #   end
-    # end
   end
 end
