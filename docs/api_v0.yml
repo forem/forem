@@ -725,6 +725,12 @@ components:
           profile_image: "..."
           profile_image_90: "..."
 
+tags:
+  - name: articles
+    description: Articles are all the posts users create on DEV
+  - name: webhooks
+    description: Webhooks are HTTP endpoints registered to receive events
+
 paths:
   /articles:
     get:
