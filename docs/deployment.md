@@ -10,7 +10,7 @@ DEV relies on GitHub and Travis to deploy continuously to Heroku. If a Pull Requ
 
 ## Travis steps
 
-The following steps can be explored in our [.travis.yml](https://github.com/thepracticaldev/dev.to/blob/master/.travis.yml) and [Procfile](https://github.com/thepracticaldev/dev.to/blob/master/Procfile). Some of the steps will be parallelized in the future.
+The following steps can be explored in our [.travis.yml](https://github.com/thepracticaldev/dev.to/blob/master/.travis.yml) and [Procfile](https://github.com/thepracticaldev/dev.to/blob/master/Procfile). Some of the steps will be parallelized in the future:
 
 1. Travis runs the test portion of Rails code.
 1. Travis runs the test portion of Preact code.
