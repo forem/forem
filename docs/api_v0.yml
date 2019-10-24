@@ -728,6 +728,8 @@ components:
 tags:
   - name: articles
     description: Articles are all the posts users create on DEV
+  - name: users
+    description: Users own resources that require authentication
   - name: webhooks
     description: Webhooks are HTTP endpoints registered to receive events
 
@@ -1014,7 +1016,7 @@ paths:
             curl https://dev.to/api/articles/150589
     put:
       operationId: updateArticle
-      summary: Update an existing article
+      summary: Update an article
       description: |
         This endpoint allows the client to updated an existing article.
 
@@ -1115,9 +1117,10 @@ paths:
   /articles/me:
     get:
       operationId: getUserArticles
-      summary: Authenticated user's articles
+      summary: User's articles
       description: |
-        This endpoint allows the client to retrieve a list of its published articles.
+        This endpoint allows the client to retrieve a list of published articles
+        on behalf of an authenticated user.
 
         "Articles" are all the posts that users create on DEV that typically
         show up in the feed. They can be a blog post, a discussion question,
@@ -1129,6 +1132,7 @@ paths:
         By default a page will contain `30` articles.
       tags:
         - articles
+        - users
       parameters:
         - name: page
           in: query
@@ -1165,9 +1169,10 @@ paths:
   /articles/me/published:
     get:
       operationId: getUserPublishedArticles
-      summary: Authenticated user's published articles
+      summary: User's published articles
       description: |
-        This endpoint allows the client to retrieve a list of its published articles.
+        This endpoint allows the client to retrieve a list of published articles
+        on behalf of an authenticated user.
 
         "Articles" are all the posts that users create on DEV that typically
         show up in the feed. They can be a blog post, a discussion question,
@@ -1179,6 +1184,7 @@ paths:
         By default a page will contain `30` articles.
       tags:
         - articles
+        - users
       parameters:
         - name: page
           in: query
@@ -1215,9 +1221,10 @@ paths:
   /articles/me/unpublished:
     get:
       operationId: getUserUnpublishedArticles
-      summary: Authenticated user's unpublished articles
+      summary: User's unpublished articles
       description: |
-        This endpoint allows the client to retrieve a list of its unpublished articles.
+        This endpoint allows the client to retrieve a list of unpublished articles
+        on behalf of an authenticated user.
 
         "Articles" are all the posts that users create on DEV that typically
         show up in the feed. They can be a blog post, a discussion question,
@@ -1229,6 +1236,7 @@ paths:
         By default a page will contain `30` articles.
       tags:
         - articles
+        - users
       parameters:
         - name: page
           in: query
@@ -1265,9 +1273,10 @@ paths:
   /articles/me/all:
     get:
       operationId: getUserAllArticles
-      summary: Authenticated user's all articles
+      summary: User's all articles
       description: |
-        This endpoint allows the client to retrieve a list of its articles.
+        This endpoint allows the client to retrieve a list of all articles on
+        behalf of an authenticated user.
 
         "Articles" are all the posts that users create on DEV that typically
         show up in the feed. They can be a blog post, a discussion question,
@@ -1281,6 +1290,7 @@ paths:
         By default a page will contain `30` articles.
       tags:
         - articles
+        - users
       parameters:
         - name: page
           in: query
