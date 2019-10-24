@@ -2,7 +2,7 @@ openapi: "3.0.2"
 info:
   title: DEV API
   description: Access DEV articles, comments and other resources via API
-  version: "0.5.7"
+  version: "0.5.8"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -77,13 +77,21 @@ components:
         - title
         - description
         - cover_image
-        - published_at
+        - readable_publish_date
+        - social_image
         - tag_list
+        - tags
         - slug
         - path
         - url
         - canonical_url
+        - comments_count
         - positive_reactions_count
+        - created_at
+        - edited_at
+        - crossposted_at
+        - published_at
+        - last_comment_at
         - published_timestamp
         - user
       properties:
@@ -99,13 +107,17 @@ components:
         cover_image:
           type: string
           format: url
-        published_at:
+        readable_publish_date:
           type: string
-          format: date-time
+        social_image:
+          type: string
+          format: url
         tag_list:
           type: array
           items:
             type: string
+        tags:
+          type: string
         slug:
           type: string
         path:
@@ -117,9 +129,27 @@ components:
         canonical_url:
           type: string
           format: url
+        comments_count:
+          type: integer
+          format: int32
         positive_reactions_count:
           type: integer
           format: int32
+        created_at:
+          type: string
+          format: date-time
+        edited_at:
+          type: string
+          format: date-time
+        crossposted_at:
+          type: string
+          format: date-time
+        published_at:
+          type: string
+          format: date-time
+        last_comment_at:
+          type: string
+          format: date-time
         published_timestamp:
           description: Crossposting or published date time
           type: string
@@ -157,6 +187,7 @@ components:
         - crossposted_at
         - published_at
         - last_comment_at
+        - published_timestamp
         - body_html
         - body_markdown
         - user
@@ -216,6 +247,10 @@ components:
         last_comment_at:
           type: string
           format: date-time
+        published_timestamp:
+          description: Crossposting or published date time
+          type: string
+          format: date-time
         body_html:
           type: string
         body_markdown:
@@ -223,6 +258,12 @@ components:
         user:
           type: object
           $ref: "#/components/schemas/ArticleUser"
+        organization:
+          type: object
+          $ref: "#/components/schemas/ArticleOrganization"
+        flare_tag:
+          type: object
+          $ref: "#/components/schemas/ArticleFlareTag"
 
     ArticleCreate:
       type: object
