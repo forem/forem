@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Layout/TrailingWhitespace
 class ArticleWithVideoCreationService
   VIDEO_SERVICE_URL = "https://dw71fyauz7yz9.cloudfront.net"
 
@@ -42,4 +41,3 @@ class ArticleWithVideoCreationService
     article
   end
 end
-# rubocop:enable Layout/TrailingWhitespace

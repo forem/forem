@@ -11,14 +11,17 @@ RSpec.describe DisplayAd, type: :model do
   it "generates processed_html before save" do
     expect(display_ad.processed_html).to eq("Hello <em>hey</em> Hey hey")
   end
+
   it "only disallows unacceptable placement_area" do
     display_ad.placement_area = "tsdsdsdds"
     expect(display_ad).not_to be_valid
   end
+
   it "allows sidebar_right" do
     display_ad.placement_area = "sidebar_right"
     expect(display_ad).to be_valid
   end
+
   it "allows sidebar_left" do
     display_ad.placement_area = "sidebar_left"
     expect(display_ad).to be_valid

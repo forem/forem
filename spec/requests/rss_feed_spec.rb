@@ -15,14 +15,17 @@ RSpec.describe "RssFeed", type: :request do
       get "/feed"
       expect(response.body).to include("<link>https://dev.to</link>")
     end
+
     it "renders user feed" do
       get "/feed/#{user.username}"
       expect(response.body).to include("<link>https://dev.to/#{user.username}</link>")
     end
+
     it "renders organization feed" do
       get "/feed/#{organization.slug}"
       expect(response.body).to include("<link>https://dev.to/#{organization.slug}</link>")
     end
+
     it "renders tag feed" do
       get "/feed/tag/#{tag.name}"
       expect(response.body).to include("<link>https://dev.to</link>")

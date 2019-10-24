@@ -21,20 +21,24 @@ RSpec.describe HtmlVariant, type: :model do
     html_variant.save!
     expect(described_class.find_for_test.id).to eq(html_variant.id)
   end
+
   it "finds for test with tag given" do
     html_variant.target_tag = "hello"
     html_variant.save!
     expect(described_class.find_for_test(["hello"]).id).to eq(html_variant.id)
   end
+
   it "does not find if different tag targeted" do
     html_variant.target_tag = "different_tag_yolo"
     html_variant.save!
     expect(described_class.find_for_test(["hello"])).to eq(nil)
   end
+
   it "finds if no tag targeted and tag given" do
     html_variant.save!
     expect(described_class.find_for_test(["hello"]).id).to eq(html_variant.id)
   end
+
   it "creates an html variant with img in it" do
     html_variant = create(:html_variant, approved: false, published: true)
     html_variant.html = "<div><img src='https://devimages.com/image.jpg' /></div>"
