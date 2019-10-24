@@ -9,6 +9,7 @@ RSpec.describe "/listings", type: :request do
       get "/listings"
       expect(response.body).to include("classified-filters")
     end
+
     it "has page content for category page" do
       get "/listings/saas"
       expect(response.body).to include("classified-filters")

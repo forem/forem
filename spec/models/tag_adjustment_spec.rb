@@ -25,15 +25,18 @@ RSpec.describe TagAdjustment, type: :model do
       tag_adjustment = build(:tag_adjustment, user_id: mod_user.id, article_id: article.id, tag_id: tag.id)
       expect(tag_adjustment).to be_valid
     end
+
     it "does not allow tag mods to create for other tags" do
       another_tag = create(:tag)
       tag_adjustment = build(:tag_adjustment, user_id: mod_user.id, article_id: article.id, tag_id: another_tag.id)
       expect(tag_adjustment).to be_invalid
     end
+
     it "allows admins to create for any tags" do
       tag_adjustment = build(:tag_adjustment, user_id: admin_user.id, article_id: article.id, tag_id: tag.id)
       expect(tag_adjustment).to be_valid
     end
+
     it "does not allow normal users to create for any tags" do
       tag_adjustment = build(:tag_adjustment, user_id: regular_user.id, article_id: article.id, tag_id: tag.id)
       expect(tag_adjustment).to be_invalid
@@ -45,14 +48,17 @@ RSpec.describe TagAdjustment, type: :model do
       tag_adjustment = build(:tag_adjustment, user_id: mod_user.id, article_id: article.id, tag_id: tag.id, adjustment_type: "removal")
       expect(tag_adjustment).to be_valid
     end
+
     it "disallows improper adjustment_types" do
       tag_adjustment = build(:tag_adjustment, user_id: mod_user.id, article_id: article.id, tag_id: tag.id, adjustment_type: "slushie")
       expect(tag_adjustment).to be_invalid
     end
+
     it "allows proper status" do
       tag_adjustment = build(:tag_adjustment, user_id: mod_user.id, article_id: article.id, tag_id: tag.id, status: "committed")
       expect(tag_adjustment).to be_valid
     end
+
     it "disallows improper status" do
       tag_adjustment = build(:tag_adjustment, user_id: mod_user.id, article_id: article.id, tag_id: tag.id, status: "slushiemonkey")
       expect(tag_adjustment).to be_invalid

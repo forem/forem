@@ -37,6 +37,7 @@ RSpec.describe "PollVotes", type: :request do
       expect(JSON.parse(response.body)["voted"]).to eq(true)
       expect(user.poll_votes.size).to eq(1)
     end
+
     it "votes on behalf of current user only once" do
       post "/poll_votes", params: {
         poll_vote: { poll_option_id: poll.poll_options.first.id }
