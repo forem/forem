@@ -77,3 +77,7 @@ div {
 ```
 
 `themeable-important` is used when a CSS variable requires `!important` as a postfix of the CSS property's value where the CSS variable is being used. You can use it the same way you would use `themeable` mixin, but you should avoid `!important` if possible.
+
+# Other user config
+
+In addition to themes, users can also directly configure their preferred fonts and their nav bar preferences. The implementation of these is similar to themes.

@@ -81,6 +81,6 @@ Liquid Tags should also be accompanied by tests in `spec/liquid_tags` which conf
 
 Some Liquid Tags are constructed using HTML and CSS within the app, and some are constructed by displaying an iframe of an external site.
 
-CSS for Liquid Tags are found in `app/assets/stylesheets/ltags`. Liquid tag classes should generally be prepnded by `ltag__`. e.g. `ltag__tag__content` etc.
+CSS for Liquid Tags are found in `app/assets/stylesheets/ltags`. Liquid tag classes should generally be prepended by `ltag__`. e.g. `ltag__tag__content` etc.
 
 Here is an example of a good Liquid Tag pull request... https://github.com/thepracticaldev/dev.to/pull/3801

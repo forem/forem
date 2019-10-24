@@ -48,8 +48,6 @@ deploy:
   api_key: '$HEROKU_AUTH_TOKEN'
   app:
     master: practicaldev
-  run:
-    - rails db:migrate
 after_deploy:
   - bash after_deploy.sh
 notifications:

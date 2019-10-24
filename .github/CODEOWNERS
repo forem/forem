@@ -1,4 +1,10 @@
 *        @thepracticaldev/core-pullassigner
 
+# SRE
+Gemfile @thepracticaldev/sre
+/db/ @thepracticaldev/sre
+/config/ @thepracticaldev/sre
+
+# Mac
 Gemfile   @maestromac
 yarn.lock @maestromac
