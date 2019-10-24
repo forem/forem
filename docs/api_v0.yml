@@ -2,7 +2,7 @@ openapi: "3.0.2"
 info:
   title: DEV API (beta)
   description: Access DEV articles, comments and other resources via API
-  version: "0.5.8"
+  version: "0.5.9"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
