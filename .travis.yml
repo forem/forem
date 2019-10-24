@@ -48,6 +48,8 @@ deploy:
   api_key: '$HEROKU_AUTH_TOKEN'
   app:
     master: practicaldev
+  on:
+    condition: commit_message =~ /\[\s?deploy\s?\]/
 after_deploy:
   - bash after_deploy.sh
 notifications:
