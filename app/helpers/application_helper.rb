@@ -93,17 +93,22 @@ module ApplicationHelper
   def cloudinary(url, width = nil, _quality = 80, _format = "jpg")
     return url if Rails.env.development? && (url.blank? || url.exclude?("http"))
 
-    service_path = "https://res.cloudinary.com/practicaldev/image/fetch"
-
-    if url&.size&.positive?
-      if width
-        "#{service_path}/c_scale,fl_progressive,q_auto,w_#{width}/f_auto/#{url}"
-      else
-        "#{service_path}/c_scale,fl_progressive,q_auto/f_auto/#{url}"
-      end
+    if url&.blank?
+      url = "https://pbs.twimg.com/profile_images/481625927911092224/iAVNQXjn_normal.jpeg"
+      quality = 1
     else
-      "#{service_path}/c_scale,fl_progressive,q_1/f_auto/https://pbs.twimg.com/profile_images/481625927911092224/iAVNQXjn_normal.jpeg"
+      quality = "auto"
     end
+
+    transformation = {
+      crop: "scale",
+      flags: "progressive",
+      quality: quality,
+      fetch_format: "auto"
+    }
+    transformation[:width] = width if width
+
+    Cloudinary::Utils.cloudinary_url(url, type: "fetch", transformation: transformation)
   end
 
   def cloud_cover_url(url)
