@@ -31,6 +31,13 @@ DEV uses [ImageMagick](https://imagemagick.org/) to manipulate images on upload.
 
 Please refer to ImageMagick's [instructions](https://imagemagick.org/script/download.php) on how to install it.
 
+### Redis
+
+DEV requires Redis version 4.0 or higher.
+
+We recommend following Digital Ocean's extensive [How To Install and Configure Redis on Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-redis-on-ubuntu-16-04)
+(available for other Linux distributions as well) to setup Redis.
+
 ## Installing DEV
 
 1. Fork DEV's repository, e.g. <https://github.com/thepracticaldev/dev.to/fork>
