@@ -1,38 +1,36 @@
 require "rails_helper"
 
-RSpec.describe GiphyService do
-  let(:giphy_service) { described_class.new }
-
+RSpec.describe Giphy::Image do
   describe "#giphy_img?" do
     context "when the URL is not a giphy URL" do
       it "returns false if the URI scheme is not https" do
         url = "http://media.giphy.com/media/H7NQUsEwTGfjkr9QoG/giphy.gif"
 
-        expect(giphy_service.giphy_img?(url)).to be false
+        expect(described_class.valid_url?(url)).to be false
       end
 
       it "returns false if the URI has userinfo" do
         url = "https://username:password@media.giphy.com/media/H7NQUsEwTGfjkr9QoG/giphy.gif"
 
-        expect(giphy_service.giphy_img?(url)).to be false
+        expect(described_class.valid_url?(url)).to be false
       end
 
       it "returns false if the URI has a fragment" do
         url = "https://media.giphy.com/media/H7NQUsEwTGfjkr9QoG/giphy.gif#a-fragment"
 
-        expect(giphy_service.giphy_img?(url)).to be false
+        expect(described_class.valid_url?(url)).to be false
       end
 
       it "returns false if the URI contains query params" do
         url = "https://media.giphy.com/media/H7NQUsEwTGfjkr9QoG/giphy.gif?query_param=1"
 
-        expect(giphy_service.giphy_img?(url)).to be false
+        expect(described_class.valid_url?(url)).to be false
       end
 
       it "returns false if the host is not a subdomain of giphy.com" do
         url = "https://example.com/some_url"
 
-        expect(giphy_service.giphy_img?(url)).to be false
+        expect(described_class.valid_url?(url)).to be false
       end
     end
 
@@ -40,13 +38,13 @@ RSpec.describe GiphyService do
       it "returns true if the URI host is media.giphy.com" do
         url = "https://media.giphy.com/media/H7NQUsEwTGfjkr9QoG/giphy.gif"
 
-        expect(giphy_service.giphy_img?(url)).to be true
+        expect(described_class.valid_url?(url)).to be true
       end
 
       it "returns true if the URI host is i.giphy.com" do
         url = "https://i.giphy.com/l0O9xQNSsQKmfSeUU.gif"
 
-        expect(giphy_service.giphy_img?(url)).to be true
+        expect(described_class.valid_url?(url)).to be true
       end
     end
 
@@ -54,7 +52,7 @@ RSpec.describe GiphyService do
       it "returns false" do
         url = "https://i.giphy.com/l0O9xQNSsQKmfSeUU"
 
-        expect(giphy_service.giphy_img?(url)).to be false
+        expect(described_class.valid_url?(url)).to be false
       end
     end
   end
