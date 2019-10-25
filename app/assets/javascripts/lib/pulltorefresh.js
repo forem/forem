@@ -1,6 +1,7 @@
 'use strict';
 
-((global, factory) => {
+((g, factory) => {
+  const global = g;
   typeof exports === 'object' && typeof module !== 'undefined'
     ? (module.exports = factory())
     : typeof define === 'function' && define.amd
@@ -80,22 +81,26 @@
   }
 
   var ptr = {
-    setupDOM: function setupDOM(handler) {
+    setupDOM: function setupDOM(h) {
+      const handler = h;
       if (!handler.ptrElement) {
-        var ptr = document.createElement('div');
+        var innerPtr = document.createElement('div');
 
         if (handler.mainElement !== document.body) {
-          handler.mainElement.parentNode.insertBefore(ptr, handler.mainElement);
+          handler.mainElement.parentNode.insertBefore(
+            innerPtr,
+            handler.mainElement,
+          );
         } else {
-          document.body.insertBefore(ptr, document.body.firstChild);
+          document.body.insertBefore(innerPtr, document.body.firstChild);
         }
 
-        ptr.classList.add(handler.classPrefix + 'ptr');
-        ptr.innerHTML = handler
+        innerPtr.classList.add(handler.classPrefix + 'ptr');
+        innerPtr.innerHTML = handler
           .getMarkup()
           .replace(/__PREFIX__/g, handler.classPrefix);
 
-        handler.ptrElement = ptr;
+        handler.ptrElement = innerPtr;
 
         if (typeof handler.onInit === 'function') {
           handler.onInit(handler);
@@ -118,7 +123,8 @@
 
       return handler;
     },
-    onReset: function onReset(handler) {
+    onReset: function onReset(h) {
+      const handler = h;
       handler.ptrElement.classList.remove(handler.classPrefix + 'refresh');
       handler.ptrElement.style[handler.cssProp] = '0px';
       setTimeout(() => {
@@ -389,8 +395,8 @@
         h.destroy();
       });
     },
-    init: function init(options) {
-      if (options === void 0) options = {};
+    init: function init(o) {
+      const options = o === void 0 ? {} : o;
 
       var handler = setupHandler(options);
 
