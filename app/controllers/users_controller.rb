@@ -90,7 +90,7 @@ class UsersController < ApplicationController
       identity.destroy
 
       identity_username = "#{provider}_username".to_sym
-      @user.update(identity_username => nil, profile_updated_at: Time.current)
+      @user.update(identity_username => nil, :profile_updated_at => Time.current)
 
       flash[:settings_notice] = "Your #{provider.capitalize} account was successfully removed."
     else
