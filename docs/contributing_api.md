@@ -11,6 +11,10 @@ The API docs follow the [OpenAPI 3 specification](http://spec.openapis.org/oas/v
 We auto-generate the documentation from `api_v0.yml` within the `/docs` directory.
 We use [ReDoc](https://github.com/Redocly/redoc) to turn the OpenAPI 3 format into a readable and searchable HTML documentation.
 
+## Updating API docs
+
+Whenever you make changes to the API docs, make sure to bump the version in `api_v0.yml`.
+
 ## Running and editing the Docs Locally
 
 If you want to browse the documentation locally you can use:

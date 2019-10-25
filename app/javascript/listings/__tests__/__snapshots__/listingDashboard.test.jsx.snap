@@ -9,6 +9,7 @@ preact-render-spy (1 nodes)
     class="rounded-btn active"
     role="button"
     tabIndex="0"
+    onKeyPress={[Function onKeyPress]}
   >
     Personal
   </span>
@@ -17,6 +18,7 @@ preact-render-spy (1 nodes)
     class="rounded-btn "
     role="button"
     tabIndex="0"
+    onKeyPress={[Function onKeyPress]}
   >
     Yoyodyne
   </span>
@@ -25,6 +27,7 @@ preact-render-spy (1 nodes)
     class="rounded-btn "
     role="button"
     tabIndex="0"
+    onKeyPress={[Function onKeyPress]}
   >
     Infotrode
   </span>
@@ -51,6 +54,7 @@ preact-render-spy (1 nodes)
         onClick={[Function onClick]}
         class="rounded-btn active"
         role="button"
+        onKeyPress={[Function onKeyPress]}
         tabIndex="0"
       >
         All
@@ -59,6 +63,7 @@ preact-render-spy (1 nodes)
         onClick={[Function onClick]}
         class="rounded-btn "
         role="button"
+        onKeyPress={[Function onKeyPress]}
         tabIndex="0"
       >
         Active
@@ -67,6 +72,7 @@ preact-render-spy (1 nodes)
         onClick={[Function onClick]}
         class="rounded-btn "
         role="button"
+        onKeyPress={[Function onKeyPress]}
         tabIndex="0"
       >
         Draft
@@ -75,12 +81,16 @@ preact-render-spy (1 nodes)
         onClick={[Function onClick]}
         class="rounded-btn "
         role="button"
+        onKeyPress={[Function onKeyPress]}
         tabIndex="0"
       >
         Expired
       </span>
     </div>
-    <select onChange={[Function onChange]}>
+    <select
+      onChange={[Function onChange]}
+      onBlur={[Function onBlur]}
+    >
       <option
         value="created_at"
         selected="selected"

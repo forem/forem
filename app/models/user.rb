@@ -49,6 +49,7 @@ class User < ApplicationRecord
   has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
+  has_many :user_blocks
   has_one :pro_membership, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
@@ -120,11 +121,14 @@ class User < ApplicationRecord
                          message: "%{value} must be either v1 or v2" }
 
   validates :config_theme,
-            inclusion: { in: %w[default night_theme pink_theme minimal_light_theme],
+            inclusion: { in: %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme],
                          message: "%{value} is not a valid theme" }
   validates :config_font,
-            inclusion: { in: %w[default sans_serif comic_sans],
-                         message: "%{value} must be either default or sans serif" }
+            inclusion: { in: %w[default sans_serif monospace comic_sans],
+                         message: "%{value} is not a valid font selection" }
+  validates :config_navbar,
+            inclusion: { in: %w[default static],
+                         message: "%{value} is not a valid navbar value" }
   validates :shipping_country,
             length: { in: 2..2 },
             allow_blank: true
@@ -149,7 +153,7 @@ class User < ApplicationRecord
   after_save  :bust_cache
   after_save  :subscribe_to_mailchimp_newsletter
   after_save  :conditionally_resave_articles
-  after_create :estimate_default_language!
+  after_create :estimate_default_language
   before_create :set_default_language
   before_validation :set_username
   # make sure usernames are not empty, to be able to use the database unique index
@@ -216,12 +220,8 @@ class User < ApplicationRecord
     self.remember_created_at ||= Time.now.utc
   end
 
-  def estimate_default_language!
+  def estimate_default_language
     Users::EstimateDefaultLanguageJob.perform_later(id)
-  end
-
-  def estimate_default_language_without_delay!
-    Users::EstimateDefaultLanguageJob.perform_now(id)
   end
 
   def calculate_score
@@ -380,21 +380,30 @@ class User < ApplicationRecord
     OrganizationMembership.exists?(user: user, organization: organization, type_of_user: "admin")
   end
 
+  def block; end
+
+  def all_blocking
+    UserBlock.where(blocker_id: id)
+  end
+
+  def all_blocked_by
+    UserBlock.where(blocked_id: id)
+  end
+
+  def blocking?(blocked_id)
+    UserBlock.blocking?(id, blocked_id)
+  end
+
+  def blocked_by?(blocker_id)
+    UserBlock.blocking?(blocker_id, id)
+  end
+
   def unique_including_orgs_and_podcasts
     errors.add(:username, "is taken.") if Organization.find_by(slug: username) || Podcast.find_by(slug: username) || Page.find_by(slug: username)
   end
 
-  def subscribe_to_mailchimp_newsletter_without_delay
-    return unless email.present? && email.include?("@")
-
-    return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
-
-    Users::SubscribeToMailchimpNewsletterJob.perform_now(id)
-  end
-
   def subscribe_to_mailchimp_newsletter
     return unless email.present? && email.include?("@")
-
     return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
 
     Users::SubscribeToMailchimpNewsletterJob.perform_later(id)
@@ -515,6 +524,7 @@ class User < ApplicationRecord
   def set_config_input
     self.config_theme = config_theme.tr(" ", "_")
     self.config_font = config_font.tr(" ", "_")
+    self.config_navbar = config_navbar.tr(" ", "_")
   end
 
   def check_for_username_change

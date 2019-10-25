@@ -2,7 +2,7 @@ openapi: "3.0.2"
 info:
   title: DEV API
   description: Access DEV articles, comments and other resources via API
-  version: "0.5.5"
+  version: "0.5.8"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -77,13 +77,21 @@ components:
         - title
         - description
         - cover_image
-        - published_at
+        - readable_publish_date
+        - social_image
         - tag_list
+        - tags
         - slug
         - path
         - url
         - canonical_url
+        - comments_count
         - positive_reactions_count
+        - created_at
+        - edited_at
+        - crossposted_at
+        - published_at
+        - last_comment_at
         - published_timestamp
         - user
       properties:
@@ -99,13 +107,17 @@ components:
         cover_image:
           type: string
           format: url
-        published_at:
+        readable_publish_date:
           type: string
-          format: date-time
+        social_image:
+          type: string
+          format: url
         tag_list:
           type: array
           items:
             type: string
+        tags:
+          type: string
         slug:
           type: string
         path:
@@ -117,9 +129,27 @@ components:
         canonical_url:
           type: string
           format: url
+        comments_count:
+          type: integer
+          format: int32
         positive_reactions_count:
           type: integer
           format: int32
+        created_at:
+          type: string
+          format: date-time
+        edited_at:
+          type: string
+          format: date-time
+        crossposted_at:
+          type: string
+          format: date-time
+        published_at:
+          type: string
+          format: date-time
+        last_comment_at:
+          type: string
+          format: date-time
         published_timestamp:
           description: Crossposting or published date time
           type: string
@@ -157,6 +187,7 @@ components:
         - crossposted_at
         - published_at
         - last_comment_at
+        - published_timestamp
         - body_html
         - body_markdown
         - user
@@ -216,6 +247,10 @@ components:
         last_comment_at:
           type: string
           format: date-time
+        published_timestamp:
+          description: Crossposting or published date time
+          type: string
+          format: date-time
         body_html:
           type: string
         body_markdown:
@@ -223,6 +258,12 @@ components:
         user:
           type: object
           $ref: "#/components/schemas/ArticleUser"
+        organization:
+          type: object
+          $ref: "#/components/schemas/ArticleOrganization"
+        flare_tag:
+          type: object
+          $ref: "#/components/schemas/ArticleFlareTag"
 
     ArticleCreate:
       type: object
@@ -373,6 +414,7 @@ components:
         - canonical_url
         - comments_count
         - positive_reactions_count
+        - page_views_count
         - published_timestamp
         - body_markdown
         - user
@@ -413,6 +455,9 @@ components:
           type: integer
           format: int32
         positive_reactions_count:
+          type: integer
+          format: int32
+        page_views_count:
           type: integer
           format: int32
         published_timestamp:
@@ -558,6 +603,10 @@ components:
           format: date-time
 
   examples:
+    ErrorBadRequest:
+      value:
+        error: bad request
+        status: 400
     ErrorNotFound:
       value:
         error: not found
@@ -566,6 +615,10 @@ components:
       value:
         error: unauthorized
         status: 401
+    ErrorUnprocessableEntity:
+      value:
+        error: "param is missing or the value is empty: article"
+        status: 422
     ArticleShow:
       value:
         type_of: article
@@ -856,6 +909,16 @@ paths:
               schema:
                 type: string
                 format: url
+        400:
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-bad-request:
+                  $ref: "#/components/examples/ErrorBadRequest"
         401:
           description: Unauthorized
           content:
@@ -864,8 +927,18 @@ paths:
                 type: object
                 $ref: "#/components/schemas/APIError"
               examples:
-                article-unauthorized:
+                error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
+        422:
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unprocessable-entity:
+                  $ref: "#/components/examples/ErrorUnprocessableEntity"
       security:
         - api_key: []
         - oauth2: []
@@ -874,14 +947,14 @@ paths:
           label: curl
           source: |
             curl -X POST -H "Content-Type: application/json" \
-              -H "api-key: ACCESS_TOKEN" \
+              -H "api-key: API_KEY" \
               -d '{"article":{"title":"Title","body_markdown":"Body","published":false,"tags":["discuss", "javascript"]}}' \
               https://dev.to/api/articles
         - lang: Shell
           label: curl (with front matter)
           source: |
             curl -X POST -H "Content-Type: application/json" \
-            -H "api-key: ACCESS_TOKEN" \
+            -H "api-key: API_KEY" \
             -d '{"article":{"body_markdown":"---\ntitle:A sample article about...\npublished:false\n---\n..."}}' \
             https://dev.to/api/articles
 
@@ -987,6 +1060,16 @@ paths:
               examples:
                 article-success:
                   $ref: "#/components/examples/ArticleShow"
+        400:
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-bad-request:
+                  $ref: "#/components/examples/ErrorBadRequest"
         401:
           description: Unauthorized
           content:
@@ -995,8 +1078,18 @@ paths:
                 type: object
                 $ref: "#/components/schemas/APIError"
               examples:
-                article-unauthorized:
+                error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
+        422:
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unprocessable-entity:
+                  $ref: "#/components/examples/ErrorUnprocessableEntity"
       security:
         - api_key: []
         - oauth2: []
@@ -1005,7 +1098,7 @@ paths:
           label: curl
           source: |
             curl -X PUT -H "Content-Type: application/json" \
-              -H "api-key: ACCESS_TOKEN" \
+              -H "api-key: API_KEY" \
               -d '{"article":{"title":"Title"}' \
               https://dev.to/api/articles/{id}
 
@@ -1056,7 +1149,7 @@ paths:
         - lang: Shell
           label: curl
           source: |
-            curl https://dev.to/api/articles/me
+            curl -H "api-key: API_KEY" https://dev.to/api/articles/me
 
   /articles/me/published:
     get:
@@ -1105,7 +1198,7 @@ paths:
         - lang: Shell
           label: curl
           source: |
-            curl https://dev.to/api/articles/me/published
+            curl -H "api-key: API_KEY" https://dev.to/api/articles/me/published
 
   /articles/me/unpublished:
     get:
@@ -1154,7 +1247,7 @@ paths:
         - lang: Shell
           label: curl
           source: |
-            curl https://dev.to/api/articles/me/unpublished
+            curl -H "api-key: API_KEY" https://dev.to/api/articles/me/unpublished
 
   /articles/me/all:
     get:
@@ -1205,7 +1298,7 @@ paths:
         - lang: Shell
           label: curl
           source: |
-            curl https://dev.to/api/articles/me/all
+            curl -H "api-key: API_KEY" https://dev.to/api/articles/me/all
 
   /webhooks:
     get:
@@ -1247,7 +1340,7 @@ paths:
         - lang: Shell
           label: curl
           source: |
-            curl -H "api-key: ACCESS_TOKEN" https://dev.to/api/webhooks
+            curl -H "api-key: API_KEY" https://dev.to/api/webhooks
     post:
       summary: Create a new webhook
       description: |
@@ -1278,6 +1371,16 @@ paths:
               examples:
                 webhook-success:
                   $ref: "#/components/examples/WebhookShow"
+        400:
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-bad-request:
+                  $ref: "#/components/examples/ErrorBadRequest"
         401:
           description: Unauthorized
           content:
@@ -1286,8 +1389,18 @@ paths:
                 type: object
                 $ref: "#/components/schemas/APIError"
               examples:
-                article-unauthorized:
+                error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
+        422:
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unprocessable-entity:
+                  $ref: "#/components/examples/ErrorUnprocessableEntity"
       security:
         - api_key: []
         - oauth2: []
@@ -1296,7 +1409,7 @@ paths:
           label: curl
           source: |
             curl -X POST -H "Content-Type: application/json" \
-              -H "api-key: ACCESS_TOKEN" \
+              -H "api-key: API_KEY" \
               -d '{"webhook_endpoint":{"target_url":"https://example.org/webhooks/webhook1","source":"DEV","events":["article_created"]}}' \
               https://dev.to/api/webhooks
 
@@ -1403,5 +1516,5 @@ paths:
           label: curl
           source: |
             curl -X DELETE \
-              -H "api-key: ACCESS_TOKEN" \
+              -H "api-key: API_KEY" \
               https://dev.to/api/webhooks/1

@@ -7,7 +7,7 @@
 <br>
 <p align="center">
   <a href="https://www.ruby-lang.org/en/">
-    <img src="https://img.shields.io/badge/Ruby-v2.6.3-green.svg" alt="ruby version">
+    <img src="https://img.shields.io/badge/Ruby-v2.6.5-green.svg" alt="ruby version">
   </a>
   <a href="http://rubyonrails.org/">
     <img src="https://img.shields.io/badge/Rails-v5.2.3-brightgreen.svg" alt="rails version">
@@ -41,9 +41,6 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
 - [Contributing](#contributing)
 - [Codebase](#codebase)
   - [The stack](#the-stack)
-  - [Engineering standards](#engineering-standards)
-    - [Style guide](#style-guide)
-    - [Husky hooks](#husky-hooks)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Standard Installation](#standard-installation)
@@ -143,6 +140,7 @@ Caveat: `bin/rspec` is not equipped with Spring because it affects Simplecov's r
 - [@lightalloy](https://dev.to/lightalloy)
 - [@rhymes](https://dev.to/rhymes)
 - [@jacobherrington](https://dev.to/jacobherrington)
+- [@mstruve](https://dev.to/molly_struve)
 
 ## Vulnerability disclosure
 

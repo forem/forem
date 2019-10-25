@@ -57,7 +57,7 @@ class MarkdownFixer
       markdown.sub(FRONT_MATTER_DETECTOR) do |front_matter|
         front_matter.gsub(/#{section}: ?(?<content>.*?)(\r\n|\n)/m) do |target|
           # `content` is the captured group (.*?)
-          captured_text = Regexp.last_match('content')
+          captured_text = Regexp.last_match("content")
           # The query below checks if the whole text is wrapped in
           # either single or double quotes.
           match = captured_text.scan(/(^".*"$|^'.*'$)/)

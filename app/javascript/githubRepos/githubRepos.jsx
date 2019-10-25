@@ -23,8 +23,7 @@ export class GithubRepos extends Component {
       .then(json => {
         this.setState({ repos: json });
       })
-      .catch(error => {
-        console.log(error);
+      .catch(() => {
         this.setState({ erroredOut: true });
       });
   };

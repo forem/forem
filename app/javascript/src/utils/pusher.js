@@ -26,10 +26,10 @@ export default function setupPusher(key, callbackObjects) {
       'client-initiatevideocall',
       callbackObjects.videoCallInitiated,
     );
-    channel.bind('client-endvideocall', callbackObjects.videoCallEnded);
 
-    // channel.bind('pusher:subscription_succeeded', callbackObjects.channelSubscribed);
+    channel.bind('client-endvideocall', callbackObjects.videoCallEnded);
     channel.bind('pusher:subscription_error', callbackObjects.channelError);
+
     return channel;
   });
 }

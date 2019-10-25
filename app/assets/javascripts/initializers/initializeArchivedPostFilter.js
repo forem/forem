@@ -1,3 +1,5 @@
+'use strict';
+
 function archivedPosts() {
   return document.getElementsByClassName('single-article-archived');
 }
@@ -20,7 +22,7 @@ function hideArchivedPosts() {
 
 function toggleArchivedPosts(e) {
   var link = e.target;
-  
+
   if (link.innerHTML.match(/Show/)) {
     link.innerHTML = 'Hide Archived';
     showArchivedPosts();

@@ -14,20 +14,13 @@ class Mention < ApplicationRecord
     def create_all(notifiable)
       Mentions::CreateAllJob.perform_later(notifiable.id, notifiable.class.name)
     end
-
-    def create_all_without_delay(notifiable)
-      Mentions::CreateAllJob.perform_now(notifiable.id, notifiable.class.name)
-    end
   end
 
   def send_email_notification
     user = User.find(user_id)
-    Mentions::SendEmailNotificationJob.perform_later(id) if user.email.present? && user.email_mention_notifications
-  end
+    return unless user.email.present? && user.email_mention_notifications
 
-  def send_email_notification_without_delay
-    user = User.find(user_id)
-    Mentions::SendEmailNotificationJob.perform_now(id) if user.email.present? && user.email_mention_notifications
+    Mentions::SendEmailNotificationJob.perform_later(id)
   end
 
   def permission

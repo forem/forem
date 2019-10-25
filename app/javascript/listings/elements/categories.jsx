@@ -40,9 +40,11 @@ class Categories extends Component {
           Category
         </label>
         <select
+          id="category"
           className="listingform__input"
           name="classified_listing[category]"
           onChange={onChange}
+          onBlur={onChange}
         >
           {this.options()}
         </select>
@@ -53,8 +55,13 @@ class Categories extends Component {
 }
 
 Categories.propTypes = {
-  categoriesForSelect: PropTypes.array.isRequired,
-  categoriesForDetails: PropTypes.array.isRequired,
+  categoriesForSelect: PropTypes.arrayOf(PropTypes.string).isRequired,
+  categoriesForDetails: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      rules: PropTypes.string,
+    }),
+  ).isRequired,
   category: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
 };

@@ -18,6 +18,7 @@ RSpec.describe "PollSkips", type: :request do
       expect(JSON.parse(response.body)["voted"]).to eq(false)
       expect(user.poll_skips.size).to eq(1)
     end
+
     it "only allows one of vote or skip" do
       post "/poll_skips", params: {
         poll_skip: { poll_id: poll.id }

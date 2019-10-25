@@ -34,8 +34,15 @@ class UserDecorator < ApplicationDecorator
   def config_body_class
     body_class = ""
     body_class += config_theme.tr("_", "-")
-    body_class = body_class + " " + config_font.tr("_", "-") + "-article-body" + " pro-status-#{pro?} trusted-status-#{trusted}"
+    body_class += " #{config_font.tr('_', '-')}-article-body"
+    body_class += " pro-status-#{pro?}"
+    body_class += " trusted-status-#{trusted}"
+    body_class += " #{config_navbar.tr('_', '-')}-navbar-config"
     body_class
+  end
+
+  def dark_theme?
+    config_theme == "night_theme" || config_theme == "ten_x_hacker_theme"
   end
 
   def assigned_color

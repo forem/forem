@@ -928,6 +928,7 @@ a.header-link {
   .editor-image-upload {
     width: initial;
     text-align: left;
+    z-index: 6;
 
     .uploaded-image {
       width: calc(93% - 3.375rem);

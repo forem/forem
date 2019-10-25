@@ -38,8 +38,8 @@ git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
 exec $SHELL
 
-rbenv install 2.6.3
-rbenv global 2.6.3
+rbenv install 2.6.5
+rbenv global 2.6.5
 ruby -v
 ```
 
@@ -98,6 +98,12 @@ Download [PostgreSQL for Windows](https://www.postgresql.org/download/windows/) 
 Pay attention to the username and password you setup during installation of PostgreSQL as you will use this to configure your Rails applications to login to the database later.
 
 For additional configuration options, check our [PostgreSQL setup guide](/installation/postgresql).
+
+### ImageMagick
+
+DEV uses [ImageMagick](https://imagemagick.org/) to manipulate images on upload.
+
+Please refer to ImageMagick's [instructions](https://imagemagick.org/script/download.php) on how to install it.
 
 ## Installing DEV
 
