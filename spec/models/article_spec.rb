@@ -19,7 +19,7 @@ RSpec.describe Article, type: :model do
   it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:organization).optional }
-  it { is_expected.to belong_to(:collection).optional }
+  it { is_expected.to belong_to(:collection).optional.touch(true) }
   it { is_expected.to have_many(:comments) }
   it { is_expected.to have_many(:reactions).dependent(:destroy) }
   it { is_expected.to have_many(:notifications).dependent(:delete_all) }
@@ -192,10 +192,10 @@ RSpec.describe Article, type: :model do
         expect(build(:article, tags: tags).valid?).to be(false)
       end
 
-      context 'when description is empty' do
-        it 'parses tags' do
+      context "when description is empty" do
+        it "parses tags" do
           body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: one\n---\n\n"
-          expect(build_and_validate_article(body_markdown: body_markdown).tag_list).to eq(['one'])
+          expect(build_and_validate_article(body_markdown: body_markdown).tag_list).to eq(["one"])
         end
       end
     end
