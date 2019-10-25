@@ -6,7 +6,7 @@ title: Deployment and CI/CD Process
 
 ## Overview
 
-DEV relies on GitHub and Travis to deploy continuously to Heroku. If a Pull Request is merged without the "ci skip" in its title, it will be automatically deployed to production once the build steps complete successfully. The process currently takes about 20 minutes to complete and will need a few additional minutes before the change goes live.
+DEV relies on GitHub and Travis to deploy continuously to Heroku. If a Pull Request is merged with a `[deploy]` in its title, it will be automatically deployed to production once the build steps complete successfully. The process currently takes about 20 minutes to complete and will need a few additional minutes before the change goes live.
 
 ## Travis steps
 
