@@ -614,14 +614,6 @@ RSpec.describe Article, type: :model do
   end
 
   describe ".feed" do
-    it "returns published articles ordered by most recent published_at" do
-      first_article = create(:article, published: true, published_at: 2.hours.ago)
-      second_article = create(:article, published: true, published_at: 1.hour.ago)
-      create(:article, published: false)
-
-      expect(described_class.feed.pluck(:id)).to eq([second_article.id, first_article.id])
-    end
-
     it "returns records with a subset of attributes" do
       create(:article, published: true, published_at: 2.hours.ago)
 

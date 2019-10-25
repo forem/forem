@@ -62,7 +62,8 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def self.aliased_name(word)
-    return unless (tag = find_by(name: word.downcase))
+    tag = find_by(name: word.downcase)
+    return unless tag
 
     tag.alias_for.presence || tag.name
   end

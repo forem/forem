@@ -10,7 +10,7 @@ class ArticlesController < ApplicationController
   def feed
     skip_authorization
 
-    @articles = Article.feed.page(params[:page].to_i).per(12)
+    @articles = Article.feed.order(published_at: :desc).page(params[:page].to_i).per(12)
     @articles = if params[:username]
                   handle_user_or_organization_feed
                 elsif params[:tag]
@@ -209,7 +209,8 @@ class ArticlesController < ApplicationController
   end
 
   def handle_tag_feed
-    return unless (@tag = Tag.aliased_name(params[:tag]))
+    @tag = Tag.aliased_name(params[:tag])
+    return unless @tag
 
     @articles = @articles.cached_tagged_with(@tag)
   end
