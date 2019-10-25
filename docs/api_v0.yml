@@ -155,13 +155,10 @@ components:
           type: string
           format: date-time
         user:
-          type: object
           $ref: "#/components/schemas/ArticleUser"
         organization:
-          type: object
           $ref: "#/components/schemas/ArticleOrganization"
         flare_tag:
-          type: object
           $ref: "#/components/schemas/ArticleFlareTag"
 
     ArticleShow:
@@ -256,13 +253,10 @@ components:
         body_markdown:
           type: string
         user:
-          type: object
           $ref: "#/components/schemas/ArticleUser"
         organization:
-          type: object
           $ref: "#/components/schemas/ArticleOrganization"
         flare_tag:
-          type: object
           $ref: "#/components/schemas/ArticleFlareTag"
 
     ArticleCreate:
@@ -465,13 +459,10 @@ components:
           type: string
           format: date-time
         user:
-          type: object
           $ref: "#/components/schemas/ArticleUser"
         organization:
-          type: object
           $ref: "#/components/schemas/ArticleOrganization"
         flare_tag:
-          type: object
           $ref: "#/components/schemas/ArticleFlareTag"
 
     ArticleUser:
@@ -575,7 +566,6 @@ components:
           type: string
           format: date-time
         user:
-          type: object
           $ref: "#/components/schemas/ArticleUser"
 
     WebhookIndex:
@@ -922,7 +912,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/ArticleShow"
               examples:
                 article-success:
@@ -938,7 +927,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-bad-request:
@@ -948,7 +936,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unauthorized:
@@ -958,7 +945,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unprocessable-entity:
@@ -1008,7 +994,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/ArticleShow"
               examples:
                 article-success:
@@ -1018,7 +1003,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 article-not-found:
@@ -1535,7 +1519,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 article-unauthorized:
@@ -1545,7 +1528,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 article-not-found:
