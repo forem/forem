@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { organizationPropType } from '../src/components/common-prop-types';
 
 const orgOptions = (organizations, organizationId) => {
   const orgs = organizations.map(organization => {
@@ -20,25 +21,26 @@ const orgOptions = (organizations, organizationId) => {
     ) : (
       <option value="">None</option>
     );
-  orgs.unshift(nullOrgOption); // make first option as "None"
-  return orgs;
+
+  return [nullOrgOption, ...orgs];
 };
 
-const OrgSettings = ({ organizations, organizationId, onToggle }) => (
-  <div className="articleform__orgsettings">
-    Publish under an organization:
-    <select
-      name="article[organization_id]"
-      id="article_publish_under_org"
-      onBlur={onToggle}
-    >
-      {orgOptions(organizations, organizationId)}
-    </select>
-  </div>
+export const OrganizationPicker = ({
+  name,
+  id,
+  organizations,
+  organizationId,
+  onToggle,
+}) => (
+  <select name={name} id={id} onBlur={onToggle}>
+    {orgOptions(organizations, organizationId)}
+  </select>
 );
 
-OrgSettings.propTypes = {
+OrganizationPicker.propTypes = {
+  name: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
   onToggle: PropTypes.func.isRequired,
+  organizationId: PropTypes.number.isRequired,
+  organizations: PropTypes.arrayOf(organizationPropType).isRequired,
 };
-
-export default OrgSettings;

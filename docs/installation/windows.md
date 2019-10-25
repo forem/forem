@@ -99,6 +99,12 @@ Pay attention to the username and password you setup during installation of Post
 
 For additional configuration options, check our [PostgreSQL setup guide](/installation/postgresql).
 
+### ImageMagick
+
+DEV uses [ImageMagick](https://imagemagick.org/) to manipulate images on upload.
+
+Please refer to ImageMagick's [instructions](https://imagemagick.org/script/download.php) on how to install it.
+
 ## Installing DEV
 
 1. Fork DEV's repository, eg. <https://github.com/thepracticaldev/dev.to/fork>

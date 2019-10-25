@@ -9,6 +9,7 @@ RSpec.describe DisplayAdEvent, type: :model do
     event = build(:display_ad_event, category: "click", user_id: user.id, display_ad_id: display_ad.id)
     expect(event).to be_valid
   end
+
   it "creates an impression event" do
     event = build(:display_ad_event, category: "impression", user_id: user.id, display_ad_id: display_ad.id)
     expect(event).to be_valid

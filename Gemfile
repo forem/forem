@@ -26,7 +26,7 @@ gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
 gem "carrierwave", "~> 2.0" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cld", "~> 0.8" # Compact Language Detection for Ruby
-gem "cloudinary", "~> 1.11" # Client library for easily using the Cloudinary service
+gem "cloudinary", "~> 1.12" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.2" # counter_culture provides turbo-charged counter caches that are kept up-to-date
 gem "dalli", "~> 2.7" # High performance memcached client for Ruby
 gem "delayed_job_active_record", "~> 4.1" # ActiveRecord backend for Delayed::Job
@@ -47,7 +47,7 @@ gem "fog-aws", "~> 3.5" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 3.0.1" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.2" # API wrapper for MailChimp's API
-gem "google-api-client", "~> 0.32" # Client for accessing Google APIs
+gem "google-api-client", "~> 0.33" # Client for accessing Google APIs
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "htmlentities", "~> 4.3", ">= 4.3.4"
 gem "httparty", "~> 0.17" # Makes http fun! Also, makes consuming restful web services dead easy
@@ -91,7 +91,7 @@ gem "storext", "~> 3.1" # Add type-casting and other features on top of ActiveRe
 gem "stripe", "~> 4.23" # Ruby library for the Stripe API
 gem "timber", "~> 3.0" # Great Ruby logging made easy
 gem "timber-rails", "~> 1.0" #  Timber integration for Rails
-gem "twilio-ruby", "~> 5.27" # The official library for communicating with the Twilio REST API
+gem "twilio-ruby", "~> 5.28" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 6.2" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.1" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
@@ -102,7 +102,7 @@ gem "webpush", "~> 1.0" # Encryption Utilities for Web Push payload
 group :development do
   gem "better_errors", "~> 2.5" # Provides a better error page for Rails and other Rack apps
   gem "binding_of_caller", "~> 0.8" # Retrieve the binding of a method's caller
-  gem "brakeman", "~> 4.6", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
+  gem "brakeman", "~> 4.7", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.6" # bundler-audit provides patch-level verification for Bundled apps
   gem "derailed_benchmarks", "~> 1.4", require: false # A series of things you can use to benchmark a Rails or Ruby app
   gem "erb_lint", "~> 0.0", require: false # ERB Linter tool
@@ -139,6 +139,7 @@ end
 
 group :test do
   gem "approvals", "~> 0.0" # A library to make it easier to do golden-master style testing in Ruby
+  gem "exifr", ">= 1.3.6" # EXIF Reader is a module to read EXIF from JPEG and TIFF images
   gem "factory_bot_rails", "~> 4.11" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
   gem "launchy", "~> 2.4" # Launchy is helper class for launching cross-platform applications in a fire and forget manner.
   gem "pundit-matchers", "~> 1.6" # A set of RSpec matchers for testing Pundit authorisation policies

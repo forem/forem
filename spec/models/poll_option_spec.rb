@@ -8,6 +8,7 @@ RSpec.describe PollOption, type: :model do
     poll_option = described_class.create(markdown: "0" * 30, poll_id: poll.id)
     expect(poll_option).to be_valid
   end
+
   it "disallows over 128 markdown characters" do
     poll_option = described_class.create(markdown: "0" * 200, poll_id: poll.id)
     expect(poll_option).not_to be_valid

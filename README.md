@@ -41,9 +41,6 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
 - [Contributing](#contributing)
 - [Codebase](#codebase)
   - [The stack](#the-stack)
-  - [Engineering standards](#engineering-standards)
-    - [Style guide](#style-guide)
-    - [Husky hooks](#husky-hooks)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Standard Installation](#standard-installation)
@@ -143,6 +140,7 @@ Caveat: `bin/rspec` is not equipped with Spring because it affects Simplecov's r
 - [@lightalloy](https://dev.to/lightalloy)
 - [@rhymes](https://dev.to/rhymes)
 - [@jacobherrington](https://dev.to/jacobherrington)
+- [@mstruve](https://dev.to/molly_struve)
 
 ## Vulnerability disclosure
 
