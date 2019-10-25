@@ -72,6 +72,7 @@ This section provides a high-level requirement & quick start guide. **For detail
 - [Ruby](https://www.ruby-lang.org/en/): we recommend using [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on the badge.
 - [Yarn](https://yarnpkg.com/): please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
 - [PostgreSQL](https://www.postgresql.org/) 9.4 or higher.
+- [ImageMagick](https://imagemagick.org/): please refer to ImageMagick's [installation instructions](https://imagemagick.org/script/download.php). Alternatively, macOS users can install ImageMagick with `brew install imagemagick`.
 
 ### Standard Installation
 
