@@ -1,8 +1,8 @@
 openapi: "3.0.2"
 info:
-  title: DEV API
+  title: DEV API (beta)
   description: Access DEV articles, comments and other resources via API
-  version: "0.5.8"
+  version: "0.5.9"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -155,13 +155,10 @@ components:
           type: string
           format: date-time
         user:
-          type: object
           $ref: "#/components/schemas/ArticleUser"
         organization:
-          type: object
           $ref: "#/components/schemas/ArticleOrganization"
         flare_tag:
-          type: object
           $ref: "#/components/schemas/ArticleFlareTag"
 
     ArticleShow:
@@ -256,13 +253,10 @@ components:
         body_markdown:
           type: string
         user:
-          type: object
           $ref: "#/components/schemas/ArticleUser"
         organization:
-          type: object
           $ref: "#/components/schemas/ArticleOrganization"
         flare_tag:
-          type: object
           $ref: "#/components/schemas/ArticleFlareTag"
 
     ArticleCreate:
@@ -465,13 +459,10 @@ components:
           type: string
           format: date-time
         user:
-          type: object
           $ref: "#/components/schemas/ArticleUser"
         organization:
-          type: object
           $ref: "#/components/schemas/ArticleOrganization"
         flare_tag:
-          type: object
           $ref: "#/components/schemas/ArticleFlareTag"
 
     ArticleUser:
@@ -575,7 +566,6 @@ components:
           type: string
           format: date-time
         user:
-          type: object
           $ref: "#/components/schemas/ArticleUser"
 
     WebhookIndex:
@@ -619,13 +609,55 @@ components:
       value:
         error: "param is missing or the value is empty: article"
         status: 422
+    ArticlesIndex:
+      value:
+        - type_of: article
+          id: 194541
+          title: There's a new DEV theme in town for all you 10x hackers out there (plus one
+            actually useful new feature)
+          description: ''
+          cover_image: https://res.cloudinary.com/practicaldev/image/fetch/s--74Bl23tz--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://res.cloudinary.com/practicaldev/image/fetch/s--xU8cbIK4--/c_imagga_scale%2Cf_auto%2Cfl_progressive%2Ch_420%2Cq_auto%2Cw_1000/https://thepracticaldev.s3.amazonaws.com/i/8a39dzf3oovzc2snl7iv.png
+          readable_publish_date: Oct 24
+          social_image: https://res.cloudinary.com/practicaldev/image/fetch/s--SeMxdKIa--/c_imagga_scale,f_auto,fl_progressive,h_500,q_auto,w_1000/https://res.cloudinary.com/practicaldev/image/fetch/s--xU8cbIK4--/c_imagga_scale%2Cf_auto%2Cfl_progressive%2Ch_420%2Cq_auto%2Cw_1000/https://thepracticaldev.s3.amazonaws.com/i/8a39dzf3oovzc2snl7iv.png
+          tag_list:
+          - meta
+          - changelog
+          - css
+          - ux
+          tags: meta, changelog, css, ux
+          slug: there-s-a-new-dev-theme-in-town-for-all-you-10x-hackers-out-there-plus-one-actually-useful-new-feature-2kgk
+          path: "/devteam/there-s-a-new-dev-theme-in-town-for-all-you-10x-hackers-out-there-plus-one-actually-useful-new-feature-2kgk"
+          url: https://dev.to/devteam/there-s-a-new-dev-theme-in-town-for-all-you-10x-hackers-out-there-plus-one-actually-useful-new-feature-2kgk
+          canonical_url: https://dev.to/devteam/there-s-a-new-dev-theme-in-town-for-all-you-10x-hackers-out-there-plus-one-actually-useful-new-feature-2kgk
+          comments_count: 37
+          positive_reactions_count: 142
+          collection_id:
+          created_at: '2019-10-24T13:41:29Z'
+          edited_at: '2019-10-24T13:56:35Z'
+          crossposted_at:
+          published_at: '2019-10-24T13:52:17Z'
+          last_comment_at: '2019-10-25T08:12:43Z'
+          published_timestamp: '2019-10-24T13:52:17Z'
+          user:
+            name: Ben Halpern
+            username: ben
+            twitter_username: bendhalpern
+            github_username: benhalpern
+            website_url: http://benhalpern.com
+            profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--Y1sq1tFG--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/1/f451a206-11c8-4e3d-8936-143d0a7e65bb.png
+            profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--DcW51A6v--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/1/f451a206-11c8-4e3d-8936-143d0a7e65bb.png
+          organization:
+            name: The DEV Team
+            username: devteam
+            slug: devteam
+            profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--0kDBq1Ne--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/organization/profile_image/1/0213bbaa-d5a1-4d25-9e7a-10c30b455af0.png
+            profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--8tTU-XkZ--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/organization/profile_image/1/0213bbaa-d5a1-4d25-9e7a-10c30b455af0.png
     ArticleShow:
       value:
         type_of: article
         id: 150589
         title: "Byte Sized Episode 2: The Creation of Graph Theory "
-        description:
-          The full story of Leonhard Euler and the creation of this fundamental
+        description: The full story of Leonhard Euler and the creation of this fundamental
           computer science principle, delivered in a few minutes.
         cover_image: https://res.cloudinary.com/practicaldev/image/fetch/s--qgutBUrH--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://thepracticaldev.s3.amazonaws.com/i/88e62fzblbluz1dm7xjf.png
         readable_publish_date: Aug  1
@@ -640,19 +672,20 @@ components:
         path: "/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1"
         url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
         canonical_url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
-        comments_count: 19
-        positive_reactions_count: 276
+        comments_count: 21
+        positive_reactions_count: 322
+        collection_id: 1693
         created_at: "2019-07-31T11:15:06Z"
         edited_at:
         crossposted_at:
         published_at: "2019-08-01T15:47:54Z"
-        last_comment_at: "2019-08-06T09:12:45Z"
+        last_comment_at: "2019-08-06T16:48:10Z"
+        published_timestamp: "2019-08-01T15:47:54Z"
         body_html: |+
           <p>Today's episode of Byte Sized is about Leonhard Euler and the creation of <a href="https://en.wikipedia.org/wiki/Graph_theory">Graph Theory</a>.</p>
 
           <p>For more about how Graph Theory works, check out this video from BaseCS!</p>...
-        body_markdown:
-          "---\r\ntitle: Byte Sized Episode 2: The Creation of Graph Theory \r\npublished:
+        body_markdown: "---\r\ntitle: Byte Sized Episode 2: The Creation of Graph Theory \r\npublished:
           true\r\ndescription: The full story of Leonhard Euler and the creation of this fundamental
           computer science principle, delivered in a few minutes.\r\ntags: computerscience,
           graphtheory, bytesized, history\r\ncover_image: https://thepracticaldev.s3.amazonaws.com/i/88e62fzblbluz1dm7xjf.png\r\nseries:
@@ -667,6 +700,12 @@ components:
           website_url: http://www.vaidehi.com
           profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--eDGAYAoK--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2882/K2evUksb.jpg
           profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--htZnqMn3--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2882/K2evUksb.jpg
+        organization:
+          name: Byte Sized
+          username: bytesized
+          slug: bytesized
+          profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--sq0DrZfn--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/organization/profile_image/865/652f7998-32a8-4fd9-85ca-dd697d2a9ee9.png
+          profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--1Pt_ICL---/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/organization/profile_image/865/652f7998-32a8-4fd9-85ca-dd697d2a9ee9.png
     ArticleCreateTitleBody:
       value:
         article:
@@ -725,9 +764,18 @@ components:
           profile_image: "..."
           profile_image_90: "..."
 
+tags:
+  - name: articles
+    description: Articles are all the posts users create on DEV
+  - name: users
+    description: Users own resources that require authentication
+  - name: webhooks
+    description: Webhooks are HTTP endpoints registered to receive events
+
 paths:
   /articles:
     get:
+      operationId: getArticles
       summary: Published articles
       description: |
         This endpoint allows the client to retrieve a list of articles.
@@ -815,42 +863,7 @@ paths:
                   $ref: "#/components/schemas/ArticleIndex"
               examples:
                 articles-success:
-                  summary: Successful response
-                  value:
-                    - type_of: article
-                      id: 150589
-                      title: "Byte Sized Episode 2: The Creation of Graph Theory"
-                      description:
-                        The full story of Leonhard Euler and the creation of this fundamental
-                        computer science principle, delivered in a few minutes.
-                      cover_image: https://res.cloudinary.com/practicaldev/image/fetch/s--qgutBUrH--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://thepracticaldev.s3.amazonaws.com/i/88e62fzblbluz1dm7xjf.png
-                      published_at: "2019-08-01T15:47:54.000Z"
-                      tag_list:
-                        - computerscience
-                        - graphtheory
-                        - bytesized
-                        - history
-                      slug: byte-sized-episode-2-the-creation-of-graph-theory-34g1
-                      path: "/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1"
-                      url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
-                      canonical_url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
-                      comments_count: 15
-                      positive_reactions_count: 210
-                      published_timestamp: "2019-08-01T15:47:54Z"
-                      user:
-                        name: Vaidehi Joshi
-                        username: vaidehijoshi
-                        twitter_username: vaidehijoshi
-                        github_username: vaidehijoshi
-                        website_url: http://www.vaidehi.com
-                        profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--eDGAYAoK--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2882/K2evUksb.jpg
-                        profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--htZnqMn3--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2882/K2evUksb.jpg
-                      organization:
-                        name: Byte Sized
-                        username: bytesized
-                        slug: bytesized
-                        profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--sq0DrZfn--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/organization/profile_image/865/652f7998-32a8-4fd9-85ca-dd697d2a9ee9.png
-                        profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--1Pt_ICL---/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/organization/profile_image/865/652f7998-32a8-4fd9-85ca-dd697d2a9ee9.png
+                  $ref: "#/components/examples/ArticlesIndex"
       x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
         - lang: Shell
           label: curl (all articles)
@@ -861,6 +874,7 @@ paths:
           source: |
             curl https://dev.to/api/articles?username=ben
     post:
+      operationId: createArticle
       summary: Create a new article
       description: |
         This endpoint allows the client to create a new article.
@@ -898,7 +912,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/ArticleShow"
               examples:
                 article-success:
@@ -914,7 +927,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-bad-request:
@@ -924,7 +936,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unauthorized:
@@ -934,7 +945,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unprocessable-entity:
@@ -960,6 +970,7 @@ paths:
 
   /articles/{id}:
     get:
+      operationId: getArticleById
       summary: A published article
       description: |
         This endpoint allows the client to retrieve a single
@@ -983,7 +994,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/ArticleShow"
               examples:
                 article-success:
@@ -993,7 +1003,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 article-not-found:
@@ -1004,7 +1013,8 @@ paths:
           source: |
             curl https://dev.to/api/articles/150589
     put:
-      summary: Update an existing article
+      operationId: updateArticle
+      summary: Update an article
       description: |
         This endpoint allows the client to updated an existing article.
 
@@ -1104,9 +1114,11 @@ paths:
 
   /articles/me:
     get:
-      summary: Authenticated user's articles
+      operationId: getUserArticles
+      summary: User's articles
       description: |
-        This endpoint allows the client to retrieve a list of its published articles.
+        This endpoint allows the client to retrieve a list of published articles
+        on behalf of an authenticated user.
 
         "Articles" are all the posts that users create on DEV that typically
         show up in the feed. They can be a blog post, a discussion question,
@@ -1118,6 +1130,7 @@ paths:
         By default a page will contain `30` articles.
       tags:
         - articles
+        - users
       parameters:
         - name: page
           in: query
@@ -1153,9 +1166,11 @@ paths:
 
   /articles/me/published:
     get:
-      summary: Authenticated user's published articles
+      operationId: getUserPublishedArticles
+      summary: User's published articles
       description: |
-        This endpoint allows the client to retrieve a list of its published articles.
+        This endpoint allows the client to retrieve a list of published articles
+        on behalf of an authenticated user.
 
         "Articles" are all the posts that users create on DEV that typically
         show up in the feed. They can be a blog post, a discussion question,
@@ -1167,6 +1182,7 @@ paths:
         By default a page will contain `30` articles.
       tags:
         - articles
+        - users
       parameters:
         - name: page
           in: query
@@ -1202,9 +1218,11 @@ paths:
 
   /articles/me/unpublished:
     get:
-      summary: Authenticated user's unpublished articles
+      operationId: getUserUnpublishedArticles
+      summary: User's unpublished articles
       description: |
-        This endpoint allows the client to retrieve a list of its unpublished articles.
+        This endpoint allows the client to retrieve a list of unpublished articles
+        on behalf of an authenticated user.
 
         "Articles" are all the posts that users create on DEV that typically
         show up in the feed. They can be a blog post, a discussion question,
@@ -1216,6 +1234,7 @@ paths:
         By default a page will contain `30` articles.
       tags:
         - articles
+        - users
       parameters:
         - name: page
           in: query
@@ -1251,9 +1270,11 @@ paths:
 
   /articles/me/all:
     get:
-      summary: Authenticated user's all articles
+      operationId: getUserAllArticles
+      summary: User's all articles
       description: |
-        This endpoint allows the client to retrieve a list of its articles.
+        This endpoint allows the client to retrieve a list of all articles on
+        behalf of an authenticated user.
 
         "Articles" are all the posts that users create on DEV that typically
         show up in the feed. They can be a blog post, a discussion question,
@@ -1267,6 +1288,7 @@ paths:
         By default a page will contain `30` articles.
       tags:
         - articles
+        - users
       parameters:
         - name: page
           in: query
@@ -1302,6 +1324,7 @@ paths:
 
   /webhooks:
     get:
+      operationId: getWebhooks
       summary: Webhooks
       description: |
         This endpoint allows the client to retrieve a list of webhooks they have
@@ -1342,6 +1365,7 @@ paths:
           source: |
             curl -H "api-key: API_KEY" https://dev.to/api/webhooks
     post:
+      operationId: createWebhook
       summary: Create a new webhook
       description: |
         This endpoint allows the client to create a new webhook.
@@ -1415,6 +1439,7 @@ paths:
 
   /webhooks/{id}:
     get:
+      operationId: getWebhookById
       summary: A webhook endpoint
       description: |
         This endpoint allows the client to retrieve a single
@@ -1470,6 +1495,7 @@ paths:
           source: |
             curl https://dev.to/api/webhooks/123
     delete:
+      operationId: deleteWebhook
       summary: A webhook endpoint
       description: |
         This endpoint allows the client to delete a single
@@ -1493,7 +1519,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 article-unauthorized:
@@ -1503,7 +1528,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 article-not-found:
