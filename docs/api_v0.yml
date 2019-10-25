@@ -1,6 +1,6 @@
 openapi: "3.0.2"
 info:
-  title: DEV API
+  title: DEV API (beta)
   description: Access DEV articles, comments and other resources via API
   version: "0.5.8"
   termsOfService: https://dev.to/terms
