@@ -22,7 +22,7 @@ exports[`<SearchForm /> renders properly when given search functions and a searc
       id="nav-search"
       name="q"
       onKeyDown={[MockFunction]}
-      placeholder="search"
+      placeholder="Search (Press '/' to focus)"
       type="text"
       value="hello"
     />

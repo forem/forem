@@ -49,7 +49,7 @@ class ReactionsController < ApplicationController
       category: category,
     ).first
     if reaction
-      reaction.user.touch
+      current_user.touch
       reaction.destroy
       Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
       Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) if organization_article?(reaction)

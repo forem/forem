@@ -355,7 +355,17 @@ RSpec.describe User, type: :model do
       user.config_theme = "goobledigook"
       expect(user).not_to be_valid
     end
-  end
+
+    it "accepts valid navbar" do
+      user.config_navbar = "static"
+      expect(user).to be_valid
+    end
+
+    it "does not accept invalid navbar" do
+      user.config_navbar = "not valid navbar input"
+      expect(user).not_to be_valid
+    end
+end
 
   ## Registration
   describe "user registration" do
@@ -553,37 +563,57 @@ RSpec.describe User, type: :model do
   end
 
   it "creates proper body class with defaults" do
-    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
+    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+  end
+
+  it "determines dark theme if night theme" do
+    user.config_theme = "night_theme"
+    expect(user.decorate.dark_theme?).to eq(true)
+  end
+
+  it "determines dark theme if ten x hacker" do
+    user.config_theme = "ten_x_hacker_theme"
+    expect(user.decorate.dark_theme?).to eq(true)
+  end
+
+  it "determines not dark theme if not one of the dark themes" do
+    user.config_theme = "default"
+    expect(user.decorate.dark_theme?).to eq(false)
   end
 
   it "creates proper body class with sans serif config" do
     user.config_font = "sans_serif"
-    expect(user.decorate.config_body_class).to eq("default sans-serif-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
+    expect(user.decorate.config_body_class).to eq("default sans-serif-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
   end
 
   it "creates proper body class with night theme" do
     user.config_theme = "night_theme"
-    expect(user.decorate.config_body_class).to eq("night-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
+    expect(user.decorate.config_body_class).to eq("night-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
   end
 
   it "creates proper body class with pink theme" do
     user.config_theme = "pink_theme"
-    expect(user.decorate.config_body_class).to eq("pink-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
+    expect(user.decorate.config_body_class).to eq("pink-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
   end
 
   it "creates proper body class with minimal light theme" do
     user.config_theme = "minimal_light_theme"
-    expect(user.decorate.config_body_class).to eq("minimal-light-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
+    expect(user.decorate.config_body_class).to eq("minimal-light-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
   end
 
   it "creates proper body class with pro user" do
     user.add_role(:pro)
-    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
+    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
   end
 
   it "creates proper body class with trusted user" do
     user.add_role(:trusted)
-    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted}")
+    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+  end
+
+  it "creates proper body class with trusted user" do
+    user.config_navbar = "static"
+    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
   end
 
   it "does not allow to change to username that is taken" do

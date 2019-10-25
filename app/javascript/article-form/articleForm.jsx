@@ -16,10 +16,10 @@ import Title from './elements/title';
 import MainImage from './elements/mainImage';
 import ImageManagement from './elements/imageManagement';
 import MoreConfig from './elements/moreConfig';
-import OrgSettings from './elements/orgSettings';
 import Errors from './elements/errors';
 import KeyboardShortcutsHandler from './elements/keyboardShortcutsHandler';
 import Tags from '../shared/components/tags';
+import { OrganizationPicker } from '../organization/OrganizationPicker';
 
 const SetupImageButton = ({
   className,
@@ -88,7 +88,7 @@ export default class ArticleForm extends Component {
       tagList: this.article.cached_tag_list || '',
       description: '',
       canonicalUrl: this.article.canonical_url || '',
-      series:this.state.series || '',
+      series: this.state.series || '',
       allSeries: this.article.all_series || [],
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
@@ -292,7 +292,7 @@ export default class ArticleForm extends Component {
       tagList: this.article.cached_tag_list || '',
       description: '',
       canonicalUrl: this.article.canonical_url || '',
-      series:this.state.series || '',
+      series: this.state.series || '',
       allSeries: this.article.all_series || [],
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
@@ -381,14 +381,17 @@ export default class ArticleForm extends Component {
     );
     const orgArea =
       organizations && organizations.length > 0 ? (
-        <OrgSettings
-          organizations={organizations}
-          organizationId={organizationId}
-          onToggle={this.handleOrgIdChange}
-        />
-      ) : (
-        ''
-      );
+        <div className="articleform__orgsettings">
+          Publish under an organization:
+          <OrganizationPicker
+            name="article[organization_id]"
+            id="article_publish_under_org"
+            organizations={organizations}
+            organizationId={organizationId}
+            onToggle={this.handleOrgIdChange}
+          />
+        </div>
+      ) : null;
     const errorsArea = errors ? <Errors errorsList={errors} /> : '';
     let editorView = '';
     if (previewShowing) {

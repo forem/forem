@@ -19,6 +19,7 @@ RSpec.describe "ProfilePins", type: :request do
       }
       expect(ProfilePin.last.pinnable_id).to eq(article.id)
     end
+
     it "allows only five pins" do
       articles = [article, article2, article3, article4, article5, article6, article7]
       articles.each do |a|
