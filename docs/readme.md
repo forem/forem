@@ -23,7 +23,7 @@ Here you can find instructions on how to setup your own local copy of DEV, how t
 
 DEV's documentation is built with [GitDocs NodeJS library](https://www.npmjs.com/package/gitdocs).
 
-The first step to running the documentations it locally is to install the `GitDocs` package globally.
+The first step to running the documentations locally is to install the `GitDocs` package globally.
 
 With npm:
 
