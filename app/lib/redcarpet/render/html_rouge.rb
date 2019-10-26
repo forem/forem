@@ -5,6 +5,29 @@ module Redcarpet
     class HTMLRouge < HTML
       include Rouge::Plugins::Redcarpet
 
+      # overrided method to add line number support
+      def block_code(code, language, line_numbers = false, start_line = 1)
+        lexer =
+          begin
+            Rouge::Lexer.find_fancy(language, code)
+          rescue Rouge::Guesser::Ambiguous => e
+            e.alternatives.first
+          end
+        lexer ||= Rouge::Lexers::PlainText
+
+        # XXX HACK: Redcarpet strips hard tabs out of code blocks,
+        # so we assume you're not using leading spaces that aren't tabs,
+        # and just replace them here.
+        if lexer.tag == "make"
+          code.gsub! %r{^    }, "\t"
+        end
+
+        formatter = Rouge::Formatters::HTMLLegacy.new(css_class: "highlight #{lexer.tag}",
+                                                      line_numbers: line_numbers,
+                                                      start_line: start_line)
+        formatter.format(lexer.lex(code))
+      end
+
       def link(link, _title, content)
         # Probably not the best fix but it does it's job of preventing
         # a nested links.
