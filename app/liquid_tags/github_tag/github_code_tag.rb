@@ -47,7 +47,7 @@ class GithubTag
       sliced_file_content = file_content[(start_line - 1)..(end_line - 1)]
 
       renderer = Redcarpet::Render::HTMLRouge.new
-      renderer.block_code(sliced_file_content.join("\n"), file_type)
+      renderer.block_code(sliced_file_content.join("\n"), file_type, true, start_line)
     end
 
     private
