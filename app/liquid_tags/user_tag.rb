@@ -1,6 +1,4 @@
 class UserTag < LiquidTagBase
-  PARTIAL = "users/liquid".freeze
-
   def initialize(_tag_name, user, _tokens)
     @user = parse_username_to_user(user.delete(" "))
     @follow_button = follow_button(@user)
@@ -9,7 +7,7 @@ class UserTag < LiquidTagBase
 
   def render(_context)
     ActionController::Base.new.render_to_string(
-      partial: PARTIAL,
+      partial: partial_file,
       locals: {
         user: @user,
         follow_button: @follow_button,

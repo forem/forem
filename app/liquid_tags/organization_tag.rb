@@ -1,6 +1,4 @@
 class OrganizationTag < LiquidTagBase
-  PARTIAL = "organizations/liquid".freeze
-
   def initialize(_tag_name, organization, _tokens)
     @organization = parse_slug_to_organization(organization.delete(" "))
     @follow_button = follow_button(@organization)
@@ -9,7 +7,7 @@ class OrganizationTag < LiquidTagBase
 
   def render(_context)
     ActionController::Base.new.render_to_string(
-      partial: PARTIAL,
+      partial: partial_file,
       locals: {
         organization: @organization,
         follow_button: @follow_button,
