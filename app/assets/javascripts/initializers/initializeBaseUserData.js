@@ -1,6 +1,6 @@
-/* global userData, filterXSS */
-
 'use strict';
+
+/* global userData, filterXSS */
 
 function initializeUserProfileContent(user) {
   document.getElementById('sidebar-profile-pic').innerHTML =
