@@ -5,11 +5,28 @@ module Redcarpet
     class HTMLRouge < HTML
       include Rouge::Plugins::Redcarpet
 
-      # Rouge requires the hint language to be lower case, by overriding this
-      # method we can allow the hint language to be specified with other casings
-      # eg. `Ada` instead of `ada`
-      def block_code(code, language)
-        super(code, language.to_s.downcase)
+      # overrided method to add line number support
+      def block_code(code, language, line_numbers = false, start_line = 1)
+        lexer =
+          begin
+            # add fix to handle language with upper case
+            Rouge::Lexer.find_fancy(language.to_s.downcase) code)
+          rescue Rouge::Guesser::Ambiguous => e
+            e.alternatives.first
+          end
+        lexer ||= Rouge::Lexers::PlainText
+
+        # XXX HACK: Redcarpet strips hard tabs out of code blocks,
+        # so we assume you're not using leading spaces that aren't tabs,
+        # and just replace them here.
+        if lexer.tag == "make"
+          code.gsub! %r{^    }, "\t"
+        end
+
+        formatter = Rouge::Formatters::HTMLLegacy.new(css_class: "highlight #{lexer.tag}",
+                                                      line_numbers: line_numbers,
+                                                      start_line: start_line)
+        formatter.format(lexer.lex(code))
       end
 
       def link(link, _title, content)
