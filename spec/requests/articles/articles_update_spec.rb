@@ -94,7 +94,11 @@ RSpec.describe "ArticlesUpdate", type: :request do
 
   it "removes all published notifications if unpublished" do
     user2.follow(user)
-    Notification.send_to_followers_without_delay(article, "Published")
+    perform_enqueued_jobs do
+      Notification.send_to_followers(article, "Published")
+    end
+    expect(article.notifications.size).to eq 1
+
     put "/articles/#{article.id}", params: {
       article: { body_markdown: article.body_markdown.gsub("published: true", "published: false") }
     }
@@ -110,7 +114,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
   end
 
   it "schedules a dispatching event job" do
-    create(:webhook_endpoint, events: %w[article_created article_updated])
+    create(:webhook_endpoint, events: %w[article_created article_updated], user: user)
     expect do
       put "/articles/#{article.id}", params: {
         article: { title: "new_title", body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }

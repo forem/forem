@@ -26,4 +26,10 @@ class Internal::BufferUpdatesController < Internal::ApplicationController
     BufferUpdate.upbuff!(params[:id], current_user.id, params[:body_text], params[:status])
     render body: nil
   end
+
+  private
+
+  def authorize_admin
+    authorize BufferUpdate, :access?, policy_class: InternalPolicy
+  end
 end

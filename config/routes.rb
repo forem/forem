@@ -1,7 +1,10 @@
 # rubocop:disable Metrics/BlockLength
 
 Rails.application.routes.draw do
-  use_doorkeeper
+  use_doorkeeper do
+    controllers tokens: "oauth/tokens"
+  end
+
   devise_for :users, controllers: {
     omniauth_callbacks: "omniauth_callbacks",
     session: "sessions",
@@ -14,7 +17,7 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     delete "/sign_out" => "devise/sessions#destroy"
-    get "/enter" => "registrations#new", as: :sign_up
+    get "/enter" => "registrations#new", :as => :sign_up
   end
 
   namespace :admin do
@@ -72,6 +75,7 @@ Rails.application.routes.draw do
         post "bust_cache"
       end
     end
+    resources :webhook_endpoints, only: :index
   end
 
   namespace :api, defaults: { format: "json" } do
@@ -107,8 +111,10 @@ Rails.application.routes.draw do
           post "/update_or_create", to: "github_repos#update_or_create"
         end
       end
-      resources :webhooks, only: %i[create show destroy]
+      resources :webhooks, only: %i[index create show destroy]
 
+      resources :classified_listings, path: :listings, only: %i[index show create update]
+      get "/listings/category/:category", to: "classified_listings#index", as: :classified_listings_category
       get "/analytics/totals", to: "analytics#totals"
       get "/analytics/historical", to: "analytics#historical"
       get "/analytics/past_day", to: "analytics#past_day"
@@ -170,13 +176,19 @@ Rails.application.routes.draw do
   resources :profile_pins, only: %i[create update]
   resources :partnerships, only: %i[index create show], param: :option
   resources :display_ad_events, only: [:create]
+  resources :badges, only: [:index]
+  resource :pro_membership, path: :pro, only: %i[show create update]
+  resources :user_blocks, param: :blocked_id, only: %i[show destroy] do
+    post ":blocked_id", on: :collection, to: "user_blocks#create"
+  end
+  resolve("ProMembership") { [:pro_membership] } # see https://guides.rubyonrails.org/routing.html#using-resolve
 
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/listings/dashboard" => "classified_listings#dashboard"
   get "/listings/:category" => "classified_listings#index"
-  get "/listings/:category/:slug" => "classified_listings#index", as: :classified_listing_slug
+  get "/listings/:category/:slug" => "classified_listings#index", :as => :classified_listing_slug
   get "/listings/:category/:slug/:view" => "classified_listings#index",
-      constraints: { view: /moderate/ }
+      :constraints => { view: /moderate/ }
   get "/listings/:category/:slug/delete_confirm" => "classified_listings#delete_confirm"
   delete "/listings/:category/:slug" => "classified_listings#destroy"
   get "/notifications/:filter" => "notifications#index"
@@ -193,15 +205,15 @@ Rails.application.routes.draw do
   post "/chat_channels/create_chat" => "chat_channels#create_chat"
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
   get "/live/:username" => "twitch_live_streams#show"
-  get "/pro" => "pro_accounts#index"
 
   post "/pusher/auth" => "pusher#auth"
 
-  get "/social_previews/article/:id" => "social_previews#article", as: :article_social_preview
-  get "/social_previews/user/:id" => "social_previews#user", as: :user_social_preview
-  get "/social_previews/organization/:id" => "social_previews#organization", as: :organization_social_preview
-  get "/social_previews/tag/:id" => "social_previews#tag", as: :tag_social_preview
-  get "/social_previews/listing/:id" => "social_previews#listing", as: :listing_social_preview
+  get "/social_previews/article/:id" => "social_previews#article", :as => :article_social_preview
+  get "/social_previews/user/:id" => "social_previews#user", :as => :user_social_preview
+  get "/social_previews/organization/:id" => "social_previews#organization", :as => :organization_social_preview
+  get "/social_previews/tag/:id" => "social_previews#tag", :as => :tag_social_preview
+  get "/social_previews/listing/:id" => "social_previews#listing", :as => :listing_social_preview
+  get "/social_previews/comment/:id" => "social_previews#comment", :as => :comment_social_preview
 
   get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
 
@@ -236,15 +248,15 @@ Rails.application.routes.draw do
   post "users/update_language_settings" => "users#update_language_settings"
   post "users/update_twitch_username" => "users#update_twitch_username"
   post "users/join_org" => "users#join_org"
-  post "users/leave_org/:organization_id" => "users#leave_org"
+  post "users/leave_org/:organization_id" => "users#leave_org", :as => :users_leave_org
   post "users/add_org_admin" => "users#add_org_admin"
   post "users/remove_org_admin" => "users#remove_org_admin"
   post "users/remove_from_org" => "users#remove_from_org"
   delete "users/remove_association", to: "users#remove_association"
   delete "users/destroy", to: "users#destroy"
   post "organizations/generate_new_secret" => "organizations#generate_new_secret"
-  post "users/api_secrets" => "api_secrets#create", as: :users_api_secrets
-  delete "users/api_secrets/:id" => "api_secrets#destroy", as: :users_api_secret
+  post "users/api_secrets" => "api_secrets#create", :as => :users_api_secrets
+  delete "users/api_secrets/:id" => "api_secrets#destroy", :as => :users_api_secret
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -284,7 +296,7 @@ Rails.application.routes.draw do
   get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
   get "/freestickers" => "giveaways#new"
   get "/shop", to: redirect("https://shop.dev.to/")
-  get "/mod" => "moderations#index"
+  get "/mod" => "moderations#index", :as => :mod
 
   post "/fallback_activity_recorder" => "ga_events#create"
 
@@ -298,7 +310,7 @@ Rails.application.routes.draw do
     end
   end
 
-  get "/settings/(:tab)" => "users#edit"
+  get "/settings/(:tab)" => "users#edit", :as => :user_settings
   get "/settings/:tab/:org_id" => "users#edit"
   get "/signout_confirm" => "users#signout_confirm"
   get "/dashboard" => "dashboards#show"
@@ -306,11 +318,11 @@ Rails.application.routes.draw do
   get "dashboard/pro/org/:org_id" => "dashboards#pro"
   get "dashboard/following" => "dashboards#following"
   get "/dashboard/:which" => "dashboards#followers",
-      constraints: {
+      :constraints => {
         which: /organization_user_followers|user_followers/
       }
   get "/dashboard/:which/:org_id" => "dashboards#show",
-      constraints: {
+      :constraints => {
         which: /organization/
       }
   get "/dashboard/:username" => "dashboards#show"
@@ -329,15 +341,15 @@ Rails.application.routes.draw do
   get "/pod", to: "podcast_episodes#index"
   get "/podcasts", to: redirect("pod")
   get "/readinglist" => "reading_list_items#index"
-  get "/readinglist/:view" => "reading_list_items#index", constraints: { view: /archive/ }
+  get "/readinglist/:view" => "reading_list_items#index", :constraints => { view: /archive/ }
   get "/history", to: "history#index", as: :history
 
-  get "/feed" => "articles#feed", as: "feed", defaults: { format: "rss" }
+  get "/feed" => "articles#feed", :as => "feed", :defaults => { format: "rss" }
   get "/feed/tag/:tag" => "articles#feed",
-      as: "tag_feed", defaults: { format: "rss" }
+      :as => "tag_feed", :defaults => { format: "rss" }
   get "/feed/:username" => "articles#feed",
-      as: "user_feed", defaults: { format: "rss" }
-  get "/rss" => "articles#feed", defaults: { format: "rss" }
+      :as => "user_feed", :defaults => { format: "rss" }
+  get "/rss" => "articles#feed", :defaults => { format: "rss" }
 
   get "/tag/:tag" => "stories#index"
   get "/t/:tag", to: "stories#index", as: :tag
@@ -346,13 +358,13 @@ Rails.application.routes.draw do
   patch "/tag/:id", to: "tags#update"
   get "/t/:tag/top/:timeframe" => "stories#index"
   get "/t/:tag/:timeframe" => "stories#index",
-      constraints: { timeframe: /latest/ }
+      :constraints => { timeframe: /latest/ }
 
   get "/badge/:slug" => "badges#show"
 
   get "/top/:timeframe" => "stories#index"
 
-  get "/:timeframe" => "stories#index", constraints: { timeframe: /latest/ }
+  get "/:timeframe" => "stories#index", :constraints => { timeframe: /latest/ }
 
   # Legacy comment format (might still be floating around app, and external links)
   get "/:username/:slug/comments" => "comments#index"
@@ -368,14 +380,14 @@ Rails.application.routes.draw do
   get "/:username/comment/:id_code/settings", to: "comments#settings"
 
   get "/:username/:slug/:view" => "stories#show",
-      constraints: { view: /moderate/ }
+      :constraints => { view: /moderate/ }
   get "/:username/:slug/mod" => "moderations#article"
   get "/:username/:slug/manage" => "articles#manage"
   get "/:username/:slug/edit" => "articles#edit"
   get "/:username/:slug/delete_confirm" => "articles#delete_confirm"
   get "/:username/:slug/stats" => "articles#stats"
   get "/:username/:view" => "stories#index",
-      constraints: { view: /comments|moderate|admin/ }
+      :constraints => { view: /comments|moderate|admin/ }
   get "/:username/:slug" => "stories#show"
   get "/:username" => "stories#index"
 

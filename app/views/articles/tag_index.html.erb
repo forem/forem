@@ -3,7 +3,8 @@
 <% end %>
 <% params.delete(:i) %>
 <% expiry_minutes = params[:timeframe].blank? || params[:timeframe] == "latest" ? 4 : 20 %>
-<% cache("tag-stories-index-#{params}-#{true}-#{@tag_model.updated_at}", expires_in: expiry_minutes.minutes) do %>
+<% flag = true %>
+<% cache("tag-stories-index-#{params}-#{flag}-#{@tag_model.updated_at}", expires_in: expiry_minutes.minutes) do %>
   <style>
     .tag-header {
       border: 2px solid<%= HexComparer.new([@tag_model.bg_color_hex || "#0000000", @tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>;
@@ -58,7 +59,7 @@
       <div class="on-page-nav-controls" id="on-page-nav-controls">
         <div class="on-page-nav-label sub-home-nav">
           <div class="wide-nav-links">
-            <a class="nav-chronofiter-link <%= "selected" if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %>" href="<%= list_path %>/">
+            <a class="nav-chronofiter-link <%= "selected" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>" href="<%= list_path %>/">
               FEED
             </a>
             <span class="separator"></span>
@@ -81,17 +82,17 @@
           </div>
           <div class="narrow-nav-select" aria-label="feed-filter-select">
             <% if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %>
-              <button id="narrow-feed-butt">&lt;MY DEV FEED&gt;</button>
+              <button type="button" id="narrow-feed-butt">&lt;MY DEV FEED&gt;</button>
             <% elsif timeframe_check('week') %>
-              <button id="narrow-feed-butt">&lt;PAST WEEK&gt;</button>
+              <button type="button" id="narrow-feed-butt">&lt;PAST WEEK&gt;</button>
             <% elsif timeframe_check('month') %>
-              <button id="narrow-feed-butt">&lt;PAST MONTH&gt;</button>
+              <button type="button" id="narrow-feed-butt">&lt;PAST MONTH&gt;</button>
             <% elsif timeframe_check('year') %>
-              <button id="narrow-feed-butt">&lt;PAST YEAR&gt;</button>
+              <button type="button" id="narrow-feed-butt">&lt;PAST YEAR&gt;</button>
             <% elsif timeframe_check('infinity') %>
-              <button id="narrow-feed-butt">&lt;INFINITY&gt;</button>
+              <button type="button" id="narrow-feed-butt">&lt;INFINITY&gt;</button>
             <% elsif timeframe_check('latest') %>
-              <button id="narrow-feed-butt">&lt;LATEST&gt;</button>
+              <button type="button" id="narrow-feed-butt">&lt;LATEST&gt;</button>
             <% end %>
           </div>
         </div>

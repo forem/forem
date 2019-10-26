@@ -62,6 +62,7 @@ RSpec.describe "BufferUpdates", type: :request do
              { buffer_update: { body_text: "This is the text!!!!", tag_id: "javascript", article_id: mod_article.id } }
       end.to raise_error(Pundit::NotAuthorizedError)
     end
+
     it "accepts buffer update from author of article" do
       post "/buffer_updates",
            params:

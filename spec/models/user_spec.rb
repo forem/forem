@@ -30,6 +30,7 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
     it { is_expected.to have_many(:push_notification_subscriptions).dependent(:destroy) }
     it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
+    it { is_expected.to have_one(:pro_membership).dependent(:destroy) }
     it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
     it { is_expected.to validate_uniqueness_of(:github_username).allow_nil }
     it { is_expected.to validate_uniqueness_of(:twitter_username).allow_nil }
@@ -354,7 +355,17 @@ RSpec.describe User, type: :model do
       user.config_theme = "goobledigook"
       expect(user).not_to be_valid
     end
-  end
+
+    it "accepts valid navbar" do
+      user.config_navbar = "static"
+      expect(user).to be_valid
+    end
+
+    it "does not accept invalid navbar" do
+      user.config_navbar = "not valid navbar input"
+      expect(user).not_to be_valid
+    end
+end
 
   ## Registration
   describe "user registration" do
@@ -430,7 +441,7 @@ RSpec.describe User, type: :model do
 
       it "estimates default language to be nil" do
         perform_enqueued_jobs do
-          user.estimate_default_language!
+          user.estimate_default_language
         end
         expect(user.reload.estimated_default_language).to eq(nil)
       end
@@ -438,7 +449,7 @@ RSpec.describe User, type: :model do
       it "estimates default language to be japan with jp email" do
         perform_enqueued_jobs do
           user.update_column(:email, "ben@hello.jp")
-          user.estimate_default_language!
+          user.estimate_default_language
         end
         expect(user.reload.estimated_default_language).to eq("ja")
       end
@@ -446,7 +457,7 @@ RSpec.describe User, type: :model do
       it "estimates default language based on ID dump" do
         perform_enqueued_jobs do
           new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-          new_user.estimate_default_language!
+          new_user.estimate_default_language
           expect(user.reload.estimated_default_language).to eq(nil)
         end
       end
@@ -454,7 +465,7 @@ RSpec.describe User, type: :model do
       it "returns proper preferred_languages_array" do
         perform_enqueued_jobs do
           user.update_column(:email, "ben@hello.jp")
-          user.estimate_default_language!
+          user.estimate_default_language
         end
         expect(user.reload.preferred_languages_array).to include("ja")
       end
@@ -479,6 +490,24 @@ RSpec.describe User, type: :model do
     user.follow(user2)
     user.follow(user3)
     expect(user.all_follows.size).to eq(2)
+  end
+
+  describe "#moderator_for_tags" do
+    let(:tag1)  { create(:tag) }
+    let(:tag2)  { create(:tag) }
+    let(:tag3)  { create(:tag) }
+
+    it "lists tags user moderates" do
+      user.add_role(:tag_moderator, tag1)
+      user.add_role(:tag_moderator, tag2)
+      expect(user.moderator_for_tags).to include(tag1.name)
+      expect(user.moderator_for_tags).to include(tag2.name)
+      expect(user.moderator_for_tags).not_to include(tag3.name)
+    end
+
+    it "returns empty array if no tags moderated" do
+      expect(user.moderator_for_tags).to eq([])
+    end
   end
 
   describe "#followed_articles" do
@@ -534,36 +563,57 @@ RSpec.describe User, type: :model do
   end
 
   it "creates proper body class with defaults" do
-    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?}")
+    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+  end
+
+  it "determines dark theme if night theme" do
+    user.config_theme = "night_theme"
+    expect(user.decorate.dark_theme?).to eq(true)
+  end
+
+  it "determines dark theme if ten x hacker" do
+    user.config_theme = "ten_x_hacker_theme"
+    expect(user.decorate.dark_theme?).to eq(true)
+  end
+
+  it "determines not dark theme if not one of the dark themes" do
+    user.config_theme = "default"
+    expect(user.decorate.dark_theme?).to eq(false)
   end
 
   it "creates proper body class with sans serif config" do
     user.config_font = "sans_serif"
-    expect(user.decorate.config_body_class).to eq("default sans-serif-article-body pro-status-#{user.pro?}")
+    expect(user.decorate.config_body_class).to eq("default sans-serif-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
   end
 
   it "creates proper body class with night theme" do
     user.config_theme = "night_theme"
-    expect(user.decorate.config_body_class).to eq("night-theme default-article-body pro-status-#{user.pro?}")
+    expect(user.decorate.config_body_class).to eq("night-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
   end
 
   it "creates proper body class with pink theme" do
     user.config_theme = "pink_theme"
-    expect(user.decorate.config_body_class).to eq("pink-theme default-article-body pro-status-#{user.pro?}")
+    expect(user.decorate.config_body_class).to eq("pink-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
   end
 
   it "creates proper body class with minimal light theme" do
     user.config_theme = "minimal_light_theme"
-    expect(user.decorate.config_body_class).to eq("minimal-light-theme default-article-body pro-status-#{user.pro?}")
+    expect(user.decorate.config_body_class).to eq("minimal-light-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
   end
 
   it "creates proper body class with pro user" do
     user.add_role(:pro)
-    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?}")
+    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
   end
 
-  it "inserts into mailchimp" do
-    expect(user.subscribe_to_mailchimp_newsletter_without_delay).to eq true
+  it "creates proper body class with trusted user" do
+    user.add_role(:trusted)
+    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+  end
+
+  it "creates proper body class with trusted user" do
+    user.config_navbar = "static"
+    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
   end
 
   it "does not allow to change to username that is taken" do
@@ -651,13 +701,28 @@ RSpec.describe User, type: :model do
   end
 
   describe "#pro?" do
+    let(:user) { create(:user) }
+
     it "returns false if the user is not a pro" do
       expect(user.pro?).to be(false)
     end
 
-    it "returns true if the user is a pro" do
+    it "returns true if the user has the pro role" do
       user.add_role(:pro)
       expect(user.pro?).to be(true)
+    end
+
+    it "returns true if the user has an active pro membership" do
+      create(:pro_membership, user: user)
+      expect(user.pro?).to be(true)
+    end
+
+    it "returns false if the user has an expired pro membership" do
+      Timecop.freeze(Time.current) do
+        membership = create(:pro_membership, user: user)
+        membership.expire!
+        expect(user.pro?).to be(false)
+      end
     end
   end
 
@@ -668,6 +733,32 @@ RSpec.describe User, type: :model do
 
     it "doesn't schedule a job on destroy" do
       expect { user.destroy }.not_to have_enqueued_job.on_queue("algoliasearch")
+    end
+  end
+
+  describe "#has_enough_credits?" do
+    it "returns false if the user has less unspent credits than neeed" do
+      expect(user.has_enough_credits?(1)).to be(false)
+    end
+
+    it "returns true if the user has the exact amount of unspent credits" do
+      create(:credit, user: user, spent: false)
+      expect(user.has_enough_credits?(1)).to be(true)
+    end
+
+    it "returns true if the user has more unspent credits than needed" do
+      create_list(:credit, 2, user: user, spent: false)
+      expect(user.has_enough_credits?(1)).to be(true)
+    end
+  end
+
+  describe "#subscribe_to_mailchimp_newsletter" do
+    let(:user2) { create :user }
+
+    it "schedules the job" do
+      expect do
+        user2.subscribe_to_mailchimp_newsletter
+      end.to have_enqueued_job(Users::SubscribeToMailchimpNewsletterJob).exactly(:once).with(user2.id)
     end
   end
 end

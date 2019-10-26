@@ -3,6 +3,8 @@ require "uri"
 class GlitchTag < LiquidTagBase
   attr_accessor :uri
   PARTIAL = "liquids/glitch".freeze
+  ID_REGEXP = /\A[a-zA-Z0-9\-]{1,110}\z/.freeze
+  OPTION_REGEXP = /(app|code|no-files|preview-first|no-attribution|file\=\w(\.\w)?)/.freeze
 
   def initialize(tag_name, id, tokens)
     super
@@ -23,7 +25,7 @@ class GlitchTag < LiquidTagBase
   private
 
   def valid_id?(input)
-    (input =~ /^[a-zA-Z0-9\-]{1,110}$/)&.zero?
+    (input =~ ID_REGEXP)&.zero?
   end
 
   def parse_id(input)
@@ -34,7 +36,7 @@ class GlitchTag < LiquidTagBase
   end
 
   def valid_option(option)
-    option.match(/(app|code|no-files|preview-first|no-attribution|file\=\w(\.\w)?)/)
+    option.match(OPTION_REGEXP)
   end
 
   def option_to_query_pair(option)

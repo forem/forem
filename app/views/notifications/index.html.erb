@@ -64,16 +64,18 @@
       <% end %>
 
       <%= render "notifications_list", params: params %>
-
-      <%# not using "any?"" here because "notifications_list" already asks for ".size", a little optimization :) %>
-      <% if @notifications.size > 7 %>
-        <div class="load-more-wrapper">
-          <button id="load-more-button" type="button">
-            Load More
-          </button>
-        </div>
-      <% end %>
     </div>
+
+    <%# new or less active users that don't have a page worth of notifications
+        won't be shown the "load more" button %>
+    <% if @notifications.size >= @initial_page_size %>
+      <div class="load-more-wrapper">
+        <button id="load-more-button" type="button">
+          Load More
+        </button>
+      </div>
+    <% end %>
+
     <div class="side-bar sidebar-additional"></div>
   </div>
   <%= render "articles/fitvids" %>

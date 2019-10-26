@@ -5,14 +5,18 @@ class MediumArticleRetrievalService
     @url = url
   end
 
+  def self.call(*args)
+    new(*args).call
+  end
+
   def call
     html = HTTParty.get(url)
     page = Nokogiri::HTML(html)
 
-    title = page.css("h1").first.content
-    author_image = page.css("img.avatar-image").first.attributes["src"].value
-    reading_time = page.css("span.readingTime").first.values.last
-    author = page.css("a[data-user-id]")[1].content
+    title = page.at("meta[name='title']")["content"]
+    reading_time = page.at("meta[name='twitter:data1']")["value"]
+    author = page.at("meta[name='author']")["content"]
+    author_image = page.at("img[alt='#{author}']")["src"]
 
     {
       title: title,

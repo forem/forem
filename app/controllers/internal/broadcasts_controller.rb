@@ -31,4 +31,8 @@ class Internal::BroadcastsController < Internal::ApplicationController
     # left out body_markdown and processed_html attributes
     #   until we decide we're using them
   end
+
+  def authorize_admin
+    authorize Broadcast, :access?, policy_class: InternalPolicy
+  end
 end

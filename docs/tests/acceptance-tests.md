@@ -4,7 +4,7 @@ title: Acceptance Tests
 
 # Acceptance Tests
 
-Acceptance tests are tests from the perspective of the end user.
+Acceptance tests are tests from the perspective of the end-user.
 
 It means that we are simulating what a user could do from their web browser
 and testing the expected behavior of the app.
@@ -29,6 +29,6 @@ To run a specific test case you can use for example:
 bundle exec rspec spec/system/user_views_a_reading_list_spec.rb:10
 ```
 
-where `10` is the line number of the test case you want to execute.
+where `10` is the line number of the test case that you want to execute.
 
 You can read the official guide [Testing Rails Applications](https://guides.rubyonrails.org/testing.html#system-testing) to learn more.

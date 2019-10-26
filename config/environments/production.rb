@@ -126,4 +126,4 @@ Rails.application.configure do
                         "practicaldev.herokuapp.com" => "dev.to"
 end
 
-Rails.application.routes.default_url_options = { host: Rails.application.config.app_domain }
+Rails.application.routes.default_url_options = { host: Rails.application.config.app_domain, protocol: :https }

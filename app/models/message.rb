@@ -37,7 +37,8 @@ class Message < ApplicationRecord
     chat_channel.touch(:last_message_at)
     chat_channel.index!
     chat_channel.chat_channel_memberships.reindex!
-    chat_channel.delay.index!
+
+    ChatChannels::IndexJob.perform_later(chat_channel_id: chat_channel.id)
   end
 
   def update_all_has_unopened_messages_statuses
@@ -76,6 +77,7 @@ class Message < ApplicationRecord
     return if channel.open?
 
     errors.add(:base, "You are not a participant of this chat channel.") unless channel.has_member?(user)
+    errors.add(:base, "Something went wrong") if channel.status == "blocked"
   end
 
   def rich_link_article(link)

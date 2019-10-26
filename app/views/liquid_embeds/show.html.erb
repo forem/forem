@@ -3,7 +3,9 @@
 <% end %>
 <% begin %>
   <% @liquid_node = Liquid::Template.parse("{% #{params[:embeddable]} #{params[:args]} %}").root.nodelist.first %>
-  <%= @liquid_node.render("argument") %>
+  <%= @liquid_node.render({}) %>
 <% rescue %>
   <% raise ActionController::RoutingError, "Not Found" %>
 <% end %>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/4.1.1/iframeResizer.contentWindow.min.js" integrity="sha384-G6tHzK74z1pvDJPpiekQQg/Ad3+gDzJkLvIheIjfKjYVFG7Wpsot40rOJkXT92B2" crossorigin="anonymous" defer="defer"></script>

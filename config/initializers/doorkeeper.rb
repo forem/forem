@@ -163,7 +163,7 @@ Doorkeeper.configure do
   # For more information go to
   # https://github.com/doorkeeper-gem/doorkeeper/wiki/Using-Scopes
   #
-  # default_scopes  :public
+  default_scopes :public, :read_articles
   # optional_scopes :write, :update
 
   # Define scopes_by_grant_type to restrict only certain scopes for grant_type
@@ -331,3 +331,4 @@ end
 
 Doorkeeper::AccessGrant.belongs_to :resource_owner, class_name: "User"
 Doorkeeper::AccessToken.belongs_to :resource_owner, class_name: "User"
+Doorkeeper::Application.has_many :webhook_endpoints, class_name: "Webhook::Endpoint", inverse_of: :oauth_application

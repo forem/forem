@@ -7,7 +7,7 @@
 <br>
 <p align="center">
   <a href="https://www.ruby-lang.org/en/">
-    <img src="https://img.shields.io/badge/Ruby-v2.6.3-green.svg" alt="ruby version">
+    <img src="https://img.shields.io/badge/Ruby-v2.6.5-green.svg" alt="ruby version">
   </a>
   <a href="http://rubyonrails.org/">
     <img src="https://img.shields.io/badge/Rails-v5.2.3-brightgreen.svg" alt="rails version">
@@ -41,9 +41,6 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
 - [Contributing](#contributing)
 - [Codebase](#codebase)
   - [The stack](#the-stack)
-  - [Engineering standards](#engineering-standards)
-    - [Style guide](#style-guide)
-    - [Husky hooks](#husky-hooks)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Standard Installation](#standard-installation)
@@ -100,6 +97,10 @@ This section provides a high-level requirement & quick start guide. **For detail
 
 [View Full Installation Documentation](https://docs.dev.to/installation/)
 
+#### Docker Installation (BETA)
+
+Please refer to the [Installing DEV with Docker [Beta] guide](https://docs.dev.to/installation/docker/).
+
 #### Starting the application
 
 We're mostly a Rails app, with a bit of Webpack sprinkled in. **For most cases, simply running `bin/rails server` will do.** If you're working with Webpack though, you'll need to run the following:
@@ -137,8 +138,9 @@ Caveat: `bin/rspec` is not equipped with Spring because it affects Simplecov's r
 - [@maestromac](https://dev.to/maestromac)
 - [@zhao-andy](https://dev.to/andy)
 - [@lightalloy](https://dev.to/lightalloy)
-- [@mariocsee](https://dev.to/mariocsee)
 - [@rhymes](https://dev.to/rhymes)
+- [@jacobherrington](https://dev.to/jacobherrington)
+- [@mstruve](https://dev.to/molly_struve)
 
 ## Vulnerability disclosure
 

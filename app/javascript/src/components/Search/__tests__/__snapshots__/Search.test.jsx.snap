@@ -22,7 +22,7 @@ exports[`<Search /> renders properly 1`] = `
       id="nav-search"
       name="q"
       onKeyDown={[Function]}
-      placeholder="search"
+      placeholder="Search (Press '/' to focus)"
       type="text"
       value=""
     />

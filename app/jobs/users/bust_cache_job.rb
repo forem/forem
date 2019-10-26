@@ -4,8 +4,9 @@ module Users
 
     def perform(user_id, cache_buster = CacheBuster.new)
       user = User.find_by(id: user_id)
+      return unless user
 
-      cache_buster.bust_user(user) if user
+      cache_buster.bust_user(user)
     end
   end
 end

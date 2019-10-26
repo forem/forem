@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import render from 'preact-render-to-json';
-import { SearchForm } from '../Search';
+import { SearchForm } from '../SearchForm';
 
 describe('<SearchForm />', () => {
   it('renders properly when given search functions and a search term', () => {

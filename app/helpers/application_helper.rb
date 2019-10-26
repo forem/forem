@@ -37,7 +37,7 @@ module ApplicationHelper
       classified_listings
       credits
       partnerships
-      pro_accounts
+      pro_memberships
     ].include?(controller_name)
   end
 
@@ -121,7 +121,7 @@ module ApplicationHelper
   end
 
   def beautified_url(url)
-    url.sub(/^((http[s]?|ftp):\/)?\//, "").sub(/\?.*/, "").chomp("/")
+    url.sub(/\A((http[s]?|ftp):\/)?\//, "").sub(/\?.*/, "").chomp("/")
   rescue StandardError
     url
   end
@@ -144,7 +144,7 @@ module ApplicationHelper
     tag :button, # Yikes
         class: "cta follow-action-button",
         data: {
-          info: { id: followable.id, className: followable.class.name, style: style }.to_json,
+          :info => { id: followable.id, className: followable.class.name, style: style }.to_json,
           "follow-action-button" => true
         }
   end

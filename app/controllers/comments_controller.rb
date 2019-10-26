@@ -35,11 +35,8 @@ class CommentsController < ApplicationController
 
   # GET /comments/1
   # GET /comments/1.json
-  # def show
-  #   @comment = Comment.find_by_id_code(params[:id_code])
-  # end
-
   # GET /comments/1/edit
+
   def edit
     @comment = Comment.find(params[:id_code].to_i(26))
     authorize @comment
@@ -50,11 +47,12 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    authorize Comment
     raise if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
 
     @comment = Comment.new(permitted_attributes(Comment))
     @comment.user_id = current_user.id
+
+    authorize @comment
 
     if @comment.save
       current_user.update(checked_code_of_conduct: true) if params[:checked_code_of_conduct].present? && !current_user.checked_code_of_conduct

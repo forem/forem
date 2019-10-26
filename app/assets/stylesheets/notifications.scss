@@ -305,9 +305,9 @@
           }
         }
         .reply-sent-notice {
+          @include themeable(background, theme-container-background, $light-green);
           text-align: center;
           padding: 10px 0px;
-          background: $light-green;
           a {
             display: inline-block;
             background: $green;
@@ -410,5 +410,9 @@
 
   .load-more-wrapper {
     @include load-more;
+
+    button {
+      margin-top: 0;
+    }
   }
 }

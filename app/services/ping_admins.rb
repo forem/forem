@@ -9,7 +9,7 @@ class PingAdmins
   end
 
   def call
-    return unless user && Rails.env.production?
+    return unless user
 
     SlackBot.ping(
       "Rate limit exceeded (#{action}). https://dev.to#{user.path}",

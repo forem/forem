@@ -2,15 +2,15 @@
 title: Algolia
 ---
 
-# Algolia for Search
+## Algolia for Search
 
-Algolia is a third party service which powers the search. When working with the API it is very likely that you will need to utilize Algolia. You will need to sign up for a free-tier account, retrieve the keys and provide those keys to the Rails application.
+Algolia is a third party service that powers the search. When working with the API, you will likely need to utilize Algolia. You will need to sign up for a free-tier account, retrieve the keys, and provide those keys to the Rails application.
 
 ## Sign up
 
 1. Go to the Algolia sign up [page](https://www.algolia.com/apps/AJVD3Q9KL3/dashboard).
 
-2. Choose one of the three methods of signing up: email, github or google.
+2. Choose one of the three methods of signing up: email, GitHub, or Google.
 
 3. Fill in your information.
 
@@ -28,9 +28,9 @@ Algolia is a third party service which powers the search. When working with the 
 
    ![algolia-up-4](https://user-images.githubusercontent.com/22895284/51078747-ad602c00-16ba-11e9-8654-67c4d0f2e651.png)
 
-7. You can skip the tutorial, we will guide you through the process. Accept the [Terms and Conditions](https://www.algolia.com/policies/terms).
+7. You can skip the tutorial, by clicking on API button.
 
-   ![algolia-up-5](https://user-images.githubusercontent.com/22895284/51078748-ad602c00-16ba-11e9-8ff6-6becac2152ac.png)
+   ![algolia-up-5](https://user-images.githubusercontent.com/51912296/63767468-5f1b3880-c8eb-11e9-88c3-7b14774b684d.png)
 
 8. All good! You can get your API keys now.
 

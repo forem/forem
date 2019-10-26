@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import Navigation from './Navigation';
+import SlideContent from './SlideContent';
 import { getContentOfToken } from '../utilities';
 
 class IntroSlide extends Component {
@@ -29,52 +30,65 @@ class IntroSlide extends Component {
     next();
   }
 
-  render() {
-    const { prev, variant } = this.props;
-    let onboardingBody = (
+  selectVariant(variantId) {
+    this.defaultVariant = (
       <div>
         <p>
-          DEV is where programmers share ideas and help each other grow. 🤓
+          DEV is where programmers share ideas and help each other grow.
+          <span role="img" aria-label="Nerd Face">
+            🤓
+          </span>
         </p>
         <p>
-          Ask questions, leave helpful comments, encourage others, and have fun! 🙌
+          Ask questions, leave helpful comments, encourage others, and have fun!
+          <span role="img" aria-label="Raising Hands">
+            🙌
+          </span>
         </p>
         <p>
-          A few <strong>quick questions</strong> for you before you get started...
+          A few 
+          {' '}
+          <strong>quick questions</strong>
+          {' '}
+          for you before you get started...
         </p>
       </div>
-    )
+    );
+    const variants = [
+      <SlideContent
+        imageSource="https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif"
+        imageAlt="hello cat"
+      />,
+      <SlideContent
+        imageSource="https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif"
+        imageAlt="hello cat"
+        content={<p>We have a few quick questions to fill out your profile</p>}
+      />,
+      <SlideContent
+        imageSource="https://media.giphy.com/media/aWRWTF27ilPzy/giphy.gif"
+        imageAlt="hello"
+        content={(
+          <p>
+            The more you get involved in community, the better developer you
+            will be.
+          </p>
+        )}
+        style={{ textAlign: 'center', fontSize: '0.9em' }}
+      />,
+      <SlideContent
+        imageSource="https://media.giphy.com/media/aWRWTF27ilPzy/giphy.gif"
+        imageAlt="hello"
+        content={<p>You just made a great choice for your dev career.</p>}
+        style={{ textAlign: 'center', fontSize: '1.1em' }}
+      />,
+    ];
+    return variants[variantId - 1] || this.defaultVariant;
+  }
 
-    if (variant === '1') {
-      onboardingBody = <div style={{textAlign: 'center'}}>
-          <img src='https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif' alt='hello cat' style={{borderRadius: '8px', height: '220px'}} />
-          <br/><strong><em>Let's get started...</em></strong>
-        </div>
-    } else if ( variant === '2') {
-      onboardingBody = <div style={{textAlign: 'center'}}>
-        <img src='https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif' alt='hello cat' style={{borderRadius: '8px', height: '140px'}} />
-        <p>We have a few quick questions to fill out your profile</p>
-        <p>
-          <strong><em>Let's get started...</em></strong>
-        </p>
-      </div>
-    } else if ( variant === '3') {
-      onboardingBody = <div style={{textAlign: 'center', fontSize: '0.9em'}}>
-        <img src='https://media.giphy.com/media/aWRWTF27ilPzy/giphy.gif' alt='hello' style={{borderRadius: '8px', height: '140px'}} />
-        <p>The more you get involved in community, the better developer you will be.</p>
-        <p>
-          <strong><em>Let's get started...</em></strong>
-        </p>
-      </div>
-    } else if ( variant === '4') {
-      onboardingBody = <div style={{textAlign: 'center', fontSize: '1.1em'}}>
-        <img src='https://media.giphy.com/media/aWRWTF27ilPzy/giphy.gif' alt='hello' style={{borderRadius: '8px', height: '140px'}} />
-        <p>You just made a great choice for your dev career.</p>
-        <p>
-          <strong><em>Let's get started...</em></strong>
-        </p>
-      </div>
-    }
+  render() {
+    const { prev, variant } = this.props;
+    const onboardingBody = this.selectVariant(variant);
+
     return (
       <div className="onboarding-main">
         <div className="onboarding-content">
@@ -94,10 +108,6 @@ class IntroSlide extends Component {
     );
   }
 }
-
-// const IntroSlide = ({ prev, next }) => (
-
-// );
 
 IntroSlide.propTypes = {
   prev: PropTypes.func.isRequired,

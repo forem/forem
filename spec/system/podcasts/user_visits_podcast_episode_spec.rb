@@ -8,6 +8,7 @@ RSpec.describe "User visits podcast show page", type: :system do
     visit podcast_episode.path.to_s
     expect(page).to have_text(podcast_episode.title)
     expect(page).to have_css ".record"
+    expect(page).not_to have_css ".published-at"
   end
 
   it "see the new comment box on the page" do
@@ -35,6 +36,15 @@ RSpec.describe "User visits podcast show page", type: :system do
       expect(page).not_to have_text("Random status notice")
       expect(page).not_to have_text(I18n.t("podcasts.statuses.unplayable"))
       expect(page).not_to have_text("Click here to download")
+    end
+  end
+
+  context "when podcast has publish_at field" do
+    let!(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id, published_at: 7.hours.ago) }
+
+    it "sees published at" do
+      visit podcast_episode.path.to_s
+      expect(page).to have_css ".published-at"
     end
   end
 

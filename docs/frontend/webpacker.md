@@ -6,11 +6,11 @@ title: Webpacker
 
 DEV has two Javascript codebases.
 
-One contains plain Javascript and you can read about [in its own guide](/frontend/plain-js).
+One contains plain Javascript, you can read about it [in its own guide](/frontend/plain-js).
 
-The other one is managed by [Webpacker](https://github.com/rails/webpacker) and it's located inside `/app/javascripts`, written using ES6+.
+The other one is managed by [Webpacker](https://github.com/rails/webpacker), and it's located inside `/app/javascripts`, written using ES6+.
 
-Currently it's mainly used for Preact components, served via `webpack` which is integrated into the Rails app using `Webpacker`.
+Currently, it's mainly used for Preact components, served via `webpack` which is integrated into the Rails app using `Webpacker`.
 
 There is a packs directory `/app/javascript/packs` where you can create
 new "pack" files. Pack files are initializers for Webpacker.

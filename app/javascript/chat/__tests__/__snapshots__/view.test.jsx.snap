@@ -28,8 +28,8 @@ preact-render-spy (1 nodes)
   <div class="container">
     <button
       class="chatNonChatView_exitbutton"
-      data-content="exit"
       onClick={[Function onViewExitFake]}
+      data-content="exit"
     >
       ×
     </button>

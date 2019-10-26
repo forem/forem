@@ -79,7 +79,7 @@ class MarkdownParser
 
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
-    allowed_tags = %w[strong abbr aside em p h1 h2 h3 h4 h5 h6 i u b code pre
+    allowed_tags = %w[strong abbr aside em p h4 h5 h6 i u b code pre
                       br ul ol li small sup sub a span hr blockquote kbd]
     allowed_attributes = %w[href strong em ref rel src title alt class]
     ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
@@ -203,16 +203,24 @@ class MarkdownParser
 
   def wrap_mentions_with_links!(html)
     html_doc = Nokogiri::HTML(html)
-    html_doc.xpath("//body/*[not (@class='highlight')]").each do |el|
-      el.children.each do |child|
-        if child.text?
-          new_child = child.text.gsub(/\B@[a-z0-9_-]+/i) do |text|
-            user_link_if_exists(text)
-          end
-          child.replace(new_child) if new_child != child.text
-        end
+
+    # looks for nodes that isn't <code>, <a>, and contains "@"
+    targets = html_doc.xpath('//html/body/*[not (self::code) and not(self::a) and contains(., "@")]').to_a
+
+    # A Queue system to look for and replace possible usernames
+    until targets.empty?
+      node = targets.shift
+
+      # only focus on portion of text with "@"
+      node.xpath("text()[contains(.,'@')]").each do |el|
+        el.replace(el.text.gsub(/\B@[a-z0-9_-]+/i) { |text| user_link_if_exists(text) })
       end
+
+      # enqueue children that has @ in it's text
+      children = node.xpath('*[not(self::code) and not(self::a) and contains(., "@")]').to_a
+      targets.concat(children)
     end
+
     if html_doc.at_css("body")
       html_doc.at_css("body").inner_html
     else

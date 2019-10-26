@@ -11,49 +11,73 @@ function blockChat(activeChannelId) {
   getCsrfToken().then(sendFetch('block-chat', formData));
 }
 
+const setUpButton = ({ modalId = '', otherModalId = '', btnName = '' }) => {
+  return (
+    <button
+      onClick={() => {
+        const modal = document.getElementById(`${modalId}`);
+        const otherModal = document.getElementById(
+          `${otherModalId}`,
+        );
+        otherModal.style.display = 'none';
+        if (modal.style.display === 'none') {
+          modal.style.display = 'block';
+          window.location.href = `#${modalId}`;
+        } else {
+          modal.style.display = 'none';
+          window.location.href = `#`;
+        }
+      }}
+    >
+      {btnName}
+    </button>
+  );
+}
+
+const userDetailsConfig = {
+  twitter_username: {
+    hostUrl: 'https://twitter.com/',
+    srcImage: twitterImage,
+    imageAltText: 'twitter logo'
+  },
+  github_username: {
+    hostUrl: 'https://github.com/',
+    srcImage: githubImage,
+    imageAltText: 'github logo'
+  },
+  website_url: {
+    className: 'external-link-img',
+    hostUrl: '',
+    srcImage: websiteImage,
+    imageAltText: 'external link icon'
+  }
+}
+
 export default class UserDetails extends Component {
   render() {
     const { user } = this.props;
     const channelId = this.props.activeChannelId;
     const channel = this.props.activeChannel || {};
     const socialIcons = [];
-    if (user.twitter_username) {
-      socialIcons.push(
-        <a
-          href={`https://twitter.com/${user.twitter_username}`}
-          target="_blank"
-        >
-          <img
-            src={twitterImage}
-            style={{ width: '30px', margin: '5px 15px 15px 0px' }}
-            alt="twitter logo"
-          />
-        </a>,
-      );
-    }
-    if (user.github_username) {
-      socialIcons.push(
-        <a href={`https://github.com/${user.github_username}`} target="_blank">
-          <img
-            src={githubImage}
-            style={{ width: '30px', margin: '5px 15px 15px 0px' }}
-            alt="github logo"
-          />
-        </a>,
-      );
-    }
-    if (user.website_url) {
-      socialIcons.push(
-        <a href={user.website_url} target="_blank">
-          <img
-            className="external-link-img"
-            src={websiteImage}
-            style={{ width: '30px', margin: '5px 15px 15px 0px' }}
-            alt="external link icon"
-          />
-        </a>,
-      );
-    }
+    const userMeta = ['twitter_username', 'github_username', 'website_url'];
+    userMeta.forEach((metaProp) => {
+      if (user[metaProp]) {
+        let { className, hostUrl, srcImage, imageAltText } = userDetailsConfig[metaProp];
+        socialIcons.push(
+          <a
+            href={`${hostUrl}${user[metaProp]}`}
+            target="_blank"
+          >
+            <img
+              className={className}
+              src={srcImage}
+              style={{ width: '30px', margin: '5px 15px 15px 0px' }}
+              alt={imageAltText}
+            />
+          </a>,
+        );
+      }
+    });
     let userLocation = '';
     if (user.location && user.location.length > 0) {
       userLocation = (
@@ -65,26 +89,11 @@ export default class UserDetails extends Component {
     }
     let blockButton = '';
     if (channel.channel_type === 'direct' && window.currentUser.id != user.id) {
-      blockButton = (
-        <button
-          onClick={() => {
-            const modal = document.getElementById('userdetails__blockmsg');
-            const otherModal = document.getElementById(
-              'userdetails__reportabuse',
-            );
-            otherModal.style.display = 'none';
-            if (modal.style.display === 'none') {
-              modal.style.display = 'block';
-              window.location.href = `#userdetails__blockmsg`;
-            } else {
-              modal.style.display = 'none';
-              window.location.href = `#`;
-            }
-          }}
-        >
-          Block User
-        </button>
-      );
+      blockButton = setUpButton({ 
+          modalId: 'userdetails__blockmsg',
+          otherModalId: 'userdetails__reportabuse',
+          btnName: 'Block User'
+      });
     }
     return (
       <div>
@@ -115,24 +124,13 @@ export default class UserDetails extends Component {
         </div>
         <div className="userdetails__blockreport">
           {blockButton}
-          <button
-            onClick={() => {
-              const modal = document.getElementById('userdetails__reportabuse');
-              const otherModal = document.getElementById(
-                'userdetails__blockmsg',
-              );
-              otherModal.style.display = 'none';
-              if (modal.style.display === 'none') {
-                modal.style.display = 'block';
-                window.location.href = `#userdetails__reportabuse`;
-              } else {
-                modal.style.display = 'none';
-                window.location.href = `#`;
-              }
-            }}
-          >
-            Report Abuse
-          </button>
+          {
+            setUpButton({
+              modalId: 'userdetails__reportabuse',
+              otherModalId: 'userdetails__blockmsg',
+              btnName: 'Report Abuse'
+            })
+          }
         </div>
         <div id="userdetails__reportabuse" style="display:none">
           <div className="userdetails__reportabuse">

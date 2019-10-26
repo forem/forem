@@ -2,6 +2,7 @@ module Api
   module V0
     class UsersController < ApiController
       before_action :authenticate!, only: %i[me]
+      before_action -> { doorkeeper_authorize! :public }, only: :me, if: -> { doorkeeper_token }
 
       def index
         if !user_signed_in? || less_than_one_day_old?(current_user)

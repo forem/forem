@@ -6,7 +6,7 @@ cache:
     - node_modules
     - $HOME/.nvm
 rvm:
-  - 2.6.3
+  - 2.6.5
 addons:
   postgresql: '9.6'
   chrome: 'stable'
@@ -48,8 +48,8 @@ deploy:
   api_key: '$HEROKU_AUTH_TOKEN'
   app:
     master: practicaldev
-  run:
-    - rails db:migrate
+  on:
+    condition: commit_message =~ /\[\s?deploy\s?\]/
 after_deploy:
   - bash after_deploy.sh
 notifications:

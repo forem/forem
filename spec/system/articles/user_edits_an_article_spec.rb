@@ -9,7 +9,7 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
     sign_in user
   end
 
-  it "user clicks the edit button" do
+  xit "user clicks the edit button" do
     link = "/#{user.username}/#{article.slug}"
     visit link
     click_on("EDIT")

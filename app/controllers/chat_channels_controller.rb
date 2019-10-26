@@ -16,7 +16,9 @@ class ChatChannelsController < ApplicationController
     end
   end
 
-  def show; end
+  def show
+    @chat_messages = @chat_channel.messages.includes(:user).order("created_at DESC").limit(50)
+  end
 
   def create
     authorize ChatChannel
@@ -44,7 +46,7 @@ class ChatChannelsController < ApplicationController
       banned_user = User.find_by(username: command[1])
       if banned_user
         banned_user.add_role :banned
-        banned_user.messages.each(&:destroy!)
+        banned_user.messages.delete_all
         Pusher.trigger(@chat_channel.pusher_channels,
                        "user-banned",
                        { userId: banned_user.id }.to_json)
@@ -145,7 +147,6 @@ class ChatChannelsController < ApplicationController
       @active_channel = ChatChannel.find_by(slug: slug)
       @active_channel.current_user = current_user if @active_channel
     end
-    # @github_token = generate_github_token Not yet fully baked, not needed.
     generate_algolia_search_key
   end
 

@@ -60,7 +60,7 @@
       <%= Rails.application.assets["article-show.css"].to_s.html_safe %>
       <% end %>
     </style>
-  <% elsif view_class.include?("registrations") || @new_article_not_logged_in  %>
+  <% elsif view_class.include?("registrations") || @new_article_not_logged_in %>
     <style>
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
@@ -94,6 +94,11 @@
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["video-collection.css"].to_s.html_safe %>
       <%= Rails.application.assets["footer.css"].to_s.html_safe %>
+    </style>
+  <% elsif view_class.include? "badges-index" %>
+    <%= stylesheet_link_tag "minimal", media: "all" %>
+    <style>
+      <%= Rails.application.assets["badges.css"].to_s.html_safe %>
     </style>
   <% elsif core_pages? %>
     <%= stylesheet_link_tag "minimal", media: "all" %>

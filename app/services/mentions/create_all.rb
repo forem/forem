@@ -16,7 +16,9 @@ module Mentions
       mentions = []
       doc.css(".comment-mentioned-user").each do |link|
         username = link.text.delete("@").downcase
-        if (user = User.find_by(username: username))
+        user = User.find_by(username: username)
+
+        if user && user.id != notifiable.user_id
           usernames << username
           mentions << create_mention(user)
         end
@@ -30,7 +32,7 @@ module Mentions
     def delete_removed_mentions(usernames)
       users = User.where(username: usernames)
       mentions = @notifiable.mentions.where.not(user_id: users).destroy_all
-      Notification.remove_each(mentions) if mentions.present?
+      Notification.remove_all(notifiable_ids: mentions.pluck(:id), notifiable_type: "Mention") if mentions.present?
     end
 
     def create_mention(user)

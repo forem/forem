@@ -73,7 +73,6 @@ class RssReader
     article = Article.create!(
       feed_source_url: feed_source_url,
       user_id: user.id,
-      published_at: item.published,
       published_from_feed: true,
       show_comments: true,
       body_markdown: RssReader::Assembler.call(item, user, feed, feed_source_url),

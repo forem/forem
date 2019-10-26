@@ -64,6 +64,81 @@ RSpec.describe MarkdownParser do
     expect(generate_and_parse_markdown(code_span)).to include random_word
   end
 
+  context "when rendering links markdown" do
+    # the following specs are testing HTMLRouge
+    it "renders properly if protocol http is included" do
+      code_span = "[github](http://github.com)"
+      test = generate_and_parse_markdown(code_span)
+      expect(test).to eq("<p><a href=\"http://github.com\">github</a></p>\n\n")
+    end
+
+    it "renders properly if protocol https is included" do
+      code_span = "[github](https://github.com)"
+      test = generate_and_parse_markdown(code_span)
+      expect(test).to eq("<p><a href=\"https://github.com\">github</a></p>\n\n")
+    end
+
+    it "renders properly if protocol is not included" do
+      code_span = "[github](github.com)"
+      test = generate_and_parse_markdown(code_span)
+      expect(test).to eq("<p><a href=\"//github.com\">github</a></p>\n\n")
+    end
+
+    it "renders properly relative paths" do
+      code_span = "[career tag](/t/career)"
+      test = generate_and_parse_markdown(code_span)
+      app_protocol = ApplicationConfig["APP_PROTOCOL"]
+      app_domain = ApplicationConfig["APP_DOMAIN"]
+      expect(test).to eq("<p><a href=\"#{app_protocol}#{app_domain}/t/career\">career tag</a></p>\n\n")
+    end
+
+    it "renders properly anchored links" do
+      code_span = "[Chapter 1](#chapter-1)"
+      test = generate_and_parse_markdown(code_span)
+      expect(test).to eq("<p><a href=\"#chapter-1\">Chapter 1</a></p>\n\n")
+    end
+  end
+
+  describe "mentions" do
+    let(:user) { build_stubbed(:user) }
+
+    before { allow(User).to receive(:find_by).with(username: user.username).and_return(user) }
+
+    it "works normally" do
+      mention = "@#{user.username}"
+      result = generate_and_parse_markdown(mention)
+      expect(result).to include "<a"
+    end
+
+    it "works with undescore" do
+      mention = "what was found here _@#{user.username}_ let see"
+      result = generate_and_parse_markdown(mention)
+      expect(result).to include "<a", "<em"
+    end
+
+    it "works in ul/li tag" do
+      mention = <<~DOC
+        `@#{user.username}` one two, @#{user.username} three four:
+          - `@#{user.username}`
+      DOC
+      result = generate_and_parse_markdown(mention)
+      expect(result).to eq("<p><code>@#{user.username}</code> one two, <a class=\"comment-mentioned-user\" href=\"#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/#{user.username}\">@#{user.username}</a>\n three four:</p>\n\n<ul>\n<li><code>@#{user.username}</code></li>\n</ul>\n\n")
+    end
+
+    it "will not work in code tag" do
+      mention = "this is a chunk of text `@#{user.username}`"
+      result = generate_and_parse_markdown(mention)
+      expect(result).to include "<code"
+      expect(result).not_to include "<a"
+    end
+
+    it "works with markdown heavy contents" do
+      mention = "test **[link?](https://dev.to/ben/)** thread, @#{user.username} talks :"
+      result = generate_and_parse_markdown(mention)
+      expect(result).to include "<a class=\"comment-mentioned-user\""
+    end
+  end
+
   it "renders a double backtick codespan with a word wrapped in single backticks properly" do
     code_span = "`` `#{random_word}` ``"
     expect(generate_and_parse_markdown(code_span)).to include "`#{random_word}`"
@@ -205,6 +280,20 @@ RSpec.describe MarkdownParser do
     it "permits abbr and aside tags" do
       result = generate_and_parse_markdown("<aside><abbr title=\"ol korrect\">OK</abbr><aside>")
       expect(result).to include("<aside><abbr title=\"ol korrect\">OK</abbr><aside>")
+    end
+  end
+
+  context "when word as snake case" do
+    it "doesn't change word" do
+      code_block = "word_italic_"
+      expect(generate_and_parse_markdown(code_block)).to include("word_italic_")
+    end
+  end
+
+  context "when double underline" do
+    it "renders italic" do
+      code_block = "word__italic__"
+      expect(generate_and_parse_markdown(code_block)).to include("word_<em>italic</em>_")
     end
   end
 end

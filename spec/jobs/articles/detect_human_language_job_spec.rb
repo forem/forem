@@ -8,17 +8,13 @@ RSpec.describe Articles::DetectHumanLanguageJob, type: :job do
       detector = double
       allow(detector).to receive(:detect).and_return("en")
 
-      described_class.perform_now(article.id) do
-        expect(article.language).to be("en")
-      end
+      described_class.perform_now(article.id)
+      expect(article.language).to eql("en")
     end
 
-    it "does not update article language with detected language when no article is found" do
-      detector = double
-      allow(detector).to receive(:detect).and_return("en")
-
-      described_class.perform_now(9999) do
-        expect(article.language).not_to be("en")
+    context "without aritcle" do
+      it "does not error" do
+        expect { described_class.perform_now(nil) }.not_to raise_error
       end
     end
   end

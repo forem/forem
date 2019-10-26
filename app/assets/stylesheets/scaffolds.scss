@@ -42,6 +42,12 @@ body {
   }
 }
 
+@media print {
+   .top-bar, .article-actions {
+      display: none;
+   }
+}
+
 .config_minimize_newest_listings {
   #sidebar-listings-widget {
     .widget-body {
@@ -177,9 +183,17 @@ input[type='email'] {
   display: none !important;
 }
 
-body.night-theme {
-  .on-page-nav-butt img, .icon-img, .dropdown-icon, .reaction-button:not(.reacted) img, .image-upload-button button, .icon-image,
-  .dev-badge, .chatchannels__config img, .external-link-img, .group-img {
+body.night-theme, body.ten-x-hacker-theme {
+  .on-page-nav-butt img,
+  .icon-img,
+  .dropdown-icon,
+  .reaction-button:not(.reacted) img,
+  .image-upload-button button,
+  .icon-image,
+  .dev-badge,
+  .chatchannels__config img,
+  .external-link-img,
+  .group-img {
     -webkit-filter: invert(95%);
     filter: invert(95%);
   }
@@ -195,6 +209,8 @@ body.night-theme {
   }
 }
 
+// Alternate base fonts
+
 body.sans-serif-article-body {
   .body {
     font-family: $helvetica;
@@ -206,43 +222,63 @@ body.sans-serif-article-body {
 }
 body.comic-sans-article-body {
   .body {
-    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
   }
   .body p {
-    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
     font-size: 0.98em;
   }
 }
+body.monospace-article-body {
+  .body {
+    font-family: $monospace;
+  }
+  .body p {
+    font-family: $monospace;
+    font-size: 0.9em;
+  }
+}
 
-.pro-visible-block {
+body.static-navbar-config {
+  .top-bar {
+    position: relative !important;
+    margin-top: 20px !important;
+    margin-bottom: -66px !important;
+  }
+}
+
+.pro-visible-block,
+.trusted-visible-block {
   display: none !important;
 }
 
-body.pro-status-true .pro-visible-block {
-  display: block !important;;
+body.pro-status-true .pro-visible-block,
+body.trusted-status-true .trusted-visible-block {
+  display: block !important;
 }
 
-.delete-confirm{
-  padding:150px 10px;
-  min-height:300px;
-  h4{
-    background:$black;
-    padding:5px 8px;
-    color:white;
-    display:inline-block;
-    margin-bottom:0px;
+.delete-confirm.container {
+  padding: 150px 10px;
+  min-height: 300px;
+  text-align: center;
+  h4 {
+    background: $black;
+    padding: 5px 8px;
+    color: white;
+    display: inline-block;
+    margin-bottom: 0px;
   }
-  h2{
-    font-size:22px;
-    margin-bottom:40px;
+  h2 {
+    font-size: 22px;
+    margin-bottom: 40px;
   }
-  a.delete-link{
-    background:$red;
-    color:white;
-    padding:10px 15px;
-    &:hover{
-      color:white;
-      opacity:0.9;
+  a.delete-link {
+    background: $red;
+    color: white;
+    padding: 10px 15px;
+    &:hover {
+      color: white;
+      opacity: 0.9;
     }
   }
 }

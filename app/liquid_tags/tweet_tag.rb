@@ -1,6 +1,7 @@
 class TweetTag < LiquidTagBase
   include ActionView::Helpers::AssetTagHelper
   PARTIAL = "liquids/tweet".freeze
+  ID_REGEXP = /\A\d{10,20}\z/.freeze # id must be all numbers between 10 and 20 chars
 
   def initialize(tag_name, id, tokens)
     super
@@ -53,8 +54,7 @@ class TweetTag < LiquidTagBase
   end
 
   def valid_id?(id)
-    # id must be all numbers under 20 characters
-    /^\d{10,20}$/.match?(id)
+    ID_REGEXP.match?(id)
   end
 end
 
