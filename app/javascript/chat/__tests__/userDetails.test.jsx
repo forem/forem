@@ -1,9 +1,16 @@
 import { h } from 'preact';
 import render from 'preact-render-to-json';
+import { JSDOM } from 'jsdom';
 import { shallow } from 'preact-render-spy';
 import UserDetails from '../userDetails';
 
+const doc = new JSDOM('<!doctype html><html><body></body></html>');
+global.document = doc;
+global.window = doc.defaultView;
+global.window.currentUser = { id: '1' };
+
 const user1 = {
+  id: '1',
   username: 'bojackhorseman',
   name: 'Bojack Horseman',
   summary: 'I am the Bojack Horseman from Horsing Around and Secreteriat',
@@ -16,6 +23,7 @@ const user1 = {
 };
 
 const user2 = {
+  id: '2',
   username: 'mrpeanutbutter',
   name: 'Mr. Peanutbutter',
   summary: 'Woof Woof *smile*',

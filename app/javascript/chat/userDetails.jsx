@@ -60,9 +60,12 @@ export default class UserDetails extends Component {
     const userMeta = ['twitter_username', 'github_username', 'website_url'];
     userMeta.forEach(metaProp => {
       if (user[metaProp]) {
-        const { className, hostUrl, srcImage, imageAltText } = userDetailsConfig[
-          metaProp
-        ];
+        const {
+          className,
+          hostUrl,
+          srcImage,
+          imageAltText,
+        } = userDetailsConfig[metaProp];
         socialIcons.push(
           <a href={`${hostUrl}${user[metaProp]}`} target="_blank">
             <img
@@ -94,13 +97,13 @@ export default class UserDetails extends Component {
     }
 
     let reportButton = '';
-    if (window.currentUser.id !== user.id) {
-      reportButton = setUpButton({
-        modalId: 'userdetails__reportabuse',
-        otherModalId: 'userdetails__blockmsg',
-        btnName: 'Report Abuse',
-      });
-    }
+    // if (window.currentUser.id !== user.id) {
+    reportButton = setUpButton({
+      modalId: 'userdetails__reportabuse',
+      otherModalId: 'userdetails__blockmsg',
+      btnName: 'Report Abuse',
+    });
+    // }
     return (
       <div>
         <img
