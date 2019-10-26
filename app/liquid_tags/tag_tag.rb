@@ -1,6 +1,4 @@
 class TagTag < LiquidTagBase
-  include ApplicationHelper
-  include ActionView::Helpers::TagHelper
   PARTIAL = "tags/liquid".freeze
 
   def initialize(_tag_name, tag, _tokens)

@@ -1,4 +1,7 @@
 class LiquidTagBase < Liquid::Tag
+  include ApplicationHelper
+  include ActionView::Helpers::TagHelper
+
   def self.script
     ""
   end
