@@ -2,11 +2,13 @@
 
 ((g, factory) => {
   const global = g;
-  typeof exports === 'object' && typeof module !== 'undefined'
-    ? (module.exports = factory())
-    : typeof define === 'function' && define.amd
-    ? define(factory)
-    : (global.PullToRefresh = factory());
+  if (typeof exports === 'object' && typeof module !== 'undefined') {
+    module.exports = factory();
+  } else if (typeof window.define === 'function' && window.define.amd) {
+    window.define(factory);
+  } else {
+    global.PullToRefresh = factory();
+  }
 })(this, () => {
   function ptrMarkup() {
     return '\n<div class="__PREFIX__box">\n  <div class="__PREFIX__content">\n    <div class="__PREFIX__icon"></div>\n    <div class="__PREFIX__text"></div>\n  </div>\n</div>';
@@ -301,8 +303,10 @@
       el.ptrElement.classList.remove(el.classPrefix + 'release');
       el.ptrElement.classList.remove(el.classPrefix + 'pull');
 
-      shared.pullStartY = shared.pullMoveY = null;
-      shared.dist = shared.distResisted = 0;
+      shared.pullStartY = null;
+      shared.pullMoveY = null;
+      shared.dist = 0;
+      shared.distResisted = 0;
     }
 
     function onScroll() {
@@ -396,7 +400,7 @@
       });
     },
     init: function init(o) {
-      const options = o === void 0 ? {} : o;
+      const options = typeof o === 'undefined' ? {} : o;
 
       var handler = setupHandler(options);
 
