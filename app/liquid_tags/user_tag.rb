@@ -5,17 +5,6 @@ class UserTag < LiquidTagBase
     @user_colors = user_colors(@user)
   end
 
-  def render(_context)
-    ActionController::Base.new.render_to_string(
-      partial: partial_file,
-      locals: {
-        user: @user,
-        follow_button: @follow_button,
-        user_colors: @user_colors
-      },
-    )
-  end
-
   def parse_username_to_user(user)
     user = User.find_by(username: user)
     raise StandardError, "Invalid username" if user.nil?

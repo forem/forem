@@ -5,17 +5,6 @@ class OrganizationTag < LiquidTagBase
     @organization_colors = user_colors(@organization)
   end
 
-  def render(_context)
-    ActionController::Base.new.render_to_string(
-      partial: partial_file,
-      locals: {
-        organization: @organization,
-        follow_button: @follow_button,
-        organization_colors: @organization_colors
-      },
-    )
-  end
-
   def parse_slug_to_organization(organization)
     organization = Organization.find_by(slug: organization)
     raise StandardError, "Invalid organization slug" if organization.nil?
