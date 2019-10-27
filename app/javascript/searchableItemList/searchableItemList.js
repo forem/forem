@@ -48,6 +48,16 @@ export function toggleTag(event, tag) {
   component.search(query, { tags: newTags, statusView });
 }
 
+export function clearSelectedTags(event) {
+  event.preventDefault();
+
+  const component = this;
+  const { query, statusView } = component.state;
+  const newTags = [];
+  component.setState({ selectedTags: newTags, page: 0, items: [] });
+  component.search(query, { tags: newTags, statusView });
+}
+
 // Perform the initial search
 export function performInitialSearch({
   containerId,
