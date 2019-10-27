@@ -39,6 +39,7 @@ gem "email_validator", "~> 2.0" # Email validator for Rails and ActiveModel
 gem "emoji_regex", "~> 2.0" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
 gem "envied", "~> 0.9" # Ensure presence and type of your app's ENV-variables
 gem "fast_jsonapi", "~> 1.5" # Serializer for Ruby objects
+gem "fastimage", "~> 2.1" # Get image dimensions for remote/local images
 gem "fastly", "~> 1.15" # Client library for the Fastly acceleration system
 gem "fastly-rails", "~> 0.8" # Fastly dynamic caching integration for Rails
 gem "feedjira", "~> 3.0" # A feed fetching and parsing library
@@ -98,7 +99,6 @@ gem "ulid", "~> 1.1" # Universally Unique Lexicographically Sortable Identifier 
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "webpacker", "~> 3.5" # Use webpack to manage app-like JavaScript modules in Rails
 gem "webpush", "~> 1.0" # Encryption Utilities for Web Push payload
-gem "fastimage", "~> 2.1" # Get image dimensions for remote/local images
 
 group :development do
   gem "better_errors", "~> 2.5" # Provides a better error page for Rails and other Rack apps
