@@ -901,6 +901,7 @@ DEPENDENCIES
   factory_bot_rails (~> 4.11)
   faker (~> 2.6)
   fast_jsonapi (~> 1.5)
+  fastimage (~> 2.1)
   fastly (~> 1.15)
   fastly-rails (~> 0.8)
   feedjira (~> 3.0)

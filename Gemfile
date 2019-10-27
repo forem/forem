@@ -98,6 +98,7 @@ gem "ulid", "~> 1.1" # Universally Unique Lexicographically Sortable Identifier 
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "webpacker", "~> 3.5" # Use webpack to manage app-like JavaScript modules in Rails
 gem "webpush", "~> 1.0" # Encryption Utilities for Web Push payload
+gem "fastimage", "~> 2.1" # Get image dimensions for remote/local images
 
 group :development do
   gem "better_errors", "~> 2.5" # Provides a better error page for Rails and other Rack apps

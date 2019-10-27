@@ -1,3 +1,5 @@
+require "fastimage"
+
 class MarkdownParser
   include ApplicationHelper
   include CloudinaryHelper
@@ -23,6 +25,7 @@ class MarkdownParser
     end
     html = markdown.render(parsed_liquid.render)
     html = remove_nested_linebreak_in_list(html)
+    html = add_size_attributes_to_images(html)
     html = prefix_all_images(html)
     html = wrap_all_images_in_links(html)
     html = wrap_all_tables(html)
@@ -114,6 +117,34 @@ class MarkdownParser
                      img_of_size(src, width)
                    end
     end
+    doc.to_html
+  end
+
+  def add_size_attributes_to_images(html)
+    doc = Nokogiri::HTML.fragment(html)
+
+    doc.css("img").each do |img|
+      src = img.attr("src")
+      next unless src
+
+      dimensions = Rails.cache.fetch(src, expires_in: 15.minutes) do
+        uri = URI.parse(src)
+        if uri.scheme.nil? && uri.path.start_with?("/")
+          local_src = "./public#{uri.path}"
+          if File.file?(local_src)
+            src = local_src
+          end
+        end
+
+        FastImage.size(src)
+      end
+
+      if dimensions.is_a?(Array)
+        img["width"] = dimensions[0] unless dimensions[0].nil?
+        img["height"] = dimensions[1] unless dimensions[1].nil?
+      end
+    end
+
     doc.to_html
   end
 
