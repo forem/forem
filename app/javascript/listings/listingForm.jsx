@@ -107,7 +107,7 @@ export default class ListingForm extends Component {
           />
           {selectOrg}
           <ContactViaConnect
-            defaultValue={contactViaConnect}
+            checked={contactViaConnect}
             onChange={linkState(this, 'contactViaConnect')}
           />
         </div>
