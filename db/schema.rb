@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_25_185619) do
+ActiveRecord::Schema.define(version: 2019_10_25_202354) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -137,6 +137,7 @@ ActiveRecord::Schema.define(version: 2019_10_25_185619) do
     t.string "video_thumbnail_url"
     t.index ["boost_states"], name: "index_articles_on_boost_states", using: :gin
     t.index ["featured_number"], name: "index_articles_on_featured_number"
+    t.index ["feed_source_url"], name: "index_articles_on_feed_source_url"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
     t.index ["path"], name: "index_articles_on_path"
     t.index ["published"], name: "index_articles_on_published"
