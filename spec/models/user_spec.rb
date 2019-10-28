@@ -365,7 +365,7 @@ RSpec.describe User, type: :model do
       user.config_navbar = "not valid navbar input"
       expect(user).not_to be_valid
     end
-end
+  end
 
   ## Registration
   describe "user registration" do
