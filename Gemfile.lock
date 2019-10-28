@@ -656,7 +656,7 @@ GEM
     rspec-retry (0.6.1)
       rspec-core (> 3.3)
     rspec-support (3.9.0)
-    rubocop (0.75.0)
+    rubocop (0.75.1)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
       parser (>= 2.6)
