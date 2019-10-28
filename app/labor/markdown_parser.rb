@@ -205,7 +205,7 @@ class MarkdownParser
   def wrap_all_figures_with_tags(html)
     html_doc = Nokogiri::HTML(html)
 
-    html_doc.xpath("//html/body/figcaption").each do |caption|
+    html_doc.xpath("//figcaption").each do |caption|
       next if caption.parent.name == "figure"
       next unless caption.previous_element
 
