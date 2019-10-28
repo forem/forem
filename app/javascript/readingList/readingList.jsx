@@ -9,6 +9,7 @@ import {
   performInitialSearch,
   search,
   toggleTag,
+  clearSelectedTags,
 } from '../searchableItemList/searchableItemList';
 import { ItemListItem } from '../src/components/ItemList/ItemListItem';
 import { ItemListItemArchiveButton } from '../src/components/ItemList/ItemListItemArchiveButton';
@@ -45,6 +46,7 @@ export class ReadingList extends Component {
     this.performInitialSearch = performInitialSearch.bind(this);
     this.search = search.bind(this);
     this.toggleTag = toggleTag.bind(this);
+    this.clearSelectedTags = clearSelectedTags.bind(this);
   }
 
   componentDidMount() {
@@ -198,7 +200,23 @@ export class ReadingList extends Component {
               onKeyUp={this.onSearchBoxType}
               placeHolder="search your list"
             />
-
+            <div className="filters-header">
+              <h4 className="filters-header-text">my tags</h4>
+              {Boolean(selectedTags.length) && (
+                <a
+                  className="filters-header-action"
+                  href={
+                    isStatusViewValid
+                      ? READING_LIST_PATH
+                      : READING_LIST_ARCHIVE_PATH
+                  }
+                  onClick={this.clearSelectedTags}
+                  data-no-instant
+                >
+                  clear all
+                </a>
+              )}
+            </div>
             <ItemListTags
               availableTags={availableTags}
               selectedTags={selectedTags}
