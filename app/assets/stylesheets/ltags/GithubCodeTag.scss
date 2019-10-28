@@ -1,0 +1,39 @@
+@import 'variables';
+.ltag-github-code-tag {
+  border: 1px solid $light-medium-gray;
+  border-radius: 3px;
+
+  .code-snippet-info {
+    padding: 1em !important;
+    border-bottom: 1px solid $light-medium-gray;
+
+    img{
+      width: 1.15em !important;
+      max-width: 1.1em !important;
+      display: inline-block;
+      left: 0px;
+      margin-right: 0.3em;
+      vertical-align: -0.18em;
+      filter: invert(0);
+      filter: var(--theme-social-icon-invert, invert(0));  
+    }
+  }
+
+  .ltag-github-code-body {
+    display: flex;
+    width: 100%;
+
+    pre {
+      margin-top: 0px !important;
+      margin-bottom: 0px !important;
+      margin-left: unset !important;
+      margin-right: unset !important;
+      padding: 1em !important;
+    }
+
+    .lineno {
+      width: 10% !important;
+      text-align: right;
+    }
+  }
+}
