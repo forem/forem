@@ -364,7 +364,7 @@ GEM
     gemoji (3.0.1)
     get_process_mem (0.2.4)
       ffi (~> 1.0)
-    gibbon (3.2.0)
+    gibbon (3.3.0)
       faraday (>= 0.9.1)
       multi_json (>= 1.11.0)
     globalid (0.4.2)
@@ -910,7 +910,7 @@ DEPENDENCIES
   foreman!
   front_matter_parser (~> 0.2)
   gemoji (~> 3.0.1)
-  gibbon (~> 3.2)
+  gibbon (~> 3.3)
   google-api-client (~> 0.33)
   guard (~> 2.15)
   guard-livereload (~> 2.5)
