@@ -2,9 +2,10 @@
 .ltag-github-code-tag {
   border: 1px solid $light-medium-gray;
   border-radius: 3px;
+  margin:1.1em auto 1.30em;
 
   .code-snippet-info {
-    padding: 1em !important;
+    padding: 0.8em;
     border-bottom: 1px solid $light-medium-gray;
 
     img{
