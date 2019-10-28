@@ -64,7 +64,7 @@ class GithubTag
     def get_sliced_content(file_content, file_info)
       start_line = file_info[:start_line] - 1
       end_line = file_info[:end_line] - 1
-      file_content[(start_line - 1)..(end_line - 1)]
+      file_content[start_line..end_line]
     end
 
     def get_content(link)
