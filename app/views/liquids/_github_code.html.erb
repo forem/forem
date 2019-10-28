@@ -1,8 +1,11 @@
 <div class="ltag-github-code-tag">
-  <div class="code_snippet_info">
-    <a href="<%= original_link %>"><%= file_path %></a>
-    <br>
-    Lines <%= start_line %> to <%= end_line %>
+  <div class="code-snippet-info">
+      <img class="github-logo" alt="GitHub logo" src="<%= ActionController::Base.helpers.asset_path('github-logo.svg') %>">
+      <a href="<%= original_link %>"><%= file_path %></a>
+      <br>
+      <sub>
+        Lines <%= start_line %> to <%= end_line %>
+      </sub>
   </div>
   <div class="ltag-github-code-body">
     <%= sanitize body %>
