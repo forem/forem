@@ -47,6 +47,7 @@
 <details>
   <summary style="font-size: 1.3em; cursor: pointer;">Suggested tweets (<%= @pending_buffer_updates.size %>)</summary>
   <% @pending_buffer_updates.each do |buffer_update| %>
+    <% next unless buffer_update.article %>
     <div class="row">
       <h2><%= buffer_update.article.title %></h2>
       <h4>Score: <%= buffer_update.article.score %></h4>
