@@ -1,3 +1,10 @@
 <div class="ltag-github-code-tag">
-  <%= sanitize content %>
+  <div class="code_snippet_info">
+    <a href="<%= original_link %>"><%= file_path %></a>
+    <br>
+    Lines <%= start_line %> to <%= end_line %>
+  </div>
+  <div class="ltag-github-code-body">
+    <%= sanitize body %>
+  </div>
 </div>
