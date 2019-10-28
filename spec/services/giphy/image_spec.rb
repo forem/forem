@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Giphy::Image do
-  describe "#giphy_img?" do
+  describe "self.valid_url?" do
     context "when the URL is not a giphy URL" do
       it "returns false if the URI scheme is not https" do
         url = "http://media.giphy.com/media/H7NQUsEwTGfjkr9QoG/giphy.gif"
