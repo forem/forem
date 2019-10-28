@@ -3,7 +3,7 @@ class GithubTag
     PARTIAL = "liquids/github_code".freeze
 
     def initialize(link)
-      @original_link = link
+      @original_link = get_original_link(link)
       @link = parse_link(link)
       @content = get_content(@link)
     end
@@ -99,6 +99,11 @@ class GithubTag
     end
 
     private
+
+    def get_original_link(link)
+      link = ActionController::Base.helpers.strip_tags(link)
+      link.split(" ").first.delete(" ")
+    end
 
     def sanitize_link(link)
       link = ActionController::Base.helpers.strip_tags(link)
