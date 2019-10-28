@@ -73,8 +73,8 @@
 
   try {
     window.addEventListener('test', null, {
+      // eslint-disable-line getter-return
       get passive() {
-        // eslint-disable-line getter-return
         shared.supportsPassive = true;
       },
     });
