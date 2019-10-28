@@ -6,7 +6,7 @@ module Redcarpet
       include Rouge::Plugins::Redcarpet
 
       # overrided method to add line number support
-      def block_code(code, language, line_numbers = false, start_line = 1)
+      def block_code(code, language, opts = {})
         lexer =
           begin
             # add fix to handle language with upper case
@@ -23,9 +23,12 @@ module Redcarpet
           code.gsub! %r{^    }, "\t"
         end
 
-        formatter = Rouge::Formatters::HTMLLegacy.new(css_class: "highlight #{lexer.tag}",
-                                                      line_numbers: line_numbers,
-                                                      start_line: start_line)
+        # append default css_class to block_code
+        unless opts.key? "css_class"
+          opts["css_class"] = "highlight #{lexer.tag}"
+        end
+
+        formatter = Rouge::Formatters::HTMLLegacy.new(opts)
         formatter.format(lexer.lex(code))
       end
 
