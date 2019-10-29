@@ -41,10 +41,11 @@ RSpec.describe Collection, type: :model do
 
   describe "#touch_articles" do
     it "touches all articles in the collection" do
-      Timecop.freeze(DateTime.parse("2019/10/24"))
-      allow(collection.articles).to receive(:update_all)
-      collection.touch_articles
-      expect(collection.articles).to have_received(:update_all).with(updated_at: Time.zone.now)
+      Timecop.freeze(DateTime.parse("2019/10/24")) do
+        allow(collection.articles).to receive(:update_all)
+        collection.touch_articles
+        expect(collection.articles).to have_received(:update_all).with(updated_at: Time.zone.now)
+      end
     end
   end
 
