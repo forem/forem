@@ -21,15 +21,13 @@ describe('Visual  Regression Tests', () => {
   });
 
   it('should redirect to about us', () => {
-    cy.get('#loggedoutmenu.menu.logged-out').invoke('show');
+    cy.get('[data-cy=loggedoutmenu]').invoke('show');
     cy.get('[data-cy=aboutus]')
       .contains('All about dev.to')
       .parent()
       .invoke('attr', 'href')
       .then(href => {
         cy.visit(`${baseURL}${href}`);
-        console.log('hi');
-        console.log(`${href}`);
         cy.get('h1')
           .should('be.visible')
           .contains('More information about dev.to');
