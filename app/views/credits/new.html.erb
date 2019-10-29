@@ -137,7 +137,7 @@
     var stripe = Stripe('<%= ApplicationConfig["STRIPE_PUBLISHABLE_KEY"] %>');
     var elements = stripe.elements();
 
-    <% if current_user.config_theme == "night_theme" %>
+    <% if current_user.decorate.dark_theme? %>
       var style = {
       base: {
         color: 'white',

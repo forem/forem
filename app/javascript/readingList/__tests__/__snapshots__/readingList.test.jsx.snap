@@ -15,6 +15,15 @@ exports[`<ReadingList /> renders properly 1`] = `
         placeHolder="search your list"
       />
       <div
+        class="filters-header"
+      >
+        <h4
+          class="filters-header-text"
+        >
+          my tags
+        </h4>
+      </div>
+      <div
         class="tags"
       >
         <a

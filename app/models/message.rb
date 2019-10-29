@@ -77,6 +77,7 @@ class Message < ApplicationRecord
     return if channel.open?
 
     errors.add(:base, "You are not a participant of this chat channel.") unless channel.has_member?(user)
+    errors.add(:base, "Something went wrong") if channel.status == "blocked"
   end
 
   def rich_link_article(link)

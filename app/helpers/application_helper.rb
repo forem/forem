@@ -144,7 +144,7 @@ module ApplicationHelper
     tag :button, # Yikes
         class: "cta follow-action-button",
         data: {
-          info: { id: followable.id, className: followable.class.name, style: style }.to_json,
+          :info => { id: followable.id, className: followable.class.name, style: style }.to_json,
           "follow-action-button" => true
         }
   end

@@ -34,12 +34,14 @@ variable :DEPLOYMENT_SIGNATURE, :String, default: "Optional"
 # It's best if you have the following configured
 # for more development experience
 
-# Github for github related access
+# Github for github related access 
+# (https://developer.github.com/v3/guides/basics-of-authentication/)
 variable :GITHUB_KEY, :String, default: "Optional"
 variable :GITHUB_SECRET, :String, default: "Optional"
 variable :GITHUB_TOKEN, :String, default: "Optional"
 
 # Twitter for normal twitter access
+# (https://developer.twitter.com/en/docs/basics/authentication/guides/access-tokens)
 variable :TWITTER_ACCESS_TOKEN, :String, default: "Optional"
 variable :TWITTER_ACCESS_TOKEN_SECRET, :String, default: "Optional"
 variable :TWITTER_KEY, :String, default: "Optional"
@@ -50,10 +52,12 @@ variable :TWITTER_SECRET, :String, default: "Optional"
 ################################################
 
 # Airbrake for error tracking
+# (https://airbrake.io/docs/api/#authentication)
 variable :AIRBRAKE_API_KEY, :String, default: "Optional"
 variable :AIRBRAKE_PROJECT_ID, :integer, default: 0o0000
 
 # Algolia for search (not optional)
+# (https://www.algolia.com/doc/)
 only_in_test = proc { ENV["RACK_ENV"] == "test" ? "test-test" : nil }
 variable :ALGOLIASEARCH_API_KEY, :String, default: only_in_test
 variable :ALGOLIASEARCH_APPLICATION_ID, :String, default: only_in_test
@@ -65,6 +69,7 @@ variable :AWS_SECRET, :String, default: "Optional"
 variable :AWS_BUCKET_NAME, :String, default: "Optional"
 
 # AWS SDK
+# (https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/setup-config.html)
 variable :AWS_DEFAULT_REGION, :String, default: "us-east-1"
 variable :AWS_SDK_KEY, :String, default: "Optional"
 variable :AWS_SDK_SECRET, :String, default: "Optional"
@@ -75,6 +80,7 @@ variable :AWS_S3_VIDEO_ID, :String, default: "Optional"
 variable :AWS_S3_VIDEO_KEY, :String, default: "Optional"
 
 # Buffer for sending to buffer
+# (https://buffer.com/developers/api)
 variable :BUFFER_ACCESS_TOKEN, :String, default: "Optional"
 variable :BUFFER_FACEBOOK_ID, :String, default: "Optional"
 variable :BUFFER_LINKEDIN_ID, :String, default: "Optional"
@@ -83,23 +89,28 @@ variable :BUFFER_TWITTER_ID, :String, default: "Optional"
 variable :BUFFER_LISTINGS_PROFILE, :String, default: "Optional"
 
 # Cloudinary for image resizing and cache??
+# (https://cloudinary.com/documentation/rails_integration)
 variable :CLOUDINARY_API_KEY, :String, default: "Optional"
 variable :CLOUDINARY_API_SECRET, :String, default: "Optional"
 variable :CLOUDINARY_CLOUD_NAME, :String, default: "Optional"
 variable :CLOUDINARY_SECURE, :String, default: "Optional"
 
 # HTML/CSS to Image for generating social preview images
+# (https://docs.htmlcsstoimage.com/example-code/ruby)
 variable :HCTI_API_USER_ID, :String, default: "Optional"
 variable :HCTI_API_KEY, :String, default: "Optional"
 
 # Dacast for streaming
+# (https://www.dacast.com/video-api-documentation/)
 variable :DACAST_STREAM_CODE, :String, default: "Optional"
 
 # Fastly for edge caching
+# (https://docs.fastly.com/api/)
 variable :FASTLY_API_KEY, :String, default: "Optional"
 variable :FASTLY_SERVICE_ID, :String, default: "Optional"
 
 # Google analytic
+# (https://developers.google.com/analytics/devguides/reporting/core/v4)
 variable :GA_SERVICE_ACCOUNT_JSON, :String, default: "Optional"
 variable :GA_TRACKING_ID, :String, default: "Optional"
 variable :GA_OPTIMIZE_ID, :String, default: "Optional"
@@ -107,6 +118,7 @@ variable :GA_VIEW_ID, :String, default: "Optional"
 variable :GA_FETCH_RATE, :Integer, default: 25
 
 # Mailchimp for mails
+# (https://mailchimp.com/developer/)
 variable :MAILCHIMP_API_KEY, :String, default: "Optional-valid"
 variable :MAILCHIMP_NEWSLETTER_ID, :String, default: "Optional"
 variable :MAILCHIMP_SUSTAINING_MEMBERS_ID, :String, default: "Optional"
@@ -118,6 +130,7 @@ variable :PERIODIC_EMAIL_DIGEST_MAX, :Integer, default: 0
 variable :PERIODIC_EMAIL_DIGEST_MIN, :Integer, default: 2
 
 # Pusher for DEV Connect/notfications
+# (https://pusher.com/docs)
 variable :PUSHER_APP_ID, :String, default: "Optional"
 variable :PUSHER_CLUSTER, :String, default: "Optional"
 variable :PUSHER_KEY, :String, default: "Optional"
@@ -126,28 +139,34 @@ variable :PUSHER_BEAMS_ID, :String, default: "Optional"
 variable :PUSHER_BEAMS_KEY, :String, default: "Optional"
 
 # Google recaptcha
+# (https://developers.google.com/recaptcha/intro)
 variable :RECAPTCHA_SECRET, :String, default: "Optional"
 variable :RECAPTCHA_SITE, :String, default: "Optional"
 
 # Slack for customer alerts
+# (https://api.slack.com/)
 variable :SLACK_CHANNEL, :String, default: ""
 variable :SLACK_WEBHOOK_URL, :String, default: ""
 
 # Stripe for payment system
+# (https://stripe.com/docs/api)
 variable :STRIPE_PUBLISHABLE_KEY, :String, default: "Optional"
 variable :STRIPE_SECRET_KEY, :String, default: "Optional"
 variable :STRIPE_CANCELLATION_SECRET, :String, default: "Optional"
 
 # For browser webpush notifications (webpush gem) (totally random base64 nums)
+# (https://github.com/zaru/webpush)
 variable :VAPID_PUBLIC_KEY, :String, default: "dGhpcyBpcyBkZXYudG8gdGVzdCBkYXRh"
 variable :VAPID_PRIVATE_KEY, :String, default: "VGhpcyBpcyBtb3JlIHRlc3QgZGF0YQ=="
 
 # For video calling in DEV Connect
+# (https://www.twilio.com/docs/video)
 variable :TWILIO_ACCOUNT_SID, :String, default: "Optional"
 variable :TWILIO_VIDEO_API_KEY, :String, default: "Optional"
 variable :TWILIO_VIDEO_API_SECRET, :String, default: "Optional"
 
 # For Twitch live stream integration
+# (https://dev.twitch.tv/docs)
 variable :TWITCH_CLIENT_ID, :String, default: "Optional"
 variable :TWITCH_CLIENT_SECRET, :String, default: "Optional"
 variable :TWITCH_WEBHOOK_SECRET, :String, default: "Optional"
@@ -156,6 +175,7 @@ variable :TWITCH_WEBHOOK_SECRET, :String, default: "Optional"
 variable :TRENDING_TAGS, :String, default: "git,beginners"
 
 # For calling the Stack Exchange API
+# (https://api.stackexchange.com/docs)
 variable :STACK_EXCHANGE_APP_KEY, :String, default: ""
 
 ##### Legacy test related env vars ######
@@ -164,4 +184,24 @@ variable :SMARTY_STREETS_WEB_KEY, :String, default: "Optional"
 
 group :production do
   variable :SECRET_KEY_BASE, :String
+  
+  # Timber
+  # (https://docs.timber.io/)
+  variable :SEND_LOGS_TO_TIMBER, :String  # Defaults to true in production, false in development
+  variable :TIMBER, :String  # Only required if above is "true" or unset
+
+  # Memcachier
+  # (https://www.memcachier.com/documentation/rails)
+  variable :MEMCACHIER_SERVERS, :String
+  variable :MEMCACHIER_USERNAME, :String
+  variable :MEMCACHIER_PASSWORD, :String
+
+  # Sendgrid
+  # (https://sendgrid.com/docs/API_Reference/api_v3.html)
+  variable :SENDGRID_USERNAME_ACCEL, :String
+  variable :SENDGRID_PASSWORD_ACCEL, :String
+
+  # Heroku
+  variable :HEROKU_APP_URL, :String  # practicaldev.herokuapp.com
+
 end

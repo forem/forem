@@ -38,13 +38,20 @@ function titleArea(previewResponse, version, articleState) {
 
   const previewTitle = previewResponse.title || articleState.title || '';
 
-  return (
-    <div>
+  let coverImageHTML = '';
+  if (coverImage.length > 0) {
+    coverImageHTML = (
       <CoverImage
         className="articleform__mainimage articleform__mainimagepreview"
         imageSrc={coverImage}
         imageAlt="cover"
       />
+    );
+  }
+
+  return (
+    <div>
+      {coverImageHTML}
       <div className="title" style={{ width: '90%', maxWidth: '1000px' }}>
         <h1
           className={

@@ -70,3 +70,6 @@ docs/.static/api/
 
 # rvm
 .ruby-gemset
+
+# asdf
+.tool-versions
