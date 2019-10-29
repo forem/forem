@@ -97,13 +97,13 @@ export default class UserDetails extends Component {
     }
 
     let reportButton = '';
-    // if (window.currentUser.id !== user.id) {
-    reportButton = setUpButton({
-      modalId: 'userdetails__reportabuse',
-      otherModalId: 'userdetails__blockmsg',
-      btnName: 'Report Abuse',
-    });
-    // }
+    if (window.currentUser.id !== user.id) {
+      reportButton = setUpButton({
+        modalId: 'userdetails__reportabuse',
+        otherModalId: 'userdetails__blockmsg',
+        btnName: 'Report Abuse',
+      });
+    }
     return (
       <div>
         <img
