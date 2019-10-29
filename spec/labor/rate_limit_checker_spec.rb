@@ -31,6 +31,26 @@ RSpec.describe RateLimitChecker do
       expect(described_class.new(user).limit_by_action("published_article_creation")).to eq(true)
     end
 
+    it "returns true if a user has followed more than 500 accounts today" do
+      rate_limit_checker = described_class.new(user)
+
+      allow(rate_limit_checker).
+        to receive(:user_today_follow_count).
+        and_return(501)
+
+      expect(rate_limit_checker.limit_by_action("follow_account")).to eq(true)
+    end
+
+    it "returns false if a user has followed more than 500 accounts today" do
+      rate_limit_checker = described_class.new(user)
+
+      allow(rate_limit_checker).
+        to receive(:user_today_follow_count).
+        and_return(499)
+
+      expect(rate_limit_checker.limit_by_action("follow_account")).to eq(false)
+    end
+
     it "returns false if published articles comment" do
       create_list(:article, 2, user_id: user.id, published: true)
       expect(described_class.new(user).limit_by_action("published_article_creation")).to eq(false)
