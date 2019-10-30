@@ -106,29 +106,29 @@ class User < ApplicationRecord
             format: /\A(http(s)?:\/\/)?(www.twitch.tv|twitch.tv)\/.*\Z/
   validates :shirt_gender,
             inclusion: { in: %w[unisex womens],
-                         message: "%{value} is not a valid shirt style" },
+                         message: "%<value>s is not a valid shirt style" },
             allow_blank: true
   validates :shirt_size,
             inclusion: { in: %w[xs s m l xl 2xl 3xl 4xl],
-                         message: "%{value} is not a valid size" },
+                         message: "%<value>s is not a valid size" },
             allow_blank: true
   validates :tabs_or_spaces,
             inclusion: { in: %w[tabs spaces],
-                         message: "%{value} is not a valid answer" },
+                         message: "%<value>s is not a valid answer" },
             allow_blank: true
   validates :editor_version,
             inclusion: { in: %w[v1 v2],
-                         message: "%{value} must be either v1 or v2" }
+                         message: "%<value>s must be either v1 or v2" }
 
   validates :config_theme,
             inclusion: { in: %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme],
-                         message: "%{value} is not a valid theme" }
+                         message: "%<value>s is not a valid theme" }
   validates :config_font,
             inclusion: { in: %w[default sans_serif monospace comic_sans],
-                         message: "%{value} is not a valid font selection" }
+                         message: "%<value>s is not a valid font selection" }
   validates :config_navbar,
             inclusion: { in: %w[default static],
-                         message: "%{value} is not a valid navbar value" }
+                         message: "%<value>s is not a valid navbar value" }
   validates :shipping_country,
             length: { in: 2..2 },
             allow_blank: true
