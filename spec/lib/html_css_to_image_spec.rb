@@ -23,8 +23,8 @@ RSpec.describe HtmlCssToImage do
 
   describe ".fetch_url" do
     before do
-      allow(Rails.cache).to receive(:write)
-      allow(Rails.cache).to receive(:read)
+      allow(RedisClient).to receive(:get)
+      allow(RedisClient).to receive(:set)
     end
 
     it "caches the image url when successful" do
@@ -34,7 +34,7 @@ RSpec.describe HtmlCssToImage do
                   headers: { "Content-Type" => "application/json" })
 
       expect(described_class.fetch_url(html: "test")).to eq("https://hcti.io/v1/image/6c52de9d-4d37-4008-80f8-67155589e1a1")
-      expect(Rails.cache).to have_received(:write).once
+      expect(RedisClient).to have_received(:set).once
     end
 
     it "does not cache errors" do
@@ -44,7 +44,7 @@ RSpec.describe HtmlCssToImage do
                   headers: { "Content-Type" => "application/json" })
 
       expect(described_class.fetch_url(html: "test")).to eq described_class::FALLBACK_IMAGE
-      expect(Rails.cache).not_to have_received(:write)
+      expect(RedisClient).not_to have_received(:set)
     end
   end
 end
