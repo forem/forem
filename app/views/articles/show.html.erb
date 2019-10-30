@@ -1,6 +1,6 @@
 <% title @article.title %>
 
-<%= javascript_include_tag "https://unpkg.com/@webcomponents/webcomponentsjs@2.2.10/webcomponents-loader.js", defer: true %>
+<%= javascript_include_tag "https://unpkg.com/@webcomponents/webcomponentsjs@2.2.10/webcomponents-loader.js", defer: true, integrity: true %>
 <%= javascript_pack_tag "clipboardCopy", defer: true %>
 
 <% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}", expires_in: 30.hours) do %>
