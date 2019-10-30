@@ -28,7 +28,7 @@ class JsitorTag < LiquidTagBase
   end
 
   def link_valid?(link)
-    JSITOR_URL.match link
+    URL_REGEXP.match link
   end
 
   def jsitor_error
