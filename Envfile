@@ -37,7 +37,7 @@ variable :REDIS_URL, :String, default: "redis://localhost:6379"
 # It's best if you have the following configured
 # for more development experience
 
-# Github for github related access 
+# Github for github related access
 # (https://developer.github.com/v3/guides/basics-of-authentication/)
 variable :GITHUB_KEY, :String, default: "Optional"
 variable :GITHUB_SECRET, :String, default: "Optional"
@@ -111,6 +111,10 @@ variable :DACAST_STREAM_CODE, :String, default: "Optional"
 # (https://docs.fastly.com/api/)
 variable :FASTLY_API_KEY, :String, default: "Optional"
 variable :FASTLY_SERVICE_ID, :String, default: "Optional"
+
+# Honeycomb for monitoring and observability
+# https://www.honeycomb.io/
+variable :HONEYCOMB_API_KEY, :String, default: "Optional"
 
 # Google analytic
 # (https://developers.google.com/analytics/devguides/reporting/core/v4)
@@ -187,7 +191,7 @@ variable :SMARTY_STREETS_WEB_KEY, :String, default: "Optional"
 
 group :production do
   variable :SECRET_KEY_BASE, :String
-  
+
   # Timber
   # (https://docs.timber.io/)
   variable :SEND_LOGS_TO_TIMBER, :String  # Defaults to true in production, false in development
