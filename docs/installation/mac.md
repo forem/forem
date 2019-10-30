@@ -27,6 +27,28 @@ DEV uses [ImageMagick](https://imagemagick.org/) to manipulate images on upload.
 
 You can install ImageMagick with `brew install imagemagick`.
 
+### Redis
+
+DEV requires Redis version 4.0 or higher.
+
+We recommend using [Homebrew](https://brew.sh):
+
+```shell
+brew install redis
+```
+
+you can follow the post installation instructions, we recommend using `brew services` to start Redis in the background:
+
+```shell
+brew services start redis
+```
+
+You can test if it's up and running by issuing the following command:
+
+```shell
+redis-cli ping
+```
+
 ## Installing DEV
 
 1. Fork DEV's repository, e.g. <https://github.com/thepracticaldev/dev.to/fork>
