@@ -611,5 +611,15 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe ".feed" do
+    it "returns records with a subset of attributes" do
+      create(:article, published: true, published_at: 2.hours.ago)
+
+      feed_article = described_class.feed.first
+
+      expect(feed_article.attributes.keys).to match_array(%w[id tag_list published_at processed_html user_id organization_id title path])
+    end
+  end
+
   include_examples "#sync_reactions_count", :article
 end
