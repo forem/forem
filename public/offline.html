@@ -59,12 +59,17 @@
 
     .content {
       text-align: center;
-      margin: 40px 20px;
+      margin: 20px 20px;
+    }
+
+    .paletteSelector {
+      z-index: 2;
+      margin-top: 30px;
     }
 
     .colors {
       z-index: 2;
-      margin: 0 40px;
+      margin: 0 20px;
       text-align: center;
     }
 
@@ -92,7 +97,7 @@
     }
 
     .signature {
-      margin-top: 40px;
+      margin-top: 20px;
     }
 
     @media only screen and (max-height: 700px) {
@@ -158,7 +163,15 @@
     <h3>Good news: You can draw a picture anywhere on this page while you wait to get it back!</h3>
     <h4>(pick a color below && start drawing!)</h4>
   </div>
+
   <div class="colors">
+  </div>
+  <div class='paletteSelector'>
+    <!-- TODO: Populate options from javascript instead of hardcoding -->
+    <select>
+      <option value="default">Default Palette</option>
+      <option value="paulTol">Paul Tol Palette</option>
+    </select>
   </div>
   <svg width="75px" height="75px" viewBox="0 0 266 286" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
     class="signature">
@@ -174,45 +187,87 @@
     </g>
   </svg>
   <script type="text/javascript">
+
+    const palettes = {
+      default: ["#F4908E", "#F2F097", "#88B0DC", "#F7B5D1", "#53C4AF", "#FDE38C"],
+      // Color-deficient accessible palettes: https://owi.usgs.gov/blog/tolcolors/
+      paulTol: ["#B997C6", "#824D99", "#4E79C4", "#57A2AC", "#7EB875", "#D0B440", "#E67F33"],
+      // Add more palette options below and to the "select" dropdown.
+    }
+    let activePalette = 'default' // match key inside the palettes variable
+
+    // Globally DOM nodes + variables
     const canvas = document.querySelector('canvas')
     const context = canvas.getContext('2d')
-    const colors = ["#F4908E", "#F2F097", "#88B0DC", "#F7B5D1", "#53C4AF", "#FDE38C"]
     const colorDiv = document.querySelector(".colors")
-    let dx = 1, dy = 1
+    let dx = 1, dy = 1;
 
-    colors.forEach(color => {
-      const button = document.createElement("button")
-      button.classList.add("color")
-      button.style.backgroundColor = color
-      colorDiv.appendChild(button)
-      button.addEventListener('click', () => context.strokeStyle = color)
-    })
+    // handler for color input buttons
+    function handleButtonClick(event) {
+      const buttonStyle = event.target.style
+      context.strokeStyle = buttonStyle.backgroundColor
+    }
 
-    const setSize = () => {
-      // set dimensions on the canvas
-      canvas.setAttribute('width', window.innerWidth)
-      canvas.setAttribute('height', window.innerHeight)
-      context.strokeStyle = colors[0]
+    // Main drawing function
+    function renderColorButtons(colors) {
+      // First, remove existing event listeners to prevent memory leak
+      colorDiv.querySelectorAll('button').forEach((button) => {
+        button.removeEventListener('click', handleButtonClick)
+      })
+      // Then, remove existing buttons
+      colorDiv.innerHTML = ""
+
+      // Lastly, add new a new button for each color in the passed in palette
+      colors.forEach(color => {
+        const button = document.createElement("button")
+        button.classList.add("color")
+        button.style.backgroundColor = color
+        colorDiv.appendChild(button)
+        button.addEventListener('click', handleButtonClick)
+      })
+    }
+
+    // Helper for modifying canvas context
+    const setContextSettings = (strokeColor) => {
+      context.strokeStyle = strokeColor
       context.lineJoin = "round"
       context.lineWidth = 5
     }
 
-    const reSize = () => {
+    const setCanvasSize = () => {
+      // set dimensions on the canvas
+      canvas.setAttribute('width', window.innerWidth)
+      canvas.setAttribute('height', window.innerHeight)
+    }
+
+    const setResizeFactors = () => {
       // set the x and y resizinf factor for cursor position
       dx = canvas.width / window.innerWidth
       dy = canvas.height / window.innerHeight
     }
 
-    setSize()
+    const handleResize = () => {
+      setCanvasSize()
+      setResizeFactors();
+    }
 
-    window.addEventListener("resize", reSize)
+    window.addEventListener("resize", handleResize)
 
+    // Main function to render new DOM whenever activePalette changes
+    const render = (palette) => {
+      renderColorButtons(palette)
+      setContextSettings(palette[0])
+      setCanvasSize()
+    }
+
+    // User Input Event Handlers
+    //----------------------------------------
     let firstX, firstY, secondX, secondY, paint
 
     function getCoordinates(event) {
       // check to see if mobile or desktop
       if (["mousedown", "mousemove"].includes(event.type)) {
-        // click events 
+        // click events
         return [event.pageX * dx, event.pageY * dy]
       } else {
         // touch coordinates
@@ -241,14 +296,6 @@
       addClick(event, this)
       paint = true
     }
-
-    function endPaint(event) {
-      if (paint) {
-        addClick(event, this)
-        draw()
-      }
-    }
-
     canvas.addEventListener('mousedown', startPaint)
     canvas.addEventListener('touchstart', startPaint)
 
@@ -257,13 +304,29 @@
       firstX = null
       firstY = null
     }
-
     canvas.addEventListener('mouseup', exit)
     canvas.addEventListener('mouseleave', exit)
     canvas.addEventListener('touchend', exit)
 
+    function endPaint(event) {
+      if (paint) {
+        addClick(event, this)
+        draw()
+      }
+    }
     canvas.addEventListener('mousemove', endPaint)
     canvas.addEventListener('touchmove', endPaint)
+
+    const paletteSelector = document.querySelector(".paletteSelector")
+    paletteSelector.onchange = (event) => {
+      activePalette = event.target.value
+      render(palettes[activePalette])
+    }
+
+    // Initialization when page is ready to load, runs once
+    (function() {
+      render(palettes[activePalette])
+    })()
 
   </script>
 </body>
