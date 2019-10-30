@@ -41,6 +41,7 @@ function initializeTouchDevice() {
   setTimeout(() => {
     removeShowingMenu();
     if (isTouchDevice) {
+      // Use a named function instead of anonymous so duplicate event handlers are discarded
       getById('navigation-butt').addEventListener('click', toggleMenu);
     } else {
       getClassList('navbar-menu-wrapper').add('desktop');
