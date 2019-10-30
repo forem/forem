@@ -24,11 +24,15 @@ RSpec.describe StackexchangeTag, type: :liquid_template, vcr: vcr_option do
     it "renders basic html" do
       liquid = generate_new_liquid(valid_id)
       expect(liquid.render).to include("ltag__stackexchange")
+      expected_answer_url = "https://stackoverflow.com/questions/57496168/use-where-and-limit-to-child-in-foreach"
+      expect(liquid.render).to include("<a href=\"#{expected_answer_url}\"")
     end
 
     it "renders basic exchange html" do
       liquid = generate_exchange_liquid(exchange_id)
       expect(liquid.render).to include("stackexchange-logo")
+      expected_answer_url = "https://askubuntu.com/questions/885432/help-setting-up-sshfs/1163633#1163633"
+      expect(liquid.render).to include("<a href=\"#{expected_answer_url}\"")
     end
 
     it "rejects invalid id" do
