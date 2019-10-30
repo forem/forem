@@ -14,6 +14,8 @@ RSpec.describe "SocialPreviews", type: :request do
       to_return(status: 200,
                 body: "{ \"url\": \"#{image_url}\" }",
                 headers: { "Content-Type" => "application/json" })
+    allow(RedisClient).to receive(:get)
+    allow(RedisClient).to receive(:set)
   end
 
   describe "GET /social_previews/article/:id" do
