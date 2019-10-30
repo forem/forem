@@ -108,7 +108,7 @@ class MarkdownParser
       next if allowed_image_host?(src)
 
       img["loading"] = "lazy"
-      img["src"] = if giphy_img?(src)
+      img["src"] = if Giphy::Image.valid_url?(src)
                      src.gsub("https://media.", "https://i.")
                    else
                      img_of_size(src, width)
@@ -144,16 +144,6 @@ class MarkdownParser
   def allowed_image_host?(src)
     # GitHub camo image won't parse but should be safe to host direct
     src.start_with?("https://camo.githubusercontent.com/")
-  end
-
-  def giphy_img?(source)
-    uri = URI.parse(source)
-    return false if uri.scheme != "https"
-    return false if uri.userinfo || uri.fragment || uri.query
-    return false if uri.host != "media.giphy.com" && uri.host != "i.giphy.com"
-    return false if uri.port != 443 # I think it has to be this if its https?
-
-    uri.path.ends_with?(".gif")
   end
 
   def remove_nested_linebreak_in_list(html)
