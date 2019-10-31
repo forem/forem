@@ -1,4 +1,6 @@
-/* globals userData, filterXSS */
+'use strict';
+
+/* global userData, filterXSS */
 
 function initializeUserProfileContent(user) {
   document.getElementById('sidebar-profile-pic').innerHTML =
@@ -8,9 +10,10 @@ function initializeUserProfileContent(user) {
     user.profile_image_90 +
     '" />';
 
-    document.getElementById('sidebar-profile-name').innerHTML =
-    filterXSS(user.name);
-    document.getElementById('sidebar-profile-username').innerHTML =
+  document.getElementById('sidebar-profile-name').innerHTML = filterXSS(
+    user.name,
+  );
+  document.getElementById('sidebar-profile-username').innerHTML =
     '@' + user.username;
   document.getElementById('sidebar-profile-snapshot-inner').href =
     '/' + user.username;
