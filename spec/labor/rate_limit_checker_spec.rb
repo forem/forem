@@ -4,6 +4,17 @@ RSpec.describe RateLimitChecker do
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
 
+  describe "self.daily_account_follow_limit " do
+    it "returns 500 by default" do
+      expect(described_class.daily_account_follow_limit).to eq(500)
+    end
+
+    it 'returns the value set in ENV["DAILY_ACCOUNT_FOLLOW_LIMIT"] as an integer if it\'s set' do
+      ENV["DAILY_ACCOUNT_FOLLOW_LIMIT"] = "20"
+      expect(described_class.daily_account_follow_limit).to eq(20)
+    end
+  end
+
   describe "#limit_by_action" do
     it "returns false for invalid action" do
       expect(described_class.new(user).limit_by_action("random-nothing")).to eq(false)
@@ -31,22 +42,22 @@ RSpec.describe RateLimitChecker do
       expect(described_class.new(user).limit_by_action("published_article_creation")).to eq(true)
     end
 
-    it "returns true if a user has followed more than 500 accounts today" do
+    it "returns true if a user has followed more than <daily_limit> accounts today" do
       rate_limit_checker = described_class.new(user)
 
       allow(rate_limit_checker).
         to receive(:user_today_follow_count).
-        and_return(501)
+        and_return(described_class.daily_account_follow_limit + 1)
 
       expect(rate_limit_checker.limit_by_action("follow_account")).to eq(true)
     end
 
-    it "returns false if a user has followed more than 500 accounts today" do
+    it "returns false if a user has followed less than <daily_limit> accounts today" do
       rate_limit_checker = described_class.new(user)
 
       allow(rate_limit_checker).
         to receive(:user_today_follow_count).
-        and_return(499)
+        and_return(described_class.daily_account_follow_limit - 1)
 
       expect(rate_limit_checker.limit_by_action("follow_account")).to eq(false)
     end
