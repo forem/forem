@@ -16,7 +16,8 @@ RSpec.describe ParlerTag, type: :liquid_template do
         <iframe
           width="710"
           height="120"
-          src="https://api.parler.io/ss/player?url=#{valid_id}">
+          src="https://api.parler.io/ss/player?url=#{valid_id}"
+          loading="lazy">
         </iframe>
       HTML
     end
