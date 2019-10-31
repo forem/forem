@@ -7,7 +7,7 @@ info:
   contact:
     name: DEV Team
     url: https://dev.to/contact
-    email: yo@dev.to
+    email: ApplicationConfig["DEFAULT_SITE_EMAIL"]
   x-logo: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-logo
     url: https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-128-1a9016906487b8ba17f2d3d3c28f9d1cb3ae9b45d685cc2711e20f6b3c6730df.png
     backgroundColor: "#000"
