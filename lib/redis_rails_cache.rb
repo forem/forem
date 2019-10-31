@@ -11,7 +11,7 @@ class RedisRailsCache
         entry = client.get(key_name)
         return entry if entry.present?
 
-        save_block_result_to_cache(key_name, expires_in) { |_key_name| yield _key_name }
+        save_block_result_to_cache(key_name, expires_in) { |key_name| yield key_name }
       else
         client.get(key_name)
       end
