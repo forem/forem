@@ -2,4 +2,4 @@
 redis_url = ENV["REDISCLOUD_URL"]
 redis_url ||= ApplicationConfig["REDIS_URL"]
 
-RedisClient = Redis.new(url: redis_url)
+RedisRailsCache = ActiveSupport::Cache::RedisCacheStore.new(url: redis_url)
