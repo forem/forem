@@ -52,6 +52,16 @@ RSpec.describe RateLimitChecker do
       expect(rate_limit_checker.limit_by_action("follow_account")).to eq(true)
     end
 
+    it "returns false if a user's following_users_count is less than <daily_limit>" do
+      rate_limit_checker = described_class.new(user)
+
+      allow(user).
+        to receive(:following_users_count).
+        and_return(described_class.daily_account_follow_limit - 1)
+
+      expect(rate_limit_checker.limit_by_action("follow_account")).to eq(false)
+    end
+
     it "returns false if a user has followed less than <daily_limit> accounts today" do
       rate_limit_checker = described_class.new(user)
 

@@ -51,6 +51,9 @@ class RateLimitChecker
   private
 
   def user_today_follow_count
+    following_users_count = user.following_users_count
+    return following_users_count if following_users_count < self.class.daily_account_follow_limit
+
     now = Time.zone.now
     day_start = now.beginning_of_day
     day_end = now.end_of_day
