@@ -27,7 +27,7 @@ install:
 before_script:
   - bundle exec rails db:create
 script:
-  - if [[ $TRAVIS_COMMIT_MESSAGE =~ /\[\deploy\]/ ]]; then echo "==============================="; fi;
+  - if [[ $TRAVIS_COMMIT_MESSAGE =~ \[deploy\] ]]; then bundle install; fi;
   - bundle exec rails webpacker:compile
   - bundle exec rails db:schema:load
   - './cc-test-reporter before-build'
