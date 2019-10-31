@@ -34,6 +34,8 @@ bin/rspec spec/models/user_spec.rb
 
 After the test run is complete, open `coverage/index.html` with a browser so you can check the code coverage.
 
+To turn off coverage report generation please set environment variable `COVERAGE` value to `false`.
+
 ## Preact
 
 Preact tests will generate code coverage at the end of the tests.
