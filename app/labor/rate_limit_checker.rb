@@ -2,7 +2,7 @@ class RateLimitChecker
   attr_reader :user, :action
 
   def self.daily_account_follow_limit
-    ENV["DAILY_ACCOUNT_FOLLOW_LIMIT"]&.to_i || 500
+    ENV["RATE_LIMIT_FOLLOW_COUNT_DAILY"]&.to_i || 500
   end
 
   def initialize(user = nil)

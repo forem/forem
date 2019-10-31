@@ -9,8 +9,8 @@ RSpec.describe RateLimitChecker do
       expect(described_class.daily_account_follow_limit).to eq(500)
     end
 
-    it 'returns the value set in ENV["DAILY_ACCOUNT_FOLLOW_LIMIT"] as an integer if it\'s set' do
-      ENV["DAILY_ACCOUNT_FOLLOW_LIMIT"] = "20"
+    it 'returns the value set in ENV["RATE_LIMIT_FOLLOW_COUNT_DAILY"] as an integer if it\'s set' do
+      ENV["RATE_LIMIT_FOLLOW_COUNT_DAILY"] = "20"
       expect(described_class.daily_account_follow_limit).to eq(20)
     end
   end
