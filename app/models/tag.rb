@@ -61,6 +61,13 @@ class Tag < ActsAsTaggableOn::Tag
     ALLOWED_CATEGORIES
   end
 
+  def self.aliased_name(word)
+    tag = find_by(name: word.downcase)
+    return unless tag
+
+    tag.alias_for.presence || tag.name
+  end
+
   private
 
   def evaluate_markdown

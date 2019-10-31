@@ -48,6 +48,7 @@ gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically co
 gem "gemoji", "~> 3.0.1" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.3" # API wrapper for MailChimp's API
 gem "google-api-client", "~> 0.33" # Client for accessing Google APIs
+gem "honeycomb-beeline", "~> 1.1.1" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "htmlentities", "~> 4.3", ">= 4.3.4"
 gem "httparty", "~> 0.17" # Makes http fun! Also, makes consuming restful web services dead easy
@@ -141,7 +142,7 @@ end
 group :test do
   gem "approvals", "~> 0.0" # A library to make it easier to do golden-master style testing in Ruby
   gem "exifr", ">= 1.3.6" # EXIF Reader is a module to read EXIF from JPEG and TIFF images
-  gem "factory_bot_rails", "~> 4.11" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
+  gem "factory_bot_rails", "~> 5.1" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
   gem "launchy", "~> 2.4" # Launchy is helper class for launching cross-platform applications in a fire and forget manner.
   gem "pundit-matchers", "~> 1.6" # A set of RSpec matchers for testing Pundit authorisation policies
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples
