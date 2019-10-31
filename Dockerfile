@@ -6,7 +6,7 @@ FROM ruby:2.6.5-alpine3.10
 #
 #------------------------------------------------------------------------------
 RUN apk update -qq && apk add git nodejs postgresql-client ruby-dev build-base \
-  libxml2-dev libxslt-dev pcre-dev libffi-dev postgresql-dev tzdata
+  libxml2-dev libxslt-dev pcre-dev libffi-dev postgresql-dev tzdata imagemagick
 
 #------------------------------------------------------------------------------
 #

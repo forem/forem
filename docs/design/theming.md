@@ -68,11 +68,7 @@ Make sure to import the mixin in your SCSS file and use it like this:
 
 ```scss
 div {
-  @include themeable(
-    color, 
-    theme-color, 
-    $black
-  );
+  @include themeable(color, theme-color, $black);
 }
 ```
 

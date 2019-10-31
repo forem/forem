@@ -1,0 +1,13 @@
+<h1>Admin Roles</h1>
+
+<div class="wrapper" style="font-weight: 600; border-bottom: 2px solid black; grid-template-columns: 25% 25% 50%;">
+  <div>ID</div>
+  <div>Profile</div>
+  <div>Roles</div>
+</div>
+<% @users.each do |user| %>
+  <div class="wrapper" style="border-top: 1px solid grey; padding: 10px; grid-template-columns: 25% 25% 50%; font-size: 0.9em">
+    <div><a href="/internal/users/<%= user.id %>"><%= user.id %></a></div>
+    <div><a href="<%= user.path %>">@<%= user.username %></a></div>
+    <div><%= user.roles.pluck(:name) %></div>
+<% end %>

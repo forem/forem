@@ -8,6 +8,7 @@ For the Dev.to tech stack we use:
 
 - [_Puma_](https://github.com/puma/puma) as the web server
 - [_PostgreSQL_](https://www.postgresql.org/) as the primary database
+- [_Redis_](https://redis.io/) to store additional data and eventually replace memcache
 - [_Fastly_](https://www.fastly.com/) for [edge caching](https://dev.to/ben/making-devto-insanely-fast)
 - [_Cloudinary_](https://cloudinary.com/) for image manipulation/serving
 - [_Airbrake_](https://airbrake.io/) for error monitoring

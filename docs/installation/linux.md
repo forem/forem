@@ -31,6 +31,13 @@ DEV uses [ImageMagick](https://imagemagick.org/) to manipulate images on upload.
 
 Please refer to ImageMagick's [instructions](https://imagemagick.org/script/download.php) on how to install it.
 
+### Redis
+
+DEV requires Redis version 4.0 or higher.
+
+We recommend following Digital Ocean's extensive [How To Install and Configure Redis on Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-redis-on-ubuntu-16-04)
+(available for other Linux distributions as well) to setup Redis.
+
 ## Installing DEV
 
 1. Fork DEV's repository, e.g. <https://github.com/thepracticaldev/dev.to/fork>
@@ -59,6 +66,6 @@ Please refer to ImageMagick's [instructions](https://imagemagick.org/script/down
 
 While installing, you might run into an error due to the `pg` gem requiring PostgreSQL libraries. If so, please run `sudo apt-get install libpq-dev` before retrying.
 
-While installing, you might run into an error due to the `sass-rails` gem requiring `sassc`, which requires the `g++` compiler.  If so, please run `sudo apt-get install g++` before retrying.
+While installing, you might run into an error due to the `sass-rails` gem requiring `sassc`, which requires the `g++` compiler. If so, please run `sudo apt-get install g++` before retrying.
 
-While installing, if you didn't install `node` or `nvm` manually, you might run into an error due to an older system node version being present, which can cause issues while `yarn` is installing packages.  If so, you'll need to [install `nvm`](https://github.com/nvm-sh/nvm#installation-and-update) and then run `nvm install node` to get the most recent node version before retrying.
+While installing, if you didn't install `node` or `nvm` manually, you might run into an error due to an older system node version being present, which can cause issues while `yarn` is installing packages. If so, you'll need to [install `nvm`](https://github.com/nvm-sh/nvm#installation-and-update) and then run `nvm install node` to get the most recent node version before retrying.
