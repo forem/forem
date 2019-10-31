@@ -37,6 +37,25 @@
       @include themeable(color, theme-color, $black);
     }
 
+    .filters-header {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 5px;
+      .filters-header-text {
+        font-size: 0.9em;
+        font-family: $monospace;
+        text-decoration: underline;
+        @include themeable(color, theme-secondary-color, $medium-gray);
+      }
+      .filters-header-action {
+        font-size: 0.8em;
+        background: none;
+        border: none;
+        text-decoration: underline;
+        @include themeable(color, theme-color, $blue);
+      }
+    }
+
     .tags {
       .tag {
         padding: 5px 0px;
@@ -214,7 +233,6 @@
       margin-bottom: -15px;
 
       .filters {
-        height: 85px;
         min-height: 85px;
 
         .tags {

@@ -14,6 +14,7 @@ RSpec.describe "/internal/mods", type: :request do
       get "/internal/mods"
       expect(response.body).to include(regular_user.username)
     end
+
     it "does not display non-mod" do
       get "/internal/mods"
       expect(response.body).not_to include(regular_user.username)

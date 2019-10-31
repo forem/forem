@@ -1,4 +1,4 @@
-if ENV["COVERAGE"]
+unless ENV["COVERAGE"] == "false"
   SimpleCov.start "rails" do
     add_filter "/spec/"
     add_filter "/dashboards/"

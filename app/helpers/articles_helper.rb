@@ -49,7 +49,7 @@ module ArticlesHelper
   def get_host_without_www(url)
     url = "http://#{url}" if URI.parse(url).scheme.nil?
     host = URI.parse(url).host.downcase
-    host.gsub!("medium.com", "Medium") if host.include?("medium.com")
-    host.start_with?("www.") ? host[4..-1] : host
+    host.gsub!("medium.com", "Medium")
+    host.delete_prefix("www.")
   end
 end

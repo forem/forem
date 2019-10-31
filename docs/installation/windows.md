@@ -99,6 +99,18 @@ Pay attention to the username and password you setup during installation of Post
 
 For additional configuration options, check our [PostgreSQL setup guide](/installation/postgresql).
 
+### ImageMagick
+
+DEV uses [ImageMagick](https://imagemagick.org/) to manipulate images on upload.
+
+Please refer to ImageMagick's [instructions](https://imagemagick.org/script/download.php) on how to install it.
+
+### Redis
+
+DEV requires Redis version 4.0 or higher.
+
+We recommend to follow [this guide](https://redislabs.com/blog/redis-on-windows-10/) to run Redis under WSL.
+
 ## Installing DEV
 
 1. Fork DEV's repository, eg. <https://github.com/thepracticaldev/dev.to/fork>

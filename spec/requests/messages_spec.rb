@@ -35,6 +35,17 @@ RSpec.describe "Messages", type: :request do
       end
     end
 
+    context "when user is blocked" do
+      before do
+        sign_in user
+        chat_channel.update(status: "blocked")
+      end
+
+      it "raises an error" do
+        expect { post "/messages", params: { message: new_message } }.to raise_error
+      end
+    end
+
     # context "when Pusher isn't cooperating" do
     #   before do
     #     allow(Pusher).to receive(:trigger).and_raise(Pusher::Error)

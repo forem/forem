@@ -33,7 +33,8 @@ You're also going to need Docker Compose, to start multiple containers. We recom
    - You do not need "real" keys for basic development. Some features require certain keys, so you may be able to add them as you go.
 
 ## Running the Docker app (basic)
-*Docker compose will by default use postgres:9.6 as the database version, should you want to update that set the `POSTGRES_VERSION` variable in your environment and start the container again*
+
+_Docker compose will by default use postgres:9.6 as the database version, should you want to update that set the `POSTGRES_VERSION` variable in your environment and start the container again_
 
 1. run `docker-compose build`
 1. run `docker-compose run web rails db:setup`
