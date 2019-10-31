@@ -1,3 +1,5 @@
+/* eslint-disable no-alert */
+
 export default function initBlock() {
   const blockButton = document.getElementById(
     'user-profile-dropdownmenu-block-button',
@@ -22,13 +24,18 @@ export default function initBlock() {
       .then(response => {
         if (response.result === 'unblocked') {
           blockButton.innerText = 'Block';
+          /* eslint-disable-next-line no-use-before-define */
           blockButton.addEventListener('click', block, { once: true });
         } else if (response.status === 422) {
-          window.alert(`Something went wrong: ${e} -- Please refresh the page to try again.`)
+          window.alert(
+            `Something went wrong: ${response.error} -- Please refresh the page to try again.`,
+          );
         }
       })
       .catch(e => {
-        window.alert(`Something went wrong: ${e}. -- Please refresh the page to try again.`);
+        window.alert(
+          `Something went wrong: ${e}. -- Please refresh the page to try again.`,
+        );
       });
   }
 
@@ -40,7 +47,7 @@ export default function initBlock() {
       - prevent them from messaging you via DEV Connect`,
     );
     if (confirmBlock) {
-      fetch(`/user_blocks/${profileUserId}`, {
+      fetch(`/user_blocks`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -59,11 +66,15 @@ export default function initBlock() {
             blockButton.innerText = 'Unblock';
             blockButton.addEventListener('click', unblock, { once: true });
           } else if (response.status === 422) {
-            window.alert(`Something went wrong: ${e}. -- Please refresh the page to try again.`)
+            window.alert(
+              `Something went wrong: ${response.error}. -- Please refresh the page to try again.`,
+            );
           }
         })
         .catch(e => {
-          window.alert(`Something went wrong: ${e}. -- Please refresh the page to try again.`);
+          window.alert(
+            `Something went wrong: ${e}. -- Please refresh the page to try again.`,
+          );
         });
     } else {
       blockButton.addEventListener('click', block, { once: true });
@@ -71,6 +82,7 @@ export default function initBlock() {
   }
 
   // userData() is a global function
+  /* eslint-disable-next-line no-undef */
   const currentUserId = userData().id;
 
   if (currentUserId === parseInt(profileUserId, 10)) {
@@ -88,3 +100,5 @@ export default function initBlock() {
       });
   }
 }
+
+/* eslint-enable no-alert */

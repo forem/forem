@@ -179,9 +179,7 @@ Rails.application.routes.draw do
   resources :display_ad_events, only: [:create]
   resources :badges, only: [:index]
   resource :pro_membership, path: :pro, only: %i[show create update]
-  resources :user_blocks, param: :blocked_id, only: %i[show destroy] do
-    post ":blocked_id", on: :collection, to: "user_blocks#create"
-  end
+  resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
   resolve("ProMembership") { [:pro_membership] } # see https://guides.rubyonrails.org/routing.html#using-resolve
 
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
