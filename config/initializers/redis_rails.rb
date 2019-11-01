@@ -4,7 +4,7 @@ redis_url ||= ApplicationConfig["REDIS_URL"]
 DEFAULT_EXPIRATION = 24.hours.to_i.freeze
 
 if Rails.env.test?
-  RedisRailsCache = ActiveSupport::Cache::NullStore
+  RedisRailsCache = ActiveSupport::Cache::NullStore.new
 # Uncomment these lines to use MemoryStory in development
 # elsif Rails.env.development?
 #   RedisRailsCache = ActiveSupport::Cache::MemoryStore.new
