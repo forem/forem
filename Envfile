@@ -30,6 +30,9 @@ variable :DEPLOYMENT_SIGNATURE, :String, default: "Optional"
 # For Redis storage
 variable :REDIS_URL, :String, default: "redis://localhost:6379"
 
+# For Default Email
+ variable :DEFAULT_SITE_EMAIL, :String, default: "yo@dev.to"
+
 ################################################
 ############## 3rd Party Services ##############
 ################################################
