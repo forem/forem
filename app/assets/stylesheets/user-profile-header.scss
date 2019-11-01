@@ -500,18 +500,25 @@
       position: absolute;
       top: 30px;
       right: 3px;
-      width: 200px;
       border: 1px solid $light-medium-gray;
       border-radius: 3px;
-      background: white;
+      @include themeable(
+        background,
+        theme-container-background,
+        #fff
+      );    
       z-index: 20;
-      width: 130px;
+      width: 200px;
       box-shadow: $shadow;
       a {
         font-size: 0.75em;
-        color: $black;
+        @include themeable(
+          color,
+          theme-color,
+          $black
+        );
         display: block;
-        padding: 6px 10px;
+        padding: 9px 10px;
         font-weight: bold;
       }
       &.showing {
@@ -519,7 +526,11 @@
       }
       button {
         font-size: 0.75em;
-        color: $black;
+        @include themeable(
+          color,
+          theme-color,
+          $black
+        );
         font-weight: bold;
         width: 100%;
         text-align: left;
