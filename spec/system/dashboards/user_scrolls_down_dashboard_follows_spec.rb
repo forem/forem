@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
-  let(:default_per_page) { 5 }
+  let(:default_per_page) { 3 }
   let(:total_records) { default_per_page * 2 }
   let(:user) { create(:user) }
   let!(:users) { create_list(:user, total_records) }
@@ -32,12 +32,24 @@ RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
       tags.each do |tag|
         create(:follow, follower: user, followable: tag)
       end
+      visit dashboard_following_tags_path(per_page: default_per_page)
+      page.execute_script("window.scrollTo(0, 100000)")
     end
 
     it "scrolls through all tags" do
-      visit dashboard_following_tags_path(per_page: default_per_page)
-      page.execute_script("window.scrollTo(0, 100000)")
       page.assert_selector('div[id^="follows"]', count: total_records)
+    end
+
+    it "updates a tag point value" do
+      last_div = page.all('div[id^="follows"]').last
+      within last_div do
+        fill_in "follow_points", with: 10.0
+        click_button "commit"
+      end
+      first_div = page.find('div[id^="follows"]', match: :first)
+      within first_div do
+        expect(page).to have_field("follow_points", with: 10.0)
+      end
     end
   end
 
@@ -74,12 +86,18 @@ RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
       podcasts.each do |podcast|
         create(:follow, follower: user, followable: podcast)
       end
-    end
-
-    it "scrolls through all users" do
       visit dashboard_following_podcasts_path(per_page: default_per_page)
       page.execute_script("window.scrollTo(0, 100000)")
+    end
+
+    it "scrolls through all podcasts" do
       page.assert_selector('div[id^="follows"]', count: total_records)
+    end
+
+    it "shows working links" do
+      podcasts.each do |podcast|
+        expect(page).to have_link(nil, href: "/" + podcast.path)
+      end
     end
   end
 end
