@@ -40,7 +40,7 @@ class ReactionsController < ApplicationController
 
   def create
     authorize Reaction
-    Rails.cache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
+    RedisRailsCache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
     category = params[:category] || "like"
     reaction = Reaction.where(
       user_id: current_user.id,
