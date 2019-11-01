@@ -24,8 +24,7 @@ Develop them with that mindset in terms of naming things. They should be
 documented but also intuitive. They should also be fairly flexible in the
 arguments they take. Currently, this could use improvements.
 
-Liquid tags are "compiled" when an article is saved. So you will need to re-save
-articles to see HTML changes.
+_Note: Liquid tags are "compiled" when an article is saved. So you will need to re-save articles to see HTML changes._
 
 Here is a bunch of liquid tags supported on DEV:
 
@@ -53,6 +52,7 @@ Here is a bunch of liquid tags supported on DEV:
 {% spotify spotify:episode:5V4XZWqZQJvbddd31n56mf %}
 {% blogcast 1234 %}
 {% kotlin https://pl.kotl.in/owreUFFUG %}
+{% reddit https://www.reddit.com/r/aww/comments/ag3s4b/ive_waited_28_years_to_finally_havr_my_first_pet %}
 ```
 
 ## How liquid tags are developed
