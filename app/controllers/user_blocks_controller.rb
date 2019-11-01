@@ -19,7 +19,6 @@ class UserBlocksController < ApplicationController
     @user_block.config = "default"
 
     if @user_block.save
-      Rails.cache.delete "user-#{current_user.id}/blocked_users"
       UserBlocks::ChannelHandler.new(@user_block).block_chat_channel
       current_user.stop_following(@user_block.blocked)
       @user_block.blocked.stop_following(current_user)
@@ -40,7 +39,6 @@ class UserBlocksController < ApplicationController
     authorize @user_block
 
     if @user_block.destroy
-      Rails.cache.delete "user-#{current_user.id}/blocked_users"
       UserBlocks::ChannelHandler.new(@user_block).unblock_chat_channel
       render json: { result: "unblocked" }
     else

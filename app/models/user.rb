@@ -386,13 +386,6 @@ class User < ApplicationRecord
     UserBlock.where(blocker_id: id)
   end
 
-  def cached_all_blocking_user_ids
-    cache_name = "user-#{id}/blocked_users"
-    Rails.cache.fetch(cache_name, expires_in: 200.hours) do
-      all_blocking.pluck(:blocked_id)
-    end
-  end
-
   def all_blocked_by
     UserBlock.where(blocked_id: id)
   end
