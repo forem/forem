@@ -94,7 +94,7 @@ class UsersController < ApplicationController
 
       flash[:settings_notice] = "Your #{provider.capitalize} account was successfully removed."
     else
-      flash[:error] = "An error occurred. Please try again or send an email to: yo@dev.to"
+      flash[:error] = "An error occurred. Please try again or send an email to: #{ApplicationConfig['DEFAULT_SITE_EMAIL']}"
     end
     redirect_to "/settings/#{@tab}"
   end
