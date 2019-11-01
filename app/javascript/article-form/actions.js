@@ -18,6 +18,20 @@ export function previewArticle(payload, successCb, failureCb) {
 
 export function getArticle() {}
 
+function processPayload(payload) {
+  const {
+    previewShowing,
+    helpShowing,
+    previewResponse,
+    helpHTML,
+    imageManagementShowing,
+    moreConfigShowing,
+    errors,
+    ...neededPayload
+  } = payload;
+  return neededPayload;
+}
+
 export function submitArticle(payload, clearStorage, errorCb, failureCb) {
   const method = payload.id ? 'PUT' : 'POST';
   const url = payload.id ? `/articles/${payload.id}` : '/articles';
@@ -29,7 +43,7 @@ export function submitArticle(payload, clearStorage, errorCb, failureCb) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      article: payload,
+      article: processPayload(payload),
     }),
     credentials: 'same-origin',
   })

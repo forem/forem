@@ -49,6 +49,7 @@ class User < ApplicationRecord
   has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
+  has_many :user_blocks
   has_one :pro_membership, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
@@ -105,26 +106,29 @@ class User < ApplicationRecord
             format: /\A(http(s)?:\/\/)?(www.twitch.tv|twitch.tv)\/.*\Z/
   validates :shirt_gender,
             inclusion: { in: %w[unisex womens],
-                         message: "%{value} is not a valid shirt style" },
+                         message: "%<value>s is not a valid shirt style" },
             allow_blank: true
   validates :shirt_size,
             inclusion: { in: %w[xs s m l xl 2xl 3xl 4xl],
-                         message: "%{value} is not a valid size" },
+                         message: "%<value>s is not a valid size" },
             allow_blank: true
   validates :tabs_or_spaces,
             inclusion: { in: %w[tabs spaces],
-                         message: "%{value} is not a valid answer" },
+                         message: "%<value>s is not a valid answer" },
             allow_blank: true
   validates :editor_version,
             inclusion: { in: %w[v1 v2],
-                         message: "%{value} must be either v1 or v2" }
+                         message: "%<value>s must be either v1 or v2" }
 
   validates :config_theme,
-            inclusion: { in: %w[default night_theme pink_theme minimal_light_theme],
-                         message: "%{value} is not a valid theme" }
+            inclusion: { in: %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme],
+                         message: "%<value>s is not a valid theme" }
   validates :config_font,
-            inclusion: { in: %w[default sans_serif comic_sans],
-                         message: "%{value} must be either default or sans serif" }
+            inclusion: { in: %w[default sans_serif monospace comic_sans],
+                         message: "%<value>s is not a valid font selection" }
+  validates :config_navbar,
+            inclusion: { in: %w[default static],
+                         message: "%<value>s is not a valid navbar value" }
   validates :shipping_country,
             length: { in: 2..2 },
             allow_blank: true
@@ -376,6 +380,24 @@ class User < ApplicationRecord
     OrganizationMembership.exists?(user: user, organization: organization, type_of_user: "admin")
   end
 
+  def block; end
+
+  def all_blocking
+    UserBlock.where(blocker_id: id)
+  end
+
+  def all_blocked_by
+    UserBlock.where(blocked_id: id)
+  end
+
+  def blocking?(blocked_id)
+    UserBlock.blocking?(id, blocked_id)
+  end
+
+  def blocked_by?(blocker_id)
+    UserBlock.blocking?(blocker_id, id)
+  end
+
   def unique_including_orgs_and_podcasts
     errors.add(:username, "is taken.") if Organization.find_by(slug: username) || Podcast.find_by(slug: username) || Page.find_by(slug: username)
   end
@@ -502,6 +524,7 @@ class User < ApplicationRecord
   def set_config_input
     self.config_theme = config_theme.tr(" ", "_")
     self.config_font = config_font.tr(" ", "_")
+    self.config_navbar = config_navbar.tr(" ", "_")
   end
 
   def check_for_username_change

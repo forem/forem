@@ -11,6 +11,7 @@ class BufferedArticlesController < ApplicationController
     if Rails.env.production?
       Article.
         where("last_buffered > ? OR published_at > ?", 24.hours.ago, 20.minutes.ago).
+        select(:path).
         map { |a| "https://#{ApplicationConfig['APP_DOMAIN']}#{a.path}" }
     else
       Article.all.map { |a| "https://#{ApplicationConfig['APP_DOMAIN']}#{a.path}" }

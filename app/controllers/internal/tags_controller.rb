@@ -1,4 +1,5 @@
 class Internal::TagsController < Internal::ApplicationController
+  include AuditInstrumentation
   layout "internal"
 
   def index
@@ -23,6 +24,8 @@ class Internal::TagsController < Internal::ApplicationController
     add_moderator if @add_user_id
     remove_moderator if @remove_user_id
     @tag.update!(tag_params)
+
+    notify(:internal, current_user, __method__) { tag_params.dup }
     redirect_to "/internal/tags/#{params[:id]}"
   end
 

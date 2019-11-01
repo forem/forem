@@ -355,10 +355,22 @@ preact-render-spy (1 nodes)
       </h1>
       <div>
         <p>
-          DEV is where programmers share ideas and help each other grow. 🤓
+          DEV is where programmers share ideas and help each other grow.
+          <span
+            role="img"
+            aria-label="Nerd Face"
+          >
+            🤓
+          </span>
         </p>
         <p>
-          Ask questions, leave helpful comments, encourage others, and have fun! 🙌
+          Ask questions, leave helpful comments, encourage others, and have fun!
+          <span
+            role="img"
+            aria-label="Raising Hands"
+          >
+            🙌
+          </span>
         </p>
         <p>
           A few 
