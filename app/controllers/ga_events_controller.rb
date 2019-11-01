@@ -33,7 +33,7 @@ class GaEventsController < ApplicationController
   end
 
   def todays_key
-    Rails.cache.fetch("daily_random_key", expires_in: 48.hours) do
+    RedisRailsCache.fetch("daily_random_key", expires_in: 48.hours) do
       SecureRandom.random_bytes(32)
     end
   end
