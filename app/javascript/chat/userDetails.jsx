@@ -64,7 +64,7 @@ export default class UserDetails extends Component {
       if (user[metaProp]) {
         let { className, hostUrl, srcImage, imageAltText } = userDetailsConfig[metaProp];
         socialIcons.push(
-          <a href={`${hostUrl}${user[metaProp]}`} target="_blank">
+          <a href={`${hostUrl}${user[metaProp]}`} target="_blank" rel="noopener noreferrer">
             <img
               className={className}
               src={srcImage}
