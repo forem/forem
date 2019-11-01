@@ -2,6 +2,9 @@ export default function initBlock() {
   const blockButton = document.getElementById(
     'user-profile-dropdownmenu-block-button',
   );
+  if (!blockButton) { // button not always present when this is called 
+    return
+  }
   const { profileUserId } = blockButton.dataset;
 
   function unblock() {
