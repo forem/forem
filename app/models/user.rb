@@ -236,7 +236,7 @@ class User < ApplicationRecord
   def followed_articles
     Article.tagged_with(cached_followed_tag_names, any: true).
       union(Article.where(user_id: cached_following_users_ids)).
-      where(language: cached_preferred_langs, published: true)
+      where(language: preferred_languages_array, published: true)
   end
 
   def cached_following_users_ids
@@ -263,12 +263,6 @@ class User < ApplicationRecord
       expires_in: 120.hours,
     ) do
       Follow.where(follower_id: id, followable_type: "Podcast").pluck(:followable_id)
-    end
-  end
-
-  def cached_preferred_langs
-    Rails.cache.fetch("user-#{id}-#{updated_at}/cached_preferred_langs", expires_in: 24.hours) do
-      preferred_languages_array
     end
   end
 
