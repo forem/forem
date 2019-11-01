@@ -15,7 +15,6 @@ env:
     - RAILS_ENV=test
     - CC_TEST_REPORTER_ID=f39e060a8b1a558ebd8aff75d5b9760bf1ae98f3f85d628ae28814f3c66438cd
     - DATABASE_URL=postgres://postgres@localhost/
-    - COVERAGE=true
 branches:
   only:
     - master
@@ -48,6 +47,8 @@ deploy:
   api_key: '$HEROKU_AUTH_TOKEN'
   app:
     master: practicaldev
+  on:
+    condition: $TRAVIS_COMMIT_MESSAGE =~ \[deploy\]
 after_deploy:
   - bash after_deploy.sh
 notifications:
