@@ -32,10 +32,10 @@ RSpec.describe "UserBlock", type: :request do
     end
   end
 
-  describe "POST /user_blocks/:blocked_id or #create" do
+  describe "POST /user_blocks or #create" do
     it "renders 'not-logged-in' when not logged in" do
       sign_out blocker
-      post "/user_blocks/#{blocked.id}", params: { user_block: { blocked_id: blocked.id } }
+      post "/user_blocks", params: { user_block: { blocked_id: blocked.id } }
       json_response = JSON.parse(response.body)
       expect(response.content_type).to eq "application/json"
       expect(response.status).to eq 401
@@ -43,14 +43,14 @@ RSpec.describe "UserBlock", type: :request do
     end
 
     it "creates the correct user_block" do
-      post "/user_blocks/#{blocked.id}", params: { user_block: { blocked_id: blocked.id } }
+      post "/user_blocks", params: { user_block: { blocked_id: blocked.id } }
       expect(UserBlock.count).to eq 1
       expect(UserBlock.first.blocker_id).to eq blocker.id
       expect(UserBlock.first.blocked_id).to eq blocked.id
     end
 
     it "returns a JSON response with blocked" do
-      post "/user_blocks/#{blocked.id}", params: { user_block: { blocked_id: blocked.id } }
+      post "/user_blocks", params: { user_block: { blocked_id: blocked.id } }
       json_response = JSON.parse(response.body)
       expect(response.content_type).to eq "application/json"
       expect(json_response["result"]).to eq "blocked"
@@ -60,7 +60,7 @@ RSpec.describe "UserBlock", type: :request do
       chat_channel = create(:chat_channel, channel_type: "direct", slug: "#{blocker.username}/#{blocked.username}", status: "active")
       create(:chat_channel_membership, chat_channel_id: chat_channel.id, user_id: blocker.id)
       create(:chat_channel_membership, chat_channel_id: chat_channel.id, user_id: blocked.id)
-      post "/user_blocks/#{blocked.id}", params: { user_block: { blocked_id: blocked.id } }
+      post "/user_blocks", params: { user_block: { blocked_id: blocked.id } }
       expect(chat_channel.reload.status).to eq "blocked"
     end
   end
