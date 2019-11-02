@@ -337,7 +337,7 @@ class User < ApplicationRecord
   end
 
   def moderator_for_tags
-    Rails.cache.fetch("user-#{id}/tag_moderators_list", expires_in: 200.hours) do
+    RedisRailsCache.fetch("user-#{id}/tag_moderators_list", expires_in: 200.hours) do
       tag_ids = roles.where(name: "tag_moderator").pluck(:resource_id)
       Tag.where(id: tag_ids).pluck(:name)
     end

@@ -17,7 +17,7 @@ module AssignTagModerator
   def self.add_tag_mod_role(user, tag)
     user.update(email_tag_mod_newsletter: true) if user.email_tag_mod_newsletter == false
     user.add_role(:tag_moderator, tag)
-    Rails.cache.delete("user-#{user.id}/tag_moderators_list")
+    RedisRailsCache.delete("user-#{user.id}/tag_moderators_list")
     MailchimpBot.new(user).manage_tag_moderator_list
   end
 
@@ -35,7 +35,7 @@ module AssignTagModerator
   def self.remove_tag_moderator(user, tag)
     user.remove_role(:tag_moderator, tag)
     user.update(email_tag_mod_newsletter: false) if user.email_tag_mod_newsletter == true
-    Rails.cache.delete("user-#{user.id}/tag_moderators_list")
+    RedisRailsCache.delete("user-#{user.id}/tag_moderators_list")
     MailchimpBot.new(user).manage_tag_moderator_list
   end
 end
