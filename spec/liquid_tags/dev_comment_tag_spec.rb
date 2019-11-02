@@ -36,5 +36,19 @@ RSpec.describe DevCommentTag, type: :liquid_template do
     it "embeds the comment published timestamp" do
       expect(rendered_tag).to include(comment.decorate.published_timestamp)
     end
+
+    it "displays edited if edited after grace period" do
+      comment.update_column(:edited_at, 20.minutes.from_now)
+      expect(rendered_tag).to include("comment-edited-notice")
+    end
+
+    it "displays does not display edited if edited during grace period" do
+      comment.update_column(:edited_at, 1.minute.from_now)
+      expect(rendered_tag).not_to include("comment-edited-notice")
+    end
+
+    it "displays does not display edited if not edited" do
+      expect(rendered_tag).not_to include("comment-edited-notice")
+    end
   end
 end

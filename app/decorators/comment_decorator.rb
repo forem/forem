@@ -12,4 +12,14 @@ class CommentDecorator < ApplicationDecorator
 
     created_at.utc.iso8601
   end
+
+  def edited_timestamp
+    return "" if edited_at.nil?
+
+    edited_at.utc.iso8601
+  end
+
+  def display_edited?
+    edited_at && (edited_at - created_at) > 3.minutes
+  end
 end

@@ -608,6 +608,16 @@ a.header-link {
   .low-quality-comment > *:not(.dropdown) {
     opacity: 0.5;
   }
+  .comment-edited-notice {
+    font-size: 0.66em;
+    font-style: italic;
+    margin-top: -6px;
+    @include themeable(
+      color,
+      theme-secondary-color,
+      $medium-gray
+    );
+  }
   .body {
     padding: 1px;
     padding-left: 1.5%;
