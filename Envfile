@@ -117,8 +117,8 @@ variable :FASTLY_API_KEY, :String, default: "Optional"
 variable :FASTLY_SERVICE_ID, :String, default: "Optional"
 
 # Honeycomb for monitoring and observability
-# https://www.honeycomb.io/
-variable :HONEYCOMB_API_KEY, :String, default: "Optional"
+# (https://www.honeycomb.io/)
+variable :HONEYCOMB_API_KEY, :String, default: ""
 
 # Google analytic
 # (https://developers.google.com/analytics/devguides/reporting/core/v4)

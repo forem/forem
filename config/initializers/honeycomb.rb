@@ -1,5 +1,8 @@
+honeycomb_api_key = ApplicationConfig["HONEYCOMB_API_KEY"]
+
+# Honeycomb automatic Rails integration
 Honeycomb.configure do |config|
-  config.write_key = ENV["HONEYCOMB_API_KEY"]
+  config.write_key = honeycomb_api_key
   config.dataset = "rails"
   config.notification_events = %w[
     sql.active_record
@@ -12,3 +15,6 @@ Honeycomb.configure do |config|
     deliver.action_mailer
   ].freeze
 end
+
+# here we create an additional Honeycomb client that can be used to send custom events
+HoneycombClient = Libhoney::Client.new(writekey: honeycomb_api_key, dataset: "dev-ruby")
