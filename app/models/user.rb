@@ -325,7 +325,7 @@ class User < ApplicationRecord
   end
 
   def pro?
-    Rails.cache.fetch("user-#{id}/has_pro_membership", expires_in: 200.hours) do
+    RedisRailsCache.fetch("user-#{id}/has_pro_membership", expires_in: 200.hours) do
       pro_membership&.active? || has_role?(:pro)
     end
   end
