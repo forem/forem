@@ -17,4 +17,8 @@ Honeycomb.configure do |config|
 end
 
 # here we create an additional Honeycomb client that can be used to send custom events
-HoneycombClient = Libhoney::Client.new(writekey: honeycomb_api_key, dataset: "dev-ruby")
+HoneycombClient = if Rails.env.test?
+                    Libhoney::TestClient.new
+                  else
+                    Libhoney::Client.new(writekey: honeycomb_api_key, dataset: "dev-ruby")
+                  end
