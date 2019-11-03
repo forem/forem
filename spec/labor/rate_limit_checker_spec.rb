@@ -5,13 +5,8 @@ RSpec.describe RateLimitChecker do
   let(:article) { create(:article, user_id: user.id) }
 
   describe "self.daily_account_follow_limit " do
-    it "returns 500 by default" do
-      expect(described_class.daily_account_follow_limit).to eq(500)
-    end
-
-    it 'returns the value set in ENV["RATE_LIMIT_FOLLOW_COUNT_DAILY"] as an integer if it\'s set' do
-      ENV["RATE_LIMIT_FOLLOW_COUNT_DAILY"] = "20"
-      expect(described_class.daily_account_follow_limit).to eq(20)
+    it 'returns the value set in ApplicationConfig["RATE_LIMIT_FOLLOW_COUNT_DAILY"' do
+      expect(described_class.daily_account_follow_limit).to eq(ApplicationConfig["RATE_LIMIT_FOLLOW_COUNT_DAILY"])
     end
   end
 
