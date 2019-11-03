@@ -240,7 +240,7 @@ class User < ApplicationRecord
   end
 
   def cached_following_users_ids
-    Rails.cache.fetch(
+    RedisRailsCache.fetch(
       "user-#{id}-#{updated_at}-#{following_users_count}/following_users_ids",
       expires_in: 120.hours,
     ) do
