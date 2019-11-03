@@ -45,7 +45,7 @@ describe ArticlesHelper do
       it { is_expected.to include('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 612 612" class="icon-img" role="img"') }
     end
 
-    context "with a width and height and with #internal_navigation? set to false" do
+    context "with width and height arguments, and with #internal_navigation? set to false" do
       subject { helper.image_tag_or_inline_svg("twitter", width: 18, height: 18) }
 
       before { allow(helper).to receive(:internal_navigation?).and_return(false) }
