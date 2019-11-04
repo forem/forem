@@ -207,6 +207,7 @@ exports[`<Chat /> should load chat 1`] = `
             <button
               class="messagecomposer__submit"
               onClick={[Function]}
+              type="button"
             >
               SEND
             </button>

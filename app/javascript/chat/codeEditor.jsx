@@ -2,7 +2,12 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 export default class CodeEditor extends Component {
+  static propTypes = {
+    activeChannelId: PropTypes.string.isRequired,
+  };
+
   componentDidMount() {
+    const { activeChannelId } = this.props;
     import('codemirror').then(CodeMirror => {
       const editor = document.getElementById('codeeditor');
       const myCodeMirror = CodeMirror(editor, {
@@ -13,11 +18,11 @@ export default class CodeEditor extends Component {
       myCodeMirror.setSize('100%', '100%');
       // Initial trigger:
       const channel = window.pusher.channel(
-        `presence-channel-${this.props.activeChannelId}`,
+        `presence-channel-${activeChannelId}`,
       );
       channel.trigger('client-livecode', {
         context: 'initializing-live-code-channel',
-        channel: `presence-channel-${this.props.activeChannelId}`,
+        channel: `presence-channel-${activeChannelId}`,
       });
       // Coding trigger:
       myCodeMirror.on('keyup', cm => {

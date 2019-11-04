@@ -10,18 +10,21 @@ exports[`<Message /> should render and test snapshot 1`] = `
     <a
       data-content="users/undefined"
       href="/asdf"
+      rel="noopener noreferrer"
       target="_blank"
     >
       <img
         alt="asdf profile"
         class="chatmessagebody__profileimage"
         data-content="users/undefined"
+        role="presentation"
         src=""
       />
     </a>
   </div>
   <div
     class="chatmessage__body"
+    role="presentation"
   >
     <span
       class="chatmessagebody__username"
@@ -35,6 +38,7 @@ exports[`<Message /> should render and test snapshot 1`] = `
         class="chatmessagebody__username--link"
         data-content="users/undefined"
         href="/asdf"
+        rel="noopener noreferrer"
         target="_blank"
       >
         asdf
