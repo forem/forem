@@ -5,12 +5,10 @@ exports[`<Content /> as loading-user should render and test snapshot 1`] = `
   class="activechatchannel__activecontent"
   id="chat_activecontent"
   onClick={false}
-  role="presentation"
 >
   <button
     class="activechatchannel__activecontentexitbutton"
     data-content="exit"
-    type="button"
   >
     ×
   </button>

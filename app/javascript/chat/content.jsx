@@ -6,15 +6,37 @@ import ChannelDetails from './channelDetails';
 import UserDetails from './userDetails';
 import Article from './article';
 
-function Display(props) {
-  const {
-    resource,
-    activeChannelId,
-    activeChannel,
-    pusherKey,
-    githubToken,
-  } = props;
-  if (resource.type_of === 'loading-user') {
+export default class Content extends Component {
+  static propTypes = {
+    resource: PropTypes.object,
+    activeChannelId: PropTypes.number,
+    pusherKey: PropTypes.string,
+  };
+
+  render() {
+    if (!this.props.resource) {
+      return '';
+    }
+    return (
+      <div
+        className="activechatchannel__activecontent"
+        id="chat_activecontent"
+        onClick={this.props.onTriggerContent}
+      >
+        <button
+          className="activechatchannel__activecontentexitbutton"
+          data-content="exit"
+        >
+          ×
+        </button>
+        {display(this.props)}
+      </div>
+    );
+  }
+}
+
+function display(props) {
+  if (props.resource.type_of === 'loading-user') {
     return (
       <div
         style={{
@@ -28,7 +50,7 @@ function Display(props) {
       />
     );
   }
-  if (resource.type_of === 'loading-user') {
+  if (props.resource.type_of === 'loading-user') {
     return (
       <div
         style={{
@@ -41,75 +63,42 @@ function Display(props) {
       />
     );
   }
-  if (resource.type_of === 'user') {
+  if (props.resource.type_of === 'user') {
     return (
       <UserDetails
-        user={resource}
-        activeChannelId={activeChannelId}
-        activeChannel={activeChannel}
+        user={props.resource}
+        activeChannelId={props.activeChannelId}
+        activeChannel={props.activeChannel}
       />
     );
   }
-  if (resource.type_of === 'article') {
-    return <Article resource={resource} />;
+  if (props.resource.type_of === 'article') {
+    return <Article resource={props.resource} />;
   }
-  if (resource.type_of === 'github') {
+  if (props.resource.type_of === 'github') {
     return (
       <GithubRepo
-        activeChannelId={activeChannelId}
-        pusherKey={pusherKey}
-        githubToken={githubToken}
-        resource={resource}
+        activeChannelId={props.activeChannelId}
+        pusherKey={props.pusherKey}
+        githubToken={props.githubToken}
+        resource={props.resource}
       />
     );
   }
   if (props.resource.type_of === 'chat_channel') {
     return (
-      <ChannelDetails channel={resource} activeChannelId={activeChannelId} />
+      <ChannelDetails
+        channel={props.resource}
+        activeChannelId={props.activeChannelId}
+      />
     );
   }
   if (props.resource.type_of === 'code_editor') {
     return (
-      <CodeEditor activeChannelId={activeChannelId} pusherKey={pusherKey} />
-    );
-  }
-}
-
-Display.propTypes = {
-  activeChannelId: PropTypes.string.isRequired,
-  resource: PropTypes.objectOf().isRequired,
-  activeChannel: PropTypes.objectOf().isRequired,
-  pusherKey: PropTypes.string.isRequired,
-  githubToken: PropTypes.string.isRequired,
-};
-
-export default class Content extends Component {
-  static propTypes = {
-    resource: PropTypes.objectOf().isRequired,
-    onTriggerContent: PropTypes.func.isRequired,
-  };
-
-  render() {
-    const { resource, onTriggerContent } = this.props;
-    if (!resource) {
-      return '';
-    }
-    return (
-      <div
-        role="presentation"
-        className="activechatchannel__activecontent"
-        id="chat_activecontent"
-        onClick={onTriggerContent}
-      >
-        <button
-          type="button"
-          className="activechatchannel__activecontentexitbutton"
-          data-content="exit"
-        >
-          ×
-        </button>
-        {Display(this.props)}
-      </div>
+      <CodeEditor
+        activeChannelId={props.activeChannelId}
+        pusherKey={props.pusherKey}
+      />
     );
   }
 }
