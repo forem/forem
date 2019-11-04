@@ -7,11 +7,11 @@ module Streams
       end
 
       def call
-        token, exp = Rails.cache.fetch(ACCESS_TOKEN_AND_EXPIRATION_CACHE_KEY)
+        token, exp = RedisRailsCache.fetch(ACCESS_TOKEN_AND_EXPIRATION_CACHE_KEY)
 
         if token.nil? || Time.zone.now >= exp
           token, exp = get_new_token
-          Rails.cache.write(ACCESS_TOKEN_AND_EXPIRATION_CACHE_KEY, [token, exp])
+          RedisRailsCache.write(ACCESS_TOKEN_AND_EXPIRATION_CACHE_KEY, [token, exp])
         end
 
         token
