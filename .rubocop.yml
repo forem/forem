@@ -111,6 +111,11 @@ Style/FrozenStringLiteralComment:
     to help transition from Ruby 2.3.0 to Ruby 3.0.
   Enabled: false
 
+# https://github.com/rubocop-hq/rubocop/blob/master/manual/cops_style.md#stylehashsyntax
+Style/HashSyntax:
+  Enabled: true
+  EnforcedStyle: ruby19_no_mixed_keys
+
 Style/IfUnlessModifier:
   Description: >-
     Favor modifier if/unless usage when you have a

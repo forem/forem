@@ -73,6 +73,7 @@ RSpec.describe "PageViews", type: :request do
         post "/page_views", params: { page_view: { article_id: article.id } }
         expect(article.reload.organic_page_views_count).to eq(20)
       end
+
       it "sends referrer" do
         post "/page_views", params: {
           page_view: {

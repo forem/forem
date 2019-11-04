@@ -26,4 +26,4 @@ No. You are granting DEV a license to use and distribute your contribution witho
 
 ## What if I have other questions?
 
-Please check out our main repository or send an email to yo@dev.to.
+Please check out our main repository or send an email to [yo@dev.to](mailto:yo@dev.to).

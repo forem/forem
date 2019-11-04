@@ -49,6 +49,7 @@ class User < ApplicationRecord
   has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
+  has_many :user_blocks
   has_one :pro_membership, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
@@ -105,26 +106,29 @@ class User < ApplicationRecord
             format: /\A(http(s)?:\/\/)?(www.twitch.tv|twitch.tv)\/.*\Z/
   validates :shirt_gender,
             inclusion: { in: %w[unisex womens],
-                         message: "%{value} is not a valid shirt style" },
+                         message: "%<value>s is not a valid shirt style" },
             allow_blank: true
   validates :shirt_size,
             inclusion: { in: %w[xs s m l xl 2xl 3xl 4xl],
-                         message: "%{value} is not a valid size" },
+                         message: "%<value>s is not a valid size" },
             allow_blank: true
   validates :tabs_or_spaces,
             inclusion: { in: %w[tabs spaces],
-                         message: "%{value} is not a valid answer" },
+                         message: "%<value>s is not a valid answer" },
             allow_blank: true
   validates :editor_version,
             inclusion: { in: %w[v1 v2],
-                         message: "%{value} must be either v1 or v2" }
+                         message: "%<value>s must be either v1 or v2" }
 
   validates :config_theme,
-            inclusion: { in: %w[default night_theme pink_theme minimal_light_theme],
-                         message: "%{value} is not a valid theme" }
+            inclusion: { in: %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme],
+                         message: "%<value>s is not a valid theme" }
   validates :config_font,
-            inclusion: { in: %w[default sans_serif comic_sans],
-                         message: "%{value} must be either default or sans serif" }
+            inclusion: { in: %w[default sans_serif monospace comic_sans],
+                         message: "%<value>s is not a valid font selection" }
+  validates :config_navbar,
+            inclusion: { in: %w[default static],
+                         message: "%<value>s is not a valid navbar value" }
   validates :shipping_country,
             length: { in: 2..2 },
             allow_blank: true
@@ -232,7 +236,7 @@ class User < ApplicationRecord
   def followed_articles
     Article.tagged_with(cached_followed_tag_names, any: true).
       union(Article.where(user_id: cached_following_users_ids)).
-      where(language: cached_preferred_langs, published: true)
+      where(language: preferred_languages_array, published: true)
   end
 
   def cached_following_users_ids
@@ -245,7 +249,7 @@ class User < ApplicationRecord
   end
 
   def cached_following_organizations_ids
-    Rails.cache.fetch(
+    RedisRailsCache.fetch(
       "user-#{id}-#{updated_at}-#{following_orgs_count}/following_organizations_ids",
       expires_in: 120.hours,
     ) do
@@ -254,17 +258,11 @@ class User < ApplicationRecord
   end
 
   def cached_following_podcasts_ids
-    Rails.cache.fetch(
+    RedisRailsCache.fetch(
       "user-#{id}-#{updated_at}-#{last_followed_at}/following_podcasts_ids",
       expires_in: 120.hours,
     ) do
       Follow.where(follower_id: id, followable_type: "Podcast").pluck(:followable_id)
-    end
-  end
-
-  def cached_preferred_langs
-    Rails.cache.fetch("user-#{id}-#{updated_at}/cached_preferred_langs", expires_in: 24.hours) do
-      preferred_languages_array
     end
   end
 
@@ -327,19 +325,19 @@ class User < ApplicationRecord
   end
 
   def pro?
-    Rails.cache.fetch("user-#{id}/has_pro_membership", expires_in: 200.hours) do
+    RedisRailsCache.fetch("user-#{id}/has_pro_membership", expires_in: 200.hours) do
       pro_membership&.active? || has_role?(:pro)
     end
   end
 
   def trusted
-    Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
+    RedisRailsCache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
       has_role? :trusted
     end
   end
 
   def moderator_for_tags
-    Rails.cache.fetch("user-#{id}/tag_moderators_list", expires_in: 200.hours) do
+    RedisRailsCache.fetch("user-#{id}/tag_moderators_list", expires_in: 200.hours) do
       tag_ids = roles.where(name: "tag_moderator").pluck(:resource_id)
       Tag.where(id: tag_ids).pluck(:name)
     end
@@ -374,6 +372,24 @@ class User < ApplicationRecord
 
   def org_admin?(organization)
     OrganizationMembership.exists?(user: user, organization: organization, type_of_user: "admin")
+  end
+
+  def block; end
+
+  def all_blocking
+    UserBlock.where(blocker_id: id)
+  end
+
+  def all_blocked_by
+    UserBlock.where(blocked_id: id)
+  end
+
+  def blocking?(blocked_id)
+    UserBlock.blocking?(id, blocked_id)
+  end
+
+  def blocked_by?(blocker_id)
+    UserBlock.blocking?(blocker_id, id)
   end
 
   def unique_including_orgs_and_podcasts
@@ -502,6 +518,7 @@ class User < ApplicationRecord
   def set_config_input
     self.config_theme = config_theme.tr(" ", "_")
     self.config_font = config_font.tr(" ", "_")
+    self.config_navbar = config_navbar.tr(" ", "_")
   end
 
   def check_for_username_change

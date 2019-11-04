@@ -9,10 +9,41 @@ RSpec.describe "Api::V0::Articles", type: :request do
   end
 
   describe "GET /api/articles" do
+    it "has correct keys in the response" do
+      article.update_columns(organization_id: organization.id)
+      get api_articles_path
+
+      index_keys = %w[
+        type_of id title description cover_image readable_publish_date social_image
+        tag_list tags slug path url canonical_url comments_count positive_reactions_count
+        collection_id created_at edited_at crossposted_at published_at last_comment_at
+        published_timestamp user organization flare_tag
+      ]
+
+      expect(json_response.first.keys).to match_array index_keys
+    end
+
+    it "returns correct tag list" do
+      get api_articles_path
+
+      expect(json_response.first["tag_list"]).to be_a_kind_of Array
+    end
+
+    it "returns correct tags" do
+      get api_articles_path
+
+      expect(json_response.first["tags"]).to be_a_kind_of String
+    end
+
     context "without params" do
       it "returns json response" do
         get api_articles_path
         expect(response.content_type).to eq("application/json")
+      end
+
+      it "returns nothing if params state=all is not found" do
+        get api_articles_path(state: "all")
+        expect(json_response.size).to eq(0)
       end
 
       it "returns featured articles if no param is given" do
@@ -139,6 +170,32 @@ RSpec.describe "Api::V0::Articles", type: :request do
   end
 
   describe "GET /api/articles/:id" do
+    it "has correct keys in the response" do
+      article.update_columns(organization_id: organization.id)
+      get api_article_path(article.id)
+
+      show_keys = %w[
+        type_of id title description cover_image readable_publish_date social_image
+        tag_list tags slug path url canonical_url comments_count positive_reactions_count
+        collection_id created_at edited_at crossposted_at published_at last_comment_at
+        published_timestamp body_html body_markdown user organization flare_tag
+      ]
+
+      expect(json_response.keys).to match_array show_keys
+    end
+
+    it "returns correct tag list" do
+      get api_article_path(article.id)
+
+      expect(json_response["tag_list"]).to be_a_kind_of String
+    end
+
+    it "returns correct tags" do
+      get api_article_path(article.id)
+
+      expect(json_response["tags"]).to be_a_kind_of Array
+    end
+
     it "returns proper article" do
       get api_article_path(article.id)
       expect(json_response).to include(

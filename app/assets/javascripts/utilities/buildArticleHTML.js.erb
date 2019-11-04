@@ -113,7 +113,7 @@ function buildArticleHTML(article) {
       timeAgoInWords = timeAgo(article.published_at_int);
     }
 
-    return '<div class="single-article single-article-small-pic">\
+    return '<div class="single-article single-article-small-pic" data-content-user-id="'+article.user_id+'">\
       '+videoHTML+'\
       '+orgHeadline+'\
       <div class="small-pic">\

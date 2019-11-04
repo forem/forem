@@ -106,7 +106,7 @@ RSpec.describe MarkdownFixer do
       expect(result).to eq(expected_result)
     end
 
-    context 'when description is empty' do
+    context "when description is empty" do
       it "escapes title and description" do
         result = described_class.
           fix_all("---\ntitle: #{sample_text}\ndescription:\ntags: \n---\n")
@@ -135,6 +135,7 @@ RSpec.describe MarkdownFixer do
       expect(described_class.underscores_in_usernames(test_string1)).to eq(expected_result1)
       expect(described_class.underscores_in_usernames(test_string2)).to eq(expected_result2)
     end
+
     it "does not escape underscores when it is not a username" do
       test_string = "_make this cursive_"
       expected_result = "_make this cursive_"

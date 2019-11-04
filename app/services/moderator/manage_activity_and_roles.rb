@@ -148,7 +148,7 @@ module Moderator
     end
 
     def update_trusted_cache
-      Rails.cache.delete("user-#{@user.id}/has_trusted_role")
+      RedisRailsCache.delete("user-#{@user.id}/has_trusted_role")
       @user.trusted
     end
 
