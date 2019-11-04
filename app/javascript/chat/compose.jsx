@@ -5,11 +5,12 @@ export default class Chat extends Component {
   static propTypes = {
     handleKeyDown: PropTypes.func.isRequired,
     handleSubmitOnClick: PropTypes.func.isRequired,
-    activeChannelId: PropTypes.number,
+    activeChannelId: PropTypes.number.isRequired,
   };
 
   shouldComponentUpdate(nextProps) {
-    return this.props.activeChannelId != nextProps.activeChannelId;
+    const { activeChannelId } = this.props;
+    return activeChannelId !== nextProps.activeChannelId;
   }
 
   render() {
@@ -25,6 +26,7 @@ export default class Chat extends Component {
           maxLength="1000"
         />
         <button
+          type="button"
           className="messagecomposer__submit"
           onClick={handleSubmitOnClick}
         >

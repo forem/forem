@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+// eslint-disable-next-line import/no-unresolved
 import ConfigImage from 'images/three-dots.svg';
-import GroupImage from 'images/organization.svg';
 
 const Channels = ({
   activeChannelId,
@@ -70,9 +70,11 @@ const Channels = ({
       <div className="chatchannels__channelslistheader">
         <span role="img" aria-label="emoji">
           👋
-        </span>{' '}
+        </span>
+        {' '}
         Welcome to
-        <b> DEV Connect</b>! You may message anyone you mutually follow.
+        <b> DEV Connect</b>
+! You may message anyone you mutually follow.
       </div>
     );
   }
@@ -111,12 +113,12 @@ const Channels = ({
 
 Channels.propTypes = {
   activeChannelId: PropTypes.number.isRequired,
-  chatChannels: PropTypes.array.isRequired,
+  chatChannels: PropTypes.arrayOf(PropTypes.objectOf()).isRequired,
   handleSwitchChannel: PropTypes.func.isRequired,
   expanded: PropTypes.bool.isRequired,
   filterQuery: PropTypes.string.isRequired,
   channelsLoaded: PropTypes.bool.isRequired,
-  incomingVideoCallChannelIds: PropTypes.array.isRequired,
+  incomingVideoCallChannelIds: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default Channels;
