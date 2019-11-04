@@ -7,8 +7,6 @@ RSpec.describe Message, type: :model do
   let(:long_text) { Faker::Hipster.words(number: 1500) }
 
   describe "validations" do
-    subject { build(:message, :ignore_after_callback) }
-
     before do
       allow(ChatChannel).to receive(:find).and_return(ChatChannel.new)
     end
