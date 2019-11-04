@@ -40,6 +40,7 @@ exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
   >
     <a
       href="https://twitter.com/bojacktwitter"
+      rel="noopener noreferrer"
       target="_blank"
     >
       <img
@@ -55,6 +56,7 @@ exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
     </a>
     <a
       href="https://github.com/bojackgithub"
+      rel="noopener noreferrer"
       target="_blank"
     >
       <img
@@ -70,6 +72,7 @@ exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
     </a>
     <a
       href="http://bojackhorseman.com"
+      rel="noopener noreferrer"
       target="_blank"
     >
       <img
@@ -254,6 +257,7 @@ exports[`<UserDetails /> for user2 should render and test snapshot 1`] = `
   >
     <a
       href="https://twitter.com/mrpbtwitter"
+      rel="noopener noreferrer"
       target="_blank"
     >
       <img
@@ -269,6 +273,7 @@ exports[`<UserDetails /> for user2 should render and test snapshot 1`] = `
     </a>
     <a
       href="https://github.com/mrpbgithub"
+      rel="noopener noreferrer"
       target="_blank"
     >
       <img
@@ -284,6 +289,7 @@ exports[`<UserDetails /> for user2 should render and test snapshot 1`] = `
     </a>
     <a
       href="http://mrpeanutbutter.com"
+      rel="noopener noreferrer"
       target="_blank"
     >
       <img

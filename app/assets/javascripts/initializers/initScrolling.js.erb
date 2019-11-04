@@ -199,6 +199,8 @@ function algoliaPaginate(tag){
   .then(function searchDone(content) {
     nextPage += 1;
     insertArticles(content.hits);
+    const checkBlockedContentEvent = new CustomEvent('checkBlockedContent')
+    window.dispatchEvent(checkBlockedContentEvent)
     if (content.hits.length == 0) {
       document.getElementById("loading-articles").style.display = "none"
       done = true;
