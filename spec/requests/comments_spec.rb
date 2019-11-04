@@ -37,18 +37,18 @@ RSpec.describe "Comments", type: :request do
     it "displays edited if edited after grace period" do
       comment.update_column(:edited_at, 20.minutes.from_now)
       get comment.path
-      expect(response.body).to include("comment-edited-notice")
+      expect(response.body).to include('class="comment-edited-notice comment-date')
     end
 
     it "displays does not display edited if edited during grace period" do
       comment.update_column(:edited_at, 1.minute.from_now)
       get comment.path
-      expect(response.body).not_to include("comment-edited-notice")
+      expect(response.body).not_to include('class="comment-edited-notice comment-date')
     end
 
     it "displays does not display edited if not edited" do
       get comment.path
-      expect(response.body).not_to include("comment-edited-notice")
+      expect(response.body).not_to include('class="comment-edited-notice comment-date')
     end
 
     context "when the comment a root" do
