@@ -56,6 +56,7 @@ gem "inline_svg", "~> 1.5" # Embed SVG documents in your Rails views and style t
 gem "jbuilder", "~> 2.9" # Create JSON structures via a Builder-style DSL
 gem "jquery-rails", "~> 4.3" #  A gem to automate using jQuery with Rails
 gem "kaminari", "~> 1.1" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
+gem "libhoney", "~> 1.14" # Ruby gem for sending data to Honeycomb
 gem "liquid", "~> 4.0" # A secure, non-evaling end user template engine with aesthetic markup
 gem "nokogiri", "~> 1.10" # HTML, XML, SAX, and Reader parser
 gem "octokit", "~> 4.14" # Simple wrapper for the GitHub API
