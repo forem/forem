@@ -38,23 +38,17 @@
       When adding GIFs to posts and comments, please note that there is a limit of 200 megapixels per frame/page.
       <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--OsLaFSo9--/c_fill,f_auto,fl_progressive,h_220,q_auto,w_220/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg" alt="example image, with sloan" />
     </p>
-    <pre>
-        ![Alt text of image](put-link-to-image-here)
-    </pre>
+    <pre>![Alt text of image](put-link-to-image-here)</pre>
     <figcaption> You can even add a caption using the HTML <code>figcaption</code> tag!</figcaption>
     <h3><strong>Headers</strong></h3>
     <p>Add a header to your post with this syntax:</p>
-    <pre>
-      <br># One '#' for a h1 header<br>## Two '#'s for a h2 header<br>...<br>###### Six '#'s for a h6 header
-    </pre>
+    <pre># One '#' for a h1 header<br>## Two '#'s for a h2 header<br>...<br>###### Six '#'s for a h6 header</pre>
     <h1>One '#' for a h1 header</h1>
     <h2>Two '#'s for a h2 header</h2>
     <h6>Six '#'s for a h6 header</h6>
     <h3><strong>Author Notes/Comments</strong></h3>
     <p>Add some hidden notes/comments to your article with this syntax:</p>
-    <pre>
-      &lt;!-- This won't show up in the conent! --&gt;
-    </pre>
+    <pre>&lt;!-- This won't show up in the content! --&gt;</pre>
     <h2 style="font-size:2.8em" id="liquidtags"><strong>🌊 Liquid Tags</strong></h2>
     <p>We support native
       <a href="https://shopify.github.io/liquid/" target="_blank" rel="noopener">Liquid tags</a> in our editor, but have created our own custom tags listed below:
@@ -111,12 +105,12 @@
       </dd>
       <dt><code>preview-first</code></dt>
       <dd>
-        Hides the file browser.<br>
+        Swap panes: Show the app preview on the left and the code on the right.<br>
         <code>{% glitch earthy-course preview-first %}</code>
       </dd>
       <dt><code>no-attribution</code></dt>
       <dd>
-        Hides the file browser.<br>
+        Hides the avatar of the creator(s).<br>
         <code>{% glitch earthy-course no-attribution %}</code>
       </dd>
       <dt><code>no-files</code></dt>
@@ -183,7 +177,7 @@
       <p>Just enter the full URL of the Medium article you are trying to embed.</p>
       <code>{% medium https://medium.com/s/story/boba-science-how-can-i-drink-a-bubble-tea-to-ensure-that-i-dont-finish-the-tea-before-the-bobas-7fc5fd0e442d %}</code>
       <h3><strong>SlideShare Embed</strong></h3>
-      <p>All you need is the SlideShare <code>key</code></p>
+      <p>All you need is the SlideShare <code>key</code>:</p>
       <code>{% slideshare rdOzN9kr1yK5eE %}</code>
       <h3><strong>CodePen Embed</strong></h3>
       <p>All you need is the full CodePen <code>link</code>, ending in the pen ID code, as follows:</p>
@@ -201,7 +195,7 @@
       <code>{% kotlin https://pl.kotl.in/owreUFFUG?theme=darcula&from=3&to=6&readOnly=true %}</code>
       <h3><strong>RunKit Embed</strong></h3>
       <p>Put executable code within a runkit liquid block, as follows:</p>
-      <pre>{% runkit<br>// hidden setup JavaScript code goes in this preamble area<br>const hiddenVar = 42<br>%}<br>// visible, reader-editable JavaScript code goes here<br>console.log(hiddenVar)<br>{% endrunkit %} <br></pre>
+      <pre>{% runkit<br>// hidden setup JavaScript code goes in this preamble area<br>const hiddenVar = 42<br>%}<br>// visible, reader-editable JavaScript code goes here<br>console.log(hiddenVar)<br>{% endrunkit %}<br></pre>
       <h3><strong>Stackblitz Embed</strong></h3>
       <p>All you need is the ID of the Stackblitz:</p>
       <code>{% stackblitz ball-demo %}</code>
@@ -254,19 +248,12 @@
         <p>All you need is the URL after the domain name:</p>
         <code>{% replit @WigWog/PositiveFineOpensource %}</code>
         <h3><strong>Instagram Embed</strong></h3>
-        <p>All you need is the Instagram post <code>id</code> from the URL.</p>
+        <p>All you need is the Instagram post <code>id</code> from the URL:</p>
         <code>{% instagram BXgGcAUjM39 %}</code>
         <h3><strong>Speakerdeck Tag</strong></h3>
         <p>All you need is the data-id code from the embed link:</p>
-        <pre>
-      <span style="color: gray;"># Given this embed link:</span>
-      < script async class="speakerdeck-embed"
-            data-id="<span style='color: orange;'>7e9f8c0fa0c949bd8025457181913fd0</span>"
-            data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js">< /script >
-    </pre>
-        <pre>
-      {% speakerdeck <span style="color: orange;">7e9f8c0fa0c949bd8025457181913fd0</span> %}
-    </pre>
+        <pre><span style="color: gray;"># Given this embed link:</span><br>&lt;script async class="speakerdeck-embed"<br>    data-id="<span style='color: orange;'>7e9f8c0fa0c949bd8025457181913fd0</span>"<br>    data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js"&gt;&lt;/script&gt;</pre>
+        <pre>{% speakerdeck <span style="color: orange;">7e9f8c0fa0c949bd8025457181913fd0</span> %}</pre>
         <h3><strong>Soundcloud Embed</strong></h3>
         <p>Just enter the full URL of the Soundcloud track you are trying to embed.</p>
         <code>{% soundcloud https://soundcloud.com/user-261265215/dev-to-review-episode-1 %}</code>
@@ -275,19 +262,13 @@
           Enter the Spotify URI of the Spotify track / playlist /
           album / artist / podcast episode you are trying to embed.
         </p>
-        <pre>
-      {% spotify <span style="color: #1DB954;">spotify:episode:5V4XZWqZQJvbddd31n56mf</span> %}
-    </pre>
+        <pre>{% spotify <span style="color: #1DB954;">spotify:episode:5V4XZWqZQJvbddd31n56mf</span> %}</pre>
         <h3><strong>Blogcast Tag</strong></h3>
         <p>All you need is the article id code from the embed code:</p>
-        <pre>
-      {% blogcast <span style="color: orange;">1234</span> %}
-    </pre>
+        <pre>{% blogcast <span style="color: orange;">1234</span> %}</pre>
         <h3><strong>Parler Tag</strong></h3>
         <p>Enter the full url of the Parler.io audio file you want to embed. </p>
-        <pre>
-      {% parler https://www.parler.io/audio/73240183203/d53cff009eac2ab1bc9dd8821a638823c39cbcea.7dd28611-b7fc-4cf8-9977-b6e3aaf644a1.mp3 %}
-        </pre>
+        <pre>{% parler https://www.parler.io/audio/73240183203/d53cff009eac2ab1bc9dd8821a638823c39cbcea.7dd28611-b7fc-4cf8-9977-b6e3aaf644a1.mp3 %}</pre>
         <h3><strong>Stack Exchange / Stack Overflow Tag</strong></h3>
         <p>
           You'll need the question or answer's ID code, and the site. When using <code>{% stackoverflow %}</code> as the tag, the site will default to Stack Overflow.
@@ -297,9 +278,7 @@
           <ul>
               <li>The question ID is: <code style="color: aquamarine; background-color: black;">24789130</code></li>
           </ul>
-          <pre>
-{% stackoverflow <span style="color: aquamarine;">24789130</span> %}
-          </pre>
+          <pre>{% stackoverflow <span style="color: aquamarine;">24789130</span> %}</pre>
         </p>
         <p>
           For other Stack Exchange network sites, you'll need to provide the site's name and use <code>{% stackexchange %}</code> as the tag. For example:
@@ -309,9 +288,7 @@
             <li>The question ID is: <code style="color: aquamarine; background-color: black;">169988</code></li>
           <li>The site is <code style="color: orange; background-color: black;">diy</code></li>
           </ul>
-          <pre>
-{% stackexchange <span style="color: aquamarine;">169988</span> <span style="color: orange;">diy</span> %}
-          </pre>
+          <pre>{% stackexchange <span style="color: aquamarine;">169988</span> <span style="color: orange;">diy</span> %}</pre>
         </p>
         <p>
         For answers, you can get the answer's ID code by from the answer's "Share" link. For example:
@@ -321,9 +298,7 @@
           <li>The answer ID is: <code style="color: aquamarine; background-color: black;">170185</code></li>
           <li>The site is <code style="color: orange; background-color: black;">diy</code></li>
         </ul>
-        <pre>
-{% stackexchange <span style="color: aquamarine;">170185</span> <span style="color: orange;">diy</span> %}
-        </pre>
+        <pre>{% stackexchange <span style="color: aquamarine;">170185</span> <span style="color: orange;">diy</span> %}</pre>
         </p>
         <h3><strong>Asciinema Embed</strong></h3>
         <p>All you need is the Asciinema id:</p>
