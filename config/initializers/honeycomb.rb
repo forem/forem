@@ -1,4 +1,4 @@
-if Rails.env.test?
+if Rails.env.test? || ApplicationConfig["HONEYCOMB_API_KEY"].blank?
   Honeycomb.configure do |config|
     config.client = Libhoney::TestClient.new
   end
