@@ -1,0 +1,17 @@
+name: Greetings
+
+on: [pull_request]
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/first-interaction@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        pr-message: >
+          Thank you very much for your contribution!
+
+          You can expect a message from one of the DEV team members within 24 hours. Please be sure to sign the CLA agreement. Once your PR is reviewed and all the check passes, your PR will be merge! 
+
+          Please check our [documentation]() for additional information ✌️
