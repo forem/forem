@@ -19,14 +19,7 @@
     <%= render "comments/comment_date", decorated_comment: comment.decorate %>
   </div>
   <div class="body">
-    <% if comment.decorate.display_edited? %>
-      <div class="comment-edited-notice comment-date">
-        Edited
-        <time datetime="<%= comment.decorate.edited_timestamp %>">
-          <%= comment.decorate.edited_at %>
-        </time>
-      </div>
-    <% end %>
+    <%= render "comments/edited_notice" decorated_comment: comment.decorate %>
     <%= comment.processed_html.html_safe %>
   </div>
 </div>

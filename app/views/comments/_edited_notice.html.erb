@@ -1,0 +1,8 @@
+<% if decorated_comment.display_edited? %>
+  <div class="comment-edited-notice comment-date">
+    Edited
+    <time datetime="<%= decorated_comment.edited_timestamp %>">
+      <%= decorated_comment.edited_at %>
+    </time>
+  </div>
+<% end %>
