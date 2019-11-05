@@ -216,32 +216,7 @@ Rails.application.routes.draw do
 
   get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
 
-  get "/hello-goodbye-to-the-go-go-go",
-      to: redirect("ben/hello-goodbye-to-the-go-go-go")
-  get "/dhh-on-the-future-of-rails",
-      to: redirect("ben/dhh-on-the-future-of-rails")
-  get "/christopher-chedeau-on-the-philosophies-of-react",
-      to: redirect("ben/christopher-chedeau-on-the-philosophies-of-react")
-  get "/javascript-fatigue-buzzword",
-      to: redirect("ben/javascript-fatigue-buzzword")
-  get "/chris-seaton-making-ruby-fast",
-      to: redirect("ben/chris-seaton-making-ruby-fast")
-  get "/communicating-intent-the-perpetually-misunderstood-ruby-bang",
-      to: redirect("tom/communicating-intent-the-perpetually-misunderstood-ruby-bang")
-  get "/quick-tip-grepping-rails-routes",
-      to: redirect("tom/quick-tip-grepping-rails-routes")
-  get "/use-cases-for-githubs-new-direct-upload-feature",
-      to: redirect("ben/use-cases-for-githubs-new-direct-upload-feature")
-  get "/this-blog-post-was-written-using-draft-js",
-      to: redirect("ben/this-blog-post-was-written-using-draft-js")
-  get "/the-future-of-software-development",
-      to: redirect("ben/the-future-of-software-development")
-  get "/the-zen-of-missing-out-on-the-next-great-programming-tool",
-      to: redirect("ben/the-zen-of-missing-out-on-the-next-great-programming-tool")
-  get "/the-joy-and-benefit-of-being-an-early-adopter-in-programming",
-      to: redirect("ben/the-joy-and-benefit-of-being-an-early-adopter-in-programming")
-  get "/watkinsmatthewp/every-developer-should-write-a-personal-automation-api",
-      to: redirect("anotherdevblog/every-developer-should-write-a-personal-automation-api")
+  get "/future", to: redirect("devteam/the-future-of-dev-160n")
 
   # Settings
   post "users/update_language_settings" => "users#update_language_settings"
