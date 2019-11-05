@@ -20,7 +20,7 @@ const NAVIGATION_KEYS = [
   KEYS.TAB,
 ];
 
-const LETTERS = /[a-z]/i;
+const LETTERS_NUMBERS = /[a-z0-9]/i;
 
 /* TODO: Remove all instances of this.props.listing
    and refactor this component to be more generic */
@@ -203,7 +203,7 @@ class Tags extends Component {
       ) {
         this.clearSelectedSearchResult();
       }
-    } else if (!LETTERS.test(e.key) && !NAVIGATION_KEYS.includes(e.key)) {
+    } else if (!LETTERS_NUMBERS.test(e.key) && !NAVIGATION_KEYS.includes(e.key)) {
       e.preventDefault();
     }
   };
