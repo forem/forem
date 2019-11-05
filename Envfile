@@ -14,12 +14,16 @@ variable :COMMUNITY_NAME, :String, default: "DEV(local)"
 variable :MAIN_SOCIAL_IMAGE, :String, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
 variable :SITE_TWITTER_HANDLE, :String, default: "tbd"
 variable :RATE_LIMIT_FOLLOW_COUNT_DAILY, :Integer, default: 500
+variable :FAVICON_URL, :String, default: "favicon.ico"
 
 # Logo
 variable :LOGO_SVG, :String, default: ""
 
 # Default staff account's id
 variable :DEVTO_USER_ID, :Integer, default: 1
+
+# Default site email
+variable :DEFAULT_SITE_EMAIL, :String, default: "yo@dev.to"
 
 # Service timeout length
 variable :RACK_TIMEOUT_WAIT_TIMEOUT, :Integer, default: 100_000
@@ -114,8 +118,8 @@ variable :FASTLY_API_KEY, :String, default: "Optional"
 variable :FASTLY_SERVICE_ID, :String, default: "Optional"
 
 # Honeycomb for monitoring and observability
-# https://www.honeycomb.io/
-variable :HONEYCOMB_API_KEY, :String, default: "Optional"
+# (https://www.honeycomb.io/)
+variable :HONEYCOMB_API_KEY, :String, default: ""
 
 # Google analytic
 # (https://developers.google.com/analytics/devguides/reporting/core/v4)

@@ -1,20 +1,30 @@
 import { h, Component } from 'preact';
+import PropTypes from 'prop-types';
+// eslint-disable-next-line import/no-unresolved
 import heartImage from 'images/emoji/emoji-one-heart.png';
+// eslint-disable-next-line import/no-unresolved
 import unicornImage from 'images/emoji/emoji-one-unicorn.png';
+// eslint-disable-next-line import/no-unresolved
 import bookmarkImage from 'images/emoji/emoji-one-bookmark.png';
 
 export default class Article extends Component {
+  static propTypes = {
+    resource: PropTypes.shape({
+      id: PropTypes.string,
+    }).isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
-      reactionCounts: [],
       userReactions: [],
       optimisticUserReaction: null,
     };
   }
 
   componentDidMount() {
-    fetch(`/reactions?article_id=${this.props.resource.id}`, {
+    const { resource } = this.props;
+    fetch(`/reactions?article_id=${resource.id}`, {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       credentials: 'same-origin',
@@ -29,11 +39,12 @@ export default class Article extends Component {
   };
 
   displayReactionsFailure = response => {
+    // eslint-disable-next-line no-console
     console.log(response);
   };
 
   handleNewReactionResponse = response => {
-    let oldUserReactions = this.state.userReactions;
+    let { userReactions: oldUserReactions } = this.state;
     const foundReactions = oldUserReactions.filter(obj => {
       return obj.category === response.category;
     });
@@ -41,7 +52,7 @@ export default class Article extends Component {
       oldUserReactions.push({ category: response.category });
     } else {
       oldUserReactions = oldUserReactions.filter(obj => {
-        return obj.category != response.category;
+        return obj.category !== response.category;
       });
     }
     this.setState({
@@ -51,14 +62,15 @@ export default class Article extends Component {
   };
 
   handleNewReactionFailure = response => {
+    // eslint-disable-next-line no-console
     console.log(response);
   };
 
   handleReactionClick = e => {
     e.preventDefault();
     const { target } = e;
+    const { resource: article } = this.props;
     this.setState({ optimisticUserReaction: target.dataset.category });
-    const article = this.props.resource;
     fetch('/reactions', {
       method: 'POST',
       headers: {
@@ -93,6 +105,7 @@ export default class Article extends Component {
 
     return (
       <button
+        type="button"
         className={`${curType[0]} ${props.reactedClass}`}
         onClick={this.handleReactionClick}
         data-category={curType[1]}
@@ -107,7 +120,7 @@ export default class Article extends Component {
   };
 
   render() {
-    const article = this.props.resource;
+    const { resource: article } = this.props;
     let heartReactedClass = '';
     let unicornReactedClass = '';
     let bookmarkReactedClass = '';
@@ -167,15 +180,21 @@ export default class Article extends Component {
                   src={article.user.profile_image_90}
                   alt={article.user.username}
                 />
-                <span>{article.user.name} </span>
+                <span>
+                  {article.user.name}
+                  {' '}
+                </span>
                 <span className="published-at">
                   {' '}
-                  | {article.readable_publish_date}
+                  | 
+                  {' '}
+                  {article.readable_publish_date}
                 </span>
               </a>
             </h3>
           </div>
           <div className="body">
+            {/* eslint-disable-next-line react/no-danger */}
             <div dangerouslySetInnerHTML={{ __html: article.body_html }} />
           </div>
         </div>

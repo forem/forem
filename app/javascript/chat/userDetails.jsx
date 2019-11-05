@@ -3,12 +3,14 @@ import twitterImage from 'images/twitter-logo.svg';
 import githubImage from 'images/github-logo.svg';
 import websiteImage from 'images/external-link-logo.svg';
 
-function blockChat(activeChannelId) {
-  const formData = new FormData();
-  formData.append('chat_id', activeChannelId);
-  formData.append('controller', 'chat_channels');
+function blockUser(blockedUserId) {
+  const body = {
+    user_block: {
+      blocked_id: blockedUserId,
+    },
+  };
 
-  getCsrfToken().then(sendFetch('block-chat', formData));
+  getCsrfToken().then(sendFetch('block-user', JSON.stringify(body)));
 }
 
 const setUpButton = ({ modalId = '', otherModalId = '', btnName = '' }) => {
@@ -16,9 +18,7 @@ const setUpButton = ({ modalId = '', otherModalId = '', btnName = '' }) => {
     <button
       onClick={() => {
         const modal = document.getElementById(`${modalId}`);
-        const otherModal = document.getElementById(
-          `${otherModalId}`,
-        );
+        const otherModal = document.getElementById(`${otherModalId}`);
         otherModal.style.display = 'none';
         if (modal.style.display === 'none') {
           modal.style.display = 'block';
@@ -32,26 +32,26 @@ const setUpButton = ({ modalId = '', otherModalId = '', btnName = '' }) => {
       {btnName}
     </button>
   );
-}
+};
 
 const userDetailsConfig = {
   twitter_username: {
     hostUrl: 'https://twitter.com/',
     srcImage: twitterImage,
-    imageAltText: 'twitter logo'
+    imageAltText: 'twitter logo',
   },
   github_username: {
     hostUrl: 'https://github.com/',
     srcImage: githubImage,
-    imageAltText: 'github logo'
+    imageAltText: 'github logo',
   },
   website_url: {
     className: 'external-link-img',
     hostUrl: '',
     srcImage: websiteImage,
-    imageAltText: 'external link icon'
-  }
-}
+    imageAltText: 'external link icon',
+  },
+};
 
 export default class UserDetails extends Component {
   render() {
@@ -60,14 +60,11 @@ export default class UserDetails extends Component {
     const channel = this.props.activeChannel || {};
     const socialIcons = [];
     const userMeta = ['twitter_username', 'github_username', 'website_url'];
-    userMeta.forEach((metaProp) => {
+    userMeta.forEach(metaProp => {
       if (user[metaProp]) {
         let { className, hostUrl, srcImage, imageAltText } = userDetailsConfig[metaProp];
         socialIcons.push(
-          <a
-            href={`${hostUrl}${user[metaProp]}`}
-            target="_blank"
-          >
+          <a href={`${hostUrl}${user[metaProp]}`} target="_blank" rel="noopener noreferrer">
             <img
               className={className}
               src={srcImage}
@@ -89,10 +86,10 @@ export default class UserDetails extends Component {
     }
     let blockButton = '';
     if (channel.channel_type === 'direct' && window.currentUser.id != user.id) {
-      blockButton = setUpButton({ 
-          modalId: 'userdetails__blockmsg',
-          otherModalId: 'userdetails__reportabuse',
-          btnName: 'Block User'
+      blockButton = setUpButton({
+        modalId: 'userdetails__blockmsg',
+        otherModalId: 'userdetails__reportabuse',
+        btnName: 'Block User',
       });
     }
     return (
@@ -124,13 +121,11 @@ export default class UserDetails extends Component {
         </div>
         <div className="userdetails__blockreport">
           {blockButton}
-          {
-            setUpButton({
-              modalId: 'userdetails__reportabuse',
-              otherModalId: 'userdetails__blockmsg',
-              btnName: 'Report Abuse'
-            })
-          }
+          {setUpButton({
+            modalId: 'userdetails__reportabuse',
+            otherModalId: 'userdetails__blockmsg',
+            btnName: 'Report Abuse',
+          })}
         </div>
         <div id="userdetails__reportabuse" style="display:none">
           <div className="userdetails__reportabuse">
@@ -154,7 +149,7 @@ export default class UserDetails extends Component {
               tabIndex="0"
               href="/report-abuse"
               onClick={() => {
-                blockChat(channelId);
+                blockUser(channelId);
               }}
             >
               Yes, Report
@@ -204,12 +199,12 @@ export default class UserDetails extends Component {
             <a
               tabIndex="0"
               onClick={() => {
-                blockChat(channelId);
+                blockUser(user.id);
                 window.location.href = `/connect`;
               }}
               onKeyUp={e => {
                 if (e.keyCode === 13) {
-                  blockChat(channelId);
+                  blockUser(user.id);
                   window.location.href = `/connect`;
                 }
               }}

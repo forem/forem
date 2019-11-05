@@ -24,18 +24,21 @@ exports[`<Video /> should render properly and test snapshot 1`] = `
   <button
     class="chat__videocallexitbutton"
     onClick={[Function]}
+    type="button"
   >
     ×
   </button>
   <button
     class="chat__videocallcontrolbutton"
     onClick={[Function]}
+    type="button"
   >
     UnMute
   </button>
   <button
     class="chat__videocallcontrolbutton chat__videocallcontrolbutton--videoonoff"
     onClick={[Function]}
+    type="button"
   >
     Turn On Video
   </button>

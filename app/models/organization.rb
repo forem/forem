@@ -33,7 +33,7 @@ class Organization < ApplicationRecord
             format: { with: /\A[a-zA-Z0-9\-_]+\Z/ },
             length: { in: 2..18 },
             exclusion: { in: ReservedWords.all,
-                         message: "%<value>s is a reserved word. Contact yo@dev.to for help registering your organization." }
+                         message: "%<value>s is a reserved word. Contact #{ApplicationConfig['DEFAULT_SITE_EMAIL']} for help registering your organization." }
   validates :url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :secret, uniqueness: { allow_blank: true }
   validates :location, :email, :company_size, length: { maximum: 64 }
@@ -46,7 +46,7 @@ class Organization < ApplicationRecord
   validates :cta_button_text, length: { maximum: 20 }
   validates :cta_body_markdown, length: { maximum: 256 }
   before_save :remove_at_from_usernames
-  after_save  :bust_cache
+  after_save :bust_cache
   before_save :generate_secret
   before_save :update_articles
   before_validation :downcase_slug

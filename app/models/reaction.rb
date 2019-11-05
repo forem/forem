@@ -41,7 +41,7 @@ class Reaction < ApplicationRecord
 
   class << self
     def count_for_article(id)
-      Rails.cache.fetch("count_for_reactable-Article-#{id}", expires_in: 1.hour) do
+      RedisRailsCache.fetch("count_for_reactable-Article-#{id}", expires_in: 1.hour) do
         reactions = Reaction.where(reactable_id: id, reactable_type: "Article")
         %w[like readinglist unicorn].map do |type|
           { category: type, count: reactions.where(category: type).size }
