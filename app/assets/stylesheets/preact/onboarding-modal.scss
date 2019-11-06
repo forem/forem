@@ -63,12 +63,15 @@
   .onboarding-content {
     flex: 1 0 auto;
     width: 100%;
-    height: 440px;
     margin-top: 5px;
 
     h1 {
       margin-top: 15px;
       line-height: 1.1em;
+    }
+
+    @media screen and (min-width: 800px) {
+      height: 440px;
     }
   }
 
