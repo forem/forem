@@ -22,7 +22,13 @@ module Api
       end
 
       def show
-        @comment = Comment.find(params[:id].to_i(26))
+        @comment = Comment.includes(:user).find(params[:id].to_i(26))
+        @comment_tree = @comment.descendants.
+          includes(:user).
+          select(%i[id processed_html user_id ancestry]).
+          arrange
+
+        set_surrogate_key_header "api_comments_show", edge_cache_keys(@comment_tree)
       end
 
       private

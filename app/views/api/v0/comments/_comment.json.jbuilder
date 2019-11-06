@@ -1,6 +1,5 @@
 json.type_of    "comment"
 
-json.id    comment.id
 json.id_code    comment.id_code_generated
 json.body_html  comment.processed_html
 

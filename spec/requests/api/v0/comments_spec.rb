@@ -86,6 +86,7 @@ RSpec.describe "Api::V0::Comments", type: :request do
       child_comment = create(:comment, commentable: article, parent: comment)
 
       get "/api/comments/#{comment.id_code_generated}"
+
       comment_with_children = json_response
       expect(comment_with_children["children"][0]["id_code"]).to eq(child_comment.id_code_generated)
     end
@@ -100,6 +101,20 @@ RSpec.describe "Api::V0::Comments", type: :request do
 
       comment_with_descendants = json_response
       expect(comment_with_descendants["children"][0]["children"][0]["id_code"]).to eq(grandchild_comment.id_code_generated)
+    end
+
+    it "includes great-grandchildren comments in the children-children-children list" do
+      # create great_grandchild comment
+      root_comment = comment
+      child_comment = create(:comment, commentable: article, parent: root_comment)
+      grandchild_comment = create(:comment, commentable: article, parent: child_comment)
+      great_grandchild = create(:comment, commentable: article, parent: grandchild_comment)
+
+      get "/api/comments/#{comment.id_code_generated}"
+
+      comment_with_descendants = json_response
+      json_great_grandchild_id_code = comment_with_descendants["children"][0]["children"][0]["children"][0]["id_code"]
+      expect(json_great_grandchild_id_code).to eq(great_grandchild.id_code_generated)
     end
   end
 end
