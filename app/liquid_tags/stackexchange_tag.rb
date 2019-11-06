@@ -5,7 +5,7 @@ class StackexchangeTag < LiquidTagBase
   # Filter codes come from the example tools in the docs. For example: https://api.stackexchange.com/docs/posts-by-ids
   FILTERS = {
     "post" => "!3tz1WbZW5JxrG-f99",
-    "answer" => "!Fcb(61J.xH9ZW2D7KF1bbM_J7X",
+    "answer" => "!.Fjr38AQkcvWfJTF-2exSL50At_pT",
     "question" => "!*1SgQGDOL9bPBHULz9sKS.y6qv7V9fYNszvdhDuv5",
     "site" => "!mWxO_PNa4i"
   }.freeze

@@ -19,4 +19,10 @@ class Internal::CommentsController < Internal::ApplicationController
                     page(params[:page] || 1).per(50)
                 end
   end
+
+  private
+
+  def authorize_admin
+    authorize Comment, :access?, policy_class: InternalPolicy
+  end
 end

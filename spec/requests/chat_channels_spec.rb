@@ -121,6 +121,7 @@ RSpec.describe "ChatChannels", type: :request do
           headers: { HTTP_ACCEPT: "application/json" }
       expect(ChatChannel.last.slug).to eq("hello-channelly")
     end
+
     it "dissallows invalid users" do
       expect do
         put "/chat_channels/#{chat_channel.id}",
@@ -128,6 +129,7 @@ RSpec.describe "ChatChannels", type: :request do
             headers: { HTTP_ACCEPT: "application/json" }
       end.to raise_error(Pundit::NotAuthorizedError)
     end
+
     it "returns errors if channel is invalid" do
       # slug should be taken
       user.add_role(:super_admin)
@@ -216,16 +218,19 @@ RSpec.describe "ChatChannels", type: :request do
            params: { chat_id: direct_channel.id }
       expect(response.status).to eq(200)
     end
+
     it "makes chat channel have status of blocked" do
       direct_channel.add_users [user]
       post "/chat_channels/block_chat",
            params: { chat_id: direct_channel.id }
       expect(direct_channel.reload.status).to eq("blocked")
     end
+
     it "does not block when channel is open" do
       expect { post "/chat_channels/block_chat", params: { chat_id: chat_channel.id } }.
         to raise_error(Pundit::NotAuthorizedError)
     end
+
     it "does not block when user does not have permissions" do
       expect { post "/chat_channels/block_chat", params: { chat_id: direct_channel.id } }.
         to raise_error(Pundit::NotAuthorizedError)

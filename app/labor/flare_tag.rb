@@ -1,9 +1,11 @@
 class FlareTag
   FLARE_TAGS = %w[explainlikeimfive
                   jokes
+                  hacktoberfest
                   watercooler
                   ama
                   techtalks
+                  todayilearned
                   help
                   news
                   healthydebate
@@ -18,7 +20,8 @@ class FlareTag
   end
 
   def tag
-    @tag ||= Rails.cache.fetch("article_flare_tag-#{article.id}-#{article.updated_at}", expires_in: 12.hours) do
+    @tag ||= RedisRailsCache.fetch("article_flare_tag-#{article.id}-#{article.updated_at}", expires_in: 12.hours) do
+      # Take the first flare tag to show up in the array
       flare = FLARE_TAGS.detect { |tag| article.cached_tag_list_array.include?(tag) }
       flare && flare != except_tag ? Tag.select(%i[name bg_color_hex text_color_hex]).find_by(name: flare) : nil
     end

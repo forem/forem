@@ -1,3 +1,5 @@
+'use strict';
+
 function initializeAllTagEditButtons() {
   var tagEditButton = document.getElementById('tag-edit-button');
   var user = userData();

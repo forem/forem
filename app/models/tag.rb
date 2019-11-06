@@ -23,6 +23,8 @@ class Tag < ActsAsTaggableOn::Tag
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
 
+  validates :name,
+            format: /\A[A-Za-z0-9\s]+\z/, allow_nil: true
   validates :text_color_hex,
             format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
   validates :bg_color_hex,
@@ -37,7 +39,7 @@ class Tag < ActsAsTaggableOn::Tag
   before_save :mark_as_updated
 
   algoliasearch per_environment: true do
-    attribute :name, :bg_color_hex, :text_color_hex, :hotness_score, :supported, :short_summary
+    attribute :name, :bg_color_hex, :text_color_hex, :hotness_score, :supported, :short_summary, :rules_html
     attributesForFaceting [:supported]
     customRanking ["desc(hotness_score)"]
     searchableAttributes %w[name short_summary]
@@ -59,6 +61,13 @@ class Tag < ActsAsTaggableOn::Tag
 
   def self.valid_categories
     ALLOWED_CATEGORIES
+  end
+
+  def self.aliased_name(word)
+    tag = find_by(name: word.downcase)
+    return unless tag
+
+    tag.alias_for.presence || tag.name
   end
 
   private

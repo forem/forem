@@ -43,6 +43,7 @@ class AsyncInfoController < ApplicationController
         followed_organization_ids: @user.cached_following_organizations_ids,
         followed_podcast_ids: @user.cached_following_podcasts_ids,
         reading_list_ids: ReadingList.new(@user).cached_ids_of_articles,
+        blocked_user_ids: @user.all_blocking.pluck(:blocked_id),
         saw_onboarding: @user.saw_onboarding,
         checked_code_of_conduct: @user.checked_code_of_conduct,
         checked_terms_and_conditions: @user.checked_terms_and_conditions,
@@ -69,6 +70,7 @@ class AsyncInfoController < ApplicationController
     #{current_user&.saw_onboarding}__
     #{current_user&.checked_code_of_conduct}__
     #{current_user&.articles_count}__
+    #{current_user&.pro?}__
     #{cookies[:remember_user_token]}"
   end
 

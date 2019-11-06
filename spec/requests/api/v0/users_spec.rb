@@ -13,7 +13,7 @@ RSpec.describe "Api::V0::Users", type: :request do
 
     context "when request is authenticated" do
       let_it_be(:user)         { create(:user) }
-      let_it_be(:access_token) { create(:doorkeeper_access_token, resource_owner: user) }
+      let_it_be(:access_token) { create(:doorkeeper_access_token, resource_owner: user, scopes: "public") }
 
       it "return user's information" do
         get me_api_users_path, params: { access_token: access_token.token }

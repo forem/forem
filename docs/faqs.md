@@ -24,5 +24,5 @@ sudo -u postgres createuser -s ec2-user
 sudo -u postgres createdb ec2-user
 ```
 
-The first command creates the user **ec2-user** and the second one creates the database for this user, because every user needs its database.
+The first command creates the user **ec2-user** and the second one creates the database for this user because every user needs its database.
 Even if the first command fails, run the second command to create the missing database.

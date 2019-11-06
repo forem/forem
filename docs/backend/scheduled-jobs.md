@@ -16,4 +16,4 @@ end
 
 You can explore the [official Heroku documentation](https://devcenter.heroku.com/articles/scheduler#defining-tasks) for defining tasks and read through tasks we have implemented for busting cache, awarding badges, and more.
 
-In your Pull Request, communicate with a DEV Core Team Member to discuss at what frequency and ensure your task is scheduled on Heroku once your code is reviewed, approved and merged.
+In your Pull Request, communicate with a DEV Core Team Member to discuss at what frequency and ensure your task is scheduled on Heroku once your code is reviewed, approved, and merged.

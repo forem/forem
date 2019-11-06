@@ -6,7 +6,7 @@ const ErrorMessage = ({ message }) => {
   return (
     <div className="chatmessage">
       <span className="chatmessage__body" style={errorStyle}>
-        {'Sorry '}
+        Sorry
         <span className="chatmessagebody__currentuser">
           {`@${window.currentUser.username}`}
         </span>

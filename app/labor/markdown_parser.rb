@@ -79,7 +79,7 @@ class MarkdownParser
 
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
-    allowed_tags = %w[strong abbr aside em p h1 h2 h3 h4 h5 h6 i u b code pre
+    allowed_tags = %w[strong abbr aside em p h4 h5 h6 i u b code pre
                       br ul ol li small sup sub a span hr blockquote kbd]
     allowed_attributes = %w[href strong em ref rel src title alt class]
     ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
@@ -108,7 +108,7 @@ class MarkdownParser
       next if allowed_image_host?(src)
 
       img["loading"] = "lazy"
-      img["src"] = if giphy_img?(src)
+      img["src"] = if Giphy::Image.valid_url?(src)
                      src.gsub("https://media.", "https://i.")
                    else
                      img_of_size(src, width)
@@ -144,16 +144,6 @@ class MarkdownParser
   def allowed_image_host?(src)
     # GitHub camo image won't parse but should be safe to host direct
     src.start_with?("https://camo.githubusercontent.com/")
-  end
-
-  def giphy_img?(source)
-    uri = URI.parse(source)
-    return false if uri.scheme != "https"
-    return false if uri.userinfo || uri.fragment || uri.query
-    return false if uri.host != "media.giphy.com" && uri.host != "i.giphy.com"
-    return false if uri.port != 443 # I think it has to be this if its https?
-
-    uri.path.ends_with?(".gif")
   end
 
   def remove_nested_linebreak_in_list(html)

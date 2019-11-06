@@ -25,7 +25,7 @@ class Article < ApplicationRecord
   has_many :comments, as: :commentable, inverse_of: :commentable
   has_many :profile_pins, as: :pinnable, inverse_of: :pinnable
   has_many :buffer_updates, dependent: :destroy
-  has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
+  has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
   has_many :rating_votes
   has_many :page_views
@@ -45,6 +45,7 @@ class Article < ApplicationRecord
   validate :validate_video
   validate :validate_collection_permission
   validate :validate_liquid_tag_permissions
+  validate :past_or_present_date
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :cached_tag_list, length: { maximum: 126 }
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
@@ -69,7 +70,7 @@ class Article < ApplicationRecord
   after_save        :detect_human_language
   before_save       :update_cached_user
   after_update      :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
-  before_destroy    :before_destroy_actions
+  before_destroy    :before_destroy_actions, prepend: true
 
   serialize :ids_for_suggested_articles
   serialize :cached_user
@@ -136,6 +137,8 @@ class Article < ApplicationRecord
     order(column => dir.to_sym)
   }
 
+  scope :feed, -> { published.select(:id, :published_at, :processed_html, :user_id, :organization_id, :title, :path) }
+
   algoliasearch per_environment: true, auto_remove: false, enqueue: :trigger_index do
     attribute :title
     add_index "searchables", id: :index_id, per_environment: true, enqueue: :trigger_index do
@@ -145,9 +148,8 @@ class Article < ApplicationRecord
                  :path, :class_name, :user_name, :user_username, :comments_blob,
                  :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date, :flare_tag
       attribute :user do
-        { username: user.username,
-          name: user.name,
-          profile_image_90: ProfileImage.new(user).get(90) }
+        { username: user.username, name: user.name,
+          profile_image_90: ProfileImage.new(user).get(90), pro: user.pro? }
       end
       tags do
         [tag_list,
@@ -346,22 +348,10 @@ class Article < ApplicationRecord
     @flare_tag ||= FlareTag.new(self).tag_hash
   end
 
-  def update_main_image_background_hex_without_delay
-    return if main_image.blank? || main_image_background_hex_color != "#dddddd"
-
-    Articles::UpdateMainImageBackgroundHexJob.perform_now(id)
-  end
-
   def update_main_image_background_hex
     return if main_image.blank? || main_image_background_hex_color != "#dddddd"
 
     Articles::UpdateMainImageBackgroundHexJob.perform_later(id)
-  end
-
-  def detect_human_language_without_delay
-    return if language.present?
-
-    Articles::DetectHumanLanguageJob.perform_now(id)
   end
 
   def detect_human_language
@@ -498,7 +488,7 @@ class Article < ApplicationRecord
       remove_tag_adjustments_from_tag_list
     end
     self.published = front_matter["published"] if %w[true false].include?(front_matter["published"].to_s)
-    self.published_at = parsed_date(front_matter["date"]) if published
+    self.published_at = parse_date(front_matter["date"]) if published
     self.main_image = front_matter["cover_image"] if front_matter["cover_image"].present?
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
     self.description = front_matter["description"] || description || "#{body_text[0..80]}..."
@@ -507,14 +497,9 @@ class Article < ApplicationRecord
     self.automatically_renew = front_matter["automatically_renew"] if front_matter["automatically_renew"].present? && tag_list.include?("hiring")
   end
 
-  def parsed_date(date)
-    now = Time.current
-    return published_at || now unless date
-
-    error_msg = "must be entered in DD/MM/YYYY format with current or past date"
-    return errors.add(:date_time, error_msg) if date > now
-
-    date
+  def parse_date(date)
+    # once published_at exist, it can not be adjusted
+    published_at || date || Time.current
   end
 
   def validate_tag
@@ -542,6 +527,12 @@ class Article < ApplicationRecord
 
   def validate_collection_permission
     errors.add(:collection_id, "must be one you have permission to post to") if collection && collection.user_id != user_id
+  end
+
+  def past_or_present_date
+    if published_at && published_at > Time.current
+      errors.add(:date_time, "must be entered in DD/MM/YYYY format with current or past date")
+    end
   end
 
   # Admin only beta tags etc.
@@ -584,7 +575,8 @@ class Article < ApplicationRecord
       username: object.username,
       slug: object == organization ? object.slug : object.username,
       profile_image_90: object.profile_image_90,
-      profile_image_url: object.profile_image_url
+      profile_image_url: object.profile_image_url,
+      pro: object == user ? user.pro? : false # organizations can't be pro users
     }
   end
 

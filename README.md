@@ -7,7 +7,7 @@
 <br>
 <p align="center">
   <a href="https://www.ruby-lang.org/en/">
-    <img src="https://img.shields.io/badge/Ruby-v2.6.3-green.svg" alt="ruby version">
+    <img src="https://img.shields.io/badge/Ruby-v2.6.5-green.svg" alt="ruby version">
   </a>
   <a href="http://rubyonrails.org/">
     <img src="https://img.shields.io/badge/Rails-v5.2.3-brightgreen.svg" alt="rails version">
@@ -41,9 +41,6 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
 - [Contributing](#contributing)
 - [Codebase](#codebase)
   - [The stack](#the-stack)
-  - [Engineering standards](#engineering-standards)
-    - [Style guide](#style-guide)
-    - [Husky hooks](#husky-hooks)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Standard Installation](#standard-installation)
@@ -75,6 +72,7 @@ This section provides a high-level requirement & quick start guide. **For detail
 - [Ruby](https://www.ruby-lang.org/en/): we recommend using [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on the badge.
 - [Yarn](https://yarnpkg.com/): please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
 - [PostgreSQL](https://www.postgresql.org/) 9.4 or higher.
+- [ImageMagick](https://imagemagick.org/): please refer to ImageMagick's [installation instructions](https://imagemagick.org/script/download.php). Alternatively, macOS users can install ImageMagick with `brew install imagemagick`.
 
 ### Standard Installation
 
@@ -83,7 +81,7 @@ This section provides a high-level requirement & quick start guide. **For detail
 1. Clone your forked repository, ie. `git clone https://github.com/<your-username>/dev.to.git`
 1. Set up your environment variables/secrets
 
-   - Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](https://docs.dev.to/backend/algolia/) to get your development environment running.
+   - Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](https://docs.dev.to/backend/algolia/) to get your development environment running. You can add these to your `config/application.yml` file using the process described below.
    - This [guide](https://docs.dev.to/backend/) will show you how to get free API keys for additional services that may be required to run certain parts of the app.
    - For any key that you wish to enter/replace:
      1. Create `config/application.yml` by copying from the provided template (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
@@ -99,6 +97,10 @@ This section provides a high-level requirement & quick start guide. **For detail
 1. That's it! Run `bin/startup` to start the application and head to `http://localhost:3000/`
 
 [View Full Installation Documentation](https://docs.dev.to/installation/)
+
+#### Docker Installation (BETA)
+
+Please refer to the [Installing DEV with Docker [Beta] guide](https://docs.dev.to/installation/docker/).
 
 #### Starting the application
 
@@ -137,8 +139,9 @@ Caveat: `bin/rspec` is not equipped with Spring because it affects Simplecov's r
 - [@maestromac](https://dev.to/maestromac)
 - [@zhao-andy](https://dev.to/andy)
 - [@lightalloy](https://dev.to/lightalloy)
-- [@mariocsee](https://dev.to/mariocsee)
 - [@rhymes](https://dev.to/rhymes)
+- [@jacobherrington](https://dev.to/jacobherrington)
+- [@mstruve](https://dev.to/molly_struve)
 
 ## Vulnerability disclosure
 

@@ -6,7 +6,7 @@ class Message < ApplicationRecord
   validates :message_markdown, presence: true, length: { maximum: 1024 }
   validate :channel_permission
 
-  before_save       :determine_user_validity
+  before_validation :determine_user_validity
   before_validation :evaluate_markdown
   after_create      :send_email_if_appropriate
   after_create      :update_chat_channel_last_message_at
@@ -15,10 +15,6 @@ class Message < ApplicationRecord
   def preferred_user_color
     color_options = [user.bg_color_hex || "#000000", user.text_color_hex || "#000000"]
     HexComparer.new(color_options).brightness(0.9)
-  end
-
-  def determine_user_validity
-    raise unless chat_channel.status == "active" && (chat_channel.has_member?(user) || chat_channel.channel_type == "open")
   end
 
   def send_push
@@ -37,7 +33,8 @@ class Message < ApplicationRecord
     chat_channel.touch(:last_message_at)
     chat_channel.index!
     chat_channel.chat_channel_memberships.reindex!
-    chat_channel.delay.index!
+
+    ChatChannels::IndexJob.perform_later(chat_channel_id: chat_channel.id)
   end
 
   def update_all_has_unopened_messages_statuses
@@ -69,6 +66,13 @@ class Message < ApplicationRecord
     html
   end
 
+  def determine_user_validity
+    return unless chat_channel
+
+    user_ok = chat_channel.status == "active" && (chat_channel.has_member?(user) || chat_channel.channel_type == "open")
+    errors.add(:base, "You are not a participant of this chat channel.") unless user_ok
+  end
+
   def channel_permission
     errors.add(:base, "Must be part of channel.") if chat_channel_id.blank?
 
@@ -76,6 +80,7 @@ class Message < ApplicationRecord
     return if channel.open?
 
     errors.add(:base, "You are not a participant of this chat channel.") unless channel.has_member?(user)
+    errors.add(:base, "Something went wrong") if channel.status == "blocked"
   end
 
   def rich_link_article(link)

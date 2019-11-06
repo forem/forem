@@ -1,9 +1,9 @@
 module Notifications
   class RemoveAll
-    def initialize(notifiable_id, notifiable_type, action)
-      @notifiable_id = notifiable_id
-      @notifiable_type = notifiable_type
-      @action = action
+    def initialize(notifiable_ids, notifiable_type)
+      return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
+
+      @notifiable_collection = notifiable_type.constantize.where(id: notifiable_ids)
     end
 
     def self.call(*args)
@@ -12,14 +12,12 @@ module Notifications
 
     def call
       Notification.where(
-        notifiable_id: notifiable_id,
-        notifiable_type: notifiable_type,
-        action: action,
+        notifiable: notifiable_collection,
       ).delete_all
     end
 
     private
 
-    attr_reader :notifiable_id, :notifiable_type, :action
+    attr_reader :notifiable_collection
   end
 end

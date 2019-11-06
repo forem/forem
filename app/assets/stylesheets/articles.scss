@@ -459,6 +459,7 @@
           line-height: 25px;
           width: 100%;
           padding: 0px;
+          word-break: break-word;
           .tag-identifier {
             font-size: 14px;
             background: $blue;
@@ -540,7 +541,6 @@
         display: inline-block;
         max-width: 76%;
         z-index: 5;
-        // margin-top:-50px;
         left: 62px;
         white-space: nowrap;
         overflow: hidden;
@@ -640,6 +640,7 @@
             margin-bottom: 8px;
             margin-top: 8px;
             padding-top: 0px;
+            word-break: break-word;
             @media screen and (min-width: 1600px) {
               font-size: 45px;
             }
@@ -777,11 +778,10 @@
         border-radius: 3px;
         text-align: center;
         bottom: 12px;
-        // border: 2px solid darken($purple, 30%);
         background: darken($purple, 38%);
         color: white;
         letter-spacing: 1px;
-        &:hover {
+        &:hover, &:focus {
           background: darken($purple, 50%);
         }
         .bm-success {
@@ -969,7 +969,6 @@
             $light-gray
           );
         }
-        // background:red;
         .sidebar-profile-snapshot-inner {
           display: inline-block;
           vertical-align: middle;
@@ -1066,7 +1065,6 @@
         .sidebar-nav-element {
           color: $black;
           display: block;
-          // font-family: "Lucida Console", Monaco, monospace, sans-serif;
           position: relative;
           @media screen and (min-width: 950px) {
             .sidebar-nav-link-follow {
@@ -1111,7 +1109,8 @@
             position: absolute;
             color: $black;
             right: 5px;
-            top: 2px;
+            top: 50%;
+            transform: translateY(-50%);
             text-align: center;
             border-radius: 3px;
             font-weight: 900;
@@ -1595,9 +1594,6 @@
         @include themeable(color, theme-container-color, $black);
         font-weight: 500;
         line-height: 1em;
-        // display:inline-block;
-        // padding:3px;
-        // background:red;
       }
       .discuss-list-comment-count {
         font-size: 0.8em;

@@ -24,7 +24,7 @@ RSpec.describe BlackBox do
       # + score (99)
       # + value from the function caller (5)
       score = described_class.article_hotness_score(article, function_caller)
-      expect(score).to eq(2748)
+      expect(score).to eq(3048)
     end
 
     it "returns the lower correct value if article tagged with watercooler" do
@@ -34,7 +34,7 @@ RSpec.describe BlackBox do
       # + score (99)
       # + value from the function caller (5)
       score = described_class.article_hotness_score(article, function_caller)
-      expect(score).to be < 2800 # lower because watercooler tag
+      expect(score).to be < 3040 # lower because watercooler tag
     end
   end
 

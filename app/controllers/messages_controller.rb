@@ -11,6 +11,7 @@ class MessagesController < ApplicationController
       message_json = create_pusher_payload(@message)
       Pusher.trigger(@message.chat_channel.pusher_channels, "message-created", message_json)
     end
+
     if @message.save
       begin
         @message.send_push

@@ -1,7 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-import Navigation from './Navigation';
 import { getContentOfToken } from '../utilities';
 
 class ClosingSlide extends Component {
@@ -19,7 +18,7 @@ class ClosingSlide extends Component {
   }
 
   render() {
-    const { previousLocation, prev, next, variant } = this.props;
+    const { previousLocation, variant } = this.props;
 
     const previousLocationListElement = () => {
       if (variant === '6' || variant === '8') {
@@ -184,8 +183,6 @@ class ClosingSlide extends Component {
 }
 
 ClosingSlide.propTypes = {
-  prev: PropTypes.func.isRequired,
-  next: PropTypes.string.isRequired,
   previousLocation: PropTypes.string.isRequired,
   variant: PropTypes.string.isRequired,
 };

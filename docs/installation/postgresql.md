@@ -18,7 +18,7 @@ _You can find all installation options for a variety of operating systems [on th
 
 ## Configuration
 
-By default the application is configured to connect to a local database named `PracticalDeveloper_development`. If you need to specify a username and a password you can go about it by using the environment variable `DATABASE_URL` with a connection string.
+By default, the application is configured to connect to a local database named `PracticalDeveloper_development`. If you need to specify a username and a password, you can go about it by using the environment variable `DATABASE_URL` with a connection string.
 
 The [official Rails guides](https://guides.rubyonrails.org/configuring.html#connection-preference) go into depth on how Rails merges the existing `database.yml` with the connection string.
 

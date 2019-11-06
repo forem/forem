@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 #
 # Lets setup the alias file
@@ -74,7 +74,11 @@ fi
 #
 # Execute rails server on port 3000
 #
-echo ">---"
-echo "> [dev.to/docker-entrypoint.sh] Starting the rails servers - whheee!"
-echo ">---"
-bundle exec rails server -b 0.0.0.0 -p 3000
+if [[ "$APP_SERVER" == "true" ]]
+then
+	echo ">---"
+	echo "> [dev.to/docker-entrypoint.sh] Starting the rails servers - whheee!"
+	echo ">---"
+	rm -f tmp/pids/server.pid
+	bundle exec rails server -b 0.0.0.0 -p 3000
+fi

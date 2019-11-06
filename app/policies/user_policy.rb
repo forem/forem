@@ -44,7 +44,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def pro_user?
-    current_user? && user.has_role?(:pro)
+    current_user? && user.pro?
   end
 
   def moderation_routes?
@@ -58,6 +58,7 @@ class UserPolicy < ApplicationPolicy
       bg_color_hex
       config_font
       config_theme
+      config_navbar
       contact_consent
       currently_hacking_on
       currently_learning
@@ -99,6 +100,7 @@ class UserPolicy < ApplicationPolicy
       mastodon_url
       medium_url
       mobile_comment_notifications
+      mod_roundrobin_notifications
       mostly_work_with
       name
       password

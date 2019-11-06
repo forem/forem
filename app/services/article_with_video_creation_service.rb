@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Layout/TrailingWhitespace
 class ArticleWithVideoCreationService
   VIDEO_SERVICE_URL = "https://dw71fyauz7yz9.cloudfront.net"
 
@@ -32,15 +31,8 @@ class ArticleWithVideoCreationService
 
   def initial_article_with_params(article)
     if @current_user.editor_version == "v1"
-      article.body_markdown = <<~BODY
-        ---
-        title: Unpublished Video ~ #{rand(100_000).to_s(26)}
-        published: false
-        description:
-        tags:
-        ---
-        
-      BODY
+      title = "Unpublished Video ~ #{rand(100_000).to_s(26)}"
+      article.body_markdown = "---\ntitle: #{title}\npublished: false\ndescription: \ntags: \n---\n\n"
     else
       article.body_markdown = ""
       article.title = "Unpublished Video ~ #{rand(100_000).to_s(26)}"
@@ -49,4 +41,3 @@ class ArticleWithVideoCreationService
     article
   end
 end
-# rubocop:enable Layout/TrailingWhitespace

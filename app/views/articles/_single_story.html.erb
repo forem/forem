@@ -1,4 +1,4 @@
-<div class="single-article single-article-small-pic">
+<div class="single-article single-article-small-pic" data-content-user-id="<%= story.user_id %>">
   <% if story.video.present? && story.video_thumbnail_url.present? %>
     <a class="single-article-video-preview" style="background-image:url(<%= story.cloudinary_video_url %>)" href="<%= story.path %>">
       <div class="single-article-video-duration">
@@ -28,13 +28,20 @@
   </a>
   <h4>
     <a href="/<%= story.cached_user.username %>">
-      <%= story.cached_user.name %>・<time datetime="<%= story.published_timestamp %>"><%= story.readable_publish_date %></time><span class="time-ago-indicator-initial-placeholder" data-seconds="<%= story.published_at_int %>"></span>
+      <%= story.cached_user.name %><%= render "shared/pro_checkmark" if story.cached_user.pro %>・<time datetime="<%= story.published_timestamp %>"><%= story.readable_publish_date %></time><span class="time-ago-indicator-initial-placeholder" data-seconds="<%= story.published_at_int %>"></span>
     </a>
   </h4>
   <div class="tags">
     <% story.cached_tag_list_array.each do |tag| %>
       <a href="/t/<%= tag %>"><span class="tag">#<%= tag %></span></a>
     <% end %>
+  </div>
+  <div class="article-engagement-count reactions-count" data-reaction-count data-reactable-id="<%= story.id %>">
+    <a href="<%= story.path %>">
+      <img src="<%= asset_path("reactions-stack.png") %>" alt="Reactions" /><span id="engagement-count-number-<%= story.id %>" class="engagement-count-number">
+          <%= story.positive_reactions_count %>
+        </span>
+    </a>
   </div>
   <% if story.comments_count > 0 %>
     <div class="article-engagement-count comments-count">
@@ -43,19 +50,13 @@
       </a>
     </div>
   <% end %>
-  <div class="article-engagement-count reactions-count" data-reaction-count data-reactable-id="<%= story.id %>">
-    <a href="<%= story.path %>">
-      <img src="<%= asset_path("reactions-stack.png") %>" alt="Reactions" /><span id="engagement-count-number-<%= story.id %>" class="engagement-count-number">
-          <%= story.positive_reactions_count %>
-        </span>
-    </a>
-  </div>
   <a
     href="<%= story.path %>"
     class="article-reading-time">
     <%= story.reading_time < 1 ? 1 : story.reading_time %> min read
   </a>
   <button
+    type="button"
     class="article-engagement-count bookmark-engage"
     data-reactable-id="<%= story.id %>"
     aria-label="Save to reading list"

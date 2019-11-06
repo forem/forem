@@ -4,6 +4,7 @@ module Suggester
       MIN_REACTION_COUNT = Rails.env.production? ? 45 : 1
 
       attr_accessor :input, :not_ids
+
       def initialize(input = nil, options = {})
         @input = input
         @not_ids = options[:not_ids]
@@ -21,9 +22,9 @@ module Suggester
 
       def qualifying_articles(tag_names)
         tag_name = tag_names.sample
-        Rails.cache.fetch("classic-article-for-tag-#{tag_name}}", expires_in: 90.minutes) do
+        RedisRailsCache.fetch("classic-article-for-tag-#{tag_name}}", expires_in: 90.minutes) do
           Article.published.cached_tagged_with(tag_name).
-            includes(:user).
+            includes(user: [:pro_membership]).
             limited_column_select.
             where(featured: true).
             where("positive_reactions_count > ?", MIN_REACTION_COUNT).

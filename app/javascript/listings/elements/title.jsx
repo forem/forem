@@ -3,9 +3,11 @@ import { h } from 'preact';
 
 const domId = 1;
 
-const Title = ( { onChange, defaultValue }) => (
+const Title = ({ onChange, defaultValue }) => (
   <div className="field">
-    <label className="listingform__label" htmlFor={domId}>Title</label>
+    <label className="listingform__label" htmlFor={domId}>
+      Title
+    </label>
     <input
       type="text"
       className="listingform__input"
@@ -19,12 +21,11 @@ const Title = ( { onChange, defaultValue }) => (
       onInput={onChange}
     />
   </div>
-)
+);
 
 Title.propTypes = {
   onChange: PropTypes.func.isRequired,
   defaultValue: PropTypes.string.isRequired,
-}
-
+};
 
 export default Title;

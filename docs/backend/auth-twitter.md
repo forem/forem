@@ -4,7 +4,7 @@ title: Twitter Authentication
 
 # Twitter App and Authentication
 
-DEV allows you to authenticate using Twitter. In order to use this authentication method in local development you will need to setup a Twitter App and retrieve its keys. Then you'll need to provide these keys to the Rails application.
+DEV allows you to authenticate using Twitter. In order to use this authentication method in local development, you will need to setup a Twitter App and retrieve its keys. Then you'll need to provide these keys to the Rails application.
 
 ## Sign up
 
@@ -30,7 +30,7 @@ DEV allows you to authenticate using Twitter. In order to use this authenticatio
 
    ![twitter-up-5](https://user-images.githubusercontent.com/22895284/51078783-53ac3180-16bb-11e9-9cf1-8e009ada6e57.png)
 
-7. Verify your email address once more and you will be done.
+7. Verify your email address once more, and you will be done.
 
 8. You are done.
 
@@ -41,7 +41,7 @@ DEV allows you to authenticate using Twitter. In order to use this authenticatio
 2. From **Apps** dashboard, click on **Create and app**.
    ![twitter-1](https://user-images.githubusercontent.com/22895284/51078797-9a019080-16bb-11e9-8130-1cd13008461e.png)
 
-3. Fill in the app name, description and URL `https://dev.to`.
+3. Fill in the app name, description, and URL `https://dev.to`.
 
    ![twitter-2](https://user-images.githubusercontent.com/22895284/51078798-9a019080-16bb-11e9-900d-d2677d7c43c4.png)
 
@@ -63,7 +63,7 @@ DEV allows you to authenticate using Twitter. In order to use this authenticatio
 
 8. The app is all set!
 
-9. One more change... From the app dashboard go to **Permissions** and check **Request email addresses from users** option.
+9. One more change: From the app dashboard, go to **Permissions** and check **Request email addresses from users** option.
 
    ![twitter-7](https://user-images.githubusercontent.com/22895284/51078803-9a9a2700-16bb-11e9-8f27-dbfe04b52031.png)
 

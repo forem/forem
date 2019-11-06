@@ -137,6 +137,8 @@ function algoliaFollowedArticles(){
 
     if (user && user.followed_tag_names && user.followed_tag_names.length > 0) {
       insertInitialArticles(user)
+      const checkBlockedContentEvent = new CustomEvent('checkBlockedContent')
+      window.dispatchEvent(checkBlockedContentEvent)
       var followedUsersArray = [];
       if (user.followed_user_ids){
         followedUsersArray = user.followed_user_ids.map(function(id){return 'user_'+id});

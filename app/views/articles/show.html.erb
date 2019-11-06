@@ -42,7 +42,7 @@
       <link rel="canonical" href="https://dev.to<%= @article.path %>" />
     <% end %>
     <meta name="description" content="<%= @article.description || "An article from the community" %>">
-    <meta name="keywords" content="software development, inclusive, community,engineering,<%= @article.cached_tag_list %>">
+    <meta name="keywords" content="software development, inclusive, community, engineering, <%= @article.cached_tag_list %>">
 
     <meta property="og:type" content="article" />
     <meta property="og:url" content="https://dev.to<%= @article.path %>" />
@@ -125,10 +125,10 @@
             </a>
           </span>
           <% if @user.twitter_username.present? %>
-            <a href="http://twitter.com/<%= @user.twitter_username %>"><%= image_tag_or_inline_svg "twitter" %></a>
+            <a href="http://twitter.com/<%= @user.twitter_username %>"><%= image_tag_or_inline_svg "twitter", width: 18, height: 18 %></a>
           <% end %>
           <% if @user.github_username.present? %>
-            <a href="http://github.com/<%= @user.github_username %>"><%= image_tag_or_inline_svg "github" %></a>
+            <a href="http://github.com/<%= @user.github_username %>"><%= image_tag_or_inline_svg "github", width: 18, height: 18 %></a>
           <% end %>
           <% if @article.published_timestamp.present? %>
             <time itemprop="datePublished" datetime="<%= @article.published_timestamp %>"><%= @article.readable_publish_date %></time>
@@ -213,7 +213,8 @@
   <% end %>
 </div>
 
-<% cache("sticky-sidebar-#{@article.id}-#{(@organization || @user).profile_updated_at}-#{(@organization || @user).last_article_at}-#{@variant_number}", expires_in: 50.hours) do %>
+<% stick_nav_cache_key = "sticky-sidebar-#{@article.id}-#{(@organization || @user).profile_updated_at}-#{(@organization || @user).last_article_at}-#{@variant_number}-#{(@organization || @user).pro?}" %>
+<% cache(stick_nav_cache_key, expires_in: 50.hours) do %>
   <%= render "articles/sticky_nav" %>
 <% end %>
 
