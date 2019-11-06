@@ -35,20 +35,5 @@ RSpec.describe "Follows #create", type: :request do
 
       expect(json_response["error"]).to eq("Daily account follow limit reached!")
     end
-
-    it "raises an error for too many follows in a single request" do
-      followable_ids = Array.new(RateLimitChecker.daily_account_follow_limit) { user_2.id }
-
-      payload = {
-        followable_type: "User",
-        followable_id: followable_ids,
-        verb: "follow"
-      }.to_json
-
-      post "/follows", headers: headers, params: payload
-      json_response = JSON.parse(response.body)
-
-      expect(json_response["error"]).to eq("Daily account follow limit reached!")
-    end
   end
 end
