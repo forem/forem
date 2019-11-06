@@ -13,6 +13,7 @@ variable :APP_PROTOCOL, :String, default: "http://"
 variable :COMMUNITY_NAME, :String, default: "DEV(local)"
 variable :MAIN_SOCIAL_IMAGE, :String, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
 variable :SITE_TWITTER_HANDLE, :String, default: "tbd"
+variable :RATE_LIMIT_FOLLOW_COUNT_DAILY, :Integer, default: 500
 variable :FAVICON_URL, :String, default: "favicon.ico"
 
 # Logo

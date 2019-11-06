@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_25_202354) do
+ActiveRecord::Schema.define(version: 2019_10_31_131016) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -1175,6 +1175,7 @@ ActiveRecord::Schema.define(version: 2019_10_25_202354) do
     t.string "website_url"
     t.datetime "workshop_expiration"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
+    t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
