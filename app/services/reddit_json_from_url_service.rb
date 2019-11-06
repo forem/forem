@@ -17,7 +17,7 @@ class RedditJsonFromUrlService
       author: data["author"],
       title: data["title"],
       post_url: @url,
-      created: data["created_utc"],
+      created_at: Time.zone.at(data["created_utc"]).strftime("%b %e '%y"),
       post_hint: data["post_hint"],
       image_url: data["url"],
       thumbnail: data["thumbnail"],

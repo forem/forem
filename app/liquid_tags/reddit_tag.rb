@@ -14,7 +14,7 @@ class RedditTag < LiquidTagBase
         author: @reddit_content[:author],
         title: @reddit_content[:title],
         post_url: @reddit_content[:post_url],
-        created_at: @reddit_content[:created_utc],
+        created_at: @reddit_content[:created_at],
         post_hint: @reddit_content[:post_hint],
         image_url: @reddit_content[:image_url],
         thumbnail: @reddit_content[:thumbnail],
