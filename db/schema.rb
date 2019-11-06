@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_25_202354) do
+ActiveRecord::Schema.define(version: 2019_11_06_095242) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -900,6 +900,14 @@ ActiveRecord::Schema.define(version: 2019_10_25_202354) do
     t.string "keyword"
     t.datetime "updated_at", null: false
     t.index ["google_result_path"], name: "index_search_keywords_on_google_result_path"
+  end
+
+  create_table "site_configs", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "value"
+    t.string "var", null: false
+    t.index ["var"], name: "index_site_configs_on_var", unique: true
   end
 
   create_table "sponsorships", force: :cascade do |t|

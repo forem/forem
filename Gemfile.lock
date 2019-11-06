@@ -602,6 +602,9 @@ GEM
       loofah (~> 2.3)
     rails-observers (0.1.5)
       activemodel (>= 4.0)
+    rails-settings-cached (2.1.1)
+      rails (>= 4.2.0)
+      request_store
     railties (5.2.3)
       actionpack (= 5.2.3)
       activesupport (= 5.2.3)
@@ -955,6 +958,7 @@ DEPENDENCIES
   rails (~> 5.2, >= 5.2.3)
   rails-assets-airbrake-js-client (~> 1.6)!
   rails-observers (~> 0.1)
+  rails-settings-cached (>= 2.1.1)
   recaptcha (~> 5.2)
   redcarpet (~> 3.5)
   redis (~> 4.1.3)
