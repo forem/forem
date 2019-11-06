@@ -2,46 +2,46 @@ sudo: required
 language: ruby
 cache:
   directories:
-  - vendor/bundle
-  - node_modules
-  - "$HOME/.nvm"
+    - vendor/bundle
+    - node_modules
+    - '$HOME/.nvm'
 rvm:
-- 2.6.5
+  - 2.6.5
 addons:
   postgresql: '9.6'
   chrome: stable
 env:
   global:
-  - RAILS_ENV=test
-  - CC_TEST_REPORTER_ID=f39e060a8b1a558ebd8aff75d5b9760bf1ae98f3f85d628ae28814f3c66438cd
-  - DATABASE_URL=postgres://postgres@localhost/
+    - RAILS_ENV=test
+    - CC_TEST_REPORTER_ID=f39e060a8b1a558ebd8aff75d5b9760bf1ae98f3f85d628ae28814f3c66438cd
+    - DATABASE_URL=postgres://postgres@localhost/
 branches:
   only:
-  - master
+    - master
 before_install:
-- date --rfc-3339=seconds
-- nvm install
+  - date --rfc-3339=seconds
+  - nvm install
 install:
-- bundle install --path vendor/bundle
-- yarn install
-- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
-  > ./cc-test-reporter
-- chmod +x ./cc-test-reporter
+  - bundle install --path vendor/bundle
+  - yarn install
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
+    > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
 before_script:
-- bundle exec rails db:create
+  - bundle exec rails db:create
 script:
-- bundle exec rails webpacker:compile
-- bundle exec rails db:schema:load
-- "./cc-test-reporter before-build"
-- bundle exec rspec spec --color --tty
-- "[ ! -f .approvals ] || bundle exec approvals verify --ask false"
-- "./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json"
-- yarn test --colors
-- "./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json"
-- "./cc-test-reporter sum-coverage coverage/codeclimate.*.json"
-- "./cc-test-reporter upload-coverage"
-- bundle exec bundle-audit check --update --ignore CVE-2015-9284
-- yarn build-storybook
+  - bundle exec rails webpacker:compile
+  - bundle exec rails db:schema:load
+  - './cc-test-reporter before-build'
+  - bundle exec rspec spec --color --tty
+  - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
+  - './cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json'
+  - yarn test --colors
+  - './cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json'
+  - './cc-test-reporter sum-coverage coverage/codeclimate.*.json'
+  - './cc-test-reporter upload-coverage'
+  - bundle exec bundle-audit check --update --ignore CVE-2015-9284
+  - yarn build-storybook
 deploy:
   provider: heroku
   api_key:
@@ -49,9 +49,9 @@ deploy:
   app:
     master: staging-mma
   on:
-    condition: "$TRAVIS_COMMIT_MESSAGE =~ \\[deploy\\]"
+    condition: "$TRAVIS_COMMIT_MESSAGE =~ \\[master\\]"
 after_deploy:
-- bash after_deploy.sh
+  - bash after_deploy.sh
 notifications:
   slack:
     on_pull_requests: false
