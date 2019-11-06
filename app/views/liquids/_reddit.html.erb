@@ -19,7 +19,7 @@
   <div class="ltag__reddit--body">
     <p>
       <% if post_hint == 'self' %>
-        <%= HTML_Truncator.truncate(markdown_text, 50) %>
+        <%= markdown_text %>
       <% elsif post_hint == 'image' %>
         <img src="<%= thumbnail %>" alt="<%= title %>">
       <% end %>
