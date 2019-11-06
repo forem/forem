@@ -22,13 +22,16 @@ module Api
       end
 
       def show
-        @comment = Comment.includes(:user).find(params[:id].to_i(26))
-        @comment_tree = @comment.descendants.
+        tree_with_root_comment = Comment.subtree_of(params[:id].to_i(26)).
           includes(:user).
           select(%i[id processed_html user_id ancestry]).
           arrange
 
-        set_surrogate_key_header "api_comments_show", edge_cache_keys(@comment_tree)
+        # being only one tree we know that the root comment is the first (and only) key
+        @comment = tree_with_root_comment.keys.first
+        @comment_tree = tree_with_root_comment[@comment]
+
+        set_surrogate_key_header "api_comments_show", edge_cache_keys(tree_with_root_comment)
       end
 
       private
