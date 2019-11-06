@@ -53,4 +53,39 @@ RSpec.describe "Api::V0::Comments", type: :request do
       expect(comment_with_descendants["children"][0]["children"][0]["id_code"]).to eq(granchild_comment.id_code_generated)
     end
   end
+
+  describe "GET /api/comments/:id" do
+    let_it_be(:comment) { create(:comment, commentable: article) }
+
+    it "returns not found if wrong comment id" do
+      get "/api/comments/foobar"
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "returns the comment" do
+      get "/api/comments/#{comment.id_code_generated}"
+      expect(json_response["id_code"]).to eq(comment.id_code_generated)
+    end
+
+    it "includes children comments in the children list" do
+      # create child comment
+      child_comment = create(:comment, commentable: article, parent: comment)
+
+      get "/api/comments/#{comment.id_code_generated}"
+      comment_with_children = json_response
+      expect(comment_with_children["children"][0]["id_code"]).to eq(child_comment.id_code_generated)
+    end
+
+    it "includes granchildren comments in the children-children list" do
+      # create granchild comment
+      root_comment = comment
+      child_comment = create(:comment, commentable: article, parent: root_comment)
+      granchild_comment = create(:comment, commentable: article, parent: child_comment)
+
+      get "/api/comments/#{comment.id_code_generated}"
+
+      comment_with_descendants = json_response
+      expect(comment_with_descendants["children"][0]["children"][0]["id_code"]).to eq(granchild_comment.id_code_generated)
+    end
+  end
 end
