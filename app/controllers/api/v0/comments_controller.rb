@@ -36,11 +36,13 @@ module Api
 
       private
 
-      # since an article has multiple root comments, we need to use recursion
-      # to extract all the comment cache keys collecting both the keys of each
-      # level of root comments and their descendants
+      # ancestry wraps a single or multiple trees of comments into a single hash,
+      # in the case of an article comments, the hash has multiple keys (the root comments),
+      # in the case of a comment and its descendants, the hash has only one key.
+      # Either way, we need to use recursion to extract all the comment cache keys
+      # collecting both the keys of each level of root comments and their descendants
       # NOTE: the objects are already loaded in memory by "ancestry",
-      # so no additional SQL query is performed, avoiding N+1s
+      # so no additional SQL query is performed during this extraction, avoiding N+1s
       def edge_cache_keys(comments_trees)
         keys = comments_trees.keys.map do |comment|
           Array.wrap(comment.record_key) + edge_cache_keys(comments_trees[comment])
