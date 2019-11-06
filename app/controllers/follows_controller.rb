@@ -21,7 +21,6 @@ class FollowsController < ApplicationController
 
   def create
     authorize Follow
-    raise RateLimitChecker::DailyFollowAccountLimitReached if followable_count_over_rate_limit?
 
     followable = if params[:followable_type] == "Organization"
                    Organization.find(params[:followable_id])
@@ -39,18 +38,18 @@ class FollowsController < ApplicationController
                 unfollow(followable, need_notification: need_notification)
               else
                 rate_limiter = RateLimitChecker.new(current_user)
-                raise RateLimitChecker::DailyFollowAccountLimitReached if rate_limiter.limit_by_action("follow_account")
-
+                if rate_limiter.limit_by_action("follow_account")
+                  render json: {
+                    error: "Daily account follow limit reached!",
+                    status: :too_many_requests
+                  }
+                  return
+                end
                 follow(followable, need_notification: need_notification)
               end
 
     current_user.touch
     render json: { outcome: @result }
-  rescue RateLimitChecker::DailyFollowAccountLimitReached
-    render json: {
-      error: "Daily account follow limit reached!",
-      status: :too_many_requests
-    }
   end
 
   def update
@@ -77,11 +76,5 @@ class FollowsController < ApplicationController
     Notification.send_new_follower_notification_without_delay(user_follow, true) if need_notification
 
     "unfollowed"
-  end
-
-  def followable_count_over_rate_limit?
-    return false unless params[:followable_id].respond_to?(:count)
-
-    params[:followable_id].count > RateLimitChecker.daily_account_follow_limit
   end
 end
