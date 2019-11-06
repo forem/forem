@@ -54,6 +54,7 @@
         <%= javascript_include_tag "application" %>
       <% end %>
       <%= yield(:page_meta) %>
+      <%# TODO Remove the zoom restriction, this is pretty bad for a11y %>
       <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
       <%= favicon_link_tag ApplicationConfig["FAVICON_URL"] %>
       <link rel="apple-touch-icon" href="<%= asset_path "apple-icon.png" %>">
