@@ -3,7 +3,7 @@
 exports[`<Onboarding /> BioForm renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
-<div class="onboarding-body">
+<main class="onboarding-body">
   <div class="onboarding-main">
     <div class="onboarding-content about">
       <h2>About You!</h2>
@@ -36,14 +36,14 @@ preact-render-spy (1 nodes)
       </button>
     </nav>
   </div>
-</div>
+</main>
 
 `;
 
 exports[`<Onboarding /> CloseSlide renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
-<div class="onboarding-body">
+<main class="onboarding-body">
   <div class="onboarding-main">
     <div class="onboarding-content">
       <h1>
@@ -107,14 +107,14 @@ preact-render-spy (1 nodes)
       </div>
     </div>
   </div>
-</div>
+</main>
 
 `;
 
 exports[`<Onboarding /> EmailTermsConditionsForm renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
-<div class="onboarding-body">
+<main class="onboarding-body">
   <div class="onboarding-main">
     <div class="onboarding-content checkbox-slide">
       <h2>Some things to check off!</h2>
@@ -193,14 +193,14 @@ preact-render-spy (1 nodes)
       </button>
     </nav>
   </div>
-</div>
+</main>
 
 `;
 
 exports[`<Onboarding /> FollowTags renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
-<div class="onboarding-body">
+<main class="onboarding-body">
   <div class="onboarding-main">
     <div class="onboarding-content">
       <h2>Follow tags to customize your feed</h2>
@@ -251,14 +251,14 @@ preact-render-spy (1 nodes)
       </button>
     </nav>
   </div>
-</div>
+</main>
 
 `;
 
 exports[`<Onboarding /> FollowUsers renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
-<div class="onboarding-body">
+<main class="onboarding-body">
   <div class="onboarding-main">
     <div class="onboarding-content">
       <h2>
@@ -334,14 +334,14 @@ preact-render-spy (1 nodes)
       </button>
     </nav>
   </div>
-</div>
+</main>
 
 `;
 
 exports[`<Onboarding /> IntroSlide renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
-<div class="onboarding-body">
+<main class="onboarding-body">
   <div class="onboarding-main">
     <div class="onboarding-content">
       <h1>
@@ -389,14 +389,14 @@ preact-render-spy (1 nodes)
       </button>
     </nav>
   </div>
-</div>
+</main>
 
 `;
 
 exports[`<Onboarding /> PersonalInformationForm renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
-<div class="onboarding-body">
+<main class="onboarding-body">
   <div class="onboarding-main">
     <div class="onboarding-content about">
       <h2>About You!</h2>
@@ -450,6 +450,6 @@ preact-render-spy (1 nodes)
       </button>
     </nav>
   </div>
-</div>
+</main>
 
 `;
