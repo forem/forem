@@ -16,9 +16,9 @@ module Api
       def index
         article = Article.find(params[:a_id])
 
-        @comments_trees = article.comments.includes(:user).select(%i[id processed_html user_id ancestry]).arrange
+        @comments = article.comments.includes(:user).select(%i[id processed_html user_id ancestry]).arrange
 
-        set_surrogate_key_header "api_comments_index", edge_cache_keys(@comments_trees)
+        set_surrogate_key_header "api_comments_index", edge_cache_keys(@comments)
       end
 
       def show
@@ -29,7 +29,7 @@ module Api
 
         # being only one tree we know that the root comment is the first (and only) key
         @comment = tree_with_root_comment.keys.first
-        @comment_tree = tree_with_root_comment[@comment]
+        @comments = tree_with_root_comment[@comment]
 
         set_surrogate_key_header "api_comments_show", edge_cache_keys(tree_with_root_comment)
       end
