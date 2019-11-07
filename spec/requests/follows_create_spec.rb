@@ -22,17 +22,18 @@ RSpec.describe "Follows #create", type: :request do
 
       allow(rate_limit_checker).
         to receive(:user_today_follow_count).
-        and_return(501)
+        and_return(RateLimitChecker.daily_account_follow_limit + 1)
 
       allow(RateLimitChecker).
         to receive(:new).
         and_return(rate_limit_checker)
     end
 
-    it "raises an error for too many follows in a day" do
+    it "returns an error for too many follows in a day" do
       post "/follows", headers: headers, params: follow_payload
       json_response = JSON.parse(response.body)
 
+      expect(response).to have_http_status(:too_many_requests)
       expect(json_response["error"]).to eq("Daily account follow limit reached!")
     end
   end

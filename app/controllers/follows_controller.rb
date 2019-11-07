@@ -39,10 +39,7 @@ class FollowsController < ApplicationController
               else
                 rate_limiter = RateLimitChecker.new(current_user)
                 if rate_limiter.limit_by_action("follow_account")
-                  render json: {
-                    error: "Daily account follow limit reached!",
-                    status: :too_many_requests
-                  }
+                  render json: { error: "Daily account follow limit reached!" }, status: :too_many_requests
                   return
                 end
                 follow(followable, need_notification: need_notification)
