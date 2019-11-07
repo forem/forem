@@ -871,7 +871,7 @@ article {
             background: transparent;
             @include themeable(
               background,
-              theme-secondary-color,
+              theme-social-icon-color,
               transparent
             );
           }
