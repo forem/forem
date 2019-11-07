@@ -203,8 +203,8 @@
 }
 
 #page-content {
-  font-family: $helvetica;
   #global-notice {
+    font-family: $helvetica;
     background: $green;
     color: black;
     padding: 20px 0px 20px;
@@ -213,9 +213,5 @@
     top: 0px;
     left: 0px;
     right: 0px;
-    &.error-notice {
-      background: rgba(255, 80, 80, 0.7);
-      color: white;
-    }
   }
 }
