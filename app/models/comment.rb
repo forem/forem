@@ -126,13 +126,6 @@ class Comment < ApplicationRecord
     "comments-#{id}"
   end
 
-  def self.rooted_on(commentable_id, commentable_type)
-    includes(:user).
-      select(:id, :user_id, :commentable_type, :commentable_id,
-             :deleted, :created_at, :processed_html, :ancestry, :updated_at, :score).
-      where(commentable_id: commentable_id, ancestry: nil, commentable_type: commentable_type)
-  end
-
   def self.tree_for(commentable, limit = 0)
     commentable.comments.includes(:user).arrange(order: "score DESC").to_a[0..limit - 1].to_h
   end
