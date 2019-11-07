@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import Navigation from './Navigation';
 import { getContentOfToken } from '../utilities';
 
+/* eslint-disable camelcase */
+
 class EmailTermsConditionsForm extends Component {
   constructor(props) {
     super(props);
@@ -67,14 +69,14 @@ class EmailTermsConditionsForm extends Component {
       this.setState({
         message: 'You must agree to our Code of Conduct before continuing!',
       });
-      return;
+      return false;
     }
     if (!checked_terms_and_conditions) {
       this.setState({
         message:
           'You must agree to our Terms and Conditions before continuing!',
       });
-      return;
+      return false;
     }
     return true;
   }
@@ -109,7 +111,9 @@ class EmailTermsConditionsForm extends Component {
       return (
         <div className="onboarding-main">
           <div className="onboarding-content checkbox-slide">
-            <button onClick={() => this.backToSlide()}>BACK</button>
+            <button type="button" onClick={() => this.backToSlide()}>
+              BACK
+            </button>
             <div
               dangerouslySetInnerHTML={{ __html: textShowing }}
               style={{ height: '360px', overflow: 'scroll' }}

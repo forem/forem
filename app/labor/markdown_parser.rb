@@ -29,6 +29,7 @@ class MarkdownParser
     html = remove_empty_paragraphs(html)
     html = escape_colon_emojis_in_codeblock(html)
     html = unescape_raw_tag_in_codeblocks(html)
+    html = wrap_all_figures_with_tags(html)
     wrap_mentions_with_links!(html)
   end
 
@@ -183,6 +184,24 @@ class MarkdownParser
       indices.each do |i|
         codeblock.children[i].content = codeblock.children[i].content.delete("----")
       end
+    end
+    if html_doc.at_css("body")
+      html_doc.at_css("body").inner_html
+    else
+      html_doc.to_html
+    end
+  end
+
+  def wrap_all_figures_with_tags(html)
+    html_doc = Nokogiri::HTML(html)
+
+    html_doc.xpath("//figcaption").each do |caption|
+      next if caption.parent.name == "figure"
+      next unless caption.previous_element
+
+      fig = html_doc.create_element "figure"
+      prev = caption.previous_element
+      prev.replace(fig) << prev << caption
     end
     if html_doc.at_css("body")
       html_doc.at_css("body").inner_html

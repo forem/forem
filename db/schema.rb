@@ -1173,6 +1173,7 @@ ActiveRecord::Schema.define(version: 2019_11_06_102826) do
     t.string "website_url"
     t.datetime "workshop_expiration"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
+    t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
