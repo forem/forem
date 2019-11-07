@@ -8,6 +8,8 @@ module Users
 
       service.call(user)
       NotifyMailer.account_deleted_email(user).deliver
+    rescue StandardError => e
+      Rails.logger.error("Error while deleting user: #{e}")
     end
   end
 end
