@@ -1,7 +1,6 @@
 class FlareTag
   FLARE_TAGS = %w[explainlikeimfive
                   jokes
-                  hacktoberfest
                   watercooler
                   ama
                   techtalks
