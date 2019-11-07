@@ -1,6 +1,6 @@
 ---
 items:
-  - technical-overview.md
+  - technical-overview
   - installation
   - getting-started
   - backend
