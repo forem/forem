@@ -1,5 +1,5 @@
 ---
-title: Technical Overview
+title: Stack
 ---
 
 ## 🔑 Key App tech/services
