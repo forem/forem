@@ -5,14 +5,6 @@ module Api
 
       before_action :set_cache_control_headers, only: %i[index show]
 
-      caches_action :index,
-                    cache_path: proc { |c| c.params.permit! },
-                    expires_in: 10.minutes
-
-      caches_action :show,
-                    cache_path: proc { |c| c.params.permit! },
-                    expires_in: 10.minutes
-
       def index
         article = Article.find(params[:a_id])
 
