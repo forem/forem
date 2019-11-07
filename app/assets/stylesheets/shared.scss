@@ -201,3 +201,21 @@
     width: 140%;
   }
 }
+
+#page-content {
+  font-family: $helvetica;
+  #global-notice {
+    background: $green;
+    color: black;
+    padding: 20px 0px 20px;
+    text-align: center;
+    position: relative;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    &.error-notice {
+      background: rgba(255, 80, 80, 0.7);
+      color: white;
+    }
+  }
+}

@@ -71,7 +71,7 @@ class UsersController < ApplicationController
     if @user.articles_count.zero? && @user.comments_count.zero?
       @user.destroy!
       NotifyMailer.account_deleted_email(@user).deliver
-      flash[:settings_notice] = "Your account has been deleted."
+      flash[:global_notice] = "Your account has been deleted."
       sign_out @user
       redirect_to root_path
     else
@@ -84,8 +84,8 @@ class UsersController < ApplicationController
     set_user
     set_tabs("account")
     Users::SelfDeleteJob.perform_later(@user.id)
-    flash[:settings_notice] = "Your account deletion is scheduled. You'll be notified when it's deleted."
     sign_out @user
+    flash[:global_notice] = "Your account deletion is scheduled. You'll be notified when it's deleted."
     redirect_to root_path
   end
 
