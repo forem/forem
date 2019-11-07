@@ -486,6 +486,7 @@ class Article < ApplicationRecord
       self.tag_list = [] # overwrite any existing tag with those from the front matter
       tag_list.add(front_matter["tags"], parser: ActsAsTaggableOn::TagParser)
       remove_tag_adjustments_from_tag_list
+      add_tag_adjustments_to_tag_list
     end
     self.published = front_matter["published"] if %w[true false].include?(front_matter["published"].to_s)
     self.published_at = parse_date(front_matter["date"]) if published
@@ -505,6 +506,7 @@ class Article < ApplicationRecord
   def validate_tag
     # remove adjusted tags
     remove_tag_adjustments_from_tag_list
+    add_tag_adjustments_to_tag_list
 
     # check there are not too many tags
     return errors.add(:tag_list, "exceed the maximum of 4 tags") if tag_list.size > 4
@@ -518,6 +520,11 @@ class Article < ApplicationRecord
   def remove_tag_adjustments_from_tag_list
     tags_to_remove = TagAdjustment.where(article_id: id, adjustment_type: "removal", status: "committed").pluck(:tag_name)
     tag_list.remove(tags_to_remove, parser: ActsAsTaggableOn::TagParser) if tags_to_remove
+  end
+
+  def add_tag_adjustments_to_tag_list
+    tags_to_add = TagAdjustment.where(article_id: id, adjustment_type: "addition", status: "committed").pluck(:tag_name)
+    tag_list.add(tags_to_add, parser: ActsAsTaggableOn::TagParser) if tags_to_add
   end
 
   def validate_video

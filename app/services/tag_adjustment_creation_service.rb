@@ -16,6 +16,7 @@ class TagAdjustmentCreationService
   def update_article
     article = Article.find(creation_args[:article_id])
     article.update!(tag_list: article.tag_list.remove(@tag_adjustment.tag_name)) if @tag_adjustment.adjustment_type == "removal"
+    article.update!(tag_list: article.tag_list.add(@tag_adjustment.tag_name)) if @tag_adjustment.adjustment_type == "addition"
   end
 
   def creation_args
