@@ -39,10 +39,21 @@ RSpec.describe Collection, type: :model do
     end
   end
 
-  describe "when a single article in collection is updated" do
+  describe "#touch_articles" do
     it "touches all articles in the collection" do
-      random_article = collection.articles.sample
-      expect { random_article.touch }.to(change { collection.articles.map(&:updated_at) })
+      Timecop.freeze(DateTime.parse("2019/10/24")) do
+        allow(collection.articles).to receive(:update_all)
+        collection.touch_articles
+        expect(collection.articles).to have_received(:update_all).with(updated_at: Time.zone.now)
+      end
+    end
+  end
+
+  describe "when the collection is touched" do
+    it "touches each article in the collection" do
+      allow(collection).to receive(:touch_articles)
+      collection.touch
+      expect(collection).to have_received(:touch_articles)
     end
   end
 end

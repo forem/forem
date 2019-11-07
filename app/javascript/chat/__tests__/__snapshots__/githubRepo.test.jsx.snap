@@ -16,7 +16,13 @@ preact-render-spy (1 nodes)
         data-path="Camera"
         onClick={[Function value]}
       >
-        📁 Camera
+        <span
+          role="img"
+          aria-label="folder-emoji"
+        >
+          📁
+        </span>
+         Camera
       </a>
     </div>
     <div class="activecontent__githubrepofilerow">
@@ -26,7 +32,13 @@ preact-render-spy (1 nodes)
         data-path="Environment"
         onClick={[Function value]}
       >
-        📁 Environment
+        <span
+          role="img"
+          aria-label="folder-emoji"
+        >
+          📁
+        </span>
+         Environment
       </a>
     </div>
     <div class="activecontent__githubrepofilerow">
@@ -36,7 +48,13 @@ preact-render-spy (1 nodes)
         data-path="Interactables"
         onClick={[Function value]}
       >
-        📁 Interactables
+        <span
+          role="img"
+          aria-label="folder-emoji"
+        >
+          📁
+        </span>
+         Interactables
       </a>
     </div>
     <div class="activecontent__githubrepofilerow">

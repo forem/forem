@@ -183,7 +183,7 @@ input[type='email'] {
   display: none !important;
 }
 
-body.night-theme {
+body.night-theme, body.ten-x-hacker-theme {
   .on-page-nav-butt img,
   .icon-img,
   .dropdown-icon,
@@ -209,6 +209,8 @@ body.night-theme {
   }
 }
 
+// Alternate base fonts
+
 body.sans-serif-article-body {
   .body {
     font-family: $helvetica;
@@ -225,6 +227,23 @@ body.comic-sans-article-body {
   .body p {
     font-family: 'Comic Sans MS', cursive, sans-serif;
     font-size: 0.98em;
+  }
+}
+body.monospace-article-body {
+  .body {
+    font-family: $monospace;
+  }
+  .body p {
+    font-family: $monospace;
+    font-size: 0.9em;
+  }
+}
+
+body.static-navbar-config {
+  .top-bar {
+    position: relative !important;
+    margin-top: 20px !important;
+    margin-bottom: -66px !important;
   }
 }
 

@@ -19,7 +19,7 @@ RSpec.describe Article, type: :model do
   it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:organization).optional }
-  it { is_expected.to belong_to(:collection).optional }
+  it { is_expected.to belong_to(:collection).optional.touch(true) }
   it { is_expected.to have_many(:comments) }
   it { is_expected.to have_many(:reactions).dependent(:destroy) }
   it { is_expected.to have_many(:notifications).dependent(:delete_all) }
@@ -192,11 +192,9 @@ RSpec.describe Article, type: :model do
         expect(build(:article, tags: tags).valid?).to be(false)
       end
 
-      context 'when description is empty' do
-        it 'parses tags' do
-          body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: one\n---\n\n"
-          expect(build_and_validate_article(body_markdown: body_markdown).tag_list).to eq(['one'])
-        end
+      it "parses tags when description is empty" do
+        body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: one\n---\n\n"
+        expect(build_and_validate_article(body_markdown: body_markdown).tag_list).to eq(["one"])
       end
     end
 
@@ -610,6 +608,16 @@ RSpec.describe Article, type: :model do
         current_article = article
         expect { current_article.destroy }.not_to have_enqueued_job.with(kind_of(Hash), "index_or_remove_from_index_where_appropriate").on_queue("algoliasearch")
       end
+    end
+  end
+
+  describe ".feed" do
+    it "returns records with a subset of attributes" do
+      create(:article, published: true, published_at: 2.hours.ago)
+
+      feed_article = described_class.feed.first
+
+      expect(feed_article.attributes.keys).to match_array(%w[id tag_list published_at processed_html user_id organization_id title path])
     end
   end
 

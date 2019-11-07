@@ -25,6 +25,10 @@ function removeShowingMenu() {
   }, 150);
 }
 
+function toggleMenu() {
+  getClassList('navbar-menu-wrapper').toggle('showing');
+}
+
 function initializeTouchDevice() {
   var isTouchDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|DEV-Native-ios/i.test(
     navigator.userAgent,
@@ -37,9 +41,8 @@ function initializeTouchDevice() {
   setTimeout(() => {
     removeShowingMenu();
     if (isTouchDevice) {
-      getById('navigation-butt').addEventListener('click', e =>
-        getClassList('navbar-menu-wrapper').toggle('showing'),
-      );
+      // Use a named function instead of anonymous so duplicate event handlers are discarded
+      getById('navigation-butt').addEventListener('click', toggleMenu);
     } else {
       getClassList('navbar-menu-wrapper').add('desktop');
       getById('navigation-butt').addEventListener('focus', e =>

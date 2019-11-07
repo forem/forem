@@ -40,7 +40,7 @@ class ReactionsController < ApplicationController
 
   def create
     authorize Reaction
-    Rails.cache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
+    RedisRailsCache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
     category = params[:category] || "like"
     reaction = Reaction.where(
       user_id: current_user.id,
@@ -49,7 +49,7 @@ class ReactionsController < ApplicationController
       category: category,
     ).first
     if reaction
-      reaction.user.touch
+      current_user.touch
       reaction.destroy
       Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
       Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) if organization_article?(reaction)
@@ -69,7 +69,7 @@ class ReactionsController < ApplicationController
   end
 
   def cached_user_positive_reactions(user)
-    Rails.cache.fetch("cached_user_reactions-#{user.id}-#{user.updated_at}", expires_in: 24.hours) do
+    RedisRailsCache.fetch("cached_user_reactions-#{user.id}-#{user.updated_at}", expires_in: 24.hours) do
       Reaction.where(user_id: user.id).
         where("points > ?", 0)
     end

@@ -107,7 +107,7 @@ Rails.application.configure do
                          socket_timeout: 1.5,
                          socket_failure_delay: 0.2 }
 
-  config.app_domain = "dev.to"
+  config.app_domain = ENV["APP_DOMAIN"]
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true
@@ -118,12 +118,15 @@ Rails.application.configure do
     authentication: :plain,
     user_name: ENV["SENDGRID_USERNAME_ACCEL"],
     password: ENV["SENDGRID_PASSWORD_ACCEL"],
-    domain: "dev.to",
+    domain: ENV["APP_DOMAIN"],
     enable_starttls_auto: true
   }
 
   config.middleware.use Rack::HostRedirect,
-                        "practicaldev.herokuapp.com" => "dev.to"
+                        ENV["HEROKU_APP_URL"] => ENV["APP_DOMAIN"]
 end
 
-Rails.application.routes.default_url_options = { host: Rails.application.config.app_domain, protocol: :https }
+Rails.application.routes.default_url_options = { 
+  host: Rails.application.config.app_domain,
+  protocol: ENV["APP_PROTOCOL"].delete_suffix("://")
+}

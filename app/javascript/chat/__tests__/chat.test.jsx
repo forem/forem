@@ -16,7 +16,7 @@ global.window = doc.defaultView;
 global.window.algoliasearch = algoliasearch;
 
 // mock observer and user ID
-window.IntersectionObserver = jest.fn(function() {
+window.IntersectionObserver = jest.fn(function intersectionObserverMock() {
   this.observe = jest.fn();
 });
 global.window.currentUser = { id: 'some_id' };

@@ -24,18 +24,6 @@
   <%= auto_discovery_link_tag(:rss, "https://dev.to/feed", title: "#{ApplicationConfig['COMMUNITY_NAME']} RSS Feed") %>
 <% end %>
 <%= javascript_pack_tag "homePage", defer: true %>
-<script defer>
-
-  var DIGITAL_CLIMATE_STRIKE_OPTIONS = {
-    forceFullPageWidget: false,
-    showCloseButtonOnFullPageWidget: true,
-    alwaysShowWidget: false,
-    disableGoogleAnalytics: true,
-    websiteName: 'DEV',
-    language: 'en'
-  };
-</script>
-<script src="https://assets.digitalclimatestrike.net/widget.js" defer></script>
 
 <% params.delete(:i) %>
 <% cache("main-stories-index-#{params}-#{user_signed_in?}", expires_in: 3.minutes) do %>
@@ -105,7 +93,7 @@
         <div id="featured-story-marker" data-featured-article="articles-<%= @featured_story.id %>"></div>
         <img src="<%= cloud_cover_url(@featured_story.main_image) %>" style="display:none" alt="<%= @featured_story.title %>" />
         <a href="<%= @featured_story.path %>" id="article-link-<%= @featured_story.id %>" class="index-article-link" aria-label="Main Story" data-featured-article="articles-<%= @featured_story.id %>">
-          <div class="single-article big-article">
+          <div class="single-article big-article" data-content-user-id="<%= @featured_story.user_id %>">
             <div class="picture image-final" style="background-color:<%= @featured_story.main_image_background_hex_color %>;background-image:url(<%= cloud_cover_url(@featured_story.main_image) %>)"></div>
             <div class="content-wrapper">
               <h3>

@@ -125,10 +125,10 @@
             </a>
           </span>
           <% if @user.twitter_username.present? %>
-            <a href="http://twitter.com/<%= @user.twitter_username %>"><%= image_tag_or_inline_svg "twitter" %></a>
+            <a href="http://twitter.com/<%= @user.twitter_username %>"><%= image_tag_or_inline_svg "twitter", width: 18, height: 18 %></a>
           <% end %>
           <% if @user.github_username.present? %>
-            <a href="http://github.com/<%= @user.github_username %>"><%= image_tag_or_inline_svg "github" %></a>
+            <a href="http://github.com/<%= @user.github_username %>"><%= image_tag_or_inline_svg "github", width: 18, height: 18 %></a>
           <% end %>
           <% if @article.published_timestamp.present? %>
             <time itemprop="datePublished" datetime="<%= @article.published_timestamp %>"><%= @article.readable_publish_date %></time>

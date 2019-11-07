@@ -663,6 +663,7 @@ export default class Chat extends Component {
   };
 
   handleFailure = err => {
+    // eslint-disable-next-line no-console
     console.error(err);
   };
 

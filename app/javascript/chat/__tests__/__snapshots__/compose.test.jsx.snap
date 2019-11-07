@@ -14,6 +14,7 @@ exports[`<Compose /> behavior with message should render and test snapshot 1`] =
   <button
     class="messagecomposer__submit"
     onClick={[Function]}
+    type="button"
   >
     SEND
   </button>

@@ -192,17 +192,17 @@ article {
       min-height: 40px;
       font-size: calc(2vw + 26px);
       word-break: break-word;
-      
+
       @media screen and (min-width: 1600px) {
         font-size: 57px;
       }
 
       .title-block {
         display: inline-block;
-      }    
-      
+      }
+
       &.medium {
-        font-size: calc(1.85vw + 25px);        
+        font-size: calc(1.85vw + 25px);
         @media screen and (min-width: 1600px) {
           font-size: 47px;
         }
@@ -555,6 +555,10 @@ article {
       margin: 0.3em auto;
     }
 
+    figure {
+      margin: 0;
+    }
+
     figcaption {
       font-style: italic;
       text-align: center;
@@ -568,7 +572,7 @@ article {
       display: block;
     }
 
-    p ~ figcaption {
+    p + figcaption {
       margin-top: -0.8em;
     }
 

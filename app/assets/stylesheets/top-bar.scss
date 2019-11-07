@@ -418,7 +418,6 @@
     margin: 0;
     width: calc(100% - 12px);
     border-radius: 3px;
-    border: 0px;
     padding: 6px 9px;
     font-size: 0.9em;
     @include themeable(
@@ -432,6 +431,10 @@
       $black
     );
     -webkit-appearance: none;
+    border: 1px solid transparent;
+    &:focus {
+      border: 1px solid $dark-purple;
+    }
     &::placeholder {
       opacity: 0.5;
       @include themeable(

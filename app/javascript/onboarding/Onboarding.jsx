@@ -95,6 +95,6 @@ export default class Onboarding extends Component {
 
   render() {
     const { currentSlide } = this.state;
-    return <div className="onboarding-body">{this.slides[currentSlide]}</div>;
+    return <main className="onboarding-body">{this.slides[currentSlide]}</main>;
   }
 }

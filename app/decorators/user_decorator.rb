@@ -2,7 +2,7 @@ class UserDecorator < ApplicationDecorator
   delegate_all
 
   def cached_followed_tags
-    Rails.cache.fetch("user-#{id}-#{updated_at}/followed_tags_11-30", expires_in: 20.hours) do
+    RedisRailsCache.fetch("user-#{id}-#{updated_at}/followed_tags_11-30", expires_in: 20.hours) do
       follows_query = Follow.where(follower_id: id, followable_type: "ActsAsTaggableOn::Tag").pluck(:followable_id, :points)
       tags = Tag.where(id: follows_query.map { |f| f[0] }).order("hotness_score DESC")
       tags.each do |t|
@@ -34,8 +34,15 @@ class UserDecorator < ApplicationDecorator
   def config_body_class
     body_class = ""
     body_class += config_theme.tr("_", "-")
-    body_class = body_class + " " + config_font.tr("_", "-") + "-article-body" + " pro-status-#{pro?} trusted-status-#{trusted}"
+    body_class += " #{config_font.tr('_', '-')}-article-body"
+    body_class += " pro-status-#{pro?}"
+    body_class += " trusted-status-#{trusted}"
+    body_class += " #{config_navbar.tr('_', '-')}-navbar-config"
     body_class
+  end
+
+  def dark_theme?
+    config_theme == "night_theme" || config_theme == "ten_x_hacker_theme"
   end
 
   def assigned_color

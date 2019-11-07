@@ -16,7 +16,9 @@ class ChatChannelsController < ApplicationController
     end
   end
 
-  def show; end
+  def show
+    @chat_messages = @chat_channel.messages.includes(:user).order("created_at DESC").limit(50)
+  end
 
   def create
     authorize ChatChannel
@@ -157,7 +159,7 @@ class ChatChannelsController < ApplicationController
   end
 
   def generate_github_token
-    Rails.cache.fetch("user-github-token-#{current_user.id}", expires_in: 48.hours) do
+    RedisRailsCache.fetch("user-github-token-#{current_user.id}", expires_in: 48.hours) do
       Identity.where(user_id: current_user.id, provider: "github").first&.token
     end
   end
