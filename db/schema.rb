@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_25_202354) do
+ActiveRecord::Schema.define(version: 2019_11_06_102826) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -880,16 +880,6 @@ ActiveRecord::Schema.define(version: 2019_10_25_202354) do
     t.index ["name"], name: "index_roles_on_name"
   end
 
-  create_table "sail_settings", force: :cascade do |t|
-    t.integer "cast_type", limit: 2, null: false
-    t.datetime "created_at", null: false
-    t.text "description"
-    t.string "name", null: false
-    t.datetime "updated_at", null: false
-    t.string "value", null: false
-    t.index ["name"], name: "index_settings_on_name", unique: true
-  end
-
   create_table "search_keywords", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "google_checked_at"
@@ -900,6 +890,14 @@ ActiveRecord::Schema.define(version: 2019_10_25_202354) do
     t.string "keyword"
     t.datetime "updated_at", null: false
     t.index ["google_result_path"], name: "index_search_keywords_on_google_result_path"
+  end
+
+  create_table "site_configs", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "value"
+    t.string "var", null: false
+    t.index ["var"], name: "index_site_configs_on_var", unique: true
   end
 
   create_table "sponsorships", force: :cascade do |t|
@@ -1175,6 +1173,7 @@ ActiveRecord::Schema.define(version: 2019_10_25_202354) do
     t.string "website_url"
     t.datetime "workshop_expiration"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
+    t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin

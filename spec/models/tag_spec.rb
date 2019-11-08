@@ -3,29 +3,49 @@ require "rails_helper"
 RSpec.describe Tag, type: :model do
   let(:tag) { build(:tag) }
 
-  it "passes validations if bg_color_hex is valid" do
-    tag.bg_color_hex = "#000000"
-    expect(tag).to be_valid
-  end
+  describe "validations" do
 
-  it "fails validation if bg_color_hex is invalid" do
-    tag.bg_color_hex = "0000000"
-    expect(tag).not_to be_valid
-  end
+    describe "bg_color_hex" do
+      it "passes validations if bg_color_hex is valid" do
+        tag.bg_color_hex = "#000000"
+        expect(tag).to be_valid
+      end
+    
+      it "fails validation if bg_color_hex is invalid" do
+        tag.bg_color_hex = "0000000"
+        expect(tag).not_to be_valid
+      end
+    end
 
-  it "passes validations if text_color_hex is valid" do
-    tag.text_color_hex = "#000000"
-    expect(tag).to be_valid
-  end
+    describe "text_color_hex" do
+      it "passes validations if text_color_hex is valid" do
+        tag.text_color_hex = "#000000"
+        expect(tag).to be_valid
+      end
+    
+      it "fails validation if text_color_hex is invalid" do
+        tag.text_color_hex = "0000000"
+        expect(tag).not_to be_valid
+      end
+    end
 
-  it "fails validation if text_color_hex is invalid" do
-    tag.text_color_hex = "0000000"
-    expect(tag).not_to be_valid
-  end
+    describe "name" do
+      it "passes validations if name is alphanumeric" do
+        tag.name = "foobar123"
+        expect(tag).to be_valid
+      end
 
-  it "fails validation if the alias does not refer to an existing tag" do
-    tag.alias_for = "hello"
-    expect(tag).not_to be_valid
+      it "fails validations if name is not alphanumeric" do
+        tag.name = ""
+        expect(tag).not_to be_valid
+      end
+    end
+
+    it "fails validation if the alias does not refer to an existing tag" do
+      tag.alias_for = "hello"
+      expect(tag).not_to be_valid
+    end
+
   end
 
   it "turns markdown into HTML before saving" do

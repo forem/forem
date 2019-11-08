@@ -10,4 +10,5 @@
     <div><a href="/internal/users/<%= user.id %>"><%= user.id %></a></div>
     <div><a href="<%= user.path %>">@<%= user.username %></a></div>
     <div><%= user.roles.pluck(:name) %></div>
+  </div>
 <% end %>

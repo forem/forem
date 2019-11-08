@@ -232,7 +232,7 @@ RSpec.describe "UserSettings", type: :request do
       it "sets the proper error message" do
         delete "/users/remove_association", params: { provider: "github" }
         expect(flash[:error]).
-          to eq "An error occurred. Please try again or send an email to: yo@dev.to"
+          to eq "An error occurred. Please try again or send an email to: #{ApplicationConfig['DEFAULT_SITE_EMAIL']}"
       end
 
       it "does not delete any identities" do
