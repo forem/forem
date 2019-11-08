@@ -142,11 +142,11 @@
         <%= f.text_area :reason_for_adjustment, placeholder: "Reason for Removal (Be super kind) - Only the reason is needed, the notification will take care of the rest." %>
         <%= f.submit "Remove Tag" %>
       <% end %>
-      <% adjustments = TagAdjustment.where(article_id: @moderatable.id, adjustment_type: "removal") %>
-      <% if adjustments.any? %>
+      <% removed_adjustments = @adjustments.filter { |a| a.adjustment_type == "removal" } if @adjustments %>
+      <% if removed_adjustments.any? %>
         <br /><br />
         <b>Removed tags: </b>
-        <% adjustments.each do |adjustment| %>
+        <% removed_adjustments.each do |adjustment| %>
           <% if current_user.any_admin? %>
               <%= form_for(adjustment, url: "/tag_adjustments/#{adjustment.id}", html: { method: :delete, onsubmit: "return confirm('Are you sure you want to undo the removal of the #{adjustment.tag_name} tag?')" }) do |f| %>
                 <%= adjustment.tag_name %>
@@ -181,11 +181,11 @@
       <% else %>
         <b>Unable to add new tags. 4 tags max.</b>
       <% end %>
-      <% adjustments_type_added = TagAdjustment.where(article_id: @moderatable.id, adjustment_type: "addition") %>
-      <% if adjustments_type_added.any? %>
+      <% added_adjustments = @adjustments.filter { |a| a.adjustment_type == "addition" } if @adjustments %>
+      <% if added_adjustments.any? %>
         <br /><br />
         <b>Added tags: </b>
-        <% adjustments_type_added.each do |adjustment| %>
+        <% added_adjustments.each do |adjustment| %>
           <% if current_user.any_admin? %>
               <%= form_for(adjustment, url: "/tag_adjustments/#{adjustment.id}", html: { method: :delete, onsubmit: "return confirm('Are you sure you want to undo the addition of the #{adjustment.tag_name} tag?')" }) do |f| %>
                 <%= adjustment.tag_name %>

@@ -18,6 +18,7 @@ class ModerationsController < ApplicationController
   def article
     authorize(User, :moderation_routes?)
     @moderatable = Article.find_by(slug: params[:slug])
+    @adjustments = TagAdjustment.where(article_id: @moderatable.id)
     render template: "moderations/mod"
   end
 
