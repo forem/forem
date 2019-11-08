@@ -202,16 +202,14 @@
   }
 }
 
-#page-content {
-  #global-notice {
-    font-family: $helvetica;
-    background: $green;
-    color: black;
-    padding: 20px 0px 20px;
-    text-align: center;
-    position: relative;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-  }
+.global-notice {
+  font-family: $helvetica;
+  background: $green;
+  color: black;
+  padding: 20px 0px 20px;
+  text-align: center;
+  position: relative;
+  top: 0px;
+  left: 0px;
+  right: 0px;
 }
