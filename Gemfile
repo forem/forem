@@ -73,6 +73,7 @@ gem "rack-timeout", "~> 0.5" # Rack middleware which aborts requests that have b
 gem "rails", "~> 5.2", ">= 5.2.3" # Ruby on Rails
 gem "rails-assets-airbrake-js-client", "~> 1.6", source: "https://rails-assets.org" # Airbrake JavaScript Notifier
 gem "rails-observers", "~> 0.1" # Rails observer (removed from core in Rails 4.0)
+gem "rails-settings-cached", ">= 2.1.1" # Settings plugin for Rails that makes managing a table of global key, value pairs easy.
 gem "recaptcha", "~> 5.2", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "redis", "~> 4.1.3" # Redis ruby client
@@ -81,7 +82,6 @@ gem "rolify", "~> 5.2" # Very simple Roles library
 gem "rouge", "~> 3.12" # A pure-ruby code highlighter
 gem "rubyzip", "~> 1.2", ">= 1.3.0" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
-gem "sail", "~> 1.5" # Sail is a lightweight Rails engine that brings an admin panel for managing configuration settings on a live Rails app
 gem "sass-rails", "~> 6.0" # Sass adapter for the Rails asset pipeline
 gem "scout_apm", "~> 2.6" # Monitors Ruby apps and reports detailed metrics on performance to Scout
 gem "serviceworker-rails", "~> 0.6" # Integrates ServiceWorker into the Rails asset pipeline
