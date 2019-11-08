@@ -1,7 +1,3 @@
-/* eslint-disable no-param-reassign */
-
-const preview = document.getElementById('color-select-preview-logo');
-
 const colorField = {
   // input type="color"
   bgColor: document.getElementById('bg-color-colorfield'),
@@ -15,13 +11,16 @@ const textField = {
 };
 
 // updates field bgColor and textColor to targetField respective fields
-function updateFields(field, targetField) {
+function swapColorFields(field, targetField) {
+  /* eslint-disable no-param-reassign */
   field.bgColor.value = targetField.bgColor.value;
   field.textColor.value = targetField.textColor.value;
+  /* eslint-enable no-param-reassign */
 }
 
 // Updates Preview Colors
 function updatePreview() {
+  const preview = document.getElementById('color-select-preview-logo');
   preview.style.backgroundColor = textField.bgColor.value;
   preview.style.fill = textField.textColor.value;
 }
@@ -29,19 +28,20 @@ function updatePreview() {
 // Event Watchers
 // When color fields change -> updateTextField values and refresh preview
 function watchColorFields() {
-  updateFields(textField, colorField);
+  swapColorFields(textField, colorField);
   updatePreview();
 }
 
 // When text fields change -> updateColorField values and refresh preview
 function watchTextFields(e) {
   if (e.target.value.match(/#[0-9a-f]{6}/gi)) {
-    updateFields(colorField, textField);
+    swapColorFields(colorField, textField);
     updatePreview();
   }
 }
 
 function initPreview() {
+  const preview = document.getElementById('color-select-preview-logo');
   if (preview) {
     // Event Listeners
     colorField.bgColor.addEventListener('input', watchColorFields);
@@ -50,7 +50,7 @@ function initPreview() {
     textField.textColor.addEventListener('keyup', watchTextFields);
 
     // on init
-    updateFields(colorField, textField);
+    swapColorFields(colorField, textField);
     updatePreview();
     preview.style.display = 'inline-block';
   }
