@@ -22,7 +22,7 @@ const setUpButton = ({ modalId = '', otherModalId = '', btnName = '' }) => {
         otherModal.style.display = 'none';
         if (modal.style.display === 'none') {
           modal.style.display = 'block';
-          window.location.href = `#${modalId}`;
+          // window.location.href = `#${modalId}`;
         } else {
           modal.style.display = 'none';
           window.location.href = `#`;
@@ -69,7 +69,11 @@ export default class UserDetails extends Component {
           imageAltText,
         } = userDetailsConfig[metaProp];
         socialIcons.push(
-          <a href={`${hostUrl}${user[metaProp]}`} target="_blank" rel="noopener noreferrer">
+          <a
+            href={`${hostUrl}${user[metaProp]}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <img
               className={className}
               src={srcImage}
