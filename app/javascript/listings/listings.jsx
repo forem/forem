@@ -434,8 +434,11 @@ export class Listings extends Component {
               openedListing.user_id !== currentUserId ? (
                 <em>
                   Message must be relevant and on-topic with the listing. All
+                  {' '}
                   private interactions
+                  {' '}
                   <b>must</b>
+                  {' '}
                   abide by the 
                   {' '}
                   <a href="/code-of-conduct">code of conduct</a>
@@ -443,7 +446,9 @@ export class Listings extends Component {
               ) : (
                 <em>
                   All private interactions
+                  {' '}
                   <b>must</b>
+                  {' '}
                   abide by the 
                   {' '}
                   <a href="/code-of-conduct">code of conduct</a>

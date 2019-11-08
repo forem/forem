@@ -79,6 +79,7 @@ exports[`<Article /> should load article 1`] = `
       class="heart-reaction-button "
       data-category="like"
       onClick={[Function]}
+      type="button"
     >
       <img
         alt="like reaction"
@@ -90,6 +91,7 @@ exports[`<Article /> should load article 1`] = `
       class="unicorn-reaction-button "
       data-category="unicorn"
       onClick={[Function]}
+      type="button"
     >
       <img
         alt="unicorn reaction"
@@ -101,6 +103,7 @@ exports[`<Article /> should load article 1`] = `
       class="readinglist-reaction-button "
       data-category="readinglist"
       onClick={[Function]}
+      type="button"
     >
       <img
         alt="readinglist reaction"

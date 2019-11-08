@@ -49,10 +49,9 @@ class UserBlocksController < ApplicationController
   private
 
   def check_sign_in_status
-    unless current_user
-      skip_authorization
-      render json: { result: "not-logged-in", status: 401 }, status: :unauthorized
-      return
-    end
+    return if current_user
+
+    skip_authorization
+    render json: { result: "not-logged-in", status: 401 }, status: :unauthorized
   end
 end

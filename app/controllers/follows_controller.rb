@@ -21,6 +21,7 @@ class FollowsController < ApplicationController
 
   def create
     authorize Follow
+
     followable = if params[:followable_type] == "Organization"
                    Organization.find(params[:followable_id])
                  elsif params[:followable_type] == "Tag"
@@ -30,16 +31,20 @@ class FollowsController < ApplicationController
                  else
                    User.find(params[:followable_id])
                  end
+
     need_notification = Follow.need_new_follower_notification_for?(followable.class.name)
+
     @result = if params[:verb] == "unfollow"
-                follow = current_user.stop_following(followable)
-                Notification.send_new_follower_notification_without_delay(follow, true) if need_notification
-                "unfollowed"
+                unfollow(followable, need_notification: need_notification)
               else
-                follow = current_user.follow(followable)
-                Notification.send_new_follower_notification(follow) if need_notification
-                "followed"
+                rate_limiter = RateLimitChecker.new(current_user)
+                if rate_limiter.limit_by_action("follow_account")
+                  render json: { error: "Daily account follow limit reached!" }, status: :too_many_requests
+                  return
+                end
+                follow(followable, need_notification: need_notification)
               end
+
     current_user.touch
     render json: { outcome: @result }
   end
@@ -54,5 +59,19 @@ class FollowsController < ApplicationController
 
   def follow_params
     params.require(:follow).permit(policy(Follow).permitted_attributes)
+  end
+
+  def follow(followable, need_notification: false)
+    user_follow = current_user.follow(followable)
+    Notification.send_new_follower_notification(user_follow) if need_notification
+
+    "followed"
+  end
+
+  def unfollow(followable, need_notification: false)
+    user_follow = current_user.stop_following(followable)
+    Notification.send_new_follower_notification_without_delay(user_follow, true) if need_notification
+
+    "unfollowed"
   end
 end

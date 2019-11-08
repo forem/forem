@@ -3,12 +3,14 @@ import twitterImage from 'images/twitter-logo.svg';
 import githubImage from 'images/github-logo.svg';
 import websiteImage from 'images/external-link-logo.svg';
 
-function blockChat(activeChannelId) {
-  const formData = new FormData();
-  formData.append('chat_id', activeChannelId);
-  formData.append('controller', 'chat_channels');
+function blockUser(blockedUserId) {
+  const body = {
+    user_block: {
+      blocked_id: blockedUserId,
+    },
+  };
 
-  getCsrfToken().then(sendFetch('block-chat', formData));
+  getCsrfToken().then(sendFetch('block-user', JSON.stringify(body)));
 }
 
 const setUpButton = ({ modalId = '', otherModalId = '', btnName = '' }) => {
@@ -67,7 +69,7 @@ export default class UserDetails extends Component {
           imageAltText,
         } = userDetailsConfig[metaProp];
         socialIcons.push(
-          <a href={`${hostUrl}${user[metaProp]}`} target="_blank">
+          <a href={`${hostUrl}${user[metaProp]}`} target="_blank" rel="noopener noreferrer">
             <img
               className={className}
               src={srcImage}
@@ -157,7 +159,7 @@ export default class UserDetails extends Component {
               tabIndex="0"
               href="/report-abuse"
               onClick={() => {
-                blockChat(channelId);
+                blockUser(channelId);
               }}
             >
               Yes, Report
@@ -207,12 +209,12 @@ export default class UserDetails extends Component {
             <a
               tabIndex="0"
               onClick={() => {
-                blockChat(channelId);
+                blockUser(user.id);
                 window.location.href = `/connect`;
               }}
               onKeyUp={e => {
                 if (e.keyCode === 13) {
-                  blockChat(channelId);
+                  blockUser(user.id);
                   window.location.href = `/connect`;
                 }
               }}

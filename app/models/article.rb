@@ -137,6 +137,8 @@ class Article < ApplicationRecord
     order(column => dir.to_sym)
   }
 
+  scope :feed, -> { published.select(:id, :published_at, :processed_html, :user_id, :organization_id, :title, :path) }
+
   algoliasearch per_environment: true, auto_remove: false, enqueue: :trigger_index do
     attribute :title
     add_index "searchables", id: :index_id, per_environment: true, enqueue: :trigger_index do

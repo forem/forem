@@ -8,7 +8,7 @@ module Api
           render json: { message: "invalid_user" }, status: :unprocessable_entity
           return
         end
-        Rails.cache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
+        RedisRailsCache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
         @reaction = Reaction.create(
           user_id: @user.id,
           reactable_id: params[:reactable_id],

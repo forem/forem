@@ -1,4 +1,4 @@
-<div class="single-article single-article-small-pic">
+<div class="single-article single-article-small-pic" data-content-user-id="<%= story.user_id %>">
   <% if story.video.present? && story.video_thumbnail_url.present? %>
     <a class="single-article-video-preview" style="background-image:url(<%= story.cloudinary_video_url %>)" href="<%= story.path %>">
       <div class="single-article-video-duration">

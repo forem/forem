@@ -16,11 +16,7 @@ module Notifications
       end
 
       def call
-        user_ids = Set.new
-        user_ids += comment_user_ids
-        user_ids += subscribed_user_ids
-        user_ids += top_level_user_ids
-        user_ids += author_subscriber_user_ids
+        user_ids = Set.new(comment_user_ids + subscribed_user_ids + top_level_user_ids + author_subscriber_user_ids)
 
         json_data = {
           user: user_data(comment.user),

@@ -5,7 +5,7 @@ FactoryBot.define do
   )
 
   factory :badge do
-    title { Faker::Book.title }
+    title { Faker::Book.title + " #{rand(1000)}" }
     description { Faker::Lorem.sentence }
     badge_image { image }
   end

@@ -24,4 +24,4 @@ Imagine a developer's face with the DEV heading above them. If we existed in the
 ## Design License Info
 
 - We use the [Joystick](http://www.pixelsagas.com/?download=joystick) font by Neale Davidson and [Pixel Sagas](http://www.pixelsagas.com/) for the DEV Logo. We have a commercial license.
-- We use [EmojiOne](https://www.emojione.com/) icons from JoyPixels.  We have a commercial license.
+- We use [EmojiOne](https://www.emojione.com/) icons from JoyPixels. We have a commercial license.
