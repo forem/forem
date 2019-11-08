@@ -135,7 +135,7 @@ export default class UserDetails extends Component {
           {blockButton}
           {reportButton}
         </div>
-        <div id="userdetails__reportabuse" style="display:none">
+        <div id="userdetails__reportabuse" style={{ display: 'none' }}>
           <div className="userdetails__reportabuse">
             <p>Reporting abuse will: </p>
             <ul>
@@ -184,7 +184,7 @@ export default class UserDetails extends Component {
             </a>
           </div>
         </div>
-        <div id="userdetails__blockmsg" style="display:none">
+        <div id="userdetails__blockmsg" style={{ display: 'none' }}>
           <div className="userdetails__blockmsg">
             <p>Blocking on connect will: </p>
             <ul>
