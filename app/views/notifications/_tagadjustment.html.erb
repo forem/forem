@@ -8,7 +8,7 @@
   Hey there 👋
   <br /><br />
   Moderators <%= removal ? "removed" : "added" %>  the
-  <b><a href="/t/<%= data["tag_name"] %>" style="font-weight: 900">#<%= data["tag_name"] %></a></b> tag from your post
+  <b><a href="/t/<%= data["tag_name"] %>" style="font-weight: 900">#<%= data["tag_name"] %></a></b> tag <%= removal ? "from" : "to" %> your post
   <a href="<%= data["article"]["path"] %>"><%= h(data["article"]["title"]) %></a>.
   <br /><br />
   <%= removal ? "Certain tags have special submission guidelines, and mods need to adjust tags to best fit the community." : "Mods felt this tag represented your article." %>
