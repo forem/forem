@@ -411,7 +411,7 @@ class User < ApplicationRecord
     articles.find_each do |article|
       if article.path
         CacheBuster.bust(article.path)
-        CacheBuster.bust(article.path + "?i=i")
+        CacheBuster.bust("#{article.path}?i=i")
       end
       article.save
     end

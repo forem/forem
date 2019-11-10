@@ -10,10 +10,10 @@ module Reactions
       return unless featured_articles_ids.include?(reaction.reactable_id)
 
       reaction.reactable.touch
-      cache_buster.bust "/"
-      cache_buster.bust "/"
-      cache_buster.bust "/?i=i"
-      cache_buster.bust "?i=i"
+      cache_buster.bust("/")
+      cache_buster.bust("/")
+      cache_buster.bust("/?i=i")
+      cache_buster.bust("?i=i")
     end
   end
 end

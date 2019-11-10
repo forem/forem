@@ -47,8 +47,8 @@ class GithubRepo < ApplicationRecord
     return if user.blank?
 
     user.touch
-    CacheBuster.bust user.path
-    CacheBuster.bust user.path + "?i=i"
-    CacheBuster.bust user.path + "/?i=i"
+    CacheBuster.bust(user.path)
+    CacheBuster.bust("#{user.path}?i=i")
+    CacheBuster.bust("#{user.path}/?i=i")
   end
 end

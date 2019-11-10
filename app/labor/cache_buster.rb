@@ -24,20 +24,20 @@ module CacheBuster
     bust(commentable.path.to_s)
     commentable.comments.includes(:user).find_each do |comment|
       bust(comment.path)
-      bust(comment.path + "?i=i")
+      bust("#{comment.path}?i=i")
     end
     bust("#{commentable.path}/comments/*")
   end
 
-  bust("/" + article.user.username)
   def self.bust_article(article)
+    bust("/#{article.user.username}")
     bust(article.path)
-    bust(article.path + "/")
-    bust(article.path + "?i=i")
-    bust(article.path + "/?i=i")
-    bust(article.path + "/comments")
-    bust(article.path + "?preview=" + article.password)
-    bust(article.path + "?preview=" + article.password + "&i=i")
+    bust("#{article.path}/")
+    bust("#{article.path}?i=i")
+    bust("#{article.path}/?i=i")
+    bust("#{article.path}/comments")
+    bust("#{article.path}?preview=#{article.password}")
+    bust("#{article.path}?preview=#{article.password}&i=i")
     bust("/#{article.organization.slug}") if article.organization.present?
     bust_home_pages(article)
     bust_tag_pages(article)

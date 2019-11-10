@@ -619,8 +619,8 @@ class Article < ApplicationRecord
     return unless Rails.env.production?
 
     CacheBuster.bust(path)
-    CacheBuster.bust(path + "?i=i")
-    CacheBuster.bust(path + "?preview=" + password)
+    CacheBuster.bust("#{path}?i=i")
+    CacheBuster.bust("#{path}?preview=#{password}")
     async_bust
   end
 

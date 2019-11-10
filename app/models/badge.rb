@@ -23,7 +23,7 @@ class Badge < ApplicationRecord
   end
 
   def bust_path
-    CacheBuster.bust path
-    CacheBuster.bust path + "?i=i"
+    CacheBuster.bust(path)
+    CacheBuster.bust("#{path}?i=i")
   end
 end
