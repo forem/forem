@@ -4,7 +4,7 @@ RSpec.describe "/internal/listings", type: :request do
   describe "PUT /internal/listings/:id" do
     let(:admin) { create(:user, :super_admin) }
     let(:classified_listing) { create(:classified_listing, user_id: admin.id) }
-    let(:cache_buster) { class_double(CacheBuster) }
+    let(:cache_buster) { CacheBuster }
 
     before do
       allow(cache_buster).to receive(:bust_classified_listings)
