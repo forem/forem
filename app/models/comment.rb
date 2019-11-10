@@ -279,8 +279,7 @@ class Comment < ApplicationRecord
   def synchronous_bust
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     user.touch(:last_comment_at)
-    cache_buster = CacheBuster.new
-    cache_buster.bust(commentable.path.to_s) if commentable
+    CacheBuster.bust(commentable.path.to_s) if commentable
     expire_root_fragment
   end
 

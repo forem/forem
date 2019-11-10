@@ -7,14 +7,13 @@ task get_podcast_episodes: :environment do
 end
 
 task periodic_cache_bust: :environment do
-  cache_buster = CacheBuster.new
-  cache_buster.bust("/feed.xml")
-  cache_buster.bust("/badge")
-  cache_buster.bust("/shecoded")
+  CacheBuster.bust("/feed.xml")
+  CacheBuster.bust("/badge")
+  CacheBuster.bust("/shecoded")
 end
 
 task hourly_bust: :environment do
-  CacheBuster.new.bust("/")
+  CacheBuster.bust("/")
 end
 
 task fetch_all_rss: :environment do

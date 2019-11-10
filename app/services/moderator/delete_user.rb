@@ -21,7 +21,7 @@ module Moderator
       reassign_articles
       reassign_comments
       delete_non_content_activity_and_user
-      CacheBuster.new.bust("/ghost")
+      CacheBuster.bust("/ghost")
     end
 
     def full_delete
@@ -35,7 +35,7 @@ module Moderator
     def delete_non_content_activity_and_user
       delete_user_activity
       user.unsubscribe_from_newsletters
-      CacheBuster.new.bust("/#{user.username}")
+      CacheBuster.bust("/#{user.username}")
       user.delete
     end
 

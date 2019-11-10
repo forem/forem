@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe CacheBuster do
-  let(:cache_buster) { described_class.new }
+  let(:cache_buster) { described_class }
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
   let(:comment) { create(:comment, user_id: user.id, commentable_id: article.id) }
@@ -79,7 +79,6 @@ RSpec.describe CacheBuster do
 
     it "logs an error from bust_podcast_episode" do
       allow(Rails.logger).to receive(:warn)
-      allow(described_class).to receive(:new).and_return(cache_buster)
       allow(cache_buster).to receive(:bust).and_raise(StandardError)
       cache_buster.bust_podcast_episode(podcast_episode, 12, "-007")
       expect(Rails.logger).to have_received(:warn).once
