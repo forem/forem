@@ -1,6 +1,9 @@
 module CacheBuster
   TIMEFRAMES = [
-    [1.week.ago, "week"], [1.month.ago, "month"], [1.year.ago, "year"], [5.years.ago, "infinity"]
+    [1.week.ago, "week"],
+    [1.month.ago, "month"],
+    [1.year.ago, "year"],
+    [5.years.ago, "infinity"],
   ].freeze
 
   def self.bust(path)
@@ -58,12 +61,12 @@ module CacheBuster
       bust("/videos")
       bust("/videos?i=i")
     end
-    TIMEFRAMES.each do |timeframe|
-      if Article.published.where("published_at > ?", timeframe[0]).
+    TIMEFRAMES.each do |timestamp, interval|
+      if Article.published.where("published_at > ?", timestamp).
           order("positive_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
-        bust("/top/#{timeframe[1]}")
-        bust("/top/#{timeframe[1]}?i=i")
-        bust("/top/#{timeframe[1]}/?i=i")
+        bust("/top/#{interval}")
+        bust("/top/#{interval}?i=i")
+        bust("/top/#{interval}/?i=i")
       end
     end
     if article.published && article.published_at > 1.hour.ago
@@ -81,12 +84,12 @@ module CacheBuster
         bust("/t/#{tag}/latest")
         bust("/t/#{tag}/latest?i=i")
       end
-      TIMEFRAMES.each do |timeframe|
-        if Article.published.where("published_at > ?", timeframe[0]).tagged_with(tag).
+      TIMEFRAMES.each do |timestamp, interval|
+        if Article.published.where("published_at > ?", timestamp).tagged_with(tag).
             order("positive_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
-          bust("/top/#{timeframe[1]}")
-          bust("/top/#{timeframe[1]}?i=i")
-          bust("/top/#{timeframe[1]}/?i=i")
+          bust("/top/#{interval}")
+          bust("/top/#{interval}?i=i")
+          bust("/top/#{interval}/?i=i")
           12.times do |i|
             bust("/api/articles?tag=#{tag}&top=#{i}")
           end
