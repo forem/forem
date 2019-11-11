@@ -241,7 +241,7 @@ class User < ApplicationRecord
 
   def cached_following_users_ids
     RedisRailsCache.fetch(
-      "user-#{id}-#{updated_at}-#{following_users_count}/following_users_ids",
+      "user-#{id}-#{last_followed_at}-#{following_users_count}/following_users_ids",
       expires_in: 12.hours,
     ) do
       Follow.where(follower_id: id, followable_type: "User").limit(150).pluck(:followable_id)
@@ -250,7 +250,7 @@ class User < ApplicationRecord
 
   def cached_following_organizations_ids
     RedisRailsCache.fetch(
-      "user-#{id}-#{updated_at}-#{following_orgs_count}/following_organizations_ids",
+      "user-#{id}-#{last_followed_at}-#{following_orgs_count}/following_organizations_ids",
       expires_in: 12.hours,
     ) do
       Follow.where(follower_id: id, followable_type: "Organization").limit(150).pluck(:followable_id)
@@ -259,7 +259,7 @@ class User < ApplicationRecord
 
   def cached_following_podcasts_ids
     RedisRailsCache.fetch(
-      "user-#{id}-#{updated_at}-#{last_followed_at}/following_podcasts_ids",
+      "user-#{id}-#{last_followed_at}/following_podcasts_ids",
       expires_in: 12.hours,
     ) do
       Follow.where(follower_id: id, followable_type: "Podcast").pluck(:followable_id)
