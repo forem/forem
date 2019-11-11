@@ -112,7 +112,7 @@ group :development do
   gem "fix-db-schema-conflicts", "~> 3.0" # Ensures consistent output of db/schema.rb despite local differences in the database
   # switch foreman to stable release when thor dependency is updated to 0.20+
   gem "foreman", github: "thepracticaldev/foreman", ref: "b64e401", require: false # Process manager for applications with multiple components
-  gem "guard", "~> 2.15", require: false # Guard is a command line tool to easily handle events on file system modifications
+  gem "guard", "~> 2.16", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
   gem "guard-rspec", "~> 4.7", require: false # Guard::RSpec automatically run your specs
   gem "memory_profiler", "~> 0.9", require: false # Memory profiling routines for Ruby 2.3+
