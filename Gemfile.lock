@@ -359,7 +359,7 @@ GEM
     gemoji (3.0.1)
     get_process_mem (0.2.4)
       ffi (~> 1.0)
-    gibbon (3.3.0)
+    gibbon (3.3.1)
       faraday (>= 0.9.1)
       multi_json (>= 1.11.0)
     globalid (0.4.2)
