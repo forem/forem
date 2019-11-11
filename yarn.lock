@@ -220,10 +220,10 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.2.3.tgz#dfa0c92efe44a1d1a7974fb49ffeb40ef2da5a27"
   integrity sha512-zVgvPwGK7c1aVdUVc9Qv7SqepOGRDrqCw7KZPSZziWGxSlbII3gmvGLPzLX4d0n0BMbamBacUrN22zOMyFFEkQ==
 
-"@github/clipboard-copy-element@^1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@github/clipboard-copy-element/-/clipboard-copy-element-1.0.7.tgz#113768b620ec891202e65851a59c02e5bb8b0a80"
-  integrity sha512-8ZXA6SgcaiqJCH60L16oZ8sHHkWSz0UWollfArCNgkf0pue+Di6AoMsZmk5++3ZyglP3ijtgS+djq42Mbgqlqw==
+"@github/clipboard-copy-element@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@github/clipboard-copy-element/-/clipboard-copy-element-1.1.1.tgz#5d58f970ab89a5ee86b402b04f7765e324b8089b"
+  integrity sha512-+kIpoWk2INRk8r22q/8GPgS6KG+YyWwmIfSbKuMgzKXt0cyt6m5K3HG2sZiVVWSVqZ458cLU74JrOJRevXvxQA==
 
 "@nodelib/fs.scandir@2.1.1":
   version "2.1.1"
