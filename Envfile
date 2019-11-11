@@ -32,8 +32,11 @@ variable :RACK_TIMEOUT_SERVICE_TIMEOUT, :Integer, default: 100_000
 # Production related config that can be ignored
 variable :DEPLOYMENT_SIGNATURE, :String, default: "Optional"
 
-# For Redis storage
+# Redis caching storage
 variable :REDIS_URL, :String, default: "redis://localhost:6379"
+
+# Redis sessions storage
+variable :REDIS_SESSIONS_URL, :String, default: "redis://localhost:6379"
 
 ################################################
 ############## 3rd Party Services ##############
