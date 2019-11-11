@@ -227,7 +227,8 @@ Rails.application.routes.draw do
   post "users/remove_org_admin" => "users#remove_org_admin"
   post "users/remove_from_org" => "users#remove_from_org"
   delete "users/remove_association", to: "users#remove_association"
-  delete "users/destroy", to: "users#destroy"
+  delete "users/destroy", to: "users#destroy", as: :user_destroy
+  delete "users/full_delete", to: "users#full_delete", as: :user_full_delete
   post "organizations/generate_new_secret" => "organizations#generate_new_secret"
   post "users/api_secrets" => "api_secrets#create", :as => :users_api_secrets
   delete "users/api_secrets/:id" => "api_secrets#destroy", :as => :users_api_secret

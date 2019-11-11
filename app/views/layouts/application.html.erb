@@ -88,6 +88,11 @@
     <% end %>
     <div id="message-notice"></div>
     <div id="page-content" class="universal-page-content-wrapper <%= view_class %>" data-current-page="<%= current_page %>">
+      <% if flash[:global_notice] %>
+        <div class="global-notice">
+          <%= flash[:global_notice] %>
+        </div>
+      <% end %>
       <div id="page-content-inner">
         <%= yield %>
       </div>

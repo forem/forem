@@ -270,6 +270,10 @@ RSpec.describe "UserSettings", type: :request do
       it "redirects successfully to the home page" do
         expect(response).to redirect_to "/"
       end
+
+      it "sets flash settings" do
+        expect(flash[:global_notice]).to include("has been deleted")
+      end
     end
 
     context "when users are not allowed to destroy" do
@@ -301,6 +305,29 @@ RSpec.describe "UserSettings", type: :request do
           expect(flash[:error]).to eq "An error occurred. Try requesting an account deletion below."
         end
       end
+    end
+  end
+
+  describe "DELETE /users/full_delete" do
+    before do
+      sign_in user
+    end
+
+    it "schedules a user delete job" do
+      expect do
+        delete "/users/full_delete"
+      end.to have_enqueued_job(Users::SelfDeleteJob).with(user.id)
+    end
+
+    it "signs out" do
+      delete "/users/full_delete"
+      expect(controller.current_user).to eq nil
+    end
+
+    it "redirects to root" do
+      delete "/users/full_delete"
+      expect(response).to redirect_to "/"
+      expect(flash[:global_notice]).to include("Your account deletion is scheduled")
     end
   end
 end

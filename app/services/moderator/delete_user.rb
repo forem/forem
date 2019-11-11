@@ -12,7 +12,7 @@ module Moderator
       if user_params[:ghostify] == "true"
         new(user: user, admin: admin, user_params: user_params).ghostify
       else
-        new(user: user, admin: admin, user_params: user_params).full_delete
+        Users::Delete.call(user)
       end
     end
 
@@ -22,12 +22,6 @@ module Moderator
       reassign_comments
       delete_non_content_activity_and_user
       CacheBuster.new.bust("/ghost")
-    end
-
-    def full_delete
-      delete_comments
-      delete_articles
-      delete_non_content_activity_and_user
     end
 
     private
