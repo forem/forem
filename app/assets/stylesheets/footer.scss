@@ -49,3 +49,9 @@ footer {
     }
   }
 }
+
+@media screen and (min-width: 1250px) {
+  .stories-show + footer .inner-footer-container {
+    margin-left: 0;
+  }
+}
