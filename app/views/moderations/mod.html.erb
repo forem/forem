@@ -132,9 +132,11 @@
             <li>Only remove tags which are tagged innapropriately.</li>
             <li>Use negative reactions if tag is appropriate but quality is low.</li>
             <li>Always be friendly in your tag removal reason.</li>
+            <li>Only remove tags which haven't been adjusted already.</li>
           </ul>
         <% end %>
-        <b>Current live tags:</b> <%= @moderatable.tag_list %>
+        <b>Current live tags:</b> <%= @moderatable.tag_list %><br>
+        <b>Already adjusted tags:</b> <%= @already_adjusted_names %>
         <br /><br />
         <%= f.hidden_field :article_id, value: @moderatable.id %>
         <%= f.hidden_field :adjustment_type, value: "removal" %>
@@ -167,9 +169,11 @@
               <li>You can only add tags that you moderate.</li>
               <li>Only add tags that are appropriate.</li>
               <li>Always be friendly in your tag adding reason.</li>
+              <li>Only add tags which haven't been adjusted already.</li>
             </ul>
           <% end %>
-          <b>Current live tags:</b> <%= @moderatable.tag_list %>
+          <b>Current live tags:</b> <%= @moderatable.tag_list %><br>
+          <b>Already adjusted tags:</b> <%= @already_adjusted_names %>
           <br /><br />
           <%= f.hidden_field :article_id, value: @moderatable.id %>
           <%= f.hidden_field :adjustment_type, value: "addition" %>
