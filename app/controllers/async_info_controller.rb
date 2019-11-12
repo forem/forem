@@ -17,7 +17,6 @@ class AsyncInfoController < ApplicationController
       remember_me(current_user)
     end
     @user = current_user.decorate
-    # Updates article analytics periodically:
     occasionally_update_analytics
     respond_to do |format|
       format.json do
