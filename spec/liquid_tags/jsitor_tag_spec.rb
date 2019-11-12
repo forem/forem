@@ -2,13 +2,16 @@ require "rails_helper"
 
 RSpec.describe JsitorTag, type: :liquid_template do
   describe "#link" do
-    let(:jsitor_link) { "https://jsitor.com/embed/1QgJVmCam" }
+    let(:jsitor_link) { "https://jsitor.com/embed/B7FQ5tHbY" }
 
     xss_links = %w(
       //evil.com/?jsitor.com
       https://jsitor.com.evil.com
-      https://jsitor.com/embed/1akInalJH" onload='alert("xss")'
-      https://jsitor.com/embed/BcJ3v9Wq3?html&js&css&result&light&https://someevilkanevilsite
+      https://jsitor.com/embed/B7FQ5tHbY" onload='alert("xss")'
+      https://jsitor.com/embed/B7FQ5tHbY?html&js&css&result&light&https://someevilkanevilsite
+      B7FQ5tHbYhttps://someevilkanevilsite
+      B7FQ5tHbY?html&js&css&result&light&https://someevilkanevilsite
+      B7FQ5tHbY?html&js&css&result&light&" onload='alert("kwagmire")'
     )
 
     def create_jsitor_liquid_tag(link)
@@ -31,6 +34,20 @@ RSpec.describe JsitorTag, type: :liquid_template do
 
     it "accepts jsitor link with query params" do
       link = "https://jsitor.com/embed/1QgJVmCam?html&css"
+      expect do
+        create_jsitor_liquid_tag(link)
+      end.not_to raise_error(StandardError)
+    end
+
+    it "accepts jsitor id" do
+      link = "B7FQ5tHbY"
+      expect do
+        create_jsitor_liquid_tag(link)
+      end.not_to raise_error(StandardError)
+    end
+
+    it "accepts jsitor id with parameters" do
+      link = "B7FQ5tHbY?html&css"
       expect do
         create_jsitor_liquid_tag(link)
       end.not_to raise_error(StandardError)

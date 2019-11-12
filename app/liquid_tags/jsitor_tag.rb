@@ -1,6 +1,7 @@
 class JsitorTag < LiquidTagBase
   PARTIAL = "liquids/jsitor".freeze
   URL_REGEXP = /\A(https|http):\/\/(jsitor)\.(com)\/(embed)\/([a-zA-Z0-9]+)([?a-zA-Z&]*)\Z/.freeze
+  ID_REGEXP = /\A([?a-zA-Z0-9&])*\Z/.freeze
 
   def initialize(tag_name, link, token)
     super
@@ -12,7 +13,7 @@ class JsitorTag < LiquidTagBase
       partial: PARTIAL,
       locals: {
         link: @link,
-        height: 600
+        height: 400
       },
     )
   end
@@ -21,18 +22,21 @@ class JsitorTag < LiquidTagBase
 
   def jsitor_link_parser(link)
     parsed_link = ActionController::Base.helpers.strip_tags(link.strip).gsub("amp;", "")
+    link_valid?(parsed_link)
+  end
 
-    return parsed_link if link_valid?(parsed_link)
+  def link_valid?(link)
+    return link if URL_REGEXP.match link
+    return "https://jsitor.com/embed/#{link}" if ID_REGEXP.match link
 
     jsitor_error
   end
 
-  def link_valid?(link)
-    URL_REGEXP.match link
-  end
-
   def jsitor_error
-    raise StandardError, "Invalid JSitor link. Link should have /embed/. ex: https://jsitor.com/embed/1QgJVmCam. Parameters are optional"
+    raise StandardError, "Invalid JSitor link. Link should have /embed/.
+    ex: https://jsitor.com/embed/B7FQ5tHbY or with ID B7FQ5tHbY.
+    Parameters are optional.
+    Please read guide for more information"
   end
 end
 
