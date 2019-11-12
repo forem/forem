@@ -985,7 +985,7 @@
           height: 50px;
           vertical-align: top;
           overflow: hidden;
-          background: $tan;
+          @include themeable(background, theme-container-background, $tan);
           border-radius: 100%;
           margin: 8px 5px 8px 12px;
           img {
