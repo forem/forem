@@ -85,10 +85,11 @@
   <br /><br /><br /><br />
   <center>
     <h1>Mod Dashboard (beta)</h1>
+    <a href="/community-moderation" class="mod-link">Community moderation guide</a>
     <% if current_user.moderator_for_tags.any? %>
-      <a href="/mod" style="display: inline-block; font-size: 1.3em; padding: 3px 8px; border-radius: 3px; <%= "background: #c7ffe0" if params[:tag].blank? %>">all recent</a>
+      <a href="/mod" class="mod-link" style="<%= "background: #c7ffe0" if params[:tag].blank? %>">all recent</a>
       <% current_user.moderator_for_tags.each do |tag| %>
-        | <a href="/mod?tag=<%= tag %>" style="display: inline-block; font-size: 1.3em; padding: 3px 8px; border-radius: 3px; <%= "background: #c7ffe0" if params[:tag] == tag %>">#<%= tag %></a>
+        | <a href="/mod?tag=<%= tag %>" class="mod-link" style="<%= "background: #c7ffe0" if params[:tag] == tag %>">#<%= tag %></a>
       <% end %>
     <% end %>
   </center>
@@ -108,11 +109,11 @@
             <% end %>
           </center>
           <div class="body">
-            <%= HTML_Truncator.truncate(
+            <%= raw HTML_Truncator.truncate(
                   article.processed_html,
                   200,
                   ellipsis: '<a class="comment-read-more" href="' + article.path + '">... Read Entire Post</a>',
-                ).html_safe %>
+                ) %>
           </div>
           <center>
             <% if article.last_buffered.nil? %>
