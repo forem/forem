@@ -25,11 +25,11 @@ module Moderator
     private
 
     def reassign_and_bust_username
-      new_name = "spam_#{rand(10_000)}"
-      new_username = "spam_#{rand(10_000)}"
+      new_name = "spam_#{rand(1_000_000)}"
+      new_username = "spam_#{rand(1_000_000)}"
       if User.find_by(name: new_name) || User.find_by(username: new_username)
-        new_name = "spam_#{rand(10_000)}"
-        new_username = "spam_#{rand(10_000)}"
+        new_name = "spam_#{rand(1_000_000)}"
+        new_username = "spam_#{rand(1_000_000)}"
       end
       user.update_columns(name: new_name, username: new_username, old_username: user.username, profile_updated_at: Time.current)
       CacheBuster.new.bust("/#{user.old_username}")
