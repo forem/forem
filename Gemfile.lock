@@ -112,7 +112,7 @@ GEM
       thor (~> 0.18)
     arel (9.0.0)
     ast (2.4.0)
-    autoprefixer-rails (9.6.5)
+    autoprefixer-rails (9.7.1)
       execjs
     awesome_print (1.8.0)
     aws-eventstream (1.0.3)
@@ -881,7 +881,7 @@ DEPENDENCIES
   algorithmia (~> 1.1)
   ancestry (~> 3.0)
   approvals (~> 0.0)
-  autoprefixer-rails (~> 9.6)
+  autoprefixer-rails (~> 9.7)
   awesome_print (~> 1.8)
   aws-sdk-lambda (~> 1.31)
   better_errors (~> 2.5)
