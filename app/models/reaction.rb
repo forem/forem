@@ -79,7 +79,7 @@ class Reaction < ApplicationRecord
   private
 
   def cache_buster
-    @cache_buster ||= CacheBuster.new
+    CacheBuster
   end
 
   def touch_user

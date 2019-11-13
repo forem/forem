@@ -2,7 +2,7 @@ module Organizations
   class BustCacheJob < ApplicationJob
     queue_as :organizations_bust_cache
 
-    def perform(organization_id, slug, cache_buster = CacheBuster.new)
+    def perform(organization_id, slug, cache_buster = CacheBuster)
       organization = Organization.find_by(id: organization_id)
 
       return unless organization

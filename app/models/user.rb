@@ -408,11 +408,10 @@ class User < ApplicationRecord
   end
 
   def resave_articles
-    cache_buster = CacheBuster.new
     articles.find_each do |article|
       if article.path
-        cache_buster.bust(article.path)
-        cache_buster.bust(article.path + "?i=i")
+        CacheBuster.bust(article.path)
+        CacheBuster.bust("#{article.path}?i=i")
       end
       article.save
     end
