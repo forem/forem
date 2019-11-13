@@ -10,6 +10,8 @@ rvm:
 addons:
   postgresql: '9.6'
   chrome: 'stable'
+services:
+  - redis-server
 env:
   global:
     - RAILS_ENV=test

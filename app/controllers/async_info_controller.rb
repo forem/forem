@@ -17,7 +17,6 @@ class AsyncInfoController < ApplicationController
       remember_me(current_user)
     end
     @user = current_user.decorate
-    # Updates article analytics periodically:
     occasionally_update_analytics
     respond_to do |format|
       format.json do
@@ -71,6 +70,7 @@ class AsyncInfoController < ApplicationController
     #{current_user&.checked_code_of_conduct}__
     #{current_user&.articles_count}__
     #{current_user&.pro?}__
+    #{current_user&.blocking_others_count}__
     #{cookies[:remember_user_token]}"
   end
 
