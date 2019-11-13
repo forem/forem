@@ -136,7 +136,7 @@
           </ul>
         <% end %>
         <b>Current live tags:</b> <%= @moderatable.tag_list %><br>
-        <b>Already adjusted tags:</b> <%= @already_adjusted_names %>
+        <b>Already adjusted tags:</b> <%= @already_adjusted_tags %>
         <br /><br />
         <%= f.hidden_field :article_id, value: @moderatable.id %>
         <%= f.hidden_field :adjustment_type, value: "removal" %>
@@ -173,7 +173,7 @@
             </ul>
           <% end %>
           <b>Current live tags:</b> <%= @moderatable.tag_list %><br>
-          <b>Already adjusted tags:</b> <%= @already_adjusted_names %>
+          <b>Already adjusted tags:</b> <%= @already_adjusted_tags %>
           <br /><br />
           <%= f.hidden_field :article_id, value: @moderatable.id %>
           <%= f.hidden_field :adjustment_type, value: "addition" %>
