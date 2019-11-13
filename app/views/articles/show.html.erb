@@ -191,7 +191,7 @@
       <%= render "articles/actions" %>
     </article>
     <% if @article.body_markdown && @article.body_markdown.size > 900 %>
-      <% cache("article-about-author-#{@user.id}-#{@user.updated_at}", expires_in: 100.hours) do %>
+      <% RedisRailsCache.fetch("article-about-author-#{@user.id}-#{@user.updated_at}", expires_in: 100.hours) do %>
         <%= render "articles/about_author" %>
       <% end %>
     <% end %>
