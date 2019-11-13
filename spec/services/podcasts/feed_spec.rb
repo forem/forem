@@ -43,10 +43,10 @@ RSpec.describe Podcasts::Feed, vcr: vcr_option do
     end
 
     it "re-checks episodes urls when setting as unreachable" do
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(Errno::ECONNREFUSED)
+      allow(HTTParty).to receive(:get).with(Addressable::URI.parse("http://podcast.example.com/podcast").normalize, httparty_options).and_raise(Errno::ECONNREFUSED)
       episode = create(:podcast_episode, podcast: unpodcast, reachable: true, media_url: "http://podcast.example.com/ep1.mp3")
-      allow(HTTParty).to receive(:head).with("http://podcast.example.com/ep1.mp3").and_raise(Errno::ECONNREFUSED)
-      allow(HTTParty).to receive(:head).with("https://podcast.example.com/ep1.mp3").and_raise(Errno::ECONNREFUSED)
+      allow(HTTParty).to receive(:head).with(Addressable::URI.parse("http://podcast.example.com/ep1.mp3").normalize).and_raise(Errno::ECONNREFUSED)
+      allow(HTTParty).to receive(:head).with(Addressable::URI.parse("https://podcast.example.com/ep1.mp3").normalize).and_raise(Errno::ECONNREFUSED)
 
       perform_enqueued_jobs do
         described_class.new(unpodcast).get_episodes

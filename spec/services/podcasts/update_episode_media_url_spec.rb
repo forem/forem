@@ -19,8 +19,8 @@ RSpec.describe Podcasts::UpdateEpisodeMediaUrl, type: :service do
   it "keeps http when https and http are not reachable" do
     http_url = "http://example.com/1.mp3"
     https_url = "https://example.com/1.mp3"
-    allow(HTTParty).to receive(:head).with(http_url).and_raise(Errno::ECONNREFUSED)
-    allow(HTTParty).to receive(:head).with(https_url).and_raise(Errno::ECONNREFUSED)
+    allow(HTTParty).to receive(:head).with(Addressable::URI.parse(http_url).normalize).and_raise(Errno::ECONNREFUSED)
+    allow(HTTParty).to receive(:head).with(Addressable::URI.parse(https_url).normalize).and_raise(Errno::ECONNREFUSED)
 
     episode = create(:podcast_episode, podcast: podcast, media_url: http_url)
     described_class.call(episode, http_url)
