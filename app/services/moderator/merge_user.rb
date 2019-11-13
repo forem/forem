@@ -25,7 +25,7 @@ module Moderator
       @delete_user.delete
       @keep_user.touch(:profile_updated_at)
 
-      CacheBuster.new.bust "/#{@keep_user.username}"
+      CacheBuster.bust("/#{@keep_user.username}")
     end
 
     private

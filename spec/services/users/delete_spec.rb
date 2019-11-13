@@ -9,11 +9,9 @@ RSpec.describe Users::Delete, type: :service do
   end
 
   it "busts user profile page" do
-    buster = double
-    allow(buster).to receive(:bust)
-    allow(CacheBuster).to receive(:new).and_return(buster)
+    allow(CacheBuster).to receive(:bust)
     described_class.new(user).call
-    expect(buster).to have_received(:bust).with("/#{user.username}")
+    expect(CacheBuster).to have_received(:bust).with("/#{user.username}")
   end
 
   it "deletes user's follows" do

@@ -1,10 +1,9 @@
 require "rails_helper"
 
 RSpec.describe Podcasts::BustCacheJob do
-  let(:cache_buster) { instance_double(CacheBuster) }
+  let(:cache_buster) { class_double(CacheBuster) }
 
   before do
-    allow(CacheBuster).to receive(:new).and_return(cache_buster)
     allow(cache_buster).to receive(:bust_podcast)
   end
 
