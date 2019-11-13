@@ -36,10 +36,9 @@ module Api
       # NOTE: the objects are already loaded in memory by "ancestry",
       # so no additional SQL query is performed during this extraction, avoiding N+1s
       def edge_cache_keys(comments_trees)
-        keys = comments_trees.keys.map do |comment|
+        comments_trees.keys.flat_map do |comment|
           Array.wrap(comment.record_key) + edge_cache_keys(comments_trees[comment])
         end
-        keys.flatten
       end
     end
   end
