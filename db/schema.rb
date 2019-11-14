@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_06_102826) do
+ActiveRecord::Schema.define(version: 2019_11_14_212918) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -1096,6 +1096,7 @@ ActiveRecord::Schema.define(version: 2019_11_06_102826) do
     t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
     t.datetime "last_notification_activity"
     t.string "last_onboarding_page"
+    t.datetime "last_reaction_at", default: "2017-01-01 05:00:00"
     t.datetime "last_sign_in_at"
     t.inet "last_sign_in_ip"
     t.string "linkedin_url"
@@ -1110,6 +1111,8 @@ ActiveRecord::Schema.define(version: 2019_11_06_102826) do
     t.integer "monthly_dues", default: 0
     t.string "mostly_work_with"
     t.string "name"
+    t.integer "net_article_score", default: 0
+    t.integer "net_comment_score", default: 0
     t.string "old_old_username"
     t.string "old_username"
     t.string "onboarding_checklist", default: [], array: true
@@ -1160,6 +1163,10 @@ ActiveRecord::Schema.define(version: 2019_11_06_102826) do
     t.string "text_color_hex"
     t.string "text_only_name"
     t.string "top_languages"
+    t.integer "trailing_28_day_comments_count", default: 0
+    t.integer "trailing_28_day_reactions_count", default: 0
+    t.integer "trailing_7_day_comments_count", default: 0
+    t.integer "trailing_7_day_reactions_count", default: 0
     t.string "twitch_url"
     t.string "twitch_username"
     t.datetime "twitter_created_at"
@@ -1175,12 +1182,21 @@ ActiveRecord::Schema.define(version: 2019_11_06_102826) do
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["github_created_at"], name: "index_users_on_github_created_at"
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
+    t.index ["name"], name: "index_users_on_name"
+    t.index ["net_article_score"], name: "index_users_on_net_article_score"
+    t.index ["net_comment_score"], name: "index_users_on_net_comment_score"
     t.index ["old_old_username"], name: "index_users_on_old_old_username"
     t.index ["old_username"], name: "index_users_on_old_username"
     t.index ["organization_id"], name: "index_users_on_organization_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["trailing_28_day_comments_count"], name: "index_users_on_trailing_28_day_comments_count"
+    t.index ["trailing_28_day_reactions_count"], name: "index_users_on_trailing_28_day_reactions_count"
+    t.index ["trailing_7_day_comments_count"], name: "index_users_on_trailing_7_day_comments_count"
+    t.index ["trailing_7_day_reactions_count"], name: "index_users_on_trailing_7_day_reactions_count"
+    t.index ["twitter_created_at"], name: "index_users_on_twitter_created_at"
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
   end

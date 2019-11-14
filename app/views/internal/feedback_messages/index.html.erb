@@ -22,7 +22,7 @@
   <% end %>
 </div>
 
-<h1>Possible spam/abuse users</h1>
+<h1>Possible new spam/abuse users</h1>
 <div style="height: 400px; overflow: scroll;">
   <% @possible_spam_users.each do |user| %>
     <div style="border-bottom: 1px solid black; padding: 5px 0px 2px;">
@@ -77,5 +77,36 @@
     <%= render "feedback_message", f: f, feedback_message: feedback_message %>
   <% end %>
 <% end %>
-<br>
-<br>
+
+<h1>Possible reportedly spam/abuse users</h1>
+  <div style="height: 300px; overflow: scroll;">
+    <h3>Abusive commenters?</h3>
+    <% @possible_abusive_comment_authors.each do |user| %>
+      <div style="border-bottom: 1px solid black; padding: 5px 0px 2px;">
+        <a href="<%= user.path %>">@<%= user.username %></a> - <%= user.name %> |
+        <b><%= user.net_comment_score %> comment score</b> |
+        <%= user.net_article_score %> article score
+        <div class="single-article-actions">
+          <a href="/internal/users/<%= user.id %>">Internal User</a> |
+          <a href="/internal/users/<%= user.id %>/edit">Destructive Actions</a>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <div style="height: 300px; overflow: scroll;">
+    <h3>Abusive article authors?</h3>
+    <% @possible_abusive_article_authors.each do |user| %>
+      <div style="border-bottom: 1px solid black; padding: 5px 0px 2px;">
+        <a href="<%= user.path %>">@<%= user.username %></a> - <%= user.name %> |
+        <%= user.net_comment_score %> comment score |
+        <b><%= user.net_article_score %> article score</b>
+        <div class="single-article-actions">
+          <a href="/internal/users/<%= user.id %>">Internal User</a> |
+          <a href="/internal/users/<%= user.id %>/edit">Destructive Actions</a>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<br />
+<br />
+<br />

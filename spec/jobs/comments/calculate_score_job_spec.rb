@@ -14,5 +14,15 @@ RSpec.describe Comments::CalculateScoreJob, type: :job do
       expect(comment.score).to be(7)
       expect(comment.spaminess_rating).to be(99)
     end
+
+    it "updates user score", :aggregate_failures do
+      allow(BlackBox).to receive(:calculate_spaminess).and_return(99)
+      allow(BlackBox).to receive(:comment_quality_score).and_return(7)
+
+      described_class.perform_now(comment.id)
+      comment.reload
+      expect(comment.user.score).to be(7)
+      expect(comment.user.net_comment_score).to be(7)
+    end
   end
 end

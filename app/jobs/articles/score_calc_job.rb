@@ -9,6 +9,7 @@ module Articles
       article.update_columns(score: article.reactions.sum(:points),
                              hotness_score: BlackBox.article_hotness_score(article),
                              spaminess_rating: BlackBox.calculate_spaminess(article))
+      article&.user&.calculate_score
       article.index!
     end
   end

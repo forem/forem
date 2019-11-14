@@ -633,8 +633,7 @@ RSpec.describe User, type: :model do
   end
 
   it "calculates score" do
-    article.featured = true
-    article.save
+    article.update_column(:score, 5)
     user.calculate_score
     expect(user.score).to be > 0
   end

@@ -21,6 +21,15 @@ RSpec.describe Articles::ScoreCalcJob, type: :job do
       expect(article.spaminess_rating).to be(2)
     end
 
+    it "updates article user scores", :aggregate_failures do
+      allow(Article).to receive(:find_by).and_return(article)
+      allow(article.reactions).to receive(:sum).and_return(7)
+      described_class.perform_now(article.id)
+      article.reload
+      expect(article.user.score).to be(7)
+      expect(article.user.net_article_score).to be(7)
+    end
+
     context "without article" do
       it "does not error" do
         expect { described_class.perform_now(nil) }.not_to raise_error

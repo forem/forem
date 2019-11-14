@@ -225,8 +225,9 @@ class User < ApplicationRecord
   end
 
   def calculate_score
-    score = (articles.where(featured: true).size * 100) + comments.sum(:score)
-    update_column(:score, score)
+    article_score = articles.sum(:score)
+    comment_score = comments.sum(:score)
+    update_columns(score: article_score + comment_score, net_comment_score: comment_score, net_article_score: article_score)
   end
 
   def path

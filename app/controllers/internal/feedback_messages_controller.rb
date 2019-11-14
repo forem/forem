@@ -10,11 +10,21 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
       order("feedback_messages.created_at DESC").
       page(params[:page] || 1).per(5)
     @email_messages = EmailMessage.find_for_reports(@feedback_messages)
-    @new_articles = Article.published.includes(:user).limit(120).order("created_at DESC").where("score > ? AND score < ?", -10, 8)
+    @new_articles = Article.published.includes(:user).limit(80).order("published_at DESC").where("score > ? AND score < ?", -10, 8)
     @possible_spam_users = User.where("github_created_at > ? OR twitter_created_at > ? OR length(name) > ?", 50.hours.ago, 50.hours.ago, 30).
       where("created_at > ?", 48.hours.ago).
       order("created_at DESC").
-      where.not("username LIKE ?", "%spam_%").limit(150)
+      where.not("username LIKE ?", "%spam_%").limit(80)
+    @possible_abusive_comment_authors = User.
+      where("net_comment_score < ?", -90).
+      without_role(:banned).
+      order("last_comment_at ASC").
+      limit(25)
+    @possible_abusive_article_authors = User.
+      where("net_article_score < ?", -90).
+      without_role(:banned).
+      order("last_article_at ASC").
+      limit(25)
     @vomits = get_vomits
   end
 
