@@ -342,6 +342,13 @@
         <h3><strong>Asciinema Embed</strong></h3>
         <p>All you need is the Asciinema id:</p>
         <code>{% asciinema 239367 %}</code>
+
+        <h3><strong>Reddit Tag</strong></h3>
+        <p>Enter the full URL of the post you want to embed</p>
+        <pre>
+{% reddit https://www.reddit.com/r/aww/comments/ag3s4b/ive_waited_28_years_to_finally_havr_my_first_pet %}
+        </pre>
+
         <h3><strong>Parsing Liquid Tags as a Code Example</strong></h3>
         <p>To parse Liquid tags as code, simply wrap it with a single backtick or triple backticks.</p>
         <p><code>`{% mytag %}{{ site.SOMETHING }}{% endmytag %}`</code></p>
