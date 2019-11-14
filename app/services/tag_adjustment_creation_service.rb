@@ -4,11 +4,13 @@ class TagAdjustmentCreationService
     @tag_adjustment_params = tag_adjustment_params
   end
 
+  def tag_adjustment
+    @tag_adjustment ||= TagAdjustment.new(creation_args)
+  end
+
   def create
-    @tag_adjustment = TagAdjustment.create!(creation_args)
     update_article
-    Notification.send_tag_adjustment_notification(@tag_adjustment)
-    @tag_adjustment
+    Notification.send_tag_adjustment_notification(tag_adjustment)
   end
 
   private

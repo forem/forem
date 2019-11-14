@@ -91,6 +91,11 @@
   input.undo {
     background: #ff0000; /* $red */
   }
+
+  .adjustment-error {
+    text-align:center;
+    color:red;
+  }
 </style>
 
 <div class="container" style="text-align: center">
@@ -138,6 +143,11 @@
         <b>Current live tags:</b> <%= @moderatable.tag_list %><br>
         <b>Already adjusted tags:</b> <%= @already_adjusted_tags %>
         <br /><br />
+        <% if flash[:error_removal].present? %>
+          <div class="adjustment-error">
+            <p>Error: <%= flash[:error_removal] %></p><br>
+          </div>
+        <% end %>
         <%= f.hidden_field :article_id, value: @moderatable.id %>
         <%= f.hidden_field :adjustment_type, value: "removal" %>
         <%= f.text_field :tag_name, placeholder: "Tag Name", required: true %>
@@ -175,6 +185,11 @@
           <b>Current live tags:</b> <%= @moderatable.tag_list %><br>
           <b>Already adjusted tags:</b> <%= @already_adjusted_tags %>
           <br /><br />
+          <% if flash[:error_addition].present? %>
+            <div class="adjustment-error">
+              <p>Error: <%= flash[:error_addition] %></p><br>
+            </div>
+          <% end %>
           <%= f.hidden_field :article_id, value: @moderatable.id %>
           <%= f.hidden_field :adjustment_type, value: "addition" %>
           <%= f.text_field :tag_name, placeholder: "Tag Name - only add one at a time", required: true %>
