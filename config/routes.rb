@@ -29,6 +29,8 @@ Rails.application.routes.draw do
   end
 
   namespace :internal do
+    get "/", to: redirect("/internal/articles")
+
     resources :articles, only: %i[index show update]
     resources :broadcasts, only: %i[index new create edit update]
     resources :buffer_updates, only: %i[create update]
