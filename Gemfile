@@ -19,7 +19,7 @@ gem "airbrake", "~> 9.5" # Airbrake is an online tool that provides robust excep
 gem "algoliasearch-rails", "~> 1.23" # Algolia Search is a hosted search engine capable of delivering real-time results from the first keystroke
 gem "algorithmia", "~> 1.1" # Ruby Client for Algorithmia Algorithms and Data API
 gem "ancestry", "~> 3.0" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
-gem "autoprefixer-rails", "~> 9.6" # Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website
+gem "autoprefixer-rails", "~> 9.7" # Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website
 gem "aws-sdk-lambda", "~> 1.31" # Official AWS Ruby gem for AWS Lambda
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
@@ -84,7 +84,6 @@ gem "rouge", "~> 3.12" # A pure-ruby code highlighter
 gem "rubyzip", "~> 1.2", ">= 1.3.0" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sass-rails", "~> 6.0" # Sass adapter for the Rails asset pipeline
-gem "scout_apm", "~> 2.6" # Monitors Ruby apps and reports detailed metrics on performance to Scout
 gem "serviceworker-rails", "~> 0.6" # Integrates ServiceWorker into the Rails asset pipeline
 gem "sitemap_generator", "~> 6.0" # SitemapGenerator is a framework-agnostic XML Sitemap generator
 gem "skylight", "~> 4.2" # Skylight is a smart profiler for Rails, Sinatra, and other Ruby apps
