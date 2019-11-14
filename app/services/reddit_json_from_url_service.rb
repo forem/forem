@@ -1,4 +1,3 @@
-# app/services/reddit_json_from_url_service.rb
 class RedditJsonFromUrlService
   include ActionView::Helpers::SanitizeHelper
 
