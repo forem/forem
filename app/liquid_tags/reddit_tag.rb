@@ -1,4 +1,3 @@
-# app/liquid_tags/reddit_tag.rb
 class RedditTag < LiquidTagBase
   PARTIAL = "liquids/reddit".freeze
 

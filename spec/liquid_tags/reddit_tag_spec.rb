@@ -1,5 +1,3 @@
-# spec/liquid_tags/reddit_tag_spec.rb
-
 require "rails_helper"
 
 vcr_option = {
