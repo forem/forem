@@ -17,10 +17,10 @@
   </div>
   <div class="ltag__reddit--body">
     <p>
-      <% if post_hint == 'self' %>
-        <%= markdown_text %>
-      <% elsif post_hint == 'image' %>
+      <% if post_hint == 'image' %>
         <img src="<%= thumbnail %>" alt="<%= title %>">
+      <% else %>
+        <%= markdown_text %>
       <% end %>
     </p>
   </div>
