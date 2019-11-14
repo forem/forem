@@ -1,6 +1,5 @@
-document.addEventListener('DOMContentLoaded', () => {
-  window.WebComponents.waitFor(() => {
-    window.clipboard = require('clipboard-polyfill');
-    import('@github/clipboard-copy-element');
-  });
+window.clipboard = require('clipboard-polyfill');
+
+window.WebComponents.waitFor(() => {
+  import('@github/clipboard-copy-element');
 });
