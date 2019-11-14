@@ -21,7 +21,7 @@ Rails.application.config.action_dispatch.use_authenticated_cookie_encryption = t
 
 # Use AES-256-GCM authenticated encryption as default cipher for encrypting messages
 # instead of AES-256-CBC, when use_authenticated_message_encryption is set to true.
-# Rails.application.config.active_support.use_authenticated_message_encryption = true
+Rails.application.config.active_support.use_authenticated_message_encryption = true
 
 # Add default protection from forgery to ActionController::Base instead of in
 # ApplicationController.
