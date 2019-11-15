@@ -7,12 +7,13 @@ module Streams
       end
 
       def call
-        token, exp = RedisRailsCache.fetch(ACCESS_TOKEN_AND_EXPIRATION_CACHE_KEY)
+        token = RedisRailsCache.read(ACCESS_TOKEN_AND_EXPIRATION_CACHE_KEY)
 
-        if token.nil? || Time.zone.now >= exp
-          token, exp = get_new_token
-          RedisRailsCache.write(ACCESS_TOKEN_AND_EXPIRATION_CACHE_KEY, token, expires_in: exp)
-        end
+        return token unless token.nil?
+
+        token, exp = get_new_token
+        time_til_exp = exp - Time.now
+        RedisRailsCache.write(ACCESS_TOKEN_AND_EXPIRATION_CACHE_KEY, token, expires_in: time_til_exp)
 
         token
       end
