@@ -5,7 +5,7 @@ RSpec.describe TagAdjustmentCreationService do
   let(:article) { create(:article, tags: tag.name) }
   let(:tag) { create(:tag) }
 
-  def create_tag_adjustment(type)
+  def create_service(type)
     described_class.new(
       user,
       adjustment_type: type,
@@ -13,7 +13,7 @@ RSpec.describe TagAdjustmentCreationService do
       tag_name: tag.name,
       article_id: article.id,
       reason_for_adjustment: "Test",
-    ).create
+    )
   end
 
   before do
@@ -22,15 +22,16 @@ RSpec.describe TagAdjustmentCreationService do
 
   describe "creates tag adjustment" do
     it "with adjustment_type removal" do
-      tag_adjustment = create_tag_adjustment("removal")
+      tag_adjustment = create_service("removal").tag_adjustment
+      tag_adjustment.save
       expect(tag_adjustment).to be_valid
       expect(tag_adjustment.tag_id).to eq(tag.id)
       expect(tag_adjustment.status).to eq("committed")
     end
 
     it "with adjustment_type addition" do
-      tag_adjustment = create_tag_adjustment("addition")
-
+      tag_adjustment = create_service("addition").tag_adjustment
+      tag_adjustment.save
       expect(tag_adjustment).to be_valid
       expect(tag_adjustment.tag_id).to eq(tag.id)
       expect(tag_adjustment.status).to eq("committed")
@@ -40,7 +41,10 @@ RSpec.describe TagAdjustmentCreationService do
   describe "creates notification" do
     it "with adjustment_type removal" do
       perform_enqueued_jobs do
-        tag_adjustment = create_tag_adjustment("removal")
+        service = create_service("removal")
+        tag_adjustment = service.tag_adjustment
+        tag_adjustment.save
+        service.update_tags_and_notify
         expect(Notification.last.user_id).to eq(article.user_id)
         expect(Notification.last.json_data["adjustment_type"]).to eq(tag_adjustment.adjustment_type)
       end
@@ -48,7 +52,10 @@ RSpec.describe TagAdjustmentCreationService do
 
     it "with adjustment_type addition" do
       perform_enqueued_jobs do
-        tag_adjustment = create_tag_adjustment("addition")
+        service = create_service("addition")
+        tag_adjustment = service.tag_adjustment
+        tag_adjustment.save
+        service.update_tags_and_notify
         expect(Notification.last.user_id).to eq(article.user_id)
         expect(Notification.last.json_data["adjustment_type"]).to eq(tag_adjustment.adjustment_type)
       end

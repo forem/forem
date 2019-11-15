@@ -9,12 +9,13 @@ class TagAdjustmentsController < ApplicationController
       article_id: params[:tag_adjustment][:article_id],
       reason_for_adjustment: params[:tag_adjustment][:reason_for_adjustment],
     )
-    if service.tag_adjustment.save
-      service.create
+    tag_adjustment = service.tag_adjustment
+    if tag_adjustment.save
+      service.update_tags_and_notify
     else
-      errors = service.tag_adjustment.errors.full_messages.join(", ")
-      flash[:error_removal] = errors if service.tag_adjustment.adjustment_type == "removal"
-      flash[:error_addition] = errors if service.tag_adjustment.adjustment_type == "addition"
+      errors = tag_adjustment.errors.full_messages.join(", ")
+      flash[:error_removal] = errors if tag_adjustment.adjustment_type == "removal"
+      flash[:error_addition] = errors if tag_adjustment.adjustment_type == "addition"
     end
     @article = Article.find(params[:tag_adjustment][:article_id])
     redirect_to "#{URI.parse(@article.path).path}/mod"

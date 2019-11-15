@@ -8,7 +8,7 @@ class TagAdjustmentCreationService
     @tag_adjustment ||= TagAdjustment.new(creation_args)
   end
 
-  def create
+  def update_tags_and_notify
     update_article
     Notification.send_tag_adjustment_notification(tag_adjustment)
   end
