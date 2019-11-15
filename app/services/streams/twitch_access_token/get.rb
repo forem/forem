@@ -11,7 +11,7 @@ module Streams
 
         if token.nil? || Time.zone.now >= exp
           token, exp = get_new_token
-          RedisRailsCache.write(ACCESS_TOKEN_AND_EXPIRATION_CACHE_KEY, [token, exp])
+          RedisRailsCache.write(ACCESS_TOKEN_AND_EXPIRATION_CACHE_KEY, token, expires_in: exp)
         end
 
         token
