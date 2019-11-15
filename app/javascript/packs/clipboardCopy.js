@@ -10,7 +10,7 @@ function loadScript(src, done) {
   document.head.appendChild(js);
 }
 
-if (!window.clipboard && !window.Clipboard) {
+if (!window.clipboard && !window.Clipboard && !navigator.clipboard && !navigator.Clipboard) {
   loadScript("https://cdnjs.cloudflare.com/ajax/libs/clipboard-polyfill/2.8.6/clipboard-polyfill.js")
 }
 
