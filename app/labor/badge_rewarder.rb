@@ -71,9 +71,9 @@ module BadgeRewarder
         user_commits_count = user_commits.map(&:count).sum # sum of commits from all DEV repos.
         milestones = [
           { count: 1, slug: "dev-contributor" },
-          { count: 32, slug: "dev-contributor-bronze" },
-          { count: 64, slug: "dev-contributor-silver" },
-          { count: 128, slug: "dev-contributor-gold" },
+          { count: 16, slug: "dev-contributor-bronze" },
+          { count: 32, slug: "dev-contributor-silver" },
+          { count: 64, slug: "dev-contributor-gold" },
         ] # Note: keep it from low to high
         milestones.each do |m|
           if user_commits_count >= m[:count]

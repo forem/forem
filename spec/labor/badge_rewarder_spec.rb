@@ -108,15 +108,15 @@ RSpec.describe BadgeRewarder do
     end
 
     let(:stubbed_github_commits_bronze) do
-      Array.new(15, OpenStruct.new(author: OpenStruct.new(id: user.identities.first.uid))) # 15 commits for 3 each repo
+      Array.new(10, OpenStruct.new(author: OpenStruct.new(id: user.identities.first.uid))) # 10 commits for 3 each repo
     end
 
     let(:stubbed_github_commits_silver) do
-      Array.new(30, OpenStruct.new(author: OpenStruct.new(id: user.identities.first.uid))) # 30 commits for 3 each repo
+      Array.new(15, OpenStruct.new(author: OpenStruct.new(id: user.identities.first.uid))) # 15 commits for 3 each repo
     end
 
     let(:stubbed_github_commits_gold) do
-      Array.new(45, OpenStruct.new(author: OpenStruct.new(id: user.identities.first.uid))) # 45 commits for 3 each repo
+      Array.new(30, OpenStruct.new(author: OpenStruct.new(id: user.identities.first.uid))) # 30 commits for 3 each repo
     end
 
     before do
