@@ -22,7 +22,7 @@ module HtmlCssToImage
     image_url = url(html: html, css: css, google_fonts: google_fonts)
 
     Rails.cache.write(cache_key, image_url) unless image_url == FALLBACK_IMAGE
-    RedisRailsCache.write(cache_key, image_url) unless image_url == FALLBACK_IMAGE
+    RedisRailsCache.write(cache_key, image_url, expires_in: 2.weeks) unless image_url == FALLBACK_IMAGE
 
     image_url
   end
