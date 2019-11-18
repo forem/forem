@@ -533,7 +533,7 @@ GEM
       rack
     orm_adapter (0.5.0)
     os (1.0.1)
-    parallel (1.18.0)
+    parallel (1.19.0)
     parallel_tests (2.29.2)
       parallel
     parser (2.6.5.0)
@@ -673,7 +673,7 @@ GEM
     rspec-retry (0.6.1)
       rspec-core (> 3.3)
     rspec-support (3.9.0)
-    rubocop (0.75.1)
+    rubocop (0.76.0)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
       parser (>= 2.6)
@@ -968,7 +968,7 @@ DEPENDENCIES
   rouge (~> 3.12)
   rspec-rails (~> 3.9)
   rspec-retry (~> 0.6)
-  rubocop (~> 0.75)
+  rubocop (~> 0.76)
   rubocop-performance (~> 1.5)
   rubocop-rails (~> 2.3)
   rubocop-rspec (~> 1.36)
