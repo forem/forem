@@ -71,13 +71,22 @@ class UsersController < ApplicationController
     if @user.articles_count.zero? && @user.comments_count.zero?
       @user.destroy!
       NotifyMailer.account_deleted_email(@user).deliver
-      flash[:settings_notice] = "Your account has been deleted."
+      flash[:global_notice] = "Your account has been deleted."
       sign_out @user
       redirect_to root_path
     else
       flash[:error] = "An error occurred. Try requesting an account deletion below."
       redirect_to "/settings/#{@tab}"
     end
+  end
+
+  def full_delete
+    set_user
+    set_tabs("account")
+    Users::SelfDeleteJob.perform_later(@user.id)
+    sign_out @user
+    flash[:global_notice] = "Your account deletion is scheduled. You'll be notified when it's deleted."
+    redirect_to root_path
   end
 
   def remove_association
@@ -248,10 +257,6 @@ class UsersController < ApplicationController
       I would like to delete my dev.to account.
       %0A%0A
       You can keep any comments and discussion posts under the Ghost account.
-      %0A
-      ---OR---
-      %0A
-      Please delete all my personal information, including comments and discussion posts.
       %0A
       %0A
       Regards,

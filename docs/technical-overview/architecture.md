@@ -32,6 +32,8 @@ The biggest element of technical debt in our app are mostly on the frontend. We 
 
 We also have a sprawling CSS structure with few consistent rules.
 
+We also have inconsistencies and issues with how we bust caching on the edge. We could ideally be doing resource-based purging as described in [the Fastly Rails](https://github.com/fastly/fastly-rails) docs, but we instead rely on explicit busting of specific URLs, (via `CacheBuster`).
+
 ## The algorithm behind the feed
 
 The home feed is based on a combination of collective recent posts that are cached and delivered the same to everyone in the HTML, and additional articles fetched from an Algolia index after page load. To determine which posts a user sees, they are ranked based on the user's followed tags, followed users, and relative weights for each tag. Additional fetched articles also follow this general pattern.
@@ -71,9 +73,21 @@ Tags help organize content, with rules for each tag. A tag is a de facto communi
 
 Classified listings are similar to posts in some ways, but with more limitations. They are designed to be categorized into market areas. They also make use of tags.
 
-## Organization
+## Credits
+
+Credits are the currency of the platform which users can use to buy classifieds, or potentially future behavior.
+
+## Organizations
 
 Users can belong to organizations, which have their own profile pages where posts can be published etc. This can be any group endeavor such as a company, an open source project, or any standalone publication on DEV
+
+## Reactions
+
+Hearts, unicorns, bookmarks. How a user shows appreciation for a post. Bookmarks have the special functionality of being stored in one's reading list.
+
+## Follows
+
+How a user keeps track of the tags, users or articles they care about. Follows impact a user's home feed and notifications.
 
 ---
 
