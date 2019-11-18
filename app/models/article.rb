@@ -618,10 +618,9 @@ class Article < ApplicationRecord
   def bust_cache
     return unless Rails.env.production?
 
-    cache_buster = CacheBuster.new
-    cache_buster.bust(path)
-    cache_buster.bust(path + "?i=i")
-    cache_buster.bust(path + "?preview=" + password)
+    CacheBuster.bust(path)
+    CacheBuster.bust("#{path}?i=i")
+    CacheBuster.bust("#{path}?preview=#{password}")
     async_bust
   end
 

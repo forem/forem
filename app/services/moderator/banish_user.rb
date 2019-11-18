@@ -32,7 +32,7 @@ module Moderator
         new_username = "spam_#{rand(1_000_000)}"
       end
       user.update_columns(name: new_name, username: new_username, old_username: user.username, profile_updated_at: Time.current)
-      CacheBuster.new.bust("/#{user.old_username}")
+      CacheBuster.bust("/#{user.old_username}")
     end
 
     def remove_profile_info

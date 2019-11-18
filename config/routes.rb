@@ -29,6 +29,8 @@ Rails.application.routes.draw do
   end
 
   namespace :internal do
+    get "/", to: redirect("/internal/articles")
+
     resources :articles, only: %i[index show update]
     resources :broadcasts, only: %i[index new create edit update]
     resources :buffer_updates, only: %i[create update]
@@ -76,6 +78,7 @@ Rails.application.routes.draw do
       end
     end
     resources :webhook_endpoints, only: :index
+    resource :config
   end
 
   namespace :api, defaults: { format: "json" } do

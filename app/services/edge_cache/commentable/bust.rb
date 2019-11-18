@@ -1,7 +1,7 @@
 module EdgeCache
   module Commentable
     class Bust
-      def initialize(commentable, cache_buster = CacheBuster.new)
+      def initialize(commentable, cache_buster = CacheBuster)
         @commentable = commentable
         @cache_buster = cache_buster
       end

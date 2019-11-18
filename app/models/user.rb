@@ -292,8 +292,8 @@ class User < ApplicationRecord
   end
 
   def cached_followed_tag_names
-    cache_name = "user-#{id}-#{updated_at}/followed_tag_names"
-    Rails.cache.fetch(cache_name, expires_in: 24.hours) do
+    cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/followed_tag_names"
+    RedisRailsCache.fetch(cache_name, expires_in: 24.hours) do
       Tag.where(
         id: Follow.where(
           follower_id: id,
@@ -408,11 +408,10 @@ class User < ApplicationRecord
   end
 
   def resave_articles
-    cache_buster = CacheBuster.new
     articles.find_each do |article|
       if article.path
-        cache_buster.bust(article.path)
-        cache_buster.bust(article.path + "?i=i")
+        CacheBuster.bust(article.path)
+        CacheBuster.bust("#{article.path}?i=i")
       end
       article.save
     end

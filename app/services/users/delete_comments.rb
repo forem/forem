@@ -2,7 +2,7 @@ module Users
   module DeleteComments
     module_function
 
-    def call(user, cache_buster = CacheBuster.new)
+    def call(user, cache_buster = CacheBuster)
       return unless user.comments.any?
 
       user.comments.find_each do |comment|

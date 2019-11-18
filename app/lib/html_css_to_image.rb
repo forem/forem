@@ -14,6 +14,7 @@ module HtmlCssToImage
 
   def self.fetch_url(html:, css: nil, google_fonts: nil)
     cache_key = "htmlcssimage/#{html}/#{css}/#{google_fonts}"
+    # We could remove this after some days :)
     cached_url = Rails.cache.read(cache_key)
 
     return cached_url if cached_url.present?
@@ -21,6 +22,7 @@ module HtmlCssToImage
     image_url = url(html: html, css: css, google_fonts: google_fonts)
 
     Rails.cache.write(cache_key, image_url) unless image_url == FALLBACK_IMAGE
+    RedisRailsCache.write(cache_key, image_url, expires_in: 2.weeks) unless image_url == FALLBACK_IMAGE
 
     image_url
   end

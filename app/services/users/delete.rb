@@ -9,7 +9,7 @@ module Users
       delete_articles
       delete_user_activity
       user.unsubscribe_from_newsletters
-      CacheBuster.new.bust("/#{user.username}")
+      CacheBuster.bust("/#{user.username}")
       user.delete
     end
 
