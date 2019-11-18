@@ -91,7 +91,7 @@
     "@rails/webpacker": "^3.5.5",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-preact": "^1.1.0",
-    "chart.js": "^2.9.2",
+    "chart.js": "^2.9.3",
     "codemirror": "^5.49.2",
     "focus-visible": "^5.0.2",
     "intersection-observer": "^0.7.0",
