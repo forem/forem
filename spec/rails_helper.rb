@@ -77,6 +77,10 @@ RSpec.configure do |config|
     ActiveRecord::Base.observers.disable :all # <-- Turn 'em all off!
   end
 
+  config.after do
+    SiteConfig.clear_cache
+  end
+
   # Only turn on VCR if :vcr is included metadata keys
   config.around do |ex|
     if ex.metadata.key?(:vcr)

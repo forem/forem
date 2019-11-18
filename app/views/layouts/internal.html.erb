@@ -25,7 +25,7 @@
 </head>
 <style>
   .starter-template {
-    padding-top: 60px;
+    padding-top: 5em;
     font-size: 1.4em;
   }
 
@@ -148,37 +148,34 @@
   .highlighted-border {
     border: 20px solid black;
   }
-
 </style>
+
 <body>
-
-<nav class="navbar navbar-inverse navbar-fixed-top">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-    </div>
-    <%= render "internal/shared/navbar" %>
-  </div>
-</nav>
-
-<div class="container">
-
-  <div class="starter-template">
-    <% flash.each do |type, message| %>
-      <div class="alert alert-<%= type %>">
-        <button class="close" data-dismiss="alert">X</button>
-        <%= message %>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
       </div>
-    <% end %>
-    <%= yield %>
-  </div>
+      <%= render "internal/shared/navbar" %>
+    </div>
+  </nav>
 
-</div>
+  <div class="container">
+    <div class="starter-template">
+      <% flash.each do |type, message| %>
+        <div class="alert alert-<%= type %>">
+          <button class="close" data-dismiss="alert">X</button>
+          <%= message %>
+        </div>
+      <% end %>
+      <%= yield %>
+    </div>
+  </div>
 
 </body>
 </html>
