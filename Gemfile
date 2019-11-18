@@ -26,7 +26,7 @@ gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
 gem "carrierwave", "~> 2.0" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cld", "~> 0.8" # Compact Language Detection for Ruby
-gem "cloudinary", "~> 1.12" # Client library for easily using the Cloudinary service
+gem "cloudinary", "~> 1.13" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.2" # counter_culture provides turbo-charged counter caches that are kept up-to-date
 gem "dalli", "~> 2.7" # High performance memcached client for Ruby
 gem "delayed_job_active_record", "~> 4.1" # ActiveRecord backend for Delayed::Job
