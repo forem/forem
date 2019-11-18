@@ -31,6 +31,10 @@ class UserPolicy < ApplicationPolicy
     current_user?
   end
 
+  def request_destroy?
+    current_user?
+  end
+
   def join_org?
     !user_is_banned?
   end

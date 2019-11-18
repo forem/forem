@@ -1,0 +1,17 @@
+<p>
+  Hi <%= @user.name %>,
+</p>
+
+<p>
+  Your account deletion was requested. Please, visit <%= link_to "this page", user_request_destroy_url(@user.destroy_token) %> to destroy your account.
+</p>
+
+<p>
+  Contact us at <a href="mailto:<%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %>"><%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %></a> if there is anything more we can help with. 😊
+</p>
+
+<p>
+  Thanks,
+  <br>
+  The DEV Team
+</p>

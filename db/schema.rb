@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_06_102826) do
+ActiveRecord::Schema.define(version: 2019_11_18_120312) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -1049,6 +1049,7 @@ ActiveRecord::Schema.define(version: 2019_11_06_102826) do
     t.string "currently_hacking_on"
     t.string "currently_learning"
     t.string "currently_streaming_on"
+    t.string "destroy_token"
     t.boolean "display_sponsors", default: true
     t.string "dribbble_url"
     t.string "editor_version", default: "v1"

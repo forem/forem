@@ -74,6 +74,12 @@ class NotifyMailer < ApplicationMailer
     mail(to: user.email, subject: subject)
   end
 
+  def account_deletion_requested_email(user)
+    @user = user
+    subject = "dev.to - Account Deletion Requested"
+    mail(to: user.email, subject: subject)
+  end
+
   def export_email(user, attachment)
     @user = user
     export_filename = "devto-export-#{Date.current.iso8601}.zip"

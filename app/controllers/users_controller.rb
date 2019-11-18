@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   before_action :set_no_cache_header
   before_action :raise_banned, only: %i[update]
+  before_action :set_user, only: %i[update update_twitch_username update_language_settings destroy request_destroy full_delete remove_association]
   after_action :verify_authorized, except: %i[signout_confirm add_org_admin remove_org_admin remove_from_org]
 
   # GET /settings/@tab
@@ -16,7 +17,6 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/:id.:format
   def update
-    set_user
     set_tabs(params["user"]["tab"])
     if @user.update(permitted_attributes(@user))
       RssReaderFetchUserJob.perform_later(@user.id)
@@ -39,7 +39,6 @@ class UsersController < ApplicationController
   end
 
   def update_twitch_username
-    set_user
     set_tabs("integrations")
     new_twitch_username = params[:user][:twitch_username]
     if @user.twitch_username != new_twitch_username
@@ -53,7 +52,6 @@ class UsersController < ApplicationController
   end
 
   def update_language_settings
-    set_user
     set_tabs("misc")
     @user.language_settings["preferred_languages"] = Languages::LIST.keys & params[:user][:preferred_languages].to_a
     if @user.save
@@ -66,7 +64,6 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    set_user
     set_tabs("account")
     if @user.articles_count.zero? && @user.comments_count.zero?
       @user.destroy!
@@ -80,8 +77,14 @@ class UsersController < ApplicationController
     end
   end
 
+  def request_destroy
+    set_tabs("account")
+    Users::RequestDestroy.call(@user)
+    flash[:settings_notice] = "You have requested account deletion. Please, check your email for further instructions."
+    redirect_to "/settings/#{@tab}"
+  end
+
   def full_delete
-    set_user
     set_tabs("account")
     Users::SelfDeleteJob.perform_later(@user.id)
     sign_out @user
@@ -90,7 +93,6 @@ class UsersController < ApplicationController
   end
 
   def remove_association
-    set_user
     provider = params[:provider]
     identity = @user.identities.find_by(provider: provider)
     set_tabs("account")
