@@ -22,7 +22,8 @@ RSpec.describe SpotifyTag, type: :liquid_template do
           frameborder="0"
           allowtransparency="true"
           allow="encrypted-media"
-          src="#{parsed_uri} ">
+          src="#{parsed_uri} "
+          loading="lazy">
         </iframe>
       HTML
     end
