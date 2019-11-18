@@ -7,16 +7,18 @@ RSpec.describe "Sorting Dashboard Articles", type: :system, js: true do
   let(:article3) { create(:article, user_id: user.id, published_at: 5.minutes.ago, created_at: 3.days.ago, positive_reactions_count: 0, page_views_count: 1000, comments_count: 50) }
   let(:articles) { [article1, article2, article3] }
 
-  let(:comments_count_to_article) do
+  let(:article_with_comments_count_of) do
     ->(target_count) { articles.detect { |article| article.comments_count == target_count } }
   end
 
   let(:test_article_order) do
     lambda do |url, expected_article_array|
       visit url
-      comments_counts_as_displayed = page.all(".single-article .comments-count span.value").map { |e| e.text.to_i }
-      articles_as_displayed = comments_counts_as_displayed.map { |count| comments_count_to_article.call(count) }
-      expect(articles_as_displayed).to eq(expected_article_array)
+      comments_counts_on_page = page.all(".single-article .comments-count span.value").map { |e| e.text.to_i }
+      articles_on_page = comments_counts_on_page.map do |count|
+        article_with_comments_count_of.call(count)
+      end
+      expect(articles_on_page).to eq(expected_article_array)
     end
   end
 
