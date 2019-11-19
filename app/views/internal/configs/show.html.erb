@@ -36,6 +36,15 @@
                           placeholder: "email@staff.com" %>
         <span class="help-block">Email of the staff account</span>
       </div>
+
+      <div class="form-group">
+        <%= f.label :social_networks_handle %>
+        <%= f.text_field :social_networks_handle,
+                         class: "form-control",
+                         value: SiteConfig.social_networks_handle,
+                         placeholder: "thepracticaldev" %>
+        <span class="help-block">Social networks handle (eg. Twitter, GitHub)</span>
+      </div>
     </div>
   </div>
 

@@ -30,6 +30,12 @@ RSpec.describe "/internal/config", type: :request do
         post "/internal/config", params: { site_config: { default_site_email: expected_email } }
         expect(SiteConfig.default_site_email).to eq(expected_email)
       end
+
+      it "updates social_networks_handle" do
+        expected_handle = "tpd"
+        post "/internal/config", params: { site_config: { social_networks_handle: expected_handle } }
+        expect(SiteConfig.social_networks_handle).to eq(expected_handle)
+      end
     end
 
     describe "images" do
