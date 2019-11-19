@@ -89,7 +89,6 @@
 
 <h3>Delete Account</h3>
 <h4 style="font-weight:400;">
-  <% delete_path = @user.articles_count.zero? && @user.comments_count.zero? ? user_destroy_path : user_full_delete_path %>
   <%= form_tag user_request_destroy_path, method: :get, autocomplete: "off", id: "delete__account" do %>
     Deleting your account will:
     <ul class="delete__account">

@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :set_no_cache_header
   before_action :raise_banned, only: %i[update]
-  before_action :set_user, only: %i[update update_twitch_username update_language_settings destroy confirm_destroy request_destroy full_delete remove_association]
+  before_action :set_user, only: %i[update update_twitch_username update_language_settings confirm_destroy request_destroy full_delete remove_association]
   after_action :verify_authorized, except: %i[signout_confirm add_org_admin remove_org_admin remove_from_org]
 
   # GET /settings/@tab
@@ -60,20 +60,6 @@ class UsersController < ApplicationController
       redirect_to "/settings/#{@tab}"
     else
       render :edit
-    end
-  end
-
-  def destroy
-    set_tabs("account")
-    if @user.articles_count.zero? && @user.comments_count.zero?
-      @user.destroy!
-      NotifyMailer.account_deleted_email(@user).deliver
-      flash[:global_notice] = "Your account has been deleted."
-      sign_out @user
-      redirect_to root_path
-    else
-      flash[:error] = "An error occurred. Try requesting an account deletion below."
-      redirect_to "/settings/#{@tab}"
     end
   end
 
