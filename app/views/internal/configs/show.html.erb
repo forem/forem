@@ -25,7 +25,16 @@
                            value: SiteConfig.staff_user_id,
                            min: 1,
                            placeholder: "1" %>
-        <span class="help-block">The user id of the staff account</span>
+        <span class="help-block">User ID of the staff account</span>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :default_site_email %>
+        <%= f.email_field :default_site_email,
+                          class: "form-control",
+                          value: SiteConfig.default_site_email,
+                          placeholder: "email@staff.com" %>
+        <span class="help-block">Email of the staff account</span>
       </div>
     </div>
   </div>

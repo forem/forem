@@ -19,9 +19,17 @@ RSpec.describe "/internal/config", type: :request do
       sign_in(admin)
     end
 
-    it "updates staff_user_id" do
-      post "/internal/config", params: { site_config: { staff_user_id: 2 } }
-      expect(SiteConfig.staff_user_id).to eq(2)
+    describe "staff" do
+      it "updates staff_user_id" do
+        post "/internal/config", params: { site_config: { staff_user_id: 2 } }
+        expect(SiteConfig.staff_user_id).to eq(2)
+      end
+
+      it "updates default_site_email" do
+        expected_email = "foo@bar.com"
+        post "/internal/config", params: { site_config: { default_site_email: expected_email } }
+        expect(SiteConfig.default_site_email).to eq(expected_email)
+      end
     end
 
     describe "images" do
@@ -44,9 +52,11 @@ RSpec.describe "/internal/config", type: :request do
       end
     end
 
-    it "updates rate_limit_follow_count_daily" do
-      post "/internal/config", params: { site_config: { rate_limit_follow_count_daily: 3 } }
-      expect(SiteConfig.rate_limit_follow_count_daily).to eq(3)
+    describe "rate limits" do
+      it "updates rate_limit_follow_count_daily" do
+        post "/internal/config", params: { site_config: { rate_limit_follow_count_daily: 3 } }
+        expect(SiteConfig.rate_limit_follow_count_daily).to eq(3)
+      end
     end
   end
 end
