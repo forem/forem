@@ -8,7 +8,7 @@ module Suggester
       end
 
       def suggest
-        Rails.cache.fetch(generate_cache_name, expires_in: 120.hours) do
+        RedisRailsCache.fetch(generate_cache_name, expires_in: 120.hours) do
           reaction_count = Rails.env.production? ? 25 : 0
           user_ids = Article.published.tagged_with([given_tag], any: true).
             where("positive_reactions_count > ?", reaction_count).

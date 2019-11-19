@@ -2,7 +2,7 @@ module PodcastEpisodes
   class BustCacheJob < ApplicationJob
     queue_as :podcast_episodes_bust_cache
 
-    def perform(podcast_episode_id, path, podcast_slug, cache_buster = CacheBuster.new)
+    def perform(podcast_episode_id, path, podcast_slug, cache_buster = CacheBuster)
       podcast_episode = PodcastEpisode.find_by(id: podcast_episode_id)
       return unless podcast_episode
 

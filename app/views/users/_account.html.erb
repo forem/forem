@@ -66,7 +66,7 @@
     </ul>
     <strong>
       Note that this does not revoke our OAuth app access; you will have to do so in your
-      <a href="https://twitter.com/settings/sessions">Twitter profile settings</a> or your
+      <a href="https://twitter.com/settings/applications">Twitter profile settings</a> or your
       <a href="https://github.com/settings/applications">GitHub profile settings</a>.
     </strong>
     <br>
@@ -87,71 +87,72 @@
   </h4>
 <% end %>
 
-<% if @user.articles_count.zero? && @user.comments_count.zero? %>
-  <h3>Delete Account</h3>
-  <h4 style="font-weight:400;">
-    <%= form_tag "/users/destroy", method: :delete, autocomplete: "off" do %>
-      Deleting your account will:
-      <ul class="delete__account">
-        <li>delete your profile, along with your Twitter and/or GitHub associations.
-          This does not include app permissions, which you will have to remove yourself on Twitter/GitHub.
-        </li>
-        <%# TODO: expand the delete messaging later %>
-        <li>delete any and all content you have, such as your reading list or chat messages.</li>
-        <li>allow your username to become available to anyone.</li>
-      </ul>
-      <div class="field">
-        <label for="delete__account__username__field">
-          <b>To delete your account, type in your username:</b>
-        </label>
-        <input type="text" name="delete__account__username__field" id="delete__account__username__field">
-      </div>
-      <div class="field">
-        <label for="delete__account__verification__field">
-          <b>For verification, type the words:</b><i> delete my account</i>
-        </label>
-        <input type="text" name="delete__account__verification__field" id="delete__account__verification__field">
-      </div>
-      <button class="big-action danger-button small-button" id="delete__account__btn" type="submit" disabled="true">
-        DELETE ACCOUNT
-      </button>
-    <% end %>
-  </h4>
-  <br>
-  <script>
-    var deleteAccountBtn = document.getElementById('delete__account__btn')
-    var deleteAccountUsernameInput = document.getElementById('delete__account__username__field')
-    var deleteAcccountVerificationInput = document.getElementById('delete__account__verification__field')
+<h3>Delete Account</h3>
+<h4 style="font-weight:400;">
+  <% delete_path = @user.articles_count.zero? && @user.comments_count.zero? ? user_destroy_path : user_full_delete_path %>
+  <%= form_tag delete_path, method: :delete, autocomplete: "off", id: "delete__account" do %>
+    Deleting your account will:
+    <ul class="delete__account">
+      <li>delete your profile, along with your Twitter and/or GitHub associations.
+        This does not include app permissions. You will have to remove them yourself on
+        <a href="https://twitter.com/settings/applications">Twitter profile settings</a> and
+        <a href="https://github.com/settings/applications">GitHub profile settings</a>.
+      </li>
+      <%# TODO: expand the delete messaging later %>
+      <li>delete any and all content you have, such as articles, comments, your reading list or chat messages.</li>
+      <li>allow your username to become available to anyone.</li>
+    </ul>
+    <div class="field">
+      <label for="delete__account__username__field">
+        <b>To delete your account, type in your username:</b>
+      </label>
+      <input type="text" name="delete__account__username__field" id="delete__account__username__field">
+    </div>
+    <div class="field">
+      <label for="delete__account__verification__field">
+        <b>For verification, type the words:</b><i> delete my account</i>
+      </label>
+      <input type="text" name="delete__account__verification__field" id="delete__account__verification__field">
+    </div>
+    <button class="big-action danger-button small-button" id="delete__account__btn" type="submit" disabled="true">
+      DELETE ACCOUNT
+    </button>
+  <% end %>
+</h4>
+<br>
+<script>
+  var deleteAccountBtn = document.getElementById('delete__account__btn')
+  var deleteAccountUsernameInput = document.getElementById('delete__account__username__field')
+  var deleteAcccountVerificationInput = document.getElementById('delete__account__verification__field')
 
-    function bothInputsVerified() {
-      return deleteAccountUsernameInput.value === '<%= @user.username %>' && deleteAcccountVerificationInput.value === "delete my account"
+  function bothInputsVerified() {
+    return deleteAccountUsernameInput.value === '<%= @user.username %>' && deleteAcccountVerificationInput.value === "delete my account"
+  }
+
+  deleteAccountUsernameInput.addEventListener('input', function () {
+    if (bothInputsVerified()) {
+      deleteAccountBtn.disabled = false;
+      // enable the button via css or removing disabled class
+    } else {
+      deleteAccountBtn.disabled = true;
     }
+  })
 
-    deleteAccountUsernameInput.addEventListener('input', function () {
-      if (bothInputsVerified()) {
-        deleteAccountBtn.disabled = false;
-        // enable the button via css or removing disabled class
-      } else {
-        deleteAccountBtn.disabled = true;
-      }
-    })
-
-    deleteAcccountVerificationInput.addEventListener('input', function () {
-      if (bothInputsVerified()) {
-        deleteAccountBtn.disabled = false;
-      } else {
-        deleteAccountBtn.disabled = true;
-      }
-    })
-  </script>
-<% end %>
+  deleteAcccountVerificationInput.addEventListener('input', function () {
+    if (bothInputsVerified()) {
+      deleteAccountBtn.disabled = false;
+    } else {
+      deleteAccountBtn.disabled = true;
+    }
+  })
+</script>
+If you would like to keep your content under the <%= link_to "@ghost", "/ghost" %> account, please:
 <h3>Request Account Deletion</h3>
 <h4 style="font-weight: 400;">
   <br>
   <a href="mailto:<%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %>?subject=Request Account Deletion&body=<%= @email_body %>">
     Click this link to request account deletion via email.
-  </a> This includes all articles, comments, reactions, etc. as well as any personal information you have.
-  <br>
+  </a>
   <br>
   Be sure to change the email template to fit your needs.
 </h4>

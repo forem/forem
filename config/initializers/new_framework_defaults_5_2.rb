@@ -17,7 +17,7 @@
 # It's best enabled when your entire app is migrated and stable on 5.2.
 #
 # Existing cookies will be converted on read then written with the new scheme.
-# Rails.application.config.action_dispatch.use_authenticated_cookie_encryption = true
+Rails.application.config.action_dispatch.use_authenticated_cookie_encryption = true
 
 # Use AES-256-GCM authenticated encryption as default cipher for encrypting messages
 # instead of AES-256-CBC, when use_authenticated_message_encryption is set to true.

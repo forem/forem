@@ -122,6 +122,7 @@
   <% end %>
   <% is_mod = (@moderatable.tag_list.select { |t| current_user.has_role?(:tag_moderator, Tag.find_by(name: t)) }).any? if @moderatable.class.name == "Article" %>
   <% if @moderatable.class.name == "Article" && (current_user.has_role?(:super_admin) || is_mod) %>
+    <a href="/community-moderation" class="mod-link">Community moderation guide</a>
     <div class="tag-mod-form">
       <%= form_for(TagAdjustment.new) do |f| %>
         <h2> Remove Inappropriate Tags</h2>

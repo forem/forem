@@ -27,6 +27,10 @@ class UserPolicy < ApplicationPolicy
     current_user?
   end
 
+  def full_delete?
+    current_user?
+  end
+
   def join_org?
     !user_is_banned?
   end
