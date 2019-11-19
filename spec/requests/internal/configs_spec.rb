@@ -25,5 +25,10 @@ RSpec.describe "/internal/config", type: :request do
       post "/internal/config", params: { site_config: { main_social_image: expected_image_url } }
       expect(SiteConfig.main_social_image).to eq(expected_image_url)
     end
+
+    it "updates rate_limit_follow_count_daily" do
+      post "/internal/config", params: { site_config: { rate_limit_follow_count_daily: 3 } }
+      expect(SiteConfig.rate_limit_follow_count_daily).to eq(3)
+    end
   end
 end

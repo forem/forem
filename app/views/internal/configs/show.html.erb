@@ -19,13 +19,28 @@
     <div class="panel-heading">Images</div>
     <div class="panel-body">
       <div class="form-group">
-        <%= f.label "Main social image" %>
+        <%= f.label :main_social_image %>
         <%= f.text_field :main_social_image,
                          class: "form-control",
                          value: SiteConfig.main_social_image,
                          placeholder: "https://image.url" %>
         <span class="help-block">Used as the main image in social networks and OpenGraph</span>
         <img alt="main social image" class="preview" src="<%= SiteConfig.main_social_image %>" width="50%" />
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">Rate limits</div>
+    <div class="panel-body">
+      <div class="form-group">
+        <%= f.label :rate_limit_follow_count_daily %>
+        <%= f.number_field :rate_limit_follow_count_daily,
+                           class: "form-control",
+                           value: SiteConfig.rate_limit_follow_count_daily,
+                           min: 0,
+                           placeholder: "500" %>
+        <span class="help-block">Used to limit the amount of users a person can follow daily</span>
       </div>
     </div>
   </div>

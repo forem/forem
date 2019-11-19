@@ -13,7 +13,7 @@ class Internal::ConfigsController < Internal::ApplicationController
   private
 
   def config_params
-    # put this stuff in the policy or in the model
-    params.require(:site_config).permit(:main_social_image)
+    allowed_params = %i[main_social_image rate_limit_follow_count_daily]
+    params.require(:site_config).permit(allowed_params)
   end
 end
