@@ -13,7 +13,7 @@ document.ready.then(() => {
     !navigator.clipboard &&
     !navigator.Clipboard
   ) {
-    window.clipboard = import('clipboard-polyfill');
+    window.clipboard = await import('clipboard-polyfill');
   }
 });
 
