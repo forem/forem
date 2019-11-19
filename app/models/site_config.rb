@@ -10,6 +10,7 @@ class SiteConfig < RailsSettings::Base
 
   # images
   field :main_social_image, type: :string, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
+  field :favicon_url, type: :string, default: "favicon.ico"
 
   # rate limits
   field :rate_limit_follow_count_daily, type: :integer, default: 500

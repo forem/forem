@@ -27,6 +27,16 @@
         <span class="help-block">Used as the main image in social networks and OpenGraph</span>
         <img alt="main social image" class="preview" src="<%= SiteConfig.main_social_image %>" width="50%" />
       </div>
+
+      <div class="form-group">
+        <%= f.label :favicon_url %>
+        <%= f.text_field :favicon_url,
+                         class: "form-control",
+                         value: SiteConfig.favicon_url,
+                         placeholder: "https://image.url" %>
+        <span class="help-block">Used as the site favicon</span>
+        <img alt="favicon" class="preview" src="<%= SiteConfig.favicon_url %>" />
+      </div>
     </div>
   </div>
 

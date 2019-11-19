@@ -19,11 +19,18 @@ RSpec.describe "/internal/config", type: :request do
       sign_in(admin)
     end
 
-    it "updates main_social_image" do
-      SiteConfig.main_social_image = "https://dummyimage.com/100x100"
-      expected_image_url = "https://dummyimage.com/300x300"
-      post "/internal/config", params: { site_config: { main_social_image: expected_image_url } }
-      expect(SiteConfig.main_social_image).to eq(expected_image_url)
+    describe "images" do
+      it "updates main_social_image" do
+        expected_image_url = "https://dummyimage.com/300x300"
+        post "/internal/config", params: { site_config: { main_social_image: expected_image_url } }
+        expect(SiteConfig.main_social_image).to eq(expected_image_url)
+      end
+
+      it "updates favicon_url" do
+        expected_image_url = "https://dummyimage.com/300x300"
+        post "/internal/config", params: { site_config: { favicon_url: expected_image_url } }
+        expect(SiteConfig.favicon_url).to eq(expected_image_url)
+      end
     end
 
     it "updates rate_limit_follow_count_daily" do
