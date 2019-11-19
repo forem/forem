@@ -32,4 +32,8 @@ class SiteConfig < RailsSettings::Base
   field :mailchimp_sustaining_members_id, type: :string, default: ""
   field :mailchimp_tag_moderators_id, type: :string, default: ""
   field :mailchimp_community_moderators_id, type: :string, default: ""
+
+  # Email digest frequency
+  field :periodic_email_digest_max, type: :integer, default: 0
+  field :periodic_email_digest_min, type: :integer, default: 2
 end

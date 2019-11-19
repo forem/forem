@@ -98,5 +98,17 @@ RSpec.describe "/internal/config", type: :request do
         expect(SiteConfig.mailchimp_community_moderators_id).to eq("abc")
       end
     end
+
+    describe "Email digest frequency" do
+      it "updates periodic_email_digest_max" do
+        post "/internal/config", params: { site_config: { periodic_email_digest_max: 1 } }
+        expect(SiteConfig.periodic_email_digest_max).to eq(1)
+      end
+
+      it "updates periodic_email_digest_min" do
+        post "/internal/config", params: { site_config: { periodic_email_digest_min: 3 } }
+        expect(SiteConfig.periodic_email_digest_min).to eq(3)
+      end
+    end
   end
 end

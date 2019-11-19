@@ -103,7 +103,7 @@
     <div class="panel-heading">Google Analytics Reporting API v4</div>
     <div class="panel-body">
       <div class="form-group">
-        <%= f.label "View ID" %>
+        <%= f.label :ga_view_id, "View ID" %>
         <%= f.text_field :ga_view_id,
                          class: "form-control",
                          value: SiteConfig.ga_view_id %>
@@ -111,7 +111,7 @@
       </div>
 
       <div class="form-group">
-        <%= f.label "Fetch rate" %>
+        <%= f.label :ga_fetch_rate, "Fetch rate" %>
         <%= f.number_field :ga_fetch_rate,
                            class: "form-control",
                            value: SiteConfig.ga_fetch_rate,
@@ -126,7 +126,7 @@
     <div class="panel-heading">Mailchimp Lists IDs</div>
     <div class="panel-body">
       <div class="form-group">
-        <%= f.label "Main Newsletter" %>
+        <%= f.label :mailchimp_newsletter_id, "Main Newsletter" %>
         <%= f.text_field :mailchimp_newsletter_id,
                          class: "form-control",
                          value: SiteConfig.mailchimp_newsletter_id %>
@@ -134,7 +134,7 @@
       </div>
 
       <div class="form-group">
-        <%= f.label "Sustaining Members Newsletter" %>
+        <%= f.label :mailchimp_sustaining_members_id, "Sustaining Members Newsletter" %>
         <%= f.text_field :mailchimp_sustaining_members_id,
                          class: "form-control",
                          value: SiteConfig.mailchimp_sustaining_members_id %>
@@ -142,7 +142,7 @@
       </div>
 
       <div class="form-group">
-        <%= f.label "Tag Moderators Newsletter" %>
+        <%= f.label :mailchimp_tag_moderators_id, "Tag Moderators Newsletter" %>
         <%= f.text_field :mailchimp_tag_moderators_id,
                          class: "form-control",
                          value: SiteConfig.mailchimp_tag_moderators_id %>
@@ -150,11 +150,34 @@
       </div>
 
       <div class="form-group">
-        <%= f.label "Community Moderators Newsletter" %>
+        <%= f.label :mailchimp_community_moderators_id, "Community Moderators Newsletter" %>
         <%= f.text_field :mailchimp_community_moderators_id,
                          class: "form-control",
                          value: SiteConfig.mailchimp_community_moderators_id %>
         <span class="help-block">Community Moderators Newsletter ID</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">Email digest frequency</div>
+    <div class="panel-body">
+      <div class="form-group">
+        <%= f.label :periodic_email_digest_max %>
+        <%= f.number_field :periodic_email_digest_max,
+                           class: "form-control",
+                           value: SiteConfig.periodic_email_digest_max,
+                           placeholder: 0 %>
+        <span class="help-block">Determines the maximum for the periodic email digest</span>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :periodic_email_digest_min %>
+        <%= f.number_field :periodic_email_digest_min,
+                           class: "form-control",
+                           value: SiteConfig.periodic_email_digest_min,
+                           placeholder: 2 %>
+        <span class="help-block">Determines the mininum for the periodic email digest</span>
       </div>
     </div>
   </div>

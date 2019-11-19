@@ -22,6 +22,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       ga_view_id ga_fetch_rate
       mailchimp_newsletter_id mailchimp_sustaining_members_id
       mailchimp_tag_moderators_id mailchimp_community_moderators_id
+      periodic_email_digest_max periodic_email_digest_min
     ]
     params.require(:site_config).permit(allowed_params)
   end
