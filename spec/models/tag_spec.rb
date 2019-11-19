@@ -4,13 +4,12 @@ RSpec.describe Tag, type: :model do
   let(:tag) { build(:tag) }
 
   describe "validations" do
-
     describe "bg_color_hex" do
       it "passes validations if bg_color_hex is valid" do
         tag.bg_color_hex = "#000000"
         expect(tag).to be_valid
       end
-    
+
       it "fails validation if bg_color_hex is invalid" do
         tag.bg_color_hex = "0000000"
         expect(tag).not_to be_valid
@@ -22,7 +21,7 @@ RSpec.describe Tag, type: :model do
         tag.text_color_hex = "#000000"
         expect(tag).to be_valid
       end
-    
+
       it "fails validation if text_color_hex is invalid" do
         tag.text_color_hex = "0000000"
         expect(tag).not_to be_valid
@@ -45,7 +44,6 @@ RSpec.describe Tag, type: :model do
       tag.alias_for = "hello"
       expect(tag).not_to be_valid
     end
-
   end
 
   it "turns markdown into HTML before saving" do
