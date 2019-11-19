@@ -16,6 +16,21 @@
 
 <%= form_for(SiteConfig.new, url: internal_config_path) do |f| %>
   <div class="panel panel-default">
+    <div class="panel-heading">Staff</div>
+    <div class="panel-body">
+      <div class="form-group">
+        <%= f.label :staff_user_id %>
+        <%= f.number_field :staff_user_id,
+                           class: "form-control",
+                           value: SiteConfig.staff_user_id,
+                           min: 1,
+                           placeholder: "1" %>
+        <span class="help-block">The user id of the staff account</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
     <div class="panel-heading">Images</div>
     <div class="panel-body">
       <div class="form-group">

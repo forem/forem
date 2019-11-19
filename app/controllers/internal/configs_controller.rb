@@ -15,7 +15,7 @@ class Internal::ConfigsController < Internal::ApplicationController
   private
 
   def config_params
-    allowed_params = %i[main_social_image favicon_url logo_svg rate_limit_follow_count_daily]
+    allowed_params = %i[staff_user_id main_social_image favicon_url logo_svg rate_limit_follow_count_daily]
     params.require(:site_config).permit(allowed_params)
   end
 end

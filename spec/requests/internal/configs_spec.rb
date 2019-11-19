@@ -19,6 +19,11 @@ RSpec.describe "/internal/config", type: :request do
       sign_in(admin)
     end
 
+    it "updates staff_user_id" do
+      post "/internal/config", params: { site_config: { staff_user_id: 2 } }
+      expect(SiteConfig.staff_user_id).to eq(2)
+    end
+
     describe "images" do
       it "updates main_social_image" do
         expected_image_url = "https://dummyimage.com/300x300"

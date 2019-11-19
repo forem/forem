@@ -8,6 +8,9 @@ class SiteConfig < RailsSettings::Base
   # the cache, or call SiteConfig.clear_cache
   cache_prefix { "v1" }
 
+  # staff account
+  field :staff_user_id, type: :integer, default: 1
+
   # images
   field :main_social_image, type: :string, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
   field :favicon_url, type: :string, default: "favicon.ico"
