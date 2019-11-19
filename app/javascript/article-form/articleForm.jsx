@@ -39,6 +39,11 @@ SetupImageButton.propTypes = {
   onClickCallback: PropTypes.func.isRequired,
 };
 
+/*
+  Although the state fields: id, description, canonicalUrl, allSeries and
+  editing are not used in this file, they are important to the
+  editor.
+*/
 export default class ArticleForm extends Component {
   static handleGistPreview() {
     const els = document.getElementsByClassName('ltag_gist-liquid-tag');
@@ -84,9 +89,13 @@ export default class ArticleForm extends Component {
     this.url = window.location.href;
 
     this.state = {
+      id: this.article.id || null, // eslint-disable-line react/no-unused-state
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
+      description: '', // eslint-disable-line react/no-unused-state
+      canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
       series: series || '',
+      allSeries: this.article.all_series || [], // eslint-disable-line react/no-unused-state
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
@@ -94,6 +103,7 @@ export default class ArticleForm extends Component {
       previewResponse: '',
       helpHTML: document.getElementById('editor-help-guide').innerHTML,
       submitting: false,
+      editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       imageManagementShowing: false,
       moreConfigShowing: false,
       mainImage: this.article.main_image || null,
@@ -290,7 +300,10 @@ export default class ArticleForm extends Component {
     this.setState({
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
+      description: '', // eslint-disable-line react/no-unused-state
+      canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
       series: series || '',
+      allSeries: this.article.all_series || [], // eslint-disable-line react/no-unused-state
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
@@ -298,6 +311,7 @@ export default class ArticleForm extends Component {
       previewResponse: '',
       helpHTML: document.getElementById('editor-help-guide').innerHTML,
       submitting: false,
+      editing: this.artical.id !== null, // eslint-disable-line react/no-unused-state
       imageManagementShowing: false,
       moreConfigShowing: false,
       mainImage: this.article.main_image || null,
