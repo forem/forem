@@ -126,7 +126,7 @@ Rails.application.configure do
                         ENV["HEROKU_APP_URL"] => ENV["APP_DOMAIN"]
 end
 
-Rails.application.routes.default_url_options = { 
+Rails.application.routes.default_url_options = {
   host: Rails.application.config.app_domain,
   protocol: ENV["APP_PROTOCOL"].delete_suffix("://")
 }
