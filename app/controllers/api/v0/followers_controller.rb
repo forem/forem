@@ -1,8 +1,8 @@
 module Api
   module V0
     class FollowersController < ApiController
-      before_action :authenticate_with_api_key_or_current_user!, only: %i[organizations users]
-      before_action -> { limit_per_page(default: 80, max: 1000) }, only: %i[organizations users]
+      before_action :authenticate_with_api_key_or_current_user!
+      before_action -> { limit_per_page(default: 80, max: 1000) }
 
       def organizations
         @follows = Follow.

@@ -1,8 +1,8 @@
 class DashboardsController < ApplicationController
   before_action :set_no_cache_header
   before_action :authenticate_user!
-  before_action :fetch_and_authorize_user, only: %i[show following_tags following_users following_organizations following_podcasts followers]
-  before_action -> { limit_per_page(default: 80, max: 1000) }, only: %i[following_tags following_users following_organizations following_podcasts followers]
+  before_action :fetch_and_authorize_user, except: :pro
+  before_action -> { limit_per_page(default: 80, max: 1000) }, except: %i[show pro]
   after_action :verify_authorized
 
   def show
