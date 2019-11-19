@@ -76,5 +76,27 @@ RSpec.describe "/internal/config", type: :request do
         expect(SiteConfig.ga_fetch_rate).to eq(3)
       end
     end
+
+    describe "Mailchimp lists IDs" do
+      it "updates mailchimp_newsletter_id" do
+        post "/internal/config", params: { site_config: { mailchimp_newsletter_id: "abc" } }
+        expect(SiteConfig.mailchimp_newsletter_id).to eq("abc")
+      end
+
+      it "updates mailchimp_sustaining_members_id" do
+        post "/internal/config", params: { site_config: { mailchimp_sustaining_members_id: "abc" } }
+        expect(SiteConfig.mailchimp_sustaining_members_id).to eq("abc")
+      end
+
+      it "updates mailchimp_tag_moderators_id" do
+        post "/internal/config", params: { site_config: { mailchimp_tag_moderators_id: "abc" } }
+        expect(SiteConfig.mailchimp_tag_moderators_id).to eq("abc")
+      end
+
+      it "updates mailchimp_community_moderators_id" do
+        post "/internal/config", params: { site_config: { mailchimp_community_moderators_id: "abc" } }
+        expect(SiteConfig.mailchimp_community_moderators_id).to eq("abc")
+      end
+    end
   end
 end

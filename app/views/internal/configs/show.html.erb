@@ -122,6 +122,43 @@
     </div>
   </div>
 
+  <div class="panel panel-default">
+    <div class="panel-heading">Mailchimp Lists IDs</div>
+    <div class="panel-body">
+      <div class="form-group">
+        <%= f.label "Main Newsletter" %>
+        <%= f.text_field :mailchimp_newsletter_id,
+                         class: "form-control",
+                         value: SiteConfig.mailchimp_newsletter_id %>
+        <span class="help-block">Main Newsletter ID</span>
+      </div>
+
+      <div class="form-group">
+        <%= f.label "Sustaining Members Newsletter" %>
+        <%= f.text_field :mailchimp_sustaining_members_id,
+                         class: "form-control",
+                         value: SiteConfig.mailchimp_sustaining_members_id %>
+        <span class="help-block">Sustaining Members Newsletter ID</span>
+      </div>
+
+      <div class="form-group">
+        <%= f.label "Tag Moderators Newsletter" %>
+        <%= f.text_field :mailchimp_tag_moderators_id,
+                         class: "form-control",
+                         value: SiteConfig.mailchimp_tag_moderators_id %>
+        <span class="help-block">Tag Moderators Newsletter ID</span>
+      </div>
+
+      <div class="form-group">
+        <%= f.label "Community Moderators Newsletter" %>
+        <%= f.text_field :mailchimp_community_moderators_id,
+                         class: "form-control",
+                         value: SiteConfig.mailchimp_community_moderators_id %>
+        <span class="help-block">Community Moderators Newsletter ID</span>
+      </div>
+    </div>
+  </div>
+
   <div class="form-group">
     <%= f.submit "Update site configuration", class: "btn btn-primary" %>
   </div>

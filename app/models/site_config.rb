@@ -25,4 +25,11 @@ class SiteConfig < RailsSettings::Base
   # <https://developers.google.com/analytics/devguides/reporting/core/v4>
   field :ga_view_id, type: :string, default: ""
   field :ga_fetch_rate, type: :integer, default: 25
+
+  # Mailchimp lists IDs
+  # <https://mailchimp.com/developer/>
+  field :mailchimp_newsletter_id, type: :string, default: ""
+  field :mailchimp_sustaining_members_id, type: :string, default: ""
+  field :mailchimp_tag_moderators_id, type: :string, default: ""
+  field :mailchimp_community_moderators_id, type: :string, default: ""
 end

@@ -20,6 +20,8 @@ class Internal::ConfigsController < Internal::ApplicationController
       main_social_image favicon_url logo_svg
       rate_limit_follow_count_daily
       ga_view_id ga_fetch_rate
+      mailchimp_newsletter_id mailchimp_sustaining_members_id
+      mailchimp_tag_moderators_id mailchimp_community_moderators_id
     ]
     params.require(:site_config).permit(allowed_params)
   end
