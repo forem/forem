@@ -37,6 +37,17 @@
         <span class="help-block">Used as the site favicon</span>
         <img alt="favicon" class="preview" src="<%= SiteConfig.favicon_url %>" />
       </div>
+
+      <div class="form-group">
+        <%= f.label :logo_svg %>
+        <%= f.text_area :logo_svg,
+                        class: "form-control",
+                        value: SiteConfig.logo_svg,
+                        rows: 6,
+                        placeholder: "<svg ...></svg>" %>
+        <span class="help-block">Used as the SVG logo of the community</span>
+        <%= @logo_svg %>
+      </div>
     </div>
   </div>
 

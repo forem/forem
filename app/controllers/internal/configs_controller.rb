@@ -1,7 +1,9 @@
 class Internal::ConfigsController < Internal::ApplicationController
   layout "internal"
 
-  def show; end
+  def show
+    @logo_svg = SiteConfig.logo_svg.html_safe # rubocop:disable Rails/OutputSafety
+  end
 
   def create
     config_params.keys.each do |key|
@@ -13,7 +15,7 @@ class Internal::ConfigsController < Internal::ApplicationController
   private
 
   def config_params
-    allowed_params = %i[main_social_image favicon_url rate_limit_follow_count_daily]
+    allowed_params = %i[main_social_image favicon_url logo_svg rate_limit_follow_count_daily]
     params.require(:site_config).permit(allowed_params)
   end
 end

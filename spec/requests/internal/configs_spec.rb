@@ -31,6 +31,12 @@ RSpec.describe "/internal/config", type: :request do
         post "/internal/config", params: { site_config: { favicon_url: expected_image_url } }
         expect(SiteConfig.favicon_url).to eq(expected_image_url)
       end
+
+      it "updates logo_svg" do
+        expected_image_url = "https://dummyimage.com/300x300"
+        post "/internal/config", params: { site_config: { logo_svg: expected_image_url } }
+        expect(SiteConfig.logo_svg).to eq(expected_image_url)
+      end
     end
 
     it "updates rate_limit_follow_count_daily" do
