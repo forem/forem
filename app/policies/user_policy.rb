@@ -27,6 +27,10 @@ class UserPolicy < ApplicationPolicy
     current_user?
   end
 
+  def confirm_destroy?
+    current_user?
+  end
+
   def full_delete?
     current_user?
   end

@@ -3,65 +3,65 @@ require "rails_helper"
 RSpec.describe "UserDestroy", type: :request do
   let(:user) { create(:user) }
 
-  describe "DELETE /users/destroy" do
-    context "when user has no articles or comments" do
-      before do
-        sign_in user
-        delete "/users/destroy"
-      end
+  # describe "DELETE /users/destroy" do
+  #   context "when user has no articles or comments" do
+  #     before do
+  #       sign_in user
+  #       delete "/users/destroy"
+  #     end
 
-      it "destroys the user" do
-        expect(user.persisted?).to eq false
-      end
+  #     it "destroys the user" do
+  #       expect(user.persisted?).to eq false
+  #     end
 
-      it "sends an email to the user" do
-        expect(EmailMessage.last.to).to eq user.email
-      end
+  #     it "sends an email to the user" do
+  #       expect(EmailMessage.last.to).to eq user.email
+  #     end
 
-      it "signs out the user" do
-        expect(controller.current_user).to eq nil
-      end
+  #     it "signs out the user" do
+  #       expect(controller.current_user).to eq nil
+  #     end
 
-      it "redirects successfully to the home page" do
-        expect(response).to redirect_to "/"
-      end
+  #     it "redirects successfully to the home page" do
+  #       expect(response).to redirect_to "/"
+  #     end
 
-      it "sets flash settings" do
-        expect(flash[:global_notice]).to include("has been deleted")
-      end
-    end
+  #     it "sets flash settings" do
+  #       expect(flash[:global_notice]).to include("has been deleted")
+  #     end
+  #   end
 
-    context "when users are not allowed to destroy" do
-      let(:user_with_article) { create(:user, :with_article) }
-      let(:user_with_comment) { create(:user, :with_only_comment) }
-      let(:user_with_article_and_comment) { create(:user, :with_article_and_comment) }
-      let(:users) { [user_with_article, user_with_comment, user_with_article_and_comment] }
+  #   context "when users are not allowed to destroy" do
+  #     let(:user_with_article) { create(:user, :with_article) }
+  #     let(:user_with_comment) { create(:user, :with_only_comment) }
+  #     let(:user_with_article_and_comment) { create(:user, :with_article_and_comment) }
+  #     let(:users) { [user_with_article, user_with_comment, user_with_article_and_comment] }
 
-      it "does not allow invalid users to delete their account" do
-        users.each do |user|
-          sign_in user
-          delete "/users/destroy"
-          expect(user.persisted?).to eq true
-        end
-      end
+  #     it "does not allow invalid users to delete their account" do
+  #       users.each do |user|
+  #         sign_in user
+  #         delete "/users/destroy"
+  #         expect(user.persisted?).to eq true
+  #       end
+  #     end
 
-      it "redirects successfully to /settings/account" do
-        users.each do |user|
-          sign_in user
-          delete "/users/destroy"
-          expect(response).to redirect_to "/settings/account"
-        end
-      end
+  #     it "redirects successfully to /settings/account" do
+  #       users.each do |user|
+  #         sign_in user
+  #         delete "/users/destroy"
+  #         expect(response).to redirect_to "/settings/account"
+  #       end
+  #     end
 
-      it "shows the proper error message after redirecting" do
-        users.each do |user|
-          sign_in user
-          delete "/users/destroy"
-          expect(flash[:error]).to eq "An error occurred. Try requesting an account deletion below."
-        end
-      end
-    end
-  end
+  #     it "shows the proper error message after redirecting" do
+  #       users.each do |user|
+  #         sign_in user
+  #         delete "/users/destroy"
+  #         expect(flash[:error]).to eq "An error occurred. Try requesting an account deletion below."
+  #       end
+  #     end
+  #   end
+  # end
 
   describe "DELETE /users/full_delete" do
     before do
@@ -104,6 +104,33 @@ RSpec.describe "UserDestroy", type: :request do
 
     it "sets flash notice" do
       expect(flash[:settings_notice]).to include("You have requested account deletion")
+    end
+  end
+
+  describe "GET /users/confirm_destroy" do
+    let(:token) { SecureRandom.hex(10) }
+
+    before do
+      sign_in user
+    end
+
+    it "renders not_found if user doesn't have a destroy_token" do
+      expect do
+        get user_confirm_destroy_path(token: token)
+      end.to raise_error(ActionController::RoutingError)
+    end
+
+    it "renders not_found if destroy_token != token" do
+      user.update_column(:destroy_token, SecureRandom.hex(8))
+      expect do
+        get user_confirm_destroy_path(token: token)
+      end.to raise_error(ActionController::RoutingError)
+    end
+
+    it "renders template if destroy_token is correct" do
+      user.update_column(:destroy_token, token)
+      get user_confirm_destroy_path(token: token)
+      expect(response).to have_http_status(:ok)
     end
   end
 end

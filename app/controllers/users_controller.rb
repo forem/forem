@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :set_no_cache_header
   before_action :raise_banned, only: %i[update]
-  before_action :set_user, only: %i[update update_twitch_username update_language_settings destroy request_destroy full_delete remove_association]
+  before_action :set_user, only: %i[update update_twitch_username update_language_settings destroy confirm_destroy request_destroy full_delete remove_association]
   after_action :verify_authorized, except: %i[signout_confirm add_org_admin remove_org_admin remove_from_org]
 
   # GET /settings/@tab
@@ -82,6 +82,12 @@ class UsersController < ApplicationController
     Users::RequestDestroy.call(@user)
     flash[:settings_notice] = "You have requested account deletion. Please, check your email for further instructions."
     redirect_to "/settings/#{@tab}"
+  end
+
+  def confirm_destroy
+    raise ActionController::RoutingError, "Not Found" unless @user.destroy_token? && @user.destroy_token == params[:token]
+
+    set_tabs("account")
   end
 
   def full_delete
