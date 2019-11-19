@@ -20,4 +20,9 @@ class SiteConfig < RailsSettings::Base
 
   # rate limits
   field :rate_limit_follow_count_daily, type: :integer, default: 500
+
+  # Google Analytics Reporting API v4
+  # <https://developers.google.com/analytics/devguides/reporting/core/v4>
+  field :ga_view_id, type: :string, default: ""
+  field :ga_fetch_rate, type: :integer, default: 25
 end

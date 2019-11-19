@@ -93,8 +93,31 @@
                            class: "form-control",
                            value: SiteConfig.rate_limit_follow_count_daily,
                            min: 0,
-                           placeholder: "500" %>
+                           placeholder: 500 %>
         <span class="help-block">Used to limit the amount of users a person can follow daily</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">Google Analytics Reporting API v4</div>
+    <div class="panel-body">
+      <div class="form-group">
+        <%= f.label "View ID" %>
+        <%= f.text_field :ga_view_id,
+                         class: "form-control",
+                         value: SiteConfig.ga_view_id %>
+        <span class="help-block">Google Analytics Reporting API v4 - View ID</span>
+      </div>
+
+      <div class="form-group">
+        <%= f.label "Fetch rate" %>
+        <%= f.number_field :ga_fetch_rate,
+                           class: "form-control",
+                           value: SiteConfig.ga_fetch_rate,
+                           min: 1,
+                           placeholder: 1 %>
+        <span class="help-block">Determines how often the site updates its Google Analytics stats</span>
       </div>
     </div>
   </div>
