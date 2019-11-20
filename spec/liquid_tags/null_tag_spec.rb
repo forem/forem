@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe NullTag, type: :liquid_template do
+RSpec.describe NullTag, type: :liquid_tag do
   describe "#initialize" do
     tags = %w[assign capture case comment cycle for if ifchanged include unless]
 

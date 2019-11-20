@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Exporter::Comments do
+RSpec.describe Exporter::Comments, type: :service do
   let(:user) { create(:user) }
   let(:article) { create(:article) }
   let(:podcast_episode) { create(:podcast_episode) }

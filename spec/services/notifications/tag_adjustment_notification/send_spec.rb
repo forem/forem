@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Notifications::TagAdjustmentNotification::Send do
+RSpec.describe Notifications::TagAdjustmentNotification::Send, type: :service do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:article) { create(:article, title: "My title", user: user2, body_markdown: "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: heyheyhey,#{tag.name}\n---\n\nHello") }

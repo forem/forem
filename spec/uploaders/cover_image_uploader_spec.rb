@@ -2,7 +2,7 @@ require "rails_helper"
 require "carrierwave/test/matchers"
 require "exifr/jpeg"
 
-describe CoverImageUploader do
+describe CoverImageUploader, type: :uploader do
   include CarrierWave::Test::Matchers
 
   let_it_be(:event) { create(:event) }

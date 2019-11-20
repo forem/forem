@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MediumArticleRetrievalService, vcr: {} do
+RSpec.describe MediumArticleRetrievalService, type: :service, vcr: {} do
   let(:expected_response) do
     {
       title: "My Ruby Journey: Hooking Things Up - Fave Product & Engineering - Medium",
