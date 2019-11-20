@@ -7,8 +7,10 @@ RSpec.describe Article, type: :model do
     article
   end
 
-  let(:user) { create(:user) }
-  let(:article) { create(:article, user_id: user.id) }
+  let_it_be(:user) { create(:user) }
+  let!(:article) { create(:article, user_id: user.id) }
+
+  include_examples "#sync_reactions_count", :article
 
   it { is_expected.to validate_uniqueness_of(:canonical_url).allow_blank }
   it { is_expected.to validate_uniqueness_of(:body_markdown).scoped_to(:user_id, :title) }
@@ -620,6 +622,4 @@ RSpec.describe Article, type: :model do
       expect(feed_article.attributes.keys).to match_array(%w[id tag_list published_at processed_html user_id organization_id title path])
     end
   end
-
-  include_examples "#sync_reactions_count", :article
 end
