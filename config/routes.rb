@@ -109,6 +109,20 @@ Rails.application.routes.draw do
         end
       end
       resources :follows, only: [:create]
+      resources :followers do
+        collection do
+          get :users
+          get :organizations
+        end
+      end
+      resources :followings do
+        collection do
+          get :users
+          get :tags
+          get :organizations
+          get :podcasts
+        end
+      end
       resources :github_repos, only: [:index] do
         collection do
           post "/update_or_create", to: "github_repos#update_or_create"
@@ -293,7 +307,11 @@ Rails.application.routes.draw do
   get "/dashboard" => "dashboards#show"
   get "/dashboard/pro" => "dashboards#pro"
   get "dashboard/pro/org/:org_id" => "dashboards#pro"
-  get "dashboard/following" => "dashboards#following"
+  get "dashboard/following" => "dashboards#following_tags"
+  get "dashboard/following_tags" => "dashboards#following_tags"
+  get "dashboard/following_users" => "dashboards#following_users"
+  get "dashboard/following_organizations" => "dashboards#following_organizations"
+  get "dashboard/following_podcasts" => "dashboards#following_podcasts"
   get "/dashboard/:which" => "dashboards#followers",
       :constraints => {
         which: /organization_user_followers|user_followers/
