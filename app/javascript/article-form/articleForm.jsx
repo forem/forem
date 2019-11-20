@@ -39,6 +39,11 @@ SetupImageButton.propTypes = {
   onClickCallback: PropTypes.func.isRequired,
 };
 
+/*
+  Although the state fields: id, description, canonicalUrl, allSeries and
+  editing are not used in this file, they are important to the
+  editor.
+*/
 export default class ArticleForm extends Component {
   static handleGistPreview() {
     const els = document.getElementsByClassName('ltag_gist-liquid-tag');
@@ -76,6 +81,7 @@ export default class ArticleForm extends Component {
   constructor(props) {
     super(props);
     const { article, version } = this.props;
+    const { series } = this.state;
     let { organizations } = this.props;
     this.article = JSON.parse(article);
     organizations = organizations ? JSON.parse(organizations) : null;
@@ -83,13 +89,13 @@ export default class ArticleForm extends Component {
     this.url = window.location.href;
 
     this.state = {
-      id: this.article.id || null,
+      id: this.article.id || null, // eslint-disable-line react/no-unused-state
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
-      description: '',
-      canonicalUrl: this.article.canonical_url || '',
-      series: this.state.series || '',
-      allSeries: this.article.all_series || [],
+      description: '', // eslint-disable-line react/no-unused-state
+      canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
+      series: series || '',
+      allSeries: this.article.all_series || [], // eslint-disable-line react/no-unused-state
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
@@ -97,7 +103,7 @@ export default class ArticleForm extends Component {
       previewResponse: '',
       helpHTML: document.getElementById('editor-help-guide').innerHTML,
       submitting: false,
-      editing: this.article.id !== null,
+      editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       imageManagementShowing: false,
       moreConfigShowing: false,
       mainImage: this.article.main_image || null,
@@ -158,15 +164,26 @@ export default class ArticleForm extends Component {
     );
   };
 
+  setCommonProps = ({
+    helpShowing = false,
+    previewShowing = false,
+    imageManagementShowing = false,
+    moreConfigShowing = false,
+  }) => {
+    return {
+      helpShowing,
+      previewShowing,
+      imageManagementShowing,
+      moreConfigShowing,
+    };
+  };
+
   toggleHelp = e => {
     const { helpShowing } = this.state;
     e.preventDefault();
     window.scrollTo(0, 0);
     this.setState({
-      helpShowing: !helpShowing,
-      previewShowing: false,
-      imageManagementShowing: false,
-      moreConfigShowing: false,
+      ...this.setCommonProps({ helpShowing: !helpShowing }),
     });
   };
 
@@ -175,10 +192,7 @@ export default class ArticleForm extends Component {
     e.preventDefault();
     if (previewShowing) {
       this.setState({
-        previewShowing: false,
-        helpShowing: false,
-        imageManagementShowing: false,
-        moreConfigShowing: false,
+        ...this.setCommonProps({}),
       });
     } else {
       previewArticle(bodyMarkdown, this.showPreview, this.failedPreview);
@@ -190,10 +204,9 @@ export default class ArticleForm extends Component {
     e.preventDefault();
     window.scrollTo(0, 0);
     this.setState({
-      imageManagementShowing: !imageManagementShowing,
-      previewShowing: false,
-      helpShowing: false,
-      moreConfigShowing: false,
+      ...this.setCommonProps({
+        imageManagementShowing: !imageManagementShowing,
+      }),
     });
   };
 
@@ -201,19 +214,14 @@ export default class ArticleForm extends Component {
     const { moreConfigShowing } = this.state;
     e.preventDefault();
     this.setState({
-      moreConfigShowing: !moreConfigShowing,
-      previewShowing: false,
-      helpShowing: false,
-      imageManagementShowing: false,
+      ...this.setCommonProps({ moreConfigShowing: !moreConfigShowing }),
     });
   };
 
   showPreview = response => {
     if (response.processed_html) {
       this.setState({
-        previewShowing: true,
-        helpShowing: false,
-        imageManagementShowing: false,
+        ...this.setCommonProps({ previewShowing: true }),
         previewResponse: response,
         errors: null,
       });
@@ -287,13 +295,15 @@ export default class ArticleForm extends Component {
       'Are you sure you want to revert to the previous save?',
     );
     if (!revert && navigator.userAgent !== 'DEV-Native-ios') return;
+
+    const { series } = this.state;
     this.setState({
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
-      description: '',
-      canonicalUrl: this.article.canonical_url || '',
-      series: this.state.series || '',
-      allSeries: this.article.all_series || [],
+      description: '', // eslint-disable-line react/no-unused-state
+      canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
+      series: series || '',
+      allSeries: this.article.all_series || [], // eslint-disable-line react/no-unused-state
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
@@ -301,7 +311,7 @@ export default class ArticleForm extends Component {
       previewResponse: '',
       helpHTML: document.getElementById('editor-help-guide').innerHTML,
       submitting: false,
-      editing: this.artical.id !== null,
+      editing: this.artical.id !== null, // eslint-disable-line react/no-unused-state
       imageManagementShowing: false,
       moreConfigShowing: false,
       mainImage: this.article.main_image || null,
