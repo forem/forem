@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe JsitorTag, type: :liquid_template do
+RSpec.describe JsitorTag, type: :liquid_tag do
   describe "#link" do
     let(:jsitor_link) { "https://jsitor.com/embed/B7FQ5tHbY" }
 

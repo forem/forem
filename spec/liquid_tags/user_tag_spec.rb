@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe UserTag, type: :liquid_template do
+RSpec.describe UserTag, type: :liquid_tag do
   let(:user)  { create(:user) }
 
   setup       { Liquid::Template.register_tag("user", described_class) }

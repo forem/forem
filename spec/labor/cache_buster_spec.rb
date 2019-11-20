@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe CacheBuster do
+RSpec.describe CacheBuster, type: :labor do
   let(:cache_buster) { described_class }
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Podcasts::GetMediaUrl do
+RSpec.describe Podcasts::GetMediaUrl, type: :service do
   let(:https_url) { "https://hello.example.com/" }
   let(:http_url) { "http://hello.example.com/" }
 

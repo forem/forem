@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe StackblitzTag, type: :liquid_template do
+RSpec.describe StackblitzTag, type: :liquid_tag do
   describe "#id" do
     let(:stackblitz_id) { "ball-demo" }
     let(:stackblitz_id_with_view) { "ball-demo view=preview" }

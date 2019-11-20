@@ -5,7 +5,7 @@ vcr_option = {
   allow_playback_repeats: "true"
 }
 
-RSpec.describe Podcasts::Feed, vcr: vcr_option do
+RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
   let(:feed_url) { "http://softwareengineeringdaily.com/feed/podcast/" }
   let(:podcast) { create(:podcast, feed_url: feed_url) }
   let(:httparty_options) { { limit: 7 } }

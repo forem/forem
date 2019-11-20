@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ReadNotificationsService do
+RSpec.describe ReadNotificationsService, type: :service do
   let(:user) { create(:user) }
   let(:mock) { instance_double(NotificationCounter) }
 
