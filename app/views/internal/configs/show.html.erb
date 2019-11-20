@@ -16,16 +16,168 @@
 
 <%= form_for(SiteConfig.new, url: internal_config_path) do |f| %>
   <div class="panel panel-default">
+    <div class="panel-heading">Staff</div>
+    <div class="panel-body">
+      <div class="form-group">
+        <%= f.label :staff_user_id %>
+        <%= f.number_field :staff_user_id,
+                           class: "form-control",
+                           value: SiteConfig.staff_user_id,
+                           min: 1,
+                           placeholder: "1" %>
+        <span class="help-block">User ID of the staff account</span>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :default_site_email %>
+        <%= f.email_field :default_site_email,
+                          class: "form-control",
+                          value: SiteConfig.default_site_email,
+                          placeholder: "email@staff.com" %>
+        <span class="help-block">Email of the staff account</span>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :social_networks_handle %>
+        <%= f.text_field :social_networks_handle,
+                         class: "form-control",
+                         value: SiteConfig.social_networks_handle,
+                         placeholder: "thepracticaldev" %>
+        <span class="help-block">Social networks handle (eg. Twitter, GitHub)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
     <div class="panel-heading">Images</div>
     <div class="panel-body">
       <div class="form-group">
-        <%= f.label "Main social image" %>
+        <%= f.label :main_social_image %>
         <%= f.text_field :main_social_image,
                          class: "form-control",
                          value: SiteConfig.main_social_image,
                          placeholder: "https://image.url" %>
         <span class="help-block">Used as the main image in social networks and OpenGraph</span>
         <img alt="main social image" class="preview" src="<%= SiteConfig.main_social_image %>" width="50%" />
+      </div>
+
+      <div class="form-group">
+        <%= f.label :favicon_url %>
+        <%= f.text_field :favicon_url,
+                         class: "form-control",
+                         value: SiteConfig.favicon_url,
+                         placeholder: "https://image.url" %>
+        <span class="help-block">Used as the site favicon</span>
+        <img alt="favicon" class="preview" src="<%= SiteConfig.favicon_url %>" />
+      </div>
+
+      <div class="form-group">
+        <%= f.label :logo_svg %>
+        <%= f.text_area :logo_svg,
+                        class: "form-control",
+                        value: SiteConfig.logo_svg,
+                        rows: 6,
+                        placeholder: "<svg ...></svg>" %>
+        <span class="help-block">Used as the SVG logo of the community</span>
+        <%= @logo_svg %>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">Rate limits</div>
+    <div class="panel-body">
+      <div class="form-group">
+        <%= f.label :rate_limit_follow_count_daily %>
+        <%= f.number_field :rate_limit_follow_count_daily,
+                           class: "form-control",
+                           value: SiteConfig.rate_limit_follow_count_daily,
+                           min: 0,
+                           placeholder: 500 %>
+        <span class="help-block">Used to limit the amount of users a person can follow daily</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">Google Analytics Reporting API v4</div>
+    <div class="panel-body">
+      <div class="form-group">
+        <%= f.label :ga_view_id, "View ID" %>
+        <%= f.text_field :ga_view_id,
+                         class: "form-control",
+                         value: SiteConfig.ga_view_id %>
+        <span class="help-block">Google Analytics Reporting API v4 - View ID</span>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :ga_fetch_rate, "Fetch rate" %>
+        <%= f.number_field :ga_fetch_rate,
+                           class: "form-control",
+                           value: SiteConfig.ga_fetch_rate,
+                           min: 1,
+                           placeholder: 1 %>
+        <span class="help-block">Determines how often the site updates its Google Analytics stats</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">Mailchimp Lists IDs</div>
+    <div class="panel-body">
+      <div class="form-group">
+        <%= f.label :mailchimp_newsletter_id, "Main Newsletter" %>
+        <%= f.text_field :mailchimp_newsletter_id,
+                         class: "form-control",
+                         value: SiteConfig.mailchimp_newsletter_id %>
+        <span class="help-block">Main Newsletter ID</span>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :mailchimp_sustaining_members_id, "Sustaining Members Newsletter" %>
+        <%= f.text_field :mailchimp_sustaining_members_id,
+                         class: "form-control",
+                         value: SiteConfig.mailchimp_sustaining_members_id %>
+        <span class="help-block">Sustaining Members Newsletter ID</span>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :mailchimp_tag_moderators_id, "Tag Moderators Newsletter" %>
+        <%= f.text_field :mailchimp_tag_moderators_id,
+                         class: "form-control",
+                         value: SiteConfig.mailchimp_tag_moderators_id %>
+        <span class="help-block">Tag Moderators Newsletter ID</span>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :mailchimp_community_moderators_id, "Community Moderators Newsletter" %>
+        <%= f.text_field :mailchimp_community_moderators_id,
+                         class: "form-control",
+                         value: SiteConfig.mailchimp_community_moderators_id %>
+        <span class="help-block">Community Moderators Newsletter ID</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">Email digest frequency</div>
+    <div class="panel-body">
+      <div class="form-group">
+        <%= f.label :periodic_email_digest_max %>
+        <%= f.number_field :periodic_email_digest_max,
+                           class: "form-control",
+                           value: SiteConfig.periodic_email_digest_max,
+                           placeholder: 0 %>
+        <span class="help-block">Determines the maximum for the periodic email digest</span>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :periodic_email_digest_min %>
+        <%= f.number_field :periodic_email_digest_min,
+                           class: "form-control",
+                           value: SiteConfig.periodic_email_digest_min,
+                           placeholder: 2 %>
+        <span class="help-block">Determines the mininum for the periodic email digest</span>
       </div>
     </div>
   </div>
