@@ -53,6 +53,20 @@ RSpec.describe JsitorTag, type: :liquid_tag do
       end.not_to raise_error(StandardError)
     end
 
+    it "accepts jsitor link with hyphen id" do
+      link = "https://jsitor.com/embed/2o-syYxmi"
+      expect do
+        create_jsitor_liquid_tag(link)
+      end.not_to raise_error(StandardError)
+    end
+
+    it "accepts jsitor id with hyphen" do
+      link = "2o-syYxmi"
+      expect do
+        create_jsitor_liquid_tag(link)
+      end.not_to raise_error(StandardError)
+    end
+
     it "doesnt accepts jsitor link with a / at the end" do
       link = "https://jsitor.com/embed/1QgJVmCam/"
       expect do
