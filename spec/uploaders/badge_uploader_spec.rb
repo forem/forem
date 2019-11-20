@@ -2,7 +2,7 @@ require "rails_helper"
 require "carrierwave/test/matchers"
 require "exifr/jpeg"
 
-describe BadgeUploader do
+describe BadgeUploader, type: :uploader do
   include CarrierWave::Test::Matchers
 
   let_it_be(:badge) { create(:badge) }

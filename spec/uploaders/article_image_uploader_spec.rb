@@ -2,7 +2,7 @@ require "rails_helper"
 require "carrierwave/test/matchers"
 require "exifr/jpeg"
 
-describe ArticleImageUploader do
+describe ArticleImageUploader, type: :uploader do
   include CarrierWave::Test::Matchers
 
   let_it_be(:uploader) { described_class.new }

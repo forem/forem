@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe BlackBox do
+RSpec.describe BlackBox, type: :black_box do
   let!(:function_caller) { double }
 
   describe "#article_hotness_score" do

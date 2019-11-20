@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe DevCommentTag, type: :liquid_template do
+RSpec.describe DevCommentTag, type: :liquid_tag do
   let(:user)        { create(:user, username: "DevCommentTagTest", name: "DevCommentTag Test") }
   let(:article)     { create(:article) }
   let(:comment)     { create(:comment, commentable: article, body_markdown: "DevCommentTagTest", user: user) }

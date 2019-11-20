@@ -3,7 +3,7 @@ require "uri"
 
 base_uri = "https://glitch.com/embed/#!/embed/"
 
-RSpec.describe GlitchTag, type: :liquid_template do
+RSpec.describe GlitchTag, type: :liquid_tag do
   describe "#id" do
     let(:valid_id) { "BXgGcAUjM39" }
     let(:id_with_quotes) { 'some-id" onload="alert(42)"' }

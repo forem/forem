@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe LinkTag, type: :liquid_template do
+RSpec.describe LinkTag, type: :liquid_tag do
   let(:user) { create(:user, username: "username45", name: "Chase Danger", profile_image: nil) }
   let(:article) do
     create(:article, user_id: user.id, title: "test this please", tags: "tag1 tag2 tag3")

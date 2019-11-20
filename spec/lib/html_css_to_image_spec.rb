@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe HtmlCssToImage do
+RSpec.describe HtmlCssToImage, type: :lib do
   describe ".url" do
     it "returns the url to the created image" do
       stub_request(:post, /hcti.io/).

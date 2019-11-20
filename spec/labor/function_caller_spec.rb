@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe FunctionCaller do
+RSpec.describe FunctionCaller, type: :labor do
   let(:payload) { { user_id: 1, name: "hello" } }
   let(:dummy_client) { double }
   let(:result) { OpenStruct.new(payload: [{ body: { message: "hi" }.to_json }.to_json]) }

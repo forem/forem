@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Articles::Creator do
+RSpec.describe Articles::Creator, type: :service do
   let(:user) { create(:user) }
 
   context "when valid attributes" do

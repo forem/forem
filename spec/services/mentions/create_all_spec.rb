@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Mentions::CreateAll do
+RSpec.describe Mentions::CreateAll, type: :service do
   let(:user)        { create(:user) }
   let(:user2)       { create(:user) }
   let(:article)     { create(:article, user_id: user.id) }
