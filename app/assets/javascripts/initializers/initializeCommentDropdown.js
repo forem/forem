@@ -31,7 +31,7 @@ function initializeCommentDropdown() {
 
   function hideAnnouncer() {
     if (announcer) {
-      announcer.hidden = true; 
+      announcer.hidden = true;
     }
   }
 
@@ -105,7 +105,7 @@ function initializeCommentDropdown() {
 
         document.addEventListener('click', outsideClickListener);
         if (clipboardCopyElement) {
-          clipboardCopyElement.addEventListener('click', iOSCopyText);          
+          clipboardCopyElement.addEventListener('click', iOSCopyText);
         }
       } else {
         document.addEventListener('click', outsideClickListener);
