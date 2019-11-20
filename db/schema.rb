@@ -1163,10 +1163,6 @@ ActiveRecord::Schema.define(version: 2019_11_14_212918) do
     t.string "text_color_hex"
     t.string "text_only_name"
     t.string "top_languages"
-    t.integer "trailing_28_day_comments_count", default: 0
-    t.integer "trailing_28_day_reactions_count", default: 0
-    t.integer "trailing_7_day_comments_count", default: 0
-    t.integer "trailing_7_day_reactions_count", default: 0
     t.string "twitch_url"
     t.string "twitch_username"
     t.datetime "twitter_created_at"
@@ -1192,10 +1188,6 @@ ActiveRecord::Schema.define(version: 2019_11_14_212918) do
     t.index ["old_username"], name: "index_users_on_old_username"
     t.index ["organization_id"], name: "index_users_on_organization_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-    t.index ["trailing_28_day_comments_count"], name: "index_users_on_trailing_28_day_comments_count"
-    t.index ["trailing_28_day_reactions_count"], name: "index_users_on_trailing_28_day_reactions_count"
-    t.index ["trailing_7_day_comments_count"], name: "index_users_on_trailing_7_day_comments_count"
-    t.index ["trailing_7_day_reactions_count"], name: "index_users_on_trailing_7_day_reactions_count"
     t.index ["twitter_created_at"], name: "index_users_on_twitter_created_at"
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true

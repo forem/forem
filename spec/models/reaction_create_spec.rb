@@ -5,7 +5,7 @@ RSpec.describe Reaction, type: :model do
   let(:user) { create(:user) }
 
   context "when creating and enqueueing" do
-    it "enqueues the Users::TouchJob" do
+    it "enqueues the Reactions::TouchUsersJob" do
       expect do
         create(:reaction, reactable: article, user: user)
       end.to have_enqueued_job(Reactions::TouchUsersJob).exactly(:once).with(user.id)

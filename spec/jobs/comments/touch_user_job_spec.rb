@@ -15,15 +15,5 @@ RSpec.describe Comments::TouchUserJob, type: :job do
         expect(user.last_comment_at).to eql(touched_at)
       end
     end
-
-    it "updates user trailing_7_day_reactions_count", :aggregate_failures do
-      described_class.perform_now(comment.id)
-      expect(user.reload.trailing_7_day_comments_count).to be(1)
-    end
-
-    it "updates user trailing_28_day_reactions_count", :aggregate_failures do
-      described_class.perform_now(comment.id)
-      expect(user.reload.trailing_28_day_comments_count).to be(1)
-    end
   end
 end

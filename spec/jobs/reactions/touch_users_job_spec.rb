@@ -27,15 +27,5 @@ RSpec.describe Reactions::TouchUsersJob, type: :job do
         expect(comment_reaction_user.last_reaction_at).to eql(touched_at)
       end
     end
-
-    it "updates user trailing_7_day_reactions_count", :aggregate_failures do
-      described_class.perform_now(article_reaction.id)
-      expect(article_reaction_user.reload.trailing_7_day_reactions_count).to be(1)
-    end
-
-    it "updates user trailing_28_day_reactions_count", :aggregate_failures do
-      described_class.perform_now(comment_reaction.id)
-      expect(comment_reaction_user.reload.trailing_28_day_reactions_count).to be(1)
-    end
   end
 end
