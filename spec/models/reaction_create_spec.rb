@@ -8,7 +8,7 @@ RSpec.describe Reaction, type: :model do
     it "enqueues the Reactions::TouchUsersJob" do
       expect do
         create(:reaction, reactable: article, user: user)
-      end.to have_enqueued_job(Reactions::TouchUsersJob).exactly(:once).with(user.id)
+      end.to have_enqueued_job(Reactions::TouchUsersJob).exactly(:once)
     end
 
     it "enqueues the Reactions::UpdateReactableJob" do
