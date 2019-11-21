@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { deep } from 'preact-render-spy';
 import fetch from 'jest-fetch-mock';
+import { axe, toHaveNoViolations } from 'jest-axe';
 
 import Onboarding from '../Onboarding';
 import BioForm from '../components/BioForm';
@@ -16,6 +17,9 @@ function flushPromises() {
 }
 
 describe('<Onboarding />', () => {
+  beforeAll(() => {
+    expect.extend(toHaveNoViolations);
+  });
   beforeEach(() => {
     fetch.resetMocks();
   });
@@ -72,6 +76,12 @@ describe('<Onboarding />', () => {
 
     test('renders properly', () => {
       expect(onboardingSlides).toMatchSnapshot();
+    });
+
+    test('should not have basic a11y violations', async () => {
+      const results = await axe(onboardingSlides.toString());
+
+      expect(results).toHaveNoViolations();
     });
 
     test('should move to the next slide upon clicking the next button', () => {
