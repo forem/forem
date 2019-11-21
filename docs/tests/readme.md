@@ -5,6 +5,7 @@ items:
   - integration-tests.md
   - unit-functional-tests.md
   - preact-tests.md
+  - accessibility-tests.md
   - code-coverage.md
   - codeclimate.md
   - skip-ci.md
