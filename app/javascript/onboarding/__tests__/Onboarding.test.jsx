@@ -37,7 +37,7 @@ describe('<Onboarding />', () => {
     fetch.resetMocks();
   });
 
-  const fakeTagResponse = JSON.stringify([
+  const fakeTagsResponse = JSON.stringify([
     {
       bg_color_hex: '#000000',
       id: 715,
@@ -58,7 +58,7 @@ describe('<Onboarding />', () => {
     },
   ]);
 
-  const fakeUsersToFollowResponse = JSON.stringify([
+  const fakeUsersResponse = JSON.stringify([
     {
       id: 1,
       name: 'Ben Halpern',
@@ -235,7 +235,7 @@ describe('<Onboarding />', () => {
       expect(personalInfoForm.state('employer_name')).toBe('my employer name');
 
       personalInfoForm.find('.next-button').simulate('click');
-      fetch.once(fakeTagResponse);
+      fetch.once(fakeTagsResponse);
       await flushPromises();
       expect(onboardingSlides.state().currentSlide).toBe(4);
     });
@@ -244,7 +244,7 @@ describe('<Onboarding />', () => {
   describe('FollowTags', () => {
     let onboardingSlides;
     beforeEach(async () => {
-      onboardingSlides = initializeSlides(4, dataUser, fakeTagResponse);
+      onboardingSlides = initializeSlides(4, dataUser, fakeTagsResponse);
       await flushPromises();
     });
 
@@ -265,7 +265,7 @@ describe('<Onboarding />', () => {
         .simulate('click');
       expect(followTags.state('selectedTags').length).toBe(1);
       onboardingSlides.find('.next-button').simulate('click');
-      fetch.once(fakeUsersToFollowResponse);
+      fetch.once(fakeUsersResponse);
       await flushPromises();
       expect(onboardingSlides.state().currentSlide).toBe(5);
     });
@@ -279,11 +279,7 @@ describe('<Onboarding />', () => {
   describe('FollowUsers', () => {
     let onboardingSlides;
     beforeEach(async () => {
-      onboardingSlides = initializeSlides(
-        5,
-        dataUser,
-        fakeUsersToFollowResponse,
-      );
+      onboardingSlides = initializeSlides(5, dataUser, fakeUsersResponse);
       await flushPromises();
     });
 
@@ -309,7 +305,7 @@ describe('<Onboarding />', () => {
     });
 
     it('should move to the previous slide upon clicking the back button', async () => {
-      fetch.once(fakeTagResponse);
+      fetch.once(fakeTagsResponse);
       onboardingSlides.find('.back-button').simulate('click');
       await flushPromises();
       expect(onboardingSlides.state().currentSlide).toBe(4);
