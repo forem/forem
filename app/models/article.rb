@@ -39,7 +39,6 @@ class Article < ApplicationRecord
   validates :canonical_url,
             url: { allow_blank: true, no_local: true, schemes: %w[https http] },
             uniqueness: { allow_blank: true }
-  # validates :description, length: { in: 10..170, if: :published? }
   validates :body_markdown, uniqueness: { scope: %i[user_id title] }
   validate :validate_tag
   validate :validate_video
@@ -397,15 +396,18 @@ class Article < ApplicationRecord
   def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
     time_ago = 5.days.ago if time_ago == "latest" # Time ago sometimes returns this phrase instead of a date
     time_ago = 75.days.ago if time_ago.nil? # Time ago sometimes is given as nil and should then be the default. I know, sloppy.
+
+    relation = Article.published.
+      order(organic_page_views_past_month_count: :desc).
+      where("score > ?", 8).
+      where("published_at > ?", time_ago).
+      limit(25)
+
+    fields = %i[path title comments_count created_at]
     if tag
-      Article.published.
-        cached_tagged_with(tag).order("organic_page_views_past_month_count DESC").where("score > ?", 8).where("published_at > ?", time_ago).
-        limit(25).
-        pluck(:path, :title, :comments_count, :created_at)
+      relation.cached_tagged_with(tag).pluck(*fields)
     else
-      Article.published.
-        order("organic_page_views_past_month_count DESC").limit(25).where("score > ?", 8).where("published_at > ?", time_ago).
-        pluck(:path, :title, :comments_count, :created_at)
+      relation.pluck(*fields)
     end
   end
 
@@ -529,7 +531,7 @@ class Article < ApplicationRecord
 
   def validate_video
     return errors.add(:published, "cannot be set to true if video is still processing") if published && video_state == "PROGRESSING"
-    return errors.add(:video, "cannot be added member without permission") if video.present? && user.created_at > 2.weeks.ago
+    return errors.add(:video, "cannot be added by member without permission") if video.present? && user.created_at > 2.weeks.ago
   end
 
   def validate_collection_permission
