@@ -91,6 +91,11 @@
   input.undo {
     background: #ff0000; /* $red */
   }
+
+  .adjustment-error {
+    text-align:center;
+    color:red;
+  }
 </style>
 
 <div class="container" style="text-align: center">
@@ -132,20 +137,27 @@
             <li>Only remove tags which are tagged innapropriately.</li>
             <li>Use negative reactions if tag is appropriate but quality is low.</li>
             <li>Always be friendly in your tag removal reason.</li>
+            <li>Only remove tags which haven't been adjusted already.</li>
           </ul>
         <% end %>
-        <b>Current live tags:</b> <%= @moderatable.tag_list %>
+        <b>Current live tags:</b> <%= @moderatable.tag_list %><br>
+        <b>Already adjusted tags:</b> <%= @already_adjusted_tags %>
         <br /><br />
+        <% if flash[:error_removal].present? %>
+          <div class="adjustment-error">
+            <p>Error: <%= flash[:error_removal] %></p><br>
+          </div>
+        <% end %>
         <%= f.hidden_field :article_id, value: @moderatable.id %>
-        <%= f.text_field :tag_name, placeholder: "Tag Name" %>
-        <%= f.text_area :reason_for_adjustment, placeholder: "Reason for Removal (Be super kind) - Only the reason is needed, the notification will take care of the rest." %>
+        <%= f.hidden_field :adjustment_type, value: "removal" %>
+        <%= f.text_field :tag_name, placeholder: "Tag Name", required: true %>
+        <%= f.text_area :reason_for_adjustment, placeholder: "Reason for Removal (Be super kind) - Only the reason is needed, the notification will take care of the rest.", required: true %>
         <%= f.submit "Remove Tag" %>
       <% end %>
-      <% adjustments = TagAdjustment.where(article_id: @moderatable.id, adjustment_type: "removal") %>
-      <% if adjustments.any? %>
+      <% if @removed_adjustments.any? %>
         <br /><br />
         <b>Removed tags: </b>
-        <% adjustments.each do |adjustment| %>
+        <% @removed_adjustments.each do |adjustment| %>
           <% if current_user.any_admin? %>
               <%= form_for(adjustment, url: "/tag_adjustments/#{adjustment.id}", html: { method: :delete, onsubmit: "return confirm('Are you sure you want to undo the removal of the #{adjustment.tag_name} tag?')" }) do |f| %>
                 <%= adjustment.tag_name %>
@@ -156,6 +168,52 @@
       <% end %>
     </div>
   <% end %>
+
+  <% if @allowed_to_add %>
+    <div class="tag-mod-form">
+      <h2> Add Appropriate Tags</h2>
+      <% if @moderatable.tag_list.count < 4 %>
+        <%= form_for(TagAdjustment.new) do |f| %>
+          <% unless current_user.has_role?(:super_admin) %>
+            <ul>
+              <li>You can only add tags that you moderate.</li>
+              <li>Only add tags that are appropriate.</li>
+              <li>Always be friendly in your tag adding reason.</li>
+              <li>Only add tags which haven't been adjusted already.</li>
+            </ul>
+          <% end %>
+          <b>Current live tags:</b> <%= @moderatable.tag_list %><br>
+          <b>Already adjusted tags:</b> <%= @already_adjusted_tags %>
+          <br /><br />
+          <% if flash[:error_addition].present? %>
+            <div class="adjustment-error">
+              <p>Error: <%= flash[:error_addition] %></p><br>
+            </div>
+          <% end %>
+          <%= f.hidden_field :article_id, value: @moderatable.id %>
+          <%= f.hidden_field :adjustment_type, value: "addition" %>
+          <%= f.text_field :tag_name, placeholder: "Tag Name - only add one at a time", required: true %>
+          <%= f.text_area :reason_for_adjustment, placeholder: "Reason for addition (Be super kind) - Only the reason is needed, the notification will take care of the rest.", required: true %>
+          <%= f.submit "Add Tag" %>
+        <% end %>
+      <% else %>
+        <b>Unable to add new tags. 4 tags max.</b>
+      <% end %>
+      <% if @added_adjustments.any? %>
+        <br /><br />
+        <b>Added tags: </b>
+        <% @added_adjustments.each do |adjustment| %>
+          <% if current_user.any_admin? %>
+              <%= form_for(adjustment, url: "/tag_adjustments/#{adjustment.id}", html: { method: :delete, onsubmit: "return confirm('Are you sure you want to undo the addition of the #{adjustment.tag_name} tag?')" }) do |f| %>
+                <%= adjustment.tag_name %>
+                <%= f.submit "X", id: "undo" %>
+              <% end %>
+            <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+
   <% if @moderatable.class.name == "Article" %>
     <% if @moderatable.last_buffered.blank? %>
       <div class="tag-mod-form">

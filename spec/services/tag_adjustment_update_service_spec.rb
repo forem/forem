@@ -13,7 +13,7 @@ RSpec.describe TagAdjustmentUpdateService, type: :service do
       tag_name: tag.name,
       article_id: article.id,
       reason_for_adjustment: "reasons",
-    ).create
+    )
   end
 
   before do
@@ -21,7 +21,8 @@ RSpec.describe TagAdjustmentUpdateService, type: :service do
   end
 
   it "creates tag adjustment" do
-    tag_adjustment = create_tag_adjustment
+    tag_adjustment = create_tag_adjustment.tag_adjustment
+    tag_adjustment.save
     described_class.new(tag_adjustment, status: "resolved").update
 
     expect(tag_adjustment).to be_valid
