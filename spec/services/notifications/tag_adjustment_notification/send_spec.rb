@@ -36,6 +36,13 @@ RSpec.describe Notifications::TagAdjustmentNotification::Send, type: :service do
     expect(json["adjustment_type"]). to eq "removal"
   end
 
+  it "tests JSON data for addition" do
+    tag_adjustment.adjustment_type = "addition"
+    json = notification.json_data
+    expect(json["article"]["title"]).to start_with("Hello")
+    expect(json["adjustment_type"]). to eq "addition"
+  end
+
   specify "notification to be inserted on DB" do
     expect do
       described_class.call(tag_adjustment)
