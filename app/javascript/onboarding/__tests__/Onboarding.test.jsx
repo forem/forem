@@ -16,6 +16,19 @@ function flushPromises() {
   return new Promise(resolve => setImmediate(resolve));
 }
 
+function initializeSlides(currentSlide, dataUser = null, mockData = null) {
+  const onboardingSlides = deep(<Onboarding />);
+
+  if (mockData) {
+    fetch.once(mockData);
+  }
+
+  document.body.setAttribute('data-user', dataUser);
+  onboardingSlides.setState({ currentSlide });
+
+  return onboardingSlides;
+}
+
 describe('<Onboarding />', () => {
   beforeAll(() => {
     expect.extend(toHaveNoViolations);
@@ -70,8 +83,7 @@ describe('<Onboarding />', () => {
   describe('IntroSlide', () => {
     let onboardingSlides;
     beforeEach(() => {
-      document.body.setAttribute('data-user', null);
-      onboardingSlides = deep(<Onboarding />);
+      onboardingSlides = initializeSlides(0);
     });
 
     test('renders properly', () => {
@@ -93,9 +105,7 @@ describe('<Onboarding />', () => {
   describe('EmailTermsConditionsForm', () => {
     let onboardingSlides;
     beforeEach(() => {
-      document.body.setAttribute('data-user', dataUser);
-      onboardingSlides = deep(<Onboarding />);
-      onboardingSlides.setState({ currentSlide: 1 });
+      onboardingSlides = initializeSlides(1, dataUser);
     });
 
     test('renders properly', () => {
@@ -159,9 +169,7 @@ describe('<Onboarding />', () => {
     document.body.appendChild(meta);
 
     beforeEach(() => {
-      onboardingSlides = deep(<Onboarding />);
-      onboardingSlides.setState({ currentSlide: 2 });
-      document.body.setAttribute('data-user', dataUser);
+      onboardingSlides = initializeSlides(2, dataUser);
     });
 
     test('renders properly', () => {
@@ -192,9 +200,7 @@ describe('<Onboarding />', () => {
     document.body.appendChild(meta);
 
     beforeEach(() => {
-      onboardingSlides = deep(<Onboarding />);
-      onboardingSlides.setState({ currentSlide: 3 });
-      document.body.setAttribute('data-user', dataUser);
+      onboardingSlides = initializeSlides(3, dataUser);
     });
 
     test('renders properly', () => {
@@ -238,10 +244,7 @@ describe('<Onboarding />', () => {
   describe('FollowTags', () => {
     let onboardingSlides;
     beforeEach(async () => {
-      document.body.setAttribute('data-user', dataUser);
-      onboardingSlides = deep(<Onboarding />);
-      fetch.once(fakeTagResponse);
-      onboardingSlides.setState({ currentSlide: 4 });
+      onboardingSlides = initializeSlides(4, dataUser, fakeTagResponse);
       await flushPromises();
     });
 
@@ -276,10 +279,11 @@ describe('<Onboarding />', () => {
   describe('FollowUsers', () => {
     let onboardingSlides;
     beforeEach(async () => {
-      document.body.setAttribute('data-user', dataUser);
-      onboardingSlides = deep(<Onboarding />);
-      fetch.once(fakeUsersToFollowResponse);
-      onboardingSlides.setState({ currentSlide: 5 });
+      onboardingSlides = initializeSlides(
+        5,
+        dataUser,
+        fakeUsersToFollowResponse,
+      );
       await flushPromises();
     });
 
@@ -315,9 +319,7 @@ describe('<Onboarding />', () => {
   describe('CloseSlide', () => {
     let onboardingSlides;
     beforeEach(() => {
-      document.body.setAttribute('data-user', null);
-      onboardingSlides = deep(<Onboarding />);
-      onboardingSlides.setState({ currentSlide: 6 });
+      onboardingSlides = initializeSlides(6);
     });
 
     test('renders properly', () => {
