@@ -27,15 +27,15 @@ class ReactionsController < ApplicationController
       ).select(%i[id positive_reactions_count])
       comment_ids = comments.map(&:id)
       reaction_counts = comments.map { |c| { id: c.id, count: c.positive_reactions_count } }
-      reactions = current_user ? cached_user_positive_reactions(current_user).where(reactable_id: comment_ids) : []
+      reactions = efficient_current_user_id ? cached_user_positive_reactions(current_user).where(reactable_id: comment_ids) : []
       render json:
         {
-          current_user: { id: current_user&.id },
+          current_user: { id: efficient_current_user_id },
           positive_reaction_counts: reaction_counts,
           reactions: reactions
         }.to_json
     end
-    set_surrogate_key_header params.to_s unless current_user
+    set_surrogate_key_header params.to_s unless efficient_current_user_id
   end
 
   def create
