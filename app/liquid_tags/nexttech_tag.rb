@@ -1,41 +1,36 @@
 class NextTechTag < LiquidTagBase
   PARTIAL = "liquids/nexttech".freeze
 
-  def initialize(tag_name, link, tokens)
+  def initialize(tag_name, share_url, tokens)
     super
-    @link = parse_link(link)
+    @token = parse_share_url(share_url)
   end
 
   def render(_context)
     ActionController::Base.new.render_to_string(
       partial: PARTIAL,
       locals: {
-        link: @link
+        token: @token
       },
     )
   end
 
   private
 
-  def parse_link(link)
-    stripped_link = ActionController::Base.helpers.strip_tags(link)
-    split_link = stripped_link.split(" ").first
-    # Remove query string
-    parsed_link = URI.parse(split_link)
-    parsed_link.fragment = parsed_link.query = nil
-    the_link = parsed_link.to_s
-    raise_error unless valid_link?(the_link)
-    "#{the_link}?embed=true"
+  # Returns the share token from the end of the share URL.
+  def parse_share_url(share_url)
+    clean_share_url = ActionController::Base.helpers.strip_tags(share_url).delete(" ").gsub(/\?.*/, "")
+    raise StandardError, "Invalid Next Tech share URL" unless valid_share_url?(clean_share_url)
+
+    clean_share_url.split("/").last
   end
 
-  def valid_link?(link)
-    link_no_space = link.delete(" ")
-    (link_no_space =~
-      /\A(http|https):\/\/((?:www\.)?next\.tech)\/projects\/\w+-\w+-[a-z0-9]+\/share(|\/|(?:\?ref=[a-z0-9]+)?)\Z/)&.zero?
-  end
-
-  def raise_error
-    raise StandardError, "Invalid Next Tech URL"
+  # Examples of valid share URLs:
+  #   - https://nt.dev/s/123456abcdef
+  #   - http://nt.dev/s/123456abcdef
+  #   - nt.dev/s/123456abcdef
+  def valid_share_url?(share_url)
+    (share_url =~ /^(?:(?:http|https):\/\/)?nt\.dev\/s\/[a-z0-9]{12}$/)&.zero?
   end
 end
 
