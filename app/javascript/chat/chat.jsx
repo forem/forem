@@ -11,13 +11,7 @@ import {
   getChannelInvites,
   sendChannelInviteAction,
 } from './actions';
-import {
-  hideMessages,
-  scrollToBottom,
-  setupObserver,
-  setupNotifications,
-  getNotificationState,
-} from './util';
+import { hideMessages, scrollToBottom, setupObserver } from './util';
 import Alert from './alert';
 import Channels from './channels';
 import Compose from './compose';
@@ -93,9 +87,6 @@ export default class Chat extends Component {
     if (activeChannelId) {
       sendOpen(activeChannelId, this.handleChannelOpenSuccess, null);
     }
-    this.setState({
-      notificationsPermission: getNotificationState(),
-    });
     if (showChannelsList) {
       const filters =
         channelTypeFilter === 'all'
@@ -529,16 +520,6 @@ export default class Chat extends Component {
     }
   };
 
-  triggerNotificationRequest = () => {
-    const context = this;
-    Notification.requestPermission(permission => {
-      if (permission === 'granted') {
-        context.setState({ notificationsPermission: 'granted' });
-        setupNotifications();
-      }
-    });
-  };
-
   triggerActiveContent = e => {
     if (
       // Trying to open in new tab
@@ -775,22 +756,10 @@ export default class Chat extends Component {
     const { state } = this;
     if (state.showChannelsList) {
       const { notificationsPermission } = state;
-      let notificationsButton = '';
+      const notificationsButton = '';
       let notificationsState = '';
       let invitesButton = '';
-      if (notificationsPermission === 'waiting-permission') {
-        notificationsButton = (
-          <div>
-            <button
-              className="chat__notificationsbutton "
-              onClick={this.triggerNotificationRequest}
-              type="button"
-            >
-              Turn on Notifications
-            </button>
-          </div>
-        );
-      } else if (notificationsPermission === 'granted') {
+      if (notificationsPermission === 'granted') {
         notificationsState = (
           <div className="chat_chatconfig chat_chatconfig--on">
             Notifications On
