@@ -89,15 +89,11 @@ RSpec.describe Article, type: :model do
         expect(article.errors[:base]).to eq(["Invalid Github Repo link"])
       end
 
-      it "detects used liquid tags", :vcr do
+      it "is valid with valid liquid tags", :vcr do
         VCR.use_cassette("twitter_gem") do
           article = build_and_validate_article(with_tweet_tag: true)
-          expect(article.decorate.liquid_tags_used).to eq([TweetTag])
+          expect(article).to be_valid
         end
-      end
-
-      it "detects no liquid tag if not used" do
-        expect(article.liquid_tags_used).to be_empty
       end
     end
   end
@@ -358,12 +354,6 @@ RSpec.describe Article, type: :model do
     end
   end
 
-  describe "#search_score" do
-    it "has a valid search_score" do
-      expect(article.search_score >= 0).to be(true)
-    end
-  end
-
   describe "#video" do
     before do
       user.created_at = 3.weeks.ago
@@ -403,7 +393,8 @@ RSpec.describe Article, type: :model do
 
   describe "#index_id" do
     it "is equal to articles-ID" do
-      expect(article.index_id).to eq("articles-#{article.id}")
+      # NOTE: we shouldn't test private things but cheating a bit for Algolia here
+      expect(article.send(:index_id)).to eq("articles-#{article.id}")
     end
   end
 
