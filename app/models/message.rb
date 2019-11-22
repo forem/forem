@@ -17,10 +17,6 @@ class Message < ApplicationRecord
     HexComparer.new(color_options).brightness(0.9)
   end
 
-  def send_push
-    Messages::SendPushJob.perform_later(user.id, chat_channel.id, message_html)
-  end
-
   def direct_receiver
     return if chat_channel.channel_type != "direct"
 
