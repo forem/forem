@@ -10,7 +10,7 @@ DEV allows you to authenticate using Twitter. In order to use this authenticatio
 
 1. [Sign in](https://developer.twitter.com/apps) to your Twitter account.
 
-2. In order to get the API keys, you will have to apply for a developer account. Click the **Apply** button.
+2. In order to get the API keys, you will have to [apply for a developer account](https://developer.twitter.com/en/apply-for-access). Click the **Apply** button.
 
    ![twitter-up-1](https://user-images.githubusercontent.com/22895284/51078779-53139b00-16bb-11e9-911c-f232e229872a.png)
 
