@@ -115,24 +115,6 @@ export function getChannels(
   });
 }
 
-export function sendKeys(subscription, successCb, failureCb) {
-  fetch(`/push_notification_subscriptions`, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'X-CSRF-Token': window.csrfToken,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      subscription,
-    }),
-    credentials: 'same-origin',
-  })
-    .then(response => response.json())
-    .then(successCb)
-    .catch(failureCb);
-}
-
 export function getTwilioToken(videoChannelName, successCb, failureCb) {
   fetch(`/twilio_tokens/${videoChannelName}`, {
     Accept: 'application/json',
