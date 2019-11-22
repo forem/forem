@@ -103,6 +103,28 @@ describe('<Onboarding />', () => {
 
   describe('EmailTermsConditionsForm', () => {
     let onboardingSlides;
+    const codeOfConductCheckEvent = {
+      target: {
+        value: 'checked_code_of_conduct',
+        name: 'checked_code_of_conduct',
+      },
+    };
+    const termsAndConditionsCheckEvent = {
+      target: {
+        value: 'checked_terms_and_conditions',
+        name: 'checked_terms_and_conditions',
+      },
+    };
+    const updateCodeOfConduct = () => {
+      onboardingSlides
+        .find('#checked_code_of_conduct')
+        .simulate('change', codeOfConductCheckEvent);
+    };
+    const updateTermsAndConditions = () => {
+      onboardingSlides
+        .find('#checked_terms_and_conditions')
+        .simulate('change', termsAndConditionsCheckEvent);
+    };
 
     beforeEach(() => {
       onboardingSlides = initializeSlides(1, dataUser);
@@ -112,63 +134,43 @@ describe('<Onboarding />', () => {
       expect(onboardingSlides).toMatchSnapshot();
     });
 
-    test('should not advance if required boxes are not checked', () => {
-      const codeOfConductCheckEvent = {
-        target: {
-          value: 'checked_code_of_conduct',
-          name: 'checked_code_of_conduct',
-        },
-      };
-      const termsAndConditionsCheckEvent = {
-        target: {
-          value: 'checked_terms_and_conditions',
-          name: 'checked_terms_and_conditions',
-        },
-      };
+    // Arguably this test is actually just testing the Preact framework
+    // but for the sake of detecting a regression I am refactoring it instead
+    // of removing it (@jacobherrington)
+    test('should track state changes', () => {
+      const emailTerms = onboardingSlides.find(<EmailTermsConditionsForm />);
 
+      expect(emailTerms.state('checked_code_of_conduct')).toBe(false);
+      expect(emailTerms.state('checked_terms_and_conditions')).toBe(false);
+
+      updateCodeOfConduct();
+      updateTermsAndConditions();
+
+      expect(emailTerms.state('checked_code_of_conduct')).toBe(true);
+      expect(emailTerms.state('checked_terms_and_conditions')).toBe(true);
+    });
+
+    test('should not advance if required boxes are not checked', () => {
       // When none of the boxes are checked
       onboardingSlides.find('.next-button').simulate('click');
       expect(onboardingSlides.state().currentSlide).toBe(1);
 
       // When only the code of conduct is checked
-      onboardingSlides
-        .find('#checked_code_of_conduct')
-        .simulate('change', codeOfConductCheckEvent);
-      onboardingSlides.find('.next-button').simulate('click');
+      updateCodeOfConduct();
       expect(onboardingSlides.state().currentSlide).toBe(1);
 
       // When only the terms and conditions are checked
-      onboardingSlides
-        .find('#checked_code_of_conduct')
-        .simulate('change', codeOfConductCheckEvent);
-      onboardingSlides
-        .find('#checked_terms_and_conditions')
-        .simulate('change', termsAndConditionsCheckEvent);
+      updateCodeOfConduct();
+      updateTermsAndConditions();
       onboardingSlides.find('.next-button').simulate('click');
       expect(onboardingSlides.state().currentSlide).toBe(1);
     });
 
     test('should advance if required boxes are checked', async () => {
       fetch.once({});
-      onboardingSlides.find('#checked_code_of_conduct').simulate('change', {
-        target: {
-          value: 'checked_code_of_conduct',
-          name: 'checked_code_of_conduct',
-        },
-      });
 
-      onboardingSlides
-        .find('#checked_terms_and_conditions')
-        .simulate('change', {
-          target: {
-            value: 'checked_terms_and_conditions',
-            name: 'checked_terms_and_conditions',
-          },
-        });
-
-      // Remove Me (Useless test)
-      const emailTerms = onboardingSlides.find(<EmailTermsConditionsForm />);
-      expect(emailTerms.state('checked_code_of_conduct')).toBe(true);
+      updateCodeOfConduct();
+      updateTermsAndConditions();
 
       onboardingSlides.find('.next-button').simulate('click');
       await flushPromises();
