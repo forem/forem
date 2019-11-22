@@ -110,9 +110,8 @@ class ChatChannelsController < ApplicationController
   end
 
   def render_unopened_json_response
-    @chat_channels_memberships = if current_user
-                                   current_user.
-                                     chat_channel_memberships.includes(:chat_channel).
+    @chat_channels_memberships = if session_current_user_id
+                                   ChatChannelMembership.where(user_id: session_current_user_id).includes(:chat_channel).
                                      where("has_unopened_messages = ? OR status = ?",
                                            true, "pending").
                                      where(show_global_badge_notification: true).

@@ -3,7 +3,7 @@ class MessagesController < ApplicationController
 
   def create
     @message = Message.new(message_params)
-    @message.user_id = current_user.id
+    @message.user_id = session_current_user_id
     authorize @message
     success = false
 

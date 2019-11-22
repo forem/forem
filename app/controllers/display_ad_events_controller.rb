@@ -2,7 +2,7 @@ class DisplayAdEventsController < ApplicationController
   # No policy needed. All views are for all users
   def create
     # Only tracking for logged in users at the moment
-    display_ad_event_create_params = display_ad_event_params.merge(user_id: current_user.id)
+    display_ad_event_create_params = display_ad_event_params.merge(user_id: session_current_user_id)
     @display_ad_event = DisplayAdEvent.create(display_ad_event_create_params)
 
     update_display_ads_data

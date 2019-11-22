@@ -18,9 +18,10 @@ class ApplicationController < ActionController::Base
     raise NotAuthorizedError, "Unauthorized"
   end
 
-  def efficient_current_user_id
+  def session_current_user_id
     session["warden.user.user.key"].flatten[0] if session["warden.user.user.key"].present?
   end
+  helper_method :session_current_user_id
 
   def authenticate_user!
     return if current_user
