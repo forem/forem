@@ -357,7 +357,6 @@
     display: inline-block;
     filter: invert(100);
     filter: var(--theme-social-icon-invert, invert(0));
-    margin-right: 0.3rem;
   }
   &.articleform__detailsButton--moreconfig {
     margin-left: 5px;
@@ -377,6 +376,9 @@
     @media screen and (min-width: 600px) {
       margin-left: -5px;
       display: none;
+    }
+    img {
+      margin-right: 0.3rem;
     }
   }
 }

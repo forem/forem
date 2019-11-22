@@ -40,7 +40,7 @@ SetupImageButton.propTypes = {
 };
 
 /*
-  Although the state fields: id, description, canonicalUrl, allSeries and
+  Although the state fields: id, description, canonicalUrl, series, allSeries and
   editing are not used in this file, they are important to the
   editor.
 */
@@ -81,20 +81,18 @@ export default class ArticleForm extends Component {
   constructor(props) {
     super(props);
     const { article, version } = this.props;
-    const { series } = this.state;
     let { organizations } = this.props;
     this.article = JSON.parse(article);
     organizations = organizations ? JSON.parse(organizations) : null;
 
     this.url = window.location.href;
-
     this.state = {
       id: this.article.id || null, // eslint-disable-line react/no-unused-state
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
       description: '', // eslint-disable-line react/no-unused-state
       canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
-      series: series || '',
+      series: this.article.series || '', // eslint-disable-line react/no-unused-state
       allSeries: this.article.all_series || [], // eslint-disable-line react/no-unused-state
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
@@ -296,13 +294,12 @@ export default class ArticleForm extends Component {
     );
     if (!revert && navigator.userAgent !== 'DEV-Native-ios') return;
 
-    const { series } = this.state;
     this.setState({
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
       description: '', // eslint-disable-line react/no-unused-state
       canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
-      series: series || '',
+      series: this.article.series || '', // eslint-disable-line react/no-unused-state
       allSeries: this.article.all_series || [], // eslint-disable-line react/no-unused-state
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
