@@ -1,7 +1,7 @@
 class PageViewsController < ApplicationController
   # No policy needed. All views are for all users
   def create
-    page_view_create_params = if session_current_user_id?
+    page_view_create_params = if session_current_user_id
                                 page_view_params.merge(user_id: session_current_user_id)
                               else
                                 page_view_params.merge(counts_for_number_of_views: 10)
@@ -15,7 +15,7 @@ class PageViewsController < ApplicationController
   end
 
   def update
-    if session_current_user_id?
+    if session_current_user_id
       page_view = PageView.where(article_id: params[:id], user_id: session_current_user_id).last
       # pageview is sometimes missing if failure on prior creation.
       page_view ||= PageView.create(user_id: session_current_user_id, article_id: params[:id])
