@@ -4,7 +4,7 @@ if Rails.env.production?
     aws_access_key_id: ApplicationConfig["AWS_ID"],
     aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
     fog_directory: ApplicationConfig["AWS_BUCKET_NAME"],
-    fog_region: "us-east-1",
+    fog_region: ApplicationConfig["AWS_DEFAULT_REGION"],
   )
 
   SitemapGenerator::Sitemap.public_path = "tmp/"
