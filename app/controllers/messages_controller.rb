@@ -5,27 +5,18 @@ class MessagesController < ApplicationController
     @message = Message.new(message_params)
     @message.user_id = session_current_user_id
     authorize @message
-    success = false
 
     if @message.valid?
-      message_json = create_pusher_payload(@message)
-      Pusher.trigger(@message.chat_channel.pusher_channels, "message-created", message_json)
-    end
-
-    if @message.save
       begin
-        @message.send_push
-        success = true
+        message_json = create_pusher_payload(@message)
+        Pusher.trigger(@message.chat_channel.pusher_channels, "message-created", message_json)
       rescue Pusher::Error => e
         logger.info "PUSHER ERROR: #{e.message}"
       end
+    end
 
-      if success
-        render json: { status: "success", message: "Message created" }, status: :created
-      else
-        error_message = "Message created but could not trigger Pusher"
-        render json: { status: "error", message: error_message }, status: :created
-      end
+    if @message.save
+      render json: { status: "success", message: "Message created" }, status: :created
     else
       render json: {
         status: "error",
