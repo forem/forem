@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe NextTechTag, type: :liquid_template do
   describe "#link" do
-    let(:nexttech_link) { "https://www.next.tech/projects/6ba1fffbd09e/share" }
+    let(:nexttech_link) { "https://nt.dev/s/6ba1fffbd09e" }
 
     def generate_new_liquid(link)
       Liquid::Template.register_tag("nexttech", NextTechTag)
@@ -23,7 +23,7 @@ RSpec.describe NextTechTag, type: :liquid_template do
 
     it "rejects invalid nexttech link" do
       expect do
-        generate_new_liquid("https://www.next.tech/projects/1234567890z*/share")
+        generate_new_liquid("https://nt.dev/s/1234567890z*")
       end.to raise_error(StandardError)
     end
   end

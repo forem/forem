@@ -27,10 +27,10 @@ class NextTechTag < LiquidTagBase
 
   # Examples of valid share URLs:
   #   - https://nt.dev/s/123456abcdef
-  #   - http://nt.dev/s/123456abcdef
+  #   - http://nt.dev/s/123456abcdef/
   #   - nt.dev/s/123456abcdef
   def valid_share_url?(share_url)
-    (share_url =~ /^(?:(?:http|https):\/\/)?nt\.dev\/s\/[a-z0-9]{12}$/)&.zero?
+    (share_url =~ /^(?:(?:http|https):\/\/)?nt\.dev\/s\/[a-z0-9]{12}\/{0,1}$/)&.zero?
   end
 end
 
