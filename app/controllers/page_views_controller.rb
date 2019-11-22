@@ -2,7 +2,7 @@ class PageViewsController < ApplicationController
   # No policy needed. All views are for all users
   def create
     page_view_create_params = if user_signed_in?
-                                page_view_params.merge(user_id: efficient_current_user_id)
+                                page_view_params.merge(user_id: session_current_user_id)
                               else
                                 page_view_params.merge(counts_for_number_of_views: 10)
                               end
@@ -16,9 +16,9 @@ class PageViewsController < ApplicationController
 
   def update
     if user_signed_in?
-      page_view = PageView.where(article_id: params[:id], user_id: efficient_current_user_id).last
+      page_view = PageView.where(article_id: params[:id], user_id: session_current_user_id).last
       # pageview is sometimes missing if failure on prior creation.
-      page_view ||= PageView.create(user_id: efficient_current_user_id, article_id: params[:id])
+      page_view ||= PageView.create(user_id: session_current_user_id, article_id: params[:id])
       page_view.update_column(:time_tracked_in_seconds, page_view.time_tracked_in_seconds + 15)
     end
 
