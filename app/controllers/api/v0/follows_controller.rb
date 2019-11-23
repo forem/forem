@@ -1,9 +1,9 @@
 module Api
   module V0
-    class FollowsController < ApplicationController
-      def create
-        return unless user_signed_in?
+    class FollowsController < ApiController
+      before_action :authenticate_with_api_key_or_current_user!, only: [:create]
 
+      def create
         user_ids = params[:users].map { |h| h["id"] }
         user_ids.each do |user_id|
           Users::FollowJob.perform_later(current_user.id, user_id, "User")

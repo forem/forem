@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Notifications::TagAdjustmentNotification::Send do
+RSpec.describe Notifications::TagAdjustmentNotification::Send, type: :service do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:article) { create(:article, title: "My title", user: user2, body_markdown: "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: heyheyhey,#{tag.name}\n---\n\nHello") }
@@ -34,6 +34,13 @@ RSpec.describe Notifications::TagAdjustmentNotification::Send do
     json = notification.json_data
     expect(json["article"]["title"]).to start_with("Hello")
     expect(json["adjustment_type"]). to eq "removal"
+  end
+
+  it "tests JSON data for addition" do
+    tag_adjustment.adjustment_type = "addition"
+    json = notification.json_data
+    expect(json["article"]["title"]).to start_with("Hello")
+    expect(json["adjustment_type"]). to eq "addition"
   end
 
   specify "notification to be inserted on DB" do

@@ -244,6 +244,21 @@
             <code>{% jsfiddle https://jsfiddle.net/webdevem/Q8KVC result,html,css %}</code>
           </dd>
         </dl>
+
+        <h3><strong>JSitor Liquid Tag</strong></h3>
+        <p>
+          To use JSitor liquid tag you can use the JSitor full <code>link</code>, with or without the parameters
+        </p>
+        <code>{% jsitor https://jsitor.com/embed/B7FQ5tHbY %}</code>
+        <br/>
+        <code>{% jsitor https://jsitor.com/embed/B7FQ5tHbY?html&js&css&result&light %}</code>
+        <p>
+          Other options to use JSitor liquid tag is just by its ID, you can add it with or without the parameters
+        </p>
+        <code>{% jsitor B7FQ5tHbY %}</code>
+        <br/>
+        <code>{% jsitor B7FQ5tHbY?html&js&css&result&light %}</code>
+
         <h3><strong>repl.it Embed</strong></h3>
         <p>All you need is the URL after the domain name:</p>
         <code>{% replit @WigWog/PositiveFineOpensource %}</code>
@@ -303,9 +318,6 @@
         <h3><strong>Asciinema Embed</strong></h3>
         <p>All you need is the Asciinema id:</p>
         <code>{% asciinema 239367 %}</code>
-        <h3><strong>JSitor Liquid Tag</strong></h3>
-        <p>Copy JSitor embeddable link id. It is the last path of the link. ex: https://jsitor.com/embed/1QgJVmCam </p>
-        <code>{% jsitor 1QgJVmCam %}</code>
         <h3><strong>Parsing Liquid Tags as a Code Example</strong></h3>
         <p>To parse Liquid tags as code, simply wrap it with a single backtick or triple backticks.</p>
         <p><code>`{% mytag %}{{ site.SOMETHING }}{% endmytag %}`</code></p>

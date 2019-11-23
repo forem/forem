@@ -6,7 +6,7 @@ RSpec.describe "ImageUploads", type: :request do
     let(:headers) { { "Content-Type": "application/json", Accept: "application/json" } }
     let(:image) do
       Rack::Test::UploadedFile.new(
-        RedisRailsCache.root.join("spec", "support", "fixtures", "images", "image1.jpeg"),
+        Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg"),
         "image/jpeg",
       )
     end
@@ -14,7 +14,7 @@ RSpec.describe "ImageUploads", type: :request do
     let(:cache) { RedisRailsCache }
     let(:bad_image) do
       Rack::Test::UploadedFile.new(
-        RedisRailsCache.root.join("spec", "support", "fixtures", "images", "bad-image.jpg"),
+        Rails.root.join("spec", "support", "fixtures", "images", "bad-image.jpg"),
         "image/jpeg",
       )
     end

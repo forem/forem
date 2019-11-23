@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe BadgeRewarder do
+RSpec.describe BadgeRewarder, type: :labor do
   it "rewards birthday badge to birthday folks who registered a year ago" do
     user = create(:user, created_at: 366.days.ago)
     newer_user = create(:user, created_at: 6.days.ago)

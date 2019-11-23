@@ -171,11 +171,6 @@ variable :STRIPE_PUBLISHABLE_KEY, :String, default: "Optional"
 variable :STRIPE_SECRET_KEY, :String, default: "Optional"
 variable :STRIPE_CANCELLATION_SECRET, :String, default: "Optional"
 
-# For browser webpush notifications (webpush gem) (totally random base64 nums)
-# (https://github.com/zaru/webpush)
-variable :VAPID_PUBLIC_KEY, :String, default: "dGhpcyBpcyBkZXYudG8gdGVzdCBkYXRh"
-variable :VAPID_PRIVATE_KEY, :String, default: "VGhpcyBpcyBtb3JlIHRlc3QgZGF0YQ=="
-
 # For video calling in DEV Connect
 # (https://www.twilio.com/docs/video)
 variable :TWILIO_ACCOUNT_SID, :String, default: "Optional"

@@ -1,0 +1,28 @@
+<% title "Dashboard - DEV" %>
+
+<div id="index-container"
+    data-params="<%= params.to_json(only: %i[action per_page]) %>"
+    data-which="following">
+  <div class="dashboard-container" id="user-dashboard">
+    <%= render "actions" %>
+
+    <%= render "subactions" %>
+
+    <% @followed_podcasts.each do |follow| %>
+      <% podcast = follow.followable %>
+      <% if podcast %>
+        <div id="follows-<%= follow.id %>" class="single-article">
+          <a href="/<%= podcast.path %>" class="block-link">
+            <h2>
+              <img alt="<%= podcast.name %> profile image" src="<%= podcast.image_url %>" />
+              <%= podcast.name %>
+              <span class="dashboard-username">@<%= podcast.name %></span>
+            </h2>
+          </a>
+        </div>
+      <% end %>
+    <% end %>
+
+    <%= render "sublist" %>
+  </div>
+</div>

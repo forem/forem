@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Notifications::Moderation::Send do
+RSpec.describe Notifications::Moderation::Send, type: :service do
   let(:last_moderation_time) { Time.zone.now - Notifications::Moderation::MODERATORS_AVAILABILITY_DELAY - 3.hours }
   let(:dev_account) { create(:user) }
   let(:user) { create(:user) }

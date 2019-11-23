@@ -1,0 +1,39 @@
+<% title "Dashboard - DEV" %>
+
+<div id="index-container"
+    data-params="<%= params.to_json(only: %i[action per_page]) %>"
+    data-which="following">
+  <div class="dashboard-container" id="user-dashboard">
+    <%= render "actions" %>
+
+    <%= render "subactions" %>
+
+    <p><em>Adjust <strong>Follow Weight</strong> to make a tag show up less or more in your feed (default 1.0)</em>
+    </p>
+    <% negative_follow_shown_once = false %>
+    <% @followed_tags.each do |follow| %>
+      <% tag = follow.followable %>
+      <% if tag %>
+        <% if follow.points < 0 && !negative_follow_shown_once %>
+          <h2>Negative Tags (anti-follows)</h2>
+          <% negative_follow_shown_once = true %>
+        <% end %>
+        <% color = HexComparer.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
+        <div id="follows-<%= follow.id %>" class="single-article" style="border-color:<%= color %>;box-shadow: 3px 3px 0px <%= color %>">
+          <h2>
+            <a href="/t/<%= tag.name %>">
+              <%= tag.name %>
+            </a>
+            <%= form_for(follow) do |f| %>
+              <%= f.label(:points, "Follow Weight:") %>
+              <%= f.number_field(:points, step: :any, required: true) %>
+              <%= f.submit "Submit" %>
+            <% end %>
+          </h2>
+        </div>
+      <% end %>
+    <% end %>
+
+    <%= render "sublist" %>
+  </div>
+</div>

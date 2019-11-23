@@ -24,7 +24,7 @@ module Notifications
 
         reaction_siblings = Reaction.where(reactable_id: reaction.reactable_id, reactable_type: reaction.reactable_type).
           where.not(reactions: { user_id: reaction.reactable_user_id }).
-          includes(:reactable).
+          includes(:reactable, :user).
           order("created_at DESC")
 
         aggregated_reaction_siblings = reaction_siblings.map { |reaction| { category: reaction.category, created_at: reaction.created_at, user: user_data(reaction.user) } }

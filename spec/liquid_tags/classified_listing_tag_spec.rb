@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ClassifiedListingTag, type: :liquid_template do
+RSpec.describe ClassifiedListingTag, type: :liquid_tag do
   let(:user) { create(:user, username: "dariamorgendorffer", name: "Daria Morgendorffer") }
   let(:user_listing) do
     create(

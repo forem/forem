@@ -5,7 +5,7 @@ vcr_option = {
   allow_playback_repeats: "true"
 }
 
-RSpec.describe StackexchangeTag, type: :liquid_template, vcr: vcr_option do
+RSpec.describe StackexchangeTag, type: :liquid_tag, vcr: vcr_option do
   describe "#id" do
     let(:valid_id) { "57496168" }
     let(:exchange_id) { "1163633" }

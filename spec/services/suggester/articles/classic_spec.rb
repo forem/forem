@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Suggester::Articles::Classic do
+RSpec.describe Suggester::Articles::Classic, type: :service do
   let(:user) { create(:user) }
   let(:tag) { create(:tag, supported: true) }
   let(:article) { create(:article, tags: [tag.name], featured: true) }
