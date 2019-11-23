@@ -12,7 +12,7 @@ module Streams
         return token unless token.nil?
 
         token, exp = get_new_token
-        time_til_exp = exp - Time.now
+        time_til_exp = exp - Time.zone.now
         RedisRailsCache.write(ACCESS_TOKEN_AND_EXPIRATION_CACHE_KEY, token, expires_in: time_til_exp)
 
         token
