@@ -11,11 +11,14 @@ class FollowsController < ApplicationController
     end
 
     following_them_check = FollowChecker.new(current_user, params[:followable_type], params[:id]).cached_follow_check
+
+    return render plain: following_them_check unless params[:followable_type] == "User"
+
     following_you_check = FollowChecker.new(User.find_by(id: params[:id]), params[:followable_type], current_user.id).cached_follow_check
 
-    if params[:followable_type] == "User" && following_them_check && following_you_check
+    if following_them_check && following_you_check
       render plain: "mutual"
-    elsif params[:followable_type] == "User" && following_you_check
+    elsif following_you_check
       render plain: "follow-back"
     else
       render plain: following_them_check
