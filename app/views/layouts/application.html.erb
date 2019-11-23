@@ -75,7 +75,7 @@
   </head>
   <body data-user-status="<%= user_logged_in_status %>" data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>">
     <div id="body-styles"></div>
-    <% if user_signed_in? && !internal_navigation? %>
+    <% if !internal_navigation? %>
       <%= render "layouts/user_config" %>
     <% end %>
     <% unless internal_navigation? %>
