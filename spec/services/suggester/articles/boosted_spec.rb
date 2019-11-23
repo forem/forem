@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Suggester::Articles::Boosted do
+RSpec.describe Suggester::Articles::Boosted, type: :service do
   let(:user) { create(:user) }
   let(:organization) { create(:organization) }
   let(:tag) { create(:tag, supported: true) }

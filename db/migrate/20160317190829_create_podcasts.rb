@@ -1,4 +1,4 @@
-class CreatePodcasts < ActiveRecord::Migration
+class CreatePodcasts < ActiveRecord::Migration[4.2]
   def change
     create_table :podcasts do |t|
       t.string :title

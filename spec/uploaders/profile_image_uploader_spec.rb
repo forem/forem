@@ -2,7 +2,7 @@ require "rails_helper"
 require "carrierwave/test/matchers"
 require "exifr/jpeg"
 
-describe ProfileImageUploader do
+describe ProfileImageUploader, type: :uploader do
   include CarrierWave::Test::Matchers
 
   let_it_be(:mounted_as) { :profile_image }

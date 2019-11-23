@@ -35,15 +35,14 @@ class Internal::ToolsController < Internal::ApplicationController
   def handle_article_cache
     article = Article.find(params[:bust_article].to_i)
     article.touch(:last_commented_at)
-    CacheBuster.new.bust_article(article)
+    CacheBuster.bust_article(article)
   end
 
   def bust_link(link)
-    cb = CacheBuster.new
     link.sub!("https://dev.to", "") if link.starts_with?("https://dev.to")
-    cb.bust(link)
-    cb.bust(link + "/")
-    cb.bust(link + "?i=i")
-    cb.bust(link + "/?i=i")
+    CacheBuster.bust(link)
+    CacheBuster.bust("#{link}/")
+    CacheBuster.bust("#{link}?i=i")
+    CacheBuster.bust("#{link}/?i=i")
   end
 end

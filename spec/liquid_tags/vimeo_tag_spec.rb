@@ -1,7 +1,7 @@
 require "rails_helper"
 require "nokogiri"
 
-RSpec.describe VimeoTag, type: :liquid_template do
+RSpec.describe VimeoTag, type: :liquid_tag do
   let(:id) { "205930710" }
 
   def assert_parses(vimeo_id, token)

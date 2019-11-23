@@ -2,7 +2,7 @@ class TagAdjustment < ApplicationRecord
   validates :user_id, presence: true
   validates :article_id, presence: true
   validates :tag_id, presence: true
-  validates :tag_name, presence: true, uniqueness: { scope: :article_id }
+  validates :tag_name, presence: true, uniqueness: { scope: :article_id, message: "can't be an already adjusted tag" }
   validates :reason_for_adjustment, presence: true
   validates :adjustment_type, inclusion: { in: %w[removal addition] }, presence: true
   validates :status, inclusion: { in: %w[committed pending committed_and_resolvable resolved] }, presence: true

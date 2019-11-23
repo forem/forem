@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Suggester::Users::Recent, vcr: {} do
+RSpec.describe Suggester::Users::Recent, type: :service, vcr: {} do
   let(:user) { create(:user) }
 
   it "does not include calling user" do

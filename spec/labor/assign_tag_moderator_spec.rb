@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe AssignTagModerator do
+RSpec.describe AssignTagModerator, type: :labor do
   let(:user_one) { create(:user) }
   let(:user_two) { create(:user) }
   let(:tag_one) { create(:tag) }

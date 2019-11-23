@@ -17,11 +17,11 @@
 # It's best enabled when your entire app is migrated and stable on 5.2.
 #
 # Existing cookies will be converted on read then written with the new scheme.
-# Rails.application.config.action_dispatch.use_authenticated_cookie_encryption = true
+Rails.application.config.action_dispatch.use_authenticated_cookie_encryption = true
 
 # Use AES-256-GCM authenticated encryption as default cipher for encrypting messages
 # instead of AES-256-CBC, when use_authenticated_message_encryption is set to true.
-# Rails.application.config.active_support.use_authenticated_message_encryption = true
+Rails.application.config.active_support.use_authenticated_message_encryption = true
 
 # Add default protection from forgery to ActionController::Base instead of in
 # ApplicationController.
@@ -35,4 +35,4 @@
 # Rails.application.config.active_support.use_sha1_digests = true
 
 # Make `form_with` generate id attributes for any generated HTML tags.
-# Rails.application.config.action_view.form_with_generates_ids = true
+Rails.application.config.action_view.form_with_generates_ids = true
