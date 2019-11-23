@@ -16,7 +16,7 @@ Ruby on Rails is a web framework heavy on conventions over configuration. All el
 before_action :set_cache_control_headers
 ```
 
-We also user server-side caching [Rails caching](https://guides.rubyonrails.org/caching_with_rails.html). Any time you see `Rails.cache` or `<%= cache ... %>`, this is code affected in production by caching.
+We also use server-side caching [Rails caching](https://guides.rubyonrails.org/caching_with_rails.html). Any time you see `Rails.cache` or `<%= cache ... %>`, this is code affected in production by caching.
 
 ## We use inline CSS and deferred scripts for usage performance improvements
 
