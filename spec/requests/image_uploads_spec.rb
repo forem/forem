@@ -6,15 +6,15 @@ RSpec.describe "ImageUploads", type: :request do
     let(:headers) { { "Content-Type": "application/json", Accept: "application/json" } }
     let(:image) do
       Rack::Test::UploadedFile.new(
-        Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg"),
+        RedisRailsCache.root.join("spec", "support", "fixtures", "images", "image1.jpeg"),
         "image/jpeg",
       )
     end
     let(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
-    let(:cache) { Rails.cache }
+    let(:cache) { RedisRailsCache }
     let(:bad_image) do
       Rack::Test::UploadedFile.new(
-        Rails.root.join("spec", "support", "fixtures", "images", "bad-image.jpg"),
+        RedisRailsCache.root.join("spec", "support", "fixtures", "images", "bad-image.jpg"),
         "image/jpeg",
       )
     end
@@ -76,7 +76,7 @@ RSpec.describe "ImageUploads", type: :request do
       before do
         sign_in user
         allow(Rails).to receive(:cache).and_return(memory_store)
-        Rails.cache.clear
+        RedisRailsCache.clear
       end
 
       it "counts number of uploads in cache" do
