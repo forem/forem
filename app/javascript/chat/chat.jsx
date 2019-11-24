@@ -60,6 +60,9 @@ export default class Chat extends Component {
       inviteChannels: [],
       soundOn: true,
       videoOn: true,
+      messageOffset: 0,
+      allMessagesLoaded: false,
+      currentMessageLocation: 0,
     };
   }
 
@@ -113,11 +116,17 @@ export default class Chat extends Component {
   }
 
   componentDidUpdate() {
-    const { scrolled } = this.state;
-    if (document.getElementById('messagelist')) {
+    const { scrolled, currentMessageLocation } = this.state;
+    const messageList = document.getElementById('messagelist');
+    if (messageList) {
       if (!scrolled) {
         scrollToBottom();
       }
+    }
+
+    if (currentMessageLocation && messageList.scrollTop === 0) {
+      messageList.scrollTop =
+        messageList.scrollHeight - (currentMessageLocation + 30);
     }
   }
 
@@ -257,13 +266,13 @@ export default class Chat extends Component {
   };
 
   setupChannel = channelId => {
-    const { messages } = this.state;
+    const { messages, messageOffset } = this.state;
     if (
       !messages[channelId] ||
       messages[channelId].length === 0 ||
       messages[channelId][0].reception_method === 'pushed'
     ) {
-      getAllMessages(channelId, this.receiveAllMessages);
+      getAllMessages(channelId, messageOffset, this.receiveAllMessages);
     }
     this.subscribePusher(`presence-channel-${channelId}`);
   };
@@ -853,13 +862,53 @@ export default class Chat extends Component {
     return '';
   };
 
+  handleMessageScroll = () => {
+    const {
+      allMessagesLoaded,
+      messages,
+      activeChannelId,
+      messageOffset,
+    } = this.state;
+
+    if (this.scroller && this.scroller.scrollTop === 0 && !allMessagesLoaded) {
+      getAllMessages(
+        activeChannelId,
+        messageOffset + messages[activeChannelId].length,
+        this.addMoreMessages,
+      );
+      const curretPosition = this.scroller.scrollHeight;
+      this.setState({ currentMessageLocation: curretPosition });
+    }
+  };
+
+  addMoreMessages = res => {
+    const { chatChannelId, messages } = res;
+
+    if (messages.length > 0) {
+      this.setState(prevState => ({
+        messages: {
+          [chatChannelId]: [...messages, ...prevState.messages[chatChannelId]],
+        },
+      }));
+    } else {
+      this.setState({ allMessagesLoaded: true });
+    }
+  };
+
   renderActiveChatChannel = (channelHeader, incomingCall) => {
     const { state, props } = this;
     return (
       <div className="activechatchannel">
         <div className="activechatchannel__conversation">
           {channelHeader}
-          <div className="activechatchannel__messages" id="messagelist">
+          <div
+            className="activechatchannel__messages"
+            onScroll={this.handleMessageScroll}
+            ref={scroller => {
+              this.scroller = scroller;
+            }}
+            id="messagelist"
+          >
             {this.renderMessages()}
             {incomingCall}
             <div className="messagelist__sentinel" id="messagelist__sentinel" />
