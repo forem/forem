@@ -31,5 +31,5 @@ testing as well.
 When you're writing Preact components, you can include some basic a11y testing
 in your unit tests with [jest-axe](https://github.com/nickcolley/jest-axe).
 
-If you're still curious
-[there are some great talks on accessibility for developers](https://www.youtube.com/watch?v=8E9AEZjglqI).
+If you're still curious [there are some great talks on accessibility for
+developers](https://www.youtube.com/watch?v=8E9AEZjglqI).

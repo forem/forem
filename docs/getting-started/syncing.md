@@ -4,7 +4,8 @@ title: Keeping Your Fork In Sync
 
 # Keeping your fork in sync
 
-Now that you have a fork of DEV's source code, there is work you will need to do to keep it updated.
+Now that you have a fork of DEV's source code, there is work you will need to do
+to keep it updated.
 
 ## Setup your upstream
 
@@ -38,7 +39,8 @@ Do a pull with rebase against `upstream`:
 git pull --rebase upstream master
 ```
 
-This will pull down all of the changes to the official `master` branch, without making an additional commit in your local repo.
+This will pull down all of the changes to the official `master` branch, without
+making an additional commit in your local repo.
 
 (Optional) Force push your updated `master` branch to your GitHub fork
 
