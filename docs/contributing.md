@@ -62,9 +62,12 @@ However, it's expected that contributions to these documents are reasonably
 structured and mostly free of spelling and grammar errors. For this reason, if
 you submit a PR you might be asked to make changes before your PR is merged.
 
-Though it is not strictly enforced, most lines in these documents word wrap at
-80 characters. You can use a VS Code extension called Rewrap to follow this
-pattern.
+Prettier is used to autowrap lines in these files to 80 characters. Using 80
+characters per line allows us to retain a more specific git history over time.
+If lines are not wrapped, changing a comma in a paragraph would attribute the
+entire paragraph to one commit. By line wrapping we are helping git to correctly
+attribute smaller changes to their commits. This keeps information from getting
+lost over time.
 
 For more information on effective technical writing, check out
 [writethedocs.org][writethedocs].
