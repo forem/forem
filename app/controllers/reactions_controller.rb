@@ -62,8 +62,8 @@ class ReactionsController < ApplicationController
         category: category,
       )
       @result = "create"
-      Notification.send_reaction_notification(reaction, reaction.reactable.user)
-      Notification.send_reaction_notification(reaction, reaction.reactable.organization) if organization_article?(reaction)
+      Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
+      Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) if organization_article?(reaction)
     end
     render json: { result: @result, category: category }
   end
