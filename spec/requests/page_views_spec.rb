@@ -12,9 +12,7 @@ RSpec.describe "PageViews", type: :request do
 
       it "creates a new page view" do
         post "/page_views", params: {
-          page_view: {
-            article_id: article.id
-          }
+          article_id: article.id
         }
         expect(article.reload.page_views.size).to eq(1)
         expect(article.reload.page_views_count).to eq(1)
@@ -46,9 +44,7 @@ RSpec.describe "PageViews", type: :request do
     context "when user not signed in" do
       it "creates a new page view" do
         post "/page_views", params: {
-          page_view: {
-            article_id: article.id
-          }
+          article_id: article.id
         }
         expect(article.reload.page_views.size).to eq(1)
         expect(article.reload.page_views_count).to eq(10)
