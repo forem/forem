@@ -399,7 +399,9 @@ RSpec.describe Article, type: :model do
   end
 
   describe ".seo_boostable" do
-    let!(:top_article) { create(:article, organic_page_views_past_month_count: 20, score: 30, tags: "good, greatalicious", user: user) }
+    let!(:top_article) do
+      create(:article, organic_page_views_past_month_count: 20, score: 30, tags: "good, greatalicious", user: user)
+    end
 
     it "returns articles ordered by organic_page_views_count" do
       articles = described_class.seo_boostable
