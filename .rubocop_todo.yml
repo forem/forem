@@ -60,6 +60,7 @@ Rails/OutputSafety:
     - 'app/models/display_ad.rb'
     - 'app/models/message.rb'
     - 'app/views/articles/feed.rss.builder'
+    - 'app/views/articles/show.html.erb'
 
 # Offense count: 25
 # Cop supports --auto-correct.
