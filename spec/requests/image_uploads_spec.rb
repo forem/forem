@@ -75,7 +75,7 @@ RSpec.describe "ImageUploads", type: :request do
     context "when uploading rate limiting works" do
       before do
         sign_in user
-        allow(Rails).to receive(:cache).and_return(memory_store)
+        RedisRailsCache = ActiveSupport::Cache::MemoryStore.new
         RedisRailsCache.clear
       end
 
