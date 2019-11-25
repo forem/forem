@@ -1,4 +1,4 @@
-class PageViewsController < ActionController::Metal
+class PageViewsController < ApplicationMetalController
   # ActionController::Metal because we do not need all bells and whistles of ApplicationController
   include ActionController::Head
 
@@ -58,10 +58,5 @@ class PageViewsController < ActionController::Metal
     organic_count_past_month_count = page_views_from_google_com.
       where("created_at > ?", 1.month.ago).sum(:counts_for_number_of_views)
     @article.update_column(:organic_page_views_past_month_count, organic_count_past_month_count) if organic_count_past_month_count > @article.organic_page_views_past_month_count
-  end
-
-  def session_current_user_id
-    # custom defined here, because controller does not inherent from application_controller
-    session["warden.user.user.key"].flatten[0] if session["warden.user.user.key"].present?
   end
 end
