@@ -52,7 +52,7 @@ gem "honeycomb-beeline", "~> 1.2.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "htmlentities", "~> 4.3", ">= 4.3.4"
 gem "httparty", "~> 0.17" # Makes http fun! Also, makes consuming restful web services dead easy
-gem "inline_svg", "~> 1.5" # Embed SVG documents in your Rails views and style them with CSS
+gem "inline_svg", "~> 1.6" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.9" # Create JSON structures via a Builder-style DSL
 gem "jquery-rails", "~> 4.3" #  A gem to automate using jQuery with Rails
 gem "kaminari", "~> 1.1" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
