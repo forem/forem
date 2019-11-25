@@ -176,6 +176,8 @@ exports[`<Chat /> should load chat 1`] = `
         <div
           class="activechatchannel__messages"
           id="messagelist"
+          onScroll={[Function]}
+          ref={[Function]}
         >
           <div
             class="messagelist__sentinel"
