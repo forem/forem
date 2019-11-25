@@ -1,10 +1,10 @@
 <p>
-  Hi <%= @user.name %>,
+  Hi <%= @name %>,
 </p>
 
 <p>
   Your account deletion was requested. Please, visit
-  <%= link_to "this page", user_confirm_destroy_url(token: @user.destroy_token) %> to destroy your account.
+  <%= link_to "this page", user_confirm_destroy_url(token: @token) %> to destroy your account.
 </p>
 
 <p>

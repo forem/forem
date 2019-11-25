@@ -1,5 +1,5 @@
-Hi <%= @user.name %>,
-Your account deletion was requested. Please, visit this page: <%= user_request_destroy_url(@user.destroy_token) %> to destroy your account.
+Hi <%= @name %>,
+Your account deletion was requested. Please, visit this page: <%= user_request_destroy_url(@token) %> to destroy your account.
 Contact us at <%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %> if there is anything more we can help with.
 
 Thanks,

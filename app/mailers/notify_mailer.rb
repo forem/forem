@@ -74,8 +74,9 @@ class NotifyMailer < ApplicationMailer
     mail(to: user.email, subject: subject)
   end
 
-  def account_deletion_requested_email(user)
-    @user = user
+  def account_deletion_requested_email(user, token)
+    @name = user.name
+    @token = token
     subject = "dev.to - Account Deletion Requested"
     mail(to: user.email, subject: subject)
   end
