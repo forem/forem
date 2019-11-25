@@ -59,6 +59,7 @@ Rails/OutputSafety:
     - 'app/models/comment.rb'
     - 'app/models/display_ad.rb'
     - 'app/models/message.rb'
+    - 'app/views/articles/_actions.html.erb'
     - 'app/views/articles/feed.rss.builder'
 
 # Offense count: 25
