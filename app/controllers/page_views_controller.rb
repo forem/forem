@@ -1,4 +1,4 @@
-class PageViewsController < ApplicationMetalController
+class PageViewsController < ApplicationController
   # ActionController::Metal because we do not need all bells and whistles of ApplicationController
   include ActionController::Head
 
@@ -30,7 +30,7 @@ class PageViewsController < ApplicationMetalController
   private
 
   def update_article_page_views
-    return if Rails.env.production? && rand(10) != 1 # We don't need to update the article page views every time.
+    return if Rails.env.production? && rand(8) != 1 # We don't need to update the article page views every time.
 
     @article = Article.find(page_view_params[:article_id])
     new_page_views_count = @article.page_views.sum(:counts_for_number_of_views)
@@ -44,7 +44,7 @@ class PageViewsController < ApplicationMetalController
   end
 
   def update_organic_page_views
-    return if Rails.env.production? && rand(50) != 1 # We need to do this operation only once in a while.
+    return if Rails.env.production? && rand(20) != 1 # We need to do this operation only once in a while.
 
     page_views_from_google_com = @article.page_views.where(referrer: "https://www.google.com/")
 
