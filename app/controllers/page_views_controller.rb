@@ -1,6 +1,5 @@
 class PageViewsController < ActionController::Metal
   # ActionController::Metal because we do not need all bells and whistles of ApplicationController
-  include ActionController::StrongParameters
   include ActionController::Head
 
   def create
@@ -41,7 +40,7 @@ class PageViewsController < ActionController::Metal
   end
 
   def page_view_params
-    params.require(:page_view).permit(%i[article_id referrer user_agent])
+    params.slice(:article_id, :referrer, :user_agent)
   end
 
   def update_organic_page_views
