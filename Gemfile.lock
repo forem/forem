@@ -532,7 +532,7 @@ GEM
       rack
     orm_adapter (0.5.0)
     os (1.0.1)
-    parallel (1.19.0)
+    parallel (1.19.1)
     parallel_tests (2.29.2)
       parallel
     parser (2.6.5.0)
@@ -684,7 +684,7 @@ GEM
     rubocop-rails (2.3.2)
       rack (>= 1.1)
       rubocop (>= 0.72.0)
-    rubocop-rspec (1.36.0)
+    rubocop-rspec (1.37.0)
       rubocop (>= 0.68.1)
     ruby-prof (1.0.0)
     ruby-progressbar (1.10.1)
@@ -967,7 +967,7 @@ DEPENDENCIES
   rubocop (~> 0.76)
   rubocop-performance (~> 1.5)
   rubocop-rails (~> 2.3)
-  rubocop-rspec (~> 1.36)
+  rubocop-rspec (~> 1.37)
   ruby-prof (~> 1.0)
   rubyzip (~> 1.2, >= 1.3.0)
   s3_direct_upload (~> 0.1)
