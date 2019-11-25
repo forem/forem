@@ -10,7 +10,6 @@ RSpec.describe "ImageUploads", type: :request do
         "image/jpeg",
       )
     end
-    let(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
     let(:cache) { RedisRailsCache }
     let(:bad_image) do
       Rack::Test::UploadedFile.new(
@@ -79,6 +78,10 @@ RSpec.describe "ImageUploads", type: :request do
         RedisRailsCache.clear
       end
 
+      after do
+        RedisRailsCache = ActiveSupport::Cache::NullStore.new
+      end
+      
       it "counts number of uploads in cache" do
         post "/image_uploads", headers: headers, params: { image: [image] }
         expect(cache.read("#{user.id}_image_upload")).to eq(1)
