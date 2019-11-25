@@ -669,7 +669,7 @@ GEM
       rspec-expectations (~> 3.9.0)
       rspec-mocks (~> 3.9.0)
       rspec-support (~> 3.9.0)
-    rspec-retry (0.6.1)
+    rspec-retry (0.6.2)
       rspec-core (> 3.3)
     rspec-support (3.9.0)
     rubocop (0.76.0)
