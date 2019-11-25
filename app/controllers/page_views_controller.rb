@@ -1,5 +1,5 @@
 class PageViewsController < ApplicationMetalController
-  # ActionController::Metal because we do not need all bells and whistles of ApplicationController
+  # ApplicationMetalController because we do not need all bells and whistles of ApplicationController, so should help performance.
   include ActionController::Head
 
   def create
