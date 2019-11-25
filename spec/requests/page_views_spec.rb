@@ -22,20 +22,16 @@ RSpec.describe "PageViews", type: :request do
 
       it "sends referrer" do
         post "/page_views", params: {
-          page_view: {
-            article_id: article.id,
-            referrer: "test"
-          }
+          article_id: article.id,
+          referrer: "test"
         }
         expect(PageView.last.referrer).to eq("test")
       end
 
       it "sends user agent" do
         post "/page_views", params: {
-          page_view: {
-            article_id: article.id,
-            user_agent: "test"
-          }
+          article_id: article.id,
+          user_agent: "test"
         }
         expect(PageView.last.user_agent).to eq("test")
       end
@@ -72,20 +68,16 @@ RSpec.describe "PageViews", type: :request do
 
       it "sends referrer" do
         post "/page_views", params: {
-          page_view: {
-            article_id: article.id,
-            referrer: "test"
-          }
+          article_id: article.id,
+          referrer: "test"
         }
         expect(PageView.last.referrer).to eq("test")
       end
 
       it "sends user agent" do
         post "/page_views", params: {
-          page_view: {
-            article_id: article.id,
-            user_agent: "test"
-          }
+          article_id: article.id,
+          user_agent: "test"
         }
         expect(PageView.last.user_agent).to eq("test")
       end
@@ -100,9 +92,7 @@ RSpec.describe "PageViews", type: :request do
 
       it "updates a new page view time on page by 15" do
         post "/page_views", params: {
-          page_view: {
-            article_id: article.id
-          }
+          article_id: article.id
         }
         put "/page_views/" + article.id.to_s
         expect(PageView.last.time_tracked_in_seconds).to eq(30)
@@ -112,9 +102,7 @@ RSpec.describe "PageViews", type: :request do
     context "when user is not signed in" do
       it "updates a new page view time on page by 15" do
         post "/page_views", params: {
-          page_view: {
-            article_id: article.id
-          }
+          article_id: article.id
         }
         put "/page_views/" + article.id.to_s
         expect(PageView.last.time_tracked_in_seconds).to eq(15)
