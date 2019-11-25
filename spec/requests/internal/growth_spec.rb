@@ -8,10 +8,10 @@ RSpec.describe "/internal/growth", type: :request do
       sign_in user
     end
 
-    it "does not load /internal/growth" do
-      pending("Honestly not sure how to implement this")
-      get "/internal/growth"
-      # Expect Pundit::NotAuthorizedError
+    it "blocks the request" do
+      expect do
+        get "/internal/growth"
+      end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
 
@@ -23,7 +23,7 @@ RSpec.describe "/internal/growth", type: :request do
       get "/internal/growth"
     end
 
-    it "loads /internal/growth" do
+    it "allows the request" do
       expect(response).to have_http_status(:ok)
     end
   end
@@ -36,7 +36,7 @@ RSpec.describe "/internal/growth", type: :request do
       get "/internal/growth"
     end
 
-    it "loads /internal/growth" do
+    it "allows the request" do
       expect(response).to have_http_status(:ok)
     end
   end
@@ -48,10 +48,10 @@ RSpec.describe "/internal/growth", type: :request do
       sign_in single_resource_admin
     end
 
-    it "loads /internal/growth" do
-      pending("Honestly not sure how to implement this")
-      get "/internal/growth"
-      # Expect Pundit::NotAuthorizedError
+    it "blocks the request" do
+      expect do
+        get "/internal/growth"
+      end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
 end
