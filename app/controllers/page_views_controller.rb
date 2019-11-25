@@ -1,4 +1,4 @@
-class PageViewsController < ApplicationController
+class PageViewsController < ApplicationMetalController
   # ActionController::Metal because we do not need all bells and whistles of ApplicationController
   include ActionController::Head
 
