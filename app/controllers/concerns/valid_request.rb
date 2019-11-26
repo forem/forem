@@ -12,7 +12,6 @@ module ValidRequest
     if request.referer.present?
       request.referer.start_with?(ApplicationConfig["APP_PROTOCOL"].to_s + ApplicationConfig["APP_DOMAIN"].to_s)
     else
-      logger.info "**REQUEST ORIGIN CHECK** #{request.origin}"
       raise InvalidAuthenticityToken, NULL_ORIGIN_MESSAGE if request.origin == "null"
 
       request.origin.nil? || request.origin.gsub("https", "http") == request.base_url.gsub("https", "http")
