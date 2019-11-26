@@ -185,6 +185,19 @@ exports[`<Chat /> should load chat 1`] = `
           />
         </div>
         <div
+          class="jumpback jumpback__hide"
+        >
+          <div
+            class="jumpback__messages"
+            onClick={[Function]}
+            onKeyUp={[Function]}
+            role="button"
+            tabIndex="0"
+          >
+            Jump Back
+          </div>
+        </div>
+        <div
           class="activechatchannel__alerts"
         >
           <div
