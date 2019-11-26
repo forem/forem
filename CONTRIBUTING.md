@@ -17,6 +17,16 @@ We expect contributors to abide by our underlying
 discussions on GitHub (issues, pull requests) and across dev.to must be
 respectful and harassment-free.
 
+Remember that communication is the lifeblood of any Open Source project. We are
+all working on this together, and we are all benefiting from this software. It's
+very easy to misunderstand one another over asynchronous, text-based
+conversations: When in doubt, assume everyone you're interacting with in this
+project has the best intentions.
+
+If you feel another member of the community has violated our Code of Conduct,
+you may anonymously contact the team with our
+[abuse report form](https://dev.to/report-abuse).
+
 ### Where to contribute
 
 All [issues](https://github.com/thepracticaldev/dev.to/issues) labeled with
@@ -27,30 +37,40 @@ All [issues](https://github.com/thepracticaldev/dev.to/issues) labeled with
   more information before proceeding.
 
 While PRs without an associated `help wanted` issue may still be merged, please
-note that the core team will prioritize PRs that solve existing issues first. We
+note that the core team will prioritize PRs that solve existing issues. We
 strongly encourage creating an issue before working on a PR!
 
 When in doubt, ask a
 [core team member](https://github.com/thepracticaldev/dev.to/#core-team) by
 mentioning us on the issue.
 
-**Refactoring** code, e.g., improving the code without modifying the behavior is
+**Documentation** is almost always a great place to start contributing to a new
+project. DEV is an Open Source, community-driven project, so providing and
+maintaining quality documentation is one of our most important jobs. You can
+find more information about contributing to the documentation in the
+[docs/ directory](https://github.com/thepracticaldev/dev.to/blob/master/docs/contributing.md)!
+
+**Refactoring** code, or improving the code without modifying the behavior, is
 an area that can probably be done based on intuition and may not require much
-communication to be merged.
+communication to be merged. Generally speaking, you can rely on existing tests
+to ensure that your refactoring doesn't introduce any unexpected behavior.
+However, you might be asked to write a regression test if the area you've
+refactored isn't well covered.
 
-**Fixing bugs** may also not require a lot of communication, but the more, the
-better. Please surround bug fixes with ample tests. Bugs are magnets for other
-bugs. Write tests around bugs!
+**Fixing bugs** may also not require a lot of communication, but it's always
+better to let us know what you're working on! Please surround bug fixes with
+ample tests; bugs are magnets for other bugs. Write tests around bugs!
 
-**Building features** is the area which will require the most communication
+**Building features** is the area that will require the most communication
 and/or negotiation. Every feature is subjective and open for debate. If your
 feature involves user-facing design changes, please provide a mockup first so we
 can all get on the same page. As always, when in doubt, ask!
 
 ### How to contribute
 
-1. Fork the project and clone it to your local machine. Follow the initial setup
-   [here](https://github.com/thepracticaldev/dev.to/#getting-started).
+1. [Fork the project](https://docs.dev.to/getting-started/forking/) and clone it
+   to your local machine. Follow the initial setup
+   [here](https://docs.dev.to/installation/).
 2. Create a branch with your GitHub username as a prefix and the ID of the
    [issue](https://github.com/thepracticaldev/dev.to/issues) as a suffix, for
    example: `git checkout -b USERNAME/that-new-feature-1234` or
@@ -69,17 +89,29 @@ can all get on the same page. As always, when in doubt, ask!
 ### Create an issue
 
 Nobody's perfect. Something doesn't work? Something could be done better? Check
-to see if the issue already exists and if it does, leave a comment to get our
-attention! And if the issue doesn't already exist, feel free to create a new
-one. A core team member will triage incoming issues.
+to see if the issue already exists, and if it does, leave a comment to get our
+attention! If the issue doesn't already exist, feel free to create a new one. A
+core team member will triage incoming issues.
 
 _Please note: core team members may update the title of an issue to more
 accurately reflect the request/bug._
 
-### Clean code with tests
+### Please include tests
 
 Some existing code may be poorly written or untested, so we must have more
 scrutiny going forward. We test with [rspec](http://rspec.info/).
+
+### Code quality
+
+We use CodeClimate to evaluate code smells. If a pull request contributes a
+significant number of code smells, you may be asked to refactor your change
+before it is merged. Focusing on writing reasonably DRY code with a focus on
+readability will help avoid unnecessary code smells.
+
+More importantly, we also avoid
+[the wrong abstractions](https://www.sandimetz.com/blog/2016/1/20/the-wrong-abstraction).
+Code quality tools are not perfect, so try not to obsess over your CodeClimate
+score.
 
 ### Create a pull request
 
@@ -106,8 +138,8 @@ After you submit your pull request (PR), one of the members of the core team or
 core contributors will likely do a review of the code accepting it or giving
 feedback.
 
-If feedback or suggestions are provided, any following modifications on your
-part should happen in separate commits added to the existing ones.
+If feedback or suggestions are provided, any changes on your part should happen
+in separate commits added to the existing ones.
 
 Force pushing, though understandable for reasons of wanting to keep the history
 clean, has some drawbacks:
@@ -119,7 +151,7 @@ clean, has some drawbacks:
 PRs will be squashed and merged into master, so there's no need to use force
 push.
 
-Please avoid force pushing unless you are in need to do a rebase from master.
+Please avoid force pushing unless you need to rebase with master.
 
 ## The bottom line
 
