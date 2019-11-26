@@ -57,71 +57,71 @@
         <p class="social">
           <% if @user.twitter_username? %>
             <a href="https://twitter.com/<%= @user.twitter_username %>" target="_blank" rel="noopener me">
-              <%= inline_svg("twitter-logo.svg", class: "icon-img", aria: true, title: "Twitter logo") %>
+              <%= inline_svg_tag("twitter-logo.svg", class: "icon-img", aria: true, title: "Twitter logo") %>
             </a>
           <% end %>
           <% if @user.github_username? %>
             <a href="https://github.com/<%= @user.github_username %>" target="_blank" rel="noopener me">
-              <%= inline_svg("github-logo.svg", class: "icon-img", aria: true, title: "GitHub logo") %>
+              <%= inline_svg_tag("github-logo.svg", class: "icon-img", aria: true, title: "GitHub logo") %>
             </a>
           <% end %>
           <% if @user.mastodon_url? %>
             <a href="<%= @user.mastodon_url %>" target="_blank" rel="noopener me">
-              <%= inline_svg("mastodon-logo.svg", class: "icon-img", aria: true, title: "Mastodon logo") %>
+              <%= inline_svg_tag("mastodon-logo.svg", class: "icon-img", aria: true, title: "Mastodon logo") %>
             </a>
           <% end %>
           <% if @user.facebook_url? %>
             <a href="<%= @user.facebook_url %>" target="_blank" rel="noopener me">
-              <%= inline_svg("facebook-logo.svg", class: "icon-img", aria: true, title: "Facebook logo") %>
+              <%= inline_svg_tag("facebook-logo.svg", class: "icon-img", aria: true, title: "Facebook logo") %>
             </a>
           <% end %>
           <% if @user.linkedin_url? %>
             <a href="<%= @user.linkedin_url %>" target="_blank" rel="noopener me">
-              <%= inline_svg("linkedin_icon.svg", class: "icon-img", aria: true, title: "LinkedIn logo") %>
+              <%= inline_svg_tag("linkedin_icon.svg", class: "icon-img", aria: true, title: "LinkedIn logo") %>
             </a>
           <% end %>
           <% if @user.behance_url? %>
             <a href="<%= @user.behance_url %>" target="_blank" rel="noopener me">
-              <%= inline_svg("behance_icon.svg", class: "icon-img", aria: true, title: "Behance logo") %>
+              <%= inline_svg_tag("behance_icon.svg", class: "icon-img", aria: true, title: "Behance logo") %>
             </a>
           <% end %>
           <% if @user.stackoverflow_url? %>
             <a href="<%= @user.stackoverflow_url %>" target="_blank" rel="noopener me">
-              <%= inline_svg("stackoverflow-logo.svg", class: "icon-img", aria: true, title: "StackOverflow logo") %>
+              <%= inline_svg_tag("stackoverflow-logo.svg", class: "icon-img", aria: true, title: "StackOverflow logo") %>
             </a>
           <% end %>
           <% if @user.dribbble_url? %>
             <a href="<%= @user.dribbble_url %>" target="_blank" rel="noopener me">
-              <%= inline_svg("dribbble_icon.svg", class: "icon-img", aria: true, title: "Dribbble logo") %>
+              <%= inline_svg_tag("dribbble_icon.svg", class: "icon-img", aria: true, title: "Dribbble logo") %>
             </a>
           <% end %>
           <% if @user.medium_url? %>
             <a href="<%= @user.medium_url %>" target="_blank" rel="noopener nofollow me">
-              <%= inline_svg("medium_icon.svg", class: "icon-img", aria: true, title: "Medium logo") %>
+              <%= inline_svg_tag("medium_icon.svg", class: "icon-img", aria: true, title: "Medium logo") %>
             </a>
           <% end %>
           <% if @user.gitlab_url? %>
             <a href="<%= @user.gitlab_url %>" target="_blank" rel="noopener nofollow me">
-              <%= inline_svg("gitlab.svg", class: "icon-img", aria: true, title: "GitLab logo") %>
+              <%= inline_svg_tag("gitlab.svg", class: "icon-img", aria: true, title: "GitLab logo") %>
             </a>
           <% end %>
           <% if @user.instagram_url? %>
             <a href="<%= @user.instagram_url %>" target="_blank" rel="noopener nofollow me">
-              <%= inline_svg("instagram-logo.svg", class: "icon-img", aria: true, title: "Instagram logo") %>
+              <%= inline_svg_tag("instagram-logo.svg", class: "icon-img", aria: true, title: "Instagram logo") %>
             </a>
           <% end %>
           <% if @user.twitch_username? %>
             <%= link_to twitch_live_stream_path(username: @user.username) do %>
-              <%= inline_svg("twitch-logo.svg", class: "icon-img", id: "icon-twitch", aria: true, title: "Twitch logo") %>
+              <%= inline_svg_tag("twitch-logo.svg", class: "icon-img", id: "icon-twitch", aria: true, title: "Twitch logo") %>
             <% end %>
           <% elsif @user.twitch_url? %>
             <a href="<%= @user.twitch_url %>" target="_blank" rel="noopener nofollow me">
-              <%= inline_svg("twitch-logo.svg", class: "icon-img", aria: true, title: "Twitch logo") %>
+              <%= inline_svg_tag("twitch-logo.svg", class: "icon-img", aria: true, title: "Twitch logo") %>
             </a>
           <% end %>
           <% if @user.website_url? %>
             <a href="<%= @user.website_url %>" target="_blank" rel="noopener nofollow me">
-              <%= inline_svg("external-link-logo.svg", class: "icon-img", aria: true, title: "external link icon") %>
+              <%= inline_svg_tag("external-link-logo.svg", class: "icon-img", aria: true, title: "external link icon") %>
             </a>
           <% end %>
         </p>
