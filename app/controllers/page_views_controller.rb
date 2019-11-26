@@ -1,5 +1,7 @@
-class PageViewsController < ApplicationController
-  # No policy needed. All views are for all users
+class PageViewsController < ApplicationMetalController
+  # ApplicationMetalController because we do not need all bells and whistles of ApplicationController, so should help performance.
+  include ActionController::Head
+
   def create
     page_view_create_params = if session_current_user_id
                                 page_view_params.merge(user_id: session_current_user_id)
@@ -38,7 +40,7 @@ class PageViewsController < ApplicationController
   end
 
   def page_view_params
-    params.require(:page_view).permit(%i[article_id referrer user_agent])
+    params.slice(:article_id, :referrer, :user_agent)
   end
 
   def update_organic_page_views
