@@ -31,7 +31,7 @@
         </div>
       <% end %>
 
-      <div class="details <%= "low-quality-comment" if decorated_comment.low_quality %>">
+      <div class="details <%= "low-quality-comment" if decorated_comment.low_quality %> <%= "hidden-comment" if decorated_comment.hidden_by_commentable_user %>">
         <% unless should_be_hidden?(comment, @root_comment) %>
           <a href="/<%= comment.user.username %>">
             <img class="profile-pic" src="<%= ProfileImage.new(comment.user).get(50) %>" alt="<%= comment.user.username %> profile image" />

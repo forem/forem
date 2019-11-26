@@ -2,7 +2,7 @@
 export default function initHiddenComments() {
   function hide(commentId) {
     const confirmMsg = `
-    Are you sure you want to hide this comment? This will hide the comment in the feed, but anyone with the permalink can still view it.
+    Are you sure you want to hide this comment? This will hide the comment in your post, but will still be visible in the comment's permalink.
 
     You can also consider blocking the person or reporting abuse.
     `;

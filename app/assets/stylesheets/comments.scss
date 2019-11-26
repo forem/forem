@@ -615,6 +615,9 @@ a.header-link {
   .low-quality-comment > *:not(.dropdown) {
     opacity: 0.5;
   }
+  .hidden-comment > *:not(.dropdown) {
+    opacity: 0.5;
+  }
 
   .body {
     padding: 1px;
@@ -741,9 +744,6 @@ a.header-link {
           top: calc(14px - 0.25vw);
         }
       }
-    }
-    &.hidden-comment {
-      opacity: 0.5;
     }
   }
   .icon-img {
