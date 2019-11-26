@@ -4,7 +4,7 @@
 
 <p>
   Your account deletion was requested. Please, visit
-  <%= link_to "this page", user_confirm_destroy_url(token: @token) %> to destroy your account.
+  <%= link_to "this page", user_confirm_destroy_url(@token) %> to destroy your account. The link will expire in 12 hours.
 </p>
 
 <p>
