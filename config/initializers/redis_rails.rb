@@ -11,3 +11,15 @@ RedisRailsCache = if Rails.env.test?
                   else
                     ActiveSupport::Cache::RedisCacheStore.new(url: redis_url, expires_in: DEFAULT_EXPIRATION)
                   end
+
+module ActionView
+  module Helpers #:nodoc:
+    module CacheHelper
+      def use_redis_cache
+        controller.cache_store = RedisRailsCache
+        yield
+        controller.cache_store = Rails.cache
+      end
+    end
+  end
+end
