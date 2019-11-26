@@ -153,6 +153,28 @@ class CommentsController < ApplicationController
     render :settings
   end
 
+  def hide
+    @comment = Comment.find(params[:comment_id])
+    authorize @comment # check for commentable author
+    @comment.hidden_by_commentable_user = true
+    if @comment.save
+      render json: { hidden: "true" }, status: :ok
+    else
+      render json: { errors: @comment.errors.full_messages.join(", "), status: 422 }, status: :unprocessable_entity
+    end
+  end
+
+  def unhide
+    @comment = Comment.find(params[:comment_id])
+    authorize @comment # check for commentable author
+    @comment.hidden_by_commentable_user = false
+    if @comment.save
+      render json: { hidden: "false" }, status: :ok
+    else
+      render json: { errors: @comment.errors.full_messages.join(", "), status: 422 }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.

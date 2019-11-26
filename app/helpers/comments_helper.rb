@@ -28,6 +28,10 @@ module CommentsHelper
     nested_comments(tree: { comment => sub_comments }, commentable: commentable, is_view_root: true)
   end
 
+  def should_be_hidden?(comment, root_comment)
+    comment.hidden_by_commentable_user && root_comment != comment
+  end
+
   private
 
   def nested_comments(tree:, commentable:, is_view_root: false)

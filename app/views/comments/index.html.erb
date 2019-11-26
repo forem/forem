@@ -98,7 +98,9 @@
         <% end %>
       </div>
     <% else %>
+    <% any_comments_hidden = false %>
       <% Comment.tree_for(@commentable).each do |comment, sub_comments| %>
+      <% any_comments_hidden = true if comment.hidden_by_commentable_user %>
         <% cache ["comment_root_#{user_signed_in?}", comment] do %>
           <%= tree_for(comment, sub_comments, @commentable) %>
         <% end %>
@@ -106,6 +108,12 @@
     <% end %>
   </div>
   <center style="margin:30px 0px 22px;">
+  <% if any_comments_hidden %>
+    <div class="comments-hidden-message">
+      <p>Some comments have been hidden by the post's author <a href="/faq">find out more</a></p>
+    </div>
+  <% end %>
+
     <%= render "articles/conduct_and_abuse_actions", page: "comments_index" %>
   </center>
 </div>
