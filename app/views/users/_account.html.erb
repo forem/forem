@@ -121,30 +121,17 @@
 </h4>
 <br>
 <script>
-  var deleteAccountBtn = document.getElementById('delete__account__btn')
-  var deleteAccountUsernameInput = document.getElementById('delete__account__username__field')
-  var deleteAcccountVerificationInput = document.getElementById('delete__account__verification__field')
+  const deleteAccountBtn = document.getElementById('delete__account__btn');
+  const deleteAccountUsernameInput = document.getElementById('delete__account__username__field');
+  const deleteAcccountVerificationInput = document.getElementById('delete__account__verification__field');
 
   function bothInputsVerified() {
-    return deleteAccountUsernameInput.value === '<%= @user.username %>' && deleteAcccountVerificationInput.value === "delete my account"
+    return deleteAccountUsernameInput.value === '<%= @user.username %>' && deleteAcccountVerificationInput.value === "delete my account";
   }
 
-  deleteAccountUsernameInput.addEventListener('input', function () {
-    if (bothInputsVerified()) {
-      deleteAccountBtn.disabled = false;
-      // enable the button via css or removing disabled class
-    } else {
-      deleteAccountBtn.disabled = true;
-    }
-  })
-
-  deleteAcccountVerificationInput.addEventListener('input', function () {
-    if (bothInputsVerified()) {
-      deleteAccountBtn.disabled = false;
-    } else {
-      deleteAccountBtn.disabled = true;
-    }
-  })
+  const disableDeleteAccountBtn = () => { deleteAccountBtn.disabled = !bothInputsVerified() };
+  deleteAccountUsernameInput.addEventListener('input', disableDeleteAccountBtn);
+  deleteAcccountVerificationInput.addEventListener('input', disableDeleteAccountBtn);
 </script>
 If you would like to keep your content under the <%= link_to "@ghost", "/ghost" %> account, please:
 <h3>Request Account Deletion</h3>
