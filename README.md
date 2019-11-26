@@ -45,15 +45,10 @@ developers, and all are welcome to find their place within our community. ❤️
 ## Table of Contents
 
 - [Contributing](#contributing)
-- [Codebase](#codebase)
-  - [The stack](#the-stack)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
-  - [Standard Installation](#standard-installation)
-  - [Docker Installation (BETA)](#docker-installation-beta)
-  - [Starting the application](#starting-the-application)
-  - [Suggested Workflow](#suggested-workflow)
-- [Additional docs](#additional-docs)
+  - [Installation Documentation](#installation-documentation)
+- [Developer documentation](#developer-documentation)
 - [Core Team Members](#core-team)
 - [License](#license)
 
@@ -63,22 +58,17 @@ We encourage you to contribute to dev.to! Please check out the
 [Contributing to dev.to guide](CONTRIBUTING.md) for guidelines about how to
 proceed.
 
-## Codebase
-
-### The stack
-
-We run on a Rails backend with mostly vanilla JavaScript on the front end, and
-some Preact sprinkled in. One of our goals is to move to mostly Preact for our
-front end.
-
-Additional technologies and services are listed on
-[our docs](https://docs.dev.to/technical-overview/).
-
 ## Getting Started
 
-This section provides a high-level requirement & quick start guide. **For
-detailed installations, such as getting started with GitPod, Docker, or specific
-operating systems, please check out our [docs](http://docs.dev.to).**
+This section provides a high-level quick start guide. If you're looking for the
+[installation guide](https://docs.dev.to/installation/), you'll want to refer to
+our complete [Developer Documentation](https://docs.dev.to).
+
+We run on a [Rails](https://rubyonrails.org/) backend, and we are currently
+transitioning to a [Preact](https://preactjs.com/)-first frontend.
+
+A more complete overview of our stack is available in
+[our docs](https://docs.dev.to/technical-overview/).
 
 ### Prerequisites
 
@@ -89,93 +79,15 @@ operating systems, please check out our [docs](http://docs.dev.to).**
   [installation guide](https://yarnpkg.com/en/docs/install).
 - [PostgreSQL](https://www.postgresql.org/) 9.4 or higher.
 - [ImageMagick](https://imagemagick.org/): please refer to ImageMagick's
-  [installation instructions](https://imagemagick.org/script/download.php).
-  Alternatively, macOS users can install ImageMagick with
-  `brew install imagemagick`.
+  [installation instructions](https://imagemagick.org/script/download.php)
+  (macOS users can install ImageMagick with `brew install imagemagick`.).
+- [Redis](https://redis.io/)
 
-### Standard Installation
-
-1. Make sure all the prerequisites are installed.
-1. Fork dev.to repository, ie. https://github.com/thepracticaldev/dev.to/fork
-1. Clone your forked repository, ie.
-   `git clone https://github.com/<your-username>/dev.to.git`
-1. Set up your environment variables/secrets
-
-   - Take a look at `Envfile`. This file lists all the `ENV` variables we use
-     and provides a fake default for any missing keys. You'll need to get your
-     own free [Algolia credentials](https://docs.dev.to/backend/algolia/) to get
-     your development environment running. You can add these to your
-     `config/application.yml` file using the process described below.
-   - This [guide](https://docs.dev.to/backend/) will show you how to get free
-     API keys for additional services that may be required to run certain parts
-     of the app.
-   - For any key that you wish to enter/replace:
-     1. Create `config/application.yml` by copying from the provided template
-        (ie. with bash:
-        `cp config/sample_application.yml config/application.yml`). This is a
-        personal file that is ignored in git.
-     2. Obtain the development variable and apply the key you wish to
-        enter/replace. ie:
-     ```
-     GITHUB_KEY: "SOME_REAL_SECURE_KEY_HERE"
-     GITHUB_SECRET: "ANOTHER_REAL_SECURE_KEY_HERE"
-     ```
-   - If you are missing `ENV` variables on bootup, `envied` gem will alert you
-     with messages similar to
-     `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
-   - You do not need "real" keys for basic development. Some features require
-     certain keys, so you may be able to add them as you go.
-
-1. Run `bin/setup`
-1. That's it! Run `bin/startup` to start the application and head to
-   `http://localhost:3000/`
+### Installation Documentation
 
 [View Full Installation Documentation](https://docs.dev.to/installation/)
 
-#### Docker Installation (BETA)
-
-Please refer to the
-[Installing DEV with Docker [Beta] guide](https://docs.dev.to/installation/docker/).
-
-#### Starting the application
-
-We're mostly a Rails app, with a bit of Webpack sprinkled in. **For most cases,
-simply running `bin/rails server` will do.** If you're working with Webpack
-though, you'll need to run the following:
-
-- Run **`bin/startup`** to start the server, Webpack, and our job runner
-  `delayed_job`. `bin/startup` runs `foreman start -f Procfile.dev` under the
-  hood.
-- `alias start="bin/startup"` makes this even faster. 😊
-- If you're using **`pry`** for debugging in Rails, note that using `foreman`
-  and `pry` together works, but it's not as clean as `bin/rails server`.
-
-Here are some singleton commands you may need, usually in a separate
-instance/tab of your shell.
-
-- Running the job server (if using `bin/rails server`) -- this is mostly for
-  notifications and emails: **`bin/rails jobs:work`**
-- Clearing jobs (in case you don't want to wait for the backlog of jobs):
-  **`bin/rails jobs:clear`**
-
-Current gotchas: potential environment issues with external services need to be
-worked out.
-
-#### Suggested Workflow
-
-We use [Spring](https://github.com/rails/spring), and it is already included in
-the project.
-
-1.  Use the provided bin stubs to start Spring automatically, i.e.
-    `bin/rails server`, `bin/rspec spec/models/`, `bin/rails db:migrate`.
-1.  If Spring isn't picking up on new changes, use `spring stop`. For example,
-    Spring should always be restarted if there's a change in environment key.
-1.  Check Spring's status whenever with `spring status`.
-
-Caveat: `bin/rspec` is not equipped with Spring because it affects Simplecov's
-result. Instead, use `bin/spring rspec`.
-
-## Additional docs
+## Developer Documentation
 
 [Check out our dedicated docs page for more technical documentation.](https://docs.dev.to)
 
