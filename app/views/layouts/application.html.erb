@@ -83,9 +83,7 @@
         <%= yield(:audio) %>
       </div>
     <% end %>
-    <% cache("application-top-bar--#{user_signed_in?}--#{internal_navigation?}", expires_in: 100.hours) do %>
-      <%= render "layouts/top_bar" unless internal_navigation? %>
-    <% end %>
+    <%= render "layouts/top_bar" unless internal_navigation? %>
     <div id="message-notice"></div>
     <div id="page-content" class="universal-page-content-wrapper <%= view_class %>" data-current-page="<%= current_page %>">
       <% if flash[:global_notice] %>
