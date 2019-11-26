@@ -83,10 +83,8 @@
       </div>
 
     <% if should_be_hidden?(comment, @root_comment) %>
-      <div class="body hidden-comment">
-        <p>
+      <div class="body hidden-comment" style="padding-bottom:0px;margin-bottom:0px;opacity:0.3;">
           [hidden by post author]
-        </p>
       </div>
     <% else %>
       <div class="body <%= "low-quality-comment" if decorated_comment.low_quality %> <%= "hidden-comment" if decorated_comment.hidden_by_commentable_user %>">
