@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe GitpitchTag, type: :liquid_tag do
+RSpec.describe GitPitchTag, type: :liquid_tag do
   describe "#link" do
     let(:valid_links) do
       [
