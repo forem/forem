@@ -1,20 +1,32 @@
+---
+title: Windows
+---
+
 # Installing DEV on Windows 10
 
 ## Installing prerequisites
 
-_These prerequisites assume you're working on a 64bit Windows 10 operating system machine._
+_These prerequisites assume you're working on a 64bit Windows 10 operating
+system machine._
 
 ### Installing WSL
 
-Since DEV's codebase is using the Ruby on Rails framework, we will need to install Windows Subsystem for Linux. Some dependencies used by the source code triggered errors when installing on Windows, so using WSL allows you to work on the software and not having to fix gem incompatibilities.
+Since DEV's codebase is using the Ruby on Rails framework, we will need to
+install Windows Subsystem for Linux. Some dependencies used by the source code
+triggered errors when installing on Windows, so using WSL allows you to work on
+the software and not having to fix gem incompatibilities.
 
-First, let's enable Windows Subsystem for Linux in your machine. You can do this by opening `Control Panel`, going to `Programs`, and then clicking `Turn Windows Features On or Off`. Look for the `Windows Subsystem for Linux` option and check the box next to it. Windows will ask for a reboot.
+First, let's enable Windows Subsystem for Linux in your machine. You can do this
+by opening `Control Panel`, going to `Programs`, and then clicking `Turn Windows Features On or Off`. Look for the `Windows Subsystem for Linux` option and check
+the box next to it. Windows will ask for a reboot.
 
 ![Enable WSL on Windows](/wsl-feature.png 'Enable WSL on Windows')
 
-Once you've got this installed and after rebooting, [install Ubuntu 18.04 on Windows](https://www.microsoft.com/store/productId/9N9TNGVNDL3Q).
+Once you've got this installed and after rebooting, [install Ubuntu 18.04 on
+Windows](https://www.microsoft.com/store/productId/9N9TNGVNDL3Q).
 
-On your first run, the system will ask for username and password. Take note of both since it will be used for `sudo` commands.
+On your first run, the system will ask for username and password. Take note of
+both since it will be used for `sudo` commands.
 
 ### Ruby on WSL
 
@@ -45,7 +57,10 @@ ruby -v
 
 ### Installing Rails
 
-Since Rails ships with so many dependencies these days, we're going to need to install a JavaScript runtime like NodeJS. This lets you use CoffeeScript and the Asset Pipeline in Rails which combines and minifies your JavaScript to provide a faster production environment.
+Since Rails ships with so many dependencies these days, we're going to need to
+install a JavaScript runtime like NodeJS. This lets you use CoffeeScript and the
+Asset Pipeline in Rails which combines and minifies your JavaScript to provide a
+faster production environment.
 
 To install NodeJS, we're going to add it using the official repository:
 
@@ -56,7 +71,8 @@ node -v
 npm -v
 ```
 
-If `npm -v` gives `Syntax error: word unexpected (expecting "in")`, restart the terminal and try again.
+If `npm -v` gives `Syntax error: word unexpected (expecting "in")`, restart the
+terminal and try again.
 
 And now, for rails itself:
 
@@ -64,7 +80,8 @@ And now, for rails itself:
 gem install rails -v 5.2.3
 ```
 
-Then run `rbenv rehash` to make the Rails executable available. Check it out by using `rails -v` command
+Then run `rbenv rehash` to make the Rails executable available. Check it out by
+using `rails -v` command
 
 ```shell
 rbenv rehash
@@ -74,7 +91,8 @@ rails -v
 
 ### Yarn
 
-The fastest way to install Yarn for WSL would be from Debian package repository. Configure the repository with the following commands:
+The fastest way to install Yarn for WSL would be from Debian package repository.
+Configure the repository with the following commands:
 
 ```shell
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
@@ -91,25 +109,34 @@ Make sure that Yarn is installed with `yarn -v`
 
 ### PostgreSQL
 
-If you don't have PostgreSQL installed on your Windows system, you can do so right now. WSL is able to connect to a PostgreSQL instance on your Windows machine. DEV requires PostgreSQL version 9.4 or higher.
+If you don't have PostgreSQL installed on your Windows system, you can do so
+right now. WSL is able to connect to a PostgreSQL instance on your Windows
+machine. DEV requires PostgreSQL version 9.4 or higher.
 
-Download [PostgreSQL for Windows](https://www.postgresql.org/download/windows/) and install it.
+Download [PostgreSQL for Windows](https://www.postgresql.org/download/windows/)
+and install it.
 
-Pay attention to the username and password you setup during installation of PostgreSQL as you will use this to configure your Rails applications to login to the database later.
+Pay attention to the username and password you setup during installation of
+PostgreSQL as you will use this to configure your Rails applications to login to
+the database later.
 
-For additional configuration options, check our [PostgreSQL setup guide](/installation/postgresql).
+For additional configuration options, check our [PostgreSQL setup
+guide](/installation/postgresql).
 
 ### ImageMagick
 
 DEV uses [ImageMagick](https://imagemagick.org/) to manipulate images on upload.
 
-Please refer to ImageMagick's [instructions](https://imagemagick.org/script/download.php) on how to install it.
+Please refer to ImageMagick's
+[instructions](https://imagemagick.org/script/download.php) on how to install
+it.
 
 ### Redis
 
 DEV requires Redis version 4.0 or higher.
 
-We recommend to follow [this guide](https://redislabs.com/blog/redis-on-windows-10/) to run Redis under WSL.
+We recommend to follow [this
+guide](https://redislabs.com/blog/redis-on-windows-10/) to run Redis under WSL.
 
 ## Installing DEV
 
@@ -118,34 +145,48 @@ We recommend to follow [this guide](https://redislabs.com/blog/redis-on-windows-
 1. Install bundler with `gem install bundler`
 1. Set up your environment variables/secrets
 
-   - Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](/backend/algolia) to get your development environment running.
-   - The [backend guide](/backend) will show you how to get free API keys for additional services that may be required to run certain parts of the app.
+   - Take a look at `Envfile`. This file lists all the `ENV` variables we use
+     and provides a fake default for any missing keys. You'll need to get your
+     own free [Algolia credentials](/backend/algolia) to get your development
+     environment running.
+   - The [backend guide](/backend) will show you how to get free API keys for
+     additional services that may be required to run certain parts of the app.
    - For any key that you wish to enter/replace:
 
-     1. Create `config/application.yml` by copying from the provided template (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
-     1. Obtain the development variable and apply the key you wish to enter/replace. ie:
+     1. Create `config/application.yml` by copying from the provided template
+        (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in
+        git.
+     1. Obtain the development variable and apply the key you wish to
+        enter/replace. ie:
 
      ```shell
      GITHUB_KEY: "SOME_REAL_SECURE_KEY_HERE"
      GITHUB_SECRET: "ANOTHER_REAL_SECURE_KEY_HERE"
      ```
 
-   - If you are missing `ENV` variables on bootup, the [envied](https://rubygems.org/gems/envied) gem will alert you with messages similar to `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
-   - You do not need "real" keys for basic development. Some features require certain keys, so you may be able to add them as you go.
+   - If you are missing `ENV` variables on bootup, the
+     [envied](https://rubygems.org/gems/envied) gem will alert you with messages
+     similar to `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
+   - You do not need "real" keys for basic development. Some features require
+     certain keys, so you may be able to add them as you go.
 
 1. Run `bin/setup`
 
 ### Possible error messages
 
-1. There is a possibility that you might encounter a _statement timeout_ when seeding the database for the first time. Please increase the value of `statement_timeout` to `9999999` in `config/database.yml`.
+1. There is a possibility that you might encounter a _statement timeout_ when
+   seeding the database for the first time. Please increase the value of
+   `statement_timeout` to `9999999` in `config/database.yml`.
 
-2. If the installation process failed with the following error `ERROR: Error installing pg`. Please consider installing the following package `libpq-dev` :
+2. If the installation process failed with the following error `ERROR: Error installing pg`. Please consider installing the following package `libpq-dev`
+   :
 
 ```bash
 sudo apt-get install libpq-dev
 ```
 
-3. If the command `bin/setup` fails at installing `cld-0.8.0` with the warnings `'aclocal-1.10' is missing on your system` and `'automake-1.10' is missing on your system`. Please install `automake-1.10` using the commands below.
+3. If the command `bin/setup` fails at installing `cld-0.8.0` with the warnings
+   `'aclocal-1.10' is missing on your system` and `'automake-1.10' is missing on your system`. Please install `automake-1.10` using the commands below.
 
 ```shell
 cd
@@ -158,4 +199,5 @@ cd automake-1.10/
 make
 ```
 
-> If you encountered any errors that you subsequently resolved, **please consider updating this section** with your errors and their solutions.
+> If you encountered any errors that you subsequently resolved, **please
+> consider updating this section** with your errors and their solutions.

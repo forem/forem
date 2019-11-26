@@ -6,7 +6,8 @@ title: Admin Panel
 
 There is an admin panel located at <http://localhost:3000/admin>.
 
-To access the panel, you must be logged with a user with the `admin` role activated.
+To access the panel, you must be logged with a user with the `admin` role
+activated.
 
 To activate such a role, you can follow these instructions:
 
@@ -25,4 +26,5 @@ Loading development environment (Rails 5.2.3)
 [3] pry(main)> user.save!
 ```
 
-Now you'll be able to access the [administration panel](http://localhost:3000/admin).
+Now you'll be able to access the [administration
+panel](http://localhost:3000/admin).

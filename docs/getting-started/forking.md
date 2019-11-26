@@ -5,9 +5,9 @@ title: Forking the Repo
 # Forking the repository
 
 The first step in contributing to any Open Source project on GitHub is
-[forking][forking] so that you can create
-[Pull Requests][pull_requests]. If you're not familiar with the idea of forking
-a repository, [GitHub has a super simple tutorial][forking_tutorial]!
+[forking][forking] so that you can create [Pull Requests][pull_requests]. If
+you're not familiar with the idea of forking a repository, [GitHub has a super
+simple tutorial][forking_tutorial]!
 
 If you're ready to get started, [fork DEV's repository][fork_dev]!
 

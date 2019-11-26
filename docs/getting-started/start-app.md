@@ -4,11 +4,11 @@ title: Starting the Application
 
 # Starting the application
 
-We're a Rails app, and we use [Webpacker][webpacker] to manage some of
-our JavaScript.
+We're a Rails app, and we use [Webpacker][webpacker] to manage some of our
+JavaScript.
 
-Start the application, Webpack, and our job runner [delayed_job][delayed_job]
-by running:
+Start the application, Webpack, and our job runner [delayed_job][delayed_job] by
+running:
 
 ```shell
 bin/startup
@@ -21,8 +21,8 @@ Then point your browser to http://localhost:3000/ to view the site.
 If you're working on DEV regularly, you can use `alias start="bin/startup"` to
 make this even easier. 😊
 
-If you're using **`pry`** for debugging in Rails, note that using `foreman`
-and `pry` together works, but it's not as clean as `bin/rails server`.
+If you're using **`pry`** for debugging in Rails, note that using `foreman` and
+`pry` together works, but it's not as clean as `bin/rails server`.
 
 Here are some singleton commands you may need, usually in a separate
 instance/tab of your shell.
