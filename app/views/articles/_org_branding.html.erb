@@ -15,7 +15,7 @@
       </div>
       <div class="profile-image">
         <a href="/<%= organization.slug %>">
-          <% RedisRailsCache.fetch("article-organization-image-#{organization.id}-#{organization.updated_at.rfc3339}", expires_in: 100.hours) do %>
+          <% cache("article-organization-image-#{organization.id}-#{organization.updated_at.rfc3339}", expires_in: 100.hours) do %>
             <img src="<%= ProfileImage.new(organization).get %>" alt="<%= organization.name %>" />
           <% end %>
         </a>
