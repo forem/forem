@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception, prepend: true
 
+  include SessionCurrentUser
   include Pundit
 
   def require_http_auth
@@ -17,11 +18,6 @@ class ApplicationController < ActionController::Base
     render json: "Error: not authorized", status: :unauthorized
     raise NotAuthorizedError, "Unauthorized"
   end
-
-  def session_current_user_id
-    session["warden.user.user.key"].flatten[0] if session["warden.user.user.key"].present?
-  end
-  helper_method :session_current_user_id
 
   def authenticate_user!
     return if current_user
