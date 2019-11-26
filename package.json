@@ -39,7 +39,7 @@
       "git add"
     ],
     "*.md": [
-      "prettier --write",
+      "prettier --write --prose-wrap always",
       "git add"
     ]
   },

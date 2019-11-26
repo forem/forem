@@ -1,42 +1,80 @@
 ---
-title: Contributing to Docs
+title: Contributing to the Docs
 ---
 
-# Contributing to Docs
+# Contributing to DEV's developer documentation
 
-The documentation you are reading is powered by [GitDocs](https://github.com/timberio/gitdocs).
+Contributions to the documentation are always appreciated! Thank you for making
+an effort to improve the developer experience of contributing to the DEV
+project.
 
-## Where The Docs Are Located
+# Running the documentation locally
 
-This documentation is located in the [DEV.to codebase](https://github.com/thepracticaldev/dev.to) within the `/docs` directory.
+Like DEV, this site is open source and the code is [hosted on GitHub][docs]. If
+you find any incorrect information, or a even a typo, we'd love to see a pull
+request. Follow these steps to get the documentation site running locally.
 
-The docs are a collection of [Markdown files](https://en.wikipedia.org/wiki/Markdown) that also utilize [FrontMatter](https://jekyllrb.com/docs/front-matter/).
+DEV's documentation is built with [GitDocs NodeJS library][gitdocs].
 
-For more information on how to use GitDocs read the [GitDocs guide](https://gitdocs.netlify.com)
+The first step to running the documentations locally is to install the `GitDocs`
+package globally.
 
-## Running the Docs Locally
-
-Install the [GitDocs NodeJS library](https://www.npmjs.com/package/gitdocs):
+With npm:
 
 ```shell
 npm install gitdocs -g
 ```
 
-Specifying `-g` will install the library globally, which is what you want to do.
-
-If you use yarn you can instead issue:
+Alternatively, you can use Yarn:
 
 ```shell
 yarn global add gitdocs
 ```
 
-Once installed, you can run `gitdocs serve` from the root of the dev.to project or from the `/docs` directory.
+Once installed, you should run `gitdocs serve` from the root of the dev.to
+project or from the `/docs` directory.
 
 ```shell
 gitdocs serve
 ```
 
-This will start a server where you can browse the documentation: <http://localhost:8000/>
+This will start a server where you can browse the documentation:
+<http://localhost:8000/>
 
-When you add new markdown pages or rename existing ones, you'll have to restart
-the server before you notice any changes.
+If you add new pages or rename existing pages, you'll need to restart the server
+for those changes to take effect.
+
+# Useful links
+
+The docs are a collection of [Markdown files][markdown] that also utilize
+[FrontMatter][frontmatter].
+
+For more information on how to use GitDocs read the [GitDocs
+guide][gitdocs_guide].
+
+# Regarding style
+
+Generally speaking, the documentation hosted on this site is informal. There is
+no need to make things more complicated by writing these articles like a
+textbooks.
+
+However, it's expected that contributions to these documents are reasonably
+structured and mostly free of spelling and grammar errors. For this reason, if
+you submit a PR you might be asked to make changes before your PR is merged.
+
+Prettier is used to autowrap lines in these files to 80 characters. Using 80
+characters per line allows us to retain a more specific git history over time.
+If lines are not wrapped, changing a comma in a paragraph would attribute the
+entire paragraph to one commit. By line wrapping we are helping git to correctly
+attribute smaller changes to their commits. This keeps information from getting
+lost over time.
+
+For more information on effective technical writing, check out
+[writethedocs.org][writethedocs].
+
+[docs]: https://github.com/thepracticaldev/dev.to/tree/master/docs/
+[gitdocs]: https://www.npmjs.com/package/gitdocs/
+[markdown]: https://en.wikipedia.org/wiki/Markdown
+[frontmatter]: https://jekyllrb.com/docs/front-matter/
+[gitdocs_guide]: https://gitdocs.netlify.com/
+[writethedocs]: https://www.writethedocs.org/guide/
