@@ -33,7 +33,6 @@ RSpec.describe Streams::TwitchAccessToken::Get, type: :service do
 
     context "when there is an expired token in the cache" do
       it "requests a new token and caches it" do
-        RedisRailsCache.write(described_class::ACCESS_TOKEN_AND_EXPIRATION_CACHE_KEY, "FAKE_EXPIRED_TWITCH_TOKEN", :expires_in => 15.days.from_now)
 
         expect(described_class.call).to eq "FAKE_BRAND_NEW_TWITCH_TOKEN"
         expect(twitch_token_stubbed_route).to have_been_requested
