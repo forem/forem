@@ -16,7 +16,7 @@ FactoryBot.define do
     end
     association :user, factory: :user, strategy: :create
     description { Faker::Hipster.paragraph(sentence_count: 1)[0..100] }
-    # main_image    { Faker::Avatar.image }
+    main_image    { Faker::Avatar.image }
     language { "en" }
     experience_level_rating { rand(4..6) }
     body_markdown do
