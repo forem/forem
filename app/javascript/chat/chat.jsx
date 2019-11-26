@@ -61,6 +61,7 @@ export default class Chat extends Component {
       soundOn: true,
       videoOn: true,
       messageOffset: 0,
+      showJumpBack: false,
       allMessagesLoaded: false,
       currentMessageLocation: 0,
     };
@@ -75,6 +76,7 @@ export default class Chat extends Component {
       isMobileDevice,
       channelPaginationNum,
     } = this.state;
+
     this.setupChannels(chatChannels);
     const channelsForPusherSub = chatChannels.filter(
       this.channelTypeFilter('open'),
@@ -870,14 +872,21 @@ export default class Chat extends Component {
       messageOffset,
     } = this.state;
 
-    if (this.scroller && this.scroller.scrollTop === 0 && !allMessagesLoaded) {
-      getAllMessages(
-        activeChannelId,
-        messageOffset + messages[activeChannelId].length,
-        this.addMoreMessages,
-      );
-      const curretPosition = this.scroller.scrollHeight;
-      this.setState({ currentMessageLocation: curretPosition });
+    if (this.scroller) {
+      if (this.scroller.scrollTop < this.scroller.scrollHeight - 2000) {
+        this.setState({ showJumpBack: true });
+      } else if (this.scroller.scrollTop < this.scroller.scrollHeight - 1000) {
+        this.setState({ showJumpBack: false });
+      }
+      if (this.scroller.scrollTop === 0 && !allMessagesLoaded) {
+        getAllMessages(
+          activeChannelId,
+          messageOffset + messages[activeChannelId].length,
+          this.addMoreMessages,
+        );
+        const curretPosition = this.scroller.scrollHeight;
+        this.setState({ currentMessageLocation: curretPosition });
+      }
     }
   };
 
@@ -893,6 +902,11 @@ export default class Chat extends Component {
     } else {
       this.setState({ allMessagesLoaded: true });
     }
+  };
+
+  jumpBacktoBottom = () => {
+    scrollToBottom();
+    this.setState({ showJumpBack: false });
   };
 
   renderActiveChatChannel = (channelHeader, incomingCall) => {
@@ -912,6 +926,21 @@ export default class Chat extends Component {
             {this.renderMessages()}
             {incomingCall}
             <div className="messagelist__sentinel" id="messagelist__sentinel" />
+          </div>
+          <div
+            className={`jumpback ${state.showJumpBack ? '' : 'jumpback__hide'}`}
+          >
+            <div
+              role="button"
+              className="jumpback__messages"
+              onClick={this.jumpBacktoBottom}
+              tabIndex="0"
+              onKeyUp={e => {
+                if (e.keyCode === 13) this.jumpBacktoBottom();
+              }}
+            >
+              Jump Back
+            </div>
           </div>
           <div className="activechatchannel__alerts">
             <Alert showAlert={state.showAlert} />
