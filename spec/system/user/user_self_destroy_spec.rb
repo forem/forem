@@ -15,8 +15,9 @@ RSpec.describe "User destroys their profile", type: :system, js: true do
   end
 
   it "destroys an account" do
-    user.update_column(:destroy_token, SecureRandom.hex(10))
-    visit "/users/confirm_destroy/#{user.destroy_token}"
+    token = SecureRandom.hex(10)
+    allow(RedisRailsCache).to receive(:read).and_return(token)
+    visit "/users/confirm_destroy/#{token}"
     fill_in "delete__account__username__field", with: user.username
     fill_in "delete__account__verification__field", with: "delete my account"
     expect do
