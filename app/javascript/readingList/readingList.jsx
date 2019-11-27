@@ -111,6 +111,8 @@ export class ReadingList extends Component {
       totalCount: totalCount - 1,
     });
 
+    // Clear Algolia cache so it actually searches on toggleStatusView
+    t.state.index.clearCache();
     // hide the snackbar in a few moments
     setTimeout(() => {
       t.setState({ archiving: false });
