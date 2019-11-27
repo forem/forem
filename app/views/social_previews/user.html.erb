@@ -103,15 +103,15 @@
   <div class="preview-div">
     <div class="title-area">
         <% if @user.name.size < 14 %>
-          <% font_size = 8.7 %>
+          <% font_size = 8.3 %>
         <% elsif @user.name.size < 20 %>
-          <% font_size = 7.3 %>
+          <% font_size = 6.4 %>
         <% else %>
-          <% font_size = 5.5 %>
+          <% font_size = 4.6 %>
         <% end %>
       <h1 style="font-size:<%= font_size %>vw;">
         <img src="<%= ProfileImage.new(@user).get(640) %>" alt="<%= @user.name %> profile image">
-        <%= @user.name %>
+        <%= truncate @user.name, length: 32 %>
         <br />
         <span style="font-size: 0.4em;display: inline-block; margin-left: 5.4em; margin-top: -1.7em">@<%= @user.username %></span>
       </h1>
