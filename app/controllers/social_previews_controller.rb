@@ -28,7 +28,7 @@ class SocialPreviewsController < ApplicationController
 
   def organization
     @user = Organization.find(params[:id])
-
+    @tag_badges = [] # Orgs don't have badges, but they could!
     set_respond "user"
   end
 
