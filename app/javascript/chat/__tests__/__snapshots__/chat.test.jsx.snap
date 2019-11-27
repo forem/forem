@@ -186,6 +186,7 @@ exports[`<Chat /> should load chat 1`] = `
         </div>
         <div
           class="jumpback jumpback__hide"
+          id="jumpback_button"
         >
           <div
             class="jumpback__messages"

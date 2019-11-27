@@ -61,7 +61,6 @@ export default class Chat extends Component {
       soundOn: true,
       videoOn: true,
       messageOffset: 0,
-      showJumpBack: false,
       allMessagesLoaded: false,
       currentMessageLocation: 0,
     };
@@ -872,12 +871,19 @@ export default class Chat extends Component {
       messageOffset,
     } = this.state;
 
+    const jumpbackButton = document.getElementById('jumpback_button');
+
     if (this.scroller) {
-      if (this.scroller.scrollTop < this.scroller.scrollHeight - 2000) {
-        this.setState({ showJumpBack: true });
-      } else if (this.scroller.scrollTop < this.scroller.scrollHeight - 1000) {
-        this.setState({ showJumpBack: false });
+      const scrolledRatio =
+        (this.scroller.scrollTop + this.scroller.clientHeight) /
+        this.scroller.scrollHeight;
+
+      if (scrolledRatio < 0.7) {
+        jumpbackButton.classList.remove('jumpback__hide');
+      } else if (scrolledRatio > 0.8) {
+        jumpbackButton.classList.add('jumpback__hide');
       }
+
       if (this.scroller.scrollTop === 0 && !allMessagesLoaded) {
         getAllMessages(
           activeChannelId,
@@ -906,7 +912,9 @@ export default class Chat extends Component {
 
   jumpBacktoBottom = () => {
     scrollToBottom();
-    this.setState({ showJumpBack: false });
+    document
+      .getElementById('jumpback_button')
+      .classList.remove('jumpback__hide');
   };
 
   renderActiveChatChannel = (channelHeader, incomingCall) => {
@@ -927,9 +935,7 @@ export default class Chat extends Component {
             {incomingCall}
             <div className="messagelist__sentinel" id="messagelist__sentinel" />
           </div>
-          <div
-            className={`jumpback ${state.showJumpBack ? '' : 'jumpback__hide'}`}
-          >
+          <div className="jumpback jumpback__hide" id="jumpback_button">
             <div
               role="button"
               className="jumpback__messages"
