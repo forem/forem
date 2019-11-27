@@ -40,7 +40,7 @@ const PublishToggle = ({
       </button>
     )}
     <span>
-      <p style={!edited && { visibility: 'hidden' }}>
+      <p style={!edited && { visibility: 'hidden', cursor: 'pointer' }}>
         New Changes (
         <button onClick={onClearChanges} className="clear-button" type="button">
           clear
