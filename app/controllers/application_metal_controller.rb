@@ -7,7 +7,7 @@ class ApplicationMetalController < ActionController::Metal
   # ActionController modules which may not be used in each controller can go in
   # the specific controller.
 
-  protect_from_forgery with: :exception, prepend: true unless Rails.env.test?
+  protect_from_forgery with: :exception, prepend: true
 
   include SessionCurrentUser
   include ValidRequest
