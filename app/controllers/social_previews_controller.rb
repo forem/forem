@@ -6,6 +6,7 @@ class SocialPreviewsController < ApplicationController
 
   def article
     @article = Article.find(params[:id])
+    @tag_badges = Badge.where(id: Tag.where(name: @article.decorate.cached_tag_list_array).pluck(:badge_id))
     not_found unless @article.published
 
     template = (@article.decorate.cached_tag_list_array & SHE_CODED_TAGS).any? ? "shecoded" : "article"
@@ -15,6 +16,7 @@ class SocialPreviewsController < ApplicationController
 
   def user
     @user = User.find(params[:id])
+    @tag_badges = Badge.where(id: @user.badge_achievements.pluck(:badge_id))
     set_respond
   end
 
@@ -26,7 +28,7 @@ class SocialPreviewsController < ApplicationController
 
   def organization
     @user = Organization.find(params[:id])
-
+    @tag_badges = [] # Orgs don't have badges, but they could!
     set_respond "user"
   end
 
@@ -38,6 +40,7 @@ class SocialPreviewsController < ApplicationController
 
   def comment
     @comment = Comment.find(params[:id])
+    @tag_badges = Badge.where(id: Tag.where(name: @comment.commentable.decorate.cached_tag_list_array).pluck(:badge_id))
 
     set_respond
   end

@@ -18,7 +18,7 @@ class UserDecorator < ApplicationDecorator
   end
 
   def enriched_colors
-    if bg_color_hex.blank?
+    if bg_color_hex.blank? || text_color_hex.blank?
       {
         bg: assigned_color[:bg],
         text: assigned_color[:text]
