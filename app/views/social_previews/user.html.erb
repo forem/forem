@@ -1,12 +1,12 @@
 <% accent_color = HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).biggest %>
-<% color = HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(1.4) %>
-<% dark_color = HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.7) %>
-<% not_so_rand = Random.new(@user.id) # Using ID as seed ensures we get the same "random" numbers on each page load, Improves caching %>
+<% dark_color = HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.8) %>
 <style>
   body {
-    background: white;
+    background: <%= accent_color %>;
     margin: 0;
     padding: 0;
+    background-image: linear-gradient(to bottom, white -70%, <%= accent_color %>);
+    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", "Roboto", sans-serif;
   }
 
   .preview-div-wrapper {
@@ -14,83 +14,113 @@
     position: relative;
   }
 
-  .circle {
-    border-radius: 1000px;
-    background: <%= accent_color %>;
-    position: absolute;
-  }
-
-  .circle1 {
-    height: 40vw;
-    width: 40vw;
-    right: -<%= not_so_rand.rand(2..15) %>vw;
-    bottom: -<%= not_so_rand.rand(2..15) %>vw;
-  }
-
-  .circle2 {
-    height: 30vw;
-    width: 30vw;
-    left: <%= not_so_rand.rand(2..16) %>vw;
-    bottom: -<%= not_so_rand.rand(2..15) %>vw;
-  }
-
-  .circle3 {
-    height: 24vw;
-    width: 24vw;
-    left: -8vw;
-    top: -<%= not_so_rand.rand(2..6) %>vw;
-  }
-
   .preview-div {
     background: #fff;
     border: 0.25vw solid<%= dark_color %>;
-    box-shadow: 0.8vw 1vw 0px<%= dark_color %>;
-    width: 88vw;
-    height: 44vw;
-    margin: 2.5vw auto 5vw;
+    box-shadow: 0.8vw 1vw 0px <%= dark_color %>;
+    width: 94vw;
+    height: 45vw;
+    margin: 2.25vw auto 5vw;
     overflow: hidden;
     position: relative;
+    border-radius: 0.3vw;
+    border-top-left-radius: 2.3vw;
+    border-top-right-radius: 2.3vw;
   }
 
+  .preview-info-header {
+    color: black;
+    margin: 2vw 2.5vw 0vw;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, "Roboto", monospace;
+    font-size: 3.5vw;
+    width: 92%;
+    border-bottom: 0.9vw solid <%= accent_color %>;
+    width: 40%;
+  }
+
+  .title-area {
+    position: absolute;
+    bottom: 12vw;
+    left: 0;
+    right: 0;
+    top: 9vw;
+  }
   h1 {
     color: <%= dark_color %>;
-    width: 92%;
-    margin: 10vw auto 1vw;
-    font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", "Roboto", sans-serif;
-    font-size: 8vw;
+    width: 93%;
+    margin: 1vw auto;
+    position: absolute;
+    padding-left: 3.5%;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    line-height: 1.05em;
   }
 
   h1 img {
     border-radius: 100vw;
-    height: 15vw;
-    width: 15vw;
-    vertical-align: -4.3vw;
-    border: 0.55vw solid<%= dark_color %>;
+    height: 1.8em;
+    width: 1.8em;
+    vertical-align: -0.6em;
+    border: 0.05em solid <%= accent_color %>;
   }
 
-  .preview-dev-logo {
+  .preview-user {
+    font-size: 3vw;
     position: absolute;
-    bottom: 2.1vw;
-    right: 2.1vw;
+    color: <%= dark_color %>;
+    left: 1.5vw;
+    bottom: 1.25vw;
+    padding: 0.8vw 2vw;
+    padding-left: 0.8vw;
+    font-weight: 500;
+  }
+
+  .preview-user img {
+    border-radius: 100vw;
+    height: 4.5vw;
+    width: 4.5vw;
+    vertical-align: -1.3vw;
+    border: 0.25vw solid<%= dark_color %>;
+  }
+
+  .badge-images {
+    position: absolute;
+    bottom: 1.4vw;
+    right: 1.5vw;
     text-align: right;
   }
 
-  .logo {
+  .badge-images img {
     height: 6vw;
+    right: 6vw;
     fill: <%= dark_color %>;
+    margin-left: 0.5vw;
+    transform: rotate(5deg);
   }
 </style>
 <div class="preview-div-wrapper">
-  <div class="circle circle1"></div>
-  <div class="circle circle2"></div>
-  <div class="circle circle3"></div>
   <div class="preview-div">
-    <h1>
-      <img src="<%= ProfileImage.new(@user).get(640) %>" alt="<%= @user.name %> profile image">
-      <%= @user.name %>
-    </h1>
-    <div class="preview-dev-logo">
-      <%= inline_svg_tag("devplain.svg", class: "logo", size: "9vw * 9vw", aria: false, title: "DEV logo") %>
+    <div class="title-area">
+        <% if @user.name.size < 14 %>
+          <% font_size = 8.3 %>
+        <% elsif @user.name.size < 20 %>
+          <% font_size = 6.4 %>
+        <% else %>
+          <% font_size = 4.6 %>
+        <% end %>
+      <h1 style="font-size:<%= font_size %>vw;">
+        <img src="<%= ProfileImage.new(@user).get(640) %>" alt="<%= @user.name %> profile image">
+        <%= truncate @user.name, length: 32 %>
+        <br />
+        <span style="font-size: 0.4em;display: inline-block; margin-left: 5.4em; margin-top: -1.7em">@<%= @user.username %></span>
+      </h1>
+    </div>
+    <div class="badge-images">
+      <% @tag_badges.each do |badge| %>
+        <img src="<%= badge.badge_image_url %>" style="transform: rotate(<%= rand(-6..6) %>deg);" />
+      <% end %>
+      <img src="https://thepracticaldev.s3.amazonaws.com/i/bh2wmpcltaybu1xsnico.png" />
     </div>
   </div>
 </div>
