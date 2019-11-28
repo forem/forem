@@ -70,4 +70,19 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
       expect(episode.reachable).to be true
     end
   end
+
+  context "when attempting to create duplicate episodes" do
+    let(:rss_item) { RSS::Parser.parse("spec/support/fixtures/podcasts/developertea.rss", false).items.first }
+    let(:item) { Podcasts::EpisodeRssItem.from_item(rss_item) }
+    let!(:episode) { create(:podcast_episode, media_url: item.link) }
+
+    before do
+      stub_request(:head, item.enclosure_url).to_return(status: 200)
+    end
+
+    it "updates existing episode" do
+      new_episode = described_class.call(podcast.id)
+      expect(new_episode.id).to eq(episode.id)
+    end
+  end
 end
