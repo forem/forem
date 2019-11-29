@@ -89,8 +89,7 @@
 
 <h3>Delete Account</h3>
 <h4 style="font-weight:400;">
-  <% delete_path = @user.articles_count.zero? && @user.comments_count.zero? ? user_destroy_path : user_full_delete_path %>
-  <%= form_tag delete_path, method: :delete, autocomplete: "off", id: "delete__account" do %>
+  <%= form_tag user_request_destroy_path, method: :get, autocomplete: "off", id: "delete__account" do %>
     Deleting your account will:
     <ul class="delete__account">
       <li>delete your profile, along with your Twitter and/or GitHub associations.
@@ -102,37 +101,12 @@
       <li>delete any and all content you have, such as articles, comments, your reading list or chat messages.</li>
       <li>allow your username to become available to anyone.</li>
     </ul>
-    <div class="field">
-      <label for="delete__account__username__field">
-        <b>To delete your account, type in your username:</b>
-      </label>
-      <input type="text" name="delete__account__username__field" id="delete__account__username__field">
-    </div>
-    <div class="field">
-      <label for="delete__account__verification__field">
-        <b>For verification, type the words:</b><i> delete my account</i>
-      </label>
-      <input type="text" name="delete__account__verification__field" id="delete__account__verification__field">
-    </div>
-    <button class="big-action danger-button small-button" id="delete__account__btn" type="submit" disabled="true">
+    <button class="big-action danger-button small-button" id="delete__account__btn" type="submit">
       DELETE ACCOUNT
     </button>
   <% end %>
 </h4>
 <br>
-<script>
-  const deleteAccountBtn = document.getElementById('delete__account__btn');
-  const deleteAccountUsernameInput = document.getElementById('delete__account__username__field');
-  const deleteAcccountVerificationInput = document.getElementById('delete__account__verification__field');
-
-  function bothInputsVerified() {
-    return deleteAccountUsernameInput.value === '<%= @user.username %>' && deleteAcccountVerificationInput.value === "delete my account";
-  }
-
-  const disableDeleteAccountBtn = () => { deleteAccountBtn.disabled = !bothInputsVerified() };
-  deleteAccountUsernameInput.addEventListener('input', disableDeleteAccountBtn);
-  deleteAcccountVerificationInput.addEventListener('input', disableDeleteAccountBtn);
-</script>
 If you would like to keep your content under the <%= link_to "@ghost", "/ghost" %> account, please:
 <h3>Request Account Deletion</h3>
 <h4 style="font-weight: 400;">

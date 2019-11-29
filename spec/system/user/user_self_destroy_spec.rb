@@ -7,18 +7,17 @@ RSpec.describe "User destroys their profile", type: :system, js: true do
     sign_in user
   end
 
-  it "destroys a user without content" do
+  it "requests self-destroy" do
     visit "/settings/account"
-    fill_in "delete__account__username__field", with: user.username
-    fill_in "delete__account__verification__field", with: "delete my account"
+    allow(Users::RequestDestroy).to receive(:call).and_call_original
     click_button "DELETE ACCOUNT"
-    expect(User.find_by(id: user.id).present?).to be false
+    expect(Users::RequestDestroy).to have_received(:call).with(user)
   end
 
-  it "destroys a user with content" do
-    create(:article, user: user)
-    user.update_attribute(:articles_count, 1)
-    visit "/settings/account"
+  it "destroys an account" do
+    token = SecureRandom.hex(10)
+    allow(RedisRailsCache).to receive(:read).and_return(token)
+    visit "/users/confirm_destroy/#{token}"
     fill_in "delete__account__username__field", with: user.username
     fill_in "delete__account__verification__field", with: "delete my account"
     expect do
