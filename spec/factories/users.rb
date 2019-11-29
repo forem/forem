@@ -104,5 +104,20 @@ FactoryBot.define do
         create(:pro_membership, user: user)
       end
     end
+
+    trait :with_complete_profile do
+      email_public { true }
+      facebook_url { Faker::Internet.url(host: "facebook.com") }
+      dribbble_url { Faker::Internet.url(host: "dribbble.com") }
+      medium_url { Faker::Internet.url(host: "medium.com") }
+      stackoverflow_url { Faker::Internet.url(host: "stackoverflow.com") }
+      behance_url { Faker::Internet.url(host: "behance.net") }
+      linkedin_url { Faker::Internet.url(host: "linkedin.com") }
+      gitlab_url { Faker::Internet.url(host: "gitlab.com") }
+      instagram_url { Faker::Internet.url(host: "instagram.com") }
+      mastodon_url { Faker::Internet.url(host: "mastodon.xyz") }
+      twitch_url { Faker::Internet.url(host: "twitch.tv") }
+      feed_url { "https://medium.com/feed/@vaidehijoshi" }
+    end
   end
 end
