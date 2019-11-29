@@ -308,7 +308,7 @@ export default class ArticleForm extends Component {
       previewResponse: '',
       helpHTML: document.getElementById('editor-help-guide').innerHTML,
       submitting: false,
-      editing: this.artical.id !== null, // eslint-disable-line react/no-unused-state
+      editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       imageManagementShowing: false,
       moreConfigShowing: false,
       mainImage: this.article.main_image || null,
