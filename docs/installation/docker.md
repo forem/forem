@@ -5,8 +5,8 @@ title: Docker
 # Installing DEV with Docker [Beta]
 
 Our docker implementation is incomplete and may not work smoothly. Please,
-kindly [report any
-issues](https://github.com/thepracticaldev/dev.to/issues/new/choose)!
+kindly
+[report any issues](https://github.com/thepracticaldev/dev.to/issues/new/choose)!
 
 ## Installing prerequisites
 
@@ -20,13 +20,15 @@ follow the [Docker CE install guide](https://docs.docker.com/install/), which
 illustrates multiple installation options for each OS.
 
 You're also going to need Docker Compose, to start multiple containers. We
-recommend you follow the [Docker Compose install
-guide](https://docs.docker.com/compose/install/) as well.
+recommend you follow the
+[Docker Compose install guide](https://docs.docker.com/compose/install/) as
+well.
 
 ## Installing DEV
 
 1. Fork DEV's repository, e.g. <https://github.com/thepracticaldev/dev.to/fork>
-1. Clone your forked repository, eg. `git clone https://github.com/<your-username>/dev.to.git`
+1. Clone your forked repository, eg.
+   `git clone https://github.com/<your-username>/dev.to.git`
 1. Set up your environment variables/secrets
 
    - Take a look at `Envfile`. This file lists all the `ENV` variables we use
@@ -38,14 +40,23 @@ guide](https://docs.docker.com/compose/install/) as well.
    - For any key that you wish to enter/replace:
 
      1. Create `config/application.yml` by copying from the provided template
-        (i.e. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in
-        git.
+        (i.e. with bash:
+        `cp config/sample_application.yml config/application.yml`). This is a
+        personal file that is ignored in git.
      1. Obtain the development variable and apply the key you wish to
         enter/replace. i.e.:
 
      ```shell
      GITHUB_KEY: "SOME_REAL_SECURE_KEY_HERE"
      GITHUB_SECRET: "ANOTHER_REAL_SECURE_KEY_HERE"
+     ```
+
+   - Update the redis url variables by adding the following lines into
+     `config/application.yml`:
+
+     ```shell
+      REDIS_URL: "redis://redis:6379"
+      REDIS_SESSIONS_URL: "redis://redis:6379"
      ```
 
    - You do not need "real" keys for basic development. Some features require
