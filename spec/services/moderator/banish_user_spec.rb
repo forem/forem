@@ -74,13 +74,19 @@ RSpec.describe Moderator::BanishUser, type: :service, vcr: {} do
       expect(Search::RemoveFromIndexJob).to have_been_enqueued
     end
 
-    it "reassigns and bust username" do
+    it "reassigns username" do
       expect do
         described_class.call_banish(user: user, admin: admin)
       end.to change(user, :name).
         and change(user, :username).
         and change(user, :old_username).
         and change(user, :profile_updated_at)
+    end
+
+    it "busts username" do
+      allow(CacheBuster).to receive(:bust)
+      described_class.call_banish(user: user, admin: admin)
+      expect(CacheBuster).to have_received(:bust).with("/#{user.old_username}").once
     end
   end
 end
