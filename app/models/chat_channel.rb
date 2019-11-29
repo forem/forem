@@ -2,7 +2,7 @@ class ChatChannel < ApplicationRecord
   include AlgoliaSearch
   attr_accessor :current_user, :usernames_string
 
-  has_many :messages
+  has_many :messages, dependent: :destroy
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :users, through: :chat_channel_memberships
 
@@ -44,7 +44,7 @@ class ChatChannel < ApplicationRecord
   end
 
   def clear_channel
-    messages.delete_all
+    messages.destroy_all
     Pusher.trigger(pusher_channels, "channel-cleared", { chat_channel_id: id }.to_json)
     true
   rescue Pusher::Error => e
