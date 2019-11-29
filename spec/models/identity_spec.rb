@@ -5,7 +5,15 @@ RSpec.describe Identity, type: :model do
   it { is_expected.to validate_presence_of(:uid) }
   it { is_expected.to validate_presence_of(:provider) }
   it { is_expected.to validate_uniqueness_of(:uid).scoped_to(:provider) }
-  it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(:provider) }
+
+  it do
+    # rubocop:disable RSpec/NamedSubject
+    # see <https://github.com/thoughtbot/shoulda-matchers/issues/682>
+    subject.user = create(:user)
+    expect(subject).to validate_uniqueness_of(:user_id).scoped_to(:provider)
+    # rubocop:enable RSpec/NamedSubject
+  end
+
   it { is_expected.to validate_inclusion_of(:provider).in_array(%w[github twitter]) }
   it { is_expected.to serialize(:auth_data_dump) }
 

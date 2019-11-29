@@ -3,6 +3,8 @@ require "rails_helper"
 RSpec.describe ArticlePolicy do
   subject { described_class.new(user, article) }
 
+  let!(:user) { create(:user) }
+
   let(:article) { build_stubbed(:article) }
   let(:valid_attributes) do
     %i[title body_html body_markdown main_image published
@@ -19,8 +21,6 @@ RSpec.describe ArticlePolicy do
   end
 
   context "when user is not the author" do
-    let(:user) { build_stubbed(:user) }
-
     it { is_expected.to permit_actions(%i[new create preview]) }
     it { is_expected.to forbid_actions(%i[update edit manage delete_confirm destroy]) }
 
@@ -33,7 +33,6 @@ RSpec.describe ArticlePolicy do
   end
 
   context "when user is the author" do
-    let(:user)    { build_stubbed(:user) }
     let(:article) { build_stubbed(:article, user: user) }
 
     it { is_expected.to permit_actions(%i[update edit manage new create delete_confirm destroy preview]) }
