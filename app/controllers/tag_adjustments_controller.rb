@@ -13,9 +13,7 @@ class TagAdjustmentsController < ApplicationController
     if tag_adjustment.save
       service.update_tags_and_notify
     else
-      errors = tag_adjustment.errors.full_messages.join(", ")
-      flash[:error_removal] = errors if tag_adjustment.adjustment_type == "removal"
-      flash[:error_addition] = errors if tag_adjustment.adjustment_type == "addition"
+      flash[:error_tag_adjustment] = tag_adjustment.errors.full_messages.join(", ")
     end
     @article = Article.find(params[:tag_adjustment][:article_id])
     redirect_to "#{URI.parse(@article.path).path}/mod"

@@ -171,9 +171,9 @@
         <b>Current live tags:</b> <%= @moderatable.tag_list %><br>
         <b>Already adjusted tags:</b> <%= @already_adjusted_tags %>
         <br /><br />
-        <% if flash[:error_addition].present? %>
+        <% if flash[:error_tag_adjustment].present? %>
           <div class="adjustment-error">
-            <p>Error: <%= flash[:error_addition] %></p><br>
+            <p>Error: <%= flash[:error_tag_adjustment] %></p><br>
           </div>
         <% end %>
         <%= f.hidden_field :article_id, value: @moderatable.id %>
