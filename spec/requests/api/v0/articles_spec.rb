@@ -380,7 +380,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "fails if article contains tags with non-alphanumeric characters" do
-        tags = %w[#discuss .help]
+        tags = %w[discuss .help]
         post_article(title: "Test Article Title", tags: tags)
         expect(response).to have_http_status(:unprocessable_entity)
       end
