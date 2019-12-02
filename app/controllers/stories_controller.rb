@@ -20,18 +20,24 @@ class StoriesController < ApplicationController
     # TODO: validate input and mass assignment
     author_username = params[:username]
     article_slug = params[:slug]
+    moderate = params[:view] == "moderate"
+    variant_version = params[:variant_version]
+
+    # Object Construction
+    article_by_path = Article.find_by(path: "/#{author_username.downcase}/#{article_slug}")&.decorate
+    article_by_slug = Article.find_by(slug: article_slug)&.decorate
 
     @story_show = true
-    if (@article = Article.find_by(path: "/#{author_username.downcase}/#{article_slug}")&.decorate)
+    if (@article = article_by_path)
       # assign_article_show_variables
       @article_show = true
-      @variant_number = params[:variant_version] || (user_signed_in? ? 0 : rand(2))
+      @variant_number = variant_version || (user_signed_in? ? 0 : rand(2))
       # assign_user_and_org
       @user = @article.user || not_found
       @organization = @article.organization if @article.organization_id.present?
       @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
       # assign_second_and_third_user
-      if !@article.second_user_id.blank?
+      if @article.second_user_id.present?
         @second_user = User.find(@article.second_user_id)
         @third_user = User.find(@article.third_user_id) if @article.third_user_id.present?
       end
@@ -40,11 +46,11 @@ class StoriesController < ApplicationController
       @comment = Comment.new(body_markdown: @article&.comment_template)
 
       set_surrogate_key_header @article.record_key
-      redirect_to "/internal/articles/#{@article.id}" if params[:view] == "moderate"
+      redirect_to "/internal/articles/#{@article.id}" if moderate
       return if performed? # did previous redirect happen?
 
       render template: "articles/show"
-    elsif (@article = Article.find_by(slug: article_slug)&.decorate)
+    elsif (@article = article_by_slug) # when accessing with old author username
       potential_username = author_username.tr("@", "").downcase
       @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
       if @user&.articles&.find_by(slug: article_slug)
