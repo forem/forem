@@ -2,7 +2,6 @@ require "rails_helper"
 
 RSpec.describe Moderator::BanishUser, type: :service, vcr: {} do
   let(:user) { create(:user, :with_complete_profile) }
-  let(:user_without_email) { create(:user, email: nil) }
   let(:admin) { create(:user, :super_admin) }
 
   describe "banish_user" do
@@ -16,25 +15,25 @@ RSpec.describe Moderator::BanishUser, type: :service, vcr: {} do
       it "removes user profile details" do
         expect do
           described_class.call_banish(user: user, admin: admin)
-        end.to change(user, :twitter_username).to(nil).and change(user, :github_username).to(nil).
-          and change(user, :summary).to("").and change(user, :location).to("").
-          and change(user, :education).to("").and change(user, :employer_name).to("").
-          and change(user, :employer_url).to("").and change(user, :employment_title).to("").
-          and change(user, :mostly_work_with).to("").and change(user, :currently_learning).to("").
-          and change(user, :currently_hacking_on).to("").and change(user, :available_for).to("").
-          and change(user, :email_public).to(false)
+        end.to change(user, :twitter_username).to(nil).and(change(user, :github_username).to(nil)).
+          and(change(user, :summary).to("")).and(change(user, :location).to("")).
+          and(change(user, :education).to("")).and(change(user, :employer_name).to("")).
+          and(change(user, :employer_url).to("")).and(change(user, :employment_title).to("")).
+          and(change(user, :mostly_work_with).to("")).and(change(user, :currently_learning).to("")).
+          and(change(user, :currently_hacking_on).to("")).and(change(user, :available_for).to("")).
+          and(change(user, :email_public).to(false))
       end
 
       it "removes a users social-media details" do
         expect do
           described_class.call_banish(user: user, admin: admin)
-        end.to change(user, :facebook_url).to(nil).and change(user, :dribbble_url).to(nil).
-          and change(user, :medium_url).to(nil).and change(user, :stackoverflow_url).to(nil).
-          and change(user, :behance_url).to(nil).and change(user, :linkedin_url).to(nil).
-          and change(user, :gitlab_url).to(nil).and change(user, :instagram_url).to(nil).
-          and change(user, :mastodon_url).to(nil).and change(user, :twitch_url).to(nil).
-          and change(user, :feed_url).to(nil).
-          and change { user.reload.profile_image_identifier }.to("https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png")
+        end.to change(user, :facebook_url).to(nil).and(change(user, :dribbble_url).to(nil)).
+          and(change(user, :medium_url).to(nil)).and(change(user, :stackoverflow_url).to(nil)).
+          and(change(user, :behance_url).to(nil)).and(change(user, :linkedin_url).to(nil)).
+          and(change(user, :gitlab_url).to(nil)).and(change(user, :instagram_url).to(nil)).
+          and(change(user, :mastodon_url).to(nil)).and(change(user, :twitch_url).to(nil)).
+          and(change(user, :feed_url).to(nil)).
+          and(change { user.reload.profile_image_identifier }.to("https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png"))
       end
     end
 
@@ -78,9 +77,9 @@ RSpec.describe Moderator::BanishUser, type: :service, vcr: {} do
       expect do
         described_class.call_banish(user: user, admin: admin)
       end.to change(user, :name).
-        and change(user, :username).
-        and change(user, :old_username).
-        and change(user, :profile_updated_at)
+        and(change(user, :username)).
+        and(change(user, :old_username)).
+        and(change(user, :profile_updated_at))
     end
 
     it "busts username" do
