@@ -17,8 +17,12 @@ class StoriesController < ApplicationController
   end
 
   def show
+    # TODO: validate input and mass assignment
+    author_username = params[:username]
+    article_slug = params[:slug]
+
     @story_show = true
-    if (@article = Article.find_by(path: "/#{params[:username].downcase}/#{params[:slug]}")&.decorate)
+    if (@article = Article.find_by(path: "/#{author_username.downcase}/#{article_slug}")&.decorate)
       # assign_article_show_variables
       @article_show = true
       @variant_number = params[:variant_version] || (user_signed_in? ? 0 : rand(2))
@@ -40,20 +44,20 @@ class StoriesController < ApplicationController
       return if performed? # did previous redirect happen?
 
       render template: "articles/show"
-    elsif (@article = Article.find_by(slug: params[:slug])&.decorate)
-      potential_username = params[:username].tr("@", "").downcase
+    elsif (@article = Article.find_by(slug: article_slug)&.decorate)
+      potential_username = author_username.tr("@", "").downcase
       @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
-      if @user&.articles&.find_by(slug: params[:slug])
-        redirect_to URI.parse("/#{@user.username}/#{params[:slug]}").path
+      if @user&.articles&.find_by(slug: article_slug)
+        redirect_to URI.parse("/#{@user.username}/#{article_slug}").path
         return
       elsif (@organization = @article.organization)
-        redirect_to URI.parse("/#{@organization.slug}/#{params[:slug]}").path
+        redirect_to URI.parse("/#{@organization.slug}/#{article_slug}").path
         return
       end
       not_found # this is not covered by tests
     else
-      @podcast = Podcast.available.find_by!(slug: params[:username])
-      @episode = PodcastEpisode.available.find_by!(slug: params[:slug])
+      @podcast = Podcast.available.find_by!(slug: author_username)
+      @episode = PodcastEpisode.available.find_by!(slug: article_slug)
       set_surrogate_key_header @episode.record_key
       @episode = @episode.decorate
       @podcast_episode_show = true
