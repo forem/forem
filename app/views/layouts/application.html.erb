@@ -98,7 +98,7 @@
       </div>
     </div>
     <% unless internal_navigation? %>
-      <% cache("footer-and-signup-modal--#{user_signed_in?}--#{ApplicationConfig['DEPLOYMENT_SIGNATURE']}", expires_in: 200.hours) do %>
+      <% cache("footer-and-signup-modal--#{user_signed_in?}--#{ApplicationConfig['HEROKU_SLUG_COMMIT']}", expires_in: 24.hours) do %>
         <%= render "layouts/footer" %>
         <%= render "layouts/signup_modal" unless user_signed_in? %>
       <% end %>
