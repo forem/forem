@@ -19,13 +19,48 @@ class StoriesController < ApplicationController
   def show
     @story_show = true
     if (@article = Article.find_by(path: "/#{params[:username].downcase}/#{params[:slug]}")&.decorate)
-      handle_article_show
+      # assign_article_show_variables
+      @article_show = true
+      @variant_number = params[:variant_version] || (user_signed_in? ? 0 : rand(2))
+      # assign_user_and_org
+      @user = @article.user || not_found
+      @organization = @article.organization if @article.organization_id.present?
+      @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
+      # assign_second_and_third_user
+      if !@article.second_user_id.blank?
+        @second_user = User.find(@article.second_user_id)
+        @third_user = User.find(@article.third_user_id) if @article.third_user_id.present?
+      end
+
+      not_found if permission_denied?
+      @comment = Comment.new(body_markdown: @article&.comment_template)
+
+      set_surrogate_key_header @article.record_key
+      redirect_to "/internal/articles/#{@article.id}" if params[:view] == "moderate"
+      return if performed? # did previous redirect happen?
+
+      render template: "articles/show"
     elsif (@article = Article.find_by(slug: params[:slug])&.decorate)
-      handle_possible_redirect
+      potential_username = params[:username].tr("@", "").downcase
+      @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
+      if @user&.articles&.find_by(slug: params[:slug])
+        redirect_to URI.parse("/#{@user.username}/#{params[:slug]}").path
+        return
+      elsif (@organization = @article.organization)
+        redirect_to URI.parse("/#{@organization.slug}/#{params[:slug]}").path
+        return
+      end
+      not_found # this is not covered by tests
     else
       @podcast = Podcast.available.find_by!(slug: params[:username])
       @episode = PodcastEpisode.available.find_by!(slug: params[:slug])
-      handle_podcast_show
+      set_surrogate_key_header @episode.record_key
+      @episode = @episode.decorate
+      @podcast_episode_show = true
+      @comments_to_show_count = 25
+      @comment = Comment.new
+      render template: "podcast_episodes/show"
+      nil
     end
   end
 
@@ -48,19 +83,6 @@ class StoriesController < ApplicationController
     else
       not_found
     end
-  end
-
-  def handle_possible_redirect
-    potential_username = params[:username].tr("@", "").downcase
-    @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
-    if @user&.articles&.find_by(slug: params[:slug])
-      redirect_to URI.parse("/#{@user.username}/#{params[:slug]}").path
-      return
-    elsif (@organization = @article.organization)
-      redirect_to URI.parse("/#{@organization.slug}/#{params[:slug]}").path
-      return
-    end
-    not_found
   end
 
   def handle_user_or_organization_or_podcast_or_page_index
@@ -181,32 +203,9 @@ class StoriesController < ApplicationController
     render template: "users/show"
   end
 
-  def handle_podcast_show
-    set_surrogate_key_header @episode.record_key
-    @episode = @episode.decorate
-    @podcast_episode_show = true
-    @comments_to_show_count = 25
-    @comment = Comment.new
-    render template: "podcast_episodes/show"
-    nil
-  end
-
   def redirect_if_view_param
     redirect_to "/internal/users/#{@user.id}" if params[:view] == "moderate"
     redirect_to "/admin/users/#{@user.id}/edit" if params[:view] == "admin"
-  end
-
-  def redirect_if_show_view_param
-    redirect_to "/internal/articles/#{@article.id}" if params[:view] == "moderate"
-  end
-
-  def handle_article_show
-    assign_article_show_variables
-    set_surrogate_key_header @article.record_key
-    redirect_if_show_view_param
-    return if performed?
-
-    render template: "articles/show"
   end
 
   def assign_article_show_variables
