@@ -1,4 +1,5 @@
 require "rails_helper"
+require "requests/shared_examples/comment_hide_or_unhide_request"
 
 RSpec.describe "Comments", type: :request do
   let(:user) { create(:user) }
@@ -126,4 +127,7 @@ RSpec.describe "Comments", type: :request do
       end
     end
   end
+
+  include_examples "PATCH /comments/:comment_id/hide or unhide", path: "hide", hidden: "true"
+  include_examples "PATCH /comments/:comment_id/hide or unhide", path: "unhide", hidden: "false"
 end
