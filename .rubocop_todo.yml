@@ -60,8 +60,16 @@ Rails/OutputSafety:
     - 'app/models/display_ad.rb'
     - 'app/models/message.rb'
     - 'app/views/articles/_actions.html.erb'
+    - 'app/views/articles/_sidebar.html.erb'
     - 'app/views/articles/feed.rss.builder'
     - 'app/views/articles/show.html.erb'
+    - 'app/views/layouts/_styles.html.erb'
+    - 'app/views/liquid_embeds/show.html.erb'
+    - 'app/views/pages/live.html.erb'
+    - 'app/views/pages/onboarding.html.erb'
+    - 'app/views/partnerships/index.html.erb'
+    - 'app/views/partnerships/show.html.erb'
+    - 'app/views/pro_memberships/show.html.erb'
 
 # Offense count: 25
 # Cop supports --auto-correct.
@@ -82,3 +90,5 @@ Style/GuardClause:
 # URISchemes: http, https
 Metrics/LineLength:
   Max: 380
+  Exclude:
+    - 'app/views/layouts/_styles.html.erb'
