@@ -86,7 +86,7 @@ RSpec.describe Moderator::BanishUser, type: :service, vcr: {} do
     it "busts username" do
       allow(CacheBuster).to receive(:bust)
       described_class.call_banish(user: user, admin: admin)
-      expect(Users::BustCacheJob).to have_been_enqueued.at_least(1).with(user.id)
+      expect(Users::BustCacheJob).to have_been_enqueued.at_least(:once).with(user.id)
     end
   end
 end
