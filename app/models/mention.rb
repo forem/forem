@@ -8,13 +8,14 @@ class Mention < ApplicationRecord
   validates :mentionable_id, presence: true
   validates :mentionable_type, presence: true
   validate :permission
+
   after_create :send_email_notification
 
-  class << self
-    def create_all(notifiable)
-      Mentions::CreateAllJob.perform_later(notifiable.id, notifiable.class.name)
-    end
+  def self.create_all(notifiable)
+    Mentions::CreateAllJob.perform_later(notifiable.id, notifiable.class.name)
   end
+
+  private
 
   def send_email_notification
     user = User.find(user_id)
