@@ -1,7 +1,7 @@
 class CommentsController < ApplicationController
   before_action :set_comment, only: %i[update destroy]
   before_action :set_cache_control_headers, only: [:index]
-  before_action :authenticate_user!, only: %i[preview create]
+  before_action :authenticate_user!, only: %i[preview create hide unhide]
   after_action :verify_authorized
 
   # GET /comments
@@ -155,7 +155,7 @@ class CommentsController < ApplicationController
 
   def hide
     @comment = Comment.find(params[:comment_id])
-    authorize @comment # check for commentable author
+    authorize @comment
     @comment.hidden_by_commentable_user = true
     if @comment.save
       render json: { hidden: "true" }, status: :ok
@@ -166,7 +166,7 @@ class CommentsController < ApplicationController
 
   def unhide
     @comment = Comment.find(params[:comment_id])
-    authorize @comment # check for commentable author
+    authorize @comment
     @comment.hidden_by_commentable_user = false
     if @comment.save
       render json: { hidden: "false" }, status: :ok
