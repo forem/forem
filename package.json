@@ -59,7 +59,7 @@
   },
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "devDependencies": {
-    "@storybook/addon-actions": "^5.1.9",
+    "@storybook/addon-actions": "^5.2.8",
     "@storybook/addon-links": "^5.1.9",
     "@storybook/addons": "^5.1.8",
     "@storybook/react": "^3.4.11",
