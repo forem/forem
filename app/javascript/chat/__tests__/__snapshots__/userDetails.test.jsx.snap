@@ -125,16 +125,14 @@ exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
   </div>
   <div
     class="userdetails__blockreport"
-  >
-    <button
-      onClick={[Function]}
-    >
-      Report Abuse
-    </button>
-  </div>
+  />
   <div
     id="userdetails__reportabuse"
-    style="display:none"
+    style={
+      Object {
+        "display": "none",
+      }
+    }
   >
     <div
       class="userdetails__reportabuse"
@@ -175,7 +173,11 @@ exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
   </div>
   <div
     id="userdetails__blockmsg"
-    style="display:none"
+    style={
+      Object {
+        "display": "none",
+      }
+    }
   >
     <div
       class="userdetails__blockmsg"
@@ -346,12 +348,21 @@ exports[`<UserDetails /> for user2 should render and test snapshot 1`] = `
     <button
       onClick={[Function]}
     >
+      Block User
+    </button>
+    <button
+      onClick={[Function]}
+    >
       Report Abuse
     </button>
   </div>
   <div
     id="userdetails__reportabuse"
-    style="display:none"
+    style={
+      Object {
+        "display": "none",
+      }
+    }
   >
     <div
       class="userdetails__reportabuse"
@@ -392,7 +403,11 @@ exports[`<UserDetails /> for user2 should render and test snapshot 1`] = `
   </div>
   <div
     id="userdetails__blockmsg"
-    style="display:none"
+    style={
+      Object {
+        "display": "none",
+      }
+    }
   >
     <div
       class="userdetails__blockmsg"
