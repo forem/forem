@@ -28,6 +28,9 @@
     <img src="https://www.codetriage.com/thepracticaldev/dev.to/badges/users.svg" alt="CodeTriage badge">
   </a>
   <img src="https://flat.badgen.net/dependabot/thepracticaldev/dev.to?icon=dependabot" alt="Dependabot Badge" />
+  <a href="https://gitpod.io/from-referrer/">
+    <img src="https://img.shields.io/badge/setup-automated-blue?logo=gitpod"/>
+  </a>
 </p>
 
 Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
