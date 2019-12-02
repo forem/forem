@@ -8,8 +8,7 @@ RSpec.describe Identity, type: :model do
 
   it do
     # rubocop:disable RSpec/NamedSubject
-    # see <https://github.com/thoughtbot/shoulda-matchers/issues/682>
-    subject.user = create(:user)
+    subject.user = build(:user)
     expect(subject).to validate_uniqueness_of(:user_id).scoped_to(:provider)
     # rubocop:enable RSpec/NamedSubject
   end
