@@ -16,6 +16,18 @@ class StoriesController < ApplicationController
     render template: "articles/search"
   end
 
+  class ShowArticlePresenter
+    def initialize(article, variant_version:, user_signed_in:)
+      @article = article
+      @variant_version = variant_version
+      @user_signed_in = user_signed_in
+    end
+
+    def variant_number
+      @variant_version || (@user_signed_in ? 0 : rand(2)) # output_calculation
+    end
+  end
+
   def show
     # TODO: validate input and mass assignment
     author_username = params[:username]
@@ -29,9 +41,9 @@ class StoriesController < ApplicationController
 
     @story_show = true
     if (@article = article_by_path)
+      @presenter = ShowArticlePresenter.new(@article, variant_version: variant_version, user_signed_in: user_signed_in?)
+      @variant_number = @presenter.variant_number # TODO: couldn't replace this assignment, try to delete later
       # assign_article_show_variables
-      @article_show = true # output_calculation
-      @variant_number = variant_version || (user_signed_in? ? 0 : rand(2)) # output_calculation
       # assign_user_and_org
       @user = @article.user || not_found # output_calculation
       @organization = @article.organization if @article.organization_id.present? # output_calculation
