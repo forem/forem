@@ -19,6 +19,15 @@ config.integrations.rack.http_events.silence_request = lambda do |_rack_env, rac
   rack_request.path.match?(/^\/page_views\/\d{1,9}/)
 end
 
+config.integrations.rack.user_context.custom_user_hash = lambda do |rack_env|
+  session_user_id = rack_env["rack.session"].to_h["warden.user.user.key"]&.first&.first
+  if session_user_id
+    {
+      id: session_user_id
+    }
+  end
+end
+
 # Add additional configuration here.
 # For a full list of configuration options and their explanations see:
 # http://www.rubydoc.info/github/timberio/timber-ruby/Timber/Config
