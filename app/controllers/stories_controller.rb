@@ -30,46 +30,49 @@ class StoriesController < ApplicationController
     @story_show = true
     if (@article = article_by_path)
       # assign_article_show_variables
-      @article_show = true
-      @variant_number = variant_version || (user_signed_in? ? 0 : rand(2))
+      @article_show = true # output_calculation
+      @variant_number = variant_version || (user_signed_in? ? 0 : rand(2)) # output_calculation
       # assign_user_and_org
-      @user = @article.user || not_found
-      @organization = @article.organization if @article.organization_id.present?
-      @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
+      @user = @article.user || not_found # output_calculation
+      @organization = @article.organization if @article.organization_id.present? # output_calculation
+      @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30 # output_calculation
       # assign_second_and_third_user
       if @article.second_user_id.present?
-        @second_user = User.find(@article.second_user_id)
-        @third_user = User.find(@article.third_user_id) if @article.third_user_id.present?
+        @second_user = User.find(@article.second_user_id) # output_calculation
+        @third_user = User.find(@article.third_user_id) if @article.third_user_id.present? # output_calculation
       end
 
-      not_found if permission_denied?
-      @comment = Comment.new(body_markdown: @article&.comment_template)
+      not_found if permission_denied? # permission check
+      @comment = Comment.new(body_markdown: @article&.comment_template) # output_calculation
 
-      set_surrogate_key_header @article.record_key
-      redirect_to "/internal/articles/#{@article.id}" if moderate
-      return if performed? # did previous redirect happen?
+      set_surrogate_key_header @article.record_key # side_effect
+      redirect_to "/internal/articles/#{@article.id}" if moderate # side_effect
+      return if performed? # did previous redirect happen? # branching
 
-      render template: "articles/show"
+      render template: "articles/show" # side_effect
     elsif (@article = article_by_slug) # when accessing with old author username
-      potential_username = author_username.tr("@", "").downcase
-      @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
-      if @user&.articles&.find_by(slug: article_slug)
-        redirect_to URI.parse("/#{@user.username}/#{article_slug}").path
-        return
-      elsif (@organization = @article.organization)
-        redirect_to URI.parse("/#{@organization.slug}/#{article_slug}").path
-        return
+      potential_username = author_username.tr("@", "").downcase # uri_calculation
+      @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username) # uri_calculation
+      if @user&.articles&.find_by(slug: article_slug) # uri_calculation
+        redirect_to URI.parse("/#{@user.username}/#{article_slug}").path # side_effect + uri_calculation
+        return # uri_calculation
+      elsif (@organization = @article.organization) # uri_calculation
+        redirect_to URI.parse("/#{@organization.slug}/#{article_slug}").path # side_effect + uri_calculation
+        return # uri_calculation
       end
       not_found # this is not covered by tests
     else
-      @podcast = Podcast.available.find_by!(slug: author_username)
-      @episode = PodcastEpisode.available.find_by!(slug: article_slug)
-      set_surrogate_key_header @episode.record_key
-      @episode = @episode.decorate
-      @podcast_episode_show = true
-      @comments_to_show_count = 25
-      @comment = Comment.new
-      render template: "podcast_episodes/show"
+      @podcast = Podcast.available.find_by!(slug: author_username) # object_creation
+      @episode = PodcastEpisode.available.find_by!(slug: article_slug) # object_creation
+
+      set_surrogate_key_header @episode.record_key # side_effect
+
+      @episode = @episode.decorate # output_calculation
+      @podcast_episode_show = true # output_calculation
+      @comments_to_show_count = 25 # output_calculation
+      @comment = Comment.new # output_calculation
+
+      render template: "podcast_episodes/show" # side_effect
       nil
     end
   end
