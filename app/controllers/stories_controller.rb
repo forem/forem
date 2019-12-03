@@ -66,22 +66,20 @@ class StoriesController < ApplicationController
   end
 
   private def support_legacy_url_format(article)
-    if destination_url = url_for(article)
-      redirect_to destination_url
-    else
-      raise ActiveRecord::RecordNotFound, "Not Found" # this is not covered by tests
-    end
+    redirect_to url_for(article)
   end
 
   private def url_for(article)
     article_slug = params[:slug]
     potential_username = params[:username].tr("@", "").downcase
-    @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
+    user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
 
-    if @user&.articles&.find_by(slug: article_slug)
-      URI.parse("/#{@user.username}/#{article_slug}").path
-    elsif (@organization = article.organization)
-      URI.parse("/#{@organization.slug}/#{article_slug}").path
+    if user&.articles&.find_by(slug: article_slug)
+      URI.parse("/#{user.username}/#{article_slug}").path
+    elsif (organization = article.organization)
+      URI.parse("/#{organization.slug}/#{article_slug}").path
+    else
+      raise ActiveRecord::RecordNotFound, "Not Found" # this is not covered by tests
     end
   end
 
