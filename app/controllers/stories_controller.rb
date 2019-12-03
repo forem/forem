@@ -32,7 +32,14 @@ class StoriesController < ApplicationController
 
     case url_format
     when 'author/article'
-      show_article(article_by_path)
+      result = show_article(article_by_path)
+
+      redirect_to result.moderate_url if result.moderate_url
+      return if performed? # did previous redirect happen?
+
+      set_surrogate_key_header result.surrogate_key
+
+      render template: result.template
     when 'podcast/episode'
       show_podcast
     when 'other'
@@ -77,12 +84,9 @@ class StoriesController < ApplicationController
 
     not_found if !article.published && previewing != article.password # previewing check
 
-    redirect_to "/internal/articles/#{@presenter.id}" if moderate
-    return if performed? # did previous redirect happen?
+    moderate_url = "/internal/articles/#{@presenter.id}" if moderate
 
-    set_surrogate_key_header @presenter.record_key
-
-    render template: "articles/show"
+    OpenStruct.new(moderate_url: moderate_url, surrogate_key: @presenter.record_key, template: 'articles/show')
   end
 
   private def url_for(article)
