@@ -35,11 +35,13 @@ class StoriesController < ApplicationController
       result = show_article(article_by_path, moderate: params[:view] == "moderate",
                             variant_version: params[:variant_version], previewing: params[:preview])
 
+      @presenter = result.article_presenter
+
       return redirect_to result.moderate_url if result.moderate_url
 
-      set_surrogate_key_header result.surrogate_key
+      set_surrogate_key_header @presenter.record_key
 
-      render template: result.template
+      render template: 'articles/show'
     when 'podcast/episode'
       show_podcast(episode_slug: second_scope, podcast_provider: first_scope)
     when 'other'
@@ -67,21 +69,20 @@ class StoriesController < ApplicationController
     if destination_url = url_for(article)
       redirect_to destination_url
     else
-      not_found # this is not covered by tests
+      raise ActiveRecord::RecordNotFound, "Not Found" # this is not covered by tests
     end
   end
 
   private def show_article(article, moderate:, variant_version:, previewing:)
+    article_presenter = ArticleShowPresenter.new(article, variant_version: variant_version, user_signed_in: user_signed_in?)
 
-    @presenter = ArticleShowPresenter.new(article, variant_version: variant_version, user_signed_in: user_signed_in?)
+    raise ActiveRecord::RecordNotFound unless article_presenter.user # user existance check
 
-    not_found unless @presenter.user # user existance check
+    raise ActiveRecord::RecordNotFound if !article.published && previewing != article.password # previewing check
 
-    not_found if !article.published && previewing != article.password # previewing check
+    moderate_url = "/internal/articles/#{article_presenter.id}" if moderate
 
-    moderate_url = "/internal/articles/#{@presenter.id}" if moderate
-
-    OpenStruct.new(moderate_url: moderate_url, surrogate_key: @presenter.record_key, template: 'articles/show')
+    OpenStruct.new(article_presenter: article_presenter, moderate_url: moderate_url)
   end
 
   private def url_for(article)
