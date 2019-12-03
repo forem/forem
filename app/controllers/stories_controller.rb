@@ -40,16 +40,6 @@ class StoriesController < ApplicationController
       render template: "articles/show" # side_effect
     elsif (@article = article_by_slug) # when accessing with old author username
 
-      potential_username = author_username.tr("@", "").downcase # uri_calculation
-      @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username) # uri_calculation
-
-      destination_url =
-        if @user&.articles&.find_by(slug: article_slug) # uri_calculation
-         URI.parse("/#{@user.username}/#{article_slug}").path # side_effect + uri_calculation
-      elsif (@organization = @article.organization) # uri_calculation
-         URI.parse("/#{@organization.slug}/#{article_slug}").path # side_effect + uri_calculation
-      end
-
       if destination_url
         redirect_to destination_url
       else
@@ -68,6 +58,18 @@ class StoriesController < ApplicationController
 
       render template: "podcast_episodes/show" # side_effect
       nil
+    end
+  end
+
+  private def destination_url
+    article_slug = params[:slug]
+    potential_username = params[:username].tr("@", "").downcase
+    @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
+
+    if @user&.articles&.find_by(slug: article_slug)
+      URI.parse("/#{@user.username}/#{article_slug}").path
+    elsif (@organization = @article.organization)
+      URI.parse("/#{@organization.slug}/#{article_slug}").path
     end
   end
 
