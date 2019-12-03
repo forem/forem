@@ -329,6 +329,10 @@ Rails.application.routes.draw do
 
   get "/embed/:embeddable" => "liquid_embeds#show"
 
+  # serviceworkers
+  get "/serviceworker" => "service_worker#index"
+  get "/manifest" => "service_worker#manifest"
+
   get "/new" => "articles#new"
   get "/new/:template" => "articles#new"
 
