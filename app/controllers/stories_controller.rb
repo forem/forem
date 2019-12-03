@@ -51,35 +51,7 @@ class StoriesController < ApplicationController
 
       render template: "podcast_episodes/show"
     when 'other'
-      support_legacy_url_format(article_by_slug)
-    end
-  end
-
-  private def url_format(article_by_path, article_by_slug)
-    if article_by_path
-      'author/article'
-    elsif article_by_slug
-      'other'
-    else
-      'podcast/episode'
-    end
-  end
-
-  private def support_legacy_url_format(article)
-    redirect_to url_for(article)
-  end
-
-  private def url_for(article)
-    article_slug = params[:slug]
-    potential_username = params[:username].tr("@", "").downcase
-    user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
-
-    if user&.articles&.find_by(slug: article_slug)
-      URI.parse("/#{user.username}/#{article_slug}").path
-    elsif (organization = article.organization)
-      URI.parse("/#{organization.slug}/#{article_slug}").path
-    else
-      raise ActiveRecord::RecordNotFound, "Not Found" # this is not covered by tests
+      support_legacy_url_formats(article_by_slug)
     end
   end
 
@@ -91,6 +63,33 @@ class StoriesController < ApplicationController
   end
 
   private
+
+  def url_format(article_by_path, article_by_slug)
+    if article_by_path
+      'author/article'
+    elsif article_by_slug
+      'other'
+    else
+      'podcast/episode'
+    end
+  end
+
+  def support_legacy_url_formats(article)
+    redirect_to guess_url_for(article.organization, params[:username], params[:slug])
+  end
+
+  def guess_url_for(organization, authorname, article_slug)
+    potential_username = authorname.tr("@", "").downcase
+    user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
+
+    if user&.articles&.find_by(slug: article_slug)
+      URI.parse("/#{user.username}/#{article_slug}").path
+    elsif organization
+      URI.parse("/#{organization.slug}/#{article_slug}").path
+    else
+      raise ActiveRecord::RecordNotFound, "Not Found" # this is not covered by tests
+    end
+  end
 
   def redirect_to_changed_username_profile
     potential_username = params[:username].tr("@", "").downcase
