@@ -1,6 +1,7 @@
 'use strict';
 
-const sponsorClickHandler = event => {
+console.log('JAVASCRUPT');
+var sponsorClickHandler = event => {
   if (event.target.classList.contains('follow-action-button')) {
     handleOptimisticButtRender(event.target);
     handleFollowButtPress(event.target);

@@ -333,6 +333,10 @@ Rails.application.routes.draw do
   get "/serviceworker" => "service_worker#index"
   get "/manifest" => "service_worker#manifest"
 
+  get "/shell_top" => "shell#top"
+  get "/shell_bottom" => "shell#bottom"
+
+
   get "/new" => "articles#new"
   get "/new/:template" => "articles#new"
 

@@ -7,6 +7,8 @@
 //= require serviceworker-companion
 //= require algolia/v3/algoliasearch.min
 
+console.log("Let's go!")
+
 var instantClick
   , InstantClick = instantClick = function(document, location, $userAgent) {
   // Internal variables
@@ -633,7 +635,6 @@ var instantClick
     if (!("ontouchstart" in document.documentElement)) {
       return
     }
-
     var script = document.createElement('script');
     script.src = "<%= javascript_path 'lib/pulltorefresh.js' %>";
     document.head.appendChild(script);

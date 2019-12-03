@@ -1,6 +1,6 @@
 'use strict';
 
-const fetchCallback = ({ url, headers = {}, addTokenToBody = false, body }) => {
+var fetchCallback = ({ url, headers = {}, addTokenToBody = false, body }) => {
   return csrfToken => {
     if (addTokenToBody) {
       body.append('authenticity_token', csrfToken);
