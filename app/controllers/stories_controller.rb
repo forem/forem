@@ -32,8 +32,9 @@ class StoriesController < ApplicationController
 
     case url_format
     when 'author/article'
-      result = show_article(article_by_path, moderate: params[:view] == "moderate",
-                            variant_version: params[:variant_version], previewing: params[:preview])
+      result = Articles::Show.execute(article_by_path, moderate: params[:view] == "moderate",
+                            variant_version: params[:variant_version],
+                            previewing: params[:preview], user_signed_in: user_signed_in?)
 
       @presenter = result.article_presenter
 
@@ -71,18 +72,6 @@ class StoriesController < ApplicationController
     else
       raise ActiveRecord::RecordNotFound, "Not Found" # this is not covered by tests
     end
-  end
-
-  private def show_article(article, moderate:, variant_version:, previewing:)
-    article_presenter = ArticleShowPresenter.new(article, variant_version: variant_version, user_signed_in: user_signed_in?)
-
-    raise ActiveRecord::RecordNotFound unless article_presenter.user # user existance check
-
-    raise ActiveRecord::RecordNotFound if !article.published && previewing != article.password # previewing check
-
-    moderate_url = "/internal/articles/#{article_presenter.id}" if moderate
-
-    OpenStruct.new(article_presenter: article_presenter, moderate_url: moderate_url)
   end
 
   private def url_for(article)
