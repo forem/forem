@@ -163,7 +163,6 @@ Rails.application.routes.draw do
   resources :organizations, only: %i[update create]
   resources :followed_articles, only: [:index]
   resources :follows, only: %i[show create update]
-  resources :giveaways, only: %i[new edit update]
   resources :image_uploads, only: [:create]
   resources :blocks
   resources :notifications, only: [:index]
@@ -246,7 +245,8 @@ Rails.application.routes.draw do
   post "users/remove_org_admin" => "users#remove_org_admin"
   post "users/remove_from_org" => "users#remove_from_org"
   delete "users/remove_association", to: "users#remove_association"
-  delete "users/destroy", to: "users#destroy", as: :user_destroy
+  get "users/request_destroy", to: "users#request_destroy", as: :user_request_destroy
+  get "users/confirm_destroy/:token", to: "users#confirm_destroy", as: :user_confirm_destroy
   delete "users/full_delete", to: "users#full_delete", as: :user_full_delete
   post "organizations/generate_new_secret" => "organizations#generate_new_secret"
   post "users/api_secrets" => "api_secrets#create", :as => :users_api_secrets
@@ -288,7 +288,6 @@ Rails.application.routes.draw do
   post "articles/preview" => "articles#preview"
   post "comments/preview" => "comments#preview"
   get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
-  get "/freestickers" => "giveaways#new"
   get "/shop", to: redirect("https://shop.dev.to/")
   get "/mod" => "moderations#index", :as => :mod
 
@@ -332,6 +331,10 @@ Rails.application.routes.draw do
   end
 
   get "/embed/:embeddable" => "liquid_embeds#show"
+
+  # serviceworkers
+  get "/serviceworker" => "service_worker#index"
+  get "/manifest" => "service_worker#manifest"
 
   get "/new" => "articles#new"
   get "/new/:template" => "articles#new"

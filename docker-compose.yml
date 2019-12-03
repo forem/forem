@@ -6,6 +6,7 @@ services:
       - "3000:3000"
     depends_on:
       - db
+      - redis
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgres://postgres:mysecretpassword@db:5432/postgres
@@ -28,3 +29,7 @@ services:
     image: postgres:${POSTGRES_VERSION:-9.6.15-alpine}
     ports:
       - "5432:5432"
+  redis:
+    image: "redis"
+    ports:
+      - "6379:6379"

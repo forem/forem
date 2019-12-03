@@ -172,7 +172,7 @@ module ApplicationHelper
     if ApplicationConfig["LOGO_SVG"].present?
       ApplicationConfig["LOGO_SVG"].html_safe
     else
-      inline_svg("devplain.svg", class: "logo", size: "20% * 20%", aria: true, title: "App logo")
+      inline_svg_tag("devplain.svg", class: "logo", size: "20% * 20%", aria: true, title: "App logo")
     end
   end
 

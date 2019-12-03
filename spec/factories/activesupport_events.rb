@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :activesupport_event, class: ActiveSupport::Notifications::Event do
+  factory :activesupport_event, class: "ActiveSupport::Notifications::Event" do
     name { "audit.log" }
     time { Timecop.freeze(Time.zone.now) }
     ending { time + 10.seconds }

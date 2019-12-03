@@ -29,8 +29,8 @@ variable :DEFAULT_SITE_EMAIL, :String, default: "yo@dev.to"
 variable :RACK_TIMEOUT_WAIT_TIMEOUT, :Integer, default: 100_000
 variable :RACK_TIMEOUT_SERVICE_TIMEOUT, :Integer, default: 100_000
 
-# Production related config that can be ignored
-variable :DEPLOYMENT_SIGNATURE, :String, default: "Optional"
+# Heroku release slug used to bust caches on deploys
+variable :HEROKU_SLUG_COMMIT, :String, default: "Optional"
 
 # Redis caching storage
 variable :REDIS_URL, :String, default: "redis://localhost:6379"
