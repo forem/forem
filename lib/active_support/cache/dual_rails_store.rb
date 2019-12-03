@@ -1,5 +1,5 @@
-require 'active_support/cache'
-require 'active_support/version'
+require "active_support/cache"
+require "active_support/version"
 
 # This class is modeled off of https://github.com/mezis/level2 and is temporary
 #
@@ -20,18 +20,20 @@ module ActiveSupport
       end
 
       def cleanup(*args)
-        raise 'Do not clear production caches' if Rails.env.production?
+        raise "Do not clear production caches" if Rails.env.production?
+
         @stores.each_value { |s| s.cleanup(*args) }
       end
 
       def clear(*args)
-        raise 'Do not clear production caches' if Rails.env.production?
+        raise "Do not clear production caches" if Rails.env.production?
+
         @stores.each_value { |s| s.clear(*args) }
       end
 
       def read_multi(*names)
         result = {}
-        @stores.each do |_name,store|
+        @stores.each do |_name, store|
           data = store.read_multi(*names)
           result.merge! data
           names -= data.keys
@@ -48,7 +50,7 @@ module ActiveSupport
           return entry if entry.present?
         end
 
-        return
+        nil
       end
 
       def write_entry(key, entry, options)
