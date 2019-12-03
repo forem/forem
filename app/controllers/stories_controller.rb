@@ -30,14 +30,17 @@ class StoriesController < ApplicationController
     @story_show = true
     if (@article = article_by_path)
       @presenter = ArticleShowPresenter.new(@article, variant_version: variant_version, user_signed_in: user_signed_in?)
-      not_found unless @presenter.user
-      not_found if permission_denied? # permission check
 
-      set_surrogate_key_header @presenter.record_key # side_effect
-      redirect_to "/internal/articles/#{@presenter.id}" if moderate # side_effect
-      return if performed? # did previous redirect happen? # branching
+      not_found unless @presenter.user # user existance check
 
-      render template: "articles/show" # side_effect
+      not_found if permission_denied? # previewing check # !@article.published && params[:preview] != @article.password
+
+      redirect_to "/internal/articles/#{@presenter.id}" if moderate
+      return if performed? # did previous redirect happen?
+
+      set_surrogate_key_header @presenter.record_key
+
+      render template: "articles/show"
     elsif (@article = article_by_slug) # when accessing with old author username
 
       if destination_url
