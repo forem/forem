@@ -1,5 +1,3 @@
-require 'active_support/cache/dual_rails_store'
-
 def yarn_integrity_enabled?
   ENV.fetch("YARN_INTEGRITY_ENABLED", "true") == "true"
 end
@@ -27,7 +25,7 @@ Rails.application.configure do
     REDIS_DEFAULT_EXPIRATION = 24.hours.to_i.freeze
 
     config.cache_store = :dual_rails_store, {
-      default_store: [ :memory_store ],
+      default_store: [ :redis_store, url: ENV["REDIS_URL"] + "/15", expires_in: REDIS_DEFAULT_EXPIRATION],
       redis: [ :redis_store, url: ENV["REDIS_URL"], expires_in: REDIS_DEFAULT_EXPIRATION]
     }
     config.public_file_server.headers = {

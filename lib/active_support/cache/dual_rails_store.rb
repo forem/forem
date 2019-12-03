@@ -1,6 +1,12 @@
 require 'active_support/cache'
 require 'active_support/version'
 
+# This class is modeled off of https://github.com/mezis/level2 and is temporary
+#
+# Any cache statement as-is will use :default_store (Memcache)
+# Any cache statement with the option only: :redis will only use Redis
+# Any cache statement with the option all: true will write to Redis and Memcache BUT will read/return the value read from Memcache.
+
 module ActiveSupport
   module Cache
     class DualRailsStore < Store
