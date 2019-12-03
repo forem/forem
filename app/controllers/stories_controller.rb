@@ -39,7 +39,17 @@ class StoriesController < ApplicationController
 
       render template: 'articles/show'
     when 'podcast/episode'
-      show_podcast(episode_slug: second_scope, podcast_provider: first_scope)
+      episode_slug = second_scope
+      podcast_provider = first_scope
+      podcast = Podcast.available.find_by!(slug: podcast_provider)
+      episode = PodcastEpisode.available.find_by!(slug: episode_slug).decorate
+
+      @presenter = PodcastShowPresenter.new(podcast, episode)
+      @comment = @presenter.comment
+
+      set_surrogate_key_header episode.record_key
+
+      render template: "podcast_episodes/show"
     when 'other'
       support_legacy_url_format(article_by_slug)
     end
@@ -53,22 +63,6 @@ class StoriesController < ApplicationController
     else
       'podcast/episode'
     end
-  end
-
-  private def show_podcast(podcast_provider:, episode_slug:)
-
-    @podcast = Podcast.available.find_by!(slug: podcast_provider) # object_creation
-    @episode = PodcastEpisode.available.find_by!(slug: episode_slug) # object_creation
-
-    set_surrogate_key_header @episode.record_key # side_effect
-
-    @episode = @episode.decorate # output_calculation
-    @podcast_episode_show = true # output_calculation
-    @comments_to_show_count = 25 # output_calculation
-    @comment = Comment.new # output_calculation
-
-    render template: "podcast_episodes/show" # side_effect
-    nil
   end
 
   private def support_legacy_url_format(article)
