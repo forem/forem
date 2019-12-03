@@ -18,30 +18,34 @@ class StoriesController < ApplicationController
 
   def show
     # TODO: validate input and mass assignment
-    author_username = params[:username]
-    article_slug = params[:slug]
-    previewing = params[:preview]
-
-    # Object Construction
-    article_by_path = Article.find_by(path: "/#{author_username.downcase}/#{article_slug}")&.decorate
-    article_by_slug = Article.find_by(slug: article_slug)&.decorate
+    first_scope = params[:username]
+    second_scope = params[:slug]
 
     @story_show = true
-    if (article_by_path)
-      show_article(article_by_path)
-    elsif (article_by_slug) # when accessing with old author username
-      support_legacy_url_format(article_by_slug)
+    if article_by_path = Article.find_by(path: "/#{first_scope.downcase}/#{second_scope}")&.decorate
+      url_format = 'author/article'
+    elsif article_by_slug = Article.find_by(slug: second_scope)&.decorate
+      url_format = 'other'
     else
+      url_format = 'podcast/episode'
+    end
+
+    case url_format
+    when 'author/article'
+      show_article(article_by_path)
+    when 'podcast/episode'
       show_podcast
+    when 'other'
+      support_legacy_url_format(article_by_slug)
     end
   end
 
   private def show_podcast
-    article_slug = params[:slug]
-    author_username = params[:username]
+    episode_slug = params[:slug]
+    podcast_provider = params[:username]
 
-    @podcast = Podcast.available.find_by!(slug: author_username) # object_creation
-    @episode = PodcastEpisode.available.find_by!(slug: article_slug) # object_creation
+    @podcast = Podcast.available.find_by!(slug: podcast_provider) # object_creation
+    @episode = PodcastEpisode.available.find_by!(slug: episode_slug) # object_creation
 
     set_surrogate_key_header @episode.record_key # side_effect
 
@@ -65,11 +69,13 @@ class StoriesController < ApplicationController
   private def show_article(article)
     moderate = params[:view] == "moderate"
     variant_version = params[:variant_version]
+    previewing = params[:preview]
+
     @presenter = ArticleShowPresenter.new(article, variant_version: variant_version, user_signed_in: user_signed_in?)
 
     not_found unless @presenter.user # user existance check
 
-    not_found if !article.published && params[:preview] != article.password # previewing check
+    not_found if !article.published && previewing != article.password # previewing check
 
     redirect_to "/internal/articles/#{@presenter.id}" if moderate
     return if performed? # did previous redirect happen?
