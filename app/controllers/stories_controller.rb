@@ -20,58 +20,73 @@ class StoriesController < ApplicationController
     # TODO: validate input and mass assignment
     author_username = params[:username]
     article_slug = params[:slug]
-    moderate = params[:view] == "moderate"
-    variant_version = params[:variant_version]
+    previewing = params[:preview]
 
     # Object Construction
     article_by_path = Article.find_by(path: "/#{author_username.downcase}/#{article_slug}")&.decorate
     article_by_slug = Article.find_by(slug: article_slug)&.decorate
 
     @story_show = true
-    if (@article = article_by_path)
-      @presenter = ArticleShowPresenter.new(@article, variant_version: variant_version, user_signed_in: user_signed_in?)
-
-      not_found unless @presenter.user # user existance check
-
-      not_found if permission_denied? # previewing check # !@article.published && params[:preview] != @article.password
-
-      redirect_to "/internal/articles/#{@presenter.id}" if moderate
-      return if performed? # did previous redirect happen?
-
-      set_surrogate_key_header @presenter.record_key
-
-      render template: "articles/show"
-    elsif (@article = article_by_slug) # when accessing with old author username
-
-      if destination_url
-        redirect_to destination_url
-      else
-        not_found # this is not covered by tests
-      end
+    if (article_by_path)
+      show_article(article_by_path)
+    elsif (article_by_slug) # when accessing with old author username
+      support_legacy_url_format(article_by_slug)
     else
-      @podcast = Podcast.available.find_by!(slug: author_username) # object_creation
-      @episode = PodcastEpisode.available.find_by!(slug: article_slug) # object_creation
-
-      set_surrogate_key_header @episode.record_key # side_effect
-
-      @episode = @episode.decorate # output_calculation
-      @podcast_episode_show = true # output_calculation
-      @comments_to_show_count = 25 # output_calculation
-      @comment = Comment.new # output_calculation
-
-      render template: "podcast_episodes/show" # side_effect
-      nil
+      show_podcast
     end
   end
 
-  private def destination_url
+  private def show_podcast
+    article_slug = params[:slug]
+    author_username = params[:username]
+
+    @podcast = Podcast.available.find_by!(slug: author_username) # object_creation
+    @episode = PodcastEpisode.available.find_by!(slug: article_slug) # object_creation
+
+    set_surrogate_key_header @episode.record_key # side_effect
+
+    @episode = @episode.decorate # output_calculation
+    @podcast_episode_show = true # output_calculation
+    @comments_to_show_count = 25 # output_calculation
+    @comment = Comment.new # output_calculation
+
+    render template: "podcast_episodes/show" # side_effect
+    nil
+  end
+
+  private def support_legacy_url_format(article)
+    if destination_url = url_for(article)
+      redirect_to destination_url
+    else
+      not_found # this is not covered by tests
+    end
+  end
+
+  private def show_article(article)
+    moderate = params[:view] == "moderate"
+    variant_version = params[:variant_version]
+    @presenter = ArticleShowPresenter.new(article, variant_version: variant_version, user_signed_in: user_signed_in?)
+
+    not_found unless @presenter.user # user existance check
+
+    not_found if !article.published && params[:preview] != article.password # previewing check
+
+    redirect_to "/internal/articles/#{@presenter.id}" if moderate
+    return if performed? # did previous redirect happen?
+
+    set_surrogate_key_header @presenter.record_key
+
+    render template: "articles/show"
+  end
+
+  private def url_for(article)
     article_slug = params[:slug]
     potential_username = params[:username].tr("@", "").downcase
     @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
 
     if @user&.articles&.find_by(slug: article_slug)
       URI.parse("/#{@user.username}/#{article_slug}").path
-    elsif (@organization = @article.organization)
+    elsif (@organization = article.organization)
       URI.parse("/#{@organization.slug}/#{article_slug}").path
     end
   end

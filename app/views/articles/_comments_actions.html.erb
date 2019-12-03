@@ -1,8 +1,8 @@
 <div>
-  <% if @comments_to_show_count && @article.comments_count > @comments_to_show_count %>
+  <% if @comments_to_show_count && @presenter.comments_count > @comments_to_show_count %>
     <a class="full-discussion-button"
-       href="<%= @article.path %>/comments">
-      VIEW FULL DISCUSSION (<%= @article.comments_count %> COMMENTS)
+       href="<%= @presenter.path %>/comments">
+      VIEW FULL DISCUSSION (<%= @presenter.comments_count %> COMMENTS)
     </a>
   <% end %>
   <%= render "articles/conduct_and_abuse_actions", page: "articles_show" %>

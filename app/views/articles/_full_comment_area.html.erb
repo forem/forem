@@ -1,20 +1,20 @@
-<% cache("whole-comment-area-#{@article.id}-#{@article.last_comment_at}-#{@article.show_comments}", expires_in: 2.hours) do %>
+<% cache("whole-comment-area-#{@presenter.id}-#{@presenter.last_comment_at}-#{@presenter.show_comments}", expires_in: 2.hours) do %>
   <div id="comments" data-updated-at="<%= Time.current %>">
-    <% if @article.show_comments %>
+    <% if @presenter.show_comments %>
       <div class="comments-container-container">
         <div
           class="comments-container"
           id="comments-container"
-          data-commentable-id="<%= @article.id %>"
+          data-commentable-id="<%= @presenter.id %>"
           data-commentable-type="Article">
           <%= render "/comments/form",
-                     commentable: @article,
+                     commentable: @presenter,
                      commentable_type: "Article" %>
           <div class="comment-trees" id="comment-trees-container">
-            <% if @article.comments_count > 0 %>
-              <% Comment.tree_for(@article, @comments_to_show_count).each do |comment, sub_comments| %>
+            <% if @presenter.comments_count > 0 %>
+              <% Comment.tree_for(@presenter, @comments_to_show_count).each do |comment, sub_comments| %>
                 <% cache ["comment_root_cached_tree", comment] do %>
-                  <%= tree_for(comment, sub_comments, @article) %>
+                  <%= tree_for(comment, sub_comments, @presenter) %>
                 <% end %>
               <% end %>
             <% end %>
