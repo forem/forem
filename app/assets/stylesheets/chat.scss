@@ -1204,3 +1204,25 @@
     width:96%;
   }
 }
+
+.jumpback{
+  position: relative;
+}
+
+.jumpback__messages{
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+  background: var(--theme-background, #f5f6f7);
+  border: 2px solid #111;
+  padding: 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.jumpback__hide{
+  display: none;
+}
