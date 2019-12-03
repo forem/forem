@@ -8,6 +8,7 @@ module Constants
     "anarchism.space",
     "cmx.im",
     "cybre.space",
+    "fosstodon.org",
     "framapiaf.org",
     "friends.nico",
     "hackers.town",
