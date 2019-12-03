@@ -41,15 +41,13 @@ class StoriesController < ApplicationController
 
       render template: result.template
     when 'podcast/episode'
-      show_podcast
+      show_podcast(episode_slug: second_scope, podcast_provider: first_scope)
     when 'other'
       support_legacy_url_format(article_by_slug)
     end
   end
 
-  private def show_podcast
-    episode_slug = params[:slug]
-    podcast_provider = params[:username]
+  private def show_podcast(podcast_provider:, episode_slug:)
 
     @podcast = Podcast.available.find_by!(slug: podcast_provider) # object_creation
     @episode = PodcastEpisode.available.find_by!(slug: episode_slug) # object_creation
