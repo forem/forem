@@ -26,6 +26,30 @@ class StoriesController < ApplicationController
     def variant_number
       @variant_version || (@user_signed_in ? 0 : rand(2)) # output_calculation
     end
+
+    def user
+      @article.user
+    end
+
+    def organization
+      @article.organization if @article.organization_id.present?
+    end
+
+    def comments_count
+      @article.cached_tag_list_array.include?("discuss") ? 50 : 30
+    end
+
+    def second_user
+      User.find(@article.second_user_id) if @article.second_user_id.present?
+    end
+
+    def third_user
+      User.find(@article.third_user_id) if @article.third_user_id.present?
+    end
+
+    def comment
+      Comment.new(body_markdown: @article&.comment_template)
+    end
   end
 
   def show
@@ -43,19 +67,16 @@ class StoriesController < ApplicationController
     if (@article = article_by_path)
       @presenter = ShowArticlePresenter.new(@article, variant_version: variant_version, user_signed_in: user_signed_in?)
       @variant_number = @presenter.variant_number # TODO: couldn't replace this assignment, try to delete later
-      # assign_article_show_variables
-      # assign_user_and_org
-      @user = @article.user || not_found # output_calculation
-      @organization = @article.organization if @article.organization_id.present? # output_calculation
-      @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30 # output_calculation
-      # assign_second_and_third_user
-      if @article.second_user_id.present?
-        @second_user = User.find(@article.second_user_id) # output_calculation
-        @third_user = User.find(@article.third_user_id) if @article.third_user_id.present? # output_calculation
-      end
+      not_found unless @presenter.user
+      @user = @presenter.user
+      @organization = @presenter.organization
+      @comments_to_show_count = @presenter.comments_count
+      
+      @second_user = @presenter.second_user
+      @third_user = @presenter.third_user
 
       not_found if permission_denied? # permission check
-      @comment = Comment.new(body_markdown: @article&.comment_template) # output_calculation
+      @comment = @presenter.comment
 
       set_surrogate_key_header @article.record_key # side_effect
       redirect_to "/internal/articles/#{@article.id}" if moderate # side_effect
