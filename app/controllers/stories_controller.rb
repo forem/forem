@@ -75,20 +75,19 @@ class StoriesController < ApplicationController
   end
 
   def support_legacy_url_formats(article)
-    redirect_to guess_url_for(article.organization, params[:username], params[:slug])
+    redirect_to try_to_find_url_for(article, params[:username], params[:slug])
   end
 
-  def guess_url_for(organization, authorname, article_slug)
+  def try_to_find_url_for(article, authorname, article_slug)
+    # Search potential author considering old usernames
     potential_username = authorname.tr("@", "").downcase
     user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
+    return URI.parse("/#{user.username}/#{article_slug}").path if user&.articles&.find_by(slug: article_slug)
 
-    if user&.articles&.find_by(slug: article_slug)
-      URI.parse("/#{user.username}/#{article_slug}").path
-    elsif organization
-      URI.parse("/#{organization.slug}/#{article_slug}").path
-    else
-      raise ActiveRecord::RecordNotFound, "Not Found" # this is not covered by tests
-    end
+    # try to use article organization
+    return URI.parse("/#{article.organization.slug}/#{article_slug}").path if article.organization
+
+    raise ActiveRecord::RecordNotFound, "Not Found" # this is not covered by tests
   end
 
   def redirect_to_changed_username_profile
