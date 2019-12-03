@@ -1,5 +1,5 @@
-export function getAllMessages(channelId, successCb, failureCb) {
-  fetch(`/chat_channels/${channelId}`, {
+export function getAllMessages(channelId, messageOffset, successCb, failureCb) {
+  fetch(`/chat_channels/${channelId}?message_offset=${messageOffset}`, {
     Accept: 'application/json',
     'Content-Type': 'application/json',
     credentials: 'same-origin',
