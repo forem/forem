@@ -16,9 +16,9 @@ class StoriesController < ApplicationController
     render template: "articles/search"
   end
 
-  class ShowArticlePresenter
+  class ShowArticlePresenter < SimpleDelegator
     def initialize(article, variant_version:, user_signed_in:)
-      @article = article
+      __setobj__(article)
       @variant_version = variant_version
       @user_signed_in = user_signed_in
     end
@@ -27,28 +27,24 @@ class StoriesController < ApplicationController
       @variant_version || (@user_signed_in ? 0 : rand(2)) # output_calculation
     end
 
-    def user
-      @article.user
-    end
-
     def organization
-      @article.organization if @article.organization_id.present?
+      organization if organization_id.present?
     end
 
     def comments_count
-      @article.cached_tag_list_array.include?("discuss") ? 50 : 30
+      cached_tag_list_array.include?("discuss") ? 50 : 30
     end
 
     def second_user
-      User.find(@article.second_user_id) if @article.second_user_id.present?
+      User.find(second_user_id) if second_user_id.present?
     end
 
     def third_user
-      User.find(@article.third_user_id) if @article.third_user_id.present?
+      User.find(third_user_id) if third_user_id.present?
     end
 
     def comment
-      Comment.new(body_markdown: @article&.comment_template)
+      Comment.new(body_markdown: __getobj__&.comment_template)
     end
   end
 
@@ -78,8 +74,8 @@ class StoriesController < ApplicationController
       not_found if permission_denied? # permission check
       @comment = @presenter.comment
 
-      set_surrogate_key_header @article.record_key # side_effect
-      redirect_to "/internal/articles/#{@article.id}" if moderate # side_effect
+      set_surrogate_key_header @presenter.record_key # side_effect
+      redirect_to "/internal/articles/#{@presenter.id}" if moderate # side_effect
       return if performed? # did previous redirect happen? # branching
 
       render template: "articles/show" # side_effect
