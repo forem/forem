@@ -10,7 +10,7 @@ RSpec.describe FollowPolicy, type: :policy do
   end
 
   context "when user is signed in" do
-    let(:user) { build_stubbed(:user) }
+    let!(:user) { create(:user) }
 
     it { is_expected.to permit_actions(%i[create]) }
 
