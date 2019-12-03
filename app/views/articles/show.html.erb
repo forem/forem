@@ -1,3 +1,13 @@
+<%
+@variant_number = @presenter.variant_number
+@user = @presenter.user
+organization = @presenter.organization
+@comments_to_show_count = @presenter.comments_count # is not being used?
+second_user = @presenter.second_user
+third_user = @presenter.third_user
+@comment = @presenter.comment
+%>
+
 <% title @presenter.title %>
 
 <%= javascript_include_tag "https://unpkg.com/@webcomponents/webcomponentsjs@2.2.10/webcomponents-loader.js", defer: true %>
@@ -106,10 +116,10 @@
         <% end %>
       </section>
       <header class="title" id="main-title">
-        <% if @organization %>
-          <a href="<%= @organization.path %>" class="org-branded-title-link">
+        <% if organization %>
+          <a href="<%= organization.path %>" class="org-branded-title-link">
             <div class="org-branded-title">
-              <img src="<%= ProfileImage.new(@organization).get(50) %>" class="org-pic" alt="<%= @organization.name %> profile image"> <%= @organization.name %>
+              <img src="<%= ProfileImage.new(organization).get(50) %>" class="org-pic" alt="<%= organization.name %> profile image"> <%= organization.name %>
             </div>
           </a>
         <% end %>
@@ -133,11 +143,11 @@
           <% if @presenter.published_timestamp.present? %>
             <time itemprop="datePublished" datetime="<%= @presenter.published_timestamp %>"><%= @presenter.readable_publish_date %></time>
           <% end %>
-          <% if @second_user.present? %>
-            <em>with <b><a href="<%= @second_user.path %>"><%= @second_user.name %></a></b></em>
+          <% if second_user.present? %>
+            <em>with <b><a href="<%= second_user.path %>"><%= second_user.name %></a></b></em>
           <% end %>
-          <% if @third_user.present? %>
-            <em> and <b><a href="<%= @third_user.path %>"><%= @third_user.name %></a></b></em>
+          <% if third_user.present? %>
+            <em> and <b><a href="<%= third_user.path %>"><%= third_user.name %></a></b></em>
           <% end %>
           <% if should_show_updated_on?(@presenter) %>
             <span><em>Updated on <time itemprop="dateModified" datetime="<%= @presenter.edited_at&.utc&.iso8601 %>"><%= @presenter.edited_at&.strftime("%b %d, %Y") %></time></em></span>
@@ -195,7 +205,7 @@
         <%= render "articles/about_author" %>
       <% end %>
     <% end %>
-    <%= render "articles/org_branding", organization: @organization %>
+    <%= render "articles/org_branding", organization: organization %>
     <%= render "articles/full_comment_area" %>
   </div>
 
@@ -214,7 +224,7 @@
   <% end %>
 </div>
 
-<% stick_nav_cache_key = "sticky-sidebar-#{@presenter.id}-#{(@organization || @user).profile_updated_at}-#{(@organization || @user).last_article_at}-#{@presenter.variant_number}-#{(@organization || @user).pro?}" %>
+<% stick_nav_cache_key = "sticky-sidebar-#{@presenter.id}-#{(organization || @user).profile_updated_at}-#{(organization || @user).last_article_at}-#{@presenter.variant_number}-#{(organization || @user).pro?}" %>
 <% cache(stick_nav_cache_key, expires_in: 50.hours) do %>
   <%= render "articles/sticky_nav" %>
 <% end %>
