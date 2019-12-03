@@ -879,9 +879,9 @@ export default class Chat extends Component {
         this.scroller.scrollHeight;
 
       if (scrolledRatio < 0.7) {
-        jumpbackButton.classList.remove('jumpback__hide');
+        jumpbackButton.classList.remove('chatchanneljumpback__hide');
       } else if (scrolledRatio > 0.8) {
-        jumpbackButton.classList.add('jumpback__hide');
+        jumpbackButton.classList.add('chatchanneljumpback__hide');
       }
 
       if (this.scroller.scrollTop === 0 && !allMessagesLoaded) {
@@ -914,7 +914,7 @@ export default class Chat extends Component {
     scrollToBottom();
     document
       .getElementById('jumpback_button')
-      .classList.remove('jumpback__hide');
+      .classList.remove('chatchanneljumpback__hide');
   };
 
   renderActiveChatChannel = (channelHeader, incomingCall) => {
@@ -935,17 +935,20 @@ export default class Chat extends Component {
             {incomingCall}
             <div className="messagelist__sentinel" id="messagelist__sentinel" />
           </div>
-          <div className="jumpback jumpback__hide" id="jumpback_button">
+          <div
+            className="chatchanneljumpback chatchanneljumpback__hide"
+            id="jumpback_button"
+          >
             <div
               role="button"
-              className="jumpback__messages"
+              className="chatchanneljumpback__messages"
               onClick={this.jumpBacktoBottom}
               tabIndex="0"
               onKeyUp={e => {
                 if (e.keyCode === 13) this.jumpBacktoBottom();
               }}
             >
-              Jump Back
+              Scroll to Bottom
             </div>
           </div>
           <div className="activechatchannel__alerts">
