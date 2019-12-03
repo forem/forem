@@ -20,17 +20,12 @@ class StoriesController < ApplicationController
     # TODO: validate input and mass assignment
     first_scope = params[:username]
     second_scope = params[:slug]
+    article_by_path = Article.find_by(path: "/#{first_scope.downcase}/#{second_scope}")&.decorate
+    article_by_slug = Article.find_by(slug: second_scope)&.decorate
 
     @story_show = true
-    if article_by_path = Article.find_by(path: "/#{first_scope.downcase}/#{second_scope}")&.decorate
-      url_format = 'author/article'
-    elsif article_by_slug = Article.find_by(slug: second_scope)&.decorate
-      url_format = 'other'
-    else
-      url_format = 'podcast/episode'
-    end
 
-    case url_format
+    case url_format(article_by_path, article_by_slug)
     when 'author/article'
       result = Articles::Show.execute(article_by_path, moderate: params[:view] == "moderate",
                             variant_version: params[:variant_version],
@@ -47,6 +42,16 @@ class StoriesController < ApplicationController
       show_podcast(episode_slug: second_scope, podcast_provider: first_scope)
     when 'other'
       support_legacy_url_format(article_by_slug)
+    end
+  end
+
+  private def url_format(article_by_path, article_by_slug)
+    if article_by_path
+      'author/article'
+    elsif article_by_slug
+      'other'
+    else
+      'podcast/episode'
     end
   end
 
