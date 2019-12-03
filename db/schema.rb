@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_06_102826) do
+ActiveRecord::Schema.define(version: 2019_12_03_114809) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -1218,6 +1218,9 @@ ActiveRecord::Schema.define(version: 2019_11_06_102826) do
   add_foreign_key "push_notification_subscriptions", "users"
   add_foreign_key "sponsorships", "organizations"
   add_foreign_key "sponsorships", "users"
+  add_foreign_key "tag_adjustments", "articles", on_delete: :cascade
+  add_foreign_key "tag_adjustments", "tags", on_delete: :cascade
+  add_foreign_key "tag_adjustments", "users", on_delete: :cascade
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
   add_foreign_key "webhook_endpoints", "oauth_applications"
