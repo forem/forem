@@ -25,7 +25,7 @@ Rails.application.config.active_support.use_authenticated_message_encryption = t
 
 # Add default protection from forgery to ActionController::Base instead of in
 # ApplicationController.
-# Rails.application.config.action_controller.default_protect_from_forgery = true
+Rails.application.config.action_controller.default_protect_from_forgery = true
 
 # Store boolean values are in sqlite3 databases as 1 and 0 instead of 't' and
 # 'f' after migrating old data.
