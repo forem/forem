@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_03_114809) do
+ActiveRecord::Schema.define(version: 2019_12_03_160028) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -1204,11 +1204,14 @@ ActiveRecord::Schema.define(version: 2019_12_03_114809) do
     t.index ["user_id"], name: "index_webhook_endpoints_on_user_id"
   end
 
+  add_foreign_key "api_secrets", "users", on_delete: :cascade
   add_foreign_key "audit_logs", "users"
   add_foreign_key "badge_achievements", "badges"
   add_foreign_key "badge_achievements", "users"
   add_foreign_key "chat_channel_memberships", "chat_channels"
   add_foreign_key "chat_channel_memberships", "users"
+  add_foreign_key "classified_listings", "users", on_delete: :cascade
+  add_foreign_key "identities", "users", on_delete: :cascade
   add_foreign_key "messages", "chat_channels"
   add_foreign_key "messages", "users"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
