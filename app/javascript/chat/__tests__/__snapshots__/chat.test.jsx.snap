@@ -185,17 +185,17 @@ exports[`<Chat /> should load chat 1`] = `
           />
         </div>
         <div
-          class="jumpback jumpback__hide"
+          class="chatchanneljumpback chatchanneljumpback__hide"
           id="jumpback_button"
         >
           <div
-            class="jumpback__messages"
+            class="chatchanneljumpback__messages"
             onClick={[Function]}
             onKeyUp={[Function]}
             role="button"
             tabIndex="0"
           >
-            Jump Back
+            Scroll to Bottom
           </div>
         </div>
         <div
