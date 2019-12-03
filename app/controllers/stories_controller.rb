@@ -32,10 +32,10 @@ class StoriesController < ApplicationController
 
     case url_format
     when 'author/article'
-      result = show_article(article_by_path)
+      result = show_article(article_by_path, moderate: params[:view] == "moderate",
+                            variant_version: params[:variant_version], previewing: params[:preview])
 
-      redirect_to result.moderate_url if result.moderate_url
-      return if performed? # did previous redirect happen?
+      return redirect_to result.moderate_url if result.moderate_url
 
       set_surrogate_key_header result.surrogate_key
 
@@ -73,10 +73,7 @@ class StoriesController < ApplicationController
     end
   end
 
-  private def show_article(article)
-    moderate = params[:view] == "moderate"
-    variant_version = params[:variant_version]
-    previewing = params[:preview]
+  private def show_article(article, moderate:, variant_version:, previewing:)
 
     @presenter = ArticleShowPresenter.new(article, variant_version: variant_version, user_signed_in: user_signed_in?)
 
