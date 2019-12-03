@@ -198,13 +198,6 @@ a.header-link {
         padding: 5px 6px 1px;
       }
     }
-
-    .comments-hidden-message {
-      padding: 20px 0px;
-      p {
-        font-style: italic;
-      }
-    }
   }
 
   .top-level-actions {
@@ -1108,5 +1101,11 @@ a.header-link {
   }
   to {
     @include themeable(background-color, theme-container-background, #fff);
+  }
+}
+
+.comments-hidden-message {
+  p {
+    font-style: italic;
   }
 }
