@@ -16,38 +16,6 @@ class StoriesController < ApplicationController
     render template: "articles/search"
   end
 
-  class ShowArticlePresenter < SimpleDelegator
-    def initialize(article, variant_version:, user_signed_in:)
-      __setobj__(article)
-      @variant_version = variant_version
-      @user_signed_in = user_signed_in
-    end
-
-    def variant_number
-      @variant_version || (@user_signed_in ? 0 : rand(2)) # output_calculation
-    end
-
-    def organization
-      organization if organization_id.present?
-    end
-
-    def comments_count
-      cached_tag_list_array.include?("discuss") ? 50 : 30
-    end
-
-    def second_user
-      User.find(second_user_id) if second_user_id.present?
-    end
-
-    def third_user
-      User.find(third_user_id) if third_user_id.present?
-    end
-
-    def comment
-      Comment.new(body_markdown: __getobj__&.comment_template)
-    end
-  end
-
   def show
     # TODO: validate input and mass assignment
     author_username = params[:username]
@@ -61,7 +29,7 @@ class StoriesController < ApplicationController
 
     @story_show = true
     if (@article = article_by_path)
-      @presenter = ShowArticlePresenter.new(@article, variant_version: variant_version, user_signed_in: user_signed_in?)
+      @presenter = ArticleShowPresenter.new(@article, variant_version: variant_version, user_signed_in: user_signed_in?)
       not_found unless @presenter.user
       not_found if permission_denied? # permission check
 
