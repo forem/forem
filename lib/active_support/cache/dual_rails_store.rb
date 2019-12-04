@@ -56,6 +56,12 @@ module ActiveSupport
       def write_entry(key, entry, options)
         stores = selected_stores(options)
         stores.each do |store|
+          # Ensure default expiration gets set for keys without
+          options[:expires_in] ||= store.options[:expires_in]
+
+          # Add connection to options hash for dalli_store
+          options = options.merge(connectio: store.instance_variable_get(:@data)) if store.options[:include_connection]
+
           result = store.send(:write_entry, key, entry, options)
           return false unless result
         end

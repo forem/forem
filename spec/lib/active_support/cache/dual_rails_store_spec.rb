@@ -4,10 +4,12 @@ RSpec.describe ActiveSupport::Cache::DualRailsStore, type: :lib do
   subject do
     ActiveSupport::Cache.lookup_store :dual_rails_store,
                                       default_store: [
-                                        :memory_store, { size: 10.megabytes }
+                                        :memory_store,
+                                        { size: 10.megabytes },
                                       ],
                                       second_store: [
-                                        :memory_store, { size: 5.megabytes }
+                                        :redis_store,
+                                        { size: 5.megabytes, expires_in: 200 },
                                       ]
   end
 
@@ -49,6 +51,13 @@ RSpec.describe ActiveSupport::Cache::DualRailsStore, type: :lib do
     it "honors expiration" do
       dual_store.write("foo", "bar", expires_in: 0)
       expect(dual_store.read("foo")).to be_nil
+    end
+
+    it "honors default expiration" do
+      dual_store.write("foo", "bar")
+      ttl = second_store.data.ttl("foo")
+      expect(ttl).to be < 201
+      expect(ttl).to be > 0
     end
 
     it "can #clear" do

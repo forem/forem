@@ -106,7 +106,9 @@ Rails.application.configure do
                          password: ENV["MEMCACHIER_PASSWORD"],
                          failover: true,
                          socket_timeout: 1.5,
-                         socket_failure_delay: 0.2 } ],
+                         socket_failure_delay: 0.2,
+                         expires_in: REDIS_DEFAULT_EXPIRATION,
+                         include_connection: true } ],
     redis: [ :redis_store, url: ENV["REDIS_URL"], expires_in: REDIS_DEFAULT_EXPIRATION ]
   }
 
