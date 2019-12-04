@@ -6,9 +6,8 @@
         [deleted]
       </div>
     </div>
-  <% elsif should_be_hidden?(comment, @root_comment) && comment.depth.zero? %>
-  <div class="inner-comment" style="display:none;">
-  </div>
+  <% elsif should_be_hidden?(comment, @root_comment) %>
+    <div class="inner-comment" style="display:none"></div>
   <% else %>
     <div class="inner-comment">
       <% decorated_comment = comment.decorate %>
@@ -30,7 +29,7 @@
       <% end %>
       <% if !should_be_hidden?(comment, @root_comment) && comment.hidden_by_commentable_user %>
         <div class="low-quality-comment-marker">
-          Comment hidden by post author - only visible in this permalink
+          Comment hidden by post author - thread only visible in this permalink
         </div>
       <% end %>
 
@@ -84,12 +83,6 @@
           </div>
         </div>
       </div>
-
-    <% if should_be_hidden?(comment, @root_comment) %>
-      <div class="body hidden-comment" style="opacity:0.3;">
-          [hidden by post author]
-      </div>
-    <% else %>
       <div class="body <%= "low-quality-comment" if decorated_comment.low_quality %>">
           <%= comment.processed_html.html_safe %>
           <button class="reaction-button" id="button-for-comment-<%= comment.id %>" data-comment-id="<%= comment.id %>" title="heart">
@@ -108,7 +101,6 @@
           <a href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>" class="toggle-reply-form thread-indication" rel="nofollow">THREAD</a>
         <% end %>
       </div>
-    <% end %>
     </div>
   <% end %>
   <%= subtree_html %>
