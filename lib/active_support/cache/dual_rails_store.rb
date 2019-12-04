@@ -46,11 +46,11 @@ module ActiveSupport
       def read_entry(key, options)
         stores = selected_stores(options)
         stores.each do |store|
-          if store.options[:dalli_store]
-            entry = store.instance_variable_get(:@data).get(key, options)
-          else
-            entry = store.send :read_entry, key, options
-          end
+          entry = if store.options[:dalli_store]
+                    store.instance_variable_get(:@data).get(key, options)
+                  else
+                    store.send :read_entry, key, options
+                  end
 
           return entry if entry.present?
         end
