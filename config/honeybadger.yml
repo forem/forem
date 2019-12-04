@@ -1,0 +1,8 @@
+---
+ignore:
+  - "Pundit::NotAuthorizedError"
+  - "ActiveRecord::RecordNotFound"
+request:
+  filter_keys:
+    - authorization
+    - password
