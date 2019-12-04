@@ -680,7 +680,7 @@ var instantClick
 // INITIALIZE/ERROR HANDLING
 
   Honeybadger.configure({
-    apiKey: "<%= ENV.fetch('HONEYBADGER_JS_API_KEY', 'api_key') %>",
+    apiKey: "<%= ApplicationConfig['HONEYBADGER_JS_API_KEY'] %>",
     environment: "production"
   });
 
