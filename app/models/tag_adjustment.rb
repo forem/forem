@@ -8,7 +8,7 @@ class TagAdjustment < ApplicationRecord
   validates :status, inclusion: { in: %w[committed pending committed_and_resolvable resolved] }, presence: true
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   validate :user_permissions
-  validate :removal_tag_exists_on_article
+  validate :article_tag_list
 
   belongs_to :user
   belongs_to :tag
@@ -26,7 +26,8 @@ class TagAdjustment < ApplicationRecord
       user&.has_role?(:super_admin)
   end
 
-  def removal_tag_exists_on_article
-    errors.add(:tag_id, "selected for removal is not a current live tag") if adjustment_type == "removal" && article.tag_list.exclude?(tag_name)
+  def article_tag_list
+    errors.add(:tag_id, "selected for removal is not a current live tag.") if adjustment_type == "removal" && article.tag_list.exclude?(tag_name)
+    errors.add(:base, "4 tags max per article.") if adjustment_type == "addition" && article.tag_list.count > 3
   end
 end

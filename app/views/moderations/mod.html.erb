@@ -179,10 +179,8 @@
         <%= f.hidden_field :article_id, value: @moderatable.id %>
         <%= f.radio_button :adjustment_type, "removal", required: true %>
         <%= f.label :adjustment_type, "Remove", value: "removal" %>
-        <% if @moderatable.tag_list.count < 4 %>
-          <%= f.radio_button :adjustment_type, "addition", required: true %>
-          <%= f.label :adjustment_type, "Add", value: "addition" %>
-        <% end %>
+        <%= f.radio_button :adjustment_type, "addition", required: true %>
+        <%= f.label :adjustment_type, "Add", value: "addition" %>
         <br />
         <% if current_user.has_role?(:super_admin) %>
           <%= f.text_field :tag_name, placeholder: "Tag Name", required: true %>
