@@ -46,7 +46,12 @@ module ActiveSupport
       def read_entry(key, options)
         stores = selected_stores(options)
         stores.each do |store|
-          entry = store.send :read_entry, key, options
+          if store.options[:dalli_store]
+            entry = store.instance_variable_get(:@data).get(key, options)
+          else
+            entry = store.send :read_entry, key, options
+          end
+
           return entry if entry.present?
         end
 
@@ -60,11 +65,13 @@ module ActiveSupport
           options[:expires_in] ||= store.options[:expires_in]
 
           # Add connection to options hash for dalli_store
-          options = options.merge(connection: store.instance_variable_get(:@data)) if store.options[:include_connection]
+          options = options.merge(connection: store.instance_variable_get(:@data)) if store.options[:dalli_store]
 
           result = store.send(:write_entry, key, entry, options)
           return false unless result
         end
+
+        "OK"
       end
 
       def delete_entry(key, options)
