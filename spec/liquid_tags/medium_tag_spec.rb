@@ -13,6 +13,7 @@ RSpec.describe MediumTag, type: :liquid_tag do
       author: "Edison",
       author_image: "https://cdn-images-1.medium.com/fit/c/120/120/1*qFzi921ix0_kkrFMKYgELw.jpeg",
       reading_time: "4 min read",
+      publication_date: "Nov 3, 2018",
       url: "https://medium.com/@edisonywh"
     }
   end
