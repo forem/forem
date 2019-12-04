@@ -21,8 +21,6 @@ class ModerationsController < ApplicationController
     @moderatable = Article.find_by(slug: params[:slug])
     @tag_moderator_tags = Tag.with_role(:tag_moderator, current_user)
     @adjustments = TagAdjustment.where(article_id: @moderatable.id)
-    @removed_adjustments = @adjustments.filter { |a| a.adjustment_type == "removal" }
-    @added_adjustments = @adjustments.filter { |a| a.adjustment_type == "addition" }
     @already_adjusted_tags = @adjustments.map(&:tag_name).join(", ")
     @allowed_to_adjust = @moderatable.class.name == "Article" && (current_user.has_role?(:super_admin) || @tag_moderator_tags.any?)
     render template: "moderations/mod"
