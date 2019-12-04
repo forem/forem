@@ -1,17 +1,30 @@
 require "rails_helper"
 
 RSpec.describe Poll, type: :model do
-  let(:article) { create(:article, featured: true) }
-  let(:poll) { create(:poll, article_id: article.id) }
+  let_it_be(:article) { create(:article, featured: true) }
 
-  it "limits length of prompt" do
-    long_string = "0" * 200
-    poll.prompt_markdown = long_string
-    expect(poll).not_to be_valid
+  describe "validations" do
+    let_it_be(:poll) { build(:poll, article: article) }
+
+    describe "#prompt_markdown" do
+      it "is valid up to 128 chars" do
+        poll.prompt_markdown = "x" * 128
+        expect(poll).to be_valid
+      end
+
+      it "is not valid with more than 128 chars" do
+        poll.prompt_markdown = "x" * 129
+        expect(poll).not_to be_valid
+      end
+    end
   end
 
-  it "creates options from input" do
-    poll = create(:poll, article_id: article.id, poll_options_input_array: %w[hello goodbye heyheyhey])
-    expect(poll.poll_options.size).to eq(3)
+  context "when callbacks are triggered after create" do
+    it "creates options from input" do
+      options = %w[hello goodbye heyheyhey]
+      expect do
+        create(:poll, article: article, poll_options_input_array: options)
+      end.to change(PollOption, :count).by(options.size)
+    end
   end
 end
