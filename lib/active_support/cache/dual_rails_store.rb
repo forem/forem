@@ -60,7 +60,7 @@ module ActiveSupport
           options[:expires_in] ||= store.options[:expires_in]
 
           # Add connection to options hash for dalli_store
-          options = options.merge(connectio: store.instance_variable_get(:@data)) if store.options[:include_connection]
+          options = options.merge(connection: store.instance_variable_get(:@data)) if store.options[:include_connection]
 
           result = store.send(:write_entry, key, entry, options)
           return false unless result
