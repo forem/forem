@@ -99,8 +99,8 @@ gem "ulid", "~> 1.1" # Universally Unique Lexicographically Sortable Identifier 
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "webpacker", "~> 3.5" # Use webpack to manage app-like JavaScript modules in Rails
 
-source 'https://rails-assets.org' do
-  gem 'rails-assets-honeybadger'
+source "https://rails-assets.org" do
+  gem "rails-assets-honeybadger"
 end
 
 group :development do
