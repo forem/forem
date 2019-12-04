@@ -1,3 +1,4 @@
+<% @article = @presenter if @presenter %>
 <div class="article-actions" id="article-reaction-actions">
   <button id="reaction-butt-like" class="article-reaction-butt like-reaction-button" data-category="like" alt="heart-emoji" title="heart">
     <img alt="heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" /><span class="reaction-number" id="reaction-number-like"></span>
@@ -12,13 +13,13 @@
      id="article-actions-tweet-button"
      rel="noopener"
      target='_blank'
-     href='https://twitter.com/intent/tweet?text="<%= u @presenter.title.strip %>" by <%= @presenter.user.twitter_username ? "@" + @presenter.user.twitter_username : @presenter.user.name %> %23DEVcommunity https://dev.to<%= @presenter.path %>'>
+     href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>
     <img src="<%= asset_path("twitter.svg") %>" alt="twitter logo">
   </a>
   <a class="article-actions-comments-count" href="#comments" id="jump-to-comments">
     DISCUSS
-    <% if @presenter.comments_count.positive? %>
-      <span class="article-actions-comments-count-number">(<%= @presenter.comments_count %>)</span>
+    <% if @article.comments_count.positive? %>
+      <span class="article-actions-comments-count-number">(<%= @article.comments_count %>)</span>
     <% else %>
     <% end %>
   </a>
@@ -30,7 +31,7 @@
       <div>
         <% if user_signed_in? %>
           <div class="dropdown-link-row notification-subscriptions-area-row"
-            id="notification-subscriptions-area" data-notifiable-id="<%= @presenter.id %>" data-notifiable-type="Article">
+            id="notification-subscriptions-area" data-notifiable-id="<%= @article.id %>" data-notifiable-type="Article">
             <div class="notification-subscriptions-area-header">🔔 Notification Subscriptions
               <button for="subscribe_notifications" id="notification-subscription-label_not_subscribed" class="notification-subscription-label notification-subscription-label-unsubscribe" data-payload="not_subscribed" name="unsubscribe">
                 Unsubscribe
@@ -50,35 +51,35 @@
         <% end %>
         <div class="dropdown-link-row">
           <clipboard-copy for="article-copy-link-input" aria-live="polite" aria-controls="article-copy-link-announcer">
-            <input type="text" id="article-copy-link-input" value="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %><%= @presenter.path %>" readonly />
+            <input type="text" id="article-copy-link-input" value="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %><%= @article.path %>" readonly />
             <img id="article-copy-icon" src="<%= asset_path("content-copy.svg") %>" alt="Copy to Clipboard" />
             <span id="article-copy-link-announcer" role="alert" hidden>Copied to Clipboard</span>
           </clipboard-copy>
         </div>
-        <web-share-wrapper shareurl="https://dev.to<%= @presenter.path %>" sharetext="<%= @presenter.title %>" template="web-share-button">
+        <web-share-wrapper shareurl="https://dev.to<%= @article.path %>" sharetext="<%= @article.title %>" template="web-share-button">
           <div class="dropdown-link-row">
             <a target="_blank"
-               href='https://twitter.com/intent/tweet?text="<%= u @presenter.title.strip %>" by <%= @presenter.user.twitter_username ? "@" + @presenter.user.twitter_username : @presenter.user.name %> %23DEVcommunity https://dev.to<%= @presenter.path %>'>
+               href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>
               Share to Twitter
             </a>
           </div>
           <div class="dropdown-link-row">
-            <a target='_blank' href='https://www.linkedin.com/shareArticle?mini=true&url=https://dev.to<%= @presenter.path %>&title=<%= @presenter.title %>&summary=<%= @presenter.description %>&source=dev.to'>
+            <a target='_blank' href='https://www.linkedin.com/shareArticle?mini=true&url=https://dev.to<%= @article.path %>&title=<%= @article.title %>&summary=<%= @article.description %>&source=dev.to'>
               Share to LinkedIn
             </a>
           </div>
           <div class="dropdown-link-row">
-            <a target='_blank' href='https://www.reddit.com/submit?url=https://dev.to<%= @presenter.path %>&title=<%= @presenter.title %>'>
+            <a target='_blank' href='https://www.reddit.com/submit?url=https://dev.to<%= @article.path %>&title=<%= @article.title %>'>
               Share to Reddit
             </a>
           </div>
           <div class="dropdown-link-row">
-            <a target='_blank' href='https://news.ycombinator.com/submitlink?u=https://dev.to<%= @presenter.path %>&t=<%= @presenter.title %>'>
+            <a target='_blank' href='https://news.ycombinator.com/submitlink?u=https://dev.to<%= @article.path %>&t=<%= @article.title %>'>
               Share to Hacker News
             </a>
           </div>
           <div class="dropdown-link-row">
-            <a target='_blank' href='https://www.facebook.com/sharer.php?u=https://dev.to<%= @presenter.path %>'>
+            <a target='_blank' href='https://www.facebook.com/sharer.php?u=https://dev.to<%= @article.path %>'>
               Share to Facebook
             </a>
           </div>
@@ -91,9 +92,9 @@
     </div>
   </div>
 </div>
-<% if @variant_number.to_i == 0 && !user_signed_in? && @presenter.body_markdown.size > 900 %>
+<% if @variant_number.to_i == 0 && !user_signed_in? && @article.body_markdown.size > 900 %>
   <% cache("below-article-html-variant-#{rand(20)}", expires_in: 8.hours) do %>
-    <% @html_variant = HtmlVariant.find_for_test(@presenter.cached_tag_list_array, "article_show_below_article_cta") %>
+    <% @html_variant = HtmlVariant.find_for_test(@article.cached_tag_list_array, "article_show_below_article_cta") %>
     <% if @html_variant %>
       <div class="html-variant-wrapper" id="html-variant-article-show-below-article" data-variant-id="<%= @html_variant.id %>">
         <%= @html_variant.html.html_safe %>

@@ -1,4 +1,5 @@
-<% @actor = @presenter.organization || @presenter.user %>
+<% @actor = @presenter if @presenter.present? %>
+<% @actor = @article.organization || @article.user %>
 <style>
   .primary-sticky-nav-author, .primary-sticky-nav-author-element {
     border: 1px solid <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
@@ -75,7 +76,7 @@
   </div>
   <% if @variant_number.to_i == 1 %>
     <% cache("html-variant-sidebar#{rand(300)}", expires_in: 2.hours) do %>
-      <% @html_variant = HtmlVariant.find_for_test(@presenter.cached_tag_list_array) %>
+      <% @html_variant = HtmlVariant.find_for_test(@article.cached_tag_list_array) %>
       <% if @html_variant %>
         <div class="html-variant-wrapper" id="html-variant-article-show-sidebar" data-variant-id="<%= @html_variant.id %>">
           <%= @html_variant.html.html_safe %>
@@ -83,8 +84,8 @@
       <% end %>
     <% end %>
   <% else %>
-    <% cache("article-sticky-nav-articles-#{@presenter.id}-#{@actor.last_article_at}", expires_in: 48.hours) do %>
-      <% @sticky_collection = StickyArticleCollection.new(@presenter, @organization || @user) %>
+    <% cache("article-sticky-nav-articles-#{@article.id}-#{@actor.last_article_at}", expires_in: 48.hours) do %>
+      <% @sticky_collection = StickyArticleCollection.new(@article, @organization || @user) %>
       <% @sticky_articles = @sticky_collection.suggested_stickies %>
       <% @user_stickies = @sticky_collection.user_stickies %>
       <% if @user_stickies.any? %>
