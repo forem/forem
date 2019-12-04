@@ -54,7 +54,7 @@ RSpec.describe ActiveSupport::Cache::DualRailsStore, type: :lib do
     end
 
     it "honors default expiration" do
-      dual_store.write("foo", "bar")
+      dual_store.write("foo", "bar", all: true)
       ttl = second_store.data.ttl("foo")
       expect(ttl).to be < 201
       expect(ttl).to be > 0
