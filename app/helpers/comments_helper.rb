@@ -29,7 +29,7 @@ module CommentsHelper
   end
 
   def should_be_hidden?(comment, root_comment)
-    comment.hidden_by_commentable_user && root_comment != comment
+    comment.hidden_by_commentable_user && comment != root_comment
   end
 
   private
