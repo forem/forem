@@ -24,6 +24,7 @@ class MediumArticleRetrievalService
       author: author,
       author_image: author_image,
       reading_time: reading_time,
+      published_time: published_time,
       publication_date: publication_date(published_time),
       url: url
     }
@@ -32,7 +33,7 @@ class MediumArticleRetrievalService
   private
 
   def publication_date(published_time)
-    Date.parse(published_time).strftime("%b %-d, %Y")
+    Time.zone.parse(published_time).strftime("%b %-d, %Y")
   rescue ArgumentError, NoMethodError => e
     Rails.logger.error("#{published_time} is not a valid date: #{e}")
   end
