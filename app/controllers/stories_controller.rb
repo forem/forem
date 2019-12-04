@@ -22,14 +22,17 @@ class StoriesController < ApplicationController
     second_scope = params[:slug]
     article_by_path = Article.find_by(path: "/#{first_scope.downcase}/#{second_scope}")&.decorate
     article_by_slug = Article.find_by(slug: second_scope)&.decorate
+    # Search potential author considering old usernames
+    potential_authorname = first_scope.tr("@", "").downcase
+    potential_author = User.find_by("old_username = ? OR old_old_username = ?", potential_authorname, potential_authorname)
 
     @story_show = true
 
-    case url_format(article_by_path, article_by_slug)
-    when 'author/article'
+    case url_format(potential_author, article_by_path, article_by_slug)
+    when "author/article"
       result = Articles::Show.execute(article_by_path, moderate: params[:view] == "moderate",
-                            variant_version: params[:variant_version],
-                            previewing: params[:preview], user_signed_in: user_signed_in?)
+                                                       variant_version: params[:variant_version],
+                                                       previewing: params[:preview], user_signed_in: user_signed_in?)
 
       @presenter = result.article_presenter
 
@@ -37,8 +40,8 @@ class StoriesController < ApplicationController
 
       set_surrogate_key_header @presenter.record_key
 
-      render template: 'articles/show'
-    when 'podcast/episode'
+      render template: "articles/show"
+    when "podcast/episode"
       episode_slug = second_scope
       podcast_provider = first_scope
       podcast = Podcast.available.find_by!(slug: podcast_provider)
@@ -50,8 +53,12 @@ class StoriesController < ApplicationController
       set_surrogate_key_header episode.record_key
 
       render template: "podcast_episodes/show"
-    when 'other'
-      support_legacy_url_formats(article_by_slug)
+    when "old_authorname/article"
+      redirect_to URI.parse("/#{potential_author.username}/#{second_scope}").path
+    when "organization/article"
+      redirect_to URI.parse("/#{article_by_slug.organization.slug}/#{second_scope}").path
+    else
+      raise ActiveRecord::RecordNotFound, "Not Found" # this is not covered by tests
     end
   end
 
@@ -64,30 +71,21 @@ class StoriesController < ApplicationController
 
   private
 
-  def url_format(article_by_path, article_by_slug)
+  def url_format(potential_author, article_by_path, article_by_slug)
+    article_created_by_user = potential_author&.articles&.find_by(slug: article_by_slug&.slug)
+    article_belongs_to_organization = article_by_slug&.organization
+
     if article_by_path
-      'author/article'
+      "author/article"
+    elsif article_by_slug && article_created_by_user
+      "old_authorname/article"
+    elsif article_by_slug && article_belongs_to_organization
+      "organization/article"
     elsif article_by_slug
-      'other'
+      "other"
     else
-      'podcast/episode'
+      "podcast/episode"
     end
-  end
-
-  def support_legacy_url_formats(article)
-    redirect_to try_to_find_url_for(article, params[:username], params[:slug])
-  end
-
-  def try_to_find_url_for(article, authorname, article_slug)
-    # Search potential author considering old usernames
-    potential_username = authorname.tr("@", "").downcase
-    user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
-    return URI.parse("/#{user.username}/#{article_slug}").path if user&.articles&.find_by(slug: article_slug)
-
-    # try to use article organization
-    return URI.parse("/#{article.organization.slug}/#{article_slug}").path if article.organization
-
-    raise ActiveRecord::RecordNotFound, "Not Found" # this is not covered by tests
   end
 
   def redirect_to_changed_username_profile
