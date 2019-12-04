@@ -681,7 +681,8 @@ var instantClick
 
   Honeybadger.configure({
     apiKey: "<%= ApplicationConfig['HONEYBADGER_JS_API_KEY'] %>",
-    environment: "production"
+    environment: "<%= Rails.env %>",
+    revision: "<%= ApplicationConfig['HEROKU_SLUG_COMMIT'] %>"
   });
 
 // Start BaseApp for Page
