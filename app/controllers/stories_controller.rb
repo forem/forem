@@ -17,18 +17,9 @@ class StoriesController < ApplicationController
   end
 
   def show
-    # TODO: validate input and mass assignment
-    first_scope = params[:username]
-    second_scope = params[:slug]
-    article_by_path = Article.find_by(path: "/#{first_scope.downcase}/#{second_scope}")&.decorate
-    article_by_slug = Article.find_by(slug: second_scope)&.decorate
-    # Search potential author considering old usernames
-    potential_authorname = first_scope.tr("@", "").downcase
-    potential_author = User.find_by("old_username = ? OR old_old_username = ?", potential_authorname, potential_authorname)
-
     @story_show = true
 
-    case url_format(potential_author, article_by_path, article_by_slug)
+    case url_format
     when "author/article"
       result = Articles::Show.execute(article_by_path, moderate: params[:view] == "moderate",
                                                        variant_version: params[:variant_version],
@@ -42,10 +33,6 @@ class StoriesController < ApplicationController
 
       render template: "articles/show"
     when "podcast/episode"
-      episode_slug = second_scope
-      podcast_provider = first_scope
-      podcast = Podcast.available.find_by!(slug: podcast_provider)
-      episode = PodcastEpisode.available.find_by!(slug: episode_slug).decorate
 
       @presenter = PodcastShowPresenter.new(podcast, episode)
       @comment = @presenter.comment
@@ -54,9 +41,9 @@ class StoriesController < ApplicationController
 
       render template: "podcast_episodes/show"
     when "old_authorname/article"
-      redirect_to URI.parse("/#{potential_author.username}/#{second_scope}").path
+      redirect_to URI.parse("/#{potential_author.username}/#{article_by_slug.slug}").path
     when "organization/article"
-      redirect_to URI.parse("/#{article_by_slug.organization.slug}/#{second_scope}").path
+      redirect_to URI.parse("/#{article_by_slug.organization.slug}/#{article_by_slug.slug}").path
     else
       raise ActiveRecord::RecordNotFound, "Not Found" # this is not covered by tests
     end
@@ -71,21 +58,52 @@ class StoriesController < ApplicationController
 
   private
 
-  def url_format(potential_author, article_by_path, article_by_slug)
-    article_created_by_user = potential_author&.articles&.find_by(slug: article_by_slug&.slug)
+  def url_format
+    article_was_created_by_potential_author = potential_author&.articles&.find_by(slug: article_by_slug&.slug)
     article_belongs_to_organization = article_by_slug&.organization
+    article_was_found_by_path = !article_by_path.nil?
+    article_was_found_by_slug = !article_by_slug.nil?
 
-    if article_by_path
+    if article_was_found_by_path
       "author/article"
-    elsif article_by_slug && article_created_by_user
+    elsif article_was_found_by_slug && article_was_created_by_potential_author
       "old_authorname/article"
-    elsif article_by_slug && article_belongs_to_organization
+    elsif article_was_found_by_slug && article_belongs_to_organization
       "organization/article"
-    elsif article_by_slug
+    elsif article_was_found_by_slug
       "other"
     else
       "podcast/episode"
     end
+  end
+
+  def article_by_path
+    # TODO: validate input and mass assignment
+    first_scope = params[:username]
+    second_scope = params[:slug]
+    @article_by_path ||= Article.find_by(path: "/#{first_scope.downcase}/#{second_scope}")&.decorate
+  end
+
+  def article_by_slug
+    second_scope = params[:slug]
+    @article_by_slug ||= Article.find_by(slug: second_scope)&.decorate
+  end
+
+  def potential_author
+    # Search potential author considering old usernames
+    first_scope = params[:username]
+    potential_authorname = first_scope.tr("@", "").downcase
+    @potential_author ||= User.find_by("old_username = ? OR old_old_username = ?", potential_authorname, potential_authorname)
+  end
+
+  def podcast
+    first_scope = params[:username]
+    @podcast ||= Podcast.available.find_by(slug: first_scope)
+  end
+
+  def episode
+    second_scope = params[:slug]
+    @episode ||= PodcastEpisode.available.find_by(slug: second_scope)&.decorate
   end
 
   def redirect_to_changed_username_profile
