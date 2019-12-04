@@ -21,8 +21,8 @@ staleLabel: stale
 
 # Comment to post when marking as stale. Set to `false` to disable
 markComment: >
-  Thanks for contributing to this issue. As it has been 90 days since the last activity,
-  we are automatically closing the issue in 7 days. This is often because the request was
+  Thanks for contributing to this issue. As it has been 180 days since the last activity,
+  we are automatically closing the issue in 30 days. This is often because the request was
   already solved in some way and it just wasn't updated or it's no longer applicable. If
   this issue still requires attention, please respond with a comment. Happy Coding!
 
