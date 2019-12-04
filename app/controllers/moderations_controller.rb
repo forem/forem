@@ -17,6 +17,7 @@ class ModerationsController < ApplicationController
 
   def article
     authorize(User, :moderation_routes?)
+    @tag_adjustment = TagAdjustment.new
     @moderatable = Article.find_by(slug: params[:slug])
     @tag_moderator_tags = Tag.with_role(:tag_moderator, current_user)
     @adjustments = TagAdjustment.where(article_id: @moderatable.id)

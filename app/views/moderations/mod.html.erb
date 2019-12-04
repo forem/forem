@@ -158,7 +158,7 @@
   <% if @allowed_to_adjust %>
     <div class="tag-mod-form">
       <h2>Tag Adjustment</h2>
-      <%= form_for(TagAdjustment.new) do |f| %>
+      <%= form_for(@tag_adjustment) do |f| %>
         <h3> Add or Remove Tags</h3>
         <% unless current_user.has_role?(:super_admin) %>
           <ul>
@@ -171,10 +171,16 @@
         <b>Current live tags:</b> <%= @moderatable.tag_list %><br>
         <b>Already adjusted tags:</b> <%= @already_adjusted_tags %>
         <br /><br />
-        <% if flash[:error_tag_adjustment].present? %>
-          <div class="adjustment-error">
-            <p>Error: <%= flash[:error_tag_adjustment] %></p><br>
+        <% if @tag_adjustment.errors.any? %>
+          <div id="error_explanation">
+            <h2><%= pluralize(@tag_adjustment.errors.count, "error") %> prohibited this block from being saved:</h2>
+            <ul>
+              <% @tag_adjustment.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
           </div>
+          <br><br><br><br>
         <% end %>
         <%= f.hidden_field :article_id, value: @moderatable.id %>
         <%= f.radio_button :adjustment_type, "removal", required: true %>
