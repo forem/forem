@@ -1,6 +1,7 @@
 class AsyncInfoController < ApplicationController
   include Devise::Controllers::Rememberable
   # No pundit policy. All actions are unrestricted.
+  before_action :set_cache_control_headers, only: %i[shell_version]
 
   def base_data
     flash.discard(:notice)
@@ -28,6 +29,13 @@ class AsyncInfoController < ApplicationController
       end
     end
   end
+
+  def shell_version
+    set_surrogate_key_header "shell-version-endpoint"
+    render json: { version: 1 }.to_json
+  end
+
+  private
 
   def user_data
     RedisRailsCache.fetch(user_cache_key, expires_in: 15.minutes) do
@@ -73,8 +81,6 @@ class AsyncInfoController < ApplicationController
     #{current_user&.blocking_others_count}__
     #{cookies[:remember_user_token]}"
   end
-
-  private
 
   def occasionally_update_analytics
     Articles::UpdateAnalyticsJob.perform_later(@user.id) if Rails.env.production? && rand(ApplicationConfig["GA_FETCH_RATE"]) == 1

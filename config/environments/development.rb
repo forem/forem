@@ -102,8 +102,8 @@ Rails.application.configure do
   config.logger = ActiveSupport::TaggedLogging.new(logger)
 
   config.after_initialize do
-    Bullet.enable = true
-    Bullet.console = true
+    Bullet.enable = false
+    Bullet.console = false
     Bullet.rails_logger = true
   end
 end

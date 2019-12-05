@@ -1,4 +1,4 @@
-const staticCacheName = 'static-e6350322ee01';
+const staticCacheName = 'static-1';
 const expectedCaches = [
   staticCacheName
 ];
@@ -11,7 +11,9 @@ self.addEventListener('install', event => {
       .then(cache => cache.addAll([
         "/shell_top",
         "/shell_bottom",
+        "/async_info/shell_version",
         "/404.html",
+        "/500.html",
         "/offline.html"
       ]))
   );
@@ -33,12 +35,16 @@ function createPageStream(request) {
     start(controller) {
       // the body url is the request url plus 'include'
       const url = new URL(request.url);
+      url.searchParams.set('i', 'i'); // Adds ?i=i or &i=i, which is our indicator for "internal" partial page
 
       const startFetch = caches.match('/shell_top');
       const endFetch = caches.match('/shell_bottom');
-      const middleFetch = fetch(url + '?i=i').then(response => {
-        if (!response.ok && response.status != 404) {
+      const middleFetch = fetch(url).then(response => {
+        if (!response.ok && response.status === 404) {
           return caches.match('/404.html');
+        }
+        if (!response.ok && response.status != 404) {
+          return caches.match('/500.html');
         }
         return response;
       }).catch(err => caches.match('/offline.html'));
@@ -70,15 +76,43 @@ function createPageStream(request) {
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   if (url.origin === location.origin) {
-    // home or article pages
-    if (event.clientId === "" && !url.href.includes('?') &&!url.href.includes('shell_') && !url.href.includes('/admin') && !url.href.includes('/internal') && caches.match('/shell_top')) {
-      event.respondWith(createPageStream(event.request));
+    // 
+    if (event.clientId === "" && // Not fetched via AJAX after page load.
+      event.request.method == "GET" && // Don't fetch on POST, DELETE, etc.
+      !event.request.referrer.includes('/signout_confirm') && // If this is the referrer, we instead want to flush.
+      !url.href.includes('i=i') && // Parameter representing "internal" navigation.
+      !url.href.includes('?signin') && // Don't run on sign in.
+      !url.href.includes('/onboarding') && // Don't run on onboarding.
+      !url.href.includes('/users/auth') && // Don't run on authentication.
+      !url.href.includes('/shell_') && // Don't fetch for shell.
+      !url.href.includes('/admin') && // Don't fetch for administrate dashboard.
+      !url.href.includes('/internal') && // Don't fetch for internal dashboard.
+      caches.match('/shell_top')) { // Ensure shell_top is in the cache.
+      event.respondWith(createPageStream(event.request)); // Respond with the stream
+
+      // Ping version endpoint to see if we should fetch new shell. 
+      fetch('/async_info/shell_version').then(response => response.json()).then(json => {
+        caches.match('/async_info/shell_version').then(cachedResponse => cachedResponse.json()).then(cacheJson => {
+          if (cacheJson['version'] != json['version']) {
+            caches.open(staticCacheName)
+            .then(cache => cache.addAll([
+              "/shell_top",
+              "/shell_bottom",
+            ]))
+          }
+        })
+      });
       return;
     }
-  }
 
-  // cache-first for the rest
-  // event.respondWith(
-  //   caches.match(event.request).then(r => r || fetch(event.request))
-  // );
+    // Fetch new shell upon events that signify change in session.
+    if (event.clientId === "" &&
+      (event.request.referrer.includes('/signout_confirm') || url.href.includes('?signin') || url.href.includes('/onboarding') || Math.random() > 0.9)) {
+      caches.open(staticCacheName)
+      .then(cache => cache.addAll([
+        "/shell_top",
+        "/shell_bottom",
+      ]))
+    }
+  }
 });

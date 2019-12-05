@@ -35,9 +35,6 @@
         <%= javascript_pack_tag "onboardingRedirectCheck", defer: true %>
         <%= javascript_pack_tag "contentDisplayPolicy", defer: true %>
       <% end %>
-      <% if view_class == "users users-signout_confirm" %>
-        <%= javascript_include_tag "application" %>
-      <% end %>
       <%= yield(:page_meta) %>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <%= favicon_link_tag ApplicationConfig["FAVICON_URL"] %>

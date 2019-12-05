@@ -230,7 +230,8 @@ Rails.application.routes.draw do
   get "/social_previews/comment/:id" => "social_previews#comment", :as => :comment_social_preview
 
   get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
-
+  get "/async_info/shell_version", controller: "async_info#shell_version", defaults: { format: :json }
+  
   get "/future", to: redirect("devteam/the-future-of-dev-160n")
 
   # Settings

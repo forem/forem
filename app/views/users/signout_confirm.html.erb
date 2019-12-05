@@ -1,9 +1,9 @@
 <% title "Confirm Signout - DEV" %>
-
 <div class="signout_confirm-wrapper">
 
   <h1>Are you sure you want to sign out?</h1>
-
-  <h2><%= link_to "Yes. Sign out.", destroy_user_session_path, method: :delete, data: { "no-instant" => "" } %></h2>
+  <%= form_tag destroy_user_session_path, method: :delete do %>
+    <button class="cta">Yes. Sign out.</button>
+  <% end %>
 
 </div>

@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     return "/onboarding?referrer=#{request.env['omniauth.origin'] || 'none'}" unless current_user.saw_onboarding
 
-    request.env["omniauth.origin"] || stored_location_for(resource) || "/dashboard"
+    (request.env["omniauth.origin"] || stored_location_for(resource) || "/dashboard") + "?signin=true"
   end
 
   def raise_banned

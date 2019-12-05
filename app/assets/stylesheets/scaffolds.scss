@@ -267,6 +267,7 @@ body.trusted-status-true .trusted-visible-block {
     color: white;
     display: inline-block;
     margin-bottom: 0px;
+    border-radius: 3px;
   }
   h2 {
     font-size: 22px;
@@ -280,5 +281,13 @@ body.trusted-status-true .trusted-visible-block {
       color: white;
       opacity: 0.9;
     }
+  }
+  form button {
+    background: $red;
+    color: white;
+    font-size: 1.5em;
+    border: 0px;
+    border-radius: 3px;
+    padding: 6px 12px;
   }
 }
