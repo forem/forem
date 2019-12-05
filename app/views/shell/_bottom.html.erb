@@ -7,13 +7,6 @@
       <div id="live-article-indicator" class="live-article-indicator"></div>
       <%= image_tag("twitter-logo.svg", class: "icon-img", style: "display:none", alt: "twitter logo") %>
       <%= image_tag("github-logo.svg", class: "icon-img", style: "display:none", alt: "github logo") %>
-      <% if 1==2 %>
-        <%= stylesheet_link_tag "application", media: "all" %>
-        <% if render_js? %>
-          <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-          <%= javascript_include_tag "application" %>
-        <% end %>
-      <% end %>
       </body>
       </html>
     <% end %>

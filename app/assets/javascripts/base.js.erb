@@ -633,6 +633,7 @@ var instantClick
     if (!("ontouchstart" in document.documentElement)) {
       return
     }
+
     var script = document.createElement('script');
     script.src = "<%= javascript_path 'lib/pulltorefresh.js' %>";
     document.head.appendChild(script);

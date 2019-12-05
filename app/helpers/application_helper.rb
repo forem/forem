@@ -15,12 +15,6 @@ module ApplicationHelper
     end
   end
 
-  def render_js?
-    article_pages = controller_name == "articles" && %(index show).include?(controller.action_name)
-    pulses_pages = controller_name == "pulses"
-    !(article_pages || pulses_pages)
-  end
-
   def title(page_title)
     derived_title = if page_title.include?(ApplicationConfig["COMMUNITY_NAME"])
                       page_title
