@@ -21,22 +21,16 @@ class StoriesController < ApplicationController
 
     case url_format
     when "author/article"
-      result = Articles::Show.execute(article_by_path, variant_version: params[:variant_version],
-                                                       previewing: params[:preview],
-                                                       user_signed_in: user_signed_in?)
-
-      @presenter = result.article_presenter
-
+      @presenter = Articles::Show.execute(article_by_path, variant_version: params[:variant_version],
+                                                           preview_value: params[:preview],
+                                                           user_signed_in: user_signed_in?)
       set_surrogate_key_header @presenter.record_key
-
       render template: "articles/show"
     when "author/article?moderate"
       redirect_to "/internal/articles/#{article_presenter.id}"
     when "podcast/episode"
       @presenter = PodcastShowPresenter.new(podcast, episode)
-
       set_surrogate_key_header episode.record_key
-
       render template: "podcast_episodes/show"
     when "old_authorname/article"
       redirect_to URI.parse("/#{potential_author.username}/#{article_by_slug.slug}").path
