@@ -92,11 +92,6 @@
     background: #ff0000; /* $red */
   }
 
-  .adjustment-error {
-    text-align:center;
-    color:red;
-  }
-
   .tag-mod-form input[type=radio] {
     position: absolute;
   }
@@ -191,8 +186,7 @@
         <% if current_user.has_role?(:super_admin) %>
           <%= f.text_field :tag_name, placeholder: "Tag Name", required: true %>
         <% else %>
-          <%= f.label :tag_name, "Tag to Adjust" %>
-          <%= f.select :tag_name, @tag_moderator_tags, required: true %>
+          <%= f.select :tag_name, @tag_moderator_tags, { prompt: "Select Tag" }, required: true %>
           <br />
         <% end %>
         <%= f.text_area :reason_for_adjustment, placeholder: "Reason for adjustment (Be super kind) - Only the reason is needed, the notification will take care of the rest.", required: true %>
