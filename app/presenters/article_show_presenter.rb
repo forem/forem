@@ -29,4 +29,3 @@ class ArticleShowPresenter < SimpleDelegator
     Comment.new(body_markdown: __getobj__&.comment_template)
   end
 end
-
