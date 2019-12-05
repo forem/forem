@@ -21,21 +21,19 @@ class StoriesController < ApplicationController
 
     case url_format
     when "author/article"
-      result = Articles::Show.execute(article_by_path, moderate: params[:view] == "moderate",
-                                                       variant_version: params[:variant_version],
-                                                       previewing: params[:preview], user_signed_in: user_signed_in?)
+      result = Articles::Show.execute(article_by_path, variant_version: params[:variant_version],
+                                                       previewing: params[:preview],
+                                                       user_signed_in: user_signed_in?)
 
       @presenter = result.article_presenter
-
-      return redirect_to result.moderate_url if result.moderate_url
 
       set_surrogate_key_header @presenter.record_key
 
       render template: "articles/show"
+    when "author/article?moderate"
+      redirect_to "/internal/articles/#{article_presenter.id}"
     when "podcast/episode"
-
       @presenter = PodcastShowPresenter.new(podcast, episode)
-      @comment = @presenter.comment
 
       set_surrogate_key_header episode.record_key
 
@@ -63,9 +61,12 @@ class StoriesController < ApplicationController
     article_belongs_to_organization = article_by_slug&.organization
     article_was_found_by_path = !article_by_path.nil?
     article_was_found_by_slug = !article_by_slug.nil?
+    moderate_option = params[:view] == "moderate"
 
     if article_was_found_by_path
       "author/article"
+    elsif article_was_found_by_path && moderate_option
+      "author/article?moderate"
     elsif article_was_found_by_slug && article_was_created_by_potential_author
       "old_authorname/article"
     elsif article_was_found_by_slug && article_belongs_to_organization
