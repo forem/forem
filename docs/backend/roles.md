@@ -6,17 +6,24 @@ title: Roles
 
 ## What is a role?
 
-If authorization is about who has permission to be allowed to do what you want to do, then Roles are common patterns of authorization across users - reducing the administrative overhead.
+If authorization is about who has permission to be allowed to do what you want
+to do, then Roles are common patterns of authorization across users - reducing
+the administrative overhead.
 
 ## Why do I need to know about roles?
 
-Some bugs can only be seen for users with specific roles. You will need to change the role to reproduce a problem.
+Some bugs can only be seen for users with specific roles. You will need to
+change the role to reproduce a problem.
 
 ## How do we implement roles in DEV.to?
 
-Roles are implemented in this application using [Rolify][1]. The list of roles can be found in [app/models/role.rb][2] and you can search for [has_role in the codebase][3] to find which pages need which roles.
+Roles are implemented in this application using [Rolify][1]. The list of roles
+can be found in [app/models/role.rb][2] and you can search for [has_role in the
+codebase][3] to find which pages need which roles.
 
-A new user starts without any roles, and there is no administrative way of adding roles to users yet. To assign a user a role you will have to run commands at the console.
+A new user starts without any roles, and there is no administrative way of
+adding roles to users yet. To assign a user a role you will have to run commands
+at the console.
 
 ## Example of adding permissions to a user
 
@@ -26,7 +33,8 @@ A new user starts without any roles, and there is no administrative way of addin
 rails console
 ```
 
-- after verifying the user `test_user_name` is missing the `pro` role we proceed to add it and then verify the role has been added:
+- after verifying the user `test_user_name` is missing the `pro` role we proceed
+  to add it and then verify the role has been added:
 
 ```ruby
 > user = User.find_by(username: "test_user_name")
@@ -43,7 +51,8 @@ name: "pro"
 => true
 ```
 
-Another common requirement is changing to the administrative role, and an example of this is found [on the admin page][5].
+Another common requirement is changing to the administrative role, and an
+example of this is found [on the admin page][5].
 
 ## Verification
 

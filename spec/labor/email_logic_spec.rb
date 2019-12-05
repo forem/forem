@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe EmailLogic do
+RSpec.describe EmailLogic, type: :labor do
   let(:user) { create(:user) }
 
   # TODO: improve this test suite, and improve it's speed
@@ -26,6 +26,7 @@ RSpec.describe EmailLogic do
         h = described_class.new(user).analyze
         expect(h.should_receive_email?).to eq(false)
       end
+
       it "marks as not ready if there isn't at least 3 email-digest-eligible articles" do
         create_list(:article, 2, positive_reactions_count: 40, score: 40)
         create_list(:article, 2, positive_reactions_count: 40, email_digest_eligible: false)

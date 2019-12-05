@@ -6,10 +6,9 @@ RSpec.describe PodcastEpisodes::BustCacheJob do
   describe "#perform_now" do
     let!(:podcast) { create(:podcast) }
     let!(:podcast_episode) { FactoryBot.create(:podcast_episode, podcast_id: podcast.id) }
-    let(:cache_buster) { instance_double(CacheBuster) }
+    let(:cache_buster) { class_double(CacheBuster) }
 
     before do
-      allow(CacheBuster).to receive(:new).and_return(cache_buster)
       allow(cache_buster).to receive(:bust_podcast_episode)
     end
 

@@ -34,7 +34,15 @@ module Notifications
             notified_at: Time.current,
           )
         end
-        Notification.import! notifications
+        conflict_target = %i[notifiable_id notifiable_type user_id]
+        conflict_target << :action if action.present?
+        index_predicate = "action IS#{action.present? ? ' NOT ' : ' '}NULL"
+        Notification.import! notifications,
+                             on_duplicate_key_update: {
+                               conflict_target: conflict_target,
+                               index_predicate: index_predicate,
+                               columns: %i[json_data notified_at read]
+                             }
       end
 
       private

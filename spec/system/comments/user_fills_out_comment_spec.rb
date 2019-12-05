@@ -17,7 +17,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     expect(page).to have_text(raw_comment)
   end
 
-  it "User fill out commen box then click previews and submit" do
+  it "User fill out comment box then click previews and submit" do
     visit article.path.to_s
     fill_in "text-area", with: raw_comment
     click_button("PREVIEW")

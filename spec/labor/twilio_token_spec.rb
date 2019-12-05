@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe TwilioToken do
+RSpec.describe TwilioToken, type: :labor do
   let(:user) { create(:user) }
 
   it "returns a token" do

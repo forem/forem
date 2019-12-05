@@ -31,6 +31,7 @@ module.exports = {
         },
       },
     ],
+    'react/jsx-no-target-blank': [2, { enforceDynamicLinks: 'always' }],
   },
   globals: {
     InstantClick: false,

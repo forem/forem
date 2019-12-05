@@ -75,6 +75,7 @@ function initializeCommentsPage() {
         }
 
         thisButt.classList.add('reacted');
+        thisButt.disabled = true;
 
         function successCb(response) {
           var reactionCountSpan = thisButt.children[2];
@@ -96,6 +97,7 @@ function initializeCommentsPage() {
         getCsrfToken()
           .then(sendFetch('reaction-creation', formData))
           .then(function (response) {
+            thisButt.disabled = false;
             if (response.status === 200) {
               response.json().then(successCb);
             }

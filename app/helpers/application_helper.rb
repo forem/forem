@@ -111,7 +111,7 @@ module ApplicationHelper
   end
 
   def tag_colors(tag)
-    Rails.cache.fetch("view-helper-#{tag}/tag_colors", expires_in: 5.hours) do
+    RedisRailsCache.fetch("view-helper-#{tag}/tag_colors", expires_in: 5.hours) do
       if (found_tag = Tag.select(%i[bg_color_hex text_color_hex]).find_by(name: tag))
         { background: found_tag.bg_color_hex, color: found_tag.text_color_hex }
       else
@@ -144,7 +144,7 @@ module ApplicationHelper
     tag :button, # Yikes
         class: "cta follow-action-button",
         data: {
-          info: { id: followable.id, className: followable.class.name, style: style }.to_json,
+          :info => { id: followable.id, className: followable.class.name, style: style }.to_json,
           "follow-action-button" => true
         }
   end
@@ -172,7 +172,7 @@ module ApplicationHelper
     if ApplicationConfig["LOGO_SVG"].present?
       ApplicationConfig["LOGO_SVG"].html_safe
     else
-      inline_svg("devplain.svg", class: "logo", size: "20% * 20%", aria: true, title: "App logo")
+      inline_svg_tag("devplain.svg", class: "logo", size: "20% * 20%", aria: true, title: "App logo")
     end
   end
 

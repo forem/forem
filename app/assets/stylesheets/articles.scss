@@ -781,7 +781,7 @@
         background: darken($purple, 38%);
         color: white;
         letter-spacing: 1px;
-        &:hover {
+        &:hover, &:focus {
           background: darken($purple, 50%);
         }
         .bm-success {
@@ -985,7 +985,7 @@
           height: 50px;
           vertical-align: top;
           overflow: hidden;
-          background: $tan;
+          @include themeable(background, theme-container-background, $tan);
           border-radius: 100%;
           margin: 8px 5px 8px 12px;
           img {
@@ -1804,4 +1804,11 @@
   );
   background-size: 800px 104px;
   position: relative;
+}
+
+.loading {
+  padding: calc(3vw + 15px) 0px 60px;
+  text-align: center;
+  opacity: 0.7;
+  display: none;
 }

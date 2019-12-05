@@ -1,5 +1,5 @@
-export function getAllMessages(channelId, successCb, failureCb) {
-  fetch(`/chat_channels/${channelId}`, {
+export function getAllMessages(channelId, messageOffset, successCb, failureCb) {
+  fetch(`/chat_channels/${channelId}?message_offset=${messageOffset}`, {
     Accept: 'application/json',
     'Content-Type': 'application/json',
     credentials: 'same-origin',
@@ -113,24 +113,6 @@ export function getChannels(
         });
     }
   });
-}
-
-export function sendKeys(subscription, successCb, failureCb) {
-  fetch(`/push_notification_subscriptions`, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'X-CSRF-Token': window.csrfToken,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      subscription,
-    }),
-    credentials: 'same-origin',
-  })
-    .then(response => response.json())
-    .then(successCb)
-    .catch(failureCb);
 }
 
 export function getTwilioToken(videoChannelName, successCb, failureCb) {

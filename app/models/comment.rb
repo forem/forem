@@ -126,13 +126,6 @@ class Comment < ApplicationRecord
     "comments-#{id}"
   end
 
-  def self.rooted_on(commentable_id, commentable_type)
-    includes(:user).
-      select(:id, :user_id, :commentable_type, :commentable_id,
-             :deleted, :created_at, :processed_html, :ancestry, :updated_at, :score).
-      where(commentable_id: commentable_id, ancestry: nil, commentable_type: commentable_type)
-  end
-
   def self.tree_for(commentable, limit = 0)
     commentable.comments.includes(:user).arrange(order: "score DESC").to_a[0..limit - 1].to_h
   end
@@ -286,8 +279,7 @@ class Comment < ApplicationRecord
   def synchronous_bust
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     user.touch(:last_comment_at)
-    cache_buster = CacheBuster.new
-    cache_buster.bust(commentable.path.to_s) if commentable
+    CacheBuster.bust(commentable.path.to_s) if commentable
     expire_root_fragment
   end
 

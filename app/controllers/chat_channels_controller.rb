@@ -16,7 +16,9 @@ class ChatChannelsController < ApplicationController
     end
   end
 
-  def show; end
+  def show
+    @chat_messages = @chat_channel.messages.includes(:user).order("created_at DESC").offset(params[:message_offset]).limit(150)
+  end
 
   def create
     authorize ChatChannel
@@ -108,9 +110,8 @@ class ChatChannelsController < ApplicationController
   end
 
   def render_unopened_json_response
-    @chat_channels_memberships = if current_user
-                                   current_user.
-                                     chat_channel_memberships.includes(:chat_channel).
+    @chat_channels_memberships = if session_current_user_id
+                                   ChatChannelMembership.where(user_id: session_current_user_id).includes(:chat_channel).
                                      where("has_unopened_messages = ? OR status = ?",
                                            true, "pending").
                                      where(show_global_badge_notification: true).
@@ -157,7 +158,7 @@ class ChatChannelsController < ApplicationController
   end
 
   def generate_github_token
-    Rails.cache.fetch("user-github-token-#{current_user.id}", expires_in: 48.hours) do
+    RedisRailsCache.fetch("user-github-token-#{current_user.id}", expires_in: 48.hours) do
       Identity.where(user_id: current_user.id, provider: "github").first&.token
     end
   end

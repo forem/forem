@@ -17,7 +17,6 @@ class AsyncInfoController < ApplicationController
       remember_me(current_user)
     end
     @user = current_user.decorate
-    # Updates article analytics periodically:
     occasionally_update_analytics
     respond_to do |format|
       format.json do
@@ -31,7 +30,7 @@ class AsyncInfoController < ApplicationController
   end
 
   def user_data
-    Rails.cache.fetch(user_cache_key, expires_in: 15.minutes) do
+    RedisRailsCache.fetch(user_cache_key, expires_in: 15.minutes) do
       {
         id: @user.id,
         name: @user.name,
@@ -43,6 +42,7 @@ class AsyncInfoController < ApplicationController
         followed_organization_ids: @user.cached_following_organizations_ids,
         followed_podcast_ids: @user.cached_following_podcasts_ids,
         reading_list_ids: ReadingList.new(@user).cached_ids_of_articles,
+        blocked_user_ids: @user.all_blocking.pluck(:blocked_id),
         saw_onboarding: @user.saw_onboarding,
         checked_code_of_conduct: @user.checked_code_of_conduct,
         checked_terms_and_conditions: @user.checked_terms_and_conditions,
@@ -60,7 +60,7 @@ class AsyncInfoController < ApplicationController
   end
 
   def user_cache_key
-    "#{current_user&.id}__
+    "user-info-#{current_user&.id}__
     #{current_user&.last_sign_in_at}__
     #{current_user&.last_followed_at}__
     #{current_user&.updated_at}__
@@ -70,6 +70,7 @@ class AsyncInfoController < ApplicationController
     #{current_user&.checked_code_of_conduct}__
     #{current_user&.articles_count}__
     #{current_user&.pro?}__
+    #{current_user&.blocking_others_count}__
     #{cookies[:remember_user_token]}"
   end
 

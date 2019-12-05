@@ -23,6 +23,8 @@ class Tag < ActsAsTaggableOn::Tag
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
 
+  validates :name,
+            format: /\A[A-Za-z0-9\s]+\z/, allow_nil: true
   validates :text_color_hex,
             format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
   validates :bg_color_hex,
@@ -52,13 +54,20 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def self.bufferized_tags
-    Rails.cache.fetch("bufferized_tags_cache", expires_in: 2.hours) do
+    RedisRailsCache.fetch("bufferized_tags_cache", expires_in: 2.hours) do
       where.not(buffer_profile_id_code: nil).pluck(:name)
     end
   end
 
   def self.valid_categories
     ALLOWED_CATEGORIES
+  end
+
+  def self.aliased_name(word)
+    tag = find_by(name: word.downcase)
+    return unless tag
+
+    tag.alias_for.presence || tag.name
   end
 
   private

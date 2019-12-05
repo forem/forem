@@ -1,6 +1,8 @@
 FactoryBot.define do
+  sequence(:name) { |n| "tag#{n}" }
+
   factory :tag do
-    name { rand(10_000).to_s }
+    name { generate :name }
     supported { true }
   end
 end

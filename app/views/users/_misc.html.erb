@@ -40,13 +40,18 @@
 <%= form_for(@user, html: { id: nil }) do |f| %>
   <div class="sub-field">
     <%= f.label :config_theme, "Site Theme" %>
-    <%= f.select(:config_theme, options_for_select(["default", "night theme", "minimal light theme", "pink theme"], @user.config_theme.tr("_", " "))) %>
-    <sub><em>Default is light style. Night theme is in public alpha.</em></sub>
+    <%= f.select(:config_theme, options_for_select(["default", "night theme", "minimal light theme", "pink theme", "ten x hacker theme"], @user.config_theme.tr("_", " "))) %>
+    <sub><em>Default is light style.</em></sub>
   </div>
   <div class="sub-field">
     <%= f.label :config_font, "Base Post Font" %>
-    <%= f.select(:config_font, options_for_select(["default", "sans serif", "comic sans"], @user.config_font.tr("_", " "))) %>
+    <%= f.select(:config_font, options_for_select(["default", "sans serif", "monospace", "comic sans"], @user.config_font.tr("_", " "))) %>
     <sub><em>Default is serif style.</em></sub>
+  </div>
+  <div class="sub-field">
+    <%= f.label :config_navbar, "Site Navbar" %>
+    <%= f.select(:config_navbar, options_for_select(["default", "static"], @user.config_navbar.tr("_", " "))) %>
+    <sub><em>Default is fixed.</em></sub>
   </div>
   <div class="field">
     <label></label>

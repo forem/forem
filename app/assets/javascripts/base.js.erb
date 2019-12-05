@@ -3,7 +3,7 @@
 //= require lib/xss
 //= require initializePage
 //= require utilities/getImageForLink
-//= require airbrake-js-client
+//= require honeybadger
 //= require serviceworker-companion
 //= require algolia/v3/algoliasearch.min
 
@@ -668,7 +668,7 @@ var instantClick
 }(document, location, navigator.userAgent);
 
 
-//FUNCTIONAL CODE FOR PAGE
+// FUNCTIONAL CODE FOR PAGE
 
   function initializeBaseApp() {
     InstantClick.on('change', function() {
@@ -677,43 +677,13 @@ var instantClick
     InstantClick.init();
   }
 
+// INITIALIZE/ERROR HANDLING
 
-  // INITIALIZE/ERROR HANDLING
+  Honeybadger.configure({
+    apiKey: "<%= ApplicationConfig['HONEYBADGER_JS_API_KEY'] %>",
+    environment: "<%= Rails.env %>",
+    revision: "<%= ApplicationConfig['HEROKU_SLUG_COMMIT'] %>"
+  });
 
-  function initializeAirbrake() {
-
-    <% if Rails.env.production? %>
-      var airbrake = new airbrakeJs.Client({projectId: 1, projectKey: '<%=ApplicationConfig["AIRBRAKE_API_KEY"]%>'});
-      airbrake.addFilter(function(notice) {
-        notice.context.environment = "<%= Rails.env %>";
-        var file = notice.errors[0].backtrace[0].file;
-        var randomNumber = Math.floor(Math.random() * 10);
-        if ((file || "").startsWith("https://stats.pusher.com")) {
-          return null;
-        }
-        if (randomNumber > 4) { // We don't need to collect every JS error.
-          return null;
-        }
-        return notice;
-      });
-      try {
-        initializeBaseApp()
-      } catch (err) {
-        airbrake.notify(err);
-      }
-    <% else %>
-      initializeBaseApp()
-    <% end %>
-  }
-
-  if (typeof airbrakeJs !== 'undefined') {
-    initializeAirbrake();
-  }
-  else {
-    var waitingOnAirbrake = setInterval(function(){
-      if (typeof airbrakeJs !== 'undefined') {
-        initializeAirbrake();
-        clearInterval(waitingOnAirbrake);
-      }
-    },1);
-  }
+// Start BaseApp for Page
+  initializeBaseApp()

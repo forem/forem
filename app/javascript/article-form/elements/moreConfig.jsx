@@ -10,6 +10,13 @@ const TextField = ({ label, id, value, onKeyUp }) => {
   );
 };
 
+TextField.propTypes = {
+  label: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  onKeyUp: PropTypes.func.isRequired,
+};
+
 export default class MoreConfig extends Component {
   handleSeriesButtonClick = e => {
     e.preventDefault();
@@ -84,7 +91,7 @@ export default class MoreConfig extends Component {
           onKeyUp: onConfigChange,
         })}
         <small>
-          Change meta tag 
+          Change meta tag
           {' '}
           <code>canonical_url</code>
           {' '}
@@ -123,11 +130,4 @@ MoreConfig.propTypes = {
   }).isRequired,
   onSaveDraft: PropTypes.func.isRequired,
   onConfigChange: PropTypes.func.isRequired,
-};
-
-TextField.propTypes = {
-  label: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  onKeyUp: PropTypes.func.isRequired,
 };

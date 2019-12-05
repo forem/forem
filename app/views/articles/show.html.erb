@@ -125,10 +125,10 @@
             </a>
           </span>
           <% if @user.twitter_username.present? %>
-            <a href="http://twitter.com/<%= @user.twitter_username %>"><%= image_tag_or_inline_svg "twitter" %></a>
+            <a href="http://twitter.com/<%= @user.twitter_username %>"><%= image_tag_or_inline_svg_tag "twitter", width: 18, height: 18 %></a>
           <% end %>
           <% if @user.github_username.present? %>
-            <a href="http://github.com/<%= @user.github_username %>"><%= image_tag_or_inline_svg "github" %></a>
+            <a href="http://github.com/<%= @user.github_username %>"><%= image_tag_or_inline_svg_tag "github", width: 18, height: 18 %></a>
           <% end %>
           <% if @article.published_timestamp.present? %>
             <time itemprop="datePublished" datetime="<%= @article.published_timestamp %>"><%= @article.readable_publish_date %></time>
@@ -173,7 +173,8 @@
         <% cache("main-article-tags-#{@article.cached_tag_list}", expires_in: 30.hours) do %>
           <div class="tags">
             <% @article.cached_tag_list_array.each do |tag| %>
-              <a class="tag" href="/t/<%= tag %>" style="background-color:<%= tag_colors(tag)[:background] %>;color:<%= tag_colors(tag)[:color] %>">#<%= tag %></a>
+              <% tag_hash = tag_colors(tag) %>
+              <a class="tag" href="/t/<%= tag %>" style="background-color:<%= tag_hash[:background] %>;color:<%= tag_hash[:color] %>">#<%= tag %></a>
             <% end %>
           </div>
         <% end %>

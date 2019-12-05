@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe PingAdmins do
+RSpec.describe PingAdmins, type: :service do
   let(:user) { build_stubbed(:user) }
 
   describe "#call" do

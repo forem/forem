@@ -13,6 +13,7 @@ require "pundit/rspec"
 require "webmock/rspec"
 require "test_prof/recipes/rspec/before_all"
 require "test_prof/recipes/rspec/let_it_be"
+require "test_prof/recipes/rspec/sample"
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -75,6 +76,10 @@ RSpec.configure do |config|
 
   config.before do
     ActiveRecord::Base.observers.disable :all # <-- Turn 'em all off!
+  end
+
+  config.after do
+    SiteConfig.clear_cache
   end
 
   # Only turn on VCR if :vcr is included metadata keys

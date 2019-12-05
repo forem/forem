@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe GeneratedImage do
+RSpec.describe GeneratedImage, type: :labor do
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
 
