@@ -9,9 +9,7 @@ class UnreadNotificationsEmailer
     users.find_each do |user|
       UnreadNotificationsEmailer.new(user).send_email_if_appropriate
     rescue StandardError => e
-      logger = Logger.new(STDOUT)
-      logger = Airbrake::AirbrakeLogger.new(logger)
-      logger.error(e)
+      Honeybadger.notify(e)
     end
   end
 

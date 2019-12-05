@@ -15,7 +15,6 @@ gem "acts_as_follower", github: "thepracticaldev/acts_as_follower", branch: "mas
 gem "addressable", "~> 2.7" # A replacement for the URI implementation that is part of Ruby's standard library
 gem "administrate", "~> 0.12" # A Rails engine that helps you put together a super-flexible admin dashboard
 gem "ahoy_email", "~> 1.1" # Email analytics for Rails
-gem "airbrake", "~> 9.5" # Airbrake is an online tool that provides robust exception tracking in any of your Ruby applications
 gem "algoliasearch-rails", "~> 1.23" # Algolia Search is a hosted search engine capable of delivering real-time results from the first keystroke
 gem "algorithmia", "~> 1.1" # Ruby Client for Algorithmia Algorithms and Data API
 gem "ancestry", "~> 3.0" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
@@ -48,6 +47,7 @@ gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically co
 gem "gemoji", "~> 3.0.1" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.3" # API wrapper for MailChimp's API
 gem "google-api-client", "~> 0.34" # Client for accessing Google APIs
+gem "honeybadger", "~> 4.0" # Used for tracking application errors
 gem "honeycomb-beeline", "~> 1.2.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "htmlentities", "~> 4.3", ">= 4.3.4"
@@ -71,7 +71,6 @@ gem "pusher", "~> 1.3" # Ruby library for Pusher Channels HTTP API
 gem "pusher-push-notifications", "~> 1.1" # Pusher Push Notifications Ruby server SDK
 gem "rack-timeout", "~> 0.5" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 5.2" # Ruby on Rails
-gem "rails-assets-airbrake-js-client", "~> 1.6", source: "https://rails-assets.org" # Airbrake JavaScript Notifier
 gem "rails-observers", "~> 0.1" # Rails observer (removed from core in Rails 4.0)
 gem "rails-settings-cached", ">= 2.1.1" # Settings plugin for Rails that makes managing a table of global key, value pairs easy.
 gem "recaptcha", "~> 5.2", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
@@ -99,6 +98,10 @@ gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.1" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "webpacker", "~> 3.5" # Use webpack to manage app-like JavaScript modules in Rails
+
+source "https://rails-assets.org" do
+  gem "rails-assets-honeybadger"
+end
 
 group :development do
   gem "better_errors", "~> 2.5" # Provides a better error page for Rails and other Rack apps
