@@ -64,10 +64,10 @@ variable :TWITTER_SECRET, :String, default: "Optional"
 ######### Optional 3rd Party Services ##########
 ################################################
 
-# Airbrake for error tracking
-# (https://airbrake.io/docs/api/#authentication)
-variable :AIRBRAKE_API_KEY, :String, default: "Optional"
-variable :AIRBRAKE_PROJECT_ID, :integer, default: 0o0000
+# Honeybadger for error tracking
+# (https://docs.honeybadger.io/lib/ruby/getting-started/introduction.html)
+variable :HONEYBADGER_API_KEY, :String, default: "Optional"
+variable :HONEYBADGER_JS_API_KEY, :String, default: "Optional"
 
 # Algolia for search (not optional)
 # (https://www.algolia.com/doc/)
