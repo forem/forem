@@ -179,6 +179,10 @@ class Comment < ApplicationRecord
     end
   end
 
+  def remove_notifications
+    Notification.remove_all_without_delay(notifiable_ids: id, notifiable_type: "Comment")
+  end
+
   private
 
   def index_id
@@ -187,10 +191,6 @@ class Comment < ApplicationRecord
 
   def update_notifications
     Notification.update_notifications(self)
-  end
-
-  def remove_notifications
-    Notification.remove_all_without_delay(notifiable_ids: id, notifiable_type: "Comment")
   end
 
   def update_descendant_notifications
