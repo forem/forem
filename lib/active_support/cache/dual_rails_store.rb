@@ -62,7 +62,7 @@ module ActiveSupport
         stores = selected_stores(options)
         stores.each do |store|
           # Ensure default expiration gets set for keys without
-          options[:expires_in] ||= store.options[:expires_in]
+          options[:expires_in] ||= options.merge(expires_in: store.options[:expires_in])
 
           # Add connection to options hash for dalli_store
           options = options.merge(connection: store.instance_variable_get(:@data)) if store.options[:dalli_store]
@@ -85,7 +85,7 @@ module ActiveSupport
         return @stores.values if options[:all]
 
         only = options[:only] || :default_store
-        raise 'Store not found!' unless @stores[only]
+        raise "Store not found!" unless @stores[only]
 
         Array.wrap(@stores[only])
       end
