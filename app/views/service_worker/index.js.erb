@@ -6,15 +6,16 @@ const expectedCaches = [
 self.addEventListener('install', event => {
   self.skipWaiting();
 
+  // Populate initial serviceworker cache.
   event.waitUntil(
     caches.open(staticCacheName)
       .then(cache => cache.addAll([
-        "/shell_top",
-        "/shell_bottom",
-        "/async_info/shell_version",
-        "/404.html",
-        "/500.html",
-        "/offline.html"
+        "/shell_top", // head, top bar, inline styles
+        "/shell_bottom", // footer
+        "/async_info/shell_version", // For comparing changes in the shell. Should be incremented with style changes.
+        "/404.html", // Not found page
+        "/500.html", // Error page
+        "/offline.html" //Offline page
       ]))
   );
 });
@@ -30,13 +31,17 @@ self.addEventListener('activate', event => {
   );
 });
 
+// Create a composed streamed webpage with shell and core content
 function createPageStream(request) {
   const stream = new ReadableStream({
     start(controller) {
+      if (!caches.match('/shell_top') || !caches.match('/shell_top')) { //return if shell isn't cached.
+        return
+      }
+
       // the body url is the request url plus 'include'
       const url = new URL(request.url);
       url.searchParams.set('i', 'i'); // Adds ?i=i or &i=i, which is our indicator for "internal" partial page
-
       const startFetch = caches.match('/shell_top');
       const endFetch = caches.match('/shell_bottom');
       const middleFetch = fetch(url).then(response => {
@@ -57,7 +62,6 @@ function createPageStream(request) {
           return reader.read().then(process);
         });
       }
-
       startFetch
         .then(response => pushStream(response.body))
         .then(() => middleFetch)
@@ -87,10 +91,18 @@ self.addEventListener('fetch', event => {
       !url.href.includes('/shell_') && // Don't fetch for shell.
       !url.href.includes('/admin') && // Don't fetch for administrate dashboard.
       !url.href.includes('/internal') && // Don't fetch for internal dashboard.
-      caches.match('/shell_top')) { // Ensure shell_top is in the cache.
+      caches.match('/shell_top') && // Ensure shell_top is in the cache.
+      caches.match('/shell_bottom')) { // Ensure shell_bottom is in the cache.
       event.respondWith(createPageStream(event.request)); // Respond with the stream
 
       // Ping version endpoint to see if we should fetch new shell. 
+      if (!caches.match('/async_info/shell_version')) { // Check if we have a cached shell version
+        caches.open(staticCacheName)
+        .then(cache => cache.addAll([
+          "/async_info/shell_version",
+        ]))  
+        return
+      }
       fetch('/async_info/shell_version').then(response => response.json()).then(json => {
         caches.match('/async_info/shell_version').then(cachedResponse => cachedResponse.json()).then(cacheJson => {
           if (cacheJson['version'] != json['version']) {
@@ -98,6 +110,7 @@ self.addEventListener('fetch', event => {
             .then(cache => cache.addAll([
               "/shell_top",
               "/shell_bottom",
+              "/async_info/shell_version"
             ]))
           }
         })
