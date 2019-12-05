@@ -1,9 +1,7 @@
 require "rails_helper"
 
 RSpec.describe PageView, type: :model do
-  let(:article) { create(:article) }
-
-  let_it_be(:page_view) { create(:page_view, referrer: "http://example.com/page") }
+  let(:page_view) { create(:page_view, referrer: "http://example.com/page") }
 
   it { is_expected.to belong_to(:user).optional }
   it { is_expected.to belong_to(:article) }

@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe ClassifiedListing, type: :model do
   let_it_be(:user) { create(:user) }
   let_it_be(:organization) { create(:organization) }
-  let_it_be(:classified_listing) { create(:classified_listing, user: user) }
+  let(:classified_listing) { create(:classified_listing, user: user) }
 
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_presence_of(:body_markdown) }

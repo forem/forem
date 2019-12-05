@@ -1,7 +1,8 @@
 require "rails_helper"
 
 RSpec.describe ChatChannel, type: :model do
-  let_it_be(:chat_channel) { create(:chat_channel) }
+  let(:chat_channel) { create(:chat_channel) }
+
   let_it_be(:users) { create_list(:user, 2) }
 
   it { is_expected.to have_many(:messages) }

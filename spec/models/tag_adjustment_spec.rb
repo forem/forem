@@ -2,7 +2,6 @@ require "rails_helper"
 
 RSpec.describe TagAdjustment, type: :model do
   let_it_be(:article) { create(:article) }
-  let_it_be(:tag) { create(:tag) }
   let_it_be(:admin_user) { create(:user, :admin) }
   let_it_be(:regular_user) { create(:user) }
 
@@ -25,6 +24,7 @@ RSpec.describe TagAdjustment, type: :model do
   it { is_expected.to have_many(:notifications).dependent(:delete_all) }
 
   describe "validations" do
+    let(:tag) { create(:tag) }
     let(:mod_user) { create(:user) }
 
     describe "privileges" do

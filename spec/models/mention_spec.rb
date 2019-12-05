@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Mention, type: :model do
-  let_it_be(:comment) { create(:comment, commentable: create(:podcast_episode)) }
+  let(:comment) { create(:comment, commentable: create(:podcast_episode)) }
 
   describe "#create_all" do
     it "enqueues a job to create mentions" do
