@@ -73,8 +73,8 @@ RSpec.describe TagAdjustment, type: :model do
 
   describe "validates article tag_list" do
     it "does not allow addition on articles with 4 tags" do
-      article = create(:article)
-      tag_adjustment = build(:tag_adjustment, user_id: mod_user.id, article_id: article.id, tag_id: tag.id)
+      article_tags_maxed = create(:article)
+      tag_adjustment = build(:tag_adjustment, user_id: admin_user.id, article_id: article_tags_maxed.id, tag_id: tag.id, tag_name: tag.name)
       expect(tag_adjustment).to be_invalid
     end
 
