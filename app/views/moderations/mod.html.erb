@@ -157,10 +157,11 @@
         <h3> Add or Remove Tags</h3>
         <% unless current_user.has_role?(:super_admin) %>
           <ul>
-            <li>You can only add or remove tags that you moderate.</li>
+            <li>You can only adjust tags that you moderate.</li>
             <li>Only adjust tags that are appropriate.</li>
             <li>Always be friendly in your tag adjustment reason.</li>
             <li>Only adjust tags which haven't been adjusted already.</li>
+            <li>Each article can have a maximun of four tags</li>
           </ul>
         <% end %>
         <b>Current live tags:</b> <%= @moderatable.tag_list %><br>
@@ -178,10 +179,14 @@
           <br><br><br><br>
         <% end %>
         <%= f.hidden_field :article_id, value: @moderatable.id %>
-        <%= f.radio_button :adjustment_type, "removal", required: true %>
-        <%= f.label :adjustment_type, "Remove", value: "removal" %>
-        <%= f.radio_button :adjustment_type, "addition", required: true %>
-        <%= f.label :adjustment_type, "Add", value: "addition" %>
+        <% if current_user.any_admin? || @tag_moderator_tags.any? { |tag| @moderatable.tag_list.include?(tag.name) } %>
+          <%= f.radio_button :adjustment_type, "removal", required: true %>
+          <%= f.label :adjustment_type, "Remove", value: "removal" %>
+        <% end %>
+        <% if @moderatable.tag_list.count < 4 %>
+          <%= f.radio_button :adjustment_type, "addition", required: true %>
+          <%= f.label :adjustment_type, "Add", value: "addition" %>
+        <% end %>
         <br />
         <% if current_user.has_role?(:super_admin) %>
           <%= f.text_field :tag_name, placeholder: "Tag Name", required: true %>
