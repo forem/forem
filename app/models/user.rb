@@ -211,17 +211,9 @@ class User < ApplicationRecord
     summary
   end
 
-  def index_id
-    "users-#{id}"
-  end
-
   def set_remember_fields
     self.remember_token ||= self.class.remember_token if respond_to?(:remember_token)
     self.remember_created_at ||= Time.now.utc
-  end
-
-  def estimate_default_language
-    Users::EstimateDefaultLanguageJob.perform_later(id)
   end
 
   def calculate_score
@@ -460,6 +452,14 @@ class User < ApplicationRecord
   end
 
   private
+
+  def index_id
+    "users-#{id}"
+  end
+
+  def estimate_default_language
+    Users::EstimateDefaultLanguageJob.perform_later(id)
+  end
 
   def set_default_language
     language_settings["preferred_languages"] ||= ["en"]
