@@ -65,6 +65,10 @@ RSpec.describe ActiveSupport::Cache::DualRailsStore, type: :lib do
       dual_store.clear
       expect(dual_store.read("foo")).to be_nil
     end
+
+    it "raises an error for an unknown store" do
+      expect { dual_store.write("foo", "bar", only: :foo) }.to raise_error("Store not found!")
+    end
   end
 
   describe "storage" do

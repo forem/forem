@@ -85,6 +85,8 @@ module ActiveSupport
         return @stores.values if options[:all]
 
         only = options[:only] || :default_store
+        raise 'Store not found!' unless @stores[only]
+
         Array.wrap(@stores[only])
       end
     end
