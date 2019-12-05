@@ -99,13 +99,18 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  config.cache_store = :dalli_store,
-                       (ENV["MEMCACHIER_SERVERS"] || "").split(","),
+  REDIS_DEFAULT_EXPIRATION = 24.hours.to_i.freeze
+  config.cache_store = :dual_rails_store, {
+    default_store: [ :dalli_store, (ENV["MEMCACHIER_SERVERS"] || "").split(","),
                        { username: ENV["MEMCACHIER_USERNAME"],
                          password: ENV["MEMCACHIER_PASSWORD"],
                          failover: true,
                          socket_timeout: 1.5,
-                         socket_failure_delay: 0.2 }
+                         socket_failure_delay: 0.2,
+                         expires_in: REDIS_DEFAULT_EXPIRATION,
+                         dalli_store: true } ],
+    redis: [ :redis_store, url: ENV["REDIS_URL"], expires_in: REDIS_DEFAULT_EXPIRATION ]
+  }
 
   config.app_domain = ENV["APP_DOMAIN"]
 
