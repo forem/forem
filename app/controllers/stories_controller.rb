@@ -19,25 +19,21 @@ class StoriesController < ApplicationController
   def show
     @story_show = true
 
-    case url_format
-    when "author/article"
-      @presenter = Articles::Show.execute(article_by_path, variant_version: params[:variant_version],
-                                                           preview_value: params[:preview],
-                                                           user_signed_in: user_signed_in?)
-      set_surrogate_key_header @presenter.record_key
-      render template: "articles/show"
-    when "author/article?moderate"
-      redirect_to "/internal/articles/#{article_presenter.id}"
-    when "podcast/episode"
-      @presenter = PodcastShowPresenter.new(podcast, episode)
-      set_surrogate_key_header episode.record_key
-      render template: "podcast_episodes/show"
-    when "old_authorname/article"
-      redirect_to URI.parse("/#{potential_author.username}/#{article_by_slug.slug}").path
-    when "organization/article"
-      redirect_to URI.parse("/#{article_by_slug.organization.slug}/#{article_by_slug.slug}").path
+    result = Stories::Show.new(
+      first_scope: params[:username],
+      second_scope: params[:slug],
+      moderate: params[:view] == "moderate",
+      preview_value: params[:preview],
+      user_signed_in: user_signed_in?,
+      variant_version: params[:variant_version],
+    ).execute
+
+    if result.redirect
+      redirect_to result.destination_url
     else
-      raise ActiveRecord::RecordNotFound, "Not Found" # this is not covered by tests
+      @presenter = result.presenter
+      set_surrogate_key_header result.surrogate_key
+      render template: result.template
     end
   end
 
@@ -49,57 +45,6 @@ class StoriesController < ApplicationController
   end
 
   private
-
-  def url_format
-    article_was_created_by_potential_author = potential_author&.articles&.find_by(slug: article_by_slug&.slug)
-    article_belongs_to_organization = article_by_slug&.organization
-    article_was_found_by_path = !article_by_path.nil?
-    article_was_found_by_slug = !article_by_slug.nil?
-    moderate_option = params[:view] == "moderate"
-
-    if article_was_found_by_path
-      "author/article"
-    elsif article_was_found_by_path && moderate_option
-      "author/article?moderate"
-    elsif article_was_found_by_slug && article_was_created_by_potential_author
-      "old_authorname/article"
-    elsif article_was_found_by_slug && article_belongs_to_organization
-      "organization/article"
-    elsif article_was_found_by_slug
-      "other"
-    else
-      "podcast/episode"
-    end
-  end
-
-  def article_by_path
-    # TODO: validate input and mass assignment
-    first_scope = params[:username]
-    second_scope = params[:slug]
-    @article_by_path ||= Article.find_by(path: "/#{first_scope.downcase}/#{second_scope}")&.decorate
-  end
-
-  def article_by_slug
-    second_scope = params[:slug]
-    @article_by_slug ||= Article.find_by(slug: second_scope)&.decorate
-  end
-
-  def potential_author
-    # Search potential author considering old usernames
-    first_scope = params[:username]
-    potential_authorname = first_scope.tr("@", "").downcase
-    @potential_author ||= User.find_by("old_username = ? OR old_old_username = ?", potential_authorname, potential_authorname)
-  end
-
-  def podcast
-    first_scope = params[:username]
-    @podcast ||= Podcast.available.find_by(slug: first_scope)
-  end
-
-  def episode
-    second_scope = params[:slug]
-    @episode ||= PodcastEpisode.available.find_by(slug: second_scope)&.decorate
-  end
 
   def redirect_to_changed_username_profile
     potential_username = params[:username].tr("@", "").downcase
