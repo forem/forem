@@ -4,6 +4,8 @@ RSpec.describe "Reactions", type: :request do
   let(:user)    { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
   let(:comment) { create(:comment, commentable_id: article.id) }
+  let(:max_age) { FastlyRails.configuration.max_age }
+  let(:stale_if_error) { FastlyRails.configuration.stale_if_error }
 
   describe "GET /reactions?article_id=:article_id" do
     context "when signed in" do
@@ -23,7 +25,7 @@ RSpec.describe "Reactions", type: :request do
       it "does not set Fastly cache control and surrogate control headers" do
         expect(response.headers.to_hash).not_to include(
           "Cache-Control" => "public, no-cache",
-          "Surrogate-Control" => "max-age=86500, stale-if-error=26400",
+          "Surrogate-Control" => "max-age=#{max_age}, stale-if-error=#{stale_if_error}",
         )
       end
     end
@@ -42,7 +44,7 @@ RSpec.describe "Reactions", type: :request do
       it "sets Fastly cache control and surrogate control headers" do
         expect(response.headers.to_hash).to include(
           "Cache-Control" => "public, no-cache",
-          "Surrogate-Control" => "max-age=86500, stale-if-error=26400",
+          "Surrogate-Control" => "max-age=#{max_age}, stale-if-error=#{stale_if_error}",
         )
       end
     end
@@ -66,7 +68,7 @@ RSpec.describe "Reactions", type: :request do
       it "does not set Fastly cache control and surrogate control headers" do
         expect(response.headers.to_hash).not_to include(
           "Cache-Control" => "public, no-cache",
-          "Surrogate-Control" => "max-age=86500, stale-if-error=26400",
+          "Surrogate-Control" => "max-age=#{max_age}, stale-if-error=#{stale_if_error}",
         )
       end
     end
@@ -85,7 +87,7 @@ RSpec.describe "Reactions", type: :request do
       it "sets Fastly cache control and surrogate control headers" do
         expect(response.headers.to_hash).to include(
           "Cache-Control" => "public, no-cache",
-          "Surrogate-Control" => "max-age=86500, stale-if-error=26400",
+          "Surrogate-Control" => "max-age=#{max_age}, stale-if-error=#{stale_if_error}",
         )
       end
     end

@@ -176,11 +176,27 @@ exports[`<Chat /> should load chat 1`] = `
         <div
           class="activechatchannel__messages"
           id="messagelist"
+          onScroll={[Function]}
+          ref={[Function]}
         >
           <div
             class="messagelist__sentinel"
             id="messagelist__sentinel"
           />
+        </div>
+        <div
+          class="chatchanneljumpback chatchanneljumpback__hide"
+          id="jumpback_button"
+        >
+          <div
+            class="chatchanneljumpback__messages"
+            onClick={[Function]}
+            onKeyUp={[Function]}
+            role="button"
+            tabIndex="0"
+          >
+            Scroll to Bottom
+          </div>
         </div>
         <div
           class="activechatchannel__alerts"

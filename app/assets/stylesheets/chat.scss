@@ -1204,3 +1204,26 @@
     width:96%;
   }
 }
+
+.chatchanneljumpback{
+  position: relative;
+}
+
+.chatchanneljumpback__messages{
+  position: absolute;
+  bottom: 12px;
+  right: 8px;
+  background: var(--theme-background, #f5f6f7);
+  color: var(--theme-color, $black);
+  border: 2px solid $black;
+  padding: 7px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.chatchanneljumpback__hide{
+  display: none;
+}
