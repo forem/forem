@@ -87,6 +87,7 @@ self.addEventListener('fetch', event => {
       !url.href.includes('i=i') && // Parameter representing "internal" navigation.
       !url.href.includes('?signin') && // Don't run on sign in.
       !url.href.includes('/onboarding') && // Don't run on onboarding.
+      !url.href.includes('/api/') && // Don't run on API endpoints.
       !url.href.includes('/users/auth') && // Don't run on authentication.
       !url.href.includes('/shell_') && // Don't fetch for shell.
       !url.href.includes('/admin') && // Don't fetch for administrate dashboard.
