@@ -4,7 +4,7 @@ RSpec.describe ChatChannelPolicy, type: :policy do
   subject { described_class.new(user, chat_channel) }
 
   let(:chat_channel) { build_stubbed(:chat_channel, channel_type: "invite_only") }
-  let(:user)         { build_stubbed(:user) }
+  let!(:user) { create(:user) }
 
   context "when user is not signed-in" do
     let(:user) { nil }

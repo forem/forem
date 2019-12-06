@@ -48,4 +48,10 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
     described_class.call(article, "Published")
     expect(Notification.count).to eq 0
   end
+
+  it "doesn't fail if the notification already exists" do
+    notification = create(:notification, user: user2, action: "Published", notifiable: article)
+    result = described_class.call(article, "Published")
+    expect(result.ids).to include(notification.id)
+  end
 end

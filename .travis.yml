@@ -51,8 +51,6 @@ deploy:
     master: practicaldev
   on:
     condition: $TRAVIS_COMMIT_MESSAGE =~ \[deploy\]
-after_deploy:
-  - bash after_deploy.sh
 notifications:
   slack:
     on_pull_requests: false
