@@ -100,7 +100,7 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # TODO: Remove after cache store flip
-  if ENV['USE_REDIS']
+  if ENV["USE_REDIS"]
     DEFAULT_EXPIRATION = 24.hours.to_i.freeze
     config.cache_store = :redis_store, ENV["REDIS_URL"], { expires_in: DEFAULT_EXPIRATION }
   else
