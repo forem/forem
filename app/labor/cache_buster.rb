@@ -42,8 +42,10 @@ module CacheBuster
     bust("#{article.path}?preview=#{article.password}")
     bust("#{article.path}?preview=#{article.password}&i=i")
     bust("/#{article.organization.slug}") if article.organization.present?
-    bust_home_pages(article)
-    bust_tag_pages(article)
+    unless Rails.env.production?
+      bust_home_pages(article)
+      bust_tag_pages(article)
+    end
     bust("/api/articles/#{article.id}")
     return unless article.collection_id
 

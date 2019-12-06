@@ -158,20 +158,6 @@
           <span class="published-at">・<%= @article.reading_time < 1 ? 1 : @article.reading_time %> min read</span>
           <span class="action-space" id="action-space"></span>
         </h3>
-        <% if @article.job_opportunity_id && @article.job_opportunity.present? %>
-          <div class="tags" style="margin-bottom: 10px;">
-            <% if @article.job_opportunity.location_city.present? %>
-              <a class="tag" target="_blank" style="color:white;background:#0eb268;" href="https://www.google.com/maps/place/<%= JobOpportunity.last.location_given %>">
-                <%= @article.job_opportunity.location_city %>
-              </a>
-            <% end %>
-            <% if @article.job_opportunity.remoteness_in_words.present? %>
-              <span class="tag" style="color:white;background:#0b82c6;">
-                <%= @article.job_opportunity.remoteness_in_words %>
-              </span>
-            <% end %>
-          </div>
-        <% end %>
         <% cache("main-article-tags-#{@article.cached_tag_list}", expires_in: 30.hours) do %>
           <div class="tags">
             <% @article.cached_tag_list_array.each do |tag| %>
@@ -200,19 +186,20 @@
     <%= render "articles/org_branding", organization: @organization %>
     <%= render "articles/full_comment_area" %>
   </div>
-
-  <% cache("article-bottom-content-#{@article.id}", expires_in: 18.hours) do %>
-    <% @classic_article = Suggester::Articles::Classic.new(@article, not_ids: [@article.id]).get.first %>
-    <% if @classic_article %>
-      <%= render "additional_content_boxes/article_box",
-                 article: @classic_article,
-                 classification: "classic",
-                 classification_text: "Classic DEV Post from #{@classic_article.readable_publish_date}",
-                 follow_cue: "Follow <a href='#{@classic_article.user.path}'>@#{@classic_article.user.username}</a> to see more of their posts in your feed." %>
+  <% unless Rails.env.production? %>
+    <% cache("article-bottom-content-#{@article.id}", expires_in: 18.hours) do %>
+      <% @classic_article = Suggester::Articles::Classic.new(@article, not_ids: [@article.id]).get.first %>
+      <% if @classic_article %>
+        <%= render "additional_content_boxes/article_box",
+                  article: @classic_article,
+                  classification: "classic",
+                  classification_text: "Classic DEV Post from #{@classic_article.readable_publish_date}",
+                  follow_cue: "Follow <a href='#{@classic_article.user.path}'>@#{@classic_article.user.username}</a> to see more of their posts in your feed." %>
+      <% end %>
+      <div id="additional-content-area" data-article-id="<%= @article.id %>,<%= @classic_article&.id %>"></div>
+      <% suggested_articles = ArticleSuggester.new(@article).articles(max: 4) %>
+      <%= render "articles/bottom_content", articles: suggested_articles %>
     <% end %>
-    <div id="additional-content-area" data-article-id="<%= @article.id %>,<%= @classic_article&.id %>"></div>
-    <% suggested_articles = ArticleSuggester.new(@article).articles(max: 4) %>
-    <%= render "articles/bottom_content", articles: suggested_articles %>
   <% end %>
 </div>
 
