@@ -46,11 +46,11 @@ class IntroSlide extends Component {
           </span>
         </p>
         <p>
-          A few
+          A few 
           {' '}
           <strong>quick questions</strong>
           {' '}
-          for you before you get
+for you before you get
           started...
         </p>
       </div>

@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe CommentPolicy, type: :policy do
   subject(:comment_policy) { described_class.new(user, comment) }
 
-  let(:comment) { build_stubbed(:comment) }
+  let!(:comment) { create(:comment, commentable: create(:podcast_episode)) }
 
   let(:valid_attributes_for_create) do
     %i[body_markdown commentable_id commentable_type parent_id]
@@ -20,7 +20,7 @@ RSpec.describe CommentPolicy, type: :policy do
   end
 
   context "when user is not the author" do
-    let(:user) { build_stubbed(:user) }
+    let!(:user) { create(:user) }
 
     it { is_expected.to permit_actions(%i[create]) }
     it { is_expected.to forbid_actions(%i[edit update destroy delete_confirm]) }

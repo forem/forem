@@ -62,9 +62,18 @@ export default class UserDetails extends Component {
     const userMeta = ['twitter_username', 'github_username', 'website_url'];
     userMeta.forEach(metaProp => {
       if (user[metaProp]) {
-        let { className, hostUrl, srcImage, imageAltText } = userDetailsConfig[metaProp];
+        const {
+          className,
+          hostUrl,
+          srcImage,
+          imageAltText,
+        } = userDetailsConfig[metaProp];
         socialIcons.push(
-          <a href={`${hostUrl}${user[metaProp]}`} target="_blank" rel="noopener noreferrer">
+          <a
+            href={`${hostUrl}${user[metaProp]}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <img
               className={className}
               src={srcImage}
@@ -90,6 +99,15 @@ export default class UserDetails extends Component {
         modalId: 'userdetails__blockmsg',
         otherModalId: 'userdetails__reportabuse',
         btnName: 'Block User',
+      });
+    }
+
+    let reportButton = '';
+    if (window.currentUser.id !== user.id) {
+      reportButton = setUpButton({
+        modalId: 'userdetails__reportabuse',
+        otherModalId: 'userdetails__blockmsg',
+        btnName: 'Report Abuse',
       });
     }
     return (
@@ -121,13 +139,9 @@ export default class UserDetails extends Component {
         </div>
         <div className="userdetails__blockreport">
           {blockButton}
-          {setUpButton({
-            modalId: 'userdetails__reportabuse',
-            otherModalId: 'userdetails__blockmsg',
-            btnName: 'Report Abuse',
-          })}
+          {reportButton}
         </div>
-        <div id="userdetails__reportabuse" style="display:none">
+        <div id="userdetails__reportabuse" style={{ display: 'none' }}>
           <div className="userdetails__reportabuse">
             <p>Reporting abuse will: </p>
             <ul>
@@ -176,7 +190,7 @@ export default class UserDetails extends Component {
             </a>
           </div>
         </div>
-        <div id="userdetails__blockmsg" style="display:none">
+        <div id="userdetails__blockmsg" style={{ display: 'none' }}>
           <div className="userdetails__blockmsg">
             <p>Blocking on connect will: </p>
             <ul>

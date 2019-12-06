@@ -7,6 +7,8 @@ RSpec.describe MediumArticleRetrievalService, type: :service, vcr: {} do
       author: "Edison Yap",
       author_image: "https://miro.medium.com/fit/c/96/96/1*qFzi921ix0_kkrFMKYgELw.jpeg",
       reading_time: "4 min read",
+      published_time: "2018-11-03T09:44:32.733Z",
+      publication_date: "Nov 3, 2018",
       url: "https://medium.com/@edisonywh/my-ruby-journey-hooking-things-up-91d757e1c59c"
     }
   end

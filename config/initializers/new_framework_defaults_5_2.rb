@@ -6,6 +6,11 @@
 #
 # Read the Guide for Upgrading Ruby on Rails for more info on each option.
 
+# NOTE: we can't enable this just yet because it likely requires a flushing on the whole cache
+# due to how the new cache keys are generated. This is intended to improve and optimize caching
+# strategies by Rails but since we use "dalli_store" we can't enable this without flushing the cache.
+# This won't be a problem when we'll have switched to "redis_cache_store"
+# see <https://blog.heroku.com/cache-invalidation-rails-5-2-dalli-store>
 # Make Active Record use stable #cache_key alongside new #cache_version method.
 # This is needed for recyclable cache keys.
 # Rails.application.config.active_record.cache_versioning = true
@@ -25,12 +30,16 @@ Rails.application.config.active_support.use_authenticated_message_encryption = t
 
 # Add default protection from forgery to ActionController::Base instead of in
 # ApplicationController.
-# Rails.application.config.action_controller.default_protect_from_forgery = true
+Rails.application.config.action_controller.default_protect_from_forgery = true
 
 # Store boolean values are in sqlite3 databases as 1 and 0 instead of 't' and
 # 'f' after migrating old data.
 # Rails.application.config.active_record.sqlite3.represent_boolean_as_integer = true
 
+# NOTE: we can't enable this just yet, because it changes how "ActiveSupport::Digest.hexdigest"
+# generates digests, which in turn is used by "ActionView::Digestor", which in turn is used by the
+# see <https://github.com/rails/rails/blob/5-2-stable/actionview/lib/action_view/digestor.rb> and
+# <https://github.com/rails/rails/blob/5-2-stable/actionview/lib/action_view/helpers/cache_helper.rb#L227>
 # Use SHA-1 instead of MD5 to generate non-sensitive digests, such as the ETag header.
 # Rails.application.config.active_support.use_sha1_digests = true
 

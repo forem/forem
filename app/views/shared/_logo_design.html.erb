@@ -2,6 +2,7 @@
   <div class="color-select-fields">
     <div class="field">
       <% account.bg_color_hex = user_colors(account)[:bg] if account.bg_color_hex.blank? %>
+      <% account.text_color_hex = user_colors(account)[:text] if account.text_color_hex.blank? %>
       <%= f.label :bg_color_hex, "background color" %><br>
       <div class="select-field-wrapper">
         <%= f.text_field :bg_color_hex, placeholder: "#000000", class: "color-select-textbox", id: "bg-color-textfield" %>

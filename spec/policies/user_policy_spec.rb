@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe UserPolicy, type: :policy do
   subject { described_class.new(user, other_user) }
 
-  let(:other_user) { build_stubbed(:user) }
+  let(:other_user) { create(:user) }
 
   context "when user is not signed-in" do
     let(:user) { nil }
