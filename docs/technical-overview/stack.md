@@ -10,20 +10,20 @@ For the Dev.to tech stack we use:
 - [_PostgreSQL_](https://www.postgresql.org/) as the primary database
 - [_Redis_](https://redis.io/) to store additional data and eventually replace
   memcache
-- [_Fastly_](https://www.fastly.com/) for [edge
-  caching](https://dev.to/ben/making-devto-insanely-fast)
+- [_Fastly_](https://www.fastly.com/) for
+  [edge caching](https://dev.to/ben/making-devto-insanely-fast)
 - [_Cloudinary_](https://cloudinary.com/) for image manipulation/serving
-- [_Airbrake_](https://airbrake.io/) for error monitoring
+- [_Honeybadger_](https://www.honeybadger.io/) for error monitoring
 - [_Timber_](https://timber.io/) for logging
-- [_Delayed Job_](https://github.com/collectiveidea/delayed_job) and [_Active
-  Job_](https://guides.rubyonrails.org/active_job_basics.html) for background
-  workers
+- [_Delayed Job_](https://github.com/collectiveidea/delayed_job) and
+  [_Active Job_](https://guides.rubyonrails.org/active_job_basics.html) for
+  background workers
 - [_Algolia_](https://www.algolia.com/) for search
 - [_Redcarpet_](https://github.com/vmg/redcarpet) and
   [_Rouge_](https://github.com/jneen/rouge) to parse Markdown
 - [_Carrierwave_](https://github.com/carrierwaveuploader/carrierwave),
-  [_Fog_](https://github.com/fog/fog-aws) and [_AWS
-  S3_](https://aws.amazon.com/s3/) for image upload/storage
+  [_Fog_](https://github.com/fog/fog-aws) and
+  [_AWS S3_](https://aws.amazon.com/s3/) for image upload/storage
 - [_InstantClick_](http://instantclick.io/) (a modified version) instead of
   _Turbolinks_ to accelerate navigation
 - [_ImageMagick_](https://imagemagick.org/) to manipulate images on upload
@@ -37,11 +37,10 @@ For the Dev.to tech stack we use:
   of association counts (counter caches)
 - [_Rolify_](https://github.com/RolifyCommunity/rolify) for role management
 - [_Pundit_](https://github.com/varvet/pundit) for authorization
-- [_Service
-  Workers_](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers)
+- [_Service Workers_](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers)
   to proxy traffic
-- [Preact](https://preactjs.com/) for some of the frontend. See [the Frontend
-  Guide](/frontend) for more info
+- [Preact](https://preactjs.com/) for some of the frontend. See
+  [the Frontend Guide](/frontend) for more info
 - [_Pusher_](https://pusher.com) for realtime communication between the
   application and users' browsers
 - [_GitDocs_](https://gitdocs.netlify.com) for beautiful and SEO-friendly

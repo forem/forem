@@ -160,7 +160,6 @@ Rails.application.routes.draw do
   resources :organizations, only: %i[update create]
   resources :followed_articles, only: [:index]
   resources :follows, only: %i[show create update]
-  resources :giveaways, only: %i[new edit update]
   resources :image_uploads, only: [:create]
   resources :blocks
   resources :notifications, only: [:index]
@@ -286,7 +285,6 @@ Rails.application.routes.draw do
   post "articles/preview" => "articles#preview"
   post "comments/preview" => "comments#preview"
   get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
-  get "/freestickers" => "giveaways#new"
   get "/shop", to: redirect("https://shop.dev.to/")
   get "/mod" => "moderations#index", :as => :mod
 
@@ -330,6 +328,10 @@ Rails.application.routes.draw do
   end
 
   get "/embed/:embeddable" => "liquid_embeds#show"
+
+  # serviceworkers
+  get "/serviceworker" => "service_worker#index"
+  get "/manifest" => "service_worker#manifest"
 
   get "/new" => "articles#new"
   get "/new/:template" => "articles#new"
