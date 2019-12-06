@@ -104,5 +104,5 @@
       </div>
     </div>
   <% end %>
-  <%= subtree_html if !comment.hidden_by_commentable_user %>
+  <%= subtree_html unless should_be_hidden?(comment, @root_comment) %>
 </div>
