@@ -55,11 +55,11 @@ RSpec.describe "Api::V0::Comments", type: :request do
       get "/api/comments?a_id=#{article.id}"
 
       expected_key = [
-        "api_comments_index", sibling_root_comment.record_key,
+        "comments", sibling_root_comment.record_key,
         root_comment.record_key, child_comment.record_key,
         grandchild_comment.record_key, great_grandchild_comment.record_key
-      ].join(" ")
-      expect(response.headers["surrogate-key"]).to eq(expected_key)
+      ].to_set
+      expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
   end
 
@@ -100,10 +100,10 @@ RSpec.describe "Api::V0::Comments", type: :request do
       get "/api/comments/#{root_comment.id_code_generated}"
 
       expected_key = [
-        "api_comments_show", root_comment.record_key, child_comment.record_key,
+        "comments", root_comment.record_key, child_comment.record_key,
         grandchild_comment.record_key, great_grandchild_comment.record_key
-      ].join(" ")
-      expect(response.headers["surrogate-key"]).to eq(expected_key)
+      ].to_set
+      expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
   end
 end
