@@ -124,6 +124,7 @@ class GithubTag
 
     def sanitize_link(link)
       link = ActionController::Base.helpers.strip_tags(link)
+      raise_error unless /.*github\.com\//.match?(link)
       link.gsub(/.*github\.com\//, "")
     end
 
@@ -132,7 +133,7 @@ class GithubTag
     end
 
     def raise_error
-      raise StandardError, "Invalid Github Code link"
+      raise StandardError, "Invalid Github link"
     end
 
     def token
