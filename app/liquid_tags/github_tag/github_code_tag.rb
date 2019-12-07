@@ -74,7 +74,7 @@ class GithubTag
       client = Octokit::Client.new(access_token: token)
       file = client.contents(repo_info[:repo_path],
                              path: file_info[:file_path],
-                             ref: file_info[:ref_name])
+                             query: { ref: repo_info[:ref_name] })
 
       Base64.decode64(file[:content]).split("\n")
     end
