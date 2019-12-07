@@ -14,8 +14,7 @@ class GithubTag
         locals: {
           file_path: @content[:file_path],
           body: @content[:body],
-          start_line: @content[:start_line],
-          end_line: @content[:end_line],
+          line_info: @content[:line_info],
           original_link: @original_link,
           ref_name: @content[:ref_name]
         },
@@ -80,6 +79,14 @@ class GithubTag
       file_content[start_line..end_line]
     end
 
+    def build_line_info(file_info)
+      if file_info[:start_line] == file_info[:end_line]
+        "Line #{file_info[:start_line]}"
+      else
+        "Lines #{file_info[:start_line]} to #{file_info[:end_line]}"
+      end
+    end
+
     def get_content(link)
       repo_info = get_repo_info(link)
       file_info = get_file_info(repo_info[:file_link])
@@ -104,8 +111,7 @@ class GithubTag
                                   render_opt),
         file_path: "#{repo_info[:repo_path]}/#{file_info[:file_path]}",
         ref_name: file_info[:ref_name],
-        start_line: file_info[:start_line],
-        end_line: file_info[:end_line]
+        line_info: build_line_info(file_info)
       }
     end
 
