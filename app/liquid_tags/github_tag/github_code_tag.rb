@@ -53,6 +53,10 @@ class GithubTag
       start_line = Integer(line_info[0][1..-1])
       end_line = Integer(line_info[1][1..-1])
 
+      if start_line > end_line
+        start_line, end_line = end_line, start_line
+      end
+
       {
         file_path: file_path,
         file_type: file_type,
