@@ -50,10 +50,12 @@ class GithubTag
 
       line_info = file_link[1].split("-")
       start_line = Integer(line_info[0][1..-1])
-      end_line = Integer(line_info[1][1..-1])
+      end_line = if line_info.length > 1
+                   Integer(line_info[1][1..-1])
+                 end
 
-      if start_line > end_line
-        start_line, end_line = end_line, start_line
+      unless end_line.nil?
+        start_line, end_line = end_line, start_line if start_line > end_line
       end
 
       {
@@ -75,12 +77,16 @@ class GithubTag
 
     def get_sliced_content(file_content, file_info)
       start_line = file_info[:start_line] - 1
-      end_line = file_info[:end_line] - 1
-      file_content[start_line..end_line]
+      if file_info[:end_line].nil?
+        file_content[start_line..start_line]
+      else
+        end_line = file_info[:end_line] - 1
+        file_content[start_line..end_line]
+      end
     end
 
     def build_line_info(file_info)
-      if file_info[:start_line] == file_info[:end_line]
+      if file_info[:end_line].nil? || file_info[:start_line] == file_info[:end_line]
         "Line #{file_info[:start_line]}"
       else
         "Lines #{file_info[:start_line]} to #{file_info[:end_line]}"
@@ -93,7 +99,10 @@ class GithubTag
       file_content = get_file_contents(repo_info, file_info)
 
       raise_line_number_error if file_info[:start_line] > file_content.length
-      file_info[:end_line] = [file_info[:end_line], file_content.length].min
+
+      unless file_info[:end_line].nil?
+        file_info[:end_line] = [file_info[:end_line], file_content.length].min
+      end
 
       sliced_file_content = get_sliced_content(file_content, file_info)
 
