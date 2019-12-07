@@ -49,6 +49,10 @@ class GithubTag
       file_type = file_path[file_path.rindex(".") + 1..-1]
 
       line_info = file_link[1].split("-")
+
+      raise_line_number_error unless line_info[0][0] == "L"
+      raise_line_number_error unless line_info.length == 1 || line_info[1][0] == "L"
+
       start_line = Integer(line_info[0][1..-1])
       end_line = if line_info.length > 1
                    Integer(line_info[1][1..-1])
