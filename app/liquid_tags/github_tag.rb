@@ -1,5 +1,5 @@
 class GithubTag < LiquidTagBase
-  CODE_REGEXP = /#L\d+-L\d+/.freeze
+  CODE_REGEXP = /#L\d+/.freeze
 
   def initialize(_tag_name, link, _parse_context)
     super
