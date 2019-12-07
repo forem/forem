@@ -65,6 +65,15 @@ class GithubTag
       }
     end
 
+    def get_file_contents(repo_info, file_info)
+      client = Octokit::Client.new(access_token: token)
+      file = client.contents(repo_info[:repo_path],
+                             path: file_info[:file_path],
+                             ref: file_info[:ref_name])
+
+      Base64.decode64(file[:content]).split("\n")
+    end
+
     def get_sliced_content(file_content, file_info)
       start_line = file_info[:start_line] - 1
       end_line = file_info[:end_line] - 1
@@ -74,13 +83,11 @@ class GithubTag
     def get_content(link)
       repo_info = get_repo_info(link)
       file_info = get_file_info(repo_info[:file_link])
+      file_content = get_file_contents(repo_info, file_info)
 
-      client = Octokit::Client.new(access_token: token)
-      file = client.contents(repo_info[:repo_path],
-                             path: file_info[:file_path],
-                             ref: file_info[:ref_name])
+      raise_line_number_error if file_info[:start_line] > file_content.length
+      file_info[:end_line] = [file_info[:end_line], file_content.length].min
 
-      file_content = Base64.decode64(file[:content]).split("\n")
       sliced_file_content = get_sliced_content(file_content, file_info)
 
       renderer = Redcarpet::Render::HTMLRouge.new
@@ -112,6 +119,10 @@ class GithubTag
     def sanitize_link(link)
       link = ActionController::Base.helpers.strip_tags(link)
       link.gsub(/.*github\.com\//, "")
+    end
+
+    def raise_line_number_error
+      raise StandardError, "Line number is invalid"
     end
 
     def raise_error
