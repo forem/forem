@@ -1,6 +1,6 @@
-image_path = Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg")
-
 FactoryBot.define do
+  image_path = Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg")
+
   factory :badge do
     title       { Faker::Book.title + " #{rand(1000)}" }
     description { Faker::Lorem.sentence }

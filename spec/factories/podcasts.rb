@@ -1,7 +1,7 @@
-image_path = Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg")
-
 FactoryBot.define do
   sequence(:podcast_slug) { |n| "slug-#{n}" }
+
+  image_path = Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg")
 
   factory :podcast do
     title           { Faker::Beer.name }

@@ -1,10 +1,10 @@
-image_path = Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg")
-
 FactoryBot.define do
   sequence(:email) { |n| "person#{n}@example.com" }
   sequence(:username) { |n| "username#{n}" }
   sequence(:twitter_username) { |n| "twitter#{n}" }
   sequence(:github_username) { |n| "github#{n}" }
+
+  image_path = Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg")
 
   factory :user do
     name                         { Faker::Name.name }
