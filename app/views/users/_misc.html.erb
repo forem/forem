@@ -45,7 +45,7 @@
   </div>
   <div class="sub-field">
     <%= f.label :config_font, "Base Post Font" %>
-    <%= f.select(:config_font, options_for_select(["default", "sans serif", "monospace", "comic sans"], @user.config_font.tr("_", " "))) %>
+    <%= f.select(:config_font, options_for_select(["default", "sans serif", "monospace", "comic sans", "open dyslexic"], @user.config_font.tr("_", " "))) %>
     <sub><em>Default is serif style.</em></sub>
   </div>
   <div class="sub-field">

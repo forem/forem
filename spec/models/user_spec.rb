@@ -587,6 +587,11 @@ RSpec.describe User, type: :model do
       expect(user.decorate.config_body_class).to eq("default sans-serif-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
     end
 
+    it "creates proper body class with open dyslexic config" do
+      user.config_font = "open_dyslexic"
+      expect(user.decorate.config_body_class).to eq("default open-dyslexic-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+    end
+
     it "creates proper body class with night theme" do
       user.config_theme = "night_theme"
       expect(user.decorate.config_body_class).to eq("night-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
