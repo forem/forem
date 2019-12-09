@@ -333,6 +333,15 @@ export default class Chat extends Component {
       return;
     }
 
+    if (
+      message.temp_id &&
+      messages[activeChannelId].findIndex(
+        oldmessage => oldmessage.temp_id === message.temp_id,
+      ) > -1
+    ) {
+      return;
+    }
+
     if (messages[receivedChatChannelId]) {
       newMessages = messages[receivedChatChannelId].slice();
       newMessages.push(message);
