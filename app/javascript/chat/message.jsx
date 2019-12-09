@@ -77,7 +77,7 @@ const Message = ({
               <span />
             )}
           </div>
-          {userID === currentUserId ? (
+          {userID === window.currentUser.id ? (
             <div className="message__actions">
               <span
                 role="button"
@@ -90,6 +90,7 @@ const Message = ({
               >
                 Delete
               </span>
+              <span>Edit</span>
             </div>
           ) : (
             ' '
