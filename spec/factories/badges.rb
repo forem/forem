@@ -1,12 +1,9 @@
 FactoryBot.define do
-  image = Rack::Test::UploadedFile.new(
-    Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg"),
-    "image/jpeg",
-  )
+  image_path = Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg")
 
   factory :badge do
-    title { Faker::Book.title + " #{rand(1000)}" }
+    title       { Faker::Book.title + " #{rand(1000)}" }
     description { Faker::Lorem.sentence }
-    badge_image { image }
+    badge_image { Rack::Test::UploadedFile.new(image_path, "image/jpeg") }
   end
 end
