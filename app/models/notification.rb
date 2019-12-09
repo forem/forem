@@ -165,11 +165,11 @@ class Notification < ApplicationRecord
     end
   end
 
-  # instance methods
-
   def aggregated?
     action == "Reaction" || action == "Follow"
   end
+
+  private
 
   def mark_notified_at_time
     self.notified_at = Time.current
