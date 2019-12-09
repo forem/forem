@@ -9,24 +9,9 @@ class MessagesController < ApplicationController
     authorize @message
 
     # sending temp message only to sender
-    if @message.valid?
-      begin
-        message_json = create_pusher_payload(@message, @temp_message_id)
-        Pusher.trigger("private-message-notifications-#{@message.user_id}", "message-created", message_json)
-      rescue Pusher::Error => e
-        logger.info "PUSHER ERROR: #{e.message}"
-      end
-    end
-
+    pusher_message_created(true)
     if @message.save
-      if @message.valid?
-        begin
-          message_json = create_pusher_payload(@message, @temp_message_id)
-          Pusher.trigger(@message.chat_channel.pusher_channels, "message-created", message_json)
-        rescue Pusher::Error => e
-          logger.info "PUSHER ERROR: #{e.message}"
-        end
-      end
+      pusher_message_created(false)
       render json: { status: "success", message: { temp_id: @temp_message_id, id: @message.id } }, status: :created
     else
       render json: {
@@ -103,6 +88,21 @@ class MessagesController < ApplicationController
           }
         }, status: :unauthorized
       end
+    end
+  end
+
+  def pusher_message_created(is_single)
+    return unless @message.valid?
+
+    begin
+      message_json = create_pusher_payload(@message, @temp_message_id)
+      if is_single
+        Pusher.trigger("private-message-notifications-#{@message.user_id}", "message-created", message_json)
+      else
+        Pusher.trigger(@message.chat_channel.pusher_channels, "message-created", message_json)
+      end
+    rescue Pusher::Error => e
+      logger.info "PUSHER ERROR: #{e.message}"
     end
   end
 end
