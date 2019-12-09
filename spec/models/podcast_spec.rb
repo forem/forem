@@ -16,6 +16,11 @@ RSpec.describe Podcast, type: :model do
   end
 
   describe "validations" do
+    # Couldn't use shoulda uniqueness matchers for these tests because:
+    # Shoulda uses `save(validate: false)` which skips validations
+    # So an invalid record is trying to be saved but fails because of the db constraints
+    # https://git.io/fjg2g
+
     it "validates slug uniqueness" do
       podcast2 = build(:podcast, slug: podcast.slug)
 

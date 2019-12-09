@@ -9,6 +9,11 @@ RSpec.describe PodcastEpisode, type: :model do
   it { is_expected.to validate_presence_of(:guid) }
 
   describe "validations" do
+    # Couldn't use shoulda matchers for these tests because:
+    # Shoulda uses `save(validate: false)` which skips validations, but runs callbacks
+    # So an invalid record is saved and the algolia callback fails to run because there's no associated podcast
+    # https://git.io/fjg2g
+
     it "validates guid uniqueness" do
       ep2 = build(:podcast_episode, guid: podcast_episode.guid)
 
