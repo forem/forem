@@ -9,7 +9,7 @@
                  is_childless: is_childless,
                  subtree_html: subtree_html) %>
     </details>
-  <% else %>
+  <% elsif !should_be_hidden?(comment, @root_comment) %>
     <%= render("comments/comment_proper",
                comment: comment,
                commentable: commentable,

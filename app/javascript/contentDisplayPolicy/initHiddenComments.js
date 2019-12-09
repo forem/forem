@@ -2,9 +2,11 @@
 export default function initHiddenComments() {
   function hide(commentId) {
     const confirmMsg = `
-    Are you sure you want to hide this comment? This will hide the comment in your post, but will still be visible in the comment's permalink.
+Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's permalink.
 
-    You can also consider blocking the person or reporting abuse.
+All child comments in this thread will also be hidden.
+
+For further actions, you may consider blocking this person and/or reporting abuse.
     `;
     const confirmHide = window.confirm(confirmMsg)
     if(confirmHide) {
