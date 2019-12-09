@@ -310,11 +310,11 @@ export default class Chat extends Component {
     const { activeChannelId } = this.state;
     this.setState(prevState => ({
       messages: {
-        [activeChannelId]: {
+        [activeChannelId]: [
           ...prevState.messages[activeChannelId].filter(
             oldmessage => oldmessage.id !== message.id,
           ),
-        },
+        ],
       },
     }));
   };
@@ -323,6 +323,15 @@ export default class Chat extends Component {
     const { messages, activeChannelId, scrolled, chatChannels } = this.state;
     const receivedChatChannelId = message.chat_channel_id;
     let newMessages = [];
+
+    if (
+      message.temp_id &&
+      messages[activeChannelId].findIndex(
+        oldmessage => oldmessage.temp_id === message.temp_id,
+      ) > -1
+    ) {
+      return;
+    }
 
     if (messages[receivedChatChannelId]) {
       newMessages = messages[receivedChatChannelId].slice();
