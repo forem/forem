@@ -4,6 +4,7 @@ import { adjustTimestamp } from './util';
 import ErrorMessage from './messages/errorMessage';
 
 const Message = ({
+  currentUserId,
   id,
   user,
   userID,
@@ -76,7 +77,7 @@ const Message = ({
               <span />
             )}
           </div>
-          {userID === window.currentUser.id ? (
+          {userID === currentUserId ? (
             <div className="message__actions">
               <span
                 role="button"
@@ -102,6 +103,7 @@ const Message = ({
 };
 
 Message.propTypes = {
+  currentUserId: PropTypes.number.isRequired,
   id: PropTypes.number.isRequired,
   user: PropTypes.string.isRequired,
   userID: PropTypes.number.isRequired,
