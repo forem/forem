@@ -99,19 +99,8 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  # TODO: Remove after cache store flip
-  if ENV["USE_REDIS"]
-    DEFAULT_EXPIRATION = 24.hours.to_i.freeze
-    config.cache_store = :redis_store, ENV["REDIS_URL"], { expires_in: DEFAULT_EXPIRATION }
-  else
-    config.cache_store = :dalli_store,
-                         (ENV["MEMCACHIER_SERVERS"] || "").split(","),
-                         { username: ENV["MEMCACHIER_USERNAME"],
-                           password: ENV["MEMCACHIER_PASSWORD"],
-                           failover: true,
-                           socket_timeout: 1.5,
-                           socket_failure_delay: 0.2 }
-  end
+  DEFAULT_EXPIRATION = 24.hours.to_i.freeze
+  config.cache_store = :redis_store, ENV["REDIS_URL"], { expires_in: DEFAULT_EXPIRATION }
 
   config.app_domain = ENV["APP_DOMAIN"]
 

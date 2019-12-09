@@ -32,10 +32,6 @@
       <% end %>
     <% end %>
 
-    <%# keeping this section of out the cache: if the article is never updated
-        the containing cache will likely never expire and this section will be
-        fixed in time until expired randomly by Memcache's algorithm, which can
-        be too late for the freshness of the user experience %>
     <div>
       <% if json_data["article"]["published_at"] %>
         <small><%= time_ago_in_words json_data["article"]["published_at"] %> ago</small>
