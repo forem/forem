@@ -19,7 +19,7 @@ gem "algoliasearch-rails", "~> 1.23" # Algolia Search is a hosted search engine 
 gem "algorithmia", "~> 1.1" # Ruby Client for Algorithmia Algorithms and Data API
 gem "ancestry", "~> 3.0" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "autoprefixer-rails", "~> 9.7" # Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website
-gem "aws-sdk-lambda", "~> 1.33" # Official AWS Ruby gem for AWS Lambda
+gem "aws-sdk-lambda", "~> 1.34" # Official AWS Ruby gem for AWS Lambda
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
 gem "carrierwave", "~> 2.0" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
@@ -27,7 +27,6 @@ gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bo
 gem "cld", "~> 0.8" # Compact Language Detection for Ruby
 gem "cloudinary", "~> 1.13" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.2" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "dalli", "~> 2.7" # High performance memcached client for Ruby
 gem "delayed_job_active_record", "~> 4.1" # ActiveRecord backend for Delayed::Job
 gem "delayed_job_web", "~> 1.4" # Web interface for delayed_job
 gem "devise", "~> 4.7" # Flexible authentication solution for Rails
@@ -46,7 +45,7 @@ gem "fog-aws", "~> 3.5" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 3.0.1" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.3" # API wrapper for MailChimp's API
-gem "google-api-client", "~> 0.34" # Client for accessing Google APIs
+gem "google-api-client", "~> 0.36" # Client for accessing Google APIs
 gem "honeybadger", "~> 4.0" # Used for tracking application errors
 gem "honeycomb-beeline", "~> 1.2.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
@@ -129,13 +128,13 @@ group :development, :test do
   gem "awesome_print", "~> 1.8" # Great Ruby dubugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.0" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.29" # Capybara is an integration testing tool for rack based web applications
-  gem "faker", "~> 2.7" # A library for generating fake data such as names, addresses, and phone numbers
+  gem "faker", "~> 2.8" # A library for generating fake data such as names, addresses, and phone numbers
   gem "parallel_tests", "~> 2.29" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry-byebug", "~> 3.7" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 3.9" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 0.76", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.5", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
-  gem "rubocop-rails", "~> 2.3", require: false # Automatic Rails code style checking tool
+  gem "rubocop-rails", "~> 2.4", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 1.37", require: false # Code style checking for RSpec files
   gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
