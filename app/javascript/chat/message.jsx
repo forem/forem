@@ -76,20 +76,24 @@ const Message = ({
               <span />
             )}
           </div>
-          <div className="message__actions">
-            <span
-              role="button"
-              data-content={id}
-              onClick={onDeleteMessageTrigger}
-              tabIndex="0"
-              onKeyUp={e => {
-                if (e.keyCode === 13) onDeleteMessageTrigger();
-              }}
-            >
-              Delete
-            </span>
-            <span>Edit</span>
-          </div>
+          {userID === window.currentUser.id ? (
+            <div className="message__actions">
+              <span
+                role="button"
+                data-content={id}
+                onClick={onDeleteMessageTrigger}
+                tabIndex="0"
+                onKeyUp={e => {
+                  if (e.keyCode === 13) onDeleteMessageTrigger();
+                }}
+              >
+                Delete
+              </span>
+              <span>Edit</span>
+            </div>
+          ) : (
+            ' '
+          )}
         </div>
         <div className="chatmessage__bodytext">{messageArea}</div>
       </div>
