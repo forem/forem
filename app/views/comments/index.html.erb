@@ -70,7 +70,6 @@
      id="comments-container"
      data-commentable-id="<%= @commentable.id %>"
      data-commentable-type="<%= @commentable.class.name %>">
-  <% @any_comments_hidden = false %>
   <% if @root_comment %>
     <div class="top-level-actions">
       <h3>re: <%= @commentable.title %> <a href="<%= @commentable.path %>">VIEW POST</a></h3>
@@ -100,6 +99,7 @@
       </div>
     <% else %>
       <% Comment.tree_for(@commentable).each do |comment, sub_comments| %>
+        <% @any_comments_hidden = comment.hidden_by_commentable_user %>
         <% cache ["comment_root_#{user_signed_in?}", comment] do %>
           <%= tree_for(comment, sub_comments, @commentable) %>
         <% end %>

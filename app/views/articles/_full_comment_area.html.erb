@@ -11,10 +11,9 @@
                      commentable: @article,
                      commentable_type: "Article" %>
           <div class="comment-trees" id="comment-trees-container">
-          <% any_hidden_comments = false %>
             <% if @article.comments_count > 0 %>
               <% Comment.tree_for(@article, @comments_to_show_count).each do |comment, sub_comments| %>
-              <% any_hidden_comments = true if comment.hidden_by_commentable_user %>
+                <% @any_comments_hidden = comment.hidden_by_commentable_user %>
                 <% cache ["comment_root_cached_tree", comment] do %>
                   <%= tree_for(comment, sub_comments, @article) %>
                 <% end %>
@@ -23,7 +22,7 @@
           </div>
         </div>
         <div class="show-comments-footer">
-          <%= render "articles/comments_actions", any_hidden_comments: any_hidden_comments %>
+          <%= render "articles/comments_actions" %>
         </div>
       </div>
     <% end %>
