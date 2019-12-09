@@ -77,7 +77,7 @@ const Message = ({
               <span />
             )}
           </div>
-          {userID === window.currentUser.id ? (
+          {userID === currentUserId ? (
             <div className="message__actions">
               <span
                 role="button"

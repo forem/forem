@@ -762,7 +762,7 @@ export default class Chat extends Component {
     }
     return messages[activeChannelId].map(message => (
       <Message
-        currentUserId={currentUserId}
+        currentUserId={window.currentUser.id}
         id={message.id}
         user={message.username}
         userID={message.user_id}
