@@ -49,7 +49,7 @@ RSpec.describe Sponsorship, type: :model do
   end
 
   describe "validations" do
-    let(:org) { create(:organization) }
+    let(:org) { build(:organization) }
 
     it "forbids an org to have multiple 'expiring' sponsorships" do
       create(:sponsorship, level: :gold, organization: org)
