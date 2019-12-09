@@ -30,7 +30,7 @@ class AsyncInfoController < ApplicationController
   end
 
   def user_data
-    RedisRailsCache.fetch(user_cache_key, expires_in: 15.minutes) do
+    Rails.cache.fetch(user_cache_key, expires_in: 15.minutes) do
       {
         id: @user.id,
         name: @user.name,

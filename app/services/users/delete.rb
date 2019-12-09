@@ -11,7 +11,7 @@ module Users
       user.unsubscribe_from_newsletters
       CacheBuster.bust("/#{user.username}")
       user.delete
-      RedisRailsCache.delete("user-destroy-token-#{user.id}")
+      Rails.cache.delete("user-destroy-token-#{user.id}")
     end
 
     def self.call(*args)
