@@ -674,7 +674,7 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 1.7)
-    rubocop-performance (1.5.0)
+    rubocop-performance (1.5.1)
       rubocop (>= 0.71.0)
     rubocop-rails (2.4.0)
       rack (>= 1.1)
