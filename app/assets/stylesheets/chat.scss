@@ -1227,3 +1227,68 @@
 .chatchanneljumpback__hide{
   display: none;
 }
+
+.message__info__actions{
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+}
+.message__actions{
+  display: none;
+  justify-content: end;
+}
+.message__actions span {
+    margin-left: 7px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.chatmessage:hover .message__actions{
+   display: flex;
+}
+
+.message__delete__modal{
+  position: fixed;
+  background-color: rgba(255, 255, 255, 0.25);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 999;
+  display: block;
+  transition: all 0.3s;
+}
+.modal__content{
+  width: 400px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  padding: 1em;
+  border: 2px solid;
+  background: var(--theme-background, #f5f6f7);
+  color: var(--theme-color, $black);
+}
+.modal__content h3{
+  margin: 20px 0;
+  text-align: center;
+}
+.delete__action__buttons{
+  display: flex;
+  justify-content: space-around;
+  margin: 40px 0px 20px 0;
+}
+
+.delete__action__buttons div {
+    border: 2px solid var(--theme-color, $black);
+    padding: 5px 20px;
+    cursor: pointer;
+    user-select: none;
+}
+.message__delete__modal__hide{
+  display: none;
+}
+.message__delete__button{
+  background: #ff0000;
+  color: white;
+}
