@@ -8,7 +8,7 @@ module Search
       record = record_type.constantize.find_by(id: record_id)
       return unless record
 
-      AlgoliaSearch::AlgoliaJob.perform_later(record, "index!")
+      record.index!
     end
   end
 end
