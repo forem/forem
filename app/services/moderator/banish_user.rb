@@ -32,7 +32,6 @@ module Moderator
         new_username = "spam_#{rand(1_000_000)}"
       end
       user.update_columns(name: new_name, username: new_username, old_username: user.username, profile_updated_at: Time.current)
-      Moderators::BustCacheJob.perform_later(user.id)
     end
 
     def remove_profile_info
