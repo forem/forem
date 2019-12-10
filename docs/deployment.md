@@ -27,16 +27,14 @@ Some of the steps will be parallelized in the future:
 1. Travis builds Storybook to ensure its integrity.
 1. Travis deploys code to Heroku.
    - Heroku runs the database migrations before deployment.
-1. `after_deploy` script kicks in.
-   - Airbrake Deploy Tracking is notified of the deployment.
 1. Travis notifies the team that the process completed.
 
 ## Deploying to Heroku
 
-We use Heroku's [Release
-Phase](https://devcenter.heroku.com/articles/release-phase) feature. Upon
-deploy, the app installs dependencies, bundles assets, and gets the app ready
-for launch. However, before it launches and releases the app Heroku runs a
+We use Heroku's
+[Release Phase](https://devcenter.heroku.com/articles/release-phase) feature.
+Upon deploy, the app installs dependencies, bundles assets, and gets the app
+ready for launch. However, before it launches and releases the app Heroku runs a
 release script on a one-off dyno. If that release script/step succeeds the new
 app is released on all of the dynos. If that release script/step fails then the
 deploy is halted and we are notified. During this release step, we have chosen

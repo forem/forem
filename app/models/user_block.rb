@@ -15,6 +15,9 @@ class UserBlock < ApplicationRecord
       exists?(blocker_id: blocker_id, blocked_id: blocked_id)
     end
   end
+
+  private
+
   def blocker_cannot_be_same_as_blocked
     errors.add(:blocker_id, "can't be the same as the blocked_id") if blocker_id == blocked_id
   end

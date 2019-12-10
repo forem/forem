@@ -109,7 +109,7 @@
         <div class="email__alert alert fade in" id="email__alert__<%= feedback_message.id %>">
         </div>
         <h3>
-          Status:  <%= f.select :status, ["Open", "Invalid", "Resolved"], {}, id: "status__#{feedback_message.id}" %>
+          Status:  <%= f.select :status, %w[Open Invalid Resolved], {}, id: "status__#{feedback_message.id}" %>
           <button class="btn btn-primary" type="button" id="save__status__<%= feedback_message.id %>">SAVE STATUS</button>
         </h3>
         <h3>Notes:</h3>
@@ -192,7 +192,7 @@
   function failedEmail(alert) {
     alert.style.display = 'inline-block';
     alert.classList.add('alert-danger');
-    alert.innerHTML = "Email failed to send, see console or airbrake for errors";
+    alert.innerHTML = "Email failed to send, see console or Honeybadger for errors";
   }
 
   function sendEmail(id) {

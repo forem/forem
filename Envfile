@@ -64,10 +64,10 @@ variable :TWITTER_SECRET, :String, default: "Optional"
 ######### Optional 3rd Party Services ##########
 ################################################
 
-# Airbrake for error tracking
-# (https://airbrake.io/docs/api/#authentication)
-variable :AIRBRAKE_API_KEY, :String, default: "Optional"
-variable :AIRBRAKE_PROJECT_ID, :integer, default: 0o0000
+# Honeybadger for error tracking
+# (https://docs.honeybadger.io/lib/ruby/getting-started/introduction.html)
+variable :HONEYBADGER_API_KEY, :String, default: "Optional"
+variable :HONEYBADGER_JS_API_KEY, :String, default: "Optional"
 
 # Algolia for search (not optional)
 # (https://www.algolia.com/doc/)
@@ -201,12 +201,6 @@ group :production do
   # (https://docs.timber.io/)
   variable :SEND_LOGS_TO_TIMBER, :String  # Defaults to true in production, false in development
   variable :TIMBER, :String  # Only required if above is "true" or unset
-
-  # Memcachier
-  # (https://www.memcachier.com/documentation/rails)
-  variable :MEMCACHIER_SERVERS, :String
-  variable :MEMCACHIER_USERNAME, :String
-  variable :MEMCACHIER_PASSWORD, :String
 
   # Sendgrid
   # (https://sendgrid.com/docs/API_Reference/api_v3.html)

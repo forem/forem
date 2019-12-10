@@ -1,22 +1,24 @@
 require "rails_helper"
 
 RSpec.describe DisplayAdEvent, type: :model do
-  let(:user) { create(:user) }
-  let(:organization) { create(:organization) }
-  let(:display_ad) { create(:display_ad, organization_id: organization.id) }
+  let_it_be(:user) { build(:user) }
+  let_it_be(:organization) { build(:organization) }
+  let_it_be(:display_ad) { build(:display_ad, organization: organization) }
 
-  it "creates a click event" do
-    event = build(:display_ad_event, category: "click", user_id: user.id, display_ad_id: display_ad.id)
-    expect(event).to be_valid
-  end
+  describe "#category" do
+    it "is valid with a click category" do
+      event = build(:display_ad_event, category: "click", user: user, display_ad: display_ad)
+      expect(event).to be_valid
+    end
 
-  it "creates an impression event" do
-    event = build(:display_ad_event, category: "impression", user_id: user.id, display_ad_id: display_ad.id)
-    expect(event).to be_valid
-  end
+    it "is valid with an impression category" do
+      event = build(:display_ad_event, category: "impression", user: user, display_ad: display_ad)
+      expect(event).to be_valid
+    end
 
-  it "does not create an invalid event" do
-    event = build(:display_ad_event, category: "wazoo", user_id: user.id, display_ad_id: display_ad.id)
-    expect(event).not_to be_valid
+    it "is not valid with an uknown category" do
+      event = build(:display_ad_event, category: "wazoo", user: user, display_ad: display_ad)
+      expect(event).not_to be_valid
+    end
   end
 end

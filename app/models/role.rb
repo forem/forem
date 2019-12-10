@@ -1,4 +1,20 @@
 class Role < ApplicationRecord
+  ROLES = %w[
+    admin
+    banned
+    chatroom_beta_tester
+    comment_banned
+    podcast_admin
+    pro
+    single_resource_admin
+    super_admin
+    tag_moderator
+    tech_admin
+    trusted
+    warned
+    workshop_pass
+  ].freeze
+
   has_and_belongs_to_many :users, join_table: :users_roles
 
   belongs_to :resource,
@@ -9,22 +25,7 @@ class Role < ApplicationRecord
             allow_nil: true
 
   validates :name,
-            inclusion: {
-              in: %w[
-                super_admin
-                admin
-                single_resource_admin
-                tech_admin
-                tag_moderator
-                trusted
-                banned
-                warned
-                workshop_pass
-                chatroom_beta_tester
-                comment_banned
-                pro
-                podcast_admin
-              ]
-            }
+            inclusion: { in: ROLES }
+
   scopify
 end

@@ -85,11 +85,3 @@ RSpec.describe TagAdjustment, type: :model do
     end
   end
 end
-
-# t.integer   :user_id
-# t.integer   :article_id
-# t.integer   :tag_id
-# t.string    :tag_name
-# t.string    :adjustment_type
-# t.string    :status
-# t.string    :reason_for_adjustment

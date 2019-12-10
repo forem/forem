@@ -71,7 +71,7 @@ class UsersController < ApplicationController
   end
 
   def confirm_destroy
-    destroy_token = RedisRailsCache.read("user-destroy-token-#{@user.id}")
+    destroy_token = Rails.cache.read("user-destroy-token-#{@user.id}")
     raise ActionController::RoutingError, "Not Found" unless destroy_token.present? && destroy_token == params[:token]
 
     set_tabs("account")
