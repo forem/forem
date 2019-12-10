@@ -1,5 +1,6 @@
 class Reaction < ApplicationRecord
   include AlgoliaSearch
+
   CATEGORIES = %w[like readinglist unicorn thinking hands thumbsdown vomit].freeze
 
   belongs_to :reactable, polymorphic: true
@@ -77,10 +78,6 @@ class Reaction < ApplicationRecord
   end
 
   private
-
-  def cache_buster
-    CacheBuster
-  end
 
   def touch_user
     Users::TouchJob.perform_later(user_id)

@@ -330,7 +330,7 @@ RSpec.describe Article, type: :model do
     end
   end
 
-  describe "published_timestamp" do
+  describe "#published_timestamp" do
     it "returns empty string if the article is not published" do
       article.published = false
       expect(article.published_timestamp).to be_empty

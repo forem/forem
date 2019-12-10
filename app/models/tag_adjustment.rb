@@ -20,8 +20,10 @@ class TagAdjustment < ApplicationRecord
   end
 
   def has_privilege_to_adjust?
-    user&.has_role?(:tag_moderator, tag) ||
-      user&.has_role?(:admin) ||
-      user&.has_role?(:super_admin)
+    return false unless user
+
+    user.has_role?(:tag_moderator, tag) ||
+      user.has_role?(:admin) ||
+      user.has_role?(:super_admin)
   end
 end
