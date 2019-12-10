@@ -19,6 +19,7 @@ export default function setupPusher(key, callbackObjects) {
 
     const channel = pusher.subscribe(callbackObjects.channelId.toString());
     channel.bind('message-created', callbackObjects.messageCreated);
+    channel.bind('message-deleted', callbackObjects.messageDeleted);
     channel.bind('channel-cleared', callbackObjects.channelCleared);
     channel.bind('user-banned', callbackObjects.redactUserMessages);
     channel.bind('client-livecode', callbackObjects.liveCoding);

@@ -4,6 +4,8 @@ import { adjustTimestamp } from './util';
 import ErrorMessage from './messages/errorMessage';
 
 const Message = ({
+  currentUserId,
+  id,
   user,
   userID,
   message,
@@ -12,6 +14,7 @@ const Message = ({
   timestamp,
   profileImageUrl,
   onContentTrigger,
+  onDeleteMessageTrigger,
 }) => {
   const spanStyle = { color };
 
@@ -52,25 +55,47 @@ const Message = ({
         className="chatmessage__body"
         onClick={onContentTrigger}
       >
-        <span className="chatmessagebody__username" style={spanStyle}>
-          <a
-            className="chatmessagebody__username--link"
-            href={`/${user}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-content={`users/${userID}`}
-            onClick={onContentTrigger}
-          >
-            {user}
-          </a>
-        </span>
-        {timestamp ? (
-          <span className="chatmessage__timestamp">
-            {`${adjustTimestamp(timestamp)}`}
-          </span>
-        ) : (
-          <span />
-        )}
+        <div className="message__info__actions">
+          <div className="message__info">
+            <span className="chatmessagebody__username" style={spanStyle}>
+              <a
+                className="chatmessagebody__username--link"
+                href={`/${user}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-content={`users/${userID}`}
+                onClick={onContentTrigger}
+              >
+                {user}
+              </a>
+            </span>
+            {timestamp ? (
+              <span className="chatmessage__timestamp">
+                {`${adjustTimestamp(timestamp)}`}
+              </span>
+            ) : (
+              <span />
+            )}
+          </div>
+          {userID === currentUserId ? (
+            <div className="message__actions">
+              <span
+                role="button"
+                data-content={id}
+                onClick={onDeleteMessageTrigger}
+                tabIndex="0"
+                onKeyUp={e => {
+                  if (e.keyCode === 13) onDeleteMessageTrigger();
+                }}
+              >
+                Delete
+              </span>
+              <span>Edit</span>
+            </div>
+          ) : (
+            ' '
+          )}
+        </div>
         <div className="chatmessage__bodytext">{messageArea}</div>
       </div>
     </div>
@@ -78,6 +103,8 @@ const Message = ({
 };
 
 Message.propTypes = {
+  currentUserId: PropTypes.number.isRequired,
+  id: PropTypes.number.isRequired,
   user: PropTypes.string.isRequired,
   userID: PropTypes.number.isRequired,
   color: PropTypes.string.isRequired,
@@ -86,6 +113,7 @@ Message.propTypes = {
   timestamp: PropTypes.string,
   profileImageUrl: PropTypes.string,
   onContentTrigger: PropTypes.func.isRequired,
+  onDeleteMessageTrigger: PropTypes.func.isRequired,
 };
 
 Message.defaultProps = {
