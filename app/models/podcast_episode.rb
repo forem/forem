@@ -23,7 +23,7 @@ class PodcastEpisode < ApplicationRecord
   after_destroy :purge, :purge_all
   after_save    :bust_cache
 
-  before_validation :prefix_all_images
+  before_validation :process_html_and_prefix_all_images
 
   scope :reachable, -> { where(reachable: true) }
   scope :published, -> { joins(:podcast).where(podcasts: { published: true }) }
@@ -66,10 +66,6 @@ class PodcastEpisode < ApplicationRecord
 
   def comments_blob
     comments.pluck(:body_markdown).join(" ")
-  end
-
-  def index_id
-    "podcast_episodes-#{id}"
   end
 
   def path
@@ -117,10 +113,6 @@ class PodcastEpisode < ApplicationRecord
   alias search_score zero_method
   alias positive_reactions_count zero_method
 
-  def bust_cache
-    PodcastEpisodes::BustCacheJob.perform_later(id, path, podcast_slug)
-  end
-
   def class_name
     self.class.name
   end
@@ -143,7 +135,15 @@ class PodcastEpisode < ApplicationRecord
 
   private
 
-  def prefix_all_images
+  def index_id
+    "podcast_episodes-#{id}"
+  end
+
+  def bust_cache
+    PodcastEpisodes::BustCacheJob.perform_later(id, path, podcast_slug)
+  end
+
+  def process_html_and_prefix_all_images
     return if body.blank?
 
     self.processed_html = body.
