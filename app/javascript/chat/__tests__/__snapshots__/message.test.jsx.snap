@@ -62,9 +62,6 @@ exports[`<Message /> should render and test snapshot 1`] = `
         >
           Delete
         </span>
-        <span>
-          Edit
-        </span>
       </div>
     </div>
     <div
