@@ -13,7 +13,6 @@
           <div class="comment-trees" id="comment-trees-container">
             <% if @article.comments_count > 0 %>
               <% Comment.tree_for(@article, @comments_to_show_count).each do |comment, sub_comments| %>
-                <% @any_comments_hidden = comment.hidden_by_commentable_user %>
                 <% cache ["comment_root_cached_tree", comment] do %>
                   <%= tree_for(comment, sub_comments, @article) %>
                 <% end %>
