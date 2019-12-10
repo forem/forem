@@ -11,7 +11,7 @@ class AsyncInfoController < ApplicationController
       }
       return
     end
-    if cookies[:remember_user_token].blank?
+    if remember_user_token.blank?
       current_user.remember_me = true
       current_user.remember_me!
       remember_me(current_user)
@@ -71,7 +71,11 @@ class AsyncInfoController < ApplicationController
     #{current_user&.articles_count}__
     #{current_user&.pro?}__
     #{current_user&.blocking_others_count}__
-    #{cookies[:remember_user_token]}"
+    #{remember_user_token}"
+  end
+
+  def remember_user_token
+    cookies[:remember_user_token]
   end
 
   private
