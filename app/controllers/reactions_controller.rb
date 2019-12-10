@@ -40,7 +40,7 @@ class ReactionsController < ApplicationController
 
   def create
     authorize Reaction
-    RedisRailsCache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
+    Rails.cache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
     category = params[:category] || "like"
     reaction = Reaction.where(
       user_id: current_user.id,
@@ -69,7 +69,7 @@ class ReactionsController < ApplicationController
   end
 
   def cached_user_positive_reactions(user)
-    RedisRailsCache.fetch("cached_user_reactions-#{user.id}-#{user.updated_at}", expires_in: 24.hours) do
+    Rails.cache.fetch("cached_user_reactions-#{user.id}-#{user.updated_at}", expires_in: 24.hours) do
       Reaction.where(user_id: user.id).
         where("points > ?", 0)
     end

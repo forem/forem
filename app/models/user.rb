@@ -232,7 +232,7 @@ class User < ApplicationRecord
   end
 
   def cached_following_users_ids
-    RedisRailsCache.fetch(
+    Rails.cache.fetch(
       "user-#{id}-#{last_followed_at}-#{following_users_count}/following_users_ids",
       expires_in: 12.hours,
     ) do
@@ -241,7 +241,7 @@ class User < ApplicationRecord
   end
 
   def cached_following_organizations_ids
-    RedisRailsCache.fetch(
+    Rails.cache.fetch(
       "user-#{id}-#{last_followed_at}-#{following_orgs_count}/following_organizations_ids",
       expires_in: 12.hours,
     ) do
@@ -250,7 +250,7 @@ class User < ApplicationRecord
   end
 
   def cached_following_podcasts_ids
-    RedisRailsCache.fetch(
+    Rails.cache.fetch(
       "user-#{id}-#{last_followed_at}/following_podcasts_ids",
       expires_in: 12.hours,
     ) do
@@ -285,7 +285,7 @@ class User < ApplicationRecord
 
   def cached_followed_tag_names
     cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/followed_tag_names"
-    RedisRailsCache.fetch(cache_name, expires_in: 24.hours) do
+    Rails.cache.fetch(cache_name, expires_in: 24.hours) do
       Tag.where(
         id: Follow.where(
           follower_id: id,
@@ -317,19 +317,19 @@ class User < ApplicationRecord
   end
 
   def pro?
-    RedisRailsCache.fetch("user-#{id}/has_pro_membership", expires_in: 200.hours) do
+    Rails.cache.fetch("user-#{id}/has_pro_membership", expires_in: 200.hours) do
       pro_membership&.active? || has_role?(:pro)
     end
   end
 
   def trusted
-    RedisRailsCache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
+    Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
       has_role? :trusted
     end
   end
 
   def moderator_for_tags
-    RedisRailsCache.fetch("user-#{id}/tag_moderators_list", expires_in: 200.hours) do
+    Rails.cache.fetch("user-#{id}/tag_moderators_list", expires_in: 200.hours) do
       tag_ids = roles.where(name: "tag_moderator").pluck(:resource_id)
       Tag.where(id: tag_ids).pluck(:name)
     end
