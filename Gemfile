@@ -47,7 +47,7 @@ gem "gemoji", "~> 3.0.1" # Character information and metadata for standard and c
 gem "gibbon", "~> 3.3" # API wrapper for MailChimp's API
 gem "google-api-client", "~> 0.36" # Client for accessing Google APIs
 gem "honeybadger", "~> 4.0" # Used for tracking application errors
-gem "honeycomb-beeline", "~> 1.2.0" # Monitoring and Observability gem
+gem "honeycomb-beeline", "~> 1.3.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "htmlentities", "~> 4.3", ">= 4.3.4"
 gem "httparty", "~> 0.17" # Makes http fun! Also, makes consuming restful web services dead easy
