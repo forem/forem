@@ -1249,7 +1249,6 @@
   display: none;
   justify-content: end;
   -webkit-justify-content: flex-end;
-
 }
 
 .message__actions span {
@@ -1257,6 +1256,7 @@
   font-size: 13px;
   font-weight: bold;
   cursor: pointer;
+  color: var(--theme-secondary-color, $medium-gray);
 }
 
 .chatmessage:hover .message__actions {
@@ -1287,6 +1287,7 @@
   border: 2px solid;
   background: var(--theme-background, #f5f6f7);
   color: var(--theme-color, $black);
+  border-radius: 3px;
 }
 
 .modal__content h3 {
@@ -1305,6 +1306,7 @@
   padding: 5px 20px;
   cursor: pointer;
   user-select: none;
+  border-radius: 3px;
 }
 
 .message__delete__modal__hide {

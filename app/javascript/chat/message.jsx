@@ -90,7 +90,6 @@ const Message = ({
               >
                 Delete
               </span>
-              <span>Edit</span>
             </div>
           ) : (
             ' '
