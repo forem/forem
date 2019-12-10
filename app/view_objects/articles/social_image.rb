@@ -34,7 +34,7 @@ module Articles
     def legacy_article_social_image
       cache_key = "article-social-img-#{article}-#{article.updated_at.rfc3339}-#{article.comments_count}"
 
-      RedisRailsCache.fetch(cache_key, expires_in: 1.hour) do
+      Rails.cache.fetch(cache_key, expires_in: 1.hour) do
         src = GeneratedImage.new(article).social_image
         return src if src.start_with? "https://res.cloudinary.com/"
 

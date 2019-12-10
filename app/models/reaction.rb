@@ -42,7 +42,7 @@ class Reaction < ApplicationRecord
 
   class << self
     def count_for_article(id)
-      RedisRailsCache.fetch("count_for_reactable-Article-#{id}", expires_in: 1.hour) do
+      Rails.cache.fetch("count_for_reactable-Article-#{id}", expires_in: 1.hour) do
         reactions = Reaction.where(reactable_id: id, reactable_type: "Article")
         %w[like readinglist unicorn].map do |type|
           { category: type, count: reactions.where(category: type).size }
@@ -61,7 +61,7 @@ class Reaction < ApplicationRecord
     def cached_any_reactions_for?(reactable, user, category)
       class_name = reactable.class.name == "ArticleDecorator" ? "Article" : reactable.class.name
       cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-#{user.updated_at&.rfc3339}-#{category}"
-      RedisRailsCache.fetch(cache_name, expires_in: 24.hours) do
+      Rails.cache.fetch(cache_name, expires_in: 24.hours) do
         Reaction.where(reactable_id: reactable.id, reactable_type: class_name, user: user, category: category).any?
       end
     end
