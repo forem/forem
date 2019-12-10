@@ -199,12 +199,14 @@ RSpec.describe Comment, type: :model do
     end
 
     it "is converted to deleted if the comment is deleted" do
+
       comment.deleted = true
       expect(comment.title).to eq("[deleted]")
     end
 
     it "does not contain the wrong encoding" do
       comment.body_markdown = "It's the best post ever. It's so great."
+
       comment.validate!
       expect(comment.title).not_to include("&#39;")
     end

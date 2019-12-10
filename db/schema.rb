@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_03_171558) do
+ActiveRecord::Schema.define(version: 2019_12_10_144342) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -54,6 +54,7 @@ ActiveRecord::Schema.define(version: 2019_12_03_171558) do
     t.boolean "allow_small_edits", default: true
     t.float "amount_due", default: 0.0
     t.float "amount_paid", default: 0.0
+    t.boolean "any_comments_hidden", default: false
     t.boolean "approved", default: false
     t.boolean "archived", default: false
     t.boolean "automatically_renew", default: false
@@ -306,6 +307,7 @@ ActiveRecord::Schema.define(version: 2019_12_03_171558) do
     t.boolean "deleted", default: false
     t.boolean "edited", default: false
     t.datetime "edited_at"
+    t.boolean "hidden_by_commentable_user", default: false
     t.string "id_code"
     t.integer "markdown_character_count"
     t.integer "positive_reactions_count", default: 0, null: false
@@ -710,6 +712,7 @@ ActiveRecord::Schema.define(version: 2019_12_03_171558) do
   end
 
   create_table "podcast_episodes", id: :serial, force: :cascade do |t|
+    t.boolean "any_comments_hidden", default: false
     t.text "body"
     t.integer "comments_count", default: 0, null: false
     t.datetime "created_at", null: false
