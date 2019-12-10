@@ -9,14 +9,12 @@ Honeybadger.configure do |config|
   config.delayed_job.attempt_threshold = 10
 
   config.before_notify do |notice|
-    notice.halt! if notice.component&.include?("internal")
-
-    unless notice.halted?
-      notice.fingerprint = if notice.error_message&.include?("SIGTERM") && notice.component&.include?("fetch_all_rss")
-                             notice.error_message
-                           elsif notice.error_message&.include?("BANNED")
-                             "banned"
-                           end
-    end
+    notice.fingerprint = if notice.error_message&.include?("SIGTERM") && notice.component&.include?("fetch_all_rss")
+                           notice.error_message
+                         elsif notice.error_message&.include?("BANNED")
+                           "banned"
+                         elsif notice.component&.include?("internal")
+                           "internal"
+                         end
   end
 end

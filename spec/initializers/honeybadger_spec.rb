@@ -27,7 +27,7 @@ describe Honeybadger do
         described_class.config, component: "internal/feedback_messages"
       )
       described_class.config.before_notify_hooks.first.call(notice)
-      expect(notice.halted?).to be(true)
+      expect(notice.fingerprint).to eq("internal")
     end
   end
 end
