@@ -82,10 +82,10 @@ RSpec.describe Moderator::BanishUser, type: :service, vcr: {} do
         and(change(user, :profile_updated_at))
     end
 
-    it "busts username" do
+    it "busts old username from cache" do
       allow(CacheBuster).to receive(:bust)
       described_class.call_banish(user: user, admin: admin)
-      expect(Users::BustCacheJob).to have_been_enqueued.at_least(:once).with(user.id)
+      expect(CacheBuster::BustPathJob).to have_been_enqueued.once.with("/#{user.old_username}")
     end
   end
 end
