@@ -13,6 +13,8 @@ Honeybadger.configure do |config|
                            notice.error_message
                          elsif notice.error_message&.include?("BANNED")
                            "banned"
+                         elsif notice.component&.include?("internal")
+                           "internal"
                          end
   end
 end
