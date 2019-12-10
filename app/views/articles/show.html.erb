@@ -80,7 +80,7 @@
     <% if @article.video_state == "PROGRESSING" %>
       <h1 style="text-align:center;">⏳ Video Transcoding In Progress ⏳</h1>
     <% end %>
-    <article itemscope itemtype="http://schema.org/Article" itemprop="mainEntityOfPage">
+    <article itemscope itemtype="http://schema.org/Article" itemprop="mainEntity">
       <meta itemprop="url" content="https://dev.to<%= @article.path %>">
       <meta itemprop="image" content="<%= article_social_image_url(@article) %>">
       <div itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
