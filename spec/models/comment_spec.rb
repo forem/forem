@@ -186,18 +186,18 @@ RSpec.describe Comment, type: :model do
 
     it "is converted to deleted if the comment is deleted" do
       comment.update_column(:deleted, true)
-      expect(comment.title).to eq "[deleted]"
+      expect(comment.reload.title).to eq "[deleted]"
     end
 
     it "is converted to hidden by author if the comment is hidden by the author" do
       comment.update_column(:hidden_by_commentable_user, true)
-      expect(comment.title).to eq "[hidden by post author]"
+      expect(comment.reload.title).to eq "[hidden by post author]"
     end
 
     it "does not contain the wrong encoding" do
       comment.body_markdown = "It's the best post ever. It's so great."
       comment.save
-      expect(comment.title).not_to include "&#39;"
+      expect(comment.reload.title).not_to include "&#39;"
     end
   end
 
