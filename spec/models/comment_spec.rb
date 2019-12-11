@@ -300,8 +300,8 @@ RSpec.describe Comment, type: :model do
     context "when deleted is false" do
       it "checks auto-indexing" do
         expect do
-          create(:comment, commentable: article)
-        end.to have_enqueued_job.with(kind_of(described_class), "index!").on_queue("algoliasearch")
+          comment.update(body_markdown: "hello")
+        end.to have_enqueued_job(Search::IndexJob).with("Comment", comment.id)
       end
     end
 
@@ -309,7 +309,7 @@ RSpec.describe Comment, type: :model do
       it "checks auto-deindexing" do
         expect do
           comment.update(deleted: true)
-        end.to have_enqueued_job.with(kind_of(described_class), "remove_algolia_index").on_queue("algoliasearch")
+        end.to have_enqueued_job(Search::RemoveFromIndexJob).with(described_class.algolia_index_name, comment.index_id)
       end
     end
   end
