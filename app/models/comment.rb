@@ -115,9 +115,9 @@ class Comment < ApplicationRecord
     return if remove
 
     if record.deleted == false
-      AlgoliaSearch::AlgoliaJob.perform_later(record, "index!")
+      Search::IndexJob.perform_later("Comment", record.id)
     else
-      AlgoliaSearch::AlgoliaJob.perform_later(record, "remove_algolia_index")
+      Search::RemoveFromIndexJob.perform_later(Comment.algolia_index_name, record.index_id)
     end
   end
 
@@ -184,11 +184,12 @@ class Comment < ApplicationRecord
     Notification.remove_all_without_delay(notifiable_ids: id, notifiable_type: "Comment")
   end
 
-  private
-
+  # public because it's used in the algolia indexing methods
   def index_id
     "comments-#{id}"
   end
+
+  private
 
   def update_notifications
     Notification.update_notifications(self)

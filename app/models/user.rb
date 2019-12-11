@@ -204,7 +204,7 @@ class User < ApplicationRecord
   def self.trigger_delayed_index(record, remove)
     return if remove
 
-    AlgoliaSearch::AlgoliaJob.perform_later(record, "index!")
+    Search::IndexJob.perform_later("User", record.id)
   end
 
   def tag_line
