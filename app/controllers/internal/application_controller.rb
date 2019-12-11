@@ -4,7 +4,11 @@ class Internal::ApplicationController < ApplicationController
 
   private
 
+  def authorization_resource
+    self.class.name.demodulize.sub("Controller", "").singularize.constantize
+  end
+
   def authorize_admin
-    authorize :admin, :minimal?
+    authorize(authorization_resource, :access?, policy_class: InternalPolicy)
   end
 end
