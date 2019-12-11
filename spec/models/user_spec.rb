@@ -512,7 +512,7 @@ RSpec.describe User, type: :model do
 
   context "when indexing and deindexing" do
     it "triggers background auto-indexing when user is saved" do
-      expect { user.save }.to have_enqueued_job.with(user, "index!").on_queue("algoliasearch")
+      expect { user.save }.to have_enqueued_job(Search::IndexJob).with("User", user.id)
     end
 
     it "doesn't enqueue a job on destroy" do
@@ -522,7 +522,7 @@ RSpec.describe User, type: :model do
         user.save
       end
 
-      expect { user.destroy }.not_to have_enqueued_job.on_queue("algoliasearch")
+      expect { user.destroy }.not_to have_enqueued_job(Search::IndexJob)
     end
   end
 
