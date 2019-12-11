@@ -298,8 +298,8 @@ RSpec.describe Comment, type: :model do
     context "when deleted is false" do
       it "checks auto-indexing" do
         expect do
-          create(:comment, commentable: article)
-        end.to have_enqueued_job(Search::IndexJob).once
+          comment.update(body_markdown: "hello")
+        end.to have_enqueued_job(Search::IndexJob).with("Comment", comment.id)
       end
     end
 
