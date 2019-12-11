@@ -217,7 +217,7 @@ class ArticlesController < ApplicationController
 
   def set_article
     owner = User.find_by(username: params[:username]) || Organization.find_by(slug: params[:username])
-    found_article = if params[:slug]
+    found_article = if params[:slug] && owner
                       owner.articles.find_by(slug: params[:slug])
                     else
                       Article.includes(:user).find(params[:id])

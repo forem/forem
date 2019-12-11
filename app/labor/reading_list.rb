@@ -13,7 +13,7 @@ class ReadingList
   end
 
   def cached_ids_of_articles
-    RedisRailsCache.fetch("reading_list_ids_of_articles_#{user.id}_#{user.updated_at.rfc3339}") do
+    Rails.cache.fetch("reading_list_ids_of_articles_#{user.id}_#{user.updated_at.rfc3339}") do
       ids_of_articles
     end
   end

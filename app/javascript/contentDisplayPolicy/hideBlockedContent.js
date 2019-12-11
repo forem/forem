@@ -2,6 +2,7 @@ export default function hideBlockedContent() {
   const contentUserElements = Array.from(
     document.querySelectorAll('div[data-content-user-id]'),
   );
+  /* eslint-disable-next-line no-undef */
   const blockedUserIds = userData().blocked_user_ids;
 
   const divsToHide = contentUserElements.filter(div => {

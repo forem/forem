@@ -22,7 +22,7 @@ module Suggester
 
       def qualifying_articles(tag_names)
         tag_name = tag_names.sample
-        RedisRailsCache.fetch("classic-article-for-tag-#{tag_name}}", expires_in: 90.minutes) do
+        Rails.cache.fetch("classic-article-for-tag-#{tag_name}}", expires_in: 90.minutes) do
           Article.published.cached_tagged_with(tag_name).
             includes(user: [:pro_membership]).
             limited_column_select.

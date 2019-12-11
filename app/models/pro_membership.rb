@@ -56,6 +56,6 @@ class ProMembership < ApplicationRecord
   end
 
   def bust_cache
-    RedisRailsCache.delete("user-#{user.id}/has_pro_membership")
+    Rails.cache.delete("user-#{user.id}/has_pro_membership")
   end
 end

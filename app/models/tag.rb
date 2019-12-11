@@ -54,7 +54,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def self.bufferized_tags
-    RedisRailsCache.fetch("bufferized_tags_cache", expires_in: 2.hours) do
+    Rails.cache.fetch("bufferized_tags_cache", expires_in: 2.hours) do
       where.not(buffer_profile_id_code: nil).pluck(:name)
     end
   end

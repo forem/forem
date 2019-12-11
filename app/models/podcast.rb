@@ -40,7 +40,8 @@ class Podcast < ApplicationRecord
   private
 
   def unique_slug_including_users_and_orgs
-    errors.add(:slug, "is taken.") if User.find_by(username: slug) || Organization.find_by(slug: slug) || Page.find_by(slug: slug)
+    slug_exists = User.exists?(username: slug) || Organization.exists?(slug: slug) || Page.exists?(slug: slug)
+    errors.add(:slug, "is taken.") if slug_exists
   end
 
   def bust_cache

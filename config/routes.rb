@@ -149,7 +149,10 @@ Rails.application.routes.draw do
   resources :chat_channel_memberships, only: %i[create update destroy]
   resources :articles, only: %i[update create destroy]
   resources :article_mutes, only: %i[update]
-  resources :comments, only: %i[create update destroy]
+  resources :comments, only: %i[create update destroy] do
+    patch "/hide", to: "comments#hide"
+    patch "/unhide", to: "comments#unhide"
+  end
   resources :comment_mutes, only: %i[update]
   resources :users, only: [:update] do
     resource :twitch_stream_updates, only: %i[show create]
@@ -218,6 +221,7 @@ Rails.application.routes.draw do
   get "/connect/:slug" => "chat_channels#index"
   post "/chat_channels/create_chat" => "chat_channels#create_chat"
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
+  delete "/messages/:id" => "messages#destroy"
   get "/live/:username" => "twitch_live_streams#show"
 
   post "/pusher/auth" => "pusher#auth"

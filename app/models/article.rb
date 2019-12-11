@@ -264,14 +264,20 @@ class Article < ApplicationRecord
     # on destroy an article is removed from index in a before_destroy callback #before_destroy_actions
     return if remove
 
-    AlgoliaSearch::AlgoliaJob.perform_later(record, "index_or_remove_from_index_where_appropriate")
+    if record.published && record.tag_list.exclude?("hiring")
+      Search::IndexJob.perform_later("Article", record.id)
+    else
+      Search::RemoveFromIndexJob.perform_later(Article.algolia_index_name, record.id)
+      Search::RemoveFromIndexJob.perform_later("searchables_#{Rails.env}", record.index_id)
+      Search::RemoveFromIndexJob.perform_later("ordered_articles_#{Rails.env}", record.index_id)
+    end
   end
 
   def body_text
     ActionView::Base.full_sanitizer.sanitize(processed_html)[0..7000]
   end
 
-  # this should remain public because it's called by AlgoliaSearch::AlgoliaJob in .trigger_index
+  # TODO: remove the code a bit later, keeping it for now because remaining jobs could exist at the moment of deploy
   def index_or_remove_from_index_where_appropriate
     if published && tag_list.exclude?("hiring")
       index!
@@ -381,11 +387,12 @@ class Article < ApplicationRecord
     hours < 1 ? "#{minutes}:#{seconds}" : "#{hours}:#{minutes}:#{seconds}"
   end
 
-  private
-
+  # keep public because it's used in algolia jobs
   def index_id
     "articles-#{id}"
   end
+
+  private
 
   def delete_related_objects
     Search::RemoveFromIndexJob.perform_now("searchables_#{Rails.env}", index_id)
