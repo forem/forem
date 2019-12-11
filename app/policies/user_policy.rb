@@ -126,6 +126,7 @@ class UserPolicy < ApplicationPolicy
       twitch_username
       username
       website_url
+      pentester
     ]
   end
 

@@ -63,6 +63,10 @@
     <%= f.label :contact_consent, "Recruiters can contact me about job opportunities" %>
     <%= f.check_box :contact_consent %>
   </div>
+  <div class="field checkbox-label-first">
+    <%= f.label :pentester, "I'm a pentester" %>
+    <%= f.check_box :pentester %>
+  </div>
   <div class="field">
     <%= f.label :website_url %>
     <%= f.url_field :website_url, maxlength: 100, placeholder: "https://yoursite.com" %>

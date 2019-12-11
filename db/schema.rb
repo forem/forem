@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_10_144342) do
+ActiveRecord::Schema.define(version: 2019_12_11_165237) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -1123,6 +1123,7 @@ ActiveRecord::Schema.define(version: 2019_12_10_144342) do
     t.string "onboarding_variant_version", default: "0"
     t.boolean "org_admin", default: false
     t.integer "organization_id"
+    t.boolean "pentester", default: false
     t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "personal_data_updated_at"
     t.string "profile_image"
