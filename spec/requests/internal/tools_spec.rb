@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/internal/permissions", type: :request do
+RSpec.describe "/internal/tools", type: :request do
   context "when the user is not an admin" do
     let(:user) { create(:user) }
 
@@ -10,7 +10,7 @@ RSpec.describe "/internal/permissions", type: :request do
 
     it "blocks the request" do
       expect do
-        get "/internal/permissions"
+        get "/internal/tools"
       end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
@@ -20,7 +20,7 @@ RSpec.describe "/internal/permissions", type: :request do
 
     before do
       sign_in super_admin
-      get "/internal/permissions"
+      get "/internal/tools"
     end
 
     it "allows the request" do
@@ -29,11 +29,11 @@ RSpec.describe "/internal/permissions", type: :request do
   end
 
   context "when the user is a single resource admin" do
-    let(:single_resource_admin) { create(:user, :single_resource_admin, resource: Permission) }
+    let(:single_resource_admin) { create(:user, :single_resource_admin, resource: Tool) }
 
     before do
       sign_in single_resource_admin
-      get "/internal/permissions"
+      get "/internal/tools"
     end
 
     it "allows the request" do
@@ -50,7 +50,7 @@ RSpec.describe "/internal/permissions", type: :request do
 
     it "blocks the request" do
       expect do
-        get "/internal/permissions"
+        get "/internal/tools"
       end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
