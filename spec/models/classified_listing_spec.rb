@@ -5,6 +5,10 @@ RSpec.describe ClassifiedListing, type: :model do
   let_it_be(:organization) { create(:organization) }
   let(:classified_listing) { create(:classified_listing, user: user) }
 
+  # TODO: Remove setting of default parser from a model's callback
+  # This may apply default parser on area that should not use it.
+  after { ActsAsTaggableOn.default_parser = ActsAsTaggableOn::DefaultParser }
+
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_presence_of(:body_markdown) }
   it { is_expected.to have_many(:credits) }
