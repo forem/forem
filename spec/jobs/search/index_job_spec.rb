@@ -3,11 +3,11 @@ require "jobs/shared_examples/enqueues_job"
 
 RSpec.describe Search::IndexJob, type: :job do
   it "does nothing if there is wrong record type is passed" do
-    described_class.perform_now("SuperUser", 1)
+    expect { described_class.perform_now("SuperUser", 1) }.to raise_error(Search::InvalidRecordType)
   end
 
   it "doesn't fail if a record is not found" do
-    described_class.perform_now("Comment", -1)
+    expect { described_class.perform_now("Comment", -1) }.not_to raise_error
   end
 
   it "indexes a record if everything is fine" do
