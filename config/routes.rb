@@ -79,6 +79,7 @@ Rails.application.routes.draw do
     end
     resources :webhook_endpoints, only: :index
     resource :config
+    resources :badges, only: :index
   end
 
   namespace :api, defaults: { format: "json" } do
