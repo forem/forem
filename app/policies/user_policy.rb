@@ -64,20 +64,11 @@ class UserPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
+    email_attributes | thirdy_party_attributes | user_attributes | config_attributes
+  end
+
+  def email_attributes
     %i[
-      available_for
-      behance_url
-      bg_color_hex
-      config_font
-      config_theme
-      config_navbar
-      contact_consent
-      currently_hacking_on
-      currently_learning
-      display_sponsors
-      dribbble_url
-      editor_version
-      education
       email
       email_badge_notifications
       email_comment_notifications
@@ -91,41 +82,69 @@ class UserPolicy < ApplicationPolicy
       email_public
       email_tag_mod_newsletter
       email_unread_notifications
+    ]
+  end
+
+  def social_attributes
+    %i[
+      facebook_url
+      gitlab_url
+      instagram_url
+      linkedin_url
+      mastodon_url
+      medium_url
+      twitch_url
+      twitch_username
+    ]
+  end
+
+  def user_attributes
+    %i[
+      available_for
+      behance_url
+      contact_consent
+      currently_hacking_on
+      currently_learning
+      education
       employer_name
       employer_url
       employment_title
       experience_level
+      location
+      looking_for_work
+      looking_for_work_publicly
+      name
+      password
+      password_confirmation
+      profile_image
+      stackoverflow_url
+      summary
+      username
+      website_url
+    ]
+  end
+
+  def config_attributes
+    %i[
+      bg_color_hex
+      config_font
+      config_theme
+      config_navbar
+      display_sponsors
+      dribbble_url
+      editor_version
       export_requested
-      facebook_url
       feed_admin_publish_permission
       feed_mark_canonical
       feed_referential_link
       feed_url
-      gitlab_url
       inbox_guidelines
       inbox_type
-      instagram_url
-      linkedin_url
-      location
-      looking_for_work
-      looking_for_work_publicly
-      mastodon_url
-      medium_url
       mobile_comment_notifications
       mod_roundrobin_notifications
       mostly_work_with
-      name
-      password
-      password_confirmation
       permit_adjacent_sponsors
-      profile_image
-      stackoverflow_url
-      summary
       text_color_hex
-      twitch_url
-      twitch_username
-      username
-      website_url
     ]
   end
 
