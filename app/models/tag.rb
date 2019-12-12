@@ -24,7 +24,9 @@ class Tag < ActsAsTaggableOn::Tag
   mount_uploader :social_image, ProfileImageUploader
 
   validates :name,
-            format: /\A[A-Za-z0-9\s]+\z/, allow_nil: true
+            format: { with: /\A[A-Za-z0-9\s]+\z/, message: "contains non-alphanumeric characters" },
+            length: { maximum: 30, message: "is too long (maximum is 30 characters)" },
+            allow_nil: true
   validates :text_color_hex,
             format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
   validates :bg_color_hex,

@@ -521,11 +521,12 @@ class Article < ApplicationRecord
     # check there are not too many tags
     return errors.add(:tag_list, "exceed the maximum of 4 tags") if tag_list.size > 4
 
-    # check tags names aren't too long
-    # check that tags don't contain non alphabet characters
+    # check tags names aren't too long and don't contain non alphabet characters
     tag_list.each do |tag|
-      errors.add(:tag, "\"#{tag}\" is too long (maximum is 30 characters)") if tag.length > 30
-      errors.add(:tag, "'#{tag}' contains non-alphanumeric characters") unless tag.match?(/\A[[:alnum:]]+\z/) && !tag.empty?
+      new_tag = Tag.new(name: tag)
+      unless new_tag.valid?
+        new_tag.errors.messages[:name].each { |message| errors.add(:tag, "\"#{tag}\" #{message}") }
+      end
     end
   end
 
