@@ -524,9 +524,8 @@ class Article < ApplicationRecord
     # check tags names aren't too long and don't contain non alphabet characters
     tag_list.each do |tag|
       new_tag = Tag.new(name: tag)
-      unless new_tag.valid?
-        new_tag.errors.messages[:name].each { |message| errors.add(:tag, "\"#{tag}\" #{message}") }
-      end
+      new_tag.validate_name
+      new_tag.errors.messages[:name].each { |message| errors.add(:tag, "\"#{tag}\" #{message}") }
     end
   end
 

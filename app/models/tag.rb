@@ -23,10 +23,6 @@ class Tag < ActsAsTaggableOn::Tag
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
 
-  validates :name,
-            format: { with: /\A[A-Za-z0-9\s]+\z/, message: "contains non-alphanumeric characters" },
-            length: { maximum: 30, message: "is too long (maximum is 30 characters)" },
-            allow_nil: true
   validates :text_color_hex,
             format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
   validates :bg_color_hex,
@@ -34,6 +30,7 @@ class Tag < ActsAsTaggableOn::Tag
   validates :category, inclusion: { in: ALLOWED_CATEGORIES }
 
   validate :validate_alias
+  validate :validate_name
   before_validation :evaluate_markdown
   before_validation :pound_it
   before_save :calculate_hotness_score
@@ -70,6 +67,11 @@ class Tag < ActsAsTaggableOn::Tag
     return unless tag
 
     tag.alias_for.presence || tag.name
+  end
+
+  def validate_name
+    errors.add(:name, "is too long (maximum is 30 characters)") if name.length > 30
+    errors.add(:name, "contains non-alphanumeric characters") unless name.match?(/\A[[:alnum:]]+\z/)
   end
 
   private
