@@ -262,6 +262,7 @@ class UsersController < ApplicationController
 
   def set_user
     @user = current_user
+    not_found unless @user
     authorize @user
   end
 
