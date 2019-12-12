@@ -36,7 +36,6 @@ Rails.application.routes.draw do
     resources :buffer_updates, only: %i[create update]
     resources :classified_listings, only: %i[index edit update destroy]
     resources :comments, only: [:index]
-    resources :dogfood, only: [:index]
     resources :events, only: %i[index create update]
     resources :feedback_messages, only: %i[index show]
     resources :listings, only: %i[index edit update destroy], controller: "classified_listings"
