@@ -424,9 +424,8 @@ RSpec.describe "NotificationsIndex", type: :request do
     end
 
     context "when filter is unknown" do
-      it "returns all notifications for user" do
+      it "does not raise an error" do
         sign_in user
-        expect(user).to have_received(:notifications).and_call_original
         expect { get "/notifications/feed" }.not_to raise_error
       end
     end
