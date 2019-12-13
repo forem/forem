@@ -80,6 +80,7 @@ Rails.application.routes.draw do
     resources :webhook_endpoints, only: :index
     resource :config
     resources :badges, only: :index
+    post "badges/award_badges", to: "badges#award_badges"
   end
 
   namespace :api, defaults: { format: "json" } do
