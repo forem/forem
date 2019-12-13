@@ -422,5 +422,13 @@ RSpec.describe "NotificationsIndex", type: :request do
         expect(response.body).to include "made a new post:"
       end
     end
+
+    context "when filter is unknown" do
+      it "returns all notifications for user" do
+        sign_in user
+        expect(user).to have_received(:notifications).and_call_original
+        expect { get "/notifications/feed" }.not_to raise_error
+      end
+    end
   end
 end
