@@ -277,15 +277,6 @@ class Article < ApplicationRecord
     ActionView::Base.full_sanitizer.sanitize(processed_html)[0..7000]
   end
 
-  # TODO: remove the code a bit later, keeping it for now because remaining jobs could exist at the moment of deploy
-  def index_or_remove_from_index_where_appropriate
-    if published && tag_list.exclude?("hiring")
-      index!
-    else
-      remove_algolia_index
-    end
-  end
-
   def remove_algolia_index
     remove_from_index!
     delete_related_objects
