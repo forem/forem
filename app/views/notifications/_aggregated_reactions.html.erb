@@ -1,13 +1,11 @@
 <%# TODO: change to map of IDs %>
 <% actors = siblings.map { |n| n["user"] }.uniq %>
 <% reactable_data = notification.json_data["reaction"]["reactable"] %>
-<% cache "activity-profile-pic-#{actors.first['id']}-#{actors.first['profile_image_90']}" do %>
-  <a href="<%= actors.first["path"] %>" class="small-pic-link-wrapper">
-    <div class="small-pic">
-      <img src="<%= actors.first["profile_image_90"] %>" alt="link to <%= actors.first["username"] %>'s profile">
-    </div>
-  </a>
-<% end %>
+<a href="<%= actors.first["path"] %>" class="small-pic-link-wrapper">
+  <div class="small-pic">
+    <img src="<%= actors.first["profile_image_90"] %>" alt="link to <%= actors.first["username"] %>'s profile">
+  </div>
+</a>
 
 <div class="content notification-content reaction-content">
   <% if actors.size == 1 %>
