@@ -172,6 +172,7 @@ class ArticlesController < ApplicationController
 
   def delete_confirm
     @article = current_user.articles.find_by(slug: params[:slug])
+    not_found unless @article
     authorize @article
   end
 
