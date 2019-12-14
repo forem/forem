@@ -199,7 +199,6 @@ RSpec.describe Comment, type: :model do
     end
 
     it "is converted to deleted if the comment is deleted" do
-
       comment.deleted = true
       expect(comment.title).to eq("[deleted]")
     end
