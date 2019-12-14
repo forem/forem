@@ -114,10 +114,9 @@ class UsersController < ApplicationController
 
   def onboarding_checkbox_update
     if params[:user]
-      current_user.assign_attributes(params[:user].permit(
-                                       :checked_code_of_conduct, :checked_terms_and_conditions, :email_membership_newsletter, :email_digest_periodic
-                                     ))
+      current_user.assign_attributes(params[:user].permit(:checked_code_of_conduct, :checked_terms_and_conditions, :email_membership_newsletter, :email_digest_periodic))
     end
+
     current_user.saw_onboarding = true
     authorize User
     render_update_response
