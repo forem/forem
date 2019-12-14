@@ -241,6 +241,15 @@ FeedbackMessage.create!(
   status: "Open",
 )
 
+FeedbackMessage.create!(
+  reporter: User.first,
+  feedback_type: "abuse-reports",
+  message: Faker::Lorem.sentence,
+  reported_url: "example.com",
+  category: "harassment",
+  status: "Open",
+)
+
 Rails.logger.info "12. Creating Classified listings"
 
 users = User.order(Arel.sql("RANDOM()")).to_a
