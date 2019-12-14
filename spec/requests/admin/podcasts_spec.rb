@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Admin::Podcasts", type: :request do
   let(:super_admin) { create(:user, :super_admin) }
-  let(:image_file) { Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg") }
+  let(:image_file) { Rails.root.join("spec/support/fixtures/images/image1.jpeg") }
 
   before do
     sign_in super_admin

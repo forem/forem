@@ -50,7 +50,7 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :syste
     fill_in "organization[slug]", with: "Organization"
     attach_file(
       "organization_profile_image",
-      Rails.root.join("app", "assets", "images", "android-icon-36x36.png"),
+      Rails.root.join("app/assets/images/android-icon-36x36.png"),
     )
     fill_in "Text color (hex)", with: "#ffffff"
     fill_in "Background color (hex)", with: "#000000"
