@@ -99,18 +99,11 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  REDIS_DEFAULT_EXPIRATION = 24.hours.to_i.freeze
-  config.cache_store = :dual_rails_store, {
-    default_store: [ :dalli_store, (ENV["MEMCACHIER_SERVERS"] || "").split(","),
-                       { username: ENV["MEMCACHIER_USERNAME"],
-                         password: ENV["MEMCACHIER_PASSWORD"],
-                         failover: true,
-                         socket_timeout: 1.5,
-                         socket_failure_delay: 0.2,
-                         expires_in: REDIS_DEFAULT_EXPIRATION,
-                         dalli_store: true } ],
-    redis: [ :redis_store, url: ENV["REDIS_URL"], expires_in: REDIS_DEFAULT_EXPIRATION ]
-  }
+  # DEV uses the RedisCloud Heroku Add-On which comes with the predefined env variable REDISCLOUD_URL
+  redis_url = ENV["REDISCLOUD_URL"]
+  redis_url ||= ApplicationConfig["REDIS_URL"]
+  DEFAULT_EXPIRATION = 24.hours.to_i.freeze
+  config.cache_store = :redis_store, ENV["REDIS_URL"], { expires_in: DEFAULT_EXPIRATION }
 
   config.app_domain = ENV["APP_DOMAIN"]
 

@@ -172,6 +172,7 @@ class ArticlesController < ApplicationController
 
   def delete_confirm
     @article = current_user.articles.find_by(slug: params[:slug])
+    not_found unless @article
     authorize @article
   end
 
@@ -217,7 +218,7 @@ class ArticlesController < ApplicationController
 
   def set_article
     owner = User.find_by(username: params[:username]) || Organization.find_by(slug: params[:username])
-    found_article = if params[:slug]
+    found_article = if params[:slug] && owner
                       owner.articles.find_by(slug: params[:slug])
                     else
                       Article.includes(:user).find(params[:id])

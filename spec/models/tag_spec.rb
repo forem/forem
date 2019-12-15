@@ -3,6 +3,9 @@ require "rails_helper"
 RSpec.describe Tag, type: :model do
   let(:tag) { build(:tag) }
 
+  it { is_expected.to validate_length_of(:name).is_at_most(30) }
+  it { is_expected.not_to allow_value("#Hello", "c++", "AWS-Lambda").for(:name) }
+
   describe "validations" do
     describe "bg_color_hex" do
       it "passes validations if bg_color_hex is valid" do

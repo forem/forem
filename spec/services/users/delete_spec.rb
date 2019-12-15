@@ -30,8 +30,8 @@ RSpec.describe Users::Delete, type: :service do
   end
 
   it "deletes the destroy token" do
-    allow(RedisRailsCache).to receive(:delete).and_call_original
+    allow(Rails.cache).to receive(:delete).and_call_original
     described_class.call(user)
-    expect(RedisRailsCache).to have_received(:delete).with("user-destroy-token-#{user.id}")
+    expect(Rails.cache).to have_received(:delete).with("user-destroy-token-#{user.id}")
   end
 end

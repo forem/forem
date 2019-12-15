@@ -379,6 +379,12 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(json_response["error"]).to be_present
       end
 
+      it "fails if article contains tags with non-alphanumeric characters" do
+        tags = %w[#discuss .help]
+        post_article(title: "Test Article Title", tags: tags)
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
       it "creates an article belonging to the user" do
         post_article(title: Faker::Book.title)
         expect(response).to have_http_status(:created)
