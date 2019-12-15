@@ -327,11 +327,11 @@ class Tags extends Component {
           const { additionalTags } = this.state;
           const { category } = this.props;
           const additionalItems = (additionalTags[category] || []).filter(
-            t => t.indexOf(query) > -1,
+            t => t.includes(query),
           );
           const resultsArray = content.hits;
           additionalItems.forEach(t => {
-            if (resultsArray.indexOf(t) === -1) {
+            if (!resultsArray.includes(t)) {
               resultsArray.push({ name: t });
             }
           });
