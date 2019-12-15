@@ -27,7 +27,7 @@ module ProMemberships
 
     def purchase_pro_membership
       cost = ProMembership::MONTHLY_COST
-      return false unless user.has_enough_credits?(cost)
+      return false unless user.enough_credits?(cost)
 
       ActiveRecord::Base.transaction do
         pro_membership = ProMembership.create!(user: user)
