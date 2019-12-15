@@ -65,7 +65,7 @@ class Message < ApplicationRecord
   def determine_user_validity
     return unless chat_channel
 
-    user_ok = chat_channel.status == "active" && (chat_channel.has_member?(user) || chat_channel.channel_type == "open")
+    user_ok = chat_channel.status == "active" && (chat_channel.member?(user) || chat_channel.channel_type == "open")
     errors.add(:base, "You are not a participant of this chat channel.") unless user_ok
   end
 
@@ -75,7 +75,7 @@ class Message < ApplicationRecord
     channel = ChatChannel.find(chat_channel_id)
     return if channel.open?
 
-    errors.add(:base, "You are not a participant of this chat channel.") unless channel.has_member?(user)
+    errors.add(:base, "You are not a participant of this chat channel.") unless channel.member?(user)
     errors.add(:base, "Something went wrong") if channel.status == "blocked"
   end
 

@@ -51,7 +51,7 @@ class ChatChannel < ApplicationRecord
     logger.info "PUSHER ERROR: #{e.message}"
   end
 
-  def has_member?(user)
+  def member?(user)
     active_users.include?(user)
   end
 

@@ -43,11 +43,11 @@ class ChatChannelPolicy < ApplicationPolicy
   end
 
   def user_part_of_channel_or_open
-    record.present? && (record.channel_type == "open" || record.has_member?(user))
+    record.present? && (record.channel_type == "open" || record.member?(user))
   end
 
   def user_part_of_channel
-    record.present? && record.has_member?(user)
+    record.present? && record.member?(user)
   end
 
   def channel_is_direct

@@ -18,7 +18,7 @@ RSpec.describe ChatChannelPolicy, type: :policy do
   end
 
   context "when user is a part of channel" do
-    before { allow(chat_channel).to receive(:has_member?).with(user).and_return(true) }
+    before { allow(chat_channel).to receive(:member?).with(user).and_return(true) }
 
     it { is_expected.to permit_actions(%i[index show open]) }
     it { is_expected.to forbid_actions(%i[moderate update]) }

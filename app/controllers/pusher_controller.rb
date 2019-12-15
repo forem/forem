@@ -22,6 +22,6 @@ class PusherController < ApplicationController
 
     id = params[:channel_name].split("presence-channel-")[1].split("-")[0]
     channel = ChatChannel.find(id)
-    channel.has_member?(current_user)
+    channel.member?(current_user)
   end
 end

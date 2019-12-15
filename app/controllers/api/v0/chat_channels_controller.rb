@@ -3,7 +3,7 @@ module Api
     class ChatChannelsController < ApplicationController
       def show
         @chat_channel = ChatChannel.find(params[:id])
-        raise unless @chat_channel.has_member?(current_user)
+        raise unless @chat_channel.member?(current_user)
       end
     end
   end

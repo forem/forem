@@ -24,8 +24,8 @@ RSpec.describe ChatChannel, type: :model do
     it "creates channel with users" do
       chat_channel = described_class.create_with_users(users)
       expect(chat_channel.users.size).to eq(users.size)
-      expect(chat_channel.has_member?(users.first)).to be(true)
-      expect(chat_channel.has_member?(users.last)).to be(true)
+      expect(chat_channel.member?(users.first)).to be(true)
+      expect(chat_channel.member?(users.last)).to be(true)
     end
 
     it "lists active memberships" do
