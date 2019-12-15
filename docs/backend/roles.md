@@ -72,4 +72,4 @@ User.joins(:roles).order(:id).group(:id).pluck(:id, :username, Arel.sql("array_a
 [2]: https://github.com/thepracticaldev/dev.to/blob/master/app/models/role.rb
 [3]: https://github.com/thepracticaldev/dev.to/search?q=has_role&unscoped_q=has_role
 [4]: https://stackoverflow.com/a/16096790/1511504
-[5]: ./admin
+[5]: /backend/admin
