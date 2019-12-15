@@ -1,130 +1,13 @@
-<style>
-  .reaction-button {
-    position: relative;
-    width: 60px;
-    height: 60px;
-    background: white;
-    border-color: white;
-    margin: 100px 40px;
-    border-radius: 200px;
-  }
+<% title "[Moderate] " + @moderatable.title %>
 
-  .reaction-button img {
-    position: absolute;
-    top: 0;
-    width: 60px;
-    left: 0;
-  }
+<% cache "mod-styling-#{ApplicationConfig['HEROKU_SLUG_COMMIT']}" do %>
+  <style>
+    <%= Rails.application.assets["moderators.css"].to_s.html_safe %>
+  </style>
+<% end %>
 
-  .reaction-button .reacted-emoji {
-    display: none;
-  }
-
-  .reaction-button.reacted .reacted-emoji {
-    display: block;
-  }
-
-  .tag-mod-form {
-    border-top: 2px solid #dddddd;
-    margin: 40px auto;
-  }
-
-  .tag-mod-form ul {
-    text-align: left;
-    font-size: 15px;
-  }
-
-  .tag-mod-form form {
-    width: 500px;
-    margin: auto;
-    max-width: 90%;
-  }
-
-  .tag-mod-form form input {
-    width: 100%;
-    padding: 5px;
-    font-size: 20px;
-    margin-bottom: 5px;
-    border: 1px solid #888;
-  }
-
-  .tag-mod-form form input[type="submit"] {
-    background: #0045ff;
-    color: white;
-    font-weight: bold;
-    padding: 10px;
-    margin: auto;
-    display: block;
-  }
-
-  #undo {
-    background: #ff0000;
-    width: 2rem;
-    height: 2rem;
-    font-size: small;
-    display: inline-block;
-    padding-bottom: 2em;
-  }
-
-  .tag-mod-form form textarea {
-    box-sizing: border-box;
-    width: 100%;
-    padding: 5px;
-    font-size: 17px;
-    height: 100px;
-    border: 1px solid #888;
-  }
-
-  .level-rating-button {
-    border-radius: 8px;
-    font-size: 1.1em;
-    padding: 3px;
-    width: 42px;
-    border: 2px solid black;
-    font-weight: bold;
-  }
-
-  .level-rating-button.selected {
-    background: #9bebff;
-  }
-
-  input.undo {
-    background: #ff0000; /* $red */
-  }
-
-  .tag-mod-form input[type=radio] {
-    position: absolute;
-  }
-
-  .tag-mod-form input[type=radio] + label {
-    display: inline-block;
-    cursor: pointer;
-    font-weight: bold;
-    padding-left: 25px;
-    padding-right: 25px;
-    font-size: 20px;
-    margin: auto;
-    margin-bottom: 15px;
-  }
-
-  .tag-mod-form input[type=radio]:checked + label{
-    color: white;
-    background: #0045ff;
-  }
-
-  .tag-mod-form select {
-    display: block;
-    font-size: 20px;
-    padding: 12px;
-    font-weight: bold;
-    margin: auto;
-    border: solid 2px;
-    margin-top: 5px;
-  }
-</style>
-
-<div class="container" style="text-align: center">
-  <h2>MODERATE: <a href="<%= @moderatable.path %>" rel="nofollow"><%= @moderatable.title %></a></h2>
+<div class="container mod-container" style="text-align: center">
+  <h2>Moderate: <a href="<%= @moderatable.path %>" rel="nofollow"><%= @moderatable.title %></a></h2>
 
   <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>" data-reactable-id="<%= @moderatable.id %>" data-category="thumbsdown" data-reactable-type="<%= @moderatable.class.name %>">
     <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji") %>
@@ -135,38 +18,29 @@
     <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
   </button>
   <% if current_user.has_role?(:super_admin) && @moderatable.class.name == "Article" %>
-    <h1> Admin: <a href="<%= @moderatable.path %>/edit">Edit</a> |
-      <a href="/internal/articles/<%= @moderatable.id %>" data-no-instant>Content Moderation</a> |
-      <a href="/admin/articles/<%= @moderatable.id %>" data-no-instant>Article Admin</a></h1>
+    <h3> <a href="<%= @moderatable.path %>/edit">Edit Post</a> |
+      <a href="/internal/articles/<%= @moderatable.id %>" data-no-instant>Internal:Article</a> |
+      <a href="/admin/articles/<%= @moderatable.id %>" data-no-instant>Admin:Article</a></h3>
   <% elsif current_user.has_role?(:super_admin) && @moderatable.class.name == "Comment" %>
-    <h1> ADMIN: <a href="/admin/comments/<%= @moderatable.id %>" data-no-instant>Comment Admin</a> |
-      <a href="/admin/users/<%= @moderatable.user_id %>" data-no-instant>User Admin</a></h1>
+    <h3> <a href="/admin/comments/<%= @moderatable.id %>" data-no-instant>Admin:Comment</a> |
+      <a href="/admin/users/<%= @moderatable.user_id %>" data-no-instant>Admin:User</a></h3>
   <% else %>
-    <p style="width: 90%;margin:50px auto;text-align:left">
+    <p>
       <b style="font-size:1.3em">All negative reactions are private.</b>
-      <br><br>Use the
-      <b>thumbsdown(👎)</b> to move something "down" for any reason (quality, usefulness, code of conduct grey area).
-      <br><br>The <b>vomit(🤢)</b> is for code of conduct violations (harassment, being an asshole, spam, etc.).
-      <br><br>The DEV team will be notified about vomits and take appropriate action, but leaving a level-headed comment addressing the behavior is welcome if you feel up for it.
+    </p>
+    <hr/>
+    <p>
+      Use <b>Thumbsdown</b> to move this content "down" for any reason (quality, usefulness, etc.).
+    </p>
+    <p>
+      Use <b>vomit</b> for code of conduct violations (harassment, being a jerk, spam, etc.).
     </p>
   <% end %>
   <% if @allowed_to_adjust %>
     <div class="tag-mod-form">
-      <h2>Tag Adjustment</h2>
+      <h2>Tag Adjustments</h2>
       <%= form_for(@tag_adjustment) do |f| %>
-        <h3> Add or Remove Tags</h3>
-        <% unless current_user.has_role?(:super_admin) %>
-          <ul>
-            <li>You can only adjust tags that you moderate.</li>
-            <li>Only adjust tags that are appropriate.</li>
-            <li>Always be friendly in your tag adjustment reason.</li>
-            <li>Only adjust tags which haven't been adjusted already.</li>
-            <li>Each article can have a maximun of four tags</li>
-          </ul>
-        <% end %>
         <b>Current live tags:</b> <%= @moderatable.tag_list %><br>
-        <b>Already adjusted tags:</b> <%= @already_adjusted_tags %>
-        <br /><br />
         <% if @tag_adjustment.errors.any? %>
           <div id="error_explanation">
             <h2><%= pluralize(@tag_adjustment.errors.count, "error") %> prohibited this block from being saved:</h2>
@@ -176,58 +50,42 @@
               <% end %>
             </ul>
           </div>
-          <br><br><br><br>
         <% end %>
         <%= f.hidden_field :article_id, value: @moderatable.id %>
         <% if current_user.any_admin? || @tag_moderator_tags.any? { |tag| @moderatable.tag_list.include?(tag.name) } %>
-          <%= f.radio_button :adjustment_type, "removal", required: true %>
-          <%= f.label :adjustment_type, "Remove", value: "removal" %>
+          <div class="tag-mod-addition-radio" >
+            <%= f.radio_button :adjustment_type, "removal", required: true %>
+            <%= f.label :adjustment_type, "Remove", value: "removal" %>
+          </div>
         <% end %>
         <% if @moderatable.tag_list.count < 4 %>
-          <%= f.radio_button :adjustment_type, "addition", required: true %>
-          <%= f.label :adjustment_type, "Add", value: "addition" %>
+          <div class="tag-mod-addition-radio" >
+            <%= f.radio_button :adjustment_type, "addition", required: true %>
+            <%= f.label :adjustment_type, "Add", value: "addition" %>
+          </div>
         <% end %>
-        <br />
         <% if current_user.has_role?(:super_admin) %>
           <%= f.text_field :tag_name, placeholder: "Tag Name", required: true %>
         <% else %>
           <%= f.select :tag_name, @tag_moderator_tags, { prompt: "Select Tag" }, required: true %>
-          <br />
         <% end %>
         <%= f.text_area :reason_for_adjustment, placeholder: "Reason for adjustment (Be super kind) - Only the reason is needed, the notification will take care of the rest.", required: true %>
         <%= f.submit "Submit Tag Adjustment" %>
       <% end %>
       <% if @adjustments.any? %>
-        <br /><br />
-        <b>Adjusted Tags:</b><br /><br />
         <% @adjustments.each do |adjustment| %>
           <% if current_user.any_admin? || adjustment.user_id == current_user.id %>
             <%= form_for(adjustment, url: "/tag_adjustments/#{adjustment.id}", html: { method: :delete, onsubmit: "return confirm('Are you sure you want to undo the #{adjustment.adjustment_type} of the #{adjustment.tag_name} tag?')" }) do |f| %>
-              <%= adjustment.adjustment_type == "removal" ? "Removed" : "Added" %>: <%= adjustment.tag_name %>
-              <%= f.submit "X", id: "undo" %>
+              <b><%= adjustment.adjustment_type == "removal" ? "Currently removed tag" : "Currently added tag" %>:</b> <%= adjustment.tag_name %>
+              <%= f.submit "×", id: "undo" %>
             <% end %>
           <% end %>
-          <br />
         <% end %>
       <% end %>
     </div>
   <% end %>
 
   <% if @moderatable.class.name == "Article" %>
-    <% if @moderatable.last_buffered.blank? %>
-      <div class="tag-mod-form">
-        <%= form_for(BufferUpdate.new) do |f| %>
-          <h2>Suggest a Tweet</h2>
-          <%= f.hidden_field :article_id, value: @moderatable.id %>
-          <%= f.text_area :body_text, maxlength: 220 %>
-          <%= f.submit "Share Tweet Suggestion" %>
-        <% end %>
-        <p style="width: 90%;margin:50px auto;text-align:left">
-          <br /><br />Text will be used in the body of a tweet linking to this post.
-          <br /><br />Tweet suggestion can be a TLDR of the post, an interesting quote from the post, or bullet points from topics covered in the post.
-        </p>
-      </div>
-    <% end %>
     <div class="tag-mod-form">
       <% @rating_vote = RatingVote.where(article_id: @moderatable.id, user_id: current_user.id).first %>
       <%= form_for(RatingVote.new) do |f| %>
@@ -245,15 +103,20 @@
         <button value="9" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 9.0 %>">9</button>
         <button value="10" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 10.0 %>">10</button>
       <% end %>
-      <p style="width: 90%;margin:50px auto;text-align:left">
-        <b style="font-size:1.1em">All rating votes are private.</b>
-        <br><br>Provide a rating between 1 and 10 based on which audience would find this post most valuable.
-        <br><br>1: for brand new developers, 3: for junior developers, 10: for very advanced developers, etc.
-        <br><br>This will provide
-        <em>approximate and gentle</em> algorithmic adjustments to help deliver relevant content.
-        <br><br>It will be used as one of many indicators. No one rating will have an overly dramatic affect.
+      <p>
+        Who <em>might</em> find this post most valuable, based on overall experience level?
       </p>
     </div>
+    <% if @moderatable.last_buffered.blank? %>
+      <div class="tag-mod-form">
+        <%= form_for(BufferUpdate.new) do |f| %>
+          <h2>Suggest a Tweet for @<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %></h2>
+          <%= f.hidden_field :article_id, value: @moderatable.id %>
+          <%= f.text_area :body_text, maxlength: 220, placeholder: "Can be a TLDR of the post, an interesting quote from the post, or bullet points from topics covered in the post, etc." %>
+          <%= f.submit "Share Tweet Suggestion" %>
+        <% end %>
+      </div>
+    <% end %>
   <% end %>
 </div>
 
