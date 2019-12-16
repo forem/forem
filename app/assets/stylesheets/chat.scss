@@ -1104,6 +1104,7 @@
   display: flex;
   height: inherit;
   align-items: stretch;
+  position: relative;
 }
 
 .messagecomposer__input {
@@ -1314,4 +1315,34 @@
 .message__delete__button {
   background: #ff0000;
   color: white;
+}
+
+.messageToBeEdited {
+  position: absolute;
+  display: grid;
+  grid-template-columns: 1fr 40px;
+  width: calc(100% - 14px);
+  top: -53px;
+  background: white;
+  padding: 0px 5px;
+  border: 1px solid var(--theme-top-bar-background, #dbdbdb);
+  border-left: 3px solid #4e57ef;
+  height: 50px;
+  overflow: hidden;
+}
+
+.closeEdit {
+  text-align: right;
+  user-select: none;
+  cursor: pointer;
+  padding: 2px 5px;
+  color: #4e57ef;
+  font-weight: bold;
+}
+
+.editHead {
+  position: absolute;
+  color: #4e57ef;
+  font-size: 14px;
+  font-weight: bold;
 }

@@ -11,6 +11,7 @@ import {
   getChannelInvites,
   sendChannelInviteAction,
   deleteMessage,
+  editMessage,
 } from './actions';
 import { hideMessages, scrollToBottom, setupObserver } from './util';
 import Alert from './alert';
@@ -66,6 +67,8 @@ export default class Chat extends Component {
       messageDeleteId: null,
       allMessagesLoaded: false,
       currentMessageLocation: 0,
+      startEditing: false,
+      activeEditMessage: {},
     };
   }
 
@@ -170,6 +173,7 @@ export default class Chat extends Component {
         channelId: channelName,
         messageCreated: this.receiveNewMessage,
         messageDeleted: this.removeMessage,
+        messageEdited: this.updateMessage,
         channelCleared: this.clearChannel,
         redactUserMessages: this.redactUserMessages,
         channelError: this.channelError,
@@ -319,6 +323,19 @@ export default class Chat extends Component {
     }));
   };
 
+  updateMessage = message => {
+    const { activeChannelId } = this.state;
+
+    this.setState(({ messages }) => {
+      const newMessages = messages;
+      const foundIndex = messages[activeChannelId].findIndex(
+        oldMessage => oldMessage.id === message.id,
+      );
+      newMessages[activeChannelId][foundIndex] = message;
+      return { messages: newMessages };
+    });
+  };
+
   receiveNewMessage = message => {
     const { messages, activeChannelId, scrolled, chatChannels } = this.state;
     const receivedChatChannelId = message.chat_channel_id;
@@ -449,6 +466,35 @@ export default class Chat extends Component {
     }
   };
 
+  handleKeyDownEdit = e => {
+    const enterPressed = e.keyCode === 13;
+    const targetValue = e.target.value;
+    const messageIsEmpty = targetValue.length === 0;
+    const shiftPressed = e.shiftKey;
+
+    if (enterPressed) {
+      if (messageIsEmpty) {
+        e.preventDefault();
+      } else if (!messageIsEmpty && !shiftPressed) {
+        e.preventDefault();
+        this.handleMessageSubmitEdit(e.target.value);
+        e.target.value = '';
+      }
+    }
+  };
+
+  handleMessageSubmitEdit = message => {
+    const { activeChannelId, activeEditMessage } = this.state;
+    editMessage(
+      activeChannelId,
+      activeEditMessage.id,
+      message,
+      this.handleSuccess,
+      this.handleFailure,
+    );
+    this.handleEditMessageClose();
+  };
+
   handleMessageSubmit = message => {
     const { activeChannelId } = this.state;
     // should check if user has the privilege
@@ -551,9 +597,28 @@ export default class Chat extends Component {
     }
   };
 
+  handleSubmitOnClickEdit = e => {
+    e.preventDefault();
+    const message = document.getElementById('messageform').value;
+    if (message.length > 0) {
+      this.handleMessageSubmitEdit(message);
+      document.getElementById('messageform').value = '';
+    }
+  };
+
   triggerDeleteMessage = e => {
     this.setState({ messageDeleteId: e.target.dataset.content });
     this.setState({ showDeleteModal: true });
+  };
+
+  triggerEditMessage = e => {
+    const { messages, activeChannelId } = this.state;
+    this.setState({
+      activeEditMessage: messages[activeChannelId].filter(
+        message => message.id === parseInt(e.target.dataset.content, 10),
+      )[0],
+    });
+    this.setState({ startEditing: true });
   };
 
   handleSuccess = response => {
@@ -768,10 +833,12 @@ export default class Chat extends Component {
         profileImageUrl={message.profile_image_url}
         message={message.message}
         timestamp={showTimestamp ? message.timestamp : null}
+        editedAt={message.edited_at}
         color={message.color}
         type={message.type}
         onContentTrigger={this.triggerActiveContent}
         onDeleteMessageTrigger={this.triggerDeleteMessage}
+        onEditMessageTrigger={this.triggerEditMessage}
       />
     ));
   };
@@ -1006,7 +1073,13 @@ export default class Chat extends Component {
             <Compose
               handleSubmitOnClick={this.handleSubmitOnClick}
               handleKeyDown={this.handleKeyDown}
+              handleSubmitOnClickEdit={this.handleSubmitOnClickEdit}
+              handleKeyDownEdit={this.handleKeyDownEdit}
               activeChannelId={state.activeChannelId}
+              startEditing={state.startEditing}
+              editMessageHtml={state.activeEditMessage.message}
+              editMessageMarkdown={state.activeEditMessage.markdown}
+              handleEditMessageClose={this.handleEditMessageClose}
             />
           </div>
         </div>
@@ -1020,6 +1093,13 @@ export default class Chat extends Component {
         />
       </div>
     );
+  };
+
+  handleEditMessageClose = () => {
+    this.setState({
+      startEditing: false,
+      activeEditMessage: { message: '', markdown: '' },
+    });
   };
 
   renderDeleteModal = () => {

@@ -29,6 +29,7 @@ class UnopenedChannelNotice extends Component {
       channelId: `private-message-notifications-${window.currentUser.id}`,
       messageCreated: this.receiveNewMessage,
       messageDeleted: this.removeMessage,
+      messageEdited: this.updateMessage,
     });
     const component = this;
     document.getElementById('connect-link').onclick = () => {
@@ -39,6 +40,8 @@ class UnopenedChannelNotice extends Component {
   }
 
   removeMessage = () => {};
+
+  updateMessage = () => {};
 
   receiveNewMessage = e => {
     if (window.location.pathname.startsWith('/connect')) {
