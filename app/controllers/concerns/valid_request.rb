@@ -17,4 +17,21 @@ module ValidRequest
       request.origin.nil? || request.origin.gsub("https", "http") == request.base_url.gsub("https", "http")
     end
   end
+
+  def _compute_redirect_to_location(request, options) #:nodoc:
+    case options
+    # Yet another monkeypatch required to send proper protocol out.
+    # In this case we make sure the redirect ends in the app protocol.
+    # This is the same as the base Rails method except ApplicationConfig["APP_PROTOCOL"]
+    # is used instead of request.protocol.
+    when /\A([a-z][a-z\d\-+\.]*:|\/\/).*/i
+      options
+    when String
+      (ApplicationConfig["APP_PROTOCOL"] || request.protocol) + request.host_with_port + options
+    when Proc
+      _compute_redirect_to_location request, instance_eval(&options)
+    else
+      url_for(options)
+    end.delete("\0\r\n")
+  end
 end
