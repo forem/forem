@@ -35,8 +35,6 @@ class AsyncInfoController < ApplicationController
     render json: { version: 1 }.to_json
   end
 
-  private
-
   def user_data
     Rails.cache.fetch(user_cache_key, expires_in: 15.minutes) do
       {
@@ -85,6 +83,8 @@ class AsyncInfoController < ApplicationController
   def remember_user_token
     cookies[:remember_user_token]
   end
+
+  private
 
   def occasionally_update_analytics
     Articles::UpdateAnalyticsJob.perform_later(@user.id) if Rails.env.production? && rand(ApplicationConfig["GA_FETCH_RATE"]) == 1
