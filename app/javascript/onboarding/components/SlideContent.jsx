@@ -24,10 +24,10 @@ const SlideContent = ({
 );
 
 SlideContent.propTypes = {
-  imageSource: PropTypes.string,
-  imageAlt: PropTypes.string,
-  content: PropTypes.string,
-  style: PropTypes.object,
+  imageSource: PropTypes.string.isRequired,
+  imageAlt: PropTypes.string.isRequired,
+  content: PropTypes.string.isRequired,
+  style: PropTypes.shape().isRequired, // bypassing shape validator to allow for additional attributes
 };
 
 export default SlideContent;
