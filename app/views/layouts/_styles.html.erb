@@ -1,5 +1,10 @@
-<% cache "base_inline_styles_#{@story_show}_#{@article_index}_#{@home_page}_#{@article_show}_#{view_class}_#{@notifications_index}_#{core_pages?}_#{@tags_index}_#{@reading_list_items_index}_#{@history_index}_#{ApplicationConfig['HEROKU_SLUG_COMMIT']}_#{user_signed_in?}", expires_in: 8.hours do %>
-  <% if @story_show %>
+<% cache "base_inline_styles_#{@story_show}_#{@article_index}_#{@home_page}_#{@article_show}_#{view_class}_#{@notifications_index}_#{@tags_index}_#{@reading_list_items_index}_#{@history_index}_#{ApplicationConfig['HEROKU_SLUG_COMMIT']}_#{user_signed_in?}_#{@shell}", expires_in: 8.hours do %>
+  <% if @shell %>
+    <style>
+      <% Rails.application.config.assets.compile = true %>
+      <%= Rails.application.assets["minimal.css"].to_s.html_safe %>
+    </style>
+  <% elsif @story_show %>
     <style>
       <% Rails.application.config.assets.compile = true %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
@@ -100,9 +105,7 @@
     <style>
       <%= Rails.application.assets["badges.css"].to_s.html_safe %>
     </style>
-  <% elsif core_pages? %>
-    <%= stylesheet_link_tag "minimal", media: "all" %>
   <% else %>
-    <%= stylesheet_link_tag "application", media: "all" %>
+    <%= stylesheet_link_tag "minimal", media: "all" %>
   <% end %>
 <% end %>

@@ -88,6 +88,9 @@ export default class Chat extends Component {
       channel => `open-channel-${channel.chat_channel_id}`,
     );
     setupObserver(this.observerCallback);
+    if (!window.currentUser) {
+      window.currentUser = JSON.parse(document.body.dataset.user)
+    }
     this.subscribePusher(
       `private-message-notifications-${window.currentUser.id}`,
     );
