@@ -25,7 +25,7 @@ User.clear_index!
   user = User.create!(
     name: name = Faker::Name.unique.name,
     summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
-    profile_image: File.open(Rails.root.join("app", "assets", "images", "#{rand(1..40)}.png")),
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     website_url: Faker::Internet.url,
     twitter_username: Faker::Internet.username(specifier: name),
     email_comment_notifications: false,
@@ -118,7 +118,7 @@ end
 
 Rails.logger.info "6. Creating Podcasts"
 
-image_file = Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg")
+image_file = Rails.root.join("spec/support/fixtures/images/image1.jpeg")
 
 podcast_objects = [
   {
@@ -228,7 +228,7 @@ Rails.logger.info "10. Creating Badges"
 Badge.create!(
   title: Faker::Lorem.word,
   description: Faker::Lorem.sentence,
-  badge_image: File.open(Rails.root.join("app", "assets", "images", "#{rand(1..40)}.png")),
+  badge_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
 )
 
 Rails.logger.info "11. Creating FeedbackMessages"
