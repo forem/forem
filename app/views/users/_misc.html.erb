@@ -40,8 +40,11 @@
 <%= form_for(@user, html: { id: nil }) do |f| %>
   <div class="sub-field">
     <%= f.label :config_theme, "Site Theme" %>
-    <%= f.select(:config_theme, options_for_select(["default", "night theme", "minimal light theme", "pink theme", "ten x hacker theme"], @user.config_theme.tr("_", " "))) %>
-    <sub><em>Default is light style.</em></sub>
+    <div class="theme-selector-field">
+      <% ["default", "night theme", "minimal light theme", "pink theme", "ten x hacker theme"].each do |theme| %>
+        <%= render partial: "theme_selector", locals: { f: f, theme: theme } %>
+      <% end %>
+    </div>
   </div>
   <div class="sub-field">
     <%= f.label :config_font, "Base Post Font" %>
@@ -50,7 +53,7 @@
   </div>
   <div class="sub-field">
     <%= f.label :config_navbar, "Site Navbar" %>
-    <%= f.select(:config_navbar, options_for_select(["default", "static"], @user.config_navbar.tr("_", " "))) %>
+    <%= f.select(:config_navbar, options_for_select(%w[default static], @user.config_navbar.tr("_", " "))) %>
     <sub><em>Default is fixed.</em></sub>
   </div>
   <div class="field">
