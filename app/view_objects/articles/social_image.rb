@@ -32,7 +32,7 @@ module Articles
     attr_reader :article
 
     def legacy_article_social_image
-      cache_key = "article-social-img-#{article}-#{article.updated_at}-#{article.comments_count}"
+      cache_key = "article-social-img-#{article}-#{article.updated_at.rfc3339}-#{article.comments_count}"
 
       Rails.cache.fetch(cache_key, expires_in: 1.hour) do
         src = GeneratedImage.new(article).social_image

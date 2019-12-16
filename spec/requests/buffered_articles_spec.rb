@@ -6,10 +6,12 @@ RSpec.describe "BufferedArticles", type: :request do
       get "/buffered_articles"
       expect(response).to have_http_status(:ok)
     end
+
     it "responds with json" do
       get "/buffered_articles"
       expect(response.content_type).to eq("application/json")
     end
+
     it "responds with at least one url" do
       create(:article)
       get "/buffered_articles"

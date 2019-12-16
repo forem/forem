@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe RunkitTag, type: :liquid_template do
+RSpec.describe RunkitTag, type: :liquid_tag do
   describe "#render" do
     let(:preamble) do
       <<~CODE

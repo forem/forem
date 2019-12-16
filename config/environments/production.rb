@@ -28,7 +28,7 @@ Rails.application.configure do
   # Apache or NGINX already handles this.
   config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
   config.public_file_server.headers = {
-    "Cache-Control" => "public, s-maxage=2592000, max-age=86400"
+    "Cache-Control" => "public, s-maxage=#{30.days.to_i}, max-age=#{30.days.to_i}"
   }
 
   # Compress JavaScripts and CSS.
@@ -99,15 +99,13 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  config.cache_store = :dalli_store,
-                       (ENV["MEMCACHIER_SERVERS"] || "").split(","),
-                       { username: ENV["MEMCACHIER_USERNAME"],
-                         password: ENV["MEMCACHIER_PASSWORD"],
-                         failover: true,
-                         socket_timeout: 1.5,
-                         socket_failure_delay: 0.2 }
+  # DEV uses the RedisCloud Heroku Add-On which comes with the predefined env variable REDISCLOUD_URL
+  redis_url = ENV["REDISCLOUD_URL"]
+  redis_url ||= ApplicationConfig["REDIS_URL"]
+  DEFAULT_EXPIRATION = 24.hours.to_i.freeze
+  config.cache_store = :redis_store, ENV["REDIS_URL"], { expires_in: DEFAULT_EXPIRATION }
 
-  config.app_domain = "dev.to"
+  config.app_domain = ENV["APP_DOMAIN"]
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true
@@ -118,12 +116,15 @@ Rails.application.configure do
     authentication: :plain,
     user_name: ENV["SENDGRID_USERNAME_ACCEL"],
     password: ENV["SENDGRID_PASSWORD_ACCEL"],
-    domain: "dev.to",
+    domain: ENV["APP_DOMAIN"],
     enable_starttls_auto: true
   }
 
   config.middleware.use Rack::HostRedirect,
-                        "practicaldev.herokuapp.com" => "dev.to"
+                        ENV["HEROKU_APP_URL"] => ENV["APP_DOMAIN"]
 end
 
-Rails.application.routes.default_url_options = { host: Rails.application.config.app_domain, protocol: :https }
+Rails.application.routes.default_url_options = {
+  host: Rails.application.config.app_domain,
+  protocol: ENV["APP_PROTOCOL"].delete_suffix("://")
+}

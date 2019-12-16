@@ -104,11 +104,11 @@ RSpec.describe "Dashboards", type: :request do
         sign_in user
         user.follow second_user
         user.reload
-        get "/dashboard/following"
+        get "/dashboard/following_users"
       end
 
       it "renders followed users count" do
-        expect(response.body).to include "Followed users (1)"
+        expect(response.body).to include "users (1)"
       end
 
       it "lists followed users" do
@@ -123,11 +123,11 @@ RSpec.describe "Dashboards", type: :request do
         sign_in user
         user.follow tag
         user.reload
-        get "/dashboard/following"
+        get "/dashboard/following_tags"
       end
 
       it "renders followed tags count" do
-        expect(response.body).to include "Followed tags (1)"
+        expect(response.body).to include "tags (1)"
       end
 
       it "lists followed tags" do
@@ -142,15 +142,34 @@ RSpec.describe "Dashboards", type: :request do
         sign_in user
         user.follow organization
         user.reload
-        get "/dashboard/following"
+        get "/dashboard/following_organizations"
       end
 
       it "renders followed organizations count" do
-        expect(response.body).to include "Followed organizations (1)"
+        expect(response.body).to include "organizations (1)"
       end
 
       it "lists followed organizations" do
         expect(response.body).to include CGI.escapeHTML(organization.name)
+      end
+    end
+
+    describe "followed podcasts section" do
+      let(:podcast) { create(:podcast) }
+
+      before do
+        sign_in user
+        user.follow podcast
+        user.reload
+        get "/dashboard/following_podcasts"
+      end
+
+      it "renders followed podcast count" do
+        expect(response.body).to include "podcasts (1)"
+      end
+
+      it "lists followed podcasts" do
+        expect(response.body).to include podcast.name
       end
     end
   end

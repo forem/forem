@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe InstagramTag, type: :liquid_template do
+RSpec.describe InstagramTag, type: :liquid_tag do
   describe "#id" do
     let(:valid_id)      { "BXgGcAUjM39" }
     let(:invalid_id)    { "blahblahblahbl" }

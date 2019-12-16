@@ -1,4 +1,39 @@
 <%= render "style" %>
+<style>
+  .single-article-actions a {
+    color: black;
+    font-size: 0.77em;
+  }
+</style>
+<h1>Latest Articles</h1>
+<div style="height: 400px; overflow: scroll;">
+  <% @new_articles.each do |article| %>
+    <% next if article.user.badge_achievements_count > 2 %>
+    <div style="border-bottom: 1px solid black; padding: 3px 0px 2px;">
+      <a href="<%= article.path %>"><%= article.title %></a>
+      <div class="single-article-actions">
+        <a href="<%= article.path %>/mod">Mod</a> |
+        <a href="<%= article.path %>/moderate">Internal</a> |
+        <a href="<%= article.user.path %>">@<%= article.user.username %></a> |
+        <a href="/internal/users/<%= article.user_id %>">Internal User</a> |
+        <a href="/internal/users/<%= article.user_id %>/edit">Destructive Actions</a>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<h1>Possible spam/abuse users</h1>
+<div style="height: 400px; overflow: scroll;">
+  <% @possible_spam_users.each do |user| %>
+    <div style="border-bottom: 1px solid black; padding: 5px 0px 2px;">
+      <a href="<%= user.path %>">@<%= user.username %></a> - <%= user.name %>
+      <div class="single-article-actions">
+        <a href="/internal/users/<%= user.id %>">Internal User</a> |
+        <a href="/internal/users/<%= user.id %>/edit">Destructive Actions</a>
+      </div>
+    </div>
+  <% end %>
+</div>
 
 <h1 class="top-nav">
   Abuse Reports -

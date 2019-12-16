@@ -5,7 +5,7 @@ vcr_option = {
   allow_playback_repeats: "true"
 }
 
-RSpec.describe GithubTag::GithubIssueTag, vcr: vcr_option do
+RSpec.describe GithubTag::GithubIssueTag, type: :liquid_tag, vcr: vcr_option do
   describe "#id" do
     let(:github_link) { "https://github.com/facebook/react/issues/9218" }
 

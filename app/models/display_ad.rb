@@ -11,10 +11,12 @@ class DisplayAd < ApplicationRecord
   scope :approved_and_published, -> { where(approved: true, published: true) }
 
   def self.for_display(area)
+    relation = approved_and_published.where(placement_area: area).order(success_rate: :desc)
+
     if rand(8) == 1
-      approved_and_published.where(placement_area: area).order("success_rate DESC").sample
+      relation.sample
     else
-      approved_and_published.where(placement_area: area).order("success_rate DESC").limit(rand(1..15)).sample
+      relation.limit(rand(1..15)).sample
     end
   end
 

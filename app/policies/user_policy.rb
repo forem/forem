@@ -27,6 +27,18 @@ class UserPolicy < ApplicationPolicy
     current_user?
   end
 
+  def confirm_destroy?
+    current_user?
+  end
+
+  def full_delete?
+    current_user?
+  end
+
+  def request_destroy?
+    current_user?
+  end
+
   def join_org?
     !user_is_banned?
   end
@@ -58,6 +70,7 @@ class UserPolicy < ApplicationPolicy
       bg_color_hex
       config_font
       config_theme
+      config_navbar
       contact_consent
       currently_hacking_on
       currently_learning

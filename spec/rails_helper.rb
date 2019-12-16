@@ -13,6 +13,7 @@ require "pundit/rspec"
 require "webmock/rspec"
 require "test_prof/recipes/rspec/before_all"
 require "test_prof/recipes/rspec/let_it_be"
+require "test_prof/recipes/rspec/sample"
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -27,10 +28,10 @@ require "test_prof/recipes/rspec/let_it_be"
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
 
-Dir[Rails.root.join("spec", "support", "**", "*.rb")].each { |f| require f }
-Dir[Rails.root.join("spec", "system", "shared_examples", "**", "*.rb")].each { |f| require f }
-Dir[Rails.root.join("spec", "models", "shared_examples", "**", "*.rb")].each { |f| require f }
-Dir[Rails.root.join("spec", "jobs", "shared_examples", "**", "*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/system/shared_examples/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/models/shared_examples/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/jobs/shared_examples/**/*.rb")].each { |f| require f }
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -75,6 +76,10 @@ RSpec.configure do |config|
 
   config.before do
     ActiveRecord::Base.observers.disable :all # <-- Turn 'em all off!
+  end
+
+  config.after do
+    SiteConfig.clear_cache
   end
 
   # Only turn on VCR if :vcr is included metadata keys

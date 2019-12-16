@@ -30,27 +30,28 @@ class IntroSlide extends Component {
     next();
   }
 
-  selectVariant = variantId => {
-    const defaultVariant = (
+  selectVariant(variantId) {
+    this.defaultVariant = (
       <div>
         <p>
           DEV is where programmers share ideas and help each other grow.
-          <span role="img" aria-label="nerd">
-            {' '}
+          <span role="img" aria-label="Nerd Face">
             🤓
           </span>
         </p>
         <p>
           Ask questions, leave helpful comments, encourage others, and have fun!
-          <span role="img" aria-label="raising hands">
-            {' '}
+          <span role="img" aria-label="Raising Hands">
             🙌
           </span>
         </p>
         <p>
-          A few
-          <strong> quick questions </strong>
-          for you before you get started...
+          A few 
+          {' '}
+          <strong>quick questions</strong>
+          {' '}
+for you before you get
+          started...
         </p>
       </div>
     );
@@ -72,7 +73,7 @@ class IntroSlide extends Component {
             The more you get involved in community, the better developer you
             will be.
           </p>
-)}
+        )}
         style={{ textAlign: 'center', fontSize: '0.9em' }}
       />,
       <SlideContent
@@ -82,8 +83,8 @@ class IntroSlide extends Component {
         style={{ textAlign: 'center', fontSize: '1.1em' }}
       />,
     ];
-    return variants[variantId - 1] || defaultVariant;
-  };
+    return variants[variantId - 1] || this.defaultVariant;
+  }
 
   render() {
     const { prev, variant } = this.props;

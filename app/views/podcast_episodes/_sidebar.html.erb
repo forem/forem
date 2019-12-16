@@ -28,7 +28,7 @@
               </div>
             </a>
           <% end %>
-          <p>If you know of a great dev podcast that should be added to this list, contact <a href="mailto:yo@dev.to">yo@dev.to</a></p>
+          <p>If you know of a great dev podcast that should be added to this list, contact <a href="mailto:<%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %>"><%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %></a></p>
         </div>
       </div>
     <% elsif @podcast %>

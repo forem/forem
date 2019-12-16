@@ -8,7 +8,8 @@ module Podcasts
     end
 
     def get_episodes(limit: 100, force_update: false)
-      rss = HTTParty.get(podcast.feed_url).body
+      # increased the redirect limit from 5 (default) to 7 to be able to handle such urls
+      rss = HTTParty.get(podcast.feed_url, limit: 7).body
       feed = RSS::Parser.parse(rss, false)
 
       set_unreachable(:unparsable, force_update) && return unless feed

@@ -1,7 +1,6 @@
 <%= content_for :page_meta do %>
   <%= render "articles/tags/meta" %>
 <% end %>
-<% params.delete(:i) %>
 <% expiry_minutes = params[:timeframe].blank? || params[:timeframe] == "latest" ? 4 : 20 %>
 <% flag = true %>
 <% cache("tag-stories-index-#{params}-#{flag}-#{@tag_model.updated_at}", expires_in: expiry_minutes.minutes) do %>
@@ -82,7 +81,7 @@
           </div>
           <div class="narrow-nav-select" aria-label="feed-filter-select">
             <% if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %>
-              <button type="button" id="narrow-feed-butt">&lt;MY DEV FEED&gt;</button>
+              <button type="button" id="narrow-feed-butt">&lt;MY <%= ApplicationConfig["COMMUNITY_NAME"] %> FEED&gt;</button>
             <% elsif timeframe_check('week') %>
               <button type="button" id="narrow-feed-butt">&lt;PAST WEEK&gt;</button>
             <% elsif timeframe_check('month') %>

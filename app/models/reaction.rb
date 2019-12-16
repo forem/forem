@@ -1,5 +1,6 @@
 class Reaction < ApplicationRecord
   include AlgoliaSearch
+
   CATEGORIES = %w[like readinglist unicorn thinking hands thumbsdown vomit].freeze
 
   belongs_to :reactable, polymorphic: true
@@ -59,7 +60,7 @@ class Reaction < ApplicationRecord
 
     def cached_any_reactions_for?(reactable, user, category)
       class_name = reactable.class.name == "ArticleDecorator" ? "Article" : reactable.class.name
-      cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-#{user.updated_at}-#{category}"
+      cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-#{user.updated_at&.rfc3339}-#{category}"
       Rails.cache.fetch(cache_name, expires_in: 24.hours) do
         Reaction.where(reactable_id: reactable.id, reactable_type: class_name, user: user, category: category).any?
       end
@@ -77,10 +78,6 @@ class Reaction < ApplicationRecord
   end
 
   private
-
-  def cache_buster
-    @cache_buster ||= CacheBuster.new
-  end
 
   def touch_user
     Users::TouchJob.perform_later(user_id)

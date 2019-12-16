@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
 import Navigation from './Navigation';
 import { getContentOfToken } from '../utilities';
 
+/* eslint-disable camelcase */
+
 class EmailTermsConditionsForm extends Component {
   constructor(props) {
     super(props);

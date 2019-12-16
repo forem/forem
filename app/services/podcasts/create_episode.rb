@@ -25,8 +25,11 @@ module Podcasts
         Rails.logger.error("not a valid date: #{e}")
       end
       ep.body = item.body
-      ep.save!
-      ep
+      import_result = PodcastEpisode.import! [ep], on_duplicate_key_update: {
+        conflict_target: %i[media_url],
+        columns: %i[title slug subtitle summary website_url published_at reachable media_url https body]
+      }
+      PodcastEpisode.find(import_result.ids.first)
     end
 
     private

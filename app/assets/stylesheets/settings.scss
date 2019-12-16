@@ -2,6 +2,7 @@
 @import 'mixins';
 #page-content.users-edit,
 #page-content.users-update,
+#page-content.users-confirm_destroy,
 #page-content.organizations-create,
 #page-content.organizations-update {
   font-family: $helvetica;
@@ -167,6 +168,7 @@
     }
     .settings-color-select-container{
       display: flex;
+      align-items: center;
       width:100%;
       .color-select-fields{
         width:50%;
@@ -197,7 +199,6 @@
       .color-select-preview{
         flex:1;
         text-align:center;
-        padding:20px;
         #color-select-preview-logo{
           padding:25px 20px;
           border-radius:7px;
@@ -669,6 +670,13 @@
 .signout_confirm-wrapper {
   padding: calc(15% + 50px) 2% 30%;
   text-align: center;
+  form button {
+    font-size: 1.5em;
+    padding: 8px 15px;
+    border: 0px;
+    border-radius: 3px;
+    margin-top: 15px;
+  }
 }
 
 .org-widget-preview .primary-sticky-nav {

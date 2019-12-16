@@ -1,6 +1,6 @@
 FROM gitpod/workspace-postgres
 
 # Install Ruby
-COPY .ruby-version /tmp
-RUN bash -lc "rvm install ruby-$(cat /tmp/.ruby-version)" \
+ENV RUBY_VERSION=2.6.5
+RUN bash -lc "rvm install ruby-$RUBY_VERSION && rvm use ruby-$RUBY_VERSION --default" \
  && rm -f /tmp/*

@@ -15,38 +15,6 @@ module ApplicationHelper
     end
   end
 
-  def core_pages?
-    %w[
-      articles
-      podcast_episodes
-      events
-      tags
-      registrations
-      users
-      pages
-      chat_channels
-      dashboards
-      moderations
-      videos
-      badges
-      stories
-      comments
-      notifications
-      reading_list_items
-      html_variants
-      classified_listings
-      credits
-      partnerships
-      pro_memberships
-    ].include?(controller_name)
-  end
-
-  def render_js?
-    article_pages = controller_name == "articles" && %(index show).include?(controller.action_name)
-    pulses_pages = controller_name == "pulses"
-    !(article_pages || pulses_pages)
-  end
-
   def title(page_title)
     derived_title = if page_title.include?(ApplicationConfig["COMMUNITY_NAME"])
                       page_title
@@ -144,7 +112,7 @@ module ApplicationHelper
     tag :button, # Yikes
         class: "cta follow-action-button",
         data: {
-          info: { id: followable.id, className: followable.class.name, style: style }.to_json,
+          :info => { id: followable.id, className: followable.class.name, style: style }.to_json,
           "follow-action-button" => true
         }
   end
@@ -172,7 +140,7 @@ module ApplicationHelper
     if ApplicationConfig["LOGO_SVG"].present?
       ApplicationConfig["LOGO_SVG"].html_safe
     else
-      inline_svg("devplain.svg", class: "logo", size: "20% * 20%", aria: true, title: "App logo")
+      inline_svg_tag("devplain.svg", class: "logo", size: "20% * 20%", aria: true, title: "App logo")
     end
   end
 

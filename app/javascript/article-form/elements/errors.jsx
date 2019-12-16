@@ -6,14 +6,15 @@ const Errors = ({ errorsList }) => (
     <h2>
       <span role="img" aria-label="face screaming in fear">
         😱
-      </span>{' '}
-      Heads up:
+      </span>
+      &nbsp; Heads up:
     </h2>
     <ul>
       {Object.keys(errorsList).map(key => {
         return (
           <li>
-            {key}: &nbsp;
+            {key}
+: &nbsp;
             {errorsList[key]}
           </li>
         );

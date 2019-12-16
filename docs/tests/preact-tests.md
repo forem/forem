@@ -4,8 +4,8 @@ title: Preact Tests
 
 # Preact Tests
 
-The test code is located within the same directory as each component,
-inside a `__tests__` directory.
+The test code is located within the same directory as each component, inside a
+`__tests__` directory.
 
 ```shell
 $ tree app/javascript/article-form -L 1
@@ -28,4 +28,5 @@ or
 yarn test
 ```
 
-At the end of the tests execution, you will see the code coverage for the Preact components tests.
+At the end of the test's execution, you will see the code coverage for the Preact
+components in our codebase.

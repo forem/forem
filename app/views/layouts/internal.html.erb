@@ -8,7 +8,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <%= csrf_meta_tags %>
-  <%= favicon_link_tag %>
+  <%= favicon_link_tag ApplicationConfig["FAVICON_URL"] %>
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
   <title><%= controller_name %></title>
@@ -25,7 +25,7 @@
 </head>
 <style>
   .starter-template {
-    padding-top: 60px;
+    padding-top: 5em;
     font-size: 1.4em;
   }
 
@@ -50,7 +50,7 @@
 
   .wrapper-3 {
     display: grid;
-    grid-template-columns: 25% 40% 25%%;
+    grid-template-columns: 25% 40% 25%;
     padding: 2px;
   }
 
@@ -66,6 +66,17 @@
     display: inline-block;
   }
 
+  .flex-column form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .flex-column textarea {
+    font-size: 12px;
+    width: 45%;
+    margin-bottom: 5px;
+  }
+
   textarea {
     font-size: 12px;
     width: 75%;
@@ -73,6 +84,9 @@
 
   .btn {
     min-width: 100px;
+    width: fit-content;
+    width: -moz-fit-content;
+    width: -webkit-fit-content;
   }
 
   .single-internal-listing {
@@ -134,37 +148,34 @@
   .highlighted-border {
     border: 20px solid black;
   }
-
 </style>
+
 <body>
-
-<nav class="navbar navbar-inverse navbar-fixed-top">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-    </div>
-    <%= render "internal/shared/navbar" %>
-  </div>
-</nav>
-
-<div class="container">
-
-  <div class="starter-template">
-    <% flash.each do |type, message| %>
-      <div class="alert alert-<%= type %>">
-        <button class="close" data-dismiss="alert">X</button>
-        <%= message %>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
       </div>
-    <% end %>
-    <%= yield %>
-  </div>
+      <%= render "internal/shared/navbar" %>
+    </div>
+  </nav>
 
-</div>
+  <div class="container">
+    <div class="starter-template">
+      <% flash.each do |type, message| %>
+        <div class="alert alert-<%= type %>">
+          <button class="close" data-dismiss="alert">X</button>
+          <%= message %>
+        </div>
+      <% end %>
+      <%= yield %>
+    </div>
+  </div>
 
 </body>
 </html>

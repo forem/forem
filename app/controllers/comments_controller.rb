@@ -1,7 +1,7 @@
 class CommentsController < ApplicationController
   before_action :set_comment, only: %i[update destroy]
   before_action :set_cache_control_headers, only: [:index]
-  before_action :authenticate_user!, only: %i[preview create]
+  before_action :authenticate_user!, only: %i[preview create hide unhide]
   after_action :verify_authorized
 
   # GET /comments
@@ -47,11 +47,12 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    authorize Comment
     raise if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
 
     @comment = Comment.new(permitted_attributes(Comment))
     @comment.user_id = current_user.id
+
+    authorize @comment
 
     if @comment.save
       current_user.update(checked_code_of_conduct: true) if params[:checked_code_of_conduct].present? && !current_user.checked_code_of_conduct
@@ -150,6 +151,31 @@ class CommentsController < ApplicationController
     authorize @comment
     @notification_subscription = NotificationSubscription.find_or_initialize_by(user_id: @comment.user_id, notifiable_id: @comment.id, notifiable_type: "Comment", config: "all_comments")
     render :settings
+  end
+
+  def hide
+    @comment = Comment.find(params[:comment_id])
+    authorize @comment
+    @comment.hidden_by_commentable_user = true
+    @comment&.commentable&.update_column(:any_comments_hidden, true)
+    if @comment.save
+      render json: { hidden: "true" }, status: :ok
+    else
+      render json: { errors: @comment.errors.full_messages.join(", "), status: 422 }, status: :unprocessable_entity
+    end
+  end
+
+  def unhide
+    @comment = Comment.find(params[:comment_id])
+    authorize @comment
+    @comment.hidden_by_commentable_user = false
+    if @comment.save
+      @commentable = @comment&.commentable
+      @commentable&.update_column(:any_comments_hidden, @commentable.comments.pluck(:hidden_by_commentable_user).include?(true))
+      render json: { hidden: "false" }, status: :ok
+    else
+      render json: { errors: @comment.errors.full_messages.join(", "), status: 422 }, status: :unprocessable_entity
+    end
   end
 
   private

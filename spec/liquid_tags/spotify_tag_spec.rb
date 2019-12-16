@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe SpotifyTag, type: :liquid_template do
+RSpec.describe SpotifyTag, type: :liquid_tag do
   describe "#link" do
     let(:valid_uri) { "spotify:track:0K1UpnetfCKtcNu37rJmCg" }
     let(:valid_playlist_uri) { "spotify:playlist:37i9dQZF1E36t2Deh8frhL" }
@@ -22,7 +22,8 @@ RSpec.describe SpotifyTag, type: :liquid_template do
           frameborder="0"
           allowtransparency="true"
           allow="encrypted-media"
-          src="#{parsed_uri} ">
+          src="#{parsed_uri} "
+          loading="lazy">
         </iframe>
       HTML
     end

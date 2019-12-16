@@ -1,5 +1,4 @@
 import 'intersection-observer';
-import { sendKeys } from './actions';
 
 export function getCsrfToken() {
   const element = document.querySelector(`meta[name='csrf-token']`);
@@ -79,43 +78,4 @@ export function adjustTimestamp(timestamp) {
   };
   time = new Intl.DateTimeFormat('en-US', options).format(time);
   return time;
-}
-
-export function setupNotifications() {
-  navigator.serviceWorker.ready.then(serviceWorkerRegistration => {
-    serviceWorkerRegistration.pushManager
-      .getSubscription()
-      .then(subscription => {
-        if (subscription) {
-          return subscription;
-        }
-        return serviceWorkerRegistration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: window.vapidPublicKey,
-        });
-      })
-      .then(subscription => {
-        sendKeys(subscription.toJSON(), null, null);
-      });
-  });
-}
-
-export function getNotificationState() {
-  // Not yet ready
-  if (!window.location.href.includes('ask-for-notifications')) {
-    return 'dont-ask';
-  }
-
-  // Let's check if the browser supports notifications
-  if (!('Notification' in window)) {
-    return 'not-supported';
-  }
-
-  const { permission } = Notification;
-
-  if (permission === 'granted') {
-    setupNotifications();
-  }
-
-  return permission === 'default' ? 'waiting-permission' : permission;
 }
