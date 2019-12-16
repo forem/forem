@@ -7,6 +7,7 @@ class ShellController < ApplicationController
   end
 
   def bottom
+    @shell = true
     render partial: "bottom"
   end
 end

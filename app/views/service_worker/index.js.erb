@@ -121,7 +121,7 @@ self.addEventListener('fetch', event => {
 
     // Fetch new shell upon events that signify change in session.
     if (event.clientId === "" &&
-      (event.request.referrer.includes('/signout_confirm') || url.href.includes('?signin') || url.href.includes('/onboarding') || Math.random() > 0.9)) {
+      (event.request.referrer.includes('/signout_confirm') || url.href.includes('?signin') || url.href.includes('/onboarding'))) {
       caches.open(staticCacheName)
       .then(cache => cache.addAll([
         "/shell_top",

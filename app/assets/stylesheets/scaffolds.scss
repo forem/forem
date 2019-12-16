@@ -305,6 +305,10 @@ body.trusted-status-true .trusted-visible-block {
   z-index: -1;
 }
 
+.base-background-color {
+  @include themeable(background, theme-background, $lightest-gray);
+}
+
 @keyframes loading-fadein {
   from { opacity: 0; }
   to   { opacity: 0.6; }
