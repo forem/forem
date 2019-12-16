@@ -50,7 +50,7 @@ exports[`<Message /> should render and test snapshot 1`] = `
             asdf
           </a>
         </span>
-        <span />
+          
       </div>
       <div
         class="message__actions"
@@ -61,6 +61,13 @@ exports[`<Message /> should render and test snapshot 1`] = `
           tabIndex="0"
         >
           Delete
+        </span>
+        <span
+          onKeyUp={[Function]}
+          role="button"
+          tabIndex="0"
+        >
+          Edit
         </span>
       </div>
     </div>
