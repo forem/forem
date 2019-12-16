@@ -25,6 +25,11 @@
           <a href="/code-of-conduct">View code of conduct</a>
         </div>
       <% end %>
+      <% if comment.hidden_by_commentable_user %>
+        <div class="low-quality-comment-marker">
+          Comment hidden by post author - thread only visible in this permalink
+        </div>
+      <% end %>
 
       <div class="details <%= "low-quality-comment" if decorated_comment.low_quality %>">
         <a href="/<%= comment.user.username %>">
@@ -49,7 +54,7 @@
         <% end %>
         <%= render "comments/comment_date", decorated_comment: decorated_comment %>
         <button class="dropbtn" aria-label="Toggle dropdown menu">
-          <%= image_tag("three-dots.svg", class: "dropdown-icon", alt: "Dropdown menu icon") %>
+          <%= image_tag("three-dots.svg", class: "dropdown-icon", alt: "Dropdown menu") %>
         </button>
         <div class="dropdown">
           <div class="dropdown-content">
@@ -59,6 +64,12 @@
             <span class="comment-actions hidden" data-user-id="<%= comment.user_id %>" style="display: none;">
               <a href="<%= comment.path %>/settings" rel="nofollow" style="color:#0a0a0a;" data-no-instant>Settings</a>
             </span>
+            <% action = comment.hidden_by_commentable_user ? "Unhide" : "Hide" %>
+            <span class="comment-actions hidden" data-action="hide-button" data-commentable-user-id="<%= commentable.user_id %>" data-user-id="<%= comment.user_id %>" style="display: none; width: 100%;">
+              <button class="hide-comment" type="button" data-hide-type="<%= action.downcase %>" data-comment-id="<%= comment.id %>">
+                <%= action %>
+              </button>
+            </span>
             <span class="mod-actions hidden" style="display: none;">
               <a href="<%= comment.path %>/mod" rel="nofollow" style="color:#0a0a0a">Moderate</a>
             </span>
@@ -66,7 +77,6 @@
           </div>
         </div>
       </div>
-
       <div class="body <%= "low-quality-comment" if decorated_comment.low_quality %>">
         <%= comment.processed_html.html_safe %>
         <button class="reaction-button" id="button-for-comment-<%= comment.id %>" data-comment-id="<%= comment.id %>" title="heart">

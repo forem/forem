@@ -22,12 +22,8 @@ Rails.application.configure do
   # Enable/disable caching. By default caching is disabled.
   if Rails.root.join("tmp", "caching-dev.txt").exist?
     config.action_controller.perform_caching = true
-    REDIS_DEFAULT_EXPIRATION = 24.hours.to_i.freeze
 
-    config.cache_store = :dual_rails_store, {
-      default_store: [ :memory_store ],
-      redis: [ :redis_store, url: ENV["REDIS_URL"], expires_in: REDIS_DEFAULT_EXPIRATION]
-    }
+    config.cache_store = :memory_store
     config.public_file_server.headers = {
       "Cache-Control" => "public, max-age=#{2.days.to_i}"
     }

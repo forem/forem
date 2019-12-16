@@ -178,3 +178,23 @@ export function sendChannelInviteAction(id, action, successCb, failureCb) {
     .then(successCb)
     .catch(failureCb);
 }
+
+export function deleteMessage(messageId, successCb, failureCb) {
+  fetch(`/messages/${messageId}`, {
+    method: 'DELETE',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      message: {
+        user_id: window.currentUser.id,
+      },
+    }),
+    credentials: 'same-origin',
+  })
+    .then(response => response.json())
+    .then(successCb)
+    .catch(failureCb);
+}

@@ -1,4 +1,5 @@
 json.messages @chat_messages.reverse do |message|
+  json.id message.id
   json.user_id message.user_id
   json.username message.user.username
   json.profile_image_url ProfileImage.new(message.user).get(90)
