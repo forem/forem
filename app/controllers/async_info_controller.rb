@@ -32,7 +32,9 @@ class AsyncInfoController < ApplicationController
 
   def shell_version
     set_surrogate_key_header "shell-version-endpoint"
-    render json: { version: 1 }.to_json
+    # shell_version will change on every deploy. *Technically* could be only on changes to assets and shell, but this is more fool-proof.
+    shell_version = ApplicationConfig["HEROKU_SLUG_COMMIT"]
+    render json: { version: Rails.env.production? ? shell_version : rand(1000) }.to_json
   end
 
   def user_data
