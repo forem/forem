@@ -1,6 +1,7 @@
 class AsyncInfoController < ApplicationController
   include Devise::Controllers::Rememberable
   # No pundit policy. All actions are unrestricted.
+  before_action :set_cache_control_headers, only: %i[shell_version]
 
   def base_data
     flash.discard(:notice)
@@ -27,6 +28,13 @@ class AsyncInfoController < ApplicationController
         }
       end
     end
+  end
+
+  def shell_version
+    set_surrogate_key_header "shell-version-endpoint"
+    # shell_version will change on every deploy. *Technically* could be only on changes to assets and shell, but this is more fool-proof.
+    shell_version = ApplicationConfig["HEROKU_SLUG_COMMIT"]
+    render json: { version: Rails.env.production? ? shell_version : rand(1000) }.to_json
   end
 
   def user_data

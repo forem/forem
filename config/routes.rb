@@ -235,7 +235,8 @@ Rails.application.routes.draw do
   get "/social_previews/comment/:id" => "social_previews#comment", :as => :comment_social_preview
 
   get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
-
+  get "/async_info/shell_version", controller: "async_info#shell_version", defaults: { format: :json }
+  
   get "/future", to: redirect("devteam/the-future-of-dev-160n")
 
   # Settings
@@ -337,6 +338,10 @@ Rails.application.routes.draw do
   # serviceworkers
   get "/serviceworker" => "service_worker#index"
   get "/manifest" => "service_worker#manifest"
+
+  get "/shell_top" => "shell#top"
+  get "/shell_bottom" => "shell#bottom"
+
 
   get "/new" => "articles#new"
   get "/new/:template" => "articles#new"
