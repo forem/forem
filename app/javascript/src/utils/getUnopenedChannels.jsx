@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import setupPusher from './pusher';
 
 class UnopenedChannelNotice extends Component {
-  static defaultProps = {
-    unopenedChannels: undefined,
-    pusherKey: undefined,
-  };
-
   propTypes = {
     unopenedChannels: PropTypes.Object,
     pusherKey: PropTypes.Object,
+  };
+
+  static defaultProps = {
+    unopenedChannels: undefined,
+    pusherKey: undefined,
   };
 
   constructor(props) {
@@ -28,6 +28,8 @@ class UnopenedChannelNotice extends Component {
     setupPusher(pusherKey, {
       channelId: `private-message-notifications-${window.currentUser.id}`,
       messageCreated: this.receiveNewMessage,
+      messageDeleted: this.removeMessage,
+      messageEdited: this.updateMessage,
     });
     const component = this;
     document.getElementById('connect-link').onclick = () => {
@@ -36,6 +38,10 @@ class UnopenedChannelNotice extends Component {
       component.setState({ visible: false });
     };
   }
+
+  removeMessage = () => {};
+
+  updateMessage = () => {};
 
   receiveNewMessage = e => {
     if (window.location.pathname.startsWith('/connect')) {
@@ -118,7 +124,7 @@ class UnopenedChannelNotice extends Component {
             padding: '19px 5px 14px',
           }}
         >
-          New Message from
+          New Message from 
           {' '}
           {channels}
         </a>

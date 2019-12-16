@@ -10,6 +10,8 @@ import {
   getContent,
   getChannelInvites,
   sendChannelInviteAction,
+  deleteMessage,
+  editMessage,
 } from './actions';
 import { hideMessages, scrollToBottom, setupObserver } from './util';
 import Alert from './alert';
@@ -61,8 +63,12 @@ export default class Chat extends Component {
       soundOn: true,
       videoOn: true,
       messageOffset: 0,
+      showDeleteModal: false,
+      messageDeleteId: null,
       allMessagesLoaded: false,
       currentMessageLocation: 0,
+      startEditing: false,
+      activeEditMessage: {},
     };
   }
 
@@ -166,6 +172,8 @@ export default class Chat extends Component {
       setupPusher(pusherKey, {
         channelId: channelName,
         messageCreated: this.receiveNewMessage,
+        messageDeleted: this.removeMessage,
+        messageEdited: this.updateMessage,
         channelCleared: this.clearChannel,
         redactUserMessages: this.redactUserMessages,
         channelError: this.channelError,
@@ -302,10 +310,46 @@ export default class Chat extends Component {
     }));
   };
 
+  removeMessage = message => {
+    const { activeChannelId } = this.state;
+    this.setState(prevState => ({
+      messages: {
+        [activeChannelId]: [
+          ...prevState.messages[activeChannelId].filter(
+            oldmessage => oldmessage.id !== message.id,
+          ),
+        ],
+      },
+    }));
+  };
+
+  updateMessage = message => {
+    const { activeChannelId } = this.state;
+
+    this.setState(({ messages }) => {
+      const newMessages = messages;
+      const foundIndex = messages[activeChannelId].findIndex(
+        oldMessage => oldMessage.id === message.id,
+      );
+      newMessages[activeChannelId][foundIndex] = message;
+      return { messages: newMessages };
+    });
+  };
+
   receiveNewMessage = message => {
     const { messages, activeChannelId, scrolled, chatChannels } = this.state;
     const receivedChatChannelId = message.chat_channel_id;
     let newMessages = [];
+
+    if (
+      message.temp_id &&
+      messages[activeChannelId].findIndex(
+        oldmessage => oldmessage.temp_id === message.temp_id,
+      ) > -1
+    ) {
+      return;
+    }
+
     if (messages[receivedChatChannelId]) {
       newMessages = messages[receivedChatChannelId].slice();
       newMessages.push(message);
@@ -422,6 +466,35 @@ export default class Chat extends Component {
     }
   };
 
+  handleKeyDownEdit = e => {
+    const enterPressed = e.keyCode === 13;
+    const targetValue = e.target.value;
+    const messageIsEmpty = targetValue.length === 0;
+    const shiftPressed = e.shiftKey;
+
+    if (enterPressed) {
+      if (messageIsEmpty) {
+        e.preventDefault();
+      } else if (!messageIsEmpty && !shiftPressed) {
+        e.preventDefault();
+        this.handleMessageSubmitEdit(e.target.value);
+        e.target.value = '';
+      }
+    }
+  };
+
+  handleMessageSubmitEdit = message => {
+    const { activeChannelId, activeEditMessage } = this.state;
+    editMessage(
+      activeChannelId,
+      activeEditMessage.id,
+      message,
+      this.handleSuccess,
+      this.handleFailure,
+    );
+    this.handleEditMessageClose();
+  };
+
   handleMessageSubmit = message => {
     const { activeChannelId } = this.state;
     // should check if user has the privilege
@@ -524,8 +597,44 @@ export default class Chat extends Component {
     }
   };
 
+  handleSubmitOnClickEdit = e => {
+    e.preventDefault();
+    const message = document.getElementById('messageform').value;
+    if (message.length > 0) {
+      this.handleMessageSubmitEdit(message);
+      document.getElementById('messageform').value = '';
+    }
+  };
+
+  triggerDeleteMessage = e => {
+    this.setState({ messageDeleteId: e.target.dataset.content });
+    this.setState({ showDeleteModal: true });
+  };
+
+  triggerEditMessage = e => {
+    const { messages, activeChannelId } = this.state;
+    this.setState({
+      activeEditMessage: messages[activeChannelId].filter(
+        message => message.id === parseInt(e.target.dataset.content, 10),
+      )[0],
+    });
+    this.setState({ startEditing: true });
+  };
+
   handleSuccess = response => {
-    if (response.status === 'error') {
+    const { activeChannelId } = this.state;
+    if (response.status === 'success') {
+      if (response.message.temp_id) {
+        this.setState(({ messages }) => {
+          const newMessages = messages;
+          const foundIndex = messages[activeChannelId].findIndex(
+            message => message.temp_id === response.message.temp_id,
+          );
+          newMessages[activeChannelId][foundIndex].id = response.message.id;
+          return { messages: newMessages };
+        });
+      }
+    } else if (response.status === 'error') {
       this.receiveNewMessage(response.message);
     }
   };
@@ -717,14 +826,19 @@ export default class Chat extends Component {
     }
     return messages[activeChannelId].map(message => (
       <Message
+        currentUserId={window.currentUser.id}
+        id={message.id}
         user={message.username}
         userID={message.user_id}
         profileImageUrl={message.profile_image_url}
         message={message.message}
         timestamp={showTimestamp ? message.timestamp : null}
+        editedAt={message.edited_at}
         color={message.color}
         type={message.type}
         onContentTrigger={this.triggerActiveContent}
+        onDeleteMessageTrigger={this.triggerDeleteMessage}
+        onEditMessageTrigger={this.triggerEditMessage}
       />
     ));
   };
@@ -951,6 +1065,7 @@ export default class Chat extends Component {
               Scroll to Bottom
             </div>
           </div>
+          {this.renderDeleteModal()}
           <div className="activechatchannel__alerts">
             <Alert showAlert={state.showAlert} />
           </div>
@@ -958,7 +1073,13 @@ export default class Chat extends Component {
             <Compose
               handleSubmitOnClick={this.handleSubmitOnClick}
               handleKeyDown={this.handleKeyDown}
+              handleSubmitOnClickEdit={this.handleSubmitOnClickEdit}
+              handleKeyDownEdit={this.handleKeyDownEdit}
               activeChannelId={state.activeChannelId}
+              startEditing={state.startEditing}
+              editMessageHtml={state.activeEditMessage.message}
+              editMessageMarkdown={state.activeEditMessage.markdown}
+              handleEditMessageClose={this.handleEditMessageClose}
             />
           </div>
         </div>
@@ -972,6 +1093,68 @@ export default class Chat extends Component {
         />
       </div>
     );
+  };
+
+  handleEditMessageClose = () => {
+    this.setState({
+      startEditing: false,
+      activeEditMessage: { message: '', markdown: '' },
+    });
+  };
+
+  renderDeleteModal = () => {
+    const { showDeleteModal } = this.state;
+    return (
+      <div
+        id="message"
+        className={
+          showDeleteModal
+            ? 'message__delete__modal'
+            : 'message__delete__modal message__delete__modal__hide'
+        }
+      >
+        <div className="modal__content">
+          <h3> Are you sure, you want to delete this message ?</h3>
+
+          <div className="delete__action__buttons">
+            <div
+              role="button"
+              className="message__cancel__button"
+              onClick={this.handleCloseDeleteModal}
+              tabIndex="0"
+              onKeyUp={e => {
+                if (e.keyCode === 13) this.handleCloseDeleteModal();
+              }}
+            >
+              {' '}
+              Cancel
+            </div>
+            <div
+              role="button"
+              className="message__delete__button"
+              onClick={this.handleMessageDelete}
+              tabIndex="0"
+              onKeyUp={e => {
+                if (e.keyCode === 13) this.handleMessageDelete();
+              }}
+            >
+              {' '}
+              Delete
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  handleCloseDeleteModal = () => {
+    this.setState({ showDeleteModal: false, messageDeleteId: null });
+  };
+
+  handleMessageDelete = () => {
+    const { messageDeleteId } = this.state;
+    deleteMessage(messageDeleteId);
+    this.setState({ showDeleteModal: false });
   };
 
   renderChannelHeaderInner = () => {

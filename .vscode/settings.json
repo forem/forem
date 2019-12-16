@@ -7,5 +7,21 @@
     }
   },
   "ruby.format": "rubocop",
-  "ruby.intellisense": "rubyLocate"
+  "ruby.intellisense": "rubyLocate",
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#ab307e",
+    "activityBar.activeBorder": "#25320e",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#25320e",
+    "activityBarBadge.foreground": "#e7e7e7",
+    "titleBar.activeBackground": "#832561",
+    "titleBar.inactiveBackground": "#83256199",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveForeground": "#e7e7e799",
+    "statusBar.background": "#832561",
+    "statusBarItem.hoverBackground": "#ab307e",
+    "statusBar.foreground": "#e7e7e7"
+  },
+  "peacock.color": "#832561"
 }
