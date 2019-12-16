@@ -1,3 +1,5 @@
+/* eslint camelcase: "off" */
+
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
@@ -115,8 +117,10 @@ class EmailTermsConditionsForm extends Component {
               BACK
             </button>
             <div
+              /* eslint-disable react/no-danger */
               dangerouslySetInnerHTML={{ __html: textShowing }}
               style={{ height: '360px', overflow: 'scroll' }}
+              /* eslint-enable react/no-danger */
             />
           </div>
         </div>
@@ -131,8 +135,8 @@ class EmailTermsConditionsForm extends Component {
             <label htmlFor="checked_code_of_conduct">
               <input
                 type="checkbox"
-                name="checked_code_of_conduct"
                 id="checked_code_of_conduct"
+                name="checked_code_of_conduct"
                 checked={checked_code_of_conduct}
                 onChange={this.handleChange}
               />
