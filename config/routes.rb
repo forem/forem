@@ -69,6 +69,7 @@ Rails.application.routes.draw do
       end
     end
     resources :organization_memberships, only: %i[update destroy create]
+    resources :organizations, only: %i[index show]
     resources :welcome, only: %i[index create]
     resources :growth, only: %i[index]
     resources :tools, only: %i[index create] do
@@ -236,7 +237,7 @@ Rails.application.routes.draw do
 
   get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
   get "/async_info/shell_version", controller: "async_info#shell_version", defaults: { format: :json }
-  
+
   get "/future", to: redirect("devteam/the-future-of-dev-160n")
 
   # Settings
@@ -341,7 +342,6 @@ Rails.application.routes.draw do
 
   get "/shell_top" => "shell#top"
   get "/shell_bottom" => "shell#bottom"
-
 
   get "/new" => "articles#new"
   get "/new/:template" => "articles#new"
