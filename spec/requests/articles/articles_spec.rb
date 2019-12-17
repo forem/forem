@@ -58,7 +58,7 @@ RSpec.describe "Articles", type: :request do
 
     context "when format is invalid" do
       it "returns a 404 response" do
-        expect { get "/feed.zip" }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { get "/feed.zip" }.to raise_error(ActionController::RoutingError)
       end
     end
   end

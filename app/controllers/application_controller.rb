@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   include ValidRequest
   include Pundit
 
-  rescue_from ActionView::MissingTemplate, with: :not_found
+  rescue_from ActionView::MissingTemplate, with: :routing_error
 
   def require_http_auth
     authenticate_or_request_with_http_basic do |username, password|
@@ -15,6 +15,10 @@ class ApplicationController < ActionController::Base
 
   def not_found
     raise ActiveRecord::RecordNotFound, "Not Found"
+  end
+
+  def routing_error
+    raise ActionController::RoutingError, "Routing Error"
   end
 
   def not_authorized
