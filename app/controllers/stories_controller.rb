@@ -44,7 +44,6 @@ class StoriesController < ApplicationController
       Organization.find_by("old_slug = ? OR old_old_slug = ?", potential_username, potential_username)
     if user_or_org.present?
       redirect_to user_or_org.path
-      return
     else
       not_found
     end
