@@ -81,6 +81,10 @@
 
   self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
+    if (/iPhone|CriOS|iPad/i.test(navigator.userAgent) && event.request.referrer.includes('t.co')) {
+       // Twitter on iOS seems to cause problems
+       return;
+    }
     if (url.origin === location.origin) {
       // 
       if (event.clientId === "" && // Not fetched via AJAX after page load.
@@ -96,6 +100,7 @@
         !url.href.includes('/shell_') && // Don't fetch for shell.
         !url.href.includes('/admin') && // Don't fetch for administrate dashboard.
         !url.href.includes('/internal') && // Don't fetch for internal dashboard.
+        !url.href.includes('/future') && // Skip for /future.
         caches.match('/shell_top') && // Ensure shell_top is in the cache.
         caches.match('/shell_bottom')) { // Ensure shell_bottom is in the cache.
         event.respondWith(createPageStream(event.request)); // Respond with the stream
@@ -106,7 +111,7 @@
           .then(cache => cache.addAll([
             "/async_info/shell_version",
           ]))  
-          return
+          return;
         }
         fetch('/async_info/shell_version').then(response => response.json()).then(json => {
           caches.match('/async_info/shell_version').then(cachedResponse => cachedResponse.json()).then(cacheJson => {
