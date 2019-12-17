@@ -6,7 +6,7 @@ class Internal::OrganizationsController < Internal::ApplicationController
 
     return if params[:search].blank?
 
-    @organizations = @organization.where(
+    @organizations = @organizations.where(
       "name ILIKE ?",
       "%#{params[:search].strip}%",
     )
