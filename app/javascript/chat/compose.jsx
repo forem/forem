@@ -16,14 +16,12 @@ export default class Chat extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      startEditing: false,
       editMessageMarkdown: null,
     };
   }
 
   componentWillReceiveProps(props) {
     this.setState({
-      startEditing: props.startEditing,
       editMessageMarkdown: props.editMessageMarkdown,
       editMessageHtml: props.editMessageHtml,
     });
@@ -79,8 +77,7 @@ export default class Chat extends Component {
   };
 
   render() {
-    const { handleSubmitOnClick, handleKeyDown } = this.props;
-    const { startEditing } = this.state;
+    const { handleSubmitOnClick, handleKeyDown, startEditing } = this.props;
     return (
       <div>
         {!startEditing ? (
