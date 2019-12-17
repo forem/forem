@@ -92,6 +92,9 @@ export default class Chat extends Component {
       channel => `open-channel-${channel.chat_channel_id}`,
     );
     setupObserver(this.observerCallback);
+    if (!window.currentUser) {
+      window.currentUser = JSON.parse(document.body.dataset.user);
+    }
     this.subscribePusher(
       `private-message-notifications-${currentUserId}`,
     );
@@ -494,13 +497,12 @@ export default class Chat extends Component {
 
   handleMessageSubmitEdit = message => {
     const { activeChannelId, activeEditMessage } = this.state;
-    editMessage(
+    const editedMessage = {
       activeChannelId,
-      activeEditMessage.id,
+      id: activeEditMessage.id,
       message,
-      this.handleSuccess,
-      this.handleFailure,
-    );
+    };
+    editMessage(editedMessage, this.handleSuccess, this.handleFailure);
     this.handleEditMessageClose();
   };
 

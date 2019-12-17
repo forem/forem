@@ -31,14 +31,8 @@ export function sendMessage(activeChannelId, message, successCb, failureCb) {
     .catch(failureCb);
 }
 
-export function editMessage(
-  activeChannelId,
-  messageId,
-  message,
-  successCb,
-  failureCb,
-) {
-  fetch(`/messages/${messageId}`, {
+export function editMessage(editedMessage, successCb, failureCb) {
+  fetch(`/messages/${editedMessage.id}`, {
     method: 'PATCH',
     headers: {
       Accept: 'application/json',
@@ -47,9 +41,9 @@ export function editMessage(
     },
     body: JSON.stringify({
       message: {
-        message_markdown: message,
+        message_markdown: editedMessage.message,
         user_id: window.currentUser.id,
-        chat_channel_id: activeChannelId,
+        chat_channel_id: editedMessage.activeChannelId,
       },
     }),
     credentials: 'same-origin',

@@ -80,7 +80,7 @@ const Message = ({
               ' '
             )}
 
-            {timestamp ? (
+            {timestamp && !editedAt ? (
               <span className="chatmessage__timestamp">
                 {`${adjustTimestamp(timestamp)}`}
               </span>
