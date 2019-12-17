@@ -2,7 +2,7 @@ class Internal::OrganizationsController < Internal::ApplicationController
   layout "internal"
 
   def index
-    @organizations = Organization.order("name DESC")
+    @organizations = Organization.order("name DESC").page(params[:page]).per(50)
 
     return if params[:search].blank?
 

@@ -13,6 +13,8 @@
   <div>URL</div>
 </div>
 
+<%= paginate @organizations %>
+
 <% @organizations.each do |organization| %>
   <div class="wrapper" style="border-bottom: 1px solid grey; padding: 10px;">
     <div class="grid-item"><a href="/internal/organizations/<%= organization.id %>" target="_blank">@<%= organization.name %></a></div>
@@ -22,3 +24,5 @@
     <div class="grid-item"><%= organization.url || "N/A" %></div>
   </div>
 <% end %>
+
+<%= paginate @organizations %>
