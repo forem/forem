@@ -107,7 +107,7 @@ export function search(query, { page, tags, statusView }) {
       query,
       page: newPage,
       items: result.hits,
-      totalCount: result.nbHits,
+      totalCount: allItems,
       // show the button if the number of items is lower than the number
       // of available results
       showLoadMoreButton: allItems.length < result.nbHits,
