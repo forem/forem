@@ -81,7 +81,6 @@ export default class Chat extends Component {
   render() {
     const { handleSubmitOnClick, handleKeyDown } = this.props;
     const { startEditing } = this.state;
-
     return (
       <div>
         {!startEditing ? (
