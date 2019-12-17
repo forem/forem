@@ -48,9 +48,6 @@
       <meta name="application-name" content="dev.to">
       <meta property="fb:pages" content="568966383279687" />
       <meta name="theme-color" content="#000000" />
-      <% if view_class.include? "users-signout_confirm" %>
-        <%= csrf_meta_tags %>
-      <% end %>
       <link rel="manifest" href="/manifest.json" />
       <link rel="search" href="https://dev.to/search.xml" type="application/opensearchdescription+xml" title="<%= community_qualified_name %>" />
     <% end %>

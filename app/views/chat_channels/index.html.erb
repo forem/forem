@@ -2,10 +2,8 @@
 <%= content_for :page_meta do %>
   <link rel="canonical" href="https://dev.to/connect" />
   <meta name="description" content="DEV Connect">
-  <%= csrf_meta_tags %>
 <% end %>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/codemirror.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/theme/material.min.css">
+<%= csrf_meta_tags %>
 
 <% if user_signed_in? %>
   <%= javascript_pack_tag "Chat", defer: true %>
@@ -19,7 +17,7 @@
       data-algolia-index="<%= "SecuredChatChannelMembership_#{Rails.env}" %>"
       data-github-token="<%= @github_token %>"
       data-chat-channels="<%= [] %>"
-      data-chat-options="<%= { showChannelsList: true, showTimestamp: true, activeChannelId: @active_channel&.id }.to_json %>">
+      data-chat-options="<%= { showChannelsList: true, showTimestamp: true, activeChannelId: @active_channel&.id, currentUserId: current_user.id }.to_json %>">
       <div class="chat" id="chat_placeholder">
         <div class="chat__channels chat__channels--expanded chat__channels--placeholder">
           <button class="chat__channelstogglebutt" onClick={this.toggleExpand}>&lt;</button>

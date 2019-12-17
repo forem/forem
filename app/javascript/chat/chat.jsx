@@ -49,6 +49,7 @@ export default class Chat extends Component {
       activeChannel: null,
       showChannelsList: chatOptions.showChannelsList,
       showTimestamp: chatOptions.showTimestamp,
+      currentUserId: chatOptions.currentUserId,
       notificationsPermission: null,
       activeContent: {},
       expanded: window.innerWidth > 600,
@@ -77,8 +78,8 @@ export default class Chat extends Component {
       channelTypeFilter,
       isMobileDevice,
       channelPaginationNum,
+      currentUserId
     } = this.state;
-
     this.setupChannels(chatChannels);
     const channelsForPusherSub = chatChannels.filter(
       this.channelTypeFilter('open'),
@@ -88,11 +89,8 @@ export default class Chat extends Component {
       channel => `open-channel-${channel.chat_channel_id}`,
     );
     setupObserver(this.observerCallback);
-    if (!window.currentUser) {
-      window.currentUser = JSON.parse(document.body.dataset.user)
-    }
     this.subscribePusher(
-      `private-message-notifications-${window.currentUser.id}`,
+      `private-message-notifications-${currentUserId}`,
     );
     if (activeChannelId) {
       sendOpen(activeChannelId, this.handleChannelOpenSuccess, null);
@@ -326,7 +324,6 @@ export default class Chat extends Component {
     const { messages, activeChannelId, scrolled, chatChannels } = this.state;
     const receivedChatChannelId = message.chat_channel_id;
     let newMessages = [];
-
     if (
       message.temp_id &&
       messages[activeChannelId].findIndex(
@@ -711,6 +708,7 @@ export default class Chat extends Component {
       messages,
       showTimestamp,
       activeChannel,
+      currentUserId
     } = this.state;
     if (!messages[activeChannelId]) {
       return '';
@@ -764,7 +762,7 @@ export default class Chat extends Component {
     }
     return messages[activeChannelId].map(message => (
       <Message
-        currentUserId={window.currentUser.id}
+        currentUserId={currentUserId}
         id={message.id}
         user={message.username}
         userID={message.user_id}
@@ -969,6 +967,7 @@ export default class Chat extends Component {
 
   renderActiveChatChannel = (channelHeader, incomingCall) => {
     const { state, props } = this;
+
     return (
       <div className="activechatchannel">
         <div className="activechatchannel__conversation">
