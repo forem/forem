@@ -34,6 +34,7 @@ class Reaction < ApplicationRecord
       reactable_tags
     end
     attributesForFaceting ["filterOnly(viewable_by)", "filterOnly(status)"]
+    customRanking ["desc(id)"]
   end
 
   def index_to_algolia
