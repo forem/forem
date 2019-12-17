@@ -1,6 +1,7 @@
 class AsyncInfoController < ApplicationController
   include Devise::Controllers::Rememberable
   # No pundit policy. All actions are unrestricted.
+  before_action :set_cache_control_headers, only: %i[shell_version]
 
   def base_data
     flash.discard(:notice)
@@ -11,7 +12,7 @@ class AsyncInfoController < ApplicationController
       }
       return
     end
-    if cookies[:remember_user_token].blank?
+    if remember_user_token.blank?
       current_user.remember_me = true
       current_user.remember_me!
       remember_me(current_user)
@@ -29,8 +30,15 @@ class AsyncInfoController < ApplicationController
     end
   end
 
+  def shell_version
+    set_surrogate_key_header "shell-version-endpoint"
+    # shell_version will change on every deploy. *Technically* could be only on changes to assets and shell, but this is more fool-proof.
+    shell_version = ApplicationConfig["HEROKU_SLUG_COMMIT"]
+    render json: { version: Rails.env.production? ? shell_version : rand(1000) }.to_json
+  end
+
   def user_data
-    RedisRailsCache.fetch(user_cache_key, expires_in: 15.minutes) do
+    Rails.cache.fetch(user_cache_key, expires_in: 15.minutes) do
       {
         id: @user.id,
         name: @user.name,
@@ -71,7 +79,11 @@ class AsyncInfoController < ApplicationController
     #{current_user&.articles_count}__
     #{current_user&.pro?}__
     #{current_user&.blocking_others_count}__
-    #{cookies[:remember_user_token]}"
+    #{remember_user_token}"
+  end
+
+  def remember_user_token
+    cookies[:remember_user_token]
   end
 
   private

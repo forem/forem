@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe TagAdjustmentUpdateService, type: :service do
   let(:user) { create(:user) }
-  let(:article) { create(:article) }
+  let(:article) { create(:article, tags: tag.name) }
   let(:tag) { create(:tag) }
 
   def create_tag_adjustment

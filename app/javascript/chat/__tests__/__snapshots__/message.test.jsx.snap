@@ -50,7 +50,7 @@ exports[`<Message /> should render and test snapshot 1`] = `
             asdf
           </a>
         </span>
-          
+         
       </div>
       <div
         class="message__actions"

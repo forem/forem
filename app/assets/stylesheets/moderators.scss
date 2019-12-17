@@ -1,3 +1,196 @@
+@import 'variables';
+@import 'mixins';
+
+.mod-container {
+  border-radius: 12px;
+  padding: 30px 0px;
+  p {
+    width: 98%;
+    max-width: 720px;
+    margin: 1.3em auto;
+    font-size: 0.9em;
+  }
+
+  hr {
+    margin: 30px auto;
+    width: 80%;
+    max-width: 400px;
+    opacity: 0.3;
+  }
+
+  #error_explanation {
+    margin: 10px auto 5px;
+    box-sizing: border-box;
+  }
+  @media screen and ( min-width:880px ){
+    margin: 90px auto;
+  }
+  .reaction-button {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-color: white;
+    margin: 30px 30px;
+    border-radius: 200px;
+    border: 0px;
+    padding: 12px 12px;
+    &:active {
+      border: 0px;
+    }
+  }
+  
+  
+  .reaction-button img {
+    position: absolute;
+    top: 5px;
+    width: 70px;
+    left: 5px;
+  }
+  
+  .reaction-button .reacted-emoji {
+    display: none;
+  }
+  
+  .reaction-button.reacted .reacted-emoji {
+    display: block;
+  }
+  
+  .tag-mod-form {
+    border-top: 1px solid #dddddd;
+    margin: 42px auto;
+  }
+  
+  .tag-mod-form ul {
+    text-align: left;
+    font-size: 15px;
+  }
+  
+  .tag-mod-form form {
+    width: 500px;
+    margin: auto;
+    max-width: 90%;
+  }
+  
+  .tag-mod-form form input {
+    width: 100%;
+    padding: 5px;
+    font-size: 20px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+    box-sizing: border-box;
+    @include themeable(
+      border, 
+      theme-border, 
+      1px solid $light-medium-gray
+    );
+  }
+  
+  .tag-mod-form form input[type="submit"] {
+    background: $dark-purple;
+    color: white;
+    font-weight: bold;
+    padding: 16px 0px;
+    margin: auto;
+    display: block;
+    border-radius: 3px;
+    font-size: 1.3em;
+    font-family: $helvetica-condensed;
+  }
+  
+  #undo {
+    width: 1.5rem;
+    font-size: 1.1em;
+    display: inline-block;
+    color: $red;
+    background: transparent;
+    border: 0px;
+  }
+  
+  .tag-mod-form form textarea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 5px;
+    font-size: 17px;
+    height: 100px;
+    box-sizing: boder-box;
+    border-radius: 3px;
+    @include themeable(
+      border, 
+      theme-border, 
+      1px solid $light-medium-gray
+    );
+  }
+  
+  .level-rating-button {
+    border-radius: 8px;
+    font-size: 1.1em;
+    padding: 3px;
+    width: 42px;
+    border: 2px solid black;
+    font-weight: bold;
+  }
+  
+  .level-rating-button.selected {
+    background: #9bebff;
+  }
+  
+  input.undo {
+    background: $red;
+  }
+  
+  .tag-mod-addition-radio {
+    padding: 5px 20px;
+    border-radius: 3px;
+    @include themeable(
+      border, 
+      theme-border, 
+      1px solid $light-medium-gray
+    );
+    display: inline-block;
+    margin: 30px auto 10px;
+    min-width: 205px;
+    box-sizing: boder-box;
+    position: relative;
+  }
+  
+  .tag-mod-form input[type=radio] {
+    position: absolute;
+    cursor: pointer;
+    top: 7px;
+  }
+  
+  .tag-mod-form input[type=radio] + label {
+    display: inline-block;
+    cursor: pointer;
+    font-weight: bold;
+    padding-left: 25px;
+    padding-right: 25px;
+    font-size: 22px;
+    margin: auto;
+    margin-left: 4px;
+  }
+  
+  .tag-mod-form input[type=radio]:checked + label{
+    @include themeable(
+      background, 
+      theme-container-accent-background, 
+      $light-green
+    );
+    border-radius: 3px;
+  }
+  
+  .tag-mod-form select {
+    display: block;
+    font-size: 20px;
+    padding: 12px;
+    font-weight: bold;
+    margin: auto;
+    border: solid 2px;
+    margin: 5px auto 15px;
+  }  
+}
+
 .mod-link {
   display: inline-block; 
   font-size: 1.3em; 

@@ -1,0 +1,36 @@
+<h1>Badges</h1>
+
+<style>
+  .panel-body div, .panel-body input[type=submit] {
+    margin-top: 10px;
+  }
+
+  .panel-footer {
+    color: red;
+  }
+</style>
+
+<div class="panel panel-default">
+  <div class="panel-heading">Award Badges</div>
+  <div class="panel-body">
+    <%= form_with(url: internal_badges_award_badges_path, local: true) do |f| %>
+      <div>
+        <%= f.label :badge, "Badge" %>
+        <br>
+        <%= f.select("badge", @badges.map { |b| [b.title, b.slug] }) %>
+      </div>
+      <div>
+        <%= f.label :usernames, "Usernames (Comma Delimited)*" %>
+        <br>
+        <%= f.text_area :usernames, required: true, size: "40x20" %>
+      </div>
+      <div>
+        <%= f.label :message_markdown, "Message (Supports Markdown)" %>
+        <br>
+        <%= f.text_area :message_markdown, size: "40x20" %>
+      </div>
+      <%= f.submit "Award Badges" %>
+    <% end %>
+  </div>
+  <div class="panel-footer"><strong>Warning: This task will fail silently when supplied with incorrect usernames!<strong></div>
+</div>

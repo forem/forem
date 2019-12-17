@@ -5,6 +5,7 @@ items:
   - getting-started
   - backend
   - frontend
+  - internal
   - design
   - deployment.md
   - tests
@@ -17,8 +18,8 @@ items:
 
 # Welcome to DEV's developer documentation
 
-On this site you'll find instructions to setup a [local instance of DEV][installation],
-documentation on the [architecture of DEV][architecture],
+On this site you'll find instructions to setup a [local instance of
+DEV][installation], documentation on the [architecture of DEV][architecture],
 [how to contribute][contributing], and many other useful documents.
 
 This documentation site is the product of a number of volunteer contributors

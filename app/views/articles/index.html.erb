@@ -25,7 +25,6 @@
 <% end %>
 <%= javascript_pack_tag "homePage", defer: true %>
 
-<% params.delete(:i) %>
 <% cache("main-stories-index-#{params}-#{user_signed_in?}", expires_in: 3.minutes) do %>
   <div class="home" id="index-container"
       data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"

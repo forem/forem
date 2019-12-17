@@ -79,7 +79,6 @@ const Message = ({
             ) : (
               ' '
             )}
-
             {timestamp ? (
               <span className="chatmessage__timestamp">
                 {`${adjustTimestamp(timestamp)}`}

@@ -91,6 +91,9 @@ export default class Chat extends Component {
       channel => `open-channel-${channel.chat_channel_id}`,
     );
     setupObserver(this.observerCallback);
+    if (!window.currentUser) {
+      window.currentUser = JSON.parse(document.body.dataset.user)
+    }
     this.subscribePusher(
       `private-message-notifications-${window.currentUser.id}`,
     );
@@ -335,7 +338,6 @@ export default class Chat extends Component {
       return { messages: newMessages };
     });
   };
-
   receiveNewMessage = message => {
     const { messages, activeChannelId, scrolled, chatChannels } = this.state;
     const receivedChatChannelId = message.chat_channel_id;
@@ -1101,7 +1103,7 @@ export default class Chat extends Component {
       activeEditMessage: { message: '', markdown: '' },
     });
   };
-
+  
   renderDeleteModal = () => {
     const { showDeleteModal } = this.state;
     return (

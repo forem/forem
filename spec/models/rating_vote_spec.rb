@@ -2,9 +2,8 @@ require "rails_helper"
 
 RSpec.describe RatingVote, type: :model do
   let(:user) { create(:user, :trusted) }
-  let(:user2)        { create(:user, :trusted) }
-  let(:user3)        { create(:user, :trusted) }
-  let(:article) { create(:article, user_id: user.id) }
+  let(:user2) { create(:user, :trusted) }
+  let(:article) { create(:article, user: user) }
 
   describe "validations" do
     it { is_expected.to validate_numericality_of(:rating).is_greater_than(0.0).is_less_than_or_equal_to(10.0) }
@@ -28,36 +27,42 @@ RSpec.describe RatingVote, type: :model do
     it "assigns article rating" do
       rating = create(:rating_vote, article_id: article.id, user_id: user.id, rating: 2.0)
       create(:rating_vote, article_id: article.id, user_id: user2.id, rating: 3.0)
+
       rating.assign_article_rating
-      expect(article.reload.experience_level_rating).to eq(2.5)
-      expect(article.reload.experience_level_rating_distribution).to eq(1.0)
+      article.reload
+
+      expect(article.experience_level_rating).to eq(2.5)
+      expect(article.experience_level_rating_distribution).to eq(1.0)
     end
 
     it "assigns article rating with larger distribution" do
       rating = create(:rating_vote, article_id: article.id, user_id: user.id, rating: 1.0)
       create(:rating_vote, article_id: article.id, user_id: user2.id, rating: 7.0)
+
       rating.assign_article_rating
-      expect(article.reload.experience_level_rating).to eq(4.0)
-      expect(article.reload.experience_level_rating_distribution).to eq(6.0)
+      article.reload
+
+      expect(article.experience_level_rating).to eq(4.0)
+      expect(article.experience_level_rating_distribution).to eq(6.0)
     end
   end
 
   describe "permissions" do
+    let_it_be(:untrusted_user) { create(:user) }
+
     it "allows trusted users to make rating" do
       rating = build(:rating_vote, article_id: article.id, user_id: user.id)
       expect(rating).to be_valid
     end
 
     it "does not allow non-trusted users to make rating" do
-      nontrusted_user = create(:user)
-      rating = build(:rating_vote, article_id: article.id, user_id: nontrusted_user.id)
+      rating = build(:rating_vote, article_id: article.id, user_id: untrusted_user.id)
       expect(rating).not_to be_valid
     end
 
     it "does allows author to make rating on own post" do
-      nontrusted_user = create(:user)
-      article = create(:article, user_id: nontrusted_user.id)
-      rating = build(:rating_vote, article_id: article.id, user_id: nontrusted_user.id)
+      article = create(:article, user: untrusted_user)
+      rating = build(:rating_vote, article_id: article.id, user_id: untrusted_user.id)
       expect(rating).to be_valid
     end
   end

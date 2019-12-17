@@ -6,15 +6,19 @@ class RatingVote < ApplicationRecord
   validates :group, inclusion: { in: %w[experience_level] }
   validates :rating, numericality: { greater_than: 0.0, less_than_or_equal_to: 10.0 }
   validate :permissions
+
   counter_culture :article
   counter_culture :user
 
   def assign_article_rating
     ratings = article.rating_votes.where(group: group).pluck(:rating)
     average = ratings.sum / ratings.size
-    article.update_column(:experience_level_rating, average)
-    article.update_column(:experience_level_rating_distribution, ratings.sort.max - ratings.sort.min)
-    article.update_column(:last_experience_level_rating_at, Time.current)
+
+    article.update_columns(
+      experience_level_rating: average,
+      experience_level_rating_distribution: ratings.max - ratings.min,
+      last_experience_level_rating_at: Time.current,
+    )
   end
 
   private
