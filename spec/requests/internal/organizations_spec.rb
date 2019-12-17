@@ -9,11 +9,11 @@ RSpec.describe "internal/organizations", type: :request do
   end
 
   describe "GETS /internal/organizations" do
+    let(:organizations) { Organization.all.map { |o| CGI.escapeHTML(o.name) } }
+
     it "lists all organizations" do
       get "/internal/organizations"
-      Organization.all.each do |o|
-        expect(response.body).to include(o.name)
-      end
+      expect(response.body).to include(*organizations)
     end
   end
 
