@@ -1,13 +1,17 @@
-.starter-template {
-  padding-top: 5em;
-  font-size: 1.4em;
-}
+/* .row { */
+/*   margin-top: 1vw; */
+/*   border: 1px solid gray; */
+/*   padding: 1vw; */
+/*   border-radius: 3px; */
+/* } */
 
-.row {
-  margin-top: 1vw;
-  border: 1px solid gray;
-  padding: 1vw;
-  border-radius: 3px;
+.pagination {
+  justify-content: right;
+
+  .page, .next, .last,
+  .first, .prev {
+    padding: 8px;
+  }
 }
 
 .wrapper {
