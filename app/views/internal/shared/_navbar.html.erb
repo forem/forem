@@ -5,6 +5,6 @@
 
 <div class="navbar-nav justify-content-center">
   <% menu_items.each do |name, controller| %>
-    <a class="nav-item nav-link <%= 'active' if controller_name == controller %>" href="/internal/<%= controller %>"><%= name.to_s.titleize %></a>
+    <a class="nav-item nav-link <%= "active" if request.path.include?(controller) %>" href="/internal/<%= controller %>"><%= name.to_s.titleize %></a>
   <% end %>
 </div>
