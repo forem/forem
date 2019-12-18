@@ -4,7 +4,11 @@
 Honeybadger.configure do |config|
   config.api_key = ApplicationConfig["HONEYBADGER_API_KEY"]
   config.revision = ApplicationConfig["HEROKU_SLUG_COMMIT"]
-  config.exceptions.ignore += [Pundit::NotAuthorizedError, ActiveRecord::RecordNotFound]
+  config.exceptions.ignore += [
+    Pundit::NotAuthorizedError,
+    ActiveRecord::RecordNotFound,
+    ActiveRecord::QueryCanceled,
+  ]
   config.request.filter_keys += %w[authorization]
   config.delayed_job.attempt_threshold = 10
 
