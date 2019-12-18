@@ -1,14 +1,24 @@
-<h1>Classified Listings</h1>
-<%= form_tag("/internal/listings", method: "get") do %>
-  <%= label_tag(:search, "Find by listing title or username:") %>
-  <%= text_field_tag(:search, params[:search]) %>
-  <% if params[:state].present? %>
-    <%= hidden_field_tag(:state, params[:state]) %>
-  <% end %>
-  <%= label_tag(:search, "Filter listings by category") %>
-  <%= select_tag(:filter, options_for_select( [""] + ClassifiedListing.categories_available.keys, params[:filter])) %>
-  <%= submit_tag("Search & Filter") %>
-<% end %>
+<div class="row m-3 justify-content-end">
+  <div>
+    <%= form_tag("/internal/listings", method: "get") do %>
+      <div class="form-group">
+        <%= label_tag(:search, "Keyword") %>
+        <%= text_field_tag(:search, params[:search]) %>
+        <% if params[:state].present? %>
+          <%= hidden_field_tag(:state, params[:state]) %>
+        <% end %>
+      </div>
+      <div class="form-group">
+        <%= label_tag(:filter, "Category") %>
+        <%= select_tag(:filter, options_for_select([""] + ClassifiedListing.categories_available.keys, params[:filter])) %>
+      </div>
+      <div class="form-group">
+        <%= submit_tag("Filter") %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
 <%= paginate @classified_listings %>
 <div class="wrapper" style="border-bottom: 1px solid black">
   <div class="grid-item">Title Link</div>
@@ -56,4 +66,5 @@
   </div>
 <% end %>
 <%= paginate @classified_listings %>
+
 <%= render "internal/articles/article_script" %>
