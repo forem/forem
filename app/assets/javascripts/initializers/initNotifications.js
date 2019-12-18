@@ -42,44 +42,16 @@ function fetchNotificationsCount() {
     document.getElementById('notifications-container') === null &&
     checkUserLoggedIn()
   ) {
-    var xmlhttp;
-    if (window.XMLHttpRequest) {
-      xmlhttp = new XMLHttpRequest();
-    } else {
-      xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+    // Prefetch notifications page
+    if (instantClick) {
+      InstantClick.removeExpiredKeys('force');
+      setTimeout(function() {
+        InstantClick.preload(
+          document.getElementById('notifications-link').href,
+          'force',
+        );
+      }, 30);
     }
-    xmlhttp.onreadystatechange = () => {
-      if (xmlhttp.readyState === XMLHttpRequest.DONE) {
-        var count = xmlhttp.response;
-        if (Number.isNaN(count)) {
-          document
-            .getElementById('notifications-number')
-            .classList.remove('showing');
-        } else if (count !== '0' && count !== undefined && count !== '') {
-          document.getElementById('notifications-number').innerHTML =
-            xmlhttp.response;
-          document
-            .getElementById('notifications-number')
-            .classList.add('showing');
-          if (instantClick) {
-            InstantClick.removeExpiredKeys('force');
-            setTimeout(() => {
-              InstantClick.preload(
-                document.getElementById('notifications-link').href,
-                'force',
-              );
-            }, 30);
-          }
-        } else {
-          document
-            .getElementById('notifications-number')
-            .classList.remove('showing');
-        }
-      }
-    };
-
-    xmlhttp.open('GET', '/notifications/counts', true);
-    xmlhttp.send();
   }
 }
 

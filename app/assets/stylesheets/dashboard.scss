@@ -656,6 +656,11 @@
 }
 
 .toggles button {
+  @include themeable-important(
+                color,
+                theme-color,
+                $black
+              );
   display: inline-block;
   padding: 2px 8px;
   margin: 8px;
@@ -674,7 +679,7 @@
 
   &.selected {
     background: #cfd7ff;
-    color: #0a0a0a;
+    color: #0a0a0a !important;
     border: 1px solid #4e57ef;
     box-shadow: 3px 4px 0px #4e57ef;
   }

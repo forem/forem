@@ -1,0 +1,28 @@
+<br>
+<%= form_tag("/internal/organizations", method: "get") do %>
+  <%= label_tag(:search, "Find by name:") %>
+  <%= text_field_tag(:search, params[:search]) %>
+  <%= submit_tag("Search") %>
+<% end %>
+<br>
+<div class="wrapper" style="font-weight: 600; border-bottom: 2px solid black;">
+  <div>Name</div>
+  <div>ID</div>
+  <div>Twitter</div>
+  <div>GitHub</div>
+  <div>URL</div>
+</div>
+
+<%= paginate @organizations %>
+
+<% @organizations.each do |organization| %>
+  <div class="wrapper" style="border-bottom: 1px solid grey; padding: 10px;">
+    <div class="grid-item"><a href="/internal/organizations/<%= organization.id %>" target="_blank">@<%= organization.name %></a></div>
+    <div class="grid-item"><%= organization.id %></div>
+    <div class="grid-item"><%= organization.twitter_username || "N/A" %></div>
+    <div class="grid-item"><%= organization.github_username || "N/A" %></div>
+    <div class="grid-item"><%= organization.url || "N/A" %></div>
+  </div>
+<% end %>
+
+<%= paginate @organizations %>

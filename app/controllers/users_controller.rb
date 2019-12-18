@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   before_action :set_no_cache_header
   before_action :raise_banned, only: %i[update]
+  before_action :set_user, only: %i[update update_twitch_username update_language_settings confirm_destroy request_destroy full_delete remove_association]
   after_action :verify_authorized, except: %i[signout_confirm add_org_admin remove_org_admin remove_from_org]
 
   # GET /settings/@tab
@@ -16,11 +17,13 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/:id.:format
   def update
-    set_user
     set_tabs(params["user"]["tab"])
     if @user.update(permitted_attributes(@user))
       RssReaderFetchUserJob.perform_later(@user.id)
       notice = "Your profile was successfully updated."
+      if config_changed?
+        notice = "Your config has been updated. Refresh to see all changes."
+      end
       if @user.export_requested?
         notice += " The export will be emailed to you shortly."
         ExportContentJob.perform_later(@user.id)
@@ -36,7 +39,6 @@ class UsersController < ApplicationController
   end
 
   def update_twitch_username
-    set_user
     set_tabs("integrations")
     new_twitch_username = params[:user][:twitch_username]
     if @user.twitch_username != new_twitch_username
@@ -50,7 +52,6 @@ class UsersController < ApplicationController
   end
 
   def update_language_settings
-    set_user
     set_tabs("misc")
     @user.language_settings["preferred_languages"] = Languages::LIST.keys & params[:user][:preferred_languages].to_a
     if @user.save
@@ -62,23 +63,29 @@ class UsersController < ApplicationController
     end
   end
 
-  def destroy
-    set_user
+  def request_destroy
     set_tabs("account")
-    if @user.articles_count.zero? && @user.comments_count.zero?
-      @user.destroy!
-      NotifyMailer.account_deleted_email(@user).deliver
-      flash[:settings_notice] = "Your account has been deleted."
-      sign_out @user
-      redirect_to root_path
-    else
-      flash[:error] = "An error occurred. Try requesting an account deletion below."
-      redirect_to "/settings/#{@tab}"
-    end
+    Users::RequestDestroy.call(@user)
+    flash[:settings_notice] = "You have requested account deletion. Please, check your email for further instructions."
+    redirect_to "/settings/#{@tab}"
+  end
+
+  def confirm_destroy
+    destroy_token = Rails.cache.read("user-destroy-token-#{@user.id}")
+    raise ActionController::RoutingError, "Not Found" unless destroy_token.present? && destroy_token == params[:token]
+
+    set_tabs("account")
+  end
+
+  def full_delete
+    set_tabs("account")
+    Users::SelfDeleteJob.perform_later(@user.id)
+    sign_out @user
+    flash[:global_notice] = "Your account deletion is scheduled. You'll be notified when it's deleted."
+    redirect_to root_path
   end
 
   def remove_association
-    set_user
     provider = params[:provider]
     identity = @user.identities.find_by(provider: provider)
     set_tabs("account")
@@ -87,11 +94,11 @@ class UsersController < ApplicationController
       identity.destroy
 
       identity_username = "#{provider}_username".to_sym
-      @user.update(identity_username => nil, profile_updated_at: Time.current)
+      @user.update(identity_username => nil, :profile_updated_at => Time.current)
 
       flash[:settings_notice] = "Your #{provider.capitalize} account was successfully removed."
     else
-      flash[:error] = "An error occurred. Please try again or send an email to: yo@dev.to"
+      flash[:error] = "An error occurred. Please try again or send an email to: #{ApplicationConfig['DEFAULT_SITE_EMAIL']}"
     end
     redirect_to "/settings/#{@tab}"
   end
@@ -180,35 +187,13 @@ class UsersController < ApplicationController
     when "organization"
       handle_organization_tab
     when "integrations"
-      if current_user.identities.where(provider: "github").any?
-        @client = Octokit::Client.
-          new(access_token: current_user.identities.where(provider: "github").last.token)
-      end
+      handle_integrations_tab
     when "billing"
-      stripe_code = current_user.stripe_id_code
-      return if stripe_code == "special"
-
-      @customer = Payments::Customer.get(stripe_code) if stripe_code.present?
+      handle_billing_tab
     when "pro-membership"
-      @pro_membership = current_user.pro_membership
+      handle_pro_membership_tab
     when "account"
-      @email_body = <<~HEREDOC
-        Hello DEV Team,
-        %0A
-        %0A
-        I would like to delete my dev.to account.
-        %0A%0A
-        You can keep any comments and discussion posts under the Ghost account.
-        %0A
-        ---OR---
-        %0A
-        Please delete all my personal information, including comments and discussion posts.
-        %0A
-        %0A
-        Regards,
-        %0A
-        YOUR-DEV-USERNAME-HERE
-      HEREDOC
+      handle_account_tab
     else
       not_found unless @tab_list.map { |t| t.downcase.tr(" ", "-") }.include? @tab
     end
@@ -241,13 +226,52 @@ class UsersController < ApplicationController
     end
   end
 
+  def handle_integrations_tab
+    return unless current_user.identities.where(provider: "github").any?
+
+    @client = Octokit::Client.
+      new(access_token: current_user.identities.where(provider: "github").last.token)
+  end
+
+  def handle_billing_tab
+    stripe_code = current_user.stripe_id_code
+    return if stripe_code == "special"
+
+    @customer = Payments::Customer.get(stripe_code) if stripe_code.present?
+  end
+
+  def handle_pro_membership_tab
+    @pro_membership = current_user.pro_membership
+  end
+
+  def handle_account_tab
+    @email_body = <<~HEREDOC
+      Hello DEV Team,
+      %0A
+      %0A
+      I would like to delete my dev.to account.
+      %0A%0A
+      You can keep any comments and discussion posts under the Ghost account.
+      %0A
+      %0A
+      Regards,
+      %0A
+      YOUR-DEV-USERNAME-HERE
+    HEREDOC
+  end
+
   def set_user
     @user = current_user
+    not_found unless @user
     authorize @user
   end
 
   def set_tabs(current_tab = "profile")
     @tab_list = @user.settings_tab_list
     @tab = current_tab
+  end
+
+  def config_changed?
+    params[:user].include?(:config_theme)
   end
 end

@@ -9,6 +9,7 @@ import {
   performInitialSearch,
   search,
   toggleTag,
+  clearSelectedTags,
 } from '../searchableItemList/searchableItemList';
 import { ItemListItem } from '../src/components/ItemList/ItemListItem';
 import { ItemListItemArchiveButton } from '../src/components/ItemList/ItemListItemArchiveButton';
@@ -19,6 +20,16 @@ const STATUS_VIEW_VALID = 'valid';
 const STATUS_VIEW_ARCHIVED = 'archived';
 const READING_LIST_ARCHIVE_PATH = '/readinglist/archive';
 const READING_LIST_PATH = '/readinglist';
+
+const FilterText = ({ selectedTags, query, value }) => {
+  return (
+    <h1>
+      {selectedTags.length === 0 && query.length === 0
+        ? value
+        : 'Nothing with this filter 🤔'}
+    </h1>
+  );
+};
 
 export class ReadingList extends Component {
   constructor(props) {
@@ -35,6 +46,7 @@ export class ReadingList extends Component {
     this.performInitialSearch = performInitialSearch.bind(this);
     this.search = search.bind(this);
     this.toggleTag = toggleTag.bind(this);
+    this.clearSelectedTags = clearSelectedTags.bind(this);
   }
 
   componentDidMount() {
@@ -116,12 +128,11 @@ export class ReadingList extends Component {
     if (itemsLoaded && this.statusViewValid()) {
       return (
         <div className="items-empty">
-          <h1>
-            {selectedTags.length === 0 && query.length === 0
-              ? 'Your Reading List is Lonely'
-              : 'Nothing with this filter 🤔'}
-          </h1>
-
+          <FilterText
+            selectedTags={selectedTags}
+            query={query}
+            value="Your Reading List is Lonely"
+          />
           <h3>
             Hit the
             <span className="highlight">SAVE</span>
@@ -140,11 +151,11 @@ export class ReadingList extends Component {
 
     return (
       <div className="items-empty">
-        <h1>
-          {selectedTags.length === 0 && query.length === 0
-            ? 'Your Archive List is Lonely'
-            : 'Nothing with this filter 🤔'}
-        </h1>
+        <FilterText
+          selectedTags={selectedTags}
+          query={query}
+          value="Your Archive List is Lonely"
+        />
       </div>
     );
   }
@@ -189,7 +200,23 @@ export class ReadingList extends Component {
               onKeyUp={this.onSearchBoxType}
               placeHolder="search your list"
             />
-
+            <div className="filters-header">
+              <h4 className="filters-header-text">my tags</h4>
+              {Boolean(selectedTags.length) && (
+                <a
+                  className="filters-header-action"
+                  href={
+                    isStatusViewValid
+                      ? READING_LIST_PATH
+                      : READING_LIST_ARCHIVE_PATH
+                  }
+                  onClick={this.clearSelectedTags}
+                  data-no-instant
+                >
+                  clear all
+                </a>
+              )}
+            </div>
             <ItemListTags
               availableTags={availableTags}
               selectedTags={selectedTags}
@@ -238,4 +265,10 @@ ReadingList.defaultProps = {
 ReadingList.propTypes = {
   availableTags: PropTypes.arrayOf(PropTypes.string).isRequired,
   statusView: PropTypes.oneOf([STATUS_VIEW_VALID, STATUS_VIEW_ARCHIVED]),
+};
+
+FilterText.propTypes = {
+  selectedTags: PropTypes.arrayOf(PropTypes.string).isRequired,
+  value: PropTypes.string.isRequired,
+  query: PropTypes.arrayOf(PropTypes.string).isRequired,
 };

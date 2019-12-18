@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ReplitTag, type: :liquid_template do
+RSpec.describe ReplitTag, type: :liquid_tag do
   describe "#id" do
     let(:replit_id) { "@WigWog/PositiveFineOpensource" }
 

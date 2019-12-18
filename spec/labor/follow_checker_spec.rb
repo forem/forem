@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe FollowChecker do
+RSpec.describe FollowChecker, type: :labor do
   let(:user) { create(:user) }
 
   it "checks if following a thing and returns true if they are" do

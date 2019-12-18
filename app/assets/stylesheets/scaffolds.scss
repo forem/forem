@@ -183,7 +183,7 @@ input[type='email'] {
   display: none !important;
 }
 
-body.night-theme {
+body.night-theme, body.ten-x-hacker-theme {
   .on-page-nav-butt img,
   .icon-img,
   .dropdown-icon,
@@ -209,6 +209,8 @@ body.night-theme {
   }
 }
 
+// Alternate base fonts
+
 body.sans-serif-article-body {
   .body {
     font-family: $helvetica;
@@ -225,6 +227,23 @@ body.comic-sans-article-body {
   .body p {
     font-family: 'Comic Sans MS', cursive, sans-serif;
     font-size: 0.98em;
+  }
+}
+body.monospace-article-body {
+  .body {
+    font-family: $monospace;
+  }
+  .body p {
+    font-family: $monospace;
+    font-size: 0.9em;
+  }
+}
+
+body.static-navbar-config {
+  .top-bar {
+    position: relative !important;
+    margin-top: 20px !important;
+    margin-bottom: -66px !important;
   }
 }
 
@@ -248,6 +267,7 @@ body.trusted-status-true .trusted-visible-block {
     color: white;
     display: inline-block;
     margin-bottom: 0px;
+    border-radius: 3px;
   }
   h2 {
     font-size: 22px;
@@ -262,4 +282,34 @@ body.trusted-status-true .trusted-visible-block {
       opacity: 0.9;
     }
   }
+  form button {
+    background: $red;
+    color: white;
+    font-size: 1.5em;
+    border: 0px;
+    border-radius: 3px;
+    padding: 6px 12px;
+  }
+}
+
+.app-shell-loader {
+  position: absolute;
+  top: 200px;
+  text-align: center;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  animation: loading-fadein 1.5s;
+  animation-delay: 0.6s;
+  font-size: 1.2em;
+  z-index: -1;
+}
+
+.base-background-color {
+  @include themeable(background, theme-background, $lightest-gray);
+}
+
+@keyframes loading-fadein {
+  from { opacity: 0; }
+  to   { opacity: 0.6; }
 }

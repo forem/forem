@@ -1,22 +1,28 @@
 import { h, Component } from 'preact';
+import PropTypes from 'prop-types';
 import linkState from 'linkstate';
 import Title from './elements/title';
 import BodyMarkdown from './elements/bodyMarkdown';
 import Categories from './elements/categories';
-import OrgSettings from './elements/orgSettings';
 import ContactViaConnect from './elements/contactViaConnect';
 import ExpireDate from './elements/expireDate';
 import Tags from '../shared/components/tags';
+import { OrganizationPicker } from '../organization/OrganizationPicker';
 
 export default class ListingForm extends Component {
   constructor(props) {
     super(props);
+    const {
+      listing,
+      categoriesForDetails,
+      categoriesForSelect,
+      organizations: unparsedOrganizations,
+    } = this.props;
+    this.listing = JSON.parse(listing);
+    this.categoriesForDetails = JSON.parse(categoriesForDetails);
+    this.categoriesForSelect = JSON.parse(categoriesForSelect);
 
-    this.listing = JSON.parse(this.props.listing);
-    this.categoriesForDetails = JSON.parse(this.props.categoriesForDetails);
-    this.categoriesForSelect = JSON.parse(this.props.categoriesForSelect);
-
-    const organizations = JSON.parse(this.props.organizations);
+    const organizations = JSON.parse(unparsedOrganizations);
 
     this.url = window.location.href;
 
@@ -57,14 +63,20 @@ export default class ListingForm extends Component {
 
     const selectOrg =
       organizations && organizations.length > 0 ? (
-        <OrgSettings
-          organizations={organizations}
-          organizationId={organizationId}
-          onToggle={this.handleOrgIdChange}
-        />
-      ) : (
-        ''
-      );
+        <div className="field">
+          <label htmlFor="organizationId">Post under an organization:</label>
+          <OrganizationPicker
+            name="classified_listing[organization_id]"
+            id="listing_organization_id"
+            organizations={organizations}
+            organizationId={organizationId}
+            onToggle={this.handleOrgIdChange}
+          />
+          <p>
+            <em>Posting on behalf of org spends org credits.</em>
+          </p>
+        </div>
+      ) : null;
 
     if (id === null) {
       return (
@@ -84,10 +96,10 @@ export default class ListingForm extends Component {
             defaultValue={tagList}
             category={category}
             onInput={linkState(this, 'tagList')}
-            classPrefix={`listingform`}
+            classPrefix="listingform"
             maxTags={8}
-            autocomplete={`off`}
-            listing={true}
+            autocomplete="off"
+            listing
           />
           <ExpireDate
             defaultValue={expireDate}
@@ -95,7 +107,7 @@ export default class ListingForm extends Component {
           />
           {selectOrg}
           <ContactViaConnect
-            defaultValue={contactViaConnect}
+            checked={contactViaConnect}
             onChange={linkState(this, 'contactViaConnect')}
           />
         </div>
@@ -119,3 +131,10 @@ export default class ListingForm extends Component {
     );
   }
 }
+
+ListingForm.propTypes = {
+  listing: PropTypes.string.isRequired,
+  categoriesForDetails: PropTypes.string.isRequired,
+  categoriesForSelect: PropTypes.string.isRequired,
+  organizations: PropTypes.string.isRequired,
+};

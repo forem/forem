@@ -6,7 +6,7 @@ class PageView < ApplicationRecord
 
   before_create :extract_domain_and_path
 
-  algoliasearch index_name: "UserHistory", per_environment: true, if: :belongs_to_pro_user? do
+  algoliasearch index_name: "UserHistory", per_environment: true, if: :belongs_to_pro_user?, enqueue: :trigger_index_sync do
     attributes :referrer, :user_agent, :article_tags
 
     attribute(:article_title) { article.title }
@@ -44,6 +44,14 @@ class PageView < ApplicationRecord
     distinct true
 
     customRanking ["desc(visited_at_timestamp)"]
+  end
+
+  def self.trigger_index_sync(record, remove)
+    if remove
+      Search::RemoveFromIndexJob.perform_later(algolia_index_name, record.id)
+    else
+      Search::IndexJob.perform_later("PageView", record.id)
+    end
   end
 
   private

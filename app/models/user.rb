@@ -49,12 +49,13 @@ class User < ApplicationRecord
   has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
+  has_many :user_blocks
   has_one :pro_membership, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
 
-  devise :omniauthable, :rememberable,
-         :registerable, :database_authenticatable, :confirmable
+  devise :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable
+
   validates :email,
             length: { maximum: 50 },
             email: true,
@@ -105,26 +106,29 @@ class User < ApplicationRecord
             format: /\A(http(s)?:\/\/)?(www.twitch.tv|twitch.tv)\/.*\Z/
   validates :shirt_gender,
             inclusion: { in: %w[unisex womens],
-                         message: "%{value} is not a valid shirt style" },
+                         message: "%<value>s is not a valid shirt style" },
             allow_blank: true
   validates :shirt_size,
             inclusion: { in: %w[xs s m l xl 2xl 3xl 4xl],
-                         message: "%{value} is not a valid size" },
+                         message: "%<value>s is not a valid size" },
             allow_blank: true
   validates :tabs_or_spaces,
             inclusion: { in: %w[tabs spaces],
-                         message: "%{value} is not a valid answer" },
+                         message: "%<value>s is not a valid answer" },
             allow_blank: true
   validates :editor_version,
             inclusion: { in: %w[v1 v2],
-                         message: "%{value} must be either v1 or v2" }
+                         message: "%<value>s must be either v1 or v2" }
 
   validates :config_theme,
-            inclusion: { in: %w[default night_theme pink_theme minimal_light_theme],
-                         message: "%{value} is not a valid theme" }
+            inclusion: { in: %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme],
+                         message: "%<value>s is not a valid theme" }
   validates :config_font,
-            inclusion: { in: %w[default sans_serif comic_sans],
-                         message: "%{value} must be either default or sans serif" }
+            inclusion: { in: %w[default sans_serif monospace comic_sans],
+                         message: "%<value>s is not a valid font selection" }
+  validates :config_navbar,
+            inclusion: { in: %w[default static],
+                         message: "%<value>s is not a valid navbar value" }
   validates :shipping_country,
             length: { in: 2..2 },
             allow_blank: true
@@ -149,7 +153,7 @@ class User < ApplicationRecord
   after_save  :bust_cache
   after_save  :subscribe_to_mailchimp_newsletter
   after_save  :conditionally_resave_articles
-  after_create :estimate_default_language!
+  after_create :estimate_default_language
   before_create :set_default_language
   before_validation :set_username
   # make sure usernames are not empty, to be able to use the database unique index
@@ -200,28 +204,16 @@ class User < ApplicationRecord
   def self.trigger_delayed_index(record, remove)
     return if remove
 
-    AlgoliaSearch::AlgoliaJob.perform_later(record, "index!")
+    Search::IndexJob.perform_later("User", record.id)
   end
 
   def tag_line
     summary
   end
 
-  def index_id
-    "users-#{id}"
-  end
-
   def set_remember_fields
     self.remember_token ||= self.class.remember_token if respond_to?(:remember_token)
     self.remember_created_at ||= Time.now.utc
-  end
-
-  def estimate_default_language!
-    Users::EstimateDefaultLanguageJob.perform_later(id)
-  end
-
-  def estimate_default_language_without_delay!
-    Users::EstimateDefaultLanguageJob.perform_now(id)
   end
 
   def calculate_score
@@ -236,13 +228,13 @@ class User < ApplicationRecord
   def followed_articles
     Article.tagged_with(cached_followed_tag_names, any: true).
       union(Article.where(user_id: cached_following_users_ids)).
-      where(language: cached_preferred_langs, published: true)
+      where(language: preferred_languages_array, published: true)
   end
 
   def cached_following_users_ids
     Rails.cache.fetch(
-      "user-#{id}-#{updated_at}-#{following_users_count}/following_users_ids",
-      expires_in: 120.hours,
+      "user-#{id}-#{last_followed_at}-#{following_users_count}/following_users_ids",
+      expires_in: 12.hours,
     ) do
       Follow.where(follower_id: id, followable_type: "User").limit(150).pluck(:followable_id)
     end
@@ -250,8 +242,8 @@ class User < ApplicationRecord
 
   def cached_following_organizations_ids
     Rails.cache.fetch(
-      "user-#{id}-#{updated_at}-#{following_orgs_count}/following_organizations_ids",
-      expires_in: 120.hours,
+      "user-#{id}-#{last_followed_at}-#{following_orgs_count}/following_organizations_ids",
+      expires_in: 12.hours,
     ) do
       Follow.where(follower_id: id, followable_type: "Organization").limit(150).pluck(:followable_id)
     end
@@ -259,16 +251,10 @@ class User < ApplicationRecord
 
   def cached_following_podcasts_ids
     Rails.cache.fetch(
-      "user-#{id}-#{updated_at}-#{last_followed_at}/following_podcasts_ids",
-      expires_in: 120.hours,
+      "user-#{id}-#{last_followed_at}/following_podcasts_ids",
+      expires_in: 12.hours,
     ) do
       Follow.where(follower_id: id, followable_type: "Podcast").pluck(:followable_id)
-    end
-  end
-
-  def cached_preferred_langs
-    Rails.cache.fetch("user-#{id}-#{updated_at}/cached_preferred_langs", expires_in: 24.hours) do
-      preferred_languages_array
     end
   end
 
@@ -298,7 +284,7 @@ class User < ApplicationRecord
   end
 
   def cached_followed_tag_names
-    cache_name = "user-#{id}-#{updated_at}/followed_tag_names"
+    cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/followed_tag_names"
     Rails.cache.fetch(cache_name, expires_in: 24.hours) do
       Tag.where(
         id: Follow.where(
@@ -380,21 +366,30 @@ class User < ApplicationRecord
     OrganizationMembership.exists?(user: user, organization: organization, type_of_user: "admin")
   end
 
+  def block; end
+
+  def all_blocking
+    UserBlock.where(blocker_id: id)
+  end
+
+  def all_blocked_by
+    UserBlock.where(blocked_id: id)
+  end
+
+  def blocking?(blocked_id)
+    UserBlock.blocking?(id, blocked_id)
+  end
+
+  def blocked_by?(blocker_id)
+    UserBlock.blocking?(blocker_id, id)
+  end
+
   def unique_including_orgs_and_podcasts
     errors.add(:username, "is taken.") if Organization.find_by(slug: username) || Podcast.find_by(slug: username) || Page.find_by(slug: username)
   end
 
-  def subscribe_to_mailchimp_newsletter_without_delay
-    return unless email.present? && email.include?("@")
-
-    return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
-
-    Users::SubscribeToMailchimpNewsletterJob.perform_now(id)
-  end
-
   def subscribe_to_mailchimp_newsletter
     return unless email.present? && email.include?("@")
-
     return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
 
     Users::SubscribeToMailchimpNewsletterJob.perform_later(id)
@@ -405,11 +400,10 @@ class User < ApplicationRecord
   end
 
   def resave_articles
-    cache_buster = CacheBuster.new
     articles.find_each do |article|
       if article.path
-        cache_buster.bust(article.path)
-        cache_buster.bust(article.path + "?i=i")
+        CacheBuster.bust(article.path)
+        CacheBuster.bust("#{article.path}?i=i")
       end
       article.save
     end
@@ -453,11 +447,19 @@ class User < ApplicationRecord
     currently_streaming_on == "twitch"
   end
 
-  def has_enough_credits?(num_credits_needed)
+  def enough_credits?(num_credits_needed)
     credits.unspent.size >= num_credits_needed
   end
 
   private
+
+  def index_id
+    "users-#{id}"
+  end
+
+  def estimate_default_language
+    Users::EstimateDefaultLanguageJob.perform_later(id)
+  end
 
   def set_default_language
     language_settings["preferred_languages"] ||= ["en"]
@@ -515,6 +517,7 @@ class User < ApplicationRecord
   def set_config_input
     self.config_theme = config_theme.tr(" ", "_")
     self.config_font = config_font.tr(" ", "_")
+    self.config_navbar = config_navbar.tr(" ", "_")
   end
 
   def check_for_username_change

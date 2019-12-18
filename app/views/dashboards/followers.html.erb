@@ -1,34 +1,40 @@
 <% title "Dashboard - DEV" %>
 
-<div class="dashboard-container" id="user-dashboard">
-  <%= render "actions" %>
-  <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
-    <h1>
-      <a href="/dashboard" class="rounded-btn <%= "active" if params[:which].blank? %>">Personal</a>
-      <% @organizations.each do |org| %>
-        <a href="/dashboard/organization/<%= org.id %>" class="rounded-btn <%= "active" if params[:org_id].to_i == org.id %>"><%= org.name %> (<%= org.articles.size %>)</a>
-      <% end %>
-      <% if @user.has_role? :pro %>
-      <br>
-        <a class="rounded-btn" href="/dashboard/pro">Pro Analytics</a>
+<div id="index-container"
+    data-params="<%= params.to_json(only: %i[which per_page]) %>"
+    data-which="followers">
+  <div class="dashboard-container" id="user-dashboard">
+    <%= render "actions" %>
+    <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
+      <h1>
+        <a href="/dashboard" class="rounded-btn <%= "active" if params[:which].blank? %>">Personal</a>
         <% @organizations.each do |org| %>
-          <a class="rounded-btn" href="/dashboard/pro/org/<%= org.id %>">Pro Analytics for <%= org.name %></a>
+          <a href="/dashboard/organization/<%= org.id %>" class="rounded-btn <%= "active" if params[:org_id].to_i == org.id %>"><%= org.name %> (<%= org.articles.size %>)</a>
         <% end %>
-      <% end %>
-    </h1>
-  <% end %>
-  <% @follows.each do |follow| %>
-    <% user = follow.follower %>
-    <% if user %>
-      <div class="single-article">
-        <a href="<%= user.path %>" class="block-link">
-          <h2>
-            <img alt="<%= user.username %> profile image" src="<%= ProfileImage.new(user).get(60) %>" />
-            <%= user.name %>
-            <span class="dashboard-username">@<%= user.username %></span>
-          </h2>
-        </a>
-      </div>
+        <% if @user.has_role? :pro %>
+        <br>
+          <a class="rounded-btn" href="/dashboard/pro">Pro Analytics</a>
+          <% @organizations.each do |org| %>
+            <a class="rounded-btn" href="/dashboard/pro/org/<%= org.id %>">Pro Analytics for <%= org.name %></a>
+          <% end %>
+        <% end %>
+      </h1>
     <% end %>
-  <% end %>
+    <% @follows.each do |follow| %>
+      <% user = follow.follower %>
+      <% if user %>
+        <div id="follows-<%= follow.id %>" class="single-article">
+          <a href="<%= user.path %>" class="block-link">
+            <h2>
+              <img alt="<%= user.username %> profile image" src="<%= ProfileImage.new(user).get(60) %>" />
+              <%= user.name %>
+              <span class="dashboard-username">@<%= user.username %></span>
+            </h2>
+          </a>
+        </div>
+      <% end %>
+    <% end %>
+
+    <%= render "sublist" %>
+  </div>
 </div>

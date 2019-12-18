@@ -85,10 +85,11 @@
   <br /><br /><br /><br />
   <center>
     <h1>Mod Dashboard (beta)</h1>
+    <a href="/community-moderation" class="mod-link">Community moderation guide</a>
     <% if current_user.moderator_for_tags.any? %>
-      <a href="/mod" style="display: inline-block; font-size: 1.3em; padding: 3px 8px; border-radius: 3px; <%= "background: #c7ffe0" if params[:tag].blank? %>">all recent</a>
+      <a href="/mod" class="mod-link" style="<%= "background: #c7ffe0" if params[:tag].blank? %>">all recent</a>
       <% current_user.moderator_for_tags.each do |tag| %>
-        | <a href="/mod?tag=<%= tag %>" style="display: inline-block; font-size: 1.3em; padding: 3px 8px; border-radius: 3px; <%= "background: #c7ffe0" if params[:tag] == tag %>">#<%= tag %></a>
+        | <a href="/mod?tag=<%= tag %>" class="mod-link" style="<%= "background: #c7ffe0" if params[:tag] == tag %>">#<%= tag %></a>
       <% end %>
     <% end %>
   </center>
@@ -102,17 +103,18 @@
             <% cache("main-article-tags-#{article.cached_tag_list}", expires_in: 30.hours) do %>
               <div class="tags">
                 <% article.cached_tag_list_array.each do |tag| %>
-                  <a class="tag" href="/t/<%= tag %>" style="background-color:<%= tag_colors(tag)[:background] %>;color:<%= tag_colors(tag)[:color] %>">#<%= tag %></a>
+                  <% tag_hash = tag_colors(tag) %>
+                  <a class="tag" href="/t/<%= tag %>" style="background-color:<%= tag_hash[:background] %>;color:<%= tag_hash[:color] %>">#<%= tag %></a>
                 <% end %>
               </div>
             <% end %>
           </center>
           <div class="body">
-            <%= HTML_Truncator.truncate(
+            <%= raw HTML_Truncator.truncate(
                   article.processed_html,
                   200,
-                  ellipsis: '<a class="comment-read-more" href="' + article.path + '">... Read Entire Post</a>').html_safe
-            %>
+                  ellipsis: '<a class="comment-read-more" href="' + article.path + '">... Read Entire Post</a>',
+                ) %>
           </div>
           <center>
             <% if article.last_buffered.nil? %>
@@ -150,7 +152,7 @@
     <h1 style="text-align: center">DEV Mods</h1>
     <div class="body">
       <p>We periodically award some DEV members with heightened privileges to help moderate the community.</p>
-      <p>Email <a href="mailto:yo@dev.to">yo@dev.to</a> if you'd like to be considered right away.</p>
+      <p>Email <a href="mailto:<%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %>"><%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %></a> if you'd like to be considered right away.</p>
       <% if !user_signed_in? %>
         <p><em>P.S. You are not currently signed in.</em></p>
       <% end %>

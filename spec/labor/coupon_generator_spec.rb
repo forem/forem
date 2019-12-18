@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe CouponGenerator, vcr: {} do
+RSpec.describe CouponGenerator, type: :labor, vcr: {} do
   let(:versions) { %w[member_discount sticker_pack tee_pack] }
 
   describe "#expect" do

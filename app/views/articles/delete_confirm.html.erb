@@ -1,5 +1,3 @@
-<%= javascript_include_tag "application" %>
-
 <div class="container delete-confirm">
   <h4><%= @article.title %></h4>
   <h1>Are you sure you want to delete this article?</h1>
@@ -11,8 +9,7 @@
     </a>
     instead?
   </h2>
-
-  <h2>
-    <a class="delete-link" data-no-instant rel="nofollow" data-method="delete" href="/articles/<%= @article.id %>">DELETE</a>
-  </h2>
+  <%= form_tag "/articles/#{@article.id}", method: :delete do %>
+    <button class="cta">DELETE</button>
+  <% end %>
 </div>

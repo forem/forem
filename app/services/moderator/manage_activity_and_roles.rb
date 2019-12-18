@@ -13,50 +13,15 @@ module Moderator
     end
 
     def delete_comments
-      return unless user.comments.any?
-
-      cachebuster = CacheBuster.new
-      user.comments.find_each do |comment|
-        comment.reactions.delete_all
-        cachebuster.bust_comment(comment.commentable)
-        comment.delete
-        comment.remove_notifications
-      end
-      cachebuster.bust_user(user)
+      Users::DeleteComments.call(user)
     end
 
     def delete_articles
-      return unless user.articles.any?
-
-      cachebuster = CacheBuster.new
-      virtual_articles = user.articles.map { |article| Article.new(article.attributes) }
-      user.articles.find_each do |article|
-        article.reactions.delete_all
-        article.comments.includes(:user).find_each do |comment|
-          comment.reactions.delete_all
-          cachebuster.bust_comment(comment.commentable)
-          cachebuster.bust_user(comment.user)
-          comment.delete
-        end
-        article.remove_algolia_index
-        article.delete
-        article.purge
-      end
-      virtual_articles.each do |article|
-        cachebuster.bust_article(article)
-      end
+      Users::DeleteArticles.call(user)
     end
 
     def delete_user_activity
-      user.notifications.delete_all
-      user.reactions.delete_all
-      user.follows.delete_all
-      Follow.where(followable_id: user.id, followable_type: "User").delete_all
-      user.messages.delete_all
-      user.chat_channel_memberships.delete_all
-      user.mentions.delete_all
-      user.badge_achievements.delete_all
-      user.github_repos.delete_all
+      Users::DeleteActivity.call(user)
     end
 
     def remove_privileges

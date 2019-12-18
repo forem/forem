@@ -84,6 +84,7 @@ class ReservedWords
     amp
     live
     online
+    future
     jokes
     funny
     funnies

@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe GithubRepoPolicy, type: :policy do
   subject { described_class.new(user, github_repo) }
 
-  let(:github_repo)      { build_stubbed(:github_repo) }
+  let_it_be(:github_repo) { create(:github_repo) }
   let(:valid_attributes) { %i[github_id_code] }
 
   context "when user is not signed in" do
@@ -13,7 +13,7 @@ RSpec.describe GithubRepoPolicy, type: :policy do
   end
 
   context "when user is not the owner" do
-    let(:user) { build_stubbed(:user) }
+    let!(:user) { create(:user) }
 
     it { is_expected.to permit_actions(%i[create]) }
     it { is_expected.to forbid_actions(%i[update]) }

@@ -35,7 +35,7 @@
   }
 
   h1 {
-    color: <%= HexComparer.new([@cat_color]).brightness(0.70)  %>;
+    color: <%= HexComparer.new([@cat_color]).brightness(0.70) %>;
     width: 92%;
     margin: 0;
     padding: 1vw;
@@ -46,7 +46,7 @@
     font-size: 3.1vw;
     padding: 0 4vw;
     font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", "Roboto", sans-serif;
-    color: <%= HexComparer.new([@cat_color]).brightness(0.77)  %>;
+    color: <%= HexComparer.new([@cat_color]).brightness(0.77) %>;
   }
 
   .preview-category {
@@ -81,7 +81,7 @@
       <%= @category %>
     </div>
     <div class="preview-dev-logo">
-      <%= inline_svg("devlistings-horizontal.svg", class: "logo", size: "30vw*10vw", aria: false, title: "DEV logo") %>
+      <%= inline_svg_tag("devlistings-horizontal.svg", class: "logo", size: "30vw*10vw", aria: false, title: "DEV logo") %>
     </div>
   </div>
 </div>

@@ -10,14 +10,9 @@ import {
   getContent,
   getChannelInvites,
   sendChannelInviteAction,
+  deleteMessage,
 } from './actions';
-import {
-  hideMessages,
-  scrollToBottom,
-  setupObserver,
-  setupNotifications,
-  getNotificationState,
-} from './util';
+import { hideMessages, scrollToBottom, setupObserver } from './util';
 import Alert from './alert';
 import Channels from './channels';
 import Compose from './compose';
@@ -54,6 +49,7 @@ export default class Chat extends Component {
       activeChannel: null,
       showChannelsList: chatOptions.showChannelsList,
       showTimestamp: chatOptions.showTimestamp,
+      currentUserId: chatOptions.currentUserId,
       notificationsPermission: null,
       activeContent: {},
       expanded: window.innerWidth > 600,
@@ -66,6 +62,11 @@ export default class Chat extends Component {
       inviteChannels: [],
       soundOn: true,
       videoOn: true,
+      messageOffset: 0,
+      showDeleteModal: false,
+      messageDeleteId: null,
+      allMessagesLoaded: false,
+      currentMessageLocation: 0,
     };
   }
 
@@ -77,6 +78,7 @@ export default class Chat extends Component {
       channelTypeFilter,
       isMobileDevice,
       channelPaginationNum,
+      currentUserId
     } = this.state;
     this.setupChannels(chatChannels);
     const channelsForPusherSub = chatChannels.filter(
@@ -88,14 +90,11 @@ export default class Chat extends Component {
     );
     setupObserver(this.observerCallback);
     this.subscribePusher(
-      `private-message-notifications-${window.currentUser.id}`,
+      `private-message-notifications-${currentUserId}`,
     );
     if (activeChannelId) {
       sendOpen(activeChannelId, this.handleChannelOpenSuccess, null);
     }
-    this.setState({
-      notificationsPermission: getNotificationState(),
-    });
     if (showChannelsList) {
       const filters =
         channelTypeFilter === 'all'
@@ -122,11 +121,17 @@ export default class Chat extends Component {
   }
 
   componentDidUpdate() {
-    const { scrolled } = this.state;
-    if (document.getElementById('messagelist')) {
+    const { scrolled, currentMessageLocation } = this.state;
+    const messageList = document.getElementById('messagelist');
+    if (messageList) {
       if (!scrolled) {
         scrollToBottom();
       }
+    }
+
+    if (currentMessageLocation && messageList.scrollTop === 0) {
+      messageList.scrollTop =
+        messageList.scrollHeight - (currentMessageLocation + 30);
     }
   }
 
@@ -165,6 +170,7 @@ export default class Chat extends Component {
       setupPusher(pusherKey, {
         channelId: channelName,
         messageCreated: this.receiveNewMessage,
+        messageDeleted: this.removeMessage,
         channelCleared: this.clearChannel,
         redactUserMessages: this.redactUserMessages,
         channelError: this.channelError,
@@ -266,13 +272,13 @@ export default class Chat extends Component {
   };
 
   setupChannel = channelId => {
-    const { messages } = this.state;
+    const { messages, messageOffset } = this.state;
     if (
       !messages[channelId] ||
       messages[channelId].length === 0 ||
       messages[channelId][0].reception_method === 'pushed'
     ) {
-      getAllMessages(channelId, this.receiveAllMessages);
+      getAllMessages(channelId, messageOffset, this.receiveAllMessages);
     }
     this.subscribePusher(`presence-channel-${channelId}`);
   };
@@ -301,10 +307,32 @@ export default class Chat extends Component {
     }));
   };
 
+  removeMessage = message => {
+    const { activeChannelId } = this.state;
+    this.setState(prevState => ({
+      messages: {
+        [activeChannelId]: [
+          ...prevState.messages[activeChannelId].filter(
+            oldmessage => oldmessage.id !== message.id,
+          ),
+        ],
+      },
+    }));
+  };
+
   receiveNewMessage = message => {
     const { messages, activeChannelId, scrolled, chatChannels } = this.state;
     const receivedChatChannelId = message.chat_channel_id;
     let newMessages = [];
+    if (
+      message.temp_id &&
+      messages[activeChannelId].findIndex(
+        oldmessage => oldmessage.temp_id === message.temp_id,
+      ) > -1
+    ) {
+      return;
+    }
+
     if (messages[receivedChatChannelId]) {
       newMessages = messages[receivedChatChannelId].slice();
       newMessages.push(message);
@@ -523,20 +551,27 @@ export default class Chat extends Component {
     }
   };
 
-  handleSuccess = response => {
-    if (response.status === 'error') {
-      this.receiveNewMessage(response.message);
-    }
+  triggerDeleteMessage = e => {
+    this.setState({ messageDeleteId: e.target.dataset.content });
+    this.setState({ showDeleteModal: true });
   };
 
-  triggerNotificationRequest = () => {
-    const context = this;
-    Notification.requestPermission(permission => {
-      if (permission === 'granted') {
-        context.setState({ notificationsPermission: 'granted' });
-        setupNotifications();
+  handleSuccess = response => {
+    const { activeChannelId } = this.state;
+    if (response.status === 'success') {
+      if (response.message.temp_id) {
+        this.setState(({ messages }) => {
+          const newMessages = messages;
+          const foundIndex = messages[activeChannelId].findIndex(
+            message => message.temp_id === response.message.temp_id,
+          );
+          newMessages[activeChannelId][foundIndex].id = response.message.id;
+          return { messages: newMessages };
+        });
       }
-    });
+    } else if (response.status === 'error') {
+      this.receiveNewMessage(response.message);
+    }
   };
 
   triggerActiveContent = e => {
@@ -663,6 +698,7 @@ export default class Chat extends Component {
   };
 
   handleFailure = err => {
+    // eslint-disable-next-line no-console
     console.error(err);
   };
 
@@ -672,6 +708,7 @@ export default class Chat extends Component {
       messages,
       showTimestamp,
       activeChannel,
+      currentUserId
     } = this.state;
     if (!messages[activeChannelId]) {
       return '';
@@ -725,6 +762,8 @@ export default class Chat extends Component {
     }
     return messages[activeChannelId].map(message => (
       <Message
+        currentUserId={currentUserId}
+        id={message.id}
         user={message.username}
         userID={message.user_id}
         profileImageUrl={message.profile_image_url}
@@ -733,6 +772,7 @@ export default class Chat extends Component {
         color={message.color}
         type={message.type}
         onContentTrigger={this.triggerActiveContent}
+        onDeleteMessageTrigger={this.triggerDeleteMessage}
       />
     ));
   };
@@ -774,22 +814,10 @@ export default class Chat extends Component {
     const { state } = this;
     if (state.showChannelsList) {
       const { notificationsPermission } = state;
-      let notificationsButton = '';
+      const notificationsButton = '';
       let notificationsState = '';
       let invitesButton = '';
-      if (notificationsPermission === 'waiting-permission') {
-        notificationsButton = (
-          <div>
-            <button
-              className="chat__notificationsbutton "
-              onClick={this.triggerNotificationRequest}
-              type="button"
-            >
-              Turn on Notifications
-            </button>
-          </div>
-        );
-      } else if (notificationsPermission === 'granted') {
+      if (notificationsPermission === 'granted') {
         notificationsState = (
           <div className="chat_chatconfig chat_chatconfig--on">
             Notifications On
@@ -883,17 +911,96 @@ export default class Chat extends Component {
     return '';
   };
 
+  handleMessageScroll = () => {
+    const {
+      allMessagesLoaded,
+      messages,
+      activeChannelId,
+      messageOffset,
+    } = this.state;
+
+    const jumpbackButton = document.getElementById('jumpback_button');
+
+    if (this.scroller) {
+      const scrolledRatio =
+        (this.scroller.scrollTop + this.scroller.clientHeight) /
+        this.scroller.scrollHeight;
+
+      if (scrolledRatio < 0.7) {
+        jumpbackButton.classList.remove('chatchanneljumpback__hide');
+      } else if (scrolledRatio > 0.8) {
+        jumpbackButton.classList.add('chatchanneljumpback__hide');
+      }
+
+      if (this.scroller.scrollTop === 0 && !allMessagesLoaded) {
+        getAllMessages(
+          activeChannelId,
+          messageOffset + messages[activeChannelId].length,
+          this.addMoreMessages,
+        );
+        const curretPosition = this.scroller.scrollHeight;
+        this.setState({ currentMessageLocation: curretPosition });
+      }
+    }
+  };
+
+  addMoreMessages = res => {
+    const { chatChannelId, messages } = res;
+
+    if (messages.length > 0) {
+      this.setState(prevState => ({
+        messages: {
+          [chatChannelId]: [...messages, ...prevState.messages[chatChannelId]],
+        },
+      }));
+    } else {
+      this.setState({ allMessagesLoaded: true });
+    }
+  };
+
+  jumpBacktoBottom = () => {
+    scrollToBottom();
+    document
+      .getElementById('jumpback_button')
+      .classList.remove('chatchanneljumpback__hide');
+  };
+
   renderActiveChatChannel = (channelHeader, incomingCall) => {
     const { state, props } = this;
+
     return (
       <div className="activechatchannel">
         <div className="activechatchannel__conversation">
           {channelHeader}
-          <div className="activechatchannel__messages" id="messagelist">
+          <div
+            className="activechatchannel__messages"
+            onScroll={this.handleMessageScroll}
+            ref={scroller => {
+              this.scroller = scroller;
+            }}
+            id="messagelist"
+          >
             {this.renderMessages()}
             {incomingCall}
             <div className="messagelist__sentinel" id="messagelist__sentinel" />
           </div>
+          <div
+            className="chatchanneljumpback chatchanneljumpback__hide"
+            id="jumpback_button"
+          >
+            <div
+              role="button"
+              className="chatchanneljumpback__messages"
+              onClick={this.jumpBacktoBottom}
+              tabIndex="0"
+              onKeyUp={e => {
+                if (e.keyCode === 13) this.jumpBacktoBottom();
+              }}
+            >
+              Scroll to Bottom
+            </div>
+          </div>
+          {this.renderDeleteModal()}
           <div className="activechatchannel__alerts">
             <Alert showAlert={state.showAlert} />
           </div>
@@ -915,6 +1022,61 @@ export default class Chat extends Component {
         />
       </div>
     );
+  };
+
+  renderDeleteModal = () => {
+    const { showDeleteModal } = this.state;
+    return (
+      <div
+        id="message"
+        className={
+          showDeleteModal
+            ? 'message__delete__modal'
+            : 'message__delete__modal message__delete__modal__hide'
+        }
+      >
+        <div className="modal__content">
+          <h3> Are you sure, you want to delete this message ?</h3>
+
+          <div className="delete__action__buttons">
+            <div
+              role="button"
+              className="message__cancel__button"
+              onClick={this.handleCloseDeleteModal}
+              tabIndex="0"
+              onKeyUp={e => {
+                if (e.keyCode === 13) this.handleCloseDeleteModal();
+              }}
+            >
+              {' '}
+              Cancel
+            </div>
+            <div
+              role="button"
+              className="message__delete__button"
+              onClick={this.handleMessageDelete}
+              tabIndex="0"
+              onKeyUp={e => {
+                if (e.keyCode === 13) this.handleMessageDelete();
+              }}
+            >
+              {' '}
+              Delete
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  handleCloseDeleteModal = () => {
+    this.setState({ showDeleteModal: false, messageDeleteId: null });
+  };
+
+  handleMessageDelete = () => {
+    const { messageDeleteId } = this.state;
+    deleteMessage(messageDeleteId);
+    this.setState({ showDeleteModal: false });
   };
 
   renderChannelHeaderInner = () => {

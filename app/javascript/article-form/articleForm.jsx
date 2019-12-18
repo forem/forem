@@ -1,8 +1,11 @@
 import 'preact/devtools';
 import { h, Component } from 'preact';
+import PropTypes from 'prop-types';
 import linkState from 'linkstate';
 import postscribe from 'postscribe';
+// eslint-disable-next-line import/no-unresolved
 import ImageUploadIcon from 'images/image-upload.svg';
+// eslint-disable-next-line import/no-unresolved
 import ThreeDotsIcon from 'images/three-dots.svg';
 import { submitArticle, previewArticle } from './actions';
 import BodyMarkdown from './elements/bodyMarkdown';
@@ -13,23 +16,34 @@ import Title from './elements/title';
 import MainImage from './elements/mainImage';
 import ImageManagement from './elements/imageManagement';
 import MoreConfig from './elements/moreConfig';
-import OrgSettings from './elements/orgSettings';
 import Errors from './elements/errors';
 import KeyboardShortcutsHandler from './elements/keyboardShortcutsHandler';
 import Tags from '../shared/components/tags';
+import { OrganizationPicker } from '../organization/OrganizationPicker';
 
-const setupImageButton = ({ className = '', imgSrc, imgAltText = '', onClickCallback }) => {
-  return (
-    <button
-    type="button"
-    className={className}
-    onClick={onClickCallback}
-    >
-      <img src={imgSrc} alt={imgAltText} />
-    </button>
-  )
-}
+const SetupImageButton = ({
+  className,
+  imgSrc,
+  imgAltText,
+  onClickCallback,
+}) => (
+  <button type="button" className={className} onClick={onClickCallback}>
+    <img src={imgSrc} alt={imgAltText} />
+  </button>
+);
 
+SetupImageButton.propTypes = {
+  className: PropTypes.string.isRequired,
+  imgSrc: PropTypes.string.isRequired,
+  imgAltText: PropTypes.string.isRequired,
+  onClickCallback: PropTypes.func.isRequired,
+};
+
+/*
+  Although the state fields: id, description, canonicalUrl, series, allSeries and
+  editing are not used in this file, they are important to the
+  editor.
+*/
 export default class ArticleForm extends Component {
   static handleGistPreview() {
     const els = document.getElementsByClassName('ltag_gist-liquid-tag');
@@ -54,23 +68,32 @@ export default class ArticleForm extends Component {
     }
   }
 
+  static propTypes = {
+    version: PropTypes.string.isRequired,
+    article: PropTypes.string.isRequired,
+    organizations: PropTypes.string,
+  };
+
+  static defaultProps = {
+    organizations: '',
+  };
+
   constructor(props) {
     super(props);
-    this.article = JSON.parse(this.props.article);
-    const organizations = this.props.organizations
-      ? JSON.parse(this.props.organizations)
-      : null;
+    const { article, version } = this.props;
+    let { organizations } = this.props;
+    this.article = JSON.parse(article);
+    organizations = organizations ? JSON.parse(organizations) : null;
 
     this.url = window.location.href;
-
     this.state = {
-      id: this.article.id || null,
+      id: this.article.id || null, // eslint-disable-line react/no-unused-state
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
-      description: '',
-      canonicalUrl: this.article.canonical_url || '',
-      series: this.article.series || '',
-      allSeries: this.article.all_series || [],
+      description: '', // eslint-disable-line react/no-unused-state
+      canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
+      series: this.article.series || '', // eslint-disable-line react/no-unused-state
+      allSeries: this.article.all_series || [], // eslint-disable-line react/no-unused-state
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
@@ -78,7 +101,7 @@ export default class ArticleForm extends Component {
       previewResponse: '',
       helpHTML: document.getElementById('editor-help-guide').innerHTML,
       submitting: false,
-      editing: this.article.id != null,
+      editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       imageManagementShowing: false,
       moreConfigShowing: false,
       mainImage: this.article.main_image || null,
@@ -86,7 +109,7 @@ export default class ArticleForm extends Component {
       organizationId: this.article.organization_id,
       errors: null,
       edited: false,
-      version: this.props.version,
+      version,
     };
   }
 
@@ -139,15 +162,26 @@ export default class ArticleForm extends Component {
     );
   };
 
+  setCommonProps = ({
+    helpShowing = false,
+    previewShowing = false,
+    imageManagementShowing = false,
+    moreConfigShowing = false,
+  }) => {
+    return {
+      helpShowing,
+      previewShowing,
+      imageManagementShowing,
+      moreConfigShowing,
+    };
+  };
+
   toggleHelp = e => {
     const { helpShowing } = this.state;
     e.preventDefault();
     window.scrollTo(0, 0);
     this.setState({
-      helpShowing: !helpShowing,
-      previewShowing: false,
-      imageManagementShowing: false,
-      moreConfigShowing: false,
+      ...this.setCommonProps({ helpShowing: !helpShowing }),
     });
   };
 
@@ -156,10 +190,7 @@ export default class ArticleForm extends Component {
     e.preventDefault();
     if (previewShowing) {
       this.setState({
-        previewShowing: false,
-        helpShowing: false,
-        imageManagementShowing: false,
-        moreConfigShowing: false,
+        ...this.setCommonProps({}),
       });
     } else {
       previewArticle(bodyMarkdown, this.showPreview, this.failedPreview);
@@ -171,10 +202,9 @@ export default class ArticleForm extends Component {
     e.preventDefault();
     window.scrollTo(0, 0);
     this.setState({
-      imageManagementShowing: !imageManagementShowing,
-      previewShowing: false,
-      helpShowing: false,
-      moreConfigShowing: false,
+      ...this.setCommonProps({
+        imageManagementShowing: !imageManagementShowing,
+      }),
     });
   };
 
@@ -182,19 +212,14 @@ export default class ArticleForm extends Component {
     const { moreConfigShowing } = this.state;
     e.preventDefault();
     this.setState({
-      moreConfigShowing: !moreConfigShowing,
-      previewShowing: false,
-      helpShowing: false,
-      imageManagementShowing: false,
+      ...this.setCommonProps({ moreConfigShowing: !moreConfigShowing }),
     });
   };
 
   showPreview = response => {
     if (response.processed_html) {
       this.setState({
-        previewShowing: true,
-        helpShowing: false,
-        imageManagementShowing: false,
+        ...this.setCommonProps({ previewShowing: true }),
         previewResponse: response,
         errors: null,
       });
@@ -212,6 +237,8 @@ export default class ArticleForm extends Component {
   };
 
   failedPreview = response => {
+    // TODO: console.log should not be part of production code. Remove it!
+    // eslint-disable-next-line no-console
     console.log(response);
   };
 
@@ -261,18 +288,19 @@ export default class ArticleForm extends Component {
 
   onClearChanges = e => {
     e.preventDefault();
-    // eslint-disable-next-line no-restricted-globals
-    const revert = confirm(
+    // eslint-disable-next-line no-alert
+    const revert = window.confirm(
       'Are you sure you want to revert to the previous save?',
     );
     if (!revert && navigator.userAgent !== 'DEV-Native-ios') return;
+
     this.setState({
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
-      description: '',
-      canonicalUrl: this.article.canonical_url || '',
-      series: this.article.series || '',
-      allSeries: this.article.all_series || [],
+      description: '', // eslint-disable-line react/no-unused-state
+      canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
+      series: this.article.series || '', // eslint-disable-line react/no-unused-state
+      allSeries: this.article.all_series || [], // eslint-disable-line react/no-unused-state
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
@@ -280,7 +308,7 @@ export default class ArticleForm extends Component {
       previewResponse: '',
       helpHTML: document.getElementById('editor-help-guide').innerHTML,
       submitting: false,
-      editing: this.article.id != null,
+      editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       imageManagementShowing: false,
       moreConfigShowing: false,
       mainImage: this.article.main_image || null,
@@ -360,14 +388,17 @@ export default class ArticleForm extends Component {
     );
     const orgArea =
       organizations && organizations.length > 0 ? (
-        <OrgSettings
-          organizations={organizations}
-          organizationId={organizationId}
-          onToggle={this.handleOrgIdChange}
-        />
-      ) : (
-        ''
-      );
+        <div className="articleform__orgsettings">
+          Publish under an organization:
+          <OrganizationPicker
+            name="article[organization_id]"
+            id="article_publish_under_org"
+            organizations={organizations}
+            organizationId={organizationId}
+            onToggle={this.handleOrgIdChange}
+          />
+        </div>
+      ) : null;
     const errorsArea = errors ? <Errors errorsList={errors} /> : '';
     let editorView = '';
     if (previewShowing) {
@@ -395,12 +426,12 @@ export default class ArticleForm extends Component {
       let moreConfigBottomButton = '';
       if (version === 'v2') {
         moreConfigBottomButton = (
-          setupImageButton({
-            className: 'articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom',
-            imgSrc: ThreeDotsIcon,
-            imgAltText: 'menu dots',
-            onClickCallback: this.toggleMoreConfig
-          })
+          <SetupImageButton
+            className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
+            imgSrc={ThreeDotsIcon}
+            imgAltText="menu dots"
+            onClickCallback={this.toggleMoreConfig}
+          />
         );
         controls = (
           <div
@@ -416,25 +447,21 @@ export default class ArticleForm extends Component {
                 defaultValue={tagList}
                 onInput={linkState(this, 'tagList')}
                 maxTags={4}
-                autoComplete='off'
-                classPrefix='articleform'
+                autoComplete="off"
+                classPrefix="articleform"
               />
-              {
-                setupImageButton({
-                  className: 'articleform__detailsButton articleform__detailsButton--image',
-                  imgSrc: ImageUploadIcon,
-                  imgAltText: 'Upload images',
-                  onClickCallback: this.toggleImageManagement
-                })
-              }
-              {
-                setupImageButton({
-                  className: 'articleform__detailsButton articleform__detailsButton--moreconfig',
-                  imgSrc: ThreeDotsIcon,
-                  imgAltText: 'Menu',
-                  onClickCallback: this.toggleMoreConfig
-                })
-              }
+              <SetupImageButton
+                className="articleform__detailsButton articleform__detailsButton--image"
+                imgSrc={ImageUploadIcon}
+                imgAltText="Upload images"
+                onClickCallback={this.toggleImageManagement}
+              />
+              <SetupImageButton
+                className="articleform__detailsButton articleform__detailsButton--moreconfig"
+                imgSrc={ThreeDotsIcon}
+                imgAltText="Menu"
+                onClickCallback={this.toggleMoreConfig}
+              />
             </div>
           </div>
         );

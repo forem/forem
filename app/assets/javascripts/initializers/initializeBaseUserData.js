@@ -1,4 +1,6 @@
-/* globals userData, filterXSS */
+'use strict';
+
+/* global userData, filterXSS */
 
 function initializeUserProfileContent(user) {
   document.getElementById('sidebar-profile-pic').innerHTML =
@@ -8,9 +10,10 @@ function initializeUserProfileContent(user) {
     user.profile_image_90 +
     '" />';
 
-    document.getElementById('sidebar-profile-name').innerHTML =
-    filterXSS(user.name);
-    document.getElementById('sidebar-profile-username').innerHTML =
+  document.getElementById('sidebar-profile-name').innerHTML = filterXSS(
+    user.name,
+  );
+  document.getElementById('sidebar-profile-username').innerHTML =
     '@' + user.username;
   document.getElementById('sidebar-profile-snapshot-inner').href =
     '/' + user.username;
@@ -90,13 +93,20 @@ function addRelevantButtonsToArticle(user) {
 
 function addRelevantButtonsToComments(user) {
   if (document.getElementById('comments-container')) {
+    // buttons are actually <span>'s
     var settingsButts = document.getElementsByClassName('comment-actions');
 
     for (let i = 0; i < settingsButts.length; i += 1) {
       let butt = settingsButts[i];
-      if (parseInt(butt.dataset.userId, 10) === user.id) {
-        butt.className = 'comment-actions';
+      const { action, commentableUserId, userId } = butt.dataset
+
+      if (parseInt(userId, 10) === user.id) {
         butt.style.display = 'inline-block';
+      }
+      if (action === 'hide-button' && parseInt(commentableUserId, 10) === user.id) {
+        butt.style.display = 'inline-block';
+      } else if (action === 'hide-button' && parseInt(commentableUserId, 10) !== user.id) {
+        butt.style.display = 'none'
       }
     }
 

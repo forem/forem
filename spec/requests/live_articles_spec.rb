@@ -12,6 +12,7 @@ RSpec.describe "Live Articles", type: :request do
       get "/live_articles"
       expect(response.body).to include(article.title)
     end
+
     it "returns a live event if it is live" do
       event = create(:event, live_now: true)
       get "/live_articles"

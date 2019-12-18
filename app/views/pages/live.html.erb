@@ -20,7 +20,7 @@
 <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/bqzj1pwho9e0jicqo44s.png">
 
 <style>
-  <% cache "live-page-css-#{ApplicationConfig['DEPLOYMENT_SIGNATURE']}", expires_in: 1.hour do %>
+  <% cache "live-page-css-#{ApplicationConfig['HEROKU_SLUG_COMMIT']}", expires_in: 1.hour do %>
   <%= Rails.application.assets["live.css"].to_s.html_safe %>
   <% end %>
 </style>
@@ -29,7 +29,7 @@
   <div class="live-container">
     <div class="live-component">
       <div>
-        <iframe class="live-video" src="//iframe.dacast.com/b/105417/c/465464" width="1920" height="1080" frameborder="0" scrolling="no" allow="autoplay" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
+        <iframe class="live-video" src="//iframe.dacast.com/b/105417/c/465464" width="1920" height="1080" frameborder="0" scrolling="no" allow="autoplay" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen loading="lazy"></iframe>
       </div>
       <div class="live-chat-wrapper">
         <div id="chat" class="live-chat" data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>" data-chat-channels="<%= @chat_channels %>" data-chat-options="<%= { showChannelsList: false, showTimestamp: false, activeChannelId: @active_channel.id }.to_json %>">

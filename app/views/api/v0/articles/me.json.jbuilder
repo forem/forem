@@ -13,6 +13,7 @@ json.array! @articles do |article|
   json.canonical_url            article.processed_canonical_url
   json.comments_count           article.comments_count
   json.positive_reactions_count article.positive_reactions_count
+  json.page_views_count         article.page_views_count
   json.published_timestamp      article.published_timestamp
   json.body_markdown            article.body_markdown
 

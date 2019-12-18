@@ -6,7 +6,7 @@ vcr_option = {
   allow_playback_repeats: "true"
 }
 
-RSpec.describe RssReader, vcr: vcr_option do
+RSpec.describe RssReader, type: :service, vcr: vcr_option do
   let(:link) { "https://medium.com/feed/@vaidehijoshi" }
   let(:nonmedium_link) { "https://circleci.com/blog/feed.xml" }
   let(:nonpermanent_link) { "https://medium.com/feed/@macsiri/" }

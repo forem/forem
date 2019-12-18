@@ -7,7 +7,7 @@ vcr_option = {
   allow_playback_repeats: "true"
 }
 
-RSpec.describe GithubTag::GithubReadmeTag, vcr: vcr_option do
+RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: vcr_option do
   describe "#id" do
     let(:path) { "facebook/react" }
     let(:my_ocktokit_client) { instance_double(Octokit::Client) }

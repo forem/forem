@@ -2,7 +2,9 @@
 
 const fetchCallback = ({ url, headers = {}, addTokenToBody = false, body }) => {
   return csrfToken => {
-    if (addTokenToBody) { body.append('authenticity_token', csrfToken) };
+    if (addTokenToBody) {
+      body.append('authenticity_token', csrfToken);
+    }
     return window.fetch(url, {
       method: 'POST',
       headers: {
@@ -24,37 +26,41 @@ function sendFetch(switchStatement, body) {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body
+        body,
       });
     case 'reaction-creation':
       return fetchCallback({
         url: '/reactions',
         addTokenToBody: true,
-        body
+        body,
       });
     case 'image-upload':
       return fetchCallback({
         url: '/image_uploads',
         addTokenToBody: true,
-        body
+        body,
       });
     case 'follow-creation':
       return fetchCallback({
         url: '/follows',
         addTokenToBody: true,
-        body
+        body,
       });
     case 'chat-creation':
       return fetchCallback({
         url: '/chat_channels/create_chat',
         addTokenToBody: true,
-        body
+        body,
       });
-    case 'block-chat':
+    case 'block-user':
       return fetchCallback({
-        url: '/chat_channels/block_chat',
-        addTokenToBody: true,
-        body
+        url: '/user_blocks',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        addTokenToBody: false,
+        body,
       });
     case 'comment-creation':
       return fetchCallback({
@@ -62,7 +68,7 @@ function sendFetch(switchStatement, body) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body
+        body,
       });
     case 'comment-preview':
       return fetchCallback({
@@ -70,7 +76,7 @@ function sendFetch(switchStatement, body) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body
+        body,
       });
     default:
       console.log('A wrong switchStatement was used.'); // eslint-disable-line no-console

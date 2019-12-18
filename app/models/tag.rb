@@ -30,6 +30,7 @@ class Tag < ActsAsTaggableOn::Tag
   validates :category, inclusion: { in: ALLOWED_CATEGORIES }
 
   validate :validate_alias
+  validate :validate_name
   before_validation :evaluate_markdown
   before_validation :pound_it
   before_save :calculate_hotness_score
@@ -59,6 +60,18 @@ class Tag < ActsAsTaggableOn::Tag
 
   def self.valid_categories
     ALLOWED_CATEGORIES
+  end
+
+  def self.aliased_name(word)
+    tag = find_by(name: word.downcase)
+    return unless tag
+
+    tag.alias_for.presence || tag.name
+  end
+
+  def validate_name
+    errors.add(:name, "is too long (maximum is 30 characters)") if name.length > 30
+    errors.add(:name, "contains non-alphanumeric characters") unless name.match?(/\A[[:alnum:]]+\z/)
   end
 
   private

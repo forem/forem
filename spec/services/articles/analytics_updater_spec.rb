@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Articles::AnalyticsUpdater do
+RSpec.describe Articles::AnalyticsUpdater, type: :service do
   let(:stubbed_ga) { double }
   let(:user) { build(:user) }
 

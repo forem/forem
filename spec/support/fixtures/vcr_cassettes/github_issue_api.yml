@@ -78,14 +78,14 @@ http_interactions:
         first issue","color":"724ac9","default":true}],"state":"closed","locked":false,"assignee":null,"assignees":[],"milestone":null,"comments":0,"created_at":"2018-08-27T21:23:19Z","updated_at":"2018-09-04T21:09:29Z","closed_at":"2018-09-04T21:09:29Z","author_association":"COLLABORATOR","body":"@jessleenyc
         commented on [Tue Jul 31 2018](https://github.com/thepracticaldev/dev.to_core/issues/638)\n\n#
         _TASK or Feature_\n### Request or User Story\nGetting lots of crawlers clicking
-        on the hidden link that''s giving them 404 errors and jamming up airbrake!\n###
+        on the hidden link that''s giving them 404 errors and jamming up honeybadger!\n###
         Definition of Done\n\n### Notes\n\n\n\n---\n\n@arun1595 commented on [Wed
         Aug 01 2018](https://github.com/thepracticaldev/dev.to_core/issues/638#issuecomment-409774531)\n\n@jessleenyc
         I would like to tackle this issue. Can you guide me with what \"moderate\"
         links are?\r\n\r\nThanks.\n\n---\n\n@Zhao-Andy commented on [Mon Aug 27 2018](https://github.com/thepracticaldev/dev.to_core/issues/638#issuecomment-416373282)\n\nHey
         @arun1595, we''re going to move this to the public repo and continue the conversation
         there.\n\n","closed_by":{"login":"benhalpern","id":3102842,"node_id":"MDQ6VXNlcjMxMDI4NDI=","avatar_url":"https://avatars0.githubusercontent.com/u/3102842?v=4","gravatar_id":"","url":"https://api.github.com/users/benhalpern","html_url":"https://github.com/benhalpern","followers_url":"https://api.github.com/users/benhalpern/followers","following_url":"https://api.github.com/users/benhalpern/following{/other_user}","gists_url":"https://api.github.com/users/benhalpern/gists{/gist_id}","starred_url":"https://api.github.com/users/benhalpern/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/benhalpern/subscriptions","organizations_url":"https://api.github.com/users/benhalpern/orgs","repos_url":"https://api.github.com/users/benhalpern/repos","events_url":"https://api.github.com/users/benhalpern/events{/privacy}","received_events_url":"https://api.github.com/users/benhalpern/received_events","type":"User","site_admin":false}}'
-    http_version: 
+    http_version:
   recorded_at: Tue, 25 Sep 2018 19:42:19 GMT
 - request:
     method: post
@@ -94,7 +94,7 @@ http_interactions:
       encoding: UTF-8
       string: '{"text":"@jessleenyc commented on [Tue Jul 31 2018](https://github.com/thepracticaldev/dev.to_core/issues/638)\n\n#
         _TASK or Feature_\n### Request or User Story\nGetting lots of crawlers clicking
-        on the hidden link that''s giving them 404 errors and jamming up airbrake!\n###
+        on the hidden link that''s giving them 404 errors and jamming up honeybadger!\n###
         Definition of Done\n\n### Notes\n\n\n\n---\n\n@arun1595 commented on [Wed
         Aug 01 2018](https://github.com/thepracticaldev/dev.to_core/issues/638#issuecomment-409774531)\n\n@jessleenyc
         I would like to tackle this issue. Can you guide me with what \"moderate\"
@@ -163,7 +163,7 @@ http_interactions:
         </h1>
         <h3>
         <a id="user-content-request-or-user-story" class="anchor" href="#request-or-user-story" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Request or User Story</h3>
-        <p>Getting lots of crawlers clicking on the hidden link that's giving them 404 errors and jamming up airbrake!</p>
+        <p>Getting lots of crawlers clicking on the hidden link that's giving them 404 errors and jamming up honeybadger!</p>
         <h3>
         <a id="user-content-definition-of-done" class="anchor" href="#definition-of-done" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Definition of Done</h3>
         <h3>
@@ -175,6 +175,6 @@ http_interactions:
         <hr>
         <p>@Zhao-Andy commented on <a href="https://github.com/thepracticaldev/dev.to_core/issues/638#issuecomment-416373282">Mon Aug 27 2018</a></p>
         <p>Hey @arun1595, we're going to move this to the public repo and continue the conversation there.</p>
-    http_version: 
+    http_version:
   recorded_at: Tue, 25 Sep 2018 19:42:19 GMT
 recorded_with: VCR 4.0.0
