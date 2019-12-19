@@ -101,6 +101,7 @@
         !url.href.includes('/admin') && // Don't fetch for administrate dashboard.
         !url.href.includes('/internal') && // Don't fetch for internal dashboard.
         !url.href.includes('/future') && // Skip for /future.
+        !url.href.includes('?preview=') && // Skip for /future.
         caches.match('/shell_top') && // Ensure shell_top is in the cache.
         caches.match('/shell_bottom')) { // Ensure shell_bottom is in the cache.
         event.respondWith(createPageStream(event.request)); // Respond with the stream
