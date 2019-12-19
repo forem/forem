@@ -517,4 +517,14 @@ RSpec.describe Notification, type: :model do
       end
     end
   end
+
+  describe "#fast_destroy_old_notifications" do
+    it "bulk deletes notifications older than given timestamp" do
+      bulk_deleter = BulkSqlDelete.new
+      allow(BulkSqlDelete).to receive(:new).and_return(bulk_deleter)
+      allow(bulk_deleter).to receive(:delete_in_batches)
+      described_class.fast_destroy_old_notifications("a_time")
+      expect(bulk_deleter).to have_received(:delete_in_batches).with(a_string_including("< 'a_time'"))
+    end
+  end
 end
