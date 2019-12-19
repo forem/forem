@@ -16,6 +16,10 @@
     <% end %>
     <div id="podcast-form-data">
       <div class="field">
+        <%= label_tag :i_am_owner, "I am the owner of this podcast" %>
+        <%= check_box_tag :i_am_owner %>
+      </div>
+      <div class="field">
         <%= form.label :title %>
         <%= form.text_field :title, placeholder: "" %>
       </div>
