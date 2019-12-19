@@ -30,4 +30,11 @@ RSpec.describe "OrganizationsUpdate", type: :request do
     put "/organizations/#{org_id}", params: { organization: { id: org_id, text_color_hex: "#111111" } }
     expect(Organization.last.profile_updated_at).to be > 2.minutes.ago
   end
+
+  it "returns not_found if organization is missing" do
+    invalid_id = org_id + 100
+    expect do
+      put "/organizations/#{invalid_id}", params: { organization: { id: invalid_id, text_color_hex: "#111111" } }
+    end.to raise_error(ActiveRecord::RecordNotFound)
+  end
 end
