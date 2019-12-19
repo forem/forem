@@ -48,7 +48,7 @@
             </h2>
             <p>
               <% if feedback_message.message.blank? %>
-                <span class="blankmessage">No message was left.</span>
+                <span class="font-italic">No message was left.</span>
               <% else %>
                 <%= feedback_message.message %>
               <% end %>
@@ -119,7 +119,7 @@
             <button class="btn btn-primary" type="button" id="send__email__btn__<%= feedback_message.id %>">Send Email ✉️</button>
           </div>
         </div>
-        <div class="email__alert alert w-100 mt-2" id="email__alert__<%= feedback_message.id %>">
+        <div class="email__alert alert w-100 mt-2 d-none" id="email__alert__<%= feedback_message.id %>">
         </div>
         <div class="row my-3">
           <div class="col-12">
@@ -210,13 +210,13 @@
  });
 
  function successfulEmail(alert) {
-   alert.style.display = 'inline-block';
+   alert.classList.remove("d-none");
    alert.classList.add('alert-success');
    alert.innerHTML = "Email sent successfully! Refresh to see";
  }
 
  function failedEmail(alert) {
-   alert.style.display = 'inline-block';
+   alert.classList.remove("d-none");
    alert.classList.add('alert-danger');
    alert.innerHTML = "Email failed to send, see console or Honeybadger for errors";
  }
@@ -230,13 +230,13 @@
    var subjectLine = activeTab.querySelector("#" + userType + "__subject__" + id).value;
    var emailBody = activeTab.querySelector("#" + userType + "__body__" + id).value;
 
-   alert.style.display = "none";
+   alert.classList.add("d-none");
    alert.classList.remove("alert-warning");
    alert.classList.remove("alert-success");
    alert.classList.remove("alert-danger");
 
    if (emailToAddress === "") {
-     alert.style.display = 'inline-block';
+     alert.classList.remove("d-none");
      alert.classList.add("alert-warning");
      alert.innerHTML = "Email can't be blank!"
      return
