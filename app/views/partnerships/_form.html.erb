@@ -12,7 +12,7 @@
   </div>
 <% elsif %w[silver bronze tag].include?(level) %>
   <% organizations.find_each do |org| %>
-    <% if !org.has_enough_credits?(Sponsorship::CREDITS[level]) %>
+    <% if !org.enough_credits?(Sponsorship::CREDITS[level]) %>
       <div class="partner-credits-explainer">
         <h4>What next?</h4>
         <h3><img src="<%= ProfileImage.new(org).get(90) %>" /> Purchase Credits for @<%= org.slug %></h3>

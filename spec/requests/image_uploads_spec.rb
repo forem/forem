@@ -6,7 +6,7 @@ RSpec.describe "ImageUploads", type: :request do
     let(:headers) { { "Content-Type": "application/json", Accept: "application/json" } }
     let(:image) do
       Rack::Test::UploadedFile.new(
-        Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg"),
+        Rails.root.join("spec/support/fixtures/images/image1.jpeg"),
         "image/jpeg",
       )
     end
@@ -14,7 +14,7 @@ RSpec.describe "ImageUploads", type: :request do
     let(:cache) { Rails.cache }
     let(:bad_image) do
       Rack::Test::UploadedFile.new(
-        Rails.root.join("spec", "support", "fixtures", "images", "bad-image.jpg"),
+        Rails.root.join("spec/support/fixtures/images/bad-image.jpg"),
         "image/jpeg",
       )
     end
@@ -51,8 +51,7 @@ RSpec.describe "ImageUploads", type: :request do
 
       it "supports upload of more than one image at a time" do
         image2 = Rack::Test::UploadedFile.new(
-          Rails.root.join("spec", "support", "fixtures", "images", "image2.jpeg"),
-          "image/jpeg",
+          Rails.root.join("spec/support/fixtures/images/image2.jpeg"), "image/jpeg"
         )
         post "/image_uploads", headers: headers, params: { image: [image, image2] }
 
@@ -87,7 +86,7 @@ RSpec.describe "ImageUploads", type: :request do
       it "raises error with too many uploads" do
         upload = proc do
           Rack::Test::UploadedFile.new(
-            Rails.root.join("spec", "support", "fixtures", "images", "images1.jpeg"), "image/jpeg"
+            Rails.root.join("spec/support/fixtures/images/images1.jpeg"), "image/jpeg"
           )
         end
         expect do

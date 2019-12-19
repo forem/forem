@@ -1,9 +1,6 @@
 require "rails_helper"
 
 RSpec.describe FeedbackMessage, type: :model do
-  let(:user) { create(:user) }
-  let(:abuse_report) { create(:feedback_message, :abuse_report) }
-
   describe "validations for an abuse report" do
     subject(:feedback_message) do
       described_class.new(

@@ -19,5 +19,13 @@ RSpec.describe "VideoStatesUpdate", type: :request do
            params: { input: { key: article.video_code } }
       expect(response).to have_http_status(:unprocessable_entity)
     end
+
+    it "returns not_found if video article is not found" do
+      input = JSON.unparse(input: { key: "abc" })
+      post "/video_states?key=#{authorized_user.secret}",
+           params: { Message: input }.to_json
+      expect(response).to have_http_status(:not_found)
+      expect(response.parsed_body["message"]).to eq("Related article not found")
+    end
   end
 end

@@ -1,0 +1,32 @@
+<style>
+  dt {
+    width: calc(20% - 1rem);
+    float: left;
+  }
+
+  dd {
+    width: calc(80% - 1rem)
+  }
+</style>
+<div class="row">
+  <h1>
+    <%= @organization.name %><a href="/<%= @organization.slug %>" target="_blank"> (@<%= @organization.name %>)</a>
+  </h1>
+  <p><em>Created <%= @organization.created_at.strftime("%b %e '%y") %></em></p>
+  <p><strong><u>General Info</u></strong></p>
+  <dl>
+    <dt>ID:</dt>
+    <dd><%= @organization.id %></span></dd>
+     <dt>name:</dt>
+    <dd><%= @organization.name %></dd>
+    <dt>Membership Count:</dt>
+    <dd><%= @organization.organization_memberships.size %></dd>
+    <dt>Email:</dt>
+    <dd><%= @organization.email || "N/A" %></dd>
+    <dt>Twitter:</dt>
+    <dd><%= @organization.twitter_username || "N/A" %></dd>
+    <dt>GitHub:</dt>
+    <dd><%= @organization.github_username || "N/A" %></dd>
+  </dl>
+</div>
+<%= render "activity" %>

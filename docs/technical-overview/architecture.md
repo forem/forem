@@ -35,6 +35,20 @@ rule, you should avoid relying on JavaScript for layout when working on DEV.
 We use [PreactJS][preact], a lightweight alternative to ReactJS, and we try to
 reduce our bundle size with [dynamic imports][dynamic_imports].
 
+## Service workers and shell architecture
+
+We make use of serviceworkers to cache portions of the page.
+
+We cache styles here as well as script fingerprinting, so we should increment
+the number in `/async_info/shell_version` any time we change core CSS or
+JavaScript.
+
+Serviceworkers can be controlled in the `application` tab of Chrome.
+Serviceworkers are a reverse proxy that runs in the browser in a non-blocking
+thread, supported by most major browsers. You may want to disable or bypass
+Serviceworkers in development while making changes to avoid having everything
+cached.
+
 ## Worst technical debt
 
 The most widespread elements of technical debt in this application reside on the
@@ -63,16 +77,16 @@ shared among all users.
 
 ## Inter-page navigation
 
-DEV uses a variation of "instant click," which swaps out page content instead
-of making full-page requests. This approach is similar to the one used by the
-Rails gem `Turbolinks`, but our approach is more lightweight. The library is
-modified to work specifically with this Rails app and does not swap out reused
-elements like the navigation bar or the footer. The code for this functionality
-is viewable in `app/assets/javascripb/base.js.erb`.
+DEV uses a variation of "instant click," which swaps out page content instead of
+making full-page requests. This approach is similar to the one used by the Rails
+gem `Turbolinks`, but our approach is more lightweight. The library is modified
+to work specifically with this Rails app and does not swap out reused elements
+like the navigation bar or the footer. The code for this functionality is
+viewable in `app/assets/javascripb/base.js.erb`.
 
 There are a few caveats regarding this approach. Using our approach means a
-non-trivial amount of functionality is reloaded on page change. A similar
-amount of reloading occurs when using `window.InstantClick.on('change', someFunction)`.
+non-trivial amount of functionality is reloaded on page change. A similar amount
+of reloading occurs when using `window.InstantClick.on('change', someFunction)`.
 This results in code that looks something like this:
 
 ```javascript
@@ -92,9 +106,9 @@ that front is welcome!
 ## Articles (or posts)
 
 Articles are the primary form of user generated content in the application. An
-Article has many comments and taggings through the acts-as-taggable gem,
-belongs to a single user (and possibly an organization), and is the core unit
-of content.
+Article has many comments and taggings through the acts-as-taggable gem, belongs
+to a single user (and possibly an organization), and is the core unit of
+content.
 
 ## Comments
 
@@ -149,5 +163,6 @@ This is far from a complete view of the app, but it covers a few core concepts.
 [fastly]: https://www.fastly.com/
 [rails_caching]: https://guides.rubyonrails.org/caching_with_rails.html
 [preact]: https://preactjs.com/
-[dynamic_imports]: https://dev.to/goenning/how-we-reduced-our-initial-jscss-size-by-67-3ac0
+[dynamic_imports]:
+  https://dev.to/goenning/how-we-reduced-our-initial-jscss-size-by-67-3ac0
 [fastly_rails]: https://github.com/fastly/fastly-rails

@@ -97,17 +97,6 @@ class Comment < ApplicationRecord
     end
   end
 
-  def self.trigger_index(record, remove)
-    # record is removed from index synchronously in before_destroy_actions
-    return if remove
-
-    if record.deleted == false
-      AlgoliaSearch::AlgoliaJob.perform_later(record, "index!")
-    else
-      AlgoliaSearch::AlgoliaJob.perform_later(record, "remove_algolia_index")
-    end
-  end
-
   def self.users_with_number_of_comments(user_ids, before_date)
     joins(:user).
       select("users.username, COUNT(comments.user_id) AS number_of_comments").
@@ -117,17 +106,25 @@ class Comment < ApplicationRecord
       order("number_of_comments DESC")
   end
 
+  def self.tree_for(commentable, limit = 0)
+    commentable.comments.includes(:user).arrange(order: "score DESC").to_a[0..limit - 1].to_h
+  end
+
+  def self.trigger_index(record, remove)
+    # record is removed from index synchronously in before_destroy_actions
+    return if remove
+
+    if record.deleted == false
+      Search::IndexJob.perform_later("Comment", record.id)
+    else
+      Search::RemoveFromIndexJob.perform_later(Comment.algolia_index_name, record.index_id)
+    end
+  end
+
+  # this should remain public because it's called by AlgoliaSearch::AlgoliaJob in .trigger_index
   def remove_algolia_index
     remove_from_index!
     Search::RemoveFromIndexJob.perform_now("ordered_comments_#{Rails.env}", index_id)
-  end
-
-  def index_id
-    "comments-#{id}"
-  end
-
-  def self.tree_for(commentable, limit = 0)
-    commentable.comments.includes(:user).arrange(order: "score DESC").to_a[0..limit - 1].to_h
   end
 
   def path
@@ -151,6 +148,8 @@ class Comment < ApplicationRecord
   end
 
   def id_code_generated
+    # 26 is the conversion base
+    # eg. 1000.to_s(26) would be "1cc"
     id.to_s(26)
   end
 
@@ -162,9 +161,11 @@ class Comment < ApplicationRecord
 
   def title(length = 80)
     return "[deleted]" if deleted
+    return "[hidden by post author]" if hidden_by_commentable_user
 
     text = ActionController::Base.helpers.strip_tags(processed_html).strip
-    HTMLEntities.new.decode ActionController::Base.helpers.truncate(text, length: length).gsub("&#39;", "'").gsub("&amp;", "&")
+    truncated_text = ActionController::Base.helpers.truncate(text, length: length).gsub("&#39;", "'").gsub("&amp;", "&")
+    HTMLEntities.new.decode(truncated_text)
   end
 
   def video
@@ -181,6 +182,11 @@ class Comment < ApplicationRecord
 
   def remove_notifications
     Notification.remove_all_without_delay(notifiable_ids: id, notifiable_type: "Comment")
+  end
+
+  # public because it's used in the algolia indexing methods
+  def index_id
+    "comments-#{id}"
   end
 
   private
