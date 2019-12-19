@@ -34,6 +34,6 @@ RSpec.configure do |config|
   end
 
   config.before(:each, type: :system, js: true) do
-    driven_by :chrome
+    driven_by :headless_chrome
   end
 end

@@ -1,5 +1,3 @@
-'use strict';
-
 /* global checkUserLoggedIn instantClick InstantClick sendHapticMessage */
 
 function markNotificationsAsRead() {
