@@ -63,6 +63,13 @@ task award_badges: :environment do
   BadgeRewarder.award_streak_badge(16)
 end
 
+task award_weekly_tag_badges: :environment do
+  # Should only run once per week (via Heroku Scheduler) on Thursday.
+  return if Time.current.wday != 4
+
+  BadgeRewarder.award_tag_badges
+end
+
 # rake award_top_seven_badges["ben jess peter mac liana andy"]
 task :award_top_seven_badges, [:arg1] => :environment do |_t, args|
   usernames = args[:arg1].split(" ")
@@ -93,8 +100,8 @@ task award_contributor_badges_from_github: :environment do
 end
 
 task remove_old_html_variant_data: :environment do
-  HtmlVariantTrial.where("created_at < ?", 1.week.ago).destroy_all
-  HtmlVariantSuccess.where("created_at < ?", 1.week.ago).destroy_all
+  HtmlVariantTrial.where("created_at < ?", 2.weeks.ago).destroy_all
+  HtmlVariantSuccess.where("created_at < ?", 2.weeks.ago).destroy_all
   HtmlVariant.find_each do |html_variant|
     html_variant.calculate_success_rate! if html_variant.html_variant_successes.any?
   end
