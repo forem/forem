@@ -10,7 +10,7 @@ RSpec.describe "internal/organizations", type: :request do
   end
 
   describe "GETS /internal/organizations" do
-    let(:organizations) { Organization.all.map { |o| CGI.escapeHTML(o.name) } }
+    let(:organizations) { Organization.pluck(:name).map { |n| CGI.escapeHTML(n) } }
     let(:another_organization) { create(:organization, name: "T-800") }
 
     it "lists all organizations" do
@@ -20,15 +20,15 @@ RSpec.describe "internal/organizations", type: :request do
 
     it "allows searching" do
       get "/internal/organizations?search=#{organization.name}"
-      expect(response.body).to include(organization.name)
-      expect(response.body).not_to include(another_organization.name)
+      expect(response.body).to include(CGI.escapeHTML(organization.name))
+      expect(response.body).not_to include(CGI.escapeHTML(another_organization.name))
     end
   end
 
   describe "GET /internal/orgnaizations/:id" do
     it "renders the correct organization" do
       get "/internal/organizations/#{organization.id}"
-      expect(response.body).to include(organization.name)
+      expect(response.body).to include(CGI.escapeHTML(organization.name))
     end
   end
 end
