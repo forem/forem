@@ -12,9 +12,8 @@ SET_DEFAULTS = ! Rails.env.production?
 def set_variable(name, data_type, default_value = nil)
   if SET_DEFAULTS && (! default_value.nil?)
     key = name.to_s # name will be a symbol, we need a String
-    unless ENV.has_key?(key)
-      ENV[key] = default_value.to_s # default_value may be a number, we need a String
-    end
+    value = default_value.to_s # default_value may be a number, we need a String
+    ENV[key] ||= value
   end
   variable name, data_type
 end
