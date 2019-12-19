@@ -40,7 +40,7 @@ class SocialPreviewsController < ApplicationController
 
   def comment
     @comment = Comment.find(params[:id])
-    @tag_badges = Badge.where(id: Tag.where(name: @comment.commentable.decorate.cached_tag_list_array).pluck(:badge_id))
+    @tag_badges = Badge.where(id: Tag.where(name: @comment.commentable&.decorate&.cached_tag_list_array).pluck(:badge_id))
 
     set_respond
   end
