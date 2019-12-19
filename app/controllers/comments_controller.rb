@@ -92,10 +92,8 @@ class CommentsController < ApplicationController
                                     ancestry: @comment.ancestry)[1])
       @comment.destroy
       render json: { status: "comment already exists" }
-      return
     else
       render json: { status: "errors" }
-      return
     end
   end
 
