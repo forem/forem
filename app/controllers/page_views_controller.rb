@@ -19,11 +19,7 @@ class PageViewsController < ApplicationMetalController
   def update
     if session_current_user_id
       page_view = PageView.find_or_create_by(article_id: params[:id], user_id: session_current_user_id)
-      PageView.connection.exec_update(
-        "UPDATE page_views SET time_tracked_in_seconds = $1 WHERE page_views.id = $2",
-        "SQL",
-        [[nil, page_view.time_tracked_in_seconds + 15], [nil, page_view.id]],
-      )
+      page_view.update_column(:time_tracked_in_seconds, page_view.time_tracked_in_seconds + 15)
     end
 
     head :ok
