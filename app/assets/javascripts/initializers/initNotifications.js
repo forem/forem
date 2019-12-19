@@ -69,7 +69,7 @@ function addOnClickHandlerToButtons(className, callBack) {
 function onClickReactionButton(event) {
   event.preventDefault();
   sendHapticMessage('medium');
-  var thisButt = event.target;
+  var thisButt = this;
   thisButt.classList.add('reacted');
 
   function successCb(response) {
