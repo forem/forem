@@ -55,6 +55,12 @@ RSpec.describe "Articles", type: :request do
 
       it("renders empty body") { expect(response.body).to be_empty }
     end
+
+    context "when format is invalid" do
+      it "returns a 404 response" do
+        expect { get "/feed.zip" }.to raise_error(ActionController::RoutingError)
+      end
+    end
   end
 
   describe "GET /feed/tag" do
