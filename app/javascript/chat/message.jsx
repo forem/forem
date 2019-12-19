@@ -74,7 +74,7 @@ const Message = ({
             {editedAt ? (
               <span className="chatmessage__timestamp edited_message">
                 {`${adjustTimestamp(editedAt)}`}
-                <i>(edited)</i>
+                <i> (edited)</i>
               </span>
             ) : (
               ' '
