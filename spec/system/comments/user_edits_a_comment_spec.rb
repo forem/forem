@@ -4,10 +4,15 @@ RSpec.describe "Editing A Comment", type: :system, js: true do
   let(:user) { create(:user) }
   let!(:article) { create(:article, show_comments: true) }
   let(:new_comment_text) { Faker::Lorem.paragraph }
-  let!(:comment) { create(:comment, commentable: article, user: user, body_markdown: Faker::Lorem.paragraph) }
+  let!(:comment) do
+    create(:comment,
+           :with_path,
+           commentable: article,
+           user: user,
+           body_markdown: Faker::Lorem.paragraph)
+  end
 
   before do
-    Notification.send_new_comment_notifications(comment)
     sign_in user
   end
 

@@ -7,5 +7,11 @@ FactoryBot.define do
     factory :article_comment do
       association :commentable, factory: :article
     end
+
+    trait :with_path do
+      after(:create) do |comment|
+        Comments::CreateIdCodeJob.perform_now(comment.id)
+      end
+    end
   end
 end
