@@ -31,6 +31,28 @@ export function sendMessage(activeChannelId, message, successCb, failureCb) {
     .catch(failureCb);
 }
 
+export function editMessage(editedMessage, successCb, failureCb) {
+  fetch(`/messages/${editedMessage.id}`, {
+    method: 'PATCH',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      message: {
+        message_markdown: editedMessage.message,
+        user_id: window.currentUser.id,
+        chat_channel_id: editedMessage.activeChannelId,
+      },
+    }),
+    credentials: 'same-origin',
+  })
+    .then(response => response.json())
+    .then(successCb)
+    .catch(failureCb);
+}
+
 export function sendOpen(activeChannelId, successCb, failureCb) {
   fetch(`/chat_channels/${activeChannelId}/open`, {
     method: 'POST',

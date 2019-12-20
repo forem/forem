@@ -1104,6 +1104,7 @@
   display: flex;
   height: inherit;
   align-items: stretch;
+  position: relative;
 }
 
 .messagecomposer__input {
@@ -1249,6 +1250,7 @@
   display: none;
   justify-content: end;
   -webkit-justify-content: flex-end;
+
 }
 
 .message__actions span {
@@ -1256,7 +1258,6 @@
   font-size: 13px;
   font-weight: bold;
   cursor: pointer;
-  color: var(--theme-secondary-color, $medium-gray);
 }
 
 .chatmessage:hover .message__actions {
@@ -1287,7 +1288,6 @@
   border: 2px solid;
   background: var(--theme-background, #f5f6f7);
   color: var(--theme-color, $black);
-  border-radius: 3px;
 }
 
 .modal__content h3 {
@@ -1306,7 +1306,6 @@
   padding: 5px 20px;
   cursor: pointer;
   user-select: none;
-  border-radius: 3px;
 }
 
 .message__delete__modal__hide {
@@ -1316,4 +1315,34 @@
 .message__delete__button {
   background: #ff0000;
   color: white;
+}
+
+.messageToBeEdited {
+  position: absolute;
+  display: grid;
+  grid-template-columns: 1fr 40px;
+  width: calc(100% - 14px);
+  top: -53px;
+  background: white;
+  padding: 0px 5px;
+  border: 1px solid var(--theme-top-bar-background, #dbdbdb);
+  border-left: 3px solid #4e57ef;
+  height: 50px;
+  overflow: hidden;
+}
+
+.closeEdit {
+  text-align: right;
+  user-select: none;
+  cursor: pointer;
+  padding: 2px 5px;
+  color: #4e57ef;
+  font-weight: bold;
+}
+
+.editHead {
+  position: absolute;
+  color: #4e57ef;
+  font-size: 14px;
+  font-weight: bold;
 }
