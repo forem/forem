@@ -37,4 +37,52 @@
       <%= render "layouts/nav_menu" %>
     </div>
   </nav>
+  <% if user_signed_in? %>
+    <script async>
+      // Here we have some scripts we want to get working on before
+      // waiting for the page to stream in.
+
+      // Load the current user's pic as quickly as it's available
+      var currentUser = localStorage.getItem('current_user')
+      var navProfilePic = document.getElementById('nav-profile-image')
+      if (currentUser && navProfilePic) {
+        navProfilePic.src = JSON.parse(currentUser).profile_image_90;
+      }
+
+      // Load notifications count as quickly as it's available.
+      if (
+        document.getElementById('notifications-container') == null
+      ) {
+        var xmlhttp;
+        if (window.XMLHttpRequest) {
+          xmlhttp = new XMLHttpRequest();
+        } else {
+          xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+        }
+        xmlhttp.onreadystatechange = function() {
+          if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+            var count = xmlhttp.response;
+            if (isNaN(count)) {
+              document
+                .getElementById('notifications-number')
+                .classList.remove('showing');
+            } else if (count != '0' && count != undefined && count != '') {
+              document.getElementById('notifications-number').innerHTML =
+                xmlhttp.response;
+              document
+                .getElementById('notifications-number')
+                .classList.add('showing');
+            } else {
+              document
+                .getElementById('notifications-number')
+                .classList.remove('showing');
+            }
+          }
+        };
+
+        xmlhttp.open('GET', '/notifications/counts', true);
+        xmlhttp.send();
+      }
+    </script>
+  <% end %>
 </div>

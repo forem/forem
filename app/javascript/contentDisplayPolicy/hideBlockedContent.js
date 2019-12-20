@@ -2,7 +2,8 @@ export default function hideBlockedContent() {
   const contentUserElements = Array.from(
     document.querySelectorAll('div[data-content-user-id]'),
   );
-  const blockedUserIds = userData().blocked_user_ids;
+  const user = userData(); //global var
+  const blockedUserIds = user ? user.blocked_user_ids : [];
 
   const divsToHide = contentUserElements.filter(div => {
     const { contentUserId } = div.dataset;

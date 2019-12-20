@@ -6,6 +6,7 @@ items:
   - unit-functional-tests.md
   - preact-tests.md
   - accessibility-tests.md
+  - regression-tests.md
   - code-coverage.md
   - codeclimate.md
   - skip-ci.md
@@ -31,13 +32,13 @@ a bug. Ideally, we test the functionality of the frontend and the backed.
 
 If you'd like to help us improve our test coverage, we recommend checking out
 our total coverage and writing tests for selected files based on SimpleCov's
-test coverage results. You can also check out [Code Climate
-summary](https://codeclimate.com/github/thepracticaldev/dev.to) which includes
-the test coverage.
+test coverage results. You can also check out
+[Code Climate summary](https://codeclimate.com/github/thepracticaldev/dev.to)
+which includes the test coverage.
 
 If you're new to writing tests in general or with Rails, we recommend reading
-about [testing with Rails, RSpec, and Capybara
-first](https://guides.rubyonrails.org/testing.html).
+about
+[testing with Rails, RSpec, and Capybara first](https://guides.rubyonrails.org/testing.html).
 
 ## Continuous Integration & Continuous Deployment
 

@@ -36,7 +36,6 @@ Rails.application.routes.draw do
     resources :buffer_updates, only: %i[create update]
     resources :classified_listings, only: %i[index edit update destroy]
     resources :comments, only: [:index]
-    resources :dogfood, only: [:index]
     resources :events, only: %i[index create update]
     resources :feedback_messages, only: %i[index show]
     resources :listings, only: %i[index edit update destroy], controller: "classified_listings"
@@ -70,6 +69,7 @@ Rails.application.routes.draw do
       end
     end
     resources :organization_memberships, only: %i[update destroy create]
+    resources :organizations, only: %i[index show]
     resources :welcome, only: %i[index create]
     resources :growth, only: %i[index]
     resources :tools, only: %i[index create] do
@@ -79,6 +79,8 @@ Rails.application.routes.draw do
     end
     resources :webhook_endpoints, only: :index
     resource :config
+    resources :badges, only: :index
+    post "badges/award_badges", to: "badges#award_badges"
   end
 
   namespace :api, defaults: { format: "json" } do
@@ -149,7 +151,10 @@ Rails.application.routes.draw do
   resources :chat_channel_memberships, only: %i[create update destroy]
   resources :articles, only: %i[update create destroy]
   resources :article_mutes, only: %i[update]
-  resources :comments, only: %i[create update destroy]
+  resources :comments, only: %i[create update destroy] do
+    patch "/hide", to: "comments#hide"
+    patch "/unhide", to: "comments#unhide"
+  end
   resources :comment_mutes, only: %i[update]
   resources :users, only: [:update] do
     resource :twitch_stream_updates, only: %i[show create]
@@ -218,6 +223,7 @@ Rails.application.routes.draw do
   get "/connect/:slug" => "chat_channels#index"
   post "/chat_channels/create_chat" => "chat_channels#create_chat"
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
+  delete "/messages/:id" => "messages#destroy"
   get "/live/:username" => "twitch_live_streams#show"
 
   post "/pusher/auth" => "pusher#auth"
@@ -230,6 +236,7 @@ Rails.application.routes.draw do
   get "/social_previews/comment/:id" => "social_previews#comment", :as => :comment_social_preview
 
   get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
+  get "/async_info/shell_version", controller: "async_info#shell_version", defaults: { format: :json }
 
   get "/future", to: redirect("devteam/the-future-of-dev-160n")
 
@@ -332,6 +339,9 @@ Rails.application.routes.draw do
   # serviceworkers
   get "/serviceworker" => "service_worker#index"
   get "/manifest" => "service_worker#manifest"
+
+  get "/shell_top" => "shell#top"
+  get "/shell_bottom" => "shell#bottom"
 
   get "/new" => "articles#new"
   get "/new/:template" => "articles#new"

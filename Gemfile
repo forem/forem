@@ -19,7 +19,7 @@ gem "algoliasearch-rails", "~> 1.23" # Algolia Search is a hosted search engine 
 gem "algorithmia", "~> 1.1" # Ruby Client for Algorithmia Algorithms and Data API
 gem "ancestry", "~> 3.0" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "autoprefixer-rails", "~> 9.7" # Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website
-gem "aws-sdk-lambda", "~> 1.33" # Official AWS Ruby gem for AWS Lambda
+gem "aws-sdk-lambda", "~> 1.34" # Official AWS Ruby gem for AWS Lambda
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
 gem "carrierwave", "~> 2.0" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
@@ -27,7 +27,6 @@ gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bo
 gem "cld", "~> 0.8" # Compact Language Detection for Ruby
 gem "cloudinary", "~> 1.13" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.2" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "dalli", "~> 2.7" # High performance memcached client for Ruby
 gem "delayed_job_active_record", "~> 4.1" # ActiveRecord backend for Delayed::Job
 gem "delayed_job_web", "~> 1.4" # Web interface for delayed_job
 gem "devise", "~> 4.7" # Flexible authentication solution for Rails
@@ -46,9 +45,9 @@ gem "fog-aws", "~> 3.5" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 3.0.1" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.3" # API wrapper for MailChimp's API
-gem "google-api-client", "~> 0.34" # Client for accessing Google APIs
+gem "google-api-client", "~> 0.36" # Client for accessing Google APIs
 gem "honeybadger", "~> 4.0" # Used for tracking application errors
-gem "honeycomb-beeline", "~> 1.2.0" # Monitoring and Observability gem
+gem "honeycomb-beeline", "~> 1.3.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "htmlentities", "~> 4.3", ">= 4.3.4"
 gem "httparty", "~> 0.17" # Makes http fun! Also, makes consuming restful web services dead easy
@@ -69,7 +68,7 @@ gem "puma", "~> 4.3" # Puma is a simple, fast, threaded, and highly concurrent H
 gem "pundit", "~> 2.1" # Object oriented authorization for Rails applications
 gem "pusher", "~> 1.3" # Ruby library for Pusher Channels HTTP API
 gem "pusher-push-notifications", "~> 1.1" # Pusher Push Notifications Ruby server SDK
-gem "rack-timeout", "~> 0.5" # Rack middleware which aborts requests that have been running for longer than a specified timeout
+gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 5.2" # Ruby on Rails
 gem "rails-observers", "~> 0.1" # Rails observer (removed from core in Rails 4.0)
 gem "rails-settings-cached", ">= 2.1.1" # Settings plugin for Rails that makes managing a table of global key, value pairs easy.
@@ -79,7 +78,7 @@ gem "redis", "~> 4.1.3" # Redis ruby client
 gem "redis-rails", "~> 5.0.2" # Redis for Ruby on Rails
 gem "reverse_markdown", "~> 1.3" # Map simple html back into markdown
 gem "rolify", "~> 5.2" # Very simple Roles library
-gem "rouge", "~> 3.13" # A pure-ruby code highlighter
+gem "rouge", "~> 3.14" # A pure-ruby code highlighter
 gem "rubyzip", "~> 2.0" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sass-rails", "~> 6.0" # Sass adapter for the Rails asset pipeline
@@ -92,7 +91,7 @@ gem "storext", "~> 3.1" # Add type-casting and other features on top of ActiveRe
 gem "stripe", "~> 4.23" # Ruby library for the Stripe API
 gem "timber", "~> 3.0" # Great Ruby logging made easy
 gem "timber-rails", "~> 1.0" #  Timber integration for Rails
-gem "twilio-ruby", "~> 5.29" # The official library for communicating with the Twilio REST API
+gem "twilio-ruby", "~> 5.31" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 6.2" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.1" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
@@ -129,13 +128,13 @@ group :development, :test do
   gem "awesome_print", "~> 1.8" # Great Ruby dubugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.0" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.29" # Capybara is an integration testing tool for rack based web applications
-  gem "faker", "~> 2.7" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "parallel_tests", "~> 2.29" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
+  gem "faker", "~> 2.8" # A library for generating fake data such as names, addresses, and phone numbers
+  gem "parallel_tests", "~> 2.30" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry-byebug", "~> 3.7" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 3.9" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 0.76", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 0.77", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.5", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
-  gem "rubocop-rails", "~> 2.3", require: false # Automatic Rails code style checking tool
+  gem "rubocop-rails", "~> 2.4", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 1.37", require: false # Code style checking for RSpec files
   gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
@@ -148,7 +147,7 @@ group :test do
   gem "launchy", "~> 2.4" # Launchy is helper class for launching cross-platform applications in a fire and forget manner.
   gem "pundit-matchers", "~> 1.6" # A set of RSpec matchers for testing Pundit authorisation policies
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples
-  gem "ruby-prof", "~> 1.0", require: false # ruby-prof is a fast code profiler for Ruby
+  gem "ruby-prof", "~> 1.1", require: false # ruby-prof is a fast code profiler for Ruby
   gem "shoulda-matchers", "4.1.2", require: false # Simple one-liner tests for common Rails functionality
   gem "simplecov", "~> 0.17", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers

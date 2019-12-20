@@ -21,7 +21,7 @@ linters:
         - .rubocop.yml
       Layout/InitialIndentation:
         Enabled: false
-      Layout/TrailingBlankLines:
+      Layout/TrailingEmptyLines:
         Enabled: false
       Lint/UselessAssignment:
         Enabled: false

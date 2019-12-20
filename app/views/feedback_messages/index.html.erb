@@ -1,4 +1,9 @@
 <% title "Feedback" %>
+<% cache "feedback-messages-lander-styling-#{ApplicationConfig['HEROKU_SLUG_COMMIT']}" do %>
+  <style>
+    <%= Rails.application.assets["feedback_messages.css"].to_s.html_safe %>
+  </style>
+<% end %>
 <div class="dialog">
   <div>
     <h2>Thank you for your report.</h2>

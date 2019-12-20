@@ -85,16 +85,16 @@ module Api
           :title, :body_markdown, :published, :series,
           :main_image, :canonical_url, :description, tags: []
         ]
-        allowed_params << :organization_id if params["article"]["organization_id"] && allowed_to_change_org_id?
+        allowed_params << :organization_id if params.dig("article", "organization_id") && allowed_to_change_org_id?
         params.require(:article).permit(allowed_params)
       end
 
       def allowed_to_change_org_id?
         potential_user = @article&.user || @user
-        if @article.nil? || OrganizationMembership.exists?(user: potential_user, organization_id: params["article"]["organization_id"])
-          OrganizationMembership.exists?(user: potential_user, organization_id: params["article"]["organization_id"])
+        if @article.nil? || OrganizationMembership.exists?(user: potential_user, organization_id: params.dig("article", "organization_id"))
+          OrganizationMembership.exists?(user: potential_user, organization_id: params.dig("article", "organization_id"))
         elsif potential_user == @user
-          potential_user.org_admin?(params["article"]["organization_id"]) ||
+          potential_user.org_admin?(params.dig("article", "organization_id")) ||
             @user.any_admin?
         end
       end

@@ -202,12 +202,6 @@ group :production do
   variable :SEND_LOGS_TO_TIMBER, :String  # Defaults to true in production, false in development
   variable :TIMBER, :String  # Only required if above is "true" or unset
 
-  # Memcachier
-  # (https://www.memcachier.com/documentation/rails)
-  variable :MEMCACHIER_SERVERS, :String
-  variable :MEMCACHIER_USERNAME, :String
-  variable :MEMCACHIER_PASSWORD, :String
-
   # Sendgrid
   # (https://sendgrid.com/docs/API_Reference/api_v3.html)
   variable :SENDGRID_USERNAME_ACCEL, :String

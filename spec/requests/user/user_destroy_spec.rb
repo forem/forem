@@ -28,7 +28,7 @@ RSpec.describe "UserDestroy", type: :request do
 
   describe "GET /users/request_destroy" do
     before do
-      allow(RedisRailsCache).to receive(:write).and_call_original
+      allow(Rails.cache).to receive(:write).and_call_original
       allow(NotifyMailer).to receive(:account_deletion_requested_email).and_call_original
       sign_in user
       get "/users/request_destroy"
@@ -40,7 +40,7 @@ RSpec.describe "UserDestroy", type: :request do
 
     it "updates the destroy_token" do
       user.reload
-      expect(RedisRailsCache).to have_received(:write).with("user-destroy-token-#{user.id}", any_args)
+      expect(Rails.cache).to have_received(:write).with("user-destroy-token-#{user.id}", any_args)
     end
 
     it "sets flash notice" do
@@ -51,27 +51,37 @@ RSpec.describe "UserDestroy", type: :request do
   describe "GET /users/confirm_destroy" do
     let(:token) { SecureRandom.hex(10) }
 
-    before do
-      sign_in user
-    end
+    context "with user signed in" do
+      before do
+        sign_in user
+      end
 
-    it "renders not_found if user doesn't have a destroy_token" do
-      expect do
+      it "renders not_found if user doesn't have a destroy_token" do
+        expect do
+          get user_confirm_destroy_path(token: token)
+        end.to raise_error(ActionController::RoutingError)
+      end
+
+      it "renders not_found if destroy_token != token" do
+        allow(Rails.cache).to receive(:read).and_return(SecureRandom.hex(8))
+        expect do
+          get user_confirm_destroy_path(token: token)
+        end.to raise_error(ActionController::RoutingError)
+      end
+
+      it "renders template if destroy_token is correct" do
+        allow(Rails.cache).to receive(:read).and_return(token)
         get user_confirm_destroy_path(token: token)
-      end.to raise_error(ActionController::RoutingError)
+        expect(response).to have_http_status(:ok)
+      end
     end
 
-    it "renders not_found if destroy_token != token" do
-      allow(RedisRailsCache).to receive(:read).and_return(SecureRandom.hex(8))
-      expect do
-        get user_confirm_destroy_path(token: token)
-      end.to raise_error(ActionController::RoutingError)
-    end
-
-    it "renders template if destroy_token is correct" do
-      allow(RedisRailsCache).to receive(:read).and_return(token)
-      get user_confirm_destroy_path(token: token)
-      expect(response).to have_http_status(:ok)
+    context "without a user" do
+      it "renders not_found" do
+        expect do
+          get user_confirm_destroy_path(token: token)
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
   end
 end

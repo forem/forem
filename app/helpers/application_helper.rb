@@ -15,38 +15,6 @@ module ApplicationHelper
     end
   end
 
-  def core_pages?
-    %w[
-      articles
-      podcast_episodes
-      events
-      tags
-      registrations
-      users
-      pages
-      chat_channels
-      dashboards
-      moderations
-      videos
-      badges
-      stories
-      comments
-      notifications
-      reading_list_items
-      html_variants
-      classified_listings
-      credits
-      partnerships
-      pro_memberships
-    ].include?(controller_name)
-  end
-
-  def render_js?
-    article_pages = controller_name == "articles" && %(index show).include?(controller.action_name)
-    pulses_pages = controller_name == "pulses"
-    !(article_pages || pulses_pages)
-  end
-
   def title(page_title)
     derived_title = if page_title.include?(ApplicationConfig["COMMUNITY_NAME"])
                       page_title
@@ -111,7 +79,7 @@ module ApplicationHelper
   end
 
   def tag_colors(tag)
-    RedisRailsCache.fetch("view-helper-#{tag}/tag_colors", expires_in: 5.hours) do
+    Rails.cache.fetch("view-helper-#{tag}/tag_colors", expires_in: 5.hours) do
       if (found_tag = Tag.select(%i[bg_color_hex text_color_hex]).find_by(name: tag))
         { background: found_tag.bg_color_hex, color: found_tag.text_color_hex }
       else
