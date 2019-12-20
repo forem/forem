@@ -9,6 +9,12 @@ RSpec.describe Podcast, type: :model do
   it { is_expected.to validate_presence_of(:main_color_hex) }
   it { is_expected.to validate_presence_of(:feed_url) }
 
+  it "has a creator" do
+    user = build(:user)
+    pod = create(:podcast, creator: user)
+    expect(pod.creator).to eq(user)
+  end
+
   context "when callbacks are triggered after save" do
     it "triggers cache busting on save" do
       expect { build(:podcast).save }.to have_enqueued_job.on_queue("podcasts_bust_cache").once
