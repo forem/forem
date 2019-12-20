@@ -1,5 +1,5 @@
 class MessagesController < ApplicationController
-  before_action :set_message, only: %i[destroy]
+  before_action :set_message, only: %i[destroy update]
   before_action :authenticate_user!, only: %i[create]
 
   def create
@@ -50,6 +50,31 @@ class MessagesController < ApplicationController
     end
   end
 
+  def update
+    authorize @message
+
+    if @message.update(permitted_attributes(@message).merge(edited_at: Time.zone.now))
+      if @message.valid?
+        begin
+          message_json = create_pusher_payload(@message, "")
+          Pusher.trigger(@message.chat_channel.pusher_channels, "message-edited", message_json)
+        rescue Pusher::Error => e
+          logger.info "PUSHER ERROR: #{e.message}"
+        end
+      end
+      render json: { status: "success", message: "Message was edited" }
+    else
+      render json: {
+        status: "error",
+        message: {
+          chat_channel_id: @message.chat_channel_id,
+          message: @message.errors.full_messages,
+          type: "error"
+        }
+      }, status: :unauthorized
+    end
+  end
+
   private
 
   def create_pusher_payload(new_message, temp_id)
@@ -62,6 +87,8 @@ class MessagesController < ApplicationController
       username: new_message.user.username,
       profile_image_url: ProfileImage.new(new_message.user).get(90),
       message: new_message.message_html,
+      markdown: new_message.message_markdown,
+      edited_at: new_message.edited_at,
       timestamp: Time.current,
       color: new_message.preferred_user_color,
       reception_method: "pushed"

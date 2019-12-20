@@ -224,6 +224,7 @@ Rails.application.routes.draw do
   post "/chat_channels/create_chat" => "chat_channels#create_chat"
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
   delete "/messages/:id" => "messages#destroy"
+  patch "/messages/:id" => "messages#update"
   get "/live/:username" => "twitch_live_streams#show"
 
   post "/pusher/auth" => "pusher#auth"
