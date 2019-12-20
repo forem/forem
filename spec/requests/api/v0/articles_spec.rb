@@ -587,6 +587,14 @@ RSpec.describe "Api::V0::Articles", type: :request do
         end.to change(Article, :count).by(1)
         expect(Article.find(json_response["id"]).description).to eq("yooo" * 20 + "y...")
       end
+
+      it "does not raise an error if article params are missing" do
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        expect do
+          post api_articles_path, params: {}.to_json, headers: headers
+        end.not_to raise_error
+        expect(response.status).to eq(422)
+      end
     end
   end
 
