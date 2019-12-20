@@ -15,9 +15,9 @@ module Api
         elsif params[:state] == "sidebar_suggestions"
           given_tag = params[:tag]
           @users = Suggester::Users::Sidebar.new(current_user, given_tag).suggest.sample(3)
+        else
+          error_not_found
         end
-
-        error_not_found
       end
 
       def show
