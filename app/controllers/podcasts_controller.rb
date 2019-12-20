@@ -9,6 +9,7 @@ class PodcastsController < ApplicationController
 
   def create
     @podcast = Podcast.new(podcast_params)
+    @podcast.creator = current_user
     if @podcast.save
       current_user.add_role(:podcast_admin, @podcast) if added_by_owner?
       flash[:notice] = "Podcast suggested"

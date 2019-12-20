@@ -63,6 +63,12 @@ RSpec.describe "Podcast Create", type: :request do
       expect(user.has_role?(:podcast_admin, pod)).to be false
     end
 
+    it "sets the creator" do
+      post podcasts_path, params: { podcast: valid_attributes }
+      pod = Podcast.find_by(title: valid_attributes[:title])
+      expect(pod.creator).to eq(user)
+    end
+
     it "doesn't create with invalid attributes" do
       create(:podcast, slug: valid_attributes[:slug])
       post podcasts_path, params: { podcast: valid_attributes }
