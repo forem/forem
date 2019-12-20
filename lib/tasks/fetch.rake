@@ -64,10 +64,9 @@ task award_badges: :environment do
 end
 
 task award_weekly_tag_badges: :environment do
-  # Should only run once per week (via Heroku Scheduler) on Thursday.
-  return if Time.current.wday != 4
-
-  BadgeRewarder.award_tag_badges
+  if Time.current.wday == 4
+    BadgeRewarder.award_tag_badges
+  end
 end
 
 # rake award_top_seven_badges["ben jess peter mac liana andy"]
