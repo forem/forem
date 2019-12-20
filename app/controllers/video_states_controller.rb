@@ -18,9 +18,14 @@ class VideoStatesController < ApplicationController
     request_json = JSON.parse(request.raw_post, symbolize_names: true)
     message_json = JSON.parse(request_json[:Message], symbolize_names: true)
     @article = Article.find_by(video_code: message_json[:input][:key])
-    @article.update(video_state: "COMPLETED") # Only is called on completion
-    NotifyMailer.video_upload_complete_email(@article).deliver
-    render json: { message: "Video state updated" }
+
+    if @article
+      @article.update(video_state: "COMPLETED") # Only is called on completion
+      NotifyMailer.video_upload_complete_email(@article).deliver
+      render json: { message: "Video state updated" }
+    else
+      render json: { message: "Related article not found" }, status: :not_found
+    end
   end
 
   def valid_user
