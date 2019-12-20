@@ -5,6 +5,15 @@ RSpec.describe "Api::V0::Users", type: :request do
     JSON.parse(response.body)
   end
 
+  describe "GET /api/users" do
+    it "returns not found status if state is not present" do
+      user = create(:user)
+      sign_in user
+      get api_users_path, params: {}
+      expect(response.status).to eq(404)
+    end
+  end
+
   describe "GET /api/users/me" do
     it "requires request to be authenticated" do
       get me_api_users_path

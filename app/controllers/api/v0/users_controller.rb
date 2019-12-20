@@ -16,6 +16,8 @@ module Api
           given_tag = params[:tag]
           @users = Suggester::Users::Sidebar.new(current_user, given_tag).suggest.sample(3)
         end
+
+        error_not_found
       end
 
       def show
