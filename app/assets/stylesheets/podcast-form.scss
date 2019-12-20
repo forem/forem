@@ -49,7 +49,10 @@
   }
   form {
     font-size: 15px;
-    input {
+    input[type='checkbox']{
+      display: inline
+    }
+    input:not([type='checkbox']) {
       width: 650px;
       max-width: calc(100% - 30px);
       padding: 12px;
@@ -87,6 +90,9 @@
       display: inline-block;
       vertical-align: top;
       padding: 14px 0px 8px;
+    }
+    label.i_am_owner {
+      padding: 2px 0 2px 10px;
     }
   }
 }
