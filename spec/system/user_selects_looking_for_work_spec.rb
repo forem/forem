@@ -14,7 +14,7 @@ RSpec.describe "Looking For Work" do
     page.check "Looking for work"
     perform_enqueued_jobs do
       click_button("SUBMIT")
-      expect(user.follows.count).to eq(1)
     end
+    expect(user.follows.count).to eq(1)
   end
 end
