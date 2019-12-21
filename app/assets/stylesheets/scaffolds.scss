@@ -261,6 +261,19 @@ body.trusted-status-true .trusted-visible-block {
   display: block !important;
 }
 
+body.hidden-shell {
+  .top-bar, footer {
+    display: none;
+  }
+  .container {
+    margin-top: 20px;
+  }
+  .universal-page-content-wrapper {
+    margin-top: 0px !important;
+    margin-bottom: 30px;
+  }
+}
+
 .delete-confirm.container {
   padding: 150px 10px;
   min-height: 300px;
