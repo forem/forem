@@ -207,6 +207,10 @@ body.night-theme, body.ten-x-hacker-theme {
   .partner-image-light-mode {
     display: none !important;
   }
+
+  .not-dark-theme-text-compatible {
+    @include themeable-important(color, theme-secondary-color, white);
+  }
 }
 
 // Alternate base fonts
