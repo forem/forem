@@ -33,7 +33,7 @@ exports[`<Message /> should render and test snapshot 1`] = `
         class="message__info"
       >
         <span
-          class="chatmessagebody__username"
+          class="chatmessagebody__username not-dark-theme-text-compatible"
           style={
             Object {
               "color": "#00FFFF",
