@@ -92,9 +92,7 @@ export default class Chat extends Component {
       channel => `open-channel-${channel.chat_channel_id}`,
     );
     setupObserver(this.observerCallback);
-    if (!window.currentUser) {
-      window.currentUser = JSON.parse(document.body.dataset.user);
-    }
+
     this.subscribePusher(`private-message-notifications-${currentUserId}`);
     if (activeChannelId) {
       sendOpen(activeChannelId, this.handleChannelOpenSuccess, null);
@@ -774,6 +772,7 @@ export default class Chat extends Component {
       messages,
       showTimestamp,
       activeChannel,
+      currentUserId,
     } = this.state;
     if (!messages[activeChannelId]) {
       return '';
@@ -827,7 +826,7 @@ export default class Chat extends Component {
     }
     return messages[activeChannelId].map(message => (
       <Message
-        currentUserId={window.currentUser.id}
+        currentUserId={currentUserId}
         id={message.id}
         user={message.username}
         userID={message.user_id}
