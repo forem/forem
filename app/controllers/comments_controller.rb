@@ -22,15 +22,17 @@ class CommentsController < ApplicationController
         Organization.find_by(slug: params[:username]) ||
         not_found
       @commentable = @root_comment&.commentable ||
-        @user.articles.find_by(slug: params[:slug]) ||
-        not_found
+        @user.articles.find_by(slug: params[:slug]) || nil
       @article = @commentable
-      not_found unless @commentable.published
+      if @commentable
+        not_found unless @commentable.published
+      end
+      render :deleted_article_comment unless @article
     end
 
-    @commentable_type = @commentable.class.name
+    @commentable_type = @commentable.class.name if @commentable
 
-    set_surrogate_key_header "comments-for-#{@commentable.id}-#{@commentable_type}"
+    set_surrogate_key_header "comments-for-#{@commentable&.id}-#{@commentable_type}"
   end
 
   # GET /comments/1
