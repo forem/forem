@@ -171,6 +171,18 @@ RSpec.describe "Comments", type: :request do
         expect { get comment.path }.to raise_error("Not Found")
       end
     end
+
+    context "when the article is deleted" do
+      before do
+        comment
+        article.destroy
+        get comment.path
+      end
+
+      it "renders deleted article comment view" do
+        expect(response.body).to include("Comment from a deleted article")
+      end
+    end
   end
 
   describe "GET /:username/:slug/comments/:id_code/edit" do
