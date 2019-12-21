@@ -147,8 +147,8 @@ article {
     width: 81%;
     font-family: $helvetica;
 
-    @media screen and (max-width: 550px) {
-      width: 88%;
+    @media screen and (max-width: 750px) {
+      width: 90%;
     }
 
     @media screen and (max-width: 430px) {
@@ -576,8 +576,8 @@ article {
       margin-top: -0.8em;
     }
 
-    @media screen and (max-width: 550px) {
-      width: 90%;
+    @media screen and (max-width: 750px) {
+      width: 92%;
     }
 
     @media screen and (max-width: 430px) {

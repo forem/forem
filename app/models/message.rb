@@ -50,13 +50,15 @@ class Message < ApplicationRecord
 
   def append_rich_links(html)
     doc = Nokogiri::HTML(html)
-    rich_style = "border: 1px solid #0a0a0a; border-radius: 3px; padding: 8px;"
     doc.css("a").each do |anchor|
       if (article = rich_link_article(anchor))
-        html += "<a style='color: #0a0a0a' href='#{article.path}'
-          target='_blank' data-content='articles/#{article.id}'>
-          <h1 style='#{rich_style}'  data-content='articles/#{article.id}'>
-          #{article.title}</h1></a>".html_safe
+        html += "<a href='#{article.path}'
+        class='chatchannels__richlink'
+          target='_blank' data-content='article'>
+            #{"<div class='chatchannels__richlinkmainimage' style='background-image:url(" + article.main_image + ")' data-content='article' ></div>" if article.main_image.present?}
+          <h1 data-content='article'>#{article.title}</h1>
+          <h4 data-content='article'><img src='#{ProfileImage.new(article.cached_user).get(90)}' /> #{article.cached_user.name}・#{article.readable_publish_date}</h4>
+          </a>".html_safe
       end
     end
     html

@@ -685,15 +685,14 @@ export default class Chat extends Component {
           this.setActiveContent,
           null,
         );
-      } else if (target.dataset.content.startsWith('articles/')) {
+      } else if ((target.dataset.content || target.parentElement.dataset.content).startsWith('article')) {
         this.setActiveContentState(activeChannelId, {
           type_of: 'loading-post',
         });
-        getContent(
-          `/api/${target.dataset.content}`,
-          this.setActiveContent,
-          null,
-        );
+        this.setActiveContent({
+          path: target.href || target.parentElement.href,
+          type_of: 'article'
+        })
       } else if (target.dataset.content === 'exit') {
         this.setActiveContentState(activeChannelId, null);
       }
