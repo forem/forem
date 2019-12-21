@@ -6,6 +6,7 @@ import ConfigImage from 'images/three-dots.svg';
 const Channels = ({
   activeChannelId,
   chatChannels,
+  unopenedChannelIds,
   handleSwitchChannel,
   expanded,
   filterQuery,
@@ -14,10 +15,7 @@ const Channels = ({
 }) => {
   const channels = chatChannels.map(channel => {
     const isActive = parseInt(activeChannelId, 10) === channel.chat_channel_id;
-    const lastOpened = channel.last_opened_at;
-    const isUnopened =
-      new Date(channel.channel_last_message_at) > new Date(lastOpened) &&
-      channel.channel_messages_count > 0;
+    const isUnopened = !isActive && unopenedChannelIds.includes(channel.chat_channel_id)
     let newMessagesIndicator = isUnopened ? 'new' : 'old';
     if (incomingVideoCallChannelIds.indexOf(channel.chat_channel_id) > -1) {
       newMessagesIndicator = 'video';
@@ -114,6 +112,7 @@ const Channels = ({
 Channels.propTypes = {
   activeChannelId: PropTypes.number.isRequired,
   chatChannels: PropTypes.arrayOf(PropTypes.objectOf()).isRequired,
+  unopenedChannelIds: PropTypes.arrayOf().isRequired,
   handleSwitchChannel: PropTypes.func.isRequired,
   expanded: PropTypes.bool.isRequired,
   filterQuery: PropTypes.string.isRequired,

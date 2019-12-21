@@ -798,11 +798,12 @@
 }
 
 .chatchanneltabbutton {
-  width: 93%;
+  width: calc(95% - 2px);
   border: none;
   background: transparent;
   padding: 3px 0px;
   margin-bottom: -5px 0;
+  box-sizing: border-box;
   @include themeable(color,
     theme-color,
     $black);
@@ -817,7 +818,7 @@
 
 .chatchanneltab {
   display: inline-block;
-  width: 90%;
+  width: 100%;
   margin-bottom: 5px;
   background: inherit;
   text-align: start;
@@ -829,6 +830,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  box-sizing: border-box;
 
   @media screen and (min-width: 550px) {
     font-size: 13px;
