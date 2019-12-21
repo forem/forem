@@ -8,7 +8,7 @@ exports[`<Message /> should render and test snapshot 1`] = `
     class="chatmessage__profilepic"
   >
     <a
-      data-content="users/undefined"
+      data-content="sidecar-user"
       href="/asdf"
       rel="noopener noreferrer"
       target="_blank"
@@ -16,7 +16,7 @@ exports[`<Message /> should render and test snapshot 1`] = `
       <img
         alt="asdf profile"
         class="chatmessagebody__profileimage"
-        data-content="users/undefined"
+        data-content="sidecar-user"
         role="presentation"
         src=""
       />
@@ -42,7 +42,7 @@ exports[`<Message /> should render and test snapshot 1`] = `
         >
           <a
             class="chatmessagebody__username--link"
-            data-content="users/undefined"
+            data-content="sidecar-user"
             href="/asdf"
             rel="noopener noreferrer"
             target="_blank"

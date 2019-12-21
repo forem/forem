@@ -1226,14 +1226,14 @@ export default class Chat extends Component {
         : `chat_channels/${activeChannelId}`;
 
     return (
-      <div
+      <a
         className="activechatchannel__channelconfig"
         onClick={this.triggerActiveContent}
         onKeyUp={e => {
           if (e.keyCode === 13) this.triggerActiveContent(e);
         }}
-        role="button"
         tabIndex="0"
+        href={`/${activeChannel.channel_username}`}
         data-content={dataContent}
       >
         <img
@@ -1241,7 +1241,7 @@ export default class Chat extends Component {
           alt="channel config"
           data-content={dataContent}
         />
-      </div>
+      </a>
     );
   };
 

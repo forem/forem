@@ -535,8 +535,8 @@
   }
   -webkit-overflow-scrolling: touch;
   @include themeable(background,
-    theme-container-accent-background,
-    white);
+    theme-background,
+    $lightest-gray);
   z-index: 200;
   position: relative;
   box-sizing: border-box;
@@ -616,41 +616,6 @@
   height: 100%;
   width: 100%;
   border: 0px;
-}
-
-.activechatchannel__activeArticleDetails {
-  position: absolute;
-  top: -26px;
-  right: 2px;
-  left: 35px;
-  font-family: $monospace;
-  font-size: 0.8em;
-
-  a {
-    @include themeable(color,
-      theme-container-color,
-      $dark-gray);
-  }
-
-  .activechatchannel__activeArticleDetailsPath {
-    display: inline-block;
-    max-width: calc(100% - 15px);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  img {
-    height: 1.1em;
-    width: 1.1em;
-    margin-left: 10px;
-    vertical-align: 2px;
-    opacity: 0.86;
-
-    &:hover {
-      opacity: 1;
-    }
-  }
 }
 
 
