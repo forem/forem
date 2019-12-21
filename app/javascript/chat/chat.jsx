@@ -81,7 +81,7 @@ export default class Chat extends Component {
       channelTypeFilter,
       isMobileDevice,
       channelPaginationNum,
-      currentUserId
+      currentUserId,
     } = this.state;
     this.setupChannels(chatChannels);
     const channelsForPusherSub = chatChannels.filter(
@@ -95,9 +95,7 @@ export default class Chat extends Component {
     if (!window.currentUser) {
       window.currentUser = JSON.parse(document.body.dataset.user);
     }
-    this.subscribePusher(
-      `private-message-notifications-${currentUserId}`,
-    );
+    this.subscribePusher(`private-message-notifications-${currentUserId}`);
     if (activeChannelId) {
       sendOpen(activeChannelId, this.handleChannelOpenSuccess, null);
     }
@@ -344,14 +342,6 @@ export default class Chat extends Component {
     const { messages, activeChannelId, scrolled, chatChannels } = this.state;
     const receivedChatChannelId = message.chat_channel_id;
     let newMessages = [];
-    if (
-      message.temp_id &&
-      messages[activeChannelId].findIndex(
-        oldmessage => oldmessage.temp_id === message.temp_id,
-      ) > -1
-    ) {
-      return;
-    }
 
     if (
       message.temp_id &&
@@ -784,7 +774,6 @@ export default class Chat extends Component {
       messages,
       showTimestamp,
       activeChannel,
-      currentUserId
     } = this.state;
     if (!messages[activeChannelId]) {
       return '';
