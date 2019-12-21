@@ -39,7 +39,7 @@ const Message = ({
           href={`/${user}`}
           target="_blank"
           rel="noopener noreferrer"
-          data-content={`users/${userID}`}
+          data-content='sidecar-user'
           onClick={onContentTrigger}
         >
           <img
@@ -47,7 +47,7 @@ const Message = ({
             className="chatmessagebody__profileimage"
             src={profileImageUrl}
             alt={`${user} profile`}
-            data-content={`users/${userID}`}
+            data-content='sidecar-user'
             onClick={onContentTrigger}
           />
         </a>
@@ -65,7 +65,7 @@ const Message = ({
                 href={`/${user}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                data-content={`users/${userID}`}
+                data-content='sidecar-user'
                 onClick={onContentTrigger}
               >
                 {user}

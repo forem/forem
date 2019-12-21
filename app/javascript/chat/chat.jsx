@@ -681,7 +681,8 @@ export default class Chat extends Component {
     }
 
     const { target } = e;
-    if (target.dataset.content) {
+    const content = target.dataset.content || target.parentElement.dataset.content
+    if (content) {
       e.preventDefault();
       e.stopPropagation();
 
@@ -695,24 +696,14 @@ export default class Chat extends Component {
           this.setActiveContent,
           null,
         );
-      } else if (target.dataset.content.startsWith('users/')) {
-        this.setActiveContentState(activeChannelId, {
-          type_of: 'loading-user',
-        });
-        getContent(
-          `/api/${target.dataset.content}`,
-          this.setActiveContent,
-          null,
-        );
-      } else if (target.dataset.content.startsWith('articles/')) {
+      } else if (content.startsWith('sidecar') || content.startsWith('article')) { // article is legacy which can be removed shortly
         this.setActiveContentState(activeChannelId, {
           type_of: 'loading-post',
         });
-        getContent(
-          `/api/${target.dataset.content}`,
-          this.setActiveContent,
-          null,
-        );
+        this.setActiveContent({
+          path: target.href || target.parentElement.href,
+          type_of: 'article'
+        })
       } else if (target.dataset.content === 'exit') {
         this.setActiveContentState(activeChannelId, null);
       }
@@ -1202,7 +1193,7 @@ export default class Chat extends Component {
         <a
           href={`/${activeChannel.channel_username}`}
           onClick={this.triggerActiveContent}
-          data-content={`users/by_username?url=${activeChannel.channel_username}`}
+          data-content='sidecar-user'
         >
           {activeChannel.channel_modified_slug}
         </a>
@@ -1231,18 +1222,18 @@ export default class Chat extends Component {
 
     const dataContent =
       activeChannel.channel_type === 'direct'
-        ? `users/by_username?url=${activeChannel.channel_username}`
+        ? 'sidecar-user'
         : `chat_channels/${activeChannelId}`;
 
     return (
-      <div
+      <a
         className="activechatchannel__channelconfig"
         onClick={this.triggerActiveContent}
         onKeyUp={e => {
           if (e.keyCode === 13) this.triggerActiveContent(e);
         }}
-        role="button"
         tabIndex="0"
+        href={`/${activeChannel.channel_username}`}
         data-content={dataContent}
       >
         <img
@@ -1250,7 +1241,7 @@ export default class Chat extends Component {
           alt="channel config"
           data-content={dataContent}
         />
-      </div>
+      </a>
     );
   };
 

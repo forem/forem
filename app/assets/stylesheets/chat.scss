@@ -6,7 +6,7 @@
 .chat-page-wrapper {
   margin: 85px auto 0px;
   width: 96%;
-  max-width: calc(1440px + 10vw);
+  max-width: calc(1540px + 10vw);
 }
 
 .live-chat {
@@ -91,8 +91,8 @@
   }
 
   @media screen and (min-width: 1300px) {
-    width: calc(280px + 3vw);
-    min-width: calc(280px);
+    width: calc(220px + 3vw);
+    min-width: 220px;
   }
 
   &.chat__channels--placeholder {
@@ -423,8 +423,10 @@
   flex-direction: column;
   flex: 0 1 auto;
   width: 100%;
-  min-width: 55%;
-
+  min-width: 50%;
+  @media screen and (min-width: 1440px) {
+    min-width: 55%;
+  }
   @media screen and (max-width: 426px) {
     overflow-x: hidden;
   }
@@ -465,7 +467,7 @@
 }
 
 .activechatchannel__messages {
-  font-size: 15px;
+  font-size: calc(15px + 0.05vw);
   padding: 10px 0px;
   flex-grow: 1;
   height: 300px;
@@ -505,7 +507,7 @@
     theme-container-accent-background,
     #ededed);
   width: 100%;
-  height: 70px;
+  height: 60px;
 }
 
 .activechatchannel__incomingcall {
@@ -523,26 +525,32 @@
 .activechatchannel__activecontent {
   order: 2;
   flex: 0 1 auto;
-  border: 1px solid $outline-color;
-  border-left: 2px solid $outline-color;
+  @include themeable(border,
+    theme-border,
+    1px solid $outline-color);
   padding: 13px;
-  min-width: 45%;
+  min-width: 50%;
+  @media screen and (min-width: 1440px) {
+    min-width: 45%;
+  }
   -webkit-overflow-scrolling: touch;
   @include themeable(background,
-    theme-container-accent-background,
-    white);
+    theme-background,
+    $lightest-gray);
   z-index: 200;
   position: relative;
   box-sizing: border-box;
   overflow-y: auto;
-  max-width: 96%;
+  max-width: 100%;
 
   @media screen and (max-width: 426px) {
     padding: 10px;
     min-width: 50%;
-    width: calc(95% - 45px);
+    width: calc(100% - 16px);
     position: fixed;
-    height: calc(100% - 90px);
+    height: calc(100% - 86px);
+    margin-left: -48px;
+    margin-top: -1px;
   }
 
   @media screen and (min-width: 1000px) {
@@ -574,52 +582,40 @@
   padding: 0px;
   background: transparent;
   position: absolute;
-  left: 6px;
-  top: -3px;
+  left: 4px;
+  top: 4px;
+  @include themeable(background,
+    theme-container-accent-background,
+    white);
+  z-index: 10;
+  height: 29px;
+  width: 29px;
+  line-height: 10px;
+  padding-bottom: 5px;
+  border-radius: 100px;
+  @include themeable(border,
+  theme-border,
+  1px solid $medium-gray);
+
 }
 
 .activechatchannel__activeArticle {
   position: absolute;
-  top: 36px;
+  top: 0px;
   left: 0;
   right: 0;
   bottom: 0;
-  border-top: 1px solid $light-medium-gray !important;
 }
 
-.activechatchannel__activeArticleDetails {
+.activechatchannel__activeArticle iframe {
   position: absolute;
-  top: -26px;
-  right: 2px;
-  left: 35px;
-  font-family: $monospace;
-  font-size: 0.8em;
-
-  a {
-    @include themeable(color,
-      theme-container-color,
-      $dark-gray);
-  }
-
-  .activechatchannel__activeArticleDetailsPath {
-    display: inline-block;
-    max-width: calc(100% - 15px);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  img {
-    height: 1.1em;
-    width: 1.1em;
-    margin-left: 10px;
-    vertical-align: 2px;
-    opacity: 0.86;
-
-    &:hover {
-      opacity: 1;
-    }
-  }
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  border: 0px;
 }
 
 
@@ -677,68 +673,6 @@
     background-color: rgb(78, 87, 239);
   }
 }
-
-.chat .activechatchannel__activeArticle .container {
-  position: absolute;
-  top: 0px;
-  left: 0;
-  right: 0;
-  bottom: 30px;
-  overflow-y: scroll;
-  border-radius: 0px;
-  margin-top: 0px !important;
-
-  pre {
-    width: 97%;
-    margin-left: -3%;
-    padding-left: 4%;
-    padding-right: 7%;
-  }
-}
-
-.activechatchannel__activeArticleActions {
-  position: absolute;
-  bottom: 0;
-  left: 0px;
-  right: 0px;
-  padding: 17px;
-  @include themeable(background,
-    theme-container-accent-background,
-    white);
-  z-index: 20;
-  border-top: 1px solid $light-medium-gray;
-  border-bottom: 1px solid $light-medium-gray;
-  border-right: 1px solid $light-medium-gray;
-
-  button {
-    margin-right: 15px;
-    width: 54px;
-    @include themeable(background,
-      theme-container-background,
-      #f2f3f5);
-    border-radius: 100px !important;
-    border-width: 0;
-    padding: 5px 10px;
-
-    &.active {
-      background-color: $green;
-
-      &.unicorn-reaction-button {
-        background-color: $purple;
-      }
-
-      &.readinglist-reaction-button {
-        background: lighten($bold-blue, 32%);
-      }
-    }
-
-    img {
-      width: 22px;
-      height: 22px;
-    }
-  }
-}
-
 
 .activecontent__githubrepo {}
 
@@ -1200,26 +1134,6 @@
   }
 }
 
-.chat .container {
-  box-shadow: 0px 0px 0px #ffffff !important;
-  border: 0px !important;
-  margin-top: 8px !important;
-
-  .title {
-    width: 95%;
-    font-size: 18px;
-
-    h1 {
-      font-size: 28px !important;
-    }
-  }
-
-  .body {
-    font-size: 20px;
-    width: 96%;
-  }
-}
-
 .chatchanneljumpback {
   position: relative;
 }
@@ -1265,6 +1179,64 @@
 .chatmessage:hover .message__actions {
   display: -webkit-flex;
   display: flex;
+}
+
+.chatchannels__richlink {
+  border: 1px solid darken($light-medium-gray, 15%);
+  border-radius: 3px;
+  box-shadow: 3px 3px 0px darken($light-medium-gray, 15%);
+  color: $black;
+  display: block;
+  max-width: 670px;
+  padding: 0px;
+  margin-bottom: 6px;
+  @include themeable(background,
+  theme-container-background,
+  white);  
+  .chatchannels__richlinkmainimage {
+    position: relative;
+    width: 100%;
+    margin: auto;
+    background: transparent no-repeat center center;
+    background-size: cover;
+    z-index: 2;
+    padding-top: 42%;
+  }
+  h1 {
+    margin-top: 15px;
+    padding: 0px calc(10px + 0.2vw);
+    img {
+      height: 1.2em;
+      width: 1.2em;
+      margin-right: 5px;
+      vertical-align: -0.25em;
+      &.chatchannels__richlinkprofilepic {
+        border-radius: 100px;
+        @include themeable(border,
+        theme-border,
+        1px solid $light-medium-gray);  
+      }
+    }
+  }
+  h4 {
+    margin-top: -12px;
+    margin-bottom: 15px;
+    @include themeable(color,
+    theme-secondary-color,
+    $medium-gray);
+    font-weight: 500;
+    padding: 0px calc(10px + 0.2vw);
+    img {
+      height: 22px;
+      width: 22px;
+      border-radius: 100px;
+      margin-right: 3px;
+      @include themeable(border,
+      theme-border,
+      1px solid $light-medium-gray);  
+      vertical-align: -6px;
+    }
+  }
 }
 
 .message__delete__modal {

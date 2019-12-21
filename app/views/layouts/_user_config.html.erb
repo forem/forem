@@ -139,6 +139,9 @@
     if (localStorage.getItem('config_minimize_newest_listings') === 'yes') {
       document.getElementsByTagName("body")[0].classList.add("config_minimize_newest_listings");
     }
+    if (window.frameElement) {
+      document.getElementsByTagName("body")[0].classList.add("hidden-shell");
+    }
   } catch(e) {
       console.log(e)
   }
