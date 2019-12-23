@@ -51,7 +51,7 @@ class Message < ApplicationRecord
   def append_rich_links(html)
     doc = Nokogiri::HTML(html)
     doc.css("a").each do |anchor|
-      if article = rich_link_article(anchor)
+      if (article = rich_link_article(anchor))
         html += "<a href='#{article.current_state_path}'
         class='chatchannels__richlink'
           target='_blank' data-content='sidecar-article'>
@@ -59,7 +59,7 @@ class Message < ApplicationRecord
           <h1 data-content='sidecar-article'>#{article.title}</h1>
           <h4 data-content='sidecar-article'><img src='#{ProfileImage.new(article.cached_user).get(90)}' /> #{article.cached_user.name}・#{article.readable_publish_date || 'Draft Post'}</h4>
           </a>".html_safe
-      elsif tag = rich_link_tag(anchor)
+      elsif (tag = rich_link_tag(anchor))
         html += "<a href='/t/#{tag.name}'
         class='chatchannels__richlink'
           target='_blank' data-content='sidecar-tag'>
@@ -68,7 +68,7 @@ class Message < ApplicationRecord
             ##{tag.name}
           </h1>
           </a>".html_safe
-      elsif user = rich_user_link(anchor)
+      elsif (user = rich_user_link(anchor))
         html += "<a href='#{user.path}'
         class='chatchannels__richlink'
           target='_blank' data-content='sidecar-user'>
