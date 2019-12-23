@@ -206,6 +206,20 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe "#nth_published_by_author" do
+    it "does not have a nth_published_by_author if not published" do
+      unpublished_article = build(:article, published: false)
+      unpublished_article.validate # to make sure the front matter extraction happens
+      expect(unpublished_article.nth_published_by_author).to eq(0)
+    end
+
+    it "does have a nth_published_by_author if published" do
+      # this works because validation triggers the extraction of the date from the front matter
+      article.validate
+      expect(article.nth_published_by_author).to eq(1)
+    end
+  end
+
   describe "#crossposted_at" do
     it "does not have crossposted_at if not published_from_feed" do
       expect(article.crossposted_at).to be_nil

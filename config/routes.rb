@@ -295,6 +295,7 @@ Rails.application.routes.draw do
   get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
   get "/shop", to: redirect("https://shop.dev.to/")
   get "/mod" => "moderations#index", :as => :mod
+  get "/mod/:tag" => "moderations#index"
 
   post "/fallback_activity_recorder" => "ga_events#create"
 
