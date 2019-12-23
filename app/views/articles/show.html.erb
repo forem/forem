@@ -36,9 +36,11 @@
   <% end %>
 <% end %>
 
+<% if internal_navigation? %>
     <link rel="canonical" href="<%= @article.canonical_url.presence || "https://#{ApplicationConfig['APP_DOMAIN']}#{@article.path}" %>" />
-<% unless internal_navigation? %>
+<% else %>
   <%= content_for :page_meta do %>
+    <link rel="canonical" href="<%= @article.canonical_url.presence || "https://#{ApplicationConfig['APP_DOMAIN']}#{@article.path}" %>" />
     <meta name="description" content="<%= @article.description || "An article from the community" %>">
     <meta name="keywords" content="software development, inclusive, community, engineering, <%= @article.cached_tag_list %>">
 
