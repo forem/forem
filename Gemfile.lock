@@ -679,7 +679,7 @@ GEM
     rubocop-rails (2.4.0)
       rack (>= 1.1)
       rubocop (>= 0.72.0)
-    rubocop-rspec (1.37.0)
+    rubocop-rspec (1.37.1)
       rubocop (>= 0.68.1)
     ruby-prof (1.1.0)
     ruby-progressbar (1.10.1)
