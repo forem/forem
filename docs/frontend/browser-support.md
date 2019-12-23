@@ -2,7 +2,7 @@
 title: Browser Support
 ---
 
-# Browser Supprot
+# Browser Support
 
 This application supports the following browsers
 
