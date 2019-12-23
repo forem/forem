@@ -6,6 +6,7 @@ items:
   - preact.md
   - liquid-tags.md
   - debugging.md
+  - browser-support.md
 ---
 
 # Frontend Guide
