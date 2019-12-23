@@ -595,6 +595,7 @@ class Article < ApplicationRecord
     set_featured_number
     set_crossposted_at
     set_last_comment_at
+    set_nth_published_at
   end
 
   def set_published_date
@@ -615,6 +616,10 @@ class Article < ApplicationRecord
     self.last_comment_at = published_at
     user.touch(:last_article_at)
     organization&.touch(:last_article_at)
+  end
+
+  def set_nth_published_at
+    self.nth_published_by_author = user.articles.published.size + 1 if nth_published_by_author.zero? && published
   end
 
   def title_to_slug
