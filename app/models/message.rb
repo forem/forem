@@ -52,12 +52,12 @@ class Message < ApplicationRecord
     doc = Nokogiri::HTML(html)
     doc.css("a").each do |anchor|
       if article = rich_link_article(anchor)
-        html += "<a href='#{article.path}'
+        html += "<a href='#{article.current_state_path}'
         class='chatchannels__richlink'
           target='_blank' data-content='sidecar-article'>
             #{"<div class='chatchannels__richlinkmainimage' style='background-image:url(" + cl_path(article.main_image) + ")' data-content='sidecar-article' ></div>" if article.main_image.present?}
           <h1 data-content='sidecar-article'>#{article.title}</h1>
-          <h4 data-content='sidecar-article'><img src='#{ProfileImage.new(article.cached_user).get(90)}' /> #{article.cached_user.name}・#{article.readable_publish_date}</h4>
+          <h4 data-content='sidecar-article'><img src='#{ProfileImage.new(article.cached_user).get(90)}' /> #{article.cached_user.name}・#{article.readable_publish_date || 'Draft Post'}</h4>
           </a>".html_safe
       elsif tag = rich_link_tag(anchor)
         html += "<a href='/t/#{tag.name}'

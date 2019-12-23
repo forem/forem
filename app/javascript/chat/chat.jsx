@@ -523,6 +523,14 @@ export default class Chat extends Component {
         .trigger('client-initiatevideocall', {
           channelId: activeChannelId,
         });
+    } else if (message.startsWith('/new')) {
+      this.setActiveContentState(activeChannelId, {
+        type_of: 'loading-post',
+      });
+      this.setActiveContent({
+        path: '/new',
+        type_of: 'article'
+      })
     } else if (message.startsWith('/github')) {
       const args = message.split('/github ')[1].trim();
       this.setActiveContentState(activeChannelId, { type_of: 'github', args });
