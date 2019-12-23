@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -12,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_15_145706) do
+ActiveRecord::Schema.define(version: 2019_12_23_202251) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -99,6 +98,7 @@ ActiveRecord::Schema.define(version: 2019_12_15_145706) do
     t.string "main_image_background_hex_color", default: "#dddddd"
     t.string "main_tag_name_for_social"
     t.string "name_within_collection"
+    t.integer "nth_published_by_author", default: 0
     t.integer "organic_page_views_count", default: 0
     t.integer "organic_page_views_past_month_count", default: 0
     t.integer "organic_page_views_past_week_count", default: 0
