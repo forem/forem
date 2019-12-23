@@ -2,9 +2,9 @@ require "rails_helper"
 
 RSpec.describe "SocialPreviews", type: :request do
   let(:user) { create(:user) }
-  let(:tag) { create(:tag) }
+  let(:tag) { create(:tag, badge: create(:badge)) }
   let(:organization) { create(:organization) }
-  let(:article) { create(:article, user_id: user.id) }
+  let(:article) { create(:article, user_id: user.id, tags: tag.name) }
   let(:comment) { create(:comment, user_id: user.id, commentable_id: article.id) }
   let(:image_url) { "https://hcti.io/v1/image/6c52de9d-4d37-4008-80f8-67155589e1a1" }
   let(:listing) { create(:classified_listing, user_id: user.id, category: "cfp") }
