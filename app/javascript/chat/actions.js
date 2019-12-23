@@ -137,6 +137,16 @@ export function getChannels(
   });
 }
 
+export function getUnopenedChannelIds(successCb) {
+  fetch('/chat_channels?state=unopened_ids', {
+    credentials: 'same-origin',
+  })
+    .then(response => response.json())
+    .then(json => {
+      successCb(json.unopened_ids);
+    });
+}
+
 export function getTwilioToken(videoChannelName, successCb, failureCb) {
   fetch(`/twilio_tokens/${videoChannelName}`, {
     Accept: 'application/json',

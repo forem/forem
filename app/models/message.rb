@@ -50,16 +50,47 @@ class Message < ApplicationRecord
 
   def append_rich_links(html)
     doc = Nokogiri::HTML(html)
-    rich_style = "border: 1px solid #0a0a0a; border-radius: 3px; padding: 8px;"
     doc.css("a").each do |anchor|
-      if (article = rich_link_article(anchor))
-        html += "<a style='color: #0a0a0a' href='#{article.path}'
-          target='_blank' data-content='articles/#{article.id}'>
-          <h1 style='#{rich_style}'  data-content='articles/#{article.id}'>
-          #{article.title}</h1></a>".html_safe
+      if article = rich_link_article(anchor)
+        html += "<a href='#{article.path}'
+        class='chatchannels__richlink'
+          target='_blank' data-content='sidecar-article'>
+            #{"<div class='chatchannels__richlinkmainimage' style='background-image:url(" + cl_path(article.main_image) + ")' data-content='sidecar-article' ></div>" if article.main_image.present?}
+          <h1 data-content='sidecar-article'>#{article.title}</h1>
+          <h4 data-content='sidecar-article'><img src='#{ProfileImage.new(article.cached_user).get(90)}' /> #{article.cached_user.name}・#{article.readable_publish_date}</h4>
+          </a>".html_safe
+      elsif tag = rich_link_tag(anchor)
+        html += "<a href='/t/#{tag.name}'
+        class='chatchannels__richlink'
+          target='_blank' data-content='sidecar-tag'>
+          <h1 data-content='sidecar-tag'>
+            #{"<img src='" + cl_path(tag.badge.badge_image_url) + "' data-content='sidecar-tag' style='transform:rotate(-5deg)' />" if tag.badge_id.present?}
+            ##{tag.name}
+          </h1>
+          </a>".html_safe
+      elsif user = rich_user_link(anchor)
+        html += "<a href='#{user.path}'
+        class='chatchannels__richlink'
+          target='_blank' data-content='sidecar-user'>
+          <h1 data-content='sidecar-user'>
+            <img src='#{ProfileImage.new(user).get(90)}' data-content='sidecar-user' class='chatchannels__richlinkprofilepic' />
+            #{user.name}
+          </h1>
+          </a>".html_safe
       end
     end
     html
+  end
+
+  def cl_path(img_src)
+    ActionController::Base.helpers.
+      cl_image_path(img_src,
+                    type: "fetch",
+                    width: 725,
+                    crop: "limit",
+                    flags: "progressive",
+                    fetch_format: "auto",
+                    sign_url: true)
   end
 
   def determine_user_validity
@@ -81,6 +112,14 @@ class Message < ApplicationRecord
 
   def rich_link_article(link)
     Article.find_by(slug: link["href"].split("/")[4].split("?")[0]) if link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/") && link["href"].split("/")[4]
+  end
+
+  def rich_link_tag(link)
+    Tag.find_by(name: link["href"].split("/t/")[1].split("/")[0]) if link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/t/")
+  end
+
+  def rich_user_link(link)
+    User.find_by(username: link["href"].split("/")[3].split("/")[0]) if link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/")
   end
 
   def send_email_if_appropriate
