@@ -55,6 +55,8 @@ RSpec.describe "SocialPreviews", type: :request do
     end
 
     it "renders consistent HTML between requests" do
+      create(:badge_achievement, user: user)
+
       # We use the HTML for caching. It needs to be deterministic (if data is unchanged, the HTML should be the same)
       get "/social_previews/user/#{user.id}"
       first_request_body = response.body
