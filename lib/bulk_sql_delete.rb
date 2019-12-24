@@ -7,6 +7,7 @@ class BulkSqlDelete
 
   def delete_in_batches(sql)
     perform_and_log(sql) do
+      connection.begin_db_transaction unless Rails.env.test?
       result = connection.exec_delete(sql)
       connection.commit_db_transaction unless Rails.env.test?
 
