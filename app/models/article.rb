@@ -619,7 +619,9 @@ class Article < ApplicationRecord
   end
 
   def set_nth_published_at
-    self.nth_published_by_author = user.articles.published.size if nth_published_by_author.zero? && published
+    published_article_ids = user.articles.published.order("published_at ASC").pluck(:id)
+    index = published_article_ids.index(id)
+    self.nth_published_by_author = (index || published_article_ids.size) + 1 if nth_published_by_author.zero? && published
   end
 
   def title_to_slug
