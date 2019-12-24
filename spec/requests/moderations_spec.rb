@@ -63,16 +63,10 @@ RSpec.describe "Moderations", type: :request do
       expect(response.body).to include("We build the")
     end
 
-    it "grants access to /mod index with articles" do
-      create(:article, published: true)
-      get "/mod"
-      expect(response.body).to include("We build the")
-    end
-
-    it "grants access to /mod index with articles" do
+    it "grants access to /mod/:tag index with articles" do
       create(:article, published: true)
       get "/mod/#{article.tags.first}"
-      expect(response.body).to include("#"+article.tags.first.name.titleize)
+      expect(response.body).to include("#" + article.tags.first.name.titleize)
     end
   end
 end

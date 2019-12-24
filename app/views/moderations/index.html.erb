@@ -21,15 +21,16 @@
       </div>
       Posts This Week
     </div>
+    <% plucked_article_ids = Article.cached_tagged_with(@tag).pluck(:id) if @tag %>
     <div class="mod-index-hero-data-pod">
       <div class="mod-index-hero-data-pod-number">
-        <%= number_with_delimiter(@tag ? Comment.where(commentable_id: Article.cached_tagged_with(@tag).pluck(:id) ).where("created_at > ?", 7.days.ago).size : Comment.where("created_at > ?", 7.days.ago).size) %>
+        <%= number_with_delimiter(@tag ? Comment.where(commentable_id: plucked_article_ids ).where("created_at > ?", 7.days.ago).size : Comment.where("created_at > ?", 7.days.ago).size) %>
       </div>
       Comments This Week
     </div>
     <div class="mod-index-hero-data-pod">
       <div class="mod-index-hero-data-pod-number">
-        <%= number_with_delimiter(@tag ? Reaction.where(reactable_id: Article.cached_tagged_with(@tag).pluck(:id) ).where("created_at > ?", 7.days.ago).size : Reaction.where("created_at > ?", 7.days.ago).size)  %>
+        <%= number_with_delimiter(@tag ? Reaction.where(reactable_id: plucked_article_ids ).where("created_at > ?", 7.days.ago).size : Reaction.where("created_at > ?", 7.days.ago).size)  %>
       </div>
       Reactions This Week
     </div>
@@ -58,9 +59,9 @@
         </div>
         <div class="mod-index-actions-and-details">
           <button class="quick-mod-button cta" data-path="<%= article.path %>">Quick Mod</button>
-          <a href="/<% article.cached_user.username %>"><img src="<%= ProfileImage.new(article.cached_user).get(90) %>" /><%= article.cached_user.name %></a>
+          <a href="/<%= article.cached_user.username %>"><img src="<%= ProfileImage.new(article.cached_user).get(90) %>" /><%= article.cached_user.name %></a>
           ・ <%= article.readable_publish_date %>
-          <% if article.nth_published_by_author < 4 %>
+          <% if article.nth_published_by_author > 0 && article.nth_published_by_author < 4 %>
             ・ 👋 <strong><%= article.nth_published_by_author.ordinalize %> post by this user</strong>
           <% end %>
         </div>
