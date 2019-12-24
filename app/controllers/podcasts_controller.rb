@@ -12,7 +12,7 @@ class PodcastsController < ApplicationController
     @podcast.creator = current_user
     if @podcast.save
       current_user.add_role(:podcast_admin, @podcast) if added_by_owner?
-      flash[:notice] = "Podcast suggested"
+      flash[:global_notice] = "Podcast suggested"
       redirect_to "/pod"
     else
       @podcasts = Podcast.available.order("title asc")
