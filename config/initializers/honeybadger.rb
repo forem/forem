@@ -17,6 +17,8 @@ Honeybadger.configure do |config|
                            notice.error_message
                          elsif notice.error_message&.include?("BANNED")
                            "banned"
+                         elsif notice.error_message&.include?("Rack::Timeout::RequestTimeoutException")
+                           "rack_timeout"
                          elsif notice.component&.include?("internal")
                            "internal"
                          end

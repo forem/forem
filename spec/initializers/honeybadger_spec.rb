@@ -21,6 +21,16 @@ describe Honeybadger do
     end
   end
 
+  context "when Rack::Timeout::RequestTimeoutException is raised" do
+    it "sets fingerprint to rack_timeout" do
+      notice = Honeybadger::Notice.new(
+        described_class.config, error_message: "Rack::Timeout::RequestTimeoutException happened"
+      )
+      described_class.config.before_notify_hooks.first.call(notice)
+      expect(notice.fingerprint).to eq("rack_timeout")
+    end
+  end
+
   context "when error is raised from an internal route" do
     it "halts notification" do
       notice = Honeybadger::Notice.new(
