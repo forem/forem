@@ -215,8 +215,10 @@ RSpec.describe Article, type: :model do
 
     it "does have a nth_published_by_author if published" do
       # this works because validation triggers the extraction of the date from the front matter
-      article.validate
-      expect(article.nth_published_by_author).to eq(1)
+      published_article = create(:article, published: true, user: user)
+      expect(published_article.reload.nth_published_by_author).to eq(1)
+      second_article = create(:article, user_id: published_article.user_id)
+      expect(second_article.reload.nth_published_by_author).to eq(2)
     end
   end
 
