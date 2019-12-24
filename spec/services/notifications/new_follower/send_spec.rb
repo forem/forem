@@ -124,13 +124,10 @@ RSpec.describe Notifications::NewFollower::Send, type: :service do
     end
 
     context "when destroyed follow and notification exists" do
-      let(:unfollow) { user.stop_following(user2) }
-
-      before do
-        create(:notification, action: "Follow", user: user2, notifiable: follow, notified_at: 1.year.ago)
-      end
+      let_it_be(:unfollow) { user.stop_following(user2) }
 
       it "does not destroy a notification" do
+        create(:notification, action: "Follow", user: user2, notifiable: follow, notified_at: 1.year.ago)
         expect do
           described_class.call(follow_data(unfollow))
         end.not_to change(Notification, :count)
