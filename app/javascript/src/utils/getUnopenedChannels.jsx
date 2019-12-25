@@ -149,6 +149,10 @@ function manageChannel(json) {
 }
 
 export default function getUnopenedChannels() {
+  if (window.frameElement) {
+    // We don't want this triggered within context of iframe.
+    return;
+  }
   render(
     <UnopenedChannelNotice
       unopenedChannels={[]}

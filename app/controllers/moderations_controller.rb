@@ -6,13 +6,12 @@ class ModerationsController < ApplicationController
     return unless current_user&.trusted
 
     @articles = Article.published.
-      where("rating_votes_count < 3").
-      where("score > -5").
-      order("hotness_score DESC").limit(50)
+      where("score > -5 AND score < 5").
+      order("published_at DESC").limit(70)
     @articles = @articles.cached_tagged_with(params[:tag]) if params[:tag].present?
-
-    @rating_votes = RatingVote.where(article: @articles, user: current_user)
+    @articles = @articles.where("nth_published_by_author > 0 AND nth_published_by_author < 4 AND published_at > ?", 7.days.ago) if params[:state] == "new-authors"
     @articles = @articles.decorate
+    @tag = Tag.find_by(name: params[:tag])
   end
 
   def article

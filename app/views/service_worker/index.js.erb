@@ -37,7 +37,7 @@
   function createPageStream(request) {
     const stream = new ReadableStream({
       start(controller) {
-        if (!caches.match('/shell_top') || !caches.match('/shell_top')) { //return if shell isn't cached.
+        if (!caches.match('/shell_top') || !caches.match('/shell_bottom')) { //return if shell isn't cached.
           return
         }
 

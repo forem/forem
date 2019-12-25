@@ -7,6 +7,7 @@ import {
   sendMessage,
   sendOpen,
   getChannels,
+  getUnopenedChannelIds,
   getContent,
   getChannelInvites,
   sendChannelInviteAction,
@@ -41,6 +42,7 @@ export default class Chat extends Component {
       scrolled: false,
       showAlert: false,
       chatChannels,
+      unopenedChannelIds: [],
       filterQuery: '',
       channelTypeFilter: 'all',
       channelsLoaded: false,
@@ -92,10 +94,9 @@ export default class Chat extends Component {
       channel => `open-channel-${channel.chat_channel_id}`,
     );
     setupObserver(this.observerCallback);
-    if (!window.currentUser) {
-      window.currentUser = JSON.parse(document.body.dataset.user);
-    }
+    
     this.subscribePusher(`private-message-notifications-${currentUserId}`);
+    
     if (activeChannelId) {
       sendOpen(activeChannelId, this.handleChannelOpenSuccess, null);
     }
@@ -112,6 +113,7 @@ export default class Chat extends Component {
         filters,
         this.loadChannels,
       );
+      getUnopenedChannelIds(this.markUnopenedChannelIds)
     }
     if (!isMobileDevice) {
       document.getElementById('messageform').focus();
@@ -235,6 +237,10 @@ export default class Chat extends Component {
     document.getElementById('chatchannels__channelslist').scrollTop = 0;
   };
 
+  markUnopenedChannelIds = (ids) => {
+    this.setState({unopenedChannelIds: ids})
+  }
+
   subscribeChannelsToPusher = (channels, channelNameFn) => {
     channels.forEach(channel => {
       this.subscribePusher(channelNameFn(channel));
@@ -339,7 +345,7 @@ export default class Chat extends Component {
   };
 
   receiveNewMessage = message => {
-    const { messages, activeChannelId, scrolled, chatChannels } = this.state;
+    const { messages, activeChannelId, scrolled, chatChannels, unopenedChannelIds } = this.state;
     const receivedChatChannelId = message.chat_channel_id;
     let newMessages = [];
 
@@ -379,7 +385,16 @@ export default class Chat extends Component {
 
     if (receivedChatChannelId === activeChannelId) {
       sendOpen(receivedChatChannelId, this.handleChannelOpenSuccess, null);
+    } else {
+      const newUnopenedChannels = unopenedChannelIds
+      if (!unopenedChannelIds.includes(receivedChatChannelId)) {
+        newUnopenedChannels.push(receivedChatChannelId)
+      }  
+      this.setState({
+        unopenedChannelIds: newUnopenedChannels
+      })
     }
+
     this.setState(prevState => ({
       ...newShowAlert,
       chatChannels: newChannelsObj,
@@ -508,6 +523,14 @@ export default class Chat extends Component {
         .trigger('client-initiatevideocall', {
           channelId: activeChannelId,
         });
+    } else if (message.startsWith('/new')) {
+      this.setActiveContentState(activeChannelId, {
+        type_of: 'loading-post',
+      });
+      this.setActiveContent({
+        path: '/new',
+        type_of: 'article'
+      })
     } else if (message.startsWith('/github')) {
       const args = message.split('/github ')[1].trim();
       this.setActiveContentState(activeChannelId, { type_of: 'github', args });
@@ -535,7 +558,7 @@ export default class Chat extends Component {
       target = target.parentElement;
     }
     this.triggerSwitchChannel(
-      target.dataset.channelId,
+      parseInt(target.dataset.channelId, 10),
       target.dataset.channelSlug,
     );
   };
@@ -571,12 +594,18 @@ export default class Chat extends Component {
   };
 
   triggerSwitchChannel = (id, slug) => {
-    const { chatChannels, isMobileDevice } = this.state;
+    const { chatChannels, isMobileDevice, unopenedChannelIds } = this.state;
+    const newUnopenedChannelIds = unopenedChannelIds
+    const index = newUnopenedChannelIds.indexOf(id);
+    if (index > -1) {
+      newUnopenedChannelIds.splice(index, 1);
+    }
     this.setState({
       activeChannel: this.filterForActiveChannel(chatChannels, id),
       activeChannelId: parseInt(id, 10),
       scrolled: false,
       showAlert: false,
+      unopenedChannelIds: unopenedChannelIds.filter(unopenedId => unopenedId !== id)
     });
     this.setupChannel(id);
     window.history.replaceState(null, null, `/connect/${slug}`);
@@ -652,7 +681,8 @@ export default class Chat extends Component {
     }
 
     const { target } = e;
-    if (target.dataset.content) {
+    const content = target.dataset.content || target.parentElement.dataset.content
+    if (content) {
       e.preventDefault();
       e.stopPropagation();
 
@@ -666,24 +696,14 @@ export default class Chat extends Component {
           this.setActiveContent,
           null,
         );
-      } else if (target.dataset.content.startsWith('users/')) {
-        this.setActiveContentState(activeChannelId, {
-          type_of: 'loading-user',
-        });
-        getContent(
-          `/api/${target.dataset.content}`,
-          this.setActiveContent,
-          null,
-        );
-      } else if (target.dataset.content.startsWith('articles/')) {
+      } else if (content.startsWith('sidecar') || content.startsWith('article')) { // article is legacy which can be removed shortly
         this.setActiveContentState(activeChannelId, {
           type_of: 'loading-post',
         });
-        getContent(
-          `/api/${target.dataset.content}`,
-          this.setActiveContent,
-          null,
-        );
+        this.setActiveContent({
+          path: target.href || target.parentElement.href,
+          type_of: 'article'
+        })
       } else if (target.dataset.content === 'exit') {
         this.setActiveContentState(activeChannelId, null);
       }
@@ -774,6 +794,7 @@ export default class Chat extends Component {
       messages,
       showTimestamp,
       activeChannel,
+      currentUserId,
     } = this.state;
     if (!messages[activeChannelId]) {
       return '';
@@ -827,7 +848,7 @@ export default class Chat extends Component {
     }
     return messages[activeChannelId].map(message => (
       <Message
-        currentUserId={window.currentUser.id}
+        currentUserId={currentUserId}
         id={message.id}
         user={message.username}
         userID={message.user_id}
@@ -943,6 +964,7 @@ export default class Chat extends Component {
             <Channels
               activeChannelId={state.activeChannelId}
               chatChannels={state.chatChannels}
+              unopenedChannelIds={state.unopenedChannelIds}
               handleSwitchChannel={this.handleSwitchChannel}
               channelsLoaded={state.channelsLoaded}
               filterQuery={state.filterQuery}
@@ -968,6 +990,7 @@ export default class Chat extends Component {
             incomingVideoCallChannelIds={state.incomingVideoCallChannelIds}
             activeChannelId={state.activeChannelId}
             chatChannels={state.chatChannels}
+            unopenedChannelIds={state.unopenedChannelIds}
             handleSwitchChannel={this.handleSwitchChannel}
             expanded={state.expanded}
           />
@@ -985,6 +1008,10 @@ export default class Chat extends Component {
       activeChannelId,
       messageOffset,
     } = this.state;
+
+    if (!messages[activeChannelId]) {
+      return;
+    }
 
     const jumpbackButton = document.getElementById('jumpback_button');
 
@@ -1166,7 +1193,7 @@ export default class Chat extends Component {
         <a
           href={`/${activeChannel.channel_username}`}
           onClick={this.triggerActiveContent}
-          data-content={`users/by_username?url=${activeChannel.channel_username}`}
+          data-content='sidecar-user'
         >
           {activeChannel.channel_modified_slug}
         </a>
@@ -1195,18 +1222,18 @@ export default class Chat extends Component {
 
     const dataContent =
       activeChannel.channel_type === 'direct'
-        ? `users/by_username?url=${activeChannel.channel_username}`
+        ? 'sidecar-user'
         : `chat_channels/${activeChannelId}`;
 
     return (
-      <div
+      <a
         className="activechatchannel__channelconfig"
         onClick={this.triggerActiveContent}
         onKeyUp={e => {
           if (e.keyCode === 13) this.triggerActiveContent(e);
         }}
-        role="button"
         tabIndex="0"
+        href={`/${activeChannel.channel_username}`}
         data-content={dataContent}
       >
         <img
@@ -1214,7 +1241,7 @@ export default class Chat extends Component {
           alt="channel config"
           data-content={dataContent}
         />
-      </div>
+      </a>
     );
   };
 

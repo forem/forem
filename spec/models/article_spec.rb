@@ -206,6 +206,44 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe "#nth_published_by_author" do
+    it "does not have a nth_published_by_author if not published" do
+      unpublished_article = build(:article, published: false)
+      unpublished_article.validate # to make sure the front matter extraction happens
+      expect(unpublished_article.nth_published_by_author).to eq(0)
+    end
+
+    it "does have a nth_published_by_author if published" do
+      # this works because validation triggers the extraction of the date from the front matter
+      published_article = create(:article, published: true, user: user)
+      expect(published_article.reload.nth_published_by_author).to eq(user.articles.size)
+      second_article = create(:article, user_id: published_article.user_id)
+      expect(second_article.reload.nth_published_by_author).to eq(user.articles.size)
+    end
+
+    it "adds have a nth_published_by_author if published" do
+      # this works because validation triggers the extraction of the date from the front matter
+      published_article = create(:article, published: true, user: user)
+      expect(published_article.reload.nth_published_by_author).to eq(user.articles.size)
+      second_article = create(:article, user_id: published_article.user_id)
+      second_article.update_column(:nth_published_by_author, 0)
+      second_article.save
+      expect(second_article.reload.nth_published_by_author).to eq(user.articles.size)
+    end
+
+    it "adds have a nth_published_by_author to earlier posts if added for first time" do
+      # this works because validation triggers the extraction of the date from the front matter
+      published_article = create(:article, published: true, user: user)
+      expect(published_article.reload.nth_published_by_author).to eq(user.articles.size)
+      second_article = create(:article, user_id: published_article.user_id)
+      published_article.update_column(:nth_published_by_author, 0)
+      published_article.save
+      expect(published_article.reload.nth_published_by_author).to eq(user.articles.size - 1)
+    end
+
+
+  end
+
   describe "#crossposted_at" do
     it "does not have crossposted_at if not published_from_feed" do
       expect(article.crossposted_at).to be_nil

@@ -118,7 +118,9 @@
     </div>
     <div class="badge-images">
       <% @tag_badges.each do |badge| %>
-        <img src="<%= badge.badge_image_url %>" style="transform: rotate(<%= rand(-6..6) %>deg);" />
+        <%# Use a seed in Random so we don't break cache on every render %>
+        <% not_so_rand = Random.new(badge.id + @user.id) %>
+        <img src="<%= badge.badge_image_url %>" style="transform: rotate(<%= not_so_rand.rand(-6..6) %>deg);" />
       <% end %>
       <img src="https://thepracticaldev.s3.amazonaws.com/i/bh2wmpcltaybu1xsnico.png" />
     </div>

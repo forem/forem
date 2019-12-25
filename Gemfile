@@ -32,7 +32,7 @@ gem "delayed_job_web", "~> 1.4" # Web interface for delayed_job
 gem "devise", "~> 4.7" # Flexible authentication solution for Rails
 gem "doorkeeper", "~> 5.2" # Oauth 2 provider
 gem "draper", "~> 3.1" # Draper adds an object-oriented layer of presentation logic to your Rails apps
-gem "dry-struct", "~> 1.1" # Typed structs and value objects
+gem "dry-struct", "~> 1.2" # Typed structs and value objects
 gem "email_validator", "~> 2.0" # Email validator for Rails and ActiveModel
 gem "emoji_regex", "~> 2.0" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
 gem "envied", "~> 0.9" # Ensure presence and type of your app's ENV-variables
@@ -128,11 +128,11 @@ group :development, :test do
   gem "awesome_print", "~> 1.8" # Great Ruby dubugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.0" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.29" # Capybara is an integration testing tool for rack based web applications
-  gem "faker", "~> 2.8" # A library for generating fake data such as names, addresses, and phone numbers
+  gem "faker", "~> 2.9" # A library for generating fake data such as names, addresses, and phone numbers
   gem "parallel_tests", "~> 2.30" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry-byebug", "~> 3.7" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 3.9" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 0.77", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 0.78", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.5", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.4", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 1.37", require: false # Code style checking for RSpec files
