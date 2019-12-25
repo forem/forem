@@ -24,19 +24,15 @@ module Notifications
         recent_follows = Follow.where(followable_type: followable_type, followable_id: followable_id).
           where("created_at > ?", 24.hours.ago).order("created_at DESC")
 
-        notification_params = { action: "Follow" }
-        if followable_type == "User"
-          notification_params[:user_id] = followable_id
-        elsif followable_type == "Organization"
-          notification_params[:organization_id] = followable_id
-        end
+        notification_params = build_notification_params
 
-        followers = User.where(id: recent_follows.select(:follower_id))
-        aggregated_siblings = followers.map { |follower| user_data(follower) }
-        if aggregated_siblings.size.zero?
+        aggregated_sibling_ids = User.where(id: recent_follows.select(:follower_id))
+        aggregated_siblings_hashes = aggregated_sibling_ids.map { |follower| user_data(follower) }
+
+        if aggregated_siblings_hashes.empty?
           notification = Notification.find_by(notification_params)&.destroy
         else
-          json_data = { user: user_data(follower), aggregated_siblings: aggregated_siblings }
+          json_data = { user: user_data(follower), aggregated_siblings: aggregated_siblings_hashes }
           notification = Notification.find_or_initialize_by(notification_params)
           notification.notifiable_id = recent_follows.first.id
           notification.notifiable_type = "Follow"
@@ -51,6 +47,18 @@ module Notifications
       private
 
       attr_reader :followable_id, :followable_type, :follower_id, :is_read
+
+      # Builds a hash used to search for or create the notification of
+      # follows of the user or organization.
+      def build_notification_params
+        notification_params = { action: "Follow" }
+        if followable_type == "User"
+          notification_params[:user_id] = followable_id
+        elsif followable_type == "Organization"
+          notification_params[:organization_id] = followable_id
+        end
+        notification_params
+      end
 
       def follower
         User.find(follower_id)
