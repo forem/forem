@@ -235,13 +235,11 @@ RSpec.describe Article, type: :model do
       # this works because validation triggers the extraction of the date from the front matter
       published_article = create(:article, published: true, user: user)
       expect(published_article.reload.nth_published_by_author).to eq(user.articles.size)
-      second_article = create(:article, user_id: published_article.user_id)
+      create(:article, user_id: published_article.user_id)
       published_article.update_column(:nth_published_by_author, 0)
       published_article.save
       expect(published_article.reload.nth_published_by_author).to eq(user.articles.size - 1)
     end
-
-
   end
 
   describe "#crossposted_at" do
