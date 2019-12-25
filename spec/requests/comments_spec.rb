@@ -180,7 +180,19 @@ RSpec.describe "Comments", type: :request do
       end
 
       it "renders deleted article comment view" do
-        expect(response.body).to include("Comment from a deleted article")
+        expect(response.body).to include("Comment from a deleted article or podcast")
+      end
+    end
+
+    context "when the podcast is deleted" do
+      before do
+        podcast_comment
+        podcast_episode.destroy
+        get podcast_comment.path
+      end
+
+      it "renders deleted article comment view" do
+        expect(response.body).to include("Comment from a deleted article or podcast")
       end
     end
   end
