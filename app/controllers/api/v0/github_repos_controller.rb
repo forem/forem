@@ -11,7 +11,7 @@ module Api
           repo
         end
       rescue Octokit::Unauthorized => e
-        error_unauthorized("Github Unauthorized: #{e.message}")
+        render json: { error: "Github Unauthorized: #{e.message}", status: 401 }, status: :unauthorized
       end
 
       def update_or_create
