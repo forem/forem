@@ -37,8 +37,8 @@ task expire_old_listings: :environment do
   end
 end
 
-task clear_memory_if_too_high: :environment do
-  Rails.cache.clear if Rails.cache.stats.flatten[1]["bytes"].to_i > 9_650_000_000
+task remove_old_notifications: :environment do
+  Notification.fast_destroy_old_notifications
 end
 
 task save_nil_hotness_scores: :environment do
