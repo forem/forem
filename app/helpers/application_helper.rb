@@ -26,10 +26,6 @@ module ApplicationHelper
   end
 
   def title_with_timeframe(page_title:, timeframe:, content_for: false)
-    if timeframe.blank?
-      return content_for ? title(page_title) : page_title
-    end
-
     sub_titles = {
       "week" => "Top posts this week",
       "month" => "Top posts this month",
@@ -37,6 +33,10 @@ module ApplicationHelper
       "infinity" => "All posts",
       "latest" => "Latest posts"
     }
+
+    if timeframe.blank? || sub_titles[timeframe].blank?
+      return content_for ? title(page_title) : page_title
+    end
 
     title_text = "#{page_title} - #{sub_titles.fetch(timeframe)}"
     content_for ? title(title_text) : title_text

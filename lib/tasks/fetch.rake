@@ -50,9 +50,9 @@ task github_repo_fetch_all: :environment do
 end
 
 task send_email_digest: :environment do
-  return if Time.current.wday < 3
-
-  EmailDigest.send_periodic_digest_email
+  if Time.current.wday >= 3
+    EmailDigest.send_periodic_digest_email
+  end
 end
 
 task award_badges: :environment do
