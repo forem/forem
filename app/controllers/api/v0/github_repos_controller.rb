@@ -1,6 +1,6 @@
 module Api
   module V0
-    class GithubReposController < ApplicationController
+    class GithubReposController < ApiController
       def index
         client = create_octokit_client
         existing_user_repos = GithubRepo.
@@ -10,6 +10,8 @@ module Api
           repo.selected = existing_user_repos.include?(repo.id)
           repo
         end
+      rescue Octokit::Unauthorized => e
+        error_unauthorized("Github Unauthorized: #{e.message}")
       end
 
       def update_or_create

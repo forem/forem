@@ -19,6 +19,13 @@ RSpec.describe "Api::V0::GithubRepos", type: :request do
       get "/api/github_repos"
       expect(response).to have_http_status(:ok)
     end
+
+    it "returns 401 if github raises an unauthorized error" do
+      allow(Octokit::Client).to receive(:new).and_raise(Octokit::Unauthorized)
+      get "/api/github_repos"
+      expect(response).to have_http_status(:unauthorized)
+      expect(response.parsed_body["error"]).to include("Github Unauthorized")
+    end
   end
 
   describe "POST /api/v0/github_repos/update_or_create" do

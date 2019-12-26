@@ -35,8 +35,8 @@ class Api::V0::ApiController < ApplicationController
     render json: { error: message, status: 422 }, status: :unprocessable_entity
   end
 
-  def error_unauthorized
-    render json: { error: "unauthorized", status: 401 }, status: :unauthorized
+  def error_unauthorized(message = "unauthorized")
+    render json: { error: message, status: 401 }, status: :unauthorized
   end
 
   def error_not_found
