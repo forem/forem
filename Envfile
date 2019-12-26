@@ -84,12 +84,7 @@ set_variable :HONEYBADGER_JS_API_KEY, :String, "Optional"
 # Algolia for search (not optional)
 # (https://www.algolia.com/doc/)
 #
-# I'm changing the following line:
-# only_in_test = proc { ENV["RACK_ENV"] == "test" ? "test-test" : nil }
-# to:
 only_in_test = (ENV["RACK_ENV"] == "test" ? "test-test" : nil)
-# Is there a reason this computation needs to be deferred as a Proc?
-#
 set_variable :ALGOLIASEARCH_API_KEY, :String, only_in_test
 set_variable :ALGOLIASEARCH_APPLICATION_ID, :String, only_in_test
 set_variable :ALGOLIASEARCH_SEARCH_ONLY_KEY, :String, only_in_test
