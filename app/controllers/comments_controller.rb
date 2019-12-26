@@ -147,7 +147,12 @@ class CommentsController < ApplicationController
   def settings
     @comment = Comment.find(params[:id_code].to_i(26))
     authorize @comment
-    @notification_subscription = NotificationSubscription.find_or_initialize_by(user_id: @comment.user_id, notifiable_id: @comment.id, notifiable_type: "Comment", config: "all_comments")
+    @notification_subscription = NotificationSubscription.find_or_initialize_by(
+      user_id: @comment.user_id,
+      notifiable_id: @comment.id,
+      notifiable_type: "Comment",
+      config: "all_comments",
+    )
     render :settings
   end
 
