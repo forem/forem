@@ -136,6 +136,10 @@ class Notification < ApplicationRecord
       Notifications::UpdateJob.perform_later(notifiable.id, notifiable.class.name, action)
     end
 
+    def fast_destroy_old_notifications(destroy_before_timestamp = 4.months.ago)
+      Notification.where("created_at < ?", destroy_before_timestamp).in_batches(of: 10_000).delete_all
+    end
+
     private
 
     def user_data(user)
