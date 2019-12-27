@@ -15,8 +15,9 @@ For the Dev.to tech stack we use:
 - [_Honeybadger_](https://www.honeybadger.io/) for error monitoring
 - [_Timber_](https://timber.io/) for logging
 - [_Delayed Job_](https://github.com/collectiveidea/delayed_job) and
-  [_Active Job_](https://guides.rubyonrails.org/active_job_basics.html) for
-  background workers
+- [_Sidekiq_](https://github.com/mperham/sidekiq) (will be replacing delayed
+  job) and [_Active Job_](https://guides.rubyonrails.org/active_job_basics.html)
+  for background workers
 - [_Algolia_](https://www.algolia.com/) for search
 - [_Redcarpet_](https://github.com/vmg/redcarpet) and
   [_Rouge_](https://github.com/jneen/rouge) to parse Markdown
