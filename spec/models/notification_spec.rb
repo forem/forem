@@ -519,15 +519,17 @@ RSpec.describe Notification, type: :model do
   end
 
   describe "#fast_destroy_old_notifications" do
+    let_it_be(:notifications) { create_list(:notification, 3) }
+
     it "bulk deletes notifications older than 4 months by default" do
-      create_list :notification, 5
-      described_class.last.update(created_at: 5.months.ago)
+      notifications.last.update(created_at: 5.months.ago)
       expect { described_class.fast_destroy_old_notifications }.to change(described_class, :count).by(-1)
     end
 
     it "bulk deletes notifications older than a given timestamp" do
-      create_list :notification, 5
-      expect { described_class.fast_destroy_old_notifications(Time.zone.now) }.to change(described_class, :count).by(-5)
+      expect do
+        described_class.fast_destroy_old_notifications(Time.current)
+      end.to change(described_class, :count).by(-notifications.size)
     end
   end
 end
