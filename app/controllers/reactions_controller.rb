@@ -78,6 +78,6 @@ class ReactionsController < ApplicationController
   private
 
   def organization_article?(reaction)
-    reaction.reactable_type == "Article" && reaction.reactable.organization_id
+    reaction.reactable_type == "Article" && reaction.reactable.organization.present?
   end
 end
