@@ -836,17 +836,6 @@ ActiveRecord::Schema.define(version: 2019_12_27_114543) do
     t.index ["profile_id"], name: "index_profile_pins_on_profile_id"
   end
 
-  create_table "push_notification_subscriptions", force: :cascade do |t|
-    t.string "auth_key"
-    t.datetime "created_at", null: false
-    t.string "endpoint"
-    t.string "notification_type"
-    t.string "p256dh_key"
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_push_notification_subscriptions_on_user_id"
-  end
-
   create_table "rating_votes", force: :cascade do |t|
     t.bigint "article_id"
     t.datetime "created_at", null: false
@@ -1213,7 +1202,6 @@ ActiveRecord::Schema.define(version: 2019_12_27_114543) do
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "page_views", "articles", on_delete: :cascade
-  add_foreign_key "push_notification_subscriptions", "users"
   add_foreign_key "sponsorships", "organizations"
   add_foreign_key "sponsorships", "users"
   add_foreign_key "tag_adjustments", "articles", on_delete: :cascade
