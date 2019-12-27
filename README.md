@@ -21,9 +21,6 @@
   <a href="https://codeclimate.com/github/thepracticaldev/dev.to/test_coverage">
     <img src="https://api.codeclimate.com/v1/badges/ce45bf63293073364bcb/test_coverage" alt="Code Climate test coverage">
   </a>
-  <a href="https://oss.skylight.io/app/applications/K9H5IV3RqKGu">
-    <img src="https://badges.skylight.io/status/K9H5IV3RqKGu.svg?token=Ofd-9PTSyus3BqEZZZbM1cWKJ94nHWaPiTphGsWJMAY" alt="Skylight badge">
-  </a>
   <a href="https://www.codetriage.com/thepracticaldev/dev.to">
     <img src="https://www.codetriage.com/thepracticaldev/dev.to/badges/users.svg" alt="CodeTriage badge">
   </a>
