@@ -15,6 +15,7 @@ RSpec.describe "Looking For Work" do
     perform_enqueued_jobs do
       click_button("SUBMIT")
     end
+    expect(page).to have_text("Your profile was successfully updated")
     expect(user.follows.count).to eq(1)
   end
 end
