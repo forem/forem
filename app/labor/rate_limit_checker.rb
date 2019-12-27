@@ -45,7 +45,7 @@ class RateLimitChecker
   end
 
   def ping_admins
-    RateLimitCheckerJob.perform_later(user.id, action)
+    RateLimitCheckerWorker.perform_async(user.id, action)
   end
 
   private
