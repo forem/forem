@@ -10,8 +10,10 @@ Rails.application.routes.draw do
     registrations: "registrations"
   }
 
+  require "sidekiq/web"
   authenticated :user, ->(user) { user.tech_admin? } do
     mount DelayedJobWeb, at: "/delayed_job"
+    mount Sidekiq::Web => "/sidekiq"
   end
 
   devise_scope :user do
