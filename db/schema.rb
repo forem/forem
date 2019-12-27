@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_26_202114) do
+ActiveRecord::Schema.define(version: 2019_12_27_114543) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -883,18 +883,6 @@ ActiveRecord::Schema.define(version: 2019_12_26_202114) do
     t.datetime "updated_at"
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["name"], name: "index_roles_on_name"
-  end
-
-  create_table "search_keywords", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "google_checked_at"
-    t.integer "google_difficulty"
-    t.integer "google_position"
-    t.string "google_result_path"
-    t.integer "google_volume"
-    t.string "keyword"
-    t.datetime "updated_at", null: false
-    t.index ["google_result_path"], name: "index_search_keywords_on_google_result_path"
   end
 
   create_table "site_configs", force: :cascade do |t|
