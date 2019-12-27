@@ -1,23 +1,34 @@
 require "rails_helper"
 
 RSpec.describe RateLimitCheckerJob, type: :job do
-  describe "#perform" do
+  include_examples "#enqueues_job", "rate_limit_checker", 2
+
+  describe "#perform_later" do
     let(:user) { create(:user) }
     let(:service) { PingAdmins }
-    let(:job) { subject }
 
     before { allow(service).to receive(:call) }
 
-    it "calls a service" do
-      job.perform(user.id, "test")
+    it "enqueues the job" do
+      expect do
+        described_class.perform_later(user.id)
+      end.to have_enqueued_job.with(user.id).on_queue("rate_limit_checker")
+    end
 
-      expect(service).to have_received(:call).with(user, "test").once
+    it "calls a service" do
+      perform_enqueued_jobs do
+        described_class.perform_now(user.id, "test")
+
+        expect(service).to have_received(:call).with(user, "test").once
+      end
     end
 
     it "does nothing for non-existent user" do
-      job.perform(nil, "test")
+      perform_enqueued_jobs do
+        described_class.perform_now(nil, "test")
 
-      expect(service).not_to have_received(:call)
+        expect(service).not_to have_received(:call)
+      end
     end
   end
 end
