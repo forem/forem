@@ -40,6 +40,9 @@ variable :REDIS_SESSIONS_URL, :String, default: "redis://localhost:6379"
 variable :SESSION_KEY, :String, default: "_Dev_Community_Session"
 variable :SESSION_EXPIRY_SECONDS, :Integer, default: 1209600 # two weeks in seconds
 
+# Redis Sidekiq storage
+variable :REDIS_SIDEKIQ_URL, :String, default: "redis://localhost:6379"
+
 ################################################
 ############## 3rd Party Services ##############
 ################################################

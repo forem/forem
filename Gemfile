@@ -82,6 +82,7 @@ gem "rouge", "~> 3.14" # A pure-ruby code highlighter
 gem "rubyzip", "~> 2.0" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sass-rails", "~> 6.0" # Sass adapter for the Rails asset pipeline
+gem "sidekiq", "~> 6.0.4" # Sidekiq is used to process background jobs with the help of Redis
 gem "sitemap_generator", "~> 6.0" # SitemapGenerator is a framework-agnostic XML Sitemap generator
 gem "skylight", "~> 4.2" # Skylight is a smart profiler for Rails, Sinatra, and other Ruby apps
 gem "slack-notifier", "~> 2.3" # A slim ruby wrapper for posting to slack webhooks
