@@ -18,11 +18,9 @@ RSpec.describe MediumArticleRetrievalService, type: :service, vcr: {} do
 
     it "returns a valid response" do
       VCR.use_cassette("medium") do
-        Timecop.freeze(expected_response[:published_time]) do
-          html = HTTParty.get(medium_url)
-          stub_request(:get, medium_url).to_return(body: html.body, status: 200)
-          expect(described_class.call(medium_url)).to include(expected_response)
-        end
+        html = HTTParty.get(medium_url)
+        stub_request(:get, medium_url).to_return(body: html.body, status: 200)
+        expect(described_class.call(medium_url)).to include(expected_response)
       end
     end
   end
