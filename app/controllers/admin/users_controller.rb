@@ -13,9 +13,9 @@ module Admin
     private
 
     def user_params
-      accessible = accessible_params
-      accessible << %i[password password_confirmation] if params[:user][:password].present?
-      verify_usernames params.require(:user).permit(accessible)
+      allowed = allowed_params
+      allowed << %i[password password_confirmation] if params[:user][:password].present?
+      verify_usernames params.require(:user).permit(allowed)
     end
 
     # make sure usernames are not empty, to be able to use the database unique index
@@ -25,11 +25,11 @@ module Admin
       user_params
     end
 
-    def accessible_params
-      attributes_params | url_params | other_params
+    def allowed_params
+      core_params | url_params | other_params
     end
 
-    def attributes_params
+    def core_params
       %i[
         name
         email
