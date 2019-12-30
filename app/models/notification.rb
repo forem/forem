@@ -143,7 +143,7 @@ class Notification < ApplicationRecord
           SELECT notifications.id
           FROM notifications
           WHERE created_at < '#{destroy_before_timestamp}'
-          LIMIT 10000
+          LIMIT 50000
         )
       SQL
 
