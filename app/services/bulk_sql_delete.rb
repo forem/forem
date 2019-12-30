@@ -1,19 +1,17 @@
 class BulkSqlDelete
   attr_accessor :connection
 
-  def initialize(connection = ActiveRecord::Base.connection)
-    self.connection = connection
-  end
-
   def delete_in_batches(sql)
-    perform_and_log(sql) do
-      unless Rails.env.test?
-        connection.begin_db_transaction
-      end
-      result = connection.exec_delete(sql)
-      connection.commit_db_transaction unless Rails.env.test?
+    ActiveRecord::Base.connection_pool.with_connection do |connection|
+      perform_and_log(sql) do
+        unless Rails.env.test?
+          connection.begin_db_transaction
+        end
+        result = connection.exec_delete(sql)
+        connection.commit_db_transaction unless Rails.env.test?
 
-      result
+        result
+      end
     end
   end
 

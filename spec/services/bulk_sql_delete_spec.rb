@@ -33,7 +33,10 @@ describe BulkSqlDelete do
       allow(logger).to receive(:error).with(
         hash_including(:tag, :statement, :exception_message, :backtrace),
       )
-      allow(bulk_deleter.connection).to receive(:exec_delete).and_raise("broken")
+      # rubocop:disable RSpec/AnyInstance
+      allow_any_instance_of(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter).to receive(:exec_delete).and_raise("broken")
+      # rubocop:enable RSpec/AnyInstance
+
       expect { bulk_deleter.delete_in_batches(sql) }.to raise_error("broken")
       expect(logger).to have_received(:error).with(
         hash_including(:tag, :statement, :exception_message, :backtrace),

@@ -137,15 +137,17 @@ class Notification < ApplicationRecord
     end
 
     def fast_destroy_old_notifications(destroy_before_timestamp = 4.months.ago)
-      notification_sql = <<-SQL
+      sql = <<-SQL
         DELETE FROM notifications
         WHERE notifications.id IN (
           SELECT notifications.id
           FROM notifications
-          WHERE created_at < '#{destroy_before_timestamp}'
+          WHERE created_at < ?
           LIMIT 50000
         )
       SQL
+
+      notification_sql = Notification.sanitize_sql([sql, destroy_before_timestamp])
 
       BulkSqlDelete.new.delete_in_batches(notification_sql)
     end
