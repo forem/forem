@@ -12,7 +12,8 @@ class FunctionCaller
   def call
     response = aws_lambda_client.invoke(function_name: function_name, payload: payload)
     payload_json = response.payload.as_json[0]
-    payload_json ? JSON.parse(JSON.parse(payload_json)["body"])["message"] : nil
+    body = payload_json ? JSON.parse(payload_json)["body"] : nil
+    body ? JSON.parse(body)["message"] : nil
   end
 
   private
