@@ -4,7 +4,6 @@ module ClassifiedListings
 
     def perform(classified_listing_id, cache_buster = CacheBuster)
       classified_listing = ClassifiedListing.find_by(id: classified_listing_id)
-
       return unless classified_listing
 
       cache_buster.bust_classified_listings(classified_listing)
