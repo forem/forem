@@ -26,4 +26,11 @@ RSpec.describe FunctionCaller, type: :labor do
     allow(empty_client).to receive(:invoke).and_return(empty_result)
     expect(described_class.call("some_function", payload, empty_client)).to be_nil
   end
+
+  it "doesn't fail when payload is empty and is a hash" do
+    empty_result = result_struct.new(payload: [{}.to_json])
+    empty_client = double
+    allow(empty_client).to receive(:invoke).and_return(empty_result)
+    expect(described_class.call("some_function", payload, empty_client)).to be_nil
+  end
 end
