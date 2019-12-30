@@ -234,6 +234,14 @@ ActiveRecord::Schema.define(version: 2019_12_27_114543) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "canned_responses", force: :cascade do |t|
+    t.text "content", null: false
+    t.string "content_type", null: false
+    t.string "title", null: false
+    t.string "type_of", null: false
+    t.integer "user_id"
+  end
+
   create_table "chat_channel_memberships", force: :cascade do |t|
     t.bigint "chat_channel_id", null: false
     t.datetime "created_at", null: false
