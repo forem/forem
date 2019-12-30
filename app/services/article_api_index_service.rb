@@ -74,7 +74,9 @@ class ArticleApiIndexService
   end
 
   def top_articles
-    Article.published.order("positive_reactions_count DESC").where("published_at > ?", top.to_i.days.ago).
+    Article.published.includes(:user, :organization).
+      where("published_at > ?", top.to_i.days.ago).
+      order("positive_reactions_count DESC").
       page(page).per(per_page || DEFAULT_PER_PAGE)
   end
 
