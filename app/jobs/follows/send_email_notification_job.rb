@@ -5,6 +5,7 @@ module Follows
     def perform(follow_id, mailer = NotifyMailer)
       follow = Follow.find_by(id: follow_id, followable_type: "User")
       return unless follow&.followable&.email? && follow.followable.email_follower_notifications
+
       return if EmailMessage.where(user_id: follow.followable_id).
         where("sent_at > ?", rand(15..35).hours.ago).
         where("subject LIKE ?", "%followed you on dev.to%").any?

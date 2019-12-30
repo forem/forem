@@ -1,5 +1,6 @@
-class RateLimitCheckerJob < ApplicationJob
-  queue_as :rate_limit_checker
+class RateLimitCheckerWorker
+  include Sidekiq::Worker
+  sidekiq_options queue: :default, retry: 10
 
   def perform(user_id, action)
     user = User.find_by(id: user_id)

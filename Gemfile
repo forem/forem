@@ -27,9 +27,11 @@ gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bo
 gem "cld", "~> 0.8" # Compact Language Detection for Ruby
 gem "cloudinary", "~> 1.13" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.2" # counter_culture provides turbo-charged counter caches that are kept up-to-date
+gem "ddtrace", "~> 0.30.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "delayed_job_active_record", "~> 4.1" # ActiveRecord backend for Delayed::Job
 gem "delayed_job_web", "~> 1.4" # Web interface for delayed_job
 gem "devise", "~> 4.7" # Flexible authentication solution for Rails
+gem "dogstatsd-ruby", "~> 4.5" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
 gem "doorkeeper", "~> 5.2" # Oauth 2 provider
 gem "draper", "~> 3.1" # Draper adds an object-oriented layer of presentation logic to your Rails apps
 gem "dry-struct", "~> 1.2" # Typed structs and value objects
@@ -49,7 +51,7 @@ gem "google-api-client", "~> 0.36" # Client for accessing Google APIs
 gem "honeybadger", "~> 4.5" # Used for tracking application errors
 gem "honeycomb-beeline", "~> 1.3.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
-gem "htmlentities", "~> 4.3", ">= 4.3.4"
+gem "htmlentities", "~> 4.3", ">= 4.3.4" # A module for encoding and decoding (X)HTML entities
 gem "httparty", "~> 0.17" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "inline_svg", "~> 1.6" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.9" # Create JSON structures via a Builder-style DSL
@@ -83,8 +85,7 @@ gem "rubyzip", "~> 2.0" # Rubyzip is a ruby library for reading and writing zip 
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sass-rails", "~> 6.0" # Sass adapter for the Rails asset pipeline
 gem "sidekiq", "~> 6.0.4" # Sidekiq is used to process background jobs with the help of Redis
-gem "sitemap_generator", "~> 6.0" # SitemapGenerator is a framework-agnostic XML Sitemap generator
-gem "skylight", "~> 4.2" # Skylight is a smart profiler for Rails, Sinatra, and other Ruby apps
+gem "sitemap_generator", "~> 6.1" # SitemapGenerator is a framework-agnostic XML Sitemap generator
 gem "slack-notifier", "~> 2.3" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets", "~> 3.7" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
@@ -127,7 +128,7 @@ end
 
 group :development, :test do
   gem "awesome_print", "~> 1.8" # Great Ruby dubugging companion: pretty print Ruby objects to visualize their structure
-  gem "bullet", "~> 6.0" # help to kill N+1 queries and unused eager loading
+  gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.29" # Capybara is an integration testing tool for rack based web applications
   gem "faker", "~> 2.9" # A library for generating fake data such as names, addresses, and phone numbers
   gem "parallel_tests", "~> 2.30" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
@@ -156,7 +157,7 @@ group :test do
   gem "test-prof", "~> 0.10" # Ruby Tests Profiling Toolbox
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
   gem "vcr", "~> 5.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
-  gem "webdrivers", "~> 4.1" # Run Selenium tests more easily with install and updates for all supported webdrivers
+  gem "webdrivers", "~> 4.2" # Run Selenium tests more easily with install and updates for all supported webdrivers
   gem "webmock", "~> 3.7" # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end

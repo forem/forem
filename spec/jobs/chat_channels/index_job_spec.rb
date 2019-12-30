@@ -6,8 +6,8 @@ RSpec.describe ChatChannels::IndexJob, type: :job do
   include_examples "#enqueues_job", "chat_channels_index", chat_channel_id: 1
 
   describe "#perform_now" do
-    let(:chat_channel) { double }
-    let(:chat_channel_id) { 1 }
+    let_it_be(:chat_channel) { double }
+    let_it_be(:chat_channel_id) { 1 }
 
     context "when chat_channel is found" do
       before do
@@ -17,6 +17,7 @@ RSpec.describe ChatChannels::IndexJob, type: :job do
 
       it "calls index" do
         described_class.perform_now(chat_channel_id: chat_channel_id)
+
         expect(chat_channel).to have_received(:index!)
       end
     end
@@ -27,7 +28,7 @@ RSpec.describe ChatChannels::IndexJob, type: :job do
       end
 
       it "doesn't fail" do
-        described_class.perform_now(chat_channel_id: chat_channel_id)
+        expect { described_class.perform_now(chat_channel_id: chat_channel_id) }.not_to raise_error
       end
     end
   end
