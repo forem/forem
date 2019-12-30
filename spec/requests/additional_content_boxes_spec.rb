@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe "AdditionalContentBoxes", type: :request do
-  let_it_be(:tag) { create(:tag) }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:regular_article) { create(:article, user: user, tags: [tag.name]) }
+  let(:tag) { create(:tag) }
+  let(:user) { create(:user) }
+  let(:regular_article) { create(:article, user: user, tags: [tag.name]) }
 
   describe "GET /additional_content_boxes" do
     it "returns an article if there is a published/featured one" do
