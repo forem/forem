@@ -159,7 +159,7 @@ GEM
       yajl-ruby
     buftok (0.2.0)
     builder (3.2.4)
-    bullet (6.0.2)
+    bullet (6.1.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     bundler-audit (0.6.1)
@@ -802,7 +802,7 @@ GEM
       multipart-post (~> 2.0)
       naught (~> 1.0)
       simple_oauth (~> 0.3.0)
-    tzinfo (1.2.5)
+    tzinfo (1.2.6)
       thread_safe (~> 0.1)
     uber (0.1.0)
     uglifier (4.2.0)
@@ -812,7 +812,7 @@ GEM
       unf_ext
     unf_ext (0.0.7.6)
     unicode-display_width (1.6.0)
-    uniform_notifier (1.12.1)
+    uniform_notifier (1.13.0)
     validate_url (1.0.8)
       activemodel (>= 3.0.0)
       public_suffix
@@ -878,7 +878,7 @@ DEPENDENCIES
   bootsnap (>= 1.1.0)
   brakeman (~> 4.7)
   buffer (~> 0.1)
-  bullet (~> 6.0)
+  bullet (~> 6.1)
   bundler-audit (~> 0.6)
   capybara (~> 3.29)
   carrierwave (~> 2.0)
