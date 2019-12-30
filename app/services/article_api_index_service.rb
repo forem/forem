@@ -81,13 +81,22 @@ class ArticleApiIndexService
   end
 
   def state_articles(state)
-    if state == "fresh"
-      Article.published.
-        where("positive_reactions_count < ? AND featured_number > ? AND score > ?", 2, 7.hours.ago.to_i, -2)
-    elsif state == "rising"
-      Article.published.
-        where("positive_reactions_count > ? AND positive_reactions_count < ? AND featured_number > ?", 19, 33, 3.days.ago.to_i)
-    end
+    articles = Article.published.includes(:user, :organization)
+
+    articles = if state == "fresh"
+                 articles.where(
+                   "positive_reactions_count < ? AND featured_number > ? AND score > ?", 2, 7.hours.ago.to_i, -2
+                 )
+               elsif state == "rising"
+                 articles.where(
+                   "positive_reactions_count > ? AND positive_reactions_count < ? AND featured_number > ?",
+                   19, 33, 3.days.ago.to_i
+                 )
+               else
+                 Article.none
+               end
+
+    articles.page(page).per(per_page || DEFAULT_PER_PAGE)
   end
 
   def collection_articles(collection_id)
