@@ -9,7 +9,7 @@ class ApiSecretsController < ApplicationController
     @secret.user_id = current_user.id
 
     if @secret.save
-      flash[:notice] = "Your API Key has been generated: #{@secret.secret}"
+      flash[:settings_notice] = "Your API Key has been generated: #{@secret.secret}"
     else
       flash[:error] = @secret.errors.full_messages.to_sentence
     end
@@ -21,7 +21,7 @@ class ApiSecretsController < ApplicationController
     authorize @secret
 
     if @secret.destroy
-      flash[:notice] = "Your API Key has been revoked."
+      flash[:settings_notice] = "Your API Key has been revoked."
     else
       flash[:error] = "An error occurred. Please try again or send an email to: #{SiteConfig.default_site_email}"
     end
