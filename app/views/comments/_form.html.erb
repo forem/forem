@@ -40,24 +40,39 @@
   </div>
   <div class="code-of-conduct" id="toggle-code-of-conduct-checkbox">
   </div>
-  <a href="/p/editor_guide" class="markdown-guide" target="_blank" title="Markdown Guide">
-    <img alt="markdown guide" class="icon-image" src="<%= asset_path("info.svg") %>" />
-  </a>
-  <div class="editor-image-upload">
-    <input type="file" id="image-upload-main" name="file" accept="image/*" style="display:none">
-    <button class="image-upload-button" id="image-upload-button-main" onclick="handleImageUpload(event,'main')" title="Upload Image">
-      <img alt="upload image" class="icon-image" src="<%= asset_path("image-upload.svg") %>" />
-    </button>
-    <label class="image-upload-file-label" id="image-upload-file-label-main"></label>
-    <input type="submit" id='image-upload-submit-main' value="Upload" style="display:none">
-    <input class="uploaded-image" id="uploaded-image-main" />
-  </div>
-  <div class="actions" id="submit-wrapper">
-    <%= link_to(request.referer.present? ? :back : commentable.path, "aria-label": "Cancel action") do %>
-      <button id="cancel-button" class="comment-action-button comment-action-cancel">CANCEL</button>
-    <% end %>
-    <button id="preview-button" class="comment-action-button comment-action-preview">PREVIEW</button>
-    <%= f.submit "SUBMIT", onclick: "validateField(event)", class: "comment-action-button", id: "submit-button" %>
+  <div class="comment-bottom-actions">
+    <div class="comment-editing-actions">
+      <a href="/p/editor_guide" class="markdown-guide" target="_blank" title="Markdown Guide">
+        <img alt="markdown guide" class="icon-image" src="<%= asset_path("info.svg") %>" />
+      </a>
+      <div class="editor-canned-responses">
+        <button class="canned-responses-button dropbtn" title="Insert Canned Response" type="button">
+          <img src="<%= asset_path("canned-response.svg") %>" alt="" class="icon-image">
+        </button>
+        <div class="dropdown">
+          <div class="dropdown-content canned-response-dropdown-content">
+          <%# filled in by JS %>
+          </div>
+        </div>
+      </div>
+      <%= javascript_pack_tag "cannedResponses", defer: true %>
+      <div class="editor-image-upload">
+        <input type="file" id="image-upload-main" name="file" accept="image/*" style="display:none">
+        <button class="image-upload-button" id="image-upload-button-main" onclick="handleImageUpload(event,'main')" title="Upload Image">
+          <img alt="upload image" class="icon-image" src="<%= asset_path("image-upload.svg") %>" />
+        </button>
+        <label class="image-upload-file-label" id="image-upload-file-label-main"></label>
+        <input type="submit" id='image-upload-submit-main' value="Upload" style="display:none">
+        <input class="uploaded-image" id="uploaded-image-main" />
+      </div>
+    </div>
+    <div class="comment-submit-actions" id="submit-wrapper">
+      <%= link_to(request.referer.present? ? :back : commentable.path, "aria-label": "Cancel action") do %>
+        <button id="cancel-button" class="comment-action-button comment-action-cancel">CANCEL</button>
+      <% end %>
+      <button id="preview-button" class="comment-action-button comment-action-preview">PREVIEW</button>
+      <%= f.submit "SUBMIT", onclick: "validateField(event)", class: "comment-action-button", id: "submit-button" %>
+    </div>
   </div>
 <% end %>
 

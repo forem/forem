@@ -141,19 +141,11 @@ a.header-link {
     }
   }
   .markdown-guide {
-    position: absolute;
-    left: 22px;
-    bottom: 3px;
   }
   .editor-image-upload {
     display: flex;
     align-items: center;
     font-size: 0.8em;
-    position: absolute;
-    left: calc(0.2vw + 43px);
-    bottom: 0px;
-    width: initial;
-    text-align: left;
 
     .uploaded-image {
       border: 1px dashed #888;
@@ -184,10 +176,9 @@ a.header-link {
     }
 
     .image-upload-button {
-      padding: 2px 4px;
+      padding: 0;
       text-align: left;
       font-size: 0.8em;
-      margin: 4px 0px;
       border-radius: 3px;
       border: 0;
       cursor: pointer;
@@ -349,31 +340,148 @@ a.header-link {
         max-width: 100%;
       }
     }
-    .actions {
-      text-align: right;
+    .comment-bottom-actions {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: space-between;
+      align-content: center;
+      margin: 0 19px;
+      padding: 4px 0px;
 
-      .comment-action-button {
-        font-family: $helvetica-condensed;
-        font-stretch: condensed;
-        color: white;
-        border: 0px;
-        font-size: 13px;
-        font-weight: 500;
-        margin-top: 3px;
-        padding: 5px 12px;
-        border-radius: 3px;
-        cursor: pointer;
-        appearance: none;
+      .comment-editing-actions {
+        display: flex;
+        align-items: baseline;
+        @media screen and (min-width: 320px) {
+          padding-top: 0;
+        }
+
+        @media screen and (min-width: 768px) {
+          padding-top: 3px;
+        }
+
+        .markdown-guide {
+          padding-right: 3px;
+        }
+
+        img.icon-image {
+          height: 21px;
+        }
+
+        .editor-canned-responses {
+          height: 21px;
+          width: 21px;
+          display: flex;
+
+          button.canned-responses-button {
+            background: none;
+            border: none;
+            padding: 0;
+
+            img {
+              height: 21px;
+              opacity: 0.7;
+            }
+          }
+        }
+
+
+        .dropdown {
+          position: absolute;
+          top: 100px;
+          right: 600px;
+          display: inline-block;
+
+          .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            border: 1px solid $light-medium-gray;
+            border-radius: 3px;
+            background: white;
+            z-index: 20;
+            width: 130px;
+            box-shadow: $shadow;
+            &.showing {
+              display: block;
+            }
+            &.canned-response-dropdown-content {
+              width: 175px;
+              right: -55px;
+            }
+          }
+
+          .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            width: 98px;
+            height: 14px;
+            font-weight: bold;
+            display: block;
+            font-size: 14px;
+            white-space: nowrap;
+          }
+
+          .canned-response-dropdown-content .canned-response-dropbtn {
+            color: black;
+            text-align: left;
+            padding: 0px;
+            width: 175px;
+            height: auto;
+            font-size: 14px;
+            padding: 8px 13px;
+            white-space: nowrap;
+            border: none;
+            background: none;
+            &:hover {
+              background: $light-gray;
+            }
+
+            span {
+              margin: 0;
+              display: block;
+            }
+
+            .title {
+              margin-bottom: 5px;
+              font-weight: bold;
+            }
+
+            .content {
+              font-weight: normal;
+            }
+          }
+          .canned-response-dropdown-content a.canned-response-dropbtn {
+            width: auto;
+          }
+        }
       }
+      .comment-submit-actions {
+        text-align: right;
 
-      .comment-action-cancel {
-        background: $red;
-        display: none;
-      }
+        .comment-action-button {
+          font-family: $helvetica-condensed;
+          font-stretch: condensed;
+          color: white;
+          border: 0px;
+          font-size: 13px;
+          font-weight: 500;
+          margin-top: 3px;
+          padding: 5px 12px;
+          border-radius: 3px;
+          cursor: pointer;
+          appearance: none;
+          margin-right: 0;
+        }
 
-      .comment-action-preview {
-        background: $dark-gray;
-        z-index: 10;
+        .comment-action-cancel {
+          background: $red;
+          display: none;
+        }
+
+        .comment-action-preview {
+          background: $dark-gray;
+          z-index: 10;
+        }
       }
     }
     .reply-actions {
@@ -401,7 +509,6 @@ a.header-link {
       }
     }
     input[type='submit'] {
-      margin-right: 19px;
       background: $bold-blue;
     }
     &.submitting {
@@ -960,7 +1067,7 @@ a.header-link {
     }
   }
   img.icon-image {
-    height: 20px;
+    height: 21px;
   }
   .editor-image-upload {
     width: initial;

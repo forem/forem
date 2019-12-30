@@ -22,28 +22,32 @@ function buildCommentFormHTML(commentableId, commentableType, parentId) {
             <textarea id="textarea-for-' + parentId + '" class="embiggened" name="comment[body_markdown]" id="comment_body_markdown" required onkeydown="handleKeyDown.bind(this)(event)"></textarea>\
             '+previewDiv+'\
                 '+codeOfConductHTML+'\
-            <a href="/p/editor_guide" class="markdown-guide" target="_blank" title="Markdown Guide">\
-              <img alt="markdown guide" class="icon-image" src="<%= asset_path('info.svg') %>" />\
-            </a>\
-            <div class="editor-image-upload">\
-              <input type="file" id="image-upload-' + randomIdNumber + '"  name="file" accept="image/*" style="display:none">\
-              <button title="Upload Image" class="image-upload-button" id="image-upload-button-' + randomIdNumber + '" onclick="handleImageUpload(event,'+ randomIdNumber + ')">\
-                <img alt="upload image" class="icon-image" src="<%= asset_path("image-upload.svg") %>" />\
-              </button>\
-              <label  class="image-upload-file-label" id="image-upload-file-label-' + randomIdNumber + '"></label>\
-              <input type="submit" id="image-upload-submit-' + randomIdNumber + '" value="Upload" style="display:none">\
-              <input class="uploaded-image" id="uploaded-image-' + randomIdNumber + '" />\
-            </div>\
-            <div class="actions reply-actions">\
-              <a href="#" class="cancel" onclick="cancel(event,this)">CANCEL</a>\
-              '+previewButton+'\
-              <input type="submit" class="comment-action-button" name="commit" value="SUBMIT" />\
+            <div class="comment-bottom-actions">\
+              <div class="comment-editing-actions">\
+                <a href="/p/editor_guide" class="markdown-guide" target="_blank" title="Markdown Guide">\
+                  <img alt="markdown guide" class="icon-image" src="<%= asset_path('info.svg') %>" />\
+                </a>\
+                <div class="editor-image-upload">\
+                  <input type="file" id="image-upload-' + randomIdNumber + '"  name="file" accept="image/*" style="display:none">\
+                  <button title="Upload Image" class="image-upload-button" id="image-upload-button-' + randomIdNumber + '" onclick="handleImageUpload(event,'+ randomIdNumber + ')">\
+                    <img alt="upload image" class="icon-image" src="<%= asset_path("image-upload.svg") %>" />\
+                  </button>\
+                  <label  class="image-upload-file-label" id="image-upload-file-label-' + randomIdNumber + '"></label>\
+                  <input type="submit" id="image-upload-submit-' + randomIdNumber + '" value="Upload" style="display:none">\
+                  <input class="uploaded-image" id="uploaded-image-' + randomIdNumber + '" />\
+                </div>\
+              </div>\
+              <div class="comment-submit-actions actions reply-actions">\
+                <a href="#" class="cancel" onclick="cancel(event,this)">CANCEL</a>\
+                '+previewButton+'\
+                <input type="submit" class="comment-action-button" name="commit" value="SUBMIT" />\
+              </div>\
             </div>\
           </form>';
 }
 
 function cancel(event, el) {
   event.preventDefault();
-  replaceActionButts(el.parentNode.parentNode.parentNode.parentNode);
+  replaceActionButts(el.parentNode.parentNode.parentNode.parentNode.parentNode);
   initializeCommentsPage();
 }

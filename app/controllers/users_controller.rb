@@ -203,6 +203,8 @@ class UsersController < ApplicationController
       handle_pro_membership_tab
     when "account"
       handle_account_tab
+    when "canned-responses"
+      handle_canned_responses_tab
     else
       not_found unless @tab_list.map { |t| t.downcase.tr(" ", "-") }.include? @tab
     end
@@ -267,6 +269,12 @@ class UsersController < ApplicationController
       %0A
       YOUR-DEV-USERNAME-HERE
     HEREDOC
+  end
+
+  def handle_canned_responses_tab
+    @canned_responses = current_user.canned_responses
+    @canned_response = CannedResponse.find_or_initialize_by(id: params[:id], user: current_user)
+    # update this to handle mod editing or tag editing
   end
 
   def set_user
