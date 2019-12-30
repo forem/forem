@@ -2,6 +2,8 @@
 Gemfile @thepracticaldev/sre
 /db/ @thepracticaldev/sre
 /config/ @thepracticaldev/sre
+/app/jobs/ @thepracticaldev/sre
+/app/workers/ @thepracticaldev/sre
 
 # Mac
 Gemfile   @maestromac
