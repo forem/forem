@@ -1,5 +1,4 @@
 require "rails_helper"
-# require "nokogiri"
 
 RSpec.describe ReverseMarkdown::Converters::CustomPre, type: :lib do
   def create_custom_pre
