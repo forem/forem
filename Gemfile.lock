@@ -891,7 +891,7 @@ DEPENDENCIES
   delayed_job_web (~> 1.4)
   derailed_benchmarks (~> 1.4)
   devise (~> 4.7)
-  dogstatsd-ruby
+  dogstatsd-ruby (~> 4.5)
   doorkeeper (~> 5.2)
   draper (~> 3.1)
   dry-struct (~> 1.2)
