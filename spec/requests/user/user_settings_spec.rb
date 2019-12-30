@@ -15,7 +15,7 @@ RSpec.describe "UserSettings", type: :request do
       before { sign_in user }
 
       it "renders various settings tabs properly" do
-        %w[organization misc account].each do |tab|
+        %w[organization misc account ux-customization].each do |tab|
           get "/settings/#{tab}"
           expect(response.body).to include("Settings for")
         end
