@@ -18,20 +18,16 @@ describe BulkSqlDelete, type: :service do
 
   describe "#delete_in_batches" do
     it "logs batch deletion" do
-      create_list :notification, 5
-      allow(logger).to receive(:info).exactly(6).times.with(
-        hash_including(:tag, :statement, :duration, :rows_deleted),
-      )
+      create_list :notification, 3, created_at: 1.month.ago
+      allow(logger).to receive(:info)
       described_class.delete_in_batches(sql)
-      expect(logger).to have_received(:info).exactly(6).times.with(
+      expect(logger).to have_received(:info).exactly(4).times.with(
         hash_including(:tag, :statement, :duration, :rows_deleted),
       )
     end
 
     it "logs errors that occur" do
-      allow(logger).to receive(:error).with(
-        hash_including(:tag, :statement, :exception_message, :backtrace),
-      )
+      allow(logger).to receive(:error)
       # rubocop:disable RSpec/AnyInstance
       allow_any_instance_of(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter).to receive(:exec_delete).and_raise("broken")
       # rubocop:enable RSpec/AnyInstance
@@ -43,8 +39,8 @@ describe BulkSqlDelete, type: :service do
     end
 
     it "deletes all records in batches" do
-      create_list :notification, 10
-      expect { described_class.delete_in_batches(sql) }.to change(Notification, :count).from(10).to(0)
+      create_list :notification, 5, created_at: 1.month.ago
+      expect { described_class.delete_in_batches(sql) }.to change(Notification, :count).from(5).to(0)
     end
   end
 end
