@@ -149,7 +149,7 @@ class Notification < ApplicationRecord
 
       notification_sql = Notification.sanitize_sql([sql, destroy_before_timestamp])
 
-      BulkSqlDelete.new.delete_in_batches(notification_sql)
+      BulkSqlDelete.delete_in_batches(notification_sql)
     end
 
     private

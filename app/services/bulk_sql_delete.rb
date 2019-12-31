@@ -1,7 +1,5 @@
 class BulkSqlDelete
-  attr_accessor :connection
-
-  def delete_in_batches(sql)
+  def self.delete_in_batches(sql)
     ActiveRecord::Base.connection_pool.with_connection do |connection|
       perform_and_log(sql) do
         unless Rails.env.test?
@@ -15,9 +13,7 @@ class BulkSqlDelete
     end
   end
 
-  private
-
-  def perform_and_log(delete_sql)
+  def self.perform_and_log(delete_sql)
     deleted = 0
 
     loop do
@@ -39,8 +35,9 @@ class BulkSqlDelete
     log_deletion_error(delete_sql, e)
     raise e
   end
+  private_class_method :perform_and_log
 
-  def log_deletion_batch(statement, count, duration)
+  def self.log_deletion_batch(statement, count, duration)
     Rails.logger.info(
       tag: "notification_delete",
       statement: statement,
@@ -48,8 +45,9 @@ class BulkSqlDelete
       duration: duration,
     )
   end
+  private_class_method :log_deletion_batch
 
-  def log_deletion_error(statement, exception)
+  def self.log_deletion_error(statement, exception)
     Rails.logger.error(
       tag: "notification_delete",
       statement: statement,
@@ -57,4 +55,5 @@ class BulkSqlDelete
       backtrace: exception.backtrace.join("\n"),
     )
   end
+  private_class_method :log_deletion_error
 end
