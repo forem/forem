@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_27_114543) do
+ActiveRecord::Schema.define(version: 2019_12_30_190517) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -880,6 +880,20 @@ ActiveRecord::Schema.define(version: 2019_12_27_114543) do
     t.text "value"
     t.string "var", null: false
     t.index ["var"], name: "index_site_configs_on_var", unique: true
+  end
+
+  create_table "sortable_counts", force: :cascade do |t|
+    t.bigint "countable_id", null: false
+    t.string "countable_type", null: false
+    t.datetime "created_at", null: false
+    t.float "number", default: 0.0, null: false
+    t.string "slug", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["countable_id"], name: "index_sortable_counts_on_countable_id"
+    t.index ["countable_type"], name: "index_sortable_counts_on_countable_type"
+    t.index ["number"], name: "index_sortable_counts_on_number"
+    t.index ["slug"], name: "index_sortable_counts_on_slug"
   end
 
   create_table "sponsorships", force: :cascade do |t|

@@ -1,4 +1,9 @@
-<% title "Moderate" %>
+<% if @tag %>
+  <% title "Moderate ##{@tag.name}" %>
+<% else %>
+  <% title "Moderate" %>
+
+<% end %>
 
 <% if current_user&.trusted %>
   <% if @tag %>
@@ -17,22 +22,30 @@
     <h2>We build the <%= ApplicationConfig["COMMUNITY_NAME"] %> Community</h2>
     <div class="mod-index-hero-data-pod">
       <div class="mod-index-hero-data-pod-number">
-        <%= number_with_delimiter(@tag ? Article.cached_tagged_with(@tag).published.where("published_at > ?", 7.days.ago).size : Article.published.where("published_at > ?", 7.days.ago).size) %>
+        <%= number_with_delimiter(@article_size) %>
       </div>
       Posts This Week
+      <div class="mod-index-hero-data-pod-change mod-index-hero-data-pod-change--positive-<%= @article_change.positive? %>" title="Change in posts since last week">
+        <%= sprintf("%+d", @article_change) %>%
+      </div>
     </div>
-    <% plucked_article_ids = Article.cached_tagged_with(@tag).pluck(:id) if @tag %>
     <div class="mod-index-hero-data-pod">
       <div class="mod-index-hero-data-pod-number">
-        <%= number_with_delimiter(@tag ? Comment.where(commentable_id: plucked_article_ids ).where("created_at > ?", 7.days.ago).size : Comment.where("created_at > ?", 7.days.ago).size) %>
+        <%= number_with_delimiter(@comment_size) %>
       </div>
       Comments This Week
+      <div class="mod-index-hero-data-pod-change mod-index-hero-data-pod-change--positive-<%= @comment_change.positive? %>" title="Change in comments since last week">
+        <%= sprintf("%+d", @comment_change) %>%
+      </div>
     </div>
     <div class="mod-index-hero-data-pod">
       <div class="mod-index-hero-data-pod-number">
-        <%= number_with_delimiter(@tag ? Reaction.where(reactable_id: plucked_article_ids ).where("created_at > ?", 7.days.ago).size : Reaction.where("created_at > ?", 7.days.ago).size)  %>
+        <%= number_with_delimiter(@reaction_size)  %>
       </div>
       Reactions This Week
+      <div class="mod-index-hero-data-pod-change mod-index-hero-data-pod-change--positive-<%= @reaction_change.positive? %>" title="Change in reactions since last week">
+        <%= sprintf("%+d", @reaction_change) %>%
+      </div>
     </div>
   </div>
   <div class="mod-index-header">

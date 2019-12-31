@@ -108,6 +108,19 @@ task remove_old_html_variant_data: :environment do
   end
 end
 
+task count_user_data: :environment do
+  User.find_each do |user|
+    this_week_comments = user.comments.where("created_at > ?", 7.days.ago).size
+    SortableCount.find_or_create_by(countable_id: user.id, countable_type: "User", slug: "comments_this_7_days").
+      update_column(:number, this_week_comments)
+    prior_week_comments = user.comments.where("created_at > ? AND created_at < ?", 14.days.ago, 7.days.ago).size
+    SortableCount.find_or_create_by(countable_id: user.id, countable_type: "User", slug: "comments_prior_7_days").
+      update_column(:number, prior_week_comments)
+    SortableCount.find_or_create_by(countable_id: user.id, countable_type: "User", slug: "comments_change_7_days").
+      update_column(:number, this_week_comments / prior_week_comments.to_f || 0.5)
+  end
+end
+
 task fix_credits_count_cache: :environment do
   Credit.counter_culture_fix_counts only: %i[user organization]
 end

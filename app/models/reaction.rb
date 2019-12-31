@@ -20,7 +20,7 @@ class Reaction < ApplicationRecord
 
   before_save :assign_points
   after_save :index_to_algolia
-  after_save :update_reactable, :bust_reactable_cache, :touch_user, :async_bust
+  after_save :update_reactable, :bust_reactable_cache, :touch_user, :async_bust, :recount_tag_data
   before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
   before_destroy :bust_reactable_cache_without_delay
   before_destroy :remove_algolia
@@ -102,6 +102,10 @@ class Reaction < ApplicationRecord
 
   def update_reactable_without_delay
     Reactions::UpdateReactableJob.perform_now(id)
+  end
+
+  def recount_tag_data
+    Tags::RecountJob.perform_later(reactable_id) if reactable_type == "Article"
   end
 
   def reading_time

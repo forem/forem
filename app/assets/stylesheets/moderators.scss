@@ -7,7 +7,10 @@
   text-align: center;
   background: #d4fffe;
   h1 {
-    font-size: 4em;
+    font-size: calc(1.8em + 2vw);
+  }
+  h2 {
+    font-size: calc(0.9em + 1vw);
   }
   a {
     text-decoration: underline;
@@ -37,6 +40,19 @@
       .mod-index-hero-data-pod-number {
         font-size: calc(2.8em + 0.5vw);
       }  
+    }
+    .mod-index-hero-data-pod-change {
+      background: $black;
+      border-radius: 100px;
+      margin: 15px auto;
+      width: 110px;
+      padding: 7px 0px;
+      &.mod-index-hero-data-pod-change--positive-true {
+        color: $green;
+      }
+      &.mod-index-hero-data-pod-change--positive-false {
+        color: $red;
+      }
     }
   }
 }

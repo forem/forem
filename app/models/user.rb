@@ -49,6 +49,7 @@ class User < ApplicationRecord
   has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
   has_many :user_blocks
+  has_many :sortable_counts, as: :countable, inverse_of: :countable, dependent: :destroy
   has_one :pro_membership, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
