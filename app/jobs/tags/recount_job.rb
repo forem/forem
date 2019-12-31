@@ -23,7 +23,7 @@ module Tags
       SortableCount.find_or_create_by(countable_id: @tag.id, countable_type: "ActsAsTaggableOn::Tag", slug: "published_articles_this_7_days").update_column(:number, articles_this_7_days_count)
       articles_prior_7_days_count = Article.cached_tagged_with(@tag).published.where("published_at > ? AND published_at < ?", 14.days.ago, 7.days.ago).size
       SortableCount.find_or_create_by(countable_id: @tag.id, countable_type: "ActsAsTaggableOn::Tag", slug: "published_articles_prior_7_days").update_column(:number, articles_prior_7_days_count)
-      articles_prior_7_days_count = 0.5 if comments_prior_7_days_count.zero? # Guard against zero division
+      articles_prior_7_days_count = 0.5 if articles_prior_7_days_count.zero? # Guard against zero division
       SortableCount.find_or_create_by(countable_id: @tag.id, countable_type: "ActsAsTaggableOn::Tag", slug: "published_articles_change_7_days").
         update_column(:number, articles_this_7_days_count / articles_prior_7_days_count.to_f)
     end
@@ -43,7 +43,7 @@ module Tags
       SortableCount.find_or_create_by(countable_id: @tag.id, countable_type: "ActsAsTaggableOn::Tag", slug: "reactions_this_7_days").update_column(:number, reactions_this_7_days_count)
       reactions_prior_7_days_count = Reaction.where(reactable_id: @plucked_article_ids).where("created_at > ? AND created_at < ?", 14.days.ago, 7.days.ago).size
       SortableCount.find_or_create_by(countable_id: @tag.id, countable_type: "ActsAsTaggableOn::Tag", slug: "reactions_prior_7_days").update_column(:number, reactions_prior_7_days_count)
-      reactions_prior_7_days_count = 0.5 if comments_prior_7_days_count.zero? # Guard against zero division
+      reactions_prior_7_days_count = 0.5 if reactions_prior_7_days_count.zero? # Guard against zero division
       SortableCount.find_or_create_by(countable_id: @tag.id, countable_type: "ActsAsTaggableOn::Tag", slug: "reactions_change_7_days").
         update_column(:number, reactions_this_7_days_count / reactions_prior_7_days_count.to_f)
     end
