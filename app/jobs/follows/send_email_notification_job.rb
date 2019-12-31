@@ -1,3 +1,4 @@
+# @TODO: to be removed in favor of `app/workers/follows/send_email_notification_worker.rb`
 module Follows
   class SendEmailNotificationJob < ApplicationJob
     queue_as :send_follow_email_notification

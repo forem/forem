@@ -450,6 +450,11 @@ class User < ApplicationRecord
     credits.unspent.size >= num_credits_needed
   end
 
+  def receives_follower_notifications?
+    email.present? &&
+      email_follower_notifications
+  end
+
   private
 
   def index_id
