@@ -411,7 +411,7 @@ class User < ApplicationRecord
   def settings_tab_list
     %w[
       Profile
-      UX\ Customization
+      UX
       Integrations
       Notifications
       Publishing\ from\ RSS
