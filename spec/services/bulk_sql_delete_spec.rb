@@ -7,7 +7,7 @@ describe BulkSqlDelete, type: :service do
       WHERE notifications.id IN (
         SELECT notifications.id
         FROM notifications
-        WHERE created_at < '#{2.hours.from_now}'
+        WHERE created_at < '#{Time.zone.now}'
         LIMIT 1
       )
     SQL
@@ -18,7 +18,7 @@ describe BulkSqlDelete, type: :service do
 
   describe "#delete_in_batches" do
     it "logs batch deletion" do
-      create_list :notification, 3
+      create_list :notification, 3, created_at: 1.month.ago
       allow(logger).to receive(:info)
       described_class.delete_in_batches(sql)
       expect(logger).to have_received(:info).exactly(4).times.with(
@@ -39,7 +39,7 @@ describe BulkSqlDelete, type: :service do
     end
 
     it "deletes all records in batches" do
-      create_list :notification, 5
+      create_list :notification, 5, created_at: 1.month.ago
       expect { described_class.delete_in_batches(sql) }.to change(Notification, :count).from(5).to(0)
     end
   end
