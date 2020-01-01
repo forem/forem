@@ -78,6 +78,8 @@ RSpec.configure do |config|
 
   config.before do
     ActiveRecord::Base.observers.disable :all # <-- Turn 'em all off!
+
+    Sidekiq::Worker.clear_all # worker jobs shouldn't linger around between tests
   end
 
   config.after do
