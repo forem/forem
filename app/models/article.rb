@@ -647,6 +647,6 @@ class Article < ApplicationRecord
   end
 
   def async_bust
-    Articles::BustCacheJob.perform_later(id)
+    Articles::BustCacheWorker.perform_async(id)
   end
 end
