@@ -1,5 +1,6 @@
 # Helpers for Sidekiq tests
 # modeled after <https://api.rubyonrails.org/v5.2/classes/ActiveJob/TestHelper.html>
+# NOTE: contains code adapted from <https://github.com/rails/rails/blob/ac30e389ecfa0e26e3d44c1eda8488ddf63b3ecc/activejob/lib/active_job/test_helper.rb>
 module SidekiqTestHelpers
   # Provides a store of all the enqueued jobs
   def sidekiq_enqueued_jobs(queue: nil)
