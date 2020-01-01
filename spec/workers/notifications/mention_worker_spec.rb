@@ -10,19 +10,13 @@ RSpec.describe Notifications::MentionWorker, type: :worker do
     end
 
     it "calls a service" do
-      perform_enqueued_jobs do
-        worker.perform(mention.id)
-
-        expect(service).to have_received(:call).with(mention).once
-      end
+      worker.perform(mention.id)
+      expect(service).to have_received(:call).with(mention).once
     end
 
     it "does nothing for non-existent mention " do
-      perform_enqueued_jobs do
-        worker.perform(nil)
-
-        expect(service).not_to have_received(:call)
-      end
+      worker.perform(nil)
+      expect(service).not_to have_received(:call)
     end
   end
 end
