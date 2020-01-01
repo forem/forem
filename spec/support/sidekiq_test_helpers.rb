@@ -2,12 +2,14 @@
 # modeled after <https://api.rubyonrails.org/v5.2/classes/ActiveJob/TestHelper.html>
 module SidekiqTestHelpers
   # Provides a store of all the enqueued jobs
-  def sidekiq_enqueued_jobs
+  def sidekiq_enqueued_jobs(queue: nil)
+    return Sidekiq::Queues[queue.to_s] if queue
+
     Sidekiq::Worker.jobs
   end
 
   # Asserts that the number of enqueued jobs matches the given number.
-  # see https://api.rubyonrails.org/v5.2/classes/ActiveJob/TestHelper.html#method-i-assert_enqueued_jobs
+  # see <https://api.rubyonrails.org/v5.2/classes/ActiveJob/TestHelper.html#method-i-assert_enqueued_jobs>
   def sidekiq_assert_enqueued_jobs(number, only: nil, except: nil, queue: nil)
     if block_given?
       original_count = Utils.enqueued_jobs_size(only: only, except: except, queue: queue)
@@ -38,6 +40,12 @@ module SidekiqTestHelpers
     end
 
     expect(matching_job).to be_present, "No enqueued job found with #{expected}"
+  end
+
+  # Asserts that no jobs have been enqueued.
+  # see <https://api.rubyonrails.org/v5.2/classes/ActiveJob/TestHelper.html#method-i-assert_no_enqueued_jobs>
+  def sidekiq_assert_no_enqueued_jobs(only: nil, except: nil, &block)
+    sidekiq_assert_enqueued_jobs(0, only: only, except: except, &block)
   end
 
   class Utils
