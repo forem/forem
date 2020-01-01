@@ -25,8 +25,7 @@ RSpec.describe Follows::SendEmailNotificationWorker, type: :worker do
         user2.update_column(:email_follower_notifications, true)
         worker.drain
 
-        # @NOTE: twice: 1 from spying, 1 from executing the worker
-        expect(MockMailer).to have_received(:deliver).twice
+        expect(MockMailer).to have_received(:deliver).once
       end
 
       it "doesn't send an email if user has disabled notifications" do
