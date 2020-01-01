@@ -450,7 +450,7 @@ class User < ApplicationRecord
     credits.unspent.size >= num_credits_needed
   end
 
-  def receives_follower_notifications?
+  def receives_follower_email_notifications?
     email.present? &&
       email_follower_notifications
   end
