@@ -247,6 +247,16 @@ RSpec.describe Comment, type: :model do
     end
   end
 
+  context "when callbacks are triggered after create" do
+    it "enqueue a worker to create the first reaction" do
+      comment = build(:comment, user: user, commentable: article)
+
+      expect do
+        comment.save
+      end.to change(Comments::CreateFirstReactionWorker.jobs, :size).by(1)
+    end
+  end
+
   context "when callbacks are triggered before save" do
     it "generates character count before saving" do
       comment.save
