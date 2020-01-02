@@ -386,8 +386,8 @@ class Article < ApplicationRecord
   private
 
   def delete_related_objects
-    Search::RemoveFromIndexWorker.perform_now("searchables_#{Rails.env}", index_id)
-    Search::RemoveFromIndexWorker.perform_now("ordered_articles_#{Rails.env}", index_id)
+    Search::RemoveFromIndexWorker.perform_async("searchables_#{Rails.env}", index_id)
+    Search::RemoveFromIndexWorker.perform_async("ordered_articles_#{Rails.env}", index_id)
   end
 
   def search_score
