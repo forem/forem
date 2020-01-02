@@ -27,7 +27,7 @@ class Comment < ApplicationRecord
   after_destroy  :after_destroy_actions
   before_destroy :before_destroy_actions
   after_create   :send_email_notification, if: :should_send_email_notification?
-  after_create   :create_first_reaction
+  after_create_commit :create_first_reaction
   after_create   :send_to_moderator
   before_save    :set_markdown_character_count, if: :body_markdown
   before_create  :adjust_comment_parent_based_on_depth
