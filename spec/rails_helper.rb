@@ -75,6 +75,7 @@ RSpec.configure do |config|
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include FactoryBot::Syntax::Methods
   config.include OmniauthMacros
+  config.include SidekiqTestHelpers
 
   config.before do
     ActiveRecord::Base.observers.disable :all # <-- Turn 'em all off!
