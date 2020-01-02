@@ -89,6 +89,6 @@ class AsyncInfoController < ApplicationController
   private
 
   def occasionally_update_analytics
-    Articles::UpdateAnalyticsJob.perform_later(@user.id) if Rails.env.production? && rand(ApplicationConfig["GA_FETCH_RATE"]) == 1
+    Articles::UpdateAnalyticsWorker.perform_async(@user.id) if Rails.env.production? && rand(ApplicationConfig["GA_FETCH_RATE"]) == 1
   end
 end
