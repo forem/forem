@@ -22,10 +22,6 @@ class Notification < ApplicationRecord
     where(organization_id: org_id, notifiable_type: "Mention", user_id: nil)
   }
 
-  scope :without_past_aggregations, lambda {
-    where.not("notified_at < ? AND action IN ('Reaction', 'Follow')", 24.hours.ago)
-  }
-
   class << self
     def send_new_follower_notification(follow, is_read = false)
       return unless Follow.need_new_follower_notification_for?(follow.followable_type)
