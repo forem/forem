@@ -86,7 +86,7 @@ class Notification < ApplicationRecord
     def send_mention_notification(mention)
       return if mention.mentionable_type == "User" && UserBlock.blocking?(mention.mentionable_id, mention.user_id)
 
-      Notifications::MentionJob.perform_later(mention.id)
+      Notifications::MentionWorker.perform_async(mention.id)
     end
 
     def send_welcome_notification(receiver_id)
