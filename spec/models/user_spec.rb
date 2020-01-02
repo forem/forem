@@ -727,4 +727,21 @@ RSpec.describe User, type: :model do
       expect(user.enough_credits?(1)).to be(true)
     end
   end
+
+  describe "#receives_follower_email_notifications?" do
+    it "returns false if user has no email" do
+      user.assign_attributes(email: nil)
+      expect(user.receives_follower_email_notifications?).to be(false)
+    end
+
+    it "returns false if user opted out from follower notifications" do
+      user.assign_attributes(email_follower_notifications: false)
+      expect(user.receives_follower_email_notifications?).to be(false)
+    end
+
+    it "returns true if user opted in from follower notifications and has an email" do
+      user.assign_attributes(email_follower_notifications: true)
+      expect(user.receives_follower_email_notifications?).to be(true)
+    end
+  end
 end
