@@ -469,17 +469,17 @@ RSpec.describe Article, type: :model do
     it "deindexes unpublished article" do
       expect do
         article.update(body_markdown: "---\ntitle: Title\npublished: false\ndescription:\ntags: one\n---\n\n")
-      end.to have_enqueued_job(Search::RemoveFromIndexJob).with(described_class.algolia_index_name, article.id).
-        and have_enqueued_job(Search::RemoveFromIndexJob).with("searchables_#{Rails.env}", article.index_id).
-        and have_enqueued_job(Search::RemoveFromIndexJob).with("ordered_articles_#{Rails.env}", article.index_id)
+      end.to have_enqueued_job(Search::RemoveFromIndexWorker).with(described_class.algolia_index_name, article.id).
+        and have_enqueued_job(Search::RemoveFromIndexWorker).with("searchables_#{Rails.env}", article.index_id).
+        and have_enqueued_job(Search::RemoveFromIndexWorker).with("ordered_articles_#{Rails.env}", article.index_id)
     end
 
     it "deindexes hiring article" do
       expect do
         article.update(body_markdown: "---\ntitle: Title\npublished: true\ndescription:\ntags: hiring\n---\n\n")
-      end.to have_enqueued_job(Search::RemoveFromIndexJob).with(described_class.algolia_index_name, article.id).
-        and have_enqueued_job(Search::RemoveFromIndexJob).with("searchables_#{Rails.env}", article.index_id).
-        and have_enqueued_job(Search::RemoveFromIndexJob).with("ordered_articles_#{Rails.env}", article.index_id)
+      end.to have_enqueued_job(Search::RemoveFromIndexWorker).with(described_class.algolia_index_name, article.id).
+        and have_enqueued_job(Search::RemoveFromIndexWorker).with("searchables_#{Rails.env}", article.index_id).
+        and have_enqueued_job(Search::RemoveFromIndexWorker).with("ordered_articles_#{Rails.env}", article.index_id)
     end
 
     it "indexes published non-hiring article" do

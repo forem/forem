@@ -308,7 +308,7 @@ RSpec.describe Comment, type: :model do
       it "checks auto-deindexing" do
         expect do
           comment.update(deleted: true)
-        end.to have_enqueued_job(Search::RemoveFromIndexJob).with(described_class.algolia_index_name, comment.index_id)
+        end.to have_enqueued_job(Search::RemoveFromIndexWorker).with(described_class.algolia_index_name, comment.index_id)
       end
     end
   end

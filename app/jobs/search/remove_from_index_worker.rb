@@ -1,5 +1,5 @@
 module Search
-  class RemoveFromIndexJob < ApplicationJob
+  class RemoveFromIndexWorker
     queue_as :search_remove_from_index
 
     def perform(index, key)

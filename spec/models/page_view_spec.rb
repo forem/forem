@@ -30,7 +30,7 @@ RSpec.describe PageView, type: :model do
     it "removes deleted records" do
       expect do
         page_view.destroy
-      end.to have_enqueued_job(Search::RemoveFromIndexJob).exactly(:once).with(described_class.algolia_index_name, page_view.id)
+      end.to have_enqueued_job(Search::RemoveFromIndexWorker).exactly(:once).with(described_class.algolia_index_name, page_view.id)
     end
   end
 end
