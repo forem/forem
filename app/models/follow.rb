@@ -46,7 +46,7 @@ class Follow < ApplicationRecord
   def send_email_notification
     return unless followable.class.name == "User" && followable.email?
 
-    Follows::SendEmailNotificationJob.perform_later(id)
+    Follows::SendEmailNotificationWorker.perform_async(id)
   end
 
   def modify_chat_channel_status
