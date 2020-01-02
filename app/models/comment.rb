@@ -259,7 +259,7 @@ class Comment < ApplicationRecord
   end
 
   def create_first_reaction
-    Comments::CreateFirstReactionWorker.perform_async(id, user_id)
+    Comments::CreateFirstReactionJob.perform_later(id)
   end
 
   def after_destroy_actions
