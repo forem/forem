@@ -41,6 +41,6 @@ class Page < ApplicationRecord
   end
 
   def bust_cache
-    Pages::BustCacheJob.perform_later(slug)
+    Pages::BustCacheWorker.perform_async(slug)
   end
 end
