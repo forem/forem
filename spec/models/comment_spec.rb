@@ -249,8 +249,6 @@ RSpec.describe Comment, type: :model do
 
   context "when callbacks are triggered after create" do
     it "enqueue a worker to create the first reaction" do
-      Sidekiq::Testing.fake!
-
       comment = build(:comment, user: user, commentable: article)
 
       expect do
