@@ -1,6 +1,7 @@
 module Search
   class RemoveFromIndexWorker
-    queue_as :search_remove_from_index
+    include Sidekiq::Worker
+    sidekiq_options queue: :default, retry: 10
 
     def perform(index, key)
       Algolia::Index.new(index).delete_object(key)
