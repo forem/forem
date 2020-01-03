@@ -429,7 +429,7 @@ class Article < ApplicationRecord
   def update_main_image_background_hex
     return if main_image.blank? || main_image_background_hex_color != "#dddddd"
 
-    Articles::UpdateMainImageBackgroundHexJob.perform_later(id)
+    Articles::UpdateMainImageBackgroundHexWorker.perform_async(id)
   end
 
   def detect_human_language
