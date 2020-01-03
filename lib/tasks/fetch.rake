@@ -125,3 +125,7 @@ task record_db_table_counts: :environment do
     )
   end
 end
+
+task log_worker_queue_stats: :environment do
+  LogWorkerQueueStats.perform
+end
