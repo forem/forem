@@ -26,7 +26,7 @@ class DashboardsController < ApplicationController
 
     # Updates analytics in background if appropriate
     update_analytics = @articles && ApplicationConfig["GA_FETCH_RATE"] < 50 # Rate limited, sometimes we throttle down
-    Articles::UpdateAnalyticsJob.perform_later(current_user.id) if update_analytics
+    Articles::UpdateAnalyticsWorker.perform_async(current_user.id) if update_analytics
   end
 
   def following_tags

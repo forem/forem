@@ -7,6 +7,7 @@ Datadog.configure do |c|
   c.tracer partial_flush: true
   c.tracer priority_sampling: true
   c.use :delayed_job
+  c.use :sidekiq
   c.use :redis
   c.use :rails
   c.use :http

@@ -411,6 +411,7 @@ class User < ApplicationRecord
   def settings_tab_list
     %w[
       Profile
+      UX
       Integrations
       Notifications
       Publishing\ from\ RSS
@@ -448,6 +449,11 @@ class User < ApplicationRecord
 
   def enough_credits?(num_credits_needed)
     credits.unspent.size >= num_credits_needed
+  end
+
+  def receives_follower_email_notifications?
+    email.present? &&
+      email_follower_notifications
   end
 
   private
