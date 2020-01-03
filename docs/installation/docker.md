@@ -55,8 +55,8 @@ well.
      `config/application.yml`:
 
      ```shell
-      REDIS_URL: "redis://redis:6379"
-      REDIS_SESSIONS_URL: "redis://redis:6379"
+      REDIS_URL: "redis://localhost:6379"
+      REDIS_SESSIONS_URL: "redis://localhost:6379"
      ```
 
    - You do not need "real" keys for basic development. Some features require

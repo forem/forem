@@ -1,3 +1,6 @@
+REDIS_URL: "redis://localhost:6379"
+REDIS_SESSIONS_URL: "redis://localhost:6379"
+
 GITHUB_KEY:
 GITHUB_SECRET:
 GITHUB_TOKEN:
