@@ -347,7 +347,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       let(:mention) { create(:mention, mentionable: comment, user: user) }
 
       before do
-        Sidekiq::Testing.inline! do
+        sidekiq_perform_enqueued_jobs do
           Notification.send_mention_notification(mention)
         end
         sign_in user
