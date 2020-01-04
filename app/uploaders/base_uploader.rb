@@ -13,6 +13,10 @@ class BaseUploader < CarrierWave::Uploader::Base
     %w[jpg jpeg jpe gif png ico bmp dng]
   end
 
+  def size_range
+    1..10.megabytes
+  end
+
   protected
 
   # strip EXIF (and GPS) data
