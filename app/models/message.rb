@@ -45,7 +45,46 @@ class Message < ApplicationRecord
   def evaluate_markdown
     html = MarkdownParser.new(message_markdown).evaluate_markdown
     html = append_rich_links(html)
+    html = wrap_mentions_with_links!(html)
     self.message_html = html
+  end
+
+  def wrap_mentions_with_links!(html)
+    html_doc = Nokogiri::HTML(html)
+
+    # looks for nodes that isn't <code>, <a>, and contains "@"
+    targets = html_doc.xpath('//html/body/*[not (self::code) and not(self::a) and contains(., "@")]').to_a
+
+    # A Queue system to look for and replace possible usernames
+    until targets.empty?
+      node = targets.shift
+
+      # only focus on portion of text with "@"
+      node.xpath("text()[contains(.,'@')]").each do |el|
+        el.replace(el.text.gsub(/\B@[a-z0-9_-]+/i) { |text| user_link_if_exists(text) })
+      end
+
+      # enqueue children that has @ in it's text
+      children = node.xpath('*[not(self::code) and not(self::a) and contains(., "@")]').to_a
+      targets.concat(children)
+    end
+
+    if html_doc.at_css("body")
+      html_doc.at_css("body").inner_html
+    else
+      html_doc.to_html
+    end
+  end
+
+  def user_link_if_exists(mention)
+    username = mention.delete("@").downcase
+    if User.find_by(username: username)
+      <<~HTML
+        <a class='comment-mentioned-user' data-content="sidecar-user" href='/#{username}' target="_blank">@#{username}</a>
+      HTML
+    else
+      mention
+    end
   end
 
   def append_rich_links(html)
