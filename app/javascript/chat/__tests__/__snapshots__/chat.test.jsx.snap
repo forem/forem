@@ -244,7 +244,14 @@ exports[`<Chat /> should load chat 1`] = `
         <div
           class="activechatchannel__form"
         >
-          <div>
+          <div
+            class="mention__list"
+          >
+             
+          </div>
+          <div
+            class="compose__outer__container"
+          >
             <div
               class="messagecomposer"
             >
@@ -253,6 +260,8 @@ exports[`<Chat /> should load chat 1`] = `
                 id="messageform"
                 maxLength="1000"
                 onKeyDown={[Function]}
+                onKeyPress={[Function]}
+                onKeyUp={[Function]}
                 placeholder="Message goes here"
               />
               <button
