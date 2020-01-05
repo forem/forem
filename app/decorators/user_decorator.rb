@@ -1,4 +1,23 @@
 class UserDecorator < ApplicationDecorator
+  WHITE_TEXT_COLORS = [
+    {
+      bg: "#093656",
+      text: "#ffffff"
+    },
+    {
+      bg: "#61122f",
+      text: "#ffffff"
+    },
+    {
+      bg: "#2e0338",
+      text: "#ffffff"
+    },
+    {
+      bg: "#080E3B",
+      text: "#ffffff"
+    },
+  ].freeze
+
   delegate_all
 
   def cached_followed_tags
@@ -72,30 +91,8 @@ class UserDecorator < ApplicationDecorator
         text: "#c9d2dd"
       },
     ]
-    colors |= white_text
+    colors |= WHITE_TEXT_COLORS
     colors[id % 10]
-  end
-
-  def white_text
-    white = [
-      {
-        bg: "#093656",
-        text: "#ffffff"
-      },
-      {
-        bg: "#61122f",
-        text: "#ffffff"
-      },
-      {
-        bg: "#2e0338",
-        text: " #ffffff"
-      },
-      {
-        bg: "#080E3B",
-        text: "#ffffff"
-      },
-    ]
-    white
   end
 
   def stackbit_integration?
