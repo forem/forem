@@ -72,6 +72,10 @@ export default class Chat extends Component {
       currentMessageLocation: 0,
       startEditing: false,
       activeEditMessage: {},
+      markdownEdited: false,
+      channelUsers: [],
+      showMemberlist: false,
+      memberFilterQuery: null,
     };
   }
 
@@ -94,9 +98,9 @@ export default class Chat extends Component {
       channel => `open-channel-${channel.chat_channel_id}`,
     );
     setupObserver(this.observerCallback);
-    
+
     this.subscribePusher(`private-message-notifications-${currentUserId}`);
-    
+
     if (activeChannelId) {
       sendOpen(activeChannelId, this.handleChannelOpenSuccess, null);
     }
@@ -113,7 +117,7 @@ export default class Chat extends Component {
         filters,
         this.loadChannels,
       );
-      getUnopenedChannelIds(this.markUnopenedChannelIds)
+      getUnopenedChannelIds(this.markUnopenedChannelIds);
     }
     if (!isMobileDevice) {
       document.getElementById('messageform').focus();
@@ -194,7 +198,6 @@ export default class Chat extends Component {
   loadChannels = (channels, query) => {
     const { activeChannelId, activeChannel } = this.state;
     if (activeChannelId && query.length === 0) {
-      this.setupChannel(activeChannelId);
       this.setState({
         chatChannels: channels,
         scrolled: false,
@@ -205,15 +208,19 @@ export default class Chat extends Component {
           activeChannel ||
           this.filterForActiveChannel(channels, activeChannelId),
       });
-    } else if (activeChannelId) {
       this.setupChannel(activeChannelId);
+    } else if (activeChannelId) {
       this.setState({
         scrolled: false,
         chatChannels: channels,
         channelsLoaded: true,
         channelPaginationNum: 0,
         filterQuery: query,
+        activeChannel:
+          activeChannel ||
+          this.filterForActiveChannel(channels, activeChannelId),
       });
+      this.setupChannel(activeChannelId);
     } else if (channels.length > 0) {
       this.setState({
         chatChannels: channels,
@@ -237,9 +244,9 @@ export default class Chat extends Component {
     document.getElementById('chatchannels__channelslist').scrollTop = 0;
   };
 
-  markUnopenedChannelIds = (ids) => {
-    this.setState({unopenedChannelIds: ids})
-  }
+  markUnopenedChannelIds = ids => {
+    this.setState({ unopenedChannelIds: ids });
+  };
 
   subscribeChannelsToPusher = (channels, channelNameFn) => {
     channels.forEach(channel => {
@@ -283,15 +290,32 @@ export default class Chat extends Component {
   };
 
   setupChannel = channelId => {
-    const { messages, messageOffset } = this.state;
+    const {
+      messages,
+      messageOffset,
+      activeChannel,
+      activeChannelId,
+    } = this.state;
     if (
       !messages[channelId] ||
       messages[channelId].length === 0 ||
       messages[channelId][0].reception_method === 'pushed'
     ) {
+      if (activeChannel && activeChannel.channel_type !== 'direct') {
+        getContent(
+          `/api/chat_channels/${activeChannelId}`,
+          this.setOpenChannelUsers,
+          null,
+        );
+      }
       getAllMessages(channelId, messageOffset, this.receiveAllMessages);
     }
     this.subscribePusher(`presence-channel-${channelId}`);
+  };
+
+  setOpenChannelUsers = res => {
+    const { activeChannelId } = this.state;
+    this.setState({ channelUsers: { [activeChannelId]: res.channel_users } });
   };
 
   observerCallback = entries => {
@@ -345,7 +369,13 @@ export default class Chat extends Component {
   };
 
   receiveNewMessage = message => {
-    const { messages, activeChannelId, scrolled, chatChannels, unopenedChannelIds } = this.state;
+    const {
+      messages,
+      activeChannelId,
+      scrolled,
+      chatChannels,
+      unopenedChannelIds,
+    } = this.state;
     const receivedChatChannelId = message.chat_channel_id;
     let newMessages = [];
 
@@ -386,13 +416,13 @@ export default class Chat extends Component {
     if (receivedChatChannelId === activeChannelId) {
       sendOpen(receivedChatChannelId, this.handleChannelOpenSuccess, null);
     } else {
-      const newUnopenedChannels = unopenedChannelIds
+      const newUnopenedChannels = unopenedChannelIds;
       if (!unopenedChannelIds.includes(receivedChatChannelId)) {
-        newUnopenedChannels.push(receivedChatChannelId)
-      }  
+        newUnopenedChannels.push(receivedChatChannelId);
+      }
       this.setState({
-        unopenedChannelIds: newUnopenedChannels
-      })
+        unopenedChannelIds: newUnopenedChannels,
+      });
     }
 
     this.setState(prevState => ({
@@ -529,8 +559,8 @@ export default class Chat extends Component {
       });
       this.setActiveContent({
         path: '/new',
-        type_of: 'article'
-      })
+        type_of: 'article',
+      });
     } else if (message.startsWith('/github')) {
       const args = message.split('/github ')[1].trim();
       this.setActiveContentState(activeChannelId, { type_of: 'github', args });
@@ -595,7 +625,7 @@ export default class Chat extends Component {
 
   triggerSwitchChannel = (id, slug) => {
     const { chatChannels, isMobileDevice, unopenedChannelIds } = this.state;
-    const newUnopenedChannelIds = unopenedChannelIds
+    const newUnopenedChannelIds = unopenedChannelIds;
     const index = newUnopenedChannelIds.indexOf(id);
     if (index > -1) {
       newUnopenedChannelIds.splice(index, 1);
@@ -605,7 +635,9 @@ export default class Chat extends Component {
       activeChannelId: parseInt(id, 10),
       scrolled: false,
       showAlert: false,
-      unopenedChannelIds: unopenedChannelIds.filter(unopenedId => unopenedId !== id)
+      unopenedChannelIds: unopenedChannelIds.filter(
+        unopenedId => unopenedId !== id,
+      ),
     });
     this.setupChannel(id);
     window.history.replaceState(null, null, `/connect/${slug}`);
@@ -681,7 +713,8 @@ export default class Chat extends Component {
     }
 
     const { target } = e;
-    const content = target.dataset.content || target.parentElement.dataset.content
+    const content =
+      target.dataset.content || target.parentElement.dataset.content;
     if (content) {
       e.preventDefault();
       e.stopPropagation();
@@ -696,14 +729,18 @@ export default class Chat extends Component {
           this.setActiveContent,
           null,
         );
-      } else if (content.startsWith('sidecar') || content.startsWith('article')) { // article is legacy which can be removed shortly
+      } else if (
+        content.startsWith('sidecar') ||
+        content.startsWith('article')
+      ) {
+        // article is legacy which can be removed shortly
         this.setActiveContentState(activeChannelId, {
           type_of: 'loading-post',
         });
         this.setActiveContent({
           path: target.href || target.parentElement.href,
-          type_of: 'article'
-        })
+          type_of: 'article',
+        });
       } else if (target.dataset.content === 'exit') {
         this.setActiveContentState(activeChannelId, null);
       }
@@ -1099,13 +1136,17 @@ export default class Chat extends Component {
             <Alert showAlert={state.showAlert} />
           </div>
           <div className="activechatchannel__form">
+            {this.renderChannelMembersList()}
             <Compose
               handleSubmitOnClick={this.handleSubmitOnClick}
               handleKeyDown={this.handleKeyDown}
               handleSubmitOnClickEdit={this.handleSubmitOnClickEdit}
+              handleMention={this.handleMention}
+              handleKeyUp={this.handleKeyUp}
               handleKeyDownEdit={this.handleKeyDownEdit}
               activeChannelId={state.activeChannelId}
               startEditing={state.startEditing}
+              markdownEdited={state.markdownEdited}
               editMessageHtml={state.activeEditMessage.message}
               editMessageMarkdown={state.activeEditMessage.markdown}
               handleEditMessageClose={this.handleEditMessageClose}
@@ -1124,11 +1165,116 @@ export default class Chat extends Component {
     );
   };
 
+  handleMention = e => {
+    const mention = e.keyCode === 64;
+    if (mention) {
+      this.setState({ showMemberlist: true });
+    }
+  };
+
+  handleKeyUp = e => {
+    const { startEditing } = this.state;
+
+    if (startEditing) {
+      this.setState({ markdownEdited: true });
+    }
+
+    if (!e.target.value.includes('@')) {
+      this.setState({ showMemberlist: false });
+    } else {
+      this.setQuery(e.target);
+    }
+  };
+
+  setQuery = e => {
+    const showMemberlist = this.state;
+
+    if (showMemberlist) {
+      const before = e.value.substring(0, e.selectionStart);
+      const query = before.substring(
+        before.lastIndexOf('@') + 1,
+        e.selectionStart,
+      );
+
+      if (query.includes(' ') || before.lastIndexOf('@') < 0)
+        this.setState({ showMemberlist: false });
+      else {
+        this.setState({ showMemberlist: true });
+        this.setState({ memberFilterQuery: query });
+      }
+    }
+  };
+
+  addUserName = e => {
+    const name =
+      e.target.dataset.content || e.target.parentElement.dataset.content;
+    const el = document.getElementById('messageform');
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const text = el.value;
+    let before = text.substring(0, start);
+    before = text.substring(0, before.lastIndexOf('@') + 1);
+    const after = text.substring(end, text.length);
+    el.value = before + name + after;
+    el.selectionStart = start + name.length;
+    el.selectionEnd = start + name.length;
+    el.focus();
+    this.setState({ showMemberlist: false });
+  };
+
+  renderChannelMembersList = () => {
+    const {
+      showMemberlist,
+      activeChannelId,
+      channelUsers,
+      memberFilterQuery,
+    } = this.state;
+    const filterRegx = new RegExp(memberFilterQuery, 'gi');
+    return (
+      <div
+        className={
+          showMemberlist ? 'mention__list mention__visible' : 'mention__list'
+        }
+      >
+        {showMemberlist
+          ? Object.values(channelUsers[activeChannelId])
+              .filter(user => user.name.match(filterRegx))
+              .map(user => (
+                <div
+                  className="mention__user"
+                  role="button"
+                  onClick={this.addUserName}
+                  tabIndex="0"
+                  data-content={user.username}
+                  onKeyUp={e => {
+                    if (e.keyCode === 13) this.addUserName();
+                  }}
+                >
+                  <img
+                    className="mention__user__image"
+                    src={user.profile_image}
+                    alt={user.name}
+                  />
+                  <span
+                    style={{ color: user.darker_color, padding: '3px 0px' }}
+                  >
+                    {user.name}
+                  </span>
+                </div>
+              ))
+          : ' '}
+      </div>
+    );
+  };
+
   handleEditMessageClose = () => {
+    const textarea = document.getElementById('messageform');
     this.setState({
       startEditing: false,
+      markdownEdited: false,
       activeEditMessage: { message: '', markdown: '' },
     });
+    textarea.value = '';
   };
 
   renderDeleteModal = () => {
@@ -1193,7 +1339,7 @@ export default class Chat extends Component {
         <a
           href={`/${activeChannel.channel_username}`}
           onClick={this.triggerActiveContent}
-          data-content='sidecar-user'
+          data-content="sidecar-user"
         >
           {activeChannel.channel_modified_slug}
         </a>
