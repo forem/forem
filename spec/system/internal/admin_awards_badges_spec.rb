@@ -40,9 +40,10 @@ RSpec.describe "Admin awards badges", type: :system do
   end
 
   it "notifies users of new badges" do
-    expect { award_two_badges }.to enqueue_job(Notifications::NewBadgeAchievementJob).
-      exactly(2).times.
-      and enqueue_job(BadgeAchievements::SendEmailNotificationJob).
-      exactly(2).times
+    assert_enqueued_jobs(2, only: BadgeAchievements::SendEmailNotificationJob) do
+      sidekiq_assert_enqueued_jobs(2) do
+        award_two_badges
+      end
+    end
   end
 end
