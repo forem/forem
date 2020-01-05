@@ -48,28 +48,12 @@ class UserDecorator < ApplicationDecorator
   def assigned_color
     colors = [
       {
-        bg: "#093656",
-        text: "#ffffff"
-      },
-      {
         bg: "#19063A",
         text: "#dce9f3"
       },
       {
         bg: "#0D4D4B",
         text: "#fdf9f3"
-      },
-      {
-        bg: "#61122f",
-        text: "#ffffff"
-      },
-      {
-        bg: "#2e0338",
-        text: " #ffffff"
-      },
-      {
-        bg: "#080E3B",
-        text: "#ffffff"
       },
       {
         bg: "#010C1F",
@@ -88,7 +72,30 @@ class UserDecorator < ApplicationDecorator
         text: "#c9d2dd"
       },
     ]
+    colors |= white_text
     colors[id % 10]
+  end
+
+  def white_text
+    white = [
+      {
+        bg: "#093656",
+        text: "#ffffff"
+      },
+      {
+        bg: "#61122f",
+        text: "#ffffff"
+      },
+      {
+        bg: "#2e0338",
+        text: " #ffffff"
+      },
+      {
+        bg: "#080E3B",
+        text: "#ffffff"
+      },
+    ]
+    white
   end
 
   def stackbit_integration?
