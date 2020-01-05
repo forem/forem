@@ -22,9 +22,9 @@
   </div>
 <% end %>
 
+<% if @canned_response.persisted? %>
 <hr>
 
-<% if @canned_response.persisted? %>
 <h3>Editing a canned response</h3>
 <a href="/settings/canned-responses">Create a new canned response</a>
 <% else %>

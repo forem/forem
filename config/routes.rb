@@ -36,6 +36,7 @@ Rails.application.routes.draw do
     resources :articles, only: %i[index show update]
     resources :broadcasts, only: %i[index new create edit update]
     resources :buffer_updates, only: %i[create update]
+    resources :canned_responses, only: %i[index edit create update destroy]
     resources :classified_listings, only: %i[index edit update destroy]
     resources :comments, only: [:index]
     resources :events, only: %i[index create update]

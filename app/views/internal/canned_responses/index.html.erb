@@ -1,0 +1,21 @@
+<h1>Canned Responses</h1>
+<%= paginate @canned_responses %>
+<div class="wrapper" style="border-bottom: 1px solid black;">
+  <div class="grid-item">Title</div>
+  <div class="grid-item">Type Of</div>
+  <div class="grid-item" style="padding-left: 15px;">User ID</div>
+</div>
+<% @canned_responses.each do |canned_response| %>
+    <div class="single-internal-listing">
+      <div class="wrapper">
+        <div class="grid-item"><a href="/internal/canned_responses/<%= canned_response.id %>/edit"><%= canned_response.title %></a></div>
+        <div class="grid-item" style="word-wrap: initial;"><%= canned_response.type_of %></div>
+        <div class="grid-item" style="padding-left: 15px;"><%= canned_response.user_id %></div>
+      </div>
+    </div>
+<% end %>
+<%= paginate @canned_responses %>
+
+<h1>Create A New Canned Response</h1>
+<br />
+<%= render "form", canned_response: CannedResponse.new %>
