@@ -31,5 +31,10 @@ RSpec.describe "AdditionalContentBoxes", type: :request do
       get "/additional_content_boxes?article_id=#{regular_article.id}&state=include_sponsors"
       expect(response.body).to include CGI.escapeHTML(boosted_sugg.title)
     end
+
+    it "returns 422 status if article_id is missing" do
+      get "/additional_content_boxes"
+      expect(response.status).to eq(422)
+    end
   end
 end
