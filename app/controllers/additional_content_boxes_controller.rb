@@ -4,6 +4,11 @@ class AdditionalContentBoxesController < ApplicationController
   before_action :set_cache_control_headers, only: [:index]
 
   def index
+    if params[:article_id].blank?
+      render json: { error: "Article ID missing", status: 422 }, status: :unprocessable_entity
+      return
+    end
+
     article_ids = params[:article_id].split(",")
     @article = Article.find(article_ids[0])
     @suggested_articles = Suggester::Articles::Classic.
