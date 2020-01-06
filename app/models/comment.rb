@@ -251,7 +251,7 @@ class Comment < ApplicationRecord
   end
 
   def touch_user
-    Comments::TouchUserJob.perform_later(id)
+    user&.touch(:updated_at, :last_comment_at)
   end
 
   def expire_root_fragment
