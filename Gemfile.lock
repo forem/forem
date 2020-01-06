@@ -215,7 +215,7 @@ GEM
     dante (0.2.0)
     datetime_picker_rails (0.0.7)
       momentjs-rails (>= 2.8.1)
-    ddtrace (0.30.0)
+    ddtrace (0.30.1)
       msgpack
     debug_inspector (0.0.3)
     declarative (0.0.10)
@@ -886,7 +886,7 @@ DEPENDENCIES
   cld (~> 0.8)
   cloudinary (~> 1.13)
   counter_culture (~> 2.2)
-  ddtrace (~> 0.30.0)
+  ddtrace (~> 0.30.1)
   delayed_job_active_record (~> 4.1)
   delayed_job_web (~> 1.4)
   derailed_benchmarks (~> 1.4)
