@@ -18,7 +18,6 @@
        url: $(this).attr('action'), //sumbits it to the given url of the form
        data: valuesToSubmit,
      }).success(function (json) {
-       console.log("success")
        form.parents(".card").addClass("highlighted-bg")
        form.parents(".card").addClass("highlighted-border")
        setTimeout(function () {
