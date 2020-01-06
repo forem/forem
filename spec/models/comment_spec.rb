@@ -255,6 +255,22 @@ RSpec.describe Comment, type: :model do
         comment.save
       end.to change(Comments::CreateFirstReactionWorker.jobs, :size).by(1)
     end
+
+    it "touches user updated_at" do
+      user.updated_at = 1.month.ago
+      user.save
+      comment = build(:comment, user: user, commentable: article)
+
+      expect { comment.save }.to change(user, :updated_at)
+    end
+
+    it "touches user last_comment_at" do
+      user.last_comment_at = 1.month.ago
+      user.save
+      comment = build(:comment, user: user, commentable: article)
+
+      expect { comment.save }.to change(user, :last_comment_at)
+    end
   end
 
   context "when callbacks are triggered before save" do
