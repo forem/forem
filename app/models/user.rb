@@ -150,13 +150,13 @@ class User < ApplicationRecord
   scope :dev_account, -> { find_by(id: ApplicationConfig["DEVTO_USER_ID"]) }
 
   scope :with_this_week_comments, lambda { |number|
-    includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_this_7_days')::int >= ?", number)
+    includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_these_7_days')::int >= ?", number)
   }
   scope :with_previous_week_comments, lambda { |number|
     includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_prior_7_days')::int >= ?", number)
   }
   scope :top_commenters, lambda { |number = 10|
-    includes(:counters).order(Arel.sql("user_counters.data -> 'comments_this_7_days' DESC")).limit(number)
+    includes(:counters).order(Arel.sql("user_counters.data -> 'comments_these_7_days' DESC")).limit(number)
   }
 
   after_create :send_welcome_notification
