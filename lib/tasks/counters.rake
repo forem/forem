@@ -5,7 +5,13 @@ namespace :counters do
       User.includes(:counters).find_each do |user|
         user.build_counters unless user.counters
 
-        user.counters.comments_7_days = user.comments.where("created_at > ?", 7.days.ago).size
+        relation = user.comments
+
+        user.counters.comments_this_7_days = relation.where("created_at > ?", 7.days.ago).size
+        user.counters.comments_prior_7_days = relation.
+          where("created_at > ? AND created_at < ?", 14.days.ago, 7.days.ago).
+          size
+
         user.counters.save!
       end
     end

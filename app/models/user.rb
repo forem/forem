@@ -149,8 +149,11 @@ class User < ApplicationRecord
 
   scope :dev_account, -> { find_by(id: ApplicationConfig["DEVTO_USER_ID"]) }
 
-  scope :with_comments_7_days, lambda { |number|
-    includes(:counters).joins(:counters).where("(user_counters.data ->> 'comments_7_days')::int >= ?", number)
+  scope :with_this_week_comments, lambda { |number|
+    includes(:counters).joins(:counters).where("(user_counters.data ->> 'comments_this_7_days')::int >= ?", number)
+  }
+  scope :with_previous_week_comments, lambda { |number|
+    includes(:counters).joins(:counters).where("(user_counters.data ->> 'comments_prior_7_days')::int >= ?", number)
   }
 
   after_create :send_welcome_notification

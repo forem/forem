@@ -12,14 +12,26 @@ RSpec.describe UserCounter, type: :model do
       it { is_expected.to validate_uniqueness_of(:user) }
     end
 
-    describe "#comments_7_days" do
+    describe "#comments_this_7_days" do
       it "is valid if comments_7_days is an integer" do
-        counters.comments_7_days = 1
+        counters.comments_this_7_days = 1
         expect(counters).to be_valid
       end
 
-      it "is is not if comments_7_days is not an integer" do
-        counters.comments_7_days = 1.2
+      it "is is not if comments_this_7_days is not an integer" do
+        counters.comments_this_7_days = 1.2
+        expect(counters).not_to be_valid
+      end
+    end
+
+    describe "#comments_prior_7_days" do
+      it "is valid if comments_prior_7_days is an integer" do
+        counters.comments_prior_7_days = 1
+        expect(counters).to be_valid
+      end
+
+      it "is is not if comments_prior_7_days is not an integer" do
+        counters.comments_prior_7_days = 1.2
         expect(counters).not_to be_valid
       end
     end
