@@ -20,7 +20,7 @@ RSpec.describe BadgeAchievement, type: :model do
 
   it "notifies recipients after commit" do
     allow(Notification).to receive(:send_new_badge_achievement_notification)
-    achievement.save!
+    achievement.run_callbacks(:commit)
     expect(Notification).to have_received(:send_new_badge_achievement_notification).with(achievement)
   end
 end
