@@ -49,7 +49,7 @@
         <% next unless buffer_update.article %>
         <div class="card my-3" id="suggested-tweet-<%= buffer_update.id %>">
           <div class="card-header">
-            <h2><%= buffer_update.article.title %></h2>
+            <h2 class="my-0"><%= buffer_update.article.title %></h2>
           </div>
           <div class="card-body">
             <h4>Score: <%= buffer_update.article.score %></h4>
@@ -60,7 +60,7 @@
 
             <code><b><%= Tag.find_by(id: buffer_update.tag_id)&.name || buffer_update.social_service_name %>:</b></code>
 
-            <form action="/internal/buffer_updates/<%= buffer_update.id %>" accept-charset="UTF-8" method="post">
+            <form action="/internal/buffer_updates/<%= buffer_update.id %>" accept-charset="UTF-8" method="post" class="buffer-form buffer-confirm" data-id="<%= buffer_update.id %>">
               <div class="form-group">
                 <input name="utf8" type="hidden" value="✓">
                 <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
@@ -68,17 +68,17 @@
                 <input type="hidden" name="status" value="confirmed" />
                 <textarea name="body_text" style="height: 100px"><%= buffer_update.body_text %></textarea>
               </div>
-              <button value="confirmed" name="status" class="btn btn-success buffer-confirm">Confirm</button>
+              <button value="confirmed" name="status" class="btn btn-success">Confirm</button>
             </form>
 
-            <form action="/internal/buffer_updates/<%= buffer_update.id %>" accept-charset="UTF-8" method="post">
+            <form action="/internal/buffer_updates/<%= buffer_update.id %>" accept-charset="UTF-8" method="post" class="buffer-form buffer-dismiss" data-id="<%= buffer_update.id %>">
               <div class="form-group">
                 <input name="utf8" type="hidden" value="✓">
                 <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
                 <input type="hidden" name="_method" value="patch" />
                 <input type="hidden" name="status" value="dismissed" />
               </div>
-              <button value="dismissed" name="status" class="btn btn-danger buffer-dismiss">Dismiss</button>
+              <button value="dismissed" name="status" class="btn btn-danger">Dismiss</button>
             </form>
           </div>
         </div>
