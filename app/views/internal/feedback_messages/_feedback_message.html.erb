@@ -91,7 +91,7 @@
               </li>
             </ul>
             <div class="tab-content my-3">
-              <div role="tabcard" class="tab-pane fade in active show" data-id="<%= feedback_message.id %>" data-userType="reporter" id="reporter-<%= feedback_message.id %>">
+              <div role="tabcard" class="tab-pane fade active show" data-id="<%= feedback_message.id %>" data-userType="reporter" id="reporter-<%= feedback_message.id %>">
                 <h3>Send to:</h3>
                 <%= email_field_tag :reporter_email_to, feedback_message.reporter&.email, class: "form-control my-1", id: "reporter__emailto__#{feedback_message.id}", required: true %>
                 <h3>Subject:</h3>
@@ -222,7 +222,7 @@
  }
 
  function sendEmail(id) {
-   var activeTab = document.querySelector(".tab-pane.fade.in.active[data-id='" + id + "']");
+   var activeTab = document.querySelector(".tab-pane.active[data-id='" + id + "']");
    var alert = document.getElementById('email__alert__' + id);
    var sendEmailBtn = document.getElementById('send__email__btn__' + id);
    var userType = activeTab.dataset.usertype;
