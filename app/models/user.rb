@@ -50,6 +50,7 @@ class User < ApplicationRecord
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
   has_many :user_blocks
   has_one :pro_membership, dependent: :destroy
+  has_one :counters, class_name: "UserCounter", dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -147,6 +148,10 @@ class User < ApplicationRecord
   validate  :unique_including_orgs_and_podcasts, if: :username_changed?
 
   scope :dev_account, -> { find_by(id: ApplicationConfig["DEVTO_USER_ID"]) }
+
+  scope :with_comments_7_days, lambda { |number|
+    includes(:counters).joins(:counters).where("(user_counters.data ->> 'comments_7_days')::int >= ?", number)
+  }
 
   after_create :send_welcome_notification
   after_save  :bust_cache
