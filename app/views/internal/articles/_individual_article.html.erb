@@ -188,7 +188,7 @@
                 <% if article.user.twitter_username? %>&#013{ author: @<%= article.user.twitter_username %> } #DEVCommunity<% end %>
               </textarea>
             </div>
-            <button class="btn btn-primary mb-2">🦅 Tweet to @<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %></button>
+            <button class="btn btn-primary mb-2">🦅 Tweet to @<%= SiteConfig.social_networks_handle %></button>
           <% end %>
 
           <% if (article.decorate.cached_tag_list_array & Tag.bufferized_tags).any? %>
