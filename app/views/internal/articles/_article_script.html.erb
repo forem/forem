@@ -18,7 +18,6 @@
        url: $(this).attr('action'), //sumbits it to the given url of the form
        data: valuesToSubmit,
      }).success(function (json) {
-       console.log("success")
        form.parents(".card").addClass("highlighted-bg")
        form.parents(".card").addClass("highlighted-border")
        setTimeout(function () {
@@ -30,6 +29,18 @@
 
    $('.card').on("submit", "form", submitForms)
    $('.buffer-area').on("submit", "form", submitForms)
+
+   function tagSuggestedTweet(event) {
+     var updateId = $(this).data("id");
+     var updateElement = $(`#suggested-tweet-${updateId}`)
+     if (event.target.classList.contains('buffer-confirm')) {
+       updateElement.find('.card-header h2').append('<span class="ml-2 badge badge-success">Confirm</span>')
+     } else if (event.target.classList.contains('buffer-dismiss')) {
+       updateElement.find('.card-header h2').append('<span class="ml-2 badge badge-danger">Dismiss</span>')
+     }
+   }
+
+   $('.buffer-form').on("submit", tagSuggestedTweet);
 
    imageUploadButt = document.getElementById('image-upload-button')
    imageUpload = document.getElementById('image-upload')
