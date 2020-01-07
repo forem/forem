@@ -126,6 +126,7 @@ class MessagesController < ApplicationController
       if is_single
         Pusher.trigger("private-message-notifications-#{@message.user_id}", "message-created", message_json)
       else
+        logger.info " Papi #{@message.chat_channel.pusher_channels}"
         Pusher.trigger(@message.chat_channel.pusher_channels, "message-created", message_json)
       end
     rescue Pusher::Error => e
