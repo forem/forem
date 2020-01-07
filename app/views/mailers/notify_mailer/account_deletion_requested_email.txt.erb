@@ -1,6 +1,6 @@
 Hi <%= @name %>,
 Your account deletion was requested. Please, visit this page: <%= user_request_destroy_url(@token) %> to destroy your account. The link will expire in 12 hours.
-Contact us at <%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %> if there is anything more we can help with.
+Contact us at <%= SiteConfig.default_site_email %> if there is anything more we can help with.
 
 Thanks,
 The DEV Team

@@ -5,8 +5,8 @@ RSpec.describe RateLimitChecker, type: :labor do
   let(:article) { create(:article, user_id: user.id) }
 
   describe "self.daily_account_follow_limit " do
-    it 'returns the value set in ApplicationConfig["RATE_LIMIT_FOLLOW_COUNT_DAILY"' do
-      expect(described_class.daily_account_follow_limit).to eq(ApplicationConfig["RATE_LIMIT_FOLLOW_COUNT_DAILY"])
+    it "returns the value set in SiteConfig.rate_limit_follow_count_daily" do
+      expect(described_class.daily_account_follow_limit).to eq(SiteConfig.rate_limit_follow_count_daily)
     end
   end
 

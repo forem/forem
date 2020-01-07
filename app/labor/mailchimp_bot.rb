@@ -19,7 +19,7 @@ class MailchimpBot
     # attempt to update email if user changed email addresses
     success = false
     begin
-      gibbon.lists(ApplicationConfig["MAILCHIMP_NEWSLETTER_ID"]).members(target_md5_email).upsert(
+      gibbon.lists(SiteConfig.mailchimp_newsletter_id).members(target_md5_email).upsert(
         body: {
           email_address: user.email,
           status: user.email_newsletter ? "subscribed" : "unsubscribed",
@@ -52,7 +52,7 @@ class MailchimpBot
     success = false
     status = user.email_community_mod_newsletter ? "subscribed" : "unsubscribed"
     begin
-      gibbon.lists(ApplicationConfig["MAILCHIMP_COMMUNITY_MODERATORS_ID"]).members(target_md5_email).upsert(
+      gibbon.lists(SiteConfig.mailchimp_community_moderators_id).members(target_md5_email).upsert(
         body: {
           email_address: user.email,
           status: status,
@@ -79,7 +79,7 @@ class MailchimpBot
     tags = user.roles.where(name: "tag_moderator").map { |tag| Tag.find(tag.resource_id).name }
     status = user.email_tag_mod_newsletter ? "subscribed" : "unsubscribed"
     begin
-      gibbon.lists(ApplicationConfig["MAILCHIMP_TAG_MODERATORS_ID"]).members(target_md5_email).upsert(
+      gibbon.lists(SiteConfig.mailchimp_tag_moderators_id).members(target_md5_email).upsert(
         body: {
           email_address: user.email,
           status: status,
@@ -103,7 +103,7 @@ class MailchimpBot
   def unsub_sustaining_member
     return unless user.tag_moderator?
 
-    gibbon.lists(ApplicationConfig["MAILCHIMP_TAG_MODERATORS_ID"]).members(target_md5_email).update(
+    gibbon.lists(SiteConfig.mailchimp_tag_moderators_id).members(target_md5_email).update(
       body: {
         status: "unsubscribed"
       },
@@ -113,7 +113,7 @@ class MailchimpBot
   def unsub_community_mod
     return unless user.has_role?(:trusted)
 
-    gibbon.lists(ApplicationConfig["MAILCHIMP_COMMUNITY_MODERATORS_ID"]).members(target_md5_email).update(
+    gibbon.lists(SiteConfig.mailchimp_community_moderators_id).members(target_md5_email).update(
       body: {
         status: "unsubscribed"
       },
@@ -123,7 +123,7 @@ class MailchimpBot
   def unsub_tag_mod
     return unless a_sustaining_member?
 
-    gibbon.lists(ApplicationConfig["MAILCHIMP_SUSTAINING_MEMBERS_ID"]).members(target_md5_email).update(
+    gibbon.lists(SiteConfig.mailchimp_sustaining_members_id).members(target_md5_email).update(
       body: {
         status: "unsubscribed"
       },
@@ -133,7 +133,7 @@ class MailchimpBot
   def unsubscribe_all_newsletters
     success = false
     begin
-      gibbon.lists(ApplicationConfig["MAILCHIMP_NEWSLETTER_ID"]).members(target_md5_email).update(
+      gibbon.lists(SiteConfig.mailchimp_newsletter_id).members(target_md5_email).update(
         body: {
           status: "unsubscribed"
         },

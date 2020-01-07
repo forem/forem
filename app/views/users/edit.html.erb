@@ -15,7 +15,7 @@
 <% if params[:state] == "previous-registration" %>
   <div class="notice error-notice" id="notice">
     There is an existing account authorized with that social account. Contact
-    <a href="mailto:<%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %>"><%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %></a> if this is a mistake.
+    <a href="mailto:<%= SiteConfig.default_site_email %>"><%= SiteConfig.default_site_email %></a> if this is a mistake.
   </div>
 <% end %>
 

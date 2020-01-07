@@ -47,7 +47,7 @@
     <h3>Request Account Deletion</h3>
     <h4 style="font-weight: 400;">
       <br>
-      <a href="mailto:<%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %>?subject=Request Account Deletion&body=<%= @email_body %>">
+      <a href="mailto:<%= SiteConfig.default_site_email %>?subject=Request Account Deletion&body=<%= @email_body %>">
         Click this link to request account deletion via email.
       </a>
       <br>
