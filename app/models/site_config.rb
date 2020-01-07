@@ -10,7 +10,7 @@ class SiteConfig < RailsSettings::Base
 
   # staff account
   field :staff_user_id, type: :integer, default: 1
-  field :default_site_email, type: :string, default: "yo@dev.to"
+  field :default_site_email, type: :string, default: "yo@dev.to", readonly: true
   field :social_networks_handle, type: :string, default: "thepracticaldev"
 
   # images
