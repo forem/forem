@@ -307,6 +307,7 @@ export default class Chat extends Component {
           this.setOpenChannelUsers,
           null,
         );
+        this.subscribePusher(`open-channel-${channelId}`);
       }
       getAllMessages(channelId, messageOffset, this.receiveAllMessages);
     }
@@ -378,7 +379,6 @@ export default class Chat extends Component {
     } = this.state;
     const receivedChatChannelId = message.chat_channel_id;
     let newMessages = [];
-
     if (
       message.temp_id &&
       messages[activeChannelId].findIndex(
