@@ -1,5 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "DEV Community <#{SiteConfig.default_site_email}>"
+  default from: "DEV Community <#{ApplicationConfig['DEFAULT_SITE_EMAIL']}>"
   layout "mailer"
   default template_path: ->(mailer) { "mailers/#{mailer.class.name.underscore}" }
 
