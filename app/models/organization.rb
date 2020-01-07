@@ -33,7 +33,7 @@ class Organization < ApplicationRecord
             format: { with: /\A[a-zA-Z0-9\-_]+\Z/ },
             length: { in: 2..18 },
             exclusion: { in: ReservedWords.all,
-                         message: "%<value>s is a reserved word. Contact #{ApplicationConfig['DEFAULT_SITE_EMAIL']} for help registering your organization." }
+                         message: "%<value>s is a reserved word. Contact #{SiteConfig.default_site_email} for help registering your organization." }
   validates :url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :secret, uniqueness: { allow_blank: true }
   validates :location, :email, :company_size, length: { maximum: 64 }

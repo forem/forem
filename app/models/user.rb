@@ -146,7 +146,7 @@ class User < ApplicationRecord
   validate  :validate_feed_url, if: :feed_url_changed?
   validate  :unique_including_orgs_and_podcasts, if: :username_changed?
 
-  scope :dev_account, -> { find_by(id: ApplicationConfig["DEVTO_USER_ID"]) }
+  scope :dev_account, -> { find_by(id: SiteConfig.staff_user_id) }
 
   after_create :send_welcome_notification
   after_save  :bust_cache
