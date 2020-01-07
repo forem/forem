@@ -491,16 +491,8 @@ RSpec.describe Notification, type: :model do
 
   describe "#send_new_badge_achievement_notification" do
     it "enqueues a new badge achievement job" do
-      assert_enqueued_with(job: Notifications::NewBadgeAchievementJob, args: [badge_achievement.id]) do
+      sidekiq_assert_enqueued_with(job: Notifications::NewBadgeAchievementWorker, args: [badge_achievement.id]) do
         described_class.send_new_badge_achievement_notification(badge_achievement)
-      end
-    end
-  end
-
-  describe "#send_new_badge_notification (deprecated)" do
-    it "enqueues a new badge achievement job" do
-      assert_enqueued_with(job: Notifications::NewBadgeAchievementJob, args: [badge_achievement.id]) do
-        described_class.send_new_badge_notification(badge_achievement)
       end
     end
   end
