@@ -272,22 +272,24 @@ RSpec.describe Notification, type: :model do
     end
 
     context "when reactable is receiving notifications" do
-      let(:reaction) { create(:reaction, reactable: comment, user: user) }
-      let(:count) { comment.user.notifications.count }
-
-      before do
-        @previous_notification_count = comment.user.notifications.count
-        sidekiq_perform_enqueued_jobs do
-          described_class.send_reaction_notification(reaction, reaction.reactable.user)
-        end
-      end
-
       it "sends a notification to the author of a comment" do
-        expect(comment.user.notifications.count).to eq(@previous_notification_count + 1)
+        reaction = create(:reaction, reactable: comment, user: user)
+
+        expect do
+          sidekiq_perform_enqueued_jobs do
+            described_class.send_reaction_notification(reaction, reaction.reactable.user)
+          end
+        end.to change(comment.user.notifications, :count).by(1)
       end
 
       it "sends a notification to the author of an article" do
-        expect(comment.user.notifications.count).to eq(@previous_notification_count + 1)
+        reaction = create(:reaction, reactable: article, user: user2)
+
+        expect do
+          sidekiq_perform_enqueued_jobs do
+            described_class.send_reaction_notification(reaction, reaction.reactable.user)
+          end
+        end.to change(article.user.notifications, :count).by(1)
       end
     end
 
@@ -295,18 +297,6 @@ RSpec.describe Notification, type: :model do
       let(:comment) { create(:comment, user: user2, commentable: article) }
       let!(:notification) { create(:notification, user: user, notifiable: comment, action: "Reaction") }
       let(:sibling_reaction) { create(:reaction, reactable: comment, user: user3) }
-
-      before do
-        if  RSpec.current_example.metadata[:execute_create_and_destroy]
-          reaction = create(:reaction, user: user2, reactable: article, category: "like")
-          sidekiq_perform_enqueued_jobs do
-            @previous_notification_count = user.notifications.count
-            described_class.send_reaction_notification(reaction, reaction.reactable.user)
-            reaction.destroy!
-            described_class.send_reaction_notification(reaction, reaction.reactable.user)
-          end
-        end
-      end
 
       it "destroys the notification if it exists" do
         reaction = create(:reaction, reactable: comment, user: user)
@@ -336,7 +326,21 @@ RSpec.describe Notification, type: :model do
       end
 
       it "creates and destroys the notification properly", execute_create_and_destroy: true do
-        expect(user.notifications.count).to eq(@previous_notification_count)
+        reaction = create(:reaction, user: user2, reactable: article, category: "like")
+
+        expect do
+          sidekiq_perform_enqueued_jobs do
+            described_class.send_reaction_notification(reaction, reaction.reactable.user)
+          end
+        end.to change(user.notifications, :count).by(1)
+
+        reaction.destroy!
+
+        expect do
+          sidekiq_perform_enqueued_jobs do
+            described_class.send_reaction_notification(reaction, reaction.reactable.user)
+          end
+        end.to change(user.notifications, :count).by(-1)
       end
     end
 
@@ -376,33 +380,25 @@ RSpec.describe Notification, type: :model do
     end
 
     context "when dealing with positive and negative reactions" do
-      context "positive reaction" do
-        before do
-          @previous_notification_count = article.notifications.count
+      it "creates a notification for a positive reaction" do
+        reaction = create(:reaction, reactable: article, user: user2, category: "like")
+
+        expect do
           sidekiq_perform_enqueued_jobs do
             described_class.send_reaction_notification(reaction, reaction.reactable.user)
           end
-        end
-
-        let(:reaction) {create(:reaction, reactable: article, user: user2, category: "like") }
-        it "creates a notification for a positive reaction" do
-          expect(article.notifications.count).to eq(@previous_notification_count + 1)
-        end
+        end.to change(article.notifications, :count).by(1)
       end
 
-      context "negative reaction" do
-        before do
-          user2.add_role(:trusted)
-          @previous_notification_count = article.notifications.count
+      it "does not create a notification for a negative reaction" do
+        user2.add_role(:trusted)
+        reaction = create(:reaction, reactable: article, user: user2, category: "vomit")
+
+        expect do
           sidekiq_perform_enqueued_jobs do
             described_class.send_reaction_notification(reaction, reaction.reactable.user)
           end
-        end
-
-        let(:reaction) { create(:reaction, reactable: article, user: user2, category: "vomit") }
-        it "does not create a notification for a negative reaction" do
-          expect(article.notifications.count).to eq(@previous_notification_count)
-        end
+        end.to change(article.notifications, :count).by(0)
       end
     end
   end
