@@ -20,8 +20,11 @@
      }).success(function (json) {
        form.parents(".card").addClass("highlighted-bg")
        form.parents(".card").addClass("highlighted-border")
+       form.parents(".single-internal-listing").addClass("highlighted-bg")
+       form.parents(".single-internal-listing").addClass("highlighted-border")
        setTimeout(function () {
          form.parents(".card").removeClass("highlighted-bg")
+         form.parents(".single-internal-listing").removeClass("highlighted-bg")
        }, 350)
      });
      return false; // prevents normal behaviour
