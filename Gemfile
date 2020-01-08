@@ -27,7 +27,7 @@ gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bo
 gem "cld", "~> 0.8" # Compact Language Detection for Ruby
 gem "cloudinary", "~> 1.13" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.2" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "ddtrace", "~> 0.30.0" # ddtrace is Datadog’s tracing client for Ruby.
+gem "ddtrace", "~> 0.30.1" # ddtrace is Datadog’s tracing client for Ruby.
 gem "delayed_job_active_record", "~> 4.1" # ActiveRecord backend for Delayed::Job
 gem "delayed_job_web", "~> 1.4" # Web interface for delayed_job
 gem "devise", "~> 4.7" # Flexible authentication solution for Rails
@@ -60,12 +60,12 @@ gem "kaminari", "~> 1.1" # A Scope & Engine based, clean, powerful, customizable
 gem "libhoney", "~> 1.14" # Ruby gem for sending data to Honeycomb
 gem "liquid", "~> 4.0" # A secure, non-evaling end user template engine with aesthetic markup
 gem "nokogiri", "~> 1.10" # HTML, XML, SAX, and Reader parser
-gem "octokit", "~> 4.14" # Simple wrapper for the GitHub API
+gem "octokit", "~> 4.15" # Simple wrapper for the GitHub API
 gem "oj", "~> 3.10" # JSON parser and object serializer
 gem "omniauth", "~> 1.9" # A generalized Rack framework for multiple-provider authentication
 gem "omniauth-github", "~> 1.3" # OmniAuth strategy for GitHub
 gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter
-gem "pg", "~> 1.1" # Pg is the Ruby interface to the PostgreSQL RDBMS
+gem "pg", "~> 1.2" # Pg is the Ruby interface to the PostgreSQL RDBMS
 gem "puma", "~> 4.3" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.1" # Object oriented authorization for Rails applications
 gem "pusher", "~> 1.3" # Ruby library for Pusher Channels HTTP API
@@ -121,7 +121,7 @@ group :development do
   gem "pry", "~> 0.12" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "web-console", "~> 3.7" # Rails Console on the Browser
-  gem "yard", "~> 0.9.20" # YARD is a documentation generation tool for the Ruby programming language
+  gem "yard", "~> 0.9.23" # YARD is a documentation generation tool for the Ruby programming language
   gem "yard-activerecord", "~> 0.0.16" # YARD extension that handles and interprets methods used when developing applications with ActiveRecord
   gem "yard-activesupport-concern", "~> 0.0.1" # YARD extension that brings support for modules making use of ActiveSupport::Concern
 end
@@ -129,12 +129,12 @@ end
 group :development, :test do
   gem "awesome_print", "~> 1.8" # Great Ruby dubugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
-  gem "capybara", "~> 3.29" # Capybara is an integration testing tool for rack based web applications
-  gem "faker", "~> 2.9" # A library for generating fake data such as names, addresses, and phone numbers
+  gem "capybara", "~> 3.30" # Capybara is an integration testing tool for rack based web applications
+  gem "faker", "~> 2.10" # A library for generating fake data such as names, addresses, and phone numbers
   gem "parallel_tests", "~> 2.30" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry-byebug", "~> 3.7" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 3.9" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 0.78", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 0.79", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.5", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.4", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 1.37", require: false # Code style checking for RSpec files

@@ -25,7 +25,7 @@ class DashboardsController < ApplicationController
     @articles = @articles.sorting(params[:sort]).decorate
 
     # Updates analytics in background if appropriate
-    update_analytics = @articles && ApplicationConfig["GA_FETCH_RATE"] < 50 # Rate limited, sometimes we throttle down
+    update_analytics = @articles && SiteConfig.ga_fetch_rate < 50 # Rate limited, sometimes we throttle down
     Articles::UpdateAnalyticsWorker.perform_async(current_user.id) if update_analytics
   end
 

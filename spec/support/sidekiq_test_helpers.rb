@@ -1,10 +1,14 @@
 # Helpers for Sidekiq tests
 # modeled after <https://api.rubyonrails.org/v5.2/classes/ActiveJob/TestHelper.html>
 # NOTE: contains code adapted from <https://github.com/rails/rails/blob/ac30e389ecfa0e26e3d44c1eda8488ddf63b3ecc/activejob/lib/active_job/test_helper.rb>
+# and from <https://github.com/mperham/sidekiq/blob/ee65b5365e0c810c9defc5f1e269d53e971d783c/lib/sidekiq/testing.rb>
 module SidekiqTestHelpers
   # Provides a store of all the enqueued jobs
-  def sidekiq_enqueued_jobs(queue: nil)
-    return Sidekiq::Queues[queue.to_s] if queue
+  def sidekiq_enqueued_jobs(queue: nil, worker: nil)
+    raise ArgumentError, "Cannot specify both `:queue` and `:worker` options." if queue && worker
+
+    return Sidekiq::Queues.jobs_by_queue[queue.to_s] if queue
+    return Sidekiq::Queues.jobs_by_worker[worker.to_s] if worker
 
     Sidekiq::Worker.jobs
   end

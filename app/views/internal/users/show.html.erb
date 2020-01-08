@@ -1,58 +1,64 @@
-<style>
-  dt {
-    width: calc(20% - 1rem);
-    float: left;
-  }
-
-  dd {
-    width: calc(80% - 1rem)
-  }
-</style>
 <div class="row">
-  <h1>
-    <%= @user.name %><a href="/<%= @user.username %>" target="_blank"> (@<%= @user.username %>)</a>
-  </h1>
-  <p><u><a style="color: red" href="/internal/users/<%= @user.id %>/edit">click here to merge, banish, or delete user.</a></u>
+  <div class="col-12">
+    <h2 class="d-inline">
+      <%= @user.name %><a href="/<%= @user.username %>" target="_blank"> (@<%= @user.username %>)</a>
+    </h2>
+    <a href="<%= edit_internal_user_path(@user) %>" class="btn btn-primary float-right">Manage User</a>
+    <p class="font-italic">Member since <%= @user.created_at.strftime("%b %e '%y") %></p>
+  </div>
+  <div class="col-12">
+    <h2>General Info</h2>
+    <dl>
+      <dt>ID:</dt>
+      <dd><%= @user.id %></span></dd>
+      <dt>Username:</dt>
+      <dd><%= @user.username %></dd>
+      <dt>Name:</dt>
+      <dd><%= @user.name %></dd>
+      <dt>Email:</dt>
+      <dd><%= @user.email %></dd>
+      <dt>Twitter:</dt>
+      <% if @user.twitter_username %>
+        <dd><%= link_to @user.twitter_username, "https://twitter.com/#{@user.twitter_username}" %></dd>
+      <% else %>
+        <dd>N/A</dd>
+      <% end %>
+      <dt>GitHub:</dt>
+      <% if @user.github_username %>
+        <dd><%= link_to @user.github_username, "https://github.com/#{@user.github_username}" %></dd>
+      <% else %>
+        <dd>N/A</dd>
+      <% end %>
+      <dt>Sustaining Member:</dt>
+      <dd><%= @user.a_sustaining_member? %></dd>
+      <% if @user.a_sustaining_member? %>
+        <dt>Monthly Dues:</dt>
+        <dd><%= @user.monthly_dues %></dd>
+        <dt>25% Off Coupon:</dt>
+        <dd><%= CouponGenerator.new(current_user.id, "member_discount").generate %> || "N/A" </dd>
+        <dt>1x Gift:</dt>
+        <dd><%= CouponGenerator.new(current_user.id, "tee_pack").generate %> || "N/A" </dd>
+      <% end %>
+    </dl>
+  </div>
   </p>
-  <p><em>Member since <%= @user.created_at.strftime("%b %e '%y") %></em></p>
-  <p><strong><u>General Info</u></strong></p>
-  <dl>
-    <dt>ID:</dt>
-    <dd><%= @user.id %></span></dd>
-    <dt>Username:</dt>
-    <dd><%= @user.username %></dd>
-    <dt>Name:</dt>
-    <dd><%= @user.name %></dd>
-    <dt>Email:</dt>
-    <dd><%= @user.email %></dd>
-    <dt>Twitter:</dt>
-    <dd><%= @user.twitter_username || "N/A" %></dd>
-    <dt>GitHub:</dt>
-    <dd><%= @user.github_username || "N/A" %></dd>
-    <dt>Sustaining Member:</dt>
-    <dd><%= @user.a_sustaining_member? %></dd>
-    <% if @user.a_sustaining_member? %>
-      <dt>Monthly Dues:</dt>
-      <dd><%= @user.monthly_dues %></dd>
-      <dt>25% Off Coupon:</dt>
-      <dd><%= CouponGenerator.new(current_user.id, "member_discount").generate %> || "N/A" </dd>
-      <dt>1x Gift:</dt>
-      <dd><%= CouponGenerator.new(current_user.id, "tee_pack").generate %> || "N/A" </dd>
-    <% end %>
-  </dl>
 </div>
+
 <%= render "activity" %>
 <%= render "credits" %>
 <%= render "notes" %>
 <%= render "user_organizations" %>
-<div class="row">
-  <h2><u>Recent Emails</u></h2>
-  <ul>
-    <% @user.email_messages.order("sent_at DESC").limit(50).each do |email| %>
-      <li><a href="/admin/email_messages/<%= email.id %>"><%= email.subject %></a>
-        <em><%= email.sent_at&.strftime("%b %e '%y") %></em></li>
-    <% end %>
-  </ul>
+
+<div class="row mb-3">
+  <div class="col-12">
+    <h2>Recent Emails</h2>
+    <div class="list-group-flush">
+      <% @user.email_messages.order("sent_at DESC").limit(50).each do |email| %>
+        <a href="/admin/email_messages/<%= email.id %>" class="list-group-item list-group-item-action">
+          <%= email.subject %>
+          <em> - <%= email.sent_at&.strftime("%b %e '%y") %></em>
+        </a>
+      <% end %>
+    </div>
+  </div>
 </div>
-<br>
-<br>

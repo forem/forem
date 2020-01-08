@@ -1,4 +1,23 @@
 class UserDecorator < ApplicationDecorator
+  WHITE_TEXT_COLORS = [
+    {
+      bg: "#093656",
+      text: "#ffffff"
+    },
+    {
+      bg: "#61122f",
+      text: "#ffffff"
+    },
+    {
+      bg: "#2e0338",
+      text: "#ffffff"
+    },
+    {
+      bg: "#080E3B",
+      text: "#ffffff"
+    },
+  ].freeze
+
   delegate_all
 
   def cached_followed_tags
@@ -48,28 +67,12 @@ class UserDecorator < ApplicationDecorator
   def assigned_color
     colors = [
       {
-        bg: "#093656",
-        text: "#ffffff"
-      },
-      {
         bg: "#19063A",
         text: "#dce9f3"
       },
       {
         bg: "#0D4D4B",
         text: "#fdf9f3"
-      },
-      {
-        bg: "#61122f",
-        text: "#ffffff"
-      },
-      {
-        bg: "#2e0338",
-        text: " #ffffff"
-      },
-      {
-        bg: "#080E3B",
-        text: "#ffffff"
       },
       {
         bg: "#010C1F",
@@ -88,6 +91,7 @@ class UserDecorator < ApplicationDecorator
         text: "#c9d2dd"
       },
     ]
+    colors |= WHITE_TEXT_COLORS
     colors[id % 10]
   end
 

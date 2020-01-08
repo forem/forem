@@ -309,7 +309,7 @@ RSpec.describe "NotificationsIndex", type: :request do
         sign_in user
         badge = create(:badge)
         badge_achievement = create(:badge_achievement, user: user, badge: badge)
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           Notification.send_new_badge_achievement_notification(badge_achievement)
         end
         get "/notifications"
@@ -347,7 +347,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       let(:mention) { create(:mention, mentionable: comment, user: user) }
 
       before do
-        Sidekiq::Testing.inline! do
+        sidekiq_perform_enqueued_jobs do
           Notification.send_mention_notification(mention)
         end
         sign_in user
