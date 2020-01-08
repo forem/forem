@@ -28,3 +28,20 @@ RSpec.configure do |config|
     driven_by :headless_chrome
   end
 end
+
+# adapted from <https://medium.com/doctolib-engineering/hunting-flaky-tests-2-waiting-for-ajax-bd76d79d9ee9>
+def wait_for_javascript
+  max_time = Capybara::Helpers.monotonic_time + Capybara.default_max_wait_time
+
+  while Capybara::Helpers.monotonic_time < max_time
+    begin
+      break if page.evaluate_script("initializeBaseApp")
+    rescue Selenium::WebDriver::Error::JavascriptError => e
+      Rails.logger.debug(e)
+    end
+
+    sleep 0.1
+  end
+
+  raise "wait_for_javascript timeout" unless finished
+end
