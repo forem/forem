@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Looking For Work" do
+RSpec.describe "Looking For Work", type: :system do
   let(:user) { create(:user) }
   let(:tag) { create(:tag, name: "hiring") }
 
