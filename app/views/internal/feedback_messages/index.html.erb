@@ -108,6 +108,25 @@
   </div>
 </div>
 
+<div class="row m-3 justify-content-end">
+  <%= form_tag("/internal/reports", method: "get") do %>
+    <div class="form-group">
+      <%= label_tag(:reporter, "Reporter") %>
+      <%= text_field_tag(:reporter, params[:reporter], class: "form-control") %>
+    </div>
+    <div class="form-group">
+      <%= label_tag(:reported_url, "Reported URL") %>
+      <%= text_field_tag(:reported_url, params[:reported_url], class: "form-control") %>
+    </div>
+    <div class="form-group">
+      <% if params[:status].present? %>
+        <%= hidden_field_tag(:status, params[:status]) %>
+      <% end %>
+      <%= submit_tag("Filter", class: "float-right btn btn-secondary") %>
+    </div>
+  <% end %>
+</div>
+
 <%= paginate @feedback_messages %>
 
 <% @feedback_messages.each do |feedback_message| %>

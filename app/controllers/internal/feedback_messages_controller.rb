@@ -4,11 +4,24 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
   def index
     @feedback_type = params[:state] || "abuse-reports"
     @status = params[:status] || "Open"
+
     @feedback_messages = FeedbackMessage.
       where(feedback_type: @feedback_type, status: @status).
       includes(:reporter, :notes).
       order("feedback_messages.created_at DESC").
       page(params[:page] || 1).per(5)
+
+    if params[:reporter].present?
+      @feedback_messages = @feedback_messages.
+        joins("JOIN users ON users.id = feedback_messages.reporter_id").
+        where("username ILIKE :reporter", reporter: "%#{params[:reporter]}%")
+    end
+
+    if params[:reported_url].present?
+      @feedback_messages = @feedback_messages.
+        where("reported_url ILIKE :reported_url", reported_url: "%#{params[:reported_url]}%")
+    end
+
     @email_messages = EmailMessage.find_for_reports(@feedback_messages)
     @new_articles = Article.published.includes(:user).limit(120).order("created_at DESC").where("score > ? AND score < ?", -10, 8)
     @possible_spam_users = User.where("github_created_at > ? OR twitter_created_at > ? OR length(name) > ?", 50.hours.ago, 50.hours.ago, 30).
