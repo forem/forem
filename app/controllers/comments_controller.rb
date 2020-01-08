@@ -97,6 +97,48 @@ class CommentsController < ApplicationController
     end
   end
 
+  def moderator_create
+    return if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
+
+    moderator = User.find(ENV["MODERATOR_BOT_ID"])
+    @comment = Comment.new(permitted_attributes(Comment))
+    @comment.user_id = moderator.id
+    authorize @comment
+
+    if @comment.save
+      Mention.create_all(@comment)
+      Notification.send_new_comment_notifications_without_delay(@comment)
+
+      render json: {
+        status: "created",
+        css: @comment.custom_css,
+        depth: @comment.depth,
+        url: @comment.path,
+        readable_publish_date: @comment.readable_publish_date,
+        published_timestamp: @comment.decorate.published_timestamp,
+        body_html: @comment.processed_html,
+        id: @comment.id,
+        id_code: @comment.id_code_generated,
+        newly_created: true,
+        user: {
+          id: current_user.id,
+          username: current_user.username,
+          name: current_user.name,
+          profile_pic: ProfileImage.new(current_user).get(50),
+          twitter_username: current_user.twitter_username,
+          github_username: current_user.github_username
+        }
+      }
+    elsif (@comment = Comment.where(body_markdown: @comment.body_markdown,
+                                    commentable_id: @comment.commentable.id,
+                                    ancestry: @comment.ancestry)[1])
+      @comment.destroy
+      render json: { status: "comment already exists" }
+    else
+      render json: { status: @comment.errors.full_messages.to_sentence }
+    end
+  end
+
   # PATCH/PUT /comments/1
   # PATCH/PUT /comments/1.json
   def update

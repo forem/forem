@@ -1,4 +1,8 @@
 class CannedResponsePolicy < ApplicationPolicy
+  def index?
+    user_is_moderator?
+  end
+
   def create?
     true
   end
@@ -22,6 +26,6 @@ class CannedResponsePolicy < ApplicationPolicy
   end
 
   def user_is_moderator?
-    true # user.any_admin? || user.moderator_for_tags or something?
+    user.any_admin? || user.moderator_for_tags&.present?
   end
 end

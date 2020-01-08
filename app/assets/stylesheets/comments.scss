@@ -268,6 +268,54 @@ a.header-link {
       margin-top: 8px;
       margin-bottom: -5px;
     }
+    .mod-responses-container {
+      width: calc(100% - 52px);
+      height: 125px;
+      margin: 15px auto 2px;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      border-radius: 3px;
+      font-size: 16px;
+      @include themeable(
+        border,
+        theme-container-background,
+        1px solid $dark-gray
+      );
+      @include themeable(background, theme-container-background, $light-gray);
+      @include themeable(color, theme-color, $black);
+      .mod-response-wrapper {
+        padding: 6px;
+        border-bottom-width: 1.5px;
+        border-bottom-style: dotted;
+        @include themeable(border-bottom-color, theme-color, $black);
+
+        span {
+          font-weight: bold;
+        }
+
+        button {
+          font-family: $helvetica-condensed;
+          font-stretch: condensed;
+          color: white;
+          border: 0px;
+          font-size: 13px;
+          font-weight: 500;
+          margin-top: 3px;
+          padding: 5px 12px;
+          border-radius: 3px;
+          cursor: pointer;
+          appearance: none;
+          margin-right: 10px;
+          background: $bold-blue;
+        }
+        .moderator-submit-button {
+          background: $green;
+          color: $black;
+        }
+      }
+    }
     textarea {
       width: calc(100% - 52px);
       margin: 15px auto 2px;

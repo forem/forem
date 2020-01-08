@@ -159,6 +159,7 @@ Rails.application.routes.draw do
     patch "/hide", to: "comments#hide"
     patch "/unhide", to: "comments#unhide"
   end
+  post "/comments/moderator_create", to: "comments#moderator_create"
   resources :comment_mutes, only: %i[update]
   resources :users, only: [:update] do
     resource :twitch_stream_updates, only: %i[show create]

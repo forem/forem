@@ -22,6 +22,9 @@ variable :LOGO_SVG, :String, default: ""
 # Default staff account's id
 variable :DEVTO_USER_ID, :Integer, default: 1
 
+# Default moderator bot id (Sloan)
+variable :MODERATOR_BOT_ID, :Integer, default: 1
+
 # Default site email
 variable :DEFAULT_SITE_EMAIL, :String, default: "yo@dev.to"
 

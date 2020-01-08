@@ -26,6 +26,9 @@
     <%= f.hidden_field :parent_id, value: @parent_comment.id if @parent_comment %>
   <% end %>
   <div class="field" id="textarea-wrapper">
+    <div class="mod-responses-container" style="display: none;">
+      <%# filled by JS %>
+    </div>
     <%= f.text_area :body_markdown,
                     placeholder: "Add to the discussion",
                     onfocus: "handleFocus(event)",
@@ -46,14 +49,9 @@
         <img alt="markdown guide" class="icon-image" src="<%= asset_path("info.svg") %>" />
       </a>
       <div class="editor-canned-responses">
-        <button class="canned-responses-button dropbtn" title="Insert Canned Response" type="button">
-          <img src="<%= asset_path("canned-response.svg") %>" alt="" class="icon-image">
+        <button class="canned-responses-button" title="Reply with Sloan" type="button">
+          <img src="<%= asset_path("emoji/emoji-one-sloth.png") %>" alt="" class="icon-image">
         </button>
-        <div class="dropdown">
-          <div class="dropdown-content canned-response-dropdown-content">
-          <%# filled in by JS %>
-          </div>
-        </div>
       </div>
       <%= javascript_pack_tag "cannedResponses", defer: true %>
       <div class="editor-image-upload">

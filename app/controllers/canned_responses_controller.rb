@@ -2,8 +2,14 @@ class CannedResponsesController < ApplicationController
   after_action :verify_authorized, except: %i[index]
 
   def index
-    # authorize CannedResponse
-    @canned_responses = CannedResponse.where(user_id: current_user.id)
+    @canned_responses = if params[:type_of]
+                          result = CannedResponse.where(user_id: nil, type_of: params[:type_of])
+                          authorize result
+                          result
+                        else
+                          skip_authorization
+                          CannedResponse.where(user_id: current_user.id)
+                        end
   end
 
   def create

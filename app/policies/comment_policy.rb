@@ -7,6 +7,10 @@ class CommentPolicy < ApplicationPolicy
     !user_is_banned? && !user_is_comment_banned? && !user_is_blocked?
   end
 
+  def moderator_create?
+    !user_is_banned? && !user_is_comment_banned? && !user_is_blocked? && user_is_moderator?
+  end
+
   def update?
     edit?
   end
@@ -47,6 +51,10 @@ class CommentPolicy < ApplicationPolicy
     %i[body_markdown commentable_id commentable_type parent_id]
   end
 
+  def permitted_attributes_for_moderator_create
+    %i[body_markdown commentable_id commentable_type parent_id]
+  end
+
   private
 
   def user_is_comment_banned?
@@ -61,6 +69,10 @@ class CommentPolicy < ApplicationPolicy
     return false if user.blocked_by_count.zero?
 
     UserBlock.blocking?(record.commentable.user_id, user.id)
+  end
+
+  def user_is_moderator?
+    user.moderator_for_tags.present?
   end
 
   def user_is_commentable_author?
