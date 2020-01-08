@@ -24,7 +24,7 @@ RSpec.describe Notifications::NewReactionWorker, type: :worker do
     end
 
     it "doesn't call if is a receiver doesn't exist" do
-      subject.perform(reaction_data, { klass: "Organization", id: org.id + 1 }, reaction_service)
+      subject.perform(reaction_data, { klass: "Organization", id: nil }, reaction_service)
       expect(reaction_service).not_to have_received(:call)
     end
   end
