@@ -133,7 +133,7 @@ class Organization < ApplicationRecord
   end
 
   def bust_cache
-    Organizations::BustCacheJob.perform_later(id, slug)
+    Organizations::BustCacheWorker.perform_async(id, slug)
   end
 
   def unique_slug_including_users_and_podcasts
