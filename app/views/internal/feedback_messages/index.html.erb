@@ -109,14 +109,14 @@
 </div>
 
 <div class="row m-3 justify-content-end">
-  <%= form_tag("/internal/reports", method: "get") do %>
+  <%= form_tag("/internal/reports", method: "get", class: "form-inline") do %>
     <div class="form-group">
-      <%= label_tag(:reporter, "Reporter") %>
-      <%= text_field_tag(:reporter, params[:reporter], class: "form-control") %>
+      <%= label_tag(:reporter, "Reporter", class: "sr-only") %>
+      <%= text_field_tag(:reporter, params[:reporter], class: "form-control mx-3", placeholder: "Reporter") %>
     </div>
     <div class="form-group">
-      <%= label_tag(:reported_url, "Reported URL") %>
-      <%= text_field_tag(:reported_url, params[:reported_url], class: "form-control") %>
+      <%= label_tag(:reported_url, "Reported URL", class: "sr-only") %>
+      <%= text_field_tag(:reported_url, params[:reported_url], class: "form-control mx-3", placeholder: "Reported URL") %>
     </div>
     <div class="form-group">
       <% if params[:status].present? %>
