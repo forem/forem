@@ -70,6 +70,8 @@ RSpec.describe "User visits articles by tag", type: :system do
     end
 
     it "shows the following button", js: true do
+      wait_for_javascript
+
       within("h1") { expect(page).to have_button("✓ FOLLOWING") }
     end
   end
