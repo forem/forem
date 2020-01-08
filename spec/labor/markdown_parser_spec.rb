@@ -197,7 +197,7 @@ RSpec.describe MarkdownParser, type: :labor do
   context "when provided with liquid tags" do
     it "does not raises error if liquid tag was used incorrectly" do
       bad_ltag = "{% #{random_word} %}"
-      expect { generate_and_parse_markdown(bad_ltag) }.not_to raise_error(StandardError)
+      expect { generate_and_parse_markdown(bad_ltag) }.not_to raise_error
     end
   end
 

@@ -6,11 +6,10 @@ RSpec.describe "Api::V0::Users", type: :request do
   end
 
   describe "GET /api/users" do
-    it "returns not found status if state is not present" do
-      user = create(:user)
-      sign_in user
+    it "returns no users if state is not present" do
       get api_users_path, params: {}
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(:success)
+      expect(json_response).to be_empty
     end
   end
 

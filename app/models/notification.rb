@@ -62,12 +62,8 @@ class Notification < ApplicationRecord
     end
 
     def send_new_badge_achievement_notification(badge_achievement)
-      Notifications::NewBadgeAchievementJob.perform_later(badge_achievement.id)
+      Notifications::NewBadgeAchievementWorker.perform_async(badge_achievement.id)
     end
-    # NOTE: this alias is temporary until the transition to ActiveJob is completed
-    # and all old DelayedJob jobs are processed by the queue workers.
-    # It can be removed after pre-existing jobs are done
-    alias send_new_badge_notification send_new_badge_achievement_notification
 
     def send_reaction_notification(reaction, receiver)
       return if reaction.skip_notification_for?(receiver)
@@ -86,7 +82,7 @@ class Notification < ApplicationRecord
     def send_mention_notification(mention)
       return if mention.mentionable_type == "User" && UserBlock.blocking?(mention.mentionable_id, mention.user_id)
 
-      Notifications::MentionJob.perform_later(mention.id)
+      Notifications::MentionWorker.perform_async(mention.id)
     end
 
     def send_welcome_notification(receiver_id)
@@ -134,6 +130,22 @@ class Notification < ApplicationRecord
 
     def update_notifications(notifiable, action = nil)
       Notifications::UpdateJob.perform_later(notifiable.id, notifiable.class.name, action)
+    end
+
+    def fast_destroy_old_notifications(destroy_before_timestamp = 4.months.ago)
+      sql = <<-SQL
+        DELETE FROM notifications
+        WHERE notifications.id IN (
+          SELECT notifications.id
+          FROM notifications
+          WHERE created_at < ?
+          LIMIT 50000
+        )
+      SQL
+
+      notification_sql = Notification.sanitize_sql([sql, destroy_before_timestamp])
+
+      BulkSqlDelete.delete_in_batches(notification_sql)
     end
 
     private

@@ -68,5 +68,9 @@ RSpec.describe "Moderations", type: :request do
       get "/mod/#{article.tags.first}"
       expect(response.body).to include("#" + article.tags.first.name.titleize)
     end
+
+    it "returns not found for inapprpriate tags" do
+      expect { get "/mod/dsdsdsweweedsdseweww" }.to raise_exception(ActiveRecord::RecordNotFound)
+    end
   end
 end

@@ -4,6 +4,8 @@ class AdditionalContentBoxesController < ApplicationController
   before_action :set_cache_control_headers, only: [:index]
 
   def index
+    return head :unprocessable_entity if params[:article_id].blank?
+
     article_ids = params[:article_id].split(",")
     @article = Article.find(article_ids[0])
     @suggested_articles = Suggester::Articles::Classic.

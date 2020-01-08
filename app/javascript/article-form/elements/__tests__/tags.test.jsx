@@ -43,6 +43,26 @@ describe('<Tags />', () => {
       });
   });
 
+  it('skips the click handler if className is articleform__tagsoptionrulesbutton', () => {
+    // eslint-disable-next-line no-underscore-dangle
+    const component = preactRender(
+      <Tags
+        defaultValue=""
+        onInput={jest.fn()}
+        classPrefix="articleform"
+        maxTags={4}
+      />,
+      document.body,
+      document.body.firstElementChild,
+    )._component;
+
+    component.handleTagClick({
+      target: { className: 'articleform__tagsoptionrulesbutton' },
+    });
+    expect(component.state).toMatchSnapshot();
+    expect(component.state.searchResults).toEqual([]);
+  });
+
   it('selects tag when you click on it', () => {
     // eslint-disable-next-line no-underscore-dangle
     const component = preactRender(
@@ -56,7 +76,10 @@ describe('<Tags />', () => {
       document.body.firstElementChild,
     )._component;
 
-    component.handleTagClick({ target: { dataset: { content: 'git' } } });
+    component.handleTagClick({
+      target: {},
+      currentTarget: { dataset: { content: 'git' } },
+    });
     expect(component.state).toMatchSnapshot();
   });
 
@@ -77,7 +100,10 @@ describe('<Tags />', () => {
     input.value = 'java,javascript,linux';
     input.selectionStart = 2;
 
-    component.handleTagClick({ target: { dataset: { content: 'git' } } });
+    component.handleTagClick({
+      target: {},
+      currentTarget: { dataset: { content: 'git' } },
+    });
     expect(component.state).toMatchSnapshot();
   });
 

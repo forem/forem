@@ -132,3 +132,14 @@ Object {
   "showingRulesForTag": null,
 }
 `;
+
+exports[`<Tags /> skips the click handler if className is articleform__tagsoptionrulesbutton 1`] = `
+Object {
+  "additionalTags": Array [],
+  "cursorIdx": 0,
+  "prevLen": 0,
+  "searchResults": Array [],
+  "selectedIndex": -1,
+  "showingRulesForTag": null,
+}
+`;

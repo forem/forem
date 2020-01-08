@@ -7,7 +7,10 @@
   text-align: center;
   background: #d4fffe;
   h1 {
-    font-size: 4em;
+    font-size: calc(1.8em + 2vw);
+  }
+  h2 {
+    font-size: calc(0.9em + 1vw);
   }
   a {
     text-decoration: underline;
@@ -38,6 +41,9 @@
         font-size: calc(2.8em + 0.5vw);
       }  
     }
+  }
+  .mod-index-hero-sub {
+    font-size: 0.9em;
   }
 }
 

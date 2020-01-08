@@ -26,10 +26,10 @@ RSpec.describe Follow, type: :model do
       end.to have_enqueued_job(Follows::CreateChatChannelJob)
     end
 
-    it "enqueues send notification job" do
+    it "enqueues send notification worker" do
       expect do
         described_class.create(follower: user, followable: user_2)
-      end.to have_enqueued_job(Follows::SendEmailNotificationJob)
+      end.to change(Follows::SendEmailNotificationWorker.jobs, :size).by(1)
     end
   end
 
@@ -73,7 +73,7 @@ RSpec.describe Follow, type: :model do
     it "sends an email notification" do
       user_2.update_column(:email_follower_notifications, true)
       expect do
-        perform_enqueued_jobs do
+        Sidekiq::Testing.inline! do
           described_class.create!(follower: user, followable: user_2)
         end
       end.to change(EmailMessage, :count).by(1)

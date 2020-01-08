@@ -103,7 +103,7 @@ Rails.application.configure do
   redis_url = ENV["REDISCLOUD_URL"]
   redis_url ||= ApplicationConfig["REDIS_URL"]
   DEFAULT_EXPIRATION = 24.hours.to_i.freeze
-  config.cache_store = :redis_store, redis_url, { expires_in: DEFAULT_EXPIRATION }
+  config.cache_store = :redis_cache_store, { url: redis_url, expires_in: DEFAULT_EXPIRATION }
 
   config.app_domain = ENV["APP_DOMAIN"]
 

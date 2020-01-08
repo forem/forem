@@ -91,11 +91,14 @@ RSpec.describe "PageViews", type: :request do
       end
 
       it "updates a new page view time on page by 15" do
-        post "/page_views", params: {
-          article_id: article.id
-        }
+        post "/page_views", params: { article_id: article.id }
         put "/page_views/" + article.id.to_s
         expect(PageView.last.time_tracked_in_seconds).to eq(30)
+      end
+
+      it "does not update an invalid page view" do
+        invalid_id = article.id + 100
+        expect { put "/page_views/" + invalid_id.to_s }.not_to raise_error
       end
     end
 
