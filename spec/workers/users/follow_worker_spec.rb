@@ -13,12 +13,6 @@ RSpec.describe Users::FollowWorker, type: :worker do
           worker.perform(user.id, invalid_id, followable.class.name)
         end.not_to change(Follow, :count)
       end
-
-      it "doesn't follow user with unexpected type" do
-        expect do
-          worker.perform(user.id, followable.id, "Article")
-        end.not_to change(Follow, :count)
-      end
     end
 
     context "when user doesn't exist" do
@@ -30,6 +24,12 @@ RSpec.describe Users::FollowWorker, type: :worker do
     end
 
     context "when user + followable exist" do
+      it "doesn't follow user with unexpected type" do
+        expect do
+          worker.perform(user.id, followable.id, "Article")
+        end.not_to change(Follow, :count)
+      end
+
       it "follows user" do
         expect do
           worker.perform(user.id, followable.id, followable.class.name)
