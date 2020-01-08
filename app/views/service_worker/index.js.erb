@@ -103,6 +103,7 @@
         !url.href.includes('?preview=') && // Skip for /future.
         !url.href.includes('/delayed_job') && // Skip for Delayed Job dashboard
         !url.href.includes('/sidekiq') && // Skip for Sidekiq dashboard
+        !url.href.includes('/rails/mailers') && // Skip for mailers previews in development mode
         caches.match('/shell_top') && // Ensure shell_top is in the cache.
         caches.match('/shell_bottom')) { // Ensure shell_bottom is in the cache.
         event.respondWith(createPageStream(event.request)); // Respond with the stream
