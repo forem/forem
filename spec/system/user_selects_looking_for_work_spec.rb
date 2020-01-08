@@ -12,7 +12,7 @@ RSpec.describe "Looking For Work", type: :system do
   it "user selects looking for work and autofollows hiring tag" do
     visit "/settings"
     page.check "Looking for work"
-    perform_enqueued_jobs do
+    sidekiq_perform_enqueued_jobs do
       click_button("SUBMIT")
     end
     expect(page).to have_text("Your profile was successfully updated")
