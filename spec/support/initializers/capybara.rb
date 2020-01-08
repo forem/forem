@@ -35,12 +35,9 @@ def wait_for_javascript
   finished = false
 
   while Capybara::Helpers.monotonic_time < max_time
-    begin
-      finished = page.evaluate_script("initializeBaseApp")
-      break if finished
-    rescue Selenium::WebDriver::Error::JavascriptError => e
-      Rails.logger.debug(e)
-    end
+    finished = page.evaluate_script("typeof initializeBaseApp") != "undefined"
+
+    break if finished
 
     sleep 0.1
   end
