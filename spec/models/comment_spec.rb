@@ -256,6 +256,14 @@ RSpec.describe Comment, type: :model do
       end.to change(Comments::CreateFirstReactionWorker.jobs, :size).by(1)
     end
 
+    it "enqueues a worker to calculate comment score" do
+      comment = build(:comment, user: user, commentable: article)
+
+      expect do
+        comment.save
+      end.to change(Comments::CalculateScoreWorker.jobs, :size).by(1)
+    end
+
     it "touches user updated_at" do
       user.updated_at = 1.month.ago
       user.save
