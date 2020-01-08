@@ -1,50 +1,5 @@
 <script>
- function timeNow(objectID) {
-   var seconds = new Date().getTime() / 1000;
-   document.getElementById("featured_number_" + objectID).value = Math.round(seconds);
- }
-
- function sink(objectID) {
-   var seconds = new Date().getTime() / 1080;
-   document.getElementById("featured_number_" + objectID).value = Math.round(seconds);
- }
-
  window.addEventListener('load', function() {
-   function submitForms() {
-     var form = $(this);
-     var valuesToSubmit = $(this).serialize();
-     $.ajax({
-       type: "POST",
-       url: $(this).attr('action'), //sumbits it to the given url of the form
-       data: valuesToSubmit,
-     }).success(function (json) {
-       form.parents(".card").addClass("highlighted-bg")
-       form.parents(".card").addClass("highlighted-border")
-       form.parents(".single-internal-listing").addClass("highlighted-bg")
-       form.parents(".single-internal-listing").addClass("highlighted-border")
-       setTimeout(function () {
-         form.parents(".card").removeClass("highlighted-bg")
-         form.parents(".single-internal-listing").removeClass("highlighted-bg")
-       }, 350)
-     });
-     return false; // prevents normal behaviour
-   }
-
-   $('.card').on("submit", "form", submitForms)
-   $('.buffer-area').on("submit", "form", submitForms)
-
-   function tagSuggestedTweet(event) {
-     var updateId = $(this).data("id");
-     var updateElement = $(`#suggested-tweet-${updateId}`)
-     if (event.target.classList.contains('buffer-confirm')) {
-       updateElement.find('.card-header h2').append('<span class="ml-2 badge badge-success">Confirm</span>')
-     } else if (event.target.classList.contains('buffer-dismiss')) {
-       updateElement.find('.card-header h2').append('<span class="ml-2 badge badge-danger">Dismiss</span>')
-     }
-   }
-
-   $('.buffer-form').on("submit", tagSuggestedTweet);
-
    imageUploadButt = document.getElementById('image-upload-button')
    imageUpload = document.getElementById('image-upload')
    imageUploadSubmit = document.getElementById('image-upload-submit')

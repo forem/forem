@@ -1,0 +1,30 @@
+import { Controller } from 'stimulus';
+
+export default class extends Controller {
+    static targets = [ "featuredNumber" ]
+
+    boost() {
+        const seconds = new Date().getTime() / 1000;
+        this.featuredNumberTarget.value = Math.round(seconds);
+    }
+
+    sink() {
+        const seconds = new Date().getTime() / 1080;
+        this.featuredNumberTarget.value = Math.round(seconds);
+    }
+
+    highlightElement() {
+        this.element.classList.add("highlighted-bg", "highlighted-border");
+        setTimeout(() => {
+            this.element.classList.remove("highlighted-bg");
+        }, 350);
+    }
+
+    get articleId() {
+        return parseInt(this.data.get("id"), 10);
+    }
+
+    set articleId(value) {
+        this.data.set("id", value);
+    }
+}
