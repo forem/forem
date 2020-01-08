@@ -186,7 +186,7 @@ class UsersController < ApplicationController
     return unless user.looking_for_work?
 
     hiring_tag = Tag.find_by(name: "hiring")
-    Users::FollowJob.perform_later(user.id, hiring_tag.id, "Tag")
+    Users::FollowWorker.perform_async(user.id, hiring_tag.id, "Tag")
   end
 
   def handle_settings_tab
