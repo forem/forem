@@ -325,7 +325,7 @@ RSpec.describe Notification, type: :model do
         expect(notification.json_data["user"]["id"]).to eq(user3.id)
       end
 
-      it "creates and destroys the notification properly", execute_create_and_destroy: true do
+      it "creates and destroys the notification properly" do
         reaction = create(:reaction, user: user2, reactable: article, category: "like")
 
         expect do
