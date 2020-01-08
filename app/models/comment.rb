@@ -21,7 +21,7 @@ class Comment < ApplicationRecord
   validates :user_id, presence: true
 
   after_create   :after_create_checks
-  after_save     :calculate_score
+  after_commit   :calculate_score
   after_save     :bust_cache
   after_save     :synchronous_bust
   after_destroy  :after_destroy_actions
@@ -238,7 +238,7 @@ class Comment < ApplicationRecord
   end
 
   def calculate_score
-    Comments::CalculateScoreJob.perform_later(id)
+    Comments::CalculateScoreWorker.perform_async(id)
   end
 
   def after_create_checks
