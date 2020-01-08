@@ -26,6 +26,9 @@ RSpec.describe "Editing A Comment", type: :system, js: true do
   context "when user edits comment on the bottom of the article" do
     it "updates" do
       visit article.path.to_s
+
+      wait_for_javascript
+
       click_link("EDIT")
       assert_updated
     end
@@ -34,7 +37,11 @@ RSpec.describe "Editing A Comment", type: :system, js: true do
   context "when user edits via permalinks" do
     it "updates" do
       user.reload
+
       visit user.comments.last.path.to_s
+
+      wait_for_javascript
+
       click_link("EDIT")
       assert_updated
     end
