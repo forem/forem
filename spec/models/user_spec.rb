@@ -35,6 +35,13 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_one(:pro_membership).dependent(:destroy) }
 
       # rubocop:disable RSpec/NamedSubject
+      it "has created_podcasts" do
+        expect(subject).to have_many(:created_podcasts).
+          class_name("Podcast").
+          with_foreign_key(:creator_id).
+          dependent(:nullify)
+      end
+
       it do
         expect(subject).to have_many(:access_grants).
           class_name("Doorkeeper::AccessGrant").

@@ -50,6 +50,7 @@ class User < ApplicationRecord
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
   has_many :user_blocks
   has_one :pro_membership, dependent: :destroy
+  has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
 
   mount_uploader :profile_image, ProfileImageUploader
 

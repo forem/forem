@@ -1,4 +1,4 @@
-<% if @podcast %>
+<% if @podcast && @podcast.persisted? %>
   <% title @podcast.title + " — The Practical Dev" %>
 
   <%= content_for :page_meta do %>
