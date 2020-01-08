@@ -26,12 +26,20 @@ class NotificationsController < ApplicationController
                        @user.notifications
                      end
 
-    @notifications = @notifications.includes(:notifiable).without_past_aggregations.order(notified_at: :desc)
+    @notifications = @notifications.without_past_aggregations.order(notified_at: :desc)
 
     # if offset based pagination is invoked by the frontend code, we filter out all earlier ones
     @notifications = @notifications.where("notified_at < ?", notified_at_offset) if notified_at_offset
 
-    @notifications = NotificationDecorator.decorate_collection(@notifications.limit(num))
+    @notifications = @notifications.limit(num)
+
+    # after notifications are paginated/limited, we check if any of the notifiables is "Comment" with no action
+    # because its respective view is the only one that actually uses ".notifiable" to render,
+    # this way we save useless eager loadings
+    notifiable_eager_loading_params = { notifiable_type: %w[Comment], action: [nil, ""] }
+    @notifications = @notifications.includes(:notifiable) if @notifications.exists?(notifiable_eager_loading_params)
+
+    @notifications = NotificationDecorator.decorate_collection(@notifications)
 
     @last_user_reaction = @user.reactions.last&.id
     @last_user_comment = @user.comments.last&.id
