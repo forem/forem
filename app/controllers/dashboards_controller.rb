@@ -16,12 +16,17 @@ class DashboardsController < ApplicationController
     if params[:which] == "organization" && params[:org_id] && (@user.org_admin?(params[:org_id]) || @user.any_admin?)
       target = @organizations.find_by(id: params[:org_id])
       @organization = target
+      @articles = target.articles
+    else
+      # if the target is a user, we need to eager load the organization
+      @articles = target.articles.includes(:organization)
     end
 
-    @articles = target.articles.includes(:organization).sorting(params[:sort]).decorate
+    @articles = @articles.sorting(params[:sort]).decorate
 
     # Updates analytics in background if appropriate
-    Articles::UpdateAnalyticsWorker.perform_async(current_user.id) if @articles && SiteConfig.ga_fetch_rate < 50 # Rate limit concerned, sometimes we throttle down.
+    update_analytics = @articles && SiteConfig.ga_fetch_rate < 50 # Rate limited, sometimes we throttle down
+    Articles::UpdateAnalyticsWorker.perform_async(current_user.id) if update_analytics
   end
 
   def following_tags
