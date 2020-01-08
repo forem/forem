@@ -22,6 +22,10 @@
           <p>There are no admins for this podcast.</p>
         <% end %>
 
+        <% if @podcast.creator.present? %>
+          <p>Created by <%= link_to "@#{@podcast.creator.username}", "/#{@podcast.creator.username}" %></p>
+        <% end %>
+
         <%= form_for @podcast, url: add_admin_internal_podcast_path(@podcast.id), html: { method: :post } do |f| %>
           <div class="form-group">
             <%= f.label "Add Admin (by user_id)", for: "podcast_user_id" %>
