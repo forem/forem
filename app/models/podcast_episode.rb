@@ -140,7 +140,7 @@ class PodcastEpisode < ApplicationRecord
   end
 
   def bust_cache
-    PodcastEpisodes::BustCacheJob.perform_later(id, path, podcast_slug)
+    PodcastEpisodes::BustCacheWorker.perform_async(id, path, podcast_slug)
   end
 
   def process_html_and_prefix_all_images
