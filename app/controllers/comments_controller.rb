@@ -107,32 +107,14 @@ class CommentsController < ApplicationController
     @comment = Comment.new(permitted_attributes(Comment))
     @comment.user_id = moderator.id
     @comment.body_markdown = canned_response.content
+    @comment.moderator_id = current_user.id
     authorize @comment
 
     if @comment.save
       Mention.create_all(@comment)
       Notification.send_new_comment_notifications_without_delay(@comment)
 
-      render json: {
-        status: "created",
-        css: @comment.custom_css,
-        depth: @comment.depth,
-        url: @comment.path,
-        readable_publish_date: @comment.readable_publish_date,
-        published_timestamp: @comment.decorate.published_timestamp,
-        body_html: @comment.processed_html,
-        id: @comment.id,
-        id_code: @comment.id_code_generated,
-        newly_created: true,
-        user: {
-          id: moderator.id, # change to moderator
-          username: moderator.username,
-          name: moderator.name,
-          profile_pic: ProfileImage.new(moderator).get(50),
-          twitter_username: moderator.twitter_username,
-          github_username: moderator.github_username
-        }
-      }
+      render json: { status: "created" }
       # ask ben about this elsif
     elsif (@comment = Comment.where(body_markdown: @comment.body_markdown,
                                     commentable_id: @comment.commentable.id,
