@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Podcasts::BustCacheWorker, type: :worker do
-  let (:worker) { subject }
+  let(:worker) { subject }
 
   before do
     allow(CacheBuster).to receive(:bust_podcast)
