@@ -5,13 +5,7 @@ class Tag < ActsAsTaggableOn::Tag
   acts_as_followable
   resourcify
 
-  NAMES = %w[
-    beginners career computerscience git go java javascript react vue webassembly
-    linux productivity python security webdev css php laravel opensource npm a11y
-    ruby cpp dotnet swift testing devops vim kotlin rust elixir graphql blockchain sre
-    scala vscode docker kubernetes aws android ios angular csharp typescript django rails
-    clojure ubuntu elm gamedev flutter dart bash machinelearning sql
-  ].freeze
+  NAMES = SiteConfig.suggested_tags.freeze
 
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
 

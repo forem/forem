@@ -36,4 +36,8 @@ class SiteConfig < RailsSettings::Base
   # Email digest frequency
   field :periodic_email_digest_max, type: :integer, default: 0
   field :periodic_email_digest_min, type: :integer, default: 2
+
+  # Tags
+
+  field :suggested_tags, type: :array, default: %w[beginners career computerscience git go java javascript react vue webassembly]
 end
