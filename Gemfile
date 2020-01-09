@@ -1,3 +1,5 @@
+# coding: utf-8
+
 git_source(:github) { |name| "https://github.com/#{name}.git" }
 source "https://rubygems.org"
 ruby "2.6.5"
@@ -74,6 +76,7 @@ gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have b
 gem "rails", "~> 5.2" # Ruby on Rails
 gem "rails-observers", "~> 0.1" # Rails observer (removed from core in Rails 4.0)
 gem "rails-settings-cached", ">= 2.1.1" # Settings plugin for Rails that makes managing a table of global key, value pairs easy.
+gem "ransack", "~> 2.3" # Searching and sorting
 gem "recaptcha", "~> 5.3", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "redis", "~> 4.1.3" # Redis ruby client
