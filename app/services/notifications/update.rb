@@ -19,7 +19,7 @@ module Notifications
         notifiable_type: notifiable.class.name,
         action: action,
       )
-      return if notifications.empty?
+      return if notifications.blank?
 
       new_json_data = notifications.first.json_data || {}
       new_json_data[notifiable.class.name.downcase] = public_send("#{notifiable.class.name.downcase}_data", notifiable)
