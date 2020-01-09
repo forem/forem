@@ -44,7 +44,7 @@ class UsersController < ApplicationController
     if @user.twitch_username != new_twitch_username
       if @user.update(twitch_username: new_twitch_username)
         @user.touch(:profile_updated_at)
-        Streams::TwitchWebhookRegistrationJob.perform_later(@user.id) if @user.twitch_username?
+        Streams::TwitchWebhookRegistrationWorker.perform_async(@user.id) if @user.twitch_username?
       end
       flash[:settings_notice] = "Your Twitch username was successfully updated."
     end

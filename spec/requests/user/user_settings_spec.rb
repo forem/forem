@@ -139,7 +139,7 @@ RSpec.describe "UserSettings", type: :request do
     it "schedules the job while updating" do
       expect do
         post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
-      end.to have_enqueued_job(Streams::TwitchWebhookRegistrationJob).exactly(:once).with(user.id)
+      end.to have_enqueued_job(Streams::TwitchWebhookRegistrationWorker).exactly(:once).with(user.id)
     end
 
     it "removes twitch_username" do
@@ -152,14 +152,14 @@ RSpec.describe "UserSettings", type: :request do
     it "doesn't schedule the job when removing" do
       expect do
         post "/users/update_twitch_username", params: { user: { twitch_username: "" } }
-      end.not_to have_enqueued_job(Streams::TwitchWebhookRegistrationJob)
+      end.not_to have_enqueued_job(Streams::TwitchWebhookRegistrationWorker)
     end
 
     it "doesn't schedule the job when saving the same twitch username" do
       user.update_column(:twitch_username, "robot")
       expect do
         post "/users/update_twitch_username", params: { user: { twitch_username: "robot" } }
-      end.not_to have_enqueued_job(Streams::TwitchWebhookRegistrationJob)
+      end.not_to have_enqueued_job(Streams::TwitchWebhookRegistrationWorker)
     end
   end
 
