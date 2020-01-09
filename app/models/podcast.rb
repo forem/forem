@@ -47,6 +47,6 @@ class Podcast < ApplicationRecord
   def bust_cache
     return unless path
 
-    Podcasts::BustCacheJob.perform_later(path)
+    Podcasts::BustCacheWorker.perform_async(path)
   end
 end

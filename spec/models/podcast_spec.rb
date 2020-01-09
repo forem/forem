@@ -10,8 +10,14 @@ RSpec.describe Podcast, type: :model do
   it { is_expected.to validate_presence_of(:feed_url) }
 
   context "when callbacks are triggered after save" do
+    let(:podcast) { build(:podcast) }
+
+    before do
+      allow(Podcasts::BustCacheWorker).to receive(:perform_async)
+    end
     it "triggers cache busting on save" do
-      expect { build(:podcast).save }.to have_enqueued_job.on_queue("podcasts_bust_cache").once
+      podcast.save
+      expect(Podcasts::BustCacheWorker).to have_received(:perform_async).with(podcast.path)
     end
   end
 
