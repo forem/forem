@@ -102,12 +102,13 @@ export function search(query, { page, tags, statusView }) {
   }
   index.search(query, filters).then(result => {
     // append new items at the end
-    const allItems = page === undefined ? result.hits : [...items, ...result.hits];
+    const allItems =
+      page === undefined ? result.hits : [...items, ...result.hits];
     component.setState({
       query,
       page: newPage,
       items: result.hits,
-      totalCount: allItems,
+      totalCount: allItems.length,
       // show the button if the number of items is lower than the number
       // of available results
       showLoadMoreButton: allItems.length < result.nbHits,
