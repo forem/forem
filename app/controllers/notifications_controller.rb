@@ -33,12 +33,6 @@ class NotificationsController < ApplicationController
 
     @notifications = @notifications.limit(num)
 
-    # after notifications are paginated/limited, we check if any of the notifiables is "Comment" with no action
-    # because its respective view is the only one that actually uses ".notifiable" to render,
-    # this way we save useless eager loadings
-    notifiable_eager_loading_params = { notifiable_type: %w[Comment], action: [nil, ""] }
-    @notifications = @notifications.includes(:notifiable) if @notifications.exists?(notifiable_eager_loading_params)
-
     @notifications = NotificationDecorator.decorate_collection(@notifications)
 
     @last_user_reaction = @user.reactions.last&.id
