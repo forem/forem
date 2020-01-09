@@ -80,6 +80,7 @@
     <div id="vomitReactionsBodyContainer" class="collapse hide" aria-labelledby="vomitReactionsHeader" data-parent="#vomitReactions">
       <div class="card-body" style="overflow: scroll; max-height: 500px;">
         <% @vomits.each do |reaction| %>
+          <% next unless reaction.reactable.published %>
           <div class="d-flex justify-content-between">
             <span>
               🤢 <a href="<%= reaction.user.path %>">@<%= reaction.user.username %></a>
