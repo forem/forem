@@ -107,7 +107,7 @@ class CommentsController < ApplicationController
     @comment = Comment.new(permitted_attributes(Comment))
     @comment.user_id = moderator.id
     @comment.body_markdown = canned_response.content
-    @comment.moderator_id = current_user.id
+    @comment.actor_id = current_user.id
     authorize @comment
 
     if @comment.save
