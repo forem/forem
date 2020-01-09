@@ -476,7 +476,7 @@ class Article < ApplicationRecord
     end
     # perform busting cache in chunks in case there're a lot of articles
     (article_ids.uniq.sort - [id]).each_slice(10) do |ids|
-      Articles::BustMultipleCachesJob.perform_later(ids)
+      Articles::BustMultipleCachesWorker.perform_async(ids)
     end
   end
 

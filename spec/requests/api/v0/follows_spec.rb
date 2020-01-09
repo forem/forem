@@ -24,7 +24,7 @@ RSpec.describe "Api::V0::FollowsController", type: :request do
       it "creates follows" do
         sign_in user
         expect do
-          perform_enqueued_jobs do
+          sidekiq_perform_enqueued_jobs do
             post "/api/follows", params: { users: users_hash }
           end
         end.to change(Follow, :count).by(users_hash.size)

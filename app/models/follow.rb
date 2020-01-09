@@ -34,7 +34,7 @@ class Follow < ApplicationRecord
   private
 
   def touch_follower
-    Follows::TouchFollowerJob.perform_later(id)
+    follower.touch(:updated_at, :last_followed_at)
   end
 
   def create_chat_channel

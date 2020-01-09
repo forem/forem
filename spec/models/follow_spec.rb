@@ -14,12 +14,6 @@ RSpec.describe Follow, type: :model do
   end
 
   context "when enqueuing jobs" do
-    it "enqueues touch follower job on creation" do
-      expect do
-        described_class.create(follower: user, followable: user_2)
-      end.to have_enqueued_job(Follows::TouchFollowerJob)
-    end
-
     it "enqueues create channel job" do
       expect do
         described_class.create(follower: user, followable: user_2)
@@ -37,9 +31,8 @@ RSpec.describe Follow, type: :model do
     it "touches the follower user while creating" do
       timestamp = 1.day.ago
       user.update_columns(updated_at: timestamp, last_followed_at: timestamp)
-      perform_enqueued_jobs do
-        described_class.create!(follower: user, followable: user_2)
-      end
+      described_class.create!(follower: user, followable: user_2)
+
       user.reload
       expect(user.updated_at).to be > timestamp
       expect(user.last_followed_at).to be > timestamp

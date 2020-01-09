@@ -2,7 +2,7 @@ class RateLimitChecker
   attr_reader :user, :action
 
   def self.daily_account_follow_limit
-    ApplicationConfig["RATE_LIMIT_FOLLOW_COUNT_DAILY"]
+    SiteConfig.rate_limit_follow_count_daily
   end
 
   def initialize(user = nil)

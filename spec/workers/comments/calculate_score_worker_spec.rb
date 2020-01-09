@@ -1,9 +1,11 @@
 require "rails_helper"
 
-RSpec.describe Comments::CalculateScoreJob, type: :job do
-  include_examples "#enqueues_job", "comments_calculate_score", 1
+RSpec.describe Comments::CalculateScoreWorker, type: :worker do
+  include_examples "#enqueues_on_correct_queue", "medium_priority", 1
 
-  describe "#perform_now" do
+  describe "#perform" do
+    let(:worker) { subject }
+
     context "with comment" do
       let_it_be(:article) { create(:article) }
       let_it_be(:comment) { create(:comment, commentable: article) }
@@ -14,7 +16,7 @@ RSpec.describe Comments::CalculateScoreJob, type: :job do
       end
 
       it "updates score and spaminess_rating", :aggregate_failures do
-        described_class.perform_now(comment.id)
+        worker.perform(comment.id)
 
         comment.reload
         expect(comment.score).to be(7)
@@ -25,17 +27,17 @@ RSpec.describe Comments::CalculateScoreJob, type: :job do
         child_comment = double
         root_comment = double
 
-        allow(root_comment).to receive(:save)
+        allow(root_comment).to receive(:save!)
         allow(child_comment).to receive(:update_columns)
         allow(child_comment).to receive(:is_root?).and_return(false)
         allow(child_comment).to receive(:root).and_return(root_comment)
         allow(Comment).to receive(:find_by).with(id: 1).and_return(child_comment)
 
-        described_class.perform_now(1)
+        worker.perform(1)
 
         expect(child_comment).to have_received(:is_root?)
         expect(child_comment).to have_received(:root)
-        expect(root_comment).to have_received(:save)
+        expect(root_comment).to have_received(:save!)
       end
 
       it "does not call save on the root comment" do
@@ -47,7 +49,7 @@ RSpec.describe Comments::CalculateScoreJob, type: :job do
         allow(root_comment).to receive(:root).and_return(root_comment)
         allow(Comment).to receive(:find_by).with(id: 1).and_return(root_comment)
 
-        described_class.perform_now(1)
+        worker.perform(1)
 
         expect(root_comment).to have_received(:is_root?)
         expect(root_comment).not_to have_received(:root)
@@ -57,7 +59,7 @@ RSpec.describe Comments::CalculateScoreJob, type: :job do
 
     context "without comment" do
       it "does not break" do
-        expect { described_class.perform_now(nil) }.not_to raise_error
+        expect { worker.perform(nil) }.not_to raise_error
       end
     end
   end
