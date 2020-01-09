@@ -424,6 +424,9 @@ a.header-link {
           height: 21px;
           width: 21px;
           display: flex;
+          @media screen and (min-width: 820px) {
+            padding-right: 3px;
+          }
 
           button.canned-responses-button {
             background: none;
