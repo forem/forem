@@ -392,7 +392,7 @@ class User < ApplicationRecord
     return unless email.present? && email.include?("@")
     return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
 
-    Users::SubscribeToMailchimpNewsletterJob.perform_later(id)
+    Users::SubscribeToMailchimpNewsletterWorker.perform_async(id)
   end
 
   def a_sustaining_member?

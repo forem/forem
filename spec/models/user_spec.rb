@@ -489,29 +489,31 @@ RSpec.describe User, type: :model do
   end
 
   context "when callbacks are triggered after save" do
-    describe "subscribing to mailchip newsletter" do
-      it "enqueues SubscribeToMailchimpNewsletterJob" do
-        expect do
+    describe "subscribing to mailchimp newsletter" do
+      let(:user) { build(:user) }
+
+      it "enqueues SubscribeToMailchimpNewsletterWorker" do
+        sidekiq_assert_enqueued_with(job: Users::SubscribeToMailchimpNewsletterWorker, args: user.id) do
           user.save
-        end.to have_enqueued_job(Users::SubscribeToMailchimpNewsletterJob).exactly(:once).with(user.id)
+        end
       end
 
       it "does not enqueue without an email" do
-        expect do
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(email: "")
-        end.not_to have_enqueued_job(Users::SubscribeToMailchimpNewsletterJob).exactly(:once).with(user.id)
+        end
       end
 
       it "does not enqueue with an invalid email" do
-        expect do
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(email: "foobar")
-        end.not_to have_enqueued_job(Users::SubscribeToMailchimpNewsletterJob).exactly(:once).with(user.id)
+        end
       end
 
       it "does not enqueue with an unconfirmed email" do
-        expect do
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(unconfirmed_email: "bob@bob.com", confirmation_sent_at: Time.current)
-        end.not_to have_enqueued_job(Users::SubscribeToMailchimpNewsletterJob).exactly(:once).with(user.id)
+        end
       end
     end
   end
