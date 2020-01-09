@@ -1,6 +1,16 @@
-<!--- Prepend PR title with [WIP] if work in progress. Remove when ready for review. -->
+<!--
+     For Work In Progress Pull Requests, please use the Draft PR feature
+     and/or include [WIP] in the PR title.
 
-<!--- For a timely review/response, please avoid force-pushing additional commits if your PR already received reviews or comments -->
+     For a timely review/response, please avoid force-pushing additional
+     commits if your PR already received reviews or comments.
+
+     Before submitting a Pull Request, please ensure you've done the following:
+     - Read the DEV Contributing Guide and the Code of Conduct
+     - Provided tests for your changes
+     - Used descriptive commit messages
+     - Updated any relevant documentation and added any necessary screenshots
+-->
 
 ## What type of PR is this? (check all applicable)
 
