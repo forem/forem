@@ -56,6 +56,15 @@ function initializeUserSidebar(user) {
           tag.name +
           '</span>' +
           '</a>' +
+          '<a class="follow-action-button sidebar-nav-link-follow cta"' +
+          'href="#" id="sidebar-nav-link-follow-' +
+          tag.name +
+          '"' +
+          'data-info=\'{"id": ' +
+          tag.id +
+          ',"className":"Tag"}\'>' +
+          '+ FOLLOW' +
+          '</a>' +
           '</div>'
         : '';
     if (element) element.remove();
@@ -98,15 +107,21 @@ function addRelevantButtonsToComments(user) {
 
     for (let i = 0; i < settingsButts.length; i += 1) {
       let butt = settingsButts[i];
-      const { action, commentableUserId, userId } = butt.dataset
+      const { action, commentableUserId, userId } = butt.dataset;
 
       if (parseInt(userId, 10) === user.id) {
         butt.style.display = 'inline-block';
       }
-      if (action === 'hide-button' && parseInt(commentableUserId, 10) === user.id) {
+      if (
+        action === 'hide-button' &&
+        parseInt(commentableUserId, 10) === user.id
+      ) {
         butt.style.display = 'inline-block';
-      } else if (action === 'hide-button' && parseInt(commentableUserId, 10) !== user.id) {
-        butt.style.display = 'none'
+      } else if (
+        action === 'hide-button' &&
+        parseInt(commentableUserId, 10) !== user.id
+      ) {
+        butt.style.display = 'none';
       }
     }
 
