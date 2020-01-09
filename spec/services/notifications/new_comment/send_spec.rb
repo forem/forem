@@ -27,7 +27,7 @@ RSpec.describe Notifications::NewComment::Send, type: :service do
     expect(notification.json_data["user"]["username"]).to eq(child_comment.user.username)
   end
 
-  it "creates a the correct comment data for the notification" do
+  it "creates the correct comment data for the notification" do
     described_class.call(child_comment)
 
     notification = child_comment.notifications.last
