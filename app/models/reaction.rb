@@ -81,7 +81,7 @@ class Reaction < ApplicationRecord
   private
 
   def touch_user
-    Users::TouchWorker.perform_later(user_id)
+    user.touch
   end
 
   def update_reactable
