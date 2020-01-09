@@ -2,9 +2,15 @@ class CannedResponsesController < ApplicationController
   after_action :verify_authorized, except: %i[index]
 
   def index
-    @canned_responses = if params[:type_of]
+    @canned_responses = if params[:type_of] && params[:personal_included].nil?
                           result = CannedResponse.where(user_id: nil, type_of: params[:type_of])
-                          authorize result
+                          handle_authorization(result)
+                          result
+                        elsif params[:type_of] == "mod_comment" && params[:personal_included].present?
+                          result = CannedResponse.
+                            where(user_id: nil, type_of: "mod_comment").
+                            union(user_id: current_user.id, type_of: "personal_comment")
+                          handle_authorization(result)
                           result
                         else
                           skip_authorization
@@ -50,5 +56,16 @@ class CannedResponsesController < ApplicationController
     end
 
     redirect_back(fallback_location: root_path)
+  end
+
+  private
+
+  def handle_authorization(records)
+    case params[:type_of]
+    when "mod_comment"
+      authorize records, :moderator_index?
+    else
+      authorize records, :admin_index?
+    end
   end
 end

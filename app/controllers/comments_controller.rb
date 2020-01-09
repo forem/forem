@@ -100,9 +100,13 @@ class CommentsController < ApplicationController
   def moderator_create
     return if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
 
-    moderator = User.find(ENV["MODERATOR_BOT_ID"])
+    canned_response = CannedResponse.find(params[:canned_response][:id])
+    authorize canned_response, :moderator_create?
+
+    moderator = User.find(SiteConfig.user_moderator_id)
     @comment = Comment.new(permitted_attributes(Comment))
     @comment.user_id = moderator.id
+    @comment.body_markdown = canned_response.content
     authorize @comment
 
     if @comment.save
@@ -121,21 +125,22 @@ class CommentsController < ApplicationController
         id_code: @comment.id_code_generated,
         newly_created: true,
         user: {
-          id: current_user.id,
-          username: current_user.username,
-          name: current_user.name,
-          profile_pic: ProfileImage.new(current_user).get(50),
-          twitter_username: current_user.twitter_username,
-          github_username: current_user.github_username
+          id: moderator.id, # change to moderator
+          username: moderator.username,
+          name: moderator.name,
+          profile_pic: ProfileImage.new(moderator).get(50),
+          twitter_username: moderator.twitter_username,
+          github_username: moderator.github_username
         }
       }
+      # ask ben about this elsif
     elsif (@comment = Comment.where(body_markdown: @comment.body_markdown,
                                     commentable_id: @comment.commentable.id,
                                     ancestry: @comment.ancestry)[1])
       @comment.destroy
       render json: { status: "comment already exists" }
     else
-      render json: { status: @comment.errors.full_messages.to_sentence }
+      render json: { status: @comment&.errors&.full_messages&.to_sentence }
     end
   end
 

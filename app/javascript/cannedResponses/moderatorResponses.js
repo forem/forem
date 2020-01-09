@@ -1,7 +1,7 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-restricted-globals */
 export default function initModeratorResponses() {
-  function submitAsModerator(content) {
+  function submitAsModerator(cannedResponseId) {
     const commentableId = document.querySelector('input#comment_commentable_id')
       .value;
 
@@ -13,8 +13,11 @@ export default function initModeratorResponses() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        canned_response: {
+          id: cannedResponseId,
+        },
         comment: {
-          body_markdown: content,
+          body_markdown: '',
           commentable_id: commentableId,
           commentable_type: 'Article',
         },
@@ -23,16 +26,14 @@ export default function initModeratorResponses() {
       .then(response => response.json())
       .then(response => {
         if (response.status === 'created') {
-          /* eslint-disable-next-line no-restricted-globals */
           window.location.reload();
-          // or maybe try to build the reply?
         }
       });
   }
 
   function addClickListeners() {
     const selfSubmitButtons = Array.from(
-      document.getElementsByClassName('mod-response-button'),
+      document.getElementsByClassName('mod-template-button'),
     );
     const moderatorSubmitButtons = Array.from(
       document.getElementsByClassName('moderator-submit-button'),
@@ -56,48 +57,78 @@ export default function initModeratorResponses() {
         e.preventDefault();
 
         if (confirm('Are you sure you want to submit a comment under Sloan?')) {
-          submitAsModerator(e.target.dataset.content);
+          submitAsModerator(e.target.dataset.cannedResponseId);
         }
       });
+    });
+  }
+
+  function addToggleListener() {
+    const responsesWrapper = document.querySelector('.mod-responses-container');
+    const toggleButton = document.querySelector('.canned-responses-button');
+
+    toggleButton.addEventListener('click', () => {
+      if (responsesWrapper.style.display === 'none') {
+        responsesWrapper.style.display = 'flex';
+      } else {
+        responsesWrapper.style.display = 'none';
+      }
     });
   }
 
   function fetchCannedResponses() {
     const responsesWrapper = document.querySelector('.mod-responses-container');
 
-    fetch(`/canned_responses?type_of=mod_comment`, {
+    fetch(`/canned_responses?type_of=mod_comment&personal_included=true`, {
       method: 'GET',
       headers: {
+        Accept: 'application/json',
         'X-CSRF-Token': window.csrfToken,
+        'Content-Type': 'application/json',
       },
     })
       .then(response => response.json())
       .then(response => {
-        const toggleButton = document.querySelector('.canned-responses-button');
-        const innerHTML = response
+        const modResponseHTML = response
+          .filter(obj => {
+            return obj.typeOf === 'mod_comment';
+          })
           .map(obj => {
             return `
-            <div class="mod-response-wrapper">
-              <span>${obj.title}</span>
-              <p>${obj.contentTruncated50}</p>
-              <button class="mod-response-button" type="button" data-content="${obj.content}">USE TEMPLATE</button>
-              <button class="moderator-submit-button" type="submit" data-content="${obj.content}">SUBMIT AS MOD</button>
-            </div>
-          `;
+              <div class="mod-response-wrapper">
+                <span>${obj.title}</span>
+                <p>${obj.contentTruncated}</p>
+                <button class="mod-template-button" type="button" data-content="${obj.content}">USE TEMPLATE</button>
+                <button class="moderator-submit-button" type="submit" data-canned-response-id="${obj.id}">SUBMIT AS MOD</button>
+              </div>
+              `;
           })
           .join('');
 
-        responsesWrapper.innerHTML = innerHTML;
+        const personalResponseHTML = response
+          .filter(obj => {
+            return obj.typeOf === 'personal_comment';
+          })
+          .map(obj => {
+            return `
+              <div class="mod-response-wrapper">
+                <span>${obj.titleTruncated}</span>
+                <p>${obj.contentTruncated}</p>
+                <button class="mod-template-button" type="button" data-content="${obj.content}">USE TEMPLATE</button>
+              </div>
+            `;
+          })
+          .join('');
 
+        responsesWrapper.innerHTML = `
+          <header><h3>Moderator Responses</h3></header>
+          ${modResponseHTML}
+          <header><h3>Personal Responses</h3></header>
+          ${personalResponseHTML}
+        `;
+
+        addToggleListener(responsesWrapper);
         addClickListeners();
-
-        toggleButton.addEventListener('click', () => {
-          if (responsesWrapper.style.display === 'none') {
-            responsesWrapper.style.display = 'flex';
-          } else {
-            responsesWrapper.style.display = 'none';
-          }
-        });
       });
   }
 

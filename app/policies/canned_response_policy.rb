@@ -1,10 +1,19 @@
 class CannedResponsePolicy < ApplicationPolicy
-  def index?
+  def admin_index?
+    minimal_admin?
+  end
+
+  def moderator_index?
     user_is_moderator?
   end
 
   def create?
     true
+  end
+
+  # comes from comments_controller
+  def moderator_create?
+    user_is_moderator? && record_is_mod_comment?
   end
 
   def destroy?
@@ -26,6 +35,10 @@ class CannedResponsePolicy < ApplicationPolicy
   end
 
   def user_is_moderator?
-    user.any_admin? || user.moderator_for_tags&.present?
+    minimal_admin? || user.moderator_for_tags&.present?
+  end
+
+  def record_is_mod_comment?
+    record.type_of == "mod_comment"
   end
 end

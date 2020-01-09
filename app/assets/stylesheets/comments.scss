@@ -285,6 +285,11 @@ a.header-link {
       );
       @include themeable(background, theme-container-background, $light-gray);
       @include themeable(color, theme-color, $black);
+
+      header>h3 {
+        text-align: center;
+      }
+
       .mod-response-wrapper {
         padding: 6px;
         border-bottom-width: 1.5px;
@@ -427,6 +432,7 @@ a.header-link {
 
             img {
               height: 21px;
+              width: 21px;
               opacity: 0.7;
             }
           }
