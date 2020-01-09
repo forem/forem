@@ -5,8 +5,6 @@ class Tag < ActsAsTaggableOn::Tag
   acts_as_followable
   resourcify
 
-  NAMES = SiteConfig.suggested_tags.freeze
-
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
 
   attr_accessor :tag_moderator_id, :remove_moderator_id

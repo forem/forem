@@ -39,5 +39,5 @@ class SiteConfig < RailsSettings::Base
 
   # Tags
 
-  field :suggested_tags, type: :array, default: %w[beginners career computerscience git go java javascript react vue webassembly]
+  field :suggested_tags, type: :array, default: %w[beginners career computerscience javascript security ruby rails swift kotlin]
 end
