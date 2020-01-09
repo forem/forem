@@ -1,5 +1,5 @@
 class ProMembershipMailer < ApplicationMailer
-  default from: "DEV Pro Memberships <#{ApplicationConfig['DEFAULT_SITE_EMAIL']}>"
+  default from: -> { "DEV Pro Memberships <#{SiteConfig.default_site_email}>" }
 
   def expiring_membership(pro_membership, expiration_date)
     @pro_membership = pro_membership

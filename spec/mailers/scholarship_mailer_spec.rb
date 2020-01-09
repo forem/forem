@@ -12,6 +12,7 @@ RSpec.describe ScholarshipMailer, type: :mailer do
     it "renders proper from" do
       email = described_class.scholarship_awarded_email(user)
       expect(email.from).to eq(["members@dev.to"])
+      expect(email["from"].value).to eq("members@dev.to")
     end
 
     it "renders proper receiver" do

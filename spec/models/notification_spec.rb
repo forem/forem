@@ -491,16 +491,8 @@ RSpec.describe Notification, type: :model do
 
   describe "#send_new_badge_achievement_notification" do
     it "enqueues a new badge achievement job" do
-      assert_enqueued_with(job: Notifications::NewBadgeAchievementJob, args: [badge_achievement.id]) do
+      sidekiq_assert_enqueued_with(job: Notifications::NewBadgeAchievementWorker, args: [badge_achievement.id]) do
         described_class.send_new_badge_achievement_notification(badge_achievement)
-      end
-    end
-  end
-
-  describe "#send_new_badge_notification (deprecated)" do
-    it "enqueues a new badge achievement job" do
-      assert_enqueued_with(job: Notifications::NewBadgeAchievementJob, args: [badge_achievement.id]) do
-        described_class.send_new_badge_notification(badge_achievement)
       end
     end
   end
@@ -519,17 +511,10 @@ RSpec.describe Notification, type: :model do
   end
 
   describe "#fast_destroy_old_notifications" do
-    let_it_be(:notifications) { create_list(:notification, 3) }
-
-    it "bulk deletes notifications older than 4 months by default" do
-      notifications.last.update(created_at: 5.months.ago)
-      expect { described_class.fast_destroy_old_notifications }.to change(described_class, :count).by(-1)
-    end
-
-    it "bulk deletes notifications older than a given timestamp" do
-      expect do
-        described_class.fast_destroy_old_notifications(Time.current)
-      end.to change(described_class, :count).by(-notifications.size)
+    it "bulk deletes notifications older than given timestamp" do
+      allow(BulkSqlDelete).to receive(:delete_in_batches)
+      described_class.fast_destroy_old_notifications("a_time")
+      expect(BulkSqlDelete).to have_received(:delete_in_batches).with(a_string_including("< 'a_time'"))
     end
   end
 end

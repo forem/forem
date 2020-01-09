@@ -1,6 +1,9 @@
-<h1>Make a new broadcast:</h1>
-<%= form_for([:internal, @broadcast], method: :post) do %>
-  <%= render "form" %>
-  <%= submit_tag "Create Broadcast" %>
-<% end %>
-<hr>
+<div class="row">
+  <div class="col-12">
+    <h2>Make a new broadcast:</h2>
+    <%= form_for([:internal, @broadcast], method: :post) do %>
+      <%= render "form" %>
+      <%= submit_tag "Create Broadcast", class: "btn btn-primary float-right" %>
+    <% end %>
+  </div>
+</div>

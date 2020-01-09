@@ -5,6 +5,7 @@
              classification_text: "From one of our Community Sponsors",
              follow_cue: @boosted_article.organization&.tag_line || @boosted_article.organization&.tag_line %>
 <% end %>
+
 <% if @suggested_articles.any? %>
   <% @suggested_articles.each do |article| %>
     <%= render "additional_content_boxes/article_box",

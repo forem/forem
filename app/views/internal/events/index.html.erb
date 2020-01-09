@@ -1,41 +1,32 @@
-<style>
-  .event-list img {
-    max-width: 200px;
-  }
-</style>
-
-<h1>Create New Event</h1>
-<hr>
-
-<div class="event-form">
-  <%= form_for @event, url: { controller: "events", action: "create" } do |f| %>
-    <%= render "event_form", f: f, event: @event %>
-  <% end %>
-</div>
-
-<div class="event-list">
-  <h1> Upcoming Events </h1>
-  <% @events.each do |event| %>
-    <% if event.starts_at.future? %>
-      <img src="<%= event.cover_image_url %>" alt="event cover image">
-      <div class="event-form">
+<div class="row">
+  <div class="col-12">
+    <h2>Create New Event</h2>
+  </div>
+  <div class="col-12">
+    <%= form_for @event, url: { controller: "events", action: "create" } do |f| %>
+      <%= render "event_form", f: f, event: @event %>
+    <% end %>
+  </div>
+  <div class="col-12">
+    <h2> Upcoming Events </h2>
+    <% @events.each do |event| %>
+      <% if event.starts_at.future? %>
+        <img src="<%= event.cover_image_url %>" alt="event cover image">
         <%= form_for [:internal, event] do |f| %>
           <%= render "event_form", f: f, event: event %>
         <% end %>
-      </div>
+      <% end %>
     <% end %>
-  <% end %>
-  <br>
-  <h1> Past Events </h1>
-  <% @events.each do |event| %>
-    <% if !event.starts_at.future? %>
-      <img src="<%= event.cover_image_url %>" alt="event cover image">
-      <div class="event-form">
+  </div>
+  <div class="col-12">
+    <h2> Past Events </h2>
+    <% @events.each do |event| %>
+      <% if !event.starts_at.future? %>
+        <img src="<%= event.cover_image_url %>" alt="event cover image">
         <%= form_for [:internal, event] do |f| %>
           <%= render "event_form", f: f, event: event %>
         <% end %>
-      </div>
+      <% end %>
     <% end %>
-    <br>
-  <% end %>
+  </div>
 </div>

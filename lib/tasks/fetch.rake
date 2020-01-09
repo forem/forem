@@ -120,8 +120,15 @@ task record_db_table_counts: :environment do
       "db_table_size",
       table_info: {
         table_name: table_name,
-        table_size: estimate,
-      }
+        table_size: estimate
+      },
+    )
+    DataDogStatsClient.gauge(
+      "postgres.db_table_size", estimate, tags: { table_name: table_name }
     )
   end
+end
+
+task log_worker_queue_stats: :environment do
+  Loggers::LogWorkerQueueStats.run
 end

@@ -35,6 +35,13 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_one(:pro_membership).dependent(:destroy) }
 
       # rubocop:disable RSpec/NamedSubject
+      it "has created_podcasts" do
+        expect(subject).to have_many(:created_podcasts).
+          class_name("Podcast").
+          with_foreign_key(:creator_id).
+          dependent(:nullify)
+      end
+
       it do
         expect(subject).to have_many(:access_grants).
           class_name("Doorkeeper::AccessGrant").
@@ -725,6 +732,23 @@ RSpec.describe User, type: :model do
     it "returns true if the user has more unspent credits than needed" do
       create_list(:credit, 2, user: user, spent: false)
       expect(user.enough_credits?(1)).to be(true)
+    end
+  end
+
+  describe "#receives_follower_email_notifications?" do
+    it "returns false if user has no email" do
+      user.assign_attributes(email: nil)
+      expect(user.receives_follower_email_notifications?).to be(false)
+    end
+
+    it "returns false if user opted out from follower notifications" do
+      user.assign_attributes(email_follower_notifications: false)
+      expect(user.receives_follower_email_notifications?).to be(false)
+    end
+
+    it "returns true if user opted in from follower notifications and has an email" do
+      user.assign_attributes(email_follower_notifications: true)
+      expect(user.receives_follower_email_notifications?).to be(true)
     end
   end
 end

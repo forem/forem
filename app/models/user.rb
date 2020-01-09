@@ -50,6 +50,7 @@ class User < ApplicationRecord
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
   has_many :user_blocks
   has_one :pro_membership, dependent: :destroy
+  has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -146,7 +147,7 @@ class User < ApplicationRecord
   validate  :validate_feed_url, if: :feed_url_changed?
   validate  :unique_including_orgs_and_podcasts, if: :username_changed?
 
-  scope :dev_account, -> { find_by(id: ApplicationConfig["DEVTO_USER_ID"]) }
+  scope :dev_account, -> { find_by(id: SiteConfig.staff_user_id) }
 
   after_create :send_welcome_notification
   after_save  :bust_cache
@@ -411,6 +412,7 @@ class User < ApplicationRecord
   def settings_tab_list
     %w[
       Profile
+      UX
       Integrations
       Notifications
       Publishing\ from\ RSS
@@ -448,6 +450,11 @@ class User < ApplicationRecord
 
   def enough_credits?(num_credits_needed)
     credits.unspent.size >= num_credits_needed
+  end
+
+  def receives_follower_email_notifications?
+    email.present? &&
+      email_follower_notifications
   end
 
   private

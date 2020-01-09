@@ -33,6 +33,7 @@ Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/system/shared_examples/**/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/models/shared_examples/**/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/jobs/shared_examples/**/*.rb")].sort.each { |f| require f }
+Dir[Rails.root.join("spec/workers/shared_examples/**/*.rb")].sort.each { |f| require f }
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -74,9 +75,12 @@ RSpec.configure do |config|
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include FactoryBot::Syntax::Methods
   config.include OmniauthMacros
+  config.include SidekiqTestHelpers
 
   config.before do
     ActiveRecord::Base.observers.disable :all # <-- Turn 'em all off!
+
+    Sidekiq::Worker.clear_all # worker jobs shouldn't linger around between tests
   end
 
   config.after do
