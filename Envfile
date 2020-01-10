@@ -11,16 +11,6 @@ enable_defaults! { ENV["RACK_ENV"] != "production" }
 variable :APP_DOMAIN, :String, default: "localhost:3000"
 variable :APP_PROTOCOL, :String, default: "http://"
 variable :COMMUNITY_NAME, :String, default: "DEV(local)"
-variable :MAIN_SOCIAL_IMAGE, :String, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
-variable :SITE_TWITTER_HANDLE, :String, default: "tbd"
-variable :RATE_LIMIT_FOLLOW_COUNT_DAILY, :Integer, default: 500
-variable :FAVICON_URL, :String, default: "favicon.ico"
-
-# Logo
-variable :LOGO_SVG, :String, default: ""
-
-# Default staff account's id
-variable :DEVTO_USER_ID, :Integer, default: 1
 
 # Default site email
 variable :DEFAULT_SITE_EMAIL, :String, default: "yo@dev.to"
@@ -134,20 +124,10 @@ variable :HONEYCOMB_API_KEY, :String, default: ""
 variable :GA_SERVICE_ACCOUNT_JSON, :String, default: "Optional"
 variable :GA_TRACKING_ID, :String, default: "Optional"
 variable :GA_OPTIMIZE_ID, :String, default: "Optional"
-variable :GA_VIEW_ID, :String, default: "Optional"
-variable :GA_FETCH_RATE, :Integer, default: 25
 
 # Mailchimp for mails
 # (https://mailchimp.com/developer/)
 variable :MAILCHIMP_API_KEY, :String, default: "Optional-valid"
-variable :MAILCHIMP_NEWSLETTER_ID, :String, default: "Optional"
-variable :MAILCHIMP_SUSTAINING_MEMBERS_ID, :String, default: "Optional"
-variable :MAILCHIMP_TAG_MODERATORS_ID, :String, default: "Optional"
-variable :MAILCHIMP_COMMUNITY_MODERATORS_ID, :String, default: "Optional"
-
-# Email digest frequency
-variable :PERIODIC_EMAIL_DIGEST_MAX, :Integer, default: 0
-variable :PERIODIC_EMAIL_DIGEST_MIN, :Integer, default: 2
 
 # Pusher for DEV Connect/notfications
 # (https://pusher.com/docs)
