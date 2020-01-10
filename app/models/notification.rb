@@ -24,7 +24,7 @@ class Notification < ApplicationRecord
 
   class << self
     def send_new_follower_notification(follow, is_read = false)
-      return unless Follow.need_new_follower_notification_for?(follow.followable_type)
+      return unless follow && Follow.need_new_follower_notification_for?(follow.followable_type)
       return if follow.followable_type == "User" && UserBlock.blocking?(follow.followable_id, follow.follower_id)
 
       follow_data = follow.attributes.slice("follower_id", "followable_id", "followable_type").symbolize_keys
@@ -32,7 +32,7 @@ class Notification < ApplicationRecord
     end
 
     def send_new_follower_notification_without_delay(follow, is_read = false)
-      return unless Follow.need_new_follower_notification_for?(follow.followable_type)
+      return unless follow && Follow.need_new_follower_notification_for?(follow.followable_type)
       return if follow.followable_type == "User" && UserBlock.blocking?(follow.followable_id, follow.follower_id)
 
       follow_data = follow.attributes.slice("follower_id", "followable_id", "followable_type").symbolize_keys
