@@ -6,9 +6,9 @@ module PodcastEpisodes
 
     def perform(podcast_episode_id, path, podcast_slug)
       podcast_episode = PodcastEpisode.find_by(id: podcast_episode_id)
-      return unless podcast_episode
-
-      CacheBuster.bust_podcast_episode(podcast_episode, path, podcast_slug)
+      if podcast_episode
+        CacheBuster.bust_podcast_episode(podcast_episode, path, podcast_slug)
+      end
     end
   end
 end
