@@ -15,11 +15,18 @@ RSpec.describe "Oauth::Tokens", type: :request do
     end
     # rubocop:enable RSpec/AnyInstance
 
+    it "enqueues a job for destroying webhooks" do
+      args = [user.id, access_token.application_id]
+      sidekiq_assert_enqueued_with(job: Webhook::DestroyWorker, args: args) do
+        post oauth_revoke_path, params: { token: access_token.token }
+      end
+    end
+
     it "destroys webhooks" do
       user2_webhook = create(:webhook_endpoint, oauth_application: oauth_app)
       another_app_webhook = create(:webhook_endpoint)
 
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         post oauth_revoke_path, params: { token: access_token.token }
       end
       expect(Webhook::Endpoint.find_by(id: user_webhook.id)).to be_nil
