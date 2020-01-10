@@ -90,13 +90,6 @@ export default class Chat extends Component {
       currentUserId,
     } = this.state;
     this.setupChannels(chatChannels);
-    const channelsForPusherSub = chatChannels.filter(
-      this.channelTypeFilter('open'),
-    );
-    this.subscribeChannelsToPusher(
-      channelsForPusherSub,
-      channel => `open-channel-${channel.chat_channel_id}`,
-    );
     setupObserver(this.observerCallback);
 
     this.subscribePusher(`private-message-notifications-${currentUserId}`);
@@ -188,6 +181,7 @@ export default class Chat extends Component {
         liveCoding: this.liveCoding,
         videoCallInitiated: this.receiveVideoCall,
         videoCallEnded: this.receiveVideoCallHangup,
+        mentioned: null,
       });
       const subscriptions = subscribedPusherChannels;
       subscriptions.push(channelName);
@@ -307,7 +301,6 @@ export default class Chat extends Component {
           this.setOpenChannelUsers,
           null,
         );
-        this.subscribePusher(`open-channel-${channelId}`);
       }
       getAllMessages(channelId, messageOffset, this.receiveAllMessages);
     }
@@ -575,6 +568,7 @@ export default class Chat extends Component {
       sendMessage(
         activeChannelId,
         message,
+        this.getMentionedUsers(message),
         this.handleSuccess,
         this.handleFailure,
       );
@@ -1220,6 +1214,20 @@ export default class Chat extends Component {
     el.selectionEnd = start + name.length;
     el.focus();
     this.setState({ showMemberlist: false });
+  };
+
+  getMentionedUsers = message => {
+    const { channelUsers, activeChannelId } = this.state;
+    console.log(channelUsers);
+    if (channelUsers[activeChannelId]) {
+      return Array.from(
+        Object.values(channelUsers[activeChannelId]).filter(user =>
+          message.includes(user.username),
+        ),
+        user => user.id,
+      );
+    }
+    return null;
   };
 
   renderChannelMembersList = () => {
