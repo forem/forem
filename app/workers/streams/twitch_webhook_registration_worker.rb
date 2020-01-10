@@ -1,7 +1,7 @@
 module Streams
   class TwitchWebhookRegistrationWorker
     include Sidekiq::Worker
-    sidekiq_options queue: :default, retry: 10
+    sidekiq_options queue: :low_priority, retry: 10
 
     def perform(user_id, service = TwitchWebhook::Register)
       user = User.find_by(id: user_id)
