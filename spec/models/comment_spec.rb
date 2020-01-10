@@ -248,34 +248,39 @@ RSpec.describe Comment, type: :model do
   end
 
   context "when callbacks are triggered after create" do
-    it "creates an id code" do
-      comment = build(:comment, user: user, commentable: article)
+    let(:comment) { build(:comment, user: user, commentable: article) }
 
+    it "creates an id code" do
       comment.save
 
       expect(comment.reload.id_code).to eq(comment.id.to_s(26))
     end
 
     it "enqueue a worker to create the first reaction" do
-      comment = build(:comment, user: user, commentable: article)
-
       expect do
         comment.save
       end.to change(Comments::CreateFirstReactionWorker.jobs, :size).by(1)
     end
 
     it "enqueues a worker to calculate comment score" do
-      comment = build(:comment, user: user, commentable: article)
-
       expect do
         comment.save
       end.to change(Comments::CalculateScoreWorker.jobs, :size).by(1)
     end
 
+    it "enqueues a worker to send email" do
+      comment.save!
+      child_comment_user = create(:user)
+      child_comment = build(:comment, parent: comment, user: child_comment_user, commentable: article)
+
+      expect do
+        child_comment.save!
+      end.to change(Comments::SendEmailNotificationWorker.jobs, :size).by(1)
+    end
+
     it "touches user updated_at" do
       user.updated_at = 1.month.ago
       user.save
-      comment = build(:comment, user: user, commentable: article)
 
       expect { comment.save }.to change(user, :updated_at)
     end
@@ -283,7 +288,6 @@ RSpec.describe Comment, type: :model do
     it "touches user last_comment_at" do
       user.last_comment_at = 1.month.ago
       user.save
-      comment = build(:comment, user: user, commentable: article)
 
       expect { comment.save }.to change(user, :last_comment_at)
     end
