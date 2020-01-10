@@ -30,14 +30,14 @@ RSpec.describe "Admin::Podcasts", type: :request do
     it "enqueues a job after creating a podcast" do
       expect do
         post "/admin/podcasts", params: { podcast: valid_attributes }
-      end.to have_enqueued_job(Podcasts::GetEpisodesJob).exactly(:once)
+      end.to have_enqueued_job(Podcasts::GetEpisodesWorker).exactly(:once)
     end
 
     it "doesn't enqueue a job when creating an unpublished podcast" do
       valid_attributes[:published] = false
       expect do
         post "/admin/podcasts", params: { podcast: valid_attributes }
-      end.not_to have_enqueued_job(Podcasts::GetEpisodesJob)
+      end.not_to have_enqueued_job(Podcasts::GetEpisodesWorker)
     end
   end
 end
