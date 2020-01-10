@@ -181,13 +181,18 @@ export default class Chat extends Component {
         liveCoding: this.liveCoding,
         videoCallInitiated: this.receiveVideoCall,
         videoCallEnded: this.receiveVideoCallHangup,
-        mentioned: null,
+        mentioned: this.mentioned,
+        messageOpened: this.messageOpened,
       });
       const subscriptions = subscribedPusherChannels;
       subscriptions.push(channelName);
       this.setState({ subscribedPusherChannels: subscriptions });
     }
   };
+
+  mentioned = () => {};
+
+  messageOpened = () => {};
 
   loadChannels = (channels, query) => {
     const { activeChannelId, activeChannel } = this.state;

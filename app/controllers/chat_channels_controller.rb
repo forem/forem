@@ -37,6 +37,7 @@ class ChatChannelsController < ApplicationController
   def open
     membership = @chat_channel.chat_channel_memberships.where(user_id: current_user.id).first
     membership.update(last_opened_at: 1.second.from_now, has_unopened_messages: false)
+    send_open_notification
     @chat_channel.index!
     membership.index!
     render json: { status: "success", channel: params[:id] }, status: :ok
@@ -179,6 +180,14 @@ class ChatChannelsController < ApplicationController
              status: :ok
     else
       render json: { errors: @chat_channel.errors.full_messages }
+    end
+  end
+
+  def send_open_notification
+    if @chat_channel.channel_type == "open"
+      Pusher.trigger("private-message-notifications-#{session_current_user_id}", "message-opened", { channel_type: @chat_channel.channel_type, adjusted_slug: @chat_channel.adjusted_slug }.to_json)
+    else
+      Pusher.trigger("private-message-notifications-#{session_current_user_id}", "message-opened", { channel_type: @chat_channel.channel_type, adjusted_slug: @chat_channel.adjusted_slug(current_user) }.to_json)
     end
   end
 end
