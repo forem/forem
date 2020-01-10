@@ -45,7 +45,7 @@ RSpec.describe YoutubeTag, type: :liquid_tag do
     end
 
     it "raises an error for invalid IDs" do
-      expect { generate_new_liquid(invalid_id).render }.to raise_error("Invalid YouTube ID")
+      expect { generate_new_liquid(invalid_id).render }.to raise_error(Liquid::SyntaxError)
     end
   end
 end
