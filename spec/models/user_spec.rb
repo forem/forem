@@ -516,6 +516,125 @@ RSpec.describe User, type: :model do
         end
       end
     end
+
+    describe "#conditionally_resave_articles" do
+      let!(:user) { create(:user) }
+
+      context "when changing username" do
+        it "enqueue resave articles job" do
+          sidekiq_assert_enqueued_with(
+            job: Users::ResaveArticlesWorker,
+            args: [user.id],
+            queue: "medium_priority"
+          ) do
+            user.username = "#{user.username} changed"
+            user.save
+          end
+        end
+      end
+
+      context "when changing name" do
+        it "enqueue resave articles job" do
+          sidekiq_assert_enqueued_with(
+            job: Users::ResaveArticlesWorker,
+            args: [user.id],
+            queue: "medium_priority"
+          ) do
+            user.name = "#{user.name} changed"
+            user.save
+          end
+        end
+      end
+
+      context "when changing summary" do
+        it "enqueue resave articles job" do
+          sidekiq_assert_enqueued_with(
+            job: Users::ResaveArticlesWorker,
+            args: [user.id],
+            queue: "medium_priority"
+          ) do
+            user.summary = "#{user.summary} changed"
+            user.save
+          end
+        end
+      end
+
+      context "when changing bg_color_hex" do
+        it "enqueue resave articles job" do
+          sidekiq_assert_enqueued_with(
+            job: Users::ResaveArticlesWorker,
+            args: [user.id],
+            queue: "medium_priority"
+          ) do
+            user.bg_color_hex = "#12345F"
+            user.save
+          end
+        end
+      end
+
+      context "when changing text_color_hex" do
+        it "enqueue resave articles job" do
+          sidekiq_assert_enqueued_with(
+            job: Users::ResaveArticlesWorker,
+            args: [user.id],
+            queue: "medium_priority"
+          ) do
+            user.text_color_hex = "#FA345E"
+            user.save
+          end
+        end
+      end
+
+      context "when changing profile_image" do
+        it "enqueue resave articles job" do
+          sidekiq_assert_enqueued_with(
+            job: Users::ResaveArticlesWorker,
+            args: [user.id],
+            queue: "medium_priority"
+          ) do
+            user.profile_image = "https://fakeimg.pl/300/"
+            user.save
+          end
+        end
+      end
+
+      context "when changing github_username" do
+        it "enqueue resave articles job" do
+          sidekiq_assert_enqueued_with(
+            job: Users::ResaveArticlesWorker,
+            args: [user.id],
+            queue: "medium_priority"
+          ) do
+            user.github_username = "mygreatgithubname"
+            user.save
+          end
+        end
+      end
+
+      context "when changing twitter_username" do
+        it "enqueue resave articles job" do
+          sidekiq_assert_enqueued_with(
+            job: Users::ResaveArticlesWorker,
+            args: [user.id],
+            queue: "medium_priority"
+          ) do
+            user.twitter_username = "mygreattwittername"
+            user.save
+          end
+        end
+      end
+
+      context "when changing resave attributes but user is banned" do
+        let!(:user) { create(:user, :banned) }
+
+        it "doesn't enqueue resave articles" do
+          expect do
+            user.twitter_username = "mygreattwittername"
+            user.save
+          end.to_not change(Users::ResaveArticlesWorker.jobs, :size)
+        end
+      end
+    end
   end
 
   context "when indexing and deindexing" do
