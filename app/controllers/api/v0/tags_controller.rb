@@ -4,6 +4,7 @@ module Api
       caches_action :index,
                     cache_path: proc { |c| c.params.permit! },
                     expires_in: 10.minutes
+      before_action :set_cache_control_headers, only: %i[onboarding] # essentially static content
       respond_to :json
 
       def index
@@ -12,7 +13,8 @@ module Api
       end
 
       def onboarding
-        @tags = Tag.where(name: Tag::NAMES)
+        set_surrogate_key_header "siteconfig/onboarding-tags"
+        @tags = Tag.where(name: SiteConfig.suggested_tags)
       end
     end
   end
