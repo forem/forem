@@ -30,7 +30,8 @@ class Internal::ConfigsController < Internal::ApplicationController
   end
 
   def clean_up_params
-    params[:site_config][:suggested_tags] = params[:site_config][:suggested_tags].delete(" ") if params[:site_config][:suggested_tags]
+    config = params[:site_config]
+    config[:suggested_tags] = config[:suggested_tags].downcase.delete(" ") if config[:suggested_tags]
   end
 
   def bust_relevant_caches

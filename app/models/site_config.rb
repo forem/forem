@@ -38,6 +38,5 @@ class SiteConfig < RailsSettings::Base
   field :periodic_email_digest_min, type: :integer, default: 2
 
   # Tags
-
   field :suggested_tags, type: :array, default: %w[beginners career computerscience javascript security ruby rails swift kotlin]
 end

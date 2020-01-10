@@ -112,8 +112,13 @@ RSpec.describe "/internal/config", type: :request do
     end
 
     describe "Tags" do
-      it "updates suggested_tags" do
+      it "removes space suggested_tags" do
         post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoho, bobo fofo" } }
+        expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
+      end
+
+      it "downcases suggested_tags" do
+        post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoHo, Bobo Fofo" } }
         expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
       end
     end
