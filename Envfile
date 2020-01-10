@@ -75,9 +75,9 @@ variable :HONEYBADGER_JS_API_KEY, :String, default: "Optional"
 # Algolia for search (not optional)
 # (https://www.algolia.com/doc/)
 only_in_test = proc { ENV["RACK_ENV"] == "test" ? "test-test" : nil }
-variable :ALGOLIASEARCH_API_KEY, :String, default: "eef2dc5d0df9438d38080e613623dd1c"
-variable :ALGOLIASEARCH_APPLICATION_ID, :String, default: "K5JDUMZVD6"
-variable :ALGOLIASEARCH_SEARCH_ONLY_KEY, :String, default: "d5477c99c6ac66ebc49e2030b3a0a006"
+variable :ALGOLIASEARCH_API_KEY, :String, default: only_in_test
+variable :ALGOLIASEARCH_APPLICATION_ID, :String, default: only_in_test
+variable :ALGOLIASEARCH_SEARCH_ONLY_KEY, :String, default: only_in_test
 
 # AWS for images storages
 variable :AWS_ID, :String, default: "Optional"
