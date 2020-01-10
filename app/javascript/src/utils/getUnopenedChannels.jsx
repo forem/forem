@@ -4,22 +4,18 @@ import setupPusher from './pusher';
 
 class UnopenedChannelNotice extends Component {
   propTypes = {
-    unopenedChannels: PropTypes.Object,
     pusherKey: PropTypes.Object,
   };
 
   static defaultProps = {
-    unopenedChannels: undefined,
     pusherKey: undefined,
   };
 
   constructor(props) {
     super(props);
-    const { unopenedChannels } = this.props;
-    const visible = unopenedChannels.length > 0;
     this.state = {
-      visible,
-      unopenedChannels,
+      visible: false,
+      unopenedChannels: [],
     };
   }
 
@@ -30,7 +26,9 @@ class UnopenedChannelNotice extends Component {
       messageCreated: this.receiveNewMessage,
       messageDeleted: this.removeMessage,
       messageEdited: this.updateMessage,
+      mentioned: this.mentionedMessage,
     });
+    this.fetchUnopenedChannel(this.updateMessageNotification);
     const component = this;
     document.getElementById('connect-link').onclick = () => {
       // Hack, should probably be its own component in future
@@ -39,9 +37,42 @@ class UnopenedChannelNotice extends Component {
     };
   }
 
+  updateMessageNotification = unopenedChannels => {
+    const number = document.getElementById('connect-number');
+    this.setState({ unopenedChannels });
+    if (unopenedChannels.length > 0) {
+      number.classList.add('showing');
+      number.innerHTML = unopenedChannels.length;
+      document.getElementById(
+        'connect-link',
+      ).href = `/connect/${unopenedChannels[0].adjusted_slug}`; // Jump the user directly to the channel where appropriate
+    } else {
+      number.classList.remove('showing');
+    }
+  };
+
   removeMessage = () => {};
 
   updateMessage = () => {};
+
+  mentionedMessage = e => {
+    if (window.location.pathname.startsWith('/connect')) {
+      return;
+    }
+
+    this.setState(prevState => ({
+      unopenedChannels: prevState.unopenedChannels.map(unopenedChannel =>
+        unopenedChannel.adjusted_slug === e.chat_channel_adjusted_slug
+          ? { ...unopenedChannel, request_type: 'mentioned' }
+          : unopenedChannel,
+      ),
+      visible: true,
+    }));
+
+    setTimeout(() => {
+      this.setState({ visible: false });
+    }, 7500);
+  };
 
   receiveNewMessage = e => {
     if (window.location.pathname.startsWith('/connect')) {
@@ -56,25 +87,18 @@ class UnopenedChannelNotice extends Component {
     ) {
       unopenedChannels.push(newObj);
     }
+
     this.setState({
       visible:
-        unopenedChannels.length > 0 && e.user_id !== window.currentUser.id,
-      unopenedChannels,
+        unopenedChannels.length > 0 &&
+        e.user_id !== window.currentUser.id &&
+        e.channel_type !== 'open',
     });
 
-    const number = document.getElementById('connect-number');
-    number.classList.add('showing');
-    number.innerHTML = unopenedChannels.length;
-    const component = this;
-    if (unopenedChannels.length === 0) {
-      number.classList.remove('showing');
-    } else {
-      document.getElementById(
-        'connect-link',
-      ).href = `/connect/${unopenedChannels[0].adjusted_slug}`;
-    }
+    this.updateMessageNotification(unopenedChannels);
+
     setTimeout(() => {
-      component.setState({ visible: false });
+      this.setState({ visible: false });
     }, 7500);
   };
 
@@ -83,27 +107,44 @@ class UnopenedChannelNotice extends Component {
     this.setState({ visible: false });
   };
 
+  fetchUnopenedChannel = successCb => {
+    fetch('/chat_channels?state=unopened', {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      credentials: 'same-origin',
+    })
+      .then(response => response.json())
+      .then(successCb);
+  };
+
   render() {
     const { visible, unopenedChannels } = this.state;
     if (visible) {
-      const channels = unopenedChannels.map(channel => {
+      const message = unopenedChannels.map(channel => {
         return (
-          <a
-            href={`/connect/${unopenedChannels[0].adjusted_slug}`}
-            style={{
-              background: '#66e2d5',
-              color: 'black',
-              border: '1px solid black',
-              padding: '2px 7px',
-              display: 'inline-block',
-              margin: '3px 6px',
-              borderRadius: '3px',
-            }}
-          >
-            {channel.adjusted_slug}
-          </a>
+          <div>
+            {channel.request_type === 'mentioned'
+              ? 'You got mentioned in'
+              : 'New Message from'}
+            {' '}
+            <a
+              href={`/connect/${channel.adjusted_slug}`}
+              style={{
+                background: '#66e2d5',
+                color: 'black',
+                border: '1px solid black',
+                padding: '2px 7px',
+                display: 'inline-block',
+                margin: '3px 6px',
+                borderRadius: '3px',
+              }}
+            >
+              {channel.adjusted_slug}
+            </a>
+          </div>
         );
       });
+
       return (
         <a
           onClick={this.handleClick}
@@ -124,9 +165,7 @@ class UnopenedChannelNotice extends Component {
             padding: '19px 5px 14px',
           }}
         >
-          New Message from 
-          {' '}
-          {channels}
+          {message}
         </a>
       );
     }
@@ -135,37 +174,12 @@ class UnopenedChannelNotice extends Component {
   }
 }
 
-function manageChannel(json) {
-  const number = document.getElementById('connect-number');
-  if (json.length > 0) {
-    number.classList.add('showing');
-    number.innerHTML = json.length;
-    document.getElementById(
-      'connect-link',
-    ).href = `/connect/${json[0].adjusted_slug}`; // Jump the user directly to the channel where appropriate
-  } else {
-    number.classList.remove('showing');
-  }
-}
-
 export default function getUnopenedChannels() {
   if (window.frameElement) {
-    // We don't want this triggered within context of iframe.
     return;
   }
   render(
-    <UnopenedChannelNotice
-      unopenedChannels={[]}
-      pusherKey={document.body.dataset.pusherKey}
-    />,
+    <UnopenedChannelNotice pusherKey={document.body.dataset.pusherKey} />,
     document.getElementById('message-notice'),
   );
-  if (window.location.pathname.startsWith('/connect')) return;
-  fetch('/chat_channels?state=unopened', {
-    credentials: 'same-origin',
-  })
-    .then(response => response.json())
-    .then(json => {
-      manageChannel(json);
-    });
 }
