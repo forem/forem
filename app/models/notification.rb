@@ -22,10 +22,6 @@ class Notification < ApplicationRecord
     where(organization_id: org_id, notifiable_type: "Mention", user_id: nil)
   }
 
-  scope :without_past_aggregations, lambda {
-    where.not("notified_at < ? AND action IN ('Reaction', 'Follow')", 24.hours.ago)
-  }
-
   class << self
     def send_new_follower_notification(follow, is_read = false)
       return unless Follow.need_new_follower_notification_for?(follow.followable_type)
@@ -69,14 +65,14 @@ class Notification < ApplicationRecord
       return if reaction.skip_notification_for?(receiver)
       return if UserBlock.blocking?(receiver, reaction.user_id)
 
-      Notifications::NewReactionJob.perform_later(*reaction_notification_attributes(reaction, receiver))
+      Notifications::NewReactionWorker.perform_async(*reaction_notification_attributes(reaction, receiver))
     end
 
     def send_reaction_notification_without_delay(reaction, receiver)
       return if reaction.skip_notification_for?(receiver)
       return if UserBlock.blocking?(receiver, reaction.user_id)
 
-      Notifications::NewReactionJob.perform_now(*reaction_notification_attributes(reaction, receiver))
+      Notifications::NewReactionWorker.new.perform(*reaction_notification_attributes(reaction, receiver))
     end
 
     def send_mention_notification(mention)

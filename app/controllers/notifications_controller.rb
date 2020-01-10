@@ -26,12 +26,14 @@ class NotificationsController < ApplicationController
                        @user.notifications
                      end
 
-    @notifications = @notifications.includes(:notifiable).without_past_aggregations.order(notified_at: :desc)
+    @notifications = @notifications.order(notified_at: :desc)
 
     # if offset based pagination is invoked by the frontend code, we filter out all earlier ones
     @notifications = @notifications.where("notified_at < ?", notified_at_offset) if notified_at_offset
 
-    @notifications = NotificationDecorator.decorate_collection(@notifications.limit(num))
+    @notifications = @notifications.limit(num)
+
+    @notifications = NotificationDecorator.decorate_collection(@notifications)
 
     @last_user_reaction = @user.reactions.last&.id
     @last_user_comment = @user.comments.last&.id

@@ -248,6 +248,14 @@ RSpec.describe Comment, type: :model do
   end
 
   context "when callbacks are triggered after create" do
+    it "creates an id code" do
+      comment = build(:comment, user: user, commentable: article)
+
+      comment.save
+
+      expect(comment.reload.id_code).to eq(comment.id.to_s(26))
+    end
+
     it "enqueue a worker to create the first reaction" do
       comment = build(:comment, user: user, commentable: article)
 

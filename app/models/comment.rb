@@ -247,7 +247,7 @@ class Comment < ApplicationRecord
   end
 
   def create_id_code
-    Comments::CreateIdCodeJob.perform_later(id)
+    update_column(:id_code, id.to_s(26))
   end
 
   def touch_user
