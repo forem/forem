@@ -19,5 +19,11 @@ RSpec.describe "ArticlesApi", type: :request do
       expect(response.body).to include("[")
       expect(response.body).to include(tag.name)
     end
+
+    it "does not return incorrect onboarding tag objects" do
+      tag = create(:tag, name: "dsdsdsdsdsdssddsdsds")
+      get "/api/tags/onboarding"
+      expect(response.body).not_to include(tag.name)
+    end
   end
 end
