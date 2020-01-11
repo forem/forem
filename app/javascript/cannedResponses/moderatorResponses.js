@@ -1,7 +1,7 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-restricted-globals */
 export default function initModeratorResponses() {
-  function submitAsModerator(cannedResponseId) {
+  function submitAsModerator(cannedResponseId, parentId) {
     const commentableId = document.querySelector('input#comment_commentable_id')
       .value;
 
@@ -20,6 +20,7 @@ export default function initModeratorResponses() {
           body_markdown: '',
           commentable_id: commentableId,
           commentable_type: 'Article',
+          parent_id: parentId,
         },
       }),
     })
@@ -31,21 +32,23 @@ export default function initModeratorResponses() {
       });
   }
 
-  function addClickListeners() {
+  function addClickListeners(responsesWrapper) {
+    const form = responsesWrapper.parentElement.parentElement;
+    const parentCommentId =
+      form.id !== 'new_comment'
+        ? form.querySelector('input#comment_parent_id').value
+        : null;
     const selfSubmitButtons = Array.from(
-      document.getElementsByClassName('mod-template-button'),
+      responsesWrapper.getElementsByClassName('mod-template-button'),
     );
     const moderatorSubmitButtons = Array.from(
-      document.getElementsByClassName('moderator-submit-button'),
+      responsesWrapper.getElementsByClassName('moderator-submit-button'),
     );
-    const textArea = document.querySelector('#text-area'); // make this work for replies
 
     selfSubmitButtons.forEach(button => {
       button.addEventListener('click', e => {
-        const responsesWrapper = document.querySelector(
-          '.mod-responses-container',
-        );
         const { content } = e.target.dataset;
+        const textArea = form.querySelector('textarea');
 
         textArea.value = content;
         responsesWrapper.style.display = 'none';
@@ -57,7 +60,7 @@ export default function initModeratorResponses() {
         e.preventDefault();
 
         if (confirm('Are you sure you want to submit a comment under Sloan?')) {
-          submitAsModerator(e.target.dataset.cannedResponseId);
+          submitAsModerator(e.target.dataset.cannedResponseId, parentCommentId);
         }
       });
     });
@@ -73,6 +76,42 @@ export default function initModeratorResponses() {
       } else {
         responsesWrapper.style.display = 'none';
       }
+    });
+  }
+
+  function addReplyObservers() {
+    const targetNodes = Array.from(
+      document.querySelectorAll('div.comment-submit-actions.actions'),
+    );
+    const config = { attributes: false, childList: true, characterData: false };
+    const containerWithData = document
+      .getElementById('textarea-wrapper')
+      .querySelector('.mod-responses-container');
+
+    const callback = mutationsList => {
+      const { target } = mutationsList[0];
+      if (mutationsList[0].addedNodes.length === 1) {
+        const button = target.querySelector('button.canned-responses-button');
+        const responsesWrapper = target.querySelector(
+          '.mod-responses-container',
+        );
+        responsesWrapper.innerHTML = containerWithData.innerHTML;
+        addClickListeners(responsesWrapper);
+
+        button.addEventListener('click', () => {
+          if (responsesWrapper.style.display === 'none') {
+            responsesWrapper.style.display = 'flex';
+          } else {
+            responsesWrapper.style.display = 'none';
+          }
+        });
+      }
+    };
+
+    const observer = new MutationObserver(callback);
+
+    targetNodes.forEach(node => {
+      observer.observe(node, config);
     });
   }
 
@@ -125,10 +164,12 @@ export default function initModeratorResponses() {
           ${modResponseHTML}
           <header><h3>Personal Responses</h3></header>
           ${personalResponseHTML}
+          <a target="_blank" rel="noopener nofollow" href="/settings/canned-responses">Create a new response</a>
         `;
 
         addToggleListener(responsesWrapper);
-        addClickListeners();
+        addClickListeners(responsesWrapper);
+        addReplyObservers();
       });
   }
 

@@ -278,6 +278,7 @@ a.header-link {
       overflow-y: auto;
       border-radius: 3px;
       font-size: 16px;
+      font-family: $helvetica;
       @include themeable(
         border,
         theme-container-background,
@@ -291,6 +292,7 @@ a.header-link {
       }
 
       .mod-response-wrapper {
+        text-align: left;
         padding: 6px;
         border-bottom-width: 1.5px;
         border-bottom-style: dotted;
@@ -298,6 +300,10 @@ a.header-link {
 
         span {
           font-weight: bold;
+        }
+
+        p {
+          font-weight: normal;
         }
 
         button {
@@ -319,6 +325,11 @@ a.header-link {
           background: $green;
           color: $black;
         }
+      }
+
+      a {
+        text-align: left;
+        padding: 7px;
       }
     }
     textarea {
