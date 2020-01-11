@@ -115,8 +115,12 @@ export default function initModeratorResponses() {
     });
 
     window.addEventListener('beforeunload', () => {
-      observer.disconnect()
+      observer.disconnect();
     })
+
+    window.InstantClick.on('change', () => {
+      observer.disconnect();
+    });
   }
 
   function fetchCannedResponses() {
