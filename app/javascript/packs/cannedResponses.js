@@ -1,8 +1,7 @@
-// import initCannedResponses from '../cannedResponses/cannedResponses'
-import initModeratorResponses from '../cannedResponses/moderatorResponses';
+import initCannedResponses from '../cannedResponses/cannedResponses';
 
 window.InstantClick.on('change', () => {
-  initModeratorResponses();
+  initCannedResponses();
 });
 
-initModeratorResponses();
+initCannedResponses();
