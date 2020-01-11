@@ -8,3 +8,12 @@ Gemfile @thepracticaldev/sre
 # Mac
 Gemfile   @maestromac
 yarn.lock @maestromac
+
+# Jacob
+/app/assets/stylesheets/internal/ @jacobherrington
+/app/controllers/internal/        @jacobherrington
+/app/views/internal/              @jacobherrington
+/app/views/moderation/            @jacobherrington
+/spec/system/internal/            @jacobherrington
+/spec/requests/internal/          @jacobherrington
+/docs/                            @jacobherrington
