@@ -1,12 +1,12 @@
 require "rails_helper"
 
 RSpec.describe Streams::TwitchWebhookRegistrationWorker, type: :worker do
-  include_examples "#enqueues_on_correct_queue", "default", 1
+  include_examples "#enqueues_on_correct_queue", "low_priority", 1
 
   describe "#perform" do
     let(:user) { create(:user, twitch_username: "test-username") }
     let(:worker) { subject }
-    let(:service) { double }
+    let(:service) { Streams::TwitchWebhook::Register }
 
     before do
       allow(service).to receive(:call)
@@ -16,20 +16,20 @@ RSpec.describe Streams::TwitchWebhookRegistrationWorker, type: :worker do
       let(:user) { create(:user) }
 
       it "noops" do
-        worker.perform(user.id, service)
+        worker.perform(user.id)
 
         expect(service).not_to have_received(:call)
       end
     end
 
     it "noops when the id passed does not belong to a user" do
-      worker.perform(987_654_321, service)
+      worker.perform(987_654_321)
 
       expect(service).not_to have_received(:call)
     end
 
     it "registers for webhooks" do
-      worker.perform(user.id, service)
+      worker.perform(user.id)
 
       expect(service).to have_received(:call).with(user)
     end
