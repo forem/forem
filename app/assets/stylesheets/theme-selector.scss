@@ -189,10 +189,13 @@
 
 .font-selector--comic-sans {
   font-family: 'Comic Sans MS', cursive, sans-serif;
+  font-size: 1.44em;
 }
 
 .font-selector--open-dyslexic {
-  font-family: OpenDyslexic;
+  font-family: OpenDyslexic, sans-serif;
+  font-display: swap;
+  font-size: 1.33em;
 }
 
 

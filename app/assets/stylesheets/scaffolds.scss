@@ -240,18 +240,20 @@ body.comic-sans-article-body {
 
 body.open-dyslexic-article-body {
   .body {
-    font-family: OpenDyslexic;
+    font-display: swap;
+    font-family: OpenDyslexic, sans-serif;
   }
   .body p {
-    font-family: OpenDyslexic;
+    font-display: swap;
+    font-family: OpenDyslexic, sans-serif;
     font-size: 0.9em;
   }
   .body b, .body strong {
-    font-family: OpenDyslexic-Bold
+    font-family: OpenDyslexic-Bold, sans-serif;
   }
   
   .body i, .body em {
-    font-family: OpenDyslexic-Italic
+    font-family: OpenDyslexic-Italic, sans-serif;
   }
   
   .body b>i, .body b>em, .body strong>i, .body strong>em,
