@@ -9,9 +9,12 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
     sign_in user
   end
 
-  xit "user clicks the edit button" do
+  it "user clicks the edit button" do
     link = "/#{user.username}/#{article.slug}"
     visit link
+
+    wait_for_javascript
+
     click_on("EDIT")
     expect(page).to have_current_path(link + "/edit")
   end

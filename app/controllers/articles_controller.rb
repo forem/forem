@@ -35,25 +35,42 @@ class ArticlesController < ApplicationController
     @article = if @tag.present? && @user&.editor_version == "v2"
                  authorize Article
                  submission_template = @tag.submission_template_customized(@user.name).to_s
-                 Article.new(body_markdown: submission_template.split("---").last.to_s.strip, cached_tag_list: @tag.name,
-                             processed_html: "", user_id: current_user&.id, title: submission_template.split("title:")[1].to_s.split("\n")[0].to_s.strip)
+                 Article.new(
+                   body_markdown: submission_template.split("---").last.to_s.strip,
+                   cached_tag_list: @tag.name,
+                   processed_html: "",
+                   user_id: current_user&.id,
+                   title: submission_template.split("title:")[1].to_s.split("\n")[0].to_s.strip,
+                 )
                elsif @tag&.submission_template.present? && @user
                  authorize Article
-                 Article.new(body_markdown: @tag.submission_template_customized(@user.name),
-                             processed_html: "", user_id: current_user&.id)
+                 Article.new(
+                   body_markdown: @tag.submission_template_customized(@user.name),
+                   processed_html: "",
+                   user_id: current_user&.id,
+                 )
                elsif @prefill.present? && @user&.editor_version == "v2"
                  authorize Article
-                 Article.new(body_markdown: @prefill.split("---").last.to_s.strip, cached_tag_list: @prefill.split("tags:")[1].to_s.split("\n")[0].to_s.strip,
-                             processed_html: "", user_id: current_user&.id, title: @prefill.split("title:")[1].to_s.split("\n")[0].to_s.strip)
+                 Article.new(
+                   body_markdown: @prefill.split("---").last.to_s.strip,
+                   cached_tag_list: @prefill.split("tags:")[1].to_s.split("\n")[0].to_s.strip,
+                   processed_html: "",
+                   user_id: current_user&.id,
+                   title: @prefill.split("title:")[1].to_s.split("\n")[0].to_s.strip,
+                 )
                elsif @prefill.present? && @user
                  authorize Article
-                 Article.new(body_markdown: @prefill,
-                             processed_html: "", user_id: current_user&.id)
+                 Article.new(
+                   body_markdown: @prefill,
+                   processed_html: "",
+                   user_id: current_user&.id,
+                 )
                elsif @tag.present?
                  skip_authorization
                  Article.new(
                    body_markdown: "---\ntitle: \npublished: false\ndescription: \ntags: #{@tag.name}\n---\n\n",
-                   processed_html: "", user_id: current_user&.id
+                   processed_html: "",
+                   user_id: current_user&.id,
                  )
                else
                  skip_authorization
@@ -62,7 +79,8 @@ class ArticlesController < ApplicationController
                  else
                    Article.new(
                      body_markdown: "---\ntitle: \npublished: false\ndescription: \ntags: \n---\n\n",
-                     processed_html: "", user_id: current_user&.id
+                     processed_html: "",
+                     user_id: current_user&.id,
                    )
                  end
                end
@@ -172,6 +190,7 @@ class ArticlesController < ApplicationController
 
   def delete_confirm
     @article = current_user.articles.find_by(slug: params[:slug])
+    not_found unless @article
     authorize @article
   end
 
@@ -217,7 +236,7 @@ class ArticlesController < ApplicationController
 
   def set_article
     owner = User.find_by(username: params[:username]) || Organization.find_by(slug: params[:username])
-    found_article = if params[:slug]
+    found_article = if params[:slug] && owner
                       owner.articles.find_by(slug: params[:slug])
                     else
                       Article.includes(:user).find(params[:id])

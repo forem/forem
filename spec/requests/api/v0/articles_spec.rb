@@ -167,6 +167,37 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(json_response.length).to eq(1)
       end
     end
+
+    context "with state param" do
+      it "returns fresh articles" do
+        article.update_columns(positive_reactions_count: 1, score: 1)
+
+        get api_articles_path(state: "fresh")
+        expect(response.parsed_body.size).to eq(1)
+      end
+
+      it "returns rising articles" do
+        article.update_columns(positive_reactions_count: 32, score: 1, featured_number: 2.days.ago.to_i)
+
+        get api_articles_path(state: "rising")
+        expect(response.parsed_body.size).to eq(1)
+      end
+
+      it "returns nothing if the state is unknown" do
+        get api_articles_path(state: "foobar")
+
+        expect(response.parsed_body).to be_empty
+      end
+
+      it "supports pagination" do
+        create_list(:article, 2, tags: "discuss", positive_reactions_count: 1, score: 1)
+
+        get api_articles_path(state: "fresh"), params: { page: 1, per_page: 2 }
+        expect(json_response.length).to eq(2)
+        get api_articles_path(state: "fresh"), params: { page: 2, per_page: 2 }
+        expect(json_response.length).to eq(1)
+      end
+    end
   end
 
   describe "GET /api/articles/:id" do
@@ -379,6 +410,12 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(json_response["error"]).to be_present
       end
 
+      it "fails if article contains tags with non-alphanumeric characters" do
+        tags = %w[#discuss .help]
+        post_article(title: "Test Article Title", tags: tags)
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
       it "creates an article belonging to the user" do
         post_article(title: Faker::Book.title)
         expect(response).to have_http_status(:created)
@@ -580,6 +617,14 @@ RSpec.describe "Api::V0::Articles", type: :request do
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
         expect(Article.find(json_response["id"]).description).to eq("yooo" * 20 + "y...")
+      end
+
+      it "does not raise an error if article params are missing" do
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        expect do
+          post api_articles_path, params: {}.to_json, headers: headers
+        end.not_to raise_error
+        expect(response.status).to eq(422)
       end
     end
   end

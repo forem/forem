@@ -7,6 +7,9 @@ class ChatChannelsController < ApplicationController
     if params[:state] == "unopened"
       authorize ChatChannel
       render_unopened_json_response
+    elsif params[:state] == "unopened_ids"
+      authorize ChatChannel
+      render_unopened_ids_response
     elsif params[:state] == "pending"
       authorize ChatChannel
       render_pending_json_response
@@ -134,6 +137,12 @@ class ChatChannelsController < ApplicationController
     render "index.json"
   end
 
+  def render_unopened_ids_response
+    @unopened_ids = ChatChannelMembership.where(user_id: session_current_user_id).includes(:chat_channel).
+      where(has_unopened_messages: true).pluck(:chat_channel_id)
+    render json: { unopened_ids: @unopened_ids }
+  end
+
   def render_channels_html
     return unless current_user
 
@@ -158,7 +167,7 @@ class ChatChannelsController < ApplicationController
   end
 
   def generate_github_token
-    RedisRailsCache.fetch("user-github-token-#{current_user.id}", expires_in: 48.hours) do
+    Rails.cache.fetch("user-github-token-#{current_user.id}", expires_in: 48.hours) do
       Identity.where(user_id: current_user.id, provider: "github").first&.token
     end
   end

@@ -7,9 +7,12 @@ import {
   sendMessage,
   sendOpen,
   getChannels,
+  getUnopenedChannelIds,
   getContent,
   getChannelInvites,
   sendChannelInviteAction,
+  deleteMessage,
+  editMessage,
 } from './actions';
 import { hideMessages, scrollToBottom, setupObserver } from './util';
 import Alert from './alert';
@@ -39,6 +42,7 @@ export default class Chat extends Component {
       scrolled: false,
       showAlert: false,
       chatChannels,
+      unopenedChannelIds: [],
       filterQuery: '',
       channelTypeFilter: 'all',
       channelsLoaded: false,
@@ -48,6 +52,7 @@ export default class Chat extends Component {
       activeChannel: null,
       showChannelsList: chatOptions.showChannelsList,
       showTimestamp: chatOptions.showTimestamp,
+      currentUserId: chatOptions.currentUserId,
       notificationsPermission: null,
       activeContent: {},
       expanded: window.innerWidth > 600,
@@ -61,8 +66,12 @@ export default class Chat extends Component {
       soundOn: true,
       videoOn: true,
       messageOffset: 0,
+      showDeleteModal: false,
+      messageDeleteId: null,
       allMessagesLoaded: false,
       currentMessageLocation: 0,
+      startEditing: false,
+      activeEditMessage: {},
     };
   }
 
@@ -74,8 +83,8 @@ export default class Chat extends Component {
       channelTypeFilter,
       isMobileDevice,
       channelPaginationNum,
+      currentUserId,
     } = this.state;
-
     this.setupChannels(chatChannels);
     const channelsForPusherSub = chatChannels.filter(
       this.channelTypeFilter('open'),
@@ -85,9 +94,9 @@ export default class Chat extends Component {
       channel => `open-channel-${channel.chat_channel_id}`,
     );
     setupObserver(this.observerCallback);
-    this.subscribePusher(
-      `private-message-notifications-${window.currentUser.id}`,
-    );
+    
+    this.subscribePusher(`private-message-notifications-${currentUserId}`);
+    
     if (activeChannelId) {
       sendOpen(activeChannelId, this.handleChannelOpenSuccess, null);
     }
@@ -104,6 +113,7 @@ export default class Chat extends Component {
         filters,
         this.loadChannels,
       );
+      getUnopenedChannelIds(this.markUnopenedChannelIds)
     }
     if (!isMobileDevice) {
       document.getElementById('messageform').focus();
@@ -166,6 +176,8 @@ export default class Chat extends Component {
       setupPusher(pusherKey, {
         channelId: channelName,
         messageCreated: this.receiveNewMessage,
+        messageDeleted: this.removeMessage,
+        messageEdited: this.updateMessage,
         channelCleared: this.clearChannel,
         redactUserMessages: this.redactUserMessages,
         channelError: this.channelError,
@@ -224,6 +236,10 @@ export default class Chat extends Component {
     );
     document.getElementById('chatchannels__channelslist').scrollTop = 0;
   };
+
+  markUnopenedChannelIds = (ids) => {
+    this.setState({unopenedChannelIds: ids})
+  }
 
   subscribeChannelsToPusher = (channels, channelNameFn) => {
     channels.forEach(channel => {
@@ -302,10 +318,46 @@ export default class Chat extends Component {
     }));
   };
 
+  removeMessage = message => {
+    const { activeChannelId } = this.state;
+    this.setState(prevState => ({
+      messages: {
+        [activeChannelId]: [
+          ...prevState.messages[activeChannelId].filter(
+            oldmessage => oldmessage.id !== message.id,
+          ),
+        ],
+      },
+    }));
+  };
+
+  updateMessage = message => {
+    const { activeChannelId } = this.state;
+
+    this.setState(({ messages }) => {
+      const newMessages = messages;
+      const foundIndex = messages[activeChannelId].findIndex(
+        oldMessage => oldMessage.id === message.id,
+      );
+      newMessages[activeChannelId][foundIndex] = message;
+      return { messages: newMessages };
+    });
+  };
+
   receiveNewMessage = message => {
-    const { messages, activeChannelId, scrolled, chatChannels } = this.state;
+    const { messages, activeChannelId, scrolled, chatChannels, unopenedChannelIds } = this.state;
     const receivedChatChannelId = message.chat_channel_id;
     let newMessages = [];
+
+    if (
+      message.temp_id &&
+      messages[activeChannelId].findIndex(
+        oldmessage => oldmessage.temp_id === message.temp_id,
+      ) > -1
+    ) {
+      return;
+    }
+
     if (messages[receivedChatChannelId]) {
       newMessages = messages[receivedChatChannelId].slice();
       newMessages.push(message);
@@ -333,7 +385,16 @@ export default class Chat extends Component {
 
     if (receivedChatChannelId === activeChannelId) {
       sendOpen(receivedChatChannelId, this.handleChannelOpenSuccess, null);
+    } else {
+      const newUnopenedChannels = unopenedChannelIds
+      if (!unopenedChannelIds.includes(receivedChatChannelId)) {
+        newUnopenedChannels.push(receivedChatChannelId)
+      }  
+      this.setState({
+        unopenedChannelIds: newUnopenedChannels
+      })
     }
+
     this.setState(prevState => ({
       ...newShowAlert,
       chatChannels: newChannelsObj,
@@ -422,6 +483,34 @@ export default class Chat extends Component {
     }
   };
 
+  handleKeyDownEdit = e => {
+    const enterPressed = e.keyCode === 13;
+    const targetValue = e.target.value;
+    const messageIsEmpty = targetValue.length === 0;
+    const shiftPressed = e.shiftKey;
+
+    if (enterPressed) {
+      if (messageIsEmpty) {
+        e.preventDefault();
+      } else if (!messageIsEmpty && !shiftPressed) {
+        e.preventDefault();
+        this.handleMessageSubmitEdit(e.target.value);
+        e.target.value = '';
+      }
+    }
+  };
+
+  handleMessageSubmitEdit = message => {
+    const { activeChannelId, activeEditMessage } = this.state;
+    const editedMessage = {
+      activeChannelId,
+      id: activeEditMessage.id,
+      message,
+    };
+    editMessage(editedMessage, this.handleSuccess, this.handleFailure);
+    this.handleEditMessageClose();
+  };
+
   handleMessageSubmit = message => {
     const { activeChannelId } = this.state;
     // should check if user has the privilege
@@ -434,6 +523,14 @@ export default class Chat extends Component {
         .trigger('client-initiatevideocall', {
           channelId: activeChannelId,
         });
+    } else if (message.startsWith('/new')) {
+      this.setActiveContentState(activeChannelId, {
+        type_of: 'loading-post',
+      });
+      this.setActiveContent({
+        path: '/new',
+        type_of: 'article'
+      })
     } else if (message.startsWith('/github')) {
       const args = message.split('/github ')[1].trim();
       this.setActiveContentState(activeChannelId, { type_of: 'github', args });
@@ -461,7 +558,7 @@ export default class Chat extends Component {
       target = target.parentElement;
     }
     this.triggerSwitchChannel(
-      target.dataset.channelId,
+      parseInt(target.dataset.channelId, 10),
       target.dataset.channelSlug,
     );
   };
@@ -497,12 +594,18 @@ export default class Chat extends Component {
   };
 
   triggerSwitchChannel = (id, slug) => {
-    const { chatChannels, isMobileDevice } = this.state;
+    const { chatChannels, isMobileDevice, unopenedChannelIds } = this.state;
+    const newUnopenedChannelIds = unopenedChannelIds
+    const index = newUnopenedChannelIds.indexOf(id);
+    if (index > -1) {
+      newUnopenedChannelIds.splice(index, 1);
+    }
     this.setState({
       activeChannel: this.filterForActiveChannel(chatChannels, id),
       activeChannelId: parseInt(id, 10),
       scrolled: false,
       showAlert: false,
+      unopenedChannelIds: unopenedChannelIds.filter(unopenedId => unopenedId !== id)
     });
     this.setupChannel(id);
     window.history.replaceState(null, null, `/connect/${slug}`);
@@ -524,8 +627,44 @@ export default class Chat extends Component {
     }
   };
 
+  handleSubmitOnClickEdit = e => {
+    e.preventDefault();
+    const message = document.getElementById('messageform').value;
+    if (message.length > 0) {
+      this.handleMessageSubmitEdit(message);
+      document.getElementById('messageform').value = '';
+    }
+  };
+
+  triggerDeleteMessage = e => {
+    this.setState({ messageDeleteId: e.target.dataset.content });
+    this.setState({ showDeleteModal: true });
+  };
+
+  triggerEditMessage = e => {
+    const { messages, activeChannelId } = this.state;
+    this.setState({
+      activeEditMessage: messages[activeChannelId].filter(
+        message => message.id === parseInt(e.target.dataset.content, 10),
+      )[0],
+    });
+    this.setState({ startEditing: true });
+  };
+
   handleSuccess = response => {
-    if (response.status === 'error') {
+    const { activeChannelId } = this.state;
+    if (response.status === 'success') {
+      if (response.message.temp_id) {
+        this.setState(({ messages }) => {
+          const newMessages = messages;
+          const foundIndex = messages[activeChannelId].findIndex(
+            message => message.temp_id === response.message.temp_id,
+          );
+          newMessages[activeChannelId][foundIndex].id = response.message.id;
+          return { messages: newMessages };
+        });
+      }
+    } else if (response.status === 'error') {
       this.receiveNewMessage(response.message);
     }
   };
@@ -542,7 +681,8 @@ export default class Chat extends Component {
     }
 
     const { target } = e;
-    if (target.dataset.content) {
+    const content = target.dataset.content || target.parentElement.dataset.content
+    if (content) {
       e.preventDefault();
       e.stopPropagation();
 
@@ -556,24 +696,14 @@ export default class Chat extends Component {
           this.setActiveContent,
           null,
         );
-      } else if (target.dataset.content.startsWith('users/')) {
-        this.setActiveContentState(activeChannelId, {
-          type_of: 'loading-user',
-        });
-        getContent(
-          `/api/${target.dataset.content}`,
-          this.setActiveContent,
-          null,
-        );
-      } else if (target.dataset.content.startsWith('articles/')) {
+      } else if (content.startsWith('sidecar') || content.startsWith('article')) { // article is legacy which can be removed shortly
         this.setActiveContentState(activeChannelId, {
           type_of: 'loading-post',
         });
-        getContent(
-          `/api/${target.dataset.content}`,
-          this.setActiveContent,
-          null,
-        );
+        this.setActiveContent({
+          path: target.href || target.parentElement.href,
+          type_of: 'article'
+        })
       } else if (target.dataset.content === 'exit') {
         this.setActiveContentState(activeChannelId, null);
       }
@@ -664,6 +794,7 @@ export default class Chat extends Component {
       messages,
       showTimestamp,
       activeChannel,
+      currentUserId,
     } = this.state;
     if (!messages[activeChannelId]) {
       return '';
@@ -717,14 +848,19 @@ export default class Chat extends Component {
     }
     return messages[activeChannelId].map(message => (
       <Message
+        currentUserId={currentUserId}
+        id={message.id}
         user={message.username}
         userID={message.user_id}
         profileImageUrl={message.profile_image_url}
         message={message.message}
         timestamp={showTimestamp ? message.timestamp : null}
+        editedAt={message.edited_at}
         color={message.color}
         type={message.type}
         onContentTrigger={this.triggerActiveContent}
+        onDeleteMessageTrigger={this.triggerDeleteMessage}
+        onEditMessageTrigger={this.triggerEditMessage}
       />
     ));
   };
@@ -828,6 +964,7 @@ export default class Chat extends Component {
             <Channels
               activeChannelId={state.activeChannelId}
               chatChannels={state.chatChannels}
+              unopenedChannelIds={state.unopenedChannelIds}
               handleSwitchChannel={this.handleSwitchChannel}
               channelsLoaded={state.channelsLoaded}
               filterQuery={state.filterQuery}
@@ -853,6 +990,7 @@ export default class Chat extends Component {
             incomingVideoCallChannelIds={state.incomingVideoCallChannelIds}
             activeChannelId={state.activeChannelId}
             chatChannels={state.chatChannels}
+            unopenedChannelIds={state.unopenedChannelIds}
             handleSwitchChannel={this.handleSwitchChannel}
             expanded={state.expanded}
           />
@@ -870,6 +1008,10 @@ export default class Chat extends Component {
       activeChannelId,
       messageOffset,
     } = this.state;
+
+    if (!messages[activeChannelId]) {
+      return;
+    }
 
     const jumpbackButton = document.getElementById('jumpback_button');
 
@@ -919,6 +1061,7 @@ export default class Chat extends Component {
 
   renderActiveChatChannel = (channelHeader, incomingCall) => {
     const { state, props } = this;
+
     return (
       <div className="activechatchannel">
         <div className="activechatchannel__conversation">
@@ -951,6 +1094,7 @@ export default class Chat extends Component {
               Scroll to Bottom
             </div>
           </div>
+          {this.renderDeleteModal()}
           <div className="activechatchannel__alerts">
             <Alert showAlert={state.showAlert} />
           </div>
@@ -958,7 +1102,13 @@ export default class Chat extends Component {
             <Compose
               handleSubmitOnClick={this.handleSubmitOnClick}
               handleKeyDown={this.handleKeyDown}
+              handleSubmitOnClickEdit={this.handleSubmitOnClickEdit}
+              handleKeyDownEdit={this.handleKeyDownEdit}
               activeChannelId={state.activeChannelId}
+              startEditing={state.startEditing}
+              editMessageHtml={state.activeEditMessage.message}
+              editMessageMarkdown={state.activeEditMessage.markdown}
+              handleEditMessageClose={this.handleEditMessageClose}
             />
           </div>
         </div>
@@ -974,6 +1124,68 @@ export default class Chat extends Component {
     );
   };
 
+  handleEditMessageClose = () => {
+    this.setState({
+      startEditing: false,
+      activeEditMessage: { message: '', markdown: '' },
+    });
+  };
+
+  renderDeleteModal = () => {
+    const { showDeleteModal } = this.state;
+    return (
+      <div
+        id="message"
+        className={
+          showDeleteModal
+            ? 'message__delete__modal'
+            : 'message__delete__modal message__delete__modal__hide'
+        }
+      >
+        <div className="modal__content">
+          <h3> Are you sure, you want to delete this message ?</h3>
+
+          <div className="delete__action__buttons">
+            <div
+              role="button"
+              className="message__cancel__button"
+              onClick={this.handleCloseDeleteModal}
+              tabIndex="0"
+              onKeyUp={e => {
+                if (e.keyCode === 13) this.handleCloseDeleteModal();
+              }}
+            >
+              {' '}
+              Cancel
+            </div>
+            <div
+              role="button"
+              className="message__delete__button"
+              onClick={this.handleMessageDelete}
+              tabIndex="0"
+              onKeyUp={e => {
+                if (e.keyCode === 13) this.handleMessageDelete();
+              }}
+            >
+              {' '}
+              Delete
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  handleCloseDeleteModal = () => {
+    this.setState({ showDeleteModal: false, messageDeleteId: null });
+  };
+
+  handleMessageDelete = () => {
+    const { messageDeleteId } = this.state;
+    deleteMessage(messageDeleteId);
+    this.setState({ showDeleteModal: false });
+  };
+
   renderChannelHeaderInner = () => {
     const { activeChannel, activeChannelId } = this.state;
     if (activeChannel.channel_type === 'direct') {
@@ -981,7 +1193,7 @@ export default class Chat extends Component {
         <a
           href={`/${activeChannel.channel_username}`}
           onClick={this.triggerActiveContent}
-          data-content={`users/by_username?url=${activeChannel.channel_username}`}
+          data-content='sidecar-user'
         >
           {activeChannel.channel_modified_slug}
         </a>
@@ -1010,18 +1222,18 @@ export default class Chat extends Component {
 
     const dataContent =
       activeChannel.channel_type === 'direct'
-        ? `users/by_username?url=${activeChannel.channel_username}`
+        ? 'sidecar-user'
         : `chat_channels/${activeChannelId}`;
 
     return (
-      <div
+      <a
         className="activechatchannel__channelconfig"
         onClick={this.triggerActiveContent}
         onKeyUp={e => {
           if (e.keyCode === 13) this.triggerActiveContent(e);
         }}
-        role="button"
         tabIndex="0"
+        href={`/${activeChannel.channel_username}`}
         data-content={dataContent}
       >
         <img
@@ -1029,7 +1241,7 @@ export default class Chat extends Component {
           alt="channel config"
           data-content={dataContent}
         />
-      </div>
+      </a>
     );
   };
 

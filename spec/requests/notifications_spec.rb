@@ -309,7 +309,7 @@ RSpec.describe "NotificationsIndex", type: :request do
         sign_in user
         badge = create(:badge)
         badge_achievement = create(:badge_achievement, user: user, badge: badge)
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           Notification.send_new_badge_achievement_notification(badge_achievement)
         end
         get "/notifications"
@@ -344,12 +344,11 @@ RSpec.describe "NotificationsIndex", type: :request do
           body_markdown: "@#{user.username}",
         )
       end
+      let(:mention) { create(:mention, mentionable: comment, user: user) }
 
       before do
-        comment
-        perform_enqueued_jobs do
-          Mention.create_all(comment)
-          Notification.send_mention_notification(Mention.first)
+        sidekiq_perform_enqueued_jobs do
+          Notification.send_mention_notification(mention)
         end
         sign_in user
         get "/notifications"
@@ -420,6 +419,13 @@ RSpec.describe "NotificationsIndex", type: :request do
       it "can view other people's notifications" do
         get "/notifications?username=#{user2.username}"
         expect(response.body).to include "made a new post:"
+      end
+    end
+
+    context "when filter is unknown" do
+      it "does not raise an error" do
+        sign_in user
+        expect { get "/notifications/feed" }.not_to raise_error
       end
     end
   end

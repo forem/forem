@@ -67,10 +67,10 @@ RSpec.describe ProMemberships::Biller, type: :service do
 
     it "enqueues a job to bust the users articles caches" do
       Timecop.travel(format_date(pro_membership.expires_at)) do
-        assert_enqueued_with(
-          job: Users::ResaveArticlesJob,
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
           args: [user.id],
-          queue: "users_resave_articles",
+          queue: "medium_priority",
         ) do
           described_class.call
         end
@@ -154,10 +154,10 @@ RSpec.describe ProMemberships::Biller, type: :service do
 
     it "enqueues a job to bust the users articles caches" do
       Timecop.travel(format_date(pro_membership.expires_at)) do
-        assert_enqueued_with(
-          job: Users::ResaveArticlesJob,
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
           args: [user.id],
-          queue: "users_resave_articles",
+          queue: "medium_priority",
         ) do
           described_class.call
         end
@@ -236,10 +236,10 @@ RSpec.describe ProMemberships::Biller, type: :service do
 
       it "enqueues a job to bust the users articles caches" do
         Timecop.travel(format_date(pro_membership.expires_at)) do
-          assert_enqueued_with(
-            job: Users::ResaveArticlesJob,
+          sidekiq_assert_enqueued_with(
+            job: Users::ResaveArticlesWorker,
             args: [user.id],
-            queue: "users_resave_articles",
+            queue: "medium_priority",
           ) do
             described_class.call
           end

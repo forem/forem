@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :collection do
     user
-    slug { "word-#{rand(10_000)}" }
+    sequence(:slug) { |n| "slug-#{n}" }
   end
 
   trait :with_articles do

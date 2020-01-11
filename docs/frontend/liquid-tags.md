@@ -4,8 +4,8 @@ title: Liquid Tags
 
 # Liquid Tags
 
-Liquid tags are special elements of the [DEV Markdown
-editor](https://dev.to/new).
+Liquid tags are special elements of the
+[DEV Markdown editor](https://dev.to/new).
 
 They are custom embeds that are added via a `{% %}` syntax.
 [Liquid](https://shopify.github.io/liquid/) is a templating language developed
@@ -46,6 +46,7 @@ Here is a bunch of liquid tags supported on DEV:
 {% codesandbox ppxnl191zx %}
 {% jsfiddle https://jsfiddle.net/link2twenty/v2kx9jcd %}
 {% replit @WigWog/PositiveFineOpensource %}
+{% nexttech https://nt.dev/s/6ba1fffbd09e %}
 {% instagram BXgGcAUjM39 %}
 {% speakerdeck 7e9f8c0fa0c949bd8025457181913fd0 %}
 {% soundcloud https://soundcloud.com/user-261265215/dev-to-review-episode-1 %}

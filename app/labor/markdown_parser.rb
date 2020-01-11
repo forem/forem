@@ -18,10 +18,10 @@ class MarkdownParser
     sanitized_content = sanitize_rendered_markdown(html)
     begin
       parsed_liquid = Liquid::Template.parse(sanitized_content)
-    rescue StandardError => e
-      raise StandardError, e.message
+      html = markdown.render(parsed_liquid.render)
+    rescue Liquid::SyntaxError => e
+      html = e.message
     end
-    html = markdown.render(parsed_liquid.render)
     html = remove_nested_linebreak_in_list(html)
     html = prefix_all_images(html)
     html = wrap_all_images_in_links(html)
@@ -97,6 +97,8 @@ class MarkdownParser
       tags << node.class if node.class.superclass.to_s == LiquidTagBase.to_s
     end
     tags.uniq
+  rescue Liquid::SyntaxError
+    []
   end
 
   def prefix_all_images(html, width = 880)

@@ -18,7 +18,7 @@ module ProMemberships
         where("DATE(expires_at) = ?", expiration_date).
         where(auto_recharge: false)
       relation.find_each do |membership|
-        next if membership.user.has_enough_credits?(ProMembership::MONTHLY_COST)
+        next if membership.user.enough_credits?(ProMembership::MONTHLY_COST)
 
         # NOTE: maybe we should "deliver_later" and update the flags there
         ProMembershipMailer.expiring_membership(membership, expiration_date).deliver_now

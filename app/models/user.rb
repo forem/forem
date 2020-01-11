@@ -35,7 +35,6 @@ class User < ApplicationRecord
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :chat_channels, through: :chat_channel_memberships
   has_many :notification_subscriptions, dependent: :destroy
-  has_many :push_notification_subscriptions, dependent: :destroy
   has_many :feedback_messages
   has_many :rating_votes
   has_many :html_variants, dependent: :destroy
@@ -51,6 +50,7 @@ class User < ApplicationRecord
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
   has_many :user_blocks
   has_one :pro_membership, dependent: :destroy
+  has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -147,7 +147,7 @@ class User < ApplicationRecord
   validate  :validate_feed_url, if: :feed_url_changed?
   validate  :unique_including_orgs_and_podcasts, if: :username_changed?
 
-  scope :dev_account, -> { find_by(id: ApplicationConfig["DEVTO_USER_ID"]) }
+  scope :dev_account, -> { find_by(id: SiteConfig.staff_user_id) }
 
   after_create :send_welcome_notification
   after_save  :bust_cache
@@ -204,24 +204,16 @@ class User < ApplicationRecord
   def self.trigger_delayed_index(record, remove)
     return if remove
 
-    AlgoliaSearch::AlgoliaJob.perform_later(record, "index!")
+    Search::IndexJob.perform_later("User", record.id)
   end
 
   def tag_line
     summary
   end
 
-  def index_id
-    "users-#{id}"
-  end
-
   def set_remember_fields
     self.remember_token ||= self.class.remember_token if respond_to?(:remember_token)
     self.remember_created_at ||= Time.now.utc
-  end
-
-  def estimate_default_language
-    Users::EstimateDefaultLanguageJob.perform_later(id)
   end
 
   def calculate_score
@@ -240,7 +232,7 @@ class User < ApplicationRecord
   end
 
   def cached_following_users_ids
-    RedisRailsCache.fetch(
+    Rails.cache.fetch(
       "user-#{id}-#{last_followed_at}-#{following_users_count}/following_users_ids",
       expires_in: 12.hours,
     ) do
@@ -249,7 +241,7 @@ class User < ApplicationRecord
   end
 
   def cached_following_organizations_ids
-    RedisRailsCache.fetch(
+    Rails.cache.fetch(
       "user-#{id}-#{last_followed_at}-#{following_orgs_count}/following_organizations_ids",
       expires_in: 12.hours,
     ) do
@@ -258,7 +250,7 @@ class User < ApplicationRecord
   end
 
   def cached_following_podcasts_ids
-    RedisRailsCache.fetch(
+    Rails.cache.fetch(
       "user-#{id}-#{last_followed_at}/following_podcasts_ids",
       expires_in: 12.hours,
     ) do
@@ -293,7 +285,7 @@ class User < ApplicationRecord
 
   def cached_followed_tag_names
     cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/followed_tag_names"
-    RedisRailsCache.fetch(cache_name, expires_in: 24.hours) do
+    Rails.cache.fetch(cache_name, expires_in: 24.hours) do
       Tag.where(
         id: Follow.where(
           follower_id: id,
@@ -325,19 +317,19 @@ class User < ApplicationRecord
   end
 
   def pro?
-    RedisRailsCache.fetch("user-#{id}/has_pro_membership", expires_in: 200.hours) do
+    Rails.cache.fetch("user-#{id}/has_pro_membership", expires_in: 200.hours) do
       pro_membership&.active? || has_role?(:pro)
     end
   end
 
   def trusted
-    RedisRailsCache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
+    Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
       has_role? :trusted
     end
   end
 
   def moderator_for_tags
-    RedisRailsCache.fetch("user-#{id}/tag_moderators_list", expires_in: 200.hours) do
+    Rails.cache.fetch("user-#{id}/tag_moderators_list", expires_in: 200.hours) do
       tag_ids = roles.where(name: "tag_moderator").pluck(:resource_id)
       Tag.where(id: tag_ids).pluck(:name)
     end
@@ -400,7 +392,7 @@ class User < ApplicationRecord
     return unless email.present? && email.include?("@")
     return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
 
-    Users::SubscribeToMailchimpNewsletterJob.perform_later(id)
+    Users::SubscribeToMailchimpNewsletterWorker.perform_async(id)
   end
 
   def a_sustaining_member?
@@ -420,6 +412,7 @@ class User < ApplicationRecord
   def settings_tab_list
     %w[
       Profile
+      UX
       Integrations
       Notifications
       Publishing\ from\ RSS
@@ -455,11 +448,24 @@ class User < ApplicationRecord
     currently_streaming_on == "twitch"
   end
 
-  def has_enough_credits?(num_credits_needed)
+  def enough_credits?(num_credits_needed)
     credits.unspent.size >= num_credits_needed
   end
 
+  def receives_follower_email_notifications?
+    email.present? &&
+      email_follower_notifications
+  end
+
   private
+
+  def index_id
+    "users-#{id}"
+  end
+
+  def estimate_default_language
+    Users::EstimateDefaultLanguageJob.perform_later(id)
+  end
 
   def set_default_language
     language_settings["preferred_languages"] ||= ["en"]
@@ -536,7 +542,7 @@ class User < ApplicationRecord
   end
 
   def conditionally_resave_articles
-    Users::ResaveArticlesJob.perform_later(id) if core_profile_details_changed? && !user.banned
+    Users::ResaveArticlesWorker.perform_async(id) if core_profile_details_changed? && !user.banned
   end
 
   def bust_cache

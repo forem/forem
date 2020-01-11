@@ -1,9 +1,9 @@
 module Api
   module V0
-    class ChatChannelsController < ApplicationController
+    class ChatChannelsController < ApiController
       def show
         @chat_channel = ChatChannel.find(params[:id])
-        raise unless @chat_channel.has_member?(current_user)
+        error_not_found unless @chat_channel.has_member?(current_user)
       end
     end
   end

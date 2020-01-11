@@ -22,13 +22,9 @@ class Notification < ApplicationRecord
     where(organization_id: org_id, notifiable_type: "Mention", user_id: nil)
   }
 
-  scope :without_past_aggregations, lambda {
-    where.not("notified_at < ? AND action IN ('Reaction', 'Follow')", 24.hours.ago)
-  }
-
   class << self
     def send_new_follower_notification(follow, is_read = false)
-      return unless Follow.need_new_follower_notification_for?(follow.followable_type)
+      return unless follow && Follow.need_new_follower_notification_for?(follow.followable_type)
       return if follow.followable_type == "User" && UserBlock.blocking?(follow.followable_id, follow.follower_id)
 
       follow_data = follow.attributes.slice("follower_id", "followable_id", "followable_type").symbolize_keys
@@ -36,7 +32,7 @@ class Notification < ApplicationRecord
     end
 
     def send_new_follower_notification_without_delay(follow, is_read = false)
-      return unless Follow.need_new_follower_notification_for?(follow.followable_type)
+      return unless follow && Follow.need_new_follower_notification_for?(follow.followable_type)
       return if follow.followable_type == "User" && UserBlock.blocking?(follow.followable_id, follow.follower_id)
 
       follow_data = follow.attributes.slice("follower_id", "followable_id", "followable_type").symbolize_keys
@@ -62,31 +58,27 @@ class Notification < ApplicationRecord
     end
 
     def send_new_badge_achievement_notification(badge_achievement)
-      Notifications::NewBadgeAchievementJob.perform_later(badge_achievement.id)
+      Notifications::NewBadgeAchievementWorker.perform_async(badge_achievement.id)
     end
-    # NOTE: this alias is temporary until the transition to ActiveJob is completed
-    # and all old DelayedJob jobs are processed by the queue workers.
-    # It can be removed after pre-existing jobs are done
-    alias send_new_badge_notification send_new_badge_achievement_notification
 
     def send_reaction_notification(reaction, receiver)
       return if reaction.skip_notification_for?(receiver)
       return if UserBlock.blocking?(receiver, reaction.user_id)
 
-      Notifications::NewReactionJob.perform_later(*reaction_notification_attributes(reaction, receiver))
+      Notifications::NewReactionWorker.perform_async(*reaction_notification_attributes(reaction, receiver))
     end
 
     def send_reaction_notification_without_delay(reaction, receiver)
       return if reaction.skip_notification_for?(receiver)
       return if UserBlock.blocking?(receiver, reaction.user_id)
 
-      Notifications::NewReactionJob.perform_now(*reaction_notification_attributes(reaction, receiver))
+      Notifications::NewReactionWorker.new.perform(*reaction_notification_attributes(reaction, receiver))
     end
 
     def send_mention_notification(mention)
       return if mention.mentionable_type == "User" && UserBlock.blocking?(mention.mentionable_id, mention.user_id)
 
-      Notifications::MentionJob.perform_later(mention.id)
+      Notifications::MentionWorker.perform_async(mention.id)
     end
 
     def send_welcome_notification(receiver_id)
@@ -136,6 +128,22 @@ class Notification < ApplicationRecord
       Notifications::UpdateJob.perform_later(notifiable.id, notifiable.class.name, action)
     end
 
+    def fast_destroy_old_notifications(destroy_before_timestamp = 4.months.ago)
+      sql = <<-SQL
+        DELETE FROM notifications
+        WHERE notifications.id IN (
+          SELECT notifications.id
+          FROM notifications
+          WHERE created_at < ?
+          LIMIT 50000
+        )
+      SQL
+
+      notification_sql = Notification.sanitize_sql([sql, destroy_before_timestamp])
+
+      BulkSqlDelete.delete_in_batches(notification_sql)
+    end
+
     private
 
     def user_data(user)
@@ -165,11 +173,11 @@ class Notification < ApplicationRecord
     end
   end
 
-  # instance methods
-
   def aggregated?
     action == "Reaction" || action == "Follow"
   end
+
+  private
 
   def mark_notified_at_time
     self.notified_at = Time.current

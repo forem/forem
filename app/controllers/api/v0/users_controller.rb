@@ -10,11 +10,14 @@ module Api
           @users = User.where(username: usernames)
           return
         end
+
         if params[:state] == "follow_suggestions"
           @users = Suggester::Users::Recent.new(current_user).suggest
         elsif params[:state] == "sidebar_suggestions"
           given_tag = params[:tag]
           @users = Suggester::Users::Sidebar.new(current_user, given_tag).suggest.sample(3)
+        else
+          @users = User.none
         end
       end
 

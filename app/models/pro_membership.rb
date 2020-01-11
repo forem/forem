@@ -51,11 +51,11 @@ class ProMembership < ApplicationRecord
     if saved_change_to_created_at? ||
         saved_change_to_expires_at? ||
         saved_change_to_status?
-      Users::ResaveArticlesJob.perform_later(user.id)
+      Users::ResaveArticlesWorker.perform_async(user.id)
     end
   end
 
   def bust_cache
-    RedisRailsCache.delete("user-#{user.id}/has_pro_membership")
+    Rails.cache.delete("user-#{user.id}/has_pro_membership")
   end
 end

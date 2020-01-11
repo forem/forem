@@ -264,20 +264,17 @@ class Article < ApplicationRecord
     # on destroy an article is removed from index in a before_destroy callback #before_destroy_actions
     return if remove
 
-    AlgoliaSearch::AlgoliaJob.perform_later(record, "index_or_remove_from_index_where_appropriate")
+    if record.published && record.tag_list.exclude?("hiring")
+      Search::IndexJob.perform_later("Article", record.id)
+    else
+      Search::RemoveFromIndexJob.perform_later(Article.algolia_index_name, record.id)
+      Search::RemoveFromIndexJob.perform_later("searchables_#{Rails.env}", record.index_id)
+      Search::RemoveFromIndexJob.perform_later("ordered_articles_#{Rails.env}", record.index_id)
+    end
   end
 
   def body_text
     ActionView::Base.full_sanitizer.sanitize(processed_html)[0..7000]
-  end
-
-  # this should remain public because it's called by AlgoliaSearch::AlgoliaJob in .trigger_index
-  def index_or_remove_from_index_where_appropriate
-    if published && tag_list.exclude?("hiring")
-      index!
-    else
-      remove_algolia_index
-    end
   end
 
   def remove_algolia_index
@@ -381,11 +378,12 @@ class Article < ApplicationRecord
     hours < 1 ? "#{minutes}:#{seconds}" : "#{hours}:#{minutes}:#{seconds}"
   end
 
-  private
-
+  # keep public because it's used in algolia jobs
   def index_id
     "articles-#{id}"
   end
+
+  private
 
   def delete_related_objects
     Search::RemoveFromIndexJob.perform_now("searchables_#{Rails.env}", index_id)
@@ -478,7 +476,7 @@ class Article < ApplicationRecord
     end
     # perform busting cache in chunks in case there're a lot of articles
     (article_ids.uniq.sort - [id]).each_slice(10) do |ids|
-      Articles::BustMultipleCachesJob.perform_later(ids)
+      Articles::BustMultipleCachesWorker.perform_async(ids)
     end
   end
 
@@ -514,9 +512,11 @@ class Article < ApplicationRecord
     # check there are not too many tags
     return errors.add(:tag_list, "exceed the maximum of 4 tags") if tag_list.size > 4
 
-    # check tags names aren't too long
+    # check tags names aren't too long and don't contain non alphabet characters
     tag_list.each do |tag|
-      errors.add(:tag, "\"#{tag}\" is too long (maximum is 30 characters)") if tag.length > 30
+      new_tag = Tag.new(name: tag)
+      new_tag.validate_name
+      new_tag.errors.messages[:name].each { |message| errors.add(:tag, "\"#{tag}\" #{message}") }
     end
   end
 
@@ -595,6 +595,7 @@ class Article < ApplicationRecord
     set_featured_number
     set_crossposted_at
     set_last_comment_at
+    set_nth_published_at
   end
 
   def set_published_date
@@ -615,6 +616,12 @@ class Article < ApplicationRecord
     self.last_comment_at = published_at
     user.touch(:last_article_at)
     organization&.touch(:last_article_at)
+  end
+
+  def set_nth_published_at
+    published_article_ids = user.articles.published.order("published_at ASC").pluck(:id)
+    index = published_article_ids.index(id)
+    self.nth_published_by_author = (index || published_article_ids.size) + 1 if nth_published_by_author.zero? && published
   end
 
   def title_to_slug
@@ -640,6 +647,6 @@ class Article < ApplicationRecord
   end
 
   def async_bust
-    Articles::BustCacheJob.perform_later(id)
+    Articles::BustCacheWorker.perform_async(id)
   end
 end

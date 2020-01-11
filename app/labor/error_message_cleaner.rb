@@ -7,7 +7,7 @@ class ErrorMessageCleaner
 
   def clean
     if error_message.include? "expected key while parsing a block mapping at line"
-      "There was a problem parsing the front-matter YAML. Perhaps you need to escape a quote or a colon or something. Email #{ApplicationConfig['DEFAULT_SITE_EMAIL']} if you are having trouble."
+      "There was a problem parsing the front-matter YAML. Perhaps you need to escape a quote or a colon or something. Email #{SiteConfig.default_site_email} if you are having trouble."
     else
       error_message
     end

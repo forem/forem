@@ -1,8 +1,27 @@
 class UserDecorator < ApplicationDecorator
+  WHITE_TEXT_COLORS = [
+    {
+      bg: "#093656",
+      text: "#ffffff"
+    },
+    {
+      bg: "#61122f",
+      text: "#ffffff"
+    },
+    {
+      bg: "#2e0338",
+      text: "#ffffff"
+    },
+    {
+      bg: "#080E3B",
+      text: "#ffffff"
+    },
+  ].freeze
+
   delegate_all
 
   def cached_followed_tags
-    RedisRailsCache.fetch("user-#{id}-#{updated_at}/followed_tags_11-30", expires_in: 20.hours) do
+    Rails.cache.fetch("user-#{id}-#{updated_at}/followed_tags_11-30", expires_in: 20.hours) do
       follows_query = Follow.where(follower_id: id, followable_type: "ActsAsTaggableOn::Tag").pluck(:followable_id, :points)
       tags = Tag.where(id: follows_query.map { |f| f[0] }).order("hotness_score DESC")
       tags.each do |t|
@@ -48,28 +67,12 @@ class UserDecorator < ApplicationDecorator
   def assigned_color
     colors = [
       {
-        bg: "#093656",
-        text: "#ffffff"
-      },
-      {
         bg: "#19063A",
         text: "#dce9f3"
       },
       {
         bg: "#0D4D4B",
         text: "#fdf9f3"
-      },
-      {
-        bg: "#61122f",
-        text: "#ffffff"
-      },
-      {
-        bg: "#2e0338",
-        text: " #ffffff"
-      },
-      {
-        bg: "#080E3B",
-        text: "#ffffff"
       },
       {
         bg: "#010C1F",
@@ -88,6 +91,7 @@ class UserDecorator < ApplicationDecorator
         text: "#c9d2dd"
       },
     ]
+    colors |= WHITE_TEXT_COLORS
     colors[id % 10]
   end
 

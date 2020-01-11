@@ -206,6 +206,42 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe "#nth_published_by_author" do
+    it "does not have a nth_published_by_author if not published" do
+      unpublished_article = build(:article, published: false)
+      unpublished_article.validate # to make sure the front matter extraction happens
+      expect(unpublished_article.nth_published_by_author).to eq(0)
+    end
+
+    it "does have a nth_published_by_author if published" do
+      # this works because validation triggers the extraction of the date from the front matter
+      published_article = create(:article, published: true, user: user)
+      expect(published_article.reload.nth_published_by_author).to eq(user.articles.size)
+      second_article = create(:article, user_id: published_article.user_id)
+      expect(second_article.reload.nth_published_by_author).to eq(user.articles.size)
+    end
+
+    it "adds have a nth_published_by_author if published" do
+      # this works because validation triggers the extraction of the date from the front matter
+      published_article = create(:article, published: true, user: user)
+      expect(published_article.reload.nth_published_by_author).to eq(user.articles.size)
+      second_article = create(:article, user_id: published_article.user_id)
+      second_article.update_column(:nth_published_by_author, 0)
+      second_article.save
+      expect(second_article.reload.nth_published_by_author).to eq(user.articles.size)
+    end
+
+    it "adds have a nth_published_by_author to earlier posts if added for first time" do
+      # this works because validation triggers the extraction of the date from the front matter
+      published_article = create(:article, published: true, user: user)
+      expect(published_article.reload.nth_published_by_author).to eq(user.articles.size)
+      create(:article, user_id: published_article.user_id)
+      published_article.update_column(:nth_published_by_author, 0)
+      published_article.save
+      expect(published_article.reload.nth_published_by_author).to eq(user.articles.size - 1)
+    end
+  end
+
   describe "#crossposted_at" do
     it "does not have crossposted_at if not published_from_feed" do
       expect(article.crossposted_at).to be_nil
@@ -330,7 +366,7 @@ RSpec.describe Article, type: :model do
     end
   end
 
-  describe "published_timestamp" do
+  describe "#published_timestamp" do
     it "returns empty string if the article is not published" do
       article.published = false
       expect(article.published_timestamp).to be_empty
@@ -430,22 +466,32 @@ RSpec.describe Article, type: :model do
   end
 
   context "when indexing and deindexing" do
-    it "triggers background auto-indexing" do
-      # the article is auto indexed during creation...
-      expect(enqueued_jobs.count { |j| j[:job] == AlgoliaSearch::AlgoliaJob }.positive?).to be(true)
+    it "deindexes unpublished article" do
+      expect do
+        article.update(body_markdown: "---\ntitle: Title\npublished: false\ndescription:\ntags: one\n---\n\n")
+      end.to have_enqueued_job(Search::RemoveFromIndexJob).with(described_class.algolia_index_name, article.id).
+        and have_enqueued_job(Search::RemoveFromIndexJob).with("searchables_#{Rails.env}", article.index_id).
+        and have_enqueued_job(Search::RemoveFromIndexJob).with("ordered_articles_#{Rails.env}", article.index_id)
+    end
+
+    it "deindexes hiring article" do
+      expect do
+        article.update(body_markdown: "---\ntitle: Title\npublished: true\ndescription:\ntags: hiring\n---\n\n")
+      end.to have_enqueued_job(Search::RemoveFromIndexJob).with(described_class.algolia_index_name, article.id).
+        and have_enqueued_job(Search::RemoveFromIndexJob).with("searchables_#{Rails.env}", article.index_id).
+        and have_enqueued_job(Search::RemoveFromIndexJob).with("ordered_articles_#{Rails.env}", article.index_id)
+    end
+
+    it "indexes published non-hiring article" do
+      expect do
+        article.update(published: false)
+      end.to have_enqueued_job(Search::IndexJob).exactly(:once).with("Article", article.id)
     end
 
     it "triggers auto removal from index on destroy" do
-      jobs_count = enqueued_jobs.count { |j| j[:job] == AlgoliaSearch::AlgoliaJob }
-      create(:article, user: user).destroy
-      # 1 is for auto indexing, the second is for auto removal
-      expect(enqueued_jobs.count { |j| j[:job] == AlgoliaSearch::AlgoliaJob }).to eq(jobs_count + 1)
-    end
-
-    it "explicitly removes the article from the algolia index" do
       allow(article).to receive(:remove_from_index!)
       allow(article).to receive(:delete_related_objects)
-      article.remove_algolia_index
+      article.destroy
       expect(article).to have_received(:remove_from_index!)
       expect(article).to have_received(:delete_related_objects)
     end

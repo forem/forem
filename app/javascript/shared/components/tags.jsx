@@ -225,9 +225,14 @@ class Tags extends Component {
     if (e.target.className === 'articleform__tagsoptionrulesbutton') {
       return;
     }
+
     const input = document.getElementById('tag-input');
     input.focus();
-    this.insertTag(e.target.dataset.content);
+
+    // the rules container (__tagoptionrow) is the real target of the event,
+    // by using currentTarget we let the event propagation work
+    // from the inner rules box as well (__tagrules)
+    this.insertTag(e.currentTarget.dataset.content);
   };
 
   handleInput = e => {
@@ -326,12 +331,12 @@ class Tags extends Component {
         if (listing === true) {
           const { additionalTags } = this.state;
           const { category } = this.props;
-          const additionalItems = (additionalTags[category] || []).filter(
-            t => t.indexOf(query) > -1,
+          const additionalItems = (additionalTags[category] || []).filter(t =>
+            t.includes(query),
           );
           const resultsArray = content.hits;
           additionalItems.forEach(t => {
-            if (resultsArray.indexOf(t) === -1) {
+            if (!resultsArray.includes(t)) {
               resultsArray.push({ name: t });
             }
           });

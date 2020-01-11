@@ -1,10 +1,16 @@
+/* eslint camelcase: "off" */
+
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import Navigation from './Navigation';
 import { getContentOfToken } from '../utilities';
 
-const setupFormTextField = ({ labelText = '', entityName = '', onChangeCallback }) => {
+const setupFormTextField = ({
+  labelText = '',
+  entityName = '',
+  onChangeCallback,
+}) => {
   return (
     <label htmlFor={entityName}>
       {labelText}
@@ -16,8 +22,8 @@ const setupFormTextField = ({ labelText = '', entityName = '', onChangeCallback 
         maxLength="60"
       />
     </label>
-  )
-}
+  );
+};
 
 class PersonalInfoForm extends Component {
   constructor(props) {
@@ -96,27 +102,21 @@ class PersonalInfoForm extends Component {
         <div className="onboarding-content about">
           <h2>About You!</h2>
           <form>
-            {
-              setupFormTextField({
-                labelText: 'Where are you located?',
-                entityName: 'location',
-                onChangeCallback: this.handleChange
-              })
-            }
-            {
-              setupFormTextField({
-                labelText: 'What is your title?',
-                entityName: 'employment_title',
-                onChangeCallback: this.handleChange
-              })
-            }
-            {
-              setupFormTextField({
-                labelText: 'Where do you work?',
-                entityName: 'employer_name',
-                onChangeCallback: this.handleChange
-              })
-            }
+            {setupFormTextField({
+              labelText: 'Where are you located?',
+              entityName: 'location',
+              onChangeCallback: this.handleChange,
+            })}
+            {setupFormTextField({
+              labelText: 'What is your title?',
+              entityName: 'employment_title',
+              onChangeCallback: this.handleChange,
+            })}
+            {setupFormTextField({
+              labelText: 'Where do you work?',
+              entityName: 'employer_name',
+              onChangeCallback: this.handleChange,
+            })}
           </form>
         </div>
         <Navigation prev={prev} next={this.onSubmit} />
@@ -124,6 +124,12 @@ class PersonalInfoForm extends Component {
     );
   }
 }
+
+setupFormTextField.propTypes = {
+  labelText: PropTypes.string.isRequired,
+  entityName: PropTypes.string.isRequired,
+  onChangeCallback: PropTypes.func.isRequired,
+};
 
 PersonalInfoForm.propTypes = {
   prev: PropTypes.func.isRequired,

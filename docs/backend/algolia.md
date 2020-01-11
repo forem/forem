@@ -11,8 +11,7 @@ application.
 
 ## Sign up
 
-1. Go to the Algolia sign up
-   [page](https://www.algolia.com/apps/AJVD3Q9KL3/dashboard).
+1. Go to the Algolia sign up [page](https://www.algolia.com/users/sign_up).
 
 2. Choose one of the three methods of signing up: email, GitHub, or Google.
 
@@ -40,8 +39,8 @@ application.
 
 ## Get API keys
 
-1. [Sign up](#algolia-sign-up) or [Sign
-   in](https://www.algolia.com/users/sign_in) to your Algolia account.
+1. [Sign up](#algolia-sign-up) or
+   [Sign in](https://www.algolia.com/users/sign_in) to your Algolia account.
 
 2. From your **Dashboard**, click on **API Keys**.
 

@@ -36,13 +36,11 @@
   <% end %>
 <% end %>
 
-<% if !internal_navigation? %>
+<% if internal_navigation? %>
+    <link rel="canonical" href="<%= @article.canonical_url.presence || "https://#{ApplicationConfig['APP_DOMAIN']}#{@article.path}" %>" />
+<% else %>
   <%= content_for :page_meta do %>
-    <% if @article.canonical_url.present? %>
-      <link rel="canonical" href="<%= @article.canonical_url %>" />
-    <% else %>
-      <link rel="canonical" href="https://dev.to<%= @article.path %>" />
-    <% end %>
+    <link rel="canonical" href="<%= @article.canonical_url.presence || "https://#{ApplicationConfig['APP_DOMAIN']}#{@article.path}" %>" />
     <meta name="description" content="<%= @article.description || "An article from the community" %>">
     <meta name="keywords" content="software development, inclusive, community, engineering, <%= @article.cached_tag_list %>">
 
@@ -51,7 +49,7 @@
     <meta property="og:title" content="<%= @article.title %>" />
     <meta property="og:description" content="<%= @article.description || "An article from the community" %>" />
     <meta property="og:site_name" content="<%= community_qualified_name %>" />
-    <meta name="twitter:site" content="@<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %>">
+    <meta name="twitter:site" content="@<%= SiteConfig.social_networks_handle %>">
     <meta name="twitter:creator" content="@<%= @user.twitter_username %>">
     <meta name="twitter:title" content="<%= @article.title %>">
     <meta name="twitter:description" content="<%= @article.description || "An article from the community" %>">
@@ -80,7 +78,7 @@
     <% if @article.video_state == "PROGRESSING" %>
       <h1 style="text-align:center;">⏳ Video Transcoding In Progress ⏳</h1>
     <% end %>
-    <article itemscope itemtype="http://schema.org/Article" itemprop="mainEntityOfPage">
+    <article itemscope itemtype="http://schema.org/Article" itemprop="mainEntity">
       <meta itemprop="url" content="https://dev.to<%= @article.path %>">
       <meta itemprop="image" content="<%= article_social_image_url(@article) %>">
       <div itemprop="publisher" itemscope itemtype="https://schema.org/Organization">

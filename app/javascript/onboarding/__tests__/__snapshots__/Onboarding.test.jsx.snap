@@ -122,8 +122,8 @@ preact-render-spy (1 nodes)
         <label htmlFor="checked_code_of_conduct">
           <input
             type="checkbox"
-            name="checked_code_of_conduct"
             id="checked_code_of_conduct"
+            name="checked_code_of_conduct"
             checked={false}
             onChange={[Function bound handleChange]}
            />

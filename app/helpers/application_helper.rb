@@ -15,38 +15,6 @@ module ApplicationHelper
     end
   end
 
-  def core_pages?
-    %w[
-      articles
-      podcast_episodes
-      events
-      tags
-      registrations
-      users
-      pages
-      chat_channels
-      dashboards
-      moderations
-      videos
-      badges
-      stories
-      comments
-      notifications
-      reading_list_items
-      html_variants
-      classified_listings
-      credits
-      partnerships
-      pro_memberships
-    ].include?(controller_name)
-  end
-
-  def render_js?
-    article_pages = controller_name == "articles" && %(index show).include?(controller.action_name)
-    pulses_pages = controller_name == "pulses"
-    !(article_pages || pulses_pages)
-  end
-
   def title(page_title)
     derived_title = if page_title.include?(ApplicationConfig["COMMUNITY_NAME"])
                       page_title
@@ -58,10 +26,6 @@ module ApplicationHelper
   end
 
   def title_with_timeframe(page_title:, timeframe:, content_for: false)
-    if timeframe.blank?
-      return content_for ? title(page_title) : page_title
-    end
-
     sub_titles = {
       "week" => "Top posts this week",
       "month" => "Top posts this month",
@@ -69,6 +33,10 @@ module ApplicationHelper
       "infinity" => "All posts",
       "latest" => "Latest posts"
     }
+
+    if timeframe.blank? || sub_titles[timeframe].blank?
+      return content_for ? title(page_title) : page_title
+    end
 
     title_text = "#{page_title} - #{sub_titles.fetch(timeframe)}"
     content_for ? title(title_text) : title_text
@@ -87,13 +55,13 @@ module ApplicationHelper
       "volume-mute" => "v1461589297/technology_jiugwb.png"
     }.fetch(name, "v1456342953/star-in-black-of-five-points-shape_sor40l.png")
 
-    "https://res.cloudinary.com/practicaldev/image/upload/#{postfix}"
+    "https://res.cloudinary.com/#{ApplicationConfig['CLOUDINARY_CLOUD_NAME']}/image/upload/#{postfix}"
   end
 
   def cloudinary(url, width = nil, _quality = 80, _format = "jpg")
     return url if Rails.env.development? && (url.blank? || url.exclude?("http"))
 
-    service_path = "https://res.cloudinary.com/practicaldev/image/fetch"
+    service_path = "https://res.cloudinary.com/#{ApplicationConfig['CLOUDINARY_CLOUD_NAME']}/image/fetch"
 
     if url&.size&.positive?
       if width
@@ -111,7 +79,7 @@ module ApplicationHelper
   end
 
   def tag_colors(tag)
-    RedisRailsCache.fetch("view-helper-#{tag}/tag_colors", expires_in: 5.hours) do
+    Rails.cache.fetch("view-helper-#{tag}/tag_colors", expires_in: 5.hours) do
       if (found_tag = Tag.select(%i[bg_color_hex text_color_hex]).find_by(name: tag))
         { background: found_tag.bg_color_hex, color: found_tag.text_color_hex }
       else
@@ -169,8 +137,8 @@ module ApplicationHelper
   end
 
   def logo_svg
-    if ApplicationConfig["LOGO_SVG"].present?
-      ApplicationConfig["LOGO_SVG"].html_safe
+    if SiteConfig.logo_svg.present?
+      SiteConfig.logo_svg.html_safe
     else
       inline_svg_tag("devplain.svg", class: "logo", size: "20% * 20%", aria: true, title: "App logo")
     end

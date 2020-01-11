@@ -17,6 +17,30 @@ RSpec.describe Notifications::NewComment::Send, type: :service do
     end.to change(Notification, :count).by(2)
   end
 
+  it "creates a correct user notification" do
+    described_class.call(child_comment)
+
+    notification = child_comment.notifications.last
+
+    expect(notification.action).to be_nil
+    expect(notification.json_data["user"]["id"]).to eq(child_comment.user.id)
+    expect(notification.json_data["user"]["username"]).to eq(child_comment.user.username)
+  end
+
+  it "creates the correct comment data for the notification" do
+    described_class.call(child_comment)
+
+    notification = child_comment.notifications.last
+    json_data = notification.json_data
+
+    expect(json_data["comment"]["id"]).to eq(child_comment.id)
+    expect(Time.zone.parse(json_data["comment"]["created_at"]).to_i).to eq(child_comment.created_at.to_i)
+    expect(Time.zone.parse(json_data["comment"]["updated_at"]).to_i).to eq(child_comment.updated_at.to_i)
+    expect(json_data["comment"]["ancestors"]).to be_present
+    expect(json_data["comment"]["commentable"]).to be_present
+    expect(json_data["comment"]["processed_html"]).to be_present
+  end
+
   it "creates notifications for the article author and the parent comment author" do
     described_class.call(child_comment)
     child_comment.reload

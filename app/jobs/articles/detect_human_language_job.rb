@@ -4,7 +4,9 @@ module Articles
 
     def perform(article_id)
       article = Article.find_by(id: article_id)
-      article&.update_column(:language, LanguageDetector.new(article).detect)
+      return unless article
+
+      article.update_column(:language, LanguageDetector.new(article).detect)
     end
   end
 end

@@ -45,6 +45,6 @@ class Event < ApplicationRecord
   end
 
   def bust_cache
-    Events::BustCacheJob.perform_later
+    Events::BustCacheWorker.perform_async
   end
 end

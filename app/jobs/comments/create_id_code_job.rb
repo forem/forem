@@ -4,6 +4,7 @@ module Comments
 
     def perform(comment_id)
       comment = Comment.find_by(id: comment_id)
+
       comment&.update_column(:id_code, comment.id.to_s(26))
     end
   end

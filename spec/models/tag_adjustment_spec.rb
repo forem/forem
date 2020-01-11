@@ -6,7 +6,7 @@ RSpec.describe TagAdjustment, type: :model do
     admin_user.add_role(:admin)
   end
 
-  let(:article) { create(:article) }
+  let(:article) { create(:article, tags: nil) }
   let(:tag) { create(:tag) }
   let(:admin_user) { create(:user) }
   let(:mod_user) { create(:user) }
@@ -44,8 +44,14 @@ RSpec.describe TagAdjustment, type: :model do
   end
 
   describe "allowed attribute states" do
-    it "allows proper adjustment_types" do
-      tag_adjustment = build(:tag_adjustment, user_id: mod_user.id, article_id: article.id, tag_id: tag.id, adjustment_type: "removal")
+    it "allows addition adjustment_types" do
+      tag_adjustment = build(:tag_adjustment, user_id: mod_user.id, article_id: article.id, tag_id: tag.id)
+      expect(tag_adjustment).to be_valid
+    end
+
+    it "allows removal adjustment_types" do
+      article = create(:article, tags: tag.name)
+      tag_adjustment = build(:tag_adjustment, user_id: mod_user.id, article_id: article.id, tag_id: tag.id, tag_name: tag.name, adjustment_type: "removal")
       expect(tag_adjustment).to be_valid
     end
 
@@ -64,12 +70,19 @@ RSpec.describe TagAdjustment, type: :model do
       expect(tag_adjustment).to be_invalid
     end
   end
-end
 
-# t.integer   :user_id
-# t.integer   :article_id
-# t.integer   :tag_id
-# t.string    :tag_name
-# t.string    :adjustment_type
-# t.string    :status
-# t.string    :reason_for_adjustment
+  describe "validates article tag_list" do
+    it "does not allow addition on articles with 4 tags" do
+      article_tags_maxed = create(:article)
+      allow(article_tags_maxed).to receive(:tag_list).and_return([1, 2, 3, 4])
+      tag_adjustment = build(:tag_adjustment, user_id: admin_user.id, article_id: article_tags_maxed.id, tag_id: tag.id, tag_name: tag.name)
+      expect(tag_adjustment).to be_invalid
+    end
+
+    it "does not create if removed tag not on tag_list" do
+      article = create(:article, tags: tag.name)
+      tag_adjustment = build(:tag_adjustment, user_id: admin_user.id, article_id: article.id, adjustment_type: "removal")
+      expect(tag_adjustment).to be_invalid
+    end
+  end
+end

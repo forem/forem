@@ -2,12 +2,14 @@ class Podcast < ApplicationRecord
   resourcify
 
   has_many :podcast_episodes
+  belongs_to :creator, class_name: "User", inverse_of: :created_podcasts, foreign_key: :creator_id, optional: true
 
   mount_uploader :image, ProfileImageUploader
   mount_uploader :pattern_image, ProfileImageUploader
 
   validates :main_color_hex, :title, :feed_url, :image, presence: true
-  validates :feed_url, uniqueness: true
+  validates :main_color_hex, format: /\A([a-fA-F]|[0-9]){6}\Z/
+  validates :feed_url, uniqueness: true, url: { schemes: %w[https http] }
   validates :slug,
             presence: true,
             uniqueness: true,
@@ -40,7 +42,8 @@ class Podcast < ApplicationRecord
   private
 
   def unique_slug_including_users_and_orgs
-    errors.add(:slug, "is taken.") if User.find_by(username: slug) || Organization.find_by(slug: slug) || Page.find_by(slug: slug)
+    slug_exists = User.exists?(username: slug) || Organization.exists?(slug: slug) || Page.exists?(slug: slug)
+    errors.add(:slug, "is taken.") if slug_exists
   end
 
   def bust_cache

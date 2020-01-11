@@ -71,7 +71,7 @@ class UsersController < ApplicationController
   end
 
   def confirm_destroy
-    destroy_token = RedisRailsCache.read("user-destroy-token-#{@user.id}")
+    destroy_token = Rails.cache.read("user-destroy-token-#{@user.id}")
     raise ActionController::RoutingError, "Not Found" unless destroy_token.present? && destroy_token == params[:token]
 
     set_tabs("account")
@@ -98,20 +98,29 @@ class UsersController < ApplicationController
 
       flash[:settings_notice] = "Your #{provider.capitalize} account was successfully removed."
     else
-      flash[:error] = "An error occurred. Please try again or send an email to: #{ApplicationConfig['DEFAULT_SITE_EMAIL']}"
+      flash[:error] = "An error occurred. Please try again or send an email to: #{SiteConfig.default_site_email}"
     end
     redirect_to "/settings/#{@tab}"
   end
 
   def onboarding_update
-    current_user.assign_attributes(params[:user].permit(:summary, :location, :employment_title, :employer_name, :last_onboarding_page)) if params[:user]
+    if params[:user]
+      permitted_params = %i[summary location employment_title employer_name last_onboarding_page]
+      current_user.assign_attributes(params[:user].permit(permitted_params))
+    end
     current_user.saw_onboarding = true
     authorize User
     render_update_response
   end
 
   def onboarding_checkbox_update
-    current_user.assign_attributes(params[:user].permit(:checked_code_of_conduct, :checked_terms_and_conditions, :email_membership_newsletter, :email_digest_periodic)) if params[:user]
+    if params[:user]
+      permitted_params = %i[
+        checked_code_of_conduct checked_terms_and_conditions email_membership_newsletter email_digest_periodic
+      ]
+      current_user.assign_attributes(params[:user].permit(permitted_params))
+    end
+
     current_user.saw_onboarding = true
     authorize User
     render_update_response
@@ -177,7 +186,7 @@ class UsersController < ApplicationController
     return unless user.looking_for_work?
 
     hiring_tag = Tag.find_by(name: "hiring")
-    Users::FollowJob.perform_later(user.id, hiring_tag.id, "Tag")
+    Users::FollowWorker.perform_async(user.id, hiring_tag.id, "Tag")
   end
 
   def handle_settings_tab
@@ -262,6 +271,7 @@ class UsersController < ApplicationController
 
   def set_user
     @user = current_user
+    not_found unless @user
     authorize @user
   end
 

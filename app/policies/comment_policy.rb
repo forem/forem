@@ -27,6 +27,14 @@ class CommentPolicy < ApplicationPolicy
     true
   end
 
+  def hide?
+    user_is_commentable_author?
+  end
+
+  def unhide?
+    user_is_commentable_author?
+  end
+
   def permitted_attributes_for_update
     %i[body_markdown receive_notifications]
   end
@@ -53,5 +61,9 @@ class CommentPolicy < ApplicationPolicy
     return false if user.blocked_by_count.zero?
 
     UserBlock.blocking?(record.commentable.user_id, user.id)
+  end
+
+  def user_is_commentable_author?
+    record.commentable.present? && record.commentable.user_id == user.id
   end
 end

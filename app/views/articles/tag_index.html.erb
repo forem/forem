@@ -1,7 +1,6 @@
 <%= content_for :page_meta do %>
   <%= render "articles/tags/meta" %>
 <% end %>
-<% params.delete(:i) %>
 <% expiry_minutes = params[:timeframe].blank? || params[:timeframe] == "latest" ? 4 : 20 %>
 <% flag = true %>
 <% cache("tag-stories-index-#{params}-#{flag}-#{@tag_model.updated_at}", expires_in: expiry_minutes.minutes) do %>

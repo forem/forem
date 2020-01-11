@@ -5,6 +5,8 @@ class ApplicationController < ActionController::Base
   include ValidRequest
   include Pundit
 
+  rescue_from ActionView::MissingTemplate, with: :routing_error
+
   def require_http_auth
     authenticate_or_request_with_http_basic do |username, password|
       username == ApplicationConfig["APP_NAME"] && password == ApplicationConfig["APP_PASSWORD"]
@@ -13,6 +15,10 @@ class ApplicationController < ActionController::Base
 
   def not_found
     raise ActiveRecord::RecordNotFound, "Not Found"
+  end
+
+  def routing_error
+    raise ActionController::RoutingError, "Routing Error"
   end
 
   def not_authorized
@@ -36,7 +42,7 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     return "/onboarding?referrer=#{request.env['omniauth.origin'] || 'none'}" unless current_user.saw_onboarding
 
-    request.env["omniauth.origin"] || stored_location_for(resource) || "/dashboard"
+    (request.env["omniauth.origin"] || stored_location_for(resource) || "/dashboard") + "?signin=true" # This signin=true param is used by frontend
   end
 
   def raise_banned
