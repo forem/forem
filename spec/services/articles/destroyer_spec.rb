@@ -17,7 +17,7 @@ RSpec.describe Articles::Destroyer, type: :service do
     create(:comment, commentable: article)
     expect do
       described_class.call(article)
-    end.to have_enqueued_job(Notifications::RemoveAllJob).once
+    end.to sidekiq_assert_enqueued_jobs(1, only: Notifications::RemoveAllWorker)
   end
 
   it "calls events dispatcher" do
