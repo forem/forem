@@ -113,6 +113,10 @@ export default function initModeratorResponses() {
     targetNodes.forEach(node => {
       observer.observe(node, config);
     });
+
+    window.addEventListener('beforeunload', () => {
+      observer.disconnect()
+    })
   }
 
   function fetchCannedResponses() {
