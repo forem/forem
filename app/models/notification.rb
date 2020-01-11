@@ -97,7 +97,7 @@ class Notification < ApplicationRecord
     end
 
     def send_milestone_notification(type:, article_id:)
-      Notifications::MilestoneJob.perform_later(type, article_id)
+      Notifications::MilestoneWorker.perform_async(type, article_id)
     end
 
     def remove_all_by_action(notifiable_ids:, notifiable_type:, action: nil)

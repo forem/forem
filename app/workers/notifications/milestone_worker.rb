@@ -1,6 +1,8 @@
 module Notifications
-  class MilestoneJob < ApplicationJob
-    queue_as :send_milestone_notification
+  class MilestoneWorker
+    include Sidekiq::Worker
+
+    sidekiq_options queue: :low_priority, retry: 10
 
     def perform(type, article_id, service = Notifications::Milestone::Send)
       article = Article.find_by(id: article_id)
