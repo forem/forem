@@ -242,13 +242,13 @@ exports[`<Chat /> should load chat 1`] = `
           </div>
         </div>
         <div
+          class="mention__list"
+        >
+           
+        </div>
+        <div
           class="activechatchannel__form"
         >
-          <div
-            class="mention__list"
-          >
-             
-          </div>
           <div
             class="compose__outer__container"
           >

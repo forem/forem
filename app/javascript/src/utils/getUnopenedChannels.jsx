@@ -72,7 +72,11 @@ class UnopenedChannelNotice extends Component {
 
   messageOpened = e => {
     const { unopenedChannels } = this.state;
-    if (!window.location.pathname.startsWith('/connect')) return;
+    if (
+      !window.location.pathname.startsWith('/connect') ||
+      !window.location.pathname.includes(e.adjusted_slug)
+    )
+      return;
     this.updateMessageNotification(
       unopenedChannels.filter(
         unopenedChannel => unopenedChannel.adjusted_slug !== e.adjusted_slug,
@@ -83,7 +87,8 @@ class UnopenedChannelNotice extends Component {
   receiveNewMessage = e => {
     if (
       (window.location.pathname.startsWith('/connect') &&
-        e.user_id === window.currentUser.id && e.channel_type === 'open') ||
+        e.user_id === window.currentUser.id &&
+        e.channel_type === 'open') ||
       window.location.pathname.includes(e.adjusted_slug)
     ) {
       return;
@@ -117,6 +122,10 @@ class UnopenedChannelNotice extends Component {
       });
     }
     this.updateMessageNotification(unopenedChannels);
+    this.hideNotice();
+  };
+
+  handleClick = () => {
     this.hideNotice();
   };
 
@@ -175,6 +184,7 @@ class UnopenedChannelNotice extends Component {
       return (
         <a
           href={`/connect/${unopenedChannels[0].adjusted_slug}`}
+          onClick={this.handleClick}
           style={{
             position: 'fixed',
             zIndex: '200',
