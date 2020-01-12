@@ -35,7 +35,6 @@ class User < ApplicationRecord
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :chat_channels, through: :chat_channel_memberships
   has_many :notification_subscriptions, dependent: :destroy
-  has_many :push_notification_subscriptions, dependent: :destroy
   has_many :feedback_messages
   has_many :rating_votes
   has_many :html_variants, dependent: :destroy
@@ -51,6 +50,7 @@ class User < ApplicationRecord
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
   has_many :user_blocks
   has_one :pro_membership, dependent: :destroy
+  has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -147,7 +147,7 @@ class User < ApplicationRecord
   validate  :validate_feed_url, if: :feed_url_changed?
   validate  :unique_including_orgs_and_podcasts, if: :username_changed?
 
-  scope :dev_account, -> { find_by(id: ApplicationConfig["DEVTO_USER_ID"]) }
+  scope :dev_account, -> { find_by(id: SiteConfig.staff_user_id) }
 
   after_create :send_welcome_notification
   after_save  :bust_cache
@@ -392,7 +392,7 @@ class User < ApplicationRecord
     return unless email.present? && email.include?("@")
     return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
 
-    Users::SubscribeToMailchimpNewsletterJob.perform_later(id)
+    Users::SubscribeToMailchimpNewsletterWorker.perform_async(id)
   end
 
   def a_sustaining_member?
@@ -412,6 +412,7 @@ class User < ApplicationRecord
   def settings_tab_list
     %w[
       Profile
+      UX
       Integrations
       Notifications
       Publishing\ from\ RSS
@@ -449,6 +450,11 @@ class User < ApplicationRecord
 
   def enough_credits?(num_credits_needed)
     credits.unspent.size >= num_credits_needed
+  end
+
+  def receives_follower_email_notifications?
+    email.present? &&
+      email_follower_notifications
   end
 
   private
@@ -536,7 +542,7 @@ class User < ApplicationRecord
   end
 
   def conditionally_resave_articles
-    Users::ResaveArticlesJob.perform_later(id) if core_profile_details_changed? && !user.banned
+    Users::ResaveArticlesWorker.perform_async(id) if core_profile_details_changed? && !user.banned
   end
 
   def bust_cache

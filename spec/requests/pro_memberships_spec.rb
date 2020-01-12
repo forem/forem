@@ -90,10 +90,10 @@ RSpec.describe "Pro Memberships", type: :request do
       end
 
       it "enqueues a job to bust the user's articles caches" do
-        assert_enqueued_with(
-          job: Users::ResaveArticlesJob,
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
           args: [user.id],
-          queue: "users_resave_articles",
+          queue: "medium_priority",
         ) do
           post pro_membership_path
         end

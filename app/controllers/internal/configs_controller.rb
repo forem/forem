@@ -6,9 +6,11 @@ class Internal::ConfigsController < Internal::ApplicationController
   end
 
   def create
+    clean_up_params
     config_params.keys.each do |key|
       SiteConfig.public_send("#{key}=", config_params[key].strip) unless config_params[key].nil?
     end
+    bust_relevant_caches
     redirect_to internal_config_path, notice: "Site configuration was successfully updated."
   end
 
@@ -22,8 +24,17 @@ class Internal::ConfigsController < Internal::ApplicationController
       ga_view_id ga_fetch_rate
       mailchimp_newsletter_id mailchimp_sustaining_members_id
       mailchimp_tag_moderators_id mailchimp_community_moderators_id
-      periodic_email_digest_max periodic_email_digest_min
+      periodic_email_digest_max periodic_email_digest_min suggested_tags
     ]
     params.require(:site_config).permit(allowed_params)
+  end
+
+  def clean_up_params
+    config = params[:site_config]
+    config[:suggested_tags] = config[:suggested_tags].downcase.delete(" ") if config[:suggested_tags]
+  end
+
+  def bust_relevant_caches
+    CacheBuster.bust("/api/tags/onboarding") # Needs to change when suggested_tags is edited
   end
 end

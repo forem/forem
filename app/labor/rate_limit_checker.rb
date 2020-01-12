@@ -2,7 +2,7 @@ class RateLimitChecker
   attr_reader :user, :action
 
   def self.daily_account_follow_limit
-    ApplicationConfig["RATE_LIMIT_FOLLOW_COUNT_DAILY"]
+    SiteConfig.rate_limit_follow_count_daily
   end
 
   def initialize(user = nil)
@@ -45,7 +45,7 @@ class RateLimitChecker
   end
 
   def ping_admins
-    RateLimitCheckerJob.perform_later(user.id, action)
+    RateLimitCheckerWorker.perform_async(user.id, action)
   end
 
   private

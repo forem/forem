@@ -21,13 +21,13 @@ class Comment < ApplicationRecord
   validates :user_id, presence: true
 
   after_create   :after_create_checks
-  after_save     :calculate_score
+  after_commit   :calculate_score
   after_save     :bust_cache
   after_save     :synchronous_bust
   after_destroy  :after_destroy_actions
   before_destroy :before_destroy_actions
-  after_create   :send_email_notification, if: :should_send_email_notification?
-  after_create   :create_first_reaction
+  after_create_commit :send_email_notification, if: :should_send_email_notification?
+  after_create_commit :create_first_reaction
   after_create   :send_to_moderator
   before_save    :set_markdown_character_count, if: :body_markdown
   before_create  :adjust_comment_parent_based_on_depth
@@ -238,7 +238,7 @@ class Comment < ApplicationRecord
   end
 
   def calculate_score
-    Comments::CalculateScoreJob.perform_later(id)
+    Comments::CalculateScoreWorker.perform_async(id)
   end
 
   def after_create_checks
@@ -247,11 +247,11 @@ class Comment < ApplicationRecord
   end
 
   def create_id_code
-    Comments::CreateIdCodeJob.perform_later(id)
+    update_column(:id_code, id.to_s(26))
   end
 
   def touch_user
-    Comments::TouchUserJob.perform_later(id)
+    user&.touch(:updated_at, :last_comment_at)
   end
 
   def expire_root_fragment
@@ -259,7 +259,7 @@ class Comment < ApplicationRecord
   end
 
   def create_first_reaction
-    Comments::CreateFirstReactionJob.perform_later(id)
+    Comments::CreateFirstReactionWorker.perform_async(id, user_id)
   end
 
   def after_destroy_actions
@@ -290,7 +290,7 @@ class Comment < ApplicationRecord
   end
 
   def send_email_notification
-    Comments::SendEmailNotificationJob.perform_later(id)
+    Comments::SendEmailNotificationWorker.perform_async(id)
   end
 
   def should_send_email_notification?

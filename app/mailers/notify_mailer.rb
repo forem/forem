@@ -1,4 +1,8 @@
 class NotifyMailer < ApplicationMailer
+  SUBJECTS = {
+    new_follower_email: "just followed you on dev.to".freeze
+  }.freeze
+
   def new_reply_email(comment)
     @user = comment.parent_user
     return if RateLimitChecker.new.limit_by_email_recipient_address(@user.email)
@@ -15,7 +19,7 @@ class NotifyMailer < ApplicationMailer
     @follower = follow.follower
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_follower_notifications)
 
-    mail(to: @user.email, subject: "#{@follower.name} just followed you on dev.to")
+    mail(to: @user.email, subject: "#{@follower.name} #{SUBJECTS[__method__]}")
   end
 
   def new_mention_email(mention)

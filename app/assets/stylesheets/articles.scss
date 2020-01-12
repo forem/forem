@@ -1227,6 +1227,11 @@
             );
           }
         }
+        .suggest-podcast {
+          color: var(--theme-secondary-color, #666666);
+          text-decoration: underline;
+          padding: 0 5px;
+        }
       }
       hr {
         opacity: 0.2;

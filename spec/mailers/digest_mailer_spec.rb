@@ -14,7 +14,8 @@ RSpec.describe DigestMailer, type: :mailer do
 
       expect(email.subject).not_to be_nil
       expect(email.to).to eq([user.email])
-      expect(email.from).to eq([ApplicationConfig["DEFAULT_SITE_EMAIL"]])
+      expect(email.from).to eq([SiteConfig.default_site_email])
+      expect(email["from"].value).to eq("DEV Digest <#{SiteConfig.default_site_email}>")
     end
 
     it "includes the tracking pixel" do

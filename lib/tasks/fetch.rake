@@ -37,8 +37,8 @@ task expire_old_listings: :environment do
   end
 end
 
-task clear_memory_if_too_high: :environment do
-  Rails.cache.clear if Rails.cache.stats.flatten[1]["bytes"].to_i > 9_650_000_000
+task remove_old_notifications: :environment do
+  Notification.fast_destroy_old_notifications
 end
 
 task save_nil_hotness_scores: :environment do
@@ -50,9 +50,9 @@ task github_repo_fetch_all: :environment do
 end
 
 task send_email_digest: :environment do
-  return if Time.current.wday < 3
-
-  EmailDigest.send_periodic_digest_email
+  if Time.current.wday >= 3
+    EmailDigest.send_periodic_digest_email
+  end
 end
 
 task award_badges: :environment do
@@ -110,4 +110,25 @@ end
 
 task fix_credits_count_cache: :environment do
   Credit.counter_culture_fix_counts only: %i[user organization]
+end
+
+task record_db_table_counts: :environment do
+  table_names = %w[users articles organizations comments podcasts classified_listings page_views]
+  table_names.each do |table_name|
+    estimate = ActiveRecord::Base.connection.execute("SELECT reltuples::bigint AS estimate FROM pg_class where relname='#{table_name}'").first["estimate"]
+    Rails.logger.info(
+      "db_table_size",
+      table_info: {
+        table_name: table_name,
+        table_size: estimate
+      },
+    )
+    DataDogStatsClient.gauge(
+      "postgres.db_table_size", estimate, tags: { table_name: table_name }
+    )
+  end
+end
+
+task log_worker_queue_stats: :environment do
+  Loggers::LogWorkerQueueStats.run
 end

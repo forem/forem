@@ -26,10 +26,6 @@ module ApplicationHelper
   end
 
   def title_with_timeframe(page_title:, timeframe:, content_for: false)
-    if timeframe.blank?
-      return content_for ? title(page_title) : page_title
-    end
-
     sub_titles = {
       "week" => "Top posts this week",
       "month" => "Top posts this month",
@@ -37,6 +33,10 @@ module ApplicationHelper
       "infinity" => "All posts",
       "latest" => "Latest posts"
     }
+
+    if timeframe.blank? || sub_titles[timeframe].blank?
+      return content_for ? title(page_title) : page_title
+    end
 
     title_text = "#{page_title} - #{sub_titles.fetch(timeframe)}"
     content_for ? title(title_text) : title_text
@@ -55,13 +55,13 @@ module ApplicationHelper
       "volume-mute" => "v1461589297/technology_jiugwb.png"
     }.fetch(name, "v1456342953/star-in-black-of-five-points-shape_sor40l.png")
 
-    "https://res.cloudinary.com/practicaldev/image/upload/#{postfix}"
+    "https://res.cloudinary.com/#{ApplicationConfig['CLOUDINARY_CLOUD_NAME']}/image/upload/#{postfix}"
   end
 
   def cloudinary(url, width = nil, _quality = 80, _format = "jpg")
     return url if Rails.env.development? && (url.blank? || url.exclude?("http"))
 
-    service_path = "https://res.cloudinary.com/practicaldev/image/fetch"
+    service_path = "https://res.cloudinary.com/#{ApplicationConfig['CLOUDINARY_CLOUD_NAME']}/image/fetch"
 
     if url&.size&.positive?
       if width
@@ -137,8 +137,8 @@ module ApplicationHelper
   end
 
   def logo_svg
-    if ApplicationConfig["LOGO_SVG"].present?
-      ApplicationConfig["LOGO_SVG"].html_safe
+    if SiteConfig.logo_svg.present?
+      SiteConfig.logo_svg.html_safe
     else
       inline_svg_tag("devplain.svg", class: "logo", size: "20% * 20%", aria: true, title: "App logo")
     end

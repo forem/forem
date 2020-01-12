@@ -5,8 +5,8 @@ RSpec.describe RateLimitChecker, type: :labor do
   let(:article) { create(:article, user_id: user.id) }
 
   describe "self.daily_account_follow_limit " do
-    it 'returns the value set in ApplicationConfig["RATE_LIMIT_FOLLOW_COUNT_DAILY"' do
-      expect(described_class.daily_account_follow_limit).to eq(ApplicationConfig["RATE_LIMIT_FOLLOW_COUNT_DAILY"])
+    it "returns the value set in SiteConfig.rate_limit_follow_count_daily" do
+      expect(described_class.daily_account_follow_limit).to eq(SiteConfig.rate_limit_follow_count_daily)
     end
   end
 
@@ -21,10 +21,10 @@ RSpec.describe RateLimitChecker, type: :labor do
     end
 
     it "triggers ping admin when too many comments" do
-      allow(RateLimitCheckerJob).to receive(:perform_later)
+      allow(RateLimitCheckerWorker).to receive(:perform_async)
       create_list(:comment, 10, user_id: user.id, commentable_id: article.id)
       described_class.new(user).limit_by_action("comment_creation")
-      expect(RateLimitCheckerJob).to have_received(:perform_later).with(user.id, "comment_creation")
+      expect(RateLimitCheckerWorker).to have_received(:perform_async).with(user.id, "comment_creation")
     end
 
     it "returns false if allowed comment" do

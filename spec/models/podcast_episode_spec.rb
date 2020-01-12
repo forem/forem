@@ -117,7 +117,9 @@ RSpec.describe PodcastEpisode, type: :model do
 
   context "when callbacks are triggered after save" do
     it "triggers cache busting on save" do
-      expect { build(:podcast_episode).save }.to have_enqueued_job.on_queue("podcast_episodes_bust_cache")
+      sidekiq_assert_enqueued_with(job: PodcastEpisodes::BustCacheWorker, args: [podcast_episode.id, podcast_episode.path, podcast_episode.podcast_slug]) do
+        podcast_episode.save
+      end
     end
   end
 end

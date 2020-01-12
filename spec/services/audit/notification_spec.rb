@@ -3,8 +3,6 @@ require "rails_helper"
 RSpec.describe Audit::Notification, type: :service do
   let!(:listener) { Faker::Alphanumeric.alpha(number: 10) }
   let(:user) { build(:user, :admin) }
-  let(:queue_name) { Audit::SaveToPersistentStorageJob.queue_name }
-  let(:job_class) { Audit::SaveToPersistentStorageJob }
 
   before do
     Audit::Subscribe.listen listener
@@ -41,18 +39,10 @@ RSpec.describe Audit::Notification, type: :service do
     end
   end
 
-  describe "Queueing job for saving an event" do
-    it "can enqueue job on dedicated queue name" do
-      expect { notify }.to have_enqueued_job(job_class).on_queue(queue_name.to_s)
-    end
-  end
-
   describe "Saving to database" do
     it "creates an AuditLog record" do
       user.save
-      perform_enqueued_jobs do
-        notify
-      end
+      notify
 
       event_record = AuditLog.find_by(user_id: user.id)
       expect(event_record.user).to eq(user)

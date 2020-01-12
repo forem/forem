@@ -1,36 +1,36 @@
-<a href="/internal/listings">Back to All Listings</a>
+<a class="btn btn-primary float-right" href="/internal/listings">Back to All Listings</a>
 
-<h1>Edit <a href="/listings/<%= @classified_listing.category %>/<%= @classified_listing.slug %>" target="_blank">"<%= @classified_listing.title %>"</a></h1>
+<h2>Edit <a href="/listings/<%= @classified_listing.category %>/<%= @classified_listing.slug %>" target="_blank">"<%= @classified_listing.title %>"</a></h2>
 
 <%= form_for [:internal, @classified_listing] do |form| %>
-  <%= form.label :title %>
-  <br>
-  <%= form.text_field :title, size: 100, maxlength: 128 %>
-  <hr>
-  <%= form.label :body_markdown %>
-  <br>
-  <%= form.text_area :body_markdown, cols: 40, rows: 15, maxlength: 400 %>
-  <hr>
-  <%= form.label :tag_list %>
-  <br>
-  <i style="font-size: 15px;">Comma separated, one space, 8 tags max</i>
-  <br>
-  <%= form.text_field :tag_list, value: @classified_listing.cached_tag_list, size: 100 %>
-  <hr>
-  <%= form.label :category %>
-  <br>
-  <%= form.select :category, options_for_select(ClassifiedListing.select_options_for_categories.map(&:last), @classified_listing.category) %>
-  <hr>
-  <%= form.label :published %>
-  <%= form.check_box :published, checked: @classified_listing.published? %>
-  <hr>
-  <%= form.submit "Update Listing", class: "btn btn-lg btn-primary" %>
-  <hr>
+  <div class="form-group">
+    <%= form.label :title %>
+    <%= form.text_field :title, size: 100, maxlength: 128, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= form.label :body_markdown %>
+    <%= form.text_area :body_markdown, cols: 40, rows: 15, maxlength: 400, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= form.label :tag_list %>
+    <i style="font-size: 15px;">Comma separated, one space, 8 tags max</i>
+    <%= form.text_field :tag_list, value: @classified_listing.cached_tag_list, size: 100, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= form.label :category %>
+    <%= form.select :category, options_for_select(ClassifiedListing.select_options_for_categories.map(&:last), @classified_listing.category) %>
+  </div>
+  <div class="form-check">
+    <%= form.check_box :published, checked: @classified_listing.published? %>
+    <%= form.label :published %>
+  </div>
+  <%= form.submit "Update Listing", class: "btn btn-primary float-right" %>
 <% end %>
-<%= form_for [:internal, @classified_listing] do |f| %>
-  <input type="hidden" name="classified_listing[action]" value="bump" />
-  <%= f.submit "Bump Listing ⏫", class: "btn btn-lg btn-primary" %>
-<% end %>
-<hr>
-<%= link_to "Destroy Listing", url_for(action: :destroy, id: @classified_listing.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %>
-<br><br><br>
+<hr class="mt-5">
+<div class="d-flex justify-content-start">
+  <%= form_for [:internal, @classified_listing] do |f| %>
+    <input type="hidden" name="classified_listing[action]" value="bump" />
+    <%= f.submit "Bump Listing ⏫", class: "btn btn-secondary" %>
+  <% end %>
+  <%= link_to "Destroy Listing", url_for(action: :destroy, id: @classified_listing.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger ml-2" %>
+</div>

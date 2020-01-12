@@ -24,7 +24,9 @@ module Notifications
       new_json_data = notifications.first.json_data || {}
       new_json_data[notifiable.class.name.downcase] = public_send("#{notifiable.class.name.downcase}_data", notifiable)
       new_json_data[:user] = user_data(notifiable.user)
-      new_json_data[:organization] = organization_data(notifiable.organization) if notifiable.is_a?(Article) && notifiable.organization_id
+      add_organization_data = notifiable.is_a?(Article) && notifiable.organization_id
+      new_json_data[:organization] = organization_data(notifiable.organization) if add_organization_data
+
       notifications.update_all(json_data: new_json_data)
     end
 
