@@ -45,7 +45,9 @@ class Message < ApplicationRecord
   def evaluate_markdown
     html = MarkdownParser.new(message_markdown).evaluate_markdown
     html = append_rich_links(html)
-    html = wrap_mentions_with_links!(html)
+    if chat_channel.channel_type == "open"
+      html = wrap_mentions_with_links!(html)
+    end
     self.message_html = html
   end
 
@@ -81,6 +83,10 @@ class Message < ApplicationRecord
     if User.find_by(username: username)
       <<~HTML
         <a class='comment-mentioned-user' data-content="sidecar-user" href='/#{username}' target="_blank">@#{username}</a>
+      HTML
+    elsif username == "all"
+      <<~HTML
+        <a class='comment-mentioned-user comment-mentioned-all' data-content="chat_channels/#{chat_channel.id}" href='#' target="_blank">@#{username}</a>
       HTML
     else
       mention

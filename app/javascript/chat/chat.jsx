@@ -37,6 +37,7 @@ export default class Chat extends Component {
     super(props);
     const chatChannels = JSON.parse(props.chatChannels);
     const chatOptions = JSON.parse(props.chatOptions);
+
     this.state = {
       messages: [],
       scrolled: false,
@@ -314,7 +315,20 @@ export default class Chat extends Component {
 
   setOpenChannelUsers = res => {
     const { activeChannelId } = this.state;
-    this.setState({ channelUsers: { [activeChannelId]: res.channel_users } });
+    Object.filter = (obj, predicate) =>
+      Object.fromEntries(Object.entries(obj).filter(predicate));
+    const leftUser = Object.filter(
+      res.channel_users,
+      ([username]) => username !== window.currentUser.username,
+    );
+    this.setState({
+      channelUsers: {
+        [activeChannelId]: {
+          all: { username: 'all', name: 'To notify everyone here' },
+          ...leftUser,
+        },
+      },
+    });
   };
 
   observerCallback = entries => {
@@ -1134,8 +1148,8 @@ export default class Chat extends Component {
           <div className="activechatchannel__alerts">
             <Alert showAlert={state.showAlert} />
           </div>
+          {this.renderChannelMembersList()}
           <div className="activechatchannel__form">
-            {this.renderChannelMembersList()}
             <Compose
               handleSubmitOnClick={this.handleSubmitOnClick}
               handleKeyDown={this.handleKeyDown}
@@ -1165,23 +1179,25 @@ export default class Chat extends Component {
   };
 
   handleMention = e => {
+    const { activeChannel } = this.state;
     const mention = e.keyCode === 64;
-    if (mention) {
+    if (mention && activeChannel.channel_type === 'open') {
       this.setState({ showMemberlist: true });
     }
   };
 
   handleKeyUp = e => {
-    const { startEditing } = this.state;
+    const { startEditing, activeChannel } = this.state;
 
-    if (startEditing) {
-      this.setState({ markdownEdited: true });
-    }
-
-    if (!e.target.value.includes('@')) {
-      this.setState({ showMemberlist: false });
-    } else {
-      this.setQuery(e.target);
+    if (activeChannel.channel_type === 'open') {
+      if (startEditing) {
+        this.setState({ markdownEdited: true });
+      }
+      if (!e.target.value.includes('@')) {
+        this.setState({ showMemberlist: false });
+      } else {
+        this.setQuery(e.target);
+      }
     }
   };
 
@@ -1223,8 +1239,13 @@ export default class Chat extends Component {
 
   getMentionedUsers = message => {
     const { channelUsers, activeChannelId } = this.state;
-    console.log(channelUsers);
     if (channelUsers[activeChannelId]) {
+      if (message.includes('@all')) {
+        return Array.from(
+          Object.values(channelUsers[activeChannelId]).filter(user => user.id),
+          user => user.id,
+        );
+      }
       return Array.from(
         Object.values(channelUsers[activeChannelId]).filter(user =>
           message.includes(user.username),
@@ -1251,7 +1272,7 @@ export default class Chat extends Component {
       >
         {showMemberlist
           ? Object.values(channelUsers[activeChannelId])
-              .filter(user => user.name.match(filterRegx))
+              .filter(user => user.username.match(filterRegx))
               .map(user => (
                 <div
                   className="mention__user"
@@ -1267,11 +1288,18 @@ export default class Chat extends Component {
                     className="mention__user__image"
                     src={user.profile_image}
                     alt={user.name}
+                    style={!user.profile_image ? { display: 'none' } : ' '}
                   />
                   <span
-                    style={{ color: user.darker_color, padding: '3px 0px' }}
+                    style={{
+                      color: user.darker_color,
+                      padding: '3px 0px',
+                      'font-size': '16px',
+                    }}
                   >
-                    {user.name}
+                    {'@'}
+                    {user.username}
+                    <p>{user.name}</p>
                   </span>
                 </div>
               ))

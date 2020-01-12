@@ -72,6 +72,7 @@ class UnopenedChannelNotice extends Component {
 
   messageOpened = e => {
     const { unopenedChannels } = this.state;
+    if (!window.location.pathname.startsWith('/connect')) return;
     this.updateMessageNotification(
       unopenedChannels.filter(
         unopenedChannel => unopenedChannel.adjusted_slug !== e.adjusted_slug,
@@ -80,6 +81,13 @@ class UnopenedChannelNotice extends Component {
   };
 
   receiveNewMessage = e => {
+    if (
+      (window.location.pathname.startsWith('/connect') &&
+        e.user_id === window.currentUser.id && e.channel_type === 'open') ||
+      window.location.pathname.includes(e.adjusted_slug)
+    ) {
+      return;
+    }
     const { unopenedChannels } = this.state;
     const newObj = { adjusted_slug: e.chat_channel_adjusted_slug };
 
