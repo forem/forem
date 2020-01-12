@@ -504,11 +504,11 @@ RSpec.describe Notification, type: :model do
       mention = create(:mention, user: user, mentionable: comment)
       create(:notification, user: mention.user, notifiable: mention)
 
-      perform_enqueued_jobs do
-        expect do
+      expect do
+        sidekiq_perform_enqueued_jobs do
           described_class.remove_all(notifiable_ids: mention.id, notifiable_type: "Mention")
-        end.to change(user.notifications, :count).by(-1)
-      end
+        end
+      end.to change(user.notifications, :count).by(-1)
     end
   end
 
