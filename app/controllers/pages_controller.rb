@@ -99,7 +99,7 @@ class PagesController < ApplicationController
 
   def latest_published_thread(tag_name)
     Article.published.
-      where(user_id: ApplicationConfig["DEVTO_USER_ID"]).
+      where(user_id: SiteConfig.staff_user_id).
       order("published_at ASC").
       tagged_with(tag_name).last
   end

@@ -37,10 +37,13 @@ Upon deploy, the app installs dependencies, bundles assets, and gets the app
 ready for launch. However, before it launches and releases the app Heroku runs a
 release script on a one-off dyno. If that release script/step succeeds the new
 app is released on all of the dynos. If that release script/step fails then the
-deploy is halted and we are notified. During this release step, we have chosen
-to run migrations. This ensures that a migration finishes successfully before
-the code that uses it goes live. We deploy asynchronously, so the website is
-running the new code a few minutes after deploy. A new instance of Heroku Rails
-console will immediately run a new code.
+deploy is halted and we are notified. During this release step, we first run any
+outstanding migrations. This ensures that a migration finishes successfully
+before the code that uses it goes live. After running migrations, we use the
+rails runner to output a simple string. Executing a Rails runner command allows
+us to ensure that we can boot up the entire app successfully before it is
+deployed. We deploy asynchronously, so the website is running the new code a few
+minutes after deploy. A new instance of Heroku Rails console will immediately
+run a new code.
 
 ![](https://devcenter0.assets.heroku.com/article-images/1494371187-release-phase-diagram-3.png)

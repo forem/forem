@@ -31,11 +31,17 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:github_repos).dependent(:destroy) }
       it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
       it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
-      it { is_expected.to have_many(:push_notification_subscriptions).dependent(:destroy) }
       it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
       it { is_expected.to have_one(:pro_membership).dependent(:destroy) }
 
       # rubocop:disable RSpec/NamedSubject
+      it "has created_podcasts" do
+        expect(subject).to have_many(:created_podcasts).
+          class_name("Podcast").
+          with_foreign_key(:creator_id).
+          dependent(:nullify)
+      end
+
       it do
         expect(subject).to have_many(:access_grants).
           class_name("Doorkeeper::AccessGrant").
@@ -483,29 +489,150 @@ RSpec.describe User, type: :model do
   end
 
   context "when callbacks are triggered after save" do
-    describe "subscribing to mailchip newsletter" do
-      it "enqueues SubscribeToMailchimpNewsletterJob" do
-        expect do
+    describe "subscribing to mailchimp newsletter" do
+      let(:user) { build(:user) }
+
+      it "enqueues SubscribeToMailchimpNewsletterWorker" do
+        sidekiq_assert_enqueued_with(job: Users::SubscribeToMailchimpNewsletterWorker, args: user.id) do
           user.save
-        end.to have_enqueued_job(Users::SubscribeToMailchimpNewsletterJob).exactly(:once).with(user.id)
+        end
       end
 
       it "does not enqueue without an email" do
-        expect do
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(email: "")
-        end.not_to have_enqueued_job(Users::SubscribeToMailchimpNewsletterJob).exactly(:once).with(user.id)
+        end
       end
 
       it "does not enqueue with an invalid email" do
-        expect do
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(email: "foobar")
-        end.not_to have_enqueued_job(Users::SubscribeToMailchimpNewsletterJob).exactly(:once).with(user.id)
+        end
       end
 
       it "does not enqueue with an unconfirmed email" do
-        expect do
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(unconfirmed_email: "bob@bob.com", confirmation_sent_at: Time.current)
-        end.not_to have_enqueued_job(Users::SubscribeToMailchimpNewsletterJob).exactly(:once).with(user.id)
+        end
+      end
+    end
+
+    describe "#conditionally_resave_articles" do
+      let!(:user) { create(:user) }
+
+      context "when changing username" do
+        it "enqueue resave articles job" do
+          sidekiq_assert_enqueued_with(
+            job: Users::ResaveArticlesWorker,
+            args: [user.id],
+            queue: "medium_priority"
+          ) do
+            user.username = "#{user.username} changed"
+            user.save
+          end
+        end
+      end
+
+      context "when changing name" do
+        it "enqueue resave articles job" do
+          sidekiq_assert_enqueued_with(
+            job: Users::ResaveArticlesWorker,
+            args: [user.id],
+            queue: "medium_priority"
+          ) do
+            user.name = "#{user.name} changed"
+            user.save
+          end
+        end
+      end
+
+      context "when changing summary" do
+        it "enqueue resave articles job" do
+          sidekiq_assert_enqueued_with(
+            job: Users::ResaveArticlesWorker,
+            args: [user.id],
+            queue: "medium_priority"
+          ) do
+            user.summary = "#{user.summary} changed"
+            user.save
+          end
+        end
+      end
+
+      context "when changing bg_color_hex" do
+        it "enqueue resave articles job" do
+          sidekiq_assert_enqueued_with(
+            job: Users::ResaveArticlesWorker,
+            args: [user.id],
+            queue: "medium_priority"
+          ) do
+            user.bg_color_hex = "#12345F"
+            user.save
+          end
+        end
+      end
+
+      context "when changing text_color_hex" do
+        it "enqueue resave articles job" do
+          sidekiq_assert_enqueued_with(
+            job: Users::ResaveArticlesWorker,
+            args: [user.id],
+            queue: "medium_priority"
+          ) do
+            user.text_color_hex = "#FA345E"
+            user.save
+          end
+        end
+      end
+
+      context "when changing profile_image" do
+        it "enqueue resave articles job" do
+          sidekiq_assert_enqueued_with(
+            job: Users::ResaveArticlesWorker,
+            args: [user.id],
+            queue: "medium_priority"
+          ) do
+            user.profile_image = "https://fakeimg.pl/300/"
+            user.save
+          end
+        end
+      end
+
+      context "when changing github_username" do
+        it "enqueue resave articles job" do
+          sidekiq_assert_enqueued_with(
+            job: Users::ResaveArticlesWorker,
+            args: [user.id],
+            queue: "medium_priority"
+          ) do
+            user.github_username = "mygreatgithubname"
+            user.save
+          end
+        end
+      end
+
+      context "when changing twitter_username" do
+        it "enqueue resave articles job" do
+          sidekiq_assert_enqueued_with(
+            job: Users::ResaveArticlesWorker,
+            args: [user.id],
+            queue: "medium_priority"
+          ) do
+            user.twitter_username = "mygreattwittername"
+            user.save
+          end
+        end
+      end
+
+      context "when changing resave attributes but user is banned" do
+        let!(:user) { create(:user, :banned) }
+
+        it "doesn't enqueue resave articles" do
+          expect do
+            user.twitter_username = "mygreattwittername"
+            user.save
+          end.to_not change(Users::ResaveArticlesWorker.jobs, :size)
+        end
       end
     end
   end
@@ -726,6 +853,23 @@ RSpec.describe User, type: :model do
     it "returns true if the user has more unspent credits than needed" do
       create_list(:credit, 2, user: user, spent: false)
       expect(user.enough_credits?(1)).to be(true)
+    end
+  end
+
+  describe "#receives_follower_email_notifications?" do
+    it "returns false if user has no email" do
+      user.assign_attributes(email: nil)
+      expect(user.receives_follower_email_notifications?).to be(false)
+    end
+
+    it "returns false if user opted out from follower notifications" do
+      user.assign_attributes(email_follower_notifications: false)
+      expect(user.receives_follower_email_notifications?).to be(false)
+    end
+
+    it "returns true if user opted in from follower notifications and has an email" do
+      user.assign_attributes(email_follower_notifications: true)
+      expect(user.receives_follower_email_notifications?).to be(true)
     end
   end
 end

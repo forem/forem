@@ -15,7 +15,7 @@ RSpec.describe "UserSettings", type: :request do
       before { sign_in user }
 
       it "renders various settings tabs properly" do
-        %w[organization misc account].each do |tab|
+        %w[organization misc account ux].each do |tab|
           get "/settings/#{tab}"
           expect(response.body).to include("Settings for")
         end
@@ -29,6 +29,11 @@ RSpec.describe "UserSettings", type: :request do
       it "allows users to visit the account page" do
         get "/settings/account"
         expect(response.body).to include("Danger Zone")
+      end
+
+      it "displays content on ux tab properly" do
+        get "/settings/ux"
+        expect(response.body).to include("Style Customization")
       end
 
       it "renders heads up dupe account message with proper param" do
@@ -232,7 +237,7 @@ RSpec.describe "UserSettings", type: :request do
       it "sets the proper error message" do
         delete "/users/remove_association", params: { provider: "github" }
         expect(flash[:error]).
-          to eq "An error occurred. Please try again or send an email to: #{ApplicationConfig['DEFAULT_SITE_EMAIL']}"
+          to eq "An error occurred. Please try again or send an email to: #{SiteConfig.default_site_email}"
       end
 
       it "does not delete any identities" do

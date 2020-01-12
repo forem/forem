@@ -10,8 +10,10 @@ Rails.application.routes.draw do
     registrations: "registrations"
   }
 
+  require "sidekiq/web"
   authenticated :user, ->(user) { user.tech_admin? } do
     mount DelayedJobWeb, at: "/delayed_job"
+    mount Sidekiq::Web => "/sidekiq"
   end
 
   devise_scope :user do
@@ -182,7 +184,6 @@ Rails.application.routes.draw do
   resources :html_variants, only: %i[index new create show edit update]
   resources :html_variant_trials, only: [:create]
   resources :html_variant_successes, only: [:create]
-  resources :push_notification_subscriptions, only: [:create]
   resources :tag_adjustments, only: %i[create destroy]
   resources :rating_votes, only: [:create]
   resources :page_views, only: %i[create update]
@@ -200,6 +201,7 @@ Rails.application.routes.draw do
   resources :badges, only: [:index]
   resource :pro_membership, path: :pro, only: %i[show create update]
   resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
+  resources :podcasts, only: %i[new create]
   resolve("ProMembership") { [:pro_membership] } # see https://guides.rubyonrails.org/routing.html#using-resolve
 
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"

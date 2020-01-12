@@ -26,6 +26,8 @@ RSpec.describe Event, type: :model do
   end
 
   it "triggers cache busting on save" do
-    expect { event.save }.to have_enqueued_job.on_queue("events_bust_cache")
+    sidekiq_assert_enqueued_jobs(1, queue: "low_priority") do
+      event.save
+    end
   end
 end

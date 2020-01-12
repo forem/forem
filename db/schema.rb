@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_23_202251) do
-
+ActiveRecord::Schema.define(version: 2019_12_27_114543) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -569,6 +568,7 @@ ActiveRecord::Schema.define(version: 2019_12_23_202251) do
     t.boolean "read", default: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.index ["created_at"], name: "index_notifications_on_created_at"
     t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
     t.index ["notifiable_id"], name: "index_notifications_on_notifiable_id"
     t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
@@ -749,6 +749,7 @@ ActiveRecord::Schema.define(version: 2019_12_23_202251) do
   create_table "podcasts", id: :serial, force: :cascade do |t|
     t.string "android_url"
     t.datetime "created_at", null: false
+    t.integer "creator_id"
     t.text "description"
     t.string "feed_url", null: false
     t.string "image", null: false
@@ -766,6 +767,7 @@ ActiveRecord::Schema.define(version: 2019_12_23_202251) do
     t.boolean "unique_website_url?", default: true
     t.datetime "updated_at", null: false
     t.string "website_url"
+    t.index ["creator_id"], name: "index_podcasts_on_creator_id"
     t.index ["feed_url"], name: "index_podcasts_on_feed_url", unique: true
     t.index ["slug"], name: "index_podcasts_on_slug", unique: true
   end
@@ -835,17 +837,6 @@ ActiveRecord::Schema.define(version: 2019_12_23_202251) do
     t.index ["profile_id"], name: "index_profile_pins_on_profile_id"
   end
 
-  create_table "push_notification_subscriptions", force: :cascade do |t|
-    t.string "auth_key"
-    t.datetime "created_at", null: false
-    t.string "endpoint"
-    t.string "notification_type"
-    t.string "p256dh_key"
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_push_notification_subscriptions_on_user_id"
-  end
-
   create_table "rating_votes", force: :cascade do |t|
     t.bigint "article_id"
     t.datetime "created_at", null: false
@@ -882,18 +873,6 @@ ActiveRecord::Schema.define(version: 2019_12_23_202251) do
     t.datetime "updated_at"
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["name"], name: "index_roles_on_name"
-  end
-
-  create_table "search_keywords", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "google_checked_at"
-    t.integer "google_difficulty"
-    t.integer "google_position"
-    t.string "google_result_path"
-    t.integer "google_volume"
-    t.string "keyword"
-    t.datetime "updated_at", null: false
-    t.index ["google_result_path"], name: "index_search_keywords_on_google_result_path"
   end
 
   create_table "site_configs", force: :cascade do |t|
@@ -1224,7 +1203,7 @@ ActiveRecord::Schema.define(version: 2019_12_23_202251) do
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "page_views", "articles", on_delete: :cascade
-  add_foreign_key "push_notification_subscriptions", "users"
+  add_foreign_key "podcasts", "users", column: "creator_id"
   add_foreign_key "sponsorships", "organizations"
   add_foreign_key "sponsorships", "users"
   add_foreign_key "tag_adjustments", "articles", on_delete: :cascade

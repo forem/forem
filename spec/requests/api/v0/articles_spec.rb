@@ -167,6 +167,37 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(json_response.length).to eq(1)
       end
     end
+
+    context "with state param" do
+      it "returns fresh articles" do
+        article.update_columns(positive_reactions_count: 1, score: 1)
+
+        get api_articles_path(state: "fresh")
+        expect(response.parsed_body.size).to eq(1)
+      end
+
+      it "returns rising articles" do
+        article.update_columns(positive_reactions_count: 32, score: 1, featured_number: 2.days.ago.to_i)
+
+        get api_articles_path(state: "rising")
+        expect(response.parsed_body.size).to eq(1)
+      end
+
+      it "returns nothing if the state is unknown" do
+        get api_articles_path(state: "foobar")
+
+        expect(response.parsed_body).to be_empty
+      end
+
+      it "supports pagination" do
+        create_list(:article, 2, tags: "discuss", positive_reactions_count: 1, score: 1)
+
+        get api_articles_path(state: "fresh"), params: { page: 1, per_page: 2 }
+        expect(json_response.length).to eq(2)
+        get api_articles_path(state: "fresh"), params: { page: 2, per_page: 2 }
+        expect(json_response.length).to eq(1)
+      end
+    end
   end
 
   describe "GET /api/articles/:id" do

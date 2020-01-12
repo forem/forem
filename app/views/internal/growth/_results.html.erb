@@ -1,27 +1,44 @@
-<h3>Past <%= num_days %> day new users (<%= User.where("created_at > ?", num_days.day.ago).count %>)</h3>
-<h4>Overall data:</h4>
-<ul>
-  <li>
-    Average comments: <%= User.where("created_at > ?", num_days.day.ago).average(:comments_count) %>
-  </li>
-  <li>
-    Average articles: <%= User.where("created_at > ?", num_days.day.ago).average(:articles_count) %>
-  </li>
-  <li>
-    Average reactions: <%= User.where("created_at > ?", num_days.day.ago).average(:reactions_count) %>
-  </li>
-</ul>
-<% @variants.each do |var| %>
-  <h4>Variant: <%= var %></h4>
-  <ul>
-    <li>
-      Average comments: <%= User.where("created_at > ?", num_days.day.ago).where(onboarding_variant_version: var).average(:comments_count) %>
-    </li>
-    <li>
-      Average articles: <%= User.where("created_at > ?", num_days.day.ago).where(onboarding_variant_version: var).average(:articles_count) %>
-    </li>
-    <li>
-      Average reactions: <%= User.where("created_at > ?", num_days.day.ago).where(onboarding_variant_version: var).average(:reactions_count) %>
-    </li>
-  </ul>
-<% end %>
+<h3 class="m-4">Past <%= num_days %> day new users (<%= User.where("created_at > ?", num_days.day.ago).count %>)</h3>
+<div class="row">
+  <div class="col">
+    <div class="card">
+      <div class="card-header">
+        <strong>Overall data:</strong>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          Average comments: <%= User.where("created_at > ?", num_days.day.ago).average(:comments_count) %>
+        </li>
+        <li class="list-group-item">
+          Average articles: <%= User.where("created_at > ?", num_days.day.ago).average(:articles_count) %>
+        </li>
+        <li class="list-group-item">
+          Average reactions: <%= User.where("created_at > ?", num_days.day.ago).average(:reactions_count) %>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <% @variants.each do |var| %>
+    <div class="col-sm-6 mt-3">
+      <div class="card">
+        <div class="card-header">
+          <strong>Variant: <%= var %></strong>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            Average comments: <%= User.where("created_at > ?", num_days.day.ago).where(onboarding_variant_version: var).average(:comments_count) %>
+          </li>
+          <li class="list-group-item">
+            Average articles: <%= User.where("created_at > ?", num_days.day.ago).where(onboarding_variant_version: var).average(:articles_count) %>
+          </li>
+          <li class="list-group-item">
+            Average reactions: <%= User.where("created_at > ?", num_days.day.ago).where(onboarding_variant_version: var).average(:reactions_count) %>
+          </li>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+</div>

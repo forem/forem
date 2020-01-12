@@ -29,11 +29,7 @@
     <% end %>
 
     <div>
-      <% if json_data["article"]["published_at"] %>
-        <small><%= time_ago_in_words json_data["article"]["published_at"] %> ago</small>
-      <% else %>
-        <small><%= time_ago_in_words notification.notifiable.published_at %> ago</small>
-      <% end %>
+      <small><%= time_ago_in_words json_data["article"]["published_at"] %> ago</small>
     </div>
 
     <a href="<%= json_data["article"]["path"] %>">
