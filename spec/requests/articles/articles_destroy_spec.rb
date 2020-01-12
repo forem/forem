@@ -16,9 +16,9 @@ RSpec.describe "ArticlesDestroy", type: :request do
 
   it "schedules a RemoveAllWorker if there are comments" do
     create(:comment, commentable: article, user: user)
-    expect do
+    sidekiq_assert_enqueued_with(job: Notifications::RemoveAllWorker) do
       delete "/articles/#{article.id}"
-    end.to sidekiq_assert_enqueued_jobs(1, only: Notifications::RemoveAllWorker)
+    end
   end
 
   it "removes all previous published notifications" do
