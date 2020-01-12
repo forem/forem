@@ -415,6 +415,7 @@
 }
 
 .activechatchannel__conversation {
+  position: relative;
   @include themeable(border-top,
     theme-container-border,
     1px solid $outline-color);
@@ -1324,12 +1325,12 @@
 
 .mention__list{
   position: absolute;
-  bottom: 54px;
   background:#fff;
-  width: calc(100%);
-  display:none;
+  display: none;
   z-index: 1;
   border-top: 1px solid #dbdbdb;
+  bottom: 60px;
+  width: 100%;
 }
 .mention__list .mention__user{
   padding: 5px 10px;
@@ -1344,8 +1345,21 @@
   width: 25px;
   margin-right: 6px;
   border-radius: 20px;
-  vertical-align: -6px;
+  align-self: center;
 }
 .mention__visible{
   display:block;
+}
+.mention__user{
+  display: grid;
+  grid-template-columns: 30px 1fr;
+}
+.mention__user p {
+  margin: 0px;
+  font-size: 9px;
+  color: gray;
+  width: max-content;
+}
+.comment-mentioned-all{
+  color:rgb(213, 138, 0);
 }
