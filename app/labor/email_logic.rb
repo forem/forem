@@ -62,10 +62,11 @@ class EmailLogic
   def get_open_rate
     past_sent_emails = @user.email_messages.where(mailer: "DigestMailer#digest_email").limit(10)
 
-    # Will stick with 50% open rate if @user has no/not-enough email digest history
-    return 0.5 if past_sent_emails.length < 10
-
     past_sent_emails_count = past_sent_emails.count
+
+    # Will stick with 50% open rate if @user has no/not-enough email digest history
+    return 0.5 if past_sent_emails_count < 10
+
     past_opened_emails_count = past_sent_emails.where("opened_at IS NOT NULL").count
     past_opened_emails_count / past_sent_emails_count
   end
