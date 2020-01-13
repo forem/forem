@@ -98,6 +98,8 @@ class CommentsController < ApplicationController
     else
       render json: { status: "errors" }
     end
+  rescue Pundit::NotAuthorizedError
+    raise
   rescue StandardError => e
     Rails.logger.error(e)
     message = "There was a error in your markdown: #{e}"
