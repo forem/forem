@@ -11023,10 +11023,10 @@ redent@^1.0.0:
     indent-string "^2.1.0"
     strip-indent "^1.0.1"
 
-redoc-cli@0.9.4:
-  version "0.9.4"
-  resolved "https://registry.yarnpkg.com/redoc-cli/-/redoc-cli-0.9.4.tgz#8ca02e32d4c9c9a254901b02bb989d1a247d149d"
-  integrity sha512-kWsiKc6ZYybF6rKqFyfvBRGhhhAc795pplM5cWVORNP+6DbEnpPf4awmk5wE2x/GQgf7AxP9bLNwRdaSk1oClg==
+redoc-cli@0.9.5:
+  version "0.9.5"
+  resolved "https://registry.yarnpkg.com/redoc-cli/-/redoc-cli-0.9.5.tgz#20655d11a9d69b3dd1ca59560cb5d3dbb748ae56"
+  integrity sha512-tgsa4E6926KvqswnLmW8OULpvOc7jTLW8RKtw3u0QqUsU07QGsAvgqXuJUwgSSoZGzL9fy57zeDWZ9NWdxQs7A==
   dependencies:
     chokidar "^3.0.2"
     handlebars "^4.1.2"
@@ -11036,15 +11036,15 @@ redoc-cli@0.9.4:
     node-libs-browser "^2.2.1"
     react "^16.8.6"
     react-dom "^16.8.6"
-    redoc "2.0.0-rc.20"
+    redoc "2.0.0-rc.21"
     styled-components "^4.3.2"
     tslib "^1.10.0"
     yargs "^13.3.0"
 
-redoc@2.0.0-rc.20:
-  version "2.0.0-rc.20"
-  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.20.tgz#f50721692fe36bf2214cf8af7d456bc640dcca3b"
-  integrity sha512-nk+6aiBTRatUJ4oc+K+o/oXSEeh0Q7P9qRD7UibRCANM5ymdu4mpoMlDAHpU7iYvwejKeSuQdxfOaxTSsRTCSw==
+redoc@2.0.0-rc.21:
+  version "2.0.0-rc.21"
+  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.21.tgz#cf780f82364cbef0bf85cdd63a722fa03b4d4f3d"
+  integrity sha512-dLyzwNRkcipssE10bUwOrbQWLYA1uWXVQJ81xb8o4H/h31lksZ4OcPMX0OlSHGfNAxW3RicRoAJH6hBknv1r+w==
   dependencies:
     classnames "^2.2.6"
     decko "^1.2.0"
