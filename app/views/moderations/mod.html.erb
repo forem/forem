@@ -28,7 +28,7 @@
     <p>
       <b style="font-size:1.3em">All negative reactions are private.</b>
     </p>
-    <hr/>
+    <hr>
     <p>
       Use <b>Thumbsdown</b> to move this content "down" for any reason (quality, usefulness, etc.).
     </p>
@@ -53,13 +53,13 @@
         <% end %>
         <%= f.hidden_field :article_id, value: @moderatable.id %>
         <% if current_user.any_admin? || @tag_moderator_tags.any? { |tag| @moderatable.tag_list.include?(tag.name) } %>
-          <div class="tag-mod-addition-radio" >
+          <div class="tag-mod-addition-radio">
             <%= f.radio_button :adjustment_type, "removal", required: true %>
             <%= f.label :adjustment_type, "Remove", value: "removal" %>
           </div>
         <% end %>
-        <% if @moderatable.tag_list.count < 4 %>
-          <div class="tag-mod-addition-radio" >
+        <% if @moderatable.tag_list.size < 4 %>
+          <div class="tag-mod-addition-radio">
             <%= f.radio_button :adjustment_type, "addition", required: true %>
             <%= f.label :adjustment_type, "Add", value: "addition" %>
           </div>
