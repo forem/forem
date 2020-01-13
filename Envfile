@@ -48,8 +48,6 @@ variable :GITHUB_TOKEN, :String, default: "Optional"
 
 # Twitter for normal twitter access
 # (https://developer.twitter.com/en/docs/basics/authentication/guides/access-tokens)
-variable :TWITTER_ACCESS_TOKEN, :String, default: "Optional"
-variable :TWITTER_ACCESS_TOKEN_SECRET, :String, default: "Optional"
 variable :TWITTER_KEY, :String, default: "Optional"
 variable :TWITTER_SECRET, :String, default: "Optional"
 
