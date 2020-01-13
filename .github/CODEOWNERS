@@ -17,3 +17,11 @@ yarn.lock @maestromac
 /spec/system/internal/            @jacobherrington
 /spec/requests/internal/          @jacobherrington
 /docs/                            @jacobherrington
+
+# Andy
+/app/assets/stylesheets/internal/ @zhao-andy
+/app/controllers/internal/        @zhao-andy
+/app/views/internal/              @zhao-andy
+/app/views/moderation/            @zhao-andy
+/spec/system/internal/            @zhao-andy
+/spec/requests/internal/          @zhao-andy
