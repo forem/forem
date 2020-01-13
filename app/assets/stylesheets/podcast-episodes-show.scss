@@ -102,13 +102,17 @@
       left:0;
       right:0;
       color:$black;
-      padding:1px 0px 2px;
+      padding:2px 0px 3px;
       border-radius:2px;
       transition: opacity 400ms ease;
       background:white;
-      width:66px;
-      font-size:13px;
+      width:130px;
+      font-size:16px;
       font-weight:bold;
+      display: none;
+      &.showing {
+        display: block;
+      }
     }
 
     .playing{
