@@ -296,7 +296,7 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "renders the welcome notification" do
         broadcast = create(:broadcast, :onboarding)
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           Notification.send_welcome_notification(user.id)
         end
         get "/notifications"
