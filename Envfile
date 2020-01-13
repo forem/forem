@@ -106,10 +106,6 @@ variable :CLOUDINARY_SECURE, :String, default: "Optional"
 variable :HCTI_API_USER_ID, :String, default: "Optional"
 variable :HCTI_API_KEY, :String, default: "Optional"
 
-# Dacast for streaming
-# (https://www.dacast.com/video-api-documentation/)
-variable :DACAST_STREAM_CODE, :String, default: "Optional"
-
 # Fastly for edge caching
 # (https://docs.fastly.com/api/)
 variable :FASTLY_API_KEY, :String, default: "Optional"
@@ -123,7 +119,6 @@ variable :HONEYCOMB_API_KEY, :String, default: ""
 # (https://developers.google.com/analytics/devguides/reporting/core/v4)
 variable :GA_SERVICE_ACCOUNT_JSON, :String, default: "Optional"
 variable :GA_TRACKING_ID, :String, default: "Optional"
-variable :GA_OPTIMIZE_ID, :String, default: "Optional"
 
 # Mailchimp for mails
 # (https://mailchimp.com/developer/)
@@ -166,16 +161,9 @@ variable :TWITCH_CLIENT_ID, :String, default: "Optional"
 variable :TWITCH_CLIENT_SECRET, :String, default: "Optional"
 variable :TWITCH_WEBHOOK_SECRET, :String, default: "Optional"
 
-# Trending tags on home page
-variable :TRENDING_TAGS, :String, default: "git,beginners"
-
 # For calling the Stack Exchange API
 # (https://api.stackexchange.com/docs)
 variable :STACK_EXCHANGE_APP_KEY, :String, default: ""
-
-##### Legacy test related env vars ######
-variable :FACEBOOK_PIXEL_ID, :String, default: "Optional"
-variable :SMARTY_STREETS_WEB_KEY, :String, default: "Optional"
 
 group :production do
   variable :SECRET_KEY_BASE, :String
