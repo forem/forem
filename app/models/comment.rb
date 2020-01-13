@@ -275,11 +275,11 @@ class Comment < ApplicationRecord
   end
 
   def bust_cache_without_delay
-    Comments::BustCacheJob.perform_now(id)
+    Comments::BustCacheWorker.perform_async(id)
   end
 
   def bust_cache
-    Comments::BustCacheJob.perform_later(id)
+    Comments::BustCacheWorker.perform_async(id)
   end
 
   def synchronous_bust

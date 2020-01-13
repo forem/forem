@@ -331,6 +331,12 @@ RSpec.describe Comment, type: :model do
     it "updates user's last_comment_at" do
       expect { comment.destroy }.to change(user, :last_comment_at)
     end
+
+    it "enqueues a worker to bust the comment cache" do
+      expect do
+        comment.destroy
+      end.to change { Comments::BustCacheWorker.jobs.size }.by(1)
+    end
   end
 
   describe "when indexing and deindexing" do
