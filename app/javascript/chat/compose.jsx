@@ -78,38 +78,40 @@ export default class Chat extends Component {
     );
   };
 
-  render() {
+  textAreaSection = () => {
     const {
       handleSubmitOnClick,
       handleKeyDown,
-      startEditing,
       handleMention,
       handleKeyUp,
     } = this.props;
     return (
+      <div className="messagecomposer">
+        <textarea
+          className="messagecomposer__input"
+          id="messageform"
+          placeholder="Message goes here"
+          onKeyDown={handleKeyDown}
+          onKeyPress={handleMention}
+          onKeyUp={handleKeyUp}
+          maxLength="1000"
+        />
+        <button
+          type="button"
+          className="messagecomposer__submit"
+          onClick={handleSubmitOnClick}
+        >
+          SEND
+        </button>
+      </div>
+    );
+  };
+
+  render() {
+    const { startEditing } = this.props;
+    return (
       <div className="compose__outer__container">
-        {!startEditing ? (
-          <div className="messagecomposer">
-            <textarea
-              className="messagecomposer__input"
-              id="messageform"
-              placeholder="Message goes here"
-              onKeyDown={handleKeyDown}
-              onKeyPress={handleMention}
-              onKeyUp={handleKeyUp}
-              maxLength="1000"
-            />
-            <button
-              type="button"
-              className="messagecomposer__submit"
-              onClick={handleSubmitOnClick}
-            >
-              SEND
-            </button>
-          </div>
-        ) : (
-          this.messageCompose()
-        )}
+        {!startEditing ? this.textAreaSection() : this.messageCompose()}
       </div>
     );
   }
