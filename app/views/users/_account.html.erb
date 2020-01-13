@@ -88,30 +88,33 @@
 <% end %>
 
 <h3>Delete Account</h3>
-<h4 style="font-weight:400;">
-  <%= form_tag user_request_destroy_path, method: :get, autocomplete: "off", id: "delete__account" do %>
-    Deleting your account will:
-    <ul class="delete__account">
-      <li>delete your profile, along with your Twitter and/or GitHub associations.
-        This does not include app permissions. You will have to remove them yourself on
-        <a href="https://twitter.com/settings/applications">Twitter profile settings</a> and
-        <a href="https://github.com/settings/applications">GitHub profile settings</a>.
-      </li>
-      <%# TODO: expand the delete messaging later %>
-      <li>delete any and all content you have, such as articles, comments, your reading list or chat messages.</li>
-      <li>allow your username to become available to anyone.</li>
-    </ul>
-    <button class="big-action danger-button small-button" id="delete__account__btn" type="submit">
-      DELETE ACCOUNT
-    </button>
-  <% end %>
-</h4>
+<% if current_user.email? %>
+  <h4 style="font-weight:400;">
+    <%= form_tag user_request_destroy_path, method: :get, autocomplete: "off", id: "delete__account" do %>
+      Deleting your account will:
+      <ul class="delete__account">
+        <li>delete your profile, along with your Twitter and/or GitHub associations.
+          This does not include app permissions. You will have to remove them yourself on
+          <a href="https://twitter.com/settings/applications">Twitter profile settings</a> and
+          <a href="https://github.com/settings/applications">GitHub profile settings</a>.
+        </li>
+        <%# TODO: expand the delete messaging later %>
+        <li>delete any and all content you have, such as articles, comments, your reading list or chat messages.</li>
+        <li>allow your username to become available to anyone.</li>
+      </ul>
+      <button class="big-action danger-button small-button" id="delete__account__btn" type="submit">
+        DELETE ACCOUNT
+      </button>
+    <% end %>
+  </h4>
+<% else %>
+  <p>Please, <%= link_to "provide an email", "/settings/profile" %> to fully delete your account.</p>
+<% end %>
 <br>
 If you would like to keep your content under the <%= link_to "@ghost", "/ghost" %> account, please:
 <h3>Request Account Deletion</h3>
 <h4 style="font-weight: 400;">
-  <br>
-  <a href="mailto:<%= SiteConfig.default_site_email %>?subject=Request Account Deletion&body=<%= @email_body %>">
+  <a href="mailto:<%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %>?subject=Request Account Deletion&body=<%= @email_body %>">
     Click this link to request account deletion via email.
   </a>
   <br>

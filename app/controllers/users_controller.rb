@@ -65,9 +65,14 @@ class UsersController < ApplicationController
 
   def request_destroy
     set_tabs("account")
-    Users::RequestDestroy.call(@user)
-    flash[:settings_notice] = "You have requested account deletion. Please, check your email for further instructions."
-    redirect_to "/settings/#{@tab}"
+    if @user.email?
+      Users::RequestDestroy.call(@user)
+      flash[:settings_notice] = "You have requested account deletion. Please, check your email for further instructions."
+      redirect_to "/settings/#{@tab}"
+    else
+      flash[:settings_notice] = "Please, provide an email to delete your account"
+      redirect_to "/settings/account"
+    end
   end
 
   def confirm_destroy
@@ -79,10 +84,15 @@ class UsersController < ApplicationController
 
   def full_delete
     set_tabs("account")
-    Users::SelfDeleteJob.perform_later(@user.id)
-    sign_out @user
-    flash[:global_notice] = "Your account deletion is scheduled. You'll be notified when it's deleted."
-    redirect_to root_path
+    if @user.email?
+      Users::SelfDeleteJob.perform_later(@user.id)
+      sign_out @user
+      flash[:global_notice] = "Your account deletion is scheduled. You'll be notified when it's deleted."
+      redirect_to root_path
+    else
+      flash[:settings_notice] = "Please, provide an email to delete your account"
+      redirect_to "/settings/account"
+    end
   end
 
   def remove_association
