@@ -3,6 +3,22 @@ require "rails_helper"
 RSpec.describe "UserDestroy", type: :request do
   let(:user) { create(:user) }
 
+  describe "GET /settings/account" do
+    it "offers to delete account when user has an email" do
+      sign_in user
+      get "/settings/account"
+      expect(response.body).to include("DELETE ACCOUNT").and include("Deleting your account will")
+    end
+
+    it "offers to set an email when user doesn't have an email" do
+      shallow_user = create(:user, email: nil)
+      sign_in shallow_user
+      get "/settings/account"
+      expect(response.body).not_to include("Deleting your account will")
+      expect(response.body).to include("provide an email")
+    end
+  end
+
   describe "DELETE /users/full_delete" do
     before do
       sign_in user
