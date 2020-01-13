@@ -584,13 +584,12 @@ export default class Chat extends Component {
         this.handleFailure,
       );
     } else {
-      sendMessage(
+      const messageObject = {
         activeChannelId,
         message,
-        this.getMentionedUsers(message),
-        this.handleSuccess,
-        this.handleFailure,
-      );
+        mentionedUsersId: this.getMentionedUsers(message),
+      };
+      sendMessage(messageObject, this.handleSuccess, this.handleFailure);
     }
   };
 
