@@ -82,7 +82,7 @@ class Notification < ApplicationRecord
     end
 
     def send_welcome_notification(receiver_id)
-      Notifications::WelcomeNotificationJob.perform_later(receiver_id)
+      Notifications::WelcomeNotificationWorker.perform_async(receiver_id)
     end
 
     def send_moderation_notification(notifiable)
