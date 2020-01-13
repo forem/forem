@@ -116,17 +116,42 @@ export default function initCannedResponses() {
 
     window.addEventListener('beforeunload', () => {
       observer.disconnect();
-    })
+    });
 
     window.InstantClick.on('change', () => {
       observer.disconnect();
     });
   }
 
+  function buildModResponseHTML(response) {
+    const array = response
+      .filter(obj => {
+        return obj.typeOf === 'mod_comment';
+      })
+      .map(obj => {
+        return `
+              <div class="mod-response-wrapper">
+                <span>${obj.title}</span>
+                <p>${obj.contentTruncated}</p>
+                <button class="mod-template-button" type="button" data-content="${obj.content}">USE TEMPLATE</button>
+                <button class="moderator-submit-button" type="submit" data-canned-response-id="${obj.id}">SUBMIT AS MOD</button>
+              </div>
+              `;
+      });
+
+    array.unshift('<header><h3>Personal Responses</h3></header>').join('');
+  }
+
   function fetchCannedResponses() {
     const responsesWrapper = document.querySelector('.mod-responses-container');
+    /* eslint-disable-next-line no-undef */
+    const moderatorForTags = userData().moderator_for_tags;
+    const url =
+      moderatorForTags.length === 0
+        ? '/canned_responses'
+        : '/canned_responses?type_of=mod_comment&personal_included=true';
 
-    fetch(`/canned_responses?type_of=mod_comment&personal_included=true`, {
+    fetch(url, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -136,21 +161,8 @@ export default function initCannedResponses() {
     })
       .then(response => response.json())
       .then(response => {
-        const modResponseHTML = response
-          .filter(obj => {
-            return obj.typeOf === 'mod_comment';
-          })
-          .map(obj => {
-            return `
-              <div class="mod-response-wrapper">
-                <span>${obj.title}</span>
-                <p>${obj.contentTruncated}</p>
-                <button class="mod-template-button" type="button" data-content="${obj.content}">USE TEMPLATE</button>
-                <button class="moderator-submit-button" type="submit" data-canned-response-id="${obj.id}">SUBMIT AS MOD</button>
-              </div>
-              `;
-          })
-          .join('');
+        const modResponseHTML =
+          moderatorForTags.length === 0 ? '' : buildModResponseHTML(response);
 
         const personalResponseHTML = response
           .filter(obj => {
@@ -168,7 +180,6 @@ export default function initCannedResponses() {
           .join('');
 
         responsesWrapper.innerHTML = `
-          <header><h3>Moderator Responses</h3></header>
           ${modResponseHTML}
           <header><h3>Personal Responses</h3></header>
           ${personalResponseHTML}
