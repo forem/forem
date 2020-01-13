@@ -192,7 +192,19 @@ export default function initCannedResponses() {
       });
   }
 
-  fetchCannedResponses();
+  function handleLoggedOut() {
+    const toggleButton = document.querySelector('.canned-responses-button');
+    // see showModal.js
+    /* eslint-disable-next-line no-undef */
+    toggleButton.addEventListener('click', showModal);
+  }
+
+  const userStatus = document.querySelector('body').getAttribute('data-user-status');
+  if (userStatus === 'logged-out') {
+    handleLoggedOut();
+  } else {
+    fetchCannedResponses();
+  }
 }
 /* eslint-enable no-alert */
 /* eslint-enable no-restricted-globals */
