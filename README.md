@@ -102,6 +102,7 @@ A more complete overview of our stack is available in
 - [@rhymes](https://dev.to/rhymes)
 - [@jacobherrington](https://dev.to/jacobherrington)
 - [@mstruve](https://dev.to/molly_struve)
+- [@atsmith813](https://dev.to/atsmith813)
 
 ## Vulnerability disclosure
 
