@@ -263,7 +263,7 @@ class StoriesController < ApplicationController
       includes(:podcast).
       order("published_at desc").
       where("published_at > ?", num_hours.hours.ago).
-      select(:slug, :title, :podcast_id)
+      select(:slug, :title, :podcast_id, :image)
   end
 
   def assign_classified_listings
