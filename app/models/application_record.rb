@@ -14,8 +14,14 @@ class ApplicationRecord < ActiveRecord::Base
   # and <https://stackoverflow.com/a/48391562/4186181>
   def self.estimated_count
     query_name = "SQL COUNT ESTIMATE: #{table_name}"
-    table_name_attr = ActiveRecord::Relation::QueryAttribute.new("relname", "users", ActiveRecord::Type::String.new)
-    result = connection.exec_query(QUERY_ESTIMATED_COUNT, query_name, [table_name_attr, table_name_attr])
+    table_name_attr = ActiveRecord::Relation::QueryAttribute.new(
+      "relname", table_name, ActiveRecord::Type::String.new
+    )
+
+    result = connection.exec_query(
+      QUERY_ESTIMATED_COUNT, query_name, [table_name_attr, table_name_attr]
+    )
+
     result.first["count"]
   end
 end
