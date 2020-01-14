@@ -18,7 +18,7 @@ RSpec.describe Comments::SendEmailNotificationWorker, type: :worker do
         allow(mailer).to receive(:deliver_now)
         allow(NotifyMailer).to receive(:new_reply_email).and_return(mailer)
 
-        subject.perform(1)
+        worker.perform(1)
 
         expect(NotifyMailer).to have_received(:new_reply_email).with(comment)
         expect(mailer).to have_received(:deliver_now)
