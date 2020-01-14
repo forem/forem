@@ -91,4 +91,4 @@ application.
     API secret key -> TWITTER_SECRET
     ```
 
-    ![twitter-8](https://user-images.githubusercontent.com/22895284/51078804-9a9a2700-16bb-11e9-8b9e-0c882ae47f21.png)
+    ![twitter-8](https://user-images.githubusercontent.com/47985/72329507-72d30a00-36e7-11ea-83ac-ebea5d41ba39.png)
