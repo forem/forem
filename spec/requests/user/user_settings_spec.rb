@@ -137,9 +137,9 @@ RSpec.describe "UserSettings", type: :request do
     end
 
     it "schedules the job while updating" do
-      expect do
+      sidekiq_assert_enqueued_with(job: Streams::TwitchWebhookRegistrationWorker, args: [user.id]) do
         post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
-      end.to have_enqueued_job(Streams::TwitchWebhookRegistrationJob).exactly(:once).with(user.id)
+      end
     end
 
     it "removes twitch_username" do
@@ -150,16 +150,16 @@ RSpec.describe "UserSettings", type: :request do
     end
 
     it "doesn't schedule the job when removing" do
-      expect do
+      sidekiq_assert_no_enqueued_jobs(only: Streams::TwitchWebhookRegistrationWorker) do
         post "/users/update_twitch_username", params: { user: { twitch_username: "" } }
-      end.not_to have_enqueued_job(Streams::TwitchWebhookRegistrationJob)
+      end
     end
 
     it "doesn't schedule the job when saving the same twitch username" do
       user.update_column(:twitch_username, "robot")
-      expect do
+      sidekiq_assert_no_enqueued_jobs(only: Streams::TwitchWebhookRegistrationWorker) do
         post "/users/update_twitch_username", params: { user: { twitch_username: "robot" } }
-      end.not_to have_enqueued_job(Streams::TwitchWebhookRegistrationJob)
+      end
     end
   end
 
