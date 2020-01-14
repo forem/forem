@@ -8,4 +8,8 @@ Sidekiq.configure_server do |config|
   # On Heroku this configuration is overridden and Sidekiq will point at the redis
   # instance given by the ENV variable REDIS_PROVIDER
   config.redis = { url: sidekiq_url }
+
+  config.server_middleware do |chain|
+    chain.add Sidekiq::HoneycombMiddleware
+  end
 end
