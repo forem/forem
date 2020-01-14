@@ -19,8 +19,8 @@
 
   .podcastliquidtag__info {
     color: white;
-    font-weight: 300;
-    margin: -5px 15px;
+    font-weight: 500;
+    margin: -5px 15px 10px;
 
     @media screen and (min-width: 830px) {
       margin: 20px 15px;
@@ -45,7 +45,7 @@
     }
 
     h1 {
-      margin: 0px 0px 15px 0px;
+      margin: 0px 0px 0.5em 0px;
       font-weight: inherit;
       padding: 0;
     }
@@ -55,7 +55,29 @@
     }
     .podcastliquidtag__info__podcasttitle {
       font-size:calc(1vw + 14px);
+      padding: 0px 0px;
+      button {
+        font-size:calc(1vw + 12px);
+        border-radius: 3px;
+        border: 0px;
+        margin-left: 5px;
+        width: calc(105px + 4.5vw);
+      }
     }
+
+    @media screen and (min-width: 950px) {
+      .podcastliquidtag__info__episodetitle {
+        font-size: 38px;
+      }
+      .podcastliquidtag__info__podcasttitle {
+        font-size: 24px;
+        button {
+          font-size: 22px;
+          width: 165px;
+        }  
+      }  
+    }
+
 
     .podcastliquidtag__links {
       display: flex;
@@ -132,6 +154,7 @@
       right: 0;
       box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.5);
       height: 130px;
+      background: $black;
 
       @media screen and (min-width: 830px) {
         height: inherit;
