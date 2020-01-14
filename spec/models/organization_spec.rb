@@ -112,6 +112,7 @@ RSpec.describe Organization, type: :model do
       before do
         allow(Organizations::BustCacheWorker).to receive(:perform_async)
       end
+
       it "triggers cache busting on save" do
         organization.save
         expect(Organizations::BustCacheWorker).to have_received(:perform_async).with(organization.id, organization.slug)
