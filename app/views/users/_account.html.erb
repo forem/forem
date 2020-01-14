@@ -53,7 +53,7 @@
 <% end %>
 
 <h2 style="color: #ff0000;">Danger Zone</h2>
-<% if @user.identities.count == 2 %>
+<% if @user.identities.size == 2 %>
   <h3>Remove OAuth Associations</h3>
   <h4 style="font-weight:400;">
     You can remove one of your authentication methods. We'll still need one to authenticate you.
