@@ -49,7 +49,8 @@ class CommentsController < ApplicationController
   def create
     if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
       skip_authorization
-      return head(:too_many_requests)
+      render json: {}, status: :too_many_requests
+      return
     end
 
     @comment = Comment.new(permitted_attributes(Comment))

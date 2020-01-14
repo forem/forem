@@ -31,7 +31,7 @@ RSpec.describe "CommentsCreate", type: :request do
       comment: { body_markdown: new_body.call, commentable_id: article.id, commentable_type: "Article" }
     }
 
-    expect(response).to have_http_status(429)
+    expect(response).to have_http_status(:too_many_requests)
   end
 
   context "when user is posting on an author that blocks user" do
