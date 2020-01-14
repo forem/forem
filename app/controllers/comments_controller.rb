@@ -47,7 +47,10 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    raise if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
+    if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
+      skip_authorization
+      return head(:too_many_requests)
+    end
 
     @comment = Comment.new(permitted_attributes(Comment))
     @comment.user_id = current_user.id

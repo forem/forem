@@ -25,6 +25,17 @@ RSpec.describe "CommentsCreate", type: :request do
     expect(NotificationSubscription.last.notifiable).to eq(Comment.last)
   end
 
+  it "returns 429 Too Many Requests when a user reachers their rate limit" do
+    create_list(:comment, 10, user: user, commentable: article)
+    new_body = "NEW BODY #{rand(100)}"
+
+    post "/comments", params: {
+      comment: { body_markdown: new_body, commentable_id: article.id, commentable_type: "Article" }
+    }
+
+    expect(response).to have_http_status(429)
+  end
+
   context "when user is posting on an author that blocks user" do
     it "returns unauthorized" do
       create(:user_block, blocker: blocker, blocked: user, config: "default")
