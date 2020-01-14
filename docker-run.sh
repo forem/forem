@@ -71,31 +71,6 @@ then
 		export GITHUB_SECRET="$INPUT_KEY"
 	fi
 
-	echo -n "| Please indicate your GITHUB_TOKEN : "
-	read INPUT_KEY
-	if [ ! -z "$INPUT_KEY" ]
-	then
-		export GITHUB_TOKEN="$INPUT_KEY"
-	fi
-
-	echo "|---"
-	echo "| Setting up TWITTER keys"
-	echo "| (OPTIONAL, leave blank and press enter to skip)"
-	echo "|---"
-	echo -n "| Please indicate your TWITTER_ACCESS_TOKEN : "
-	read INPUT_KEY
-	if [ ! -z "$INPUT_KEY" ]
-	then
-		export TWITTER_ACCESS_TOKEN="$INPUT_KEY"
-	fi
-
-	echo -n "| Please indicate your TWITTER_ACCESS_TOKEN_SECRET : "
-	read INPUT_KEY
-	if [ ! -z "$INPUT_KEY" ]
-	then
-		export TWITTER_ACCESS_TOKEN_SECRET="$INPUT_KEY"
-	fi
-
 	echo -n "| Please indicate your TWITTER_KEY : "
 	read INPUT_KEY
 	if [ ! -z "$INPUT_KEY" ]
@@ -152,10 +127,10 @@ echo "# To run a simple demo, with some dummy data (replace <?> with the actual 
 echo "# './docker-run.sh DEMO -e ALGOLIASEARCH_APPLICATION_ID=<?> -e ALGOLIASEARCH_SEARCH_ONLY_KEY=<?> -e ALGOLIASEARCH_API_KEY=<?>'"
 echo "#"
 echo "# Finally to run a working demo, you will need to provide either..."
-echo "# './docker-run.sh .... -e GITHUB_KEY=<?> -e GITHUB_SECRET=<?> -e GITHUB_TOKEN=<?>"
+echo "# './docker-run.sh .... -e GITHUB_KEY=<?> -e GITHUB_SECRET=<?>"
 echo "#"
 echo "# And / Or ..."
-echo "# './docker-run.sh .... -e TWITTER_ACCESS_TOKEN=<?> -e TWITTER_ACCESS_TOKEN_SECRET=<?> -e TWITTER_KEY=<?> -e TWITTER_SECRET=<?>"
+echo "# './docker-run.sh .... -e TWITTER_KEY=<?> -e TWITTER_SECRET=<?>"
 echo "#"
 echo "# Note that all of this can also be configured via ENVIRONMENT variables prior to running the script"
 echo "#"
@@ -265,10 +240,7 @@ ENV_FORWARDING_LIST=(
 	# login via GITHUB
 	"GITHUB_KEY"
 	"GITHUB_SECRET"
-	"GITHUB_TOKEN"
 	# login via TWITTER
-	"TWITTER_ACCESS_TOKEN"
-	"TWITTER_ACCESS_TOKEN_SECRET"
 	"TWITTER_KEY"
 	"TWITTER_SECRET"
 	# PUSHER integration
