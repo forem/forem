@@ -44,7 +44,6 @@ variable :REDIS_SIDEKIQ_URL, :String, default: "redis://localhost:6379"
 # (https://developer.github.com/v3/guides/basics-of-authentication/)
 variable :GITHUB_KEY, :String, default: "Optional"
 variable :GITHUB_SECRET, :String, default: "Optional"
-variable :GITHUB_TOKEN, :String, default: "Optional"
 
 # Twitter for normal twitter access
 # (https://developer.twitter.com/en/docs/basics/authentication/guides/access-tokens)
