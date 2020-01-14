@@ -240,7 +240,7 @@ function initializePodcastPlayback() {
         setMediaState(audio)
       }
     }
-    if (progress) {
+    if (progress && time && currentTime > 0) {
       progress.style.width = value + '%';
       buffer.style.width = bufferValue + '%';
       time.innerHTML =
@@ -325,7 +325,8 @@ function initializePodcastPlayback() {
   findAndApplyOnclickToRecords();
   getMediaState();
   var audio = getById('audio');
-  if (audio) {
+  var audioContent = getById('audiocontent')
+  if (audio && audioContent && audioContent.innerHTML.length < 25) { // audio not already loaded
     audio.load();
   }
 }
