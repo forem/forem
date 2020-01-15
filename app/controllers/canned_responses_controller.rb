@@ -2,11 +2,13 @@ class CannedResponsesController < ApplicationController
   after_action :verify_authorized, except: %i[index]
 
   def index
-    @canned_responses = if params[:type_of] && params[:personal_included].nil?
+    not_found unless current_user
+
+    @canned_responses = if params[:type_of] && params[:personal_included] != "true"
                           result = CannedResponse.where(user_id: nil, type_of: params[:type_of])
                           handle_authorization(result)
                           result
-                        elsif params[:type_of] == "mod_comment" && params[:personal_included].present?
+                        elsif params[:type_of] == "mod_comment" && params[:personal_included] == "true"
                           result = CannedResponse.
                             where(user_id: nil, type_of: "mod_comment").
                             union(user_id: current_user.id, type_of: "personal_comment")
