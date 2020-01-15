@@ -17,15 +17,16 @@ module BadgeRewarder
   end
 
   def self.award_beloved_comment_badges
+    # ID 3 is the proper ID in prod. We should change in future to ENV var.
+    badge_id = Badge.find_by(slug: "beloved-comment")&.id || 3
     Comment.where("positive_reactions_count > ?", 24).find_each do |comment|
       message = "You're DEV famous! [This is the comment](https://dev.to#{comment.path}) for which you are being recognized. 😄"
       achievement = BadgeAchievement.create(
         user_id: comment.user_id,
-        badge_id: Badge.find_by(slug: "beloved-comment")&.id || 3,
+        badge_id: badge_id,
         rewarding_context_message_markdown: message,
       )
       comment.user.save if achievement.valid?
-      # ID 3 is the proper ID in prod. We should change in future to ENV var.
     end
   end
 
@@ -95,10 +96,11 @@ module BadgeRewarder
   end
 
   def self.award_badges(usernames, slug, message_markdown)
+    badge_id = Badge.find_by(slug: slug).id
     User.where(username: usernames).find_each do |user|
       BadgeAchievement.create(
         user_id: user.id,
-        badge_id: Badge.find_by(slug: slug).id,
+        badge_id: badge_id,
         rewarding_context_message_markdown: message_markdown,
       )
       user.save

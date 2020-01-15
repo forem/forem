@@ -181,4 +181,22 @@ RSpec.describe BadgeRewarder, type: :labor do
       expect(third_user.reload.badge_achievements.size).to eq(1)
     end
   end
+
+  describe "::award_badges" do
+    let!(:badge) { create(:badge, title: "one-year-club") }
+    let!(:user) { create(:user) }
+    let!(:user2) { create(:user) }
+
+    it "awards badges" do
+      expect do
+        described_class.award_badges([user.username, user2.username], "one-year-club", "Congrats on a badge!")
+      end.to change(BadgeAchievement, :count).by(2)
+    end
+
+    it "creates correct badge acheivements" do
+      described_class.award_badges([user.username, user2.username], "one-year-club", "Congrats on a badge!")
+      expect(user.badge_achievements.pluck(:badge_id)).to eq([badge.id])
+      expect(user2.badge_achievements.pluck(:rewarding_context_message_markdown)).to eq(["Congrats on a badge!"])
+    end
+  end
 end
