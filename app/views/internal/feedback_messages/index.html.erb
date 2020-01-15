@@ -126,14 +126,6 @@
     {},
     class: "custom-select mx-3" %>
 
-  <%= f.select :feedback_type_eq,
-    options_for_select([
-      ["abuse-reports"],
-      ["spam"],
-    ], @q.feedback_type_eq),
-    {},
-    class: "custom-select mx-3" %>
-
   <%= f.submit "Search", class: "btn btn-secondary" %>
 <% end %>
 
