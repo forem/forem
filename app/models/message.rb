@@ -35,8 +35,7 @@ class Message < ApplicationRecord
     chat_channel.
       chat_channel_memberships.
       where("last_opened_at < ?", 10.seconds.ago).
-      where.
-      not(user_id: user_id).
+      where.not(user_id: user_id).
       update_all(has_unopened_messages: true)
   end
 
