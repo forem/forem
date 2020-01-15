@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe RecordDbTableCountsWorker, type: :worker do
+RSpec.describe Metrics::RecordDbTableCountsWorker, type: :worker do
   include_examples "#enqueues_on_correct_queue", "low_priority", 1
 
   describe "#perform" do
