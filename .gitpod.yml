@@ -7,7 +7,10 @@ ports:
     onOpen: ignore
   - port: 5432
     onOpen: ignore
+  - port: 6379
+    onOpen: ignore
 tasks:
+  - command: redis-server
   - init: >
       cp config/sample_application.yml config/application.yml &&
       bin/setup 2>/dev/null || true
