@@ -113,12 +113,7 @@ task fix_credits_count_cache: :environment do
 end
 
 task record_db_table_counts: :environment do
-  models = [User, Article, Organization, Comment, Podcast, ClassifiedListing, PageView]
-  models.each do |model|
-    estimate = model.estimated_count
-    Rails.logger.info("db_table_size", table_info: { table_name: model.table_name, table_size: estimate })
-    DataDogStatsClient.gauge("postgres.db_table_size", estimate, tags: { table_name: model.table_name })
-  end
+  RecordDbTableCountsWorker.perform_async
 end
 
 task log_worker_queue_stats: :environment do
