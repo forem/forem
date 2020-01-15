@@ -21,6 +21,16 @@ else
       send_data.action_controller
       deliver.action_mailer
     ].freeze
+
+    # Scrub unused data to save space in Honeycomb
+    config.presend_hook do |fields|
+      if fields.key?("redis.command")
+        fields["redis.command"].slice!(0, 300)
+      elsif fields.key?("sql.active_record.binds")
+        fields.delete("sql.active_record.binds")
+        fields.delete("sql.active_record.datadog_span")
+      end
+    end
   end
 
   # here we create an additional Honeycomb client that can be used to send custom events
