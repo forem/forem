@@ -270,12 +270,8 @@ class Comment < ApplicationRecord
   def before_destroy_actions
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     ancestors.update_all(updated_at: Time.current)
-    bust_cache_without_delay
+    Comments::BustCacheWorker.new.perform(id)
     remove_algolia_index
-  end
-
-  def bust_cache_without_delay
-    Comments::BustCacheWorker.perform_async(id)
   end
 
   def bust_cache
