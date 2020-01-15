@@ -113,9 +113,9 @@ task fix_credits_count_cache: :environment do
 end
 
 task record_db_table_counts: :environment do
-  RecordDbTableCountsWorker.perform_async
+  Metrics::RecordDbTableCountsWorker.perform_async
 end
 
 task log_worker_queue_stats: :environment do
-  Loggers::LogWorkerQueueStats.run
+  Metrics::RecordBackgroundQueueStatsWorker.perform_async
 end
