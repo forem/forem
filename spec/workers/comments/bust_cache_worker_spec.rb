@@ -5,7 +5,6 @@ RSpec.describe Comments::BustCacheWorker, type: :worker do
 
   describe "#perform" do
     let(:worker) { subject }
-    let(:edge_cache_commentable_bust_service_name) { "EdgeCache::Commentable::Bust" }
 
     before(:each) do
       allow(EdgeCache::Commentable::Bust).to receive(:call)
@@ -22,7 +21,7 @@ RSpec.describe Comments::BustCacheWorker, type: :worker do
       end
 
       it "calls the service" do
-        worker.perform(comment_id, edge_cache_commentable_bust_service_name)
+        worker.perform(comment_id)
 
         expect(EdgeCache::Commentable::Bust).to have_received(:call).with(comment.commentable).once
       end
@@ -30,7 +29,7 @@ RSpec.describe Comments::BustCacheWorker, type: :worker do
       it "does not call the service with a comment without a commentable" do
         allow(comment).to receive(:commentable).and_return(nil)
 
-        worker.perform(comment_id, edge_cache_commentable_bust_service_name)
+        worker.perform(comment_id)
 
         expect(EdgeCache::Commentable::Bust).not_to have_received(:call)
       end
@@ -38,11 +37,11 @@ RSpec.describe Comments::BustCacheWorker, type: :worker do
 
     context "without comment" do
       it "does not break" do
-        expect { worker.perform(nil, edge_cache_commentable_bust_service_name) }.not_to raise_error
+        expect { worker.perform(nil) }.not_to raise_error
       end
 
       it "doesn't call the service" do
-        worker.perform(nil, edge_cache_commentable_bust_service_name)
+        worker.perform(nil)
 
         expect(EdgeCache::Commentable::Bust).not_to have_received(:call)
       end
