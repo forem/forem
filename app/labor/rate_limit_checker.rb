@@ -9,22 +9,13 @@ class RateLimitChecker
     @user = user
   end
 
-  class UploadRateLimitReached < StandardError; end
-  class DailyFollowAccountLimitReached < StandardError; end
+  UploadRateLimitReached = Class.new(StandardError)
+  DailyFollowAccountLimitReached = Class.new(StandardError)
 
   def limit_by_action(action)
-    result = case action
-             when "comment_creation"
-               user.comments.where("created_at > ?", 30.seconds.ago).size > 9
-             when "published_article_creation"
-               user.articles.published.where("created_at > ?", 30.seconds.ago).size > 9
-             when "image_upload"
-               Rails.cache.read("#{user.id}_image_upload").to_i > 9
-             when "follow_account"
-               user_today_follow_count > self.class.daily_account_follow_limit
-             else
-               false
-             end
+    check_method = "check_#{action}_limit"
+    result = respond_to?(check_method) ? public_send(check_method) : false
+
     if result
       @action = action
       ping_admins
@@ -48,13 +39,26 @@ class RateLimitChecker
     RateLimitCheckerWorker.perform_async(user.id, action)
   end
 
+  def check_comment_creation_limit
+    user.comments.where("created_at > ?", 30.seconds.ago).size > 9
+  end
+
+  def check_published_article_creation_limit
+    user.articles.published.where("created_at > ?", 30.seconds.ago).size > 9
+  end
+
+  def check_image_upload_limit
+    Rails.cache.read("#{user.id}_image_upload").to_i > 9
+  end
+
+  def check_follow_account_limit
+    user_today_follow_count > self.class.daily_account_follow_limit
+  end
+
   private
 
   def user_today_follow_count
     following_users_count = user.following_users_count
     return following_users_count if following_users_count < self.class.daily_account_follow_limit
-
-    now = Time.zone.now
-    user.follows.where(created_at: (now.beginning_of_day..now)).size
   end
 end
