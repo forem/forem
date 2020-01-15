@@ -52,7 +52,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def permitted_attributes_for_moderator_create
-    %i[body_markdown commentable_id commentable_type parent_id]
+    %i[commentable_id commentable_type parent_id]
   end
 
   private
