@@ -309,7 +309,7 @@ RSpec.describe Comment, type: :model do
   context "when callbacks are triggered after update" do
     it "deletes the comment's notifications when deleted is set to true" do
       create(:notification, notifiable: comment, user: user)
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         comment.update(deleted: true)
       end
       expect(comment.notifications).to be_empty
