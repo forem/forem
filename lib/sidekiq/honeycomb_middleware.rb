@@ -5,7 +5,7 @@ module Sidekiq
     #   * @see https://github.com/mperham/sidekiq/wiki/Job-Format
     # @param [String] queue the name of the queue the job was pulled from
     def call(worker, job, queue)
-      Honeycomb.start_span(name: "sidekiq.job") do |span|
+      Honeycomb.start_span(name: "sidekiq") do |span|
         span.add_field("sidekiq.class", worker.class.name)
         span.add_field("sidekiq.queue", queue)
         span.add_field("sidekiq.jid", job["jid"])
