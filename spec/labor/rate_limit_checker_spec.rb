@@ -4,12 +4,6 @@ RSpec.describe RateLimitChecker, type: :labor do
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
 
-  describe "self.daily_account_follow_limit " do
-    it "returns the value set in SiteConfig.rate_limit_follow_count_daily" do
-      expect(described_class.daily_account_follow_limit).to eq(SiteConfig.rate_limit_follow_count_daily)
-    end
-  end
-
   describe "#limit_by_action" do
     it "returns false for invalid action" do
       expect(described_class.new(user).limit_by_action("random-nothing")).to eq(false)
@@ -42,7 +36,7 @@ RSpec.describe RateLimitChecker, type: :labor do
 
       allow(rate_limit_checker).
         to receive(:user_today_follow_count).
-        and_return(described_class.daily_account_follow_limit + 1)
+        and_return(SiteConfig.rate_limit_follow_count_daily + 1)
 
       expect(rate_limit_checker.limit_by_action("follow_account")).to eq(true)
     end
@@ -52,7 +46,7 @@ RSpec.describe RateLimitChecker, type: :labor do
 
       allow(user).
         to receive(:following_users_count).
-        and_return(described_class.daily_account_follow_limit - 1)
+        and_return(SiteConfig.rate_limit_follow_count_daily - 1)
 
       expect(rate_limit_checker.limit_by_action("follow_account")).to eq(false)
     end
@@ -62,7 +56,7 @@ RSpec.describe RateLimitChecker, type: :labor do
 
       allow(rate_limit_checker).
         to receive(:user_today_follow_count).
-        and_return(described_class.daily_account_follow_limit - 1)
+        and_return(SiteConfig.rate_limit_follow_count_daily - 1)
 
       expect(rate_limit_checker.limit_by_action("follow_account")).to eq(false)
     end

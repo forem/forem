@@ -1,20 +1,16 @@
 class RateLimitChecker
   attr_reader :user, :action
 
-  def self.daily_account_follow_limit
-    SiteConfig.rate_limit_follow_count_daily
-  end
-
   def initialize(user = nil)
     @user = user
   end
 
-  UploadRateLimitReached = Class.new(StandardError)
-  DailyFollowAccountLimitReached = Class.new(StandardError)
+  class UploadRateLimitReached < StandardError; end
+  class DailyFollowAccountLimitReached < StandardError; end
 
   def limit_by_action(action)
     check_method = "check_#{action}_limit"
-    result = respond_to?(check_method) ? public_send(check_method) : false
+    result = respond_to?(check_method, true) ? send(check_method) : false
 
     if result
       @action = action
@@ -35,9 +31,7 @@ class RateLimitChecker
       where("sent_at > ?", 2.minutes.ago).size > 5
   end
 
-  def ping_admins
-    RateLimitCheckerWorker.perform_async(user.id, action)
-  end
+  private
 
   def check_comment_creation_limit
     user.comments.where("created_at > ?", 30.seconds.ago).size > 9
@@ -52,13 +46,18 @@ class RateLimitChecker
   end
 
   def check_follow_account_limit
-    user_today_follow_count > self.class.daily_account_follow_limit
+    user_today_follow_count > SiteConfig.rate_limit_follow_count_daily
   end
 
-  private
+  def ping_admins
+    RateLimitCheckerWorker.perform_async(user.id, action)
+  end
 
   def user_today_follow_count
     following_users_count = user.following_users_count
-    return following_users_count if following_users_count < self.class.daily_account_follow_limit
+    return following_users_count if following_users_count < SiteConfig.rate_limit_follow_count_daily
+
+    now = Time.zone.now
+    user.follows.where(created_at: (now.beginning_of_day..now)).size
   end
 end
