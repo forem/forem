@@ -68,8 +68,8 @@
         </li>
       <% end %>
     </ul>
-    <button class="btn btn-success" data-action="article#boost">☝️ Boost!</button>
-    <button class="btn btn-danger" data-action="article#sink">👇 SPAM!</button>
+    <button class="btn btn-success" data-action="article#increaseFeaturedNumber">☝️ Boost!</button>
+    <button class="btn btn-danger" data-action="article#decreaseFeaturedNumber">👇 SPAM!</button>
 
     <%= form_with url: internal_article_path(article.id), html: { data: { action: "submit->article#highlightElement" } } do |f| %>
       <div class="form-group">
