@@ -21,11 +21,15 @@ class CannedResponsePolicy < ApplicationPolicy
   end
 
   def update?
-    user_is_owner? || user_is_moderator?
+    user_is_owner?
   end
 
-  def permitted_attributes
-    %i[type_of content_type content title]
+  def permitted_attributes_for_create
+    %i[content_type content title]
+  end
+
+  def permitted_attributes_for_update
+    %i[content_type content title]
   end
 
   private

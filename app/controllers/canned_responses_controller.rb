@@ -24,6 +24,8 @@ class CannedResponsesController < ApplicationController
     authorize CannedResponse
     @canned_response = CannedResponse.new(permitted_attributes(CannedResponse))
     @canned_response.user_id = current_user.id
+    @canned_response.content_type = "body_markdown"
+    @canned_response.type_of = "personal_comment"
 
     if @canned_response.save
       flash[:settings_notice] = "Your canned response \"#{@canned_response.title}\" was created."

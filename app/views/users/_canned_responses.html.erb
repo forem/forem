@@ -35,7 +35,5 @@
   <%= f.text_field :title %>
   <%= f.label :content, "Comment body (Markdown)" %>
   <%= f.text_area :content, value: @canned_response.content %>
-  <%= f.hidden_field :content_type, value: "body_markdown" %>
-  <%= f.hidden_field :type_of, value: "personal_comment" %>
   <%= f.submit "Submit", class: "cta" %>
 <% end %>
