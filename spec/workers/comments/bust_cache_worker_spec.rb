@@ -18,6 +18,7 @@ RSpec.describe Comments::BustCacheWorker, type: :worker do
       before do
         allow(comment).to receive(:commentable).and_return(commentable)
         allow(Comment).to receive(:find_by).with(id: comment_id).and_return(comment)
+        allow(comment).to receive(:purge)
       end
 
       it "calls the service" do
