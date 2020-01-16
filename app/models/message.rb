@@ -43,9 +43,7 @@ class Message < ApplicationRecord
   def evaluate_markdown
     html = MarkdownParser.new(message_markdown).evaluate_markdown
     html = append_rich_links(html)
-    if chat_channel.channel_type == "open"
-      html = wrap_mentions_with_links!(html)
-    end
+    html = wrap_mentions_with_links!(html)
     self.message_html = html
   end
 

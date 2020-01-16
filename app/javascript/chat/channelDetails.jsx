@@ -111,12 +111,12 @@ class ChannelDetails extends Component {
           className="channeldetails__userprofileimage"
           src={user.profile_image}
           alt={`${user.username} profile`}
-          data-content='sidecar-user'
+          data-content="sidecar-user"
         />
         <a
           href={`/${user.username}`}
           style={{ color: user.darker_color, padding: '3px 0px' }}
-          data-content='sidecar-user'
+          data-content="sidecar-user"
         >
           {user.name}
         </a>

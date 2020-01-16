@@ -12,7 +12,8 @@ class MessagesController < ApplicationController
     pusher_message_created(true)
     if @message.save
       pusher_message_created(false)
-      notifiy_mentioned_user(@mentioned_users_id)
+      notify_all_user(@message.chat_channel.chanel_users_ids)
+      notify_mentioned_user(@mentioned_users_id)
       render json: { status: "success", message: { temp_id: @temp_message_id, id: @message.id } }, status: :created
     else
       render json: {
@@ -79,7 +80,7 @@ class MessagesController < ApplicationController
   private
 
   def create_pusher_payload(new_message, temp_id)
-    @payload = {
+    payload = {
       temp_id: temp_id,
       id: new_message.id,
       user_id: new_message.user.id,
@@ -96,10 +97,10 @@ class MessagesController < ApplicationController
       reception_method: "pushed"
     }
 
-    if new_message.chat_channel.channel_type == "open"
-      @payload[:chat_channel_adjusted_slug] = new_message.chat_channel.adjusted_slug
+    if new_message.chat_channel.channel_type != "direct"
+      payload[:chat_channel_adjusted_slug] = new_message.chat_channel.adjusted_slug
     end
-    @payload.to_json
+    payload.to_json
   end
 
   def message_params
@@ -141,12 +142,21 @@ class MessagesController < ApplicationController
     end
   end
 
-  def notifiy_mentioned_user(user_ids)
+  def notify_mentioned_user(user_ids)
     return unless user_ids
 
     user_ids.each do |id|
       message_json = create_pusher_payload(@message, @temp_message_id)
       Pusher.trigger("private-message-notifications-#{id}", "mentioned", message_json)
+    end
+  end
+
+  def notify_all_user(user_ids)
+    return unless user_ids
+
+    user_ids.each do |id|
+      message_json = create_pusher_payload(@message, @temp_message_id)
+      Pusher.trigger("private-message-notifications-#{id}", "message-created", message_json)
     end
   end
 end

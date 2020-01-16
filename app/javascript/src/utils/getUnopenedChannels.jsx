@@ -88,7 +88,7 @@ class UnopenedChannelNotice extends Component {
     if (
       (window.location.pathname.startsWith('/connect') &&
         e.user_id === window.currentUser.id &&
-        e.channel_type === 'open') ||
+        e.channel_type !== 'direct') ||
       window.location.pathname.includes(e.adjusted_slug)
     ) {
       return;
@@ -118,7 +118,7 @@ class UnopenedChannelNotice extends Component {
         visible:
           unopenedChannels.length > 0 &&
           e.user_id !== window.currentUser.id &&
-          e.channel_type !== 'open',
+          e.channel_type === 'direct',
       });
     }
     this.updateMessageNotification(unopenedChannels);

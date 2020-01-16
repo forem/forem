@@ -91,6 +91,16 @@ export default class Chat extends Component {
       currentUserId,
     } = this.state;
     this.setupChannels(chatChannels);
+
+    const channelsForPusherSub = chatChannels.filter(
+      this.channelTypeFilter('open'),
+    );
+    console.log(channelsForPusherSub);
+    this.subscribeChannelsToPusher(
+      channelsForPusherSub,
+      channel => `open-channel-${channel.chat_channel_id}`,
+    );
+
     setupObserver(this.observerCallback);
 
     this.subscribePusher(`private-message-notifications-${currentUserId}`);
@@ -187,6 +197,7 @@ export default class Chat extends Component {
       });
       const subscriptions = subscribedPusherChannels;
       subscriptions.push(channelName);
+      console.log(subscribedPusherChannels);
       this.setState({ subscribedPusherChannels: subscriptions });
     }
   };
@@ -307,6 +318,8 @@ export default class Chat extends Component {
           this.setOpenChannelUsers,
           null,
         );
+        if (activeChannel.channel_type === 'open')
+          this.subscribePusher(`open-channel-${channelId}`);
       }
       getAllMessages(channelId, messageOffset, this.receiveAllMessages);
     }
@@ -356,6 +369,8 @@ export default class Chat extends Component {
   };
 
   removeMessage = message => {
+    console.log('hereere');
+
     const { activeChannelId } = this.state;
     this.setState(prevState => ({
       messages: {
@@ -1180,7 +1195,7 @@ export default class Chat extends Component {
   handleMention = e => {
     const { activeChannel } = this.state;
     const mention = e.keyCode === 64;
-    if (mention && activeChannel.channel_type === 'open') {
+    if (mention && activeChannel.channel_type !== 'direct') {
       this.setState({ showMemberlist: true });
     }
   };
@@ -1188,7 +1203,7 @@ export default class Chat extends Component {
   handleKeyUp = e => {
     const { startEditing, activeChannel } = this.state;
 
-    if (activeChannel.channel_type === 'open') {
+    if (activeChannel.channel_type !== 'direct') {
       if (startEditing) {
         this.setState({ markdownEdited: true });
       }
@@ -1291,7 +1306,6 @@ export default class Chat extends Component {
                   />
                   <span
                     style={{
-                      color: user.darker_color,
                       padding: '3px 0px',
                       'font-size': '16px',
                     }}
