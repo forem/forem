@@ -189,8 +189,8 @@ RSpec.describe BadgeRewarder, type: :labor do
 
   describe "::award_badges" do
     let!(:badge) { create(:badge, title: "one-year-club") }
-    let!(:user) { create(:user) }
-    let!(:user2) { create(:user) }
+    let(:user) { create(:user) }
+    let(:user2) { create(:user) }
 
     it "awards badges" do
       expect do
