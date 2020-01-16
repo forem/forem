@@ -44,12 +44,15 @@ developers, and all are welcome to find their place within our community. ❤️
 
 ## Table of Contents
 
+- [What is dev.to?](#what-is-devto)
+- [Table of Contents](#table-of-contents)
 - [Contributing](#contributing)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation Documentation](#installation-documentation)
-- [Developer documentation](#developer-documentation)
-- [Core Team Members](#core-team)
+- [Developer Documentation](#developer-documentation)
+- [Core team](#core-team)
+- [Vulnerability disclosure](#vulnerability-disclosure)
 - [License](#license)
 
 ## Contributing
@@ -103,6 +106,7 @@ A more complete overview of our stack is available in
 - [@jacobherrington](https://dev.to/jacobherrington)
 - [@mstruve](https://dev.to/molly_struve)
 - [@atsmith813](https://dev.to/atsmith813)
+- [@citizen428](https://dev.to/citizen428)
 
 ## Vulnerability disclosure
 
