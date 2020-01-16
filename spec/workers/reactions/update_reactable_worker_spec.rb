@@ -22,7 +22,9 @@ RSpec.describe Reactions::UpdateReactableWorker, type: :worker do
     end
 
     it " doesn't fail if a reaction doesn't exist" do
-      worker.perform(Reaction.maximum(:id).to_i + 1)
+      expect do
+        worker.perform(Reaction.maximum(:id).to_i + 1)
+      end. not_to raise_error
     end
   end
 end
