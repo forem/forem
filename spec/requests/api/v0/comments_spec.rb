@@ -55,7 +55,7 @@ RSpec.describe "Api::V0::Comments", type: :request do
       get "/api/comments?a_id=#{article.id}"
 
       expected_key = [
-        "comments", sibling_root_comment.record_key,
+        article.record_key, "comments", sibling_root_comment.record_key,
         root_comment.record_key, child_comment.record_key,
         grandchild_comment.record_key, great_grandchild_comment.record_key
       ].to_set
