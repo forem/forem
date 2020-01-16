@@ -95,7 +95,6 @@ export default class Chat extends Component {
     const channelsForPusherSub = chatChannels.filter(
       this.channelTypeFilter('open'),
     );
-    console.log(channelsForPusherSub);
     this.subscribeChannelsToPusher(
       channelsForPusherSub,
       channel => `open-channel-${channel.chat_channel_id}`,
@@ -197,7 +196,6 @@ export default class Chat extends Component {
       });
       const subscriptions = subscribedPusherChannels;
       subscriptions.push(channelName);
-      console.log(subscribedPusherChannels);
       this.setState({ subscribedPusherChannels: subscriptions });
     }
   };
@@ -327,21 +325,29 @@ export default class Chat extends Component {
   };
 
   setOpenChannelUsers = res => {
-    const { activeChannelId } = this.state;
+    const { activeChannelId, activeChannel } = this.state;
     Object.filter = (obj, predicate) =>
       Object.fromEntries(Object.entries(obj).filter(predicate));
     const leftUser = Object.filter(
       res.channel_users,
       ([username]) => username !== window.currentUser.username,
     );
-    this.setState({
-      channelUsers: {
-        [activeChannelId]: {
-          all: { username: 'all', name: 'To notify everyone here' },
-          ...leftUser,
+    if (activeChannel.channel_type === 'open') {
+      this.setState({
+        channelUsers: {
+          [activeChannelId]: leftUser,
         },
-      },
-    });
+      });
+    } else {
+      this.setState({
+        channelUsers: {
+          [activeChannelId]: {
+            all: { username: 'all', name: 'To notify everyone here' },
+            ...leftUser,
+          },
+        },
+      });
+    }
   };
 
   observerCallback = entries => {
@@ -369,8 +375,6 @@ export default class Chat extends Component {
   };
 
   removeMessage = message => {
-    console.log('hereere');
-
     const { activeChannelId } = this.state;
     this.setState(prevState => ({
       messages: {
@@ -1252,9 +1256,9 @@ export default class Chat extends Component {
   };
 
   getMentionedUsers = message => {
-    const { channelUsers, activeChannelId } = this.state;
+    const { channelUsers, activeChannelId, activeChannel } = this.state;
     if (channelUsers[activeChannelId]) {
-      if (message.includes('@all')) {
+      if (message.includes('@all') && activeChannel.channel_type !== 'open') {
         return Array.from(
           Object.values(channelUsers[activeChannelId]).filter(user => user.id),
           user => user.id,
