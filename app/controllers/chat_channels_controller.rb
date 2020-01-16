@@ -184,7 +184,7 @@ class ChatChannelsController < ApplicationController
   end
 
   def send_open_notification
-    if @chat_channel.channel_type == "open"
+    if @chat_channel.channel_type != "direct"
       Pusher.trigger("private-message-notifications-#{session_current_user_id}", "message-opened", { channel_type: @chat_channel.channel_type, adjusted_slug: @chat_channel.adjusted_slug }.to_json)
     else
       Pusher.trigger("private-message-notifications-#{session_current_user_id}", "message-opened", { channel_type: @chat_channel.channel_type, adjusted_slug: @chat_channel.adjusted_slug(current_user) }.to_json)
