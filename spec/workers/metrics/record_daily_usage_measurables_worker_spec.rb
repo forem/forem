@@ -18,19 +18,19 @@ RSpec.describe Metrics::RecordDailyUsageMeasurablesWorker, type: :worker do
     it "logs articles with at least 15 score" do
       expect(
         DataDogStatsClient,
-      ).to have_received(:count).with("measurables.articles_min_15_score_past_24h", 2, Hash).at_least(1)
+      ).to have_received(:count).with("articles.min_15_score_past_24h", 2, Hash).at_least(1)
     end
 
     it "records first articles" do
       expect(
         DataDogStatsClient,
-      ).to have_received(:count).with("measurables.first_articles_past_24h", 1, Hash).at_least(1)
+      ).to have_received(:count).with("articles.first_past_24h", 1, Hash).at_least(1)
     end
 
     it "records new users with at least one comment" do
       expect(
         DataDogStatsClient,
-      ).to have_received(:count).with("measurables.new_users_min_1_comment_past_24h", 2, Hash).at_least(1)
+      ).to have_received(:count).with("users.new_min_1_comment_past_24h", 2, Hash).at_least(1)
     end
   end
 end
