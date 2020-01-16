@@ -34,15 +34,18 @@ class RateLimitChecker
   private
 
   def check_comment_creation_limit
-    user.comments.where("created_at > ?", 30.seconds.ago).size > 9
+    user.comments.where("created_at > ?", 30.seconds.ago).size >
+      SiteConfig.rate_limit_comment_creation
   end
 
   def check_published_article_creation_limit
-    user.articles.published.where("created_at > ?", 30.seconds.ago).size > 9
+    user.articles.published.where("created_at > ?", 30.seconds.ago).size >
+      SiteConfig.rate_limit_published_article_creation
   end
 
   def check_image_upload_limit
-    Rails.cache.read("#{user.id}_image_upload").to_i > 9
+    Rails.cache.read("#{user.id}_image_upload").to_i >
+      SiteConfig.rate_limit_image_upload
   end
 
   def check_follow_account_limit
