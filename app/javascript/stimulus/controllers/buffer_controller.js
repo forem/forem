@@ -1,28 +1,30 @@
 import { Controller } from 'stimulus';
 
-export default class extends Controller {
-    static targets = [ "header" ]
+export default class BufferController extends Controller {
+  static targets = ['header'];
 
-    tagBufferUpdateConfirmed() {
-        this.headerTarget.innerHTML += '<span class="ml-2 badge badge-success">Confirm</span>';
-    }
+  tagBufferUpdateConfirmed() {
+    this.headerTarget.innerHTML +=
+      '<span class="ml-2 badge badge-success">Confirm</span>';
+  }
 
-    tagBufferUpdateDismissed() {
-        this.headerTarget.innerHTML += '<span class="ml-2 badge badge-danger">Dismiss</span>';
-    }
+  tagBufferUpdateDismissed() {
+    this.headerTarget.innerHTML +=
+      '<span class="ml-2 badge badge-danger">Dismiss</span>';
+  }
 
-    highlightElement() {
-        this.element.classList.add("highlighted-bg", "highlighted-border");
-        setTimeout(() => {
-            this.element.classList.remove("highlighted-bg");
-        }, 350);
-    }
+  highlightElement() {
+    this.element.classList.add('highlighted-bg', 'highlighted-border');
+    setTimeout(() => {
+      this.element.classList.remove('highlighted-bg');
+    }, 350);
+  }
 
-    get bufferUpdateId() {
-        return parseInt(this.data.get("id"), 10);
-    }
+  get bufferUpdateId() {
+    return parseInt(this.data.get('id'), 10);
+  }
 
-    set bufferUpdateId(value) {
-        this.data.set("id", value);
-    }
+  set bufferUpdateId(value) {
+    this.data.set('id', value);
+  }
 }

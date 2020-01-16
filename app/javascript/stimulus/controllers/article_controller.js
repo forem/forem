@@ -1,6 +1,6 @@
 import { Controller } from 'stimulus';
 
-export default class extends Controller {
+export default class ArticleController extends Controller {
   static targets = ['featuredNumber'];
 
   increaseFeaturedNumber() {
