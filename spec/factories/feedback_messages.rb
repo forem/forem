@@ -14,6 +14,7 @@ FactoryBot.define do
     message { "this is spam" }
     category { "spam" }
     reported_url { "https://dev.to" }
+    status { "Open" }
   end
 
   trait :bug_report do
