@@ -1,5 +1,5 @@
 module Metrics
-  class RecordDailyUsageMeasurablesWorker
+  class RecordDailyUsageWorker
     include Sidekiq::Worker
     sidekiq_options queue: :low_priority, retry: 10
 

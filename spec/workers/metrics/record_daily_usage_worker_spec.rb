@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Metrics::RecordDailyUsageMeasurablesWorker, type: :worker do
+RSpec.describe Metrics::RecordDailyUsageWorker, type: :worker do
   include_examples "#enqueues_on_correct_queue", "low_priority", 1
   let_it_be(:first_article) { create(:user, comments_count: 1) }
   let_it_be(:first_article) { create(:user, comments_count: 2) }

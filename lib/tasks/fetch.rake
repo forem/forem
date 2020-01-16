@@ -121,5 +121,5 @@ task log_worker_queue_stats: :environment do
 end
 
 task log_daily_usage_measurables: :environment do
-  Metrics::RecordDailyUsageMeasurablesWorker.perform_async
+  Metrics::RecordDailyUsageWorker.perform_async
 end
