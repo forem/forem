@@ -13,9 +13,7 @@ module Admin
     private
 
     def user_params
-      allowed = allowed_params
-      allowed << %i[password password_confirmation] if params[:user][:password].present?
-      verify_usernames params.require(:user).permit(allowed)
+      verify_usernames params.require(:user).permit(allowed_params)
     end
 
     # make sure usernames are not empty, to be able to use the database unique index

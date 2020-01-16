@@ -150,7 +150,7 @@ class User < ApplicationRecord
 
   scope :dev_account, -> { find_by(id: SiteConfig.staff_user_id) }
 
-  after_create :send_welcome_notification
+  after_create_commit :send_welcome_notification
   after_save  :bust_cache
   after_save  :subscribe_to_mailchimp_newsletter
   after_save  :conditionally_resave_articles
@@ -393,7 +393,7 @@ class User < ApplicationRecord
     return unless email.present? && email.include?("@")
     return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
 
-    Users::SubscribeToMailchimpNewsletterJob.perform_later(id)
+    Users::SubscribeToMailchimpNewsletterWorker.perform_async(id)
   end
 
   def a_sustaining_member?
@@ -544,7 +544,7 @@ class User < ApplicationRecord
   end
 
   def conditionally_resave_articles
-    Users::ResaveArticlesJob.perform_later(id) if core_profile_details_changed? && !user.banned
+    Users::ResaveArticlesWorker.perform_async(id) if core_profile_details_changed? && !user.banned
   end
 
   def bust_cache

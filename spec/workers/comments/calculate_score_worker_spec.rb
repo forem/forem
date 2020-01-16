@@ -23,6 +23,7 @@ RSpec.describe Comments::CalculateScoreWorker, type: :worker do
         expect(comment.spaminess_rating).to be(99)
       end
 
+      # rubocop:disable RSpec/ExampleLength
       it "calls save on the root comment when given a descendant comment" do
         child_comment = double
         root_comment = double
@@ -39,6 +40,7 @@ RSpec.describe Comments::CalculateScoreWorker, type: :worker do
         expect(child_comment).to have_received(:root)
         expect(root_comment).to have_received(:save!)
       end
+      # rubocop:enable RSpec/ExampleLength
 
       it "does not call save on the root comment" do
         root_comment = double

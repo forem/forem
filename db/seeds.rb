@@ -153,7 +153,7 @@ podcast_objects = [
     slug: "developeronfire",
     twitter_username: "raelyard",
     website_url: "http://developeronfire.com",
-    main_color_hex: Faker::Color.hex_color,
+    main_color_hex: "343d46",
     overcast_url: "https://overcast.fm/itunes1006105326/developer-on-fire",
     android_url: "http://subscribeonandroid.com/developeronfire.com/rss.xml",
     image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")

@@ -3,48 +3,96 @@ require "rails_helper"
 RSpec.describe "UserDestroy", type: :request do
   let(:user) { create(:user) }
 
-  describe "DELETE /users/full_delete" do
-    before do
+  describe "GET /settings/account" do
+    it "offers to delete account when user has an email" do
       sign_in user
+      get "/settings/account"
+      expect(response.body).to include("DELETE ACCOUNT").and include("Deleting your account will")
     end
 
-    it "schedules a user delete job" do
-      expect do
+    it "offers to set an email when user doesn't have an email" do
+      shallow_user = create(:user, email: nil)
+      sign_in shallow_user
+      get "/settings/account"
+      expect(response.body).not_to include("Deleting your account will")
+      expect(response.body).to include("provide an email")
+    end
+  end
+
+  describe "DELETE /users/full_delete" do
+    context "when user has an email" do
+      before do
+        sign_in user
+      end
+
+      it "schedules a user delete job" do
+        expect do
+          delete "/users/full_delete"
+        end.to have_enqueued_job(Users::SelfDeleteJob).with(user.id)
+      end
+
+      it "signs out" do
         delete "/users/full_delete"
-      end.to have_enqueued_job(Users::SelfDeleteJob).with(user.id)
+        expect(controller.current_user).to eq nil
+      end
+
+      it "redirects to root" do
+        delete "/users/full_delete"
+        expect(response).to redirect_to "/"
+        expect(flash[:global_notice]).to include("Your account deletion is scheduled")
+      end
     end
 
-    it "signs out" do
-      delete "/users/full_delete"
-      expect(controller.current_user).to eq nil
-    end
+    context "when user doesn't have an email" do
+      let!(:shallow_user) { create(:user, email: nil) }
 
-    it "redirects to root" do
-      delete "/users/full_delete"
-      expect(response).to redirect_to "/"
-      expect(flash[:global_notice]).to include("Your account deletion is scheduled")
+      before do
+        sign_in shallow_user
+      end
+
+      it "redirects to account page" do
+        delete "/users/full_delete"
+        expect(response).to redirect_to("/settings/account")
+        expect(flash[:settings_notice]).to include("provide an email")
+      end
     end
   end
 
   describe "GET /users/request_destroy" do
-    before do
-      allow(Rails.cache).to receive(:write).and_call_original
-      allow(NotifyMailer).to receive(:account_deletion_requested_email).and_call_original
-      sign_in user
-      get "/users/request_destroy"
+    context "when user has an email" do
+      before do
+        allow(Rails.cache).to receive(:write).and_call_original
+        allow(NotifyMailer).to receive(:account_deletion_requested_email).and_call_original
+        sign_in user
+        get "/users/request_destroy"
+      end
+
+      it "sends an email" do
+        expect(NotifyMailer).to have_received(:account_deletion_requested_email).with(user, instance_of(String))
+      end
+
+      it "updates the destroy_token" do
+        user.reload
+        expect(Rails.cache).to have_received(:write).with("user-destroy-token-#{user.id}", any_args)
+      end
+
+      it "sets flash notice" do
+        expect(flash[:settings_notice]).to include("You have requested account deletion")
+      end
     end
 
-    it "sends an email" do
-      expect(NotifyMailer).to have_received(:account_deletion_requested_email).with(user, instance_of(String))
-    end
+    context "when user doesn't have an email" do
+      let!(:shallow_user) { create(:user, email: nil) }
 
-    it "updates the destroy_token" do
-      user.reload
-      expect(Rails.cache).to have_received(:write).with("user-destroy-token-#{user.id}", any_args)
-    end
+      before do
+        sign_in shallow_user
+      end
 
-    it "sets flash notice" do
-      expect(flash[:settings_notice]).to include("You have requested account deletion")
+      it "redirects to account page" do
+        get "/users/request_destroy"
+        expect(response).to redirect_to("/settings/account")
+        expect(flash[:settings_notice]).to include("provide an email")
+      end
     end
   end
 

@@ -101,10 +101,17 @@ Rails.application.configure do
   logger.level = config.log_level
   config.logger = ActiveSupport::TaggedLogging.new(logger)
 
+  # See <https://github.com/flyerhzm/bullet#configuration> for other config options
   config.after_initialize do
-    Bullet.enable = false
-    Bullet.console = false
+    Bullet.enable = true
+
+    Bullet.add_footer = true
+    Bullet.console = true
     Bullet.rails_logger = true
+
+    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
+    # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
+    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
   end
 end
 

@@ -17,6 +17,7 @@ RSpec.describe Comments::BustCacheJob, type: :job do
 
       before do
         allow(comment).to receive(:commentable).and_return(commentable)
+        allow(comment).to receive(:purge)
         allow(Comment).to receive(:find_by).with(id: comment_id).and_return(comment)
       end
 

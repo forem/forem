@@ -8,27 +8,11 @@
       <h1 class="podcastliquidtag__info__episodetitle"><%= episode.title %></h1>
     </a>
     <a href="/<%= podcast.slug %>">
-        <%= cl_image_tag(podcast.image_url,
-                         type: "fetch",
-                         crop: "fill",
-                         quality: "auto",
-                         sign_url: true,
-                         flags: "progressive",
-                         fetch_format: "auto",
-                         class: "tinyimage",
-                         alt: podcast.title) %>
-      <h1 class="podcastliquidtag__info__podcasttitle"><%= podcast.title %></h1>
+      <h2 class="podcastliquidtag__info__podcasttitle">
+        <%= podcast.title %> <button class="cta follow-action-button" data-info='{"id":<%= podcast.id %>,"className":"<%= podcast.class.name %>"}'>&nbsp;</button>
+
+      </h2>
     </a>
-    <div class="podcastliquidtag__links">
-      <% podcast_links.each do |name, source, img_src| %>
-        <% if source %>
-          <a href="<%= source %>" target="_blank" rel="noopener noreferrer">
-            <img src="<%= img_src %>" alt="<%= name %>">
-            <span class="service-name"><%= name %></span>
-          </a>
-        <% end %>
-      <% end %>
-    </div>
   </div>
   <div id="record-<%= episode.slug %>" data-podcast="<%= podcast.slug %>" data-episode="<%= episode.slug %>" class="podcastliquidtag__record">
     <img class="button play-butt" id="play-butt-<%= episode.slug %>" src="/assets/playbutt.png" alt="play">
@@ -85,8 +69,8 @@
       <span class="buffer-wrapper" id="bufferwrapper">
         <span id="buffer"></span>
         <span id="progress"></span>
-        <span id="time"></span>
-        <span id="closebutt">[ x ]</span>
+        <span id="time">initializing...</span>
+        <span id="closebutt">×</span>
       </span>
     </div>
   </div>

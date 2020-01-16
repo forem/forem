@@ -12,7 +12,7 @@ class Mention < ApplicationRecord
   after_create :send_email_notification
 
   def self.create_all(notifiable)
-    Mentions::CreateAllJob.perform_later(notifiable.id, notifiable.class.name)
+    Mentions::CreateAllWorker.perform_async(notifiable.id, notifiable.class.name)
   end
 
   private

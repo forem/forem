@@ -39,6 +39,10 @@ class Podcast < ApplicationRecord
     User.with_role(:podcast_admin, self)
   end
 
+  def image_90
+    ProfileImage.new(self).get(90)
+  end
+
   private
 
   def unique_slug_including_users_and_orgs

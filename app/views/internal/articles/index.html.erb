@@ -66,7 +66,7 @@
                 <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
                 <input type="hidden" name="_method" value="patch" />
                 <input type="hidden" name="status" value="confirmed" />
-                <textarea name="body_text" style="height: 100px"><%= buffer_update.body_text %></textarea>
+                <textarea name="body_text" class="form-control"><%= buffer_update.body_text %></textarea>
               </div>
               <button value="confirmed" name="status" class="btn btn-success">Confirm</button>
             </form>

@@ -47,7 +47,11 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    raise if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
+    if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
+      skip_authorization
+      render json: {}, status: :too_many_requests
+      return
+    end
 
     @comment = Comment.new(permitted_attributes(Comment))
     @comment.user_id = current_user.id
@@ -55,10 +59,13 @@ class CommentsController < ApplicationController
     authorize @comment
 
     if @comment.save
-      current_user.update(checked_code_of_conduct: true) if params[:checked_code_of_conduct].present? && !current_user.checked_code_of_conduct
+      checked_code_of_conduct = params[:checked_code_of_conduct].present? && !current_user.checked_code_of_conduct
+      current_user.update(checked_code_of_conduct: true) if checked_code_of_conduct
 
       Mention.create_all(@comment)
-      NotificationSubscription.create(user: current_user, notifiable_id: @comment.id, notifiable_type: "Comment", config: "all_comments")
+      NotificationSubscription.create(
+        user: current_user, notifiable_id: @comment.id, notifiable_type: "Comment", config: "all_comments",
+      )
       Notification.send_new_comment_notifications_without_delay(@comment)
 
       if @comment.invalid?
@@ -95,6 +102,12 @@ class CommentsController < ApplicationController
     else
       render json: { status: "errors" }
     end
+  rescue Pundit::NotAuthorizedError
+    raise
+  rescue StandardError => e
+    Rails.logger.error(e)
+    message = "There was a error in your markdown: #{e}"
+    render json: { error: message }, status: :unprocessable_entity
   end
 
   def moderator_create
