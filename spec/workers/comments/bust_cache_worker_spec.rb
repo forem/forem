@@ -6,7 +6,7 @@ RSpec.describe Comments::BustCacheWorker, type: :worker do
   describe "#perform" do
     let(:worker) { subject }
 
-    before(:each) do
+    before do
       allow(EdgeCache::Commentable::Bust).to receive(:call)
     end
 
@@ -19,6 +19,7 @@ RSpec.describe Comments::BustCacheWorker, type: :worker do
         allow(comment).to receive(:commentable).and_return(commentable)
         allow(Comment).to receive(:find_by).with(id: comment_id).and_return(comment)
         allow(comment).to receive(:purge)
+        allow(commentable).to receive(:purge)
       end
 
       it "calls the service" do
