@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe "UserSettings", type: :request do
   let(:user) { create(:user, twitch_username: nil) }
+  let(:canned_response) { create(:canned_response, user: user, type_of: "personal_comment") }
 
   describe "GET /settings/:tab" do
     context "when not signed-in" do
@@ -40,6 +41,30 @@ RSpec.describe "UserSettings", type: :request do
         get "/settings?state=previous-registration"
         error_message = "There is an existing account authorized with that social account"
         expect(response.body).to include error_message
+      end
+
+      it "displays content on canned responses tab properly" do
+        get "/settings/canned-responses"
+        expect(response.body).to include("Canned responses are snippets")
+      end
+
+      it "displays the user's canned response" do
+        canned_response
+        get "/settings/canned-responses"
+        expect(response.body).to include(canned_response.title)
+      end
+
+      it "shows the body markdown of the user's canned response in the edit view" do
+        canned_response
+        get "/settings/canned-responses?id=#{canned_response.id}"
+        expect(response.body).to include(canned_response.content)
+      end
+
+      it "does not display someone else's canned responses" do
+        other_user = create(:user)
+        new_canned_response = create(:canned_response, user: other_user, type_of: "personal_comment")
+        get "/settings/canned-responses?id=#{new_canned_response.id}"
+        expect(response.body).not_to include(canned_response.content)
       end
     end
   end
