@@ -4,7 +4,7 @@ module BadgeRewarder
   def self.award_yearly_club_badges
     (1..3).each do |i|
       message = "Happy DEV birthday! Can you believe it's been #{i} #{'year'.pluralize(i)} already?!"
-      badge = Badge.find_by(slug: "#{YEARS[i]}-year-club")
+      badge = Badge.find_by!(slug: "#{YEARS[i]}-year-club")
       User.where("created_at < ? AND created_at > ?", i.year.ago, i.year.ago - 2.days).find_each do |user|
         achievement = BadgeAchievement.create(
           user_id: user.id,
@@ -63,7 +63,7 @@ module BadgeRewarder
 
   def self.award_contributor_badges_from_github(since = 1.day.ago, message_markdown = "Thank you so much for your contributions!")
     client = Octokit::Client.new
-    badge = Badge.find_by(slug: "dev-contributor")
+    badge = Badge.find_by!(slug: "dev-contributor")
     ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios", "thepracticaldev/DEV-Android"].each do |repo|
       commits = client.commits repo, since: since.iso8601
       authors_uids = commits.map { |commit| commit.author.id }
@@ -96,7 +96,7 @@ module BadgeRewarder
   end
 
   def self.award_badges(usernames, slug, message_markdown)
-    badge_id = Badge.find_by(slug: slug).id
+    badge_id = Badge.find_by!(slug: slug).id
     User.where(username: usernames).find_each do |user|
       BadgeAchievement.create(
         user_id: user.id,
