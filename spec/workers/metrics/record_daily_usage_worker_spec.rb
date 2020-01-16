@@ -2,12 +2,12 @@ require "rails_helper"
 
 RSpec.describe Metrics::RecordDailyUsageWorker, type: :worker do
   include_examples "#enqueues_on_correct_queue", "low_priority", 1
-  let_it_be(:first_article) { create(:user, comments_count: 1) }
-  let_it_be(:first_article) { create(:user, comments_count: 2) }
-  let_it_be(:first_article) { create(:user, comments_count: 0) }
+  let_it_be(:first_user) { create(:user, comments_count: 1) }
+  let_it_be(:second_user) { create(:user, comments_count: 2) }
+  let_it_be(:third_user) { create(:user, comments_count: 0) }
   let_it_be(:first_article) { create(:article, score: 15, nth_published_by_author: 1) }
-  let_it_be(:first_article) { create(:article, score: 5, nth_published_by_author: 2) }
-  let_it_be(:first_article) { create(:article, score: 38, nth_published_by_author: 3) }
+  let_it_be(:second_article) { create(:article, score: 5, nth_published_by_author: 2) }
+  let_it_be(:third_article) { create(:article, score: 38, nth_published_by_author: 3) }
 
   describe "#perform" do
     before do
