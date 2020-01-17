@@ -9,6 +9,8 @@ module Comments
       return unless comment&.commentable
 
       comment.purge
+      comment.commentable.purge
+
       EdgeCache::Commentable::Bust.call(comment.commentable)
     end
   end
