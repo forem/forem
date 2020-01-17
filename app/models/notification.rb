@@ -47,14 +47,14 @@ class Notification < ApplicationRecord
       return if comment.commentable_type == "PodcastEpisode"
       return if UserBlock.blocking?(comment.commentable.user_id, comment.user_id)
 
-      Notifications::NewCommentJob.perform_later(comment.id)
+      Notifications::NewCommentWorker.perform_async(comment.id)
     end
 
     def send_new_comment_notifications_without_delay(comment)
       return if comment.commentable_type == "PodcastEpisode"
       return if UserBlock.blocking?(comment.commentable.user_id, comment.user_id)
 
-      Notifications::NewCommentJob.perform_now(comment.id)
+      Notifications::NewCommentWorker.new.perform(comment.id)
     end
 
     def send_new_badge_achievement_notification(badge_achievement)
