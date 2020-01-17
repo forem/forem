@@ -7,6 +7,8 @@ module Comments
       return unless comment&.commentable
 
       comment.purge
+      comment.commentable.purge
+
       service.call(comment.commentable)
     end
   end

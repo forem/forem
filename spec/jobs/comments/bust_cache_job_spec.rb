@@ -18,6 +18,7 @@ RSpec.describe Comments::BustCacheJob, type: :job do
       before do
         allow(comment).to receive(:commentable).and_return(commentable)
         allow(comment).to receive(:purge)
+        allow(commentable).to receive(:purge)
         allow(Comment).to receive(:find_by).with(id: comment_id).and_return(comment)
       end
 
@@ -27,7 +28,24 @@ RSpec.describe Comments::BustCacheJob, type: :job do
         expect(edge_cache_commentable_bust_service).to have_received(:call).with(comment.commentable).once
       end
 
-      it "does not call the service with a comment without a commentable" do
+      it "does not call purge on comment when commentable is not available" do
+        allow(comment).to receive(:commentable).and_return(nil)
+
+        described_class.perform_now(comment_id, edge_cache_commentable_bust_service)
+
+        expect(comment).not_to have_received(:purge)
+        expect(commentable).not_to have_received(:purge)
+      end
+
+      it "does not call purge on commentable when commentable is not available" do
+        allow(comment).to receive(:commentable).and_return(nil)
+
+        described_class.perform_now(comment_id, edge_cache_commentable_bust_service)
+
+        expect(commentable).not_to have_received(:purge)
+      end
+
+      it "does not call the service when commentable is not available" do
         allow(comment).to receive(:commentable).and_return(nil)
 
         described_class.perform_now(comment_id, edge_cache_commentable_bust_service)

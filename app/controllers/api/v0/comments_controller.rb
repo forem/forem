@@ -10,7 +10,7 @@ module Api
 
         @comments = article.comments.includes(:user).select(%i[id processed_html user_id ancestry]).arrange
 
-        set_surrogate_key_header "comments", edge_cache_keys(@comments)
+        set_surrogate_key_header article.record_key, "comments", edge_cache_keys(@comments)
       end
 
       def show
