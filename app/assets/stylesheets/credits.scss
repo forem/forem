@@ -256,6 +256,15 @@
     border-radius: 3px;
     text-align: center;
 
+    @media screen and ( min-width: 949px ) {
+      margin: 67px auto;
+      border-radius: 0;
+    }
+
+    @media screen and ( min-width: 380px ) {
+      padding: 30px 20px;
+    }
+
     .existing-credits-status {
       font-size: 1.8em;
       font-weight: bold;
@@ -272,6 +281,10 @@
       padding: 10px 30px;
       border-radius: 100px;
       font-weight: bold;
+
+      @media screen and ( min-width: 380px ) {
+        padding: 10px 2existing-credits0px;
+      }
     }
 
     @media screen and ( min-width:950px ){
