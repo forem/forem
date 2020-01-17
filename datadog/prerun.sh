@@ -3,4 +3,5 @@
 # Disable the Datadog Agent for scheduler workers
 if [ "$DYNOTYPE" == "scheduler" ] || [ "$DYNOTYPE" == "run" ]; then
   DISABLE_DATADOG_AGENT="true"
+  HONEYCOMB_DISABLE_AUTOCONFIGURE="true"
 fi
