@@ -48,7 +48,7 @@ after_script:
   addons:
     artifacts:
       paths:
-      - /tmp/screenshots/*.png
+      - ~/build/thepracticaldev/dev.to/tmp/screenshots/*.png
       debug: true
 deploy:
   provider: heroku
