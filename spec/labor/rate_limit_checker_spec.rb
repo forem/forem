@@ -11,29 +11,31 @@ RSpec.describe RateLimitChecker, type: :labor do
       expect(rate_limit_checker.limit_by_action("random-nothing")).to eq(false)
     end
 
-    it "returns true if too many comments at once" do
-      count = SiteConfig.rate_limit_comment_creation + 1
-      create_list(:comment, count, user_id: user.id, commentable_id: article.id)
-      expect(rate_limit_checker.limit_by_action("comment_creation")).to eq(true)
-    end
+    context "comment creation" do
+      before do
+        allow(SiteConfig).to receive(:rate_limit_comment_creation).and_return(1)
+      end
 
-    it "triggers ping admin when too many comments" do
-      allow(RateLimitCheckerWorker).to receive(:perform_async)
-      count = SiteConfig.rate_limit_comment_creation + 1
-      create_list(:comment, count, user_id: user.id, commentable_id: article.id)
-      rate_limit_checker.limit_by_action("comment_creation")
-      expect(RateLimitCheckerWorker).to have_received(:perform_async).with(user.id, "comment_creation")
-    end
+      it "returns true if too many comments at once" do
+        create_list(:comment, 2, user_id: user.id, commentable_id: article.id)
+        expect(rate_limit_checker.limit_by_action("comment_creation")).to eq(true)
+      end
 
-    it "returns false if allowed comment" do
-      count = SiteConfig.rate_limit_comment_creation - 1
-      create_list(:comment, count, user_id: user.id, commentable_id: article.id)
-      expect(rate_limit_checker.limit_by_action("comment_creation")).to eq(false)
+      it "triggers ping admin when too many comments" do
+        allow(RateLimitCheckerWorker).to receive(:perform_async)
+        create_list(:comment, 2, user_id: user.id, commentable_id: article.id)
+        rate_limit_checker.limit_by_action("comment_creation")
+        expect(RateLimitCheckerWorker).to have_received(:perform_async).with(user.id, "comment_creation")
+      end
+
+      it "returns false if allowed comment" do
+        expect(rate_limit_checker.limit_by_action("comment_creation")).to eq(false)
+      end
     end
 
     it "returns true if too many published articles at once" do
-      count = SiteConfig.rate_limit_published_article_creation + 1
-      create_list(:article, count, user_id: user.id, published: true)
+      allow(SiteConfig).to receive(:rate_limit_published_article_creation).and_return(1)
+      create_list(:article, 2, user_id: user.id, published: true)
       expect(rate_limit_checker.limit_by_action("published_article_creation")).to eq(true)
     end
 
@@ -55,20 +57,19 @@ RSpec.describe RateLimitChecker, type: :labor do
 
     it "returns false if a user has followed less than <daily_limit> accounts today" do
       allow(rate_limit_checker).
-        to receive(:track_image_uploads).
+        to receive(:user_today_follow_count).
         and_return(SiteConfig.rate_limit_image_upload + 1)
 
       expect(rate_limit_checker.limit_by_action("follow_account")).to eq(false)
     end
 
-    it "returns false if published articles comment" do
-      create_list(:article, 2, user_id: user.id, published: true)
+    it "returns false if published articles limit has not been reached" do
       expect(described_class.new(user).limit_by_action("published_article_creation")).to eq(false)
     end
 
     it "returns false if a user uploads too many images" do
       allow(rate_limit_checker).
-        to receive(:user_today_follow_count).
+        to receive(:track_image_uploads).
         and_return(SiteConfig.rate_limit_follow_count_daily - 1)
 
       expect(rate_limit_checker.limit_by_action("image_upload")).to eq(false)
