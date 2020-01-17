@@ -10,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_27_114543) do
+ActiveRecord::Schema.define(version: 2020_01_17_135902) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -67,6 +68,7 @@ ActiveRecord::Schema.define(version: 2019_12_27_114543) do
     t.string "canonical_url"
     t.integer "collection_id"
     t.integer "collection_position"
+    t.integer "comment_score", default: 0
     t.string "comment_template"
     t.integer "comments_count", default: 0, null: false
     t.datetime "created_at", null: false
@@ -136,6 +138,7 @@ ActiveRecord::Schema.define(version: 2019_12_27_114543) do
     t.string "video_state"
     t.string "video_thumbnail_url"
     t.index ["boost_states"], name: "index_articles_on_boost_states", using: :gin
+    t.index ["comment_score"], name: "index_articles_on_comment_score"
     t.index ["featured_number"], name: "index_articles_on_featured_number"
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
