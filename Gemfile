@@ -143,6 +143,7 @@ group :development, :test do
   gem "rubocop-rspec", "~> 1.37", require: false # Code style checking for RSpec files
   gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
+  gem "strong_migrations", "~> 0.5" # Catch unsafe migrations in development
 end
 
 group :test do
