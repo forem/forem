@@ -80,11 +80,7 @@ RSpec.describe "Pro Memberships", type: :request do
 
       it "enqueues a job to bust the user's cache" do
         ActiveJob::Base.queue_adapter.enqueued_jobs.clear # make sure it hasn't been previously queued
-        assert_enqueued_with(
-          job: Users::BustCacheJob,
-          args: [user.id],
-          queue: "users_bust_cache",
-        ) do
+        sidekiq_assert_enqueued_with(job: Users::BustCacheWorker, args: [user.id]) do
           post pro_membership_path
         end
       end

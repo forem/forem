@@ -545,7 +545,7 @@ class User < ApplicationRecord
   end
 
   def bust_cache
-    Users::BustCacheJob.perform_later(id)
+    Users::BustCacheWorker.perform_async(id)
   end
 
   def core_profile_details_changed?
