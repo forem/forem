@@ -12,7 +12,7 @@ module Reactions
 
       return unless user && reactable
 
-      Reactions.create!(
+      Reaction.create!(
         user: user,
         reactable: reactable,
         category: category,
