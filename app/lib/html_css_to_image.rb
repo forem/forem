@@ -4,7 +4,7 @@ module HtmlCssToImage
 
   FALLBACK_IMAGE = "https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png".freeze
 
-  CACHE_EXPIRATION = 2.years
+  CACHE_EXPIRATION = 6.weeks
 
   def self.url(html:, css: nil, google_fonts: nil)
     image = HTTParty.post("https://hcti.io/v1/image",
