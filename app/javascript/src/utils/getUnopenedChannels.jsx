@@ -89,7 +89,7 @@ class UnopenedChannelNotice extends Component {
       (window.location.pathname.startsWith('/connect') &&
         e.user_id === window.currentUser.id &&
         e.channel_type !== 'direct') ||
-      window.location.pathname.includes(e.adjusted_slug)
+      window.location.pathname.includes(e.chat_channel_adjusted_slug)
     ) {
       return;
     }

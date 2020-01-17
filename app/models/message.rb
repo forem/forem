@@ -42,12 +42,14 @@ class Message < ApplicationRecord
 
   def evaluate_markdown
     html = MarkdownParser.new(message_markdown).evaluate_markdown
-    html = wrap_mentions_with_links!(html)
     html = append_rich_links(html)
+    html = wrap_mentions_with_links(html)
     self.message_html = html
   end
 
-  def wrap_mentions_with_links!(html)
+  def wrap_mentions_with_links(html)
+    return unless html
+
     html_doc = Nokogiri::HTML(html)
 
     # looks for nodes that isn't <code>, <a>, and contains "@"
