@@ -116,15 +116,15 @@ RSpec.describe Notification, type: :model do
 
     context "when trying to send a notification after following a user" do
       it "creates a notification belonging to the person being followed" do
-        perform_enqueued_jobs do
-          expect do
+        expect do
+          sidekiq_perform_enqueued_jobs do
             described_class.send_new_follower_notification(user_follows_user2)
-          end.to change(user2.notifications, :count).by(1)
-        end
+          end
+        end.to change(user2.notifications, :count).by(1)
       end
 
       it "creates a notification from the follow instance" do
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           described_class.send_new_follower_notification(user_follows_user2)
         end
 
@@ -139,22 +139,23 @@ RSpec.describe Notification, type: :model do
       let_it_be_readonly(:user_follows_organization) { user.follow(organization) }
 
       it "creates a notification belonging to the organization" do
-        perform_enqueued_jobs do
-          expect do
+        expect do
+          sidekiq_perform_enqueued_jobs do
             described_class.send_new_follower_notification(user_follows_organization)
-          end.to change(organization.notifications, :count).by(1)
-        end
+          end
+        end.to change(organization.notifications, :count).by(1)
       end
 
       it "does not create a notification belonging to a user" do
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           described_class.send_new_follower_notification(user_follows_organization)
-          expect(organization.notifications.last.user_id).to be(nil)
         end
+
+        expect(organization.notifications.last&.user_id).to be(nil)
       end
 
       it "creates a notification from the follow instance" do
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           described_class.send_new_follower_notification(user_follows_organization)
         end
 
@@ -171,17 +172,17 @@ RSpec.describe Notification, type: :model do
     context "when a user unfollows another user" do
       it "destroys the follow notification" do
         # first we follow the user
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           described_class.send_new_follower_notification(user_follows_user2)
         end
 
         # then we stop following them
-        perform_enqueued_jobs do
-          expect do
+        expect do
+          sidekiq_perform_enqueued_jobs do
             user_stops_following_user2 = user.stop_following(user2)
             described_class.send_new_follower_notification(user_stops_following_user2)
-          end.to change(user2.notifications, :count).by(-1)
-        end
+          end
+        end.to change(user2.notifications, :count).by(-1)
       end
     end
   end
