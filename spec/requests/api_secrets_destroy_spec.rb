@@ -16,7 +16,7 @@ RSpec.describe "ApiSecretsDestroy", type: :request do
 
       it "flashes a notice" do
         delete "/users/api_secrets/#{api_secret.id}"
-        expect(flash[:notice]).to be_truthy
+        expect(flash[:settings_notice]).to be_truthy
         expect(flash[:error]).to be_nil
       end
 
@@ -50,7 +50,7 @@ RSpec.describe "ApiSecretsDestroy", type: :request do
       it "flashes an error message" do
         delete "/users/api_secrets/#{api_secret.id}"
         expect(flash[:error]).to be_truthy
-        expect(flash[:notice]).to be_nil
+        expect(flash[:settings_notice]).to be_nil
       end
     end
   end

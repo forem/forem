@@ -21,7 +21,7 @@ RSpec.describe "ApiSecretsCreate", type: :request do
 
       it "flashes a message containing the token" do
         post "/users/api_secrets", params: { api_secret: valid_params }
-        expect(flash[:notice]).to include(ApiSecret.last.secret)
+        expect(flash[:settings_notice]).to include(ApiSecret.last.secret)
         expect(flash[:error]).to be_nil
       end
     end
@@ -37,7 +37,7 @@ RSpec.describe "ApiSecretsCreate", type: :request do
       it "flashes an error message" do
         post "/users/api_secrets", params: { api_secret: invalid_params }
         expect(flash[:error]).to be_truthy
-        expect(flash[:notice]).to be_nil
+        expect(flash[:settings_notice]).to be_nil
       end
     end
   end
