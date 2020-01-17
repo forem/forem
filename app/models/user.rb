@@ -28,14 +28,14 @@ class User < ApplicationRecord
   has_many :messages, dependent: :destroy
   has_many :notes, as: :noteable, inverse_of: :noteable
   has_many :profile_pins, as: :profile, inverse_of: :profile
-  has_many :authored_notes, as: :author, inverse_of: :author, class_name: "Note"
+  has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id # as: :author
   has_many :notifications, dependent: :destroy
   has_many :reactions, dependent: :destroy
   has_many :tweets, dependent: :destroy
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :chat_channels, through: :chat_channel_memberships
   has_many :notification_subscriptions, dependent: :destroy
-  has_many :feedback_messages
+  # has_many :feedback_messages
   has_many :rating_votes
   has_many :html_variants, dependent: :destroy
   has_many :page_views
@@ -48,7 +48,9 @@ class User < ApplicationRecord
   has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
-  has_many :user_blocks
+  # has_many :user_blocks
+  has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id, inverse_of: :blocker
+  has_many :blocked_blocks, class_name: "UserBlock", foreign_key: :blocked_id, inverse_of: :blocked
   has_one :pro_membership, dependent: :destroy
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
 

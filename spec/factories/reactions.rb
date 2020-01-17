@@ -1,8 +1,9 @@
 FactoryBot.define do
   factory :reaction do
-    reactable_id { rand(10_000) }
+    # reactable_id { rand(10_000) }
     user
-    reactable_type { "Article" }
+    # reactable_type { "Article" }
+    reactable { create(:article) }
     category { "like" }
   end
 
