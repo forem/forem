@@ -23,6 +23,7 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_comment_creation, type: :integer, default: 9
   field :rate_limit_published_article_creation, type: :integer, default: 9
   field :rate_limit_image_upload, type: :integer, default: 9
+  field :rate_limit_email_recipient, type: :integer, default: 5
 
   # Google Analytics Reporting API v4
   # <https://developers.google.com/analytics/devguides/reporting/core/v4>

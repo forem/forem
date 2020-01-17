@@ -11,7 +11,7 @@ RSpec.describe RateLimitChecker, type: :labor do
       expect(rate_limit_checker.limit_by_action("random-nothing")).to eq(false)
     end
 
-    context "comment creation" do
+    context "when creating comments" do
       before do
         allow(SiteConfig).to receive(:rate_limit_comment_creation).and_return(1)
       end
@@ -77,13 +77,16 @@ RSpec.describe RateLimitChecker, type: :labor do
   end
 
   describe "#limit_by_email_recipient_address" do
-    it "returns true if too many published articles at once" do
-      10.times { EmailMessage.create(to: user.email, sent_at: Time.current) }
+    before do
+      allow(SiteConfig).to receive(:rate_limit_email_recipient).and_return(1)
+    end
+
+    it "returns true if too many emails are sent to the same recipient" do
+      2.times { EmailMessage.create(to: user.email, sent_at: Time.current) }
       expect(described_class.new.limit_by_email_recipient_address(user.email)).to eq(true)
     end
 
-    it "returns false if published articles comment" do
-      2.times { EmailMessage.create(to: user.email, sent_at: Time.current) }
+    it "returns false if we are below the message limit for this recipient" do
       expect(described_class.new.limit_by_email_recipient_address(user.email)).to eq(false)
     end
   end
