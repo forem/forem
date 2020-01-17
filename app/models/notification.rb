@@ -28,7 +28,7 @@ class Notification < ApplicationRecord
       return if follow.followable_type == "User" && UserBlock.blocking?(follow.followable_id, follow.follower_id)
 
       follow_data = follow.attributes.slice("follower_id", "followable_id", "followable_type").symbolize_keys
-      Notifications::NewFollowerJob.perform_later(follow_data, is_read)
+      Notifications::NewFollowerWorker.perform_async(follow_data, is_read)
     end
 
     def send_new_follower_notification_without_delay(follow, is_read = false)
@@ -36,7 +36,7 @@ class Notification < ApplicationRecord
       return if follow.followable_type == "User" && UserBlock.blocking?(follow.followable_id, follow.follower_id)
 
       follow_data = follow.attributes.slice("follower_id", "followable_id", "followable_type").symbolize_keys
-      Notifications::NewFollowerJob.perform_now(follow_data, is_read)
+      Notifications::NewFollowerWorker.new.perform(follow_data, is_read)
     end
 
     def send_to_followers(notifiable, action = nil)
