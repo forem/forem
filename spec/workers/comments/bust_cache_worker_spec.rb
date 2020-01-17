@@ -28,7 +28,24 @@ RSpec.describe Comments::BustCacheWorker, type: :worker do
         expect(EdgeCache::Commentable::Bust).to have_received(:call).with(comment.commentable).once
       end
 
-      it "does not call the service with a comment without a commentable" do
+      it "does not call purge on comment when commentable is not available" do
+        allow(comment).to receive(:commentable).and_return(nil)
+
+        worker.perform(comment_id)
+
+        expect(comment).not_to have_received(:purge)
+        expect(commentable).not_to have_received(:purge)
+      end
+
+      it "does not call purge on commentable when commentable is not available" do
+        allow(comment).to receive(:commentable).and_return(nil)
+
+        worker.perform(comment_id)
+
+        expect(commentable).not_to have_received(:purge)
+      end
+
+      it "does not call the service when commentable is not available" do
         allow(comment).to receive(:commentable).and_return(nil)
 
         worker.perform(comment_id)
