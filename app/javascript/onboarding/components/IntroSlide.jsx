@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import Navigation from './Navigation';
 import SlideContent from './SlideContent';
-import { stringfy } from '../utilities';
+import { updateOnboarding } from '../utilities';
 
 class IntroSlide extends Component {
   constructor(props) {
@@ -13,7 +13,7 @@ class IntroSlide extends Component {
   }
 
   componentDidMount() {
-    stringfy('intro slide');
+    updateOnboarding('intro slide');
   }
 
   onSubmit() {

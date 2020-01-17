@@ -4,7 +4,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import Navigation from './Navigation';
-import { getContentOfToken, stringfy } from '../utilities';
+import { getContentOfToken, updateOnboarding } from '../utilities';
 
 /* eslint-disable camelcase */
 
@@ -27,7 +27,7 @@ class EmailTermsConditionsForm extends Component {
   }
 
   componentDidMount() {
-    stringfy('emails, COC and T&C form');
+    updateOnboarding('emails, COC and T&C form');
   }
 
   onSubmit() {

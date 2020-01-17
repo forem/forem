@@ -1,11 +1,11 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-import { stringfy } from '../utilities';
+import { updateOnboarding } from '../utilities';
 
 class ClosingSlide extends Component {
   componentDidMount() {
-    stringfy('closing slide');
+    updateOnboarding('closing slide');
   }
 
   render() {

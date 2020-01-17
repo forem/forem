@@ -7,7 +7,7 @@ export const jsonToForm = data => {
 export const getContentOfToken = token =>
   document.querySelector(`meta[name='${token}']`).content;
 
-export const stringfy = text => {
+export const updateOnboarding = lastPage => {
   const csrfToken = getContentOfToken('csrf-token');
   fetch('/onboarding_update', {
     method: 'PATCH',
@@ -15,7 +15,7 @@ export const stringfy = text => {
       'X-CSRF-Token': csrfToken,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ user: { last_onboarding_page: text } }),
+    body: JSON.stringify({ user: { last_onboarding_page: lastPage } }),
     credentials: 'same-origin',
   });
 };

@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import Navigation from './Navigation';
-import { getContentOfToken, stringfy } from '../utilities';
+import { getContentOfToken, updateOnboarding } from '../utilities';
 
 class BioForm extends Component {
   constructor(props) {
@@ -17,7 +17,7 @@ class BioForm extends Component {
   }
 
   componentDidMount() {
-    stringfy('bio form');
+    updateOnboarding('bio form');
   }
 
   onSubmit() {
