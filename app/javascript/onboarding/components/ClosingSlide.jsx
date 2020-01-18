@@ -20,7 +20,7 @@ class ClosingSlide extends Component {
   render() {
     const { previousLocation, variant } = this.props;
 
-    const sanitizedPreviousLocation = filterXSS(previousLocation).startsWith('/')
+    const sanitizedPreviousLocation = previousLocation && filterXSS(previousLocation).startsWith('/')
       ? filterXSS(previousLocation)
       : '';
     const previousLocationListElement = () => {
