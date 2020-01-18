@@ -15,6 +15,16 @@
       </div>
 
       <div class="form-group">
+        <%= f.label :user_moderator_id %>
+        <%= f.number_field :user_moderator_id,
+                           class: "form-control",
+                           value: SiteConfig.user_moderator_id,
+                           min: 1,
+                           placeholder: "1" %>
+        <div class="alert alert-info">User ID of the moderation mascot account</div>
+      </div>
+
+      <div class="form-group">
         <%= f.label :default_site_email %>
         <%= f.email_field :default_site_email,
                           class: "form-control",

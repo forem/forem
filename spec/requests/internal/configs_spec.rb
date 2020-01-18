@@ -25,6 +25,11 @@ RSpec.describe "/internal/config", type: :request do
         expect(SiteConfig.staff_user_id).to eq(2)
       end
 
+      it "updates user_moderator_id" do
+        post "/internal/config", params: { site_config: { user_moderator_id: 2 } }
+        expect(SiteConfig.user_moderator_id).to eq(2)
+      end
+
       it "updates default_site_email" do
         expected_email = "foo@bar.com"
         post "/internal/config", params: { site_config: { default_site_email: expected_email } }
