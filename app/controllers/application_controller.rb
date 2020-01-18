@@ -40,7 +40,8 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    return "/onboarding?referrer=#{request.env['omniauth.origin'] || 'none'}" unless current_user.saw_onboarding
+    sanitized_referrer = (request.env["omniauth.origin"] || "").delete_prefix(ENV["APP_PROTOCOL"] + ENV["APP_DOMAIN"])
+    return "/onboarding?referrer=#{sanitized_referrer}" unless current_user.saw_onboarding
 
     (request.env["omniauth.origin"] || stored_location_for(resource) || "/dashboard") + "?signin=true" # This signin=true param is used by frontend
   end
