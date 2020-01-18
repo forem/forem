@@ -28,22 +28,5 @@ keys. Then you'll need to provide these keys to the Rails application.
    ```
 
    ![github-2](https://user-images.githubusercontent.com/22895284/51085862-49337b80-173f-11e9-8503-f8251d07f458.png)
-
-4. You will need a personal token as well. From the same dashboard, navigate to
-   **Personal access tokens** and generate a new token.
-
-   ![github-3](https://user-images.githubusercontent.com/22895284/51085863-49337b80-173f-11e9-81bf-1c1e38035a7a.png)
-
-5. Fill in the token description and generate the token. You don't need to
-   select any of the scopes.
-
-6. Be sure that you copy the token right away because it is the only time you
-   will see it. Change it accordingly.
-
-   ```shell
-   Personal access tokens -> GITHUB_TOKEN
-   ```
-
-   ![github-4](https://user-images.githubusercontent.com/22895284/51085865-49cc1200-173f-11e9-86a8-7e7e1db408a0.png)
-
-7. Done.
+   
+4. Done.

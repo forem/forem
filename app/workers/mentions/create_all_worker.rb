@@ -1,6 +1,7 @@
 module Mentions
-  class CreateAllJob < ApplicationJob
-    queue_as :mentions_create_all
+  class CreateAllWorker
+    include Sidekiq::Worker
+    sidekiq_options queue: :default, retry: 10
 
     def perform(notifiable_id, notifiable_type)
       return if ["Comment"].none?(notifiable_type)

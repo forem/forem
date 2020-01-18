@@ -2,13 +2,14 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
   layout "internal"
 
   def index
-    @feedback_type = params[:state] || "abuse-reports"
-    @status = params[:status] || "Open"
-    @feedback_messages = FeedbackMessage.
-      where(feedback_type: @feedback_type, status: @status).
+    @q = FeedbackMessage.
       includes(:reporter, :notes).
       order("feedback_messages.created_at DESC").
-      page(params[:page] || 1).per(5)
+      ransack(params[:q])
+    @feedback_messages = @q.result.page(params[:page] || 1).per(5)
+
+    @feedback_type = params[:state] || "abuse-reports"
+    @status = params[:status] || "Open"
     @email_messages = EmailMessage.find_for_reports(@feedback_messages)
     @new_articles = Article.published.includes(:user).limit(120).order("created_at DESC").where("score > ? AND score < ?", -10, 8)
     @possible_spam_users = User.where("github_created_at > ? OR twitter_created_at > ? OR length(name) > ?", 50.hours.ago, 50.hours.ago, 30).

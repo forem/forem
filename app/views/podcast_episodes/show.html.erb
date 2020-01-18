@@ -28,8 +28,6 @@
 
 <% end %>
 
-<%= render "podcast_episodes/podcast_bar" %>
-
 <div class="podcast-episode-container">
   <div class="hero">
     <% image_url = cl_image_path(@podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png",
@@ -122,3 +120,5 @@
     </div>
   </div>
 </div>
+
+<%= render "podcast_episodes/podcast_bar" %>

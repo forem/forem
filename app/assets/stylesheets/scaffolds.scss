@@ -12,6 +12,10 @@ body {
   overflow-y: scroll;
 }
 
+#audiocontent {
+  display: none;
+}
+
 *:focus {
   &:active {
     outline: 0;

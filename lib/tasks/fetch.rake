@@ -113,22 +113,13 @@ task fix_credits_count_cache: :environment do
 end
 
 task record_db_table_counts: :environment do
-  table_names = %w[users articles organizations comments podcasts classified_listings page_views]
-  table_names.each do |table_name|
-    estimate = ActiveRecord::Base.connection.execute("SELECT reltuples::bigint AS estimate FROM pg_class where relname='#{table_name}'").first["estimate"]
-    Rails.logger.info(
-      "db_table_size",
-      table_info: {
-        table_name: table_name,
-        table_size: estimate
-      },
-    )
-    DataDogStatsClient.gauge(
-      "postgres.db_table_size", estimate, tags: { table_name: table_name }
-    )
-  end
+  Metrics::RecordDbTableCountsWorker.perform_async
 end
 
 task log_worker_queue_stats: :environment do
-  Loggers::LogWorkerQueueStats.run
+  Metrics::RecordBackgroundQueueStatsWorker.perform_async
+end
+
+task log_daily_usage_measurables: :environment do
+  Metrics::RecordDailyUsageWorker.perform_async
 end

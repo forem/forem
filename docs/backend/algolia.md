@@ -11,8 +11,7 @@ application.
 
 ## Sign up
 
-1. Go to the Algolia sign up
-   [page](https://www.algolia.com/users/sign_up).
+1. Go to the Algolia sign up [page](https://www.algolia.com/users/sign_up).
 
 2. Choose one of the three methods of signing up: email, GitHub, or Google.
 
@@ -40,8 +39,8 @@ application.
 
 ## Get API keys
 
-1. [Sign up](#algolia-sign-up) or [Sign
-   in](https://www.algolia.com/users/sign_in) to your Algolia account.
+1. [Sign up](#algolia-sign-up) or
+   [Sign in](https://www.algolia.com/users/sign_in) to your Algolia account.
 
 2. From your **Dashboard**, click on **API Keys**.
 
@@ -59,3 +58,19 @@ application.
    ![algolia-2](https://user-images.githubusercontent.com/22895284/51078771-2eb7be80-16bb-11e9-9622-f19417f1b29c.png)
 
 4. Done.
+
+## Notes
+
+Algolia puts you on a trial account by defult. The trial period is 14 days. But
+don't worry, it also offers a free plan called **Community**. You may want to
+switch to it manually:
+
+1. Go to [Billing](https://www.algolia.com/billing) section.
+
+   ![algolia-community-plan-1](https://user-images.githubusercontent.com/108287/72377741-f866b200-3707-11ea-974f-591f965f05b4.png)
+
+2. Choose **Community** plan and submit.
+
+   ![algolia-community-plan-2](https://user-images.githubusercontent.com/108287/72377900-3cf24d80-3708-11ea-8371-43563ca7fb43.png)
+
+3. Done.

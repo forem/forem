@@ -278,6 +278,12 @@ RSpec.describe Comment, type: :model do
       end.to change(Comments::SendEmailNotificationWorker.jobs, :size).by(1)
     end
 
+    it "enqueues a worker to bust comment cache" do
+      expect do
+        comment.save
+      end.to change(Comments::BustCacheWorker.jobs, :size).by(1)
+    end
+
     it "touches user updated_at" do
       user.updated_at = 1.month.ago
       user.save
@@ -309,7 +315,7 @@ RSpec.describe Comment, type: :model do
   context "when callbacks are triggered after update" do
     it "deletes the comment's notifications when deleted is set to true" do
       create(:notification, notifiable: comment, user: user)
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         comment.update(deleted: true)
       end
       expect(comment.notifications).to be_empty
@@ -330,6 +336,11 @@ RSpec.describe Comment, type: :model do
   context "when callbacks are triggered after destroy" do
     it "updates user's last_comment_at" do
       expect { comment.destroy }.to change(user, :last_comment_at)
+    end
+
+    it "busts the comment cache" do
+      expect_any_instance_of(Comments::BustCacheWorker).to receive(:perform).with(comment.id)
+      comment.destroy
     end
   end
 

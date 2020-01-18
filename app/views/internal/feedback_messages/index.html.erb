@@ -109,6 +109,32 @@
   </div>
 </div>
 
+<%= search_form_for @q, url: internal_feedback_messages_path, class: "form-inline justify-content-end" do |f| %>
+
+  <%= f.label :reported_url_cont, "Reported URL", class: "sr-only" %>
+  <%= f.search_field :reported_url_cont, placeholder: "Reported URL", class: "form-control mx-3" %>
+
+  <%= f.label :reporter_username_cont, "Reporter", class: "sr-only" %>
+  <%= f.search_field :reporter_username_cont, placeholder: "Reporter", class: "form-control mx-3" %>
+
+  <%= f.select :status_eq,
+    options_for_select([
+      ["Open"],
+      ["Invalid"],
+      ["Resolved"],
+    ], @q.status_eq),
+    {},
+    class: "custom-select mx-3" %>
+
+  <%= f.submit "Search", class: "btn btn-secondary" %>
+<% end %>
+
+<div class="row mt-4 justify-content-center">
+  <%= content_tag :span, sort_link(@q, :reporter_username, "Reporter"), class: "mx-2" %>
+  <%= content_tag :span, sort_link(@q, :reported_url, "Reported URL"), class: "mx-2" %>
+  <%= content_tag :span, sort_link(@q, :created_at, "Creation Date"), class: "ml-2" %>
+</div>
+
 <%= paginate @feedback_messages %>
 
 <% @feedback_messages.each do |feedback_message| %>

@@ -149,7 +149,7 @@ class User < ApplicationRecord
 
   scope :dev_account, -> { find_by(id: SiteConfig.staff_user_id) }
 
-  after_create :send_welcome_notification
+  after_create_commit :send_welcome_notification
   after_save  :bust_cache
   after_save  :subscribe_to_mailchimp_newsletter
   after_save  :conditionally_resave_articles

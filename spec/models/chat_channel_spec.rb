@@ -5,7 +5,9 @@ RSpec.describe ChatChannel, type: :model do
 
   let_it_be(:users) { create_list(:user, 2) }
 
-  it { is_expected.to have_many(:messages) }
+  it { is_expected.to have_many(:messages).dependent(:destroy) }
+  it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
+  it { is_expected.to have_many(:users) }
   it { is_expected.to validate_presence_of(:channel_type) }
 
   describe "#clear_channel" do
