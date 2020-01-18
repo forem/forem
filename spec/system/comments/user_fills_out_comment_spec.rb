@@ -36,14 +36,15 @@ RSpec.describe "Creating Comment", type: :system, js: true do
   end
 
   it "User replies to a comment" do
-    create(:comment, commentable_id: article.id, user_id: user.id)
+    comment = create(:comment, commentable_id: article.id, user_id: user.id)
     visit article.path.to_s
 
     wait_for_javascript
 
     find(".toggle-reply-form").click
-    find(:xpath, "//div[@class='actions']/form[@class='new_comment']/textarea").set(raw_comment)
-    find(:xpath, "//div[contains(@class, 'reply-actions')]/input[@name='commit']").click
-    expect(page).to have_text(raw_comment)
+    find("form#new-comment-#{comment.id}").find("textarea").set(raw_comment)
+    find("div.reply-actions").find("input[name='commit']").click
+    new_comment_element = find("div#comment-node-#{comment.id}")
+    expect(new_comment_element).to have_text(raw_comment)
   end
 end
