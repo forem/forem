@@ -19,6 +19,7 @@ For the Dev.to tech stack we use:
   job) and [_Active Job_](https://guides.rubyonrails.org/active_job_basics.html)
   for background workers
 - [_Algolia_](https://www.algolia.com/) for search
+- [Ransack](https://github.com/activerecord-hackery/ransack) for internal search
 - [_Redcarpet_](https://github.com/vmg/redcarpet) and
   [_Rouge_](https://github.com/jneen/rouge) to parse Markdown
 - [_Carrierwave_](https://github.com/carrierwaveuploader/carrierwave),

@@ -1,6 +1,5 @@
 class EmailLogic
-  attr_reader :open_percentage, :last_email_sent_at,
-              :days_until_next_email, :articles_to_send
+  attr_reader :open_percentage, :last_email_sent_at, :days_until_next_email, :articles_to_send
 
   def initialize(user)
     @user = user
@@ -28,13 +27,19 @@ class EmailLogic
 
   def get_articles_to_send
     fresh_date = get_fresh_date
+
     articles = if user_has_followings?
+                 experience_level_rating = (@user.experience_level || 5)
+                 experience_level_rating_min = experience_level_rating - 3.6
+                 experience_level_rating_max = experience_level_rating + 3.6
+
                  @user.followed_articles.
                    where("published_at > ?", fresh_date).
                    where(published: true, email_digest_eligible: true).
                    where.not(user_id: @user.id).
                    where("score > ?", 12).
-                   where("experience_level_rating > ? AND experience_level_rating < ?", (@user.experience_level || 5) - 3.6, (@user.experience_level || 5) + 3.6).
+                   where("experience_level_rating > ? AND experience_level_rating < ?",
+                         experience_level_rating_min, experience_level_rating_max).
                    order("score DESC").
                    limit(8)
                else
@@ -46,7 +51,9 @@ class EmailLogic
                    order("score DESC").
                    limit(8)
                end
+
     @ready_to_receive_email = false if articles.length < 3
+
     articles
   end
 
@@ -62,10 +69,11 @@ class EmailLogic
   def get_open_rate
     past_sent_emails = @user.email_messages.where(mailer: "DigestMailer#digest_email").limit(10)
 
-    # Will stick with 50% open rate if @user has no/not-enough email digest history
-    return 0.5 if past_sent_emails.length < 10
-
     past_sent_emails_count = past_sent_emails.count
+
+    # Will stick with 50% open rate if @user has no/not-enough email digest history
+    return 0.5 if past_sent_emails_count < 10
+
     past_opened_emails_count = past_sent_emails.where("opened_at IS NOT NULL").count
     past_opened_emails_count / past_sent_emails_count
   end

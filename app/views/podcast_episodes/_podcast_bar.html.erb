@@ -19,8 +19,8 @@
       <img id="animated-bars" src="<%= asset_path("animated-bars.gif") %>" alt="animated volume bars">
     </a>
     <span id="barPlayPause">
-      <img class="butt play-butt" alt="play" src="<%= cloudinary("https://res.cloudinary.com/practicaldev/image/upload/f_auto/v1467584797/playbutt_o4jk1d.png", 60, 90, format = "png") %>">
-      <img class="butt pause-butt" alt="pause" src="<%= cloudinary("https://res.cloudinary.com/practicaldev/image/upload/f_auto/v1467584911/pausebutt_wrwpnr.png", 60, 90, format = "png") %>">
+      <img class="butt play-butt" alt="play" src="<%= asset_path("playbutt.png") %>">
+      <img class="butt pause-butt" alt="pause" src="<%= asset_path("pausebutt.png") %>">
     </span>
     <span id="volume">
       <span id="volumeindicator" class="volume-icon-wrapper showing">
@@ -35,26 +35,8 @@
     <span class="buffer-wrapper" id="bufferwrapper">
       <span id="buffer"></span>
       <span id="progress"></span>
-      <span id="time"></span>
-      <span id="closebutt">[ x ]</span>
+      <span id="time">initializing...</span>
+      <span id="closebutt">×</span>
     </span>
   </div>
-  <script>
-    setTimeout(function () {
-      initializePodcastPlayback();
-      if (InstantClick) {
-        InstantClick.on('change', function () {
-          initializePodcastPlayback();
-        });
-      }
-    }, 350)
-    setTimeout(function () {
-      initializePodcastPlayback();
-      if (InstantClick) {
-        InstantClick.on('change', function () {
-          initializePodcastPlayback();
-        });
-      }
-    }, 1000)
-  </script>
 </div>
