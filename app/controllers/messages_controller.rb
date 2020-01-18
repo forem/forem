@@ -97,7 +97,7 @@ class MessagesController < ApplicationController
       reception_method: "pushed"
     }
 
-    if new_message.chat_channel.channel_type != "direct"
+    if new_message.chat_channel.group?
       payload[:chat_channel_adjusted_slug] = new_message.chat_channel.adjusted_slug
     end
     payload.to_json

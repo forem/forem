@@ -43,6 +43,10 @@ class ChatChannel < ApplicationRecord
     channel_type == "invite_only"
   end
 
+  def group?
+    channel_type != "direct"
+  end
+
   def clear_channel
     messages.destroy_all
     Pusher.trigger(pusher_channels, "channel-cleared", { chat_channel_id: id }.to_json)
