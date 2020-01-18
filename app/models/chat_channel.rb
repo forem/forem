@@ -112,7 +112,7 @@ class ChatChannel < ApplicationRecord
     end
   end
 
-  def chanel_users_ids
+  def channel_users_ids
     chat_channel_memberships.pluck(:user_id)
   end
 
