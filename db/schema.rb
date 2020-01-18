@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_09_155115) do
+ActiveRecord::Schema.define(version: 2020_01_18_225505) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -238,9 +238,13 @@ ActiveRecord::Schema.define(version: 2020_01_09_155115) do
   create_table "canned_responses", force: :cascade do |t|
     t.text "content", null: false
     t.string "content_type", null: false
+    t.datetime "created_at", null: false
     t.string "title", null: false
     t.string "type_of", null: false
+    t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.index ["type_of"], name: "index_canned_responses_on_type_of"
+    t.index ["user_id"], name: "index_canned_responses_on_user_id"
   end
 
   create_table "chat_channel_memberships", force: :cascade do |t|

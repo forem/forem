@@ -1,8 +1,8 @@
-<h3>Canned Responses</h3>
-<p>Canned responses are snippets that you can reuse for comments.</p>
+<h3>Personal Response Templates</h3>
+<p>Response templates are snippets that you can re-use for quick and accurate comments.</p>
 
 <% if @canned_responses.size.positive? %>
-  <h3>Your canned responses</h3>
+  <h3>Your templates</h3>
   <div class="github-repos-container">
     <div class="github-repos">
     <% @canned_responses.each do |canned_response| %>
@@ -13,7 +13,7 @@
             <button type="submit" class="cta danger-button">DELETE</button>
           <% end %>
           <button type="button" class="cta">
-            <a href="/settings/canned-responses?id=<%= canned_response.id %>">EDIT</a>
+            <a href="/settings/response-templates?id=<%= canned_response.id %>">EDIT</a>
           </button>
         </div>
       </div>
@@ -21,18 +21,16 @@
     </div>
   </div>
 <% end %>
-
-<% if @canned_response.persisted? %>
 <hr>
-
-<h3>Editing a canned response</h3>
-<a href="/settings/canned-responses">Create a new canned response</a>
+<% if @canned_response.persisted? %>
+  <h3>Editing a canned response</h3>
+  <a href="/settings/response-templates">Create a new canned response</a>
 <% else %>
-<h3>Add a canned response</h3>
+  <h3>Add new canned response</h3>
 <% end %>
 <%= form_for(@canned_response) do |f| %>
   <%= f.label :title %>
-  <%= f.text_field :title %>
+  <%= f.text_field :title, placeholder: "Memorable cue for template" %>
   <%= f.label :content, "Comment body (Markdown)" %>
   <%= f.text_area :content, value: @canned_response.content %>
   <%= f.submit "Submit", class: "cta" %>

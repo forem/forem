@@ -6,6 +6,8 @@ class CreateCannedResponsesTable < ActiveRecord::Migration[5.2]
       t.text "content", null: false
       t.string "title", null: false
       t.integer "user_id" # nil means belongs to app
+
+      t.timestamps null: false
     end
   end
 end

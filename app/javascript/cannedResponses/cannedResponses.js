@@ -59,7 +59,7 @@ export default function initCannedResponses() {
       button.addEventListener('click', e => {
         e.preventDefault();
 
-        if (confirm('Are you sure you want to submit a comment under Sloan?')) {
+        if (confirm('Are you sure you want to submit this comment as Sloan?\n\nIt will be sent immediately and users will be notified.\n\nMake sure this is the appropriate comment for the situation.\n\nThis action is not reversible.')) {
           submitAsModerator(e.target.dataset.cannedResponseId, parentCommentId);
         }
       });
@@ -126,20 +126,21 @@ export default function initCannedResponses() {
   function buildModResponseHTML(response) {
     const array = response
       .filter(obj => {
-        return obj.typeOf === 'mod_comment';
+        return obj.type_of === 'mod_comment';
       })
       .map(obj => {
         return `
               <div class="mod-response-wrapper">
                 <span>${obj.title}</span>
-                <p>${obj.contentTruncated}</p>
-                <button class="mod-template-button" type="button" data-content="${obj.content}">USE TEMPLATE</button>
-                <button class="moderator-submit-button" type="submit" data-canned-response-id="${obj.id}">SUBMIT AS MOD</button>
+                <p>${obj.content}</p>
+                <button class="mod-template-button" type="button" data-content="${obj.content}">INSERT</button>
+                <button class="moderator-submit-button" type="submit" data-canned-response-id="${obj.id}">SEND AS MOD</button>
               </div>
               `;
       });
 
-    array.unshift('<header><h3>Personal Responses</h3></header>').join('');
+    array.unshift('<header><h3>Mod Responses</h3></header>')
+    return array.join('');
   }
 
   function fetchCannedResponses() {
@@ -163,27 +164,31 @@ export default function initCannedResponses() {
       .then(response => {
         const modResponseHTML =
           moderatorForTags.length === 0 ? '' : buildModResponseHTML(response);
-
-        const personalResponseHTML = response
+        let personalResponseHTML = response
           .filter(obj => {
-            return obj.typeOf === 'personal_comment';
+            return obj.type_of === 'personal_comment';
           })
           .map(obj => {
             return `
               <div class="mod-response-wrapper">
-                <span>${obj.titleTruncated}</span>
-                <p>${obj.contentTruncated}</p>
-                <button class="mod-template-button" type="button" data-content="${obj.content}">USE TEMPLATE</button>
+                <span>${obj.title}</span>
+                <p>${obj.content}</p>
+                <button class="mod-template-button" type="button" data-content="${obj.content}">INSERT</button>
               </div>
             `;
           })
           .join('');
-
+          if (personalResponseHTML.length === 0) {
+          personalResponseHTML = `<div class="mod-response-wrapper mod-response-wrapper-empty">
+                                    <p>🤔... It looks like you don't have any templates yet.</p>
+                                    <p>Create templates to quickly answer FAQs or store snippets for re-use.</p>
+                                  </div>`
+        }
         responsesWrapper.innerHTML = `
           ${modResponseHTML}
-          <header><h3>Personal Responses</h3></header>
+          <header><h3>Personal Templates</h3></header>
           ${personalResponseHTML}
-          <a target="_blank" rel="noopener nofollow" href="/settings/canned-responses">Create a new response</a>
+          <a target="_blank" rel="noopener nofollow" href="/settings/canned-responses" class="mod-respons-create-new">Create new template</a>
         `;
 
         addToggleListener(responsesWrapper);

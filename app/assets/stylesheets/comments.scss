@@ -140,30 +140,27 @@ a.header-link {
       opacity: 1;
     }
   }
+
+  .uploaded-image {
+    border: 1px dashed #888;
+    padding: 4px 6px;
+    font-size: 1em;
+    width: 8.125rem;
+    display: block;
+    margin: 8px auto 4px;
+    width: calc(100% - 54px);
+    display: none;
+    &.showing {
+      display: block;
+    }
+  }
+
   .markdown-guide {
   }
   .editor-image-upload {
     display: flex;
     align-items: center;
     font-size: 0.8em;
-
-    .uploaded-image {
-      border: 1px dashed #888;
-      padding: 0.2vw 0.4vw;
-      font-size: 1em;
-      width: 8.125rem;
-      display: none;
-
-      @media screen and (min-width: 500px) {
-        & {
-          width: calc(94% - 2.25rem);
-        }
-      }
-
-      &.showing {
-        display: inline-block;
-      }
-    }
 
     .image-upload-file-label {
       font-size: 0.9em;
@@ -270,40 +267,65 @@ a.header-link {
     }
     .mod-responses-container {
       width: calc(100% - 52px);
-      height: 125px;
+      max-height: calc(40vh + 80px);
       margin: 15px auto 2px;
-      padding: 6px;
       display: flex;
       flex-direction: column;
       overflow-y: auto;
-      border-radius: 3px;
       font-size: 16px;
       font-family: $helvetica;
       @include themeable(
-        border,
-        theme-container-background,
-        1px solid $dark-gray
+        border-bottom,
+        theme-subtle-border,
+        1px solid $light-medium-gray
       );
-      @include themeable(background, theme-container-background, $light-gray);
+      @include themeable(background, theme-container-accent-background, $light-gray);
       @include themeable(color, theme-color, $black);
 
       header>h3 {
-        text-align: center;
+        padding: 18px 12px;
+        margin: 0px;
+        font-size: 22px;
+        text-align: left;
       }
 
       .mod-response-wrapper {
         text-align: left;
-        padding: 6px;
-        border-bottom-width: 1.5px;
-        border-bottom-style: dotted;
-        @include themeable(border-bottom-color, theme-color, $black);
-
+        padding: 10px;
+        position: relative;
+        @include themeable(background, theme-container-background, white);
+        margin: 5px auto;
+        border-radius: 8px;
+        width: calc(100% - 20px);
+        box-sizing: border-box;
         span {
           font-weight: bold;
+          display: block;
+          width: calc(100% - 140px);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;  
         }
 
         p {
           font-weight: normal;
+          display: block;
+          width: calc(100% - 140px);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          margin: 0.5em 0;
+          @include themeable(color, theme-secondary-color, $medium-gray);
+        }
+        &.mod-response-wrapper-empty {
+          text-align: center;
+          p {
+            width: 100%;
+            font-size: 1.05em;
+            font-weight: bold;
+            margin: 1.5em 0;
+            @include themeable(color, theme-color, $black);
+          }
         }
 
         button {
@@ -314,22 +336,28 @@ a.header-link {
           font-size: 13px;
           font-weight: 500;
           margin-top: 3px;
-          padding: 5px 12px;
+          padding: 5px 0px;
           border-radius: 3px;
           cursor: pointer;
           appearance: none;
           margin-right: 10px;
           background: $bold-blue;
+          position: absolute;
+          top: 5px;
+          right: 0px;
+          width: 125px;
         }
         .moderator-submit-button {
           background: $green;
           color: $black;
+          top: 36px;
         }
       }
 
       a {
         text-align: left;
-        padding: 7px;
+        padding: 12px;
+        font-weight: bold;
       }
     }
     textarea {
@@ -420,7 +448,7 @@ a.header-link {
         }
 
         @media screen and (min-width: 768px) {
-          padding-top: 3px;
+          padding: 6px 0px 3px;
         }
 
         .markdown-guide {
@@ -428,12 +456,12 @@ a.header-link {
         }
 
         img.icon-image {
-          height: 21px;
+          height: 23px;
+          width: 23px;
+          margin-right: 10px;
         }
 
         .editor-canned-responses {
-          height: 21px;
-          width: 21px;
           display: flex;
           @media screen and (min-width: 820px) {
             padding-right: 3px;
@@ -445,8 +473,9 @@ a.header-link {
             padding: 0;
 
             img {
-              height: 21px;
-              width: 21px;
+              height: 22px;
+              width: 22px;
+              transform: rotate(4deg);
               opacity: 0.7;
             }
           }
@@ -1141,17 +1170,6 @@ a.header-link {
     width: initial;
     text-align: left;
     z-index: 6;
-
-    .uploaded-image {
-      width: calc(93% - 3.375rem);
-
-      @media screen and (min-width: 500px) {
-        & {
-          width: calc(94% - 3.875rem);
-        }
-      }
-    }
-
     .image-upload-button {
       padding: 5px 2px 0px;
       margin-left: 3px;

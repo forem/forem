@@ -7,38 +7,40 @@
        data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
        data-version="<%= version %>">
     <form class="articleform__form articleform__form--<%= version %>">
-      <% if organizations && organizations.size > 0 %>
-        <div class="articleform__orgsettings">
-          Publish under an organization:<select name="article[organization_id]" id="article_publish_under_org">
-            <%= options_for_select({ "None" => "" }.merge(organizations.pluck(:name, :id).to_h), article.organization_id || "") %>
-          </select>
-        </div>
-      <% end %>
-      <% if version == "v2" %>
-        <% if article.main_image.present? %>
-          <div class="articleform__mainimage"><img src="<%= article.main_image %>"></div>
-        <% end %>
-        <input class="articleform__title articleform__titlepreview" type="text" value="<%= article.title %>" placeholder="Title" />
-        <div class="articleform__detailfields">
-          <div class="articleform__tagswrapper">
-            <textarea type="text" class="articleform__tags" placeholder="4 tags max, comma separated, no spaces or special characters"><%= article.cached_tag_list %></textarea>
-          </div>
-          <button class="articleform__detailsButton articleform__detailsButton--image"></button>
-          <button class="articleform__detailsButton articleform__detailsButton--moreconfig"></button>
-        </div>
-      <% end %>
-      <textarea class="articleform__body" placeholder="Body Markdown" name="body_markdown" style="margin-top: -4px"><%= article.body_markdown %></textarea>
       <div>
-        <button class="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"></button>
-        <% if version == "v2" %>
-          <button class="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"></button>
+        <% if organizations && organizations.size > 0 %>
+          <div class="articleform__orgsettings">
+            Publish under an organization:<select name="article[organization_id]" id="article_publish_under_org">
+              <%= options_for_select({ "None" => "" }.merge(organizations.pluck(:name, :id).to_h), article.organization_id || "") %>
+            </select>
+          </div>
         <% end %>
-      </div>
-      <div class="articleform__buttons">
-        <span style="visibility:hidden;">
-          <p>New Changes <button class="clear-button">clear</button></p>
-          <button class="articleform__buttons--publish">SAVE CHANGES</button>
-        </span>
+        <% if version == "v2" %>
+          <% if article.main_image.present? %>
+            <div class="articleform__mainimage"><img src="<%= article.main_image %>"></div>
+          <% end %>
+          <input class="articleform__title articleform__titlepreview" type="text" value="<%= article.title %>" placeholder="Title" />
+          <div class="articleform__detailfields">
+            <div class="articleform__tagswrapper">
+              <textarea type="text" class="articleform__tags" placeholder="4 tags max, comma separated, no spaces or special characters"><%= article.cached_tag_list %></textarea>
+            </div>
+            <button class="articleform__detailsButton articleform__detailsButton--image"></button>
+            <button class="articleform__detailsButton articleform__detailsButton--moreconfig"></button>
+          </div>
+        <% end %>
+        <textarea class="articleform__body" placeholder="Body Markdown" name="body_markdown"><%= article.body_markdown %></textarea>
+        <div>
+          <button class="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"></button>
+          <% if version == "v2" %>
+            <button class="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"></button>
+          <% end %>
+        </div>
+        <div class="articleform__buttons">
+          <span style="visibility:hidden;">
+            <p>New Changes <button class="clear-button">clear</button></p>
+            <button class="articleform__buttons--publish">SAVE CHANGES</button>
+          </span>
+        </div>
       </div>
     </form>
     <div style="display:none">

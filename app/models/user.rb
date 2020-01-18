@@ -420,7 +420,7 @@ class User < ApplicationRecord
       Organization
       Billing
       Account
-      Canned\ Responses
+      Response\ Templates
       Misc
     ]
   end

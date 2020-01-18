@@ -213,7 +213,7 @@ class UsersController < ApplicationController
       handle_pro_membership_tab
     when "account"
       handle_account_tab
-    when "canned-responses"
+    when "response-templates"
       handle_canned_responses_tab
     else
       not_found unless @tab_list.map { |t| t.downcase.tr(" ", "-") }.include? @tab
