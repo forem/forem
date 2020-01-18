@@ -20,6 +20,11 @@ class ClosingSlide extends Component {
   render() {
     const { previousLocation, variant } = this.props;
 
+    const sanitizedPreviousLocation = filterXSS(previousLocation).startsWith(
+      '/',
+    )
+      ? filterXSS(previousLocation)
+      : '';
     const previousLocationListElement = () => {
       if (variant === '6' || variant === '8') {
         return (
@@ -36,9 +41,15 @@ class ClosingSlide extends Component {
           </div>
         );
       }
-      if (previousLocation !== 'none' && previousLocation !== null) {
+      if (
+        sanitizedPreviousLocation !== '' &&
+        sanitizedPreviousLocation !== null
+      ) {
         return (
-          <a className="onboarding-previous-location" href={previousLocation}>
+          <a
+            className="onboarding-previous-location"
+            href={sanitizedPreviousLocation}
+          >
             <div>Or go back to the page you were on before you signed up</div>
             <code>{previousLocation}</code>
           </a>
