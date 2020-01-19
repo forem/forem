@@ -33,7 +33,7 @@ RSpec.describe "CannedResponses", type: :request do
         create(:canned_response, user: nil, type_of: "mod_comment")
         create_list(:canned_response, 2, user: user, type_of: "personal_comment")
         get "/canned_responses", headers: { HTTP_ACCEPT: "application/json" }
-        user_ids = JSON.parse(response.body).map { |hash| hash["userId"] }
+        user_ids = JSON.parse(response.body).map { |hash| hash["user_id"] }
         expect(user_ids).to eq [user.id, user.id]
       end
 
@@ -75,14 +75,14 @@ RSpec.describe "CannedResponses", type: :request do
         create_list(:canned_response, 2, user: moderator, type_of: "personal_comment")
 
         get url, headers: { HTTP_ACCEPT: "application/json" }
-        user_ids = JSON.parse(response.body).map { |hash| hash["userId"] }
+        user_ids = JSON.parse(response.body).map { |hash| hash["user_id"] }
         expect(user_ids).to eq [nil, nil, moderator.id, moderator.id]
       end
 
       it "returns the user's canned responses when no params are given" do
         create_list(:canned_response, 2, user: moderator, type_of: "personal_comment")
         get "/canned_responses", headers: { HTTP_ACCEPT: "application/json" }
-        user_ids = JSON.parse(response.body).map { |hash| hash["userId"] }
+        user_ids = JSON.parse(response.body).map { |hash| hash["user_id"] }
         expect(user_ids).to eq [moderator.id, moderator.id]
       end
 
@@ -102,14 +102,14 @@ RSpec.describe "CannedResponses", type: :request do
         create_list(:canned_response, 2, user: admin, type_of: "personal_comment")
 
         get "/canned_responses?type_of=mod_comment&personal_included=true", headers: { HTTP_ACCEPT: "application/json" }
-        user_ids = JSON.parse(response.body).map { |hash| hash["userId"] }
+        user_ids = JSON.parse(response.body).map { |hash| hash["user_id"] }
         expect(user_ids).to eq [nil, nil, admin.id, admin.id]
       end
 
       it "returns the user's canned responses" do
         create_list(:canned_response, 2, user: admin, type_of: "personal_comment")
         get "/canned_responses", headers: { HTTP_ACCEPT: "application/json" }
-        user_ids = JSON.parse(response.body).map { |hash| hash["userId"] }
+        user_ids = JSON.parse(response.body).map { |hash| hash["user_id"] }
         expect(user_ids).to eq [admin.id, admin.id]
       end
 

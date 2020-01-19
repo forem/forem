@@ -45,7 +45,7 @@ RSpec.describe "UserSettings", type: :request do
 
       it "displays content on canned responses tab properly" do
         get "/settings/response-templates"
-        expect(response.body).to include("Canned responses are snippets")
+        expect(response.body).to include("Response templates are snippets")
       end
 
       it "displays the user's canned response" do
