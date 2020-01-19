@@ -39,6 +39,13 @@ RSpec.describe "UserProfiles", type: :request do
       expect(response).to redirect_to("/#{user.username}")
     end
 
+    it "raises not found for banished users" do
+      banishable_user = create(:user)
+      Moderator::BanishUser.call_banish(admin: user, user: banishable_user)
+      expect { get "/#{banishable_user.reload.old_username}" }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { get "/#{banishable_user.reload.username}" }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
     it "renders noindex meta if banned" do
       user.add_role(:banned)
       get "/#{user.username}"
