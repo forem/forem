@@ -96,7 +96,7 @@ class Reaction < ApplicationRecord
   end
 
   def update_reactable_without_delay
-    Reactions::UpdateReactableWorker.perform_async(id)
+    Reactions::UpdateReactableWorker.new.perform(id)
   end
 
   def reading_time
