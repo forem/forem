@@ -11,6 +11,8 @@ RSpec.describe Articles::ScoreCalcJob, type: :job do
 
     context "with article" do
       let_it_be(:article) { create(:article) }
+      let_it_be(:comment) { create(:comment, commentable: article, score: 5) }
+      let_it_be(:second_comment) { create(:comment, commentable: article, score: 7) }
 
       it "updates article scores", :aggregate_failures do
         allow(Article).to receive(:find_by).and_return(article)
@@ -20,6 +22,7 @@ RSpec.describe Articles::ScoreCalcJob, type: :job do
         article.reload
 
         expect(article.score).to be(7)
+        expect(article.comment_score).to be(12)
         expect(article.hotness_score).to be(373)
         expect(article.spaminess_rating).to be(2)
       end
