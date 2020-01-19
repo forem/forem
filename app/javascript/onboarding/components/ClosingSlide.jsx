@@ -36,7 +36,7 @@ class ClosingSlide extends Component {
           </div>
         );
       }
-      if (previousLocation !== 'none' && previousLocation !== null) {
+      if (previousLocation !== 'none' && previousLocation !== null && !previousLocation.startsWith('javascript')) {
         return (
           <a className="onboarding-previous-location" href={previousLocation}>
             <div>Or go back to the page you were on before you signed up</div>
