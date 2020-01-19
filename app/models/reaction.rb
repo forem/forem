@@ -93,7 +93,7 @@ class Reaction < ApplicationRecord
   end
 
   def async_bust
-    Reactions::BustHomepageCacheJob.perform_later(id)
+    Reactions::BustHomepageCacheWorker.perform_async(id)
   end
 
   def bust_reactable_cache_without_delay
