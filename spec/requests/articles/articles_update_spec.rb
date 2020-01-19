@@ -85,7 +85,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
 
   it "creates a notification job if published" do
     article.update_column(:published, false)
-    assert_enqueued_with(job: Notifications::NotifiableActionJob) do
+    sidekiq_assert_enqueued_with(job: Notifications::NotifiableActionWorker) do
       put "/articles/#{article.id}", params: {
         article: { published: true }
       }
@@ -94,7 +94,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
 
   it "removes all published notifications if unpublished" do
     user2.follow(user)
-    perform_enqueued_jobs do
+    sidekiq_perform_enqueued_jobs do
       Notification.send_to_followers(article, "Published")
     end
     expect(article.notifications.size).to eq 1
