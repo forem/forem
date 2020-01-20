@@ -128,14 +128,13 @@ class CommentsController < ApplicationController
       Notification.send_new_comment_notifications_without_delay(@comment)
 
       render json: { status: "created" }
-      # ask ben about this elsif
     elsif (@comment = Comment.where(body_markdown: @comment.body_markdown,
                                     commentable_id: @comment.commentable.id,
                                     ancestry: @comment.ancestry)[1])
       @comment.destroy
-      render json: { status: "comment already exists" }
+      render json: { status: "comment already exists" }, status: :conflict
     else
-      render json: { status: @comment&.errors&.full_messages&.to_sentence }
+      render json: { status: @comment&.errors&.full_messages&.to_sentence }, status: :unprocessable_entity
     end
   end
 
