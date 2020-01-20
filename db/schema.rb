@@ -298,7 +298,6 @@ ActiveRecord::Schema.define(version: 2020_01_19_195227) do
   end
 
   create_table "comments", id: :serial, force: :cascade do |t|
-    t.integer "actor_id"
     t.string "ancestry"
     t.text "body_html"
     t.text "body_markdown"
@@ -842,17 +841,6 @@ ActiveRecord::Schema.define(version: 2020_01_19_195227) do
     t.index ["profile_id"], name: "index_profile_pins_on_profile_id"
   end
 
-  create_table "push_notification_subscriptions", force: :cascade do |t|
-    t.string "auth_key"
-    t.datetime "created_at", null: false
-    t.string "endpoint"
-    t.string "notification_type"
-    t.string "p256dh_key"
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_push_notification_subscriptions_on_user_id"
-  end
-
   create_table "rating_votes", force: :cascade do |t|
     t.bigint "article_id"
     t.datetime "created_at", null: false
@@ -891,37 +879,12 @@ ActiveRecord::Schema.define(version: 2020_01_19_195227) do
     t.index ["name"], name: "index_roles_on_name"
   end
 
-  create_table "search_keywords", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "google_checked_at"
-    t.integer "google_difficulty"
-    t.integer "google_position"
-    t.string "google_result_path"
-    t.integer "google_volume"
-    t.string "keyword"
-    t.datetime "updated_at", null: false
-  end
-
   create_table "site_configs", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
     t.index ["var"], name: "index_site_configs_on_var", unique: true
-  end
-
-  create_table "sortable_counts", force: :cascade do |t|
-    t.bigint "countable_id", null: false
-    t.string "countable_type", null: false
-    t.datetime "created_at", null: false
-    t.float "number", default: 0.0, null: false
-    t.string "slug", null: false
-    t.string "title", null: false
-    t.datetime "updated_at", null: false
-    t.index ["countable_id"], name: "index_sortable_counts_on_countable_id"
-    t.index ["countable_type"], name: "index_sortable_counts_on_countable_type"
-    t.index ["number"], name: "index_sortable_counts_on_number"
-    t.index ["slug"], name: "index_sortable_counts_on_slug"
   end
 
   create_table "sponsorships", force: :cascade do |t|
@@ -1238,10 +1201,12 @@ ActiveRecord::Schema.define(version: 2020_01_19_195227) do
   add_foreign_key "identities", "users", on_delete: :cascade
   add_foreign_key "messages", "chat_channels"
   add_foreign_key "messages", "users"
+  add_foreign_key "notification_subscriptions", "users", on_delete: :cascade
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_grants", "users", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
+  add_foreign_key "page_views", "articles", on_delete: :cascade
   add_foreign_key "podcasts", "users", column: "creator_id"
   add_foreign_key "sponsorships", "organizations"
   add_foreign_key "sponsorships", "users"
@@ -1250,6 +1215,7 @@ ActiveRecord::Schema.define(version: 2020_01_19_195227) do
   add_foreign_key "tag_adjustments", "users", on_delete: :cascade
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
+  add_foreign_key "users_roles", "users", on_delete: :cascade
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_endpoints", "users"
 end
