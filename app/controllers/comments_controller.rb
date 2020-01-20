@@ -30,7 +30,7 @@ class CommentsController < ApplicationController
 
     @commentable_type = @commentable.class.name if @commentable
 
-    set_surrogate_key_header "comments-for-#{@commentable&.id}-#{@commentable_type}"
+    set_surrogate_key_header "comments-for-#{@commentable.id}-#{@commentable_type}" if @commentable
 
     render :deleted_commentable_comment unless @commentable
   end
