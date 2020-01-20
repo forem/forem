@@ -501,10 +501,6 @@ a.header-link {
             &.showing {
               display: block;
             }
-            &.response-template-dropdown-content {
-              width: 175px;
-              right: -55px;
-            }
           }
 
           .dropdown-content a {
@@ -518,7 +514,7 @@ a.header-link {
             white-space: nowrap;
           }
 
-          .response-template-dropdown-content .response-template-dropbtn {
+          .response-template-dropbtn {
             color: black;
             text-align: left;
             padding: 0px;
@@ -547,7 +543,7 @@ a.header-link {
               font-weight: normal;
             }
           }
-          .response-template-dropdown-content a.response-template-dropbtn {
+          a.response-template-dropbtn {
             width: auto;
           }
         }

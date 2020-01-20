@@ -49,8 +49,7 @@ function initializeCommentDropdown() {
       event.target.matches('clipboard-copy') ||
       event.target.matches('clipboard-copy input') ||
       event.target.matches('clipboard-copy img') ||
-      event.target.parentElement.classList.contains('dropdown-link-row') ||
-      event.target.parentElement.classList.contains('canned-responses-button')
+      event.target.parentElement.classList.contains('dropdown-link-row')
     );
   }
 
