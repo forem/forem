@@ -237,18 +237,6 @@ ActiveRecord::Schema.define(version: 2020_01_18_225505) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "canned_responses", force: :cascade do |t|
-    t.text "content", null: false
-    t.string "content_type", null: false
-    t.datetime "created_at", null: false
-    t.string "title", null: false
-    t.string "type_of", null: false
-    t.datetime "updated_at", null: false
-    t.integer "user_id"
-    t.index ["type_of"], name: "index_canned_responses_on_type_of"
-    t.index ["user_id"], name: "index_canned_responses_on_user_id"
-  end
-
   create_table "chat_channel_memberships", force: :cascade do |t|
     t.bigint "chat_channel_id", null: false
     t.datetime "created_at", null: false
@@ -881,6 +869,17 @@ ActiveRecord::Schema.define(version: 2020_01_18_225505) do
     t.index ["user_id"], name: "index_reactions_on_user_id"
   end
 
+  create_table "response_templates", force: :cascade do |t|
+    t.text "content", null: false
+    t.string "content_type", null: false
+    t.datetime "created_at", null: false
+    t.string "title", null: false
+    t.string "type_of", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_response_templates_on_user_id"
+  end
+
   create_table "roles", id: :serial, force: :cascade do |t|
     t.datetime "created_at"
     t.string "name"
@@ -1220,6 +1219,7 @@ ActiveRecord::Schema.define(version: 2020_01_18_225505) do
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "page_views", "articles", on_delete: :cascade
   add_foreign_key "podcasts", "users", column: "creator_id"
+  add_foreign_key "response_templates", "users"
   add_foreign_key "sponsorships", "organizations"
   add_foreign_key "sponsorships", "users"
   add_foreign_key "tag_adjustments", "articles", on_delete: :cascade

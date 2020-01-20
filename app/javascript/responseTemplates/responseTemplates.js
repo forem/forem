@@ -1,7 +1,7 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-restricted-globals */
-export default function initCannedResponses() {
-  function submitAsModerator(cannedResponseId, parentId) {
+export default function initResponseTemplates() {
+  function submitAsModerator(ResponseTemplateId, parentId) {
     const commentableId = document.querySelector('input#comment_commentable_id')
       .value;
 
@@ -13,8 +13,8 @@ export default function initCannedResponses() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        canned_response: {
-          id: cannedResponseId,
+        response_template: {
+          id: ResponseTemplateId,
         },
         comment: {
           body_markdown: '',
@@ -71,7 +71,7 @@ Make sure this is the appropriate comment for the situation.
 
 This action is not reversible.`;
         if (confirm(confirmMsg)) {
-          submitAsModerator(e.target.dataset.cannedResponseId, parentCommentId);
+          submitAsModerator(e.target.dataset.ResponseTemplateId, parentCommentId);
         }
       });
     });
@@ -79,7 +79,7 @@ This action is not reversible.`;
 
   function addToggleListener() {
     const responsesWrapper = document.querySelector('.mod-responses-container');
-    const toggleButton = document.querySelector('.canned-responses-button');
+    const toggleButton = document.querySelector('.response-templates-button');
 
     toggleButton.addEventListener('click', () => {
       if (responsesWrapper.style.display === 'none') {
@@ -102,7 +102,7 @@ This action is not reversible.`;
     const callback = mutationsList => {
       const { target } = mutationsList[0];
       if (mutationsList[0].addedNodes.length === 1) {
-        const button = target.querySelector('button.canned-responses-button');
+        const button = target.querySelector('button.response-templates-button');
         const responsesWrapper = target.querySelector(
           '.mod-responses-container',
         );
@@ -145,7 +145,7 @@ This action is not reversible.`;
                 <span>${obj.title}</span>
                 <p>${obj.content}</p>
                 <button class="mod-template-button" type="button" data-content="${obj.content}">INSERT</button>
-                <button class="moderator-submit-button" type="submit" data-canned-response-id="${obj.id}">SEND AS MOD</button>
+                <button class="moderator-submit-button" type="submit" data-response-template-id="${obj.id}">SEND AS MOD</button>
               </div>
               `;
       });
@@ -154,14 +154,14 @@ This action is not reversible.`;
     return array.join('');
   }
 
-  function fetchCannedResponses() {
+  function fetchResponseTemplates() {
     const responsesWrapper = document.querySelector('.mod-responses-container');
     /* eslint-disable-next-line no-undef */
     const moderatorForTags = userData().moderator_for_tags;
     const url =
       moderatorForTags.length === 0
-        ? '/canned_responses'
-        : '/canned_responses?type_of=mod_comment&personal_included=true';
+        ? '/response_templates'
+        : '/response_templates?type_of=mod_comment&personal_included=true';
 
     fetch(url, {
       method: 'GET',
@@ -199,7 +199,7 @@ This action is not reversible.`;
           ${modResponseHTML}
           <header><h3>Personal Templates</h3></header>
           ${personalResponseHTML}
-          <a target="_blank" rel="noopener nofollow" href="/settings/canned-responses" class="mod-respons-create-new">Create new template</a>
+          <a target="_blank" rel="noopener nofollow" href="/settings/response-templates" class="mod-respons-create-new">Create new template</a>
         `;
 
         addToggleListener(responsesWrapper);
@@ -209,7 +209,7 @@ This action is not reversible.`;
   }
 
   function handleLoggedOut() {
-    const toggleButton = document.querySelector('.canned-responses-button');
+    const toggleButton = document.querySelector('.response-templates-button');
     // see showModal.js
     /* eslint-disable-next-line no-undef */
     toggleButton.addEventListener('click', showModal);
@@ -219,7 +219,7 @@ This action is not reversible.`;
   if (userStatus === 'logged-out') {
     handleLoggedOut();
   } else {
-    fetchCannedResponses();
+    fetchResponseTemplates();
   }
 }
 /* eslint-enable no-alert */

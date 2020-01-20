@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :canned_response do
+  factory :response_template do
     sequence(:content) { |n| "#{Faker::Lorem.sentence}#{n}" }
 
     user

@@ -214,7 +214,7 @@ class UsersController < ApplicationController
     when "account"
       handle_account_tab
     when "response-templates"
-      handle_canned_responses_tab
+      handle_response_templates_tab
     else
       not_found unless @tab_list.map { |t| t.downcase.tr(" ", "-") }.include? @tab
     end
@@ -281,9 +281,9 @@ class UsersController < ApplicationController
     HEREDOC
   end
 
-  def handle_canned_responses_tab
-    @canned_responses = current_user.canned_responses
-    @canned_response = CannedResponse.find_or_initialize_by(id: params[:id], user: current_user)
+  def handle_response_templates_tab
+    @response_templates = current_user.response_templates
+    @response_template = ResponseTemplate.find_or_initialize_by(id: params[:id], user: current_user)
     # update this to handle mod editing or tag editing
   end
 

@@ -1,4 +1,4 @@
-class CannedResponsePolicy < ApplicationPolicy
+class ResponseTemplatePolicy < ApplicationPolicy
   def admin_index?
     minimal_admin?
   end

@@ -114,13 +114,13 @@ class CommentsController < ApplicationController
   def moderator_create
     return if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
 
-    canned_response = CannedResponse.find(params[:canned_response][:id])
-    authorize canned_response, :moderator_create?
+    response_template = ResponseTemplate.find(params[:response_template][:id])
+    authorize response_template, :moderator_create?
 
     moderator = User.find(SiteConfig.user_moderator_id)
     @comment = Comment.new(permitted_attributes(Comment))
     @comment.user_id = moderator.id
-    @comment.body_markdown = canned_response.content
+    @comment.body_markdown = response_template.content
     @comment.actor_id = current_user.id
     authorize @comment
 

@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "UserSettings", type: :request do
   let(:user) { create(:user, twitch_username: nil) }
-  let(:canned_response) { create(:canned_response, user: user, type_of: "personal_comment") }
+  let(:response_template) { create(:response_template, user: user, type_of: "personal_comment") }
 
   describe "GET /settings/:tab" do
     context "when not signed-in" do
@@ -43,28 +43,28 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).to include error_message
       end
 
-      it "displays content on canned responses tab properly" do
+      it "displays content on response templates tab properly" do
         get "/settings/response-templates"
         expect(response.body).to include("Response templates are snippets")
       end
 
-      it "displays the user's canned response" do
-        canned_response
+      it "displays the user's response template" do
+        response_template
         get "/settings/response-templates"
-        expect(response.body).to include(canned_response.title)
+        expect(response.body).to include(response_template.title)
       end
 
-      it "shows the body markdown of the user's canned response in the edit view" do
-        canned_response
-        get "/settings/response-templates?id=#{canned_response.id}"
-        expect(response.body).to include(canned_response.content)
+      it "shows the body markdown of the user's response template in the edit view" do
+        response_template
+        get "/settings/response-templates?id=#{response_template.id}"
+        expect(response.body).to include(response_template.content)
       end
 
-      it "does not display someone else's canned responses" do
+      it "does not display someone else's response templates" do
         other_user = create(:user)
-        new_canned_response = create(:canned_response, user: other_user, type_of: "personal_comment")
-        get "/settings/response-templates?id=#{new_canned_response.id}"
-        expect(response.body).not_to include(canned_response.content)
+        new_response_template = create(:response_template, user: other_user, type_of: "personal_comment")
+        get "/settings/response-templates?id=#{new_response_template.id}"
+        expect(response.body).not_to include(response_template.content)
       end
     end
   end

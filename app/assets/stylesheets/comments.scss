@@ -461,13 +461,13 @@ a.header-link {
           margin-right: 10px;
         }
 
-        .editor-canned-responses {
+        .editor-response-templates {
           display: flex;
           @media screen and (min-width: 820px) {
             padding-right: 3px;
           }
 
-          button.canned-responses-button {
+          button.response-templates-button {
             background: none;
             border: none;
             padding: 0;
@@ -501,7 +501,7 @@ a.header-link {
             &.showing {
               display: block;
             }
-            &.canned-response-dropdown-content {
+            &.response-template-dropdown-content {
               width: 175px;
               right: -55px;
             }
@@ -518,7 +518,7 @@ a.header-link {
             white-space: nowrap;
           }
 
-          .canned-response-dropdown-content .canned-response-dropbtn {
+          .response-template-dropdown-content .response-template-dropbtn {
             color: black;
             text-align: left;
             padding: 0px;
@@ -547,7 +547,7 @@ a.header-link {
               font-weight: normal;
             }
           }
-          .canned-response-dropdown-content a.canned-response-dropbtn {
+          .response-template-dropdown-content a.response-template-dropbtn {
             width: auto;
           }
         }

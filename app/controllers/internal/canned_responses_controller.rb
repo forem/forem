@@ -1,58 +1,58 @@
-class Internal::CannedResponsesController < Internal::ApplicationController
+class Internal::ResponseTemplatesController < Internal::ApplicationController
   layout "internal"
 
   def index
-    @canned_responses = if params[:filter]
-                          CannedResponse.where(type_of: params[:filter])
+    @response_templates = if params[:filter]
+                          ResponseTemplate.where(type_of: params[:filter])
                         else
-                          CannedResponse.all
+                          ResponseTemplate.all
                         end
-    @canned_responses = @canned_responses.page(params[:page]).per(50)
+    @response_templates = @response_templates.page(params[:page]).per(50)
   end
 
   def create
-    @canned_response = CannedResponse.new(permitted_params)
-    if @canned_response.save
-      flash[:success] = "Canned response: \"#{@canned_response.title}\" saved successfully."
-      redirect_to("/internal/canned_responses/#{@canned_response.id}/edit")
+    @response_template = ResponseTemplate.new(permitted_params)
+    if @response_template.save
+      flash[:success] = "Response Template: \"#{@response_template.title}\" saved successfully."
+      redirect_to("/internal/response_templates/#{@response_template.id}/edit")
     else
-      flash[:danger] = @canned_response.errors.full_messages.to_sentence
-      @canned_responses = CannedResponse.all.page(params[:page]).per(50)
+      flash[:danger] = @response_template.errors.full_messages.to_sentence
+      @response_templates = ResponseTemplate.all.page(params[:page]).per(50)
       render :index
     end
   end
 
   def edit
-    @canned_response = CannedResponse.find(params[:id])
+    @response_template = ResponseTemplate.find(params[:id])
   end
 
   def update
-    @canned_response = CannedResponse.find(params[:id])
+    @response_template = ResponseTemplate.find(params[:id])
 
-    if @canned_response.update(permitted_attributes(CannedResponse))
-      flash[:success] = "The canned response \"#{@canned_response.title}\" was updated."
+    if @response_template.update(permitted_attributes(ResponseTemplate))
+      flash[:success] = "The response template \"#{@response_template.title}\" was updated."
     else
-      flash[:danger] = @canned_response.errors.full_messages.to_sentence
+      flash[:danger] = @response_template.errors.full_messages.to_sentence
     end
 
-    redirect_back(fallback_location: "/internal/canned_responses/#{@canned_response.id}")
+    redirect_back(fallback_location: "/internal/response_templates/#{@response_template.id}")
   end
 
   def destroy
-    @canned_response = CannedResponse.find(params[:id])
+    @response_template = ResponseTemplate.find(params[:id])
 
-    if @canned_response.destroy
-      flash[:success] = "The canned response \"#{@canned_response.title}\" was deleted."
+    if @response_template.destroy
+      flash[:success] = "The response template \"#{@response_template.title}\" was deleted."
     else
-      flash[:danger] = @canned_response.errors.full_messages.to_sentence # this will probably never fail
+      flash[:danger] = @response_template.errors.full_messages.to_sentence # this will probably never fail
     end
 
-    redirect_to "/internal/canned_responses"
+    redirect_to "/internal/response_templates"
   end
 
   private
 
   def permitted_params
-    params.require(:canned_response).permit(:body_markdown, :user_id, :content, :title, :type_of, :content_type)
+    params.require(:response_template).permit(:body_markdown, :user_id, :content, :title, :type_of, :content_type)
   end
 end

@@ -1,19 +1,19 @@
 <h3>Personal Response Templates</h3>
 <p>Response templates are snippets that you can re-use for quick and accurate comments.</p>
 
-<% if @canned_responses.size.positive? %>
+<% if @response_templates.size.positive? %>
   <h3>Your templates</h3>
   <div class="github-repos-container">
     <div class="github-repos">
-    <% @canned_responses.each do |canned_response| %>
+    <% @response_templates.each do |response_template| %>
       <div class="github-repo-row">
-        <div class="github-repo-row-name canned-response-row-name">
-          <%= canned_response.title %>
-          <%= form_tag "/canned_responses/#{canned_response.id}", method: :delete, onsubmit: "return confirm('Are you sure you want to delete: #{canned_response.title}?');" do %>
+        <div class="github-repo-row-name response-template-row-name">
+          <%= response_template.title %>
+          <%= form_tag "/response_templates/#{response_template.id}", method: :delete, onsubmit: "return confirm('Are you sure you want to delete: #{response_template.title}?');" do %>
             <button type="submit" class="cta danger-button">DELETE</button>
           <% end %>
           <button type="button" class="cta">
-            <a href="/settings/response-templates?id=<%= canned_response.id %>">EDIT</a>
+            <a href="/settings/response-templates?id=<%= response_template.id %>">EDIT</a>
           </button>
         </div>
       </div>
@@ -22,16 +22,16 @@
   </div>
 <% end %>
 <hr>
-<% if @canned_response.persisted? %>
-  <h3>Editing a canned response</h3>
-  <a href="/settings/response-templates">Create a new canned response</a>
+<% if @response_template.persisted? %>
+  <h3>Editing a response template</h3>
+  <a href="/settings/response-templates">Create a new response template</a>
 <% else %>
-  <h3>Add new canned response</h3>
+  <h3>Add a new response template</h3>
 <% end %>
-<%= form_for(@canned_response) do |f| %>
+<%= form_for(@response_template) do |f| %>
   <%= f.label :title %>
   <%= f.text_field :title, placeholder: "Memorable cue for template" %>
   <%= f.label :content, "Comment body (Markdown)" %>
-  <%= f.text_area :content, value: @canned_response.content %>
+  <%= f.text_area :content, value: @response_template.content %>
   <%= f.submit "Submit", class: "cta" %>
 <% end %>
