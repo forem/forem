@@ -55,11 +55,7 @@ RSpec.describe ProMemberships::Biller, type: :service do
     it "enqueues a job to bust the users caches" do
       ActiveJob::Base.queue_adapter.enqueued_jobs.clear # make sure it hasn't been previously queued
       Timecop.travel(format_date(pro_membership.expires_at)) do
-        assert_enqueued_with(
-          job: Users::BustCacheJob,
-          args: [user.id],
-          queue: "users_bust_cache",
-        ) do
+        sidekiq_assert_enqueued_with(job: Users::BustCacheWorker, args: [user.id]) do
           described_class.call
         end
       end
@@ -142,11 +138,7 @@ RSpec.describe ProMemberships::Biller, type: :service do
     it "enqueues a job to bust the users caches" do
       ActiveJob::Base.queue_adapter.enqueued_jobs.clear # make sure it hasn't been previously queued
       Timecop.travel(format_date(pro_membership.expires_at)) do
-        assert_enqueued_with(
-          job: Users::BustCacheJob,
-          args: [user.id],
-          queue: "users_bust_cache",
-        ) do
+        sidekiq_assert_enqueued_with(job: Users::BustCacheWorker, args: [user.id]) do
           described_class.call
         end
       end
@@ -224,11 +216,7 @@ RSpec.describe ProMemberships::Biller, type: :service do
       it "enqueues a job to bust the users caches" do
         ActiveJob::Base.queue_adapter.enqueued_jobs.clear # make sure it hasn't been previously queued
         Timecop.travel(format_date(pro_membership.expires_at)) do
-          assert_enqueued_with(
-            job: Users::BustCacheJob,
-            args: [user.id],
-            queue: "users_bust_cache",
-          ) do
+          sidekiq_assert_enqueued_with(job: Users::BustCacheWorker, args: [user.id]) do
             described_class.call
           end
         end
