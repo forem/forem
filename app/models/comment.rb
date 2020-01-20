@@ -263,7 +263,7 @@ class Comment < ApplicationRecord
   end
 
   def after_destroy_actions
-    Users::BustCacheJob.perform_now(user_id)
+    Users::BustCacheWorker.perform_async(user_id)
     user.touch(:last_comment_at)
   end
 
