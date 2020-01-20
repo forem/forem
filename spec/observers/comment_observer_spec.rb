@@ -9,7 +9,7 @@ RSpec.describe CommentObserver, type: :observer do
   end
 
   it "pings slack if user with warned role creates a comment" do
-    perform_enqueued_jobs do
+    sidekiq_perform_enqueued_jobs do
       user.add_role :warned
       Comment.observers.enable :comment_observer do
         sidekiq_perform_enqueued_jobs do
