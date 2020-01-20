@@ -22,7 +22,7 @@ RSpec.describe "Follows #create", type: :request do
 
       allow(rate_limit_checker).
         to receive(:user_today_follow_count).
-        and_return(RateLimitChecker.daily_account_follow_limit + 1)
+        and_return(SiteConfig.rate_limit_follow_count_daily + 1)
 
       allow(RateLimitChecker).
         to receive(:new).

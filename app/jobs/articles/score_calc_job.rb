@@ -7,6 +7,7 @@ module Articles
       return unless article
 
       article.update_columns(score: article.reactions.sum(:points),
+                             comment_score: article.comments.sum(:score),
                              hotness_score: BlackBox.article_hotness_score(article),
                              spaminess_rating: BlackBox.calculate_spaminess(article))
       article.index!
