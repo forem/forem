@@ -116,7 +116,7 @@ function buildArticleHTML(article) {
     return '<div class="single-article single-article-small-pic" data-content-user-id="'+article.user_id+'">\
       '+videoHTML+'\
       '+orgHeadline+'\
-      <div class="small-pic">\
+      <div class="small-pic" data-hover-details="users/'+article.user_id+'">\
        <a href="/'+profileUsername+'" class="small-pic-link-wrapper">\
          <img src="'+picUrl+'" alt="'+profileUsername+' profile" loading="lazy">\
        </a>\
@@ -127,7 +127,7 @@ function buildArticleHTML(article) {
          '+searchSnippetHTML+'\
         </div>\
        </a>\
-       <h4><a href="/'+article.user.username+'">'+filterXSS(article.user.name)+publishDate+timeAgoInWords+'</a></h4>\
+       <h4 data-hover-details="users/'+article.user_id+'"><a href="/'+article.user.username+'">'+filterXSS(article.user.name)+publishDate+timeAgoInWords+'</a></h4>\
        <div class="tags">'+tagString+'</div>\
        '+commentsCountHTML+reactionsCountHTML+readingTimeHTML+'\
        '+saveButton+'</div>';

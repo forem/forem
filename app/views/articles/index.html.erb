@@ -99,11 +99,11 @@
                 <%= @featured_story.title %>
               </h3>
             </div>
-            <a href="/<%= @featured_story.cached_user.username %>" class="featured-profile-button">
+            <a href="/<%= @featured_story.cached_user.username %>" class="featured-profile-button" data-hover-details="users/<%= @featured_story.cached_user.id %>">
               <img class="featured-profile-pic" src="<%= ProfileImage.new(@featured_story.cached_user).get(90) %>" alt="<%= @featured_story.title %>" />
             </a>
             <div class="featured-user-name">
-              <a href="/<%= @featured_story.cached_user.username %>">
+              <a href="/<%= @featured_story.cached_user.username %>" data-hover-details="users/<%= @featured_story.cached_user.id %>">
                 <%= @featured_story.cached_user.name %><%= render "shared/pro_checkmark" if @featured_story.cached_user.pro %>・<time datetime="<%= @featured_story.published_timestamp %>"><%= @featured_story.readable_publish_date %></time>
                 <span class="time-ago-indicator-initial-placeholder" data-seconds="<%= @featured_story.published_at_int %>"></span>
               </a>

@@ -18,6 +18,7 @@ exports[`<ItemListItem /> renders properly with a history item 1`] = `
     >
       <a
         class="item-user"
+        data-hover-details="users/undefined"
         href="/bob"
       >
         <img
@@ -59,6 +60,7 @@ exports[`<ItemListItem /> renders properly with a readinglist item 1`] = `
     >
       <a
         class="item-user"
+        data-hover-details="users/undefined"
         href="/bob"
       >
         <img

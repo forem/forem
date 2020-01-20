@@ -32,7 +32,7 @@
       <% end %>
 
       <div class="details <%= "low-quality-comment" if decorated_comment.low_quality %>">
-        <a href="/<%= comment.user.username %>">
+        <a href="/<%= comment.user.username %>" data-hover-details="users/<%= comment.user.id %>">
           <img class="profile-pic" src="<%= ProfileImage.new(comment.user).get(50) %>" alt="<%= comment.user.username %> profile image" />
           <span class="comment-username">
             <span class="comment-username-inner">
