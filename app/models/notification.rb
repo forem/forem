@@ -47,7 +47,7 @@ class Notification < ApplicationRecord
       return if comment.commentable_type == "PodcastEpisode"
       return if UserBlock.blocking?(comment.commentable.user_id, comment.user_id)
 
-      Notifications::NewCommentWorker.new.perform(comment.id)
+      Notifications::NewComment::Send.call(comment)
     end
 
     def send_new_badge_achievement_notification(badge_achievement)
