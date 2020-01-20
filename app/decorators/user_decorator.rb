@@ -95,6 +95,13 @@ class UserDecorator < ApplicationDecorator
     colors[id % 10]
   end
 
+  def fully_banished?
+    # User suspended and has no content
+    articles_count.zero? &&
+      comments_count.zero? &&
+      banned
+  end
+
   def stackbit_integration?
     access_tokens.any?
   end

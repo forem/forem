@@ -35,14 +35,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def user_banished?(user_or_org)
-    # User suspended and has no content
-    user_or_org.class.name == "User" &&
-      user_or_org.articles_count.zero? &&
-      user_or_org.comments_count.zero? &&
-      user_or_org.banned
-  end
-
   def customize_params
     params[:signed_in] = user_signed_in?.to_s
   end
