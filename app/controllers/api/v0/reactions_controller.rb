@@ -24,12 +24,7 @@ module Api
         verify_authenticity_token
         reactable_ids = JSON.parse(params[:articles]).map { |article| article["id"] }
         reactable_ids.each do |article_id|
-          Reactions::CreateJob.perform_later(
-            user_id: current_user.id,
-            reactable_id: article_id,
-            reactable_type: "Article",
-            category: "readinglist",
-          )
+          Reactions::CreateWorker.perform_async(current_user.id, article_id, "Article", "readinglist")
         end
       end
 
