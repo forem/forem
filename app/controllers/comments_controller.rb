@@ -70,7 +70,7 @@ class CommentsController < ApplicationController
 
       if @comment.invalid?
         @comment.destroy
-        render json: { status: "comment already exists" }
+        render json: { status: "comment already exists" }, status: :conflict
         return
       end
 
@@ -94,13 +94,14 @@ class CommentsController < ApplicationController
           github_username: current_user.github_username
         }
       }
+    # elsif is to prevent double submits
     elsif (@comment = Comment.where(body_markdown: @comment.body_markdown,
                                     commentable_id: @comment.commentable.id,
                                     ancestry: @comment.ancestry)[1])
       @comment.destroy
-      render json: { status: "comment already exists" }
+      render json: { status: "comment already exists" }, status: :conflict
     else
-      render json: { status: "errors" }
+      render json: { status: @comment&.errors&.full_messages&.to_sentence }, status: :unprocessable_entity
     end
   rescue Pundit::NotAuthorizedError
     raise
@@ -128,6 +129,7 @@ class CommentsController < ApplicationController
       Notification.send_new_comment_notifications_without_delay(@comment)
 
       render json: { status: "created" }
+    # elsif is to prevent double submits
     elsif (@comment = Comment.where(body_markdown: @comment.body_markdown,
                                     commentable_id: @comment.commentable.id,
                                     ancestry: @comment.ancestry)[1])
