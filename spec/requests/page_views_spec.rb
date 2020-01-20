@@ -35,6 +35,15 @@ RSpec.describe "PageViews", type: :request do
         }
         expect(PageView.last.user_agent).to eq("test")
       end
+
+      it "sends visited_page_category" do
+        post "/page_views", params: {
+          article_id: article.id,
+          user_agent: "test",
+          visited_page_category: "stories-show"
+        }
+        expect(PageView.last.visited_page_category).to eq("stories-show")
+      end
     end
 
     context "when user not signed in" do

@@ -10,7 +10,7 @@ class PageViewsController < ApplicationMetalController
                               end
 
     PageView.create(page_view_create_params.
-      merge(visited_page_path: URI(request.referer).path, visited_page_full_url: request.referer))
+      merge(visited_page_path: request.referer ? URI(request.referer).path : nil, visited_page_full_url: request.referer))
 
     update_article_page_views if page_view_params[:article_id].present?
 
