@@ -2,11 +2,11 @@ class PageView < ApplicationRecord
   include AlgoliaSearch
 
   belongs_to :user, optional: true
-  belongs_to :article
+  belongs_to :article, optional: true
 
   before_create :extract_domain_and_path
 
-  algoliasearch index_name: "UserHistory", per_environment: true, if: :belongs_to_pro_user?, enqueue: :trigger_index_sync do
+  algoliasearch index_name: "UserHistory", per_environment: true, if: :should_index?, enqueue: :trigger_index_sync do
     attributes :referrer, :user_agent, :article_tags
 
     attribute(:article_title) { article.title }
@@ -64,8 +64,8 @@ class PageView < ApplicationRecord
     self.path = parsed_url.path
   end
 
-  def belongs_to_pro_user?
-    user&.pro?
+  def should_index?
+    article.present? && user&.pro?
   end
 
   def article_searchable_tags

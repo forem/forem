@@ -9,9 +9,10 @@ class PageViewsController < ApplicationMetalController
                                 page_view_params.merge(counts_for_number_of_views: 10)
                               end
 
-    PageView.create(page_view_create_params)
+    PageView.create(page_view_create_params.
+      merge(visited_page_path: URI(request.referer).path, visited_page_full_url: request.referer))
 
-    update_article_page_views
+    update_article_page_views if page_view_params[:article_id].present?
 
     head :ok
   end
@@ -33,6 +34,7 @@ class PageViewsController < ApplicationMetalController
     return if Rails.env.production? && rand(15) != 1 # We don't need to update the article page views every time.
 
     @article = Article.find(page_view_params[:article_id])
+
     new_page_views_count = @article.page_views.sum(:counts_for_number_of_views)
     @article.update_column(:page_views_count, new_page_views_count) if new_page_views_count > @article.page_views_count
 
@@ -40,7 +42,7 @@ class PageViewsController < ApplicationMetalController
   end
 
   def page_view_params
-    params.slice(:article_id, :referrer, :user_agent)
+    params.slice(:article_id, :referrer, :user_agent, :visited_page_category)
   end
 
   def update_organic_page_views

@@ -116,31 +116,35 @@ function trackCustomImpressions() {
     }
 
     // page view
-    if (ArticleElement && tokenMeta && !isBot) {
+    if (tokenMeta && !isBot) {
       var randomNumber = Math.floor(Math.random() * 10); // 1 in 10; Only track 1 in 10 impressions
       if (!checkUserLoggedIn() && randomNumber != 1) {
         return;
       }
+      var contentDiv = document.getElementById('page-content')
       var dataBody = {
-        article_id: ArticleElement.dataset.articleId,
+        article_id: ArticleElement ? ArticleElement.dataset.articleId : null,
         referrer: document.referrer,
         user_agent: navigator.userAgent,
+        visited_page_category: contentDiv ? contentDiv.dataset.currentPage : null
       };
       var csrfToken = tokenMeta.getAttribute('content');
       trackPageView(dataBody, csrfToken);
-      var timeOnSiteCounter = 0;
-      var timeOnSiteInterval = setInterval(function(){
-        timeOnSiteCounter++
-        var ArticleElement = document.getElementById('article-body');
-        if (ArticleElement && checkUserLoggedIn()) {
-          trackFifteenSecondsOnPage(ArticleElement.dataset.articleId, csrfToken);
-        } else {
-          clearInterval(timeOnSiteInterval);
-        }
-        if ( timeOnSiteCounter > 118 ) {
-          clearInterval(timeOnSiteInterval);
-        }
-      }, 15000)
+      if (ArticleElement) {
+        var timeOnSiteCounter = 0;
+        var timeOnSiteInterval = setInterval(function(){
+          timeOnSiteCounter++
+          var ArticleElement = document.getElementById('article-body');
+          if (ArticleElement && checkUserLoggedIn()) {
+            trackFifteenSecondsOnPage(ArticleElement.dataset.articleId, csrfToken);
+          } else {
+            clearInterval(timeOnSiteInterval);
+          }
+          if ( timeOnSiteCounter > 118 ) {
+            clearInterval(timeOnSiteInterval);
+          }
+        }, 15000)
+      }
     }
 
     // display add
