@@ -1,5 +1,6 @@
 @import 'variables';
 @import 'mixins';
+@import 'fonts';
 
 body {
   @include themeable(background, theme-background, $lightest-gray);
@@ -230,6 +231,7 @@ body.sans-serif-article-body {
     font-size: 0.98em;
   }
 }
+
 body.comic-sans-article-body {
   .body {
     font-family: 'Comic Sans MS', cursive, sans-serif;
@@ -239,6 +241,31 @@ body.comic-sans-article-body {
     font-size: 0.98em;
   }
 }
+
+body.open-dyslexic-article-body {
+  .body {
+    font-display: swap;
+    font-family: OpenDyslexic, sans-serif;
+  }
+  .body p {
+    font-display: swap;
+    font-family: OpenDyslexic, sans-serif;
+    font-size: 0.9em;
+  }
+  .body b, .body strong {
+    font-family: OpenDyslexic-Bold, sans-serif;
+  }
+  
+  .body i, .body em {
+    font-family: OpenDyslexic-Italic, sans-serif;
+  }
+  
+  .body b>i, .body b>em, .body strong>i, .body strong>em,
+  .body i>b, .body em>b, .body i>strong, .body em>strong {
+    font-family: OpenDyslexic-Bolditalic
+  }
+}
+
 body.monospace-article-body {
   .body {
     font-family: $monospace;

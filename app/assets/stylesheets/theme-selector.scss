@@ -1,4 +1,5 @@
 @import 'variables';
+@import 'fonts';
 
 .rich-selector {
   display: inline-block;
@@ -188,7 +189,15 @@
 
 .font-selector--comic-sans {
   font-family: 'Comic Sans MS', cursive, sans-serif;
+  font-size: 1.44em;
 }
+
+.font-selector--open-dyslexic {
+  font-family: OpenDyslexic, sans-serif;
+  font-display: swap;
+  font-size: 1.33em;
+}
+
 
 // Navbar selector
 

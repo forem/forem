@@ -124,7 +124,7 @@ class User < ApplicationRecord
             inclusion: { in: %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme],
                          message: "%<value>s is not a valid theme" }
   validates :config_font,
-            inclusion: { in: %w[default sans_serif monospace comic_sans],
+            inclusion: { in: %w[default sans_serif monospace comic_sans open_dyslexic],
                          message: "%<value>s is not a valid font selection" }
   validates :config_navbar,
             inclusion: { in: %w[default static],
