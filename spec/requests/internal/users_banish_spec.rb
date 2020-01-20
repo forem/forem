@@ -234,6 +234,12 @@ RSpec.describe "Internal::Users", type: :request do
       banish_user
       expect(user.follows.count).to eq(0)
     end
+
+    it "creates an entry in the BanishedUsers table" do
+      expect do
+        banish_user
+      end.to change(BanishedUser, :count).by(1)
+    end
   end
 
   context "when handling credits" do

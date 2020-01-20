@@ -47,7 +47,7 @@ class Internal::UsersController < Internal::ApplicationController
   def banish
     @user = User.find(params[:id])
     begin
-      Moderator::BanishUser.call_banish(admin: current_user, user: @user)
+      Moderator::BanishUser.call(admin: current_user, user: @user)
     rescue StandardError => e
       flash[:danger] = e.message
     end
