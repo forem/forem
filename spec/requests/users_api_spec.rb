@@ -22,5 +22,10 @@ RSpec.describe "Api::V0::Users", type: :request do
       get "/api/users/#{user.id}"
       expect(response.body).to include(user.name)
     end
+
+    it "sets the correct edge caching surrogate key" do
+      get "/api/users/#{user.id}"
+      expect(response.headers["surrogate-key"].split.to_set).to eq([user.record_key].to_set)
+    end
   end
 end

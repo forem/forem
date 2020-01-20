@@ -50,6 +50,11 @@ RSpec.describe "UserProfiles", type: :request do
       expect(response.body).not_to include("<meta name=\"googlebot\" content=\"noindex\">")
     end
 
+    it "sets the correct edge caching surrogate key" do
+      get "/#{user.username}"
+      expect(response.headers["surrogate-key"].split.to_set).to eq([user.record_key].to_set)
+    end
+
     context "when organization" do
       it "renders organization page if org" do
         get organization.path
