@@ -26,7 +26,7 @@ class Comment < ApplicationRecord
   after_save     :synchronous_bust
   after_destroy  :after_destroy_actions
   before_destroy :before_destroy_actions
-  after_create   :send_email_notification, if: :should_send_email_notification?
+  after_create_commit :send_email_notification, if: :should_send_email_notification?
   after_create_commit :create_first_reaction
   after_create   :send_to_moderator
   before_save    :set_markdown_character_count, if: :body_markdown
@@ -270,16 +270,12 @@ class Comment < ApplicationRecord
   def before_destroy_actions
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     ancestors.update_all(updated_at: Time.current)
-    bust_cache_without_delay
+    Comments::BustCacheWorker.new.perform(id)
     remove_algolia_index
   end
 
-  def bust_cache_without_delay
-    Comments::BustCacheJob.perform_now(id)
-  end
-
   def bust_cache
-    Comments::BustCacheJob.perform_later(id)
+    Comments::BustCacheWorker.perform_async(id)
   end
 
   def synchronous_bust
@@ -290,7 +286,7 @@ class Comment < ApplicationRecord
   end
 
   def send_email_notification
-    Comments::SendEmailNotificationJob.perform_later(id)
+    Comments::SendEmailNotificationWorker.perform_async(id)
   end
 
   def should_send_email_notification?

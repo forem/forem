@@ -1,5 +1,7 @@
 ---
 title: Internal Guide
+items:
+  - internal-search.md
 ---
 
 # Internal Guide

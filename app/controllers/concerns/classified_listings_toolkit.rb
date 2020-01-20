@@ -34,7 +34,7 @@ module ClassifiedListingsToolkit
   end
 
   def clear_listings_cache
-    ClassifiedListings::BustCacheJob.perform_now(@classified_listing.id)
+    ClassifiedListings::BustCacheWorker.perform_async(@classified_listing.id)
   end
 
   def set_classified_listing

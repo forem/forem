@@ -311,16 +311,43 @@
       &.single-article-podcast-div {
         margin-top: 8px;
         padding: 8px 0px 15px;
-        font-size: 0.8em;
+        font-size: 0.95em;
         h3 {
           font-size: 1.5em;
           margin-left: 13px;
           font-weight: 800;
         }
         a.individual-podcast-link {
+          img {
+            height: 50px;
+            width: 50px;
+            border-radius: 120px;
+            vertical-align: top;
+          }
+          .individual-podcast-link-details {
+            width: calc(100% - 85px);
+            display: inline-block;
+            margin-left: 10px;
+          }
+          font-weight: 500;
+          @include themeable(
+            color,
+            theme-secondary-color,
+            $medium-gray
+          );
           strong {
             display: block;
             margin-bottom: 4px;
+            @media screen and (min-width: 500px) {
+              font-size: 1.2em;
+            }
+            padding-top: 0.2em;
+            font-weight: 500;
+            @include themeable(
+              color,
+              theme-color,
+              $black
+            );
           }
           display: block;
           padding: 4px 14px 7px;

@@ -490,29 +490,131 @@ RSpec.describe User, type: :model do
   end
 
   context "when callbacks are triggered after save" do
-    describe "subscribing to mailchip newsletter" do
-      it "enqueues SubscribeToMailchimpNewsletterJob" do
-        expect do
+    describe "subscribing to mailchimp newsletter" do
+      let(:user) { build(:user) }
+
+      it "enqueues SubscribeToMailchimpNewsletterWorker" do
+        sidekiq_assert_enqueued_with(job: Users::SubscribeToMailchimpNewsletterWorker, args: user.id) do
           user.save
-        end.to have_enqueued_job(Users::SubscribeToMailchimpNewsletterJob).exactly(:once).with(user.id)
+        end
       end
 
       it "does not enqueue without an email" do
-        expect do
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(email: "")
-        end.not_to have_enqueued_job(Users::SubscribeToMailchimpNewsletterJob).exactly(:once).with(user.id)
+        end
       end
 
       it "does not enqueue with an invalid email" do
-        expect do
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(email: "foobar")
-        end.not_to have_enqueued_job(Users::SubscribeToMailchimpNewsletterJob).exactly(:once).with(user.id)
+        end
       end
 
       it "does not enqueue with an unconfirmed email" do
-        expect do
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(unconfirmed_email: "bob@bob.com", confirmation_sent_at: Time.current)
-        end.not_to have_enqueued_job(Users::SubscribeToMailchimpNewsletterJob).exactly(:once).with(user.id)
+        end
+      end
+    end
+
+    describe "#conditionally_resave_articles" do
+      let!(:user) { create(:user) }
+
+      it "enqueues resave articles job when changing username" do
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
+          args: [user.id],
+          queue: "medium_priority",
+        ) do
+          user.username = "#{user.username} changed"
+          user.save
+        end
+      end
+
+      it "enqueues resave articles job when changing name" do
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
+          args: [user.id],
+          queue: "medium_priority",
+        ) do
+          user.name = "#{user.name} changed"
+          user.save
+        end
+      end
+
+      it "enqueues resave articles job when changing summary" do
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
+          args: [user.id],
+          queue: "medium_priority",
+        ) do
+          user.summary = "#{user.summary} changed"
+          user.save
+        end
+      end
+
+      it "enqueues resave articles job when changing bg_color_hex" do
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
+          args: [user.id],
+          queue: "medium_priority",
+        ) do
+          user.bg_color_hex = "#12345F"
+          user.save
+        end
+      end
+
+      it "enqueues resave articles job when changing text_color_hex" do
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
+          args: [user.id],
+          queue: "medium_priority",
+        ) do
+          user.text_color_hex = "#FA345E"
+          user.save
+        end
+      end
+
+      it "enqueues resave articles job when changing profile_image" do
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
+          args: [user.id],
+          queue: "medium_priority",
+        ) do
+          user.profile_image = "https://fakeimg.pl/300/"
+          user.save
+        end
+      end
+
+      it "enqueues resave articles job when changing github_username" do
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
+          args: [user.id],
+          queue: "medium_priority",
+        ) do
+          user.github_username = "mygreatgithubname"
+          user.save
+        end
+      end
+
+      it "enqueues resave articles job when changing twitter_username" do
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
+          args: [user.id],
+          queue: "medium_priority",
+        ) do
+          user.twitter_username = "mygreattwittername"
+          user.save
+        end
+      end
+
+      it "doesn't enqueue resave articles when changing resave attributes but user is banned" do
+        banned_user = create(:user, :banned)
+        expect do
+          banned_user.twitter_username = "mygreattwittername"
+          banned_user.save
+        end.not_to change(Users::ResaveArticlesWorker.jobs, :size)
       end
     end
   end

@@ -55,13 +55,13 @@ module ApplicationHelper
       "volume-mute" => "v1461589297/technology_jiugwb.png"
     }.fetch(name, "v1456342953/star-in-black-of-five-points-shape_sor40l.png")
 
-    "https://res.cloudinary.com/practicaldev/image/upload/#{postfix}"
+    "https://res.cloudinary.com/#{ApplicationConfig['CLOUDINARY_CLOUD_NAME']}/image/upload/#{postfix}"
   end
 
   def cloudinary(url, width = nil, _quality = 80, _format = "jpg")
     return url if Rails.env.development? && (url.blank? || url.exclude?("http"))
 
-    service_path = "https://res.cloudinary.com/practicaldev/image/fetch"
+    service_path = "https://res.cloudinary.com/#{ApplicationConfig['CLOUDINARY_CLOUD_NAME']}/image/fetch"
 
     if url&.size&.positive?
       if width

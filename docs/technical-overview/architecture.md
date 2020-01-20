@@ -118,6 +118,11 @@ the URL (`/username/tag-slug`), but they are present in communal areas of the
 application. They are threaded, but they flatten out gradually to avoid
 infinitely branching threads.
 
+## Users
+
+The user is the authorization/identity component of logging into the app. It is
+also the public profile/authorship/etc. belonging to the people who use the app.
+
 ## Tags
 
 Tags are used to organize user generated content. Each tag has a set of rules
@@ -155,6 +160,22 @@ article in the user's reading list.
 
 How a user keeps track of the tags, users, or articles they care about. Follows
 impact a user's home feed and notifications.
+
+## Roles
+
+Through the "rolify" gem, users can have roles like "admin", etc. A role can
+also be associated with a model or a model instance. Such as "moderator of
+javascript tag"
+
+## Organization
+
+An organization is a collection of users who can author under one umbrella. An
+organization could be a company or perhaps just a publication on-site.
+
+## Notes
+
+Notes are an internal tool admins can use to leave information about things.
+Example: "This user was warned for spammy content".
 
 ---
 

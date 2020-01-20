@@ -22,25 +22,21 @@ class Notification < ApplicationRecord
     where(organization_id: org_id, notifiable_type: "Mention", user_id: nil)
   }
 
-  scope :without_past_aggregations, lambda {
-    where.not("notified_at < ? AND action IN ('Reaction', 'Follow')", 24.hours.ago)
-  }
-
   class << self
     def send_new_follower_notification(follow, is_read = false)
-      return unless Follow.need_new_follower_notification_for?(follow.followable_type)
+      return unless follow && Follow.need_new_follower_notification_for?(follow.followable_type)
       return if follow.followable_type == "User" && UserBlock.blocking?(follow.followable_id, follow.follower_id)
 
       follow_data = follow.attributes.slice("follower_id", "followable_id", "followable_type").symbolize_keys
-      Notifications::NewFollowerJob.perform_later(follow_data, is_read)
+      Notifications::NewFollowerWorker.perform_async(follow_data, is_read)
     end
 
     def send_new_follower_notification_without_delay(follow, is_read = false)
-      return unless Follow.need_new_follower_notification_for?(follow.followable_type)
+      return unless follow && Follow.need_new_follower_notification_for?(follow.followable_type)
       return if follow.followable_type == "User" && UserBlock.blocking?(follow.followable_id, follow.follower_id)
 
       follow_data = follow.attributes.slice("follower_id", "followable_id", "followable_type").symbolize_keys
-      Notifications::NewFollowerJob.perform_now(follow_data, is_read)
+      Notifications::NewFollowerWorker.new.perform(follow_data, is_read)
     end
 
     def send_to_followers(notifiable, action = nil)
@@ -86,7 +82,7 @@ class Notification < ApplicationRecord
     end
 
     def send_welcome_notification(receiver_id)
-      Notifications::WelcomeNotificationJob.perform_later(receiver_id)
+      Notifications::WelcomeNotificationWorker.perform_async(receiver_id)
     end
 
     def send_moderation_notification(notifiable)
@@ -101,7 +97,7 @@ class Notification < ApplicationRecord
     end
 
     def send_milestone_notification(type:, article_id:)
-      Notifications::MilestoneJob.perform_later(type, article_id)
+      Notifications::MilestoneWorker.perform_async(type, article_id)
     end
 
     def remove_all_by_action(notifiable_ids:, notifiable_type:, action: nil)
@@ -119,13 +115,13 @@ class Notification < ApplicationRecord
     def remove_all(notifiable_ids:, notifiable_type:)
       return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
 
-      Notifications::RemoveAllJob.perform_later(notifiable_ids, notifiable_type)
+      Notifications::RemoveAllWorker.perform_async(notifiable_ids, notifiable_type)
     end
 
     def remove_all_without_delay(notifiable_ids:, notifiable_type:)
       return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
 
-      Notifications::RemoveAllJob.perform_now(notifiable_ids, notifiable_type)
+      Notifications::RemoveAllWorker.new.perform(notifiable_ids, notifiable_type)
     end
 
     def update_notifications(notifiable, action = nil)
