@@ -50,8 +50,11 @@ export default function initCannedResponses() {
         const { content } = e.target.dataset;
         const textArea = form.querySelector('textarea');
 
-        textArea.value = content;
-        responsesWrapper.style.display = 'none';
+        const textAreaReplaceable = textArea.value === null || textArea.value === '' || confirm('Are you sure you want to replace your current comment draft?')
+        if (textAreaReplaceable) {
+          textArea.value = content;
+          responsesWrapper.style.display = 'none';
+        }
       });
     });
 
