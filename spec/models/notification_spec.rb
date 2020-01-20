@@ -187,7 +187,7 @@ RSpec.describe Notification, type: :model do
     end
   end
 
-  describe "#send_new_comment_notifications" do
+  describe "#send_new_comment_notifications_without_delay" do
     let_it_be_changeable(:comment) { create(:comment, user: user2, commentable: article) }
     let_it_be_readonly(:child_comment) { create(:comment, user: user3, commentable: article, parent: comment) }
 
