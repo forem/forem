@@ -190,7 +190,7 @@ GEM
     childprocess (3.0.0)
     cld (0.8.0)
       ffi
-    cloudinary (1.13.1)
+    cloudinary (1.13.2)
       aws_cf_signer
       rest-client
     coderay (1.1.2)
@@ -477,7 +477,7 @@ GEM
       thread_safe (~> 0.3, >= 0.3.1)
     memory_profiler (0.9.14)
     method_source (0.9.2)
-    mime-types (3.3)
+    mime-types (3.3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2019.1009)
     mimemagic (0.3.3)
