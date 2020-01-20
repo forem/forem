@@ -1,6 +1,6 @@
 class SlackBotPingWorker
   include Sidekiq::Worker
-  
+
   sidekiq_options queue: :default, retry: 10
 
   def perform(message, channel, username, icon_emoji)

@@ -27,11 +27,11 @@ module ProMemberships
         membership.increment(:expiration_notifications_count)
         membership.save!
 
-        SlackBotPingJob.perform_later(
-          message: "#{membership.user.name}'s pro membership expires on #{expiration_date}",
-          channel: "pro-memberships",
-          username: "pro-memberships",
-          icon_emoji: ":fire:",
+        SlackBotPingWorker.perform_async(
+          "#{membership.user.name}'s pro membership expires on #{expiration_date}", # message
+          "pro-memberships", # channel
+          "pro-memberships", # username
+          ":fire:", # icon_emoji
         )
 
         count += 1

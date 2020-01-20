@@ -107,11 +107,11 @@ module ProMemberships
     end
 
     def notify_admins(user, message)
-      SlackBotPingJob.perform_later(
-        message: "ProMemberships::Biller: #{user.username}: #{message}",
-        channel: "pro-memberships",
-        username: "pro-memberships",
-        icon_emoji: ":fire:",
+      SlackBotPingWorker.perform_async(
+        "ProMemberships::Biller: #{user.username}: #{message}", # message
+        "pro-memberships", # channel
+        "pro-memberships", # username
+        ":fire:", # icon_emoji
       )
     end
   end
