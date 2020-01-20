@@ -18,7 +18,7 @@ class Message < ApplicationRecord
   end
 
   def direct_receiver
-    return if chat_channel.channel_type != "direct"
+    return if chat_channel.group?
 
     chat_channel.users.where.not(id: user.id).first
   end
@@ -78,7 +78,7 @@ class Message < ApplicationRecord
 
   def user_link_if_exists(mention)
     username = mention.delete("@").downcase
-    if User.find_by(username: username) && chat_channel.channel_type != "direct"
+    if User.find_by(username: username) && chat_channel.group?
       <<~HTML
         <a class='comment-mentioned-user' data-content="sidecar-user" href='/#{username}' target="_blank">@#{username}</a>
       HTML
