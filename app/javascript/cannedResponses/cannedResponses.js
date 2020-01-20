@@ -59,7 +59,15 @@ export default function initCannedResponses() {
       button.addEventListener('click', e => {
         e.preventDefault();
 
-        if (confirm('Are you sure you want to submit this comment as Sloan?\n\nIt will be sent immediately and users will be notified.\n\nMake sure this is the appropriate comment for the situation.\n\nThis action is not reversible.')) {
+        const confirmMsg = `
+Are you sure you want to submit this comment as Sloan?
+
+It will be sent immediately and users will be notified.
+
+Make sure this is the appropriate comment for the situation.
+
+This action is not reversible.`;
+        if (confirm(confirmMsg)) {
           submitAsModerator(e.target.dataset.cannedResponseId, parentCommentId);
         }
       });
