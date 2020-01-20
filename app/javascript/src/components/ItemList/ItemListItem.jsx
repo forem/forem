@@ -21,7 +21,7 @@ export const ItemListItem = ({ item, children }) => {
         <div className="item-title">{adaptedItem.title}</div>
 
         <div className="item-details">
-          <a className="item-user" href={`/${adaptedItem.user.username}`} data-hover-details={`users/${adaptedItem.user.id}`}>
+          <a className="item-user" href={`/${adaptedItem.user.username}`}>
             <img src={adaptedItem.user.profile_image_90} alt="Profile Pic" />
             {`${adaptedItem.user.name}・`}
             {adaptedItem.visitedDate
