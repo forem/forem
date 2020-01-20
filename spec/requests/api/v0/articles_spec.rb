@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Api::V0::Articles", type: :request do
-  let_it_be(:organization) { create(:organization) } # not used by every spec but lower times overall
-  let_it_be(:article) { create(:article, featured: true, tags: "discuss") }
+  let_it_be_readonly(:organization) { create(:organization) } # not used by every spec but lower times overall
+  let_it_be_changeable(:article) { create(:article, featured: true, tags: "discuss") }
 
   describe "GET /api/articles" do
     it "has correct keys in the response" do
@@ -63,6 +63,13 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response_article["flare_tag"].keys).to eq(%w[name bg_color_hex text_color_hex])
         expect(response_article["flare_tag"]["name"]).to eq("discuss")
       end
+
+      it "sets the correct edge caching surrogate key" do
+        get api_articles_path
+
+        expected_key = ["articles", article.record_key].to_set
+        expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
+      end
     end
 
     context "with username param" do
@@ -89,6 +96,14 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response.parsed_body.length).to eq(2)
         get api_articles_path(username: article.user.username), params: { page: 2, per_page: 2 }
         expect(response.parsed_body.length).to eq(1)
+      end
+
+      it "sets the correct edge caching surrogate key" do
+        new_article = create(:article, user: article.user)
+        get api_articles_path(username: article.user.username)
+
+        expected_key = ["articles", article.record_key, new_article.record_key].to_set
+        expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
       end
     end
 
@@ -119,6 +134,13 @@ RSpec.describe "Api::V0::Articles", type: :request do
         get api_articles_path(tag: article.tag_list.first), params: { page: 2, per_page: 2 }
         expect(response.parsed_body.length).to eq(1)
       end
+
+      it "sets the correct edge caching surrogate key" do
+        get api_articles_path(tag: article.tag_list.first)
+
+        expected_key = ["articles", article.record_key].to_set
+        expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
+      end
     end
 
     context "with top param" do
@@ -139,6 +161,13 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response.parsed_body.length).to eq(2)
         get api_articles_path(top: "11"), params: { page: 2, per_page: 2 }
         expect(response.parsed_body.length).to eq(1)
+      end
+
+      it "sets the correct edge caching surrogate key" do
+        get api_articles_path(top: "7")
+
+        expected_key = ["articles", article.record_key].to_set
+        expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
       end
     end
 
@@ -161,6 +190,15 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response.parsed_body.length).to eq(2)
         get api_articles_path(collection_id: collection.id), params: { page: 2, per_page: 2 }
         expect(response.parsed_body.length).to eq(1)
+      end
+
+      it "sets the correct edge caching surrogate key" do
+        collection = create(:collection, user: article.user)
+        article.update_columns(collection_id: collection.id)
+        get api_articles_path(collection_id: collection.id)
+
+        expected_key = ["articles", article.record_key].to_set
+        expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
       end
     end
 
@@ -192,6 +230,14 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response.parsed_body.length).to eq(2)
         get api_articles_path(state: "fresh"), params: { page: 2, per_page: 2 }
         expect(response.parsed_body.length).to eq(1)
+      end
+
+      it "sets the correct edge caching surrogate key" do
+        article.update_columns(positive_reactions_count: 1, score: 1)
+
+        get api_articles_path(state: "fresh")
+        expected_key = ["articles", article.record_key].to_set
+        expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
       end
     end
   end
