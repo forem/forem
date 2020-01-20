@@ -27,7 +27,7 @@ class RateLimitChecker
 
   def limit_by_email_recipient_address(address)
     # This is related to the recipient, not the "user" initiator, like in action.
-    EmailMessage.where(to: address).where("sent_at > ?", 2.minutes.ago).count >
+    EmailMessage.where(to: address).where("sent_at > ?", 2.minutes.ago).size >
       SiteConfig.rate_limit_email_recipient
   end
 
