@@ -3,7 +3,9 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
 
   def index
     @q = FeedbackMessage.
-      includes(:reporter, :notes).
+      includes(:reporter,
+               :offender,
+               :affected).
       order("feedback_messages.created_at DESC").
       ransack(params[:q])
     @feedback_messages = @q.result.page(params[:page] || 1).per(5)
