@@ -172,6 +172,11 @@ module CacheBuster
       "/feed/#{username}"
     ]
     paths.each { |path| bust(path) }
+
+    # ^ TODO We can remove the above most or all of the manual paths purge
+    # once past relevant caches expire and get new surrogate keys (> 1 day after merge).
+
+    user.purge
   end
 
   # bust commentable if it's an article

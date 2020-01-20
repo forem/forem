@@ -2,6 +2,7 @@ module Api
   module V0
     class UsersController < ApiController
       before_action :authenticate!, only: %i[me]
+      before_action :set_cache_control_headers, only: [:show]
       before_action -> { doorkeeper_authorize! :public }, only: :me, if: -> { doorkeeper_token }
 
       def index
@@ -27,6 +28,7 @@ module Api
                 else
                   User.find(params[:id])
                 end
+        set_surrogate_key_header @user.record_key
       end
 
       def me; end

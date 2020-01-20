@@ -3,6 +3,7 @@ class TwitchLiveStreamsController < ApplicationController
 
   def show
     @user = User.find_by!(username: params[:username].tr("@", "").downcase)
+    set_surrogate_key_header @user.record_key
     if @user.twitch_username.present?
       render :show
     else
