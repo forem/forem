@@ -300,7 +300,6 @@ ActiveRecord::Schema.define(version: 2020_01_18_225505) do
   end
 
   create_table "comments", id: :serial, force: :cascade do |t|
-    t.integer "actor_id"
     t.string "ancestry"
     t.text "body_html"
     t.text "body_markdown"
@@ -313,6 +312,7 @@ ActiveRecord::Schema.define(version: 2020_01_18_225505) do
     t.boolean "hidden_by_commentable_user", default: false
     t.string "id_code"
     t.integer "markdown_character_count"
+    t.bigint "moderator_id"
     t.integer "positive_reactions_count", default: 0, null: false
     t.text "processed_html"
     t.integer "reactions_count", default: 0, null: false
