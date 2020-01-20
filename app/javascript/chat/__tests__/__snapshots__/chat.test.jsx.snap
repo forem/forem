@@ -243,6 +243,7 @@ exports[`<Chat /> should load chat 1`] = `
         </div>
         <div
           class="mention__list"
+          id="mentionList"
         >
            
         </div>
