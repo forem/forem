@@ -69,10 +69,10 @@ RSpec.describe "Pro Memberships", type: :request do
       end
 
       it "enqueues a job to populate the history" do
-        assert_enqueued_with(
-          job: ProMemberships::PopulateHistoryJob,
+        sidekiq_assert_enqueued_with(
+          job: ProMemberships::PopulateHistoryWorker,
           args: [user.id],
-          queue: "pro_memberships_populate_history",
+          queue: "medium_priority",
         ) do
           post pro_membership_path
         end
