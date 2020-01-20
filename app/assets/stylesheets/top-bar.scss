@@ -418,8 +418,8 @@
     margin: 0;
     width: calc(100% - 12px);
     border-radius: 3px;
-    padding: 6px 9px;
-    font-size: 0.9em;
+    padding: 6px 9px 5px;
+    font-size: 16px;
     @include themeable(
       background, 
       theme-top-bar-search-background, 
