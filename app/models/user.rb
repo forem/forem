@@ -49,7 +49,7 @@ class User < ApplicationRecord
   has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
   has_many :user_blocks
-  has_many :response_templates, :dependent :destroy
+  has_many :response_templates, dependent: :destroy
   has_one :pro_membership, dependent: :destroy
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
 

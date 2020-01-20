@@ -5,19 +5,19 @@ class ResponseTemplatesController < ApplicationController
     not_found unless current_user
 
     @response_templates = if params[:type_of] && params[:personal_included] != "true"
-                          result = ResponseTemplate.where(user_id: nil, type_of: params[:type_of])
-                          handle_authorization(result)
-                          result
-                        elsif params[:type_of] == "mod_comment" && params[:personal_included] == "true"
-                          result = ResponseTemplate.
-                            where(user_id: nil, type_of: "mod_comment").
-                            union(user_id: current_user.id, type_of: "personal_comment")
-                          handle_authorization(result)
-                          result
-                        else
-                          skip_authorization
-                          ResponseTemplate.where(user_id: current_user.id)
-                        end
+                            result = ResponseTemplate.where(user_id: nil, type_of: params[:type_of])
+                            handle_authorization(result)
+                            result
+                          elsif params[:type_of] == "mod_comment" && params[:personal_included] == "true"
+                            result = ResponseTemplate.
+                              where(user_id: nil, type_of: "mod_comment").
+                              union(user_id: current_user.id, type_of: "personal_comment")
+                            handle_authorization(result)
+                            result
+                          else
+                            skip_authorization
+                            ResponseTemplate.where(user_id: current_user.id)
+                          end
   end
 
   def create
@@ -30,7 +30,7 @@ class ResponseTemplatesController < ApplicationController
     if @response_template.save
       flash[:settings_notice] = "Your response template \"#{@response_template.title}\" was created."
     else
-      flash[:error] = @response_template.errors.full_messages.to_sentence
+      flash[:error] = "Response template error: #{@response_template.errors.full_messages.to_sentence}"
     end
 
     redirect_back(fallback_location: root_path)
@@ -56,7 +56,7 @@ class ResponseTemplatesController < ApplicationController
     if @response_template.update(permitted_attributes(ResponseTemplate))
       flash[:settings_notice] = "Your response template \"#{@response_template.title}\" was updated."
     else
-      flash[:error] = @response_template.errors.full_messages.to_sentence
+      flash[:error] = "Response template error: #{@response_template.errors.full_messages.to_sentence}"
     end
 
     redirect_back(fallback_location: root_path)
