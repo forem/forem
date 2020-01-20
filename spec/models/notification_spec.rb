@@ -107,7 +107,7 @@ RSpec.describe Notification, type: :model do
   describe "#send_new_follower_notification" do
     context "when trying to a send notification after following a tag" do
       it "does not enqueue a notification job" do
-        assert_no_enqueued_jobs(only: Notifications::NewFollowerJob) do
+        sidekiq_assert_no_enqueued_jobs(only: Notifications::NewFollowerWorker) do
           tag_follow = user.follow(create(:tag))
           described_class.send_new_follower_notification(tag_follow)
         end
