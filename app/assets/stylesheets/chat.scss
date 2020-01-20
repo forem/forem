@@ -1313,3 +1313,7 @@
 .comment-mentioned-all {
   color: rgb(213, 138, 0);
 }
+
+.active__message__list {
+  background: var(--theme-container-accent-background, #f5f6f7);
+}

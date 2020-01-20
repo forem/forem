@@ -310,16 +310,16 @@ export default class Chat extends Component {
       messages[channelId].length === 0 ||
       messages[channelId][0].reception_method === 'pushed'
     ) {
-      if (activeChannel && activeChannel.channel_type !== 'direct') {
-        getContent(
-          `/api/chat_channels/${activeChannelId}`,
-          this.setOpenChannelUsers,
-          null,
-        );
-        if (activeChannel.channel_type === 'open')
-          this.subscribePusher(`open-channel-${channelId}`);
-      }
       getAllMessages(channelId, messageOffset, this.receiveAllMessages);
+    }
+    if (activeChannel && activeChannel.channel_type !== 'direct') {
+      getContent(
+        `/api/chat_channels/${activeChannelId}`,
+        this.setOpenChannelUsers,
+        null,
+      );
+      if (activeChannel.channel_type === 'open')
+        this.subscribePusher(`open-channel-${channelId}`);
     }
     this.subscribePusher(`presence-channel-${channelId}`);
   };
@@ -1215,6 +1215,7 @@ export default class Chat extends Component {
         this.setState({ showMemberlist: false });
       } else {
         this.setQuery(e.target);
+        // this.listHighlighterManager();
       }
     }
   };
@@ -1255,6 +1256,11 @@ export default class Chat extends Component {
     this.setState({ showMemberlist: false });
   };
 
+  listHighlighterManager = () => {
+    const mentionList = document.getElementById('mentionList');
+    mentionList.children[0].classList.add('active__message__list');
+  };
+
   getMentionedUsers = message => {
     const { channelUsers, activeChannelId, activeChannel } = this.state;
     if (channelUsers[activeChannelId]) {
@@ -1287,6 +1293,7 @@ export default class Chat extends Component {
         className={
           showMemberlist ? 'mention__list mention__visible' : 'mention__list'
         }
+        id="mentionList"
       >
         {showMemberlist
           ? Object.values(channelUsers[activeChannelId])
