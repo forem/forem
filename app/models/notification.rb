@@ -139,18 +139,6 @@ class Notification < ApplicationRecord
 
     private
 
-    def user_data(user)
-      Notifications.user_data(user)
-    end
-
-    def comment_data(comment)
-      Notifications.comment_data(comment)
-    end
-
-    def article_data(article)
-      Notifications.article_data(article)
-    end
-
     def reaction_notification_attributes(reaction, receiver)
       reactable_data = {
         reactable_id: reaction.reactable_id,
@@ -159,10 +147,6 @@ class Notification < ApplicationRecord
       }
       receiver_data = { klass: receiver.class.name, id: receiver.id }
       [reactable_data, receiver_data]
-    end
-
-    def organization_data(organization)
-      Notifications.organization_data(organization)
     end
   end
 
