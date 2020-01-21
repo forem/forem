@@ -12,7 +12,7 @@ RSpec.describe "CommentsCreate", type: :request do
 
   it "creates ordinary article with proper params" do
     post "/comments", params: {
-      comment: { body_markdown: new_body.call, commentable_id: article.id, commentable_type: "Article" }
+      comment: { body_markdown: new_body.call, commentable: article.id, commentable_type: "Article" }
     }
     expect(Comment.last.user_id).to eq(user.id)
   end

@@ -5,7 +5,7 @@ RSpec.describe "BufferUpdates", type: :request do
   let(:mod_user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
   let(:mod_article) { create(:article, user_id: mod_user.id) }
-  let(:comment) { create(:comment, user_id: user.id, commentable_id: article.id) }
+  let(:comment) { create(:comment, user_id: user.id, commentable: article) }
 
   context "when trusted user is logged in" do
     before do
