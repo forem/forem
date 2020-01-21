@@ -450,8 +450,7 @@ RSpec.describe Notification, type: :model do
 
       it "updates the notification with the new article title" do
         new_title = "hehehe hohoho!"
-        article.update_column(:title, new_title)
-        article.reload
+        article.update_attribute(:title, new_title)
 
         perform_enqueued_jobs do
           described_class.update_notifications(article, "Published")
