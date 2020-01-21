@@ -2,7 +2,7 @@ module Search
   class IndexWorker
     include Sidekiq::Worker
 
-    sidekiq_options queue: :default, retry: 10
+    sidekiq_options queue: :medium_priority, retry: 10
 
     VALID_RECORD_TYPES = %w[Comment Article User PageView].freeze
 

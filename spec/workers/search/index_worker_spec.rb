@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Search::IndexWorker, type: :worker do
   let(:worker) { subject }
 
-  include_examples "#enqueues_on_correct_queue", "default", ["User", 1]
+  include_examples "#enqueues_on_correct_queue", "medium_priority", ["User", 1]
 
   it "does nothing if there is wrong record type is passed" do
     expect { worker.perform("SuperUser", 1) }.to raise_error(Search::InvalidRecordType)
