@@ -12,7 +12,7 @@ module Moderator
     end
 
     def banish
-      BanishedUser.create(username: user.username)
+      BanishedUser.create(username: user.username, banished_by: admin)
       user.unsubscribe_from_newsletters if user.email?
       remove_profile_info
       handle_user_status("Ban", "spam account")

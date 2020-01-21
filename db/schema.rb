@@ -194,9 +194,11 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
   end
 
   create_table "banished_users", force: :cascade do |t|
+    t.string "username"
+    t.bigint "banished_by_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "username"
+    t.index ["banished_by_id"], name: "index_banished_users_on_banished_by_id"
     t.index ["username"], name: "index_banished_users_on_username", unique: true
   end
 

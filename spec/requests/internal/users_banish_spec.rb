@@ -240,6 +240,12 @@ RSpec.describe "Internal::Users", type: :request do
         banish_user
       end.to change(BanishedUser, :count).by(1)
     end
+
+    it "records who banished a user" do
+      banish_user
+      admin = BanishedUser.last
+      expect(admin.banished_by).to eq super_admin
+    end
   end
 
   context "when handling credits" do
