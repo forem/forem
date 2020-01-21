@@ -1,6 +1,4 @@
 class Tweet < ApplicationRecord
-  include AlgoliaSearch
-
   mount_uploader :profile_image, ProfileImageUploader
 
   belongs_to :user, optional: true
