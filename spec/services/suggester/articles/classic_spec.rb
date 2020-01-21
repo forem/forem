@@ -4,12 +4,12 @@ RSpec.describe Suggester::Articles::Classic, type: :service do
   let(:user) { create(:user) }
   let(:tag) { create(:tag, supported: true) }
   let(:article) { create(:article, tags: [tag.name], featured: true) }
-  let(:reaction) { create(:reaction, user_id: user.id, reactable_id: article.id) }
+  let(:reaction) { create(:reaction, user_id: user.id, reactable: article) }
 
   it "returns an article" do
-    create(:reaction, user_id: user.id, reactable_id: article.id)
-    create(:reaction, user_id: user.id, reactable_id: article.id, category: "thinking")
-    create(:reaction, user_id: user.id, reactable_id: article.id, category: "unicorn")
+    create(:reaction, user_id: user.id, reactable: article)
+    create(:reaction, user_id: user.id, reactable: article, category: "thinking")
+    create(:reaction, user_id: user.id, reactable: article, category: "unicorn")
     expect(described_class.new(article).get.first.id).to eq article.id
   end
 
@@ -20,14 +20,14 @@ RSpec.describe Suggester::Articles::Classic, type: :service do
 
   it "returns single article if multiple qualify" do
     user.follow(tag)
-    create(:reaction, user_id: user.id, reactable_id: article.id)
-    create(:reaction, user_id: user.id, reactable_id: article.id, category: "thinking")
-    create(:reaction, user_id: user.id, reactable_id: article.id, category: "unicorn")
+    create(:reaction, user_id: user.id, reactable: article)
+    create(:reaction, user_id: user.id, reactable: article, category: "thinking")
+    create(:reaction, user_id: user.id, reactable: article, category: "unicorn")
     user2 = create(:user)
     article2 = create(:article, user_id: user2.id)
-    create(:reaction, user_id: user2.id, reactable_id: article2.id)
-    create(:reaction, user_id: user2.id, reactable_id: article2.id, category: "thinking")
-    create(:reaction, user_id: user2.id, reactable_id: article2.id, category: "unicorn")
+    create(:reaction, user_id: user2.id, reactable: article2)
+    create(:reaction, user_id: user2.id, reactable: article2, category: "thinking")
+    create(:reaction, user_id: user2.id, reactable: article2, category: "unicorn")
     expect(described_class.new(article).get.first&.id).to eq article.id
   end
 end

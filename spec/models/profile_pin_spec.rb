@@ -20,6 +20,7 @@ RSpec.describe ProfilePin, type: :model do
 
       it "disallows the sixth pin" do
         create(:profile_pin, pinnable: fifth_article, profile: user)
+        user.reload
         expect do
           create(:profile_pin, pinnable: sixth_article, profile: user)
         end.to raise_error(ActiveRecord::RecordInvalid)
