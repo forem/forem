@@ -528,18 +528,28 @@ export default class Chat extends Component {
   };
 
   handleKeyDown = e => {
+    const { showMemberlist } = this.state;
     const enterPressed = e.keyCode === 13;
     const targetValue = e.target.value;
     const messageIsEmpty = targetValue.length === 0;
     const shiftPressed = e.shiftKey;
 
     if (enterPressed) {
-      if (messageIsEmpty) {
+      if (showMemberlist) {
+        e.preventDefault();
+        const selectedUser = document.querySelector('.active__message__list');
+        this.addUserName({ target: selectedUser });
+      } else if (messageIsEmpty) {
         e.preventDefault();
       } else if (!messageIsEmpty && !shiftPressed) {
         e.preventDefault();
         this.handleMessageSubmit(e.target.value);
         e.target.value = '';
+      }
+    }
+    if (e.target.value.includes('@')) {
+      if (e.keyCode === 40 || e.keyCode === 38) {
+        e.preventDefault();
       }
     }
   };
@@ -1205,8 +1215,10 @@ export default class Chat extends Component {
   };
 
   handleKeyUp = e => {
-    const { startEditing, activeChannel } = this.state;
-
+    const { startEditing, activeChannel, showMemberlist } = this.state;
+    const enterPressed = e.keyCode === 13;
+    if (enterPressed && showMemberlist)
+      this.setState({ showMemberlist: false });
     if (activeChannel.channel_type !== 'direct') {
       if (startEditing) {
         this.setState({ markdownEdited: true });
@@ -1215,14 +1227,13 @@ export default class Chat extends Component {
         this.setState({ showMemberlist: false });
       } else {
         this.setQuery(e.target);
-        // this.listHighlighterManager();
+        this.listHighlightManager(e.keyCode);
       }
     }
   };
 
   setQuery = e => {
-    const showMemberlist = this.state;
-
+    const { showMemberlist } = this.state;
     if (showMemberlist) {
       const before = e.value.substring(0, e.selectionStart);
       const query = before.substring(
@@ -1256,9 +1267,28 @@ export default class Chat extends Component {
     this.setState({ showMemberlist: false });
   };
 
-  listHighlighterManager = () => {
+  listHighlightManager = keyCode => {
     const mentionList = document.getElementById('mentionList');
-    mentionList.children[0].classList.add('active__message__list');
+    const activeElement = document.querySelector('.active__message__list');
+    if (mentionList.children.length > 0) {
+      if (keyCode === 40 && activeElement) {
+        if (activeElement.nextElementSibling) {
+          activeElement.classList.remove('active__message__list');
+          activeElement.nextElementSibling.classList.add(
+            'active__message__list',
+          );
+        }
+      } else if (keyCode === 38 && activeElement) {
+        if (activeElement.previousElementSibling) {
+          activeElement.classList.remove('active__message__list');
+          activeElement.previousElementSibling.classList.add(
+            'active__message__list',
+          );
+        }
+      } else {
+        mentionList.children[0].classList.add('active__message__list');
+      }
+    }
   };
 
   getMentionedUsers = message => {
