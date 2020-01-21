@@ -202,4 +202,10 @@ RSpec.describe Organization, type: :model do
       expect(build(:organization).pro?).to be(false)
     end
   end
+
+  describe "#decoarated" do
+    it "returns not fully banished" do
+      expect(organization.decorate.fully_banished?).to eq(false)
+    end
+  end
 end

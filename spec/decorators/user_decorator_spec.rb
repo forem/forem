@@ -35,6 +35,16 @@ RSpec.describe UserDecorator, type: :decorator do
       follow.update(points: 0.1)
       expect(user.decorate.cached_followed_tags.first.points).to eq(0.1)
     end
+
+    it "returns not fully banished if in good standing" do
+      expect(user.decorate.fully_banished?).to eq(false)
+    end
+
+    it "returns fully banished if user has been banished" do
+      Moderator::BanishUser.call_banish(admin: user, user: user)
+      expect(user.decorate.fully_banished?).to eq(true)
+    end
+
   end
 
   describe "#config_body_class" do
