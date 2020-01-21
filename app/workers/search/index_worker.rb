@@ -4,8 +4,12 @@ module Search
 
     sidekiq_options queue: :default, retry: 10
 
+    VALID_RECORD_TYPES = %w[Comment Article User PageView].freeze
+
     def perform(record_type, record_id)
-      raise InvalidRecordType unless %w[Comment Article User PageView].include?(record_type)
+      unless VALID_RECORD_TYPES.include?(record_type)
+        raise InvalidRecordType, "Invalid class: #{record_type}. Valid and indexable classes are #{VALID_RECORD_TYPES.join(', ')}"
+      end
 
       record = record_type.constantize.find_by(id: record_id)
       return unless record
