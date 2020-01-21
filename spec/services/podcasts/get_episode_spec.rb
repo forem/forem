@@ -80,9 +80,10 @@ RSpec.describe Podcasts::GetEpisode, type: :service do
 
   it "schedules a Create job when an episode doesn't exist" do
     allow(podcast).to receive(:existing_episode).and_return(nil)
+
     expect do
       described_class.new(podcast).call(item: item)
-    end.to have_enqueued_job.on_queue("podcast_episode_create") # .with(podcast.id)
+    end.to change { PodcastEpisodes::CreateWorker.jobs.size }.by(1)
   end
 
   context "when feed doesn't contain enclosure urls" do
