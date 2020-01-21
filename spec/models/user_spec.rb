@@ -710,6 +710,25 @@ RSpec.describe User, type: :model do
       new_user = user_from_authorization_service(:github, nil, "navbar_basic")
       expect(new_user.github_created_at).to be_kind_of(ActiveSupport::TimeWithZone)
     end
+
+    it "does not allow previously banished users to sign up again" do
+      banished_name = "SpammyMcSpamface"
+      create(:banished_user, username: banished_name)
+      OmniAuth.config.mock_auth[:twitter].info.nickname = banished_name
+
+      expect do
+        user_from_authorization_service(:twitter, nil, "navbar_basic")
+      end.to raise_error(ActiveRecord::RecordInvalid, /Username has been banished./)
+    end
+
+    it "does not allow an existing user to change their name to a banished one" do
+      banished_name = "SpammyMcSpamface"
+      create(:banished_user, username: banished_name)
+      user = create(:user)
+
+      user.update(username: banished_name)
+      expect(user.errors.full_messages).to include("Username has been banished.")
+    end
   end
 
   describe "#follow and #all_follows" do
