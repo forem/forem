@@ -21,7 +21,6 @@ module Users
       user.blocked_blocks. delete_all
       user.webhook_endpoints.delete_all
       user.authored_notes.delete_all
-      user.notes.delete_all
       user.backup_data.delete_all
       user.collections.delete_all
       user.credits.delete_all

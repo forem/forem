@@ -41,7 +41,7 @@ RSpec.describe Users::Delete, type: :service do
       user_associations = []
       # choose only "direct" associations
       associations = User.reflect_on_all_associations.reject { |a| a.options.key?(:join_table) || a.options.key?(:through) }
-      kept_associations = [:created_podcasts]
+      kept_associations = %i[created_podcasts notes]
       associations.reject { |a| kept_associations.include?(a.name) }.sort_by(&:name).each do |association|
         if user.public_send(association.name).present?
           user_associations.push(*user.public_send(association.name))
