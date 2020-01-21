@@ -34,4 +34,37 @@ RSpec.describe Users::Delete, type: :service do
     described_class.call(user)
     expect(Rails.cache).to have_received(:delete).with("user-destroy-token-#{user.id}")
   end
+
+  # check that all the associated records are being destroyed, except for those that are kept explicitly (kept_associations)
+  describe "deleting associations" do
+    let!(:user_associations) do
+      user_associations = []
+      # choose only "direct" associations
+      associations = User.reflect_on_all_associations.reject { |a| a.options.key?(:join_table) || a.options.key?(:through) }
+      kept_associations = [:created_podcasts]
+      associations.reject { |a| kept_associations.include?(a.name) }.sort_by(&:name).each do |association|
+        if user.public_send(association.name).present?
+          user_associations.push(*user.public_send(association.name))
+        else
+          singular_name = ActiveSupport::Inflector.singularize(association.name)
+          class_name = association.options[:class_name] || singular_name
+          possible_factory_name = class_name.underscore.tr("/", "_")
+          inverse_of = association.options[:inverse_of] || association.options[:as] || :user
+          record = create(possible_factory_name, inverse_of => user)
+          user_associations.push record
+        end
+      end
+      user_associations
+    end
+
+    it "deletes all the associations" do
+      # making sure that the association records were actually created
+      expect(user_associations).not_to be_empty
+      user.reload
+      described_class.call(user)
+      user_associations.each do |user_association|
+        expect { user_association.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
 end
