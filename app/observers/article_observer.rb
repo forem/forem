@@ -11,10 +11,10 @@ class ArticleObserver < ApplicationObserver
     return unless article.published && article.published_at > 30.seconds.ago
 
     SlackBotPingWorker.perform_async(
-      "New Article Published: #{article.title}\nhttps://dev.to#{article.path}", # message
-      "activity", # channel
-      "article_bot", # username
-      ":writing_hand:", # icon_emoji
+      message: "New Article Published: #{article.title}\nhttps://dev.to#{article.path}",
+      channel: "activity",
+      username: "article_bot",
+      icon_emoji: ":writing_hand:",
     )
   end
 end

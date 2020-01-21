@@ -3,7 +3,15 @@ class SlackBotPingWorker
 
   sidekiq_options queue: :default, retry: 10
 
-  def perform(message, channel, username, icon_emoji)
-    SlackBot.ping(message, channel: channel, username: username, icon_emoji: icon_emoji)
+  def perform(slack_data = {})
+    # prevent any mismatch between String keys and Symbol keys
+    slack_data.symbolize_keys!
+
+    SlackBot.ping(
+      slack_data[:message],
+      channel: slack_data[:channel],
+      username: slack_data[:username],
+      icon_emoji: slack_data[:icon_emoji],
+    )
   end
 end
