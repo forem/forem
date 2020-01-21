@@ -40,7 +40,6 @@ class User < ApplicationRecord
   has_many :reporter_feedback_messages, class_name: "FeedbackMessage", inverse_of: :reporter, foreign_key: :reporter_id, dependent: :delete_all
   has_many :affected_feedback_messages, class_name: "FeedbackMessage", inverse_of: :affected, foreign_key: :affected_id, dependent: :delete_all
 
-  # has_many :feedback_messages
   has_many :rating_votes, dependent: :destroy
   has_many :html_variants, dependent: :destroy
   has_many :page_views, dependent: :destroy
@@ -53,7 +52,6 @@ class User < ApplicationRecord
   has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
-  # has_many :user_blocks
   has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id, inverse_of: :blocker, dependent: :delete_all
   has_many :blocked_blocks, class_name: "UserBlock", foreign_key: :blocked_id, inverse_of: :blocked, dependent: :delete_all
   has_one :pro_membership, dependent: :destroy
