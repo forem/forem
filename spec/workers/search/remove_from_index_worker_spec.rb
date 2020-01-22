@@ -19,18 +19,14 @@ RSpec.describe Search::RemoveFromIndexWorker, type: :worker do
       expect(algolia_index).to have_received(:delete_object).with("users-456").once
     end
 
-    it "does nothing if key is missing" do
+    it "doesn't raise an error if key is missing" do
       # key is nil
-      worker.perform("searchables_#{Rails.env}", nil)
-
-      expect(algolia_index).not_to have_received(:delete_object)
+      expect { worker.perform("searchables_#{Rails.env}", nil) }.not_to raise_error
     end
 
-    it "does nothing if index is missing" do
+    it "doesn't raise an error if index is missing" do
       # index is nil
-      worker.perform(nil, "users-456")
-
-      expect(Algolia::Index).not_to have_received(:new)
+      expect { worker.perform(nil, "users-456") }.not_to raise_error
     end
   end
 end
