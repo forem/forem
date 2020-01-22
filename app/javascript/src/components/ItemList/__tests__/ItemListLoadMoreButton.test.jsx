@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render } from 'preact-render-to-string';
+import render from 'preact-render-to-json';
 import { ItemListLoadMoreButton } from '../ItemListLoadMoreButton';
 
 describe('<ItemListLoadMoreButton />', () => {

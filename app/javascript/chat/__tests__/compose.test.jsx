@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render } from 'preact-render-to-string';
+import render from 'preact-render-to-json';
 import { shallow } from 'preact-render-spy';
 import Compose from '../compose';
 

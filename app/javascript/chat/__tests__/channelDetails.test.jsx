@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render } from 'preact-render-to-string';
+import render from 'preact-render-to-json';
 import { shallow } from 'preact-render-spy';
 import { JSDOM } from 'jsdom';
 import fetch from 'jest-fetch-mock';
@@ -104,7 +104,9 @@ describe('<ChannelDetails />', () => {
             .at(i)
             .childAt(1)
             .attr('data-content'),
-        ).toEqual(`sidecar-user`);
+        ).toEqual(
+          `sidecar-user`,
+        );
       }
 
       // mod only divs
@@ -288,7 +290,9 @@ describe('<ChannelDetails />', () => {
             .at(i)
             .childAt(1)
             .attr('data-content'),
-        ).toEqual(`sidecar-user`);
+        ).toEqual(
+          `sidecar-user`,
+        );
       }
 
       // user only divs

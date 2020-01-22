@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render } from 'preact-render-to-string';
+import render from 'preact-render-to-json';
 import { deep } from 'preact-render-spy';
 import fetch from 'jest-fetch-mock';
 import Video from '../video';

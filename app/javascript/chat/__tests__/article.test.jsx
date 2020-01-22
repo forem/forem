@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render } from 'preact-render-to-string';
+import render from 'preact-render-to-json';
 import { deep } from 'preact-render-spy';
 import fetch from 'jest-fetch-mock';
 import Article from '../article';
@@ -54,6 +54,8 @@ describe('<Article />', () => {
     expect(context.find('.activechatchannel__activeArticle').exists()).toEqual(
       true,
     );
-    expect(context.find('iframe').exists()).toEqual(true);
+    expect(
+      context.find('iframe').exists(),
+    ).toEqual(true);
   });
 });

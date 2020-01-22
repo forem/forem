@@ -1,5 +1,5 @@
 import { h, render as preactRender } from 'preact';
-import { render } from 'preact-render-to-string';
+import render from 'preact-render-to-json';
 import { shallow } from 'preact-render-spy';
 import { JSDOM } from 'jsdom';
 import fetch from 'jest-fetch-mock';
