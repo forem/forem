@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
+import { render } from 'preact-render-to-string';
 import { deep } from 'preact-render-spy';
 import View from '../view';
 

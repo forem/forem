@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
+import { render } from 'preact-render-to-string';
 import { JSDOM } from 'jsdom';
 import { shallow } from 'preact-render-spy';
 import UserDetails from '../userDetails';

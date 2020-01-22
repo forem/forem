@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { shallow } from 'preact-render-spy';
-import render from 'preact-render-to-json';
+import { render } from 'preact-render-to-string';
 import fetch from 'jest-fetch-mock';
 import { GithubRepos } from '../githubRepos';
 

@@ -1,11 +1,8 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
+import { render } from 'preact-render-to-string';
 import Errors from '../errors';
 
-const errorsList = [
-  'Error 1',
-  'Error 2'
-];
+const errorsList = ['Error 1', 'Error 2'];
 
 describe('<Errors />', () => {
   it('renders properly', () => {
