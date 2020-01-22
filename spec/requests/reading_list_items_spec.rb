@@ -29,7 +29,7 @@ RSpec.describe "ReadingListItems", type: :request do
       expect(reaction.reload.status).to eq("valid")
     end
 
-    it "raises Runtime error if current_user is not the reaction user" do
+    it "raises NotAuthorizedError if current_user is not the reaction user" do
       expect { put "/reading_list_items/#{unauthorized_reaction.id}" }.to raise_error Pundit::NotAuthorizedError
     end
   end
