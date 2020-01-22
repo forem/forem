@@ -6,30 +6,10 @@ function initializeDrawerSliders() {
 
   if (document.getElementById('on-page-nav-controls')) {
     const drawerSliders = [
-      {
-        selector: 'sidebar-bg-left',
-        swipeState: 'middle',
-        side: 'left',
-        view: 'outOfView',
-      },
-      {
-        selector: 'sidebar-bg-right',
-        swipeState: 'middle',
-        side: 'right',
-        view: 'outOfView',
-      },
-      {
-        selector: 'on-page-nav-butt-left',
-        swipeState: 'left',
-        side: 'left',
-        view: 'intoView',
-      },
-      {
-        selector: 'on-page-nav-butt-right',
-        swipeState: 'right',
-        side: 'right',
-        view: 'intoView',
-      },
+      { selector: 'sidebar-bg-left', swipeState: 'middle', side: 'left', view: 'outOfView', },
+      { selector: 'sidebar-bg-right', swipeState: 'middle', side: 'right', view: 'outOfView', },
+      { selector: 'on-page-nav-butt-left', swipeState: 'left', side: 'left', view: 'intoView', },
+      { selector: 'on-page-nav-butt-right', swipeState: 'right', side: 'right', view: 'intoView', },
     ];
 
     drawerSliders.forEach(drawerSliders => {
