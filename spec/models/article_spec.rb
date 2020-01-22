@@ -483,9 +483,9 @@ RSpec.describe Article, type: :model do
     end
 
     it "indexes published non-hiring article" do
-      expect do
+      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["Article", article.id]) do
         article.update(published: false)
-      end.to have_enqueued_job(Search::IndexJob).exactly(:once).with("Article", article.id)
+      end
     end
 
     it "triggers auto removal from index on destroy" do

@@ -205,7 +205,7 @@ class User < ApplicationRecord
   def self.trigger_delayed_index(record, remove)
     return if remove
 
-    Search::IndexJob.perform_later("User", record.id)
+    Search::IndexWorker.perform_async("User", record.id)
   end
 
   def tag_line

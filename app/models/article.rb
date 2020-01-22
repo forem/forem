@@ -265,7 +265,7 @@ class Article < ApplicationRecord
     return if remove
 
     if record.published && record.tag_list.exclude?("hiring")
-      Search::IndexJob.perform_later("Article", record.id)
+      Search::IndexWorker.perform_async("Article", record.id)
     else
       Search::RemoveFromIndexJob.perform_later(Article.algolia_index_name, record.id)
       Search::RemoveFromIndexJob.perform_later("searchables_#{Rails.env}", record.index_id)
