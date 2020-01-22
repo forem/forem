@@ -1,6 +1,6 @@
 // Sidebar tags for item list page
 import { h } from 'preact';
-import { PropTypes } from 'preact/compat';
+import PropTypes from 'prop-types';
 
 export const ItemListTags = ({ availableTags, selectedTags, onClick }) => {
   const tagsHTML = availableTags.map(tag => (

@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { PropTypes } from 'prop-types';
+import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-unresolved
 import twitterImage from 'images/twitter-logo.svg';
 // eslint-disable-next-line import/no-unresolved
