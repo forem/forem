@@ -18,7 +18,7 @@ module Users
       user.created_podcasts.update_all(creator_id: nil)
 
       user.blocker_blocks.delete_all
-      user.blocked_blocks. delete_all
+      user.blocked_blocks.delete_all
       user.webhook_endpoints.delete_all
       user.authored_notes.delete_all
       user.backup_data.delete_all
