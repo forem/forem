@@ -1,4 +1,4 @@
-function initializeSwipeGestures(){
+export function initializeSwipeGestures(){
   initializeSwipeGestures.called = true;
   swipeState = "middle";
   setTimeout(function(){
