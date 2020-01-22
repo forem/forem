@@ -28,9 +28,9 @@ RSpec.describe PageView, type: :model do
     end
 
     it "removes deleted records" do
-      expect do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class.algolia_index_name, page_view.id]) do
         page_view.destroy
-      end.to have_enqueued_job(Search::RemoveFromIndexJob).exactly(:once).with(described_class.algolia_index_name, page_view.id)
+      end
     end
   end
 end
