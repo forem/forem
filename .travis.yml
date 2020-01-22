@@ -48,7 +48,6 @@ script:
   - './cc-test-reporter upload-coverage'
   - 'bundle exec bundle-audit check --update --ignore CVE-2015-9284'
   - yarn build-storybook
-after_script:
   - RAILS_ENV=production bundle exec rails runner 'puts "App booted successfully"'
 deploy:
   provider: heroku
