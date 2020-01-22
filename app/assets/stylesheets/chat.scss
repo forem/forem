@@ -893,7 +893,9 @@
     }
   }
 }
-
+.chatchanneltabindicatordirectimage {
+  filter: var(--theme-invert-image, none);
+}
 .chatmessage__profileimage {
 }
 
