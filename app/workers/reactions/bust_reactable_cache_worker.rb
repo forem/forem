@@ -4,7 +4,8 @@ module Reactions
 
     sidekiq_options queue: :high_priority, retry: 10
 
-    def perform(reaction_id, cache_buster = CacheBuster)
+    def perform(reaction_id)
+      cache_buster = CacheBuster
       reaction = Reaction.find_by(id: reaction_id)
       return unless reaction&.reactable
 
