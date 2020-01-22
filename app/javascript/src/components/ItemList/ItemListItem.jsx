@@ -1,6 +1,6 @@
 // Item list item
 import { h } from 'preact';
-import { PropTypes } from 'preact-compat';
+import { PropTypes } from 'preact/compat';
 
 export const ItemListItem = ({ item, children }) => {
   const adaptedItem = {

@@ -6,7 +6,7 @@
 // where if I transform it in a button, `e.preventDefault()` in the parent
 // handler or `e.stopPropagation` are just ignored
 import { h } from 'preact';
-import { PropTypes } from 'preact-compat';
+import { PropTypes } from 'preact/compat';
 
 export const ItemListItemArchiveButton = ({ text, onClick }) => {
   const onKeyUp = e => {
