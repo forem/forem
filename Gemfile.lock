@@ -16,7 +16,6 @@ GIT
 
 GEM
   remote: https://rubygems.org/
-  remote: https://rails-assets.org/
   specs:
     actioncable (5.2.4.1)
       actionpack (= 5.2.4.1)
@@ -587,7 +586,6 @@ GEM
       bundler (>= 1.3.0)
       railties (= 5.2.4.1)
       sprockets-rails (>= 2.0.0)
-    rails-assets-honeybadger (5.0.0)
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
@@ -961,7 +959,6 @@ DEPENDENCIES
   rack-host-redirect (~> 1.3)
   rack-timeout (~> 0.6)
   rails (~> 5.2)
-  rails-assets-honeybadger!
   rails-observers (~> 0.1)
   rails-settings-cached (>= 2.1.1)
   ransack (~> 2.3)
