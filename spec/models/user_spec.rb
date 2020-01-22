@@ -620,17 +620,21 @@ RSpec.describe User, type: :model do
 
   context "when indexing and deindexing" do
     it "triggers background auto-indexing when user is saved" do
-      expect { user.save }.to have_enqueued_job(Search::IndexJob).with("User", user.id)
+      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["User", user.id]) do
+        user.save
+      end
     end
 
     it "doesn't enqueue a job on destroy" do
       user = build(:user)
 
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         user.save
       end
 
-      expect { user.destroy }.not_to have_enqueued_job(Search::IndexJob)
+      sidekiq_assert_no_enqueued_jobs(only: Search::IndexWorker) do
+        user.destroy
+      end
     end
   end
 

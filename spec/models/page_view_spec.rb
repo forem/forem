@@ -22,9 +22,9 @@ RSpec.describe PageView, type: :model do
 
   describe "indexing" do
     it "indexes updated records" do
-      expect do
+      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["PageView", page_view.id]) do
         page_view.update(path: "/")
-      end.to have_enqueued_job(Search::IndexJob).exactly(:once).with("PageView", page_view.id)
+      end
     end
 
     it "removes deleted records" do
