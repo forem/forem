@@ -1,4 +1,3 @@
-import 'preact/devtools';
 import { h, Component } from 'preact';
 
 import IntroSlide from './components/IntroSlide';

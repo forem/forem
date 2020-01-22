@@ -1,4 +1,3 @@
-import 'preact/devtools';
 import { Component, h } from 'preact';
 import PropTypes from 'prop-types';
 import {
