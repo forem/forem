@@ -1,5 +1,3 @@
-import initializeSwipeGestures from './initializeSwipeGestures';
-
 function initializeDrawerSliders() {
   if (!initializeSwipeGestures.called) {
     swipeState = 'middle';
