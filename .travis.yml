@@ -12,7 +12,7 @@ addons:
   chrome: 'stable'
   artifacts:
     paths:
-      - $TRAVIS_BUILD_DIR/dev.to/tmp/screenshots/*.png
+      - $TRAVIS_BUILD_DIR/tmp/screenshots/*.png
     debug: true
 services:
   - redis-server
