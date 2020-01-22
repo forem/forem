@@ -7,7 +7,7 @@ class ReadingListItemsController < ApplicationController
 
   def update
     @reaction = Reaction.find(params[:id])
-    raise if @reaction.user_id != session_current_user_id # Lazy but I'm tired. HACK
+    not_authorized if @reaction.user_id != session_current_user_id
 
     @reaction.status = params[:current_status] == "archived" ? "valid" : "archived"
     @reaction.save
