@@ -117,14 +117,14 @@ class Comment < ApplicationRecord
     if record.deleted == false
       Search::IndexWorker.perform_async("Comment", record.id)
     else
-      Search::RemoveFromIndexJob.perform_later(Comment.algolia_index_name, record.index_id)
+      Search::RemoveFromIndexWorker.perform_async(Comment.algolia_index_name, record.index_id)
     end
   end
 
   # this should remain public because it's called by AlgoliaSearch::AlgoliaJob in .trigger_index
   def remove_algolia_index
     remove_from_index!
-    Search::RemoveFromIndexJob.perform_now("ordered_comments_#{Rails.env}", index_id)
+    Search::RemoveFromIndexWorker.new.perform("ordered_comments_#{Rails.env}", index_id)
   end
 
   def path

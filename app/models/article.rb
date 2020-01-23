@@ -267,9 +267,9 @@ class Article < ApplicationRecord
     if record.published && record.tag_list.exclude?("hiring")
       Search::IndexWorker.perform_async("Article", record.id)
     else
-      Search::RemoveFromIndexJob.perform_later(Article.algolia_index_name, record.id)
-      Search::RemoveFromIndexJob.perform_later("searchables_#{Rails.env}", record.index_id)
-      Search::RemoveFromIndexJob.perform_later("ordered_articles_#{Rails.env}", record.index_id)
+      Search::RemoveFromIndexWorker.perform_async(Article.algolia_index_name, record.id)
+      Search::RemoveFromIndexWorker.perform_async("searchables_#{Rails.env}", record.index_id)
+      Search::RemoveFromIndexWorker.perform_async("ordered_articles_#{Rails.env}", record.index_id)
     end
   end
 
@@ -386,8 +386,8 @@ class Article < ApplicationRecord
   private
 
   def delete_related_objects
-    Search::RemoveFromIndexJob.perform_now("searchables_#{Rails.env}", index_id)
-    Search::RemoveFromIndexJob.perform_now("ordered_articles_#{Rails.env}", index_id)
+    Search::RemoveFromIndexWorker.new.perform("searchables_#{Rails.env}", index_id)
+    Search::RemoveFromIndexWorker.new.perform("ordered_articles_#{Rails.env}", index_id)
   end
 
   def search_score
