@@ -273,6 +273,15 @@ class Article < ApplicationRecord
     end
   end
 
+  def contrived_description
+    text_portion = body_text.present? ? "#{body_text[0..100].tr("\n", ' ').strip}" : ""
+    text_portion += + "..." if body_text.size > 100 || tag_list.present?
+    tags_portion = (" Tagged with #{tag_list}" if tag_list.present?).to_s
+    return "A post by #{user.name}" if text_portion.blank? && tags_portion.blank?
+
+    (text_portion + tags_portion).strip
+  end
+
   def body_text
     ActionView::Base.full_sanitizer.sanitize(processed_html)[0..7000]
   end
@@ -493,7 +502,7 @@ class Article < ApplicationRecord
     self.published_at = parse_date(front_matter["date"]) if published
     self.main_image = front_matter["cover_image"] if front_matter["cover_image"].present?
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
-    self.description = front_matter["description"] || description || "#{body_text[0..80]}..."
+    self.description = front_matter["description"].presence || contrived_description
     self.collection_id = nil if front_matter["title"].present?
     self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
     self.automatically_renew = front_matter["automatically_renew"] if front_matter["automatically_renew"].present? && tag_list.include?("hiring")

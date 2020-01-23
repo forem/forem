@@ -38,6 +38,7 @@
 
 <% if internal_navigation? %>
     <link rel="canonical" href="<%= @article.canonical_url.presence || "https://#{ApplicationConfig['APP_DOMAIN']}#{@article.path}" %>" />
+    <meta name="description" content="<%= @article.description || "An article from the community" %>">
 <% else %>
   <%= content_for :page_meta do %>
     <link rel="canonical" href="<%= @article.canonical_url.presence || "https://#{ApplicationConfig['APP_DOMAIN']}#{@article.path}" %>" />
