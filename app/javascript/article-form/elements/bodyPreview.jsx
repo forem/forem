@@ -30,9 +30,13 @@ function titleArea(previewResponse, version, articleState) {
   }
 
   let coverImage = '';
-  if (previewResponse.cover_image && previewResponse.cover_image.length > 0) {
-    coverImage = previewResponse.cover_image;
+  if (articleState.previewShowing) {
+    // In preview state, use the cover_image from previewResponse.
+    if (previewResponse.cover_image && previewResponse.cover_image.length > 0) {
+      coverImage = previewResponse.cover_image;
+    }
   } else if (articleState.mainImage) {
+    // Otherwise, use the mainImage from the article if it exists.
     coverImage = articleState.mainImage;
   }
 
