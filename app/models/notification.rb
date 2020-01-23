@@ -82,7 +82,7 @@ class Notification < ApplicationRecord
       # TODO: make this work for articles in the future. only works for comments right now
       return if UserBlock.blocking?(notifiable.commentable.user_id, notifiable.user_id)
 
-      Notifications::ModerationNotificationJob.perform_later(notifiable.id)
+      Notifications::ModerationNotificationWorker.perform_async(notifiable.id)
     end
 
     def send_tag_adjustment_notification(tag_adjustment)
