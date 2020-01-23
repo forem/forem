@@ -21,16 +21,7 @@ module Api
       def index
         @articles = ArticleApiIndexService.new(params).get
 
-        key_headers = [
-          "articles_api",
-          params[:tag],
-          params[:page],
-          params[:username],
-          params[:signature],
-          params[:state],
-          params[:collection_id],
-        ]
-        set_surrogate_key_header key_headers.join("_")
+        set_surrogate_key_header "articles", @articles.map(&:record_key)
       end
 
       def show

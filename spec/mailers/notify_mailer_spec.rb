@@ -4,7 +4,7 @@ RSpec.describe NotifyMailer, type: :mailer do
   let(:user)      { create(:user) }
   let(:user2)     { create(:user) }
   let(:article)   { create(:article, user_id: user.id) }
-  let(:comment)   { create(:comment, user_id: user.id, commentable_id: article.id) }
+  let(:comment)   { create(:comment, user_id: user.id, commentable: article) }
 
   describe "#new_reply_email" do
     let(:email) { described_class.new_reply_email(comment) }

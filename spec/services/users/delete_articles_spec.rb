@@ -27,7 +27,7 @@ RSpec.describe Users::DeleteArticles, type: :service do
 
     it "deletes articles' comments" do
       described_class.call(user)
-      expect(Comment.where(commentable_id: article, commentable_type: "Article").any?).to be false
+      expect(Comment.where(commentable_id: article.id, commentable_type: "Article").any?).to be false
     end
 
     it "busts cache" do

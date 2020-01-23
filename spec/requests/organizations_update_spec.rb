@@ -4,7 +4,7 @@ RSpec.describe "OrganizationsUpdate", type: :request do
   let(:user) { create(:user, :org_admin) }
   let(:org_id) { user.organizations.first.id }
   let(:article) { create(:article, user_id: user.id) }
-  let(:comment) { create(:comment, user_id: user.id, commentable_id: article.id) }
+  let(:comment) { create(:comment, user_id: user.id, commentable: article) }
 
   before do
     sign_in user

@@ -14,7 +14,7 @@ RSpec.describe "UserProfiles", type: :request do
       create(:article, user_id: user.id)
       create(:article, user_id: user.id)
       last_article = create(:article, user_id: user.id)
-      create(:profile_pin, pinnable_id: last_article.id, profile_id: user.id)
+      create(:profile_pin, pinnable: last_article, profile: user)
       get "/#{user.username}"
       expect(response.body).to include "Pinned"
     end
