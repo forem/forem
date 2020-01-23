@@ -90,10 +90,11 @@ export default class Chat extends Component {
       channelPaginationNum,
       currentUserId,
     } = this.state;
+
     this.setupChannels(chatChannels);
 
     const channelsForPusherSub = chatChannels.filter(
-      this.channelTypeFilter('open'),
+      this.channelTypeFilterFn('open'),
     );
     this.subscribeChannelsToPusher(
       channelsForPusherSub,
@@ -247,7 +248,11 @@ export default class Chat extends Component {
       this.setState({ channelsLoaded: true });
     }
     this.subscribeChannelsToPusher(
-      channels.filter(this.channelTypeFilter('invite_only')),
+      channels.filter(this.channelTypeFilterFn('open')),
+      channel => `open-channel-${channel.chat_channel_id}`,
+    );
+    this.subscribeChannelsToPusher(
+      channels.filter(this.channelTypeFilterFn('invite_only')),
       channel => `presence-channel-${channel.chat_channel_id}`,
     );
     document.getElementById('chatchannels__channelslist').scrollTop = 0;
@@ -263,7 +268,7 @@ export default class Chat extends Component {
     });
   };
 
-  channelTypeFilter = type => channel => {
+  channelTypeFilterFn = type => channel => {
     return channel.channel_type === type;
   };
 
@@ -389,15 +394,16 @@ export default class Chat extends Component {
 
   updateMessage = message => {
     const { activeChannelId } = this.state;
-
-    this.setState(({ messages }) => {
-      const newMessages = messages;
-      const foundIndex = messages[activeChannelId].findIndex(
-        oldMessage => oldMessage.id === message.id,
-      );
-      newMessages[activeChannelId][foundIndex] = message;
-      return { messages: newMessages };
-    });
+    if (message.chat_channel_id === activeChannelId) {
+      this.setState(({ messages }) => {
+        const newMessages = messages;
+        const foundIndex = messages[activeChannelId].findIndex(
+          oldMessage => oldMessage.id === message.id,
+        );
+        newMessages[activeChannelId][foundIndex] = message;
+        return { messages: newMessages };
+      });
+    }
   };
 
   receiveNewMessage = message => {
@@ -733,7 +739,9 @@ export default class Chat extends Component {
           const foundIndex = messages[activeChannelId].findIndex(
             message => message.temp_id === response.message.temp_id,
           );
-          newMessages[activeChannelId][foundIndex].id = response.message.id;
+          if (foundIndex > 0) {
+            newMessages[activeChannelId][foundIndex].id = response.message.id;
+          }
           return { messages: newMessages };
         });
       }
