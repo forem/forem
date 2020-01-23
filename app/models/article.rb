@@ -275,11 +275,10 @@ class Article < ApplicationRecord
 
   def contrived_description
     text_portion = body_text.present? ? "#{body_text[0..100].tr("\n", ' ').strip}" : ""
-    text_portion += + "..." if body_text.size > 100 || tag_list.present?
-    tags_portion = (" Tagged with #{tag_list}" if tag_list.present?).to_s
-    return "A post by #{user.name}" if text_portion.blank? && tags_portion.blank?
+    text_portion = + text_portion.strip + "..." if body_text.size > 100
+    return "A post by #{user.name}" if text_portion.blank?
 
-    (text_portion + tags_portion).strip
+    text_portion.strip
   end
 
   def body_text

@@ -153,26 +153,15 @@ RSpec.describe Article, type: :model do
         expect(build_and_validate_article(body_markdown: body_markdown).description).to eq("This is the body yo")
       end
 
-      it "creates proper description when description is not present and body is present and short, and tags are present" do
+      it "creates proper description when description is not present and body is present and short" do
         body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: heytag\n---\n\nThis is the body yo"
-        expect(build_and_validate_article(body_markdown: body_markdown).description).to eq("This is the body yo... Tagged with heytag")
+        expect(build_and_validate_article(body_markdown: body_markdown).description).to eq("This is the body yo")
       end
 
-      it "creates proper description when description is not present and body is present and long, with no tags" do
+      it "creates proper description when description is not present and body is present and long" do
         paragraphs = Faker::Hipster.paragraph(sentence_count: 40)
         body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags:\n---\n\n#{paragraphs}"
         expect(build_and_validate_article(body_markdown: body_markdown).description).to end_with("...")
-      end
-
-      it "creates proper description when description is not present and body is present and long, and tags are present" do
-        paragraphs = Faker::Hipster.paragraph(sentence_count: 40)
-        body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: heytag\n---\n\n#{paragraphs}"
-        expect(build_and_validate_article(body_markdown: body_markdown).description).to end_with("... Tagged with heytag")
-      end
-
-      it "creates proper description when description is not present and body is not present and long, and tags are present" do
-        body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: heytag\n---\n\n"
-        expect(build_and_validate_article(body_markdown: body_markdown).description).to eq("... Tagged with heytag")
       end
     end
 
