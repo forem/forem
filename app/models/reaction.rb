@@ -19,8 +19,9 @@ class Reaction < ApplicationRecord
   validate  :permissions
 
   before_save :assign_points
+  after_commit :async_bust
   after_save :index_to_algolia
-  after_save :update_reactable, :bust_reactable_cache, :touch_user, :async_bust
+  after_save :update_reactable, :bust_reactable_cache, :touch_user
   before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
   before_destroy :bust_reactable_cache_without_delay
   before_destroy :remove_algolia
