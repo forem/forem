@@ -1,18 +1,27 @@
 require "rails_helper"
 
 RSpec.describe Tags::BustCacheJob do
-  let(:cache_buster) { class_double(CacheBuster) }
-
   before do
-    allow(cache_buster).to receive(:bust_tag)
+    allow(CacheBuster).to receive(:bust_tag)
   end
 
-  include_examples "#enqueues_job", "tags_bust_cache", "PHP"
+  include_examples "#enqueues_job", "tags_bust_cache", "php"
 
   describe "#perform_now" do
     it "busts cache" do
-      described_class.perform_now("PHP", cache_buster)
-      expect(cache_buster).to have_received(:bust_tag).with("PHP")
+      tag = create(:tag)
+
+      described_class.perform_now(tag.name)
+
+      expect(CacheBuster).to have_received(:bust_tag).with(tag)
+    end
+
+    it "doesn't call the cache buster if the tag does not exist" do
+      tag_name = "definitelyatagthatdoesnotexist"
+
+      described_class.perform_now(tag_name)
+
+      expect(CacheBuster).not_to have_received(:bust_tag)
     end
   end
 end
