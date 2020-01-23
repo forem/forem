@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe PodcastEpisodes::CreateWorker, type: :worker do
-  include_examples "#enqueues_on_correct_queue", "high_priority", 1
+  include_examples "#enqueues_on_correct_queue", "high_priority", [123, {}]
 
   describe "#perform" do
     let(:worker) { subject }
