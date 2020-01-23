@@ -43,6 +43,10 @@ class ChatChannel < ApplicationRecord
     channel_type == "invite_only"
   end
 
+  def group?
+    channel_type != "direct"
+  end
+
   def clear_channel
     messages.destroy_all
     Pusher.trigger(pusher_channels, "channel-cleared", { chat_channel_id: id }.to_json)
@@ -110,6 +114,10 @@ class ChatChannel < ApplicationRecord
     else
       chat_channel_memberships.pluck(:user_id).map { |id| "private-message-notifications-#{id}" }
     end
+  end
+
+  def channel_users_ids
+    chat_channel_memberships.pluck(:user_id)
   end
 
   def adjusted_slug(user = nil, caller_type = "receiver")
