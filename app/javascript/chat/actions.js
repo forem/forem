@@ -9,7 +9,7 @@ export function getAllMessages(channelId, messageOffset, successCb, failureCb) {
     .catch(failureCb);
 }
 
-export function sendMessage(activeChannelId, message, successCb, failureCb) {
+export function sendMessage(messageObject, successCb, failureCb) {
   fetch('/messages', {
     method: 'POST',
     headers: {
@@ -19,9 +19,10 @@ export function sendMessage(activeChannelId, message, successCb, failureCb) {
     },
     body: JSON.stringify({
       message: {
-        message_markdown: message,
+        message_markdown: messageObject.message,
         user_id: window.currentUser.id,
-        chat_channel_id: activeChannelId,
+        chat_channel_id: messageObject.activeChannelId,
+        mentioned_users_id: messageObject.mentionedUsersId,
       },
     }),
     credentials: 'same-origin',
