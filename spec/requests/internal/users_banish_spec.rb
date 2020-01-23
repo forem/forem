@@ -170,7 +170,7 @@ RSpec.describe "Internal::Users", type: :request do
         :comment,
         body_markdown: "Hello @#{user.username}, you are cool.",
         user_id: user2.id,
-        commentable_id: article2.id,
+        commentable: article2,
       )
       perform_enqueued_jobs do
         Mention.create_all(comment)

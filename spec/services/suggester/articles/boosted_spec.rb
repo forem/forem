@@ -5,7 +5,7 @@ RSpec.describe Suggester::Articles::Boosted, type: :service do
   let(:organization) { create(:organization) }
   let(:tag) { create(:tag, supported: true) }
   let(:article) { create(:article, tags: [tag.name], featured: true) }
-  let(:reaction) { create(:reaction, user_id: user.id, reactable_id: article.id) }
+  let(:reaction) { create(:reaction, user_id: user.id, reactable: article) }
 
   it "returns an article" do
     user.follow(tag)
