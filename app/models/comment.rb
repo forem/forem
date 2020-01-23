@@ -115,7 +115,7 @@ class Comment < ApplicationRecord
     return if remove
 
     if record.deleted == false
-      Search::IndexJob.perform_later("Comment", record.id)
+      Search::IndexWorker.perform_async("Comment", record.id)
     else
       Search::RemoveFromIndexJob.perform_later(Comment.algolia_index_name, record.index_id)
     end
@@ -263,7 +263,7 @@ class Comment < ApplicationRecord
   end
 
   def after_destroy_actions
-    Users::BustCacheJob.perform_now(user_id)
+    Users::BustCacheWorker.perform_async(user_id)
     user.touch(:last_comment_at)
   end
 

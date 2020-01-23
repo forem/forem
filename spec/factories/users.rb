@@ -94,7 +94,7 @@ FactoryBot.define do
       after(:create) do |user|
         other_user = create(:user)
         article = create(:article, user_id: other_user.id)
-        create(:comment, user_id: user.id, commentable_id: article.id)
+        create(:comment, user_id: user.id, commentable: article)
         user.update(comments_count: 1)
       end
     end
@@ -102,7 +102,7 @@ FactoryBot.define do
     trait :with_article_and_comment do
       after(:create) do |user|
         article = create(:article, user_id: user.id)
-        create(:comment, user_id: user.id, commentable_id: article.id)
+        create(:comment, user_id: user.id, commentable: article)
         user.update(articles_count: 1, comments_count: 1)
       end
     end

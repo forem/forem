@@ -1,5 +1,9 @@
 module Moderator
   class BanishUser < ManageActivityAndRoles
+    def self.call(admin:, user:)
+      new(user: user, admin: admin).banish
+    end
+
     attr_reader :user, :admin
 
     def initialize(admin:, user:)
@@ -7,11 +11,8 @@ module Moderator
       @admin = admin
     end
 
-    def self.call_banish(admin:, user:)
-      new(user: user, admin: admin).banish
-    end
-
     def banish
+      BanishedUser.create(username: user.username, banished_by: admin)
       user.unsubscribe_from_newsletters if user.email?
       remove_profile_info
       handle_user_status("Ban", "spam account")

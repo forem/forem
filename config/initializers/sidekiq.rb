@@ -1,7 +1,19 @@
-require "sidekiq/web"
-# Sidekiq sessions don't play well with Redis based sessions and Devise
-# <https://github.com/mperham/sidekiq/wiki/Monitoring#sessions-being-lost>
-Sidekiq::Web.set :sessions, false
+# Monkey patch `stringify_keys` to make rack 2.1.1 compatible with Sidekiq UI Admin panel.
+# Should be removed when 2.1.2 is released.
+# https://github.com/rack/rack/pull/1428
+module Rack
+  module Session
+    module Abstract
+      class SessionHash
+        private
+
+        def stringify_keys(other)
+          other.to_hash.transform_keys(&:to_s)
+        end
+      end
+    end
+  end
+end
 
 Sidekiq.configure_server do |config|
   sidekiq_url = ApplicationConfig["REDIS_SIDEKIQ_URL"] || ApplicationConfig["REDIS_URL"]

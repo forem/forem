@@ -50,7 +50,7 @@ class PageView < ApplicationRecord
     if remove
       Search::RemoveFromIndexJob.perform_later(algolia_index_name, record.id)
     else
-      Search::IndexJob.perform_later("PageView", record.id)
+      Search::IndexWorker.perform_async("PageView", record.id)
     end
   end
 

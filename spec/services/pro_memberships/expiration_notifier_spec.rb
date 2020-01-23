@@ -43,7 +43,7 @@ RSpec.describe ProMemberships::ExpirationNotifier, type: :service do
 
     it "enqueus a slack bot ping job" do
       Timecop.travel(pro_membership.expires_at - 1.week) do
-        assert_enqueued_with(job: SlackBotPingJob) do
+        sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
           described_class.call(1.week.from_now)
         end
       end

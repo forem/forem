@@ -40,21 +40,14 @@ class Notification < ApplicationRecord
     end
 
     def send_to_followers(notifiable, action = nil)
-      Notifications::NotifiableActionJob.perform_later(notifiable.id, notifiable.class.name, action)
-    end
-
-    def send_new_comment_notifications(comment)
-      return if comment.commentable_type == "PodcastEpisode"
-      return if UserBlock.blocking?(comment.commentable.user_id, comment.user_id)
-
-      Notifications::NewCommentJob.perform_later(comment.id)
+      Notifications::NotifiableActionWorker.perform_async(notifiable.id, notifiable.class.name, action)
     end
 
     def send_new_comment_notifications_without_delay(comment)
       return if comment.commentable_type == "PodcastEpisode"
       return if UserBlock.blocking?(comment.commentable.user_id, comment.user_id)
 
-      Notifications::NewCommentJob.perform_now(comment.id)
+      Notifications::NewComment::Send.call(comment)
     end
 
     def send_new_badge_achievement_notification(badge_achievement)
@@ -146,18 +139,6 @@ class Notification < ApplicationRecord
 
     private
 
-    def user_data(user)
-      Notifications.user_data(user)
-    end
-
-    def comment_data(comment)
-      Notifications.comment_data(comment)
-    end
-
-    def article_data(article)
-      Notifications.article_data(article)
-    end
-
     def reaction_notification_attributes(reaction, receiver)
       reactable_data = {
         reactable_id: reaction.reactable_id,
@@ -166,10 +147,6 @@ class Notification < ApplicationRecord
       }
       receiver_data = { klass: receiver.class.name, id: receiver.id }
       [reactable_data, receiver_data]
-    end
-
-    def organization_data(organization)
-      Notifications.organization_data(organization)
     end
   end
 

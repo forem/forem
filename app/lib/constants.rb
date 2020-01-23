@@ -63,5 +63,6 @@ module Constants
     "toot.cafe",
     "wikitetas.club",
     "xoxo.zone",
+    "4estate.media",
   ].freeze
 end

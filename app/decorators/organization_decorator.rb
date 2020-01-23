@@ -25,4 +25,10 @@ class OrganizationDecorator < ApplicationDecorator
       text: "#ffffff"
     }
   end
+
+  def fully_banished?
+    # We do not *currently* have the functionality to "ban" organizations.
+    # We deal with them in other ways, but we still need to respond to this question.
+    false
+  end
 end
