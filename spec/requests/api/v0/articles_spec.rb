@@ -302,6 +302,13 @@ RSpec.describe "Api::V0::Articles", type: :request do
       get api_article_path("9999")
       expect(response).to have_http_status(:not_found)
     end
+
+    it "sets the correct edge caching surrogate key" do
+      get api_article_path(article)
+
+      expected_key = [article.record_key].to_set
+      expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
+    end
   end
 
   describe "GET /api/articles/me(/:status)" do
