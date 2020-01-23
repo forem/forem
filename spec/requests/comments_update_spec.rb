@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "CommentsUpdate", type: :request do
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
-  let(:comment) { create(:comment, user_id: user.id, commentable_id: article.id) }
+  let(:comment) { create(:comment, user_id: user.id, commentable: article) }
 
   before do
     sign_in user

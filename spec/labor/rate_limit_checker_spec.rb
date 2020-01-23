@@ -17,13 +17,13 @@ RSpec.describe RateLimitChecker, type: :labor do
       end
 
       it "returns true if too many comments at once" do
-        create_list(:comment, 2, user_id: user.id, commentable_id: article.id)
+        create_list(:comment, 2, user_id: user.id, commentable: article)
         expect(rate_limit_checker.limit_by_action("comment_creation")).to eq(true)
       end
 
       it "triggers ping admin when too many comments" do
         allow(RateLimitCheckerWorker).to receive(:perform_async)
-        create_list(:comment, 2, user_id: user.id, commentable_id: article.id)
+        create_list(:comment, 2, user_id: user.id, commentable: article)
         rate_limit_checker.limit_by_action("comment_creation")
         expect(RateLimitCheckerWorker).to have_received(:perform_async).with(user.id, "comment_creation")
       end
