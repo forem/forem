@@ -16,7 +16,8 @@ RSpec.describe ResponseTemplatePolicy, type: :policy do
 
   context "when user is not the author" do
     let(:user) { create(:user) }
-    let(:response_template) { create(:response_template, type_of: "personal_comment", user_id: user.id + 1) }
+    let(:second_user) { create(:user) }
+    let(:response_template) { create(:response_template, type_of: "personal_comment", user: second_user) }
 
     it { is_expected.to permit_actions(%i[create]) }
     it { is_expected.to forbid_actions(%i[update destroy admin_index moderator_index moderator_create]) }
