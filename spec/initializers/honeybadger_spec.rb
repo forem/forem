@@ -32,12 +32,22 @@ describe Honeybadger do
   end
 
   context "when error is raised from an internal route" do
-    it "halts notification" do
+    it "sets fingerprint to internal" do
       notice = Honeybadger::Notice.new(
         described_class.config, component: "internal/feedback_messages"
       )
       described_class.config.before_notify_hooks.first.call(notice)
       expect(notice.fingerprint).to eq("internal")
+    end
+  end
+
+  context "when a PG::QueryCanceled error is raised" do
+    it "sets fingerprint to pg_query_cancel" do
+      notice = Honeybadger::Notice.new(
+        described_class.config, error_message: "ActionView::Template::Error: PG::QueryCanceled:"
+      )
+      described_class.config.before_notify_hooks.first.call(notice)
+      expect(notice.fingerprint).to eq("pg_query_canceled")
     end
   end
 end
