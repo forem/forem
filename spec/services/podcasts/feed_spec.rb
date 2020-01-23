@@ -87,14 +87,14 @@ RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
 
     it "fetches podcast episodes" do
       expect do
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           described_class.new(podcast).get_episodes(limit: 2)
         end
       end.to change(PodcastEpisode, :count).by(2)
     end
 
     it "fetches correct podcasts" do
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         described_class.new(podcast).get_episodes(limit: 2)
       end
       episodes = podcast.podcast_episodes
