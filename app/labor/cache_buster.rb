@@ -33,6 +33,8 @@ module CacheBuster
   end
 
   def self.bust_article(article)
+    article.purge
+
     bust(article.path)
     bust("/#{article.user.username}")
     bust("#{article.path}/")
