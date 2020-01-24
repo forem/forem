@@ -17,25 +17,15 @@ class ClosingSlide extends Component {
     ];
 
     return(
-      properties.map((element, index) =>
-        (index === 0) ?
-          <a key={ index } href={ element.href } data-no-instant>
+      properties.map((element, index) => 
+          <a key={ index } href={ element.href } data-no-instant={(index === 0) ? true : null }>
             { element.text }
             <p className="whatnext-emoji">
               <span role="img" aria-label="tada">
                 { element.emoji }
               </span>
             </p>
-          </a>
-          :
-          <a href={ element.href }>
-            { element.text }
-            <p className="whatnext-emoji">
-              <span role="img" aria-label="tada">
-                { element.emoji }
-              </span>
-            </p>
-          </a>       
+          </a>   
       )
     );
   };
@@ -148,11 +138,10 @@ class ClosingSlide extends Component {
           </div>
         );
       }
-      return (
+      return( 
         <div className="onboarding-what-next">
-          { this.whatsNext() }
-        </div>
-      );
+          {this.whatsNext()}
+        </div>);
     };
 
     return (
