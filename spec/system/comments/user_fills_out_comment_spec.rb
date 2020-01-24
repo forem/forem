@@ -36,7 +36,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
   end
 
   it "User replies to a comment" do
-    comment = create(:comment, commentable_id: article.id, user_id: user.id)
+    comment = create(:comment, commentable: article, user_id: user.id)
     visit article.path.to_s
 
     wait_for_javascript
