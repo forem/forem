@@ -2,23 +2,28 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
   layout "internal"
 
   def index
-    @q = FeedbackMessage.
-      includes(:reporter,
-               :offender,
-               :affected).
-      order("feedback_messages.created_at DESC").
-      ransack(params[:q])
-    @feedback_messages = @q.result.page(params[:page] || 1).per(5)
+    @view = params[:view]
+    if @view == "new-articles"
+      @new_articles = Article.published.includes(:user).limit(180).order("created_at DESC").where("score > ? AND score < ?", -10, 8)
+    elsif @view == "suspicious-users"
+      @possible_spam_users = User.where("github_created_at > ? OR twitter_created_at > ? OR length(name) > ?", 50.hours.ago, 50.hours.ago, 30).
+        where("created_at > ?", 100.hours.ago).
+        order("created_at DESC").
+        where.not("username LIKE ?", "%spam_%").limit(250)
+    else
+      @q = FeedbackMessage.
+        includes(:reporter,
+                 :offender,
+                 :affected).
+        order("feedback_messages.created_at DESC").
+        ransack(params[:q])
+      @feedback_messages = @q.result.page(params[:page] || 1).per(5)
 
-    @feedback_type = params[:state] || "abuse-reports"
-    @status = params[:status] || "Open"
-    @email_messages = EmailMessage.find_for_reports(@feedback_messages)
-    @new_articles = Article.published.includes(:user).limit(120).order("created_at DESC").where("score > ? AND score < ?", -10, 8)
-    @possible_spam_users = User.where("github_created_at > ? OR twitter_created_at > ? OR length(name) > ?", 50.hours.ago, 50.hours.ago, 30).
-      where("created_at > ?", 48.hours.ago).
-      order("created_at DESC").
-      where.not("username LIKE ?", "%spam_%").limit(150)
-    @vomits = get_vomits
+      @feedback_type = params[:state] || "abuse-reports"
+      @status = params[:status] || "Open"
+      @email_messages = EmailMessage.find_for_reports(@feedback_messages)
+      @vomits = get_vomits
+    end
   end
 
   def save_status

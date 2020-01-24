@@ -6,6 +6,31 @@ RSpec.describe "/internal/reports", type: :request do
   let(:feedback_message3) { create(:feedback_message, :abuse_report) }
   let(:user)              { create(:user) }
   let(:admin)             { create(:user, :super_admin) }
+  let(:article) { create(:article, published: true, score: 2) }
+
+  describe "GET /internal/reports" do
+    before do
+      sign_in admin
+    end
+
+    it "displays feedback messages when they exist" do
+      create(:feedback_message)
+      get "/internal/reports"
+      expect(response.body).to include("Reported URL ")
+    end
+
+    it "displays new articles" do
+      article.update_column(:score, 2)
+      get "/internal/reports?view=new-articles"
+      expect(response.body).to include(article.path)
+    end
+
+    it "displays suspicious users" do
+      suspicious_user = create(:user, name: "Very very very long suspicious username, right? Right? Right?")
+      get "/internal/reports?view=suspicious-users"
+      expect(response.body).to include(suspicious_user.path)
+    end
+  end
 
   describe "POST /save_status" do
     context "when a valid request is made" do
