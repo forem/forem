@@ -11,9 +11,7 @@ module Api
         per_page = (params[:per_page] || 24).to_i
         num = [per_page, 1000].min
 
-        @video_articles = Article.published.
-          where.not(video: [nil, ""], video_thumbnail_url: [nil, ""]).
-          where("score > ?", -4).
+        @video_articles = Article.with_video.
           order("hotness_score DESC").
           page(page).per(num)
 
