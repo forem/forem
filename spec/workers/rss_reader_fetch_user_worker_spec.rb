@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe RssReaderFetchUserWorker, type: :worker do
   let(:worker) { subject }
 
-  include_examples "#enqueues_on_correct_queue", "medium_priority", [456]
+  include_examples "#enqueues_on_correct_queue", "medium_priority", [9999]
 
   describe "#perform_now" do
     let(:rss_reader_service) { instance_double(RssReader) }
@@ -18,7 +18,7 @@ RSpec.describe RssReaderFetchUserWorker, type: :worker do
 
       before do
         allow(User).to receive(:find_by).and_return(user)
-        allow(user).to receive(:feed_url).and_return(true)
+        allow(user).to receive(:feed_url).and_return(:feed_url)
         allow(user).to receive(:id)
       end
 
@@ -31,7 +31,7 @@ RSpec.describe RssReaderFetchUserWorker, type: :worker do
     context "when no user found" do
       it "does not call the service" do
         allow(User).to receive(:find_by)
-        worker.perform(456)
+        worker.perform(9999)
         expect(rss_reader_service).not_to have_received(:fetch_user)
       end
     end
