@@ -13,6 +13,7 @@ module Api
 
         @video_articles = Article.with_video.
           includes([:user]).
+          select(:id, :video, :path, :title, :video_thumbnail_url, :user_id, :video_duration_in_seconds).
           order("hotness_score DESC").
           page(page).per(num)
 
