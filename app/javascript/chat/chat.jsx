@@ -1231,7 +1231,7 @@ export default class Chat extends Component {
       if (startEditing) {
         this.setState({ markdownEdited: true });
       }
-      if (!e.target.value.includes('@')) {
+      if (!e.target.value.includes('@') && showMemberlist) {
         this.setState({ showMemberlist: false });
       } else {
         this.setQuery(e.target);
