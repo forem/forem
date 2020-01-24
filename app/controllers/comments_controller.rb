@@ -16,21 +16,23 @@ class CommentsController < ApplicationController
 
     if @podcast
       @user = @podcast
-      (@commentable = @user.podcast_episodes.find_by(slug: params[:slug])) || not_found
+      @commentable = @user.podcast_episodes.find_by(slug: params[:slug]) if @user.podcast_episodes
     else
       @user = User.find_by(username: params[:username]) ||
         Organization.find_by(slug: params[:username]) ||
         not_found
       @commentable = @root_comment&.commentable ||
-        @user.articles.find_by(slug: params[:slug]) ||
-        not_found
+        @user.articles.find_by(slug: params[:slug]) || nil
       @article = @commentable
-      not_found unless @commentable.published
+
+      not_found if @commentable && !@commentable.published
     end
 
-    @commentable_type = @commentable.class.name
+    @commentable_type = @commentable.class.name if @commentable
 
-    set_surrogate_key_header "comments-for-#{@commentable.id}-#{@commentable_type}"
+    set_surrogate_key_header "comments-for-#{@commentable.id}-#{@commentable_type}" if @commentable
+
+    render :deleted_commentable_comment unless @commentable
   end
 
   # GET /comments/1
