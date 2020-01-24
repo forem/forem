@@ -185,6 +185,11 @@ export function addReplyObservers() {
         responsesWrapper.innerHTML = containerWithData.innerHTML;
       }
 
+      if (containerWithData.innerHTML !== '') {
+        responsesWrapper.innerHTML = containerWithData.innerHTML;
+        addClickListeners(responsesWrapper)
+      }
+
       button.addEventListener('click', () => {
         if (responsesWrapper.style.display === 'none') {
           responsesWrapper.style.display = 'flex';
