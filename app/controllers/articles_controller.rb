@@ -23,10 +23,8 @@ class ArticlesController < ApplicationController
       render body: nil
       return
     end
-
-    set_surrogate_key_header "feed"
-    response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
-
+    set_surrogate_keys_by_case
+    response.headers["Surrogate-Control"] = "max-age=186400, stale-while-revalidate=3600, stale-if-error=86400"
     render layout: false
   end
 
@@ -229,7 +227,8 @@ class ArticlesController < ApplicationController
 
   def handle_tag_feed
     @tag = Tag.aliased_name(params[:tag])
-    return unless @tag
+    @tag_model = Tag.find_by(name: @tag)
+    return unless @tag && @tag_model
 
     @articles = @articles.cached_tagged_with(@tag)
   end
@@ -242,6 +241,16 @@ class ArticlesController < ApplicationController
                       Article.includes(:user).find(params[:id])
                     end
     @article = found_article || not_found
+  end
+
+  def set_surrogate_keys_by_case
+    if @tag_model
+      set_surrogate_key_header @tag_model.record_key, Article.table_key, Tag.table_key, @articles.map(&:record_key)
+    elsif @user
+      set_surrogate_key_header @user.record_key, Article.table_key, User.table_key, @articles.map(&:record_key)
+    else
+      set_surrogate_key_header Article.table_key, @articles.map(&:record_key)
+    end
   end
 
   def article_params

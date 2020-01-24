@@ -37,6 +37,10 @@ RSpec.describe "Articles", type: :request do
         expect(response.body).to include(user_article.title)
         expect(response.body).not_to include(organization_article.title)
       end
+
+      it "sets the correct edge caching surrogate key for username feed" do
+        expect(response.headers["surrogate-key"].split.to_set).to eq([user.record_key, "articles", "users", user_article.record_key].to_set)
+      end
     end
 
     context "when :username param is given and belongs to an organization" do
@@ -46,6 +50,10 @@ RSpec.describe "Articles", type: :request do
       it "returns only articles for that organization" do
         expect(response.body).not_to include(user_article.title)
         expect(response.body).to include(organization_article.title)
+      end
+
+      it "sets the correct edge caching surrogate key for org feed" do
+        expect(response.headers["surrogate-key"].split.to_set).to eq([organization.record_key, "articles", "users", organization_article.record_key].to_set)
       end
     end
 
@@ -61,9 +69,17 @@ RSpec.describe "Articles", type: :request do
         expect { get "/feed.zip" }.to raise_error(ActionController::RoutingError)
       end
     end
+
+    it "sets the correct edge caching surrogate key for base feed" do
+      article = create(:article, featured: true)
+      second_article = create(:article, featured: true)
+      create(:article, featured: false)
+      get "/feed"
+      expect(response.headers["surrogate-key"].split.to_set).to eq(["articles", article.record_key, second_article.record_key].to_set)
+    end
   end
 
-  describe "GET /feed/tag" do
+  describe "GET /feed/tag/:tag_name" do
     shared_context "when tagged articles exist" do
       let!(:tag_article) { create(:article, tags: tag.name) }
     end
@@ -94,6 +110,11 @@ RSpec.describe "Articles", type: :request do
       before { get "/feed/tag/unknown" }
 
       it("renders empty body") { expect(response.body).to be_empty }
+    end
+
+    it "sets the correct edge caching surrogate key for tag feed" do
+      get "/feed/tag/#{tag.name}"
+      expect(response.headers["surrogate-key"].split.to_set).to eq([tag.record_key, "articles", "tags"].to_set)
     end
   end
 

@@ -52,7 +52,7 @@ RSpec.describe "UserProfiles", type: :request do
 
     it "sets the correct edge caching surrogate key" do
       get "/#{user.username}"
-      expect(response.headers["surrogate-key"].split.to_set).to eq([user.record_key].to_set)
+      expect(response.headers["surrogate-key"].split.to_set).to eq([user.record_key, "articles", "users"].to_set)
     end
 
     context "when organization" do
