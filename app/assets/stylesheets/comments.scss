@@ -155,8 +155,6 @@ a.header-link {
     }
   }
 
-  .markdown-guide {
-  }
   .editor-image-upload {
     display: flex;
     align-items: center;
@@ -458,7 +456,10 @@ a.header-link {
         img.icon-image {
           height: 23px;
           width: 23px;
-          margin-right: 10px;
+        }
+
+        .editor-image-upload {
+          padding-right: 3px;
         }
 
         .editor-response-templates {
@@ -1163,6 +1164,7 @@ a.header-link {
     height: 21px;
   }
   .editor-image-upload {
+    padding-right: 5px;
     width: initial;
     text-align: left;
     z-index: 6;
