@@ -1,4 +1,4 @@
-<div class="card my-3">
+<div class="card my-3" data-controller="article" data-article-id="<%= article.id %>">
   <div class="card-header">
     <a href="<%= article.path %>" target="_blank"><%= article.title %></a>
     <a class="ml-2" href="<%= article.path %>/edit" target="_blank"><span class="badge badge-success">EDIT</span></a>
@@ -68,11 +68,10 @@
         </li>
       <% end %>
     </ul>
+    <button class="btn btn-success" data-action="article#increaseFeaturedNumber">☝️ Boost!</button>
+    <button class="btn btn-danger" data-action="article#decreaseFeaturedNumber">👇 SPAM!</button>
 
-    <button class="btn btn-success" onclick="timeNow(<%= article.id %>);return false;">☝️ Boost!</button>
-    <button class="btn btn-danger" onclick="sink(<%= article.id %>);return false;">👇 SPAM!</button>
-
-    <form action="/internal/articles/<%= article.id %>" accept-charset="UTF-8" method="post">
+    <%= form_with url: internal_article_path(article.id), html: { data: { action: "submit->article#highlightElement" } } do |f| %>
       <div class="form-group">
         <input name="utf8" type="hidden" value="✓">
         <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
@@ -80,7 +79,7 @@
       </div>
       <div class="form-group">
         <label for="featured_number_<%= article.id %>">Featured Number:</label>
-        <input id="featured_number_<%= article.id %>" class="form-control" name="article[featured_number]" value="<%= article.featured_number %>">
+        <input id="featured_number_<%= article.id %>" class="form-control" name="article[featured_number]" value="<%= article.featured_number %>" data-target="article.featuredNumber">
       </div>
       <div class="form-group">
         <label for="author_id_<%= article.id %>">Author ID:</label>
@@ -131,7 +130,7 @@
       <% end %>
 
       <button class="btn btn-primary float-right">Submit</button>
-    </form>
+    <% end %>
 
     <% if article.last_buffered %>
       <div class="mt-5">
@@ -179,7 +178,7 @@
         </div>
 
         <div>
-          <%= form_tag "/internal/buffer_updates" do %>
+          <%= form_with url: "/internal/buffer_updates", html: { data: { action: "submit->article#highlightElement" } } do %>
             <input type="hidden" name="social_channel" value="main_twitter" />
             <input type="hidden" name="article_id" value="<%= article.id %>" />
             <h5>Twitter MAIN</h5>
@@ -192,7 +191,7 @@
           <% end %>
 
           <% if (article.decorate.cached_tag_list_array & Tag.bufferized_tags).any? %>
-            <%= form_tag "/internal/buffer_updates" do %>
+            <%= form_with url: "/internal/buffer_updates", html: { data: { action: "submit->article#highlightElement" } } do %>
               <input type="hidden" name="social_channel" value="satellite_twitter" />
               <input type="hidden" name="article_id" value="<%= article.id %>" />
               <h5>Twitter Satellite</h5>
@@ -206,7 +205,7 @@
           <% end %>
         </div>
 
-        <%= form_tag "/internal/buffer_updates" do %>
+        <%= form_with url: "/internal/buffer_updates", html: { data: { action: "submit->article#highlightElement" } } do %>
           <input type="hidden" name="social_channel" value="facebook" />
           <input type="hidden" name="article_id" value="<%= article.id %>" />
           <h5>Facebook & LinkedIn</h5>
