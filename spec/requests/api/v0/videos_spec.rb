@@ -20,8 +20,25 @@ RSpec.describe "Api::V0::Tags", type: :request do
       expect(response.parsed_body.size).to eq(1)
     end
 
+    it "does not return unpublished video articles" do
+      article = create_article
+      article.update(published: false)
+
+      get api_videos_path
+
+      expect(response.parsed_body.size).to eq(1)
+    end
+
     it "does not return regular articles without videos" do
       create(:article)
+
+      get api_videos_path
+
+      expect(response.parsed_body.size).to eq(0)
+    end
+
+    it "does not return video articles with a score that is too low" do
+      create_article(score: -4)
 
       get api_videos_path
 
