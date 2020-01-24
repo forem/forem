@@ -5,6 +5,7 @@ items:
   - webpacker.md
   - preact.md
   - instant-click.md
+  - linting-formatting.md
   - liquid-tags.md
   - debugging.md
 ---
