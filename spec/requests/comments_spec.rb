@@ -223,6 +223,20 @@ RSpec.describe "Comments", type: :request do
     end
   end
 
+  describe "PUT /comments/:id" do
+    before do
+      sign_in user
+    end
+
+    it "does not raise a StandardError for invalid liquid tags" do
+      put "/comments/#{comment.id}",
+          params: { comment: { body_markdown: "{% gist flsnjfklsd %}" } }
+
+      expect(response).to have_http_status(:ok)
+      expect(flash[:error]).not_to be_nil
+    end
+  end
+
   describe "POST /comments/preview" do
     it "returns 401 if user is not logged in" do
       post "/comments/preview",
