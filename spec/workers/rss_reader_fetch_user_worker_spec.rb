@@ -4,7 +4,7 @@ RSpec.describe RssReaderFetchUserWorker, type: :worker do
   let(:worker) { subject }
 
   # passing in a random user_id argument since the worker itself won't be executed
-  include_examples "#enqueues_on_correct_queue", "medium_priority", [rand(1..999)]
+  include_examples "#enqueues_on_correct_queue", "medium_priority", [456]
 
   describe "#perform_now" do
     let(:rss_reader_service) { instance_double(RssReader) }
