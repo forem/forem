@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Api::V0::Tags", type: :request do
   describe "GET /api/tags" do
-    let_it_be_readonly(:tag) { create(:tag, taggings_count: 10) }
+    let_it_be(:tag) { create(:tag, taggings_count: 10) }
 
     it "returns tags" do
       get api_tags_path
@@ -46,7 +46,7 @@ RSpec.describe "Api::V0::Tags", type: :request do
   end
 
   describe "GET /api/tags/onboarding" do
-    let_it_be_readonly(:tag) { create(:tag, name: SiteConfig.suggested_tags.first) }
+    let_it_be(:tag) { create(:tag, name: SiteConfig.suggested_tags.first) }
 
     it "returns tags" do
       get onboarding_api_tags_path
