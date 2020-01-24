@@ -19,7 +19,7 @@ class UsersController < ApplicationController
   def update
     set_tabs(params["user"]["tab"])
     if @user.update(permitted_attributes(@user))
-      RssReaderFetchUserJob.perform_later(@user.id)
+      RssReaderFetchUserWorker.perform_async(@user.id) if @user.feed_url.present?
       notice = "Your profile was successfully updated."
       if config_changed?
         notice = "Your config has been updated. Refresh to see all changes."
