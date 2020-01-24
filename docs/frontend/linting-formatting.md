@@ -25,10 +25,10 @@ globals: {
 
 ## Husky and lint-staged
 
-The code base uses pre-commit hooks that are enabled by the
+The code base uses a pre-commit hooks that is enabled by the
 [husky](https://github.com/typicode/husky) and
-[lint-staged](https://github.com/okonet/lint-staged) tools. Pre-commit hooks run
-tasks such as eslint before code is committed. If there are listing issues that
-can be fixed, they will get auto fixed and committed. If there are issues that
+[lint-staged](https://github.com/okonet/lint-staged) tools. The pre-commit hook
+runs eslint before frontend code is committed. If there are any issues that can
+automatically be fixed, eslint will fix them. If there are linting issues that
 cannot be resolved, the commit fails and the changes need to be handled
-manually.
+manually. Prettier also runs during the pre-commit hook.
