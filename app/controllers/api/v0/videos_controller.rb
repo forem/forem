@@ -12,6 +12,7 @@ module Api
         num = [per_page, 1000].min
 
         @video_articles = Article.with_video.
+          includes([:user]).
           order("hotness_score DESC").
           page(page).per(num)
 
