@@ -96,13 +96,13 @@ class Notification < ApplicationRecord
     def remove_all_by_action(notifiable_ids:, notifiable_type:, action: nil)
       return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
 
-      Notifications::RemoveAllByActionJob.perform_later(notifiable_ids, notifiable_type, action)
+      Notifications::RemoveAllByActionWorker.perform_async(notifiable_ids, notifiable_type, action)
     end
 
     def remove_all_by_action_without_delay(notifiable_ids:, notifiable_type:, action: nil)
       return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
 
-      Notifications::RemoveAllByActionJob.perform_now(notifiable_ids, notifiable_type, action)
+      Notifications::RemoveAllByActionWorker.new.perform(notifiable_ids, notifiable_type, action)
     end
 
     def remove_all(notifiable_ids:, notifiable_type:)
