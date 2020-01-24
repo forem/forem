@@ -29,7 +29,7 @@
   <div class="grid-item">Last Bumped</div>
 </div>
 <% @classified_listings.each do |listing| %>
-  <div class="single-internal-listing">
+  <div class="single-internal-listing" data-controller="buffer">
     <div class="wrapper">
       <div class="grid-item">
         <a href="/internal/listings/<%= listing.id %>/edit" target="_blank">
@@ -60,12 +60,12 @@
           <p class="listing-body"><%= listing.processed_html&.html_safe %></p>
         </div>
         <div class="grid-item">
-          <%= form_tag "/internal/buffer_updates" do %>
+          <%= form_with url: "/internal/buffer_updates", html: { data: { action: "submit->buffer#highlightElement" } } do %>
             <input type="hidden" name="social_channel" value="listings_twitter" />
             <input type="hidden" name="listing_id" value="<%= listing.id %>" />
             <textarea cols="37" rows="8" wrap="hard" name="tweet" maxlength="255">📋 New DEV Listing!&#013&#013Category: <%= listing.category %>&#013&#013<%= listing.title %>&#013&#013<% if listing.user.twitter_username? %>Posted by @<%= listing.user.twitter_username %><% end %></textarea>
             <br>
-            <button class="btn btn-primary">🐦 Tweet 🐦</button>
+            <button class="btn btn-primary" data-action=>🐦 Tweet 🐦</button>
           <% end %>
         </div>
       </div>
@@ -75,4 +75,3 @@
 <% end %>
 <%= paginate @classified_listings %>
 
-<%= render "internal/articles/article_script" %>
