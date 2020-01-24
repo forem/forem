@@ -106,7 +106,7 @@ class CommentsController < ApplicationController
     raise
   rescue StandardError => e
     Rails.logger.error(e)
-    message = "There was a error in your markdown: #{e}"
+    message = "There was an error in your markdown: #{e}"
     render json: { error: message }, status: :unprocessable_entity
   end
 
@@ -121,6 +121,10 @@ class CommentsController < ApplicationController
       @commentable = @comment.commentable
       render :edit
     end
+  rescue StandardError => e
+    @commentable = @comment.commentable
+    flash.now[:error] = "There was an error in your markdown: #{e}"
+    render :edit
   end
 
   # DELETE /comments/1
@@ -150,7 +154,7 @@ class CommentsController < ApplicationController
       parsed_markdown = MarkdownParser.new(fixed_body_markdown)
       processed_html = parsed_markdown.finalize
     rescue StandardError => e
-      processed_html = "<p>😔 There was a error in your markdown</p><hr><p>#{e}</p>"
+      processed_html = "<p>😔 There was an error in your markdown</p><hr><p>#{e}</p>"
     end
     respond_to do |format|
       format.json { render json: { processed_html: processed_html }, status: :ok }
