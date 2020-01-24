@@ -16,6 +16,9 @@ Rails.application.routes.draw do
 
     Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
     Sidekiq::Web.set :sessions, Rails.application.config.session_options
+    Sidekiq::Web.class_eval do
+      use Rack::Protection, origin_whitelist: ["https://dev.to"] # resolve Rack Protection HttpOrigin
+    end
     mount Sidekiq::Web => "/sidekiq"
   end
 
