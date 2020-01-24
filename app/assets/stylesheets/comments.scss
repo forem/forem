@@ -280,6 +280,11 @@ a.header-link {
       @include themeable(background, theme-container-accent-background, $light-gray);
       @include themeable(color, theme-color, $black);
 
+      .loading-img {
+        margin: 0 auto;
+        width: 75px;
+      }
+
       header>h3 {
         padding: 18px 12px;
         margin: 0px;

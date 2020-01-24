@@ -36,6 +36,9 @@
   <% end %>
 <% end %>
 
+<div id="response-templates-data" style="display: none;"></div>
+<%= javascript_pack_tag "responseTemplatesComments", defer: true %>
+
 <% if @root_comment %>
   <div class="single-comment-header"></div>
 <% else %>
