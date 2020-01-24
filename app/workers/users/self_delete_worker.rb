@@ -1,6 +1,8 @@
 module Users
-  class SelfDeleteJob < ApplicationJob
-    queue_as :users_self_delete
+  class SelfDeleteWorker
+    include Sidekiq::Worker
+
+    sidekiq_options queue: :high_priority, retry: 10
 
     def perform(user_id, service = Users::Delete)
       user = User.find_by(id: user_id)
