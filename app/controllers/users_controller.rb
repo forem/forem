@@ -26,7 +26,7 @@ class UsersController < ApplicationController
       end
       if @user.export_requested?
         notice += " The export will be emailed to you shortly."
-        ExportContentJob.perform_later(@user.id)
+        ExportContentWorker.perform_async(@user.id)
       end
       cookies.permanent[:user_experience_level] = @user.experience_level.to_s if @user.experience_level.present?
       follow_hiring_tag(@user)
