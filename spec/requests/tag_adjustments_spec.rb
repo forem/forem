@@ -47,6 +47,18 @@ RSpec.describe "TagAdjustments", type: :request do
         expect(article.reload.tag_list.include?("heyheyhey")).to be true
       end
     end
+
+    context "when tag being removed has a different case" do
+      let(:article) { create(:article, tags: nil, tag_list: [tag.name.titleize, "yoyo"]) }
+
+      it "removes the tag regardless of case" do
+        expect(article.reload.tag_list.include?(tag.name.titleize)).to be false
+      end
+
+      it "keeps the other tags" do
+        expect(article.reload.tag_list.include?("yoyo")).to be true
+      end
+    end
   end
 
   describe "POST /tag_adjustments with adjustment_type addition" do

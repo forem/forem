@@ -84,5 +84,12 @@ RSpec.describe TagAdjustment, type: :model do
       tag_adjustment = build(:tag_adjustment, user_id: admin_user.id, article_id: article.id, adjustment_type: "removal")
       expect(tag_adjustment).to be_invalid
     end
+
+    it "allows removal of tag regardless of case" do
+      article = create(:article, tags: nil, tag_list: ["Career"])
+      tag = create(:tag, name: "career")
+      tag_adjustment = build(:tag_adjustment, user_id: admin_user.id, article_id: article.id, tag_id: tag.id, tag_name: tag.name, adjustment_type: "removal")
+      expect(tag_adjustment).to be_valid
+    end
   end
 end
