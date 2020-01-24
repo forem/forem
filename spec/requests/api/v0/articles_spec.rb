@@ -910,7 +910,10 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
       it "updates a description" do
         description = "this is a very interesting article"
-        put_article(description: description)
+        put_article(
+          body_markdown: "Yo ho ho bsddsdsobo",
+          description: description,
+        )
         expect(response).to have_http_status(:ok)
         expect(article.reload.description).to eq(description)
       end

@@ -55,7 +55,7 @@ class ArticleDecorator < ApplicationDecorator
   def description_and_tags
     modified_description = description.strip
     modified_description += "." unless description.end_with?(".")
-    return modified_description unless  cached_tag_list.present?
+    return modified_description if cached_tag_list.blank?
 
     modified_description + " Tagged with #{cached_tag_list}."
   end

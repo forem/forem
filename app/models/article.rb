@@ -273,7 +273,7 @@ class Article < ApplicationRecord
     end
   end
 
-  def contrived_description
+  def processed_description
     text_portion = body_text.present? ? body_text[0..100].tr("\n", " ").strip.to_s : ""
     text_portion = + text_portion.strip + "..." if body_text.size > 100
     return "A post by #{user.name}" if text_portion.blank?
@@ -430,7 +430,7 @@ class Article < ApplicationRecord
     self.reading_time = parsed_markdown.calculate_reading_time
     self.processed_html = parsed_markdown.finalize
     evaluate_front_matter(parsed.front_matter)
-    self.description = contrived_description if description.blank?
+    self.description = processed_description if description.blank?
   rescue StandardError => e
     errors[:base] << ErrorMessageCleaner.new(e.message).clean
   end
