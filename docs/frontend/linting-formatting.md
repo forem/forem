@@ -25,7 +25,7 @@ globals: {
 
 ## Husky and lint-staged
 
-The code base uses a pre-commit hooks that is enabled by the
+The code base uses a pre-commit hook that is enabled by the
 [husky](https://github.com/typicode/husky) and
 [lint-staged](https://github.com/okonet/lint-staged) tools. The pre-commit hook
 runs eslint before frontend code is committed. If there are any issues that can
