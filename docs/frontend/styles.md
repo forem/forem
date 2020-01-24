@@ -8,7 +8,7 @@ The majority of the CSS in the application is written in
 [SASS](https://sass-lang.com/). There are a few places in the code base that
 have style blocks in ERB templates, but this is not the norm.
 
-Important file when working with SASS in the project:
+Important files when working with SASS in the project:
 
 - variables,
   [/app/assets/stylesheets/variables.scss](https://github.com/thepracticaldev/dev.to/blob/master/app/assets/stylesheets/variables.scss)
