@@ -7,7 +7,7 @@ effectively instant in most cases.”.
 The way it works is if a user hovers over a hyperlink, chances are their
 intentions are to click on it. InstantClick will start prefetching the page
 while a user is hovering over a hyperlink, so that by the time they do click on
-it, it's instantaneous. On mobile devices, preloading starts
+it, it's instantaneous. On mobile devices, preloading starts on
 [touchstart](https://developer.mozilla.org/en-US/docs/Web/API/Element/touchstart_event).
 
 Aside from prefetching pages, InstantClick also allows you to customize what
@@ -21,8 +21,7 @@ window.InstantClick.on('change', () => {
 ```
 
 You can also decide whether or not to reevaluate a script in an InstantClick
-loaded page via the `data-no-instant` attribute. I don’t believe there are any
-examples in the code base that blacklist script reevaluation.
+loaded page via the `data-no-instant` attribute.
 
 ```javascript
 // Found in https://github.com/thepracticaldev/dev.to/blob/master/app/assets/javascripts/utilities/buildCommentHTML.js.erb#L80
