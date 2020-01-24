@@ -176,7 +176,7 @@ class StoriesController < ApplicationController
     redirect_if_view_param
     return if performed?
 
-    set_surrogate_key_header @user.record_key
+    set_surrogate_key_header @user.record_key, Article.table_key, User.table_key, @stories.map(&:record_key)
     render template: "users/show"
   end
 
