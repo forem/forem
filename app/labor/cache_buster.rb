@@ -113,11 +113,13 @@ module CacheBuster
     bust "/#{slug}?i=i"
   end
 
-  def self.bust_tag(name)
-    bust("/t/#{name}")
-    bust("/t/#{name}?i=i")
-    bust("/t/#{name}/?i=i")
-    bust("/t/#{name}/")
+  def self.bust_tag(tag)
+    tag.purge
+
+    bust("/t/#{tag.name}")
+    bust("/t/#{tag.name}?i=i")
+    bust("/t/#{tag.name}/?i=i")
+    bust("/t/#{tag.name}/")
     bust("/tags")
   end
 
