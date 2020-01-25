@@ -31,14 +31,7 @@ module Api
 
         return unless user
 
-        @stories = Article.
-          joins(:reactions).
-          where(reactions: { user_id: user.id, reactable_type: "Article", category: %w[like unicorn] }).
-          order("published_at DESC").
-          page(params[:page]).
-          per(@reactions_limit).
-          decorate.
-          uniq
+        @stories = Reactions::FetchArticlesService.call(user, params[:page], @reactions_limit)
       end
 
       def onboarding

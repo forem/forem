@@ -182,13 +182,7 @@ class StoriesController < ApplicationController
   def handle_user_reactions_index
     @comments = Comment.none # add comments
     @pinned_stories = Article.none
-    @stories = Article.
-      joins(:reactions).
-      where(reactions: { user_id: @user.id, reactable_type: "Article", category: %w[like unicorn] }).
-      order("published_at DESC").
-      page(@page).per(user_signed_in? ? 2 : 5).
-      decorate.
-      uniq
+    @stories = Reactions::FetchArticlesService.call(@user, @page, user_signed_in? ? 2 : 5)
     @article_index = true
     @list_of = "reactions"
     render template: "users/reactions"
