@@ -133,6 +133,11 @@ Rails.application.routes.draw do
           get :podcasts
         end
       end
+      resources :reactions do
+        collection do
+          get :articles
+        end
+      end
       resources :github_repos, only: [:index] do
         collection do
           post "/update_or_create", to: "github_repos#update_or_create"
@@ -405,7 +410,7 @@ Rails.application.routes.draw do
   get "/:username/:slug/delete_confirm" => "articles#delete_confirm"
   get "/:username/:slug/stats" => "articles#stats"
   get "/:username/:view" => "stories#index",
-      :constraints => { view: /comments|moderate|admin/ }
+      :constraints => { view: /comments|moderate|admin|reactions/ }
   get "/:username/:slug" => "stories#show"
   get "/:username" => "stories#index"
 

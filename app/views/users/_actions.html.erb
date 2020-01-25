@@ -1,0 +1,18 @@
+<div class="on-page-nav-controls fluid-height" id="on-page-nav-controls">
+  <div class="actions-container">
+    <div class="actions">
+      <a class="action <%= "active" if params[:view].blank? %>" href="/<%= @user.username %>">
+        <span>ARTICLES</span>
+      </a>
+      <a class="action <%= "active" if params[:view] == "reactions" %>" href="/<%= @user.username %>/reactions">
+        <span>REACTIONS</span>
+      </a>
+    </div>
+  </div>
+  <button class="on-page-nav-butt on-page-nav-butt-left" id="on-page-nav-butt-left" aria-label="nav-button-left">
+    <img src="<%= asset_path "stack.svg" %>" alt="left-sidebar-nav">
+  </button>
+  <button class="on-page-nav-butt on-page-nav-butt-right" style="margin-top:-1px;" id="on-page-nav-butt-right" aria-label="nav-button-right">
+    <img style="height:28px;width:28px;" src="<%= asset_path "ribbon.svg" %>" alt="right-sidebar-nav">
+  </button>
+</div>

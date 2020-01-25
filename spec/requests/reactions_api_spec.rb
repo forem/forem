@@ -26,4 +26,17 @@ RSpec.describe "ArticlesApi", type: :request do
       expect(response).to have_http_status(:unprocessable_entity)
     end
   end
+
+  describe "GET /api/reactions/articles" do
+    let(:reaction) { create(:reaction, reactable: article, user: user) }
+
+    before do
+      reaction.reload
+    end
+
+    it "returns a list of reacted articles" do
+      get "/api/reactions/articles", params: { username: user.username }
+      expect(response.body).to include article.title
+    end
+  end
 end

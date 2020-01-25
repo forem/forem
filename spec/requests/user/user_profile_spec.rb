@@ -121,6 +121,22 @@ RSpec.describe "UserProfiles", type: :request do
         expect(response.body).to include "A book bot 🤖"
       end
     end
+
+    context "when /reactions" do
+      let(:articles) { create_list(:article, 3) }
+      let(:reaction) { create(:reaction, reactable: articles[0], user: user) }
+
+      before do
+        reaction.reload
+      end
+
+      it "renders reaction page" do
+        get "/#{user.username}/reactions"
+        expect(response.body).to include articles[0].title
+        expect(response.body).not_to include articles[1].title
+        expect(response.body).not_to include articles[2].title
+      end
+    end
   end
 
   describe "GET /user" do

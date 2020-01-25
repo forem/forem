@@ -1,7 +1,13 @@
 module Api
   module V0
-    class ReactionsController < ApplicationController
+    class ReactionsController < ApiController
       skip_before_action :verify_authenticity_token
+
+      caches_action :articles,
+                    cache_path: proc { |c| c.params.permit! },
+                    expires_in: 5.minutes
+      before_action -> { limit_per_page(default: 80, max: 1000) }
+
       def create
         @user = valid_user
         unless @user
@@ -18,6 +24,21 @@ module Api
         Notification.send_reaction_notification(@reaction, @reaction.reactable.user)
         Notification.send_reaction_notification(@reaction, @reaction.reactable.organization) if organization_article?(@reaction)
         render json: { reaction: @reaction.to_json }
+      end
+
+      def articles
+        user = User.find_by(username: params[:username])
+
+        return unless user
+
+        @stories = Article.
+          joins(:reactions).
+          where(reactions: { user_id: user.id, reactable_type: "Article", category: %w[like unicorn] }).
+          order("published_at DESC").
+          page(params[:page]).
+          per(@reactions_limit).
+          decorate.
+          uniq
       end
 
       def onboarding
@@ -38,6 +59,11 @@ module Api
 
       def organization_article?(reaction)
         reaction.reactable_type == "Article" && reaction.reactable.organization_id
+      end
+
+      def limit_per_page(default:, max:)
+        per_page = (params[:per_page] || default).to_i
+        @reactions_limit = [per_page, max].min
       end
     end
   end

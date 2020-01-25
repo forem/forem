@@ -164,15 +164,34 @@ class StoriesController < ApplicationController
       return
     end
     not_found if @user.username.include?("spam_") && @user.decorate.fully_banished?
-    assign_user_comments
-    assign_user_stories
-    @article_index = true
-    @list_of = "articles"
-    redirect_if_view_param
-    return if performed?
+    if params[:view] == "reactions"
+      handle_user_reactions_index
+    else
+      assign_user_comments
+      assign_user_stories
+      @article_index = true
+      @list_of = "articles"
+      redirect_if_view_param
+      return if performed?
 
-    set_surrogate_key_header "articles-user-#{@user.id}"
-    render template: "users/show"
+      set_surrogate_key_header "articles-user-#{@user.id}"
+      render template: "users/show"
+    end
+  end
+
+  def handle_user_reactions_index
+    @comments = Comment.none # add comments
+    @pinned_stories = Article.none
+    @stories = Article.
+      joins(:reactions).
+      where(reactions: { user_id: @user.id, reactable_type: "Article", category: %w[like unicorn] }).
+      order("published_at DESC").
+      page(@page).per(user_signed_in? ? 2 : 5).
+      decorate.
+      uniq
+    @article_index = true
+    @list_of = "reactions"
+    render template: "users/reactions"
   end
 
   def handle_podcast_show

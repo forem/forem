@@ -184,6 +184,11 @@ function fetchNextPodcastPage(el){
   fetchNext(el, "/api/podcast_episodes", insertArticles)
 }
 
+function fetchNextReactionsPage(el){
+  fetchNext(el, "/api/reactions/articles", insertArticles)
+}
+
+
 function algoliaPaginate(tag){
   var filters = [];
   if (tag && tag.length > 0) {
@@ -251,6 +256,11 @@ function fetchNextPageIfNearBottom() {
     scrollableElemId = "user-dashboard";
     fetchCallback = function fetch() {
       fetchNextFollowingPage(indexContainer);
+    }
+  } else if (indexWhich === "reactions"){
+    scrollableElemId = "articles-list";
+    fetchCallback = function fetch() {
+      fetchNextReactionsPage(indexContainer);
     }
   } else {
     scrollableElemId = "articles-list";

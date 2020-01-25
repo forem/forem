@@ -879,6 +879,74 @@
         height: 339px;
       }
     }
+
+    .actions-container {
+      width: 600px;
+      max-width: 100%;
+      margin: auto;
+
+      .actions {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        padding: 2% 0;
+
+        @media screen and (min-width: 600px) {
+          flex-direction: row;
+        }
+
+        .action {
+          flex-basis: 0;
+          flex-grow: 1;
+          flex-shrink: 0;
+          width: 100%;
+          @include themeable(color, theme-color, $black);
+          padding: 10px 0px;
+          border-radius: 3px;
+          min-width: 115px;
+          transition: background-color 250ms ease, opacity 250ms ease;
+          font-family: $helvetica-condensed;
+          font-stretch: condensed;
+          font-size: 0.95em;
+          text-align: center;
+
+          &.active {
+            @include themeable(
+              background,
+              theme-container-accent-background,
+              $purple
+            );
+            @include themeable(color, theme-container-color, $black);
+          }
+
+          &:not(.active):hover {
+            background: $light-medium-purple;
+            @include themeable(
+              background,
+              theme-container-background-hover,
+              $light-medium-purple
+            );
+            @include themeable(color, theme-container-color, $black);
+          }
+
+          &:not(:last-child) {
+            /* gap between actions */
+            margin-bottom: 8px;
+
+            @media screen and (min-width: 600px) {
+              margin-bottom: 0;
+              margin-right: 8px;
+            }
+          }
+        }
+      }
+
+    }
+
+    .fluid-height {
+      height: 100% !important;
+    }
   }
   @media screen and (max-width: 949px) {
     .sidebar-wrapper {
