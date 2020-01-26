@@ -15,7 +15,7 @@ Should you use them everywhere? No. They are a great tool when you need to load 
 JavaScript module on the fly for functionality that is not needed immediately
 for the page to be usable.
 
-Here are a couple of examples of this on DEV:
+Here are a couple of examples of dynamic import usage on DEV:
 
 - The
   [Onboarding flow](https://github.com/thepracticaldev/dev.to/blob/master/app/javascript/packs/Onboarding.jsx#L28).
