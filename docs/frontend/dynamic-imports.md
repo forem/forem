@@ -11,7 +11,7 @@ Explorer which are both unsupported browsers for DEV. They allow you to import
 JavaScript dynamically instead of statically. Why is this important?
 Performance.
 
-Should I use them everywhere? No. They are a great tool when you need to load a
+Should you use them everywhere? No. They are a great tool when you need to load a
 JavaScript module on the fly for functionality that is not needed immediately
 for the page to be usable.
 
@@ -25,7 +25,7 @@ Here are a couple of examples of this on DEV:
 
 DEV uses [webpacker](frontend/webpacker) (webpack), so what webpack will do is
 create separate bundles for code that is dynamically imported. So not only do we
-ended loading code only when we need it, we also end up with smaller bundle
+end up loading code only when we need it, we also end up with smaller bundle
 sizes in the frontend.
 
 For a great deep dive into dynamic imports, there is a great article from
