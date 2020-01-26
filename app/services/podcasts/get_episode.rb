@@ -27,7 +27,7 @@ module Podcasts
 
       unreachable = !(episode.https? && episode.reachable?)
       need_url_update = (unreachable && episode.created_at > 12.hours.ago) || force_update
-      PodcastEpisodes::UpdateMediaUrlJob.perform_later(episode.id, item_data.enclosure_url) if need_url_update
+      PodcastEpisodes::UpdateMediaUrlWorker.perform_async(episode.id, item_data.enclosure_url) if need_url_update
     end
 
     def update_published_at(episode, item_data)
