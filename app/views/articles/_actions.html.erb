@@ -58,27 +58,27 @@
         <web-share-wrapper shareurl="https://dev.to<%= @article.path %>" sharetext="<%= @article.title %>" template="web-share-button">
           <div class="dropdown-link-row">
             <a target="_blank"
-               href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>' rel='nofollow'>
+               href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>
               Share to Twitter
             </a>
           </div>
           <div class="dropdown-link-row">
-            <a target='_blank' href='https://www.linkedin.com/shareArticle?mini=true&url=https://dev.to<%= @article.path %>&title=<%= @article.title %>&summary=<%= @article.description %>&source=dev.to'  rel='nofollow'>
+            <a target='_blank' href='https://www.linkedin.com/shareArticle?mini=true&url=https://dev.to<%= @article.path %>&title=<%= @article.title %>&summary=<%= @article.description %>&source=dev.to'>
               Share to LinkedIn
             </a>
           </div>
           <div class="dropdown-link-row">
-            <a target='_blank' href='https://www.reddit.com/submit?url=https://dev.to<%= @article.path %>&title=<%= @article.title %>' rel='nofollow'>
+            <a target='_blank' href='https://www.reddit.com/submit?url=https://dev.to<%= @article.path %>&title=<%= @article.title %>'>
               Share to Reddit
             </a>
           </div>
           <div class="dropdown-link-row">
-            <a target='_blank' href='https://news.ycombinator.com/submitlink?u=https://dev.to<%= @article.path %>&t=<%= @article.title %>' rel='nofollow'>
+            <a target='_blank' href='https://news.ycombinator.com/submitlink?u=https://dev.to<%= @article.path %>&t=<%= @article.title %>'>
               Share to Hacker News
             </a>
           </div>
           <div class="dropdown-link-row">
-            <a target='_blank' href='https://www.facebook.com/sharer.php?u=https://dev.to<%= @article.path %>' rel='nofollow'>
+            <a target='_blank' href='https://www.facebook.com/sharer.php?u=https://dev.to<%= @article.path %>'>
               Share to Facebook
             </a>
           </div>

@@ -155,7 +155,7 @@
         <% if user_signed_in? %>
           <%= javascript_pack_tag "profileDropdown", defer: true %>
         <% end %>
-        <a href="/report-abuse?url=https://dev.to/<%= @user.username %>" rel="nofollow">Report Abuse</a>
+        <a href="/report-abuse?url=https://dev.to/<%= @user.username %>">Report Abuse</a>
       </div>
     </div>
   </div>
