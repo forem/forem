@@ -958,6 +958,7 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
     t.datetime "created_at"
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
+    t.integer "mod_chat_channel_id"
     t.string "name"
     t.string "pretty_name"
     t.string "profile_image"

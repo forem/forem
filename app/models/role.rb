@@ -9,6 +9,7 @@ class Role < ApplicationRecord
     single_resource_admin
     super_admin
     tag_moderator
+    mod_relations
     tech_admin
     trusted
     warned
