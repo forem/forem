@@ -6,6 +6,8 @@ module Api
       before_action :cors_preflight_check
       after_action :cors_set_access_control_headers
 
+      before_action :set_cache_control_headers, only: %i[index]
+
       def index
         page = params[:page]
         per_page = (params[:per_page] || 24).to_i
