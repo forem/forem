@@ -273,6 +273,14 @@ class Article < ApplicationRecord
     end
   end
 
+  def processed_description
+    text_portion = body_text.present? ? body_text[0..100].tr("\n", " ").strip.to_s : ""
+    text_portion = text_portion.strip + "..." if body_text.size > 100
+    return "A post by #{user.name}" if text_portion.blank?
+
+    text_portion.strip
+  end
+
   def body_text
     ActionView::Base.full_sanitizer.sanitize(processed_html)[0..7000]
   end
@@ -422,6 +430,7 @@ class Article < ApplicationRecord
     self.reading_time = parsed_markdown.calculate_reading_time
     self.processed_html = parsed_markdown.finalize
     evaluate_front_matter(parsed.front_matter)
+    self.description = processed_description if description.blank?
   rescue StandardError => e
     errors[:base] << ErrorMessageCleaner.new(e.message).clean
   end
@@ -493,7 +502,7 @@ class Article < ApplicationRecord
     self.published_at = parse_date(front_matter["date"]) if published
     self.main_image = front_matter["cover_image"] if front_matter["cover_image"].present?
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
-    self.description = front_matter["description"] || description || "#{body_text[0..80]}..."
+    self.description = front_matter["description"] if front_matter["description"].present? || front_matter["title"].present? # Do this if frontmatte exists at all
     self.collection_id = nil if front_matter["title"].present?
     self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
     self.automatically_renew = front_matter["automatically_renew"] if front_matter["automatically_renew"].present? && tag_list.include?("hiring")
