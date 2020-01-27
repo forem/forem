@@ -1115,6 +1115,7 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
     t.string "onboarding_variant_version", default: "0"
     t.boolean "org_admin", default: false
     t.integer "organization_id"
+    t.datetime "organization_info_updated_at"
     t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "personal_data_updated_at"
     t.string "profile_image"
