@@ -295,12 +295,12 @@ GEM
       thor (~> 0.15)
     environs (1.1.0)
     equalizer (0.0.11)
-    erb_lint (0.0.30)
+    erb_lint (0.0.31)
       activesupport
       better_html (~> 1.0.7)
       html_tokenizer
       rainbow
-      rubocop (~> 0.51)
+      rubocop (~> 0.79.0)
       smart_properties
     errbase (0.1.1)
     erubi (1.9.0)
@@ -534,7 +534,7 @@ GEM
     parallel (1.19.1)
     parallel_tests (2.30.1)
       parallel
-    parser (2.7.0.1)
+    parser (2.7.0.2)
       ast (~> 2.4.0)
     pg (1.2.2)
     polyamorous (2.3.2)
@@ -819,7 +819,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.6)
-    unicode-display_width (1.6.0)
+    unicode-display_width (1.6.1)
     uniform_notifier (1.13.0)
     validate_url (1.0.8)
       activemodel (>= 3.0.0)
