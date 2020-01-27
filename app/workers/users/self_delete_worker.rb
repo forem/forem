@@ -1,12 +1,14 @@
 module Users
-  class SelfDeleteJob < ApplicationJob
-    queue_as :users_self_delete
+  class SelfDeleteWorker
+    include Sidekiq::Worker
 
-    def perform(user_id, service = Users::Delete)
+    sidekiq_options queue: :high_priority, retry: 10
+
+    def perform(user_id)
       user = User.find_by(id: user_id)
       return unless user
 
-      service.call(user)
+      Users::Delete.call(user)
       NotifyMailer.account_deleted_email(user).deliver
     rescue StandardError => e
       Rails.logger.error("Error while deleting user: #{e}")
