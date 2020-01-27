@@ -22,7 +22,7 @@ module AssignTagModerator
   end
 
   def self.add_to_chat_channels(user, tag)
-    ChatChannel.find_by(slug: "tag-moderators").add_users(user) if user.chat_channels.find_by(slug: "tag-moderators").blank?
+    ChatChannel.find_by(slug: "tag-moderators").add_users(user) if user.chat_channels.where(slug: "tag-moderators").none?
     if tag.mod_chat_channel_id
       ChatChannel.find(tag.mod_chat_channel_id).add_users(user) if user.chat_channels.where(id: tag.mod_chat_channel_id).none?
     else
