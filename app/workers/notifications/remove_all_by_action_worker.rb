@@ -5,7 +5,8 @@ module Notifications
     sidekiq_options queue: :medium_priority, retry: 10
 
     def perform(notifiable_ids, notifiable_type, action)
-      return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
+      notifiable_collection = notifiable_type.constantize.where(id: notifiable_ids)
+      return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_collection.exists?
 
       Notifications::RemoveAllByAction.call(Array.wrap(notifiable_ids), notifiable_type, action)
     end
