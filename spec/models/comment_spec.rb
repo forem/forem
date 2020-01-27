@@ -368,9 +368,9 @@ RSpec.describe Comment, type: :model do
 
     context "when deleted is true" do
       it "checks auto-deindexing" do
-        expect do
+        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class.algolia_index_name, comment.index_id]) do
           comment.update(deleted: true)
-        end.to have_enqueued_job(Search::RemoveFromIndexJob).with(described_class.algolia_index_name, comment.index_id)
+        end
       end
     end
   end

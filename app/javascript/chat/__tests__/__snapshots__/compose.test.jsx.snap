@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<Compose /> behavior with message should render and test snapshot 1`] = `
-<div>
+<div
+  class="compose__outer__container"
+>
   <div
     class="messagecomposer"
   >

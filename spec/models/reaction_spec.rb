@@ -119,9 +119,14 @@ RSpec.describe Reaction, type: :model do
         reaction.save
       end.to(
         have_enqueued_job(Reactions::UpdateReactableJob).exactly(:once).
-        and(have_enqueued_job(Reactions::BustReactableCacheJob).exactly(:once)).
-        and(have_enqueued_job(Reactions::BustHomepageCacheJob).exactly(:once)),
+        and(have_enqueued_job(Reactions::BustReactableCacheJob).exactly(:once)),
       )
+    end
+
+    it "enqueues the correct workers" do
+      sidekiq_assert_enqueued_with(job: Reactions::BustHomepageCacheWorker) do
+        reaction.save
+      end
     end
 
     it "updates updated_at if the reactable is a comment" do

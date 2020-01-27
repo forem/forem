@@ -26,9 +26,9 @@ RSpec.describe "UserDestroy", type: :request do
       end
 
       it "schedules a user delete job" do
-        expect do
+        sidekiq_assert_enqueued_with(job: Users::SelfDeleteWorker) do
           delete "/users/full_delete"
-        end.to have_enqueued_job(Users::SelfDeleteJob).with(user.id)
+        end
       end
 
       it "signs out" do

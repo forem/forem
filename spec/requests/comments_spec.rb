@@ -171,6 +171,30 @@ RSpec.describe "Comments", type: :request do
         expect { get comment.path }.to raise_error("Not Found")
       end
     end
+
+    context "when the article is deleted" do
+      before do
+        comment
+        article.destroy
+        get comment.path
+      end
+
+      it "renders deleted article comment view" do
+        expect(response.body).to include("Comment from a deleted article or podcast")
+      end
+    end
+
+    context "when the podcast is deleted" do
+      before do
+        podcast_comment
+        podcast_episode.destroy
+        get podcast_comment.path
+      end
+
+      it "renders deleted article comment view" do
+        expect(response.body).to include("Comment from a deleted article or podcast")
+      end
+    end
   end
 
   describe "GET /:username/:slug/comments/:id_code/edit" do
@@ -196,6 +220,20 @@ RSpec.describe "Comments", type: :request do
         get "/#{user.username}/#{article.slug}/comments/#{comment.id_code_generated}/edit"
         expect(response.body).to include CGI.escapeHTML(comment.body_markdown)
       end
+    end
+  end
+
+  describe "PUT /comments/:id" do
+    before do
+      sign_in user
+    end
+
+    it "does not raise a StandardError for invalid liquid tags" do
+      put "/comments/#{comment.id}",
+          params: { comment: { body_markdown: "{% gist flsnjfklsd %}" } }
+
+      expect(response).to have_http_status(:ok)
+      expect(flash[:error]).not_to be_nil
     end
   end
 

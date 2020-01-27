@@ -302,6 +302,13 @@ RSpec.describe "Api::V0::Articles", type: :request do
       get api_article_path("9999")
       expect(response).to have_http_status(:not_found)
     end
+
+    it "sets the correct edge caching surrogate key" do
+      get api_article_path(article)
+
+      expected_key = [article.record_key].to_set
+      expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
+    end
   end
 
   describe "GET /api/articles/me(/:status)" do
@@ -654,11 +661,11 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect do
           post_article(
             title: Faker::Book.title,
-            body_markdown: "yooo" * 100,
+            body_markdown: "yoooo" * 100,
           )
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
-        expect(Article.find(response.parsed_body["id"]).description).to eq("yooo" * 20 + "y...")
+        expect(Article.find(response.parsed_body["id"]).description).to eq("yoooo" * 20 + "y...")
       end
 
       it "does not raise an error if article params are missing" do
@@ -910,7 +917,10 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
       it "updates a description" do
         description = "this is a very interesting article"
-        put_article(description: description)
+        put_article(
+          body_markdown: "Yo ho ho bsddsdsobo",
+          description: description,
+        )
         expect(response).to have_http_status(:ok)
         expect(article.reload.description).to eq(description)
       end
