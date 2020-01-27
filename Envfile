@@ -31,10 +31,10 @@ variable :SESSION_EXPIRY_SECONDS, :Integer, default: 1209600 # two weeks in seco
 variable :REDIS_SIDEKIQ_URL, :String, default: "redis://localhost:6379"
 
 # Temp
-variable :AWS_UPLOAD_ID, :String
-variable :AWS_UPLOAD_SECRET, :String
-variable :AWS_UPLOAD_REGION, :String
-variable :AWS_UPLOAD_BUCKET_NAME, :String
+variable :AWS_UPLOAD_ID, :String, default: "Optional"
+variable :AWS_UPLOAD_SECRET, :String, default: "Optional"
+variable :AWS_UPLOAD_REGION, :String, default: "Optional"
+variable :AWS_UPLOAD_BUCKET_NAME, :String, default: "Optional"
 
 ################################################
 ############## 3rd Party Services ##############
