@@ -32,7 +32,7 @@ class BadgeAchievement < ApplicationRecord
   def send_email_notification
     return unless user.class.name == "User" && user.email.present? && user.email_badge_notifications
 
-    BadgeAchievements::SendEmailNotificationJob.perform_later(id)
+    BadgeAchievements::SendEmailNotificationWorker.perform_async(id)
   end
 
   def award_credits
