@@ -115,10 +115,10 @@ RSpec.describe "ArticlesUpdate", type: :request do
 
   it "schedules a dispatching event job" do
     create(:webhook_endpoint, events: %w[article_created article_updated], user: user)
-    expect do
+    sidekiq_assert_enqueued_jobs(1, only: Webhook::DispatchEventWorker) do
       put "/articles/#{article.id}", params: {
         article: { title: "new_title", body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
       }
-    end.to have_enqueued_job(Webhook::DispatchEventJob).once
+    end
   end
 end
