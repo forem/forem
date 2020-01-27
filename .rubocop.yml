@@ -28,6 +28,10 @@ AllCops:
   ExtraDetails: true
   TargetRubyVersion: 2.6
 
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - "spec/**/*"
+
 Naming/AccessorMethodName:
   Description: Check the naming of accessor methods for get_/set_.
   Enabled: false
