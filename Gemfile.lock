@@ -107,7 +107,7 @@ GEM
       thor (~> 0.18)
     arel (9.0.0)
     ast (2.4.0)
-    autoprefixer-rails (9.7.3)
+    autoprefixer-rails (9.7.4)
       execjs
     awesome_print (1.8.0)
     aws-eventstream (1.0.3)
