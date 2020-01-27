@@ -1,13 +1,13 @@
-<div class="row my-3" id="latestArticles">
+<div class="row my-3" id="siteConfig">
   <div class="card w-100">
     <div class="card-header" id="siteConfigHeader">
       <h2 class="d-inline">Site Configuration</h2>
       <button class="btn btn-secondary float-right" type="button" data-toggle="collapse"
-        data-target="#siteConfigBodyContainer" aria-expanded="false" aria-controls="siteConfigBodyContainer">
+        data-target="#siteConfigBodyContainer" aria-expanded="true" aria-controls="siteConfigBodyContainer">
         Toggle
       </button>
     </div>
-    <div id="siteConfigBodyContainer" class="collapse hide" aria-labelledby="siteConfigHeader">
+    <div id="siteConfigBodyContainer" class="collapse show hide" aria-labelledby="siteConfigHeader">
       <%= form_for(SiteConfig.new, url: internal_config_path) do |f| %>
       <div class="card mt-3">
         <div class="card-header">Staff</div>
@@ -248,35 +248,38 @@
       </div>
       <% end %>
     </div>
+  </div>
+</div>
 
-    <div class="card w-100">
-      <div class="card-header" id="appConfigHeader">
-        <h2 class="d-inline">Environment variables / AppConfig (readonly)</h2>
-        <button class="btn btn-secondary float-right" type="button" data-toggle="collapse"
-          data-target="#appConfigBodyContainer" aria-expanded="false" aria-controls="appConfigBodyContainer">
-          Toggle
-        </button>
-      </div>
-      <div id="appConfigBodyContainer" class="collapse hide" aria-labelledby="appConfigHeader">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Variable</th>
-              <th>Value</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% ENVied.config.variables.each do |v| %>
-            <% if v.group.in?(ENVied.required_groups) %>
-            <tr>
-              <td><%= v.name %></td>
-              <td><%= ApplicationConfig[v.name] %></td>
-            </tr>
-            <% end %>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
+<div class="row my-3" id="siteConfig">
+  <div class="card w-100">
+    <div class="card-header" id="appConfigHeader">
+      <h2 class="d-inline">Environment variables / AppConfig (readonly)</h2>
+      <button class="btn btn-secondary float-right" type="button" data-toggle="collapse"
+        data-target="#appConfigBodyContainer" aria-expanded="true" aria-controls="appConfigBodyContainer">
+        Toggle
+      </button>
+    </div>
+    <div id="appConfigBodyContainer" class="collapse show hide" aria-labelledby="appConfigHeader">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% ENVied.config.variables.each do |v| %>
+          <% if v.group.in?(ENVied.required_groups) %>
+          <tr>
+            <td><%= v.name %></td>
+            <td><%= ApplicationConfig[v.name] %></td>
+          </tr>
+          <% end %>
+          <% end %>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
+<//div>
