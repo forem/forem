@@ -107,6 +107,8 @@ class CommentsController < ApplicationController
   rescue Pundit::NotAuthorizedError
     raise
   rescue StandardError => e
+    skip_authorization
+
     Rails.logger.error(e)
     message = "There was an error in your markdown: #{e}"
     render json: { error: message }, status: :unprocessable_entity
