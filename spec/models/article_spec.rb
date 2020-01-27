@@ -142,6 +142,29 @@ RSpec.describe Article, type: :model do
       end
     end
 
+    describe "#description" do
+      it "creates proper description when description is present" do
+        body_markdown = "---\ntitle: Title\npublished: false\ndescription: hey hey hoho\ntags: one\n---\n\n"
+        expect(build_and_validate_article(body_markdown: body_markdown).description).to eq("hey hey hoho")
+      end
+
+      it "creates proper description when description is not present and body is present and short, with no tags" do
+        body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags:\n---\n\nThis is the body yo"
+        expect(build_and_validate_article(body_markdown: body_markdown).description).to eq("This is the body yo")
+      end
+
+      it "creates proper description when description is not present and body is present and short" do
+        body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: heytag\n---\n\nThis is the body yo"
+        expect(build_and_validate_article(body_markdown: body_markdown).description).to eq("This is the body yo")
+      end
+
+      it "creates proper description when description is not present and body is present and long" do
+        paragraphs = Faker::Hipster.paragraph(sentence_count: 40)
+        body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags:\n---\n\n#{paragraphs}"
+        expect(build_and_validate_article(body_markdown: body_markdown).description).to end_with("...")
+      end
+    end
+
     describe "#canonical_url" do
       let!(:article_with_canon_url) { build(:article, with_canonical_url: true) }
 

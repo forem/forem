@@ -9,19 +9,11 @@ Gemfile @thepracticaldev/sre
 Gemfile   @maestromac
 yarn.lock @maestromac
 
-# Jacob
-/app/assets/stylesheets/internal/ @jacobherrington
-/app/controllers/internal/        @jacobherrington
-/app/views/internal/              @jacobherrington
-/app/views/moderation/            @jacobherrington
-/spec/system/internal/            @jacobherrington
-/spec/requests/internal/          @jacobherrington
+# Team snackCase
+/app/assets/stylesheets/internal/ @jacobherrington @zhao-andy
+/app/controllers/internal/        @jacobherrington @zhao-andy
+/app/views/internal/              @jacobherrington @zhao-andy
+/app/views/moderation/            @jacobherrington @zhao-andy
+/spec/system/internal/            @jacobherrington @zhao-andy
+/spec/requests/internal/          @jacobherrington @zhao-andy
 /docs/                            @jacobherrington
-
-# Andy
-/app/assets/stylesheets/internal/ @zhao-andy
-/app/controllers/internal/        @zhao-andy
-/app/views/internal/              @zhao-andy
-/app/views/moderation/            @zhao-andy
-/spec/system/internal/            @zhao-andy
-/spec/requests/internal/          @zhao-andy
