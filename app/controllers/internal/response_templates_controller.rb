@@ -3,10 +3,10 @@ class Internal::ResponseTemplatesController < Internal::ApplicationController
 
   def index
     @response_templates = if params[:filter]
-                          ResponseTemplate.where(type_of: params[:filter])
-                        else
-                          ResponseTemplate.all
-                        end
+                            ResponseTemplate.where(type_of: params[:filter])
+                          else
+                            ResponseTemplate.all
+                          end
     @response_templates = @response_templates.page(params[:page]).per(50)
   end
 
