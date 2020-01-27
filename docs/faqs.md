@@ -11,8 +11,8 @@ cd docs
 make ruby-doc
 ```
 
-Then open `.static/ruby-doc/index.html` in the `docs` directory and browse the
-Ruby documentation
+Test Then open `.static/ruby-doc/index.html` in the `docs` directory and browse
+the Ruby documentation
 
 ## How do I fix the Error `role "ec2-user" does not exist` on an AWS instance?
 
