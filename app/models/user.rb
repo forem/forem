@@ -223,7 +223,7 @@ class User < ApplicationRecord
   end
 
   def calculate_score
-    score = (articles.where(featured: true).size * 100) + comments.sum(:score)
+    score = articles.sum(:score) + comments.sum(:score)
     update_column(:score, score)
   end
 

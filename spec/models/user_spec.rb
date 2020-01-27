@@ -818,7 +818,7 @@ RSpec.describe User, type: :model do
 
   describe "#calculate_score" do
     it "calculates a score" do
-      create(:article, featured: true, user: user)
+      create(:article, featured: true, user: user, score: 5)
 
       user.calculate_score
       expect(user.score).to be_positive

@@ -13,6 +13,7 @@ module Comments
 
       comment.update_columns(score: score, spaminess_rating: spaminess_rating)
       comment.root.save! unless comment.is_root?
+      comment.user&.calculate_score
     end
   end
 end

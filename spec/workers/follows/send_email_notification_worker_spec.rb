@@ -7,7 +7,7 @@ end
 RSpec.describe Follows::SendEmailNotificationWorker, type: :worker do
   subject(:worker) { described_class }
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, score: 50) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:follow) { create(:follow, follower: user, followable: user2) }
 
@@ -26,6 +26,14 @@ RSpec.describe Follows::SendEmailNotificationWorker, type: :worker do
         worker.drain
 
         expect(MockMailer).to have_received(:deliver).once
+      end
+
+      it "doesn't send a new_follower_email if user has low score" do
+        user.update_column(:score, 0)
+        user2.update_column(:email_follower_notifications, true)
+        worker.drain
+
+        expect(MockMailer).not_to have_received(:deliver)
       end
 
       it "doesn't send an email if user has disabled notifications" do
