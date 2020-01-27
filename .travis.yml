@@ -21,6 +21,14 @@ env:
     - RAILS_ENV=test
     - CC_TEST_REPORTER_ID=f39e060a8b1a558ebd8aff75d5b9760bf1ae98f3f85d628ae28814f3c66438cd
     - DATABASE_URL=postgres://postgres@localhost/
+    - APP_PROTOCOL=http://
+    - APP_DOMAIN=localhost:3000
+    - TIMBER=dummy
+    - SEND_LOGS_TO_TIMBER=false
+    - SENDGRID_USERNAME_ACCEL=dummy
+    - SENDGRID_PASSWORD_ACCEL=dummy
+    - HEROKU_APP_URL=practicaldev.herokuapp.com
+    - SECRET_KEY_BASE=dummydummydummy
 branches:
   only:
     - master
@@ -48,6 +56,7 @@ script:
   - './cc-test-reporter upload-coverage'
   - 'bundle exec bundle-audit check --update --ignore CVE-2015-9284'
   - yarn build-storybook
+  - bundle exec rails runner -e production 'puts "App booted successfully"'
 deploy:
   provider: heroku
   api_key: '$HEROKU_AUTH_TOKEN'
