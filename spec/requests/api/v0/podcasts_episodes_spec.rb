@@ -6,10 +6,25 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
   describe "GET /api/podcast_episodes" do
     it "returns json response" do
       get api_podcast_episodes_path
+
       expect(response.content_type).to eq("application/json")
     end
 
-    it "does not return unreachable podcasts"
+    it "does not return unreachable podcasts" do
+      create(:podcast_episode, reachable: false, podcast: podcast)
+
+      get api_podcast_episodes_path
+
+      expect(response.parsed_body.size).to eq(0)
+    end
+
+    it "does not return reachable podcast episodes belonging to unpublished podcasts" do
+      pe = create(:podcast_episode, reachable: true, podcast: create(:podcast, published: false))
+
+      get api_podcast_episodes_path
+
+      expect(response.parsed_body.map { |e| e["id"] }).not_to include(pe.id.to_s)
+    end
 
     it "returns correct attributes for an episode", :aggregate_failures do
       podcast_episode = create(:podcast_episode, podcast: podcast)
@@ -73,15 +88,28 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
         expect(response.parsed_body.map { |pe| pe["id"] }).to eq([pe1.id])
       end
 
-      it "returns not found if the podcast is unavailable"
-      it "returns not found if the podcast episode is unreachable"
+      it "returns not found if the podcast is unavailable" do
+        unavailable_podcast = create(:podcast, published: false)
+        create(:podcast_episode, podcast: unavailable_podcast)
 
-      it "returns not found if the username does not exist" do
-        get api_podcast_episodes_path(username: "foobar")
+        get api_podcast_episodes_path(username: unavailable_podcast.slug)
+
         expect(response).to have_http_status(:not_found)
       end
 
-      it "does not return episodes from other podcasts"
+      it "returns not found if any of the podcast episodes are unreachable" do
+        create(:podcast_episode, reachable: false, podcast: podcast)
+
+        get api_podcast_episodes_path(username: podcast.slug)
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns not found if the username does not exist" do
+        get api_podcast_episodes_path(username: "foobar")
+
+        expect(response).to have_http_status(:not_found)
+      end
     end
   end
 end
