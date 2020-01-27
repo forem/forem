@@ -1,5 +1,5 @@
 if Rails.env.production?
-  region = ApplicationConfig["AWS_UPLOAD_REGION"] || ApplicationConfig["AWS_DEFAULT_REGION"]
+  region = ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
   SitemapGenerator::Sitemap.adapter = SitemapGenerator::S3Adapter.new(
     fog_provider: "AWS",
     aws_access_key_id: ApplicationConfig["AWS_ID"],

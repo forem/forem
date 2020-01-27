@@ -6,7 +6,7 @@ CarrierWave.configure do |config|
     config.storage = :file
   else
     config.fog_provider = "fog/aws"
-    region = ApplicationConfig["AWS_UPLOAD_REGION"] || ApplicationConfig["AWS_DEFAULT_REGION"]
+    region = ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
     config.fog_credentials = {
       provider: "AWS",
       aws_access_key_id: ApplicationConfig["AWS_ID"],
