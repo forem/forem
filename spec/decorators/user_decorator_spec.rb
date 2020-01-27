@@ -76,7 +76,7 @@ RSpec.describe UserDecorator, type: :decorator do
     it "creates proper body class with pink theme" do
       user.config_theme = "pink_theme"
       expected_result = %W[
-        pink-theme sans-serif-article-body pro-status-#{user.pro?}
+        pink-theme default-article-body pro-status-#{user.pro?}
         trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
@@ -85,7 +85,7 @@ RSpec.describe UserDecorator, type: :decorator do
     it "creates proper body class with minimal light theme" do
       user.config_theme = "minimal_light_theme"
       expected_result = %W[
-        minimal-light-theme sans-serif-article-body pro-status-#{user.pro?}
+        minimal-light-theme default-article-body pro-status-#{user.pro?}
         trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
@@ -94,7 +94,7 @@ RSpec.describe UserDecorator, type: :decorator do
     it "works with static navbar" do
       user.config_navbar = "static"
       expected_result = %W[
-        default sans-serif-article-body pro-status-#{user.pro?}
+        default default-article-body pro-status-#{user.pro?}
         trusted-status-#{user.trusted} static-navbar-config
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
@@ -107,8 +107,8 @@ RSpec.describe UserDecorator, type: :decorator do
         user.add_role(:pro)
 
         expected_result = %W[
-          default sans-serif-article-body pro-status-true
-          trusted-status-#{user.trusted} static-navbar-config
+          default default-article-body pro-status-true
+          trusted-status-#{user.trusted} default-navbar-config
         ].join(" ")
         expect(user.decorate.config_body_class).to eq(expected_result)
       end
@@ -117,8 +117,8 @@ RSpec.describe UserDecorator, type: :decorator do
         user.add_role(:trusted)
 
         expected_result = %W[
-          default sans-serif-article-body pro-status-#{user.pro?}
-          trusted-status-true static-navbar-config
+          default default-article-body pro-status-#{user.pro?}
+          trusted-status-true default-navbar-config
         ].join(" ")
         expect(user.decorate.config_body_class).to eq(expected_result)
       end
