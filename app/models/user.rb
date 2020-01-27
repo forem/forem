@@ -47,12 +47,12 @@ class User < ApplicationRecord
   has_many :classified_listings
   has_many :poll_votes, dependent: :destroy
   has_many :poll_skips, dependent: :destroy
-  has_many :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user, class_name: "BackupData", dependent: :delete_all
+  has_many :backup_data, foreign_key: :instance_user_id, inverse_of: :instance_user, class_name: "BackupData", dependent: :delete_all
   has_many :display_ad_events, dependent: :destroy
   has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
-  has_many :response_templates, foreign_key: :user_id, dependent: :destroy
+  has_many :response_templates, foreign_key: :user_id, inverse_of: :user, dependent: :destroy
   has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id, inverse_of: :blocker, dependent: :delete_all
   has_many :blocked_blocks, class_name: "UserBlock", foreign_key: :blocked_id, inverse_of: :blocked, dependent: :delete_all
   has_one :pro_membership, dependent: :destroy
