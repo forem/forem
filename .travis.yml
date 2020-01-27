@@ -12,7 +12,7 @@ addons:
   chrome: 'stable'
   artifacts:
     paths:
-      - 'tmp/screenshots/*.png'
+      - $(ls tmp/screenshots/*.png | tr "\n" ":")
     debug: true
 services:
   - redis-server
