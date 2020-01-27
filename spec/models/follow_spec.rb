@@ -63,13 +63,23 @@ RSpec.describe Follow, type: :model do
       end.to change(ChatChannel, :count).by(1)
     end
 
-    it "sends an email notification" do
+    it "sends an email notification if user has score" do
+      user.update_column(:score, 111)
       user_2.update_column(:email_follower_notifications, true)
       expect do
         Sidekiq::Testing.inline! do
           described_class.create!(follower: user, followable: user_2)
         end
       end.to change(EmailMessage, :count).by(1)
+    end
+
+    it "does not send email if user does not have high enough score" do
+      user_2.update_column(:email_follower_notifications, true)
+      expect do
+        Sidekiq::Testing.inline! do
+          described_class.create!(follower: user, followable: user_2)
+        end
+      end.to change(EmailMessage, :count).by(0)
     end
   end
 end
