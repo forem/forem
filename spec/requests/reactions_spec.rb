@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Reactions", type: :request do
   let(:user)    { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
-  let(:comment) { create(:comment, commentable_id: article.id) }
+  let(:comment) { create(:comment, commentable: article) }
   let(:max_age) { FastlyRails.configuration.max_age }
   let(:stale_if_error) { FastlyRails.configuration.stale_if_error }
 

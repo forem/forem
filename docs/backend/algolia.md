@@ -61,7 +61,7 @@ application.
 
 ## Notes
 
-Algolia puts you on a trial account by defult. The trial period is 14 days. But
+Algolia puts you on a trial account by default. The trial period is 14 days. But
 don't worry, it also offers a free plan called **Community**. You may want to
 switch to it manually:
 

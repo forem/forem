@@ -170,7 +170,7 @@ RSpec.describe "Internal::Users", type: :request do
         :comment,
         body_markdown: "Hello @#{user.username}, you are cool.",
         user_id: user2.id,
-        commentable_id: article2.id,
+        commentable: article2,
       )
       perform_enqueued_jobs do
         Mention.create_all(comment)
@@ -233,6 +233,18 @@ RSpec.describe "Internal::Users", type: :request do
       user.follow(user2)
       banish_user
       expect(user.follows.count).to eq(0)
+    end
+
+    it "creates an entry in the BanishedUsers table" do
+      expect do
+        banish_user
+      end.to change(BanishedUser, :count).by(1)
+    end
+
+    it "records who banished a user" do
+      banish_user
+      admin = BanishedUser.last
+      expect(admin.banished_by).to eq super_admin
     end
   end
 

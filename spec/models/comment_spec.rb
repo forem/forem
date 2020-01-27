@@ -339,8 +339,13 @@ RSpec.describe Comment, type: :model do
     end
 
     it "busts the comment cache" do
-      expect_any_instance_of(Comments::BustCacheWorker).to receive(:perform).with(comment.id)
-      comment.destroy
+      # here the comment is destroyed from the test above so we re-create one
+      new_comment = create(:comment, commentable: article)
+
+      # this replaces the use of expect_any_instance_of which is a RuboCop violation
+      sidekiq_assert_enqueued_with(job: Comments::BustCacheWorker, args: [new_comment.id]) do
+        new_comment.destroy
+      end
     end
   end
 
@@ -355,17 +360,17 @@ RSpec.describe Comment, type: :model do
 
     context "when deleted is false" do
       it "checks auto-indexing" do
-        expect do
+        sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["Comment", comment.id]) do
           comment.update(body_markdown: "hello")
-        end.to have_enqueued_job(Search::IndexJob).with("Comment", comment.id)
+        end
       end
     end
 
     context "when deleted is true" do
       it "checks auto-deindexing" do
-        expect do
+        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class.algolia_index_name, comment.index_id]) do
           comment.update(deleted: true)
-        end.to have_enqueued_job(Search::RemoveFromIndexJob).with(described_class.algolia_index_name, comment.index_id)
+        end
       end
     end
   end

@@ -16,21 +16,23 @@ class CommentsController < ApplicationController
 
     if @podcast
       @user = @podcast
-      (@commentable = @user.podcast_episodes.find_by(slug: params[:slug])) || not_found
+      @commentable = @user.podcast_episodes.find_by(slug: params[:slug]) if @user.podcast_episodes
     else
       @user = User.find_by(username: params[:username]) ||
         Organization.find_by(slug: params[:username]) ||
         not_found
       @commentable = @root_comment&.commentable ||
-        @user.articles.find_by(slug: params[:slug]) ||
-        not_found
+        @user.articles.find_by(slug: params[:slug]) || nil
       @article = @commentable
-      not_found unless @commentable.published
+
+      not_found if @commentable && !@commentable.published
     end
 
-    @commentable_type = @commentable.class.name
+    @commentable_type = @commentable.class.name if @commentable
 
-    set_surrogate_key_header "comments-for-#{@commentable.id}-#{@commentable_type}"
+    set_surrogate_key_header "comments-for-#{@commentable.id}-#{@commentable_type}" if @commentable
+
+    render :deleted_commentable_comment unless @commentable
   end
 
   # GET /comments/1
@@ -106,7 +108,7 @@ class CommentsController < ApplicationController
     raise
   rescue StandardError => e
     Rails.logger.error(e)
-    message = "There was a error in your markdown: #{e}"
+    message = "There was an error in your markdown: #{e}"
     render json: { error: message }, status: :unprocessable_entity
   end
 
@@ -121,6 +123,10 @@ class CommentsController < ApplicationController
       @commentable = @comment.commentable
       render :edit
     end
+  rescue StandardError => e
+    @commentable = @comment.commentable
+    flash.now[:error] = "There was an error in your markdown: #{e}"
+    render :edit
   end
 
   # DELETE /comments/1
@@ -150,7 +156,7 @@ class CommentsController < ApplicationController
       parsed_markdown = MarkdownParser.new(fixed_body_markdown)
       processed_html = parsed_markdown.finalize
     rescue StandardError => e
-      processed_html = "<p>😔 There was a error in your markdown</p><hr><p>#{e}</p>"
+      processed_html = "<p>😔 There was an error in your markdown</p><hr><p>#{e}</p>"
     end
     respond_to do |format|
       format.json { render json: { processed_html: processed_html }, status: :ok }

@@ -40,7 +40,7 @@ class Notification < ApplicationRecord
     end
 
     def send_to_followers(notifiable, action = nil)
-      Notifications::NotifiableActionJob.perform_later(notifiable.id, notifiable.class.name, action)
+      Notifications::NotifiableActionWorker.perform_async(notifiable.id, notifiable.class.name, action)
     end
 
     def send_new_comment_notifications_without_delay(comment)

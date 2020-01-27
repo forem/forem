@@ -6,6 +6,7 @@ RSpec.describe Message, type: :model do
   let(:tag) { create(:tag) }
   let(:chat_channel) { create(:chat_channel) }
   let(:message) { create(:message, user: user) }
+  let(:random_word) { Faker::Lorem.word }
 
   describe "validations" do
     context "with automatic validations" do
@@ -70,6 +71,22 @@ RSpec.describe Message, type: :model do
         message.validate!
 
         expect(message.message_html).not_to include("data-content")
+      end
+
+      it "creates mention if user exists" do
+        message.message_markdown = "Hello @#{user.username}"
+        message.validate!
+
+        expect(message.message_html).to include "<a"
+        expect(message.message_html).to include("/#{user.username}")
+      end
+
+      it "doesn't creates mention if user exists" do
+        message.message_markdown = "Hello @#{random_word}"
+        message.validate!
+
+        expect(message.message_html).not_to include "<a"
+        expect(message.message_html).not_to include("/#{random_word}")
       end
     end
   end

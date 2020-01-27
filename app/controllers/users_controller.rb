@@ -19,14 +19,14 @@ class UsersController < ApplicationController
   def update
     set_tabs(params["user"]["tab"])
     if @user.update(permitted_attributes(@user))
-      RssReaderFetchUserJob.perform_later(@user.id)
+      RssReaderFetchUserWorker.perform_async(@user.id) if @user.feed_url.present?
       notice = "Your profile was successfully updated."
       if config_changed?
         notice = "Your config has been updated. Refresh to see all changes."
       end
       if @user.export_requested?
         notice += " The export will be emailed to you shortly."
-        ExportContentJob.perform_later(@user.id)
+        ExportContentWorker.perform_async(@user.id)
       end
       cookies.permanent[:user_experience_level] = @user.experience_level.to_s if @user.experience_level.present?
       follow_hiring_tag(@user)
@@ -126,7 +126,7 @@ class UsersController < ApplicationController
   def onboarding_checkbox_update
     if params[:user]
       permitted_params = %i[
-        checked_code_of_conduct checked_terms_and_conditions email_membership_newsletter email_digest_periodic
+        checked_code_of_conduct checked_terms_and_conditions email_newsletter email_digest_periodic
       ]
       current_user.assign_attributes(params[:user].permit(permitted_params))
     end

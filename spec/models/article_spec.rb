@@ -142,6 +142,29 @@ RSpec.describe Article, type: :model do
       end
     end
 
+    describe "#description" do
+      it "creates proper description when description is present" do
+        body_markdown = "---\ntitle: Title\npublished: false\ndescription: hey hey hoho\ntags: one\n---\n\n"
+        expect(build_and_validate_article(body_markdown: body_markdown).description).to eq("hey hey hoho")
+      end
+
+      it "creates proper description when description is not present and body is present and short, with no tags" do
+        body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags:\n---\n\nThis is the body yo"
+        expect(build_and_validate_article(body_markdown: body_markdown).description).to eq("This is the body yo")
+      end
+
+      it "creates proper description when description is not present and body is present and short" do
+        body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: heytag\n---\n\nThis is the body yo"
+        expect(build_and_validate_article(body_markdown: body_markdown).description).to eq("This is the body yo")
+      end
+
+      it "creates proper description when description is not present and body is present and long" do
+        paragraphs = Faker::Hipster.paragraph(sentence_count: 40)
+        body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags:\n---\n\n#{paragraphs}"
+        expect(build_and_validate_article(body_markdown: body_markdown).description).to end_with("...")
+      end
+    end
+
     describe "#canonical_url" do
       let!(:article_with_canon_url) { build(:article, with_canonical_url: true) }
 
@@ -466,26 +489,46 @@ RSpec.describe Article, type: :model do
   end
 
   context "when indexing and deindexing" do
-    it "deindexes unpublished article" do
-      expect do
+    it "deindexes unpublished article from Article index" do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class.algolia_index_name, article.id]) do
         article.update(body_markdown: "---\ntitle: Title\npublished: false\ndescription:\ntags: one\n---\n\n")
-      end.to have_enqueued_job(Search::RemoveFromIndexJob).with(described_class.algolia_index_name, article.id).
-        and have_enqueued_job(Search::RemoveFromIndexJob).with("searchables_#{Rails.env}", article.index_id).
-        and have_enqueued_job(Search::RemoveFromIndexJob).with("ordered_articles_#{Rails.env}", article.index_id)
+      end
     end
 
-    it "deindexes hiring article" do
-      expect do
+    it "deindexes unpublished article from searchables index" do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: ["searchables_#{Rails.env}", article.index_id]) do
+        article.update(body_markdown: "---\ntitle: Title\npublished: false\ndescription:\ntags: one\n---\n\n")
+      end
+    end
+
+    it "deindexes unpublished article from ordered_articles index" do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: ["ordered_articles_#{Rails.env}", article.index_id]) do
+        article.update(body_markdown: "---\ntitle: Title\npublished: false\ndescription:\ntags: one\n---\n\n")
+      end
+    end
+
+    it "deindexes hiring article from Article index" do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class.algolia_index_name, article.id]) do
         article.update(body_markdown: "---\ntitle: Title\npublished: true\ndescription:\ntags: hiring\n---\n\n")
-      end.to have_enqueued_job(Search::RemoveFromIndexJob).with(described_class.algolia_index_name, article.id).
-        and have_enqueued_job(Search::RemoveFromIndexJob).with("searchables_#{Rails.env}", article.index_id).
-        and have_enqueued_job(Search::RemoveFromIndexJob).with("ordered_articles_#{Rails.env}", article.index_id)
+      end
+    end
+
+    it "deindexes hiring article from searchables index" do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: ["searchables_#{Rails.env}", article.index_id]) do
+        article.update(body_markdown: "---\ntitle: Title\npublished: true\ndescription:\ntags: hiring\n---\n\n")
+      end
+    end
+
+    it "deindexes hiring article from ordered_articles index" do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: ["ordered_articles_#{Rails.env}", article.index_id]) do
+        article.update(body_markdown: "---\ntitle: Title\npublished: true\ndescription:\ntags: hiring\n---\n\n")
+      end
     end
 
     it "indexes published non-hiring article" do
-      expect do
+      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["Article", article.id]) do
         article.update(published: false)
-      end.to have_enqueued_job(Search::IndexJob).exactly(:once).with("Article", article.id)
+      end
     end
 
     it "triggers auto removal from index on destroy" do

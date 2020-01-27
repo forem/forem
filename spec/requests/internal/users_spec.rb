@@ -39,7 +39,7 @@ RSpec.describe "internal/users", type: :request do
     end
   end
 
-  describe "PUT internal/users/:id/edit" do
+  describe "POST internal/users/:id/banish" do
     it "bans user for spam" do
       post "/internal/users/#{user.id}/banish"
       expect(user.reload.username).to include("spam")

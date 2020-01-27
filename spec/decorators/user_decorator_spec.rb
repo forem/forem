@@ -41,7 +41,7 @@ RSpec.describe UserDecorator, type: :decorator do
     end
 
     it "returns fully banished if user has been banished" do
-      Moderator::BanishUser.call_banish(admin: user, user: user)
+      Moderator::BanishUser.call(admin: user, user: user)
       expect(user.decorate.fully_banished?).to eq(true)
     end
 

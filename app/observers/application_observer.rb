@@ -2,10 +2,12 @@ class ApplicationObserver < ActiveRecord::Observer
   def warned_user_ping(activity)
     return unless activity.user.warned == true
 
-    SlackBotPingJob.perform_later message: message(activity),
-                                  channel: "warned-user-comments",
-                                  username: "sloan_watch_bot",
-                                  icon_emoji: ":sloan:"
+    SlackBotPingWorker.perform_async(
+      message: message(activity),
+      channel: "warned-user-comments",
+      username: "sloan_watch_bot",
+      icon_emoji: ":sloan:",
+    )
   end
 
   def message(activity)
