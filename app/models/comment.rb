@@ -28,7 +28,7 @@ class Comment < ApplicationRecord
   before_destroy :before_destroy_actions
   after_create_commit :send_email_notification, if: :should_send_email_notification?
   after_create_commit :create_first_reaction
-  after_create   :send_to_moderator
+  after_create_commit :send_to_moderator
   before_save    :set_markdown_character_count, if: :body_markdown
   before_create  :adjust_comment_parent_based_on_depth
   after_update   :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
