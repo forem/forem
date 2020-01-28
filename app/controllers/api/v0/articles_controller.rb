@@ -1,7 +1,7 @@
 module Api
   module V0
     class ArticlesController < ApiController
-      ATTRIBUTES_FOR_SERIALIZATION = %i[
+      INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[
         id user_id organization_id collection_id
         title description main_image published_at crossposted_at social_image
         cached_tag_list slug path canonical_url comments_count
@@ -10,7 +10,7 @@ module Api
       ].freeze
 
       SHOW_ATTRIBUTES_FOR_SERIALIZATION = (
-        ATTRIBUTES_FOR_SERIALIZATION + %i[body_markdown processed_html]
+        INDEX_ATTRIBUTES_FOR_SERIALIZATION + %i[body_markdown processed_html]
       ).freeze
 
       ME_ATTRIBUTES_FOR_SERIALIZATION = %i[
@@ -35,7 +35,7 @@ module Api
       skip_before_action :verify_authenticity_token, only: %i[create update]
 
       def index
-        @articles = ArticleApiIndexService.new(params, ATTRIBUTES_FOR_SERIALIZATION).get
+        @articles = ArticleApiIndexService.new(params, INDEX_ATTRIBUTES_FOR_SERIALIZATION).get
 
         set_surrogate_key_header Article.table_key, @articles.map(&:record_key)
       end
