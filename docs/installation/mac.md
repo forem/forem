@@ -89,8 +89,7 @@ To start elasticsearch as a daemonized process:
 ## Installing DEV
 
 1. Fork DEV's repository, e.g. <https://github.com/thepracticaldev/dev.to/fork>
-1. Clone your forked repository, e.g.
-   `git clone https://github.com/<your-username>/dev.to.git`
+1. Clone your forked repository, e.g. `git clone https://github.com/<your-username>/dev.to.git`
 1. Install bundler with `gem install bundler`
 1. Set up your environment variables/secrets
 
