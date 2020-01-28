@@ -4,6 +4,7 @@
 MESSAGE_FINGERPRINTS = {
   "BANNED" => "banned",
   "Rack::Timeout::RequestTimeoutException" => "rack_timeout",
+  "Rack::Timeout::RequestTimeoutError" => "rack_timeout",
   "PG::QueryCanceled" => "pg_query_canceled"
 }.freeze
 
