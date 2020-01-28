@@ -15,7 +15,7 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
 
     context "when user is unauthorized" do
       it "returns unauthorized" do
-        get organizations_api_followers_path
+        get api_followers_organizations_path
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -27,7 +27,7 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
       end
 
       it "returns user's followers list with the correct format" do
-        get organizations_api_followers_path
+        get api_followers_organizations_path
         expect(response).to have_http_status(:ok)
 
         response_follower = response.parsed_body.first
@@ -52,7 +52,7 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
 
     context "when user is unauthorized" do
       it "returns unauthorized" do
-        get users_api_followers_path
+        get api_followers_users_path
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -64,7 +64,7 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
       end
 
       it "returns user's followers list with the correct format" do
-        get users_api_followers_path
+        get api_followers_users_path
         expect(response).to have_http_status(:ok)
 
         response_follower = response.parsed_body.first
