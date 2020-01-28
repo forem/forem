@@ -55,6 +55,7 @@ class Article < ApplicationRecord
   validates :video_closed_caption_track_url, url: { allow_blank: true, schemes: ["https"] }
   validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
 
+  after_update_commit :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
   before_validation :evaluate_markdown
   before_validation :create_slug
   before_create     :create_password
@@ -68,7 +69,6 @@ class Article < ApplicationRecord
   after_save        :update_main_image_background_hex
   after_save        :detect_human_language
   before_save       :update_cached_user
-  after_update      :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
   before_destroy    :before_destroy_actions, prepend: true
 
   serialize :ids_for_suggested_articles

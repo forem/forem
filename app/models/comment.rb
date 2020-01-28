@@ -22,6 +22,7 @@ class Comment < ApplicationRecord
 
   after_create   :after_create_checks
   after_commit   :calculate_score
+  after_update_commit :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
   after_save     :bust_cache
   after_save     :synchronous_bust
   after_destroy  :after_destroy_actions
@@ -31,7 +32,6 @@ class Comment < ApplicationRecord
   after_create_commit :send_to_moderator
   before_save    :set_markdown_character_count, if: :body_markdown
   before_create  :adjust_comment_parent_based_on_depth
-  after_update   :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
   after_update   :remove_notifications, if: :deleted
   after_update   :update_descendant_notifications, if: :deleted
   before_validation :evaluate_markdown, if: -> { body_markdown && commentable }
