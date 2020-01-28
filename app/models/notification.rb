@@ -112,7 +112,7 @@ class Notification < ApplicationRecord
     end
 
     def update_notifications(notifiable, action = nil)
-      Notifications::UpdateJob.perform_later(notifiable.id, notifiable.class.name, action)
+      Notifications::UpdateWorker.perform_async(notifiable.id, notifiable.class.name, action)
     end
 
     def fast_destroy_old_notifications(destroy_before_timestamp = 4.months.ago)
