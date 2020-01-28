@@ -20,6 +20,10 @@ module Moderator
       Users::DeleteArticles.call(user)
     end
 
+    def cleanup_chat_channels
+      Users::CleanupChatChannels.call(user)
+    end
+
     def delete_user_activity
       Users::DeleteActivity.call(user)
     end
