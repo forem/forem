@@ -4,7 +4,15 @@ class ArticleApiIndexService
   DEFAULT_PER_PAGE = 30
   MAX_PER_PAGE = 1000
 
-  def initialize(params)
+  ATTRIBUTES_FOR_SERIALIZATION = %i[
+    id user_id organization_id collection_id
+    title description main_image published_at crossposted_at social_image
+    cached_tag_list slug path canonical_url comments_count
+    positive_reactions_count created_at edited_at last_comment_at published
+    updated_at
+  ].freeze
+
+  def initialize(params, attributes_for_serialization)
     @page = params[:page]
     @tag = params[:tag]
     @username = params[:username]
@@ -12,6 +20,7 @@ class ArticleApiIndexService
     @top = params[:top]
     @collection_id = params[:collection_id]
     @per_page = params[:per_page]
+    @attributes_for_serialization = attributes_for_serialization
   end
 
   def get
@@ -29,10 +38,14 @@ class ArticleApiIndexService
                  base_articles
                end
 
+    articles = articles.select(attributes_for_serialization)
+
     articles&.decorate
   end
 
   private
+
+  attr_reader :attributes_for_serialization
 
   def username_articles
     num = if @state == "all"

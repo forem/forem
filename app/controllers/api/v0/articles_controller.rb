@@ -1,6 +1,25 @@
 module Api
   module V0
     class ArticlesController < ApiController
+      ATTRIBUTES_FOR_SERIALIZATION = %i[
+        id user_id organization_id collection_id
+        title description main_image published_at crossposted_at social_image
+        cached_tag_list slug path canonical_url comments_count
+        positive_reactions_count created_at edited_at last_comment_at published
+        updated_at
+      ].freeze
+
+      SHOW_ATTRIBUTES_FOR_SERIALIZATION = (
+        ATTRIBUTES_FOR_SERIALIZATION + %i[body_markdown processed_html]
+      ).freeze
+
+      ME_ATTRIBUTES_FOR_SERIALIZATION = %i[
+        id user_id organization_id
+        title description main_image published published_at cached_tag_list
+        slug path canonical_url comments_count positive_reactions_count
+        page_views_count crossposted_at body_markdown updated_at
+      ].freeze
+
       respond_to :json
 
       before_action :authenticate_with_api_key_or_current_user!, only: %i[create update]
@@ -16,13 +35,17 @@ module Api
       skip_before_action :verify_authenticity_token, only: %i[create update]
 
       def index
-        @articles = ArticleApiIndexService.new(params).get
+        @articles = ArticleApiIndexService.new(params, ATTRIBUTES_FOR_SERIALIZATION).get
 
         set_surrogate_key_header Article.table_key, @articles.map(&:record_key)
       end
 
       def show
-        @article = Article.published.includes(:user).find(params[:id]).decorate
+        @article = Article.published.
+          includes(:user).
+          select(SHOW_ATTRIBUTES_FOR_SERIALIZATION).
+          find(params[:id]).
+          decorate
 
         set_surrogate_key_header @article.record_key
       end
@@ -62,6 +85,7 @@ module Api
 
         @articles = @articles.
           includes(:organization).
+          select(ME_ATTRIBUTES_FOR_SERIALIZATION).
           order(published_at: :desc, created_at: :desc).
           page(params[:page]).
           per(num).
