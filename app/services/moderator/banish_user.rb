@@ -46,7 +46,7 @@ module Moderator
         twitch_url: nil, feed_url: nil
       )
 
-      user.update_columns(profile_image: "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png")
+      user.update_columns(profile_image: "https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png")
     end
   end
 end

@@ -14,7 +14,7 @@ class SiteConfig < RailsSettings::Base
   field :social_networks_handle, type: :string, default: "thepracticaldev"
 
   # images
-  field :main_social_image, type: :string, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
+  field :main_social_image, type: :string, default: "https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
   field :favicon_url, type: :string, default: "favicon.ico"
   field :logo_svg, type: :string, default: ""
 
