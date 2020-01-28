@@ -11,5 +11,6 @@ class EventsController < ApplicationController
 
   def show
     @event = Event.find_by(slug: params[:id])
+    not_found unless @event
   end
 end
