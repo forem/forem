@@ -2,3 +2,5 @@
 CacheBuster.bust("/shell_top")
 CacheBuster.bust("/shell_bottom")
 CacheBuster.bust("/async_info/shell_version")
+CacheBuster.bust("/serviceworker.js")
+CacheBuster.bust("/robots.txt")
