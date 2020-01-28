@@ -9,7 +9,6 @@ group :production do
   gem "rack-host-redirect", "~> 1.3" # Lean and simple host redirection via Rack middleware
 end
 
-gem "actionpack-action_caching", "~> 1.2" # Action caching for Action Pack (removed from core in Rails 4.0)
 gem "active_record_union", "~> 1.3" # Adds proper union and union_all methods to ActiveRecord::Relation
 gem "activerecord-import", "~> 1.0" # Adds ability to bulk create activerecord objects
 gem "acts-as-taggable-on", "~> 6.5" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
