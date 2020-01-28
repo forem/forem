@@ -8,7 +8,10 @@ module Api
       def index
         article = Article.find(params[:a_id])
 
-        @comments = article.comments.includes(:user).select(%i[id processed_html user_id ancestry]).arrange
+        @comments = article.comments.
+          includes(:user).
+          select(ATTRIBUTES_FOR_SERIALIZATION).
+          arrange
 
         set_surrogate_key_header article.record_key, Comment.table_key, edge_cache_keys(@comments)
       end
@@ -16,7 +19,7 @@ module Api
       def show
         tree_with_root_comment = Comment.subtree_of(params[:id].to_i(26)).
           includes(:user).
-          select(%i[id processed_html user_id ancestry]).
+          select(ATTRIBUTES_FOR_SERIALIZATION).
           arrange
 
         # being only one tree we know that the root comment is the first (and only) key
@@ -27,6 +30,8 @@ module Api
       end
 
       private
+
+      ATTRIBUTES_FOR_SERIALIZATION = %i[id processed_html user_id ancestry].freeze
 
       # ancestry wraps a single or multiple trees of comments into a single hash,
       # in the case of an article comments, the hash has multiple keys (the root comments),

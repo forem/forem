@@ -3,11 +3,6 @@ module Api
     class ClassifiedListingsController < ApiController
       include ClassifiedListingsToolkit
 
-      ATTRIBUTES_FOR_SERIALIZATION = %i[
-        id user_id organization_id title slug body_markdown
-        cached_tag_list category processed_html published
-      ].freeze
-
       respond_to :json
 
       before_action :set_classified_listing, only: %i[update]
@@ -53,6 +48,11 @@ module Api
       attr_accessor :user
 
       alias current_user user
+
+      ATTRIBUTES_FOR_SERIALIZATION = %i[
+        id user_id organization_id title slug body_markdown
+        cached_tag_list category processed_html published
+      ].freeze
 
       def process_no_credit_left
         msg = "Not enough available credits"

@@ -8,6 +8,7 @@ module Api
         @follows = Follow.
           where(followable_id: @user.organization_id, followable_type: "Organization").
           includes(:follower).
+          select(ATTRIBUTES_FOR_SERIALIZATION).
           order("created_at DESC").
           page(params[:page]).
           per(@follows_limit)
@@ -17,12 +18,15 @@ module Api
         @follows = Follow.
           where(followable_id: @user.id, followable_type: "User").
           includes(:follower).
+          select(ATTRIBUTES_FOR_SERIALIZATION).
           order("created_at DESC").
           page(params[:page]).
           per(@follows_limit)
       end
 
       private
+
+      ATTRIBUTES_FOR_SERIALIZATION = %i[id follower_id follower_type].freeze
 
       def limit_per_page(default:, max:)
         per_page = (params[:per_page] || default).to_i
