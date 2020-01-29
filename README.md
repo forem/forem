@@ -111,6 +111,7 @@ A more complete overview of our stack is available in
 - [@joshpuetz](http://dev.to/joshpuetz)
 - [@vaidehijoshi](https://dev.to/vaidehijoshi)
 - [@juliannatetreault](https://dev.to/juliannatetreault)
+- [@ridhwana](https://dev.to/ridhwana)
 
 ## Vulnerability disclosure
 
