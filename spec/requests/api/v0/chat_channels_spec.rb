@@ -1,10 +1,10 @@
 require "rails_helper"
 
 RSpec.describe "Api::V0::ChatChannels", type: :request do
-  let_it_be_changeable(:chat_channel) { create(:chat_channel) }
+  let(:chat_channel) { create(:chat_channel) }
 
   describe "GET /api/chat_channels/:id" do
-    let_it_be_changeable(:user) { create(:user) }
+    let(:user) { create(:user) }
 
     context "when there is no user signed in" do
       before do
