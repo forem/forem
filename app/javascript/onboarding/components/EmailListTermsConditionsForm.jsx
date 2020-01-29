@@ -4,7 +4,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import Navigation from './Navigation';
-import { getContentOfToken, updateOnboarding } from '../utilities';
+import { csrfTokenContent, updateOnboarding } from '../utilities';
 
 /* eslint-disable camelcase */
 
@@ -32,12 +32,11 @@ class EmailTermsConditionsForm extends Component {
 
   onSubmit() {
     if (!this.checkRequirements()) return;
-    const csrfToken = getContentOfToken('csrf-token');
 
     fetch('/onboarding_checkbox_update', {
       method: 'PATCH',
       headers: {
-        'X-CSRF-Token': csrfToken,
+        'X-CSRF-Token': csrfTokenContent,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ user: this.state }),

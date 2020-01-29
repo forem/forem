@@ -4,7 +4,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import Navigation from './Navigation';
-import { getContentOfToken } from '../utilities';
+import { csrfTokenContent } from '../utilities';
 
 const setupFormTextField = ({
   labelText = '',
@@ -41,12 +41,11 @@ class PersonalInfoForm extends Component {
   }
 
   componentDidMount() {
-    const csrfToken = getContentOfToken('csrf-token');
     const { last_onboarding_page } = this.state;
     fetch('/onboarding_update', {
       method: 'PATCH',
       headers: {
-        'X-CSRF-Token': csrfToken,
+        'X-CSRF-Token': csrfTokenContent,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ user: { last_onboarding_page } }),
@@ -55,8 +54,6 @@ class PersonalInfoForm extends Component {
   }
 
   onSubmit() {
-    const csrfToken = getContentOfToken('csrf-token');
-
     const {
       last_onboarding_page,
       location,
@@ -67,7 +64,7 @@ class PersonalInfoForm extends Component {
     fetch('/onboarding_update', {
       method: 'PATCH',
       headers: {
-        'X-CSRF-Token': csrfToken,
+        'X-CSRF-Token': csrfTokenContent,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({

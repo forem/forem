@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import Navigation from './Navigation';
-import { getContentOfToken } from '../utilities';
+import { csrfTokenContent } from '../utilities';
 
 class FollowUsers extends Component {
   constructor(props) {
@@ -30,11 +30,10 @@ class FollowUsers extends Component {
         this.setState({ users: data, selectedUsers: data });
       });
 
-    const csrfToken = getContentOfToken('csrf-token');
     fetch('/onboarding_update', {
       method: 'PATCH',
       headers: {
-        'X-CSRF-Token': csrfToken,
+        'X-CSRF-Token': csrfTokenContent,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -45,14 +44,13 @@ class FollowUsers extends Component {
   }
 
   handleComplete() {
-    const csrfToken = getContentOfToken('csrf-token');
     const { selectedUsers } = this.state;
     const { next } = this.props;
 
     fetch('/api/follows', {
       method: 'POST',
       headers: {
-        'X-CSRF-Token': csrfToken,
+        'X-CSRF-Token': csrfTokenContent,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ users: selectedUsers }),

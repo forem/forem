@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import Navigation from './Navigation';
-import { getContentOfToken } from '../utilities';
+import { csrfTokenContent } from '../utilities';
 
 class FollowTags extends Component {
   constructor(props) {
@@ -24,11 +24,10 @@ class FollowTags extends Component {
         this.setState({ allTags: data });
       });
 
-    const csrfToken = getContentOfToken('csrf-token');
     fetch('/onboarding_update', {
       method: 'PATCH',
       headers: {
-        'X-CSRF-Token': csrfToken,
+        'X-CSRF-Token': csrfTokenContent,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -55,7 +54,6 @@ class FollowTags extends Component {
   }
 
   handleComplete() {
-    const csrfToken = getContentOfToken('csrf-token');
     const { selectedTags } = this.state;
 
     Promise.all(
@@ -63,7 +61,7 @@ class FollowTags extends Component {
         fetch('/follows', {
           method: 'POST',
           headers: {
-            'X-CSRF-Token': csrfToken,
+            'X-CSRF-Token': csrfTokenContent,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
