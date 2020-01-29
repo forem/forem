@@ -110,6 +110,7 @@ A more complete overview of our stack is available in
 - [@nickytonline](https://dev.to/nickytonline)
 - [@joshpuetz](http://dev.to/joshpuetz)
 - [@vaidehijoshi](https://dev.to/vaidehijoshi)
+- [@juliannatetreault](https://dev.to/juliannatetreault)
 
 ## Vulnerability disclosure
 
