@@ -8,26 +8,14 @@ class ClosingSlide extends Component {
     updateOnboarding('closing slide');
   }
 
-  whatsNext() {
+  whatsNextLinks() {
     const properties = [
       { href: '/welcome', text: 'Join the Welcome Thread', emoji: '😊' },
       { href: '/new', text: 'Write your first DEV post', emoji: '✍️' },
       { href: '/top/infinity', text: 'Read all-time top posts', emoji: '🤓' },
       { href: '/settings', text: 'Customize your profile', emoji: '💅' },
     ];
-
-    return(
-      properties.map((element, index) => 
-          <a key={ index } href={ element.href } data-no-instant={(index === 0) ? true : null }>
-            { element.text }
-            <p className="whatnext-emoji">
-              <span role="img" aria-label="tada">
-                { element.emoji }
-              </span>
-            </p>
-          </a>   
-      )
-    );
+    return properties;
   };
 
   render() {
@@ -138,9 +126,18 @@ class ClosingSlide extends Component {
           </div>
         );
       }
-      return( 
+      return ( 
         <div className="onboarding-what-next">
-          {this.whatsNext()}
+          {this.whatsNext().map((element, index) => {
+            <a key={ index } href={ element.href } data-no-instant={(index === 0) ? true : null }>
+              { element.text }
+              <p className="whatnext-emoji">
+              <span role="img" aria-label="tada">
+                { element.emoji }
+              </span>
+              </p>
+            </a>  
+          })}
         </div>);
     };
 
