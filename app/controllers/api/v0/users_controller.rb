@@ -19,19 +19,31 @@ module Api
         else
           @users = User.none
         end
+
+        @users = @users.select(INDEX_ATTRIBUTES_FOR_SELECTION)
       end
 
       def show
+        relation = User.select(SHOW_ATTRIBUTES_FOR_SELECTION)
+
         @user = if params[:id] == "by_username"
-                  User.find_by(username: params[:url])
+                  relation.find_by!(username: params[:url])
                 else
-                  User.find(params[:id])
+                  relation.find(params[:id])
                 end
       end
 
-      def me; end
+      def me
+        render :show
+      end
 
       private
+
+      INDEX_ATTRIBUTES_FOR_SELECTION = %i[id name username summary].freeze
+      SHOW_ATTRIBUTES_FOR_SELECTION = %i[
+        id username name summary twitter_username github_username website_url
+        location created_at
+      ].freeze
 
       def less_than_one_day_old?(user)
         range = 1.day.ago.beginning_of_day..Time.current
