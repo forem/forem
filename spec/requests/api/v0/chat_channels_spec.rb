@@ -98,8 +98,6 @@ RSpec.describe "Api::V0::ChatChannels", type: :request do
       end
 
       it "returns not found if user is not a member" do
-        # channel = create(:chat_channel)
-
         get api_chat_channel_path(chat_channel.id)
 
         expect(response).to have_http_status(:not_found)
