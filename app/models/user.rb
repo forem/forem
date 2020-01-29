@@ -445,7 +445,7 @@ class User < ApplicationRecord
   end
 
   def profile_image_90
-    ProfileImage.new(self).get(90)
+    ProfileImage.new(self).get(width: 90)
   end
 
   def remove_from_algolia_index
