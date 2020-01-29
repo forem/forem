@@ -2,21 +2,27 @@ module Api
   module V0
     class ReactionsController < ApplicationController
       skip_before_action :verify_authenticity_token
+
       def create
         @user = valid_user
+
         unless @user
           render json: { message: "invalid_user" }, status: :unprocessable_entity
           return
         end
+
         Rails.cache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
+
         @reaction = Reaction.create(
           user_id: @user.id,
           reactable_id: params[:reactable_id],
           reactable_type: params[:reactable_type],
           category: params[:category] || "like",
         )
+
         Notification.send_reaction_notification(@reaction, @reaction.reactable.user)
-        Notification.send_reaction_notification(@reaction, @reaction.reactable.organization) if organization_article?(@reaction)
+        Notification.send_reaction_notification(@reaction, @reaction.reactable.organization) if org_article?(@reaction)
+
         render json: { reaction: @reaction.to_json }
       end
 
@@ -36,7 +42,7 @@ module Api
         user
       end
 
-      def organization_article?(reaction)
+      def org_article?(reaction)
         reaction.reactable_type == "Article" && reaction.reactable.organization_id
       end
     end
