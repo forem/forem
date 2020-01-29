@@ -19,7 +19,7 @@ module Moderator
       delete_user_activity
       delete_comments
       delete_articles
-      cleanup_chat_channels
+      Users::CleanupChatChannels.call(user)
       user.remove_from_algolia_index
       reassign_and_bust_username
     end

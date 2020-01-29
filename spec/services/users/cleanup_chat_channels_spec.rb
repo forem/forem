@@ -20,7 +20,8 @@ RSpec.describe Users::CleanupChatChannels, type: :service do
   it "does not delete open chat channels" do
     described_class.call(user)
 
-    expect(ChatChannelMembership.find_by(chat_channel: open_channel)).to be_nil
+    ccm = ChatChannelMembership.find_by(chat_channel: open_channel, user: user)
+    expect(ccm).to be_nil
     expect(ChatChannel.find(open_channel.id)).to be_present
   end
 end
