@@ -10,6 +10,7 @@ module Api
       end
 
       SHOW_ATTRIBUTES_FOR_SERIALIZATION = %i[id description channel_name].freeze
+      private_constant :SHOW_ATTRIBUTES_FOR_SERIALIZATION
     end
   end
 end

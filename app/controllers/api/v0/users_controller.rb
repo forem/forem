@@ -37,13 +37,16 @@ module Api
         render :show
       end
 
-      private
-
       INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary].freeze
+      private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
+
       SHOW_ATTRIBUTES_FOR_SERIALIZATION = %i[
         id username name summary twitter_username github_username website_url
         location created_at
       ].freeze
+      private_constant :SHOW_ATTRIBUTES_FOR_SERIALIZATION
+
+      private
 
       def less_than_one_day_old?(user)
         range = 1.day.ago.beginning_of_day..Time.current

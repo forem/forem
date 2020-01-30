@@ -25,6 +25,7 @@ module Api
       end
 
       ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex].freeze
+      private_constant :ATTRIBUTES_FOR_SERIALIZATION
     end
   end
 end

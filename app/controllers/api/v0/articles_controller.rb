@@ -74,8 +74,6 @@ module Api
           decorate
       end
 
-      private
-
       INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[
         id user_id organization_id collection_id
         title description main_image published_at crossposted_at social_image
@@ -83,10 +81,12 @@ module Api
         positive_reactions_count created_at edited_at last_comment_at published
         updated_at
       ].freeze
+      private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
       SHOW_ATTRIBUTES_FOR_SERIALIZATION = [
         *INDEX_ATTRIBUTES_FOR_SERIALIZATION, :body_markdown, :processed_html
       ].freeze
+      private_constant :SHOW_ATTRIBUTES_FOR_SERIALIZATION
 
       ME_ATTRIBUTES_FOR_SERIALIZATION = %i[
         id user_id organization_id
@@ -94,6 +94,9 @@ module Api
         slug path canonical_url comments_count positive_reactions_count
         page_views_count crossposted_at body_markdown updated_at
       ].freeze
+      private_constant :ME_ATTRIBUTES_FOR_SERIALIZATION
+
+      private
 
       def article_params
         allowed_params = [

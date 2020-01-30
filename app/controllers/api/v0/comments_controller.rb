@@ -29,9 +29,10 @@ module Api
         set_surrogate_key_header Comment.table_key, edge_cache_keys(tree_with_root_comment)
       end
 
-      private
-
       ATTRIBUTES_FOR_SERIALIZATION = %i[id processed_html user_id ancestry].freeze
+      private_constant :ATTRIBUTES_FOR_SERIALIZATION
+
+      private
 
       # ancestry wraps a single or multiple trees of comments into a single hash,
       # in the case of an article comments, the hash has multiple keys (the root comments),

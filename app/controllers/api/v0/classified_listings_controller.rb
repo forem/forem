@@ -43,16 +43,17 @@ module Api
         super
       end
 
+      ATTRIBUTES_FOR_SERIALIZATION = %i[
+        id user_id organization_id title slug body_markdown
+        cached_tag_list category processed_html published
+      ].freeze
+      private_constant :ATTRIBUTES_FOR_SERIALIZATION
+
       private
 
       attr_accessor :user
 
       alias current_user user
-
-      ATTRIBUTES_FOR_SERIALIZATION = %i[
-        id user_id organization_id title slug body_markdown
-        cached_tag_list category processed_html published
-      ].freeze
 
       def process_no_credit_left
         msg = "Not enough available credits"

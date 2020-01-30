@@ -29,9 +29,10 @@ module Api
         head :no_content
       end
 
-      private
-
       ATTRIBUTES_FOR_SERIALIZATION = %i[id user_id source target_url events created_at].freeze
+      private_constant :ATTRIBUTES_FOR_SERIALIZATION
+
+      private
 
       def webhooks_scope
         relation = if doorkeeper_token

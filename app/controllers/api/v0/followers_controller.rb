@@ -24,9 +24,10 @@ module Api
           per(@follows_limit)
       end
 
-      private
-
       ATTRIBUTES_FOR_SERIALIZATION = %i[id follower_id follower_type].freeze
+      private_constant :ATTRIBUTES_FOR_SERIALIZATION
+
+      private
 
       def limit_per_page(default:, max:)
         per_page = (params[:per_page] || default).to_i
