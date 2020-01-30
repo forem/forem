@@ -16,7 +16,8 @@ module Api
       skip_before_action :verify_authenticity_token, only: %i[create update]
 
       def index
-        @articles = ArticleApiIndexService.new(params, INDEX_ATTRIBUTES_FOR_SERIALIZATION).get
+        @articles = ArticleApiIndexService.new(params).get
+        @articles = @articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
 
         set_surrogate_key_header Article.table_key, @articles.map(&:record_key)
       end
