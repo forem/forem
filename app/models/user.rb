@@ -395,7 +395,7 @@ class User < ApplicationRecord
   end
 
   def non_banished_username
-    errors.add(:username, "has been banished.") if BanishedUser.exists?(username: username)
+    errors.add(:username, "has been suspended.") if BanishedUser.exists?(username: username)
   end
 
   def subscribe_to_mailchimp_newsletter

@@ -46,7 +46,7 @@ class ApplicationController < ActionController::Base
   end
 
   def raise_banned
-    raise "BANNED" if current_user&.banned
+    raise "SUSPENDED" if current_user&.banned
   end
 
   def internal_navigation?

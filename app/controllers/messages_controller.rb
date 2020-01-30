@@ -119,7 +119,7 @@ class MessagesController < ApplicationController
           status: "error",
           message: {
             chat_channel_id: message_params[:chat_channel_id],
-            message: "You can not do that because you are banned",
+            message: "You can not do that because you are suspended",
             type: "error"
           }
         }, status: :unauthorized

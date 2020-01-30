@@ -248,7 +248,7 @@ RSpec.describe "ClassifiedListings", type: :request do
         user.add_role(:banned)
         expect do
           post "/listings", params: listing_params
-        end.to raise_error("BANNED")
+        end.to raise_error("SUSPENDED")
       end
     end
   end
