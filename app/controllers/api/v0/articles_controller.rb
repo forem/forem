@@ -84,9 +84,9 @@ module Api
         updated_at
       ].freeze
 
-      SHOW_ATTRIBUTES_FOR_SERIALIZATION = (
-        INDEX_ATTRIBUTES_FOR_SERIALIZATION + %i[body_markdown processed_html]
-      ).freeze
+      SHOW_ATTRIBUTES_FOR_SERIALIZATION = [
+        *INDEX_ATTRIBUTES_FOR_SERIALIZATION, :body_markdown, :processed_html
+      ].freeze
 
       ME_ATTRIBUTES_FOR_SERIALIZATION = %i[
         id user_id organization_id

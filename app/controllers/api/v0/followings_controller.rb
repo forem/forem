@@ -35,7 +35,7 @@ module Api
       private
 
       ATTRIBUTES_FOR_SERIALIZATION = %i[id followable_id followable_type].freeze
-      TAGS_ATTRIBUTES_FOR_SERIALIZATION = (ATTRIBUTES_FOR_SERIALIZATION + %i[points]).freeze
+      TAGS_ATTRIBUTES_FOR_SERIALIZATION = [*ATTRIBUTES_FOR_SERIALIZATION, :points].freeze
 
       def limit_per_page(default:, max:)
         per_page = (params[:per_page] || default).to_i
