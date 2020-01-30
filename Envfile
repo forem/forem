@@ -67,6 +67,7 @@ variable :ALGOLIASEARCH_SEARCH_ONLY_KEY, :String, default: only_in_test
 variable :AWS_ID, :String, default: "Optional"
 variable :AWS_SECRET, :String, default: "Optional"
 variable :AWS_BUCKET_NAME, :String, default: "Optional"
+variable :AWS_UPLOAD_REGION, :String, default: ""
 
 # AWS SDK
 # (https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/setup-config.html)

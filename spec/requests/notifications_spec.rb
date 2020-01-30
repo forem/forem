@@ -216,7 +216,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       before do
         user.add_role :trusted
         sign_in user
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           Notification.send_moderation_notification(comment)
         end
         get "/notifications"
@@ -242,7 +242,7 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       before do
         sign_in user
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           Notification.send_moderation_notification(comment)
         end
         get "/notifications"
@@ -369,7 +369,7 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       before do
         user2.follow(user)
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           Notification.send_to_followers(article, "Published")
         end
         sign_in user2
@@ -410,7 +410,7 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       before do
         user2.follow(user)
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           Notification.send_to_followers(article, "Published")
         end
         sign_in admin

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_17_135902) do
+ActiveRecord::Schema.define(version: 2020_01_20_053525) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -190,6 +190,15 @@ ActiveRecord::Schema.define(version: 2020_01_17_135902) do
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.index ["title"], name: "index_badges_on_title", unique: true
+  end
+
+  create_table "banished_users", force: :cascade do |t|
+    t.bigint "banished_by_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "username"
+    t.index ["banished_by_id"], name: "index_banished_users_on_banished_by_id"
+    t.index ["username"], name: "index_banished_users_on_username", unique: true
   end
 
   create_table "blocks", id: :serial, force: :cascade do |t|
@@ -1114,6 +1123,7 @@ ActiveRecord::Schema.define(version: 2020_01_17_135902) do
     t.string "onboarding_variant_version", default: "0"
     t.boolean "org_admin", default: false
     t.integer "organization_id"
+    t.datetime "organization_info_updated_at"
     t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "personal_data_updated_at"
     t.string "profile_image"

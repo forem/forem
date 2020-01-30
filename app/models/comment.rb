@@ -22,16 +22,16 @@ class Comment < ApplicationRecord
 
   after_create   :after_create_checks
   after_commit   :calculate_score
+  after_update_commit :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
   after_save     :bust_cache
   after_save     :synchronous_bust
   after_destroy  :after_destroy_actions
   before_destroy :before_destroy_actions
   after_create_commit :send_email_notification, if: :should_send_email_notification?
   after_create_commit :create_first_reaction
-  after_create   :send_to_moderator
+  after_create_commit :send_to_moderator
   before_save    :set_markdown_character_count, if: :body_markdown
   before_create  :adjust_comment_parent_based_on_depth
-  after_update   :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
   after_update   :remove_notifications, if: :deleted
   after_update   :update_descendant_notifications, if: :deleted
   before_validation :evaluate_markdown, if: -> { body_markdown && commentable }
@@ -115,16 +115,16 @@ class Comment < ApplicationRecord
     return if remove
 
     if record.deleted == false
-      Search::IndexJob.perform_later("Comment", record.id)
+      Search::IndexWorker.perform_async("Comment", record.id)
     else
-      Search::RemoveFromIndexJob.perform_later(Comment.algolia_index_name, record.index_id)
+      Search::RemoveFromIndexWorker.perform_async(Comment.algolia_index_name, record.index_id)
     end
   end
 
   # this should remain public because it's called by AlgoliaSearch::AlgoliaJob in .trigger_index
   def remove_algolia_index
     remove_from_index!
-    Search::RemoveFromIndexJob.perform_now("ordered_comments_#{Rails.env}", index_id)
+    Search::RemoveFromIndexWorker.new.perform("ordered_comments_#{Rails.env}", index_id)
   end
 
   def path
@@ -263,7 +263,7 @@ class Comment < ApplicationRecord
   end
 
   def after_destroy_actions
-    Users::BustCacheJob.perform_now(user_id)
+    Users::BustCacheWorker.perform_async(user_id)
     user.touch(:last_comment_at)
   end
 

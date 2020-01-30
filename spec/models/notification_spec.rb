@@ -1,4 +1,5 @@
 require "rails_helper"
+require "sidekiq/testing"
 
 RSpec.describe Notification, type: :model do
   let_it_be_readonly(:user)            { create(:user) }
@@ -107,7 +108,7 @@ RSpec.describe Notification, type: :model do
   describe "#send_new_follower_notification" do
     context "when trying to a send notification after following a tag" do
       it "does not enqueue a notification job" do
-        assert_no_enqueued_jobs(only: Notifications::NewFollowerJob) do
+        sidekiq_assert_no_enqueued_jobs(only: Notifications::NewFollowerWorker) do
           tag_follow = user.follow(create(:tag))
           described_class.send_new_follower_notification(tag_follow)
         end
@@ -150,7 +151,6 @@ RSpec.describe Notification, type: :model do
         sidekiq_perform_enqueued_jobs do
           described_class.send_new_follower_notification(user_follows_organization)
         end
-
         expect(organization.notifications.last&.user_id).to be(nil)
       end
 
@@ -187,7 +187,7 @@ RSpec.describe Notification, type: :model do
     end
   end
 
-  describe "#send_new_comment_notifications" do
+  describe "#send_new_comment_notifications_without_delay" do
     let_it_be_changeable(:comment) { create(:comment, user: user2, commentable: article) }
     let_it_be_readonly(:child_comment) { create(:comment, user: user3, commentable: article, parent: comment) }
 
@@ -409,11 +409,11 @@ RSpec.describe Notification, type: :model do
       it "sends a notification to the author's followers" do
         user2.follow(user)
 
-        perform_enqueued_jobs do
-          expect do
+        expect do
+          sidekiq_perform_enqueued_jobs do
             described_class.send_to_followers(article, "Published")
-          end.to change(user2.notifications, :count).by(1)
-        end
+          end
+        end.to change(user2.notifications, :count).by(1)
       end
     end
 
@@ -423,21 +423,21 @@ RSpec.describe Notification, type: :model do
       it "sends a notification to author's followers" do
         user2.follow(user)
 
-        perform_enqueued_jobs do
-          expect do
+        expect do
+          sidekiq_perform_enqueued_jobs do
             described_class.send_to_followers(org_article, "Published")
-          end.to change(user2.notifications, :count).by(1)
-        end
+          end
+        end.to change(user2.notifications, :count).by(1)
       end
 
       it "sends a notification to the organization's followers" do
         user3.follow(organization)
 
-        perform_enqueued_jobs do
-          expect do
+        expect do
+          sidekiq_perform_enqueued_jobs do
             described_class.send_to_followers(org_article, "Published")
-          end.to change(user3.notifications, :count).by(1)
-        end
+          end
+        end.to change(user3.notifications, :count).by(1)
       end
     end
   end
@@ -446,28 +446,28 @@ RSpec.describe Notification, type: :model do
     context "when there are article notifications to update" do
       before do
         user2.follow(user)
-        perform_enqueued_jobs { described_class.send_to_followers(article, "Published") }
+        sidekiq_perform_enqueued_jobs { described_class.send_to_followers(article, "Published") }
       end
 
       it "updates the notification with the new article title" do
         new_title = "hehehe hohoho!"
         article.update_attribute(:title, new_title)
+        described_class.update_notifications(article, "Published")
 
-        perform_enqueued_jobs do
-          described_class.update_notifications(article, "Published")
-          expected_notification_article_title = user2.notifications.last.json_data["article"]["title"]
-          expect(expected_notification_article_title).to eq(new_title)
-        end
+        sidekiq_perform_enqueued_jobs
+
+        expected_notification_article_title = user2.notifications.last.json_data["article"]["title"]
+        expect(expected_notification_article_title).to eq(new_title)
       end
 
       it "adds organization data when the article now belongs to an org" do
         article.update(organization_id: organization.id)
+        described_class.update_notifications(article, "Published")
 
-        perform_enqueued_jobs do
-          described_class.update_notifications(article, "Published")
-          expected_notification_organization_id = described_class.last.json_data["organization"]["id"]
-          expect(expected_notification_organization_id).to eq(organization.id)
-        end
+        sidekiq_perform_enqueued_jobs
+
+        expected_notification_organization_id = described_class.last.json_data["organization"]["id"]
+        expect(expected_notification_organization_id).to eq(organization.id)
       end
     end
   end

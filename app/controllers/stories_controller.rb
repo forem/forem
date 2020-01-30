@@ -42,7 +42,7 @@ class StoriesController < ApplicationController
     potential_username = params[:username].tr("@", "").downcase
     user_or_org = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username) ||
       Organization.find_by("old_slug = ? OR old_old_slug = ?", potential_username, potential_username)
-    if user_or_org.present?
+    if user_or_org.present? && !user_or_org.decorate.fully_banished?
       redirect_to user_or_org.path
     else
       not_found
@@ -163,14 +163,9 @@ class StoriesController < ApplicationController
       redirect_to_changed_username_profile
       return
     end
+    not_found if @user.username.include?("spam_") && @user.decorate.fully_banished?
     assign_user_comments
-    @pinned_stories = Article.published.where(id: @user.profile_pins.select(:pinnable_id)).
-      limited_column_select.
-      order("published_at DESC").decorate
-    @stories = ArticleDecorator.decorate_collection(@user.articles.published.
-      limited_column_select.
-      where.not(id: @pinned_stories.pluck(:id)).
-      order("published_at DESC").page(@page).per(user_signed_in? ? 2 : 5))
+    assign_user_stories
     @article_index = true
     @list_of = "articles"
     redirect_if_view_param
@@ -242,6 +237,16 @@ class StoriesController < ApplicationController
                 else
                   []
                 end
+  end
+
+  def assign_user_stories
+    @pinned_stories = Article.published.where(id: @user.profile_pins.select(:pinnable_id)).
+      limited_column_select.
+      order("published_at DESC").decorate
+    @stories = ArticleDecorator.decorate_collection(@user.articles.published.
+      limited_column_select.
+      where.not(id: @pinned_stories.pluck(:id)).
+      order("published_at DESC").page(@page).per(user_signed_in? ? 2 : 5))
   end
 
   def stories_by_timeframe

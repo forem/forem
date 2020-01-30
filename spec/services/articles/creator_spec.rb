@@ -20,9 +20,9 @@ RSpec.describe Articles::Creator, type: :service do
 
     it "schedules a job" do
       valid_attributes[:published] = true
-      expect do
+      sidekiq_assert_enqueued_with(job: Notifications::NotifiableActionWorker) do
         described_class.call(user, valid_attributes)
-      end.to have_enqueued_job(Notifications::NotifiableActionJob).once
+      end
     end
 
     it "creates a notification subscription" do

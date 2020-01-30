@@ -201,11 +201,13 @@ RSpec.describe "ChatChannels", type: :request do
 
   describe "POST /chat_channels/:id/open" do
     it "returns success" do
+      allow(Pusher).to receive(:trigger).and_return(true)
       post "/chat_channels/#{chat_channel.id}/open"
       expect(response.body).to include("success")
     end
 
     it "marks chat_channel_membership as opened" do
+      allow(Pusher).to receive(:trigger).and_return(true)
       post "/chat_channels/#{chat_channel.id}/open"
       expect(user.chat_channel_memberships.last.has_unopened_messages).to eq(false)
     end

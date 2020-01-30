@@ -7,10 +7,7 @@ module Api
       before_action :authenticate!, only: :me
       before_action -> { doorkeeper_authorize! :public }, only: %w[index show], if: -> { doorkeeper_token }
 
-      before_action :set_cache_control_headers, only: [:index]
-      caches_action :show,
-                    cache_path: proc { |c| c.params.permit! },
-                    expires_in: 5.minutes
+      before_action :set_cache_control_headers, only: %i[index show]
 
       before_action :cors_preflight_check
       after_action :cors_set_access_control_headers
@@ -21,20 +18,13 @@ module Api
       def index
         @articles = ArticleApiIndexService.new(params).get
 
-        key_headers = [
-          "articles_api",
-          params[:tag],
-          params[:page],
-          params[:username],
-          params[:signature],
-          params[:state],
-          params[:collection_id],
-        ]
-        set_surrogate_key_header key_headers.join("_")
+        set_surrogate_key_header Article.table_key, @articles.map(&:record_key)
       end
 
       def show
         @article = Article.published.includes(:user).find(params[:id]).decorate
+
+        set_surrogate_key_header @article.record_key
       end
 
       def create

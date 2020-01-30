@@ -48,9 +48,9 @@ class PageView < ApplicationRecord
 
   def self.trigger_index_sync(record, remove)
     if remove
-      Search::RemoveFromIndexJob.perform_later(algolia_index_name, record.id)
+      Search::RemoveFromIndexWorker.perform_async(algolia_index_name, record.id)
     else
-      Search::IndexJob.perform_later("PageView", record.id)
+      Search::IndexWorker.perform_async("PageView", record.id)
     end
   end
 

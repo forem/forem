@@ -476,4 +476,18 @@ RSpec.describe "ClassifiedListings", type: :request do
       end
     end
   end
+
+  describe "GET /delete_confirm" do
+    let!(:listing) { create(:classified_listing, user: user) }
+
+    before { sign_in user }
+
+    context "without classified listing" do
+      it "renders not_found" do
+        expect do
+          get "/listings/#{listing.category}/#{listing.slug}_1/delete_confirm"
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
 end

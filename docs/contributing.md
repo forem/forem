@@ -44,6 +44,13 @@ This will start a server where you can browse the documentation:
 If you add new pages or rename existing pages, you'll need to restart the server
 for those changes to take effect.
 
+Since our documentation is built on GitDocs, which is built on Netlify, you can
+use the generated deploy preview link to check out your documentation changes.
+Once you make a PR, click on "Show all checks" and find the "deploy/netlify"
+row. If your deploy preview is ready, you can click on "Details" to see the
+preview. Please note that the deploy preview only reflects any documentation
+changes you make (and not any changes elsewhere in the app).
+
 # Useful links
 
 The docs are a collection of [Markdown files][markdown] that also utilize
