@@ -33,12 +33,6 @@ variable :REDIS_SIDEKIQ_URL, :String, default: "redis://localhost:6379"
 # Elasticsearch
 variable :ELASTICSEARCH_URL, :String, default: "http://localhost:9200"
 
-# Temp
-variable :AWS_UPLOAD_ID, :String, default: "Optional"
-variable :AWS_UPLOAD_SECRET, :String, default: "Optional"
-variable :AWS_UPLOAD_REGION, :String, default: "Optional"
-variable :AWS_UPLOAD_BUCKET_NAME, :String, default: "Optional"
-
 ################################################
 ############## 3rd Party Services ##############
 ################################################
@@ -76,6 +70,7 @@ variable :ALGOLIASEARCH_SEARCH_ONLY_KEY, :String, default: only_in_test
 variable :AWS_ID, :String, default: "Optional"
 variable :AWS_SECRET, :String, default: "Optional"
 variable :AWS_BUCKET_NAME, :String, default: "Optional"
+variable :AWS_UPLOAD_REGION, :String, default: ""
 
 # AWS SDK
 # (https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/setup-config.html)

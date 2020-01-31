@@ -57,10 +57,10 @@
   },
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "devDependencies": {
-    "@storybook/addon-actions": "^5.1.9",
-    "@storybook/addon-links": "^5.1.9",
-    "@storybook/addons": "^5.1.8",
-    "@storybook/react": "^3.4.11",
+    "@storybook/addon-actions": "3.4.11",
+    "@storybook/addon-links": "3.4.11",
+    "@storybook/addons": "3.4.11",
+    "@storybook/react": "3.4.11",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^23.4.2",
     "eslint": "^5.16.0",
@@ -93,7 +93,7 @@
     "babel-preset-preact": "^1.1.0",
     "chart.js": "^2.9.3",
     "clipboard-polyfill": "^2.8.6",
-    "codemirror": "^5.50.2",
+    "codemirror": "^5.51.0",
     "focus-visible": "^5.0.2",
     "honeybadger-js": "2.0.2",
     "intersection-observer": "^0.7.0",
@@ -107,7 +107,7 @@
     "prop-types": "^15.7.2",
     "pusher-js": "^5.0.3",
     "stimulus": "^1.1.1",
-    "twilio-video": "^2.0.0",
+    "twilio-video": "^2.0.1",
     "web-share-wrapper": "^0.2.1"
   },
   "jest": {

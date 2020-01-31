@@ -30,7 +30,7 @@
             <span class="video-timestamp"><%= video_article.video_duration_in_minutes %></span>
           </div>
           <p><strong><%= video_article.title %></strong></p>
-          <p class="video-username"><%= User.find(video_article.user_id).name %></p>
+          <p class="video-username"><%= video_article.user.name %></p>
       </a>
     <% end %>
   </div>

@@ -196,7 +196,7 @@
       loading...
     </div>
   </div>
-  <% cache "user-profile-sidebar-additional-#{@user.id}-#{@user.github_repos_updated_at}-#{@user.badge_achievements_count}", expires_in: 2.days do %>
+  <% cache "user-profile-sidebar-additional-#{@user.id}-#{@user.github_repos_updated_at}-#{@user.badge_achievements_count}-#{@user.organization_info_updated_at}", expires_in: 2.days do %>
     <%= render "users/sidebar_additional" %>
   <% end %>
 </div>

@@ -70,7 +70,7 @@ and start the container again_
 
 1. run `docker-compose build`
 1. run `docker-compose run web rails db:setup`
-1. run `docker-compose run web yarn install`
+1. run `docker-compose run web yarn`
 1. run `docker-compose up`
 1. That's it! Navigate to <http://localhost:3000>
 
