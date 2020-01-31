@@ -69,6 +69,7 @@ DEV requires Elasticsearch version 7 or higher.
 
 We recommend following
 [Elasticsearch's guide for installing on Linux](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#install-linux).
+NOTE: Make sure to download the OSS version, `elasticsearch-oss`.
 
 ## Installing DEV
 

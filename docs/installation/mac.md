@@ -61,11 +61,10 @@ redis-cli ping
 
 DEV requires Elasticsearch version 7 or higher.
 
-We recommend installing from archive, but if you prefer you can also use
-[Homebrew](https://brew.sh) to install Elasticsearch, directions at the bottom
-of this section. The following directions were
+We recommend installing from archive on Mac. The following directions were
 [taken from the Elasticsearch docs themselves](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#install-macos),
-so check those out if you run into any issues or want further information.
+so check those out if you run into any issues or want further information. NOTE:
+Make sure to download the OSS version, `elasticsearch-oss`.
 
 ```shell
 wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz
@@ -81,7 +80,11 @@ To start elasticsearch:
 ./bin/elasticsearch
 ```
 
-[Directions to install via Homebrew](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/brew.html#brew)
+To start elasticsearch with as a daemonized process:
+
+```shell
+./bin/elasticsearch -d
+```
 
 ## Installing DEV
 

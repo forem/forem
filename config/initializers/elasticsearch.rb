@@ -5,4 +5,5 @@ SearchClient = Elasticsearch::Client.new(
   retry_on_failure: 5,
   request_timeout: 30,
   adapter: :typhoeus,
+  log: Rails.env.development?,
 )
