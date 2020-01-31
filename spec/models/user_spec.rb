@@ -722,7 +722,7 @@ RSpec.describe User, type: :model do
 
       expect do
         user_from_authorization_service(:twitter, nil, "navbar_basic")
-      end.to raise_error(ActiveRecord::RecordInvalid, /Username has been banished./)
+      end.to raise_error(ActiveRecord::RecordInvalid, /Username has been suspended./)
     end
 
     it "does not allow an existing user to change their name to a banished one" do
@@ -731,7 +731,7 @@ RSpec.describe User, type: :model do
       user = create(:user)
 
       user.update(username: banished_name)
-      expect(user.errors.full_messages).to include("Username has been banished.")
+      expect(user.errors.full_messages).to include("Username has been suspended.")
     end
   end
 
