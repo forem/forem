@@ -80,7 +80,7 @@ To start elasticsearch:
 ./bin/elasticsearch
 ```
 
-To start elasticsearch with as a daemonized process:
+To start elasticsearch as a daemonized process:
 
 ```shell
 ./bin/elasticsearch -d
