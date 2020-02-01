@@ -7,15 +7,14 @@
       </div>
     <% end %>
 
-    <%# .find_each always issues a SQL query and loads objects in memory,
-        thus we don't need to load the users ahead of time,
-        for this reason we use `.any?` to check for presence %>
-    <% if @organization.users.any? %>
+    <%# it's highly unlikely a single org will have so many users to slow down
+        this fetch, thus we can safely use the .present?/.each pattern to load them %>
+    <% if @organization.users.present? %>
       <div class="widget">
         <div class="widget-suggested-follows-container">
           <header><h4>meet the team</h4></header>
           <div class="widget-body">
-            <% @organization.users.find_each do |user| %>
+            <% @organization.users.each do |user| %>
               <div class="widget-user-pic">
                 <a href="/<%= user.username %>">
                   <img src="<%= ProfileImage.new(user).get(90) %>" alt="<%= user.username %> profile image">
