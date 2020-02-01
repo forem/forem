@@ -8,7 +8,7 @@
     }
   </style>
   <div class="index-comments">
-    <% if @comments.any? %>
+    <% if @comments.present? %>
       <% if params[:view] == "comments" %>
         <div class="breadcrumb"><a href="<%= @user.path %>">View All Activity</a></div>
         <header>
