@@ -1,4 +1,7 @@
-<% if @user.organizations.present? %>
+<%# .find_each always issues a SQL query and loads objects in memory,
+    thus we don't need to load the users ahead of time,
+    for this reason we use `.any?` to check for presence %>
+<% if @user.organizations.any? %>
   <div id="sidebar-organizations" class="widget">
     <div class="widget-suggested-follows-container">
       <header><h4>organizations</h4></header>
