@@ -1,4 +1,4 @@
-<% if @pinned_stories.any? %>
+<% if @pinned_stories.present? %>
   <div class="pinned-articles">
     <div class="pinned-articles-indicator"><img src="<%= asset_path("pushpin.svg") %>" alt="pin" /> Pinned</div>
     <% @pinned_stories.each do |story| %>
