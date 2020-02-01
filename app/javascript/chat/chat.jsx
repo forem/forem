@@ -539,6 +539,7 @@ export default class Chat extends Component {
     const targetValue = e.target.value;
     const messageIsEmpty = targetValue.length === 0;
     const shiftPressed = e.shiftKey;
+    const upArrowPressed = e.keyCode === 38;
 
     if (enterPressed) {
       if (showMemberlist) {
@@ -557,6 +558,19 @@ export default class Chat extends Component {
       if (e.keyCode === 40 || e.keyCode === 38) {
         e.preventDefault();
       }
+    }
+    if (upArrowPressed && messageIsEmpty) {
+      e.preventDefault();
+      const { messages, activeChannelId, currentUserId } = this.state;
+
+      const messagesByCurrentUser = messages[activeChannelId].filter(
+        message => message.user_id === currentUserId,
+      );
+      const lastMessage =
+        messagesByCurrentUser[messagesByCurrentUser.length - 1];
+
+      this.setState({ messageDeleteId: lastMessage.id });
+      this.setState({ showDeleteModal: true });
     }
   };
 

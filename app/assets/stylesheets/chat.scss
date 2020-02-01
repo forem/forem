@@ -1120,20 +1120,48 @@
 
 .message__info__actions {
   display: grid;
-  grid-template-columns: 4fr 1fr;
+  grid-template-columns: 19fr 1fr;
 }
 
 .message__actions {
   display: none;
   justify-content: end;
   -webkit-justify-content: flex-end;
-}
 
-.message__actions span {
-  margin-left: 7px;
-  font-size: 13px;
-  font-weight: bold;
-  cursor: pointer;
+  .ellipsis__menubutton {
+    height: 17px;
+    cursor: pointer;
+  }
+
+  &:hover {
+    .messagebody__dropdownmenu {
+      display: block;
+    }
+  }
+
+  img {
+    height: 100%;
+  }
+
+  .messagebody__dropdownmenu {
+    display: none;
+    position: absolute;
+    background-color: white;
+    border-style: solid;
+    border-color: #ccc;
+    border-radius: 5px;
+    border-width: 1px;
+    margin-top: 1em;
+    margin-right: -0.6em;
+
+    span {
+      display: block;
+      padding: 10px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  }
 }
 
 .chatmessage:hover .message__actions {
