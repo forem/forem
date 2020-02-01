@@ -5,7 +5,7 @@ class ProfileImage
   def initialize(resource)
     @resource = resource
     @image_link = resource.profile_image_url
-    @backup_link = "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png"
+    @backup_link = ActionController::Base.helpers.image_path("smiley-white-bg.png")
   end
 
   def get(width: 120)

@@ -23,9 +23,8 @@
   </div>
   <div class="body">
     <p style="min-height:300px">
-      <a href="https://res.cloudinary.com/practicaldev/image/fetch/s--5h06TvlR--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/jl3vwgqxcx37vr45ln2o.png" class="article-body-image-wrapper">
-        <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--5h06TvlR--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/jl3vwgqxcx37vr45ln2o.png" alt="octopus attacking our systems" style="max-width:420px">
-      </a>
+      <%= link_to cl_image_tag("octopus.jpg", width: 880, crop: :limit, fetch_format: "auto", flags: ["progressive"], quality: "auto", type: :asset, alt: "octopus attacking our systems", style: "max-width:420px"),
+                  cl_image_path("octopus.jpg", width: 880, crop: :limit, fetch_format: "auto", flags: ["progressive"], quality: "auto", type: :asset), class: "article-body-image-wrapper" %>
     </p>
     <p>
       Found a vulnerability in our systems? Shoot us an email at

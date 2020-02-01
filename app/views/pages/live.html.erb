@@ -9,7 +9,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://dev.to/live" />
 <meta property="og:title" content="DEV LIVE" />
-<meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/bqzj1pwho9e0jicqo44s.png" />
+<meta property="og:image" content="<%= image_path "dev-live.png" %>" />
 <meta property="og:description" content="DEV Live Events" />
 <meta property="og:site_name" content="The Practical Dev" />
 
@@ -17,7 +17,7 @@
 <meta name="twitter:site" content="@ThePracticalDev">
 <meta name="twitter:title" content="DEV LIVE">
 <meta property="og:description" content="DEV Live Events" />
-<meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/bqzj1pwho9e0jicqo44s.png">
+<meta name="twitter:image:src" content="<%= image_path "dev-live.png" %>">
 
 <style>
   <% cache(cache_key_heroku_slug("live-page-css"), expires_in: 1.hour) do %>

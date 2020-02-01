@@ -48,7 +48,7 @@ module Moderator
         twitch_url: nil, feed_url: nil
       )
 
-      user.update_columns(profile_image: "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png")
+      user.update_columns(profile_image: ActionController::Base.helpers.image_path("smiley-white-bg.png"))
     end
 
     def delete_vomit_reactions

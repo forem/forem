@@ -129,7 +129,7 @@
         <% not_so_rand = Random.new(badge.id + @comment.id) %>
         <img src="<%= badge.badge_image_url %>" style="transform: rotate(<%= not_so_rand.rand(-6..6) %>deg);" />
       <% end %>
-      <img src="https://thepracticaldev.s3.amazonaws.com/i/bh2wmpcltaybu1xsnico.png" />
+      <%= image_tag "dev-logo-2.png" %>
     </div>
   </div>
 </div>

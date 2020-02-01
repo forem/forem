@@ -43,7 +43,7 @@
 </style>
 
 <header class="page-header" role="banner">
-  <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/9bsnlmppunw39rnnshk6.png") %>"/>
+  <%= cl_image_tag("dev-listings.png", crop: :scale, fetch_format: "auto", flags: ["progressive"], quality: "auto", type: :asset) %>
 </header>
 
 <main role="main">

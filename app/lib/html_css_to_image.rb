@@ -2,7 +2,7 @@ module HtmlCssToImage
   AUTH = { username: ApplicationConfig["HCTI_API_USER_ID"],
            password: ApplicationConfig["HCTI_API_KEY"] }.freeze
 
-  FALLBACK_IMAGE = "https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png".freeze
+  FALLBACK_IMAGE = ActionController::Base.helpers.image_path("dev-bg-1.png").freeze
 
   CACHE_EXPIRATION = 6.weeks
 

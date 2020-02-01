@@ -23,7 +23,7 @@ class SiteConfig < RailsSettings::Base
   field :campaign_sidebar_image, type: :string, default: nil
 
   # images
-  field :main_social_image, type: :string, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
+  field :main_social_image, type: :string, default: ActionController::Base.helpers.image_path("dev-bg-2.png")
   field :favicon_url, type: :string, default: "favicon.ico"
   field :logo_svg, type: :string, default: ""
 

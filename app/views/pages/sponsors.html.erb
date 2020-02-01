@@ -30,9 +30,9 @@
     <p style="margin:5px 5px;"><em>for supporting our community</em></p>
 
     <h4>
-      <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="golden badge">
+      <%= cl_image_tag("golden-badge.png", width: 30, crop: :scale, fetch_format: "auto", flags: ["progressive"], quality: "auto", type: :asset, alt: "golden badge") %>
       <span class="sponsor-level-headline" style="background-color: #fefa87;">Gold Sponsors</span>
-      <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="golden badge">
+      <%= cl_image_tag("golden-badge.png", width: 30, crop: :scale, fetch_format: "auto", flags: ["progressive"], quality: "auto", type: :asset, alt: "golden badge") %>
     </h4>
     <div id="gold-sponsors">
       <% Sponsorship.gold.live.includes(:organization).order(featured_number: :asc).each do |sponsorship| %>
@@ -45,9 +45,9 @@
     </div>
 
     <h4>
-      <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="silver badge">
+      <%= cl_image_tag("golden-badge.png", width: 30, crop: :scale, fetch_format: "auto", flags: ["progressive"], quality: "auto", type: :asset, alt: "silver badge") %>
       <span class="sponsor-level-headline" style="background-color: #d8e1f0;">Silver Sponsors</span>
-      <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="silver badge">
+      <%= cl_image_tag("golden-badge.png", width: 30, crop: :scale, fetch_format: "auto", flags: ["progressive"], quality: "auto", type: :asset, alt: "silver badge") %>
     </h4>
     <div id="silver-sponsors">
       <% Sponsorship.where(status: "live", level: "silver").where("expires_at > ?", Time.current).includes(:organization).order(featured_number: :asc).each do |sponsorship| %>
@@ -60,9 +60,9 @@
     </div>
 
     <h4>
-      <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="bronze badge">
+      <%= cl_image_tag("golden-badge.png", width: 30, crop: :scale, fetch_format: "auto", flags: ["progressive"], quality: "auto", type: :asset, alt: "bronze badge") %>
       <span class="sponsor-level-headline" style="background-color: #fcd6bb;">Bronze Sponsors</span>
-      <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="bronze badge">
+      <%= cl_image_tag("golden-badge.png", width: 30, crop: :scale, fetch_format: "auto", flags: ["progressive"], quality: "auto", type: :asset, alt: "bronze badge") %>
     </h4>
     <div id="bronze-sponsors">
       <% Sponsorship.bronze.live.where("expires_at > ?", Time.current).includes(:organization).order(featured_number: :asc).find_each do |sponsorship| %>

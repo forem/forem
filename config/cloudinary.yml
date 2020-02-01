@@ -1,0 +1,11 @@
+development:
+  enhance_image_tag: true
+  static_file_support: false
+
+test:
+  enhance_image_tag: true
+  static_file_support: false
+
+production:
+  enhance_image_tag: true
+  static_file_support: true

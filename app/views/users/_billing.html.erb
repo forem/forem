@@ -46,7 +46,7 @@
   setTimeout(function () {
     var handler = StripeCheckout.configure({
       key: '<%= Rails.configuration.stripe[:publishable_key] %>',
-      image: "https://thepracticaldev.s3.amazonaws.com/i/xoxvppfjorrnxudkzskw.jpg",
+      image: "<%= image_path "attributes-example.png" %>",
       locale: 'auto',
       token: function (token) {
         var form = document.getElementById("credit-card-form")
