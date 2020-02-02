@@ -114,4 +114,11 @@ RSpec.describe "Pages", type: :request do
       end
     end
   end
+
+  describe "GET /robots.txt" do
+    it "has proper text" do
+      get "/robots.txt"
+      expect(response.body).to include("Sitemap: https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com/sitemaps/sitemap.xml.gz")
+    end
+  end
 end

@@ -32,8 +32,9 @@ rule, you should avoid relying on JavaScript for layout when working on DEV.
 
 ## We attempt to reduce our bundle size
 
-We use [PreactJS][preact], a lightweight alternative to ReactJS, and we try to
-reduce our bundle size with [dynamic imports][dynamic_imports].
+We use [PreactJS](/frontend/preact), a lightweight alternative to ReactJS, and
+we try to reduce our bundle size with
+[dynamic imports](frontend/dynamic-imports).
 
 ## Service workers and shell architecture
 
@@ -77,7 +78,8 @@ shared among all users.
 
 ## Inter-page navigation
 
-DEV uses a variation of "instant click," which swaps out page content instead of
+DEV uses a variation of "instant click", via
+[InstantClick](/frontend/instant-click), which swaps out page content instead of
 making full-page requests. This approach is similar to the one used by the Rails
 gem `Turbolinks`, but our approach is more lightweight. The library is modified
 to work specifically with this Rails app and does not swap out reused elements
@@ -183,7 +185,4 @@ This is far from a complete view of the app, but it covers a few core concepts.
 
 [fastly]: https://www.fastly.com/
 [rails_caching]: https://guides.rubyonrails.org/caching_with_rails.html
-[preact]: https://preactjs.com/
-[dynamic_imports]:
-  https://dev.to/goenning/how-we-reduced-our-initial-jscss-size-by-67-3ac0
 [fastly_rails]: https://github.com/fastly/fastly-rails

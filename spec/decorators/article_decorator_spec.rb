@@ -16,7 +16,8 @@ RSpec.describe ArticleDecorator, type: :decorator do
 
     it "returns the article url without a canonical_url" do
       article.canonical_url = ""
-      expect(article.decorate.processed_canonical_url). to eq("https://#{ApplicationConfig['APP_DOMAIN']}#{article.path}")
+      expected_url = "https://#{ApplicationConfig['APP_DOMAIN']}#{article.path}"
+      expect(article.decorate.processed_canonical_url).to eq(expected_url)
     end
   end
 
@@ -36,26 +37,24 @@ RSpec.describe ArticleDecorator, type: :decorator do
   end
 
   describe "#description_and_tags" do
-    it "creates proper description when description is not present and body is present and short, and tags are present" do
-      paragraphs = Faker::Hipster.paragraph(sentence_count: 40)
+    it "creates proper description when it is not present and body is present and short, and tags are present" do
       body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: heytag\n---\n\nHey this is the article"
-      expect(create_article(body_markdown: body_markdown).description_and_tags).to eq("Hey this is the article. Tagged with heytag.")
+      expected_result = "Hey this is the article. Tagged with heytag."
+      expect(create_article(body_markdown: body_markdown).description_and_tags).to eq(expected_result)
     end
 
-    it "creates proper description when description is not present and body is present and short, and tags are not present" do
-      paragraphs = Faker::Hipster.paragraph(sentence_count: 40)
+    it "creates proper description when it is not present and body is present and short, and tags are not present" do
       body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags:\n---\n\nHey this is the article"
       expect(create_article(body_markdown: body_markdown).description_and_tags).to eq("Hey this is the article.")
     end
 
-
-    it "creates proper description when description is not present and body is present and long, and tags are present" do
+    it "creates proper description when it is not present and body is present and long, and tags are present" do
       paragraphs = Faker::Hipster.paragraph(sentence_count: 40)
       body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: heytag\n---\n\n#{paragraphs}"
       expect(create_article(body_markdown: body_markdown).description_and_tags).to end_with("... Tagged with heytag.")
     end
 
-    it "creates proper description when description is not present and body is not present and long, and tags are present" do
+    it "creates proper description when it is not present and body is not present and long, and tags are present" do
       body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: heytag\n---\n\n"
       created_article = create_article(body_markdown: body_markdown)
       expect(created_article.description_and_tags).to eq("A post by #{created_article.user.name}. Tagged with heytag.")

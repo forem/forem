@@ -11,6 +11,7 @@ module Constants
     "fosstodon.org",
     "framapiaf.org",
     "friends.nico",
+    "functional.cafe",
     "hackers.town",
     "hearthtodon.com",
     "hex.bz",

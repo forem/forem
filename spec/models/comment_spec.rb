@@ -325,7 +325,7 @@ RSpec.describe Comment, type: :model do
       comment = create(:comment, commentable: article)
       child_comment = create(:comment, parent: comment, commentable: article, user: user)
       create(:notification, notifiable: child_comment, user: user)
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         comment.update(deleted: true)
       end
       notification = child_comment.notifications.first
