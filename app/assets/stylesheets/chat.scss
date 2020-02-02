@@ -1131,6 +1131,7 @@
   .ellipsis__menubutton {
     height: 17px;
     cursor: pointer;
+    color: var(--theme-color, #0a0a0a);
   }
 
   &:hover {
@@ -1141,14 +1142,15 @@
 
   img {
     height: 100%;
+    opacity: 0.6;
   }
 
   .messagebody__dropdownmenu {
     display: none;
     position: absolute;
-    background-color: white;
+    background-color: var(--theme-container-background, #fff);
     border-style: solid;
-    border-color: #ccc;
+    border-color: var(--theme-color, #0a0a0a);
     border-radius: 5px;
     border-width: 1px;
     margin-top: 1em;
@@ -1160,6 +1162,7 @@
       font-size: 15px;
       font-weight: bold;
       cursor: pointer;
+      color: var(--theme-color, #0a0a0a);
     }
   }
 }
