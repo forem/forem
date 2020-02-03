@@ -58,7 +58,7 @@ gem "httparty", "~> 0.17" # Makes http fun! Also, makes consuming restful web se
 gem "inline_svg", "~> 1.6" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.9" # Create JSON structures via a Builder-style DSL
 gem "jquery-rails", "~> 4.3" #  A gem to automate using jQuery with Rails
-gem "kaminari", "~> 1.1" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
+gem "kaminari", "~> 1.2" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
 gem "libhoney", "~> 1.14" # Ruby gem for sending data to Honeycomb
 gem "liquid", "~> 4.0" # A secure, non-evaling end user template engine with aesthetic markup
 gem "nokogiri", "~> 1.10" # HTML, XML, SAX, and Reader parser
