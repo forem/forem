@@ -26,7 +26,7 @@ class Tag < ActsAsTaggableOn::Tag
   before_validation :evaluate_markdown
   before_validation :pound_it
   before_save :calculate_hotness_score
-  after_save :bust_cache
+  after_commit :bust_cache
   before_save :mark_as_updated
 
   algoliasearch per_environment: true do
@@ -83,7 +83,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def bust_cache
-    Tags::BustCacheJob.perform_later(name)
+    Tags::BustCacheWorker.perform_async(name)
   end
 
   def validate_alias
