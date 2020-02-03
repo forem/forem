@@ -614,14 +614,14 @@ RSpec.describe Article, type: :model do
     describe "detect human language" do
       it "calls the human language detector" do
         article.language = ""
-        assert_enqueued_with(job: Articles::DetectHumanLanguageJob) do
+        sidekiq_assert_enqueued_with(job: Articles::DetectHumanLanguageWorker, args: [article.id]) do
           article.save
         end
       end
 
       it "does not call the human language detector if there is already a language" do
         article.language = "en"
-        assert_no_enqueued_jobs(only: Articles::DetectHumanLanguageJob) do
+        sidekiq_assert_no_enqueued_jobs(only: Articles::DetectHumanLanguageWorker) do
           article.save
         end
       end

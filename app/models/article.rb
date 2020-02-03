@@ -67,7 +67,7 @@ class Article < ApplicationRecord
   after_save        :async_score_calc, if: :published
   after_save        :bust_cache
   after_save        :update_main_image_background_hex
-  after_save        :detect_human_language
+  after_commit      :detect_human_language
   before_save       :update_cached_user
   before_destroy    :before_destroy_actions, prepend: true
 
@@ -446,7 +446,7 @@ class Article < ApplicationRecord
   def detect_human_language
     return if language.present?
 
-    Articles::DetectHumanLanguageJob.perform_later(id)
+    Articles::DetectHumanLanguageWorker.perform_async(id)
   end
 
   def async_score_calc
