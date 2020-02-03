@@ -49,7 +49,7 @@ function initializeUserSidebar(user) {
         ? '<div class="sidebar-nav-element" id="sidebar-element-' +
           tag.name +
           '">' +
-          '<a class="sidebar-nav-link" href="/t/' +
+          '<a class="sidebar-nav-link sidebar-nav-link-tag" href="/t/' +
           tag.name +
           '">' +
           '<span class="sidebar-nav-tag-text">#' +

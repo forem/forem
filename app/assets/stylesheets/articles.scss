@@ -941,7 +941,7 @@
     width: 280px;
     margin: auto;
     text-align: left;
-    font-size: 0.92em;
+    font-size: 0.9em;
     line-height: 1.35em;
     margin-left: 0.786vw;
     min-height: 5px;
@@ -966,71 +966,72 @@
       width: 276px;
       top: 77px;
     }
+    
     .sidebar-nav {
-      .sidebar-profile-snapshot {
-        overflow: hidden;
-        @include themeable(background, theme-container-background, #fff);
-        margin-bottom: 14px;
-        border-radius: 3px;
-        width: calc(100% - 6px);
-        @include themeable(
-          border,
-          theme-container-border,
-          1px solid $outline-color
-        );
-        @include themeable(
-          box-shadow,
-          theme-container-box-shadow,
-          $bold-shadow2
-        );
-        &:hover {
-          @include themeable(
-            background,
-            theme-container-background-hover,
-            $light-gray
-          );
-        }
-        .sidebar-profile-snapshot-inner {
-          display: inline-block;
-          vertical-align: middle;
-          width: 100%;
-          line-height: 20px;
-          @include themeable(color, theme-container-color, $black);
-          &:hover {
-            opacity: 0.9;
-          }
-        }
-        .sidebar-profile-pic {
-          display: inline-block;
-          width: 50px;
-          height: 50px;
-          vertical-align: top;
-          overflow: hidden;
-          @include themeable(background, theme-container-background, $tan);
-          border-radius: 100%;
-          margin: 8px 5px 8px 12px;
-          img {
-            width: 100%;
-            border-radius: 100%;
-          }
-        }
-        .sidebar-profile-content {
-          display: inline-block;
-          width: calc(100% - 74px);
-          margin-top: 15px;
-          font-size: 13px;
-          vertical-align: middle;
-          text-align: left;
-          .sidebar-profile-name {
-            font-weight: 400;
-            font-size: 17px;
-          }
-          .sidebar-profile-username {
-            @include themeable(color, theme-secondary-color, $medium-gray);
-          }
-        }
-      }
-      margin-bottom: 20px;
+      // .sidebar-profile-snapshot {
+      //   overflow: hidden;
+      //   @include themeable(background, theme-container-background, #fff);
+      //   margin-bottom: 14px;
+      //   border-radius: 3px;
+      //   width: calc(100% - 6px);
+      //   @include themeable(
+      //     border,
+      //     theme-container-border,
+      //     1px solid $outline-color
+      //   );
+      //   @include themeable(
+      //     box-shadow,
+      //     theme-container-box-shadow,
+      //     $bold-shadow2
+      //   );
+      //   &:hover {
+      //     @include themeable(
+      //       background,
+      //       theme-container-background-hover,
+      //       $light-gray
+      //     );
+      //   }
+      //   .sidebar-profile-snapshot-inner {
+      //     display: inline-block;
+      //     vertical-align: middle;
+      //     width: 100%;
+      //     line-height: 20px;
+      //     @include themeable(color, theme-container-color, $black);
+      //     &:hover {
+      //       opacity: 0.9;
+      //     }
+      //   }
+      //   .sidebar-profile-pic {
+      //     display: inline-block;
+      //     width: 50px;
+      //     height: 50px;
+      //     vertical-align: top;
+      //     overflow: hidden;
+      //     @include themeable(background, theme-container-background, $tan);
+      //     border-radius: 100%;
+      //     margin: 8px 5px 8px 12px;
+      //     img {
+      //       width: 100%;
+      //       border-radius: 100%;
+      //     }
+      //   }
+      //   .sidebar-profile-content {
+      //     display: inline-block;
+      //     width: calc(100% - 74px);
+      //     margin-top: 15px;
+      //     font-size: 13px;
+      //     vertical-align: middle;
+      //     text-align: left;
+      //     .sidebar-profile-name {
+      //       font-weight: 400;
+      //       font-size: 17px;
+      //     }
+      //     .sidebar-profile-username {
+      //       @include themeable(color, theme-secondary-color, $medium-gray);
+      //     }
+      //   }
+      // }
+      margin-bottom: 32px;
       .sidebar-nav-block {
         padding: 0px;
         width: calc(100% - 4px);
@@ -1120,6 +1121,12 @@
             // width: calc(100% - 10px);
             font-weight: 400;
             font-size: 1em;
+
+            &.sidebar-nav-link-tag {
+              font-size: 0.9em;
+              padding: 6px 0;
+              @include themeable(color, theme-container-color, rgba($black, 0.7));
+            }
             &:hover {
               @include themeable(color, theme-container-color, $black);
             }
@@ -1201,7 +1208,6 @@
       }
       &.sponsorship-widget {
         display: none;
-        text-align: center;
       }
       &.showing {
         display: block;
@@ -1259,6 +1265,7 @@
         position: relative;
         font-size: 0.8em;
         font-weight: bold;
+        padding: 8px 0;
         font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo,
           Courier, monospace;
         a {
@@ -1564,12 +1571,15 @@
         border: 1px solid darken($light-gray, 4%);
       }
       .social-icon {
-        width: 30px;
-        height: 30px;
+        width: 24px;
+        height: 24px;
         border: none;
-        padding-left: 12px;
-        margin-right: 3px;
+        margin-right: 8px;
         @include themeable(filter, theme-social-icon-invert, invert(0));
+        opacity: 0.7;
+        &:hover {
+          opacity: 1;
+        }
       }
       .row {
         position: relative;
@@ -1637,8 +1647,13 @@
     .side-footer {
       a {
         display: block;
-        margin: 10px 10px;
-        @include themeable(color, theme-container-color, $black);
+        margin: 8px 0;
+        font-size: 0.8em;
+        @include themeable(color, theme-container-color, rgba($black, 0.7));
+
+        &:hover {
+          @include themeable(color, theme-container-color, $black);
+        }
       }
     }
     .search-partner-mention {

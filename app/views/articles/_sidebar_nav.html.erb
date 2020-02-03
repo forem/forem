@@ -39,9 +39,9 @@
     <% end %>
     <header>
       <% if user_signed_in? %>
-        my tags
+        My Tags
       <% else %>
-        design your experience
+        Design Your Experience
       <% end %>
     </header>
     <div class="sidebar-nav-block-inner">
@@ -52,7 +52,7 @@
         <% end %>
         <% Tag.where(supported: true).order("hotness_score DESC").limit(30).pluck(:id, :name).each do |tag_array| %>
           <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
-            <a class="sidebar-nav-link" href="<%= tag_path(tag_array.second) %>">
+            <a class="sidebar-nav-link sidebar-nav-link-tag" href="<%= tag_path(tag_array.second) %>">
               <span class="sidebar-nav-tag-text">
                 #<%= tag_array.second %>
               </span>
@@ -66,8 +66,8 @@
         <% end %>
       </div>
     </div>
-    <div class="sidebar-nav-subheader">
-      <a href="<%= tags_path %>">View all-time top tags</a>
-    </div>
+    <!-- <div class="sidebar-nav-subheader"> -->
+      <a href="<%= tags_path %>" class="cta cta-button">View all-time top tags</a>
+    <!-- </div> -->
   </div>
 </div>
