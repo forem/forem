@@ -1165,21 +1165,21 @@
       @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
     }
     .widget {
-      width: calc(100% - 30px);
-      padding: 10px 12px;
-      margin-bottom: 15px;
+      // width: calc(100% - 30px);
+      // padding: 10px 12px;
+      margin-bottom: 32px; // TODO: use spacing units instead
       position: relative;
       overflow: hidden;
-      @include themeable(background, theme-container-background, #fff);
+      // @include themeable(background, theme-container-background, #fff);
       display: block;
-      @include themeable(color, theme-container-color, $black);
-      border-radius: 3px;
-      @include themeable(
-        border,
-        theme-container-border,
-        1px solid $outline-color
-      );
-      @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
+      // @include themeable(color, theme-container-color, $black);
+      // border-radius: 3px;
+      // @include themeable(
+      //   border,
+      //   theme-container-border,
+      //   1px solid $outline-color
+      // );
+      // @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
       &.fixed-widget {
         position: fixed;
         width: 254px;
@@ -1264,17 +1264,17 @@
         opacity: 0.2;
       }
       header {
-        width: 100%;
-        margin: auto;
-        font-weight: 800;
-        font-size: 0.9em;
+        text-transform: uppercase;
+        position: relative;
+        font-size: 0.7em;
         font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo,
           Courier, monospace;
         a {
-          @include themeable(color, theme-container-color, $black);
+          @include themeable(color, theme-container-color, rgba($black, 0.5));
           h4 {
             display: inline-block;
             margin: 0;
+            font-weight: normal;
           }
           &:hover {
             text-decoration: underline;
@@ -1299,15 +1299,16 @@
           padding: 1px 5px 0px;
           line-height: 1.4em;
         }
-        &.widget-header-listings {
-          @include themeable(background, theme-container-accent-background, $light-gray);
-          padding: 10px 12px;
-          margin: -10px -12px;
-        }
+        // &.widget-header-listings {
+        //   @include themeable(background, theme-container-accent-background, $light-gray);
+        //   padding: 10px 12px;
+        //   margin: -10px -12px;
+        // }
         .widget-minimize-button {
           position: absolute;
-          right: 8px;
-          top: 15px;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
           background: transparent;
           padding: 0px 5px 1px;
           border-radius: 3px;
@@ -1318,21 +1319,21 @@
         }
       }
       .widget-body {
-        margin-top: 9px;
+        // margin-top: 9px;
         font-size: 0.9em;
         line-height: 1.2em;
-        padding-bottom: 5px;
+        // padding-bottom: 5px;
         overflow-wrap: break-word;
         &.body-scrollable {
           height: calc(100vh - 300px);
           max-height: 390px;
           overflow-y: scroll;
         }
-        &.widget-body-listings {
-          .cta-button {
-            margin-top: 15px;
-          }
-        }
+        // &.widget-body-listings {
+        //   .cta-button {
+        //     margin-top: 15px;
+        //   }
+        // }
         &.signup-cta-widget-body {
           ul {
             li {
@@ -1405,18 +1406,18 @@
         }
         .widget-listing-link {
           display: block;
-          padding: 6px 12px 4px;
-          font-size: 0.92em;
+          padding: 8px 0;
+          font-size: 0.9em;
           width: 100%;
-          margin-left: -12px;
-          @include themeable(color, theme-color, $black);
-          @include themeable(border-bottom, theme-subtle-border, 1px solid $light-medium-gray);
-          &:first-child {
-            @include themeable(border-top, theme-subtle-border, 1px solid $light-medium-gray);
-          }
+          // margin-left: -12px;
+          @include themeable(color, theme-color, rgba($black, 0.8));
+          // @include themeable(border-bottom, theme-subtle-border, 1px solid $light-medium-gray);
+          // &:first-child {
+          //   @include themeable(border-top, theme-subtle-border, 1px solid $light-medium-gray);
+          // }
           .widget-listing-link-title {
             display: block;
-            font-weight: 600;
+            // font-weight: 600;
           }
           .widget-listing-link-category {
             display: inline-block;
@@ -1454,8 +1455,10 @@
           }
         }
         .widget-subtext {
-          text-align: center;
-          font-size: 0.9em;
+          padding: 0;
+          margin: 0;
+          color: rgba($black, 0.6);
+          font-size: 0.85em;
         }
         .widget-events-single-link {
           color: $black;
@@ -1594,25 +1597,10 @@
         }
       }
       .cta-button {
-        margin: 8px auto 0px;
-        padding: 10px 0px;
-        font-size: 0.93em;
+        background: transparent;;
         @include themeable(color, theme-color, darken($sky-blue, 17%));
-        @include themeable(background, theme-container-background, #fff);
-        border: 2px solid;
-        @include themeable(border-color, theme-color, darken($sky-blue, 17%));
-        display: block;
-        width: 85%;
-        text-align: center;
-        border-radius: 100px;
-        &.login-cta-button {
-          color: $black;
-          font-size: 1.1em;
-          width: 85%;
-          background: lighten($purple, 3%);
-          margin: 20px 0px;
-          padding: 18px 0px;
-        }
+        padding: 8px 0;
+        display: inline-block;
         &:hover {
           text-decoration: underline;
           opacity: 1;
