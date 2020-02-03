@@ -266,13 +266,13 @@
       text-align: left;
       @include themeable(background, theme-container-background, $white);
       transition: opacity 0.35s ease-in;
-      border: 1px solid $outline-color;
+      // border: 1px solid $outline-color;
       @include themeable(
         border,
         theme-container-border,
-        1px solid $outline-color
+        none
       );
-      @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
+      @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow2);
       border-radius: 3px;
       cursor: pointer;
       width: 96%;
