@@ -283,6 +283,14 @@ GEM
       dry-equalizer (~> 0.3)
       dry-inflector (~> 0.1, >= 0.1.2)
       dry-logic (~> 1.0, >= 1.0.2)
+    elasticsearch (7.4.0)
+      elasticsearch-api (= 7.4.0)
+      elasticsearch-transport (= 7.4.0)
+    elasticsearch-api (7.4.0)
+      multi_json
+    elasticsearch-transport (7.4.0)
+      faraday
+      multi_json
     em-websocket (0.5.1)
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.6.0)
@@ -302,6 +310,8 @@ GEM
       smart_properties
     errbase (0.1.1)
     erubi (1.9.0)
+    ethon (0.12.0)
+      ffi (>= 1.3.0)
     eventmachine (1.2.5)
     excon (0.71.0)
     execjs (2.7.0)
@@ -808,6 +818,8 @@ GEM
       multipart-post (~> 2.0)
       naught (~> 1.0)
       simple_oauth (~> 0.3.0)
+    typhoeus (1.3.1)
+      ethon (>= 0.9.0)
     tzinfo (1.2.6)
       thread_safe (~> 0.1)
     uber (0.1.0)
@@ -900,6 +912,7 @@ DEPENDENCIES
   doorkeeper (~> 5.2)
   draper (~> 3.1)
   dry-struct (~> 1.2)
+  elasticsearch (~> 7.4)
   email_validator (~> 2.0)
   emoji_regex (~> 2.0)
   envied (~> 0.9)
@@ -996,6 +1009,7 @@ DEPENDENCIES
   timecop (~> 0.9)
   twilio-ruby (~> 5.31)
   twitter (~> 6.2)
+  typhoeus (~> 1.3.1)
   uglifier (~> 4.2)
   ulid (~> 1.1)
   validate_url (~> 1.0)

@@ -36,6 +36,7 @@ gem "dogstatsd-ruby", "~> 4.6" # A client for DogStatsD, an extension of the Sta
 gem "doorkeeper", "~> 5.2" # Oauth 2 provider
 gem "draper", "~> 3.1" # Draper adds an object-oriented layer of presentation logic to your Rails apps
 gem "dry-struct", "~> 1.2" # Typed structs and value objects
+gem "elasticsearch", "~> 7.4" # Powers DEVs core search functionality
 gem "email_validator", "~> 2.0" # Email validator for Rails and ActiveModel
 gem "emoji_regex", "~> 2.0" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
 gem "envied", "~> 0.9" # Ensure presence and type of your app's ENV-variables
@@ -97,6 +98,7 @@ gem "timber", "~> 3.0" # Great Ruby logging made easy
 gem "timber-rails", "~> 1.0" #  Timber integration for Rails
 gem "twilio-ruby", "~> 5.31" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 6.2" # A Ruby interface to the Twitter API
+gem "typhoeus", "~> 1.3.1" # Used with Elasticsearch to support http keep-alive connections
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.1" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
