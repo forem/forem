@@ -1264,17 +1264,17 @@
         opacity: 0.2;
       }
       header {
-        text-transform: uppercase;
         position: relative;
-        font-size: 0.7em;
+        font-size: 0.8em;
+        font-weight: bold;
         font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo,
           Courier, monospace;
         a {
-          @include themeable(color, theme-container-color, rgba($black, 0.5));
+          display: inline-block;
+          @include themeable(color, theme-container-color, $black);
           h4 {
             display: inline-block;
             margin: 0;
-            font-weight: normal;
           }
           &:hover {
             text-decoration: underline;
@@ -1410,7 +1410,7 @@
           font-size: 0.9em;
           width: 100%;
           // margin-left: -12px;
-          @include themeable(color, theme-color, rgba($black, 0.8));
+          @include themeable(color, theme-color, rgba($black, 0.7));
           // @include themeable(border-bottom, theme-subtle-border, 1px solid $light-medium-gray);
           // &:first-child {
           //   @include themeable(border-top, theme-subtle-border, 1px solid $light-medium-gray);
@@ -1431,8 +1431,8 @@
             line-height: 1.3em;
           }
           &:hover {
-            background: $lightest-gray;
-            @include themeable(background, theme-container-background-hover, $lightest-gray);
+            // background: $lightest-gray;
+            @include themeable(color, theme-color, $black);
           }
         }
         .widget-accent {
@@ -1608,17 +1608,18 @@
       }
     }
     .widget-link-list__item {
-      margin-bottom: 12px;
-      padding-left: 20px;
+      padding: 8px 0 8px 20px;
       a {
-        @include themeable(color, theme-container-color, $black);
-        font-weight: 500;
-        line-height: 1em;
+        font-size: 0.9em;
+        @include themeable(color, theme-color, rgba($black, 0.7));
+
+        &:hover {
+          color: $black;
+        }
       }
       .discuss-list-comment-count {
         font-size: 0.8em;
         @include themeable(color, theme-container-color, $medium-gray);
-        margin-top: 2px;
         img {
           width: 20px;
           vertical-align: -3px;
@@ -1627,7 +1628,10 @@
         &.discuss-list-comment-count-brand-new {
           background: $yellow;
           color: $black;
-          font-size: 1.2em;
+          padding: 2px 4px;
+          display: inline-block;
+          font-size: 0.9em;
+          text-transform: uppercase;
         }
       }
       &::before {
