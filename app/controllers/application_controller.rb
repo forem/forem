@@ -40,9 +40,22 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    return "/onboarding?referrer=#{request.env['omniauth.origin'] || 'none'}" unless current_user.saw_onboarding
+    if current_user.saw_onboarding
+      path = request.env["omniauth.origin"] || stored_location_for(resource) || dashboard_path
+      signin_param = { "signin" => "true" } # the "signin" param is used by the service worker
 
-    (request.env["omniauth.origin"] || stored_location_for(resource) || "/dashboard") + "?signin=true" # This signin=true param is used by frontend
+      uri = Addressable::URI.parse(path)
+      uri.query_values = if uri.query_values
+                           uri.query_values.merge(signin_param)
+                         else
+                           signin_param
+                         end
+
+      uri.to_s
+    else
+      referrer = request.env["omniauth.origin"] || "none"
+      onboarding_path(referrer: referrer)
+    end
   end
 
   def raise_banned
