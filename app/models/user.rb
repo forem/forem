@@ -55,6 +55,7 @@ class User < ApplicationRecord
   has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id, inverse_of: :blocker, dependent: :delete_all
   has_many :blocked_blocks, class_name: "UserBlock", foreign_key: :blocked_id, inverse_of: :blocked, dependent: :delete_all
   has_one :pro_membership, dependent: :destroy
+  has_one :counters, class_name: "UserCounter", dependent: :destroy
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
 
   mount_uploader :profile_image, ProfileImageUploader
@@ -154,6 +155,16 @@ class User < ApplicationRecord
   validate  :unique_including_orgs_and_podcasts, if: :username_changed?
 
   scope :dev_account, -> { find_by(id: SiteConfig.staff_user_id) }
+
+  scope :with_this_week_comments, lambda { |number|
+    includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_these_7_days')::int >= ?", number)
+  }
+  scope :with_previous_week_comments, lambda { |number|
+    includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_prior_7_days')::int >= ?", number)
+  }
+  scope :top_commenters, lambda { |number = 10|
+    includes(:counters).order(Arel.sql("user_counters.data -> 'comments_these_7_days' DESC")).limit(number)
+  }
 
   after_create_commit :send_welcome_notification
   after_save  :bust_cache
