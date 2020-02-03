@@ -11,15 +11,10 @@
   max-width: 1250px;
   text-align: left;
   @media screen and (min-width: 950px) {
-    margin-top: 26px;
+    margin-top: 16px;
   }
   &.sub-home {
     margin-top: 10px;
-    .side-bar {
-      @media screen and (min-width: 950px) {
-        margin-top: 12px;
-      }
-    }
   }
   .query-results-nothing {
     padding: 40px 0px;
@@ -953,6 +948,7 @@
     display: none;
     position: relative;
     z-index: 5;
+    padding: 16px;
     &.sidebar-additional {
       display: none;
       &.showing {
@@ -963,9 +959,7 @@
     }
     @media screen and (min-width: 950px) {
       display: block;
-    }
-    @media screen and (min-width: 1500px) {
-      margin-left: 13px;
+      padding: 8px 0;
     }
     .fixed-sidebar {
       position: fixed;
@@ -1120,19 +1114,14 @@
           }
 
           a.sidebar-nav-link {
-            @include themeable(color, theme-container-color, $black);
-            padding: 5px;
-            display: inline-block;
-            width: calc(100% - 10px);
+            @include themeable(color, theme-container-color, rgba($black, 0.8));
+            padding: 8px 0;
+            display: block;
+            // width: calc(100% - 10px);
             font-weight: 400;
-            padding: 8px;
             font-size: 1em;
             &:hover {
-              @include themeable(
-                background,
-                theme-container-background-hover,
-                $light-gray
-              );
+              @include themeable(color, theme-container-color, $black);
             }
           }
           a.sidebar-nav-link-follow {
