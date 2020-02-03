@@ -68,7 +68,7 @@ Make sure to download the OSS version, `elasticsearch-oss`.
 
 ```shell
 wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz
-wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz.sha512
 shasum -a 512 -c elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz.sha512
 tar -xzf elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz
 cd elasticsearch-7.5.2/
