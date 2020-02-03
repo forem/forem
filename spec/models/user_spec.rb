@@ -33,6 +33,7 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
       it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
       it { is_expected.to have_one(:pro_membership).dependent(:destroy) }
+      it { is_expected.to have_one(:counters).dependent(:destroy) }
 
       # rubocop:disable RSpec/NamedSubject
       it "has created_podcasts" do
