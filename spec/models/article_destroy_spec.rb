@@ -6,8 +6,10 @@ RSpec.describe Article, type: :model do
 
     before { create(:reaction, reactable: article) }
 
-    it "doesn't create ScoreCalcJob on destroy" do
-      expect { article.destroy }.not_to have_enqueued_job(Articles::ScoreCalcJob)
+    it "doesn't create ScoreCalcWorker on destroy" do
+      sidekiq_assert_no_enqueued_jobs(only: Articles::ScoreCalcWorker) do
+        article.destroy
+      end
     end
   end
 

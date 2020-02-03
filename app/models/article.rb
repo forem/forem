@@ -64,7 +64,7 @@ class Article < ApplicationRecord
   before_save       :set_caches
   before_save       :fetch_video_duration
   before_save       :clean_data
-  after_save        :async_score_calc, if: :published
+  after_commit      :async_score_calc, if: :published, unless: :destroyed?
   after_save        :bust_cache
   after_save        :update_main_image_background_hex
   after_save        :detect_human_language
@@ -450,7 +450,7 @@ class Article < ApplicationRecord
   end
 
   def async_score_calc
-    Articles::ScoreCalcJob.perform_later(id)
+    Articles::ScoreCalcWorker.perform_async(id)
   end
 
   def fetch_video_duration

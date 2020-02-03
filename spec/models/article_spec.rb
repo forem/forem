@@ -597,15 +597,15 @@ RSpec.describe Article, type: :model do
     end
 
     describe "async score calc" do
-      it "enqueues Articles::ScoreCalcJob if published" do
-        assert_enqueued_with(job: Articles::ScoreCalcJob) do
+      it "enqueues Articles::ScoreCalcWorker if published" do
+        sidekiq_assert_enqueued_with(job: Articles::ScoreCalcWorker, args: [article.id]) do
           article.save
         end
       end
 
-      it "does not enqueue Articles::ScoreCalcJob if not published" do
+      it "does not enqueue Articles::ScoreCalcWorker if not published" do
         article = build(:article, published: false)
-        assert_no_enqueued_jobs(only: Articles::ScoreCalcJob) do
+        sidekiq_assert_no_enqueued_jobs(only: Articles::ScoreCalcWorker) do
           article.save
         end
       end
