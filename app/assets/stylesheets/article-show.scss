@@ -116,7 +116,7 @@ article {
   @include themeable(
     box-shadow,
     theme-container-box-shadow,
-    $bold-shadow
+    $bold-shadow2
   );
   @media screen and (min-width: 880px) {
     @include themeable(
@@ -344,7 +344,7 @@ article {
     width: 92%;
     max-width: 500px;
     margin: calc(1.1vw + 5px) auto 1.0vw;
-    box-shadow: $bold-shadow;
+    box-shadow: $bold-shadow2;
     p {
       margin: 0px auto;
       padding: calc(0.1vw + 9px);
@@ -898,7 +898,7 @@ article {
     @include themeable(
       box-shadow,
       theme-container-box-shadow,
-      $bold-shadow
+      $bold-shadow2
     );
     width: 100%;
     @include themeable(

@@ -188,7 +188,7 @@
     text-align: center;
     margin-bottom: 15px;
     background: $dark-gray;
-    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
+    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow2);
     padding: 15px 0px;
   }
 
@@ -253,7 +253,7 @@
       theme-container-border,
       1px solid $light-medium-gray
     );
-    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
+    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow2);
     padding: 5px 15px;
     margin-bottom: 13px;
     border-radius: 3px;

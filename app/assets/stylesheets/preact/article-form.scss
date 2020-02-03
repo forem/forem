@@ -47,8 +47,8 @@
   box-sizing: border-box;
   border: 1px solid darken($light-medium-gray, 5%);
   border: var(--theme-container-border, 1px solid darken($light-medium-gray, 5%));
-  box-shadow: $bold-shadow;
-  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
+  box-shadow: $bold-shadow2;
+  box-shadow: var(--theme-container-box-shadow, $bold-shadow2);
   border-radius: 3px;
 
   @media screen and (min-width: 500px) {
@@ -260,8 +260,8 @@
   background: white;
   background: var(--theme-container-background, white);
   border: 1px solid $medium-gray;
-  box-shadow: $bold-shadow;
-  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
+  box-shadow: $bold-shadow2;
+  box-shadow: var(--theme-container-box-shadow, $bold-shadow2);
   font-family: $monospace;
   z-index: 20;
 }
@@ -583,8 +583,8 @@
   background: $dark-gray;
   color: white;
   padding: 4%;
-  box-shadow: $bold-shadow;
-  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
+  box-shadow: $bold-shadow2;
+  box-shadow: var(--theme-container-box-shadow, $bold-shadow2);
   text-align: center;
   border-radius: 3px;
   overflow-y: scroll;

@@ -25,7 +25,7 @@
     padding: 40px 0px;
     font-size: 1.2em;
     @include themeable(background, theme-container-background, white);
-    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
+    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow2);
     border-radius: 3px;
     @include themeable(
       border,
@@ -987,7 +987,7 @@
         @include themeable(
           box-shadow,
           theme-container-box-shadow,
-          $bold-shadow
+          $bold-shadow2
         );
         &:hover {
           @include themeable(
@@ -1089,6 +1089,9 @@
             display: block;
           }
         }
+        .sidebar-main-nav {
+          margin-bottom: 24px;
+        }
         .sidebar-nav-element {
           color: $black;
           display: block;
@@ -1121,8 +1124,8 @@
             padding: 5px;
             display: inline-block;
             width: calc(100% - 10px);
-            font-weight: 500;
-            padding: 7px 9px;
+            font-weight: 400;
+            padding: 8px;
             font-size: 1em;
             &:hover {
               @include themeable(
@@ -1162,7 +1165,7 @@
         theme-container-border,
         1px solid $outline-color
       );
-      @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
+      @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow2);
     }
     .widget {
       // width: calc(100% - 30px);
@@ -1179,7 +1182,7 @@
       //   theme-container-border,
       //   1px solid $outline-color
       // );
-      // @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
+      // @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow2);
       &.fixed-widget {
         position: fixed;
         width: 254px;

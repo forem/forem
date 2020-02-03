@@ -15,7 +15,7 @@
   <% end %>
   <div class="widget sidebar-nav-block sidebar-tag-block">
     <% if user_signed_in? %>
-      <div class="sidebar-nav-element">
+      <div class="sidebar-nav-element sidebar-main-nav">
         <a class="sidebar-nav-link" href="<%= readinglist_path %>">
           <img class="nav-emoji" src="<%= asset_path("emoji/emoji-one-bookmark.png") %>" alt="reading list icon" /> Reading List
           <span id="reading-list-count"></span>
@@ -37,18 +37,18 @@
         </a>
       </div>
     <% end %>
-    <div class="sidebar-nav-header sidebar-nav-header-middle">
+    <header>
       <% if user_signed_in? %>
         my tags
       <% else %>
         design your experience
       <% end %>
-    </div>
+    </header>
     <div class="sidebar-nav-block-inner">
       <div id="sidebar-nav-followed-tags" class="sidebar-nav-followed-tags"></div>
       <div id="sidebar-nav-default-tags" class="sidebar-nav-default-tags <%= "showing" unless user_signed_in? %>">
         <% if user_signed_in? %>
-          <div class="sidebar-nav-subheader tag-separator" id="tag-separator">Other Popular Tags</div>
+          <header id="tag-separator">Other Popular Tags</header>
         <% end %>
         <% Tag.where(supported: true).order("hotness_score DESC").limit(30).pluck(:id, :name).each do |tag_array| %>
           <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">

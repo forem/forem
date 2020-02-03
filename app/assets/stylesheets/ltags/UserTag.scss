@@ -18,7 +18,7 @@
 .ltag__user {
   font-family: $helvetica;
   border: 1px solid $light-medium-gray;
-  @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
+  @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow2);
   border-radius: 3px;
   display: block;
   margin: 0.95em 0 1.2em;
