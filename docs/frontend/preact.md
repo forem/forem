@@ -17,7 +17,7 @@ view pages inside `app/views`.
 
 Preact supports
 [PropTypes](https://reactjs.org/docs/typechecking-with-proptypes.html). When
-creating Preact components, ensure to always have prop types defined.
+creating Preact components, please ensure that you have defined your PropTypes.
 
 ### Common PropTypes
 
