@@ -85,7 +85,7 @@ class UsersController < ApplicationController
   def full_delete
     set_tabs("account")
     if @user.email?
-      Users::SelfDeleteWorker.perform_async(@user.id)
+      Users::DeleteWorker.perform_async(@user.id)
       sign_out @user
       flash[:global_notice] = "Your account deletion is scheduled. You'll be notified when it's deleted."
       redirect_to root_path
