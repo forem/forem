@@ -4,25 +4,35 @@
 @import 'variables';
 @import '_mixins';
 
+// Card styling
+@mixin dev-card {
+  @include themeable(background, theme-container-background, $white);
+  @include themeable(border, theme-container-border, none);
+  @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow2);
+  margin-bottom: 1px;
+
+  @media screen and (min-width: 750px) {
+    border-radius: 3px;
+    margin-bottom: 8px;
+  }
+}
+
+
 .home {
   position: relative;
   min-height: 440px; // TODO: why?
   margin: 16px auto 0;
   max-width: 1250px;
-  text-align: left; // TODO: why?
+  text-align: left;
 
   .articles-list {
-    text-align: left;
     margin: auto;
-    text-align: center;
+    max-width: 750px;
     width: 100%;
     position: relative;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0); //Invisible black
-    max-width: 750px;
-    padding-bottom: 30px;
-    @media screen and (min-width: 750px) {
-      margin-bottom: 30px;
-    }
+    padding-bottom: 32px;
+
     @media screen and (min-width: 950px) {
       width: 100%;
       margin-left: 2.3%;
@@ -34,216 +44,37 @@
       max-width: calc(100% - 640px);
     }
     @media screen and (min-width: 1240px) {
-      width: 100%;
-      margin-left: 2.3%;
-      margin-right: 15px;
       max-width: 604px;
-      float: left;
     }
-    .notifications-mobile-filters {
-      padding-bottom: 8px;
-      @media screen and (min-width: 950px) {
-        display: none;
-      }
-      .organization-name {
-        font-size: 15px;
-        font-weight: bold;
-        border: 0px;
-        display: inline-block;
-        width: 27%;
-        padding: 9px 0px;
-        text-align: center;
-        @include themeable(color, theme-secondary-color, $medium-gray);
-        margin: 1%;
-      }
-      .query-filter-button {
-        font-size: 12px;
-        font-weight: bold;
-        background: transparent;
-        border: 0px;
-        display: inline-block;
-        width: 27%;
-        padding: 9px 0px;
-        text-align: left;
-        border-radius: 100px;
-        @include themeable(color, theme-color, $black);
-        text-align: center;
-        margin: 1%;
-        &:hover {
-          @include themeable(
-            background,
-            theme-container-background-hover,
-            lighten($bold-blue, 38%)
-          );
-        }
-        &.selected {
-          @include themeable(
-            background,
-            theme-container-accent-background,
-            lighten($bold-blue, 8%)
-          );
-          @include themeable(
-            color,
-            theme-color,
-            white
-          );
-        }
-      }
-    }
-    .on-page-nav-controls {
-      height: 45px;
-      position: relative;
-      opacity: 0.85;
-      &.user-nav-controls {
-        margin-top: -12px;
-        @media screen and (min-width: 950px) {
-          display: none;
-        }
-      }
-      .on-page-nav-butt {
-        position: absolute;
-        top: 14px;
-        border: 0px;
-        background: transparent;
-        border-radius: 8px;
-        img {
-          height: 24px;
-        }
-        &.on-page-nav-butt-left {
-          left: 3%;
-        }
-        &.on-page-nav-butt-right {
-          right: 3%;
-        }
-        @media screen and (min-width: 950px) {
-          display: none;
-        }
-      }
-      .on-page-nav-label {
-        position: absolute;
-        right: 0;
-        left: 0;
-        font-family: $helvetica-condensed;
-        font-stretch: condensed;
-        top: 18px;
-        font-weight: 600;
-        &.sub-home-nav {
-          top: 12px;
-        }
-        .wide-nav-links {
-          display: none;
-        }
-        @media screen and (min-width: 650px) {
-          .narrow-nav-select {
-            display: none;
-          }
-          .wide-nav-links {
-            display: block;
-            cursor: default;
-          }
-        }
-        @media screen and (min-width: 950px) {
-          top: 9px;
-          &.sub-home-nav {
-            top: 8px;
-          }
-        }
-      }
-      .separator {
-        border-left: 2px solid $light-medium-gray;
-        display: inline-block;
-        margin: 0px 7px;
-        height: 15px;
-      }
-      .nav-chronofiter-link {
-        display: inline-block;
-        padding: 2px 8px;
-        font-size: 0.95em;
-        border-radius: 2px;
-        border: 1px solid transparent;
-        &.selected {
-          background: $purple;
-          color: $black;
-          border: 1px solid $dark-purple;
-          box-shadow: 3px 4px 0px $dark-purple;
-        }
-        &:hover {
-          opacity: 1;
-          background: $dark-purple;
-          color: white;
-          border: 1px solid $purple;
-          box-shadow: 3px 4px 0px $purple;
-        }
-      }
-      .narrow-nav-select {
-        button {
-          all: unset;
-          background: transparent;
-          border: 0;
-          font-family: $helvetica-condensed;
-          font-stretch: condensed;
-          font-weight: 600;
-          cursor: pointer;
-        }
-      }
-    }
+    
     .pinned-articles {
-      @include themeable(background, theme-container-background, $white);
-      @include themeable(
-        border,
-        theme-container-border,
-        1px solid $outline-color
-      );
-      padding: 8px 0px;
-      margin-bottom: 8px;
-      @media screen and (min-width: 750px) {
-        border-radius: 3px;
-        box-sizing: border-box;
-        padding: 8px 8px;
-        padding-right: 9px;
-        width: calc(100% + 2px);
-        max-width: 722px;
-      }
-      .pinned-articles-indicator {
-        text-align: left;
-        font-weight: bold;
-        margin-bottom: 8px;
-        padding-top: 8px;
-        img {
-          width: 20px;
-          transform: rotate(-8deg);
-          vertical-align: -5px;
-          @include themeable(filter, theme-social-icon-invert, invert(0));
-        }
+      padding: 8px;
+      margin: 0 auto;
+      @include dev-card;
+
+      h5 {
+        margin: 0 0 8px;
+        padding: 8px 0;
+        display: flex;
+        align-items: center;
       }
     }
+
     a {
       @include themeable(color, theme-container-color, $black);
     }
+
     a.small-pic-link-wrapper,
     .placeholder-div {
       display: block;
       width: 100%;
     }
+
     .single-article {
-      text-align: left;
-      @include themeable(background, theme-container-background, $white);
-      transition: opacity 0.35s ease-in;
-      // border: 1px solid $outline-color;
-      @include themeable(
-        border,
-        theme-container-border,
-        none
-      );
-      @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow2);
-      border-radius: 3px;
       cursor: pointer;
-      width: 96%;
-      margin: 0 auto 8px auto;
+      margin: 0 auto;
       position: relative;
-      @media screen and (min-width: 950px) {
-        width: 100%;
-      }
+      @include dev-card;
       &.active {
         opacity: 0.66;
       }
@@ -258,10 +89,6 @@
       &.single-article-small-pic {
         vertical-align: top;
         overflow: hidden;
-        // margin-top: 8px;
-        @media screen and (min-width: 430px) {
-          // margin-top: 12px;
-        }
       }
       &.single-article-single-podcast {
         h4 {
@@ -272,7 +99,6 @@
         }
       }
       &.single-article-podcast-div {
-        margin-top: 8px;
         padding: 8px 0px 15px;
         font-size: 0.95em;
         h3 {
@@ -405,18 +231,7 @@
         height: 40px;
         width: 40px;
         margin: 16px 0 0 16px;
-        // margin-left: 12px;
-        // margin-top: 3px;
-        border-radius: 40px;
-        // padding: 8px 0px 11px;
-        // @media screen and (min-width: 430px) {
-        //   height: 50px;
-        //   width: 50px;
-        //   padding: 20px 0px 23px;
-        // }
-        // @media screen and (min-width: 1400px) {
-        //   padding: 23px 0px 27px;
-        // }
+        border-radius: 50%;
         img,
         .color {
           height: 100%;
@@ -435,15 +250,15 @@
           height: 100%;
           width: 100%;
           &.round {
-            border-radius: 30px;
+            border-radius: 50%;
           }
         }
       }
       .content {
         float: left;
         width: calc(100% - 75px);
-        padding: 16px 16px 100px 16px;
-        padding-bottom: 110px;
+        padding: 16px 16px 110px 16px;
+        // padding-bottom: 110px;
         h3 {
           margin: 0px;
           font-size: 20px;
@@ -585,7 +400,7 @@
       }
       &.big-article {
         padding: 0px;
-        margin: 8px auto;
+        margin-top: 8px;
         .picture {
           width: 100%;
           margin: auto;
@@ -1690,6 +1505,126 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////
+// TO COMPONETIZE //////////////////////////////
+////////////////////////////////////////////////
+
+// Filtering tabs on top of the feed.
+.on-page-nav-controls {
+  height: 45px;
+  position: relative;
+  opacity: 0.85;
+  text-align: center;
+  &.user-nav-controls {
+    @media screen and (min-width: 950px) {
+      display: none;
+    }
+  }
+  .on-page-nav-butt {
+    position: absolute;
+    top: 14px;
+    border: 0px;
+    background: transparent;
+    border-radius: 8px;
+    img {
+      height: 24px;
+    }
+    &.on-page-nav-butt-left {
+      left: 3%;
+    }
+    &.on-page-nav-butt-right {
+      right: 3%;
+    }
+    @media screen and (min-width: 950px) {
+      display: none;
+    }
+  }
+  .on-page-nav-label {
+    position: absolute;
+    right: 0;
+    left: 0;
+    font-family: $helvetica-condensed;
+    font-stretch: condensed;
+    top: 18px;
+    font-weight: 600;
+    &.sub-home-nav {
+      top: 12px;
+    }
+    .wide-nav-links {
+      display: none;
+    }
+    @media screen and (min-width: 650px) {
+      .narrow-nav-select {
+        display: none;
+      }
+      .wide-nav-links {
+        display: block;
+        cursor: default;
+      }
+    }
+    @media screen and (min-width: 950px) {
+      top: 9px;
+      &.sub-home-nav {
+        top: 8px;
+      }
+    }
+  }
+  .separator {
+    border-left: 2px solid $light-medium-gray;
+    display: inline-block;
+    margin: 0px 7px;
+    height: 15px;
+  }
+  .nav-chronofiter-link {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 0.95em;
+    border-radius: 2px;
+    border: 1px solid transparent;
+    &.selected {
+      background: $purple;
+      color: $black;
+      border: 1px solid $dark-purple;
+      box-shadow: 3px 4px 0px $dark-purple;
+    }
+    &:hover {
+      opacity: 1;
+      background: $dark-purple;
+      color: white;
+      border: 1px solid $purple;
+      box-shadow: 3px 4px 0px $purple;
+    }
+  }
+  .narrow-nav-select {
+    button {
+      all: unset;
+      background: transparent;
+      border: 0;
+      font-family: $helvetica-condensed;
+      font-stretch: condensed;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
+}
+
+
+
+////////////////////////////////////////////////
+// OTHER VIEWS /////////////////////////////////
+////////////////////////////////////////////////
+
 // Search results: empty
 .query-results-nothing {
   padding: 40px 0px;
@@ -1706,5 +1641,59 @@
   margin: auto;
   @media screen and (min-width: 950px) {
     width: 100%;
+  }
+}
+
+
+
+// Notifications
+.notifications-mobile-filters {
+  padding-bottom: 8px;
+  @media screen and (min-width: 950px) {
+    display: none;
+  }
+  .organization-name {
+    font-size: 15px;
+    font-weight: bold;
+    border: 0px;
+    display: inline-block;
+    width: 27%;
+    padding: 9px 0px;
+    text-align: center;
+    @include themeable(color, theme-secondary-color, $medium-gray);
+    margin: 1%;
+  }
+  .query-filter-button {
+    font-size: 12px;
+    font-weight: bold;
+    background: transparent;
+    border: 0px;
+    display: inline-block;
+    width: 27%;
+    padding: 9px 0px;
+    text-align: left;
+    border-radius: 100px;
+    @include themeable(color, theme-color, $black);
+    text-align: center;
+    margin: 1%;
+    &:hover {
+      @include themeable(
+        background,
+        theme-container-background-hover,
+        lighten($bold-blue, 38%)
+      );
+    }
+    &.selected {
+      @include themeable(
+        background,
+        theme-container-accent-background,
+        lighten($bold-blue, 8%)
+      );
+      @include themeable(
+        color,
+        theme-color,
+        white
+      );
+    }
   }
 }
