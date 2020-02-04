@@ -79,18 +79,17 @@
   }
 
   .items-container {
-    width: calc(100% - 280px);
     padding: 16px;
-    float: left;
     box-sizing: border-box;
+    width: 100%;
+    float: left;
+
+    @media screen and (min-width: 950px) {
+      width: calc(100% - 280px);
+    }
 
     .results {
-      @include themeable(background, theme-container-background, white);
-      @include themeable(
-        border,
-        theme-container-border,
-        1px solid $light-medium-gray
-      );
+      @include dev-card;
       border-radius: 3px;
       min-height: 350px;
       display: none;
