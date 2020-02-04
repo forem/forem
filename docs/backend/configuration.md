@@ -6,8 +6,8 @@ title: Configuration
 
 We currently use two gems for configuring the application:
 
-- [rails-settings-cached](https://github.com/huacnlee/rails-settings-cached)
 - [ENVied](https://github.com/eval/envied)
+- [rails-settings-cached](https://github.com/huacnlee/rails-settings-cached)
 
 ## ENVied
 
@@ -20,9 +20,10 @@ credentials and third party services. Examples:
 
 Settings managed via ENVied can be found in
 [`Envfile`](https://github.com/thepracticaldev/dev.to/blob/master/Envfile) (see
-[Configuring Environment Variables](../getting-started/config-env.md)):
+[Configuring Environment Variables](../getting-started/config-env.md)) and
+viewed at `/internal/config` (see [Accessing the admin panel](./admin.md)):
 
-![Screenshot of site configuration admin interface](https://user-images.githubusercontent.com/47985/73627238-6276d500-467e-11ea-8724-afb703f056bc.png)
+![Screenshot of env variable admin interface](https://user-images.githubusercontent.com/47985/73627243-67d41f80-467e-11ea-9121-221275ff8a89.png)
 
 ## rails-settings-cached
 
@@ -38,4 +39,4 @@ These settings can be accessed via the
 object and viewed / modified via `/internal/config` (see
 [Accessing the admin panel](./admin.md)).
 
-![Screenshot of env variable admin interface](https://user-images.githubusercontent.com/47985/73627243-67d41f80-467e-11ea-9121-221275ff8a89.png)
+![Screenshot of site configuration admin interface](https://user-images.githubusercontent.com/47985/73627238-6276d500-467e-11ea-8724-afb703f056bc.png)
