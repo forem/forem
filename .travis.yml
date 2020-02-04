@@ -15,6 +15,7 @@ addons:
       - $(ls tmp/screenshots/*.png | tr "\n" ":")
     debug: true
 services:
+  - elasticsearch
   - redis-server
 env:
   global:
