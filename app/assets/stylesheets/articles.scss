@@ -271,7 +271,7 @@
       border-radius: 3px;
       cursor: pointer;
       width: 96%;
-      margin: auto;
+      margin: 0 auto 8px auto;
       position: relative;
       @media screen and (min-width: 950px) {
         width: 100%;
@@ -290,9 +290,9 @@
       &.single-article-small-pic {
         vertical-align: top;
         overflow: hidden;
-        margin-top: 8px;
+        // margin-top: 8px;
         @media screen and (min-width: 430px) {
-          margin-top: 12px;
+          // margin-top: 12px;
         }
       }
       &.single-article-single-podcast {
@@ -436,18 +436,19 @@
         float: left;
         height: 40px;
         width: 40px;
-        margin-left: 12px;
-        margin-top: 3px;
-        border-radius: 50px;
-        padding: 8px 0px 11px;
-        @media screen and (min-width: 430px) {
-          height: 50px;
-          width: 50px;
-          padding: 20px 0px 23px;
-        }
-        @media screen and (min-width: 1400px) {
-          padding: 23px 0px 27px;
-        }
+        margin: 16px 0 0 16px;
+        // margin-left: 12px;
+        // margin-top: 3px;
+        border-radius: 40px;
+        // padding: 8px 0px 11px;
+        // @media screen and (min-width: 430px) {
+        //   height: 50px;
+        //   width: 50px;
+        //   padding: 20px 0px 23px;
+        // }
+        // @media screen and (min-width: 1400px) {
+        //   padding: 23px 0px 27px;
+        // }
         img,
         .color {
           height: 100%;
@@ -473,12 +474,13 @@
       .content {
         float: left;
         width: calc(100% - 75px);
-        padding: calc(1vw + 7px) 9px;
+        padding: 16px 16px 100px 16px;
         padding-bottom: 110px;
         h3 {
           margin: 0px;
-          font-size: 21px;
-          line-height: 25px;
+          font-size: 20px;
+          font-weight: 700;
+          line-height: 28px;
           width: 100%;
           padding: 0px;
           word-break: break-word;
@@ -501,7 +503,7 @@
         @media screen and (min-width: 430px) {
           width: calc(100% - 88px);
           padding-right: 0px;
-          padding-bottom: 124px;
+          padding-bottom: 100px;
           h3 {
             margin: 0px;
             font-size: 27px;
@@ -530,11 +532,10 @@
         margin-right: 4px;
       }
       h4 {
-        font-size: 14px;
         margin-left: 0px;
         max-width: 80%;
         padding: 0px;
-        margin: 5px 0px;
+        margin: 0;
         font-weight: 500;
         display: inline-block;
         left: 62px;
@@ -543,13 +544,13 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        font-size: 0.8em;
         a {
           @include themeable(color, theme-secondary-color, #666666);
         }
         @media screen and (min-width: 430px) {
-          bottom: 90px;
+          bottom: 50px;
           left: 72px;
-          font-size: 17px;
         }
         &:hover {
           opacity: 0.9;
@@ -558,7 +559,7 @@
       }
       .tags {
         margin-top: 0px;
-        font-size: 14px;
+        font-size: 0.8em;
         position: absolute;
         display: inline-block;
         max-width: 76%;
@@ -580,8 +581,7 @@
         }
         @media screen and (min-width: 430px) {
           left: 72px;
-          bottom: 72px;
-          font-size: 16px;
+          bottom: 75px;
         }
       }
       .search-snippet {
@@ -617,13 +617,7 @@
       }
       &.big-article {
         padding: 0px;
-        margin: 10px auto 0px;
-        @media screen and (min-width: 650px) {
-          margin: 15px auto 0px;
-        }
-        @media screen and (min-width: 950px) {
-          margin: 10px auto 0px;
-        }
+        margin: 8px auto;
         .picture {
           width: 100%;
           margin: auto;
@@ -641,37 +635,28 @@
           @include themeable(color, theme-container-color, $black);
           position: relative;
           z-index: 5;
-          border-top: 1px solid darken($lightest-gray, 4%);
-          @include themeable(
-            border-top,
-            theme-container-border,
-            1px solid darken($lightest-gray, 4%)
-          );
-          @include themeable(
-            border-bottom,
-            theme-container-border,
-            1px solid darken($lightest-gray, 4%)
-          );
+          // border-top: 1px solid darken($lightest-gray, 4%);
+          // @include themeable(
+          //   border-top,
+          //   theme-container-border,
+          //   1px solid darken($lightest-gray, 4%)
+          // );
+          // @include themeable(
+          //   border-bottom,
+          //   theme-container-border,
+          //   1px solid darken($lightest-gray, 4%)
+          // );
           padding-bottom: 105px;
           border-radius: 3px;
           h3 {
-            font-size: calc(1.7vw + 22px);
-            font-weight: 500;
-            width: calc(100% - 20px);
-            margin-left: 12px;
-            margin-bottom: 8px;
-            margin-top: 8px;
-            padding-top: 0px;
+            font-size: 36px;
+            font-weight: 800;
+            margin: 16px;
+            padding: 0;
             word-break: break-word;
-            @media screen and (min-width: 1600px) {
-              font-size: 45px;
-            }
           }
           .title-block {
             display: inline-block;
-          }
-          @media screen and (min-width: 430px) {
-            padding-bottom: 120px;
           }
         }
       }
@@ -708,6 +693,7 @@
       text-overflow: ellipsis;
       z-index: 10;
       left: 62px;
+      bottom: 90px;
       font-size: 14px;
       a {
         @include themeable(color, theme-secondary-color, #666666);
@@ -715,11 +701,6 @@
       &:hover {
         opacity: 0.9;
         text-decoration: underline;
-      }
-      @media screen and (min-width: 430px) {
-        left: 72px;
-        font-size: 18px;
-        margin-top: -120px;
       }
     }
     .featured-tags {
@@ -751,14 +732,13 @@
       position: absolute;
       right: 82px;
       bottom: 12px;
-      font-size: 13px;
+      font-size: 0.7em;
       padding: 6px 0px;
-      font-weight: 600;
       z-index: 8;
       @include themeable(
         color,
         theme-secondary-color,
-        darken($medium-gray, 5%)
+        $medium-gray
       );
     }
     .article-engagement-count {
@@ -786,13 +766,13 @@
         margin-right: 7px;
       }
       &.comments-count {
-        left: 93px;
+        left: 85px;
         img {
           width: 28px;
         }
       }
       &.reactions-count {
-        left: 20px;
+        left: 16px;
       }
       &.engage-button {
         right: 12px;
@@ -1318,10 +1298,6 @@
         }
       }
       .widget-body {
-        // margin-top: 9px;
-        font-size: 0.9em;
-        line-height: 1.2em;
-        // padding-bottom: 5px;
         overflow-wrap: break-word;
         &.body-scrollable {
           height: calc(100vh - 300px);
