@@ -137,14 +137,14 @@ class CommentsController < ApplicationController
   # DELETE /comments/1.json
   def destroy
     authorize @comment
-    @commentable_path = @comment.commentable.path
     if @comment.is_childless?
       @comment.destroy
     else
       @comment.deleted = true
       @comment.save!
     end
-    redirect_to URI.parse(@commentable_path).path, notice: "Comment was successfully deleted."
+    redirect_path = @comment.commentable&.path || user_path(current_user)
+    redirect_to redirect_path, notice: "Comment was successfully deleted."
   end
 
   def delete_confirm
