@@ -52,13 +52,5 @@ of a browser extension. These tools are currently supported for Preact version
 10.x and up.
 
 DEV currently uses Preact 8.x so the Preact developer tools are not an option,
-however Preact 8.x+ is compatible with the React developer tools.
-
-The browser extension is available for Chrome and Firefox:
-
-- [React DevTools for Chrome](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en)
-- [React DevTools for Firefox](https://addons.mozilla.org/en-CA/firefox/addon/react-devtools/)
-
-Note: You can use the Chrome extension if you use [Brave](https://brave.com/) or
-the [new Edge](https://www.microsoft.com/en-us/edge) (Chromium version).
-Potentially it will also work with other Chromium based browsers.
+however Preact 8.x+ is compatible with the React developer tools extension which
+is available for Chrome and Firefox.
