@@ -268,15 +268,12 @@
         margin-right: 4px;
       }
       h4 {
-        margin-left: 0px;
-        max-width: 80%;
         padding: 0px;
         margin: 0;
         font-weight: 500;
-        display: inline-block;
-        left: 62px;
         position: absolute;
-        bottom: 80px;
+        bottom: 50px;
+        left: 72px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -284,10 +281,7 @@
         a {
           @include themeable(color, theme-secondary-color, #666666);
         }
-        @media screen and (min-width: 430px) {
-          bottom: 50px;
-          left: 72px;
-        }
+
         &:hover {
           opacity: 0.9;
           text-decoration: underline;
@@ -298,13 +292,12 @@
         font-size: 0.8em;
         position: absolute;
         display: inline-block;
-        max-width: 76%;
         z-index: 5;
-        left: 62px;
+        left: 72px;
+        bottom: 75px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        bottom: 63px;
         color: $black;
         a {
           display: inline-block;
@@ -314,10 +307,6 @@
           &:hover {
             text-decoration: underline;
           }
-        }
-        @media screen and (min-width: 430px) {
-          left: 72px;
-          bottom: 75px;
         }
       }
       .search-snippet {
@@ -395,12 +384,14 @@
       z-index: 10;
       left: 72px;
       bottom: 65px;
-      font-size: 1em;
+      font-size: 0.8em;
       a {
         @include themeable(color, theme-secondary-color, #666666);
       }
+      @media screen and (min-width: 450px) {
+        font-size: 1em;
+      }
       &:hover {
-        opacity: 0.9;
         text-decoration: underline;
       }
     }
@@ -409,21 +400,18 @@
       position: absolute;
       max-width: 80%;
       bottom: 95px !important;
+      left: 62px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       z-index: 10;
       &:hover {
-        opacity: 0.9;
+        text-decoration: underline;
       }
       .tag {
         @include themeable(color, theme-color, $black);
         margin-right: 4px;
       }
-      left: 62px;
-      // @media screen and (min-width: 430px) {
-      //   left: 72px;
-      // }
     }
     .article-reading-time {
       position: absolute;
