@@ -663,38 +663,31 @@
     }
     .featured-profile-button {
       float: left;
-      margin-top: -104px;
       z-index: 10;
-      left: 12px;
+      left: 16px;
       position: absolute;
-      @media screen and (min-width: 430px) {
-        margin-top: -124px;
-      }
+      margin-top: -110px;
     }
     img.featured-profile-pic {
       height: 40px;
       width: 40px;
       border-radius: 50px;
-      @media screen and (min-width: 430px) {
-        height: 50px;
-        width: 50px;
-      }
       &:hover {
         opacity: 0.9;
       }
     }
     .featured-user-name {
       font-weight: bold;
-      margin-top: -101px;
+      margin-top: 0;
       position: absolute;
       width: 80%;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       z-index: 10;
-      left: 62px;
-      bottom: 90px;
-      font-size: 14px;
+      left: 72px;
+      bottom: 65px;
+      font-size: 1em;
       a {
         @include themeable(color, theme-secondary-color, #666666);
       }
@@ -704,11 +697,10 @@
       }
     }
     .featured-tags {
-      font-size: 15px;
-      margin-top: -78px !important;
-      bottom: auto !important;
+      font-size: 1em;
       position: absolute;
-      max-width: 76%;
+      max-width: 80%;
+      bottom: 95px !important;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -718,14 +710,11 @@
       }
       .tag {
         @include themeable(color, theme-color, $black);
-        margin-right: 3px;
+        margin-right: 4px;
       }
       left: 62px;
       @media screen and (min-width: 430px) {
-        font-size: 16px !important;
         left: 72px;
-        bottom: auto;
-        margin-top: -94px !important;
       }
     }
     .article-reading-time {
