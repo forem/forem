@@ -31,13 +31,13 @@ you may anonymously contact the team with our
 ### Where to contribute
 
 All [issues](https://github.com/thepracticaldev/dev.to/issues) labeled with
-`help wanted` are up for grabs.
+`ready for dev` are up for grabs.
 
 - `good first issue` are issues meant for newer developers.
 - `type: discussion` are issues we haven't decided to move forward with, or need
   more information before proceeding.
 
-While PRs without an associated `help wanted` issue may still be merged, please
+While PRs without an associated `ready for dev` issue may still be merged, please
 note that the core team will prioritize PRs that solve existing issues. We
 strongly encourage creating an issue before working on a PR!
 
