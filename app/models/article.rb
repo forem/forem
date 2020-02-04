@@ -64,7 +64,7 @@ class Article < ApplicationRecord
   before_save       :set_caches
   before_save       :fetch_video_duration
   before_save       :clean_data
-  after_save        :async_score_calc, if: :published
+  after_commit      :async_score_calc
   after_save        :bust_cache
   after_save        :update_main_image_background_hex
   after_save        :detect_human_language
@@ -393,6 +393,13 @@ class Article < ApplicationRecord
     "articles-#{id}"
   end
 
+  def update_score
+    update_columns(score: reactions.sum(:points),
+                   comment_score: comments.sum(:score),
+                   hotness_score: BlackBox.article_hotness_score(self),
+                   spaminess_rating: BlackBox.calculate_spaminess(self))
+  end
+
   private
 
   def delete_related_objects
@@ -450,7 +457,9 @@ class Article < ApplicationRecord
   end
 
   def async_score_calc
-    Articles::ScoreCalcJob.perform_later(id)
+    return if !published? || destroyed?
+
+    Articles::ScoreCalcWorker.perform_async(id)
   end
 
   def fetch_video_duration
