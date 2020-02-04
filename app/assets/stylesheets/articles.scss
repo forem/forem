@@ -46,8 +46,7 @@
       @include themeable(color, theme-container-color, $black);
     }
 
-    a.small-pic-link-wrapper,
-    .placeholder-div {
+    .placeholder-div { // TOOD: what is this?
       display: block;
       width: 100%;
     }
@@ -57,14 +56,15 @@
       margin: 0 auto;
       position: relative;
       @include dev-card;
-      &.active {
+
+      &.active { // TODO: what is this .active thingy?
         opacity: 0.66;
       }
       &.big-article {
         &.active {
           opacity: 0.84;
         }
-        .time-ago-indicator {
+        .time-ago-indicator { // TODO: where do we use it?
           vertical-align: 0.11em;
         }
       }
@@ -166,6 +166,8 @@
           }
         }
       }
+
+      // Organization Badge
       .org-headline-filler {
         @include themeable(background, theme-container-accent-background, darken($light-gray, 6%));
         @include themeable(color, theme-color, $black);
@@ -184,6 +186,7 @@
           vertical-align: middle;
         }
       }
+
       .small-pic {
         float: left;
         height: 40px;
@@ -191,13 +194,10 @@
         margin: 16px 0 0 16px;
         border-radius: 50%;
         img,
-        .color {
+        .color { // TODO: what is .color for?
           height: 100%;
           width: 100%;
-          border-radius: 50px;
-        }
-        &:hover {
-          opacity: 0.9;
+          border-radius: 50%;
         }
       }
       .tiny-pic {
@@ -216,7 +216,7 @@
         float: left;
         width: calc(100% - 72px);
         box-sizing: border-box; // TODO: this should be applied globally, not only .content
-        padding: 16px 16px 100px 16px;
+        padding: 16px 16px 100px 16px; // TODO: my, oh my...
         h3 {
           margin: 0px;
           font-size: 20px;
@@ -240,7 +240,7 @@
             }
           }
         }
-        @media screen and (min-width: 430px) {
+        @media screen and (min-width: 450px) {
           h3 {
             font-size: 27px;
             line-height: 32px;
@@ -353,11 +353,15 @@
         .content-wrapper {
           padding-bottom: 115px;
           h3 {
-            font-size: 36px;
+            font-size: 28px;
             font-weight: 800;
             padding: 16px;
             margin: 0;
             word-break: break-word;
+
+            @media screen and (min-width: 450px) {
+              font-size: 36px;
+            }
           }
           .title-block {
             display: inline-block;
@@ -417,9 +421,9 @@
         margin-right: 4px;
       }
       left: 62px;
-      @media screen and (min-width: 430px) {
-        left: 72px;
-      }
+      // @media screen and (min-width: 430px) {
+      //   left: 72px;
+      // }
     }
     .article-reading-time {
       position: absolute;
@@ -512,17 +516,6 @@
         min-width: 28px;
         text-align: left;
         display: inline-block;
-      }
-      @media screen and (min-width: 430px) {
-        font-size: 15px;
-        img {
-          height: 20px;
-          min-width: 26px;
-          vertical-align: -5px;
-        }
-        &.featured-engagement {
-          margin-top: -38px;
-        }
       }
     }
     .video-player-header {
