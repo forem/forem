@@ -2,18 +2,14 @@
 @import 'mixins';
 
 .item-list-container {
-  @media screen and (min-width: 950px) {
-    margin-top: -25px;
-  }
-
   a {
     display: block;
   }
 
   .filters {
-    width: 300px;
-    float: left;
-    min-height: 356px;
+    // width: 300px;
+    // float: left;
+    // min-height: 356px;
     position: relative;
 
     input {
@@ -83,16 +79,10 @@
   }
 
   .items-container {
-    width: calc(100% - 20px);
-    margin: 10px auto;
-    margin-left: 10px;
+    width: calc(100% - 280px);
+    padding: 16px;
     float: left;
-
-    @media screen and (min-width: 950px) {
-      width: calc(100% - 332px);
-      margin-left: 20px;
-      margin-top: 0px;
-    }
+    box-sizing: border-box;
 
     .results {
       @include themeable(background, theme-container-background, white);
