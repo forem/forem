@@ -23,7 +23,7 @@ creating Preact components, please ensure that you have defined your PropTypes.
 
 Using PropTypes can be repetitive. Some duplication is normal, like when a
 PropType is a string or a number. But for commonly-used PropTypes, like the user
-entity, you can use the provided common PropTypes, located in
+entity, you can use the provided common PropTypes, located in the
 `/app/javascript/src/components/common-prop-types`, as shown below.
 
 ```javascript
@@ -44,8 +44,10 @@ Common PropTypes are imported just like any other
 For example, here are two scenarios where a component needs to use the
 `tagPropTypes`.
 
-Example 1: Using the `tagPropTypes` with `PropTypes.arrayOf` to construct the
-PropTypes for the `tags` prop.
+In the example below, our component `SomeComponentUsingTags` has a `tags` prop,
+which is an array of the tag entity. PropTypes have a built-in method called
+`arrayOf` that allows you to define a prop as an array of something. In our
+case, this is the tag entity, so we can use the `tagPropTypes` PropType.
 
 ```jsx
 import { h } from 'preact';
@@ -66,8 +68,9 @@ SomeComponentUsingTags.propTypes = {
 };
 ```
 
-Example 2: Using the `tagPropTypes` to construct the PropTypes for the `tag`
-prop.
+The next example the `SomeComponentUsingOneTag` component has a `tag` prop
+representing a single tag. In this case, we can just the `tagPropTypes` on their
+own to represent the shape of the `tag` prop.
 
 ```jsx
 import { h } from 'preact';
