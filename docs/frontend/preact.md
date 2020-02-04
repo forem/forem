@@ -24,8 +24,8 @@ creating Preact components, ensure to always have prop types defined.
 PropTypes can become repetitive. In simple cases where a PropType is a string or
 number, this duplication is expected. For commonly used entities in the DEV
 project, common PropTypes exist. All common PropTypes are located in the
-`/app/javascript/src/components/common-prop-types`. For example, the user entity
-that is referenced in many parts of the DEV codebase.
+`/app/javascript/src/components/common-prop-types` folder. For example, the user
+entity that is referenced in many parts of the DEV codebase.
 
 ```javascript
 import PropTypes from 'prop-types';
