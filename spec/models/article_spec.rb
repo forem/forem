@@ -612,18 +612,25 @@ RSpec.describe Article, type: :model do
     end
 
     describe "detect human language" do
+      let(:language_detector) { instance_double(LanguageDetector) }
+
+      before do
+        allow(LanguageDetector).to receive(:new).and_return(language_detector)
+        allow(language_detector).to receive(:detect)
+      end
+
       it "calls the human language detector" do
         article.language = ""
-        assert_enqueued_with(job: Articles::DetectHumanLanguageJob) do
-          article.save
-        end
+        article.save
+
+        expect(language_detector).to have_received(:detect)
       end
 
       it "does not call the human language detector if there is already a language" do
         article.language = "en"
-        assert_no_enqueued_jobs(only: Articles::DetectHumanLanguageJob) do
-          article.save
-        end
+        article.save
+
+        expect(language_detector).not_to have_received(:detect)
       end
     end
   end
