@@ -65,7 +65,7 @@ class Article < ApplicationRecord
   before_save       :clean_data
   after_save        :async_score_calc, if: :published
   after_save        :bust_cache
-  after_save        :update_main_image_background_hex
+  after_commit      :update_main_image_background_hex
   after_save        :detect_human_language
   before_save       :update_cached_user
   after_update      :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
