@@ -229,6 +229,12 @@ RSpec.describe "Internal::Users", type: :request do
       expect(user.articles.count).to eq(0)
     end
 
+    it "removes a user's direct chat channels" do
+      ChatChannel.create_with_users([user, user2])
+
+      expect { banish_user }.to change(user.chat_channels, :count).from(1).to(0)
+    end
+
     it "removes all follow relationships" do
       user.follow(user2)
       banish_user
