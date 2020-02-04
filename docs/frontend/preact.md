@@ -21,11 +21,10 @@ creating Preact components, please ensure that you have defined your PropTypes.
 
 ### Common PropTypes
 
-PropTypes can become repetitive. In simple cases where a PropType is a string or
-number, this duplication is expected. For commonly used entities in the DEV
-project, common PropTypes exist. All common PropTypes are located in the
-`/app/javascript/src/components/common-prop-types` folder. For example, the user
-entity that is referenced in many parts of the DEV codebase.
+Using PropTypes can be repetitive. Some duplication is normal, like when a
+PropType is a string or a number. But for commonly-used PropTypes, like the user
+entity, you can use the provided common PropTypes, located in
+`/app/javascript/src/components/common-prop-types`, as shown below.
 
 ```javascript
 import PropTypes from 'prop-types';
