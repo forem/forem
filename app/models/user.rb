@@ -478,6 +478,10 @@ class User < ApplicationRecord
       email_follower_notifications
   end
 
+  def title
+    name
+  end
+
   private
 
   def index_id
@@ -601,10 +605,6 @@ class User < ApplicationRecord
     return if uri.host&.in?(Constants::ALLOWED_MASTODON_INSTANCES)
 
     errors.add(:mastodon_url, "is not an allowed Mastodon instance")
-  end
-
-  def title
-    name
   end
 
   def tag_list
