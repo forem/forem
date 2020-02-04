@@ -29,6 +29,10 @@ function titleArea(previewResponse, version, articleState) {
     });
   }
 
+  // The v2 editor stores its cover image in articleState.mainImage, while the v1 editor
+  // stores it as previewRespose.cover_image. When previewing, we handle both by
+  // defaulting to setting the cover image to the mainImage on the article (v2),
+  //  and only using the cover image from the previewResponse if it exists (v1).
   let coverImage = articleState.mainImage || '';
   if (articleState.previewShowing) {
     // In preview state, use the cover_image from previewResponse.
