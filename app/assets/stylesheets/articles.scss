@@ -815,6 +815,7 @@
         font-weight: bold;
         padding: 8px 0;
         font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+        @include themeable(color, theme-container-color, $black);
         a {
           display: inline-block;
           @include themeable(color, theme-container-color, $black);
