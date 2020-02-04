@@ -166,34 +166,22 @@
           }
         }
       }
-      .article-organization-headline {
-        display: block;
-        margin-bottom: calc(-1px - 0.6vw);
-        display: flex;
-        .article-organization-headline-inner {
-          @include themeable(
-            background,
-            theme-container-accent-background,
-            darken($light-gray, 6%)
-          );
-          @include themeable(color, theme-color, $black);
-          padding: 6px 12px;
-          border-radius: 100px;
-          font-weight: 600;
-          display: inline-block;
-          margin-top: 10px;
-          margin-left: 10px;
-          font-size: calc(0.9em);
-          img {
-            height: calc(1.3em);
-            width: calc(1.3em);
-            vertical-align: -0.27em;
-            margin-right: 6px;
-            border-radius: 100px;
-          }
-        }
-        a.org-headline-filler {
-          flex: 1;
+      .org-headline-filler {
+        @include themeable(background, theme-container-accent-background, darken($light-gray, 6%));
+        @include themeable(color, theme-color, $black);
+        padding: 8px;
+        border-radius: 3px 0 3px 0;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        font-size: 0.9em;
+        line-height: 1;
+        img {
+          width: 24px; 
+          height: 24px;
+          margin-right: 4px;
+          border-radius: 50%;
+          vertical-align: middle;
         }
       }
       .small-pic {
