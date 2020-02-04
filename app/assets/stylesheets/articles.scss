@@ -9,7 +9,6 @@
   @include themeable(background, theme-container-background, $white);
   @include themeable(border, theme-container-border, none);
   @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow2);
-  margin-bottom: 1px;
 
   @media screen and (min-width: 750px) {
     border-radius: 3px;
@@ -256,15 +255,14 @@
       }
       .content {
         float: left;
-        width: calc(100% - 75px);
-        padding: 16px 16px 110px 16px;
-        // padding-bottom: 110px;
+        width: calc(100% - 72px);
+        box-sizing: border-box; // TODO: this should be applied globally, not only .content
+        padding: 16px 16px 100px 16px;
         h3 {
           margin: 0px;
           font-size: 20px;
           font-weight: 700;
           line-height: 28px;
-          width: 100%;
           padding: 0px;
           word-break: break-word;
           .tag-identifier {
@@ -284,11 +282,7 @@
           }
         }
         @media screen and (min-width: 430px) {
-          width: calc(100% - 88px);
-          padding-right: 0px;
-          padding-bottom: 100px;
           h3 {
-            margin: 0px;
             font-size: 27px;
             line-height: 32px;
             .tag-identifier {
@@ -382,60 +376,28 @@
           font-style: normal;
         }
       }
-      h3 {
-        margin: 15px auto;
-        font-size: 32px;
-        font-weight: 500;
-        width: 94%;
-        margin-top: -14px;
-        padding-top: 20px;
-      }
       p {
         margin: 6px auto;
         line-height: 20px;
         font-size: 16px;
-        width: 94%;
         color: rgb(163, 188, 201);
-        padding-bottom: 19px;
+        padding-bottom: 16px;
       }
       &.big-article {
         padding: 0px;
-        margin-top: 8px;
         .picture {
-          width: 100%;
-          margin: auto;
           padding-top: 42%;
-          position: relative;
-          z-index: 0;
-          border-top-left-radius: 3px;
-          border-top-right-radius: 3px;
-
+          border-radius: 3px 3px 0 0;
           background: no-repeat center center;
           background-size: cover;
         }
         .content-wrapper {
-          @include themeable(background, theme-container-background, #fff);
-          @include themeable(color, theme-container-color, $black);
-          position: relative;
-          z-index: 5;
-          // border-top: 1px solid darken($lightest-gray, 4%);
-          // @include themeable(
-          //   border-top,
-          //   theme-container-border,
-          //   1px solid darken($lightest-gray, 4%)
-          // );
-          // @include themeable(
-          //   border-bottom,
-          //   theme-container-border,
-          //   1px solid darken($lightest-gray, 4%)
-          // );
-          padding-bottom: 105px;
-          border-radius: 3px;
+          padding-bottom: 115px;
           h3 {
             font-size: 36px;
             font-weight: 800;
-            margin: 16px;
-            padding: 0;
+            padding: 16px;
+            margin: 0;
             word-break: break-word;
           }
           .title-block {
@@ -691,16 +653,17 @@
   .side-bar {
     float: left;
     width: 280px;
-    margin: auto;
+    // margin: auto;
     text-align: left;
     font-size: 0.85em;
     line-height: 1.35em;
-    margin-left: 0.786vw;
-    min-height: 5px;
+    // margin-left: 0.786vw;
+    // min-height: 5px;
     display: none;
     position: relative;
     z-index: 5;
     padding: 16px;
+    box-sizing: border-box;
     @include themeable(color, theme-color, rgba($black, 0.7));
     &.sidebar-additional {
       display: none;
@@ -712,56 +675,17 @@
     }
     @media screen and (min-width: 950px) {
       display: block;
-      padding: 8px 0;
-    }
-    .fixed-sidebar {
-      position: fixed;
-      width: 276px;
-      top: 77px;
     }
     
     .sidebar-nav {
       margin-bottom: 32px;
       .sidebar-nav-block {
-        box-sizing: border-box;
-        &.principle-sidebar-nav-block {
-          padding: 9px 0px;
-          .sidebar-nav-element {
-            .sidebar-nav-link {
-              padding: 5px 8px;
-            }
-          }
-        }
         @media screen and (min-width: 950px) {
           .sidebar-nav-block-inner {
             height: 420px;
             overflow-y: scroll;
             overflow-x: hidden;
-          }
-        }
-        .sidebar-nav-header {
-          padding: 15px 10px;
-          font-family: $monospace;
-          &.sidebar-nav-header-middle {
-            padding: 10px 10px;
-            text-decoration: underline;
-            @include themeable(color, theme-secondary-color, $medium-gray);
-          }
-          img {
-            width: 15px;
-            border: 0px;
-          }
-        }
-        .sidebar-nav-subheader {
-          padding: 10px;
-          font-weight: 500;
-          @include themeable(
-            background,
-            theme-background,
-            darken($light-gray, 4%)
-          );
-          a {
-            @include themeable(color, theme-secondary-color, $black);
+            -webkit-overflow-scrolling: touch;
           }
         }
         .sidebar-nav-default-tags {
@@ -804,7 +728,6 @@
             @include themeable(color, theme-container-color, rgba($black, 0.8));
             padding: 8px 0;
             display: block;
-            // width: calc(100% - 10px);
             font-weight: 400;
 
             &.sidebar-nav-link-tag {
@@ -853,7 +776,7 @@
       display: block;
       
       &.fixed-widget {
-        position: fixed;
+        position: sticky;
         width: 254px;
         top: 80px;
         header {
@@ -939,8 +862,7 @@
         font-size: 0.9em;
         font-weight: bold;
         padding: 8px 0;
-        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo,
-          Courier, monospace;
+        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
         a {
           display: inline-block;
           @include themeable(color, theme-container-color, $black);
@@ -1526,6 +1448,7 @@
   position: relative;
   opacity: 0.85;
   text-align: center;
+  margin-bottom: 8px;
   &.user-nav-controls {
     @media screen and (min-width: 950px) {
       display: none;
