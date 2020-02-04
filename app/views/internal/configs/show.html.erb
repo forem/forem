@@ -1,238 +1,284 @@
-<h2>Site Configuration</h2>
-
-<%= form_for(SiteConfig.new, url: internal_config_path) do |f| %>
-  <div class="card mt-3">
-    <div class="card-header">Staff</div>
-    <div class="card-body">
-      <div class="form-group">
-        <%= f.label :staff_user_id %>
-        <%= f.number_field :staff_user_id,
-                           class: "form-control",
-                           value: SiteConfig.staff_user_id,
-                           min: 1,
-                           placeholder: "1" %>
-        <div class="alert alert-info">User ID of the staff account</div>
-      </div>
-
-      <div class="form-group">
-        <%= f.label :default_site_email %>
-        <%= f.email_field :default_site_email,
-                          class: "form-control",
-                          value: SiteConfig.default_site_email,
-                          placeholder: "email@staff.com" %>
-        <div class="alert alert-info">Email of the staff account</div>
-      </div>
-
-      <div class="form-group">
-        <%= f.label :social_networks_handle %>
-        <%= f.text_field :social_networks_handle,
-                         class: "form-control",
-                         value: SiteConfig.social_networks_handle,
-                         placeholder: "thepracticaldev" %>
-        <div class="alert alert-info">Social networks handle (eg. Twitter, GitHub)</div>
-      </div>
+<div class="row my-3" id="siteConfig">
+  <div class="card w-100">
+    <div class="card-header" id="siteConfigHeader">
+      <h2 class="d-inline">Site Configuration</h2>
+      <button class="btn btn-secondary float-right" type="button" data-toggle="collapse"
+        data-target="#siteConfigBodyContainer" aria-expanded="true" aria-controls="siteConfigBodyContainer">
+        Toggle
+      </button>
     </div>
-  </div>
-
-  <div class="card mt-3">
-    <div class="card-header">Images</div>
-    <div class="card-body">
-      <div class="form-group">
-        <%= f.label :main_social_image %>
-        <%= f.text_field :main_social_image,
-                         class: "form-control",
-                         value: SiteConfig.main_social_image,
-                         placeholder: "https://image.url" %>
-        <div class="row mt-2">
-          <div class="col-12">
-            <img alt="main social image" class="img-fluid" src="<%= SiteConfig.main_social_image %>" />
+    <div id="siteConfigBodyContainer" class="collapse show hide" aria-labelledby="siteConfigHeader">
+      <%= form_for(SiteConfig.new, url: internal_config_path) do |f| %>
+      <div class="card mt-3">
+        <div class="card-header">Staff</div>
+        <div class="card-body">
+          <div class="form-group">
+            <%= f.label :staff_user_id %>
+            <%= f.number_field :staff_user_id,
+                               class: "form-control",
+                               value: SiteConfig.staff_user_id,
+                               min: 1,
+                               placeholder: "1" %>
+            <div class="alert alert-info">User ID of the staff account</div>
           </div>
-          <div class="col-12">
-            <div class="alert alert-info"><h5>Used as the main image in social networks and OpenGraph</h5></div>
+
+          <div class="form-group">
+            <%= f.label :default_site_email %>
+            <%= f.email_field :default_site_email,
+                              class: "form-control",
+                              value: SiteConfig.default_site_email,
+                              placeholder: "email@staff.com" %>
+            <div class="alert alert-info">Email of the staff account</div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :social_networks_handle %>
+            <%= f.text_field :social_networks_handle,
+                             class: "form-control",
+                             value: SiteConfig.social_networks_handle,
+                             placeholder: "thepracticaldev" %>
+            <div class="alert alert-info">Social networks handle (eg. Twitter, GitHub)</div>
           </div>
         </div>
-
-        <div class="form-group">
-          <%= f.label :favicon_url %>
-          <%= f.text_field :favicon_url,
-                           class: "form-control",
-                           value: SiteConfig.favicon_url,
-                           placeholder: "https://image.url" %>
-          <div class="alert alert-info">Used as the site favicon</div>
-          <img alt="favicon" class="preview" src="<%= SiteConfig.favicon_url %>" />
-        </div>
-
-        <div class="form-group">
-          <%= f.label :logo_svg %>
-          <%= f.text_area :logo_svg,
-                          class: "form-control",
-                          value: SiteConfig.logo_svg,
-                          rows: 6,
-                          placeholder: "<svg ...></svg>" %>
-          <div class="alert alert-info">Used as the SVG logo of the community</div>
-          <%= @logo_svg %>
-        </div>
       </div>
-    </div>
-  </div>
 
-  <div class="card mt-3">
-    <div class="card-header">Rate limits</div>
-    <div class="card-body">
-      <div class="form-group">
-        <%= f.label :rate_limit_follow_count_daily %>
-        <%= f.number_field :rate_limit_follow_count_daily,
-                           class: "form-control",
-                           value: SiteConfig.rate_limit_follow_count_daily,
-                           min: 0,
-                           placeholder: 500 %>
-        <div class="alert alert-info">Used to limit the amount of users a person can follow daily</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="form-group">
-        <%= f.label :rate_limit_comment_creation %>
-        <%= f.number_field :rate_limit_comment_creation,
-                           class: "form-control",
-                           value: SiteConfig.rate_limit_comment_creation,
-                           min: 0,
-                           placeholder: 9 %>
-        <div class="alert alert-info">Used to limit the amount of comments a user can create within 30 seconds</div>
-      </div>
-    </div>
+      <div class="card mt-3">
+        <div class="card-header">Images</div>
         <div class="card-body">
-      <div class="form-group">
-        <%= f.label :rate_limit_published_article_creation %>
-        <%= f.number_field :rate_limit_published_article_creation,
-                           class: "form-control",
-                           value: SiteConfig.rate_limit_published_article_creation,
-                           min: 0,
-                           placeholder: 9 %>
-        <div class="alert alert-info">Used to limit the amount of articles a user can create within 30 seconds</div>
+          <div class="form-group">
+            <%= f.label :main_social_image %>
+            <%= f.text_field :main_social_image,
+                             class: "form-control",
+                             value: SiteConfig.main_social_image,
+                             placeholder: "https://image.url" %>
+            <div class="row mt-2">
+              <div class="col-12">
+                <img alt="main social image" class="img-fluid" src="<%= SiteConfig.main_social_image %>" />
+              </div>
+              <div class="col-12">
+                <div class="alert alert-info">
+                  <h5>Used as the main image in social networks and OpenGraph</h5>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :favicon_url %>
+              <%= f.text_field :favicon_url,
+                               class: "form-control",
+                               value: SiteConfig.favicon_url,
+                               placeholder: "https://image.url" %>
+              <div class="alert alert-info">Used as the site favicon</div>
+              <img alt="favicon" class="preview" src="<%= SiteConfig.favicon_url %>" />
+            </div>
+
+            <div class="form-group">
+              <%= f.label :logo_svg %>
+              <%= f.text_area :logo_svg,
+                              class: "form-control",
+                              value: SiteConfig.logo_svg,
+                              rows: 6,
+                              placeholder: "<svg ...></svg>" %>
+              <div class="alert alert-info">Used as the SVG logo of the community</div>
+              <%= @logo_svg %>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+
+      <div class="card mt-3">
+        <div class="card-header">Rate limits</div>
         <div class="card-body">
-      <div class="form-group">
-        <%= f.label :rate_limit_image_upload %>
-        <%= f.number_field :rate_limit_image_upload,
-                           class: "form-control",
-                           value: SiteConfig.rate_limit_image_upload,
-                           min: 0,
-                           placeholder: 9 %>
-        <div class="alert alert-info">Used to limit the amount of images a user can upload within 30 seconds</div>
+          <div class="form-group">
+            <%= f.label :rate_limit_follow_count_daily %>
+            <%= f.number_field :rate_limit_follow_count_daily,
+                               class: "form-control",
+                               value: SiteConfig.rate_limit_follow_count_daily,
+                               min: 0,
+                               placeholder: 500 %>
+            <div class="alert alert-info">Used to limit the amount of users a person can follow daily</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <%= f.label :rate_limit_comment_creation %>
+            <%= f.number_field :rate_limit_comment_creation,
+                               class: "form-control",
+                               value: SiteConfig.rate_limit_comment_creation,
+                               min: 0,
+                               placeholder: 9 %>
+            <div class="alert alert-info">Used to limit the amount of comments a user can create within 30 seconds</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <%= f.label :rate_limit_published_article_creation %>
+            <%= f.number_field :rate_limit_published_article_creation,
+                               class: "form-control",
+                               value: SiteConfig.rate_limit_published_article_creation,
+                               min: 0,
+                               placeholder: 9 %>
+            <div class="alert alert-info">Used to limit the amount of articles a user can create within 30 seconds</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <%= f.label :rate_limit_image_upload %>
+            <%= f.number_field :rate_limit_image_upload,
+                               class: "form-control",
+                               value: SiteConfig.rate_limit_image_upload,
+                               min: 0,
+                               placeholder: 9 %>
+            <div class="alert alert-info">Used to limit the amount of images a user can upload within 30 seconds</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <%= f.label :rate_limit_email_recipient %>
+            <%= f.number_field :rate_limit_email_recipient,
+                               class: "form-control",
+                               value: SiteConfig.rate_limit_email_recipient,
+                               min: 0,
+                               placeholder: 5 %>
+            <div class="alert alert-info">Used to limit the amount of emails we send to a user within 2 minutes</div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="card-body">
-      <div class="form-group">
-        <%= f.label :rate_limit_email_recipient %>
-        <%= f.number_field :rate_limit_email_recipient,
-                           class: "form-control",
-                           value: SiteConfig.rate_limit_email_recipient,
-                           min: 0,
-                           placeholder: 5 %>
-        <div class="alert alert-info">Used to limit the amount of emails we send to a user within 2 minutes</div>
+
+      <div class="card mt-3">
+        <div class="card-header">Google Analytics Reporting API v4</div>
+        <div class="card-body">
+          <div class="form-group">
+            <%= f.label :ga_view_id, "View ID" %>
+            <%= f.text_field :ga_view_id,
+                             class: "form-control",
+                             value: SiteConfig.ga_view_id %>
+            <div class="alert alert-info">Google Analytics Reporting API v4 - View ID</div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :ga_fetch_rate, "Fetch rate" %>
+            <%= f.number_field :ga_fetch_rate,
+                               class: "form-control",
+                               value: SiteConfig.ga_fetch_rate,
+                               min: 1,
+                               placeholder: 1 %>
+            <div class="alert alert-info">Determines how often the site updates its Google Analytics stats</div>
+          </div>
+        </div>
       </div>
+
+      <div class="card mt-3">
+        <div class="card-header">Mailchimp Lists IDs</div>
+        <div class="card-body">
+          <div class="form-group">
+            <%= f.label :mailchimp_newsletter_id, "Main Newsletter" %>
+            <%= f.text_field :mailchimp_newsletter_id,
+                             class: "form-control",
+                             value: SiteConfig.mailchimp_newsletter_id %>
+            <div class="alert alert-info">Main Newsletter ID</div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :mailchimp_sustaining_members_id, "Sustaining Members Newsletter" %>
+            <%= f.text_field :mailchimp_sustaining_members_id,
+                             class: "form-control",
+                             value: SiteConfig.mailchimp_sustaining_members_id %>
+            <div class="alert alert-info">Sustaining Members Newsletter ID</div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :mailchimp_tag_moderators_id, "Tag Moderators Newsletter" %>
+            <%= f.text_field :mailchimp_tag_moderators_id,
+                             class: "form-control",
+                             value: SiteConfig.mailchimp_tag_moderators_id %>
+            <div class="alert alert-info">Tag Moderators Newsletter ID</div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :mailchimp_community_moderators_id, "Community Moderators Newsletter" %>
+            <%= f.text_field :mailchimp_community_moderators_id,
+                             class: "form-control",
+                             value: SiteConfig.mailchimp_community_moderators_id %>
+            <div class="alert alert-info">Community Moderators Newsletter ID</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-3">
+        <div class="card-header">Email digest frequency</div>
+        <div class="card-body">
+          <div class="form-group">
+            <%= f.label :periodic_email_digest_max %>
+            <%= f.number_field :periodic_email_digest_max,
+                               class: "form-control",
+                               value: SiteConfig.periodic_email_digest_max,
+                               placeholder: 0 %>
+            <div class="alert alert-info">Determines the maximum for the periodic email digest</div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :periodic_email_digest_min %>
+            <%= f.number_field :periodic_email_digest_min,
+                               class: "form-control",
+                               value: SiteConfig.periodic_email_digest_min,
+                               placeholder: 2 %>
+            <div class="alert alert-info">Determines the mininum for the periodic email digest</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-3">
+        <div class="card-header">Tags</div>
+        <div class="card-body">
+          <div class="form-group">
+            <%= f.label :suggested_tags %>
+            <%= f.text_field :suggested_tags,
+                             class: "form-control",
+                             value: SiteConfig.suggested_tags.join(","),
+                             placeholder: "List of valid tags: comma separated, letters only e.g. beginners,javascript,ruby,swift,kotlin" %>
+            <div class="alert alert-info">Determines which tags are suggested to new users during onboarding (comma
+              separated, letters only)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group mt-3">
+        <%= f.submit "Update Site Configuration", class: "btn btn-primary" %>
+      </div>
+      <% end %>
     </div>
   </div>
+</div>
 
-  <div class="card mt-3">
-    <div class="card-header">Google Analytics Reporting API v4</div>
-    <div class="card-body">
-      <div class="form-group">
-        <%= f.label :ga_view_id, "View ID" %>
-        <%= f.text_field :ga_view_id,
-                         class: "form-control",
-                         value: SiteConfig.ga_view_id %>
-        <div class="alert alert-info">Google Analytics Reporting API v4 - View ID</div>
-      </div>
-
-      <div class="form-group">
-        <%= f.label :ga_fetch_rate, "Fetch rate" %>
-        <%= f.number_field :ga_fetch_rate,
-                           class: "form-control",
-                           value: SiteConfig.ga_fetch_rate,
-                           min: 1,
-                           placeholder: 1 %>
-        <div class="alert alert-info">Determines how often the site updates its Google Analytics stats</div>
-      </div>
+<div class="row my-3" id="siteConfig">
+  <div class="card w-100">
+    <div class="card-header" id="appConfigHeader">
+      <h2 class="d-inline">Environment variables / AppConfig (readonly)</h2>
+      <button class="btn btn-secondary float-right" type="button" data-toggle="collapse"
+        data-target="#appConfigBodyContainer" aria-expanded="true" aria-controls="appConfigBodyContainer">
+        Toggle
+      </button>
+    </div>
+    <div id="appConfigBodyContainer" class="collapse show hide" aria-labelledby="appConfigHeader">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% ENVied.config.variables.each do |v| %>
+          <% if v.group.in?(ENVied.required_groups) %>
+          <tr>
+            <td><%= v.name %></td>
+            <td><%= ApplicationConfig[v.name] %></td>
+          </tr>
+          <% end %>
+          <% end %>
+        </tbody>
+      </table>
     </div>
   </div>
-
-  <div class="card mt-3">
-    <div class="card-header">Mailchimp Lists IDs</div>
-    <div class="card-body">
-      <div class="form-group">
-        <%= f.label :mailchimp_newsletter_id, "Main Newsletter" %>
-        <%= f.text_field :mailchimp_newsletter_id,
-                         class: "form-control",
-                         value: SiteConfig.mailchimp_newsletter_id %>
-        <div class="alert alert-info">Main Newsletter ID</div>
-      </div>
-
-      <div class="form-group">
-        <%= f.label :mailchimp_sustaining_members_id, "Sustaining Members Newsletter" %>
-        <%= f.text_field :mailchimp_sustaining_members_id,
-                         class: "form-control",
-                         value: SiteConfig.mailchimp_sustaining_members_id %>
-        <div class="alert alert-info">Sustaining Members Newsletter ID</div>
-      </div>
-
-      <div class="form-group">
-        <%= f.label :mailchimp_tag_moderators_id, "Tag Moderators Newsletter" %>
-        <%= f.text_field :mailchimp_tag_moderators_id,
-                         class: "form-control",
-                         value: SiteConfig.mailchimp_tag_moderators_id %>
-        <div class="alert alert-info">Tag Moderators Newsletter ID</div>
-      </div>
-
-      <div class="form-group">
-        <%= f.label :mailchimp_community_moderators_id, "Community Moderators Newsletter" %>
-        <%= f.text_field :mailchimp_community_moderators_id,
-                         class: "form-control",
-                         value: SiteConfig.mailchimp_community_moderators_id %>
-        <div class="alert alert-info">Community Moderators Newsletter ID</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mt-3">
-    <div class="card-header">Email digest frequency</div>
-    <div class="card-body">
-      <div class="form-group">
-        <%= f.label :periodic_email_digest_max %>
-        <%= f.number_field :periodic_email_digest_max,
-                           class: "form-control",
-                           value: SiteConfig.periodic_email_digest_max,
-                           placeholder: 0 %>
-        <div class="alert alert-info">Determines the maximum for the periodic email digest</div>
-      </div>
-
-      <div class="form-group">
-        <%= f.label :periodic_email_digest_min %>
-        <%= f.number_field :periodic_email_digest_min,
-                           class: "form-control",
-                           value: SiteConfig.periodic_email_digest_min,
-                           placeholder: 2 %>
-        <div class="alert alert-info">Determines the mininum for the periodic email digest</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mt-3">
-    <div class="card-header">Tags</div>
-    <div class="card-body">
-      <div class="form-group">
-        <%= f.label :suggested_tags %>
-        <%= f.text_field :suggested_tags,
-                         class: "form-control",
-                         value: SiteConfig.suggested_tags.join(","),
-                         placeholder: "List of valid tags: comma separated, letters only e.g. beginners,javascript,ruby,swift,kotlin" %>
-        <div class="alert alert-info">Determines which tags are suggested to new users during onboarding (comma separated, letters only)</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="form-group mt-3">
-    <%= f.submit "Update Site Configuration", class: "btn btn-primary" %>
-  </div>
-<% end %>
+</div>
