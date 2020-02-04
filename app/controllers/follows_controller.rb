@@ -68,14 +68,12 @@ class FollowsController < ApplicationController
   end
 
   def follow(followable, need_notification: false)
-    begin
-      user_follow = current_user.follow(followable)
-    rescue ActiveRecord::RecordInvalid => e
-      Rails.logger.error(e)
-    end
+    user_follow = current_user.follow(followable)
     Notification.send_new_follower_notification(user_follow) if need_notification
-
     "followed"
+  rescue ActiveRecord::RecordInvalid
+    DataDogStatsClient.increment("users.invalid_follow")
+    "already followed"
   end
 
   def unfollow(followable, need_notification: false)
