@@ -219,8 +219,7 @@
         1px solid $outline-color
       );
       padding: 8px 0px;
-      margin: auto;
-      margin-top: 8px;
+      margin-bottom: 8px;
       @media screen and (min-width: 750px) {
         border-radius: 3px;
         box-sizing: border-box;
@@ -231,16 +230,9 @@
       }
       .pinned-articles-indicator {
         text-align: left;
-        font-size: 15px;
         font-weight: bold;
+        margin-bottom: 8px;
         padding-top: 8px;
-        padding-left: 2.8%;
-        @media screen and (min-width: 750px) {
-          padding-left: 22px;
-        }
-        @media screen and (min-width: 950px) {
-          padding-left: 2px;
-        }
         img {
           width: 20px;
           transform: rotate(-8deg);
@@ -910,7 +902,7 @@
     width: 280px;
     margin: auto;
     text-align: left;
-    font-size: 0.9em;
+    font-size: 0.85em;
     line-height: 1.35em;
     margin-left: 0.786vw;
     min-height: 5px;
@@ -918,6 +910,7 @@
     position: relative;
     z-index: 5;
     padding: 16px;
+    @include themeable(color, theme-color, rgba($black, 0.7));
     &.sidebar-additional {
       display: none;
       &.showing {
@@ -937,73 +930,8 @@
     }
     
     .sidebar-nav {
-      // .sidebar-profile-snapshot {
-      //   overflow: hidden;
-      //   @include themeable(background, theme-container-background, #fff);
-      //   margin-bottom: 14px;
-      //   border-radius: 3px;
-      //   width: calc(100% - 6px);
-      //   @include themeable(
-      //     border,
-      //     theme-container-border,
-      //     1px solid $outline-color
-      //   );
-      //   @include themeable(
-      //     box-shadow,
-      //     theme-container-box-shadow,
-      //     $bold-shadow2
-      //   );
-      //   &:hover {
-      //     @include themeable(
-      //       background,
-      //       theme-container-background-hover,
-      //       $light-gray
-      //     );
-      //   }
-      //   .sidebar-profile-snapshot-inner {
-      //     display: inline-block;
-      //     vertical-align: middle;
-      //     width: 100%;
-      //     line-height: 20px;
-      //     @include themeable(color, theme-container-color, $black);
-      //     &:hover {
-      //       opacity: 0.9;
-      //     }
-      //   }
-      //   .sidebar-profile-pic {
-      //     display: inline-block;
-      //     width: 50px;
-      //     height: 50px;
-      //     vertical-align: top;
-      //     overflow: hidden;
-      //     @include themeable(background, theme-container-background, $tan);
-      //     border-radius: 100%;
-      //     margin: 8px 5px 8px 12px;
-      //     img {
-      //       width: 100%;
-      //       border-radius: 100%;
-      //     }
-      //   }
-      //   .sidebar-profile-content {
-      //     display: inline-block;
-      //     width: calc(100% - 74px);
-      //     margin-top: 15px;
-      //     font-size: 13px;
-      //     vertical-align: middle;
-      //     text-align: left;
-      //     .sidebar-profile-name {
-      //       font-weight: 400;
-      //       font-size: 17px;
-      //     }
-      //     .sidebar-profile-username {
-      //       @include themeable(color, theme-secondary-color, $medium-gray);
-      //     }
-      //   }
-      // }
       margin-bottom: 32px;
       .sidebar-nav-block {
-        padding: 0px;
-        width: calc(100% - 4px);
         box-sizing: border-box;
         &.principle-sidebar-nav-block {
           padding: 9px 0px;
@@ -1022,7 +950,6 @@
         }
         .sidebar-nav-header {
           padding: 15px 10px;
-          font-size: 0.9em;
           font-family: $monospace;
           &.sidebar-nav-header-middle {
             padding: 10px 10px;
@@ -1037,7 +964,6 @@
         .sidebar-nav-subheader {
           padding: 10px;
           font-weight: 500;
-          font-size: 0.9em;
           @include themeable(
             background,
             theme-background,
@@ -1089,10 +1015,8 @@
             display: block;
             // width: calc(100% - 10px);
             font-weight: 400;
-            font-size: 1em;
 
             &.sidebar-nav-link-tag {
-              font-size: 0.9em;
               padding: 6px 0;
               @include themeable(color, theme-container-color, rgba($black, 0.7));
             }
@@ -1124,7 +1048,6 @@
       margin-bottom: 10px;
       font-family: $helvetica-condensed;
       font-stretch: condensed;
-      font-size: 1.1em;
       @include themeable(
         border,
         theme-container-border,
@@ -1133,21 +1056,11 @@
       @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow2);
     }
     .widget {
-      // width: calc(100% - 30px);
-      // padding: 10px 12px;
       margin-bottom: 32px; // TODO: use spacing units instead
       position: relative;
       overflow: hidden;
-      // @include themeable(background, theme-container-background, #fff);
       display: block;
-      // @include themeable(color, theme-container-color, $black);
-      // border-radius: 3px;
-      // @include themeable(
-      //   border,
-      //   theme-container-border,
-      //   1px solid $outline-color
-      // );
-      // @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow2);
+      
       &.fixed-widget {
         position: fixed;
         width: 254px;
@@ -1232,7 +1145,7 @@
       }
       header {
         position: relative;
-        font-size: 0.8em;
+        font-size: 0.9em;
         font-weight: bold;
         padding: 8px 0;
         font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo,
@@ -1267,11 +1180,7 @@
           padding: 1px 5px 0px;
           line-height: 1.4em;
         }
-        // &.widget-header-listings {
-        //   @include themeable(background, theme-container-accent-background, $light-gray);
-        //   padding: 10px 12px;
-        //   margin: -10px -12px;
-        // }
+        
         .widget-minimize-button {
           position: absolute;
           right: 0;
@@ -1371,7 +1280,6 @@
         .widget-listing-link {
           display: block;
           padding: 8px 0;
-          font-size: 0.9em;
           width: 100%;
           // margin-left: -12px;
           @include themeable(color, theme-color, rgba($black, 0.7));
@@ -1502,7 +1410,7 @@
         }
       }
       p {
-        margin: 14px 0px 8px;
+        margin: 8px 0;
       }
       ul {
         padding-left: 10px;
@@ -1577,7 +1485,6 @@
     .widget-link-list__item {
       padding: 8px 0 8px 20px;
       a {
-        font-size: 0.9em;
         @include themeable(color, theme-color, rgba($black, 0.7));
 
         &:hover {
@@ -1613,7 +1520,7 @@
       a {
         display: block;
         margin: 8px 0;
-        font-size: 0.8em;
+        font-size: 0.9em;
         @include themeable(color, theme-container-color, rgba($black, 0.7));
 
         &:hover {
