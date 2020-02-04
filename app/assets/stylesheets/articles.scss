@@ -1180,7 +1180,7 @@
           padding: 1px 5px 0px;
           line-height: 1.4em;
         }
-        
+
         .widget-minimize-button {
           position: absolute;
           right: 0;
@@ -1556,14 +1556,6 @@
   }
   100% {
     opacity: 1;
-  }
-}
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
   }
 }
 
