@@ -2,7 +2,9 @@ require "rails_helper"
 
 RSpec.describe Article, type: :model do
   context "when no organization" do
-    let(:article) { create(:article) }
+    # Setting published explicitly to true to pass guard clause in the async_score_calc method on
+    # the Article model that returns early if the article is unpublished
+    let(:article) { create(:article, published: true) }
 
     before { create(:reaction, reactable: article) }
 
