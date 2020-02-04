@@ -33,6 +33,47 @@
       </div>
 
       <div class="card mt-3">
+        <div class="card-header">Campaign</div>
+        <div class="card-body">
+          <div class="form-group">
+            <%= f.label :campaign_hero_html_variant_name %>
+            <%= f.text_field :campaign_hero_html_variant_name,
+                            class: "form-control",
+                            value: SiteConfig.campaign_hero_html_variant_name,
+                            placeholder: "" %>
+            <div class="alert alert-info">Hero HtmlVariant name</div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :campaign_background_color %>
+            <%= f.text_field :campaign_background_color,
+                            class: "form-control",
+                            value: SiteConfig.campaign_background_color,
+                            placeholder: "FFFFFF" %>
+            <div class="alert alert-info">Campaign background color</div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :campaign_text_color %>
+            <%= f.text_field :campaign_text_color,
+                            class: "form-control",
+                            value: SiteConfig.campaign_text_color,
+                            placeholder: "000000" %>
+            <div class="alert alert-info">Campaign text color</div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :campaign_featured_tags %>
+            <%= f.text_field :campaign_featured_tags,
+                            class: "form-control",
+                            value: SiteConfig.campaign_featured_tags.join(","),
+                            placeholder: "List of campaign featured tags: comma separated, letters only e.g. beginners,javascript,ruby,swift,kotlin" %>
+            <div class="alert alert-info">Determines posts with which tags will be featured during the campaign (comma separated, letters only)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-3">
         <div class="card-header">Images</div>
         <div class="card-body">
           <div class="form-group">

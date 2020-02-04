@@ -38,6 +38,12 @@ class StoriesController < ApplicationController
 
   private
 
+  def assign_hero_html
+    return if SiteConfig.campaign_hero_html_variant_name.blank?
+
+    @hero_html = HtmlVariant.relevant.select(:html).find_by(group: "campaign", name: SiteConfig.campaign_hero_html_variant_name)&.html
+  end
+
   def redirect_to_changed_username_profile
     potential_username = params[:username].tr("@", "").downcase
     user_or_org = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username) ||
@@ -128,6 +134,7 @@ class StoriesController < ApplicationController
         @stories = @stories.offset(offset)
       end
     end
+    assign_hero_html
     assign_podcasts
     assign_classified_listings
     @article_index = true
