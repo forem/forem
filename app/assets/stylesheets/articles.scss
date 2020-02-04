@@ -10,7 +10,7 @@
   @include themeable(border, theme-container-border, none);
   @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow2);
 
-  @media screen and (min-width: 750px) {
+  @media screen and (min-width: 950px) {
     border-radius: 3px;
     margin-bottom: 8px;
   }
@@ -20,30 +20,25 @@
 .home {
   position: relative;
   min-height: 440px; // TODO: why?
-  margin: 16px auto 0;
+  margin: 0 auto;
   max-width: 1250px;
   text-align: left;
 
   .articles-list {
     margin: auto;
-    max-width: 750px;
-    width: 100%;
+    max-width: 100%;
     position: relative;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0); //Invisible black
-    padding-bottom: 32px;
+    box-sizing: border-box;
 
     @media screen and (min-width: 950px) {
-      width: 100%;
-      margin-left: 2.3%;
-      margin-right: 15px;
-      max-width: calc(100% - 380px);
       float: left;
+      width: 100%;
+      max-width: calc(100% - 280px);
+      padding: 16px;
     }
     @media screen and (min-width: 1120px) {
-      max-width: calc(100% - 640px);
-    }
-    @media screen and (min-width: 1240px) {
-      max-width: 604px;
+      max-width: calc(100% - 280px - 280px);
     }
     
     .pinned-articles {
