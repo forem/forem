@@ -54,6 +54,7 @@ RSpec.describe "Admin awards badges", type: :system do
   end
 
   it "does not award badges if no badge is selected" do
-    expect { award_no_badges }.to raise_exception(ArgumentError)
+    expect { award_no_badges }.to change { user.badges.count }.by(0)
+    expect(page).to have_content("Please choose a badge to award")
   end
 end

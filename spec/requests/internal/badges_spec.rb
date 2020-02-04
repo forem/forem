@@ -37,7 +37,7 @@ RSpec.describe "/internal/badges", type: :request do
           usernames: "#{user.username}, #{user2.username}",
           message_markdown: ""
         }
-      end.to change { user.badges.count }.by(0).and raise_error(ArgumentError, "You must choose a badge to award")
+      end.to change { user.badges.count }.by(0)
     end
   end
 end
