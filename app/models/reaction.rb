@@ -13,7 +13,7 @@ class Reaction < ApplicationRecord
   counter_culture :user
 
   validates :category, inclusion: { in: CATEGORIES }
-  validates :reactable_type, inclusion: { in: %w[Comment Article] }
+  validates :reactable_type, inclusion: { in: %w[Comment Article User] }
   validates :status, inclusion: { in: %w[valid invalid confirmed archived] }
   validates :user_id, uniqueness: { scope: %i[reactable_id reactable_type category] }
   validate  :permissions
