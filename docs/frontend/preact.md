@@ -13,7 +13,7 @@ Preact code is located in `app/javascript`.
 The components are mounted when needed, look for `javascript_pack_tag` in the
 view pages inside `app/views`.
 
-## Prop Types
+## PropTypes
 
 Preact supports
 [PropTypes](https://reactjs.org/docs/typechecking-with-proptypes.html). When
