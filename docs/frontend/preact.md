@@ -68,9 +68,9 @@ SomeComponentUsingTags.propTypes = {
 };
 ```
 
-The next example the `SomeComponentUsingOneTag` component has a `tag` prop
-representing a single tag. In this case, we can just the `tagPropTypes` on their
-own to represent the shape of the `tag` prop.
+In the following example, the `SomeComponentUsingOneTag` component has a `tag`
+prop representing a single tag. In this case, we can just the `tagPropTypes` on
+their own to represent the shape of the `tag` prop.
 
 ```jsx
 import { h } from 'preact';
