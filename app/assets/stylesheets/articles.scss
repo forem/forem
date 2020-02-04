@@ -6,34 +6,10 @@
 
 .home {
   position: relative;
-  min-height: 440px;
-  margin: auto;
+  min-height: 440px; // TODO: why?
+  margin: 16px auto 0;
   max-width: 1250px;
-  text-align: left;
-  @media screen and (min-width: 950px) {
-    margin-top: 16px;
-  }
-  &.sub-home {
-    margin-top: 10px;
-  }
-  .query-results-nothing {
-    padding: 40px 0px;
-    font-size: 1.2em;
-    @include themeable(background, theme-container-background, white);
-    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow2);
-    border-radius: 3px;
-    @include themeable(
-      border,
-      theme-container-border,
-      1px solid $outline-color
-    );
-    width: 94%;
-    margin: auto;
-    margin-top: 12px;
-    @media screen and (min-width: 950px) {
-      width: 100%;
-    }
-  }
+  text-align: left; // TODO: why?
 
   .articles-list {
     text-align: left;
@@ -1202,11 +1178,6 @@
           max-height: 390px;
           overflow-y: scroll;
         }
-        // &.widget-body-listings {
-        //   .cta-button {
-        //     margin-top: 15px;
-        //   }
-        // }
         &.signup-cta-widget-body {
           ul {
             li {
@@ -1706,4 +1677,34 @@
   text-align: center;
   opacity: 0.7;
   display: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// Search results: empty
+.query-results-nothing {
+  padding: 40px 0px;
+  font-size: 1.2em;
+  @include themeable(background, theme-container-background, white);
+  @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow2);
+  border-radius: 3px;
+  @include themeable(
+    border,
+    theme-container-border,
+    none
+  );
+  width: 94%;
+  margin: auto;
+  @media screen and (min-width: 950px) {
+    width: 100%;
+  }
 }
