@@ -47,7 +47,7 @@ gem "feedjira", "~> 3.1" # A feed fetching and parsing library
 gem "figaro", "~> 1.1" # Simple, Heroku-friendly Rails app configuration using ENV and a single YAML file
 gem "fog-aws", "~> 3.5" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically correct strings or files
-gem "gemoji", "~> 3.0.1" # Character information and metadata for standard and custom emoji
+gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.3" # API wrapper for MailChimp's API
 gem "google-api-client", "~> 0.36" # Client for accessing Google APIs
 gem "honeybadger", "~> 4.5" # Used for tracking application errors
