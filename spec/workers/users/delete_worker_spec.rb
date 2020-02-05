@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Users::SelfDeleteWorker, type: :worker do
+RSpec.describe Users::DeleteWorker, type: :worker do
   describe "#perform" do
     let(:user) { create(:user) }
     let(:delete) { Users::Delete }
@@ -20,6 +20,12 @@ RSpec.describe Users::SelfDeleteWorker, type: :worker do
         expect do
           worker.perform(user.id)
         end.to change(ActionMailer::Base.deliveries, :count).by(1)
+      end
+
+      it "doesn't send a notification for admin triggered deletion" do
+        expect do
+          worker.perform(user.id, true)
+        end.not_to change(ActionMailer::Base.deliveries, :count)
       end
 
       it "sends the correct notification" do
