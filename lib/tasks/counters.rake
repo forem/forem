@@ -4,7 +4,7 @@ namespace :counters do
     batch_size = args.fetch(:batch_size, 1000).to_i
 
     # NOTE: we could bypass Rails by using SQL directly to compute the counts and update these columns
-    User.includes(:counters).find_each(batch_size: batch_size) do |user|
+    User.includes(:counters).select(:id).find_each(batch_size: batch_size) do |user|
       user.build_counters unless user.counters
 
       relation = user.comments
