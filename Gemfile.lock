@@ -6,14 +6,6 @@ GIT
     acts_as_follower (0.2.1)
       activerecord (>= 4.0)
 
-GIT
-  remote: https://github.com/thepracticaldev/foreman.git
-  revision: b64e4019a8ed3cfae7216c3219dc91833845d9c7
-  ref: b64e401
-  specs:
-    foreman (0.85.0)
-      thor (>= 0.19, < 0.21)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -927,7 +919,6 @@ DEPENDENCIES
   figaro (~> 1.1)
   fix-db-schema-conflicts (~> 3.0)
   fog-aws (~> 3.5)
-  foreman!
   front_matter_parser (~> 0.2)
   gemoji (~> 3.0.1)
   gibbon (~> 3.3)
