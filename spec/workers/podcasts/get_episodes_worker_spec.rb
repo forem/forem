@@ -1,6 +1,9 @@
 require "rails_helper"
 
 RSpec.describe Podcasts::GetEpisodesWorker, type: :worker do
+  # Passing in a random podcast_data since the worker doesn't actually run
+  include_examples "#enqueues_on_correct_queue", "high_priority", [{ podcast_id: 456, limit: 999, force_update: false }]
+
   describe "#perform" do
     let(:podcast) { create(:podcast) }
     let(:feed) { instance_double(Podcasts::Feed) }
