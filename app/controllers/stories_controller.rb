@@ -123,6 +123,7 @@ class StoriesController < ApplicationController
       @stories = @stories.
         where("score > ? OR featured = ?", 9, true).
         order("hotness_score DESC")
+      @featured_story = @stories.where.not(main_image: nil).first
       if user_signed_in?
         offset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11].sample # random offset, weighted more towards zero
         @stories = @stories.offset(offset)
@@ -131,6 +132,8 @@ class StoriesController < ApplicationController
     assign_podcasts
     assign_classified_listings
     @article_index = true
+    @featured_story = (@featured_story || Article.new)&.decorate
+    @stories = @stories&.decorate
     set_surrogate_key_header "main_app_home_page"
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
     render template: "articles/index"

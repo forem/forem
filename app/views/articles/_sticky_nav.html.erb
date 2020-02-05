@@ -103,7 +103,7 @@
               <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" loading="lazy" alt="<%= article.user.name %> profile image">
               <%= article.title %>
               <div class="primary-sticky-nav-element-details">
-                <% article.decorate.cached_tag_list_array.each do |tag| %>
+                <% article.cached_tag_list_array.each do |tag| %>
                   <span>#<%= tag %></span>
                 <% end %>
               </div>
@@ -123,7 +123,7 @@
               <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" loading="lazy" alt="<%= article.user.name %> profile image">
               <%= article.title %>
               <div class="primary-sticky-nav-element-details">
-                <% article.decorate.cached_tag_list_array.each do |tag| %>
+                <% article.cached_tag_list_array.each do |tag| %>
                   <span>#<%= tag %></span>
                 <% end %>
               </div>
