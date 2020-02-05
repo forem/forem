@@ -143,8 +143,10 @@ class CommentsController < ApplicationController
       @comment.deleted = true
       @comment.save!
     end
-    redirect_path = @comment.commentable&.path || user_path(current_user)
-    redirect_to redirect_path, notice: "Comment was successfully deleted."
+    redirect = @comment.commentable&.path || user_path(current_user)
+    # NOTE: Brakeman doesn't like redirecting to a path, because of a "possible
+    # unprotected redirect". Using URI.parse().path is the recommended workaround.
+    redirect_to URI.parse(redirect).path, notice: "Comment was successfully deleted."
   end
 
   def delete_confirm

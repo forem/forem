@@ -279,6 +279,7 @@ RSpec.describe "Comments", type: :request do
 
       expect(Comment.find_by(id: comment.id)).to be_nil
       expect(flash[:notice]).to eq("Comment was successfully deleted.")
+      expect(response.location).to eq("http://www.example.com/#{user.username}/#{article.slug}")
     end
 
     it "deletes a comment if the article has been deleted" do
@@ -288,6 +289,7 @@ RSpec.describe "Comments", type: :request do
 
       expect(Comment.find_by(id: comment.id)).to be_nil
       expect(flash[:notice]).to eq("Comment was successfully deleted.")
+      expect(response.location).to eq("http://www.example.com/users/#{user.id}")
     end
   end
 end
