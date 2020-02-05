@@ -117,14 +117,6 @@ class ChatChannel < ApplicationRecord
     end
   end
 
-  def viewable_by
-    active_memberships.pluck(:user_id)
-  end
-
-  def messages_count
-    messages.size
-  end
-
   def channel_human_names
     active_memberships.
       order("last_opened_at DESC").limit(5).includes(:user).map do |membership|
