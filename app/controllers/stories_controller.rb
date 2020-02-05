@@ -111,6 +111,10 @@ class StoriesController < ApplicationController
     @page = (params[:page] || 1).to_i
     num_articles = 35
     @stories = article_finder(num_articles)
+    @new_stories = Article.published.
+      where("published_at > ? AND score > ?", rand(2..6).hours.ago, -15).
+      limited_column_select.order("published_at DESC").limit(rand(15..80)).
+      decorate
     if %w[week month year infinity].include?(params[:timeframe])
       @stories = @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
         order("score DESC")
