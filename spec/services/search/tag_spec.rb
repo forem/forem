@@ -5,7 +5,7 @@ RSpec.describe Search::Tag, type: :service, elasticsearch: true do
     it "indexes a tag to elasticsearch" do
       tag = FactoryBot.create(:tag)
       expect { described_class.get(tag.id) }.to raise_error(Elasticsearch::Transport::Transport::Errors::NotFound)
-      described_class.index(tag.id, id: tag.id)
+      described_class.index(tag.id, tag.serialized_search_hash)
       expect(described_class.get(tag.id)).not_to be_nil
     end
   end
@@ -13,7 +13,7 @@ RSpec.describe Search::Tag, type: :service, elasticsearch: true do
   describe "::get" do
     it "fetches a document for a given ID from elasticsearch" do
       tag = FactoryBot.create(:tag)
-      described_class.index(tag.id, id: tag.id)
+      described_class.index(tag.id, tag.serialized_search_hash)
       expect { described_class.get(tag.id) }.not_to raise_error
     end
   end
