@@ -24,28 +24,42 @@ if (sidebarListingsMinimizeButton) {
   );
 }
 
-import('../leftSidebar/TagsFollowed').then(({ TagsFollowed }) => {
-  const user = userData();
+function renderTagsFollowed(tagsFollowedContainer) {
+  import('../leftSidebar/TagsFollowed').then(({ TagsFollowed }) => {
+    const user = userData();
 
-  if (user === null) {
+    if (user === null) {
+      return;
+    }
+
+    const { followed_tags } = user; // eslint-disable-line camelcase
+    const followedTags = JSON.parse(followed_tags);
+
+    // This should be done server-side potentially
+    // sort tags by descending weight, descending popularity and name
+    followedTags.sort((tagA, tagB) => {
+      return (
+        tagB.points - tagA.points ||
+        tagB.hotness_score - tagA.hotness_score ||
+        tagA.name.localeCompare(tagB.name)
+      );
+    });
+
+    render(<TagsFollowed tags={followedTags} />, tagsFollowedContainer);
+  });
+}
+
+renderTagsFollowed(document.getElementById('sidebar-nav-followed-tags-ctn'));
+
+InstantClick.on('receive', (_url, body, _title) => {
+  const tagsFollowedContainer = body.querySelector(
+    '#sidebar-nav-followed-tags-ctn',
+  );
+
+  if (!tagsFollowedContainer) {
     return;
   }
 
-  const { followed_tags } = user; // eslint-disable-line camelcase
-  const followedTags = JSON.parse(followed_tags);
-
-  // This should be done server-side potentially
-  // sort tags by descending weight, descending popularity and name
-  followedTags.sort((tagA, tagB) => {
-    return (
-      tagB.points - tagA.points ||
-      tagB.hotness_score - tagA.hotness_score ||
-      tagA.name.localeCompare(tagB.name)
-    );
-  });
-
-  render(
-    <TagsFollowed tags={followedTags} />,
-    document.getElementById('sidebar-nav-followed-tags-ctn'),
-  );
+  renderTagsFollowed(tagsFollowedContainer);
 });
+InstantClick.init();
