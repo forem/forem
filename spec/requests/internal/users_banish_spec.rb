@@ -191,7 +191,9 @@ RSpec.describe "Internal::Users", type: :request do
     end
 
     it "raises a 'record not found' error after deletion" do
-      post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
+      sidekiq_perform_enqueued_jobs do
+        post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
+      end
       expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
 
