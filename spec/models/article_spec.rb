@@ -580,7 +580,7 @@ RSpec.describe Article, type: :model do
       it "enqueues a job to update the main image background if #dddddd" do
         article.main_image_background_hex_color = "#dddddd"
         allow(article).to receive(:update_main_image_background_hex).and_call_original
-        assert_enqueued_with(job: Articles::UpdateMainImageBackgroundHexJob) do
+        sidekiq_assert_enqueued_with(job: Articles::UpdateMainImageBackgroundHexWorker) do
           article.save
         end
         expect(article).to have_received(:update_main_image_background_hex)
@@ -589,7 +589,7 @@ RSpec.describe Article, type: :model do
       it "does not enqueue a job to update the main image background if not #dddddd" do
         article.main_image_background_hex_color = "#fff000"
         allow(article).to receive(:update_main_image_background_hex).and_call_original
-        assert_no_enqueued_jobs(only: Articles::UpdateMainImageBackgroundHexJob) do
+        sidekiq_assert_no_enqueued_jobs(only: Articles::UpdateMainImageBackgroundHexWorker) do
           article.save
         end
         expect(article).to have_received(:update_main_image_background_hex)

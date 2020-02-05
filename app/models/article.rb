@@ -66,7 +66,7 @@ class Article < ApplicationRecord
   before_save       :clean_data
   after_commit      :async_score_calc
   after_save        :bust_cache
-  after_save        :update_main_image_background_hex
+  after_commit      :update_main_image_background_hex
   after_save        :detect_human_language
   before_save       :update_cached_user
   before_destroy    :before_destroy_actions, prepend: true
@@ -447,7 +447,7 @@ class Article < ApplicationRecord
   def update_main_image_background_hex
     return if main_image.blank? || main_image_background_hex_color != "#dddddd"
 
-    Articles::UpdateMainImageBackgroundHexJob.perform_later(id)
+    Articles::UpdateMainImageBackgroundHexWorker.perform_async(id)
   end
 
   def detect_human_language
