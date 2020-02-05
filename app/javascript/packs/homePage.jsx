@@ -24,14 +24,19 @@ if (sidebarListingsMinimizeButton) {
   );
 }
 
-function renderTagsFollowed(tagsFollowedContainer) {
+/**
+ * Renders tags followed in the left side bar of the homepage.
+ *
+ * @param {HTMLElement} tagsFollowedContainer DOM element to render tags followed.
+ * @param {object} user The currently logged on user
+ */
+function renderTagsFollowed(tagsFollowedContainer, user = userData()) {
+  if (user === null) {
+    return;
+  }
+
+  // Only render if a user is logged on.
   import('../leftSidebar/TagsFollowed').then(({ TagsFollowed }) => {
-    const user = userData();
-
-    if (user === null) {
-      return;
-    }
-
     const { followed_tags } = user; // eslint-disable-line camelcase
     const followedTags = JSON.parse(followed_tags);
 
