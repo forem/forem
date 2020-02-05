@@ -48,8 +48,11 @@ RSpec.describe TagAdjustmentCreationService, type: :service do
         service.update_tags_and_notify
       end
 
-      expect(Notification.last.user_id).to eq(article.user_id)
-      expect(Notification.last.json_data["adjustment_type"]).to eq(tag_adjustment.adjustment_type)
+      tag_adjustment.reload
+      last_tag_adjustment = tag_adjustment.notifications.last
+
+      expect(last_tag_adjustment.user_id).to eq(article.user_id)
+      expect(last_tag_adjustment.json_data["adjustment_type"]).to eq(tag_adjustment.adjustment_type)
     end
 
     it "with adjustment_type addition" do
@@ -61,8 +64,11 @@ RSpec.describe TagAdjustmentCreationService, type: :service do
         service.update_tags_and_notify
       end
 
-      expect(Notification.last.user_id).to eq(article.user_id)
-      expect(Notification.last.json_data["adjustment_type"]).to eq(tag_adjustment.adjustment_type)
+      tag_adjustment.reload
+      last_tag_adjustment = tag_adjustment.notifications.last
+
+      expect(last_tag_adjustment.user_id).to eq(article.user_id)
+      expect(last_tag_adjustment.json_data["adjustment_type"]).to eq(tag_adjustment.adjustment_type)
     end
   end
 end
