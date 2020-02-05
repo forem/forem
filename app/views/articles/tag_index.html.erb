@@ -104,7 +104,9 @@
       </div>
 
       <div class="substories" id="substories">
-        <% if @stories.any? %>
+        <%# articles/tags/main_feed will iterate on stories with .each_with_index,
+            thus by using .present? here we preload the items %>
+        <% if @stories.present? %>
           <%= render "articles/tags/main_feed" %>
         <% end %>
       </div>

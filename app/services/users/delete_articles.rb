@@ -3,7 +3,7 @@ module Users
     module_function
 
     def call(user, cache_buster = CacheBuster)
-      return unless user.articles.any?
+      return if user.articles.blank?
 
       virtual_articles = user.articles.map { |article| Article.new(article.attributes) }
       user.articles.find_each do |article|

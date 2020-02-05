@@ -86,7 +86,7 @@
     </details>
   </div>
   <div class="col-12">
-    <% if @featured_articles && @featured_articles.any? %>
+    <% if @featured_articles.present? %>
       <h2>Manually Featured Articles</h2>
       <% @featured_articles.each do |article| %>
         <%= render "individual_article", article: article %>
