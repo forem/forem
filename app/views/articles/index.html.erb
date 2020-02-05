@@ -23,7 +23,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <%= auto_discovery_link_tag(:rss, "https://dev.to/feed", title: "#{ApplicationConfig['COMMUNITY_NAME']} RSS Feed") %>
 <% end %>
-<%= javascript_pack_tag "homePage", defer: true %>
+<%= javascript_pack_tag "homePage", defer: true, "data-no-instant": true %>
 
 <% cache("main-stories-index-#{params}-#{user_signed_in?}", expires_in: 90.seconds) do %>
   <div class="home" id="index-container"
