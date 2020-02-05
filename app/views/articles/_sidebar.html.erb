@@ -11,7 +11,8 @@
           </span>
         </header>
         <% @sponsorships = Sponsorship.gold.live.includes(:organization).order(featured_number: :asc) %>
-        <% if @sponsorships.any? %>
+        <%# the pattern .present?/.each has the advantage of issuing only a single SQL query to load objects in memory %>
+        <% if @sponsorships.present? %>
           <div class="widget-body">
             <% @sponsorships.each do |sponsorship| %>
               <%= render "articles/single_sponsor", sponsorship: sponsorship %>

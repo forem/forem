@@ -72,7 +72,7 @@
         <%= f.text_area :reason_for_adjustment, placeholder: "Reason for adjustment (Be super kind) - Only the reason is needed, the notification will take care of the rest.", required: true %>
         <%= f.submit "Submit Tag Adjustment" %>
       <% end %>
-      <% if @adjustments.any? %>
+      <% if @adjustments.present? %>
         <% @adjustments.each do |adjustment| %>
           <% if current_user.any_admin? || adjustment.user_id == current_user.id %>
             <%= form_for(adjustment, url: "/tag_adjustments/#{adjustment.id}", html: { method: :delete, onsubmit: "return confirm('Are you sure you want to undo the #{adjustment.adjustment_type} of the #{adjustment.tag_name} tag?')" }) do |f| %>

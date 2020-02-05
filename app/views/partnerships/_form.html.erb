@@ -1,4 +1,4 @@
-<% if !organizations.any? %>
+<% if organizations.none? %>
   <div class="partner-credits-explainer">
     <h4>What next?</h4>
     <h3>Create an Organization</h3>
@@ -46,7 +46,7 @@
                 <br /><br />Your placement is <em>pending</em>.
               <% end %>
             </div>
-          <% elsif sponsorships.any? %>
+          <% elsif sponsorships.present? %>
             <div class="partner-explainer-notice">
               <%# this should never happen but better safe than sorry %>
               <% sponsorships.each do |sponsorship| %>
