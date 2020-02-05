@@ -675,7 +675,7 @@ form.listings-contact-via-connect {
     justify-content: center;
     margin-bottom: 15px;
     background: $dark-gray;
-    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow2);
+    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
     padding: 15px 0px;
 
     @media screen and (max-width: 768px) {

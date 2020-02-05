@@ -42,7 +42,7 @@ footer {
         theme-container-border,
         1px solid darken($light-medium-gray, 2%)
       );
-      @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow2);
+      @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
       padding: 50px 30px;
       line-height: 3em;
       margin: auto;

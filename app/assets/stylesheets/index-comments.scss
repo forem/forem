@@ -6,7 +6,7 @@
   @include themeable(background, theme-container-background, #fff);
   border-radius: 3px;
   @include themeable(border, theme-container-border, none);
-  @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow2);
+  @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
   margin: auto;
   margin-bottom: 8px;
   width: 94%;

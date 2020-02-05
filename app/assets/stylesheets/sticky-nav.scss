@@ -111,7 +111,7 @@
     @include themeable(
       box-shadow, 
       theme-container-box-shadow, 
-      $bold-shadow2
+      $bold-shadow
     );
     @include themeable(
       color, 
