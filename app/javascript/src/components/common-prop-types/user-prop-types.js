@@ -5,4 +5,4 @@ export const userPropTypes = PropTypes.shape({
   name: PropTypes.string.isRequired,
   profile_image_url: PropTypes.string.isRequired,
   summary: PropTypes.string.isRequired,
-}).isRequired;
+});
