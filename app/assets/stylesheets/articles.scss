@@ -1078,62 +1078,6 @@
             display: block;
           }
         }
-        .sidebar-nav-element {
-          color: $black;
-          display: block;
-          position: relative;
-          @media screen and (min-width: 950px) {
-            .sidebar-nav-link-follow {
-              display: none;
-            }
-            &:hover {
-              .sidebar-nav-link-follow {
-                display: block;
-              }
-            }
-          }
-          img {
-            width: 30px;
-            height: 30px;
-            border: 0px;
-            vertical-align: -8px;
-            margin-right: 4px;
-          }
-          img.nav-emoji {
-            height: 19px;
-            width: 19px;
-            vertical-align: -2px;
-          }
-
-          a.sidebar-nav-link {
-            @include themeable(color, theme-container-color, $black);
-            padding: 5px;
-            display: inline-block;
-            width: calc(100% - 10px);
-            font-weight: 500;
-            padding: 7px 9px;
-            font-size: 1em;
-            &:hover {
-              @include themeable(
-                background,
-                theme-container-background-hover,
-                $light-gray
-              );
-            }
-          }
-          a.sidebar-nav-link-follow {
-            position: absolute;
-            color: $black;
-            right: 5px;
-            top: 50%;
-            transform: translateY(-50%);
-            text-align: center;
-            border-radius: 3px;
-            font-weight: 900;
-            font-size: 0.8em;
-            padding: 2px 8px;
-          }
-        }
       }
     }
     .sidebar-sponsorship-level {
@@ -1864,4 +1808,62 @@
   text-align: center;
   opacity: 0.7;
   display: none;
+}
+
+// Left Side bar navigation links
+.sidebar-nav-element {
+  color: $black;
+  display: block;
+  position: relative;
+  @media screen and (min-width: 950px) {
+    .sidebar-nav-link-follow {
+      display: none;
+    }
+    &:hover {
+      .sidebar-nav-link-follow {
+        display: block;
+      }
+    }
+  }
+  img {
+    width: 30px;
+    height: 30px;
+    border: 0px;
+    vertical-align: -8px;
+    margin-right: 4px;
+  }
+  img.nav-emoji {
+    height: 19px;
+    width: 19px;
+    vertical-align: -2px;
+  }
+
+  a.sidebar-nav-link {
+    @include themeable(color, theme-container-color, $black);
+    padding: 5px;
+    display: inline-block;
+    width: calc(100% - 10px);
+    font-weight: 500;
+    padding: 7px 9px;
+    font-size: 1em;
+    &:hover {
+      @include themeable(
+        background,
+        theme-container-background-hover,
+        $light-gray
+      );
+    }
+  }
+  a.sidebar-nav-link-follow {
+    position: absolute;
+    color: $black;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    border-radius: 3px;
+    font-weight: 900;
+    font-size: 0.8em;
+    padding: 2px 8px;
+  }
 }
