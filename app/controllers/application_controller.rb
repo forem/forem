@@ -45,7 +45,7 @@ class ApplicationController < ActionController::Base
     (request.env["omniauth.origin"] || stored_location_for(resource) || "/dashboard") + "?signin=true" # This signin=true param is used by frontend
   end
 
-  def raise_banned
+  def raise_suspended
     raise "SUSPENDED" if current_user&.banned
   end
 
