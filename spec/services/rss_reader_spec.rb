@@ -6,6 +6,8 @@ vcr_option = {
   allow_playback_repeats: "true"
 }
 
+default_logger = Rails.logger
+
 RSpec.describe RssReader, type: :service, vcr: vcr_option do
   let(:link) { "https://medium.com/feed/@vaidehijoshi" }
   let(:nonmedium_link) { "https://circleci.com/blog/feed.xml" }
@@ -17,6 +19,8 @@ RSpec.describe RssReader, type: :service, vcr: vcr_option do
     timber_logger = Timber::Logger.new(nil)
     Rails.logger = ActiveSupport::TaggedLogging.new(timber_logger)
   end
+
+  after { Rails.logger = default_logger }
 
   describe "#get_all_articles" do
     before do

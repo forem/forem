@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Metrics::RecordDbTableCountsWorker, type: :worker do
+  default_logger = Rails.logger
+
   include_examples "#enqueues_on_correct_queue", "low_priority", 1
 
   describe "#perform" do
@@ -9,6 +11,8 @@ RSpec.describe Metrics::RecordDbTableCountsWorker, type: :worker do
       timber_logger = Timber::Logger.new(nil)
       Rails.logger = ActiveSupport::TaggedLogging.new(timber_logger)
     end
+
+    after { Rails.logger = default_logger }
 
     it "logs estimated counts in Datadog" do
       allow(DataDogStatsClient).to receive(:gauge)

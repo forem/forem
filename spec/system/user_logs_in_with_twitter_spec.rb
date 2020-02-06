@@ -32,11 +32,15 @@ RSpec.describe "Authenticating with twitter" do
     }
   end
 
+  default_logger = Rails.logger
+
   # Override the default Rails logger as these tests require the Timber logger.
   before do
     timber_logger = Timber::Logger.new(nil)
     Rails.logger = ActiveSupport::TaggedLogging.new(timber_logger)
   end
+
+  after { Rails.logger = default_logger }
 
   context "when user is new on dev.to" do
     it "logging in with twitter using valid credentials" do
