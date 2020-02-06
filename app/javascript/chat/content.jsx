@@ -35,70 +35,73 @@ export default class Content extends Component {
   }
 }
 
-function display(props) {
-  if (props.resource.type_of === 'loading-user') {
-    return (
-      <div
-        style={{
-          height: '210px',
-          width: '210px',
-          margin: ' 15px auto',
-          display: 'block',
-          borderRadius: '500px',
-          backgroundColor: '#f5f6f7',
-        }}
-      />
-    );
-  }
-  if (props.resource.type_of === 'loading-user') {
-    return (
-      <div
-        style={{
-          height: '25px',
-          width: '96%',
-          margin: ' 8px auto',
-          display: 'block',
-          backgroundColor: '#f5f6f7',
-        }}
-      />
-    );
-  }
-  if (props.resource.type_of === 'user') {
-    return (
-      <UserDetails
-        user={props.resource}
-        activeChannelId={props.activeChannelId}
-        activeChannel={props.activeChannel}
-      />
-    );
-  }
-  if (props.resource.type_of === 'article') {
-    return <Article resource={props.resource} />;
-  }
-  if (props.resource.type_of === 'github') {
-    return (
-      <GithubRepo
-        activeChannelId={props.activeChannelId}
-        pusherKey={props.pusherKey}
-        githubToken={props.githubToken}
-        resource={props.resource}
-      />
-    );
-  }
-  if (props.resource.type_of === 'chat_channel') {
-    return (
-      <ChannelDetails
-        channel={props.resource}
-        activeChannelId={props.activeChannelId}
-      />
-    );
-  }
-  if (props.resource.type_of === 'code_editor') {
-    return (
-      <CodeEditor
-        activeChannelId={props.activeChannelId}
-        pusherKey={props.pusherKey}
-      />
-    );
-  }
+const loadingUser = () => {
+  return(
+    <div
+      style={{
+        height: '210px',
+        width: '210px',
+        margin: ' 15px auto',
+        display: 'block',
+        borderRadius: '500px',
+        backgroundColor: '#f5f6f7',
+      }}
+    />
+  );
+}
+
+const renderUserDetails = (props)  => {
+  return(
+    <UserDetails
+      user={props.resource}
+      activeChannelId={props.activeChannelId}
+      activeChannel={props.activeChannel}
+    />
+  );
+}
+
+const renderArticle = (props) => {
+  return(
+    <Article resource={props.resource} />
+  );
+}
+
+const renderGitHubRepo = (props) => {
+  return (
+    <GithubRepo
+      activeChannelId={props.activeChannelId}
+      pusherKey={props.pusherKey}
+      githubToken={props.githubToken}
+      resource={props.resource}
+    />
+  );
+}
+
+const renderChannelDetails = (props) => {
+  return (
+    <ChannelDetails
+      channel={props.resource}
+      activeChannelId={props.activeChannelId}
+    />
+  );
+}
+
+const renderCodeEditor = (props) => {
+  return (
+    <CodeEditor
+      activeChannelId={props.activeChannelId}
+      pusherKey={props.pusherKey}
+    />
+  );
+}
+
+const display = (props) => {
+  objectLiteral( ( {
+    'loading-user': () => loadingUser(),
+    'user': () => renderUserDetails(props),
+    'article': () => renderArticle(props),
+    'github': () => renderGitHubRepo(props),
+    'chat_channel': () => renderChannelDetails(props),
+    'code_editor': () => renderCodeEditor(props),
+  } )[ props.resource.type_of ] || null );
 }
