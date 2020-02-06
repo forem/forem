@@ -1,18 +1,17 @@
 module Api
   module V0
-    class ReactionsController < ApplicationController
+    class ReactionsController < ApiController
       skip_before_action :verify_authenticity_token
 
       def create
-        @user = valid_user
-
-        unless @user
-          render json: { message: "invalid_user" }, status: :unprocessable_entity
+        reaction_user = load_reaction_user
+        unless reaction_user
+          render json: { error: "invalid user" }, status: :unprocessable_entity
           return
         end
 
-        @reaction = Reaction.create(
-          user_id: @user.id,
+        @reaction = Reaction.create!(
+          user: reaction_user,
           reactable_id: reaction_params[:reactable_id],
           reactable_type: reaction_params[:reactable_type],
           category: reaction_params[:category] || "like",
@@ -36,8 +35,8 @@ module Api
 
       private
 
-      def valid_user
-        user = User.find_by(secret: params[:key])
+      def load_reaction_user
+        user = User.find_by!(secret: params[:key])
         user = nil unless user.has_role?(:super_admin)
         user
       end

@@ -13,6 +13,30 @@ RSpec.describe "Api::V0::Reactions", type: :request do
     )
   end
 
+  describe "POST /api/reactions" do
+    context "when authorized as a super admin" do
+      before do
+        user.add_role(:super_admin)
+        sign_in user
+      end
+
+      it "returns 422 if the reaction is invalid" do
+        create_reaction(user, create(:tag))
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "returns 404 if the key is not found" do
+        post api_reactions_path(
+          reactable_id: article.id,
+          reactable_type: article.class.name,
+          category: "like",
+          key: "foobar",
+        )
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
+
   describe "POST /api/reactions - articles" do
     context "when authorized as a super admin" do
       before do
