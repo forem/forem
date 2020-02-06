@@ -150,7 +150,7 @@ group :test do
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples
   gem "ruby-prof", "~> 1.2", require: false # ruby-prof is a fast code profiler for Ruby
   gem "shoulda-matchers", "4.2.0", require: false # Simple one-liner tests for common Rails functionality
-  gem "simplecov", "~> 0.17", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
+  gem "simplecov", "~> 0.18", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers
   gem "stripe-ruby-mock", "~> 2.5", require: "stripe_mock" # A drop-in library to test stripe without hitting their servers
   gem "test-prof", "~> 0.10" # Ruby Tests Profiling Toolbox
