@@ -1,17 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<TagsFollowed /> should render the empty view when no tags are passed in 1`] = `
-<div
-  class="sidebar-nav-followed-tags"
-  id="sidebar-nav-followed-tags"
-/>
-`;
+exports[`<TagsFollowed /> should render the empty view when no tags are passed in 1`] = `<div />`;
 
 exports[`<TagsFollowed /> should render the tags followed when tags are passed in 1`] = `
-<div
-  class="sidebar-nav-followed-tags"
-  id="sidebar-nav-followed-tags"
->
+<div>
   <div
     class="sidebar-nav-element"
     id="sidebar-element-javascript"

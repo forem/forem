@@ -54,11 +54,11 @@ function renderTagsFollowed(tagsFollowedContainer, user = userData()) {
   });
 }
 
-renderTagsFollowed(document.getElementById('sidebar-nav-followed-tags-ctn'));
+renderTagsFollowed(document.getElementById('sidebar-nav-followed-tags'));
 
 InstantClick.on('receive', (_url, body, title) => {
   const tagsFollowedContainer = body.querySelector(
-    '#sidebar-nav-followed-tags-ctn',
+    '#sidebar-nav-followed-tags',
   );
 
   if (!tagsFollowedContainer) {
