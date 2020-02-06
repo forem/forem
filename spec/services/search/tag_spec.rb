@@ -29,11 +29,11 @@ RSpec.describe Search::Tag, type: :service, elasticsearch: true do
     it "creates an elasticsearch index with name argument" do
       other_name = "random"
       expect(SearchClient.indices.exists(index: other_name)).to eq(false)
-      described_class.create_index(other_name)
+      described_class.create_index(index_name: other_name)
       expect(SearchClient.indices.exists(index: other_name)).to eq(true)
 
       # Have to cleanup index since it wont automatically be handled by our cluster class bc of the unexpected name
-      described_class.delete_index(other_name)
+      described_class.delete_index(index_name: other_name)
     end
   end
 
@@ -46,10 +46,10 @@ RSpec.describe Search::Tag, type: :service, elasticsearch: true do
 
     it "deletes an elasticsearch index with name argument" do
       other_name = "random"
-      described_class.create_index(other_name)
+      described_class.create_index(index_name: other_name)
       expect(SearchClient.indices.exists(index: other_name)).to eq(true)
 
-      described_class.delete_index(other_name)
+      described_class.delete_index(index_name: other_name)
       expect(SearchClient.indices.exists(index: other_name)).to eq(false)
     end
   end
@@ -65,7 +65,7 @@ RSpec.describe Search::Tag, type: :service, elasticsearch: true do
     it "adds custom alias to elasticsearch index with INDEX_NAME" do
       other_alias = "random"
       expect(SearchClient.indices.exists(index: other_alias)).to eq(false)
-      described_class.add_alias(described_class::INDEX_NAME, other_alias)
+      described_class.add_alias(index_name: described_class::INDEX_NAME, index_alias: other_alias)
       expect(SearchClient.indices.exists(index: other_alias)).to eq(true)
     end
   end
@@ -73,16 +73,16 @@ RSpec.describe Search::Tag, type: :service, elasticsearch: true do
   describe "::update_mappings" do
     it "updates index mappings for tag index", :aggregate_failures do
       other_name = "random"
-      described_class.create_index(other_name)
+      described_class.create_index(index_name: other_name)
       initial_mapping = SearchClient.indices.get_mapping(index: other_name).dig(other_name, "mappings")
       expect(initial_mapping).to be_empty
 
-      described_class.update_mappings(other_name)
+      described_class.update_mappings(index_alias: other_name)
       mapping = SearchClient.indices.get_mapping(index: other_name).dig(other_name, "mappings")
       expect(mapping.deep_stringify_keys).to include(described_class.send("mappings").deep_stringify_keys)
 
       # Have to cleanup index since it wont automatically be handled by our cluster class bc of the unexpected name
-      described_class.delete_index(other_name)
+      described_class.delete_index(index_name: other_name)
     end
   end
 end

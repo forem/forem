@@ -31,6 +31,8 @@ module Search
       end
 
       def delete_indexes
+        return if Rails.env.production?
+
         SEARCH_CLASSES.each do |search_class|
           next unless SearchClient.indices.exists(index: search_class::INDEX_NAME)
 

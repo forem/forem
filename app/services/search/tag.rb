@@ -1,7 +1,7 @@
 module Search
   class Tag
-    INDEX_NAME = "tag_#{Rails.env}".freeze
-    INDEX_ALIAS = "tag_#{Rails.env}_alias".freeze
+    INDEX_NAME = "tags_#{Rails.env}".freeze
+    INDEX_ALIAS = "tags_#{Rails.env}_alias".freeze
 
     class << self
       def index(tag_id, serialized_data)
@@ -16,19 +16,19 @@ module Search
         SearchClient.get(id: tag_id, index: INDEX_ALIAS)
       end
 
-      def create_index(index_name = INDEX_NAME)
+      def create_index(index_name: INDEX_NAME)
         SearchClient.indices.create(index: index_name, body: settings)
       end
 
-      def delete_index(index_name = INDEX_NAME)
+      def delete_index(index_name: INDEX_NAME)
         SearchClient.indices.delete(index: index_name)
       end
 
-      def add_alias(index_name = INDEX_NAME, index_alias = INDEX_ALIAS)
+      def add_alias(index_name: INDEX_NAME, index_alias: INDEX_ALIAS)
         SearchClient.indices.put_alias(index: index_name, name: index_alias)
       end
 
-      def update_mappings(index_alias = INDEX_ALIAS)
+      def update_mappings(index_alias: INDEX_ALIAS)
         SearchClient.indices.put_mapping(index: index_alias, body: mappings)
       end
 
