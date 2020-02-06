@@ -69,4 +69,10 @@ RSpec.describe Tag, type: :model do
       tag.save
     end
   end
+
+  it "finds mod chat channel" do
+    channel = create(:chat_channel)
+    tag.mod_chat_channel_id = channel.id
+    expect(tag.mod_chat_channel).to eq(channel)
+  end
 end

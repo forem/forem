@@ -66,6 +66,10 @@ class Tag < ActsAsTaggableOn::Tag
     errors.add(:name, "contains non-alphanumeric characters") unless name.match?(/\A[[:alnum:]]+\z/)
   end
 
+  def mod_chat_channel
+    ChatChannel.find(mod_chat_channel_id) if mod_chat_channel_id
+  end
+
   private
 
   def evaluate_markdown
