@@ -24,4 +24,8 @@ Sidekiq.configure_server do |config|
   config.server_middleware do |chain|
     chain.add Sidekiq::HoneycombMiddleware
   end
+
+  config.death_handlers << lambda do |job, _ex|
+    Sidekiq::WorkerRetriesExhaustedReporter.report_final_failure(job)
+  end
 end
