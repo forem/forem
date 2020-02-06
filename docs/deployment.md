@@ -54,7 +54,6 @@ Rails runner command ensures that we can boot up the entire app successfully
 before it is deployed. We deploy asynchronously, so the website is running the
 new code a few minutes after deploy. A new instance of Heroku Rails console will
 immediately run a new code. We deploy asynchronously, so the website is running
-the new code a few minutes after deploy. A new instance of Heroku Rails console
-will immediately run a new code.
+the new code a few minutes after deploy.
 
 ![](https://devcenter0.assets.heroku.com/article-images/1494371187-release-phase-diagram-3.png)
