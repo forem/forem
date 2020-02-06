@@ -54,10 +54,8 @@ Rails.application.configure do
 
   config.active_job.queue_adapter = :test
 
-  # Install the Timber.io logger, but do not send logs.
-  logger = Timber::Logger.new(nil)
-  logger.level = config.log_level
-  config.logger = ActiveSupport::TaggedLogging.new(logger)
+  # Debug is the default log_level, but can be changed per environment.
+  config.log_level = :debug
 
   # enable Bullet in testing mode only if requested
   config.after_initialize do
