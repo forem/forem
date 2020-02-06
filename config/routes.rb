@@ -162,7 +162,7 @@ Rails.application.routes.draw do
   resources :chat_channels, only: %i[index show create update]
   resources :chat_channel_memberships, only: %i[create update destroy]
   resources :articles, only: %i[update create destroy]
-  resources :article_mutes,  only: %i[update]
+  resources :article_mutes, only: %i[update]
   resources :comments, only: %i[create update destroy] do
     patch "/hide", to: "comments#hide"
     patch "/unhide", to: "comments#unhide"
