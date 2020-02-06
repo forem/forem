@@ -240,6 +240,15 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
       end
     end
+
+    context "with regression tests" do
+      it "works if both the social image and the main image are missing" do
+        article.update_columns(social_image: nil, main_image: nil)
+
+        get api_articles_path
+        expect(response).to have_http_status(:ok)
+      end
+    end
   end
 
   describe "GET /api/articles/:id" do
