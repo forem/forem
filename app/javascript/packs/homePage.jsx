@@ -56,15 +56,20 @@ function renderTagsFollowed(tagsFollowedContainer, user = userData()) {
 
 renderTagsFollowed(document.getElementById('sidebar-nav-followed-tags-ctn'));
 
-InstantClick.on('receive', (_url, body, _title) => {
+InstantClick.on('receive', (_url, body, title) => {
   const tagsFollowedContainer = body.querySelector(
     '#sidebar-nav-followed-tags-ctn',
   );
 
   if (!tagsFollowedContainer) {
-    return;
+    return false;
   }
 
   renderTagsFollowed(tagsFollowedContainer);
+
+  return {
+    body,
+    title,
+  };
 });
 InstantClick.init();
