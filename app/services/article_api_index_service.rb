@@ -1,6 +1,4 @@
 class ArticleApiIndexService
-  attr_accessor :tag, :username, :page, :state, :top, :collection_id, :per_page
-
   DEFAULT_PER_PAGE = 30
   MAX_PER_PAGE = 1000
 
@@ -15,24 +13,24 @@ class ArticleApiIndexService
   end
 
   def get
-    articles = if tag.present?
-                 tag_articles
-               elsif username.present?
-                 username_articles
-               elsif state.present?
-                 state_articles(state)
-               elsif top.present?
-                 top_articles
-               elsif collection_id.present?
-                 collection_articles(collection_id)
-               else
-                 base_articles
-               end
-
-    articles&.decorate
+    if tag.present?
+      tag_articles
+    elsif username.present?
+      username_articles
+    elsif state.present?
+      state_articles(state)
+    elsif top.present?
+      top_articles
+    elsif collection_id.present?
+      collection_articles(collection_id)
+    else
+      base_articles
+    end
   end
 
   private
+
+  attr_reader :tag, :username, :page, :state, :top, :collection_id, :per_page
 
   def username_articles
     num = if @state == "all"

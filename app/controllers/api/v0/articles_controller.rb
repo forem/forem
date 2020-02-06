@@ -17,12 +17,17 @@ module Api
 
       def index
         @articles = ArticleApiIndexService.new(params).get
+        @articles = @articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
 
         set_surrogate_key_header Article.table_key, @articles.map(&:record_key)
       end
 
       def show
-        @article = Article.published.includes(:user).find(params[:id]).decorate
+        @article = Article.published.
+          includes(:user).
+          select(SHOW_ATTRIBUTES_FOR_SERIALIZATION).
+          find(params[:id]).
+          decorate
 
         set_surrogate_key_header @article.record_key
       end
@@ -62,11 +67,34 @@ module Api
 
         @articles = @articles.
           includes(:organization).
+          select(ME_ATTRIBUTES_FOR_SERIALIZATION).
           order(published_at: :desc, created_at: :desc).
           page(params[:page]).
           per(num).
           decorate
       end
+
+      INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[
+        id user_id organization_id collection_id
+        title description main_image published_at crossposted_at social_image
+        cached_tag_list slug path canonical_url comments_count
+        positive_reactions_count created_at edited_at last_comment_at published
+        updated_at
+      ].freeze
+      private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
+
+      SHOW_ATTRIBUTES_FOR_SERIALIZATION = [
+        *INDEX_ATTRIBUTES_FOR_SERIALIZATION, :body_markdown, :processed_html
+      ].freeze
+      private_constant :SHOW_ATTRIBUTES_FOR_SERIALIZATION
+
+      ME_ATTRIBUTES_FOR_SERIALIZATION = %i[
+        id user_id organization_id
+        title description main_image published published_at cached_tag_list
+        slug path canonical_url comments_count positive_reactions_count
+        page_views_count crossposted_at body_markdown updated_at
+      ].freeze
+      private_constant :ME_ATTRIBUTES_FOR_SERIALIZATION
 
       private
 
