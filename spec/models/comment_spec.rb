@@ -9,7 +9,7 @@ RSpec.describe Comment, type: :model do
 
   describe "validations" do
     it { is_expected.to belong_to(:user) }
-    it { is_expected.to belong_to(:commentable) }
+    it { is_expected.to belong_to(:commentable).optional }
     it { is_expected.to have_many(:reactions).dependent(:destroy) }
     it { is_expected.to have_many(:mentions).dependent(:destroy) }
     it { is_expected.to have_many(:notifications).dependent(:delete_all) }
