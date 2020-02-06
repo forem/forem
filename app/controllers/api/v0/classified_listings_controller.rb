@@ -2,9 +2,10 @@ module Api
   module V0
     class ClassifiedListingsController < ApiController
       include ClassifiedListingsToolkit
+
       respond_to :json
 
-      before_action :set_classified_listing, only: %i[show update]
+      before_action :set_classified_listing, only: %i[update]
       before_action :authenticate_with_api_key_or_current_user!, only: %i[create update]
 
       # skip CSRF checks for create and update
@@ -12,10 +13,12 @@ module Api
 
       def index
         @classified_listings = ClassifiedListing.published.
-          order("bumped_at DESC").
+          select(ATTRIBUTES_FOR_SERIALIZATION).
           includes(:user, :organization, :taggings)
 
         @classified_listings = @classified_listings.where(category: params[:category]) if params[:category].present?
+
+        @classified_listings = @classified_listings.order(bumped_at: :desc)
 
         per_page = (params[:per_page] || 30).to_i
         num = [per_page, 100].min
@@ -26,7 +29,10 @@ module Api
       end
 
       def show
-        # rendering with json builder
+        @classified_listing = ClassifiedListing.
+          select(ATTRIBUTES_FOR_SERIALIZATION).
+          includes(:user, :organization).
+          find(params[:id])
       end
 
       def create
@@ -36,6 +42,12 @@ module Api
       def update
         super
       end
+
+      ATTRIBUTES_FOR_SERIALIZATION = %i[
+        id user_id organization_id title slug body_markdown
+        cached_tag_list category processed_html published
+      ].freeze
+      private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
       private
 
