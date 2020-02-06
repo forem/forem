@@ -10,7 +10,7 @@ class Internal::ModsController < Internal::ApplicationController
               User.with_role(:trusted).page(params[:page]).per(50)
             end
 
-    return unless params[:search]
+    return if params[:search].blank?
 
     @mods = @mods.where(
       "users.username ILIKE :search OR users.name ILIKE :search",
