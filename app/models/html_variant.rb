@@ -35,7 +35,7 @@ class HtmlVariant < ApplicationRecord
         order("success_rate DESC").limit(rand(1..15)).sample
     end
 
-    def self.find_random_for_test(tags_array, group)
+    def find_random_for_test(tags_array, group)
       where(group: group, approved: true, published: true, target_tag: tags_array).
         order(Arel.sql("RANDOM()")).first
     end
