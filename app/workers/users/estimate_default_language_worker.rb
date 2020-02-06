@@ -6,7 +6,9 @@ module Users
 
     def perform(user_id)
       user = User.find_by(id: user_id)
-      Users::EstimateDefaultLanguage.call(user) if user
+      return unless user
+
+      Users::EstimateDefaultLanguage.call(user)
     end
   end
 end
