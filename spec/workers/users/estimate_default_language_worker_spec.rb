@@ -1,6 +1,9 @@
 require "rails_helper"
 
 RSpec.describe Users::EstimateDefaultLanguageWorker, type: :worker do
+  # Passing in a random user_id since the worker doesn't actually run
+  include_examples "#enqueues_on_correct_queue", "high_priority", [456]
+
   describe "#perform" do
     let(:user) { create(:user) }
     let(:service) { Users::EstimateDefaultLanguage }
