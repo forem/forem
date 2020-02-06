@@ -104,9 +104,13 @@ class CommentsController < ApplicationController
     else
       render json: { status: "errors" }
     end
+  # See https://github.com/thepracticaldev/dev.to/pull/5485#discussion_r366056925
+  # for details as to why this is necessary
   rescue Pundit::NotAuthorizedError
     raise
   rescue StandardError => e
+    skip_authorization
+
     Rails.logger.error(e)
     message = "There was an error in your markdown: #{e}"
     render json: { error: message }, status: :unprocessable_entity
@@ -133,14 +137,16 @@ class CommentsController < ApplicationController
   # DELETE /comments/1.json
   def destroy
     authorize @comment
-    @commentable_path = @comment.commentable.path
     if @comment.is_childless?
       @comment.destroy
     else
       @comment.deleted = true
       @comment.save!
     end
-    redirect_to URI.parse(@commentable_path).path, notice: "Comment was successfully deleted."
+    redirect = @comment.commentable&.path || user_path(current_user)
+    # NOTE: Brakeman doesn't like redirecting to a path, because of a "possible
+    # unprotected redirect". Using URI.parse().path is the recommended workaround.
+    redirect_to URI.parse(redirect).path, notice: "Comment was successfully deleted."
   end
 
   def delete_confirm

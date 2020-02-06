@@ -82,27 +82,21 @@ class Notification < ApplicationRecord
       # TODO: make this work for articles in the future. only works for comments right now
       return if UserBlock.blocking?(notifiable.commentable.user_id, notifiable.user_id)
 
-      Notifications::ModerationNotificationJob.perform_later(notifiable.id)
+      Notifications::ModerationNotificationWorker.perform_async(notifiable.id)
     end
 
     def send_tag_adjustment_notification(tag_adjustment)
-      Notifications::TagAdjustmentNotificationJob.perform_later(tag_adjustment.id)
+      Notifications::TagAdjustmentNotificationWorker.perform_async(tag_adjustment.id)
     end
 
     def send_milestone_notification(type:, article_id:)
       Notifications::MilestoneWorker.perform_async(type, article_id)
     end
 
-    def remove_all_by_action(notifiable_ids:, notifiable_type:, action: nil)
-      return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
-
-      Notifications::RemoveAllByActionJob.perform_later(notifiable_ids, notifiable_type, action)
-    end
-
     def remove_all_by_action_without_delay(notifiable_ids:, notifiable_type:, action: nil)
       return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
 
-      Notifications::RemoveAllByActionJob.perform_now(notifiable_ids, notifiable_type, action)
+      Notifications::RemoveAllByAction.call(Array.wrap(notifiable_ids), notifiable_type, action)
     end
 
     def remove_all(notifiable_ids:, notifiable_type:)
@@ -118,7 +112,7 @@ class Notification < ApplicationRecord
     end
 
     def update_notifications(notifiable, action = nil)
-      Notifications::UpdateJob.perform_later(notifiable.id, notifiable.class.name, action)
+      Notifications::UpdateWorker.perform_async(notifiable.id, notifiable.class.name, action)
     end
 
     def fast_destroy_old_notifications(destroy_before_timestamp = 4.months.ago)

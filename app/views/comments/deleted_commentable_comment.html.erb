@@ -3,7 +3,7 @@
   <h3>Comment from a deleted article or podcast</h3>
   <div class="single-comment-node root">
     <% @user ||= @root_comment.user %>
-    <% if @root_comment.deleted %>
+    <% if @root_comment.blank? || @root_comment.deleted %>
       <div class="inner-comment">
         <div class="body">
           [deleted]

@@ -19,7 +19,9 @@ module Notifications
         notifiable_type: notifiable.class.name,
         action: action,
       )
-      return if notifications.blank?
+      # as we only select the first notification right after, there is no need
+      # to load all of them in memory with `.blank?`, thus we choose `.none?`
+      return if notifications.none?
 
       new_json_data = notifications.first.json_data || {}
       new_json_data[notifiable.class.name.downcase] = public_send("#{notifiable.class.name.downcase}_data", notifiable)

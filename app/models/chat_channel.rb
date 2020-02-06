@@ -149,16 +149,25 @@ class ChatChannel < ApplicationRecord
   def channel_users
     # Purely for algolia indexing
     obj = {}
-    active_memberships.
-      order("last_opened_at DESC").includes(:user).each do |membership|
+
+    relation = active_memberships.includes(:user).select(:id, :user_id, :last_opened_at)
+
+    relation.order(last_opened_at: :desc).each do |membership|
       obj[membership.user.username] = user_obj(membership)
     end
+
     obj
   end
 
   def channel_mod_ids
     mod_users.pluck(:id)
   end
+
+  def pending_users_select_fields
+    pending_users.select(:id, :username, :name, :updated_at)
+  end
+
+  private
 
   def user_obj(membership)
     {
@@ -169,9 +178,5 @@ class ChatChannel < ApplicationRecord
       username: membership.user.username,
       id: membership.user_id
     }
-  end
-
-  def pending_users_select_fields
-    pending_users.select(:id, :username, :name, :updated_at)
   end
 end

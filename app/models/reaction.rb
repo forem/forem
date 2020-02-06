@@ -2,6 +2,8 @@ class Reaction < ApplicationRecord
   include AlgoliaSearch
 
   CATEGORIES = %w[like readinglist unicorn thinking hands thumbsdown vomit].freeze
+  REACTABLE_TYPES = %w[Comment Article User].freeze
+  STATUSES = %w[valid invalid confirmed archived].freeze
 
   belongs_to :reactable, polymorphic: true
   belongs_to :user
@@ -13,8 +15,8 @@ class Reaction < ApplicationRecord
   counter_culture :user
 
   validates :category, inclusion: { in: CATEGORIES }
-  validates :reactable_type, inclusion: { in: %w[Comment Article] }
-  validates :status, inclusion: { in: %w[valid invalid confirmed archived] }
+  validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
+  validates :status, inclusion: { in: STATUSES }
   validates :user_id, uniqueness: { scope: %i[reactable_id reactable_type category] }
   validate  :permissions
 

@@ -1,7 +1,7 @@
 class ReactionObserver < ActiveRecord::Observer
   def after_create(reaction)
     if reaction.category == "vomit"
-      SlackBotPingWorker.perfom_async(
+      SlackBotPingWorker.perform_async(
         message: "#{reaction.user.name} (https://dev.to#{reaction.user.path}) \nreacted with a #{reaction.category} on\nhttps://dev.to#{reaction.reactable.path}",
         channel: "abuse-reports",
         username: "abuse_bot",

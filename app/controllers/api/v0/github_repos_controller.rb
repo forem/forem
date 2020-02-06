@@ -3,9 +3,10 @@ module Api
     class GithubReposController < ApiController
       def index
         client = create_octokit_client
-        existing_user_repos = GithubRepo.
-          where(user_id: current_user.id, featured: true).pluck(:github_id_code) #=> [1,2,3]
-        existing_user_repos = Set.new(existing_user_repos)
+
+        existing_user_repos = current_user.github_repos.where(featured: true).
+          distinct.pluck(:github_id_code)
+
         @repos = client.repositories.map do |repo|
           repo.selected = existing_user_repos.include?(repo.id)
           repo
@@ -15,19 +16,22 @@ module Api
       end
 
       def update_or_create
-        @client = create_octokit_client
-        fetched_repo = fetch_repo
+        client = create_octokit_client
+
+        fetched_repo = fetch_repo(client)
         unless fetched_repo
           render json: "error: Could not find Github repo", status: :not_found
           return
         end
 
-        @repo = GithubRepo.find_or_create(fetched_repo_params(fetched_repo))
+        repo = GithubRepo.find_or_create(fetched_repo_params(fetched_repo))
+
         current_user.touch(:github_repos_updated_at)
-        if @repo.valid?
-          render json: { featured: @repo.featured }
+
+        if repo.valid?
+          render json: { featured: repo.featured }
         else
-          render json: "error: #{@repo.errors.full_messages}"
+          render json: "error: #{repo.errors.full_messages}"
         end
       end
 
@@ -55,9 +59,10 @@ module Api
         }
       end
 
-      def fetch_repo
+      def fetch_repo(client)
         params[:github_repo] = JSON.parse(params[:github_repo])
-        @client.repositories.detect do |repo|
+
+        client.repositories.detect do |repo|
           repo.id == permitted_attributes(GithubRepo)[:github_id_code].to_i
         end
       end
