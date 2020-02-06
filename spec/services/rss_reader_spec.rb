@@ -12,6 +12,12 @@ RSpec.describe RssReader, type: :service, vcr: vcr_option do
   let(:nonpermanent_link) { "https://medium.com/feed/@macsiri/" }
   let(:rss_data) { RSS::Parser.parse(HTTParty.get(link).body, false) }
 
+  # Override the default Rails logger as these tests require the Timber logger.
+  before do
+    timber_logger = Timber::Logger.new(nil)
+    Rails.logger = ActiveSupport::TaggedLogging.new(timber_logger)
+  end
+
   describe "#get_all_articles" do
     before do
       [link, nonmedium_link, nonpermanent_link].each do |feed_url|
