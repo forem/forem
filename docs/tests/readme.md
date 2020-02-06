@@ -9,7 +9,6 @@ items:
   - regression-tests.md
   - code-coverage.md
   - codeclimate.md
-  - skip-ci.md
 ---
 
 We use the following testing tools:
