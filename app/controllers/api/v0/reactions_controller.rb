@@ -43,7 +43,7 @@ module Api
       end
 
       def org_article?(reaction)
-        reaction.reactable_type == "Article" && reaction.reactable.organization_id
+        reaction.reactable.is_a?(Article) && reaction.reactable.organization
       end
     end
   end
