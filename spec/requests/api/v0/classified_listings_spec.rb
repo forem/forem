@@ -45,10 +45,6 @@ RSpec.describe "Api::V0::Listings" do
     end
   end
 
-  def json_response
-    JSON.parse(response.body)
-  end
-
   describe "GET /api/listings" do
     include_context "with 7 listings and 2 user"
 
@@ -60,18 +56,18 @@ RSpec.describe "Api::V0::Listings" do
 
     it "returns listings created" do
       get api_classified_listings_path
-      expect(json_response.size).to eq(7)
-      expect(json_response.first["type_of"]).to eq("classified_listing")
-      expect(json_response.first["slug"]).to eq(ClassifiedListing.last.slug)
-      expect(json_response.first["user"]).to include("username")
-      expect(json_response.first["user"]["username"]).not_to be_empty
+      expect(response.parsed_body.size).to eq(7)
+      expect(response.parsed_body.first["type_of"]).to eq("classified_listing")
+      expect(response.parsed_body.first["slug"]).to eq(ClassifiedListing.last.slug)
+      expect(response.parsed_body.first["user"]).to include("username")
+      expect(response.parsed_body.first["user"]["username"]).not_to be_empty
     end
 
     it "supports pagination" do
       get api_classified_listings_path, params: { page: 2, per_page: 2 }
-      expect(json_response.length).to eq(2)
+      expect(response.parsed_body.length).to eq(2)
       get api_classified_listings_path, params: { page: 4, per_page: 2 }
-      expect(json_response.length).to eq(1)
+      expect(response.parsed_body.length).to eq(1)
     end
   end
 
@@ -81,7 +77,7 @@ RSpec.describe "Api::V0::Listings" do
     it "displays only listings from the cfp category" do
       get api_classified_listings_category_path("cfp")
       expect(response).to have_http_status(:ok)
-      expect(json_response.size).to eq(3)
+      expect(response.parsed_body.size).to eq(3)
     end
   end
 
@@ -91,11 +87,13 @@ RSpec.describe "Api::V0::Listings" do
 
     it "displays a unique listing" do
       get api_classified_listing_path(listing.id)
+
       expect(response).to have_http_status(:ok)
-      expect(json_response["type_of"]).to eq("classified_listing")
-      expect(json_response["slug"]).to eq(listing.slug)
-      expect(json_response["user"]).to include("username")
-      expect(json_response["user"]["username"]).not_to be_empty
+
+      expect(response.parsed_body["type_of"]).to eq("classified_listing")
+      expect(response.parsed_body["slug"]).to eq(listing.slug)
+      expect(response.parsed_body["user"]).to include("username")
+      expect(response.parsed_body["user"]["username"]).not_to be_empty
     end
   end
 
@@ -215,7 +213,7 @@ RSpec.describe "Api::V0::Listings" do
           false
         end
         post_classified_listing(draft_params)
-        expect(json_response["errors"]["base"]).to eq(["is invalid"])
+        expect(response.parsed_body["errors"]["base"]).to eq(["is invalid"])
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
@@ -240,7 +238,7 @@ RSpec.describe "Api::V0::Listings" do
           post_classified_listing(listing_params)
           expect(response).to have_http_status(:created)
         end.to change(ClassifiedListing, :count).by(1)
-        expect(ClassifiedListing.find(json_response["id"]).user).to eq(user)
+        expect(ClassifiedListing.find(response.parsed_body["id"]).user).to eq(user)
       end
 
       it "creates a classified listing with a title, a body markdown, a category" do
@@ -248,9 +246,9 @@ RSpec.describe "Api::V0::Listings" do
           post_classified_listing(listing_params)
           expect(response).to have_http_status(:created)
         end.to change(ClassifiedListing, :count).by(1)
-        expect(ClassifiedListing.find(json_response["id"]).title).to eq("Title")
-        expect(ClassifiedListing.find(json_response["id"]).body_markdown).to eq("Markdown text")
-        expect(ClassifiedListing.find(json_response["id"]).category).to eq("cfp")
+        expect(ClassifiedListing.find(response.parsed_body["id"]).title).to eq("Title")
+        expect(ClassifiedListing.find(response.parsed_body["id"]).body_markdown).to eq("Markdown text")
+        expect(ClassifiedListing.find(response.parsed_body["id"]).category).to eq("cfp")
       end
 
       it "creates a classified listing with a location" do
@@ -259,7 +257,7 @@ RSpec.describe "Api::V0::Listings" do
           post_classified_listing(params)
           expect(response).to have_http_status(:created)
         end.to change(ClassifiedListing, :count).by(1)
-        expect(ClassifiedListing.find(json_response["id"]).location).to eq("Frejus")
+        expect(ClassifiedListing.find(response.parsed_body["id"]).location).to eq("Frejus")
       end
 
       it "creates a classified listing with a list of tags and a contact" do
@@ -268,8 +266,8 @@ RSpec.describe "Api::V0::Listings" do
           post_classified_listing(params)
           expect(response).to have_http_status(:created)
         end.to change(ClassifiedListing, :count).by(1)
-        expect(ClassifiedListing.find(json_response["id"]).cached_tag_list).to eq("discuss, javascript")
-        expect(ClassifiedListing.find(json_response["id"]).contact_via_connect).to eq(true)
+        expect(ClassifiedListing.find(response.parsed_body["id"]).cached_tag_list).to eq("discuss, javascript")
+        expect(ClassifiedListing.find(response.parsed_body["id"]).contact_via_connect).to eq(true)
       end
     end
 

@@ -119,19 +119,15 @@ Rails.application.routes.draw do
         end
       end
       resources :follows, only: [:create]
-      resources :followers do
-        collection do
-          get :users
-          get :organizations
-        end
+      namespace :followers do
+        get :users
+        get :organizations
       end
-      resources :followings do
-        collection do
-          get :users
-          get :tags
-          get :organizations
-          get :podcasts
-        end
+      namespace :followings do
+        get :users
+        get :tags
+        get :organizations
+        get :podcasts
       end
       resources :github_repos, only: [:index] do
         collection do
