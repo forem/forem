@@ -253,12 +253,12 @@ RSpec.describe "Comments", type: :request do
       before do
         comment
         article.destroy
-        put "/comments/#{comment.id}",
-            params: { comment: { body_markdown: "{edited comment}" } }
-        comment.reload
       end
 
       it "updates body markdown" do
+        put "/comments/#{comment.id}",
+            params: { comment: { body_markdown: "{edited comment}" } }
+        comment.reload
         expect(comment.processed_html).to include("edited comment")
       end
     end
@@ -286,6 +286,38 @@ RSpec.describe "Comments", type: :request do
 
       it "returns json" do
         expect(response.content_type).to eq("application/json")
+      end
+    end
+  end
+
+  describe "DELETE /comments/:id" do
+    before do
+      sign_in user
+      comment
+    end
+
+    it "deletes" do
+      expect do
+        delete "/comments/#{comment.id}",
+               params: { comment: { body_markdown: "{edited comment}" } }
+      end.to change(Comment, :count).by(-1)
+      expect(response).to have_http_status(:redirect)
+    end
+
+    context "when the article is deleted" do
+      before do
+        article.destroy
+        put "/comments/#{comment.id}",
+            params: { comment: { body_markdown: "{edited comment}" } }
+        comment.reload
+      end
+
+      it "deletes" do
+        expect do
+          delete "/comments/#{comment.id}",
+                 params: { comment: { body_markdown: "{edited comment}" } }
+        end.to change(Comment, :count).by(-1)
+        expect(response).to have_http_status(:redirect)
       end
     end
   end
