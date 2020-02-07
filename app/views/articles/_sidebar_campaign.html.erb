@@ -1,0 +1,20 @@
+<div class="widget">
+  Campaign widget
+  <header>
+    <h4>
+      <% SiteConfig.campaign_featured_tags.each do |t| %>
+        <%= link_to("##{t}", "/t/#{t}") %>
+      <% end %>
+    </h4>
+  </header>
+  <div class="widget-body">
+    <div class="widget-link-list">
+      <% Article.tagged_with(SiteConfig.campaign_featured_tags, any: true).
+           where("published_at > ?", 2.weeks.ago).where(approved: true).
+           order("hotness_score DESC").pluck(:path, :title, :comments_count, :created_at).
+           each do |plucked_article| %>
+        <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
+      <% end %>
+    </div>
+  </div>
+</div>
