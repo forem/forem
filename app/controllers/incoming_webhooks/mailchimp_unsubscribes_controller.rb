@@ -1,4 +1,4 @@
-class Webhooks::MailchimpUnsubscribesController < ApplicationController
+class IncomingWebhooks::MailchimpUnsubscribesController < ApplicationController
   class InvalidListID < StandardError; end
 
   LIST_MAPPINGS = {

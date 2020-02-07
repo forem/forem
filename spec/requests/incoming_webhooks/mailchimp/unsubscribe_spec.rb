@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Webhooks::MailchimpUnsubscribesController", type: :request do
+RSpec.describe "IncomingWebhooks::MailchimpUnsubscribesController", type: :request do
   let(:user) { create(:user, email_digest_periodic: true) }
 
   describe "POST /webhooks/mailchimp/:secret/unsubscribe" do
@@ -14,7 +14,7 @@ RSpec.describe "Webhooks::MailchimpUnsubscribesController", type: :request do
 
     it "return not authorized if the secret is incorrect" do
       expect do
-        post "/webhooks/mailchimp/wrong_secret/unsubscribe", params: params
+        post "/incoming_webhooks/mailchimp/wrong_secret/unsubscribe", params: params
       end.to raise_error(Pundit::NotAuthorizedError)
     end
 
@@ -22,7 +22,7 @@ RSpec.describe "Webhooks::MailchimpUnsubscribesController", type: :request do
       SiteConfig.mailchimp_newsletter_id = list_id
 
       expect do
-        post "/webhooks/mailchimp/#{secret}/unsubscribe", params: params
+        post "/incoming_webhooks/mailchimp/#{secret}/unsubscribe", params: params
       end.to change { user.reload.email_newsletter }.from(true).to(false)
     end
   end
