@@ -112,15 +112,6 @@ RSpec.describe "Api::V0::Reactions", type: :request do
         expect(comment.reactions.last.category).to eq("like")
       end
 
-      it "creates a new unicorn reaction" do
-        expect do
-          create_reaction(user, comment, category: "unicorn")
-          expect(response).to have_http_status(:ok)
-        end.to change(comment.reactions, :count).by(1)
-
-        expect(comment.reactions.last.category).to eq("unicorn")
-      end
-
       it "sends a reaction notification to the comment's user" do
         expect do
           sidekiq_perform_enqueued_jobs do
