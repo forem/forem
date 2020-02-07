@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { deep, shallow } from 'preact-render-spy';
-import { SingleListing } from '../singleListing';
+import SingleListing from '../singleListing';
 
 const listing = {
   id: 22,
