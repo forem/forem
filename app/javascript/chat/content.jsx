@@ -36,7 +36,7 @@ export default class Content extends Component {
 }
 
 const loadingUser = () => {
-  return(
+  return (
     <div
       style={{
         height: '210px',
@@ -48,25 +48,23 @@ const loadingUser = () => {
       }}
     />
   );
-}
+};
 
-const renderUserDetails = (props)  => {
-  return(
+const renderUserDetails = props => {
+  return (
     <UserDetails
       user={props.resource}
       activeChannelId={props.activeChannelId}
       activeChannel={props.activeChannel}
     />
   );
-}
+};
 
-const renderArticle = (props) => {
-  return(
-    <Article resource={props.resource} />
-  );
-}
+const renderArticle = props => {
+  return <Article resource={props.resource} />;
+};
 
-const renderGitHubRepo = (props) => {
+const renderGitHubRepo = props => {
   return (
     <GithubRepo
       activeChannelId={props.activeChannelId}
@@ -75,33 +73,39 @@ const renderGitHubRepo = (props) => {
       resource={props.resource}
     />
   );
-}
+};
 
-const renderChannelDetails = (props) => {
+const renderChannelDetails = props => {
   return (
     <ChannelDetails
       channel={props.resource}
       activeChannelId={props.activeChannelId}
     />
   );
-}
+};
 
-const renderCodeEditor = (props) => {
+const renderCodeEditor = props => {
   return (
     <CodeEditor
       activeChannelId={props.activeChannelId}
       pusherKey={props.pusherKey}
     />
   );
-}
+};
 
-const display = (props) => {
-  objectLiteral( ( {
+const display = props => {
+  const contents = {
     'loading-user': () => loadingUser(),
-    'user': () => renderUserDetails(props),
-    'article': () => renderArticle(props),
-    'github': () => renderGitHubRepo(props),
-    'chat_channel': () => renderChannelDetails(props),
-    'code_editor': () => renderCodeEditor(props),
-  } )[ props.resource.type_of ] || null );
-}
+    user: () => renderUserDetails(props),
+    article: () => renderArticle(props),
+    github: () => renderGitHubRepo(props),
+    chat_channel: () => renderChannelDetails(props),
+    code_editor: () => renderCodeEditor(props),
+  };
+  const content = contents[props.resource.type_of];
+
+  if (!content) {
+    return null;
+  }
+  return content();
+};
