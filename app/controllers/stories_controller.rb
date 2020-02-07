@@ -111,10 +111,6 @@ class StoriesController < ApplicationController
     @page = (params[:page] || 1).to_i
     num_articles = 35
     @stories = article_finder(num_articles)
-    @new_stories = Article.published.
-      where("published_at > ? AND score > ?", rand(2..6).hours.ago, -15).
-      limited_column_select.order("published_at DESC").limit(rand(15..80)).
-      decorate
     if %w[week month year infinity].include?(params[:timeframe])
       @stories = @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
         order("score DESC")
@@ -132,12 +128,16 @@ class StoriesController < ApplicationController
         offset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11].sample # random offset, weighted more towards zero
         @stories = @stories.offset(offset)
       end
+      @new_stories = Article.published.
+        where("published_at > ? AND score > ?", rand(2..6).hours.ago, -15).
+        limited_column_select.order("published_at DESC").limit(rand(15..80))
+      @stories = @stories.to_a + @new_stories.to_a
     end
     assign_podcasts
     assign_classified_listings
     @article_index = true
     @featured_story = (@featured_story || Article.new)&.decorate
-    @stories = @stories&.decorate
+    @stories = ArticleDecorator.decorate_collection(@stories)
     set_surrogate_key_header "main_app_home_page"
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
     render template: "articles/index"
