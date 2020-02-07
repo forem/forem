@@ -3,6 +3,7 @@ class UsersController < ApplicationController
   before_action :raise_banned, only: %i[update]
   before_action :set_user, only: %i[update update_twitch_username update_language_settings confirm_destroy request_destroy full_delete remove_association]
   after_action :verify_authorized, except: %i[signout_confirm add_org_admin remove_org_admin remove_from_org]
+  before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
 
   # GET /settings/@tab
   def edit
