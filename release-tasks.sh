@@ -6,6 +6,8 @@ set -x
 # abort release if deploy status equals "blocked"
 [[ $DEPLOY_STATUS = "blocked" ]] && echo "Deploy blocked" && exit 1
 
-# runs migration and boots the app to check there are no errors
+# runs migration for Postgres, setups/updates Elasticsearch
+# and boots the app to check there are no errors
 STATEMENT_TIMEOUT=180000 bundle exec rails db:migrate && \
+  bundle exec rake search:setup && \
   bundle exec rails runner "puts 'app load success'"
