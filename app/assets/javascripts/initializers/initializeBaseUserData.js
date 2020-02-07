@@ -28,6 +28,17 @@ function initializeUserSidebar(user) {
     followedTags.length === 0
       ? 'Follow tags to improve your feed'
       : 'Other Popular Tags';
+
+  followedTags.forEach(tag => {
+    const element = document.getElementById(
+      'default-sidebar-element-' + tag.name,
+    );
+
+    if (element) {
+      element.remove();
+    }
+  });
+
   document.getElementById('tag-separator').innerHTML = tagSeparatorLabel;
   document.getElementById('sidebar-nav-default-tags').classList.add('showing');
 }
