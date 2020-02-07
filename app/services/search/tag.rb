@@ -75,6 +75,9 @@ module Search
             },
             short_summary: {
               type: "text"
+            },
+            rules_html: {
+              type: "text"
             }
           }
         }
