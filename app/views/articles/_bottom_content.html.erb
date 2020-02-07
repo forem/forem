@@ -4,7 +4,7 @@
     <a href="<%= article.path %>" data-preload-image="<%= cloud_cover_url(article.main_image) %>">
       <div class="single-other-article">
         <div class="picture">
-          <%= cl_image_tag(article.user.profile_image_url,
+          <%= cl_image_tag(article.cached_user.profile_image_url,
                            type: "fetch",
                            crop: "imagga_scale",
                            width: 100,
@@ -14,12 +14,12 @@
                            fetch_format: "auto",
                            loading: "lazy",
                            sign_url: true,
-                           alt: "#{article.user.username} profile image") %>
+                           alt: "#{article.cached_user.username} profile image") %>
         </div>
         <div class="content">
           <h3><%= article.title %></h3>
           <h4>
-            <%= article.user.name %><%= render "shared/pro_checkmark", width: "12px" if article.user.pro? %> - <time datetime="<%= article.published_timestamp %>"><%= article.readable_publish_date %></time>
+            <%= article.cached_user.name %> ・ <time datetime="<%= article.published_timestamp %>"><%= article.readable_publish_date %></time>
           </h4>
         </div>
       </div>

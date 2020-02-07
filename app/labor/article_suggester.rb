@@ -31,7 +31,6 @@ class ArticleSuggester
     Article.published.where(featured: true).
       where.not(id: ids_to_ignore).
       order("hotness_score DESC").
-      includes(user: [:pro_membership]).
       offset(rand(0..offsets[1])).
       first(max)
   end
@@ -40,12 +39,11 @@ class ArticleSuggester
     Article.published.tagged_with(article.tag_list, any: true).
       where.not(id: article.id).
       order("hotness_score DESC").
-      includes(user: [:pro_membership]).
       offset(rand(0..offsets[0])).
       first(max)
   end
 
   def offsets
-    Rails.env.production? ? [10, 120] : [0, 0]
+    Rails.env.production? ? [10, 1000] : [0, 0]
   end
 end
