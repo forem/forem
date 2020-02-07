@@ -54,14 +54,6 @@ class Reaction < ApplicationRecord
       end
     end
 
-    def for_display(user)
-      includes(:reactable).
-        where(reactable_type: "Article", user: user).
-        where("created_at > ?", 5.days.ago).
-        select("distinct on (reactable_id) *").
-        take(15)
-    end
-
     def cached_any_reactions_for?(reactable, user, category)
       class_name = reactable.class.name == "ArticleDecorator" ? "Article" : reactable.class.name
       cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-#{user.updated_at&.rfc3339}-#{category}"
