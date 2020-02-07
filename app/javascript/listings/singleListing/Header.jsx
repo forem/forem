@@ -6,7 +6,7 @@ import DropdownMenu from './DropdownMenu';
 const Header = ({ listing, currentUserId, onTitleClick }) => {
   const { id, user_id: userId, category, slug, title } = listing;
   return (
-    <h3>
+    <h3 className="single-classified-listing-header">
       <a
         href={`/listings/${category}/${slug}`}
         data-no-instant

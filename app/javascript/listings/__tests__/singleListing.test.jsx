@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { deep, shallow } from 'preact-render-spy';
+import { deep } from 'preact-render-spy';
 import SingleListing from '../singleListing';
 
 const listing = {
@@ -43,7 +43,7 @@ describe('<SingleListing />', () => {
   });
 
   describe('should load the following elements', () => {
-    const context = shallow(
+    const context = deep(
       <SingleListing
         onAddTag={() => {
           return 'onAddTag';
@@ -64,7 +64,7 @@ describe('<SingleListing />', () => {
     it('for listing title', () => {
       expect(
         context
-          .find('.listing-content')
+          .find('.single-classified-listing-header')
           .at(0)
           .childAt(0)
           .childAt(0)
@@ -109,3 +109,10 @@ describe('<SingleListing />', () => {
     });
   });
 });
+
+// describe('<AuthorInfo />', () => {
+//   it('should load the author info of a single listing', () => {
+//     const tree = deep(<AuthorInfo listing={listing} />);
+//     expect(tree).toMatchSnapshot();
+//   });
+// });

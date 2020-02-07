@@ -8,7 +8,7 @@ preact-render-spy (1 nodes)
   id="single-classified-listing-22"
 >
   <div class="listing-content">
-    <h3>
+    <h3 class="single-classified-listing-header">
       <a
         href="/listings/misc/illo-iure-quos-perspiciatis-5hk7"
         data-no-instant={true}
