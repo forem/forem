@@ -257,7 +257,7 @@
       <div class="posts">
         <% @top_articles.each do |article| %>
           <a href="<%= article.path %>" class="single-post">
-            <img src="<%= ProfileImage.new(article.user).get(150) %>" alt="<%= article.user.name %> profile image">
+            <img src="<%= ProfileImage.new(article.user).get(width: 150) %>" alt="<%= article.user.name %> profile image">
             <h3>
               <%= article.title %>
             </h3>
@@ -271,7 +271,7 @@
         <% end %>
         <% @articles.each do |article| %>
           <a href="<%= article.path %>" class="single-post">
-            <img src="<%= ProfileImage.new(article.user).get(150) %>" alt="<%= article.user.name %> profile image">
+            <img src="<%= ProfileImage.new(article.user).get(width: 150) %>" alt="<%= article.user.name %> profile image">
             <h3>
               <%= article.title %>
             </h3>

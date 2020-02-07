@@ -36,7 +36,7 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
         expect(response_follower["name"]).to eq(follower.name)
         expect(response_follower["path"]).to eq(follower.path)
         expect(response_follower["username"]).to eq(follower.username)
-        expect(response_follower["profile_image"]).to eq(ProfileImage.new(follower).get(60))
+        expect(response_follower["profile_image"]).to eq(ProfileImage.new(follower).get(width: 60))
       end
     end
   end
@@ -73,7 +73,7 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
         expect(response_follower["name"]).to eq(follower.name)
         expect(response_follower["path"]).to eq(follower.path)
         expect(response_follower["username"]).to eq(follower.username)
-        expect(response_follower["profile_image"]).to eq(ProfileImage.new(follower).get(60))
+        expect(response_follower["profile_image"]).to eq(ProfileImage.new(follower).get(width: 60))
       end
     end
   end

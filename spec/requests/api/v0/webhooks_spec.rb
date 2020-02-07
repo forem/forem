@@ -94,8 +94,8 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
       expect(response_webhook_user["twitter_username"]).to eq(webhook.user.twitter_username)
       expect(response_webhook_user["github_username"]).to eq(webhook.user.github_username)
       expect(response_webhook_user["website_url"]).to eq(webhook.user.processed_website_url)
-      expect(response_webhook_user["profile_image"]).to eq(user_profile_image.get(640))
-      expect(response_webhook_user["profile_image_90"]).to eq(user_profile_image.get(90))
+      expect(response_webhook_user["profile_image"]).to eq(user_profile_image.get(width: 640))
+      expect(response_webhook_user["profile_image_90"]).to eq(user_profile_image.get(width: 90))
     end
   end
 

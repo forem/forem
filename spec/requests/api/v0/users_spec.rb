@@ -22,7 +22,7 @@ RSpec.describe "Api::V0::Users", type: :request do
       expect(response_user["name"]).to eq(user.name)
       expect(response_user["username"]).to eq(user.username)
       expect(response_user["summary"]).to eq(user.summary)
-      expect(response_user["profile_image_url"]).to eq(ProfileImage.new(user).get(90))
+      expect(response_user["profile_image_url"]).to eq(ProfileImage.new(user).get(width: 90))
       expect(response_user["following"]).to be(false)
     end
 
@@ -84,7 +84,7 @@ RSpec.describe "Api::V0::Users", type: :request do
       end
 
       expect(response_user["joined_at"]).to eq(user.created_at.strftime("%b %e, %Y"))
-      expect(response_user["profile_image"]).to eq(ProfileImage.new(user).get(320))
+      expect(response_user["profile_image"]).to eq(ProfileImage.new(user).get(width: 320))
     end
   end
 
@@ -112,7 +112,7 @@ RSpec.describe "Api::V0::Users", type: :request do
         end
 
         expect(response_user["joined_at"]).to eq(user.created_at.strftime("%b %e, %Y"))
-        expect(response_user["profile_image"]).to eq(ProfileImage.new(user).get(320))
+        expect(response_user["profile_image"]).to eq(ProfileImage.new(user).get(width: 320))
       end
     end
   end
