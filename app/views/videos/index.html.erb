@@ -8,14 +8,14 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://dev.to<%= request.path %>" />
   <meta property="og:title" content="<% title "Videos" %>" />
-  <meta property="og:image" content="<%= ApplicationConfig["MAIN_SOCIAL_IMAGE"] %>">
+  <meta property="og:image" content="<%= SiteConfig.main_social_image %>">
   <meta property="og:description" content="All videos on DEV" />
   <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
   <meta name="twitter:site" content="@ThePracticalDev">
   <meta name="twitter:title" content="<% title "Videos" %>">
   <meta name="twitter:description" content="All videos on DEV">
-  <meta name="twitter:image:src" content="<%= ApplicationConfig["MAIN_SOCIAL_IMAGE"] %>">
+  <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
   <meta name="twitter:card" content="summary_large_image">
 <% end %>
 
@@ -30,7 +30,7 @@
             <span class="video-timestamp"><%= video_article.video_duration_in_minutes %></span>
           </div>
           <p><strong><%= video_article.title %></strong></p>
-          <p class="video-username"><%= User.find(video_article.user_id).name %></p>
+          <p class="video-username"><%= video_article.user.name %></p>
       </a>
     <% end %>
   </div>

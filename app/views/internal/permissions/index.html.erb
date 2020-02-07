@@ -1,0 +1,30 @@
+<h2>Admin Roles</h2>
+
+<div class="row">
+  <div class="col-12">
+
+    <%= paginate @users %>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Profile</th>
+          <th scope="col">Roles</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @users.each do |user| %>
+          <tr>
+            <td><%= user.id %></td>
+            <td><%= link_to "@#{user.username}", user.path %></td>
+            <td><%= user.roles.pluck(:name) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <%= paginate @users %>
+
+  </div>
+</div>

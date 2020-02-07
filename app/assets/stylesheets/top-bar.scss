@@ -272,7 +272,7 @@
       bottom: 0;
       background: rgba(17, 17, 17, 0.88);
       z-index: -5;
-      top: 48px;
+      top: 46px;
       display: none;
     }
     .menu {
@@ -367,7 +367,6 @@
       transition: opacity 0.3s $ease-out-cubic, transform 0.3s $ease-out-cubic;
     }
   }
-  // border-bottom:2px solid rgb(10, 10, 10);
   .logo-link {
     display: inline-block;
     margin-left: 2%;
@@ -419,9 +418,8 @@
     margin: 0;
     width: calc(100% - 12px);
     border-radius: 3px;
-    border: 0px;
-    padding: 6px 9px;
-    font-size: 0.9em;
+    padding: 6px 9px 5px;
+    font-size: 16px;
     @include themeable(
       background, 
       theme-top-bar-search-background, 
@@ -433,6 +431,10 @@
       $black
     );
     -webkit-appearance: none;
+    border: 1px solid transparent;
+    &:focus {
+      border: 1px solid $dark-purple;
+    }
     &::placeholder {
       opacity: 0.5;
       @include themeable(

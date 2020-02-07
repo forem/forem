@@ -1,6 +1,18 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
+const CoverImage = ({ className, imageSrc, imageAlt }) => (
+  <div className={className}>
+    <img src={imageSrc} alt={imageAlt} />
+  </div>
+);
+
+CoverImage.propTypes = {
+  className: PropTypes.string.isRequired,
+  imageSrc: PropTypes.string.isRequired,
+  imageAlt: PropTypes.string.isRequired,
+};
+
 function titleArea(previewResponse, version, articleState) {
   if (version === 'help') {
     // possibly something different here in future.
@@ -12,31 +24,39 @@ function titleArea(previewResponse, version, articleState) {
   if (tagArray.length > 0 && tagArray[0].length > 0) {
     tags = tagArray.map(tag => {
       return (
-        <span>{tag.length > 0 ? <div className="tag">{tag}</div> : ''} </span>
+        <span>{tag.length > 0 ? <div className="tag">{tag}</div> : ''}</span>
       );
     });
   }
 
-  let coverImage = '';
-  if (previewResponse.cover_image && previewResponse.cover_image.length > 0) {
-    coverImage = (
-      <div className="articleform__mainimage articleform__mainimagepreview">
-        <img src={previewResponse.cover_image} alt="cover" />
-      </div>
-    );
-  } else if (articleState.mainImage) {
-    coverImage = (
-      <div className="articleform__mainimage articleform__mainimagepreview">
-        <img src={articleState.mainImage} alt="cover" />
-      </div>
-    );
+  // The v2 editor stores its cover image in articleState.mainImage, while the v1 editor
+  // stores it as previewRespose.cover_image. When previewing, we handle both by
+  // defaulting to setting the cover image to the mainImage on the article (v2),
+  //  and only using the cover image from the previewResponse if it exists (v1).
+  let coverImage = articleState.mainImage || '';
+  if (articleState.previewShowing) {
+    // In preview state, use the cover_image from previewResponse.
+    if (previewResponse.cover_image && previewResponse.cover_image.length > 0) {
+      coverImage = previewResponse.cover_image;
+    }
   }
 
   const previewTitle = previewResponse.title || articleState.title || '';
 
+  let coverImageHTML = '';
+  if (coverImage.length > 0) {
+    coverImageHTML = (
+      <CoverImage
+        className="articleform__mainimage articleform__mainimagepreview"
+        imageSrc={coverImage}
+        imageAlt="cover"
+      />
+    );
+  }
+
   return (
     <div>
-      {coverImage}
+      {coverImageHTML}
       <div className="title" style={{ width: '90%', maxWidth: '1000px' }}>
         <h1
           className={
@@ -74,6 +94,7 @@ const BodyPreview = ({ previewResponse, version, articleState }) => (
     {titleArea(previewResponse, version, articleState)}
     <div
       className="body"
+      // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{ __html: previewResponse.processed_html }}
       style={{ width: '90%' }}
     />

@@ -12,7 +12,7 @@
     instead?
   </h2>
 
-  <h2>
-    <a class="delete-link" data-no-instant rel="nofollow" data-method="delete" href="/listings/<%= @classified_listing.id %>">DELETE</a>
-  </h2>
+  <%= form_tag "/listings/#{@classified_listing.id}", method: :delete do %>
+    <button class="cta">DELETE</button>
+  <% end %>
 </div>

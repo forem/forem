@@ -19,6 +19,7 @@ RSpec.describe "ProfilePins", type: :request do
       }
       expect(ProfilePin.last.pinnable_id).to eq(article.id)
     end
+
     it "allows only five pins" do
       articles = [article, article2, article3, article4, article5, article6, article7]
       articles.each do |a|
@@ -32,7 +33,7 @@ RSpec.describe "ProfilePins", type: :request do
 
   describe "PUT /profile_pins/:id" do # delete
     it "adds pin on behalf of current user" do
-      profile_pin = create(:profile_pin, pinnable_id: article.id, profile_id: user.id)
+      profile_pin = create(:profile_pin, pinnable: article, profile: user)
       put "/profile_pins/#{profile_pin.id}"
       expect(ProfilePin.all.size).to eq(0)
     end

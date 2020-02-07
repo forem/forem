@@ -1,6 +1,6 @@
 import { h, render as preactRender } from 'preact';
 import render from 'preact-render-to-json';
-import { shallow, deep } from 'preact-render-spy';
+import { shallow } from 'preact-render-spy';
 import { JSDOM } from 'jsdom';
 import Tags from '../../../shared/components/tags';
 import algoliasearch from '../__mocks__/algoliasearch';
@@ -14,12 +14,26 @@ describe('<Tags />', () => {
   });
 
   it('renders properly', () => {
-    const tree = render(<Tags defaultValue="" onInput={jest.fn()} classPrefix={`articleform`} maxTags={4} />);
+    const tree = render(
+      <Tags
+        defaultValue=""
+        onInput={jest.fn()}
+        classPrefix="articleform"
+        maxTags={4}
+      />,
+    );
     expect(tree).toMatchSnapshot();
   });
 
   it('shows tags as you search', () => {
-    const context = shallow(<Tags defaultValue="" onInput={jest.fn()} classPrefix={`articleform`} maxTags={4} />);
+    const context = shallow(
+      <Tags
+        defaultValue=""
+        onInput={jest.fn()}
+        classPrefix="articleform"
+        maxTags={4}
+      />,
+    );
     const component = context.component();
 
     return component
@@ -29,20 +43,55 @@ describe('<Tags />', () => {
       });
   });
 
-  it('selects tag when you click on it', () => {
+  it('skips the click handler if className is articleform__tagsoptionrulesbutton', () => {
+    // eslint-disable-next-line no-underscore-dangle
     const component = preactRender(
-      <Tags defaultValue="" onInput={jest.fn()} classPrefix={`articleform`} maxTags={4} />,
+      <Tags
+        defaultValue=""
+        onInput={jest.fn()}
+        classPrefix="articleform"
+        maxTags={4}
+      />,
       document.body,
       document.body.firstElementChild,
     )._component;
 
-    component.handleTagClick({ target: { dataset: { content: 'git' } } });
+    component.handleTagClick({
+      target: { className: 'articleform__tagsoptionrulesbutton' },
+    });
+    expect(component.state).toMatchSnapshot();
+    expect(component.state.searchResults).toEqual([]);
+  });
+
+  it('selects tag when you click on it', () => {
+    // eslint-disable-next-line no-underscore-dangle
+    const component = preactRender(
+      <Tags
+        defaultValue=""
+        onInput={jest.fn()}
+        classPrefix="articleform"
+        maxTags={4}
+      />,
+      document.body,
+      document.body.firstElementChild,
+    )._component;
+
+    component.handleTagClick({
+      target: {},
+      currentTarget: { dataset: { content: 'git' } },
+    });
     expect(component.state).toMatchSnapshot();
   });
 
   it('replaces tag when editing', () => {
+    // eslint-disable-next-line no-underscore-dangle
     const component = preactRender(
-      <Tags defaultValue="" onInput={jest.fn()} classPrefix={`articleform`} maxTags={4} />,
+      <Tags
+        defaultValue=""
+        onInput={jest.fn()}
+        classPrefix="articleform"
+        maxTags={4}
+      />,
       document.body,
       document.body.firstElementChild,
     )._component;
@@ -51,13 +100,22 @@ describe('<Tags />', () => {
     input.value = 'java,javascript,linux';
     input.selectionStart = 2;
 
-    component.handleTagClick({ target: { dataset: { content: 'git' } } });
+    component.handleTagClick({
+      target: {},
+      currentTarget: { dataset: { content: 'git' } },
+    });
     expect(component.state).toMatchSnapshot();
   });
 
   it('shows tags when editing', () => {
+    // eslint-disable-next-line no-underscore-dangle
     const component = preactRender(
-      <Tags defaultValue="" onInput={jest.fn()} classPrefix={`articleform`} maxTags={4} />,
+      <Tags
+        defaultValue=""
+        onInput={jest.fn()}
+        classPrefix="articleform"
+        maxTags={4}
+      />,
       document.body,
       document.body.firstElementChild,
     )._component;
@@ -72,7 +130,14 @@ describe('<Tags />', () => {
   });
 
   it('only allows 4 tags', () => {
-    const component = shallow(<Tags defaultValue="" onInput={jest.fn()} classPrefix={`articleform`} maxTags={4} />);
+    const component = shallow(
+      <Tags
+        defaultValue=""
+        onInput={jest.fn()}
+        classPrefix="articleform"
+        maxTags={4}
+      />,
+    );
 
     component.simulate('input', {
       target: { value: 'java, javascript, linux, productivity' },

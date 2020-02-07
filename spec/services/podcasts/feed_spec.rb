@@ -5,9 +5,10 @@ vcr_option = {
   allow_playback_repeats: "true"
 }
 
-RSpec.describe Podcasts::Feed, vcr: vcr_option do
+RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
   let(:feed_url) { "http://softwareengineeringdaily.com/feed/podcast/" }
   let(:podcast) { create(:podcast, feed_url: feed_url) }
+  let(:httparty_options) { { limit: 7 } }
 
   before do
     podcast
@@ -26,7 +27,7 @@ RSpec.describe Podcasts::Feed, vcr: vcr_option do
     end
 
     it "sets reachable" do
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast").and_raise(Errno::ECONNREFUSED)
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(Errno::ECONNREFUSED)
       described_class.new(unpodcast).get_episodes(limit: 2)
       unpodcast.reload
       expect(unpodcast.reachable).to be false
@@ -34,20 +35,21 @@ RSpec.describe Podcasts::Feed, vcr: vcr_option do
     end
 
     it "schedules the update url jobs when setting as unreachable" do
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast").and_raise(Errno::ECONNREFUSED)
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(Errno::ECONNREFUSED)
       create_list(:podcast_episode, 2, podcast: unpodcast)
+
       expect do
         described_class.new(unpodcast).get_episodes(limit: 2)
-      end.to have_enqueued_job(PodcastEpisodes::UpdateMediaUrlJob).exactly(2)
+      end.to change { PodcastEpisodes::UpdateMediaUrlWorker.jobs.size }.by(2)
     end
 
     it "re-checks episodes urls when setting as unreachable" do
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast").and_raise(Errno::ECONNREFUSED)
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(Errno::ECONNREFUSED)
       episode = create(:podcast_episode, podcast: unpodcast, reachable: true, media_url: "http://podcast.example.com/ep1.mp3")
       allow(HTTParty).to receive(:head).with("http://podcast.example.com/ep1.mp3").and_raise(Errno::ECONNREFUSED)
       allow(HTTParty).to receive(:head).with("https://podcast.example.com/ep1.mp3").and_raise(Errno::ECONNREFUSED)
 
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         described_class.new(unpodcast).get_episodes
       end
 
@@ -57,11 +59,11 @@ RSpec.describe Podcasts::Feed, vcr: vcr_option do
 
     it "doesn't re-check episodes reachable if the podcast was unreachable" do
       unpodcast.update_column(:reachable, false)
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast").and_raise(Errno::ECONNREFUSED)
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(Errno::ECONNREFUSED)
       create_list(:podcast_episode, 2, podcast: unpodcast)
       expect do
         described_class.new(unpodcast).get_episodes(limit: 2)
-      end.not_to have_enqueued_job(PodcastEpisodes::UpdateMediaUrlJob)
+      end.not_to change { PodcastEpisodes::UpdateMediaUrlWorker.jobs.size }
     end
   end
 
@@ -70,7 +72,7 @@ RSpec.describe Podcasts::Feed, vcr: vcr_option do
     let(:unpodcast) { create(:podcast, feed_url: un_feed_url) }
 
     it "sets ssl_failed" do
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast").and_raise(OpenSSL::SSL::SSLError)
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(OpenSSL::SSL::SSLError)
       described_class.new(unpodcast).get_episodes(limit: 2)
       unpodcast.reload
       expect(unpodcast.reachable).to be false
@@ -86,14 +88,14 @@ RSpec.describe Podcasts::Feed, vcr: vcr_option do
 
     it "fetches podcast episodes" do
       expect do
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           described_class.new(podcast).get_episodes(limit: 2)
         end
       end.to change(PodcastEpisode, :count).by(2)
     end
 
     it "fetches correct podcasts" do
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         described_class.new(podcast).get_episodes(limit: 2)
       end
       episodes = podcast.podcast_episodes

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarkdownFixer do
+RSpec.describe MarkdownFixer, type: :labor do
   let(:sample_text) { Faker::Book.title }
 
   def front_matter(title: "", description: "")
@@ -105,6 +105,15 @@ RSpec.describe MarkdownFixer do
       expected_result = front_matter(title: %("#{sample_text}"), description: %("#{sample_text}"))
       expect(result).to eq(expected_result)
     end
+
+    context "when description is empty" do
+      it "escapes title and description" do
+        result = described_class.
+          fix_all("---\ntitle: #{sample_text}\ndescription:\ntags: \n---\n")
+        expected_result = "---\ntitle: \"#{sample_text}\"\ndescription: \"\"\ntags: \n---\n"
+        expect(result).to eq(expected_result)
+      end
+    end
   end
 
   describe "::fix_for_preview" do
@@ -126,6 +135,7 @@ RSpec.describe MarkdownFixer do
       expect(described_class.underscores_in_usernames(test_string1)).to eq(expected_result1)
       expect(described_class.underscores_in_usernames(test_string2)).to eq(expected_result2)
     end
+
     it "does not escape underscores when it is not a username" do
       test_string = "_make this cursive_"
       expected_result = "_make this cursive_"

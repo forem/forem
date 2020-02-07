@@ -1,19 +1,25 @@
 <div class="row">
-  <h3><u>Notes</u></h3>
-  <% if @user.notes.count > 0 %>
-    <% @user.notes.each do |note| %>
-      <p><em><%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= User.find(note.author_id).username if note.author_id.present? %></em> -
-        <% if !note.reason.blank? %><strong><%= note.reason %>:</strong>
+  <div class="col-12">
+    <h2>Notes</h2>
+
+    <%# notes are going to be iterated upon in the following line,
+        thus we can preload them, to avoid a second SELECT COUNT(*)
+        that would instead happen when ActiveRecord calls .each on a collection #%>
+    <% if @user.notes.load.size > 0 %>
+      <% @user.notes.each do |note| %>
+        <p><em><%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= User.find(note.author_id).username if note.author_id.present? %></em> -
+          <% if !note.reason.blank? %><strong><%= note.reason %>:</strong>
           <% end %><%= note.content %></p>
+      <% end %>
+    <% else %>
+      <p><em>No notes yet!</em></p>
     <% end %>
-  <% else %>
-    <p><em>No notes yet!</em></p>
-  <% end %>
-  <%= form_for [:internal, @user] do |f| %>
-    <%= f.label "Add new note: " %>
-    <br>
-    <%= f.text_area :new_note %>
-    <br>
-    <%= f.submit "Submit Note" %>
-  <% end %>
+    <%= form_for [:internal, @user], html: { class: "mb-2" }  do |f| %>
+      <div class="form-group">
+        <%= f.label "Add new note: ", class: "d-block" %>
+        <%= f.text_area :new_note, class: "form-control" %>
+      </div>
+      <%= f.submit "Submit Note", class: "btn btn-primary float-right" %>
+    <% end %>
+  </div>
 </div>

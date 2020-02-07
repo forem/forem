@@ -23,23 +23,23 @@
     <ul style="list-style-type:none; margin-left:0px;">
       <li>
         <%= f.radio_button :category, "rude or vulgar", required: "required" %>
-        <%= label_tag(:category_rude, "Rude or vulgar") %>
+        <%= label_tag(:feedback_message_category_rude_or_vulgar, "Rude or vulgar") %>
       </li>
       <li>
         <%= f.radio_button :category, "harassment" %>
-        <%= label_tag(:category_harassment, "Harassment or hate speech") %>
+        <%= label_tag(:feedback_message_category_harassment, "Harassment or hate speech") %>
       </li>
       <li>
         <%= f.radio_button :category, "spam" %>
-        <%= label_tag(:category_spam, "Spam or copyright issue") %>
+        <%= label_tag(:feedback_message_category_spam, "Spam or copyright issue") %>
       </li>
       <li>
         <%= f.radio_button :category, "listings" %>
-        <%= label_tag(:category_listing, "Inappropriate listings message/category") %>
+        <%= label_tag(:feedback_message_category_listings, "Inappropriate listings message/category") %>
       </li>
       <li>
         <%= f.radio_button :category, "other" %>
-        <%= label_tag(:category_other, "Other") %>
+        <%= label_tag(:feedback_message_category_other, "Other") %>
       </li>
     </ul>
     Reported URL:

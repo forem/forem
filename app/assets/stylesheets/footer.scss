@@ -2,7 +2,6 @@
 @import 'mixins';
 
 footer {
-  // background: darken($tan,1%);
   z-index: 10;
   position: relative;
   .container {
@@ -16,8 +15,8 @@ footer {
     &.centered-footer {
       width: 97%;
       max-width: 722px;
+      margin-left: auto;
       @media screen and (min-width: 950px) and (max-width: 1119px) {
-        margin-left: 310px;
         max-width: calc(100% - 377px);
       }
       @media screen and (min-width: 1120px) {
@@ -47,9 +46,12 @@ footer {
       padding: 50px 30px;
       line-height: 3em;
       margin: auto;
-      @media screen and (min-width: 1250px) {
-        margin-left: 0px;
-      }
     }
+  }
+}
+
+@media screen and (min-width: 1250px) {
+  .stories-show + footer .inner-footer-container {
+    margin-left: 0;
   }
 }

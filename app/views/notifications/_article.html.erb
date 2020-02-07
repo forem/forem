@@ -14,42 +14,37 @@
       </a>
    </div>
   <% end %>
-  <% cache "activity-profile-pic-#{json_data['user']['id']}-#{json_data['user']['profile_image_90']}" do %>
-    <a href="<%= json_data["user"]["path"] %>" class="small-pic-link-wrapper">
-      <div class="small-pic">
-        <img src="<%= json_data["user"]["profile_image_90"] %>" alt="link to <%= json_data["user"]["username"] %>'s profile">
+  <a href="<%= json_data["user"]["path"] %>" class="small-pic-link-wrapper">
+    <div class="small-pic">
+      <img src="<%= json_data["user"]["profile_image_90"] %>" alt="link to <%= json_data["user"]["username"] %>'s profile">
+    </div>
+  </a>
+  <div class="content notification-content article-content">
+    <a href="<%= json_data["user"]["path"] %>">
+      <%= json_data["user"]["name"] %>
+    </a>
+    made a new post<%= ":" unless json_data["organization"] %>
+    <% if json_data["organization"] %>
+      under <a href="<%= json_data["organization"]["path"] %>"><%= json_data["organization"]["name"] %></a>:
+    <% end %>
+
+    <div>
+      <small><%= time_ago_in_words json_data["article"]["published_at"] %> ago</small>
+    </div>
+
+    <a href="<%= json_data["article"]["path"] %>">
+      <div class="notification-new-post">
+        <div class="notification-new-post-title">
+          <%= h(json_data["article"]["title"]) %>
+        </div>
+        <div class="notification-new-post-tags">
+          <% json_data["article"]["cached_tag_list_array"].each do |tag| %>
+            #<%= tag %>
+          <% end %>
+        </div>
       </div>
     </a>
-  <% end %>
-  <div class="content notification-content article-content">
-    <% cache "activity-published-article-#{json_data['article']['id']}-#{json_data['article']['updated_at']}" do %>
-      <a href="<%= json_data["user"]["path"] %>">
-        <%= json_data["user"]["name"] %>
-      </a>
-      made a new post<%= ":" unless json_data["organization"] %>
-      <% if json_data["organization"] %>
-        under <a href="<%= json_data["organization"]["path"] %>"><%= json_data["organization"]["name"] %></a>:
-      <% end %>
-      <div>
-        <% if json_data["article"]["published_at"] %>
-          <small><%= time_ago_in_words json_data["article"]["published_at"] %> ago</small>
-        <% else %>
-          <small><%= time_ago_in_words notification.notifiable.published_at %> ago</small>
-        <% end %>
-      </div>
-      <a href="<%= json_data["article"]["path"] %>">
-        <div class="notification-new-post">
-          <div class="notification-new-post-title">
-            <%= h(json_data["article"]["title"]) %>
-          </div>
-          <div class="notification-new-post-tags">
-            <% json_data["article"]["cached_tag_list_array"].each do |tag| %>
-              #<%= tag %>
-            <% end %>
-          </div>
-        </div>
-      </a>
-    <% end %>
+
     <% cache "activity-published-article-reactions-#{@last_user_reaction}-#{json_data['article']['updated_at']}-#{json_data['article']['id']}" do %>
       <div class="comment-actions">
         <button class="reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("article"), current_user, "like") ? "reacted" : "" %>" data-reactable-id="<%= json_data["article"]["id"] %>" data-category="like" data-reactable-type="Article">

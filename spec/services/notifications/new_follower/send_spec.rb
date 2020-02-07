@@ -26,6 +26,16 @@ RSpec.describe Notifications::NewFollower::Send, type: :service do
     end
   end
 
+  context "when trying to pass follow data as a Hash with keys as strings" do
+    it "creates a notification" do
+      stringified_follow_data = follow_data(follow).stringify_keys
+
+      expect do
+        described_class.call(stringified_follow_data)
+      end.to change(Notification, :count).by(1)
+    end
+  end
+
   context "when user follows another user" do
     it "creates a notification" do
       expect do
@@ -124,14 +134,11 @@ RSpec.describe Notifications::NewFollower::Send, type: :service do
     end
 
     context "when destroyed follow and notification exists" do
-      let(:unfollow) { user.stop_following(user2) }
-
-      before do
-        create(:notification, action: "Follow", user: user2, notifiable: follow, notified_at: 1.year.ago)
-      end
-
       it "does not destroy a notification" do
+        create(:notification, action: "Follow", user: user2, notifiable: follow, notified_at: 1.year.ago)
+
         expect do
+          unfollow = user.stop_following(user2)
           described_class.call(follow_data(unfollow))
         end.not_to change(Notification, :count)
       end

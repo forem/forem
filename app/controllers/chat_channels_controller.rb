@@ -7,6 +7,9 @@ class ChatChannelsController < ApplicationController
     if params[:state] == "unopened"
       authorize ChatChannel
       render_unopened_json_response
+    elsif params[:state] == "unopened_ids"
+      authorize ChatChannel
+      render_unopened_ids_response
     elsif params[:state] == "pending"
       authorize ChatChannel
       render_pending_json_response
@@ -16,7 +19,9 @@ class ChatChannelsController < ApplicationController
     end
   end
 
-  def show; end
+  def show
+    @chat_messages = @chat_channel.messages.includes(:user).order("created_at DESC").offset(params[:message_offset]).limit(150)
+  end
 
   def create
     authorize ChatChannel
@@ -32,6 +37,7 @@ class ChatChannelsController < ApplicationController
   def open
     membership = @chat_channel.chat_channel_memberships.where(user_id: current_user.id).first
     membership.update(last_opened_at: 1.second.from_now, has_unopened_messages: false)
+    send_open_notification
     @chat_channel.index!
     membership.index!
     render json: { status: "success", channel: params[:id] }, status: :ok
@@ -44,7 +50,7 @@ class ChatChannelsController < ApplicationController
       banned_user = User.find_by(username: command[1])
       if banned_user
         banned_user.add_role :banned
-        banned_user.messages.each(&:destroy!)
+        banned_user.messages.delete_all
         Pusher.trigger(@chat_channel.pusher_channels,
                        "user-banned",
                        { userId: banned_user.id }.to_json)
@@ -108,9 +114,8 @@ class ChatChannelsController < ApplicationController
   end
 
   def render_unopened_json_response
-    @chat_channels_memberships = if current_user
-                                   current_user.
-                                     chat_channel_memberships.includes(:chat_channel).
+    @chat_channels_memberships = if session_current_user_id
+                                   ChatChannelMembership.where(user_id: session_current_user_id).includes(:chat_channel).
                                      where("has_unopened_messages = ? OR status = ?",
                                            true, "pending").
                                      where(show_global_badge_notification: true).
@@ -131,6 +136,12 @@ class ChatChannelsController < ApplicationController
                                    []
                                  end
     render "index.json"
+  end
+
+  def render_unopened_ids_response
+    @unopened_ids = ChatChannelMembership.where(user_id: session_current_user_id).includes(:chat_channel).
+      where(has_unopened_messages: true).pluck(:chat_channel_id)
+    render json: { unopened_ids: @unopened_ids }
   end
 
   def render_channels_html
@@ -170,5 +181,14 @@ class ChatChannelsController < ApplicationController
     else
       render json: { errors: @chat_channel.errors.full_messages }
     end
+  end
+
+  def send_open_notification
+    adjusted_slug = if @chat_channel.group?
+                      @chat_channel.adjusted_slug
+                    else
+                      @chat_channel.adjusted_slug(current_user)
+                    end
+    Pusher.trigger("private-message-notifications-#{session_current_user_id}", "message-opened", { channel_type: @chat_channel.channel_type, adjusted_slug: adjusted_slug }.to_json)
   end
 end

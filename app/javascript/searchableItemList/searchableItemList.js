@@ -29,7 +29,7 @@ export function onSearchBoxType(event) {
   const query = event.target.value;
   const { selectedTags, statusView } = component.state;
 
-  component.setState({ page: 0, items: [] });
+  component.setState({ page: 0 });
   component.search(query, { tags: selectedTags, statusView });
 }
 
@@ -44,6 +44,16 @@ export function toggleTag(event, tag) {
   } else {
     newTags.splice(newTags.indexOf(tag), 1);
   }
+  component.setState({ selectedTags: newTags, page: 0, items: [] });
+  component.search(query, { tags: newTags, statusView });
+}
+
+export function clearSelectedTags(event) {
+  event.preventDefault();
+
+  const component = this;
+  const { query, statusView } = component.state;
+  const newTags = [];
   component.setState({ selectedTags: newTags, page: 0, items: [] });
   component.search(query, { tags: newTags, statusView });
 }
@@ -92,12 +102,13 @@ export function search(query, { page, tags, statusView }) {
   }
   index.search(query, filters).then(result => {
     // append new items at the end
-    const allItems = [...items, ...result.hits];
+    const allItems =
+      page === undefined ? result.hits : [...items, ...result.hits];
     component.setState({
       query,
       page: newPage,
-      items: allItems,
-      totalCount: result.nbHits,
+      items: result.hits,
+      totalCount: allItems.length,
       // show the button if the number of items is lower than the number
       // of available results
       showLoadMoreButton: allItems.length < result.nbHits,

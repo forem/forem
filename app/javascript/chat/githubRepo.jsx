@@ -4,6 +4,13 @@ import marked from 'marked';
 import { getJSONContents } from './actions';
 
 export default class GithubRepo extends Component {
+  static propTypes = {
+    githubToken: PropTypes.string.isRequired,
+    resource: PropTypes.shape({
+      args: PropTypes.string,
+    }).isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -18,25 +25,28 @@ export default class GithubRepo extends Component {
   }
 
   componentDidMount() {
-    if (this.state.token) {
+    const { token } = this.state;
+    const { resource } = this.props;
+    if (token) {
       getJSONContents(
-        `https://api.github.com/repos/${this.props.resource.args}/contents?access_token=${this.state.token}`,
+        `https://api.github.com/repos/${resource.args}/contents?access_token=${token}`,
         this.loadContent,
         this.loadFailure,
       );
       getJSONContents(
-        `https://api.github.com/repos/${this.props.resource.args}/readme?access_token=${this.state.token}`,
+        `https://api.github.com/repos/${resource.args}/readme?access_token=${token}`,
         this.loadContent,
         this.loadFailure,
       );
     }
-    this.setState({ path: this.props.resource.args });
+    this.setState({ path: resource.args });
   }
 
   handleItemClick = e => {
+    const { token } = this.state;
     e.preventDefault();
     getJSONContents(
-      `${e.target.dataset.apiUrl}&access_token=${this.state.token}`,
+      `${e.target.dataset.apiUrl}&access_token=${token}`,
       this.loadContent,
       this.loadFailure,
     );
@@ -62,7 +72,6 @@ export default class GithubRepo extends Component {
       this.setState({
         files,
         directories,
-        response,
       });
     } else if (response.path === 'README.md') {
       this.setState({
@@ -71,7 +80,6 @@ export default class GithubRepo extends Component {
     } else if (response.content) {
       this.setState({
         content: window.atob(response.content),
-        response,
       });
     }
   };
@@ -81,7 +89,16 @@ export default class GithubRepo extends Component {
   };
 
   render() {
-    if (!this.state.token || this.state.token.length === 0) {
+    const {
+      token,
+      content,
+      path,
+      directories: directoriesFromState,
+      files: filesFromState,
+      readme: readmeFromState,
+      root,
+    } = this.state;
+    if (!token || token.length === 0) {
       return (
         <div className="activecontent__githubrepo">
           <div className="activecontent__githubrepoheader">
@@ -91,17 +108,15 @@ export default class GithubRepo extends Component {
         </div>
       );
     }
-    if (this.state.content) {
+    if (content) {
       return (
         <div className="activecontent__githubrepo">
-          <div className="activecontent__githubrepoheader">
-            {this.state.path}
-          </div>
-          <pre>{this.state.content}</pre>
+          <div className="activecontent__githubrepoheader">{path}</div>
+          <pre>{content}</pre>
         </div>
       );
     }
-    const directories = this.state.directories.map(item => (
+    const directories = directoriesFromState.map(item => (
       <div className="activecontent__githubrepofilerow">
         <a
           href={item.html_url}
@@ -109,11 +124,15 @@ export default class GithubRepo extends Component {
           data-path={item.path}
           onClick={this.handleItemClick}
         >
-          📁 {item.name}
+          <span role="img" aria-label="folder-emoji">
+            📁
+          </span>
+          {' '}
+          {item.name}
         </a>
       </div>
     ));
-    const files = this.state.files.map(item => (
+    const files = filesFromState.map(item => (
       <div className="activecontent__githubrepofilerow">
         <a
           href={item.html_url}
@@ -126,22 +145,24 @@ export default class GithubRepo extends Component {
       </div>
     ));
     let readme = '';
-    if (this.state.readme) {
+    if (readmeFromState) {
       readme = (
         <div
           className="activecontent__githubreporeadme"
+          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{
-            __html: marked(this.state.readme),
+            __html: marked(readmeFromState),
           }}
         />
       );
     }
-    if (this.state.root) {
+    if (root) {
       return (
         <div className="activecontent__githubrepo">
           <div className="activecontent__githubrepoheader">
+            {/* eslint-disable-next-line jsx-a11y/anchor-has-content */}
             <a href="/Users/benhalpern/dev/dev.to_core/app" />
-            {this.state.path}
+            {path}
           </div>
           <div className="activecontent__githubrepofiles activecontent__githubrepofiles--root">
             {directories}
@@ -153,7 +174,7 @@ export default class GithubRepo extends Component {
     }
     return (
       <div className="activecontent__githubrepo">
-        <div className="activecontent__githubrepoheader">{this.state.path}</div>
+        <div className="activecontent__githubrepoheader">{path}</div>
         <div className="activecontent__githubrepofiles">
           {directories}
           {files}

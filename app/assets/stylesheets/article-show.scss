@@ -147,8 +147,8 @@ article {
     width: 81%;
     font-family: $helvetica;
 
-    @media screen and (max-width: 550px) {
-      width: 88%;
+    @media screen and (max-width: 750px) {
+      width: 90%;
     }
 
     @media screen and (max-width: 430px) {
@@ -191,6 +191,7 @@ article {
       font-weight: 500;
       min-height: 40px;
       font-size: calc(2vw + 26px);
+      word-break: break-word;
 
       @media screen and (min-width: 1600px) {
         font-size: 57px;
@@ -202,7 +203,6 @@ article {
 
       &.medium {
         font-size: calc(1.85vw + 25px);
-
         @media screen and (min-width: 1600px) {
           font-size: 47px;
         }
@@ -319,7 +319,6 @@ article {
     }
 
     .tags {
-      // margin-top:-2.2vw;
       .tag {
         display: inline-block;
         border-radius: 3px;
@@ -556,6 +555,10 @@ article {
       margin: 0.3em auto;
     }
 
+    figure {
+      margin: 0;
+    }
+
     figcaption {
       font-style: italic;
       text-align: center;
@@ -569,12 +572,12 @@ article {
       display: block;
     }
 
-    p ~ figcaption {
+    p + figcaption {
       margin-top: -0.8em;
     }
 
-    @media screen and (max-width: 550px) {
-      width: 90%;
+    @media screen and (max-width: 750px) {
+      width: 92%;
     }
 
     @media screen and (max-width: 430px) {
@@ -602,11 +605,8 @@ article {
     }
 
     blockquote {
-      // border:1px solid lighten($light-medium-gray,3%);
       border-left: calc(0.2vw + 2px) solid $dark-gray;
       padding: 0.1% 6% 0.1% 4%;
-      // background:lighten($lightest-gray,3%);
-      // border-radius: 3px;
       margin: 1.6em 1vw;
       font-size: 0.92em;
       line-height: 1.4em;
@@ -772,7 +772,6 @@ article {
   .about-the-author {
     margin: auto;
     width: calc(100% - 5px);
-    // max-width:450px;
     position: relative;
     overflow: hidden;
     padding: 0px 0px 5px;
@@ -808,7 +807,6 @@ article {
         display: inline-block;
         background: no-repeat center center;
         background-size: cover;
-        // vertical-align:-9px;
         margin-right: 2px;
         margin-bottom: 12px;
       }
@@ -873,7 +871,7 @@ article {
             background: transparent;
             @include themeable(
               background,
-              theme-secondary-color,
+              theme-social-icon-color,
               transparent
             );
           }
@@ -1008,7 +1006,7 @@ article {
         left: 80px !important;
         bottom: 0px !important;
         @media screen and (min-width: 1365px) {
-          bottom: -155px !important;
+          bottom: -185px !important;
         }
         a {
           background: transparent !important;

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Payments::Customer do
+RSpec.describe Payments::Customer, type: :service do
   before do
     StripeMock.start
   end

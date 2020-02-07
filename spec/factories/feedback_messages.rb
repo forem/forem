@@ -1,8 +1,9 @@
 FactoryBot.define do
   factory :feedback_message do
-    transient do
-      reporter_id { 1 }
-    end
+    feedback_type { "abuse-reports" }
+    message { Faker::Hipster.paragraph(sentence_count: 1) }
+    category { "rude or vulgar" }
+    reported_url { "/" }
 
     after(:create) do |feedback_message, evaluator|
       feedback_message.update(reporter_id: evaluator.reporter_id)
@@ -14,6 +15,7 @@ FactoryBot.define do
     message { "this is spam" }
     category { "spam" }
     reported_url { "https://dev.to" }
+    status { "Open" }
   end
 
   trait :bug_report do

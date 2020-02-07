@@ -26,7 +26,10 @@ class LinkTag < LiquidTagBase
     path = Addressable::URI.parse(slug).path
     path.slice!(0) if path.starts_with?("/") # remove leading slash if present
     path.slice!(-1) if path.ends_with?("/") # remove trailing slash if present
-    Addressable::Template.new("{username}/{slug}").extract(path)&.symbolize_keys
+    extracted_hash = Addressable::Template.new("{username}/{slug}").extract(path)&.symbolize_keys
+    raise StandardError, "This URL is not an article link: {% link #{slug} %}" unless extracted_hash
+
+    extracted_hash
   end
 
   def find_article_by_user(hash)
@@ -45,3 +48,4 @@ class LinkTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("link", LinkTag)
+Liquid::Template.register_tag("post", LinkTag)

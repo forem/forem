@@ -1,4 +1,4 @@
-class CreatePulseSubscriptions < ActiveRecord::Migration
+class CreatePulseSubscriptions < ActiveRecord::Migration[4.2]
   def change
     create_table :pulse_subscriptions do |t|
       t.string :team_name

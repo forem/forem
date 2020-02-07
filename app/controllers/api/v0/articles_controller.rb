@@ -3,13 +3,11 @@ module Api
     class ArticlesController < ApiController
       respond_to :json
 
-      before_action :authenticate!, only: %i[create update me]
+      before_action :authenticate_with_api_key_or_current_user!, only: %i[create update]
+      before_action :authenticate!, only: :me
       before_action -> { doorkeeper_authorize! :public }, only: %w[index show], if: -> { doorkeeper_token }
 
-      before_action :set_cache_control_headers, only: [:index]
-      caches_action :show,
-                    cache_path: proc { |c| c.params.permit! },
-                    expires_in: 5.minutes
+      before_action :set_cache_control_headers, only: %i[index show]
 
       before_action :cors_preflight_check
       after_action :cors_set_access_control_headers
@@ -20,24 +18,23 @@ module Api
       def index
         @articles = ArticleApiIndexService.new(params).get
 
-        key_headers = [
-          "articles_api",
-          params[:tag],
-          params[:page],
-          params[:username],
-          params[:signature],
-          params[:state],
-        ]
-        set_surrogate_key_header key_headers.join("_")
+        set_surrogate_key_header Article.table_key, @articles.map(&:record_key)
       end
 
       def show
         @article = Article.published.includes(:user).find(params[:id]).decorate
+
+        set_surrogate_key_header @article.record_key
       end
 
       def create
         @article = Articles::Creator.call(@user, article_params)
-        render "show", status: :created, location: @article.url
+        if @article.persisted?
+          render "show", status: :created, location: @article.url
+        else
+          message = @article.errors.full_messages.join(", ")
+          render json: { error: message, status: 422 }, status: :unprocessable_entity
+        end
       end
 
       def update
@@ -78,16 +75,16 @@ module Api
           :title, :body_markdown, :published, :series,
           :main_image, :canonical_url, :description, tags: []
         ]
-        allowed_params << :organization_id if params["article"]["organization_id"] && allowed_to_change_org_id?
+        allowed_params << :organization_id if params.dig("article", "organization_id") && allowed_to_change_org_id?
         params.require(:article).permit(allowed_params)
       end
 
       def allowed_to_change_org_id?
         potential_user = @article&.user || @user
-        if @article.nil? || OrganizationMembership.exists?(user: potential_user, organization_id: params["article"]["organization_id"])
-          OrganizationMembership.exists?(user: potential_user, organization_id: params["article"]["organization_id"])
+        if @article.nil? || OrganizationMembership.exists?(user: potential_user, organization_id: params.dig("article", "organization_id"))
+          OrganizationMembership.exists?(user: potential_user, organization_id: params.dig("article", "organization_id"))
         elsif potential_user == @user
-          potential_user.org_admin?(params["article"]["organization_id"]) ||
+          potential_user.org_admin?(params.dig("article", "organization_id")) ||
             @user.any_admin?
         end
       end

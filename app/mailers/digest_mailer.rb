@@ -1,5 +1,5 @@
 class DigestMailer < ApplicationMailer
-  default from: "DEV Digest <yo@dev.to>"
+  default from: -> { "DEV Digest <#{SiteConfig.default_site_email}>" }
 
   def digest_email(user, articles)
     @user = user

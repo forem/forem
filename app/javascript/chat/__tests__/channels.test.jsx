@@ -78,6 +78,7 @@ const getChannels = (mod, chatChannels) => (
     incomingVideoCallChannelIds={[]} // no incoming calls
     activeChannelId={12345}
     chatChannels={chatChannels}
+    unopenedChannelIds={[]}
     handleSwitchChannel={fakeSwitchChannel}
     channelsLoaded
     filterQuery=""

@@ -7,7 +7,7 @@
   <% end %>
 </div>
 <h3>Danger zone</h3>
-<%= form_tag "/users/leave_org", onsubmit: "return confirm('Are you sure you want to leave this organization?');" do %>
+<%= form_tag users_leave_org_path(@organization), onsubmit: "return confirm('Are you sure you want to leave this organization?');" do %>
   <div class="field">
     <%= submit_tag "Leave Organization", class: "danger-button" %>
   </div>

@@ -1,22 +1,36 @@
 require "rails_helper"
 
 RSpec.describe PageView, type: :model do
-  let(:article) { create(:article) }
+  let(:page_view) { create(:page_view, referrer: "http://example.com/page") }
 
   it { is_expected.to belong_to(:user).optional }
   it { is_expected.to belong_to(:article) }
 
-  describe "#domain" do
-    it "is automatically set when a new page view is created" do
-      pv = create(:page_view, referrer: "http://example.com/page")
-      expect(pv.reload.domain).to eq("example.com")
+  context "when callbacks are triggered before create" do
+    describe "#domain" do
+      it "is automatically set when a new page view is created" do
+        expect(page_view.domain).to eq("example.com")
+      end
+    end
+
+    describe "#path" do
+      it "is automatically set when a new page view is created" do
+        expect(page_view.path).to eq("/page")
+      end
     end
   end
 
-  describe "#path" do
-    it "is automatically set when a new page view is created" do
-      pv = create(:page_view, referrer: "http://example.com/page")
-      expect(pv.reload.path).to eq("/page")
+  describe "indexing" do
+    it "indexes updated records" do
+      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["PageView", page_view.id]) do
+        page_view.update(path: "/")
+      end
+    end
+
+    it "removes deleted records" do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class.algolia_index_name, page_view.id]) do
+        page_view.destroy
+      end
     end
   end
 end

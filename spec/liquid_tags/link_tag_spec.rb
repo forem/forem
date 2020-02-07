@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe LinkTag, type: :liquid_template do
+RSpec.describe LinkTag, type: :liquid_tag do
   let(:user) { create(:user, username: "username45", name: "Chase Danger", profile_image: nil) }
   let(:article) do
     create(:article, user_id: user.id, title: "test this please", tags: "tag1 tag2 tag3")
@@ -18,6 +18,11 @@ RSpec.describe LinkTag, type: :liquid_template do
   def generate_new_liquid(slug)
     Liquid::Template.register_tag("link", LinkTag)
     Liquid::Template.parse("{% link #{slug} %}")
+  end
+
+  def generate_new_liquid_alias(slug)
+    Liquid::Template.register_tag("post", described_class)
+    Liquid::Template.parse("{% post #{slug} %}")
   end
 
   def correct_link_html(article)
@@ -40,6 +45,11 @@ RSpec.describe LinkTag, type: :liquid_template do
         </a>
       </div>
     HTML
+  end
+
+  it 'can use "post" as an alias' do
+    liquid = generate_new_liquid_alias("/#{user.username}/#{article.slug}")
+    expect(liquid.render).to eq(correct_link_html(article))
   end
 
   it "raises an error when invalid" do

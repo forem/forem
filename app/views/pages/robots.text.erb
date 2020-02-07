@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /users/auth/twitter*
+Disallow: /users/auth/github*
+Disallow: /report-abuse?url=*
+
+Sitemap: https://<%= ApplicationConfig["AWS_BUCKET_NAME"] %>.s3.amazonaws.com/sitemaps/sitemap.xml.gz

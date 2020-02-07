@@ -4,26 +4,23 @@ FactoryBot.define do
   sequence(:twitter_username) { |n| "twitter#{n}" }
   sequence(:github_username) { |n| "github#{n}" }
 
-  image = Rack::Test::UploadedFile.new(
-    Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg"),
-    "image/jpeg",
-  )
+  image_path = Rails.root.join("spec/support/fixtures/images/image1.jpeg")
 
   factory :user do
-    name               { Faker::Name.name }
-    email              { generate :email }
-    username           { generate :username }
-    profile_image      { image }
-    twitter_username   { generate :twitter_username }
-    github_username    { generate :github_username }
-    summary            { Faker::Lorem.paragraph[0..rand(190)] }
-    website_url        { Faker::Internet.url }
-    confirmed_at       { Time.current }
-    saw_onboarding { true }
-    checked_code_of_conduct { true }
+    name                         { Faker::Name.name }
+    email                        { generate :email }
+    username                     { generate :username }
+    profile_image                { Rack::Test::UploadedFile.new(image_path, "image/jpeg") }
+    twitter_username             { generate :twitter_username }
+    github_username              { generate :github_username }
+    summary                      { Faker::Lorem.paragraph[0..rand(190)] }
+    website_url                  { Faker::Internet.url }
+    confirmed_at                 { Time.current }
+    saw_onboarding               { true }
+    checked_code_of_conduct      { true }
     checked_terms_and_conditions { true }
-    signup_cta_variant { "navbar_basic" }
-    email_digest_periodic { false }
+    signup_cta_variant           { "navbar_basic" }
+    email_digest_periodic        { false }
 
     after(:create) do |user|
       create(:identity, user_id: user.id)
@@ -39,6 +36,14 @@ FactoryBot.define do
 
     trait :admin do
       after(:build) { |user| user.add_role(:admin) }
+    end
+
+    trait :single_resource_admin do
+      transient do
+        resource { nil }
+      end
+
+      after(:build) { |user, options| user.add_role(:single_resource_admin, options.resource) }
     end
 
     trait :trusted do
@@ -89,7 +94,7 @@ FactoryBot.define do
       after(:create) do |user|
         other_user = create(:user)
         article = create(:article, user_id: other_user.id)
-        create(:comment, user_id: user.id, commentable_id: article.id)
+        create(:comment, user_id: user.id, commentable: article)
         user.update(comments_count: 1)
       end
     end
@@ -97,7 +102,7 @@ FactoryBot.define do
     trait :with_article_and_comment do
       after(:create) do |user|
         article = create(:article, user_id: user.id)
-        create(:comment, user_id: user.id, commentable_id: article.id)
+        create(:comment, user_id: user.id, commentable: article)
         user.update(articles_count: 1, comments_count: 1)
       end
     end

@@ -8,39 +8,69 @@ exports[`<Message /> should render and test snapshot 1`] = `
     class="chatmessage__profilepic"
   >
     <a
-      data-content="users/undefined"
+      data-content="sidecar-user"
       href="/asdf"
+      rel="noopener noreferrer"
       target="_blank"
     >
       <img
         alt="asdf profile"
         class="chatmessagebody__profileimage"
-        data-content="users/undefined"
+        data-content="sidecar-user"
+        role="presentation"
         src=""
       />
     </a>
   </div>
   <div
     class="chatmessage__body"
+    role="presentation"
   >
-    <span
-      class="chatmessagebody__username"
-      style={
-        Object {
-          "color": "#00FFFF",
-        }
-      }
+    <div
+      class="message__info__actions"
     >
-      <a
-        class="chatmessagebody__username--link"
-        data-content="users/undefined"
-        href="/asdf"
-        target="_blank"
+      <div
+        class="message__info"
       >
-        asdf
-      </a>
-    </span>
-    <span />
+        <span
+          class="chatmessagebody__username not-dark-theme-text-compatible"
+          style={
+            Object {
+              "color": "#00FFFF",
+            }
+          }
+        >
+          <a
+            class="chatmessagebody__username--link"
+            data-content="sidecar-user"
+            href="/asdf"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            asdf
+          </a>
+        </span>
+          
+      </div>
+      <div
+        class="message__actions"
+      >
+        <span
+          onKeyUp={[Function]}
+          role="button"
+          tabIndex="0"
+        >
+          Delete
+        </span>
+        <span
+          onKeyUp={[Function]}
+          role="button"
+          tabIndex="0"
+        >
+          Edit
+        </span>
+      </div>
+    </div>
     <div
       class="chatmessage__bodytext"
     >

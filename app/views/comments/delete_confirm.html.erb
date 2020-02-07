@@ -1,5 +1,3 @@
-<%= javascript_include_tag "application" %>
-
 <div class="container delete-confirm">
 
   <h4><%= truncate(strip_tags(@comment.processed_html.html_safe), length: 80) %></h4>
@@ -7,8 +5,8 @@
   <h2>You cannot undo this action, perhaps you just want to
     <a data-no-instant href="<%= @comment.path %>/edit">EDIT</a> instead?</h2>
 
-  <h2>
-    <a class="delete-link" data-no-instant rel="nofollow" data-method="delete" href="/comments/<%= @comment.id %>">DELETE</a>
-  </h2>
+  <%= form_tag "/comments/#{@comment.id}", method: :delete do %>
+    <button class="cta">DELETE</button>
+  <% end %>
 
 </div>

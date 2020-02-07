@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Articles::Creator do
+RSpec.describe Articles::Creator, type: :service do
   let(:user) { create(:user) }
 
   context "when valid attributes" do
@@ -20,9 +20,9 @@ RSpec.describe Articles::Creator do
 
     it "schedules a job" do
       valid_attributes[:published] = true
-      expect do
+      sidekiq_assert_enqueued_with(job: Notifications::NotifiableActionWorker) do
         described_class.call(user, valid_attributes)
-      end.to have_enqueued_job(Notifications::NotifiableActionJob).once
+      end
     end
 
     it "creates a notification subscription" do

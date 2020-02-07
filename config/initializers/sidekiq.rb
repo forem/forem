@@ -1,0 +1,27 @@
+# Monkey patch `stringify_keys` to make rack 2.1.1 compatible with Sidekiq UI Admin panel.
+# Should be removed when 2.1.2 is released.
+# https://github.com/rack/rack/pull/1428
+module Rack
+  module Session
+    module Abstract
+      class SessionHash
+        private
+
+        def stringify_keys(other)
+          other.to_hash.transform_keys(&:to_s)
+        end
+      end
+    end
+  end
+end
+
+Sidekiq.configure_server do |config|
+  sidekiq_url = ApplicationConfig["REDIS_SIDEKIQ_URL"] || ApplicationConfig["REDIS_URL"]
+  # On Heroku this configuration is overridden and Sidekiq will point at the redis
+  # instance given by the ENV variable REDIS_PROVIDER
+  config.redis = { url: sidekiq_url }
+
+  config.server_middleware do |chain|
+    chain.add Sidekiq::HoneycombMiddleware
+  end
+end

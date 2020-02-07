@@ -216,7 +216,9 @@ RSpec.describe "NotificationsIndex", type: :request do
       before do
         user.add_role :trusted
         sign_in user
-        Notification.send_moderation_notification_without_delay(comment)
+        sidekiq_perform_enqueued_jobs do
+          Notification.send_moderation_notification(comment)
+        end
         get "/notifications"
       end
 
@@ -240,7 +242,9 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       before do
         sign_in user
-        Notification.send_moderation_notification_without_delay(comment)
+        sidekiq_perform_enqueued_jobs do
+          Notification.send_moderation_notification(comment)
+        end
         get "/notifications"
       end
 
@@ -266,7 +270,9 @@ RSpec.describe "NotificationsIndex", type: :request do
         user.add_role :trusted
         user.update(mod_roundrobin_notifications: false)
         sign_in user
-        Notification.send_moderation_notification_without_delay(comment)
+        perform_enqueued_jobs do
+          Notification.send_moderation_notification(comment)
+        end
         get "/notifications"
       end
 
@@ -290,7 +296,9 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "renders the welcome notification" do
         broadcast = create(:broadcast, :onboarding)
-        Notification.send_welcome_notification_without_delay(user.id)
+        sidekiq_perform_enqueued_jobs do
+          Notification.send_welcome_notification(user.id)
+        end
         get "/notifications"
         expect(response.body).to include broadcast.processed_html
       end
@@ -301,7 +309,7 @@ RSpec.describe "NotificationsIndex", type: :request do
         sign_in user
         badge = create(:badge)
         badge_achievement = create(:badge_achievement, user: user, badge: badge)
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           Notification.send_new_badge_achievement_notification(badge_achievement)
         end
         get "/notifications"
@@ -336,11 +344,12 @@ RSpec.describe "NotificationsIndex", type: :request do
           body_markdown: "@#{user.username}",
         )
       end
+      let(:mention) { create(:mention, mentionable: comment, user: user) }
 
       before do
-        comment
-        Mention.create_all_without_delay(comment)
-        Notification.send_mention_notification_without_delay(Mention.first)
+        sidekiq_perform_enqueued_jobs do
+          Notification.send_mention_notification(mention)
+        end
         sign_in user
         get "/notifications"
       end
@@ -360,7 +369,9 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       before do
         user2.follow(user)
-        Notification.send_to_followers_without_delay(article, "Published")
+        sidekiq_perform_enqueued_jobs do
+          Notification.send_to_followers(article, "Published")
+        end
         sign_in user2
         get "/notifications"
       end
@@ -399,13 +410,22 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       before do
         user2.follow(user)
-        Notification.send_to_followers_without_delay(article, "Published")
+        sidekiq_perform_enqueued_jobs do
+          Notification.send_to_followers(article, "Published")
+        end
         sign_in admin
       end
 
       it "can view other people's notifications" do
         get "/notifications?username=#{user2.username}"
         expect(response.body).to include "made a new post:"
+      end
+    end
+
+    context "when filter is unknown" do
+      it "does not raise an error" do
+        sign_in user
+        expect { get "/notifications/feed" }.not_to raise_error
       end
     end
   end

@@ -85,7 +85,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
 
   it "creates a notification job if published" do
     article.update_column(:published, false)
-    assert_enqueued_with(job: Notifications::NotifiableActionJob) do
+    sidekiq_assert_enqueued_with(job: Notifications::NotifiableActionWorker) do
       put "/articles/#{article.id}", params: {
         article: { published: true }
       }
@@ -94,7 +94,11 @@ RSpec.describe "ArticlesUpdate", type: :request do
 
   it "removes all published notifications if unpublished" do
     user2.follow(user)
-    Notification.send_to_followers_without_delay(article, "Published")
+    sidekiq_perform_enqueued_jobs do
+      Notification.send_to_followers(article, "Published")
+    end
+    expect(article.notifications.size).to eq 1
+
     put "/articles/#{article.id}", params: {
       article: { body_markdown: article.body_markdown.gsub("published: true", "published: false") }
     }
@@ -111,10 +115,10 @@ RSpec.describe "ArticlesUpdate", type: :request do
 
   it "schedules a dispatching event job" do
     create(:webhook_endpoint, events: %w[article_created article_updated], user: user)
-    expect do
+    sidekiq_assert_enqueued_jobs(1, only: Webhook::DispatchEventWorker) do
       put "/articles/#{article.id}", params: {
         article: { title: "new_title", body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
       }
-    end.to have_enqueued_job(Webhook::DispatchEventJob).once
+    end
   end
 end

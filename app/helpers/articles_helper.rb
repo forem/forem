@@ -10,6 +10,8 @@ module ArticlesHelper
   end
 
   def has_vid?(article)
+    return if article.processed_html.blank?
+
     article.processed_html.include?("youtube.com/embed/") || article.processed_html.include?("player.vimeo.com") || article.comments_blob.include?("youtube")
   end
 
@@ -21,13 +23,13 @@ module ArticlesHelper
     end
   end
 
-  def image_tag_or_inline_svg(service_name)
+  def image_tag_or_inline_svg_tag(service_name, width: nil, height: nil)
     name = "#{service_name}-logo.svg"
 
     if internal_navigation?
-      image_tag(name, class: "icon-img", alt: "#{service_name} logo")
+      image_tag(name, class: "icon-img", alt: "#{service_name} logo", width: width, height: height)
     else
-      inline_svg(name, class: "icon-img", aria: true, title: "#{service_name} logo")
+      inline_svg_tag(name, class: "icon-img", aria: true, title: "#{service_name} logo", width: width, height: height)
     end
   end
 
@@ -49,7 +51,7 @@ module ArticlesHelper
   def get_host_without_www(url)
     url = "http://#{url}" if URI.parse(url).scheme.nil?
     host = URI.parse(url).host.downcase
-    host.gsub!("medium.com", "Medium") if host.include?("medium.com")
-    host.start_with?("www.") ? host[4..-1] : host
+    host.gsub!("medium.com", "Medium")
+    host.delete_prefix("www.")
   end
 end

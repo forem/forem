@@ -55,11 +55,7 @@ RSpec.describe ProMemberships::Biller, type: :service do
     it "enqueues a job to bust the users caches" do
       ActiveJob::Base.queue_adapter.enqueued_jobs.clear # make sure it hasn't been previously queued
       Timecop.travel(format_date(pro_membership.expires_at)) do
-        assert_enqueued_with(
-          job: Users::BustCacheJob,
-          args: [user.id],
-          queue: "users_bust_cache",
-        ) do
+        sidekiq_assert_enqueued_with(job: Users::BustCacheWorker, args: [user.id]) do
           described_class.call
         end
       end
@@ -67,10 +63,10 @@ RSpec.describe ProMemberships::Biller, type: :service do
 
     it "enqueues a job to bust the users articles caches" do
       Timecop.travel(format_date(pro_membership.expires_at)) do
-        assert_enqueued_with(
-          job: Users::ResaveArticlesJob,
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
           args: [user.id],
-          queue: "users_resave_articles",
+          queue: "medium_priority",
         ) do
           described_class.call
         end
@@ -100,7 +96,7 @@ RSpec.describe ProMemberships::Biller, type: :service do
       it "notifies the admins about the error" do
         Timecop.travel(format_date(pro_membership.expires_at)) do
           allow(Credits::Buyer).to receive(:call).and_raise(StandardError)
-          assert_enqueued_with(job: SlackBotPingJob) do
+          sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
             described_class.call
           end
         end
@@ -133,7 +129,7 @@ RSpec.describe ProMemberships::Biller, type: :service do
 
     it "notifies the admins about the expiration" do
       Timecop.travel(format_date(pro_membership.expires_at)) do
-        assert_enqueued_with(job: SlackBotPingJob) do
+        sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
           described_class.call
         end
       end
@@ -142,11 +138,7 @@ RSpec.describe ProMemberships::Biller, type: :service do
     it "enqueues a job to bust the users caches" do
       ActiveJob::Base.queue_adapter.enqueued_jobs.clear # make sure it hasn't been previously queued
       Timecop.travel(format_date(pro_membership.expires_at)) do
-        assert_enqueued_with(
-          job: Users::BustCacheJob,
-          args: [user.id],
-          queue: "users_bust_cache",
-        ) do
+        sidekiq_assert_enqueued_with(job: Users::BustCacheWorker, args: [user.id]) do
           described_class.call
         end
       end
@@ -154,10 +146,10 @@ RSpec.describe ProMemberships::Biller, type: :service do
 
     it "enqueues a job to bust the users articles caches" do
       Timecop.travel(format_date(pro_membership.expires_at)) do
-        assert_enqueued_with(
-          job: Users::ResaveArticlesJob,
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
           args: [user.id],
-          queue: "users_resave_articles",
+          queue: "medium_priority",
         ) do
           described_class.call
         end
@@ -224,11 +216,7 @@ RSpec.describe ProMemberships::Biller, type: :service do
       it "enqueues a job to bust the users caches" do
         ActiveJob::Base.queue_adapter.enqueued_jobs.clear # make sure it hasn't been previously queued
         Timecop.travel(format_date(pro_membership.expires_at)) do
-          assert_enqueued_with(
-            job: Users::BustCacheJob,
-            args: [user.id],
-            queue: "users_bust_cache",
-          ) do
+          sidekiq_assert_enqueued_with(job: Users::BustCacheWorker, args: [user.id]) do
             described_class.call
           end
         end
@@ -236,10 +224,10 @@ RSpec.describe ProMemberships::Biller, type: :service do
 
       it "enqueues a job to bust the users articles caches" do
         Timecop.travel(format_date(pro_membership.expires_at)) do
-          assert_enqueued_with(
-            job: Users::ResaveArticlesJob,
+          sidekiq_assert_enqueued_with(
+            job: Users::ResaveArticlesWorker,
             args: [user.id],
-            queue: "users_resave_articles",
+            queue: "medium_priority",
           ) do
             described_class.call
           end
@@ -251,7 +239,7 @@ RSpec.describe ProMemberships::Biller, type: :service do
       it "notifies the admins about the problem" do
         allow(user).to receive(:stripe_id_code).and_return(nil)
         Timecop.travel(format_date(pro_membership.expires_at)) do
-          assert_enqueued_with(job: SlackBotPingJob) do
+          sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
             described_class.call
           end
         end

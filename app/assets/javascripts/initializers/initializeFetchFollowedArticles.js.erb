@@ -137,6 +137,8 @@ function algoliaFollowedArticles(){
 
     if (user && user.followed_tag_names && user.followed_tag_names.length > 0) {
       insertInitialArticles(user)
+      const checkBlockedContentEvent = new CustomEvent('checkBlockedContent')
+      window.dispatchEvent(checkBlockedContentEvent)
       var followedUsersArray = [];
       if (user.followed_user_ids){
         followedUsersArray = user.followed_user_ids.map(function(id){return 'user_'+id});
@@ -189,7 +191,8 @@ function insertPodcasts() {
       data.forEach(function(ep) {
         if (user.followed_podcast_ids.indexOf(ep.podcast.id) > -1) {
           episodeCount += 1;
-          podcastHTML = podcastHTML + '<a class="individual-podcast-link" href="/' + ep.podcast.slug + '/' + ep.slug + '"><strong>' + ep.podcast.title + '</strong> ' + ep.title + '</a>'
+          podcastHTML = podcastHTML + '<a class="individual-podcast-link" href="/' + ep.podcast.slug + '/' + ep.slug + '">\
+            <img src="' + ep.podcast.image_90 + '"/><div class="individual-podcast-link-details"><strong>' + ep.title + '</strong> ' + ep.podcast.title + '</div></a>'
         }
       });
       if (episodeCount > 0) {

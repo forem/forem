@@ -31,7 +31,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
           class="articleform__tagswrapper"
         >
           <input
-            autoComplete="on"
+            autoComplete="off"
             class="articleform__tags"
             id="tag-input"
             onBlur={[Function]}

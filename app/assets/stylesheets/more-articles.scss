@@ -59,6 +59,7 @@
       padding: 0px;
       font-size: 1.4em;
       font-weight: 500;
+      word-break: break-word;
     }
     h4 {
       margin: 0;
@@ -183,7 +184,7 @@
         }
       }
     }
-    .bookmark-engage {
+    .engage-button {
       font-family: $helvetica-condensed;
       background: darken($purple, 26%);
       color: white;

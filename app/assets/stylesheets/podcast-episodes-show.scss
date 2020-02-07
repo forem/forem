@@ -65,8 +65,7 @@
         @media screen and ( min-width: 680px ){
           font-size:40px;
           line-height:44px;
-
-          margin-bottom:48px;
+          margin-bottom:28px;
         }
         @media screen and ( min-width: 800px ){
           font-size:44px;
@@ -82,8 +81,7 @@
           @media screen and ( min-width: 680px ){
             font-size:30px;
             line-height:33px;
-
-            margin-bottom:40px;
+            margin-bottom:20px;
           }
           @media screen and ( min-width: 800px ){
             font-size:40px;
@@ -104,13 +102,17 @@
       left:0;
       right:0;
       color:$black;
-      padding:1px 0px 2px;
+      padding:2px 0px 3px;
       border-radius:2px;
       transition: opacity 400ms ease;
       background:white;
-      width:66px;
-      font-size:13px;
+      width:130px;
+      font-size:16px;
       font-weight:bold;
+      display: none;
+      &.showing {
+        display: block;
+      }
     }
 
     .playing{
@@ -127,11 +129,7 @@
         }
       }
     }
-    // .loading{
-    //   .loading-message{
-    //     opacity:1;
-    //   }
-    // }
+
     .record{
       position:relative;
       cursor:pointer;
@@ -162,12 +160,12 @@
       }
       .butt{
         position:absolute;
-        width: 160px;
-        height: 160px;
+        width: 120px;
+        height: 120px;
         position: absolute;
         top: 50%;
         left: 50%;
-        margin: -80px 0 0 -80px;
+        margin: -60px 0 0 -60px;
         z-index:18;
       }
       .pause-butt{

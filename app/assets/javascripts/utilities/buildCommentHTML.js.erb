@@ -34,7 +34,7 @@ function buildCommentHTML(comment) {
           '+detailsStartHTML+'\
           <div class="comment-hash-marker" id="'+comment.id_code+'"></div>\
           <div id="comment-node-'+comment.id+'" class="single-comment-node '+depthClass+' comment-deep-'+comment.depth+'" "\
-          data-comment-id="'+comment.id+'" data-comment-author-id="'+comment.user.id+'" data-current-user-comment="'+comment.newly_created+'">\
+          data-comment-id="'+comment.id+'" data-comment-author-id="'+comment.user.id+'" data-current-user-comment="'+comment.newly_created+'" data-content-user-id="'+comment.user.id+'">\
           <div class="inner-comment '+customClass+'">\
             <div class="details">\
               <a href="/'+comment.user.username+'">\

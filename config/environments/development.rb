@@ -1,10 +1,9 @@
-def yarn_integrity_enabled?
-  ENV.fetch("YARN_INTEGRITY_ENABLED", "true") == "true"
-end
-
 Rails.application.configure do
   # Verifies that versions and hashed value of the package contents in the project's package.json
-  config.webpacker.check_yarn_integrity = yarn_integrity_enabled?
+  # As the integrity check is currently broken under Docker with webpacker,
+  # we can't enable this flag by default
+  # see <https://github.com/thepracticaldev/dev.to/pull/296#discussion_r210635685>
+  config.webpacker.check_yarn_integrity = ENV.fetch("YARN_INTEGRITY_ENABLED", "true") == "true"
 
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -20,7 +19,7 @@ Rails.application.configure do
   config.consider_all_requests_local = true
 
   # Enable/disable caching. By default caching is disabled.
-  if Rails.root.join("tmp", "caching-dev.txt").exist?
+  if Rails.root.join("tmp/caching-dev.txt").exist?
     config.action_controller.perform_caching = true
 
     config.cache_store = :memory_store
@@ -85,7 +84,7 @@ Rails.application.configure do
     domain: "localhost:3000"
   }
 
-  config.action_mailer.preview_path = Rails.root.join("spec", "mailers", "previews")
+  config.action_mailer.preview_path = Rails.root.join("spec/mailers/previews")
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
@@ -101,10 +100,17 @@ Rails.application.configure do
   logger.level = config.log_level
   config.logger = ActiveSupport::TaggedLogging.new(logger)
 
+  # See <https://github.com/flyerhzm/bullet#configuration> for other config options
   config.after_initialize do
     Bullet.enable = true
+
+    Bullet.add_footer = true
     Bullet.console = true
     Bullet.rails_logger = true
+
+    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
+    # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
+    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
   end
 end
 

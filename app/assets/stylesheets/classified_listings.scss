@@ -298,6 +298,7 @@
   .classifieds-load-more-button {
     text-align: center;
     button {
+      @include themeable(color, theme-color, $black);
       background: transparent;
       @include themeable(border, theme-border, 1px solid $light-medium-gray);
       font-size: 17px;
@@ -335,10 +336,17 @@
 .listingform__tagoptionrow {
   padding: 10px;
   cursor: pointer;
+  position: relative;
   &:hover {
     background: lighten($green, 27%);
     color: $black;
   }
+}
+
+.listingform__tagsoptionsbottomrow,
+.listingform__tagsoptionrulesbutton,
+.listingform__tagrules--inactive {
+  display: none; //not yet fully functional or relevant
 }
 
 .listingform__tagoptionrow--active {
@@ -390,7 +398,6 @@
     }
   }
   .single-classified-listing-container__inner::-webkit-scrollbar {
-    // width: 0 !important;
     display: none;
   }
 }
@@ -542,9 +549,14 @@
   border-radius: 100px;
   font-weight: bold;
   margin: 40px auto 10px;
-  @include themeable(color, theme-color, $white);
+  @include themeable(color, theme-color, $black);
   border: 3px solid white;
-  @include themeable(border-color, theme-color, $white);
+  @include themeable(border-color, theme-color, $black);
+  @include themeable(
+    background-color,
+    theme-container-accent-background,
+    $white
+  );
 }
 
 form.listings-contact-via-connect {

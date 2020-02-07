@@ -1,0 +1,249 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<bodyPreview version="v1" /> renders properly with an image 1`] = `
+<div
+  class="container"
+  style={
+    Object {
+      "border": "0px",
+      "boxShadow": "0px 0px 0px #fff",
+      "marginTop": "10px",
+      "minHeight": "508px",
+      "overflow": "hidden",
+    }
+  }
+>
+  <div>
+    <div
+      class="articleform__mainimage articleform__mainimagepreview"
+    >
+      <img
+        alt="cover"
+        src="http://lorempixel.com/400/200/"
+      />
+    </div>
+    <div
+      class="title"
+      style={
+        Object {
+          "maxWidth": "1000px",
+          "width": "90%",
+        }
+      }
+    >
+      <h1>
+        My Awesome Post
+      </h1>
+      <h3>
+        <img
+          alt="profile"
+          class="profile-pic"
+          src="/uploads/user/profile_image/41/0841dbe2-208c-4daa-b498-b2f01f3d37b2.png"
+        />
+         
+        <span>
+          Guy Fieri
+        </span>
+      </h3>
+      <div
+        class="tags"
+      />
+    </div>
+  </div>
+  <div
+    class="body"
+    dangerouslySetInnerHTML={
+      Object {
+        "__html": "<p>My Awesome Post! Not very long, but still very awesome.</p>↵↵",
+      }
+    }
+    style={
+      Object {
+        "width": "90%",
+      }
+    }
+  />
+</div>
+`;
+
+exports[`<bodyPreview version="v1" /> renders properly without an image 1`] = `
+<div
+  class="container"
+  style={
+    Object {
+      "border": "0px",
+      "boxShadow": "0px 0px 0px #fff",
+      "marginTop": "10px",
+      "minHeight": "508px",
+      "overflow": "hidden",
+    }
+  }
+>
+  <div>
+    <div
+      class="title"
+      style={
+        Object {
+          "maxWidth": "1000px",
+          "width": "90%",
+        }
+      }
+    >
+      <h1>
+        My Awesome Post
+      </h1>
+      <h3>
+        <img
+          alt="profile"
+          class="profile-pic"
+          src="/uploads/user/profile_image/41/0841dbe2-208c-4daa-b498-b2f01f3d37b2.png"
+        />
+         
+        <span>
+          Guy Fieri
+        </span>
+      </h3>
+      <div
+        class="tags"
+      />
+    </div>
+  </div>
+  <div
+    class="body"
+    dangerouslySetInnerHTML={
+      Object {
+        "__html": "<p>My Awesome Post! Not very long, but still very awesome.</p>↵↵",
+      }
+    }
+    style={
+      Object {
+        "width": "90%",
+      }
+    }
+  />
+</div>
+`;
+
+exports[`<bodyPreview version="v2" /> renders properly with an image 1`] = `
+<div
+  class="container"
+  style={
+    Object {
+      "border": "0px",
+      "boxShadow": "0px 0px 0px #fff",
+      "marginTop": "10px",
+      "minHeight": "508px",
+      "overflow": "hidden",
+    }
+  }
+>
+  <div>
+    <div
+      class="articleform__mainimage articleform__mainimagepreview"
+    >
+      <img
+        alt="cover"
+        src="http://lorempixel.com/400/200/"
+      />
+    </div>
+    <div
+      class="title"
+      style={
+        Object {
+          "maxWidth": "1000px",
+          "width": "90%",
+        }
+      }
+    >
+      <h1>
+        My Awesome Post
+      </h1>
+      <h3>
+        <img
+          alt="profile"
+          class="profile-pic"
+          src="/uploads/user/profile_image/41/0841dbe2-208c-4daa-b498-b2f01f3d37b2.png"
+        />
+         
+        <span>
+          Guy Fieri
+        </span>
+      </h3>
+      <div
+        class="tags"
+      />
+    </div>
+  </div>
+  <div
+    class="body"
+    dangerouslySetInnerHTML={
+      Object {
+        "__html": "<p>My Awesome Post! Not very long, but still very awesome.</p>↵↵",
+      }
+    }
+    style={
+      Object {
+        "width": "90%",
+      }
+    }
+  />
+</div>
+`;
+
+exports[`<bodyPreview version="v2" /> renders properly without an image 1`] = `
+<div
+  class="container"
+  style={
+    Object {
+      "border": "0px",
+      "boxShadow": "0px 0px 0px #fff",
+      "marginTop": "10px",
+      "minHeight": "508px",
+      "overflow": "hidden",
+    }
+  }
+>
+  <div>
+    <div
+      class="title"
+      style={
+        Object {
+          "maxWidth": "1000px",
+          "width": "90%",
+        }
+      }
+    >
+      <h1>
+        My Awesome Post
+      </h1>
+      <h3>
+        <img
+          alt="profile"
+          class="profile-pic"
+          src="/uploads/user/profile_image/41/0841dbe2-208c-4daa-b498-b2f01f3d37b2.png"
+        />
+         
+        <span>
+          Guy Fieri
+        </span>
+      </h3>
+      <div
+        class="tags"
+      />
+    </div>
+  </div>
+  <div
+    class="body"
+    dangerouslySetInnerHTML={
+      Object {
+        "__html": "<p>My Awesome Post! Not very long, but still very awesome.</p>↵↵",
+      }
+    }
+    style={
+      Object {
+        "width": "90%",
+      }
+    }
+  />
+</div>
+`;

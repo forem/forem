@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarkdownParser do
+RSpec.describe MarkdownParser, type: :labor do
   let(:random_word) { Faker::Lorem.word }
   let(:basic_parsed_markdown) { described_class.new(random_word) }
 
@@ -62,6 +62,59 @@ RSpec.describe MarkdownParser do
   it "renders double backtick code spans properly" do
     code_span = "``#{random_word}``"
     expect(generate_and_parse_markdown(code_span)).to include random_word
+  end
+
+  it "wraps figcaptions with figures" do
+    code_span = "<p>Statement</p>\n<figcaption>A fig</figcaption>"
+    test = generate_and_parse_markdown("<p>case: </p>" + code_span)
+    expect(test).to eq("<p>case: </p>\n<figure>" + code_span + "</figure>\n\n\n\n")
+  end
+
+  it "does not wrap figcaptions already in figures" do
+    code_span = "<figure><p>Statement</p>\n<figcaption>A fig</figcaption></figure>"
+    test = generate_and_parse_markdown(code_span)
+    expect(test).to eq(code_span + "\n\n\n\n")
+  end
+
+  it "does not wrap figcaptions without predecessors" do
+    code_span = "<figcaption>A fig</figcaption>"
+    test = generate_and_parse_markdown(code_span)
+    expect(test).to eq(code_span + "\n\n")
+  end
+
+  context "when rendering links markdown" do
+    # the following specs are testing HTMLRouge
+    it "renders properly if protocol http is included" do
+      code_span = "[github](http://github.com)"
+      test = generate_and_parse_markdown(code_span)
+      expect(test).to eq("<p><a href=\"http://github.com\">github</a></p>\n\n")
+    end
+
+    it "renders properly if protocol https is included" do
+      code_span = "[github](https://github.com)"
+      test = generate_and_parse_markdown(code_span)
+      expect(test).to eq("<p><a href=\"https://github.com\">github</a></p>\n\n")
+    end
+
+    it "renders properly if protocol is not included" do
+      code_span = "[github](github.com)"
+      test = generate_and_parse_markdown(code_span)
+      expect(test).to eq("<p><a href=\"//github.com\">github</a></p>\n\n")
+    end
+
+    it "renders properly relative paths" do
+      code_span = "[career tag](/t/career)"
+      test = generate_and_parse_markdown(code_span)
+      app_protocol = ApplicationConfig["APP_PROTOCOL"]
+      app_domain = ApplicationConfig["APP_DOMAIN"]
+      expect(test).to eq("<p><a href=\"#{app_protocol}#{app_domain}/t/career\">career tag</a></p>\n\n")
+    end
+
+    it "renders properly anchored links" do
+      code_span = "[Chapter 1](#chapter-1)"
+      test = generate_and_parse_markdown(code_span)
+      expect(test).to eq("<p><a href=\"#chapter-1\">Chapter 1</a></p>\n\n")
+    end
   end
 
   describe "mentions" do
@@ -142,9 +195,9 @@ RSpec.describe MarkdownParser do
   end
 
   context "when provided with liquid tags" do
-    it "raises error if liquid tag was used incorrectly" do
+    it "does not raises error if liquid tag was used incorrectly" do
       bad_ltag = "{% #{random_word} %}"
-      expect { generate_and_parse_markdown(bad_ltag) }.to raise_error(StandardError)
+      expect { generate_and_parse_markdown(bad_ltag) }.not_to raise_error
     end
   end
 
@@ -210,7 +263,7 @@ RSpec.describe MarkdownParser do
   context "when a colon emoji is used" do
     it "doesn't change text in codeblock" do
       result = generate_and_parse_markdown("<span>:o:<code>:o:</code>:o:<code>:o:</code>:o:<span>:o:</span>:o:</span>")
-      expect(result).to include("<span>⭕️<code>:o:</code>⭕️<code>:o:</code>⭕️<span>⭕️</span>⭕️</span>")
+      expect(result).to include("<span>⭕<code>:o:</code>⭕<code>:o:</code>⭕<span>⭕</span>⭕</span>")
     end
   end
 
@@ -245,6 +298,20 @@ RSpec.describe MarkdownParser do
     it "permits abbr and aside tags" do
       result = generate_and_parse_markdown("<aside><abbr title=\"ol korrect\">OK</abbr><aside>")
       expect(result).to include("<aside><abbr title=\"ol korrect\">OK</abbr><aside>")
+    end
+  end
+
+  context "when word as snake case" do
+    it "doesn't change word" do
+      code_block = "word_italic_"
+      expect(generate_and_parse_markdown(code_block)).to include("word_italic_")
+    end
+  end
+
+  context "when double underline" do
+    it "renders italic" do
+      code_block = "word__italic__"
+      expect(generate_and_parse_markdown(code_block)).to include("word_<em>italic</em>_")
     end
   end
 end

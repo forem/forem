@@ -1,9 +1,16 @@
 import { h } from 'preact';
 import render from 'preact-render-to-json';
+import { JSDOM } from 'jsdom';
 import { shallow } from 'preact-render-spy';
 import UserDetails from '../userDetails';
 
+const doc = new JSDOM('<!doctype html><html><body></body></html>');
+global.document = doc;
+global.window = doc.defaultView;
+global.window.currentUser = { id: '1' };
+
 const user1 = {
+  id: '1',
   username: 'bojackhorseman',
   name: 'Bojack Horseman',
   summary: 'I am the Bojack Horseman from Horsing Around and Secreteriat',
@@ -16,6 +23,7 @@ const user1 = {
 };
 
 const user2 = {
+  id: '2',
   username: 'mrpeanutbutter',
   name: 'Mr. Peanutbutter',
   summary: 'Woof Woof *smile*',
@@ -27,7 +35,11 @@ const user2 = {
   profile_image: 'https://media.giphy.com/media/xThuW6sWCGbpZMpX7a/giphy.gif',
 };
 
-const getUserDetails = user => <UserDetails user={user} />;
+const channel = { channel_type: 'direct', id: 2 };
+
+const getUserDetails = user => (
+  <UserDetails user={user} activeChannel={channel} activeChannelId={2} />
+);
 
 describe('<UserDetails />', () => {
   describe('for user1', () => {
@@ -59,6 +71,13 @@ describe('<UserDetails />', () => {
           .at(0)
           .attr('href'),
       ).toEqual(`/${user1.username}`); // user.username
+
+      expect(
+        context
+          .find('.userdetails__blockreport')
+          .at(0)
+          .children()[0],
+      ).toEqual('');
 
       // social links
       expect(
@@ -131,6 +150,22 @@ describe('<UserDetails />', () => {
           .at(0)
           .attr('href'),
       ).toEqual(`/${user2.username}`); // user.username
+
+      expect(
+        parentDiv
+          .find('.userdetails__blockreport')
+          .at(0)
+          .childAt(0)
+          .text(),
+      ).toEqual('Block User');
+
+      expect(
+        parentDiv
+          .find('.userdetails__blockreport')
+          .at(0)
+          .childAt(1)
+          .text(),
+      ).toEqual('Report Abuse');
 
       // social links
       expect(

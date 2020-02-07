@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe UserSimilarity, vcr: {} do
+RSpec.describe UserSimilarity, type: :labor, vcr: {} do
   let(:user) { create(:user, summary: "I like ruby and JavaScript and Go") }
   let(:similar_user) { create(:user, summary: "I like JavaScript and Go") }
   let(:dissimilar_user) { create(:user, summary: "I like Haskell and functional programming") }

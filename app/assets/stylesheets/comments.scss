@@ -146,21 +146,28 @@ a.header-link {
     bottom: 3px;
   }
   .editor-image-upload {
+    display: flex;
+    align-items: center;
     font-size: 0.8em;
     position: absolute;
     left: calc(0.2vw + 43px);
     bottom: 0px;
     width: initial;
     text-align: left;
+
     .uploaded-image {
-      vertical-align: 11px;
       border: 1px dashed #888;
-      position: relative;
       padding: 0.2vw 0.4vw;
       font-size: 1em;
-      width: calc(94% - 36px);
-      top: 5px;
+      width: 8.125rem;
       display: none;
+
+      @media screen and (min-width: 500px) {
+        & {
+          width: calc(94% - 2.25rem);
+        }
+      }
+
       &.showing {
         display: inline-block;
       }
@@ -338,6 +345,9 @@ a.header-link {
       code {
         word-wrap: break-word;
       }
+      .article-body-image-wrapper img {
+        max-width: 100%;
+      }
     }
     .actions {
       text-align: right;
@@ -414,7 +424,7 @@ a.header-link {
       .comment-deep-2 {
         margin-top: -123px;
       }
-      // this ms-lang hack (which behaves like a media query) is going to be ignored by all browsers 
+      // this ms-lang hack (which behaves like a media query) is going to be ignored by all browsers
       // except IE and 11 and it fixes indentation on the unsupported <details> tags
       _:-ms-lang(x),
       .comment-deep-1,
@@ -459,7 +469,6 @@ a.header-link {
   }
 
   .comment-trees {
-    // margin-left:-$indent-distance;
     .comment-hash-marker {
       margin-top: -45px;
       margin-bottom: 45px;
@@ -476,14 +485,22 @@ a.header-link {
       margin-top: -80px;
       .comment-parent-link {
         @include themeable(background, theme-container-background, white);
-        @include themeable(border, theme-container-border, 1px solid $medium-gray);
+        @include themeable(
+          border,
+          theme-container-border,
+          1px solid $medium-gray
+        );
         display: block;
         padding: 9px 12px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         font-size: 0.8em;
-        @include themeable(background, theme-container-accent-background, lighten($lightest-gray, 1%));
+        @include themeable(
+          background,
+          theme-container-accent-background,
+          lighten($lightest-gray, 1%)
+        );
       }
     }
   }
@@ -505,6 +522,16 @@ a.header-link {
       overflow-x: hidden;
       text-overflow: ellipsis;
     }
+  }
+
+  .alert-error {
+    background: $red;
+    max-width: 730px;
+    font-family: $helvetica;
+    color: white;
+    border-radius: 5px;
+    margin: 20px auto;
+    padding: 20px;
   }
 }
 
@@ -591,6 +618,7 @@ a.header-link {
   .low-quality-comment > *:not(.dropdown) {
     opacity: 0.5;
   }
+
   .body {
     padding: 1px;
     padding-left: 1.5%;
@@ -710,6 +738,17 @@ a.header-link {
     kbd {
       @extend %kbd;
     }
+    .liquid-comment {
+      .details {
+        .comment-date {
+          top: calc(14px - 0.25vw);
+        }
+      }
+    }
+    &.hidden-comment {
+    padding: 5px 0;
+    margin-bottom: 0;
+  }
   }
   .icon-img {
     height: 16px;
@@ -722,7 +761,6 @@ a.header-link {
     border-top-left-radius: 3px;
     @include themeable(color, theme-secondary-color, $dark-gray);
     position: relative;
-    // background:$light-gray;
     .comment-date {
       border: none;
       position: absolute;
@@ -740,6 +778,9 @@ a.header-link {
       position: absolute;
       top: calc(0.3vw + 13px);
       right: 10px;
+      &.commentable-hidden {
+        top: calc(0.3vw + 8px)
+      }
     }
 
     .dropdown {
@@ -774,6 +815,26 @@ a.header-link {
         white-space: nowrap;
       }
 
+      .dropdown-content button {
+        display: inline-block;
+        color: black;
+        border: none;
+        background: none;
+        padding: 12px 16px;
+        width: 100%;
+        height: 38px;
+        font-size: 14px;
+        font-weight: bold;
+        text-align: left;
+        &:hover {
+          background-color: #f1f1f1;
+        }
+      }
+
+      .dropdown-content .comment-actions .async-hide {
+        display: none;
+      }
+
       .dropdown-content a:hover {
         background-color: #f1f1f1;
       }
@@ -785,6 +846,12 @@ a.header-link {
         padding: 4px;
         max-width: 15px;
         max-height: 15px;
+      }
+    }
+
+    &.hidden-comment {
+      .dropbtn {
+        top: calc(0.3vw + 8px);
       }
     }
 
@@ -908,17 +975,21 @@ a.header-link {
   .editor-image-upload {
     width: initial;
     text-align: left;
+    z-index: 6;
+
     .uploaded-image {
-      width: calc(93% - 54px);
+      width: calc(93% - 3.375rem);
+
+      @media screen and (min-width: 500px) {
+        & {
+          width: calc(94% - 3.875rem);
+        }
+      }
     }
+
     .image-upload-button {
       padding: 5px 2px 0px;
       margin-left: 3px;
-    }
-    @media screen and (min-width: 500px) {
-      .uploaded-image {
-        width: calc(94% - 62px);
-      }
     }
   }
   .actions {
@@ -1040,5 +1111,11 @@ a.header-link {
   }
   to {
     @include themeable(background-color, theme-container-background, #fff);
+  }
+}
+
+.comments-hidden-message {
+  p {
+    font-style: italic;
   }
 }

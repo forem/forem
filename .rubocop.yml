@@ -12,10 +12,8 @@ RSpec/DescribeClass:
     - spec/requests/**/*
     - spec/system/**/*
 
-# TODO: Uncomment it after fix rubocop-todo Metrics/LineLength
-# Metrics/LineLength:
-#   Description: 'Limit lines to 100 characters.'
-#   Max: 100
+RSpec/ExampleLength:
+  Max: 10
 
 #############################
 
@@ -29,6 +27,10 @@ AllCops:
   DisplayStyleGuide: true
   ExtraDetails: true
   TargetRubyVersion: 2.6
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - "spec/**/*"
 
 Naming/AccessorMethodName:
   Description: Check the naming of accessor methods for get_/set_.
@@ -74,7 +76,7 @@ Metrics/ParameterLists:
 Naming/PredicateName:
   Description: 'Check the names of predicate methods.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#bool-methods-qmark'
-  NamePrefixBlacklist:
+  ForbiddenPrefixes:
     - is_
   Exclude:
     - spec/**/*
@@ -107,6 +109,11 @@ Style/FrozenStringLiteralComment:
     Add the frozen_string_literal comment to the top of files
     to help transition from Ruby 2.3.0 to Ruby 3.0.
   Enabled: false
+
+# https://github.com/rubocop-hq/rubocop/blob/master/manual/cops_style.md#stylehashsyntax
+Style/HashSyntax:
+  Enabled: true
+  EnforcedStyle: ruby19_no_mixed_keys
 
 Style/IfUnlessModifier:
   Description: >-
@@ -153,6 +160,11 @@ Layout/DotPosition:
   Description: 'Checks the position of the dot in multi-line method calls.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#consistent-multi-line-chains'
   EnforcedStyle: trailing
+
+# # TODO: Uncomment this after fixing Layout/LineLength in .rubocop_todo.yml
+# Layout/LineLength:
+#   Description: 'Limit lines to 100 characters.'
+#   Max: 100
 
 Layout/MultilineOperationIndentation:
   Description: >-

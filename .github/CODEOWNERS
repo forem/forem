@@ -1,0 +1,19 @@
+# SRE
+Gemfile @thepracticaldev/sre
+/db/ @thepracticaldev/sre
+/config/ @thepracticaldev/sre
+/app/jobs/ @thepracticaldev/sre
+/app/workers/ @thepracticaldev/sre
+
+# Mac
+Gemfile   @maestromac
+yarn.lock @maestromac
+
+# Team snackCase
+/app/assets/stylesheets/internal/ @jacobherrington @zhao-andy
+/app/controllers/internal/        @jacobherrington @zhao-andy
+/app/views/internal/              @jacobherrington @zhao-andy
+/app/views/moderation/            @jacobherrington @zhao-andy
+/spec/system/internal/            @jacobherrington @zhao-andy
+/spec/requests/internal/          @jacobherrington @zhao-andy
+/docs/                            @jacobherrington

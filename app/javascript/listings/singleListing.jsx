@@ -1,10 +1,28 @@
 import PropTypes from 'prop-types';
 import { h, Component, createRef } from 'preact';
+// eslint-disable-next-line import/no-unresolved
 import ThreeDotsIcon from 'images/three-dots.svg';
 
 export class SingleListing extends Component {
+  componentRef = createRef();
+
   static propTypes = {
-    listing: PropTypes.objectOf(PropTypes.object).isRequired,
+    listing: PropTypes.shape({
+      id: PropTypes.number,
+      category: PropTypes.string,
+      contact_via_connect: PropTypes.bool,
+      location: PropTypes.string,
+      processed_html: PropTypes.string,
+      slug: PropTypes.string,
+      title: PropTypes.string,
+      user_id: PropTypes.number,
+      tag_list: PropTypes.arrayOf(PropTypes.string),
+      author: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        username: PropTypes.string.isRequired,
+        profile_image_90: PropTypes.string.isRequired,
+      }),
+    }).isRequired,
     onAddTag: PropTypes.func.isRequired,
     onOpenModal: PropTypes.func.isRequired,
     onChangeCategory: PropTypes.func.isRequired,
@@ -15,8 +33,6 @@ export class SingleListing extends Component {
   static defaultProps = {
     currentUserId: null,
   };
-
-  componentRef = createRef();
 
   constructor(props) {
     super(props);
@@ -140,7 +156,7 @@ export class SingleListing extends Component {
           </h3>
           <div
             className="single-classified-listing-body"
-            dangerouslySetInnerHTML={{ __html: listing.processed_html }}
+            dangerouslySetInnerHTML={{ __html: listing.processed_html }} // eslint-disable-line react/no-danger
           />
           <div className="single-classified-listing-tags">
             {this.getTagLinks()}

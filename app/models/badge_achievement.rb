@@ -7,8 +7,8 @@ class BadgeAchievement < ApplicationRecord
 
   validates :badge_id, uniqueness: { scope: :user_id }
 
-  after_create :notify_recipient
-  after_create :send_email_notification
+  after_create_commit :notify_recipient
+  after_create_commit :send_email_notification
   after_create :award_credits
   before_validation :render_rewarding_context_message_html
 
@@ -30,11 +30,9 @@ class BadgeAchievement < ApplicationRecord
   end
 
   def send_email_notification
-    BadgeAchievements::SendEmailNotificationJob.perform_later(id) if user.class.name == "User" && user.email.present? && user.email_badge_notifications
-  end
+    return unless user.class.name == "User" && user.email.present? && user.email_badge_notifications
 
-  def send_email_notification_without_delay
-    BadgeAchievements::SendEmailNotificationJob.perform_now(id) if user.class.name == "User" && user.email.present? && user.email_badge_notifications
+    BadgeAchievements::SendEmailNotificationWorker.perform_async(id)
   end
 
   def award_credits

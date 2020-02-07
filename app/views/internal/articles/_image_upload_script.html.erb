@@ -1,0 +1,63 @@
+<script>
+ window.addEventListener('load', function() {
+   imageUploadButt = document.getElementById('image-upload-button')
+   imageUpload = document.getElementById('image-upload')
+   imageUploadSubmit = document.getElementById('image-upload-submit')
+
+   if (imageUploadButt && imageUpload && imageUploadSubmit) {
+     imageUploadButt.onclick = function (e) {
+       e.preventDefault();
+       document.getElementById('image-upload').click();
+     }
+     imageUpload.onchange = function (e) {
+       var image = document.getElementById('image-upload').files;
+       if (image.length > 0) {
+         document.getElementById('uploaded-image').style = 'display:none';
+         document.getElementById('image-upload-submit').value = "uploading";
+         setTimeout(function () {
+           document.getElementById('image-upload-submit').click(function () {
+           });
+         }, 50)
+       }
+     }
+     imageUploadSubmit.onclick = function (e) {
+       e.preventDefault();
+       var image = document.getElementById('image-upload').files;
+       if (image.length > 0) {
+         var ajaxReq = createAjaxReq();
+         ajaxReq.onreadystatechange = uploadImageCb.bind(this, ajaxReq);
+         ajaxReq.open('POST', '/image_uploads', true);
+         ajaxReq.send(generateUploadFormdata(image));
+       }
+     }
+   }
+
+   function generateUploadFormdata(image) {
+     var token = document.getElementsByName('authenticity_token')[0].value;
+     var formData = new FormData();
+     formData.append('authenticity_token', token);
+     formData.append('image', image[0]);
+     return formData;
+   }
+
+   function uploadImageCb(ajaxReq) {
+     if (ajaxReq.status === 200 && ajaxReq.readyState === XMLHttpRequest.DONE) {
+       var address = document.getElementById('uploaded-image');
+       address.value = JSON.parse(ajaxReq.response).link;
+       address.style.display = "inline-block";
+       address.style.width = "90%";
+       address.select();
+       var uploadedMessage = '';
+       document.getElementById('image-upload-submit').style.display = 'none';
+     }
+   }
+
+   function createAjaxReq() {
+     if (window.XMLHttpRequest) {
+       return new XMLHttpRequest();
+     } else {
+       return new ActiveXObject("Microsoft.XMLHTTP");
+     }
+   }
+ });
+</script>

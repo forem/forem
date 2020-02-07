@@ -5,5 +5,13 @@
       VIEW FULL DISCUSSION (<%= @article.comments_count %> COMMENTS)
     </a>
   <% end %>
+
+  <% if @article.any_comments_hidden %>
+    <div class="comments-hidden-message">
+      <p>
+        Some comments have been hidden by the post's author - <a href="/faq">find out more</a>
+      </p>
+    </div>
+  <% end %>
   <%= render "articles/conduct_and_abuse_actions", page: "articles_show" %>
 </div>

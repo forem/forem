@@ -2,7 +2,7 @@ class ChatChannel < ApplicationRecord
   include AlgoliaSearch
   attr_accessor :current_user, :usernames_string
 
-  has_many :messages
+  has_many :messages, dependent: :destroy
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :users, through: :chat_channel_memberships
 
@@ -29,7 +29,7 @@ class ChatChannel < ApplicationRecord
     ranking ["desc(last_message_at)"]
   end
 
-  before_destroy :remove_from_index!
+  before_destroy :remove_from_index!, prepend: true
 
   def open?
     channel_type == "open"
@@ -43,8 +43,12 @@ class ChatChannel < ApplicationRecord
     channel_type == "invite_only"
   end
 
+  def group?
+    channel_type != "direct"
+  end
+
   def clear_channel
-    messages.find_each(&:destroy!)
+    messages.destroy_all
     Pusher.trigger(pusher_channels, "channel-cleared", { chat_channel_id: id }.to_json)
     true
   rescue Pusher::Error => e
@@ -110,6 +114,10 @@ class ChatChannel < ApplicationRecord
     else
       chat_channel_memberships.pluck(:user_id).map { |id| "private-message-notifications-#{id}" }
     end
+  end
+
+  def channel_users_ids
+    chat_channel_memberships.pluck(:user_id)
   end
 
   def adjusted_slug(user = nil, caller_type = "receiver")

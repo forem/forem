@@ -1,5 +1,5 @@
-export function getAllMessages(channelId, successCb, failureCb) {
-  fetch(`/chat_channels/${channelId}`, {
+export function getAllMessages(channelId, messageOffset, successCb, failureCb) {
+  fetch(`/chat_channels/${channelId}?message_offset=${messageOffset}`, {
     Accept: 'application/json',
     'Content-Type': 'application/json',
     credentials: 'same-origin',
@@ -9,7 +9,7 @@ export function getAllMessages(channelId, successCb, failureCb) {
     .catch(failureCb);
 }
 
-export function sendMessage(activeChannelId, message, successCb, failureCb) {
+export function sendMessage(messageObject, successCb, failureCb) {
   fetch('/messages', {
     method: 'POST',
     headers: {
@@ -19,9 +19,32 @@ export function sendMessage(activeChannelId, message, successCb, failureCb) {
     },
     body: JSON.stringify({
       message: {
-        message_markdown: message,
+        message_markdown: messageObject.message,
         user_id: window.currentUser.id,
-        chat_channel_id: activeChannelId,
+        chat_channel_id: messageObject.activeChannelId,
+        mentioned_users_id: messageObject.mentionedUsersId,
+      },
+    }),
+    credentials: 'same-origin',
+  })
+    .then(response => response.json())
+    .then(successCb)
+    .catch(failureCb);
+}
+
+export function editMessage(editedMessage, successCb, failureCb) {
+  fetch(`/messages/${editedMessage.id}`, {
+    method: 'PATCH',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      message: {
+        message_markdown: editedMessage.message,
+        user_id: window.currentUser.id,
+        chat_channel_id: editedMessage.activeChannelId,
       },
     }),
     credentials: 'same-origin',
@@ -115,22 +138,14 @@ export function getChannels(
   });
 }
 
-export function sendKeys(subscription, successCb, failureCb) {
-  fetch(`/push_notification_subscriptions`, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'X-CSRF-Token': window.csrfToken,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      subscription,
-    }),
+export function getUnopenedChannelIds(successCb) {
+  fetch('/chat_channels?state=unopened_ids', {
     credentials: 'same-origin',
   })
     .then(response => response.json())
-    .then(successCb)
-    .catch(failureCb);
+    .then(json => {
+      successCb(json.unopened_ids);
+    });
 }
 
 export function getTwilioToken(videoChannelName, successCb, failureCb) {
@@ -188,6 +203,26 @@ export function sendChannelInviteAction(id, action, successCb, failureCb) {
     body: JSON.stringify({
       chat_channel_membership: {
         user_action: action,
+      },
+    }),
+    credentials: 'same-origin',
+  })
+    .then(response => response.json())
+    .then(successCb)
+    .catch(failureCb);
+}
+
+export function deleteMessage(messageId, successCb, failureCb) {
+  fetch(`/messages/${messageId}`, {
+    method: 'DELETE',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      message: {
+        user_id: window.currentUser.id,
       },
     }),
     credentials: 'same-origin',

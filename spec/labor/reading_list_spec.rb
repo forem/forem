@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ReadingList do
+RSpec.describe ReadingList, type: :labor do
   let(:user) { create(:user) }
   let(:article) { create(:article) }
   let(:article2) { create(:article) }

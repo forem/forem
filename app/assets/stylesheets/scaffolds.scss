@@ -1,5 +1,6 @@
 @import 'variables';
 @import 'mixins';
+@import 'fonts';
 
 body {
   @include themeable(background, theme-background, $lightest-gray);
@@ -10,6 +11,10 @@ body {
   margin: 0 !important;
   margin-top: -20px !important;
   overflow-y: scroll;
+}
+
+#audiocontent {
+  display: none;
 }
 
 *:focus {
@@ -42,6 +47,12 @@ body {
   }
 }
 
+@media print {
+   .top-bar, .article-actions {
+      display: none;
+   }
+}
+
 .config_minimize_newest_listings {
   #sidebar-listings-widget {
     .widget-body {
@@ -58,6 +69,8 @@ body {
   &.notifications-index,
   &.stories-search,
   &.podcast_episodes-index,
+  &.podcasts-new,
+  &.podcasts-create,
   &.reading_list_items-index,
   &.history-index,
   .tags-index,
@@ -177,7 +190,7 @@ input[type='email'] {
   display: none !important;
 }
 
-body.night-theme {
+body.night-theme, body.ten-x-hacker-theme {
   .on-page-nav-butt img,
   .icon-img,
   .dropdown-icon,
@@ -201,7 +214,13 @@ body.night-theme {
   .partner-image-light-mode {
     display: none !important;
   }
+
+  .not-dark-theme-text-compatible {
+    @include themeable-important(color, theme-secondary-color, white);
+  }
 }
+
+// Alternate base fonts
 
 body.sans-serif-article-body {
   .body {
@@ -212,6 +231,7 @@ body.sans-serif-article-body {
     font-size: 0.98em;
   }
 }
+
 body.comic-sans-article-body {
   .body {
     font-family: 'Comic Sans MS', cursive, sans-serif;
@@ -219,6 +239,48 @@ body.comic-sans-article-body {
   .body p {
     font-family: 'Comic Sans MS', cursive, sans-serif;
     font-size: 0.98em;
+  }
+}
+
+body.open-dyslexic-article-body {
+  .body {
+    font-display: swap;
+    font-family: OpenDyslexic, sans-serif;
+  }
+  .body p {
+    font-display: swap;
+    font-family: OpenDyslexic, sans-serif;
+    font-size: 0.9em;
+  }
+  .body b, .body strong {
+    font-family: OpenDyslexic-Bold, sans-serif;
+  }
+  
+  .body i, .body em {
+    font-family: OpenDyslexic-Italic, sans-serif;
+  }
+  
+  .body b>i, .body b>em, .body strong>i, .body strong>em,
+  .body i>b, .body em>b, .body i>strong, .body em>strong {
+    font-family: OpenDyslexic-Bolditalic
+  }
+}
+
+body.monospace-article-body {
+  .body {
+    font-family: $monospace;
+  }
+  .body p {
+    font-family: $monospace;
+    font-size: 0.9em;
+  }
+}
+
+body.static-navbar-config {
+  .top-bar {
+    position: relative !important;
+    margin-top: 20px !important;
+    margin-bottom: -66px !important;
   }
 }
 
@@ -232,6 +294,19 @@ body.trusted-status-true .trusted-visible-block {
   display: block !important;
 }
 
+body.hidden-shell {
+  .top-bar, footer {
+    display: none;
+  }
+  .container {
+    margin-top: 20px;
+  }
+  .universal-page-content-wrapper {
+    margin-top: 0px !important;
+    margin-bottom: 30px;
+  }
+}
+
 .delete-confirm.container {
   padding: 150px 10px;
   min-height: 300px;
@@ -242,6 +317,7 @@ body.trusted-status-true .trusted-visible-block {
     color: white;
     display: inline-block;
     margin-bottom: 0px;
+    border-radius: 3px;
   }
   h2 {
     font-size: 22px;
@@ -256,4 +332,34 @@ body.trusted-status-true .trusted-visible-block {
       opacity: 0.9;
     }
   }
+  form button {
+    background: $red;
+    color: white;
+    font-size: 1.5em;
+    border: 0px;
+    border-radius: 3px;
+    padding: 6px 12px;
+  }
+}
+
+.app-shell-loader {
+  position: absolute;
+  top: 200px;
+  text-align: center;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  animation: loading-fadein 1.5s;
+  animation-delay: 0.6s;
+  font-size: 1.2em;
+  z-index: -1;
+}
+
+.base-background-color {
+  @include themeable(background, theme-background, $lightest-gray);
+}
+
+@keyframes loading-fadein {
+  from { opacity: 0; }
+  to   { opacity: 0.6; }
 }

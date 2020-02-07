@@ -2,6 +2,7 @@ module Api
   module V0
     class UsersController < ApiController
       before_action :authenticate!, only: %i[me]
+      before_action -> { doorkeeper_authorize! :public }, only: :me, if: -> { doorkeeper_token }
 
       def index
         if !user_signed_in? || less_than_one_day_old?(current_user)
@@ -9,11 +10,14 @@ module Api
           @users = User.where(username: usernames)
           return
         end
+
         if params[:state] == "follow_suggestions"
           @users = Suggester::Users::Recent.new(current_user).suggest
         elsif params[:state] == "sidebar_suggestions"
           given_tag = params[:tag]
           @users = Suggester::Users::Sidebar.new(current_user, given_tag).suggest.sample(3)
+        else
+          @users = User.none
         end
       end
 

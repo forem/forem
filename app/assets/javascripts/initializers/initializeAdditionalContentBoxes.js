@@ -7,7 +7,7 @@ function initializeAdditionalContentBoxes() {
     var signature = d
       .getTime()
       .toString()
-      .substring(0, 5);
+      .substring(0, 4);
     var user = userData();
     var stateParam = 'include_sponsors';
     if (user && !user.display_sponsors) {

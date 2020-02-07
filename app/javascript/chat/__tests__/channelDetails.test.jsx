@@ -107,7 +107,7 @@ describe('<ChannelDetails />', () => {
             .childAt(1)
             .attr('data-content'),
         ).toEqual(
-          `users/by_username?url=${moddetails.channel_users[i].username}`,
+          `sidecar-user`,
         );
       }
 
@@ -132,9 +132,7 @@ describe('<ChannelDetails />', () => {
       const pendingusers = context.find('.channeldetails__pendingusers');
       for (let i = 0; i < pendingusers.length; i += 1) {
         expect(pendingusers.at(i).text()).toEqual(
-          `@${moddetails.pending_users_select_fields[i].username} - ${
-            moddetails.pending_users_select_fields[i].name
-          }`,
+          `@${moddetails.pending_users_select_fields[i].username} - ${moddetails.pending_users_select_fields[i].name}`,
         );
         expect(
           pendingusers
@@ -199,11 +197,13 @@ describe('<ChannelDetails />', () => {
       let inviteAttrAns;
       const included = (list, el) => {
         const keys = Object.keys(list);
-        for (const key of keys) {
+        for (let i = 0; i < keys.length; i += 1) {
+          const key = keys[i];
           if (list[key].id === el.id) {
             return true;
           }
         }
+        return false;
       };
       for (let i = 0; i < searchedusersdivs.length; i += 1) {
         if (
@@ -224,9 +224,7 @@ describe('<ChannelDetails />', () => {
               .childAt(0)
               .text(),
           ).toEqual(
-            `@${searchedusers.searchedUsers[i].user.username} - ${
-              searchedusers.searchedUsers[i].title
-            }`,
+            `@${searchedusers.searchedUsers[i].user.username} - ${searchedusers.searchedUsers[i].title}`,
           );
 
           if (
@@ -295,7 +293,7 @@ describe('<ChannelDetails />', () => {
             .childAt(1)
             .attr('data-content'),
         ).toEqual(
-          `users/by_username?url=${userdetails.channel_users[i].username}`,
+          `sidecar-user`,
         );
       }
 

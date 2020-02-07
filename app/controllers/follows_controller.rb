@@ -3,24 +3,31 @@ class FollowsController < ApplicationController
 
   def show
     skip_authorization
-    unless current_user
-      render plain: "not-logged-in"
-      return
-    end
+    render(plain: "not-logged-in") && return unless current_user
+
     if current_user.id == params[:id].to_i && params[:followable_type] == "User"
       render plain: "self"
       return
-    elsif params[:followable_type] == "User" && FollowChecker.new(current_user, params[:followable_type], params[:id]).cached_follow_check && FollowChecker.new(User.find(params[:id]), params[:followable_type], current_user.id).cached_follow_check
+    end
+
+    following_them_check = FollowChecker.new(current_user, params[:followable_type], params[:id]).cached_follow_check
+
+    return render plain: following_them_check unless params[:followable_type] == "User"
+
+    following_you_check = FollowChecker.new(User.find_by(id: params[:id]), params[:followable_type], current_user.id).cached_follow_check
+
+    if following_them_check && following_you_check
       render plain: "mutual"
-    elsif params[:followable_type] == "User" && FollowChecker.new(User.find(params[:id]), params[:followable_type], current_user.id).cached_follow_check
+    elsif following_you_check
       render plain: "follow-back"
     else
-      render plain: FollowChecker.new(current_user, params[:followable_type], params[:id]).cached_follow_check
+      render plain: following_them_check
     end
   end
 
   def create
     authorize Follow
+
     followable = if params[:followable_type] == "Organization"
                    Organization.find(params[:followable_id])
                  elsif params[:followable_type] == "Tag"
@@ -30,16 +37,20 @@ class FollowsController < ApplicationController
                  else
                    User.find(params[:followable_id])
                  end
+
     need_notification = Follow.need_new_follower_notification_for?(followable.class.name)
+
     @result = if params[:verb] == "unfollow"
-                follow = current_user.stop_following(followable)
-                Notification.send_new_follower_notification_without_delay(follow, true) if need_notification
-                "unfollowed"
+                unfollow(followable, need_notification: need_notification)
               else
-                follow = current_user.follow(followable)
-                Notification.send_new_follower_notification(follow) if need_notification
-                "followed"
+                rate_limiter = RateLimitChecker.new(current_user)
+                if rate_limiter.limit_by_action("follow_account")
+                  render json: { error: "Daily account follow limit reached!" }, status: :too_many_requests
+                  return
+                end
+                follow(followable, need_notification: need_notification)
               end
+
     current_user.touch
     render json: { outcome: @result }
   end
@@ -54,5 +65,21 @@ class FollowsController < ApplicationController
 
   def follow_params
     params.require(:follow).permit(policy(Follow).permitted_attributes)
+  end
+
+  def follow(followable, need_notification: false)
+    user_follow = current_user.follow(followable)
+    Notification.send_new_follower_notification(user_follow) if need_notification
+    "followed"
+  rescue ActiveRecord::RecordInvalid
+    DataDogStatsClient.increment("users.invalid_follow")
+    "already followed"
+  end
+
+  def unfollow(followable, need_notification: false)
+    user_follow = current_user.stop_following(followable)
+    Notification.send_new_follower_notification_without_delay(user_follow, true) if need_notification
+
+    "unfollowed"
   end
 end

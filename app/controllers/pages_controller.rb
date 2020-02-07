@@ -1,6 +1,6 @@
 class PagesController < ApplicationController
   # No authorization required for entirely public controller
-  before_action :set_cache_control_headers, only: %i[show rlyweb now survey badge shecoded bounty faq]
+  before_action :set_cache_control_headers, only: %i[show rlyweb now survey badge shecoded bounty faq robots]
 
   def show
     @page = Page.find_by!(slug: params[:slug])
@@ -51,6 +51,11 @@ class PagesController < ApplicationController
     render "pages/report-abuse"
   end
 
+  def robots
+    respond_to :text
+    set_surrogate_key_header "robots_page"
+  end
+
   def rlyweb
     set_surrogate_key_header "rlyweb"
   end
@@ -99,7 +104,7 @@ class PagesController < ApplicationController
 
   def latest_published_thread(tag_name)
     Article.published.
-      where(user_id: ApplicationConfig["DEVTO_USER_ID"]).
+      where(user_id: SiteConfig.staff_user_id).
       order("published_at ASC").
       tagged_with(tag_name).last
   end

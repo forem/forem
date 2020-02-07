@@ -168,14 +168,6 @@ RSpec.describe "Api::V0::Listings" do
       include_context "when param list is valid"
       include_context "when user has enough credit"
 
-      it "supports oauth's access_token" do
-        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
-        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
-
-        post api_classified_listings_path, params: { classified_listing: listing_params }.to_json, headers: headers
-        expect(response).to have_http_status(:created)
-      end
-
       it "properly deducts the amount of credits" do
         post_classified_listing(listing_params)
         listing_cost = ClassifiedListing.categories_available[:cfp][:cost]
@@ -278,6 +270,19 @@ RSpec.describe "Api::V0::Listings" do
         end.to change(ClassifiedListing, :count).by(1)
         expect(ClassifiedListing.find(json_response["id"]).cached_tag_list).to eq("discuss, javascript")
         expect(ClassifiedListing.find(json_response["id"]).contact_via_connect).to eq(true)
+      end
+    end
+
+    describe "with oauth token" do
+      include_context "when param list is valid"
+
+      it "fails with oauth token" do
+        user = create(:user)
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        post api_classified_listings_path, params: { classified_listing: listing_params }.to_json, headers: headers
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end

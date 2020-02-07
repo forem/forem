@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe Organization, type: :model do
-  let(:user)         { create(:user) }
   let(:organization) { create(:organization) }
 
   it { is_expected.to have_many(:sponsorships) }
@@ -9,22 +8,24 @@ RSpec.describe Organization, type: :model do
 
   describe "#name" do
     it "rejects names with over 50 characters" do
-      organization.name = Faker::Lorem.characters(number: 51)
+      organization.name = "x" * 51
       expect(organization).not_to be_valid
     end
 
     it "accepts names with 50 or less characters" do
+      organization.name = "x" * 50
       expect(organization).to be_valid
     end
   end
 
   describe "#summary" do
-    it "rejects summaries with over 1000 characters" do
-      organization.summary = Faker::Lorem.characters(number: 1001)
+    it "rejects summaries with over 250 characters" do
+      organization.summary = "x" * 251
       expect(organization).not_to be_valid
     end
 
-    it "accepts summaries with 1000 or less characters" do
+    it "accepts summaries with 250 or less characters" do
+      organization.summary = "x" * 250
       expect(organization).to be_valid
     end
   end
@@ -46,7 +47,7 @@ RSpec.describe Organization, type: :model do
     end
 
     it "rejects wrong color format" do
-      organization.text_color_hex = "##{Faker::Lorem.words(number: 4)}"
+      organization.text_color_hex = "#FOOBAR"
       expect(organization).not_to be_valid
     end
   end
@@ -105,8 +106,17 @@ RSpec.describe Organization, type: :model do
       expect(organization.errors[:slug].to_s.include?("taken")).to be true
     end
 
-    it "triggers cache busting on save" do
-      expect { build(:organization).save }.to have_enqueued_job.on_queue("organizations_bust_cache")
+    context "when callbacks are triggered after save" do
+      let(:organization) { build(:organization) }
+
+      before do
+        allow(Organizations::BustCacheWorker).to receive(:perform_async)
+      end
+
+      it "triggers cache busting on save" do
+        organization.save
+        expect(Organizations::BustCacheWorker).to have_received(:perform_async).with(organization.id, organization.slug)
+      end
     end
   end
 
@@ -128,66 +138,74 @@ RSpec.describe Organization, type: :model do
   end
 
   describe "#check_for_slug_change" do
-    def create_article_for_organization
-      user.update(organization_id: organization.id, org_admin: true)
-      create(:article, organization_id: organization.id, user_id: user.id)
-    end
+    let(:user) { create(:user) }
 
     it "properly updates the slug/username" do
       random_new_slug = "slug_#{rand(10_000)}"
       organization.update(slug: random_new_slug)
-      expect(organization.slug).to eq random_new_slug
+      expect(organization.slug).to eq(random_new_slug)
     end
 
     it "updates old_slug to original slug if slug was changed" do
       original_slug = organization.slug
       organization.update(slug: "slug_#{rand(10_000)}")
-      expect(organization.old_slug).to eq original_slug
+      expect(organization.old_slug).to eq(original_slug)
     end
 
     it "updates old_old_slug properly if slug was changed and there was an old_slug" do
       original_slug = organization.slug
       organization.update(slug: "something_else")
       organization.update(slug: "another_slug")
-      expect(organization.old_old_slug).to eq original_slug
+      expect(organization.old_old_slug).to eq(original_slug)
     end
 
-    it "updates the paths of the organization's articles" do
-      create_article_for_organization
-      new_slug = "slug_#{rand(10_000)}"
-      organization.update(slug: new_slug)
-      article = Article.find_by(organization_id: organization.id)
-      expect(article.path).to include new_slug
-    end
+    context "when dealing with organization articles" do
+      before do
+        create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
+        create(:article, organization: organization, user: user)
+      end
 
-    it "updates article cached_organizations" do
-      create_article_for_organization
-      new_slug = "slug_#{rand(10_000)}"
-      organization.update(slug: new_slug)
-      article = Article.find_by(organization_id: organization.id)
-      expect(article.cached_organization.slug).to eq new_slug
+      it "updates the paths of the organization's articles" do
+        new_slug = "slug_#{rand(10_000)}"
+        organization.update(slug: new_slug)
+        article = Article.find_by(organization_id: organization.id)
+        expect(article.path).to include(new_slug)
+      end
+
+      it "updates article cached_organizations" do
+        new_slug = "slug_#{rand(10_000)}"
+        organization.update(slug: new_slug)
+        article = Article.find_by(organization_id: organization.id)
+        expect(article.cached_organization.slug).to eq(new_slug)
+      end
     end
   end
 
-  describe "#has_enough_credits?" do
+  describe "#enough_credits?" do
     it "returns false if the user has less unspent credits than neeed" do
-      expect(organization.has_enough_credits?(1)).to be(false)
+      expect(organization.enough_credits?(1)).to be(false)
     end
 
     it "returns true if the user has the exact amount of unspent credits" do
       create(:credit, organization: organization, spent: false)
-      expect(organization.has_enough_credits?(1)).to be(true)
+      expect(organization.enough_credits?(1)).to be(true)
     end
 
     it "returns true if the user has more unspent credits than needed" do
       create_list(:credit, 2, organization: organization, spent: false)
-      expect(organization.has_enough_credits?(1)).to be(true)
+      expect(organization.enough_credits?(1)).to be(true)
     end
   end
 
   describe "#pro?" do
     it "always returns false" do
-      expect(organization.pro?).to be(false)
+      expect(build(:organization).pro?).to be(false)
+    end
+  end
+
+  describe "#decoarated" do
+    it "returns not fully banished" do
+      expect(organization.decorate.fully_banished?).to eq(false)
     end
   end
 end

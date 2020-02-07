@@ -33,7 +33,7 @@ class Organization < ApplicationRecord
             format: { with: /\A[a-zA-Z0-9\-_]+\Z/ },
             length: { in: 2..18 },
             exclusion: { in: ReservedWords.all,
-                         message: "%{value} is a reserved word. Contact yo@dev.to for help registering your organization." }
+                         message: "%<value>s is a reserved word. Contact site admins for help registering your organization." }
   validates :url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :secret, uniqueness: { allow_blank: true }
   validates :location, :email, :company_size, length: { maximum: 64 }
@@ -46,7 +46,7 @@ class Organization < ApplicationRecord
   validates :cta_button_text, length: { maximum: 20 }
   validates :cta_body_markdown, length: { maximum: 256 }
   before_save :remove_at_from_usernames
-  after_save  :bust_cache
+  after_save :bust_cache
   before_save :generate_secret
   before_save :update_articles
   before_validation :downcase_slug
@@ -92,7 +92,7 @@ class Organization < ApplicationRecord
     ProfileImage.new(self).get(90)
   end
 
-  def has_enough_credits?(num_credits_needed)
+  def enough_credits?(num_credits_needed)
     credits.unspent.size >= num_credits_needed
   end
 
@@ -133,7 +133,7 @@ class Organization < ApplicationRecord
   end
 
   def bust_cache
-    Organizations::BustCacheJob.perform_later(id, slug)
+    Organizations::BustCacheWorker.perform_async(id, slug)
   end
 
   def unique_slug_including_users_and_podcasts

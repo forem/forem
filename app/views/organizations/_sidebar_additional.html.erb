@@ -7,7 +7,10 @@
       </div>
     <% end %>
 
-    <% if @organization.users.present? %>
+    <%# given the probability that organizations can have lots of users,
+        here we're using the any?/find_each pattern to avoid loading possibly
+        too many objects in memory %>
+    <% if @organization.users.any? %>
       <div class="widget">
         <div class="widget-suggested-follows-container">
           <header><h4>meet the team</h4></header>

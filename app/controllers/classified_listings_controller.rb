@@ -59,6 +59,7 @@ class ClassifiedListingsController < ApplicationController
 
   def delete_confirm
     @classified_listing = ClassifiedListing.find_by(slug: params[:slug])
+    not_found unless @classified_listing
     authorize @classified_listing
   end
 

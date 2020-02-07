@@ -1,5 +1,6 @@
 class Comment < ApplicationRecord
   has_ancestry
+  resourcify
   include AlgoliaSearch
   include Reactable
   belongs_to :commentable, polymorphic: true
@@ -20,17 +21,17 @@ class Comment < ApplicationRecord
   validates :user_id, presence: true
 
   after_create   :after_create_checks
-  after_save     :calculate_score
+  after_commit   :calculate_score
+  after_update_commit :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
   after_save     :bust_cache
   after_save     :synchronous_bust
   after_destroy  :after_destroy_actions
   before_destroy :before_destroy_actions
-  after_create   :send_email_notification, if: :should_send_email_notification?
-  after_create   :create_first_reaction
-  after_create   :send_to_moderator
+  after_create_commit :send_email_notification, if: :should_send_email_notification?
+  after_create_commit :create_first_reaction
+  after_create_commit :send_to_moderator
   before_save    :set_markdown_character_count, if: :body_markdown
   before_create  :adjust_comment_parent_based_on_depth
-  after_update   :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
   after_update   :remove_notifications, if: :deleted
   after_update   :update_descendant_notifications, if: :deleted
   before_validation :evaluate_markdown, if: -> { body_markdown && commentable }
@@ -96,17 +97,6 @@ class Comment < ApplicationRecord
     end
   end
 
-  def self.trigger_index(record, remove)
-    # record is removed from index synchronously in before_destroy_actions
-    return if remove
-
-    if record.deleted == false
-      AlgoliaSearch::AlgoliaJob.perform_later(record, "index!")
-    else
-      AlgoliaSearch::AlgoliaJob.perform_later(record, "remove_algolia_index")
-    end
-  end
-
   def self.users_with_number_of_comments(user_ids, before_date)
     joins(:user).
       select("users.username, COUNT(comments.user_id) AS number_of_comments").
@@ -116,24 +106,25 @@ class Comment < ApplicationRecord
       order("number_of_comments DESC")
   end
 
-  def remove_algolia_index
-    remove_from_index!
-    Search::RemoveFromIndexJob.perform_now("ordered_comments_#{Rails.env}", index_id)
-  end
-
-  def index_id
-    "comments-#{id}"
-  end
-
-  def self.rooted_on(commentable_id, commentable_type)
-    includes(:user).
-      select(:id, :user_id, :commentable_type, :commentable_id,
-             :deleted, :created_at, :processed_html, :ancestry, :updated_at, :score).
-      where(commentable_id: commentable_id, ancestry: nil, commentable_type: commentable_type)
-  end
-
   def self.tree_for(commentable, limit = 0)
     commentable.comments.includes(:user).arrange(order: "score DESC").to_a[0..limit - 1].to_h
+  end
+
+  def self.trigger_index(record, remove)
+    # record is removed from index synchronously in before_destroy_actions
+    return if remove
+
+    if record.deleted == false
+      Search::IndexWorker.perform_async("Comment", record.id)
+    else
+      Search::RemoveFromIndexWorker.perform_async(Comment.algolia_index_name, record.index_id)
+    end
+  end
+
+  # this should remain public because it's called by AlgoliaSearch::AlgoliaJob in .trigger_index
+  def remove_algolia_index
+    remove_from_index!
+    Search::RemoveFromIndexWorker.new.perform("ordered_comments_#{Rails.env}", index_id)
   end
 
   def path
@@ -157,6 +148,8 @@ class Comment < ApplicationRecord
   end
 
   def id_code_generated
+    # 26 is the conversion base
+    # eg. 1000.to_s(26) would be "1cc"
     id.to_s(26)
   end
 
@@ -168,9 +161,11 @@ class Comment < ApplicationRecord
 
   def title(length = 80)
     return "[deleted]" if deleted
+    return "[hidden by post author]" if hidden_by_commentable_user
 
     text = ActionController::Base.helpers.strip_tags(processed_html).strip
-    HTMLEntities.new.decode ActionController::Base.helpers.truncate(text, length: length).gsub("&#39;", "'").gsub("&amp;", "&")
+    truncated_text = ActionController::Base.helpers.truncate(text, length: length).gsub("&#39;", "'").gsub("&amp;", "&")
+    HTMLEntities.new.decode(truncated_text)
   end
 
   def video
@@ -187,6 +182,11 @@ class Comment < ApplicationRecord
 
   def remove_notifications
     Notification.remove_all_without_delay(notifiable_ids: id, notifiable_type: "Comment")
+  end
+
+  # public because it's used in the algolia indexing methods
+  def index_id
+    "comments-#{id}"
   end
 
   private
@@ -238,7 +238,7 @@ class Comment < ApplicationRecord
   end
 
   def calculate_score
-    Comments::CalculateScoreJob.perform_later(id)
+    Comments::CalculateScoreWorker.perform_async(id)
   end
 
   def after_create_checks
@@ -247,11 +247,11 @@ class Comment < ApplicationRecord
   end
 
   def create_id_code
-    Comments::CreateIdCodeJob.perform_later(id)
+    update_column(:id_code, id.to_s(26))
   end
 
   def touch_user
-    Comments::TouchUserJob.perform_later(id)
+    user&.touch(:updated_at, :last_comment_at)
   end
 
   def expire_root_fragment
@@ -259,39 +259,34 @@ class Comment < ApplicationRecord
   end
 
   def create_first_reaction
-    Comments::CreateFirstReactionJob.perform_later(id)
+    Comments::CreateFirstReactionWorker.perform_async(id, user_id)
   end
 
   def after_destroy_actions
-    Users::BustCacheJob.perform_now(user_id)
+    Users::BustCacheWorker.perform_async(user_id)
     user.touch(:last_comment_at)
   end
 
   def before_destroy_actions
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     ancestors.update_all(updated_at: Time.current)
-    bust_cache_without_delay
+    Comments::BustCacheWorker.new.perform(id)
     remove_algolia_index
   end
 
-  def bust_cache_without_delay
-    Comments::BustCacheJob.perform_now(id)
-  end
-
   def bust_cache
-    Comments::BustCacheJob.perform_later(id)
+    Comments::BustCacheWorker.perform_async(id)
   end
 
   def synchronous_bust
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     user.touch(:last_comment_at)
-    cache_buster = CacheBuster.new
-    cache_buster.bust(commentable.path.to_s) if commentable
+    CacheBuster.bust(commentable.path.to_s) if commentable
     expire_root_fragment
   end
 
   def send_email_notification
-    Comments::SendEmailNotificationJob.perform_later(id)
+    Comments::SendEmailNotificationWorker.perform_async(id)
   end
 
   def should_send_email_notification?

@@ -1,7 +1,9 @@
 FactoryBot.define do
+  sequence(:title) { |n| "#{Faker::Book.title}#{n}" }
+
   factory :article do
     transient do
-      title { Faker::Book.title }
+      title { generate :title }
       published { true }
       date { "01/01/2015" }
       tags { Faker::Hipster.words(number: 4).join(", ") }
@@ -15,7 +17,7 @@ FactoryBot.define do
       with_collection { nil }
     end
     association :user, factory: :user, strategy: :create
-    description   { Faker::Hipster.paragraph(sentence_count: 1)[0..100] }
+    description { Faker::Hipster.paragraph(sentence_count: 1)[0..100] }
     main_image    { Faker::Avatar.image }
     language { "en" }
     experience_level_rating { rand(4..6) }

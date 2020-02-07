@@ -1,23 +1,29 @@
 require "rails_helper"
 
 RSpec.describe Podcast, type: :model do
+  let(:podcast) { create(:podcast) }
+
   it { is_expected.to validate_presence_of(:image) }
   it { is_expected.to validate_presence_of(:slug) }
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_presence_of(:main_color_hex) }
   it { is_expected.to validate_presence_of(:feed_url) }
 
-  describe "validations" do
-    let(:podcast) { create(:podcast) }
+  it "has a creator" do
+    user = build(:user)
+    pod = create(:podcast, creator: user)
+    expect(pod.creator).to eq(user)
+  end
 
-    it "is valid" do
-      expect(podcast).to be_valid
-    end
-
+  context "when callbacks are triggered after save" do
     it "triggers cache busting on save" do
-      expect { podcast.save }.to have_enqueued_job.on_queue("podcasts_bust_cache").twice
+      sidekiq_assert_enqueued_with(job: Podcasts::BustCacheWorker, args: [podcast.path]) do
+        podcast.save
+      end
     end
+  end
 
+  describe "validations" do
     # Couldn't use shoulda uniqueness matchers for these tests because:
     # Shoulda uses `save(validate: false)` which skips validations
     # So an invalid record is trying to be saved but fails because of the db constraints
@@ -35,6 +41,20 @@ RSpec.describe Podcast, type: :model do
 
       expect(podcast2).not_to be_valid
       expect(podcast2.errors[:feed_url]).to be_present
+    end
+
+    it "validates feed_url format" do
+      podcast2 = build(:podcast, feed_url: "example.com")
+
+      expect(podcast2).not_to be_valid
+      expect(podcast2.errors[:feed_url]).to be_present
+    end
+
+    it "validates main_color_hex" do
+      podcast2 = build(:podcast, main_color_hex: "#FFFFFF")
+
+      expect(podcast2).not_to be_valid
+      expect(podcast2.errors[:main_color_hex]).to be_present
     end
 
     it "doesn't allow to create a podcast with a reserved word slug" do
@@ -65,36 +85,52 @@ RSpec.describe Podcast, type: :model do
     end
   end
 
-  describe "#reachable and #available" do
-    let(:podcast) { create(:podcast, reachable: false, published: true) }
-    let!(:unpodcast) { create(:podcast, reachable: false, published: true) }
-    let!(:unpodcast2) { create(:podcast, reachable: false, published: true) }
-    let!(:cool_podcast) { create(:podcast, reachable: true, published: false) }
-    let!(:reachable_podcast) { create(:podcast, reachable: true, published: true) }
-
-    before do
-      create(:podcast_episode, reachable: true, podcast: podcast)
-      create(:podcast_episode, reachable: false, podcast: unpodcast2)
-      create(:podcast_episode, reachable: true, podcast: cool_podcast)
-      create(:podcast_episode, reachable: true, podcast: reachable_podcast)
+  describe ".reachable" do
+    it "is reachable when it has a reachable episode" do
+      expect do
+        create(:podcast_episode, reachable: true)
+        create(:podcast, published: true)
+      end.to change(described_class.reachable, :count).by(1)
     end
 
-    it "is reachable when the feed is unreachable but the podcast has reachable podcasts" do
-      reachable_ids = described_class.reachable.pluck(:id)
-      expect(reachable_ids).to include(podcast.id)
-      expect(reachable_ids).to include(cool_podcast.id)
-      expect(reachable_ids).not_to include(unpodcast.id)
-      expect(reachable_ids).not_to include(unpodcast2.id)
+    it "is reachable when it has a reachable episode even if it is unpublished" do
+      expect do
+        create(:podcast_episode, reachable: true)
+        create(:podcast, published: false)
+      end.to change(described_class.reachable, :count).by(1)
     end
 
-    it "is available only when reachable and published" do
-      available_ids = described_class.available.pluck(:id)
-      expect(available_ids.sort).to eq([podcast.id, reachable_podcast.id].sort)
+    it "is not reachable when it has an unreachable episode" do
+      expect do
+        create(:podcast_episode, reachable: false)
+        create(:podcast, published: true)
+      end.to change(described_class.reachable, :count).by(0)
+    end
+  end
+
+  describe ".available" do
+    it "is available when it has a reachable episode and it is published" do
+      expect do
+        create(:podcast_episode, reachable: true)
+        create(:podcast, published: true)
+      end.to change(described_class.available, :count).by(1)
+    end
+
+    it "is not available when it has an unreachable episode" do
+      expect do
+        create(:podcast_episode, reachable: false)
+        create(:podcast, published: true)
+      end.to change(described_class.available, :count).by(0)
+    end
+
+    it "is not available when it is not published" do
+      expect do
+        create(:podcast, published: false)
+      end.to change(described_class.available, :count).by(0)
     end
   end
 
   describe "#existing_episode" do
-    let(:podcast) { create(:podcast) }
     let(:guid) { "<guid isPermaLink=\"false\">http://podcast.example/file.mp3</guid>" }
 
     let(:item) do
@@ -130,35 +166,24 @@ RSpec.describe Podcast, type: :model do
     end
 
     it "doesn't determine existing episode by non-unique website_url" do
-      podcast.update_columns(unique_website_url?: false)
+      podcast.update_attribute(:unique_website_url?, false)
       create(:podcast_episode, podcast: podcast, website_url: "https://litealloy.ru")
       expect(podcast.existing_episode(item)).to eq(nil)
     end
   end
 
   describe "#admins" do
-    let(:podcast) { create(:podcast) }
-    let(:podcast2) { create(:podcast) }
-    let(:podcast3) { create(:podcast) }
     let(:user) { create(:user) }
-    let(:user2) { create(:user) }
-    let(:user3) { create(:user) }
 
-    before do
+    it "returns podcast admins" do
       user.add_role(:podcast_admin, podcast)
-      user2.add_role(:podcast_admin, podcast)
-      user.add_role(:podcast_admin, podcast3)
-      user3.add_role(:podcast_admin, podcast2)
-      user3.add_role(:podcast_admin, podcast2)
-      [user, user2, user3].each(&:save)
+      expect(podcast.admins).to include(user)
     end
 
-    it "returns proper admins" do
-      expect(podcast.admins.sort).to eq([user, user2].sort)
-    end
-
-    it "returns proper admins for podcast3" do
-      expect(podcast3.admins).to eq([user])
+    it "does not return admins for other podcasts" do
+      other_podcast = create(:podcast)
+      user.add_role(:podcast_admin, other_podcast)
+      expect(podcast.admins).to be_empty
     end
   end
 end

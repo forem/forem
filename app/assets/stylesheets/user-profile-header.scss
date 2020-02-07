@@ -191,7 +191,6 @@
     }
     .social{
       font-size:15px;
-      // width:550px;
       max-width:100%;
       margin:10px 0px 10px;
       z-index:3;
@@ -209,6 +208,7 @@
           width:23px;
           height:23px;
           margin: 0px 0px;
+          filter: none;
           @media screen and ( min-width: 580px ){
             margin:3px;
             width:28px;
@@ -235,6 +235,7 @@
   .user-metadata-details{
     font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
     width: 97%;
+    overflow-y: auto;
     @media screen and ( min-width: 1100px ){
       position: absolute;
       right: 0px;
@@ -500,22 +501,45 @@
       position: absolute;
       top: 30px;
       right: 3px;
-      width: 200px;
       border: 1px solid $light-medium-gray;
       border-radius: 3px;
-      background: white;
+      @include themeable(
+        background,
+        theme-container-background,
+        #fff
+      );    
       z-index: 20;
-      width: 130px;
+      width: 200px;
       box-shadow: $shadow;
       a {
         font-size: 0.75em;
-        color: $black;
+        @include themeable(
+          color,
+          theme-color,
+          $black
+        );
         display: block;
-        padding: 6px 10px;
+        padding: 9px 10px;
         font-weight: bold;
       }
       &.showing {
         display: block;
+      }
+      button {
+        font-size: 0.75em;
+        @include themeable(
+          color,
+          theme-color,
+          $black
+        );
+        font-weight: bold;
+        width: 100%;
+        text-align: left;
+        padding-left: 10px;
+        display: block;
+        border: none;
+        text-overflow: ellipsis;
+        overflow: hidden;
       }
     }
   }

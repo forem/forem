@@ -5,6 +5,14 @@ RSpec.describe "Api::V0::Users", type: :request do
     JSON.parse(response.body)
   end
 
+  describe "GET /api/users" do
+    it "returns no users if state is not present" do
+      get api_users_path, params: {}
+      expect(response).to have_http_status(:success)
+      expect(json_response).to be_empty
+    end
+  end
+
   describe "GET /api/users/me" do
     it "requires request to be authenticated" do
       get me_api_users_path
@@ -13,7 +21,7 @@ RSpec.describe "Api::V0::Users", type: :request do
 
     context "when request is authenticated" do
       let_it_be(:user)         { create(:user) }
-      let_it_be(:access_token) { create(:doorkeeper_access_token, resource_owner: user) }
+      let_it_be(:access_token) { create(:doorkeeper_access_token, resource_owner: user, scopes: "public") }
 
       it "return user's information" do
         get me_api_users_path, params: { access_token: access_token.token }

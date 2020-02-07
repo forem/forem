@@ -1,4 +1,4 @@
-<div class="single-article single-article-small-pic">
+<div class="single-article single-article-small-pic" data-content-user-id="<%= story.user_id %>">
   <% if story.video.present? && story.video_thumbnail_url.present? %>
     <a class="single-article-video-preview" style="background-image:url(<%= story.cloudinary_video_url %>)" href="<%= story.path %>">
       <div class="single-article-video-duration">
@@ -36,13 +36,6 @@
       <a href="/t/<%= tag %>"><span class="tag">#<%= tag %></span></a>
     <% end %>
   </div>
-  <% if story.comments_count > 0 %>
-    <div class="article-engagement-count comments-count">
-      <a href="<%= story.path %>#comments">
-        <img src="<%= asset_path("comments-bubble.png") %>" alt="chat" /><span class="engagement-count-number"><%= story.comments_count %></span>
-      </a>
-    </div>
-  <% end %>
   <div class="article-engagement-count reactions-count" data-reaction-count data-reactable-id="<%= story.id %>">
     <a href="<%= story.path %>">
       <img src="<%= asset_path("reactions-stack.png") %>" alt="Reactions" /><span id="engagement-count-number-<%= story.id %>" class="engagement-count-number">
@@ -50,13 +43,21 @@
         </span>
     </a>
   </div>
+  <% if story.comments_count > 0 %>
+    <div class="article-engagement-count comments-count">
+      <a href="<%= story.path %>#comments">
+        <img src="<%= asset_path("comments-bubble.png") %>" alt="chat" /><span class="engagement-count-number"><%= story.comments_count %></span>
+      </a>
+    </div>
+  <% end %>
   <a
     href="<%= story.path %>"
     class="article-reading-time">
     <%= story.reading_time < 1 ? 1 : story.reading_time %> min read
   </a>
   <button
-    class="article-engagement-count bookmark-engage"
+    type="button"
+    class="article-engagement-count engage-button bookmark-button"
     data-reactable-id="<%= story.id %>"
     aria-label="Save to reading list"
     title="Save to reading list">

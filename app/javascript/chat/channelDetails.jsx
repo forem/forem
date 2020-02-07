@@ -94,7 +94,8 @@ class ChannelDetails extends Component {
 
   userInList = (list, user) => {
     const keys = Object.keys(list);
-    for (const key of keys) {
+    for (let i = 0; i < keys.length; i += 1) {
+      const key = keys[i];
       if (user.id === list[key].id) {
         return true;
       }
@@ -110,12 +111,12 @@ class ChannelDetails extends Component {
           className="channeldetails__userprofileimage"
           src={user.profile_image}
           alt={`${user.username} profile`}
-          data-content={`users/${user.id}`}
+          data-content="sidecar-user"
         />
         <a
           href={`/${user.username}`}
           style={{ color: user.darker_color, padding: '3px 0px' }}
-          data-content={`users/by_username?url=${user.username}`}
+          data-content="sidecar-user"
         >
           {user.name}
         </a>
@@ -144,16 +145,25 @@ class ChannelDetails extends Component {
           if (this.userInList(channel.channel_users, user)) {
             invite = (
               <span className="channel__member">
-                is already in <em>{channel.channel_name}</em>
+                is already in 
+                {' '}
+                <em>{channel.channel_name}</em>
               </span>
             );
           }
           return (
             <div className="channeldetails__searchedusers">
               <a href={user.path} target="_blank" rel="noopener noreferrer">
-                <img src={user.user.profile_image_90} alt="profile_image" />@
-                {user.user.username} - {user.title}
-              </a>{' '}
+                <img src={user.user.profile_image_90} alt="profile_image" />
+@
+                {user.user.username}
+                {' '}
+-
+                {/* prettier-ignore */} 
+                {' '}
+                {user.title}
+              </a>
+              {' '}
               {invite}
             </div>
           );
@@ -167,7 +177,12 @@ class ChannelDetails extends Component {
             rel="noopener noreferrer"
             data-content={`users/${user.id}`}
           >
-            @{user.username} - {user.name}
+            @
+            {user.username}
+            {' '}
+- 
+            {' '}
+            {user.name}
           </a>
         </div>
       ));
@@ -188,7 +203,8 @@ class ChannelDetails extends Component {
         <div className="channeldetails__leftchannel">
           <h2>Danger Zone</h2>
           <h3>
-            You have left this channel{' '}
+            You have left this channel
+            {' '}
             <span role="img" aria-label="emoji">
               😢😢😢
             </span>

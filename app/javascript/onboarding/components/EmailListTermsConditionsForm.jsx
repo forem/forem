@@ -1,8 +1,12 @@
+/* eslint camelcase: "off" */
+
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import Navigation from './Navigation';
 import { getContentOfToken } from '../utilities';
+
+/* eslint-disable camelcase */
 
 class EmailTermsConditionsForm extends Component {
   constructor(props) {
@@ -15,7 +19,7 @@ class EmailTermsConditionsForm extends Component {
     this.state = {
       checked_code_of_conduct: false,
       checked_terms_and_conditions: false,
-      email_membership_newsletter: true,
+      email_newsletter: true,
       email_digest_periodic: true,
       message: '',
       textShowing: null,
@@ -67,14 +71,14 @@ class EmailTermsConditionsForm extends Component {
       this.setState({
         message: 'You must agree to our Code of Conduct before continuing!',
       });
-      return;
+      return false;
     }
     if (!checked_terms_and_conditions) {
       this.setState({
         message:
           'You must agree to our Terms and Conditions before continuing!',
       });
-      return;
+      return false;
     }
     return true;
   }
@@ -100,7 +104,7 @@ class EmailTermsConditionsForm extends Component {
       message,
       checked_code_of_conduct,
       checked_terms_and_conditions,
-      email_membership_newsletter,
+      email_newsletter,
       email_digest_periodic,
       textShowing,
     } = this.state;
@@ -109,10 +113,14 @@ class EmailTermsConditionsForm extends Component {
       return (
         <div className="onboarding-main">
           <div className="onboarding-content checkbox-slide">
-            <button onClick={() => this.backToSlide()}>BACK</button>
+            <button type="button" onClick={() => this.backToSlide()}>
+              BACK
+            </button>
             <div
+              /* eslint-disable react/no-danger */
               dangerouslySetInnerHTML={{ __html: textShowing }}
               style={{ height: '360px', overflow: 'scroll' }}
+              /* eslint-enable react/no-danger */
             />
           </div>
         </div>
@@ -127,8 +135,8 @@ class EmailTermsConditionsForm extends Component {
             <label htmlFor="checked_code_of_conduct">
               <input
                 type="checkbox"
-                name="checked_code_of_conduct"
                 id="checked_code_of_conduct"
+                name="checked_code_of_conduct"
                 checked={checked_code_of_conduct}
                 onChange={this.handleChange}
               />
@@ -161,12 +169,12 @@ class EmailTermsConditionsForm extends Component {
               </a>
             </label>
             <h3>Email Preferences</h3>
-            <label htmlFor="email_membership_newsletter">
+            <label htmlFor="email_newsletter">
               <input
                 type="checkbox"
-                id="email_membership_newsletter"
-                name="email_membership_newsletter"
-                checked={email_membership_newsletter}
+                id="email_newsletter"
+                name="email_newsletter"
+                checked={email_newsletter}
                 onChange={this.handleChange}
               />
               Do you want to receive our weekly newsletter emails?

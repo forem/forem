@@ -5,14 +5,6 @@ class Tag < ActsAsTaggableOn::Tag
   acts_as_followable
   resourcify
 
-  NAMES = %w[
-    beginners career computerscience git go java javascript react vue webassembly
-    linux productivity python security webdev css php laravel opensource npm a11y
-    ruby cpp dotnet swift testing devops vim kotlin rust elixir graphql blockchain sre
-    scala vscode docker kubernetes aws android ios angular csharp typescript django rails
-    clojure ubuntu elm gamedev flutter dart bash machinelearning sql
-  ].freeze
-
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
 
   attr_accessor :tag_moderator_id, :remove_moderator_id
@@ -30,14 +22,15 @@ class Tag < ActsAsTaggableOn::Tag
   validates :category, inclusion: { in: ALLOWED_CATEGORIES }
 
   validate :validate_alias
+  validate :validate_name
   before_validation :evaluate_markdown
   before_validation :pound_it
   before_save :calculate_hotness_score
-  after_save :bust_cache
+  after_commit :bust_cache
   before_save :mark_as_updated
 
   algoliasearch per_environment: true do
-    attribute :name, :bg_color_hex, :text_color_hex, :hotness_score, :supported, :short_summary
+    attribute :name, :bg_color_hex, :text_color_hex, :hotness_score, :supported, :short_summary, :rules_html
     attributesForFaceting [:supported]
     customRanking ["desc(hotness_score)"]
     searchableAttributes %w[name short_summary]
@@ -61,6 +54,18 @@ class Tag < ActsAsTaggableOn::Tag
     ALLOWED_CATEGORIES
   end
 
+  def self.aliased_name(word)
+    tag = find_by(name: word.downcase)
+    return unless tag
+
+    tag.alias_for.presence || tag.name
+  end
+
+  def validate_name
+    errors.add(:name, "is too long (maximum is 30 characters)") if name.length > 30
+    errors.add(:name, "contains non-alphanumeric characters") unless name.match?(/\A[[:alnum:]]+\z/)
+  end
+
   private
 
   def evaluate_markdown
@@ -78,7 +83,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def bust_cache
-    Tags::BustCacheJob.perform_later(name)
+    Tags::BustCacheWorker.perform_async(name)
   end
 
   def validate_alias

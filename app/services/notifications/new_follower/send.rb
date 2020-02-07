@@ -7,6 +7,9 @@ module Notifications
       #   * :followable_type [String] - "User" or "Organization"
       #   * :follower_id [Integer] - user id
       def initialize(follow_data, is_read = false)
+        # we explicitly symbolize_keys because FollowData.new will fail otherwise with an error of
+        # ":followable_id is missing in Hash input". FollowData expects a symbol, not a string.
+        follow_data.symbolize_keys!
         follow_data = follow_data.is_a?(FollowData) ? follow_data : FollowData.new(follow_data)
         @followable_id = follow_data.followable_id # fetch(:followable_id)
         @followable_type = follow_data.followable_type # fetch(:followable_type)
@@ -38,8 +41,18 @@ module Notifications
         else
           json_data = { user: user_data(follower), aggregated_siblings: aggregated_siblings }
           notification = Notification.find_or_initialize_by(notification_params)
-          notification.notifiable_id = recent_follows.first.id
+
+          # we explicitly load the correct follow, to avoid incurring in the possibility of
+          # two different follows created at the same time
+          notifiable_follow = recent_follows.detect { |f| f.follower_id == @follower_id }
+
+          # if this method is called after a ".stop_following" the follower_id won't be
+          # present, hence, we load the most recent
+          notifiable_follow ||= recent_follows.first
+
+          notification.notifiable_id = notifiable_follow.id
           notification.notifiable_type = "Follow"
+
           notification.json_data = json_data
           notification.notified_at = Time.current
           notification.read = is_read

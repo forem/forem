@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe HtmlCssToImage do
+RSpec.describe HtmlCssToImage, type: :lib do
   describe ".url" do
     it "returns the url to the created image" do
       stub_request(:post, /hcti.io/).
@@ -35,6 +35,17 @@ RSpec.describe HtmlCssToImage do
 
       expect(described_class.fetch_url(html: "test")).to eq("https://hcti.io/v1/image/6c52de9d-4d37-4008-80f8-67155589e1a1")
       expect(Rails.cache).to have_received(:write).once
+    end
+
+    it "cache has a long expiration" do
+      # Images are expensive to generate, make sure we don't expire them too quickly.
+      stub_request(:post, /hcti.io/).
+        to_return(status: 200,
+                  body: '{ "url": "https://hcti.io/v1/image/6c52de9d-4d37-4008-80f8-67155589e1a1" }',
+                  headers: { "Content-Type" => "application/json" })
+
+      expect(described_class.fetch_url(html: "test")).to eq("https://hcti.io/v1/image/6c52de9d-4d37-4008-80f8-67155589e1a1")
+      expect(Rails.cache).to have_received(:write).with(anything, anything, expires_in: HtmlCssToImage::CACHE_EXPIRATION).once
     end
 
     it "does not cache errors" do
