@@ -19,7 +19,6 @@ class ChatChannelMembershipsController < ApplicationController
       chat_channel_id: @chat_channel.id,
       status: "pending",
     )
-    @chat_channel.index!
   end
 
   def update
@@ -31,7 +30,6 @@ class ChatChannelMembershipsController < ApplicationController
     else
       @chat_channel_membership.update(status: "rejected")
     end
-    @chat_channel_membership.chat_channel.index!
     @chat_channels_memberships = current_user.
       chat_channel_memberships.includes(:chat_channel).
       where(status: "pending").
@@ -45,7 +43,6 @@ class ChatChannelMembershipsController < ApplicationController
     authorize @chat_channel_membership
     @chat_channel_membership.update(status: "left_channel")
     @chat_channel_membership.remove_from_index!
-    @chat_channel_membership.chat_channel.index!
     @chat_channels_memberships = []
     render json: { result: "left channel" }, status: :created
   end

@@ -1,5 +1,4 @@
 class ChatChannel < ApplicationRecord
-  include AlgoliaSearch
   attr_accessor :current_user, :usernames_string
 
   has_many :messages, dependent: :destroy
@@ -18,18 +17,6 @@ class ChatChannel < ApplicationRecord
   validates :channel_type, presence: true, inclusion: { in: %w[open invite_only direct] }
   validates :status, presence: true, inclusion: { in: %w[active inactive blocked] }
   validates :slug, uniqueness: true, presence: true
-
-  algoliasearch index_name: "SecuredChatChannel_#{Rails.env}" do
-    attribute :id, :viewable_by, :slug, :channel_type,
-              :channel_name, :last_message_at, :status,
-              :messages_count, :channel_human_names, :channel_mod_ids, :pending_users_select_fields,
-              :description
-    searchableAttributes %i[channel_name channel_slug channel_human_names]
-    attributesForFaceting ["filterOnly(viewable_by)", "filterOnly(status)", "filterOnly(channel_type)"]
-    ranking ["desc(last_message_at)"]
-  end
-
-  before_destroy :remove_from_index!, prepend: true
 
   def open?
     channel_type == "open"
@@ -90,7 +77,6 @@ class ChatChannel < ApplicationRecord
         status: "active",
       )
       channel.add_users(users)
-      channel.index!
       channel.chat_channel_memberships.map(&:index!)
     end
     channel
@@ -131,14 +117,6 @@ class ChatChannel < ApplicationRecord
     end
   end
 
-  def viewable_by
-    active_memberships.pluck(:user_id)
-  end
-
-  def messages_count
-    messages.size
-  end
-
   def channel_human_names
     active_memberships.
       order("last_opened_at DESC").limit(5).includes(:user).map do |membership|
@@ -147,7 +125,6 @@ class ChatChannel < ApplicationRecord
   end
 
   def channel_users
-    # Purely for algolia indexing
     obj = {}
 
     relation = active_memberships.includes(:user).select(:id, :user_id, :last_opened_at)

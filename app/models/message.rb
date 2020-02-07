@@ -27,7 +27,6 @@ class Message < ApplicationRecord
 
   def update_chat_channel_last_message_at
     chat_channel.touch(:last_message_at)
-    chat_channel.index!
     chat_channel.chat_channel_memberships.reindex!
   end
 
