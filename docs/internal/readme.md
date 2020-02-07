@@ -2,6 +2,7 @@
 title: Internal Guide
 items:
   - internal-search.md
+  - internal-user-interface.md
 ---
 
 # Internal Guide
