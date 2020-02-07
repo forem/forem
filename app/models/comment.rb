@@ -97,15 +97,6 @@ class Comment < ApplicationRecord
     end
   end
 
-  def self.users_with_number_of_comments(user_ids, before_date)
-    joins(:user).
-      select("users.username, COUNT(comments.user_id) AS number_of_comments").
-      where(user_id: user_ids).
-      where(arel_table[:created_at].gt(before_date)).
-      group(User.arel_table[:username]).
-      order("number_of_comments DESC")
-  end
-
   def self.tree_for(commentable, limit = 0)
     commentable.comments.includes(:user).arrange(order: "score DESC").to_a[0..limit - 1].to_h
   end
