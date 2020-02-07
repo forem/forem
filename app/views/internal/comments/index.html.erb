@@ -19,7 +19,7 @@
           <h5 class="card-title text-center">
             <% if comment.user %>
               <a href="<%= comment.user.path %>" target="_blank">
-                <img class="rounded" height="30" src="<%= ProfileImage.new(comment.user).get(50) %>" alt="<%= comment.user.username %> profile" /> <%= comment.user.username %>
+                <img class="rounded" height="30" src="<%= ProfileImage.new(comment.user).get(width: 50) %>" alt="<%= comment.user.username %> profile" /> <%= comment.user.username %>
               </a>
             <% end %>
             <% if comment.user && comment.user.twitter_username.present? %>

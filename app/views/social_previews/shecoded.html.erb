@@ -39,7 +39,7 @@
 
 <div class="preview-div-wrapper">
   <div class="avatar">
-    <img src="<%= ProfileImage.new(@article.user).get(320) %>" alt="<%= @article.user.name %> profile image">
+    <img src="<%= ProfileImage.new(@article.user).get(width: 320) %>" alt="<%= @article.user.name %> profile image">
   </div>
   <div class="title">
     <strong><%= @article.title %></strong>

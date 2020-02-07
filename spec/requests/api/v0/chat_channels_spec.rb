@@ -64,7 +64,7 @@ RSpec.describe "Api::V0::ChatChannels", type: :request do
         expected_last_opened_at = Time.zone.parse(response_channel_users[user.username]["last_opened_at"]).to_i
         response_user = response_channel_users[user.username]
 
-        expect(response_user["profile_image"]).to eq(ProfileImage.new(user).get(90))
+        expect(response_user["profile_image"]).to eq(ProfileImage.new(user).get(width: 90))
         expect(response_user["darker_color"]).to eq(user.decorate.darker_color)
         expect(response_user["name"]).to eq(user.name)
         expect(expected_last_opened_at).to eq(membership.last_opened_at.to_i)

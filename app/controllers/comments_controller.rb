@@ -91,7 +91,7 @@ class CommentsController < ApplicationController
           id: current_user.id,
           username: current_user.username,
           name: current_user.name,
-          profile_pic: ProfileImage.new(current_user).get(50),
+          profile_pic: ProfileImage.new(current_user).get(width: 50),
           twitter_username: current_user.twitter_username,
           github_username: current_user.github_username
         }

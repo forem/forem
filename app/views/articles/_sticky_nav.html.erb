@@ -36,7 +36,7 @@
 
 <div class="primary-sticky-nav" id="article-show-primary-sticky-nav">
   <div class="primary-sticky-nav-element primary-sticky-nav-author">
-    <a href="<%= @actor.path %>"><img src="<%= ProfileImage.new(@actor).get(90) %>" class="primary-sticky-nav-author-top-profile-image" alt="<%= @actor.name %> profile image"></a>
+    <a href="<%= @actor.path %>"><img src="<%= ProfileImage.new(@actor).get(width: 90) %>" class="primary-sticky-nav-author-top-profile-image" alt="<%= @actor.name %> profile image"></a>
     <div style="display:inline-block">
       <div class="primary-sticky-nav-author-name">
         <a href="<%= @actor.path %>">
@@ -100,7 +100,7 @@
               </div>
             <% end %>
             <a class="primary-sticky-nav-element primary-sticky-nav-author-element" href="<%= article.path %>">
-              <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" loading="lazy" alt="<%= article.user.name %> profile image">
+              <img src="<%= ProfileImage.new(article.user).get(width: 90) %>" class="primary-sticky-nav-profile-image" loading="lazy" alt="<%= article.user.name %> profile image">
               <%= article.title %>
               <div class="primary-sticky-nav-element-details">
                 <% article.decorate.cached_tag_list_array.each do |tag| %>
@@ -120,7 +120,7 @@
               </div>
             <% end %>
             <a class="primary-sticky-nav-element" href="<%= article.path %>">
-              <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" loading="lazy" alt="<%= article.user.name %> profile image">
+              <img src="<%= ProfileImage.new(article.user).get(width: 90) %>" class="primary-sticky-nav-profile-image" loading="lazy" alt="<%= article.user.name %> profile image">
               <%= article.title %>
               <div class="primary-sticky-nav-element-details">
                 <% article.decorate.cached_tag_list_array.each do |tag| %>

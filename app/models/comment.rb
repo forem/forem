@@ -74,8 +74,8 @@ class Comment < ApplicationRecord
           username: user.username,
           name: user.name,
           id: user.id,
-          profile_pic: ProfileImage.new(user).get(90),
-          profile_image_90: ProfileImage.new(user).get(90),
+          profile_pic: ProfileImage.new(user).get(width: 90),
+          profile_image_90: ProfileImage.new(user).get(width: 90),
           github_username: user.github_username,
           twitter_username: user.twitter_username
         }
