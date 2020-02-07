@@ -1529,6 +1529,10 @@
           opacity: 0.9;
         }
       }
+      & + .widget-body--sponsorship-arbitrary img {
+        width: 100%;
+        border: 1px solid darken($light-gray, 4%);
+      }
       .social-icon {
         width: 30px;
         height: 30px;

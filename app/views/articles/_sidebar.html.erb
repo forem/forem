@@ -55,7 +55,7 @@
       <% @left_sidebar_ad = DisplayAd.for_display("sidebar_left") %>
       <% if @left_sidebar_ad %>
         <div class="widget" id="sponsorship-arbitrary-display-widget" data-id="<%= @left_sidebar_ad.id %>">
-          <div class="widget-body" style="margin-top:-6px">
+          <div class="widget-body widget-body--sponsorship-arbitrary" style="margin-top:-6px">
             <%= @left_sidebar_ad.processed_html.html_safe %>
           </div>
         </div>
