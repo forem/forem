@@ -4,7 +4,6 @@ module Users
       # We only destroy direct message channels, not open and invite-only ones
       direct_channels = user.chat_channels.where(channel_type: "direct")
       direct_channels.each do |direct_channel|
-        direct_channel.remove_from_index!
         cleanup_memberships(direct_channel.chat_channel_memberships)
         direct_channel.destroy!
       end
