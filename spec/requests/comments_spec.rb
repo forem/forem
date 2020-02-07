@@ -290,38 +290,6 @@ RSpec.describe "Comments", type: :request do
     end
   end
 
-  describe "DELETE /comments/:id" do
-    before do
-      sign_in user
-      comment
-    end
-
-    it "deletes" do
-      expect do
-        delete "/comments/#{comment.id}",
-               params: { comment: { body_markdown: "{edited comment}" } }
-      end.to change(Comment, :count).by(-1)
-      expect(response).to have_http_status(:redirect)
-    end
-
-    context "when the article is deleted" do
-      before do
-        article.destroy
-        put "/comments/#{comment.id}",
-            params: { comment: { body_markdown: "{edited comment}" } }
-        comment.reload
-      end
-
-      it "deletes" do
-        expect do
-          delete "/comments/#{comment.id}",
-                 params: { comment: { body_markdown: "{edited comment}" } }
-        end.to change(Comment, :count).by(-1)
-        expect(response).to have_http_status(:redirect)
-      end
-    end
-  end
-
   describe "PATCH /comments/:comment_id/hide" do
     include_examples "PATCH /comments/:comment_id/hide or unhide", path: "hide", hidden: "true"
   end
