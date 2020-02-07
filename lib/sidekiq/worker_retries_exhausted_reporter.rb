@@ -1,3 +1,6 @@
+# Any time a worker has failed and will no longer retry we want to be
+# notified bc manual intervention will be needed to get the
+# job to succeed.
 module Sidekiq
   class WorkerRetriesExhaustedReporter
     def self.report_final_failure(job)
