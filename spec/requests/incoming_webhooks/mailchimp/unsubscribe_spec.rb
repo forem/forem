@@ -9,7 +9,7 @@ RSpec.describe "IncomingWebhooks::MailchimpUnsubscribesController", type: :reque
     let(:params) { { data: { email: user.email, list_id: list_id } } }
 
     before do
-      allow(SiteConfig).to receive(:mailchimp_webhook_secret).and_return(secret)
+      allow(SiteConfig).to receive(:mailchimp_incoming_webhook_secret).and_return(secret)
     end
 
     it "return not authorized if the secret is incorrect" do

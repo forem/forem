@@ -39,7 +39,7 @@ class SiteConfig < RailsSettings::Base
 
   # Mailchimp webhook secret. Part of the callback URL in the Mailchimp settings.
   # <https://mailchimp.com/developer/guides/about-webhooks/#Webhooks_security>
-  field :mailchimp_webhook_secret, type: :string, default: ""
+  field :mailchimp_incoming_webhook_secret, type: :string, default: ""
 
   # Email digest frequency
   field :periodic_email_digest_max, type: :integer, default: 0

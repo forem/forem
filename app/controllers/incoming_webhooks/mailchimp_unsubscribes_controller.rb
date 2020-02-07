@@ -17,7 +17,7 @@ class IncomingWebhooks::MailchimpUnsubscribesController < ApplicationController
   private
 
   def valid_secret?
-    params[:secret] == SiteConfig.mailchimp_webhook_secret
+    params[:secret] == SiteConfig.mailchimp_incoming_webhook_secret
   end
 
   def email_type
