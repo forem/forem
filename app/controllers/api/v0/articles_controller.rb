@@ -117,7 +117,6 @@ module Api
           :title, :body_markdown, :published, :series,
           :main_image, :canonical_url, :description, tags: []
         ]
-
         allowed_params << :organization_id if params.dig("article", "organization_id") && allowed_to_change_org_id?
         params.require(:article).permit(allowed_params)
       end
