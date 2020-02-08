@@ -86,7 +86,7 @@ class Notification < ApplicationRecord
     end
 
     def send_tag_adjustment_notification(tag_adjustment)
-      Notifications::TagAdjustmentNotificationJob.perform_later(tag_adjustment.id)
+      Notifications::TagAdjustmentNotificationWorker.perform_async(tag_adjustment.id)
     end
 
     def send_milestone_notification(type:, article_id:)
