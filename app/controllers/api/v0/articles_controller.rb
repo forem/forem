@@ -33,6 +33,13 @@ module Api
       end
 
       def create
+        # Check if the article param is a Hash
+        unless params[:article].respond_to?(:dig)
+          message = "article param must be a JSON object. You provided article as a #{params[:article].class.name}"
+          render json: { error: message, status: 422 }, status: :unprocessable_entity
+          return
+        end
+
         @article = Articles::Creator.call(@user, article_params)
         if @article.persisted?
           render "show", status: :created, location: @article.url
@@ -43,6 +50,13 @@ module Api
       end
 
       def update
+        # Check if the article param is a Hash
+        unless params[:article].respond_to?(:dig)
+          message = "article param must be a JSON object. You provided article as a #{params[:article].class.name}"
+          render json: { error: message, status: 422 }, status: :unprocessable_entity
+          return
+        end
+
         @article = Articles::Updater.call(@user, params[:id], article_params)
         render "show", status: :ok
       end
@@ -103,6 +117,7 @@ module Api
           :title, :body_markdown, :published, :series,
           :main_image, :canonical_url, :description, tags: []
         ]
+
         allowed_params << :organization_id if params.dig("article", "organization_id") && allowed_to_change_org_id?
         params.require(:article).permit(allowed_params)
       end
