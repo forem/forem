@@ -7,6 +7,8 @@ module Api
       before_action :authenticate!, only: :me
       before_action -> { doorkeeper_authorize! :public }, only: %w[index show], if: -> { doorkeeper_token }
 
+      before_action :check_if_article_param_is_hash, only: %w[create update]
+
       before_action :set_cache_control_headers, only: %i[index show]
 
       before_action :cors_preflight_check
@@ -33,13 +35,6 @@ module Api
       end
 
       def create
-        # Check if the article param is a Hash
-        unless params[:article].respond_to?(:dig)
-          message = "article param must be a JSON object. You provided article as a #{params[:article].class.name}"
-          render json: { error: message, status: 422 }, status: :unprocessable_entity
-          return
-        end
-
         @article = Articles::Creator.call(@user, article_params)
         if @article.persisted?
           render "show", status: :created, location: @article.url
@@ -50,13 +45,6 @@ module Api
       end
 
       def update
-        # Check if the article param is a Hash
-        unless params[:article].respond_to?(:dig)
-          message = "article param must be a JSON object. You provided article as a #{params[:article].class.name}"
-          render json: { error: message, status: 422 }, status: :unprocessable_entity
-          return
-        end
-
         @article = Articles::Updater.call(@user, params[:id], article_params)
         render "show", status: :ok
       end
@@ -129,6 +117,13 @@ module Api
           potential_user.org_admin?(params.dig("article", "organization_id")) ||
             @user.any_admin?
         end
+      end
+
+      def check_if_article_param_is_hash
+        return if params[:article].respond_to?(:dig)
+
+        message = "article param must be a JSON object. You provided article as a #{params[:article].class.name}"
+        render json: { error: message, status: 422 }, status: :unprocessable_entity
       end
     end
   end
