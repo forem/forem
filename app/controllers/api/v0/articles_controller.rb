@@ -7,7 +7,7 @@ module Api
       before_action :authenticate!, only: :me
       before_action -> { doorkeeper_authorize! :public }, only: %w[index show], if: -> { doorkeeper_token }
 
-      before_action :check_if_article_param_is_hash, only: %w[create update]
+      before_action :validate_article_param_is_hash, only: %w[create update]
 
       before_action :set_cache_control_headers, only: %i[index show]
 
@@ -119,7 +119,7 @@ module Api
         end
       end
 
-      def check_if_article_param_is_hash
+      def validate_article_param_is_hash
         return if params[:article].respond_to?(:dig)
 
         message = "article param must be a JSON object. You provided article as a #{params[:article].class.name}"
