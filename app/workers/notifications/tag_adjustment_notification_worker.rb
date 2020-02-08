@@ -9,6 +9,5 @@ module Notifications
 
       Notifications::TagAdjustmentNotification::Send.call(tag_adjustment)
     end
-
   end
 end
