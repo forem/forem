@@ -55,15 +55,19 @@ class ReactionsController < ApplicationController
       Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) if organization_article?(reaction)
       @result = "destroy"
     else
-      reaction = Reaction.create!(
+      reaction = Reaction.new(
         user_id: current_user.id,
         reactable_id: params[:reactable_id],
         reactable_type: params[:reactable_type],
         category: category,
       )
-      @result = "create"
-      Notification.send_reaction_notification(reaction, reaction.reactable.user)
-      Notification.send_reaction_notification(reaction, reaction.reactable.organization) if organization_article?(reaction)
+      if reaction.save
+        @result = "create"
+        Notification.send_reaction_notification(reaction, reaction.reactable.user)
+        Notification.send_reaction_notification(reaction, reaction.reactable.organization) if organization_article?(reaction)
+      else
+        @result = ""
+      end
     end
     render json: { result: @result, category: category }
   end
