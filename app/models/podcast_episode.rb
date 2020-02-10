@@ -42,7 +42,7 @@ class PodcastEpisode < ApplicationRecord
       attribute :user do
         { name: podcast.name,
           username: user_username,
-          profile_image_90: ProfileImage.new(user).get(90) }
+          profile_image_90: ProfileImage.new(user).get(width: 90) }
       end
       searchableAttributes ["unordered(title)",
                             "body_text",

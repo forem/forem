@@ -2,14 +2,13 @@
 
 git_source(:github) { |name| "https://github.com/#{name}.git" }
 source "https://rubygems.org"
-ruby "2.6.5"
+ruby File.read(".ruby-version").strip
 
 group :production do
   gem "nakayoshi_fork", "~> 0.0.4" # solves CoW friendly problem on MRI 2.2 and later
   gem "rack-host-redirect", "~> 1.3" # Lean and simple host redirection via Rack middleware
 end
 
-gem "actionpack-action_caching", "~> 1.2" # Action caching for Action Pack (removed from core in Rails 4.0)
 gem "active_record_union", "~> 1.3" # Adds proper union and union_all methods to ActiveRecord::Relation
 gem "activerecord-import", "~> 1.0" # Adds ability to bulk create activerecord objects
 gem "acts-as-taggable-on", "~> 6.5" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
@@ -34,9 +33,10 @@ gem "delayed_job_active_record", "~> 4.1" # ActiveRecord backend for Delayed::Jo
 gem "delayed_job_web", "~> 1.4" # Web interface for delayed_job
 gem "devise", "~> 4.7" # Flexible authentication solution for Rails
 gem "dogstatsd-ruby", "~> 4.6" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
-gem "doorkeeper", "~> 5.2" # Oauth 2 provider
+gem "doorkeeper", "~> 5.3" # Oauth 2 provider
 gem "draper", "~> 3.1" # Draper adds an object-oriented layer of presentation logic to your Rails apps
 gem "dry-struct", "~> 1.2" # Typed structs and value objects
+gem "elasticsearch", "~> 7.4" # Powers DEVs core search functionality
 gem "email_validator", "~> 2.0" # Email validator for Rails and ActiveModel
 gem "emoji_regex", "~> 2.0" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
 gem "envied", "~> 0.9" # Ensure presence and type of your app's ENV-variables
@@ -47,7 +47,7 @@ gem "feedjira", "~> 3.1" # A feed fetching and parsing library
 gem "figaro", "~> 1.1" # Simple, Heroku-friendly Rails app configuration using ENV and a single YAML file
 gem "fog-aws", "~> 3.5" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically correct strings or files
-gem "gemoji", "~> 3.0.1" # Character information and metadata for standard and custom emoji
+gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.3" # API wrapper for MailChimp's API
 gem "google-api-client", "~> 0.36" # Client for accessing Google APIs
 gem "honeybadger", "~> 4.5" # Used for tracking application errors
@@ -58,7 +58,7 @@ gem "httparty", "~> 0.17" # Makes http fun! Also, makes consuming restful web se
 gem "inline_svg", "~> 1.6" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.9" # Create JSON structures via a Builder-style DSL
 gem "jquery-rails", "~> 4.3" #  A gem to automate using jQuery with Rails
-gem "kaminari", "~> 1.1" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
+gem "kaminari", "~> 1.2" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
 gem "libhoney", "~> 1.14" # Ruby gem for sending data to Honeycomb
 gem "liquid", "~> 4.0" # A secure, non-evaling end user template engine with aesthetic markup
 gem "nokogiri", "~> 1.10" # HTML, XML, SAX, and Reader parser
@@ -98,6 +98,7 @@ gem "timber", "~> 3.0" # Great Ruby logging made easy
 gem "timber-rails", "~> 1.0" #  Timber integration for Rails
 gem "twilio-ruby", "~> 5.31" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 6.2" # A Ruby interface to the Twitter API
+gem "typhoeus", "~> 1.3.1" # Used with Elasticsearch to support http keep-alive connections
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.1" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
@@ -111,8 +112,6 @@ group :development do
   gem "derailed_benchmarks", "~> 1.6", require: false # A series of things you can use to benchmark a Rails or Ruby app
   gem "erb_lint", "~> 0.0", require: false # ERB Linter tool
   gem "fix-db-schema-conflicts", "~> 3.0" # Ensures consistent output of db/schema.rb despite local differences in the database
-  # switch foreman to stable release when thor dependency is updated to 0.20+
-  gem "foreman", github: "thepracticaldev/foreman", ref: "b64e401", require: false # Process manager for applications with multiple components
   gem "guard", "~> 2.16", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
   gem "guard-rspec", "~> 4.7", require: false # Guard::RSpec automatically run your specs
@@ -130,8 +129,8 @@ group :development, :test do
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.31" # Capybara is an integration testing tool for rack based web applications
   gem "faker", "~> 2.10" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "parallel_tests", "~> 2.30" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
-  gem "pry-byebug", "~> 3.7" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
+  gem "parallel_tests", "~> 2.31" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
+  gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 3.9" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 0.79", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.5", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
@@ -156,7 +155,7 @@ group :test do
   gem "stripe-ruby-mock", "~> 2.5", require: "stripe_mock" # A drop-in library to test stripe without hitting their servers
   gem "test-prof", "~> 0.10" # Ruby Tests Profiling Toolbox
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
-  gem "vcr", "~> 5.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
+  gem "vcr", "~> 5.1" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
   gem "webdrivers", "~> 4.2" # Run Selenium tests more easily with install and updates for all supported webdrivers
   gem "webmock", "~> 3.8" # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone

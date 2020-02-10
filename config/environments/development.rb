@@ -1,10 +1,9 @@
-def yarn_integrity_enabled?
-  ENV.fetch("YARN_INTEGRITY_ENABLED", "true") == "true"
-end
-
 Rails.application.configure do
   # Verifies that versions and hashed value of the package contents in the project's package.json
-  config.webpacker.check_yarn_integrity = yarn_integrity_enabled?
+  # As the integrity check is currently broken under Docker with webpacker,
+  # we can't enable this flag by default
+  # see <https://github.com/thepracticaldev/dev.to/pull/296#discussion_r210635685>
+  config.webpacker.check_yarn_integrity = ENV.fetch("YARN_INTEGRITY_ENABLED", "true") == "true"
 
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -94,12 +93,8 @@ Rails.application.configure do
 
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
-  # Install the Timber.io logger
-  send_logs_to_timber = ENV["SEND_LOGS_TO_TIMBER"] || "false" # <---- set to false to stop sending dev logs to Timber.io
-  log_device = send_logs_to_timber == "true" ? Timber::LogDevices::HTTP.new(ENV["TIMBER"]) : STDOUT
-  logger = Timber::Logger.new(log_device)
-  logger.level = config.log_level
-  config.logger = ActiveSupport::TaggedLogging.new(logger)
+  # Debug is the default log_level, but can be changed per environment.
+  config.log_level = :debug
 
   # See <https://github.com/flyerhzm/bullet#configuration> for other config options
   config.after_initialize do

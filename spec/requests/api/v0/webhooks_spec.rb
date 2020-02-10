@@ -1,11 +1,15 @@
 require "rails_helper"
 
 RSpec.describe "Api::V0::Webhooks", type: :request do
-  let(:user) { create(:user) }
+  let_it_be_changeable(:user) { create(:user) }
+  let_it_be_changeable(:webhook) do
+    create(:webhook_endpoint, user: user, target_url: "https://api.example.com/go")
+  end
 
   describe "GET /api/v0/webhooks" do
-    let!(:webhook) { create(:webhook_endpoint, user: user, target_url: "https://api.example.com/go") }
-    let!(:webhook2) { create(:webhook_endpoint, user: user, target_url: "https://api.example.com/webhook") }
+    let_it_be_readonly(:webhook2) do
+      create(:webhook_endpoint, user: user, target_url: "https://api.example.com/webhook")
+    end
 
     before do
       sign_in user
@@ -19,42 +23,79 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
 
     it "returns json on success" do
       get api_webhooks_path
-      json = JSON.parse(response.body)
+
+      json = response.parsed_body
       ids = json.map { |item| item["id"] }
       urls = json.map { |item| item["target_url"] }
       expect(ids).to eq([webhook.id, webhook2.id])
       expect(urls).to eq(%w[https://api.example.com/go https://api.example.com/webhook])
     end
+
+    it "returns the correct json representation" do
+      get api_webhooks_path
+
+      response_webhook = response.parsed_body.first
+
+      expect(response_webhook["type_of"]).to eq("webhook_endpoint")
+      expect(response_webhook["id"]).to eq(webhook.id)
+      expect(response_webhook["source"]).to eq(webhook.source)
+      expect(response_webhook["target_url"]).to eq(webhook.target_url)
+      expect(response_webhook["events"]).to eq(webhook.events)
+      expect(response_webhook["created_at"]).to eq(webhook.created_at.rfc3339)
+    end
   end
 
   describe "GET /api/v0/webhooks/:id" do
-    let!(:webhook) { create(:webhook_endpoint, user: user, target_url: "https://api.example.com/go") }
-
     before do
       sign_in user
     end
 
     it "returns 200 on success" do
       get api_webhook_path(webhook.id)
+
       expect(response).to have_http_status(:ok)
     end
 
     it "returns 404 if the webhook does not exist" do
       get api_webhook_path(9999)
+
       expect(response).to have_http_status(:not_found)
     end
 
     it "returns 404 if another user webhook is accessed" do
       other_webhook = create(:webhook_endpoint, user: create(:user))
+
       get api_webhook_path(other_webhook.id)
+
       expect(response).to have_http_status(:not_found)
     end
 
-    it "returns json on success" do
+    it "returns the correct json representation" do
       get api_webhook_path(webhook.id)
-      json = JSON.parse(response.body)
-      expect(json["target_url"]).to eq(webhook.target_url)
-      expect(json["user"]["username"]).to eq(user.username)
+
+      response_webhook = response.parsed_body
+
+      expect(response_webhook["type_of"]).to eq("webhook_endpoint")
+      expect(response_webhook["id"]).to eq(webhook.id)
+      expect(response_webhook["source"]).to eq(webhook.source)
+      expect(response_webhook["target_url"]).to eq(webhook.target_url)
+      expect(response_webhook["events"]).to eq(webhook.events)
+      expect(response_webhook["created_at"]).to eq(webhook.created_at.rfc3339)
+    end
+
+    it "returns the correct json representation for the webhook user" do
+      get api_webhook_path(webhook.id)
+
+      response_webhook_user = response.parsed_body["user"]
+      user_profile_image = ProfileImage.new(webhook.user)
+
+      expect(response_webhook_user["name"]).to eq(webhook.user.name)
+      expect(response_webhook_user["username"]).to eq(webhook.user.username)
+      expect(response_webhook_user["twitter_username"]).to eq(webhook.user.twitter_username)
+      expect(response_webhook_user["github_username"]).to eq(webhook.user.github_username)
+      expect(response_webhook_user["website_url"]).to eq(webhook.user.processed_website_url)
+      expect(response_webhook_user["profile_image"]).to eq(user_profile_image.get(width: 640))
+      expect(response_webhook_user["profile_image_90"]).to eq(user_profile_image.get(width: 90))
     end
   end
 
@@ -96,8 +137,6 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
   end
 
   describe "DELETE /api/v0/webhooks/:id" do
-    let!(:webhook) { create(:webhook_endpoint, user: user, target_url: "https://api.example.com/go") }
-
     before do
       sign_in user
     end

@@ -580,7 +580,7 @@ RSpec.describe Article, type: :model do
       it "enqueues a job to update the main image background if #dddddd" do
         article.main_image_background_hex_color = "#dddddd"
         allow(article).to receive(:update_main_image_background_hex).and_call_original
-        assert_enqueued_with(job: Articles::UpdateMainImageBackgroundHexJob) do
+        sidekiq_assert_enqueued_with(job: Articles::UpdateMainImageBackgroundHexWorker) do
           article.save
         end
         expect(article).to have_received(:update_main_image_background_hex)
@@ -589,7 +589,7 @@ RSpec.describe Article, type: :model do
       it "does not enqueue a job to update the main image background if not #dddddd" do
         article.main_image_background_hex_color = "#fff000"
         allow(article).to receive(:update_main_image_background_hex).and_call_original
-        assert_no_enqueued_jobs(only: Articles::UpdateMainImageBackgroundHexJob) do
+        sidekiq_assert_no_enqueued_jobs(only: Articles::UpdateMainImageBackgroundHexWorker) do
           article.save
         end
         expect(article).to have_received(:update_main_image_background_hex)
@@ -597,33 +597,40 @@ RSpec.describe Article, type: :model do
     end
 
     describe "async score calc" do
-      it "enqueues Articles::ScoreCalcJob if published" do
-        assert_enqueued_with(job: Articles::ScoreCalcJob) do
+      it "enqueues Articles::ScoreCalcWorker if published" do
+        sidekiq_assert_enqueued_with(job: Articles::ScoreCalcWorker, args: [article.id]) do
           article.save
         end
       end
 
-      it "does not enqueue Articles::ScoreCalcJob if not published" do
+      it "does not enqueue Articles::ScoreCalcWorker if not published" do
         article = build(:article, published: false)
-        assert_no_enqueued_jobs(only: Articles::ScoreCalcJob) do
+        sidekiq_assert_no_enqueued_jobs(only: Articles::ScoreCalcWorker) do
           article.save
         end
       end
     end
 
     describe "detect human language" do
+      let(:language_detector) { instance_double(LanguageDetector) }
+
+      before do
+        allow(LanguageDetector).to receive(:new).and_return(language_detector)
+        allow(language_detector).to receive(:detect)
+      end
+
       it "calls the human language detector" do
         article.language = ""
-        assert_enqueued_with(job: Articles::DetectHumanLanguageJob) do
-          article.save
-        end
+        article.save
+
+        expect(language_detector).to have_received(:detect)
       end
 
       it "does not call the human language detector if there is already a language" do
         article.language = "en"
-        assert_no_enqueued_jobs(only: Articles::DetectHumanLanguageJob) do
-          article.save
-        end
+        article.save
+
+        expect(language_detector).not_to have_received(:detect)
       end
     end
   end

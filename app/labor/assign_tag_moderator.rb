@@ -10,8 +10,25 @@ module AssignTagModerator
     NotifyMailer.trusted_role_email(user).deliver
   end
 
-  def self.add_to_chat_channel(user)
-    ChatChannel.find_by(slug: "tag-moderators").add_users(user) if user.chat_channels.find_by(slug: "tag-moderators").blank?
+  def self.add_tag_moderators(user_ids, tag_ids)
+    user_ids.each_with_index do |user_id, index|
+      user = User.find(user_id)
+      tag = Tag.find(tag_ids[index])
+      add_tag_mod_role(user, tag)
+      add_trusted_role(user)
+      add_to_chat_channels(user, tag)
+      NotifyMailer.tag_moderator_confirmation_email(user, tag.name).deliver unless tag.name == "go"
+    end
+  end
+
+  def self.add_to_chat_channels(user, tag)
+    ChatChannel.find_by(slug: "tag-moderators").add_users(user) if user.chat_channels.where(slug: "tag-moderators").none?
+    if tag.mod_chat_channel_id
+      ChatChannel.find(tag.mod_chat_channel_id).add_users(user) if user.chat_channels.where(id: tag.mod_chat_channel_id).none?
+    else
+      channel = ChatChannel.create_with_users(([user] + User.with_role(:mod_relations_admin)).flatten.uniq, "invite_only", "##{tag.name} mods")
+      tag.update_column(:mod_chat_channel_id, channel.id)
+    end
   end
 
   def self.add_tag_mod_role(user, tag)
@@ -19,17 +36,6 @@ module AssignTagModerator
     user.add_role(:tag_moderator, tag)
     Rails.cache.delete("user-#{user.id}/tag_moderators_list")
     MailchimpBot.new(user).manage_tag_moderator_list
-  end
-
-  def self.add_tag_moderators(user_ids, tag_ids)
-    user_ids.each_with_index do |user_id, index|
-      user = User.find(user_id)
-      tag = Tag.find(tag_ids[index])
-      add_tag_mod_role(user, tag)
-      add_trusted_role(user)
-      add_to_chat_channel(user)
-      NotifyMailer.tag_moderator_confirmation_email(user, tag.name).deliver unless tag.name == "go"
-    end
   end
 
   def self.remove_tag_moderator(user, tag)

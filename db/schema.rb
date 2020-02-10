@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_20_053525) do
+ActiveRecord::Schema.define(version: 2020_02_05_225813) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -582,6 +582,7 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
     t.integer "user_id"
     t.index ["created_at"], name: "index_notifications_on_created_at"
     t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
+    t.index ["notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_notifiable_id_notifiable_type_and_action"
     t.index ["notifiable_id"], name: "index_notifications_on_notifiable_id"
     t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
     t.index ["notified_at"], name: "index_notifications_on_notified_at"
@@ -958,6 +959,7 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
     t.datetime "created_at"
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
+    t.integer "mod_chat_channel_id"
     t.string "name"
     t.string "pretty_name"
     t.string "profile_image"
@@ -1016,6 +1018,15 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["blocked_id", "blocker_id"], name: "index_user_blocks_on_blocked_id_and_blocker_id", unique: true
+  end
+
+  create_table "user_counters", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.jsonb "data", default: {}, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["data"], name: "index_user_counters_on_data", using: :gin
+    t.index ["user_id"], name: "index_user_counters_on_user_id", unique: true
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
@@ -1224,6 +1235,7 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
   add_foreign_key "tag_adjustments", "users", on_delete: :cascade
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
+  add_foreign_key "user_counters", "users", on_delete: :cascade
   add_foreign_key "users_roles", "users", on_delete: :cascade
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_endpoints", "users"

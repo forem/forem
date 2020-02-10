@@ -191,7 +191,9 @@ RSpec.describe "Internal::Users", type: :request do
     end
 
     it "raises a 'record not found' error after deletion" do
-      post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
+      sidekiq_perform_enqueued_jobs do
+        post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
+      end
       expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
 
@@ -227,6 +229,12 @@ RSpec.describe "Internal::Users", type: :request do
       expect(user.reactions.count).to eq(0)
       expect(user.comments.count).to eq(0)
       expect(user.articles.count).to eq(0)
+    end
+
+    it "removes a user's direct chat channels" do
+      ChatChannel.create_with_users([user, user2])
+
+      expect { banish_user }.to change(user.chat_channels, :count).from(1).to(0)
     end
 
     it "removes all follow relationships" do

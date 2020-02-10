@@ -10,9 +10,9 @@ RSpec.describe Reactions::UpdateReactableJob, type: :job do
     let(:comment_reaction) { create(:reaction, reactable: comment) }
 
     it "updates the reactable Article" do
-      expect do
+      sidekiq_assert_enqueued_with(job: Articles::ScoreCalcWorker, args: [article.id]) do
         described_class.perform_now(reaction.id)
-      end.to have_enqueued_job(Articles::ScoreCalcJob).exactly(:once).with(article.id)
+      end
     end
 
     it "updates the reactable Comment" do

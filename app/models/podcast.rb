@@ -40,7 +40,7 @@ class Podcast < ApplicationRecord
   end
 
   def image_90
-    ProfileImage.new(self).get(90)
+    ProfileImage.new(self).get(width: 90)
   end
 
   private
@@ -53,6 +53,6 @@ class Podcast < ApplicationRecord
   def bust_cache
     return unless path
 
-    Podcasts::BustCacheJob.perform_later(path)
+    Podcasts::BustCacheWorker.perform_async(path)
   end
 end

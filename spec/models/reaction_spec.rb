@@ -150,9 +150,11 @@ RSpec.describe Reaction, type: :model do
   end
 
   context "when callbacks are called before destroy" do
-    it "enqueues a ScoreCalcJob on article reaction destroy" do
+    it "enqueues a ScoreCalcWorker on article reaction destroy" do
       reaction = create(:reaction, reactable: article, user: user)
-      expect { reaction.destroy }.to have_enqueued_job(Articles::ScoreCalcJob).exactly(:once)
+      sidekiq_assert_enqueued_with(job: Articles::ScoreCalcWorker, args: [article.id]) do
+        reaction.destroy
+      end
     end
   end
 end

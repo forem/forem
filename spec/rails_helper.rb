@@ -34,6 +34,7 @@ Dir[Rails.root.join("spec/system/shared_examples/**/*.rb")].sort.each { |f| requ
 Dir[Rails.root.join("spec/models/shared_examples/**/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/jobs/shared_examples/**/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/workers/shared_examples/**/*.rb")].sort.each { |f| require f }
+Dir[Rails.root.join("spec/initializers/shared_examples/**/*.rb")].sort.each { |f| require f }
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -81,6 +82,11 @@ RSpec.configure do |config|
     ActiveRecord::Base.observers.disable :all # <-- Turn 'em all off!
 
     Sidekiq::Worker.clear_all # worker jobs shouldn't linger around between tests
+  end
+
+  config.around(:each, elasticsearch: true) do |example|
+    Search::Cluster.recreate_indexes
+    example.run
   end
 
   config.after do
