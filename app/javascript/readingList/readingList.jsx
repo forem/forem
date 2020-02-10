@@ -11,25 +11,15 @@ import {
   toggleTag,
   clearSelectedTags,
 } from '../searchableItemList/searchableItemList';
-import { ItemListItem } from '../src/components/ItemList/ItemListItem';
-import { ItemListItemArchiveButton } from '../src/components/ItemList/ItemListItemArchiveButton';
-import { ItemListLoadMoreButton } from '../src/components/ItemList/ItemListLoadMoreButton';
-import { ItemListTags } from '../src/components/ItemList/ItemListTags';
+
+import SnackBar from './snackbar';
+import SideBar from './sidebar';
+import ItemsContainer from './itemsContainer';
 
 const STATUS_VIEW_VALID = 'valid';
 const STATUS_VIEW_ARCHIVED = 'archived';
 const READING_LIST_ARCHIVE_PATH = '/readinglist/archive';
 const READING_LIST_PATH = '/readinglist';
-
-const FilterText = ({ selectedTags, query, value }) => {
-  return (
-    <h1>
-      {selectedTags.length === 0 && query.length === 0
-        ? value
-        : 'Nothing with this filter 🤔'}
-    </h1>
-  );
-};
 
 export class ReadingList extends Component {
   constructor(props) {
@@ -67,15 +57,13 @@ export class ReadingList extends Component {
 
     const { query, selectedTags } = this.state;
 
-    const isStatusViewValid = this.statusViewValid();
-    const newStatusView = isStatusViewValid
+    const newStatusView = isStatusViewValid()
       ? STATUS_VIEW_ARCHIVED
       : STATUS_VIEW_VALID;
-    const newPath = isStatusViewValid
+    const newPath = isStatusViewValid()
       ? READING_LIST_ARCHIVE_PATH
       : READING_LIST_PATH;
 
-    // empty items so that changing the view will start from scratch
     this.setState({ statusView: newStatusView, items: [] });
 
     this.search(query, {
@@ -102,62 +90,30 @@ export class ReadingList extends Component {
       credentials: 'same-origin',
     });
 
-    const t = this;
     const newItems = items;
     newItems.splice(newItems.indexOf(item), 1);
-    t.setState({
+    this.setState({
       archiving: true,
       items: newItems,
       totalCount: totalCount - 1,
     });
 
-    // hide the snackbar in a few moments
-    setTimeout(() => {
-      t.setState({ archiving: false });
-    }, 1000);
+    this.hideSnackBar(1000);
   };
 
-  statusViewValid() {
+  hideSnackBar(time) {
+    setTimeout(() => {
+      this.setState({ archiving: false });
+    }, time);
+  }
+
+  isStatusViewValid() {
     const { statusView } = this.state;
     return statusView === STATUS_VIEW_VALID;
   }
 
-  renderEmptyItems() {
-    const { itemsLoaded, selectedTags, query } = this.state;
-
-    if (itemsLoaded && this.statusViewValid()) {
-      return (
-        <div className="items-empty">
-          <FilterText
-            selectedTags={selectedTags}
-            query={query}
-            value="Your Reading List is Lonely"
-          />
-          <h3>
-            Hit the
-            <span className="highlight">SAVE</span>
-            or
-            <span className="highlight">
-              Bookmark
-              <span role="img" aria-label="Bookmark">
-                🔖
-              </span>
-            </span>
-            to start your Collection
-          </h3>
-        </div>
-      );
-    }
-
-    return (
-      <div className="items-empty">
-        <FilterText
-          selectedTags={selectedTags}
-          query={query}
-          value="Your Archive List is Lonely"
-        />
-      </div>
-    );
+  setArchiveButtonLabel() {
+    return this.isStatusViewValid() ? 'archive' : 'unarchive';
   }
 
   render() {
@@ -169,90 +125,38 @@ export class ReadingList extends Component {
       selectedTags,
       showLoadMoreButton,
       archiving,
+      query,
     } = this.state;
 
-    const isStatusViewValid = this.statusViewValid();
+    const archiveButtonLabel = this.setArchiveButtonLabel();
 
-    const archiveButtonLabel = isStatusViewValid ? 'archive' : 'unarchive';
-    const itemsToRender = items.map(item => {
-      return (
-        <ItemListItem item={item}>
-          <ItemListItemArchiveButton
-            text={archiveButtonLabel}
-            onClick={e => this.toggleArchiveStatus(e, item)}
-          />
-        </ItemListItem>
-      );
-    });
-
-    const snackBar = archiving ? (
-      <div className="snackbar">
-        {isStatusViewValid ? 'Archiving...' : 'Unarchiving...'}
-      </div>
-    ) : (
-      ''
-    );
     return (
       <div className="home item-list">
-        <div className="side-bar">
-          <div className="widget filters">
-            <input
-              onKeyUp={this.onSearchBoxType}
-              placeHolder="search your list"
-            />
-            <div className="filters-header">
-              <h4 className="filters-header-text">my tags</h4>
-              {Boolean(selectedTags.length) && (
-                <a
-                  className="filters-header-action"
-                  href={
-                    isStatusViewValid
-                      ? READING_LIST_PATH
-                      : READING_LIST_ARCHIVE_PATH
-                  }
-                  onClick={this.clearSelectedTags}
-                  data-no-instant
-                >
-                  clear all
-                </a>
-              )}
-            </div>
-            <ItemListTags
-              availableTags={availableTags}
-              selectedTags={selectedTags}
-              onClick={this.toggleTag}
-            />
-
-            <div className="status-view-toggle">
-              <a
-                href={READING_LIST_ARCHIVE_PATH}
-                onClick={e => this.toggleStatusView(e)}
-                data-no-instant
-              >
-                {isStatusViewValid ? 'View Archive' : 'View Reading List'}
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div className="items-container">
-          <div className={`results ${itemsLoaded ? 'results--loaded' : ''}`}>
-            <div className="results-header">
-              {isStatusViewValid ? 'Reading List' : 'Archive'}
-              {` (${totalCount > 0 ? totalCount : 'empty'})`}
-            </div>
-            <div>
-              {items.length > 0 ? itemsToRender : this.renderEmptyItems()}
-            </div>
-          </div>
-
-          <ItemListLoadMoreButton
-            show={showLoadMoreButton}
-            onClick={this.loadNextPage}
-          />
-        </div>
-
-        {snackBar}
+        <SideBar
+          onSearchBoxType={onSearchBoxType}
+          isStatusViewValid={this.isStatusViewValid()}
+          selectedTags={selectedTags}
+          clearSelectedTags={clearSelectedTags}
+          availableTags={availableTags}
+          toggleTag={this.toggleTag}
+          toggleStatusView={this.toggleStatusView}
+        />
+        <ItemsContainer
+          itemsLoaded={itemsLoaded}
+          items={items}
+          archiveButtonLabel={archiveButtonLabel}
+          toggleArchiveStatus={this.toggleArchiveStatus}
+          selectedTags={selectedTags}
+          query={query}
+          showLoadMoreButton={showLoadMoreButton}
+          loadNextPage={this.loadNextPage}
+          totalCount={totalCount}
+          isStatusViewValid={this.isStatusViewValid}
+        />
+        <SnackBar
+          archiving={archiving}
+          isStatusViewValid={this.isStatusViewValid()}
+        />
       </div>
     );
   }
