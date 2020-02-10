@@ -1,6 +1,8 @@
 module Articles
-  class ScoreCalcJob < ApplicationJob
-    queue_as :articles_score_calc
+  class ScoreCalcWorker
+    include Sidekiq::Worker
+
+    sidekiq_options queue: :medium_priority
 
     def perform(article_id)
       article = Article.find_by(id: article_id)
