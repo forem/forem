@@ -63,12 +63,12 @@ RSpec.describe "Notifications page", type: :system, js: true do
 
     it "allows trusted user to moderate content" do
       article = create(:article, user: alex)
-      comment = perform_enqueued_jobs { create(:comment, commentable: article, user: leslie) }
+      sidekiq_perform_enqueued_jobs { create(:comment, commentable: article, user: leslie) }
       visit "/notifications"
       expect(page).to have_css("div.single-notification")
       interact_with_each_emojis
       click_link("Reply")
-      validate_reply(comment.id)
+      validate_reply(Comment.first.id)
     end
   end
 end
