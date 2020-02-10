@@ -192,24 +192,20 @@ Broadcast.create!(
 
 Rails.logger.info "8. Creating Chat Channels and Messages"
 
-ChatChannel.clear_index!
-ChatChannel.without_auto_index do
-  %w[Workshop Meta General].each do |chan|
-    ChatChannel.create!(
-      channel_name: chan,
-      channel_type: "open",
-      slug: chan,
-    )
-  end
-
-  direct_channel = ChatChannel.create_with_users(User.last(2), "direct")
-  Message.create!(
-    chat_channel: direct_channel,
-    user: User.last,
-    message_markdown: "This is **awesome**",
+%w[Workshop Meta General].each do |chan|
+  ChatChannel.create!(
+    channel_name: chan,
+    channel_type: "open",
+    slug: chan,
   )
 end
-ChatChannel.reindex!
+
+direct_channel = ChatChannel.create_with_users(User.last(2), "direct")
+Message.create!(
+  chat_channel: direct_channel,
+  user: User.last,
+  message_markdown: "This is **awesome**",
+)
 
 Rails.logger.info "9. Creating HTML Variants"
 
