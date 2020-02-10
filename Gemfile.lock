@@ -826,7 +826,7 @@ GEM
     validate_url (1.0.8)
       activemodel (>= 3.0.0)
       public_suffix
-    vcr (5.0.0)
+    vcr (5.1.0)
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
@@ -1004,7 +1004,7 @@ DEPENDENCIES
   uglifier (~> 4.2)
   ulid (~> 1.1)
   validate_url (~> 1.0)
-  vcr (~> 5.0)
+  vcr (~> 5.1)
   web-console (~> 3.7)
   webdrivers (~> 4.2)
   webmock (~> 3.8)
