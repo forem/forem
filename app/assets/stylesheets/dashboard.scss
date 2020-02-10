@@ -248,17 +248,10 @@
   }
 
   .single-article {
-    @include themeable(
-      border,
-      theme-container-border,
-      1px solid $light-medium-gray
-    );
-    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
     padding: 5px 15px;
-    margin-bottom: 13px;
-    border-radius: 3px;
+    @include dev-card;
     position: relative;
-    @include themeable(background, theme-container-background, #fff);
+
     &.single-article-unpublished {
       background: lighten($yellow, 20%);
       @include themeable(
