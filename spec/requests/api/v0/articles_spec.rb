@@ -474,6 +474,16 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
+      it "fails if params are not a Hash" do
+        # Not using the nifty post_article helper method because it expects a Hash
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        string_params = "this_string_is_definitely_not_a_hash"
+        post api_articles_path, params: { article: string_params }.to_json, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
+      end
+
       it "creates an article belonging to the user" do
         post_article(title: Faker::Book.title)
         expect(response).to have_http_status(:created)
@@ -940,6 +950,16 @@ RSpec.describe "Api::V0::Articles", type: :request do
         put_article(organization_id: organization.id)
         expect(response).to have_http_status(:ok)
         expect(article.reload.organization).to eq(organization)
+      end
+
+      it "fails if params are not a Hash" do
+        # Not using the nifty put_article helper method because it expects a Hash
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        string_params = "this_string_is_definitely_not_a_hash"
+        put path, params: { article: string_params }.to_json, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
       end
     end
   end

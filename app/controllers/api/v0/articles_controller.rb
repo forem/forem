@@ -7,6 +7,8 @@ module Api
       before_action :authenticate!, only: :me
       before_action -> { doorkeeper_authorize! :public }, only: %w[index show], if: -> { doorkeeper_token }
 
+      before_action :validate_article_param_is_hash, only: %w[create update]
+
       before_action :set_cache_control_headers, only: %i[index show]
 
       before_action :cors_preflight_check
@@ -115,6 +117,13 @@ module Api
           potential_user.org_admin?(params.dig("article", "organization_id")) ||
             @user.any_admin?
         end
+      end
+
+      def validate_article_param_is_hash
+        return if params.to_unsafe_h.dig(:article).is_a?(Hash)
+
+        message = "article param must be a JSON object. You provided article as a #{params[:article].class.name}"
+        render json: { error: message, status: 422 }, status: :unprocessable_entity
       end
     end
   end
