@@ -21,7 +21,8 @@ class Follow < ApplicationRecord
     ["follows.followable_type = ?", "ActsAsTaggableOn::Tag"] => "following_tags_count"
   }
   after_save :touch_follower
-  after_create :send_email_notification, :create_chat_channel
+  after_create :send_email_notification
+  after_create_commit :create_chat_channel
   before_destroy :modify_chat_channel_status
 
   validates :followable_id, uniqueness: { scope: %i[followable_type follower_id] }
@@ -34,19 +35,19 @@ class Follow < ApplicationRecord
   private
 
   def touch_follower
-    Follows::TouchFollowerJob.perform_later(id)
+    follower.touch(:updated_at, :last_followed_at)
   end
 
   def create_chat_channel
     return unless followable_type == "User"
 
-    Follows::CreateChatChannelJob.perform_later(id)
+    Follows::CreateChatChannelWorker.perform_async(id)
   end
 
   def send_email_notification
     return unless followable.class.name == "User" && followable.email?
 
-    Follows::SendEmailNotificationJob.perform_later(id)
+    Follows::SendEmailNotificationWorker.perform_async(id)
   end
 
   def modify_chat_channel_status

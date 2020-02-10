@@ -5,7 +5,9 @@
              classification_text: "From one of our Community Sponsors",
              follow_cue: @boosted_article.organization&.tag_line || @boosted_article.organization&.tag_line %>
 <% end %>
-<% if @suggested_articles.any? %>
+
+<%# the pattern .present?/.each has the advantage of issuing only a single SQL query to load objects in memory %>
+<% if @suggested_articles.present? %>
   <% @suggested_articles.each do |article| %>
     <%= render "additional_content_boxes/article_box",
                article: article,

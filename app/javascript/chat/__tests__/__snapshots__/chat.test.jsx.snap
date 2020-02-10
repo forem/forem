@@ -73,7 +73,7 @@ exports[`<Chat /> should load chat 1`] = `
             >
               <img
                 alt="pic"
-                class="chatchanneltabindicatordirectimage"
+                class="chatchanneltabindicatordirectimage invert-channel-image"
               />
             </span>
             channel name 1
@@ -123,7 +123,7 @@ exports[`<Chat /> should load chat 1`] = `
             >
               <img
                 alt="pic"
-                class="chatchanneltabindicatordirectimage"
+                class="chatchanneltabindicatordirectimage invert-channel-image"
               />
             </span>
             group channel 3
@@ -242,25 +242,37 @@ exports[`<Chat /> should load chat 1`] = `
           </div>
         </div>
         <div
+          class="mention__list"
+          id="mentionList"
+        >
+           
+        </div>
+        <div
           class="activechatchannel__form"
         >
           <div
-            class="messagecomposer"
+            class="compose__outer__container"
           >
-            <textarea
-              class="messagecomposer__input"
-              id="messageform"
-              maxLength="1000"
-              onKeyDown={[Function]}
-              placeholder="Message goes here"
-            />
-            <button
-              class="messagecomposer__submit"
-              onClick={[Function]}
-              type="button"
+            <div
+              class="messagecomposer"
             >
-              SEND
-            </button>
+              <textarea
+                class="messagecomposer__input"
+                id="messageform"
+                maxLength="1000"
+                onKeyDown={[Function]}
+                onKeyPress={[Function]}
+                onKeyUp={[Function]}
+                placeholder="Message goes here"
+              />
+              <button
+                class="messagecomposer__submit"
+                onClick={[Function]}
+                type="button"
+              >
+                SEND
+              </button>
+            </div>
           </div>
         </div>
       </div>

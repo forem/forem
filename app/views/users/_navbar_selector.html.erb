@@ -1,0 +1,10 @@
+<label class="rich-selector navbar-selector navbar-selector--<%= navbar.tr(" ", "-") %>">
+  <%= f.radio_button :config_navbar, navbar, checked: @user.config_navbar.tr("_", " ") == navbar, class: "rich-selector__radio" %>
+  <div class="rich-selector__indicator"></div>
+  <div class="rich-selector__outline"></div>
+  <% if navbar == "default"%>
+    fixed to window
+  <% else %>
+    static top of page
+  <% end %>
+</label>

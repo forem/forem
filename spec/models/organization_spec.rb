@@ -106,8 +106,17 @@ RSpec.describe Organization, type: :model do
       expect(organization.errors[:slug].to_s.include?("taken")).to be true
     end
 
-    it "triggers cache busting on save" do
-      expect { build(:organization).save }.to have_enqueued_job.on_queue("organizations_bust_cache")
+    context "when callbacks are triggered after save" do
+      let(:organization) { build(:organization) }
+
+      before do
+        allow(Organizations::BustCacheWorker).to receive(:perform_async)
+      end
+
+      it "triggers cache busting on save" do
+        organization.save
+        expect(Organizations::BustCacheWorker).to have_received(:perform_async).with(organization.id, organization.slug)
+      end
     end
   end
 
@@ -191,6 +200,12 @@ RSpec.describe Organization, type: :model do
   describe "#pro?" do
     it "always returns false" do
       expect(build(:organization).pro?).to be(false)
+    end
+  end
+
+  describe "#decoarated" do
+    it "returns not fully banished" do
+      expect(organization.decorate.fully_banished?).to eq(false)
     end
   end
 end

@@ -1,43 +1,52 @@
-<h1>
-  <%= link_to @podcast.title, "/#{@podcast.slug}" %>
-</h1>
-<% if @podcast.admins.any? %>
-  <p><strong>Admins: </strong></p>
-  <ul>
-    <% @podcast.admins.each do |admin| %>
-      <%= form_for @podcast, url: remove_admin_internal_podcast_path(@podcast.id), html: { method: :delete } do |f| %>
-        <li>
-          <%= link_to "@#{admin.username}", "/#{admin.username}" %>
-          <%= f.hidden_field :user_id, value: admin.id %>
-          <%= f.submit "Remove" %>
-        </li>
-        <br>
-      <% end %>
-    <% end %>
-  </ul>
-<% else %>
-  <p>There are no admins for this podcast.</p>
-<% end %>
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="m-0"><%= link_to @podcast.title, "/#{@podcast.slug}" %></h2>
+      </div>
+      <div class="card-body">
+        <% if @podcast.admins.present? %>
+          <h3>Admins:</h3>
+          <ul class="list-group list-group-flush mb-3">
+            <% @podcast.admins.each do |admin| %>
+              <%= form_for @podcast, url: remove_admin_internal_podcast_path(@podcast.id), html: { method: :delete, class: "form-inline" } do |f| %>
+                <li class="list-group-item w-100">
+                  <%= link_to "@#{admin.username}", "/#{admin.username}" %>
+                  <%= f.hidden_field :user_id, value: admin.id %>
+                  <%= f.submit "Remove", class: "btn btn-danger btn-sm float-right" %>
+                </li>
+              <% end %>
+            <% end %>
+          </ul>
+        <% else %>
+          <p>There are no admins for this podcast.</p>
+        <% end %>
 
-<%= form_for @podcast, url: add_admin_internal_podcast_path(@podcast.id), html: { method: :post } do |f| %>
-  <div>
-    <%= f.label "Add Admin (by user_id) " %>
-    <%= f.text_field :user_id, value: "" %>
-    <%= f.submit "Add Admin" %>
-  </div>
-<% end %>
+        <% if @podcast.creator.present? %>
+          <p>Created by <%= link_to "@#{@podcast.creator.username}", "/#{@podcast.creator.username}" %></p>
+        <% end %>
 
-<%= form_for [:internal, @podcast] do |f| %>
-  <hr>
-  <div>
-    <%= f.label :title %>
-    <%= f.text_field :title %>
+        <%= form_for @podcast, url: add_admin_internal_podcast_path(@podcast.id), html: { method: :post } do |f| %>
+          <div class="form-group">
+            <%= f.label "Add Admin (by user_id)", for: "podcast_user_id" %>
+            <%= f.text_field :user_id, value: "", class: "form-control" %>
+          </div>
+          <%= f.submit "Add Admin", class: "btn btn-primary" %>
+        <% end %>
+
+        <%= form_for [:internal, @podcast] do |f| %>
+          <hr>
+          <div class="form-group">
+            <%= f.label :title, for: "podcast_title" %>
+            <%= f.text_field :title, class: "form-control" %>
+          </div>
+          <div class="form-group">
+            <%= f.label :feed_url, for: "podcast_feed_url" %>
+            <%= f.text_field :feed_url, class: "form-control" %>
+          </div>
+          <%= f.submit class: "btn btn-primary" %>
+        <% end %>
+      </div>
+    </div>
   </div>
-  <div>
-    <%= f.label :feed_url %>
-    <%= f.text_field :feed_url %>
-  </div>
-  <div>
-    <%= f.submit %>
-  </div>
-<% end %>
+</div>

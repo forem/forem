@@ -14,7 +14,7 @@ function initializeReadingListIcons() {
 
 // set SAVE or SAVED articles buttons
 function setReadingListButtonsState() {
-  var readingListButtons = document.getElementsByClassName('bookmark-engage');
+  var readingListButtons = document.getElementsByClassName('bookmark-button');
   Array.from(readingListButtons).forEach(highlightButton);
 }
 
@@ -150,7 +150,7 @@ function isReadingListButtonHoverTarget(element) {
 
   return (
     (element.tagName === 'BUTTON' &&
-      classList.contains('bookmark-engage') &&
+      classList.contains('bookmark-button') &&
       classList.contains('selected')) ||
     (element.tagName === 'SPAN' && classList.contains('bm-success'))
   );

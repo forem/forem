@@ -4,7 +4,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import Navigation from './Navigation';
-import { getContentOfToken } from '../utilities';
+import { getContentOfToken, updateOnboarding } from '../utilities';
 
 /* eslint-disable camelcase */
 
@@ -19,7 +19,7 @@ class EmailTermsConditionsForm extends Component {
     this.state = {
       checked_code_of_conduct: false,
       checked_terms_and_conditions: false,
-      email_membership_newsletter: true,
+      email_newsletter: true,
       email_digest_periodic: true,
       message: '',
       textShowing: null,
@@ -27,18 +27,7 @@ class EmailTermsConditionsForm extends Component {
   }
 
   componentDidMount() {
-    const csrfToken = getContentOfToken('csrf-token');
-    fetch('/onboarding_update', {
-      method: 'PATCH',
-      headers: {
-        'X-CSRF-Token': csrfToken,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user: { last_onboarding_page: 'emails, COC and T&C form' },
-      }),
-      credentials: 'same-origin',
-    });
+    updateOnboarding('emails, COC and T&C form');
   }
 
   onSubmit() {
@@ -104,7 +93,7 @@ class EmailTermsConditionsForm extends Component {
       message,
       checked_code_of_conduct,
       checked_terms_and_conditions,
-      email_membership_newsletter,
+      email_newsletter,
       email_digest_periodic,
       textShowing,
     } = this.state;
@@ -169,12 +158,12 @@ class EmailTermsConditionsForm extends Component {
               </a>
             </label>
             <h3>Email Preferences</h3>
-            <label htmlFor="email_membership_newsletter">
+            <label htmlFor="email_newsletter">
               <input
                 type="checkbox"
-                id="email_membership_newsletter"
-                name="email_membership_newsletter"
-                checked={email_membership_newsletter}
+                id="email_newsletter"
+                name="email_newsletter"
+                checked={email_newsletter}
                 onChange={this.handleChange}
               />
               Do you want to receive our weekly newsletter emails?

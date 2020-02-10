@@ -60,8 +60,33 @@ RSpec.describe "/internal/config", type: :request do
 
     describe "rate limits" do
       it "updates rate_limit_follow_count_daily" do
-        post "/internal/config", params: { site_config: { rate_limit_follow_count_daily: 3 } }
-        expect(SiteConfig.rate_limit_follow_count_daily).to eq(3)
+        expect do
+          post "/internal/config", params: { site_config: { rate_limit_follow_count_daily: 3 } }
+        end.to change(SiteConfig, :rate_limit_follow_count_daily).from(500).to(3)
+      end
+
+      it "updates rate_limit_comment_creation" do
+        expect do
+          post "/internal/config", params: { site_config: { rate_limit_comment_creation: 3 } }
+        end.to change(SiteConfig, :rate_limit_comment_creation).from(9).to(3)
+      end
+
+      it "updates rate_limit_published_article_creation" do
+        expect do
+          post "/internal/config", params: { site_config: { rate_limit_published_article_creation: 3 } }
+        end.to change(SiteConfig, :rate_limit_published_article_creation).from(9).to(3)
+      end
+
+      it "updates rate_limit_image_upload" do
+        expect do
+          post "/internal/config", params: { site_config: { rate_limit_image_upload: 3 } }
+        end.to change(SiteConfig, :rate_limit_image_upload).from(9).to(3)
+      end
+
+      it "updates rate_limit_email_recipient" do
+        expect do
+          post "/internal/config", params: { site_config: { rate_limit_email_recipient: 3 } }
+        end.to change(SiteConfig, :rate_limit_email_recipient).from(5).to(3)
       end
     end
 
@@ -108,6 +133,18 @@ RSpec.describe "/internal/config", type: :request do
       it "updates periodic_email_digest_min" do
         post "/internal/config", params: { site_config: { periodic_email_digest_min: 3 } }
         expect(SiteConfig.periodic_email_digest_min).to eq(3)
+      end
+    end
+
+    describe "Tags" do
+      it "removes space suggested_tags" do
+        post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoho, bobo fofo" } }
+        expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
+      end
+
+      it "downcases suggested_tags" do
+        post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoHo, Bobo Fofo" } }
+        expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
       end
     end
   end

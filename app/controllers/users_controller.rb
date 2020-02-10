@@ -1,8 +1,9 @@
 class UsersController < ApplicationController
   before_action :set_no_cache_header
-  before_action :raise_banned, only: %i[update]
+  before_action :raise_suspended, only: %i[update]
   before_action :set_user, only: %i[update update_twitch_username update_language_settings confirm_destroy request_destroy full_delete remove_association]
   after_action :verify_authorized, except: %i[signout_confirm add_org_admin remove_org_admin remove_from_org]
+  before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
 
   # GET /settings/@tab
   def edit
@@ -19,14 +20,14 @@ class UsersController < ApplicationController
   def update
     set_tabs(params["user"]["tab"])
     if @user.update(permitted_attributes(@user))
-      RssReaderFetchUserJob.perform_later(@user.id)
+      RssReaderFetchUserWorker.perform_async(@user.id) if @user.feed_url.present?
       notice = "Your profile was successfully updated."
       if config_changed?
         notice = "Your config has been updated. Refresh to see all changes."
       end
       if @user.export_requested?
         notice += " The export will be emailed to you shortly."
-        ExportContentJob.perform_later(@user.id)
+        ExportContentWorker.perform_async(@user.id)
       end
       cookies.permanent[:user_experience_level] = @user.experience_level.to_s if @user.experience_level.present?
       follow_hiring_tag(@user)
@@ -44,7 +45,7 @@ class UsersController < ApplicationController
     if @user.twitch_username != new_twitch_username
       if @user.update(twitch_username: new_twitch_username)
         @user.touch(:profile_updated_at)
-        Streams::TwitchWebhookRegistrationJob.perform_later(@user.id) if @user.twitch_username?
+        Streams::TwitchWebhookRegistrationWorker.perform_async(@user.id) if @user.twitch_username?
       end
       flash[:settings_notice] = "Your Twitch username was successfully updated."
     end
@@ -65,9 +66,14 @@ class UsersController < ApplicationController
 
   def request_destroy
     set_tabs("account")
-    Users::RequestDestroy.call(@user)
-    flash[:settings_notice] = "You have requested account deletion. Please, check your email for further instructions."
-    redirect_to "/settings/#{@tab}"
+    if @user.email?
+      Users::RequestDestroy.call(@user)
+      flash[:settings_notice] = "You have requested account deletion. Please, check your email for further instructions."
+      redirect_to "/settings/#{@tab}"
+    else
+      flash[:settings_notice] = "Please, provide an email to delete your account"
+      redirect_to "/settings/account"
+    end
   end
 
   def confirm_destroy
@@ -79,10 +85,15 @@ class UsersController < ApplicationController
 
   def full_delete
     set_tabs("account")
-    Users::SelfDeleteJob.perform_later(@user.id)
-    sign_out @user
-    flash[:global_notice] = "Your account deletion is scheduled. You'll be notified when it's deleted."
-    redirect_to root_path
+    if @user.email?
+      Users::DeleteWorker.perform_async(@user.id)
+      sign_out @user
+      flash[:global_notice] = "Your account deletion is scheduled. You'll be notified when it's deleted."
+      redirect_to root_path
+    else
+      flash[:settings_notice] = "Please, provide an email to delete your account"
+      redirect_to "/settings/account"
+    end
   end
 
   def remove_association
@@ -98,20 +109,29 @@ class UsersController < ApplicationController
 
       flash[:settings_notice] = "Your #{provider.capitalize} account was successfully removed."
     else
-      flash[:error] = "An error occurred. Please try again or send an email to: #{ApplicationConfig['DEFAULT_SITE_EMAIL']}"
+      flash[:error] = "An error occurred. Please try again or send an email to: #{SiteConfig.default_site_email}"
     end
     redirect_to "/settings/#{@tab}"
   end
 
   def onboarding_update
-    current_user.assign_attributes(params[:user].permit(:summary, :location, :employment_title, :employer_name, :last_onboarding_page)) if params[:user]
+    if params[:user]
+      permitted_params = %i[summary location employment_title employer_name last_onboarding_page]
+      current_user.assign_attributes(params[:user].permit(permitted_params))
+    end
     current_user.saw_onboarding = true
     authorize User
     render_update_response
   end
 
   def onboarding_checkbox_update
-    current_user.assign_attributes(params[:user].permit(:checked_code_of_conduct, :checked_terms_and_conditions, :email_membership_newsletter, :email_digest_periodic)) if params[:user]
+    if params[:user]
+      permitted_params = %i[
+        checked_code_of_conduct checked_terms_and_conditions email_newsletter email_digest_periodic
+      ]
+      current_user.assign_attributes(params[:user].permit(permitted_params))
+    end
+
     current_user.saw_onboarding = true
     authorize User
     render_update_response
@@ -177,7 +197,7 @@ class UsersController < ApplicationController
     return unless user.looking_for_work?
 
     hiring_tag = Tag.find_by(name: "hiring")
-    Users::FollowJob.perform_later(user.id, hiring_tag.id, "Tag")
+    Users::FollowWorker.perform_async(user.id, hiring_tag.id, "Tag")
   end
 
   def handle_settings_tab

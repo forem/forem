@@ -55,6 +55,7 @@ class Article < ApplicationRecord
   validates :video_closed_caption_track_url, url: { allow_blank: true, schemes: ["https"] }
   validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
 
+  after_update_commit :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
   before_validation :evaluate_markdown
   before_validation :create_slug
   before_create     :create_password
@@ -63,12 +64,11 @@ class Article < ApplicationRecord
   before_save       :set_caches
   before_save       :fetch_video_duration
   before_save       :clean_data
-  after_save        :async_score_calc, if: :published
+  after_commit      :async_score_calc
   after_save        :bust_cache
-  after_save        :update_main_image_background_hex
+  after_commit      :update_main_image_background_hex
   after_save        :detect_human_language
   before_save       :update_cached_user
-  after_update      :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
   before_destroy    :before_destroy_actions, prepend: true
 
   serialize :ids_for_suggested_articles
@@ -138,6 +138,8 @@ class Article < ApplicationRecord
 
   scope :feed, -> { published.select(:id, :published_at, :processed_html, :user_id, :organization_id, :title, :path) }
 
+  scope :with_video, -> { published.where.not(video: [nil, ""], video_thumbnail_url: [nil, ""]).where("score > ?", -4) }
+
   algoliasearch per_environment: true, auto_remove: false, enqueue: :trigger_index do
     attribute :title
     add_index "searchables", id: :index_id, per_environment: true, enqueue: :trigger_index do
@@ -148,7 +150,7 @@ class Article < ApplicationRecord
                  :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date, :flare_tag
       attribute :user do
         { username: user.username, name: user.name,
-          profile_image_90: ProfileImage.new(user).get(90), pro: user.pro? }
+          profile_image_90: ProfileImage.new(user).get(width: 90), pro: user.pro? }
       end
       tags do
         [tag_list,
@@ -178,13 +180,13 @@ class Article < ApplicationRecord
       attribute :user do
         { username: user.username,
           name: user.name,
-          profile_image_90: ProfileImage.new(user).get(90) }
+          profile_image_90: ProfileImage.new(user).get(width: 90) }
       end
       attribute :organization do
         if organization
           { slug: organization.slug,
             name: organization.name,
-            profile_image_90: ProfileImage.new(organization).get(90) }
+            profile_image_90: ProfileImage.new(organization).get(width: 90) }
         end
       end
       tags do
@@ -265,12 +267,20 @@ class Article < ApplicationRecord
     return if remove
 
     if record.published && record.tag_list.exclude?("hiring")
-      Search::IndexJob.perform_later("Article", record.id)
+      Search::IndexWorker.perform_async("Article", record.id)
     else
-      Search::RemoveFromIndexJob.perform_later(Article.algolia_index_name, record.id)
-      Search::RemoveFromIndexJob.perform_later("searchables_#{Rails.env}", record.index_id)
-      Search::RemoveFromIndexJob.perform_later("ordered_articles_#{Rails.env}", record.index_id)
+      Search::RemoveFromIndexWorker.perform_async(Article.algolia_index_name, record.id)
+      Search::RemoveFromIndexWorker.perform_async("searchables_#{Rails.env}", record.index_id)
+      Search::RemoveFromIndexWorker.perform_async("ordered_articles_#{Rails.env}", record.index_id)
     end
+  end
+
+  def processed_description
+    text_portion = body_text.present? ? body_text[0..100].tr("\n", " ").strip.to_s : ""
+    text_portion = text_portion.strip + "..." if body_text.size > 100
+    return "A post by #{user.name}" if text_portion.blank?
+
+    text_portion.strip
   end
 
   def body_text
@@ -383,11 +393,18 @@ class Article < ApplicationRecord
     "articles-#{id}"
   end
 
+  def update_score
+    update_columns(score: reactions.sum(:points),
+                   comment_score: comments.sum(:score),
+                   hotness_score: BlackBox.article_hotness_score(self),
+                   spaminess_rating: BlackBox.calculate_spaminess(self))
+  end
+
   private
 
   def delete_related_objects
-    Search::RemoveFromIndexJob.perform_now("searchables_#{Rails.env}", index_id)
-    Search::RemoveFromIndexJob.perform_now("ordered_articles_#{Rails.env}", index_id)
+    Search::RemoveFromIndexWorker.new.perform("searchables_#{Rails.env}", index_id)
+    Search::RemoveFromIndexWorker.new.perform("ordered_articles_#{Rails.env}", index_id)
   end
 
   def search_score
@@ -422,6 +439,7 @@ class Article < ApplicationRecord
     self.reading_time = parsed_markdown.calculate_reading_time
     self.processed_html = parsed_markdown.finalize
     evaluate_front_matter(parsed.front_matter)
+    self.description = processed_description if description.blank?
   rescue StandardError => e
     errors[:base] << ErrorMessageCleaner.new(e.message).clean
   end
@@ -429,17 +447,19 @@ class Article < ApplicationRecord
   def update_main_image_background_hex
     return if main_image.blank? || main_image_background_hex_color != "#dddddd"
 
-    Articles::UpdateMainImageBackgroundHexJob.perform_later(id)
+    Articles::UpdateMainImageBackgroundHexWorker.perform_async(id)
   end
 
   def detect_human_language
     return if language.present?
 
-    Articles::DetectHumanLanguageJob.perform_later(id)
+    update_column(:language, LanguageDetector.new(self).detect)
   end
 
   def async_score_calc
-    Articles::ScoreCalcJob.perform_later(id)
+    return if !published? || destroyed?
+
+    Articles::ScoreCalcWorker.perform_async(id)
   end
 
   def fetch_video_duration
@@ -476,7 +496,7 @@ class Article < ApplicationRecord
     end
     # perform busting cache in chunks in case there're a lot of articles
     (article_ids.uniq.sort - [id]).each_slice(10) do |ids|
-      Articles::BustMultipleCachesJob.perform_later(ids)
+      Articles::BustMultipleCachesWorker.perform_async(ids)
     end
   end
 
@@ -493,7 +513,7 @@ class Article < ApplicationRecord
     self.published_at = parse_date(front_matter["date"]) if published
     self.main_image = front_matter["cover_image"] if front_matter["cover_image"].present?
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
-    self.description = front_matter["description"] || description || "#{body_text[0..80]}..."
+    self.description = front_matter["description"] if front_matter["description"].present? || front_matter["title"].present? # Do this if frontmatte exists at all
     self.collection_id = nil if front_matter["title"].present?
     self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
     self.automatically_renew = front_matter["automatically_renew"] if front_matter["automatically_renew"].present? && tag_list.include?("hiring")
@@ -595,6 +615,7 @@ class Article < ApplicationRecord
     set_featured_number
     set_crossposted_at
     set_last_comment_at
+    set_nth_published_at
   end
 
   def set_published_date
@@ -615,6 +636,12 @@ class Article < ApplicationRecord
     self.last_comment_at = published_at
     user.touch(:last_article_at)
     organization&.touch(:last_article_at)
+  end
+
+  def set_nth_published_at
+    published_article_ids = user.articles.published.order("published_at ASC").pluck(:id)
+    index = published_article_ids.index(id)
+    self.nth_published_by_author = (index || published_article_ids.size) + 1 if nth_published_by_author.zero? && published
   end
 
   def title_to_slug
@@ -640,6 +667,6 @@ class Article < ApplicationRecord
   end
 
   def async_bust
-    Articles::BustCacheJob.perform_later(id)
+    Articles::BustCacheWorker.perform_async(id)
   end
 end

@@ -15,7 +15,7 @@ RSpec.describe "UserSettings", type: :request do
       before { sign_in user }
 
       it "renders various settings tabs properly" do
-        %w[organization misc account].each do |tab|
+        %w[organization misc account ux].each do |tab|
           get "/settings/#{tab}"
           expect(response.body).to include("Settings for")
         end
@@ -29,6 +29,11 @@ RSpec.describe "UserSettings", type: :request do
       it "allows users to visit the account page" do
         get "/settings/account"
         expect(response.body).to include("Danger Zone")
+      end
+
+      it "displays content on ux tab properly" do
+        get "/settings/ux"
+        expect(response.body).to include("Style Customization")
       end
 
       it "renders heads up dupe account message with proper param" do
@@ -104,9 +109,11 @@ RSpec.describe "UserSettings", type: :request do
       end
 
       it "sends an email" do
-        perform_enqueued_jobs do
-          expect { send_request }.to change { ActionMailer::Base.deliveries.count }.by(1)
-        end
+        expect do
+          sidekiq_perform_enqueued_jobs do
+            send_request
+          end
+        end.to change { ActionMailer::Base.deliveries.count }.by(1)
       end
 
       it "does not send an email if there was no request" do
@@ -132,9 +139,9 @@ RSpec.describe "UserSettings", type: :request do
     end
 
     it "schedules the job while updating" do
-      expect do
+      sidekiq_assert_enqueued_with(job: Streams::TwitchWebhookRegistrationWorker, args: [user.id]) do
         post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
-      end.to have_enqueued_job(Streams::TwitchWebhookRegistrationJob).exactly(:once).with(user.id)
+      end
     end
 
     it "removes twitch_username" do
@@ -145,16 +152,16 @@ RSpec.describe "UserSettings", type: :request do
     end
 
     it "doesn't schedule the job when removing" do
-      expect do
+      sidekiq_assert_no_enqueued_jobs(only: Streams::TwitchWebhookRegistrationWorker) do
         post "/users/update_twitch_username", params: { user: { twitch_username: "" } }
-      end.not_to have_enqueued_job(Streams::TwitchWebhookRegistrationJob)
+      end
     end
 
     it "doesn't schedule the job when saving the same twitch username" do
       user.update_column(:twitch_username, "robot")
-      expect do
+      sidekiq_assert_no_enqueued_jobs(only: Streams::TwitchWebhookRegistrationWorker) do
         post "/users/update_twitch_username", params: { user: { twitch_username: "robot" } }
-      end.not_to have_enqueued_job(Streams::TwitchWebhookRegistrationJob)
+      end
     end
   end
 
@@ -232,7 +239,7 @@ RSpec.describe "UserSettings", type: :request do
       it "sets the proper error message" do
         delete "/users/remove_association", params: { provider: "github" }
         expect(flash[:error]).
-          to eq "An error occurred. Please try again or send an email to: #{ApplicationConfig['DEFAULT_SITE_EMAIL']}"
+          to eq "An error occurred. Please try again or send an email to: #{SiteConfig.default_site_email}"
       end
 
       it "does not delete any identities" do

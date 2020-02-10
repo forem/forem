@@ -49,8 +49,12 @@ RSpec.describe Page, type: :model do
   end
 
   context "when callbacks are triggered after save" do
+    let(:page) { create(:page) }
+
     it "triggers cache busting on save" do
-      expect { build(:page).save }.to have_enqueued_job.on_queue("pages_bust_cache")
+      sidekiq_assert_enqueued_with(job: Pages::BustCacheWorker, args: [page.slug]) do
+        page.save
+      end
     end
   end
 end

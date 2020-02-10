@@ -1,5 +1,5 @@
 {
-  "name": "Dev.to",
+  "name": "dev.to",
   "version": "1.0.0",
   "description": "Where programmers share ideas and help each other grow",
   "main": "index.js",
@@ -23,28 +23,22 @@
   "lint-staged": {
     "*.{js,jsx}": [
       "prettier --write",
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ],
     "{app,spec,config,lib}/**/*.rb": [
-      "bundle exec rubocop --require rubocop-rspec --safe-auto-correct",
-      "git add"
+      "bundle exec rubocop --require rubocop-rspec --safe-auto-correct"
     ],
     "Gemfile": [
-      "bundle exec rubocop --require rubocop-rspec --safe-auto-correct",
-      "git add"
+      "bundle exec rubocop --require rubocop-rspec --safe-auto-correct"
     ],
     "app/**/*.html.erb": [
-      "bundle exec erblint",
-      "git add"
+      "bundle exec erblint"
     ],
     "*.json": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ],
     "*.md": [
-      "prettier --write --prose-wrap always",
-      "git add"
+      "prettier --write --prose-wrap always"
     ]
   },
   "prettier": {
@@ -63,43 +57,45 @@
   },
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "devDependencies": {
-    "@storybook/addon-actions": "^5.1.9",
-    "@storybook/addon-links": "^5.1.9",
-    "@storybook/addons": "^5.1.8",
-    "@storybook/react": "^3.4.11",
+    "@storybook/addon-actions": "3.4.11",
+    "@storybook/addon-links": "3.4.11",
+    "@storybook/addons": "3.4.12",
+    "@storybook/react": "3.4.11",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^23.4.2",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.1",
     "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-config-prettier": "^6.7.0",
+    "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-ignore-erb": "^0.1.1",
-    "eslint-plugin-import": "^2.19.1",
+    "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-react": "^7.18.3",
     "faker": "^4.1.0",
-    "husky": "^3.1.0",
+    "husky": "^4.2.1",
     "jest": "^23.5.0",
-    "jest-axe": "^3.2.0",
-    "jest-fetch-mock": "^2.1.2",
-    "jsdom": "^15.2.1",
-    "lint-staged": "^9.5.0",
+    "jest-axe": "^3.3.0",
+    "jest-fetch-mock": "^3.0.1",
+    "jsdom": "^16.1.0",
+    "lint-staged": "^10.0.7",
+    "mutationobserver-shim": "^0.3.3",
     "preact-render-spy": "1.3.0",
     "preact-render-to-json": "^3.6.6",
     "prettier": "^1.19.1",
-    "redoc-cli": "0.9.4",
+    "redoc-cli": "0.9.6",
     "webpack-dev-server": "^2.11.3"
   },
   "dependencies": {
-    "@github/clipboard-copy-element": "^1.1.1",
+    "@github/clipboard-copy-element": "^1.1.2",
     "@rails/webpacker": "^3.5.5",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-preact": "^1.1.0",
     "chart.js": "^2.9.3",
     "clipboard-polyfill": "^2.8.6",
-    "codemirror": "^5.49.2",
+    "codemirror": "^5.51.0",
     "focus-visible": "^5.0.2",
+    "honeybadger-js": "2.1.1",
     "intersection-observer": "^0.7.0",
     "linkstate": "^1.1.1",
     "lodash.debounce": "4.0.8",
@@ -110,7 +106,8 @@
     "preact-textarea-autosize": "^4.0.7",
     "prop-types": "^15.7.2",
     "pusher-js": "^5.0.3",
-    "twilio-video": "^1.20.0",
+    "stimulus": "^1.1.1",
+    "twilio-video": "^2.1.0",
     "web-share-wrapper": "^0.2.1"
   },
   "jest": {

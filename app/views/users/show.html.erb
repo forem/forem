@@ -28,7 +28,7 @@
     <meta itemprop="url" content="https://dev.to/<%= @user.username %>">
     <div class="user-profile-header-container">
       <div class="profile-pic-wrapper">
-        <img class="profile-pic" src="<%= ProfileImage.new(@user).get(320) %>" itemprop="image" alt="<%= @user.username %> profile" style="border-color:<%= user_colors(@user)[:bg] %>;background:<%= user_colors(@user)[:bg] %>" />
+        <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 320) %>" itemprop="image" alt="<%= @user.username %> profile" style="border-color:<%= user_colors(@user)[:bg] %>;background:<%= user_colors(@user)[:bg] %>" />
       </div>
       <div class="profile-details">
         <h1>
@@ -36,12 +36,13 @@
           <span class="user-profile-follow-button-wrapper">
             <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%= user_colors(@user)[:text] %>;background-color:<%= user_colors(@user)[:bg] %>" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>"}'>&nbsp;</button>
           </span>
-          <span class="user-profile-chat-button-wrapper">
-            <a href="/connect/@<%= @user.username %>" id="user-connect-redirect" style="display:none">
-              <button class="chat-action-button user-profile-chat-button" id="modal-opener" style="color:<%= user_colors(@user)[:text] %>;background-color:<%= user_colors(@user)[:bg] %>; display:none; ">CHAT</button>
-            </a>
-          </span>
-
+          <% if user_signed_in? %>
+            <span class="user-profile-chat-button-wrapper">
+              <a href="/connect/@<%= @user.username %>" id="user-connect-redirect" style="display:none">
+                <button class="chat-action-button user-profile-chat-button" id="modal-opener" style="color:<%= user_colors(@user)[:text] %>;background-color:<%= user_colors(@user)[:bg] %>; display:none; ">CHAT</button>
+              </a>
+            </span>
+          <% end %>
         </h1>
         <p class="profile-description" itemprop="description">
           <%= @user.summary.presence || ["404 bio not found"].sample %>
@@ -151,7 +152,9 @@
       </button>
       <div id="user-profile-dropdownmenu" class="profile-dropdownmenu">
         <button id="user-profile-dropdownmenu-block-button" data-profile-user-id="<%= @user.id %>" class="block-button" type="button">Block @<%= @user.username %></button>
-        <%= javascript_pack_tag "profileDropdown", defer: true %>
+        <% if user_signed_in? %>
+          <%= javascript_pack_tag "profileDropdown", defer: true %>
+        <% end %>
         <a href="/report-abuse?url=https://dev.to/<%= @user.username %>">Report Abuse</a>
       </div>
     </div>
@@ -193,7 +196,7 @@
       loading...
     </div>
   </div>
-  <% cache "user-profile-sidebar-additional-#{@user.id}-#{@user.github_repos_updated_at}-#{@user.badge_achievements_count}", expires_in: 2.days do %>
+  <% cache "user-profile-sidebar-additional-#{@user.id}-#{@user.github_repos_updated_at}-#{@user.badge_achievements_count}-#{@user.organization_info_updated_at}", expires_in: 2.days do %>
     <%= render "users/sidebar_additional" %>
   <% end %>
 </div>

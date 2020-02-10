@@ -1,6 +1,6 @@
 // Serviceworkers file. This code gets installed in users browsers and runs code before the request is made.
 <% unless Rails.env.test? %>
-  const staticCacheName = 'static-1.1';
+  const staticCacheName = 'static-1.2';
   const expectedCaches = [
     staticCacheName
   ];
@@ -37,7 +37,7 @@
   function createPageStream(request) {
     const stream = new ReadableStream({
       start(controller) {
-        if (!caches.match('/shell_top') || !caches.match('/shell_top')) { //return if shell isn't cached.
+        if (!caches.match('/shell_top') || !caches.match('/shell_bottom')) { //return if shell isn't cached.
           return
         }
 
@@ -86,7 +86,6 @@
        return;
     }
     if (url.origin === location.origin) {
-      // 
       if (event.clientId === "" && // Not fetched via AJAX after page load.
         event.request.method == "GET" && // Don't fetch on POST, DELETE, etc.
         !event.request.referrer.includes('/signout_confirm') && // If this is the referrer, we instead want to flush.
@@ -101,18 +100,26 @@
         !url.href.includes('/admin') && // Don't fetch for administrate dashboard.
         !url.href.includes('/internal') && // Don't fetch for internal dashboard.
         !url.href.includes('/future') && // Skip for /future.
+        !url.href.includes('?preview=') && // Skip for preview pages.
+        !url.href.includes('/delayed_job') && // Skip for Delayed Job dashboard
+        !url.href.includes('/sidekiq') && // Skip for Sidekiq dashboard
+        !url.href.includes('/oauth/') && // Skip oauth apps
+        !url.href.includes('/robots.txt') && // Skip robots for web crawlers
+        !url.href.includes('/rails/mailers') && // Skip for mailers previews in development mode
+        !url.href.includes('/feed') && // Skip the RSS feed
         caches.match('/shell_top') && // Ensure shell_top is in the cache.
         caches.match('/shell_bottom')) { // Ensure shell_bottom is in the cache.
         event.respondWith(createPageStream(event.request)); // Respond with the stream
 
-        // Ping version endpoint to see if we should fetch new shell. 
+        // Ping version endpoint to see if we should fetch new shell.
         if (!caches.match('/async_info/shell_version')) { // Check if we have a cached shell version
           caches.open(staticCacheName)
           .then(cache => cache.addAll([
             "/async_info/shell_version",
-          ]))  
+          ]));
           return;
         }
+
         fetch('/async_info/shell_version').then(response => response.json()).then(json => {
           caches.match('/async_info/shell_version').then(cachedResponse => cachedResponse.json()).then(cacheJson => {
             if (cacheJson['version'] != json['version']) {
@@ -121,7 +128,7 @@
                 "/shell_top",
                 "/shell_bottom",
                 "/async_info/shell_version"
-              ]))
+              ]));
             }
           })
         })
@@ -135,7 +142,7 @@
         .then(cache => cache.addAll([
           "/shell_top",
           "/shell_bottom",
-        ]))
+        ]));
       }
     }
   });

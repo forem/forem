@@ -10,8 +10,16 @@ Rails.application.routes.draw do
     registrations: "registrations"
   }
 
+  require "sidekiq/web"
   authenticated :user, ->(user) { user.tech_admin? } do
     mount DelayedJobWeb, at: "/delayed_job"
+
+    Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
+    Sidekiq::Web.set :sessions, Rails.application.config.session_options
+    Sidekiq::Web.class_eval do
+      use Rack::Protection, origin_whitelist: ["https://dev.to"] # resolve Rack Protection HttpOrigin
+    end
+    mount Sidekiq::Web => "/sidekiq"
   end
 
   devise_scope :user do
@@ -111,19 +119,15 @@ Rails.application.routes.draw do
         end
       end
       resources :follows, only: [:create]
-      resources :followers do
-        collection do
-          get :users
-          get :organizations
-        end
+      namespace :followers do
+        get :users
+        get :organizations
       end
-      resources :followings do
-        collection do
-          get :users
-          get :tags
-          get :organizations
-          get :podcasts
-        end
+      namespace :followings do
+        get :users
+        get :tags
+        get :organizations
+        get :podcasts
       end
       resources :github_repos, only: [:index] do
         collection do
@@ -182,7 +186,6 @@ Rails.application.routes.draw do
   resources :html_variants, only: %i[index new create show edit update]
   resources :html_variant_trials, only: [:create]
   resources :html_variant_successes, only: [:create]
-  resources :push_notification_subscriptions, only: [:create]
   resources :tag_adjustments, only: %i[create destroy]
   resources :rating_votes, only: [:create]
   resources :page_views, only: %i[create update]
@@ -200,6 +203,7 @@ Rails.application.routes.draw do
   resources :badges, only: [:index]
   resource :pro_membership, path: :pro, only: %i[show create update]
   resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
+  resources :podcasts, only: %i[new create]
   resolve("ProMembership") { [:pro_membership] } # see https://guides.rubyonrails.org/routing.html#using-resolve
 
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
@@ -224,6 +228,7 @@ Rails.application.routes.draw do
   post "/chat_channels/create_chat" => "chat_channels#create_chat"
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
   delete "/messages/:id" => "messages#destroy"
+  patch "/messages/:id" => "messages#update"
   get "/live/:username" => "twitch_live_streams#show"
 
   post "/pusher/auth" => "pusher#auth"
@@ -261,6 +266,7 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root
   get "/about" => "pages#about"
+  get "/robots.:format" => "pages#robots"
   get "/api", to: redirect("https://docs.dev.to/api")
   get "/privacy" => "pages#privacy"
   get "/terms" => "pages#terms"
@@ -294,6 +300,7 @@ Rails.application.routes.draw do
   get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
   get "/shop", to: redirect("https://shop.dev.to/")
   get "/mod" => "moderations#index", :as => :mod
+  get "/mod/:tag" => "moderations#index"
 
   post "/fallback_activity_recorder" => "ga_events#create"
 

@@ -50,6 +50,26 @@ RSpec.describe "ChatChannels", type: :request do
     end
   end
 
+  describe "get /chat_channels?state=unopened_ids" do
+    it "returns unopened chat channel ids" do
+      direct_channel.add_users [user]
+      user.chat_channel_memberships.each { |m| m.update(has_unopened_messages: true) }
+      sign_in user
+      get "/chat_channels?state=unopened_ids"
+      expect(response.body).to include(direct_channel.id.to_s)
+      expect(response.body).to include("unopened_ids")
+    end
+
+    it "does not return chat channel ids if not signed in" do
+      direct_channel.add_users [user]
+      user.chat_channel_memberships.each { |m| m.update(has_unopened_messages: true) }
+      sign_out user
+      expect do
+        get "/chat_channels?state=unopened_ids"
+      end.to raise_error(Pundit::NotAuthorizedError)
+    end
+  end
+
   describe "get /chat_channels?state=pending" do
     it "returns pending channels" do
       ChatChannelMembership.create(chat_channel_id: invite_channel.id, user_id: user.id, status: "pending")
@@ -181,11 +201,13 @@ RSpec.describe "ChatChannels", type: :request do
 
   describe "POST /chat_channels/:id/open" do
     it "returns success" do
+      allow(Pusher).to receive(:trigger).and_return(true)
       post "/chat_channels/#{chat_channel.id}/open"
       expect(response.body).to include("success")
     end
 
     it "marks chat_channel_membership as opened" do
+      allow(Pusher).to receive(:trigger).and_return(true)
       post "/chat_channels/#{chat_channel.id}/open"
       expect(user.chat_channel_memberships.last.has_unopened_messages).to eq(false)
     end

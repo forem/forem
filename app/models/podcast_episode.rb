@@ -42,7 +42,7 @@ class PodcastEpisode < ApplicationRecord
       attribute :user do
         { name: podcast.name,
           username: user_username,
-          profile_image_90: ProfileImage.new(user).get(90) }
+          profile_image_90: ProfileImage.new(user).get(width: 90) }
       end
       searchableAttributes ["unordered(title)",
                             "body_text",
@@ -140,7 +140,7 @@ class PodcastEpisode < ApplicationRecord
   end
 
   def bust_cache
-    PodcastEpisodes::BustCacheJob.perform_later(id, path, podcast_slug)
+    PodcastEpisodes::BustCacheWorker.perform_async(id, path, podcast_slug)
   end
 
   def process_html_and_prefix_all_images

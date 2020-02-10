@@ -11,10 +11,12 @@ const Message = ({
   message,
   color,
   type,
+  editedAt,
   timestamp,
   profileImageUrl,
   onContentTrigger,
   onDeleteMessageTrigger,
+  onEditMessageTrigger,
 }) => {
   const spanStyle = { color };
 
@@ -37,7 +39,7 @@ const Message = ({
           href={`/${user}`}
           target="_blank"
           rel="noopener noreferrer"
-          data-content={`users/${userID}`}
+          data-content='sidecar-user'
           onClick={onContentTrigger}
         >
           <img
@@ -45,7 +47,7 @@ const Message = ({
             className="chatmessagebody__profileimage"
             src={profileImageUrl}
             alt={`${user} profile`}
-            data-content={`users/${userID}`}
+            data-content='sidecar-user'
             onClick={onContentTrigger}
           />
         </a>
@@ -57,24 +59,33 @@ const Message = ({
       >
         <div className="message__info__actions">
           <div className="message__info">
-            <span className="chatmessagebody__username" style={spanStyle}>
+            <span className="chatmessagebody__username not-dark-theme-text-compatible" style={spanStyle}>
               <a
                 className="chatmessagebody__username--link"
                 href={`/${user}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                data-content={`users/${userID}`}
+                data-content='sidecar-user'
                 onClick={onContentTrigger}
               >
                 {user}
               </a>
             </span>
-            {timestamp ? (
+            {editedAt ? (
+              <span className="chatmessage__timestamp edited_message">
+                {`${adjustTimestamp(editedAt)}`}
+                <i> (edited)</i>
+              </span>
+            ) : (
+              ' '
+            )}
+
+            {timestamp && !editedAt ? (
               <span className="chatmessage__timestamp">
                 {`${adjustTimestamp(timestamp)}`}
               </span>
             ) : (
-              <span />
+              ' '
             )}
           </div>
           {userID === currentUserId ? (
@@ -89,6 +100,17 @@ const Message = ({
                 }}
               >
                 Delete
+              </span>
+              <span
+                role="button"
+                data-content={id}
+                onClick={onEditMessageTrigger}
+                tabIndex="0"
+                onKeyUp={e => {
+                  if (e.keyCode === 13) onEditMessageTrigger();
+                }}
+              >
+                Edit
               </span>
             </div>
           ) : (
@@ -110,9 +132,11 @@ Message.propTypes = {
   message: PropTypes.string.isRequired,
   type: PropTypes.string,
   timestamp: PropTypes.string,
+  editedAt: PropTypes.number.isRequired,
   profileImageUrl: PropTypes.string,
   onContentTrigger: PropTypes.func.isRequired,
   onDeleteMessageTrigger: PropTypes.func.isRequired,
+  onEditMessageTrigger: PropTypes.func.isRequired,
 };
 
 Message.defaultProps = {

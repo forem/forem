@@ -153,7 +153,7 @@ podcast_objects = [
     slug: "developeronfire",
     twitter_username: "raelyard",
     website_url: "http://developeronfire.com",
-    main_color_hex: Faker::Color.hex_color,
+    main_color_hex: "343d46",
     overcast_url: "https://overcast.fm/itunes1006105326/developer-on-fire",
     android_url: "http://subscribeonandroid.com/developeronfire.com/rss.xml",
     image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
@@ -192,24 +192,20 @@ Broadcast.create!(
 
 Rails.logger.info "8. Creating Chat Channels and Messages"
 
-ChatChannel.clear_index!
-ChatChannel.without_auto_index do
-  %w[Workshop Meta General].each do |chan|
-    ChatChannel.create!(
-      channel_name: chan,
-      channel_type: "open",
-      slug: chan,
-    )
-  end
-
-  direct_channel = ChatChannel.create_with_users(User.last(2), "direct")
-  Message.create!(
-    chat_channel: direct_channel,
-    user: User.last,
-    message_markdown: "This is **awesome**",
+%w[Workshop Meta General].each do |chan|
+  ChatChannel.create!(
+    channel_name: chan,
+    channel_type: "open",
+    slug: chan,
   )
 end
-ChatChannel.reindex!
+
+direct_channel = ChatChannel.create_with_users(User.last(2), "direct")
+Message.create!(
+  chat_channel: direct_channel,
+  user: User.last,
+  message_markdown: "This is **awesome**",
+)
 
 Rails.logger.info "9. Creating HTML Variants"
 

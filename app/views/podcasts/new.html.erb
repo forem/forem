@@ -1,0 +1,13 @@
+<%= content_for :page_meta do %>
+  <%= render "podcast_episodes/meta" %>
+<% end %>
+<div class="home">
+  <%= render "podcast_episodes/sidebar" %>
+  <div class="podcasts-form" id="podcasts-form">
+    <%= render "form", podcast: @podcast %>
+  </div>
+  <%= render "podcast_episodes/sidebar_additional" %>
+</div>
+
+<%= render "stories/narrow_nav_menu" %>
+<%= render "stories/stories_list_script" %>

@@ -9,9 +9,9 @@ class SiteConfig < RailsSettings::Base
   cache_prefix { "v1" }
 
   # staff account
-  field :staff_user_id, type: :integer, default: 1 # will replace DEVTO_USER_ID
+  field :staff_user_id, type: :integer, default: 1
   field :default_site_email, type: :string, default: "yo@dev.to"
-  field :social_networks_handle, type: :string, default: "thepracticaldev" # will replace SITE_TWITTER_HANDLE
+  field :social_networks_handle, type: :string, default: "thepracticaldev"
 
   # images
   field :main_social_image, type: :string, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
@@ -20,6 +20,10 @@ class SiteConfig < RailsSettings::Base
 
   # rate limits
   field :rate_limit_follow_count_daily, type: :integer, default: 500
+  field :rate_limit_comment_creation, type: :integer, default: 9
+  field :rate_limit_published_article_creation, type: :integer, default: 9
+  field :rate_limit_image_upload, type: :integer, default: 9
+  field :rate_limit_email_recipient, type: :integer, default: 5
 
   # Google Analytics Reporting API v4
   # <https://developers.google.com/analytics/devguides/reporting/core/v4>
@@ -36,4 +40,7 @@ class SiteConfig < RailsSettings::Base
   # Email digest frequency
   field :periodic_email_digest_max, type: :integer, default: 0
   field :periodic_email_digest_min, type: :integer, default: 2
+
+  # Tags
+  field :suggested_tags, type: :array, default: %w[beginners career computerscience javascript security ruby rails swift kotlin]
 end

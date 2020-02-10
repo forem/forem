@@ -32,8 +32,9 @@ rule, you should avoid relying on JavaScript for layout when working on DEV.
 
 ## We attempt to reduce our bundle size
 
-We use [PreactJS][preact], a lightweight alternative to ReactJS, and we try to
-reduce our bundle size with [dynamic imports][dynamic_imports].
+We use [PreactJS](/frontend/preact), a lightweight alternative to ReactJS, and
+we try to reduce our bundle size with
+[dynamic imports](frontend/dynamic-imports).
 
 ## Service workers and shell architecture
 
@@ -77,7 +78,8 @@ shared among all users.
 
 ## Inter-page navigation
 
-DEV uses a variation of "instant click," which swaps out page content instead of
+DEV uses a variation of "instant click", via
+[InstantClick](/frontend/instant-click), which swaps out page content instead of
 making full-page requests. This approach is similar to the one used by the Rails
 gem `Turbolinks`, but our approach is more lightweight. The library is modified
 to work specifically with this Rails app and does not swap out reused elements
@@ -118,6 +120,11 @@ the URL (`/username/tag-slug`), but they are present in communal areas of the
 application. They are threaded, but they flatten out gradually to avoid
 infinitely branching threads.
 
+## Users
+
+The user is the authorization/identity component of logging into the app. It is
+also the public profile/authorship/etc. belonging to the people who use the app.
+
 ## Tags
 
 Tags are used to organize user generated content. Each tag has a set of rules
@@ -156,13 +163,26 @@ article in the user's reading list.
 How a user keeps track of the tags, users, or articles they care about. Follows
 impact a user's home feed and notifications.
 
+## Roles
+
+Through the "rolify" gem, users can have roles like "admin", etc. A role can
+also be associated with a model or a model instance. Such as "moderator of
+javascript tag"
+
+## Organization
+
+An organization is a collection of users who can author under one umbrella. An
+organization could be a company or perhaps just a publication on-site.
+
+## Notes
+
+Notes are an internal tool admins can use to leave information about things.
+Example: "This user was warned for spammy content".
+
 ---
 
 This is far from a complete view of the app, but it covers a few core concepts.
 
 [fastly]: https://www.fastly.com/
 [rails_caching]: https://guides.rubyonrails.org/caching_with_rails.html
-[preact]: https://preactjs.com/
-[dynamic_imports]:
-  https://dev.to/goenning/how-we-reduced-our-initial-jscss-size-by-67-3ac0
 [fastly_rails]: https://github.com/fastly/fastly-rails

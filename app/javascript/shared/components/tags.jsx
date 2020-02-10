@@ -225,9 +225,14 @@ class Tags extends Component {
     if (e.target.className === 'articleform__tagsoptionrulesbutton') {
       return;
     }
+
     const input = document.getElementById('tag-input');
     input.focus();
-    this.insertTag(e.target.dataset.content);
+
+    // the rules container (__tagoptionrow) is the real target of the event,
+    // by using currentTarget we let the event propagation work
+    // from the inner rules box as well (__tagrules)
+    this.insertTag(e.currentTarget.dataset.content);
   };
 
   handleInput = e => {
@@ -326,8 +331,8 @@ class Tags extends Component {
         if (listing === true) {
           const { additionalTags } = this.state;
           const { category } = this.props;
-          const additionalItems = (additionalTags[category] || []).filter(
-            t => t.includes(query),
+          const additionalItems = (additionalTags[category] || []).filter(t =>
+            t.includes(query),
           );
           const resultsArray = content.hits;
           additionalItems.forEach(t => {
@@ -372,6 +377,7 @@ class Tags extends Component {
     let searchResultsHTML = '';
     const { searchResults, selectedIndex, showingRulesForTag } = this.state;
     const { classPrefix, defaultValue, maxTags, listing } = this.props;
+    const { activeElement } = document;
     const searchResultsRows = searchResults.map((tag, index) => (
       <div
         tabIndex="-1"
@@ -406,9 +412,11 @@ class Tags extends Component {
     ));
     if (
       searchResults.length > 0 &&
-      (document.activeElement.id === 'tag-input' ||
-        document.activeElement.className ===
-          'articleform__tagsoptionrulesbutton')
+      (activeElement.id === 'tag-input' ||
+        activeElement.classList.contains(
+          'articleform__tagsoptionrulesbutton',
+        ) ||
+        activeElement.classList.contains('articleform__tagoptionrow'))
     ) {
       searchResultsHTML = (
         <div className={`${classPrefix}__tagsoptions`}>

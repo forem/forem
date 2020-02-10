@@ -13,24 +13,28 @@ module Admin
     private
 
     def user_params
-      accessible = %i[
+      verify_usernames params.require(:user).permit(allowed_params)
+    end
+
+    # make sure usernames are not empty, to be able to use the database unique index
+    def verify_usernames(user_params)
+      user_params[:twitter_username] = nil if user_params[:twitter_username] == ""
+      user_params[:github_username] = nil if user_params[:github_username] == ""
+      user_params
+    end
+
+    def allowed_params
+      core_params | url_params | other_params
+    end
+
+    def core_params
+      %i[
         name
         email
         username
         twitter_username
         github_username
         profile_image
-        website_url
-        summary
-        email_newsletter
-        email_comment_notifications
-        email_follower_notifications
-        organization_id
-        org_admin
-        bg_color_hex
-        text_color_hex
-        employer_name
-        employer_url
         employment_title
         currently_learning
         available_for
@@ -39,10 +43,11 @@ module Admin
         location
         email_public
         education
-        feed_url
-        reputation_modifier
-        saw_onboarding
-        scholar_email
+      ]
+    end
+
+    def url_params
+      %i[
         facebook_url
         behance_url
         dribbble_url
@@ -51,16 +56,27 @@ module Admin
         linkedin_url
         twitch_url
         instagram_url
+        website_url
+        employer_url
+        feed_url
       ]
-      accessible << %i[password password_confirmation] if params[:user][:password].present?
-      verify_usernames params.require(:user).permit(accessible)
     end
 
-    # make sure usernames are not empty, to be able to use the database unique index
-    def verify_usernames(user_params)
-      user_params[:twitter_username] = nil if user_params[:twitter_username] == ""
-      user_params[:github_username] = nil if user_params[:github_username] == ""
-      user_params
+    def other_params
+      %i[
+        email_newsletter
+        email_comment_notifications
+        email_follower_notifications
+        summary
+        organization_id
+        org_admin
+        bg_color_hex
+        text_color_hex
+        employer_name
+        reputation_modifier
+        saw_onboarding
+        scholar_email
+      ]
     end
   end
 end

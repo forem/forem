@@ -195,9 +195,9 @@ RSpec.describe MarkdownParser, type: :labor do
   end
 
   context "when provided with liquid tags" do
-    it "raises error if liquid tag was used incorrectly" do
+    it "does not raises error if liquid tag was used incorrectly" do
       bad_ltag = "{% #{random_word} %}"
-      expect { generate_and_parse_markdown(bad_ltag) }.to raise_error(StandardError)
+      expect { generate_and_parse_markdown(bad_ltag) }.not_to raise_error
     end
   end
 
@@ -263,7 +263,7 @@ RSpec.describe MarkdownParser, type: :labor do
   context "when a colon emoji is used" do
     it "doesn't change text in codeblock" do
       result = generate_and_parse_markdown("<span>:o:<code>:o:</code>:o:<code>:o:</code>:o:<span>:o:</span>:o:</span>")
-      expect(result).to include("<span>⭕️<code>:o:</code>⭕️<code>:o:</code>⭕️<span>⭕️</span>⭕️</span>")
+      expect(result).to include("<span>⭕<code>:o:</code>⭕<code>:o:</code>⭕<span>⭕</span>⭕</span>")
     end
   end
 

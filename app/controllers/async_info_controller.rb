@@ -43,7 +43,7 @@ class AsyncInfoController < ApplicationController
         id: @user.id,
         name: @user.name,
         username: @user.username,
-        profile_image_90: ProfileImage.new(@user).get(90),
+        profile_image_90: ProfileImage.new(@user).get(width: 90),
         followed_tag_names: @user.cached_followed_tag_names,
         followed_tags: @user.cached_followed_tags.to_json(only: %i[id name bg_color_hex text_color_hex hotness_score], methods: [:points]),
         followed_user_ids: @user.cached_following_users_ids,
@@ -89,6 +89,8 @@ class AsyncInfoController < ApplicationController
   private
 
   def occasionally_update_analytics
-    Articles::UpdateAnalyticsJob.perform_later(@user.id) if Rails.env.production? && rand(ApplicationConfig["GA_FETCH_RATE"]) == 1
+    return unless Rails.env.production? && rand(SiteConfig.ga_fetch_rate) == 1
+
+    Articles::UpdateAnalyticsWorker.perform_async(@user.id)
   end
 end

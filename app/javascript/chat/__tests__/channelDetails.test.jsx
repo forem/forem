@@ -107,7 +107,7 @@ describe('<ChannelDetails />', () => {
             .childAt(1)
             .attr('data-content'),
         ).toEqual(
-          `users/by_username?url=${moddetails.channel_users[i].username}`,
+          `sidecar-user`,
         );
       }
 
@@ -293,7 +293,7 @@ describe('<ChannelDetails />', () => {
             .childAt(1)
             .attr('data-content'),
         ).toEqual(
-          `users/by_username?url=${userdetails.channel_users[i].username}`,
+          `sidecar-user`,
         );
       }
 

@@ -154,11 +154,11 @@ preact-render-spy (1 nodes)
           </a>
         </label>
         <h3>Email Preferences</h3>
-        <label htmlFor="email_membership_newsletter">
+        <label htmlFor="email_newsletter">
           <input
             type="checkbox"
-            id="email_membership_newsletter"
-            name="email_membership_newsletter"
+            id="email_newsletter"
+            name="email_newsletter"
             checked={true}
             onChange={[Function bound handleChange]}
            />
