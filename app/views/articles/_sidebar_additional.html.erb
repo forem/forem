@@ -7,14 +7,8 @@
           Join <%= ApplicationConfig["COMMUNITY_NAME"] %>
         </header>
         <div class="widget-body">
-          <center style="margin-bottom: 2px;">
-            <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="cta cta-button login-cta-button" data-no-instant>
-              Sign In With Twitter
-            </a>
-            <a href="/users/auth/github?state=navbar_basic" class="cta cta-button login-cta-button" data-no-instant>
-              Sign In With GitHub
-            </a>
-          </center>
+          <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="cta cta-button login-cta-button" data-no-instant>Sign In With Twitter</a>
+          <a href="/users/auth/github?state=navbar_basic" class="cta cta-button login-cta-button" data-no-instant>Sign In With GitHub</a>
         </div>
       </div>
     <% end %>
