@@ -558,12 +558,6 @@
           @include themeable(background, theme-container-background, white);
           height: calc(100% - 2px);
           overflow-y: auto;
-          .widget,
-          .sidebar-profile-snapshot {
-            border-radius: 0px;
-            box-shadow: none;
-            margin-bottom: 0;
-          }
         }
       }
     }
@@ -1504,6 +1498,35 @@
   margin: auto;
   @media screen and (min-width: 950px) {
     width: 100%;
+  }
+}
+
+
+
+// Profile card
+.sidebar-profile {
+  display: flex;
+  align-items: center;
+  padding: 8px 0 16px;
+
+  .sidebar-profile--avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+  }
+
+  .sidebar-profile--details {
+    flex: 1 auto;
+    padding-left: 8px;
+  }
+
+  .sidebar-profile--name {
+    margin: 0;
+    @include themeable(color, theme-color, rgba($black, 0.9));
+  }
+
+  .sidebar-profile--username {
+    @include themeable(color, theme-secondary-color, $medium-gray);
   }
 }
 
