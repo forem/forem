@@ -71,6 +71,8 @@ ENV	DATABASE_URL="postgresql://devto:devto@db:5432/PracticalDeveloper_developmen
 ENV DB_SETUP="false" \
   DB_MIGRATE="false"
 
+ENV ELASTICSEARCH_URL="http://elasticsearch:9200"
+
 #
 # Let's setup the public uploads folder volume
 #

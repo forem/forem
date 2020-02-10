@@ -7,6 +7,7 @@ services:
     depends_on:
       - db
       - redis
+      - elasticsearch
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgres://postgres:mysecretpassword@db:5432/postgres
@@ -33,3 +34,7 @@ services:
     image: "redis"
     ports:
       - "6379:6379"
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.2
+    ports:
+      - "9200:9200"
