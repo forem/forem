@@ -326,7 +326,7 @@ GEM
     fastly-rails (0.8.0)
       fastly (~> 1.6)
       railties (> 2, < 6)
-    feedjira (3.1.0)
+    feedjira (3.1.1)
       loofah (>= 2.3.1)
       sax-machine (>= 1.0)
     ffi (1.12.1)
