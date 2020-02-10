@@ -74,8 +74,8 @@ ENV DB_SETUP="false" \
 #
 # Let's setup the public uploads folder volume
 #
-RUN mkdir -p /usr/src/app/public/uploads
-VOLUME /usr/src/app/public/uploads
+RUN mkdir -p ./public/uploads
+VOLUME ./public/uploads
 
 # Entrypoint and command to start the server
 COPY docker-entrypoint.sh /usr/bin/
