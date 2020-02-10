@@ -1,5 +1,5 @@
 class Page < ApplicationRecord
-  TEMPLATE_OPTIONS = %w[contained full_within_layout full_page].freeze
+  TEMPLATE_OPTIONS = %w[contained full_within_layout].freeze
 
   validates :title, presence: true
   validates :description, presence: true
