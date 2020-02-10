@@ -1,4 +1,5 @@
 require "rails_helper"
+require "sidekiq/testing"
 
 RSpec.describe Notification, type: :model do
   let_it_be_readonly(:user)            { create(:user) }
@@ -291,6 +292,18 @@ RSpec.describe Notification, type: :model do
           end
         end.to change(article.user.notifications, :count).by(1)
       end
+
+      it "does not send a notification to the author of an article if the reaction owner is deleted" do
+        user4 = create(:user)
+        reaction = create(:reaction, reactable: article, user: user4)
+        user4.delete
+
+        expect do
+          sidekiq_perform_enqueued_jobs do
+            described_class.send_reaction_notification(reaction, reaction.reactable.user)
+          end
+        end.not_to change(article.user.notifications, :count)
+      end
     end
 
     context "when a reaction is destroyed" do
@@ -451,22 +464,22 @@ RSpec.describe Notification, type: :model do
       it "updates the notification with the new article title" do
         new_title = "hehehe hohoho!"
         article.update_attribute(:title, new_title)
+        described_class.update_notifications(article, "Published")
 
-        perform_enqueued_jobs do
-          described_class.update_notifications(article, "Published")
-          expected_notification_article_title = user2.notifications.last.json_data["article"]["title"]
-          expect(expected_notification_article_title).to eq(new_title)
-        end
+        sidekiq_perform_enqueued_jobs
+
+        expected_notification_article_title = user2.notifications.last.json_data["article"]["title"]
+        expect(expected_notification_article_title).to eq(new_title)
       end
 
       it "adds organization data when the article now belongs to an org" do
         article.update(organization_id: organization.id)
+        described_class.update_notifications(article, "Published")
 
-        perform_enqueued_jobs do
-          described_class.update_notifications(article, "Published")
-          expected_notification_organization_id = described_class.last.json_data["organization"]["id"]
-          expect(expected_notification_organization_id).to eq(organization.id)
-        end
+        sidekiq_perform_enqueued_jobs
+
+        expected_notification_organization_id = described_class.last.json_data["organization"]["id"]
+        expect(expected_notification_organization_id).to eq(organization.id)
       end
     end
   end

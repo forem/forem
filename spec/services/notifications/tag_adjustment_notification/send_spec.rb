@@ -18,7 +18,7 @@ RSpec.describe Notifications::TagAdjustmentNotification::Send, type: :service do
   end
 
   it "notifies the author of the article" do
-    perform_enqueued_jobs do
+    sidekiq_perform_enqueued_jobs do
       Notification.send_tag_adjustment_notification(tag_adjustment)
     end
     expect(Notification.first.user_id).to eq user2.id

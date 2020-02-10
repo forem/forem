@@ -1,3 +1,8 @@
+# we use this to be able to increase the size of the seeded DB at will
+# eg.: `SEEDS_MULTIPLIER=2 rails db:seed` would double the amount of data
+SEEDS_MULTIPLIER = [1, ENV["SEEDS_MULTIPLIER"].to_i].max
+Rails.logger.info "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}"
+
 Rails.logger.info "1. Creating Organizations"
 
 3.times do
@@ -21,7 +26,7 @@ Rails.logger.info "2. Creating Users"
 
 roles = %i[trusted chatroom_beta_tester workshop_pass]
 User.clear_index!
-10.times do |i|
+(10 * SEEDS_MULTIPLIER).times do |i|
   user = User.create!(
     name: name = Faker::Name.unique.name,
     summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
@@ -73,7 +78,7 @@ end
 Rails.logger.info "4. Creating Articles"
 
 Article.clear_index!
-25.times do |i|
+(25 * SEEDS_MULTIPLIER).times do |i|
   tags = []
   tags << "discuss" if (i % 3).zero?
   tags.concat Tag.order(Arel.sql("RANDOM()")).select("name").first(3).map(&:name)
@@ -192,24 +197,20 @@ Broadcast.create!(
 
 Rails.logger.info "8. Creating Chat Channels and Messages"
 
-ChatChannel.clear_index!
-ChatChannel.without_auto_index do
-  %w[Workshop Meta General].each do |chan|
-    ChatChannel.create!(
-      channel_name: chan,
-      channel_type: "open",
-      slug: chan,
-    )
-  end
-
-  direct_channel = ChatChannel.create_with_users(User.last(2), "direct")
-  Message.create!(
-    chat_channel: direct_channel,
-    user: User.last,
-    message_markdown: "This is **awesome**",
+%w[Workshop Meta General].each do |chan|
+  ChatChannel.create!(
+    channel_name: chan,
+    channel_type: "open",
+    slug: chan,
   )
 end
-ChatChannel.reindex!
+
+direct_channel = ChatChannel.create_with_users(User.last(2), "direct")
+Message.create!(
+  chat_channel: direct_channel,
+  user: User.last,
+  message_markdown: "This is **awesome**",
+)
 
 Rails.logger.info "9. Creating HTML Variants"
 

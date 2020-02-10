@@ -13,6 +13,12 @@ RSpec.describe "Admin awards badges", type: :system do
     click_on "Award Badges"
   end
 
+  def award_no_badges
+    fill_in "usernames", with: "#{user.username}, #{user2.username}"
+    fill_in "message_markdown", with: "He who controls the spice controls the universe."
+    click_on "Award Badges"
+  end
+
   before do
     create_list :badge, 5
     sign_in admin
@@ -40,10 +46,15 @@ RSpec.describe "Admin awards badges", type: :system do
   end
 
   it "notifies users of new badges" do
-    assert_enqueued_jobs(2, only: BadgeAchievements::SendEmailNotificationJob) do
+    sidekiq_assert_enqueued_jobs(2, only: BadgeAchievements::SendEmailNotificationWorker) do
       sidekiq_assert_enqueued_jobs(2, only: Notifications::NewBadgeAchievementWorker) do
         award_two_badges
       end
     end
+  end
+
+  it "does not award badges if no badge is selected" do
+    expect { award_no_badges }.to change { user.badges.count }.by(0)
+    expect(page).to have_content("Please choose a badge to award")
   end
 end

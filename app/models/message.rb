@@ -27,7 +27,6 @@ class Message < ApplicationRecord
 
   def update_chat_channel_last_message_at
     chat_channel.touch(:last_message_at)
-    chat_channel.index!
     chat_channel.chat_channel_memberships.reindex!
   end
 
@@ -35,8 +34,7 @@ class Message < ApplicationRecord
     chat_channel.
       chat_channel_memberships.
       where("last_opened_at < ?", 10.seconds.ago).
-      where.
-      not(user_id: user_id).
+      where.not(user_id: user_id).
       update_all(has_unopened_messages: true)
   end
 
@@ -100,7 +98,7 @@ class Message < ApplicationRecord
           target='_blank' data-content='sidecar-article'>
             #{"<div class='chatchannels__richlinkmainimage' style='background-image:url(" + cl_path(article.main_image) + ")' data-content='sidecar-article' ></div>" if article.main_image.present?}
           <h1 data-content='sidecar-article'>#{article.title}</h1>
-          <h4 data-content='sidecar-article'><img src='#{ProfileImage.new(article.cached_user).get(90)}' /> #{article.cached_user.name}・#{article.readable_publish_date || 'Draft Post'}</h4>
+          <h4 data-content='sidecar-article'><img src='#{ProfileImage.new(article.cached_user).get(width: 90)}' /> #{article.cached_user.name}・#{article.readable_publish_date || 'Draft Post'}</h4>
           </a>".html_safe
       elsif (tag = rich_link_tag(anchor))
         html += "<a href='/t/#{tag.name}'
@@ -116,7 +114,7 @@ class Message < ApplicationRecord
         class='chatchannels__richlink'
           target='_blank' data-content='sidecar-user'>
           <h1 data-content='sidecar-user'>
-            <img src='#{ProfileImage.new(user).get(90)}' data-content='sidecar-user' class='chatchannels__richlinkprofilepic' />
+            <img src='#{ProfileImage.new(user).get(width: 90)}' data-content='sidecar-user' class='chatchannels__richlinkprofilepic' />
             #{user.name}
           </h1>
           </a>".html_safe

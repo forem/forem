@@ -61,6 +61,8 @@ class Tweet < ApplicationRecord
       make_tweet_from_api_object(tweet)
     end
 
+    private
+
     def make_tweet_from_api_object(tweeted)
       twitter_bot = TwitterBot.new(random_identity)
       tweeted = if tweeted.attrs[:retweeted_status]

@@ -28,7 +28,7 @@
     <meta itemprop="url" content="https://dev.to/<%= @user.username %>">
     <div class="user-profile-header-container">
       <div class="profile-pic-wrapper">
-        <img class="profile-pic" src="<%= ProfileImage.new(@user).get(320) %>" itemprop="image" alt="<%= @user.username %> profile" style="border-color:<%= user_colors(@user)[:bg] %>;background:<%= user_colors(@user)[:bg] %>" />
+        <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 320) %>" itemprop="image" alt="<%= @user.username %> profile" style="border-color:<%= user_colors(@user)[:bg] %>;background:<%= user_colors(@user)[:bg] %>" />
       </div>
       <div class="profile-details">
         <h1>
@@ -196,7 +196,7 @@
       loading...
     </div>
   </div>
-  <% cache "user-profile-sidebar-additional-#{@user.id}-#{@user.github_repos_updated_at}-#{@user.badge_achievements_count}", expires_in: 2.days do %>
+  <% cache "user-profile-sidebar-additional-#{@user.id}-#{@user.github_repos_updated_at}-#{@user.badge_achievements_count}-#{@user.organization_info_updated_at}", expires_in: 2.days do %>
     <%= render "users/sidebar_additional" %>
   <% end %>
 </div>

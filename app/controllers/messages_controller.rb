@@ -88,7 +88,7 @@ class MessagesController < ApplicationController
       chat_channel_adjusted_slug: new_message.chat_channel.adjusted_slug(current_user, "sender"),
       channel_type: new_message.chat_channel.channel_type,
       username: new_message.user.username,
-      profile_image_url: ProfileImage.new(new_message.user).get(90),
+      profile_image_url: ProfileImage.new(new_message.user).get(width: 90),
       message: new_message.message_html,
       markdown: new_message.message_markdown,
       edited_at: new_message.edited_at,
@@ -119,7 +119,7 @@ class MessagesController < ApplicationController
           status: "error",
           message: {
             chat_channel_id: message_params[:chat_channel_id],
-            message: "You can not do that because you are banned",
+            message: "You can not do that because you are suspended",
             type: "error"
           }
         }, status: :unauthorized

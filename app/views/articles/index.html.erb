@@ -100,7 +100,7 @@
               </h3>
             </div>
             <a href="/<%= @featured_story.cached_user.username %>" class="featured-profile-button">
-              <img class="featured-profile-pic" src="<%= ProfileImage.new(@featured_story.cached_user).get(90) %>" alt="<%= @featured_story.title %>" />
+              <img class="featured-profile-pic" src="<%= ProfileImage.new(@featured_story.cached_user).get(width: 90) %>" alt="<%= @featured_story.title %>" />
             </a>
             <div class="featured-user-name">
               <a href="/<%= @featured_story.cached_user.username %>">

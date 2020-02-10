@@ -3,11 +3,12 @@ module Users
     module_function
 
     def call(user, cache_buster = CacheBuster)
-      return unless user.articles.any?
+      return if user.articles.blank?
 
       virtual_articles = user.articles.map { |article| Article.new(article.attributes) }
       user.articles.find_each do |article|
         article.reactions.delete_all
+        article.buffer_updates.delete_all
         article.comments.includes(:user).find_each do |comment|
           comment.reactions.delete_all
           cache_buster.bust_comment(comment.commentable)

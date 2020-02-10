@@ -26,7 +26,7 @@ class Tag < ActsAsTaggableOn::Tag
   before_validation :evaluate_markdown
   before_validation :pound_it
   before_save :calculate_hotness_score
-  after_save :bust_cache
+  after_commit :bust_cache
   before_save :mark_as_updated
 
   algoliasearch per_environment: true do
@@ -66,6 +66,10 @@ class Tag < ActsAsTaggableOn::Tag
     errors.add(:name, "contains non-alphanumeric characters") unless name.match?(/\A[[:alnum:]]+\z/)
   end
 
+  def mod_chat_channel
+    ChatChannel.find(mod_chat_channel_id) if mod_chat_channel_id
+  end
+
   private
 
   def evaluate_markdown
@@ -83,7 +87,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def bust_cache
-    Tags::BustCacheJob.perform_later(name)
+    Tags::BustCacheWorker.perform_async(name)
   end
 
   def validate_alias

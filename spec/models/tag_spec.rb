@@ -65,6 +65,14 @@ RSpec.describe Tag, type: :model do
   end
 
   it "triggers cache busting on save" do
-    expect { build(:tag).save }.to have_enqueued_job.on_queue("tags_bust_cache")
+    sidekiq_assert_enqueued_with(job: Tags::BustCacheWorker, args: [tag.name]) do
+      tag.save
+    end
+  end
+
+  it "finds mod chat channel" do
+    channel = create(:chat_channel)
+    tag.mod_chat_channel_id = channel.id
+    expect(tag.mod_chat_channel).to eq(channel)
   end
 end

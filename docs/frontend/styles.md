@@ -6,7 +6,9 @@ title: Styles
 
 The majority of the CSS in the application is written in
 [SASS](https://sass-lang.com/). There are a few places in the code base that
-have style blocks in ERB templates, but this is not the norm.
+have style blocks in ERB templates, for inlining critical CSS (good). There are
+also some styles that live in ERB templates that are not critical CSS (bad).
+That is a bit of refactoring that needs to be done. PRs welcome!
 
 Important files when working with SASS in the project:
 

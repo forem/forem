@@ -59,4 +59,21 @@ RSpec.describe "CommentsCreate", type: :request do
       expect(new_comment.id).not_to eq(nil)
     end
   end
+
+  context "when an error is raised before authorization is performed" do
+    let(:rate_limit_checker) { instance_double(RateLimitChecker) }
+
+    before do
+      allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
+      allow(rate_limit_checker).to receive(:limit_by_action).and_raise(StandardError)
+    end
+
+    it "returns an unprocessable_entity response code" do
+      post "/comments", params: {
+        comment: { body_markdown: "something not allowed", commentable_id: article.id, commentable_type: "Article" }
+      }
+
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+  end
 end

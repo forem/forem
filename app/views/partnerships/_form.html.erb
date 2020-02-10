@@ -1,4 +1,4 @@
-<% if !organizations.any? %>
+<% if organizations.none? %>
   <div class="partner-credits-explainer">
     <h4>What next?</h4>
     <h3>Create an Organization</h3>
@@ -15,7 +15,7 @@
     <% if !org.enough_credits?(Sponsorship::CREDITS[level]) %>
       <div class="partner-credits-explainer">
         <h4>What next?</h4>
-        <h3><img src="<%= ProfileImage.new(org).get(90) %>" /> Purchase Credits for @<%= org.slug %></h3>
+        <h3><img src="<%= ProfileImage.new(org).get(width: 90) %>" /> Purchase Credits for @<%= org.slug %></h3>
         <% if org.credits.unspent.size > 0 %>
           <div style="font-size: 0.88em;">
             <em>This organization account has <%= org.credits.unspent.size %> credits available</em>
@@ -35,7 +35,7 @@
     <% else %>
       <div class="partner-credits-explainer">
         <% if Sponsorship::LEVELS_WITH_EXPIRATION.include?(level) %>
-          <h3><img src="<%= ProfileImage.new(org).get(90) %>" />@<%= org.slug %></h3>
+          <h3><img src="<%= ProfileImage.new(org).get(width: 90) %>" />@<%= org.slug %></h3>
           <div style="font-size: 0.88em;"><em>This organization account has <%= org.credits.unspent.size %> credits available</em></div>
           <% sponsorships = org.sponsorships.where(level: Sponsorship::LEVELS_WITH_EXPIRATION) %>
           <% level_sponsorship = sponsorships.where(level: level).take %>
@@ -46,7 +46,7 @@
                 <br /><br />Your placement is <em>pending</em>.
               <% end %>
             </div>
-          <% elsif sponsorships.any? %>
+          <% elsif sponsorships.present? %>
             <div class="partner-explainer-notice">
               <%# this should never happen but better safe than sorry %>
               <% sponsorships.each do |sponsorship| %>
@@ -69,7 +69,7 @@
             <% end %>
           <% end %>
         <% elsif level == "tag" %>
-          <h3><img src="<%= ProfileImage.new(org).get(90) %>" />@<%= org.slug %></h3>
+          <h3><img src="<%= ProfileImage.new(org).get(width: 90) %>" />@<%= org.slug %></h3>
           <div style="font-size: 0.88em;"><em>This organization account has <%= org.credits.unspent.size %> credits available</em></div>
           <br />
           <%= form_tag "/partnerships" do %>
@@ -97,7 +97,7 @@
           <% end %>
         <%# NOTE: this currently can't be reached %>
         <% elsif level == "media" %>
-          <h3><img src="<%= ProfileImage.new(org).get(90) %>" />@<%= org.slug %></h3>
+          <h3><img src="<%= ProfileImage.new(org).get(width: 90) %>" />@<%= org.slug %></h3>
           <div style="font-size: 0.88em;"><em>This organization account has <%= org.credits.unspent.size %> credits available</em></div>
           <br />
           <%= form_tag "/partnerships" do %>
@@ -113,7 +113,7 @@
           <% end %>
         <%# NOTE: this currently can't be reached %>
         <% elsif level == "devrel" %>
-          <h3><img src="<%= ProfileImage.new(org).get(90) %>" />@<%= org.slug %></h3>
+          <h3><img src="<%= ProfileImage.new(org).get(width: 90) %>" />@<%= org.slug %></h3>
           <div style="font-size: 0.88em;"><em>This organization account has <%= org.credits.unspent.size %> credits available</em></div>
           <br />
           <%= form_tag "/partnerships" do %>

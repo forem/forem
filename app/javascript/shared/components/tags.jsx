@@ -377,6 +377,7 @@ class Tags extends Component {
     let searchResultsHTML = '';
     const { searchResults, selectedIndex, showingRulesForTag } = this.state;
     const { classPrefix, defaultValue, maxTags, listing } = this.props;
+    const { activeElement } = document;
     const searchResultsRows = searchResults.map((tag, index) => (
       <div
         tabIndex="-1"
@@ -411,9 +412,11 @@ class Tags extends Component {
     ));
     if (
       searchResults.length > 0 &&
-      (document.activeElement.id === 'tag-input' ||
-        document.activeElement.className ===
-          'articleform__tagsoptionrulesbutton')
+      (activeElement.id === 'tag-input' ||
+        activeElement.classList.contains(
+          'articleform__tagsoptionrulesbutton',
+        ) ||
+        activeElement.classList.contains('articleform__tagoptionrow'))
     ) {
       searchResultsHTML = (
         <div className={`${classPrefix}__tagsoptions`}>
