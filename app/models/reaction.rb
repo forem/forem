@@ -3,14 +3,14 @@ class Reaction < ApplicationRecord
 
   CATEGORIES = %w[like readinglist unicorn thinking hands thumbsdown vomit].freeze
   REACTABLE_TYPES = %w[Comment Article User].freeze
-  STATUSES = %w[valid invalid confirmed archived].freeze
+  STATUSES = %w[valid invalid confirmed archived bulk_submitted].freeze
 
   belongs_to :reactable, polymorphic: true
   belongs_to :user
 
   counter_culture :reactable,
                   column_name: proc { |model|
-                    model.points.positive? ? "positive_reactions_count" : "reactions_count"
+                    model.reactable_type != "User" && model.points.positive? ? "positive_reactions_count" : "reactions_count"
                   }
   counter_culture :user
 
