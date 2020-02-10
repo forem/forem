@@ -109,10 +109,10 @@ RSpec.describe Tag, type: :model do
   end
 
   describe "#elasticsearch_doc" do
-    it "gets document from elasticsearch", elasticsearch: true do
-      allow(Search::Tag).to receive(:get)
+    it "finds document in elasticsearch", elasticsearch: true do
+      allow(Search::Tag).to receive(:find_document)
       tag.elasticsearch_doc
-      expect(Search::Tag).to have_received(:get)
+      expect(Search::Tag).to have_received(:find_document)
     end
   end
 end

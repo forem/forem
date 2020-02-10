@@ -49,7 +49,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def elasticsearch_doc
-    Search::Tag.get(id)
+    Search::Tag.find_document(id)
   end
 
   def submission_template_customized(param_0 = nil)
