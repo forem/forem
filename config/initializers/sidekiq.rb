@@ -24,4 +24,10 @@ Sidekiq.configure_server do |config|
   config.server_middleware do |chain|
     chain.add Sidekiq::HoneycombMiddleware
   end
+
+  # This allows us to define custom logic to handle when a worker has exhausted all
+  # of it's retries. For more details: https://github.com/mperham/sidekiq/wiki/Error-Handling#death-notification
+  config.death_handlers << lambda do |job, _ex|
+    Sidekiq::WorkerRetriesExhaustedReporter.report_final_failure(job)
+  end
 end
