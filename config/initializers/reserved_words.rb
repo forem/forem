@@ -210,7 +210,7 @@ class ReservedWords
     welcome
     work
     yes
-  ].freeze
+  ].to_set.freeze
 
   class << self
     def all
