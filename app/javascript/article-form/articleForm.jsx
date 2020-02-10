@@ -20,6 +20,7 @@ import Errors from './elements/errors';
 import KeyboardShortcutsHandler from './elements/keyboardShortcutsHandler';
 import Tags from '../shared/components/tags';
 import { OrganizationPicker } from '../organization/OrganizationPicker';
+import '@github/markdown-toolbar-element';
 
 const SetupImageButton = ({
   className,

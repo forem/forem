@@ -88,6 +88,7 @@
   },
   "dependencies": {
     "@github/clipboard-copy-element": "^1.1.2",
+    "@github/markdown-toolbar-element": "^1.1.1",
     "@rails/webpacker": "^3.5.5",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-preact": "^1.1.0",

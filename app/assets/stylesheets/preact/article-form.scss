@@ -748,3 +748,20 @@
   color: darken($red, 8%);
   font-size: 0.8em;
 }
+
+markdown-toolbar {
+  position: fixed;
+  left: calc(50% - 500px);
+  top: 150px;
+  width: 80x;
+  .articleform__toolbarbutton {
+    font-size: 16px;
+    display: block;
+    cursor: pointer;
+    border: var(--theme-container-border, 1px solid darken($light-medium-gray, 5%));
+    padding: 3px;
+    width: 50px;
+    margin-top: 3px;
+    border-radius: 3px;
+  }
+}

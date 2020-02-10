@@ -140,6 +140,11 @@
   resolved "https://registry.yarnpkg.com/@github/clipboard-copy-element/-/clipboard-copy-element-1.1.2.tgz#7a6e8042749471504d4e7cfcc47097a781db2bdb"
   integrity sha512-L6CMrcA5we0udafvoSuRCE/Ci/3xrLWKYRGup2IlhxF771bQYsQ2EB1of182pI8ZWM4oxgwzu37+igMeoZjN/A==
 
+"@github/markdown-toolbar-element@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@github/markdown-toolbar-element/-/markdown-toolbar-element-1.1.1.tgz#05c7525652d819408342f7d5e8e10783e2e064ab"
+  integrity sha512-ZLy9iXIWg/TwS0Q+tx7HJ0zD04BHCwqzu9SFPShhdHbL8dPXLwvg0aQgzjHVWnLlm8kKiMAnbFBJyuKARwWl4Q==
+
 "@jest/types@^24.9.0":
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/@jest/types/-/types-24.9.0.tgz#63cb26cb7500d069e5a389441a7c6ab5e909fc59"
