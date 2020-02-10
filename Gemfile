@@ -100,7 +100,7 @@ gem "twilio-ruby", "~> 5.31" # The official library for communicating with the T
 gem "twitter", "~> 6.2" # A Ruby interface to the Twitter API
 gem "typhoeus", "~> 1.3.1" # Used with Elasticsearch to support http keep-alive connections
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
-gem "ulid", "~> 1.1" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
+gem "ulid", "~> 1.2" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "webpacker", "~> 3.5" # Use webpack to manage app-like JavaScript modules in Rails
 
