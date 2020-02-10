@@ -4,7 +4,6 @@ class ReservedWords
     404
     500
     about
-    about
     account
     additional_content_boxes
     admin
@@ -15,14 +14,11 @@ class ReservedWords
     anal
     analysis
     analytics
-    analytics
     answers
     api
     app
     article
     articles
-    articles
-    binary
     binary
     bit
     bits
@@ -44,11 +40,9 @@ class ReservedWords
     computer
     connect
     contact
-    contact
     csv_exports
     daily
     dash
-    dashboard
     dashboard
     day
     deep
@@ -57,7 +51,6 @@ class ReservedWords
     design
     designer
     destroy
-    dev
     dev
     developer
     developertea
@@ -69,7 +62,6 @@ class ReservedWords
     faq
     features
     feed
-    feed
     feedback_messages
     flip
     followers
@@ -79,7 +71,6 @@ class ReservedWords
     fuck
     fun
     funnies
-    funny
     funny
     future
     gag
@@ -93,7 +84,6 @@ class ReservedWords
     help
     infinite
     infiniteloop
-    infiniteloop
     internal
     iot
     java
@@ -103,16 +93,13 @@ class ReservedWords
     job_applications
     job_listings
     jobs
-    jobs
     joke
-    jokes
     jokes
     journal
     ki
     kilo
     kilobyte
     kis
-    latest
     latest
     leader
     leaderboard
@@ -123,7 +110,6 @@ class ReservedWords
     links
     linux
     listen
-    live
     live
     live_articles
     loop
@@ -136,7 +122,6 @@ class ReservedWords
     mega
     megabyte
     membership
-    merch
     merch
     merchandise
     new
@@ -151,7 +136,6 @@ class ReservedWords
     one-of-us
     online
     ons
-    opensource
     opensource
     opps
     ops
@@ -169,9 +153,7 @@ class ReservedWords
     podcast
     podcasts
     privacy
-    privacy
     programmer
-    programming
     programming
     pulse
     pulses
@@ -187,7 +169,6 @@ class ReservedWords
     repos
     retro
     rly
-    rly
     rlygenerator
     rlyslack
     rlyweb
@@ -198,7 +179,6 @@ class ReservedWords
     search
     security
     sedaily
-    settings
     settings
     shoutouts
     signout_confirm
@@ -214,7 +194,6 @@ class ReservedWords
     tags
     tea
     tech
-    terms
     terms
     things
     top
