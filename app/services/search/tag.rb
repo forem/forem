@@ -12,7 +12,7 @@ module Search
         )
       end
 
-      def get(tag_id)
+      def find_document(tag_id)
         SearchClient.get(id: tag_id, index: INDEX_ALIAS)
       end
 
@@ -74,6 +74,9 @@ module Search
               type: "boolean"
             },
             short_summary: {
+              type: "text"
+            },
+            rules_html: {
               type: "text"
             }
           }
