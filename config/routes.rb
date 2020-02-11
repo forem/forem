@@ -150,6 +150,10 @@ Rails.application.routes.draw do
     resources :reads, only: [:create]
   end
 
+  namespace :incoming_webhooks do
+    post "/mailchimp/:secret/unsubscribe", to: "mailchimp_unsubscribes#create", as: :mailchimp_unsubscribe
+  end
+
   resources :messages, only: [:create]
   resources :chat_channels, only: %i[index show create update]
   resources :chat_channel_memberships, only: %i[create update destroy]
