@@ -36,7 +36,7 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows correct articles " do
-        expect(page).to have_selector(".single-article", count: 3)
+        expect(page).to have_selector(".single-article", count: 2)
         expect(page).to have_text(article.title)
         expect(page).to have_text(article2.title)
         expect(page.all(".single-article").last).to have_text(unreacted_article.title)

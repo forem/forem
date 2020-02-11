@@ -87,7 +87,7 @@ class StoriesController < ApplicationController
       return
     end
 
-    @stories = article_finder(8)
+    @stories = Articles::Feed.new(number_of_articles: 8, tag: @tag).published_articles_by_tag
 
     @stories = @stories.where(approved: true) if @tag_model&.requires_approval
 
@@ -112,7 +112,7 @@ class StoriesController < ApplicationController
     number_of_articles = 35
     feed = Articles::Feed.new(number_of_articles: number_of_articles, page: @page, tag: params[:tag])
     if %w[week month year infinity].include?(params[:timeframe])
-      @stories = feed.time_based_feed(timeframe: params[:timeframe])
+      @stories = feed.top_articles_by_timeframe(timeframe: params[:timeframe])
     elsif params[:timeframe] == "latest"
       @stories = feed.latest_feed
     else

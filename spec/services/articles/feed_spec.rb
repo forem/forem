@@ -5,10 +5,6 @@ RSpec.describe Articles::Feed, type: :service do
   let!(:article) { create(:article) }
 
   describe "#initialize" do
-    it "requires number of pages argument" do
-      expect { described_class.new(number_of_articles: 1, tag: "foo") }.to raise_error(ArgumentError)
-    end
-
     it "requires number of articles argument" do
       expect { described_class.new(tag: "foo", page: 1) }.to raise_error(ArgumentError)
     end
@@ -24,28 +20,28 @@ RSpec.describe Articles::Feed, type: :service do
     let(:tagged_article) { create(:article, tags: [tag]) }
 
     it "returns published articles" do
-      expect(described_class.new(number_of_articles: 1, page: 1).stories).to eq [article]
+      expect(described_class.new(number_of_articles: 1, page: 1).published_articles_by_tag).to eq [article]
     end
 
     context "with tag" do
       it "returns articles with the specified tag" do
-        expect(described_class.new(number_of_articles: 1, page: 1, tag: tag).stories).to eq [tagged_article]
+        expect(described_class.new(number_of_articles: 1, page: 1, tag: tag).published_articles_by_tag).to eq [tagged_article]
       end
     end
   end
 
-  describe "#time_based_feed" do
+  describe "#top_articles_by_timeframe" do
     let!(:high_scoring_article) { create(:article, score: 100) }
 
     it "returns articles ordered by score" do
-      expect(feed.time_based_feed(timeframe: "week")).to eq [high_scoring_article, article]
+      expect(feed.top_articles_by_timeframe(timeframe: "week")).to eq [high_scoring_article, article]
     end
 
     context "with week article timeframe specified" do
       let!(:month_old_article) { create(:article, published_at: 1.month.ago) }
 
       it "only returns articles from this week" do
-        expect(feed.time_based_feed(timeframe: "week")).not_to include(month_old_article)
+        expect(feed.top_articles_by_timeframe(timeframe: "week")).not_to include(month_old_article)
       end
     end
   end
@@ -77,7 +73,7 @@ RSpec.describe Articles::Feed, type: :service do
 
     it "returns a featured article and array of other articles" do
       expect(featured_story).to be_a(Article)
-      expect(stories).to be_a(Array)
+      expect(stories).to be_a(ActiveRecord::Relation)
     end
 
     it "chooses a featured story with a main image" do
@@ -88,9 +84,13 @@ RSpec.describe Articles::Feed, type: :service do
       expect(stories).not_to include(low_scoring_article)
     end
 
-    it "only includes stories from more than 6 hours ago" do
-      expect(stories).not_to include(article)
-      expect(stories).to include(new_story)
+    context "when user logged in" do
+      let(:stories) { feed.default_home_feed(user_signed_in: true).second }
+
+      it "only includes stories from more than 6 hours ago" do
+        expect(stories).not_to include(article)
+        expect(stories).to include(new_story)
+      end
     end
   end
 end
