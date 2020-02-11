@@ -37,6 +37,28 @@ RSpec.describe Search::Tag, type: :service, elasticsearch: true do
     end
   end
 
+  describe "::tag_search_documents" do
+    let(:tag_doc_1) { { "name" => "tag1" } }
+    let(:tag_doc_2) { { "name" => "tag2" } }
+    let(:mock_search_response) do
+      {
+        "hits" => {
+          "hits" => [
+            { "_source" => tag_doc_1 },
+            { "_source" => tag_doc_2 },
+          ]
+        }
+      }
+    end
+
+    it "parses tag document hits from search response" do
+      allow(SearchClient).to receive(:search) { mock_search_response }
+      tag_docs = described_class.tag_search_documents("query")
+      expect(tag_docs.count).to eq(2)
+      expect(tag_docs).to include(tag_doc_1, tag_doc_2)
+    end
+  end
+
   describe "::find_document" do
     it "fetches a document for a given ID from elasticsearch" do
       tag = FactoryBot.create(:tag)

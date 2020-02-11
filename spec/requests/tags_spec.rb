@@ -10,27 +10,17 @@ RSpec.describe "Tags", type: :request, proper_status: true do
 
   describe "GET /tags/search" do
     let(:authorized_user) { create(:user) }
-    let(:mock_search_response) do
-      {
-        "hits" => {
-          "hits" => [
-            { "_source" => { "name" => "tag1" } },
-            { "_source" => { "name" => "tag2" } },
-            { "_source" => { "name" => "tag3" } },
-          ]
-        }
-      }
+    let(:mock_documents) do
+      [{ "name" => "tag1" }, { "name" => "tag2" }, { "name" => "tag3" }]
     end
 
     it "returns json" do
       sign_in authorized_user
-      allow(Search::Tag).to receive(:search).and_return(
-        mock_search_response,
+      allow(Search::Tag).to receive(:tag_search_documents).and_return(
+        mock_documents,
       )
       get "/tags/search"
-      expect(response.parsed_body).to eq(
-        "result" => mock_search_response.dig("hits", "hits").map { |tag| tag.dig("_source") },
-      )
+      expect(response.parsed_body).to eq("result" => mock_documents)
     end
   end
 
