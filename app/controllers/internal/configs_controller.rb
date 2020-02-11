@@ -18,7 +18,7 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   def config_params
     allowed_params = %i[
-      staff_user_id default_site_email social_networks_handle
+      default_site_email social_networks_handle
       main_social_image favicon_url logo_svg
       rate_limit_follow_count_daily
       ga_view_id ga_fetch_rate
