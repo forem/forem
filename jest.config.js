@@ -10,4 +10,7 @@ module.exports = {
     '\\.(svg|png)$': '<rootDir>/empty-module.js',
   },
   snapshotSerializers: ['preact-render-spy/snapshot'],
+  // The webpack config folder for webpacker is excluded as it has a test.js file that gets
+  // picked up by jest if this folder is not excluded causing a false negative of a test suite failing.
+  testPathIgnorePatterns: ['/node_modules/', './config/webpack'],
 };
