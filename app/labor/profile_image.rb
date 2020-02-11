@@ -4,6 +4,7 @@ class ProfileImage
 
   def initialize(resource)
     @resource = resource
+    resource&.profile_image_url
     @image_link = resource.profile_image_url
     @backup_link = "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png"
   end
