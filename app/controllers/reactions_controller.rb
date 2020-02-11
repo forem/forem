@@ -48,12 +48,13 @@ class ReactionsController < ApplicationController
       reactable_type: params[:reactable_type],
       category: category,
     ).first
+    result = ""
     if reaction
       current_user.touch
       reaction.destroy
       Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
       Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) if organization_article?(reaction)
-      @result = "destroy"
+      result = "destroy"
     else
       reaction = Reaction.new(
         user_id: current_user.id,
@@ -62,14 +63,14 @@ class ReactionsController < ApplicationController
         category: category,
       )
       if reaction.save
-        @result = "create"
+        result = "create"
         Notification.send_reaction_notification(reaction, reaction.reactable.user)
         Notification.send_reaction_notification(reaction, reaction.reactable.organization) if organization_article?(reaction)
       else
-        @result = ""
+        result = ""
       end
     end
-    render json: { result: @result, category: category }
+    render json: { result: result, category: category }
   end
 
   def cached_user_positive_reactions(user)
