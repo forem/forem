@@ -7,7 +7,6 @@ RSpec.describe Moderator::SinkArticles, type: :service do
     create_list(:article, 3, user: user)
     user
   end
-  let(:admin) { create(:user, :super_admin) }
   let(:vomit_reaction) { create(:reaction, reactable: spam_user, user: moderator, category: "vomit") }
 
   describe "#call" do
