@@ -163,6 +163,9 @@ variable :TWITCH_WEBHOOK_SECRET, :String, default: "Optional"
 # (https://api.stackexchange.com/docs)
 variable :STACK_EXCHANGE_APP_KEY, :String, default: ""
 
+# For setting the ID of the welcoming user
+variable :WELCOMING_USER_ID, :Integer, default: 1
+
 group :production do
   variable :SECRET_KEY_BASE, :String
 

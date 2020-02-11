@@ -14,9 +14,9 @@ module Notifications
       end
 
       def call
-        dev_account = User.dev_account
+        welcoming_account = User.welcoming_account
         json_data = {
-          user: user_data(dev_account),
+          user: user_data(welcoming_account),
           broadcast: {
             title: welcome_broadcast.title,
             processed_html: welcome_broadcast.processed_html

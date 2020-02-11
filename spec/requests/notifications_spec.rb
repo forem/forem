@@ -4,10 +4,12 @@ RSpec.describe "NotificationsIndex", type: :request do
   include ActionView::Helpers::DateHelper
 
   let(:dev_account) { create(:user) }
+  let(:welcoming_account) { create(:user) }
   let(:user) { create(:user) }
 
   before do
     allow(User).to receive(:dev_account).and_return(dev_account)
+    allow(User).to receive(:welcoming_account).and_return(welcoming_account)
   end
 
   def has_both_names(response_body)
@@ -302,6 +304,8 @@ RSpec.describe "NotificationsIndex", type: :request do
         get "/notifications"
         expect(response.body).to include broadcast.processed_html
       end
+
+      xit "it renders a welcome notification with a type of Welcome"
     end
 
     context "when a user has a new badge notification" do

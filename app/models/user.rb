@@ -155,6 +155,7 @@ class User < ApplicationRecord
   validate  :unique_including_orgs_and_podcasts, if: :username_changed?
 
   scope :dev_account, -> { find_by(id: SiteConfig.staff_user_id) }
+  scope :welcoming_account, -> { find_by(id: ApplicationConfig["WELCOMING_USER_ID"]) }
 
   scope :with_this_week_comments, lambda { |number|
     includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_these_7_days')::int >= ?", number)
