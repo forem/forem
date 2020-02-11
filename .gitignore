@@ -69,3 +69,6 @@ docs/.static/api/
 
 # asdf
 .tool-versions
+
+# ES docker volume
+docker_data/
