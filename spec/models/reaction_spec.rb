@@ -117,9 +117,7 @@ RSpec.describe Reaction, type: :model do
     it "enqueues the correct jobs" do
       expect do
         reaction.save
-      end.to(
-        have_enqueued_job(Reactions::UpdateReactableJob).exactly(:once),
-      )
+      end.to(have_enqueued_job(Reactions::BustReactableCacheJob).exactly(:once))
     end
 
     describe "enqueues the correct worker" do
@@ -159,11 +157,7 @@ RSpec.describe Reaction, type: :model do
   context "when callbacks are called before destroy" do
     it "enqueues a ScoreCalcWorker on article reaction destroy" do
       reaction = create(:reaction, reactable: article, user: user)
-<<<<<<< HEAD
       sidekiq_assert_enqueued_with(job: Articles::ScoreCalcWorker, args: [article.id]) do
-=======
-      sidekiq_enqueued_jobs(queue: Articles::ScoreCalcJob) do
->>>>>>> Update specs related with UpdateReactableWorker
         reaction.destroy
       end
     end

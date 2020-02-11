@@ -9,9 +9,9 @@ RSpec.describe Reactions::UpdateReactableWorker, type: :worker do
     let(:worker) { subject }
 
     it " updates the reactable Article" do
-      expect do
+      sidekiq_assert_enqueued_with(job: Articles::ScoreCalcWorker) do
         worker.perform(reaction.id)
-      end. to have_enqueued_job(Articles::ScoreCalcJob).exactly(:once).with(article.id)
+      end
     end
 
     it " updates the reactable Comment" do
