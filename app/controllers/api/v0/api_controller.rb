@@ -1,4 +1,4 @@
-class Api::V0::ApiController < ApplicationController
+class Api::V0::ApiController < ActionController::Base
   protect_from_forgery with: :exception, prepend: true
 
   include ValidRequest
