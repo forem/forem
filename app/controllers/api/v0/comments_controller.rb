@@ -1,8 +1,6 @@
 module Api
   module V0
     class CommentsController < ApiController
-      respond_to :json
-
       before_action :set_cache_control_headers, only: %i[index show]
 
       def index

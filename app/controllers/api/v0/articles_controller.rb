@@ -1,8 +1,6 @@
 module Api
   module V0
     class ArticlesController < ApiController
-      respond_to :json
-
       before_action :authenticate_with_api_key_or_current_user!, only: %i[create update]
       before_action :authenticate!, only: :me
       before_action -> { doorkeeper_authorize! :public }, only: %w[index show], if: -> { doorkeeper_token }
@@ -14,7 +12,6 @@ module Api
       before_action :cors_preflight_check
       after_action :cors_set_access_control_headers
 
-      # skip CSRF checks for create and update
       skip_before_action :verify_authenticity_token, only: %i[create update]
 
       def index
