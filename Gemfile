@@ -2,7 +2,7 @@
 
 git_source(:github) { |name| "https://github.com/#{name}.git" }
 source "https://rubygems.org"
-ruby File.read(".ruby-version").strip
+ruby File.read(File.join(File.dirname(__FILE__), ".ruby-version")).strip
 
 group :production do
   gem "nakayoshi_fork", "~> 0.0.4" # solves CoW friendly problem on MRI 2.2 and later
