@@ -34,7 +34,7 @@ module Search
         )
       end
 
-      def tag_search_documents(query_string)
+      def search_documents(query_string)
         results = search(query_string)
         results.dig("hits", "hits").map { |tag_doc| tag_doc.dig("_source") }
       end

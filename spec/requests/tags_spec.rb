@@ -16,7 +16,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
 
     it "returns json" do
       sign_in authorized_user
-      allow(Search::Tag).to receive(:tag_search_documents).and_return(
+      allow(Search::Tag).to receive(:search_documents).and_return(
         mock_documents,
       )
       get "/tags/search"

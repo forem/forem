@@ -10,7 +10,7 @@ class TagsController < ApplicationController
   end
 
   def search
-    tag_docs = Search::Tag.tag_search_documents("name:#{params[:name]}* AND supported:true")
+    tag_docs = Search::Tag.search_documents("name:#{params[:name]}* AND supported:true")
 
     render json: { result: tag_docs }
   end
