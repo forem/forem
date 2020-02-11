@@ -162,11 +162,27 @@ a.header-link {
 
     .image-upload-file-label {
       font-size: 0.9em;
-      color: #888;
       display: none;
       vertical-align: 4px;
+      position: absolute;
+      left: 15px;
+      bottom: 8px;
+      background: $green;
+      color: white;
+      font-weight: bold;
+      padding: 6px 20px;
+      z-index: 5;
+      border-radius: 8px;
       @media screen and (min-width: 500px) {
-        display: inline-block;
+        display: none;
+      }
+      button#warningclosebutt {
+        color: white;
+        border: 0px;
+        padding-left: 5px;
+        background: transparent;
+        font-size: 1em;
+        margin-right: -12px;
       }
     }
 
@@ -456,6 +472,7 @@ a.header-link {
 
         .markdown-guide {
           padding-right: 3px;
+          margin-right: 6px;
         }
 
         img.icon-image {
@@ -465,6 +482,7 @@ a.header-link {
 
         .editor-image-upload {
           padding-right: 3px;
+          margin-right: 8px;
         }
 
         .editor-response-templates {

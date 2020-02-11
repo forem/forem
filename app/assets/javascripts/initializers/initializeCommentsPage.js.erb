@@ -449,9 +449,9 @@ function handleImageUpload(event, randomIdNumber) {
   document.getElementById('image-upload-' + randomIdNumber).onchange = function (e) {
     var image = document.getElementById('image-upload-' + randomIdNumber).files;
     if (image.length > 0) {
-      document.getElementById("image-upload-file-label-" + randomIdNumber).style.color = '#888888';
       document.getElementById("image-upload-file-label-" + randomIdNumber).innerHTML = "Uploading...";
       document.getElementById("image-upload-submit-" + randomIdNumber).value = "uploading";
+      document.getElementById("image-upload-file-label-" + randomIdNumber).style.display = "inline-block";
       setTimeout(function () {
         document.getElementById("image-upload-submit-" + randomIdNumber).click(function () { });
       }, 50)
@@ -471,25 +471,22 @@ function handleImageUpload(event, randomIdNumber) {
                 var address = document.getElementById("uploaded-image-" + randomIdNumber);
                 var button = document.getElementById("image-upload-button-" + randomIdNumber);
                 var messageContainer = document.getElementById("image-upload-file-label-" + randomIdNumber)
-                // button.style.display = "none";
                 messageContainer.style.display = "none";
-                address.value = json.links[0];
+                address.value = '![image](' + json.links[0] + ')';
                 address.classList.add("showing");
                 address.select();
-
-                var uploadedMessage = 'Uploaded! Paste into editor';
-                messageContainer.innerHTML = uploadedMessage;
-                messageContainer.style.color = '#00c673';
-                messageContainer.style.position = "relative"
-                messageContainer.style.top = "5px";
               }
             );
           } else {
             response.json().then(function(responseBody) {
               var errorMessage = responseBody.error || 'Invalid file!';
-              document.getElementById("image-upload-file-label-" + randomIdNumber).innerHTML = errorMessage;
-              document.getElementById("image-upload-file-label-" + randomIdNumber).style.color = '#e05252';
-              document.getElementById("image-upload-submit-" + randomIdNumber).style.display = 'none';
+              document.getElementById("image-upload-file-label-" + randomIdNumber).innerHTML = errorMessage + '<button id="warningclosebutt">×</button>';
+              document.getElementById("image-upload-file-label-" + randomIdNumber).style.backgroundColor = '#e05252';
+              document.getElementById('warningclosebutt').onclick = function(e) {
+                e.preventDefault();
+                document.getElementById("image-upload-file-label-" + randomIdNumber).style.backgroundColor = '#66e2d5';
+                document.getElementById("image-upload-file-label-" + randomIdNumber).style.display = 'none';
+              }
             });
           }
         })

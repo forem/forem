@@ -5,6 +5,9 @@ const userStatus = document.querySelector('body').getAttribute('data-user-status
 
 function prepareButton() {
   const button = document.querySelector('.response-templates-button')
+  if (!button) {
+    return
+  }
 
   button.addEventListener('click', () => {
     const responsesWrapper = document.querySelector('.mod-responses-container');

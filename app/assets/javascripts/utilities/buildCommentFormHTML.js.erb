@@ -23,6 +23,7 @@ function buildCommentFormHTML(commentableId, commentableType, parentId) {
             <textarea id="textarea-for-' + parentId + '" class="embiggened" name="comment[body_markdown]" id="comment_body_markdown" required onkeydown="handleKeyDown.bind(this)(event)"></textarea>\
             '+previewDiv+'\
                 '+codeOfConductHTML+'\
+            <input class="uploaded-image" id="uploaded-image-' + randomIdNumber + '" />\
             <div class="comment-bottom-actions">\
               <div class="comment-editing-actions">\
                 <a href="/p/editor_guide" class="markdown-guide" target="_blank" title="Markdown Guide">\
@@ -35,7 +36,6 @@ function buildCommentFormHTML(commentableId, commentableType, parentId) {
                   </button>\
                   <label  class="image-upload-file-label" id="image-upload-file-label-' + randomIdNumber + '"></label>\
                   <input type="submit" id="image-upload-submit-' + randomIdNumber + '" value="Upload" style="display:none">\
-                  <input class="uploaded-image" id="uploaded-image-' + randomIdNumber + '" />\
                 </div>\
                 <div class="editor-response-templates">\
                   <button class="response-templates-button" title="Use a response template" type="button">\

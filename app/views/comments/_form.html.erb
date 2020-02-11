@@ -67,7 +67,9 @@
           <img src="<%= asset_path("response-template.svg") %>" alt="" class="icon-image">
         </button>
       </div>
-      <%= javascript_pack_tag "responseTemplates", defer: true %>
+      <% if user_signed_in? %>
+        <%= javascript_pack_tag "responseTemplates", defer: true %>
+      <% end %>
     </div>
     <div class="comment-submit-actions" id="submit-wrapper">
       <%= link_to(request.referer.present? ? :back : commentable.path, "aria-label": "Cancel action") do %>
