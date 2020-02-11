@@ -1,8 +1,7 @@
-class Api::V0::ApiController < ActionController::Base
+class Api::V0::ApiController < ApplicationController
   protect_from_forgery with: :exception, prepend: true
 
   include ValidRequest
-  include Pundit
 
   respond_to :json
 

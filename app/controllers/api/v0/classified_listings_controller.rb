@@ -1,6 +1,7 @@
 module Api
   module V0
     class ClassifiedListingsController < ApiController
+      include Pundit
       include ClassifiedListingsToolkit
 
       before_action :set_classified_listing, only: %i[update]
