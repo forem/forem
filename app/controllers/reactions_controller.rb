@@ -62,13 +62,11 @@ class ReactionsController < ApplicationController
         reactable_type: params[:reactable_type],
         category: category,
       )
-      if reaction.save
-        result = "create"
-        Notification.send_reaction_notification(reaction, reaction.reactable.user)
-        Notification.send_reaction_notification(reaction, reaction.reactable.organization) if organization_article?(reaction)
-      else
-        result = ""
-      end
+      return render json: { error: reaction.errors.full_messages.join(", "), status: 422 }, status: :unprocessable_entity unless reaction.save
+
+      result = "create"
+      Notification.send_reaction_notification(reaction, reaction.reactable.user)
+      Notification.send_reaction_notification(reaction, reaction.reactable.organization) if organization_article?(reaction)
     end
     render json: { result: result, category: category }
   end
