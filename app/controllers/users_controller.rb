@@ -266,10 +266,10 @@ class UsersController < ApplicationController
 
   def handle_account_tab
     @email_body = <<~HEREDOC
-      Hello DEV Team,
+      Hello #{ApplicationConfig['COMMUNITY_NAME']} Team,
       %0A
       %0A
-      I would like to delete my dev.to account.
+      I would like to delete my account.
       %0A%0A
       You can keep any comments and discussion posts under the Ghost account.
       %0A

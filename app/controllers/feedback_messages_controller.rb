@@ -37,7 +37,7 @@ class FeedbackMessagesController < ApplicationController
     <<~HEREDOC
       #{generate_user_detail}
       Category: #{feedback_message_params[:category]}
-      Internal Report: https://dev.to/internal/reports
+      Internal Report: https://#{ApplicationConfig['APP_DOMAIN']}/internal/reports
       *_ Reported URL: #{feedback_message_params[:reported_url]} _*
       -----
       *Message:* #{feedback_message_params[:message]}
@@ -49,7 +49,7 @@ class FeedbackMessagesController < ApplicationController
 
     <<~HEREDOC
       *Logged in user:*
-      reporter: #{current_user.username} - https://dev.to/#{current_user.username}
+      reporter: #{current_user.username} - https://#{ApplicationConfig['APP_DOMAIN']}/#{current_user.username}
       email: <mailto:#{current_user.email}|#{current_user.email}>
     HEREDOC
   end
