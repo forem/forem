@@ -71,7 +71,7 @@ class UsersController < ApplicationController
       flash[:settings_notice] = "You have requested account deletion. Please, check your email for further instructions."
       redirect_to "/settings/#{@tab}"
     else
-      flash[:settings_notice] = "Please, provide an email to delete your account"
+      flash[:settings_notice] = "Please, provide an email to delete your account."
       redirect_to "/settings/account"
     end
   end
