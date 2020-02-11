@@ -2,7 +2,7 @@ module Reactions
   class UpdateReactableWorker
     include Sidekiq::Worker
 
-    sidekiq_options queue: :low_priority, retry: 10
+    sidekiq_options queue: :high_priority, retry: 10
 
     def perform(reaction_id)
       reaction = Reaction.find_by(id: reaction_id)
