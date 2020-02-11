@@ -10,6 +10,33 @@ RSpec.describe Search::Tag, type: :service, elasticsearch: true do
     end
   end
 
+  describe "::search" do
+    it "searches with a given query string" do
+      tag1 = FactoryBot.create(:tag, :search_indexed, name: "tag1")
+      described_class.refresh_index
+      hits = described_class.search("name:tag1").dig("hits", "hits")
+      tag_names = hits.map { |t| t.dig("_source", "name") }
+      expect(tag_names.count).to eq(1)
+      expect(tag_names).to include(tag1.name)
+    end
+
+    it "analyzes wildcards" do
+      tag1 = FactoryBot.create(:tag, :search_indexed, name: "tag1")
+      tag2 = FactoryBot.create(:tag, :search_indexed, name: "tag2")
+      tag3 = FactoryBot.create(:tag, :search_indexed, name: "3tag")
+      described_class.refresh_index
+      hits = described_class.search("name:tag*").dig("hits", "hits")
+      tag_names = hits.map { |t| t.dig("_source", "name") }
+      expect(tag_names).to include(tag1.name, tag2.name)
+      expect(tag_names).not_to include(tag3.name)
+    end
+
+    it "does not allow leading wildcards" do
+      bad_request_error = Elasticsearch::Transport::Transport::Errors::BadRequest
+      expect { described_class.search("name:*tag") }.to raise_error(bad_request_error)
+    end
+  end
+
   describe "::find_document" do
     it "fetches a document for a given ID from elasticsearch" do
       tag = FactoryBot.create(:tag)
