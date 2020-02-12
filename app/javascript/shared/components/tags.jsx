@@ -313,7 +313,7 @@ class Tags extends Component {
       });
     }
     const { listing } = this.props;
-    return fetch(`/tags/search?name=${query}`, {
+    return fetch(`/search/tags?name=${query}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',

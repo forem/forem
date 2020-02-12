@@ -1,18 +1,12 @@
 class TagsController < ApplicationController
   before_action :set_cache_control_headers, only: [:index]
-  before_action :authenticate_user!, only: %i[edit update search]
-  after_action :verify_authorized, except: %i[search]
+  before_action :authenticate_user!, only: %i[edit update]
+  after_action :verify_authorized
 
   def index
     skip_authorization
     @tags_index = true
     @tags = Tag.includes(:sponsorship).order(hotness_score: :desc).limit(100)
-  end
-
-  def search
-    tag_docs = Search::Tag.search_documents("name:#{params[:name]}* AND supported:true")
-
-    render json: { result: tag_docs }
   end
 
   def edit

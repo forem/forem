@@ -8,22 +8,6 @@ RSpec.describe "Tags", type: :request, proper_status: true do
     end
   end
 
-  describe "GET /tags/search" do
-    let(:authorized_user) { create(:user) }
-    let(:mock_documents) do
-      [{ "name" => "tag1" }, { "name" => "tag2" }, { "name" => "tag3" }]
-    end
-
-    it "returns json" do
-      sign_in authorized_user
-      allow(Search::Tag).to receive(:search_documents).and_return(
-        mock_documents,
-      )
-      get "/tags/search"
-      expect(response.parsed_body).to eq("result" => mock_documents)
-    end
-  end
-
   describe "GET /t/:tag/edit" do
     let(:tag)                  { create(:tag) }
     let(:another_tag)          { create(:tag) }
