@@ -154,6 +154,8 @@ class User < ApplicationRecord
   validate  :non_banished_username, :username_changed?
   validate  :unique_including_orgs_and_podcasts, if: :username_changed?
 
+  alias_attribute :positive_reactions_count, :reactions_count
+
   scope :dev_account, -> { find_by(id: SiteConfig.staff_user_id) }
 
   scope :with_this_week_comments, lambda { |number|
@@ -624,10 +626,6 @@ class User < ApplicationRecord
   def published_at; end
 
   def featured_number; end
-
-  def positive_reactions_count
-    reactions_count
-  end
 
   def user
     self
