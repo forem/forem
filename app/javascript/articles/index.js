@@ -1,2 +1,3 @@
-export * from './PodcastArticle';
+export * from './Article';
 export * from './LoadingArticle';
+export * from './PodcastArticle';
