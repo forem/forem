@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import PropTypes from 'prop-types';
+import { articlePropTypes } from '../src/components/common-prop-types/article-prop-types';
 
 export const PodcastArticle = ({ article }) => {
   return (
@@ -30,15 +30,5 @@ export const PodcastArticle = ({ article }) => {
 
 // TODO: Move these out into common-prop-types
 PodcastArticle.propTypes = {
-  article: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-    path: PropTypes.string.isRequired,
-    type_of: PropTypes.oneOf(['podcast_episodes']),
-    podcast: PropTypes.shape({
-      slug: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      image_url: PropTypes.string.isRequired,
-    }),
-  }).isRequired,
+  article: articlePropTypes.isRequired,
 };
