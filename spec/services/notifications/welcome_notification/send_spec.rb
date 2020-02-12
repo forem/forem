@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Notifications::WelcomeNotification::Send, type: :service do
   describe "::call" do
     before do
-      allow(User).to receive(:dev_account).and_return(create(:user))
+      allow(User).to receive(:welcoming_account).and_return(create(:user))
     end
 
     it "checks a newly created welcome notification", :aggregate_failures do
