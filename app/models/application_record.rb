@@ -21,11 +21,26 @@ class ApplicationRecord < ActiveRecord::Base
     count
   end
 
-  # Decorate record with appropriate decorator
+  # Decorate object with appropriate decorator
   def decorate_
-    decorator_class = "#{self.class.name}Decorator".safe_constantize
-    raise UninferrableDecoratorError, "Could not infer a decorator for #{self.class.name}" unless decorator_class
+    self.class.decorator_class.new(self)
+  end
 
-    decorator_class.new(self)
+  # Decorate collection with appropriate decorator
+  def self.decorate_
+    decorator_class.decorate_collection(all)
+  end
+
+  # Infers the decorator class to be used by (e.g. `User` maps to `UserDecorator`).
+  # adapted from https://github.com/drapergem/draper/blob/157eb955072a941e6455e0121fca09a989fcbc21/lib/draper/decoratable.rb#L71
+  def self.decorator_class(called_on = self)
+    prefix = respond_to?(:model_name) ? model_name : name
+    decorator_name = "#{prefix}Decorator"
+    decorator_name_constant = decorator_name.safe_constantize
+    return decorator_name_constant unless decorator_name_constant.nil?
+
+    return superclass.decorator_class(called_on) if superclass.respond_to?(:decorator_class)
+
+    raise UninferrableDecoratorError, "Could not infer a decorator for #{called_on.class.name}."
   end
 end

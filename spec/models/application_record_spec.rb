@@ -8,7 +8,7 @@ RSpec.describe ApplicationRecord, type: :model do
     end
   end
 
-  describe ".decorate_" do
+  describe "#decorate_" do
     it "decorates an object that has a decorator" do
       sponsorship = build(:sponsorship)
       expect(sponsorship.decorate_).to be_a(SponsorshipDecorator)
@@ -17,6 +17,18 @@ RSpec.describe ApplicationRecord, type: :model do
     it "raises an error if an object has no decorator" do
       badge = build(:badge)
       expect { badge.decorate_ }.to raise_error(UninferrableDecoratorError)
+    end
+  end
+
+  describe ".decorate_" do
+    before do
+      create(:sponsorship, level: :gold)
+    end
+
+    it "decorates a relation" do
+      decorated_collection = Sponsorship.gold.decorate_
+      expect(decorated_collection.size).to eq(Sponsorship.gold.size)
+      expect(decorated_collection.first).to be_a(SponsorshipDecorator)
     end
   end
 end

@@ -1,4 +1,4 @@
-# raised when a model object tries to decorate itself,
+# raised when an object or collection tries to decorate itself,
 # without having an inferrable decorator
-class UninferrableDecoratorError < StandardError
+class UninferrableDecoratorError < NameError
 end
