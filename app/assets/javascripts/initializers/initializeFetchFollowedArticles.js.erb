@@ -23,62 +23,10 @@ function insertArticle(article,parent,insertPlace) {
 
 function insertInitialArticles(user) {
   var el = document.getElementById("home-articles-object");
-  if (!el) {return}
+ if (!el) {return}
   el.innerHTML = "";
-  insertNewArticles(user);
   insertTopArticles(user);
   el.outerHTML = "";
-}
-
-function insertNewArticles(user){
-  var el = document.getElementById("new-articles-object");
-  var articlesJSON = JSON.parse(el.dataset.articles);
-  var insertPlace = document.getElementById("article-index-hidden-div");
-  if (insertPlace) {
-      articlesJSON.forEach(function(article){
-      var articlePoints = 0
-      var containsUserID = findOne([article.user_id], user.followed_user_ids || [])
-      var containsOrganizationID = findOne([article.organization_id], user.followed_organization_ids || [])
-      var intersectedTags = intersect_arrays(user.followed_tag_names, article.cached_tag_list_array)
-      var followedPoints = 1
-      var experienceDifference = Math.abs(article['experience_level_rating'] - user.experience_level || 5)
-      var containsPreferredLanguage = findOne([article.language || 'en'], user.preferred_languages_array || ['en']);
-      JSON.parse(user.followed_tags).map(function(tag) {
-        if (intersectedTags.includes(tag.name)) {
-          followedPoints = followedPoints + tag.points
-        }
-      })
-      articlePoints = articlePoints + (followedPoints*2) + article.positive_reactions_count
-      if (containsUserID || article.user_id === user.id) {
-        articlePoints = articlePoints + 16
-      }
-      if (containsOrganizationID) {
-        articlePoints = articlePoints + 16
-      }
-      if (containsPreferredLanguage) {
-        articlePoints = articlePoints + 1
-      } else {
-        articlePoints = articlePoints - 10
-      }
-      var rand = Math.random();
-      if (rand < 0.3) {
-        articlePoints = articlePoints + 3
-      } else if (rand < 0.6) {
-        articlePoints = articlePoints + 6
-      }
-      articlePoints = articlePoints - (experienceDifference/2);
-      article['points'] = articlePoints
-    });
-    var sortedArticles = articlesJSON.sort(function(a, b) {
-      return b.points - a.points;
-    });
-    sortedArticles.forEach(function(article){
-      var parent = insertPlace.parentNode;
-      if ( article.points > 12 && !document.getElementById("article-link-"+article.id) ) {
-        insertArticle(article,parent,insertPlace);
-      }
-    });
-  }
 }
 
 function insertTopArticles(user){
