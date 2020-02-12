@@ -91,7 +91,7 @@ class CommentsController < ApplicationController
           id: current_user.id,
           username: current_user.username,
           name: current_user.name,
-          profile_pic: ProfileImage.new(current_user).get(50),
+          profile_pic: ProfileImage.new(current_user).get(width: 50),
           twitter_username: current_user.twitter_username,
           github_username: current_user.github_username
         }
@@ -137,14 +137,16 @@ class CommentsController < ApplicationController
   # DELETE /comments/1.json
   def destroy
     authorize @comment
-    @commentable_path = @comment.commentable.path
     if @comment.is_childless?
       @comment.destroy
     else
       @comment.deleted = true
       @comment.save!
     end
-    redirect_to URI.parse(@commentable_path).path, notice: "Comment was successfully deleted."
+    redirect = @comment.commentable&.path || user_path(current_user)
+    # NOTE: Brakeman doesn't like redirecting to a path, because of a "possible
+    # unprotected redirect". Using URI.parse().path is the recommended workaround.
+    redirect_to URI.parse(redirect).path, notice: "Comment was successfully deleted."
   end
 
   def delete_confirm

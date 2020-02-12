@@ -2,6 +2,8 @@ class Reaction < ApplicationRecord
   include AlgoliaSearch
 
   CATEGORIES = %w[like readinglist unicorn thinking hands thumbsdown vomit].freeze
+  REACTABLE_TYPES = %w[Comment Article User].freeze
+  STATUSES = %w[valid invalid confirmed archived].freeze
 
   belongs_to :reactable, polymorphic: true
   belongs_to :user
@@ -13,15 +15,15 @@ class Reaction < ApplicationRecord
   counter_culture :user
 
   validates :category, inclusion: { in: CATEGORIES }
-  validates :reactable_type, inclusion: { in: %w[Comment Article] }
-  validates :status, inclusion: { in: %w[valid invalid confirmed archived] }
+  validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
+  validates :status, inclusion: { in: STATUSES }
   validates :user_id, uniqueness: { scope: %i[reactable_id reactable_type category] }
   validate  :permissions
 
   before_save :assign_points
-  after_commit :async_bust
+  after_commit :async_bust, :bust_reactable_cache
   after_save :index_to_algolia
-  after_save :update_reactable, :bust_reactable_cache, :touch_user
+  after_save :update_reactable, :touch_user
   before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
   before_destroy :bust_reactable_cache_without_delay
   before_destroy :remove_algolia
@@ -50,14 +52,6 @@ class Reaction < ApplicationRecord
           { category: type, count: reactions.where(category: type).size }
         end
       end
-    end
-
-    def for_display(user)
-      includes(:reactable).
-        where(reactable_type: "Article", user: user).
-        where("created_at > ?", 5.days.ago).
-        select("distinct on (reactable_id) *").
-        take(15)
     end
 
     def cached_any_reactions_for?(reactable, user, category)
@@ -90,7 +84,7 @@ class Reaction < ApplicationRecord
   end
 
   def bust_reactable_cache
-    Reactions::BustReactableCacheJob.perform_later(id)
+    Reactions::BustReactableCacheWorker.perform_async(id)
   end
 
   def async_bust
@@ -98,7 +92,7 @@ class Reaction < ApplicationRecord
   end
 
   def bust_reactable_cache_without_delay
-    Reactions::BustReactableCacheJob.perform_now(id)
+    Reactions::BustReactableCacheWorker.new.perform(id)
   end
 
   def update_reactable_without_delay

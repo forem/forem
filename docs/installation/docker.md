@@ -71,6 +71,7 @@ and start the container again_
 1. run `docker-compose build`
 1. run `docker-compose run web rails db:setup`
 1. run `docker-compose run web yarn`
+1. run `docker-compose run web rails search:setup`
 1. run `docker-compose up`
 1. That's it! Navigate to <http://localhost:3000>
 
@@ -84,3 +85,11 @@ Please execute the script itself to view all additional options:
 ```shell
 ./docker-run.sh
 ```
+
+## Known Problems & Solutions
+
+- Should you experience problems with the Elasticsearch container, try to
+  increase the memory and/or swap allocation for Docker. On macOS this can be
+  done via the GUI:
+
+  ![docker gui](https://user-images.githubusercontent.com/47985/74210448-b63b7c80-4c83-11ea-959b-02249b2a6952.png)

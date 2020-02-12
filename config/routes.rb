@@ -119,19 +119,15 @@ Rails.application.routes.draw do
         end
       end
       resources :follows, only: [:create]
-      resources :followers do
-        collection do
-          get :users
-          get :organizations
-        end
+      namespace :followers do
+        get :users
+        get :organizations
       end
-      resources :followings do
-        collection do
-          get :users
-          get :tags
-          get :organizations
-          get :podcasts
-        end
+      namespace :followings do
+        get :users
+        get :tags
+        get :organizations
+        get :podcasts
       end
       resources :github_repos, only: [:index] do
         collection do
@@ -152,6 +148,10 @@ Rails.application.routes.draw do
   namespace :notifications do
     resources :counts, only: [:index]
     resources :reads, only: [:create]
+  end
+
+  namespace :incoming_webhooks do
+    post "/mailchimp/:secret/unsubscribe", to: "mailchimp_unsubscribes#create", as: :mailchimp_unsubscribe
   end
 
   resources :messages, only: [:create]
@@ -258,7 +258,7 @@ Rails.application.routes.draw do
   post "users/remove_org_admin" => "users#remove_org_admin"
   post "users/remove_from_org" => "users#remove_from_org"
   delete "users/remove_association", to: "users#remove_association"
-  get "users/request_destroy", to: "users#request_destroy", as: :user_request_destroy
+  post "users/request_destroy", to: "users#request_destroy", as: :user_request_destroy
   get "users/confirm_destroy/:token", to: "users#confirm_destroy", as: :user_confirm_destroy
   delete "users/full_delete", to: "users#full_delete", as: :user_full_delete
   post "organizations/generate_new_secret" => "organizations#generate_new_secret"

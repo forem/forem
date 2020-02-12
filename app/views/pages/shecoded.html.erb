@@ -10,7 +10,6 @@
       * {
           padding: 0;
           margin: 0;
-          box-sizing: border-box;
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
             Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
           color: #46286e;
@@ -257,7 +256,7 @@
       <div class="posts">
         <% @top_articles.each do |article| %>
           <a href="<%= article.path %>" class="single-post">
-            <img src="<%= ProfileImage.new(article.user).get(150) %>" alt="<%= article.user.name %> profile image">
+            <img src="<%= ProfileImage.new(article.user).get(width: 150) %>" alt="<%= article.user.name %> profile image">
             <h3>
               <%= article.title %>
             </h3>
@@ -271,7 +270,7 @@
         <% end %>
         <% @articles.each do |article| %>
           <a href="<%= article.path %>" class="single-post">
-            <img src="<%= ProfileImage.new(article.user).get(150) %>" alt="<%= article.user.name %> profile image">
+            <img src="<%= ProfileImage.new(article.user).get(width: 150) %>" alt="<%= article.user.name %> profile image">
             <h3>
               <%= article.title %>
             </h3>
@@ -284,7 +283,6 @@
           </a>
         <% end %>
       </div>
-      <%= render "layouts/footer" %>
     </div>
   </body>
 </html>

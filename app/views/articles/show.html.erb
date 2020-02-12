@@ -111,7 +111,7 @@
         <% if @organization %>
           <a href="<%= @organization.path %>" class="org-branded-title-link">
             <div class="org-branded-title">
-              <img src="<%= ProfileImage.new(@organization).get(50) %>" class="org-pic" alt="<%= @organization.name %> profile image"> <%= @organization.name %>
+              <img src="<%= ProfileImage.new(@organization).get(width: 50) %>" class="org-pic" alt="<%= @organization.name %> profile image"> <%= @organization.name %>
             </div>
           </a>
         <% end %>
@@ -122,7 +122,7 @@
           <span itemprop="author" itemscope itemtype="http://schema.org/Person">
             <meta itemprop="url" content="https://dev.to/<%= @user.username %>">
             <a href="/<%= @user.username %>" class="author">
-              <img class="profile-pic" src="<%= ProfileImage.new(@user).get(50) %>" alt="<%= @user.username %> profile image" />
+              <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 50) %>" alt="<%= @user.username %> profile image" />
               <span itemprop="name"><%= @user.name %></span>
             </a>
           </span>

@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import Navigation from './Navigation';
-import { getContentOfToken } from '../utilities';
+import { getContentOfToken, updateOnboarding } from '../utilities';
 
 class BioForm extends Component {
   constructor(props) {
@@ -17,16 +17,7 @@ class BioForm extends Component {
   }
 
   componentDidMount() {
-    const csrfToken = getContentOfToken('csrf-token');
-    fetch('/onboarding_update', {
-      method: 'PATCH',
-      headers: {
-        'X-CSRF-Token': csrfToken,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ user: { last_onboarding_page: 'bio form' } }),
-      credentials: 'same-origin',
-    });
+    updateOnboarding('bio form');
   }
 
   onSubmit() {

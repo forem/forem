@@ -25,6 +25,7 @@
       max-width: calc(100% - 280px);
       padding: 16px;
     }
+
     @media screen and (min-width: 1120px) {
       max-width: calc(100% - 280px - 280px);
     }
@@ -113,11 +114,7 @@
             }
             padding-top: 0.2em;
             font-weight: 500;
-            @include themeable(
-              color,
-              theme-color,
-              $black
-            );
+            @include themeable(color, theme-color, $black);
           }
           &:hover {
             @include themeable(
@@ -467,7 +464,8 @@
         background: darken($purple, 38%);
         color: white;
         letter-spacing: 1px;
-        &:hover, &:focus {
+        &:hover,
+        &:focus {
           background: darken($purple, 50%);
         }
         .bm-success {
@@ -842,6 +840,15 @@
           line-height: 1.4em;
         }
 
+        &.widget-header-listings {
+          @include themeable(
+            background,
+            theme-container-accent-background,
+            $light-gray
+          );
+          padding: 10px 12px;
+          margin: -10px -12px;
+        }
         .widget-minimize-button {
           position: absolute;
           right: 0;
@@ -852,8 +859,16 @@
           border-radius: 3px;
           font-size: 1.2em;
           line-height: 0.6em;
-          @include themeable(border, theme-secondary-color-border, 1px solid $light-medium-gray);
-          @include themeable(color, theme-secondary-color, darken($light-medium-gray, 10%));
+          @include themeable(
+            border,
+            theme-secondary-color-border,
+            1px solid $light-medium-gray
+          );
+          @include themeable(
+            color,
+            theme-secondary-color,
+            darken($light-medium-gray, 10%)
+          );
         }
       }
       .widget-body {
@@ -862,6 +877,29 @@
           height: calc(100vh - 300px);
           max-height: 390px;
           overflow-y: scroll;
+        }
+
+        &.widget-body-listings {
+          .cta-button {
+            margin-top: 15px;
+          }
+        }
+        &.signup-cta-widget-body {
+          ul {
+            li {
+              font-size: 1.25em;
+              line-height: 1.5em;
+              &::before {
+                content: '• ';
+                color: $green;
+                vertical-align: -2px;
+              }
+            }
+          }
+        }
+        &.widget-body--sponsorship-arbitrary img {
+          width: 100%;
+          border: 1px solid darken($light-gray, 4%);
         }
         .sidebar-sponsor {
           margin: 25px auto 40px;
@@ -930,8 +968,16 @@
           }
           .widget-listing-link-category {
             display: inline-block;
-            @include themeable(border, theme-container-border, 1px solid darken($light-medium-gray, 10%));
-            @include themeable(color, theme-secondary-color, lighten($medium-gray, 5%));
+            @include themeable(
+              border,
+              theme-container-border,
+              1px solid darken($light-medium-gray, 10%)
+            );
+            @include themeable(
+              color,
+              theme-secondary-color,
+              lighten($medium-gray, 5%)
+            );
 
             padding: 0px 5px;
             font-size: 0.77em;
@@ -1074,10 +1120,6 @@
         &:hover {
           opacity: 0.9;
         }
-      }
-      img {
-        width: 100%;
-        border: 1px solid darken($light-gray, 4%);
       }
       .social-icon {
         width: 24px;
@@ -1507,6 +1549,7 @@
 
 
 
+
 // Profile card
 .sidebar-profile {
   display: flex;
@@ -1566,6 +1609,7 @@
     @include themeable(color, theme-color, $black);
     text-align: center;
     margin: 1%;
+
     &:hover {
       @include themeable(
         background,

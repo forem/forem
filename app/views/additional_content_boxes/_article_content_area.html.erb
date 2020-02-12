@@ -3,7 +3,7 @@
 </h2>
 <div class="content-author">
   <a href="<%= article.user.path + article.decorate.internal_utm_params %>">
-    <img class="profile-pic" src="<%= ProfileImage.new(article.user).get(50) %>" alt="<%= article.user.username %> profile image" />
+    <img class="profile-pic" src="<%= ProfileImage.new(article.user).get(width: 50) %>" alt="<%= article.user.username %> profile image" />
     <span><%= article.user.name %></span>
     <%= render "shared/pro_checkmark" if article.user.pro? %>
   </a>

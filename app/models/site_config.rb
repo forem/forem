@@ -37,6 +37,10 @@ class SiteConfig < RailsSettings::Base
   field :mailchimp_tag_moderators_id, type: :string, default: ""
   field :mailchimp_community_moderators_id, type: :string, default: ""
 
+  # Mailchimp webhook secret. Part of the callback URL in the Mailchimp settings.
+  # <https://mailchimp.com/developer/guides/about-webhooks/#Webhooks_security>
+  field :mailchimp_incoming_webhook_secret, type: :string, default: ""
+
   # Email digest frequency
   field :periodic_email_digest_max, type: :integer, default: 0
   field :periodic_email_digest_min, type: :integer, default: 2

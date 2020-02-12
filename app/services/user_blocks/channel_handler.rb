@@ -18,7 +18,7 @@ module UserBlocks
       return if chat_channel.blank?
 
       chat_channel.update(status: "blocked")
-      chat_channel.chat_channel_memberships.each do |membership|
+      chat_channel.chat_channel_memberships.includes([:user]).each do |membership|
         membership.update(status: "left_channel")
         membership.remove_from_index!
       end
@@ -29,7 +29,7 @@ module UserBlocks
       return if chat_channel.blank?
 
       chat_channel.update(status: "active")
-      chat_channel.chat_channel_memberships.each do |membership|
+      chat_channel.chat_channel_memberships.includes([:user]).each do |membership|
         membership.update(status: "active")
         membership.index!
       end

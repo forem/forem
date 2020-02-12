@@ -21,8 +21,7 @@ respectful and harassment-free.
 Remember that communication is the lifeblood of any Open Source project. We are
 all working on this together, and we are all benefiting from this software. It's
 very easy to misunderstand one another over asynchronous, text-based
-conversations: When in doubt, assume everyone you're interacting with in this
-project has the best intentions.
+conversations: When in doubt, assume everyone you're interacting within this project has the best intentions.
 
 If you feel another member of the community has violated our Code of Conduct,
 you may anonymously contact the team with our
@@ -31,13 +30,13 @@ you may anonymously contact the team with our
 ### Where to contribute
 
 All [issues](https://github.com/thepracticaldev/dev.to/issues) labeled with
-`help wanted` are up for grabs.
+`ready for dev` are up for grabs.
 
 - `good first issue` are issues meant for newer developers.
 - `type: discussion` are issues we haven't decided to move forward with, or need
   more information before proceeding.
 
-While PRs without an associated `help wanted` issue may still be merged, please
+While PRs without an associated `ready for dev` issue may still be merged, please
 note that the core team will prioritize PRs that solve existing issues. We
 strongly encourage creating an issue before working on a PR!
 
@@ -51,10 +50,10 @@ maintaining quality documentation is one of our most important jobs. You can
 find more information about contributing to the documentation in the
 [docs/ directory](https://github.com/thepracticaldev/dev.to/blob/master/docs/contributing.md)!
 
-**Refactoring** code, or improving the code without modifying the behavior, is
+**Refactoring** code, or improving the code without modifying the behaviour, is
 an area that can probably be done based on intuition and may not require much
 communication to be merged. Generally speaking, you can rely on existing tests
-to ensure that your refactoring doesn't introduce any unexpected behavior.
+to ensure that your refactoring doesn't introduce any unexpected behaviour.
 However, you might be asked to write a regression test if the area you've
 refactored isn't well covered.
 
@@ -75,9 +74,7 @@ can all get on the same page. As always, when in doubt, ask!
 2. Create a branch with your GitHub username as a prefix and the ID of the
    [issue](https://github.com/thepracticaldev/dev.to/issues) as a suffix, for
    example: `git checkout -b USERNAME/that-new-feature-1234` or
-   `git checkout -b USERNAME/fixing-that-bug-1234` where `USERNAME` should be
-   replaced by your username and `1234` is the ID of the issue tied to your pull
-   request. If there is no issue, you can leave the number out.
+   `git checkout -b USERNAME/fixing-that-bug-1234` where `USERNAME` should be replaced by your username and `1234` is the ID of the issue tied to your pull request. If there is no issue, you can leave the number out.
 3. Code and commit your changes. Bonus points if you write a
    [good commit message](https://chris.beams.io/posts/git-commit/):
    `git commit -m 'Add some feature'`
@@ -123,8 +120,7 @@ score.
 - Document your reasoning behind the changes. Explain why you wrote the code in
   the way you did. The code should explain what it does.
 - If there's an existing issue related to the pull request, reference to it by
-  adding something like `References/Closes/Fixes/Resolves #305`, where 305 is
-  the issue number.
+  adding something like `References/Closes/Fixes/Resolves #305`, where 305 is the issue number.
   [More info here](https://github.com/blog/1506-closing-issues-via-pull-requests).
 - Please fill out the PR Template when making a PR.
 - All commits in a pull request will be squashed when merged, but when your PR
@@ -143,7 +139,7 @@ If feedback or suggestions are provided, any changes on your part should happen
 in separate commits added to the existing ones.
 
 Force pushing, though understandable for reasons of wanting to keep the history
-clean, has some drawbacks:
+clean has some drawbacks:
 
 - it removes the review history of the code
 - forces the reviewer to start from scratch when adding possible further
@@ -152,7 +148,7 @@ clean, has some drawbacks:
 PRs will be squashed and merged into master, so there's no need to use force
 push.
 
-Please avoid force pushing unless you need to rebase with master.
+Please avoid force pushing unless you need to rebase with the master branch.
 
 ## The bottom line
 

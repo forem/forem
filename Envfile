@@ -30,6 +30,9 @@ variable :SESSION_EXPIRY_SECONDS, :Integer, default: 1209600 # two weeks in seco
 # Redis Sidekiq storage
 variable :REDIS_SIDEKIQ_URL, :String, default: "redis://localhost:6379"
 
+# Elasticsearch
+variable :ELASTICSEARCH_URL, :String, default: "http://localhost:9200"
+
 ################################################
 ############## 3rd Party Services ##############
 ################################################

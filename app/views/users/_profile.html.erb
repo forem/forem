@@ -45,7 +45,7 @@
   <div class="field">
     <% if @user.profile_image_url.present? %>
       <span class="image-present">
-        <img alt="<%= @user.username %> profile image" src="<%= ProfileImage.new(@user).get(50) %>" />
+        <img alt="<%= @user.username %> profile image" src="<%= ProfileImage.new(@user).get(width: 50) %>" />
         <%= f.file_field :profile_image %>
       </span>
     <% end %>

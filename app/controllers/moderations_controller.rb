@@ -18,6 +18,7 @@ class ModerationsController < ApplicationController
     authorize(User, :moderation_routes?)
     @tag_adjustment = TagAdjustment.new
     @moderatable = Article.find_by(slug: params[:slug])
+    not_found unless @moderatable
     @tag_moderator_tags = Tag.with_role(:tag_moderator, current_user)
     @adjustments = TagAdjustment.where(article_id: @moderatable.id)
     @already_adjusted_tags = @adjustments.map(&:tag_name).join(", ")
