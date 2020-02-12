@@ -15,7 +15,7 @@ const article = {
   podcast: {
     slug: title.replace(/\s+/, '-').toLowerCase(),
     title: faker.random.words(2),
-    image_url: '/images/undraw_podcast_q6p7.svg',
+    image_url: `/images/${Math.floor(Math.random() * 40)}.png`,
   },
 };
 
