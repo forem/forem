@@ -1,5 +1,5 @@
 class SponsorshipDecorator < BaseDecorator
-  def level_color_hex
+  def level_background_color
     hexes = {
       "gold" => "linear-gradient(to right, #faf0e6 8%, #faf3e6 18%, #fcf6eb 33%);",
       "silver" => "linear-gradient(to right, #e3e3e3 8%, #f0eded 18%, #e8e8e8 33%);",
