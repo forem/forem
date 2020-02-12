@@ -66,4 +66,13 @@ RSpec.describe Search::Cluster, type: :service do
       expect(described_class::SEARCH_CLASSES).to all(have_received(:update_mappings))
     end
   end
+
+  describe "::update_settings" do
+    it "updates cluster settings" do
+      described_class.update_settings
+      cluster_settings = SearchClient.cluster.get_settings
+      auto_create_setting = cluster_settings.dig("persistent", "action", "auto_create_index")
+      expect(auto_create_setting).to eq("false")
+    end
+  end
 end
