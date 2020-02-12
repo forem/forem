@@ -22,7 +22,7 @@ module Notifications
             processed_html: welcome_broadcast.processed_html
           }
         }
-        Notification.create(
+        Notification.create!(
           user_id: receiver_id,
           notifiable_id: welcome_broadcast.id,
           notifiable_type: "Broadcast",
