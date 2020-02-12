@@ -8,6 +8,16 @@ class ClosingSlide extends Component {
     updateOnboarding('closing slide');
   }
 
+  whatsNextLinks() {
+    const properties = [
+      { href: '/welcome', text: 'Join the Welcome Thread', emoji: '😊' },
+      { href: '/new', text: 'Write your first DEV post', emoji: '✍️' },
+      { href: '/top/infinity', text: 'Read all-time top posts', emoji: '🤓' },
+      { href: '/settings', text: 'Customize your profile', emoji: '💅' },
+    ];
+    return properties;
+  };
+
   render() {
     const { previousLocation, variant } = this.props;
 
@@ -27,7 +37,7 @@ class ClosingSlide extends Component {
           </div>
         );
       }
-      if (previousLocation !== 'none' && previousLocation !== null && !previousLocation.startsWith('javascript')) {
+      if (previousLocation !== 'none' && previousLocation !== null) {
         return (
           <a className="onboarding-previous-location" href={previousLocation}>
             <div>Or go back to the page you were on before you signed up</div>
@@ -116,42 +126,19 @@ class ClosingSlide extends Component {
           </div>
         );
       }
-      return (
+      return ( 
         <div className="onboarding-what-next">
-          <a href="/welcome" data-no-instant>
-            Join the Welcome Thread
-            <p className="whatnext-emoji">
+          {this.whatsNext().map((element, index) => {
+            <a key={ index } href={ element.href } data-no-instant={(index === 0) ? true : null }>
+              { element.text }
+              <p className="whatnext-emoji">
               <span role="img" aria-label="tada">
-                😊
+                { element.emoji }
               </span>
-            </p>
-          </a>
-          <a href="/new">
-            Write your first DEV post
-            <p className="whatnext-emoji">
-              <span role="img" aria-label="tada">
-                ✍️
-              </span>
-            </p>
-          </a>
-          <a href="/top/infinity">
-            Read all-time top posts
-            <p className="whatnext-emoji">
-              <span role="img" aria-label="tada">
-                🤓
-              </span>
-            </p>
-          </a>
-          <a href="/settings">
-            Customize your profile
-            <p className="whatnext-emoji">
-              <span role="img" aria-label="tada">
-                💅
-              </span>
-            </p>
-          </a>
-        </div>
-      );
+              </p>
+            </a>  
+          })}
+        </div>);
     };
 
     return (

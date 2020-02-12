@@ -4,8 +4,7 @@ export const jsonToForm = data => {
   return form;
 };
 
-export const getContentOfToken = token =>
-  document.querySelector(`meta[name='${token}']`).content;
+export const csrfTokenContent = document.querySelector(`meta[name='csrf-token']`).content;
 
 export const updateOnboarding = lastPage => {
   const csrfToken = getContentOfToken('csrf-token');
