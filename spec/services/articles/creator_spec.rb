@@ -12,9 +12,10 @@ RSpec.describe Articles::Creator, type: :service do
       end.to change(Article, :count).by(1)
     end
 
-    it "returns an article" do
+    it "returns a decorated, persisted, article" do
       article = described_class.call(user, valid_attributes)
-      expect(article).to be_kind_of(Article)
+
+      expect(article).to be_a(ArticleDecorator)
       expect(article).to be_persisted
     end
 
@@ -60,9 +61,10 @@ RSpec.describe Articles::Creator, type: :service do
       end.not_to change(Article, :count)
     end
 
-    it "returns an unsaved article" do
+    it "returns a decorated, non persisted, article" do
       article = described_class.call(user, invalid_attributes)
-      expect(article).to be_kind_of(Article)
+
+      expect(article).to be_a(ArticleDecorator)
       expect(article).not_to be_persisted
       expect(article.errors.size).to eq(1)
     end

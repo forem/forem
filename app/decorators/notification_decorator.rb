@@ -1,7 +1,7 @@
 class NotificationDecorator < ApplicationDecorator
   NOTIFIABLE_STUB = Struct.new(:name, :id) do
     def class
-      Struct.new(:name).name
+      Struct.new(:name).new(name)
     end
   end.freeze
 

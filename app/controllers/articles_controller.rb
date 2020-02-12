@@ -88,14 +88,16 @@ class ArticlesController < ApplicationController
 
   def edit
     authorize @article
+
     @version = @article.has_frontmatter? ? "v1" : "v2"
     @user = @article.user
     @organizations = @user&.organizations
   end
 
   def manage
-    @article = @article.decorate
     authorize @article
+
+    @article = @article.decorate
     @user = @article.user
     @rating_vote = RatingVote.where(article_id: @article.id, user_id: @user.id).first
     @buffer_updates = BufferUpdate.where(composer_user_id: @user.id, article_id: @article.id)
