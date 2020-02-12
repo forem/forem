@@ -1291,6 +1291,10 @@
             }
           }
         }
+        &.widget-body--sponsorship-arbitrary img {
+          width: 100%;
+          border: 1px solid darken($light-gray, 4%);
+        }
         .sidebar-sponsor {
           margin: 25px auto 40px;
           width: 96%;
@@ -1528,10 +1532,6 @@
         &:hover {
           opacity: 0.9;
         }
-      }
-      & + .widget-body--sponsorship-arbitrary img {
-        width: 100%;
-        border: 1px solid darken($light-gray, 4%);
       }
       .social-icon {
         width: 30px;
