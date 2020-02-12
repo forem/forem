@@ -1,6 +1,4 @@
-class NotificationDecorator < Draper::Decorator
-  delegate_all
-
+class NotificationDecorator < BaseDecorator
   NOTIFIABLE_STUB = Struct.new(:name, :id) do
     def class
       Struct.new(:name).name
