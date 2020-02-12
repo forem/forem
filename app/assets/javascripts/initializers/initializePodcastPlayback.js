@@ -152,10 +152,19 @@ function initializePodcastPlayback() {
     getById('animated-bars').classList.add('playing');
   }
 
+  function playAudio(audio) {
+    return new Promise(function (resolve, reject) {
+      if(navigator.userAgent === 'DEV-Native-ios') {
+        sendPodcastMessage('play');
+      } else {
+        audio.play();
+      }
+      resolve();
+    })
+  }
+
   function startAudioPlayback(audio) {
-    audio
-      .play()
-      .then(
+    playAudio(audio).then(
         function() {
           spinPodcastRecord();
           startPodcastBar();
@@ -165,7 +174,7 @@ function initializePodcastPlayback() {
         },
       )
       .catch(function(error) {
-        audio.play();
+        playAudio(audio);
         setTimeout(function() {
           spinPodcastRecord('initializing...');
           startPodcastBar();
@@ -179,7 +188,11 @@ function initializePodcastPlayback() {
   }
 
   function pauseAudioPlayback(audio) {
-    audio.pause();
+    if(navigator.userAgent === 'DEV-Native-ios') {
+      sendPodcastMessage('pause');
+    } else {
+      audio.pause();
+    }
     stopRotatingActivePodcastIfExist();
     pausePodcastBar();
   }
@@ -272,7 +285,6 @@ function initializePodcastPlayback() {
     sec = sec >= 10 ? sec : '0' + sec;
     return min + ':' + sec;
   }
-  
 
   function terminatePodcastBar(audio) {
     audio.removeEventListener('timeupdate', updateProgressListener, false);
@@ -308,7 +320,7 @@ function initializePodcastPlayback() {
       audio.currentTime = currentState.time;
       audio.load();
       if (currentState.playing) {
-        audio.play().catch(function(error) {
+        playAudio(audio).catch(function(error) {
           pausePodcastBar();
         });
       }
@@ -321,6 +333,21 @@ function initializePodcastPlayback() {
     }
   }
 
+  function sendPodcastMessage(message) {
+    try {
+      if (
+        window &&
+        window.webkit &&
+        window.webkit.messageHandlers &&
+        window.webkit.messageHandlers.podcast
+      ) {
+        window.webkit.messageHandlers.podcast.postMessage(message);
+      }
+    } catch (err) {
+      console.log(err.message); // eslint-disable-line no-console
+    }
+  }
+
   spinPodcastRecord();
   findAndApplyOnclickToRecords();
   getMediaState();
@@ -330,5 +357,3 @@ function initializePodcastPlayback() {
     audio.load();
   }
 }
-
-
