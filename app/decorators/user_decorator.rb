@@ -1,4 +1,4 @@
-class UserDecorator < ApplicationDecorator
+class UserDecorator < BaseDecorator
   WHITE_TEXT_COLORS = [
     {
       bg: "#093656",
@@ -17,8 +17,6 @@ class UserDecorator < ApplicationDecorator
       text: "#ffffff"
     },
   ].freeze
-
-  delegate_all
 
   def cached_followed_tags
     Rails.cache.fetch("user-#{id}-#{updated_at}/followed_tags_11-30", expires_in: 20.hours) do
