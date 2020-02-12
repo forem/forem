@@ -11,7 +11,7 @@ RSpec.describe Notifications::WelcomeNotificationWorker, type: :worker do
     end
 
     it "calls a service" do
-      worker.perform(user.id)
+      worker.perform(user.id, broadcast.id)
       expect(service).to have_received(:call).with(user.id, broadcast).once
     end
 
@@ -21,7 +21,7 @@ RSpec.describe Notifications::WelcomeNotificationWorker, type: :worker do
       end
 
       it "does nothing" do
-        worker.perform(user.id)
+        worker.perform(user.id, broadcast.id)
         expect(service).not_to have_received(:call)
       end
     end

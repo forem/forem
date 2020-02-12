@@ -1,4 +1,6 @@
 class IncomingWebhooks::MailchimpUnsubscribesController < ApplicationController
+  skip_before_action :verify_authenticity_token
+
   class InvalidListID < StandardError; end
 
   LIST_MAPPINGS = {
@@ -7,6 +9,10 @@ class IncomingWebhooks::MailchimpUnsubscribesController < ApplicationController
     mailchimp_tag_moderators_id: :email_tag_mod_newsletter,
     mailchimp_community_moderators_id: :email_community_mod_newsletter
   }.freeze
+
+  def index
+    head :ok
+  end
 
   def create
     not_authorized unless valid_secret?

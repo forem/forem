@@ -96,6 +96,8 @@ Rails.application.configure do
   # Debug is the default log_level, but can be changed per environment.
   config.log_level = :debug
 
+  config.welcoming_user_id = ENV["WELCOMING_USER_ID"]
+
   # See <https://github.com/flyerhzm/bullet#configuration> for other config options
   config.after_initialize do
     Bullet.enable = true

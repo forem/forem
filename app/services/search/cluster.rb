@@ -9,9 +9,14 @@ module Search
       end
 
       def setup_indexes
+        update_settings
         create_indexes
         add_aliases
         update_mappings
+      end
+
+      def update_settings
+        SearchClient.cluster.put_settings(body: default_settings)
       end
 
       def create_indexes
@@ -38,6 +43,18 @@ module Search
 
           search_class.delete_index
         end
+      end
+
+      private
+
+      def default_settings
+        {
+          persistent: {
+            action: {
+              auto_create_index: false
+            }
+          }
+        }
       end
     end
   end
