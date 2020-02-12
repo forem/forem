@@ -498,7 +498,9 @@ class User < ApplicationRecord
   end
 
   def send_welcome_notification
-    Notification.send_welcome_notification(id)
+    return unless (welcome_broadcast = Broadcast.find_by(title: "Welcome Notification"))
+
+    Notification.send_welcome_notification(id, welcome_broadcast.id)
   end
 
   def verify_twitter_username

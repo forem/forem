@@ -292,14 +292,13 @@ RSpec.describe "NotificationsIndex", type: :request do
     end
 
     context "when a user has a new welcome notification" do
-      before do
-        sign_in user
-      end
+      let(:broadcast) { create(:broadcast, :onboarding) }
+
+      before { sign_in user }
 
       it "renders the welcome notification" do
-        broadcast = create(:broadcast, :onboarding)
         sidekiq_perform_enqueued_jobs do
-          Notification.send_welcome_notification(user.id)
+          Notification.send_welcome_notification(user.id, broadcast.id)
         end
         get "/notifications"
         expect(response.body).to include broadcast.processed_html
