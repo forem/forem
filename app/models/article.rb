@@ -94,7 +94,7 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :language,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
-           :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds)
+           :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds, :approved)
   }
 
   scope :limited_columns_internal_select, lambda {
@@ -147,7 +147,7 @@ class Article < ApplicationRecord
                  :featured, :published, :published_at, :featured_number,
                  :comments_count, :reactions_count, :positive_reactions_count,
                  :path, :class_name, :user_name, :user_username, :comments_blob,
-                 :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date, :flare_tag
+                 :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date, :flare_tag, :approved
       attribute :user do
         { username: user.username, name: user.name,
           profile_image_90: ProfileImage.new(user).get(width: 90), pro: user.pro? }
