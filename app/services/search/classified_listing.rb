@@ -53,11 +53,18 @@ module Search
       end
 
       def mappings
-        # "In Elasticsearch, there is no dedicated array datatype. Any field can
-        # contain zero or more values by default, however, all values in the
-        # array must be of the same datatype."
+        # 1. "In Elasticsearch, there is no dedicated array datatype. Any field can
+        #    contain zero or more values by default, however, all values in the
+        #    array must be of the same datatype."
         #
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/array.html
+
+        # 2. You don't have to specify type: "object" since it is the default.
+        #    Specifying type: "object" will break specs because when you later
+        #    call the mappings API on Elasticsearch, it will NOT return the
+        #    type: object key, value pair.
+        #
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/object.html#object
 
         {
           dynamic: "strict",
@@ -65,14 +72,8 @@ module Search
             id: {
               type: "keyword"
             },
-            author: {
+            author: { # Don't need to specify type: "object" - see comment 2 above
               dynamic: "strict",
-              # You don't have to specify type: "object" since it is the default.
-              # Specifying type: "object" will break specs because when you later
-              # call the mappings API on Elasticsearch, it will NOT return the
-              # type: object key, value pair.
-              #
-              # https://www.elastic.co/guide/en/elasticsearch/reference/current/object.html#object
               properties: {
                 username: {
                   type: "keyword"
@@ -116,8 +117,7 @@ module Search
                 }
               }
             },
-            tag_list: {
-              # Think of this as an Array - see comment at the top of this method
+            tag_list: { # Think of this as an Array - see comment 1 above
               type: "keyword"
             },
             title: {
