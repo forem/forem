@@ -26,6 +26,10 @@ class ApplicationRecord < ActiveRecord::Base
     self.class.decorator_class.new(self)
   end
 
+  def decorated?
+    false
+  end
+
   # Decorate collection with appropriate decorator
   def self.decorate
     decorator_class.decorate_collection(all)

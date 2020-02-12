@@ -8,6 +8,13 @@ RSpec.describe ApplicationDecorator, type: :decorator do
     end
   end
 
+  describe "#decorated?" do
+    it "returns true" do
+      obj = Class.new
+      expect(described_class.new(obj).decorated?).to be(true)
+    end
+  end
+
   # as ApplicationDecorator is an abstract class, some tests also use an actual decorator
   describe ".decorate_collection" do
     before do

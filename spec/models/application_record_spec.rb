@@ -20,6 +20,13 @@ RSpec.describe ApplicationRecord, type: :model do
     end
   end
 
+  describe "#decorated?" do
+    it "returns false" do
+      sponsorship = build(:sponsorship)
+      expect(sponsorship.decorated?).to be(false)
+    end
+  end
+
   describe ".decorate" do
     before do
       create(:sponsorship, level: :gold)
