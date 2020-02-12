@@ -50,8 +50,9 @@
       }
 
       // Load notifications count as quickly as it's available.
+      // Not if we're on the notifications page itself
       if (
-        document.getElementById('notifications-container') == null
+        window.location.pathname !== '/notifications'
       ) {
         var xmlhttp;
         if (window.XMLHttpRequest) {

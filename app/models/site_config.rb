@@ -20,6 +20,10 @@ class SiteConfig < RailsSettings::Base
 
   # rate limits
   field :rate_limit_follow_count_daily, type: :integer, default: 500
+  field :rate_limit_comment_creation, type: :integer, default: 9
+  field :rate_limit_published_article_creation, type: :integer, default: 9
+  field :rate_limit_image_upload, type: :integer, default: 9
+  field :rate_limit_email_recipient, type: :integer, default: 5
 
   # Google Analytics Reporting API v4
   # <https://developers.google.com/analytics/devguides/reporting/core/v4>
@@ -32,6 +36,10 @@ class SiteConfig < RailsSettings::Base
   field :mailchimp_sustaining_members_id, type: :string, default: ""
   field :mailchimp_tag_moderators_id, type: :string, default: ""
   field :mailchimp_community_moderators_id, type: :string, default: ""
+
+  # Mailchimp webhook secret. Part of the callback URL in the Mailchimp settings.
+  # <https://mailchimp.com/developer/guides/about-webhooks/#Webhooks_security>
+  field :mailchimp_incoming_webhook_secret, type: :string, default: ""
 
   # Email digest frequency
   field :periodic_email_digest_max, type: :integer, default: 0

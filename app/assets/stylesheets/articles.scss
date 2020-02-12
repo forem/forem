@@ -111,11 +111,7 @@
             theme-container-accent-background,
             lighten($bold-blue, 8%)
           );
-          @include themeable(
-            color,
-            theme-color,
-            white
-          );
+          @include themeable(color, theme-color, white);
         }
       }
     }
@@ -330,11 +326,7 @@
             margin-left: 10px;
           }
           font-weight: 500;
-          @include themeable(
-            color,
-            theme-secondary-color,
-            $medium-gray
-          );
+          @include themeable(color, theme-secondary-color, $medium-gray);
           strong {
             display: block;
             margin-bottom: 4px;
@@ -343,11 +335,7 @@
             }
             padding-top: 0.2em;
             font-weight: 500;
-            @include themeable(
-              color,
-              theme-color,
-              $black
-            );
+            @include themeable(color, theme-color, $black);
           }
           display: block;
           padding: 4px 14px 7px;
@@ -808,7 +796,8 @@
         background: darken($purple, 38%);
         color: white;
         letter-spacing: 1px;
-        &:hover, &:focus {
+        &:hover,
+        &:focus {
           background: darken($purple, 50%);
         }
         .bm-success {
@@ -1089,62 +1078,6 @@
             display: block;
           }
         }
-        .sidebar-nav-element {
-          color: $black;
-          display: block;
-          position: relative;
-          @media screen and (min-width: 950px) {
-            .sidebar-nav-link-follow {
-              display: none;
-            }
-            &:hover {
-              .sidebar-nav-link-follow {
-                display: block;
-              }
-            }
-          }
-          img {
-            width: 30px;
-            height: 30px;
-            border: 0px;
-            vertical-align: -8px;
-            margin-right: 4px;
-          }
-          img.nav-emoji {
-            height: 19px;
-            width: 19px;
-            vertical-align: -2px;
-          }
-
-          a.sidebar-nav-link {
-            @include themeable(color, theme-container-color, $black);
-            padding: 5px;
-            display: inline-block;
-            width: calc(100% - 10px);
-            font-weight: 500;
-            padding: 7px 9px;
-            font-size: 1em;
-            &:hover {
-              @include themeable(
-                background,
-                theme-container-background-hover,
-                $light-gray
-              );
-            }
-          }
-          a.sidebar-nav-link-follow {
-            position: absolute;
-            color: $black;
-            right: 5px;
-            top: 50%;
-            transform: translateY(-50%);
-            text-align: center;
-            border-radius: 3px;
-            font-weight: 900;
-            font-size: 0.8em;
-            padding: 2px 8px;
-          }
-        }
       }
     }
     .sidebar-sponsorship-level {
@@ -1300,7 +1233,11 @@
           line-height: 1.4em;
         }
         &.widget-header-listings {
-          @include themeable(background, theme-container-accent-background, $light-gray);
+          @include themeable(
+            background,
+            theme-container-accent-background,
+            $light-gray
+          );
           padding: 10px 12px;
           margin: -10px -12px;
         }
@@ -1313,8 +1250,16 @@
           border-radius: 3px;
           font-size: 1.2em;
           line-height: 0.6em;
-          @include themeable(border, theme-secondary-color-border, 1px solid $light-medium-gray);
-          @include themeable(color, theme-secondary-color, darken($light-medium-gray, 10%));
+          @include themeable(
+            border,
+            theme-secondary-color-border,
+            1px solid $light-medium-gray
+          );
+          @include themeable(
+            color,
+            theme-secondary-color,
+            darken($light-medium-gray, 10%)
+          );
         }
       }
       .widget-body {
@@ -1345,6 +1290,10 @@
               }
             }
           }
+        }
+        &.widget-body--sponsorship-arbitrary img {
+          width: 100%;
+          border: 1px solid darken($light-gray, 4%);
         }
         .sidebar-sponsor {
           margin: 25px auto 40px;
@@ -1410,9 +1359,17 @@
           width: 100%;
           margin-left: -12px;
           @include themeable(color, theme-color, $black);
-          @include themeable(border-bottom, theme-subtle-border, 1px solid $light-medium-gray);
+          @include themeable(
+            border-bottom,
+            theme-subtle-border,
+            1px solid $light-medium-gray
+          );
           &:first-child {
-            @include themeable(border-top, theme-subtle-border, 1px solid $light-medium-gray);
+            @include themeable(
+              border-top,
+              theme-subtle-border,
+              1px solid $light-medium-gray
+            );
           }
           .widget-listing-link-title {
             display: block;
@@ -1420,8 +1377,16 @@
           }
           .widget-listing-link-category {
             display: inline-block;
-            @include themeable(border, theme-container-border, 1px solid darken($light-medium-gray, 10%));
-            @include themeable(color, theme-secondary-color, lighten($medium-gray, 5%));
+            @include themeable(
+              border,
+              theme-container-border,
+              1px solid darken($light-medium-gray, 10%)
+            );
+            @include themeable(
+              color,
+              theme-secondary-color,
+              lighten($medium-gray, 5%)
+            );
 
             padding: 0px 5px;
             font-size: 0.77em;
@@ -1431,7 +1396,11 @@
           }
           &:hover {
             background: $lightest-gray;
-            @include themeable(background, theme-container-background-hover, $lightest-gray);
+            @include themeable(
+              background,
+              theme-container-background-hover,
+              $lightest-gray
+            );
           }
         }
         .widget-accent {
@@ -1563,10 +1532,6 @@
         &:hover {
           opacity: 0.9;
         }
-      }
-      img {
-        width: 100%;
-        border: 1px solid darken($light-gray, 4%);
       }
       .social-icon {
         width: 30px;
@@ -1843,4 +1808,62 @@
   text-align: center;
   opacity: 0.7;
   display: none;
+}
+
+// Left Side bar navigation links
+.sidebar-nav-element {
+  color: $black;
+  display: block;
+  position: relative;
+  @media screen and (min-width: 950px) {
+    .sidebar-nav-link-follow {
+      display: none;
+    }
+    &:hover {
+      .sidebar-nav-link-follow {
+        display: block;
+      }
+    }
+  }
+  img {
+    width: 30px;
+    height: 30px;
+    border: 0px;
+    vertical-align: -8px;
+    margin-right: 4px;
+  }
+  img.nav-emoji {
+    height: 19px;
+    width: 19px;
+    vertical-align: -2px;
+  }
+
+  a.sidebar-nav-link {
+    @include themeable(color, theme-container-color, $black);
+    padding: 5px;
+    display: inline-block;
+    width: calc(100% - 10px);
+    font-weight: 500;
+    padding: 7px 9px;
+    font-size: 1em;
+    &:hover {
+      @include themeable(
+        background,
+        theme-container-background-hover,
+        $light-gray
+      );
+    }
+  }
+  a.sidebar-nav-link-follow {
+    position: absolute;
+    color: $black;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    border-radius: 3px;
+    font-weight: 900;
+    font-size: 0.8em;
+    padding: 2px 8px;
+  }
 }

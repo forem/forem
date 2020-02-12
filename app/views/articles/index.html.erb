@@ -83,11 +83,6 @@
         </button>
       </div>
 
-      <% if @home_page %>
-        <% @featured_story ||= @stories.where.not(main_image: nil).first&.decorate || Article.new %>
-        <% @stories = @stories.decorate %>
-      <% end %>
-
       <% if @featured_story.id %>
         <div id="featured-story-marker" data-featured-article="articles-<%= @featured_story.id %>"></div>
         <img src="<%= cloud_cover_url(@featured_story.main_image) %>" style="display:none" alt="<%= @featured_story.title %>" />
@@ -100,7 +95,7 @@
               </h3>
             </div>
             <a href="/<%= @featured_story.cached_user.username %>" class="featured-profile-button">
-              <img class="featured-profile-pic" src="<%= ProfileImage.new(@featured_story.cached_user).get(90) %>" alt="<%= @featured_story.title %>" />
+              <img class="featured-profile-pic" src="<%= ProfileImage.new(@featured_story.cached_user).get(width: 90) %>" alt="<%= @featured_story.title %>" />
             </a>
             <div class="featured-user-name">
               <a href="/<%= @featured_story.cached_user.username %>">

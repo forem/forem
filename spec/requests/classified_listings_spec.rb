@@ -248,7 +248,7 @@ RSpec.describe "ClassifiedListings", type: :request do
         user.add_role(:banned)
         expect do
           post "/listings", params: listing_params
-        end.to raise_error("BANNED")
+        end.to raise_error("SUSPENDED")
       end
     end
   end
@@ -473,6 +473,20 @@ RSpec.describe "ClassifiedListings", type: :request do
         expect do
           delete "/listings/#{org_listing.id}"
         end.to change(ClassifiedListing, :count).by(-1)
+      end
+    end
+  end
+
+  describe "GET /delete_confirm" do
+    let!(:listing) { create(:classified_listing, user: user) }
+
+    before { sign_in user }
+
+    context "without classified listing" do
+      it "renders not_found" do
+        expect do
+          get "/listings/#{listing.category}/#{listing.slug}_1/delete_confirm"
+        end.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end

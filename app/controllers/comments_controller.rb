@@ -16,21 +16,23 @@ class CommentsController < ApplicationController
 
     if @podcast
       @user = @podcast
-      (@commentable = @user.podcast_episodes.find_by(slug: params[:slug])) || not_found
+      @commentable = @user.podcast_episodes.find_by(slug: params[:slug]) if @user.podcast_episodes
     else
       @user = User.find_by(username: params[:username]) ||
         Organization.find_by(slug: params[:username]) ||
         not_found
       @commentable = @root_comment&.commentable ||
-        @user.articles.find_by(slug: params[:slug]) ||
-        not_found
+        @user.articles.find_by(slug: params[:slug]) || nil
       @article = @commentable
-      not_found unless @commentable.published
+
+      not_found if @commentable && !@commentable.published
     end
 
-    @commentable_type = @commentable.class.name
+    @commentable_type = @commentable.class.name if @commentable
 
-    set_surrogate_key_header "comments-for-#{@commentable.id}-#{@commentable_type}"
+    set_surrogate_key_header "comments-for-#{@commentable.id}-#{@commentable_type}" if @commentable
+
+    render :deleted_commentable_comment unless @commentable
   end
 
   # GET /comments/1
@@ -89,7 +91,7 @@ class CommentsController < ApplicationController
           id: current_user.id,
           username: current_user.username,
           name: current_user.name,
-          profile_pic: ProfileImage.new(current_user).get(50),
+          profile_pic: ProfileImage.new(current_user).get(width: 50),
           twitter_username: current_user.twitter_username,
           github_username: current_user.github_username
         }
@@ -102,11 +104,15 @@ class CommentsController < ApplicationController
     else
       render json: { status: "errors" }
     end
+  # See https://github.com/thepracticaldev/dev.to/pull/5485#discussion_r366056925
+  # for details as to why this is necessary
   rescue Pundit::NotAuthorizedError
     raise
   rescue StandardError => e
+    skip_authorization
+
     Rails.logger.error(e)
-    message = "There was a error in your markdown: #{e}"
+    message = "There was an error in your markdown: #{e}"
     render json: { error: message }, status: :unprocessable_entity
   end
 
@@ -121,20 +127,26 @@ class CommentsController < ApplicationController
       @commentable = @comment.commentable
       render :edit
     end
+  rescue StandardError => e
+    @commentable = @comment.commentable
+    flash.now[:error] = "There was an error in your markdown: #{e}"
+    render :edit
   end
 
   # DELETE /comments/1
   # DELETE /comments/1.json
   def destroy
     authorize @comment
-    @commentable_path = @comment.commentable.path
     if @comment.is_childless?
       @comment.destroy
     else
       @comment.deleted = true
       @comment.save!
     end
-    redirect_to URI.parse(@commentable_path).path, notice: "Comment was successfully deleted."
+    redirect = @comment.commentable&.path || user_path(current_user)
+    # NOTE: Brakeman doesn't like redirecting to a path, because of a "possible
+    # unprotected redirect". Using URI.parse().path is the recommended workaround.
+    redirect_to URI.parse(redirect).path, notice: "Comment was successfully deleted."
   end
 
   def delete_confirm
@@ -150,7 +162,7 @@ class CommentsController < ApplicationController
       parsed_markdown = MarkdownParser.new(fixed_body_markdown)
       processed_html = parsed_markdown.finalize
     rescue StandardError => e
-      processed_html = "<p>😔 There was a error in your markdown</p><hr><p>#{e}</p>"
+      processed_html = "<p>😔 There was an error in your markdown</p><hr><p>#{e}</p>"
     end
     respond_to do |format|
       format.json { render json: { processed_html: processed_html }, status: :ok }

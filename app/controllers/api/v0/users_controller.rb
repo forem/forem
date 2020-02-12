@@ -11,25 +11,40 @@ module Api
           return
         end
 
-        if params[:state] == "follow_suggestions"
-          @users = Suggester::Users::Recent.new(current_user).suggest
-        elsif params[:state] == "sidebar_suggestions"
-          given_tag = params[:tag]
-          @users = Suggester::Users::Sidebar.new(current_user, given_tag).suggest.sample(3)
-        else
-          @users = User.none
-        end
+        @users = if params[:state] == "follow_suggestions"
+                   Suggester::Users::Recent.new(
+                     current_user,
+                     attributes_to_select: INDEX_ATTRIBUTES_FOR_SERIALIZATION,
+                   ).suggest
+                 elsif params[:state] == "sidebar_suggestions"
+                   Suggester::Users::Sidebar.new(current_user, params[:tag]).suggest.sample(3)
+                 else
+                   User.none
+                 end
       end
 
       def show
+        relation = User.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
+
         @user = if params[:id] == "by_username"
-                  User.find_by(username: params[:url])
+                  relation.find_by!(username: params[:url])
                 else
-                  User.find(params[:id])
+                  relation.find(params[:id])
                 end
       end
 
-      def me; end
+      def me
+        render :show
+      end
+
+      INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary].freeze
+      private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
+
+      SHOW_ATTRIBUTES_FOR_SERIALIZATION = %i[
+        id username name summary twitter_username github_username website_url
+        location created_at
+      ].freeze
+      private_constant :SHOW_ATTRIBUTES_FOR_SERIALIZATION
 
       private
 

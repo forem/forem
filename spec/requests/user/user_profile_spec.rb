@@ -14,7 +14,7 @@ RSpec.describe "UserProfiles", type: :request do
       create(:article, user_id: user.id)
       create(:article, user_id: user.id)
       last_article = create(:article, user_id: user.id)
-      create(:profile_pin, pinnable_id: last_article.id, profile_id: user.id)
+      create(:profile_pin, pinnable: last_article, profile: user)
       get "/#{user.username}"
       expect(response.body).to include "Pinned"
     end
@@ -37,6 +37,13 @@ RSpec.describe "UserProfiles", type: :request do
       user.update(username: "new_new_username_#{rand(10_000)}")
       get "/#{old_username}"
       expect(response).to redirect_to("/#{user.username}")
+    end
+
+    it "raises not found for banished users" do
+      banishable_user = create(:user)
+      Moderator::BanishUser.call(admin: user, user: banishable_user)
+      expect { get "/#{banishable_user.reload.old_username}" }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { get "/#{banishable_user.reload.username}" }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it "renders noindex meta if banned" do

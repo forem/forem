@@ -21,9 +21,11 @@ linters:
         - .rubocop.yml
       Layout/InitialIndentation:
         Enabled: false
+      Layout/LineLength:
+        Max: 289
       Layout/TrailingEmptyLines:
         Enabled: false
       Lint/UselessAssignment:
         Enabled: false
-      Metrics/LineLength:
-        Max: 289
+      Rails/OutputSafety:
+        Enabled: false

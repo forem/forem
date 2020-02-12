@@ -28,39 +28,18 @@ function initializeUserSidebar(user) {
     followedTags.length === 0
       ? 'Follow tags to improve your feed'
       : 'Other Popular Tags';
-  document.getElementById('tag-separator').innerHTML = tagSeparatorLabel;
 
-  // sort tags by descending weigth, descending popularity and name
-  followedTags.sort((tagA, tagB) => {
-    return (
-      tagB.points - tagA.points ||
-      tagB.hotness_score - tagA.hotness_score ||
-      tagA.name.localeCompare(tagB.name)
-    );
-  });
-
-  let tagHTML = '';
   followedTags.forEach(tag => {
-    var element = document.getElementById(
+    const element = document.getElementById(
       'default-sidebar-element-' + tag.name,
     );
-    tagHTML +=
-      tag.points > 0.0
-        ? '<div class="sidebar-nav-element" id="sidebar-element-' +
-          tag.name +
-          '">' +
-          '<a class="sidebar-nav-link" href="/t/' +
-          tag.name +
-          '">' +
-          '<span class="sidebar-nav-tag-text">#' +
-          tag.name +
-          '</span>' +
-          '</a>' +
-          '</div>'
-        : '';
-    if (element) element.remove();
+
+    if (element) {
+      element.remove();
+    }
   });
-  document.getElementById('sidebar-nav-followed-tags').innerHTML = tagHTML;
+
+  document.getElementById('tag-separator').innerHTML = tagSeparatorLabel;
   document.getElementById('sidebar-nav-default-tags').classList.add('showing');
 }
 
@@ -98,15 +77,21 @@ function addRelevantButtonsToComments(user) {
 
     for (let i = 0; i < settingsButts.length; i += 1) {
       let butt = settingsButts[i];
-      const { action, commentableUserId, userId } = butt.dataset
+      const { action, commentableUserId, userId } = butt.dataset;
 
       if (parseInt(userId, 10) === user.id) {
         butt.style.display = 'inline-block';
       }
-      if (action === 'hide-button' && parseInt(commentableUserId, 10) === user.id) {
+      if (
+        action === 'hide-button' &&
+        parseInt(commentableUserId, 10) === user.id
+      ) {
         butt.style.display = 'inline-block';
-      } else if (action === 'hide-button' && parseInt(commentableUserId, 10) !== user.id) {
-        butt.style.display = 'none'
+      } else if (
+        action === 'hide-button' &&
+        parseInt(commentableUserId, 10) !== user.id
+      ) {
+        butt.style.display = 'none';
       }
     }
 

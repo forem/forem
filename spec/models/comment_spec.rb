@@ -278,6 +278,12 @@ RSpec.describe Comment, type: :model do
       end.to change(Comments::SendEmailNotificationWorker.jobs, :size).by(1)
     end
 
+    it "enqueues a worker to bust comment cache" do
+      expect do
+        comment.save
+      end.to change(Comments::BustCacheWorker.jobs, :size).by(1)
+    end
+
     it "touches user updated_at" do
       user.updated_at = 1.month.ago
       user.save
@@ -319,7 +325,7 @@ RSpec.describe Comment, type: :model do
       comment = create(:comment, commentable: article)
       child_comment = create(:comment, parent: comment, commentable: article, user: user)
       create(:notification, notifiable: child_comment, user: user)
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         comment.update(deleted: true)
       end
       notification = child_comment.notifications.first
@@ -330,6 +336,16 @@ RSpec.describe Comment, type: :model do
   context "when callbacks are triggered after destroy" do
     it "updates user's last_comment_at" do
       expect { comment.destroy }.to change(user, :last_comment_at)
+    end
+
+    it "busts the comment cache" do
+      # here the comment is destroyed from the test above so we re-create one
+      new_comment = create(:comment, commentable: article)
+
+      # this replaces the use of expect_any_instance_of which is a RuboCop violation
+      sidekiq_assert_enqueued_with(job: Comments::BustCacheWorker, args: [new_comment.id]) do
+        new_comment.destroy
+      end
     end
   end
 
@@ -344,17 +360,17 @@ RSpec.describe Comment, type: :model do
 
     context "when deleted is false" do
       it "checks auto-indexing" do
-        expect do
+        sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["Comment", comment.id]) do
           comment.update(body_markdown: "hello")
-        end.to have_enqueued_job(Search::IndexJob).with("Comment", comment.id)
+        end
       end
     end
 
     context "when deleted is true" do
       it "checks auto-deindexing" do
-        expect do
+        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class.algolia_index_name, comment.index_id]) do
           comment.update(deleted: true)
-        end.to have_enqueued_job(Search::RemoveFromIndexJob).with(described_class.algolia_index_name, comment.index_id)
+        end
       end
     end
   end

@@ -20,9 +20,10 @@ RSpec.describe "/internal/config", type: :request do
     end
 
     describe "staff" do
-      it "updates staff_user_id" do
+      it "does not allow the staff_user_id to be updated" do
+        expect(SiteConfig.staff_user_id).to eq(1)
         post "/internal/config", params: { site_config: { staff_user_id: 2 } }
-        expect(SiteConfig.staff_user_id).to eq(2)
+        expect(SiteConfig.staff_user_id).to eq(1)
       end
 
       it "updates default_site_email" do
@@ -60,8 +61,33 @@ RSpec.describe "/internal/config", type: :request do
 
     describe "rate limits" do
       it "updates rate_limit_follow_count_daily" do
-        post "/internal/config", params: { site_config: { rate_limit_follow_count_daily: 3 } }
-        expect(SiteConfig.rate_limit_follow_count_daily).to eq(3)
+        expect do
+          post "/internal/config", params: { site_config: { rate_limit_follow_count_daily: 3 } }
+        end.to change(SiteConfig, :rate_limit_follow_count_daily).from(500).to(3)
+      end
+
+      it "updates rate_limit_comment_creation" do
+        expect do
+          post "/internal/config", params: { site_config: { rate_limit_comment_creation: 3 } }
+        end.to change(SiteConfig, :rate_limit_comment_creation).from(9).to(3)
+      end
+
+      it "updates rate_limit_published_article_creation" do
+        expect do
+          post "/internal/config", params: { site_config: { rate_limit_published_article_creation: 3 } }
+        end.to change(SiteConfig, :rate_limit_published_article_creation).from(9).to(3)
+      end
+
+      it "updates rate_limit_image_upload" do
+        expect do
+          post "/internal/config", params: { site_config: { rate_limit_image_upload: 3 } }
+        end.to change(SiteConfig, :rate_limit_image_upload).from(9).to(3)
+      end
+
+      it "updates rate_limit_email_recipient" do
+        expect do
+          post "/internal/config", params: { site_config: { rate_limit_email_recipient: 3 } }
+        end.to change(SiteConfig, :rate_limit_email_recipient).from(5).to(3)
       end
     end
 

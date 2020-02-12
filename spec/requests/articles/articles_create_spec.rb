@@ -64,16 +64,16 @@ RSpec.describe "ArticlesCreate", type: :request do
     end
 
     it "doesn't schedule a dispatching event job (unpublished)" do
-      expect do
+      sidekiq_assert_no_enqueued_jobs(only: Webhook::DispatchEventWorker) do
         post "/articles", params: article_params
-      end.not_to have_enqueued_job(Webhook::DispatchEventJob).once
+      end
     end
 
     it "schedules a dispatching event job (published)" do
       article_params[:article][:body_markdown] = "---\ntitle: hey hey hahuu\npublished: true\nseries: helloyo\n---\nYo ho ho#{rand(100)}"
-      expect do
+      sidekiq_assert_enqueued_jobs(1, only: Webhook::DispatchEventWorker) do
         post "/articles", params: article_params
-      end.to have_enqueued_job(Webhook::DispatchEventJob).once
+      end
     end
 
     it "doesn't fail when executing jobs" do

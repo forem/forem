@@ -21,35 +21,41 @@ class User < ApplicationRecord
   has_many :badges, through: :badge_achievements
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
-  has_many :email_messages, class_name: "Ahoy::Message"
+  has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
   has_many :github_repos, dependent: :destroy
   has_many :identities, dependent: :destroy
   has_many :mentions, dependent: :destroy
   has_many :messages, dependent: :destroy
   has_many :notes, as: :noteable, inverse_of: :noteable
-  has_many :profile_pins, as: :profile, inverse_of: :profile
-  has_many :authored_notes, as: :author, inverse_of: :author, class_name: "Note"
+  has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
+  has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
   has_many :notifications, dependent: :destroy
   has_many :reactions, dependent: :destroy
   has_many :tweets, dependent: :destroy
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :chat_channels, through: :chat_channel_memberships
   has_many :notification_subscriptions, dependent: :destroy
-  has_many :feedback_messages
-  has_many :rating_votes
+
+  has_many :offender_feedback_messages, class_name: "FeedbackMessage", inverse_of: :offender, foreign_key: :offender_id, dependent: :nullify
+  has_many :reporter_feedback_messages, class_name: "FeedbackMessage", inverse_of: :reporter, foreign_key: :reporter_id, dependent: :nullify
+  has_many :affected_feedback_messages, class_name: "FeedbackMessage", inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
+
+  has_many :rating_votes, dependent: :destroy
   has_many :html_variants, dependent: :destroy
-  has_many :page_views
-  has_many :credits
+  has_many :page_views, dependent: :destroy
+  has_many :credits, dependent: :destroy
   has_many :classified_listings
-  has_many :poll_votes
-  has_many :poll_skips
-  has_many :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user, class_name: "BackupData"
-  has_many :display_ad_events
+  has_many :poll_votes, dependent: :destroy
+  has_many :poll_skips, dependent: :destroy
+  has_many :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user, class_name: "BackupData", dependent: :delete_all
+  has_many :display_ad_events, dependent: :destroy
   has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
-  has_many :user_blocks
+  has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id, inverse_of: :blocker, dependent: :delete_all
+  has_many :blocked_blocks, class_name: "UserBlock", foreign_key: :blocked_id, inverse_of: :blocked, dependent: :delete_all
   has_one :pro_membership, dependent: :destroy
+  has_one :counters, class_name: "UserCounter", dependent: :destroy
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
 
   mount_uploader :profile_image, ProfileImageUploader
@@ -124,7 +130,7 @@ class User < ApplicationRecord
             inclusion: { in: %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme],
                          message: "%<value>s is not a valid theme" }
   validates :config_font,
-            inclusion: { in: %w[default sans_serif monospace comic_sans],
+            inclusion: { in: %w[default sans_serif monospace comic_sans open_dyslexic],
                          message: "%<value>s is not a valid font selection" }
   validates :config_navbar,
             inclusion: { in: %w[default static],
@@ -145,15 +151,26 @@ class User < ApplicationRecord
   validate  :conditionally_validate_summary
   validate  :validate_mastodon_url
   validate  :validate_feed_url, if: :feed_url_changed?
+  validate  :non_banished_username, :username_changed?
   validate  :unique_including_orgs_and_podcasts, if: :username_changed?
 
   scope :dev_account, -> { find_by(id: SiteConfig.staff_user_id) }
+
+  scope :with_this_week_comments, lambda { |number|
+    includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_these_7_days')::int >= ?", number)
+  }
+  scope :with_previous_week_comments, lambda { |number|
+    includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_prior_7_days')::int >= ?", number)
+  }
+  scope :top_commenters, lambda { |number = 10|
+    includes(:counters).order(Arel.sql("user_counters.data -> 'comments_these_7_days' DESC")).limit(number)
+  }
 
   after_create_commit :send_welcome_notification
   after_save  :bust_cache
   after_save  :subscribe_to_mailchimp_newsletter
   after_save  :conditionally_resave_articles
-  after_create :estimate_default_language
+  after_create_commit :estimate_default_language
   before_create :set_default_language
   before_validation :set_username
   # make sure usernames are not empty, to be able to use the database unique index
@@ -204,7 +221,7 @@ class User < ApplicationRecord
   def self.trigger_delayed_index(record, remove)
     return if remove
 
-    Search::IndexJob.perform_later("User", record.id)
+    Search::IndexWorker.perform_async("User", record.id)
   end
 
   def tag_line
@@ -388,6 +405,10 @@ class User < ApplicationRecord
     errors.add(:username, "is taken.") if Organization.find_by(slug: username) || Podcast.find_by(slug: username) || Page.find_by(slug: username)
   end
 
+  def non_banished_username
+    errors.add(:username, "has been banished.") if BanishedUser.exists?(username: username)
+  end
+
   def subscribe_to_mailchimp_newsletter
     return unless email.present? && email.include?("@")
     return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
@@ -424,12 +445,12 @@ class User < ApplicationRecord
   end
 
   def profile_image_90
-    ProfileImage.new(self).get(90)
+    ProfileImage.new(self).get(width: 90)
   end
 
   def remove_from_algolia_index
     remove_from_index!
-    Search::RemoveFromIndexJob.perform_later("searchables_#{Rails.env}", index_id)
+    Search::RemoveFromIndexWorker.perform_async("searchables_#{Rails.env}", index_id)
   end
 
   def unsubscribe_from_newsletters
@@ -457,6 +478,10 @@ class User < ApplicationRecord
       email_follower_notifications
   end
 
+  def title
+    name
+  end
+
   private
 
   def index_id
@@ -464,7 +489,7 @@ class User < ApplicationRecord
   end
 
   def estimate_default_language
-    Users::EstimateDefaultLanguageJob.perform_later(id)
+    Users::EstimateDefaultLanguageWorker.perform_async(id)
   end
 
   def set_default_language
@@ -546,7 +571,7 @@ class User < ApplicationRecord
   end
 
   def bust_cache
-    Users::BustCacheJob.perform_later(id)
+    Users::BustCacheWorker.perform_async(id)
   end
 
   def core_profile_details_changed?
@@ -580,10 +605,6 @@ class User < ApplicationRecord
     return if uri.host&.in?(Constants::ALLOWED_MASTODON_INSTANCES)
 
     errors.add(:mastodon_url, "is not an allowed Mastodon instance")
-  end
-
-  def title
-    name
   end
 
   def tag_list

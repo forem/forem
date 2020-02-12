@@ -118,10 +118,22 @@ RSpec.describe Reaction, type: :model do
       expect do
         reaction.save
       end.to(
-        have_enqueued_job(Reactions::UpdateReactableJob).exactly(:once).
-        and(have_enqueued_job(Reactions::BustReactableCacheJob).exactly(:once)).
-        and(have_enqueued_job(Reactions::BustHomepageCacheJob).exactly(:once)),
+        have_enqueued_job(Reactions::UpdateReactableJob).exactly(:once),
       )
+    end
+
+    describe "enqueues the correct worker" do
+      it "BustReactableCacheWorker" do
+        sidekiq_assert_enqueued_with(job: Reactions::BustReactableCacheWorker) do
+          reaction.save
+        end
+      end
+
+      it "BustHomepageCacheWorker" do
+        sidekiq_assert_enqueued_with(job: Reactions::BustHomepageCacheWorker) do
+          reaction.save
+        end
+      end
     end
 
     it "updates updated_at if the reactable is a comment" do
@@ -145,9 +157,11 @@ RSpec.describe Reaction, type: :model do
   end
 
   context "when callbacks are called before destroy" do
-    it "enqueues a ScoreCalcJob on article reaction destroy" do
+    it "enqueues a ScoreCalcWorker on article reaction destroy" do
       reaction = create(:reaction, reactable: article, user: user)
-      expect { reaction.destroy }.to have_enqueued_job(Articles::ScoreCalcJob).exactly(:once)
+      sidekiq_assert_enqueued_with(job: Articles::ScoreCalcWorker, args: [article.id]) do
+        reaction.destroy
+      end
     end
   end
 end

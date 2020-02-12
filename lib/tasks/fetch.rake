@@ -2,7 +2,7 @@ desc "This task is called by the Heroku scheduler add-on"
 
 task get_podcast_episodes: :environment do
   Podcast.published.select(:id).find_each do |podcast|
-    Podcasts::GetEpisodesJob.perform_later(podcast_id: podcast.id, limit: 5)
+    Podcasts::GetEpisodesWorker.perform_async({ podcast_id: podcast.id, limit: 5 })
   end
 end
 
@@ -113,9 +113,13 @@ task fix_credits_count_cache: :environment do
 end
 
 task record_db_table_counts: :environment do
-  RecordDbTableCountsWorker.perform_async
+  Metrics::RecordDbTableCountsWorker.perform_async
 end
 
 task log_worker_queue_stats: :environment do
-  Loggers::LogWorkerQueueStats.run
+  Metrics::RecordBackgroundQueueStatsWorker.perform_async
+end
+
+task log_daily_usage_measurables: :environment do
+  Metrics::RecordDailyUsageWorker.perform_async
 end

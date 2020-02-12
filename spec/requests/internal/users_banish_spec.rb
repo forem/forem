@@ -170,7 +170,7 @@ RSpec.describe "Internal::Users", type: :request do
         :comment,
         body_markdown: "Hello @#{user.username}, you are cool.",
         user_id: user2.id,
-        commentable_id: article2.id,
+        commentable: article2,
       )
       perform_enqueued_jobs do
         Mention.create_all(comment)
@@ -191,7 +191,9 @@ RSpec.describe "Internal::Users", type: :request do
     end
 
     it "raises a 'record not found' error after deletion" do
-      post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
+      sidekiq_perform_enqueued_jobs do
+        post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
+      end
       expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
 
@@ -229,10 +231,28 @@ RSpec.describe "Internal::Users", type: :request do
       expect(user.articles.count).to eq(0)
     end
 
+    it "removes a user's direct chat channels" do
+      ChatChannel.create_with_users([user, user2])
+
+      expect { banish_user }.to change(user.chat_channels, :count).from(1).to(0)
+    end
+
     it "removes all follow relationships" do
       user.follow(user2)
       banish_user
       expect(user.follows.count).to eq(0)
+    end
+
+    it "creates an entry in the BanishedUsers table" do
+      expect do
+        banish_user
+      end.to change(BanishedUser, :count).by(1)
+    end
+
+    it "records who banished a user" do
+      banish_user
+      admin = BanishedUser.last
+      expect(admin.banished_by).to eq super_admin
     end
   end
 

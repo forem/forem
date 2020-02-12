@@ -1,6 +1,4 @@
 class Tweet < ApplicationRecord
-  include AlgoliaSearch
-
   mount_uploader :profile_image, ProfileImageUploader
 
   belongs_to :user, optional: true
@@ -62,6 +60,8 @@ class Tweet < ApplicationRecord
       tweet = client.status(twitter_id_code, tweet_mode: "extended")
       make_tweet_from_api_object(tweet)
     end
+
+    private
 
     def make_tweet_from_api_object(tweeted)
       twitter_bot = TwitterBot.new(random_identity)

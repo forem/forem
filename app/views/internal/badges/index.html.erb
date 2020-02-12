@@ -3,7 +3,7 @@
   <%= form_with(url: internal_badges_award_badges_path, local: true) do |f| %>
     <div class="form-group">
       <%= f.label :badge, "Badge" %>
-      <%= f.select("badge", @badges.map { |b| [b.title, b.slug] }, class: "form-control") %>
+      <%= f.select("badge", @badges.map { |b| [b.title, b.slug] }, include_blank: true, class: "form-control") %>
     </div>
     <div class="form-group">
       <%= f.label :usernames, "Usernames (Comma Delimited)*" %>

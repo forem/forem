@@ -523,6 +523,16 @@ a.header-link {
       text-overflow: ellipsis;
     }
   }
+
+  .alert-error {
+    background: $red;
+    max-width: 730px;
+    font-family: $helvetica;
+    color: white;
+    border-radius: 5px;
+    margin: 20px auto;
+    padding: 20px;
+  }
 }
 
 .single-comment-node {

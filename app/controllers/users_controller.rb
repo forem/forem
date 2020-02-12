@@ -1,8 +1,9 @@
 class UsersController < ApplicationController
   before_action :set_no_cache_header
-  before_action :raise_banned, only: %i[update]
+  before_action :raise_suspended, only: %i[update]
   before_action :set_user, only: %i[update update_twitch_username update_language_settings confirm_destroy request_destroy full_delete remove_association]
   after_action :verify_authorized, except: %i[signout_confirm add_org_admin remove_org_admin remove_from_org]
+  before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
 
   # GET /settings/@tab
   def edit
@@ -19,14 +20,14 @@ class UsersController < ApplicationController
   def update
     set_tabs(params["user"]["tab"])
     if @user.update(permitted_attributes(@user))
-      RssReaderFetchUserJob.perform_later(@user.id)
+      RssReaderFetchUserWorker.perform_async(@user.id) if @user.feed_url.present?
       notice = "Your profile was successfully updated."
       if config_changed?
         notice = "Your config has been updated. Refresh to see all changes."
       end
       if @user.export_requested?
         notice += " The export will be emailed to you shortly."
-        ExportContentJob.perform_later(@user.id)
+        ExportContentWorker.perform_async(@user.id)
       end
       cookies.permanent[:user_experience_level] = @user.experience_level.to_s if @user.experience_level.present?
       follow_hiring_tag(@user)
@@ -70,7 +71,7 @@ class UsersController < ApplicationController
       flash[:settings_notice] = "You have requested account deletion. Please, check your email for further instructions."
       redirect_to "/settings/#{@tab}"
     else
-      flash[:settings_notice] = "Please, provide an email to delete your account"
+      flash[:settings_notice] = "Please, provide an email to delete your account."
       redirect_to "/settings/account"
     end
   end
@@ -85,7 +86,7 @@ class UsersController < ApplicationController
   def full_delete
     set_tabs("account")
     if @user.email?
-      Users::SelfDeleteJob.perform_later(@user.id)
+      Users::DeleteWorker.perform_async(@user.id)
       sign_out @user
       flash[:global_notice] = "Your account deletion is scheduled. You'll be notified when it's deleted."
       redirect_to root_path
@@ -126,7 +127,7 @@ class UsersController < ApplicationController
   def onboarding_checkbox_update
     if params[:user]
       permitted_params = %i[
-        checked_code_of_conduct checked_terms_and_conditions email_membership_newsletter email_digest_periodic
+        checked_code_of_conduct checked_terms_and_conditions email_newsletter email_digest_periodic
       ]
       current_user.assign_attributes(params[:user].permit(permitted_params))
     end
@@ -265,10 +266,10 @@ class UsersController < ApplicationController
 
   def handle_account_tab
     @email_body = <<~HEREDOC
-      Hello DEV Team,
+      Hello #{ApplicationConfig['COMMUNITY_NAME']} Team,
       %0A
       %0A
-      I would like to delete my dev.to account.
+      I would like to delete my account.
       %0A%0A
       You can keep any comments and discussion posts under the Ghost account.
       %0A

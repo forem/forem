@@ -26,9 +26,9 @@ RSpec.describe "UserDestroy", type: :request do
       end
 
       it "schedules a user delete job" do
-        expect do
+        sidekiq_assert_enqueued_with(job: Users::DeleteWorker) do
           delete "/users/full_delete"
-        end.to have_enqueued_job(Users::SelfDeleteJob).with(user.id)
+        end
       end
 
       it "signs out" do
@@ -58,13 +58,13 @@ RSpec.describe "UserDestroy", type: :request do
     end
   end
 
-  describe "GET /users/request_destroy" do
+  describe "POST /users/request_destroy" do
     context "when user has an email" do
       before do
         allow(Rails.cache).to receive(:write).and_call_original
         allow(NotifyMailer).to receive(:account_deletion_requested_email).and_call_original
         sign_in user
-        get "/users/request_destroy"
+        post "/users/request_destroy"
       end
 
       it "sends an email" do
@@ -89,7 +89,7 @@ RSpec.describe "UserDestroy", type: :request do
       end
 
       it "redirects to account page" do
-        get "/users/request_destroy"
+        post "/users/request_destroy"
         expect(response).to redirect_to("/settings/account")
         expect(flash[:settings_notice]).to include("provide an email")
       end

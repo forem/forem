@@ -10,6 +10,10 @@ rvm:
 addons:
   postgresql: '9.6'
   chrome: 'stable'
+  artifacts:
+    paths:
+      - $(ls tmp/screenshots/*.png | tr "\n" ":")
+    debug: true
 services:
   - redis-server
 env:
@@ -17,12 +21,29 @@ env:
     - RAILS_ENV=test
     - CC_TEST_REPORTER_ID=f39e060a8b1a558ebd8aff75d5b9760bf1ae98f3f85d628ae28814f3c66438cd
     - DATABASE_URL=postgres://postgres@localhost/
+    # Dummy values needed to verify the app boots via "rails runner"
+    - APP_PROTOCOL=http://
+    - APP_DOMAIN=localhost:3000
+    - TIMBER=dummy
+    - SEND_LOGS_TO_TIMBER=false
+    - SENDGRID_USERNAME_ACCEL=dummy
+    - SENDGRID_PASSWORD_ACCEL=dummy
+    - HEROKU_APP_URL=practicaldev.herokuapp.com
+    - SECRET_KEY_BASE=dummydummydummy
 branches:
   only:
     - master
 before_install:
   - date --rfc-3339=seconds
   - nvm install
+  - pkill -9 -f elasticsearch || true
+  - curl -s -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.5.2-amd64.deb
+  - sudo dpkg -i --force-confnew elasticsearch-7.5.2-amd64.deb
+  - sudo sed -i.old 's/-Xms1g/-Xms128m/' /etc/elasticsearch/jvm.options
+  - sudo sed -i.old 's/-Xmx1g/-Xmx128m/' /etc/elasticsearch/jvm.options
+  - echo -e '-XX:+DisableExplicitGC\n-Djdk.io.permissionsUseCanonicalPath=true\n-Dlog4j.skipJansi=true\n-server\n' | sudo tee -a /etc/elasticsearch/jvm.options
+  - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
+  - sudo systemctl start elasticsearch
 install:
   - bundle install --path vendor/bundle
   - yarn install
@@ -44,6 +65,7 @@ script:
   - './cc-test-reporter upload-coverage'
   - 'bundle exec bundle-audit check --update --ignore CVE-2015-9284'
   - yarn build-storybook
+  - bundle exec rails runner -e production 'puts "App booted successfully"'
 deploy:
   provider: heroku
   api_key: '$HEROKU_AUTH_TOKEN'
