@@ -52,7 +52,6 @@ module Search
         end
       end
 
-      # rubocop:disable Metrics/MethodLength
       def mappings
         # 1. "In Elasticsearch, there is no dedicated array datatype. Any field can
         #    contain zero or more values by default, however, all values in the
@@ -135,8 +134,6 @@ module Search
           }
         }
       end
-      # rubocop:enable Metrics/MethodLength
-
     end
   end
 end
