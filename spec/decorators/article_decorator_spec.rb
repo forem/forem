@@ -57,7 +57,12 @@ RSpec.describe ArticleDecorator, type: :decorator do
     it "creates proper description when it is not present and body is not present and long, and tags are present" do
       body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: heytag\n---\n\n"
       created_article = create_article(body_markdown: body_markdown)
-      expect(created_article.description_and_tags).to eq("A post by #{created_article.user.name.delete('.')}. Tagged with heytag.")
+      parsed_post_by_string = if created_article.user.name.end_with?(".")
+                                "A post by #{created_article.user.name}"
+                              else
+                                "A post by #{created_article.user.name}."
+                              end
+      expect(created_article.description_and_tags).to eq("#{parsed_post_by_string} Tagged with heytag.")
     end
   end
 end
