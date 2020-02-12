@@ -118,14 +118,21 @@ RSpec.describe Reaction, type: :model do
       expect do
         reaction.save
       end.to(
-        have_enqueued_job(Reactions::UpdateReactableJob).exactly(:once).
-        and(have_enqueued_job(Reactions::BustReactableCacheJob).exactly(:once)),
+        have_enqueued_job(Reactions::UpdateReactableJob).exactly(:once),
       )
     end
 
-    it "enqueues the correct workers" do
-      sidekiq_assert_enqueued_with(job: Reactions::BustHomepageCacheWorker) do
-        reaction.save
+    describe "enqueues the correct worker" do
+      it "BustReactableCacheWorker" do
+        sidekiq_assert_enqueued_with(job: Reactions::BustReactableCacheWorker) do
+          reaction.save
+        end
+      end
+
+      it "BustHomepageCacheWorker" do
+        sidekiq_assert_enqueued_with(job: Reactions::BustHomepageCacheWorker) do
+          reaction.save
+        end
       end
     end
 
