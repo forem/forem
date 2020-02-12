@@ -4,16 +4,16 @@ module Search
     INDEX_ALIAS = "classified_listings_#{Rails.env}_alias".freeze
 
     class << self
-      def index(classified_listing__id, serialized_data)
+      def index(classified_listing_id, serialized_data)
         SearchClient.index(
-          id: classified_listing__id,
+          id: classified_listing_id,
           index: INDEX_ALIAS,
           body: serialized_data,
         )
       end
 
-      def find_document(classified_listing__id)
-        SearchClient.get(id: classified_listing__id, index: INDEX_ALIAS)
+      def find_document(classified_listing_id)
+        SearchClient.get(id: classified_listing_id, index: INDEX_ALIAS)
       end
 
       def create_index(index_name: INDEX_NAME)
