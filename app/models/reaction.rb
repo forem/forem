@@ -21,9 +21,9 @@ class Reaction < ApplicationRecord
   validate  :permissions
 
   before_save :assign_points
-  after_commit :async_bust
+  after_commit :async_bust, :bust_reactable_cache
   after_save :index_to_algolia
-  after_save :update_reactable, :bust_reactable_cache, :touch_user
+  after_save :update_reactable, :touch_user
   before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
   before_destroy :bust_reactable_cache_without_delay
   before_destroy :remove_algolia
@@ -84,7 +84,7 @@ class Reaction < ApplicationRecord
   end
 
   def bust_reactable_cache
-    Reactions::BustReactableCacheJob.perform_later(id)
+    Reactions::BustReactableCacheWorker.perform_async(id)
   end
 
   def async_bust
@@ -92,7 +92,7 @@ class Reaction < ApplicationRecord
   end
 
   def bust_reactable_cache_without_delay
-    Reactions::BustReactableCacheJob.perform_now(id)
+    Reactions::BustReactableCacheWorker.new.perform(id)
   end
 
   def update_reactable_without_delay
