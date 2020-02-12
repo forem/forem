@@ -117,7 +117,7 @@ module Search
                 }
               }
             },
-            tag_list: { # Think of this as an Array - see comment 1 above
+            tags: { # Think of this as an Array - see comment 1 above
               type: "keyword"
             },
             title: {
