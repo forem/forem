@@ -3,7 +3,7 @@ class Reaction < ApplicationRecord
 
   CATEGORIES = %w[like readinglist unicorn thinking hands thumbsdown vomit].freeze
   REACTABLE_TYPES = %w[Comment Article User].freeze
-  STATUSES = %w[valid invalid confirmed archived bulk_submitted].freeze
+  STATUSES = %w[valid invalid confirmed archived].freeze
 
   belongs_to :reactable, polymorphic: true
   belongs_to :user
