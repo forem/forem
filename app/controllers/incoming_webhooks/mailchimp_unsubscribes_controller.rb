@@ -10,6 +10,10 @@ class IncomingWebhooks::MailchimpUnsubscribesController < ApplicationController
     mailchimp_community_moderators_id: :email_community_mod_newsletter
   }.freeze
 
+  def index
+    head :ok
+  end
+
   def create
     not_authorized unless valid_secret?
     user = User.find_by!(email: params.dig(:data, :email))
