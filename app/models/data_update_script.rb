@@ -1,17 +1,13 @@
 class DataUpdateScript < ApplicationRecord
   DIRECTORY = Rails.root.join("lib/data_update_scripts").freeze
   NAMESPACE = "DataUpdateScripts".freeze
-  STATUSES = %i[enqueued working succeeded failed].freeze
+  STATUSES = { enqueued: 0, working: 1, succeeded: 2, failed: 3 }.freeze
 
   enum status: STATUSES
   validates :file_name, uniqueness: true
 
   def self.filenames
-    Pathname.
-      new(self::DIRECTORY).
-      children.
-      select { |path| path.file? && path.extname == ".rb" }.
-      map { |path| path.basename(".rb").to_s }
+    Dir.glob("*.rb", base: DIRECTORY).map { |f| Pathname.new(f).basename(".rb").to_s }
   end
 
   def self.load_script_ids

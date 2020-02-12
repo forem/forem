@@ -24,7 +24,7 @@ chdir APP_ROOT do
   system! 'bin/rails db:migrate'
 
   puts "\n== Update Data =="
-  system! 'bin/rails data_updates:enqueue_data_update_workers'
+  system! 'bin/rails data_updates:run'
 
   puts "\n== Update Elasticsearch =="
   system! 'bin/rails search:setup'
