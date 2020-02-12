@@ -1,6 +1,9 @@
 module Search
   class Cluster
-    SEARCH_CLASSES = [Search::Tag].freeze
+    SEARCH_CLASSES = [
+      Search::Tag,
+      Search::ClassifiedListing,
+    ].freeze
 
     class << self
       def recreate_indexes
