@@ -1,5 +1,6 @@
+<% module_namespacing do -%>
 module DataUpdateScripts
-  class ExampleScript
+  class <%= class_name %>
     def run
       # Place your data update logic here
       # Make sure your code is idempotent and can be run safely
@@ -7,3 +8,4 @@ module DataUpdateScripts
     end
   end
 end
+<% end -%>
