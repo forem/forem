@@ -1,4 +1,4 @@
-class CommentDecorator < BaseDecorator
+class CommentDecorator < ApplicationDecorator
   LOW_QUALITY_THRESHOLD = -75
 
   def low_quality

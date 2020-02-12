@@ -1,4 +1,4 @@
-class UserDecorator < BaseDecorator
+class UserDecorator < ApplicationDecorator
   WHITE_TEXT_COLORS = [
     {
       bg: "#093656",

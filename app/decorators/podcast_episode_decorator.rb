@@ -1,4 +1,4 @@
-class PodcastEpisodeDecorator < BaseDecorator
+class PodcastEpisodeDecorator < ApplicationDecorator
   def comments_to_show_count
     cached_tag_list_array.include?("discuss") ? 75 : 25
   end

@@ -1,4 +1,4 @@
-class NotificationDecorator < BaseDecorator
+class NotificationDecorator < ApplicationDecorator
   NOTIFIABLE_STUB = Struct.new(:name, :id) do
     def class
       Struct.new(:name).name

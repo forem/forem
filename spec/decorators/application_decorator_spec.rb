@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe BaseDecorator, type: :decorator do
+RSpec.describe ApplicationDecorator, type: :decorator do
   describe "#object" do
     it "exposes the decorated object" do
       obj = Class.new
@@ -8,7 +8,7 @@ RSpec.describe BaseDecorator, type: :decorator do
     end
   end
 
-  # as BaseDecorator is an abstract class, some tests also use an actual decorator
+  # as ApplicationDecorator is an abstract class, some tests also use an actual decorator
   describe ".decorate_collection" do
     before do
       create(:sponsorship, level: :gold)

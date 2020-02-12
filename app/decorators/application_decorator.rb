@@ -1,4 +1,4 @@
-class BaseDecorator
+class ApplicationDecorator
   delegate_missing_to :@object
 
   attr_reader :object
