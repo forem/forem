@@ -582,6 +582,7 @@ ActiveRecord::Schema.define(version: 2020_02_12_164359) do
     t.integer "user_id"
     t.index ["created_at"], name: "index_notifications_on_created_at"
     t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
+    t.index ["notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_notifiable_id_notifiable_type_and_action"
     t.index ["notifiable_id"], name: "index_notifications_on_notifiable_id"
     t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
     t.index ["notified_at"], name: "index_notifications_on_notified_at"
@@ -959,6 +960,7 @@ ActiveRecord::Schema.define(version: 2020_02_12_164359) do
     t.datetime "created_at"
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
+    t.integer "mod_chat_channel_id"
     t.string "name"
     t.string "pretty_name"
     t.string "profile_image"

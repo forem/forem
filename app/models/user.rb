@@ -172,7 +172,7 @@ class User < ApplicationRecord
   after_save  :bust_cache
   after_save  :subscribe_to_mailchimp_newsletter
   after_save  :conditionally_resave_articles
-  after_create :estimate_default_language
+  after_create_commit :estimate_default_language
   before_create :set_default_language
   before_validation :set_username
   # make sure usernames are not empty, to be able to use the database unique index
@@ -447,7 +447,7 @@ class User < ApplicationRecord
   end
 
   def profile_image_90
-    ProfileImage.new(self).get(90)
+    ProfileImage.new(self).get(width: 90)
   end
 
   def remove_from_algolia_index
@@ -491,7 +491,7 @@ class User < ApplicationRecord
   end
 
   def estimate_default_language
-    Users::EstimateDefaultLanguageJob.perform_later(id)
+    Users::EstimateDefaultLanguageWorker.perform_async(id)
   end
 
   def set_default_language

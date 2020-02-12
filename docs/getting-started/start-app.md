@@ -14,7 +14,8 @@ running:
 bin/startup
 ```
 
-(This just runs `foreman start -f Procfile.dev`)
+(This just runs `foreman start -f Procfile.dev`, for notes on how to install
+Foreman, please see [Other Tools](/installation/others/))
 
 Then point your browser to http://localhost:3000/ to view the site.
 

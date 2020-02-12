@@ -20,9 +20,10 @@ RSpec.describe "/internal/config", type: :request do
     end
 
     describe "staff" do
-      it "updates staff_user_id" do
+      it "does not allow the staff_user_id to be updated" do
+        expect(SiteConfig.staff_user_id).to eq(1)
         post "/internal/config", params: { site_config: { staff_user_id: 2 } }
-        expect(SiteConfig.staff_user_id).to eq(2)
+        expect(SiteConfig.staff_user_id).to eq(1)
       end
 
       it "updates default_site_email" do

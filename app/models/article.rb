@@ -150,7 +150,7 @@ class Article < ApplicationRecord
                  :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date, :flare_tag
       attribute :user do
         { username: user.username, name: user.name,
-          profile_image_90: ProfileImage.new(user).get(90), pro: user.pro? }
+          profile_image_90: ProfileImage.new(user).get(width: 90), pro: user.pro? }
       end
       tags do
         [tag_list,
@@ -180,13 +180,13 @@ class Article < ApplicationRecord
       attribute :user do
         { username: user.username,
           name: user.name,
-          profile_image_90: ProfileImage.new(user).get(90) }
+          profile_image_90: ProfileImage.new(user).get(width: 90) }
       end
       attribute :organization do
         if organization
           { slug: organization.slug,
             name: organization.name,
-            profile_image_90: ProfileImage.new(organization).get(90) }
+            profile_image_90: ProfileImage.new(organization).get(width: 90) }
         end
       end
       tags do

@@ -26,7 +26,8 @@ Some of the steps will be parallelized in the future:
 1. `bundle-audit` checks for any known vulnerability.
 1. Travis builds Storybook to ensure its integrity.
 1. Travis deploys code to Heroku.
-   - Heroku runs the database migrations before deployment.
+   - Heroku runs the database migrations and Elasticsearch updates before
+     deployment.
 1. Travis notifies the team that the process completed.
 
 ## Deploying to Heroku
@@ -44,13 +45,14 @@ This will cause the release script to exit with a code of 1 which will halt the
 deploy. This ensures that we don't accidentally push out code while we are
 waiting for a fix or running other tasks. Next, we run any outstanding
 migrations. This ensures that a migration finishes successfully before the code
-that uses it goes live. After running migrations, we use the Rails runner to
-output a simple string. Executing a Rails runner command ensures that we can
-boot up the entire app successfully before it is deployed. We deploy
-asynchronously, so the website is running the new code a few minutes after
-deploy. A new instance of Heroku Rails console will immediately run a new code.
-We deploy asynchronously, so the website is running the new code a few minutes
-after deploy. A new instance of Heroku Rails console will immediately run a new
-code.
+that uses it goes live. After running migrations, we update Elasticsearch.
+Elasticsearch contains indexes which have mappings. Mappings are similar to
+database schema. The same way we run a migration to update our database we have
+to run a setup task to update any Elasticsearch mappings. Following updating all
+of our datastores we use the Rails runner to output a simple string. Executing a
+Rails runner command ensures that we can boot up the entire app successfully
+before it is deployed. We deploy asynchronously, so the website is running the
+new code a few minutes after deploy. A new instance of Heroku Rails console will
+immediately run a new code.
 
 ![](https://devcenter0.assets.heroku.com/article-images/1494371187-release-phase-diagram-3.png)

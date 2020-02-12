@@ -38,7 +38,6 @@ class ChatChannelsController < ApplicationController
     membership = @chat_channel.chat_channel_memberships.where(user_id: current_user.id).first
     membership.update(last_opened_at: 1.second.from_now, has_unopened_messages: false)
     send_open_notification
-    @chat_channel.index!
     membership.index!
     render json: { status: "success", channel: params[:id] }, status: :ok
   end
@@ -51,10 +50,8 @@ class ChatChannelsController < ApplicationController
       if banned_user
         banned_user.add_role :banned
         banned_user.messages.delete_all
-        Pusher.trigger(@chat_channel.pusher_channels,
-                       "user-banned",
-                       { userId: banned_user.id }.to_json)
-        render json: { status: "success", message: "banned!" }, status: :ok
+        Pusher.trigger(@chat_channel.pusher_channels, "user-banned", { userId: banned_user.id }.to_json)
+        render json: { status: "success", message: "suspended!" }, status: :ok
       else
         render json: { status: "error", message: "username not found" }, status: :bad_request
       end
@@ -62,7 +59,7 @@ class ChatChannelsController < ApplicationController
       banned_user = User.find_by(username: command[1])
       if banned_user
         banned_user.remove_role :banned
-        render json: { status: "success", message: "unbanned!" }, status: :ok
+        render json: { status: "success", message: "unsuspended!" }, status: :ok
       else
         render json: { status: "error", message: "username not found" }, status: :bad_request
       end

@@ -87,7 +87,7 @@ class StoriesController < ApplicationController
       return
     end
 
-    @stories = article_finder(8)
+    @stories = Articles::Feed.new(number_of_articles: 8, tag: @tag).published_articles_by_tag
 
     @stories = @stories.where(approved: true) if @tag_model&.requires_approval
 
@@ -109,28 +109,21 @@ class StoriesController < ApplicationController
   def handle_base_index
     @home_page = true
     @page = (params[:page] || 1).to_i
-    num_articles = 35
-    @stories = article_finder(num_articles)
+    number_of_articles = 35
+    feed = Articles::Feed.new(number_of_articles: number_of_articles, page: @page, tag: params[:tag])
     if %w[week month year infinity].include?(params[:timeframe])
-      @stories = @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
-        order("score DESC")
+      @stories = feed.top_articles_by_timeframe(timeframe: params[:timeframe])
     elsif params[:timeframe] == "latest"
-      @stories = @stories.order("published_at DESC").
-        where("featured_number > ? AND score > ?", 1_449_999_999, -40)
-      @featured_story = Article.new
+      @stories = feed.latest_feed
     else
       @default_home_feed = true
-      @stories = @stories.
-        where("score > ? OR featured = ?", 9, true).
-        order("hotness_score DESC")
-      if user_signed_in?
-        offset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11].sample # random offset, weighted more towards zero
-        @stories = @stories.offset(offset)
-      end
+      @featured_story, @stories = feed.default_home_feed(user_signed_in: user_signed_in?)
     end
     assign_podcasts
     assign_classified_listings
     @article_index = true
+    @featured_story = (@featured_story || Article.new)&.decorate
+    @stories = ArticleDecorator.decorate_collection(@stories)
     set_surrogate_key_header "main_app_home_page"
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
     render template: "articles/index"
@@ -273,12 +266,5 @@ class StoriesController < ApplicationController
 
   def assign_classified_listings
     @classified_listings = ClassifiedListing.where(published: true).select(:title, :category, :slug, :bumped_at)
-  end
-
-  def article_finder(num_articles)
-    tag = params[:tag]
-    articles = Article.published.limited_column_select.page(@page).per(num_articles)
-    articles = articles.cached_tagged_with(tag) if tag.present? # More efficient than tagged_with
-    articles
   end
 end

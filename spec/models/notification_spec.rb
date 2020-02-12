@@ -292,6 +292,18 @@ RSpec.describe Notification, type: :model do
           end
         end.to change(article.user.notifications, :count).by(1)
       end
+
+      it "does not send a notification to the author of an article if the reaction owner is deleted" do
+        user4 = create(:user)
+        reaction = create(:reaction, reactable: article, user: user4)
+        user4.delete
+
+        expect do
+          sidekiq_perform_enqueued_jobs do
+            described_class.send_reaction_notification(reaction, reaction.reactable.user)
+          end
+        end.not_to change(article.user.notifications, :count)
+      end
     end
 
     context "when a reaction is destroyed" do

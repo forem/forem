@@ -31,7 +31,7 @@ RSpec.describe LinkTag, type: :liquid_tag do
       <div class='ltag__link'>
         <a href='#{article.user.path}' class='ltag__link__link'>
           <div class='ltag__link__pic'>
-            <img src='#{ProfileImage.new(article.user).get(150)}' alt='#{article.user.username} image'/>
+            <img src='#{ProfileImage.new(article.user).get(width: 150)}' alt='#{article.user.username} image'/>
           </div>
         </a>
         <a href='#{article.path}' class='ltag__link__link'>

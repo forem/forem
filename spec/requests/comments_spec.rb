@@ -6,7 +6,7 @@ RSpec.describe "Comments", type: :request do
   let(:article) { create(:article, user_id: user.id) }
   let(:podcast) { create(:podcast) }
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
-  let(:comment) do
+  let!(:comment) do
     create(:comment,
            commentable_id: article.id,
            commentable_type: "Article",
@@ -269,5 +269,27 @@ RSpec.describe "Comments", type: :request do
 
   describe "PATCH /comments/:comment_id/unhide" do
     include_examples "PATCH /comments/:comment_id/hide or unhide", path: "unhide", hidden: "false"
+  end
+
+  describe "DELETE /comments/:comment_id" do
+    before { sign_in user }
+
+    it "deletes a comment if the article is still present" do
+      delete "/comments/#{comment.id}"
+
+      expect(Comment.find_by(id: comment.id)).to be_nil
+      expect(response).to redirect_to(comment.commentable.path)
+      expect(flash[:notice]).to eq("Comment was successfully deleted.")
+    end
+
+    it "deletes a comment if the article has been deleted" do
+      article.destroy!
+
+      delete "/comments/#{comment.id}"
+
+      expect(Comment.find_by(id: comment.id)).to be_nil
+      expect(response).to redirect_to(user_path(user))
+      expect(flash[:notice]).to eq("Comment was successfully deleted.")
+    end
   end
 end
