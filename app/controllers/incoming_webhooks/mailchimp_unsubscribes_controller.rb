@@ -1,4 +1,6 @@
 class IncomingWebhooks::MailchimpUnsubscribesController < ApplicationController
+  skip_before_action :verify_authenticity_token
+
   class InvalidListID < StandardError; end
 
   LIST_MAPPINGS = {
