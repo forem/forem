@@ -13,8 +13,8 @@ class OrganizationDecorator < ApplicationDecorator
       }
     else
       {
-        bg: bg_color_hex || assigned_color[:bg],
-        text: text_color_hex || assigned_color[:text]
+        bg: bg_color_hex,
+        text: text_color_hex.presence || assigned_color[:text]
       }
     end
   end
