@@ -1,6 +1,4 @@
-class ArticleDecorator < ApplicationDecorator
-  delegate_all
-
+class ArticleDecorator < BaseDecorator
   def current_state_path
     published ? "/#{username}/#{slug}" : "/#{username}/#{slug}?preview=#{password}"
   end
@@ -26,13 +24,13 @@ class ArticleDecorator < ApplicationDecorator
   end
 
   def title_length_classification
-    if article.title.size > 105
+    if title.size > 105
       "longest"
-    elsif article.title.size > 80
+    elsif title.size > 80
       "longer"
-    elsif article.title.size > 60
+    elsif title.size > 60
       "long"
-    elsif article.title.size > 22
+    elsif title.size > 22
       "medium"
     else
       "short"
