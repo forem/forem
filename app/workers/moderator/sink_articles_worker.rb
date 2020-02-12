@@ -14,7 +14,7 @@ module Moderator
       articles.update_all(score: new_score)
     rescue StandardError => e
       DataDogStatsClient.count("moderators.sink", 1, tags: ["action:failed", "user_id:#{user.id}"])
-      Honeybadger.notify("Error while sinking user: #{e}")
+      Honeybadger.notify(e)
     end
   end
 end
