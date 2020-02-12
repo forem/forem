@@ -22,13 +22,13 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   # Decorate object with appropriate decorator
-  def decorate_
+  def decorate
     self.class.decorator_class.new(self)
   end
 
   # Decorate collection with appropriate decorator
-  def self.decorate_
-    decorator_class.decorate_collection(all)
+  def self.decorate
+    decorator_class.decoratecollection(all)
   end
 
   # Infers the decorator class to be used by (e.g. `User` maps to `UserDecorator`).
