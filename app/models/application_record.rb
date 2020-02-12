@@ -20,4 +20,12 @@ class ApplicationRecord < ActiveRecord::Base
     result.clear # PG::Result is manually managed in memory, we need to release its resources
     count
   end
+
+  # Decorate record with appropriate decorator
+  def decorate_
+    decorator_class = "#{self.class.name}Decorator".safe_constantize
+    raise UninferrableDecoratorError, "Could not infer a decorator for #{self.class.name}" unless decorator_class
+
+    decorator_class.new(self)
+  end
 end
