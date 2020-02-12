@@ -184,7 +184,7 @@ function fetchNextPodcastPage(el){
   fetchNext(el, "/api/podcast_episodes", insertArticles)
 }
 
-function algoliaPaginate(tag){
+function algoliaPaginate(tag, requiresApproval) {
   var filters = [];
   if (tag && tag.length > 0) {
     filters.push(tag);
@@ -195,6 +195,7 @@ function algoliaPaginate(tag){
       page: nextPage,
       attributesToHighlight: [],
       tagFilters: filters,
+      filters: (requiresApproval === 'true') ? 'approved:true' : ''
   }
 
   var homeEl = document.getElementById("index-container");
@@ -255,7 +256,7 @@ function fetchNextPageIfNearBottom() {
   } else {
     scrollableElemId = "articles-list";
     fetchCallback = function fetch() {
-      algoliaPaginate(indexContainer.dataset.algoliaTag);
+      algoliaPaginate(indexContainer.dataset.algoliaTag, indexContainer.dataset.requiresApproval);
     };
   }
 
