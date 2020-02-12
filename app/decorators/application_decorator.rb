@@ -7,7 +7,7 @@ class ApplicationDecorator
     @object = object
   end
 
-  def self.decoratecollection(objects)
+  def self.decorate_collection(objects)
     objects.map(&:decorate)
   end
 end

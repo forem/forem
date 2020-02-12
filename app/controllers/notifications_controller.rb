@@ -33,7 +33,7 @@ class NotificationsController < ApplicationController
 
     @notifications = @notifications.limit(num)
 
-    @notifications = NotificationDecorator.decoratecollection(@notifications)
+    @notifications = NotificationDecorator.decorate_collection(@notifications)
 
     @last_user_reaction = @user.reactions.last&.id
     @last_user_comment = @user.comments.last&.id

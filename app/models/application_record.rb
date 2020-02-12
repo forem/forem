@@ -28,7 +28,7 @@ class ApplicationRecord < ActiveRecord::Base
 
   # Decorate collection with appropriate decorator
   def self.decorate
-    decorator_class.decoratecollection(all)
+    decorator_class.decorate_collection(all)
   end
 
   # Infers the decorator class to be used by (e.g. `User` maps to `UserDecorator`).

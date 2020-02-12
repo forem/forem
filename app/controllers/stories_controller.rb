@@ -141,7 +141,7 @@ class StoriesController < ApplicationController
 
   def handle_organization_index
     @user = @organization
-    @stories = ArticleDecorator.decoratecollection(@organization.articles.published.
+    @stories = ArticleDecorator.decorate_collection(@organization.articles.published.
       limited_column_select.
       order("published_at DESC").page(@page).per(8))
     @article_index = true
@@ -236,7 +236,7 @@ class StoriesController < ApplicationController
     @pinned_stories = Article.published.where(id: @user.profile_pins.select(:pinnable_id)).
       limited_column_select.
       order("published_at DESC").decorate
-    @stories = ArticleDecorator.decoratecollection(@user.articles.published.
+    @stories = ArticleDecorator.decorate_collection(@user.articles.published.
       limited_column_select.
       where.not(id: @pinned_stories.pluck(:id)).
       order("published_at DESC").page(@page).per(user_signed_in? ? 2 : 5))

@@ -6,7 +6,7 @@ class PodcastEpisodesController < ApplicationController
     @podcast_index = true
 
     @podcasts = Podcast.available.order("title asc")
-    @podcast_episodes = PodcastEpisodeDecorator.decoratecollection(PodcastEpisode.
+    @podcast_episodes = PodcastEpisodeDecorator.decorate_collection(PodcastEpisode.
       available.
       includes(:podcast).order("published_at desc").first(20))
 
