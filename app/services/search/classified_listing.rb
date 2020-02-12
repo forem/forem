@@ -67,7 +67,12 @@ module Search
             },
             author: {
               dynamic: "strict",
-              type: "object",
+              # You don't have to specify type: "object" since it is the default.
+              # Specifying type: "object" will break specs because when you later
+              # call the mappings API on Elasticsearch, it will NOT return the
+              # type: object key, value pair.
+              #
+              # https://www.elastic.co/guide/en/elasticsearch/reference/current/object.html#object
               properties: {
                 username: {
                   type: "keyword"
