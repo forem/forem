@@ -88,7 +88,7 @@ Please execute the script itself to view all additional options:
 
 ## Known Problems & Solutions
 
-- Should you experience problems with the ElasticSearch container, try to
+- Should you experience problems with the Elasticsearch container, try to
   increase the memory and/or swap allocation for Docker. On macOS this can be
   done via the GUI:
 
