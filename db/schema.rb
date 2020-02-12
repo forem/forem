@@ -10,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_20_053525) do
+ActiveRecord::Schema.define(version: 2020_02_12_164359) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -871,6 +872,7 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
     t.index ["category"], name: "index_reactions_on_category"
     t.index ["created_at"], name: "index_reactions_on_created_at"
     t.index ["points"], name: "index_reactions_on_points"
+    t.index ["reactable_id", "reactable_type"], name: "index_reactions_on_reactable_id_and_reactable_type"
     t.index ["reactable_id"], name: "index_reactions_on_reactable_id"
     t.index ["reactable_type"], name: "index_reactions_on_reactable_type"
     t.index ["user_id"], name: "index_reactions_on_user_id"
