@@ -625,60 +625,6 @@
         .sidebar-main-nav {
           margin-bottom: 24px;
         }
-        .sidebar-nav-element {
-          color: $black;
-          display: block;
-          position: relative;
-          @media screen and (min-width: 950px) {
-            .sidebar-nav-link-follow {
-              display: none;
-            }
-            &:hover {
-              .sidebar-nav-link-follow {
-                display: block;
-              }
-            }
-          }
-          img {
-            width: 30px;
-            height: 30px;
-            border: 0px;
-            vertical-align: -8px;
-            margin-right: 4px;
-          }
-          img.nav-emoji {
-            height: 19px;
-            width: 19px;
-            vertical-align: -2px;
-          }
-
-          a.sidebar-nav-link {
-            @include themeable(color, theme-container-color, rgba($black, 0.9));
-            padding: 8px 0;
-            display: block;
-            font-weight: 400;
-
-            &.sidebar-nav-link-tag {
-              padding: 6px 0;
-              @include themeable(color, theme-container-color, rgba($black, 0.8));
-            }
-            &:hover {
-              @include themeable(color, theme-container-color, $black);
-            }
-          }
-          a.sidebar-nav-link-follow {
-            position: absolute;
-            color: $black;
-            right: 5px;
-            top: 50%;
-            transform: translateY(-50%);
-            text-align: center;
-            border-radius: 3px;
-            font-weight: 900;
-            font-size: 0.8em;
-            padding: 2px 8px;
-          }
-        }
       }
     }
     .sidebar-sponsorship-level {
@@ -840,15 +786,6 @@
           line-height: 1.4em;
         }
 
-        &.widget-header-listings {
-          @include themeable(
-            background,
-            theme-container-accent-background,
-            $light-gray
-          );
-          padding: 10px 12px;
-          margin: -10px -12px;
-        }
         .widget-minimize-button {
           position: absolute;
           right: 0;
@@ -1629,5 +1566,62 @@
         white
       );
     }
+  }
+}
+
+// Left Side bar navigation links
+// Pulling this out of context because Nick says so: https://github.com/thepracticaldev/dev.to/pull/5918/commits/f1642e62accbdaff72dc7762e1e1ffd4e40027b0
+.sidebar-nav-element {
+  color: $black;
+  display: block;
+  position: relative;
+  @media screen and (min-width: 950px) {
+    .sidebar-nav-link-follow {
+      display: none;
+    }
+    &:hover {
+      .sidebar-nav-link-follow {
+        display: block;
+      }
+    }
+  }
+  img {
+    width: 30px;
+    height: 30px;
+    border: 0px;
+    vertical-align: -8px;
+    margin-right: 4px;
+  }
+  img.nav-emoji {
+    height: 19px;
+    width: 19px;
+    vertical-align: -2px;
+  }
+
+  a.sidebar-nav-link {
+    @include themeable(color, theme-container-color, rgba($black, 0.9));
+    padding: 8px 0;
+    display: block;
+    font-weight: 400;
+
+    &.sidebar-nav-link-tag {
+      padding: 6px 0;
+      @include themeable(color, theme-container-color, rgba($black, 0.8));
+    }
+    &:hover {
+      @include themeable(color, theme-container-color, $black);
+    }
+  }
+  a.sidebar-nav-link-follow {
+    position: absolute;
+    color: $black;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    border-radius: 3px;
+    font-weight: 900;
+    font-size: 0.8em;
+    padding: 2px 8px;
   }
 }
