@@ -86,6 +86,9 @@ module Search
                 }
               }
             },
+            body_markdown: {
+              type: "text"
+            },
             bumped_at: {
               type: "date"
             },
@@ -107,7 +110,7 @@ module Search
               }
             },
             processed_html: {
-              type: "text"
+              type: "keyword"
             },
             slug: {
               type: "text",
