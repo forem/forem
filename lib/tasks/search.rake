@@ -16,6 +16,6 @@ namespace :search do
       exit
     end
 
-    Search::Cluster.destroy_indexes
+    SearchClient.indices.delete(index: "*")
   end
 end

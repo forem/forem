@@ -33,6 +33,9 @@ chdir APP_ROOT do
   puts "\n== Preparing Elasticsearch =="
   system! 'bin/rails search:setup'
 
+  puts "\n== Update Data =="
+  system! 'bin/rails data_updates:run'
+
   puts "\n== Removing old logs and tempfiles =="
   system! 'bin/rails log:clear tmp:clear'
 

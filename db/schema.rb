@@ -350,6 +350,15 @@ ActiveRecord::Schema.define(version: 2020_02_12_164359) do
     t.index ["spent"], name: "index_credits_on_spent"
   end
 
+  create_table "data_update_scripts", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "file_name"
+    t.datetime "finished_at"
+    t.datetime "run_at"
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "delayed_jobs", id: :serial, force: :cascade do |t|
     t.integer "attempts", default: 0, null: false
     t.datetime "created_at"

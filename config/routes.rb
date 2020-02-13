@@ -151,6 +151,7 @@ Rails.application.routes.draw do
   end
 
   namespace :incoming_webhooks do
+    get "/mailchimp/:secret/unsubscribe", to: "mailchimp_unsubscribes#index", as: :mailchimp_unsubscribe_check
     post "/mailchimp/:secret/unsubscribe", to: "mailchimp_unsubscribes#create", as: :mailchimp_unsubscribe
   end
 

@@ -63,8 +63,11 @@ DEV requires Elasticsearch version 7 or higher.
 
 We recommend installing from archive on Mac. The following directions were
 [taken from the Elasticsearch docs themselves](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#install-macos),
-so check those out if you run into any issues or want further information. NOTE:
-Make sure to download the OSS version, `elasticsearch-oss`.
+so check those out if you run into any issues or want further information. Make
+sure to download **the OSS version** of Elasticsearch, `elasticsearch-oss`.
+
+Please note that you will need `wget` in order to proceed with this installation
+(`brew install wget`).
 
 ```shell
 wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz
