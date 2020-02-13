@@ -52,17 +52,31 @@ export class ReadingList extends Component {
     });
   }
 
+  setArchiveButtonLabel() {
+    return this.isStatusViewValid() ? 'archive' : 'unarchive';
+  }
+
+  getNewStatusView() {
+    return this.isStatusViewValid() ? STATUS_VIEW_ARCHIVED : STATUS_VIEW_VALID;
+  }
+
+  getNewPath() {
+    return this.isStatusViewValid()
+      ? READING_LIST_ARCHIVE_PATH
+      : READING_LIST_PATH;
+  }
+
+  setNewPath = newPath => {
+    window.history.replaceState(null, null, newPath);
+  };
+
   toggleStatusView = event => {
     event.preventDefault();
 
     const { query, selectedTags } = this.state;
 
-    const newStatusView = isStatusViewValid()
-      ? STATUS_VIEW_ARCHIVED
-      : STATUS_VIEW_VALID;
-    const newPath = isStatusViewValid()
-      ? READING_LIST_ARCHIVE_PATH
-      : READING_LIST_PATH;
+    const newStatusView = this.getNewStatusView();
+    const newPath = this.getNewPath();
 
     this.setState({ statusView: newStatusView, items: [] });
 
@@ -72,8 +86,7 @@ export class ReadingList extends Component {
       statusView: newStatusView,
     });
 
-    // change path in the address bar
-    window.history.replaceState(null, null, newPath);
+    this.setNewPath(newPath);
   };
 
   toggleArchiveStatus = (event, item) => {
@@ -110,10 +123,6 @@ export class ReadingList extends Component {
   isStatusViewValid() {
     const { statusView } = this.state;
     return statusView === STATUS_VIEW_VALID;
-  }
-
-  setArchiveButtonLabel() {
-    return this.isStatusViewValid() ? 'archive' : 'unarchive';
   }
 
   render() {
@@ -169,10 +178,4 @@ ReadingList.defaultProps = {
 ReadingList.propTypes = {
   availableTags: PropTypes.arrayOf(PropTypes.string).isRequired,
   statusView: PropTypes.oneOf([STATUS_VIEW_VALID, STATUS_VIEW_ARCHIVED]),
-};
-
-FilterText.propTypes = {
-  selectedTags: PropTypes.arrayOf(PropTypes.string).isRequired,
-  value: PropTypes.string.isRequired,
-  query: PropTypes.arrayOf(PropTypes.string).isRequired,
 };

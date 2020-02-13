@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import { PropTypes } from 'preact-compat';
 
 import { ItemListItem } from '../src/components/ItemList/ItemListItem';
 import { ItemListItemArchiveButton } from '../src/components/ItemList/ItemListItemArchiveButton';
@@ -109,5 +110,15 @@ const ItemsContainer = ({
     </div>
   );
 };
+
+FilterText.propTypes = {
+  selectedTags: PropTypes.arrayOf(PropTypes.string).isRequired,
+  value: PropTypes.string.isRequired,
+  query: PropTypes.arrayOf(PropTypes.string).isRequired,
+};
+
+EmptyItems.propTypes = {};
+
+ItemsContainer.propTypes = {};
 
 export default ItemsContainer;
