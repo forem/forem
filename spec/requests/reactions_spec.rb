@@ -94,7 +94,8 @@ RSpec.describe "Reactions", type: :request do
   end
 
   describe "POST /reactions" do
-    let(:valid_params) do
+    let(:trusted_user) { create(:user, :trusted) }
+    let(:article_params) do
       {
         reactable_id: article.id,
         reactable_type: "Article",
@@ -102,19 +103,46 @@ RSpec.describe "Reactions", type: :request do
       }
     end
 
-    before do
-      sign_in user
-      post "/reactions", params: valid_params
+    let(:user_params) do
+      {
+        reactable_id: user.id,
+        reactable_type: "User",
+        category: "vomit"
+      }
     end
 
-    it "creates reaction" do
-      expect(Reaction.last.reactable_id).to eq(article.id)
+    context "when reacting to an article" do
+      before do
+        sign_in user
+        post "/reactions", params: article_params
+      end
+
+      it "creates reaction" do
+        expect(Reaction.last.reactable_id).to eq(article.id)
+      end
+
+      it "destroys existing reaction" do
+        # same route to destroy, so sending POST request again
+        post "/reactions", params: article_params
+        expect(Reaction.all.size).to eq(0)
+      end
     end
 
-    it "destroys existing reaction" do
-      # same route to destroy, so sending POST request again
-      post "/reactions", params: valid_params
-      expect(Reaction.all.size).to eq(0)
+    context "when vomiting on a user" do
+      before do
+        sign_in trusted_user
+        post "/reactions", params: user_params
+      end
+
+      it "creates reaction" do
+        expect(Reaction.last.reactable_id).to eq(user.id)
+      end
+
+      it "destroys existing reaction" do
+        # same route to destroy, so sending POST request again
+        post "/reactions", params: user_params
+        expect(Reaction.all.size).to eq(0)
+      end
     end
   end
 end
