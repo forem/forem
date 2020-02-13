@@ -152,7 +152,7 @@
       </button>
       <div id="user-profile-dropdownmenu" class="profile-dropdownmenu">
         <button id="user-profile-dropdownmenu-block-button" data-profile-user-id="<%= @user.id %>" class="block-button" type="button">Block @<%= @user.username %></button>
-        <% if current_user.has_role?(:trusted) %>
+        <% if current_user&.has_role?(:trusted) %>
           <%= button_to Reaction.cached_any_reactions_for?(@user, current_user, "vomit") ? "Flag as Abusive" : "Remove Abuse Flag",
                         reactions_path(reactable_id: @user.id, category: "vomit", reactable_type: "User"),
                         method: :post,
