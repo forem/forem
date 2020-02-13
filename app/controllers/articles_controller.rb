@@ -138,13 +138,12 @@ class ArticlesController < ApplicationController
   def create
     authorize Article
 
-    @user = current_user
-    @article = Articles::Creator.call(@user, article_params_json)
+    article = Articles::Creator.call(current_user, article_params_json)
 
-    render json: if @article.persisted?
-                   @article.to_json(only: [:id], methods: [:current_state_path])
+    render json: if article.persisted?
+                   { id: article.id, current_state_path: article.decorate.current_state_path }.to_json
                  else
-                   @article.errors.to_json
+                   article.errors.to_json
                  end
   end
 
