@@ -103,6 +103,7 @@ const articleWithReadingTimeGreaterThan1 = {
 const videoArticle = {
   ...article,
   cloudinary_video_url: '/images/onboarding-background.png',
+  video_duration_in_minutes: 10,
   user: {
     ...article.user,
     profile_image_90: `/images/${Math.floor(Math.random() * 40)}.png`,
