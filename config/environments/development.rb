@@ -110,6 +110,19 @@ Rails.application.configure do
     # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
     Bullet.add_whitelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
   end
+
+  # Docker specific development configuration
+  if File.file?("/.dockerenv")
+    # Using shell tools so we don't need to require Socker and IPAddr
+    host_ip = `/sbin/ip route|awk '/default/ { print $3 }'`.strip
+    logger = Logger.new(STDOUT)
+    logger.info "Whitelisting #{host_ip} for BetterErrors and Web Console"
+
+    if defined?(BetterErrors::Middleware)
+      BetterErrors::Middleware.allow_ip!(host_ip)
+    end
+    config.web_console.whitelisted_ips << host_ip
+  end
 end
 
 Rails.application.routes.default_url_options = { host: Rails.application.config.app_domain }
