@@ -17,7 +17,7 @@ RSpec.describe "/internal/config", type: :request do
   end
 
   describe "POST internal/events" do
-    context "when admin has full permissions" do
+    context "when admin has typical admin permissions but not single resource" do
       before do
         sign_in(admin)
       end
@@ -33,7 +33,7 @@ RSpec.describe "/internal/config", type: :request do
       end
     end
 
-    context "when admin has full permissions" do
+    context "when admin has full permissions including single resource" do
       before do
         sign_in(admin_plus_config)
       end

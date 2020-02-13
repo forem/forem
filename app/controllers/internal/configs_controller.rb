@@ -1,12 +1,13 @@
 class Internal::ConfigsController < Internal::ApplicationController
   layout "internal"
 
+  before_action :extra_authorization_and_confirmation, only: [:create]
+
   def show
     @logo_svg = SiteConfig.logo_svg.html_safe # rubocop:disable Rails/OutputSafety
   end
 
   def create
-    confirmation
     clean_up_params
     config_params.keys.each do |key|
       SiteConfig.public_send("#{key}=", config_params[key].strip) unless config_params[key].nil?
@@ -32,7 +33,7 @@ class Internal::ConfigsController < Internal::ApplicationController
     params.require(:site_config).permit(allowed_params)
   end
 
-  def confirmation
+  def extra_authorization_and_confirmation
     not_authorized unless current_user.has_role?(:single_resource_admin, Config) # Special additional permission
     not_authorized if params[:confirmation] != "My username is @#{current_user.username} and this action is 100% safe and appropriate."
   end
