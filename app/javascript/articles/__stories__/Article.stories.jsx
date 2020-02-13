@@ -98,6 +98,7 @@ const videoArticle = {
 
 const podcastArticle = {
   ...article,
+  type_of: 'podcast_episodes',
   podcast: {
     slug: title.replace(/\s+/, '-').toLowerCase(),
     title: faker.random.words(2),
