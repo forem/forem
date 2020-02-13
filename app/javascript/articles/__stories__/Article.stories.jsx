@@ -2,8 +2,8 @@ import { h } from 'preact';
 import { storiesOf } from '@storybook/react';
 import faker from 'faker';
 import { Article } from '..';
-import { defaultChildrenPropTypes } from '../../src/components/common-prop-types/default-children-prop-types';
 import '../../../assets/stylesheets/articles.scss';
+import { articleDecorator } from './articleDecorator';
 
 const title = faker.random.words(2);
 
@@ -108,52 +108,24 @@ const videoArticle = {
   },
 };
 
-const ArticleWrapper = ({ children }) => (
-  <div className="articles-list">{children}</div>
-);
-ArticleWrapper.propTypes = {
-  children: defaultChildrenPropTypes.isRequired,
-};
-ArticleWrapper.displayName = 'ArticleWrapper';
-
-storiesOf('Components/Articles/Article', module)
-  .add('Default', () => (
-    <ArticleWrapper>
-      <Article article={article} currentTag="javascript" />
-    </ArticleWrapper>
-  ))
+storiesOf('Components/Articles/Standard', module)
+  .addDecorator(articleDecorator)
+  .add('Default', () => <Article article={article} currentTag="javascript" />)
   .add('With Organization', () => (
-    <ArticleWrapper>
-      <Article article={articleWithOrganization} currentTag="javascript" />
-    </ArticleWrapper>
+    <Article article={articleWithOrganization} currentTag="javascript" />
   ))
-  .add('With Flare Tag', () => (
-    <ArticleWrapper>
-      <Article article={article} />
-    </ArticleWrapper>
+  .add('Wth Flare Tag', () => <Article article={article} />)
+  .add('Wth Snippet Result', () => (
+    <Article article={articleWithSnippetResult} />
   ))
-  .add('With Snippet Result', () => (
-    <ArticleWrapper>
-      <Article article={articleWithSnippetResult} />
-    </ArticleWrapper>
+  .add('Wth Reading Time', () => (
+    <Article article={articleWithReadingTimeGreaterThan1} />
   ))
-  .add('With Reading Time', () => (
-    <ArticleWrapper>
-      <Article article={articleWithReadingTimeGreaterThan1} />
-    </ArticleWrapper>
+  .add('Wth Reactions', () => <Article article={articleWithReactions} />);
+
+storiesOf('Components/Articles/Video', module)
+  .addDecorator(articleDecorator)
+  .add('Default', () => (
+    <Article article={videoArticle} currentTag="javascript" />
   ))
-  .add('With Reactions', () => (
-    <ArticleWrapper>
-      <Article article={articleWithReactions} />
-    </ArticleWrapper>
-  ))
-  .add('With Video', () => (
-    <ArticleWrapper>
-      <Article article={videoArticle} currentTag="javascript" />
-    </ArticleWrapper>
-  ))
-  .add('With Video and Flare Tag', () => (
-    <ArticleWrapper>
-      <Article article={videoArticle} />
-    </ArticleWrapper>
-  ));
+  .add('Video Article and Flare Tag', () => <Article article={videoArticle} />);

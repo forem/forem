@@ -2,8 +2,8 @@ import { h } from 'preact';
 import { storiesOf } from '@storybook/react';
 import faker from 'faker';
 import { PodcastArticle } from '..';
-import { defaultChildrenPropTypes } from '../../src/components/common-prop-types/default-children-prop-types';
 import '../../../assets/stylesheets/articles.scss';
+import { articleDecorator } from './articleDecorator';
 
 const title = faker.random.words(2);
 
@@ -19,16 +19,6 @@ const article = {
   },
 };
 
-const ArticleWrapper = ({ children }) => (
-  <div className="articles-list">{children}</div>
-);
-ArticleWrapper.propTypes = {
-  children: defaultChildrenPropTypes.isRequired,
-};
-ArticleWrapper.displayName = 'ArticleWrapper';
-
-storiesOf('Components/Articles/Podcast Article', module).add('Default', () => (
-  <ArticleWrapper>
-    <PodcastArticle article={article} />
-  </ArticleWrapper>
-));
+storiesOf('Components/Articles/Podcast', module)
+  .addDecorator(articleDecorator)
+  .add('Default', () => <PodcastArticle article={article} />);
