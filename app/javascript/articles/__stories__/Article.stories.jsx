@@ -1,7 +1,8 @@
 import { h } from 'preact';
 import { storiesOf } from '@storybook/react';
 import faker from 'faker';
-import { Article, PodcastArticle } from '..';
+import { withKnobs, object, text } from '@storybook/addon-knobs/react';
+import { Article } from '..';
 import { articleDecorator } from './articleDecorator';
 
 import '../../../assets/stylesheets/articles.scss';
@@ -105,28 +106,73 @@ const podcastArticle = {
 };
 
 storiesOf('Components/Articles/Standard', module)
-  .addDecorator(articleDecorator)
-  .add('Default', () => <Article article={article} currentTag="javascript" />)
-  .add('With Organization', () => (
-    <Article article={articleWithOrganization} currentTag="javascript" />
-  ))
-  .add('Wth Flare Tag', () => <Article article={article} />)
-  .add('Wth Snippet Result', () => (
-    <Article article={articleWithSnippetResult} />
-  ))
-  .add('Wth Reading Time', () => (
-    <Article article={articleWithReadingTimeGreaterThan1} />
-  ))
-  .add('Wth Reactions', () => <Article article={articleWithReactions} />)
-  .add('With Comments', () => <Article article={articleWithComments} />);
-
-storiesOf('Components/Articles/Video', module)
+  .addDecorator(withKnobs)
   .addDecorator(articleDecorator)
   .add('Default', () => (
-    <Article article={videoArticle} currentTag="javascript" />
+    <Article
+      article={object('article', article)}
+      currentTag={text('currentTag', 'javascript')}
+    />
   ))
-  .add('Video Article and Flare Tag', () => <Article article={videoArticle} />);
+  .add('With Organization', () => (
+    <Article
+      article={object('article', articleWithOrganization)}
+      currentTag={text('currentTag', 'javascript')}
+    />
+  ))
+  .add('Wth Flare Tag', () => (
+    <Article
+      article={object('article', article)}
+      currentTag={text('currentTag')}
+    />
+  ))
+  .add('Wth Snippet Result', () => (
+    <Article
+      article={object('article', articleWithSnippetResult)}
+      currentTag={text('currentTag')}
+    />
+  ))
+  .add('Wth Reading Time', () => (
+    <Article
+      article={object('article', articleWithReadingTimeGreaterThan1)}
+      currentTag={text('currentTag')}
+    />
+  ))
+  .add('Wth Reactions', () => (
+    <Article
+      article={object('article', articleWithReactions)}
+      currentTag={text('currentTag')}
+    />
+  ))
+  .add('With Comments', () => (
+    <Article
+      article={object('article', articleWithComments)}
+      currentTag={text('currentTag')}
+    />
+  ));
+
+storiesOf('Components/Articles/Video', module)
+  .addDecorator(withKnobs)
+  .addDecorator(articleDecorator)
+  .add('Default', () => (
+    <Article
+      article={videoArticle}
+      currentTag={text('currentTag', 'javascript')}
+    />
+  ))
+  .add('Video Article and Flare Tag', () => (
+    <Article
+      article={object('article', videoArticle)}
+      currentTag={text('currentTag')}
+    />
+  ));
 
 storiesOf('Components/Articles/Podcast', module)
+  .addDecorator(withKnobs)
   .addDecorator(articleDecorator)
-  .add('Default', () => <PodcastArticle article={podcastArticle} />);
+  .add('Default', () => (
+    <Article
+      article={object('article', podcastArticle)}
+      currentTag={text('currentTag')}
+    />
+  ));
