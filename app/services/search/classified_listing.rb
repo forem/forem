@@ -2,6 +2,7 @@ module Search
   class ClassifiedListing
     INDEX_NAME = "classified_listings_#{Rails.env}".freeze
     INDEX_ALIAS = "classified_listings_#{Rails.env}_alias".freeze
+    MAPPINGS = JSON.parse(File.read("config/elasticsearch/mappings/classified_listings.json"), symbolize_names: true).freeze
 
     class << self
       def index(classified_listing_id, serialized_data)
@@ -53,76 +54,7 @@ module Search
       end
 
       def mappings
-        {
-          dynamic: "strict",
-          properties: {
-            id: {
-              type: "keyword"
-            },
-            author: {
-              dynamic: "strict",
-              properties: {
-                username: {
-                  type: "keyword"
-                },
-                name: {
-                  type: "keyword"
-                },
-                profile_image_90: {
-                  type: "keyword"
-                }
-              }
-            },
-            body_markdown: {
-              type: "text"
-            },
-            bumped_at: {
-              type: "date"
-            },
-            category: {
-              type: "keyword"
-            },
-            contact_via_connect: {
-              type: "boolean"
-            },
-            expires_at: {
-              type: "date"
-            },
-            location: {
-              type: "text",
-              fields: {
-                raw: {
-                  type: "keyword"
-                }
-              }
-            },
-            processed_html: {
-              type: "keyword"
-            },
-            slug: {
-              type: "text",
-              fields: {
-                raw: {
-                  type: "keyword"
-                }
-              }
-            },
-            tags: {
-              type: "keyword"
-            },
-            title: {
-              type: "text",
-              fields: {
-                raw: {
-                  type: "keyword"
-                }
-              }
-            },
-            user_id: {
-              type: "keyword"
-            }
-          }
-        }
+        MAPPINGS
       end
     end
   end
