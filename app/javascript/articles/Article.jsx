@@ -349,7 +349,11 @@ export const Article = ({ article, currentTag, isBookmarked }) => {
       </a>
       <h4>
         <a href={`/${article.user.username}`}>
-          {filterXSS(article.user.name)}
+          {filterXSS(
+            article.class_name === 'User'
+              ? article.user.username
+              : article.user.name,
+          )}
           {article.readable_publish_date ? '・' : ''}
           {article.readable_publish_date && (
             <PublishDate

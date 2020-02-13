@@ -9,6 +9,8 @@ import '../../../assets/stylesheets/articles.scss';
 
 const title = faker.random.words(2);
 
+const getName = () => `${faker.name.firstName()} ${faker.name.lastName()}`;
+
 const article = {
   id: faker.random.number(),
   title,
@@ -27,8 +29,8 @@ const article = {
   cached_tag_list_array: [],
   user_id: faker.random.number(),
   user: {
-    username: faker.random.word(),
-    name: faker.random.words(2),
+    username: faker.internet.userName(),
+    name: getName(),
     // We have 40 fake O'Reilly images to work with
     profile_image_90: `/images/${Math.floor(Math.random() * 40)}.png`,
   },
@@ -111,14 +113,14 @@ const podcastEpisodeArticle = {
   class_name: 'PodcastEpisode',
 };
 
-const name = faker.random.words(2);
+const name = getName();
 const userArticle = {
   id: faker.random.number(),
   title: name,
   user_id: faker.random.number(),
   class_name: 'User',
   user: {
-    username: faker.random.word(),
+    username: name.replace(/\s+/, '.').toLowerCase(),
     name,
     // We have 40 fake O'Reilly images to work with
     profile_image_90: `/images/${Math.floor(Math.random() * 40)}.png`,
