@@ -2,7 +2,7 @@ module Search
   class Tag
     INDEX_NAME = "tags_#{Rails.env}".freeze
     INDEX_ALIAS = "tags_#{Rails.env}_alias".freeze
-    MAPPING = JSON.parse(File.read("config/elasticsearch_mappings/tags.json"), symbolize_names: true).freeze
+    MAPPING = JSON.parse(File.read("config/elasticsearch/mappings/tags.json"), symbolize_names: true).freeze
 
     class << self
       def index(tag_id, serialized_data)
