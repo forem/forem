@@ -1089,7 +1089,6 @@
       .cta-button {
         background: transparent;
         @include themeable(color, theme-color, darken($sky-blue, 17%));
-        padding: 8px 0;
         display: inline-block;
         &:hover {
           text-decoration: underline;
@@ -1469,6 +1468,7 @@
 .query-results-nothing {
   padding: 40px 0px;
   font-size: 1.2em;
+  text-align: center;
   @include themeable(background, theme-container-background, white);
   @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
   border-radius: 3px;
