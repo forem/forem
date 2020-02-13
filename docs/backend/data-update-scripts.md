@@ -4,7 +4,7 @@ title: Data Update Scripts
 
 ## What are Data Update Scripts?
 
-Data Update Scripts were introduced recently in
+Data Update Scripts were introduced in
 [this PR](https://github.com/thepracticaldev/dev.to/pull/6025) and allow us to
 run any data updates we might need. For example, if we added a column to the
 database and then wanted to backfill that column with data, rather than going
