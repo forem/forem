@@ -113,7 +113,7 @@ Rails.application.configure do
 
   # Docker specific development configuration
   if File.file?("/.dockerenv")
-    # Using shell tools so we don't need to require Socker and IPAddr
+    # Using shell tools so we don't need to require Socket and IPAddr
     host_ip = `/sbin/ip route|awk '/default/ { print $3 }'`.strip
     logger = Logger.new(STDOUT)
     logger.info "Whitelisting #{host_ip} for BetterErrors and Web Console"
