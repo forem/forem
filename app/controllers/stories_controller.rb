@@ -126,7 +126,26 @@ class StoriesController < ApplicationController
     @stories = ArticleDecorator.decorate_collection(@stories)
     set_surrogate_key_header "main_app_home_page"
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
-    render template: "articles/index"
+
+    respond_to do |format|
+      format.html do
+        render template: "articles/index"
+      end
+      format.json do
+        render json: @stories.to_json(
+          only: %i[
+            title path id user_id comments_count positive_reactions_count organization_id
+            reading_time video_thumbnail_url video video_duration_in_minutes language
+            experience_level_rating experience_level_rating_distribution cached_user cached_organization
+          ],
+          methods: %i[
+            readable_publish_date cached_tag_list_array flare_tag class_name
+            cloudinary_video_url video_duration_in_minutes published_at_int
+            published_timestamp
+          ],
+        )
+      end
+    end
   end
 
   def handle_podcast_index

@@ -2,15 +2,21 @@ require "rails_helper"
 
 RSpec.describe "StoriesIndex", type: :request do
   describe "GET stories index" do
-    it "renders page with proper sidebar" do
+    let!(:article) { create(:article, featured: true) }
+
+    it "renders page with article list" do
       get "/"
-      expect(response.body).to include("key links")
+      expect(response.body).to include(article.title)
     end
 
     it "renders page with min read" do
-      create(:article, featured: true)
       get "/"
       expect(response.body).to include("min read")
+    end
+
+    it "renders page with proper sidebar" do
+      get "/"
+      expect(response.body).to include("key links")
     end
 
     it "renders left display_ads when published and approved" do
@@ -67,6 +73,15 @@ RSpec.describe "StoriesIndex", type: :request do
       listing = create(:classified_listing, user_id: user.id)
       get "/"
       expect(response.body).to include(CGI.escapeHTML(listing.title))
+    end
+
+    context "when json requested" do
+      let(:headers) { { "ACCEPT": "application/json" } }
+
+      it "renders article list as json" do
+        get "/", headers: headers
+        expect(response.content_type).to eq("application/json")
+      end
     end
   end
 
