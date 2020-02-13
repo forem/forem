@@ -6,6 +6,7 @@ class Internal::ConfigsController < Internal::ApplicationController
   end
 
   def create
+    confirmation
     clean_up_params
     config_params.keys.each do |key|
       SiteConfig.public_send("#{key}=", config_params[key].strip) unless config_params[key].nil?
@@ -29,6 +30,11 @@ class Internal::ConfigsController < Internal::ApplicationController
       rate_limit_image_upload rate_limit_email_recipient
     ]
     params.require(:site_config).permit(allowed_params)
+  end
+
+  def confirmation
+    not_authorized unless current_user.has_role?(:single_resource_admin, Config) # Special additional permission
+    not_authorized if params[:confirmation] != "My username is @#{current_user.username} and this action is 100% safe and appropriate."
   end
 
   def clean_up_params
