@@ -1,9 +1,10 @@
 import { h } from 'preact';
 import { storiesOf } from '@storybook/react';
 import faker from 'faker';
-import { Article } from '..';
-import '../../../assets/stylesheets/articles.scss';
+import { Article, PodcastArticle } from '..';
 import { articleDecorator } from './articleDecorator';
+
+import '../../../assets/stylesheets/articles.scss';
 
 const title = faker.random.words(2);
 
@@ -108,6 +109,15 @@ const videoArticle = {
   },
 };
 
+const podcastArticle = {
+  ...article,
+  podcast: {
+    slug: title.replace(/\s+/, '-').toLowerCase(),
+    title: faker.random.words(2),
+    image_url: `/images/${Math.floor(Math.random() * 40)}.png`,
+  },
+};
+
 storiesOf('Components/Articles/Standard', module)
   .addDecorator(articleDecorator)
   .add('Default', () => <Article article={article} currentTag="javascript" />)
@@ -129,3 +139,7 @@ storiesOf('Components/Articles/Video', module)
     <Article article={videoArticle} currentTag="javascript" />
   ))
   .add('Video Article and Flare Tag', () => <Article article={videoArticle} />);
+
+storiesOf('Components/Articles/Podcast', module)
+  .addDecorator(articleDecorator)
+  .add('Default', () => <PodcastArticle article={podcastArticle} />);

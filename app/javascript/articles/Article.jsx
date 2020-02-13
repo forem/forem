@@ -8,6 +8,7 @@ import {
   organizationPropType,
   tagPropTypes,
 } from '../src/components/common-prop-types';
+import { PodcastArticle } from './PodcastArticle';
 
 // TODO: faking this from backend function asset_path. Need to get this in the frontend.
 const assetPath = relativeUrl => `/images/${relativeUrl}`;
@@ -297,78 +298,87 @@ PublishDate.propTypes = {
 
 PublishDate.displayName = 'PublishDate';
 
-export const Article = ({ article, currentTag }) => (
-  <div
-    className="single-article single-article-small-pic"
-    data-content-user-id={article.user_id}
-  >
-    {article.cloudinary_video_url && (
+export const Article = ({ article, currentTag }) => {
+  if (article && article.type_of === 'podcast_episodes') {
+    return <PodcastArticle article={article} />;
+  }
+
+  return (
+    <div
+      className="single-article single-article-small-pic"
+      data-content-user-id={article.user_id}
+    >
+      {article.cloudinary_video_url && (
+        <a
+          href={article.path}
+          className="single-article-video-preview"
+          style={`background-image:url(${article.cloudinary_video_url})`}
+        >
+          <div className="single-article-video-duration">
+            <img src={assetPath('video-camera.svg')} alt="video camera" />
+            {article.video_duration_in_minutes}
+          </div>
+        </a>
+      )}
+
+      <OrganizationHeadline organization={article.organization} />
+      <div className="small-pic">
+        <a
+          href={`/${article.user.username}`}
+          className="small-pic-link-wrapper"
+        >
+          <img
+            src={article.user.profile_image_90}
+            alt={`${article.user.username} profile`}
+            loading="lazy"
+          />
+        </a>
+      </div>
       <a
         href={article.path}
-        className="single-article-video-preview"
-        style={`background-image:url(${article.cloudinary_video_url})`}
+        className="small-pic-link-wrapper index-article-link"
+        id={`article-link-${article.id}`}
       >
-        <div className="single-article-video-duration">
-          <img src={assetPath('video-camera.svg')} alt="video camera" />
-          {article.video_duration_in_minutes}
+        <div className="content">
+          <ContentTitle article={article} currentTag={currentTag} />
+          {article.class_name === 'Article' && (
+            // eslint-disable-next-line no-underscore-dangle
+            <SearchSnippet snippetResult={article._snippetResult} />
+          )}
         </div>
       </a>
-    )}
+      <h4>
+        <a href={`/${article.user.username}`}>
+          {filterXSS(article.user.name)}
+          {article.readable_publish_date ? '・' : ''}
+          {article.readable_publish_date && (
+            <PublishDate
+              readablePublishDate={article.readable_publish_date}
+              publishedTimestamp={article.published_timestamp}
+            />
+          )}
+          {article.published_at_int ? timeAgo(article.published_at_int) : ''}
+        </a>
+      </h4>
 
-    <OrganizationHeadline organization={article.organization} />
-    <div className="small-pic">
-      <a href={`/${article.user.username}`} className="small-pic-link-wrapper">
-        <img
-          src={article.user.profile_image_90}
-          alt={`${article.user.username} profile`}
-          loading="lazy"
+      <TagList tags={article.tag_list || article.cached_tag_list_array} />
+      {article.class_name !== 'User' && (
+        <CommentsCount
+          count={article.comments_count}
+          articlePath={article.path}
         />
-      </a>
+      )}
+      {article.class_name !== 'User' && <ReactionsCount article={article} />}
+      {article.class_name === 'Article' && (
+        <ReadingTime
+          articlePath={article.path}
+          readingTime={article.reading_time}
+        />
+      )}
+      <SaveButton article={article} />
     </div>
-    <a
-      href={article.path}
-      className="small-pic-link-wrapper index-article-link"
-      id={`article-link-${article.id}`}
-    >
-      <div className="content">
-        <ContentTitle article={article} currentTag={currentTag} />
-        {article.class_name === 'Article' && (
-          // eslint-disable-next-line no-underscore-dangle
-          <SearchSnippet snippetResult={article._snippetResult} />
-        )}
-      </div>
-    </a>
-    <h4>
-      <a href={`/${article.user.username}`}>
-        {filterXSS(article.user.name)}
-        {article.readable_publish_date ? '・' : ''}
-        {article.readable_publish_date && (
-          <PublishDate
-            readablePublishDate={article.readable_publish_date}
-            publishedTimestamp={article.published_timestamp}
-          />
-        )}
-        {article.published_at_int ? timeAgo(article.published_at_int) : ''}
-      </a>
-    </h4>
-
-    <TagList tags={article.tag_list || article.cached_tag_list_array} />
-    {article.class_name !== 'User' && (
-      <CommentsCount
-        count={article.comments_count}
-        articlePath={article.path}
-      />
-    )}
-    {article.class_name !== 'User' && <ReactionsCount article={article} />}
-    {article.class_name === 'Article' && (
-      <ReadingTime
-        articlePath={article.path}
-        readingTime={article.reading_time}
-      />
-    )}
-    <SaveButton article={article} />
-  </div>
-);
+  );
+};
 
 Article.defaultProps = {
   currentTag: null,
