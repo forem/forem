@@ -1,13 +1,31 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { articlePropTypes } from '../src/components/common-prop-types/article-prop-types';
-import { organizationPropType } from '../src/components/common-prop-types';
+import {
+  articlePropTypes,
+  articleSnippetResultPropTypes,
+} from '../src/components/common-prop-types/article-prop-types';
+import {
+  organizationPropType,
+  tagPropTypes,
+} from '../src/components/common-prop-types';
 
-// TODO: faking this from backend function asset_path and timeAgo. Need to get these in the frontend.
-const assetPath = relativeUrl => relativeUrl;
+// TODO: faking this from backend function asset_path. Need to get this in the frontend.
+const assetPath = relativeUrl => `/images/${relativeUrl}`;
 const timeAgo = time => time;
+const filterXSS = data => data;
 
-const TagList = (tags = []) => (
+// function timeAgo(oldTimeInSeconds, maxDisplayedAge = 60 * 60 * 24 - 1) {
+//   const timeNow = new Date() / 1000;
+//   const diff = Math.round(timeNow - oldTimeInSeconds);
+
+//   if (diff > maxDisplayedAge) return '';
+
+//   return `<span class='time-ago-indicator'>(${secondsToHumanUnitAgo(
+//     diff,
+//   )})</span>`;
+// }
+
+const TagList = ({ tags = [] }) => (
   <div className="tags">
     {tags.forEach(tag => (
       <a href={`/t/${tag}`}>
@@ -19,6 +37,10 @@ const TagList = (tags = []) => (
     ))}
   </div>
 );
+
+TagList.propTypes = {
+  tags: tagPropTypes.isRequired,
+};
 
 TagList.displayName = 'TagList';
 
@@ -99,7 +121,7 @@ SaveButton.displayName = 'SaveButton';
 
 const SearchSnippet = ({ snippetResult }) => {
   if (snippetResult && snippetResult.body_text) {
-    let bodyTextSnippet;
+    let bodyTextSnippet = '';
 
     if (snippetResult.body_text.matchLevel !== 'none') {
       const firstSnippetChar = snippetResult.body_text.value[0];
@@ -112,7 +134,7 @@ const SearchSnippet = ({ snippetResult }) => {
       bodyTextSnippet = `${startingEllipsis + snippetResult.body_text.value}…`;
     }
 
-    let commentsBlobSnippet;
+    let commentsBlobSnippet = '';
 
     if (
       snippetResult.comments_blob.matchLevel !== 'none' &&
@@ -146,16 +168,15 @@ const SearchSnippet = ({ snippetResult }) => {
 
 SearchSnippet.propTypes = {
   // eslint-disable-next-line no-underscore-dangle
-  snippetResult: articlePropTypes._snippetResult.isRequired,
+  snippetResult: articleSnippetResultPropTypes.isRequired,
 };
 
 SearchSnippet.displayName = 'SearchSnippet';
 
 const ReactionsCount = ({ article }) => {
-  const totalReactions =
-    article.positive_reactions_count || article.reactions_count || 0;
+  const totalReactions = article.positive_reactions_count || 0;
 
-  if (totalReactions > 0 && article.class_name !== 'User') {
+  if (totalReactions > 0) {
     return (
       <div className="article-engagement-count reactions-count">
         <a href={article.path}>
@@ -338,14 +359,14 @@ export const Article = ({ article, currentTag }) => (
         articlePath={article.path}
       />
     )}
-    <ReactionsCount article={article} />
+    {article.class_name !== 'User' && <ReactionsCount article={article} />}
     {article.class_name === 'Article' && (
       <ReadingTime
         articlePath={article.path}
         readingTime={article.reading_time}
       />
     )}
-    <SaveButton className={article.class_name} />
+    <SaveButton article={article} />
   </div>
 );
 
