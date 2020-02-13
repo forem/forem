@@ -25,7 +25,7 @@ const article = {
   },
   tag_list: ['javascript', 'ruby', 'go'],
   cached_tag_list_array: [],
-  user_id: 1,
+  user_id: faker.random.number(),
   user: {
     username: faker.random.word(),
     name: faker.random.words(2),
@@ -103,6 +103,25 @@ const podcastArticle = {
     slug: title.replace(/\s+/, '-').toLowerCase(),
     title: faker.random.words(2),
     image_url: `/images/${Math.floor(Math.random() * 40)}.png`,
+  },
+};
+
+const podcastEpisodeArticle = {
+  ...article,
+  class_name: 'PodcastEpisode',
+};
+
+const name = faker.random.words(2);
+const userArticle = {
+  id: faker.random.number(),
+  title: name,
+  user_id: faker.random.number(),
+  class_name: 'User',
+  user: {
+    username: faker.random.word(),
+    name,
+    // We have 40 fake O'Reilly images to work with
+    profile_image_90: `/images/${Math.floor(Math.random() * 40)}.png`,
   },
 };
 
@@ -193,4 +212,16 @@ storiesOf('Components/Articles/Podcast', module)
       article={object('article', podcastArticle)}
       currentTag={text('currentTag')}
     />
+  ))
+  .add('Podcast Episode', () => (
+    <Article
+      isBookmarked={boolean('isBookmarked', false)}
+      article={object('article', podcastEpisodeArticle)}
+      currentTag={text('currentTag')}
+    />
   ));
+
+storiesOf('Components/Articles/User', module)
+  .addDecorator(withKnobs)
+  .addDecorator(articleDecorator)
+  .add('Default', () => <Article article={object('article', userArticle)} />);
