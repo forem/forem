@@ -81,12 +81,14 @@ ContentTitle.propTypes = {
 
 ContentTitle.displayName = 'ContentTitle';
 
-const SaveButton = ({ article }) => {
+const SaveButton = ({ article, isBookmarked }) => {
   if (article.class_name === 'Article') {
     return (
       <button
         type="button"
-        className="article-engagement-count engage-button bookmark-button"
+        className={`article-engagement-count engage-button bookmark-button ${
+          isBookmarked ? 'selected' : ''
+        }`}
         data-reactable-id={article.id}
       >
         <span className="bm-initial">SAVE</span>
@@ -113,6 +115,7 @@ const SaveButton = ({ article }) => {
 
 SaveButton.propTypes = {
   article: articlePropTypes.isRequired,
+  isBookmarked: PropTypes.bool.isRequired,
 };
 
 SaveButton.displayName = 'SaveButton';
@@ -295,7 +298,7 @@ PublishDate.propTypes = {
 
 PublishDate.displayName = 'PublishDate';
 
-export const Article = ({ article, currentTag }) => {
+export const Article = ({ article, currentTag, isBookmarked }) => {
   if (article && article.type_of === 'podcast_episodes') {
     return <PodcastArticle article={article} />;
   }
@@ -372,16 +375,18 @@ export const Article = ({ article, currentTag }) => {
           readingTime={article.reading_time}
         />
       )}
-      <SaveButton article={article} />
+      <SaveButton article={article} isBookmarked={isBookmarked} />
     </div>
   );
 };
 
 Article.defaultProps = {
   currentTag: null,
+  isBookmarked: false,
 };
 
 Article.propTypes = {
   article: articlePropTypes.isRequired,
   currentTag: PropTypes.string,
+  isBookmarked: PropTypes.bool,
 };

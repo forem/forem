@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { storiesOf } from '@storybook/react';
 import faker from 'faker';
-import { withKnobs, object, text } from '@storybook/addon-knobs/react';
+import { withKnobs, object, text, boolean } from '@storybook/addon-knobs/react';
 import { Article } from '..';
 import { articleDecorator } from './articleDecorator';
 
@@ -110,42 +110,56 @@ storiesOf('Components/Articles/Standard', module)
   .addDecorator(articleDecorator)
   .add('Default', () => (
     <Article
+      isBookmarked={boolean('isBookmarked', false)}
       article={object('article', article)}
       currentTag={text('currentTag', 'javascript')}
     />
   ))
   .add('With Organization', () => (
     <Article
+      isBookmarked={boolean('isBookmarked', false)}
       article={object('article', articleWithOrganization)}
       currentTag={text('currentTag', 'javascript')}
     />
   ))
   .add('Wth Flare Tag', () => (
     <Article
+      isBookmarked={boolean('isBookmarked', false)}
       article={object('article', article)}
       currentTag={text('currentTag')}
     />
   ))
   .add('Wth Snippet Result', () => (
     <Article
+      isBookmarked={boolean('isBookmarked', false)}
       article={object('article', articleWithSnippetResult)}
       currentTag={text('currentTag')}
     />
   ))
   .add('Wth Reading Time', () => (
     <Article
+      isBookmarked={boolean('isBookmarked', false)}
       article={object('article', articleWithReadingTimeGreaterThan1)}
       currentTag={text('currentTag')}
     />
   ))
   .add('Wth Reactions', () => (
     <Article
+      isBookmarked={boolean('isBookmarked', false)}
       article={object('article', articleWithReactions)}
       currentTag={text('currentTag')}
     />
   ))
   .add('With Comments', () => (
     <Article
+      isBookmarked={boolean('isBookmarked', false)}
+      article={object('article', articleWithComments)}
+      currentTag={text('currentTag')}
+    />
+  ))
+  .add('Is on Reading List', () => (
+    <Article
+      isBookmarked={boolean('isBookmarked', true)}
       article={object('article', articleWithComments)}
       currentTag={text('currentTag')}
     />
@@ -156,12 +170,14 @@ storiesOf('Components/Articles/Video', module)
   .addDecorator(articleDecorator)
   .add('Default', () => (
     <Article
+      isBookmarked={boolean('isBookmarked', false)}
       article={videoArticle}
       currentTag={text('currentTag', 'javascript')}
     />
   ))
   .add('Video Article and Flare Tag', () => (
     <Article
+      isBookmarked={boolean('isBookmarked', false)}
       article={object('article', videoArticle)}
       currentTag={text('currentTag')}
     />
@@ -172,6 +188,7 @@ storiesOf('Components/Articles/Podcast', module)
   .addDecorator(articleDecorator)
   .add('Default', () => (
     <Article
+      isBookmarked={boolean('isBookmarked', false)}
       article={object('article', podcastArticle)}
       currentTag={text('currentTag')}
     />
