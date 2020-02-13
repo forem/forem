@@ -22,9 +22,11 @@ services:
     command: rails jobs:work
     depends_on:
       - db
+      - redis
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgres://postgres:mysecretpassword@db:5432/postgres
+      REDIS_URL: redis://redis:6379
   webpacker:
     build: .
     command: ./bin/webpack-dev-server
