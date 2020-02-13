@@ -25,6 +25,8 @@
 /config/                                            @thepracticaldev/sre
 /db/                                                @thepracticaldev/sre
 /docs/                                              @thepracticaldev/oss    @jacobherrington
+/lib/data_update_scripts/                           @thepracticaldev/sre
+/lib/sidekiq/                                       @thepracticaldev/sre
 /spec/requests/internal/                            @thepracticaldev/snackcase
 /spec/system/internal/                              @thepracticaldev/snackcase
 Gemfile                                             @thepracticaldev/sre    @thepracticaldev/oss
