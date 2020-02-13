@@ -18,7 +18,13 @@
           <tr>
             <td><%= user.id %></td>
             <td><%= link_to "@#{user.username}", user.path %></td>
-            <td><%= user.roles.pluck(:name) %></td>
+            <td>
+              <ul>
+                <% user.roles.pluck(:name, :resource_type, :resource_id).each do |role| %>
+                  <li><%= role[0] %><%= ": #{role[1]}" if role[1] %><%= "/#{role[2]}" if role[2] %></li>
+                <% end %>
+              </ul>
+            </td>
           </tr>
         <% end %>
       </tbody>
