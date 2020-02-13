@@ -141,7 +141,6 @@ DEV requires Redis version 4.0 or higher.
 We recommend to follow
 [this guide](https://redislabs.com/blog/redis-on-windows-10/) to run Redis under
 WSL.
-<<<<<<< HEAD
 
 ### Elasticsearch
 
@@ -150,16 +149,9 @@ supported. We recommend version 7.5.2.
 
 We recommend following the install guide
 [in Elasticsearch's docs](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/zip-windows.html)
-<<<<<<< HEAD
 for installing on Windows machines.
 
 NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
-=======
-for installing on Windows machines. NOTE: Make sure to download the OSS version,
-`elasticsearch-oss`.
-=======
->>>>>>> Upgrade to Ruby 2.7.0
->>>>>>> Upgrade to Ruby 2.7.0
 
 ## Installing DEV
 
