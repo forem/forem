@@ -18,18 +18,18 @@ class DataUpdateScript < ApplicationRecord
   end
 
   def mark_as_run!
-    update!(run_at: Time.now.utc, status: :working)
+    update!(run_at: Time.current, status: :working)
   end
 
   def mark_as_finished!
-    update!(finished_at: Time.now.utc, status: :succeeded)
+    update!(finished_at: Time.current, status: :succeeded)
   end
 
   def mark_as_failed!
-    update!(finished_at: Time.now.utc, status: :failed)
+    update!(finished_at: Time.current, status: :failed)
   end
 
   def file_class
-    "#{self.class::NAMESPACE}::#{file_name.camelcase}".constantize
+    "#{self.class::NAMESPACE}::#{file_name.camelcase}".safe_constantize
   end
 end

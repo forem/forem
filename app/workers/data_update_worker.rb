@@ -12,6 +12,8 @@ class DataUpdateWorker
     end
   end
 
+  private
+
   def run_script(script)
     script.file_class.new.run
     script.mark_as_finished!
