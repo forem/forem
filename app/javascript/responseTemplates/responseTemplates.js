@@ -156,7 +156,7 @@ export function fetchResponseTemplates(dataContainer, responsesWrapper) {
       }
       dataContainer.innerHTML = `
         ${modResponseHTML}
-        <header><h3>Personal Templates</h3></header>
+        <header><h3>Personal Response Templates</h3></header>
         ${personalResponseHTML}
         <a target="_blank" rel="noopener nofollow" href="/settings/response-templates" class="mod-response-create-new">Create new template</a>
       `;

@@ -304,7 +304,7 @@ a.header-link {
       header>h3 {
         padding: 18px 12px;
         margin: 0px;
-        font-size: 22px;
+        font-size: calc(20px + 0.4vw);
         text-align: left;
       }
 
