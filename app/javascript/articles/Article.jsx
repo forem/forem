@@ -28,12 +28,9 @@ const filterXSS = data => data;
 
 const TagList = ({ tags = [] }) => (
   <div className="tags">
-    {tags.forEach(tag => (
+    {tags.map(tag => (
       <a href={`/t/${tag}`}>
-        <span className="tag">
-          #$
-          {tag}
-        </span>
+        <span className="tag">{`#${tag}`}</span>
       </a>
     ))}
   </div>

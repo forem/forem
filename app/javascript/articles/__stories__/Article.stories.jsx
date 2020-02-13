@@ -22,32 +22,7 @@ const article = {
     bg_color_hex: '#000000',
     text_color_hex: '#ffffff',
   },
-  tag_list: [
-    {
-      id: faker.random.number(),
-      name: 'javascript',
-      hotness_score: 99,
-      points: 23,
-      bg_color_hex: '#ffff00',
-      text_color_hex: '#000000',
-    },
-    {
-      id: faker.random.number(),
-      name: 'ruby',
-      hotness_score: 12,
-      points: 43,
-      bg_color_hex: '##ff0000',
-      text_color_hex: '#ffffff',
-    },
-    {
-      id: faker.random.number(),
-      name: 'go',
-      hotness_score: 13,
-      points: 3,
-      bg_color_hex: '#000000',
-      text_color_hex: '#ffffff',
-    },
-  ],
+  tag_list: ['javascript', 'ruby', 'go'],
   cached_tag_list_array: [],
   user_id: 1,
   user: {
@@ -84,7 +59,17 @@ const articleWithSnippetResult = {
 
 const articleWithReactions = {
   ...article,
-  positive_reactions_count: 125,
+  positive_reactions_count: faker.random.number({ min: 1, max: 500 }),
+  user: {
+    ...article.user,
+    profile_image_90: `/images/${Math.floor(Math.random() * 40)}.png`,
+  },
+};
+
+const articleWithComments = {
+  ...article,
+  positive_reactions_count: faker.random.number({ min: 1, max: 500 }),
+  comments_count: faker.random.number({ min: 1, max: 500 }),
   user: {
     ...article.user,
     profile_image_90: `/images/${Math.floor(Math.random() * 40)}.png`,
@@ -132,7 +117,8 @@ storiesOf('Components/Articles/Standard', module)
   .add('Wth Reading Time', () => (
     <Article article={articleWithReadingTimeGreaterThan1} />
   ))
-  .add('Wth Reactions', () => <Article article={articleWithReactions} />);
+  .add('Wth Reactions', () => <Article article={articleWithReactions} />)
+  .add('With Comments', () => <Article article={articleWithComments} />);
 
 storiesOf('Components/Articles/Video', module)
   .addDecorator(articleDecorator)
