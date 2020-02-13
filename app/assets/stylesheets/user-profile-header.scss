@@ -507,7 +507,7 @@
         background,
         theme-container-background,
         #fff
-      );    
+      );
       z-index: 20;
       width: 200px;
       box-shadow: $shadow;
@@ -525,7 +525,7 @@
       &.showing {
         display: block;
       }
-      button {
+      button, form>input[type=submit] {
         font-size: 0.75em;
         @include themeable(
           color,
@@ -540,6 +540,7 @@
         border: none;
         text-overflow: ellipsis;
         overflow: hidden;
+        background: transparent;
       }
     }
   }
