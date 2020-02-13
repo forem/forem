@@ -1,4 +1,3 @@
-// app/assets/javascripts/initializers
 const drawerSliders = [
   { selector: 'sidebar-bg-left', swipeState: 'middle', side: 'left', view: 'outOfView' },
   { selector: 'sidebar-bg-right', swipeState: 'middle', side: 'right', view: 'outOfView' },
@@ -33,19 +32,15 @@ function initializeDrawerSliders() {
 }
 
 function listenForNarrowMenuClick(event) {
-  const navLinks = document.getElementsByClassName('narrow-nav-menu');
+  const navLinks = document.getElementById('narrow-nav-menu');
   const narrowFeedButt = document.getElementById('narrow-feed-butt');
-  for (let x = 0; x < navLinks.length; x++) {
-    document.getElementById('narrow-nav-menu').classList.remove('showing');
-  }
+    navLinks.classList.remove('showing');
   if (narrowFeedButt) {
-    narrowFeedButt.addEventListener('click', function() {
-      document.getElementById('narrow-nav-menu').classList.add('showing');
+    narrowFeedButt.addEventListener('click', () => {
+      navLinks.classList.add('showing');
     });
   }
-  for (let i = 0; i < navLinks.length; i++) {
-    navLinks[i].addEventListener('click', function(event) {
-      document.getElementById('narrow-nav-menu').classList.remove('showing');
-    });
-  }
+  navLinks.addEventListener('click', (event) => {
+    navLinks.classList.remove('showing');
+  });
 }
