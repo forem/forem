@@ -23,6 +23,9 @@ chdir APP_ROOT do
   puts "\n== Updating database =="
   system! 'bin/rails db:migrate'
 
+  puts "\n== Update Data =="
+  system! 'bin/rails data_updates:run'
+
   puts "\n== Update Elasticsearch =="
   system! 'bin/rails search:setup'
 

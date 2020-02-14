@@ -120,6 +120,8 @@ Rails.application.configure do
     enable_starttls_auto: true
   }
 
+  config.welcoming_user_id = ENV["WELCOMING_USER_ID"]
+
   config.middleware.use Rack::HostRedirect,
                         ENV["HEROKU_APP_URL"] => ENV["APP_DOMAIN"]
 end

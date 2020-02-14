@@ -17,7 +17,7 @@
 <% end %>
 
 <h2>DEV API Keys</h2>
-<p>You can generate personal API keys to use for authentication with the DEV API. The API is still in early beta though. The <a href="/api">DEV API documentation</a> contains further information.</a></p>
+<p>You can generate personal API keys to use for authentication with the DEV API. The API is still in early beta though. The <a href="https://docs.dev.to/api/">DEV API documentation</a> contains further information.</a></p>
 <h3>Generate a new Key</h3>
 <%= form_tag users_api_secrets_path, method: :post do %>
   <%= fields_for :api_secret do |api_secret| %>
@@ -90,7 +90,7 @@
 <h3>Delete Account</h3>
 <% if current_user.email? %>
   <h4 style="font-weight:400;">
-    <%= form_tag user_request_destroy_path, method: :get, autocomplete: "off", id: "delete__account" do %>
+    <%= form_tag user_request_destroy_path, method: :post, autocomplete: "off", id: "delete__account" do %>
       Deleting your account will:
       <ul class="delete__account">
         <li>delete your profile, along with your Twitter and/or GitHub associations.

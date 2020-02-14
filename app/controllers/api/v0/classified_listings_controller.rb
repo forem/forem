@@ -1,14 +1,12 @@
 module Api
   module V0
     class ClassifiedListingsController < ApiController
+      include Pundit
       include ClassifiedListingsToolkit
-
-      respond_to :json
 
       before_action :set_classified_listing, only: %i[update]
       before_action :authenticate_with_api_key_or_current_user!, only: %i[create update]
 
-      # skip CSRF checks for create and update
       skip_before_action :verify_authenticity_token, only: %i[create update]
 
       def index

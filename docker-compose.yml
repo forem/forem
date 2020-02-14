@@ -7,10 +7,12 @@ services:
     depends_on:
       - db
       - redis
+      - elasticsearch
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgres://postgres:mysecretpassword@db:5432/postgres
       YARN_INTEGRITY_ENABLED: "false"
+      ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
       - .:/usr/src/app
     command: bundle exec rails server -b 0.0.0.0 -p 3000
@@ -33,3 +35,23 @@ services:
     image: "redis"
     ports:
       - "6379:6379"
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.2
+    container_name: elasticsearch
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.type=single-node"
+      - xpack.security.enabled=false
+      - xpack.monitoring.enabled=false
+      - xpack.graph.enabled=false
+      - xpack.watcher.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+        - ./docker_data/elasticsearch/data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
