@@ -1,12 +1,11 @@
 require "rails_helper"
 require Rails.root.join("lib/data_update_scripts/20200214171607_index_tags_to_elasticsearch.rb")
 
-describe DataUpdateScripts::IndexTagsToElasticsearch do
+describe DataUpdateScripts::IndexTagsToElasticsearch, elasticsearch: true do
   it "indexes tags to Elasticsearch" do
     tag = FactoryBot.create(:tag)
-    expect(tag).to respond_to(:index_to_elasticsearch_inline)
-    allow(Tag).to receive(:find_each)
+    expect { tag.elasticsearch_doc }.to raise_error(Elasticsearch::Transport::Transport::Errors::NotFound)
     described_class.new.run
-    expect(Tag).to have_received(:find_each) { [tag] }
+    expect(tag.elasticsearch_doc).not_to be_nil
   end
 end
