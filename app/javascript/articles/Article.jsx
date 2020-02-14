@@ -10,21 +10,10 @@ import {
 } from '../src/components/common-prop-types';
 import { PodcastArticle } from './PodcastArticle';
 
+/* global timeAgo */
+
 // TODO: faking this from backend function asset_path. Need to get this in the frontend.
 const assetPath = relativeUrl => `/images/${relativeUrl}`;
-const timeAgo = time => time;
-const filterXSS = data => data;
-
-// function timeAgo(oldTimeInSeconds, maxDisplayedAge = 60 * 60 * 24 - 1) {
-//   const timeNow = new Date() / 1000;
-//   const diff = Math.round(timeNow - oldTimeInSeconds);
-
-//   if (diff > maxDisplayedAge) return '';
-
-//   return `<span class='time-ago-indicator'>(${secondsToHumanUnitAgo(
-//     diff,
-//   )})</span>`;
-// }
 
 const TagList = ({ tags = [] }) => (
   <div className="tags">
@@ -361,7 +350,16 @@ export const Article = ({ article, currentTag, isBookmarked }) => {
               publishedTimestamp={article.published_timestamp}
             />
           )}
-          {article.published_at_int ? timeAgo(article.published_at_int) : ''}
+          {article.published_at_int ? (
+            <span className="time-ago-indicator">
+              (
+              {timeAgo({
+                oldTimeInSeconds: article.published_at_int,
+                formatter: x => x,
+              })}
+              )
+            </span>
+          ) : null}
         </a>
       </h4>
 
