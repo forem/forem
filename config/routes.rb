@@ -12,8 +12,6 @@ Rails.application.routes.draw do
 
   require "sidekiq/web"
   authenticated :user, ->(user) { user.tech_admin? } do
-    mount DelayedJobWeb, at: "/delayed_job"
-
     Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
     Sidekiq::Web.set :sessions, Rails.application.config.session_options
     Sidekiq::Web.class_eval do
