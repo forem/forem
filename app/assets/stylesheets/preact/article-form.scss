@@ -43,20 +43,11 @@
   max-width: 860px;
   padding: 0px 6px;
   @include dev-card;
-  // background: white;
-  // background: var(--theme-container-background, white);
   position: relative;
   box-sizing: border-box;
-  // border: 1px solid darken($light-medium-gray, 5%);
-  // border: var(--theme-container-border, 1px solid darken($light-medium-gray, 5%));
-  // box-shadow: $bold-shadow;
-  // box-shadow: var(--theme-container-box-shadow, $bold-shadow);
-  // border-radius: 3px;
 
   @media screen and (min-width: 500px) {
     padding: 0px 12px;
-    // border: 1px solid darken($light-medium-gray, 5%);
-    // border: var(--theme-container-border, 1px solid darken($light-medium-gray, 5%));
   }
   @media screen and (min-width: 600px) {
     width: calc(97% - 30px);
