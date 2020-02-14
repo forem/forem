@@ -22,12 +22,12 @@
     @media screen and (min-width: 950px) {
       float: left;
       width: 100%;
-      max-width: calc(100% - 280px);
+      max-width: calc(100% - 280px); // 280: width of the sidebar
       padding: 16px;
     }
 
     @media screen and (min-width: 1120px) {
-      max-width: calc(100% - 280px - 280px);
+      max-width: calc(100% - 560px); // 560 = 2*280: two sidebars
     }
     
     .pinned-articles {
