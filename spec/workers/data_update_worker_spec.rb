@@ -26,7 +26,7 @@ RSpec.describe DataUpdateWorker, type: :worker do
     expect do
       worker.perform
     end.to change(DataUpdateScript, :count).by(1)
-    dus = DataUpdateScript.find_by(file_name: "data_update_test_script")
+    dus = DataUpdateScript.find_by(file_name: "20200214151804_data_update_test_script")
     expect(dus.finished_at).not_to be_nil
     expect(dus).to be_succeeded
     expect(dus.run_at).not_to be_nil
