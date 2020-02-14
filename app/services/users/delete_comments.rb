@@ -8,8 +8,8 @@ module Users
       user.comments.find_each do |comment|
         comment.reactions.delete_all
         cache_buster.bust_comment(comment.commentable)
-        comment.delete
         comment.remove_notifications
+        comment.delete
       end
       cache_buster.bust_user(user)
     end
