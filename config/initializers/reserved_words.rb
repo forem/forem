@@ -46,6 +46,7 @@ class ReservedWords
     dashboard
     day
     deep
+    delayed_job_admin
     delete
     design
     designer
