@@ -3,6 +3,8 @@
 SEEDS_MULTIPLIER = [1, ENV["SEEDS_MULTIPLIER"].to_i].max
 Rails.logger.info "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}"
 
+##############################################################################
+
 Rails.logger.info "1. Creating Organizations"
 
 3.times do
@@ -22,13 +24,19 @@ end
 
 ##############################################################################
 
-Rails.logger.info "2. Creating Users"
+num_users = 10 * SEEDS_MULTIPLIER
+
+Rails.logger.info "2. Creating #{num_users} Users"
+
+User.clear_index!
 
 roles = %i[trusted chatroom_beta_tester workshop_pass]
-User.clear_index!
-(10 * SEEDS_MULTIPLIER).times do |i|
+
+num_users.times do |i|
+  name = "#{Faker::Name.name} #{Faker::Lorem.word.titleize}"
+
   user = User.create!(
-    name: name = Faker::Name.unique.name,
+    name: name,
     summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     website_url: Faker::Internet.url,
@@ -40,7 +48,7 @@ User.clear_index!
     password: "password",
   )
 
-  user.add_role(roles[rand(0..3)]) # includes chance of having no role
+  user.add_role(roles[rand(0..roles.length)]) # includes chance of having no role
 
   Identity.create!(
     provider: "twitter",
@@ -75,17 +83,20 @@ end
 
 ##############################################################################
 
-Rails.logger.info "4. Creating Articles"
+num_articles = 25 * SEEDS_MULTIPLIER
+
+Rails.logger.info "4. Creating #{num_articles} Articles"
 
 Article.clear_index!
-(25 * SEEDS_MULTIPLIER).times do |i|
+
+num_articles.times do |i|
   tags = []
   tags << "discuss" if (i % 3).zero?
   tags.concat Tag.order(Arel.sql("RANDOM()")).select("name").first(3).map(&:name)
 
   markdown = <<~MARKDOWN
     ---
-    title:  #{Faker::Book.unique.title}
+    title:  #{Faker::Book.title} #{Faker::Lorem.sentence(word_count: 2).chomp(".")}
     published: true
     cover_image: #{Faker::Company.logo}
     tags: #{tags.join(', ')}
@@ -106,16 +117,20 @@ end
 
 ##############################################################################
 
-Rails.logger.info "5. Creating Comments"
+num_comments = 30 * SEEDS_MULTIPLIER
+
+Rails.logger.info "5. Creating #{num_comments} Comments"
 
 Comment.clear_index!
-30.times do
+
+num_comments.times do
   attributes = {
     body_markdown: Faker::Hipster.paragraph(sentence_count: 1),
     user_id: User.order(Arel.sql("RANDOM()")).first.id,
     commentable_id: Article.order(Arel.sql("RANDOM()")).first.id,
     commentable_type: "Article"
   }
+
   Comment.create!(attributes)
 end
 

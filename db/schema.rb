@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_05_225813) do
+ActiveRecord::Schema.define(version: 2020_02_11_192415) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -348,6 +348,15 @@ ActiveRecord::Schema.define(version: 2020_02_05_225813) do
     t.bigint "user_id"
     t.index ["purchase_id", "purchase_type"], name: "index_credits_on_purchase_id_and_purchase_type"
     t.index ["spent"], name: "index_credits_on_spent"
+  end
+
+  create_table "data_update_scripts", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "file_name"
+    t.datetime "finished_at"
+    t.datetime "run_at"
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "delayed_jobs", id: :serial, force: :cascade do |t|

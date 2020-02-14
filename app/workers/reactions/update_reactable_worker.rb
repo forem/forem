@@ -1,6 +1,8 @@
 module Reactions
-  class UpdateReactableJob < ApplicationJob
-    queue_as :update_reactable
+  class UpdateReactableWorker
+    include Sidekiq::Worker
+
+    sidekiq_options queue: :high_priority, retry: 10
 
     def perform(reaction_id)
       reaction = Reaction.find_by(id: reaction_id)

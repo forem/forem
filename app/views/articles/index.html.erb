@@ -83,11 +83,6 @@
         </button>
       </div>
 
-      <% if @home_page %>
-        <% @featured_story ||= @stories.where.not(main_image: nil).first&.decorate || Article.new %>
-        <% @stories = @stories.decorate %>
-      <% end %>
-
       <% if @featured_story.id %>
         <div id="featured-story-marker" data-featured-article="articles-<%= @featured_story.id %>"></div>
         <img src="<%= cloud_cover_url(@featured_story.main_image) %>" style="display:none" alt="<%= @featured_story.title %>" />
