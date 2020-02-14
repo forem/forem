@@ -1,4 +1,4 @@
-# send welcome notification
+# Creates and sends a specific welcome notification.
 module Notifications
   module WelcomeNotification
     class Send
