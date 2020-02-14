@@ -4,7 +4,7 @@
 
 var client;
 
-function fetchNext(el, endpoint, insertCallback){
+function fetchNext(el, endpoint, insertCallback) {
   var indexParams = JSON.parse(el.dataset.params);
   var urlParams = Object.keys(indexParams).map(function handleMap(k) {
     return encodeURIComponent(k) + "=" + encodeURIComponent(indexParams[k])
@@ -90,7 +90,7 @@ function buildTagsHTML(tag) {
         '</div>';
 }
 
-function fetchNextFollowingPage(el){
+function fetchNextFollowingPage(el) {
   var indexParams = JSON.parse(el.dataset.params);
   var action = indexParams.action;
   if (action.includes("users")){
@@ -104,7 +104,7 @@ function fetchNextFollowingPage(el){
   }
 }
 
-function fetchNextFollowersPage(el){
+function fetchNextFollowersPage(el) {
   var indexParams = JSON.parse(el.dataset.params);
   var whichEndpoint = indexParams.which;
   if (whichEndpoint.includes("organization")){
@@ -180,7 +180,7 @@ function insertArticles(articles) {
   }
 }
 
-function fetchNextPodcastPage(el){
+function fetchNextPodcastPage(el) {
   fetchNext(el, "/api/podcast_episodes", insertArticles)
 }
 
@@ -279,7 +279,7 @@ function checkIfNearBottomOfPage() {
     document.getElementById("loading-articles").style.display = "block";
   }
   fetchNextPageIfNearBottom();
-  setInterval(function handleInterval(){
+  setInterval(function handleInterval() {
     fetchNextPageIfNearBottom();
   }, 210)
 }
