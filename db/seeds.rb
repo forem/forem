@@ -201,12 +201,29 @@ end
 
 Rails.logger.info "7. Creating Broadcasts"
 
+# TODO: [@thepracticaldev/delightful] Remove this once we have launched welcome notifications.
 Broadcast.create!(
   title: "Welcome Notification",
   processed_html: "Welcome to dev.to! Start by introducing yourself in <a href='/welcome' data-no-instant>the welcome thread</a>.",
   type_of: "Onboarding",
   sent: true,
 )
+
+broadcast_messages = {
+  set_up_profile: "Welcome to DEV! 👋 I'm Sloan, the community mascot and I'm here to help get you started. Let's begin by <a href='/settings'>setting up your profile</a>!",
+  welcome_thread: "Sloan here again! 👋 DEV is a friendly community. Why not introduce yourself by leaving a comment in <a href='/welcome'>the welcome thread</a>!",
+  twitter_connect: "You're on a roll! 🎉 Let's connect your <a href='/settings'> Twitter account</a> to complete your identity so that we don't think you're a robot. 🤖",
+  github_connect: "You're on a roll! 🎉 Let's connect your <a href='/settings'> GitHub account</a> to complete your identity so that we don't think you're a robot. 🤖"
+}
+
+broadcast_messages.each do |type, message|
+  Broadcast.create!(
+    title: "Welcome Notification: #{type}",
+    processed_html: message,
+    type_of: "Welcome",
+    sent: true,
+  )
+end
 
 ##############################################################################
 
