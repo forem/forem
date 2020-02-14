@@ -7,7 +7,7 @@ title: Starting the Application
 We're a Rails app, and we use [Webpacker][webpacker] to manage some of our
 JavaScript.
 
-Start the application, Webpack, and our job runner [delayed_job][delayed_job] by
+Start the application, Webpack, and our job runner [Sidekiq][sidekiq] by
 running:
 
 ```shell
@@ -40,5 +40,5 @@ instance/tab of your shell.
 Current gotchas: potential environment issues with external services need to be
 worked out.
 
-[delayed_job]: https://github.com/collectiveidea/delayed_job_active_record
+[sidekiq]: https://github.com/mperham/sidekiq
 [webpacker]: https://github.com/rails/webpacker
