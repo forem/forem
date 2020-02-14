@@ -40,7 +40,7 @@ module DataUpdateScripts
 end
 ```
 
-Once your script is in place then you can either run `rake data_updates:run`
+Once your script is in place then you can either run `rails data_updates:run`
 manually or you can let our setup and update scripts handle it. In our local
 [bin/setup](https://github.com/thepracticaldev/dev.to/blob/master/bin/setup#L36)
 and
