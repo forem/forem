@@ -34,8 +34,10 @@ const article = {
     // We have 40 fake O'Reilly images to work with
     profile_image_90: `/images/${Math.floor(Math.random() * 40)}.png`,
   },
-  published_at_int: 1577077200000,
+  published_at_int: new Date().getTime(),
 };
+
+const articleWithPastPublishDate = { ...article, published_at_int: 1581693220 };
 
 const articleWithOrganization = {
   ...article,
@@ -135,6 +137,13 @@ storiesOf('Components/Articles/Standard', module)
     <Article
       isBookmarked={boolean('isBookmarked', false)}
       article={object('article', article)}
+      currentTag={text('currentTag', 'javascript')}
+    />
+  ))
+  .add('With Past Published Date', () => (
+    <Article
+      isBookmarked={boolean('isBookmarked', false)}
+      article={object('article', articleWithPastPublishDate)}
       currentTag={text('currentTag', 'javascript')}
     />
   ))
