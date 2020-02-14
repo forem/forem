@@ -201,7 +201,7 @@ end
 
 Rails.logger.info "7. Creating Broadcasts"
 
-# TODO: Remove this once we remove the "Onboarding" type of Broadcasts.
+# TODO: [@thepracticaldev/delightful] Remove this once we have launched welcome notifications.
 Broadcast.create!(
   title: "Welcome Notification",
   processed_html: "Welcome to dev.to! Start by introducing yourself in <a href='/welcome' data-no-instant>the welcome thread</a>.",
