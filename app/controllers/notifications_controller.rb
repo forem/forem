@@ -18,7 +18,7 @@ class NotificationsController < ApplicationController
       num = @initial_page_size
     end
 
-    @notifications = if (params[:org_id].present? || params[:filter] == "org") && allowed_user?
+    @notifications = if (params[:org_id].present? || params[:filter] == "org") && @user.admin?
                        organization_notifications
                      elsif params[:org_id].blank? && params[:filter].present?
                        filtered_notifications
@@ -75,9 +75,5 @@ class NotificationsController < ApplicationController
     else
       Notification.for_organization(org_id)
     end
-  end
-
-  def allowed_user?
-    @user.organization_id == params[:org_id] || @user.admin?
   end
 end
