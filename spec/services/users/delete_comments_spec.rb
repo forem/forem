@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe Users::DeleteComments, type: :service do
   let(:user) { create(:user) }
   let(:article) { create(:article) }
+  let(:comment) { create(:comment, user: user, commentable: article) }
   let(:buster) { double }
 
   before do
@@ -13,6 +14,7 @@ RSpec.describe Users::DeleteComments, type: :service do
   end
 
   it "destroys user comments" do
+    comment
     described_class.call(user, buster)
     expect(Comment.where(user_id: user.id).any?).to be false
   end
