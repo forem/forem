@@ -170,7 +170,11 @@ const ReactionsCount = ({ article }) => {
     return (
       <div className="article-engagement-count reactions-count">
         <a href={article.path}>
-          <img src={assetPath('reactions-stack.png')} alt="heart" />
+          <img
+            src={assetPath('reactions-stack.png')}
+            alt="heart"
+            loading="lazy"
+          />
           <span
             id={`engagement-count-number-${article.id}`}
             className="engagement-count-number"
@@ -247,7 +251,11 @@ const CommentsCount = ({ count, articlePath }) => {
     return (
       <div className="article-engagement-count comments-count">
         <a href={`${articlePath}#comments`}>
-          <img src={assetPath('comments-bubble.png')} alt="chat" />
+          <img
+            src={assetPath('comments-bubble.png')}
+            alt="chat"
+            loading="lazy"
+          />
           <span className="engagement-count-number">{count}</span>
         </a>
       </div>
@@ -304,7 +312,11 @@ export const Article = ({ article, currentTag, isBookmarked }) => {
           style={`background-image:url(${article.cloudinary_video_url})`}
         >
           <div className="single-article-video-duration">
-            <img src={assetPath('video-camera.svg')} alt="video camera" />
+            <img
+              src={assetPath('video-camera.svg')}
+              alt="video camera"
+              loading="lazy"
+            />
             {article.video_duration_in_minutes}
           </div>
         </a>
