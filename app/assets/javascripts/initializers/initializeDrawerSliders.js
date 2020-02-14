@@ -15,7 +15,7 @@ function initializeDrawerSliders() {
     drawerSliders.forEach(drawerSlider => {
       const element = document.getElementById(drawerSlider.selector);
       if (element) {
-        element.onclick = function() {
+        element.onclick = () => {
           swipeState = drawerSlider.swipeState;
           slideSidebar(drawerSlider.side, drawerSlider.view);
         };
@@ -40,7 +40,7 @@ function listenForNarrowMenuClick(event) {
       navLinks.classList.add('showing');
     });
   }
-  navLinks.addEventListener('click', (event) => {
-    navLinks.classList.remove('showing');
+  navLinks.addEventListener('click', event => {
+    event.target.classList.remove('showing');
   });
 }
