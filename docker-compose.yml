@@ -17,16 +17,6 @@ services:
     volumes:
       - .:/usr/src/app
     command: bundle exec rails server -b 0.0.0.0 -p 3000
-  jobs:
-    build: .
-    command: rails jobs:work
-    depends_on:
-      - db
-      - redis
-    environment:
-      RAILS_ENV: development
-      DATABASE_URL: postgres://postgres:mysecretpassword@db:5432/postgres
-      REDIS_URL: redis://redis:6379
   webpacker:
     build: .
     command: ./bin/webpack-dev-server
