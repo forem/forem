@@ -185,16 +185,16 @@ function fetchNextPodcastPage(el){
 }
 
 function algoliaPaginate(tag, requiresApproval) {
-  var filters = [];
+  var tagFilters = [];
   if (tag && tag.length > 0) {
-    filters.push(tag);
+    tagFilters.push(tag);
   }
 
   var searchObj = {
       hitsPerPage: 15,
       page: nextPage,
       attributesToHighlight: [],
-      tagFilters: filters,
+      tagFilters: tagFilters,
       filters: (requiresApproval === 'true') ? 'approved:true' : ''
   }
 
@@ -205,7 +205,7 @@ function algoliaPaginate(tag, requiresApproval) {
   } else if (homeEl.dataset.feed === "latest") {
     paginationArticlesIndex = client.initIndex('ordered_articles_by_published_at_<%= Rails.env %>');
   } else {
-    searchObj.filters = ('published_at_int > ' + homeEl.dataset.articlesSince);
+    searchObj.tagFilters = ('published_at_int > ' + homeEl.dataset.articlesSince);
     paginationArticlesIndex = client.initIndex('ordered_articles_by_positive_reactions_count_<%= Rails.env %>');
   }
 
