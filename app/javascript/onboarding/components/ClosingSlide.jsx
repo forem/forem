@@ -9,13 +9,12 @@ class ClosingSlide extends Component {
   }
 
   whatsNextLinks() {
-    const properties = [
+    return [
       { href: '/welcome', text: 'Join the Welcome Thread', emoji: '😊' },
       { href: '/new', text: 'Write your first DEV post', emoji: '✍️' },
       { href: '/top/infinity', text: 'Read all-time top posts', emoji: '🤓' },
       { href: '/settings', text: 'Customize your profile', emoji: '💅' },
     ];
-    return properties;
   };
 
   render() {
