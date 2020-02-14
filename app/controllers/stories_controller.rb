@@ -3,6 +3,9 @@ class StoriesController < ApplicationController
   before_action :set_cache_control_headers, only: %i[index search show]
 
   def index
+    @page = (params[:page] || 1).to_i
+    @article_index = true
+
     return handle_user_or_organization_or_podcast_or_page_index if params[:username]
     return handle_tag_index if params[:tag]
 
@@ -34,6 +37,22 @@ class StoriesController < ApplicationController
     @warm_only = true
     assign_article_show_variables
     render partial: "articles/full_comment_area"
+  end
+
+  def home_feed
+    render json: @stories.to_json(
+      only: %i[
+        title path id user_id comments_count positive_reactions_count organization_id
+        reading_time video_thumbnail_url video video_duration_in_minutes language
+        experience_level_rating experience_level_rating_distribution cached_user
+        cached_organization main_image
+      ],
+      methods: %i[
+        readable_publish_date cached_tag_list_array flare_tag class_name
+        cloudinary_video_url video_duration_in_minutes published_at_int
+        published_timestamp
+      ],
+    )
   end
 
   private
@@ -79,7 +98,6 @@ class StoriesController < ApplicationController
 
   def handle_tag_index
     @tag = params[:tag].downcase
-    @page = (params[:page] || 1).to_i
     @tag_model = Tag.find_by(name: @tag) || not_found
     @moderators = User.with_role(:tag_moderator, @tag_model).select(:username, :profile_image, :id)
     if @tag_model.alias_for.present?
@@ -94,7 +112,6 @@ class StoriesController < ApplicationController
     @stories = stories_by_timeframe
     @stories = @stories.decorate
 
-    @article_index = true
     set_surrogate_key_header "articles-#{@tag}"
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
     render template: "articles/tag_index"
@@ -108,20 +125,9 @@ class StoriesController < ApplicationController
 
   def handle_base_index
     @home_page = true
-    @page = (params[:page] || 1).to_i
-    number_of_articles = 35
-    feed = Articles::Feed.new(number_of_articles: number_of_articles, page: @page, tag: params[:tag])
-    if %w[week month year infinity].include?(params[:timeframe])
-      @stories = feed.top_articles_by_timeframe(timeframe: params[:timeframe])
-    elsif params[:timeframe] == "latest"
-      @stories = feed.latest_feed
-    else
-      @default_home_feed = true
-      @featured_story, @stories = feed.default_home_feed(user_signed_in: user_signed_in?)
-    end
+    assign_feed_stories
     assign_podcasts
     assign_classified_listings
-    @article_index = true
     @featured_story = (@featured_story || Article.new)&.decorate
     @stories = ArticleDecorator.decorate_collection(@stories)
     set_surrogate_key_header "main_app_home_page"
@@ -151,7 +157,6 @@ class StoriesController < ApplicationController
 
   def handle_podcast_index
     @podcast_index = true
-    @article_index = true
     @list_of = "podcast-episodes"
     @podcast_episodes = @podcast.podcast_episodes.
       reachable.order("published_at DESC").limit(30).decorate
@@ -164,7 +169,6 @@ class StoriesController < ApplicationController
     @stories = ArticleDecorator.decorate_collection(@organization.articles.published.
       limited_column_select.
       order("published_at DESC").page(@page).per(8))
-    @article_index = true
     @organization_article_index = true
     set_surrogate_key_header "articles-org-#{@organization.id}"
     render template: "organizations/show"
@@ -179,7 +183,6 @@ class StoriesController < ApplicationController
     not_found if @user.username.include?("spam_") && @user.decorate.fully_banished?
     assign_user_comments
     assign_user_stories
-    @article_index = true
     @list_of = "articles"
     redirect_if_view_param
     return if performed?
@@ -214,6 +217,18 @@ class StoriesController < ApplicationController
     return if performed?
 
     render template: "articles/show"
+  end
+
+  def assign_feed_stories
+    feed = Articles::Feed.new(number_of_articles: 35, page: @page, tag: params[:tag])
+    if %w[week month year infinity].include?(params[:timeframe])
+      @stories = feed.top_articles_by_timeframe(timeframe: params[:timeframe])
+    elsif params[:timeframe] == "latest"
+      @stories = feed.latest_feed
+    else
+      @default_home_feed = true
+      @featured_story, @stories = feed.default_home_feed(user_signed_in: user_signed_in?)
+    end
   end
 
   def assign_article_show_variables
