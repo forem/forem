@@ -63,8 +63,11 @@ DEV requires Elasticsearch version 7 or higher.
 
 We recommend installing from archive on Mac. The following directions were
 [taken from the Elasticsearch docs themselves](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#install-macos),
-so check those out if you run into any issues or want further information. NOTE:
-Make sure to download the OSS version, `elasticsearch-oss`.
+so check those out if you run into any issues or want further information. Make
+sure to download **the OSS version** of Elasticsearch, `elasticsearch-oss`.
+
+Please note that you will need `wget` in order to proceed with this installation
+(`brew install wget`).
 
 ```shell
 wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz
@@ -89,10 +92,13 @@ To start elasticsearch as a daemonized process:
 ## Installing DEV
 
 1. Fork DEV's repository, e.g. <https://github.com/thepracticaldev/dev.to/fork>
-1. Clone your forked repository, e.g.
-   `git clone https://github.com/<your-username>/dev.to.git`
-1. Install bundler with `gem install bundler`
-1. Set up your environment variables/secrets
+2. Clone your forked repository in one of two ways:
+
+   - e.g. with HTTPS: `git clone https://github.com/<your-username>/dev.to.git`
+   - e.g. with SSH: `git clone git@github.com:<your-username>/dev.to.git`
+
+3. Install bundler with `gem install bundler`
+4. Set up your environment variables/secrets
 
    - Take a look at `Envfile` to see all the `ENV` variables we use and the fake
      default provided for any missing keys.
@@ -107,7 +113,7 @@ To start elasticsearch as a daemonized process:
         (i.e. with bash:
         `cp config/sample_application.yml config/application.yml`). This is a
         personal file that is ignored in git.
-     1. Obtain the development variable and apply the key you wish to
+     2. Obtain the development variable and apply the key you wish to
         enter/replace. i.e.:
 
      ```shell
@@ -122,7 +128,7 @@ To start elasticsearch as a daemonized process:
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 
-1. Run `bin/setup`
+5. Run `bin/setup`
 
 ### Possible error messages
 

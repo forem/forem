@@ -7,12 +7,6 @@ class ApplicationController < ActionController::Base
 
   rescue_from ActionView::MissingTemplate, with: :routing_error
 
-  def require_http_auth
-    authenticate_or_request_with_http_basic do |username, password|
-      username == ApplicationConfig["APP_NAME"] && password == ApplicationConfig["APP_PASSWORD"]
-    end
-  end
-
   def not_found
     raise ActiveRecord::RecordNotFound, "Not Found"
   end
@@ -58,8 +52,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def raise_banned
-    raise "BANNED" if current_user&.banned
+  def raise_suspended
+    raise "SUSPENDED" if current_user&.banned
   end
 
   def internal_navigation?

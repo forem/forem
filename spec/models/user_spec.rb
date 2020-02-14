@@ -442,32 +442,41 @@ RSpec.describe User, type: :model do
 
     describe "#estimated_default_language" do
       it "estimates default language to be nil" do
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           expect(user.estimated_default_language).to be(nil)
         end
       end
 
       it "estimates default language to be japanese with .jp email" do
-        perform_enqueued_jobs do
+        user = nil
+
+        sidekiq_perform_enqueued_jobs do
           user = create(:user, email: "ben@hello.jp")
-          expect(user.reload.estimated_default_language).to eq("ja")
         end
+
+        expect(user.reload.estimated_default_language).to eq("ja")
       end
 
       it "estimates default language based on ID dump" do
-        perform_enqueued_jobs do
+        new_user = nil
+
+        sidekiq_perform_enqueued_jobs do
           new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-          expect(new_user.estimated_default_language).to eq(nil)
         end
+
+        expect(new_user.estimated_default_language).to eq(nil)
       end
     end
 
     describe "#preferred_languages_array" do
       it "returns proper preferred_languages_array" do
-        perform_enqueued_jobs do
+        user = nil
+
+        sidekiq_perform_enqueued_jobs do
           user = create(:user, email: "ben@hello.jp")
-          expect(user.reload.preferred_languages_array).to eq(%w[en ja])
         end
+
+        expect(user.reload.preferred_languages_array).to eq(%w[en ja])
       end
 
       it "returns a correct array when language settings are in a new format" do

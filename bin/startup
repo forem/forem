@@ -12,5 +12,5 @@ end
 
 chdir APP_ROOT do
   puts "== STARTING UP =="
-  system! "bundle exec foreman start -f Procfile.dev"
+  system! "foreman start -f Procfile.dev"
 end

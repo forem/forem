@@ -64,12 +64,19 @@ RSpec.describe "User visits a homepage", type: :system do
 
       it "shows the followed tags", js: true do
         expect(page).to have_text("my tags")
+
+        # Need to ensure the user data is loaded before doing any checks
+        find("body")["data-user"]
+
         within("#sidebar-nav-followed-tags") do
           expect(page).to have_link("#ruby", href: "/t/ruby")
         end
       end
 
       it "shows followed tags ordered by weight and name", js: true do
+        # Need to ensure the user data is loaded before doing any checks
+        find("body")["data-user"]
+
         within("#sidebar-nav-followed-tags") do
           expect(all(".sidebar-nav-tag-text").map(&:text)).to eq(%w[#javascript #go #ruby])
         end

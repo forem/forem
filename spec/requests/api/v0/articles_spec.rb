@@ -240,6 +240,15 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
       end
     end
+
+    context "with regression tests" do
+      it "works if both the social image and the main image are missing" do
+        article.update_columns(social_image: nil, main_image: nil)
+
+        get api_articles_path
+        expect(response).to have_http_status(:ok)
+      end
+    end
   end
 
   describe "GET /api/articles/:id" do
@@ -463,6 +472,16 @@ RSpec.describe "Api::V0::Articles", type: :request do
         tags = %w[#discuss .help]
         post_article(title: "Test Article Title", tags: tags)
         expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "fails if params are not a Hash" do
+        # Not using the nifty post_article helper method because it expects a Hash
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        string_params = "this_string_is_definitely_not_a_hash"
+        post api_articles_path, params: { article: string_params }.to_json, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
       end
 
       it "creates an article belonging to the user" do
@@ -931,6 +950,16 @@ RSpec.describe "Api::V0::Articles", type: :request do
         put_article(organization_id: organization.id)
         expect(response).to have_http_status(:ok)
         expect(article.reload.organization).to eq(organization)
+      end
+
+      it "fails if params are not a Hash" do
+        # Not using the nifty put_article helper method because it expects a Hash
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        string_params = "this_string_is_definitely_not_a_hash"
+        put path, params: { article: string_params }.to_json, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
       end
     end
   end

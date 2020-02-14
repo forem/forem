@@ -26,7 +26,7 @@ class Tag < ActsAsTaggableOn::Tag
   before_validation :evaluate_markdown
   before_validation :pound_it
   before_save :calculate_hotness_score
-  after_commit :bust_cache
+  after_commit :bust_cache, :index_to_elasticsearch
   before_save :mark_as_updated
 
   algoliasearch per_environment: true do
@@ -34,6 +34,22 @@ class Tag < ActsAsTaggableOn::Tag
     attributesForFaceting [:supported]
     customRanking ["desc(hotness_score)"]
     searchableAttributes %w[name short_summary]
+  end
+
+  def index_to_elasticsearch
+    Search::TagEsIndexWorker.perform_async(id)
+  end
+
+  def index_to_elasticsearch_inline
+    Search::Tag.index(id, serialized_search_hash)
+  end
+
+  def serialized_search_hash
+    Search::TagSerializer.new(self).serializable_hash.dig(:data, :attributes)
+  end
+
+  def elasticsearch_doc
+    Search::Tag.find_document(id)
   end
 
   def submission_template_customized(param_0 = nil)
@@ -64,6 +80,10 @@ class Tag < ActsAsTaggableOn::Tag
   def validate_name
     errors.add(:name, "is too long (maximum is 30 characters)") if name.length > 30
     errors.add(:name, "contains non-alphanumeric characters") unless name.match?(/\A[[:alnum:]]+\z/)
+  end
+
+  def mod_chat_channel
+    ChatChannel.find(mod_chat_channel_id) if mod_chat_channel_id
   end
 
   private

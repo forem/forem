@@ -1,8 +1,6 @@
 module Api
   module V0
     class PodcastEpisodesController < ApiController
-      respond_to :json
-
       before_action :cors_preflight_check
       after_action :cors_set_access_control_headers
 

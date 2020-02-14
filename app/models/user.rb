@@ -155,6 +155,7 @@ class User < ApplicationRecord
   validate  :unique_including_orgs_and_podcasts, if: :username_changed?
 
   scope :dev_account, -> { find_by(id: SiteConfig.staff_user_id) }
+  scope :welcoming_account, -> { find_by(id: ApplicationConfig["WELCOMING_USER_ID"]) }
 
   scope :with_this_week_comments, lambda { |number|
     includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_these_7_days')::int >= ?", number)
@@ -170,7 +171,7 @@ class User < ApplicationRecord
   after_save  :bust_cache
   after_save  :subscribe_to_mailchimp_newsletter
   after_save  :conditionally_resave_articles
-  after_create :estimate_default_language
+  after_create_commit :estimate_default_language
   before_create :set_default_language
   before_validation :set_username
   # make sure usernames are not empty, to be able to use the database unique index
@@ -445,7 +446,7 @@ class User < ApplicationRecord
   end
 
   def profile_image_90
-    ProfileImage.new(self).get(90)
+    ProfileImage.new(self).get(width: 90)
   end
 
   def remove_from_algolia_index
@@ -489,7 +490,7 @@ class User < ApplicationRecord
   end
 
   def estimate_default_language
-    Users::EstimateDefaultLanguageJob.perform_later(id)
+    Users::EstimateDefaultLanguageWorker.perform_async(id)
   end
 
   def set_default_language
@@ -497,7 +498,9 @@ class User < ApplicationRecord
   end
 
   def send_welcome_notification
-    Notification.send_welcome_notification(id)
+    return unless (welcome_broadcast = Broadcast.find_by(title: "Welcome Notification"))
+
+    Notification.send_welcome_notification(id, welcome_broadcast.id)
   end
 
   def verify_twitter_username

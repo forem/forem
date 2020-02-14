@@ -21,9 +21,9 @@ class Reaction < ApplicationRecord
   validate  :permissions
 
   before_save :assign_points
-  after_commit :async_bust
+  after_commit :async_bust, :bust_reactable_cache, :update_reactable
   after_save :index_to_algolia
-  after_save :update_reactable, :bust_reactable_cache, :touch_user
+  after_save :touch_user
   before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
   before_destroy :bust_reactable_cache_without_delay
   before_destroy :remove_algolia
@@ -54,14 +54,6 @@ class Reaction < ApplicationRecord
       end
     end
 
-    def for_display(user)
-      includes(:reactable).
-        where(reactable_type: "Article", user: user).
-        where("created_at > ?", 5.days.ago).
-        select("distinct on (reactable_id) *").
-        take(15)
-    end
-
     def cached_any_reactions_for?(reactable, user, category)
       class_name = reactable.class.name == "ArticleDecorator" ? "Article" : reactable.class.name
       cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-#{user.updated_at&.rfc3339}-#{category}"
@@ -88,11 +80,11 @@ class Reaction < ApplicationRecord
   end
 
   def update_reactable
-    Reactions::UpdateReactableJob.perform_later(id)
+    Reactions::UpdateReactableWorker.perform_async(id)
   end
 
   def bust_reactable_cache
-    Reactions::BustReactableCacheJob.perform_later(id)
+    Reactions::BustReactableCacheWorker.perform_async(id)
   end
 
   def async_bust
@@ -100,11 +92,11 @@ class Reaction < ApplicationRecord
   end
 
   def bust_reactable_cache_without_delay
-    Reactions::BustReactableCacheJob.perform_now(id)
+    Reactions::BustReactableCacheWorker.new.perform(id)
   end
 
   def update_reactable_without_delay
-    Reactions::UpdateReactableJob.perform_now(id)
+    Reactions::UpdateReactableWorker.new.perform(id)
   end
 
   def reading_time

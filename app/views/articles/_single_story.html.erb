@@ -16,7 +16,7 @@
   <% end %>
   <a href="/<%= story.cached_user.username %>" class="small-pic-link-wrapper">
     <div class="small-pic">
-      <img src="<%= ProfileImage.new(story.cached_user).get(90) %>" alt="<%= story.cached_user.username %> profile" />
+      <img src="<%= ProfileImage.new(story.cached_user).get(width: 90) %>" alt="<%= story.cached_user.username %> profile" />
     </div>
   </a>
   <a href="<%= story.path %>" class="small-pic-link-wrapper index-article-link" data-preload-image="<%= cloud_cover_url(story.main_image) %>" id="article-link-<%= story.id %>">
