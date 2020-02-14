@@ -34,6 +34,7 @@ const article = {
     // We have 40 fake O'Reilly images to work with
     profile_image_90: `/images/${Math.floor(Math.random() * 40)}.png`,
   },
+  published_at_int: 1577077200000,
 };
 
 const articleWithOrganization = {
