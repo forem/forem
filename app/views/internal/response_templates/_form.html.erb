@@ -1,7 +1,7 @@
 <%= form_for [:internal, response_template] do |f| %>
   <%= f.label :type_of, "Type of Response Template (Mod Comment, Personal Comment, Email, etc)" %>
   <br>
-  <% type_of_options = [["Mod Comment", "mod_comment"], ["Personal Comment", "personal_comment"], ["Email", "email"], ["Abuse Report Email", "abuse_report_email"]] %>
+  <% type_of_options = [["Mod Comment", "mod_comment"], ["Personal Comment", "personal_comment"], ["Email", "email_reply"], ["Abuse Report Email", "abuse_report_reply"]] %>
   <%= f.select :type_of, options_for_select(type_of_options, response_template.type_of), html: { required: true } %>
   <br>
   <%= f.label :title %>
