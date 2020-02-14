@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe "StoriesIndex", type: :request do
-  describe "GET stories index" do
-    let!(:article) { create(:article, featured: true) }
+  let!(:article) { create(:article, featured: true) }
 
+  describe "GET stories index" do
     it "renders page with article list" do
       get "/"
       expect(response.body).to include(article.title)
@@ -74,14 +74,15 @@ RSpec.describe "StoriesIndex", type: :request do
       get "/"
       expect(response.body).to include(CGI.escapeHTML(listing.title))
     end
+  end
 
-    context "when json requested" do
-      let(:headers) { { "ACCEPT": "application/json" } }
+  describe "GET home page JSON feed" do
+    let(:headers) { { "ACCEPT": "application/json" } }
 
-      it "renders article list as json" do
-        get "/", headers: headers
-        expect(response.content_type).to eq("application/json")
-      end
+    it "renders article list as json" do
+      get "/", headers: headers
+      expect(response.content_type).to eq("application/json")
+      expect(response.body).to include(article.title)
     end
   end
 
