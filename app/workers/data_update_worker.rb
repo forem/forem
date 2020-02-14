@@ -15,6 +15,7 @@ class DataUpdateWorker
   private
 
   def run_script(script)
+    require script.file_path
     script.file_class.new.run
     script.mark_as_finished!
   rescue StandardError => e

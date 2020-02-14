@@ -3,11 +3,15 @@ class DataUpdateScript < ApplicationRecord
   NAMESPACE = "DataUpdateScripts".freeze
   STATUSES = { enqueued: 0, working: 1, succeeded: 2, failed: 3 }.freeze
 
+  default_scope { order(file_name: :asc) }
+
   enum status: STATUSES
   validates :file_name, uniqueness: true
 
   def self.filenames
-    Dir.glob("*.rb", base: DIRECTORY).map { |f| Pathname.new(f).basename(".rb").to_s }
+    Dir.glob("*.rb", base: DIRECTORY).map do |f|
+      Pathname.new(f).basename(".rb").to_s
+    end
   end
 
   def self.load_script_ids
@@ -29,7 +33,17 @@ class DataUpdateScript < ApplicationRecord
     update!(finished_at: Time.current, status: :failed)
   end
 
+  def file_path
+    "#{self.class::DIRECTORY}/#{file_name}.rb"
+  end
+
   def file_class
-    "#{self.class::NAMESPACE}::#{file_name.camelcase}".safe_constantize
+    "#{self.class::NAMESPACE}::#{parsed_file_name.camelcase}".safe_constantize
+  end
+
+  private
+
+  def parsed_file_name
+    file_name.match(/\d{14}_(.*)/)[1]
   end
 end
