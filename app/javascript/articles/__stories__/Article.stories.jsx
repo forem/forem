@@ -11,6 +11,7 @@ const title = faker.random.words(2);
 
 const getName = () => `${faker.name.firstName()} ${faker.name.lastName()}`;
 
+const publishDate = new Date();
 const article = {
   id: faker.random.number(),
   title,
@@ -34,10 +35,13 @@ const article = {
     // We have 40 fake O'Reilly images to work with
     profile_image_90: `/images/${Math.floor(Math.random() * 40)}.png`,
   },
-  published_at_int: new Date().getTime(),
+  published_at_int: publishDate.getTime(),
+  published_timestamp: publishDate.toUTCString(),
+  readable_publish_date: new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    day: 'numeric',
+  }).format(publishDate),
 };
-
-const articleWithPastPublishDate = { ...article, published_at_int: 1581693220 };
 
 const articleWithOrganization = {
   ...article,
@@ -137,13 +141,6 @@ storiesOf('Components/Articles/Standard', module)
     <Article
       isBookmarked={boolean('isBookmarked', false)}
       article={object('article', article)}
-      currentTag={text('currentTag', 'javascript')}
-    />
-  ))
-  .add('With Past Published Date', () => (
-    <Article
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', articleWithPastPublishDate)}
       currentTag={text('currentTag', 'javascript')}
     />
   ))
