@@ -74,6 +74,68 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
     end
 
+    context "when a user's organization has new follow notifications" do
+      let_it_be_changeable(:organization) { create(:organization) }
+
+      before do
+        create(:organization_membership, user: user, organization: organization, type_of_user: "member")
+        sign_in user
+      end
+
+      def mock_follow_notifications(followers_amount, organization)
+        users = create_list(:user, followers_amount)
+        follow_instances = users.map { |follower| follower.follow(organization) }
+        follow_instances.each { |follow| Notification.send_new_follower_notification_without_delay(follow) }
+        users
+      end
+
+      it "renders the proper message for a single notification" do
+        users = mock_follow_notifications(1, organization)
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        expect(response.body).to include(CGI.escapeHTML(users.last.name))
+      end
+
+      it "renders the proper message for two notifications in the same day" do
+        mock_follow_notifications(2, organization)
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        expect(has_both_names(response.body)).to be(true)
+      end
+
+      it "renders the proper message for three or more notifications in the same day" do
+        mock_follow_notifications(rand(3..5), organization)
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        follow_message = "others followed you!"
+        expect(response.body).to include(follow_message)
+      end
+
+      it "does group notifications that occur on different days" do
+        mock_follow_notifications(2, organization)
+        Notification.last.update(created_at: Notification.last.created_at - 1.day)
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        notifications = controller.instance_variable_get(:@notifications)
+        expect(notifications.count).to eq(1)
+      end
+
+      it "does not render the proper message for a single notification if missing :org_id" do
+        users = mock_follow_notifications(1, organization)
+
+        get notifications_path(filter: :org)
+        expect(response.body).not_to include(CGI.escapeHTML(users.last.name))
+      end
+
+      it "does not render notifications belonging to other orgs" do
+        organization = create(:organization)
+        users = mock_follow_notifications(1, organization)
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        expect(response.body).not_to include(CGI.escapeHTML(users.last.name))
+      end
+    end
+
     context "when a user has new reaction notifications" do
       let(:article1)                   { create(:article, user_id: user.id) }
       let(:article2)                   { create(:article, user_id: user.id) }
