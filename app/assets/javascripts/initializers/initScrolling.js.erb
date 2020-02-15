@@ -104,11 +104,8 @@ function fetchNextFollowingPage(el){
   }
 }
 
-function fetchNextFollowersPage(el){
-  var indexParams = JSON.parse(el.dataset.params);
-  var whichEndpoint = indexParams.which;
-
-  fetchNext(el, "/api/followers/users", insertNext({ elId: "follows" }, buildFollowsHTML));
+function fetchNextFollowersPage(el) {
+  fetchNext(el, "<%= api_followers_users_path %>", insertNext({ elId: "follows" }, buildFollowsHTML));
 }
 
 function buildVideoArticleHTML(videoArticle) {
