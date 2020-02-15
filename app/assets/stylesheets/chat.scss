@@ -1,5 +1,4 @@
 @import 'variables';
-@import 'connect/_channel-details';
 @import 'mixins';
 
 // High level classes
@@ -298,49 +297,6 @@
     video {
       border-radius: 5px;
     }
-  }
-}
-
-.chatNonChatView {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  top: 0;
-  padding: 80px 7%;
-  z-index: 10;
-  @include themeable(background, theme-background, white);
-}
-
-.chatNonChatView_exitbutton {
-  position: absolute;
-  left: 4%;
-  top: 60px;
-  font-size: 25px;
-  background: transparent;
-  border: 0px;
-  font-size: 1.8em;
-  @include themeable(color, theme-color, $black);
-}
-
-.chatNonChatView_contentblock {
-  border: 1px solid $medium-gray;
-  padding: 20px;
-  margin-bottom: 10px;
-  max-width: 900px;
-  @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
-
-  h2 {
-    margin: 5px auto 5px;
-  }
-
-  button {
-    font-size: 1.6em;
-    background: white;
-    border: 4px solid $black;
-    padding: 4px 12px;
-    border-radius: 3px;
-    margin: 20px 12px;
   }
 }
 
@@ -645,54 +601,18 @@
   }
 }
 
-.activecontent__githubrepo {
-}
-
-.activecontent__githubrepoheader {
-  padding-left: 30px;
-  padding-bottom: 3px;
-  min-height: 30px;
-  margin-top: -9px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 0.9em;
-}
-
-.activecontent__githubrepofiles {
-  border-bottom: 1px solid $light-medium-gray;
-  font-size: 0.8em;
-  overflow: auto;
-
-  &.activecontent__githubrepofiles--root {
-    height: 280px;
-    max-height: 40vh;
-  }
-}
-
-.activecontent__githubreporeadme {
-  font-size: 0.8em;
-
-  img {
-    max-width: 100%;
-  }
-}
-
-.activecontent__githubrepofilerow {
-  padding: 4px 2px;
-  border-top: 1px solid $light-medium-gray;
-}
-
-.chat__channelinvitationsindicator button {
-  background: $green;
+.chat__channelinvitationsindicator a {
+  background: linear-gradient(10deg, darken($green, 25%), darken($green, 15%)); 
   text-align: center;
-  padding: 10px 0px;
+  padding: 30px 0px;
   display: block;
   border-radius: 3px;
   margin: 3px 0px;
   border: 0px;
-  width: 93%;
-  font-size: 0.9em;
+  width: 94%;
+  color: white;
+  font-size: 1.1em;
+  font-weight: 700;
 }
 
 .chatchannels {

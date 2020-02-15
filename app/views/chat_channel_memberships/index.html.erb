@@ -1,0 +1,30 @@
+<% if flash[:settings_notice] %>
+  <div class="notice" id="notice">
+    <%= flash[:settings_notice] %>
+  </div>
+<% end %>
+<div class="user-settings-page">
+  <% if @pending_invites.any? %>
+    <h1>Pending Invitations</h1>
+    <h3>You may leave a group channel at any point in the future.</h3>
+    <% @pending_invites.each do |membership| %>
+      <div>
+        <h2><%= membership.chat_channel.channel_name %></h2>
+        <p><%= membership.chat_channel.description %></p>
+        <%= form_for(membership) do |f| %>
+          <%= f.hidden_field :user_action, value: "accept" %>
+          <%= f.submit "Accept", class: "cta" %>
+        <% end %>
+        <%= form_for(membership) do |f| %>
+          <%= f.hidden_field :user_action, value: "decline" %>
+          <%= f.submit "Decline", class: "cta cta-danger" %>
+        <% end %>
+      </div>
+      <hr class="settings-hr"/>
+    <% end %>
+  <% else %>
+    <p>
+      <em>You have no pending invitations</em>
+    </p>
+  <% end %>
+</div>

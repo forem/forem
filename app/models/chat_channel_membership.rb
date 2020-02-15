@@ -1,5 +1,8 @@
 class ChatChannelMembership < ApplicationRecord
   include AlgoliaSearch
+
+  attr_accessor :invitation_usernames
+
   belongs_to :chat_channel
   belongs_to :user
 

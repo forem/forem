@@ -21,7 +21,6 @@ import Compose from './compose';
 import Message from './message';
 import Content from './content';
 import Video from './video';
-import View from './view';
 
 import setupPusher from '../src/utils/pusher';
 
@@ -62,7 +61,6 @@ export default class Chat extends Component {
       activeVideoChannelId: null,
       incomingVideoCallChannelIds: [],
       videoCallParticipants: [],
-      nonChatView: null,
       inviteChannels: [],
       soundOn: true,
       videoOn: true,
@@ -861,14 +859,6 @@ export default class Chat extends Component {
     getChannels(filterQuery, null, this.props, 0, filters, this.loadChannels);
   };
 
-  triggerNonChatView = e => {
-    this.setState({ nonChatView: e.target.dataset.content });
-  };
-
-  triggerExitView = () => {
-    this.setState({ nonChatView: null });
-  };
-
   handleFailure = err => {
     // eslint-disable-next-line no-console
     console.error(err);
@@ -1007,13 +997,14 @@ export default class Chat extends Component {
       if (state.inviteChannels.length > 0) {
         invitesButton = (
           <div className="chat__channelinvitationsindicator">
-            <button
-              onClick={this.triggerNonChatView}
-              data-content="invitations"
+            <a
+              href="/chat_channel_memberships"
+              onClick={this.triggerActiveContent}
+              data-content='sidecar-chat_channel_memberships'
               type="button"
             >
-              New Invitations!
-            </button>
+              👋 New Invitations!
+            </a>
           </div>
         );
       }
@@ -1442,7 +1433,7 @@ export default class Chat extends Component {
         <a
           href={`/${activeChannel.channel_username}`}
           onClick={this.triggerActiveContent}
-          data-content="sidecar-user"
+          data-content='sidecar-user'
         >
           {activeChannel.channel_modified_slug}
         </a>
@@ -1450,9 +1441,9 @@ export default class Chat extends Component {
     }
     return (
       <a
-        href={`/connect/${activeChannel.channel_modified_slug}`}
+        href={`/chat_channel_memberships/${activeChannel.id}/edit`}
         onClick={this.triggerActiveContent}
-        data-content={`chat_channels/${activeChannelId}`}
+        data-content='sidecar-chat_channel_membership'
       >
         {activeChannel.channel_name}
       </a>
@@ -1472,7 +1463,12 @@ export default class Chat extends Component {
     const dataContent =
       activeChannel.channel_type === 'direct'
         ? 'sidecar-user'
-        : `chat_channels/${activeChannelId}`;
+        : `sidecar-chat_channel_membership`;
+
+    const path =
+      activeChannel.channel_type === 'direct'
+        ? `/${activeChannel.channel_username}`
+        : `/chat_channel_memberships/${activeChannel.id}/edit`;
 
     return (
       <a
@@ -1482,7 +1478,7 @@ export default class Chat extends Component {
           if (e.keyCode === 13) this.triggerActiveContent(e);
         }}
         tabIndex="0"
-        href={`/${activeChannel.channel_username}`}
+        href={path}
         data-content={dataContent}
       >
         <img
@@ -1546,17 +1542,6 @@ export default class Chat extends Component {
         </div>
       );
     }
-    let nonChatView = '';
-    if (state.nonChatView) {
-      nonChatView = (
-        <View
-          channels={state.inviteChannels}
-          onViewExit={this.triggerExitView}
-          onAcceptInvitation={this.handleInvitationAccept}
-          onDeclineInvitation={this.handleInvitationDecline}
-        />
-      );
-    }
     return (
       <div
         className={`chat chat--${
@@ -1567,7 +1552,6 @@ export default class Chat extends Component {
         {this.renderChatChannels()}
         <div className="chat__activechat">
           {vid}
-          {nonChatView}
           {this.renderActiveChatChannel(channelHeader, incomingCall)}
         </div>
       </div>

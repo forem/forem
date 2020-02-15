@@ -17,6 +17,7 @@ class ChatChannel < ApplicationRecord
   validates :channel_type, presence: true, inclusion: { in: %w[open invite_only direct] }
   validates :status, presence: true, inclusion: { in: %w[active inactive blocked] }
   validates :slug, uniqueness: true, presence: true
+  validates :description, length: { maximum: 200 }, allow_blank: true
 
   def open?
     channel_type == "open"

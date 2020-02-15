@@ -130,6 +130,9 @@ pre {
   -webkit-appearance: none;
   font-stretch: condensed;
   font-weight: bold;
+  &.cta-danger {
+    background: $red;
+  }
 }
 
 button {

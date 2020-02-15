@@ -31,7 +31,8 @@ class ChatChannelsController < ApplicationController
 
   def update
     ChatChannelUpdateService.new(@chat_channel, chat_channel_params).update
-    render_chat_channel
+    flash[:settings_notice] = "Channel Settings Updated."
+    redirect_to "/chat_channel_memberships/#{@chat_channel.mod_memberships.where(user_id: current_user.id).first.id}/edit"
   end
 
   def open
