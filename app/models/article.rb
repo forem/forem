@@ -45,6 +45,7 @@ class Article < ApplicationRecord
   validate :validate_collection_permission
   validate :validate_liquid_tag_permissions
   validate :past_or_present_date
+  validate :canonical_url_must_not_has_spaces
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :cached_tag_list, length: { maximum: 126 }
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
@@ -562,6 +563,12 @@ class Article < ApplicationRecord
   def past_or_present_date
     if published_at && published_at > Time.current
       errors.add(:date_time, "must be entered in DD/MM/YYYY format with current or past date")
+    end
+  end
+
+  def canonical_url_must_not_has_spaces
+    if canonical_url.to_s.match(/\s/).present?
+      errors.add(:canonical_url, "must has not spaces")
     end
   end
 
