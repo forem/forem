@@ -37,6 +37,9 @@
     "*.json": [
       "prettier --write"
     ],
+    "*.scss": [
+      "prettier --write"
+    ],
     "*.md": [
       "prettier --write --prose-wrap always"
     ]
