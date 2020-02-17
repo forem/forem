@@ -394,7 +394,8 @@ class Article < ApplicationRecord
   end
 
   def update_score
-    update_columns(score: reactions.sum(:points),
+    new_score = reactions.sum(:points) + Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
+    update_columns(score: new_score,
                    comment_score: comments.sum(:score),
                    hotness_score: BlackBox.article_hotness_score(self),
                    spaminess_rating: BlackBox.calculate_spaminess(self))
