@@ -96,7 +96,7 @@ num_articles.times do |i|
 
   markdown = <<~MARKDOWN
     ---
-    title:  #{Faker::Book.title} #{Faker::Lorem.sentence(word_count: 2).chomp(".")}
+    title:  #{Faker::Book.title} #{Faker::Lorem.sentence(word_count: 2).chomp('.')}
     published: true
     cover_image: #{Faker::Company.logo}
     tags: #{tags.join(', ')}

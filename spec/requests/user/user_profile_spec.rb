@@ -123,14 +123,6 @@ RSpec.describe "UserProfiles", type: :request do
     end
   end
 
-  describe "GET /user" do
-    it "renders to appropriate page" do
-      user = create(:user)
-      get "/#{user.username}"
-      expect(response.body).to include CGI.escapeHTML(user.name)
-    end
-  end
-
   describe "redirect to moderation" do
     it "redirects to admin" do
       user = create(:user)
