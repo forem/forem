@@ -1,17 +1,8 @@
-class ApplicationDecorator
-  delegate_missing_to :@object
-
-  attr_reader :object
-
-  def initialize(object)
-    @object = object
-  end
-
-  def decorated?
-    true
-  end
-
-  def self.decorate_collection(objects)
-    objects.map(&:decorate)
-  end
+class ApplicationDecorator < Draper::Decorator
+  # Define methods for all decorated objects.
+  # Helpers are accessed through `helpers` (aka `h`). For example:
+  #
+  #   def percent_amount
+  #     h.number_to_percentage object.amount, precision: 2
+  #   end
 end

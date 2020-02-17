@@ -1,92 +1,48 @@
 require "rails_helper"
 
 RSpec.describe UserDecorator, type: :decorator do
-  let_it_be_changeable(:saved_user) { create(:user) }
-  let(:user) { build(:user) }
+  let(:user) { build_stubbed(:user) }
 
   describe "#cached_followed_tags" do
+    let_it_be(:user) { create(:user) }
     let(:tag1)  { create(:tag) }
     let(:tag2)  { create(:tag) }
     let(:tag3)  { create(:tag) }
 
     it "returns empty if no tags followed" do
-      expect(saved_user.decorate.cached_followed_tags.size).to eq(0)
+      expect(user.decorate.cached_followed_tags.size).to eq(0)
     end
 
     it "returns array of tags if user follows them" do
-      saved_user.follow(tag1)
-      saved_user.follow(tag2)
-      saved_user.follow(tag3)
-      expect(saved_user.decorate.cached_followed_tags.size).to eq(3)
+      user.follow(tag1)
+      user.follow(tag2)
+      user.follow(tag3)
+      expect(user.decorate.cached_followed_tags.size).to eq(3)
     end
 
     it "returns tag object with name" do
-      saved_user.follow(tag1)
-      expect(saved_user.decorate.cached_followed_tags.first.name).to eq(tag1.name)
+      user.follow(tag1)
+      expect(user.decorate.cached_followed_tags.first.name).to eq(tag1.name)
     end
 
     it "returns follow points for tag" do
-      saved_user.follow(tag1)
-      expect(saved_user.decorate.cached_followed_tags.first.points).to eq(1.0)
+      user.follow(tag1)
+      expect(user.decorate.cached_followed_tags.first.points).to eq(1.0)
     end
 
     it "returns adjusted points for tag" do
-      follow = saved_user.follow(tag1)
+      follow = user.follow(tag1)
       follow.update(points: 0.1)
-      expect(saved_user.decorate.cached_followed_tags.first.points).to eq(0.1)
-    end
-  end
-
-  describe "#darker_color" do
-    it "returns a darker version of the assigned color if colors are blank" do
-      saved_user.assign_attributes(bg_color_hex: "", text_color_hex: "")
-      expect(saved_user.decorate.darker_color).to be_present
+      expect(user.decorate.cached_followed_tags.first.points).to eq(0.1)
     end
 
-    it "returns a darker version of the color if bg_color_hex is present" do
-      saved_user.assign_attributes(bg_color_hex: "#dddddd", text_color_hex: "#ffffff")
-      expect(saved_user.decorate.darker_color).to eq("#c2c2c2")
+    it "returns not fully banished if in good standing" do
+      expect(user.decorate.fully_banished?).to eq(false)
     end
 
-    it "returns an adjusted darker version of the color" do
-      saved_user.assign_attributes(bg_color_hex: "#dddddd", text_color_hex: "#ffffff")
-      expect(saved_user.decorate.darker_color(0.3)).to eq("#424242")
-    end
-
-    it "returns an adjusted lighter version of the color if adjustment is over 1.0" do
-      saved_user.assign_attributes(bg_color_hex: "#dddddd", text_color_hex: "#ffffff")
-      expect(saved_user.decorate.darker_color(1.1)).to eq("#f3f3f3")
-    end
-  end
-
-  describe "#enriched_colors" do
-    it "returns assigned colors if bg_color_hex is blank" do
-      saved_user.assign_attributes(bg_color_hex: "")
-      expect(saved_user.decorate.enriched_colors[:bg]).to be_present
-      expect(saved_user.decorate.enriched_colors[:text]).to be_present
-    end
-
-    it "returns assigned colors if text_color_hex is blank" do
-      saved_user.assign_attributes(text_color_hex: "")
-      expect(saved_user.decorate.enriched_colors[:bg]).to be_present
-      expect(saved_user.decorate.enriched_colors[:text]).to be_present
-    end
-
-    it "returns bg_color_hex and assigned text_color_hex if text_color_hex is blank" do
-      saved_user.assign_attributes(bg_color_hex: "#dddddd", text_color_hex: "")
-      expect(saved_user.decorate.enriched_colors[:bg]).to be_present
-      expect(saved_user.decorate.enriched_colors[:text]).to be_present
-    end
-
-    it "returns text_color_hex and assigned bg_color_hex if bg_color_hex is blank" do
-      saved_user.assign_attributes(bg_color_hex: "", text_color_hex: "#ffffff")
-      expect(saved_user.decorate.enriched_colors[:bg]).to be_present
-      expect(saved_user.decorate.enriched_colors[:text]).to be_present
-    end
-
-    it "returns bg_color_hex and text_color_hex if both are present" do
-      saved_user.assign_attributes(bg_color_hex: "#dddddd", text_color_hex: "#fffff3")
-      expect(saved_user.decorate.enriched_colors).to eq(bg: "#dddddd", text: "#fffff3")
+    it "returns fully banished if user has been banished" do
+      Moderator::BanishUser.call(admin: user, user: user)
+      expect(user.decorate.fully_banished?).to eq(true)
     end
   end
 
@@ -183,28 +139,6 @@ RSpec.describe UserDecorator, type: :decorator do
     it "determines not dark theme if not one of the dark themes" do
       user.config_theme = "default"
       expect(user.decorate.dark_theme?).to be(false)
-    end
-  end
-
-  describe "#fully_banished?" do
-    it "returns not fully banished if in good standing" do
-      expect(user.decorate.fully_banished?).to eq(false)
-    end
-
-    it "returns fully banished if user has been banished" do
-      Moderator::BanishUser.call(admin: user, user: user)
-      expect(user.decorate.fully_banished?).to eq(true)
-    end
-  end
-
-  describe "#stackbit_integration?" do
-    it "returns false by default" do
-      expect(user.decorate.stackbit_integration?).to be(false)
-    end
-
-    it "returns true if the user has access tokens" do
-      user.access_tokens.build
-      expect(user.decorate.stackbit_integration?).to be(true)
     end
   end
 end
