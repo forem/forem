@@ -17,12 +17,39 @@ module Search
         SearchClient.get(id: tag_id, index: INDEX_ALIAS)
       end
 
+      def search(query_string)
+        SearchClient.search(
+          index: INDEX_ALIAS,
+          body: {
+            query: {
+              query_string: {
+                query: query_string,
+                analyze_wildcard: true,
+                allow_leading_wildcard: false
+              }
+            },
+            sort: {
+              hotness_score: "desc"
+            }
+          },
+        )
+      end
+
+      def search_documents(query_string)
+        results = search(query_string)
+        results.dig("hits", "hits").map { |tag_doc| tag_doc.dig("_source") }
+      end
+
       def create_index(index_name: INDEX_NAME)
         SearchClient.indices.create(index: index_name, body: settings)
       end
 
       def delete_index(index_name: INDEX_NAME)
         SearchClient.indices.delete(index: index_name)
+      end
+
+      def refresh_index(index_name: INDEX_ALIAS)
+        SearchClient.indices.refresh(index: index_name)
       end
 
       def add_alias(index_name: INDEX_NAME, index_alias: INDEX_ALIAS)
