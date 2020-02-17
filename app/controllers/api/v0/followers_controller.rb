@@ -6,7 +6,7 @@ module Api
 
       def organizations
         @follows = Follow.
-          where(followable_id: @user.organizations.pluck(:id), followable_type: "Organization").
+          where(followable_id: @user.organization_ids, followable_type: "Organization").
           includes(:follower).
           select(ORGANIZATIONS_ATTRIBUTES_FOR_SERIALIZATION).
           order("created_at DESC").
