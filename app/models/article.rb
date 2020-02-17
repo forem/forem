@@ -567,9 +567,7 @@ class Article < ApplicationRecord
   end
 
   def canonical_url_must_not_have_spaces
-    if canonical_url.to_s.match(/[[:space:]]/).present?
-      errors.add(:canonical_url, "must not have spaces")
-    end
+    errors.add(:canonical_url, "must not have spaces") if canonical_url.to_s.match?(/[[:space:]]/)
   end
 
   # Admin only beta tags etc.
