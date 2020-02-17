@@ -132,16 +132,19 @@ RSpec.describe "StoriesIndex", type: :request do
       end
 
       it "contains the stories correctly serialized" do
-        create(:article, featured: true)
-        create_list(:article, 2)
+        # we control titles to avoid escaping errors with apostrophes and such
+        article = create(:article, featured: true)
+        article.update_columns(title: "abc")
+
+        articles = create_list(:article, 2)
+        articles.each { |a| a.update_columns(title: "abc") }
 
         get root_path
         expect(response).to have_http_status(:ok)
 
-        # Articles::Feed.new(number_of_articles: number_of_articles, page: @page, tag: params[:tag])
-        # feed.default_home_feed(user_signed_in: user_signed_in?)
         stories = controller.instance_variable_get(:@stories) # cheating a bit ;)
-        expected_result = stories.to_json(controller.class.const_get(:DEFAULT_HOME_FEED_ATTRIBUTES_FOR_SERIALIZATION))
+        expected_result = ArticleDecorator.decorate_collection(stories).
+          to_json(controller.class.const_get(:DEFAULT_HOME_FEED_ATTRIBUTES_FOR_SERIALIZATION))
         expect(response.body).to include(ERB::Util.html_escape(expected_result))
       end
     end
