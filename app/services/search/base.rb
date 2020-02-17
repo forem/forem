@@ -30,7 +30,7 @@ module Search
       end
 
       def update_mappings(index_alias: self::INDEX_ALIAS)
-        SearchClient.indices.put_mapping(index: index_alias, body: mappings)
+        SearchClient.indices.put_mapping(index: index_alias, body: self::MAPPINGS)
       end
 
       private
@@ -41,10 +41,6 @@ module Search
 
       def index_settings
         raise "Search classes must implement their own index settings"
-      end
-
-      def mappings
-        raise "Search classes must define their own index mappings"
       end
     end
   end
