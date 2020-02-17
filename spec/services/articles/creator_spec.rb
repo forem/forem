@@ -12,7 +12,7 @@ RSpec.describe Articles::Creator, type: :service do
       end.to change(Article, :count).by(1)
     end
 
-    it "returns a non decorated, persisted, article" do
+    it "returns a non decorated, persisted article" do
       article = described_class.call(user, valid_attributes)
 
       expect(article.decorated?).to be(false)
@@ -61,7 +61,7 @@ RSpec.describe Articles::Creator, type: :service do
       end.not_to change(Article, :count)
     end
 
-    it "returns a non decorated, non persisted, article" do
+    it "returns a non decorated, non persisted article" do
       article = described_class.call(user, invalid_attributes)
 
       expect(article.decorated?).to be(false)

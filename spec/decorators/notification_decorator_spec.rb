@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe NotificationDecorator, type: :decorator do
+  let(:notification) { build(:notification) }
+
   context "with serialization" do
     let_it_be_readonly(:notification) { create(:notification).decorate }
 
@@ -20,7 +22,6 @@ RSpec.describe NotificationDecorator, type: :decorator do
     let(:comment) { create(:comment, commentable: create(:article, organization: create(:organization))) }
 
     it "returns empty struct if the notification is new" do
-      notification = build(:notification)
       result = notification.decorate.mocked_object("user")
 
       expect(result.name).to be_empty
@@ -28,7 +29,6 @@ RSpec.describe NotificationDecorator, type: :decorator do
     end
 
     it "returns empty struct class and its name if the notification is new" do
-      notification = build(:notification)
       result = notification.decorate.mocked_object("user")
 
       expect(result.class).to be_a(Struct)
@@ -54,7 +54,6 @@ RSpec.describe NotificationDecorator, type: :decorator do
 
   describe "#milestone_type" do
     it "returns empty string if there is no action" do
-      notification = build(:notification)
       expect(notification.decorate.milestone_type).to be_empty
     end
 
@@ -66,7 +65,6 @@ RSpec.describe NotificationDecorator, type: :decorator do
 
   describe "#milestone_count" do
     it "returns empty string if there is no action" do
-      notification = build(:notification)
       expect(notification.decorate.milestone_count).to be_empty
     end
 
