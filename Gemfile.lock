@@ -641,7 +641,7 @@ GEM
     reverse_markdown (1.4.0)
       nokogiri
     rolify (5.2.0)
-    rouge (3.15.0)
+    rouge (3.16.0)
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
       rspec-expectations (~> 3.9.0)
@@ -950,7 +950,7 @@ DEPENDENCIES
   redis-rails (~> 5.0.2)
   reverse_markdown (~> 1.4)
   rolify (~> 5.2)
-  rouge (~> 3.15)
+  rouge (~> 3.16)
   rspec-rails (~> 3.9)
   rspec-retry (~> 0.6)
   rubocop (~> 0.79)
