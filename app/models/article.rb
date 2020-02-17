@@ -45,7 +45,7 @@ class Article < ApplicationRecord
   validate :validate_collection_permission
   validate :validate_liquid_tag_permissions
   validate :past_or_present_date
-  validate :canonical_url_must_not_has_spaces
+  validate :canonical_url_must_not_have_spaces
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :cached_tag_list, length: { maximum: 126 }
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
@@ -566,9 +566,9 @@ class Article < ApplicationRecord
     end
   end
 
-  def canonical_url_must_not_has_spaces
-    if canonical_url.to_s.match(/\s/).present?
-      errors.add(:canonical_url, "must has not spaces")
+  def canonical_url_must_not_have_spaces
+    if canonical_url.to_s.match(/[[:space:]]/).present?
+      errors.add(:canonical_url, "must not have spaces")
     end
   end
 
