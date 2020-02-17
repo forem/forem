@@ -17,9 +17,9 @@ module Search
     attribute :tags, &:tag_list
 
     attribute :author do |cl|
-      ClassifiedListingAuthorSerializer.new(cl.author)
-        .serializable_hash
-        .dig(:data, :attributes)
+      ClassifiedListingAuthorSerializer.new(cl.author).
+        serializable_hash.
+        dig(:data, :attributes)
     end
   end
 end
