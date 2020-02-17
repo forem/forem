@@ -7,8 +7,7 @@ class StoriesController < ApplicationController
     ],
     methods: %i[
       readable_publish_date cached_tag_list_array flare_tag class_name
-      cloudinary_video_url video_duration_in_minutes published_at_int
-      published_timestamp
+      cloudinary_video_url video_duration_in_minutes published_at_int published_timestamp
     ]
   }.freeze
 
