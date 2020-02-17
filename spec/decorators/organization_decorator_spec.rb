@@ -1,6 +1,21 @@
 require "rails_helper"
 
 RSpec.describe OrganizationDecorator, type: :decorator do
+  context "with serialization" do
+    let_it_be_readonly(:organization) { create(:organization).decorate }
+
+    it "serializes both the decorated object IDs and decorated methods" do
+      expected_result = { "id" => organization.id, "fully_banished?" => organization.fully_banished? }
+      expect(organization.as_json(only: [:id], methods: [:fully_banished?])).to eq(expected_result)
+    end
+
+    it "serializes collections of decorated objects" do
+      decorated_collection = Organization.decorate
+      expected_result = [{ "id" => organization.id, "fully_banished?" => organization.fully_banished? }]
+      expect(decorated_collection.as_json(only: [:id], methods: [:fully_banished?])).to eq(expected_result)
+    end
+  end
+
   describe "#darker_color" do
     it "returns a darker version of the assigned color if colors are blank" do
       organization = build(:organization, bg_color_hex: "", text_color_hex: "")

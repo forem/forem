@@ -4,6 +4,21 @@ RSpec.describe UserDecorator, type: :decorator do
   let_it_be_changeable(:saved_user) { create(:user) }
   let(:user) { build(:user) }
 
+  context "with serialization" do
+    it "serializes both the decorated object IDs and decorated methods" do
+      user = saved_user.decorate
+      expected_result = { "id" => user.id, "dark_theme?" => user.dark_theme? }
+      expect(user.as_json(only: [:id], methods: [:dark_theme?])).to eq(expected_result)
+    end
+
+    it "serializes collections of decorated objects" do
+      user = saved_user.decorate
+      decorated_collection = User.decorate
+      expected_result = [{ "id" => user.id, "dark_theme?" => user.dark_theme? }]
+      expect(decorated_collection.as_json(only: [:id], methods: [:dark_theme?])).to eq(expected_result)
+    end
+  end
+
   describe "#cached_followed_tags" do
     let(:tag1)  { create(:tag) }
     let(:tag2)  { create(:tag) }

@@ -1,6 +1,27 @@
 require "rails_helper"
 
 RSpec.describe PodcastEpisodeDecorator, type: :decorator do
+  context "with serialization" do
+    let(:podcast_episode) { create(:podcast_episode).decorate }
+
+    it "serializes both the decorated object IDs and decorated methods" do
+      expected_result = {
+        "id" => podcast_episode.id, "comments_to_show_count" => podcast_episode.comments_to_show_count
+      }
+      expect(podcast_episode.as_json(only: [:id], methods: [:comments_to_show_count])).to eq(expected_result)
+    end
+
+    it "serializes collections of decorated objects" do
+      podcast_episode # for the side effect
+
+      decorated_collection = PodcastEpisode.decorate
+      expected_result = [
+        { "id" => podcast_episode.id, "comments_to_show_count" => podcast_episode.comments_to_show_count },
+      ]
+      expect(decorated_collection.as_json(only: [:id], methods: [:comments_to_show_count])).to eq(expected_result)
+    end
+  end
+
   describe "#comments_to_show_count" do
     it "returns 25 if does not have a discuss tag" do
       pe = build(:podcast_episode)

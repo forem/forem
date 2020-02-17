@@ -7,11 +7,27 @@ RSpec.describe ArticleDecorator, type: :decorator do
   end
 
   let(:article) { build(:article) }
+  let(:published_article) { create_article(published: true) }
   let(:organization) { build(:organization) }
+
+  context "with serialization" do
+    it "serializes both the decorated object IDs and decorated methods" do
+      article = published_article
+      expected_result = { "id" => article.id, "published_at_int" => article.published_at_int }
+      expect(article.as_json(only: [:id], methods: [:published_at_int])).to eq(expected_result)
+    end
+
+    it "serializes collections of decorated objects" do
+      article = published_article
+      decorated_collection = Article.published.decorate
+      expected_result = [{ "id" => article.id, "published_at_int" => article.published_at_int }]
+      expect(decorated_collection.as_json(only: [:id], methods: [:published_at_int])).to eq(expected_result)
+    end
+  end
 
   describe "#current_state_path" do
     it "returns the path /:username/:slug when published" do
-      article = create_article(published: true)
+      article = published_article
       expect(article.current_state_path).to eq("/#{article.username}/#{article.slug}")
     end
 

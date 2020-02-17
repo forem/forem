@@ -1,4 +1,7 @@
 class ApplicationDecorator
+  include ActiveModel::Serialization
+  include ActiveModel::Serializers::JSON
+
   delegate_missing_to :@object
 
   attr_reader :object

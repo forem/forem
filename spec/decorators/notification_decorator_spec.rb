@@ -1,6 +1,21 @@
 require "rails_helper"
 
 RSpec.describe NotificationDecorator, type: :decorator do
+  context "with serialization" do
+    let_it_be_readonly(:notification) { create(:notification).decorate }
+
+    it "serializes both the decorated object IDs and decorated methods" do
+      expected_result = { "id" => notification.id, "milestone_type" => notification.milestone_type }
+      expect(notification.as_json(only: [:id], methods: [:milestone_type])).to eq(expected_result)
+    end
+
+    it "serializes collections of decorated objects" do
+      decorated_collection = Notification.decorate
+      expected_result = [{ "id" => notification.id, "milestone_type" => notification.milestone_type }]
+      expect(decorated_collection.as_json(only: [:id], methods: [:milestone_type])).to eq(expected_result)
+    end
+  end
+
   describe "#mocked_object" do
     let(:comment) { create(:comment, commentable: create(:article, organization: create(:organization))) }
 
