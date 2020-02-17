@@ -163,6 +163,14 @@ function initializePodcastPlayback() {
     })
   }
 
+  function loadAudio(audio) {
+    if(navigator.userAgent === 'DEV-Native-ios') {
+      sendPodcastMessage('load');
+    } else {
+      audio.load();
+    }
+  }
+
   function startAudioPlayback(audio) {
     playAudio(audio).then(
         function() {
@@ -318,7 +326,7 @@ function initializePodcastPlayback() {
       document.getElementById('audiocontent').innerHTML = currentState.html;
       var audio = getById('audio');
       audio.currentTime = currentState.time;
-      audio.load();
+      loadAudio(audio);
       if (currentState.playing) {
         playAudio(audio).catch(function(error) {
           pausePodcastBar();
@@ -354,6 +362,6 @@ function initializePodcastPlayback() {
   var audio = getById('audio');
   var audioContent = getById('audiocontent')
   if (audio && audioContent && audioContent.innerHTML.length < 25) { // audio not already loaded
-    audio.load();
+    loadAudio(audio);
   }
 }
