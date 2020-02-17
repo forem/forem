@@ -93,3 +93,12 @@ Please execute the script itself to view all additional options:
   done via the GUI:
 
   ![docker gui](https://user-images.githubusercontent.com/47985/74210448-b63b7c80-4c83-11ea-959b-02249b2a6952.png)
+
+- In case `rails server` doesn't start with the following message:
+  ```
+  Data update scripts need to be run before you can start the application. Please run rake data_updates:run (RuntimeError)
+  ```
+  run the following command:
+  ```sh
+  docker-compose run web data_updates:run
+  ```
