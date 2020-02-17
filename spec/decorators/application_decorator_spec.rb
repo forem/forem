@@ -3,14 +3,14 @@ require "rails_helper"
 RSpec.describe ApplicationDecorator, type: :decorator do
   describe "#object" do
     it "exposes the decorated object" do
-      obj = Class.new
+      obj = Object.new
       expect(described_class.new(obj).object).to be(obj)
     end
   end
 
   describe "#decorated?" do
     it "returns true" do
-      obj = Class.new
+      obj = Object.new
       expect(described_class.new(obj).decorated?).to be(true)
     end
   end
