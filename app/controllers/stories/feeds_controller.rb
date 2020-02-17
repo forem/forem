@@ -1,6 +1,4 @@
 class Stories::FeedsController < ApplicationController
-  before_action :set_cache_control_headers
-
   respond_to :json
 
   ARTICLE_ATTRIBUTES = %i[
