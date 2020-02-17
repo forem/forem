@@ -10,7 +10,6 @@ else
   params = {
     restrictIndices: [
       "searchables_#{Rails.env}",
-      "Tag_#{Rails.env}",
       "ordered_articles_#{Rails.env}",
       "ClassifiedListing_#{Rails.env}",
       "ordered_articles_by_published_at_#{Rails.env}",
