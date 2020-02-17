@@ -88,16 +88,14 @@ class ArticlesController < ApplicationController
 
   def edit
     authorize @article
-
     @version = @article.has_frontmatter? ? "v1" : "v2"
     @user = @article.user
     @organizations = @user&.organizations
   end
 
   def manage
-    authorize @article
-
     @article = @article.decorate
+    authorize @article
     @user = @article.user
     @rating_vote = RatingVote.where(article_id: @article.id, user_id: @user.id).first
     @buffer_updates = BufferUpdate.where(composer_user_id: @user.id, article_id: @article.id)
@@ -138,12 +136,13 @@ class ArticlesController < ApplicationController
   def create
     authorize Article
 
-    article = Articles::Creator.call(current_user, article_params_json)
+    @user = current_user
+    @article = Articles::Creator.call(@user, article_params_json)
 
-    render json: if article.persisted?
-                   { id: article.id, current_state_path: article.decorate.current_state_path }.to_json
+    render json: if @article.persisted?
+                   @article.to_json(only: [:id], methods: [:current_state_path])
                  else
-                   article.errors.to_json
+                   @article.errors.to_json
                  end
   end
 

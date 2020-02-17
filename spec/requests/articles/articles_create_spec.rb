@@ -2,7 +2,6 @@ require "rails_helper"
 
 RSpec.describe "ArticlesCreate", type: :request do
   let(:user) { create(:user, :org_member) }
-  let(:template) { file_fixture("article_published.txt").read }
 
   before do
     sign_in user
@@ -47,15 +46,6 @@ RSpec.describe "ArticlesCreate", type: :request do
       }
     }
     expect(Collection.last.slug).to eq("helloyo")
-  end
-
-  it "returns the ID and the current_state_path of the article" do
-    post "/articles", params: { article: { body_markdown: template } }
-    expect(response).to have_http_status(:ok)
-
-    article = Article.last
-    expect(response.parsed_body["id"]).to eq(article.id)
-    expect(response.parsed_body["current_state_path"]).to eq(article.current_state_path)
   end
 
   context "when scheduling jobs" do
