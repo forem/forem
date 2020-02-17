@@ -18,12 +18,14 @@ class UserDecorator < ApplicationDecorator
     },
   ].freeze
 
+  delegate_all
+
   def cached_followed_tags
     Rails.cache.fetch("user-#{id}-#{updated_at}/followed_tags_11-30", expires_in: 20.hours) do
-      follows = Follow.where(follower_id: id, followable_type: "ActsAsTaggableOn::Tag").pluck(:followable_id, :points)
-      tags = Tag.where(id: follows.map { |f| f[0] }).order("hotness_score DESC")
+      follows_query = Follow.where(follower_id: id, followable_type: "ActsAsTaggableOn::Tag").pluck(:followable_id, :points)
+      tags = Tag.where(id: follows_query.map { |f| f[0] }).order("hotness_score DESC")
       tags.each do |t|
-        follow_query_item = follows.detect { |f| f[0] == t.id }
+        follow_query_item = follows_query.detect { |f| f[0] == t.id }
         t.points = follow_query_item[1]
       end
       tags
@@ -42,21 +44,20 @@ class UserDecorator < ApplicationDecorator
       }
     else
       {
-        bg: bg_color_hex,
-        text: text_color_hex
+        bg: bg_color_hex || assigned_color[:bg],
+        text: text_color_hex || assigned_color[:text]
       }
     end
   end
 
   def config_body_class
-    body_class = [
-      config_theme.tr("_", "-"),
-      "#{config_font.tr('_', '-')}-article-body",
-      "pro-status-#{pro?}",
-      "trusted-status-#{trusted}",
-      "#{config_navbar.tr('_', '-')}-navbar-config",
-    ]
-    body_class.join(" ")
+    body_class = ""
+    body_class += config_theme.tr("_", "-")
+    body_class += " #{config_font.tr('_', '-')}-article-body"
+    body_class += " pro-status-#{pro?}"
+    body_class += " trusted-status-#{trusted}"
+    body_class += " #{config_navbar.tr('_', '-')}-navbar-config"
+    body_class
   end
 
   def dark_theme?
@@ -94,9 +95,11 @@ class UserDecorator < ApplicationDecorator
     colors[id % 10]
   end
 
-  # returns true if the user has been suspended and has no content
   def fully_banished?
-    articles_count.zero? && comments_count.zero? && banned
+    # User suspended and has no content
+    articles_count.zero? &&
+      comments_count.zero? &&
+      banned
   end
 
   def stackbit_integration?
