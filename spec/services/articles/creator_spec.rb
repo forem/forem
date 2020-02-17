@@ -12,9 +12,10 @@ RSpec.describe Articles::Creator, type: :service do
       end.to change(Article, :count).by(1)
     end
 
-    it "returns an article" do
+    it "returns a non decorated, persisted, article" do
       article = described_class.call(user, valid_attributes)
-      expect(article).to be_kind_of(Article)
+
+      expect(article.decorated?).to be(false)
       expect(article).to be_persisted
     end
 
@@ -35,7 +36,7 @@ RSpec.describe Articles::Creator, type: :service do
       event_dispatcher = double
       allow(event_dispatcher).to receive(:call)
       article = described_class.call(user, valid_attributes, event_dispatcher)
-      expect(event_dispatcher).to have_received(:call).with("article_created", article.object)
+      expect(event_dispatcher).to have_received(:call).with("article_created", article)
     end
 
     it "doesn't call an event dispatcher when an article is unpublished" do
@@ -43,7 +44,7 @@ RSpec.describe Articles::Creator, type: :service do
       event_dispatcher = double
       allow(event_dispatcher).to receive(:call)
       article = described_class.call(user, attributes, event_dispatcher)
-      expect(event_dispatcher).not_to have_received(:call).with("article_created", article.object)
+      expect(event_dispatcher).not_to have_received(:call).with("article_created", article)
     end
   end
 
@@ -60,9 +61,10 @@ RSpec.describe Articles::Creator, type: :service do
       end.not_to change(Article, :count)
     end
 
-    it "returns an unsaved article" do
+    it "returns a non decorated, non persisted, article" do
       article = described_class.call(user, invalid_attributes)
-      expect(article).to be_kind_of(Article)
+
+      expect(article.decorated?).to be(false)
       expect(article).not_to be_persisted
       expect(article.errors.size).to eq(1)
     end

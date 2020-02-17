@@ -32,7 +32,8 @@ module Api
       end
 
       def create
-        @article = Articles::Creator.call(@user, article_params)
+        @article = Articles::Creator.call(@user, article_params).decorate
+
         if @article.persisted?
           render "show", status: :created, location: @article.url
         else

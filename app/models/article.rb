@@ -147,7 +147,7 @@ class Article < ApplicationRecord
                  :featured, :published, :published_at, :featured_number,
                  :comments_count, :reactions_count, :positive_reactions_count,
                  :path, :class_name, :user_name, :user_username, :comments_blob,
-                 :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date, :flare_tag
+                 :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date, :flare_tag, :approved
       attribute :user do
         { username: user.username, name: user.name,
           profile_image_90: ProfileImage.new(user).get(width: 90), pro: user.pro? }
@@ -173,7 +173,7 @@ class Article < ApplicationRecord
     add_index "ordered_articles", id: :index_id, per_environment: true, enqueue: :trigger_index do
       attributes :title, :path, :class_name, :comments_count, :reading_time, :language,
                  :tag_list, :positive_reactions_count, :id, :hotness_score, :score, :readable_publish_date, :flare_tag, :user_id,
-                 :organization_id, :cloudinary_video_url, :video_duration_in_minutes, :experience_level_rating, :experience_level_rating_distribution
+                 :organization_id, :cloudinary_video_url, :video_duration_in_minutes, :experience_level_rating, :experience_level_rating_distribution, :approved
       attribute :published_at_int do
         published_at.to_i
       end

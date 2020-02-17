@@ -4,9 +4,17 @@ RSpec.describe DataUpdateScript do
   it { is_expected.to validate_uniqueness_of(:file_name) }
 
   it "can constantize all script names" do
+    described_class.load_script_ids # Create DataUpdateScripts in db
     described_class.filenames.each do |filename|
-      expect { "#{described_class::NAMESPACE}::#{filename.camelcase}".constantize }.not_to raise_error
+      script = described_class.find_by(file_name: filename)
+      expect { script.file_class }.not_to raise_error
     end
+  end
+
+  it "default orders scripts by name" do
+    script1 = FactoryBot.create(:data_update_script, file_name: "456_test_script")
+    script2 = FactoryBot.create(:data_update_script, file_name: "123_test_script")
+    expect(described_class.pluck(:id)).to eq([script2.id, script1.id])
   end
 
   describe "::load_script_ids" do
@@ -63,6 +71,18 @@ RSpec.describe DataUpdateScript do
       test_script.mark_as_failed!
       expect(test_script).to be_failed
       expect(test_script.finished_at).not_to be_nil
+    end
+  end
+
+  describe "#file_path" do
+    it "returns correct loadable file_path" do
+      described_class.load_script_ids
+      described_class.filenames.each do |filename|
+        expect do
+          script = described_class.find_by(file_name: filename)
+          require script.file_path
+        end.not_to raise_error
+      end
     end
   end
 end
