@@ -92,7 +92,9 @@ Rails.application.routes.draw do
   end
 
   namespace :stories, defaults: { format: "json" } do
-    resource :feed, only: [:show]
+    resource :feed, only: [:show] do
+      get ":timeframe" => "feeds#show"
+    end
   end
 
   namespace :api, defaults: { format: "json" } do
