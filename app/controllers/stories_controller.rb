@@ -87,6 +87,12 @@ class StoriesController < ApplicationController
       return
     end
 
+    @num_published_articles = if @tag_model.requires_approval?
+                                Article.published.cached_tagged_by_approval_with(@tag).size
+                              else
+                                Article.published.cached_tagged_with(@tag).size
+                              end
+
     @stories = Articles::Feed.new(number_of_articles: 8, tag: @tag).published_articles_by_tag
 
     @stories = @stories.where(approved: true) if @tag_model&.requires_approval
