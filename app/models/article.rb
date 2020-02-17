@@ -80,6 +80,8 @@ class Article < ApplicationRecord
 
   scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
 
+  scope :cached_tagged_by_approval_with, ->(tag) { cached_tagged_with(tag).where(approved: true) }
+
   scope :active_help, lambda {
                         published.
                           cached_tagged_with("help").
