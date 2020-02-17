@@ -82,23 +82,23 @@ RSpec.describe "StoriesIndex", type: :request do
         SiteConfig.campaign_hero_html_variant_name = "hero"
         get "/"
         expect(response.body).to include(CGI.escapeHTML(hero_html.html))
-       end
+      end
 
-       it "doesn't display when campaign_hero_html_variant_name is not set" do
+      it "doesn't display when campaign_hero_html_variant_name is not set" do
         SiteConfig.campaign_hero_html_variant_name = ""
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML(hero_html.html))
-       end
+      end
 
-       it "doesn't display when hero html is not approved" do
+      it "doesn't display when hero html is not approved" do
         SiteConfig.campaign_hero_html_variant_name = "hero"
         hero_html.update_column(:approved, false)
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML(hero_html.html))
-       end
-     end
+      end
+    end
 
-     context "with campaign_sidebar" do
+    context "with campaign_sidebar" do
       before do
         SiteConfig.campaign_featured_tags = "shecoded,theycoded"
         create(:article, approved: true, body_markdown: "---\ntitle: Super-sheep#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello")
@@ -121,6 +121,28 @@ RSpec.describe "StoriesIndex", type: :request do
         SiteConfig.campaign_sidebar_enabled = false
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Super-puper"))
+      end
+    end
+
+    describe "when authenticated" do
+      let(:user) { create(:user) }
+
+      before do
+        sign_in user
+      end
+
+      it "contains the stories correctly serialized" do
+        create(:article, featured: true)
+        create_list(:article, 2)
+
+        get root_path
+        expect(response).to have_http_status(:ok)
+
+        # Articles::Feed.new(number_of_articles: number_of_articles, page: @page, tag: params[:tag])
+        # feed.default_home_feed(user_signed_in: user_signed_in?)
+        stories = controller.instance_variable_get(:@stories) # cheating a bit ;)
+        expected_result = stories.to_json(controller.class.const_get(:DEFAULT_HOME_FEED_ATTRIBUTES_FOR_SERIALIZATION))
+        expect(response.body).to include(ERB::Util.html_escape(expected_result))
       end
     end
   end
