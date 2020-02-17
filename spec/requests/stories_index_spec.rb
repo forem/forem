@@ -76,16 +76,6 @@ RSpec.describe "StoriesIndex", type: :request do
     end
   end
 
-  describe "GET home page JSON feed" do
-    let(:headers) { { "ACCEPT": "application/json" } }
-
-    it "renders article list as json" do
-      get "/", headers: headers
-      expect(response.content_type).to eq("application/json")
-      expect(response.body).to include(article.title)
-    end
-  end
-
   describe "GET query page" do
     it "renders page with proper header" do
       get "/search?q=hello"
