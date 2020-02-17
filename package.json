@@ -98,7 +98,7 @@
     "clipboard-polyfill": "^2.8.6",
     "codemirror": "^5.51.0",
     "focus-visible": "^5.0.2",
-    "honeybadger-js": "2.1.1",
+    "honeybadger-js": "2.1.2",
     "intersection-observer": "^0.7.0",
     "linkstate": "^1.1.1",
     "lodash.debounce": "4.0.8",
