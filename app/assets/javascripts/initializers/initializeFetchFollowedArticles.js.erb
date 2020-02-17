@@ -186,10 +186,10 @@ function insertTimes() {
   var elements = document.getElementsByClassName('time-ago-indicator-initial-placeholder');
   for (var i = 0; i < elements.length; i++) {
 
-    // getElementsByClassName will get updated everytime we change DOM  
+    // getElementsByClassName will get updated everytime we change DOM
     // so elements[0] will produce the next unchanged element every iteration
     var element = elements[0];
 
-    element.outerHTML = timeAgo(element.dataset.seconds);
+    element.outerHTML = timeAgo({ oldTimeInSeconds: element.dataset.seconds });
   }
 };
