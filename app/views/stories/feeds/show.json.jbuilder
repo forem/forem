@@ -14,4 +14,3 @@ json.array!(@stories) do |article|
   json.extract! article, *article_attributes_to_include
   json.extract! article, *article_methods_to_include
 end
-
