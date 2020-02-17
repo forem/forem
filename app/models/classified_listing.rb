@@ -22,6 +22,7 @@ class ClassifiedListing < ApplicationRecord
   before_save :evaluate_markdown
   before_create :create_slug
   before_validation :modify_inputs
+  after_commit :index_to_elasticsearch
   acts_as_taggable_on :tags
   has_many :credits, as: :purchase, inverse_of: :purchase, dependent: :nullify
 
@@ -55,6 +56,22 @@ class ClassifiedListing < ApplicationRecord
   end
 
   scope :published, -> { where(published: true) }
+
+  def index_to_elasticsearch
+    Search::ClassifiedListingEsIndexWorker.perform_async(id)
+  end
+
+  def index_to_elasticsearch_inline
+    Search::ClassifiedListing.index(id, serialized_search_hash)
+  end
+
+  def serialized_search_hash
+    Search::ClassifiedListingSerializer.new(self).serializable_hash.dig(:data, :attributes)
+  end
+
+  def elasticsearch_doc
+    Search::ClassifiedListing.find_document(id)
+  end
 
   def self.cost_by_category(category = "education")
     categories_available[category][:cost]
