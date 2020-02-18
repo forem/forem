@@ -109,6 +109,7 @@
     "preact-textarea-autosize": "^4.0.7",
     "prop-types": "^15.7.2",
     "pusher-js": "^5.1.1",
+    "rails-erb-loader": "^5.5.2",
     "stimulus": "^1.1.1",
     "twilio-video": "^2.1.0",
     "web-share-wrapper": "^0.2.1"
