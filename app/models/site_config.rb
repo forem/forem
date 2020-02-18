@@ -13,6 +13,13 @@ class SiteConfig < RailsSettings::Base
   field :default_site_email, type: :string, default: "yo@dev.to"
   field :social_networks_handle, type: :string, default: "thepracticaldev"
 
+  # campaign
+  field :campaign_hero_html_variant_name, type: :string, default: ""
+  field :campaign_background_color, type: :string, default: "FFFFFF"
+  field :campaign_text_color, type: :string, default: "000000"
+  field :campaign_featured_tags, type: :array, default: %w[]
+  field :campaign_sidebar_enabled, type: :boolean, default: 0
+
   # images
   field :main_social_image, type: :string, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
   field :favicon_url, type: :string, default: "favicon.ico"

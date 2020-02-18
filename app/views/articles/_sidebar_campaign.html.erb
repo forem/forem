@@ -1,0 +1,16 @@
+<div class="widget">
+  <header>
+    <h4>
+      <% SiteConfig.campaign_featured_tags.each do |t| %>
+        <%= link_to("##{t}", "/t/#{t}") %>
+      <% end %>
+    </h4>
+  </header>
+  <div class="widget-body">
+    <div class="widget-link-list">
+      <% @latest_campaign_articles.each do |plucked_article| %>
+        <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
+      <% end %>
+    </div>
+  </div>
+</div>
