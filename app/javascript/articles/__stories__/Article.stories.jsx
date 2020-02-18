@@ -18,7 +18,7 @@ import { articleDecorator } from './articleDecorator';
 
 import '../../../assets/stylesheets/articles.scss';
 
-storiesOf('Components/Articles/Standard', module)
+storiesOf('Components/Article/Standard', module)
   .addDecorator(withKnobs)
   .addDecorator(articleDecorator)
   .add('Default', () => (
@@ -78,7 +78,7 @@ storiesOf('Components/Articles/Standard', module)
     />
   ));
 
-storiesOf('Components/Articles/Video', module)
+storiesOf('Components/Article/Video', module)
   .addDecorator(withKnobs)
   .addDecorator(articleDecorator)
   .add('Default', () => (
@@ -96,7 +96,7 @@ storiesOf('Components/Articles/Video', module)
     />
   ));
 
-storiesOf('Components/Articles/Podcast', module)
+storiesOf('Components/Article/Podcast', module)
   .addDecorator(withKnobs)
   .addDecorator(articleDecorator)
   .add('Default', () => (
@@ -114,7 +114,7 @@ storiesOf('Components/Articles/Podcast', module)
     />
   ));
 
-storiesOf('Components/Articles/User', module)
+storiesOf('Components/Article/User', module)
   .addDecorator(withKnobs)
   .addDecorator(articleDecorator)
   .add('Default', () => <Article article={object('article', userArticle)} />);
