@@ -46,6 +46,13 @@ class StoriesController < ApplicationController
                             &.html
   end
 
+  def get_latest_campaign_articles
+    @latest_campaign_articles = Article.tagged_with(SiteConfig.campaign_featured_tags, any: true)
+           .where("published_at > ?", 2.weeks.ago).where(approved: true)
+           .order("hotness_score DESC")
+           .pluck(:path, :title, :comments_count, :created_at)
+  end
+
   def redirect_to_changed_username_profile
     potential_username = params[:username].tr("@", "").downcase
     user_or_org = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username) ||
@@ -136,6 +143,7 @@ class StoriesController < ApplicationController
     assign_hero_html
     assign_podcasts
     assign_classified_listings
+    get_latest_campaign_articles if SiteConfig.campaign_sidebar_enabled?
     @article_index = true
     @featured_story = (@featured_story || Article.new)&.decorate
     @stories = ArticleDecorator.decorate_collection(@stories)
