@@ -12,8 +12,6 @@ Rails.application.routes.draw do
 
   require "sidekiq/web"
   authenticated :user, ->(user) { user.tech_admin? } do
-    mount DelayedJobWeb, at: "/delayed_job"
-
     Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
     Sidekiq::Web.set :sessions, Rails.application.config.session_options
     Sidekiq::Web.class_eval do
@@ -151,6 +149,7 @@ Rails.application.routes.draw do
   end
 
   namespace :incoming_webhooks do
+    get "/mailchimp/:secret/unsubscribe", to: "mailchimp_unsubscribes#index", as: :mailchimp_unsubscribe_check
     post "/mailchimp/:secret/unsubscribe", to: "mailchimp_unsubscribes#create", as: :mailchimp_unsubscribe
   end
 
@@ -210,6 +209,7 @@ Rails.application.routes.draw do
   resources :podcasts, only: %i[new create]
   resolve("ProMembership") { [:pro_membership] } # see https://guides.rubyonrails.org/routing.html#using-resolve
 
+  get "/search/tags" => "search#tags"
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/listings/dashboard" => "classified_listings#dashboard"
   get "/listings/:category" => "classified_listings#index"

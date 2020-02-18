@@ -13,7 +13,6 @@ RSpec.describe "Internal::Users", type: :request do
 
   before do
     sign_in super_admin
-    Delayed::Worker.new(quiet: true).work_off
     dependents_for_offending_user_article
     offender_activity_on_other_content
   end
@@ -32,7 +31,6 @@ RSpec.describe "Internal::Users", type: :request do
     perform_enqueued_jobs do
       Mention.create_all(comment2)
     end
-    Delayed::Worker.new(quiet: true).work_off
   end
 
   def offender_activity_on_other_content
@@ -42,7 +40,6 @@ RSpec.describe "Internal::Users", type: :request do
     comment = create(:comment, commentable_type: "Article", commentable: article2, user: user)
     # user3 reacts to offender comment
     create(:reaction, reactable: comment, reactable_type: "Comment", user: user3)
-    Delayed::Worker.new(quiet: true).work_off
   end
 
   def full_profile
@@ -62,13 +59,11 @@ RSpec.describe "Internal::Users", type: :request do
       url: Faker::Internet.url
     }
     GithubRepo.create(params)
-    Delayed::Worker.new(quiet: true).work_off
   end
 
   def call_ghost
     ghost
     post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "true" } }
-    Delayed::Worker.new(quiet: true).work_off
   end
 
   context "when merging users" do
@@ -187,7 +182,6 @@ RSpec.describe "Internal::Users", type: :request do
       create_mutual_follows
       create_mention
       create(:badge_achievement, rewarder_id: 1, rewarding_context_message: "yay", user_id: user.id)
-      Delayed::Worker.new(quiet: true).work_off
     end
 
     it "raises a 'record not found' error after deletion" do
@@ -206,7 +200,6 @@ RSpec.describe "Internal::Users", type: :request do
   context "when banishing user" do
     def banish_user
       post "/internal/users/#{user.id}/banish"
-      Delayed::Worker.new(quiet: true).work_off
       user.reload
     end
 
