@@ -8,10 +8,10 @@ class Stories::FeedsController < ApplicationController
   private
 
   def assign_feed_stories
-    feed = Articles::Feed.new(number_of_articles: 35, page: @page, tag: params[:tag])
-    stories = if %w[week month year infinity].include?(params[:timeframe])
+    feed = Articles::Feed.new(page: @page, tag: params[:tag])
+    stories = if params[:timeframe].in?(Timeframer::FILTER_TIMEFRAMES)
                 feed.top_articles_by_timeframe(timeframe: params[:timeframe])
-              elsif params[:timeframe] == "latest"
+              elsif params[:timeframe] == Timeframer::LATEST_TIMEFRAME
                 feed.latest_feed
               else
                 feed.default_home_feed(user_signed_in: user_signed_in?)

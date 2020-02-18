@@ -11,7 +11,7 @@ RSpec.describe "Stories::FeedsIndex", type: :request do
     it "renders article list as json" do
       get "/stories/feed", headers: headers
       expect(response.content_type).to eq("application/json")
-      expect(response.body).to include(article.title)
+      expect(response.body).to include(article.id.to_s)
       expect(response_article["title"]).to eq title
       expect(response_article["class_name"]).to eq "Article"
     end

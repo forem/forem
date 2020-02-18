@@ -1,6 +1,6 @@
 module Articles
   class Feed
-    def initialize(number_of_articles:, page: 1, tag: nil)
+    def initialize(number_of_articles: 35, page: 1, tag: nil)
       @number_of_articles = number_of_articles
       @page = page
       @tag = tag
@@ -12,7 +12,7 @@ module Articles
       articles
     end
 
-    # Timeframe values dome from Timeframer::DATETIMES
+    # Timeframe values from Timeframer::DATETIMES
     def top_articles_by_timeframe(timeframe:)
       published_articles_by_tag.where("published_at > ?", Timeframer.new(timeframe).datetime).
         order("score DESC")
