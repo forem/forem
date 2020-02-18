@@ -188,7 +188,7 @@ function algoliaPaginate(tag, requiresApproval) {
       hitsPerPage: 15,
       page: nextPage,
       attributesToHighlight: [],
-      tagFilters: tagFilters,
+      tagFilters,
       filters: (requiresApproval === 'true') ? 'approved:true' : ''
   }
 
