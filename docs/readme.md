@@ -7,13 +7,14 @@ items:
   - frontend
   - internal
   - design
-  - deployment.md
+  - deployment
   - tests
-  - contributing.md
-  - contributing_api.md
-  - faqs.md
-  - licensing.md
-  - self-hosting.md
+  - contributing
+  - contributing_api
+  - faqs
+  - licensing
+  - self-hosting
+  - maintainers
 ---
 
 # Welcome to DEV's developer documentation
