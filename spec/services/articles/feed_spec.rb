@@ -4,16 +4,6 @@ RSpec.describe Articles::Feed, type: :service do
   let!(:feed) { described_class.new(number_of_articles: 100, page: 1) }
   let!(:article) { create(:article) }
 
-  describe "#initialize" do
-    it "requires number of articles argument" do
-      expect { described_class.new(tag: "foo", page: 1) }.to raise_error(ArgumentError)
-    end
-
-    it "does not require the tag argument" do
-      expect { described_class.new(number_of_articles: 1, page: 1) }.not_to raise_error
-    end
-  end
-
   describe "#published_articles_by_tag" do
     let(:unpublished_article) { create(:article, published: false) }
     let(:tag) { "foo" }
