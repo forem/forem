@@ -52,7 +52,7 @@ class ReactionsController < ApplicationController
       current_user.touch
       reaction.destroy
       Moderator::SinkArticles.call(reaction.user_id) if vomit_reaction_on_user?(reaction)
-      Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
+      Notification.send_reaction_notification_without_delay(reaction, reaction_user(reaction))
       Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) if organization_article?(reaction)
       @result = "destroy"
     else
@@ -64,7 +64,7 @@ class ReactionsController < ApplicationController
       )
       @result = "create"
       Moderator::SinkArticles.call(reaction.user_id) if vomit_reaction_on_user?(reaction)
-      Notification.send_reaction_notification(reaction, reaction.reactable.user)
+      Notification.send_reaction_notification(reaction, reaction_user(reaction))
       Notification.send_reaction_notification(reaction, reaction.reactable.organization) if organization_article?(reaction)
     end
     render json: { result: @result, category: category }
@@ -78,6 +78,14 @@ class ReactionsController < ApplicationController
   end
 
   private
+
+  def reaction_user(reaction)
+    if reaction.reactable_type == "User"
+      reaction.reactable
+    else
+      reaction.reactable.user
+    end
+  end
 
   def organization_article?(reaction)
     reaction.reactable_type == "Article" && reaction.reactable.organization.present?

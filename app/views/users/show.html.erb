@@ -151,13 +151,11 @@
         <%= image_tag("three-dots.svg", class: "dropdown-icon", alt: "Toggle dropdown menu") %>
       </button>
       <div id="user-profile-dropdownmenu" class="profile-dropdownmenu">
-        <button id="user-profile-dropdownmenu-block-button" data-profile-user-id="<%= @user.id %>" class="block-button" type="button">Block @<%= @user.username %></button>
+        <button id="user-profile-dropdownmenu-block-button" data-profile-user-id="<%= @user.id %>" type="button">Block @<%= @user.username %></button>
         <% if current_user&.has_role?(:trusted) %>
-          <%= button_to Reaction.cached_any_reactions_for?(@user, current_user, "vomit") ? "Flag as Abusive" : "Remove Abuse Flag",
-                        reactions_path(reactable_id: @user.id, category: "vomit", reactable_type: "User"),
-                        method: :post,
-                        remote: true,
-                        form_class: "block-button" %>
+          <button id="user-profile-dropdownmenu-abuse-button" data-profile-user-id="<%= @user.id %>" type="button">
+            <%= Reaction.cached_any_reactions_for?(@user, current_user, "vomit") ? "Remove Abuse Flag" : "Flag as Abusive" %>
+          </button>
         <% end %>
         <% if user_signed_in? %>
           <%= javascript_pack_tag "profileDropdown", defer: true %>
