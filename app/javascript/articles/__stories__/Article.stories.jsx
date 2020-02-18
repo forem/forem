@@ -33,7 +33,7 @@ const article = {
     username: faker.internet.userName(),
     name: getName(),
     // We have 40 fake O'Reilly images to work with
-    profile_image_90: `/images/${Math.floor(Math.random() * 40)}.png`,
+    profile_image_90: `/images/10.png`,
   },
   published_at_int: publishDate.getTime(),
   published_timestamp: publishDate.toUTCString(),
@@ -49,7 +49,7 @@ const articleWithOrganization = {
     id: faker.random.number(),
     name: faker.random.words(2),
     slug: faker.helpers.slugify(faker.random.words(2)),
-    profile_image_90: `/images/${Math.floor(Math.random() * 40)}.png`,
+    profile_image_90: `/images/30.png`,
   },
 };
 
@@ -70,28 +70,16 @@ const articleWithSnippetResult = {
 const articleWithReactions = {
   ...article,
   positive_reactions_count: faker.random.number({ min: 1, max: 500 }),
-  user: {
-    ...article.user,
-    profile_image_90: `/images/${Math.floor(Math.random() * 40)}.png`,
-  },
 };
 
 const articleWithComments = {
   ...article,
   positive_reactions_count: faker.random.number({ min: 1, max: 500 }),
   comments_count: faker.random.number({ min: 1, max: 500 }),
-  user: {
-    ...article.user,
-    profile_image_90: `/images/${Math.floor(Math.random() * 40)}.png`,
-  },
 };
 
 const articleWithReadingTimeGreaterThan1 = {
   ...article,
-  user: {
-    ...article.user,
-    profile_image_90: `/images/${Math.floor(Math.random() * 40)}.png`,
-  },
   reading_time: 8,
 };
 
@@ -99,10 +87,6 @@ const videoArticle = {
   ...article,
   cloudinary_video_url: '/images/onboarding-background.png',
   video_duration_in_minutes: 10,
-  user: {
-    ...article.user,
-    profile_image_90: `/images/${Math.floor(Math.random() * 40)}.png`,
-  },
 };
 
 const podcastArticle = {
@@ -111,7 +95,7 @@ const podcastArticle = {
   podcast: {
     slug: title.replace(/\s+/, '-').toLowerCase(),
     title: faker.random.words(2),
-    image_url: `/images/${Math.floor(Math.random() * 40)}.png`,
+    image_url: `/images/16.png`,
   },
 };
 
@@ -130,7 +114,7 @@ const userArticle = {
     username: name.replace(/\s+/, '.').toLowerCase(),
     name,
     // We have 40 fake O'Reilly images to work with
-    profile_image_90: `/images/${Math.floor(Math.random() * 40)}.png`,
+    profile_image_90: `/images/3.png`,
   },
 };
 
