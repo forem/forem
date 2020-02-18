@@ -86,6 +86,10 @@ Please execute the script itself to view all additional options:
 ./docker-run.sh
 ```
 
+## Running the Docker app with docker-sync
+
+TODO: add documentation
+
 ## Known Problems & Solutions
 
 - Should you experience problems with the Elasticsearch container, try to

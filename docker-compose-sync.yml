@@ -1,0 +1,13 @@
+version: "3"
+services:
+  web:
+    volumes:
+      - app-sync:/usr/src/app:nocopy
+  elasticsearch:
+    volumes:
+      - es-sync:/usr/share/elasticsearch/data
+volumes:
+  app-sync:
+    external: true
+  es-sync:
+    external: true

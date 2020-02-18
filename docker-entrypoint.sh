@@ -15,6 +15,13 @@ echo "alias devto-start='cd /usr/src/app/ && bundle exec rails server -b 0.0.0.0
 cd /usr/src/app/
 
 #
+# Clean out server.pid
+#
+if [ -f tmp/pids/server.pid ]; then
+  rm -f tmp/pids/server.pid
+fi
+
+#
 # Lets handle "DEV" RUN_MODE
 #
 if [[ "$RUN_MODE" = "DEV" ]]
