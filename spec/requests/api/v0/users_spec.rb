@@ -42,6 +42,22 @@ RSpec.describe "Api::V0::Users", type: :request do
       expect(response_user["id"]).to eq(other_user.id)
     end
 
+    it "returns follow suggestions that have profile images" do
+      user = create(:user)
+      tag = create(:tag)
+      user.follow(tag)
+
+      other_user = create(:user)
+      create(:article, user: other_user, tags: [tag.name])
+
+      sign_in user
+
+      get api_users_path(state: "follow_suggestions")
+
+      response_user = response.parsed_body.first
+      expect(response_user["profile_image_url"]).to eq(other_user.profile_image_url)
+    end
+
     it "returns no sidebar suggestions for an authenticated user" do
       sign_in create(:user)
 
