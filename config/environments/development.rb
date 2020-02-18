@@ -96,8 +96,8 @@ Rails.application.configure do
   # Debug is the default log_level, but can be changed per environment.
   config.log_level = :debug
 
-  # See <https://github.com/flyerhzm/bullet#configuration> for other config options
   config.after_initialize do
+    # See <https://github.com/flyerhzm/bullet#configuration> for other Bullet config options
     Bullet.enable = true
 
     Bullet.add_footer = true
@@ -116,19 +116,6 @@ Rails.application.configure do
         raise "Data update scripts need to be run before you can start the application. Please run rake data_updates:run"
       end
     end
-  end
-
-  # Docker specific development configuration
-  if File.file?("/.dockerenv")
-    # Using shell tools so we don't need to require Socket and IPAddr
-    host_ip = `/sbin/ip route|awk '/default/ { print $3 }'`.strip
-    logger = Logger.new(STDOUT)
-    logger.info "Whitelisting #{host_ip} for BetterErrors and Web Console"
-
-    if defined?(BetterErrors::Middleware)
-      BetterErrors::Middleware.allow_ip!(host_ip)
-    end
-    config.web_console.whitelisted_ips << host_ip
   end
 end
 
