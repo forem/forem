@@ -11,16 +11,16 @@ class Credit < ApplicationRecord
   counter_culture :user,
                   column_name: proc { |model| "#{model.spent ? 'spent' : 'unspent'}_credits_count" },
                   column_names: {
-                    ["credits.spent = ?", true] => "spent_credits_count",
-                    ["credits.spent = ?", false] => "unspent_credits_count",
-                    ["credits.id > ?", 0] => "credits_count"
+                    Credit.spent => "spent_credits_count",
+                    Credit.unspent => "unspent_credits_count",
+                    Credit.all => "credits_count"
                   }
   counter_culture :organization,
                   column_name: proc { |model| "#{model.spent ? 'spent' : 'unspent'}_credits_count" },
                   column_names: {
-                    ["credits.spent = ?", true] => "spent_credits_count",
-                    ["credits.spent = ?", false] => "unspent_credits_count",
-                    ["credits.id > ?", 0] => "credits_count"
+                    Credit.spent => "spent_credits_count",
+                    Credit.unspent => "unspent_credits_count",
+                    Credit.all => "credits_count"
                   }
 
   def self.add_to(user, amount)
