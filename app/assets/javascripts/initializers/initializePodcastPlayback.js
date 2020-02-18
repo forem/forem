@@ -20,7 +20,8 @@ function initializePodcastPlayback() {
   }
 
   function audioExistAndIsPlaying() {
-    return getById('audio') && !getById('audio').paused;
+    var currentState = currentAudioState();
+    return getById('audio') && currentState.playing;
   }
 
   function recordExist() {
@@ -51,6 +52,7 @@ function initializePodcastPlayback() {
   }
 
   function applyOnclickToPodcastBar(audio) {
+    var currentState = currentAudioState();
     getById('barPlayPause').onclick = function() {
       playPause(audio);
     };
@@ -63,9 +65,9 @@ function initializePodcastPlayback() {
     getById('bufferwrapper').onclick = function(e) {
       goToTime(e, audio);
     };
-    getById('volumeslider').value = audio.volume * 100;
+    getById('volumeslider').value = currentState.volume * 100;
     getById('volumeslider').onchange = function(e) {
-      audio.volume = e.target.value / 100;
+      updateVolume(e, audio);
     };
     getById('speed').onclick = function() {
       changePlaybackRate(audio);
@@ -81,7 +83,12 @@ function initializePodcastPlayback() {
 
   function updateProgressListener(audio) {
     return function(e) {
-      updateProgress(e, audio);
+      var bufferValue = 0;
+      if (audio.currentTime > 0) {
+        var bufferEnd = audio.buffered.end(audio.buffered.length - 1);
+        bufferValue = (bufferEnd / audio.duration) * 100;
+      }
+      updateProgress(audio.currentTime, audio.duration, bufferValue);
     };
   }
 
@@ -116,16 +123,23 @@ function initializePodcastPlayback() {
   }
 
   function changePlaybackRate(audio) {
+    var currentState = currentAudioState();
     var el = getById('speed');
     var speed = parseFloat(el.getAttribute('data-speed'));
     if (speed == 2) {
       el.setAttribute('data-speed', 0.5);
       el.innerHTML = '0.5x';
-      audio.playbackRate = 0.5;
+      currentState.playbackRate = 0.5;
     } else {
       el.setAttribute('data-speed', speed + 0.5);
       el.innerHTML = speed + 0.5 + 'x';
-      audio.playbackRate = speed + 0.5;
+      currentState.playbackRate = speed + 0.5;
+    }
+
+    if (isNativeIOS()) {
+      sendPodcastMessage('rate;' + audio.playbackRate)
+    } else {
+      audio.playbackRate = currentState.playbackRate;
     }
   }
 
@@ -154,18 +168,19 @@ function initializePodcastPlayback() {
 
   function playAudio(audio) {
     return new Promise(function (resolve, reject) {
-      if(navigator.userAgent === 'DEV-Native-ios') {
+      if (isNativeIOS()) {
         sendPodcastMessage('play');
       } else {
         audio.play();
       }
+      setPlaying(true);
       resolve();
     })
   }
 
   function loadAudio(audio) {
-    if(navigator.userAgent === 'DEV-Native-ios') {
-      sendPodcastMessage('load');
+    if (isNativeIOS()) {
+      sendPodcastMessage('load;' + audio.querySelector('source').src);
     } else {
       audio.load();
     }
@@ -196,21 +211,26 @@ function initializePodcastPlayback() {
   }
 
   function pauseAudioPlayback(audio) {
-    if(navigator.userAgent === 'DEV-Native-ios') {
+    if (isNativeIOS()) {
       sendPodcastMessage('pause');
     } else {
       audio.pause();
     }
+    setPlaying(false);
     stopRotatingActivePodcastIfExist();
     pausePodcastBar();
+  }
+
+  function isNativeIOS() {
+    return navigator.userAgent === 'DEV-Native-ios';
   }
 
   function playPause(audio) {
     window.activeEpisode = audio.getAttribute('data-episode');
     window.activePodcast = audio.getAttribute('data-podcast');
 
-
-    if (audio.paused) {
+    var currentState = currentAudioState();
+    if (!currentState.playing) {
       ga(
         'send',
         'event',
@@ -233,54 +253,78 @@ function initializePodcastPlayback() {
       pauseAudioPlayback(audio);
       changeStatusMessage(null);
     }
-    setMediaState(audio)
   }
 
   function muteUnmute(audio) {
-    getById('mutebutt').classList.add(audio.muted ? 'hidden' : 'showing');
-    getById('volumeindicator').classList.add(audio.muted ? 'showing' : 'hidden');
-    getById('mutebutt').classList.remove(audio.muted ? 'showing' : 'hidden');
-    getById('volumeindicator').classList.remove(audio.muted ? 'hidden' : 'showing');
-    audio.muted = !audio.muted;
+    var currentState = currentAudioState();
+    getById('mutebutt').classList.add(currentState.muted ? 'hidden' : 'showing');
+    getById('volumeindicator').classList.add(currentState.muted ? 'showing' : 'hidden');
+    getById('mutebutt').classList.remove(currentState.muted ? 'showing' : 'hidden');
+    getById('volumeindicator').classList.remove(currentState.muted ? 'hidden' : 'showing');
+    if (isNativeIOS()) {
+      currentState.muted = !currentState.muted;
+      sendPodcastMessage('muted;', currentState.muted);
+    } else {
+      currentState.muted = !audio.muted;
+    }
+    saveMediaState(currentState);
   }
 
-  function updateProgress(e, audio) {
+  function updateVolume(e, audio) {
+    var currentState = currentAudioState();
+    currentState.volume = e.target.value / 100;
+    if (isNativeIOS()) {
+      sendPodcastMessage('volume;' + currentState.volume);
+    } else {
+      audio.volume = currentState.volume
+    }
+    saveMediaState(currentState);
+  }
+
+  function updateProgress(currentTime, duration, bufferValue) {
     var progress = getById('progress');
     var buffer = getById('buffer');
     var time = getById('time');
     var value = 0;
-    var bufferValue = 0;
-    var currentTime = audio.currentTime;
     var firstDecimal = currentTime - Math.floor(currentTime);
     if (currentTime > 0) {
-      value = Math.floor((100.0 / audio.duration) * audio.currentTime);
-      bufferValue =
-        (audio.buffered.end(audio.buffered.length - 1) / audio.duration) * 100;
+      value = Math.floor((100.0 / duration) * currentTime);
       if(firstDecimal < 0.4) {
         // Rewrite to mediaState storage every few beats.
-        setMediaState(audio)
+        var currentState = currentAudioState();
+        currentState.duration = duration;
+        currentState.currentTime = currentTime;
+        saveMediaState(currentState);
       }
     }
     if (progress && time && currentTime > 0) {
       progress.style.width = value + '%';
       buffer.style.width = bufferValue + '%';
       time.innerHTML =
-        readableDuration(audio.currentTime) +
+        readableDuration(currentTime) +
         ' / ' +
-        readableDuration(audio.duration);
+        readableDuration(duration);
     }
   }
 
   function goToTime(e, audio) {
+    var currentState = currentAudioState();
     var progress = getById('progress');
     if (e.clientX > 128) {
       var percent = (e.clientX - 128) / (window.innerWidth - 133);
-      var duration = audio.duration;
-      audio.currentTime = duration * percent; // jumps to 29th secs
+      var duration = currentState.duration;
+      currentState.currentTime = duration * percent; // jumps to 29th secs
+
+      if (isNativeIOS()) {
+        sendPodcastMessage('skip;' + currentState.currentTime);
+      } else {
+        audio.currentTime = currentState.currentTime
+      }
+
       time.innerHTML =
-        readableDuration(audio.currentTime) +
+        readableDuration(currentState.currentTime) +
         ' / ' +
-        readableDuration(audio.duration);
+        readableDuration(currentState.duration);
       progress.style.width = percent * 100.0 + '%';
     }
   }
@@ -295,50 +339,86 @@ function initializePodcastPlayback() {
   }
 
   function terminatePodcastBar(audio) {
-    audio.removeEventListener('timeupdate', updateProgressListener, false);
+    audio.removeEventListener('timeupdate', updateProgressListener(audio), false);
     getById('audiocontent').innerHTML = '';
     stopRotatingActivePodcastIfExist();
-    setMediaState(audio);
+    saveMediaState();
   }
 
-  function setMediaState(audio) {
-    var date = new Date();
-    var timeNumber = date.getTime();
-    if (!window.name) {
-      window.name = Math.random();
-    }
-    var newState = {
-      html: document.getElementById('audiocontent').innerHTML,
-      time: audio.currentTime,
-      playing: !audio.paused,
-      updated: timeNumber,
-      windowName: window.name
-    }
-    localStorage.setItem('media_playback_state', JSON.stringify(newState));
+  function saveMediaState(state) {
+    var currentState = state || currentAudioState();
+    var newState = newAudioState();
+    newState.currentTime = currentState.currentTime;
+    newState.playing = currentState.playing;
+    newState.muted = currentState.muted;
+    newState.volume = currentState.volume;
+    newState.duration = currentState.duration;
+    localStorage.setItem('media_playback_state_v3', JSON.stringify(newState));
   }
 
   function getMediaState() {
-    try {
-      var currentState = JSON.parse(localStorage.getItem('media_playback_state'));
-      if (!currentState || getById('audiocontent').innerHTML.length > 50 || window.name !== currentState.windowName) {
-        return;
-      }
-      document.getElementById('audiocontent').innerHTML = currentState.html;
-      var audio = getById('audio');
-      audio.currentTime = currentState.time;
-      loadAudio(audio);
-      if (currentState.playing) {
-        playAudio(audio).catch(function(error) {
-          pausePodcastBar();
+    var currentState = currentAudioState();
+    document.getElementById('audiocontent').innerHTML = currentState.html;
+    var audio = getById('audio');
+    if (audio == undefined) {
+      return;
+    }
+    if (!isNativeIOS()) {
+      audio.currentTime = currentState.currentTime || 0;
+    }
+    loadAudio(audio);
+    if (currentState.playing) {
+      playAudio(audio).catch(function(error) {
+        pausePodcastBar();
+      });
+    }
+    setTimeout(function(){
+      audio.addEventListener('timeupdate', updateProgressListener(audio), false);
+      var mutationObserver = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.type == "attributes") {
+            console.log("attributes changed", mutation)
+          }
         });
+      });
+      mutationObserver.observe(getById('audiocontent'), { attributes: true });
+    },500)
+    applyOnclickToPodcastBar(audio);
+  }
+
+  function currentAudioState() {
+    try {
+      var currentState = JSON.parse(localStorage.getItem('media_playback_state_v3'));
+      if (!currentState || window.name !== currentState.windowName) {
+        return newAudioState();
       }
-      setTimeout(function(){
-        audio.addEventListener('timeupdate', updateProgressListener(audio), false);
-      },500)
-      applyOnclickToPodcastBar(audio);
+      return currentState;
     } catch(e) {
       console.log(e)
+      return newAudioState();
     }
+  }
+
+  function setPlaying(playing) {
+    var currentState = currentAudioState();
+    currentState.playing = playing;
+    saveMediaState(currentState);
+  }
+
+  function newAudioState() {
+    if (!window.name) {
+      window.name = Math.random();
+    }
+    return {
+      html: document.getElementById('audiocontent').innerHTML,
+      currentTime: 0,
+      playing: false,
+      muted: false,
+      volume: 1,
+      duration: 1,
+      updated: new Date().getTime(),
+      windowName: window.name
+    };
   }
 
   function sendPodcastMessage(message) {
