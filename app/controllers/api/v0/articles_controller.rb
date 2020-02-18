@@ -9,9 +9,6 @@ module Api
 
       before_action :set_cache_control_headers, only: %i[index show]
 
-      before_action :cors_preflight_check
-      after_action :cors_set_access_control_headers
-
       skip_before_action :verify_authenticity_token, only: %i[create update]
 
       def index

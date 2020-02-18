@@ -104,14 +104,8 @@ function fetchNextFollowingPage(el){
   }
 }
 
-function fetchNextFollowersPage(el){
-  var indexParams = JSON.parse(el.dataset.params);
-  var whichEndpoint = indexParams.which;
-  if (whichEndpoint.includes("organization")){
-    fetchNext(el, "/api/followers/organizations", insertNext({ elId: "follows" }, buildFollowsHTML));
-  } else {
-    fetchNext(el, "/api/followers/users", insertNext({ elId: "follows" }, buildFollowsHTML));
-  }
+function fetchNextFollowersPage(el) {
+  fetchNext(el, "/api/followers/users", insertNext({ elId: "follows" }, buildFollowsHTML));
 }
 
 function buildVideoArticleHTML(videoArticle) {

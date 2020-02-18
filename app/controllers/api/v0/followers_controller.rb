@@ -6,9 +6,9 @@ module Api
 
       def organizations
         @follows = Follow.
-          where(followable_id: @user.organization_id, followable_type: "Organization").
+          where(followable_id: @user.organization_ids, followable_type: "Organization").
           includes(:follower).
-          select(ATTRIBUTES_FOR_SERIALIZATION).
+          select(ORGANIZATIONS_ATTRIBUTES_FOR_SERIALIZATION).
           order("created_at DESC").
           page(params[:page]).
           per(@follows_limit)
@@ -18,14 +18,17 @@ module Api
         @follows = Follow.
           where(followable_id: @user.id, followable_type: "User").
           includes(:follower).
-          select(ATTRIBUTES_FOR_SERIALIZATION).
+          select(USERS_ATTRIBUTES_FOR_SERIALIZATION).
           order("created_at DESC").
           page(params[:page]).
           per(@follows_limit)
       end
 
-      ATTRIBUTES_FOR_SERIALIZATION = %i[id follower_id follower_type].freeze
-      private_constant :ATTRIBUTES_FOR_SERIALIZATION
+      ORGANIZATIONS_ATTRIBUTES_FOR_SERIALIZATION = %i[id follower_id follower_type followable_id].freeze
+      private_constant :ORGANIZATIONS_ATTRIBUTES_FOR_SERIALIZATION
+
+      USERS_ATTRIBUTES_FOR_SERIALIZATION = %i[id follower_id follower_type].freeze
+      private_constant :USERS_ATTRIBUTES_FOR_SERIALIZATION
 
       private
 

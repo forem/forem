@@ -78,6 +78,6 @@ class NotificationsController < ApplicationController
   end
 
   def allowed_user?
-    @user.organization_id == params[:org_id] || @user.admin?
+    @user.organizations.exists?(id: params[:org_id]) || @user.admin?
   end
 end
