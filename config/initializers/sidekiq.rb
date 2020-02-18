@@ -15,6 +15,8 @@ module Rack
   end
 end
 
+require Rails.root.join("lib/sidekiq/worker_retries_exhausted_reporter")
+
 Sidekiq.configure_server do |config|
   sidekiq_url = ApplicationConfig["REDIS_SIDEKIQ_URL"] || ApplicationConfig["REDIS_URL"]
   # On Heroku this configuration is overridden and Sidekiq will point at the redis
