@@ -1,5 +1,10 @@
 class ClassifiedListing < ApplicationRecord
   include AlgoliaSearch
+  include Searchable
+
+  SEARCH_INDEX_WORKER = Search::ClassifiedListingEsIndexWorker
+  SEARCH_SERIALIZER = Search::ClassifiedListingSerializer
+  SEARCH_CLASS = Search::ClassifiedListing
 
   CATEGORIES_AVAILABLE = {
     cfp: { cost: 1, name: "Conference CFP", rules: "Currently open for proposals, with link to form." },
@@ -56,22 +61,6 @@ class ClassifiedListing < ApplicationRecord
   end
 
   scope :published, -> { where(published: true) }
-
-  def index_to_elasticsearch
-    Search::ClassifiedListingEsIndexWorker.perform_async(id)
-  end
-
-  def index_to_elasticsearch_inline
-    Search::ClassifiedListing.index(id, serialized_search_hash)
-  end
-
-  def serialized_search_hash
-    Search::ClassifiedListingSerializer.new(self).serializable_hash.dig(:data, :attributes)
-  end
-
-  def elasticsearch_doc
-    Search::ClassifiedListing.find_document(id)
-  end
 
   def self.cost_by_category(category = "education")
     categories_available[category][:cost]
