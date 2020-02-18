@@ -27,6 +27,7 @@
           </div>
         </div>
       <% end %>
+      <%= render "articles/sidebar_campaign" if SiteConfig.campaign_sidebar_enabled? %>
       <% if params[:timeframe].blank? && @classified_listings.any? %>
         <div class="widget" id="sidebar-listings-widget">
           <header class="widget-header-listings">

@@ -46,6 +46,53 @@
         </div>
 
         <div class="card mt-3">
+          <div class="card-header">Campaign</div>
+          <div class="card-body">
+            <div class="form-group">
+              <%= f.label :campaign_hero_html_variant_name %>
+              <%= f.text_field :campaign_hero_html_variant_name,
+                               class: "form-control",
+                               value: SiteConfig.campaign_hero_html_variant_name,
+                               placeholder: "" %>
+              <div class="alert alert-info">Hero HtmlVariant name</div>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :campaign_background_color %>
+              <%= f.text_field :campaign_background_color,
+                               class: "form-control",
+                               value: SiteConfig.campaign_background_color,
+                               placeholder: "FFFFFF" %>
+              <div class="alert alert-info">Campaign background color</div>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :campaign_text_color %>
+              <%= f.text_field :campaign_text_color,
+                               class: "form-control",
+                               value: SiteConfig.campaign_text_color,
+                               placeholder: "FFFFFF" %>
+              <div class="alert alert-info">Campaign text color</div>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :campaign_sidebar_enabled %>
+              <%= f.check_box :campaign_sidebar_enabled, checked: SiteConfig.campaign_sidebar_enabled %>
+              <div class="alert alert-info">Campaign sidebar enabled or not</div>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :campaign_featured_tags %>
+              <%= f.text_field :campaign_featured_tags,
+                               class: "form-control",
+                               value: SiteConfig.campaign_featured_tags.join(","),
+                               placeholder: "List of campaign tags: comma separated, letters only e.g. shecoded,theycoded" %>
+              <div class="alert alert-info">Posts with which tags will be featured in the campaign sidebar (comma separated, letters only)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
           <div class="card-header">Images</div>
           <div class="card-body">
             <div class="form-group">

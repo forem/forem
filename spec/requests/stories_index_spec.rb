@@ -68,6 +68,55 @@ RSpec.describe "StoriesIndex", type: :request do
       get "/"
       expect(response.body).to include(CGI.escapeHTML(listing.title))
     end
+
+    context "with campaign hero" do
+      let!(:hero_html) { create(:html_variant, group: "campaign", name: "hero", html: Faker::Book.title, published: true, approved: true) }
+
+      it "displays hero html when it exists and is set in config" do
+        SiteConfig.campaign_hero_html_variant_name = "hero"
+        get "/"
+        expect(response.body).to include(CGI.escapeHTML(hero_html.html))
+       end
+
+       it "doesn't display when campaign_hero_html_variant_name is not set" do
+        SiteConfig.campaign_hero_html_variant_name = ""
+        get "/"
+        expect(response.body).not_to include(CGI.escapeHTML(hero_html.html))
+       end
+
+       it "doesn't display when hero html is not approved" do
+        SiteConfig.campaign_hero_html_variant_name = "hero"
+        hero_html.update_column(:approved, false)
+        get "/"
+        expect(response.body).not_to include(CGI.escapeHTML(hero_html.html))
+       end
+     end
+
+     context "with campaign_sidebar" do
+      before do
+        SiteConfig.campaign_featured_tags = "shecoded,theycoded"
+        create(:article, approved: true, body_markdown: "---\ntitle: Super-sheep#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello")
+        create(:article, approved: false, body_markdown: "---\ntitle: Unapproved-post#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello")
+      end
+
+      it "doesn't display posts with the campaign tags when sidebar is disabled" do
+        SiteConfig.campaign_sidebar_enabled = false
+        get "/"
+        expect(response.body).not_to include(CGI.escapeHTML("Super-sheep"))
+      end
+
+      it "displays posts with the campaign tags when sidebar is enabled" do
+        SiteConfig.campaign_sidebar_enabled = true
+        get "/"
+        expect(response.body).not_to include(CGI.escapeHTML("Unapproved-post"))
+      end
+
+      it "displays only approved posts with the campaign tags" do
+        SiteConfig.campaign_sidebar_enabled = false
+        get "/"
+        expect(response.body).not_to include(CGI.escapeHTML("Super-puper"))
+      end
+    end
   end
 
   describe "GET query page" do
