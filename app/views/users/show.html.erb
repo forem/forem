@@ -152,11 +152,9 @@
       </button>
       <div id="user-profile-dropdownmenu" class="profile-dropdownmenu">
         <button id="user-profile-dropdownmenu-block-button" data-profile-user-id="<%= @user.id %>" type="button">Block @<%= @user.username %></button>
-        <% if current_user&.has_role?(:trusted) %>
-          <button id="user-profile-dropdownmenu-abuse-button" data-profile-user-id="<%= @user.id %>" type="button">
-            <%= Reaction.cached_any_reactions_for?(@user, current_user, "vomit") ? "Remove Abuse Flag" : "Flag as Abusive" %>
-          </button>
-        <% end %>
+        <button id="user-profile-dropdownmenu-abuse-button" data-profile-user-id="<%= @user.id %>" type="button" style="display: none;">
+          <%= Reaction.cached_any_reactions_for?(@user, current_user, "vomit") ? "Remove Abuse Flag" : "Flag as Abusive" %>
+        </button>
         <% if user_signed_in? %>
           <%= javascript_pack_tag "profileDropdown", defer: true %>
         <% end %>
