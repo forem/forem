@@ -1,6 +1,8 @@
 module Api
   module V0
     class GithubReposController < ApiController
+      include Pundit
+
       def index
         client = create_octokit_client
 

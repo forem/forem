@@ -1,4 +1,10 @@
 class Api::V0::ApiController < ApplicationController
+  protect_from_forgery with: :exception, prepend: true
+
+  include ValidRequest
+
+  respond_to :json
+
   def cors_set_access_control_headers
     headers["Access-Control-Allow-Origin"] = "*"
     headers["Access-Control-Allow-Methods"] = "POST, GET, PUT, DELETE, OPTIONS"

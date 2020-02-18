@@ -74,8 +74,8 @@ class Notification < ApplicationRecord
       Notifications::MentionWorker.perform_async(mention.id)
     end
 
-    def send_welcome_notification(receiver_id)
-      Notifications::WelcomeNotificationWorker.perform_async(receiver_id)
+    def send_welcome_notification(receiver_id, broadcast_id)
+      Notifications::WelcomeNotificationWorker.perform_async(receiver_id, broadcast_id)
     end
 
     def send_moderation_notification(notifiable)

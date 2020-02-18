@@ -107,6 +107,28 @@ Rails.application.configure do
     Bullet.add_whitelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
     # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
     Bullet.add_whitelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
+
+    DATA_UPDATE_CHECK_COMMANDS = %w[c console s server].freeze
+    if DATA_UPDATE_CHECK_COMMANDS.include?(ENV["COMMAND"])
+      script_ids = DataUpdateScript.load_script_ids
+      scripts_to_run = DataUpdateScript.where(id: script_ids).select(&:enqueued?)
+      if scripts_to_run.any?
+        raise "Data update scripts need to be run before you can start the application. Please run rake data_updates:run"
+      end
+    end
+  end
+
+  # Docker specific development configuration
+  if File.file?("/.dockerenv")
+    # Using shell tools so we don't need to require Socket and IPAddr
+    host_ip = `/sbin/ip route|awk '/default/ { print $3 }'`.strip
+    logger = Logger.new(STDOUT)
+    logger.info "Whitelisting #{host_ip} for BetterErrors and Web Console"
+
+    if defined?(BetterErrors::Middleware)
+      BetterErrors::Middleware.allow_ip!(host_ip)
+    end
+    config.web_console.whitelisted_ips << host_ip
   end
 end
 

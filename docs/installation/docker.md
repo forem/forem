@@ -88,8 +88,18 @@ Please execute the script itself to view all additional options:
 
 ## Known Problems & Solutions
 
-- Should you experience problems with the ElasticSearch container, try to
+- Should you experience problems with the Elasticsearch container, try to
   increase the memory and/or swap allocation for Docker. On macOS this can be
   done via the GUI:
 
   ![docker gui](https://user-images.githubusercontent.com/47985/74210448-b63b7c80-4c83-11ea-959b-02249b2a6952.png)
+
+- In case `rails server` doesn't start with the following message:
+  ```
+  Data update scripts need to be run before you can start the application. Please run rake data_updates:run (RuntimeError)
+  ```
+  run the following command:
+
+  ```shell
+  docker-compose run web rails data_updates:run
+  ```
