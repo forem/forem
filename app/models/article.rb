@@ -320,7 +320,7 @@ class Article < ApplicationRecord
     begin
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
       parsed.front_matter["title"].present?
-    rescue Psych::SyntaxError
+    rescue Psych::SyntaxError, Psych::DisallowedClass
       # if frontmatter is invalid, still render editor with errors instead of 500ing
       true
     end
