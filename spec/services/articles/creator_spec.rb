@@ -47,7 +47,7 @@ RSpec.describe Articles::Creator, type: :service do
     end
   end
 
-  context "when valid attributes" do
+  context "when invalid attributes" do
     let(:invalid_attributes) { attributes_for(:article) }
 
     before do
