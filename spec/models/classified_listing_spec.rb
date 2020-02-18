@@ -100,8 +100,12 @@ RSpec.describe ClassifiedListing, type: :model do
 
   describe "#serialized_search_hash" do
     it "creates a valid serialized hash to send to elasticsearch" do
-      mapping_keys = Search::ClassifiedListing.send("mappings").dig(:properties).keys
-      expect(classified_listing.serialized_search_hash.symbolize_keys.keys).to match_array(mapping_keys)
+      # classified_listing_search is a copy_to field and will never be included
+      # in the searialized_search_hash, so we skip it
+      mapping_keys = Search::ClassifiedListing.send("mappings").dig(:properties).except(:classified_listing_search).keys
+      search_hash_keys = classified_listing.serialized_search_hash.symbolize_keys.keys
+
+      expect(search_hash_keys).to match_array(mapping_keys)
     end
   end
 

@@ -77,9 +77,14 @@ RSpec.describe Search::ClassifiedListing, type: :service, elasticsearch: true do
       initial_mapping = SearchClient.indices.get_mapping(index: other_name).dig(other_name, "mappings")
       expect(initial_mapping).to be_empty
 
+      # This might look a little strange...it's because es_mapping_keys returns
+      # certain fields like copy_to as an Array and our mappings don't have it
+      # in that format. As a result, we're just comparing keys instead.
       described_class.update_mappings(index_alias: other_name)
-      mapping = SearchClient.indices.get_mapping(index: other_name).dig(other_name, "mappings")
-      expect(mapping.deep_stringify_keys).to include(described_class::MAPPINGS.deep_stringify_keys)
+      es_mapping_keys = SearchClient.indices.get_mapping(index: other_name).dig(other_name, "mappings", "properties").symbolize_keys.keys
+      mapping_keys = described_class::MAPPINGS.dig(:properties).keys
+
+      expect(mapping_keys).to match_array(es_mapping_keys)
 
       # Have to cleanup index since it wont automatically be handled by our cluster class bc of the unexpected name
       described_class.delete_index(index_name: other_name)
