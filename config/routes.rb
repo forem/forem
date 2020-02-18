@@ -89,6 +89,12 @@ Rails.application.routes.draw do
     post "badges/award_badges", to: "badges#award_badges"
   end
 
+  namespace :stories, defaults: { format: "json" } do
+    resource :feed, only: [:show] do
+      get ":timeframe" => "feeds#show"
+    end
+  end
+
   namespace :api, defaults: { format: "json" } do
     scope module: :v0,
           constraints: ApiConstraints.new(version: 0, default: true) do
