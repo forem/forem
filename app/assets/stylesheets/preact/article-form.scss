@@ -2,12 +2,7 @@
 @import 'mixins';
 
 .articleformcontainer {
-  padding-top: 80px;
-  @media screen and (min-width: 500px) {
-    padding-top: calc(90px + 0.2vw);
-  }
-
-  padding-bottom: calc(94px + 2vw);
+  padding: 24px 0 96px;
 }
 
 .article-form-video-preview {

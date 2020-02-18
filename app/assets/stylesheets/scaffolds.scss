@@ -9,8 +9,8 @@ body {
   font-size: 18px;
   padding: 0 !important;
   margin: 0 !important;
-  margin-top: -20px !important;
   overflow-y: scroll;
+  padding-top: 46px !important; // height of header
 }
 
 #audiocontent {
@@ -65,18 +65,6 @@ body {
   overflow: hidden;
   min-height: 88vh;
   visibility: visible;
-  &.stories-index,
-  &.notifications-index,
-  &.stories-search,
-  &.podcast_episodes-index,
-  &.podcasts-new,
-  &.podcasts-create,
-  &.reading_list_items-index,
-  &.history-index,
-  .tags-index,
-  &.twitch_live_streams-show {
-    margin-top: 68px;
-  }
 }
 
 pre {
@@ -277,10 +265,9 @@ body.monospace-article-body {
 }
 
 body.static-navbar-config {
+  padding-top: 0 !important;
   .top-bar {
     position: relative !important;
-    margin-top: 20px !important;
-    margin-bottom: -66px !important;
   }
 }
 

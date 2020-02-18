@@ -106,16 +106,13 @@ article {
 .container {
   width: 880px;
   max-width: 100%;
-  margin: 66px auto 20px;
+  margin: 0 auto 20px;
   text-align: left;
   @include dev-card;
 
   @media screen and (min-width: 950px) {
     border-radius: 3px;
-  }
-
-  @media screen and (min-width: 1250px) {
-    margin-top: 100px;
+    margin-top: 24px;
   }
 
   &.article {
