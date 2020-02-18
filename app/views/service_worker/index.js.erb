@@ -97,11 +97,11 @@
         !url.href.includes('/api/') && // Don't run on API endpoints.
         !url.href.includes('/users/auth') && // Don't run on authentication.
         !url.href.includes('/shell_') && // Don't fetch for shell.
+        !url.href.includes('/embed/') && // Don't fetch for embeded content.
         !url.href.includes('/admin') && // Don't fetch for administrate dashboard.
         !url.href.includes('/internal') && // Don't fetch for internal dashboard.
         !url.href.includes('/future') && // Skip for /future.
         !url.href.includes('?preview=') && // Skip for preview pages.
-        !url.href.includes('/delayed_job') && // Skip for Delayed Job dashboard
         !url.href.includes('/sidekiq') && // Skip for Sidekiq dashboard
         !url.href.includes('/oauth/') && // Skip oauth apps
         !url.href.includes('/robots.txt') && // Skip robots for web crawlers

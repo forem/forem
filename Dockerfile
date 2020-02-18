@@ -22,7 +22,7 @@ RUN gem install bundler:2.0.2
 #------------------------------------------------------------------------------
 ENV PATH=/root/.yarn/bin:$PATH
 RUN apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
-        yarn
+  yarn
 
 #------------------------------------------------------------------------------
 #
@@ -36,7 +36,7 @@ WORKDIR /usr/src/app
 # Copy Gemfile and run bundle install
 #
 #------------------------------------------------------------------------------
-COPY Gemfile /usr/src/app/Gemfile
+COPY ./.ruby-version .
 COPY ./Gemfile ./Gemfile.lock ./
 RUN bundle install --jobs 20 --retry 5
 
@@ -81,4 +81,4 @@ VOLUME /usr/src/app/public/uploads
 COPY docker-entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/docker-entrypoint.sh
 
-COPY . /usr/src/app
+COPY . .

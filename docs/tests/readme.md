@@ -53,3 +53,8 @@ Travis will deploy your pull request to production after CI passes and a member
 of the DEV team has approved it.
 
 Our test suite is not perfect and sometimes a re-run is needed.
+
+Please note that you will need to have Elasticsearch installed and running for
+certain tests in our test suite. You can find instructions on how to install and
+run Elasticsearch specific your environment in the
+[Installation Guide](/installation).

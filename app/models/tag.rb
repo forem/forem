@@ -1,7 +1,6 @@
 class Tag < ActsAsTaggableOn::Tag
   attr_accessor :points
 
-  include AlgoliaSearch
   acts_as_followable
   resourcify
 
@@ -26,14 +25,23 @@ class Tag < ActsAsTaggableOn::Tag
   before_validation :evaluate_markdown
   before_validation :pound_it
   before_save :calculate_hotness_score
-  after_commit :bust_cache
+  after_commit :bust_cache, :index_to_elasticsearch
   before_save :mark_as_updated
 
-  algoliasearch per_environment: true do
-    attribute :name, :bg_color_hex, :text_color_hex, :hotness_score, :supported, :short_summary, :rules_html
-    attributesForFaceting [:supported]
-    customRanking ["desc(hotness_score)"]
-    searchableAttributes %w[name short_summary]
+  def index_to_elasticsearch
+    Search::TagEsIndexWorker.perform_async(id)
+  end
+
+  def index_to_elasticsearch_inline
+    Search::Tag.index(id, serialized_search_hash)
+  end
+
+  def serialized_search_hash
+    Search::TagSerializer.new(self).serializable_hash.dig(:data, :attributes)
+  end
+
+  def elasticsearch_doc
+    Search::Tag.find_document(id)
   end
 
   def submission_template_customized(param_0 = nil)

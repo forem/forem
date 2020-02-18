@@ -10,4 +10,5 @@ set -x
 # and boots the app to check there are no errors
 STATEMENT_TIMEOUT=180000 bundle exec rails db:migrate && \
   bundle exec rake search:setup && \
+  bundle exec rake data_updates:enqueue_data_update_worker && \
   bundle exec rails runner "puts 'app load success'"

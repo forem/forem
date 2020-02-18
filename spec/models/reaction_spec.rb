@@ -114,18 +114,17 @@ RSpec.describe Reaction, type: :model do
   context "when callbacks are called after save" do
     let!(:reaction) { build(:reaction, category: "like", reactable: article, user: user) }
 
-    it "enqueues the correct jobs" do
-      expect do
-        reaction.save
-      end.to(
-        have_enqueued_job(Reactions::UpdateReactableJob).exactly(:once).
-        and(have_enqueued_job(Reactions::BustReactableCacheJob).exactly(:once)),
-      )
-    end
+    describe "enqueues the correct worker" do
+      it "BustReactableCacheWorker" do
+        sidekiq_assert_enqueued_with(job: Reactions::BustReactableCacheWorker) do
+          reaction.save
+        end
+      end
 
-    it "enqueues the correct workers" do
-      sidekiq_assert_enqueued_with(job: Reactions::BustHomepageCacheWorker) do
-        reaction.save
+      it "BustHomepageCacheWorker" do
+        sidekiq_assert_enqueued_with(job: Reactions::BustHomepageCacheWorker) do
+          reaction.save
+        end
       end
     end
 

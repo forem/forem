@@ -11,6 +11,7 @@ Doorkeeper.configure do
     # Put your resource owner authentication logic here.
     # Example implementation:
     #   User.find_by(id: session[:user_id]) || redirect_to(new_user_session_url)
+
     current_user || warden.authenticate!(scope: :user)
   end
 
@@ -29,6 +30,35 @@ Doorkeeper.configure do
       warden.authenticate!(scope: :user)
     end
   end
+
+  # You can use your own model classes if you need to extend (or even override) default
+  # Doorkeeper models such as `Application`, `AccessToken` and `AccessGrant.
+  #
+  # Be default Doorkeeper ActiveRecord ORM uses it's own classes:
+  #
+  # access_token_class "Doorkeeper::AccessToken"
+  # access_grant_class "Doorkeeper::AccessGrant"
+  # application_class "Doorkeeper::Application"
+  #
+  # Don't forget to include Doorkeeper ORM mixins into your custom models:
+  #
+  #   *  ::Doorkeeper::Orm::ActiveRecord::Mixins::AccessToken - for access token
+  #   *  ::Doorkeeper::Orm::ActiveRecord::Mixins::AccessGrant - for access grant
+  #   *  ::Doorkeeper::Orm::ActiveRecord::Mixins::Application - for application (OAuth2 clients)
+  #
+  # For example:
+  #
+  # access_token_class "MyAccessToken"
+  #
+  # class MyAccessToken < ApplicationRecord
+  #   include ::Doorkeeper::Orm::ActiveRecord::Mixins::AccessToken
+  #
+  #   self.table_name = "hey_i_wanna_my_name"
+  #
+  #   def destroy_me!
+  #     destroy
+  #   end
+  # end
 
   # If you are planning to use Doorkeeper in Rails 5 API-only application, then you might
   # want to use API mode that will skip all the views management and change the way how
@@ -89,6 +119,14 @@ Doorkeeper.configure do
   #
   # reuse_access_token
 
+  # In case you enabled `reuse_access_token` option Doorkeeper will try to find matching
+  # token using `matching_token_for` Access Token API that searches for valid records
+  # in batches in order not to pollute the memory with all the database records. By default
+  # Doorkeeper uses batch size of 10 000 records. You can increase or decrease this value
+  # depending on your needs and server capabilities.
+  #
+  # token_lookup_batch_size 10_000
+
   # Set a limit for token_reuse if using reuse_access_token option
   #
   # This option limits token_reusability to some extent.
@@ -98,6 +136,16 @@ Doorkeeper.configure do
   # This option should be a percentage(i.e. (0,100])
   #
   # token_reuse_limit 100
+
+  # Only allow one valid access token obtained via client credentials
+  # per client. If a new access token is obtained before the old one
+  # expired, the old one gets revoked (disabled by default)
+  #
+  # When enabling this option, make sure that you do not expect multiple processes
+  # using the same credentials at the same time (e.g. web servers spanning
+  # multiple machines and/or processes).
+  #
+  # revoke_previous_client_credentials_token
 
   # Hash access and refresh tokens before persisting them.
   # This will disable the possibility to use +reuse_access_token+

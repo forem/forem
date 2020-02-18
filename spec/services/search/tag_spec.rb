@@ -4,17 +4,66 @@ RSpec.describe Search::Tag, type: :service, elasticsearch: true do
   describe "::index" do
     it "indexes a tag to elasticsearch" do
       tag = FactoryBot.create(:tag)
-      expect { described_class.get(tag.id) }.to raise_error(Elasticsearch::Transport::Transport::Errors::NotFound)
-      described_class.index(tag.id, id: tag.id)
-      expect(described_class.get(tag.id)).not_to be_nil
+      expect { described_class.find_document(tag.id) }.to raise_error(Elasticsearch::Transport::Transport::Errors::NotFound)
+      described_class.index(tag.id, tag.serialized_search_hash)
+      expect(described_class.find_document(tag.id)).not_to be_nil
     end
   end
 
-  describe "::get" do
+  describe "::search" do
+    it "searches with a given query string" do
+      tag1 = FactoryBot.create(:tag, :search_indexed, name: "tag1")
+      described_class.refresh_index
+      hits = described_class.search("name:tag1").dig("hits", "hits")
+      tag_names = hits.map { |t| t.dig("_source", "name") }
+      expect(tag_names.count).to eq(1)
+      expect(tag_names).to include(tag1.name)
+    end
+
+    it "analyzes wildcards" do
+      tag1 = FactoryBot.create(:tag, :search_indexed, name: "tag1")
+      tag2 = FactoryBot.create(:tag, :search_indexed, name: "tag2")
+      tag3 = FactoryBot.create(:tag, :search_indexed, name: "3tag")
+      described_class.refresh_index
+      hits = described_class.search("name:tag*").dig("hits", "hits")
+      tag_names = hits.map { |t| t.dig("_source", "name") }
+      expect(tag_names).to include(tag1.name, tag2.name)
+      expect(tag_names).not_to include(tag3.name)
+    end
+
+    it "does not allow leading wildcards" do
+      bad_request_error = Elasticsearch::Transport::Transport::Errors::BadRequest
+      expect { described_class.search("name:*tag") }.to raise_error(bad_request_error)
+    end
+  end
+
+  describe "::search_documents" do
+    let(:tag_doc_1) { { "name" => "tag1" } }
+    let(:tag_doc_2) { { "name" => "tag2" } }
+    let(:mock_search_response) do
+      {
+        "hits" => {
+          "hits" => [
+            { "_source" => tag_doc_1 },
+            { "_source" => tag_doc_2 },
+          ]
+        }
+      }
+    end
+
+    it "parses tag document hits from search response" do
+      allow(SearchClient).to receive(:search) { mock_search_response }
+      tag_docs = described_class.search_documents("query")
+      expect(tag_docs.count).to eq(2)
+      expect(tag_docs).to include(tag_doc_1, tag_doc_2)
+    end
+  end
+
+  describe "::find_document" do
     it "fetches a document for a given ID from elasticsearch" do
       tag = FactoryBot.create(:tag)
-      described_class.index(tag.id, id: tag.id)
-      expect { described_class.get(tag.id) }.not_to raise_error
+      described_class.index(tag.id, tag.serialized_search_hash)
+      expect { described_class.find_document(tag.id) }.not_to raise_error
     end
   end
 

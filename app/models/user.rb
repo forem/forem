@@ -154,7 +154,10 @@ class User < ApplicationRecord
   validate  :non_banished_username, :username_changed?
   validate  :unique_including_orgs_and_podcasts, if: :username_changed?
 
+  alias_attribute :positive_reactions_count, :reactions_count
+
   scope :dev_account, -> { find_by(id: SiteConfig.staff_user_id) }
+  scope :welcoming_account, -> { find_by(id: ApplicationConfig["WELCOMING_USER_ID"]) }
 
   scope :with_this_week_comments, lambda { |number|
     includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_these_7_days')::int >= ?", number)
@@ -497,7 +500,9 @@ class User < ApplicationRecord
   end
 
   def send_welcome_notification
-    Notification.send_welcome_notification(id)
+    return unless (welcome_broadcast = Broadcast.find_by(title: "Welcome Notification"))
+
+    Notification.send_welcome_notification(id, welcome_broadcast.id)
   end
 
   def verify_twitter_username
@@ -624,10 +629,6 @@ class User < ApplicationRecord
   def published_at; end
 
   def featured_number; end
-
-  def positive_reactions_count
-    reactions_count
-  end
 
   def user
     self

@@ -6,7 +6,7 @@ namespace :search do
 
   desc "update Elasticsearch index mappings"
   task update_mappings: :environment do
-     Search::Cluster.update_mappings
+    Search::Cluster.update_mappings
   end
 
   desc "tear down Elasticsearch indexes"
@@ -16,6 +16,6 @@ namespace :search do
       exit
     end
 
-    Search::Cluster.destroy_indexes
+    SearchClient.indices.delete(index: "*")
   end
 end

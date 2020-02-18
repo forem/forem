@@ -1,18 +1,17 @@
 module Api
   module V0
     class ArticlesController < ApiController
-      respond_to :json
-
       before_action :authenticate_with_api_key_or_current_user!, only: %i[create update]
       before_action :authenticate!, only: :me
       before_action -> { doorkeeper_authorize! :public }, only: %w[index show], if: -> { doorkeeper_token }
+
+      before_action :validate_article_param_is_hash, only: %w[create update]
 
       before_action :set_cache_control_headers, only: %i[index show]
 
       before_action :cors_preflight_check
       after_action :cors_set_access_control_headers
 
-      # skip CSRF checks for create and update
       skip_before_action :verify_authenticity_token, only: %i[create update]
 
       def index
@@ -115,6 +114,13 @@ module Api
           potential_user.org_admin?(params.dig("article", "organization_id")) ||
             @user.any_admin?
         end
+      end
+
+      def validate_article_param_is_hash
+        return if params.to_unsafe_h.dig(:article).is_a?(Hash)
+
+        message = "article param must be a JSON object. You provided article as a #{params[:article].class.name}"
+        render json: { error: message, status: 422 }, status: :unprocessable_entity
       end
     end
   end

@@ -1,7 +1,7 @@
 import { Controller } from 'stimulus';
 
 export default class BufferController extends Controller {
-  static targets = ['header'];
+  static targets = ['header', 'bodyText'];
 
   tagBufferUpdateConfirmed() {
     this.headerTarget.innerHTML +=
@@ -18,6 +18,12 @@ export default class BufferController extends Controller {
     setTimeout(() => {
       this.element.classList.remove('highlighted-bg');
     }, 350);
+  }
+
+  autosizeBodyText() {
+    this.bodyTextTarget.rows = this.bodyTextTarget.value.split(
+      /\r\n|\r|\n/,
+    ).length;
   }
 
   get bufferUpdateId() {
