@@ -100,9 +100,8 @@ RSpec.describe ClassifiedListing, type: :model do
 
   describe "#serialized_search_hash" do
     it "creates a valid serialized hash to send to elasticsearch" do
-      # Sorting keys to ignore order
-      mapping_keys = Search::ClassifiedListing.send("mappings").dig(:properties).keys.sort
-      expect(classified_listing.serialized_search_hash.symbolize_keys.keys.sort).to eq(mapping_keys)
+      mapping_keys = Search::ClassifiedListing.send("mappings").dig(:properties).keys
+      expect(classified_listing.serialized_search_hash.symbolize_keys.keys).to match_array(mapping_keys)
     end
   end
 
