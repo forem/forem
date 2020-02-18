@@ -14,6 +14,7 @@ items:
   - previewing-emails.md
   - notification.md
   - scheduled-jobs.md
+  - metrics.md
 ---
 
 # Backend Guide
