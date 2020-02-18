@@ -51,7 +51,7 @@ class ReactionsController < ApplicationController
     if reaction
       current_user.touch
       reaction.destroy
-      Moderator::SinkArticles.call(reaction.user_id) if vomit_reaction_on_user?(reaction)
+      Moderator::SinkArticles.call(reaction.reactable_id) if vomit_reaction_on_user?(reaction)
       Notification.send_reaction_notification_without_delay(reaction, reaction_user(reaction))
       Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) if organization_article?(reaction)
       @result = "destroy"
@@ -63,7 +63,7 @@ class ReactionsController < ApplicationController
         category: category,
       )
       @result = "create"
-      Moderator::SinkArticles.call(reaction.user_id) if vomit_reaction_on_user?(reaction)
+      Moderator::SinkArticles.call(reaction.reactable_id) if vomit_reaction_on_user?(reaction)
       Notification.send_reaction_notification(reaction, reaction_user(reaction))
       Notification.send_reaction_notification(reaction, reaction.reactable.organization) if organization_article?(reaction)
     end
