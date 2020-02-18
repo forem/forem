@@ -1,10 +1,8 @@
 import { h } from 'preact';
-import { storiesOf } from '@storybook/react';
-import { withKnobs, object, text, boolean } from '@storybook/addon-knobs/react';
+import render from 'preact-render-to-json';
 import { Article } from '..';
-import { articleDecorator } from './articleDecorator';
-
-import '../../../assets/stylesheets/articles.scss';
+import '../../../assets/javascripts/lib/xss';
+import '../../../assets/javascripts/utilities/timeAgo';
 
 const article = {
   id: 62407,
@@ -290,103 +288,104 @@ const userArticle = {
   },
 };
 
-storiesOf('Components/Articles/Standard', module)
-  .addDecorator(withKnobs)
-  .addDecorator(articleDecorator)
-  .add('Default', () => (
-    <Article
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', article)}
-      currentTag={text('currentTag', 'javascript')}
-    />
-  ))
-  .add('With Organization', () => (
-    <Article
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', articleWithOrganization)}
-      currentTag={text('currentTag', 'javascript')}
-    />
-  ))
-  .add('Wth Flare Tag', () => (
-    <Article
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', article)}
-      currentTag={text('currentTag')}
-    />
-  ))
-  .add('Wth Snippet Result', () => (
-    <Article
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', articleWithSnippetResult)}
-      currentTag={text('currentTag')}
-    />
-  ))
-  .add('Wth Reading Time', () => (
-    <Article
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', articleWithReadingTimeGreaterThan1)}
-      currentTag={text('currentTag')}
-    />
-  ))
-  .add('Wth Reactions', () => (
-    <Article
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', articleWithReactions)}
-      currentTag={text('currentTag')}
-    />
-  ))
-  .add('With Comments', () => (
-    <Article
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', articleWithComments)}
-      currentTag={text('currentTag')}
-    />
-  ))
-  .add('Is on Reading List', () => (
-    <Article
-      isBookmarked={boolean('isBookmarked', true)}
-      article={object('article', articleWithComments)}
-      currentTag={text('currentTag')}
-    />
-  ));
+describe('<Article /> component', () => {
+  it('should render a standard article', () => {
+    const tree = render(
+      <Article
+        isBookmarked={false}
+        article={article}
+        currentTag="javascript"
+      />,
+    );
+    expect(tree).toMatchSnapshot();
+  });
 
-storiesOf('Components/Articles/Video', module)
-  .addDecorator(withKnobs)
-  .addDecorator(articleDecorator)
-  .add('Default', () => (
-    <Article
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', videoArticle)}
-      currentTag={text('currentTag', 'javascript')}
-    />
-  ))
-  .add('Video Article and Flare Tag', () => (
-    <Article
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', videoArticle)}
-      currentTag={text('currentTag')}
-    />
-  ));
+  it('should render with an organization', () => {
+    const tree = render(
+      <Article
+        isBookmarked={false}
+        article={articleWithOrganization}
+        currentTag="javascript"
+      />,
+    );
+    expect(tree).toMatchSnapshot();
+  });
 
-storiesOf('Components/Articles/Podcast', module)
-  .addDecorator(withKnobs)
-  .addDecorator(articleDecorator)
-  .add('Default', () => (
-    <Article
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', podcastArticle)}
-      currentTag={text('currentTag')}
-    />
-  ))
-  .add('Podcast Episode', () => (
-    <Article
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', podcastEpisodeArticle)}
-      currentTag={text('currentTag')}
-    />
-  ));
+  it('should render with a flare tag', () => {
+    const tree = render(<Article isBookmarked={false} article={article} />);
+    expect(tree).toMatchSnapshot();
+  });
 
-storiesOf('Components/Articles/User', module)
-  .addDecorator(withKnobs)
-  .addDecorator(articleDecorator)
-  .add('Default', () => <Article article={object('article', userArticle)} />);
+  it('should render with a snippet result', () => {
+    const tree = render(
+      <Article isBookmarked={false} article={articleWithSnippetResult} />,
+    );
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('should render with a reading time', () => {
+    const tree = render(
+      <Article
+        isBookmarked={false}
+        article={articleWithReadingTimeGreaterThan1}
+      />,
+    );
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('should render with reactions', () => {
+    const tree = render(
+      <Article isBookmarked={false} article={articleWithReactions} />,
+    );
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('should render with comments', () => {
+    const tree = render(
+      <Article isBookmarked={false} article={articleWithComments} />,
+    );
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('should render as saved on reading list', () => {
+    const tree = render(<Article isBookmarked article={articleWithComments} />);
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('should render a video article', () => {
+    const tree = render(
+      <Article
+        isBookmarked={false}
+        article={videoArticle}
+        currentTag="javascript"
+      />,
+    );
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('should render a video article with a flare tag', () => {
+    const tree = render(
+      <Article isBookmarked={false} article={videoArticle} />,
+    );
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('should render a podcast article', () => {
+    const tree = render(
+      <Article isBookmarked={false} article={podcastArticle} />,
+    );
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('should render a podcast episode', () => {
+    const tree = render(
+      <Article isBookmarked={false} article={podcastEpisodeArticle} />,
+    );
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('should render a user article', () => {
+    const tree = render(<Article article={userArticle} />);
+    expect(tree).toMatchSnapshot();
+  });
+});
