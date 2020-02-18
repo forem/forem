@@ -13,7 +13,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
       expect(response.headers["Access-Control-Allow-Methods"]).to eq("HEAD, GET, OPTIONS")
       expect(response.headers["Access-Control-Expose-Headers"]).to be_empty
-      expect(response.headers["Access-Control-Max-Age"]).to be_present
+      expect(response.headers["Access-Control-Max-Age"]).to eq(2.hours.to_i.to_s)
     end
 
     it "has correct keys in the response" do
@@ -271,7 +271,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
       expect(response.headers["Access-Control-Allow-Methods"]).to eq("HEAD, GET, OPTIONS")
       expect(response.headers["Access-Control-Expose-Headers"]).to be_empty
-      expect(response.headers["Access-Control-Max-Age"]).to be_present
+      expect(response.headers["Access-Control-Max-Age"]).to eq(2.hours.to_i.to_s)
     end
 
     it "has correct keys in the response" do
