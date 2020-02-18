@@ -57,7 +57,6 @@ FactoryBot.define do
       end
     end
 
-
     trait :trusted do
       after(:build) { |user| user.add_role(:trusted) }
     end

@@ -80,6 +80,8 @@ class Article < ApplicationRecord
 
   scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
 
+  scope :cached_tagged_by_approval_with, ->(tag) { cached_tagged_with(tag).where(approved: true) }
+
   scope :active_help, lambda {
                         published.
                           cached_tagged_with("help").
@@ -394,7 +396,8 @@ class Article < ApplicationRecord
   end
 
   def update_score
-    update_columns(score: reactions.sum(:points),
+    new_score = reactions.sum(:points) + Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
+    update_columns(score: new_score,
                    comment_score: comments.sum(:score),
                    hotness_score: BlackBox.article_hotness_score(self),
                    spaminess_rating: BlackBox.calculate_spaminess(self))

@@ -103,7 +103,7 @@ RSpec.describe Tag, type: :model do
 
   describe "#serialized_search_hash" do
     it "creates a valid serialized hash to send to elasticsearch" do
-      mapping_keys = Search::Tag.send("mappings").dig(:properties).keys
+      mapping_keys = Search::Tag::MAPPINGS.dig(:properties).keys
       expect(tag.serialized_search_hash.symbolize_keys.keys).to eq(mapping_keys)
     end
   end

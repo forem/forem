@@ -45,7 +45,8 @@ There are two ways to install Yarn.
 
 There are more than one ways to setup PostgreSQL. For additional configuration,
 check out our [PostgreSQL setup guide](/installation/postgresql) or the official
-[PostgreSQL](https://www.postgresql.org/) site for further information.
+[PostgreSQL](https://www.postgresql.org/) site for further information. DEV
+requires PostgreSQL version 9.4 or higher.
 
 ### ImageMagick
 
