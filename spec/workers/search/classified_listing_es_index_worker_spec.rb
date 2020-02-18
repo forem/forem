@@ -14,14 +14,11 @@ RSpec.describe Search::ClassifiedListingEsIndexWorker, type: :worker, elasticsea
     expect { classified_listing.elasticsearch_doc }.to raise_error(Elasticsearch::Transport::Transport::Errors::NotFound)
     worker.perform(classified_listing.id)
 
-    elasticsearch_doc = classified_listing.elasticsearch_doc.dig("_source")
-    cl_serialized_search_hash = classified_listing.serialized_search_hash.deep_stringify_keys
+    elasticsearch_doc = classified_listing.elasticsearch_doc.dig("_source").deep_symbolize_keys
+    cl_serialized_search_hash = classified_listing.serialized_search_hash.deep_symbolize_keys
 
-    # To avoid a mess of parsing timestamps in different timezones, just check the key
-    expect(elasticsearch_doc).to have_key("bumped_at")
-    expect(cl_serialized_search_hash).to have_key("bumped_at")
-
-    # Test equality except the bumped_at field which is a timestamp - the value is always different
-    expect(elasticsearch_doc.except("bumped_at")).to eq(cl_serialized_search_hash.except("bumped_at"))
+    expect(elasticsearch_doc[:id]).to eq(cl_serialized_search_hash[:id])
+    expect(elasticsearch_doc[:author][:name]).to eq(cl_serialized_search_hash[:author][:name])
+    expect(elasticsearch_doc[:body_markdown]).to eq(cl_serialized_search_hash[:body_markdown])
   end
 end
