@@ -12,7 +12,7 @@ class ChatChannelMembership < ApplicationRecord
   algoliasearch index_name: "SecuredChatChannelMembership_#{Rails.env}", auto_index: false do
     attribute :id, :status, :viewable_by, :chat_channel_id, :last_opened_at,
               :channel_text, :channel_last_message_at, :channel_status, :channel_type, :channel_username,
-              :channel_text, :channel_name, :channel_image, :channel_modified_slug, :channel_messages_count
+              :channel_name, :channel_image, :channel_modified_slug, :channel_messages_count
     searchableAttributes %i[channel_text]
     attributesForFaceting ["filterOnly(viewable_by)", "filterOnly(status)", "filterOnly(channel_status)", "filterOnly(channel_type)"]
     ranking ["desc(channel_last_message_at)"]

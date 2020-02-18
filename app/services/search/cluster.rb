@@ -1,8 +1,9 @@
 module Search
   class Cluster
     SEARCH_CLASSES = [
-      Search::Tag,
+      Search::ChatChannelMembership,
       Search::ClassifiedListing,
+      Search::Tag,
     ].freeze
 
     class << self
