@@ -329,10 +329,7 @@ Rails.application.routes.draw do
   get "dashboard/following_users" => "dashboards#following_users"
   get "dashboard/following_organizations" => "dashboards#following_organizations"
   get "dashboard/following_podcasts" => "dashboards#following_podcasts"
-  get "/dashboard/:which" => "dashboards#followers",
-      :constraints => {
-        which: /organization_user_followers|user_followers/
-      }
+  get "/dashboard/:which" => "dashboards#followers", :constraints => { which: /user_followers/ }
   get "/dashboard/:which/:org_id" => "dashboards#show",
       :constraints => {
         which: /organization/
