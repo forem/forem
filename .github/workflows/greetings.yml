@@ -10,8 +10,10 @@ jobs:
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         pr-message: >
-          Thank you very much for your contribution!
+          Thank you so much for your PR! We'll do our best to review your submission as soon as possible.
 
-          You can expect a message from one of the DEV team members within 24 hours. Please be sure to sign the CLA agreement. Once your PR is reviewed and all the check passes, your PR will be merge! 
+          If you don't hear from us within 3 business days, please ping @thepracticaldev/oss.
 
-          Please check our [documentation]() for additional information ✌️
+          Some things we look for immediately when reviewing a PR are: tests, updated docs, etc.
+
+          Please make sure you've added all relevant info in order to help us get your code merged as quickly as possible!
