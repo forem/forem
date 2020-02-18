@@ -1,13 +1,3 @@
-// const { environment } = require('@rails/webpacker');
-// const customConfig = require('./custom');
-
-// environment.config.set('resolve.extensions', ['.foo', '.bar']);
-// environment.config.set('output.filename', '[name].js');
-// environment.config.merge(customConfig);
-// environment.config.delete('output.chunkFilename');
-
-// environment.loaders.append('erb', erb)
-
 const { environment } = require('@rails/webpacker');
 const erb = require('./loaders/erb');
 const webpack = require('webpack');
