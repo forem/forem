@@ -1,6 +1,6 @@
 module Articles
   class Feed
-    def initialize(number_of_articles:, page: 1, tag: nil)
+    def initialize(number_of_articles: 35, page: 1, tag: nil)
       @number_of_articles = number_of_articles
       @page = page
       @tag = tag
@@ -12,7 +12,7 @@ module Articles
       articles
     end
 
-    # Timeframe values dome from Timeframer::DATETIMES
+    # Timeframe values from Timeframer::DATETIMES
     def top_articles_by_timeframe(timeframe:)
       published_articles_by_tag.where("published_at > ?", Timeframer.new(timeframe).datetime).
         order("score DESC")
@@ -23,7 +23,7 @@ module Articles
         where("featured_number > ? AND score > ?", 1_449_999_999, -40)
     end
 
-    def default_home_feed(user_signed_in: false)
+    def default_home_feed_and_featured_story(user_signed_in: false)
       hot_stories = published_articles_by_tag.
         where("score > ? OR featured = ?", 9, true).
         order("hotness_score DESC")
@@ -37,6 +37,11 @@ module Articles
         hot_stories = hot_stories.to_a + new_stories.to_a
       end
       [featured_story, hot_stories]
+    end
+
+    def default_home_feed(user_signed_in: false)
+      _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: user_signed_in)
+      stories
     end
   end
 end
