@@ -168,7 +168,7 @@ class Article < ApplicationRecord
                             "user_name",
                             "user_username",
                             "comments_blob"]
-      attributesForFaceting [:class_name]
+      attributesForFaceting %i[class_name approved]
       customRanking ["desc(search_score)", "desc(hotness_score)"]
     end
 
