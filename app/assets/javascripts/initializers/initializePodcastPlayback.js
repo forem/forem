@@ -359,7 +359,7 @@ function initializePodcastPlayback() {
     newState.muted = currentState.muted;
     newState.volume = currentState.volume;
     newState.duration = currentState.duration;
-    localStorage.setItem('media_playback_state_v3', JSON.stringify(newState));
+    localStorage.setItem('media_playback_state_v2', JSON.stringify(newState));
   }
 
   function getMediaState() {
@@ -418,7 +418,7 @@ function initializePodcastPlayback() {
 
   function currentAudioState() {
     try {
-      var currentState = JSON.parse(localStorage.getItem('media_playback_state_v3'));
+      var currentState = JSON.parse(localStorage.getItem('media_playback_state_v2'));
       if (!currentState || window.name !== currentState.windowName) {
         return newAudioState();
       }
