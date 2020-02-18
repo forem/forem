@@ -1,0 +1,13 @@
+body {
+  margin: 0;
+  padding: 0;
+
+  // This should be Storybook's root element.
+  & > :first-child {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    align-items: center;
+  }
+}
