@@ -2,7 +2,6 @@
 @import 'mixins';
 
 .credits-container {
-  margin: 50px auto;
 
   .notice {
     background: $green;
@@ -15,7 +14,6 @@
     background-color: $dark-purple;
     background-image: linear-gradient(141deg, $dark-purple 0%, #1f89db 51%, #2981e5 75%);
     padding: 70px 5px;
-    margin-top: 60px;
     h1 {
       font-size: calc(1.4em + 0.5vw);
     }

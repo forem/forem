@@ -48,26 +48,31 @@ class ReactionsController < ApplicationController
       reactable_type: params[:reactable_type],
       category: category,
     ).first
+    result = ""
     if reaction
       current_user.touch
       reaction.destroy
       Moderator::SinkArticles.call(reaction.user_id) if vomit_reaction_on_user?(reaction)
       Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
       Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) if organization_article?(reaction)
-      @result = "destroy"
+      result = "destroy"
     else
-      reaction = Reaction.create!(
+      reaction = Reaction.new(
         user_id: current_user.id,
         reactable_id: params[:reactable_id],
         reactable_type: params[:reactable_type],
         category: category,
       )
-      @result = "create"
-      Moderator::SinkArticles.call(reaction.user_id) if vomit_reaction_on_user?(reaction)
-      Notification.send_reaction_notification(reaction, reaction.reactable.user)
-      Notification.send_reaction_notification(reaction, reaction.reactable.organization) if organization_article?(reaction)
+      if reaction.save
+        result = "create"
+        Moderator::SinkArticles.call(reaction.user_id) if vomit_reaction_on_user?(reaction)
+        Notification.send_reaction_notification(reaction, reaction.reactable.user)
+        Notification.send_reaction_notification(reaction, reaction.reactable.organization) if organization_article?(reaction)
+      else
+        return render json: { error: reaction.errors.full_messages.join(", "), status: 422 }, status: :unprocessable_entity
+      end
     end
-    render json: { result: @result, category: category }
+    render json: { result: result, category: category }
   end
 
   def cached_user_positive_reactions(user)

@@ -1,5 +1,11 @@
 class ChatChannelMembership < ApplicationRecord
   include AlgoliaSearch
+
+  include Searchable
+  SEARCH_INDEX_WORKER = Search::ChatChannelMembershipEsIndexWorker
+  SEARCH_SERIALIZER = Search::ChatChannelMembershipSerializer
+  SEARCH_CLASS = Search::ChatChannelMembership
+
   belongs_to :chat_channel
   belongs_to :user
 
@@ -8,6 +14,8 @@ class ChatChannelMembership < ApplicationRecord
   validates :status, inclusion: { in: %w[active inactive pending rejected left_channel] }
   validates :role, inclusion: { in: %w[member mod] }
   validate  :permission
+
+  after_commit :index_to_elasticsearch
 
   algoliasearch index_name: "SecuredChatChannelMembership_#{Rails.env}", auto_index: false do
     attribute :id, :status, :viewable_by, :chat_channel_id, :last_opened_at,
@@ -18,7 +26,7 @@ class ChatChannelMembership < ApplicationRecord
     ranking ["desc(channel_last_message_at)"]
   end
 
-  private
+  delegate :channel_type, to: :chat_channel
 
   def channel_last_message_at
     chat_channel.last_message_at
@@ -26,10 +34,6 @@ class ChatChannelMembership < ApplicationRecord
 
   def channel_status
     chat_channel.status
-  end
-
-  def channel_type
-    chat_channel.channel_type
   end
 
   def channel_text
@@ -60,14 +64,6 @@ class ChatChannelMembership < ApplicationRecord
     other_user&.username if chat_channel.channel_type == "direct"
   end
 
-  def channel_color
-    if chat_channel.channel_type == "direct"
-      other_user&.decorate&.darker_color
-    else
-      "#111111"
-    end
-  end
-
   def channel_modified_slug
     if chat_channel.channel_type == "direct"
       "@" + other_user&.username
@@ -78,6 +74,16 @@ class ChatChannelMembership < ApplicationRecord
 
   def viewable_by
     user_id
+  end
+
+  private
+
+  def channel_color
+    if chat_channel.channel_type == "direct"
+      other_user&.decorate&.darker_color
+    else
+      "#111111"
+    end
   end
 
   def other_user

@@ -46,6 +46,26 @@ RSpec.describe Article, type: :model do
       end
     end
 
+    describe "#canonical_url_must_not_have_spaces" do
+      let!(:article) { build :article, user: user }
+
+      it "is valid without spaces" do
+        valid_url = "https://www.positronx.io/angular-radio-buttons-example/"
+        article.canonical_url = valid_url
+
+        expect(article).to be_valid
+      end
+
+      it "is not valid with spaces" do
+        invalid_url = "https://www.positronx.io/angular radio-buttons-example/"
+        article.canonical_url = invalid_url
+        messages = ["must not have spaces"]
+
+        expect(article).not_to be_valid
+        expect(article.errors.messages[:canonical_url]).to eq messages
+      end
+    end
+
     describe "#main_image" do
       it "must have url for main image if present" do
         article.main_image = "hello"

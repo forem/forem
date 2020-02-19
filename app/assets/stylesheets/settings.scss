@@ -12,19 +12,18 @@
     padding: 40px 0px 40px;
     text-align: center;
     position: relative;
-    top: 60px;
-    left: 0px;
-    right: 0px;
+    top: 0;
+    left: 0;
+    right: 0;
     &.error-notice {
       background: rgba(255, 80, 80, 0.7);
       color: white;
     }
   }
   .user-settings-page {
-    padding-top: 10px;
     width: 900px;
     max-width: 94%;
-    margin: 40px auto;
+    margin: 0 auto;
     font-size: 15px;
     .finish-notice {
       background: rgb(102, 93, 162);

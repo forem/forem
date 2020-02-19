@@ -70,3 +70,5 @@ exclude_patterns:
   - "**/__tests__/"
   - "**/.eslintrc.js"
   - "*.js"
+  - "**/__stories__/"
+
