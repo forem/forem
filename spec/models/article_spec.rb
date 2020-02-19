@@ -355,6 +355,17 @@ RSpec.describe Article, type: :model do
       article.body_markdown = "Hey hey Ho Ho"
       expect(article.has_frontmatter?).to eq(false)
     end
+
+    it "returns true if parser raises a Psych::DisallowedClass error" do
+      allow(FrontMatterParser::Parser).to receive(:new).and_raise(Psych::DisallowedClass.new("msg"))
+      expect(article.has_frontmatter?).to eq(true)
+    end
+
+    it "returns true if parser raises a Psych::SyntaxError error" do
+      syntax_error = Psych::SyntaxError.new("file", 1, 1, 0, "problem", "context")
+      allow(FrontMatterParser::Parser).to receive(:new).and_raise(syntax_error)
+      expect(article.has_frontmatter?).to eq(true)
+    end
   end
 
   describe "#readable_edit_date" do
