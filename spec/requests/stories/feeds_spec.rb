@@ -2,7 +2,9 @@ require "rails_helper"
 
 RSpec.describe "Stories::FeedsIndex", type: :request do
   let(:title) { "My post" }
-  let!(:article) { create(:article, title: title, featured: true) }
+  let(:user) { create(:user, name: "Josh") }
+  let(:organization) { create(:organization, name: "JoshCo") }
+  let!(:article) { create(:article, title: title, featured: true, user: user, organization: organization) }
 
   describe "GET feeds index" do
     let(:response_json) { JSON.parse(response.body) }
@@ -11,9 +13,13 @@ RSpec.describe "Stories::FeedsIndex", type: :request do
     it "renders article list as json" do
       get "/stories/feed", headers: headers
       expect(response.content_type).to eq("application/json")
-      expect(response.body).to include(article.id.to_s)
+      expect(response_article["id"]).to eq article.id
       expect(response_article["title"]).to eq title
-      expect(response_article["class_name"]).to eq "Article"
+      expect(response_article["user_id"]).to eq user.id
+      expect(response_article["user"]["table"]["name"]).to eq user.name
+      expect(response_article["organization_id"]).to eq organization.id
+      expect(response_article["organization"]["table"]["name"]).to eq organization.name
+      expect(response_article["tag_list"]).to eq article.decorate.cached_tag_list_array
     end
 
     context "when timeframe parameter is present" do
