@@ -2,6 +2,9 @@ import { h, render } from 'preact';
 import { Article, Feed, LoadingArticle } from '../articles';
 import { FeaturedArticle } from '../articles/FeaturedArticle';
 
+/**
+ * Renders the main feed.
+ */
 export const renderFeed = () => {
   const feedContainer = document.getElementById('homepage-feed');
 
@@ -19,17 +22,11 @@ export const renderFeed = () => {
           );
         }
 
-        const [featuredStory, ...subStories] = feedItems.map(item => ({
-          ...item,
-          user: item.user.table,
-          organization: item.organization ? item.organization.table : null,
-        }));
+        const [featuredStory, ...subStories] = feedItems;
 
         // 1. Show the featured story first
         // 2. Podcast episodes out today
         // 3. Rest of the stories for the feed
-
-        // TODO: Featured
         return (
           <div>
             <FeaturedArticle article={featuredStory} />

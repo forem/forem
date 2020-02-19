@@ -60,7 +60,6 @@ let waitingForDataLoad = setTimeout(function dataLoadedCheck() {
 
   if (userStatus === 'logged-out') {
     // Nothing to do, the user is not logged on.
-    renderFeed();
     return;
   }
 
@@ -77,14 +76,9 @@ let waitingForDataLoad = setTimeout(function dataLoadedCheck() {
 }, 40);
 
 InstantClick.on('receive', (_url, body, title) => {
-  renderFeed();
-
   if (document.body.dataset.userStatus !== 'logged-in') {
     // Nothing to do, the user is not logged on.
-    return {
-      body,
-      title,
-    };
+    return false;
   }
 
   const tagsFollowedContainer = body.querySelector(
@@ -96,6 +90,7 @@ InstantClick.on('receive', (_url, body, title) => {
     return false;
   }
 
+  renderFeed();
   renderTagsFollowed(tagsFollowedContainer);
 
   return {
