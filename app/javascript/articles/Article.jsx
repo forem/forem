@@ -99,7 +99,7 @@ export const Article = ({
         </a>
       </h4>
 
-      <TagList tags={article.tag_list || article.cached_tag_list_array} />
+      <TagList tags={article.tag_list} />
       {article.class_name !== 'User' && (
         <CommentsCount
           count={article.comments_count}
