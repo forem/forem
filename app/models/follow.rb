@@ -13,6 +13,7 @@ class Follow < ApplicationRecord
   scope :follower_user, ->(id) { where(follower_id: id, followable_type: "User") }
   scope :follower_organization, ->(id) { where(follower_id: id, followable_type: "Organization") }
   scope :follower_podcast, ->(id) { where(follower_id: id, followable_type: "Podcast") }
+  scope :follower_tag, ->(id) { where(follower_id: id, followable_type: "ActsAsTaggableOn::Tag") }
 
   counter_culture :follower, column_name: proc { |follow|
     case follow.followable_type
