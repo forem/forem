@@ -4,7 +4,7 @@ FactoryBot.define do
   end
 
   trait :onboarding do
-    title { "Welcome Notification" }
+    title { "Onboarding Notification" }
     type_of { "Onboarding" }
     processed_html { "Welcome! Introduce yourself in our <a href='/welcome'>welcome thread!</a>" }
   end
