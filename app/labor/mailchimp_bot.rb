@@ -162,8 +162,7 @@ class MailchimpBot
   end
 
   def report_error(exception)
-    logger = Logger.new(STDOUT)
-    logger.error(exception)
+    Honeybadger.notify(exception)
   end
 
   def target_md5_email
