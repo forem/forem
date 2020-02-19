@@ -23,7 +23,7 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
   end
 
   context "when a valid token is given but the user is not a pro" do
-    before { get "/api/analytics/#{endpoint}?#{params}", headers: { "api-key" => "abadskajdlsak" } }
+    before { get "/api/analytics/#{endpoint}?#{params}", headers: { "api-key" => api_token.secret } }
 
     it "renders an error message: 'unauthorized' in JSON" do
       expect(JSON.parse(response.body)["error"]).to eq "unauthorized"

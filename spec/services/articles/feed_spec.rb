@@ -4,16 +4,6 @@ RSpec.describe Articles::Feed, type: :service do
   let!(:feed) { described_class.new(number_of_articles: 100, page: 1) }
   let!(:article) { create(:article) }
 
-  describe "#initialize" do
-    it "requires number of articles argument" do
-      expect { described_class.new(tag: "foo", page: 1) }.to raise_error(ArgumentError)
-    end
-
-    it "does not require the tag argument" do
-      expect { described_class.new(number_of_articles: 1, page: 1) }.not_to raise_error
-    end
-  end
-
   describe "#published_articles_by_tag" do
     let(:unpublished_article) { create(:article, published: false) }
     let(:tag) { "foo" }
@@ -61,13 +51,13 @@ RSpec.describe Articles::Feed, type: :service do
     end
   end
 
-  describe "#default_home_feed" do
+  describe "#default_home_feed_and_featured_story" do
     let!(:hot_story) { create(:article, hotness_score: 100, score: 100, published_at: 1.day.ago) }
     let!(:new_story) { create(:article, published_at: 1.minute.ago) }
     let!(:low_scoring_article) { create(:article, score: -1000) }
 
-    let(:featured_story) { feed.default_home_feed.first }
-    let(:stories) { feed.default_home_feed.second }
+    let(:featured_story) { feed.default_home_feed_and_featured_story.first }
+    let(:stories) { feed.default_home_feed_and_featured_story.second }
 
     before { article.update(published_at: 1.week.ago) }
 
@@ -85,7 +75,33 @@ RSpec.describe Articles::Feed, type: :service do
     end
 
     context "when user logged in" do
-      let(:stories) { feed.default_home_feed(user_signed_in: true).second }
+      let(:stories) { feed.default_home_feed_and_featured_story(user_signed_in: true).second }
+
+      it "only includes stories from more than 6 hours ago" do
+        expect(stories).not_to include(article)
+        expect(stories).to include(new_story)
+      end
+    end
+  end
+
+  describe "#default_home_feed" do
+    let!(:new_story) { create(:article, published_at: 1.minute.ago) }
+    let!(:low_scoring_article) { create(:article, score: -1000) }
+
+    let(:stories) { feed.default_home_feed }
+
+    before { article.update(published_at: 1.week.ago) }
+
+    it "returns array of articles" do
+      expect(stories).to be_a(ActiveRecord::Relation)
+    end
+
+    it "doesn't include low scoring stories" do
+      expect(stories).not_to include(low_scoring_article)
+    end
+
+    context "when user logged in" do
+      let(:stories) { feed.default_home_feed(user_signed_in: true) }
 
       it "only includes stories from more than 6 hours ago" do
         expect(stories).not_to include(article)

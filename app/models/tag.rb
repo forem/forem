@@ -28,21 +28,10 @@ class Tag < ActsAsTaggableOn::Tag
   after_commit :bust_cache, :index_to_elasticsearch
   before_save :mark_as_updated
 
-  def index_to_elasticsearch
-    Search::TagEsIndexWorker.perform_async(id)
-  end
-
-  def index_to_elasticsearch_inline
-    Search::Tag.index(id, serialized_search_hash)
-  end
-
-  def serialized_search_hash
-    Search::TagSerializer.new(self).serializable_hash.dig(:data, :attributes)
-  end
-
-  def elasticsearch_doc
-    Search::Tag.find_document(id)
-  end
+  include Searchable
+  SEARCH_INDEX_WORKER = Search::TagEsIndexWorker
+  SEARCH_SERIALIZER = Search::TagSerializer
+  SEARCH_CLASS = Search::Tag
 
   def submission_template_customized(param_0 = nil)
     submission_template&.gsub("PARAM_0", param_0)

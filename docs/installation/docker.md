@@ -99,6 +99,7 @@ Please execute the script itself to view all additional options:
   Data update scripts need to be run before you can start the application. Please run rake data_updates:run (RuntimeError)
   ```
   run the following command:
-  ```sh
-  docker-compose run web data_updates:run
+
+  ```shell
+  docker-compose run web rails data_updates:run
   ```

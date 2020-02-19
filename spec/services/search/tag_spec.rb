@@ -128,7 +128,7 @@ RSpec.describe Search::Tag, type: :service, elasticsearch: true do
 
       described_class.update_mappings(index_alias: other_name)
       mapping = SearchClient.indices.get_mapping(index: other_name).dig(other_name, "mappings")
-      expect(mapping.deep_stringify_keys).to include(described_class.send("mappings").deep_stringify_keys)
+      expect(mapping.deep_stringify_keys).to include(described_class::MAPPINGS.deep_stringify_keys)
 
       # Have to cleanup index since it wont automatically be handled by our cluster class bc of the unexpected name
       described_class.delete_index(index_name: other_name)

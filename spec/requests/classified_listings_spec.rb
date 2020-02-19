@@ -440,7 +440,7 @@ RSpec.describe "ClassifiedListings", type: :request do
       end
     end
 
-    context "when deleting org listing" do
+    context "when deleting draft org listing" do
       it "redirect to dashboard" do
         delete "/listings/#{org_listing_draft.id}"
         expect(response).to redirect_to("/listings/dashboard")
