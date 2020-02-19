@@ -234,7 +234,7 @@ RSpec.describe "Credits", type: :request do
 
     context "when payment fails" do
       it "does not reward credits" do
-        StripeMock.prepare_card_error(:card_declined)
+        StripeMock.prepare_card_error(:card_declined, :new_charge)
 
         post "/credits", params: {
           credit: {
@@ -248,7 +248,7 @@ RSpec.describe "Credits", type: :request do
       it "does not reward credits for orgs" do
         sign_in org_admin
 
-        StripeMock.prepare_card_error(:card_declined)
+        StripeMock.prepare_card_error(:card_declined, :new_charge)
 
         post "/credits", params: {
           organization_id: admin_org_id,
