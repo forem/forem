@@ -43,12 +43,14 @@ class StripeActiveCardsController < ApplicationController
 
   def destroy
     authorize :stripe_active_card
+
     customer = Stripe::Customer.retrieve(current_user.stripe_id_code)
     if customer.subscriptions.count.zero? || customer.sources.list(object: "card").count > 1
-      customer.sources.retrieve(params[:id]).delete
+      source = customer.sources.retrieve(params[:id])
+      Payments::Customer.detach_source(customer.id, source.id)
       customer.save
-      redirect_to "/settings/billing",
-                  notice: "Your card has been successfully removed."
+
+      redirect_to "/settings/billing", notice: "Your card has been successfully removed."
     else
       redirect_to "/settings/billing", flash: { error:
         "Can't remove card if you have an active membership. Please cancel your membership first." }

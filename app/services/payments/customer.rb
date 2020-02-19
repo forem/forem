@@ -28,6 +28,12 @@ module Payments
         end
       end
 
+      def detach_source(customer_id, source_id)
+        request do
+          Stripe::Customer.detach_source(customer_id, source_id)
+        end
+      end
+
       def charge(customer:, amount:, description:, card_id: nil)
         source = card_id || customer.default_source
 
@@ -41,6 +47,8 @@ module Payments
           )
         end
       end
+
+      private
 
       def request
         yield
