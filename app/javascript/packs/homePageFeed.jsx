@@ -20,17 +20,11 @@ export const renderFeed = () => {
 
         return (
           <div>
-            {feedItems.map(item => {
-              const feedItem = item;
-              // BEGIN: Remove this mapping once server-side changes have been made.
-              if (feedItem.cached_user) {
-                feedItem.user = feedItem.cached_user.table;
-              }
+            <Article article={feedItems} />
+            <div id="article-index-podcast-div">PODCAST EPISODES</div>
 
-              if (feedItem.cached_organization) {
-                feedItem.organization = feedItem.cached_organization.table;
-              }
-              // END: Remove this mapping once server-side changes have been made.
+            {feedItems.slice(1).map(item => {
+              const feedItem = item;
 
               return <Article article={feedItem} />;
             })}
@@ -42,5 +36,3 @@ export const renderFeed = () => {
     feedContainer.firstElementChild,
   );
 };
-
-renderFeed();
