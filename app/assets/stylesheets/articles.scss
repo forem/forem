@@ -4,7 +4,6 @@
 @import 'variables';
 @import '_mixins';
 
-
 .home {
   position: relative;
   min-height: 440px; // TODO: why?
@@ -12,523 +11,6 @@
   max-width: 1250px;
   text-align: left;
 
-  .articles-list {
-    margin: auto;
-    max-width: 100%;
-    position: relative;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0); //Invisible black
-    box-sizing: border-box;
-
-    @media screen and (min-width: 950px) {
-      float: left;
-      width: 100%;
-      max-width: calc(100% - 280px); // 280: width of the sidebar
-      padding: 16px;
-    }
-
-    @media screen and (min-width: 1120px) {
-      max-width: calc(100% - 560px); // 560 = 2*280: two sidebars
-    }
-    
-    .pinned-articles {
-      padding: 8px;
-      margin: 0 auto;
-      @include dev-card;
-
-      h5 {
-        margin: 0 0 8px;
-        padding: 8px 0;
-        display: flex;
-        align-items: center;
-      }
-    }
-
-    a {
-      @include themeable(color, theme-container-color, $black);
-    }
-
-    .placeholder-div { // TOOD: what is this?
-      display: block;
-      width: 100%;
-    }
-
-    .single-article {
-      cursor: pointer;
-      margin: 0 auto;
-      position: relative;
-      @include dev-card;
-
-      &.active { // TODO: what is this .active thingy?
-        opacity: 0.66;
-      }
-      &.big-article {
-        &.active {
-          opacity: 0.84;
-        }
-        .time-ago-indicator { // TODO: where do we use it?
-          vertical-align: 0.11em;
-        }
-      }
-      &.single-article-small-pic {
-        vertical-align: top;
-        overflow: hidden;
-      }
-      &.single-article-single-podcast {
-        h4 {
-          bottom: 10px;
-        }
-        .content {
-          padding-bottom: 40px;
-        }
-      }
-      &.single-article-podcast-div {
-        @include dev-card;
-        padding-bottom: 8px;
-        h3 {
-          margin: 0;
-          padding: 16px;
-        }
-        a.individual-podcast-link {
-          display: flex;
-          padding: 8px 16px;
-          font-size: 0.8em;
-          @include themeable(color, theme-secondary-color, $medium-gray);
-          
-          img {
-            height: 50px;
-            width: 50px;
-            border-radius: 50%;
-            vertical-align: top;
-          }
-
-          .individual-podcast-link-details {
-            padding-left: 16px;
-            flex: 1 auto;
-          }
-
-          strong {
-            display: block;
-            margin-bottom: 4px;
-            @media screen and (min-width: 500px) {
-              font-size: 1.2em;
-            }
-            padding-top: 0.2em;
-            font-weight: 500;
-            @include themeable(color, theme-color, $black);
-          }
-          &:hover {
-            @include themeable(
-              background,
-              theme-container-background-hover,
-              $light-gray
-            );
-          }
-        }
-        p {
-          margin-left: 14px;
-        }
-      }
-      h4 {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .single-article-video-preview {
-        img {
-          width: 100%;
-        }
-        position: relative;
-        padding-top: 56%;
-        display: block;
-        background: $black no-repeat center center;
-        background-size: cover;
-        &:hover {
-          opacity: 1;
-        }
-        .single-article-video-duration {
-          position: absolute;
-          bottom: 8px;
-          right: 7px;
-          background: rgba(0, 0, 0, 0.8);
-          color: white;
-          border-radius: 3px;
-          padding: 2px 5px 3px;
-          font-size: 0.75em;
-          font-weight: 500;
-          img {
-            width: 12px;
-            height: 12px;
-            margin-right: 4px;
-            vertical-align: -1px;
-          }
-        }
-      }
-
-      // Organization Badge
-      .org-headline-filler {
-        @include themeable(background, theme-container-accent-background, darken($light-gray, 6%));
-        @include themeable(color, theme-color, $black);
-        padding: 8px;
-        border-radius: 3px 0 3px 0;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        font-size: 0.9em;
-        line-height: 1;
-        img {
-          width: 24px; 
-          height: 24px;
-          margin-right: 4px;
-          border-radius: 50%;
-          vertical-align: middle;
-        }
-      }
-
-      .small-pic {
-        float: left;
-        height: 40px;
-        width: 40px;
-        margin: 16px 0 0 16px;
-        overflow: hidden;
-        font-size: 11px;
-        border-radius: 50%;
-        img,
-        .color { // TODO: what is .color for?
-          height: 100%;
-          width: 100%;
-          border-radius: 50%;
-        }
-      }
-      .tiny-pic {
-        display: inline-block;
-        height: 30px;
-        width: 30px;
-        img {
-          height: 100%;
-          width: 100%;
-          &.round {
-            border-radius: 50%;
-          }
-        }
-      }
-      .content {
-        float: left;
-        width: calc(100% - 72px);
-        box-sizing: border-box; // TODO: this should be applied globally, not only .content
-        padding: 16px 16px 100px 16px; // TODO: my, oh my...
-        h3 {
-          margin: 0px;
-          font-size: 20px;
-          font-weight: 700;
-          line-height: 28px;
-          padding: 0px;
-          word-break: break-word;
-          .tag-identifier {
-            font-size: 14px;
-            background: $blue;
-            color: white;
-            padding: 2px 4px 3px;
-            margin-right: 5px;
-            border-radius: 4px;
-            vertical-align: 3px;
-            &.red-identifier {
-              background: $red;
-            }
-            &.black-identifier {
-              background: $black;
-            }
-          }
-        }
-        @media screen and (min-width: 450px) {
-          h3 {
-            font-size: 27px;
-            line-height: 32px;
-            .tag-identifier {
-              font-size: 15px;
-              padding: 2px 6px 3px;
-              vertical-align: 4px;
-            }
-          }
-          h4 {
-            font-size: 15px;
-          }
-        }
-      }
-      .time-ago-indicator {
-        @include themeable(color, theme-secondary-color, $medium-gray);
-        display: inline-block;
-        margin-left: 4px;
-        font-weight: 400;
-        font-size: 0.8em;
-        vertical-align: 0.07em;
-      }
-      .emoji {
-        display: inline-block;
-        margin-right: 4px;
-      }
-      h4 {
-        padding: 0px;
-        margin: 0;
-        font-weight: 500;
-        position: absolute;
-        bottom: 50px;
-        left: 72px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        font-size: 0.8em;
-        a {
-          @include themeable(color, theme-secondary-color, #666666);
-        }
-
-        &:hover {
-          opacity: 0.9;
-          text-decoration: underline;
-        }
-      }
-      .tags {
-        margin-top: 0px;
-        font-size: 0.8em;
-        position: absolute;
-        display: inline-block;
-        z-index: 5;
-        left: 72px;
-        bottom: 75px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        color: $black;
-        a {
-          display: inline-block;
-        }
-        .tag {
-          margin-right: 3px;
-          &:hover {
-            text-decoration: underline;
-          }
-        }
-      }
-      .search-snippet {
-        font-size: 15px;
-        padding: 6px 0px 2px;
-        color: lighten($dark-gray, 8%);
-        line-height: 21px;
-        span {
-          background: darken($light-gray, 2%);
-          padding: 1px;
-        }
-        em {
-          font-weight: 600;
-          color: darken($dark-gray, 6%);
-          font-style: normal;
-        }
-      }
-      p {
-        margin: 6px auto;
-        line-height: 20px;
-        font-size: 16px;
-        color: rgb(163, 188, 201);
-        padding-bottom: 16px;
-      }
-      &.big-article {
-        padding: 0px;
-        .picture {
-          padding-top: 42%;
-          border-radius: 3px 3px 0 0;
-          background: no-repeat center center;
-          background-size: cover;
-        }
-        .content-wrapper {
-          padding-bottom: 115px;
-          h3 {
-            font-size: 28px;
-            padding: 16px;
-            margin: 0;
-            word-break: break-word;
-
-            @media screen and (min-width: 450px) {
-              font-size: 40px;
-            }
-          }
-          .title-block {
-            display: inline-block;
-          }
-        }
-      }
-    }
-    .featured-profile-button {
-      float: left;
-      z-index: 10;
-      left: 16px;
-      position: absolute;
-      margin-top: -110px;
-    }
-    img.featured-profile-pic {
-      height: 40px;
-      width: 40px;
-      border-radius: 50px;
-      overflow: hidden;
-      &:hover {
-        opacity: 0.9;
-      }
-    }
-    .featured-user-name {
-      font-weight: bold;
-      margin-top: 0;
-      position: absolute;
-      width: 80%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      z-index: 10;
-      left: 72px;
-      bottom: 65px;
-      font-size: 0.8em;
-      a {
-        @include themeable(color, theme-secondary-color, #666666);
-      }
-      @media screen and (min-width: 450px) {
-        font-size: 1em;
-      }
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-    .featured-tags {
-      font-size: 1em;
-      position: absolute;
-      max-width: 80%;
-      bottom: 95px !important;
-      left: 62px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      z-index: 10;
-      &:hover {
-        text-decoration: underline;
-      }
-      .tag {
-        @include themeable(color, theme-color, $black);
-        margin-right: 4px;
-      }
-    }
-    .article-reading-time {
-      position: absolute;
-      right: 82px;
-      bottom: 12px;
-      font-size: 0.7em;
-      padding: 6px 0px;
-      z-index: 8;
-      @include themeable(
-        color,
-        theme-secondary-color,
-        $medium-gray
-      );
-    }
-    .article-engagement-count {
-      font-size: 13px;
-      font-weight: bold;
-      position: absolute;
-      bottom: 12px;
-      font-weight: 400;
-      padding: 3px 6px;
-      background: transparent;
-      border: 0;
-      -webkit-appearance: none;
-      font-family: $helvetica-condensed;
-      @include themeable(color, theme-secondary-color, $medium-gray);
-      a {
-        &:hover {
-          opacity: 1;
-        }
-        @include themeable(color, theme-secondary-color, $medium-gray);
-      }
-      img {
-        height: 18px;
-        border: 0px;
-        vertical-align: -4px;
-        margin-right: 7px;
-      }
-      &.comments-count {
-        left: 85px;
-        img {
-          width: 28px;
-        }
-      }
-      &.reactions-count {
-        left: 16px;
-      }
-      &.engage-button {
-        right: 12px;
-        border: 2px solid transparent;
-        border-radius: 3px;
-        text-align: center;
-        bottom: 12px;
-        background: darken($purple, 38%);
-        color: white;
-        letter-spacing: 1px;
-        &:hover,
-        &:focus {
-          background: darken($purple, 50%);
-        }
-        .bm-success {
-          display: none;
-          position: relative;
-          top: 1px;
-        }
-        &.selected {
-          color: darken($purple, 33%);
-          background: transparent;
-          padding-right: 0px;
-          .bm-initial {
-            display: none;
-          }
-          .bm-success {
-            display: inline-block;
-          }
-        }
-        &.following-butt {
-          background: transparent;
-          color: darken($purple, 33%);
-        }
-      }
-      &.featured-engagement-count {
-        margin-top: -38px;
-        bottom: auto;
-        z-index: 10;
-        &.engage-button {
-          margin-top: -39px;
-        }
-      }
-      .engagement-count-number {
-        min-width: 28px;
-        text-align: left;
-        display: inline-block;
-      }
-    }
-    .video-player-header {
-      background: $black;
-      margin-top: 0;
-      max-width: 1050px;
-      margin: auto;
-      margin-bottom: 15px;
-      height: 52.5vw;
-      margin-bottom: -5px;
-      overflow-y: hidden;
-      @media screen and (min-width: 750px) {
-        height: 396px;
-      }
-      @media screen and (min-width: 950px) {
-        height: calc(52.5vw - 172px);
-      }
-      @media screen and (min-width: 1120px) {
-        height: calc(52.5vw - 314px);
-      }
-      @media screen and (min-width: 1240px) {
-        height: 339px;
-      }
-    }
-  }
   @media screen and (max-width: 949px) {
     .sidebar-wrapper {
       position: fixed;
@@ -607,7 +89,7 @@
     @media screen and (min-width: 950px) {
       display: block;
     }
-    
+
     .sidebar-nav {
       margin-bottom: 32px;
       .sidebar-nav-block {
@@ -651,7 +133,7 @@
       position: relative;
       overflow: hidden;
       display: block;
-      
+
       &.fixed-widget {
         position: sticky;
         width: 254px;
@@ -671,7 +153,7 @@
         box-shadow: 5px 6px 0px darken($bold-blue, 15%);
         padding: 0px 0px;
         border-radius: 3px;
-        
+
         header {
           background: darken($bold-blue, 5%);
           color: white;
@@ -756,7 +238,8 @@
         font-size: 0.9em;
         font-weight: bold;
         padding: 8px 0;
-        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo,
+          Courier, monospace;
         @include themeable(color, theme-container-color, $black);
         a {
           display: inline-block;
@@ -1288,32 +771,6 @@
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ////////////////////////////////////////////////
 // TO COMPONENTIZE //////////////////////////////
 ////////////////////////////////////////////////
@@ -1418,8 +875,6 @@
   }
 }
 
-
-
 //  Loading // TODO
 .loading {
   padding: calc(3vw + 15px) 0px 60px;
@@ -1427,8 +882,6 @@
   opacity: 0.7;
   display: none;
 }
-
-
 
 //  More loading  // TODO
 .single-article-loading {
@@ -1461,8 +914,6 @@
   position: relative;
 }
 
-
-
 ////////////////////////////////////////////////
 // OTHER VIEWS /////////////////////////////////
 ////////////////////////////////////////////////
@@ -1475,20 +926,13 @@
   @include themeable(background, theme-container-background, white);
   @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
   border-radius: 3px;
-  @include themeable(
-    border,
-    theme-container-border,
-    none
-  );
+  @include themeable(border, theme-container-border, none);
   width: 94%;
   margin: auto;
   @media screen and (min-width: 950px) {
     width: 100%;
   }
 }
-
-
-
 
 // Profile card
 .sidebar-profile {
@@ -1516,8 +960,6 @@
     @include themeable(color, theme-secondary-color, $medium-gray);
   }
 }
-
-
 
 // Notifications
 .notifications-mobile-filters {
@@ -1563,11 +1005,7 @@
         theme-container-accent-background,
         lighten($bold-blue, 8%)
       );
-      @include themeable(
-        color,
-        theme-color,
-        white
-      );
+      @include themeable(color, theme-color, white);
     }
   }
 }
@@ -1626,5 +1064,527 @@
     font-weight: 900;
     font-size: 0.8em;
     padding: 2px 8px;
+  }
+}
+
+.articles-list {
+  margin: auto;
+  max-width: 100%;
+  position: relative;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0); //Invisible black
+  box-sizing: border-box;
+
+  @media screen and (min-width: 950px) {
+    float: left;
+    width: 100%;
+    max-width: calc(100% - 280px); // 280: width of the sidebar
+    padding: 16px;
+  }
+
+  @media screen and (min-width: 1120px) {
+    max-width: calc(100% - 560px); // 560 = 2*280: two sidebars
+  }
+
+  .pinned-articles {
+    padding: 8px;
+    margin: 0 auto;
+    @include dev-card;
+
+    h5 {
+      margin: 0 0 8px;
+      padding: 8px 0;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  a {
+    @include themeable(color, theme-container-color, $black);
+  }
+
+  .placeholder-div {
+    // TOOD: what is this?
+    display: block;
+    width: 100%;
+  }
+
+  .single-article {
+    cursor: pointer;
+    margin: 0 auto;
+    position: relative;
+    @include dev-card;
+
+    &.active {
+      // TODO: what is this .active thingy?
+      opacity: 0.66;
+    }
+    &.big-article {
+      &.active {
+        opacity: 0.84;
+      }
+      .time-ago-indicator {
+        // TODO: where do we use it?
+        vertical-align: 0.11em;
+      }
+    }
+    &.single-article-small-pic {
+      vertical-align: top;
+      overflow: hidden;
+    }
+    &.single-article-single-podcast {
+      h4 {
+        bottom: 10px;
+      }
+      .content {
+        padding-bottom: 40px;
+      }
+    }
+    &.single-article-podcast-div {
+      @include dev-card;
+      padding-bottom: 8px;
+      h3 {
+        margin: 0;
+        padding: 16px;
+      }
+      a.individual-podcast-link {
+        display: flex;
+        padding: 8px 16px;
+        font-size: 0.8em;
+        @include themeable(color, theme-secondary-color, $medium-gray);
+
+        img {
+          height: 50px;
+          width: 50px;
+          border-radius: 50%;
+          vertical-align: top;
+        }
+
+        .individual-podcast-link-details {
+          padding-left: 16px;
+          flex: 1 auto;
+        }
+
+        strong {
+          display: block;
+          margin-bottom: 4px;
+          @media screen and (min-width: 500px) {
+            font-size: 1.2em;
+          }
+          padding-top: 0.2em;
+          font-weight: 500;
+          @include themeable(color, theme-color, $black);
+        }
+        &:hover {
+          @include themeable(
+            background,
+            theme-container-background-hover,
+            $light-gray
+          );
+        }
+      }
+      p {
+        margin-left: 14px;
+      }
+    }
+    h4 {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .single-article-video-preview {
+      img {
+        width: 100%;
+      }
+      position: relative;
+      padding-top: 56%;
+      display: block;
+      background: $black no-repeat center center;
+      background-size: cover;
+      &:hover {
+        opacity: 1;
+      }
+      .single-article-video-duration {
+        position: absolute;
+        bottom: 8px;
+        right: 7px;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        border-radius: 3px;
+        padding: 2px 5px 3px;
+        font-size: 0.75em;
+        font-weight: 500;
+        img {
+          width: 12px;
+          height: 12px;
+          margin-right: 4px;
+          vertical-align: -1px;
+        }
+      }
+    }
+
+    // Organization Badge
+    .org-headline-filler {
+      @include themeable(
+        background,
+        theme-container-accent-background,
+        darken($light-gray, 6%)
+      );
+      @include themeable(color, theme-color, $black);
+      padding: 8px;
+      border-radius: 3px 0 3px 0;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.9em;
+      line-height: 1;
+      img {
+        width: 24px;
+        height: 24px;
+        margin-right: 4px;
+        border-radius: 50%;
+        vertical-align: middle;
+      }
+    }
+
+    .small-pic {
+      float: left;
+      height: 40px;
+      width: 40px;
+      margin: 16px 0 0 16px;
+      overflow: hidden;
+      font-size: 11px;
+      border-radius: 50%;
+      img,
+      .color {
+        // TODO: what is .color for?
+        height: 100%;
+        width: 100%;
+        border-radius: 50%;
+      }
+    }
+    .tiny-pic {
+      display: inline-block;
+      height: 30px;
+      width: 30px;
+      img {
+        height: 100%;
+        width: 100%;
+        &.round {
+          border-radius: 50%;
+        }
+      }
+    }
+    .content {
+      float: left;
+      width: calc(100% - 72px);
+      box-sizing: border-box; // TODO: this should be applied globally, not only .content
+      padding: 16px 16px 100px 16px; // TODO: my, oh my...
+      h3 {
+        margin: 0px;
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 28px;
+        padding: 0px;
+        word-break: break-word;
+        .tag-identifier {
+          font-size: 14px;
+          background: $blue;
+          color: white;
+          padding: 2px 4px 3px;
+          margin-right: 5px;
+          border-radius: 4px;
+          vertical-align: 3px;
+          &.red-identifier {
+            background: $red;
+          }
+          &.black-identifier {
+            background: $black;
+          }
+        }
+      }
+      @media screen and (min-width: 450px) {
+        h3 {
+          font-size: 27px;
+          line-height: 32px;
+          .tag-identifier {
+            font-size: 15px;
+            padding: 2px 6px 3px;
+            vertical-align: 4px;
+          }
+        }
+        h4 {
+          font-size: 15px;
+        }
+      }
+    }
+    .time-ago-indicator {
+      @include themeable(color, theme-secondary-color, $medium-gray);
+      display: inline-block;
+      margin-left: 4px;
+      font-weight: 400;
+      font-size: 0.8em;
+      vertical-align: 0.07em;
+    }
+    .emoji {
+      display: inline-block;
+      margin-right: 4px;
+    }
+    h4 {
+      padding: 0px;
+      margin: 0;
+      font-weight: 500;
+      position: absolute;
+      bottom: 50px;
+      left: 72px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 0.8em;
+      a {
+        @include themeable(color, theme-secondary-color, #666666);
+      }
+
+      &:hover {
+        opacity: 0.9;
+        text-decoration: underline;
+      }
+    }
+    .tags {
+      margin-top: 0px;
+      font-size: 0.8em;
+      position: absolute;
+      display: inline-block;
+      z-index: 5;
+      left: 72px;
+      bottom: 75px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: $black;
+      a {
+        display: inline-block;
+      }
+      .tag {
+        margin-right: 3px;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+    .search-snippet {
+      font-size: 15px;
+      padding: 6px 0px 2px;
+      color: lighten($dark-gray, 8%);
+      line-height: 21px;
+      span {
+        background: darken($light-gray, 2%);
+        padding: 1px;
+      }
+      em {
+        font-weight: 600;
+        color: darken($dark-gray, 6%);
+        font-style: normal;
+      }
+    }
+    p {
+      margin: 6px auto;
+      line-height: 20px;
+      font-size: 16px;
+      color: rgb(163, 188, 201);
+      padding-bottom: 16px;
+    }
+    &.big-article {
+      padding: 0px;
+      .picture {
+        padding-top: 42%;
+        border-radius: 3px 3px 0 0;
+        background: no-repeat center center;
+        background-size: cover;
+      }
+      .content-wrapper {
+        padding-bottom: 115px;
+        h3 {
+          font-size: 28px;
+          padding: 16px;
+          margin: 0;
+          word-break: break-word;
+
+          @media screen and (min-width: 450px) {
+            font-size: 40px;
+          }
+        }
+        .title-block {
+          display: inline-block;
+        }
+      }
+    }
+  }
+  .featured-profile-button {
+    float: left;
+    z-index: 10;
+    left: 16px;
+    position: absolute;
+    margin-top: -110px;
+  }
+  img.featured-profile-pic {
+    height: 40px;
+    width: 40px;
+    border-radius: 50px;
+    overflow: hidden;
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+  .featured-user-name {
+    font-weight: bold;
+    margin-top: 0;
+    position: absolute;
+    width: 80%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    z-index: 10;
+    left: 72px;
+    bottom: 65px;
+    font-size: 0.8em;
+    a {
+      @include themeable(color, theme-secondary-color, #666666);
+    }
+    @media screen and (min-width: 450px) {
+      font-size: 1em;
+    }
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  .featured-tags {
+    font-size: 1em;
+    position: absolute;
+    max-width: 80%;
+    bottom: 95px !important;
+    left: 62px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    z-index: 10;
+    &:hover {
+      text-decoration: underline;
+    }
+    .tag {
+      @include themeable(color, theme-color, $black);
+      margin-right: 4px;
+    }
+  }
+  .article-reading-time {
+    position: absolute;
+    right: 82px;
+    bottom: 12px;
+    font-size: 0.7em;
+    padding: 6px 0px;
+    z-index: 8;
+    @include themeable(color, theme-secondary-color, $medium-gray);
+  }
+  .article-engagement-count {
+    font-size: 13px;
+    font-weight: bold;
+    position: absolute;
+    bottom: 12px;
+    font-weight: 400;
+    padding: 3px 6px;
+    background: transparent;
+    border: 0;
+    -webkit-appearance: none;
+    font-family: $helvetica-condensed;
+    @include themeable(color, theme-secondary-color, $medium-gray);
+    a {
+      &:hover {
+        opacity: 1;
+      }
+      @include themeable(color, theme-secondary-color, $medium-gray);
+    }
+    img {
+      height: 18px;
+      border: 0px;
+      vertical-align: -4px;
+      margin-right: 7px;
+    }
+    &.comments-count {
+      left: 85px;
+      img {
+        width: 28px;
+      }
+    }
+    &.reactions-count {
+      left: 16px;
+    }
+    &.engage-button {
+      right: 12px;
+      border: 2px solid transparent;
+      border-radius: 3px;
+      text-align: center;
+      bottom: 12px;
+      background: darken($purple, 38%);
+      color: white;
+      letter-spacing: 1px;
+      &:hover,
+      &:focus {
+        background: darken($purple, 50%);
+      }
+      .bm-success {
+        display: none;
+        position: relative;
+        top: 1px;
+      }
+      &.selected {
+        color: darken($purple, 33%);
+        background: transparent;
+        padding-right: 0px;
+        .bm-initial {
+          display: none;
+        }
+        .bm-success {
+          display: inline-block;
+        }
+      }
+      &.following-butt {
+        background: transparent;
+        color: darken($purple, 33%);
+      }
+    }
+    &.featured-engagement-count {
+      margin-top: -38px;
+      bottom: auto;
+      z-index: 10;
+      &.engage-button {
+        margin-top: -39px;
+      }
+    }
+    .engagement-count-number {
+      min-width: 28px;
+      text-align: left;
+      display: inline-block;
+    }
+  }
+  .video-player-header {
+    background: $black;
+    margin-top: 0;
+    max-width: 1050px;
+    margin: auto;
+    margin-bottom: 15px;
+    height: 52.5vw;
+    margin-bottom: -5px;
+    overflow-y: hidden;
+    @media screen and (min-width: 750px) {
+      height: 396px;
+    }
+    @media screen and (min-width: 950px) {
+      height: calc(52.5vw - 172px);
+    }
+    @media screen and (min-width: 1120px) {
+      height: calc(52.5vw - 314px);
+    }
+    @media screen and (min-width: 1240px) {
+      height: 339px;
+    }
   }
 }
