@@ -1,5 +1,11 @@
 class ChatChannelMembership < ApplicationRecord
   include AlgoliaSearch
+
+  include Searchable
+  SEARCH_INDEX_WORKER = Search::ChatChannelMembershipEsIndexWorker
+  SEARCH_SERIALIZER = Search::ChatChannelMembershipSerializer
+  SEARCH_CLASS = Search::ChatChannelMembershipSerializer
+
   belongs_to :chat_channel
   belongs_to :user
 
@@ -20,10 +26,7 @@ class ChatChannelMembership < ApplicationRecord
     ranking ["desc(channel_last_message_at)"]
   end
 
-  include Searchable
-  SEARCH_INDEX_WORKER = Search::ChatChannelMembershipEsIndexWorker
-  SEARCH_SERIALIZER = Search::ChatChannelMembershipSerializer
-  SEARCH_CLASS = Search::ChatChannelMembership
+  delegate :channel_type, to: :chat_channel
 
   def channel_last_message_at
     chat_channel.last_message_at
@@ -32,8 +35,6 @@ class ChatChannelMembership < ApplicationRecord
   def channel_status
     chat_channel.status
   end
-
-  delegate :channel_type, to: :chat_channel
 
   def channel_text
     "#{chat_channel.channel_name} #{chat_channel.slug} #{chat_channel.channel_human_names}"
