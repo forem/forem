@@ -968,7 +968,7 @@ DEPENDENCIES
   sdoc (~> 1.0)
   shoulda-matchers (~> 4.3.0)
   sidekiq (~> 6.0.4)
-  simplecov (~> 0.17)
+  simplecov (= 0.17.1)
   sitemap_generator (~> 6.1)
   slack-notifier (~> 2.3)
   spring (~> 2.1)
