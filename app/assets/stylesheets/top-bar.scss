@@ -369,7 +369,10 @@
   }
   .logo-link {
     display: inline-block;
-    margin-left: 16px;
+    margin-left: 9px;
+    @media screen and (min-width: 950px) {
+      margin-left: 16px;
+    }
   }
   .logo {
     width: 33px;
