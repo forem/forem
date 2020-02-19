@@ -595,7 +595,7 @@
     z-index: 5;
     padding: 16px;
     box-sizing: border-box;
-    @include themeable(color, theme-color, rgba($black, 0.8));
+    @include themeable(color, theme-color, rgba($black, 0.9));
     &.sidebar-additional {
       display: none;
       &.showing {
@@ -902,7 +902,7 @@
           display: block;
           padding: 8px 0;
           width: 100%;
-          @include themeable(color, theme-color, rgba($black, 0.8));
+          @include themeable(color, theme-color, rgba($black, 0.9));
           .widget-listing-link-title {
             display: block;
           }
@@ -1102,7 +1102,7 @@
     .widget-link-list__item {
       padding: 8px 0 8px 20px;
       a {
-        @include themeable(color, theme-color, rgba($black, 0.8));
+        @include themeable(color, theme-color, rgba($black, 0.9));
 
         &:hover {
           color: $black;
@@ -1609,7 +1609,7 @@
 
     &.sidebar-nav-link-tag {
       padding: 6px 0;
-      @include themeable(color, theme-container-color, rgba($black, 0.8));
+      @include themeable(color, theme-container-color, rgba($black, 0.9));
     }
     &:hover {
       @include themeable(color, theme-container-color, $black);
