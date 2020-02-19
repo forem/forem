@@ -2,6 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { articlePropTypes } from '../src/components/common-prop-types/article-prop-types';
 import {
+  CommentsCount,
   ContentTitle,
   OrganizationHeadline,
   PublishDate,
@@ -9,77 +10,20 @@ import {
   SaveButton,
   SearchSnippet,
   TagList,
+  ReactionsCount,
 } from './components';
 import { PodcastArticle } from './PodcastArticle';
 
 /* global timeAgo */
 
-// TODO: faking this from backend function asset_path. Need to get this in the frontend.
-const assetPath = relativeUrl => `/images/${relativeUrl}`;
-
-const ReactionsCount = ({ article }) => {
-  const totalReactions = article.positive_reactions_count || 0;
-
-  if (totalReactions > 0) {
-    return (
-      <div className="article-engagement-count reactions-count">
-        <a href={article.path}>
-          <img
-            src={assetPath('reactions-stack.png')}
-            alt="heart"
-            loading="lazy"
-          />
-          <span
-            id={`engagement-count-number-${article.id}`}
-            className="engagement-count-number"
-          >
-            {totalReactions}
-          </span>
-        </a>
-      </div>
-    );
-  }
-
-  return null;
-};
-
-ReactionsCount.propTypes = {
-  article: articlePropTypes.isRequired,
-};
-
-ReactionsCount.displayName = 'ReactionsCount';
-
-const CommentsCount = ({ count, articlePath }) => {
-  if (count > 0) {
-    return (
-      <div className="article-engagement-count comments-count">
-        <a href={`${articlePath}#comments`}>
-          <img
-            src={assetPath('comments-bubble.png')}
-            alt="chat"
-            loading="lazy"
-          />
-          <span className="engagement-count-number">{count}</span>
-        </a>
-      </div>
-    );
-  }
-
-  return null;
-};
-
-CommentsCount.defaultProps = {
-  count: 0,
-};
-
-CommentsCount.propTypes = {
-  count: PropTypes.number,
-  articlePath: PropTypes.string.isRequired,
-};
-
-CommentsCount.displayName = 'CommentsCount';
-
-export const Article = ({ article, currentTag, isBookmarked }) => {
+export const Article = ({
+  article,
+  currentTag,
+  isBookmarked,
+  reactionsIcon,
+  commentsIcon,
+  videoIcon,
+}) => {
   if (article && article.type_of === 'podcast_episodes') {
     return <PodcastArticle article={article} />;
   }
@@ -96,11 +40,7 @@ export const Article = ({ article, currentTag, isBookmarked }) => {
           style={`background-image:url(${article.cloudinary_video_url})`}
         >
           <div className="single-article-video-duration">
-            <img
-              src={assetPath('video-camera.svg')}
-              alt="video camera"
-              loading="lazy"
-            />
+            <img src={videoIcon} alt="video camera" loading="lazy" />
             {article.video_duration_in_minutes}
           </div>
         </a>
@@ -164,9 +104,12 @@ export const Article = ({ article, currentTag, isBookmarked }) => {
         <CommentsCount
           count={article.comments_count}
           articlePath={article.path}
+          icon={commentsIcon}
         />
       )}
-      {article.class_name !== 'User' && <ReactionsCount article={article} />}
+      {article.class_name !== 'User' && (
+        <ReactionsCount article={article} icon={reactionsIcon} />
+      )}
       {article.class_name === 'Article' && (
         <ReadingTime
           articlePath={article.path}
@@ -187,4 +130,7 @@ Article.propTypes = {
   article: articlePropTypes.isRequired,
   currentTag: PropTypes.string,
   isBookmarked: PropTypes.bool,
+  reactionsIcon: PropTypes.string.isRequired,
+  commentsIcon: PropTypes.string.isRequired,
+  videoIcon: PropTypes.string.isRequired,
 };

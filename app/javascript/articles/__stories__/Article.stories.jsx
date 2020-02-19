@@ -13,16 +13,24 @@ import {
   podcastArticle,
   podcastEpisodeArticle,
   userArticle,
-} from '../__tests__/utilities/testArticleEntities';
+  assetPath,
+} from '../__tests__/utilities/articleUtilities';
 import { articleDecorator } from './articleDecorator';
 
 import '../../../assets/stylesheets/articles.scss';
+
+const commonProps = {
+  reactionsIcon: assetPath('reactions-stack.png'),
+  commentsIcon: assetPath('comments-bubble.png'),
+  videoIcon: assetPath('video-camera.svg'),
+};
 
 storiesOf('Components/Article/Standard', module)
   .addDecorator(withKnobs)
   .addDecorator(articleDecorator)
   .add('Default', () => (
     <Article
+      {...commonProps}
       isBookmarked={boolean('isBookmarked', false)}
       article={object('article', article)}
       currentTag={text('currentTag', 'javascript')}
@@ -30,6 +38,7 @@ storiesOf('Components/Article/Standard', module)
   ))
   .add('With Organization', () => (
     <Article
+      {...commonProps}
       isBookmarked={boolean('isBookmarked', false)}
       article={object('article', articleWithOrganization)}
       currentTag={text('currentTag', 'javascript')}
@@ -37,6 +46,7 @@ storiesOf('Components/Article/Standard', module)
   ))
   .add('Wth Flare Tag', () => (
     <Article
+      {...commonProps}
       isBookmarked={boolean('isBookmarked', false)}
       article={object('article', article)}
       currentTag={text('currentTag')}
@@ -44,6 +54,7 @@ storiesOf('Components/Article/Standard', module)
   ))
   .add('Wth Snippet Result', () => (
     <Article
+      {...commonProps}
       isBookmarked={boolean('isBookmarked', false)}
       article={object('article', articleWithSnippetResult)}
       currentTag={text('currentTag')}
@@ -51,6 +62,7 @@ storiesOf('Components/Article/Standard', module)
   ))
   .add('Wth Reading Time', () => (
     <Article
+      {...commonProps}
       isBookmarked={boolean('isBookmarked', false)}
       article={object('article', articleWithReadingTimeGreaterThan1)}
       currentTag={text('currentTag')}
@@ -58,6 +70,7 @@ storiesOf('Components/Article/Standard', module)
   ))
   .add('Wth Reactions', () => (
     <Article
+      {...commonProps}
       isBookmarked={boolean('isBookmarked', false)}
       article={object('article', articleWithReactions)}
       currentTag={text('currentTag')}
@@ -65,6 +78,7 @@ storiesOf('Components/Article/Standard', module)
   ))
   .add('With Comments', () => (
     <Article
+      {...commonProps}
       isBookmarked={boolean('isBookmarked', false)}
       article={object('article', articleWithComments)}
       currentTag={text('currentTag')}
@@ -72,6 +86,7 @@ storiesOf('Components/Article/Standard', module)
   ))
   .add('Is on Reading List', () => (
     <Article
+      {...commonProps}
       isBookmarked={boolean('isBookmarked', true)}
       article={object('article', articleWithComments)}
       currentTag={text('currentTag')}
@@ -83,6 +98,7 @@ storiesOf('Components/Article/Video', module)
   .addDecorator(articleDecorator)
   .add('Default', () => (
     <Article
+      {...commonProps}
       isBookmarked={boolean('isBookmarked', false)}
       article={object('article', videoArticle)}
       currentTag={text('currentTag', 'javascript')}
@@ -90,6 +106,7 @@ storiesOf('Components/Article/Video', module)
   ))
   .add('Video Article and Flare Tag', () => (
     <Article
+      {...commonProps}
       isBookmarked={boolean('isBookmarked', false)}
       article={object('article', videoArticle)}
       currentTag={text('currentTag')}
@@ -101,6 +118,7 @@ storiesOf('Components/Article/Podcast', module)
   .addDecorator(articleDecorator)
   .add('Default', () => (
     <Article
+      {...commonProps}
       isBookmarked={boolean('isBookmarked', false)}
       article={object('article', podcastArticle)}
       currentTag={text('currentTag')}
@@ -108,6 +126,7 @@ storiesOf('Components/Article/Podcast', module)
   ))
   .add('Podcast Episode', () => (
     <Article
+      {...commonProps}
       isBookmarked={boolean('isBookmarked', false)}
       article={object('article', podcastEpisodeArticle)}
       currentTag={text('currentTag')}
@@ -117,4 +136,6 @@ storiesOf('Components/Article/Podcast', module)
 storiesOf('Components/Article/User', module)
   .addDecorator(withKnobs)
   .addDecorator(articleDecorator)
-  .add('Default', () => <Article article={object('article', userArticle)} />);
+  .add('Default', () => (
+    <Article {...commonProps} article={object('article', userArticle)} />
+  ));

@@ -1,3 +1,5 @@
+export const assetPath = relativeUrl => `/images/${relativeUrl}`;
+
 export const article = {
   id: 62407,
   title: 'Unbranded Home Loan Account',

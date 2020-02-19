@@ -12,14 +12,22 @@ import {
   podcastArticle,
   podcastEpisodeArticle,
   userArticle,
-} from './utilities/testArticleEntities';
+  assetPath,
+} from './utilities/articleUtilities';
 import '../../../assets/javascripts/lib/xss';
 import '../../../assets/javascripts/utilities/timeAgo';
+
+const commonProps = {
+  reactionsIcon: assetPath('reactions-stack.png'),
+  commentsIcon: assetPath('comments-bubble.png'),
+  videoIcon: assetPath('video-camera.svg'),
+};
 
 describe('<Article /> component', () => {
   it('should render a standard article', () => {
     const tree = render(
       <Article
+        {...commonProps}
         isBookmarked={false}
         article={article}
         currentTag="javascript"
@@ -31,6 +39,7 @@ describe('<Article /> component', () => {
   it('should render with an organization', () => {
     const tree = render(
       <Article
+        {...commonProps}
         isBookmarked={false}
         article={articleWithOrganization}
         currentTag="javascript"
@@ -40,13 +49,19 @@ describe('<Article /> component', () => {
   });
 
   it('should render with a flare tag', () => {
-    const tree = render(<Article isBookmarked={false} article={article} />);
+    const tree = render(
+      <Article {...commonProps} isBookmarked={false} article={article} />,
+    );
     expect(tree).toMatchSnapshot();
   });
 
   it('should render with a snippet result', () => {
     const tree = render(
-      <Article isBookmarked={false} article={articleWithSnippetResult} />,
+      <Article
+        {...commonProps}
+        isBookmarked={false}
+        article={articleWithSnippetResult}
+      />,
     );
     expect(tree).toMatchSnapshot();
   });
@@ -54,6 +69,7 @@ describe('<Article /> component', () => {
   it('should render with a reading time', () => {
     const tree = render(
       <Article
+        {...commonProps}
         isBookmarked={false}
         article={articleWithReadingTimeGreaterThan1}
       />,
@@ -63,26 +79,37 @@ describe('<Article /> component', () => {
 
   it('should render with reactions', () => {
     const tree = render(
-      <Article isBookmarked={false} article={articleWithReactions} />,
+      <Article
+        {...commonProps}
+        isBookmarked={false}
+        article={articleWithReactions}
+      />,
     );
     expect(tree).toMatchSnapshot();
   });
 
   it('should render with comments', () => {
     const tree = render(
-      <Article isBookmarked={false} article={articleWithComments} />,
+      <Article
+        {...commonProps}
+        isBookmarked={false}
+        article={articleWithComments}
+      />,
     );
     expect(tree).toMatchSnapshot();
   });
 
   it('should render as saved on reading list', () => {
-    const tree = render(<Article isBookmarked article={articleWithComments} />);
+    const tree = render(
+      <Article {...commonProps} isBookmarked article={articleWithComments} />,
+    );
     expect(tree).toMatchSnapshot();
   });
 
   it('should render a video article', () => {
     const tree = render(
       <Article
+        {...commonProps}
         isBookmarked={false}
         article={videoArticle}
         currentTag="javascript"
@@ -93,14 +120,18 @@ describe('<Article /> component', () => {
 
   it('should render a video article with a flare tag', () => {
     const tree = render(
-      <Article isBookmarked={false} article={videoArticle} />,
+      <Article {...commonProps} isBookmarked={false} article={videoArticle} />,
     );
     expect(tree).toMatchSnapshot();
   });
 
   it('should render a podcast article', () => {
     const tree = render(
-      <Article isBookmarked={false} article={podcastArticle} />,
+      <Article
+        {...commonProps}
+        isBookmarked={false}
+        article={podcastArticle}
+      />,
     );
     expect(tree).toMatchSnapshot();
   });
