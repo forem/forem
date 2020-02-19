@@ -1,4 +1,5 @@
 import { h, render } from 'preact';
+import { renderFeed } from './homePageFeed';
 
 /* global userData */
 
@@ -59,12 +60,14 @@ let waitingForDataLoad = setTimeout(function dataLoadedCheck() {
 
   if (userStatus === 'logged-out') {
     // Nothing to do, the user is not logged on.
+    renderFeed();
     return;
   }
 
   if (userStatus === 'logged-in' && user !== null) {
     // We have user data, render followed tags.
     clearTimeout(waitingForDataLoad);
+    renderFeed();
     renderTagsFollowed(document.getElementById('sidebar-nav-followed-tags'));
     return;
   }
@@ -74,9 +77,14 @@ let waitingForDataLoad = setTimeout(function dataLoadedCheck() {
 }, 40);
 
 InstantClick.on('receive', (_url, body, title) => {
+  renderFeed();
+
   if (document.body.dataset.userStatus !== 'logged-in') {
     // Nothing to do, the user is not logged on.
-    return false;
+    return {
+      body,
+      title,
+    };
   }
 
   const tagsFollowedContainer = body.querySelector(
