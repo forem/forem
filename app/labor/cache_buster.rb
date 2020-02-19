@@ -15,6 +15,7 @@ module CacheBuster
                   headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
   rescue URI::InvalidURIError => e
     Rails.logger.error("Trying to bust cache of an invalid uri: #{e}")
+    DataDogStatsClient.increment("cache_buster.invalid_uri")
   end
 
   def self.bust_comment(commentable)
