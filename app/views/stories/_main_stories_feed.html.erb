@@ -1,5 +1,5 @@
 <% if @default_home_feed && user_signed_in? %>
-  <% cache("fetched-home-articles-object", expires_in: 3.minutes) do %>
+  <% cache("fetched-home-articles-object-#{ApplicationConfig['HEROKU_SLUG_COMMIT']}", expires_in: 3.minutes) do %>
     <div id="followed-podcasts" data-episodes="<%= @podcast_episodes.to_json(include: { podcast: { only: %i[slug title id], methods: %i[image_90] } }) %>">
     </div>
     <div id="home-articles-object" data-articles="
