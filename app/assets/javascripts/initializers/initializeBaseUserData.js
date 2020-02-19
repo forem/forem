@@ -3,20 +3,14 @@
 /* global userData, filterXSS */
 
 function initializeUserProfileContent(user) {
-  document.getElementById('sidebar-profile-pic').innerHTML =
-    '<img alt="' +
-    user.username +
-    '" class="sidebar-profile-pic-img" src="' +
-    user.profile_image_90 +
-    '" />';
+  document.getElementById('sidebar-profile--avatar').src = user.profile_image_90;
+  document.getElementById('sidebar-profile--avatar').alt = user.username;
 
-  document.getElementById('sidebar-profile-name').innerHTML = filterXSS(
+  document.getElementById('sidebar-profile--name').innerHTML = filterXSS(
     user.name,
   );
-  document.getElementById('sidebar-profile-username').innerHTML =
-    '@' + user.username;
-  document.getElementById('sidebar-profile-snapshot-inner').href =
-    '/' + user.username;
+  document.getElementById('sidebar-profile--username').innerHTML = '@' + user.username;
+  document.getElementById('sidebar-profile').href = '/' + user.username;
 }
 
 function initializeUserSidebar(user) {

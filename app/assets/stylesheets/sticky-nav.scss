@@ -7,9 +7,9 @@
     display: block;
     position: fixed;
     left: calc(50% + 298px);
-    top: 80px;
+    top: 70px;
     bottom: 20px;
-    width: 310px;
+    padding: 0 2px;
     display: flex;
     flex-flow: column wrap;
     overflow: hidden;
@@ -96,28 +96,9 @@
     padding: 10px 13px;
     font-size:0.9em;
     font-weight: bold;
-    @include themeable(
-      background, 
-      theme-container-background, 
-      #fff
-    );
-    margin-bottom: 10px;
+    @include dev-card;
     margin-left: 10px;
-    @include themeable(
-      border, 
-      theme-container-border, 
-      1px solid $outline-color
-    );
-    @include themeable(
-      box-shadow, 
-      theme-container-box-shadow, 
-      $bold-shadow
-    );
-    @include themeable(
-      color, 
-      theme-container-color, 
-      $black
-    );
+    @include themeable(color, theme-container-color, $black);
     width: 262px;
     border-radius: 3px;
     .primary-sticky-nav-element-details{

@@ -1,5 +1,10 @@
 class ClassifiedListing < ApplicationRecord
   include AlgoliaSearch
+  include Searchable
+
+  SEARCH_INDEX_WORKER = Search::ClassifiedListingEsIndexWorker
+  SEARCH_SERIALIZER = Search::ClassifiedListingSerializer
+  SEARCH_CLASS = Search::ClassifiedListing
 
   CATEGORIES_AVAILABLE = {
     cfp: { cost: 1, name: "Conference CFP", rules: "Currently open for proposals, with link to form." },
@@ -22,6 +27,7 @@ class ClassifiedListing < ApplicationRecord
   before_save :evaluate_markdown
   before_create :create_slug
   before_validation :modify_inputs
+  after_commit :index_to_elasticsearch
   acts_as_taggable_on :tags
   has_many :credits, as: :purchase, inverse_of: :purchase, dependent: :nullify
 

@@ -10,7 +10,7 @@ $light-purple: lighten($purple, 7%);
 $blue: #1395b8;
 $sky-blue: #557de8;
 $light-sky-blue: lighten($sky-blue, 30%);
-$lightest-gray: #f9f9fa;
+$lightest-gray: #fcfcfd;
 $light-gray: #f5f6f7;
 $light-medium-gray:#dbdbdb;
 $medium-gray:#666666;
@@ -30,7 +30,7 @@ $outline-color: darken($light-medium-gray, 2%);
 $shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.18);
 $light-shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.1);
 $dark-shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.25);
-$bold-shadow: 1px 1px 0px darken($light-medium-gray, 10%);
+$bold-shadow: 0px 1px 1px rgba($black, 0.1), 0px 1px 2px rgba($black, 0.1), 0px 0px 1px rgba($black, 0.8);
 
 $ease-in-cubic : cubic-bezier(0.55, 0.055, 0.675, 0.19);
 $ease-out-cubic : cubic-bezier(0.215, 0.61, 0.355, 1);

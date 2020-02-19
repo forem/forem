@@ -99,41 +99,20 @@ article {
 
 .home .container {
   @media screen and (min-width: 1250px) {
-    margin-left: 25px;
+    margin-left: 16px;
   }
 }
 
 .container {
   width: 880px;
   max-width: 100%;
-  @include themeable(
-    background,
-    theme-container-background,
-    white
-  );
-  margin: 66px auto 20px;
+  margin: 0 auto 20px;
   text-align: left;
-  @include themeable(
-    box-shadow,
-    theme-container-box-shadow,
-    $bold-shadow
-  );
-  @media screen and (min-width: 880px) {
-    @include themeable(
-      border,
-      theme-container-border,
-      1px solid darken(
-        $light-medium-gray, 2%
-      )
-    );
-  }
+  @include dev-card;
 
   @media screen and (min-width: 950px) {
     border-radius: 3px;
-  }
-
-  @media screen and (min-width: 1250px) {
-    margin-top: 72px;
+    margin-top: 24px;
   }
 
   &.article {
@@ -188,7 +167,7 @@ article {
     h1 {
       margin: 0 auto;
       padding: 14px 0 7px;
-      font-weight: 500;
+      font-weight: 700;
       min-height: 40px;
       font-size: calc(2vw + 26px);
       word-break: break-word;
@@ -886,26 +865,15 @@ article {
     position: fixed;
     bottom: 0;
     z-index: 22;
-    background: white;
-    border: 1px solid darken($light-medium-gray, 2%);
-    @include themeable(
-      border,
-      theme-container-border,
-      1px solid darken(
-        $light-medium-gray, 2%
-      )
-    );
-    @include themeable(
-      box-shadow,
-      theme-container-box-shadow,
-      $bold-shadow
-    );
     width: 100%;
-    @include themeable(
-      background,
-      theme-background,
-      $tan
-    );
+    @include themeable(background, theme-container-background, $tan);
+    @include themeable(border, theme-container-border, none);
+    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
+
+    @media screen and (min-width: 950px) {
+      border-radius: 3px 3px 0 0;
+    }
+    
     .dropdown-content {
       clipboard-copy {
         display: flex;
@@ -949,10 +917,7 @@ article {
       }
     }
     @media screen and (min-width: 880px) {
-      margin-left: -1px;
-      margin-right: -1px;
       width: 880px;
-      padding: calc(0 + 0.7vh) 0;
     }
     @media screen and (min-width: 1365px) {
       margin-left: -1px;
@@ -1448,6 +1413,7 @@ article {
   .container {
     .article-actions {
       padding: 4px 0 0;
+
       border-bottom: 1px solid $tan;
       border-bottom: 1px solid var(--theme-background, $tan);
       border-top: 1px solid rgba(0, 0, 0, 0.33);

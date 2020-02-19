@@ -1,12 +1,8 @@
 @import 'variables';
+@import 'mixins';
 
 .articleformcontainer {
-  padding-top: 80px;
-  @media screen and (min-width: 500px) {
-    padding-top: calc(90px + 0.2vw);
-  }
-
-  padding-bottom: calc(94px + 2vw);
+  padding: 24px 0 96px;
 }
 
 .article-form-video-preview {
@@ -41,20 +37,12 @@
   width: 97%;
   max-width: 860px;
   padding: 0px 6px;
-  background: white;
-  background: var(--theme-container-background, white);
+  @include dev-card;
   position: relative;
   box-sizing: border-box;
-  border: 1px solid darken($light-medium-gray, 5%);
-  border: var(--theme-container-border, 1px solid darken($light-medium-gray, 5%));
-  box-shadow: $bold-shadow;
-  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
-  border-radius: 3px;
 
   @media screen and (min-width: 500px) {
     padding: 0px 12px;
-    border: 1px solid darken($light-medium-gray, 5%);
-    border: var(--theme-container-border, 1px solid darken($light-medium-gray, 5%));
   }
   @media screen and (min-width: 600px) {
     width: calc(97% - 30px);
