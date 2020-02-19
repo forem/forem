@@ -11,27 +11,33 @@ module Broadcasts
       end
 
       def call
-        # This method should find the user based on the `receiver_id`.
-        # It should then determine the appropriate Broadcast for a user,
-        # based on the `created_at` and the different conditions for sending a notification.
-        # `welcome_broadcast = ...`
+        return if commented_on_welcome_thread? || received_notification?
 
-        # Once it has the appropriate Broadcast to be sent, it should send a notification for it:
-        # `Notification.send_welcome_notification(receiver_id, welcome_broadcast.id)`
-        # welcome_broadcast = # Rubocop will NOT leave me alone and keeps throwing errors in this entire method, so this will have to stay like this for now
-        return if has_commented_on_welcome_thread?
-
-        welcome_broadcast = Broadcast.find_by(title: "Welcome Notification")
-        # Find the correct, welcome_thread in this case, Broadcast
+        welcome_broadcast = Broadcast.find_by(title: "Welcome Notification: welcome_thread")
         Notification.send_welcome_notification(receiver_id, welcome_broadcast.id)
-        # Send the welcome_notification once the appropriate Broadcast has been found
       end
 
-      def has_commented_on_welcome_thread?
+      def received_notification?
+        welcome_broadcast = Broadcast.find_by(title: "Welcome Notification: welcome_thread")
+        # Find a Notification by its Broadcast, e.g. Notification.notifiable
+        # Check whether a Notification exists where a Broadcast is the Broadcast
+        # Notification where Notifiable is welcome_broadcast and User is the receiver_id - this must return true
+        # notification = Notification.find_by(notifiable_id: welcome_broadcast.id, user_id: receiver_id)
+        Notification.find_by(notifiable_id: welcome_broadcast.id, user_id: receiver_id)
+      # rescue ActiveRecord::RecordInvalid # attempt to rescue error - this may need to be changed a bit
+      #   # raise StandardError, "Invalid User: User is already associated with this notification."
+      #   raise "Invalid User: User is already associated with this notification.", if notification.true?
+      #                                                                             end
+      # rescue StandardError => e
+      rescue ActiveRecord::RecordInvalid
+        # raise StandardError.new("User is already associated with this notification: #{e}")
+        raise StandardError, "User is already associated with this notification."
+      end
+
+      def commented_on_welcome_thread?
         welcome_threads = Article.where("slug LIKE 'welcome-thread%'")
-        # Find all Articles containing the Welcome Thread slug
-        Comment.where(commentable: welcome_threads, user_id: receiver_id).any?
-        # Check to see if there are any comments on the Welcome Thread Articles by the User
+        user = User.find_by(id: receiver_id)
+        Comment.where(commentable: welcome_threads, user_id: receiver_id).any? && user.created_at + 3.hours <= Time.zone.now
       end
 
       private
