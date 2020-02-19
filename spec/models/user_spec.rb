@@ -187,6 +187,11 @@ RSpec.describe User, type: :model do
         user.mastodon_url = "mastodon.social/@test"
         expect(user).not_to be_valid
       end
+
+      it "does not raise InvalidURIError when url is badly formatted" do
+        user.mastodon_url = "ben .com"
+        expect { user.validate }.not_to raise_error(URI::InvalidURIError)
+      end
     end
 
     describe "#facebook_url" do
