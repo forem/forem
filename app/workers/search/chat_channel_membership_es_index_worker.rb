@@ -5,7 +5,7 @@ module Search
     sidekiq_options queue: :high_priority
 
     def perform(chat_channel_membership_id)
-      chat_channel_membership = ::ChatChannelMembership.find_by!(id: chat_channel_membership_id)
+      chat_channel_membership = ::ChatChannelMembership.find(chat_channel_membership_id)
       chat_channel_membership.index_to_elasticsearch_inline
     end
   end
