@@ -27,7 +27,7 @@ RSpec.describe "StripeActiveCards", type: :request do
     it "successfully adds a card to the correct user" do
       post stripe_active_cards_path(stripe_token: stripe_helper.generate_card_token)
       expect(response).to redirect_to(user_settings_path(:billing))
-      expect(flash[:notice]).to eq("Your billing information has been updated")
+      expect(flash[:settings_notice]).to eq("Your billing information has been updated")
 
       card = Payments::Customer.get(user.stripe_id_code).sources.first
       expect(card.is_a?(Stripe::Card)).to eq(true)
@@ -77,7 +77,7 @@ RSpec.describe "StripeActiveCards", type: :request do
 
       put stripe_active_card_path(id: new_card.id)
       expect(response).to redirect_to(user_settings_path(:billing))
-      expect(flash[:notice]).to eq("Your billing information has been updated")
+      expect(flash[:settings_notice]).to eq("Your billing information has been updated")
 
       expect(Payments::Customer.get(customer.id).default_source).to eq(new_card.id)
     end
@@ -132,7 +132,7 @@ RSpec.describe "StripeActiveCards", type: :request do
       end
 
       it "provides the proper flash notice" do
-        expect(flash[:notice]).to eq("Your card has been successfully removed.")
+        expect(flash[:settings_notice]).to eq("Your card has been successfully removed.")
       end
 
       it "successfully deletes the card from sources" do

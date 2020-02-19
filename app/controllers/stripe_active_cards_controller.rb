@@ -9,7 +9,7 @@ class StripeActiveCardsController < ApplicationController
 
     if Payments::Customer.create_source(customer.id, stripe_params[:stripe_token])
       Rails.logger.info("Stripe Add New Card Success - #{current_user.username}")
-      flash[:notice] = "Your billing information has been updated"
+      flash[:settings_notice] = "Your billing information has been updated"
     else
       DataDogStatsClient.increment("stripe.errors")
 
@@ -34,7 +34,7 @@ class StripeActiveCardsController < ApplicationController
 
     if Payments::Customer.save(customer)
       Rails.logger.info("Stripe Card Update Success - #{current_user.username}")
-      flash[:notice] = "Your billing information has been updated"
+      flash[:settings_notice] = "Your billing information has been updated"
     else
       DataDogStatsClient.increment("stripe.errors")
 
@@ -61,7 +61,7 @@ class StripeActiveCardsController < ApplicationController
       Payments::Customer.detach_source(customer.id, source.id)
       Payments::Customer.save(customer)
 
-      flash[:notice] = "Your card has been successfully removed."
+      flash[:settings_notice] = "Your card has been successfully removed."
     end
 
     redirect_to user_settings_path(:billing)
