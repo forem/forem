@@ -76,33 +76,38 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     context "with campaign hero" do
-      let!(:hero_html) { create(:html_variant, group: "campaign", name: "hero", html: Faker::Book.title, published: true, approved: true) }
+      let!(:hero_html) do
+        create(:html_variant, group: "campaign", name: "hero", html: Faker::Book.title, published: true, approved: true)
+      end
 
       it "displays hero html when it exists and is set in config" do
         SiteConfig.campaign_hero_html_variant_name = "hero"
         get "/"
         expect(response.body).to include(CGI.escapeHTML(hero_html.html))
-       end
+      end
 
-       it "doesn't display when campaign_hero_html_variant_name is not set" do
+      it "doesn't display when campaign_hero_html_variant_name is not set" do
         SiteConfig.campaign_hero_html_variant_name = ""
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML(hero_html.html))
-       end
+      end
 
-       it "doesn't display when hero html is not approved" do
+      it "doesn't display when hero html is not approved" do
         SiteConfig.campaign_hero_html_variant_name = "hero"
         hero_html.update_column(:approved, false)
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML(hero_html.html))
-       end
-     end
+      end
+    end
 
-     context "with campaign_sidebar" do
+    context "with campaign_sidebar" do
       before do
         SiteConfig.campaign_featured_tags = "shecoded,theycoded"
-        create(:article, approved: true, body_markdown: "---\ntitle: Super-sheep#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello")
-        create(:article, approved: false, body_markdown: "---\ntitle: Unapproved-post#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello")
+
+        a_body = "---\ntitle: Super-sheep#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello"
+        create(:article, approved: true, body_markdown: a_body)
+        u_body = "---\ntitle: Unapproved-post#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello"
+        create(:article, approved: false, body_markdown: u_body)
       end
 
       it "doesn't display posts with the campaign tags when sidebar is disabled" do
@@ -121,6 +126,31 @@ RSpec.describe "StoriesIndex", type: :request do
         SiteConfig.campaign_sidebar_enabled = false
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Super-puper"))
+      end
+    end
+
+    describe "when authenticated" do
+      let(:user) { create(:user) }
+
+      before do
+        sign_in user
+      end
+
+      it "contains the stories correctly serialized" do
+        # we control titles to avoid escaping errors with apostrophes and such
+        article = create(:article, featured: true)
+        article.update_columns(title: "abc")
+
+        articles = create_list(:article, 2)
+        articles.each { |a| a.update_columns(title: "abc") }
+
+        get root_path
+        expect(response).to have_http_status(:ok)
+
+        stories = controller.instance_variable_get(:@stories) # cheating a bit ;)
+        expected_result = ArticleDecorator.decorate_collection(stories).
+          to_json(controller.class.const_get(:DEFAULT_HOME_FEED_ATTRIBUTES_FOR_SERIALIZATION))
+        expect(response.body).to include(ERB::Util.html_escape(expected_result))
       end
     end
   end
@@ -143,6 +173,19 @@ RSpec.describe "StoriesIndex", type: :request do
 
   describe "GET tag index" do
     let(:tag) { create(:tag) }
+    let(:org) { create(:organization) }
+
+    def create_live_sponsor(org, tag)
+      create(
+        :sponsorship,
+        level: :tag,
+        blurb_html: "<p>Oh Yeah!!!</p>",
+        status: "live",
+        organization: org,
+        sponsorable: tag,
+        expires_at: 30.days.from_now,
+      )
+    end
 
     it "renders page with proper header" do
       get "/t/#{tag.name}"
@@ -167,8 +210,9 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     it "does not render sponsor if not live" do
-      org = create(:organization)
-      sponsorship = create(:sponsorship, level: :tag, tagline: "Oh Yeah!!!", status: "pending", organization: org, sponsorable: tag)
+      sponsorship = create(
+        :sponsorship, level: :tag, tagline: "Oh Yeah!!!", status: "pending", organization: org, sponsorable: tag
+      )
 
       get "/t/#{tag.name}"
       expect(response.body).not_to include("is sponsored by")
@@ -176,8 +220,7 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     it "renders live sponsor" do
-      org = create(:organization)
-      sponsorship = create(:sponsorship, level: :tag, blurb_html: "<p>Oh Yeah!!!</p>", status: "live", organization: org, sponsorable: tag, expires_at: 30.days.from_now)
+      sponsorship = create_live_sponsor(org, tag)
       get "/t/#{tag.name}"
       expect(response.body).to include("is sponsored by")
       expect(response.body).to include(sponsorship.blurb_html)
