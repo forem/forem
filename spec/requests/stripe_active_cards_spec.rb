@@ -40,7 +40,7 @@ RSpec.describe "StripeSubscriptions", type: :request do
     it "increments sidekiq.errors in Datadog on failure" do
       valid_instance(user)
       customer = Stripe::Customer.retrieve(user.stripe_id_code)
-      original_card_id = customer.sources.all(object: "card").first.id
+      original_card_id = customer.sources.list(object: "card").first.id
       allow(DataDogStatsClient).to receive(:increment)
       card_error = Stripe::CardError.new(nil, nil, nil)
       allow(Stripe::Customer).to receive(:retrieve).and_raise(card_error)
@@ -54,7 +54,7 @@ RSpec.describe "StripeSubscriptions", type: :request do
       before do
         valid_instance(user)
         customer = Stripe::Customer.retrieve(user.stripe_id_code)
-        original_card_id = customer.sources.all(object: "card").first.id
+        original_card_id = customer.sources.list(object: "card").first.id
         delete "/stripe_active_cards/#{original_card_id}"
       end
 
@@ -68,7 +68,7 @@ RSpec.describe "StripeSubscriptions", type: :request do
 
       it "successfully deletes the card" do
         customer = Stripe::Customer.retrieve(user.stripe_id_code)
-        expect(customer.sources.all.count).to eq(0)
+        expect(customer.sources.list.count).to eq(0)
       end
     end
   end

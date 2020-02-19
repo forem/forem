@@ -44,7 +44,7 @@ class StripeActiveCardsController < ApplicationController
   def destroy
     authorize :stripe_active_card
     customer = Stripe::Customer.retrieve(current_user.stripe_id_code)
-    if customer.subscriptions.count.zero? || customer.sources.all(object: "card").count > 1
+    if customer.subscriptions.count.zero? || customer.sources.list(object: "card").count > 1
       customer.sources.retrieve(params[:id]).delete
       customer.save
       redirect_to "/settings/billing",
