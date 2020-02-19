@@ -44,3 +44,17 @@
     color: inherit
   }
 }
+
+
+
+// Card styling
+@mixin dev-card {
+  @include themeable(background, theme-container-background, $white);
+  @include themeable(border, theme-container-border, none);
+  @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
+
+  @media screen and (min-width: 950px) {
+    border-radius: 3px;
+    margin-bottom: 12px;
+  }
+}

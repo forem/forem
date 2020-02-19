@@ -1,8 +1,6 @@
 @import 'variables';
 @import 'mixins';
 .dashboard-container {
-  padding-top: 80px;
-  padding-bottom: 80px;
   width: 800px;
   max-width: 96%;
   margin: auto;
@@ -248,17 +246,10 @@
   }
 
   .single-article {
-    @include themeable(
-      border,
-      theme-container-border,
-      1px solid $light-medium-gray
-    );
-    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
     padding: 5px 15px;
-    margin-bottom: 13px;
-    border-radius: 3px;
+    @include dev-card;
     position: relative;
-    @include themeable(background, theme-container-background, #fff);
+
     &.single-article-unpublished {
       background: lighten($yellow, 20%);
       @include themeable(
@@ -757,7 +748,6 @@
 .dashboard-manage-header {
   background: darken($bold-blue, 25%);
   color: white;
-  margin-top: 60px;
   padding: 50px 0px 120px;
   margin-bottom: -160px;
   line-height: 1.3em;
