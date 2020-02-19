@@ -20,9 +20,24 @@ RSpec.describe Payments::Customer, type: :service do
       expect { described_class.get("foobar") }.to raise_error(Payments::InvalidRequestError)
     end
 
+    it "increments stripe.errors if the customer does not exist" do
+      allow(DataDogStatsClient).to receive(:increment)
+
+      expect { described_class.get("foobar") }.to raise_error(Payments::InvalidRequestError)
+      expect(DataDogStatsClient).to have_received(:increment).with("stripe.errors")
+    end
+
     it "raises Payments::PaymentsError for any other known error" do
       allow(Stripe::Customer).to receive(:retrieve).with("foobar").and_raise(Stripe::StripeError)
       expect { described_class.get("foobar") }.to raise_error(Payments::PaymentsError)
+    end
+
+    it "increments stripe.errors for any other known error" do
+      allow(DataDogStatsClient).to receive(:increment)
+      allow(Stripe::Customer).to receive(:retrieve).with("foobar").and_raise(Stripe::StripeError)
+
+      expect { described_class.get("foobar") }.to raise_error(Payments::PaymentsError)
+      expect(DataDogStatsClient).to have_received(:increment).with("stripe.errors")
     end
   end
 
@@ -56,9 +71,26 @@ RSpec.describe Payments::Customer, type: :service do
       expect { described_class.create_source("customer_id", "token") }.to raise_error(Payments::InvalidRequestError)
     end
 
+    it "increments stripe.errors if anything in the params is invalid" do
+      error = Stripe::InvalidRequestError.new("message", :token)
+      allow(Stripe::Customer).to receive(:create_source).and_raise(error)
+      allow(DataDogStatsClient).to receive(:increment)
+
+      expect { described_class.create_source("customer_id", "token") }.to raise_error(Payments::InvalidRequestError)
+      expect(DataDogStatsClient).to have_received(:increment).with("stripe.errors")
+    end
+
     it "raises Payments::PaymentsError for any other known error" do
       allow(Stripe::Customer).to receive(:create_source).and_raise(Stripe::StripeError)
       expect { described_class.create_source("customer_id", "token") }.to raise_error(Payments::PaymentsError)
+    end
+
+    it "increments stripe.errors for any other known error" do
+      allow(Stripe::Customer).to receive(:create_source).and_raise(Stripe::StripeError)
+      allow(DataDogStatsClient).to receive(:increment)
+
+      expect { described_class.create_source("customer_id", "token") }.to raise_error(Payments::PaymentsError)
+      expect(DataDogStatsClient).to have_received(:increment).with("stripe.errors")
     end
   end
 
@@ -126,6 +158,20 @@ RSpec.describe Payments::Customer, type: :service do
           customer: customer, amount: 1, description: "Test charge", card_id: card.id,
         )
       end.to raise_error(Payments::CardError)
+    end
+
+    it "increments stripe.errors if the card has any troubles" do
+      StripeMock.prepare_card_error(:expired_card)
+      allow(DataDogStatsClient).to receive(:increment)
+
+      customer = Stripe::Customer.create
+      token = stripe_helper.generate_card_token
+      card = Stripe::Customer.create_source(customer.id, source: token)
+
+      expect do
+        described_class.charge(customer: customer, amount: 1, description: "Test charge", card_id: card.id)
+      end.to raise_error(Payments::CardError)
+      expect(DataDogStatsClient).to have_received(:increment).with("stripe.errors")
     end
   end
 end

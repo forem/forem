@@ -16,11 +16,9 @@ class StripeActiveCardsController < ApplicationController
       Rails.logger.error("Stripe Add New Card Failure - #{current_user.username}")
       flash[:error] = "There was a problem updating your billing info."
     end
-
     redirect_to user_settings_path(:billing)
   rescue Payments::CardError, Payments::InvalidRequestError => e
-    DatadogStatsClient.increment("stripe.errors")
-
+    DataDogStatsClient.increment("stripe.errors.new_subscription")
     redirect_to user_settings_path(:billing), flash: { error: e.message }
   end
 
@@ -44,7 +42,7 @@ class StripeActiveCardsController < ApplicationController
 
     redirect_to user_settings_path(:billing)
   rescue Payments::CardError, Payments::InvalidRequestError => e
-    DatadogStatsClient.increment("stripe.errors")
+    DataDogStatsClient.increment("stripe.errors.update_subscription")
 
     redirect_to user_settings_path(:billing), flash: { error: e.message }
   end
