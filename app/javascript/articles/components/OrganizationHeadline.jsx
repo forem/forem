@@ -6,14 +6,12 @@ export const OrganizationHeadline = ({ organization }) => {
     return (
       <div className="article-organization-headline">
         <a className="org-headline-filler" href={`/${organization.slug}`}>
-          <span className="article-organization-headline-inner">
-            <img
-              alt={`${organization.name} logo`}
-              src={organization.profile_image_90}
-              loading="lazy"
-            />
-            {organization.name}
-          </span>
+          <img
+            alt={`${organization.name} logo`}
+            src={organization.profile_image_90}
+            loading="lazy"
+          />
+          {organization.name}
         </a>
       </div>
     );
