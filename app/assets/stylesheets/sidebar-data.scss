@@ -3,16 +3,14 @@
 
 .sidebar-data{
   border-radius:3px;
-  font-size:14px;
   font-weight:bold;
-  padding:1px 12px 1px;
-  margin:3px 1px;
+  margin-bottom: 32px;
+  font-family: $monospace;
   @include themeable(
     color, 
     theme-secondary-color, 
     $dark-medium-gray
   );
-  font-family: $monospace;
   .mod-action-button {
     padding: 2px 9px;
     font-size: 1.2em;

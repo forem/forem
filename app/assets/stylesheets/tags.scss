@@ -1,21 +1,13 @@
 @import 'variables';
 
 .home {
-  &.tag-home{
-    margin-top: 20px;
-  }
-  .tag-list-container{
+  .tag-list-container {
     background:$black;
     color:white;
-    margin-bottom:0px;
-    display:block;
-    font-family: "Lucida Console", Monaco, monospace, sans-serif;
-    position:relative;
-    text-align: left;
+    font-family: $monospace;
     border-radius: 3px;
-    box-shadow: $shadow;
-    margin: 6px auto 0px;
-    width: 92%;
+    margin: 0 8px 8px;
+    text-align: left;
     &:hover{
       opacity:0.8;
     }
