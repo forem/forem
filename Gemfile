@@ -32,7 +32,6 @@ gem "ddtrace", "~> 0.32.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.7" # Flexible authentication solution for Rails
 gem "dogstatsd-ruby", "~> 4.7" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
 gem "doorkeeper", "~> 5.3" # Oauth 2 provider
-gem "draper", "~> 4.0" # Draper adds an object-oriented layer of presentation logic to your Rails apps
 gem "dry-struct", "~> 1.2" # Typed structs and value objects
 gem "elasticsearch", "~> 7.4" # Powers DEVs core search functionality
 gem "email_validator", "~> 2.0" # Email validator for Rails and ActiveModel
