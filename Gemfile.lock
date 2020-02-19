@@ -687,7 +687,7 @@ GEM
     ruby-statistics (2.1.1)
     ruby-vips (2.0.17)
       ffi (~> 1.9)
-    rubyzip (2.1.0)
+    rubyzip (2.2.0)
     s3_direct_upload (0.1.7)
       coffee-rails (>= 3.1)
       jquery-fileupload-rails (~> 0.4.1)
