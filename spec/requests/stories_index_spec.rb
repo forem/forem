@@ -76,7 +76,9 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     context "with campaign hero" do
-      let!(:hero_html) { create(:html_variant, group: "campaign", name: "hero", html: Faker::Book.title, published: true, approved: true) }
+      let!(:hero_html) do
+        create(:html_variant, group: "campaign", name: "hero", html: Faker::Book.title, published: true, approved: true)
+      end
 
       it "displays hero html when it exists and is set in config" do
         SiteConfig.campaign_hero_html_variant_name = "hero"
@@ -101,8 +103,11 @@ RSpec.describe "StoriesIndex", type: :request do
     context "with campaign_sidebar" do
       before do
         SiteConfig.campaign_featured_tags = "shecoded,theycoded"
-        create(:article, approved: true, body_markdown: "---\ntitle: Super-sheep#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello")
-        create(:article, approved: false, body_markdown: "---\ntitle: Unapproved-post#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello")
+
+        a_body = "---\ntitle: Super-sheep#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello"
+        create(:article, approved: true, body_markdown: a_body)
+        u_body = "---\ntitle: Unapproved-post#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello"
+        create(:article, approved: false, body_markdown: u_body)
       end
 
       it "doesn't display posts with the campaign tags when sidebar is disabled" do
@@ -168,6 +173,19 @@ RSpec.describe "StoriesIndex", type: :request do
 
   describe "GET tag index" do
     let(:tag) { create(:tag) }
+    let(:org) { create(:organization) }
+
+    def create_live_sponsor(org, tag)
+      create(
+        :sponsorship,
+        level: :tag,
+        blurb_html: "<p>Oh Yeah!!!</p>",
+        status: "live",
+        organization: org,
+        sponsorable: tag,
+        expires_at: 30.days.from_now,
+      )
+    end
 
     it "renders page with proper header" do
       get "/t/#{tag.name}"
@@ -192,8 +210,9 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     it "does not render sponsor if not live" do
-      org = create(:organization)
-      sponsorship = create(:sponsorship, level: :tag, tagline: "Oh Yeah!!!", status: "pending", organization: org, sponsorable: tag)
+      sponsorship = create(
+        :sponsorship, level: :tag, tagline: "Oh Yeah!!!", status: "pending", organization: org, sponsorable: tag
+      )
 
       get "/t/#{tag.name}"
       expect(response.body).not_to include("is sponsored by")
@@ -201,8 +220,7 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     it "renders live sponsor" do
-      org = create(:organization)
-      sponsorship = create(:sponsorship, level: :tag, blurb_html: "<p>Oh Yeah!!!</p>", status: "live", organization: org, sponsorable: tag, expires_at: 30.days.from_now)
+      sponsorship = create_live_sponsor(org, tag)
       get "/t/#{tag.name}"
       expect(response.body).to include("is sponsored by")
       expect(response.body).to include(sponsorship.blurb_html)
