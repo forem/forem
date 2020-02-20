@@ -6,6 +6,7 @@
   font-weight: bold;
   margin-bottom: 32px;
   font-family: $monospace;
+  padding: 16px;
   @include themeable(color, theme-secondary-color, $dark-medium-gray);
   .mod-action-button {
     padding: 2px 9px;

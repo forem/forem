@@ -55,3 +55,21 @@
     margin-bottom: 12px;
   }
 }
+
+// Sidebar links
+@mixin sidebar-link {
+  display: block;
+  padding: 8px 16px;
+  margin: 0 -16px;
+  border-radius: 3px;
+  @include themeable(color, theme-container-color, rgba($black, 0.8));
+
+  &:hover {
+    @include themeable(color, theme-container-color, $black);
+    @include themeable(
+      background,
+      theme-container-background-hover,
+      $light-gray
+    );
+  }
+}

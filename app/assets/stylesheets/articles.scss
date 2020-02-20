@@ -75,7 +75,7 @@
     display: none;
     position: relative;
     z-index: 5;
-    padding: 16px;
+    padding: 16px 0;
     box-sizing: border-box;
     @include themeable(color, theme-color, rgba($black, 0.8));
     &.sidebar-additional {
@@ -99,6 +99,8 @@
             overflow-y: scroll;
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
+            padding: 0 16px;
+            margin: 0 -16px 8px -16px;
           }
         }
         .sidebar-nav-default-tags {
@@ -129,10 +131,16 @@
       @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
     }
     .widget {
-      margin-bottom: 32px; // TODO: use spacing units instead
       position: relative;
       overflow: hidden;
       display: block;
+      padding: 0 16px 16px 16px;
+      margin: 8px 0 16px 0;
+      @include themeable(
+        border-bottom,
+        theme-secondary-color-border,
+        1px solid rgba($light-medium-gray, 0.75)
+      );
 
       &.fixed-widget {
         position: sticky;
@@ -322,7 +330,6 @@
         }
         &.widget-body--sponsorship-arbitrary img {
           width: 100%;
-          border: 1px solid darken($light-gray, 4%);
         }
         .sidebar-sponsor {
           margin: 25px auto 40px;
@@ -382,34 +389,19 @@
           }
         }
         .widget-listing-link {
-          display: block;
-          padding: 8px 0;
-          width: 100%;
-          @include themeable(color, theme-color, rgba($black, 0.8));
+          @include sidebar-link;
           .widget-listing-link-title {
             display: block;
           }
           .widget-listing-link-category {
             display: inline-block;
             @include themeable(
-              border,
-              theme-container-border,
-              1px solid darken($light-medium-gray, 10%)
-            );
-            @include themeable(
               color,
               theme-secondary-color,
-              lighten($medium-gray, 5%)
+              lighten($medium-gray, 10%)
             );
-
-            padding: 0px 5px;
-            font-size: 0.77em;
-            border-radius: 3px;
-            margin-bottom: 3px;
-            line-height: 1.3em;
-          }
-          &:hover {
-            @include themeable(color, theme-color, $black);
+            font-size: 0.8em;
+            line-height: 1;
           }
         }
         .widget-accent {
@@ -444,10 +436,10 @@
         .widget-user-pic {
           display: inline-block;
           img {
-            height: 60px;
-            width: 60px;
-            margin: 9px;
-            border-radius: 100px;
+            height: 48px;
+            width: 48px;
+            margin: 0 8px 8px 0;
+            border-radius: 100%;
           }
         }
         .utc-date {
@@ -574,6 +566,7 @@
       }
       .cta-button {
         background: transparent;
+        padding: 8px 0;
         @include themeable(color, theme-color, darken($sky-blue, 17%));
         display: inline-block;
         &:hover {
@@ -583,14 +576,19 @@
       }
     }
     .widget-link-list__item {
-      padding: 8px 0 8px 20px;
-      a {
-        @include themeable(color, theme-color, rgba($black, 0.8));
+      @include sidebar-link;
+      position: relative;
+      padding-left: 32px;
 
-        &:hover {
-          color: $black;
-        }
+      &:before {
+        content: '• ';
+        color: $green;
+        font-size: 2em;
+        vertical-align: -6px;
+        position: absolute;
+        left: 16px;
       }
+
       .discuss-list-comment-count {
         font-size: 0.8em;
         @include themeable(color, theme-container-color, $medium-gray);
@@ -608,24 +606,12 @@
           text-transform: uppercase;
         }
       }
-      &::before {
-        content: '• ';
-        color: $green;
-        font-size: 2em;
-        vertical-align: -6px;
-        margin-left: -20px;
-      }
     }
     .side-footer {
       a {
-        display: block;
-        margin: 8px 0;
+        @include sidebar-link;
         font-size: 0.9em;
         @include themeable(color, theme-container-color, rgba($black, 0.7));
-
-        &:hover {
-          @include themeable(color, theme-container-color, $black);
-        }
       }
     }
     .search-partner-mention {
@@ -936,9 +922,10 @@
 
 // Profile card
 .sidebar-profile {
+  @include sidebar-link;
+  margin: 0;
   display: flex;
   align-items: center;
-  padding: 8px 0 16px;
 
   .sidebar-profile--avatar {
     width: 48px;
@@ -1040,17 +1027,12 @@
   }
 
   a.sidebar-nav-link {
+    @include sidebar-link;
     @include themeable(color, theme-container-color, rgba($black, 0.9));
-    padding: 8px 0;
-    display: block;
     font-weight: 400;
 
     &.sidebar-nav-link-tag {
-      padding: 6px 0;
       @include themeable(color, theme-container-color, rgba($black, 0.8));
-    }
-    &:hover {
-      @include themeable(color, theme-container-color, $black);
     }
   }
   a.sidebar-nav-link-follow {
@@ -1361,6 +1343,9 @@
       overflow: hidden;
       text-overflow: ellipsis;
       color: $black;
+      width: calc(
+        100% - 72px
+      ); // improving ellipsis for tags. 72px = avatar_width + spacing around
       a {
         display: inline-block;
       }
@@ -1467,13 +1452,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     z-index: 10;
-    &:hover {
-      text-decoration: underline;
-    }
-    .tag {
-      @include themeable(color, theme-color, $black);
-      margin-right: 4px;
-    }
   }
   .article-reading-time {
     position: absolute;
