@@ -28,8 +28,8 @@ body {
 }
 
 .ptr--ptr {
-  margin-top: 70px;
-  margin-bottom: -70px;
+  margin-top: 10px;
+  margin-bottom: -10px;
 }
 
 .modal-open {
@@ -297,10 +297,10 @@ body.hidden-shell {
     display: none;
   }
   .container {
-    margin-top: 20px;
+    margin-top: 0px;
   }
   .universal-page-content-wrapper {
-    margin-top: 0px !important;
+    margin-top: -46px !important;
     margin-bottom: 30px;
   }
 }
