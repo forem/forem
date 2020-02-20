@@ -148,7 +148,10 @@ module ApplicationHelper
     "The #{ApplicationConfig['COMMUNITY_NAME']} Community"
   end
 
-  def cache_key(path)
-  "#{path}-#{ApplicationConfig['HEROKU_SLUG_COMMIT']}"
+  def cache_key_heroku_slug(path)
+    heroku_slug_commit = ApplicationConfig["HEROKU_SLUG_COMMIT"]
+    return path if heroku_slug_commit.blank?
+
+    "#{path}-#{heroku_slug_commit}"
   end
 end
