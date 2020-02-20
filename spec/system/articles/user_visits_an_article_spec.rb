@@ -7,10 +7,10 @@ RSpec.describe "Views an article", type: :system do
 
   before do
     sign_in user
+    visit "/#{user.username}/#{article.slug}"
   end
 
   it "shows an article" do
-    visit "/#{user.username}/#{article.slug}"
     expect(page).to have_content(article.title)
   end
 
@@ -20,18 +20,21 @@ RSpec.describe "Views an article", type: :system do
     expect(page).to have_selector(".single-comment-node", visible: true, count: 3)
   end
 
+  it "stops a user from moderating an article" do
+    expect { visit("/#{user.username}/#{article.slug}/mod") }.to raise_error(Pundit::NotAuthorizedError)
+  end
+
   context "when showing the date" do
     before do
       article.update_column(:published_at, Time.zone.parse(timestamp))
+      visit "/#{user.username}/#{article.slug}"
     end
 
     it "shows the readable publish date", js: true do
-      visit "/#{user.username}/#{article.slug}"
       expect(page).to have_selector("article time", text: "Mar 4")
     end
 
     it "embeds the published timestamp" do
-      visit "/#{user.username}/#{article.slug}"
       selector = "article time[datetime='#{timestamp}']"
       expect(page).to have_selector(selector)
     end
