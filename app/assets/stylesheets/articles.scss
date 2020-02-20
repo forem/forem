@@ -1363,6 +1363,7 @@
       width: calc(
         100% - 72px
       ); // improving ellipsis for tags. 72px = avatar_width + spacing around
+      @include themeable(color, theme-secondary-color, #666666); // test
       a {
         display: inline-block;
       }
