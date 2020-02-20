@@ -17,5 +17,10 @@ RSpec.describe "LiquidEmbeds", type: :request, vcr: vcr_option do
         get "/embed/tweet?args=improper"
       end.to raise_error(ActionView::Template::Error)
     end
+
+    it "contains base target parent" do
+      get "/embed/tweet?args=1018911886862057472"
+      expect(response.body).to include('<base target="_parent">')
+    end
   end
 end
