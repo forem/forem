@@ -63,7 +63,11 @@ class ReactionsController < ApplicationController
         reactable_type: params[:reactable_type],
         category: category,
       )
-      return render json: { error: reaction.errors.full_messages.join(", "), status: 422 }, status: :unprocessable_entity unless reaction.save
+
+      unless reaction.save
+        render json: { error: reaction.errors.full_messages.join(", "), status: 422 }, status: :unprocessable_entity
+        return
+      end
 
       result = "create"
       Moderator::SinkArticles.call(reaction.user_id) if vomit_reaction_on_user?(reaction)

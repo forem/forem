@@ -10,11 +10,17 @@
   <h2>Moderate: <a href="<%= @moderatable.path %>" rel="nofollow"><%= @moderatable.title %></a></h2>
   <h2>Author: <a href="<%= @moderatable.user.path %>"><%= @moderatable.user.username %></a></h2>
 
-  <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>" data-reactable-id="<%= @moderatable.id %>" data-category="thumbsdown" data-reactable-type="<%= @moderatable.class.name %>">
+  <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>"
+          data-reactable-id="<%= @moderatable.id %>"
+          data-category="thumbsdown"
+          data-reactable-type="<%= @moderatable.class.name %>">
     <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji") %>
     <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
   </button>
-  <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>" data-reactable-id="<%= @moderatable.id %>" data-category="vomit" data-reactable-type="<%= @moderatable.class.name %>">
+  <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
+          data-reactable-id="<%= @moderatable.id %>"
+          data-category="vomit"
+          data-reactable-type="<%= @moderatable.class.name %>">
     <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji") %>
     <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
   </button>
@@ -37,12 +43,15 @@
   </p>
   <div class="tag-mod-form">
     <h2>Flag <a href="<%= @moderatable.user.path %>"><%= @moderatable.user.username %></a> as Abusive</h2>
-    <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable.user, current_user, "vomit") ? "reacted" : "" %>" data-reactable-id="<%= @moderatable.user.id %>" data-category="vomit" data-reactable-type="<%= @moderatable.user.class.name %>">
+    <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable.user, current_user, "vomit") ? "reacted" : "" %>"
+            data-reactable-id="<%= @moderatable.user.id %>"
+            data-category="vomit"
+            data-reactable-type="<%= @moderatable.user.class.name %>">
       <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji") %>
       <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
     </button>
     <p>
-      This is the equivalent of vomitting on <b>all</b> of this user's articles.
+      This is the equivalent of vomiting on <b>all</b> of this user's articles.
     </p>
   </div>
   <% if @allowed_to_adjust %>
