@@ -1,53 +1,47 @@
 @import 'variables';
 
-.sidebar-additional{
-  .widget{
-    .widget-suggested-follows-container{
-      h4{
+.sidebar-additional {
+  .widget {
+    .widget-suggested-follows-container {
+      h4 {
         margin: 0;
       }
-      .widget-body{
-        .widget-list-item__suggestions{
-          .widget-list-item__close-button{
-            float: right;
-            width: 24px;
-            height: 19px;
-            margin: 3px;
+      .widget-body {
+        .widget-list-item__suggestions {
+          display: flex;
+          align-items: center;
+
+          .widget-list-item__avatar {
+            width: 48px;
+            height: 48px;
+
+            img {
+              width: 100%;
+              height: 100%;
+              border-radius: 100%;
+            }
           }
-          .widget-list-item__content{
-            max-width: 180px;
-            margin-left: 60px;
-            margin-right: 20px;
-            min-height: 55px;
-            a{
+
+          .widget-list-item__content {
+            flex: 1 auto;
+            padding-left: 8px;
+            h5 {
+              all: unset;
               display: block;
-              padding: 5px 0px;
-              font-size: 18px;
-              color: $black;
-              color: var(--theme-color, $black);
-              &:hover {
-                text-decoration: underline;
-              }
+              margin-bottom: 4px;
             }
-            img{
-              width: 48px;
-              height: 48px;
-              border-radius: 50%;
-              position: absolute;
-              top: unset;
-              left: 15px;
-            }
-            .widget-list-item__follow-button{
-              border: 2px solid transparent;
-              border-radius: 3px;
-              padding: 2px 8px;
-              text-align: center;
-              background-color: $green;
-              color: $black;
-              font-family: $helvetica-condensed;
-              font-weight: 900;
-              font-size: 0.8em;
-            }
+          }
+
+          .widget-list-item__follow-button {
+            border: 2px solid transparent;
+            border-radius: 3px;
+            padding: 2px 8px;
+            text-align: center;
+            background-color: $green;
+            color: $black;
+            font-family: $helvetica-condensed;
+            font-weight: 900;
+            font-size: 0.8em;
           }
         }
       }
