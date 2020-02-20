@@ -1360,7 +1360,9 @@
       overflow: hidden;
       text-overflow: ellipsis;
       color: $black;
-      width: calc(100% - 72px); // improving ellipsis for tags. 72px = avatar_width + spacing around
+      width: calc(
+        100% - 72px
+      ); // improving ellipsis for tags. 72px = avatar_width + spacing around
       a {
         display: inline-block;
       }
@@ -1467,13 +1469,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     z-index: 10;
-    &:hover {
-      text-decoration: underline;
-    }
-    .tag {
-      @include themeable(color, theme-color, $black);
-      margin-right: 4px;
-    }
   }
   .article-reading-time {
     position: absolute;
