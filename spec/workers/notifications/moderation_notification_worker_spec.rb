@@ -57,7 +57,7 @@ RSpec.describe Notifications::ModerationNotificationWorker do
       end
     end
 
-    describe "When moderator is the comment author" do
+    describe "when moderator is the comment author" do
       it "does not call the service" do
         comment = create(:comment, user: mod, commentable: create(:article))
         worker.perform(comment.id)
