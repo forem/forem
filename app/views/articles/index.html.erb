@@ -25,7 +25,7 @@
 <% end %>
 <%= javascript_pack_tag "homePage", defer: true %>
 
-<% cache("main-stories-index-#{params}-#{user_signed_in?}-#{ApplicationConfig['HEROKU_SLUG_COMMIT']}", expires_in: 90.seconds) do %>
+<% cache(cache_key_heroku_slug("main-stories-index-#{params}-#{user_signed_in?}"), expires_in: 90.seconds) do %>
   <div class="home" id="index-container"
       data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
       data-algolia-tag=""
