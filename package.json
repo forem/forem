@@ -21,6 +21,10 @@
     }
   },
   "lint-staged": {
+    "app/assets/config/manifest.js": [
+      "prettier --write",
+      "eslint --fix -c app/assets/javascripts/.eslintrc.js"
+    ],
     "*.{js,jsx}": [
       "prettier --write",
       "eslint --fix"
