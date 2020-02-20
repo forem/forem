@@ -10,14 +10,22 @@ RSpec.describe "/internal/podcasts", type: :request do
   end
 
   describe "GET /internal/podcasts" do
+    let!(:no_eps_podcast) { create(:podcast, title: Faker::Book.title) }
+
     before do
-      create_list(:podcast, 3)
+      create(:podcast_episode, podcast: podcast)
       user.add_role(:podcast_admin, Podcast.order(Arel.sql("RANDOM()")).first)
     end
 
     it "renders success" do
       get internal_podcasts_path
       expect(response).to be_successful
+    end
+
+    it "displays podcasts with and without episodes" do
+      get internal_podcasts_path
+      expect(response.body).to include(CGI.escapeHTML(no_eps_podcast.title))
+      expect(response.body).to include(CGI.escapeHTML(podcast.title))
     end
   end
 
