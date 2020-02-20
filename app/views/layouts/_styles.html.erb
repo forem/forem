@@ -72,13 +72,6 @@
       <%= Rails.application.assets["article-form-needed-legacy.css"].to_s.html_safe %>
       <%= Rails.application.assets["footer.css"].to_s.html_safe %>
     </style>
-  <% elsif view_class.include? "users-index" %>
-    <style>
-      <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
-      <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
-      <%= Rails.application.assets["leaderboard.css"].to_s.html_safe %>
-      <%= Rails.application.assets["footer.css"].to_s.html_safe %>
-    </style>
   <% elsif view_class.include? "classified_listings-" %>
     <style>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
