@@ -4,16 +4,22 @@ exports[`<SidebarUser /> renders properly 1`] = `
 <div
   class="widget-list-item__suggestions"
 >
+  <a
+    class="widget-list-item__avatar"
+    href="/undefined"
+  >
+    <img
+      class="widget-list-item__profile-pic"
+    />
+  </a>
   <div
     class="widget-list-item__content"
   >
-    <a
-      href="/undefined"
-    >
-      <img
-        class="widget-list-item__profile-pic"
+    <h5>
+      <a
+        href="/undefined"
       />
-    </a>
+    </h5>
     <button
       class="widget-list-item__follow-button"
       id="widget-list-item__follow-button-undefined"
@@ -23,6 +29,5 @@ exports[`<SidebarUser /> renders properly 1`] = `
       + FOLLOW
     </button>
   </div>
-  <hr />
 </div>
 `;
