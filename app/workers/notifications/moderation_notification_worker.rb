@@ -13,6 +13,8 @@ module Notifications
       return unless notifiable
 
       random_moderators.each do |mod|
+        next if mod == notifiable.user
+
         Notifications::Moderation::Send.call(mod, notifiable)
       end
     end
