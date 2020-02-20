@@ -1360,9 +1360,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
       color: $black;
-      width: calc(
-        100% - 72px
-      ); // improving ellipsis for tags. 72px = avatar_width + spacing around
+      width: calc(100% - 72px); // improving ellipsis for tags. 72px = avatar_width + spacing around
       a {
         display: inline-block;
       }
