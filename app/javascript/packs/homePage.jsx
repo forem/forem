@@ -1,5 +1,5 @@
 import { h, render } from 'preact';
-import { renderFeed } from './homePageFeed';
+import { renderFeed } from './homePageFeed.jsx.erb';
 
 /* global userData */
 
@@ -59,7 +59,7 @@ let waitingForDataLoad = setTimeout(function dataLoadedCheck() {
   const { user = null, userStatus } = document.body.dataset;
 
   if (userStatus === 'logged-out') {
-    // Nothing to do, the user is not logged on.
+    renderFeed();
     return;
   }
 
