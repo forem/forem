@@ -29,7 +29,7 @@ class Tag < ActsAsTaggableOn::Tag
   before_save :mark_as_updated
 
   include Searchable
-  SEARCH_INDEX_WORKER = Search::TagEsIndexWorker
+  SEARCH_INDEX_WORKER = Search::TagEsSyncWorker
   SEARCH_SERIALIZER = Search::TagSerializer
   SEARCH_CLASS = Search::Tag
 

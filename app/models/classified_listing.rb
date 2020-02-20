@@ -2,7 +2,7 @@ class ClassifiedListing < ApplicationRecord
   include AlgoliaSearch
   include Searchable
 
-  SEARCH_INDEX_WORKER = Search::ClassifiedListingEsIndexWorker
+  SEARCH_INDEX_WORKER = Search::ClassifiedListingEsSyncWorker
   SEARCH_SERIALIZER = Search::ClassifiedListingSerializer
   SEARCH_CLASS = Search::ClassifiedListing
 
