@@ -13,4 +13,4 @@ Datadog.configure do |c|
   c.use :http
 end
 
-DataDogStatsClient = Datadog::Statsd.new
+DatadogStatsClient = Datadog::Statsd.new

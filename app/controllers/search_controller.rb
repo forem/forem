@@ -6,7 +6,7 @@ class SearchController < ApplicationController
 
     render json: { result: tag_docs }
   rescue Elasticsearch::Transport::Transport::Errors::BadRequest
-    DataDogStatsClient.increment("elasticsearch.errors", tags: ["error:BadRequest"])
+    DatadogStatsClient.increment("elasticsearch.errors", tags: ["error:BadRequest"])
     render json: { result: [] }
   end
 end
