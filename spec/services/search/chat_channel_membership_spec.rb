@@ -85,4 +85,13 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
       described_class.delete_index(index_name: other_name)
     end
   end
+
+  describe "::search_documents" do
+    it "parses chat_channel_membership document hits from search response" do
+      mock_search_response = { "hits" => { "hits" => {} } }
+      allow(described_class).to receive(:search) { mock_search_response }
+      described_class.search_documents(params: {}, user_id: 1)
+      expect(described_class).to have_received(:search).with(body: a_kind_of(Hash))
+    end
+  end
 end
