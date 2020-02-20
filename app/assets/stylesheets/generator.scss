@@ -1,152 +1,175 @@
 @import 'variables';
-#page-content.pages-generator{
+#page-content.pages-generator {
   font-family: $helvetica;
-  .generator-container{
-    padding-top:50px;
-    min-height:800px;
-    text-align:center;
-    h2{
-      margin:auto;
-      font-weight:300;
-      width:1060px;
-      max-width:93%;
-      text-align:left;
-      margin-bottom:22px;
-      margin-top:200px;
-      color:rgb(159, 164, 166);
+  .generator-container {
+    padding-top: 50px;
+    min-height: 800px;
+    text-align: center;
+    h2 {
+      margin: auto;
+      font-weight: 300;
+      width: 1060px;
+      max-width: 93%;
+      text-align: left;
+      margin-bottom: 22px;
+      margin-top: 200px;
+      color: rgb(159, 164, 166);
     }
-    img.loading{
-      display:none;
-      width:120px;
-      margin-top:40px;
+    img.loading {
+      display: none;
+      width: 120px;
+      margin-top: 40px;
     }
-    img.cover{
-      display:none;
-      width:330px;
-      margin-top:20px;
-      box-shadow:10px 10px 80px #888;
+    img.cover {
+      display: none;
+      width: 330px;
+      margin-top: 20px;
+      box-shadow: 10px 10px 80px #888;
     }
-    .slack-butt{
-      vertical-align:middle;
-      display:inline-block;
-      margin-top:-470px;
-      width:0px;
-      overflow:hidden;
-      @media screen and ( max-width: 600px ){
-        margin-top:-1170px;
-        margin-bottom:1170px;
-        display:block;
+    .slack-butt {
+      vertical-align: middle;
+      display: inline-block;
+      margin-top: -470px;
+      width: 0px;
+      overflow: hidden;
+      @media screen and (max-width: 600px) {
+        margin-top: -1170px;
+        margin-bottom: 1170px;
+        display: block;
       }
     }
-    h4{
-      display:none;
-      font-style:italic;
-      font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua', Georgia, serif;
-      width:750px;
-      max-width:96%;
-      text-align:center;
-      margin:150px auto 50px;
-      font-size:33px;
-      line-height:45px;
+    h4 {
+      display: none;
+      font-style: italic;
+      font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD',
+        'Book Antiqua', Georgia, serif;
+      width: 750px;
+      max-width: 96%;
+      text-align: center;
+      margin: 150px auto 50px;
+      font-size: 33px;
+      line-height: 45px;
     }
-    .second-slack{
-      display:none;
-      margin-bottom:50px;
+    .second-slack {
+      display: none;
+      margin-bottom: 50px;
     }
-    .loved{
-      font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua', Georgia, serif;
-      font-style:italic;
-      font-size:23px;
-      padding-top:100px;
-      padding-bottom:100px;
-      background:rgb(32, 16, 66);
-      color:white;
+    .loved {
+      font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD',
+        'Book Antiqua', Georgia, serif;
+      font-style: italic;
+      font-size: 23px;
+      padding-top: 100px;
+      padding-bottom: 100px;
+      background: rgb(32, 16, 66);
+      color: white;
       box-shadow: inset 0px 30px 120px rgb(17, 3, 33);
-      display:none;
-      text-align:center;
-      font-size:65px;
-      img{
-        margin-top:50px;
+      display: none;
+      text-align: center;
+      font-size: 65px;
+      img {
+        margin-top: 50px;
       }
     }
-    .thanks{
-      background:rgb(13, 3, 31);
-      color:white;
-      padding:120px 10px 90px;
-      font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua', Georgia, serif;
-      display:none;
-      h4{
-        display:block;
-        margin-top:10px;
+    .thanks {
+      background: rgb(13, 3, 31);
+      color: white;
+      padding: 120px 10px 90px;
+      font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD',
+        'Book Antiqua', Georgia, serif;
+      display: none;
+      h4 {
+        display: block;
+        margin-top: 10px;
       }
-      &.feedback{
-        background:rgb(40, 80, 157);
-        a{
-          color:rgb(24, 221, 195);
+      &.feedback {
+        background: rgb(40, 80, 157);
+        a {
+          color: rgb(24, 221, 195);
         }
       }
     }
-    .usage{
-      display:none;
-      padding:50px 0px;
-      pre{
-        width:1000px;
-        max-width:96%;
-        padding:28px 10px 10px 0px;
-        border-radius:3px;
-        margin:20px auto;
-        text-align:left;
-        overflow-x:scroll;
-        background:rgb(246, 246, 246);
+    .usage {
+      display: none;
+      padding: 50px 0px;
+      pre {
+        width: 1000px;
+        max-width: 96%;
+        padding: 28px 10px 10px 0px;
+        border-radius: 3px;
+        margin: 20px auto;
+        text-align: left;
+        overflow-x: scroll;
+        background: rgb(246, 246, 246);
         color: $black;
-        font-size:16px;
-        @media screen and ( max-width: 600px ){
-          font-size:14px;
+        font-size: 16px;
+        @media screen and (max-width: 600px) {
+          font-size: 14px;
         }
       }
-      .animal{
-        width:120px;
-        display:inline-block;
-        font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua', Georgia, serif;
-        font-size:26px;
-        margin:40px 22px;
-        img{
-          width:100%;
+      .animal {
+        width: 120px;
+        display: inline-block;
+        font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD',
+          'Book Antiqua', Georgia, serif;
+        font-size: 26px;
+        margin: 40px 22px;
+        img {
+          width: 100%;
         }
       }
-      .color{
-        height:90px;
-        width:90px;
-        margin:20px;
-        border-radius:220px;
-        color:white;
-        display:inline-block;
-        font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua', Georgia, serif;
-        font-size:30px;
-        line-height:90px;
+      .color {
+        height: 90px;
+        width: 90px;
+        margin: 20px;
+        border-radius: 220px;
+        color: white;
+        display: inline-block;
+        font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD',
+          'Book Antiqua', Georgia, serif;
+        font-size: 30px;
+        line-height: 90px;
       }
     }
   }
 }
 
-.typed-cursor{
+.typed-cursor {
+  opacity: 1;
+  -webkit-animation: blink 0.7s infinite;
+  -moz-animation: blink 0.7s infinite;
+  animation: blink 0.7s infinite;
+}
+@keyframes blink {
+  0% {
     opacity: 1;
-    -webkit-animation: blink 0.7s infinite;
-    -moz-animation: blink 0.7s infinite;
-    animation: blink 0.7s infinite;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
-@keyframes blink{
-    0% { opacity:1; }
-    50% { opacity:0; }
-    100% { opacity:1; }
+@-webkit-keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
-@-webkit-keyframes blink{
-    0% { opacity:1; }
-    50% { opacity:0; }
-    100% { opacity:1; }
-}
-@-moz-keyframes blink{
-    0% { opacity:1; }
-    50% { opacity:0; }
-    100% { opacity:1; }
+@-moz-keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
