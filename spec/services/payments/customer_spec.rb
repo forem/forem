@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Payments::Customer, type: :service do
+  let(:customer) { Stripe::Customer.create }
+
   before do
     StripeMock.start
   end
@@ -11,7 +13,6 @@ RSpec.describe Payments::Customer, type: :service do
 
   describe ".get" do
     it "retrieves an existing customer" do
-      customer = Stripe::Customer.create
       expect(described_class.get(customer.id)).to be_present
     end
 
@@ -61,17 +62,51 @@ RSpec.describe Payments::Customer, type: :service do
     end
   end
 
+  describe ".get_source" do
+    it "gets an existing source" do
+      source = Stripe::Customer.create_source(customer.id, source: "token")
+
+      expect(described_class.get_source(customer, source.id)).to be_present
+    end
+
+    it "raises Payments::InvalidRequestError if the source does not exist" do
+      expect { described_class.get_source(customer, "token") }.to raise_error(Payments::InvalidRequestError)
+    end
+
+    it "raises Payments::PaymentsError for any other known error" do
+      allow(customer).to receive(:sources).and_raise(Stripe::StripeError)
+
+      expect { described_class.get_source(customer, "token") }.to raise_error(Payments::PaymentsError)
+    end
+  end
+
+  describe ".detach_source" do
+    it "removes an existing source" do
+      source = Stripe::Customer.create_source(customer.id, source: "token")
+
+      expect(described_class.detach_source(customer.id, source.id).deleted).to be(true)
+    end
+
+    it "raises Payments::InvalidRequestError if the source does not exist" do
+      expect { described_class.detach_source(customer.id, "token") }.to raise_error(Payments::InvalidRequestError)
+    end
+
+    it "raises Payments::PaymentsError for any other known error" do
+      allow(Stripe::Customer).to receive(:detach_source).and_raise(Stripe::StripeError)
+
+      expect { described_class.detach_source(customer.id, "token") }.to raise_error(Payments::PaymentsError)
+    end
+  end
+
   describe ".charge" do
     let(:stripe_helper) { StripeMock.create_test_helper }
 
     it "charges a customer" do
-      customer = Stripe::Customer.create
       charge = described_class.charge(customer: customer, amount: 1, description: "Test charge")
       expect(charge).to be_present
     end
 
     it "charges a customer with an explicit card id" do
-      customer = Stripe::Customer.create
       token = stripe_helper.generate_card_token
       card = Stripe::Customer.create_source(customer.id, source: token)
       charge = described_class.charge(
@@ -83,7 +118,6 @@ RSpec.describe Payments::Customer, type: :service do
     it "raises a card error if the card has any troubles" do
       StripeMock.prepare_card_error(:expired_card)
 
-      customer = Stripe::Customer.create
       token = stripe_helper.generate_card_token
       card = Stripe::Customer.create_source(customer.id, source: token)
 
