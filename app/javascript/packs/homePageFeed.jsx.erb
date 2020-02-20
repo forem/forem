@@ -2,6 +2,14 @@ import { h, render } from 'preact';
 import { Article, Feed, LoadingArticle } from '../articles';
 import { FeaturedArticle } from '../articles/FeaturedArticle';
 
+<% helpers = ActionController::Base.helpers %>
+
+const FEED_ICONS = {
+  COMMENTS_ICON: '<%= helpers.image_path("comments-bubble.png") %>',
+  REACTIONS_ICON: '<%= helpers.image_path("reactions-stack.png") %>',
+  VIDEO_ICON: '<%= helpers.image_path("video-camera.svg") %>',
+};
+
 /**
  * Renders the main feed.
  */
@@ -29,10 +37,18 @@ export const renderFeed = () => {
         // 3. Rest of the stories for the feed
         return (
           <div>
-            <FeaturedArticle article={featuredStory} />
+            <FeaturedArticle
+              article={featuredStory}
+              reactionsIcon={FEED_ICONS.REACTIONS_ICON}
+              commentsIcon={FEED_ICONS.COMMENTS_ICON}
+            />
             <div id="article-index-podcast-div">PODCAST EPISODES</div>
             {(subStories || []).map(story => (
-              <Article article={story} />
+              <Article
+                article={story}
+                reactionsIcon={FEED_ICONS.REACTIONS_ICON}
+                commentsIcon={FEED_ICONS.COMMENTS_ICON}
+              />
             ))}
           </div>
         );
