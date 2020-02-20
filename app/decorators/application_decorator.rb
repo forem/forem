@@ -4,6 +4,9 @@ class ApplicationDecorator
 
   delegate_missing_to :@object
 
+  # ActiveModel compatibility
+  delegate :to_param, :to_partial_path, to: :@object
+
   attr_reader :object
 
   def initialize(object)
