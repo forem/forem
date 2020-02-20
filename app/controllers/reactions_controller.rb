@@ -70,7 +70,7 @@ class ReactionsController < ApplicationController
       end
 
       result = "create"
-      Moderator::SinkArticles.call(reaction.user_id) if vomit_reaction_on_user?(reaction)
+      Moderator::SinkArticles.call(reaction.reactable_id) if vomit_reaction_on_user?(reaction)
       Notification.send_reaction_notification(reaction, reaction_user(reaction))
       Notification.send_reaction_notification(reaction, reaction.reactable.organization) if organization_article?(reaction)
     end
