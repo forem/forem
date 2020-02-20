@@ -13,6 +13,15 @@
           align-items: center;
           margin-bottom: 8px;
 
+          & + .widget-list-item__suggestions {
+            @include themeable(
+              border-top,
+              theme-border,
+              1px solid $light-medium-gray
+            );
+            padding-top: 8px;
+          }
+
           .widget-list-item__avatar {
             width: 48px;
             height: 48px;
@@ -31,6 +40,14 @@
               all: unset;
               display: block;
               margin-bottom: 4px;
+
+              a {
+                @include themeable(color, theme-color, rgba($black, 0.8));
+
+                &:hover {
+                  @include themeable(color, theme-color, $black);
+                }
+              }
             }
           }
 
@@ -44,15 +61,6 @@
             font-family: $helvetica-condensed;
             font-weight: 900;
             font-size: 0.8em;
-          }
-
-          & + & {
-            @include themeable(
-              border,
-              theme-border,
-              1px solid $light-medium-gray
-            );
-            padding-top: 8px;
           }
         }
       }

@@ -31,8 +31,8 @@
           <div class="widget-body widget-body-listings">
             <% @classified_listings.order("bumped_at DESC").limit(8).each do |listing| %>
               <a class="widget-listing-link" href="<%= listing.path %>">
-                <span class="widget-listing-link-category"><%= listing.category %></span>
                 <span class="widget-listing-link-title"><%= listing.title %></span>
+                <span class="widget-listing-link-category"><%= listing.category %></span>
               </a>
             <% end %>
             <a class="cta cta-button" href="/listings/new">CREATE A LISTING</a>
