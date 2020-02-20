@@ -35,7 +35,7 @@ RSpec.describe DataUpdateScript do
     end
 
     it "does not return script ids that are running" do
-      script = create(:data_update_script, run_at: Time.now.utc, status: :working)
+      script = create(:data_update_script, run_at: Time.current, status: :working)
       need_running_ids = described_class.load_script_ids
       expect(need_running_ids).not_to include(script.id)
     end
@@ -58,7 +58,7 @@ RSpec.describe DataUpdateScript do
     end
 
     it "does not return script ids that are running" do
-      script = create(:data_update_script, run_at: Time.now.utc, status: :working)
+      script = create(:data_update_script, run_at: Time.current, status: :working)
       expect(described_class.scripts_to_run).not_to include(script)
     end
   end
