@@ -16,6 +16,12 @@ module Payments
         end
       end
 
+      def save(customer)
+        request do
+          customer.save
+        end
+      end
+
       def create_source(customer_id, token)
         request do
           Stripe::Customer.create_source(customer_id, source: token)
@@ -25,6 +31,18 @@ module Payments
       def get_source(customer, source_id)
         request do
           customer.sources.retrieve(source_id)
+        end
+      end
+
+      def detach_source(customer_id, source_id)
+        request do
+          Stripe::Customer.detach_source(customer_id, source_id)
+        end
+      end
+
+      def get_sources(customer, **params)
+        request do
+          customer.sources.list(**params)
         end
       end
 
@@ -41,6 +59,8 @@ module Payments
           )
         end
       end
+
+      private
 
       def request
         yield
