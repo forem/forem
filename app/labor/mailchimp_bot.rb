@@ -162,8 +162,8 @@ class MailchimpBot
   end
 
   def report_error(exception)
-    logger = Logger.new(STDOUT)
     logger.error(exception)
+    DataDogStatsClient.increment("mailchimp.errors", tags: [action: "failed", user_id: user.id, source: "gibbon-gem"])
   end
 
   def target_md5_email
