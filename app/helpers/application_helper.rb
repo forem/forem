@@ -147,4 +147,8 @@ module ApplicationHelper
   def community_qualified_name
     "The #{ApplicationConfig['COMMUNITY_NAME']} Community"
   end
+
+  def cache_key(path)
+  "#{path}-#{ApplicationConfig['HEROKU_SLUG_COMMIT']}"
+  end
 end
