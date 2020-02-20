@@ -291,6 +291,18 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
     end
 
+    context "when user is trusted" do
+      let(:user) { create(:user, :trusted) }
+      let(:reaction) { create(:thumbsdown_reaction, user: user) }
+
+      it "allow sees thumbsdown category" do
+        sign_in user
+        Notification.send_reaction_notification_without_delay(reaction, user)
+        get "/notifications"
+        expect(response.body).to include("Notifications")
+      end
+    end
+
     context "when a user has a new welcome notification" do
       let(:broadcast) { create(:broadcast, :onboarding) }
 
