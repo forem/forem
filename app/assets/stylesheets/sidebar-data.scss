@@ -1,16 +1,12 @@
 @import 'variables';
 @import 'mixins';
 
-.sidebar-data{
-  border-radius:3px;
-  font-weight:bold;
+.sidebar-data {
+  border-radius: 3px;
+  font-weight: bold;
   margin-bottom: 32px;
   font-family: $monospace;
-  @include themeable(
-    color, 
-    theme-secondary-color, 
-    $dark-medium-gray
-  );
+  @include themeable(color, theme-secondary-color, $dark-medium-gray);
   .mod-action-button {
     padding: 2px 9px;
     font-size: 1.2em;

@@ -1,25 +1,25 @@
 @import 'variables';
 
-.sidebar-additional{
-  .widget{
-    .widget-suggested-follows-container{
-      h4{
+.sidebar-additional {
+  .widget {
+    .widget-suggested-follows-container {
+      h4 {
         margin: 0;
       }
-      .widget-body{
-        .widget-list-item__suggestions{
-          .widget-list-item__close-button{
+      .widget-body {
+        .widget-list-item__suggestions {
+          .widget-list-item__close-button {
             float: right;
             width: 24px;
             height: 19px;
             margin: 3px;
           }
-          .widget-list-item__content{
+          .widget-list-item__content {
             max-width: 180px;
             margin-left: 60px;
             margin-right: 20px;
             min-height: 55px;
-            a{
+            a {
               display: block;
               padding: 5px 0px;
               font-size: 18px;
@@ -29,7 +29,7 @@
                 text-decoration: underline;
               }
             }
-            img{
+            img {
               width: 48px;
               height: 48px;
               border-radius: 50%;
@@ -37,7 +37,7 @@
               top: unset;
               left: 15px;
             }
-            .widget-list-item__follow-button{
+            .widget-list-item__follow-button {
               border: 2px solid transparent;
               border-radius: 3px;
               padding: 2px 8px;

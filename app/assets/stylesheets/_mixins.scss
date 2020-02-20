@@ -26,7 +26,6 @@
   #{$property}: var(--#{$cssVariable}, #{$fallback}) !important;
 }
 
-
 /* Mixin for a load more wrapper, made by a container div and child button */
 @mixin load-more() {
   text-align: center;
@@ -41,11 +40,9 @@
     max-width: 80%;
     border-radius: 100px;
     font-weight: bold;
-    color: inherit
+    color: inherit;
   }
 }
-
-
 
 // Card styling
 @mixin dev-card {

@@ -1,1 +1,28 @@
-.color-palette{height:100px;width:100px;background:red;display:none}.color-palette{margin-top:5px;width:270px;height:220px;background:#efefef;border:1px solid #bcbcbc;border-radius:1px;display:none;padding:1px;position:absolute;z-index:1000}.color-option{width:18px;height:18px;margin:3px;cursor:pointer;float:left}#colorPicker{border-right:10px solid #003cb3}
+.color-palette {
+  height: 100px;
+  width: 100px;
+  background: red;
+  display: none;
+}
+.color-palette {
+  margin-top: 5px;
+  width: 270px;
+  height: 220px;
+  background: #efefef;
+  border: 1px solid #bcbcbc;
+  border-radius: 1px;
+  display: none;
+  padding: 1px;
+  position: absolute;
+  z-index: 1000;
+}
+.color-option {
+  width: 18px;
+  height: 18px;
+  margin: 3px;
+  cursor: pointer;
+  float: left;
+}
+#colorPicker {
+  border-right: 10px solid #003cb3;
+}

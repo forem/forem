@@ -16,11 +16,7 @@
 }
 
 .stories-show {
-  @include themeable(
-    background,
-    theme-background,
-    $lightest-gray
-  );
+  @include themeable(background, theme-background, $lightest-gray);
 }
 
 .unpublished {
@@ -138,11 +134,7 @@ article {
     margin: auto;
 
     .org-branded-title-link {
-      @include themeable(
-        color,
-        theme-color,
-        lighten($black, 4%)
-      );
+      @include themeable(color, theme-color, lighten($black, 4%));
       .org-branded-title {
         font-size: calc(0.9em + 0.3vw);
         padding: 8px 0 6px;
@@ -217,11 +209,7 @@ article {
       padding: 0;
       padding: 0 3px 16px;
       font-weight: 500;
-      @include themeable(
-        color,
-        theme-secondary-color,
-        $medium-gray
-      );
+      @include themeable(color, theme-secondary-color, $medium-gray);
       font-size: 13.5px;
       line-height: 1.5em;
 
@@ -240,11 +228,7 @@ article {
       }
 
       a {
-        @include themeable(
-          color,
-          theme-secondary-color,
-          $medium-gray
-        );
+        @include themeable(color, theme-secondary-color, $medium-gray);
         text-decoration: none;
       }
 
@@ -322,7 +306,7 @@ article {
     border: 1px solid $light-medium-gray;
     width: 92%;
     max-width: 500px;
-    margin: calc(1.1vw + 5px) auto 1.0vw;
+    margin: calc(1.1vw + 5px) auto 1vw;
     box-shadow: $bold-shadow;
     p {
       margin: 0px auto;
@@ -338,11 +322,7 @@ article {
       position: relative;
       z-index: 8;
       a {
-        @include themeable (
-          color,
-          theme-color,
-          $black
-        );
+        @include themeable(color, theme-color, $black);
         padding: calc(0.1vw + 9px);
         display: block;
         position: relative;
@@ -358,7 +338,7 @@ article {
         }
 
         &:hover {
-          @include themeable (
+          @include themeable(
             background,
             theme-series-article-hover,
             $lightest-gray
@@ -366,7 +346,7 @@ article {
         }
 
         &.current-article {
-          @include themeable (
+          @include themeable(
             background,
             theme-series-article-background,
             lighten($sky-blue, 21%)
@@ -395,20 +375,11 @@ article {
   .body {
     margin: auto;
     width: 82%;
-    font-family:
-      Palatino,
-      'Palatino Linotype',
-      'Palatino LT STD',
-      'Book Antiqua',
-      Georgia,
-      serif;
+    font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD',
+      'Book Antiqua', Georgia, serif;
     font-size: 21px;
     line-height: 32px;
-    @include themeable(
-      background,
-      theme-container-background,
-      #fff
-    );
+    @include themeable(background, theme-container-background, #fff);
     position: relative;
     z-index: 5;
     padding-bottom: 5px;
@@ -483,11 +454,7 @@ article {
       opacity: 0.1;
       border-width: 1px;
       border-style: solid;
-      @include themeable(
-        border-color,
-        theme-color,
-        $black
-      );
+      @include themeable(border-color, theme-color, $black);
       margin: 1.3em auto 1.5em;
     }
 
@@ -543,11 +510,7 @@ article {
       text-align: center;
       font-size: 0.8em;
       line-height: 1.4em;
-      @include themeable(
-        color,
-        theme-color,
-        darken($medium-gray, 8%)
-      );
+      @include themeable(color, theme-color, darken($medium-gray, 8%));
       display: block;
     }
 
@@ -728,11 +691,7 @@ article {
       th {
         border: 1px solid $light-medium-gray;
         padding: 5px 1vw;
-        @include themeable(
-          background,
-          theme-background,
-          $lightest-gray
-        );
+        @include themeable(background, theme-background, $lightest-gray);
         text-align: left;
       }
 
@@ -754,19 +713,11 @@ article {
     position: relative;
     overflow: hidden;
     padding: 0px 0px 5px;
-    @include themeable(
-      background,
-      theme-container-background,
-      white
-    );
+    @include themeable(background, theme-container-background, white);
     font-family: $helvetica;
 
     a {
-      @include themeable(
-        color,
-        theme-color,
-        $black
-      );
+      @include themeable(color, theme-color, $black);
     }
 
     @media screen and (min-width: 520px) {
@@ -832,11 +783,7 @@ article {
         font-size: 0.85em;
 
         a {
-          @include themeable(
-            color,
-            theme-secondary-color,
-            $medium-gray
-          );
+          @include themeable(color, theme-secondary-color, $medium-gray);
           margin-right: 6px;
           display: inline-block;
 
@@ -873,7 +820,7 @@ article {
     @media screen and (min-width: 950px) {
       border-radius: 3px 3px 0 0;
     }
-    
+
     .dropdown-content {
       clipboard-copy {
         display: flex;
@@ -983,7 +930,7 @@ article {
       width: calc(90px + 1.1vw);
       left: calc(50% - 711px);
       a {
-        font-size: 0.70em !important;
+        font-size: 0.7em !important;
       }
       button {
         padding: 9px 0px !important;
@@ -1050,7 +997,8 @@ article {
       }
       &:hover {
         img {
-          box-shadow: 0px 0px 0px 2px var(--theme-container-accent-background, $purple);
+          box-shadow: 0px 0px 0px 2px
+            var(--theme-container-accent-background, $purple);
         }
       }
 
@@ -1059,11 +1007,7 @@ article {
         vertical-align: 6px;
         margin-left: 5px;
         vertical-align: 10px;
-        @include themeable(
-          color,
-          theme-secondary-color,
-          $medium-gray
-        );
+        @include themeable(color, theme-secondary-color, $medium-gray);
         font-size: 13px;
         width: 27px;
 
@@ -1158,11 +1102,7 @@ article {
         right: 0;
         left: 0;
         z-index: 100;
-        @include themeable(
-          background,
-          theme-top-bar-background,
-          $tan
-        );
+        @include themeable(background, theme-top-bar-background, $tan);
         font-size: 1em;
         text-align: left;
         min-width: 300px;
@@ -1188,7 +1128,7 @@ article {
         }
 
         .dropdown-link-row {
-          input[type="text"] {
+          input[type='text'] {
             border: 1px dashed black;
             padding: 4px 6px;
             font-size: 1em;
@@ -1198,7 +1138,7 @@ article {
             margin-left: 15px;
           }
 
-          input[type="checkbox"] {
+          input[type='checkbox'] {
             float: right;
             cursor: pointer;
             @media screen and (min-width: 400px) {
@@ -1214,11 +1154,7 @@ article {
 
           a {
             font-weight: bold;
-            @include themeable(
-              color,
-              theme-color,
-              $black
-            );
+            @include themeable(color, theme-color, $black);
             padding: 12px 18px;
             width: calc(100% - 36px);
             display: block;
@@ -1229,7 +1165,7 @@ article {
                 theme-top-bar-background-hover,
                 $light-gray
               );
-              }
+            }
           }
 
           &.notification-subscriptions-area-row {
@@ -1280,7 +1216,7 @@ article {
           }
           button.notification-subscription-label {
             width: 100% !important;
-            opacity: 1.0 !important;
+            opacity: 1 !important;
             text-align: left;
             font-size: 0.8em;
             box-sizing: border-box !important;
@@ -1288,11 +1224,7 @@ article {
             padding-left: 13px !important;
             margin: auto !important;
             cursor: pointer !important;
-            @include themeable-important(
-              color,
-              theme-color,
-              $black
-            );
+            @include themeable-important(color, theme-color, $black);
             &:hover {
               @include themeable-important(
                 background,
@@ -1311,11 +1243,7 @@ article {
                 display: inline-block;
                 visibility: visible;
               }
-              @include themeable-important(
-                color,
-                theme-color,
-                $black
-              );
+              @include themeable-important(color, theme-color, $black);
             }
           }
         }
@@ -1325,11 +1253,7 @@ article {
     .article-actions-comments-count {
       display: none;
       position: relative;
-      @include themeable(
-        color,
-        theme-secondary-color,
-        $medium-gray
-      );
+      @include themeable(color, theme-secondary-color, $medium-gray);
       font-weight: bold;
       font-size: calc(0.8em + 0.1vw);
       vertical-align: calc(7px - 0.07vw);
@@ -1495,11 +1419,7 @@ article {
   padding-bottom: 20px;
 
   a {
-    @include themeable(
-      color,
-      theme-color,
-      $black
-    );
+    @include themeable(color, theme-color, $black);
   }
 
   .inner {
