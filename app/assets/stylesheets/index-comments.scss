@@ -8,10 +8,9 @@
   @include themeable(border, theme-container-border, none);
   @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
   margin: auto;
-  margin-bottom: 8px;
-  width: 94%;
+  width: 100%;
   @media screen and (min-width: 950px) {
-    width: 100%;
+    margin-bottom: 12px;
   }
   .breadcrumb {
     margin-top: 10px;

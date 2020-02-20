@@ -5,8 +5,8 @@ class Internal::PodcastsController < Internal::ApplicationController
   before_action :find_user, only: %i[remove_admin add_admin]
 
   def index
-    @podcasts = Podcast.joins(:podcast_episodes).
-      select("podcasts.*, count(podcast_episodes) as count").
+    @podcasts = Podcast.left_outer_joins(:podcast_episodes).
+      select("podcasts.*, count(podcast_episodes) as episodes_count").
       group("podcasts.id").order("podcasts.created_at DESC").
       page(params[:page]).per(50)
     @podcasts = @podcasts.where("podcasts.title ILIKE :search", search: "%#{params[:search]}%") if params[:search].present?

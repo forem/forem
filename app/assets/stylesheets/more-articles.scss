@@ -112,9 +112,12 @@
       display: inline-block;
       padding: 3px 25px;
       border-radius: 3px;
-      @include themeable(background, theme-container-accent-background, $light-gray);
+      @include themeable(
+        background,
+        theme-container-accent-background,
+        $light-gray
+      );
       @include themeable(color, theme-color, $black);
-
     }
   }
   .main-content-display {
