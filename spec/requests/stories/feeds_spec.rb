@@ -4,8 +4,7 @@ RSpec.describe "Stories::FeedsIndex", type: :request do
   let(:title) { "My post" }
   let(:user) { create(:user, name: "Josh") }
   let(:organization) { create(:organization, name: "JoshCo") }
-  let!(:article) { create(:article, title: title, featured: true, user: user, organization: organization) }
-
+  # let!(:article) { create(:article, title: title, featured: true, user: user, organization: organization) }
   describe "GET feeds index" do
     let(:response_json) { JSON.parse(response.body) }
     let(:response_article) { response_json.first }
@@ -21,6 +20,28 @@ RSpec.describe "Stories::FeedsIndex", type: :request do
       expect(response_article["organization_id"]).to eq organization.id
       expect(response_article["organization"]["name"]).to eq organization.name
       expect(response_article["tag_list"]).to eq article.decorate.cached_tag_list_array
+    end
+
+    context "when organization is nil" do
+      before(:example) { let!(:article)….
+        let!(:article) { create(:article, title: title, featured: true, user: user, organization: nil) }
+        let(:response_json) { JSON.parse(response.body) }
+        let(:response_article) { response_json }
+      }
+
+
+      it "renders article list as json" do
+        get "/stories/feed", headers: headers
+
+        expect(response.content_type).to eq("application/json")
+        expect(response_article["id"]).to eq article.id
+        expect(response_article["title"]).to eq title
+        expect(response_article["user_id"]).to eq user.id
+        expect(response_article["user"]["name"]).to eq user.name
+        expect(response_article["organization_id"]).to eq nil
+        expect(response_article["organization"]).to eq nil
+        expect(response_article["tag_list"]).to eq article.decorate.cached_tag_list_array
+      end
     end
 
     context "when timeframe parameter is present" do
