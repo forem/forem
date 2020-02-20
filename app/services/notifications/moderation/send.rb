@@ -17,6 +17,9 @@ module Notifications
         # notifiable is currently only comment
         return unless notifiable_supported?(notifiable)
 
+        # do not create the notification if the comment was created by the moderator
+        return if moderator == notifiable.user
+
         json_data = { user: user_data(User.dev_account) }
         json_data[notifiable.class.name.downcase] = public_send "#{notifiable.class.name.downcase}_data", notifiable
         new_notification = Notification.create!(
@@ -35,7 +38,7 @@ module Notifications
       attr_reader :notifiable, :moderator
 
       def notifiable_supported?(notifiable)
-        SUPPORTED.include? notifiable.class
+        SUPPORTED.include?(notifiable.class)
       end
     end
   end

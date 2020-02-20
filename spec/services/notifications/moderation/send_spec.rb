@@ -46,4 +46,12 @@ RSpec.describe Notifications::Moderation::Send, type: :service do
       described_class.call(moderator, comment)
     end.to change(moderator, :last_moderation_notification)
   end
+
+  it "does not create a notification if the moderator is the comment's author" do
+    comment = create(:comment, user: moderator, commentable: article)
+
+    expect do
+      described_class.call(moderator, comment)
+    end.to change(Notification, :count).by(0)
+  end
 end
