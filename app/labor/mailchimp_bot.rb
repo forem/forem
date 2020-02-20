@@ -162,6 +162,7 @@ class MailchimpBot
   end
 
   def report_error(exception)
+    DataDogStatsClient.increment("mailchimp.errors", tags: [action: "failed", user_id: user.id, source: "gibbon-gem"])
     Honeybadger.notify(exception)
   end
 
