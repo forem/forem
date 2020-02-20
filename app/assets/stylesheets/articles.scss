@@ -443,10 +443,10 @@
         .widget-user-pic {
           display: inline-block;
           img {
-            height: 60px;
-            width: 60px;
-            margin: 9px;
-            border-radius: 100px;
+            height: 48px;
+            width: 48px;
+            margin: 0 8px 8px 0;
+            border-radius: 100%;
           }
         }
         .utc-date {
