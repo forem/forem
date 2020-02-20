@@ -3,11 +3,9 @@ class DataUpdateWorker
   sidekiq_options queue: :high_priority, retry: 5
 
   def perform
-    script_ids = DataUpdateScript.load_script_ids
-    scripts_to_run = DataUpdateScript.where(id: script_ids).select(&:enqueued?)
-
-    scripts_to_run.each do |script|
+    DataUpdateScript.scripts_to_run.each do |script|
       script.mark_as_run!
+
       run_script(script)
     end
   end
