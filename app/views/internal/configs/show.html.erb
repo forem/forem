@@ -125,10 +125,10 @@
               <div class="form-group">
                 <%= f.label :logo_svg %>
                 <%= f.text_area :logo_svg,
-                                 class: "form-control",
-                                 value: SiteConfig.logo_svg,
-                                 rows: 6,
-                                 placeholder: "<svg ...></svg>" %>
+                                class: "form-control",
+                                value: SiteConfig.logo_svg,
+                                rows: 6,
+                                placeholder: "<svg ...></svg>" %>
                 <div class="alert alert-info">Used as the SVG logo of the community</div>
                 <%= @logo_svg %>
               </div>
@@ -248,8 +248,8 @@
             <div class="form-group">
               <%= f.label :mailchimp_community_moderators_id, "Community Moderators Newsletter" %>
               <%= f.text_field :mailchimp_community_moderators_id,
-                              class: "form-control",
-                              value: SiteConfig.mailchimp_community_moderators_id %>
+                               class: "form-control",
+                               value: SiteConfig.mailchimp_community_moderators_id %>
               <div class="alert alert-info">Community Moderators Newsletter ID</div>
             </div>
           </div>
