@@ -30,3 +30,15 @@ sudo -u postgres createdb ec2-user
 The first command creates the user **ec2-user** and the second one creates the
 database for this user because every user needs its database. Even if the first
 command fails, run the second command to create the missing database.
+
+## How do I enable logging to standard output in development?
+
+By default Rails logs to `log.development.log`.
+
+If, instead, you wish to log to `STDOUT` you can add the variable:
+
+```yaml
+RAILS_LOG_TO_STDOUT: true
+```
+
+to your own `config/application.yml` file.
