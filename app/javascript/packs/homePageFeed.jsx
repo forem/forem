@@ -26,6 +26,14 @@ function sendFeaturedArticleAnalytics(articleId) {
   })();
 }
 
+const FeedLoading = () => (
+  <div>
+    <LoadingArticle />
+    <LoadingArticle />
+    <LoadingArticle />
+  </div>
+);
+
 /**
  * Renders the main feed.
  */
@@ -38,13 +46,7 @@ export const renderFeed = timeFrame => {
       renderFeed={({ feedItems, feedIcons }) => {
         if (feedItems.length === 0) {
           // Fancy loading ✨
-          return (
-            <div>
-              <LoadingArticle />
-              <LoadingArticle />
-              <LoadingArticle />
-            </div>
-          );
+          return <FeedLoading />;
         }
 
         const [featuredStory, ...subStories] = feedItems;
