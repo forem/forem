@@ -65,14 +65,14 @@ module Payments
       def request
         yield
       rescue Stripe::InvalidRequestError => e
-        DataDogStatsClient.increment("stripe.errors")
+        DatadogStatsClient.increment("stripe.errors")
         raise InvalidRequestError, e.message
       rescue Stripe::CardError => e
-        DataDogStatsClient.increment("stripe.errors")
+        DatadogStatsClient.increment("stripe.errors")
         raise CardError, e.message
       rescue Stripe::StripeError => e
         Rails.logger.error(e)
-        DataDogStatsClient.increment("stripe.errors")
+        DatadogStatsClient.increment("stripe.errors")
         raise PaymentsError, e.message
       end
     end
