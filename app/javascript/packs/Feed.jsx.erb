@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import { podcastEpisodeArticle } from '../articles/__tests__/utilities/articleUtilities';
 
 <% helpers = ActionController::Base.helpers %>
 
@@ -78,7 +79,7 @@ export class Feed extends Component {
           this.feedContainer = element;
         }}
       >
-        {renderFeed({ feedItems, feedIcons: FEED_ICONS, podcastEpisodes })}
+        {renderFeed({ feedItems, feedIcons: FEED_ICONS, podcastEpisodes: [podcastEpisodeArticle] })}
       </div>
     );
   }
