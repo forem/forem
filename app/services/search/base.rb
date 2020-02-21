@@ -39,6 +39,19 @@ module Search
 
       private
 
+      def search(body:)
+        SearchClient.search(index: self::INDEX_ALIAS, body: body)
+      rescue Elasticsearch::Transport::Transport::Errors::BadRequest
+        ::DatadogStatsClient.increment(
+          "elasticsearch.errors", tags: ["error:BadRequest", "index:#{self::INDEX_ALIAS}"]
+        )
+        empty_response
+      end
+
+      def empty_response
+        { "hits" => { "total" => { "value" => 0 }, "hits" => [] } }
+      end
+
       def settings
         { settings: { index: index_settings } }
       end

@@ -13,10 +13,6 @@ module Search
 
       private
 
-      def search(body:)
-        SearchClient.search(index: INDEX_ALIAS, body: body)
-      end
-
       def index_settings
         if Rails.env.production?
           {

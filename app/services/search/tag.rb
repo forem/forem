@@ -5,30 +5,27 @@ module Search
     MAPPINGS = JSON.parse(File.read("config/elasticsearch/mappings/tags.json"), symbolize_names: true).freeze
 
     class << self
-      def search(query_string)
-        SearchClient.search(
-          index: INDEX_ALIAS,
-          body: {
-            query: {
-              query_string: {
-                query: query_string,
-                analyze_wildcard: true,
-                allow_leading_wildcard: false
-              }
-            },
-            sort: {
-              hotness_score: "desc"
-            }
-          },
-        )
-      end
-
       def search_documents(query_string)
-        results = search(query_string)
+        results = search(body: search_body(query_string))
         results.dig("hits", "hits").map { |tag_doc| tag_doc.dig("_source") }
       end
 
       private
+
+      def search_body(query_string)
+        {
+          query: {
+            query_string: {
+              query: query_string,
+              analyze_wildcard: true,
+              allow_leading_wildcard: false
+            }
+          },
+          sort: {
+            hotness_score: "desc"
+          }
+        }
+      end
 
       def index_settings
         if Rails.env.production?

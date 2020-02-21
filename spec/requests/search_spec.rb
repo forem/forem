@@ -18,8 +18,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
 
     it "returns an empty array when a Elasticsearch Bad Request error is raised" do
       sign_in authorized_user
-      allow(Search::Tag).to receive(:search_documents).and_raise(Elasticsearch::Transport::Transport::Errors::BadRequest)
-      get "/search/tags"
+      get "/search/tags?name=*tag"
       expect(response.parsed_body).to eq("result" => [])
     end
   end
