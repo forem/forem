@@ -242,6 +242,7 @@ export const podcastArticle = {
     slug: 'monitor-recontextualize',
     title: 'Rubber local',
     image_url: '/images/16.png',
+    image_90: '/images/16.png',
   },
 };
 

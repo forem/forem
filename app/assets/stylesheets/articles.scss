@@ -1128,42 +1128,6 @@
         margin: 0;
         padding: 16px;
       }
-      a.individual-podcast-link {
-        display: flex;
-        padding: 8px 16px;
-        font-size: 0.8em;
-        @include themeable(color, theme-secondary-color, $medium-gray);
-
-        img {
-          height: 50px;
-          width: 50px;
-          border-radius: 50%;
-          vertical-align: top;
-        }
-
-        .individual-podcast-link-details {
-          padding-left: 16px;
-          flex: 1 auto;
-        }
-
-        strong {
-          display: block;
-          margin-bottom: 4px;
-          @media screen and (min-width: 500px) {
-            font-size: 1.2em;
-          }
-          padding-top: 0.2em;
-          font-weight: 500;
-          @include themeable(color, theme-color, $black);
-        }
-        &:hover {
-          @include themeable(
-            background,
-            theme-container-background-hover,
-            $light-gray
-          );
-        }
-      }
       p {
         margin-left: 14px;
       }
@@ -1564,5 +1528,43 @@
     @media screen and (min-width: 1240px) {
       height: 339px;
     }
+  }
+}
+
+// Podcast episode that goes within the <TodaysPodcast /> component.
+.individual-podcast-link {
+  display: flex;
+  padding: 8px 16px;
+  font-size: 0.8em;
+  @include themeable(color, theme-secondary-color, $medium-gray);
+
+  img {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    vertical-align: top;
+  }
+
+  .individual-podcast-link-details {
+    padding-left: 16px;
+    flex: 1 auto;
+  }
+
+  strong {
+    display: block;
+    margin-bottom: 4px;
+    @media screen and (min-width: 500px) {
+      font-size: 1.2em;
+    }
+    padding-top: 0.2em;
+    font-weight: 500;
+    @include themeable(color, theme-color, $black);
+  }
+  &:hover {
+    @include themeable(
+      background,
+      theme-container-background-hover,
+      $light-gray
+    );
   }
 }
