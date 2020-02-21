@@ -1,0 +1,388 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<FeaturedArticle /> component should render a bookmarked standard article 1`] = `
+<div>
+  <div
+    data-featured-article="articles-62407"
+    id="featured-story-marker"
+  />
+  <img
+    alt="Unbranded Home Loan Account"
+    src="/images/12.png"
+    style={
+      Object {
+        "display": "none",
+      }
+    }
+  />
+  <a
+    aria-label="Main Story"
+    class="index-article-link"
+    data-featured-article="articles-62407"
+    href="/some-post/path"
+    id="article-link-62407"
+  >
+    <div
+      class="single-article big-article"
+      data-content-user-id={23289}
+    >
+      <div
+        class="picture image-final"
+        style={
+          Object {
+            "backgroundColor": undefined,
+            "backgroundImage": "url(/images/12.png)",
+          }
+        }
+      />
+      <div
+        class="content-wrapper"
+      >
+        <h3>
+          Unbranded Home Loan Account
+        </h3>
+      </div>
+      <a
+        class="featured-profile-button"
+        href="/<%= article.cached_user.username %>"
+      >
+        <img
+          alt="<%= article.title %>"
+          class="featured-profile-pic"
+          src="/images/10.png"
+        />
+      </a>
+      <div
+        class="featured-user-name"
+      >
+        <a
+          href="/<%= article.cached_user.username %>"
+        >
+          Stella Macejkovic render "shared/pro_checkmark" if
+              article.cached_user.pro・
+          <time
+            dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
+          >
+            February 18
+          </time>
+          <span
+            class="time-ago-indicator-initial-placeholder"
+            data-seconds="<%= article.published_at_int %>"
+          />
+        </a>
+      </div>
+      <div
+        class="tags featured-tags"
+      >
+        <a
+          href="/t/javascript"
+        >
+          <span
+            class="tag"
+          >
+            #javascript
+          </span>
+        </a>
+        <a
+          href="/t/ruby"
+        >
+          <span
+            class="tag"
+          >
+            #ruby
+          </span>
+        </a>
+        <a
+          href="/t/go"
+        >
+          <span
+            class="tag"
+          >
+            #go
+          </span>
+        </a>
+      </div>
+      <a
+        class="article-reading-time"
+        href="/some-post/path"
+      >
+        undefined min read
+      </a>
+      <button
+        class="article-engagement-count engage-button bookmark-button selected"
+        data-reactable-id={62407}
+        type="button"
+      >
+        <span
+          class="bm-initial"
+        >
+          SAVE
+        </span>
+        <span
+          class="bm-success"
+        >
+          SAVED
+        </span>
+      </button>
+    </div>
+  </a>
+</div>
+`;
+
+exports[`<FeaturedArticle /> component should render a standard article 1`] = `
+<div>
+  <div
+    data-featured-article="articles-62407"
+    id="featured-story-marker"
+  />
+  <img
+    alt="Unbranded Home Loan Account"
+    src="/images/12.png"
+    style={
+      Object {
+        "display": "none",
+      }
+    }
+  />
+  <a
+    aria-label="Main Story"
+    class="index-article-link"
+    data-featured-article="articles-62407"
+    href="/some-post/path"
+    id="article-link-62407"
+  >
+    <div
+      class="single-article big-article"
+      data-content-user-id={23289}
+    >
+      <div
+        class="picture image-final"
+        style={
+          Object {
+            "backgroundColor": undefined,
+            "backgroundImage": "url(/images/12.png)",
+          }
+        }
+      />
+      <div
+        class="content-wrapper"
+      >
+        <h3>
+          Unbranded Home Loan Account
+        </h3>
+      </div>
+      <a
+        class="featured-profile-button"
+        href="/<%= article.cached_user.username %>"
+      >
+        <img
+          alt="<%= article.title %>"
+          class="featured-profile-pic"
+          src="/images/10.png"
+        />
+      </a>
+      <div
+        class="featured-user-name"
+      >
+        <a
+          href="/<%= article.cached_user.username %>"
+        >
+          Stella Macejkovic render "shared/pro_checkmark" if
+              article.cached_user.pro・
+          <time
+            dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
+          >
+            February 18
+          </time>
+          <span
+            class="time-ago-indicator-initial-placeholder"
+            data-seconds="<%= article.published_at_int %>"
+          />
+        </a>
+      </div>
+      <div
+        class="tags featured-tags"
+      >
+        <a
+          href="/t/javascript"
+        >
+          <span
+            class="tag"
+          >
+            #javascript
+          </span>
+        </a>
+        <a
+          href="/t/ruby"
+        >
+          <span
+            class="tag"
+          >
+            #ruby
+          </span>
+        </a>
+        <a
+          href="/t/go"
+        >
+          <span
+            class="tag"
+          >
+            #go
+          </span>
+        </a>
+      </div>
+      <a
+        class="article-reading-time"
+        href="/some-post/path"
+      >
+        undefined min read
+      </a>
+      <button
+        class="article-engagement-count engage-button bookmark-button "
+        data-reactable-id={62407}
+        type="button"
+      >
+        <span
+          class="bm-initial"
+        >
+          SAVE
+        </span>
+        <span
+          class="bm-success"
+        >
+          SAVED
+        </span>
+      </button>
+    </div>
+  </a>
+</div>
+`;
+
+exports[`<FeaturedArticle /> component should render an article with an organization 1`] = `
+<div>
+  <div
+    data-featured-article="articles-62407"
+    id="featured-story-marker"
+  />
+  <img
+    alt="Unbranded Home Loan Account"
+    src="/images/12.png"
+    style={
+      Object {
+        "display": "none",
+      }
+    }
+  />
+  <a
+    aria-label="Main Story"
+    class="index-article-link"
+    data-featured-article="articles-62407"
+    href="/some-post/path"
+    id="article-link-62407"
+  >
+    <div
+      class="single-article big-article"
+      data-content-user-id={23289}
+    >
+      <div
+        class="picture image-final"
+        style={
+          Object {
+            "backgroundColor": undefined,
+            "backgroundImage": "url(/images/12.png)",
+          }
+        }
+      />
+      <div
+        class="content-wrapper"
+      >
+        <h3>
+          Unbranded Home Loan Account
+        </h3>
+      </div>
+      <a
+        class="featured-profile-button"
+        href="/<%= article.cached_user.username %>"
+      >
+        <img
+          alt="<%= article.title %>"
+          class="featured-profile-pic"
+          src="/images/10.png"
+        />
+      </a>
+      <div
+        class="featured-user-name"
+      >
+        <a
+          href="/<%= article.cached_user.username %>"
+        >
+          Stella Macejkovic render "shared/pro_checkmark" if
+              article.cached_user.pro・
+          <time
+            dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
+          >
+            February 18
+          </time>
+          <span
+            class="time-ago-indicator-initial-placeholder"
+            data-seconds="<%= article.published_at_int %>"
+          />
+        </a>
+      </div>
+      <div
+        class="tags featured-tags"
+      >
+        <a
+          href="/t/javascript"
+        >
+          <span
+            class="tag"
+          >
+            #javascript
+          </span>
+        </a>
+        <a
+          href="/t/ruby"
+        >
+          <span
+            class="tag"
+          >
+            #ruby
+          </span>
+        </a>
+        <a
+          href="/t/go"
+        >
+          <span
+            class="tag"
+          >
+            #go
+          </span>
+        </a>
+      </div>
+      <a
+        class="article-reading-time"
+        href="/some-post/path"
+      >
+        undefined min read
+      </a>
+      <button
+        class="article-engagement-count engage-button bookmark-button "
+        data-reactable-id={62407}
+        type="button"
+      >
+        <span
+          class="bm-initial"
+        >
+          SAVE
+        </span>
+        <span
+          class="bm-success"
+        >
+          SAVED
+        </span>
+      </button>
+    </div>
+  </a>
+</div>
+`;

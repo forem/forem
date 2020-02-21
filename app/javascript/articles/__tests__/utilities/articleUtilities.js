@@ -284,3 +284,13 @@ export const userArticle = {
     profile_image_90: '/images/3.png',
   },
 };
+
+export const featuredArticle = {
+  ...article,
+  main_image: '/images/12.png',
+};
+
+export const featuredArticleWithOrganization = {
+  ...articleWithOrganization,
+  main_image: '/images/12.png',
+};
