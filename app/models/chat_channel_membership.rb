@@ -15,7 +15,8 @@ class ChatChannelMembership < ApplicationRecord
   validates :role, inclusion: { in: %w[member mod] }
   validate  :permission
 
-  after_commit :index_to_elasticsearch
+  after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :remove_from_elasticsearch, on: [:destroy]
 
   algoliasearch index_name: "SecuredChatChannelMembership_#{Rails.env}", auto_index: false do
     attribute :id, :status, :viewable_by, :chat_channel_id, :last_opened_at,

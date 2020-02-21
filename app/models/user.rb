@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  self.ignored_columns = ["organization_id"]
+
   include CloudinaryHelper
 
   attr_accessor(

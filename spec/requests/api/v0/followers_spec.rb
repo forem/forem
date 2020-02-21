@@ -14,7 +14,7 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
 
     context "when user is authorized" do
       let(:orgs) { create_list(:organization, 2) }
-      let(:user) { create(:user, organization_id: orgs.first.id) }
+      let(:user) { create(:user) }
 
       before do
         orgs.each { |org| follower.follow(org) }
