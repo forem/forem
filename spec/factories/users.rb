@@ -80,6 +80,10 @@ FactoryBot.define do
       after(:build) { |user| user.add_role :pro }
     end
 
+    trait :potential_spam_user do
+      after(:build) { |user| user.github_created_at = Time.zone.now }
+    end
+
     trait :org_member do
       after(:create) do |user|
         org = create(:organization)

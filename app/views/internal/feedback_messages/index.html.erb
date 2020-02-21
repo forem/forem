@@ -39,7 +39,7 @@
     </div>
     <div id="possibleSpamUsersBodyContainer" class="collapse hide" aria-labelledby="possibleSpamUsersHeader" data-parent="#possibleSpamUsers">
       <div class="card-body" style="overflow: scroll; max-height: 500px;">
-        <% @possible_spam_users.each do |user| %>
+        <% @potential_spam_users.each do |user| %>
           <a href="<%= user.path %>">@<%= user.username %></a> - <%= user.name %>
           <span class="float-right">
             <a href="/internal/users/<%= user.id %>" class="btn btn-secondary btn-sm">Internal User</a>
