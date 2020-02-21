@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_13_182938) do
+ActiveRecord::Schema.define(version: 2020_02_21_170905) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1120,7 +1120,6 @@ ActiveRecord::Schema.define(version: 2020_02_13_182938) do
     t.boolean "onboarding_package_requested_again", default: false
     t.string "onboarding_variant_version", default: "0"
     t.boolean "org_admin", default: false
-    t.integer "organization_id"
     t.datetime "organization_info_updated_at"
     t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "personal_data_updated_at"
@@ -1181,7 +1180,6 @@ ActiveRecord::Schema.define(version: 2020_02_13_182938) do
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["old_old_username"], name: "index_users_on_old_old_username"
     t.index ["old_username"], name: "index_users_on_old_username"
-    t.index ["organization_id"], name: "index_users_on_organization_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
