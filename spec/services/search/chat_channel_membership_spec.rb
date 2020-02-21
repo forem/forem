@@ -18,6 +18,16 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
     end
   end
 
+  describe "::delete_document" do
+    it "deletes a document for a given ID from elasticsearch" do
+      chat_channel_membership = FactoryBot.create(:chat_channel_membership)
+      chat_channel_membership.index_to_elasticsearch_inline
+      expect { described_class.find_document(chat_channel_membership.id) }.not_to raise_error
+      described_class.delete_document(chat_channel_membership.id)
+      expect { described_class.find_document(chat_channel_membership.id) }.to raise_error(Elasticsearch::Transport::Transport::Errors::NotFound)
+    end
+  end
+
   describe "::create_index" do
     it "creates an elasticsearch index with INDEX_NAME" do
       described_class.delete_index

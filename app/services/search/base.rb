@@ -13,6 +13,10 @@ module Search
         SearchClient.get(id: doc_id, index: self::INDEX_ALIAS)
       end
 
+      def delete_document(doc_id)
+        SearchClient.delete(id: doc_id, index: self::INDEX_ALIAS)
+      end
+
       def create_index(index_name: self::INDEX_NAME)
         SearchClient.indices.create(index: index_name, body: settings)
       end
