@@ -11,7 +11,7 @@ class StripeActiveCardsController < ApplicationController
       Rails.logger.info("Stripe Add New Card Success - #{current_user.username}")
       flash[:settings_notice] = "Your billing information has been updated"
     else
-      DatadogStatsClient.increment("stripe.errors")
+      DataDogStatsClient.increment("stripe.errors.new_subscription")
 
       Rails.logger.error("Stripe Add New Card Failure - #{current_user.username}")
       flash[:error] = "There was a problem updating your billing info."
@@ -34,7 +34,7 @@ class StripeActiveCardsController < ApplicationController
       Rails.logger.info("Stripe Card Update Success - #{current_user.username}")
       flash[:settings_notice] = "Your billing information has been updated"
     else
-      DatadogStatsClient.increment("stripe.errors")
+      DataDogStatsClient.increment("stripe.errors.update_subscription")
 
       Rails.logger.error("Stripe Card Update Failure - #{current_user.username}")
       flash[:error] = "There was a problem updating your billing info."
