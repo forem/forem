@@ -33,7 +33,7 @@ User.clear_index!
 roles = %i[trusted chatroom_beta_tester workshop_pass]
 
 num_users.times do |i|
-  name = "#{Faker::Name.name} #{Faker::Lorem.word.titleize}"
+  name = Faker::Name.unique.name
 
   user = User.create!(
     name: name,
@@ -43,7 +43,7 @@ num_users.times do |i|
     twitter_username: Faker::Internet.username(specifier: name),
     email_comment_notifications: false,
     email_follower_notifications: false,
-    email: Faker::Internet.email(name: name, separators: "+"),
+    email: Faker::Internet.email(name: name, separators: "+", domain: Faker::Internet.domain_word.first(20)), # Emails limited to 50 characters
     confirmed_at: Time.current,
     password: "password",
   )
