@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<FeaturedArticle /> component should render a bookmarked standard article 1`] = `
+exports[`<FeaturedArticle /> component should render a bookmarked featured article 1`] = `
 <div>
   <div
     data-featured-article="articles-62407"
@@ -8,7 +8,7 @@ exports[`<FeaturedArticle /> component should render a bookmarked standard artic
   />
   <img
     alt="Unbranded Home Loan Account"
-    src="/images/12.png"
+    src="/images/onboarding-background.png"
     style={
       Object {
         "display": "none",
@@ -31,7 +31,7 @@ exports[`<FeaturedArticle /> component should render a bookmarked standard artic
         style={
           Object {
             "backgroundColor": undefined,
-            "backgroundImage": "url(/images/12.png)",
+            "backgroundImage": "url(/images/onboarding-background.png)",
           }
         }
       />
@@ -99,6 +99,43 @@ exports[`<FeaturedArticle /> component should render a bookmarked standard artic
             class="tag"
           >
             #go
+          </span>
+        </a>
+      </div>
+      <div
+        class="article-engagement-count comments-count featured-engagement-count"
+      >
+        <a
+          href="/some-post/path#comments"
+        >
+          <img
+            alt="chat"
+            loading="lazy"
+            src="/images/comments-bubble.png"
+          />
+          <span
+            class="engagement-count-number"
+          >
+            213
+          </span>
+        </a>
+      </div>
+      <div
+        class="article-engagement-count reactions-count"
+      >
+        <a
+          href="/some-post/path"
+        >
+          <img
+            alt="heart"
+            loading="lazy"
+            src="/images/reactions-stack.png"
+          />
+          <span
+            class="engagement-count-number"
+            id="engagement-count-number-62407"
+          >
+            428
           </span>
         </a>
       </div>
@@ -137,7 +174,7 @@ exports[`<FeaturedArticle /> component should render a standard article 1`] = `
   />
   <img
     alt="Unbranded Home Loan Account"
-    src="/images/12.png"
+    src="/images/onboarding-background.png"
     style={
       Object {
         "display": "none",
@@ -160,7 +197,7 @@ exports[`<FeaturedArticle /> component should render a standard article 1`] = `
         style={
           Object {
             "backgroundColor": undefined,
-            "backgroundImage": "url(/images/12.png)",
+            "backgroundImage": "url(/images/onboarding-background.png)",
           }
         }
       />
@@ -231,132 +268,40 @@ exports[`<FeaturedArticle /> component should render a standard article 1`] = `
           </span>
         </a>
       </div>
-      <a
-        class="article-reading-time"
-        href="/some-post/path"
-      >
-        undefined min read
-      </a>
-      <button
-        class="article-engagement-count engage-button bookmark-button "
-        data-reactable-id={62407}
-        type="button"
-      >
-        <span
-          class="bm-initial"
-        >
-          SAVE
-        </span>
-        <span
-          class="bm-success"
-        >
-          SAVED
-        </span>
-      </button>
-    </div>
-  </a>
-</div>
-`;
-
-exports[`<FeaturedArticle /> component should render an article with an organization 1`] = `
-<div>
-  <div
-    data-featured-article="articles-62407"
-    id="featured-story-marker"
-  />
-  <img
-    alt="Unbranded Home Loan Account"
-    src="/images/12.png"
-    style={
-      Object {
-        "display": "none",
-      }
-    }
-  />
-  <a
-    aria-label="Main Story"
-    class="index-article-link"
-    data-featured-article="articles-62407"
-    href="/some-post/path"
-    id="article-link-62407"
-  >
-    <div
-      class="single-article big-article"
-      data-content-user-id={23289}
-    >
       <div
-        class="picture image-final"
-        style={
-          Object {
-            "backgroundColor": undefined,
-            "backgroundImage": "url(/images/12.png)",
-          }
-        }
-      />
-      <div
-        class="content-wrapper"
-      >
-        <h3>
-          Unbranded Home Loan Account
-        </h3>
-      </div>
-      <a
-        class="featured-profile-button"
-        href="/<%= article.cached_user.username %>"
-      >
-        <img
-          alt="<%= article.title %>"
-          class="featured-profile-pic"
-          src="/images/10.png"
-        />
-      </a>
-      <div
-        class="featured-user-name"
+        class="article-engagement-count comments-count featured-engagement-count"
       >
         <a
-          href="/<%= article.cached_user.username %>"
+          href="/some-post/path#comments"
         >
-          Stella Macejkovic render "shared/pro_checkmark" if
-              article.cached_user.pro・
-          <time
-            dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
-          >
-            February 18
-          </time>
-          <span
-            class="time-ago-indicator-initial-placeholder"
-            data-seconds="<%= article.published_at_int %>"
+          <img
+            alt="chat"
+            loading="lazy"
+            src="/images/comments-bubble.png"
           />
+          <span
+            class="engagement-count-number"
+          >
+            213
+          </span>
         </a>
       </div>
       <div
-        class="tags featured-tags"
+        class="article-engagement-count reactions-count"
       >
         <a
-          href="/t/javascript"
+          href="/some-post/path"
         >
+          <img
+            alt="heart"
+            loading="lazy"
+            src="/images/reactions-stack.png"
+          />
           <span
-            class="tag"
+            class="engagement-count-number"
+            id="engagement-count-number-62407"
           >
-            #javascript
-          </span>
-        </a>
-        <a
-          href="/t/ruby"
-        >
-          <span
-            class="tag"
-          >
-            #ruby
-          </span>
-        </a>
-        <a
-          href="/t/go"
-        >
-          <span
-            class="tag"
-          >
-            #go
+            428
           </span>
         </a>
       </div>
