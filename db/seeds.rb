@@ -43,7 +43,7 @@ num_users.times do |i|
     twitter_username: Faker::Internet.username(specifier: name),
     email_comment_notifications: false,
     email_follower_notifications: false,
-    email: Faker::Internet.email(name: name, separators: "+")[-49..-1], # Emails limited to 50 characters
+    email: Faker::Internet.email(name: name, separators: "+", domain: Faker::Internet.domain_word.first(20)), # Emails limited to 50 characters
     confirmed_at: Time.current,
     password: "password",
   )
