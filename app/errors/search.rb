@@ -4,6 +4,9 @@ module Search
     end
 
     module Transport
+      class TransportError < Error
+      end
+
       class BadRequest < Error
       end
 

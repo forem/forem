@@ -65,7 +65,7 @@ module Search
         error_class = "::Search::Errors::Transport::#{class_name}".safe_constantize
         raise error_class, e.message if error_class
 
-        raise ::Search::Errors::Error, e.message
+        raise ::Search::Errors::TransportError, e.message
       end
 
       def settings
