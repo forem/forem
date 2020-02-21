@@ -1,7 +1,9 @@
 import { h, render } from 'preact';
+import PropTypes from 'prop-types';
 import { Article, LoadingArticle } from '../articles';
 import { FeaturedArticle } from '../articles/FeaturedArticle';
 import { Feed } from './Feed.jsx.erb';
+import { articlePropTypes } from '../src/components/common-prop-types';
 
 /**
  * Sends analytics about the featured article.
@@ -26,6 +28,30 @@ function sendFeaturedArticleAnalytics(articleId) {
   })();
 }
 
+const FeedLoading = () => (
+  <div>
+    <LoadingArticle />
+    <LoadingArticle />
+    <LoadingArticle />
+  </div>
+);
+
+const PodcastEpisodes = ({ episodes }) => (
+  <div id="article-index-podcast-div">
+    {episodes.map(episode => (
+      <Article article={episode} />
+    ))}
+  </div>
+);
+
+PodcastEpisodes.defaultProps = {
+  episodes: [],
+};
+
+PodcastEpisodes.propTypes = {
+  episodes: PropTypes.arrayOf(articlePropTypes),
+};
+
 /**
  * Renders the main feed.
  */
@@ -35,18 +61,16 @@ export const renderFeed = timeFrame => {
   render(
     <Feed
       timeFrame={timeFrame}
-      renderFeed={({ feedItems, feedIcons }) => {
+      renderFeed={({ feedItems, feedIcons, podcastEpisodes }) => {
         if (feedItems.length === 0) {
           // Fancy loading ✨
-          return (
-            <div>
-              <LoadingArticle />
-              <LoadingArticle />
-              <LoadingArticle />
-            </div>
-          );
+          return <FeedLoading />;
         }
 
+        const commonProps = {
+          reactionsIcon: feedIcons.REACTIONS_ICON,
+          commentsIcon: feedIcons.COMMENTS_ICON,
+        };
         const [featuredStory, ...subStories] = feedItems;
 
         sendFeaturedArticleAnalytics(featuredStory.id);
@@ -56,18 +80,10 @@ export const renderFeed = timeFrame => {
         // 3. Rest of the stories for the feed
         return (
           <div>
-            <FeaturedArticle
-              article={featuredStory}
-              reactionsIcon={feedIcons.REACTIONS_ICON}
-              commentsIcon={feedIcons.COMMENTS_ICON}
-            />
-            <div id="article-index-podcast-div">PODCAST EPISODES</div>
+            <FeaturedArticle {...commonProps} article={featuredStory} />
+            <PodcastEpisodes episodes={podcastEpisodes} />
             {(subStories || []).map(story => (
-              <Article
-                article={story}
-                reactionsIcon={feedIcons.REACTIONS_ICON}
-                commentsIcon={feedIcons.COMMENTS_ICON}
-              />
+              <Article {...commonProps} article={story} />
             ))}
           </div>
         );
