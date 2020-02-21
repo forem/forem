@@ -127,13 +127,17 @@ RSpec.describe "StripeActiveCards", type: :request do
     end
 
     it "increments sidekiq.errors.update_subscription in Datadog on failure" do
-      valid_instance(user)
-      customer = Stripe::Customer.retrieve(user.stripe_id_code)
-      original_card_id = customer.sources.all(object: "card").first.id
+      _, source = create_user_with_card(user, card_token)
+      original_card_id = source.id
+
       allow(DatadogStatsClient).to receive(:increment)
-      card_error = Stripe::CardError.new(nil, nil, nil)
+      card_error = Stripe::CardError.new("message", "param")
       allow(Stripe::Customer).to receive(:retrieve).and_raise(card_error)
-      put "/stripe_active_cards/#{original_card_id}", params: {}
+
+      put stripe_active_card_path(id: original_card_id)
+      expect(response).to redirect_to(user_settings_path(:billing))
+      expect(flash[:error]).to eq(card_error.message)
+
       expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors.update_subscription")
     end
   end
