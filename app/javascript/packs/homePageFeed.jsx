@@ -1,28 +1,25 @@
 import { h, render } from 'preact';
-import { Article, Feed, LoadingArticle } from '../articles';
+import { Article, LoadingArticle } from '../articles';
 import { FeaturedArticle } from '../articles/FeaturedArticle';
-
-<% helpers = ActionController::Base.helpers %>
-
-const FEED_ICONS = {
-  COMMENTS_ICON: '<%= helpers.image_path("comments-bubble.png") %>',
-  REACTIONS_ICON: '<%= helpers.image_path("reactions-stack.png") %>',
-  VIDEO_ICON: '<%= helpers.image_path("video-camera.svg") %>',
-};
+import { Feed } from './Feed.jsx.erb';
 
 /**
  * Renders the main feed.
  */
-export const renderFeed = () => {
+export const renderFeed = feedTimeFrame => {
   const feedContainer = document.getElementById('homepage-feed');
+
+  // The feed is wrapped in a <div /> with the ID 'new-feed' so that current paging/scrolling
+  // functionality does not affect the new feed.
 
   render(
     <Feed
-      renderFeedItems={(feedItems = []) => {
+      feedTimeFrame={feedTimeFrame}
+      renderFeedItems={({ feedItems, feedIcons }) => {
         if (feedItems.length === 0) {
           // Fancy loading ✨
           return (
-            <div>
+            <div id="new-feed">
               <LoadingArticle />
               <LoadingArticle />
               <LoadingArticle />
@@ -36,22 +33,20 @@ export const renderFeed = () => {
         // 2. Podcast episodes out today
         // 3. Rest of the stories for the feed
         return (
-          <div>
+          <div id="new-feed">
             <FeaturedArticle
               article={featuredStory}
-              reactionsIcon={FEED_ICONS.REACTIONS_ICON}
-              commentsIcon={FEED_ICONS.COMMENTS_ICON}
+              reactionsIcon={feedIcons.REACTIONS_ICON}
+              commentsIcon={feedIcons.COMMENTS_ICON}
             />
             <div id="article-index-podcast-div">PODCAST EPISODES</div>
             {(subStories || []).map(story => (
               <Article
                 article={story}
-                reactionsIcon={FEED_ICONS.REACTIONS_ICON}
-                commentsIcon={FEED_ICONS.COMMENTS_ICON}
+                reactionsIcon={feedIcons.REACTIONS_ICON}
+                commentsIcon={feedIcons.COMMENTS_ICON}
               />
             ))}
-            hello Algolia
-            <div id="substories" class="substories"></div>
           </div>
         );
       }}
