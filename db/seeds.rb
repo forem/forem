@@ -33,7 +33,7 @@ User.clear_index!
 roles = %i[trusted chatroom_beta_tester workshop_pass]
 
 num_users.times do |i|
-  name = "#{Faker::Name.name} #{Faker::Lorem.word.titleize}"[0..29]
+  name = Faker::Name.unique.name
 
   user = User.create!(
     name: name,
