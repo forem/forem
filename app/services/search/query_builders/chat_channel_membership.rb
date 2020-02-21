@@ -36,6 +36,8 @@ module Search
         @body = ActiveSupport::HashWithIndifferentAccess.new
         build_queries
         add_sort
+        # By default we will return 0 documents if size is not specified
+        @body[:size] = @params[:size] || DEFAULT_PARAMS[:size]
       end
 
       def build_queries
@@ -50,7 +52,6 @@ module Search
         @body[:sort] = {
           sort_key => sort_direction
         }
-        @body[:size] = @params[:size] || DEFAULT_PARAMS[:size]
       end
 
       def filter_conditions
