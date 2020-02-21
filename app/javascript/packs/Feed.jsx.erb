@@ -34,6 +34,7 @@ export class Feed extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.feedTimeFrame !== this.props.feedTimeFrame) {
+      // The feed timeframe has changed. Get new feed data.
       Feed.getFeedItems(this.props.feedTimeFrame).then(feedItems => {
         this.setState({ feedItems });
 
