@@ -70,7 +70,7 @@ export class Feed extends Component {
 
   render() {
     const { renderFeed } = this.props;
-    const { feedItems = [] } = this.state;
+    const { feedItems = [], podcastEpisodes = [] } = this.state;
 
     return (
       <div
@@ -78,7 +78,7 @@ export class Feed extends Component {
           this.feedContainer = element;
         }}
       >
-        {renderFeed({ feedItems, feedIcons: FEED_ICONS })}
+        {renderFeed({ feedItems, feedIcons: FEED_ICONS, podcastEpisodes })}
       </div>
     );
   }
