@@ -8,9 +8,9 @@ syncs:
     sync_strategy: 'rsync'
     sync_host_ip: 'auto'
     sync_host_port: 20871
-    sync_excludes: ['.gitignore', '.git/', 'tmp', 'log', 'README.md', '.docker*', ]
+    sync_excludes: ['.gitignore', '.git/', 'tmp', 'log', 'README.md', '.docker*', 'node_modules', 'vendor']
     sync_args: '-v --inplace'
-    watch_excludes: ['.*/.git', '.gitignore', 'docker-*.yml', 'Dockerfile', '.docker*', 'docker_data'],
+    watch_excludes: ['.*/.git', '.gitignore', 'docker-*.yml', 'Dockerfile', '.docker*', 'docker_data', 'node_modules', 'vendor']
   es-sync:
     src: './docker_data/elasticsearch/data'
     sync_strategy: 'rsync'

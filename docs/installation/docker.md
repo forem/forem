@@ -88,7 +88,15 @@ Please execute the script itself to view all additional options:
 
 ## Running the Docker app with docker-sync
 
-TODO: add documentation
+To run the app with [docker-sync](http://docker-sync.io/) please follow the
+following steps:
+
+1. Install `docker-sync`: `gem install docker-sync`
+2. Make sure your system has `rsync` available
+3. Run `docker-compose run web rails db:setup`
+4. Run `docker-compose run web rails search:setup`
+5. Run `docker-compose run web rails data_updates:run`
+6. Run `docker-sync-stack start`
 
 ## Known Problems & Solutions
 
