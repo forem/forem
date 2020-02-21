@@ -23,8 +23,6 @@ json.array!(@stories) do |article|
     json.main_image nil
   end
 
-  # article.main_image? ? cloud_cover_url(article.main_image) : nil
-
   json.tag_list article.cached_tag_list_array
   json.extract! article, *article_methods_to_include
 end
