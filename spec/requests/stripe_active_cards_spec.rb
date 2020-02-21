@@ -52,7 +52,8 @@ RSpec.describe "StripeActiveCards", type: :request do
       expect(response).to redirect_to(user_settings_path(:billing))
       expect(flash[:error]).to eq(invalid_error.message)
 
-      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors")
+      tags = hash_including(tags: array_including("error:InvalidRequestError"))
+      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
 
     it "updates the user's updated_at" do
@@ -70,7 +71,9 @@ RSpec.describe "StripeActiveCards", type: :request do
       invalid_error = Stripe::InvalidRequestError.new(nil, nil)
       allow(Stripe::Customer).to receive(:create).and_raise(invalid_error)
       post "/stripe_active_cards", params: { stripe_token: stripe_helper.generate_card_token }
-      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors.new_subscription")
+
+      tags = hash_including(tags: array_including("event:new_subscription", "user_id:#{user.id}"))
+      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
   end
 
@@ -112,7 +115,8 @@ RSpec.describe "StripeActiveCards", type: :request do
       expect(response).to redirect_to(user_settings_path(:billing))
       expect(flash[:error]).to eq(card_error.message)
 
-      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors")
+      tags = hash_including(tags: array_including("error:CardError"))
+      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
 
     it "updates the user's updated_at" do
@@ -137,8 +141,8 @@ RSpec.describe "StripeActiveCards", type: :request do
       put stripe_active_card_path(id: original_card_id)
       expect(response).to redirect_to(user_settings_path(:billing))
       expect(flash[:error]).to eq(card_error.message)
-
-      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors.update_subscription")
+      tags = hash_including(tags: array_including("event:update_subscription", "user_id:#{user.id}"))
+      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
   end
 

@@ -24,7 +24,8 @@ RSpec.describe Payments::Customer, type: :service do
       allow(DatadogStatsClient).to receive(:increment)
 
       expect { described_class.get("foobar") }.to raise_error(Payments::InvalidRequestError)
-      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors")
+      tags = hash_including(tags: array_including("error:InvalidRequestError"))
+      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
 
     it "raises Payments::PaymentsError for any other known error" do
@@ -37,7 +38,8 @@ RSpec.describe Payments::Customer, type: :service do
       allow(Stripe::Customer).to receive(:retrieve).with("foobar").and_raise(Stripe::StripeError)
 
       expect { described_class.get("foobar") }.to raise_error(Payments::PaymentsError)
-      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors")
+      tags = hash_including(tags: array_including("error:StripeError"))
+      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
   end
 
@@ -77,7 +79,8 @@ RSpec.describe Payments::Customer, type: :service do
       allow(DatadogStatsClient).to receive(:increment)
 
       expect { described_class.create_source("customer_id", "token") }.to raise_error(Payments::InvalidRequestError)
-      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors")
+      tags = hash_including(tags: array_including("error:InvalidRequestError"))
+      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
 
     it "raises Payments::PaymentsError for any other known error" do
@@ -90,7 +93,8 @@ RSpec.describe Payments::Customer, type: :service do
       allow(DatadogStatsClient).to receive(:increment)
 
       expect { described_class.create_source("customer_id", "token") }.to raise_error(Payments::PaymentsError)
-      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors")
+      tags = hash_including(tags: array_including("error:StripeError"))
+      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
   end
 
@@ -171,7 +175,8 @@ RSpec.describe Payments::Customer, type: :service do
       expect do
         described_class.charge(customer: customer, amount: 1, description: "Test charge", card_id: card.id)
       end.to raise_error(Payments::CardError)
-      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors")
+      tags = hash_including(tags: array_including("error:CardError"))
+      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
   end
 end
