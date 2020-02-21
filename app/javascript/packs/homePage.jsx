@@ -3,6 +3,8 @@ import { renderFeed } from './homePageFeed';
 
 /* global userData */
 
+// This logic is similar to that in initScrolling.js.erb
+// that prevents the classic Algolia scrolling for the front page.
 const frontPageFeedPathNames = new Map([
   ['/', ''],
   ['/top/week', 'week'],
@@ -86,30 +88,21 @@ let waitingForDataLoad = setTimeout(function dataLoadedCheck() {
   waitingForDataLoad = setTimeout(dataLoadedCheck, 40);
 }, 40);
 
-InstantClick.on('receive', (address, body, title) => {
-  const url = new URL(address);
-  const preloadedFeedTimeFrame = frontPageFeedPathNames.get(url.pathname);
+InstantClick.on('change', () => {
+  const url = new URL(window.location);
+  const changedFeedTimeFrame = frontPageFeedPathNames.get(url.pathname);
 
-  if (document.body.dataset.userStatus === 'logged-out') {
-    if (frontPageFeedPathNames.has(url.pathname)) {
-      renderFeed(preloadedFeedTimeFrame);
-
-      return {
-        body,
-        title,
-      };
-    }
-
-    return false;
+  if (!frontPageFeedPathNames.has(url.pathname)) {
+    return;
   }
 
+  renderFeed(changedFeedTimeFrame);
+});
+
+InstantClick.on('receive', (address, body, title) => {
   if (document.body.dataset.userStatus !== 'logged-in') {
     // Nothing to do, the user is not logged on.
     return false;
-  }
-
-  if (frontPageFeedPathNames.has(url.pathname)) {
-    renderFeed(preloadedFeedTimeFrame);
   }
 
   const tagsFollowedContainer = body.querySelector(
