@@ -17,7 +17,7 @@ export class Feed extends Component {
     this.scrollHandler = _event => {
       // // handle scroll logic for pages of feed data and get an extra page on load.
       // page += 1;
-      // Feed.getFeedItems(this.props.feedTimeFrame, page).then(feedItems => {
+      // Feed.getFeedItems(this.props.timeFrame, page).then(feedItems => {
       //   // We are not doing virtual scrolling at the moment, so feed items keep getting appended.
       //   this.setState(previousState => ({
       //     feedItems: previousState.feedItems.concat(feedItems),
@@ -25,7 +25,7 @@ export class Feed extends Component {
       // });
     };
 
-    Feed.getFeedItems(this.props.feedTimeFrame).then(feedItems => {
+    Feed.getFeedItems(this.props.timeFrame).then(feedItems => {
       this.setState({ feedItems });
 
       this.feedContainer.addEventListener('scroll', this.scrollHandler);
@@ -33,9 +33,9 @@ export class Feed extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.feedTimeFrame !== this.props.feedTimeFrame) {
+    if (prevProps.timeFrame !== this.props.timeFrame) {
       // The feed timeframe has changed. Get new feed data.
-      Feed.getFeedItems(this.props.feedTimeFrame).then(feedItems => {
+      Feed.getFeedItems(this.props.timeFrame).then(feedItems => {
         this.setState({ feedItems });
 
         this.feedContainer.addEventListener('scroll', this.scrollHandler);
@@ -56,8 +56,8 @@ export class Feed extends Component {
    *
    * @returns {Promise} A promise containing the JSON response for the feed data.
    */
-  static getFeedItems(feedTimeFrame = '', page = 1) {
-    return fetch(`/stories/feed/${feedTimeFrame}?page=${page}`, {
+  static getFeedItems(timeFrame = '', page = 1) {
+    return fetch(`/stories/feed/${timeFrame}?page=${page}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -69,7 +69,7 @@ export class Feed extends Component {
   }
 
   render() {
-    const { renderFeedItems } = this.props;
+    const { renderFeed } = this.props;
     const { feedItems = [] } = this.state;
 
     return (
@@ -78,19 +78,19 @@ export class Feed extends Component {
           this.feedContainer = element;
         }}
       >
-        {renderFeedItems({ feedItems, feedIcons: FEED_ICONS })}
+        {renderFeed({ feedItems, feedIcons: FEED_ICONS })}
       </div>
     );
   }
 }
 
 Feed.defaultProps = {
-  feedTimeFrame: '',
+  timeFrame: '',
 }
 
 Feed.propTypes = {
-  feedTimeFrame: PropTypes.string,
-  renderFeedItems: PropTypes.func.isRequired,
+  timeFrame: PropTypes.string,
+  renderFeed: PropTypes.func.isRequired,
 };
 
 Feed.displayName = 'Feed';
