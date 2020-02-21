@@ -6,7 +6,7 @@ import { Feed } from './Feed.jsx.erb';
 /**
  * Renders the main feed.
  */
-export const renderFeed = feedTimeFrame => {
+export const renderFeed = timeFrame => {
   const feedContainer = document.getElementById('homepage-feed');
 
   // The feed is wrapped in a <div /> with the ID 'new-feed' so that current paging/scrolling
@@ -14,8 +14,8 @@ export const renderFeed = feedTimeFrame => {
 
   render(
     <Feed
-      feedTimeFrame={feedTimeFrame}
-      renderFeedItems={({ feedItems, feedIcons }) => {
+      timeFrame={timeFrame}
+      renderFeed={({ feedItems, feedIcons }) => {
         if (feedItems.length === 0) {
           // Fancy loading ✨
           return (
