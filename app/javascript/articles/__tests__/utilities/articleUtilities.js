@@ -287,7 +287,9 @@ export const userArticle = {
 
 export const featuredArticle = {
   ...article,
-  main_image: '/images/12.png',
+  main_image: '/images/onboarding-background.png',
+  positive_reactions_count: 428,
+  comments_count: 213,
 };
 
 export const featuredArticleWithOrganization = {
