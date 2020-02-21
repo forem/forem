@@ -1,7 +1,16 @@
 import { h, render } from 'preact';
-import { renderFeed } from './homePageFeed.jsx.erb';
+import { renderFeed } from './homePageFeed';
 
 /* global userData */
+
+const frontPageFeedPathNames = new Map([
+  ['/', ''],
+  ['/top/week', 'week'],
+  ['/top/month', 'month'],
+  ['/top/year', 'year'],
+  ['/top/infinity', 'infinity'],
+  ['/latest', 'latest'],
+]);
 
 function toggleListingsMinimization() {
   if (document.body.classList.contains('config_minimize_newest_listings')) {
@@ -55,18 +64,20 @@ function renderTagsFollowed(tagsFollowedContainer, user = userData()) {
   });
 }
 
+const feedTimeFrame = frontPageFeedPathNames.get(window.location.pathname);
+
 let waitingForDataLoad = setTimeout(function dataLoadedCheck() {
   const { user = null, userStatus } = document.body.dataset;
 
   if (userStatus === 'logged-out') {
-    renderFeed();
+    renderFeed(feedTimeFrame);
     return;
   }
 
   if (userStatus === 'logged-in' && user !== null) {
     // We have user data, render followed tags.
     clearTimeout(waitingForDataLoad);
-    renderFeed();
+    renderFeed(feedTimeFrame);
     renderTagsFollowed(document.getElementById('sidebar-nav-followed-tags'));
     return;
   }
@@ -75,10 +86,30 @@ let waitingForDataLoad = setTimeout(function dataLoadedCheck() {
   waitingForDataLoad = setTimeout(dataLoadedCheck, 40);
 }, 40);
 
-InstantClick.on('receive', (_url, body, title) => {
+InstantClick.on('receive', (address, body, title) => {
+  const url = new URL(address);
+  const preloadedFeedTimeFrame = frontPageFeedPathNames.get(url.pathname);
+
+  if (document.body.dataset.userStatus === 'logged-out') {
+    if (frontPageFeedPathNames.has(url.pathname)) {
+      renderFeed(preloadedFeedTimeFrame);
+
+      return {
+        body,
+        title,
+      };
+    }
+
+    return false;
+  }
+
   if (document.body.dataset.userStatus !== 'logged-in') {
     // Nothing to do, the user is not logged on.
     return false;
+  }
+
+  if (frontPageFeedPathNames.has(url.pathname)) {
+    renderFeed(preloadedFeedTimeFrame);
   }
 
   const tagsFollowedContainer = body.querySelector(
@@ -90,7 +121,6 @@ InstantClick.on('receive', (_url, body, title) => {
     return false;
   }
 
-  renderFeed();
   renderTagsFollowed(tagsFollowedContainer);
 
   return {

@@ -1,6 +1,14 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
+<% helpers = ActionController::Base.helpers %>
+
+const FEED_ICONS = {
+  COMMENTS_ICON: '<%= helpers.image_path("comments-bubble.png") %>',
+  REACTIONS_ICON: '<%= helpers.image_path("reactions-stack.png") %>',
+  VIDEO_ICON: '<%= helpers.image_path("video-camera.svg") %>',
+};
+
 // TODO: Add scroll initial fetch and scroll etc.
 export class Feed extends Component {
   scrollHandler;
@@ -9,7 +17,7 @@ export class Feed extends Component {
     this.scrollHandler = _event => {
       // // handle scroll logic for pages of feed data and get an extra page on load.
       // page += 1;
-      // Feed.getFeedItems(page).then(feedItems => {
+      // Feed.getFeedItems(this.props.feedTimeFrame, page).then(feedItems => {
       //   // We are not doing virtual scrolling at the moment, so feed items keep getting appended.
       //   this.setState(previousState => ({
       //     feedItems: previousState.feedItems.concat(feedItems),
@@ -17,11 +25,21 @@ export class Feed extends Component {
       // });
     };
 
-    Feed.getFeedItems().then(feedItems => {
+    Feed.getFeedItems(this.props.feedTimeFrame).then(feedItems => {
       this.setState({ feedItems });
 
       this.feedContainer.addEventListener('scroll', this.scrollHandler);
     });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.feedTimeFrame !== this.props.feedTimeFrame) {
+      Feed.getFeedItems(this.props.feedTimeFrame).then(feedItems => {
+        this.setState({ feedItems });
+
+        this.feedContainer.addEventListener('scroll', this.scrollHandler);
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -37,8 +55,8 @@ export class Feed extends Component {
    *
    * @returns {Promise} A promise containing the JSON response for the feed data.
    */
-  static getFeedItems(page = 1) {
-    return fetch(`/stories/feed?page=${page}`, {
+  static getFeedItems(feedTimeFrame = '', page = 1) {
+    return fetch(`/stories/feed/${feedTimeFrame}?page=${page}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -51,7 +69,7 @@ export class Feed extends Component {
 
   render() {
     const { renderFeedItems } = this.props;
-    const { feedItems } = this.state;
+    const { feedItems = [] } = this.state;
 
     return (
       <div
@@ -59,13 +77,18 @@ export class Feed extends Component {
           this.feedContainer = element;
         }}
       >
-        {renderFeedItems(feedItems)}
+        {renderFeedItems({ feedItems, feedIcons: FEED_ICONS })}
       </div>
     );
   }
 }
 
+Feed.defaultProps = {
+  feedTimeFrame: '',
+}
+
 Feed.propTypes = {
+  feedTimeFrame: PropTypes.string,
   renderFeedItems: PropTypes.func.isRequired,
 };
 
