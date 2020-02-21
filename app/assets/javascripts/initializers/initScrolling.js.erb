@@ -248,7 +248,8 @@ function fetchNextPageIfNearBottom() {
       fetchNextFollowingPage(indexContainer);
     }
   } else {
-    if (document.getElementById("new-feed")) {
+    // TODO: Consolidate this logic of checking the path name with that in homePage.jsx
+    if (['/', '/top/week', '/top/month', '/top/year', '/top/infinity', '/latest'].includes(window.location.pathname)) {
       // Scrolling is handled in the new Feed on the homepage.
       return;
     }
