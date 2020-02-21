@@ -1,7 +1,6 @@
 import { h, render } from 'preact';
 import PropTypes from 'prop-types';
-import { Article, LoadingArticle } from '../articles';
-import { FeaturedArticle } from '../articles/FeaturedArticle';
+import { Article, FeaturedArticle, LoadingArticle } from '../articles';
 import { Feed } from './Feed.jsx.erb';
 import { articlePropTypes } from '../src/components/common-prop-types';
 
