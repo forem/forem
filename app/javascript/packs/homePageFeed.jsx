@@ -4,6 +4,29 @@ import { FeaturedArticle } from '../articles/FeaturedArticle';
 import { Feed } from './Feed.jsx.erb';
 
 /**
+ * Sends analytics about the featured article.
+ *
+ * @param {number} articleId
+ */
+function sendFeaturedArticleAnalytics(articleId) {
+  (function logFeaturedArticleImpression() {
+    if (!window.ga || !ga.create) {
+      setTimeout(logFeaturedArticleImpression, 20);
+      return;
+    }
+
+    ga(
+      'send',
+      'event',
+      'view',
+      'featured-feed-impression',
+      `articles-${articleId}`,
+      null,
+    );
+  })();
+}
+
+/**
  * Renders the main feed.
  */
 export const renderFeed = timeFrame => {
@@ -28,6 +51,8 @@ export const renderFeed = timeFrame => {
         }
 
         const [featuredStory, ...subStories] = feedItems;
+
+        sendFeaturedArticleAnalytics(featuredStory.id);
 
         // 1. Show the featured story first
         // 2. Podcast episodes out today
