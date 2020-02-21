@@ -1,4 +1,5 @@
 class ModerationsController < ApplicationController
+  include PotentialSpamUser
   after_action :verify_authorized
 
   def index
@@ -12,6 +13,7 @@ class ModerationsController < ApplicationController
     @articles = @articles.where("nth_published_by_author > 0 AND nth_published_by_author < 4 AND published_at > ?", 7.days.ago) if params[:state] == "new-authors"
     @articles = @articles.decorate
     @tag = Tag.find_by(name: params[:tag]) || not_found if params[:tag].present?
+    @potential_spam_users = potential_spam_users
   end
 
   def article

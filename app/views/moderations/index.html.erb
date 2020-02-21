@@ -74,6 +74,25 @@
       </div>
     <% end %>
   </div>
+  <h2 class="mod-index-title">Potential Spam Users</h2>
+  <div class="mod-index-list">
+    <% @potential_spam_users.each do |user| %>
+      <div class="mod-index-row">
+        <div class="mod-index-actions-and-details">
+          <a href="/<%= user.username %>" class="mod-index-spam-user-link"><img src="<%= ProfileImage.new(user).get(width: 90) %>" /><h2 class="mod-index-potential-spam-user-name"><%= user.username %></h2></a>
+          <button class="spam-user-button reaction-button cta <%= Reaction.cached_any_reactions_for?(user, current_user, "vomit") ? "reacted" : "" %>"
+                  data-reactable-id="<%= user.id %>"
+                  data-category="vomit"
+                  data-reactable-type="<%= user.class.name %>">
+            Flag as Spam
+          </button>
+          created <%= time_ago_in_words(user.created_at) %> ago
+          ・ <%= user.articles_count %> Posts
+          ・ <%= user.comments_count %> Comments
+        </div>
+      </div>
+    <% end %>
+  </div>
   <div class="mod-index-footer">
     <a href="/community-moderation" class="mod-link">Community Moderation Guide</a>
     <% if current_user.moderator_for_tags.any? %>
@@ -106,4 +125,39 @@
       }
     }
   }
+</script>
+
+<script defer>
+  setTimeout(function () {
+    var butts = document.getElementsByClassName('reaction-button');
+    for (var i = 0; i < butts.length; i++) {
+      var butt = butts[i];
+      butt.onclick = function (event) {
+        event.preventDefault();
+        var thisButt = this;
+        thisButt.classList.add('reacted');
+
+        function successCb(response) {
+          if (response.result === 'create') {
+            thisButt.classList.add('reacted');
+          } else {
+            thisButt.classList.remove('reacted');
+          }
+        }
+
+        var formData = new FormData();
+        formData.append('reactable_type', thisButt.dataset.reactableType);
+        formData.append('category', thisButt.dataset.category);
+        formData.append('reactable_id', thisButt.dataset.reactableId);
+
+        getCsrfToken()
+          .then(sendFetch('reaction-creation', formData))
+          .then(function (response) {
+            if (response.status === 200) {
+              response.json().then(successCb);
+            }
+          });
+      };
+    }
+  }, 200)
 </script>

@@ -78,6 +78,10 @@
   }
 }
 
+.mod-index-title {
+  padding-left: 20px;
+}
+
 .mod-index-list {
   margin: 5px auto;
   width: 96%;
@@ -114,6 +118,15 @@
       color: $black;
       vertical-align: 0.2em;
     }
+    .mod-index-potential-spam-user-name {
+        padding: 3px 8px;
+        border-radius: 3px;
+        color: $black;
+        display: inline;
+    }
+    .mod-index-spam-user-link {
+        display: block;
+    }
     .mod-index-actions-and-details {
       img {
         height: 1.4em;
@@ -128,7 +141,7 @@
         @include themeable(color, theme-secondary-color, $medium-gray);
       }
     }
-    .quick-mod-button {
+    .quick-mod-button, .spam-user-button {
       font-size: 0.95em;
       padding: 5px 18px;
       border-radius: 100px;
@@ -138,6 +151,13 @@
       margin-right: 5px;
       background: transparent;
       @include themeable(color, theme-color, $black);
+    }
+    .reacted {
+        @include themeable(
+            background,
+            theme-container-accent-background,
+            $light-green
+        );
     }
     .mod-index-row-iframes {
       padding: 5px 0px;
