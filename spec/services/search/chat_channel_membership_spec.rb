@@ -4,7 +4,7 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
   describe "::index" do
     it "indexes a chat_channel_membership to elasticsearch" do
       chat_channel_membership = FactoryBot.create(:chat_channel_membership)
-      expect { described_class.find_document(chat_channel_membership.id) }.to raise_error(Elasticsearch::Transport::Transport::Errors::NotFound)
+      expect { described_class.find_document(chat_channel_membership.id) }.to raise_error(Search::Errors::Transport::NotFound)
       described_class.index(chat_channel_membership.id, id: chat_channel_membership.id)
       expect(described_class.find_document(chat_channel_membership.id)).not_to be_nil
     end
