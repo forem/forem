@@ -9,9 +9,6 @@ import {
 } from './components';
 import { articlePropTypes } from '../src/components/common-prop-types';
 
-// TODO: cloud_cover_url
-const cloud_cover_url = url => url; // eslint-disable-line camelcase
-
 export const FeaturedArticle = ({
   article,
   isBookmarked,
@@ -25,7 +22,7 @@ export const FeaturedArticle = ({
         data-featured-article={`articles-${article.id}`}
       />
       <img
-        src={cloud_cover_url(article.main_image)}
+        src={article.main_image}
         style={{ display: 'none' }}
         alt={article.title}
       />
@@ -44,7 +41,7 @@ export const FeaturedArticle = ({
             className="picture image-final"
             style={{
               backgroundColor: article.main_image_background_hex_color,
-              backgroundImage: `url(${cloud_cover_url(article.main_image)})`,
+              backgroundImage: `url(${article.main_image})`,
             }}
           />
           <div className="content-wrapper">
