@@ -58,7 +58,8 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
 
   context "when attempting to view organization analytics and being a member of the organization" do
     before do
-      get "/api/analytics/#{endpoint}?organization_id=#{pro_org_member.organization_id}#{params}", headers: { "api-key" => org_member_token.secret }
+      path = "/api/analytics/#{endpoint}?organization_id=#{pro_org_member.organization_ids.first}#{params}"
+      get path, headers: { "api-key" => org_member_token.secret }
     end
 
     it "renders JSON as the content type" do
