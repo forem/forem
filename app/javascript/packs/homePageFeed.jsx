@@ -32,9 +32,6 @@ function sendFeaturedArticleAnalytics(articleId) {
 export const renderFeed = timeFrame => {
   const feedContainer = document.getElementById('homepage-feed');
 
-  // The feed is wrapped in a <div /> with the ID 'new-feed' so that current paging/scrolling
-  // functionality does not affect the new feed.
-
   render(
     <Feed
       timeFrame={timeFrame}
@@ -42,7 +39,7 @@ export const renderFeed = timeFrame => {
         if (feedItems.length === 0) {
           // Fancy loading ✨
           return (
-            <div id="new-feed">
+            <div>
               <LoadingArticle />
               <LoadingArticle />
               <LoadingArticle />
@@ -58,7 +55,7 @@ export const renderFeed = timeFrame => {
         // 2. Podcast episodes out today
         // 3. Rest of the stories for the feed
         return (
-          <div id="new-feed">
+          <div>
             <FeaturedArticle
               article={featuredStory}
               reactionsIcon={feedIcons.REACTIONS_ICON}
