@@ -44,7 +44,7 @@ RSpec.describe DataUpdateWorker, type: :worker do
   end
 
   it "logs data to Datadog", :aggregate_failures do
-    allow(DataDogStatsClient).to receive(:increment)
+    allow(DatadogStatsClient).to receive(:increment)
     worker.perform
 
     statuses.each do |status|
@@ -52,7 +52,7 @@ RSpec.describe DataUpdateWorker, type: :worker do
         "data_update_scripts.status",
         { tags: ["status:#{status}", "script_name:20200214151804_data_update_test_script"] },
       ]
-      expect(DataDogStatsClient).to have_received(:increment).once.with(*expected_args)
+      expect(DatadogStatsClient).to have_received(:increment).once.with(*expected_args)
     end
   end
 end
