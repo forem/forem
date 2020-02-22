@@ -1,0 +1,97 @@
+module Search
+  module QueryBuilders
+    class ClassifiedListing
+      TERM_KEYS = %i[
+        category
+        contact_via_connect
+        location
+        slug
+        tags
+        title
+        user_id
+      ].freeze
+
+      RANGE_KEYS = %i[
+        bumped_at
+        expires_at
+      ].freeze
+
+      QUERY_KEYS = %i[
+        classified_listing_search
+      ].freeze
+
+      DEFAULT_PARAMS = {
+        sort_by: "bumped_at",
+        sort_direction: "desc",
+        size: 0
+      }.freeze
+
+      attr_accessor :params, :body
+
+      def initialize(params)
+        @params = params.deep_symbolize_keys
+        build_body
+      end
+
+      def as_hash
+        @body
+      end
+
+      private
+
+      def build_body
+        @body = ActiveSupport::HashWithIndifferentAccess.new
+        build_queries
+        add_sort
+        # By default we will return 0 documents if size is not specified
+        @body[:size] = @params[:size] || DEFAULT_PARAMS[:size]
+      end
+
+      def build_queries
+        @body[:query] = {}
+        @body[:query][:bool] = { filter: filter_conditions }
+        @body[:query][:bool] = { must: query_conditions } if query_keys_present?
+      end
+
+      def add_sort
+        sort_key = @params[:sort_by] || DEFAULT_PARAMS[:sort_by]
+        sort_direction = @params[:sort_direction] || DEFAULT_PARAMS[:sort_direction]
+        @body[:sort] = {
+          sort_key => sort_direction
+        }
+      end
+
+      def filter_conditions
+        term_keys + range_keys
+      end
+
+      def term_keys
+        TERM_KEYS.map do |term_key|
+          next if @params[term_key].blank? && @params[term_key] != false
+
+          { term: { term_key => @params[term_key] } }
+        end.compact
+      end
+
+      def range_keys
+        RANGE_KEYS.map do |range_key|
+          next if @params[range_key].blank? && @params[range_key] != false
+
+          { range: { range_key => @params[range_key] } }
+        end.compact
+      end
+
+      def query_keys_present?
+        QUERY_KEYS.detect { |key| @params[key].present? }
+      end
+
+      def query_conditions
+        QUERY_KEYS.map do |query_key|
+          next if @params[query_key].blank?
+
+          { match: { query_key => { query: @params[query_key] } } }
+        end.compact
+      end
+    end
+  end
+end
