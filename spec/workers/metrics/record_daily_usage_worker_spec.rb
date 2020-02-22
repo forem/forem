@@ -13,43 +13,43 @@ RSpec.describe Metrics::RecordDailyUsageWorker, type: :worker do
   let_it_be(:feedback_message) { create(:feedback_message, :abuse_report) }
   describe "#perform" do
     before do
-      allow(DataDogStatsClient).to receive(:count)
+      allow(DatadogStatsClient).to receive(:count)
       described_class.new.perform
     end
 
     it "logs articles with at least 15 score" do
       expect(
-        DataDogStatsClient,
+        DatadogStatsClient,
       ).to have_received(:count).with("articles.min_15_score_past_24h", 2, Hash).at_least(1)
     end
 
     it "logs articles with at least comment 15 score" do
       expect(
-        DataDogStatsClient,
+        DatadogStatsClient,
       ).to have_received(:count).with("articles.min_15_comment_score_past_24h", 1, Hash).at_least(1)
     end
 
     it "records first articles" do
       expect(
-        DataDogStatsClient,
+        DatadogStatsClient,
       ).to have_received(:count).with("articles.first_past_24h", 1, Hash).at_least(1)
     end
 
     it "records new users with at least one comment" do
       expect(
-        DataDogStatsClient,
+        DatadogStatsClient,
       ).to have_received(:count).with("users.new_min_1_comment_past_24h", 2, Hash).at_least(1)
     end
 
     it "records negative reactions" do
       expect(
-        DataDogStatsClient,
+        DatadogStatsClient,
       ).to have_received(:count).with("reactions.negative_past_24h", 1, Hash).at_least(1)
     end
 
     it "records report feedback_messages" do
       expect(
-        DataDogStatsClient,
+        DatadogStatsClient,
       ).to have_received(:count).with("feedback_messages.reports_past_24_hours", 1, Hash).at_least(1)
     end
   end

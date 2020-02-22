@@ -44,7 +44,7 @@ RSpec.describe "StripeActiveCards", type: :request do
     end
 
     it "increments sidekiq.errors in Datadog on failure" do
-      allow(DataDogStatsClient).to receive(:increment)
+      allow(DatadogStatsClient).to receive(:increment)
       invalid_error = Stripe::InvalidRequestError.new("message", "param")
       allow(Stripe::Customer).to receive(:create).and_raise(invalid_error)
 
@@ -52,7 +52,7 @@ RSpec.describe "StripeActiveCards", type: :request do
       expect(response).to redirect_to(user_settings_path(:billing))
       expect(flash[:error]).to eq(invalid_error.message)
 
-      expect(DataDogStatsClient).to have_received(:increment).with("stripe.errors")
+      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors")
     end
 
     it "updates the user's updated_at" do
@@ -96,7 +96,7 @@ RSpec.describe "StripeActiveCards", type: :request do
       _, source = create_user_with_card(user, card_token)
       original_card_id = source.id
 
-      allow(DataDogStatsClient).to receive(:increment)
+      allow(DatadogStatsClient).to receive(:increment)
       card_error = Stripe::CardError.new("message", "param")
       allow(Stripe::Customer).to receive(:retrieve).and_raise(card_error)
 
@@ -104,7 +104,7 @@ RSpec.describe "StripeActiveCards", type: :request do
       expect(response).to redirect_to(user_settings_path(:billing))
       expect(flash[:error]).to eq(card_error.message)
 
-      expect(DataDogStatsClient).to have_received(:increment).with("stripe.errors")
+      expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors")
     end
 
     it "updates the user's updated_at" do

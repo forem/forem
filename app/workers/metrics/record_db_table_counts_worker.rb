@@ -8,7 +8,7 @@ module Metrics
       models.each do |model|
         estimate = model.estimated_count
         Rails.logger.info("db_table_size", table_info: { table_name: model.table_name, table_size: estimate })
-        DataDogStatsClient.gauge("postgres.db_table_size", estimate, tags: { table_name: model.table_name })
+        DatadogStatsClient.gauge("postgres.db_table_size", estimate, tags: { table_name: model.table_name })
       end
     end
   end

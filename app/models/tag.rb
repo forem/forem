@@ -25,7 +25,9 @@ class Tag < ActsAsTaggableOn::Tag
   before_validation :evaluate_markdown
   before_validation :pound_it
   before_save :calculate_hotness_score
-  after_commit :bust_cache, :index_to_elasticsearch
+  after_commit :bust_cache
+  after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :remove_from_elasticsearch, on: [:destroy]
   before_save :mark_as_updated
 
   include Searchable
