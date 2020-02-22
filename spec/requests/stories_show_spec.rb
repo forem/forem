@@ -119,6 +119,12 @@ RSpec.describe "StoriesShow", type: :request do
       get article.path
       expect(response.body).not_to include('"canonical" href="' + article.canonical_url.to_s + '"')
     end
+
+    it "handles invalid slug characters" do
+      get "/devteam/call-for-contributions-move-all-%delayedjobs-to-sidekiq-246k"
+
+      expect(response.status).to be(400)
+    end
   end
 
   describe "GET /:username (org)" do
