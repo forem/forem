@@ -72,7 +72,7 @@ RSpec.describe "StripeActiveCards", type: :request do
       allow(Stripe::Customer).to receive(:create).and_raise(invalid_error)
       post "/stripe_active_cards", params: { stripe_token: stripe_helper.generate_card_token }
 
-      tags = hash_including(tags: array_including("action:crate", "user_id:#{user.id}"))
+      tags = hash_including(tags: array_including("action:create", "user_id:#{user.id}"))
       expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
   end
