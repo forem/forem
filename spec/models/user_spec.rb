@@ -188,9 +188,9 @@ RSpec.describe User, type: :model do
         expect(user).not_to be_valid
       end
 
-      it "does not raise InvalidURIError when url is badly formatted" do
+      it "does not accept an invalid url" do
         user.mastodon_url = "ben .com"
-        expect { user.validate }.not_to raise_error(URI::InvalidURIError)
+        expect(user).not_to be_valid
       end
     end
 
