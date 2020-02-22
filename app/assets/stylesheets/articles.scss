@@ -6,9 +6,8 @@
 
 .home {
   position: relative;
-  min-height: 440px; // TODO: why?
   margin: 0 auto;
-  max-width: 1250px;
+  max-width: $max-width;
   text-align: left;
 
   @media screen and (max-width: 949px) {
@@ -662,6 +661,7 @@
   }
 }
 
+// Feed Card: Signup CTA
 .feed-cta {
   background: lighten($purple, 6%) !important;
   border: 1px solid darken($bold-blue, 5%) !important;
@@ -716,6 +716,8 @@
   }
 }
 
+// MOBILE ONLY navigation to switch between tabs (these on top of the feed).
+// Although it uses different markup :/.
 .narrow-nav-menu {
   position: absolute;
   top: 48px;
@@ -740,18 +742,6 @@
       @include themeable(background, theme-container-background-hover, $purple);
     }
   }
-  &.showing {
-    display: block;
-  }
-}
-
-.load-more-cta {
-  margin: 35px auto;
-  border: 0px;
-  font-size: 20px;
-  padding: 5px 10px;
-  border-radius: 3px;
-  display: none;
   &.showing {
     display: block;
   }
@@ -872,19 +862,6 @@
 //  More loading  // TODO
 .single-article-loading {
   border-radius: 3px;
-  @extend .animated-background;
-}
-
-@keyframes placeHolderShimmer {
-  0% {
-    background-position: -468px 0;
-  }
-  100% {
-    background-position: 468px 0;
-  }
-}
-
-.animated-background {
   animation-duration: 1.25s;
   animation-fill-mode: forwards;
   animation-iteration-count: infinite;
@@ -898,6 +875,15 @@
   );
   background-size: 800px 104px;
   position: relative;
+}
+
+@keyframes placeHolderShimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
 }
 
 ////////////////////////////////////////////////

@@ -29,7 +29,7 @@
   }
   nav {
     max-width: 100%;
-    width: 1250px;
+    width: $max-width;
     margin: auto;
     position: relative;
     .pwa-nav-buttons {
@@ -269,7 +269,7 @@
         border-bottom-left-radius: 5px;
         box-shadow: 0px 4px 5px 1px rgba(97, 95, 95, 0.18);
       }
-      @media screen and (min-width: 1250px) {
+      @media screen and (min-width: $max-width) {
         position: absolute;
         border-right: 1px solid rgb(219, 222, 225);
         border-bottom-right-radius: 5px;

@@ -3,7 +3,7 @@
 
 .primary-sticky-nav {
   display: none;
-  @media screen and (min-width: 1250px) {
+  @media screen and (min-width: $max-width) {
     display: block;
     position: fixed;
     left: calc(50% + 298px);
