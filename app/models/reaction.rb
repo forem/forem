@@ -50,8 +50,10 @@ class Reaction < ApplicationRecord
     def count_for_article(id)
       Rails.cache.fetch("count_for_reactable-Article-#{id}", expires_in: 1.hour) do
         reactions = Reaction.where(reactable_id: id, reactable_type: "Article")
+        counts = reactions.group(:category).count
+
         %w[like readinglist unicorn].map do |type|
-          { category: type, count: reactions.where(category: type).size }
+          { category: type, count: counts.fetch(type, 0) }
         end
       end
     end
