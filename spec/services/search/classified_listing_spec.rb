@@ -100,4 +100,159 @@ RSpec.describe Search::ClassifiedListing, type: :service, elasticsearch: true do
       described_class.delete_index(index_name: other_name)
     end
   end
+
+  describe "::search_documents" do
+    let(:classified_listing1) { create(:classified_listing) }
+    let(:classified_listing2) { create(:classified_listing) }
+    let(:classified_listing3) { create(:classified_listing) }
+    let(:classified_listing4) { create(:classified_listing) }
+    let(:classified_listing5) { create(:classified_listing) }
+    let(:classified_listings) { [classified_listing1, classified_listing2, classified_listing3, classified_listing4, classified_listing5] }
+
+    def index_documents(resources)
+      resources.each(&:index_to_elasticsearch_inline)
+      described_class.refresh_index
+    end
+
+    it "parses classified_listing document hits from search response" do
+      mock_search_response = { "hits" => { "hits" => {} } }
+      allow(described_class).to receive(:search) { mock_search_response }
+      described_class.search_documents(params: {})
+      expect(described_class).to have_received(:search).with(body: a_kind_of(Hash))
+    end
+
+    context "with a query" do
+      # classified_listing_search is a copy_to field including:
+      # body_markdown, location, slug, tags, and title
+      it "searches by classified_listing_search" do
+        allow(classified_listing1).to receive(:body_markdown).and_return("body_markdown with test")
+        allow(classified_listing2).to receive(:location).and_return("a test location")
+        allow(classified_listing3).to receive(:slug).and_return("a-test-slug")
+        allow(classified_listing4).to receive(:tag_list).and_return(["test"])
+        allow(classified_listing5).to receive(:title).and_return("a test title")
+        index_documents(classified_listings)
+        title_params = { size: 5, classified_listing_search: "test" }
+
+        classified_listing_docs = described_class.search_documents(params: title_params)
+        expect(classified_listing_docs.count).to eq(5)
+        expect(classified_listing_docs.map { |t| t.dig("id") }).to match_array(classified_listings.map(&:id))
+      end
+    end
+
+    context "with a term filter" do
+      it "searches by category" do
+        allow(classified_listing1).to receive(:category).and_return("forhire")
+        index_documents(classified_listings)
+        params = { size: 5, category: "forhire" }
+
+        classified_listing_docs = described_class.search_documents(params: params)
+        expect(classified_listing_docs.count).to eq(1)
+        expect(classified_listing_docs.first["id"]).to eq(classified_listing1.id)
+      end
+
+      it "searches by contact_via_connect" do
+        allow(classified_listing2).to receive(:contact_via_connect).and_return(true)
+        index_documents(classified_listings)
+        params = { size: 5, contact_via_connect: true }
+
+        classified_listing_docs = described_class.search_documents(params: params)
+        expect(classified_listing_docs.count).to eq(1)
+        expect(classified_listing_docs.first["id"]).to eq(classified_listing2.id)
+      end
+
+      it "searches by location" do
+        allow(classified_listing3).to receive(:location).and_return("a location")
+        index_documents(classified_listings)
+        params = { size: 5, location: "location" }
+
+        classified_listing_docs = described_class.search_documents(params: params)
+        expect(classified_listing_docs.count).to eq(1)
+        expect(classified_listing_docs.first["id"]).to eq(classified_listing3.id)
+      end
+
+      it "searches by slug" do
+        allow(classified_listing4).to receive(:slug).and_return("an-example-of-a-slug")
+        index_documents(classified_listings)
+        params = { size: 5, slug: "slug" }
+
+        classified_listing_docs = described_class.search_documents(params: params)
+        expect(classified_listing_docs.count).to eq(1)
+        expect(classified_listing_docs.first["id"]).to eq(classified_listing4.id)
+      end
+
+      it "searches by tags" do
+        allow(classified_listing5).to receive(:tag_list).and_return(%w[beginners career])
+        index_documents(classified_listings)
+        params = { size: 5, tags: "career" }
+
+        classified_listing_docs = described_class.search_documents(params: params)
+        expect(classified_listing_docs.count).to eq(1)
+        expect(classified_listing_docs.first["id"]).to eq(classified_listing5.id)
+      end
+
+      it "searches by title" do
+        allow(classified_listing1).to receive(:title).and_return("An Amazing Title")
+        index_documents(classified_listings)
+        params = { size: 5, title: "amazing" }
+
+        classified_listing_docs = described_class.search_documents(params: params)
+        expect(classified_listing_docs.count).to eq(1)
+        expect(classified_listing_docs.first["id"]).to eq(classified_listing1.id)
+      end
+
+      it "searches by user_id" do
+        allow(classified_listing2).to receive(:user_id).and_return(99)
+        index_documents(classified_listings)
+        params = { size: 5, user_id: 99 }
+
+        classified_listing_docs = described_class.search_documents(params: params)
+        expect(classified_listing_docs.count).to eq(1)
+        expect(classified_listing_docs.first["id"]).to eq(classified_listing2.id)
+      end
+
+      it "searches by bumped_at" do
+        allow(classified_listing3).to receive(:bumped_at).and_return(1.day.from_now)
+        index_documents(classified_listings)
+        params = { size: 5, bumped_at: { gt: Time.current } }
+
+        classified_listing_docs = described_class.search_documents(params: params)
+        expect(classified_listing_docs.count).to eq(1)
+        expect(classified_listing_docs.first["id"]).to eq(classified_listing3.id)
+      end
+
+      it "searches by expires_at" do
+        allow(classified_listing4).to receive(:expires_at).and_return(1.day.ago)
+        index_documents(classified_listings)
+        params = { size: 5, expires_at: { lt: Time.current } }
+
+        classified_listing_docs = described_class.search_documents(params: params)
+        expect(classified_listing_docs.count).to eq(1)
+        expect(classified_listing_docs.first["id"]).to eq(classified_listing4.id)
+      end
+    end
+
+    it "sorts documents for a given field" do
+      allow(classified_listing1).to receive(:category).and_return("forhire")
+      allow(classified_listing2).to receive(:category).and_return("cfp")
+      index_documents([classified_listing1, classified_listing2])
+      params = { size: 5, sort_by: "category", sort_direction: "asc" }
+
+      classified_listing_docs = described_class.search_documents(params: params)
+      expect(classified_listing_docs.count).to eq(2)
+      expect(classified_listing_docs.first["id"]).to eq(classified_listing2.id)
+      expect(classified_listing_docs.last["id"]).to eq(classified_listing1.id)
+    end
+
+    it "sorts documents by bumped_at by default" do
+      allow(classified_listing1).to receive(:bumped_at).and_return(1.year.ago)
+      allow(classified_listing2).to receive(:bumped_at).and_return(Time.current)
+      index_documents([classified_listing1, classified_listing2])
+      params = { size: 5 }
+
+      classified_listing_docs = described_class.search_documents(params: params)
+      expect(classified_listing_docs.count).to eq(2)
+      expect(classified_listing_docs.first["id"]).to eq(classified_listing2.id)
+      expect(classified_listing_docs.last["id"]).to eq(classified_listing1.id)
+    end
+  end
 end
