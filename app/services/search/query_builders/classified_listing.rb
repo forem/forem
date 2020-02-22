@@ -48,9 +48,9 @@ module Search
       end
 
       def build_queries
-        @body[:query] = {}
-        @body[:query][:bool] = { filter: filter_conditions }
-        @body[:query][:bool] = { must: query_conditions } if query_keys_present?
+        @body[:query] = { bool: {} }
+        @body[:query][:bool][:filter] = filter_conditions if filter_keys_present?
+        @body[:query][:bool].merge!(must: query_conditions) if query_keys_present?
       end
 
       def add_sort
@@ -66,6 +66,8 @@ module Search
       end
 
       def term_keys
+        return [] if (@params.keys & TERM_KEYS).blank?
+
         TERM_KEYS.map do |term_key|
           next if @params[term_key].blank? && @params[term_key] != false
 
@@ -74,11 +76,25 @@ module Search
       end
 
       def range_keys
+        return [] if (@params.keys & RANGE_KEYS).blank?
+
         RANGE_KEYS.map do |range_key|
           next if @params[range_key].blank? && @params[range_key] != false
 
           { range: { range_key => @params[range_key] } }
         end.compact
+      end
+
+      def filter_keys_present?
+        term_keys_present? || range_keys_present?
+      end
+
+      def term_keys_present?
+        TERM_KEYS.detect { |key| @params[key].present? }
+      end
+
+      def range_keys_present?
+        RANGE_KEYS.detect { |key| @params[key].present? }
       end
 
       def query_keys_present?
