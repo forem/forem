@@ -14,6 +14,8 @@ class Reaction < ApplicationRecord
                   }
   counter_culture :user
 
+  scope :positive, -> { where("points > ?", 0) }
+
   validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
   validates :status, inclusion: { in: STATUSES }
