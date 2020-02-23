@@ -85,8 +85,8 @@ class AnalyticsService
       where("score > 0")
     @follow_data = Follow.
       where(followable_type: user_or_org.class.name, followable_id: user_or_org.id)
-    @reaction_data = Reaction.positive
-    where(reactable_id: article_ids, reactable_type: "Article")
+    @reaction_data = Reaction.positive.
+      where(reactable_id: article_ids, reactable_type: "Article")
     @page_view_data = PageView.where(article_id: article_ids)
 
     # filter data by date if needed
