@@ -192,10 +192,10 @@ RSpec.describe Comment, type: :model do
     end
 
     it "retains content from #processed_html" do
-      comment.processed_html = "Hello this is a post." # Remove randomness
+      comment.processed_html = "Hello this is a post."
       comment.validate!
       text = comment.title.gsub("...", "").delete("\n")
-      expect(comment.processed_html).to include(CGI.unescapeHTML(text))
+      expect(CGI.unescapeHTML(comment.processed_html)).to include(CGI.unescape_html(text))
     end
 
     it "is converted to deleted if the comment is deleted" do
