@@ -1,6 +1,7 @@
 import { h, render } from 'preact';
 import PropTypes from 'prop-types';
 import { Article, FeaturedArticle, LoadingArticle } from '../articles';
+import { TodaysPodcasts, PodcastEpisode } from '../podcasts';
 import { Feed } from './Feed.jsx.erb';
 import { articlePropTypes } from '../src/components/common-prop-types';
 
@@ -36,11 +37,11 @@ const FeedLoading = () => (
 );
 
 const PodcastEpisodes = ({ episodes }) => (
-  <div id="article-index-podcast-div">
+  <TodaysPodcasts>
     {episodes.map(episode => (
-      <Article article={episode} />
+      <PodcastEpisode episode={episode} />
     ))}
-  </div>
+  </TodaysPodcasts>
 );
 
 PodcastEpisodes.defaultProps = {
@@ -80,7 +81,9 @@ export const renderFeed = timeFrame => {
         return (
           <div>
             <FeaturedArticle {...commonProps} article={featuredStory} />
-            <PodcastEpisodes episodes={podcastEpisodes} />
+            {podcastEpisodes.length && (
+              <PodcastEpisodes episodes={podcastEpisodes} />
+            )}
             {(subStories || []).map(story => (
               <Article {...commonProps} article={story} />
             ))}
