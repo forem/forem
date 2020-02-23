@@ -44,10 +44,10 @@ exports[`<FeaturedArticle /> component should render a bookmarked featured artic
       </div>
       <a
         class="featured-profile-button"
-        href="/<%= article.cached_user.username %>"
+        href="/Emil99"
       >
         <img
-          alt="<%= article.title %>"
+          alt="Unbranded Home Loan Account"
           class="featured-profile-pic"
           src="/images/10.png"
         />
@@ -58,8 +58,7 @@ exports[`<FeaturedArticle /> component should render a bookmarked featured artic
         <a
           href="/<%= article.cached_user.username %>"
         >
-          Stella Macejkovic render "shared/pro_checkmark" if
-              article.cached_user.pro・
+          Stella Macejkovic ・ 
           <time
             dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
           >
@@ -210,10 +209,10 @@ exports[`<FeaturedArticle /> component should render a standard article 1`] = `
       </div>
       <a
         class="featured-profile-button"
-        href="/<%= article.cached_user.username %>"
+        href="/Emil99"
       >
         <img
-          alt="<%= article.title %>"
+          alt="Unbranded Home Loan Account"
           class="featured-profile-pic"
           src="/images/10.png"
         />
@@ -224,8 +223,7 @@ exports[`<FeaturedArticle /> component should render a standard article 1`] = `
         <a
           href="/<%= article.cached_user.username %>"
         >
-          Stella Macejkovic render "shared/pro_checkmark" if
-              article.cached_user.pro・
+          Stella Macejkovic ・ 
           <time
             dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
           >
