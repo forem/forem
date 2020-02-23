@@ -71,6 +71,17 @@ export const renderFeed = timeFrame => {
           reactionsIcon: feedIcons.REACTIONS_ICON,
           commentsIcon: feedIcons.COMMENTS_ICON,
         };
+
+        if (timeFrame !== '') {
+          return (
+            <div>
+              {feedItems.map(story => (
+                <Article {...commonProps} article={story} />
+              ))}
+            </div>
+          );
+        }
+
         const [featuredStory, ...subStories] = feedItems;
 
         sendFeaturedArticleAnalytics(featuredStory.id);
