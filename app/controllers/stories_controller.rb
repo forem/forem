@@ -14,6 +14,8 @@ class StoriesController < ApplicationController
   before_action :authenticate_user!, except: %i[index search show]
   before_action :set_cache_control_headers, only: %i[index search show]
 
+  rescue_from ArgumentError, with: :bad_request
+
   def index
     @page = (params[:page] || 1).to_i
     @article_index = true

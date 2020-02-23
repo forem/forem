@@ -121,7 +121,8 @@ RSpec.describe "StoriesShow", type: :request do
     end
 
     it "handles invalid slug characters" do
-      get "/devteam/call-for-contributions-move-all-%delayedjobs-to-sidekiq-246k"
+      allow(Article).to receive(:find_by).and_raise(ArgumentError)
+      get article.path
 
       expect(response.status).to be(400)
     end

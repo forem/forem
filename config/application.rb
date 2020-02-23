@@ -1,5 +1,4 @@
 require_relative "boot"
-require_relative "../lib/middleware/handle_bad_request"
 
 # only require Rails parts that we actually use, this shaves off some memory
 # ActiveStorage, ActionCable and TestUnit are not currently used by the app
@@ -51,8 +50,6 @@ module PracticalDeveloper
     config.active_job.queue_adapter = :sidekiq
 
     config.middleware.use Rack::Deflater
-
-    config.middleware.insert_after ActionDispatch::DebugExceptions, Middleware::HandleBadRequest
 
     # Globally handle Pundit::NotAuthorizedError by serving 404
     config.action_dispatch.rescue_responses["Pundit::NotAuthorizedError"] = :not_found
