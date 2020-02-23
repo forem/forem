@@ -475,19 +475,19 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "creates an article belonging to the user" do
-        post_article(title: Faker::Book.title)
+        post_article(title: Faker::Book.title, body_markdown: "")
         expect(response).to have_http_status(:created)
         expect(Article.find(response.parsed_body["id"]).user).to eq(user)
       end
 
       it "creates an unpublished article by default" do
-        post_article(title: Faker::Book.title)
+        post_article(title: Faker::Book.title, body_markdown: "")
         expect(response).to have_http_status(:created)
         expect(Article.find(response.parsed_body["id"]).published).to be(false)
       end
 
       it "returns the location of the article" do
-        post_article(title: Faker::Book.title)
+        post_article(title: Faker::Book.title, body_markdown: "")
         expect(response).to have_http_status(:created)
         expect(response.location).not_to be_blank
       end
@@ -495,7 +495,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       it "creates an article with only a title" do
         title = Faker::Book.title
         expect do
-          post_article(title: title)
+          post_article(title: title, body_markdown: "")
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
         expect(Article.find(response.parsed_body["id"]).title).to eq(title)
@@ -504,7 +504,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       it "creates a published article" do
         title = Faker::Book.title
         expect do
-          post_article(title: title, published: true)
+          post_article(title: title, published: true, body_markdown: "")
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
         expect(Article.find(response.parsed_body["id"]).published).to be(true)
@@ -588,6 +588,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           post_article(
             title: Faker::Book.title,
             organization_id: organization.id,
+            body_markdown: "",
           )
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
