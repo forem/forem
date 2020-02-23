@@ -7,6 +7,5 @@
     }
   },
   "ruby.format": "rubocop",
-  "ruby.intellisense": "rubyLocate",
-  "ruby.specCommand": "rspec"
+  "ruby.intellisense": "rubyLocate"
 }
