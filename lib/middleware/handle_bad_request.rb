@@ -6,8 +6,8 @@ module Middleware
 
     def call(env)
       @app.call(env)
-    rescue ActionController::BadRequest => e
-      [400, {}, "Bad Request: #{e.message}"]
+    rescue  ActionController::BadRequest => e
+      [400, { "Content-Type" => "text/plain" }, ["Bad Request: #{e.message}"]]
     end
   end
 end
