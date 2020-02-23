@@ -48,22 +48,21 @@ export const FeaturedArticle = ({
             <h3>{article.title}</h3>
           </div>
           <a
-            href="/<%= article.cached_user.username %>"
+            href={`/${article.user.username}`}
             className="featured-profile-button"
           >
             <img
               className="featured-profile-pic"
               src={article.user.profile_image_90}
-              alt="<%= article.title %>"
+              alt={article.title}
             />
           </a>
           <div className="featured-user-name">
             <a href="/<%= article.cached_user.username %>">
               {article.user.name}
               {' '}
-              {`render "shared/pro_checkmark" if
-              article.cached_user.pro`}
               ・
+              {' '}
               <time dateTime={article.published_timestamp}>
                 {article.readable_publish_date}
               </time>
