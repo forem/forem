@@ -72,7 +72,7 @@ RSpec.describe "StripeActiveCards", type: :request do
       allow(Stripe::Customer).to receive(:create).and_raise(invalid_error)
       post "/stripe_active_cards", params: { stripe_token: stripe_helper.generate_card_token }
 
-      tags = hash_including(tags: array_including("action:create", "user_id:#{user.id}"))
+      tags = hash_including(tags: array_including("action:create_card", "user_id:#{user.id}"))
       expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
   end
@@ -141,7 +141,7 @@ RSpec.describe "StripeActiveCards", type: :request do
       put stripe_active_card_path(id: original_card_id)
       expect(response).to redirect_to(user_settings_path(:billing))
       expect(flash[:error]).to eq(card_error.message)
-      tags = hash_including(tags: array_including("action:update", "user_id:#{user.id}"))
+      tags = hash_including(tags: array_including("action:update_card", "user_id:#{user.id}"))
       expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
   end
