@@ -126,12 +126,6 @@
       }
     }
 
-    .bars {
-      height: 22px;
-      width: 22px;
-      background: transparent;
-    }
-
     .navbar-menu-wrapper {
       position: relative;
       right: 0px;
@@ -180,6 +174,10 @@
       display: none;
       width: calc(100vw - 18px);
       top: 39px;
+
+      &.logged-out {
+        top: 35px; // todo
+      }
       @media screen and (min-width: 380px) {
         position: fixed;
         width: 230px;
