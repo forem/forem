@@ -10,7 +10,7 @@ body {
   padding: 0;
   margin: 0;
   overflow-y: scroll;
-  padding-top: 46px; // height of header
+  padding-top: $header-height; // height of header
 }
 
 #audiocontent {
@@ -177,7 +177,7 @@ body.hidden-shell {
     margin-top: 0px;
   }
   .universal-page-content-wrapper {
-    margin-top: -46px !important;
+    margin-top: -$header-height !important;
     margin-bottom: 30px;
   }
 }
