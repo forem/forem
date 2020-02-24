@@ -29,6 +29,12 @@ RSpec.describe Users::Delete, type: :service do
     expect(Article.find_by(id: article.id)).to be_nil
   end
 
+  it "deletes user's classified listings" do
+    listing = create(:classified_listing, user: user)
+    described_class.call(user)
+    expect(ClassifiedListing.find_by(id: listing.id)).to be_nil
+  end
+
   it "deletes the destroy token" do
     allow(Rails.cache).to receive(:delete).and_call_original
     described_class.call(user)
