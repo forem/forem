@@ -120,8 +120,8 @@ class StoriesController < ApplicationController
                               else
                                 Article.published.cached_tagged_with(@tag).size
                               end
-
-    @stories = Articles::Feed.new(number_of_articles: 8, tag: @tag).published_articles_by_tag
+    number_of_articles = user_signed_in? ? 5 : 45
+    @stories = Articles::Feed.new(number_of_articles: number_of_articles, tag: @tag).published_articles_by_tag
 
     @stories = @stories.where(approved: true) if @tag_model&.requires_approval
 
@@ -274,7 +274,7 @@ class StoriesController < ApplicationController
     @stories = ArticleDecorator.decorate_collection(@user.articles.published.
       limited_column_select.
       where.not(id: @pinned_stories.pluck(:id)).
-      order("published_at DESC").page(@page).per(user_signed_in? ? 2 : 5))
+      order("published_at DESC").page(@page).per(user_signed_in? ? 2 : 20))
   end
 
   def stories_by_timeframe

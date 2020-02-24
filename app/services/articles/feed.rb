@@ -7,7 +7,7 @@ module Articles
     end
 
     def published_articles_by_tag
-      articles = Article.published.limited_column_select.page(@page).per(@num_articles)
+      articles = Article.published.limited_column_select.page(@page).per(@number_of_articles)
       articles = articles.cached_tagged_with(@tag) if @tag.present? # More efficient than tagged_with
       articles
     end
@@ -26,7 +26,7 @@ module Articles
     def default_home_feed_and_featured_story(user_signed_in: false)
       hot_stories = published_articles_by_tag.
         where("score > ? OR featured = ?", 9, true).
-        order("hotness_score DESC")
+        order("hotness_score DESC").limit(@number_of_articles)
       featured_story = hot_stories.where.not(main_image: nil).first
       if user_signed_in
         offset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11].sample # random offset, weighted more towards zero
