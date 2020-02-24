@@ -16,11 +16,11 @@ gem "acts_as_follower", github: "thepracticaldev/acts_as_follower", branch: "mas
 gem "addressable", "~> 2.7" # A replacement for the URI implementation that is part of Ruby's standard library
 gem "administrate", "~> 0.12" # A Rails engine that helps you put together a super-flexible admin dashboard
 gem "ahoy_email", "~> 1.1" # Email analytics for Rails
-gem "algoliasearch-rails", "~> 1.23" # Algolia Search is a hosted search engine capable of delivering real-time results from the first keystroke
+gem "algoliasearch-rails", "~> 1.24" # Algolia Search is a hosted search engine capable of delivering real-time results from the first keystroke
 gem "algorithmia", "~> 1.1" # Ruby Client for Algorithmia Algorithms and Data API
 gem "ancestry", "~> 3.0" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "autoprefixer-rails", "~> 9.7" # Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website
-gem "aws-sdk-lambda", "~> 1.35" # Official AWS Ruby gem for AWS Lambda
+gem "aws-sdk-lambda", "~> 1.36" # Official AWS Ruby gem for AWS Lambda
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
 gem "carrierwave", "~> 2.0" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
@@ -47,13 +47,13 @@ gem "fog-aws", "~> 3.5" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.3" # API wrapper for MailChimp's API
-gem "google-api-client", "~> 0.36" # Client for accessing Google APIs
+gem "google-api-client", "~> 0.37" # Client for accessing Google APIs
 gem "groupdate", "~> 5.0" # Group collections by date
 gem "honeybadger", "~> 4.5" # Used for tracking application errors
 gem "honeycomb-beeline", "~> 1.3.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "htmlentities", "~> 4.3", ">= 4.3.4" # A module for encoding and decoding (X)HTML entities
-gem "httparty", "~> 0.17" # Makes http fun! Also, makes consuming restful web services dead easy
+gem "httparty", "~> 0.18" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "inline_svg", "~> 1.7" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.10" # Create JSON structures via a Builder-style DSL
 gem "jquery-rails", "~> 4.3" #  A gem to automate using jQuery with Rails
@@ -94,10 +94,11 @@ gem "sprockets", "~> 3.7" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "storext", "~> 3.1" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
 gem "stripe", "~> 5.15" # Ruby library for the Stripe API
+gem "strong_migrations", "~> 0.6" # Catch unsafe migrations
 gem "timber", "~> 3.0" # Great Ruby logging made easy
 gem "timber-rails", "~> 1.0" #  Timber integration for Rails
 gem "twilio-ruby", "~> 5.31" # The official library for communicating with the Twilio REST API
-gem "twitter", "~> 6.2" # A Ruby interface to the Twitter API
+gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "typhoeus", "~> 1.3.1" # Used with Elasticsearch to support http keep-alive connections
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.2" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
@@ -138,7 +139,6 @@ group :development, :test do
   gem "rubocop-rspec", "~> 1.38", require: false # Code style checking for RSpec files
   gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
-  gem "strong_migrations", "~> 0.6" # Catch unsafe migrations in development
 end
 
 group :test do
@@ -148,7 +148,7 @@ group :test do
   gem "launchy", "~> 2.4" # Launchy is helper class for launching cross-platform applications in a fire and forget manner.
   gem "pundit-matchers", "~> 1.6" # A set of RSpec matchers for testing Pundit authorisation policies
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples
-  gem "ruby-prof", "~> 1.2", require: false # ruby-prof is a fast code profiler for Ruby
+  gem "ruby-prof", "~> 1.3", require: false # ruby-prof is a fast code profiler for Ruby
   gem "shoulda-matchers", "~> 4.3.0", require: false # Simple one-liner tests for common Rails functionality
   gem "simplecov", "0.17.1", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers

@@ -15,18 +15,41 @@ RSpec.describe "Stories::FeedsIndex", type: :request do
     let(:response_json) { JSON.parse(response.body) }
     let(:response_article) { response_json.first }
 
-    context "when organization and tags are present" do
-      it "renders article list as json" do
+    it "renders article list as json" do
+      get "/stories/feed", headers: headers
+
+      expect(response.content_type).to eq("application/json")
+      expect(response_article["id"]).to eq article.id
+      expect(response_article["title"]).to eq title
+      expect(response_article["user_id"]).to eq user.id
+      expect(response_article["user"]["name"]).to eq user.name
+      expect(response_article["organization_id"]).to eq organization.id
+      expect(response_article["organization"]["name"]).to eq organization.name
+      expect(response_article["tag_list"]).to eq article.decorate.cached_tag_list_array
+    end
+
+    context "when rendering an article with an image" do
+      let(:cloud_cover) { CloudCoverUrl.new(article.main_image) }
+
+      it "renders main_image as a cloud link" do
+        allow(CloudCoverUrl).to receive(:new).with(article.main_image).and_return(cloud_cover)
+        allow(cloud_cover).to receive(:call).and_call_original
+
         get "/stories/feed", headers: headers
 
-        expect(response.content_type).to eq("application/json")
-        expect(response_article["id"]).to eq article.id
-        expect(response_article["title"]).to eq title
-        expect(response_article["user_id"]).to eq user.id
-        expect(response_article["user"]["name"]).to eq user.name
-        expect(response_article["organization_id"]).to eq organization.id
-        expect(response_article["organization"]["name"]).to eq organization.name
-        expect(response_article["tag_list"]).to eq article.decorate.cached_tag_list_array
+        expect(CloudCoverUrl).to have_received(:new).with(article.main_image)
+        expect(cloud_cover).to have_received(:call)
+      end
+    end
+
+    context "when main_image is null" do
+      let(:article) { create(:article, main_image: nil) }
+
+      it "renders main_image as null" do
+        # Calling the standard feed endpoint only retrieves articles without images if you're logged in.
+        # We'll call use the 'latest' param to get around this
+        get "/stories/feed?timeframe=latest", headers: headers
+        expect(response_article["main_image"]).to eq nil
       end
     end
 

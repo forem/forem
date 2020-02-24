@@ -96,6 +96,12 @@ Rails.application.configure do
   # Debug is the default log_level, but can be changed per environment.
   config.log_level = :debug
 
+  if ENV["RAILS_LOG_TO_STDOUT"].present?
+    logger           = ActiveSupport::Logger.new(STDOUT)
+    logger.formatter = config.log_formatter
+    config.logger    = ActiveSupport::TaggedLogging.new(logger)
+  end
+
   config.after_initialize do
     # See <https://github.com/flyerhzm/bullet#configuration> for other Bullet config options
     Bullet.enable = true
@@ -108,8 +114,7 @@ Rails.application.configure do
     # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
     Bullet.add_whitelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
 
-    DATA_UPDATE_CHECK_COMMANDS = %w[c console s server].freeze
-    if DATA_UPDATE_CHECK_COMMANDS.include?(ENV["COMMAND"])
+    if %w[c console runner s server].include?(ENV["COMMAND"])
       script_ids = DataUpdateScript.load_script_ids
       scripts_to_run = DataUpdateScript.where(id: script_ids).select(&:enqueued?)
       if scripts_to_run.any?
