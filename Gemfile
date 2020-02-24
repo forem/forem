@@ -95,7 +95,7 @@ gem "stripe", "~> 5.15" # Ruby library for the Stripe API
 gem "timber", "~> 3.0" # Great Ruby logging made easy
 gem "timber-rails", "~> 1.0" #  Timber integration for Rails
 gem "twilio-ruby", "~> 5.31" # The official library for communicating with the Twilio REST API
-gem "twitter", "~> 6.2" # A Ruby interface to the Twitter API
+gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "typhoeus", "~> 1.3.1" # Used with Elasticsearch to support http keep-alive connections
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.2" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
