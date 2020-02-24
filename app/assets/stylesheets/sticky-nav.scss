@@ -154,14 +154,6 @@
     font-weight: bold;
     text-align: center;
     font-stretch: condensed;
-    box-shadow: $light-shadow;
     margin-bottom: 5px;
-    &:hover {
-      box-shadow: $dark-shadow;
-      padding: 7px 39px;
-      margin-bottom: 4px;
-      margin-top: 19px;
-      transition: all 0.3s;
-    }
   }
 }

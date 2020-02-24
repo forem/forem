@@ -325,13 +325,13 @@
     cursor: default;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.3s $ease-in-cubic, transform 0.3s $ease-in-cubic;
+    transition: opacity 0.3s linear, transform 0.3s linear;
 
     &:focus {
       pointer-events: auto;
       opacity: 1;
       transform: translate(-50%, 22px);
-      transition: opacity 0.3s $ease-out-cubic, transform 0.3s $ease-out-cubic;
+      transition: opacity 0.3s linear, transform 0.3s linear;
     }
   }
   .logo-link {
