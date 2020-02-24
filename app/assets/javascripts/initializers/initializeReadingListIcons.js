@@ -7,8 +7,24 @@
 /* eslint-disable no-unused-vars */
 
 function initializeReadingListIcons() {
-  setReadingListButtonsState();
   addReadingListCountToHomePage();
+
+  // TODO: This snippet of code is in a few places now. I'll promote it to a simple function.
+  if (
+    ![
+      '/',
+      '/top/week',
+      '/top/month',
+      '/top/year',
+      '/top/infinity',
+      '/latest',
+    ].includes(window.location.pathname)
+  ) {
+    // We're on the front page in one of the feeds, so let Preact components handle the bookmark buttons.
+    return;
+  }
+
+  setReadingListButtonsState();
   addHoverEffectToReadingListButtons();
 }
 
