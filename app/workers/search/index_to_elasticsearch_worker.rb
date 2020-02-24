@@ -4,8 +4,8 @@ module Search
 
     sidekiq_options queue: :high_priority
 
-    def perform(search_class, id)
-      object = search_class.safe_constantize.find(id)
+    def perform(object_class, id)
+      object = object_class.safe_constantize.find(id)
       object.index_to_elasticsearch_inline
     end
   end
