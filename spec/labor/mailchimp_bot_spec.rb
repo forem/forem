@@ -91,6 +91,19 @@ RSpec.describe MailchimpBot, type: :labor do
       expect(my_gibbon_client).to have_received(:upsert).
         with(hash_including(body: hash_including(email_address: user.email)))
     end
+
+    it "tries to resubscribe the user if the user has previously been subscribed" do
+      user.update(email_newsletter: false)
+      mailchimp_bot = described_class.new(user)
+      mc_error =
+        Gibbon::MailChimpError.new("Error", status_code: 400, title: "Member In Compliance State")
+      allow(mailchimp_bot.gibbon).to receive(:upsert).and_raise(mc_error)
+      allow(mailchimp_bot).to receive(:resubscribe_to_newsletter)
+
+      mailchimp_bot.upsert_to_newsletter
+
+      expect(mailchimp_bot).to have_received(:resubscribe_to_newsletter)
+    end
   end
 
   describe "manage community moderator list" do
