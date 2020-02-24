@@ -25,15 +25,12 @@ class ReactionsController < ApplicationController
         where(commentable_id: params[:commentable_id], commentable_type: params[:commentable_type]).
         select(%i[id positive_reactions_count])
 
-      # iterating only once
-      comment_ids = []
-      reaction_counts = []
-      comments.each do |comment|
-        comment_ids << comment.id
-        reaction_counts << { id: comment.id, count: comment.positive_reactions_count }
+      reaction_counts = comments.map do |comment|
+        { id: comment.id, count: comment.positive_reactions_count }
       end
 
       reactions = if session_current_user_id
+                    comment_ids = reaction_counts.map { |rc| rc[:id] }
                     cached_user_positive_reactions(current_user).where(reactable_id: comment_ids)
                   else
                     Reaction.none
