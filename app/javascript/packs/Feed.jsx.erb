@@ -1,6 +1,5 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { podcastEpisodeArticle } from '../articles/__tests__/utilities/articleUtilities';
 
 <% helpers = ActionController::Base.helpers %>
 
@@ -70,8 +69,8 @@ export class Feed extends Component {
   }
 
   render() {
-    const { renderFeed } = this.props;
-    const { feedItems = [], podcastEpisodes = [] } = this.state;
+    const { bookmarkedFeedItems } = this.props;
+    const { renderFeed,  } = this.props;
 
     return (
       <div
@@ -79,7 +78,7 @@ export class Feed extends Component {
           this.feedContainer = element;
         }}
       >
-        {renderFeed({ feedItems, feedIcons: FEED_ICONS, podcastEpisodes: [podcastEpisodeArticle] })}
+        {renderFeed({ feedItems, feedIcons: FEED_ICONS, podcastEpisodes, bookmarkedFeedItems })}
       </div>
     );
   }
@@ -92,6 +91,7 @@ Feed.defaultProps = {
 Feed.propTypes = {
   timeFrame: PropTypes.string,
   renderFeed: PropTypes.func.isRequired,
+  bookmarkedFeedItems: PropTypes.instanceOf(Set),
 };
 
 Feed.displayName = 'Feed';
