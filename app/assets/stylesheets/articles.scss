@@ -90,7 +90,7 @@
     }
 
     .sidebar-nav {
-      margin-bottom: 32px;
+      margin-bottom: 16px;
       .sidebar-nav-block {
         @media screen and (min-width: 950px) {
           .sidebar-nav-block-inner {
@@ -185,7 +185,7 @@
           }
         }
       }
-      &.sponsorship-widget {
+      &.widget-sponsorship {
         display: none;
       }
       &.showing {
@@ -329,48 +329,6 @@
         }
         &.widget-body--sponsorship-arbitrary img {
           width: 100%;
-        }
-        .sidebar-sponsor {
-          margin: 25px auto 40px;
-          width: 96%;
-          img {
-            border: 0;
-            margin: auto;
-            margin-bottom: 8px;
-            width: 98%;
-            min-height: 35px;
-            border-radius: 8px;
-          }
-          .sponsor-tagline {
-            margin: 10px auto;
-            width: 92%;
-            @include themeable(color, theme-secondary-color, $dark-gray);
-            .sponsor-learn-more {
-              display: block;
-              margin: 8px auto;
-              color: $bold-blue;
-            }
-          }
-        }
-        .sponsors-love-message {
-          border-top: 2px solid $light-gray;
-          font-size: 0.84em;
-          @include themeable(color, theme-secondary-color, $medium-gray);
-          padding-top: 18px;
-        }
-        .sponsor-footer {
-          font-size: 0.77em;
-          margin-top: 106px;
-          margin: auto;
-          margin-bottom: 18px;
-          width: 96%;
-          a {
-            background: lighten($purple, 3%);
-            color: $black;
-            display: inline-block;
-            padding: 2px 6px;
-            font-weight: 500;
-          }
         }
         .widget-podcast-ep {
           padding-bottom: 8px;
@@ -931,6 +889,27 @@
 
   .sidebar-profile--username {
     @include themeable(color, theme-secondary-color, $medium-gray);
+  }
+}
+
+// Sidebar sponsors
+.sidebar-sponsor {
+  margin-bottom: 24px;
+  @include themeable(color, theme-container-color, rgba($black, 0.8));
+  img {
+    width: 100%;
+    max-width: 180px;
+  }
+}
+.sidebar-sponsor--footer {
+  font-size: 0.75em;
+  @include themeable(color, theme-secondary-color, $medium-gray);
+  a {
+    background: lighten($purple, 3%);
+    color: $black;
+    display: inline-block;
+    padding: 2px 6px;
+    font-weight: 500;
   }
 }
 
