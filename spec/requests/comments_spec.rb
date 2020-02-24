@@ -276,7 +276,6 @@ RSpec.describe "Comments", type: :request do
     context "when part of field test" do
       before do
         sign_in user
-        get "/stories/feed"
         allow(Users::RecordFieldTestEventWorker).to receive(:perform_async)
       end
 

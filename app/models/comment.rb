@@ -3,7 +3,6 @@ class Comment < ApplicationRecord
   resourcify
   include AlgoliaSearch
   include Reactable
-  include FieldTest::Helpers
 
   belongs_to :commentable, polymorphic: true
   counter_culture :commentable

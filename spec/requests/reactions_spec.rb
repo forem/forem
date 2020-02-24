@@ -148,24 +148,12 @@ RSpec.describe "Reactions", type: :request do
     context "when part of field test" do
       before do
         sign_in user
-        get "/stories/feed"
+        allow(Users::RecordFieldTestEventWorker).to receive(:perform_async)
       end
 
       it "converts field test" do
         post "/reactions", params: article_params
-        expect(FieldTest::Event.all.size).to be(1)
-        expect(FieldTest::Event.last.name).to eq("makes_reaction")
-      end
-    end
-
-    context "when not part of field test" do
-      before do
-        sign_in user
-      end
-
-      it "converts field test" do
-        post "/reactions", params: article_params
-        expect(FieldTest::Event.all.size).to be(0)
+        expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).with(user.id, :user_home_feed, "makes_reaction")
       end
     end
   end
