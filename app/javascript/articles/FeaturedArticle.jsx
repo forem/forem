@@ -14,6 +14,7 @@ export const FeaturedArticle = ({
   isBookmarked,
   reactionsIcon,
   commentsIcon,
+  bookmarkClick,
 }) => {
   return (
     <div>
@@ -84,7 +85,11 @@ export const FeaturedArticle = ({
             articlePath={article.path}
             readingTime={article.reading_time}
           />
-          <SaveButton article={article} isBookmarked={isBookmarked} />
+          <SaveButton
+            article={article}
+            isBookmarked={isBookmarked}
+            onClick={bookmarkClick}
+          />
         </div>
       </a>
     </div>
@@ -100,4 +105,5 @@ FeaturedArticle.propTypes = {
   isBookmarked: PropTypes.bool,
   reactionsIcon: PropTypes.string.isRequired,
   commentsIcon: PropTypes.string.isRequired,
+  bookmarkClick: PropTypes.func.isRequired,
 };

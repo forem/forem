@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { articlePropTypes } from '../../src/components/common-prop-types';
 
-export const SaveButton = ({ article, isBookmarked }) => {
+export const SaveButton = ({ article, isBookmarked, onClick }) => {
   if (article.class_name === 'Article') {
     return (
       <button
@@ -11,6 +11,7 @@ export const SaveButton = ({ article, isBookmarked }) => {
           isBookmarked ? 'selected' : ''
         }`}
         data-reactable-id={article.id}
+        onClick={onClick}
       >
         <span className="bm-initial">SAVE</span>
         <span className="bm-success">SAVED</span>
@@ -37,6 +38,7 @@ export const SaveButton = ({ article, isBookmarked }) => {
 SaveButton.propTypes = {
   article: articlePropTypes.isRequired,
   isBookmarked: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 
 SaveButton.displayName = 'SaveButton';
