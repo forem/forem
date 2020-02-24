@@ -27,11 +27,6 @@ body {
   outline: none;
 }
 
-.ptr--ptr {
-  margin-top: 10px;
-  margin-bottom: -10px;
-}
-
 .modal-open {
   margin: 0;
   overflow: hidden;
@@ -136,6 +131,7 @@ input[type='email'] {
   outline: 0;
 }
 
+// Notification: Toast
 .snackbar {
   position: fixed;
   bottom: 20px;
@@ -286,7 +282,6 @@ body.static-navbar-config {
   display: none !important;
 }
 
-body.pro-status-true .pro-visible-block,
 body.trusted-status-true .trusted-visible-block {
   display: block !important;
 }
@@ -305,6 +300,7 @@ body.hidden-shell {
   }
 }
 
+// Remove post confirmaiton
 .delete-confirm.container {
   padding: 150px 10px;
   min-height: 300px;
@@ -312,7 +308,7 @@ body.hidden-shell {
   h4 {
     background: $black;
     padding: 5px 8px;
-    color: white;
+    color: $white;
     display: inline-block;
     margin-bottom: 0px;
     border-radius: 3px;
@@ -351,10 +347,6 @@ body.hidden-shell {
   animation-delay: 0.6s;
   font-size: 1.2em;
   z-index: -1;
-}
-
-.base-background-color {
-  @include themeable(background, theme-background, $lightest-gray);
 }
 
 @keyframes loading-fadein {
