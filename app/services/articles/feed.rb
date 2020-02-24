@@ -43,5 +43,22 @@ module Articles
       _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: user_signed_in)
       stories
     end
+
+    def optimized_feed(user, test_variant)
+      # test_variants as defined in field_test.yml
+      # Each variant is it's own algorithm which defines all the branching scenarios.
+      case test_variant
+      when "base"
+        Article.limit(20)
+      when "more_random"
+        Article.limit(21)
+      when "top_past_week_random"
+        Article.limit(22)
+      when "newer"
+        Article.limit(23)
+      else
+        Article.limit(24)
+      end
+    end
   end
 end

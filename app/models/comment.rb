@@ -3,6 +3,8 @@ class Comment < ApplicationRecord
   resourcify
   include AlgoliaSearch
   include Reactable
+  include FieldTest::Helpers
+
   belongs_to :commentable, polymorphic: true
   counter_culture :commentable
   belongs_to :user
@@ -21,6 +23,7 @@ class Comment < ApplicationRecord
   validates :user_id, presence: true
 
   after_create   :after_create_checks
+  after_create   :record_field_test_event
   after_commit   :calculate_score
   after_update_commit :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
   after_save     :bust_cache
@@ -303,5 +306,10 @@ class Comment < ApplicationRecord
 
   def permissions
     errors.add(:commentable_id, "is not valid.") if commentable_type == "Article" && !commentable.published
+  end
+
+  def record_field_test_event
+    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "makes_comment")
+    # field_test_converted(:user_home_feed, participant: user, goal: "makes_comment")
   end
 end

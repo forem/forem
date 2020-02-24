@@ -3,6 +3,7 @@ class PageView < ApplicationRecord
   belongs_to :article
 
   before_create :extract_domain_and_path
+  after_commit :record_field_test_event
 
   private
 
@@ -24,5 +25,11 @@ class PageView < ApplicationRecord
 
   def article_tags
     article.decorate.cached_tag_list_array
+  end
+
+  def record_field_test_event
+    return unless user_id
+
+    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "makes_article_pageview_four_days_in_week")
   end
 end

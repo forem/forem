@@ -1,5 +1,6 @@
 class Reaction < ApplicationRecord
   include AlgoliaSearch
+  include FieldTest::Helpers
 
   CATEGORIES = %w[like readinglist unicorn thinking hands thumbsdown vomit].freeze
   REACTABLE_TYPES = %w[Comment Article User].freeze
@@ -21,6 +22,7 @@ class Reaction < ApplicationRecord
   validate  :permissions
 
   before_save :assign_points
+  after_create :record_field_test_event
   after_commit :async_bust, :bust_reactable_cache, :update_reactable
   after_save :index_to_algolia
   after_save :touch_user
@@ -174,5 +176,12 @@ class Reaction < ApplicationRecord
 
   def negative?
     category == "vomit" || category == "thumbsdown"
+  end
+
+  def record_field_test_event
+    p "FIELD TEST MAGOO"
+    p "FIELD TEST MAGOO"
+    p "FIELD TEST MAGOO"
+    field_test_converted(:user_home_feed, participant: user, goal: "makes_reaction")
   end
 end

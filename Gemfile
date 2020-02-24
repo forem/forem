@@ -41,12 +41,14 @@ gem "fast_jsonapi", "~> 1.5" # Serializer for Ruby objects
 gem "fastly", "~> 1.15" # Client library for the Fastly acceleration system
 gem "fastly-rails", "~> 0.8" # Fastly dynamic caching integration for Rails
 gem "feedjira", "~> 3.1" # A feed fetching and parsing library
+gem "field_test", "~> 0.3" # A/B testing
 gem "figaro", "~> 1.1" # Simple, Heroku-friendly Rails app configuration using ENV and a single YAML file
 gem "fog-aws", "~> 3.5" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.3" # API wrapper for MailChimp's API
 gem "google-api-client", "~> 0.36" # Client for accessing Google APIs
+gem "groupdate", "~> 5.0" # Group collections by date
 gem "honeybadger", "~> 4.5" # Used for tracking application errors
 gem "honeycomb-beeline", "~> 1.3.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly

@@ -144,5 +144,29 @@ RSpec.describe "Reactions", type: :request do
         expect(Reaction.all.size).to eq(0)
       end
     end
+
+    context "when part of field test" do
+      before do
+        sign_in user
+        get "/stories/feed"
+      end
+
+      it "converts field test" do
+        post "/reactions", params: article_params
+        expect(FieldTest::Event.all.size).to be(1)
+        expect(FieldTest::Event.last.name).to eq("makes_reaction")
+      end
+    end
+
+    context "when not part of field test" do
+      before do
+        sign_in user
+      end
+
+      it "converts field test" do
+        post "/reactions", params: article_params
+        expect(FieldTest::Event.all.size).to be(0)
+      end
+    end
   end
 end
