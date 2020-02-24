@@ -7,13 +7,14 @@ items:
   - frontend
   - internal
   - design
-  - deployment
+  - deployment.md
   - tests
-  - contributing
-  - contributing_api
-  - faqs
-  - licensing
-  - self-hosting
+  - contributing.md
+  - contributing_api.md
+  - faqs.md
+  - troubleshooting.md
+  - licensing.md
+  - self-hosting.md
   - maintainers
 ---
 
