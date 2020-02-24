@@ -26,8 +26,9 @@
     display: none;
   }
   nav {
-    max-width: 100%;
-    width: $max-width;
+    width: 100%;
+    max-width: $max-width;
+    height: 100%;
     margin: auto;
     position: relative;
     .pwa-nav-buttons {
@@ -60,149 +61,76 @@
         left: -88px;
       }
     }
-    a {
-      &:active {
-        opacity: 0.8;
-      }
-    }
     .nav-link {
-      position: absolute;
-      top: 17px;
-      width: 120px;
-      height: 30px;
-      border-radius: 2px;
-      padding-right: 10px;
-      font-size: 14px;
-      font-weight: 400;
-      display: none;
+      position: relative;
+      display: flex;
+      padding: 0 8px;
+      height: 100%;
+      align-items: center;
+      @include themeable(fill, theme-top-bar-color, $black);
     }
     .write {
-      width: 118px;
-      padding: 3px 0px;
-      height: auto;
-      top: 11px;
-      text-align: center;
-      font-weight: bold;
       border-radius: 3px;
-      border: 2px solid $black;
+      height: auto;
+      margin-right: 8px;
+      padding: 4px 8px;
+      font-size: 0.9em;
       border: 2px solid var(--theme-top-bar-write-color, $black);
       @include themeable(color, theme-top-bar-write-color, $black);
       @include themeable(background, theme-top-bar-write-background, $green);
-      @media screen and (min-width: 560px) {
-        display: block;
-        right: 140px;
-      }
-      @media screen and (min-width: 700px) {
-        display: block;
-        right: 165px;
+      display: none;
+
+      @media screen and (min-width: 650px) {
+        display: inline-block;
       }
     }
-    .connect-icon {
-      width: 29px;
-      height: 48px;
-      display: block;
-      text-align: center;
-      z-index: 10;
-      top: 0px;
-      right: 90px;
-      @include themeable(fill, theme-top-bar-color, $black);
-      @media screen and (min-width: 700px) {
-        right: 110px;
+
+    .nav-indicator {
+      position: absolute;
+      padding: 2px 7px;
+      border-radius: 8px;
+      display: none;
+      color: $white;
+      font-size: 1.05em;
+
+      &.showing {
+        display: block;
       }
-      img {
-        margin-top: 6px;
-        height: 33px;
-      }
-      .connect-number {
-        position: absolute;
+
+      &.connect-number {
         top: 5px;
         left: 17px;
         background: $green;
-        padding: 2px 7px;
-        border-radius: 8px;
-        color: white;
-        display: none;
-        font-size: 1.05em;
-        &.showing {
-          display: block;
-        }
       }
-      &:hover {
-        img {
-          opacity: 0.9;
-        }
-        .connect-number {
-          background: $green;
-        }
-      }
-    }
-    .notifications-icon {
-      right: 50px;
-      top: 4px;
-      width: 22px;
-      height: 41px;
-      display: block;
-      text-align: center;
-      z-index: 10;
-      @include themeable(fill, theme-top-bar-color, $black);
-      @media screen and (min-width: 700px) {
-        right: 73px;
-      }
-      img {
-        margin-top: 10px;
-        height: 23px;
-      }
-      .notifications-number {
-        position: absolute;
+
+      &.notifications-number {
         top: 1px;
         left: 11px;
         background: $dark-purple;
-        padding: 2px 7px;
-        border-radius: 8px;
-        color: white;
-        display: none;
-        font-size: 1.05em;
-        &.showing {
-          display: block;
-        }
-      }
-      &:hover {
-        img {
-          opacity: 0.9;
-        }
-        .notifications-number {
-          background: $dark-purple;
-        }
       }
     }
 
     .nav-profile-image-wrapper {
-      height: 33px;
-      width: 33px;
+      height: 32px;
+      width: 32px;
       background: $dark-gray;
-      margin-top: -6px;
-      border-radius: 100%;
-      border: 0;
-      overflow: hidden;
+      border-radius: 50%;
+
       img {
-        height: 35px;
-        width: 35px;
-        border-radius: 100%;
-        margin-top: -1px;
-        margin-left: -1px;
-        -ms-user-select: none;
-        -moz-user-select: none;
-        -webkit-user-select: none;
-        user-select: none;
+        height: 32px;
+        width: 32px;
+        border-radius: 50%;
       }
     }
+
     .bars {
       height: 22px;
       width: 22px;
       background: transparent;
     }
+
     .navbar-menu-wrapper {
-      position: absolute;
+      position: relative;
       right: 0px;
       top: 0px;
       &.showing {
@@ -223,20 +151,11 @@
     }
     .navigation-butt {
       all: unset;
-      position: absolute;
-      right: 0px;
-      top: 7px;
-      padding-top: 6px;
-      padding-bottom: 6px;
-      padding-left: 28px;
-      padding-right: 6px;
-      border-bottom-left-radius: 8px;
-      background: transparent;
-      border: 0;
+      display: flex;
+      height: 100%;
+      padding: 0 8px;
+      align-items: center;
       cursor: pointer;
-      @media screen and (min-width: 700px) {
-        padding-right: 33px;
-      }
     }
     .menubg {
       position: fixed;
@@ -244,7 +163,6 @@
       right: 0;
       bottom: 0;
       background: rgba(17, 17, 17, 0.88);
-      z-index: -5;
       top: $header-height;
       display: none;
     }
@@ -258,7 +176,7 @@
       border-top: 0px;
       display: none;
       width: calc(100vw - 18px);
-      top: 45px;
+      top: 39px;
       @media screen and (min-width: 380px) {
         position: fixed;
         width: 230px;
@@ -392,4 +310,13 @@
       @include themeable(color, theme-top-bar-search-color, $black);
     }
   }
+}
+
+.top-bar--actions {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: $header-height;
+  display: flex;
+  align-items: center;
 }
