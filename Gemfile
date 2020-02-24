@@ -92,7 +92,7 @@ gem "sprockets", "~> 3.7" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "storext", "~> 3.1" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
 gem "stripe", "~> 5.15" # Ruby library for the Stripe API
-gem "strong_migrations", "~> 0.6" # Catch unsafe migrations in development
+gem "strong_migrations", "~> 0.6" # Catch unsafe migrations
 gem "timber", "~> 3.0" # Great Ruby logging made easy
 gem "timber-rails", "~> 1.0" #  Timber integration for Rails
 gem "twilio-ruby", "~> 5.31" # The official library for communicating with the Twilio REST API
