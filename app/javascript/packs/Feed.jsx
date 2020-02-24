@@ -1,22 +1,15 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import { FEED_ICONS } from './feedIcons.js.erb';
 
-<% helpers = ActionController::Base.helpers %>
-
-const FEED_ICONS = {
-  COMMENTS_ICON: '<%= helpers.image_path("comments-bubble.png") %>',
-  REACTIONS_ICON: '<%= helpers.image_path("reactions-stack.png") %>',
-  VIDEO_ICON: '<%= helpers.image_path("video-camera.svg") %>',
-};
-
-/* global sendHapticMessage showModal buttonFormData renderNewSidebarCount */
+/* global userData sendHapticMessage showModal buttonFormData renderNewSidebarCount */
 
 export class Feed extends Component {
   componentDidMount() {
     const { timeFrame } = this.props;
-    const { reading_list_ids = [] } = userData();
+    const { reading_list_ids = [] } = userData(); // eslint-disable-line camelcase
 
-    this.setState({bookmarkedFeedItems : new Set(reading_list_ids) })
+    this.setState({ bookmarkedFeedItems: new Set(reading_list_ids) });
 
     Feed.getFeedItems(timeFrame).then(feedItems => {
       this.setState({ feedItems });
@@ -53,10 +46,10 @@ export class Feed extends Component {
   }
 
   /**
-  * Dispatches a click event to bookmark/unbook,ard an article.
-  *
-  * @param {Event} event
-  */
+   * Dispatches a click event to bookmark/unbook,ard an article.
+   *
+   * @param {Event} event
+   */
   bookmarkClick(event) {
     // The assumption is that the user is logged on at this point.
     const { userStatus } = document.body;
@@ -69,7 +62,7 @@ export class Feed extends Component {
     }
 
     const { currentTarget: button } = event;
-    const data = buttonFormData(button)
+    const data = buttonFormData(button);
 
     getCsrfToken()
       .then(sendFetch('reaction-creation', data))
@@ -85,7 +78,11 @@ export class Feed extends Component {
 
   render() {
     const { renderFeed } = this.props;
-    const { feedItems = [], podcastEpisodes = [], bookmarkedFeedItems = new Set() } = this.state;
+    const {
+      feedItems = [],
+      podcastEpisodes = [],
+      bookmarkedFeedItems = new Set(),
+    } = this.state;
 
     return (
       <div

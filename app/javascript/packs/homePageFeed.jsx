@@ -2,7 +2,7 @@ import { h, render } from 'preact';
 import PropTypes from 'prop-types';
 import { Article, FeaturedArticle, LoadingArticle } from '../articles';
 import { TodaysPodcasts, PodcastEpisode } from '../podcasts';
-import { Feed } from './Feed.jsx.erb';
+import { Feed } from './Feed';
 import { articlePropTypes } from '../src/components/common-prop-types';
 
 /**
