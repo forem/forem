@@ -9,10 +9,14 @@ const FEED_ICONS = {
   VIDEO_ICON: '<%= helpers.image_path("video-camera.svg") %>',
 };
 
-// TODO: Add scroll initial fetch and scroll etc.
+/* global sendHapticMessage showModal buttonFormData renderNewSidebarCount */
+
 export class Feed extends Component {
   componentDidMount() {
     const { timeFrame } = this.props;
+    const { reading_list_ids = [] } = userData();
+
+    this.setState({bookmarkedFeedItems : new Set(reading_list_ids) })
 
     Feed.getFeedItems(timeFrame).then(feedItems => {
       this.setState({ feedItems });
@@ -48,9 +52,40 @@ export class Feed extends Component {
     }).then(response => response.json());
   }
 
+  /**
+  * Dispatches a click event to bookmark/unbook,ard an article.
+  *
+  * @param {Event} event
+  */
+  bookmarkClick(event) {
+    // The assumption is that the user is logged on at this point.
+    const { userStatus } = document.body;
+    event.preventDefault();
+    sendHapticMessage('medium');
+
+    if (userStatus === 'logged-out') {
+      showModal('add-to-readinglist-from-index');
+      return;
+    }
+
+    const { currentTarget: button } = event;
+    const data = buttonFormData(button)
+
+    getCsrfToken()
+      .then(sendFetch('reaction-creation', data))
+      // eslint-disable-next-line consistent-return
+      .then(response => {
+        if (response.status === 200) {
+          return response.json().then(json => {
+            renderNewSidebarCount(button, json);
+          });
+        }
+      });
+  }
+
   render() {
-    const { renderFeed, bookmarkedFeedItems } = this.props;
-    const { feedItems = [], podcastEpisodes = [] } = this.state;
+    const { renderFeed } = this.props;
+    const { feedItems = [], podcastEpisodes = [], bookmarkedFeedItems = new Set() } = this.state;
 
     return (
       <div

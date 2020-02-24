@@ -61,7 +61,13 @@ export const renderFeed = timeFrame => {
   render(
     <Feed
       timeFrame={timeFrame}
-      renderFeed={({ feedItems, feedIcons, podcastEpisodes }) => {
+      renderFeed={({
+        feedItems,
+        feedIcons,
+        podcastEpisodes,
+        bookmarkedFeedItems,
+        bookmarkClick,
+      }) => {
         if (feedItems.length === 0) {
           // Fancy loading ✨
           return <FeedLoading />;
@@ -70,6 +76,7 @@ export const renderFeed = timeFrame => {
         const commonProps = {
           reactionsIcon: feedIcons.REACTIONS_ICON,
           commentsIcon: feedIcons.COMMENTS_ICON,
+          bookmarkClick,
         };
 
         const [featuredStory, ...subStories] = feedItems;
@@ -81,12 +88,20 @@ export const renderFeed = timeFrame => {
         // 3. Rest of the stories for the feed
         return (
           <div>
-            <FeaturedArticle {...commonProps} article={featuredStory} />
+            <FeaturedArticle
+              {...commonProps}
+              article={featuredStory}
+              isBookmarked={bookmarkedFeedItems.has(featuredStory.id)}
+            />
             {podcastEpisodes.length > 0 && (
               <PodcastEpisodes episodes={podcastEpisodes} />
             )}
             {(subStories || []).map(story => (
-              <Article {...commonProps} article={story} />
+              <Article
+                {...commonProps}
+                article={story}
+                isBookmarked={bookmarkedFeedItems.has(story.id)}
+              />
             ))}
           </div>
         );
