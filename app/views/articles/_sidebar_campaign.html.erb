@@ -1,6 +1,6 @@
 <div class="widget">
   <% if SiteConfig.campaign_sidebar_image %>
-    <img src="<%= SiteConfig.campaign_sidebar_image %>" />
+    <img src="<%= SiteConfig.campaign_sidebar_image %>" class="widget-image" />
   <% end %>
   <header>
     <h4>
@@ -13,7 +13,7 @@
         <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
       <% end %>
     </div>
-    <%= link_to "Share your story", "/new/#{SiteConfig.campaign_featured_tags.first}", class: "write" %>
-    <%= link_to "See all stories", "/t/#{SiteConfig.campaign_featured_tags.first}", class: "all-stories" %>
   </div>
+  <%= link_to "Share your story", "/new/#{SiteConfig.campaign_featured_tags.first}", class: "widget-button widget-button--action" %>
+  <%= link_to "See all stories", "/t/#{SiteConfig.campaign_featured_tags.first}", class: "widget-button widget-button--view" %>
 </div>
