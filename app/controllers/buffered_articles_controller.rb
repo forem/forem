@@ -9,7 +9,8 @@ class BufferedArticlesController < ApplicationController
 
   def buffered_articles_urls
     relation = if Rails.env.production?
-                 Article.where("last_buffered > ? OR published_at > ?", 24.hours.ago, 20.minutes.ago)
+                 Article.where("last_buffered > ?", 24.hours.ago).
+                   or(Article.where("published_at > ?", 20.minutes.ago))
                else
                  Article.all
                end
