@@ -86,25 +86,24 @@
 
     .nav-indicator {
       position: absolute;
-      padding: 2px 7px;
-      border-radius: 8px;
+      padding: 4px;
+      border-radius: 3px;
+      font-weight: bold;
       display: none;
       color: $white;
-      font-size: 1.05em;
+      top: 4px;
+      right: 0;
+      font-size: 0.8em;
 
       &.showing {
         display: block;
       }
 
       &.connect-number {
-        top: 5px;
-        left: 17px;
         background: $green;
       }
 
       &.notifications-number {
-        top: 1px;
-        left: 11px;
         background: $dark-purple;
       }
     }
