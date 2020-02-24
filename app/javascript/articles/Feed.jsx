@@ -1,8 +1,8 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { FEED_ICONS } from './feedIcons.js.erb';
+import { FEED_ICONS } from '../packs/feedIcons.js.erb';
 
-/* global userData sendHapticMessage showModal buttonFormData renderNewSidebarCount */
+/* global userData */
 
 export class Feed extends Component {
   componentDidMount() {
@@ -45,37 +45,6 @@ export class Feed extends Component {
     }).then(response => response.json());
   }
 
-  /**
-   * Dispatches a click event to bookmark/unbook,ard an article.
-   *
-   * @param {Event} event
-   */
-  bookmarkClick(event) {
-    // The assumption is that the user is logged on at this point.
-    const { userStatus } = document.body;
-    event.preventDefault();
-    sendHapticMessage('medium');
-
-    if (userStatus === 'logged-out') {
-      showModal('add-to-readinglist-from-index');
-      return;
-    }
-
-    const { currentTarget: button } = event;
-    const data = buttonFormData(button);
-
-    getCsrfToken()
-      .then(sendFetch('reaction-creation', data))
-      // eslint-disable-next-line consistent-return
-      .then(response => {
-        if (response.status === 200) {
-          return response.json().then(json => {
-            renderNewSidebarCount(button, json);
-          });
-        }
-      });
-  }
-
   render() {
     const { renderFeed } = this.props;
     const {
@@ -108,7 +77,6 @@ Feed.defaultProps = {
 Feed.propTypes = {
   timeFrame: PropTypes.string,
   renderFeed: PropTypes.func.isRequired,
-  bookmarkedFeedItems: PropTypes.instanceOf(Set).isRequired,
 };
 
 Feed.displayName = 'Feed';
