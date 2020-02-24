@@ -30,6 +30,10 @@
     height: 100%;
     margin: auto;
     position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
     .pwa-nav-buttons {
       position: absolute;
       top: 17px;
@@ -73,6 +77,7 @@
       height: auto;
       margin-right: 8px;
       padding: 4px 8px;
+      white-space: nowrap;
       font-size: 0.9em;
       border: 2px solid var(--theme-top-bar-write-color, $black);
       @include themeable(color, theme-top-bar-write-color, $black);
@@ -249,8 +254,10 @@
     }
   }
   .logo-link {
-    display: inline-block;
-    margin-left: 9px;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    margin-left: 8px;
     @media screen and (min-width: 950px) {
       margin-left: 16px;
     }
@@ -259,40 +266,29 @@
     width: 33px;
     height: 21px;
     padding: 7px 8px 6px 10px;
-    margin-top: 6px;
     @include themeable(fill, theme-logo-color, white);
     border-radius: 3px;
     @include themeable(background, theme-logo-background, $black);
   }
 }
 
+#nav-search-form-root {
+  display: flex;
+  max-width: 490px;
+  padding: 0 8px;
+  flex: 1 auto;
+
+  &,
+  & * {
+    box-sizing: border-box;
+  }
+}
+
 .nav-search-form {
-  position: absolute;
-  top: 8px;
-  left: calc(50px + 5vw);
-  bottom: 0px;
-  width: calc(55vw - 63px);
-  @media screen and (min-width: 350px) {
-    width: calc(61vw - 75px);
-  }
-  @media screen and (min-width: 450px) {
-    width: calc(61vw - 45px);
-  }
-  @media screen and (min-width: 560px) {
-    width: calc(46vw - 52px);
-  }
-  @media screen and (min-width: 950px) {
-    left: 0;
-    right: 0;
-    margin: auto;
-    width: 300px;
-  }
-  @media screen and (min-width: 1120px) {
-    width: calc(100% - 760px);
-  }
+  width: 100%;
   &__input {
     margin: 0;
-    width: calc(100% - 12px);
+    width: 100%;
     border-radius: 3px;
     padding: 6px 9px 5px;
     font-size: 16px;
@@ -311,9 +307,6 @@
 }
 
 .top-bar--actions {
-  position: absolute;
-  right: 0;
-  top: 0;
   height: $header-height;
   display: flex;
   align-items: center;
