@@ -194,5 +194,13 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
       expect(chat_channel_membership_docs.first["id"]).to eq(chat_channel_membership1.id)
       expect(chat_channel_membership_docs.last["id"]).to eq(chat_channel_membership2.id)
     end
+
+    it "will return a set number of docs based on pagination params" do
+      index_documents([chat_channel_membership1, chat_channel_membership2])
+      params = { page: 0, per_page: 1 }
+
+      chat_channel_membership_docs = described_class.search_documents(params: params, user_id: user.id)
+      expect(chat_channel_membership_docs.count).to eq(1)
+    end
   end
 end

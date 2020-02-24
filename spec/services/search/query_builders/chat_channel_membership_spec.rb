@@ -30,10 +30,12 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
     it "applies QUERY_KEYS from params" do
       params = { channel_text: "a_name" }
       query = described_class.new(params, 1)
-      expected_musts = [
-        { "match" => { "channel_text" => { "query" => "a_name" } } },
-      ]
-      expect(query.as_hash.dig("query", "bool", "must")).to match_array(expected_musts)
+      expected_query = [{
+        "simple_query_string" => {
+          "query" => "a_name*", "fields" => [:channel_text], "lenient" => true, "analyze_wildcard" => true
+        }
+      }]
+      expect(query.as_hash.dig("query", "bool", "must")).to match_array(expected_query)
     end
 
     it "ignores params we dont support" do
