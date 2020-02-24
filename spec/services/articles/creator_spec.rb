@@ -51,6 +51,7 @@ RSpec.describe Articles::Creator, type: :service do
     let(:invalid_attributes) { attributes_for(:article) }
 
     before do
+      invalid_attributes[:title] = Faker::Book.title
       invalid_attributes[:body_markdown] = nil
     end
 
