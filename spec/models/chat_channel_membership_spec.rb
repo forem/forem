@@ -5,7 +5,7 @@ RSpec.describe ChatChannelMembership, type: :model do
 
   describe "#index_to_elasticsearch" do
     it "enqueues job to index tag to elasticsearch" do
-      sidekiq_assert_enqueued_with(job: described_class::SEARCH_INDEX_WORKER, args: [chat_channel_membership.id]) do
+      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, chat_channel_membership.id]) do
         chat_channel_membership.index_to_elasticsearch
       end
     end
@@ -22,7 +22,7 @@ RSpec.describe ChatChannelMembership, type: :model do
   describe "#after_commit" do
     it "on update enqueues job to index chat_channel_membership to elasticsearch" do
       chat_channel_membership.save
-      sidekiq_assert_enqueued_with(job: described_class::SEARCH_INDEX_WORKER, args: [chat_channel_membership.id]) do
+      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, chat_channel_membership.id]) do
         chat_channel_membership.save
       end
     end
