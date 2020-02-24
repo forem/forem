@@ -82,7 +82,7 @@ export const renderFeed = timeFrame => {
         return (
           <div>
             <FeaturedArticle {...commonProps} article={featuredStory} />
-            {podcastEpisodes.length && (
+            {podcastEpisodes.length > 0 && (
               <PodcastEpisodes episodes={podcastEpisodes} />
             )}
             {(subStories || []).map(story => (
