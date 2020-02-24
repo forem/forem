@@ -26,7 +26,7 @@ class DisplayAd < ApplicationRecord
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer)
     initial_html = markdown.render(body_markdown)
-    stripped_html = ActionController::Base.helpers.sanitize initial_html.html_safe,
+    stripped_html = ActionController::Base.helpers.sanitize initial_html,
                                                             tags: %w[a em i b u br img h1 h2 h3 h4 div],
                                                             attributes: %w[href target src height width style]
     html = stripped_html.delete("\n")

@@ -99,7 +99,7 @@ module ApplicationHelper
   end
 
   def sanitize_rendered_markdown(processed_html)
-    ActionController::Base.helpers.sanitize processed_html.html_safe,
+    ActionController::Base.helpers.sanitize processed_html,
                                             scrubber: RenderedMarkdownScrubber.new
   end
 
