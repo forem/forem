@@ -191,11 +191,10 @@ RSpec.describe Comment, type: :model do
       expect(comment.title(5).length).to eq(5)
     end
 
-    it "retains content from #processed_html" do
-      comment.processed_html = "Hello this is a post." # Remove randomness
+    it "gets content from body_markdown" do
+      comment.body_markdown = "Migas fingerstache pbr&b tofu."
       comment.validate!
-      text = comment.title.gsub("...", "").delete("\n")
-      expect(comment.processed_html).to include(CGI.unescapeHTML(text))
+      expect(comment.title).to eq("Migas fingerstache pbr&b tofu.")
     end
 
     it "is converted to deleted if the comment is deleted" do
