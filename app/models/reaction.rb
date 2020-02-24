@@ -178,6 +178,6 @@ class Reaction < ApplicationRecord
   end
 
   def record_field_test_event
-    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "makes_reaction") 
+    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "makes_reaction")
   end
 end

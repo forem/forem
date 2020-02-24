@@ -49,7 +49,8 @@ module Articles
       # Each variant is it's own algorithm which defines all the branching scenarios.
       case test_variant
       when "base"
-        Article.limit(20)
+        # These variants, should live in their own dedicated space I think so we can comfortably create big long beautiful branching algorithms.
+        Article.published.where(user_id: user.cached_following_users_ids).limit(20) # for example
       when "more_random"
         Article.limit(21)
       when "top_past_week_random"
