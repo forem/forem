@@ -11,7 +11,7 @@ function initializeReadingListIcons() {
 
   // TODO: This snippet of code is in a few places now. I'll promote it to a simple function.
   if (
-    ![
+    [
       '/',
       '/top/week',
       '/top/month',
