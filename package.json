@@ -61,7 +61,7 @@
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "devDependencies": {
     "@storybook/addon-actions": "3.4.11",
-    "@storybook/addon-knobs": "3.4.11",
+    "@storybook/addon-knobs": "5.3.13",
     "@storybook/addon-links": "3.4.11",
     "@storybook/addons": "3.4.11",
     "@storybook/react": "3.4.11",
