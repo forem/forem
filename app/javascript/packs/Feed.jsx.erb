@@ -11,41 +11,21 @@ const FEED_ICONS = {
 
 // TODO: Add scroll initial fetch and scroll etc.
 export class Feed extends Component {
-  scrollHandler;
-
   componentDidMount() {
-    this.scrollHandler = _event => {
-      // // handle scroll logic for pages of feed data and get an extra page on load.
-      // page += 1;
-      // Feed.getFeedItems(this.props.timeFrame, page).then(feedItems => {
-      //   // We are not doing virtual scrolling at the moment, so feed items keep getting appended.
-      //   this.setState(previousState => ({
-      //     feedItems: previousState.feedItems.concat(feedItems),
-      //   }));
-      // });
-    };
+    const { timeFrame } = this.props;
 
-    Feed.getFeedItems(this.props.timeFrame).then(feedItems => {
+    Feed.getFeedItems(timeFrame).then(feedItems => {
       this.setState({ feedItems });
-
-      this.feedContainer.addEventListener('scroll', this.scrollHandler);
     });
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.timeFrame !== this.props.timeFrame) {
+    const { timeFrame } = this.props;
+    if (prevProps.timeFrame !== timeFrame) {
       // The feed timeframe has changed. Get new feed data.
-      Feed.getFeedItems(this.props.timeFrame).then(feedItems => {
-        this.setState({ feedItems });
-
-        this.feedContainer.addEventListener('scroll', this.scrollHandler);
+      Feed.getFeedItems(timeFrame).then(feedItems => {
+        this.setState(_prevState => ({ feedItems }));
       });
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.scrollHandler) {
-      this.feedContainer.removeEventListener('scroll', this.scrollHandler);
     }
   }
 
@@ -69,8 +49,8 @@ export class Feed extends Component {
   }
 
   render() {
-    const { bookmarkedFeedItems } = this.props;
-    const { renderFeed,  } = this.props;
+    const { renderFeed, bookmarkedFeedItems } = this.props;
+    const { feedItems = [], podcastEpisodes = [] } = this.state;
 
     return (
       <div
@@ -78,7 +58,12 @@ export class Feed extends Component {
           this.feedContainer = element;
         }}
       >
-        {renderFeed({ feedItems, feedIcons: FEED_ICONS, podcastEpisodes, bookmarkedFeedItems })}
+        {renderFeed({
+          feedItems,
+          feedIcons: FEED_ICONS,
+          podcastEpisodes,
+          bookmarkedFeedItems,
+        })}
       </div>
     );
   }
@@ -86,12 +71,12 @@ export class Feed extends Component {
 
 Feed.defaultProps = {
   timeFrame: '',
-}
+};
 
 Feed.propTypes = {
   timeFrame: PropTypes.string,
   renderFeed: PropTypes.func.isRequired,
-  bookmarkedFeedItems: PropTypes.instanceOf(Set),
+  bookmarkedFeedItems: PropTypes.instanceOf(Set).isRequired,
 };
 
 Feed.displayName = 'Feed';
