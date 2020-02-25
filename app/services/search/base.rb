@@ -63,7 +63,7 @@ module Search
       rescue *TRANSPORT_EXCEPTIONS => e
         class_name = e.class.name.demodulize
 
-        DataDogStatsClient.increment("elasticsearch.errors", tags: ["error:#{class_name}"], message: e.message)
+        DatadogStatsClient.increment("elasticsearch.errors", tags: ["error:#{class_name}"], message: e.message)
 
         # raise specific error if known, generic one if unknown
         error_class = "::Search::Errors::Transport::#{class_name}".safe_constantize
