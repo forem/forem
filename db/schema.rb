@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_21_170905) do
-
+ActiveRecord::Schema.define(version: 2020_02_24_153122) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -751,6 +750,8 @@ ActiveRecord::Schema.define(version: 2020_02_21_170905) do
     t.index ["guid"], name: "index_podcast_episodes_on_guid", unique: true
     t.index ["media_url"], name: "index_podcast_episodes_on_media_url", unique: true
     t.index ["podcast_id"], name: "index_podcast_episodes_on_podcast_id"
+    t.index ["title"], name: "index_podcast_episodes_on_title"
+    t.index ["website_url"], name: "index_podcast_episodes_on_website_url"
   end
 
   create_table "podcasts", id: :serial, force: :cascade do |t|
