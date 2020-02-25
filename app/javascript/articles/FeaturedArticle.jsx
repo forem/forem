@@ -33,10 +33,17 @@ export const FeaturedArticle = ({
         className="index-article-link"
         aria-label="Main Story"
         data-featured-article={`articles-${article.id}`}
+      />
+      <div
+        className="single-article big-article"
+        data-content-user-id={article.user_id}
       >
-        <div
-          className="single-article big-article"
-          data-content-user-id={article.user_id}
+        <a
+          href={article.path}
+          id={`article-link-${article.id}`}
+          className="index-article-link"
+          aria-label="Main Story"
+          data-featured-article={`articles-${article.id}`}
         >
           <div
             className="picture image-final"
@@ -48,50 +55,47 @@ export const FeaturedArticle = ({
           <div className="content-wrapper">
             <h3>{article.title}</h3>
           </div>
-          <a
-            href={`/${article.user.username}`}
-            className="featured-profile-button"
-          >
-            <img
-              className="featured-profile-pic"
-              src={article.user.profile_image_90}
-              alt={article.title}
+        </a>
+        <a
+          href={`/${article.user.username}`}
+          className="featured-profile-button"
+        >
+          <img
+            className="featured-profile-pic"
+            src={article.user.profile_image_90}
+            alt={article.title}
+          />
+        </a>
+        <div className="featured-user-name">
+          <a href="/<%= article.cached_user.username %>">
+            {article.user.name} ・{' '}
+            <time dateTime={article.published_timestamp}>
+              {article.readable_publish_date}
+            </time>
+            <span
+              className="time-ago-indicator-initial-placeholder"
+              data-seconds="<%= article.published_at_int %>"
             />
           </a>
-          <div className="featured-user-name">
-            <a href="/<%= article.cached_user.username %>">
-              {article.user.name}
-              {' '}
-              ・
-              {' '}
-              <time dateTime={article.published_timestamp}>
-                {article.readable_publish_date}
-              </time>
-              <span
-                className="time-ago-indicator-initial-placeholder"
-                data-seconds="<%= article.published_at_int %>"
-              />
-            </a>
-          </div>
-          <TagList tags={article.tag_list} className="featured-tags" />
-          <CommentsCount
-            count={article.comments_count}
-            articlePath={article.path}
-            icon={commentsIcon}
-            className="featured-engagement-count"
-          />
-          <ReactionsCount article={article} icon={reactionsIcon} />
-          <ReadingTime
-            articlePath={article.path}
-            readingTime={article.reading_time}
-          />
-          <SaveButton
-            article={article}
-            isBookmarked={isBookmarked}
-            onClick={bookmarkClick}
-          />
         </div>
-      </a>
+        <TagList tags={article.tag_list} className="featured-tags" />
+        <CommentsCount
+          count={article.comments_count}
+          articlePath={article.path}
+          icon={commentsIcon}
+          className="featured-engagement-count"
+        />
+        <ReactionsCount article={article} icon={reactionsIcon} />
+        <ReadingTime
+          articlePath={article.path}
+          readingTime={article.reading_time}
+        />
+        <SaveButton
+          article={article}
+          isBookmarked={isBookmarked}
+          onClick={bookmarkClick}
+        />
+      </div>
     </div>
   );
 };
