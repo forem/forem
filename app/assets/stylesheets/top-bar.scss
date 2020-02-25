@@ -60,31 +60,33 @@
         left: -88px;
       }
     }
-    .nav-link {
+    .top-bar--link {
       position: relative;
       display: flex;
       padding: 0 8px;
       height: 100%;
       align-items: center;
       @include themeable(fill, theme-top-bar-color, $black);
-    }
-    .write {
-      border-radius: 3px;
-      height: auto;
-      margin-right: 8px;
-      padding: 4px 8px;
-      white-space: nowrap;
-      font-size: 0.9em;
-      border: 2px solid var(--theme-top-bar-write-color, $black);
-      @include themeable(color, theme-top-bar-write-color, $black);
-      @include themeable(background, theme-top-bar-write-background, $green);
-      display: none;
 
-      @media screen and (min-width: 650px) {
-        display: inline-block;
+      &.write {
+        border-radius: 3px;
+        height: auto;
+        margin-right: 8px;
+        padding: 4px 8px;
+        white-space: nowrap;
+        font-size: 0.9em;
+        border: 2px solid var(--theme-top-bar-write-color, $black);
+        @include themeable(color, theme-top-bar-write-color, $black);
+        @include themeable(background, theme-top-bar-write-background, $green);
+        display: none;
+
+        @media screen and (min-width: 650px) {
+          display: inline-block;
+        }
       }
     }
 
+    // TODO make it a component in future.
     .nav-indicator {
       position: absolute;
       padding: 4px;
@@ -109,7 +111,7 @@
       }
     }
 
-    .nav-profile-image-wrapper {
+    .top-bar--profile {
       height: 32px;
       width: 32px;
       background: $dark-gray;

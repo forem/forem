@@ -15,21 +15,21 @@
       </form>
     </div>
     <div class="top-bar--actions">
-      <a href="/new" id="write-link" class="cta nav-link write">WRITE A POST</a>
-      <a href="/connect" id="connect-link" class="nav-link connect-icon" aria-label="Connect">
+      <a href="/new" id="write-link" class="cta top-bar--action write">WRITE A POST</a>
+      <a href="/connect" id="connect-link" class="top-bar--action connect-icon" aria-label="Connect">
         <%= inline_svg_tag("connect.svg", aria: true, title: "Connect") %>
-        <div class="connect-number nav-indicator" id="connect-number"></div>
+        <span class="connect-number nav-indicator" id="connect-number"></span>
       </a>
-      <a href="/notifications" id="notifications-link" class="nav-link notifications-icon" aria-label="Notifications">
+      <a href="/notifications" id="notifications-link" class="top-bar--action notifications-icon" aria-label="Notifications">
         <%= inline_svg_tag("bell.svg", aria: true, title: "Notifications") %>
-        <div class="notifications-number nav-indicator" id="notifications-number"></div>
+        <span class="notifications-number nav-indicator" id="notifications-number"></span>
       </a>
       <div class="navbar-menu-wrapper" id="navbar-menu-wrapper">
         <button type="button" class="navigation-butt" id="navigation-butt" aria-label="Navigation menu">
           <% if user_signed_in? %>
-            <div class="nav-profile-image-wrapper"><img alt="" class="nav-profile-image" id="nav-profile-image" /></div>
+            <span class="top-bar--profile"><img alt="" id="nav-profile-image" /></span>
           <% else %>
-            <%= inline_svg_tag("menu.svg", class: "bars", aria: true, title: "Navigation menu") %>
+            <%= inline_svg_tag("menu.svg", aria: true, title: "Navigation menu") %>
           <% end %>
         </button>
         <div class="menubg" id="menubg"></div>
