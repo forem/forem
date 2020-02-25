@@ -1,14 +1,23 @@
 class AddTitleWebsiteUrlIndexesToPodcastEpisodes < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
-  include IndexMigrationHelpers
 
   def up
-    add_index_if_missing(:podcast_episodes, :title, algorithm: :concurrently)
-    add_index_if_missing(:podcast_episodes, :website_url, algorithm: :concurrently)
+    unless index_exists?(:podcast_episodes, :title)
+      add_index :podcast_episodes, :title, algorithm: :concurrently
+    end
+
+    unless index_exists?(:podcast_episodes, :website_url)
+      add_index :podcast_episodes, :website_url, algorithm: :concurrently
+    end
   end
 
   def down
-    remove_index_if_exists(:podcast_episodes, column: :title, algorithm: :concurrently)
-    remove_index_if_exists(:podcast_episodes, column: :website_url, algorithm: :concurrently)
+    if index_exists?(:podcast_episodes, :title)
+      remove_index :podcast_episodes, column: :title, algorithm: :concurrently
+    end
+
+    if index_exists?(:podcast_episodes, :website_url)
+      remove_index :podcast_episodes, column: :website_url, algorithm: :concurrently
+    end
   end
 end
