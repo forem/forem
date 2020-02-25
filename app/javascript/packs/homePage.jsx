@@ -72,7 +72,6 @@ import('./homePageFeed').then(({ renderFeed }) => {
     const { user = null, userStatus } = document.body.dataset;
 
     if (userStatus === 'logged-out') {
-      renderFeed(feedTimeFrame);
       return;
     }
 
@@ -89,6 +88,12 @@ import('./homePageFeed').then(({ renderFeed }) => {
   }, 40);
 
   InstantClick.on('change', () => {
+    const { userStatus } = document.body.dataset;
+
+    if (userStatus === 'logged-out') {
+      return;
+    }
+
     const url = new URL(window.location);
     const changedFeedTimeFrame = frontPageFeedPathNames.get(url.pathname);
 
