@@ -1,16 +1,6 @@
 @import 'variables';
 @import 'mixins';
 
-.stories-index,
-.comments-index,
-.notifications-index {
-  .top-bar {
-    @media screen and (min-width: 820px) {
-      border-bottom: 1.5px solid darken($lightest-gray, 4%);
-      box-shadow: 0px 0px 2px 0px rgba(97, 95, 95, 0.18);
-    }
-  }
-}
 .top-bar {
   position: fixed;
   top: 0px;
@@ -18,13 +8,19 @@
   right: 0px;
   -webkit-backface-visibility: hidden;
   z-index: 1000;
-  font-size: 17px;
   height: $header-height;
+  font-size: 16px; // todo: make it global, based on body
   @include themeable(background, theme-top-bar-background, $tan);
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   &.hidden {
     display: none;
   }
+
+  &,
+  & * {
+    box-sizing: border-box; // todo: make it global
+  }
+
   nav {
     max-width: $max-width;
     height: 100%;
@@ -128,14 +124,15 @@
 
     .navbar-menu-wrapper {
       position: relative;
-      right: 0px;
-      top: 0px;
+      height: 100%;
+
       &.showing {
         .menu,
         .menubg {
           display: block;
         }
       }
+
       &.desktop {
         &:hover,
         &:active,
@@ -164,34 +161,21 @@
       display: none;
     }
     .menu {
-      position: absolute;
-      right: -3px;
-      padding: 5px 10px;
-      text-align: left;
+      position: fixed;
+      right: 0;
+      top: $header-height;
+      padding: 16px;
       @include themeable(background, theme-top-bar-background, $tan);
-      border: 1px solid rgb(219, 222, 225);
-      border-top: 0px;
       display: none;
-      width: calc(100vw - 18px);
-      top: 39px;
+      width: 100%;
+      border-radius: 0 0 3px 3px;
+      box-shadow: $shadow;
 
-      &.logged-out {
-        top: 35px; // todo
-      }
       @media screen and (min-width: 380px) {
-        position: fixed;
-        width: 230px;
-        border-right: none;
-        padding: 15px 10px;
-        border-bottom-left-radius: 5px;
-        box-shadow: 0px 4px 5px 1px rgba(97, 95, 95, 0.18);
-      }
-      @media screen and (min-width: $max-width) {
         position: absolute;
-        border-right: 1px solid rgb(219, 222, 225);
-        border-bottom-right-radius: 5px;
-        right: 4px;
+        width: 250px;
       }
+
       .header {
         padding: 3px 10px;
         border-bottom: 3px solid rgb(241, 244, 246);
@@ -261,8 +245,8 @@
     }
   }
   .logo {
-    width: 33px;
-    height: 21px;
+    width: 51px;
+    height: 34px;
     padding: 7px 8px 6px 10px;
     @include themeable(fill, theme-logo-color, white);
     border-radius: 3px;
