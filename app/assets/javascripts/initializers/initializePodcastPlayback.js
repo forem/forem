@@ -346,6 +346,7 @@ function initializePodcastPlayback() {
     audio.removeEventListener('timeupdate', updateProgressListener(audio), false);
     getById('audiocontent').innerHTML = '';
     stopRotatingActivePodcastIfExist();
+    saveMediaState(newAudioState());
     if (isNativeIOS()) {
       sendPodcastMessage('terminate');
     }
