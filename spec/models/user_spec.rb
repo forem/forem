@@ -187,6 +187,11 @@ RSpec.describe User, type: :model do
         user.mastodon_url = "mastodon.social/@test"
         expect(user).not_to be_valid
       end
+
+      it "does not accept an invalid url" do
+        user.mastodon_url = "ben .com"
+        expect(user).not_to be_valid
+      end
     end
 
     describe "#facebook_url" do
