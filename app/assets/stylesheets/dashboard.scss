@@ -398,7 +398,7 @@
           theme-secondary-color,
           darken($light-gray, 6%)
         );
-        @include themeable(color, theme-container-background, #fff);
+        @include themeable(color, theme-secondary-color, $medium-gray);
         margin-right: 5px;
         padding: 3px 10px;
         border-radius: 100px;
