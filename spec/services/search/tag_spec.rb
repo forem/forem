@@ -70,11 +70,11 @@ RSpec.describe Search::Tag, type: :service, elasticsearch: true do
 
   describe "::delete_document" do
     it "deletes a document for a given ID from elasticsearch" do
-      tag = FactoryBot.create(:tag)
+      tag = create(:tag)
       tag.index_to_elasticsearch_inline
       expect { described_class.find_document(tag.id) }.not_to raise_error
       described_class.delete_document(tag.id)
-      expect { described_class.find_document(tag.id) }.to raise_error(Elasticsearch::Transport::Transport::Errors::NotFound)
+      expect { described_class.find_document(tag.id) }.to raise_error(Search::Errors::Transport::NotFound)
     end
   end
 
