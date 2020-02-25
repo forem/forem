@@ -159,6 +159,9 @@ module CacheBuster
   end
 
   def self.bust_classified_listings(classified_listing)
+    # we purge all listings as it's the wanted behavior with the following URL purging
+    classified_listing.purge_all
+
     bust("/listings")
     bust("/listings?i=i")
     bust("/listings/#{classified_listing.category}/#{classified_listing.slug}")
