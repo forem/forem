@@ -525,6 +525,14 @@ RSpec.describe User, type: :model do
           user.update(unconfirmed_email: "bob@bob.com", confirmation_sent_at: Time.current)
         end
       end
+
+      it "does not enqueue when the email address or subscription status has not changed" do
+        user = create(:user, :ignore_after_callback)
+
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
+          user.update(website_url: "http://example.com")
+        end
+      end
     end
 
     describe "#conditionally_resave_articles" do
