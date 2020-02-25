@@ -74,7 +74,7 @@ RSpec.describe ClassifiedListing, type: :model do
 
   describe "#index_to_elasticsearch" do
     it "enqueues job to index classified_listing to elasticsearch" do
-      sidekiq_assert_enqueued_with(job: described_class::SEARCH_INDEX_WORKER, args: [classified_listing.id]) do
+      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, classified_listing.id]) do
         classified_listing.index_to_elasticsearch
       end
     end
@@ -92,7 +92,7 @@ RSpec.describe ClassifiedListing, type: :model do
     it "on update enqueues worker to index tag to elasticsearch" do
       classified_listing.save
 
-      sidekiq_assert_enqueued_with(job: described_class::SEARCH_INDEX_WORKER, args: [classified_listing.id]) do
+      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, classified_listing.id]) do
         classified_listing.save
       end
     end

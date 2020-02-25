@@ -2,7 +2,6 @@ class ChatChannelMembership < ApplicationRecord
   include AlgoliaSearch
 
   include Searchable
-  SEARCH_INDEX_WORKER = Search::ChatChannelMembershipEsIndexWorker
   SEARCH_SERIALIZER = Search::ChatChannelMembershipSerializer
   SEARCH_CLASS = Search::ChatChannelMembership
 

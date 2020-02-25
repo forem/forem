@@ -11,7 +11,7 @@ RSpec.describe Search::ClassifiedListingEsIndexWorker, type: :worker, elasticsea
 
   it "indexes classified_listing" do
     classified_listing = FactoryBot.create(:classified_listing)
-    expect { classified_listing.elasticsearch_doc }.to raise_error(Elasticsearch::Transport::Transport::Errors::NotFound)
+    expect { classified_listing.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
     worker.perform(classified_listing.id)
 
     elasticsearch_doc = classified_listing.elasticsearch_doc.dig("_source").deep_symbolize_keys
