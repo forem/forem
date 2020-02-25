@@ -53,20 +53,20 @@ RSpec.describe Sponsorship, type: :model do
     let(:org) { user.organizations.first }
 
     it "forbids an org to have multiple 'expiring' (bronze-silver-gold) sponsorships" do
-      create(:sponsorship, level: :gold, organization: org, expires_at: Time.current + 2.days)
+      create(:sponsorship, level: :gold, organization: org, expires_at: 2.days.from_now)
       bronze_sponsorship = build(:sponsorship, level: :bronze, organization: org)
       expect(bronze_sponsorship).not_to be_valid
       expect(bronze_sponsorship.errors[:level]).to be_present
     end
 
     it "allows to create a new sponsorship for the same org if the previous one is expired" do
-      create(:sponsorship, expires_at: Time.current - 1.day, user: user, organization: org, level: :bronze)
+      create(:sponsorship, expires_at: 1.day.ago, user: user, organization: org, level: :bronze)
       bronze_sponsorship = build(:sponsorship, level: :bronze, user: user, organization: org)
       expect(bronze_sponsorship).to be_valid
     end
 
     it "allows to create a new sponsorship for the same level for another org" do
-      create(:sponsorship, level: :gold, organization: org, expires_at: Time.current + 2.days)
+      create(:sponsorship, level: :gold, organization: org, expires_at: 2.days.from_now)
       other_org = create(:organization)
       gold_sponsorship = build(:sponsorship, level: :gold, organization: other_org)
       expect(gold_sponsorship).to be_valid
@@ -77,20 +77,20 @@ RSpec.describe Sponsorship, type: :model do
       let(:ruby) { create(:tag, name: "ruby") }
 
       it "allows an org to have multiple tag sponsorships on different tags" do
-        create(:sponsorship, level: :tag, organization: org, expires_at: Time.current + 2.days, sponsorable: python)
+        create(:sponsorship, level: :tag, organization: org, expires_at: 2.days.from_now, sponsorable: python)
         tag_sponsorship = build(:sponsorship, level: :tag, organization: org, sponsorable: ruby)
         expect(tag_sponsorship).to be_valid
       end
 
       it "allows to create a new tag sponsorship if the previous one is expired" do
-        create(:sponsorship, user: user, organization: org, expires_at: Time.current - 1.day, level: :tag, sponsorable: ruby)
+        create(:sponsorship, user: user, organization: org, expires_at: 1.day.ago, level: :tag, sponsorable: ruby)
         ruby_sponsorship = build(:sponsorship, user: user, organization: org, level: :tag, sponsorable: ruby)
         expect(ruby_sponsorship).to be_valid
       end
 
       it "forbids an org to have multiple active tag sponsorships on the same tag" do
         tag = create(:tag, name: "python")
-        create(:sponsorship, level: :tag, organization: org, sponsorable: tag, expires_at: Time.current + 2.days)
+        create(:sponsorship, level: :tag, organization: org, sponsorable: tag, expires_at: 2.days.from_now)
         tag_sponsorship = build(:sponsorship, level: :tag, organization: org, sponsorable: tag)
         expect(tag_sponsorship).not_to be_valid
         expect(tag_sponsorship.errors[:level]).to be_present
@@ -98,7 +98,7 @@ RSpec.describe Sponsorship, type: :model do
 
       it "forbids different orgs to have active sponsorships on the same tag" do
         other_org = create(:organization)
-        create(:sponsorship, level: :tag, organization: org, sponsorable: python, expires_at: Time.current + 2.days)
+        create(:sponsorship, level: :tag, organization: org, sponsorable: python, expires_at: 2.days.from_now)
         tag_sponsorship = build(:sponsorship, level: :tag, organization: other_org, sponsorable: python)
         expect(tag_sponsorship).not_to be_valid
         expect(tag_sponsorship.errors[:level]).to be_present
