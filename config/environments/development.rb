@@ -114,11 +114,13 @@ Rails.application.configure do
     # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
     Bullet.add_whitelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
 
+    # Check if there are any data update scripts to run during startup
     if %w[c console runner s server].include?(ENV["COMMAND"])
-      script_ids = DataUpdateScript.load_script_ids
-      scripts_to_run = DataUpdateScript.where(id: script_ids).select(&:enqueued?)
-      if scripts_to_run.any?
-        raise "Data update scripts need to be run before you can start the application. Please run rake data_updates:run"
+      if DataUpdateScript.scripts_to_run.any?
+        message = <<~ERROR
+          Data update scripts need to be run before you can start the application. Please run "rails data_updates:run"
+        ERROR
+        raise message
       end
     end
   end
