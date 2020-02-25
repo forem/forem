@@ -60,31 +60,6 @@
         left: -88px;
       }
     }
-    .top-bar--link {
-      position: relative;
-      display: flex;
-      padding: 0 8px;
-      height: 100%;
-      align-items: center;
-      @include themeable(fill, theme-top-bar-color, $black);
-
-      &.write {
-        border-radius: 3px;
-        height: auto;
-        margin-right: 8px;
-        padding: 4px 8px;
-        white-space: nowrap;
-        font-size: 0.9em;
-        border: 2px solid var(--theme-top-bar-write-color, $black);
-        @include themeable(color, theme-top-bar-write-color, $black);
-        @include themeable(background, theme-top-bar-write-background, $green);
-        display: none;
-
-        @media screen and (min-width: 650px) {
-          display: inline-block;
-        }
-      }
-    }
 
     // TODO make it a component in future.
     .nav-indicator {
@@ -111,26 +86,13 @@
       }
     }
 
-    .top-bar--profile {
-      height: 32px;
-      width: 32px;
-      background: $dark-gray;
-      border-radius: 50%;
-
-      img {
-        height: 32px;
-        width: 32px;
-        border-radius: 50%;
-      }
-    }
-
-    .navbar-menu-wrapper {
+    .top-bar--menu {
       position: relative;
       height: 100%;
 
       &.showing {
-        .menu,
-        .menubg {
+        .top-bar--menu-dropdown,
+        .top-bar--menu-overlay {
           display: block;
         }
       }
@@ -139,13 +101,13 @@
         &:hover,
         &:active,
         &:focus {
-          .menu {
+          .top-bar--menu-dropdown {
             display: block;
           }
         }
       }
     }
-    .navigation-butt {
+    .top-bar--menu-trigger {
       all: unset;
       display: flex;
       height: 100%;
@@ -153,7 +115,8 @@
       align-items: center;
       cursor: pointer;
     }
-    .menubg {
+
+    .top-bar--menu-overlay {
       position: fixed;
       left: 0;
       right: 0;
@@ -162,7 +125,7 @@
       top: $header-height;
       display: none;
     }
-    .menu {
+    .top-bar--menu-dropdown {
       position: fixed;
       right: 0;
       top: $header-height;
@@ -237,15 +200,18 @@
       transition: opacity 0.3s linear, transform 0.3s linear;
     }
   }
-  .logo-link {
-    display: flex;
-    align-items: center;
-    height: 100%;
-    margin-left: 8px;
-    @media screen and (min-width: 950px) {
-      margin-left: 16px;
-    }
+}
+
+// Logo
+.top-bar--logo {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  margin-left: 8px;
+  @media screen and (min-width: 950px) {
+    margin-left: 16px;
   }
+
   .logo {
     width: 51px;
     height: 34px;
@@ -256,6 +222,9 @@
   }
 }
 
+
+
+// Search bar
 .top-bar--search {
   display: flex;
   max-width: 490px;
@@ -270,28 +239,71 @@
   form {
     width: 100%;
   }
+}
 
-  .top-bar--search-input {
-    width: 100%;
-    border-radius: 3px;
-    padding: 6px 9px 5px;
-    font-size: 16px;
-    @include themeable(background, theme-top-bar-search-background, #e8e7e7);
+.top-bar--search-input {
+  width: 100%;
+  border-radius: 3px;
+  padding: 6px 9px 5px;
+  font-size: 16px;
+  @include themeable(background, theme-top-bar-search-background, #e8e7e7);
+  @include themeable(color, theme-top-bar-search-color, $black);
+  -webkit-appearance: none;
+  border: 1px solid transparent;
+  &:focus {
+    border: 1px solid $dark-purple;
+  }
+  &::placeholder {
+    opacity: 0.5;
     @include themeable(color, theme-top-bar-search-color, $black);
-    -webkit-appearance: none;
-    border: 1px solid transparent;
-    &:focus {
-      border: 1px solid $dark-purple;
-    }
-    &::placeholder {
-      opacity: 0.5;
-      @include themeable(color, theme-top-bar-search-color, $black);
-    }
   }
 }
 
-.top-bar--actions {
+
+
+// Actions on right side...
+.top-bar--links {
   height: $header-height;
   display: flex;
   align-items: center;
 }
+
+.top-bar--link {
+  position: relative;
+  display: flex;
+  padding: 0 8px;
+  height: 100%;
+  align-items: center;
+  @include themeable(fill, theme-top-bar-color, $black);
+
+  &.write {
+    border-radius: 3px;
+    height: auto;
+    margin-right: 8px;
+    padding: 4px 8px;
+    white-space: nowrap;
+    font-size: 0.9em;
+    border: 2px solid var(--theme-top-bar-write-color, $black);
+    @include themeable(color, theme-top-bar-write-color, $black);
+    @include themeable(background, theme-top-bar-write-background, $green);
+    display: none;
+
+    @media screen and (min-width: 650px) {
+      display: inline-block;
+    }
+  }
+}
+
+.top-bar--profile {
+  height: 32px;
+  width: 32px;
+  background: $dark-gray;
+  border-radius: 50%;
+
+  img {
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+  }
+}
+
