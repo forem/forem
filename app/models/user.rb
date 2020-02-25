@@ -81,7 +81,7 @@ class User < ApplicationRecord
   validates :experience_level, numericality: { less_than_or_equal_to: 10 }, allow_blank: true
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
-  validates :website_url, :employer_url, :mastodon_url,
+  validates :website_url, :employer_url,
             url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :facebook_url,
             format: /\A(http(s)?:\/\/)?(www.facebook.com|facebook.com)\/.*\Z/,
@@ -612,6 +612,8 @@ class User < ApplicationRecord
     return if uri.host&.in?(Constants::ALLOWED_MASTODON_INSTANCES)
 
     errors.add(:mastodon_url, "is not an allowed Mastodon instance")
+  rescue URI::InvalidURIError
+    errors.add(:mastodon_url, "is not a valid url")
   end
 
   def tag_list
