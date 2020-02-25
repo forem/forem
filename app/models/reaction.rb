@@ -21,7 +21,7 @@ class Reaction < ApplicationRecord
   validate  :permissions
 
   before_save :assign_points
-  after_create :record_field_test_event
+  after_create_commit :record_field_test_event
   after_commit :async_bust, :bust_reactable_cache, :update_reactable
   after_save :index_to_algolia
   after_save :touch_user
