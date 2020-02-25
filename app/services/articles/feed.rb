@@ -1,6 +1,9 @@
 module Articles
   class Feed
-    def initialize(number_of_articles: 35, page: 1, tag: nil)
+    RankedArticle = Struct.new(:article, :score)
+
+    def initialize(user: nil, number_of_articles: 35, page: 1, tag: nil)
+      @user = user
       @number_of_articles = number_of_articles
       @page = page
       @tag = tag
@@ -36,12 +39,34 @@ module Articles
           limited_column_select.order("published_at DESC").limit(rand(15..80))
         hot_stories = hot_stories.to_a + new_stories.to_a
       end
+      hot_stories = rank_articles(hot_stories)
       [featured_story, hot_stories]
     end
 
     def default_home_feed(user_signed_in: false)
       _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: user_signed_in)
       stories
+    end
+
+    def rank_articles(articles)
+      ranked_articles = articles.map do |article|
+        article_points = 0
+        article_points += score_followed_user(article)
+        article_points += score_followed_organization(article)
+        # article_points += score_randomness
+        # article_points += score_language(article)
+        # article_points += score_experience_level(article)
+        RankedArticle.new(article, article_points)
+      end
+      ranked_articles.sort { |a, b| b.score <=> a.score }.map(&:article)
+    end
+
+    def score_followed_user(article)
+      @user&.cached_following_users_ids&.include?(article.user_id) ? 1 : 0
+    end
+
+    def score_followed_organization(article)
+      @user&.cached_following_organizations_ids&.include?(article.organization_id) ? 1 : 0
     end
   end
 end

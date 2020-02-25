@@ -220,7 +220,7 @@ class StoriesController < ApplicationController
   end
 
   def assign_feed_stories
-    feed = Articles::Feed.new(page: @page, tag: params[:tag])
+    feed = Articles::Feed.new(user: current_user, page: @page, tag: params[:tag])
     if params[:timeframe].in?(Timeframer::FILTER_TIMEFRAMES)
       @stories = feed.top_articles_by_timeframe(timeframe: params[:timeframe])
     elsif params[:timeframe] == Timeframer::LATEST_TIMEFRAME
