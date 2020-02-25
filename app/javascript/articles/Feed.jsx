@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { FEED_ICONS } from '../packs/feedIcons.js.erb';
 
-/* global userData */
+/* global userData sendHapticMessage showModal buttonFormData renderNewSidebarCount */
 
 export class Feed extends Component {
   componentDidMount() {
@@ -45,6 +45,61 @@ export class Feed extends Component {
     }).then(response => response.json());
   }
 
+  /**
+   * Dispatches a click event to bookmark/unbook,ard an article.
+   *
+   * @param {Event} event
+   */
+  bookmarkClick = event => {
+    // The assumption is that the user is logged on at this point.
+    const { userStatus } = document.body;
+    event.preventDefault();
+    sendHapticMessage('medium');
+
+    if (userStatus === 'logged-out') {
+      showModal('add-to-readinglist-from-index');
+      return;
+    }
+
+    const { currentTarget: button } = event;
+    const data = buttonFormData(button);
+
+    getCsrfToken()
+      .then(sendFetch('reaction-creation', data))
+      // eslint-disable-next-line consistent-return
+      .then(response => {
+        if (response.status === 200) {
+          return response.json().then(json => {
+            const articleId = Number(button.dataset.reactableId);
+
+            this.setState(previousState => {
+              const { bookmarkedFeedItems } = previousState;
+
+              const { result } = json;
+              const updatedBookmarkedFeedItems = new Set([
+                ...bookmarkedFeedItems.values(),
+              ]);
+
+              if (result === 'create') {
+                updatedBookmarkedFeedItems.add(articleId);
+              }
+
+              if (result === 'destroy') {
+                updatedBookmarkedFeedItems.delete(articleId);
+              }
+
+              renderNewSidebarCount(button, json);
+
+              return {
+                ...previousState,
+                bookmarkedFeedItems: updatedBookmarkedFeedItems,
+              };
+            });
+          });
+        }
+      });
+  };
+
   render() {
     const { renderFeed } = this.props;
     const {
@@ -64,6 +119,7 @@ export class Feed extends Component {
           feedIcons: FEED_ICONS,
           podcastEpisodes,
           bookmarkedFeedItems,
+          bookmarkClick: this.bookmarkClick,
         })}
       </div>
     );
