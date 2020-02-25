@@ -9,12 +9,10 @@
     </div>
     <a href="#articles-list" class="skip-content-link">Skip to content</a>
     <a href="/" class="logo-link" id="logo-link" aria-label="<%= ApplicationConfig["COMMUNITY_NAME"] %> Home"><%= logo_svg %></a>
-    <div id="nav-search-form-root">
-      <div class="nav-search-form">
-        <form acceptCharset="UTF-8" method="get">
-          <input class="nav-search-form__input" type="text" name="q" id="nav-search" placeholder="Search" autoComplete="off" />
-        </form>
-      </div>
+    <div class="top-bar--search js-top-bar-search" id="nav-search-form-root">
+      <form acceptCharset="UTF-8" method="get" action="/search">
+        <input class="top-bar--search-input" type="text" name="q" id="nav-search" placeholder="Search" autoComplete="off" />
+      </form>
     </div>
     <div class="top-bar--actions">
       <a href="/new" id="write-link" class="cta nav-link write">WRITE A POST</a>

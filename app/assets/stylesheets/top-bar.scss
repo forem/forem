@@ -270,7 +270,7 @@
   }
 }
 
-#nav-search-form-root {
+.top-bar--search {
   display: flex;
   max-width: 490px;
   padding: 0 8px;
@@ -280,12 +280,12 @@
   & * {
     box-sizing: border-box;
   }
-}
 
-.nav-search-form {
-  width: 100%;
-  &__input {
-    margin: 0;
+  form {
+    width: 100%;
+  }
+
+  .top-bar--search-input {
     width: 100%;
     border-radius: 3px;
     padding: 6px 9px 5px;
