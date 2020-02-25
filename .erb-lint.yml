@@ -29,3 +29,5 @@ linters:
         Enabled: false
       Rails/OutputSafety:
         Enabled: false
+        Exclude:
+          - '**/app/views/layouts/_styles.html.erb'
