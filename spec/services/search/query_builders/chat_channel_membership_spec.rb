@@ -38,6 +38,19 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
       expect(query.as_hash.dig("query", "bool", "must")).to match_array(expected_query)
     end
 
+    it "applies QUERY_KEYS and FILTER_KEYS from params" do
+      params = { channel_text: "a_name", channel_status: "active" }
+      query = described_class.new(params, 1)
+      expected_query = [{
+        "simple_query_string" => {
+          "query" => "a_name*", "fields" => [:channel_text], "lenient" => true, "analyze_wildcard" => true
+        }
+      }]
+      expected_filters = [{ "term" => { "channel_status" => "active" } }, { "term" => { "viewable_by" => 1 } }]
+      expect(query.as_hash.dig("query", "bool", "must")).to match_array(expected_query)
+      expect(query.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
+    end
+
     it "ignores params we dont support" do
       params = { not_supported: "direct", status: "closed" }
       filter = described_class.new(params, 1)
