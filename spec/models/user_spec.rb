@@ -527,7 +527,7 @@ RSpec.describe User, type: :model do
       end
 
       it "does not enqueue when the email address or subscription status has not changed" do
-        user = create(:user, :ignore_after_callback)
+        user = create(:user, :ignore_mailchimp_subscribe_callback)
 
         sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(website_url: "http://example.com")
