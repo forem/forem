@@ -6,21 +6,23 @@ module Search
 
     class << self
       def search(query_string)
-        SearchClient.search(
-          index: INDEX_ALIAS,
-          body: {
-            query: {
-              query_string: {
-                query: query_string,
-                analyze_wildcard: true,
-                allow_leading_wildcard: false
+        request do
+          SearchClient.search(
+            index: INDEX_ALIAS,
+            body: {
+              query: {
+                query_string: {
+                  query: query_string,
+                  analyze_wildcard: true,
+                  allow_leading_wildcard: false
+                }
+              },
+              sort: {
+                hotness_score: "desc"
               }
             },
-            sort: {
-              hotness_score: "desc"
-            }
-          },
-        )
+          )
+        end
       end
 
       def search_documents(query_string)

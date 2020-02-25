@@ -4,7 +4,7 @@ RSpec.describe Search::ClassifiedListing, type: :service, elasticsearch: true do
   describe "::index" do
     it "indexes a classified_listing to elasticsearch" do
       classified_listing = FactoryBot.create(:classified_listing)
-      expect { described_class.find_document(classified_listing.id) }.to raise_error(Elasticsearch::Transport::Transport::Errors::NotFound)
+      expect { described_class.find_document(classified_listing.id) }.to raise_error(Search::Errors::Transport::NotFound)
       described_class.index(classified_listing.id, classified_listing.serialized_search_hash)
       expect(described_class.find_document(classified_listing.id)).not_to be_nil
     end
@@ -24,7 +24,7 @@ RSpec.describe Search::ClassifiedListing, type: :service, elasticsearch: true do
       classified_listing.index_to_elasticsearch_inline
       expect { described_class.find_document(classified_listing.id) }.not_to raise_error
       described_class.delete_document(classified_listing.id)
-      expect { described_class.find_document(classified_listing.id) }.to raise_error(Elasticsearch::Transport::Transport::Errors::NotFound)
+      expect { described_class.find_document(classified_listing.id) }.to raise_error(Search::Errors::Transport::NotFound)
     end
   end
 

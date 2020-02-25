@@ -11,7 +11,7 @@ RSpec.describe Search::ChatChannelMembershipEsIndexWorker, type: :worker, elasti
 
   it "indexes chat_channel_membership" do
     chat_channel_membership = FactoryBot.create(:chat_channel_membership)
-    expect { chat_channel_membership.elasticsearch_doc }.to raise_error(Elasticsearch::Transport::Transport::Errors::NotFound)
+    expect { chat_channel_membership.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
     worker.perform(chat_channel_membership.id)
     expected_hash = chat_channel_membership.serialized_search_hash.stringify_keys
     expect(chat_channel_membership.elasticsearch_doc.dig("_source")).to include(

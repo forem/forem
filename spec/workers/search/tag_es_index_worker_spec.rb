@@ -11,7 +11,7 @@ RSpec.describe Search::TagEsIndexWorker, type: :worker, elasticsearch: true do
 
   it "indexes tag" do
     tag = FactoryBot.create(:tag)
-    expect { tag.elasticsearch_doc }.to raise_error(Elasticsearch::Transport::Transport::Errors::NotFound)
+    expect { tag.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
     worker.perform(tag.id)
     expect(tag.elasticsearch_doc.dig("_source")).to eq(
       tag.serialized_search_hash.stringify_keys,

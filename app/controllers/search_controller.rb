@@ -5,8 +5,7 @@ class SearchController < ApplicationController
     tag_docs = Search::Tag.search_documents("name:#{params[:name]}* AND supported:true")
 
     render json: { result: tag_docs }
-  rescue Elasticsearch::Transport::Transport::Errors::BadRequest
-    DatadogStatsClient.increment("elasticsearch.errors", tags: ["error:BadRequest"])
+  rescue Search::Errors::Transport::BadRequest
     render json: { result: [] }
   end
 end
