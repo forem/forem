@@ -1,5 +1,4 @@
 import { h, render } from 'preact';
-import { renderFeed } from './homePageFeed';
 
 /* global userData */
 
@@ -66,37 +65,39 @@ function renderTagsFollowed(tagsFollowedContainer, user = userData()) {
   });
 }
 
-const feedTimeFrame = frontPageFeedPathNames.get(window.location.pathname);
+import('./homePageFeed').then(({ renderFeed }) => {
+  const feedTimeFrame = frontPageFeedPathNames.get(window.location.pathname);
 
-let waitingForDataLoad = setTimeout(function dataLoadedCheck() {
-  const { user = null, userStatus } = document.body.dataset;
+  let waitingForDataLoad = setTimeout(function dataLoadedCheck() {
+    const { user = null, userStatus } = document.body.dataset;
 
-  if (userStatus === 'logged-out') {
-    renderFeed(feedTimeFrame);
-    return;
-  }
+    if (userStatus === 'logged-out') {
+      renderFeed(feedTimeFrame);
+      return;
+    }
 
-  if (userStatus === 'logged-in' && user !== null) {
-    // We have user data, render followed tags.
-    clearTimeout(waitingForDataLoad);
-    renderFeed(feedTimeFrame);
-    renderTagsFollowed(document.getElementById('sidebar-nav-followed-tags'));
-    return;
-  }
+    if (userStatus === 'logged-in' && user !== null) {
+      // We have user data, render followed tags.
+      clearTimeout(waitingForDataLoad);
+      renderFeed(feedTimeFrame);
+      renderTagsFollowed(document.getElementById('sidebar-nav-followed-tags'));
+      return;
+    }
 
-  // No user data yet for the logged on user, poll once more.
-  waitingForDataLoad = setTimeout(dataLoadedCheck, 40);
-}, 40);
+    // No user data yet for the logged on user, poll once more.
+    waitingForDataLoad = setTimeout(dataLoadedCheck, 40);
+  }, 40);
 
-InstantClick.on('change', () => {
-  const url = new URL(window.location);
-  const changedFeedTimeFrame = frontPageFeedPathNames.get(url.pathname);
+  InstantClick.on('change', () => {
+    const url = new URL(window.location);
+    const changedFeedTimeFrame = frontPageFeedPathNames.get(url.pathname);
 
-  if (!frontPageFeedPathNames.has(url.pathname)) {
-    return;
-  }
+    if (!frontPageFeedPathNames.has(url.pathname)) {
+      return;
+    }
 
-  renderFeed(changedFeedTimeFrame);
+    renderFeed(changedFeedTimeFrame);
+  });
 });
 
 InstantClick.on('receive', (address, body, title) => {
