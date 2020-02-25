@@ -25,24 +25,15 @@ class Tag < ActsAsTaggableOn::Tag
   before_validation :evaluate_markdown
   before_validation :pound_it
   before_save :calculate_hotness_score
-  after_commit :bust_cache, :index_to_elasticsearch
+  after_commit :bust_cache
+  after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :remove_from_elasticsearch, on: [:destroy]
   before_save :mark_as_updated
 
-  def index_to_elasticsearch
-    Search::TagEsIndexWorker.perform_async(id)
-  end
-
-  def index_to_elasticsearch_inline
-    Search::Tag.index(id, serialized_search_hash)
-  end
-
-  def serialized_search_hash
-    Search::TagSerializer.new(self).serializable_hash.dig(:data, :attributes)
-  end
-
-  def elasticsearch_doc
-    Search::Tag.find_document(id)
-  end
+  include Searchable
+  SEARCH_INDEX_WORKER = Search::TagEsIndexWorker
+  SEARCH_SERIALIZER = Search::TagSerializer
+  SEARCH_CLASS = Search::Tag
 
   def submission_template_customized(param_0 = nil)
     submission_template&.gsub("PARAM_0", param_0)

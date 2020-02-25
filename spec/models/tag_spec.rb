@@ -78,7 +78,7 @@ RSpec.describe Tag, type: :model do
 
   describe "#index_to_elasticsearch" do
     it "enqueues job to index tag to elasticsearch" do
-      sidekiq_assert_enqueued_with(job: Search::TagEsIndexWorker, args: [tag.id]) do
+      sidekiq_assert_enqueued_with(job: described_class::SEARCH_INDEX_WORKER, args: [tag.id]) do
         tag.index_to_elasticsearch
       end
     end
@@ -93,17 +93,24 @@ RSpec.describe Tag, type: :model do
   end
 
   describe "#after_commit" do
-    it "enqueues job to index tag to elasticsearch" do
+    it "on update enqueues job to index tag to elasticsearch" do
       tag.save
-      sidekiq_assert_enqueued_with(job: Search::TagEsIndexWorker, args: [tag.id]) do
+      sidekiq_assert_enqueued_with(job: described_class::SEARCH_INDEX_WORKER, args: [tag.id]) do
         tag.save
+      end
+    end
+
+    it "on destroy enqueues job to delete tag from elasticsearch" do
+      tag.save
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, tag.id]) do
+        tag.destroy
       end
     end
   end
 
   describe "#serialized_search_hash" do
     it "creates a valid serialized hash to send to elasticsearch" do
-      mapping_keys = Search::Tag.send("mappings").dig(:properties).keys
+      mapping_keys = Search::Tag::MAPPINGS.dig(:properties).keys
       expect(tag.serialized_search_hash.symbolize_keys.keys).to eq(mapping_keys)
     end
   end

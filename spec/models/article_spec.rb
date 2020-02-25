@@ -46,6 +46,26 @@ RSpec.describe Article, type: :model do
       end
     end
 
+    describe "#canonical_url_must_not_have_spaces" do
+      let!(:article) { build :article, user: user }
+
+      it "is valid without spaces" do
+        valid_url = "https://www.positronx.io/angular-radio-buttons-example/"
+        article.canonical_url = valid_url
+
+        expect(article).to be_valid
+      end
+
+      it "is not valid with spaces" do
+        invalid_url = "https://www.positronx.io/angular radio-buttons-example/"
+        article.canonical_url = invalid_url
+        messages = ["must not have spaces"]
+
+        expect(article).not_to be_valid
+        expect(article.errors.messages[:canonical_url]).to eq messages
+      end
+    end
+
     describe "#main_image" do
       it "must have url for main image if present" do
         article.main_image = "hello"
@@ -90,7 +110,7 @@ RSpec.describe Article, type: :model do
       end
 
       it "is valid with valid liquid tags", :vcr do
-        VCR.use_cassette("twitter_gem") do
+        VCR.use_cassette("twitter_fetch_status") do
           article = build_and_validate_article(with_tweet_tag: true)
           expect(article).to be_valid
         end
@@ -354,6 +374,17 @@ RSpec.describe Article, type: :model do
     it "returns false if the article does not have a frontmatter" do
       article.body_markdown = "Hey hey Ho Ho"
       expect(article.has_frontmatter?).to eq(false)
+    end
+
+    it "returns true if parser raises a Psych::DisallowedClass error" do
+      allow(FrontMatterParser::Parser).to receive(:new).and_raise(Psych::DisallowedClass.new("msg"))
+      expect(article.has_frontmatter?).to eq(true)
+    end
+
+    it "returns true if parser raises a Psych::SyntaxError error" do
+      syntax_error = Psych::SyntaxError.new("file", 1, 1, 0, "problem", "context")
+      allow(FrontMatterParser::Parser).to receive(:new).and_raise(syntax_error)
+      expect(article.has_frontmatter?).to eq(true)
     end
   end
 

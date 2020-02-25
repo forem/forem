@@ -3,6 +3,8 @@ module Api
     class GithubReposController < ApiController
       include Pundit
 
+      before_action :authenticate_user!
+
       def index
         client = create_octokit_client
 

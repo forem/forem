@@ -45,6 +45,7 @@ class Article < ApplicationRecord
   validate :validate_collection_permission
   validate :validate_liquid_tag_permissions
   validate :past_or_present_date
+  validate :canonical_url_must_not_have_spaces
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :cached_tag_list, length: { maximum: 126 }
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
@@ -168,7 +169,7 @@ class Article < ApplicationRecord
                             "user_name",
                             "user_username",
                             "comments_blob"]
-      attributesForFaceting [:class_name]
+      attributesForFaceting %i[class_name approved]
       customRanking ["desc(search_score)", "desc(hotness_score)"]
     end
 
@@ -320,7 +321,7 @@ class Article < ApplicationRecord
     begin
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
       parsed.front_matter["title"].present?
-    rescue Psych::SyntaxError
+    rescue Psych::SyntaxError, Psych::DisallowedClass
       # if frontmatter is invalid, still render editor with errors instead of 500ing
       true
     end
@@ -566,6 +567,10 @@ class Article < ApplicationRecord
     if published_at && published_at > Time.current
       errors.add(:date_time, "must be entered in DD/MM/YYYY format with current or past date")
     end
+  end
+
+  def canonical_url_must_not_have_spaces
+    errors.add(:canonical_url, "must not have spaces") if canonical_url.to_s.match?(/[[:space:]]/)
   end
 
   # Admin only beta tags etc.

@@ -67,6 +67,16 @@ RSpec.describe Search::Tag, type: :service, elasticsearch: true do
     end
   end
 
+  describe "::delete_document" do
+    it "deletes a document for a given ID from elasticsearch" do
+      tag = FactoryBot.create(:tag)
+      tag.index_to_elasticsearch_inline
+      expect { described_class.find_document(tag.id) }.not_to raise_error
+      described_class.delete_document(tag.id)
+      expect { described_class.find_document(tag.id) }.to raise_error(Elasticsearch::Transport::Transport::Errors::NotFound)
+    end
+  end
+
   describe "::create_index" do
     it "creates an elasticsearch index with INDEX_NAME" do
       described_class.delete_index
@@ -128,7 +138,7 @@ RSpec.describe Search::Tag, type: :service, elasticsearch: true do
 
       described_class.update_mappings(index_alias: other_name)
       mapping = SearchClient.indices.get_mapping(index: other_name).dig(other_name, "mappings")
-      expect(mapping.deep_stringify_keys).to include(described_class.send("mappings").deep_stringify_keys)
+      expect(mapping.deep_stringify_keys).to include(described_class::MAPPINGS.deep_stringify_keys)
 
       # Have to cleanup index since it wont automatically be handled by our cluster class bc of the unexpected name
       described_class.delete_index(index_name: other_name)

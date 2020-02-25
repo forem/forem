@@ -25,7 +25,7 @@
 <% end %>
 <%= javascript_pack_tag "homePage", defer: true %>
 
-<% cache("main-stories-index-#{params}-#{user_signed_in?}", expires_in: 90.seconds) do %>
+<% cache(cache_key_heroku_slug("main-stories-index-#{params}-#{user_signed_in?}"), expires_in: 90.seconds) do %>
   <div class="home" id="index-container"
       data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
       data-algolia-tag=""
@@ -95,7 +95,7 @@
               </h3>
             </div>
             <a href="/<%= @featured_story.cached_user.username %>" class="featured-profile-button">
-              <img class="featured-profile-pic" src="<%= ProfileImage.new(@featured_story.cached_user).get(width: 90) %>" alt="<%= @featured_story.title %>" />
+              <img class="featured-profile-pic" src="<%= ProfileImage.new(@featured_story.cached_user).get(width: 90) %>" width="40" height="40" alt="<%= @featured_story.title %>" />
             </a>
             <div class="featured-user-name">
               <a href="/<%= @featured_story.cached_user.username %>">

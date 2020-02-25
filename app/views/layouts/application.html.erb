@@ -7,6 +7,9 @@
     </div>
   <% end %>
   <div id="page-content-inner">
+    <% if @hero_html %>
+      <%= @hero_html.html_safe %>
+    <% end %>
     <%= yield %>
   </div>
 </div>

@@ -9,8 +9,8 @@ body {
   font-size: 18px;
   padding: 0;
   margin: 0;
-  margin-top: -20px;
   overflow-y: scroll;
+  padding-top: 46px; // height of header
 }
 
 #audiocontent {
@@ -28,8 +28,8 @@ body {
 }
 
 .ptr--ptr {
-  margin-top: 70px;
-  margin-bottom: -70px;
+  margin-top: 10px;
+  margin-bottom: -10px;
 }
 
 .modal-open {
@@ -66,18 +66,6 @@ body {
   overflow: hidden;
   min-height: 88vh;
   visibility: visible;
-  &.stories-index,
-  &.notifications-index,
-  &.stories-search,
-  &.podcast_episodes-index,
-  &.podcasts-new,
-  &.podcasts-create,
-  &.reading_list_items-index,
-  &.history-index,
-  .tags-index,
-  &.twitch_live_streams-show {
-    margin-top: 68px;
-  }
 }
 
 pre {
@@ -287,10 +275,9 @@ body.monospace-article-body {
 }
 
 body.static-navbar-config {
+  padding-top: 0;
   .top-bar {
     position: relative !important;
-    margin-top: 20px !important;
-    margin-bottom: -66px !important;
   }
 }
 
@@ -310,10 +297,10 @@ body.hidden-shell {
     display: none;
   }
   .container {
-    margin-top: 20px;
+    margin-top: 0px;
   }
   .universal-page-content-wrapper {
-    margin-top: 0px !important;
+    margin-top: -46px !important;
     margin-bottom: 30px;
   }
 }
