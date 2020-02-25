@@ -966,6 +966,7 @@ ActiveRecord::Schema.define(version: 2020_02_26_192145) do
     t.text "rules_markdown"
     t.string "short_summary"
     t.string "social_image"
+    t.string "social_preview_template", default: "article"
     t.string "submission_rules_headsup"
     t.text "submission_template"
     t.boolean "supported", default: false
