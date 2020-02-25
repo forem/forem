@@ -7,12 +7,13 @@ RSpec.describe "Comments", type: :request do
   let(:podcast) { create(:podcast) }
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
   let(:base_comment_params) do
-    { 
+    {
       comment: {
         commentable_id: article.id,
         commentable_type: "Article",
         user_id: user.id,
-        body_markdown: "New comment #{rand(10)}" }
+        body_markdown: "New comment #{rand(10)}"
+      }
     }
   end
   let!(:comment) do
@@ -281,7 +282,7 @@ RSpec.describe "Comments", type: :request do
 
       it "converts field test" do
         post "/comments", params: base_comment_params
-        expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).with(user.id, :user_home_feed, "makes_comment")
+        expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).with(user.id, :user_home_feed, "user_creates_comment")
       end
     end
   end

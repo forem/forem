@@ -11,9 +11,9 @@ experiments:
       - 25
       - 25
     goals:
-      - makes_comment
-      - makes_reaction
-      - makes_article_pageview_four_days_in_week
+      - user_creates_comment
+      - user_creates_reaction
+      - user_views_article_four_days_in_week
 exclude:
   bots: true
 

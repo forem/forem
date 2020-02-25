@@ -30,6 +30,6 @@ class PageView < ApplicationRecord
   def record_field_test_event
     return unless user_id
 
-    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "makes_article_pageview_four_days_in_week")
+    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "user_views_article_four_days_in_week")
   end
 end

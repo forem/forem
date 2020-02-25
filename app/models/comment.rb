@@ -308,7 +308,6 @@ class Comment < ApplicationRecord
   end
 
   def record_field_test_event
-    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "makes_comment")
-    # field_test_converted(:user_home_feed, participant: user, goal: "makes_comment")
+    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "user_creates_comment")
   end
 end
