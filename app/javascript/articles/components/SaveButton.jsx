@@ -27,6 +27,7 @@ export class SaveButton extends Component {
           className={`article-engagement-count engage-button bookmark-button ${
             isBookmarked ? 'selected' : ''
           }`}
+          data-initial-feed
           data-reactable-id={article.id}
           onClick={onClick}
           onMouseOver={mouseOver}

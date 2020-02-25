@@ -1,5 +1,3 @@
-'use strict';
-
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-undef */
 /* eslint-disable func-names */
@@ -8,29 +6,15 @@
 
 function initializeReadingListIcons() {
   addReadingListCountToHomePage();
-
-  // TODO: This snippet of code is in a few places now. I'll promote it to a simple function.
-  if (
-    [
-      '/',
-      '/top/week',
-      '/top/month',
-      '/top/year',
-      '/top/infinity',
-      '/latest',
-    ].includes(window.location.pathname)
-  ) {
-    // We're on the front page in one of the feeds, so let Preact components handle the bookmark buttons.
-    return;
-  }
-
   setReadingListButtonsState();
   addHoverEffectToReadingListButtons();
 }
 
 // set SAVE or SAVED articles buttons
 function setReadingListButtonsState() {
-  var readingListButtons = document.getElementsByClassName('bookmark-button');
+  var readingListButtons = document.querySelectorAll(
+    '.bookmark-button:not([data-initial-feed])',
+  );
   Array.from(readingListButtons).forEach(highlightButton);
 }
 
