@@ -5,8 +5,8 @@
 /* eslint-disable no-unused-vars */
 
 function initializeReadingListIcons() {
-  addReadingListCountToHomePage();
   setReadingListButtonsState();
+  addReadingListCountToHomePage();
   addHoverEffectToReadingListButtons();
 }
 
