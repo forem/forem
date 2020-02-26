@@ -104,38 +104,49 @@ export function getChannels(
   successCb,
   _failureCb,
 ) {
-  const client = algoliasearch(props.algoliaId, props.algoliaKey);
-  const index = client.initIndex(props.algoliaIndex);
-  const filters = {
-    ...{
-      hitsPerPage: 30 + paginationNumber,
-      page: paginationNumber,
+  const dataHash = {};
+  if (additionalFilters.filters) {
+    const [key, value] = additionalFilters.filters.split(':');
+    dataHash[key] = value;
+  }
+  dataHash.per_page = 30;
+  dataHash.page = paginationNumber;
+  dataHash.channel_text = query;
+
+  const searchParams = new URLSearchParams(dataHash).toString();
+  return fetch(`/search/chat_channels?${searchParams}`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
     },
-    ...additionalFilters,
-  };
-  index.search(query, filters).then(content => {
-    const channels = content.hits;
-    if (
-      retrievalID === null ||
-      content.hits.filter(e => e.chat_channel_id === retrievalID).length === 1
-    ) {
-      successCb(channels, query);
-    } else {
-      fetch(
-        `/chat_channel_memberships/find_by_chat_channel_id?chat_channel_id=${retrievalID}`,
-        {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          credentials: 'same-origin',
-        },
-      )
-        .then(response => response.json())
-        .then(json => {
-          channels.unshift(json);
-          successCb(channels, query);
-        });
-    }
-  });
+    credentials: 'same-origin',
+  })
+    .then(response => response.json())
+    .then(response => {
+      const channels = response.result;
+      if (
+        retrievalID === null ||
+        channels.filter(e => e.chat_channel_id === retrievalID).length === 1
+      ) {
+        successCb(channels, query);
+      } else {
+        fetch(
+          `/chat_channel_memberships/find_by_chat_channel_id?chat_channel_id=${retrievalID}`,
+          {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            credentials: 'same-origin',
+          },
+        )
+          .then(individualResponse => individualResponse.json())
+          .then(json => {
+            channels.unshift(json);
+            successCb(channels, query);
+          });
+      }
+    });
 }
 
 export function getUnopenedChannelIds(successCb) {

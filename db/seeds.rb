@@ -92,7 +92,7 @@ Article.clear_index!
 num_articles.times do |i|
   tags = []
   tags << "discuss" if (i % 3).zero?
-  tags.concat Tag.order(Arel.sql("RANDOM()")).select("name").first(3).map(&:name)
+  tags.concat Tag.order(Arel.sql("RANDOM()")).limit(3).pluck(:name)
 
   markdown = <<~MARKDOWN
     ---
