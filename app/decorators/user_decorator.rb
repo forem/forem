@@ -20,7 +20,7 @@ class UserDecorator < ApplicationDecorator
 
   def cached_followed_tags
     Rails.cache.fetch("user-#{id}-#{updated_at}/followed_tags_11-30", expires_in: 20.hours) do
-      follows = Follow.where(follower_id: id, followable_type: "ActsAsTaggableOn::Tag").pluck(:followable_id, :points)
+      follows = Follow.follower_tag(id).pluck(:followable_id, :points)
       follows_map = follows.to_h
 
       tags = Tag.where(id: follows_map.keys).order(hotness_score: :desc)

@@ -37,7 +37,8 @@ class ChatChannelMembership < ApplicationRecord
   end
 
   def channel_text
-    "#{chat_channel.channel_name} #{chat_channel.slug} #{chat_channel.channel_human_names}"
+    parsed_channel_name = chat_channel.channel_name&.gsub("chat between", "")&.gsub("and", "")
+    "#{parsed_channel_name} #{chat_channel.slug} #{chat_channel.channel_human_names.join(' ')}"
   end
 
   def channel_name

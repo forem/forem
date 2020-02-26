@@ -97,7 +97,7 @@ RSpec.describe "Internal::Users", type: :request do
       post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
 
       expect(user.follows.count).to eq(expected_follows_count)
-      expect(Follow.where(followable_id: user.id, followable_type: "User").count).to eq(1)
+      expect(Follow.followable_user(user.id).count).to eq(1)
       expect(user.chat_channel_memberships.count).to eq(expected_channel_memberships_count)
       expect(user.mentions.count).to eq(expected_mentions_count)
     end
