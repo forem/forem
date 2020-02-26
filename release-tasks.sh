@@ -2,7 +2,7 @@
 
 notify () {
   FAILED_COMMAND="$(caller): ${BASH_COMMAND}" \
-    bundle exec bin/rails runner "ReleasePhaseNotifier.ping_slack"
+    bundle exec rails runner "ReleasePhaseNotifier.ping_slack"
 }
 
 trap notify ERR
