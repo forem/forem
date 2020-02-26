@@ -17,8 +17,8 @@
         </p>
         <h3>Status:</h3>
         <h3>
-          <span class="badge badge-<%= broadcast.sent ? "success" : "warning" %>">
-            <%= broadcast.sent ? "Sent" : "Not Sent" %>
+          <span class="badge badge-<%= broadcast.active? ? "success" : "warning" %>">
+            <%= broadcast.active? ? "Active" : "Inactive" %>
           </span>
           <span class="sr-only">Broadcast Status</span>
         </h3>
