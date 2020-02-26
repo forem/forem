@@ -50,7 +50,7 @@ module Search
       def build_queries
         @body[:query] = { bool: {} }
         @body[:query][:bool][:filter] = filter_conditions if filter_keys_present?
-        @body[:query][:bool].merge!(must: query_conditions) if query_keys_present?
+        @body[:query][:bool][:must] = query_conditions if query_keys_present?
       end
 
       def add_sort
@@ -62,12 +62,14 @@ module Search
       end
 
       def filter_conditions
-        term_keys + range_keys
+        filter_conditions = []
+        filter_conditions.concat term_keys if term_keys_present?
+        filter_conditions.concat range_keys if range_keys_present?
+
+        filter_conditions
       end
 
       def term_keys
-        return [] if (@params.keys & TERM_KEYS).blank?
-
         TERM_KEYS.map do |term_key|
           next if @params[term_key].blank? && @params[term_key] != false
 
@@ -76,8 +78,6 @@ module Search
       end
 
       def range_keys
-        return [] if (@params.keys & RANGE_KEYS).blank?
-
         RANGE_KEYS.map do |range_key|
           next if @params[range_key].blank? && @params[range_key] != false
 
