@@ -63,10 +63,12 @@ class StoriesController < ApplicationController
   end
 
   def get_latest_campaign_articles
-    @latest_campaign_articles = Article.tagged_with(SiteConfig.campaign_featured_tags, any: true).
+    campaign_articles_scope = Article.tagged_with(SiteConfig.campaign_featured_tags, any: true).
       where("published_at > ?", 2.weeks.ago).where(approved: true).
-      order("hotness_score DESC").
-      pluck(:path, :title, :comments_count, :created_at)
+      order("hotness_score DESC")
+
+    @campaign_articles_count = campaign_articles_scope.count
+    @latest_campaign_articles = campaign_articles_scope.limit(3).pluck(:path, :title, :comments_count, :created_at)
   end
 
   def redirect_to_changed_username_profile

@@ -82,6 +82,22 @@
             </div>
 
             <div class="form-group">
+              <%= f.label :campaign_sidebar_image %>
+              <% if SiteConfig.campaign_sidebar_image %>
+                <div class="row mt-2">
+                  <div class="col-12">
+                    <img alt="Campaign sidebar image" class="img-fluid" src="<%= SiteConfig.campaign_sidebar_image %>" />
+                  </div>
+                </div>
+              <% end %>
+              <%= f.text_field :campaign_sidebar_image,
+                               class: "form-control",
+                               value: SiteConfig.campaign_sidebar_image,
+                               placeholder: "https://image.url" %>
+              <div class="alert alert-info">Used at the top of the campaign sidebar</div>
+            </div>
+
+            <div class="form-group">
               <%= f.label :campaign_featured_tags %>
               <%= f.text_field :campaign_featured_tags,
                                class: "form-control",
