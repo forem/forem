@@ -6,7 +6,7 @@ module Users
       user.notifications.delete_all
       user.reactions.delete_all
       user.follows.delete_all
-      Follow.where(followable_id: user.id, followable_type: "User").delete_all
+      Follow.followable_user(user.id).delete_all
       user.messages.delete_all
       Users::CleanupChatChannels.call(user)
       user.mentions.delete_all

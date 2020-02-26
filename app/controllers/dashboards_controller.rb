@@ -50,7 +50,7 @@ class DashboardsController < ApplicationController
   end
 
   def followers
-    @follows = Follow.where(followable_id: @user.id, followable_type: "User").
+    @follows = Follow.followable_user(@user.id).
       includes(:follower).order("created_at DESC").limit(@follows_limit)
   end
 
