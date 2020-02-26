@@ -236,6 +236,12 @@ RSpec.describe "Internal::Users", type: :request do
       expect(user.follows.count).to eq(0)
     end
 
+    it "removes a user's classified listings" do
+      create(:classified_listing, user: user)
+      banish_user
+      expect(user.classified_listings.count).to eq(0)
+    end
+
     it "creates an entry in the BanishedUsers table" do
       expect do
         banish_user
