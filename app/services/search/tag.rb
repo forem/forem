@@ -5,6 +5,13 @@ module Search
     MAPPINGS = JSON.parse(File.read("config/elasticsearch/mappings/tags.json"), symbolize_names: true).freeze
 
     class << self
+      def search_documents(query_string)
+        results = search(query_string)
+        results.dig("hits", "hits").map { |tag_doc| tag_doc.dig("_source") }
+      end
+
+      private
+
       def search(query_string)
         request do
           SearchClient.search(
@@ -24,13 +31,6 @@ module Search
           )
         end
       end
-
-      def search_documents(query_string)
-        results = search(query_string)
-        results.dig("hits", "hits").map { |tag_doc| tag_doc.dig("_source") }
-      end
-
-      private
 
       def index_settings
         if Rails.env.production?

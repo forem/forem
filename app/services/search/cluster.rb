@@ -1,5 +1,7 @@
 module Search
   class Cluster
+    include Transport
+
     SEARCH_CLASSES = [
       Search::ChatChannelMembership,
       Search::ClassifiedListing,
@@ -20,14 +22,18 @@ module Search
       end
 
       def update_settings
-        SearchClient.cluster.put_settings(body: default_settings)
+        request do
+          SearchClient.cluster.put_settings(body: default_settings)
+        end
       end
 
       def create_indexes
-        SEARCH_CLASSES.each do |search_class|
-          next if SearchClient.indices.exists(index: search_class::INDEX_NAME)
+        request do
+          SEARCH_CLASSES.each do |search_class|
+            next if SearchClient.indices.exists(index: search_class::INDEX_NAME)
 
-          search_class.create_index
+            search_class.create_index
+          end
         end
       end
 
@@ -42,10 +48,12 @@ module Search
       def delete_indexes
         return if Rails.env.production?
 
-        SEARCH_CLASSES.each do |search_class|
-          next unless SearchClient.indices.exists(index: search_class::INDEX_NAME)
+        request do
+          SEARCH_CLASSES.each do |search_class|
+            next unless SearchClient.indices.exists(index: search_class::INDEX_NAME)
 
-          search_class.delete_index
+            search_class.delete_index
+          end
         end
       end
 

@@ -1,5 +1,7 @@
 module Search
   class Base
+    include Transport
+
     class << self
       def index(doc_id, serialized_data)
         request do
@@ -18,7 +20,9 @@ module Search
       end
 
       def delete_document(doc_id)
-        SearchClient.delete(id: doc_id, index: self::INDEX_ALIAS)
+        request do
+          SearchClient.delete(id: doc_id, index: self::INDEX_ALIAS)
+        end
       end
 
       def create_index(index_name: self::INDEX_NAME)
@@ -52,25 +56,6 @@ module Search
       end
 
       private
-
-      TRANSPORT_EXCEPTIONS = [
-        Elasticsearch::Transport::Transport::Errors::BadRequest,
-        Elasticsearch::Transport::Transport::Errors::NotFound,
-      ].freeze
-
-      def request
-        yield
-      rescue *TRANSPORT_EXCEPTIONS => e
-        class_name = e.class.name.demodulize
-
-        DatadogStatsClient.increment("elasticsearch.errors", tags: ["error:#{class_name}"], message: e.message)
-
-        # raise specific error if known, generic one if unknown
-        error_class = "::Search::Errors::Transport::#{class_name}".safe_constantize
-        raise error_class, e.message if error_class
-
-        raise ::Search::Errors::TransportError, e.message
-      end
 
       def settings
         { settings: { index: index_settings } }
