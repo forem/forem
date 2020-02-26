@@ -10,6 +10,8 @@
  * - findAndApplyOnclickToRecords();
  */
 
+ audioInitialized = false;
+
 function initializePodcastPlayback() {
   function getById(name) {
     return document.getElementById(name);
@@ -20,8 +22,13 @@ function initializePodcastPlayback() {
   }
 
   function audioExistAndIsPlaying() {
+    var audio = getById('audio');
     var currentState = currentAudioState();
-    return getById('audio') && currentState.playing;
+    if (isNativeIOS()) {
+      return audio && currentState.playing;
+    } else {
+      return audio && currentState.playing && audioInitialized;
+    }
   }
 
   function recordExist() {
@@ -98,7 +105,7 @@ function initializePodcastPlayback() {
     ).innerHTML;
     var audio = getById('audio');
     audio.addEventListener('timeupdate', updateProgressListener(audio), false);
-    audio.load();
+    loadAudio(audio);
     playPause(audio);
     applyOnclickToPodcastBar(audio);
   }
@@ -172,12 +179,18 @@ function initializePodcastPlayback() {
       var currentState = currentAudioState();
       if (isNativeIOS()) {
         sendPodcastMessage('play;' + currentState.currentTime);
+        setPlaying(true);
       } else {
         audio.currrentTime = currentState.currentTime;
-        audio.play();
+        audio.play().then(function() {
+          setPlaying(true);
+          resolve();
+        }).catch(function(error) {
+          console.log(error);
+          setPlaying(false);
+          reject();
+        });
       }
-      setPlaying(true);
-      resolve();
     })
   }
 
@@ -280,7 +293,7 @@ function initializePodcastPlayback() {
     if (isNativeIOS()) {
       sendPodcastMessage('volume;' + currentState.volume);
     } else {
-      audio.volume = currentState.volume
+      audio.volume = currentState.volume;
     }
     saveMediaState(currentState);
   }
@@ -314,6 +327,7 @@ function initializePodcastPlayback() {
   function goToTime(e, audio) {
     var currentState = currentAudioState();
     var progress = getById('progress');
+    var time = getById('time');
     if (e.clientX > 128) {
       var percent = (e.clientX - 128) / (window.innerWidth - 133);
       var duration = currentState.duration;
@@ -361,9 +375,10 @@ function initializePodcastPlayback() {
     newState.volume = currentState.volume;
     newState.duration = currentState.duration;
     localStorage.setItem('media_playback_state_v2', JSON.stringify(newState));
+    return newState;
   }
 
-  function getMediaState() {
+  function initializeMedia() {
     var currentState = currentAudioState();
     document.getElementById('audiocontent').innerHTML = currentState.html;
     var audio = getById('audio');
@@ -376,6 +391,7 @@ function initializePodcastPlayback() {
     loadAudio(audio);
     if (currentState.playing) {
       playAudio(audio).catch(function(error) {
+        console.log(error);
         pausePodcastBar();
       });
     }
@@ -425,7 +441,7 @@ function initializePodcastPlayback() {
       }
       return currentState;
     } catch(e) {
-      console.log(e)
+      console.log(e);
       return newAudioState();
     }
   }
@@ -469,9 +485,12 @@ function initializePodcastPlayback() {
 
   spinPodcastRecord();
   findAndApplyOnclickToRecords();
-  getMediaState();
+  if (!audioInitialized) {
+    initializeMedia();
+    audioInitialized = true;
+  }
   var audio = getById('audio');
-  var audioContent = getById('audiocontent')
+  var audioContent = getById('audiocontent');
   if (audio && audioContent && audioContent.innerHTML.length < 25) { // audio not already loaded
     loadAudio(audio);
   }
