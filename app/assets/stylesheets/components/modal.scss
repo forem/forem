@@ -1,0 +1,34 @@
+.crayons-modal {
+  background: $snowflake;
+  border: 2px solid $smoke-100;
+  border-radius: $br-default;
+  padding: $su-4;
+
+  &:not(&__m),
+  &:not(&__l),
+  &:not(&__xl),
+  &:not(&__xxl),
+  &:not(&__l) {
+    max-width: 250px;
+  }
+
+  &__m {
+    padding: $su-6;
+    width: 320px; // todo?
+  }
+
+  &__l {
+    padding: $su-6;
+    width: 480px; // todo?
+  }
+
+  &__xl {
+    padding: $su-7;
+    width: 640px; // todo?
+  }
+
+  &__xxl {
+    padding: $su-8;
+    width: 800px; // todo?
+  }
+}
