@@ -26,7 +26,6 @@ class ChatChannelMembershipsController < ApplicationController
     authorize @chat_channel_membership
     if permitted_params[:user_action] == "accept"
       @chat_channel_membership.update(status: "active")
-      @chat_channel_membership.index!
     else
       @chat_channel_membership.update(status: "rejected")
     end
@@ -42,7 +41,6 @@ class ChatChannelMembershipsController < ApplicationController
       chat_channel_memberships.where(user_id: current_user.id).first
     authorize @chat_channel_membership
     @chat_channel_membership.update(status: "left_channel")
-    @chat_channel_membership.remove_from_index!
     @chat_channels_memberships = []
     render json: { result: "left channel" }, status: :created
   end
