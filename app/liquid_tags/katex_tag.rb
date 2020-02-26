@@ -1,6 +1,5 @@
 # TODO
-# - verify how this looks in darkmode
-# - Add proper error handling
+# - some kind of vulnerability protection?
 #
 # Known issue
 # - Does not currently support chemical type settings
@@ -16,14 +15,16 @@ class KatexTag < Liquid::Block
   def render(context)
     block = Nokogiri::HTML(super).at("body").text
 
-    parsed_content = Katex.render(block, display_mode: true)
+    parsed_content = begin
+                       Katex.render(block, display_mode: true)
+                     rescue ExecJS::ProgramError => e
+                       e.message
+                     end
 
     ActionController::Base.new.render_to_string(
       partial: PARTIAL,
       locals: { parsed_content: parsed_content },
     )
-  rescue ExecJS::ProgramError => e
-    raise StandardError, e.full_message
   end
 end
 
