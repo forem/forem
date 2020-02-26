@@ -68,8 +68,7 @@ RSpec.describe "Partnerships", type: :request do
           sign_in user
         end
 
-        describe "level sponsorshi[s" do
-          # should pass
+        describe "level sponsorships" do
           it "displays info about an existing sponsorship" do
             create(:sponsorship, level: :bronze, organization: org, user: user, expires_at: 3.days.from_now)
             get "/partnerships/bronze-sponsor"
@@ -77,21 +76,18 @@ RSpec.describe "Partnerships", type: :request do
             expect(response.body).to include("You are Subscribed as a Bronze Sponsor")
           end
 
-          # should pass
           it "displayes already sponsored for other level" do
             create(:sponsorship, level: :bronze, organization: org, user: user, expires_at: 3.days.from_now)
             get "/partnerships/silver-sponsor"
             expect(response.body).to include("You are already subscribed as a bronze sponsor")
           end
 
-          # should fail
           it "doesn't display info about an expired sponsorship" do
             create(:sponsorship, level: :bronze, organization: org, user: user, expires_at: 3.days.ago)
             get "/partnerships/bronze-sponsor"
             expect(response.body).not_to include("You are Subscribed as a Bronze Sponsor")
           end
 
-          # should fail
           it "doesn't display 'already sponsored' for the different level if an org has expired sponsorship" do
             create(:sponsorship, level: :bronze, organization: org, user: user, expires_at: 3.days.ago)
             get "/partnerships/silver-sponsor"
