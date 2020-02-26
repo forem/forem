@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import debounce from 'lodash.debounce';
 import ConfigImage from '../../assets/images/three-dots.svg';
 import {
   conductModeration,
@@ -902,7 +903,7 @@ export default class Chat extends Component {
                 <b>must</b>
               </em>
               {' '}
-              abide by the 
+              abide by the
               {' '}
               <a href="/code-of-conduct">code of conduct</a>
 .
@@ -914,7 +915,7 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You have joined 
+              You have joined
               {' '}
               {activeChannel.channel_name}
 ! All interactions
@@ -923,7 +924,7 @@ export default class Chat extends Component {
                 <b>must</b>
               </em>
               {' '}
-              abide by the 
+              abide by the
               {' '}
               <a href="/code-of-conduct">code of conduct</a>
 .
@@ -1028,7 +1029,7 @@ export default class Chat extends Component {
             >
               {'<'}
             </button>
-            <input placeholder="Filter" onKeyUp={this.triggerChannelFilter} />
+            <input placeholder="Filter" onKeyUp={debounce(this.triggerChannelFilter, 500)} />
             {invitesButton}
             <div className="chat__channeltypefilter">
               {this.renderChannelFilterButton(
