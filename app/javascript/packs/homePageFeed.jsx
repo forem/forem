@@ -33,6 +33,10 @@ const FeedLoading = () => (
     <LoadingArticle version='featured' />
     <LoadingArticle />
     <LoadingArticle />
+    <LoadingArticle />
+    <LoadingArticle />
+    <LoadingArticle />
+    <LoadingArticle />
   </div>
 );
 
