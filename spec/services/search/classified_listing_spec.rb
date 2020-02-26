@@ -102,12 +102,7 @@ RSpec.describe Search::ClassifiedListing, type: :service, elasticsearch: true do
   end
 
   describe "::search_documents" do
-    let(:classified_listing1) { create(:classified_listing) }
-    let(:classified_listing2) { create(:classified_listing) }
-    let(:classified_listing3) { create(:classified_listing) }
-    let(:classified_listing4) { create(:classified_listing) }
-    let(:classified_listing5) { create(:classified_listing) }
-    let(:classified_listings) { [classified_listing1, classified_listing2, classified_listing3, classified_listing4, classified_listing5] }
+    let(:classified_listing) { create(:classified_listing) }
 
     it "parses classified_listing document hits from search response" do
       mock_search_response = { "hits" => { "hits" => {} } }
@@ -120,15 +115,15 @@ RSpec.describe Search::ClassifiedListing, type: :service, elasticsearch: true do
       # classified_listing_search is a copy_to field including:
       # body_markdown, location, slug, tags, and title
       it "searches by classified_listing_search" do
-        allow(classified_listing1).to receive(:body_markdown).and_return("body_markdown with test")
-        allow(classified_listing2).to receive(:location).and_return("a test location")
-        allow(classified_listing3).to receive(:slug).and_return("a-test-slug")
-        allow(classified_listing4).to receive(:tag_list).and_return(["test"])
-        allow(classified_listing5).to receive(:title).and_return("a test title")
+        classified_listing1 = create(:classified_listing, body_markdown: "# body_markdown with test")
+        classified_listing2 = create(:classified_listing, location: "a test location")
+        classified_listing3 = create(:classified_listing, title: "this test title is testing slug")
+        classified_listing4 = create(:classified_listing, tag_list: ["test"])
+        classified_listing5 = create(:classified_listing, title: "a test title")
+        classified_listings = [classified_listing1, classified_listing2, classified_listing3, classified_listing4, classified_listing5]
         index_documents(classified_listings)
-        title_params = { size: 5, classified_listing_search: "test" }
 
-        classified_listing_docs = described_class.search_documents(params: title_params)
+        classified_listing_docs = described_class.search_documents(params: { size: 5, classified_listing_search: "test" })
         expect(classified_listing_docs.count).to eq(5)
         expect(classified_listing_docs.map { |t| t.dig("id") }).to match_array(classified_listings.map(&:id))
       end
@@ -136,118 +131,117 @@ RSpec.describe Search::ClassifiedListing, type: :service, elasticsearch: true do
 
     context "with a term filter" do
       it "searches by category" do
-        allow(classified_listing1).to receive(:category).and_return("forhire")
-        index_documents(classified_listings)
+        classified_listing.update(category: "forhire")
+        index_documents(classified_listing)
         params = { size: 5, category: "forhire" }
 
         classified_listing_docs = described_class.search_documents(params: params)
         expect(classified_listing_docs.count).to eq(1)
-        expect(classified_listing_docs.first["id"]).to eq(classified_listing1.id)
+        expect(classified_listing_docs.first["id"]).to eq(classified_listing.id)
       end
 
       it "searches by contact_via_connect" do
-        allow(classified_listing2).to receive(:contact_via_connect).and_return(true)
-        index_documents(classified_listings)
+        classified_listing.update(contact_via_connect: true)
+        index_documents(classified_listing)
         params = { size: 5, contact_via_connect: true }
 
         classified_listing_docs = described_class.search_documents(params: params)
         expect(classified_listing_docs.count).to eq(1)
-        expect(classified_listing_docs.first["id"]).to eq(classified_listing2.id)
+        expect(classified_listing_docs.first["id"]).to eq(classified_listing.id)
       end
 
       it "searches by location" do
-        allow(classified_listing3).to receive(:location).and_return("a location")
-        index_documents(classified_listings)
+        classified_listing.update(location: "a location")
+        index_documents(classified_listing)
         params = { size: 5, location: "location" }
 
         classified_listing_docs = described_class.search_documents(params: params)
         expect(classified_listing_docs.count).to eq(1)
-        expect(classified_listing_docs.first["id"]).to eq(classified_listing3.id)
+        expect(classified_listing_docs.first["id"]).to eq(classified_listing.id)
       end
 
       it "searches by slug" do
-        allow(classified_listing4).to receive(:slug).and_return("an-example-of-a-slug")
-        index_documents(classified_listings)
+        slug_classified_listing = FactoryBot.create(:classified_listing, title: "A slug is created from this title in a callback")
+        index_documents(slug_classified_listing)
         params = { size: 5, slug: "slug" }
 
         classified_listing_docs = described_class.search_documents(params: params)
         expect(classified_listing_docs.count).to eq(1)
-        expect(classified_listing_docs.first["id"]).to eq(classified_listing4.id)
+        expect(classified_listing_docs.first["id"]).to eq(slug_classified_listing.id)
       end
 
       it "searches by tags" do
-        allow(classified_listing5).to receive(:tag_list).and_return(%w[beginners career])
-        index_documents(classified_listings)
+        classified_listing.update(tag_list: %w[beginners career])
+        index_documents(classified_listing)
         params = { size: 5, tags: "career" }
 
         classified_listing_docs = described_class.search_documents(params: params)
         expect(classified_listing_docs.count).to eq(1)
-        expect(classified_listing_docs.first["id"]).to eq(classified_listing5.id)
+        expect(classified_listing_docs.first["id"]).to eq(classified_listing.id)
       end
 
       it "searches by title" do
-        allow(classified_listing1).to receive(:title).and_return("An Amazing Title")
-        index_documents(classified_listings)
+        classified_listing.update(title: "An Amazing Title")
+        index_documents(classified_listing)
         params = { size: 5, title: "amazing" }
 
         classified_listing_docs = described_class.search_documents(params: params)
         expect(classified_listing_docs.count).to eq(1)
-        expect(classified_listing_docs.first["id"]).to eq(classified_listing1.id)
+        expect(classified_listing_docs.first["id"]).to eq(classified_listing.id)
       end
 
       it "searches by user_id" do
-        allow(classified_listing2).to receive(:user_id).and_return(99)
-        index_documents(classified_listings)
-        params = { size: 5, user_id: 99 }
+        index_documents(classified_listing)
+        params = { size: 5, user_id: classified_listing.user_id }
 
         classified_listing_docs = described_class.search_documents(params: params)
         expect(classified_listing_docs.count).to eq(1)
-        expect(classified_listing_docs.first["id"]).to eq(classified_listing2.id)
+        expect(classified_listing_docs.first["id"]).to eq(classified_listing.id)
       end
 
       it "searches by bumped_at" do
-        allow(classified_listing3).to receive(:bumped_at).and_return(1.day.from_now)
-        index_documents(classified_listings)
+        classified_listing.update(bumped_at: 1.day.from_now)
+        index_documents(classified_listing)
         params = { size: 5, bumped_at: { gt: Time.current } }
 
         classified_listing_docs = described_class.search_documents(params: params)
         expect(classified_listing_docs.count).to eq(1)
-        expect(classified_listing_docs.first["id"]).to eq(classified_listing3.id)
+        expect(classified_listing_docs.first["id"]).to eq(classified_listing.id)
       end
 
       it "searches by expires_at" do
-        allow(classified_listing4).to receive(:expires_at).and_return(1.day.ago)
-        index_documents(classified_listings)
+        classified_listing.update(expires_at: 1.day.ago)
+        index_documents(classified_listing)
         params = { size: 5, expires_at: { lt: Time.current } }
 
         classified_listing_docs = described_class.search_documents(params: params)
         expect(classified_listing_docs.count).to eq(1)
-        expect(classified_listing_docs.first["id"]).to eq(classified_listing4.id)
+        expect(classified_listing_docs.first["id"]).to eq(classified_listing.id)
       end
     end
 
     it "sorts documents for a given field" do
-      allow(classified_listing1).to receive(:category).and_return("forhire")
-      allow(classified_listing2).to receive(:category).and_return("cfp")
-      index_documents([classified_listing1, classified_listing2])
+      classified_listing.update(category: "forhire")
+      classified_listing2 = FactoryBot.create(:classified_listing, category: "cfp")
+      index_documents([classified_listing, classified_listing2])
       params = { size: 5, sort_by: "category", sort_direction: "asc" }
 
       classified_listing_docs = described_class.search_documents(params: params)
       expect(classified_listing_docs.count).to eq(2)
       expect(classified_listing_docs.first["id"]).to eq(classified_listing2.id)
-      expect(classified_listing_docs.last["id"]).to eq(classified_listing1.id)
+      expect(classified_listing_docs.last["id"]).to eq(classified_listing.id)
     end
 
     it "sorts documents by bumped_at by default" do
-      allow(classified_listing1).to receive(:bumped_at).and_return(1.year.ago)
-      allow(classified_listing2).to receive(:bumped_at).and_return(Time.current)
-      index_documents([classified_listing1, classified_listing2])
+      classified_listing.update(bumped_at: 1.year.ago)
+      classified_listing2 = FactoryBot.create(:classified_listing, bumped_at: Time.current)
+      index_documents([classified_listing, classified_listing2])
       params = { size: 5 }
 
       classified_listing_docs = described_class.search_documents(params: params)
       expect(classified_listing_docs.count).to eq(2)
       expect(classified_listing_docs.first["id"]).to eq(classified_listing2.id)
-      expect(classified_listing_docs.last["id"]).to eq(classified_listing1.id)
+      expect(classified_listing_docs.last["id"]).to eq(classified_listing.id)
     end
   end
 end
