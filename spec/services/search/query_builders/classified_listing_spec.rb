@@ -38,6 +38,30 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
       end
     end
 
+    it "applies QUERY_KEYS from params" do
+      params = { classified_listing_search: "test" }
+      filter = described_class.new(params)
+      exepcted_query = [{
+        "simple_query_string" => {
+          "query" => "test*", "fields" => [:classified_listing_search], "lenient" => true, "analyze_wildcard" => true
+        }
+      }]
+      expect(filter.as_hash.dig("query", "bool", "must")).to match_array(exepcted_query)
+    end
+
+    it "applies QUERY_KEYS, TERM_KEYS, and RANGE_KEYS from params" do
+      Timecop.freeze(Time.current) do
+        params = { classified_listing_search: "test", bumped_at: Time.current, category: "cfp" }
+        filter = described_class.new(params)
+        exepcted_query = [{
+          "simple_query_string" => { "query" => "test*", "fields" => [:classified_listing_search], "lenient" => true, "analyze_wildcard" => true }
+        }]
+        exepcted_filters = [{ "range" => { "bumped_at" => Time.current } }, { "term" => { "category" => "cfp" } }]
+        expect(filter.as_hash.dig("query", "bool", "must")).to match_array(exepcted_query)
+        expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(exepcted_filters)
+      end
+    end
+
     it "ignores params we don't support" do
       params = { not_supported: "trash", category: "cfp" }
       filter = described_class.new(params)

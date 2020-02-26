@@ -105,7 +105,14 @@ module Search
         QUERY_KEYS.map do |query_key|
           next if @params[query_key].blank?
 
-          { match: { query_key => { query: @params[query_key] } } }
+          {
+            simple_query_string: {
+              query: "#{@params[query_key]}*",
+              fields: [query_key],
+              lenient: true,
+              analyze_wildcard: true
+            }
+          }
         end.compact
       end
     end
