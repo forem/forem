@@ -109,11 +109,6 @@ RSpec.describe Search::ClassifiedListing, type: :service, elasticsearch: true do
     let(:classified_listing5) { create(:classified_listing) }
     let(:classified_listings) { [classified_listing1, classified_listing2, classified_listing3, classified_listing4, classified_listing5] }
 
-    def index_documents(resources)
-      resources.each(&:index_to_elasticsearch_inline)
-      described_class.refresh_index
-    end
-
     it "parses classified_listing document hits from search response" do
       mock_search_response = { "hits" => { "hits" => {} } }
       allow(described_class).to receive(:search) { mock_search_response }
