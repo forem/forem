@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import debounce from 'lodash.debounce';
 
 const KEYS = {
   UP: 'ArrowUp',
@@ -439,7 +440,7 @@ class Tags extends Component {
           placeholder={`${maxTags} tags max, comma separated, no spaces or special characters`}
           autoComplete="off"
           value={defaultValue}
-          onInput={this.handleInput}
+          onInput={debounce(this.handleInput, 500)}
           onKeyDown={this.handleKeyDown}
           onBlur={this.handleFocusChange}
           onFocus={this.handleFocusChange}
