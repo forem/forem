@@ -1,4 +1,5 @@
 module Search
+  # Search client (uses Elasticsearch as a backend)
   class Client
     class << self
       # adapted from https://api.rubyonrails.org/classes/Module.html#method-i-delegate_missing_to
@@ -39,7 +40,13 @@ module Search
       end
 
       def target
-        @target ||= SearchClient
+        @target ||= Elasticsearch::Client.new(
+          url: ApplicationConfig["ELASTICSEARCH_URL"],
+          retry_on_failure: 5,
+          request_timeout: 30,
+          adapter: :typhoeus,
+          log: Rails.env.development?,
+        )
       end
     end
   end

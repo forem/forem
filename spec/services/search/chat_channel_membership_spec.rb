@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: true do
   describe "::index" do
     it "indexes a chat_channel_membership to elasticsearch" do
-      chat_channel_membership = FactoryBot.create(:chat_channel_membership)
+      chat_channel_membership = create(:chat_channel_membership)
       expect { described_class.find_document(chat_channel_membership.id) }.to raise_error(Search::Errors::Transport::NotFound)
       described_class.index(chat_channel_membership.id, id: chat_channel_membership.id)
       expect(described_class.find_document(chat_channel_membership.id)).not_to be_nil
@@ -12,7 +12,7 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
 
   describe "::find_document" do
     it "fetches a document for a given ID from elasticsearch" do
-      chat_channel_membership = FactoryBot.create(:chat_channel_membership)
+      chat_channel_membership = create(:chat_channel_membership)
       described_class.index(chat_channel_membership.id, id: chat_channel_membership.id)
       expect { described_class.find_document(chat_channel_membership.id) }.not_to raise_error
     end
@@ -20,7 +20,7 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
 
   describe "::delete_document" do
     it "deletes a document for a given ID from elasticsearch" do
-      chat_channel_membership = FactoryBot.create(:chat_channel_membership)
+      chat_channel_membership = create(:chat_channel_membership)
       chat_channel_membership.index_to_elasticsearch_inline
       expect { described_class.find_document(chat_channel_membership.id) }.not_to raise_error
       described_class.delete_document(chat_channel_membership.id)
@@ -31,16 +31,16 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
   describe "::create_index" do
     it "creates an elasticsearch index with INDEX_NAME" do
       described_class.delete_index
-      expect(SearchClient.indices.exists(index: described_class::INDEX_NAME)).to eq(false)
+      expect(Search::Client.indices.exists(index: described_class::INDEX_NAME)).to eq(false)
       described_class.create_index
-      expect(SearchClient.indices.exists(index: described_class::INDEX_NAME)).to eq(true)
+      expect(Search::Client.indices.exists(index: described_class::INDEX_NAME)).to eq(true)
     end
 
     it "creates an elasticsearch index with name argument" do
       other_name = "random"
-      expect(SearchClient.indices.exists(index: other_name)).to eq(false)
+      expect(Search::Client.indices.exists(index: other_name)).to eq(false)
       described_class.create_index(index_name: other_name)
-      expect(SearchClient.indices.exists(index: other_name)).to eq(true)
+      expect(Search::Client.indices.exists(index: other_name)).to eq(true)
 
       # Have to cleanup index since it wont automatically be handled by our cluster class bc of the unexpected name
       described_class.delete_index(index_name: other_name)
@@ -49,34 +49,34 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
 
   describe "::delete_index" do
     it "deletes an elasticsearch index with INDEX_NAME" do
-      expect(SearchClient.indices.exists(index: described_class::INDEX_NAME)).to eq(true)
+      expect(Search::Client.indices.exists(index: described_class::INDEX_NAME)).to eq(true)
       described_class.delete_index
-      expect(SearchClient.indices.exists(index: described_class::INDEX_NAME)).to eq(false)
+      expect(Search::Client.indices.exists(index: described_class::INDEX_NAME)).to eq(false)
     end
 
     it "deletes an elasticsearch index with name argument" do
       other_name = "random"
       described_class.create_index(index_name: other_name)
-      expect(SearchClient.indices.exists(index: other_name)).to eq(true)
+      expect(Search::Client.indices.exists(index: other_name)).to eq(true)
 
       described_class.delete_index(index_name: other_name)
-      expect(SearchClient.indices.exists(index: other_name)).to eq(false)
+      expect(Search::Client.indices.exists(index: other_name)).to eq(false)
     end
   end
 
   describe "::add_alias" do
     it "adds alias INDEX_ALIAS to elasticsearch index with INDEX_NAME" do
-      SearchClient.indices.delete_alias(index: described_class::INDEX_NAME, name: described_class::INDEX_ALIAS)
-      expect(SearchClient.indices.exists(index: described_class::INDEX_ALIAS)).to eq(false)
+      Search::Client.indices.delete_alias(index: described_class::INDEX_NAME, name: described_class::INDEX_ALIAS)
+      expect(Search::Client.indices.exists(index: described_class::INDEX_ALIAS)).to eq(false)
       described_class.add_alias
-      expect(SearchClient.indices.exists(index: described_class::INDEX_ALIAS)).to eq(true)
+      expect(Search::Client.indices.exists(index: described_class::INDEX_ALIAS)).to eq(true)
     end
 
     it "adds custom alias to elasticsearch index with INDEX_NAME" do
       other_alias = "random"
-      expect(SearchClient.indices.exists(index: other_alias)).to eq(false)
+      expect(Search::Client.indices.exists(index: other_alias)).to eq(false)
       described_class.add_alias(index_name: described_class::INDEX_NAME, index_alias: other_alias)
-      expect(SearchClient.indices.exists(index: other_alias)).to eq(true)
+      expect(Search::Client.indices.exists(index: other_alias)).to eq(true)
     end
   end
 
@@ -84,11 +84,11 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
     it "updates index mappings for chat_channel_membership index", :aggregate_failures do
       other_name = "random"
       described_class.create_index(index_name: other_name)
-      initial_mapping = SearchClient.indices.get_mapping(index: other_name).dig(other_name, "mappings")
+      initial_mapping = Search::Client.indices.get_mapping(index: other_name).dig(other_name, "mappings")
       expect(initial_mapping).to be_empty
 
       described_class.update_mappings(index_alias: other_name)
-      mapping = SearchClient.indices.get_mapping(index: other_name).dig(other_name, "mappings")
+      mapping = Search::Client.indices.get_mapping(index: other_name).dig(other_name, "mappings")
       expect(mapping.deep_stringify_keys).to include(described_class::MAPPINGS.deep_stringify_keys)
 
       # Have to cleanup index since it wont automatically be handled by our cluster class bc of the unexpected name

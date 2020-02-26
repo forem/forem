@@ -18,7 +18,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
 
     it "returns an empty array when a Bad Request error is raised" do
       sign_in authorized_user
-      allow(SearchClient).to receive(:search).and_raise(Search::Errors::Transport::BadRequest)
+      allow(Search::Client).to receive(:search).and_raise(Search::Errors::Transport::BadRequest)
       get "/search/tags"
       expect(response.parsed_body).to eq("result" => [])
     end
