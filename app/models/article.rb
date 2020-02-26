@@ -546,12 +546,12 @@ class Article < ApplicationRecord
 
   def remove_tag_adjustments_from_tag_list
     tags_to_remove = TagAdjustment.where(article_id: id, adjustment_type: "removal", status: "committed").pluck(:tag_name)
-    tag_list.remove(tags_to_remove, parser: ActsAsTaggableOn::TagParser) if tags_to_remove
+    tag_list.remove(tags_to_remove, parser: ActsAsTaggableOn::TagParser) if tags_to_remove.present?
   end
 
   def add_tag_adjustments_to_tag_list
     tags_to_add = TagAdjustment.where(article_id: id, adjustment_type: "addition", status: "committed").pluck(:tag_name)
-    tag_list.add(tags_to_add, parser: ActsAsTaggableOn::TagParser) if tags_to_add
+    tag_list.add(tags_to_add, parser: ActsAsTaggableOn::TagParser) if tags_to_add.present?
   end
 
   def validate_video
