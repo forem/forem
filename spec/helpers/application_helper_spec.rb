@@ -37,4 +37,10 @@ RSpec.describe ApplicationHelper, type: :helper do
       expect(helper.cache_key_heroku_slug("cache-me")).to eq("cache-me-abc123")
     end
   end
+
+  describe "#shell_version" do
+    it "is an integer" do
+      expect(helper.shell_version).to be_a(Integer)
+    end
+  end
 end

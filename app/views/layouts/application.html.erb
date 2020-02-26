@@ -1,5 +1,13 @@
 <%= render "shell/top" %>
-<style>.app-shell-loader {display: none;}</style>
+<% if internal_navigation? %>
+  <style>.app-shell-loader {display: none;}</style>
+  <script async>
+    var shellData = document.getElementById('shell-data')
+    if (shellData && parseInt(shellData.dataset.version) < <%= shell_version %>) {
+      window.location.reload()
+    }
+  </script>
+<% end %>
 <div id="page-content" class="universal-page-content-wrapper <%= view_class %>" data-current-page="<%= current_page %>">
   <% if flash[:global_notice] %>
     <div class="global-notice">

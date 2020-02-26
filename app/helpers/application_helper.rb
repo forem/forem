@@ -1,4 +1,8 @@
 module ApplicationHelper
+  def shell_version
+    0
+  end
+
   def user_logged_in_status
     user_signed_in? ? "logged-in" : "logged-out"
   end
