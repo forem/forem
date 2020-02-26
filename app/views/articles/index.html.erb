@@ -85,9 +85,13 @@
       </div>
       <%# END Feed menu bar %>
 
-      <div id="homepage-feed"></div>
+      <% if user_signed_in? %>
+        <div id="homepage-feed"></div>
+      <% else %>
+        <%= render "stories/main_stories_feed" %>
+      <% end %>
 
-      <%# TODO REMOVE LOADING DIV AND ACCOMPANYING JS %>
+      <div id="followed-podcasts" data-episodes="<%= @podcast_episodes.to_json(include: { podcast: { only: %i[slug title id], methods: %i[image_90] } }) %>"></div>
       <div class="loading-articles" id="loading-articles">
         loading...
       </div>

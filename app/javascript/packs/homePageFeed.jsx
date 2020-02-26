@@ -2,6 +2,7 @@ import { h, render } from 'preact';
 import { Article, LoadingArticle } from '../articles';
 import { FeaturedArticle } from '../articles/FeaturedArticle';
 import { Feed } from './Feed.jsx.erb';
+import { PodcastFeed } from '../podcasts/PodcastFeed';
 
 /**
  * Sends analytics about the featured article.
@@ -28,7 +29,7 @@ function sendFeaturedArticleAnalytics(articleId) {
 
 const FeedLoading = () => (
   <div>
-    <LoadingArticle />
+    <LoadingArticle version='featured' />
     <LoadingArticle />
     <LoadingArticle />
   </div>
@@ -39,17 +40,17 @@ const FeedLoading = () => (
  */
 export const renderFeed = timeFrame => {
   const feedContainer = document.getElementById('homepage-feed');
-
   render(
     <Feed
       timeFrame={timeFrame}
-      renderFeed={({ feedItems, feedIcons }) => {
+      renderFeed={({ feedItems, podcastItems, feedIcons }) => {
         if (feedItems.length === 0) {
           // Fancy loading ✨
           return <FeedLoading />;
         }
 
         const [featuredStory, ...subStories] = feedItems;
+        const podcastFeed = podcastItems.length > 0 ? <PodcastFeed podcastItems={podcastItems} /> : ''
 
         sendFeaturedArticleAnalytics(featuredStory.id);
 
@@ -63,7 +64,7 @@ export const renderFeed = timeFrame => {
               reactionsIcon={feedIcons.REACTIONS_ICON}
               commentsIcon={feedIcons.COMMENTS_ICON}
             />
-            <div id="article-index-podcast-div">PODCAST EPISODES</div>
+            {podcastFeed}
             {(subStories || []).map(story => (
               <Article
                 article={story}

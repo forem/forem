@@ -14,7 +14,7 @@ export class Feed extends Component {
   scrollHandler;
 
   componentDidMount() {
-    this.scrollHandler = _event => {
+    // this.scrollHandler = _event => {
       // // handle scroll logic for pages of feed data and get an extra page on load.
       // page += 1;
       // Feed.getFeedItems(this.props.timeFrame, page).then(feedItems => {
@@ -23,13 +23,14 @@ export class Feed extends Component {
       //     feedItems: previousState.feedItems.concat(feedItems),
       //   }));
       // });
-    };
+    // };
 
     Feed.getFeedItems(this.props.timeFrame).then(feedItems => {
       this.setState({ feedItems });
 
       this.feedContainer.addEventListener('scroll', this.scrollHandler);
     });
+    this.setState({ podcastItems: Feed.getPodcastItems() });
   }
 
   componentDidUpdate(prevProps) {
@@ -68,9 +69,24 @@ export class Feed extends Component {
     }).then(response => response.json());
   }
 
+  static getPodcastItems() {
+    const el = document.getElementById('followed-podcasts');
+    const user = userData();
+    const myEpisodes = []
+    if (user && user.followed_podcast_ids && user.followed_podcast_ids.length > 0) {
+      var data = JSON.parse(el.dataset.episodes);
+      data.forEach(function(ep) {
+        if (user.followed_podcast_ids.indexOf(ep.podcast.id) > -1) {
+          myEpisodes.push(ep);
+        }
+      });
+    }
+    return myEpisodes;
+  }
+
   render() {
     const { renderFeed } = this.props;
-    const { feedItems = [] } = this.state;
+    const { feedItems = [], podcastItems = [] } = this.state;
 
     return (
       <div
@@ -78,7 +94,7 @@ export class Feed extends Component {
           this.feedContainer = element;
         }}
       >
-        {renderFeed({ feedItems, feedIcons: FEED_ICONS })}
+        {renderFeed({ feedItems, podcastItems, feedIcons: FEED_ICONS })}
       </div>
     );
   }

@@ -72,7 +72,6 @@ let waitingForDataLoad = setTimeout(function dataLoadedCheck() {
   const { user = null, userStatus } = document.body.dataset;
 
   if (userStatus === 'logged-out') {
-    renderFeed(feedTimeFrame);
     return;
   }
 
