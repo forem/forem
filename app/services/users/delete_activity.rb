@@ -35,6 +35,7 @@ module Users
       user.profile_pins.delete_all
       user.rating_votes.delete_all
       user.tweets.delete_all
+      user.classified_listings.delete_all
 
       handle_feedback_messages(user)
     end
