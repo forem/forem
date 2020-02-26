@@ -53,9 +53,10 @@ module Articles
         article_points = 0
         article_points += score_followed_user(article)
         article_points += score_followed_organization(article)
-        # article_points += score_randomness
-        # article_points += score_language(article)
-        # article_points += score_experience_level(article)
+        article_points += score_followed_tags(article)
+        article_points += score_randomness
+        article_points += score_language(article)
+        article_points += score_experience_level(article)
         RankedArticle.new(article, article_points)
       end
       ranked_articles.sort { |a, b| b.score <=> a.score }.map(&:article)
@@ -65,8 +66,33 @@ module Articles
       @user&.cached_following_users_ids&.include?(article.user_id) ? 1 : 0
     end
 
+    def score_followed_tags(article)
+      @user.decorate.cached_followed_tags.select do |tag|
+        article.tag_list.include?(tag.name)
+      end.sum(&:points)
+    end
+
     def score_followed_organization(article)
       @user&.cached_following_organizations_ids&.include?(article.organization_id) ? 1 : 0
+    end
+
+    def score_randomness
+      random_number = rand
+      if random_number < 0.3
+        3
+      elsif random_number >= 0.3 && random_number < 0.6
+        6
+      else
+        0
+      end
+    end
+
+    def score_language(article)
+      @user.preferred_languages_array.include?(article.language || "en") ? 1 : -10
+    end
+
+    def score_experience_level(article)
+      - ((article.experience_level_rating - (@user.experience_level || 5).abs) / 2)
     end
   end
 end

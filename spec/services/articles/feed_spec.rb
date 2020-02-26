@@ -53,8 +53,6 @@ RSpec.describe Articles::Feed, type: :service do
   end
 
   describe "#default_home_feed_and_featured_story" do
-    # let!(:new_story) { create(:article, published_at: 1.minute.ago) }
-
     let(:featured_story) { feed.default_home_feed_and_featured_story.first }
     let(:stories) { feed.default_home_feed_and_featured_story.second }
 
@@ -75,12 +73,16 @@ RSpec.describe Articles::Feed, type: :service do
     end
 
     context "when user logged in" do
-      let(:stories) { feed.default_home_feed_and_featured_story(user_signed_in: true).second }
+      let(:result) { feed.default_home_feed_and_featured_story(user_signed_in: true) }
+      let(:featured_story) { result.first }
+      let(:stories) { result.second }
 
       it "only includes stories from less than 6 hours ago" do
         expect(stories).not_to include(old_story)
-        expect(stories).to include(hot_story)
         expect(stories).not_to include(article)
+
+        # Ideally we'd test for hot_story in the stories list, but the random offset selection makes that random
+        expect(featured_story).to eq(hot_story)
       end
     end
   end
@@ -152,6 +154,136 @@ RSpec.describe Articles::Feed, type: :service do
 
       it "returns a score of 0" do
         expect(feed.score_followed_organization(article)).to eq 0
+      end
+    end
+  end
+
+  describe "#score_randomness" do
+    context "when random number is less than 0.6 but greater than 0.3" do
+      it "returns 6" do
+        allow(feed).to receive(:rand).and_return(0.5)
+        expect(feed.score_randomness).to eq 6
+      end
+    end
+
+    context "when random number is less than 0.3" do
+      it "returns 3" do
+        allow(feed).to receive(:rand).and_return(0.1)
+        expect(feed.score_randomness).to eq 3
+      end
+    end
+
+    context "when random number is greater than 0.6" do
+      it "returns 0" do
+        allow(feed).to receive(:rand).and_return(0.9)
+        expect(feed.score_randomness).to eq 0
+      end
+    end
+  end
+
+  describe "#score_language" do
+    context "when article is in a user's preferred language" do
+      it "returns a score of 1" do
+        expect(feed.score_language(article)).to eq 1
+      end
+    end
+
+    context "when article is not in user's prferred language" do
+      before { article.language = "de" }
+
+      it "returns a score of -10" do
+        expect(feed.score_language(article)).to eq(-10)
+      end
+    end
+
+    context "when article doesn't have a language, assume english" do
+      before { article.language = nil }
+
+      it "returns a score of 1" do
+        expect(feed.score_language(article)).to eq 1
+      end
+    end
+  end
+
+  describe "#score_followed_tags" do
+    let(:tag) { create(:tag) }
+    let(:unfollowed_tag) { create(:tag) }
+
+    context "when article includes a followed tag" do
+      let(:article) { create(:article, tags: tag.name) }
+
+      before do
+        user.follow(tag)
+        user.save
+        user.follows.last.update(points: 2)
+      end
+
+      it "returns the followed tag point value" do
+        expect(feed.score_followed_tags(article)).to eq 2
+      end
+    end
+
+    context "when article includes multiple followed tags" do
+      let(:tag2) { create(:tag) }
+      let(:article) { create(:article, tags: "#{tag.name}, #{tag2.name}") }
+
+      before do
+        user.follow(tag)
+        user.follow(tag2)
+        user.save
+        user.follows.each { |follow| follow.update(points: 2) }
+      end
+
+      it "returns the sum of followed tag point values" do
+        expect(feed.score_followed_tags(article)).to eq 4
+      end
+    end
+
+    context "when article includes an unfollowed tag" do
+      let(:article) { create(:article, tags: "#{tag.name}, #{unfollowed_tag.name}") }
+
+      before do
+        user.follow(tag)
+        user.save
+      end
+
+      it "doesn't score the unfollowed tag" do
+        expect(feed.score_followed_tags(article)).to eq 1
+      end
+    end
+
+    context "when article doesn't include any followed tags" do
+      let(:article) { create(:article, tags: unfollowed_tag.name) }
+
+      it "returns 0" do
+        expect(feed.score_followed_tags(article)).to eq 0
+      end
+    end
+
+    context "when user doesn't follow any tags" do
+      it "returns 0" do
+        expect(user.cached_followed_tag_names).to be_empty
+        expect(feed.score_followed_tags(article)).to eq 0
+      end
+    end
+  end
+
+  describe "#score_experience_level" do
+    let(:article) { create(:article, experience_level_rating: 9) }
+
+    context "when user has an experience level" do
+      let(:user) { create(:user, experience_level: 3) }
+
+      it "returns negative of (absolute value of the difference between article and user experience) divided by 2" do
+        expect(feed.score_experience_level(article)).to eq(-3)
+      end
+    end
+
+    context "when the user does not have an experience level set" do
+      let(:user) { create(:user, experience_level: nil) }
+
+      it "uses a value of 5 for user experience level" do
+        expect(feed.score_experience_level(article)).to eq(-2)
       end
     end
   end
