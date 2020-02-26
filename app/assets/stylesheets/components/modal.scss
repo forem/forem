@@ -1,15 +1,15 @@
 .crayons-modal {
   background: $snowflake;
   border: 2px solid $smoke-100;
+  box-shadow: 2px 2px 0 $smoke-100;
   border-radius: $br-default;
   padding: $su-4;
 
   &:not(&__m),
   &:not(&__l),
   &:not(&__xl),
-  &:not(&__xxl),
-  &:not(&__l) {
-    max-width: 250px;
+  &:not(&__xxl) {
+    max-width: 250px; // __s
   }
 
   &__m {
@@ -30,5 +30,9 @@
   &__xxl {
     padding: $su-8;
     width: 800px; // todo?
+  }
+
+  &.is-hidden {
+    display: none;
   }
 }
