@@ -1,0 +1,14 @@
+@import '../vars/_variables.scss';
+
+// Basic Styling
+.crayons-textfield {
+  background: $smoke-00;
+  border: 1px solid $smoke-30;
+  line-height: $lh-base;
+  padding: 0.5em 1em;
+  border-radius: $br-default;
+  font-family: inherit;
+  margin: 0; //todo: do we need it?
+  -webkit-appearance: none;
+  width: 100%;
+}
