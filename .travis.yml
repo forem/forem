@@ -53,7 +53,7 @@ install:
 before_script:
   - bundle exec rails db:create
 script:
-  - bundle exec rails webpacker:compile
+  - bundle exec rails assets:precompile # compile both webpack and assets
   - bundle exec rails db:schema:load
   - './cc-test-reporter before-build'
   - 'bundle exec rspec spec --color --tty'
