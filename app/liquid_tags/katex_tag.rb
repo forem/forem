@@ -1,10 +1,3 @@
-# TODO
-# - some kind of vulnerability protection?
-#
-# Known issue
-# - Does not currently support chemical type settings
-# - Can't support really wide equation
-
 class KatexTag < Liquid::Block
   PARTIAL = "liquids/katex".freeze
 
