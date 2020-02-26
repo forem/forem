@@ -171,6 +171,22 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
       end
     end
 
+    context "with a query and filter" do
+      it "searches by channel_text and status" do
+        allow(chat_channel_membership1).to receive(:channel_text).and_return("a name")
+        allow(chat_channel_membership2).to receive(:channel_text).and_return("another name")
+        chat_channel_membership1.update(status: "active")
+        chat_channel_membership2.update(status: "inactive")
+        index_documents([chat_channel_membership1, chat_channel_membership2])
+        name_params = { size: 5, channel_text: "name", status: "active" }
+
+        chat_channel_membership_docs = described_class.search_documents(params: name_params, user_id: user.id)
+        expect(chat_channel_membership_docs.count).to eq(1)
+        doc_ids = chat_channel_membership_docs.map { |t| t.dig("id") }
+        expect(doc_ids).to include(chat_channel_membership1.id)
+      end
+    end
+
     it "sorts documents for given field" do
       chat_channel_membership1.update(status: "inactive")
       chat_channel_membership2.update(status: "active")
@@ -193,6 +209,14 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
       expect(chat_channel_membership_docs.count).to eq(2)
       expect(chat_channel_membership_docs.first["id"]).to eq(chat_channel_membership1.id)
       expect(chat_channel_membership_docs.last["id"]).to eq(chat_channel_membership2.id)
+    end
+
+    it "will return a set number of docs based on pagination params" do
+      index_documents([chat_channel_membership1, chat_channel_membership2])
+      params = { page: 0, per_page: 1 }
+
+      chat_channel_membership_docs = described_class.search_documents(params: params, user_id: user.id)
+      expect(chat_channel_membership_docs.count).to eq(1)
     end
   end
 end
