@@ -5,15 +5,15 @@ $ff-accent: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier,
   monospace;
 
 // Font sizes
-$fs-xs: 12px; // .75rem
-$fs-s: 14px; // .875rem
-$fs-base: 16px; // 1rem
-$fs-l: 18px; // 1.125rem
-$fs-xl: 20px; // 1.25rem
-$fs-xxl: 24px; // 1.5rem
-$fs-xxxl: 30px; // 1.875rem
-$fs-xxxxl: 36px; // 2.25rem
-$fs-xxxxxl: 48px; // 3rem
+$fs-xs: 0.75rem;
+$fs-s: 0.875rem;
+$fs-base: 1rem;
+$fs-l: 1.125rem;
+$fs-xl: 1.25rem;
+$fs-xxl: 1.5rem;
+$fs-xxxl: 1.875rem;
+$fs-xxxxl: 2.25rem;
+$fs-xxxxxl: 3rem;
 
 // Line heights
 $lh-tight: 1.25; // 20px for 16px font-size
