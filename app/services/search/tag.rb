@@ -13,23 +13,21 @@ module Search
       private
 
       def search(query_string)
-        request do
-          SearchClient.search(
-            index: INDEX_ALIAS,
-            body: {
-              query: {
-                query_string: {
-                  query: query_string,
-                  analyze_wildcard: true,
-                  allow_leading_wildcard: false
-                }
-              },
-              sort: {
-                hotness_score: "desc"
+        Search::Client.search(
+          index: INDEX_ALIAS,
+          body: {
+            query: {
+              query_string: {
+                query: query_string,
+                analyze_wildcard: true,
+                allow_leading_wildcard: false
               }
             },
-          )
-        end
+            sort: {
+              hotness_score: "desc"
+            }
+          },
+        )
       end
 
       def index_settings
