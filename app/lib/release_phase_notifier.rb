@@ -3,7 +3,7 @@ class ReleasePhaseNotifier
     client = Slack::Notifier.new(
       ApplicationConfig["SLACK_WEBHOOK_URL"],
       channel: ApplicationConfig["SLACK_DEPLOY_CHANNEL"],
-      username: "heroku",
+      username: "Heroku",
     )
 
     client.ping("Release Phase Failed: #{ENV['FAILED_COMMAND']}")
