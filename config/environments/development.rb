@@ -116,11 +116,8 @@ Rails.application.configure do
 
     # Check if there are any data update scripts to run during startup
     if %w[c console runner s server].include?(ENV["COMMAND"])
-      if DataUpdateScript.scripts_to_run.any?
-        message = <<~ERROR
-          Data update scripts need to be run before you can start the application. Please run "rails data_updates:run"
-        ERROR
-        raise message
+      if DataUpdateScript.scripts_to_run?
+        raise "Data update scripts need to be run before you can start the application. Please run 'rails data_updates:run'"
       end
     end
   end
