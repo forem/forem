@@ -218,5 +218,15 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
       chat_channel_membership_docs = described_class.search_documents(params: params, user_id: user.id)
       expect(chat_channel_membership_docs.count).to eq(1)
     end
+
+    it "returns an empty Array if no results are found" do
+      allow(chat_channel_membership1).to receive(:channel_last_message_at).and_return(Time.current)
+      allow(chat_channel_membership2).to receive(:channel_last_message_at).and_return(1.year.ago)
+      index_documents([chat_channel_membership1, chat_channel_membership2])
+      params = { page: 3, per_page: 1 }
+
+      chat_channel_membership_docs = described_class.search_documents(params: params, user_id: user.id)
+      expect(chat_channel_membership_docs.count).to eq(0)
+    end
   end
 end
