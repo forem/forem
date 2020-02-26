@@ -2,7 +2,7 @@
 
 // Basic Styling
 .crayons-textfield {
-  background: $smoke-00;
+  background-color: $smoke-00;
   border: 1px solid $smoke-30;
   line-height: $lh-base;
   padding: 0.5em 1em;
@@ -11,4 +11,24 @@
   margin: 0; //todo: do we need it?
   -webkit-appearance: none;
   width: 100%;
+
+  &::placeholder {
+    color: $smoke-60;
+  }
+
+  &:focus {
+    background-color: $snowflake;
+    border-color: $dolphin;
+    box-shadow: 1px 1px 0 $dolphin;
+  }
+
+  &__disabled,
+  &[disabled] {
+    color: $smoke-60;
+    background-color: $smoke-10;
+  }
+
+  &::-ms-clear {
+    display: none;
+  }
 }
