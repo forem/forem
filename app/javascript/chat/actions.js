@@ -110,6 +110,7 @@ export function getChannels(
     dataHash[key] = value;
   }
   dataHash.per_page = 30;
+  dataHash.status = 'active';
   dataHash.page = paginationNumber;
   dataHash.channel_text = query;
 
