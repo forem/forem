@@ -40,7 +40,7 @@ RSpec.describe ApplicationHelper, type: :helper do
 
   describe "#shell_version" do
     it "is an integer" do
-      expect(helper.shell_version).to be_a(Integer)
+      expect(helper.impactful_shell_version).to be_a(Integer)
     end
   end
 end

@@ -1,5 +1,5 @@
 module ApplicationHelper
-  def shell_version
+  def impactful_shell_version
     0
   end
 

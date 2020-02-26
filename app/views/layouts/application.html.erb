@@ -3,7 +3,7 @@
   <style>.app-shell-loader {display: none;}</style>
   <script async>
     var shellData = document.getElementById('shell-data')
-    if (shellData && parseInt(shellData.dataset.version) < <%= shell_version %>) {
+    if (shellData && parseInt(shellData.dataset.version) < <%= impactful_shell_version %>) {
       window.location.reload()
     }
   </script>
