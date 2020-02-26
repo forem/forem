@@ -32,6 +32,8 @@ class Sponsorship < ApplicationRecord
   scope :live, -> { where(status: :live) }
   scope :pending, -> { where(status: :pending) }
 
+  scope :unexpired, -> { where("expires_at > ?", Time.current) }
+
   private
 
   def validate_tag_uniqueness
