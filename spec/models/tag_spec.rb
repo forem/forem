@@ -78,7 +78,7 @@ RSpec.describe Tag, type: :model do
 
   describe "#index_to_elasticsearch" do
     it "enqueues job to index tag to elasticsearch" do
-      sidekiq_assert_enqueued_with(job: described_class::SEARCH_INDEX_WORKER, args: [tag.id]) do
+      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, tag.id]) do
         tag.index_to_elasticsearch
       end
     end
@@ -95,7 +95,7 @@ RSpec.describe Tag, type: :model do
   describe "#after_commit" do
     it "on update enqueues job to index tag to elasticsearch" do
       tag.save
-      sidekiq_assert_enqueued_with(job: described_class::SEARCH_INDEX_WORKER, args: [tag.id]) do
+      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, tag.id]) do
         tag.save
       end
     end

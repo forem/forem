@@ -3,7 +3,7 @@ class Comment < ApplicationRecord
   resourcify
   include AlgoliaSearch
   include Reactable
-  belongs_to :commentable, polymorphic: true
+  belongs_to :commentable, polymorphic: true, optional: true
   counter_culture :commentable
   belongs_to :user
   counter_culture :user
@@ -34,7 +34,7 @@ class Comment < ApplicationRecord
   before_create  :adjust_comment_parent_based_on_depth
   after_update   :remove_notifications, if: :deleted
   after_update   :update_descendant_notifications, if: :deleted
-  before_validation :evaluate_markdown, if: -> { body_markdown && commentable }
+  before_validation :evaluate_markdown, if: -> { body_markdown }
   validate :permissions, if: :commentable
 
   alias touch_by_reaction save
@@ -204,7 +204,7 @@ class Comment < ApplicationRecord
     fixed_body_markdown = MarkdownFixer.fix_for_comment(body_markdown)
     parsed_markdown = MarkdownParser.new(fixed_body_markdown)
     self.processed_html = parsed_markdown.finalize(link_attributes: { rel: "nofollow" })
-    wrap_timestamps_if_video_present!
+    wrap_timestamps_if_video_present! if commentable
     shorten_urls!
   end
 

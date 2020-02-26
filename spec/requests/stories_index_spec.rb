@@ -6,7 +6,7 @@ RSpec.describe "StoriesIndex", type: :request do
   describe "GET stories index" do
     it "renders page with article list" do
       get "/"
-      expect(response.body).to include(article.title)
+      expect(response.body).to include(CGI.escapeHTML(article.title))
     end
 
     it "renders page with min read" do
