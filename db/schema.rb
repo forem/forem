@@ -976,6 +976,7 @@ ActiveRecord::Schema.define(version: 2020_02_26_192145) do
     t.text "wiki_body_html"
     t.text "wiki_body_markdown"
     t.index ["name"], name: "index_tags_on_name", unique: true
+    t.index ["social_preview_template"], name: "index_tags_on_social_preview_template"
   end
 
   create_table "tweets", id: :serial, force: :cascade do |t|

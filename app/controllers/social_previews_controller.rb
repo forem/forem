@@ -13,9 +13,7 @@ class SocialPreviewsController < ApplicationController
       select(:social_preview_template).first&.social_preview_template
 
     # make sure that the template exists
-    template = nil unless Tag.social_preview_templates.include?(template)
-
-    template ||= "article"
+    template = "article" unless Tag.social_preview_templates.include?(template)
 
     set_respond "social_previews/articles/#{template}"
   end
