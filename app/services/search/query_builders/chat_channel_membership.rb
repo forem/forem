@@ -23,6 +23,11 @@ module Search
       def initialize(params, user_id)
         @params = params.deep_symbolize_keys
         @params[:viewable_by] = user_id
+
+        # TODO: @mstruve: When we want to allow people like admins to
+        # search ALL memberships this will need to change
+        @params[:status] = "active"
+
         build_body
       end
 
