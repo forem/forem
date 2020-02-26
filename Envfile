@@ -145,7 +145,6 @@ variable :SLACK_WEBHOOK_URL, :String, default: ""
 # (https://stripe.com/docs/api)
 variable :STRIPE_PUBLISHABLE_KEY, :String, default: "Optional"
 variable :STRIPE_SECRET_KEY, :String, default: "Optional"
-variable :STRIPE_CANCELLATION_SECRET, :String, default: "Optional"
 
 # For video calling in DEV Connect
 # (https://www.twilio.com/docs/video)

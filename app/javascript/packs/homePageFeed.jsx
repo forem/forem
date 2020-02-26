@@ -1,8 +1,9 @@
 import { h, render } from 'preact';
-import { Article, LoadingArticle } from '../articles';
-import { FeaturedArticle } from '../articles/FeaturedArticle';
-import { Feed } from './Feed.jsx.erb';
-import { PodcastFeed } from '../podcasts/PodcastFeed';
+import PropTypes from 'prop-types';
+import { Article, FeaturedArticle, LoadingArticle } from '../articles';
+import { Feed } from '../articles/Feed';
+import { TodaysPodcasts, PodcastEpisode } from '../podcasts';
+import { articlePropTypes } from '../src/components/common-prop-types';
 
 /**
  * Sends analytics about the featured article.
@@ -35,22 +36,50 @@ const FeedLoading = () => (
   </div>
 );
 
+const PodcastEpisodes = ({ episodes }) => (
+  <TodaysPodcasts>
+    {episodes.map(episode => (
+      <PodcastEpisode episode={episode} />
+    ))}
+  </TodaysPodcasts>
+);
+
+PodcastEpisodes.defaultProps = {
+  episodes: [],
+};
+
+PodcastEpisodes.propTypes = {
+  episodes: PropTypes.arrayOf(articlePropTypes),
+};
+
 /**
  * Renders the main feed.
  */
 export const renderFeed = timeFrame => {
   const feedContainer = document.getElementById('homepage-feed');
+
   render(
     <Feed
       timeFrame={timeFrame}
-      renderFeed={({ feedItems, podcastItems, feedIcons }) => {
+      renderFeed={({
+        feedItems,
+        feedIcons,
+        podcastEpisodes,
+        bookmarkedFeedItems,
+        bookmarkClick,
+      }) => {
         if (feedItems.length === 0) {
           // Fancy loading ✨
           return <FeedLoading />;
         }
 
+        const commonProps = {
+          reactionsIcon: feedIcons.REACTIONS_ICON,
+          commentsIcon: feedIcons.COMMENTS_ICON,
+          bookmarkClick,
+        };
+
         const [featuredStory, ...subStories] = feedItems;
-        const podcastFeed = podcastItems.length > 0 ? <PodcastFeed podcastItems={podcastItems} /> : ''
 
         sendFeaturedArticleAnalytics(featuredStory.id);
 
@@ -60,16 +89,18 @@ export const renderFeed = timeFrame => {
         return (
           <div>
             <FeaturedArticle
+              {...commonProps}
               article={featuredStory}
-              reactionsIcon={feedIcons.REACTIONS_ICON}
-              commentsIcon={feedIcons.COMMENTS_ICON}
+              isBookmarked={bookmarkedFeedItems.has(featuredStory.id)}
             />
-            {podcastFeed}
+            {podcastEpisodes.length > 0 && (
+              <PodcastEpisodes episodes={podcastEpisodes} />
+            )}
             {(subStories || []).map(story => (
               <Article
+                {...commonProps}
                 article={story}
-                reactionsIcon={feedIcons.REACTIONS_ICON}
-                commentsIcon={feedIcons.COMMENTS_ICON}
+                isBookmarked={bookmarkedFeedItems.has(story.id)}
               />
             ))}
           </div>

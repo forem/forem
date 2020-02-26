@@ -5,7 +5,9 @@ export const CommentsCount = ({ count, articlePath, icon, className }) => {
   if (count > 0) {
     return (
       <div
-        className={`article-engagement-count comments-count ${className || ''}`}
+        className={`article-engagement-count comments-count${
+          className ? ` ${className}` : ''
+        }`}
       >
         <a href={`${articlePath}#comments`}>
           <img src={icon} alt="chat" loading="lazy" />

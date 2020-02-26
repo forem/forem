@@ -76,9 +76,30 @@ let waitingForDataLoad = setTimeout(function dataLoadedCheck() {
   }
 
   if (userStatus === 'logged-in' && user !== null) {
-    // We have user data, render followed tags.
     clearTimeout(waitingForDataLoad);
-    renderFeed(feedTimeFrame);
+
+    import('./homePageFeed').then(({ renderFeed }) => {
+      // We have user data, render followed tags.
+      renderFeed(feedTimeFrame);
+
+      InstantClick.on('change', () => {
+        const { userStatus: currentUserStatus } = document.body.dataset;
+
+        if (currentUserStatus === 'logged-out') {
+          return;
+        }
+
+        const url = new URL(window.location);
+        const changedFeedTimeFrame = frontPageFeedPathNames.get(url.pathname);
+
+        if (!frontPageFeedPathNames.has(url.pathname)) {
+          return;
+        }
+
+        renderFeed(changedFeedTimeFrame);
+      });
+    });
+
     renderTagsFollowed(document.getElementById('sidebar-nav-followed-tags'));
     return;
   }
@@ -86,17 +107,6 @@ let waitingForDataLoad = setTimeout(function dataLoadedCheck() {
   // No user data yet for the logged on user, poll once more.
   waitingForDataLoad = setTimeout(dataLoadedCheck, 40);
 }, 40);
-
-InstantClick.on('change', () => {
-  const url = new URL(window.location);
-  const changedFeedTimeFrame = frontPageFeedPathNames.get(url.pathname);
-
-  if (!frontPageFeedPathNames.has(url.pathname)) {
-    return;
-  }
-
-  renderFeed(changedFeedTimeFrame);
-});
 
 InstantClick.on('receive', (address, body, title) => {
   if (document.body.dataset.userStatus !== 'logged-in') {

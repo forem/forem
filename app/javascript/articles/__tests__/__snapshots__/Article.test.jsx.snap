@@ -232,19 +232,17 @@ exports[`<Article /> component should render a standard article 1`] = `
   </a>
   <button
     class="article-engagement-count engage-button bookmark-button "
+    data-initial-feed={true}
     data-reactable-id={62407}
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseOver={[Function]}
+    onMouseout={[Function]}
     type="button"
   >
     <span
       class="bm-initial"
-    >
-      SAVE
-    </span>
-    <span
-      class="bm-success"
-    >
-      SAVED
-    </span>
+    />
   </button>
 </div>
 `;
@@ -421,19 +419,17 @@ exports[`<Article /> component should render a video article 1`] = `
   </a>
   <button
     class="article-engagement-count engage-button bookmark-button "
+    data-initial-feed={true}
     data-reactable-id={49020}
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseOver={[Function]}
+    onMouseout={[Function]}
     type="button"
   >
     <span
       class="bm-initial"
-    >
-      SAVE
-    </span>
-    <span
-      class="bm-success"
-    >
-      SAVED
-    </span>
+    />
   </button>
 </div>
 `;
@@ -553,19 +549,17 @@ exports[`<Article /> component should render a video article with a flare tag 1`
   </a>
   <button
     class="article-engagement-count engage-button bookmark-button "
+    data-initial-feed={true}
     data-reactable-id={49020}
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseOver={[Function]}
+    onMouseout={[Function]}
     type="button"
   >
     <span
       class="bm-initial"
-    >
-      SAVE
-    </span>
-    <span
-      class="bm-success"
-    >
-      SAVED
-    </span>
+    />
   </button>
 </div>
 `;
@@ -706,19 +700,17 @@ exports[`<Article /> component should render as saved on reading list 1`] = `
   </a>
   <button
     class="article-engagement-count engage-button bookmark-button selected"
+    data-initial-feed={true}
     data-reactable-id={62407}
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseOver={[Function]}
+    onMouseout={[Function]}
     type="button"
   >
     <span
-      class="bm-initial"
-    >
-      SAVE
-    </span>
-    <span
       class="bm-success"
-    >
-      SAVED
-    </span>
+    />
   </button>
 </div>
 `;
@@ -822,19 +814,17 @@ exports[`<Article /> component should render with a flare tag 1`] = `
   </a>
   <button
     class="article-engagement-count engage-button bookmark-button "
+    data-initial-feed={true}
     data-reactable-id={62407}
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseOver={[Function]}
+    onMouseout={[Function]}
     type="button"
   >
     <span
       class="bm-initial"
-    >
-      SAVE
-    </span>
-    <span
-      class="bm-success"
-    >
-      SAVED
-    </span>
+    />
   </button>
 </div>
 `;
@@ -938,19 +928,17 @@ exports[`<Article /> component should render with a reading time 1`] = `
   </a>
   <button
     class="article-engagement-count engage-button bookmark-button "
+    data-initial-feed={true}
     data-reactable-id={62407}
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseOver={[Function]}
+    onMouseout={[Function]}
     type="button"
   >
     <span
       class="bm-initial"
-    >
-      SAVE
-    </span>
-    <span
-      class="bm-success"
-    >
-      SAVED
-    </span>
+    />
   </button>
 </div>
 `;
@@ -1061,19 +1049,17 @@ exports[`<Article /> component should render with a snippet result 1`] = `
   </a>
   <button
     class="article-engagement-count engage-button bookmark-button "
+    data-initial-feed={true}
     data-reactable-id={62407}
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseOver={[Function]}
+    onMouseout={[Function]}
     type="button"
   >
     <span
       class="bm-initial"
-    >
-      SAVE
-    </span>
-    <span
-      class="bm-success"
-    >
-      SAVED
-    </span>
+    />
   </button>
 </div>
 `;
@@ -1181,19 +1167,17 @@ exports[`<Article /> component should render with an organization 1`] = `
   </a>
   <button
     class="article-engagement-count engage-button bookmark-button "
+    data-initial-feed={true}
     data-reactable-id={62407}
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseOver={[Function]}
+    onMouseout={[Function]}
     type="button"
   >
     <span
       class="bm-initial"
-    >
-      SAVE
-    </span>
-    <span
-      class="bm-success"
-    >
-      SAVED
-    </span>
+    />
   </button>
 </div>
 `;
@@ -1334,19 +1318,17 @@ exports[`<Article /> component should render with comments 1`] = `
   </a>
   <button
     class="article-engagement-count engage-button bookmark-button "
+    data-initial-feed={true}
     data-reactable-id={62407}
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseOver={[Function]}
+    onMouseout={[Function]}
     type="button"
   >
     <span
       class="bm-initial"
-    >
-      SAVE
-    </span>
-    <span
-      class="bm-success"
-    >
-      SAVED
-    </span>
+    />
   </button>
 </div>
 `;
@@ -1469,19 +1451,17 @@ exports[`<Article /> component should render with reactions 1`] = `
   </a>
   <button
     class="article-engagement-count engage-button bookmark-button "
+    data-initial-feed={true}
     data-reactable-id={62407}
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseOver={[Function]}
+    onMouseout={[Function]}
     type="button"
   >
     <span
       class="bm-initial"
-    >
-      SAVE
-    </span>
-    <span
-      class="bm-success"
-    >
-      SAVED
-    </span>
+    />
   </button>
 </div>
 `;
