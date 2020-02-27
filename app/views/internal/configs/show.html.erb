@@ -153,6 +153,20 @@
         </div>
 
         <div class="card mt-3">
+          <div class="card-header">Images</div>
+          <div class="card-body">
+            <div class="form-group">
+              <%= f.label :payment_pointer %>
+              <%= f.text_field :payment_pointer,
+                               class: "form-control",
+                               value: SiteConfig.payment_pointer,
+                               placeholder: "$pay.somethinglikethis.co/value" %>
+              <div class="alert alert-info">Used for site-wide web monetization</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
           <div class="card-header">Rate limits</div>
           <div class="card-body">
             <div class="form-group">

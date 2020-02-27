@@ -26,6 +26,9 @@ class SiteConfig < RailsSettings::Base
   field :favicon_url, type: :string, default: "favicon.ico"
   field :logo_svg, type: :string, default: ""
 
+  # Monetization
+  field :payment_pointer, type: :string, default: "" # Future monetization fields can include stripe credentials
+
   # rate limits
   field :rate_limit_follow_count_daily, type: :integer, default: 500
   field :rate_limit_comment_creation, type: :integer, default: 9
