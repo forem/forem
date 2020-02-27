@@ -3,7 +3,7 @@
 // This file is specifically used for SheCoded,
 // We can try to make it more general for campaigns in the future once we know more (classnames, params).
 
-function renderArticles(articles, articleElement ) {
+function renderArticles(articles, articleElement) {
   let articleDiv = articleElement;
   const articleHTML = articles.map((article) => {
     return `<a class="she-coded-page__some-story-container-link" href="${article.url}"><div class="she-coded-page__some-story-container">
