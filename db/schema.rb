@@ -397,7 +397,6 @@ ActiveRecord::Schema.define(version: 2020_02_26_210111) do
     t.bigint "user_id"
     t.datetime "verified_at"
     t.index ["user_id", "type_of"], name: "index_email_authorizations_on_user_id_and_type_of", unique: true
-    t.index ["user_id"], name: "index_email_authorizations_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
