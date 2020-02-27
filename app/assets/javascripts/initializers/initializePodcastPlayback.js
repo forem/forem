@@ -31,6 +31,35 @@ function initializePodcastPlayback() {
     return document.getElementsByClassName(name);
   }
 
+  function newAudioState() {
+    if (!window.name) {
+      window.name = Math.random();
+    }
+    return {
+      html: document.getElementById('audiocontent').innerHTML,
+      currentTime: 0,
+      playing: false,
+      muted: false,
+      volume: 1,
+      duration: 1,
+      updated: new Date().getTime(),
+      windowName: window.name
+    };
+  }
+
+  function currentAudioState() {
+    try {
+      var currentState = JSON.parse(localStorage.getItem('media_playback_state_v2'));
+      if (!currentState || window.name !== currentState.windowName) {
+        return newAudioState();
+      }
+      return currentState;
+    } catch(e) {
+      console.log(e); // eslint-disable-line no-console
+      return newAudioState();
+    }
+  }
+
   function audioExistAndIsPlaying() {
     var audio = getById('audio');
     var currentState = currentAudioState();
@@ -66,22 +95,6 @@ function initializePodcastPlayback() {
 
   function isNativeIOS() {
     return navigator.userAgent === 'DEV-Native-ios';
-  }
-
-  function newAudioState() {
-    if (!window.name) {
-      window.name = Math.random();
-    }
-    return {
-      html: document.getElementById('audiocontent').innerHTML,
-      currentTime: 0,
-      playing: false,
-      muted: false,
-      volume: 1,
-      duration: 1,
-      updated: new Date().getTime(),
-      windowName: window.name
-    };
   }
 
   function saveMediaState(state) {
@@ -235,6 +248,11 @@ function initializePodcastPlayback() {
     getById('animated-bars').classList.add('playing');
   }
 
+  function pausePodcastBar() {
+    getById('barPlayPause').classList.remove('playing');
+    getById('animated-bars').classList.remove('playing');
+  }
+
   function playAudio(audio) {
     return new Promise(function (resolve, reject) {
       var currentState = currentAudioState();
@@ -248,7 +266,7 @@ function initializePodcastPlayback() {
           setPlaying(true);
           resolve();
         }).catch(function(error) {
-          console.log(error);
+          console.log(error); // eslint-disable-line no-console
           setPlaying(false);
           reject();
         });
@@ -278,11 +296,6 @@ function initializePodcastPlayback() {
           startPodcastBar();
         }, 5);
       });
-  }
-
-  function pausePodcastBar() {
-    getById('barPlayPause').classList.remove('playing');
-    getById('animated-bars').classList.remove('playing');
   }
 
   function pauseAudioPlayback(audio) {
@@ -421,31 +434,6 @@ function initializePodcastPlayback() {
     }
   }
 
-  function initializeMedia() {
-    var currentState = currentAudioState();
-    document.getElementById('audiocontent').innerHTML = currentState.html;
-    var audio = getById('audio');
-    if (audio == undefined) {
-      audioInitialized = false
-      return;
-    }
-    if (!isNativeIOS()) {
-      audio.currentTime = currentState.currentTime || 0;
-    }
-    loadAudio(audio);
-    if (currentState.playing) {
-      playAudio(audio).catch(function(error) {
-        console.log(error);
-        pausePodcastBar();
-      });
-    }
-    setTimeout(function(){
-      audio.addEventListener('timeupdate', updateProgressListener(audio), false);
-      addMutationObserver();
-    },500);
-    applyOnclickToPodcastBar(audio);
-  }
-
   function handlePodcastMessages(mutation) {
     if (mutation.type == "attributes") {
       var message = getById('audiocontent').dataset.podcast;
@@ -466,7 +454,7 @@ function initializePodcastPlayback() {
           currentState.duration = parameter;
           break;
         default:
-          console.log('Unrecognized podcast message: ', action);
+          console.log('Unrecognized podcast message: ', action);  // eslint-disable-line no-console
       }
 
       saveMediaState(currentState);
@@ -483,17 +471,29 @@ function initializePodcastPlayback() {
     mutationObserver.observe(getById('audiocontent'), { attributes: true });
   }
 
-  function currentAudioState() {
-    try {
-      var currentState = JSON.parse(localStorage.getItem('media_playback_state_v2'));
-      if (!currentState || window.name !== currentState.windowName) {
-        return newAudioState();
-      }
-      return currentState;
-    } catch(e) {
-      console.log(e);
-      return newAudioState();
+  function initializeMedia() {
+    var currentState = currentAudioState();
+    document.getElementById('audiocontent').innerHTML = currentState.html;
+    var audio = getById('audio');
+    if (audio == undefined) {
+      audioInitialized = false
+      return;
     }
+    if (!isNativeIOS()) {
+      audio.currentTime = currentState.currentTime || 0;
+    }
+    loadAudio(audio);
+    if (currentState.playing) {
+      playAudio(audio).catch(function(error) {
+        console.log(error); // eslint-disable-line no-console
+        pausePodcastBar();
+      });
+    }
+    setTimeout(function(){
+      audio.addEventListener('timeupdate', updateProgressListener(audio), false);
+      addMutationObserver();
+    },500);
+    applyOnclickToPodcastBar(audio);
   }
 
   function setPlaying(playing) {
