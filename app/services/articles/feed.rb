@@ -39,7 +39,7 @@ module Articles
           limited_column_select.order("published_at DESC").limit(rand(15..80))
         hot_stories = hot_stories.to_a + new_stories.to_a
       end
-      hot_stories = rank_articles(hot_stories)
+      hot_stories = rank_articles(hot_stories) if @user
       [featured_story, hot_stories]
     end
 
@@ -68,7 +68,7 @@ module Articles
 
     def score_followed_tags(article)
       @user.decorate.cached_followed_tags.select do |tag|
-        article.tag_list.include?(tag.name)
+        article.decorate.cached_tag_list_array.include?(tag.name)
       end.sum(&:points)
     end
 
