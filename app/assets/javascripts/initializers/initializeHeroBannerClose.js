@@ -1,8 +1,8 @@
 'use strict';
 
 function initializeHeroBannerClose() {
-  let banner = document.getElementById("js-she-coded-hero-banner");
-  let closeIcon = document.getElementById("js-she-coded-hero-banner__x");
+  let banner = document.getElementById("js-hero-banner");
+  let closeIcon = document.getElementById("js-hero-banner__x");
 
   if (banner && closeIcon) {
     closeIcon.onclick = (e) => {
