@@ -5,10 +5,10 @@
   border-radius: $br-default;
   padding: $su-4;
 
-  &:not(&__m),
-  &:not(&__l),
-  &:not(&__xl),
-  &:not(&__xxl) {
+  &:not(#{& + __m}),
+  &:not(#{& + __l}),
+  &:not(#{& + __xl}),
+  &:not(#{& + __xxl}) {
     max-width: 250px; // __s
   }
 

@@ -1,0 +1,10 @@
+.crayons-icon {
+  vertical-align: bottom;
+  -moz-transform: rotate(360deg);
+
+  &:not(#{& + __default}) {
+    * {
+      fill: currentColor;
+    }
+  }
+}
