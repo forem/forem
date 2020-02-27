@@ -10,25 +10,29 @@
       box-shadow: 5px 6px 0px<%= HexComparer.new([@tag_model.bg_color_hex || "#0000000", @tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>;
     }
   </style>
-  <div class="user-profile-header tag-header">
-    <div class="tag-or-query-header-container">
-      <h1>
-        <% if @tag_model.badge_id && @tag_model.badge %>
-            <img src="<%= cloudinary @tag_model.badge.badge_image_url, 180 %>" style="transform: rotate(<%= -25 + (@tag_model.id.digits.first * 5) %>deg" />
-        <% end %>
-        <% if @tag_model && @tag_model.pretty_name.present? %>
-          <%= @tag_model.pretty_name %>
-        <% else %>
-          <%= @tag %>
-        <% end %>
-        <% if @tag_model %>
-            <span class="user-profile-follow-button-wrapper">
-              <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>" data-info='{"id":<%= @tag_model.id %>,"className":"Tag"}'>&nbsp;</button>
-            </span>
-        <% end %>
-      </h1>
+  <% if @header_container_html %>
+    <%= @header_container_html.html_safe %>
+  <% else %>
+    <div class="user-profile-header tag-header">
+      <div class="tag-or-query-header-container">
+        <h1>
+          <% if @tag_model.badge_id && @tag_model.badge %>
+              <img src="<%= cloudinary @tag_model.badge.badge_image_url, 180 %>" style="transform: rotate(<%= -25 + (@tag_model.id.digits.first * 5) %>deg" />
+          <% end %>
+          <% if @tag_model && @tag_model.pretty_name.present? %>
+            <%= @tag_model.pretty_name %>
+          <% else %>
+            <%= @tag %>
+          <% end %>
+          <% if @tag_model %>
+              <span class="user-profile-follow-button-wrapper">
+                <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>" data-info='{"id":<%= @tag_model.id %>,"className":"Tag"}'>&nbsp;</button>
+              </span>
+          <% end %>
+        </h1>
+      </div>
     </div>
-  </div>
+  <% end %>
   <div class="home sub-home" id="index-container"
       data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which=""
       data-algolia-tag="<%= @tag %>"

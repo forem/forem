@@ -132,6 +132,11 @@ class StoriesController < ApplicationController
     @stories = stories_by_timeframe
     @stories = @stories.decorate
 
+    if SiteConfig.campaign_featured_tags.include?(@tag)
+      @header_container_html = HtmlVariant.relevant.select(:html).
+        find_by(group: "campaign", name: "header_container_#{@tag}")&.html
+    end
+
     set_surrogate_key_header "articles-#{@tag}"
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
     render template: "articles/tag_index"
