@@ -24,6 +24,7 @@ class User < ApplicationRecord
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
+  has_many :email_authorizations, dependent: :delete_all
   has_many :github_repos, dependent: :destroy
   has_many :identities, dependent: :destroy
   has_many :mentions, dependent: :destroy
