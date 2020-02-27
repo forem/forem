@@ -1,0 +1,15 @@
+.crayons-card {
+  border-radius: $br-default;
+  background: $smoke-00;
+
+  &--header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid $smoke-10;
+    padding: 0 $su-4;
+  }
+
+  &--body {
+  }
+}

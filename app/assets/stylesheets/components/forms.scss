@@ -1,16 +1,37 @@
 @import '../vars/_variables.scss';
 
-// Basic Styling
-.crayons-textfield {
+%form-styling {
   background-color: $smoke-00;
   border: 1px solid $smoke-30;
+  border-radius: $br-default;
+
+  &-disabled {
+    color: $smoke-60;
+    background-color: $smoke-10;
+  }
+
+  &-checked {
+    background-color: $dolphin;
+    border-color: $dolphin-darker;
+    color: $snowflake;
+  }
+
+  &-checked-disabled {
+    background-color: $dolphin-lighter;
+    border-color: $dolphin-lighter;
+    color: rgba($snowflake, 0.5);
+  }
+}
+
+// Text inputs and textareas.
+.crayons-textfield {
   line-height: $lh-base;
   padding: 0.5em 1em;
-  border-radius: $br-default;
   font-family: inherit;
   margin: 0; //todo: do we need it?
   -webkit-appearance: none;
   width: 100%;
+  @extend %form-styling;
 
   &::placeholder {
     color: $smoke-60;
@@ -24,11 +45,67 @@
 
   &__disabled,
   &[disabled] {
-    color: $smoke-60;
-    background-color: $smoke-10;
+    @extend %form-styling-disabled;
   }
 
   &::-ms-clear {
     display: none;
+  }
+
+  &__icon {
+    padding-left: 40px; // TODO
+  }
+}
+
+// Checkboxes, Radios
+.crayons-checkbox,
+.crayons-radio {
+  width: 18px;
+  height: 18px;
+
+  &__disabled,
+  &[disabled] {
+    @extend %form-styling-disabled;
+  }
+
+  &__checked,
+  &[checked] {
+    @extend %form-styling-checked;
+
+    &__disabled,
+    &[disabled] {
+      @extend %form-styling-checked-disabled;
+    }
+  }
+}
+
+// Radios
+.crayons-radio {
+  border-radius: 50%;
+}
+
+///////////////////////////////////////////////////
+
+// Full Fields markup
+.crayons-field {
+  display: flex;
+  flex-flow: row;
+
+  &--label {
+    color: $smoke-90;
+    font-weight: $fw-medium;
+
+    > * {
+      margin-top: @su-2;
+    }
+  }
+
+  &--description {
+    color: $smoke-60;
+    font-size: $fs-s;
+  }
+
+  > * + * {
+    margin-top: $su-2;
   }
 }

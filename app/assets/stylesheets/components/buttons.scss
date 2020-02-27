@@ -99,5 +99,13 @@
 // Icon Left
 .crayons-btn__icon-left {
   padding-left: 0.75em;
-  margin-right: 0.5em;
+
+  .crayons-icon {
+    margin-right: 0.5em;
+  }
+}
+
+// Full width
+.crayons-btn__full {
+  width: 100%;
 }
