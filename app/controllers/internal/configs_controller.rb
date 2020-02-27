@@ -47,6 +47,6 @@ class Internal::ConfigsController < Internal::ApplicationController
   end
 
   def bust_relevant_caches
-    CacheBuster.bust("/api/tags/onboarding") # Needs to change when suggested_tags is edited
+    CacheBuster.bust("/tags/onboarding") # Needs to change when suggested_tags is edited
   end
 end
