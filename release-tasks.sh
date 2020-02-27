@@ -9,7 +9,7 @@ trap notify ERR
 
 # enable echo mode (-x) and exit on error (-e)
 # -E ensures that ERR traps get inherited by functions, command substitutions, and subshell environments.
-set -ex -E
+set -Eex
 
 # abort release if deploy status equals "blocked"
 [[ $DEPLOY_STATUS = "blocked" ]] && echo "Deploy blocked" && exit 1
