@@ -4,10 +4,20 @@
  * This script hunts for podcast's "Record" for both the podcast_episde's
  * show page and an article page containing podcast liquid tag. It handles
  * playback and makes sure the record will spin when the podcast is currently
- * playing. The high level functions are the following
+ * playing.
  *
- * - spinPodcastRecord();
- * - findAndApplyOnclickToRecords();
+ * The media is initialized (once) and the "state" is stored using localStorage.
+ * When playback is the website's responsability it's run using the `audio` HTML
+ * element. The iOS app uses a bridging strategy that sends messages using
+ * webkit messageHandlers and receives incoming messages through the
+ * `contentaudio` element, which allows for native audio playback.
+ *
+ * The high level functions are the following:
+ * - spinPodcastRecord()
+ * - findAndApplyOnclickToRecords()
+ * - initializeMedia()
+ * - currentAudioState()
+ * - saveMediaState()
  */
 
  var audioInitialized = false;
@@ -54,6 +64,53 @@ function initializePodcastPlayback() {
     return podcastLiquidTagrecords;
   }
 
+  function isNativeIOS() {
+    return navigator.userAgent === 'DEV-Native-ios';
+  }
+
+  function newAudioState() {
+    if (!window.name) {
+      window.name = Math.random();
+    }
+    return {
+      html: document.getElementById('audiocontent').innerHTML,
+      currentTime: 0,
+      playing: false,
+      muted: false,
+      volume: 1,
+      duration: 1,
+      updated: new Date().getTime(),
+      windowName: window.name
+    };
+  }
+
+  function saveMediaState(state) {
+    var currentState = state || currentAudioState();
+    var newState = newAudioState();
+    newState.currentTime = currentState.currentTime;
+    newState.playing = currentState.playing;
+    newState.muted = currentState.muted;
+    newState.volume = currentState.volume;
+    newState.duration = currentState.duration;
+    localStorage.setItem('media_playback_state_v2', JSON.stringify(newState));
+    return newState;
+  }
+
+  function sendPodcastMessage(message) {
+    try {
+      if (
+        window &&
+        window.webkit &&
+        window.webkit.messageHandlers &&
+        window.webkit.messageHandlers.podcast
+      ) {
+        window.webkit.messageHandlers.podcast.postMessage(message);
+      }
+    } catch (err) {
+      console.log(err.message); // eslint-disable-line no-console
+    }
+  }
+
   function applyOnclickToPodcastBar(audio) {
     var currentState = currentAudioState();
     getById('barPlayPause').onclick = function() {
@@ -93,6 +150,14 @@ function initializePodcastPlayback() {
       }
       updateProgress(audio.currentTime, audio.duration, bufferValue);
     };
+  }
+
+  function loadAudio(audio) {
+    if (isNativeIOS()) {
+      sendPodcastMessage('load;' + audio.querySelector('source').src);
+    } else {
+      audio.load();
+    }
   }
 
   function loadAndPlayNewPodcast(episodeSlug) {
@@ -191,18 +256,10 @@ function initializePodcastPlayback() {
     })
   }
 
-  function loadAudio(audio) {
-    if (isNativeIOS()) {
-      sendPodcastMessage('load;' + audio.querySelector('source').src);
-    } else {
-      audio.load();
-    }
-  }
-
   function startAudioPlayback(audio) {
     if (isNativeIOS()) {
       var titleElement = document.getElementsByClassName("title")[0];
-      if (titleElement != undefined) {
+      if (titleElement !== undefined) {
         // We do have the Podcast data (not always true in this case)
         // Might be good to consider adding podcast metadata as an API endpoint
         sendPodcastMessage('episodeName;' + titleElement.querySelector("h1").innerText);
@@ -237,10 +294,6 @@ function initializePodcastPlayback() {
     setPlaying(false);
     stopRotatingActivePodcastIfExist();
     pausePodcastBar();
-  }
-
-  function isNativeIOS() {
-    return navigator.userAgent === 'DEV-Native-ios';
   }
 
   function playPause(audio) {
@@ -368,27 +421,6 @@ function initializePodcastPlayback() {
     }
   }
 
-  function addMutationObserver() {
-    var mutationObserver = new MutationObserver(function(mutations) {
-      mutations.forEach(function(mutation) {
-        handlePodcastMessages(mutation);
-      });
-    });
-    mutationObserver.observe(getById('audiocontent'), { attributes: true });
-  }
-
-  function saveMediaState(state) {
-    var currentState = state || currentAudioState();
-    var newState = newAudioState();
-    newState.currentTime = currentState.currentTime;
-    newState.playing = currentState.playing;
-    newState.muted = currentState.muted;
-    newState.volume = currentState.volume;
-    newState.duration = currentState.duration;
-    localStorage.setItem('media_playback_state_v2', JSON.stringify(newState));
-    return newState;
-  }
-
   function initializeMedia() {
     var currentState = currentAudioState();
     document.getElementById('audiocontent').innerHTML = currentState.html;
@@ -433,11 +465,22 @@ function initializePodcastPlayback() {
         case 'duration':
           currentState.duration = parameter;
           break;
+        default:
+          console.log('Unrecognized podcast message: ', action);
       }
 
       saveMediaState(currentState);
       updateProgress(currentState.currentTime, currentState.duration, 100);
     }
+  }
+
+  function addMutationObserver() {
+    var mutationObserver = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        handlePodcastMessages(mutation);
+      });
+    });
+    mutationObserver.observe(getById('audiocontent'), { attributes: true });
   }
 
   function currentAudioState() {
@@ -457,37 +500,6 @@ function initializePodcastPlayback() {
     var currentState = currentAudioState();
     currentState.playing = playing;
     saveMediaState(currentState);
-  }
-
-  function newAudioState() {
-    if (!window.name) {
-      window.name = Math.random();
-    }
-    return {
-      html: document.getElementById('audiocontent').innerHTML,
-      currentTime: 0,
-      playing: false,
-      muted: false,
-      volume: 1,
-      duration: 1,
-      updated: new Date().getTime(),
-      windowName: window.name
-    };
-  }
-
-  function sendPodcastMessage(message) {
-    try {
-      if (
-        window &&
-        window.webkit &&
-        window.webkit.messageHandlers &&
-        window.webkit.messageHandlers.podcast
-      ) {
-        window.webkit.messageHandlers.podcast.postMessage(message);
-      }
-    } catch (err) {
-      console.log(err.message); // eslint-disable-line no-console
-    }
   }
 
   spinPodcastRecord();
