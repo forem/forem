@@ -63,6 +63,41 @@ RSpec.describe DataUpdateScript do
     end
   end
 
+  describe ".scripts_to_run?" do
+    let(:test_directory) { Rails.root.join("spec/support/fixtures/data_update_scripts") }
+
+    before { stub_const "#{described_class}::DIRECTORY", test_directory }
+
+    it "returns true for a new set of files" do
+      expect(described_class.scripts_to_run?).to be(true)
+    end
+
+    it "returns true if there is a script on disk but not in the DB" do
+      create(:data_update_script, file_name: "not_the_one_on_disk")
+      expect(described_class.scripts_to_run?).to be(true)
+    end
+
+    it "returns true if there is an enqueued script" do
+      create(:data_update_script, status: :enqueued)
+      expect(described_class.scripts_to_run?).to be(true)
+    end
+
+    it "returns false if there are only working scripts" do
+      create(:data_update_script, status: :working)
+      expect(described_class.scripts_to_run?).to be(false)
+    end
+
+    it "returns false if there are only succeeded scripts" do
+      create(:data_update_script, status: :succeeded)
+      expect(described_class.scripts_to_run?).to be(false)
+    end
+
+    it "returns false if there are only failed scripts" do
+      create(:data_update_script, status: :failed)
+      expect(described_class.scripts_to_run?).to be(false)
+    end
+  end
+
   describe "#mark_as_finished!" do
     it "marks data update script as finished" do
       test_script = create(:data_update_script)

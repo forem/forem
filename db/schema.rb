@@ -224,6 +224,7 @@ ActiveRecord::Schema.define(version: 2020_02_26_210111) do
   end
 
   create_table "broadcasts", id: :serial, force: :cascade do |t|
+    t.boolean "active", default: false
     t.text "body_markdown"
     t.text "processed_html"
     t.boolean "sent", default: false

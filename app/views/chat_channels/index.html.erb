@@ -12,9 +12,6 @@
       id="chat"
       class="live-chat"
       data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>"
-      data-algolia-id="<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>"
-      data-algolia-key="<%= @secured_algolia_key %>"
-      data-algolia-index="<%= "SecuredChatChannelMembership_#{Rails.env}" %>"
       data-github-token="<%= @github_token %>"
       data-chat-channels="<%= [] %>"
       data-chat-options="<%= { showChannelsList: true, showTimestamp: true, activeChannelId: @active_channel&.id, currentUserId: current_user.id }.to_json %>">
