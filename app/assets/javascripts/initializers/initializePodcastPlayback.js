@@ -24,11 +24,7 @@ function initializePodcastPlayback() {
   function audioExistAndIsPlaying() {
     var audio = getById('audio');
     var currentState = currentAudioState();
-    if (isNativeIOS()) {
-      return audio && currentState.playing;
-    } else {
-      return audio && currentState.playing && audioInitialized;
-    }
+    return audio && currentState.playing;
   }
 
   function recordExist() {
@@ -180,6 +176,7 @@ function initializePodcastPlayback() {
       if (isNativeIOS()) {
         sendPodcastMessage('play;' + currentState.currentTime);
         setPlaying(true);
+        resolve();
       } else {
         audio.currrentTime = currentState.currentTime;
         audio.play().then(function() {
@@ -203,16 +200,21 @@ function initializePodcastPlayback() {
   }
 
   function startAudioPlayback(audio) {
-    playAudio(audio).then(
-        function() {
-          spinPodcastRecord();
-          startPodcastBar();
-        },
-        function() {
-          // Handle any pause() failures.
-        },
-      )
-      .catch(function(error) {
+    if (isNativeIOS()) {
+      var titleElement = document.getElementsByClassName("title")[0];
+      if (titleElement != undefined) {
+        // We do have the Podcast data (not always true in this case)
+        // Might be good to consider adding podcast metadata as an API endpoint
+        sendPodcastMessage('episodeName;' + titleElement.querySelector("h1").innerText);
+        sendPodcastMessage('podcastName;' + titleElement.querySelector("img").alt);
+        sendPodcastMessage('podcastImage;' + titleElement.querySelector("img").src);
+      }
+    }
+
+    playAudio(audio).then(function() {
+        spinPodcastRecord();
+        startPodcastBar();
+      }).catch(function(error) {
         playAudio(audio);
         setTimeout(function() {
           spinPodcastRecord('initializing...');
@@ -383,6 +385,7 @@ function initializePodcastPlayback() {
     document.getElementById('audiocontent').innerHTML = currentState.html;
     var audio = getById('audio');
     if (audio == undefined) {
+      audioInitialized = false
       return;
     }
     if (!isNativeIOS()) {
@@ -486,8 +489,8 @@ function initializePodcastPlayback() {
   spinPodcastRecord();
   findAndApplyOnclickToRecords();
   if (!audioInitialized) {
-    initializeMedia();
     audioInitialized = true;
+    initializeMedia();
   }
   var audio = getById('audio');
   var audioContent = getById('audiocontent');
