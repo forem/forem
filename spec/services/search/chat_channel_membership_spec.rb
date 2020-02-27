@@ -159,11 +159,11 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
         expect(chat_channel_membership_docs.first["id"]).to eq(chat_channel_membership2.id)
       end
 
-      it "searches by status" do
+      it "only returns active status memberships" do
         chat_channel_membership1.update(status: "inactive")
         chat_channel_membership2.update(status: "active")
         index_documents([chat_channel_membership1, chat_channel_membership2])
-        params = { size: 5, status: "active" }
+        params = { size: 5 }
 
         chat_channel_membership_docs = described_class.search_documents(params: params, user_id: user.id)
         expect(chat_channel_membership_docs.count).to eq(1)
@@ -188,10 +188,10 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
     end
 
     it "sorts documents for given field" do
-      chat_channel_membership1.update(status: "inactive")
-      chat_channel_membership2.update(status: "active")
+      allow(chat_channel_membership1).to receive(:channel_type).and_return("not_direct")
+      allow(chat_channel_membership2).to receive(:channel_type).and_return("direct")
       index_documents([chat_channel_membership1, chat_channel_membership2])
-      params = { size: 5, sort_by: "status", sort_direction: "asc" }
+      params = { size: 5, sort_by: "channel_type", sort_direction: "asc" }
 
       chat_channel_membership_docs = described_class.search_documents(params: params, user_id: user.id)
       expect(chat_channel_membership_docs.count).to eq(2)
