@@ -241,7 +241,7 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
       params = { page: 3, per_page: 1 }
 
       chat_channel_membership_docs = described_class.search_documents(params: params, user_id: user.id)
-      expect(chat_channel_membership_docs.count).to eq(0)
+      expect(chat_channel_membership_docs).to eq([])
     end
   end
 end
