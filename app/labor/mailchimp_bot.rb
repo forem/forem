@@ -76,8 +76,12 @@ class MailchimpBot
     return false unless user.tag_moderator?
 
     success = false
-    tags = user.roles.where(name: "tag_moderator").map { |tag| Tag.find(tag.resource_id).name }
+
+    tag_ids = user.roles.where(name: "tag_moderator").pluck(:resource_id)
+    tag_names = Tag.where(id: tag_ids).pluck(:name)
+
     status = user.email_tag_mod_newsletter ? "subscribed" : "unsubscribed"
+
     begin
       gibbon.lists(SiteConfig.mailchimp_tag_moderators_id).members(target_md5_email).upsert(
         body: {
@@ -89,7 +93,7 @@ class MailchimpBot
             TWITTER: user.twitter_username.to_s,
             GITHUB: user.github_username.to_s,
             IMAGE_URL: user.profile_image_url.to_s,
-            TAGS: tags.join(", ")
+            TAGS: tag_names.join(", ")
           }
         },
       )

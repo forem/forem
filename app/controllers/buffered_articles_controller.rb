@@ -1,20 +1,21 @@
 class BufferedArticlesController < ApplicationController
   # No authorization required for entirely public controller
+
   def index
-    @article_urls = buffered_article_urls
-    render json: {
-      urls: @article_urls
-    }.to_json
+    render json: { urls: buffered_articles_urls }.to_json
   end
 
-  def buffered_article_urls
-    if Rails.env.production?
-      Article.
-        where("last_buffered > ? OR published_at > ?", 24.hours.ago, 20.minutes.ago).
-        select(:path).
-        map { |a| "https://#{ApplicationConfig['APP_DOMAIN']}#{a.path}" }
-    else
-      Article.all.map { |a| "https://#{ApplicationConfig['APP_DOMAIN']}#{a.path}" }
-    end
+  private
+
+  def buffered_articles_urls
+    relation = if Rails.env.production?
+                 Article.where("last_buffered > ?", 24.hours.ago).
+                   or(Article.where("published_at > ?", 20.minutes.ago))
+               else
+                 Article.all
+               end
+
+    paths = relation.pluck(:path)
+    paths.map { |path| "https://#{ApplicationConfig['APP_DOMAIN']}#{path}" }
   end
 end
