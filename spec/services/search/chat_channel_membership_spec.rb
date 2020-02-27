@@ -218,5 +218,30 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
       chat_channel_membership_docs = described_class.search_documents(params: params, user_id: user.id)
       expect(chat_channel_membership_docs.count).to eq(1)
     end
+
+    it "paginates the results" do
+      allow(chat_channel_membership1).to receive(:channel_last_message_at).and_return(Time.current)
+      allow(chat_channel_membership2).to receive(:channel_last_message_at).and_return(1.year.ago)
+      index_documents([chat_channel_membership1, chat_channel_membership2])
+      first_page_params = { page: 0, per_page: 1, sort_by: "channel_last_message_at", order: "dsc" }
+
+      chat_channel_membership_docs = described_class.search_documents(params: first_page_params, user_id: user.id)
+      expect(chat_channel_membership_docs.first["id"]).to eq(chat_channel_membership1.id)
+
+      second_page_params = { page: 1, per_page: 1, sort_by: "channel_last_message_at", order: "dsc" }
+
+      chat_channel_membership_docs = described_class.search_documents(params: second_page_params, user_id: user.id)
+      expect(chat_channel_membership_docs.first["id"]).to eq(chat_channel_membership2.id)
+    end
+
+    it "returns an empty Array if no results are found" do
+      allow(chat_channel_membership1).to receive(:channel_last_message_at).and_return(Time.current)
+      allow(chat_channel_membership2).to receive(:channel_last_message_at).and_return(1.year.ago)
+      index_documents([chat_channel_membership1, chat_channel_membership2])
+      params = { page: 3, per_page: 1 }
+
+      chat_channel_membership_docs = described_class.search_documents(params: params, user_id: user.id)
+      expect(chat_channel_membership_docs).to eq([])
+    end
   end
 end

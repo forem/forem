@@ -4,7 +4,7 @@ RSpec.describe ChatChannelMembership, type: :model do
   let(:chat_channel_membership) { FactoryBot.create(:chat_channel_membership) }
 
   describe "#channel_text" do
-    it "sets channel text using name, slig, and human names" do
+    it "sets channel text using name, slug, and human names" do
       chat_channel = chat_channel_membership.chat_channel
       parsed_channel_name = chat_channel_membership.channel_name&.gsub("chat between", "")&.gsub("and", "")
       expected_text = "#{parsed_channel_name} #{chat_channel.slug} #{chat_channel.channel_human_names.join(' ')}"
