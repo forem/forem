@@ -10,7 +10,7 @@
  * - findAndApplyOnclickToRecords();
  */
 
- audioInitialized = false;
+ var audioInitialized = false;
 
 function initializePodcastPlayback() {
   function getById(name) {
@@ -368,6 +368,15 @@ function initializePodcastPlayback() {
     }
   }
 
+  function addMutationObserver() {
+    var mutationObserver = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        handlePodcastMessages(mutation);
+      });
+    });
+    mutationObserver.observe(getById('audiocontent'), { attributes: true });
+  }
+
   function saveMediaState(state) {
     var currentState = state || currentAudioState();
     var newState = newAudioState();
@@ -400,13 +409,8 @@ function initializePodcastPlayback() {
     }
     setTimeout(function(){
       audio.addEventListener('timeupdate', updateProgressListener(audio), false);
-      var mutationObserver = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-          handlePodcastMessages(mutation);
-        });
-      });
-      mutationObserver.observe(getById('audiocontent'), { attributes: true });
-    },500)
+      addMutationObserver();
+    },500);
     applyOnclickToPodcastBar(audio);
   }
 
