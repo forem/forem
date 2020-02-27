@@ -27,7 +27,7 @@ function renderArticles(articles, articleElement ) {
     </div></a>`
   });
 
-  articleElement.innerHTML = articleHTML.join(" ")
+  articleElement.innerHTML = articleHTML.join(" ");
 }
 
 function renderNoArticles(articleElement) {
