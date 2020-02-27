@@ -12,16 +12,16 @@ RSpec.describe Articles::Feed, type: :service do
   describe "#published_articles_by_tag" do
     let(:unpublished_article) { create(:article, published: false) }
     let(:tag) { "foo" }
-    let(:tagged_article) { create(:article, tags: [tag]) }
+    let(:tagged_article) { create(:article, tags: tag) }
 
     it "returns published articles" do
-      expect(described_class.new(number_of_articles: 1, page: 1).published_articles_by_tag).to include article
-      expect(described_class.new(number_of_articles: 1, page: 1).published_articles_by_tag).not_to include unpublished_article
+      expect(feed.published_articles_by_tag).to include article
+      expect(feed.published_articles_by_tag).not_to include unpublished_article
     end
 
     context "with tag" do
       it "returns articles with the specified tag" do
-        expect(described_class.new(number_of_articles: 1, page: 1, tag: tag).published_articles_by_tag).to include tagged_article
+        expect(described_class.new(tag: tag).published_articles_by_tag).to include tagged_article
       end
     end
   end
