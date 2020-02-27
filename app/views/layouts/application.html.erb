@@ -1,5 +1,5 @@
 <%= render "shell/top" %>
-<% if internal_navigation? %>
+<% if internal_navigation? # Meaning rendered from within a shell or internal page swap context %>
   <style>.app-shell-loader {display: none;}</style>
   <script async>
     var shellData = document.getElementById('shell-data')
