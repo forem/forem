@@ -4,6 +4,11 @@
   background-color: $smoke-00;
   border: 1px solid $smoke-30;
   border-radius: $br-default;
+  transition: all ease-in-out 100ms;
+
+  &-hover {
+    border-color: $smoke-40;
+  }
 
   &-disabled {
     color: $smoke-60;
@@ -28,6 +33,7 @@
   line-height: $lh-base;
   padding: 0.5em 1em;
   font-family: inherit;
+  font-size: $fs-base;
   margin: 0; //todo: do we need it?
   -webkit-appearance: none;
   width: 100%;
@@ -35,6 +41,10 @@
 
   &::placeholder {
     color: $smoke-60;
+  }
+
+  &:hover {
+    @extend %form-styling-hover;
   }
 
   &:focus {
@@ -53,7 +63,7 @@
   }
 
   &__icon {
-    padding-left: 40px; // TODO
+    padding-left: $su-7;
   }
 }
 
@@ -62,6 +72,10 @@
 .crayons-radio {
   width: 18px;
   height: 18px;
+
+  &:hover {
+    @extend %form-styling-hover;
+  }
 
   &__disabled,
   &[disabled] {
@@ -89,20 +103,23 @@
 // Full Fields markup
 .crayons-field {
   display: flex;
-  flex-flow: row;
+  flex-flow: column;
+  font-size: $fs-base; // todo: do we need it?
 
   &--label {
     color: $smoke-90;
     font-weight: $fw-medium;
 
-    > * {
-      margin-top: @su-2;
+    + .crayons-field--description {
+      margin-top: 0;
     }
   }
 
   &--description {
     color: $smoke-60;
     font-size: $fs-s;
+    font-weight: $fw-normal; // for when it's inside --label
+    margin: 0; //todo remove
   }
 
   > * + * {

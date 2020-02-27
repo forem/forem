@@ -1,3 +1,5 @@
+@import '../vars/_variables.scss';
+
 .crayons-card {
   border-radius: $br-default;
   background: $smoke-00;
@@ -10,6 +12,37 @@
     padding: 0 $su-4;
   }
 
+  &--title {
+    font-size: $fs-l;
+    color: $smoke-100;
+  }
+
   &--body {
+    // padding: $su-4;
+  }
+
+  &--link-block {
+    padding: $su-2 $su-4;
+    border-bottom: 1px solid $smoke-10;
+    display: block;
+    color: $smoke-80;
+
+    &:last-child {
+      border-bottom: 0;
+    }
+
+    &--footer {
+      font-size: $fs-s;
+      color: $smoke-50;
+    }
+
+    &:hover {
+      background-color: $snowflake;
+      color: $dolphin;
+
+      .crayons-card--link-block--footer {
+        color: $smoke-60;
+      }
+    }
   }
 }

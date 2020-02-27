@@ -1,0 +1,73 @@
+<% title "Crayons" %>
+<style>
+  .container {
+    padding: 48px;
+    font-size: 16px;
+    line-height: 150%;
+    box-sizing: border-box;
+  }
+  .container * {
+    box-sizing: border-box;
+  }
+
+  .container > * {
+    margin-bottom: 32px;
+  }
+</style>
+<div class="container">
+
+  <div><input type="text" class="crayons-textfield" placeholder="This is placeholder..."></div>
+
+  <div><textarea class="crayons-textfield" placeholder="This is palceholder..."></textarea></div>
+
+  <div class="crayons-field">
+    <label for="" class="crayons-field--label">Textfield Label</label>
+    <p class="crayons-field--description">This is some description for a textfield lorem ipsum...</p>
+    <input type="text" class="crayons-textfield" placeholder="This is placeholder...">
+    <p class="crayons-field--description">Another description just in case...</p>
+  </div>
+
+  <div class="crayons-field">
+    <label for="" class="crayons-field--label">
+      Textfield Label
+      <p class="crayons-field--description">This is some description for a textfield lorem ipsum...</p>
+    </label>
+    <input type="text" class="crayons-textfield" placeholder="This is placeholder...">
+    <p class="crayons-field--description">Another description just in case...</p>
+  </div>
+
+  <div>
+    <a href="#" class="crayons-btn">Button label</a><br><br>
+    <a href="#" class="crayons-btn crayons-btn__full">Full Button label</a><br><br>
+    <a href="#" class="crayons-btn crayons-btn__secondary">Secondary Button label</a><br><br>
+    <a href="#" class="crayons-btn crayons-btn__outlined">Outlined Button label</a><br><br>
+    <a href="#" class="crayons-btn crayons-btn__text">Text Button label</a><br><br>
+    <a href="#" class="crayons-btn crayons-btn__danger">Danger Button label</a><br><br>
+    <a href="#" class="crayons-btn crayons-btn__icon-left"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon"><path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" /></svg>Button</a>
+  </div>
+
+  <div>
+    <div class="crayons-card" style="max-width: 316px;">
+      <header class="crayons-card--header">
+        <h3>Listings</h3>
+      </header>
+      <div class="crayons-card--body">
+        <a href="#" class="crayons-card--link-block">
+          Take part in the global microservices survey!
+          <footer class="crayons-card--link-block--footer">For hire</footer>
+        </a>
+
+        <a href="#" class="crayons-card--link-block">
+          React / Java Dev - Austin, TX
+          <footer class="crayons-card--link-block--footer">For hire</footer>
+        </a>
+
+        <a href="#" class="crayons-card--link-block">
+          Mecha, a flat-file content management system for minimalists.
+          <footer class="crayons-card--link-block--footer">For hire</footer>
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>

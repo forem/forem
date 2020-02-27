@@ -14,6 +14,7 @@
   text-align: center;
   text-decoration: none;
   cursor: pointer;
+  transition: all ease-in-out 100ms;
 }
 
 // Styles
@@ -33,6 +34,7 @@
 
   &__secondary {
     background-color: $smoke-20;
+    color: $smoke-80;
 
     &__disabled,
     &[disabled] {
