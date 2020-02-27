@@ -243,5 +243,30 @@ RSpec.describe Search::ClassifiedListing, type: :service, elasticsearch: true do
       expect(classified_listing_docs.first["id"]).to eq(classified_listing2.id)
       expect(classified_listing_docs.last["id"]).to eq(classified_listing.id)
     end
+
+    it "paginates the results" do
+      classified_listing.update(bumped_at: 1.year.ago)
+      classified_listing2 = FactoryBot.create(:classified_listing, bumped_at: Time.current)
+      index_documents([classified_listing, classified_listing2])
+      first_page_params = { page: 0, per_page: 1, sort_by: "bumped_at", order: "dsc" }
+
+      classified_listing_docs = described_class.search_documents(params: first_page_params)
+      expect(classified_listing_docs.first["id"]).to eq(classified_listing2.id)
+
+      second_page_params = { page: 1, per_page: 1, sort_by: "bumped_at", order: "dsc" }
+
+      classified_listing_docs = described_class.search_documents(params: second_page_params)
+      expect(classified_listing_docs.first["id"]).to eq(classified_listing.id)
+    end
+
+    it "returns an empty Array if no results are found" do
+      classified_listing.update(category: "forhire")
+      classified_listing2 = FactoryBot.create(:classified_listing, category: "cfp")
+      index_documents([classified_listing, classified_listing2])
+      params = { page: 3, per_page: 1 }
+
+      classified_listing_docs = described_class.search_documents(params: params)
+      expect(classified_listing_docs).to eq([])
+    end
   end
 end
