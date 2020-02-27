@@ -56,7 +56,14 @@
             <span class="reactions-count"><%= @root_comment.reactions_count %></span>
           </button>
         </div>
-        <div class="actions"></div>
+        <div class="actions">
+          <% if @root_comment.user_id == current_user&.id %>
+            <span class="current-user-actions">
+              <a href="<%= @root_comment.path %>/delete_confirm" class="edit-butt" rel="nofollow">DELETE</a>
+              <a href="<%= @root_comment.path %>/edit" class="edit-butt" rel="nofollow">EDIT</a>
+            </span>
+          <% end %>
+        </div>
       </div>
     <% end %>
   </div>

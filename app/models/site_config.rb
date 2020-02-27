@@ -19,6 +19,7 @@ class SiteConfig < RailsSettings::Base
   field :campaign_text_color, type: :string, default: "000000"
   field :campaign_featured_tags, type: :array, default: %w[]
   field :campaign_sidebar_enabled, type: :boolean, default: 0
+  field :campaign_sidebar_image, type: :string, default: nil
 
   # images
   field :main_social_image, type: :string, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"

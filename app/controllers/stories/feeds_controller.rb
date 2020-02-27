@@ -8,13 +8,13 @@ class Stories::FeedsController < ApplicationController
   private
 
   def assign_feed_stories
-    feed = Articles::Feed.new(page: @page, tag: params[:tag])
+    feed = Articles::Feed.new(user: current_user, page: @page, tag: params[:tag])
     stories = if params[:timeframe].in?(Timeframer::FILTER_TIMEFRAMES)
                 feed.top_articles_by_timeframe(timeframe: params[:timeframe])
               elsif params[:timeframe] == Timeframer::LATEST_TIMEFRAME
                 feed.latest_feed
               elsif user_signed_in?
-                feed.optimized_feed(current_user, field_test(:user_home_feed, participant: current_user))
+                feed.ab_test_feed(field_test(:user_home_feed, participant: current_user))
               else
                 feed.default_home_feed(user_signed_in: user_signed_in?)
               end

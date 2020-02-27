@@ -23,6 +23,11 @@ module Search
       def initialize(params, user_id)
         @params = params.deep_symbolize_keys
         @params[:viewable_by] = user_id
+
+        # TODO: @mstruve: When we want to allow people like admins to
+        # search ALL memberships this will need to change
+        @params[:status] = "active"
+
         build_body
       end
 
@@ -36,14 +41,13 @@ module Search
         @body = ActiveSupport::HashWithIndifferentAccess.new
         build_queries
         add_sort
-        # By default we will return 0 documents if size is not specified
-        @body[:size] = @params[:size] || DEFAULT_PARAMS[:size]
+        set_size
       end
 
       def build_queries
         @body[:query] = {}
         @body[:query][:bool] = { filter: filter_conditions }
-        @body[:query][:bool] = { must: query_conditions } if query_keys_present?
+        @body[:query][:bool][:must] = query_conditions if query_keys_present?
       end
 
       def add_sort
@@ -54,9 +58,14 @@ module Search
         }
       end
 
+      def set_size
+        # By default we will return 0 documents if size is not specified
+        @body[:size] = @params[:size] || DEFAULT_PARAMS[:size]
+      end
+
       def filter_conditions
         FILTER_KEYS.map do |filter_key|
-          next if @params[filter_key].blank?
+          next if @params[filter_key].blank? || @params[filter_key] == "all"
 
           { term: { filter_key => @params[filter_key] } }
         end.compact
@@ -70,7 +79,14 @@ module Search
         QUERY_KEYS.map do |query_key|
           next if @params[query_key].blank?
 
-          { match: { query_key => { query: @params[query_key] } } }
+          {
+            simple_query_string: {
+              query: "#{@params[query_key]}*",
+              fields: [query_key],
+              lenient: true,
+              analyze_wildcard: true
+            }
+          }
         end.compact
       end
     end

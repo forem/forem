@@ -23,6 +23,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       default_site_email social_networks_handle
       campaign_hero_html_variant_name campaign_background_color
       campaign_text_color campaign_sidebar_enabled campaign_featured_tags
+      campaign_sidebar_image
       main_social_image favicon_url logo_svg
       rate_limit_follow_count_daily
       ga_view_id ga_fetch_rate

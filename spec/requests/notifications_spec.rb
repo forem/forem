@@ -580,19 +580,27 @@ RSpec.describe "NotificationsIndex", type: :request do
     end
 
     context "when a user has a new welcome notification" do
-      let(:broadcast) { create(:broadcast, :onboarding) }
+      # TODO: [@thepracticaldev/delightful] Only test against type_of Welcome once Onbarding notifications have been removed.
+      let(:active_broadcast) { create(:broadcast, :onboarding, :active) }
+      let(:inactive_broadcast) { create(:broadcast, :onboarding) }
 
       before { sign_in user }
 
-      it "renders the welcome notification" do
+      it "renders a welcome notification if the broadcast is active" do
         sidekiq_perform_enqueued_jobs do
-          Notification.send_welcome_notification(user.id, broadcast.id)
+          Notification.send_welcome_notification(user.id, active_broadcast.id)
         end
         get "/notifications"
-        expect(response.body).to include broadcast.processed_html
+        expect(response.body).to include active_broadcast.processed_html
       end
 
-      xit "it renders a welcome notification with a type of Welcome"
+      it "does not render a welcome notification if the broadcast is inactive" do
+        sidekiq_perform_enqueued_jobs do
+          Notification.send_welcome_notification(user.id, inactive_broadcast.id)
+        end
+        get "/notifications"
+        expect(response.body).not_to include inactive_broadcast.processed_html
+      end
     end
 
     context "when a user has a new badge notification" do

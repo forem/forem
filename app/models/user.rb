@@ -46,7 +46,7 @@ class User < ApplicationRecord
   has_many :html_variants, dependent: :destroy
   has_many :page_views, dependent: :destroy
   has_many :credits, dependent: :destroy
-  has_many :classified_listings
+  has_many :classified_listings, dependent: :destroy
   has_many :poll_votes, dependent: :destroy
   has_many :poll_skips, dependent: :destroy
   has_many :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user, class_name: "BackupData", dependent: :delete_all
@@ -172,9 +172,9 @@ class User < ApplicationRecord
   }
 
   after_create_commit :send_welcome_notification
-  after_save  :bust_cache
-  after_save  :subscribe_to_mailchimp_newsletter
-  after_save  :conditionally_resave_articles
+  after_save :bust_cache
+  after_save :subscribe_to_mailchimp_newsletter
+  after_save :conditionally_resave_articles
   after_create_commit :estimate_default_language
   before_create :set_default_language
   before_validation :set_username
@@ -254,29 +254,23 @@ class User < ApplicationRecord
   end
 
   def cached_following_users_ids
-    Rails.cache.fetch(
-      "user-#{id}-#{last_followed_at}-#{following_users_count}/following_users_ids",
-      expires_in: 12.hours,
-    ) do
-      Follow.where(follower_id: id, followable_type: "User").limit(150).pluck(:followable_id)
+    cache_key = "user-#{id}-#{last_followed_at}-#{following_users_count}/following_users_ids"
+    Rails.cache.fetch(cache_key, expires_in: 12.hours) do
+      Follow.follower_user(id).limit(150).pluck(:followable_id)
     end
   end
 
   def cached_following_organizations_ids
-    Rails.cache.fetch(
-      "user-#{id}-#{last_followed_at}-#{following_orgs_count}/following_organizations_ids",
-      expires_in: 12.hours,
-    ) do
-      Follow.where(follower_id: id, followable_type: "Organization").limit(150).pluck(:followable_id)
+    cache_key = "user-#{id}-#{last_followed_at}-#{following_orgs_count}/following_organizations_ids"
+    Rails.cache.fetch(cache_key, expires_in: 12.hours) do
+      Follow.follower_organization(id).limit(150).pluck(:followable_id)
     end
   end
 
   def cached_following_podcasts_ids
-    Rails.cache.fetch(
-      "user-#{id}-#{last_followed_at}/following_podcasts_ids",
-      expires_in: 12.hours,
-    ) do
-      Follow.where(follower_id: id, followable_type: "Podcast").pluck(:followable_id)
+    cache_key = "user-#{id}-#{last_followed_at}/following_podcasts_ids"
+    Rails.cache.fetch(cache_key, expires_in: 12.hours) do
+      Follow.follower_podcast(id).pluck(:followable_id)
     end
   end
 
@@ -417,6 +411,7 @@ class User < ApplicationRecord
   def subscribe_to_mailchimp_newsletter
     return unless email.present? && email.include?("@")
     return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
+    return unless saved_changes.key?(:email) || saved_changes.key?(:email_newsletter)
 
     Users::SubscribeToMailchimpNewsletterWorker.perform_async(id)
   end
@@ -682,7 +677,7 @@ class User < ApplicationRecord
   end
 
   def destroy_follows
-    follower_relationships = Follow.where(followable_id: id, followable_type: "User")
+    follower_relationships = Follow.followable_user(id)
     follower_relationships.destroy_all
     follows.destroy_all
   end
