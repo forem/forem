@@ -1,6 +1,7 @@
 'use strict';
 
-// This file is specifically used for SheCoded, we can try to make it more general for campaigns in the future once we know more.
+// This file is specifically used for SheCoded,
+// We can try to make it more general for campaigns in the future once we know more (classnames, params).
 
 function initializeSheCodedArticles() {
   let articleElement = document.getElementById('js-she-coded-page__some-stories-sub-container');
