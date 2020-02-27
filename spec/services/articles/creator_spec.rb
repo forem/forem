@@ -49,20 +49,21 @@ RSpec.describe Articles::Creator, type: :service do
   end
 
   context "when invalid attributes" do
-    let(:invalid_attributes) { attributes_for(:article) }
+    let(:invalid_body_attributes) { attributes_for(:article) }
 
     before do
-      invalid_attributes[:body_markdown] = nil
+      invalid_body_attributes[:title] = Faker::Book.title
+      invalid_body_attributes[:body_markdown] = nil
     end
 
     it "doesn't create an invalid article" do
       expect do
-        described_class.call(user, invalid_attributes)
+        described_class.call(user, invalid_body_attributes)
       end.not_to change(Article, :count)
     end
 
     it "returns a non decorated, non persisted article" do
-      article = described_class.call(user, invalid_attributes)
+      article = described_class.call(user, invalid_body_attributes)
 
       expect(article.decorated?).to be(false)
       expect(article).not_to be_persisted
@@ -71,20 +72,20 @@ RSpec.describe Articles::Creator, type: :service do
 
     it "doesn't schedule a job" do
       expect do
-        described_class.call(user, invalid_attributes)
+        described_class.call(user, invalid_body_attributes)
       end.not_to have_enqueued_job(1).on_queue(:send_notifiable_action_notification)
     end
 
     it "doesn't create a notification subscription" do
       expect do
-        described_class.call(user, invalid_attributes)
+        described_class.call(user, invalid_body_attributes)
       end.not_to change(NotificationSubscription, :count)
     end
 
     it "doesn't call an event dispatcher" do
       event_dispatcher = double
       allow(event_dispatcher).to receive(:call)
-      described_class.call(user, invalid_attributes, event_dispatcher)
+      described_class.call(user, invalid_body_attributes, event_dispatcher)
       expect(event_dispatcher).not_to have_received(:call)
     end
   end

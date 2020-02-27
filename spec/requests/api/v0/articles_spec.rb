@@ -473,8 +473,11 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
 
     describe "when authorized" do
+      let(:default_params) { { body_markdown: "" } }
+
       def post_article(**params)
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        params = default_params.merge params
         post api_articles_path, params: { article: params }.to_json, headers: headers
       end
 
@@ -715,6 +718,12 @@ RSpec.describe "Api::V0::Articles", type: :request do
           post api_articles_path, params: {}.to_json, headers: headers
         end.not_to raise_error
         expect(response.status).to eq(422)
+      end
+
+      it "fails with a nil body markdown" do
+        post_article(title: Faker::Book.title, body_markdown: nil)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
       end
     end
   end
