@@ -39,7 +39,7 @@ module Articles
           limited_column_select.order("published_at DESC").limit(rand(15..80))
         hot_stories = hot_stories.to_a + new_stories.to_a
       end
-      hot_stories = rank_articles(hot_stories) if @user
+      hot_stories = rank_and_sort_articles(hot_stories) if @user
       [featured_story, hot_stories]
     end
 
@@ -48,18 +48,23 @@ module Articles
       stories
     end
 
-    def rank_articles(articles)
-      ranked_articles = articles.map do |article|
-        article_points = 0
-        article_points += score_followed_user(article)
-        article_points += score_followed_organization(article)
-        article_points += score_followed_tags(article)
-        article_points += score_randomness
-        article_points += score_language(article)
-        article_points += score_experience_level(article)
-        RankedArticle.new(article, article_points)
+    def rank_and_sort_articles(articles)
+      ranked_articles = articles.each_with_object({}) do |article, result|
+        article_points = score_single_article(article)
+        result[article] = article_points
       end
-      ranked_articles.sort { |a, b| b.score <=> a.score }.map(&:article)
+      ranked_articles.sort_by { |_article, article_points| -article_points }.map(&:first)
+    end
+
+    def score_single_article(article)
+      article_points = 0
+      article_points += score_followed_user(article)
+      article_points += score_followed_organization(article)
+      article_points += score_followed_tags(article)
+      article_points += score_randomness
+      article_points += score_language(article)
+      article_points += score_experience_level(article)
+      article_points
     end
 
     def score_followed_user(article)
