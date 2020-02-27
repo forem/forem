@@ -172,9 +172,9 @@ class User < ApplicationRecord
   }
 
   after_create_commit :send_welcome_notification
-  after_save  :bust_cache
-  after_save  :subscribe_to_mailchimp_newsletter
-  after_save  :conditionally_resave_articles
+  after_save :bust_cache
+  after_save :subscribe_to_mailchimp_newsletter
+  after_save :conditionally_resave_articles
   after_create_commit :estimate_default_language
   before_create :set_default_language
   before_validation :set_username
@@ -411,6 +411,7 @@ class User < ApplicationRecord
   def subscribe_to_mailchimp_newsletter
     return unless email.present? && email.include?("@")
     return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
+    return unless saved_changes.key?(:email) || saved_changes.key?(:email_newsletter)
 
     Users::SubscribeToMailchimpNewsletterWorker.perform_async(id)
   end
