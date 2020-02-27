@@ -42,5 +42,8 @@ experience, we should make an effort to not do this overly often and where
 possible ship changes which are temporarily compatable with the old and new
 designs.
 
+The key is to have good communication around what may and may not require a a
+bump to the `impactful_shell_version`.
+
 We may eventually be able to come up with new and better ways to update the
 cached shell.
