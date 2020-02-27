@@ -66,16 +66,16 @@
   }
 
   &__danger {
-    background-color: $roses-are-red;
+    background-color: $raspberry;
 
     &__disabled,
     &[disabled] {
       color: rgba($snowflake, 0.8);
-      background-color: $roses-are-red-lighter;
+      background-color: $raspberry-lighter;
     }
 
     &:hover {
-      background-color: $roses-are-red-darker;
+      background-color: $raspberry-darker;
     }
   }
 
