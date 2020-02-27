@@ -13,10 +13,7 @@ module Users
     end
 
     def self.cleanup_memberships(chat_channel_memberships)
-      chat_channel_memberships.each do |ccm|
-        ccm.remove_from_index!
-        ccm.destroy!
-      end
+      chat_channel_memberships.each(&:destroy!)
     end
     private_class_method :cleanup_memberships
   end
