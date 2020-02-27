@@ -52,12 +52,8 @@
       <td><%= time_ago_in_words mod.last_comment_at %> ago</td>
       <% if params[:state] == "potential" %>
         <td>
-          <% if !mod.trusted %>
-            <%= form_for([:internal, mod], url: "/internal/mods/#{mod.id}", method: :patch) do |f| %>
-              <%= f.submit "Make Trusted Mod" %>
-            <% end %>
-          <% elsif mod.trusted %>
-            <span class="badge badge-success">Trusted</span>
+          <%= form_for([:internal, mod], url: "/internal/mods/#{mod.id}", method: :patch) do |f| %>
+            <%= f.submit "Make Trusted Mod" %>
           <% end %>
         </td>
       <% end %>
