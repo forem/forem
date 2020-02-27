@@ -440,7 +440,7 @@ class Tags extends Component {
           placeholder={`${maxTags} tags max, comma separated, no spaces or special characters`}
           autoComplete="off"
           value={defaultValue}
-          onInput={debounce(this.handleInput, 500)}
+          onInput={debounce(this.handleInput, 300)}
           onKeyDown={this.handleKeyDown}
           onBlur={this.handleFocusChange}
           onFocus={this.handleFocusChange}
