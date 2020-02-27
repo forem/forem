@@ -4,7 +4,7 @@ info:
   description: |
     Access DEV articles, users and other resources via API.
 
-    All public endpoints are CORS enabled.
+    All endpoints that don't require authentication are CORS enabled.
   version: "0.6.0"
   termsOfService: https://dev.to/terms
   contact:
