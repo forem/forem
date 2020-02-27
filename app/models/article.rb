@@ -39,7 +39,7 @@ class Article < ApplicationRecord
   validates :canonical_url,
             url: { allow_blank: true, no_local: true, schemes: %w[https http] },
             uniqueness: { allow_blank: true }
-  validates :body_markdown, uniqueness: { scope: %i[user_id title] }
+  validates :body_markdown, length: { minimum: 0, allow_nil: false }, uniqueness: { scope: %i[user_id title] }
   validate :validate_tag
   validate :validate_video
   validate :validate_collection_permission
