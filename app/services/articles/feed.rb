@@ -67,9 +67,10 @@ module Articles
     end
 
     def score_followed_tags(article)
-      @user.decorate.cached_followed_tags.select do |tag|
-        article.decorate.cached_tag_list_array.include?(tag.name)
-      end.sum(&:points)
+      article_tags = article.decorate.cached_tag_list_array
+      @user.decorate.cached_followed_tags.sum do |tag|
+        article_tags.include?(tag.name) ? tag.points : 0
+      end
     end
 
     def score_followed_organization(article)
