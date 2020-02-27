@@ -39,6 +39,11 @@ export default class Chat extends Component {
     const chatChannels = JSON.parse(props.chatChannels);
     const chatOptions = JSON.parse(props.chatOptions);
 
+    this.debouncedChannelFilter = debounce(
+      this.triggerChannelFilter.bind(this),
+      300,
+    );
+
     this.state = {
       messages: [],
       scrolled: false,
@@ -903,10 +908,10 @@ export default class Chat extends Component {
                 <b>must</b>
               </em>
               {' '}
-              abide by the
+              abide by the 
               {' '}
               <a href="/code-of-conduct">code of conduct</a>
-.
+              .
             </div>
           </div>
         );
@@ -915,19 +920,19 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You have joined
+              You have joined 
               {' '}
               {activeChannel.channel_name}
-! All interactions
+              ! All interactions
               {' '}
               <em>
                 <b>must</b>
               </em>
               {' '}
-              abide by the
+              abide by the 
               {' '}
               <a href="/code-of-conduct">code of conduct</a>
-.
+              .
             </div>
           </div>
         );
@@ -1029,7 +1034,7 @@ export default class Chat extends Component {
             >
               {'<'}
             </button>
-            <input placeholder="Filter" onKeyUp={debounce(this.triggerChannelFilter, 500)} />
+            <input placeholder="Filter" onKeyUp={this.debouncedChannelFilter} />
             {invitesButton}
             <div className="chat__channeltypefilter">
               {this.renderChannelFilterButton(
