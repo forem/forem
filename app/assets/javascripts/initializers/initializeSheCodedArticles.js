@@ -3,15 +3,8 @@
 // This file is specifically used for SheCoded,
 // We can try to make it more general for campaigns in the future once we know more (classnames, params).
 
-function initializeSheCodedArticles() {
-  let articleElement = document.getElementById('js-she-coded-page__some-stories-sub-container');
-  if(articleElement) {
-    getArticles(articleElement);
-  }
-}
-
 function renderArticles(articles, articleElement ) {
-  articleHTML = articles.map((article) => {
+  const articleHTML = articles.map((article) => {
     return `<a class="she-coded-page__some-story-container-link" href="${article.url}"><div class="she-coded-page__some-story-container">
       <div class="she-coded-page__some-story-tag"><span class="she-coded-page__some-story-hashtag">#</span>shecoded</div>
       <div class="she-coded-page__some-story-header">${article.title}</div>
@@ -26,6 +19,8 @@ function renderArticles(articles, articleElement ) {
       </div>
     </div></a>`
   });
+
+
 
   articleElement.innerHTML = articleHTML.join(" ");
 }
@@ -42,7 +37,7 @@ function getArticles(articleElement) {
     xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
   }
 
-  xmlhttp.onreadystatechange = () => {
+  xmlhttp.onreadystatechange = function() {
     if (xmlhttp.readyState === XMLHttpRequest.DONE) {
       let json = JSON.parse(xmlhttp.responseText);
       document.getElementById("js-she-coded-page__loading-articles").style.display = "none";
@@ -55,4 +50,11 @@ function getArticles(articleElement) {
 
   xmlhttp.open("GET", `${url}?${params}`, true);
   xmlhttp.send();
+}
+
+function initializeSheCodedArticles() {
+  let articleElement = document.getElementById('js-she-coded-page__some-stories-sub-container');
+  if(articleElement) {
+    getArticles(articleElement);
+  }
 }
