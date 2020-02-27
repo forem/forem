@@ -113,13 +113,6 @@ Rails.application.configure do
     Bullet.add_whitelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
     # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
     Bullet.add_whitelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
-
-    # Check if there are any data update scripts to run during startup
-    if %w[c console runner s server].include?(ENV["COMMAND"])
-      if DataUpdateScript.scripts_to_run?
-        raise "Data update scripts need to be run before you can start the application. Please run 'rails data_updates:run'"
-      end
-    end
   end
 end
 
