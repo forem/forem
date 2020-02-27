@@ -30,7 +30,7 @@ class Tags extends Component {
   constructor(props) {
     super(props);
 
-    this.debouncedTagSearch = debounce(this.handleInput.bind(this), 300);
+    this.debouncedTagSearch = debounce(this.handleInput.bind(this), 150);
 
     this.state = {
       selectedIndex: -1,
