@@ -75,7 +75,7 @@ module Search
 
       def term_keys
         TERM_KEYS.map do |term_key|
-          next if @params[term_key].blank? && @params[term_key] != false
+          next unless @params.key? term_key
 
           { term: { term_key => @params[term_key] } }
         end.compact
@@ -83,7 +83,7 @@ module Search
 
       def range_keys
         RANGE_KEYS.map do |range_key|
-          next if @params[range_key].blank? && @params[range_key] != false
+          next unless @params.key? range_key
 
           { range: { range_key => @params[range_key] } }
         end.compact
