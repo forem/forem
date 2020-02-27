@@ -116,9 +116,10 @@ export default class ArticleForm extends Component {
 
   componentDidMount() {
     const { version, updatedAt } = this.state;
-    const previousContent = JSON.parse(
-      localStorage.getItem(`editor-${version}-${window.location.href}`),
-    );
+    const previousContent =
+      JSON.parse(
+        localStorage.getItem(`editor-${version}-${window.location.href}`),
+      ) || {};
     const isLocalstorageNewer =
       new Date(previousContent.updatedAt) > new Date(updatedAt);
 
