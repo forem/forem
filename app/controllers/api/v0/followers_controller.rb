@@ -5,27 +5,28 @@ module Api
       before_action -> { limit_per_page(default: 80, max: 1000) }
 
       def organizations
-        @follows = Follow.
-          where(followable_id: @user.organization_id, followable_type: "Organization").
+        @follows = Follow.followable_organization(@user.organization_ids).
           includes(:follower).
-          select(ATTRIBUTES_FOR_SERIALIZATION).
+          select(ORGANIZATIONS_ATTRIBUTES_FOR_SERIALIZATION).
           order("created_at DESC").
           page(params[:page]).
           per(@follows_limit)
       end
 
       def users
-        @follows = Follow.
-          where(followable_id: @user.id, followable_type: "User").
+        @follows = Follow.followable_user(@user.id).
           includes(:follower).
-          select(ATTRIBUTES_FOR_SERIALIZATION).
+          select(USERS_ATTRIBUTES_FOR_SERIALIZATION).
           order("created_at DESC").
           page(params[:page]).
           per(@follows_limit)
       end
 
-      ATTRIBUTES_FOR_SERIALIZATION = %i[id follower_id follower_type].freeze
-      private_constant :ATTRIBUTES_FOR_SERIALIZATION
+      ORGANIZATIONS_ATTRIBUTES_FOR_SERIALIZATION = %i[id follower_id follower_type followable_id].freeze
+      private_constant :ORGANIZATIONS_ATTRIBUTES_FOR_SERIALIZATION
+
+      USERS_ATTRIBUTES_FOR_SERIALIZATION = %i[id follower_id follower_type].freeze
+      private_constant :USERS_ATTRIBUTES_FOR_SERIALIZATION
 
       private
 

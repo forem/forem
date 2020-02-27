@@ -50,13 +50,8 @@ class DashboardsController < ApplicationController
   end
 
   def followers
-    if params[:which] == "user_followers"
-      @follows = Follow.where(followable_id: @user.id, followable_type: "User").
-        includes(:follower).order("created_at DESC").limit(@follows_limit)
-    elsif params[:which] == "organization_user_followers"
-      @follows = Follow.where(followable_id: @user.organization_id, followable_type: "Organization").
-        includes(:follower).order("created_at DESC").limit(@follows_limit)
-    end
+    @follows = Follow.followable_user(@user.id).
+      includes(:follower).order("created_at DESC").limit(@follows_limit)
   end
 
   def pro

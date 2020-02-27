@@ -1,9 +1,9 @@
 module Api
   module V0
     class WebhooksController < ApiController
-      respond_to :json
       before_action :authenticate!
       before_action -> { doorkeeper_authorize! :public }, if: -> { doorkeeper_token }
+
       skip_before_action :verify_authenticity_token, only: %w[create destroy]
 
       def index

@@ -1,33 +1,22 @@
 <div class="sidebar-nav" id="sidebar-nav">
   <% if user_signed_in? %>
-    <div class="sidebar-profile-snapshot">
-      <a class="sidebar-profile-snapshot-inner" id="sidebar-profile-snapshot-inner" href="#">
-        <div class="sidebar-profile-pic" id="sidebar-profile-pic">
-        </div>
-        <div class="sidebar-profile-content">
-          <div class="sidebar-profile-name" id="sidebar-profile-name">
-          </div>
-          <div class="sidebar-profile-username" id="sidebar-profile-username">
-          </div>
-        </div>
-      </a>
-    </div>
+    <a class="sidebar-profile" id="sidebar-profile" href="#">
+      <img src="" class="sidebar-profile--avatar" id="sidebar-profile--avatar" alt="" width="48" height="48">
+      <div class="sidebar-profile--details">
+        <h4 class="sidebar-profile--name" id="sidebar-profile--name"></h4>
+        <small class="sidebar-profile--username" id="sidebar-profile--username"></small>
+      </div>
+    </a>
   <% end %>
   <div class="widget sidebar-nav-block sidebar-tag-block">
     <% if user_signed_in? %>
-      <div class="sidebar-nav-header sidebar-nav-header-middle">
-        navigation
-      </div>
-      <div class="sidebar-nav-element">
+      <div class="sidebar-nav-element sidebar-main-nav">
         <a class="sidebar-nav-link" href="<%= readinglist_path %>">
           <img class="nav-emoji" src="<%= asset_path("emoji/emoji-one-bookmark.png") %>" alt="reading list icon" /> Reading List
           <span id="reading-list-count"></span>
         </a>
         <a class="sidebar-nav-link trusted-visible-block" href="<%= mod_path %>">
           <img class="nav-emoji" src="<%= asset_path("emoji/emoji-one-sloth.png") %>" alt="moderation icon" /> Moderation
-        </a>
-        <a class="sidebar-nav-link pro-visible-block" href="<%= history_path %>">
-          <img class="nav-emoji" src="<%= asset_path("emoji/emoji-one-filmstrip.png") %>" alt="history icon" /> History
         </a>
         <a class="sidebar-nav-link" href="<%= classified_listings_path %>">
           <img class="nav-emoji" src="<%= asset_path("emoji/emoji-one-clipboard.png") %>" alt="listings icon" /> Listings
@@ -40,22 +29,22 @@
         </a>
       </div>
     <% end %>
-    <div class="sidebar-nav-header sidebar-nav-header-middle">
+    <header>
       <% if user_signed_in? %>
-        my tags
+        My Tags
       <% else %>
-        design your experience
+        Design Your Experience
       <% end %>
-    </div>
+    </header>
     <div class="sidebar-nav-block-inner">
       <div id="sidebar-nav-followed-tags" class="sidebar-nav-followed-tags"></div>
       <div id="sidebar-nav-default-tags" class="sidebar-nav-default-tags <%= "showing" unless user_signed_in? %>">
         <% if user_signed_in? %>
-          <div class="sidebar-nav-subheader tag-separator" id="tag-separator">Other Popular Tags</div>
+          <header id="tag-separator">Other Popular Tags</header>
         <% end %>
         <% Tag.where(supported: true).order("hotness_score DESC").limit(30).pluck(:id, :name).each do |tag_array| %>
           <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
-            <a class="sidebar-nav-link" href="<%= tag_path(tag_array.second) %>">
+            <a class="sidebar-nav-link sidebar-nav-link-tag" href="<%= tag_path(tag_array.second) %>">
               <span class="sidebar-nav-tag-text">
                 #<%= tag_array.second %>
               </span>
@@ -69,8 +58,6 @@
         <% end %>
       </div>
     </div>
-    <div class="sidebar-nav-subheader">
-      <a href="<%= tags_path %>">View all-time top tags</a>
-    </div>
+    <a href="<%= tags_path %>" class="cta cta-button">View all-time top tags</a>
   </div>
 </div>

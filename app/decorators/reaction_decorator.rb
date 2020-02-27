@@ -1,1 +1,0 @@
-class ReactionDecorator < ApplicationDecorator; end

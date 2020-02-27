@@ -5,7 +5,7 @@
       <%= render "articles/sidebar_nav" %>
       <div class="widget sponsorship-widget <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
         <header>
-          <a href="/sponsors"><h4>community sponsors</h4></a>
+          <a href="/sponsors"><h4>Community sponsors</h4></a>
           <span class="emoji">
             <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" alt="emoji heart" />
           </span>
@@ -30,7 +30,7 @@
       </div>
       <div class="widget">
         <header>
-          <h4>key links</h4>
+          <h4>Key links</h4>
         </header>
         <div class="widget-body">
           <a href="https://twitter.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener"><img src="<%= asset_path("twitter-logo.svg") %>" alt="Twitter logo" class="social-icon" /></a>
@@ -55,7 +55,7 @@
       <% @left_sidebar_ad = DisplayAd.for_display("sidebar_left") %>
       <% if @left_sidebar_ad %>
         <div class="widget" id="sponsorship-arbitrary-display-widget" data-id="<%= @left_sidebar_ad.id %>">
-          <div class="widget-body" style="margin-top:-6px">
+          <div class="widget-body widget-body--sponsorship-arbitrary">
             <%= @left_sidebar_ad.processed_html.html_safe %>
           </div>
         </div>

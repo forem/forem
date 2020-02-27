@@ -25,7 +25,7 @@
     <%= f.label :published %>
     <%= f.check_box :published %>
     <%= f.label :group %>
-    <%= f.select(:group, options_for_select(["article_show_sidebar_cta", "article_show_below_article_cta", "badge_landing_page"], @html_variant.group || "article_show_sidebar_cta")) %>
+    <%= f.select(:group, options_for_select(HtmlVariant::GROUP_NAMES, @html_variant.group || "article_show_sidebar_cta")) %>
   </div>
   <%= f.submit %>
 <% end %>

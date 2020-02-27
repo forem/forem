@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_05_225813) do
+ActiveRecord::Schema.define(version: 2020_02_26_192145) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -224,6 +224,7 @@ ActiveRecord::Schema.define(version: 2020_02_05_225813) do
   end
 
   create_table "broadcasts", id: :serial, force: :cascade do |t|
+    t.boolean "active", default: false
     t.text "body_markdown"
     t.text "processed_html"
     t.boolean "sent", default: false
@@ -350,19 +351,13 @@ ActiveRecord::Schema.define(version: 2020_02_05_225813) do
     t.index ["spent"], name: "index_credits_on_spent"
   end
 
-  create_table "delayed_jobs", id: :serial, force: :cascade do |t|
-    t.integer "attempts", default: 0, null: false
-    t.datetime "created_at"
-    t.datetime "failed_at"
-    t.text "handler", null: false
-    t.text "last_error"
-    t.datetime "locked_at"
-    t.string "locked_by"
-    t.integer "priority", default: 0, null: false
-    t.string "queue"
+  create_table "data_update_scripts", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "file_name"
+    t.datetime "finished_at"
     t.datetime "run_at"
-    t.datetime "updated_at"
-    t.index ["priority", "run_at"], name: "delayed_jobs_priority"
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "display_ad_events", force: :cascade do |t|
@@ -757,6 +752,8 @@ ActiveRecord::Schema.define(version: 2020_02_05_225813) do
     t.index ["guid"], name: "index_podcast_episodes_on_guid", unique: true
     t.index ["media_url"], name: "index_podcast_episodes_on_media_url", unique: true
     t.index ["podcast_id"], name: "index_podcast_episodes_on_podcast_id"
+    t.index ["title"], name: "index_podcast_episodes_on_title"
+    t.index ["website_url"], name: "index_podcast_episodes_on_website_url"
   end
 
   create_table "podcasts", id: :serial, force: :cascade do |t|
@@ -873,6 +870,7 @@ ActiveRecord::Schema.define(version: 2020_02_05_225813) do
     t.index ["category"], name: "index_reactions_on_category"
     t.index ["created_at"], name: "index_reactions_on_created_at"
     t.index ["points"], name: "index_reactions_on_points"
+    t.index ["reactable_id", "reactable_type"], name: "index_reactions_on_reactable_id_and_reactable_type"
     t.index ["reactable_id"], name: "index_reactions_on_reactable_id"
     t.index ["reactable_type"], name: "index_reactions_on_reactable_type"
     t.index ["user_id"], name: "index_reactions_on_user_id"
@@ -1125,7 +1123,6 @@ ActiveRecord::Schema.define(version: 2020_02_05_225813) do
     t.boolean "onboarding_package_requested_again", default: false
     t.string "onboarding_variant_version", default: "0"
     t.boolean "org_admin", default: false
-    t.integer "organization_id"
     t.datetime "organization_info_updated_at"
     t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "personal_data_updated_at"
@@ -1186,7 +1183,6 @@ ActiveRecord::Schema.define(version: 2020_02_05_225813) do
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["old_old_username"], name: "index_users_on_old_old_username"
     t.index ["old_username"], name: "index_users_on_old_username"
-    t.index ["organization_id"], name: "index_users_on_organization_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true

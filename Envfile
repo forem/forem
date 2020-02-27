@@ -145,7 +145,6 @@ variable :SLACK_WEBHOOK_URL, :String, default: ""
 # (https://stripe.com/docs/api)
 variable :STRIPE_PUBLISHABLE_KEY, :String, default: "Optional"
 variable :STRIPE_SECRET_KEY, :String, default: "Optional"
-variable :STRIPE_CANCELLATION_SECRET, :String, default: "Optional"
 
 # For video calling in DEV Connect
 # (https://www.twilio.com/docs/video)
@@ -162,6 +161,10 @@ variable :TWITCH_WEBHOOK_SECRET, :String, default: "Optional"
 # For calling the Stack Exchange API
 # (https://api.stackexchange.com/docs)
 variable :STACK_EXCHANGE_APP_KEY, :String, default: ""
+
+# For setting the IDs of the staff and welcoming users
+variable :STAFF_USER_ID, :Integer, default: 1
+variable :WELCOMING_USER_ID, :Integer, default: 1
 
 group :production do
   variable :SECRET_KEY_BASE, :String

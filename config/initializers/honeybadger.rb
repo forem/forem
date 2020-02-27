@@ -2,7 +2,7 @@
 # https://docs.honeybadger.io/lib/ruby/getting-started/ignoring-errors.html#ignore-programmatically
 
 MESSAGE_FINGERPRINTS = {
-  "BANNED" => "banned",
+  "SUSPENDED" => "banned",
   "Rack::Timeout::RequestTimeoutException" => "rack_timeout",
   "Rack::Timeout::RequestTimeoutError" => "rack_timeout",
   "PG::QueryCanceled" => "pg_query_canceled"
@@ -21,8 +21,8 @@ Honeybadger.configure do |config|
     ActiveRecord::QueryCanceled,
   ]
   config.request.filter_keys += %w[authorization]
-  config.delayed_job.attempt_threshold = 10
   config.sidekiq.attempt_threshold = 10
+  config.breadcrumbs.enabled = true
 
   config.before_notify do |notice|
     notice.fingerprint = if notice.error_message&.include?("SIGTERM") && notice.component&.include?("fetch_all_rss")

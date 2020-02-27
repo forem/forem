@@ -1,7 +1,6 @@
 class Tag < ActsAsTaggableOn::Tag
   attr_accessor :points
 
-  include AlgoliaSearch
   acts_as_followable
   resourcify
 
@@ -27,14 +26,13 @@ class Tag < ActsAsTaggableOn::Tag
   before_validation :pound_it
   before_save :calculate_hotness_score
   after_commit :bust_cache
+  after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :remove_from_elasticsearch, on: [:destroy]
   before_save :mark_as_updated
 
-  algoliasearch per_environment: true do
-    attribute :name, :bg_color_hex, :text_color_hex, :hotness_score, :supported, :short_summary, :rules_html
-    attributesForFaceting [:supported]
-    customRanking ["desc(hotness_score)"]
-    searchableAttributes %w[name short_summary]
-  end
+  include Searchable
+  SEARCH_SERIALIZER = Search::TagSerializer
+  SEARCH_CLASS = Search::Tag
 
   def submission_template_customized(param_0 = nil)
     submission_template&.gsub("PARAM_0", param_0)

@@ -7,18 +7,12 @@
           Join <%= ApplicationConfig["COMMUNITY_NAME"] %>
         </header>
         <div class="widget-body">
-          <center style="margin-bottom: 2px;">
-            <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="cta cta-button login-cta-button" data-no-instant>
-              Sign In With Twitter
-            </a>
-            <a href="/users/auth/github?state=navbar_basic" class="cta cta-button login-cta-button" data-no-instant>
-              Sign In With GitHub
-            </a>
-          </center>
+          <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="cta cta-button login-cta-button" data-no-instant>Sign In With Twitter</a>
+          <a href="/users/auth/github?state=navbar_basic" class="cta cta-button login-cta-button" data-no-instant>Sign In With GitHub</a>
         </div>
       </div>
     <% end %>
-    <% cache("main-article-right-sidebar-discussions-#{params[:timeframe]}", expires_in: (params[:timeframe].blank? ? 120 : 360).seconds) do %>
+    <% cache(cache_key_heroku_slug("main-article-right-sidebar-discussions-#{params[:timeframe]}"), expires_in: (params[:timeframe].blank? ? 120 : 360).seconds) do %>
       <% @sidebar_ad = DisplayAd.for_display("sidebar_right") %>
       <% if @sidebar_ad %>
         <div class="widget">
@@ -27,17 +21,18 @@
           </div>
         </div>
       <% end %>
+      <%= render "articles/sidebar_campaign" if SiteConfig.campaign_sidebar_enabled? %>
       <% if params[:timeframe].blank? && @classified_listings.any? %>
         <div class="widget" id="sidebar-listings-widget">
           <header class="widget-header-listings">
-            <a href="/listings"><h4>newest listings <span class="widget-listing-live-count"><%= @classified_listings.size %> active</span></h4></a>
+            <a href="/listings"><h4>Listings <span class="widget-listing-live-count"><%= @classified_listings.size %></span></h4></a>
             <button type="button" class="widget-minimize-button" id="sidebar-listings-widget-minimize-button">-</button>
           </header>
           <div class="widget-body widget-body-listings">
             <% @classified_listings.order("bumped_at DESC").limit(8).each do |listing| %>
               <a class="widget-listing-link" href="<%= listing.path %>">
-                <span class="widget-listing-link-category"><%= listing.category %></span>
                 <span class="widget-listing-link-title"><%= listing.title %></span>
+                <span class="widget-listing-link-category"><%= listing.category %></span>
               </a>
             <% end %>
             <a class="cta cta-button" href="/listings/new">CREATE A LISTING</a>

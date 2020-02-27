@@ -1,42 +1,36 @@
 module Search
-  class Tag
+  class Tag < Base
     INDEX_NAME = "tags_#{Rails.env}".freeze
     INDEX_ALIAS = "tags_#{Rails.env}_alias".freeze
+    MAPPINGS = JSON.parse(File.read("config/elasticsearch/mappings/tags.json"), symbolize_names: true).freeze
 
     class << self
-      def index(tag_id, serialized_data)
-        SearchClient.index(
-          id: tag_id,
-          index: INDEX_ALIAS,
-          body: serialized_data,
-        )
+      def search(query_string)
+        request do
+          SearchClient.search(
+            index: INDEX_ALIAS,
+            body: {
+              query: {
+                query_string: {
+                  query: query_string,
+                  analyze_wildcard: true,
+                  allow_leading_wildcard: false
+                }
+              },
+              sort: {
+                hotness_score: "desc"
+              }
+            },
+          )
+        end
       end
 
-      def get(tag_id)
-        SearchClient.get(id: tag_id, index: INDEX_ALIAS)
-      end
-
-      def create_index(index_name: INDEX_NAME)
-        SearchClient.indices.create(index: index_name, body: settings)
-      end
-
-      def delete_index(index_name: INDEX_NAME)
-        SearchClient.indices.delete(index: index_name)
-      end
-
-      def add_alias(index_name: INDEX_NAME, index_alias: INDEX_ALIAS)
-        SearchClient.indices.put_alias(index: index_name, name: index_alias)
-      end
-
-      def update_mappings(index_alias: INDEX_ALIAS)
-        SearchClient.indices.put_mapping(index: index_alias, body: mappings)
+      def search_documents(query_string)
+        results = search(query_string)
+        results.dig("hits", "hits").map { |tag_doc| tag_doc.dig("_source") }
       end
 
       private
-
-      def settings
-        { settings: { index: index_settings } }
-      end
 
       def index_settings
         if Rails.env.production?
@@ -50,34 +44,6 @@ module Search
             number_of_replicas: 0
           }
         end
-      end
-
-      def mappings
-        {
-          dynamic: "strict",
-          properties: {
-            id: {
-              type: "keyword"
-            },
-            name: {
-              type: "text",
-              fields: {
-                raw: {
-                  type: "keyword"
-                }
-              }
-            },
-            hotness_score: {
-              type: "integer"
-            },
-            supported: {
-              type: "boolean"
-            },
-            short_summary: {
-              type: "text"
-            }
-          }
-        }
       end
     end
   end

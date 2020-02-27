@@ -16,6 +16,12 @@ module Payments
         end
       end
 
+      def save(customer)
+        request do
+          customer.save
+        end
+      end
+
       def create_source(customer_id, token)
         request do
           Stripe::Customer.create_source(customer_id, source: token)
@@ -25,6 +31,18 @@ module Payments
       def get_source(customer, source_id)
         request do
           customer.sources.retrieve(source_id)
+        end
+      end
+
+      def detach_source(customer_id, source_id)
+        request do
+          Stripe::Customer.detach_source(customer_id, source_id)
+        end
+      end
+
+      def get_sources(customer, **params)
+        request do
+          customer.sources.list(**params)
         end
       end
 
@@ -42,14 +60,19 @@ module Payments
         end
       end
 
+      private
+
       def request
         yield
       rescue Stripe::InvalidRequestError => e
+        DatadogStatsClient.increment("stripe.errors", tags: ["error:InvalidRequestError"])
         raise InvalidRequestError, e.message
       rescue Stripe::CardError => e
+        DatadogStatsClient.increment("stripe.errors", tags: ["error:CardError"])
         raise CardError, e.message
       rescue Stripe::StripeError => e
         Rails.logger.error(e)
+        DatadogStatsClient.increment("stripe.errors", tags: ["error:StripeError"])
         raise PaymentsError, e.message
       end
     end

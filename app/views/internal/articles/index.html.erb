@@ -44,10 +44,10 @@
   </div>
   <div class="col-12 mb-2">
     <details>
-      <summary style="font-size: 1.3em; cursor: pointer;">Suggested tweets (<%= @pending_buffer_updates.size %>)</summary>
+      <summary style="font-size: 1.3em; cursor: pointer;">Suggested Tweets (<%= @pending_buffer_updates.size %>)</summary>
       <% @pending_buffer_updates.each do |buffer_update| %>
         <% next unless buffer_update.article %>
-        <div class="card my-3" id="suggested-tweet-<%= buffer_update.id %>" data-controller="buffer">
+        <div class="card my-3" id="suggested-tweet-<%= buffer_update.id %>" data-controller="buffer" data-action="load@window->buffer#autosizeBodyText">
           <div class="card-header">
             <h2 class="my-0" data-target="buffer.header"><%= buffer_update.article.title %></h2>
           </div>
@@ -66,7 +66,7 @@
                 <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
                 <input type="hidden" name="_method" value="patch" />
                 <input type="hidden" name="status" value="confirmed" />
-                <textarea name="body_text" class="form-control"><%= buffer_update.body_text %></textarea>
+                <textarea class="w-100 suggested-tweet-body-text" name="body_text" class="form-control" data-target="buffer.bodyText"><%= buffer_update.body_text %></textarea>
               </div>
               <button value="confirmed" name="status" class="btn btn-success" data-action="buffer#tagBufferUpdateConfirmed">Confirm</button>
             <% end %>

@@ -6,9 +6,9 @@ module Users
       user.notifications.delete_all
       user.reactions.delete_all
       user.follows.delete_all
-      Follow.where(followable_id: user.id, followable_type: "User").delete_all
+      Follow.followable_user(user.id).delete_all
       user.messages.delete_all
-      user.chat_channel_memberships.delete_all
+      Users::CleanupChatChannels.call(user)
       user.mentions.delete_all
       user.badge_achievements.delete_all
       user.github_repos.delete_all
@@ -35,6 +35,7 @@ module Users
       user.profile_pins.delete_all
       user.rating_votes.delete_all
       user.tweets.delete_all
+      user.classified_listings.delete_all
 
       handle_feedback_messages(user)
     end

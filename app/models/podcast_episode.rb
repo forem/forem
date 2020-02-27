@@ -98,10 +98,6 @@ class PodcastEpisode < ApplicationRecord
     ActionView::Base.full_sanitizer.sanitize(processed_html)
   end
 
-  def published_at_date_slashes
-    published_at&.to_date&.strftime("%m/%d/%Y")
-  end
-
   def user
     podcast
   end

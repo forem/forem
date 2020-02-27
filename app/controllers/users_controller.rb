@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_no_cache_header
-  before_action :raise_banned, only: %i[update]
+  before_action :raise_suspended, only: %i[update]
   before_action :set_user, only: %i[update update_twitch_username update_language_settings confirm_destroy request_destroy full_delete remove_association]
   after_action :verify_authorized, except: %i[signout_confirm add_org_admin remove_org_admin remove_from_org]
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
@@ -71,7 +71,7 @@ class UsersController < ApplicationController
       flash[:settings_notice] = "You have requested account deletion. Please, check your email for further instructions."
       redirect_to "/settings/#{@tab}"
     else
-      flash[:settings_notice] = "Please, provide an email to delete your account"
+      flash[:settings_notice] = "Please, provide an email to delete your account."
       redirect_to "/settings/account"
     end
   end
@@ -266,10 +266,10 @@ class UsersController < ApplicationController
 
   def handle_account_tab
     @email_body = <<~HEREDOC
-      Hello DEV Team,
+      Hello #{ApplicationConfig['COMMUNITY_NAME']} Team,
       %0A
       %0A
-      I would like to delete my dev.to account.
+      I would like to delete my account.
       %0A%0A
       You can keep any comments and discussion posts under the Ghost account.
       %0A

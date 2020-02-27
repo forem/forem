@@ -14,6 +14,8 @@ class Reaction < ApplicationRecord
                   }
   counter_culture :user
 
+  scope :positive, -> { where("points > ?", 0) }
+
   validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
   validates :status, inclusion: { in: STATUSES }
@@ -21,9 +23,9 @@ class Reaction < ApplicationRecord
   validate  :permissions
 
   before_save :assign_points
-  after_commit :async_bust
+  after_commit :async_bust, :bust_reactable_cache, :update_reactable
   after_save :index_to_algolia
-  after_save :update_reactable, :bust_reactable_cache, :touch_user
+  after_save :touch_user
   before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
   before_destroy :bust_reactable_cache_without_delay
   before_destroy :remove_algolia
@@ -48,8 +50,10 @@ class Reaction < ApplicationRecord
     def count_for_article(id)
       Rails.cache.fetch("count_for_reactable-Article-#{id}", expires_in: 1.hour) do
         reactions = Reaction.where(reactable_id: id, reactable_type: "Article")
+        counts = reactions.group(:category).count
+
         %w[like readinglist unicorn].map do |type|
-          { category: type, count: reactions.where(category: type).size }
+          { category: type, count: counts.fetch(type, 0) }
         end
       end
     end
@@ -80,11 +84,11 @@ class Reaction < ApplicationRecord
   end
 
   def update_reactable
-    Reactions::UpdateReactableJob.perform_later(id)
+    Reactions::UpdateReactableWorker.perform_async(id)
   end
 
   def bust_reactable_cache
-    Reactions::BustReactableCacheJob.perform_later(id)
+    Reactions::BustReactableCacheWorker.perform_async(id)
   end
 
   def async_bust
@@ -92,11 +96,11 @@ class Reaction < ApplicationRecord
   end
 
   def bust_reactable_cache_without_delay
-    Reactions::BustReactableCacheJob.perform_now(id)
+    Reactions::BustReactableCacheWorker.new.perform(id)
   end
 
   def update_reactable_without_delay
-    Reactions::UpdateReactableJob.perform_now(id)
+    Reactions::UpdateReactableWorker.new.perform(id)
   end
 
   def reading_time
@@ -153,6 +157,7 @@ class Reaction < ApplicationRecord
   def assign_points
     base_points = BASE_POINTS.fetch(category, 1.0)
     base_points = 0 if status == "invalid"
+    base_points /= 2 if reactable_type == "User"
     base_points *= 2 if status == "confirmed"
     self.points = user ? (base_points * user.reputation_modifier) : -5
   end

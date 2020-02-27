@@ -1,11 +1,11 @@
 require "rails_helper"
 
-vcr_option = {
-  cassette_name: "twitter_gem",
-  allow_playback_repeats: "true"
-}
+VCR_OPTIONS = {
+  cassette_name: "twitter_fetch_status",
+  allow_playback_repeats: true
+}.freeze
 
-RSpec.describe "LiquidEmbeds", type: :request, vcr: vcr_option do
+RSpec.describe "LiquidEmbeds", type: :request, vcr: VCR_OPTIONS do
   describe "get /embeds" do
     it "renders proper tweet" do
       get "/embed/tweet?args=1018911886862057472"
@@ -16,6 +16,11 @@ RSpec.describe "LiquidEmbeds", type: :request, vcr: vcr_option do
       expect do
         get "/embed/tweet?args=improper"
       end.to raise_error(ActionView::Template::Error)
+    end
+
+    it "contains base target parent" do
+      get "/embed/tweet?args=1018911886862057472"
+      expect(response.body).to include('<base target="_parent">')
     end
   end
 end

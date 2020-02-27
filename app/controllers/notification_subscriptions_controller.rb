@@ -22,7 +22,7 @@ class NotificationSubscriptionsController < ApplicationController
       @notification_subscription.config = params[:config] || "all_comments"
       receive_notifications = (params[:config] == "all_comments" && current_user_is_author?)
       @notification_subscription.notifiable.update(receive_notifications: true) if receive_notifications
-      @notification_subscription.save!
+      @notification_subscription.save
     end
     result = @notification_subscription.persisted?
     respond_to do |format|

@@ -24,10 +24,13 @@ default: &default
   checkout_timeout: 2
   variables:
       statement_timeout: <%= ENV['STATEMENT_TIMEOUT'] || 2500 %>
+
 development:
   <<: *default
   url: <%= ENV.fetch('DATABASE_URL', '') %>
   database: PracticalDeveloper_development
+  variables:
+      statement_timeout: <%= ENV['STATEMENT_TIMEOUT'] || 10_000 %>
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.

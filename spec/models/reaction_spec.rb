@@ -111,21 +111,34 @@ RSpec.describe Reaction, type: :model do
     end
   end
 
+  describe ".count_for_article" do
+    it "counts the reactions an article has grouped by category" do
+      create(:reaction, reactable: article, user: user, category: "like")
+      create(:reaction, reactable: article, user: user, category: "unicorn")
+
+      expected_result = [
+        { category: "like", count: 1 },
+        { category: "readinglist", count: 0 },
+        { category: "unicorn", count: 1 },
+      ]
+      expect(described_class.count_for_article(article.id)).to eq(expected_result)
+    end
+  end
+
   context "when callbacks are called after save" do
     let!(:reaction) { build(:reaction, category: "like", reactable: article, user: user) }
 
-    it "enqueues the correct jobs" do
-      expect do
-        reaction.save
-      end.to(
-        have_enqueued_job(Reactions::UpdateReactableJob).exactly(:once).
-        and(have_enqueued_job(Reactions::BustReactableCacheJob).exactly(:once)),
-      )
-    end
+    describe "enqueues the correct worker" do
+      it "BustReactableCacheWorker" do
+        sidekiq_assert_enqueued_with(job: Reactions::BustReactableCacheWorker) do
+          reaction.save
+        end
+      end
 
-    it "enqueues the correct workers" do
-      sidekiq_assert_enqueued_with(job: Reactions::BustHomepageCacheWorker) do
-        reaction.save
+      it "BustHomepageCacheWorker" do
+        sidekiq_assert_enqueued_with(job: Reactions::BustHomepageCacheWorker) do
+          reaction.save
+        end
       end
     end
 

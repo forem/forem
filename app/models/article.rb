@@ -45,6 +45,7 @@ class Article < ApplicationRecord
   validate :validate_collection_permission
   validate :validate_liquid_tag_permissions
   validate :past_or_present_date
+  validate :canonical_url_must_not_have_spaces
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :cached_tag_list, length: { maximum: 126 }
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
@@ -79,6 +80,8 @@ class Article < ApplicationRecord
   scope :unpublished, -> { where(published: false) }
 
   scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
+
+  scope :cached_tagged_by_approval_with, ->(tag) { cached_tagged_with(tag).where(approved: true) }
 
   scope :active_help, lambda {
                         published.
@@ -147,7 +150,7 @@ class Article < ApplicationRecord
                  :featured, :published, :published_at, :featured_number,
                  :comments_count, :reactions_count, :positive_reactions_count,
                  :path, :class_name, :user_name, :user_username, :comments_blob,
-                 :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date, :flare_tag
+                 :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date, :flare_tag, :approved
       attribute :user do
         { username: user.username, name: user.name,
           profile_image_90: ProfileImage.new(user).get(width: 90), pro: user.pro? }
@@ -166,14 +169,14 @@ class Article < ApplicationRecord
                             "user_name",
                             "user_username",
                             "comments_blob"]
-      attributesForFaceting [:class_name]
+      attributesForFaceting %i[class_name approved]
       customRanking ["desc(search_score)", "desc(hotness_score)"]
     end
 
     add_index "ordered_articles", id: :index_id, per_environment: true, enqueue: :trigger_index do
       attributes :title, :path, :class_name, :comments_count, :reading_time, :language,
                  :tag_list, :positive_reactions_count, :id, :hotness_score, :score, :readable_publish_date, :flare_tag, :user_id,
-                 :organization_id, :cloudinary_video_url, :video_duration_in_minutes, :experience_level_rating, :experience_level_rating_distribution
+                 :organization_id, :cloudinary_video_url, :video_duration_in_minutes, :experience_level_rating, :experience_level_rating_distribution, :approved
       attribute :published_at_int do
         published_at.to_i
       end
@@ -318,7 +321,7 @@ class Article < ApplicationRecord
     begin
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
       parsed.front_matter["title"].present?
-    rescue Psych::SyntaxError
+    rescue Psych::SyntaxError, Psych::DisallowedClass
       # if frontmatter is invalid, still render editor with errors instead of 500ing
       true
     end
@@ -394,7 +397,8 @@ class Article < ApplicationRecord
   end
 
   def update_score
-    update_columns(score: reactions.sum(:points),
+    new_score = reactions.sum(:points) + Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
+    update_columns(score: new_score,
                    comment_score: comments.sum(:score),
                    hotness_score: BlackBox.article_hotness_score(self),
                    spaminess_rating: BlackBox.calculate_spaminess(self))
@@ -563,6 +567,10 @@ class Article < ApplicationRecord
     if published_at && published_at > Time.current
       errors.add(:date_time, "must be entered in DD/MM/YYYY format with current or past date")
     end
+  end
+
+  def canonical_url_must_not_have_spaces
+    errors.add(:canonical_url, "must not have spaces") if canonical_url.to_s.match?(/[[:space:]]/)
   end
 
   # Admin only beta tags etc.
