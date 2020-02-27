@@ -1,7 +1,5 @@
 module Articles
   class Feed
-    RankedArticle = Struct.new(:article, :score)
-
     def initialize(user: nil, number_of_articles: 35, page: 1, tag: nil)
       @user = user
       @number_of_articles = number_of_articles
