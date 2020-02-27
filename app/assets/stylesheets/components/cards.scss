@@ -9,7 +9,7 @@
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid $smoke-10;
-    padding: 0 $su-4;
+    padding: $su-2 $su-4;
   }
 
   &--title {
@@ -26,6 +26,7 @@
     border-bottom: 1px solid $smoke-10;
     display: block;
     color: $smoke-80;
+    transition: all $transition-props;
 
     &:last-child {
       border-bottom: 0;
@@ -34,6 +35,7 @@
     &--footer {
       font-size: $fs-s;
       color: $smoke-50;
+      transition: all $transition-props;
     }
 
     &:hover {

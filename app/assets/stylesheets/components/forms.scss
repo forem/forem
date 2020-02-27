@@ -4,7 +4,7 @@
   background-color: $smoke-00;
   border: 1px solid $smoke-30;
   border-radius: $br-default;
-  transition: all ease-in-out 100ms;
+  transition: all $transition-props;
 
   &-hover {
     border-color: $smoke-40;
@@ -31,7 +31,7 @@
 // Text inputs and textareas.
 .crayons-textfield {
   line-height: $lh-base;
-  padding: 0.5em 1em;
+  padding: 0.5em;
   font-family: inherit;
   font-size: $fs-base;
   margin: 0; //todo: do we need it?

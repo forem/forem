@@ -6,13 +6,7 @@
   box-shadow: 2px 2px 0 $smoke-100;
   border-radius: $br-default;
   padding: $su-4;
-
-  &:not(#{& + __m}),
-  &:not(#{& + __l}),
-  &:not(#{& + __xl}),
-  &:not(#{& + __xxl}) {
-    max-width: 250px; // __s
-  }
+  width: 250px;
 
   &__m {
     padding: $su-6;

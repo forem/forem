@@ -1,0 +1,36 @@
+@import '../vars/_variables.scss';
+
+// Basic styling
+.crayons-indicator {
+  font-family: $ff-accent;
+  font-size: $fs-xs;
+  padding: $su-1;
+  background-color: $smoke-20;
+  text-align: center;
+  line-height: $lh-tight;
+  border-radius: $br-default;
+  display: inline-block;
+
+  &__accent {
+    background-color: $dolphin;
+    color: $snowflake;
+  }
+
+  &__critical {
+    background-color: $raspberry;
+    color: $snowflake;
+  }
+
+  &__inverted {
+    background-color: $smoke-90;
+    color: $snowflake;
+  }
+
+  // Circle, no text
+  &__bullet {
+    width: $su-3;
+    height: $su-3;
+    padding: 0;
+    border-radius: 100%;
+  }
+}
