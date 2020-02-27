@@ -8,7 +8,8 @@ notify () {
 trap notify ERR
 
 # enable echo mode (-x) and exit on error (-e)
-set -ex
+# -E ensures that ERR traps get inherited by functions, command substitutions, and subshell environments.
+set -ex -E
 
 # abort release if deploy status equals "blocked"
 [[ $DEPLOY_STATUS = "blocked" ]] && echo "Deploy blocked" && exit 1
