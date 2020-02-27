@@ -16,12 +16,12 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
 
   describe "#as_hash" do
     it "applies FILTER_KEYS from params" do
-      params = { channel_status: "active", channel_type: "direct", status: "open" }
+      params = { channel_status: "active", channel_type: "direct" }
       filter = described_class.new(params, 1)
       expected_filters = [
         { "term" => { "channel_status" => "active" } },
         { "term" => { "channel_type" => "direct" } },
-        { "term" => { "status" => "open" } },
+        { "term" => { "status" => "active" } },
         { "term" => { "viewable_by" => 1 } },
       ]
       expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
@@ -46,16 +46,26 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
           "query" => "a_name*", "fields" => [:channel_text], "lenient" => true, "analyze_wildcard" => true
         }
       }]
-      expected_filters = [{ "term" => { "channel_status" => "active" } }, { "term" => { "viewable_by" => 1 } }]
+      expected_filters = [{ "term" => { "channel_status" => "active" } }, { "term" => { "viewable_by" => 1 } }, { "term" => { "status" => "active" } }]
       expect(query.as_hash.dig("query", "bool", "must")).to match_array(expected_query)
       expect(query.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
     end
 
-    it "ignores params we dont support" do
-      params = { not_supported: "direct", status: "closed" }
+    it "always applies viewable_by and status params" do
+      params = {}
       filter = described_class.new(params, 1)
       expected_filters = [
-        { "term" => { "status" => "closed" } },
+        { "term" => { "status" => "active" } },
+        { "term" => { "viewable_by" => 1 } },
+      ]
+      expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
+    end
+
+    it "ignores params we dont support" do
+      params = { not_supported: "direct" }
+      filter = described_class.new(params, 1)
+      expected_filters = [
+        { "term" => { "status" => "active" } },
         { "term" => { "viewable_by" => 1 } },
       ]
       expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
