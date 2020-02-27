@@ -29,6 +29,9 @@ const LETTERS_NUMBERS = /[a-z0-9]/i;
 class Tags extends Component {
   constructor(props) {
     super(props);
+
+    this.debouncedTagSearch = debounce(this.handleInput.bind(this), 300);
+
     this.state = {
       selectedIndex: -1,
       searchResults: [],
@@ -440,7 +443,7 @@ class Tags extends Component {
           placeholder={`${maxTags} tags max, comma separated, no spaces or special characters`}
           autoComplete="off"
           value={defaultValue}
-          onInput={debounce(this.handleInput, 300)}
+          onInput={this.debouncedTagSearch}
           onKeyDown={this.handleKeyDown}
           onBlur={this.handleFocusChange}
           onFocus={this.handleFocusChange}
