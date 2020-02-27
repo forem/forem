@@ -4,7 +4,7 @@
 // We can try to make it more general for campaigns in the future once we know more (classnames, params).
 
 function renderArticles(articles, articleElement ) {
-  let articleHTML = articleElement;
+  let articleDiv = articleElement;
   const articleHTML = articles.map((article) => {
     return `<a class="she-coded-page__some-story-container-link" href="${article.url}"><div class="she-coded-page__some-story-container">
       <div class="she-coded-page__some-story-tag"><span class="she-coded-page__some-story-hashtag">#</span>shecoded</div>
@@ -21,12 +21,12 @@ function renderArticles(articles, articleElement ) {
     </div></a>`
   });
 
-  articleHTML.innerHTML = articleHTML.join(" ");
+  articleDiv.innerHTML = articleHTML.join(" ");
 }
 
 function renderNoArticles(articleElement) {
-  let articleHTML = articleElement;
-  articleHTML.innerHTML = "<div>There are no articles to show.</div>";
+  let articleDiv = articleElement;
+  articleDiv.innerHTML = "<div>There are no articles to show.</div>";
 }
 
 function getArticles(articleElement) {
