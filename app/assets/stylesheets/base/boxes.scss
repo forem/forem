@@ -1,0 +1,45 @@
+@import '../vars/_variables.scss';
+
+@mixin box($level: 0, $background: $snowflake, $border: $smoke-90) {
+  background-color: $background;
+  border: 2px solid $border;
+  @if $level > 0 {
+    box-shadow: #{pow(2, $level) + px} #{pow(2, $level) + px} 0 $border;
+  }
+}
+
+@mixin generate-levels($background, $border) {
+  &__l-0 {
+    @include box(0, $background, $border);
+  }
+
+  &__l-1 {
+    @include box(1, $background, $border);
+  }
+
+  &__l-2 {
+    @include box(2, $background, $border);
+  }
+
+  &__l-3 {
+    @include box(3, $background, $border);
+  }
+}
+
+// Default
+.crayons-box {
+  @include generate-levels($snowflake, $smoke-90);
+
+  &-filled {
+    @include generate-levels($smoke-90, $smoke-100);
+  }
+}
+
+// Danger
+.crayons-box {
+  @include generate-levels($snowflake, $smoke-90);
+
+  &-filled {
+    @include generate-levels($smoke-90, $smoke-100);
+  }
+}
