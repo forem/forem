@@ -1,8 +1,6 @@
 @import 'variables';
 @import 'mixins';
 .notifications-index {
-  @include themeable(background, theme-background, $lightest-gray);
-
   .home {
     .articles-list {
       .signup-cue {

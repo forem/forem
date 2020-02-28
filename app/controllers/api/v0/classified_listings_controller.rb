@@ -4,8 +4,11 @@ module Api
       include Pundit
       include ClassifiedListingsToolkit
 
-      before_action :set_classified_listing, only: %i[update]
       before_action :authenticate_with_api_key_or_current_user!, only: %i[create update]
+
+      before_action :set_classified_listing, only: %i[update]
+
+      before_action :set_cache_control_headers, only: %i[index show]
 
       skip_before_action :verify_authenticity_token, only: %i[create update]
 
@@ -23,7 +26,7 @@ module Api
         page = params[:page] || 1
         @classified_listings = @classified_listings.page(page).per(num)
 
-        set_surrogate_key_header "classified-listings-#{params[:category]}-#{page}-#{num}"
+        set_surrogate_key_header ClassifiedListing.table_key, @classified_listings.map(&:record_key)
       end
 
       def show
@@ -31,6 +34,8 @@ module Api
           select(ATTRIBUTES_FOR_SERIALIZATION).
           includes(:user, :organization).
           find(params[:id])
+
+        set_surrogate_key_header @classified_listing.record_key
       end
 
       def create

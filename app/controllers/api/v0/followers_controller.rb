@@ -5,8 +5,7 @@ module Api
       before_action -> { limit_per_page(default: 80, max: 1000) }
 
       def organizations
-        @follows = Follow.
-          where(followable_id: @user.organization_ids, followable_type: "Organization").
+        @follows = Follow.followable_organization(@user.organization_ids).
           includes(:follower).
           select(ORGANIZATIONS_ATTRIBUTES_FOR_SERIALIZATION).
           order("created_at DESC").
@@ -15,8 +14,7 @@ module Api
       end
 
       def users
-        @follows = Follow.
-          where(followable_id: @user.id, followable_type: "User").
+        @follows = Follow.followable_user(@user.id).
           includes(:follower).
           select(USERS_ATTRIBUTES_FOR_SERIALIZATION).
           order("created_at DESC").

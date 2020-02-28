@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import debounce from 'lodash.debounce';
 
 const KEYS = {
   UP: 'ArrowUp',
@@ -28,6 +29,9 @@ const LETTERS_NUMBERS = /[a-z0-9]/i;
 class Tags extends Component {
   constructor(props) {
     super(props);
+
+    this.debouncedTagSearch = debounce(this.handleInput.bind(this), 150);
+
     this.state = {
       selectedIndex: -1,
       searchResults: [],
@@ -439,7 +443,7 @@ class Tags extends Component {
           placeholder={`${maxTags} tags max, comma separated, no spaces or special characters`}
           autoComplete="off"
           value={defaultValue}
-          onInput={this.handleInput}
+          onInput={this.debouncedTagSearch}
           onKeyDown={this.handleKeyDown}
           onBlur={this.handleFocusChange}
           onFocus={this.handleFocusChange}
