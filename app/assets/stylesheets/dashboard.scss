@@ -395,10 +395,10 @@
       .dashboard-top-pill {
         @include themeable(
           background,
-          theme-secondary-color,
+          theme-container-accent-background,
           darken($light-gray, 6%)
         );
-        @include themeable(color, theme-container-background, #fff);
+        @include themeable(color, theme-color, $black);
         margin-right: 5px;
         padding: 3px 10px;
         border-radius: 100px;

@@ -69,6 +69,24 @@ RSpec.describe "Api::V0::Listings" do
       get api_classified_listings_path, params: { page: 4, per_page: 2 }
       expect(response.parsed_body.length).to eq(1)
     end
+
+    it "sets the correct caching headers" do
+      get api_classified_listings_path
+
+      expect(response.headers["cache-control"]).to be_present
+      expect(response.headers["surrogate-control"]).to match(/max-age/).and(match(/stale-if-error/))
+    end
+
+    it "sets the correct edge caching surrogate key" do
+      get api_classified_listings_path
+
+      expected_key = (
+        ["classified_listings"] +
+        user1.classified_listings.map(&:record_key) +
+        user2.classified_listings.map(&:record_key)
+      ).to_set
+      expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
+    end
   end
 
   describe "GET /api/listings/category/:category" do
@@ -94,6 +112,20 @@ RSpec.describe "Api::V0::Listings" do
       expect(response.parsed_body["slug"]).to eq(listing.slug)
       expect(response.parsed_body["user"]).to include("username")
       expect(response.parsed_body["user"]["username"]).not_to be_empty
+    end
+
+    it "sets the correct caching headers" do
+      get api_classified_listing_path(listing.id)
+
+      expect(response.headers["cache-control"]).to be_present
+      expect(response.headers["surrogate-control"]).to match(/max-age/).and(match(/stale-if-error/))
+    end
+
+    it "sets the correct edge caching surrogate key" do
+      get api_classified_listing_path(listing.id)
+
+      expected_key = [listing.record_key].to_set
+      expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
   end
 

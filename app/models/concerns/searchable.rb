@@ -1,6 +1,6 @@
 module Searchable
   def index_to_elasticsearch
-    self.class::SEARCH_INDEX_WORKER.perform_async(id)
+    Search::IndexToElasticsearchWorker.perform_async(self.class.name, id)
   end
 
   def index_to_elasticsearch_inline

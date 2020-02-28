@@ -92,7 +92,7 @@ Article.clear_index!
 num_articles.times do |i|
   tags = []
   tags << "discuss" if (i % 3).zero?
-  tags.concat Tag.order(Arel.sql("RANDOM()")).select("name").first(3).map(&:name)
+  tags.concat Tag.order(Arel.sql("RANDOM()")).limit(3).pluck(:name)
 
   markdown = <<~MARKDOWN
     ---
@@ -206,7 +206,7 @@ Broadcast.create!(
   title: "Welcome Notification",
   processed_html: "Welcome to dev.to! Start by introducing yourself in <a href='/welcome' data-no-instant>the welcome thread</a>.",
   type_of: "Onboarding",
-  sent: true,
+  active: true,
 )
 
 broadcast_messages = {
@@ -221,7 +221,7 @@ broadcast_messages.each do |type, message|
     title: "Welcome Notification: #{type}",
     processed_html: message,
     type_of: "Welcome",
-    sent: true,
+    active: true,
   )
 end
 

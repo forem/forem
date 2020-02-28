@@ -4,7 +4,7 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
   describe "::index" do
     it "indexes a chat_channel_membership to elasticsearch" do
       chat_channel_membership = FactoryBot.create(:chat_channel_membership)
-      expect { described_class.find_document(chat_channel_membership.id) }.to raise_error(Elasticsearch::Transport::Transport::Errors::NotFound)
+      expect { described_class.find_document(chat_channel_membership.id) }.to raise_error(Search::Errors::Transport::NotFound)
       described_class.index(chat_channel_membership.id, id: chat_channel_membership.id)
       expect(described_class.find_document(chat_channel_membership.id)).not_to be_nil
     end
@@ -24,7 +24,7 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
       chat_channel_membership.index_to_elasticsearch_inline
       expect { described_class.find_document(chat_channel_membership.id) }.not_to raise_error
       described_class.delete_document(chat_channel_membership.id)
-      expect { described_class.find_document(chat_channel_membership.id) }.to raise_error(Elasticsearch::Transport::Transport::Errors::NotFound)
+      expect { described_class.find_document(chat_channel_membership.id) }.to raise_error(Search::Errors::Transport::NotFound)
     end
   end
 
@@ -159,11 +159,11 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
         expect(chat_channel_membership_docs.first["id"]).to eq(chat_channel_membership2.id)
       end
 
-      it "searches by status" do
+      it "only returns active status memberships" do
         chat_channel_membership1.update(status: "inactive")
         chat_channel_membership2.update(status: "active")
         index_documents([chat_channel_membership1, chat_channel_membership2])
-        params = { size: 5, status: "active" }
+        params = { size: 5 }
 
         chat_channel_membership_docs = described_class.search_documents(params: params, user_id: user.id)
         expect(chat_channel_membership_docs.count).to eq(1)
@@ -171,11 +171,27 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
       end
     end
 
+    context "with a query and filter" do
+      it "searches by channel_text and status" do
+        allow(chat_channel_membership1).to receive(:channel_text).and_return("a name")
+        allow(chat_channel_membership2).to receive(:channel_text).and_return("another name")
+        chat_channel_membership1.update(status: "active")
+        chat_channel_membership2.update(status: "inactive")
+        index_documents([chat_channel_membership1, chat_channel_membership2])
+        name_params = { size: 5, channel_text: "name", status: "active" }
+
+        chat_channel_membership_docs = described_class.search_documents(params: name_params, user_id: user.id)
+        expect(chat_channel_membership_docs.count).to eq(1)
+        doc_ids = chat_channel_membership_docs.map { |t| t.dig("id") }
+        expect(doc_ids).to include(chat_channel_membership1.id)
+      end
+    end
+
     it "sorts documents for given field" do
-      chat_channel_membership1.update(status: "inactive")
-      chat_channel_membership2.update(status: "active")
+      allow(chat_channel_membership1).to receive(:channel_type).and_return("not_direct")
+      allow(chat_channel_membership2).to receive(:channel_type).and_return("direct")
       index_documents([chat_channel_membership1, chat_channel_membership2])
-      params = { size: 5, sort_by: "status", sort_direction: "asc" }
+      params = { size: 5, sort_by: "channel_type", sort_direction: "asc" }
 
       chat_channel_membership_docs = described_class.search_documents(params: params, user_id: user.id)
       expect(chat_channel_membership_docs.count).to eq(2)
@@ -193,6 +209,39 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
       expect(chat_channel_membership_docs.count).to eq(2)
       expect(chat_channel_membership_docs.first["id"]).to eq(chat_channel_membership1.id)
       expect(chat_channel_membership_docs.last["id"]).to eq(chat_channel_membership2.id)
+    end
+
+    it "will return a set number of docs based on pagination params" do
+      index_documents([chat_channel_membership1, chat_channel_membership2])
+      params = { page: 0, per_page: 1 }
+
+      chat_channel_membership_docs = described_class.search_documents(params: params, user_id: user.id)
+      expect(chat_channel_membership_docs.count).to eq(1)
+    end
+
+    it "paginates the results" do
+      allow(chat_channel_membership1).to receive(:channel_last_message_at).and_return(Time.current)
+      allow(chat_channel_membership2).to receive(:channel_last_message_at).and_return(1.year.ago)
+      index_documents([chat_channel_membership1, chat_channel_membership2])
+      first_page_params = { page: 0, per_page: 1, sort_by: "channel_last_message_at", order: "dsc" }
+
+      chat_channel_membership_docs = described_class.search_documents(params: first_page_params, user_id: user.id)
+      expect(chat_channel_membership_docs.first["id"]).to eq(chat_channel_membership1.id)
+
+      second_page_params = { page: 1, per_page: 1, sort_by: "channel_last_message_at", order: "dsc" }
+
+      chat_channel_membership_docs = described_class.search_documents(params: second_page_params, user_id: user.id)
+      expect(chat_channel_membership_docs.first["id"]).to eq(chat_channel_membership2.id)
+    end
+
+    it "returns an empty Array if no results are found" do
+      allow(chat_channel_membership1).to receive(:channel_last_message_at).and_return(Time.current)
+      allow(chat_channel_membership2).to receive(:channel_last_message_at).and_return(1.year.ago)
+      index_documents([chat_channel_membership1, chat_channel_membership2])
+      params = { page: 3, per_page: 1 }
+
+      chat_channel_membership_docs = described_class.search_documents(params: params, user_id: user.id)
+      expect(chat_channel_membership_docs).to eq([])
     end
   end
 end

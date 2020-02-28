@@ -50,6 +50,8 @@ class OrganizationsController < ApplicationController
       url
       proof
       profile_image
+      nav_image
+      dark_nav_image
       location
       company_size
       tech_stack

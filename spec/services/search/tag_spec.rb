@@ -3,8 +3,10 @@ require "rails_helper"
 RSpec.describe Search::Tag, type: :service, elasticsearch: true do
   describe "::index" do
     it "indexes a tag to elasticsearch" do
-      tag = FactoryBot.create(:tag)
-      expect { described_class.find_document(tag.id) }.to raise_error(Elasticsearch::Transport::Transport::Errors::NotFound)
+      tag = create(:tag)
+
+      expect { described_class.find_document(tag.id) }.to raise_error(Search::Errors::Transport::NotFound)
+
       described_class.index(tag.id, tag.serialized_search_hash)
       expect(described_class.find_document(tag.id)).not_to be_nil
     end
@@ -12,7 +14,7 @@ RSpec.describe Search::Tag, type: :service, elasticsearch: true do
 
   describe "::search" do
     it "searches with a given query string" do
-      tag1 = FactoryBot.create(:tag, :search_indexed, name: "tag1")
+      tag1 = create(:tag, :search_indexed, name: "tag1")
       described_class.refresh_index
       hits = described_class.search("name:tag1").dig("hits", "hits")
       tag_names = hits.map { |t| t.dig("_source", "name") }
@@ -21,9 +23,9 @@ RSpec.describe Search::Tag, type: :service, elasticsearch: true do
     end
 
     it "analyzes wildcards" do
-      tag1 = FactoryBot.create(:tag, :search_indexed, name: "tag1")
-      tag2 = FactoryBot.create(:tag, :search_indexed, name: "tag2")
-      tag3 = FactoryBot.create(:tag, :search_indexed, name: "3tag")
+      tag1 = create(:tag, :search_indexed, name: "tag1")
+      tag2 = create(:tag, :search_indexed, name: "tag2")
+      tag3 = create(:tag, :search_indexed, name: "3tag")
       described_class.refresh_index
       hits = described_class.search("name:tag*").dig("hits", "hits")
       tag_names = hits.map { |t| t.dig("_source", "name") }
@@ -32,8 +34,7 @@ RSpec.describe Search::Tag, type: :service, elasticsearch: true do
     end
 
     it "does not allow leading wildcards" do
-      bad_request_error = Elasticsearch::Transport::Transport::Errors::BadRequest
-      expect { described_class.search("name:*tag") }.to raise_error(bad_request_error)
+      expect { described_class.search("name:*tag") }.to raise_error(Search::Errors::Transport::BadRequest)
     end
   end
 
@@ -61,7 +62,7 @@ RSpec.describe Search::Tag, type: :service, elasticsearch: true do
 
   describe "::find_document" do
     it "fetches a document for a given ID from elasticsearch" do
-      tag = FactoryBot.create(:tag)
+      tag = create(:tag)
       described_class.index(tag.id, tag.serialized_search_hash)
       expect { described_class.find_document(tag.id) }.not_to raise_error
     end
@@ -69,11 +70,11 @@ RSpec.describe Search::Tag, type: :service, elasticsearch: true do
 
   describe "::delete_document" do
     it "deletes a document for a given ID from elasticsearch" do
-      tag = FactoryBot.create(:tag)
+      tag = create(:tag)
       tag.index_to_elasticsearch_inline
       expect { described_class.find_document(tag.id) }.not_to raise_error
       described_class.delete_document(tag.id)
-      expect { described_class.find_document(tag.id) }.to raise_error(Elasticsearch::Transport::Transport::Errors::NotFound)
+      expect { described_class.find_document(tag.id) }.to raise_error(Search::Errors::Transport::NotFound)
     end
   end
 

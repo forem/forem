@@ -4,37 +4,46 @@ class ReactionsController < ApplicationController
 
   def index
     skip_authorization
+
     if params[:article_id]
       id = params[:article_id]
-      reactions = if session_current_user_id.present?
-                    Reaction.where(reactable_id: id,
-                                   reactable_type: "Article",
-                                   user_id: session_current_user_id).
-                      where("points > ?", 0)
+
+      reactions = if session_current_user_id
+                    Reaction.positive.
+                      where(
+                        reactable_id: id,
+                        reactable_type: "Article",
+                        user_id: session_current_user_id,
+                      )
                   else
-                    []
+                    Reaction.none
                   end
-      render json:
-      {
-        current_user: { id: session_current_user_id },
-        article_reaction_counts: Reaction.count_for_article(id),
-        reactions: reactions
-      }.to_json
+
+      result = { article_reaction_counts: Reaction.count_for_article(id) }
     else
-      comments = Comment.where(
-        commentable_id: params[:commentable_id],
-        commentable_type: params[:commentable_type],
-      ).select(%i[id positive_reactions_count])
-      comment_ids = comments.map(&:id)
-      reaction_counts = comments.map { |c| { id: c.id, count: c.positive_reactions_count } }
-      reactions = session_current_user_id ? cached_user_positive_reactions(current_user).where(reactable_id: comment_ids) : []
-      render json:
-        {
-          current_user: { id: session_current_user_id },
-          positive_reaction_counts: reaction_counts,
-          reactions: reactions
-        }.to_json
+      comments = Comment.
+        where(commentable_id: params[:commentable_id], commentable_type: params[:commentable_type]).
+        select(%i[id positive_reactions_count])
+
+      reaction_counts = comments.map do |comment|
+        { id: comment.id, count: comment.positive_reactions_count }
+      end
+
+      reactions = if session_current_user_id
+                    comment_ids = reaction_counts.map { |rc| rc[:id] }
+                    cached_user_positive_reactions(current_user).where(reactable_id: comment_ids)
+                  else
+                    Reaction.none
+                  end
+
+      result = { positive_reaction_counts: reaction_counts }
     end
+
+    render json: {
+      current_user: { id: session_current_user_id },
+      reactions: reactions
+    }.merge(result).to_json
+
     set_surrogate_key_header params.to_s unless session_current_user_id
   end
 
@@ -79,8 +88,7 @@ class ReactionsController < ApplicationController
 
   def cached_user_positive_reactions(user)
     Rails.cache.fetch("cached_user_reactions-#{user.id}-#{user.updated_at}", expires_in: 24.hours) do
-      Reaction.where(user_id: user.id).
-        where("points > ?", 0)
+      user.reactions.positive
     end
   end
 
