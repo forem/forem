@@ -16,12 +16,13 @@ module Articles
     # Timeframe values from Timeframer::DATETIMES
     def top_articles_by_timeframe(timeframe:)
       published_articles_by_tag.where("published_at > ?", Timeframer.new(timeframe).datetime).
-        order("score DESC")
+        order("score DESC").page(@page).per(@number_of_articles)
     end
 
     def latest_feed
       published_articles_by_tag.order("published_at DESC").
-        where("featured_number > ? AND score > ?", 1_449_999_999, -40)
+        where("featured_number > ? AND score > ?", 1_449_999_999, -40).
+        page(@page).per(@number_of_articles)
     end
 
     def default_home_feed_and_featured_story(user_signed_in: false)
@@ -51,7 +52,8 @@ module Articles
         article_points = score_single_article(article)
         result[article] = article_points
       end
-      ranked_articles.sort_by { |_article, article_points| -article_points }.map(&:first)
+      ranked_articles = ranked_articles.sort_by { |_article, article_points| -article_points }.map(&:first)
+      ranked_articles.to(@number_of_articles - 1)
     end
 
     def score_single_article(article)
@@ -70,6 +72,8 @@ module Articles
     end
 
     def score_followed_tags(article)
+      return 0 unless @user
+
       article_tags = article.decorate.cached_tag_list_array
       @user.decorate.cached_followed_tags.sum do |tag|
         article_tags.include?(tag.name) ? tag.points : 0
@@ -92,11 +96,11 @@ module Articles
     end
 
     def score_language(article)
-      @user.preferred_languages_array.include?(article.language || "en") ? 1 : -10
+      @user&.preferred_languages_array&.include?(article.language || "en") ? 1 : -10
     end
 
     def score_experience_level(article)
-      - ((article.experience_level_rating - (@user.experience_level || 5).abs) / 2)
+      - ((article.experience_level_rating - (@user&.experience_level || 5).abs) / 2)
     end
   end
 end
