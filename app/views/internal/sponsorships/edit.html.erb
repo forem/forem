@@ -1,7 +1,7 @@
 <h3><%= "Edit Sponsorship ##{@sponsorship.id}" %></h3>
 <%= form_for [:internal, @sponsorship] do |f| %>
   <div class="form-group">
-    User: <%= link_to "@#{@sponsorship.user.username}", "/#{@sponsorship.user.username}" %>
+    Creator: <%= link_to "@#{@sponsorship.user.username}", "/#{@sponsorship.user.username}" %>
   </div>
   <div class="form-group">
     Organization: <%= link_to "@#{@sponsorship.organization.username}", "/#{@sponsorship.organization.username}" %>
