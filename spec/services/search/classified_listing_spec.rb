@@ -31,16 +31,16 @@ RSpec.describe Search::ClassifiedListing, type: :service, elasticsearch: true do
   describe "::create_index" do
     it "creates an elasticsearch index with INDEX_NAME" do
       described_class.delete_index
-      expect(SearchClient.indices.exists(index: described_class::INDEX_NAME)).to eq(false)
+      expect(Search::Client.indices.exists(index: described_class::INDEX_NAME)).to eq(false)
       described_class.create_index
-      expect(SearchClient.indices.exists(index: described_class::INDEX_NAME)).to eq(true)
+      expect(Search::Client.indices.exists(index: described_class::INDEX_NAME)).to eq(true)
     end
 
     it "creates an elasticsearch index with name argument" do
       other_name = "random"
-      expect(SearchClient.indices.exists(index: other_name)).to eq(false)
+      expect(Search::Client.indices.exists(index: other_name)).to eq(false)
       described_class.create_index(index_name: other_name)
-      expect(SearchClient.indices.exists(index: other_name)).to eq(true)
+      expect(Search::Client.indices.exists(index: other_name)).to eq(true)
 
       # Have to cleanup index since it wont automatically be handled by our cluster class bc of the unexpected name
       described_class.delete_index(index_name: other_name)
@@ -49,34 +49,34 @@ RSpec.describe Search::ClassifiedListing, type: :service, elasticsearch: true do
 
   describe "::delete_index" do
     it "deletes an elasticsearch index with INDEX_NAME" do
-      expect(SearchClient.indices.exists(index: described_class::INDEX_NAME)).to eq(true)
+      expect(Search::Client.indices.exists(index: described_class::INDEX_NAME)).to eq(true)
       described_class.delete_index
-      expect(SearchClient.indices.exists(index: described_class::INDEX_NAME)).to eq(false)
+      expect(Search::Client.indices.exists(index: described_class::INDEX_NAME)).to eq(false)
     end
 
     it "deletes an elasticsearch index with name argument" do
       other_name = "random"
       described_class.create_index(index_name: other_name)
-      expect(SearchClient.indices.exists(index: other_name)).to eq(true)
+      expect(Search::Client.indices.exists(index: other_name)).to eq(true)
 
       described_class.delete_index(index_name: other_name)
-      expect(SearchClient.indices.exists(index: other_name)).to eq(false)
+      expect(Search::Client.indices.exists(index: other_name)).to eq(false)
     end
   end
 
   describe "::add_alias" do
     it "adds alias INDEX_ALIAS to elasticsearch index with INDEX_NAME" do
-      SearchClient.indices.delete_alias(index: described_class::INDEX_NAME, name: described_class::INDEX_ALIAS)
-      expect(SearchClient.indices.exists(index: described_class::INDEX_ALIAS)).to eq(false)
+      Search::Client.indices.delete_alias(index: described_class::INDEX_NAME, name: described_class::INDEX_ALIAS)
+      expect(Search::Client.indices.exists(index: described_class::INDEX_ALIAS)).to eq(false)
       described_class.add_alias
-      expect(SearchClient.indices.exists(index: described_class::INDEX_ALIAS)).to eq(true)
+      expect(Search::Client.indices.exists(index: described_class::INDEX_ALIAS)).to eq(true)
     end
 
     it "adds custom alias to elasticsearch index with INDEX_NAME" do
       other_alias = "random"
-      expect(SearchClient.indices.exists(index: other_alias)).to eq(false)
+      expect(Search::Client.indices.exists(index: other_alias)).to eq(false)
       described_class.add_alias(index_name: described_class::INDEX_NAME, index_alias: other_alias)
-      expect(SearchClient.indices.exists(index: other_alias)).to eq(true)
+      expect(Search::Client.indices.exists(index: other_alias)).to eq(true)
     end
   end
 
@@ -84,14 +84,14 @@ RSpec.describe Search::ClassifiedListing, type: :service, elasticsearch: true do
     it "updates index mappings for classified_listing index", :aggregate_failures do
       other_name = "random"
       described_class.create_index(index_name: other_name)
-      initial_mapping = SearchClient.indices.get_mapping(index: other_name).dig(other_name, "mappings")
+      initial_mapping = Search::Client.indices.get_mapping(index: other_name).dig(other_name, "mappings")
       expect(initial_mapping).to be_empty
 
       # This might look a little strange...it's because es_mapping_keys returns
       # certain fields like copy_to as an Array and our mappings don't have it
       # in that format. As a result, we're just comparing keys instead.
       described_class.update_mappings(index_alias: other_name)
-      es_mapping_keys = SearchClient.indices.get_mapping(index: other_name).dig(other_name, "mappings", "properties").symbolize_keys.keys
+      es_mapping_keys = Search::Client.indices.get_mapping(index: other_name).dig(other_name, "mappings", "properties").symbolize_keys.keys
       mapping_keys = described_class::MAPPINGS.dig(:properties).keys
 
       expect(mapping_keys).to match_array(es_mapping_keys)
