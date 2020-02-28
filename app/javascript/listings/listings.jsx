@@ -57,13 +57,6 @@ export class Listings extends Component {
   componentWillMount() {
     const params = this.getQueryParams();
     const t = this;
-    const algoliaId = document.querySelector("meta[name='algolia-public-id']")
-      .content;
-    const algoliaKey = document.querySelector("meta[name='algolia-public-key']")
-      .content;
-    const env = document.querySelector("meta[name='environment']").content;
-    const client = algoliasearch(algoliaId, algoliaKey);
-    const index = client.initIndex(`ClassifiedListing_${env}`);
     const container = document.getElementById('classifieds-index-container');
     const category = container.dataset.category || '';
     const allCategories = JSON.parse(container.dataset.allcategories || []);
@@ -86,7 +79,6 @@ export class Listings extends Component {
     t.setState({
       query,
       tags,
-      index,
       category,
       allCategories,
       listings,
@@ -284,27 +276,45 @@ export class Listings extends Component {
 
   listingSearch(query, tags, category, slug) {
     const t = this;
-    const { index, page, listings } = t.state;
-    const filterObject = { tagFilters: tags, hitsPerPage: 75, page };
+    const { page, listings } = t.state;
+    const dataHash = {};
+    dataHash.per_page = 75;
+    dataHash.page = page;
+    dataHash.tags = tags;
+    dataHash.classified_listing_search = query;
+
     if (category.length > 0) {
-      filterObject.filters = `category:${category}`;
+      dataHash.category = category;
     }
-    index.search(query, filterObject).then(function searchDone(content) {
-      const fullListings = listings;
-      content.hits.forEach(listing => {
-        if (listing.bumped_at) {
-          if (!listings.map(l => l.id).includes(listing.id)) {
-            fullListings.push(listing);
+
+    const searchParams = new URLSearchParams(dataHash).toString();
+    return fetch(`/search/classified_listings?${searchParams}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'X-CSRF-Token': window.csrfToken,
+        'Content-Type': 'application/json',
+      },
+      credentials: 'same-origin',
+    })
+      .then(response => response.json())
+      .then(response => {
+        const classfiedListings = response.result;
+        const fullListings = listings;
+        classfiedListings.forEach(listing => {
+          if (listing.bumped_at) {
+            if (!listings.map(l => l.id).includes(listing.id)) {
+              fullListings.push(listing);
+            }
           }
-        }
+        });
+        t.setState({
+          listings: fullListings,
+          initialFetch: false,
+          showNextPageButt: classfiedListings.length === 75,
+        });
+        this.setLocation(query, tags, category, slug);
       });
-      t.setState({
-        listings: fullListings,
-        initialFetch: false,
-        showNextPageButt: content.hits.length === 75,
-      });
-    });
-    this.setLocation(query, tags, category, slug);
   }
 
   render() {
