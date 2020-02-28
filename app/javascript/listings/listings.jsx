@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import debounce from 'lodash.debounce';
 import SingleListing from './singleListing';
 
 function resizeMasonryItem(item) {
@@ -76,6 +77,15 @@ export class Listings extends Component {
       ({ slug } = openedListing);
       document.body.classList.add('modal-open');
     }
+
+    t.debouncedClassifiedListingSearch = debounce(
+      this.handleQuery.bind(this),
+      150,
+      {
+        leading: true,
+      },
+    );
+
     t.setState({
       query,
       tags,
@@ -529,7 +539,7 @@ export class Listings extends Component {
               id="listings-search"
               autoComplete="off"
               defaultValue={query}
-              onKeyUp={e => this.handleQuery(e)}
+              onKeyUp={this.debouncedClassifiedListingSearch}
             />
             {clearQueryButton}
             {selectedTags}
