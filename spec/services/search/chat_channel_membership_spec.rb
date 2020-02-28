@@ -21,7 +21,7 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
   describe "::delete_document" do
     it "deletes a document for a given ID from elasticsearch" do
       chat_channel_membership = create(:chat_channel_membership)
-      chat_channel_membership.index_to_elasticsearch_inline
+      index_documents(chat_channel_membership)
       expect { described_class.find_document(chat_channel_membership.id) }.not_to raise_error
       described_class.delete_document(chat_channel_membership.id)
       expect { described_class.find_document(chat_channel_membership.id) }.to raise_error(Search::Errors::Transport::NotFound)
@@ -100,11 +100,6 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
     let(:user) { create(:user) }
     let(:chat_channel_membership1) { create(:chat_channel_membership, user_id: user.id) }
     let(:chat_channel_membership2) { create(:chat_channel_membership, user_id: user.id) }
-
-    def index_documents(resources)
-      resources.each(&:index_to_elasticsearch_inline)
-      described_class.refresh_index
-    end
 
     it "parses chat_channel_membership document hits from search response" do
       mock_search_response = { "hits" => { "hits" => {} } }
