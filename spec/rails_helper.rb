@@ -77,6 +77,7 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   config.include OmniauthMacros
   config.include SidekiqTestHelpers
+  config.include ElasticsearchHelpers, elasticsearch: true
 
   config.before do
     ActiveRecord::Base.observers.disable :all # <-- Turn 'em all off!
