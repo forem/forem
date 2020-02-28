@@ -3,7 +3,7 @@
 
 .primary-sticky-nav {
   display: none;
-  @media screen and (min-width: 1250px) {
+  @media screen and (min-width: $max-width) {
     display: block;
     position: fixed;
     left: calc(50% + 298px);
@@ -154,14 +154,6 @@
     font-weight: bold;
     text-align: center;
     font-stretch: condensed;
-    box-shadow: $light-shadow;
     margin-bottom: 5px;
-    &:hover {
-      box-shadow: $dark-shadow;
-      padding: 7px 39px;
-      margin-bottom: 4px;
-      margin-top: 19px;
-      transition: all 0.3s;
-    }
   }
 }
