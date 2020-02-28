@@ -12,7 +12,16 @@ export class Feed extends Component {
     this.setState({ bookmarkedFeedItems: new Set(reading_list_ids) });
 
     Feed.getFeedItems(timeFrame).then(feedItems => {
-      this.setState({ feedItems, podcastEpisodes: Feed.getPodcastEpisodes() });
+
+      // Ensure first article is one with a main_image
+      const featuredStory = feedItems.find(story => story.main_image !== null);
+      // Remove that first one from the array.
+      const index = feedItems.indexOf(featuredStory);
+      feedItems.splice(index, 1);
+      const subStories = feedItems;   
+      const organizedFeedItems = [featuredStory, subStories].flat();  
+      console.log(organizedFeedItems);
+      this.setState({feedItems: organizedFeedItems, podcastEpisodes: Feed.getPodcastEpisodes() });
     });
   }
 
