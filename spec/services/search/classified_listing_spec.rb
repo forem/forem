@@ -21,7 +21,7 @@ RSpec.describe Search::ClassifiedListing, type: :service, elasticsearch: true do
   describe "::delete_document" do
     it "deletes a document for a given ID from elasticsearch" do
       classified_listing = FactoryBot.create(:classified_listing)
-      classified_listing.index_to_elasticsearch_inline
+      index_documents(classified_listing)
       expect { described_class.find_document(classified_listing.id) }.not_to raise_error
       described_class.delete_document(classified_listing.id)
       expect { described_class.find_document(classified_listing.id) }.to raise_error(Search::Errors::Transport::NotFound)
