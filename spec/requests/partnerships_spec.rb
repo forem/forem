@@ -56,7 +56,7 @@ RSpec.describe "Partnerships", type: :request do
         OrganizationMembership.create(user_id: user.id, organization_id: organization.id, type_of_user: "admin")
         Credit.add_to_org(organization, 100)
         get "/partnerships/bronze-sponsor"
-        expect(response.body).to include("This subscription will renew every month")
+        expect(response.body).to include("Subscribe for #{Sponsorship::CREDITS[:bronze]} credits")
       end
 
       context "when sponsorship exists" do

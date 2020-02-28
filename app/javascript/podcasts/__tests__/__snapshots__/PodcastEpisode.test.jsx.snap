@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<PodcastEpisode /> component should render a podcast episode 1`] = `
+<a
+  class="individual-podcast-link"
+  href="/monitor-recontextualize/undefined"
+>
+  <img
+    alt="monitor recontextualize"
+    src="/images/16.png"
+  />
+  <div
+    class="individual-podcast-link-details"
+  >
+    <strong>
+      monitor recontextualize
+    </strong>
+     Rubber local
+  </div>
+</a>
+`;

@@ -7,7 +7,7 @@ footer {
   .container {
     width: 100%;
     margin: auto;
-    max-width: 1250px;
+    max-width: $max-width;
     box-shadow: none;
     border: none;
     font-weight: 500;
@@ -51,7 +51,7 @@ footer {
   }
 }
 
-@media screen and (min-width: 1250px) {
+@media screen and (min-width: $max-width) {
   .stories-show + footer .inner-footer-container {
     margin-left: 16px;
   }

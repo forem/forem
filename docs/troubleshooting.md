@@ -58,7 +58,7 @@ If you want to disable the threshold check on your local machine you can open a
 Rails console (with `rails console`) and issue the following command:
 
 ```ruby
-SearchClient.cluster.put_settings(body: {
+Search::Client.cluster.put_settings(body: {
   persistent: {
     "cluster.routing.allocation.disk.threshold_enabled" => false,
   }
@@ -69,8 +69,8 @@ To disable the "read only" mode to allow operations on the Elasticsearch indexes
 you can issue the following command, similary in the Rails console:
 
 ```ruby
-SearchClient.indices.get(index: "*").keys.each do |index_name|
-  SearchClient.indices.put_settings(
+Search::Client.indices.get(index: "*").keys.each do |index_name|
+  Search::Client.indices.put_settings(
     index: index_name,
     body: { "index.blocks.read_only_allow_delete" => nil }
   )
