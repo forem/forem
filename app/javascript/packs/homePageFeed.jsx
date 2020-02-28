@@ -82,8 +82,13 @@ export const renderFeed = timeFrame => {
           commentsIcon: feedIcons.COMMENTS_ICON,
           bookmarkClick,
         };
-
-        const [featuredStory, ...subStories] = feedItems;
+        
+        // Ensure first article is one with a main_image
+        const featuredStory = feedItems.find(story => story.main_image !== null);
+        // Remove that first one from the array.
+        const index = feedItems.indexOf(featuredStory);
+        feedItems.splice(index, 1);
+        const subStories = feedItems;
 
         sendFeaturedArticleAnalytics(featuredStory.id);
 
