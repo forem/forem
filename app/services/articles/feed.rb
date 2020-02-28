@@ -47,13 +47,13 @@ module Articles
       stories
     end
 
-    def ab_test_feed(test_variant)
+    def ab_test_user_signed_in_feed(test_variant)
       # test_variants as defined in field_test.yml
       # Each variant is it's own algorithm which defines all the branching scenarios.
       case test_variant
       when "base"
         # These variants, should live in their own dedicated space I think so we can comfortably create big long beautiful branching algorithms.
-        default_home_feed(user_signed_in: user_signed_in?) # for example
+        default_home_feed(user_signed_in: true) # for example
       when "more_random"
         Article.limit(21) # Maybe objects like Articles::Feeds::MoreRandom
       when "ben_a" # <- Possibly give people space to "own" a few feeds themself to submit to the optimization contest.

@@ -14,7 +14,7 @@ class Stories::FeedsController < ApplicationController
               elsif params[:timeframe] == Timeframer::LATEST_TIMEFRAME
                 feed.latest_feed
               elsif user_signed_in?
-                feed.ab_test_feed(field_test(:user_home_feed, participant: current_user))
+                feed.ab_test_user_signed_in_feed(field_test(:user_home_feed, participant: current_user))
               else
                 feed.default_home_feed(user_signed_in: user_signed_in?)
               end
