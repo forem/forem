@@ -1,11 +1,14 @@
 <h3><%= "Edit Sponsorship ##{@sponsorship.id}" %></h3>
 
-<%= form_for [:internal, @sponsorship] do |form| %>
+<%= form_for [:internal, @sponsorship] do |f| %>
   <div class="form-group">
     User: <%= link_to "@#{@sponsorship.user.username}", "/#{@sponsorship.user.username}" %>
   </div>
   <div class="form-group">
     Organization: <%= link_to "@#{@sponsorship.organization.username}", "/#{@sponsorship.organization.username}" %>
+  </div>
+  <div class="form-group">
+    Created at: <%= f.object.created_at.strftime("%d %B %Y %H:%M UTC") %>
   </div>
   <div class="form-group">
     Level: <%= @sponsorship.level %>
@@ -16,12 +19,36 @@
     <% end %>
   </div>
   <div class="form-group">
-    <%= form.label :status %>
-    <%= form.select :status, Sponsorship::STATUSES %>
+    <%= f.label :status %>
+    <%= f.select :status, Sponsorship::STATUSES %>
   </div>
   <div class="form-group">
-    <%= form.label :expires_at %>
-    <%= form.text_field :expires_at, "data-type" => "datetime" %>
+    <%= f.label :expires_at %>
+    <%= f.datetime_select :expires_at, required: true, start_year: Time.current.year, end_year: Time.current.year + 2, class: "form-control" %> UTC Time
   </div>
-  <%= form.submit "Update Sponsorship", class: "btn btn-primary float-right" %>
+  <div class="form-group">
+    <%= f.label :tagline %>
+    <%= f.text_field :tagline, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :url %>
+    <%= f.text_field :url, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :blurb_html %>
+    <%= f.text_area :blurb_html, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :featured_number %>
+    <%= f.text_field :featured_number, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :instructions %>
+    <%= f.text_field :instructions, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :instructions_updated_at %>
+    <%= f.datetime_select :instructions_updated_at, required: true, start_year: Time.current.year, end_year: Time.current.year + 2, class: "form-control" %> UTC Time
+  </div>
+  <%= f.submit "Update Sponsorship", class: "btn btn-primary float-right" %>
 <% end %>

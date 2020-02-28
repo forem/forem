@@ -12,8 +12,10 @@ class Internal::SponsorshipsController < Internal::ApplicationController
   def update
     @sponsorship = Sponsorship.find(params[:id])
     if @sponsorship.update(sponsorship_params)
+      flash[:notice] = "Sponsorship was successfully updated"
       redirect_to internal_sponsorships_path
     else
+      flash[:danger] = @sponsorship.errors.full_messages.join(", ")
       render action: :edit
     end
   end
@@ -21,6 +23,6 @@ class Internal::SponsorshipsController < Internal::ApplicationController
   private
 
   def sponsorship_params
-    params.require(:sponsorship).permit(%i[status expired_at])
+    params.require(:sponsorship).permit(%i[status expires_at tagline url blurb_html featured_number instructions instructions_updated_at])
   end
 end

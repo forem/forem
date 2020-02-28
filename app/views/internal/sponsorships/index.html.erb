@@ -20,7 +20,7 @@
         <td><%= link_to sponsorship.id, edit_internal_sponsorship_path(sponsorship) %></td>
         <td><%= sponsorship.level %></td>
         <td><%= sponsorship.status %></td>
-        <td><%= sponsorship.expires_at.strftime("%d %B %Y %H:%M UTC") %></td>
+        <td><%= sponsorship.expires_at&.strftime("%d %B %Y %H:%M UTC") %></td>
         <td>
           <% if sponsorship.sponsorable.is_a?(ActsAsTaggableOn::Tag) %>
             <%= link_to sponsorship.sponsorable.name, "/t/#{sponsorship.sponsorable.name}" %>
