@@ -85,6 +85,30 @@ RSpec.describe Articles::Feed, type: :service do
         expect(featured_story).to eq(hot_story)
       end
     end
+
+    context "when ranking is true" do
+      it "performs article ranking" do
+        allow(feed).to receive(:rank_and_sort_articles).and_call_original
+        feed.default_home_feed_and_featured_story(ranking: true)
+        expect(feed).to have_received(:rank_and_sort_articles)
+      end
+    end
+
+    context "when ranking is false" do
+      it "does not perform article ranking" do
+        allow(feed).to receive(:rank_and_sort_articles).and_call_original
+        feed.default_home_feed_and_featured_story(ranking: false)
+        expect(feed).not_to have_received(:rank_and_sort_articles)
+      end
+    end
+
+    context "when ranking not passed" do
+      it "performs article ranking" do
+        allow(feed).to receive(:rank_and_sort_articles).and_call_original
+        feed.default_home_feed_and_featured_story
+        expect(feed).to have_received(:rank_and_sort_articles)
+      end
+    end
   end
 
   describe "#default_home_feed" do
@@ -112,6 +136,14 @@ RSpec.describe Articles::Feed, type: :service do
         expect(stories).not_to include(old_story)
         expect(stories).to include(new_story)
       end
+    end
+  end
+
+  describe "#default_home_feed_without_ranking" do
+    it "calls the default home feed generator with user logged in and ranking turned off" do
+      allow(feed).to receive(:default_home_feed_and_featured_story).and_call_original
+      feed.default_home_feed_without_ranking
+      expect(feed).to have_received(:default_home_feed_and_featured_story).with(user_signed_in: true, ranking: false)
     end
   end
 

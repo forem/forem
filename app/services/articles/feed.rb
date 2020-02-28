@@ -25,7 +25,7 @@ module Articles
         page(@page).per(@number_of_articles)
     end
 
-    def default_home_feed_and_featured_story(user_signed_in: false)
+    def default_home_feed_and_featured_story(user_signed_in: false, ranking: true)
       hot_stories = published_articles_by_tag.
         where("score > ? OR featured = ?", 9, true).
         order("hotness_score DESC")
@@ -38,12 +38,17 @@ module Articles
           limited_column_select.order("published_at DESC").limit(rand(15..80))
         hot_stories = hot_stories.to_a + new_stories.to_a
       end
-      hot_stories = rank_and_sort_articles(hot_stories) if @user
+      hot_stories = rank_and_sort_articles(hot_stories) if @user && ranking
       [featured_story, hot_stories]
     end
 
+    def default_home_feed_without_ranking
+      _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true, ranking: false)
+      stories
+    end
+
     def default_home_feed(user_signed_in: false)
-      _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: user_signed_in)
+      _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: user_signed_in, ranking: true)
       stories
     end
 
@@ -54,12 +59,8 @@ module Articles
       when "base"
         # These variants, should live in their own dedicated space I think so we can comfortably create big long beautiful branching algorithms.
         default_home_feed(user_signed_in: true) # for example
-      when "more_random"
-        Article.limit(21) # Maybe objects like Articles::Feeds::MoreRandom
-      when "ben_a" # <- Possibly give people space to "own" a few feeds themself to submit to the optimization contest.
-        Article.limit(22) # Maybe objects like Articles::Feeds::BenA
-      when "newer"
-        Article.limit(23)
+      when "without_ranking"
+        default_home_feed_without_ranking # Maybe objects like Articles::Feeds::MoreRandom
       else
         Article.limit(24)
       end

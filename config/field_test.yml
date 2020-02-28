@@ -2,14 +2,10 @@ experiments:
   user_home_feed: # Home feed collection for logged in user
     variants:
       - base
-      - more_random
-      - top_past_week_random
-      - newer
+      - without_ranking
     weights:
-      - 25
-      - 25
-      - 25
-      - 25
+      - 80
+      - 20
     goals:
       - user_creates_comment
       - user_creates_reaction
@@ -23,8 +19,3 @@ cache: true
 # For logged-in users we'll explicitely pass participant. 
 # If we experiment on non-logged in, we don't want to collect cookies anyway.
 cookies: false
-
-# For ongoing tests I think it probably makes sense to recycle participant info
-# and send folks back into the experiment over and over again as we optimize.
-# So so maybe running a script that records and deletes the old experiments and
-# events every two weeks or so in order to facilitate ongoing improvements.
