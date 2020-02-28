@@ -1,5 +1,6 @@
 class SearchController < ApplicationController
   before_action :authenticate_user!
+  before_action :format_integer_params
 
   CLASSIFIED_LISTINGS_PARAMS = %i[
     category
@@ -44,14 +45,16 @@ class SearchController < ApplicationController
       channel_status
       status
     ]
-    params[:page] = params[:page].to_i if params[:page].present?
-    params[:per_page] = params[:per_page].to_i if params[:per_page].present?
+
     params.permit(accessible)
   end
 
   def classified_listing_params
+    params.permit(CLASSIFIED_LISTINGS_PARAMS)
+  end
+
+  def format_integer_params
     params[:page] = params[:page].to_i if params[:page].present?
     params[:per_page] = params[:per_page].to_i if params[:per_page].present?
-    params.permit(CLASSIFIED_LISTINGS_PARAMS)
   end
 end
