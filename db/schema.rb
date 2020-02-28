@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_26_192145) do
+ActiveRecord::Schema.define(version: 2020_02_27_214321) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -227,7 +227,6 @@ ActiveRecord::Schema.define(version: 2020_02_26_192145) do
     t.boolean "active", default: false
     t.text "body_markdown"
     t.text "processed_html"
-    t.boolean "sent", default: false
     t.string "title"
     t.string "type_of"
   end
@@ -966,6 +965,7 @@ ActiveRecord::Schema.define(version: 2020_02_26_192145) do
     t.text "rules_markdown"
     t.string "short_summary"
     t.string "social_image"
+    t.string "social_preview_template", default: "article"
     t.string "submission_rules_headsup"
     t.text "submission_template"
     t.boolean "supported", default: false
@@ -975,6 +975,7 @@ ActiveRecord::Schema.define(version: 2020_02_26_192145) do
     t.text "wiki_body_html"
     t.text "wiki_body_markdown"
     t.index ["name"], name: "index_tags_on_name", unique: true
+    t.index ["social_preview_template"], name: "index_tags_on_social_preview_template"
   end
 
   create_table "tweets", id: :serial, force: :cascade do |t|

@@ -530,6 +530,15 @@ RSpec.describe User, type: :model do
           user.update(unconfirmed_email: "bob@bob.com", confirmation_sent_at: Time.current)
         end
       end
+
+      it "does not enqueue when the email address or subscription status has not changed" do
+        # The trait replaces the method with a dummy, but we need the actual method for this test.
+        user = described_class.find(create(:user, :ignore_mailchimp_subscribe_callback).id)
+
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
+          user.update(website_url: "http://example.com")
+        end
+      end
     end
 
     describe "#conditionally_resave_articles" do
