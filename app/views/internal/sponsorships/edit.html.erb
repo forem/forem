@@ -1,0 +1,27 @@
+<h3><%= "Edit Sponsorship ##{@sponsorship.id}" %></h3>
+
+<%= form_for [:internal, @sponsorship] do |form| %>
+  <div class="form-group">
+    User: <%= link_to "@#{@sponsorship.user.username}", "/#{@sponsorship.user.username}" %>
+  </div>
+  <div class="form-group">
+    Organization: <%= link_to "@#{@sponsorship.organization.username}", "/#{@sponsorship.organization.username}" %>
+  </div>
+  <div class="form-group">
+    Level: <%= @sponsorship.level %>
+  </div>
+  <div class="form-group">
+    <% if @sponsorship.sponsorable.is_a?(ActsAsTaggableOn::Tag) %>
+      Sponsorable: <%= link_to @sponsorship.sponsorable.name, "/t/#{@sponsorship.sponsorable.name}" %>
+    <% end %>
+  </div>
+  <div class="form-group">
+    <%= form.label :status %>
+    <%= form.select :status, Sponsorship::STATUSES %>
+  </div>
+  <div class="form-group">
+    <%= form.label :expires_at %>
+    <%= form.text_field :expires_at, "data-type" => "datetime" %>
+  </div>
+  <%= form.submit "Update Sponsorship", class: "btn btn-primary float-right" %>
+<% end %>
