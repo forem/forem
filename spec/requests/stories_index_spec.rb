@@ -138,31 +138,6 @@ RSpec.describe "StoriesIndex", type: :request do
         expect(response.body).not_to include(CGI.escapeHTML("Super-puper"))
       end
     end
-
-    describe "when authenticated" do
-      let(:user) { create(:user) }
-
-      before do
-        sign_in user
-      end
-
-      it "contains the stories correctly serialized" do
-        # we control titles to avoid escaping errors with apostrophes and such
-        article = create(:article, featured: true)
-        article.update_columns(title: "abc")
-
-        articles = create_list(:article, 2)
-        articles.each { |a| a.update_columns(title: "abc") }
-
-        get root_path
-        expect(response).to have_http_status(:ok)
-
-        stories = controller.instance_variable_get(:@stories) # cheating a bit ;)
-        expected_result = ArticleDecorator.decorate_collection(stories).
-          to_json(controller.class.const_get(:DEFAULT_HOME_FEED_ATTRIBUTES_FOR_SERIALIZATION))
-        expect(response.body).to include(ERB::Util.html_escape(expected_result))
-      end
-    end
   end
 
   describe "GET query page" do

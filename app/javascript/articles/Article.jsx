@@ -23,6 +23,7 @@ export const Article = ({
   reactionsIcon,
   commentsIcon,
   videoIcon,
+  bookmarkClick,
 }) => {
   if (article && article.type_of === 'podcast_episodes') {
     return <PodcastArticle article={article} />;
@@ -99,7 +100,7 @@ export const Article = ({
         </a>
       </h4>
 
-      <TagList tags={article.tag_list || article.cached_tag_list_array} />
+      <TagList tags={article.tag_list} />
       {article.class_name !== 'User' && (
         <CommentsCount
           count={article.comments_count}
@@ -116,7 +117,11 @@ export const Article = ({
           readingTime={article.reading_time}
         />
       )}
-      <SaveButton article={article} isBookmarked={isBookmarked} />
+      <SaveButton
+        article={article}
+        isBookmarked={isBookmarked}
+        onClick={bookmarkClick}
+      />
     </div>
   );
 };
@@ -133,4 +138,5 @@ Article.propTypes = {
   reactionsIcon: PropTypes.string.isRequired,
   commentsIcon: PropTypes.string.isRequired,
   videoIcon: PropTypes.string.isRequired,
+  bookmarkClick: PropTypes.func.isRequired,
 };
