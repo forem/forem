@@ -20,6 +20,16 @@ class Internal::SponsorshipsController < Internal::ApplicationController
     end
   end
 
+  def destroy
+    @sponsorship = Sponsorship.find(params[:id])
+    if @sponsorship.destroy
+      flash[:notice] = "Sponsorship was successfully destroyed"
+    else
+      flash[:danger] = "Sponsorship was not destroyed"
+    end
+    redirect_to internal_sponsorships_path
+  end
+
   private
 
   def sponsorship_params

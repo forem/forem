@@ -70,4 +70,15 @@ RSpec.describe "/internal/sponsorships", type: :request do
       expect(response.body).to include("Status is not included in the list")
     end
   end
+
+  describe "DELETE /internal/sponsorships/:id" do
+    let!(:sponsorship) { create(:sponsorship, organization: org, level: :silver, status: "live", expires_at: Time.current) }
+
+    it "destroys a sponsorship" do
+      sign_in admin
+      expect do
+        delete internal_sponsorship_path(sponsorship.id)
+      end.to change(Sponsorship, :count).by(-1)
+    end
+  end
 end

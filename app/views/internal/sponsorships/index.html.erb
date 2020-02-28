@@ -31,7 +31,9 @@
         <td>
           <%= link_to "@#{sponsorship.organization.username}", "/#{sponsorship.organization.username}" %>
         </td>
-        <td><%= link_to "edit", edit_internal_sponsorship_path(sponsorship) %></td>
+        <td>
+          <%= link_to "edit", edit_internal_sponsorship_path(sponsorship) %>
+        </td>
       </tr>
     <% end %>
   </tbody>
