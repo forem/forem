@@ -287,4 +287,27 @@ RSpec.describe Articles::Feed, type: :service do
       end
     end
   end
+
+  describe "#rank_and_sort_articles" do
+    let(:article1) { create(:article) }
+    let(:article2) { create(:article) }
+    let(:article3) { create(:article) }
+    let(:articles) { [article1, article2, article3] }
+
+    context "when number of articles specified" do
+      let(:feed) { described_class.new(number_of_articles: 1) }
+
+      it "only returns the requested number of articles" do
+        expect(feed.rank_and_sort_articles(articles).size).to eq 1
+      end
+    end
+
+    it "returns articles in scored order" do
+      allow(feed).to receive(:score_single_article).with(article1).and_return(1)
+      allow(feed).to receive(:score_single_article).with(article2).and_return(2)
+      allow(feed).to receive(:score_single_article).with(article3).and_return(3)
+
+      expect(feed.rank_and_sort_articles(articles)).to eq [article3, article2, article1]
+    end
+  end
 end
