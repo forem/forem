@@ -1,45 +1,42 @@
 @import '../vars/_variables.scss';
 
-@mixin box($level: 0, $background: $snowflake, $border: $smoke-90) {
-  background-color: $background;
-  border: 2px solid $border;
-  @if $level > 0 {
-    box-shadow: #{pow(2, $level) + px} #{pow(2, $level) + px} 0 $border;
+@mixin box($color-1: $smoke-90, $color-2: $smoke-100) {
+  border-color: $color-1;
+  @for $i from 1 through 3 {
+    #{& + '__level-' + $i} {
+      box-shadow: #{pow(2, $i) + px} #{pow(2, $i) + px} 0 $color-1;
+    }
+  }
+
+  &__filled {
+    background-color: $color-1;
+    border-color: $color-2;
+    @for $i from 1 through 3 {
+      #{& + '__level-' + $i} {
+        box-shadow: #{pow(2, $i) + px} #{pow(2, $i) + px} 0 $color-2;
+      }
+    }
   }
 }
 
-@mixin generate-levels($background, $border) {
-  &__l-0 {
-    @include box(0, $background, $border);
-  }
-
-  &__l-1 {
-    @include box(1, $background, $border);
-  }
-
-  &__l-2 {
-    @include box(2, $background, $border);
-  }
-
-  &__l-3 {
-    @include box(3, $background, $border);
-  }
-}
-
-// Default
 .crayons-box {
-  @include generate-levels($snowflake, $smoke-90);
+  border-radius: 3px;
+  background-color: $snowflake;
+  @include box;
 
-  &-filled {
-    @include generate-levels($smoke-90, $smoke-100);
+  &__danger {
+    @include box($raspberry, $raspberry-darker);
   }
-}
 
-// Danger
-.crayons-box {
-  @include generate-levels($snowflake, $smoke-90);
+  &__warning {
+    @include box($peanut, $peanut-darker);
+  }
 
-  &-filled {
-    @include generate-levels($smoke-90, $smoke-100);
+  &__success {
+    @include box($avocado, $avocado-darker);
+  }
+
+  &__info {
+    @include box($dolphin, $dolphin-darker);
   }
 }
