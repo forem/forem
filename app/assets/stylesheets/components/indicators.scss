@@ -11,23 +11,23 @@
   border-radius: $br-default;
   display: inline-block;
 
-  &__accent {
+  &--accent {
     background-color: $dolphin;
     color: $snowflake;
   }
 
-  &__critical {
+  &--critical {
     background-color: $raspberry;
     color: $snowflake;
   }
 
-  &__inverted {
+  &--inverted {
     background-color: $smoke-90;
     color: $snowflake;
   }
 
   // Circle, no text
-  &__bullet {
+  &--bullet {
     width: $su-3;
     height: $su-3;
     padding: 0;

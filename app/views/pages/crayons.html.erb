@@ -21,102 +21,131 @@
   <div><textarea class="crayons-textfield" placeholder="This is palceholder..."></textarea></div>
 
   <div class="crayons-field">
-    <label for="" class="crayons-field--label">Textfield Label</label>
-    <p class="crayons-field--description">This is some description for a textfield lorem ipsum...</p>
+    <label for="" class="crayons-field__label">Textfield Label</label>
+    <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
     <input type="text" class="crayons-textfield" placeholder="This is placeholder...">
-    <p class="crayons-field--description">Another description just in case...</p>
+    <p class="crayons-field__description">Another description just in case...</p>
   </div>
 
   <div class="crayons-field">
-    <label for="" class="crayons-field--label">
+    <label for="" class="crayons-field__label">
       Textfield Label
-      <p class="crayons-field--description">This is some description for a textfield lorem ipsum...</p>
+      <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
     </label>
     <input type="text" class="crayons-textfield" placeholder="This is placeholder...">
-    <p class="crayons-field--description">Another description just in case...</p>
+    <p class="crayons-field__description">Another description just in case...</p>
   </div>
 
   <div>
     <a href="#" class="crayons-btn">Button label</a><br><br>
-    <a href="#" class="crayons-btn crayons-btn__full">Full Button label</a><br><br>
-    <a href="#" class="crayons-btn crayons-btn__secondary">Secondary Button label</a><br><br>
-    <a href="#" class="crayons-btn crayons-btn__outlined">Outlined Button label</a><br><br>
-    <a href="#" class="crayons-btn crayons-btn__text">Text Button label</a><br><br>
-    <a href="#" class="crayons-btn crayons-btn__danger">Danger Button label</a><br><br>
-    <a href="#" class="crayons-btn crayons-btn__icon-left"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon"><path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" /></svg>Button</a>
+    <a href="#" class="crayons-btn crayons-btn--full">Full Button label</a><br><br>
+    <a href="#" class="crayons-btn crayons-btn--secondary">Secondary Button label</a><br><br>
+    <a href="#" class="crayons-btn crayons-btn--outlined">Outlined Button label</a><br><br>
+    <a href="#" class="crayons-btn crayons-btn--text">Text Button label</a><br><br>
+    <a href="#" class="crayons-btn crayons-btn--danger">Danger Button label</a><br><br>
+    <a href="#" class="crayons-btn crayons-btn--icon-left"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon"><path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" /></svg>Button</a>
   </div>
 
   <div>
     <div class="crayons-card" style="max-width: 316px;">
-      <header class="crayons-card--header">
+      <header class="crayons-card__header">
         <h3>Listings</h3>
       </header>
-      <div class="crayons-card--body">
-        <a href="#" class="crayons-card--link-block">
+      <div class="crayons-card__body">
+        <a href="#" class="crayons-card__link-block">
           Take part in the global microservices survey!
-          <footer class="crayons-card--link-block--footer">
-            <span class="crayons-indicator crayons-indicator__accent">New</span>
+          <footer class="crayons-card__link-block__footer">
+            <span class="crayons-indicator crayons-indicator--accent">New</span>
             For hire
           </footer>
         </a>
 
-        <a href="#" class="crayons-card--link-block">
+        <a href="#" class="crayons-card__link-block">
           React / Java Dev - Austin, TX
-          <footer class="crayons-card--link-block--footer">For hire</footer>
+          <footer class="crayons-card__link-block__footer">For hire</footer>
         </a>
 
-        <a href="#" class="crayons-card--link-block">
+        <a href="#" class="crayons-card__link-block">
           Mecha, a flat-file content management system for minimalists.
-          <footer class="crayons-card--link-block--footer">For hire</footer>
+          <footer class="crayons-card__link-block__footer">For hire</footer>
         </a>
       </div>
     </div>
   </div>
 
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; grid-gap: 16px;">
+    <div class="crayons-box">box, level 0</div>
+    <div class="crayons-box crayons-box--level-1">box, level 1</div>
+    <div class="crayons-box crayons-box--level-2">box, level 2</div>
+    <div class="crayons-box crayons-box--level-3">box, level 3</div>
+    <div class="crayons-box crayons-box--filled crayons-box--filled">filled box, level 0</div>
+    <div class="crayons-box crayons-box--filled crayons-box--filled--level-1">filled box, level 1</div>
+    <div class="crayons-box crayons-box--filled crayons-box--filled--level-2">filled box, level 2</div>
+    <div class="crayons-box crayons-box--filled crayons-box--filled--level-3">filled box, level 3</div>
+
+    <div class="crayons-box crayons-box--danger">danger box, level 0</div>
+    <div class="crayons-box crayons-box--danger crayons-box--danger--level-1">danger box, level 1</div>
+    <div class="crayons-box crayons-box--danger crayons-box--danger--level-2">danger box, level 2</div>
+    <div class="crayons-box crayons-box--danger crayons-box--danger--level-3">danger box, level 3</div>
+    <div class="crayons-box crayons-box--danger crayons-box--danger--filled crayons-box--danger--filled">filled danger box, level 0</div>
+    <div class="crayons-box crayons-box--danger crayons-box--danger--filled crayons-box--danger--filled--level-1">filled danger box, level 1</div>
+    <div class="crayons-box crayons-box--danger crayons-box--danger--filled crayons-box--danger--filled--level-2">filled danger box, level 2</div>
+    <div class="crayons-box crayons-box--danger crayons-box--danger--filled crayons-box--danger--filled--level-3">filled danger box, level 3</div>
+
+    <div class="crayons-box crayons-box--success">success box, level 0</div>
+    <div class="crayons-box crayons-box--success crayons-box--success--level-1">success box, level 1</div>
+    <div class="crayons-box crayons-box--success crayons-box--success--level-2">success box, level 2</div>
+    <div class="crayons-box crayons-box--success crayons-box--success--level-3">success box, level 3</div>
+    <div class="crayons-box crayons-box--success crayons-box--success--filled crayons-box--success--filled">filled success box, level 0</div>
+    <div class="crayons-box crayons-box--success crayons-box--success--filled crayons-box--success--filled--level-1">filled success box, level 1</div>
+    <div class="crayons-box crayons-box--success crayons-box--success--filled crayons-box--success--filled--level-2">filled success box, level 2</div>
+    <div class="crayons-box crayons-box--success crayons-box--success--filled crayons-box--success--filled--level-3">filled success box, level 3</div>
+
+    <div class="crayons-box crayons-box--info">info box, level 0</div>
+    <div class="crayons-box crayons-box--info crayons-box--info--level-1">info box, level 1</div>
+    <div class="crayons-box crayons-box--info crayons-box--info--level-2">info box, level 2</div>
+    <div class="crayons-box crayons-box--info crayons-box--info--level-3">info box, level 3</div>
+    <div class="crayons-box crayons-box--info crayons-box--info--filled crayons-box--info--filled">filled info box, level 0</div>
+    <div class="crayons-box crayons-box--info crayons-box--info--filled crayons-box--info--filled--level-1">filled info box, level 1</div>
+    <div class="crayons-box crayons-box--info crayons-box--info--filled crayons-box--info--filled--level-2">filled info box, level 2</div>
+    <div class="crayons-box crayons-box--info crayons-box--info--filled crayons-box--info--filled--level-3">filled info box, level 3</div>
+
+    <div class="crayons-box crayons-box--warning">warning box, level 0</div>
+    <div class="crayons-box crayons-box--warning crayons-box--warning--level-1">warning box, level 1</div>
+    <div class="crayons-box crayons-box--warning crayons-box--warning--level-2">warning box, level 2</div>
+    <div class="crayons-box crayons-box--warning crayons-box--warning--level-3">warning box, level 3</div>
+    <div class="crayons-box crayons-box--warning crayons-box--warning--filled crayons-box--warning--filled">filled warning box, level 0</div>
+    <div class="crayons-box crayons-box--warning crayons-box--warning--filled crayons-box--warning--filled--level-1">filled warning box, level 1</div>
+    <div class="crayons-box crayons-box--warning crayons-box--warning--filled crayons-box--warning--filled--level-2">filled warning box, level 2</div>
+    <div class="crayons-box crayons-box--warning crayons-box--warning--filled crayons-box--warning--filled--level-3">filled warning box, level 3</div>
+  </div>
+
   <div>
-    <div class="crayons-modal">
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et libero quia aut, est, adipisci ut facere saepe dolorum laboriosam reiciendis? Recusandae eveniet dolorem delectus, ducimus, maiores veniam dolore omnis.</p>
-    </div><br>
-
-    <div class="crayons-modal crayons-modal__m">
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et libero quia aut, est, adipisci ut facere saepe dolorum laboriosam reiciendis? Recusandae eveniet dolorem delectus, ducimus, maiores veniam dolore omnis.</p>
-    </div><br>
-
-    <div class="crayons-modal crayons-modal__l">
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et libero quia aut, est, adipisci ut facere saepe dolorum laboriosam reiciendis? Recusandae eveniet dolorem delectus, ducimus, maiores veniam dolore omnis.</p>
-    </div><br>
-
-    <div class="crayons-modal crayons-modal__xl">
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et libero quia aut, est, adipisci ut facere saepe dolorum laboriosam reiciendis? Recusandae eveniet dolorem delectus, ducimus, maiores veniam dolore omnis.</p>
-    </div><br>
-
-    <div class="crayons-modal crayons-modal__xxl">
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et libero quia aut, est, adipisci ut facere saepe dolorum laboriosam reiciendis? Recusandae eveniet dolorem delectus, ducimus, maiores veniam dolore omnis.</p>
-    </div><br>
+    <div class="modal">test</div>
   </div>
 
   <div>
     <span class="crayons-indicator">Label</span>
     <span class="crayons-indicator">1</span>
-    <span class="crayons-indicator crayons-indicator__bullet"></span>
+    <span class="crayons-indicator crayons-indicator--bullet"></span>
   </div>
 
   <div>
-    <span class="crayons-indicator crayons-indicator__accent">Label</span>
-    <span class="crayons-indicator crayons-indicator__accent">1</span>
-    <span class="crayons-indicator crayons-indicator__accent crayons-indicator__bullet"></span>
+    <span class="crayons-indicator crayons-indicator--accent">Label</span>
+    <span class="crayons-indicator crayons-indicator--accent">1</span>
+    <span class="crayons-indicator crayons-indicator--accent crayons-indicator--bullet"></span>
   </div>
 
   <div>
-    <span class="crayons-indicator crayons-indicator__critical">Label</span>
-    <span class="crayons-indicator crayons-indicator__critical">1</span>
-    <span class="crayons-indicator crayons-indicator__critical crayons-indicator__bullet"></span>
+    <span class="crayons-indicator crayons-indicator--critical">Label</span>
+    <span class="crayons-indicator crayons-indicator--critical">1</span>
+    <span class="crayons-indicator crayons-indicator--critical crayons-indicator--bullet"></span>
   </div>
 
   <div>
-    <span class="crayons-indicator crayons-indicator__inverted">Label</span>
-    <span class="crayons-indicator crayons-indicator__inverted">1</span>
-    <span class="crayons-indicator crayons-indicator__inverted crayons-indicator__bullet"></span>
+    <span class="crayons-indicator crayons-indicator--inverted">Label</span>
+    <span class="crayons-indicator crayons-indicator--inverted">1</span>
+    <span class="crayons-indicator crayons-indicator--inverted crayons-indicator--bullet"></span>
   </div>
 
 </div>

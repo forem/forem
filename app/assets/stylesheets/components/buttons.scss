@@ -22,7 +22,7 @@
   background-color: $dolphin;
   color: $snowflake;
 
-  &__disabled,
+  &--disabled,
   &[disabled] {
     color: rgba($snowflake, 0.8);
     background-color: $dolphin-lighter;
@@ -32,11 +32,11 @@
     background-color: $dolphin-darker;
   }
 
-  &__secondary {
+  &--secondary {
     background-color: $smoke-20;
     color: $smoke-80;
 
-    &__disabled,
+    &--disabled,
     &[disabled] {
       color: $smoke-40;
       background-color: $smoke-10;
@@ -48,12 +48,12 @@
     }
   }
 
-  &__outlined {
+  &--outlined {
     border: 2px solid $smoke-30;
     color: $smoke-80;
     background-color: transparent;
 
-    &__disabled,
+    &--disabled,
     &[disabled] {
       color: $smoke-40;
       border-color: $smoke-20;
@@ -67,10 +67,10 @@
     }
   }
 
-  &__danger {
+  &--danger {
     background-color: $raspberry;
 
-    &__disabled,
+    &--disabled,
     &[disabled] {
       color: rgba($snowflake, 0.8);
       background-color: $raspberry-lighter;
@@ -81,11 +81,11 @@
     }
   }
 
-  &__text {
+  &--text {
     background-color: transparent;
     color: $dolphin;
 
-    &__disabled,
+    &--disabled,
     &[disabled] {
       background-color: transparent;
       color: $dolphin-lighter;
@@ -99,7 +99,7 @@
 }
 
 // Icon Left
-.crayons-btn__icon-left {
+.crayons-btn--icon-left {
   padding-left: 0.75em;
 
   .crayons-icon {
@@ -108,6 +108,6 @@
 }
 
 // Full width
-.crayons-btn__full {
+.crayons-btn--full {
   width: 100%;
 }

@@ -3,16 +3,16 @@
 @mixin box($color-1: $smoke-90, $color-2: $smoke-100) {
   border-color: $color-1;
   @for $i from 1 through 3 {
-    #{& + '__level-' + $i} {
+    &#{'--level-' + $i} {
       box-shadow: #{pow(2, $i) + px} #{pow(2, $i) + px} 0 $color-1;
     }
   }
 
-  &__filled {
+  &--filled {
     background-color: $color-1;
     border-color: $color-2;
     @for $i from 1 through 3 {
-      #{& + '__level-' + $i} {
+      &#{'--level-' + $i} {
         box-shadow: #{pow(2, $i) + px} #{pow(2, $i) + px} 0 $color-2;
       }
     }
@@ -20,23 +20,29 @@
 }
 
 .crayons-box {
-  border-radius: 3px;
+  border-radius: $br-default;
   background-color: $snowflake;
+  border: 2px solid;
   @include box;
 
-  &__danger {
+  &--danger {
     @include box($raspberry, $raspberry-darker);
   }
 
-  &__warning {
+  &--warning {
     @include box($peanut, $peanut-darker);
   }
 
-  &__success {
+  &--success {
     @include box($avocado, $avocado-darker);
   }
 
-  &__info {
+  &--info {
     @include box($dolphin, $dolphin-darker);
   }
+}
+
+.modal {
+  @extend .crayons-box--danger;
+  color: $snowflake;
 }

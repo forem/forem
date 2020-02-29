@@ -5,7 +5,7 @@
   // If we ever have an icon with its own colors that we don't want to overwrite,
   // lets use modifier class `.crayons-icon__default`. It will prevent applying
   // currentColor from parent element.
-  &:not(#{& + __default}) {
+  &:not(#{& + --default}) {
     * {
       fill: currentColor;
     }

@@ -8,27 +8,27 @@
   padding: $su-4;
   width: 250px;
 
-  &__m {
+  &--m {
     padding: $su-6;
     width: 320px; // todo?
   }
 
-  &__l {
+  &--l {
     padding: $su-6;
     width: 480px; // todo?
   }
 
-  &__xl {
+  &--xl {
     padding: $su-7;
     width: 640px; // todo?
   }
 
-  &__xxl {
+  &--xxl {
     padding: $su-8;
     width: 800px; // todo?
   }
 
-  &.is-hidden {
+  &__hidden {
     display: none;
   }
 }

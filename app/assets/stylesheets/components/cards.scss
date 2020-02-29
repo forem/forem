@@ -4,7 +4,7 @@
   border-radius: $br-default;
   background: $smoke-00;
 
-  &--header {
+  &__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -12,16 +12,16 @@
     padding: $su-2 $su-4;
   }
 
-  &--title {
+  &__title {
     font-size: $fs-l;
     color: $smoke-100;
   }
 
-  &--body {
+  &__body {
     // padding: $su-4;
   }
 
-  &--link-block {
+  &__link-block {
     padding: $su-2 $su-4;
     border-bottom: 1px solid $smoke-10;
     display: block;
@@ -32,7 +32,7 @@
       border-bottom: 0;
     }
 
-    &--footer {
+    &__footer {
       font-size: $fs-s;
       color: $smoke-50;
       transition: all $transition-props;
@@ -42,7 +42,7 @@
       background-color: $snowflake;
       color: $dolphin;
 
-      .crayons-card--link-block--footer {
+      .crayons-card__link-block__footer {
         color: $smoke-60;
       }
     }

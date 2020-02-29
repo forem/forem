@@ -53,7 +53,7 @@
     box-shadow: 1px 1px 0 $dolphin;
   }
 
-  &__disabled,
+  &--disabled,
   &[disabled] {
     @extend %form-styling-disabled;
   }
@@ -62,7 +62,7 @@
     display: none;
   }
 
-  &__icon {
+  &--icon {
     padding-left: $su-7;
   }
 }
@@ -77,16 +77,16 @@
     @extend %form-styling-hover;
   }
 
-  &__disabled,
+  &--disabled,
   &[disabled] {
     @extend %form-styling-disabled;
   }
 
-  &__checked,
+  &--checked,
   &[checked] {
     @extend %form-styling-checked;
 
-    &__disabled,
+    &--disabled,
     &[disabled] {
       @extend %form-styling-checked-disabled;
     }
@@ -106,16 +106,16 @@
   flex-flow: column;
   font-size: $fs-base; // todo: do we need it?
 
-  &--label {
+  &__label {
     color: $smoke-90;
     font-weight: $fw-medium;
 
-    + .crayons-field--description {
+    + .crayons-field__description {
       margin-top: 0;
     }
   }
 
-  &--description {
+  &__description {
     color: $smoke-60;
     font-size: $fs-s;
     font-weight: $fw-normal; // for when it's inside --label
