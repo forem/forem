@@ -29,6 +29,11 @@ export const Article = ({
     return <PodcastArticle article={article} />;
   }
 
+  const timeAgoIndicator = timeAgo({
+    oldTimeInSeconds: article.published_at_int,
+    formatter: x => x,
+  })
+
   return (
     <div
       className="single-article single-article-small-pic"
@@ -89,12 +94,7 @@ export const Article = ({
           )}
           {article.published_at_int ? (
             <span className="time-ago-indicator">
-              (
-              {timeAgo({
-                oldTimeInSeconds: article.published_at_int,
-                formatter: x => x,
-              })}
-              )
+              {timeAgoIndicator.length > 0 ? `(${timeAgoIndicator})`: '' }
             </span>
           ) : null}
         </a>
