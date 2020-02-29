@@ -17,6 +17,7 @@
 <div class="container">
 
   <div><input type="text" class="crayons-textfield" placeholder="This is placeholder..."></div>
+  <div><input type="text" class="crayons-textfield" placeholder="This is placeholder..." value="Disabled field" disabled></div>
 
   <div><textarea class="crayons-textfield" placeholder="This is palceholder..."></textarea></div>
 
@@ -37,13 +38,28 @@
   </div>
 
   <div>
+    <input type="checkbox" class="crayons-checkbox">
+    <input type="checkbox" class="crayons-checkbox" checked>
+    <input type="checkbox" class="crayons-checkbox" disabled>
+    <input type="checkbox" class="crayons-checkbox" checked disabled>
+  </div>
+
+  <div>
+    <input type="radio" name="n1" class="crayons-radio">
+    <input type="radio" name="n1" class="crayons-radio" checked>
+    <input type="radio" class="crayons-radio" disabled>
+    <input type="radio" class="crayons-radio" checked disabled>
+  </div>
+
+  <div>
     <a href="#" class="crayons-btn">Button label</a><br><br>
     <a href="#" class="crayons-btn crayons-btn--full">Full Button label</a><br><br>
     <a href="#" class="crayons-btn crayons-btn--secondary">Secondary Button label</a><br><br>
     <a href="#" class="crayons-btn crayons-btn--outlined">Outlined Button label</a><br><br>
     <a href="#" class="crayons-btn crayons-btn--text">Text Button label</a><br><br>
     <a href="#" class="crayons-btn crayons-btn--danger">Danger Button label</a><br><br>
-    <a href="#" class="crayons-btn crayons-btn--icon-left"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon"><path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" /></svg>Button</a>
+    <a href="#" class="crayons-btn crayons-btn--icon-left"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon"><path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" /></svg>Button</a><br><br>
+    <a href="#" class="crayons-btn crayons-btn--secondary crayons-btn--full crayons-btn--icon-left"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon"><path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" /></svg>Button</a>
   </div>
 
   <div>
@@ -121,10 +137,6 @@
   </div>
 
   <div>
-    <div class="modal">test</div>
-  </div>
-
-  <div>
     <span class="crayons-indicator">Label</span>
     <span class="crayons-indicator">1</span>
     <span class="crayons-indicator crayons-indicator--bullet"></span>
@@ -146,6 +158,14 @@
     <span class="crayons-indicator crayons-indicator--inverted">Label</span>
     <span class="crayons-indicator crayons-indicator--inverted">1</span>
     <span class="crayons-indicator crayons-indicator--inverted crayons-indicator--bullet"></span>
+  </div>
+
+  <div>
+    <span class="crayons-avatar"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
+    <span class="crayons-avatar crayons-avatar--l"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
+    <span class="crayons-avatar crayons-avatar--xl"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
+    <span class="crayons-avatar crayons-avatar--xxl"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
+    <span class="crayons-avatar crayons-avatar--xxxl"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
   </div>
 
 </div>

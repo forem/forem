@@ -70,8 +70,12 @@
 // Checkboxes, Radios
 .crayons-checkbox,
 .crayons-radio {
-  width: 18px;
-  height: 18px;
+  width: 1.125em;
+  height: 1.125em;
+  appearance: none;
+  cursor: pointer;
+  vertical-align: middle;
+  @extend %form-styling;
 
   &:hover {
     @extend %form-styling-hover;
@@ -83,8 +87,11 @@
   }
 
   &--checked,
-  &[checked] {
+  &:checked {
     @extend %form-styling-checked;
+    background-image: url("data:image/svg+xml,%3Csvg width='11' height='11' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 3.41L8.59 2 4 6.59 2.41 5 1 6.41l3 3z' fill='%23fff'/%3E%3C/svg%3E"); // todo
+    background-position: center center;
+    background-repeat: no-repeat;
 
     &--disabled,
     &[disabled] {
