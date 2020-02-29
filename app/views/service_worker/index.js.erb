@@ -112,8 +112,9 @@
         !url.href.includes('/users/auth') && // Don't run on authentication.
         !url.href.includes('/enter') && // Don't run on registration.
 
-        // Don't run on search endpoints (trailing slash important not to match the search page itself)
-        !url.href.includes('/search/') &&
+        // Don't run on search endpoints
+        !url.href.includes('/search/tags') &&
+        !url.href.includes('/search/chat_channels') &&
 
         caches.match('/shell_top') && // Ensure shell_top is in the cache.
         caches.match('/shell_bottom')) { // Ensure shell_bottom is in the cache.
