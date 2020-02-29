@@ -78,3 +78,17 @@ export function preloadSearchResults({
     )}`,
   );
 }
+
+export function fetchSearchAPIPromise(endpoint, dataHash) {
+  const searchParams = new URLSearchParams(dataHash).toString();
+
+  return fetch(`/search/${endpoint}?${searchParams}`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+  }).then(response => response.json());
+}
