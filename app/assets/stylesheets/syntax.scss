@@ -14,8 +14,8 @@ div.inner-comment div.body div.highlight pre.highlight {
 }
 
 $code-highlight-background-color: #29292e;
-$code-highlight-text-color: #89c4f4;
-$code-highlight-comment-color: #d5d5d5;
+$code-highlight-text-color: #f8f8f2;
+$code-highlight-comment-color: #808080;
 $code-highlight-declaration-color: #f39c12;
 $code-highlight-literal-color: #dda0dd;
 $code-highlight-error-color: #f9690e;
@@ -32,6 +32,9 @@ $code-highlight-string-color: #f2ca27;
 .highlight .c {
   color: $code-highlight-comment-color;
 } /* Comment */
+.highlight .err {
+  text-shadow: 0 0 7px $code-highlight-error-color;
+} /* Error */
 .highlight .k {
   color: $code-highlight-declaration-color;
 } /* Keyword */
