@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import debounce from 'lodash.debounce';
-import { fetchSearchAPIPromise } from '../../src/utils/search';
+import { fetchSearch } from '../../src/utils/search';
 
 const KEYS = {
   UP: 'ArrowUp',
@@ -322,7 +322,7 @@ class Tags extends Component {
     const { listing } = this.props;
 
     const dataHash = { name: query };
-    const responsePromise = fetchSearchAPIPromise('tags', dataHash);
+    const responsePromise = fetchSearch('tags', dataHash);
 
     return responsePromise.then(response => {
       if (listing === true) {

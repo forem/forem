@@ -87,7 +87,7 @@ export function preloadSearchResults({
  *
  * @returns {Promise} A promise object with response formatted as JSON.
  */
-export function fetchSearchAPIPromise(endpoint, dataHash) {
+export function fetchSearch(endpoint, dataHash) {
   const searchParams = new URLSearchParams(dataHash).toString();
 
   return fetch(`/search/${endpoint}?${searchParams}`, {

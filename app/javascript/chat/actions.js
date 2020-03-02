@@ -1,4 +1,4 @@
-import { fetchSearchAPIPromise } from '../src/utils/search';
+import { fetchSearch } from '../src/utils/search';
 
 export function getAllMessages(channelId, messageOffset, successCb, failureCb) {
   fetch(`/chat_channels/${channelId}?message_offset=${messageOffset}`, {
@@ -115,7 +115,7 @@ export function getChannels(
   dataHash.page = paginationNumber;
   dataHash.channel_text = query;
 
-  const responsePromise = fetchSearchAPIPromise('chat_channels', dataHash);
+  const responsePromise = fetchSearch('chat_channels', dataHash);
 
   return responsePromise.then(response => {
     const channels = response.result;

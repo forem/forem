@@ -4,7 +4,7 @@ import {
   preloadSearchResults,
   hasInstantClick,
   displaySearchResults,
-  fetchSearchAPIPromise,
+  fetchSearch,
 } from '../search';
 import '../../../../assets/javascripts/lib/xss';
 
@@ -226,7 +226,7 @@ describe('Search utilities', () => {
     });
   });
 
-  describe('fetchSearchAPIPromise', () => {
+  describe('fetchSearch', () => {
     let responsePromise;
     let dataHash;
 
@@ -234,7 +234,7 @@ describe('Search utilities', () => {
       fetch.resetMocks();
       fetch.once({});
       dataHash = { name: 'jav' };
-      responsePromise = fetchSearchAPIPromise('tags', dataHash);
+      responsePromise = fetchSearch('tags', dataHash);
     });
 
     test('should return a Promise', () => {
