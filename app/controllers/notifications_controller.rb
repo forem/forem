@@ -78,11 +78,6 @@ class NotificationsController < ApplicationController
   end
 
   def allowed_user?
-    if @user.admin?
-      true
-    else
-      organization = Organization.find_by(id: params[:org_id])
-      @user.org_member?(organization)
-    end
+    @user.org_member?(params[:org_id]) || @user.admin?
   end
 end
