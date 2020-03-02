@@ -256,13 +256,13 @@ GEM
       dry-equalizer (~> 0.3)
       dry-inflector (~> 0.1, >= 0.1.2)
       dry-logic (~> 1.0, >= 1.0.2)
-    elasticsearch (7.4.0)
-      elasticsearch-api (= 7.4.0)
-      elasticsearch-transport (= 7.4.0)
-    elasticsearch-api (7.4.0)
+    elasticsearch (7.5.0)
+      elasticsearch-api (= 7.5.0)
+      elasticsearch-transport (= 7.5.0)
+    elasticsearch-api (7.5.0)
       multi_json
-    elasticsearch-transport (7.4.0)
-      faraday
+    elasticsearch-transport (7.5.0)
+      faraday (>= 0.14, < 1)
       multi_json
     em-websocket (0.5.1)
       eventmachine (>= 0.12.9)
@@ -879,7 +879,7 @@ DEPENDENCIES
   dogstatsd-ruby (~> 4.7)
   doorkeeper (~> 5.3)
   dry-struct (~> 1.2)
-  elasticsearch (~> 7.4)
+  elasticsearch (~> 7.5)
   email_validator (~> 2.0)
   emoji_regex (~> 2.0)
   envied (~> 0.9)
