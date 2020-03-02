@@ -64,8 +64,8 @@ DEV requires Elasticsearch version 7 or higher.
 You have the option of installing Elasticsearch with Homebrew of through an
 archive. We recommend installing from archive on Mac.
 
-Once installed and running you can test if it's up and running by issuing the
-following command:
+Once installed and started you can test if it's up and running correctly by
+issuing the following command:
 
 ```shell
 curl http://localhost:9200
@@ -156,7 +156,7 @@ This happens because the installation of ES might have a recursive link in the
 configuration directory causing the infinite loop:
 
 ```shell
-ll /usr/local/etc/elasticsearch
+> ll /usr/local/etc/elasticsearch
 elasticsearch -> /usr/local/etc/elasticsearch
 ```
 
@@ -174,7 +174,7 @@ This happens for a similar reason as the previous error, the installation might
 create a recursive link in the plugins director:
 
 ```shell
-ll /usr/local/var/elasticsearch/plugins
+> ll /usr/local/var/elasticsearch/plugins
 plugins -> /usr/local/var/elasticsearch/plugins
 ```
 
