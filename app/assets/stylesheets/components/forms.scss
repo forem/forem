@@ -3,6 +3,7 @@
 %form-styling {
   background-color: $smoke-00;
   border: 1px solid $smoke-30;
+  appearance: none;
   border-radius: $br-default;
   transition: all $transition-props;
 
@@ -19,6 +20,8 @@
     background-color: $dolphin;
     border-color: $dolphin-darker;
     color: $snowflake;
+    background-position: center center;
+    background-repeat: no-repeat;
   }
 
   &-checked-disabled {
@@ -34,8 +37,6 @@
   padding: 0.5em;
   font-family: inherit;
   font-size: $fs-base;
-  margin: 0; //todo: do we need it?
-  -webkit-appearance: none;
   width: 100%;
   @extend %form-styling;
 
@@ -72,8 +73,8 @@
 .crayons-radio {
   width: 1.125em;
   height: 1.125em;
-  appearance: none;
   cursor: pointer;
+  background-position: center center;
   vertical-align: middle;
   @extend %form-styling;
 
@@ -89,9 +90,7 @@
   &--checked,
   &:checked {
     @extend %form-styling-checked;
-    background-image: url("data:image/svg+xml,%3Csvg width='11' height='11' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 3.41L8.59 2 4 6.59 2.41 5 1 6.41l3 3z' fill='%23fff'/%3E%3C/svg%3E"); // todo
-    background-position: center center;
-    background-repeat: no-repeat;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11.157.933a.75.75 0 01.077 1.058L4.817 9.407a.75.75 0 01-1.134 0L.766 6.037a.75.75 0 011.135-.982L4.25 7.77l5.85-6.76a.75.75 0 011.057-.077z' fill='%23fff'/%3E%3C/svg%3E");
 
     &--disabled,
     &[disabled] {
@@ -103,6 +102,12 @@
 // Radios
 .crayons-radio {
   border-radius: 50%;
+
+  &--checked,
+  &:checked {
+    @extend %form-styling-checked;
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='6' height='6' rx='3' fill='%23fff'/%3E%3C/svg%3E");
+  }
 }
 
 ///////////////////////////////////////////////////
