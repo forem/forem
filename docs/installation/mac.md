@@ -61,7 +61,7 @@ redis-cli ping
 
 DEV requires Elasticsearch version 7 or higher.
 
-You have the option of installing Elasticsearch with Homebrew of through an
+You have the option of installing Elasticsearch with Homebrew or through an
 archive. We recommend installing from archive on Mac.
 
 Once installed and started you can test if it's up and running correctly by
