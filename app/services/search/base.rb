@@ -39,6 +39,10 @@ module Search
 
       private
 
+      def search(body:)
+        Search::Client.search(index: self::INDEX_ALIAS, body: body)
+      end
+
       def settings
         { settings: { index: index_settings } }
       end

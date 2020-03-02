@@ -18,7 +18,6 @@
 /app/views/internal/                                @thepracticaldev/snackcase
 /app/views/moderation/                              @thepracticaldev/snackcase
 /app/views/notifications/                           @thepracticaldev/delightful
-/app/views/pages/shecoded.html.erb                  @thepracticaldev/cool
 /app/views/partnerships/                            @thepracticaldev/cool
 /app/views/stories/                                 @thepracticaldev/hells-bells
 /app/workers/                                       @thepracticaldev/sre

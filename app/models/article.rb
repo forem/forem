@@ -17,7 +17,9 @@ class Article < ApplicationRecord
   belongs_to :user
   belongs_to :job_opportunity, optional: true
   belongs_to :organization, optional: true
-  belongs_to :collection, optional: true, touch: true
+  # touch: true was removed because when an article is updated, the associated collection
+  # is touched along with all its articles(including this one). This causes eventually a deadlock.
+  belongs_to :collection, optional: true
 
   counter_culture :user
   counter_culture :organization
@@ -71,6 +73,7 @@ class Article < ApplicationRecord
   after_save        :detect_human_language
   before_save       :update_cached_user
   before_destroy    :before_destroy_actions, prepend: true
+  after_commit      :touch_collection
 
   serialize :ids_for_suggested_articles
   serialize :cached_user
@@ -676,5 +679,9 @@ class Article < ApplicationRecord
 
   def async_bust
     Articles::BustCacheWorker.perform_async(id)
+  end
+
+  def touch_collection
+    collection.touch if collection && previous_changes.present?
   end
 end
