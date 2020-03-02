@@ -1,11 +1,10 @@
 @import '../vars/_variables.scss';
 
-@mixin box($this: $this, $color-1: $snowflake, $color-2: $smoke-100) {
+@mixin box($this: $this, $color-1: $smoke-90, $color-2: $smoke-100) {
   border-color: $color-2;
-  background-color: $color-1;
 
   &#{$this}--filled {
-    background-color: $color-2;
+    background-color: $color-1;
   }
 
   @for $i from 1 through 3 {
@@ -19,8 +18,9 @@
   $this: &;
   border: 2px solid;
   border-radius: $br-default;
+  background-color: $snowflake;
 
-  @include box($this, $snowflake, $smoke-100);
+  @include box($this, $smoke-90, $smoke-100);
 
   &--danger {
     @include box($this, $raspberry, $raspberry-darker);
