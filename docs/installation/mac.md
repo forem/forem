@@ -61,7 +61,7 @@ redis-cli ping
 
 DEV requires Elasticsearch version 7 or higher.
 
-You have the option of installing Elasticsearch with Homebrew of through an
+You have the option of installing Elasticsearch with Homebrew or through an
 archive. We recommend installing from archive on Mac.
 
 ### Installing Elasticsearch from the archive
@@ -141,7 +141,7 @@ Likely root cause: java.nio.file.NoSuchFileException: /usr/local/Cellar/elastics
 ```
 
 This happens for a similar reason as the previous error, the installation might
-create a recursive link in the plugins director:
+create a recursive link in the plugins directory.
 
 ```shell
 > ll /usr/local/var/elasticsearch/plugins
