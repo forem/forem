@@ -85,7 +85,7 @@ RSpec.describe "Api::V0::Listings" do
     end
   end
 
-  describe "GET /api/listings?category=:category" do
+  describe "GET /api/listings/category/:category" do
     include_context "with 7 listings and 2 user"
 
     it "displays only listings from the cfp category" do

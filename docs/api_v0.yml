@@ -517,7 +517,7 @@ components:
           items:
             type: string
         category:
-          type: string
+          $ref: "#/components/schemas/ListingCategory"
         processed_html:
           type: string
         published:
@@ -526,6 +526,10 @@ components:
           $ref: "#/components/schemas/SharedUser"
         organization:
           $ref: "#/components/schemas/SharedOrganization"
+
+    ListingCategory:
+      type: string
+      enum: [cfp, forhire, collabs, education, jobs, mentors, products, mentees, forsale, events, misc]
 
     ListingCreate:
       type: object
@@ -543,8 +547,7 @@ components:
               description: The body of the listing in Markdown format.
               type: string
             category:
-              type: string
-              enum: [cfp, forhire, collabs, education, jobs, mentors, products, mentees, forsale, events, misc]
+              $ref: "#/components/schemas/ListingCategory"
             tags:
               description: |
                 Tags related to the listing.
@@ -596,8 +599,7 @@ components:
               description: The body of the listing in Markdown format.
               type: string
             category:
-              type: string
-              enum: [cfp, forhire, collabs, education, jobs, mentors, products, mentees, forsale, events, misc]
+              $ref: "#/components/schemas/ListingCategory"
             tags:
               description: |
                 Tags related to the listing.
@@ -1650,10 +1652,6 @@ paths:
           label: curl (all listings)
           source: |
             curl https://dev.to/api/listings
-        - lang: Shell
-          label: curl (call for papers listings)
-          source: |
-            curl https://dev.to/api/listings?category=cfp
     post:
       operationId: createListing
       summary: Create a new listing
@@ -1756,6 +1754,63 @@ paths:
               -H "api-key: API_KEY" \
               -d '{"classified_listing":{"title":"Title","body_markdown":"Body","category":"cfp","action":"draft"}}' \
               https://dev.to/api/listings
+
+  /listings/category/{category}:
+    get:
+      operationId: getListingsByCategory
+      summary: Published listings by category
+      description: |
+        This endpoint allows the client to retrieve a list of listings belonging
+        to the specified category.
+
+        "Listings" are classified ads that users create on DEV.
+        They can be related to conference announcements, job offers, mentorships,
+        upcoming events and more.
+
+        By default it will return published listings ordered by descending
+        freshness.
+
+        It supports pagination, each page will contain `30` articles by default.
+      tags:
+        - listings
+      parameters:
+        - name: category
+          in: path
+          required: true
+          description: The category of the listing
+          schema:
+            $ref: "#/components/schemas/ListingCategory"
+        - name: page
+          in: query
+          description: Pagination page.
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: per_page
+          in: query
+          description: Page size (defaults to 30 with a maximum of 100).
+          schema:
+            type: integer
+            format: int32
+          example: 30
+      responses:
+        200:
+          description: A list of listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Listing"
+              examples:
+                listings-success:
+                  $ref: "#/components/examples/Listings"
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl (call for papers listings)
+          source: |
+            curl https://dev.to/api/listings/category/cfp
 
   /listings/{id}:
     get:
