@@ -64,36 +64,6 @@ DEV requires Elasticsearch version 7 or higher.
 You have the option of installing Elasticsearch with Homebrew of through an
 archive. We recommend installing from archive on Mac.
 
-Once installed and started you can test if it's up and running correctly by
-issuing the following command:
-
-```shell
-curl http://localhost:9200
-```
-
-You should receive in response a JSON document containing some information about
-your local Elasticsearch installation, for example:
-
-```json
-{
-  "name": "hostname",
-  "cluster_name": "elasticsearch_...",
-  "cluster_uuid": "...",
-  "version": {
-    "number": "7.6.0",
-    "build_flavor": "oss",
-    "build_type": "tar",
-    "build_hash": "7f634e9f44834fbc12724506cc1da681b0c3b1e3",
-    "build_date": "2020-02-06T00:09:00.449973Z",
-    "build_snapshot": false,
-    "lucene_version": "8.4.0",
-    "minimum_wire_compatibility_version": "6.8.0",
-    "minimum_index_compatibility_version": "6.0.0-beta1"
-  },
-  "tagline": "You Know, for Search"
-}
-```
-
 ### Installing Elasticsearch from the archive
 
 The following directions were
@@ -180,6 +150,38 @@ plugins -> /usr/local/var/elasticsearch/plugins
 
 By manually removing the link with
 `rm -i /usr/local/var/elasticsearch/plugins/plugins` the issue should be fixed.
+
+### Testing if Elasticsearch is running
+
+Once installed and started you can test if it's up and running correctly by
+issuing the following command:
+
+```shell
+curl http://localhost:9200
+```
+
+You should receive in response a JSON document containing some information about
+your local Elasticsearch installation, for example:
+
+```json
+{
+  "name": "hostname",
+  "cluster_name": "elasticsearch_...",
+  "cluster_uuid": "...",
+  "version": {
+    "number": "7.6.0",
+    "build_flavor": "oss",
+    "build_type": "tar",
+    "build_hash": "7f634e9f44834fbc12724506cc1da681b0c3b1e3",
+    "build_date": "2020-02-06T00:09:00.449973Z",
+    "build_snapshot": false,
+    "lucene_version": "8.4.0",
+    "minimum_wire_compatibility_version": "6.8.0",
+    "minimum_index_compatibility_version": "6.0.0-beta1"
+  },
+  "tagline": "You Know, for Search"
+}
+```
 
 ## Installing DEV
 
