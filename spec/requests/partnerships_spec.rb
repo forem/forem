@@ -56,7 +56,60 @@ RSpec.describe "Partnerships", type: :request do
         OrganizationMembership.create(user_id: user.id, organization_id: organization.id, type_of_user: "admin")
         Credit.add_to_org(organization, 100)
         get "/partnerships/bronze-sponsor"
-        expect(response.body).to include("This subscription will renew every month")
+        expect(response.body).to include("Subscribe for #{Sponsorship::CREDITS[:bronze]} credits")
+      end
+
+      context "when sponsorship exists" do
+        let(:org) { create(:organization) }
+
+        before do
+          create(:organization_membership, user: user, organization: org, type_of_user: "admin")
+          Credit.add_to_org(org, 1000)
+          sign_in user
+        end
+
+        describe "level sponsorships" do
+          it "displays info about an existing sponsorship" do
+            create(:sponsorship, level: :bronze, organization: org, user: user, expires_at: 3.days.from_now)
+            get "/partnerships/bronze-sponsor"
+            expect(response.body).not_to include("Credits are your wallet for flexibly managing")
+            expect(response.body).to include("You are Subscribed as a Bronze Sponsor")
+          end
+
+          it "displayes already sponsored for other level" do
+            create(:sponsorship, level: :bronze, organization: org, user: user, expires_at: 3.days.from_now)
+            get "/partnerships/silver-sponsor"
+            expect(response.body).to include("You are already subscribed as a bronze sponsor")
+          end
+
+          it "doesn't display info about an expired sponsorship" do
+            create(:sponsorship, level: :bronze, organization: org, user: user, expires_at: 3.days.ago)
+            get "/partnerships/bronze-sponsor"
+            expect(response.body).not_to include("You are Subscribed as a Bronze Sponsor")
+          end
+
+          it "doesn't display 'already sponsored' for the different level if an org has expired sponsorship" do
+            create(:sponsorship, level: :bronze, organization: org, user: user, expires_at: 3.days.ago)
+            get "/partnerships/silver-sponsor"
+            expect(response.body).not_to include("You are already subscribed as a bronze sponsor")
+          end
+        end
+
+        describe "tag sponsorships" do
+          let(:ruby) { create(:tag, name: "ruby") }
+
+          it "displays info about an existing sponsorship" do
+            create(:sponsorship, level: :tag, organization: org, user: user, sponsorable: ruby, expires_at: 3.days.from_now)
+            get "/partnerships/tag-sponsor"
+            expect(response.body).to include("You are Subscribed as the sponsor of #ruby")
+          end
+
+          it "doesn't display info about an expired sponsorship" do
+            create(:sponsorship, level: :tag, organization: org, user: user, sponsorable: ruby, expires_at: 3.days.ago)
+            get "/partnerships/tag-sponsor"
+            expect(response.body).not_to include("You are Subscribed as the sponsor of #ruby")
+          end
+        end
       end
     end
 

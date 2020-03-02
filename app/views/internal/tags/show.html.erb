@@ -48,6 +48,10 @@
         <%= f.select(:category, options_for_select(Tag.valid_categories, @tag.category)) %>
       </div>
       <div class="form-group">
+        <%= f.label :social_preview_template %>
+        <%= f.select(:social_preview_template, Tag.social_preview_templates) %>
+      </div>
+      <div class="form-group">
         <%= f.label :alias_for %>
         <%= f.text_field :alias_for, class: "form-control" %>
       </div>

@@ -31,9 +31,13 @@ class Tag < ActsAsTaggableOn::Tag
   before_save :mark_as_updated
 
   include Searchable
-  SEARCH_INDEX_WORKER = Search::TagEsIndexWorker
   SEARCH_SERIALIZER = Search::TagSerializer
   SEARCH_CLASS = Search::Tag
+
+  # possible social previews templates for articles with a particular tag
+  def self.social_preview_templates
+    Rails.root.join("app/views/social_previews/articles").children.map { |ch| File.basename(ch, ".html.erb") }
+  end
 
   def submission_template_customized(param_0 = nil)
     submission_template&.gsub("PARAM_0", param_0)

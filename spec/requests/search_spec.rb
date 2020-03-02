@@ -16,11 +16,27 @@ RSpec.describe "Search", type: :request, proper_status: true do
       expect(response.parsed_body).to eq("result" => mock_documents)
     end
 
-    it "returns an empty array when a Elasticsearch Bad Request error is raised" do
+    it "returns an empty array when a Bad Request error is raised" do
       sign_in authorized_user
-      allow(Search::Tag).to receive(:search_documents).and_raise(Elasticsearch::Transport::Transport::Errors::BadRequest)
+      allow(Search::Client).to receive(:search).and_raise(Search::Errors::Transport::BadRequest)
       get "/search/tags"
       expect(response.parsed_body).to eq("result" => [])
+    end
+  end
+
+  describe "GET /search/chat_channels" do
+    let(:authorized_user) { create(:user) }
+    let(:mock_documents) do
+      [{ "channel_name" => "channel1" }]
+    end
+
+    it "returns json" do
+      sign_in authorized_user
+      allow(Search::ChatChannelMembership).to receive(:search_documents).and_return(
+        mock_documents,
+      )
+      get "/search/chat_channels"
+      expect(response.parsed_body).to eq("result" => mock_documents)
     end
   end
 end

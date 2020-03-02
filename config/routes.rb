@@ -76,6 +76,7 @@ Rails.application.routes.draw do
     end
     resources :organization_memberships, only: %i[update destroy create]
     resources :organizations, only: %i[index show]
+    resources :sponsorships, only: %i[index edit update destroy]
     resources :welcome, only: %i[index create]
     resources :growth, only: %i[index]
     resources :tools, only: %i[index create] do
@@ -133,11 +134,6 @@ Rails.application.routes.draw do
         get :organizations
         get :podcasts
       end
-      resources :github_repos, only: [:index] do
-        collection do
-          post "/update_or_create", to: "github_repos#update_or_create"
-        end
-      end
       resources :webhooks, only: %i[index create show destroy]
 
       resources :classified_listings, path: :listings, only: %i[index show create update]
@@ -185,7 +181,11 @@ Rails.application.routes.draw do
   resources :downloads, only: [:index]
   resources :stripe_active_cards, only: %i[create update destroy]
   resources :live_articles, only: [:index]
-  resources :github_repos, only: %i[create update]
+  resources :github_repos, only: %i[index create update] do
+    collection do
+      post "/update_or_create", to: "github_repos#update_or_create"
+    end
+  end
   resources :buffered_articles, only: [:index]
   resources :events, only: %i[index show]
   resources :additional_content_boxes, only: [:index]
@@ -216,6 +216,7 @@ Rails.application.routes.draw do
   resolve("ProMembership") { [:pro_membership] } # see https://guides.rubyonrails.org/routing.html#using-resolve
 
   get "/search/tags" => "search#tags"
+  get "/search/chat_channels" => "search#chat_channels"
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/listings/dashboard" => "classified_listings#dashboard"
   get "/listings/:category" => "classified_listings#index"

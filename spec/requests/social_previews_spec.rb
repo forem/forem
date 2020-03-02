@@ -33,7 +33,8 @@ RSpec.describe "SocialPreviews", type: :request do
       expect(first_request_body).to eq second_request_body
     end
 
-    it "renders shecoded template when tagged with shecoded" do
+    it "renders custom template when tagged with shecoded" do
+      create(:tag, social_preview_template: "shecoded")
       she_coded_article = create(:article, tags: "shecoded")
 
       get "/social_previews/article/#{she_coded_article.id}"
