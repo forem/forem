@@ -340,7 +340,7 @@ RSpec.describe "Api::V0::Listings" do
 
     let(:user) { create(:user) }
     let(:another_user) { create(:user) }
-    let(:listing) { create(:classified_listing, user_id: user.id) }
+    let!(:listing) { create(:classified_listing, user: user) }
     let(:another_user_listing) { create(:classified_listing, user_id: another_user.id) }
     let(:listing_draft) { create(:classified_listing, user: user) }
     let(:organization) { create(:organization) }
@@ -352,7 +352,7 @@ RSpec.describe "Api::V0::Listings" do
       org_listing_draft.update_columns(bumped_at: nil, published: false)
     end
 
-    describe "user cannot proceed if not properly unauthorizedœ" do
+    describe "user cannot proceed if not properly unauthorized" do
       let(:api_secret) { create(:api_secret) }
 
       it "fails with no api key" do
@@ -524,6 +524,35 @@ RSpec.describe "Api::V0::Listings" do
       it "cannot update another user listing" do
         put_classified_listing(another_user_listing.id, title: "Test for a new title")
         expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "updates details if the listing has been bumped in the last 24 hours" do
+        listing.update!(bumped_at: 3.minutes.ago)
+
+        new_title = Faker::Book.title
+
+        put_classified_listing(listing.id, title: new_title)
+        expect(listing.reload.title).to eq(new_title)
+      end
+
+      it "does not update details if the listing hasn't been bumped in the last 24 hours" do
+        listing.update!(bumped_at: 24.hours.ago)
+
+        old_title = listing.title
+        new_title = Faker::Book.title
+
+        put_classified_listing(listing.id, title: new_title)
+        expect(listing.reload.title).to eq(old_title)
+      end
+
+      it "does not update a published listing" do
+        listing.update!(bumped_at: nil, published: true)
+
+        old_title = listing.title
+        new_title = Faker::Book.title
+
+        put_classified_listing(listing.id, title: new_title)
+        expect(listing.reload.title).to eq(old_title)
       end
     end
   end
