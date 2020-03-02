@@ -61,7 +61,12 @@ redis-cli ping
 
 DEV requires Elasticsearch version 7 or higher.
 
-We recommend installing from archive on Mac. The following directions were
+You have the option of installing Elasticsearch with Homebrew or through an
+archive. We recommend installing from archive on Mac.
+
+### Installing Elasticsearch from the archive
+
+The following directions were
 [taken from the Elasticsearch docs themselves](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#install-macos),
 so check those out if you run into any issues or want further information. Make
 sure to download **the OSS version** of Elasticsearch, `elasticsearch-oss`.
@@ -87,6 +92,95 @@ To start elasticsearch as a daemonized process:
 
 ```shell
 ./bin/elasticsearch -d
+```
+
+### Installing Elasticsearch with Homebrew
+
+The following directions were
+[taken from the Elasticsearch docs](https://www.elastic.co/guide/en/elasticsearch/reference/current/brew.html).
+
+```shell
+brew tap elastic/tap
+brew install elastic/tap/elasticsearch-oss
+```
+
+After installation you can manually test if the Elasticsearch server starts by
+issuing the command `elasticsearch` in the shell. You can then start the server
+as a service with `brew services start elastic/tap/elasticsearch-oss`.
+
+You can find further info on your local Elasticsearch installation by typing
+`brew info elastic/tap/elasticsearch-oss`.
+
+#### Troubleshooting startup issues
+
+Two possible startup issues you might encounter:
+
+- `java.nio.file.FileSystemLoopException`:
+
+```text
+Exception in thread "main" org.elasticsearch.bootstrap.BootstrapException: java.nio.file.FileSystemLoopException: /usr/local/etc/elasticsearch/elasticsearch
+Likely root cause: java.nio.file.FileSystemLoopException: /usr/local/etc/elasticsearch/elasticsearch
+```
+
+This happens because the installation of Elasticsearch might have a recursive link in the
+configuration directory causing the infinite loop:
+
+```shell
+> ll /usr/local/etc/elasticsearch
+elasticsearch -> /usr/local/etc/elasticsearch
+```
+
+By manually removing the link with
+`rm -i /usr/local/etc/elasticsearch/elasticsearch` the issue should be fixed.
+
+- `java.lang.IllegalStateException`:
+
+```text
+java.lang.IllegalStateException: Could not load plugin descriptor for plugin directory [plugins]
+Likely root cause: java.nio.file.NoSuchFileException: /usr/local/Cellar/elasticsearch-oss/7.6.0/libexec/plugins/plugins/plugin-descriptor.properties
+```
+
+This happens for a similar reason as the previous error, the installation might
+create a recursive link in the plugins directory.
+
+```shell
+> ll /usr/local/var/elasticsearch/plugins
+plugins -> /usr/local/var/elasticsearch/plugins
+```
+
+By manually removing the link with
+`rm -i /usr/local/var/elasticsearch/plugins/plugins` the issue should be fixed.
+
+### Testing if Elasticsearch is running
+
+Once installed and started you can test if it's up and running correctly by
+issuing the following command:
+
+```shell
+curl http://localhost:9200
+```
+
+You should receive in response a JSON document containing some information about
+your local Elasticsearch installation, for example:
+
+```json
+{
+  "name": "hostname",
+  "cluster_name": "elasticsearch_...",
+  "cluster_uuid": "...",
+  "version": {
+    "number": "7.6.0",
+    "build_flavor": "oss",
+    "build_type": "tar",
+    "build_hash": "7f634e9f44834fbc12724506cc1da681b0c3b1e3",
+    "build_date": "2020-02-06T00:09:00.449973Z",
+    "build_snapshot": false,
+    "lucene_version": "8.4.0",
+    "minimum_wire_compatibility_version": "6.8.0",
+    "minimum_index_compatibility_version": "6.0.0-beta1"
+  },
+  "tagline": "You Know, for Search"
+}
 ```
 
 ## Installing DEV
