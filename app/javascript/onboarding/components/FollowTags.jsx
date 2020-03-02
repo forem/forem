@@ -85,31 +85,43 @@ class FollowTags extends Component {
     const { selectedTags, allTags } = this.state;
     return (
       <div className="onboarding-main">
+        <Navigation prev={prev} next={this.handleComplete} />
         <div className="onboarding-content">
-          <h2>Follow tags to customize your feed</h2>
-          <div className="scroll">
+          <header className="onboarding-content-header">
+            <h1 className="title">
+              What are you interested in?
+            </h1>
+            <h3 className="subtitle">
+              Follow tags to customize your feed
+            </h3>
+          </header>
+
+          <div className="modal-scroll-container tag-container">
+
             {allTags.map(tag => (
-              <button
-                type="button"
+              <div
                 onClick={() => this.handleClick(tag)}
                 style={{
                   backgroundColor: tag.bg_color_hex,
                   color: tag.text_color_hex,
                 }}
                 className={
-                  selectedTags.includes(tag) ? 'tag tag-selected' : 'tag'
+                  selectedTags.includes(tag) ? 'tag-item tag-selected' : 'tag-item'
                 }
               >
+              <p className="tag-topic-name">
                 #
-                {tag.name}
-                <div className="onboarding-tag-follow-indicator">
-                  {selectedTags.includes(tag) ? '✓ following ' : ''}
-                </div>
+                <strong>
+                  {tag.name}
+                </strong>
+              </p>
+              <button type="button" className="tag-item-selector">
+                {selectedTags.includes(tag) ? 'Following ' : 'Follow'}
               </button>
+            </div>
             ))}
           </div>
         </div>
-        <Navigation prev={prev} next={this.handleComplete} />
       </div>
     );
   }

@@ -1,0 +1,121 @@
+// Form Elements
+// -------------
+// Inputs
+// Textarea
+// Checkboxes
+// Buttons
+
+fieldset {
+  padding: 0;
+  border: none;
+  margin-bottom: 24px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding-left: 0;
+  }
+}
+
+legend {
+  color: #202428; // smoke-90
+  font-weight: 500;
+}
+
+
+label,
+input,
+textarea {
+  box-sizing: border-box;
+  margin: 0;
+  width: 100%;
+}
+
+// Input Fields
+label {
+  color: #202428; // smoke-90
+  display: flex;
+  flex-direction: column;
+  font-weight: 500; // medium
+  margin-bottom: 16px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+input[type="text"],
+textarea {
+  background-color: #F9FAFA;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #B5BDC4;
+  border-radius: 3px;
+}
+
+textarea {
+  min-height: 80px;
+}
+
+
+
+// Checkboxes
+.checkbox-item {
+  label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-radius: 3px;
+    padding: 0 4px;
+
+    &:hover {
+      background: #EEF0F1;
+      cursor: pointer;
+    }
+
+   &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+input[type="checkbox"] {
+  -webkit-appearance: none;
+  background: transparent;
+  border-radius: 3px;
+  border: 1px solid #B5BDC4;
+  cursor: pointer;
+  height: 18px;
+  margin: 2px 8px 2px 2px;
+  vertical-align: middle;
+  width: 18px;
+  position: relative;
+
+  &:checked {
+    background: #3B49DF; // dolphin
+    border-color: #3B49DF; 
+
+    &:after {
+      display: block;
+    }
+  }
+
+  &:after {
+    display: none;
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    width: 4px;
+    height: 8px;
+
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+}
