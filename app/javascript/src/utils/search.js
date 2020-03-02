@@ -79,6 +79,14 @@ export function preloadSearchResults({
   );
 }
 
+/**
+ * A helper method to call /search endpoints.
+ *
+ * @param {string} endpoint - The search endpoint you want to request (i.e. tags).
+ * @param {object} dataHash - A hash with any params that need to be included in the request.
+ *
+ * @returns {Promise} A promise object with response formatted as JSON.
+ */
 export function fetchSearchAPIPromise(endpoint, dataHash) {
   const searchParams = new URLSearchParams(dataHash).toString();
 
