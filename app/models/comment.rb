@@ -58,7 +58,7 @@ class Comment < ApplicationRecord
         custom_css
       end
       attribute :tag_list do
-        commentable.tag_list
+        commentable&.tag_list
       end
       attribute :root_path do
         root&.path
