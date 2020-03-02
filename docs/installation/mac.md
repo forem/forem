@@ -122,7 +122,7 @@ Exception in thread "main" org.elasticsearch.bootstrap.BootstrapException: java.
 Likely root cause: java.nio.file.FileSystemLoopException: /usr/local/etc/elasticsearch/elasticsearch
 ```
 
-This happens because the installation of ES might have a recursive link in the
+This happens because the installation of Elasticsearch might have a recursive link in the
 configuration directory causing the infinite loop:
 
 ```shell
