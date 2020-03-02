@@ -14,10 +14,26 @@ class Stories::FeedsController < ApplicationController
               elsif params[:timeframe] == Timeframer::LATEST_TIMEFRAME
                 feed.latest_feed
               elsif user_signed_in?
-                feed.ab_test_user_signed_in_feed(field_test(:user_home_feed, participant: current_user))
+                ab_test_user_signed_in_feed(feed)
               else
                 feed.default_home_feed(user_signed_in: user_signed_in?)
               end
     ArticleDecorator.decorate_collection(stories)
+  end
+
+  def ab_test_user_signed_in_feed(feed)
+    test_variant = field_test(:user_home_feed, participant: current_user)
+    case test_variant
+    when "base"
+      feed.default_home_feed(user_signed_in: true)
+    when "more_random"
+      feed.default_home_feed_with_more_randomness
+    when "mix_base_and_more_random"
+      feed.mix_default_and_more_random
+    when "more_tag_weight"
+      feed.more_tag_weight
+    else
+      feed.default_home_feed(user_signed_in: true)
+    end
   end
 end

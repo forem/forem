@@ -2,10 +2,14 @@ experiments:
   user_home_feed: # Home feed collection for logged in user
     variants:
       - base
-      - without_ranking
+      - more_random
+      - more_tag_weight
+      - mix_base_more_random
     weights:
-      - 80
-      - 20
+      - 65
+      - 10
+      - 10
+      - 15
     goals:
       - user_creates_comment
       - user_creates_reaction

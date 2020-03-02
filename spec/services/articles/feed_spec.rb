@@ -139,11 +139,33 @@ RSpec.describe Articles::Feed, type: :service do
     end
   end
 
-  describe "#default_home_feed_without_ranking" do
-    it "calls the default home feed generator with user logged in and ranking turned off" do
-      allow(feed).to receive(:default_home_feed_and_featured_story).and_call_original
-      feed.default_home_feed_without_ranking
-      expect(feed).to have_received(:default_home_feed_and_featured_story).with(user_signed_in: true, ranking: false)
+  describe "#default_home_feed_with_more_randomness" do
+    let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
+    let(:stories) { feed.default_home_feed_with_more_randomness }
+
+    it "includes stories from between 2 and 6 hours ago" do
+      expect(stories).not_to include(old_story)
+      expect(stories).to include(new_story)
+    end
+  end
+
+  describe "#mix_default_and_more_random" do
+    let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
+    let(:stories) { feed.mix_default_and_more_random }
+
+    it "includes stories from between 2 and 6 hours ago" do
+      expect(stories).not_to include(old_story)
+      expect(stories).to include(new_story)
+    end
+  end
+
+  describe "#more_tag_weight" do
+    let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
+    let(:stories) { feed.more_tag_weight }
+
+    it "includes stories from between 2 and 6 hours ago" do
+      expect(stories).not_to include(old_story)
+      expect(stories).to include(new_story)
     end
   end
 
@@ -193,21 +215,21 @@ RSpec.describe Articles::Feed, type: :service do
   describe "#score_randomness" do
     context "when random number is less than 0.6 but greater than 0.3" do
       it "returns 6" do
-        allow(feed).to receive(:rand).and_return(0.5)
+        allow(feed).to receive(:rand).and_return(2)
         expect(feed.score_randomness).to eq 6
       end
     end
 
     context "when random number is less than 0.3" do
       it "returns 3" do
-        allow(feed).to receive(:rand).and_return(0.1)
+        allow(feed).to receive(:rand).and_return(1)
         expect(feed.score_randomness).to eq 3
       end
     end
 
     context "when random number is greater than 0.6" do
       it "returns 0" do
-        allow(feed).to receive(:rand).and_return(0.9)
+        allow(feed).to receive(:rand).and_return(0)
         expect(feed.score_randomness).to eq 0
       end
     end
@@ -224,7 +246,7 @@ RSpec.describe Articles::Feed, type: :service do
       before { article.language = "de" }
 
       it "returns a score of -10" do
-        expect(feed.score_language(article)).to eq(-10)
+        expect(feed.score_language(article)).to eq(-15)
       end
     end
 
