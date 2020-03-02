@@ -161,6 +161,7 @@
   background: white;
   background: var(--theme-container-background, white);
   resize: none;
+  font-family: $monospace;
   @media screen and (min-width: 600px) {
     font-size: 29px;
     height: 50px;
@@ -170,14 +171,11 @@
     color: var(--theme-secondary-color, #8f949c);
   }
   &.articleform__titlepreview {
-    height: 26px;
     margin-bottom: 0px;
-    margin-top: -3px;
     margin-bottom: 1px;
     @media screen and (min-width: 600px) {
-      height: 34px;
-      margin-top: 0px;
-      margin-bottom: 4px;
+      height: 32px;
+      margin-top: 2px;
     }
   }
 }
