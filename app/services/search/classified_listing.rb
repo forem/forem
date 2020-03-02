@@ -18,10 +18,6 @@ module Search
 
       private
 
-      def search(body:)
-        Search::Client.search(index: INDEX_ALIAS, body: body)
-      end
-
       def set_query_size(params)
         params[:page] ||= DEFAULT_PAGE
         params[:per_page] ||= DEFAULT_PER_PAGE
