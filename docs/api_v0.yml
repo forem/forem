@@ -790,54 +790,57 @@ paths:
         By default it will return featured, published articles ordered
         by descending popularity.
 
-        Each page will contain `30` articles.
-
-        Responses, according to the combination of params, are cached for 24 hours.
+        It supports pagination, each page will contain `30` articles by default.
       tags:
         - articles
       parameters:
         - name: page
           in: query
-          description: |
-            Pagination page.
-
-            This param can be used in conjuction with all other params
-            (except when asking for fresh and rising articles by themselves).
+          description: Pagination page.
           schema:
             type: integer
             format: int32
           example: 1
+        - name: per_page
+          in: query
+          description: Page size (defaults to 30 with a maximum of 1000).
+          schema:
+            type: integer
+            format: int32
+          example: 30
         - name: tag
           in: query
           description: |
-            Adding this parameter will return articles that contain the
+            Using this parameter will retrieve articles that contain the
             requested tag.
 
-            This param can be used by itself, with `page` or with `top`.
+            Articles will be ordered by descending popularity.
+
+            This parameter can be used in conjuction with `top`.
           schema:
             type: string
           example: discuss
         - name: username
           in: query
           description: |
-            Adding this parameter will return articles belonging to a User or Organization
-            ordered by descending `published_at`.
+            Using this parameter will retrieve articles belonging
+            to a User or Organization ordered by descending publication date.
 
             If `state=all` the number of items returned will be `1000` instead of the default `30`.
 
-            This param can be used by itself or only with `page` and `state`.
+            This parameter can be used in conjuction with `state`.
           schema:
             type: string
           example: ben
         - name: state
           in: query
           description: |
-            Adding this will allow the client to check which articles are fresh or rising.
+            Using this parameter will allow the client to check which articles are fresh or rising.
 
-            If `state=fresh` the server will return published fresh articles.
-            If `state=rising` the server will return published rising articles.
+            If `state=fresh` the server will return fresh articles.
+            If `state=rising` the server will return rising articles.
 
-            This param can only be used by itself or with `username` if set to `all`.
+            This param can be used in conjuction with `username`, only if set to `all`.
           schema:
             type: string
             enum: [fresh, rising, all]
@@ -845,17 +848,27 @@ paths:
         - name: top
           in: query
           description: |
-            Adding this will allow the client to return the most popular articles
+            Using this parameter will allow the client to return the most popular articles
             in the last `N` days.
 
             `top` indicates the number of days since publication of the articles
             returned.
 
-            This param can only be used by itself or with `tag`.
+            This param can be used in conjuction with `tag`.
           schema:
             type: integer
             format: int32
           example: 2
+        - name: collection_id
+          in: query
+          description: |
+            Adding this will allow the client to return the list of articles
+            belonging to the requested collection, ordered by ascending
+            publication date.
+          schema:
+            type: integer
+            format: int32
+          example: 99
       responses:
         200:
           description: A list of articles
@@ -979,8 +992,6 @@ paths:
       description: |
         This endpoint allows the client to retrieve a single
         published article given its `id`.
-
-        Responses are cached for 5 minutes.
       tags:
         - articles
       parameters:
