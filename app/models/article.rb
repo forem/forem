@@ -203,6 +203,7 @@ class Article < ApplicationRecord
          ("organization_#{organization_id}" if organization)].flatten.compact
       end
       ranking ["desc(hotness_score)"]
+      attributesForFaceting %i[class_name approved]
       add_replica "ordered_articles_by_positive_reactions_count", inherit: true, per_environment: true do
         ranking ["desc(positive_reactions_count)"]
       end
