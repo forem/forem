@@ -22,6 +22,7 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
         { "term" => { "category" => "cfp" } },
         { "term" => { "tags" => ["beginner"] } },
         { "term" => { "contact_via_connect" => false } },
+        { "term" => { "published" => true } },
       ]
       expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(exepcted_filters)
     end
@@ -33,6 +34,7 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
         exepcted_filters = [
           { "range" => { "bumped_at" => Time.current } },
           { "range" => { "expires_at" => 1.day.from_now } },
+          { "term" => { "published" => true } },
         ]
         expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(exepcted_filters)
       end
@@ -56,7 +58,11 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
         exepcted_query = [{
           "simple_query_string" => { "query" => "test*", "fields" => [:classified_listing_search], "lenient" => true, "analyze_wildcard" => true }
         }]
-        exepcted_filters = [{ "range" => { "bumped_at" => Time.current } }, { "term" => { "category" => "cfp" } }]
+        exepcted_filters = [
+          { "range" => { "bumped_at" => Time.current } },
+          { "term" => { "category" => "cfp" } },
+          { "term" => { "published" => true } },
+        ]
         expect(filter.as_hash.dig("query", "bool", "must")).to match_array(exepcted_query)
         expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(exepcted_filters)
       end
@@ -67,21 +73,23 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
       filter = described_class.new(params)
       exepcted_filters = [
         { "term" => { "category" => "cfp" } },
+        { "term" => { "published" => true } },
       ]
       expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(exepcted_filters)
     end
 
     it "sets default params when not present" do
-      filter = described_class.new({})
-      expect(filter.as_hash.dig("sort")).to eq("bumped_at" => "desc")
-      expect(filter.as_hash.dig("size")).to eq(0)
+      filter = described_class.new({}).as_hash
+      expect(filter.dig("sort")).to eq("bumped_at" => "desc")
+      expect(filter.dig("size")).to eq(0)
+      expect(filter.dig("query", "bool", "filter")).to match_array([{ "term" => { "published" => true } }])
     end
 
     it "allows default params to be overriden" do
       params = { sort_by: "category", sort_direction: "asc", size: 20 }
-      filter = described_class.new(params)
-      expect(filter.as_hash.dig("sort")).to eq("category" => "asc")
-      expect(filter.as_hash.dig("size")).to eq(20)
+      filter = described_class.new(params).as_hash
+      expect(filter.dig("sort")).to eq("category" => "asc")
+      expect(filter.dig("size")).to eq(20)
     end
   end
 end
