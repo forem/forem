@@ -86,11 +86,10 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
     end
 
     it "allows default params to be overriden" do
-      params = { sort_by: "category", sort_direction: "asc", size: 20, published: false }
+      params = { sort_by: "category", sort_direction: "asc", size: 20 }
       filter = described_class.new(params).as_hash
       expect(filter.dig("sort")).to eq("category" => "asc")
       expect(filter.dig("size")).to eq(20)
-      expect(filter.dig("query", "bool", "filter")).to match_array([{ "term" => { "published" => false } }])
     end
   end
 end

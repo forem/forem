@@ -32,7 +32,12 @@ module Search
 
       def initialize(params)
         @params = params.deep_symbolize_keys
-        @params[:published] = DEFAULT_PARAMS[:published] unless @params.key?(:published)
+
+        # For now, we're not allowing searches for ClassifiedListings that are
+        # not published. If we want tochange this in the future we can just do:
+        # @params[:published] = DEFAULT_PARAMS[:published] unless @params.key?(:published)
+        @params[:published] = DEFAULT_PARAMS[:published]
+
         build_body
       end
 
