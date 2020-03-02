@@ -137,7 +137,7 @@ class FollowUsers extends Component {
         <div className="onboarding-selection-status">
           <div className="selection-status-content">
             <button type="button" onClick={() => this.handleSelectAll()}>
-              Select All 
+              Select All
               {' '}
               {selectedUsers.length === users.length ? '✅' : ''}
             </button>
