@@ -5,6 +5,7 @@ module Search
       Search::ClassifiedListing,
       Search::FeedContent,
       Search::Tag,
+      Search::User,
     ].freeze
 
     class << self

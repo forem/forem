@@ -85,7 +85,6 @@
     "reactions_count": {
       "type": "integer"
     },
-
     "readable_publish_date": {
       "type": "date"
     },
