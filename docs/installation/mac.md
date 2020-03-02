@@ -171,7 +171,7 @@ Likely root cause: java.nio.file.NoSuchFileException: /usr/local/Cellar/elastics
 ```
 
 This happens for a similar reason as the previous error, the installation might
-create a recursive link in the plugins director:
+create a recursive link in the plugins directory.
 
 ```shell
 > ll /usr/local/var/elasticsearch/plugins
