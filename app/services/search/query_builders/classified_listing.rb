@@ -52,7 +52,7 @@ module Search
       def build_queries
         @body[:query] = { bool: {} }
         @body[:query][:bool][:filter] = filter_conditions
-        @body[:query][:bool][:must] = query_conditions
+        @body[:query][:bool][:must] = query_conditions if query_keys_present?
       end
 
       def add_sort
