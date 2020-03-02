@@ -97,38 +97,56 @@ class FollowUsers extends Component {
     const { prev } = this.props;
     return (
       <div className="onboarding-main">
+        <Navigation prev={prev} next={this.handleComplete} />
         <div className="onboarding-content">
-          <h2>Ok, here are some people we picked for you</h2>
-          <div className="scroll">
-            <div className="select-all-button-wrapper">
-              <button type="button" onClick={() => this.handleSelectAll()}>
-                Select All 
-                {' '}
-                {selectedUsers.length === users.length ? '✅' : ''}
-              </button>
-            </div>
+          <header className="onboarding-content-header">
+            <h1 className="title">
+              Suggested people to follow
+            </h1>
+            <h3 className="subtitle">
+              Let&apos; s review a few things first
+            </h3>
+          </header>
+
+          <div className="modal-scroll-container">
             {users.map(user => (
               <button
                 type="button"
                 style={{
                   backgroundColor: selectedUsers.includes(user)
-                    ? '#c7ffe8'
+                    ? '#F6F7FE'
                     : 'white',
                 }}
                 onClick={() => this.handleClick(user)}
-                className="user"
+                className="user content-row"
               >
-                <div className="onboarding-user-follow-status">
-                  {selectedUsers.includes(user) ? 'selected' : ''}
+                <figure className="user-avatar-container">
+                  <img className="user-avatar" src={user.profile_image_url} alt="profile image" />
+                </figure>
+                <div className="user-info">
+                  <h4 className="user-name">
+                    {user.name}
+                  </h4>
+                  <p className="user-summary">
+                    {user.summary}
+                  </p>
                 </div>
-                <img src={user.profile_image_url} alt="" />
-                <span>{user.name}</span>
-                <p>{user.summary}</p>
+                <button className="user-following-status">
+                  {selectedUsers.includes(user) ? 'Following' : 'Follow'}
+                </button>
               </button>
             ))}
           </div>
         </div>
-        <Navigation prev={prev} next={this.handleComplete} />
+        <div className="onboarding-selection-status">
+          <div className="selection-status-content">
+            <button type="button" onClick={() => this.handleSelectAll()}>
+              Select All
+              {' '}
+              {selectedUsers.length === users.length ? '✅' : ''}
+            </button>
+          </div>
+        </div>
       </div>
     );
   }

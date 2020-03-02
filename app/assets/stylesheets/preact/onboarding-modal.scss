@@ -1,6 +1,10 @@
 @import 'variables';
 @import 'mixins';
 
+#onboarding-container {
+  min-height: calc(100vh - 350px);
+}
+
 .pages-onboarding {
   min-height: initial;
 }
@@ -14,102 +18,68 @@
   width: 100%;
   overflow: hidden;
   display: flex;
+  flex-direction: column;
+  font-size: 16px;
   justify-content: center;
-  align-items: center;
-  line-height: 200%;
-  z-index: 11;
-  margin: 0;
-  background-image: url('/assets/onboarding-background-white.png');
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  /* Center the image */
-  background-position: center;
-  /* Do not repeat the image */
-  background-repeat: no-repeat;
+  min-height: 460px;
+  width: 740px;
+  z-index: 1;
+}
 
   a {
     color: var(--link-brand-color);
   }
 
-  .sticker-logo {
-    height: 80px;
-    width: 80px;
-    transform: rotate(-5deg);
-    padding: 10px;
-    vertical-align: middle;
-    top: -10px;
-    padding-top: 5px;
+  @media screen and (min-width: 800px) {
+
+  }
+}
+
+// Modal Header
+.onboarding-content-header {
+  margin-bottom: 24px;
+
+  .title,
+  .subtitle {
+    margin: 0;
   }
 
-  .onboarding-main {
-    display: flex;
-    flex-direction: column;
-    width: 800px;
-    height: 466px;
-    @include themeable(background-color, theme-container-background, $white);
-    border: 8px solid #6b55c9;
-    @include themeable(border-color, theme-container-border, #6b55c9);
-    padding: 30px;
-    border-radius: 3px;
-    z-index: 1;
+  .title {
+    font-weight: 900;
+    text-align: left;
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    color: #363D44;
     font-size: 20px;
-    box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.3), 8px 0px 13px rgba(0, 0, 0, 0.21);
-    align-items: center;
-    justify-content: center;
+    font-weight: 500;
+    letter-spacing: normal;
+    line-height: 150%;
   }
-
-  .onboarding-content {
-    flex: 1 0 auto;
-    width: 100%;
-    margin-top: 5px;
-
-    h1 {
-      margin-top: 15px;
-      line-height: 1.1em;
-    }
-
-    @media screen and (min-width: 800px) {
-      height: 440px;
-    }
-  }
-
-  .onboarding-navigation {
-    align-self: flex-end;
-    flex-shrink: 0;
-    width: 100%;
-  }
-
-  .background-image {
-    z-index: -1;
-    position: absolute;
-    top: 60px;
-    left: 0px;
-  }
-
-  h1 {
-    text-align: center;
-  }
+}
 
   h2 {
     margin-top: 20px;
     font-size: 15px;
 
-    @media screen and (min-width: 600px) {
-      font-size: 26px;
-    }
+  .navigation-content {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
   }
+}
 
-  p {
-    line-height: 1.25em;
-  }
+// Modal Selection Status
+.onboarding-selection-status {
+  align-self: flex-end;
+  flex-shrink: 0;
+  width: 100%;
+  border-top: 2px solid black;
 
-  button {
-    width: 130px;
-    padding: 6px 0px;
-    height: auto;
-    margin: 11px 20px;
+  .selection-status-content {
+    display: block;
+    padding: 16px;
     text-align: center;
     font-weight: bold;
     border-radius: 3px;
@@ -136,173 +106,167 @@
     background: var(--button-primary-bg);
     float: right;
   }
+}
 
-  .about {
-    width: 100%;
+// Button Styles
+.onboarding-body button {
+  -webkit-appearance: none;
+  background-color: #3B49DF;
+  border-radius: 3px;
+  border: none;
+  box-sizing: border-box;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 150%;
+  padding: 0.5em 1.5em;
+  text-align: center;
+}
 
-    label,
-    input,
-    textarea {
-      display: block;
-      width: 95%;
-      margin: 0 auto;
-    }
+// Tag Styles
+.tag-container {
+  box-sizing: border-box;
+  column-gap: 1em;
+  display: grid;
+  grid-gap: 1em;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto;
+  width: 100%;
 
-    input,
-    textarea {
-      padding: 12px;
-      font-size: 19px;
-      text-emphasis: bold;
-      border: 1px solid #dee6e9;
-      border-radius: 3px;
-    }
+  .tag-item {
+    background-color: #EEF0F1; // smoke-10
+    border: 2px solid #EEF0F1;
+    border-radius: 3px;
+    display: grid;
+    row-gap: 1em;
+    height: 120px;
+    padding: 16px;
 
-    textarea {
-      height: 120px;
-    }
-  }
-
-  .checkbox-slide {
-    label {
-      display: block;
+    &:hover {
+      border-color: black;
+      background: white;
       cursor: pointer;
+
+      .tag-item-selector {
+        display: block;
+      }
     }
 
-    input[type='checkbox'] {
-      -webkit-appearance: none;
-      width: 19px;
-      height: 19px;
-      background: transparent;
-      border-radius: 5px;
-      border: 2px solid #555;
-      vertical-align: middle;
-      margin: 8px;
-      cursor: pointer;
+    .tag-topic-name {
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo,
+      Courier, monospace;
+      font-size: 16px;
+      font-weight: 400;
+      margin: 0;
     }
 
     input[type='checkbox']:checked {
       background: var(--link-brand-color);
     }
   }
+}
 
-  .warning-message {
-    background-color: red;
-    opacity: 0.7;
-    padding: 10px;
-    width: 100%;
-    border-radius: 3px;
+// Onboarding Intro
+
+.onboarding-main.introduction {
+  width: 578px;
+
+  .onboarding-content {
+    background: #08090A;
     color: white;
-  }
-
-  .scroll {
-    height: 365px;
-    overflow: auto;
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    border-bottom: 1px solid $light-medium-gray;
+    flex-direction: column;
+    justify-content: center;
+    padding: 48px;
   }
 
-  .tag {
-    padding: 44px 6px 46px;
-    font-size: 20px;
-    margin: 5px;
-    border-radius: 3px;
-    font-weight: bold;
-    border: none;
-    outline: none;
-    overflow: hidden;
-    position: relative;
-    text-overflow: ellipsis;
+  figure {
+    margin: 0 0 8px 0;
+
+    .sticker-logo {
+      height: 48px;
+      width: 48px;
+      transform: rotate(-30deg);
+      padding: 10px;
+      vertical-align: middle;
+    }
+  }
+
+  .introduction-title,
+  .introduction-subtitle {
+    margin: 0;
+  }
+
+  .introduction-title {
+    font-size: 48px;
+    font-weight: 900;
+    line-height: 125%;
+  }
+
+  .introduction-subtitle {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 150%;
+  }
+
+  .navigation-content {
+    padding: 32px;
+    justify-content: center;
+  }
+}
+
+// Next steps
+
+// Background
+.onboarding-body {
+  background-image: url('/assets/onboarding-background-white.png');
+  position: fixed;
+  margin-top: 50px;
+  bottom: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 200%;
+  z-index: 11;
+  margin: 0;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  /* Center the image */
+  background-position: center;
+  /* Do not repeat the image */
+  background-repeat: no-repeat;
+
+  &:before {
+    display: block;
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.65);
+    height: 100%;
     width: 100%;
-    opacity: 0.8;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-      Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-      'Segoe UI Symbol';
-
-    @media screen and (min-width: 600px) {
-      width: 255px;
-    }
-
-    &.tag-selected {
-      opacity: 1;
-    }
-
-    &:hover {
-      opacity: 1;
-    }
-
-    .onboarding-tag-follow-indicator {
-      position: absolute;
-      bottom: 22px;
-      left: 0px;
-      right: 0px;
-      text-align: center;
-      font-size: 0.66em;
-    }
   }
 
-  .select-all-button-wrapper {
-    width: 100%;
-
-    button {
-      width: 300px;
-      line-height: 1em;
-      text-align: left;
-      padding-left: 15px;
-    }
+  a {
+    @include themeable(color, theme-anchor-color, #2e3b9e);
   }
 
-  .user {
-    width: calc(100% - 40px);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-      Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-      'Segoe UI Symbol';
-    font-size: 15px;
-    padding: 5px;
-    border-radius: 3px;
-    text-align: center;
-    margin-right: 5px;
-    position: relative;
-    color: $black;
 
-    .onboarding-user-follow-status {
-      position: absolute;
-      color: #32a99c;
-      right: 8px;
-      top: 5px;
-      font-size: 0.88em;
-    }
 
-    span {
-      display: block;
-      width: 100%;
-    }
-
-    p {
-      font-weight: 400;
-      height: 55px;
-    }
-
-    @media screen and (min-width: 600px) {
-      width: 365px;
-    }
-
-    img {
-      height: 80px;
-      width: 80px;
-      border-radius: 50%;
-      padding: 5px;
-      margin: 10px auto;
-      display: block;
-    }
+  .background-image {
+    z-index: -1;
+    position: absolute;
+    top: 60px;
+    left: 0px;
   }
 
-  .user:active {
-    background-color: red;
-  }
 
   .badge-image {
     position: absolute;
@@ -436,5 +400,42 @@
     h1 {
       font-size: 20px;
     }
+  }
+}
+
+// Follow user
+.onboarding-body {
+  .content-row {
+    align-items: center;
+    color: #202428; // smoke-90
+    display: flex;
+    padding: 8px 16px;
+    text-align: left;
+    width: 100%;
+
+    &:hover {
+      background-color: #EEF0F1 !important; //smoke-10
+    }
+  }
+
+  .user-avatar-container {
+    margin: 0 16px 0 0;
+  }
+
+  .user-avatar {
+    border-radius: 100%;
+    height: 48px;
+    width: 48px;
+    object-fit: cover;
+    border: 1px solid #EEF0F1; //smoke-10
+  }
+
+  .user-name,
+  .user-summary {
+    margin: 0;
+  }
+
+  .user-following-status {
+    margin-left: 32px;
   }
 }
