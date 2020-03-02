@@ -34,7 +34,7 @@ module Search
         @params = params.deep_symbolize_keys
 
         # For now, we're not allowing searches for ClassifiedListings that are
-        # not published. If we want tochange this in the future we can just do:
+        # not published. If we want to change this in the future we can do:
         # @params[:published] = DEFAULT_PARAMS[:published] unless @params.key?(:published)
         @params[:published] = DEFAULT_PARAMS[:published]
 
