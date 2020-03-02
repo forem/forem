@@ -89,7 +89,7 @@ class Comment < ApplicationRecord
         }
       end
       tags do
-        [commentable.tag_list,
+        [commentable&.tag_list,
          "user_#{user_id}",
          "commentable_#{commentable_type}_#{commentable_id}"].flatten.compact
       end
