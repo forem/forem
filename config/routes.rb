@@ -307,6 +307,7 @@ Rails.application.routes.draw do
   get "/search" => "stories#search"
   post "articles/preview" => "articles#preview"
   post "comments/preview" => "comments#preview"
+  post "articles/approval/:id" => "articles#approval"
   get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
   get "/shop", to: redirect("https://shop.dev.to/")
   get "/mod" => "moderations#index", :as => :mod

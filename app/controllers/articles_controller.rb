@@ -135,6 +135,16 @@ class ArticlesController < ApplicationController
     end
   end
 
+  def approval
+    @article = Article.find(params[:id])
+    authorize(User, moderation_routes?)
+    @article.decorate.cached_tag_list_array.each do |tag|
+      authorize(Tag.find_by(name: tag), :update?)
+    end
+    @article.update(approved: params[:approved])
+    redirect_to "#{URI.parse(@article.path).path}/mod"
+  end
+
   def create
     authorize Article
 
