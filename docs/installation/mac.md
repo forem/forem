@@ -108,7 +108,7 @@ After installation you can manually test if the Elasticsearch server starts by
 issuing the command `elasticsearch` in the shell. You can then start the server
 as a service with `brew services start elastic/tap/elasticsearch-oss`.
 
-You can find further info on your local ES installation by typing
+You can find further info on your local Elasticsearch installation by typing
 `brew info elastic/tap/elasticsearch-oss`.
 
 #### Troubleshooting startup issues
