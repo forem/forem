@@ -5,6 +5,9 @@ info:
     Access DEV articles, users and other resources via API.
 
     All endpoints that don't require authentication are CORS enabled.
+
+    Dates and date times, unless otherwise specified, must be in
+    the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
   version: "0.6.1"
   termsOfService: https://dev.to/terms
   contact:
@@ -158,9 +161,9 @@ components:
           type: string
           format: date-time
         user:
-          $ref: "#/components/schemas/ArticleUser"
+          $ref: "#/components/schemas/SharedUser"
         organization:
-          $ref: "#/components/schemas/ArticleOrganization"
+          $ref: "#/components/schemas/SharedOrganization"
         flare_tag:
           $ref: "#/components/schemas/ArticleFlareTag"
 
@@ -256,9 +259,9 @@ components:
         body_markdown:
           type: string
         user:
-          $ref: "#/components/schemas/ArticleUser"
+          $ref: "#/components/schemas/SharedUser"
         organization:
-          $ref: "#/components/schemas/ArticleOrganization"
+          $ref: "#/components/schemas/SharedOrganization"
         flare_tag:
           $ref: "#/components/schemas/ArticleFlareTag"
 
@@ -462,14 +465,129 @@ components:
           type: string
           format: date-time
         user:
-          $ref: "#/components/schemas/ArticleUser"
+          $ref: "#/components/schemas/SharedUser"
         organization:
-          $ref: "#/components/schemas/ArticleOrganization"
+          $ref: "#/components/schemas/SharedOrganization"
         flare_tag:
           $ref: "#/components/schemas/ArticleFlareTag"
 
-    ArticleUser:
-      description: The article's creator
+    ArticleFlareTag:
+      description: Flare tag of the article
+      type: object
+      properties:
+        name:
+          type: string
+        bg_color_hex:
+          description: Background color (hexadecimal)
+          type: string
+        text_color_hex:
+          description: Text color (hexadecimal)
+          type: string
+
+    Listing:
+      type: object
+      required:
+        - type_of
+        - id
+        - title
+        - slug
+        - body_markdown
+        - tag_list
+        - tags
+        - category
+        - processed_html
+        - published
+        - user
+      properties:
+        type_of:
+          type: string
+        id:
+          type: integer
+          format: int32
+        title:
+          type: string
+        slug:
+          type: string
+        body_markdown:
+          type: string
+        tag_list:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        category:
+          type: string
+        processed_html:
+          type: string
+        published:
+          type: boolean
+        user:
+          $ref: "#/components/schemas/SharedUser"
+        organization:
+          $ref: "#/components/schemas/SharedOrganization"
+
+    ListingCreate:
+      type: object
+      properties:
+        classified_listing:
+          type: object
+          required:
+            - title
+            - body_markdown
+            - category
+          properties:
+            title:
+              type: string
+            body_markdown:
+              description: The body of the listing in Markdown format.
+              type: string
+            category:
+              type: string
+              enum: [cfp, forhire, collabs, education, jobs, mentors, products, mentees, forsale, events, misc]
+            tags:
+              description: |
+                Tags related to the listing.
+
+                A maximum of 8 tags are allowed and it takes precedence over `tag_list`.
+              type: array
+              items:
+                type: string
+            tag_list:
+              description: |
+                Comma separated list of tags.
+
+                A maximum of 8 tags are allowed.
+              type: string
+            expires_at:
+              description: Date and time of expiration.
+              type: date
+              format: date-time
+            contact_via_connect:
+              description: |
+                True if users are allowed to contact the listing's owner
+                via DEV connect, false otherwise.
+
+                Defaults to false.
+              type: boolean
+            location:
+              description: Geographical area or city for the listing.
+              type: string
+            organization_id:
+              description: |
+                The ID of the organization the user is creating the listing for.
+
+                Only users belonging to an organization can assign the listing to it.
+              type: integer
+              format: int32
+            action:
+              description: Set it to "draft" to create an unpublished listing
+              type: string
+              enum: [draft]
+
+
+    SharedUser:
+      description: The resource creator
       type: object
       properties:
         name:
@@ -490,8 +608,8 @@ components:
           description: Profile image (90x90)
           type: string
 
-    ArticleOrganization:
-      description: The organization the article belongs to
+    SharedOrganization:
+      description: The organization the resource belongs to
       type: object
       properties:
         name:
@@ -508,19 +626,6 @@ components:
           description: Profile image (90x90)
           type: string
           format: url
-
-    ArticleFlareTag:
-      description: Flare tag of the article
-      type: object
-      properties:
-        name:
-          type: string
-        bg_color_hex:
-          description: Background color (hexadecimal)
-          type: string
-        text_color_hex:
-          description: Text color (hexadecimal)
-          type: string
 
     WebhookCreate:
       description: Webhook creation payload
@@ -569,7 +674,7 @@ components:
           type: string
           format: date-time
         user:
-          $ref: "#/components/schemas/ArticleUser"
+          $ref: "#/components/schemas/SharedUser"
 
     WebhookIndex:
       description: Webhook
@@ -608,10 +713,15 @@ components:
       value:
         error: unauthorized
         status: 401
+    ErrorPaymentRequired:
+      value:
+        error: not enough available credits
+        status: 402
     ErrorUnprocessableEntity:
       value:
         error: "param is missing or the value is empty: article"
         status: 422
+
     ArticlesIndex:
       value:
         - type_of: article
@@ -742,6 +852,77 @@ components:
           series: Hello series
           canonical_url: https://example.com/blog/hello
           organization_id: 1234
+
+    Listings:
+      value:
+        - type_of: classified_listing
+          id: 1157
+          title: TestBash Detroit
+          slug: testbash-detroit-50gb
+          body_markdown: "Do you want to learn about automation? Maybe you're interested in
+            AI-driven testing? Security testing? We have a selection of talks, workshops and
+            training courses to help you in a wide variety of areas in software testing. Join
+            us for our very first trip to Detroit MI! \n\nhttps://bit.ly/TBDetroit"
+          tag_list: events
+          tags:
+          - events
+          category: cfp
+          processed_html: |
+            <p>Do you want to learn about automation? Maybe you're interested in AI-driven testing? Security testing? We have a selection of talks, workshops and training courses to help you in a wide variety of areas in software testing. Join us for our very first trip to Detroit MI! </p>
+
+            <p><a href="https://bit.ly/TBDetroit">https://bit.ly/TBDetroit</a></p>
+          published: true
+          user:
+            name: Heather
+            username: heatherr
+            twitter_username:
+            github_username: Heather-R
+            website_url:
+            profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--ggU5WPaT--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/136256/11cced64-afd2-4421-91e1-c5f7b216d49b.jpeg
+            profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--CjladMBD--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/136256/11cced64-afd2-4421-91e1-c5f7b216d49b.jpeg
+    Listing:
+      value:
+        type_of: classified_listing
+        id: 1157
+        title: TestBash Detroit
+        slug: testbash-detroit-50gb
+        body_markdown: "Do you want to learn about automation? Maybe you're interested in
+          AI-driven testing? Security testing? We have a selection of talks, workshops and
+          training courses to help you in a wide variety of areas in software testing. Join
+          us for our very first trip to Detroit MI! \n\nhttps://bit.ly/TBDetroit"
+        tag_list: events
+        tags:
+        - events
+        category: cfp
+        processed_html: |
+          <p>Do you want to learn about automation? Maybe you're interested in AI-driven testing? Security testing? We have a selection of talks, workshops and training courses to help you in a wide variety of areas in software testing. Join us for our very first trip to Detroit MI! </p>
+
+          <p><a href="https://bit.ly/TBDetroit">https://bit.ly/TBDetroit</a></p>
+        published: true
+        user:
+          name: Heather
+          username: heatherr
+          twitter_username:
+          github_username: Heather-R
+          website_url:
+          profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--ggU5WPaT--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/136256/11cced64-afd2-4421-91e1-c5f7b216d49b.jpeg
+          profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--CjladMBD--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/136256/11cced64-afd2-4421-91e1-c5f7b216d49b.jpeg
+    ListingCreate:
+      value:
+        title: ACME Conference
+        body_markdown: Awesome conference
+        category: cfp
+        tags:
+        - events
+    ListingCreateOrganization:
+      value:
+        title: ACME Conference
+        body_markdown: Awesome conference
+        category: cfp
+        tags:
+        - events
+        organization_id: 1
+
     WebhookCreate:
       value:
         webhook_endpoint:
@@ -770,6 +951,8 @@ components:
 tags:
   - name: articles
     description: Articles are all the posts users create on DEV
+  - name: listings
+    description: Listings are classified ads
   - name: users
     description: Users own resources that require authentication
   - name: webhooks
@@ -1336,6 +1519,170 @@ paths:
           label: curl
           source: |
             curl -H "api-key: API_KEY" https://dev.to/api/articles/me/all
+
+  /listings:
+    get:
+      operationId: getListings
+      summary: Published listings
+      description: |
+        This endpoint allows the client to retrieve a list of listings.
+
+        "Listings" are classified ads that users create on DEV.
+        They can be related to conference announcements, job offers, mentorships,
+        upcoming events and more.
+
+        By default it will return published listings ordered by descending
+        freshness.
+
+        It supports pagination, each page will contain `30` articles by default.
+      tags:
+        - listings
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page.
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: per_page
+          in: query
+          description: Page size (defaults to 30 with a maximum of 100).
+          schema:
+            type: integer
+            format: int32
+          example: 30
+        - name: category
+          in: query
+          description: |
+            Using this parameter will return listings belonging to the
+            requested category.
+          schema:
+            type: string
+          example: cfp
+      responses:
+        200:
+          description: A list of listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Listing"
+              examples:
+                listings-success:
+                  $ref: "#/components/examples/Listings"
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl (all listings)
+          source: |
+            curl https://dev.to/api/listings
+        - lang: Shell
+          label: curl (call for papers listings)
+          source: |
+            curl https://dev.to/api/listings?category=cfp
+    post:
+      operationId: createListing
+      summary: Create a new listing
+      description: |
+        This endpoint allows the client to create a new listing.
+
+        "Listings" are classified ads that users create on DEV.
+        They can be related to conference announcements, job offers, mentorships,
+        upcoming events and more.
+
+        The user creating the listing or the organization on which behalf the user
+        is creating for need to have enough creadits for this operation to be
+        successful. The server will prioritize the organization's credits over
+        the user's credits.
+
+        ### Additional resources
+
+        - [Rails tests for Listings API](https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/classified_listings_spec.rb)
+      tags:
+        - listings
+      requestBody:
+        description: Listing to create
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListingCreate"
+            examples:
+              listing-create:
+                $ref: "#/components/examples/ListingCreate"
+              listing-create-organization:
+                $ref: "#/components/examples/ListingCreateOrganization"
+
+      responses:
+        201:
+          description: A newly created Listing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Listing"
+              examples:
+                article-success:
+                  $ref: "#/components/examples/Listing"
+        400:
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-bad-request:
+                  $ref: "#/components/examples/ErrorBadRequest"
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
+        402:
+          description: PaymentRequired
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorPaymentRequired"
+        422:
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unprocessable-entity:
+                  $ref: "#/components/examples/ErrorUnprocessableEntity"
+      security:
+        - api_key: []
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl
+          source: |
+            curl -X POST -H "Content-Type: application/json" \
+              -H "api-key: API_KEY" \
+              -d '{"classified_listing":{"title":"Title","body_markdown":"Body","category":"cfp"}}' \
+              https://dev.to/api/listings
+        - lang: Shell
+          label: curl (with tags)
+          source: |
+            curl -X POST -H "Content-Type: application/json" \
+              -H "api-key: API_KEY" \
+              -d '{"classified_listing":{"title":"Title","body_markdown":"Body","category":"cfp","tags":["python"]}}' \
+              https://dev.to/api/listings
+        - lang: Shell
+          label: curl (draft)
+          source: |
+            curl -X POST -H "Content-Type: application/json" \
+              -H "api-key: API_KEY" \
+              -d '{"classified_listing":{"title":"Title","body_markdown":"Body","category":"cfp","action":"draft"}}' \
+              https://dev.to/api/listings
 
   /webhooks:
     get:

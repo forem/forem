@@ -44,7 +44,7 @@ module ClassifiedListingsToolkit
   def create
     @classified_listing = ClassifiedListing.new(listing_params)
 
-    # this will 500 for now if they don't belong in the org
+    # this will 401 for now if they don't belong in the org
     authorize @classified_listing, :authorized_organization_poster? if @classified_listing.organization_id.present?
 
     @classified_listing.user_id = current_user.id

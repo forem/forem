@@ -4,8 +4,8 @@ title: Contributing to the API Specification Docs
 
 # Contributing to API spec docs
 
-The API docs follow the [OpenAPI 3
-specification](http://spec.openapis.org/oas/v3.0.2).
+The API docs follow the
+[OpenAPI 3 specification](https://spec.openapis.org/oas/v3.0.3).
 
 ## Where the docs are located
 
@@ -32,7 +32,5 @@ will reload the doc after every modification of the spec file.
 If you have Visual Studio Code, we suggest you install the following extensions
 that enable validation and navigation within the spec file:
 
-- [OpenAPI (Swagger)
-  editor](https://marketplace.visualstudio.com/items?itemName=42Crunch.vscode-openapi)
-- [openapi-designer live
-  preview](https://marketplace.visualstudio.com/items?itemName=philosowaffle.openapi-designer)
+- [OpenAPI (Swagger) editor](https://marketplace.visualstudio.com/items?itemName=42Crunch.vscode-openapi)
+- [openapi-designer live preview](https://marketplace.visualstudio.com/items?itemName=philosowaffle.openapi-designer)

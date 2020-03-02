@@ -12,9 +12,7 @@ RSpec.describe "Api::V0::Listings" do
       {
         title: "Title",
         body_markdown: "Markdown text",
-        category: "cfp",
-        tags: [],
-        contact_via_connect: true
+        category: "cfp"
       }
     end
     let(:draft_params) do
@@ -22,8 +20,6 @@ RSpec.describe "Api::V0::Listings" do
         title: "Title draft",
         body_markdown: "Markdown draft text",
         category: "cfp",
-        tags: [],
-        contact_via_connect: true,
         action: "draft"
       }
     end
@@ -89,7 +85,7 @@ RSpec.describe "Api::V0::Listings" do
     end
   end
 
-  describe "GET /api/listings/category/:category" do
+  describe "GET /api/listings?category=:category" do
     include_context "with 7 listings and 2 user"
 
     it "displays only listings from the cfp category" do
@@ -141,7 +137,7 @@ RSpec.describe "Api::V0::Listings" do
       org
     end
 
-    describe "user cannot proceed if not properly unauthorizedœ" do
+    describe "user cannot proceed if not properly unauthorized" do
       let(:api_secret) { create(:api_secret) }
 
       it "fails with no api key" do
@@ -181,8 +177,13 @@ RSpec.describe "Api::V0::Listings" do
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
-      it "fails if a mandatory param is missing" do
+      it "fails if body_markdown is missing" do
         post_classified_listing(invalid_params)
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "fails if category is missing" do
+        post_classified_listing(title: "Title", body_markdown: "body")
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
@@ -200,6 +201,8 @@ RSpec.describe "Api::V0::Listings" do
 
       it "properly deducts the amount of credits" do
         post_classified_listing(listing_params)
+        expect(response).to have_http_status(:created)
+
         listing_cost = ClassifiedListing.categories_available[:cfp][:cost]
         expect(user.credits.spent.size).to eq(listing_cost)
       end
@@ -221,12 +224,18 @@ RSpec.describe "Api::V0::Listings" do
 
       it "does not create a listing draft for an org not belonging to the user" do
         org = create(:organization)
-        expect { post_classified_listing(draft_params.merge(organization_id: org.id)) }.to raise_error(Pundit::NotAuthorizedError)
+        expect do
+          post_classified_listing(draft_params.merge(organization_id: org.id))
+          expect(response).to have_http_status(:unauthorized)
+        end.to change(ClassifiedListing, :count).by(0)
       end
 
       it "does not create a listing for an org not belonging to the user" do
         org = create(:organization)
-        expect { post_classified_listing(listing_params.merge(organization_id: org.id)) }.to raise_error(Pundit::NotAuthorizedError)
+        expect do
+          post_classified_listing(listing_params.merge(organization_id: org.id))
+          expect(response).to have_http_status(:unauthorized)
+        end.to change(ClassifiedListing, :count).by(0)
       end
 
       it "assigns the spent credits to the listing" do
@@ -278,9 +287,12 @@ RSpec.describe "Api::V0::Listings" do
           post_classified_listing(listing_params)
           expect(response).to have_http_status(:created)
         end.to change(ClassifiedListing, :count).by(1)
-        expect(ClassifiedListing.find(response.parsed_body["id"]).title).to eq("Title")
-        expect(ClassifiedListing.find(response.parsed_body["id"]).body_markdown).to eq("Markdown text")
-        expect(ClassifiedListing.find(response.parsed_body["id"]).category).to eq("cfp")
+
+        listing = ClassifiedListing.find(response.parsed_body["id"])
+
+        expect(listing.title).to eq(listing_params[:title])
+        expect(listing.body_markdown).to eq(listing_params[:body_markdown])
+        expect(listing.category).to eq(listing_params[:category])
       end
 
       it "creates a classified listing with a location" do
@@ -298,8 +310,11 @@ RSpec.describe "Api::V0::Listings" do
           post_classified_listing(params)
           expect(response).to have_http_status(:created)
         end.to change(ClassifiedListing, :count).by(1)
-        expect(ClassifiedListing.find(response.parsed_body["id"]).cached_tag_list).to eq("discuss, javascript")
-        expect(ClassifiedListing.find(response.parsed_body["id"]).contact_via_connect).to eq(true)
+
+        listing = ClassifiedListing.find(response.parsed_body["id"])
+
+        expect(listing.cached_tag_list).to eq("discuss, javascript")
+        expect(listing.contact_via_connect).to be(true)
       end
     end
 
@@ -507,9 +522,8 @@ RSpec.describe "Api::V0::Listings" do
       end
 
       it "cannot update another user listing" do
-        expect do
-          put_classified_listing(another_user_listing.id, title: "Test for a new title")
-        end.to raise_error(Pundit::NotAuthorizedError)
+        put_classified_listing(another_user_listing.id, title: "Test for a new title")
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
