@@ -5,7 +5,7 @@ info:
     Access DEV articles, users and other resources via API.
 
     All endpoints that don't require authentication are CORS enabled.
-  version: "0.6.0"
+  version: "0.6.1"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -840,7 +840,8 @@ paths:
             This param can only be used by itself or with `username` if set to `all`.
           schema:
             type: string
-          example: ben
+            enum: [fresh, rising, all]
+          example: fresh
         - name: top
           in: query
           description: |
