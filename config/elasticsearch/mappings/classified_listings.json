@@ -49,6 +49,9 @@
     "processed_html": {
       "type": "keyword"
     },
+    "published": {
+      "type": "boolean"
+    },
     "slug": {
       "type": "text",
       "copy_to": "classified_listing_search",

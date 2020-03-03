@@ -3,7 +3,9 @@ module Search
     SEARCH_CLASSES = [
       Search::ChatChannelMembership,
       Search::ClassifiedListing,
+      Search::FeedContent,
       Search::Tag,
+      Search::User,
     ].freeze
 
     class << self
@@ -20,12 +22,12 @@ module Search
       end
 
       def update_settings
-        SearchClient.cluster.put_settings(body: default_settings)
+        Search::Client.cluster.put_settings(body: default_settings)
       end
 
       def create_indexes
         SEARCH_CLASSES.each do |search_class|
-          next if SearchClient.indices.exists(index: search_class::INDEX_NAME)
+          next if Search::Client.indices.exists(index: search_class::INDEX_NAME)
 
           search_class.create_index
         end
@@ -43,7 +45,7 @@ module Search
         return if Rails.env.production?
 
         SEARCH_CLASSES.each do |search_class|
-          next unless SearchClient.indices.exists(index: search_class::INDEX_NAME)
+          next unless Search::Client.indices.exists(index: search_class::INDEX_NAME)
 
           search_class.delete_index
         end

@@ -18,10 +18,6 @@ module Search
 
       private
 
-      def search(body:)
-        SearchClient.search(index: INDEX_ALIAS, body: body)
-      end
-
       def set_query_size(params)
         params[:page] ||= DEFAULT_PAGE
         params[:per_page] ||= DEFAULT_PER_PAGE
@@ -31,8 +27,8 @@ module Search
       end
 
       def paginate_hits(hits, params)
-        start = (params[:per_page] + 1) * params[:page]
-        hits[start, params[:per_page]]
+        start = params[:per_page] * params[:page]
+        hits[start, params[:per_page]] || []
       end
 
       def index_settings

@@ -1,0 +1,42 @@
+<%= paginate @sponsorships %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Level</th>
+      <th scope="col">Status</th>
+      <th scope="col">Expires At</th>
+      <th scope="col">Sponsorable</th>
+      <th scope="col">Created At</th>
+      <th scope="col">Creator</th>
+      <th scope="col">Organization</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @sponsorships.each do |sponsorship| %>
+      <tr>
+        <td><%= link_to sponsorship.id, edit_internal_sponsorship_path(sponsorship) %></td>
+        <td><%= sponsorship.level %></td>
+        <td><%= sponsorship.status %></td>
+        <td><%= sponsorship.expires_at&.strftime("%d %B %Y %H:%M UTC") %></td>
+        <td>
+          <% if sponsorship.sponsorable.is_a?(ActsAsTaggableOn::Tag) %>
+            <%= link_to sponsorship.sponsorable.name, "/t/#{sponsorship.sponsorable.name}" %>
+          <% end %>
+        </td>
+        <td><%= sponsorship.created_at.strftime("%d %B %Y %H:%M UTC") %></td>
+        <td><%= link_to "@#{sponsorship.user.username}", "/#{sponsorship.user.username}" %></td>
+        <td>
+          <%= link_to "@#{sponsorship.organization.username}", "/#{sponsorship.organization.username}" %>
+        </td>
+        <td>
+          <%= link_to "edit", edit_internal_sponsorship_path(sponsorship) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @sponsorships %>

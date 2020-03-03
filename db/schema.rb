@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_24_153122) do
+ActiveRecord::Schema.define(version: 2020_02_27_214321) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -224,9 +224,9 @@ ActiveRecord::Schema.define(version: 2020_02_24_153122) do
   end
 
   create_table "broadcasts", id: :serial, force: :cascade do |t|
+    t.boolean "active", default: false
     t.text "body_markdown"
     t.text "processed_html"
-    t.boolean "sent", default: false
     t.string "title"
     t.string "type_of"
   end
@@ -386,6 +386,16 @@ ActiveRecord::Schema.define(version: 2020_02_24_153122) do
     t.boolean "published", default: false
     t.float "success_rate", default: 0.0
     t.datetime "updated_at", null: false
+  end
+
+  create_table "email_authorizations", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.jsonb "json_data", default: {}, null: false
+    t.string "type_of", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.datetime "verified_at"
+    t.index ["user_id", "type_of"], name: "index_email_authorizations_on_user_id_and_type_of", unique: true
   end
 
   create_table "events", force: :cascade do |t|
@@ -965,6 +975,7 @@ ActiveRecord::Schema.define(version: 2020_02_24_153122) do
     t.text "rules_markdown"
     t.string "short_summary"
     t.string "social_image"
+    t.string "social_preview_template", default: "article"
     t.string "submission_rules_headsup"
     t.text "submission_template"
     t.boolean "supported", default: false
@@ -974,6 +985,7 @@ ActiveRecord::Schema.define(version: 2020_02_24_153122) do
     t.text "wiki_body_html"
     t.text "wiki_body_markdown"
     t.index ["name"], name: "index_tags_on_name", unique: true
+    t.index ["social_preview_template"], name: "index_tags_on_social_preview_template"
   end
 
   create_table "tweets", id: :serial, force: :cascade do |t|
@@ -1213,6 +1225,7 @@ ActiveRecord::Schema.define(version: 2020_02_24_153122) do
   add_foreign_key "chat_channel_memberships", "chat_channels"
   add_foreign_key "chat_channel_memberships", "users"
   add_foreign_key "classified_listings", "users", on_delete: :cascade
+  add_foreign_key "email_authorizations", "users", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade
   add_foreign_key "messages", "chat_channels"
   add_foreign_key "messages", "users"

@@ -1,20 +1,6 @@
 @import 'variables';
 @import 'mixins';
 
-%kbd {
-  display: inline-block;
-  padding: 3px 5px;
-  font-size: 11px;
-  line-height: 10px;
-  color: #444d56;
-  vertical-align: middle;
-  background-color: #fafbfc;
-  border: solid 1px #c6cbd1;
-  border-bottom-color: #959da5;
-  border-radius: 3px;
-  box-shadow: inset 0 -1px 0 #959da5;
-}
-
 .stories-show {
   @include themeable(background, theme-background, $lightest-gray);
 }
@@ -94,7 +80,7 @@ article {
 }
 
 .home .container {
-  @media screen and (min-width: 1250px) {
+  @media screen and (min-width: $max-width) {
     margin-left: 16px;
   }
 }
@@ -596,7 +582,17 @@ article {
     }
 
     kbd {
-      @extend %kbd;
+      display: inline-block;
+      padding: 3px 5px;
+      font-size: 11px;
+      line-height: 10px;
+      color: #444d56;
+      vertical-align: middle;
+      background-color: #fafbfc;
+      border: solid 1px #c6cbd1;
+      border-bottom-color: #959da5;
+      border-radius: 3px;
+      box-shadow: inset 0 -1px 0 #959da5;
     }
 
     pre {
@@ -1268,7 +1264,7 @@ article {
         display: inline-block;
       }
 
-      @media screen and (min-width: 1250px) {
+      @media screen and (min-width: $max-width) {
         font-size: 0.92em;
         vertical-align: 6px;
       }

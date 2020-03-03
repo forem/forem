@@ -1,10 +1,14 @@
+import fetch from 'jest-fetch-mock';
 import {
   getInitialSearchTerm,
   preloadSearchResults,
   hasInstantClick,
   displaySearchResults,
+  fetchSearch,
 } from '../search';
 import '../../../../assets/javascripts/lib/xss';
+
+global.fetch = fetch;
 
 describe('Search utilities', () => {
   describe('getInitialSearchTerm', () => {
@@ -202,9 +206,7 @@ describe('Search utilities', () => {
       displaySearchResults({ searchTerm, location });
 
       expect(InstantClick.display).toBeCalledWith(
-        `${
-          location.origin
-        }/search?q=${sanitizedSearchTerm}&filters=${filterParameters}`,
+        `${location.origin}/search?q=${sanitizedSearchTerm}&filters=${filterParameters}`,
       );
     });
 
@@ -221,6 +223,29 @@ describe('Search utilities', () => {
       expect(InstantClick.display).toBeCalledWith(
         `${location.origin}/search?q=${sanitizedSearchTerm}`,
       );
+    });
+  });
+
+  describe('fetchSearch', () => {
+    let responsePromise;
+    let dataHash;
+
+    beforeEach(() => {
+      fetch.resetMocks();
+      fetch.once({});
+      dataHash = { name: 'jav' };
+      responsePromise = fetchSearch('tags', dataHash);
+    });
+
+    test('should return a Promise', () => {
+      expect(responsePromise).toBeInstanceOf(Promise);
+    });
+
+    test('should return response formatted as JSON', () => {
+      responsePromise.then(response => {
+        expect(response).toBeInstanceOf(Object);
+        expect(response).toMatchObject({ results: expect.any(Array) });
+      });
     });
   });
 });
