@@ -47,11 +47,12 @@ function resizeAllMasonryItems() {
 }
 
 function updateListings(classifiedListings, listings) {
+  const listingIDs = listings.map(l => l.id);
   const fullListings = listings;
 
   classifiedListings.forEach(listing => {
     if (listing.bumped_at) {
-      if (!listings.map(l => l.id).includes(listing.id)) {
+      if (!listingIDs.includes(listing.id)) {
         fullListings.push(listing);
       }
     }
