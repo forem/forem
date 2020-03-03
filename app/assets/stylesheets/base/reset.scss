@@ -356,7 +356,6 @@ template {
 //  License: none (public domain)
 //  ----------------------------------------------------------------------------
 html,
-body,
 div,
 span,
 applet,
@@ -459,6 +458,11 @@ section {
 }
 body {
   line-height: 1;
+  margin: 0;
+  border: 0;
+  // font: inherit;
+  // font-size: 100%;
+  vertical-align: baseline;
 }
 ol,
 ul {
