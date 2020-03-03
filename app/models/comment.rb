@@ -181,6 +181,10 @@ class Comment < ApplicationRecord
     "comments-#{id}"
   end
 
+  def safe_processed_html
+    processed_html.html_safe
+  end
+
   private
 
   def update_notifications
