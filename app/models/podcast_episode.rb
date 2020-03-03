@@ -42,7 +42,7 @@ class PodcastEpisode < ApplicationRecord
       attribute :user do
         { name: podcast.name,
           username: user_username,
-          profile_image_90: ProfileImage.new(user).get(90) }
+          profile_image_90: ProfileImage.new(user).get(width: 90) }
       end
       searchableAttributes ["unordered(title)",
                             "body_text",
@@ -96,10 +96,6 @@ class PodcastEpisode < ApplicationRecord
 
   def body_text
     ActionView::Base.full_sanitizer.sanitize(processed_html)
-  end
-
-  def published_at_date_slashes
-    published_at&.to_date&.strftime("%m/%d/%Y")
   end
 
   def user

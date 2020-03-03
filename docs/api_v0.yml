@@ -1,8 +1,11 @@
 openapi: "3.0.2"
 info:
   title: DEV API (beta)
-  description: Access DEV articles, comments and other resources via API
-  version: "0.5.9"
+  description: |
+    Access DEV articles, users and other resources via API.
+
+    All endpoints that don't require authentication are CORS enabled.
+  version: "0.6.0"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team

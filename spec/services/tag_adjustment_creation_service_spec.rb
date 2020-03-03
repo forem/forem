@@ -40,25 +40,35 @@ RSpec.describe TagAdjustmentCreationService, type: :service do
 
   describe "creates notification" do
     it "with adjustment_type removal" do
-      perform_enqueued_jobs do
-        service = create_service("removal")
-        tag_adjustment = service.tag_adjustment
-        tag_adjustment.save
+      service = create_service("removal")
+      tag_adjustment = service.tag_adjustment
+      tag_adjustment.save
+
+      sidekiq_perform_enqueued_jobs do
         service.update_tags_and_notify
-        expect(Notification.last.user_id).to eq(article.user_id)
-        expect(Notification.last.json_data["adjustment_type"]).to eq(tag_adjustment.adjustment_type)
       end
+
+      tag_adjustment.reload
+      last_tag_adjustment = tag_adjustment.notifications.last
+
+      expect(last_tag_adjustment.user_id).to eq(article.user_id)
+      expect(last_tag_adjustment.json_data["adjustment_type"]).to eq(tag_adjustment.adjustment_type)
     end
 
     it "with adjustment_type addition" do
-      perform_enqueued_jobs do
-        service = create_service("addition")
-        tag_adjustment = service.tag_adjustment
-        tag_adjustment.save
+      service = create_service("addition")
+      tag_adjustment = service.tag_adjustment
+      tag_adjustment.save
+
+      sidekiq_perform_enqueued_jobs do
         service.update_tags_and_notify
-        expect(Notification.last.user_id).to eq(article.user_id)
-        expect(Notification.last.json_data["adjustment_type"]).to eq(tag_adjustment.adjustment_type)
       end
+
+      tag_adjustment.reload
+      last_tag_adjustment = tag_adjustment.notifications.last
+
+      expect(last_tag_adjustment.user_id).to eq(article.user_id)
+      expect(last_tag_adjustment.json_data["adjustment_type"]).to eq(tag_adjustment.adjustment_type)
     end
   end
 end

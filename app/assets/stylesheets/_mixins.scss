@@ -26,7 +26,6 @@
   #{$property}: var(--#{$cssVariable}, #{$fallback}) !important;
 }
 
-
 /* Mixin for a load more wrapper, made by a container div and child button */
 @mixin load-more() {
   text-align: center;
@@ -41,6 +40,36 @@
     max-width: 80%;
     border-radius: 100px;
     font-weight: bold;
-    color: inherit
+    color: inherit;
+  }
+}
+
+// Card styling
+@mixin dev-card {
+  @include themeable(background, theme-container-background, $white);
+  @include themeable(border, theme-container-border, none);
+  @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
+
+  @media screen and (min-width: 950px) {
+    border-radius: 3px;
+    margin-bottom: 12px;
+  }
+}
+
+// Sidebar links
+@mixin sidebar-link {
+  display: block;
+  padding: 8px 16px;
+  margin: 0 -16px;
+  border-radius: 3px;
+  @include themeable(color, theme-container-color, rgba($black, 0.8));
+
+  &:hover {
+    @include themeable(color, theme-container-color, $black);
+    @include themeable(
+      background,
+      theme-container-background-hover,
+      $light-gray
+    );
   }
 }

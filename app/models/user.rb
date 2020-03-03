@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  self.ignored_columns = ["organization_id"]
+
   include CloudinaryHelper
 
   attr_accessor(
@@ -22,6 +24,7 @@ class User < ApplicationRecord
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
+  has_many :email_authorizations, dependent: :delete_all
   has_many :github_repos, dependent: :destroy
   has_many :identities, dependent: :destroy
   has_many :mentions, dependent: :destroy
@@ -44,7 +47,7 @@ class User < ApplicationRecord
   has_many :html_variants, dependent: :destroy
   has_many :page_views, dependent: :destroy
   has_many :credits, dependent: :destroy
-  has_many :classified_listings
+  has_many :classified_listings, dependent: :destroy
   has_many :poll_votes, dependent: :destroy
   has_many :poll_skips, dependent: :destroy
   has_many :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user, class_name: "BackupData", dependent: :delete_all
@@ -55,6 +58,7 @@ class User < ApplicationRecord
   has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id, inverse_of: :blocker, dependent: :delete_all
   has_many :blocked_blocks, class_name: "UserBlock", foreign_key: :blocked_id, inverse_of: :blocked, dependent: :delete_all
   has_one :pro_membership, dependent: :destroy
+  has_one :counters, class_name: "UserCounter", dependent: :destroy
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
 
   mount_uploader :profile_image, ProfileImageUploader
@@ -78,7 +82,7 @@ class User < ApplicationRecord
   validates :experience_level, numericality: { less_than_or_equal_to: 10 }, allow_blank: true
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
-  validates :website_url, :employer_url, :mastodon_url,
+  validates :website_url, :employer_url,
             url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :facebook_url,
             format: /\A(http(s)?:\/\/)?(www.facebook.com|facebook.com)\/.*\Z/,
@@ -153,13 +157,26 @@ class User < ApplicationRecord
   validate  :non_banished_username, :username_changed?
   validate  :unique_including_orgs_and_podcasts, if: :username_changed?
 
+  alias_attribute :positive_reactions_count, :reactions_count
+
   scope :dev_account, -> { find_by(id: SiteConfig.staff_user_id) }
+  scope :welcoming_account, -> { find_by(id: ApplicationConfig["WELCOMING_USER_ID"]) }
+
+  scope :with_this_week_comments, lambda { |number|
+    includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_these_7_days')::int >= ?", number)
+  }
+  scope :with_previous_week_comments, lambda { |number|
+    includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_prior_7_days')::int >= ?", number)
+  }
+  scope :top_commenters, lambda { |number = 10|
+    includes(:counters).order(Arel.sql("user_counters.data -> 'comments_these_7_days' DESC")).limit(number)
+  }
 
   after_create_commit :send_welcome_notification
-  after_save  :bust_cache
-  after_save  :subscribe_to_mailchimp_newsletter
-  after_save  :conditionally_resave_articles
-  after_create :estimate_default_language
+  after_save :bust_cache
+  after_save :subscribe_to_mailchimp_newsletter
+  after_save :conditionally_resave_articles
+  after_create_commit :estimate_default_language
   before_create :set_default_language
   before_validation :set_username
   # make sure usernames are not empty, to be able to use the database unique index
@@ -238,29 +255,23 @@ class User < ApplicationRecord
   end
 
   def cached_following_users_ids
-    Rails.cache.fetch(
-      "user-#{id}-#{last_followed_at}-#{following_users_count}/following_users_ids",
-      expires_in: 12.hours,
-    ) do
-      Follow.where(follower_id: id, followable_type: "User").limit(150).pluck(:followable_id)
+    cache_key = "user-#{id}-#{last_followed_at}-#{following_users_count}/following_users_ids"
+    Rails.cache.fetch(cache_key, expires_in: 12.hours) do
+      Follow.follower_user(id).limit(150).pluck(:followable_id)
     end
   end
 
   def cached_following_organizations_ids
-    Rails.cache.fetch(
-      "user-#{id}-#{last_followed_at}-#{following_orgs_count}/following_organizations_ids",
-      expires_in: 12.hours,
-    ) do
-      Follow.where(follower_id: id, followable_type: "Organization").limit(150).pluck(:followable_id)
+    cache_key = "user-#{id}-#{last_followed_at}-#{following_orgs_count}/following_organizations_ids"
+    Rails.cache.fetch(cache_key, expires_in: 12.hours) do
+      Follow.follower_organization(id).limit(150).pluck(:followable_id)
     end
   end
 
   def cached_following_podcasts_ids
-    Rails.cache.fetch(
-      "user-#{id}-#{last_followed_at}/following_podcasts_ids",
-      expires_in: 12.hours,
-    ) do
-      Follow.where(follower_id: id, followable_type: "Podcast").pluck(:followable_id)
+    cache_key = "user-#{id}-#{last_followed_at}/following_podcasts_ids"
+    Rails.cache.fetch(cache_key, expires_in: 12.hours) do
+      Follow.follower_podcast(id).pluck(:followable_id)
     end
   end
 
@@ -401,6 +412,7 @@ class User < ApplicationRecord
   def subscribe_to_mailchimp_newsletter
     return unless email.present? && email.include?("@")
     return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
+    return unless saved_changes.key?(:email) || saved_changes.key?(:email_newsletter)
 
     Users::SubscribeToMailchimpNewsletterWorker.perform_async(id)
   end
@@ -434,7 +446,7 @@ class User < ApplicationRecord
   end
 
   def profile_image_90
-    ProfileImage.new(self).get(90)
+    ProfileImage.new(self).get(width: 90)
   end
 
   def remove_from_algolia_index
@@ -467,6 +479,10 @@ class User < ApplicationRecord
       email_follower_notifications
   end
 
+  def title
+    name
+  end
+
   private
 
   def index_id
@@ -474,7 +490,7 @@ class User < ApplicationRecord
   end
 
   def estimate_default_language
-    Users::EstimateDefaultLanguageJob.perform_later(id)
+    Users::EstimateDefaultLanguageWorker.perform_async(id)
   end
 
   def set_default_language
@@ -482,7 +498,9 @@ class User < ApplicationRecord
   end
 
   def send_welcome_notification
-    Notification.send_welcome_notification(id)
+    return unless (welcome_broadcast = Broadcast.find_by(title: "Welcome Notification"))
+
+    Notification.send_welcome_notification(id, welcome_broadcast.id)
   end
 
   def verify_twitter_username
@@ -590,10 +608,8 @@ class User < ApplicationRecord
     return if uri.host&.in?(Constants::ALLOWED_MASTODON_INSTANCES)
 
     errors.add(:mastodon_url, "is not an allowed Mastodon instance")
-  end
-
-  def title
-    name
+  rescue URI::InvalidURIError
+    errors.add(:mastodon_url, "is not a valid url")
   end
 
   def tag_list
@@ -613,10 +629,6 @@ class User < ApplicationRecord
   def published_at; end
 
   def featured_number; end
-
-  def positive_reactions_count
-    reactions_count
-  end
 
   def user
     self
@@ -666,7 +678,7 @@ class User < ApplicationRecord
   end
 
   def destroy_follows
-    follower_relationships = Follow.where(followable_id: id, followable_type: "User")
+    follower_relationships = Follow.followable_user(id)
     follower_relationships.destroy_all
     follows.destroy_all
   end

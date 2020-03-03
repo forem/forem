@@ -9,6 +9,8 @@
       <% Rails.application.config.assets.compile = true %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
+      <%= Rails.application.assets["buttons.css"].to_s.html_safe %>
+      <%= Rails.application.assets["typography.css"].to_s.html_safe %>
       <% if @article_show %>
       <%= Rails.application.assets["article-show.css"].to_s.html_safe %>
       <%= Rails.application.assets["comments.css"].to_s.html_safe %>
@@ -28,7 +30,10 @@
       <% Rails.application.config.assets.compile = true %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
       <%= Rails.application.assets["articles.css"].to_s.html_safe %>
+      <%= Rails.application.assets["buttons.css"].to_s.html_safe %>
+      <%= Rails.application.assets["widgets.css"].to_s.html_safe %>
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
+      <%= Rails.application.assets["footer.css"].to_s.html_safe %>
       <% unless @home_page %>
       <%= Rails.application.assets["user-profile-header.css"].to_s.html_safe %>
       <%= Rails.application.assets["sidebar-data.scss"].to_s.html_safe %>
@@ -46,6 +51,8 @@
       <%= Rails.application.assets["readinglist.css"].to_s.html_safe %>
       <%= Rails.application.assets["history.css"].to_s.html_safe %>
       <%= Rails.application.assets["articles.css"].to_s.html_safe %>
+      <%= Rails.application.assets["buttons.css"].to_s.html_safe %>
+      <%= Rails.application.assets["widgets.css"].to_s.html_safe %>
       <%= Rails.application.assets["comments.css"].to_s.html_safe %>
       <%= Rails.application.assets["notifications.css"].to_s.html_safe %>
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
@@ -70,13 +77,6 @@
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
       <%= Rails.application.assets["article-form-needed-legacy.css"].to_s.html_safe %>
-      <%= Rails.application.assets["footer.css"].to_s.html_safe %>
-    </style>
-  <% elsif view_class.include? "users-index" %>
-    <style>
-      <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
-      <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
-      <%= Rails.application.assets["leaderboard.css"].to_s.html_safe %>
       <%= Rails.application.assets["footer.css"].to_s.html_safe %>
     </style>
   <% elsif view_class.include? "classified_listings-" %>

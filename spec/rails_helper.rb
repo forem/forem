@@ -77,11 +77,17 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   config.include OmniauthMacros
   config.include SidekiqTestHelpers
+  config.include ElasticsearchHelpers, elasticsearch: true
 
   config.before do
     ActiveRecord::Base.observers.disable :all # <-- Turn 'em all off!
 
     Sidekiq::Worker.clear_all # worker jobs shouldn't linger around between tests
+  end
+
+  config.around(:each, elasticsearch: true) do |example|
+    Search::Cluster.recreate_indexes
+    example.run
   end
 
   config.after do

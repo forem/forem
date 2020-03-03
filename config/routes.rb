@@ -12,8 +12,6 @@ Rails.application.routes.draw do
 
   require "sidekiq/web"
   authenticated :user, ->(user) { user.tech_admin? } do
-    mount DelayedJobWeb, at: "/delayed_job"
-
     Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
     Sidekiq::Web.set :sessions, Rails.application.config.session_options
     Sidekiq::Web.class_eval do
@@ -78,6 +76,7 @@ Rails.application.routes.draw do
     end
     resources :organization_memberships, only: %i[update destroy create]
     resources :organizations, only: %i[index show]
+    resources :sponsorships, only: %i[index edit update destroy]
     resources :welcome, only: %i[index create]
     resources :growth, only: %i[index]
     resources :tools, only: %i[index create] do
@@ -89,6 +88,12 @@ Rails.application.routes.draw do
     resource :config
     resources :badges, only: :index
     post "badges/award_badges", to: "badges#award_badges"
+  end
+
+  namespace :stories, defaults: { format: "json" } do
+    resource :feed, only: [:show] do
+      get ":timeframe" => "feeds#show"
+    end
   end
 
   namespace :api, defaults: { format: "json" } do
@@ -119,24 +124,15 @@ Rails.application.routes.draw do
         end
       end
       resources :follows, only: [:create]
-      resources :followers do
-        collection do
-          get :users
-          get :organizations
-        end
+      namespace :followers do
+        get :users
+        get :organizations
       end
-      resources :followings do
-        collection do
-          get :users
-          get :tags
-          get :organizations
-          get :podcasts
-        end
-      end
-      resources :github_repos, only: [:index] do
-        collection do
-          post "/update_or_create", to: "github_repos#update_or_create"
-        end
+      namespace :followings do
+        get :users
+        get :tags
+        get :organizations
+        get :podcasts
       end
       resources :webhooks, only: %i[index create show destroy]
 
@@ -152,6 +148,11 @@ Rails.application.routes.draw do
   namespace :notifications do
     resources :counts, only: [:index]
     resources :reads, only: [:create]
+  end
+
+  namespace :incoming_webhooks do
+    get "/mailchimp/:secret/unsubscribe", to: "mailchimp_unsubscribes#index", as: :mailchimp_unsubscribe_check
+    post "/mailchimp/:secret/unsubscribe", to: "mailchimp_unsubscribes#create", as: :mailchimp_unsubscribe
   end
 
   resources :messages, only: [:create]
@@ -180,7 +181,11 @@ Rails.application.routes.draw do
   resources :downloads, only: [:index]
   resources :stripe_active_cards, only: %i[create update destroy]
   resources :live_articles, only: [:index]
-  resources :github_repos, only: %i[create update]
+  resources :github_repos, only: %i[index create update] do
+    collection do
+      post "/update_or_create", to: "github_repos#update_or_create"
+    end
+  end
   resources :buffered_articles, only: [:index]
   resources :events, only: %i[index show]
   resources :additional_content_boxes, only: [:index]
@@ -210,6 +215,8 @@ Rails.application.routes.draw do
   resources :podcasts, only: %i[new create]
   resolve("ProMembership") { [:pro_membership] } # see https://guides.rubyonrails.org/routing.html#using-resolve
 
+  get "/search/tags" => "search#tags"
+  get "/search/chat_channels" => "search#chat_channels"
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/listings/dashboard" => "classified_listings#dashboard"
   get "/listings/:category" => "classified_listings#index"
@@ -258,7 +265,7 @@ Rails.application.routes.draw do
   post "users/remove_org_admin" => "users#remove_org_admin"
   post "users/remove_from_org" => "users#remove_from_org"
   delete "users/remove_association", to: "users#remove_association"
-  get "users/request_destroy", to: "users#request_destroy", as: :user_request_destroy
+  post "users/request_destroy", to: "users#request_destroy", as: :user_request_destroy
   get "users/confirm_destroy/:token", to: "users#confirm_destroy", as: :user_confirm_destroy
   delete "users/full_delete", to: "users#full_delete", as: :user_full_delete
   post "organizations/generate_new_secret" => "organizations#generate_new_secret"
@@ -289,7 +296,6 @@ Rails.application.routes.draw do
   get "/challenge" => "pages#challenge"
   get "/badge" => "pages#badge"
   get "/onboarding" => "pages#onboarding"
-  get "/shecoded" => "pages#shecoded"
   get "/💸", to: redirect("t/hiring")
   get "/security", to: "pages#bounty"
   get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
@@ -329,10 +335,7 @@ Rails.application.routes.draw do
   get "dashboard/following_users" => "dashboards#following_users"
   get "dashboard/following_organizations" => "dashboards#following_organizations"
   get "dashboard/following_podcasts" => "dashboards#following_podcasts"
-  get "/dashboard/:which" => "dashboards#followers",
-      :constraints => {
-        which: /organization_user_followers|user_followers/
-      }
+  get "/dashboard/:which" => "dashboards#followers", :constraints => { which: /user_followers/ }
   get "/dashboard/:which/:org_id" => "dashboards#show",
       :constraints => {
         which: /organization/
@@ -361,7 +364,6 @@ Rails.application.routes.draw do
   get "/podcasts", to: redirect("pod")
   get "/readinglist" => "reading_list_items#index"
   get "/readinglist/:view" => "reading_list_items#index", :constraints => { view: /archive/ }
-  get "/history", to: "history#index", as: :history
 
   get "/feed" => "articles#feed", :as => "feed", :defaults => { format: "rss" }
   get "/feed/tag/:tag" => "articles#feed",

@@ -5,6 +5,17 @@ RSpec.describe "Api::V0::Articles", type: :request do
   let_it_be_changeable(:article) { create(:article, featured: true, tags: "discuss") }
 
   describe "GET /api/articles" do
+    it "returns CORS headers" do
+      origin = "http://example.com"
+      get api_articles_path, headers: { "origin": origin }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
+      expect(response.headers["Access-Control-Allow-Methods"]).to eq("HEAD, GET, OPTIONS")
+      expect(response.headers["Access-Control-Expose-Headers"]).to be_empty
+      expect(response.headers["Access-Control-Max-Age"]).to eq(2.hours.to_i.to_s)
+    end
+
     it "has correct keys in the response" do
       article.update_columns(organization_id: organization.id)
       get api_articles_path
@@ -240,9 +251,29 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
       end
     end
+
+    context "with regression tests" do
+      it "works if both the social image and the main image are missing" do
+        article.update_columns(social_image: nil, main_image: nil)
+
+        get api_articles_path
+        expect(response).to have_http_status(:ok)
+      end
+    end
   end
 
   describe "GET /api/articles/:id" do
+    it "returns CORS headers" do
+      origin = "http://example.com"
+      get api_article_path(article.id), headers: { "origin": origin }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
+      expect(response.headers["Access-Control-Allow-Methods"]).to eq("HEAD, GET, OPTIONS")
+      expect(response.headers["Access-Control-Expose-Headers"]).to be_empty
+      expect(response.headers["Access-Control-Max-Age"]).to eq(2.hours.to_i.to_s)
+    end
+
     it "has correct keys in the response" do
       article.update_columns(organization_id: organization.id)
       get api_article_path(article.id)
@@ -442,8 +473,11 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
 
     describe "when authorized" do
+      let(:default_params) { { body_markdown: "" } }
+
       def post_article(**params)
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        params = default_params.merge params
         post api_articles_path, params: { article: params }.to_json, headers: headers
       end
 
@@ -463,6 +497,16 @@ RSpec.describe "Api::V0::Articles", type: :request do
         tags = %w[#discuss .help]
         post_article(title: "Test Article Title", tags: tags)
         expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "fails if params are not a Hash" do
+        # Not using the nifty post_article helper method because it expects a Hash
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        string_params = "this_string_is_definitely_not_a_hash"
+        post api_articles_path, params: { article: string_params }.to_json, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
       end
 
       it "creates an article belonging to the user" do
@@ -674,6 +718,12 @@ RSpec.describe "Api::V0::Articles", type: :request do
           post api_articles_path, params: {}.to_json, headers: headers
         end.not_to raise_error
         expect(response.status).to eq(422)
+      end
+
+      it "fails with a nil body markdown" do
+        post_article(title: Faker::Book.title, body_markdown: nil)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
       end
     end
   end
@@ -931,6 +981,16 @@ RSpec.describe "Api::V0::Articles", type: :request do
         put_article(organization_id: organization.id)
         expect(response).to have_http_status(:ok)
         expect(article.reload.organization).to eq(organization)
+      end
+
+      it "fails if params are not a Hash" do
+        # Not using the nifty put_article helper method because it expects a Hash
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        string_params = "this_string_is_definitely_not_a_hash"
+        put path, params: { article: string_params }.to_json, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
       end
     end
   end

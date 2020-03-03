@@ -1,153 +1,155 @@
 @import 'variables';
-blockquote.ltag__twitter-tweet{
+blockquote.ltag__twitter-tweet {
   font-family: $helvetica;
-  background:white;
-  max-width:500px;
-  font-size:0.75em;
-  line-height:1.35em;
-  border-radius:3px;
-  margin:1.6em auto !important;
-  min-height:60px;
-  cursor:pointer;
-  padding:0px !important;
-  border:1px solid $light-medium-gray !important;
+  background: white;
+  max-width: 500px;
+  font-size: 0.75em;
+  line-height: 1.35em;
+  border-radius: 3px;
+  margin: 1.6em auto !important;
+  min-height: 60px;
+  cursor: pointer;
+  padding: 0px !important;
+  border: 1px solid $light-medium-gray !important;
   box-shadow: $shadow;
-  &:hover{
-  border:1px solid darken($light-medium-gray, 3%) !important;
+  &:hover {
+    border: 1px solid darken($light-medium-gray, 3%) !important;
   }
-  a{
-    color:#55acee;
+  a {
+    color: #55acee;
   }
 
-  @media screen and ( min-width: 360px ){
-    min-height:105px;
+  @media screen and (min-width: 360px) {
+    min-height: 105px;
   }
-  .ltag__twitter-tweet__media{
-    position:relative;
-    overflow:hidden;
-    img{
-      width:100%;
-      left:0;
-      right:0;
-      margin:auto;
-      border-top-left-radius:3px;
-      border-top-right-radius:3px;
+  .ltag__twitter-tweet__media {
+    position: relative;
+    overflow: hidden;
+    img {
+      width: 100%;
+      left: 0;
+      right: 0;
+      margin: auto;
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
     }
-    img.ltag__twitter-tweet__play-butt{
-      width:70px;
-      height:70px;
+    img.ltag__twitter-tweet__play-butt {
+      width: 70px;
+      height: 70px;
       margin: auto;
       position: absolute;
-      top: 0; left: 0; bottom: 0; right: 0;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
     }
   }
-  .ltag__twitter-tweet__video{
-    display:none;
-    video{
-      width:100%;
+  .ltag__twitter-tweet__video {
+    display: none;
+    video {
+      width: 100%;
     }
   }
-  .ltag__twitter-tweet__header{
-    position:relative;
-    height:45px;
-    @media screen and ( min-width: 360px ){
-      height:52px;
+  .ltag__twitter-tweet__header {
+    position: relative;
+    height: 45px;
+    @media screen and (min-width: 360px) {
+      height: 52px;
     }
-    .ltag__twitter-tweet__profile-image{
-      height:36px;
-      min-height:36px;
-      width:36px;
-      border-radius:50px;
-      position:absolute;
-      left:calc(0.3vw + 13px);
-      top:calc(0.3vw + 13px);
-      background-color:#ececec;
+    .ltag__twitter-tweet__profile-image {
+      height: 36px;
+      min-height: 36px;
+      width: 36px;
+      border-radius: 50px;
+      position: absolute;
+      left: calc(0.3vw + 13px);
+      top: calc(0.3vw + 13px);
+      background-color: #ececec;
     }
-    .ltag__twitter-tweet__twitter-logo{
-      position:absolute;
-      right:calc(0.3vw + 8px);
-      top:20px;
-      left:auto;
-      img{
-        height:24px;
-        min-height:24px;
-        max-width:24px;
-        display:inline-block;
-        width:36px;
-        margin:auto;
+    .ltag__twitter-tweet__twitter-logo {
+      position: absolute;
+      right: calc(0.3vw + 8px);
+      top: 20px;
+      left: auto;
+      img {
+        height: 24px;
+        min-height: 24px;
+        max-width: 24px;
+        display: inline-block;
+        width: 36px;
+        margin: auto;
       }
     }
-    .ltag__twitter-tweet__full-name{
+    .ltag__twitter-tweet__full-name {
       color: #1c2022;
-      position:absolute;
-      left:calc(0.3vw + 57px);
-      top:calc(0.3vw + 13px);
-      font-weight:bold;
-      font-size:16px;
-
+      position: absolute;
+      left: calc(0.3vw + 57px);
+      top: calc(0.3vw + 13px);
+      font-weight: bold;
+      font-size: 16px;
     }
-    .ltag__twitter-tweet__username{
-      position:absolute;
-      left:calc(0.3vw + 57px);
-      top:calc(0.3vw + 33px);
-      color:#697882;
-      font-size:14px;
-    }
-  }
-  .ltag__twitter-tweet__body{
-    color:#1c2022;
-    font-size:16px;
-    line-height:22px;
-    padding:calc(0.3vw + 13px) calc(0.3vw + 13px) 0px;
-    br{
-      line-height:0 !important;
+    .ltag__twitter-tweet__username {
+      position: absolute;
+      left: calc(0.3vw + 57px);
+      top: calc(0.3vw + 33px);
+      color: #697882;
+      font-size: 14px;
     }
   }
-  .ltag__twitter-tweet__date{
-    font-size:14px;
-    color:#697882;
-    margin-top:3px;
-    padding:0px calc(0.3vw + 13px);
-  }
-  .ltag__twitter-tweet__quote{
+  .ltag__twitter-tweet__body {
     color: #1c2022;
-    margin:calc(0.3vw + 13px) calc(0.3vw + 13px) 0px;
-    padding:calc(0.2vw + 8px) calc(0.2vw + 8px);
-    border:1px solid #dce3e8;
-    border-radius:4px;
-    font-size:15px;
-    line-height: 1.1em;
-    &:hover{
-      border:1px solid #a09dad;
+    font-size: 16px;
+    line-height: 22px;
+    padding: calc(0.3vw + 13px) calc(0.3vw + 13px) 0px;
+    br {
+      line-height: 0 !important;
     }
-    .ltag__twitter-tweet__quote__header{
-      padding:0 0 calc(0.05vw + 3px);
-      font-size:0.9em;
-      .ltag__twitter-tweet__quote__header__name{
-        font-weight:bold;
-        font-size:1.1em;
+  }
+  .ltag__twitter-tweet__date {
+    font-size: 14px;
+    color: #697882;
+    margin-top: 3px;
+    padding: 0px calc(0.3vw + 13px);
+  }
+  .ltag__twitter-tweet__quote {
+    color: #1c2022;
+    margin: calc(0.3vw + 13px) calc(0.3vw + 13px) 0px;
+    padding: calc(0.2vw + 8px) calc(0.2vw + 8px);
+    border: 1px solid #dce3e8;
+    border-radius: 4px;
+    font-size: 15px;
+    line-height: 1.1em;
+    &:hover {
+      border: 1px solid #a09dad;
+    }
+    .ltag__twitter-tweet__quote__header {
+      padding: 0 0 calc(0.05vw + 3px);
+      font-size: 0.9em;
+      .ltag__twitter-tweet__quote__header__name {
+        font-weight: bold;
+        font-size: 1.1em;
       }
     }
   }
-  .ltag__twitter-tweet__actions{
-    margin:6px auto 0px;
-    padding:0px calc(0.3vw + 13px) 5px;
+  .ltag__twitter-tweet__actions {
+    margin: 6px auto 0px;
+    padding: 0px calc(0.3vw + 13px) 5px;
     color: #aab8c2;
     font-size: 14px;
-    .ltag__twitter-tweet__actions__button{
-      width:18px;
-      height:22px;
-      display:inline-block;
-      margin-left:20px;
-      margin-right:2px;
-      vertical-align:-7px;
+    .ltag__twitter-tweet__actions__button {
+      width: 18px;
+      height: 22px;
+      display: inline-block;
+      margin-left: 20px;
+      margin-right: 2px;
+      vertical-align: -7px;
       &:first-child {
-        margin-left:8px;
+        margin-left: 8px;
       }
     }
-    img{
-      height:20px;
-      min-height:20px;
+    img {
+      height: 20px;
+      min-height: 20px;
     }
   }
 }

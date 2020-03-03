@@ -21,7 +21,7 @@ RSpec.describe Article, type: :model do
     it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:organization).optional }
-    it { is_expected.to belong_to(:collection).optional.touch(true) }
+    it { is_expected.to belong_to(:collection).optional }
     it { is_expected.to have_many(:comments) }
     it { is_expected.to have_many(:reactions).dependent(:destroy) }
     it { is_expected.to have_many(:notifications).dependent(:delete_all) }
@@ -43,6 +43,26 @@ RSpec.describe Article, type: :model do
         expect(article.valid?).to eq(false)
         article.main_image_background_hex_color = "#fff000"
         expect(article.valid?).to eq(true)
+      end
+    end
+
+    describe "#canonical_url_must_not_have_spaces" do
+      let!(:article) { build :article, user: user }
+
+      it "is valid without spaces" do
+        valid_url = "https://www.positronx.io/angular-radio-buttons-example/"
+        article.canonical_url = valid_url
+
+        expect(article).to be_valid
+      end
+
+      it "is not valid with spaces" do
+        invalid_url = "https://www.positronx.io/angular radio-buttons-example/"
+        article.canonical_url = invalid_url
+        messages = ["must not have spaces"]
+
+        expect(article).not_to be_valid
+        expect(article.errors.messages[:canonical_url]).to eq messages
       end
     end
 
@@ -90,7 +110,7 @@ RSpec.describe Article, type: :model do
       end
 
       it "is valid with valid liquid tags", :vcr do
-        VCR.use_cassette("twitter_gem") do
+        VCR.use_cassette("twitter_fetch_status") do
           article = build_and_validate_article(with_tweet_tag: true)
           expect(article).to be_valid
         end
@@ -355,6 +375,17 @@ RSpec.describe Article, type: :model do
       article.body_markdown = "Hey hey Ho Ho"
       expect(article.has_frontmatter?).to eq(false)
     end
+
+    it "returns true if parser raises a Psych::DisallowedClass error" do
+      allow(FrontMatterParser::Parser).to receive(:new).and_raise(Psych::DisallowedClass.new("msg"))
+      expect(article.has_frontmatter?).to eq(true)
+    end
+
+    it "returns true if parser raises a Psych::SyntaxError error" do
+      syntax_error = Psych::SyntaxError.new("file", 1, 1, 0, "problem", "context")
+      allow(FrontMatterParser::Parser).to receive(:new).and_raise(syntax_error)
+      expect(article.has_frontmatter?).to eq(true)
+    end
   end
 
   describe "#readable_edit_date" do
@@ -580,7 +611,7 @@ RSpec.describe Article, type: :model do
       it "enqueues a job to update the main image background if #dddddd" do
         article.main_image_background_hex_color = "#dddddd"
         allow(article).to receive(:update_main_image_background_hex).and_call_original
-        assert_enqueued_with(job: Articles::UpdateMainImageBackgroundHexJob) do
+        sidekiq_assert_enqueued_with(job: Articles::UpdateMainImageBackgroundHexWorker) do
           article.save
         end
         expect(article).to have_received(:update_main_image_background_hex)
@@ -589,7 +620,7 @@ RSpec.describe Article, type: :model do
       it "does not enqueue a job to update the main image background if not #dddddd" do
         article.main_image_background_hex_color = "#fff000"
         allow(article).to receive(:update_main_image_background_hex).and_call_original
-        assert_no_enqueued_jobs(only: Articles::UpdateMainImageBackgroundHexJob) do
+        sidekiq_assert_no_enqueued_jobs(only: Articles::UpdateMainImageBackgroundHexWorker) do
           article.save
         end
         expect(article).to have_received(:update_main_image_background_hex)
@@ -597,33 +628,40 @@ RSpec.describe Article, type: :model do
     end
 
     describe "async score calc" do
-      it "enqueues Articles::ScoreCalcJob if published" do
-        assert_enqueued_with(job: Articles::ScoreCalcJob) do
+      it "enqueues Articles::ScoreCalcWorker if published" do
+        sidekiq_assert_enqueued_with(job: Articles::ScoreCalcWorker, args: [article.id]) do
           article.save
         end
       end
 
-      it "does not enqueue Articles::ScoreCalcJob if not published" do
+      it "does not enqueue Articles::ScoreCalcWorker if not published" do
         article = build(:article, published: false)
-        assert_no_enqueued_jobs(only: Articles::ScoreCalcJob) do
+        sidekiq_assert_no_enqueued_jobs(only: Articles::ScoreCalcWorker) do
           article.save
         end
       end
     end
 
     describe "detect human language" do
+      let(:language_detector) { instance_double(LanguageDetector) }
+
+      before do
+        allow(LanguageDetector).to receive(:new).and_return(language_detector)
+        allow(language_detector).to receive(:detect)
+      end
+
       it "calls the human language detector" do
         article.language = ""
-        assert_enqueued_with(job: Articles::DetectHumanLanguageJob) do
-          article.save
-        end
+        article.save
+
+        expect(language_detector).to have_received(:detect)
       end
 
       it "does not call the human language detector if there is already a language" do
         article.language = "en"
-        assert_no_enqueued_jobs(only: Articles::DetectHumanLanguageJob) do
-          article.save
-        end
+        article.save
+
+        expect(language_detector).not_to have_received(:detect)
       end
     end
   end

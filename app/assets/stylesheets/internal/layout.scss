@@ -1,8 +1,15 @@
+#siteConfigBodyContainer {
+  padding: 20px;
+}
+
 .pagination {
   justify-content: right;
 
-  .page, .next, .last,
-  .first, .prev {
+  .page,
+  .next,
+  .last,
+  .first,
+  .prev {
     padding: 8px;
   }
 }
@@ -29,7 +36,7 @@
 }
 
 .featured-bg {
-  background: #bbffd2
+  background: #bbffd2;
 }
 
 .approved-bg {
@@ -50,7 +57,7 @@
   background: #2effa8 !important;
 }
 
-.highlighted-no-border input[type="submit"] {
+.highlighted-no-border input[type='submit'] {
   display: none;
 }
 

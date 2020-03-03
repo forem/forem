@@ -49,7 +49,7 @@ function buildArticleHTML(article) {
     var profileUsername = article.user.username
     var orgHeadline = "";
     if (article.organization && !document.getElementById("organization-article-index")) {
-      orgHeadline = '<div class="article-organization-headline"><a class="org-headline-filler" href="/'+article.organization.slug+'"><span class="article-organization-headline-inner"><img alt="'+article.organization.name+' logo" src="'+article.organization.profile_image_90+'" loading="lazy">'+article.organization.name+'</span></a></div>'
+      orgHeadline = '<div class="article-organization-headline"><a class="org-headline-filler" href="/'+article.organization.slug+'"><img alt="'+article.organization.name+' logo" src="'+article.organization.profile_image_90+'" loading="lazy">'+article.organization.name+'</a></div>'
     }
     var bodyTextSnippet = "";
     var commentsBlobSnippet = "";
@@ -110,7 +110,7 @@ function buildArticleHTML(article) {
 
     var timeAgoInWords = '';
     if (article.published_at_int) {
-      timeAgoInWords = timeAgo(article.published_at_int);
+      timeAgoInWords = timeAgo({ oldTimeInSeconds: article.published_at_int });
     }
 
     return '<div class="single-article single-article-small-pic" data-content-user-id="'+article.user_id+'">\

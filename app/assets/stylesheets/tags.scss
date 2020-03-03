@@ -1,35 +1,27 @@
 @import 'variables';
 
 .home {
-  &.tag-home{
-    margin-top: 20px;
-  }
-  .tag-list-container{
-    background:$black;
-    color:white;
-    margin-bottom:0px;
-    display:block;
-    font-family: "Lucida Console", Monaco, monospace, sans-serif;
-    position:relative;
-    text-align: left;
+  .tag-list-container {
+    background: $black;
+    color: white;
+    font-family: $monospace;
     border-radius: 3px;
-    box-shadow: $shadow;
-    margin: 6px auto 0px;
-    width: 92%;
-    &:hover{
-      opacity:0.8;
+    margin: 0 8px 8px;
+    text-align: left;
+    &:hover {
+      opacity: 0.8;
     }
     h2 {
       display: inline-block;
       font-size: calc(1vw + 15px);
       margin: 15px 0px;
     }
-    a.tag-show-link{
-      color:white;
-      padding:5px 15px;
-      display:inline-block;
-      width:calc(100% - 75px - 3vw);
-      opacity:0.9;
+    a.tag-show-link {
+      color: white;
+      padding: 5px 15px;
+      display: inline-block;
+      width: calc(100% - 75px - 3vw);
+      opacity: 0.9;
 
       p {
         font-size: calc(0.4vw + 13px);
@@ -38,34 +30,34 @@
       h4 {
         margin-top: 4px;
       }
-      &:hover{
-        opacity:1;
+      &:hover {
+        opacity: 1;
       }
     }
   }
-  a.tag-follow-link{
-    position:absolute;
-    right:0px;
-    top:0px;
-    bottom:0px;
-    padding:5px 1px 5px 2px;
-    text-align:center;
-    width:calc(3vw + 45px);
-    color:white;
-    background:white;
-    border-left:1px solid white;
-    font-weight:900;
-    font-size:calc(1.3vw + 33px);
-    &.showing{
-      color:$black;
+  a.tag-follow-link {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    padding: 5px 1px 5px 2px;
+    text-align: center;
+    width: calc(3vw + 45px);
+    color: white;
+    background: white;
+    border-left: 1px solid white;
+    font-weight: 900;
+    font-size: calc(1.3vw + 33px);
+    &.showing {
+      color: $black;
     }
-    &:hover{
-      background:lighten($blue,57%);
+    &:hover {
+      background: lighten($blue, 57%);
     }
 
-    &.following-butt{
-      color:white;
-      background:$blue;
+    &.following-butt {
+      color: white;
+      background: $blue;
     }
   }
 }

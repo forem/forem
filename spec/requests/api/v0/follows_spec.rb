@@ -17,8 +17,7 @@ RSpec.describe "Api::V0::FollowsController", type: :request do
 
       it "returns the number of followed users" do
         post "/api/follows", params: { users: users_hash }
-        json_response = JSON.parse(response.body)
-        expect(json_response["outcome"]).to include("#{users_hash.size} users")
+        expect(response.parsed_body["outcome"]).to include("#{users_hash.size} users")
       end
 
       it "creates follows" do

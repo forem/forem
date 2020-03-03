@@ -16,7 +16,7 @@ class Internal::ToolsController < Internal::ApplicationController
                       end
     redirect_to "/internal/tools"
   rescue StandardError => e
-    flash[:danger] = e
+    flash[:danger] = e.message
     redirect_to "/internal/tools"
   end
 
@@ -39,7 +39,7 @@ class Internal::ToolsController < Internal::ApplicationController
   end
 
   def bust_link(link)
-    link.sub!("https://dev.to", "") if link.starts_with?("https://dev.to")
+    link.sub!("https://#{ApplicationConfig['APP_DOMAIN']}", "") if link.starts_with?("https://#{ApplicationConfig['APP_DOMAIN']}")
     CacheBuster.bust(link)
     CacheBuster.bust("#{link}/")
     CacheBuster.bust("#{link}?i=i")

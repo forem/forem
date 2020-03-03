@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_20_053525) do
+ActiveRecord::Schema.define(version: 2020_02_27_214321) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -224,9 +224,9 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
   end
 
   create_table "broadcasts", id: :serial, force: :cascade do |t|
+    t.boolean "active", default: false
     t.text "body_markdown"
     t.text "processed_html"
-    t.boolean "sent", default: false
     t.string "title"
     t.string "type_of"
   end
@@ -350,19 +350,13 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
     t.index ["spent"], name: "index_credits_on_spent"
   end
 
-  create_table "delayed_jobs", id: :serial, force: :cascade do |t|
-    t.integer "attempts", default: 0, null: false
-    t.datetime "created_at"
-    t.datetime "failed_at"
-    t.text "handler", null: false
-    t.text "last_error"
-    t.datetime "locked_at"
-    t.string "locked_by"
-    t.integer "priority", default: 0, null: false
-    t.string "queue"
+  create_table "data_update_scripts", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "file_name"
+    t.datetime "finished_at"
     t.datetime "run_at"
-    t.datetime "updated_at"
-    t.index ["priority", "run_at"], name: "delayed_jobs_priority"
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "display_ad_events", force: :cascade do |t|
@@ -392,6 +386,16 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
     t.boolean "published", default: false
     t.float "success_rate", default: 0.0
     t.datetime "updated_at", null: false
+  end
+
+  create_table "email_authorizations", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.jsonb "json_data", default: {}, null: false
+    t.string "type_of", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.datetime "verified_at"
+    t.index ["user_id", "type_of"], name: "index_email_authorizations_on_user_id_and_type_of", unique: true
   end
 
   create_table "events", force: :cascade do |t|
@@ -582,6 +586,7 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
     t.integer "user_id"
     t.index ["created_at"], name: "index_notifications_on_created_at"
     t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
+    t.index ["notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_notifiable_id_notifiable_type_and_action"
     t.index ["notifiable_id"], name: "index_notifications_on_notifiable_id"
     t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
     t.index ["notified_at"], name: "index_notifications_on_notified_at"
@@ -756,6 +761,8 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
     t.index ["guid"], name: "index_podcast_episodes_on_guid", unique: true
     t.index ["media_url"], name: "index_podcast_episodes_on_media_url", unique: true
     t.index ["podcast_id"], name: "index_podcast_episodes_on_podcast_id"
+    t.index ["title"], name: "index_podcast_episodes_on_title"
+    t.index ["website_url"], name: "index_podcast_episodes_on_website_url"
   end
 
   create_table "podcasts", id: :serial, force: :cascade do |t|
@@ -872,6 +879,7 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
     t.index ["category"], name: "index_reactions_on_category"
     t.index ["created_at"], name: "index_reactions_on_created_at"
     t.index ["points"], name: "index_reactions_on_points"
+    t.index ["reactable_id", "reactable_type"], name: "index_reactions_on_reactable_id_and_reactable_type"
     t.index ["reactable_id"], name: "index_reactions_on_reactable_id"
     t.index ["reactable_type"], name: "index_reactions_on_reactable_type"
     t.index ["user_id"], name: "index_reactions_on_user_id"
@@ -958,6 +966,7 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
     t.datetime "created_at"
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
+    t.integer "mod_chat_channel_id"
     t.string "name"
     t.string "pretty_name"
     t.string "profile_image"
@@ -966,6 +975,7 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
     t.text "rules_markdown"
     t.string "short_summary"
     t.string "social_image"
+    t.string "social_preview_template", default: "article"
     t.string "submission_rules_headsup"
     t.text "submission_template"
     t.boolean "supported", default: false
@@ -975,6 +985,7 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
     t.text "wiki_body_html"
     t.text "wiki_body_markdown"
     t.index ["name"], name: "index_tags_on_name", unique: true
+    t.index ["social_preview_template"], name: "index_tags_on_social_preview_template"
   end
 
   create_table "tweets", id: :serial, force: :cascade do |t|
@@ -1016,6 +1027,15 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["blocked_id", "blocker_id"], name: "index_user_blocks_on_blocked_id_and_blocker_id", unique: true
+  end
+
+  create_table "user_counters", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.jsonb "data", default: {}, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["data"], name: "index_user_counters_on_data", using: :gin
+    t.index ["user_id"], name: "index_user_counters_on_user_id", unique: true
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
@@ -1114,7 +1134,6 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
     t.boolean "onboarding_package_requested_again", default: false
     t.string "onboarding_variant_version", default: "0"
     t.boolean "org_admin", default: false
-    t.integer "organization_id"
     t.datetime "organization_info_updated_at"
     t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "personal_data_updated_at"
@@ -1175,7 +1194,6 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["old_old_username"], name: "index_users_on_old_old_username"
     t.index ["old_username"], name: "index_users_on_old_username"
-    t.index ["organization_id"], name: "index_users_on_organization_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
@@ -1207,6 +1225,7 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
   add_foreign_key "chat_channel_memberships", "chat_channels"
   add_foreign_key "chat_channel_memberships", "users"
   add_foreign_key "classified_listings", "users", on_delete: :cascade
+  add_foreign_key "email_authorizations", "users", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade
   add_foreign_key "messages", "chat_channels"
   add_foreign_key "messages", "users"
@@ -1224,6 +1243,7 @@ ActiveRecord::Schema.define(version: 2020_01_20_053525) do
   add_foreign_key "tag_adjustments", "users", on_delete: :cascade
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
+  add_foreign_key "user_counters", "users", on_delete: :cascade
   add_foreign_key "users_roles", "users", on_delete: :cascade
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_endpoints", "users"

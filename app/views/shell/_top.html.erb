@@ -11,21 +11,13 @@
       <meta name="algolia-public-key" content="<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>">
       <meta name="environment" content="<%= Rails.env %>">
       <%= render "layouts/styles" %>
-      <style>
-        .home {
-          overflow: hidden;
-          position: relative;
-          text-align: center;
-          min-height: 440px;
-          margin: auto;
-          max-width: 1250px;
-        }
-
-        @media screen and (min-width: 950px) {
-          .home {
-            margin-top: 26px;
-          }
-        }
+      <style> 
+        .home { 
+          overflow: hidden; 
+          position: relative; 
+          margin: auto; 
+          max-width: 1250px;  
+        } 
       </style>
       <%= javascript_pack_tag "manifest", defer: true %>
       <%= javascript_pack_tag "vendor", defer: true %>

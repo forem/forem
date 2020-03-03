@@ -32,7 +32,7 @@
       <td><%= podcast.id %></td>
       <td><%= link_to podcast.title, edit_internal_podcast_path(podcast) %></td>
       <td><%= link_to podcast.feed_url, podcast.feed_url %></td>
-      <td><%= podcast.podcast_episode.size %></td>
+      <td><%= podcast.episodes_count %></td>
       <td><%= podcast.reachable %></td>
       <td><%= podcast.published %></td>
       <td><%= podcast.status_notice %></td>

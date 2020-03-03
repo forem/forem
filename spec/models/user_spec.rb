@@ -33,6 +33,7 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
       it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
       it { is_expected.to have_one(:pro_membership).dependent(:destroy) }
+      it { is_expected.to have_one(:counters).dependent(:destroy) }
 
       # rubocop:disable RSpec/NamedSubject
       it "has created_podcasts" do
@@ -184,6 +185,11 @@ RSpec.describe User, type: :model do
 
       it "does not accept invalid mastodon url" do
         user.mastodon_url = "mastodon.social/@test"
+        expect(user).not_to be_valid
+      end
+
+      it "does not accept an invalid url" do
+        user.mastodon_url = "ben .com"
         expect(user).not_to be_valid
       end
     end
@@ -441,32 +447,41 @@ RSpec.describe User, type: :model do
 
     describe "#estimated_default_language" do
       it "estimates default language to be nil" do
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           expect(user.estimated_default_language).to be(nil)
         end
       end
 
       it "estimates default language to be japanese with .jp email" do
-        perform_enqueued_jobs do
+        user = nil
+
+        sidekiq_perform_enqueued_jobs do
           user = create(:user, email: "ben@hello.jp")
-          expect(user.reload.estimated_default_language).to eq("ja")
         end
+
+        expect(user.reload.estimated_default_language).to eq("ja")
       end
 
       it "estimates default language based on ID dump" do
-        perform_enqueued_jobs do
+        new_user = nil
+
+        sidekiq_perform_enqueued_jobs do
           new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-          expect(new_user.estimated_default_language).to eq(nil)
         end
+
+        expect(new_user.estimated_default_language).to eq(nil)
       end
     end
 
     describe "#preferred_languages_array" do
       it "returns proper preferred_languages_array" do
-        perform_enqueued_jobs do
+        user = nil
+
+        sidekiq_perform_enqueued_jobs do
           user = create(:user, email: "ben@hello.jp")
-          expect(user.reload.preferred_languages_array).to eq(%w[en ja])
         end
+
+        expect(user.reload.preferred_languages_array).to eq(%w[en ja])
       end
 
       it "returns a correct array when language settings are in a new format" do
@@ -513,6 +528,15 @@ RSpec.describe User, type: :model do
       it "does not enqueue with an unconfirmed email" do
         sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(unconfirmed_email: "bob@bob.com", confirmation_sent_at: Time.current)
+        end
+      end
+
+      it "does not enqueue when the email address or subscription status has not changed" do
+        # The trait replaces the method with a dummy, but we need the actual method for this test.
+        user = described_class.find(create(:user, :ignore_mailchimp_subscribe_callback).id)
+
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
+          user.update(website_url: "http://example.com")
         end
       end
     end

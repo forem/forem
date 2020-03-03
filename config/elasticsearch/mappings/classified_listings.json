@@ -1,0 +1,81 @@
+{
+  "dynamic": "strict",
+  "properties": {
+    "id": {
+      "type": "keyword"
+    },
+    "author": {
+      "dynamic": "strict",
+      "properties": {
+        "username": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "keyword"
+        },
+        "profile_image_90": {
+          "type": "keyword"
+        }
+      }
+    },
+    "body_markdown": {
+      "type": "text",
+      "copy_to": "classified_listing_search"
+    },
+    "bumped_at": {
+      "type": "date"
+    },
+    "category": {
+      "type": "keyword"
+    },
+    "classified_listing_search": {
+      "type": "text"
+    },
+    "contact_via_connect": {
+      "type": "boolean"
+    },
+    "expires_at": {
+      "type": "date"
+    },
+    "location": {
+      "type": "text",
+      "copy_to": "classified_listing_search",
+      "fields": {
+        "raw": {
+          "type": "keyword"
+        }
+      }
+    },
+    "processed_html": {
+      "type": "keyword"
+    },
+    "published": {
+      "type": "boolean"
+    },
+    "slug": {
+      "type": "text",
+      "copy_to": "classified_listing_search",
+      "fields": {
+        "raw": {
+          "type": "keyword"
+        }
+      }
+    },
+    "tags": {
+      "type": "keyword",
+      "copy_to": "classified_listing_search"
+    },
+    "title": {
+      "type": "text",
+      "copy_to": "classified_listing_search",
+      "fields": {
+        "raw": {
+          "type": "keyword"
+        }
+      }
+    },
+    "user_id": {
+      "type": "keyword"
+    }
+  }
+}

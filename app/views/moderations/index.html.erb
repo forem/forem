@@ -64,7 +64,7 @@
         </div>
         <div class="mod-index-actions-and-details">
           <button class="quick-mod-button cta" data-path="<%= article.path %>">Quick Mod</button>
-          <a href="/<%= article.cached_user.username %>"><img src="<%= ProfileImage.new(article.cached_user).get(90) %>" /><%= article.cached_user.name %></a>
+          <a href="/<%= article.cached_user.username %>"><img src="<%= ProfileImage.new(article.cached_user).get(width: 90) %>" /><%= article.cached_user.name %></a>
           ・ <%= article.readable_publish_date %>
           <% if article.nth_published_by_author > 0 && article.nth_published_by_author < 4 %>
             ・ 👋 <strong><%= article.nth_published_by_author.ordinalize %> post by this user</strong>

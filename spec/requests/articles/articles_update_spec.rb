@@ -4,7 +4,11 @@ RSpec.describe "ArticlesUpdate", type: :request do
   let(:organization) { create(:organization) }
   let(:organization2) { create(:organization) }
   let(:user) { create(:user, :org_admin) }
-  let(:user2) { create(:user, organization_id: organization2.id) }
+  let(:user2) do
+    user = create(:user)
+    create(:organization_membership, user: user, organization: organization2)
+    user
+  end
   let(:article) { create(:article, user_id: user.id) }
 
   before do
@@ -62,7 +66,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
     put "/articles/#{article.id}", params: {
       article: { post_under_org: true }
     }
-    expect(article.reload.organization_id).to eq user2.organization_id
+    expect(article.reload.organization_id).to be_in(user2.organization_ids)
   end
 
   it "allows an org admin to assign an org article to another user" do

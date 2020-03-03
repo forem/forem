@@ -91,9 +91,16 @@
             </span>
             <span>
               <% if params[:status] == "Open" || params[:status].blank? %>
-                <%= form_for [:internal, reaction], html: { class: "d-inline" } do |f| %>
-                  <%= f.hidden_field :status, value: "confirmed" %>
-                  <%= f.submit "CONFIRMED", class: "btn btn-success btn-sm" %>
+                <% if reaction.reactable_type == "User" %>
+                  <%= form_for [:internal, reaction], html: { class: "d-inline" } do |f| %>
+                    <%= f.hidden_field :status, value: "confirmed" %>
+                    <%= f.submit "CONFIRMED", class: "btn btn-success btn-sm", data: { confirm: "Are you sure?" } %>
+                  <% end %>
+                <% else %>
+                  <%= form_for [:internal, reaction], html: { class: "d-inline" } do |f| %>
+                    <%= f.hidden_field :status, value: "confirmed" %>
+                    <%= f.submit "CONFIRMED", class: "btn btn-success btn-sm" %>
+                  <% end %>
                 <% end %>
                 <%= form_for [:internal, reaction], html: { class: "d-inline" } do |f| %>
                   <%= f.hidden_field :status, value: "invalid" %>
@@ -117,14 +124,12 @@
   <%= f.label :reporter_username_cont, "Reporter", class: "sr-only" %>
   <%= f.search_field :reporter_username_cont, placeholder: "Reporter", class: "form-control mx-3" %>
 
-  <%= f.select :status_eq,
-    options_for_select([
-      ["Open"],
-      ["Invalid"],
-      ["Resolved"],
-    ], @q.status_eq),
-    {},
-    class: "custom-select mx-3" %>
+  <%= f.select(
+        :status_eq,
+        options_for_select([["Open"], ["Invalid"], ["Resolved"]], @q.status_eq),
+        {},
+        class: "custom-select mx-3",
+      ) %>
 
   <%= f.submit "Search", class: "btn btn-secondary" %>
 <% end %>

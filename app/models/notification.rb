@@ -74,8 +74,8 @@ class Notification < ApplicationRecord
       Notifications::MentionWorker.perform_async(mention.id)
     end
 
-    def send_welcome_notification(receiver_id)
-      Notifications::WelcomeNotificationWorker.perform_async(receiver_id)
+    def send_welcome_notification(receiver_id, broadcast_id)
+      Notifications::WelcomeNotificationWorker.perform_async(receiver_id, broadcast_id)
     end
 
     def send_moderation_notification(notifiable)
@@ -86,7 +86,7 @@ class Notification < ApplicationRecord
     end
 
     def send_tag_adjustment_notification(tag_adjustment)
-      Notifications::TagAdjustmentNotificationJob.perform_later(tag_adjustment.id)
+      Notifications::TagAdjustmentNotificationWorker.perform_async(tag_adjustment.id)
     end
 
     def send_milestone_notification(type:, article_id:)

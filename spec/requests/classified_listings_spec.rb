@@ -248,7 +248,7 @@ RSpec.describe "ClassifiedListings", type: :request do
         user.add_role(:banned)
         expect do
           post "/listings", params: listing_params
-        end.to raise_error("BANNED")
+        end.to raise_error("SUSPENDED")
       end
     end
   end
@@ -440,7 +440,7 @@ RSpec.describe "ClassifiedListings", type: :request do
       end
     end
 
-    context "when deleting org listing" do
+    context "when deleting draft org listing" do
       it "redirect to dashboard" do
         delete "/listings/#{org_listing_draft.id}"
         expect(response).to redirect_to("/listings/dashboard")
