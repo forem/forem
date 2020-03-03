@@ -58,22 +58,21 @@ class Article < ApplicationRecord
   validates :video_closed_caption_track_url, url: { allow_blank: true, schemes: ["https"] }
   validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
 
+  before_validation :evaluate_markdown, :create_slug
+  before_create :create_password
+  before_save :set_all_dates
+  before_save :calculate_base_scores
+  before_save :set_caches
+  before_save :fetch_video_duration
+  before_save :clean_data
+  before_save :update_cached_user
+
+  after_save :bust_cache, :detect_human_language
+
   after_update_commit :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
-  before_validation :evaluate_markdown
-  before_validation :create_slug
-  before_create     :create_password
-  before_save       :set_all_dates
-  before_save       :calculate_base_scores
-  before_save       :set_caches
-  before_save       :fetch_video_duration
-  before_save       :clean_data
-  after_commit      :async_score_calc
-  after_save        :bust_cache
-  after_commit      :update_main_image_background_hex
-  after_save        :detect_human_language
-  before_save       :update_cached_user
-  before_destroy    :before_destroy_actions, prepend: true
-  after_commit      :touch_collection
+  after_commit :async_score_calc, :update_main_image_background_hex, :touch_collection
+
+  before_destroy :before_destroy_actions, prepend: true
 
   serialize :ids_for_suggested_articles
   serialize :cached_user
@@ -196,10 +195,7 @@ class Article < ApplicationRecord
         end
       end
       tags do
-        [tag_list,
-         "user_#{user_id}",
-         "username_#{user&.username}",
-         "lang_#{language || 'en'}",
+        [tag_list, "user_#{user_id}", "username_#{user&.username}", "lang_#{language || 'en'}",
          ("organization_#{organization_id}" if organization)].flatten.compact
       end
       ranking ["desc(hotness_score)"]
