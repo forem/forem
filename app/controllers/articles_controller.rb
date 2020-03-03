@@ -19,9 +19,8 @@ class ArticlesController < ApplicationController
                   @articles.where(featured: true).includes(:user)
                 end
 
-    unless @articles
-      render body: nil
-      return
+    unless @articles&.any?
+      not_found
     end
 
     set_surrogate_key_header "feed"

@@ -57,6 +57,18 @@ RSpec.describe "UserProfiles", type: :request do
       expect(response.body).not_to include("<meta name=\"googlebot\" content=\"noindex\">")
     end
 
+    it "renders rss feed link if any stories" do
+      create(:article, user_id: user.id)
+
+      get "/#{user.username}"
+      expect(response.body).to include("/feed/#{user.username}")
+    end
+
+    it "does not render feed link if any stories" do
+      get "/#{user.username}"
+      expect(response.body).not_to include("/feed/#{user.username}")
+    end
+
     context "when organization" do
       it "renders organization page if org" do
         get organization.path
