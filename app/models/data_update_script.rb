@@ -25,6 +25,16 @@ class DataUpdateScript < ApplicationRecord
     def scripts_to_run
       DataUpdateScript.where(id: load_script_ids).select(&:enqueued?)
     end
+
+    # true if there are any new files on disk or any scripts to run, false otherwise
+    def scripts_to_run?
+      db_scripts = DataUpdateScript.pluck(:file_name, :status).to_h
+
+      return true unless filenames.to_set == db_scripts.keys.to_set
+      return true if db_scripts.values.any? { |s| s.to_sym == :enqueued }
+
+      false
+    end
   end
 
   def mark_as_run!

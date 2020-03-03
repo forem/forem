@@ -1,0 +1,36 @@
+@import 'variables';
+@import '_mixins';
+
+// Notifications: Toast
+.snackbar {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  @include themeable(
+    background,
+    theme-container-accent-background,
+    $light-purple
+  );
+  @include themeable(border, container-border, 2px solid $purple);
+  padding: 12px 30px;
+  z-index: 20;
+  border-radius: 3px;
+  font-weight: bold;
+  @media screen and (min-width: 430px) {
+    right: auto;
+    display: inline-block;
+    -webkit-animation: ease-out;
+    -webkit-animation-name: slide-in-from-left;
+    -webkit-animation-duration: 0.25s;
+  }
+}
+
+@-webkit-keyframes slide-in-from-left {
+  0% {
+    left: -300px;
+  }
+  100% {
+    left: 20px;
+  }
+}

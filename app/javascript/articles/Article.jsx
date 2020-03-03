@@ -23,10 +23,16 @@ export const Article = ({
   reactionsIcon,
   commentsIcon,
   videoIcon,
+  bookmarkClick,
 }) => {
   if (article && article.type_of === 'podcast_episodes') {
     return <PodcastArticle article={article} />;
   }
+
+  const timeAgoIndicator = timeAgo({
+    oldTimeInSeconds: article.published_at_int,
+    formatter: x => x,
+  })
 
   return (
     <div
@@ -88,18 +94,13 @@ export const Article = ({
           )}
           {article.published_at_int ? (
             <span className="time-ago-indicator">
-              (
-              {timeAgo({
-                oldTimeInSeconds: article.published_at_int,
-                formatter: x => x,
-              })}
-              )
+              {timeAgoIndicator.length > 0 ? `(${timeAgoIndicator})`: '' }
             </span>
           ) : null}
         </a>
       </h4>
 
-      <TagList tags={article.tag_list || article.cached_tag_list_array} />
+      <TagList tags={article.tag_list} />
       {article.class_name !== 'User' && (
         <CommentsCount
           count={article.comments_count}
@@ -116,7 +117,11 @@ export const Article = ({
           readingTime={article.reading_time}
         />
       )}
-      <SaveButton article={article} isBookmarked={isBookmarked} />
+      <SaveButton
+        article={article}
+        isBookmarked={isBookmarked}
+        onClick={bookmarkClick}
+      />
     </div>
   );
 };
@@ -133,4 +138,5 @@ Article.propTypes = {
   reactionsIcon: PropTypes.string.isRequired,
   commentsIcon: PropTypes.string.isRequired,
   videoIcon: PropTypes.string.isRequired,
+  bookmarkClick: PropTypes.func.isRequired,
 };

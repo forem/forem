@@ -77,7 +77,6 @@ class ChatChannel < ApplicationRecord
         status: "active",
       )
       channel.add_users(users)
-      channel.chat_channel_memberships.map(&:index!)
     end
     channel
   end

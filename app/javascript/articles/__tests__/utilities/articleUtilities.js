@@ -242,6 +242,7 @@ export const podcastArticle = {
     slug: 'monitor-recontextualize',
     title: 'Rubber local',
     image_url: '/images/16.png',
+    image_90: '/images/16.png',
   },
 };
 
@@ -282,4 +283,16 @@ export const userArticle = {
     name: 'Phyllis Armstrong',
     profile_image_90: '/images/3.png',
   },
+};
+
+export const featuredArticle = {
+  ...article,
+  main_image: '/images/onboarding-background.png',
+  positive_reactions_count: 428,
+  comments_count: 213,
+};
+
+export const featuredArticleWithOrganization = {
+  ...articleWithOrganization,
+  main_image: '/images/12.png',
 };

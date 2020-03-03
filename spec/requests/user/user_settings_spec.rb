@@ -41,6 +41,20 @@ RSpec.describe "UserSettings", type: :request do
         error_message = "There is an existing account authorized with that social account"
         expect(response.body).to include error_message
       end
+
+      it "does not render the ghost account email option if the user has no content" do
+        ghost_account_message = "If you would like to keep your content under the"
+        get "/settings/account"
+        expect(response.body).not_to include ghost_account_message
+      end
+
+      it "does render the ghost account email option if the user has content" do
+        ghost_account_message = "If you would like to keep your content under the"
+        create(:article, user: user)
+        user.update(articles_count: 1)
+        get "/settings/account"
+        expect(response.body).to include ghost_account_message
+      end
     end
   end
 

@@ -39,6 +39,24 @@ class MailchimpBot
           }
         },
       )
+
+      success = true
+    rescue Gibbon::MailChimpError => e
+      # If user was previously subscribed, set their status to "pending"
+      return resubscribe_to_newsletter if previously_subcribed?(e)
+
+      report_error(e)
+    end
+    success
+  end
+
+  def resubscribe_to_newsletter
+    success = false
+
+    begin
+      gibbon.lists(SiteConfig.mailchimp_newsletter_id).members(target_md5_email).upsert(
+        body: { status: "pending" },
+      )
       success = true
     rescue Gibbon::MailChimpError => e
       report_error(e)
@@ -173,5 +191,9 @@ class MailchimpBot
   def target_md5_email
     email = saved_changes["unconfirmed_email"] ? saved_changes["email"][0] : user.email
     md5_email(email)
+  end
+
+  def previously_subcribed?(error)
+    error.title.match?(/Member In Compliance State/)
   end
 end
