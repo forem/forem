@@ -53,16 +53,24 @@
       "maxSize": "1.1 kB"
     },
     {
+      "path": "public/packs*/Feed-*.js",
+      "maxSize": "1.8 kB"
+    },
+    {
+      "path": "public/packs*/feedIcons-*.js",
+      "maxSize": "0.5 kB"
+    },
+    {
       "path": "public/packs*/githubRepos-*.js",
       "maxSize": "1.8 kB"
     },
     {
-      "path": "public/packs*/history-*.js",
-      "maxSize": "3.2 kB"
+      "path": "public/packs*/homePage-*.js",
+      "maxSize": "6 kB"
     },
     {
-      "path": "public/packs*/homePage-*.js",
-      "maxSize": "1 kB"
+      "path": "public/packs*/homePageFeed-*.js",
+      "maxSize": "5.3 kB"
     },
     {
       "path": "public/packs*/internal-*.js",
@@ -74,11 +82,11 @@
     },
     {
       "path": "public/packs*/listingForm-*.js",
-      "maxSize": "5.2 kB"
+      "maxSize": "5.5 kB"
     },
     {
       "path": "public/packs*/listings-*.js",
-      "maxSize": "4.2 kB"
+      "maxSize": "5 kB"
     },
     {
       "path": "public/packs*/manifest-*.js",
@@ -114,7 +122,7 @@
     },
     {
       "path": "public/packs*/sidebarWidget-*.js",
-      "maxSize": "1.9 kB"
+      "maxSize": "2.5 kB"
     },
     {
       "path": "public/packs*/vendor-*.js",
