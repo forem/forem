@@ -1,6 +1,7 @@
 class SearchController < ApplicationController
   before_action :authenticate_user!
   before_action :format_integer_params
+  before_action :sanitize_params, only: %i[classified_listings]
 
   CLASSIFIED_LISTINGS_PARAMS = %i[
     category
@@ -50,7 +51,6 @@ class SearchController < ApplicationController
   end
 
   def classified_listing_params
-    remove_blank_params
     params.permit(CLASSIFIED_LISTINGS_PARAMS)
   end
 
@@ -62,7 +62,7 @@ class SearchController < ApplicationController
   # Some Elasticsearches/QueryBuilders treat values such as empty Strings and
   # nil differently. This is a helper method to remove any params that are
   # blank before passing it to Elasticsearch.
-  def remove_blank_params
+  def sanitize_params
     params.delete_if { |_k, v| v.blank? }
   end
 end
