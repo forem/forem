@@ -167,7 +167,7 @@ function initializePodcastPlayback() {
 
   function loadAudio(audio) {
     if (isNativeIOS()) {
-      sendPodcastMessage('load;' + audio.querySelector('source').src);
+      sendPodcastMessage({'action': 'load', 'url': audio.querySelector('source').src});
     } else {
       audio.load();
     }
@@ -219,7 +219,7 @@ function initializePodcastPlayback() {
     saveMediaState(currentState);
 
     if (isNativeIOS()) {
-      sendPodcastMessage('rate;' + currentState.playbackRate);
+      sendPodcastMessage({'action':'rate', 'rate': currentState.playbackRate.toString()});
     } else {
       audio.playbackRate = currentState.playbackRate;
     }
@@ -257,7 +257,7 @@ function initializePodcastPlayback() {
     return new Promise(function (resolve, reject) {
       var currentState = currentAudioState();
       if (isNativeIOS()) {
-        sendPodcastMessage('play;' + currentState.currentTime);
+        sendPodcastMessage({'action': 'play', 'seconds': currentState.currentTime.toString()});
         setPlaying(true);
         resolve();
       } else {
@@ -276,13 +276,15 @@ function initializePodcastPlayback() {
 
   function startAudioPlayback(audio) {
     if (isNativeIOS()) {
-      var titleElement = document.getElementsByClassName("title")[0];
+      var titleElement = document.getElementsByClassName('title')[0];
       if (titleElement !== undefined) {
-        // We do have the Podcast data (not always true in this case)
-        // Might be good to consider adding podcast metadata as an API endpoint
-        sendPodcastMessage('episodeName;' + titleElement.querySelector("h1").innerText);
-        sendPodcastMessage('podcastName;' + titleElement.querySelector("img").alt);
-        sendPodcastMessage('podcastImage;' + titleElement.querySelector("img").src);
+        // We do have the Podcast data (not always true)
+        var message = {
+          'action': 'metadata',
+          'episodeName': titleElement.querySelector('h1').innerText,
+          'podcastName': titleElement.querySelector('img').alt
+        }
+        sendPodcastMessage(message);
       }
     }
 
@@ -300,7 +302,7 @@ function initializePodcastPlayback() {
 
   function pauseAudioPlayback(audio) {
     if (isNativeIOS()) {
-      sendPodcastMessage('pause');
+      sendPodcastMessage({'action': 'pause'});
     } else {
       audio.pause();
     }
@@ -348,7 +350,7 @@ function initializePodcastPlayback() {
 
     currentState.muted = !currentState.muted;
     if (isNativeIOS()) {
-      sendPodcastMessage('muted;' + currentState.muted);
+      sendPodcastMessage({'action': 'muted', 'muted': currentState.muted.toString()});
     } else {
       audio.muted = currentState.muted;
     }
@@ -359,7 +361,7 @@ function initializePodcastPlayback() {
     var currentState = currentAudioState();
     currentState.volume = e.target.value / 100;
     if (isNativeIOS()) {
-      sendPodcastMessage('volume;' + currentState.volume);
+      sendPodcastMessage({'action': 'volume', 'volume': currentState.volume});
     } else {
       audio.volume = currentState.volume;
     }
@@ -402,7 +404,7 @@ function initializePodcastPlayback() {
       currentState.currentTime = duration * percent; // jumps to 29th secs
 
       if (isNativeIOS()) {
-        sendPodcastMessage('seek;' + currentState.currentTime);
+        sendPodcastMessage({'action': 'seek', 'seconds': currentState.currentTime.toString()});
       } else {
         audio.currentTime = currentState.currentTime
       }
@@ -430,35 +432,31 @@ function initializePodcastPlayback() {
     stopRotatingActivePodcastIfExist();
     saveMediaState(newAudioState());
     if (isNativeIOS()) {
-      sendPodcastMessage('terminate');
+      sendPodcastMessage({'action': 'terminate'});
     }
   }
 
   function handlePodcastMessages(mutation) {
-    if (mutation.type == "attributes") {
-      var message = getById('audiocontent').dataset.podcast;
-      var action = message;
-      var parameter = "";
-      var separatorIndex = message.indexOf(';');
-      if (separatorIndex > 0) {
-        action = message.substring(0, separatorIndex);
-        parameter = message.substring(separatorIndex + 1);
-      }
+    if (mutation.type !== 'attributes') {
+      return;
+    }
 
-      var currentState = currentAudioState();
-      switch(action) {
-        case 'time':
-          currentState.currentTime = parameter;
-          break;
-        case 'duration':
-          currentState.duration = parameter;
-          break;
-        default:
-          console.log('Unrecognized podcast message: ', action);  // eslint-disable-line no-console
-      }
+    try {
+      var messageData = getById('audiocontent').dataset.podcast;
+      var message = JSON.parse(messageData);
+    } catch(e) {
+      console.log(e); // eslint-disable-line no-console
+      return;
+    }
 
+    var currentState = currentAudioState();
+    if (message.action === 'tick') {
+      currentState.currentTime = message.currentTime;
+      currentState.duration = message.duration;
       saveMediaState(currentState);
       updateProgress(currentState.currentTime, currentState.duration, 100);
+    } else {
+      console.log('Unrecognized podcast message: ', action);  // eslint-disable-line no-console
     }
   }
 
