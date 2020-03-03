@@ -64,7 +64,7 @@ RSpec.describe "UserProfiles", type: :request do
       expect(response.body).to include("/feed/#{user.username}")
     end
 
-    it "does not render feed link if any stories" do
+    it "does not render feed link if no stories" do
       get "/#{user.username}"
       expect(response.body).not_to include("/feed/#{user.username}")
     end
@@ -114,6 +114,17 @@ RSpec.describe "UserProfiles", type: :request do
         organization.update(location: "123, ave dev & < ' \" &quot; to")
         get organization.path
         expect(response.body).to include(ActionController::Base.helpers.sanitize(organization.location))
+      end
+
+      it "renders rss feed link if any stories" do
+        create(:article, organization_id: organization.id)
+        get organization.path
+        expect(response.body).to include("/feed/#{organization.slug}")
+      end
+
+      it "does not render feed link if no stories" do
+        get organization.path
+        expect(response.body).not_to include("/feed/#{organization.slug}")
       end
     end
 
