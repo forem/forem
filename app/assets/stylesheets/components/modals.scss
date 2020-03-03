@@ -1,34 +1,28 @@
 @import '../vars/_variables.scss';
 
-.crayons-modal {
-  background: $snowflake;
-  border: 2px solid $smoke-100;
-  box-shadow: 2px 2px 0 $smoke-100;
-  border-radius: $br-default;
-  padding: $su-4;
-  width: 250px;
+%modal-style {
+  @extend .crayons-box;
+  @extend .crayons-box--level-3;
+  display: inline-block;
+  width: 100%;
+}
 
-  &--m {
+.crayons-modal {
+  @extend %modal-style; 
+  padding: $su-7;
+  max-width: 640px;
+
+  &--s {
+    max-width: 480px;
     padding: $su-6;
-    width: 320px; // todo?
   }
 
   &--l {
-    padding: $su-6;
-    width: 480px; // todo?
-  }
-
-  &--xl {
-    padding: $su-7;
-    width: 640px; // todo?
-  }
-
-  &--xxl {
+    max-width: 800px;
     padding: $su-8;
-    width: 800px; // todo?
   }
 
-  &__hidden {
-    display: none;
+  &--padding-0 {
+    padding: 0;
   }
 }

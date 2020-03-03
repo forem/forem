@@ -15,7 +15,7 @@
 }
 
 .crayons-box {
-  $this: &;
+  $this: &; // Caching current element: https://css-tricks.com/snippets/sass/caching-current-selector-sass/
   border: 2px solid;
   border-radius: $br-default;
   background-color: $snowflake;
