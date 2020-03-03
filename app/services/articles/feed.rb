@@ -5,6 +5,8 @@ module Articles
       @number_of_articles = number_of_articles
       @page = page
       @tag = tag
+      @randomness = 3 # default number for randomly adjusting feed
+      @tag_weight = 1 # default weight tags play in rankings
     end
 
     def published_articles_by_tag
@@ -25,26 +27,39 @@ module Articles
         page(@page).per(@number_of_articles)
     end
 
-    def default_home_feed_and_featured_story(user_signed_in: false)
-      hot_stories = published_articles_by_tag.
-        where("score > ? OR featured = ?", 9, true).
-        order("hotness_score DESC")
-      featured_story = hot_stories.where.not(main_image: nil).first
-      if user_signed_in
-        offset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11].sample # random offset, weighted more towards zero
-        hot_stories = hot_stories.offset(offset)
-        new_stories = Article.published.
-          where("published_at > ? AND score > ?", rand(2..6).hours.ago, -15).
-          limited_column_select.order("published_at DESC").limit(rand(15..80))
-        hot_stories = hot_stories.to_a + new_stories.to_a
-      end
-      hot_stories = rank_and_sort_articles(hot_stories) if @user
+    def default_home_feed_and_featured_story(user_signed_in: false, ranking: true)
+      featured_story, hot_stories = globally_cached_hot_articles(user_signed_in)
+      hot_stories = rank_and_sort_articles(hot_stories) if @user && ranking
       [featured_story, hot_stories]
     end
 
+    # Test variation: Base
     def default_home_feed(user_signed_in: false)
-      _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: user_signed_in)
+      _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: user_signed_in, ranking: true)
       stories
+    end
+
+    # Test variation: More random
+    def default_home_feed_with_more_randomness
+      @randomness = 7
+      _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
+      stories
+    end
+
+    # Test variation: tags make bigger impact
+    def more_tag_weight
+      @tag_weight = 2
+      _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
+      stories
+    end
+
+    # Test variation: Base half the time, more random other half. Varies on impressions.
+    def mix_default_and_more_random
+      if rand(2) == 1
+        default_home_feed(user_signed_in: true)
+      else
+        default_home_feed_with_more_randomness
+      end
     end
 
     def rank_and_sort_articles(articles)
@@ -76,7 +91,7 @@ module Articles
 
       article_tags = article.decorate.cached_tag_list_array
       @user.decorate.cached_followed_tags.sum do |tag|
-        article_tags.include?(tag.name) ? tag.points : 0
+        article_tags.include?(tag.name) ? tag.points * @tag_weight : 0
       end
     end
 
@@ -85,22 +100,35 @@ module Articles
     end
 
     def score_randomness
-      random_number = rand
-      if random_number < 0.3
-        3
-      elsif random_number >= 0.3 && random_number < 0.6
-        6
-      else
-        0
-      end
+      rand(3) * @randomness
     end
 
     def score_language(article)
-      @user&.preferred_languages_array&.include?(article.language || "en") ? 1 : -10
+      @user&.preferred_languages_array&.include?(article.language || "en") ? 1 : -15
     end
 
     def score_experience_level(article)
       - ((article.experience_level_rating - (@user&.experience_level || 5).abs) / 2)
+    end
+
+    def globally_cached_hot_articles(user_signed_in)
+      # If these query is shared by the all users and fetched often, we can cache it and fetch cold
+      # only every x seconds.
+      Rails.cache.fetch("globally-cached-hot-articles-#{user_signed_in}", expires_in: 20.seconds) do
+        hot_stories = published_articles_by_tag.
+          where("score > ? OR featured = ?", 9, true).
+          order("hotness_score DESC")
+        featured_story = hot_stories.where.not(main_image: nil).first
+        if user_signed_in
+          offset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11].sample # random offset, weighted more towards zero
+          hot_stories = hot_stories.offset(offset)
+          new_stories = Article.published.
+            where("published_at > ? AND score > ?", rand(2..6).hours.ago, -15).
+            limited_column_select.order("published_at DESC").limit(rand(15..80))
+          hot_stories = hot_stories.to_a + new_stories.to_a
+        end
+        [featured_story, hot_stories.to_a]
+      end
     end
   end
 end

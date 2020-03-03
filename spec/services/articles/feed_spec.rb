@@ -85,6 +85,30 @@ RSpec.describe Articles::Feed, type: :service do
         expect(featured_story).to eq(hot_story)
       end
     end
+
+    context "when ranking is true" do
+      it "performs article ranking" do
+        allow(feed).to receive(:rank_and_sort_articles).and_call_original
+        feed.default_home_feed_and_featured_story(ranking: true)
+        expect(feed).to have_received(:rank_and_sort_articles)
+      end
+    end
+
+    context "when ranking is false" do
+      it "does not perform article ranking" do
+        allow(feed).to receive(:rank_and_sort_articles).and_call_original
+        feed.default_home_feed_and_featured_story(ranking: false)
+        expect(feed).not_to have_received(:rank_and_sort_articles)
+      end
+    end
+
+    context "when ranking not passed" do
+      it "performs article ranking" do
+        allow(feed).to receive(:rank_and_sort_articles).and_call_original
+        feed.default_home_feed_and_featured_story
+        expect(feed).to have_received(:rank_and_sort_articles)
+      end
+    end
   end
 
   describe "#default_home_feed" do
@@ -112,6 +136,36 @@ RSpec.describe Articles::Feed, type: :service do
         expect(stories).not_to include(old_story)
         expect(stories).to include(new_story)
       end
+    end
+  end
+
+  describe "#default_home_feed_with_more_randomness" do
+    let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
+    let(:stories) { feed.default_home_feed_with_more_randomness }
+
+    it "includes stories from between 2 and 6 hours ago" do
+      expect(stories).not_to include(old_story)
+      expect(stories).to include(new_story)
+    end
+  end
+
+  describe "#mix_default_and_more_random" do
+    let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
+    let(:stories) { feed.mix_default_and_more_random }
+
+    it "includes stories from between 2 and 6 hours ago" do
+      expect(stories).not_to include(old_story)
+      expect(stories).to include(new_story)
+    end
+  end
+
+  describe "#more_tag_weight" do
+    let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
+    let(:stories) { feed.more_tag_weight }
+
+    it "includes stories from between 2 and 6 hours ago" do
+      expect(stories).not_to include(old_story)
+      expect(stories).to include(new_story)
     end
   end
 
@@ -161,21 +215,21 @@ RSpec.describe Articles::Feed, type: :service do
   describe "#score_randomness" do
     context "when random number is less than 0.6 but greater than 0.3" do
       it "returns 6" do
-        allow(feed).to receive(:rand).and_return(0.5)
+        allow(feed).to receive(:rand).and_return(2)
         expect(feed.score_randomness).to eq 6
       end
     end
 
     context "when random number is less than 0.3" do
       it "returns 3" do
-        allow(feed).to receive(:rand).and_return(0.1)
+        allow(feed).to receive(:rand).and_return(1)
         expect(feed.score_randomness).to eq 3
       end
     end
 
     context "when random number is greater than 0.6" do
       it "returns 0" do
-        allow(feed).to receive(:rand).and_return(0.9)
+        allow(feed).to receive(:rand).and_return(0)
         expect(feed.score_randomness).to eq 0
       end
     end
@@ -192,7 +246,7 @@ RSpec.describe Articles::Feed, type: :service do
       before { article.language = "de" }
 
       it "returns a score of -10" do
-        expect(feed.score_language(article)).to eq(-10)
+        expect(feed.score_language(article)).to eq(-15)
       end
     end
 

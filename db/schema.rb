@@ -433,6 +433,24 @@ ActiveRecord::Schema.define(version: 2020_02_27_214321) do
     t.index ["reporter_id"], name: "index_feedback_messages_on_reporter_id"
   end
 
+  create_table "field_test_events", force: :cascade do |t|
+    t.datetime "created_at"
+    t.bigint "field_test_membership_id"
+    t.string "name"
+    t.index ["field_test_membership_id"], name: "index_field_test_events_on_field_test_membership_id"
+  end
+
+  create_table "field_test_memberships", force: :cascade do |t|
+    t.boolean "converted", default: false
+    t.datetime "created_at"
+    t.string "experiment"
+    t.string "participant_id"
+    t.string "participant_type"
+    t.string "variant"
+    t.index ["experiment", "created_at"], name: "index_field_test_memberships_on_experiment_and_created_at"
+    t.index ["participant_type", "participant_id", "experiment"], name: "index_field_test_memberships_on_participant", unique: true
+  end
+
   create_table "follows", id: :serial, force: :cascade do |t|
     t.boolean "blocked", default: false, null: false
     t.datetime "created_at"

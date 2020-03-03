@@ -23,6 +23,7 @@ class Reaction < ApplicationRecord
   validate  :permissions
 
   before_save :assign_points
+  after_create_commit :record_field_test_event
   after_commit :async_bust, :bust_reactable_cache, :update_reactable
   after_save :index_to_algolia
   after_save :touch_user
@@ -178,5 +179,9 @@ class Reaction < ApplicationRecord
 
   def negative?
     category == "vomit" || category == "thumbsdown"
+  end
+
+  def record_field_test_event
+    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "user_creates_reaction")
   end
 end

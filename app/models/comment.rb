@@ -20,8 +20,9 @@ class Comment < ApplicationRecord
   validates :commentable_type, inclusion: { in: %w[Article PodcastEpisode] }
   validates :user_id, presence: true
 
-  after_create   :after_create_checks
-  after_commit   :calculate_score
+  after_create :after_create_checks
+  after_create_commit :record_field_test_event
+  after_commit :calculate_score
   after_update_commit :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
   after_save     :bust_cache
   after_save     :synchronous_bust
@@ -303,5 +304,9 @@ class Comment < ApplicationRecord
 
   def permissions
     errors.add(:commentable_id, "is not valid.") if commentable_type == "Article" && !commentable.published
+  end
+
+  def record_field_test_event
+    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "user_creates_comment")
   end
 end
