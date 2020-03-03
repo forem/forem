@@ -311,6 +311,7 @@ export class Listings extends Component {
       classified_listing_search: query,
     };
 
+    /* tags defaults to an empty String, so we check for that case here */
     if (dataHash.tags) {
       dataHash.tags = tags;
     }
