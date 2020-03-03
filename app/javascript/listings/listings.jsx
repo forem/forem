@@ -311,9 +311,13 @@ export class Listings extends Component {
       classified_listing_search: query,
     };
 
-    if (dataHash.tags) dataHash.tags = tags;
+    if (dataHash.tags) {
+      dataHash.tags = tags;
+    }
 
-    if (category.length > 0) dataHash.category = category;
+    if (category.length > 0) {
+      dataHash.category = category;
+    }
 
     const responsePromise = fetchSearch('classified_listings', dataHash);
     return responsePromise.then(response => {
