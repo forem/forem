@@ -64,7 +64,7 @@ exports[`<FeaturedArticle /> component should render a bookmarked featured artic
       class="featured-user-name"
     >
       <a
-        href="/<%= article.cached_user.username %>"
+        href="/Emil99"
       >
         Stella Macejkovic ・ 
         <time
@@ -74,7 +74,7 @@ exports[`<FeaturedArticle /> component should render a bookmarked featured artic
         </time>
         <span
           class="time-ago-indicator-initial-placeholder"
-          data-seconds="<%= article.published_at_int %>"
+          data-seconds="1582037964819"
         />
       </a>
     </div>
@@ -234,7 +234,7 @@ exports[`<FeaturedArticle /> component should render a standard article 1`] = `
       class="featured-user-name"
     >
       <a
-        href="/<%= article.cached_user.username %>"
+        href="/Emil99"
       >
         Stella Macejkovic ・ 
         <time
@@ -244,7 +244,7 @@ exports[`<FeaturedArticle /> component should render a standard article 1`] = `
         </time>
         <span
           class="time-ago-indicator-initial-placeholder"
-          data-seconds="<%= article.published_at_int %>"
+          data-seconds="1582037964819"
         />
       </a>
     </div>
