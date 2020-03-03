@@ -319,19 +319,12 @@ export class Listings extends Component {
     const t = this;
     const { page, listings } = t.state;
     const dataHash = {
-      per_page: LISTING_PAGE_SIZE,
-      page,
+      category,
       classified_listing_search: query,
+      page,
+      per_page: LISTING_PAGE_SIZE,
+      tags,
     };
-
-    /* tags defaults to an empty String, so we check for that case here */
-    if (dataHash.tags) {
-      dataHash.tags = tags;
-    }
-
-    if (category.length > 0) {
-      dataHash.category = category;
-    }
 
     const responsePromise = fetchSearch('classified_listings', dataHash);
     return responsePromise.then(response => {

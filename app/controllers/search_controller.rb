@@ -50,11 +50,19 @@ class SearchController < ApplicationController
   end
 
   def classified_listing_params
+    remove_blank_params
     params.permit(CLASSIFIED_LISTINGS_PARAMS)
   end
 
   def format_integer_params
     params[:page] = params[:page].to_i if params[:page].present?
     params[:per_page] = params[:per_page].to_i if params[:per_page].present?
+  end
+
+  # Some Elasticsearches/QueryBuilders treat values such as empty Strings and
+  # nil differently. This is a helper method to remove any params that are
+  # blank before passing it to Elasticsearch.
+  def remove_blank_params
+    params.delete_if { |_k, v| v.blank? }
   end
 end
