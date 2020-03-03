@@ -33,7 +33,7 @@ class PodcastTag < LiquidTagBase
   end
 
   def self.script
-    <<~JAVASCRIPT
+    "".html_safe + <<~JAVASCRIPT
       var waitingOnPodcast = setInterval(function(){
         if (typeof initializePodcastPlayback !== 'undefined') {
           initializePodcastPlayback();
