@@ -66,7 +66,7 @@ exports[`<FeaturedArticle /> component should render a bookmarked featured artic
       <a
         href="/Emil99"
       >
-        Stella Macejkovic ・
+        Stella Macejkovic ・ 
         <time
           dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
         >
@@ -236,7 +236,7 @@ exports[`<FeaturedArticle /> component should render a standard article 1`] = `
       <a
         href="/Emil99"
       >
-        Stella Macejkovic ・
+        Stella Macejkovic ・ 
         <time
           dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
         >

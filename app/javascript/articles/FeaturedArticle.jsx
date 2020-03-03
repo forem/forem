@@ -74,7 +74,7 @@ export const FeaturedArticle = ({
             </time>
             <span
               className="time-ago-indicator-initial-placeholder"
-              data-seconds={article.published_at_int}
+              data-seconds={`${article.published_at_int}`}
             />
           </a>
         </div>
