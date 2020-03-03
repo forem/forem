@@ -39,4 +39,20 @@ RSpec.describe "Search", type: :request, proper_status: true do
       expect(response.parsed_body).to eq("result" => mock_documents)
     end
   end
+
+  describe "GET /search/classified_listings" do
+    let(:authorized_user) { create(:user) }
+    let(:mock_documents) do
+      [{ "title" => "classified_listing1" }]
+    end
+
+    it "returns json" do
+      sign_in authorized_user
+      allow(Search::ClassifiedListing).to receive(:search_documents).and_return(
+        mock_documents,
+      )
+      get "/search/classified_listings"
+      expect(response.parsed_body).to eq("result" => mock_documents)
+    end
+  end
 end
