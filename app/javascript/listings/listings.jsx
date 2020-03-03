@@ -3,7 +3,10 @@ import debounce from 'lodash.debounce';
 import { fetchSearch } from '../src/utils/search';
 import SingleListing from './singleListing';
 
-/* How many listings to show per page */
+/**
+ * How many listings to show per page
+ * @constant {number}
+ */
 const LISTING_PAGE_SIZE = 75;
 
 function resizeMasonryItem(item) {
@@ -302,6 +305,16 @@ export class Listings extends Component {
     window.history.replaceState(null, null, newLocation);
   };
 
+  /**
+   * Call search API for ClassifiedListings
+   *
+   * @param {string} query - The search term
+   * @param {string} tags - The tags selected by the user
+   * @param {string} category - The category selected by the user
+   * @param {string} slug - The listing's slug
+   *
+   * @returns {Promise} A promise object with response formatted as JSON.
+   */
   listingSearch(query, tags, category, slug) {
     const t = this;
     const { page, listings } = t.state;
