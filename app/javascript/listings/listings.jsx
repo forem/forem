@@ -288,18 +288,15 @@ export class Listings extends Component {
   listingSearch(query, tags, category, slug) {
     const t = this;
     const { page, listings } = t.state;
-    const dataHash = {};
-    dataHash.per_page = 75;
-    dataHash.page = page;
-    dataHash.classified_listing_search = query;
+    const dataHash = {
+      per_page: 75,
+      page,
+      classified_listing_search: query,
+    };
 
-    if (dataHash.tags) {
-      dataHash.tags = tags;
-    }
+    if (dataHash.tags) dataHash.tags = tags;
 
-    if (category.length > 0) {
-      dataHash.category = category;
-    }
+    if (category.length > 0) dataHash.category = category;
 
     const responsePromise = fetchSearch('classified_listings', dataHash);
     return responsePromise.then(response => {
