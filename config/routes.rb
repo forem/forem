@@ -18,6 +18,7 @@ Rails.application.routes.draw do
       use Rack::Protection, origin_whitelist: ["https://dev.to"] # resolve Rack Protection HttpOrigin
     end
     mount Sidekiq::Web => "/sidekiq"
+    mount FieldTest::Engine, at: "abtests"
   end
 
   devise_scope :user do

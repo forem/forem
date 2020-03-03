@@ -91,5 +91,25 @@ RSpec.describe "Stories::FeedsIndex", type: :request do
         expect(feed_service).to have_received(:latest_feed)
       end
     end
+
+    context "when there are no params passed (base feed) and user is signed in" do
+      before do
+        sign_in user
+      end
+
+      it "sets a field test" do
+        get "/stories/feed"
+        expect(FieldTest::Membership.all.size).to be(1)
+        expect(FieldTest::Membership.last.participant_id).to eq(user.id.to_s)
+        expect(FieldTest::Membership.last.experiment).to eq("user_home_feed")
+      end
+    end
+
+    context "when there are no params passed (base feed) and user is signed not in" do
+      it "sets a field test" do
+        get "/stories/feed"
+        expect(FieldTest::Membership.all.size).to be(0)
+      end
+    end
   end
 end
