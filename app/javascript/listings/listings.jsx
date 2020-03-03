@@ -285,6 +285,20 @@ export class Listings extends Component {
     window.history.replaceState(null, null, newLocation);
   };
 
+  updateListings = (classifiedListings, listings) => {
+    const fullListings = listings;
+
+    classifiedListings.forEach(listing => {
+      if (listing.bumped_at) {
+        if (!listings.map(l => l.id).includes(listing.id)) {
+          fullListings.push(listing);
+        }
+      }
+    });
+
+    return fullListings;
+  };
+
   listingSearch(query, tags, category, slug) {
     const t = this;
     const { page, listings } = t.state;
@@ -300,19 +314,12 @@ export class Listings extends Component {
 
     const responsePromise = fetchSearch('classified_listings', dataHash);
     return responsePromise.then(response => {
-      const classfiedListings = response.result;
-      const fullListings = listings;
-      classfiedListings.forEach(listing => {
-        if (listing.bumped_at) {
-          if (!listings.map(l => l.id).includes(listing.id)) {
-            fullListings.push(listing);
-          }
-        }
-      });
+      const classifiedListings = response.result;
+      const fullListings = this.updateListings(classifiedListings, listings);
       t.setState({
         listings: fullListings,
         initialFetch: false,
-        showNextPageButt: classfiedListings.length === 75,
+        showNextPageButt: classifiedListings.length === 75,
       });
       this.setLocation(query, tags, category, slug);
     });
