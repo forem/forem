@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import debounce from 'lodash.debounce';
+import { fetchSearch } from '../src/utils/search';
 import SingleListing from './singleListing';
 
 function resizeMasonryItem(item) {
@@ -290,41 +291,34 @@ export class Listings extends Component {
     const dataHash = {};
     dataHash.per_page = 75;
     dataHash.page = page;
-    dataHash.tags = tags;
     dataHash.classified_listing_search = query;
+
+    if (dataHash.tags) {
+      dataHash.tags = tags;
+    }
 
     if (category.length > 0) {
       dataHash.category = category;
     }
 
-    const searchParams = new URLSearchParams(dataHash).toString();
-    return fetch(`/search/classified_listings?${searchParams}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'X-CSRF-Token': window.csrfToken,
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-    })
-      .then(response => response.json())
-      .then(response => {
-        const classfiedListings = response.result;
-        const fullListings = listings;
-        classfiedListings.forEach(listing => {
-          if (listing.bumped_at) {
-            if (!listings.map(l => l.id).includes(listing.id)) {
-              fullListings.push(listing);
-            }
+    const responsePromise = fetchSearch('classified_listings', dataHash);
+    return responsePromise.then(response => {
+      const classfiedListings = response.result;
+      const fullListings = listings;
+      classfiedListings.forEach(listing => {
+        if (listing.bumped_at) {
+          if (!listings.map(l => l.id).includes(listing.id)) {
+            fullListings.push(listing);
           }
-        });
-        t.setState({
-          listings: fullListings,
-          initialFetch: false,
-          showNextPageButt: classfiedListings.length === 75,
-        });
-        this.setLocation(query, tags, category, slug);
+        }
       });
+      t.setState({
+        listings: fullListings,
+        initialFetch: false,
+        showNextPageButt: classfiedListings.length === 75,
+      });
+      this.setLocation(query, tags, category, slug);
+    });
   }
 
   render() {
