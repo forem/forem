@@ -83,20 +83,20 @@ module Articles
     end
 
     def score_followed_user(article)
-      @user&.cached_following_users_ids&.include?(article.user_id) ? 1 : 0
+      user_following_users_ids.include?(article.user_id) ? 1 : 0
     end
 
     def score_followed_tags(article)
       return 0 unless @user
 
       article_tags = article.decorate.cached_tag_list_array
-      @user.decorate.cached_followed_tags.sum do |tag|
+      user_followed_tags.sum do |tag|
         article_tags.include?(tag.name) ? tag.points * @tag_weight : 0
       end
     end
 
     def score_followed_organization(article)
-      @user&.cached_following_organizations_ids&.include?(article.organization_id) ? 1 : 0
+      user_following_org_ids.include?(article.organization_id) ? 1 : 0
     end
 
     def score_randomness
@@ -129,6 +129,20 @@ module Articles
         end
         [featured_story, hot_stories.to_a]
       end
+    end
+
+    private
+
+    def user_followed_tags
+      @user_followed_tags ||= (@user&.decorate&.cached_followed_tags || [])
+    end
+
+    def user_following_org_ids
+      @user_following_org_ids ||= (@user&.cached_following_organizations_ids || [])
+    end
+
+    def user_following_users_ids
+      @user_following_users_ids ||= (@user&.cached_following_users_ids || [])
     end
   end
 end
