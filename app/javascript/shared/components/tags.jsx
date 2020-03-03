@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import debounce from 'lodash.debounce';
+import { fetchSearch } from '../../src/utils/search';
 
 const KEYS = {
   UP: 'ArrowUp',
@@ -319,36 +320,30 @@ class Tags extends Component {
       });
     }
     const { listing } = this.props;
-    return fetch(`/search/tags?name=${query}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'X-CSRF-Token': window.csrfToken,
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-    })
-      .then(response => response.json())
-      .then(response => {
-        if (listing === true) {
-          const { additionalTags } = this.state;
-          const { category } = this.props;
-          const additionalItems = (additionalTags[category] || []).filter(t =>
-            t.includes(query),
-          );
-          const resultsArray = response.result;
-          additionalItems.forEach(t => {
-            if (!resultsArray.includes(t)) {
-              resultsArray.push({ name: t });
-            }
-          });
-        }
-        // updates searchResults array according to what is being typed by user
-        // allows user to choose a tag when they've typed the partial or whole word
-        this.setState({
-          searchResults: response.result,
+
+    const dataHash = { name: query };
+    const responsePromise = fetchSearch('tags', dataHash);
+
+    return responsePromise.then(response => {
+      if (listing === true) {
+        const { additionalTags } = this.state;
+        const { category } = this.props;
+        const additionalItems = (additionalTags[category] || []).filter(t =>
+          t.includes(query),
+        );
+        const resultsArray = response.result;
+        additionalItems.forEach(t => {
+          if (!resultsArray.includes(t)) {
+            resultsArray.push({ name: t });
+          }
         });
+      }
+      // updates searchResults array according to what is being typed by user
+      // allows user to choose a tag when they've typed the partial or whole word
+      this.setState({
+        searchResults: response.result,
       });
+    });
   }
 
   resetSearchResults() {
