@@ -40,6 +40,20 @@ function resizeAllMasonryItems() {
   }
 }
 
+function updateListings(classifiedListings, listings) {
+  const fullListings = listings;
+
+  classifiedListings.forEach(listing => {
+    if (listing.bumped_at) {
+      if (!listings.map(l => l.id).includes(listing.id)) {
+        fullListings.push(listing);
+      }
+    }
+  });
+
+  return fullListings;
+}
+
 export class Listings extends Component {
   state = {
     listings: [],
@@ -285,20 +299,6 @@ export class Listings extends Component {
     window.history.replaceState(null, null, newLocation);
   };
 
-  updateListings = (classifiedListings, listings) => {
-    const fullListings = listings;
-
-    classifiedListings.forEach(listing => {
-      if (listing.bumped_at) {
-        if (!listings.map(l => l.id).includes(listing.id)) {
-          fullListings.push(listing);
-        }
-      }
-    });
-
-    return fullListings;
-  };
-
   listingSearch(query, tags, category, slug) {
     const t = this;
     const { page, listings } = t.state;
@@ -315,7 +315,7 @@ export class Listings extends Component {
     const responsePromise = fetchSearch('classified_listings', dataHash);
     return responsePromise.then(response => {
       const classifiedListings = response.result;
-      const fullListings = this.updateListings(classifiedListings, listings);
+      const fullListings = updateListings(classifiedListings, listings);
       t.setState({
         listings: fullListings,
         initialFetch: false,
