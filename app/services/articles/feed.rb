@@ -114,7 +114,9 @@ module Articles
     def globally_cached_hot_articles(user_signed_in)
       # If these query is shared by the all users and fetched often, we can cache it and fetch cold
       # only every x seconds.
-      Rails.cache.fetch("globally-cached-hot-articles-#{user_signed_in}", expires_in: 20.seconds) do
+      cache_key = "globally-cached-hot-articles-#{user_signed_in}-#{@page}-#{@number_of_articles}"
+      cache_key += "-#{@tag.name}" if @tag
+      Rails.cache.fetch(cache_key, expires_in: 20.seconds) do
         hot_stories = published_articles_by_tag.
           where("score > ? OR featured = ?", 9, true).
           order("hotness_score DESC")
