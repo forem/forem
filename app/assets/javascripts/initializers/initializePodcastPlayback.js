@@ -441,9 +441,10 @@ function initializePodcastPlayback() {
       return;
     }
 
+    var message = {};
     try {
       var messageData = getById('audiocontent').dataset.podcast;
-      var message = JSON.parse(messageData);
+      message = JSON.parse(messageData);
     } catch(e) {
       console.log(e); // eslint-disable-line no-console
       return;
@@ -456,7 +457,7 @@ function initializePodcastPlayback() {
       saveMediaState(currentState);
       updateProgress(currentState.currentTime, currentState.duration, 100);
     } else {
-      console.log('Unrecognized podcast message: ', action);  // eslint-disable-line no-console
+      console.log('Unrecognized podcast message: ', message);  // eslint-disable-line no-console
     }
   }
 
