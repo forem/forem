@@ -10,32 +10,62 @@
     box-sizing: border-box;
   }
 
-  .container > * {
-    margin-bottom: 32px;
+  .container > *+* {
+    margin-top: 32px;
+  }
+
+  .container > pre {
+    padding: 24px;
+    width: 100%;
+  }
+
+  .container > .body {
+    width: 100%;
+    font-size: 16px;
+    line-height: 150%;
+    border-bottom: 1px solid lightgrey;
+    padding-bottom: 32px;
+  }
+
+  .container > .body h2 {
+    padding: 0;
+    margin: 0;
+  }
+
+  .container > .body p {
+    margin: 0;
+    padding: 0;
+  }
+
+  .container > .body ul,
+  .container > .body ol {
+    margin: 0 0 0 24px;
+    padding: 0;
+  }
+
+  .container > .body > *+* {
+    margin-top: 16px !important;
   }
 </style>
 <div class="container">
-
+  <div class="body">
+    <h2>Form elements</h2>
+  </div>
   <div><input type="text" class="crayons-textfield" placeholder="This is placeholder..."></div>
   <div><input type="text" class="crayons-textfield" placeholder="This is placeholder..." value="Disabled field" disabled></div>
 
+  <pre><%='
+  <input type="text" class="crayons-textfield" placeholder="This is placeholder...">
+  <input type="text" class="crayons-textfield" placeholder="This is placeholder..." value="Disabled field" disabled>
+  '.rstrip %></pre>
+
   <div><textarea class="crayons-textfield" placeholder="This is palceholder..."></textarea></div>
+  <div><textarea class="crayons-textfield" placeholder="This is palceholder..." disabled>Disabled textarea</textarea></div>
 
-  <div class="crayons-field">
-    <label for="" class="crayons-field__label">Textfield Label</label>
-    <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
-    <input type="text" class="crayons-textfield" placeholder="This is placeholder...">
-    <p class="crayons-field__description">Another description just in case...</p>
-  </div>
-
-  <div class="crayons-field">
-    <label for="" class="crayons-field__label">
-      Textfield Label
-      <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
-    </label>
-    <input type="text" class="crayons-textfield" placeholder="This is placeholder...">
-    <p class="crayons-field__description">Another description just in case...</p>
-  </div>
+  <pre><%='
+  <textarea class="crayons-textfield" placeholder="This is palceholder..."></textarea>
+  <textarea class="crayons-textfield" placeholder="This is palceholder..." disabled>Disabled textarea</textarea>
+  '.rstrip %></pre>
 
   <div>
     <input type="checkbox" class="crayons-checkbox">
@@ -44,13 +74,66 @@
     <input type="checkbox" class="crayons-checkbox" checked disabled>
   </div>
 
+  <pre><%='
+  <input type="checkbox" class="crayons-checkbox">
+  <input type="checkbox" class="crayons-checkbox" checked>
+  <input type="checkbox" class="crayons-checkbox" disabled>
+  <input type="checkbox" class="crayons-checkbox" checked disabled>
+  '.rstrip %></pre>
+
   <div>
     <input type="radio" name="n1" class="crayons-radio">
     <input type="radio" name="n1" class="crayons-radio" checked>
-    <input type="radio" class="crayons-radio" disabled>
-    <input type="radio" class="crayons-radio" checked disabled>
+    <input type="radio" name="n2" class="crayons-radio" disabled>
+    <input type="radio" name="n2" class="crayons-radio" checked disabled>
   </div>
 
+  <pre><%='
+  <input type="radio" name="n1" class="crayons-radio">
+  <input type="radio" name="n1" class="crayons-radio" checked>
+  <input type="radio" name="n2" class="crayons-radio" disabled>
+  <input type="radio" name="n2" class="crayons-radio" checked disabled>
+  '.rstrip %></pre>
+</div>
+
+<div class="container">
+  <div class="body">
+    <h2>Field Component</h2>
+    <p>Because of accessibility most (ideally all) fields should have label on top of it. Label should be placed 8px above the field.</p>
+    <p>Fields can also have optional description - between Label and field itself. It’s distance from the Label should be 0px.</p>
+    <p>Fields can also have additional optional description, for example characters count - it should be placed 8px below the field.</p>
+    <p>Distance between fields should be 24px.</p>
+  </div>
+
+  <div class="crayons-field">
+    <label for="t1" class="crayons-field__label">
+      Textfield Label
+      <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
+    </label>
+    <input type="text" id="t1" class="crayons-textfield" placeholder="This is placeholder...">
+    <p class="crayons-field__description">Another description just in case...</p>
+  </div>
+
+  <pre><%='
+  <div class="crayons-field">
+    <label for="t1" class="crayons-field__label">
+      Textfield Label
+      <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
+    </label>
+    <input type="text" id="t1" class="crayons-textfield" placeholder="This is placeholder...">
+    <p class="crayons-field__description">Another description just in case...</p>
+  </div>
+  '.rstrip %></pre>
+</div>
+
+<div class="container">
+  <div class="body">
+    <h2>Buttons</h2>
+    <p>Use Danger style only for destructive actions like removing something. Do not use it for, for example “unfollow” action.</p>
+    <p>If you have to use several buttons together, keep in mind you should always have ONE Primary button. Rest of them should be Secondary and/or Outlined and/or Text buttons.</p>
+    <p>It is ok to use ONLY Secondary or outlined button without being accompanied by Primary one.</p>
+    <p>For Stacking buttons (vertically or horizontally) please use 8px spacing unit for default size buttons (no matter if stacking horizontally or vertically).</p>
+  </div>
   <div>
     <a href="#" class="crayons-btn">Button label</a><br><br>
     <a href="#" class="crayons-btn crayons-btn--full">Full Button label</a><br><br>
@@ -62,31 +145,37 @@
     <a href="#" class="crayons-btn crayons-btn--secondary crayons-btn--full crayons-btn--icon-left"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon"><path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" /></svg>Button</a>
   </div>
 
-  <div>
-    <div class="crayons-card" style="max-width: 316px;">
-      <header class="crayons-card__header">
-        <h3>Listings</h3>
-      </header>
-      <div class="crayons-card__body">
-        <a href="#" class="crayons-card__link-block">
-          Take part in the global microservices survey!
-          <footer class="crayons-card__link-block__footer">
-            <span class="crayons-indicator crayons-indicator--accent">New</span>
-            For hire
-          </footer>
-        </a>
+  <pre><%='
+  <a href="#" class="crayons-btn">Button label</a>
+  <a href="#" class="... crayons-btn--full">Full Button label</a>
+  <a href="#" class="... crayons-btn--secondary">Secondary Button label</a>
+  <a href="#" class="... crayons-btn--outlined">Outlined Button label</a>
+  <a href="#" class="... crayons-btn--text">Text Button label</a>
+  <a href="#" class="... crayons-btn--danger">Danger Button label</a>
+  <a href="#" class="... crayons-btn--icon-left"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon">...</svg>Button</a>
+  <a href="#" class="... crayons-btn--secondary crayons-btn--full crayons-btn--icon-left"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon">...</svg>Button</a>
+  '.rstrip %></pre>
+</div>
 
-        <a href="#" class="crayons-card__link-block">
-          React / Java Dev - Austin, TX
-          <footer class="crayons-card__link-block__footer">For hire</footer>
-        </a>
-
-        <a href="#" class="crayons-card__link-block">
-          Mecha, a flat-file content management system for minimalists.
-          <footer class="crayons-card__link-block__footer">For hire</footer>
-        </a>
-      </div>
-    </div>
+<div class="container">
+  <div class="body">
+    <h2>Boxes</h2>
+    <p>“Box” will be a background element used for many other components, for example banners, dropdowns, modals. This component does not have any guidelines in terms of placement or spacing, since it’s supposed to be used to build other components.</p>
+    <p>There are:</p>
+    <ul>
+      <li>2 types: outlined  & filled,</li>
+      <li>5 styles: default, danger, warning, info, success,</li>
+      <li>4 eleveations: 0, 1, 2, 3.</li>
+    </ul>
+    <p>By default use “outlined” type unless you really have to make something stand out - then use “filled”. But double check if it makes sense since “filled” style really steals attention.</p>
+    <p>Use style that makes the most sense for you current use case. It’s pretty obvious when to use Danger, Warning and Success. But for Default and Info - it’s more up to designer to make a good call :).</p>
+    <p>Elevations should define what kind of element it is:</p>
+    <ul>
+      <li>0: something inside content.</li>
+      <li>1: that can also be used in content but for elements that need more attention, like notices...</li>
+      <li>2: dropdowns</li>
+      <li>3: modals</li>
+    </ul>
   </div>
 
   <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; grid-gap: 16px;">
@@ -134,9 +223,46 @@
     <div class="crayons-box crayons-box--info crayons-box--filled crayons-box--level-1">filled box, level 1</div>
     <div class="crayons-box crayons-box--info crayons-box--filled crayons-box--level-2">filled box, level 2</div>
     <div class="crayons-box crayons-box--info crayons-box--filled crayons-box--level-3">filled box, level 3</div>
-
   </div>
 
+  <pre><%='
+  <!-- default: outlined, black -->
+  <div class="crayons-box">box, level 0</div>
+
+  <-- levels 0-3 -->
+  <div class="... crayons-box--level-1">box, level 1</div>
+  <div class="... crayons-box--level-2">box, level 2</div>
+  <div class="... crayons-box--level-3">box, level 3</div>
+
+  <-- filled variation -->
+  <div class="... crayons-box--filled">filled box, level 0</div>
+
+  <-- styles: danger, success, warning, info -->
+  <div class="... crayons-box--danger">
+  <div class="... crayons-box--success">
+  <div class="... crayons-box--warning">
+  <div class="... crayons-box--info">
+  '.rstrip %></pre>
+</div>
+
+<div class="container">
+  <div class="body">
+    <h2>Indicators</h2>
+    <p>Indicators are meant to be used to inform user about, for example, unread notifications. They supposed to steal user's attention and make him notice or click specific element.</p>
+    <p>We should keep in mind to never show too many indicators at the same time. Use your best judgment.</p>
+    <p>There're two types of indicators:</p>
+    <ul>
+      <li>Rectangle with label (text or number)</li>
+      <li>Bullet - just a circle without any text on it.</li>
+    </ul>
+    <p>And there're four styles to pick from:</p>
+    <ul>
+      <li>Default (grey) - nothing really crucial, basic information about something.</li>
+      <li>Accent (blueish) - something we want user to be aware of but it's also not crucial information</li>
+      <li>Critical (red) - something super important, don't overuse it!!</li>
+      <li>Inverted (dark grey) - alternative to the default one, especially when we need to show two defautl indicators next to each other.</li>
+    </ul>
+  </div>
   <div>
     <span class="crayons-indicator">Label</span>
     <span class="crayons-indicator">1</span>
@@ -161,6 +287,34 @@
     <span class="crayons-indicator crayons-indicator--inverted crayons-indicator--bullet"></span>
   </div>
 
+  <pre><%='
+  <span class="crayons-indicator">Label</span>
+  <span class="crayons-indicator">1</span>
+  <span class="crayons-indicator crayons-indicator--bullet"></span>
+
+  <!-- styles: accent, critical, inverted -->
+  <span class="... crayons-indicator--accent">...</span>
+  <span class="... crayons-indicator--critical">...</span>
+  <span class="... crayons-indicator--inverted">...</span>
+  '.rstrip %></pre>
+</div>
+
+<div class="container">
+  <div class="body">
+    <h2>Avatars &amp; logos</h2>
+    <p>An image representing a user is called an avatar.</p>
+    <p>An image representing a company or organization is called a logo.</p>
+    <p>To make a distinction between these two different entities we should keep them visually different. For Avatars, we gonna use circle shape. And for logos we gonna use square shape. This will help recognize what is what in a heartbeat.</p>
+    <p>Each of these will be available in 5 different sizes (use your best judgment in picking right size):</p>
+    <ul>
+      <li>Default</li>
+      <li>L(arge)</li>
+      <li>XL(arge)</li>
+      <li>XXL(arge)</li>
+      <li>XXXL(arge)</li>
+    </ul>
+    <p>Remember to use descriptive alt="" values!</p>
+  </div>
   <div>
     <span class="crayons-avatar"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
     <span class="crayons-avatar crayons-avatar--l"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
@@ -169,4 +323,82 @@
     <span class="crayons-avatar crayons-avatar--xxxl"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
   </div>
 
+  <pre><%='
+  <span class="crayons-avatar"><img src="..." class="crayons-avatar__image" alt="..." /></span>
+
+  <!-- sizes: l, xl, xxl, xxxl -->
+  <span class="... crayons-avatar--l">...</span>
+  <span class="... crayons-avatar--xl">...</span>
+  <span class="... crayons-avatar--xxl">...</span>
+  <span class="... crayons-avatar--xxxl">...</span>
+  '.rstrip %></pre>
+
+  <div>
+    <span class="crayons-logo"><img src="<%= asset_path("sloan.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+    <span class="crayons-logo crayons-logo--l"><img src="<%= asset_path("sloan.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+    <span class="crayons-logo crayons-logo--xl"><img src="<%= asset_path("sloan.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+    <span class="crayons-logo crayons-logo--xxl"><img src="<%= asset_path("sloan.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+    <span class="crayons-logo crayons-logo--xxxl"><img src="<%= asset_path("sloan.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+  </div>
+
+  <pre><%='
+  <span class="crayons-logo"><img src="..." class="crayons-logo__image" alt="..." /></span>
+
+  <!-- sizes: l, xl, xxl, xxxl -->
+  <span class="... crayons-logo--l">...</span>
+  <span class="... crayons-logo--xl">...</span>
+  <span class="... crayons-logo--xxl">...</span>
+  <span class="... crayons-logo--xxxl">...</span>
+  '.rstrip %></pre>
+</div>
+
+<div class="container">
+  <div class="body">
+    <h2>Cards</h2>
+    <p>These are containers used for creating, for example, widgets in sidebars.</p>
+  </div>
+  <div>
+    <div class="crayons-card" style="max-width: 316px;">
+      <header class="crayons-card__header">
+        <h3>Listings</h3>
+      </header>
+      <div class="crayons-card__body">
+        <a href="#" class="crayons-card__link-block">
+          Take part in the global microservices survey!
+          <footer class="crayons-card__link-block__footer">
+            <span class="crayons-indicator crayons-indicator--accent">New</span>
+            For hire
+          </footer>
+        </a>
+
+        <a href="#" class="crayons-card__link-block">
+          React / Java Dev - Austin, TX
+          <footer class="crayons-card__link-block__footer">For hire</footer>
+        </a>
+
+        <a href="#" class="crayons-card__link-block">
+          Mecha, a flat-file content management system for minimalists.
+          <footer class="crayons-card__link-block__footer">For hire</footer>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <pre><%='
+  <div class="crayons-card">
+    <header class="crayons-card__header">
+      <h3>Listings</h3>
+    </header>
+    <div class="crayons-card__body">
+      <a href="#" class="crayons-card__link-block">
+        Take part in the global microservices survey!
+        <footer class="crayons-card__link-block__footer">
+          <span class="crayons-indicator crayons-indicator--accent">New</span>
+          For hire
+        </footer>
+      </a>
+      ...
+    </div>
+  </div>
+  '.rstrip %></pre>
 </div>
