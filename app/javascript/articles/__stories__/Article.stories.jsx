@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, object, text, boolean } from '@storybook/addon-knobs/react';
+import { action } from '@storybook/addon-actions';
 import { Article } from '..';
 import {
   article,
@@ -25,11 +26,16 @@ const ICONS = {
   VIDEO_ICON: assetPath('video-camera.svg'),
 };
 
+const commonProps = {
+  bookmarkClick: action('Saved/unsaved article'),
+};
+
 storiesOf('Components/Article/Standard', module)
   .addDecorator(withKnobs)
   .addDecorator(articleDecorator)
   .add('Default', () => (
     <Article
+      {...commonProps}
       reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
       commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
       videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
@@ -40,6 +46,7 @@ storiesOf('Components/Article/Standard', module)
   ))
   .add('With Organization', () => (
     <Article
+      {...commonProps}
       reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
       commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
       videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
@@ -50,6 +57,7 @@ storiesOf('Components/Article/Standard', module)
   ))
   .add('Wth Flare Tag', () => (
     <Article
+      {...commonProps}
       reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
       commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
       videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
@@ -60,6 +68,7 @@ storiesOf('Components/Article/Standard', module)
   ))
   .add('Wth Snippet Result', () => (
     <Article
+      {...commonProps}
       reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
       commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
       videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
@@ -70,6 +79,7 @@ storiesOf('Components/Article/Standard', module)
   ))
   .add('Wth Reading Time', () => (
     <Article
+      {...commonProps}
       reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
       commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
       videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
@@ -80,6 +90,7 @@ storiesOf('Components/Article/Standard', module)
   ))
   .add('Wth Reactions', () => (
     <Article
+      {...commonProps}
       reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
       commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
       videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
@@ -90,6 +101,7 @@ storiesOf('Components/Article/Standard', module)
   ))
   .add('With Comments', () => (
     <Article
+      {...commonProps}
       reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
       commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
       videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
@@ -100,6 +112,7 @@ storiesOf('Components/Article/Standard', module)
   ))
   .add('Is on Reading List', () => (
     <Article
+      {...commonProps}
       reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
       commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
       videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
@@ -114,6 +127,7 @@ storiesOf('Components/Article/Video', module)
   .addDecorator(articleDecorator)
   .add('Default', () => (
     <Article
+      {...commonProps}
       reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
       commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
       videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
@@ -124,6 +138,7 @@ storiesOf('Components/Article/Video', module)
   ))
   .add('Video Article and Flare Tag', () => (
     <Article
+      {...commonProps}
       reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
       commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
       videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
@@ -138,6 +153,7 @@ storiesOf('Components/Article/Podcast', module)
   .addDecorator(articleDecorator)
   .add('Default', () => (
     <Article
+      {...commonProps}
       reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
       commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
       videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
@@ -148,6 +164,7 @@ storiesOf('Components/Article/Podcast', module)
   ))
   .add('Podcast Episode', () => (
     <Article
+      {...commonProps}
       reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
       commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
       videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
@@ -162,6 +179,7 @@ storiesOf('Components/Article/User', module)
   .addDecorator(articleDecorator)
   .add('Default', () => (
     <Article
+      {...commonProps}
       reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
       commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
       videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}

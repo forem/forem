@@ -2,7 +2,12 @@
 
 exports[`<LoadingArticle /> should render 1`] = `
 <div
-  class="single-article single-article-small-pic"
+  class="single-article single-article-small-pic big-article"
+  style={
+    Object {
+      "paddingBottom": "0",
+    }
+  }
 >
   <div
     class="small-pic"
@@ -32,11 +37,6 @@ exports[`<LoadingArticle /> should render 1`] = `
   </h4>
   <div
     class="tags single-article-loading"
-    style={
-      Object {
-        "width": "56%",
-      }
-    }
   />
 </div>
 `;

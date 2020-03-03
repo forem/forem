@@ -519,6 +519,8 @@
     left: 0px;
     right: 0px;
     padding-bottom: 12px;
+    max-width: 800px;
+    margin: auto;
     @media screen and (min-width: 950px) {
       h3 {
         font-size: calc(20px + 0.05vw);
@@ -564,7 +566,7 @@ form.listings-contact-via-connect {
     text-align: left;
   }
   width: 94%;
-  max-width: 600px;
+  max-width: 800px;
   textarea#new-message {
     height: 100px;
     margin: 5px auto 10px auto;

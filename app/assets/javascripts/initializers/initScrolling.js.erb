@@ -152,7 +152,8 @@ function insertArticles(articles) {
   if (el) {el.outerHTML = "";}
   articles.forEach(function insertAnArticle(article) {
     var existingEl = document.getElementById("article-link-"+article.id);
-    if ( existingEl &&
+    if ( !['/', '/top/week', '/top/month', '/top/year', '/top/infinity', '/latest'].includes(window.location.pathname) &&
+      existingEl &&
       existingEl.parentElement &&
       existingEl.parentElement.classList.contains('single-article-small-pic') &&
       !document.getElementById("video-player-"+article.id)) {
@@ -209,7 +210,8 @@ function algoliaPaginate(tag, requiresApproval) {
     nextPage += 1;
     insertArticles(content.hits);
     const checkBlockedContentEvent = new CustomEvent('checkBlockedContent')
-    window.dispatchEvent(checkBlockedContentEvent)
+    window.dispatchEvent(checkBlockedContentEvent);
+    initializeReadingListIcons();
     if (content.hits.length === 0) {
       document.getElementById("loading-articles").style.display = "none"
       done = true;

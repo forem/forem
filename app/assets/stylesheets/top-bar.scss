@@ -72,6 +72,8 @@
       top: 4px;
       right: 0;
       font-size: 0.8em;
+      min-width: 18px;
+      text-align: center;
 
       &.showing {
         display: block;

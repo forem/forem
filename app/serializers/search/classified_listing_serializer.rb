@@ -10,6 +10,7 @@ module Search
                :expires_at,
                :location,
                :processed_html,
+               :published,
                :slug,
                :title,
                :user_id

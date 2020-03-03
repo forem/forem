@@ -1,5 +1,3 @@
-'use strict';
-
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-undef */
 /* eslint-disable func-names */
@@ -14,7 +12,9 @@ function initializeReadingListIcons() {
 
 // set SAVE or SAVED articles buttons
 function setReadingListButtonsState() {
-  var readingListButtons = document.getElementsByClassName('bookmark-button');
+  var readingListButtons = document.querySelectorAll(
+    '.bookmark-button:not([data-initial-feed])',
+  );
   Array.from(readingListButtons).forEach(highlightButton);
 }
 
