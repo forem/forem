@@ -31,7 +31,9 @@ RSpec.describe Article, type: :model do
 
     context "when published" do
       before do
-        allow(article).to receive(:published?).and_return(true)
+        # rubocop:disable RSpec/NamedSubject
+        allow(subject).to receive(:published?).and_return(true)
+        # rubocop:enable RSpec/NamedSubject
       end
 
       it { is_expected.to validate_presence_of(:slug) }
