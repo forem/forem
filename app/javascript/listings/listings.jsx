@@ -3,6 +3,9 @@ import debounce from 'lodash.debounce';
 import { fetchSearch } from '../src/utils/search';
 import SingleListing from './singleListing';
 
+/* How many listings to show per page */
+const LISTING_PAGE_SIZE = 75;
+
 function resizeMasonryItem(item) {
   /* Get the grid object, its row-gap, and the size of its implicit rows */
   const grid = document.getElementsByClassName('classifieds-columns')[0];
@@ -303,7 +306,7 @@ export class Listings extends Component {
     const t = this;
     const { page, listings } = t.state;
     const dataHash = {
-      per_page: 75,
+      per_page: LISTING_PAGE_SIZE,
       page,
       classified_listing_search: query,
     };
@@ -319,7 +322,7 @@ export class Listings extends Component {
       t.setState({
         listings: fullListings,
         initialFetch: false,
-        showNextPageButt: classifiedListings.length === 75,
+        showNextPageButt: classifiedListings.length === LISTING_PAGE_SIZE,
       });
       this.setLocation(query, tags, category, slug);
     });
