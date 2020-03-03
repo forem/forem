@@ -151,12 +151,16 @@ class StoriesController < ApplicationController
     assign_classified_listings
     get_latest_campaign_articles if SiteConfig.campaign_sidebar_enabled?
     @article_index = true
-    @featured_story = (@featured_story || Article.new)&.decorate
+    @featured_story = (featured_story || Article.new)&.decorate
     @stories = ArticleDecorator.decorate_collection(@stories)
     set_surrogate_key_header "main_app_home_page"
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
 
     render template: "articles/index"
+  end
+
+  def featured_story
+    @featured_story ||= Articles::Feed.find_featured_story(@stories)
   end
 
   def handle_podcast_index
