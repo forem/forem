@@ -35,14 +35,9 @@ module Api
 
         # if the user is authenticated we allow them to access
         # their own unpublished listings as well
-        relation = if @user
-                     relation.union(@user.classified_listings)
-                   else
-                     relation.includes(:user, :organization)
-                   end
+        relation = relation.union(@user.classified_listings) if @user
 
-        @classified_listing = relation.
-          select(ATTRIBUTES_FOR_SERIALIZATION).find(params[:id])
+        @classified_listing = relation.select(ATTRIBUTES_FOR_SERIALIZATION).find(params[:id])
 
         set_surrogate_key_header @classified_listing.record_key
       end
