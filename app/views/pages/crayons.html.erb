@@ -6,7 +6,9 @@
     line-height: 150%;
     box-sizing: border-box;
   }
-  .container * {
+  .container *,
+  .container *:before,
+  .container *:after {
     box-sizing: border-box;
   }
 
@@ -126,6 +128,207 @@
     </label>
     <input type="text" id="t1" class="crayons-textfield" placeholder="This is placeholder...">
     <p class="crayons-field__description">Another description just in case...</p>
+  </div>
+  '.rstrip %></pre>
+
+  <div>
+    <div class="crayons-field crayons-field--checkbox">
+      <input type="checkbox" id="c2" class="crayons-checkbox">
+      <label for="c2" class="crayons-field__label">
+        Raspberry
+        <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
+      </label>
+    </div>
+  </div>
+
+  <pre><%='
+  <div class="crayons-field crayons-field--checkbox">
+    <input type="checkbox" id="c2" class="crayons-checkbox">
+    <label for="c2" class="crayons-field__label">
+      Raspberry
+      <p class="crayons-field__description">This is...</p>
+    </label>
+  </div>
+  '.rstrip %></pre>
+
+  <div>
+    <div class="crayons-fields">
+      <div class="crayons-field crayons-field--checkbox">
+        <input type="checkbox" id="c3" class="crayons-checkbox">
+        <label for="c3" class="crayons-field__label">
+          Avocado
+          <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
+        </label>
+      </div>
+
+      <div class="crayons-field crayons-field--checkbox">
+        <input type="checkbox" id="c4" class="crayons-checkbox">
+        <label for="c4" class="crayons-field__label">
+          Raspberry
+          <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
+        </label>
+      </div>
+
+      <div class="crayons-field crayons-field--checkbox">
+        <input type="checkbox" id="c5" class="crayons-checkbox">
+        <label for="c5" class="crayons-field__label">
+          Peanut
+          <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <pre><%='
+  <div class="crayons-fields">
+    <div class="crayons-field crayons-field--checkbox">
+      <input type="checkbox" id="c3" class="crayons-checkbox">
+      <label for="c3" class="crayons-field__label">
+        Avocado
+        <p class="crayons-field__description">This is...</p>
+      </label>
+    </div>
+
+    <div class="crayons-field crayons-field--checkbox">
+      ...
+    </div>
+
+    ...
+  </div>
+  '.rstrip %></pre>
+
+  <div>
+    <div class="crayons-fields crayons-fields--horizontal">
+      <div class="crayons-field crayons-field--checkbox">
+        <input type="checkbox" id="c6" class="crayons-checkbox">
+        <label for="c6" class="crayons-field__label">Avocado</label>
+      </div>
+
+      <div class="crayons-field crayons-field--checkbox">
+        <input type="checkbox" id="c7" class="crayons-checkbox">
+        <label for="c7" class="crayons-field__label">Raspberry</label>
+      </div>
+
+      <div class="crayons-field crayons-field--checkbox">
+        <input type="checkbox" id="c8" class="crayons-checkbox">
+        <label for="c8" class="crayons-field__label">Peanut</label>
+      </div>
+    </div>
+  </div>
+
+  <pre><%='
+  <div class="crayons-fields crayons-fields--horizontal">
+    <div class="crayons-field crayons-field--checkbox">
+      <input type="checkbox" id="c3" class="crayons-checkbox">
+      <label for="c3" class="crayons-field__label">Avocado</label>
+    </div>
+
+    <div class="crayons-field crayons-field--checkbox">
+      ...
+    </div>
+    
+    ...
+  </div>
+  '.rstrip %></pre>
+
+
+  <div>
+    <div class="crayons-field crayons-field--radio">
+      <input type="radio" name="name1" id="r2" class="crayons-radio">
+      <label for="r2" class="crayons-field__label">
+        Raspberry
+        <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
+      </label>
+    </div>
+  </div>
+
+  <pre><%='
+  <div class="crayons-field crayons-field--radio">
+    <input type="radio" name="name1" id="r2" class="crayons-radio">
+    <label for="r2" class="crayons-field__label">
+      Raspberry
+      <p class="crayons-field__description">This is...</p>
+    </label>
+  </div>
+  '.rstrip %></pre>
+
+  <div>
+    <div class="crayons-fields">
+      <div class="crayons-field crayons-field--radio">
+        <input type="radio" name="name2" id="r3" class="crayons-radio">
+        <label for="r3" class="crayons-field__label">
+          Avocado
+          <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
+        </label>
+      </div>
+
+      <div class="crayons-field crayons-field--radio">
+        <input type="radio" name="name2" id="r4" class="crayons-radio">
+        <label for="r4" class="crayons-field__label">
+          Raspberry
+          <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
+        </label>
+      </div>
+
+      <div class="crayons-field crayons-field--radio">
+        <input type="radio" name="name2" id="r5" class="crayons-radio">
+        <label for="r5" class="crayons-field__label">
+          Peanut
+          <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <pre><%='
+  <div class="crayons-fields">
+    <div class="crayons-field crayons-field--radio">
+      <input type="radio" name="name2" id="r3" class="crayons-radio">
+      <label for="r3" class="crayons-field__label">
+        Avocado
+        <p class="crayons-field__description">This is...</p>
+      </label>
+    </div>
+
+    <div class="crayons-field crayons-field--radio">
+      ...
+    </div>
+
+    ...
+  </div>
+  '.rstrip %></pre>
+
+  <div>
+    <div class="crayons-fields crayons-fields--horizontal">
+      <div class="crayons-field crayons-field--radio">
+        <input type="radio" name="name3" id="r6" class="crayons-radio">
+        <label for="r6" class="crayons-field__label">Avocado</label>
+      </div>
+
+      <div class="crayons-field crayons-field--radio">
+        <input type="radio" name="name3" id="r7" class="crayons-radio">
+        <label for="r7" class="crayons-field__label">Raspberry</label>
+      </div>
+
+      <div class="crayons-field crayons-field--radio">
+        <input type="radio" name="name3" id="r8" class="crayons-radio">
+        <label for="r8" class="crayons-field__label">Peanut</label>
+      </div>
+    </div>
+  </div>
+
+  <pre><%='
+  <div class="crayons-fields crayons-fields--horizontal">
+    <div class="crayons-field crayons-field--radio">
+      <input type="radio" name="name3" id="r6" class="crayons-radio">
+      <label for="r6" class="crayons-field__label">Avocado</label>
+    </div>
+
+    <div class="crayons-field crayons-field--radio">
+      ...
+    </div>
+    
+    ...
   </div>
   '.rstrip %></pre>
 </div>
@@ -452,8 +655,8 @@
       <li>Default: 24px</li>
       <li>L(arge): 32px</li>
       <li>XL(arge): 48px</li>
-      <li>XXL(arge): 64px</li>
-      <li>XXXL(arge): 128px</li>
+      <li>2XL(arge): 64px</li>
+      <li>3XL(arge): 128px</li>
     </ul>
     <p>Remember to use descriptive alt="" values!</p>
   </div>
@@ -461,36 +664,36 @@
     <span class="crayons-avatar"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
     <span class="crayons-avatar crayons-avatar--l"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
     <span class="crayons-avatar crayons-avatar--xl"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
-    <span class="crayons-avatar crayons-avatar--xxl"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
-    <span class="crayons-avatar crayons-avatar--xxxl"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
+    <span class="crayons-avatar crayons-avatar--2xl"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
+    <span class="crayons-avatar crayons-avatar--3xl"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
   </div>
 
   <pre><%='
   <span class="crayons-avatar"><img src="..." class="crayons-avatar__image" alt="..." /></span>
 
-  <!-- sizes: l, xl, xxl, xxxl -->
+  <!-- sizes: l, xl, 2xl, 3xl -->
   <span class="... crayons-avatar--l">...</span>
   <span class="... crayons-avatar--xl">...</span>
-  <span class="... crayons-avatar--xxl">...</span>
-  <span class="... crayons-avatar--xxxl">...</span>
+  <span class="... crayons-avatar--2xl">...</span>
+  <span class="... crayons-avatar--3xl">...</span>
   '.rstrip %></pre>
 
   <div>
     <span class="crayons-logo"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
     <span class="crayons-logo crayons-logo--l"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
     <span class="crayons-logo crayons-logo--xl"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
-    <span class="crayons-logo crayons-logo--xxl"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
-    <span class="crayons-logo crayons-logo--xxxl"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+    <span class="crayons-logo crayons-logo--2xl"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+    <span class="crayons-logo crayons-logo--3xl"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
   </div>
 
   <pre><%='
   <span class="crayons-logo"><img src="..." class="crayons-logo__image" alt="..." /></span>
 
-  <!-- sizes: l, xl, xxl, xxxl -->
+  <!-- sizes: l, xl, 2xl, 3xl -->
   <span class="... crayons-logo--l">...</span>
   <span class="... crayons-logo--xl">...</span>
-  <span class="... crayons-logo--xxl">...</span>
-  <span class="... crayons-logo--xxxl">...</span>
+  <span class="... crayons-logo--2xl">...</span>
+  <span class="... crayons-logo--3xl">...</span>
   '.rstrip %></pre>
 </div>
 

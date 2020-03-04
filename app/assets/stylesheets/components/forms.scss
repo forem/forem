@@ -118,6 +118,8 @@
   flex-flow: column;
   font-size: $fs-base; // todo: do we need it?
 
+  $this: &;
+
   &__label {
     color: $smoke-90;
     font-weight: $fw-medium;
@@ -136,5 +138,50 @@
 
   > * + * {
     margin-top: $su-2;
+  }
+
+  &--checkbox,
+  &--radio {
+    display: grid;
+    grid-template-columns: 1.5em 1fr;
+    grid-gap: $su-2;
+    border-radius: $br-default;
+    transition: all $transition-props;
+
+    &:hover {
+      background: $smoke-10;
+      box-shadow: 0 0 0 $su-1 $smoke-10;
+    }
+
+    #{$this}__label {
+      margin-top: 0;
+      padding-right: $su-2; // adding this to make hovers look slightly better.
+    }
+  }
+
+  .crayons-checkbox,
+  .crayons-radio {
+    margin: 0.1875em; // centering checkbox within 1.5em grid cell.
+    justify-self: center;
+  }
+}
+
+.crayons-fields {
+  display: flex;
+  flex-flow: column;
+  $this: &;
+
+  &:not(#{$this}--horizontal) {
+    > .crayons-field + .crayons-field {
+      margin-top: $su-2;
+    }
+  }
+
+  &--horizontal {
+    flex-flow: row;
+
+    > .crayons-field + .crayons-field {
+      margin-left: $su-4;
+    }
   }
 }

@@ -8,7 +8,7 @@ $breakpoint-l: 1024px;
 $breakpoint-xl: 1280px;
 
 // Transitions
-$transition-props: ease-in-out 100ms;
+$transition-props: cubic-bezier(.17,.67,.5,.71) 100ms;
 
 // pow() - Raise number to the nth power
 //
