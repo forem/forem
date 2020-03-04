@@ -97,6 +97,10 @@ To start elasticsearch as a daemonized process:
 
 ### Installing Elasticsearch with Homebrew
 
+As the default version of the Homebrew formula points to Elasticsearch 7.6, we
+need to retrieve the correct revision of the formula to make sure we install the
+latest supported version: 7.5.2.
+
 ```shell
 brew tap elastic/tap
 brew install https://raw.githubusercontent.com/elastic/homebrew-tap/bed8bc6b03213c2c1a7df6e4b9f928e7082fae46/Formula/elasticsearch-oss.rb
