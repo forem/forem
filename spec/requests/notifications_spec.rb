@@ -560,7 +560,7 @@ RSpec.describe "NotificationsIndex", type: :request do
         user.add_role :trusted
         user.update(mod_roundrobin_notifications: false)
         sign_in user
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           Notification.send_moderation_notification(comment)
         end
         get "/notifications"
