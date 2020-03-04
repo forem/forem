@@ -6,13 +6,11 @@ module ClassifiedListingsToolkit
   def unpublish_listing
     @classified_listing.published = false
     @classified_listing.save
-    @classified_listing.remove_from_index!
   end
 
   def publish_listing
     @classified_listing.published = true
     @classified_listing.save
-    @classified_listing.index!
   end
 
   def update_listing_details
@@ -29,7 +27,6 @@ module ClassifiedListingsToolkit
   def bump_listing_success
     @classified_listing.bumped_at = Time.current
     saved = @classified_listing.save
-    @classified_listing.index! if saved
     saved
   end
 
@@ -115,7 +112,6 @@ module ClassifiedListingsToolkit
 
     if successful_transaction
       clear_listings_cache
-      @classified_listing.index!
       process_successful_creation
     else
       @credits = current_user.credits.unspent
