@@ -72,22 +72,6 @@ RSpec.describe ClassifiedListing, type: :model do
     end
   end
 
-  describe "#index_to_elasticsearch" do
-    it "enqueues job to index classified_listing to elasticsearch" do
-      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, classified_listing.id]) do
-        classified_listing.index_to_elasticsearch
-      end
-    end
-  end
-
-  describe "#index_to_elasticsearch_inline" do
-    it "indexed classified_listing to elasticsearch inline" do
-      allow(Search::ClassifiedListing).to receive(:index)
-      classified_listing.index_to_elasticsearch_inline
-      expect(Search::ClassifiedListing).to have_received(:index).with(classified_listing.id, hash_including(:id, :body_markdown))
-    end
-  end
-
   describe "#after_commit" do
     it "on update enqueues worker to index tag to elasticsearch" do
       classified_listing.save
@@ -102,25 +86,6 @@ RSpec.describe ClassifiedListing, type: :model do
       sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, classified_listing.id]) do
         classified_listing.destroy
       end
-    end
-  end
-
-  describe "#serialized_search_hash" do
-    it "creates a valid serialized hash to send to elasticsearch" do
-      # classified_listing_search is a copy_to field and will never be included
-      # in the searialized_search_hash, so we skip it
-      mapping_keys = Search::ClassifiedListing::MAPPINGS.dig(:properties).except(:classified_listing_search).keys
-      search_hash_keys = classified_listing.serialized_search_hash.symbolize_keys.keys
-
-      expect(search_hash_keys).to match_array(mapping_keys)
-    end
-  end
-
-  describe "#elasticsearch_doc" do
-    it "finds document in elasticsearch", elasticsearch: true do
-      allow(Search::ClassifiedListing).to receive(:find_document)
-      classified_listing.elasticsearch_doc
-      expect(Search::ClassifiedListing).to have_received(:find_document)
     end
   end
 
