@@ -9,6 +9,19 @@ module Articles
       @tag_weight = 1 # default weight tags play in rankings
     end
 
+    def self.find_featured_story(stories)
+      featured_story =  if stories.is_a?(ActiveRecord::Relation)
+                          stories.where.not(main_image: nil).first
+                        else
+                          stories.detect { |story| !story.main_image.nil? }
+                        end
+      featured_story || Article.new
+    end
+
+    def find_featured_story(stories)
+      self.class.find_featured_story(stories)
+    end
+
     def published_articles_by_tag
       articles = Article.published.limited_column_select.page(@page).per(@number_of_articles)
       articles = articles.cached_tagged_with(@tag) if @tag.present? # More efficient than tagged_with

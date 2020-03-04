@@ -364,4 +364,41 @@ RSpec.describe Articles::Feed, type: :service do
       expect(feed.rank_and_sort_articles(articles)).to eq [article3, article2, article1]
     end
   end
+
+  describe ".find_featured_story" do
+    let(:featured_story) { described_class.find_featured_story(stories) }
+
+    context "when passed an ActiveRecord collection" do
+      let(:stories) { Article.all }
+
+      it "returns first article with a main image" do
+        expect(featured_story.main_image).not_to be_nil
+      end
+    end
+
+    context "when passed an array" do
+      let(:stories) { Article.all.to_a }
+
+      it "returns first article with a main image" do
+        expect(featured_story.main_image).not_to be_nil
+      end
+    end
+
+    context "when passed collection without any articles" do
+      let(:stories) { [] }
+
+      it "returns an new, empty Article object" do
+        expect(featured_story.main_image).to be_nil
+        expect(featured_story.id).to be_nil
+      end
+    end
+  end
+
+  describe "#find_featured_story" do
+    it "calls the class method" do
+      allow(described_class).to receive(:find_featured_story)
+      feed.find_featured_story([])
+      expect(described_class).to have_received(:find_featured_story)
+    end
+  end
 end
