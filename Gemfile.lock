@@ -298,10 +298,10 @@ GEM
       railties (>= 4.2.0)
     faker (2.10.2)
       i18n (>= 1.6, < 2)
-    faraday (1.0.0)
+    faraday (0.17.3)
       multipart-post (>= 1.2, < 3)
-    faraday_middleware (1.0.0.rc1)
-      faraday (~> 1.0)
+    faraday_middleware (0.14.0)
+      faraday (>= 0.7.4, < 1.0)
     fast_jsonapi (1.5)
       activesupport (>= 4.2)
     fastimage (2.1.1)
@@ -494,7 +494,7 @@ GEM
       nenv (~> 0.1)
       shellany (~> 0.0)
     oauth (0.5.4)
-    oauth2 (1.4.4)
+    oauth2 (1.4.3)
       faraday (>= 0.8, < 2.0)
       jwt (>= 1.0, < 3.0)
       multi_json (~> 1.3)
@@ -780,8 +780,8 @@ GEM
       timber (~> 3.0)
       timber-rack (~> 1.0)
     timecop (0.9.1)
-    twilio-ruby (5.31.5)
-      faraday (~> 1.0.0)
+    twilio-ruby (5.31.1)
+      faraday (~> 0.9)
       jwt (>= 1.5, <= 2.5)
       nokogiri (>= 1.6, < 2.0)
     twitter (7.0.0)
@@ -982,7 +982,7 @@ DEPENDENCIES
   timber (~> 3.0)
   timber-rails (~> 1.0)
   timecop (~> 0.9)
-  twilio-ruby (~> 5.31)
+  twilio-ruby (~> 5.31.1)
   twitter (~> 7.0)
   typhoeus (~> 1.3.1)
   uglifier (~> 4.2)
@@ -1002,4 +1002,4 @@ RUBY VERSION
    ruby 2.6.5p114
 
 BUNDLED WITH
-   2.0.2
+   2.1.4
