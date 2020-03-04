@@ -32,6 +32,8 @@ class Stories::FeedsController < ApplicationController
       feed.mix_default_and_more_random
     when "more_tag_weight"
       feed.more_tag_weight
+    when "more_tag_weight_more_random"
+      feed.more_tag_weight_more_random
     else
       feed.default_home_feed(user_signed_in: true)
     end

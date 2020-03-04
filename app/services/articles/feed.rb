@@ -66,6 +66,13 @@ module Articles
       stories
     end
 
+    def more_tag_weight_more_random
+      @tag_weight = 2
+      @randomness = 7
+      _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
+      stories
+    end
+
     # Test variation: Base half the time, more random other half. Varies on impressions.
     def mix_default_and_more_random
       if rand(2) == 1
@@ -126,7 +133,7 @@ module Articles
 
     def globally_hot_articles(user_signed_in)
       hot_stories = published_articles_by_tag.
-        where("score > ? OR featured = ?", 9, true).
+        where("score > ? OR featured = ?", 8, true).
         order("hotness_score DESC")
       featured_story = hot_stories.where.not(main_image: nil).first
       if user_signed_in
