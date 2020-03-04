@@ -143,7 +143,7 @@ RSpec.describe Reaction, type: :model do
     end
 
     it "updates updated_at if the reactable is a comment" do
-      sidkiq_perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         updated_at = 1.day.ago
         comment = create(:comment, commentable: article, updated_at: updated_at)
         reaction.update(reactable: comment)
