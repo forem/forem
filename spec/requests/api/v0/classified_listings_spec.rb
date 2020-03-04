@@ -538,11 +538,10 @@ RSpec.describe "Api::V0::Listings" do
       it "does not update details if the listing hasn't been bumped in the last 24 hours" do
         listing.update!(bumped_at: 24.hours.ago)
 
-        old_title = listing.title
         new_title = Faker::Book.title
 
         put_classified_listing(listing.id, title: new_title)
-        expect(listing.reload.title).to eq(old_title)
+        expect(listing.reload.title).to eq(listing.title)
       end
 
       it "does not update a published listing" do
