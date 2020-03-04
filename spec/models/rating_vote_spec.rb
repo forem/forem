@@ -21,6 +21,13 @@ RSpec.describe RatingVote, type: :model do
       rating = build(:rating_vote, article_id: article.id, user_id: user.id)
       expect(rating).not_to be_valid
     end
+
+    it "does allows more than one reaction if different contexts" do
+      create(:rating_vote, article_id: article.id, user_id: user.id)
+      rating = build(:rating_vote, article_id: article.id, user_id: user.id, context: "readinglist_reaction")
+      expect(rating).to be_valid
+    end
+
   end
 
   describe "modifies article rating score" do
@@ -50,7 +57,12 @@ RSpec.describe RatingVote, type: :model do
   describe "permissions" do
     let_it_be(:untrusted_user) { create(:user) }
 
-    it "allows trusted users to make rating" do
+    it "allows untrusted user to leave readinglist_reaction context rating" do
+      rating = build(:rating_vote, article_id: article.id, user_id: untrusted_user.id, context: "readinglist_reaction")
+      expect(rating).to be_valid
+    end
+
+    it "allows trusted users to make explicit rating" do
       rating = build(:rating_vote, article_id: article.id, user_id: user.id)
       expect(rating).to be_valid
     end

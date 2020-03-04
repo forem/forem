@@ -1,5 +1,15 @@
 class SearchController < ApplicationController
   before_action :authenticate_user!
+  before_action :format_integer_params
+  before_action :sanitize_params, only: %i[classified_listings]
+
+  CLASSIFIED_LISTINGS_PARAMS = %i[
+    category
+    classified_listing_search
+    page
+    per_page
+    tags
+  ].freeze
 
   def tags
     tag_docs = Search::Tag.search_documents("name:#{params[:name]}* AND supported:true")
@@ -17,6 +27,14 @@ class SearchController < ApplicationController
     render json: { result: ccm_docs }
   end
 
+  def classified_listings
+    cl_docs = Search::ClassifiedListing.search_documents(
+      params: classified_listing_params.to_h,
+    )
+
+    render json: { result: cl_docs }
+  end
+
   private
 
   def chat_channel_params
@@ -28,8 +46,23 @@ class SearchController < ApplicationController
       channel_status
       status
     ]
+
+    params.permit(accessible)
+  end
+
+  def classified_listing_params
+    params.permit(CLASSIFIED_LISTINGS_PARAMS)
+  end
+
+  def format_integer_params
     params[:page] = params[:page].to_i if params[:page].present?
     params[:per_page] = params[:per_page].to_i if params[:per_page].present?
-    params.permit(accessible)
+  end
+
+  # Some Elasticsearches/QueryBuilders treat values such as empty Strings and
+  # nil differently. This is a helper method to remove any params that are
+  # blank before passing it to Elasticsearch.
+  def sanitize_params
+    params.delete_if { |_k, v| v.blank? }
   end
 end
