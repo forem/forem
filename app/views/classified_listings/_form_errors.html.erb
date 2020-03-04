@@ -1,0 +1,10 @@
+<% if classified_listing.errors.any? %>
+  <div class="classified-errors">
+    <h2><%= pluralize(classified_listing.errors.count, "error") %> prohibited this listing from being saved:</h2>
+    <ul>
+    <% classified_listing.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>

@@ -187,6 +187,12 @@ RSpec.describe "Api::V0::Listings" do
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
+      it "fails if category is invalid" do
+        post_classified_listing(title: "Title", body_markdown: "body", category: "unknown")
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body.dig("errors", "category").first).to match(/not a valid category/)
+      end
+
       it "does not subtract credits or create a listing if the listing is not valid" do
         expect do
           post_classified_listing(invalid_params)
@@ -496,9 +502,15 @@ RSpec.describe "Api::V0::Listings" do
       include_context "when user is authorized"
       include_context "when user has enough credit"
 
-      it "returns HTTP 422 if no params given" do
+      it "fails if no params have been given" do
         put_classified_listing(listing.id)
         expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "fails if category is invalid" do
+        put_classified_listing(listing.id, title: "New title", category: "unknown")
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body.dig("errors", "category").first).to match(/not a valid category/)
       end
 
       it "updates the title of his listing" do

@@ -145,7 +145,8 @@ module ClassifiedListingsToolkit
 
       publish_listing
     elsif listing_updatable?
-      update_listing_details
+      saved = update_listing_details
+      return process_unsuccessful_update unless saved
     end
 
     clear_listings_cache

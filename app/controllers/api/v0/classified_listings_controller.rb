@@ -79,6 +79,8 @@ module Api
         render json: { errors: @classified_listing.errors }, status: :unprocessable_entity
       end
 
+      alias process_unsuccessful_update process_unsuccessful_creation
+
       def process_after_update
         render "show", status: :ok
       end
