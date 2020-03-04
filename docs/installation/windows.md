@@ -110,9 +110,11 @@ Make sure that Yarn is installed with `yarn -v`
 
 ### PostgreSQL
 
+DEV requires PostgreSQL version 9.5 or higher.
+
 If you don't have PostgreSQL installed on your Windows system, you can do so
 right now. WSL is able to connect to a PostgreSQL instance on your Windows
-machine. DEV requires PostgreSQL version 9.4 or higher.
+machine.
 
 Download [PostgreSQL for Windows](https://www.postgresql.org/download/windows/)
 and install it.
