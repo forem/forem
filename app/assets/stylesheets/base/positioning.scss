@@ -155,3 +155,46 @@
     'z-auto': auto,
   )
 );
+
+// Overflow
+@include generate-classes(
+  'overflow',
+  'overflow',
+  (
+    'auto': auto,
+    'visible': visible,
+    'scroll': scroll,
+    'hidden': hidden,
+  )
+);
+
+// Overflow X
+@include generate-classes(
+  'overflow-x',
+  'overflow-x',
+  (
+    'auto': auto,
+    'visible': visible,
+    'scroll': scroll,
+    'hidden': hidden,
+  )
+);
+
+// Overflow Y
+@include generate-classes(
+  'overflow-y',
+  'overflow-y',
+  (
+    'auto': auto,
+    'visible': visible,
+    'scroll': scroll,
+    'hidden': hidden,
+  )
+);
+
+.scrolling-touch {
+  -webkit-overflow-scrolling: touch;
+}
+.scrolling-auto {
+  -webkit-overflow-scrolling: auto;
+}
