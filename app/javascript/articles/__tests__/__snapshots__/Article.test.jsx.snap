@@ -141,6 +141,24 @@ exports[`<Article /> component should render a podcast episode 1`] = `
       </span>
     </a>
   </div>
+  <div
+    class="article-engagement-count reactions-count"
+  >
+    <a
+      href="/some-post/path"
+    >
+      <img
+        alt="heart"
+        loading="lazy"
+      />
+      <span
+        class="engagement-count-number"
+        id="engagement-count-number-49020"
+      >
+        0
+      </span>
+    </a>
+  </div>
 </div>
 `;
 
@@ -221,6 +239,25 @@ exports[`<Article /> component should render a standard article 1`] = `
         class="tag"
       >
         #go
+      </span>
+    </a>
+  </div>
+  <div
+    class="article-engagement-count reactions-count"
+  >
+    <a
+      href="/some-post/path"
+    >
+      <img
+        alt="heart"
+        loading="lazy"
+        src="/images/reactions-stack.png"
+      />
+      <span
+        class="engagement-count-number"
+        id="engagement-count-number-62407"
+      >
+        0
       </span>
     </a>
   </div>
@@ -411,6 +448,25 @@ exports[`<Article /> component should render a video article 1`] = `
       </span>
     </a>
   </div>
+  <div
+    class="article-engagement-count reactions-count"
+  >
+    <a
+      href="/some-post/path"
+    >
+      <img
+        alt="heart"
+        loading="lazy"
+        src="/images/reactions-stack.png"
+      />
+      <span
+        class="engagement-count-number"
+        id="engagement-count-number-49020"
+      >
+        0
+      </span>
+    </a>
+  </div>
   <a
     class="article-reading-time"
     href="/some-post/path"
@@ -538,6 +594,25 @@ exports[`<Article /> component should render a video article with a flare tag 1`
         class="tag"
       >
         #go
+      </span>
+    </a>
+  </div>
+  <div
+    class="article-engagement-count reactions-count"
+  >
+    <a
+      href="/some-post/path"
+    >
+      <img
+        alt="heart"
+        loading="lazy"
+        src="/images/reactions-stack.png"
+      />
+      <span
+        class="engagement-count-number"
+        id="engagement-count-number-49020"
+      >
+        0
       </span>
     </a>
   </div>
@@ -806,6 +881,25 @@ exports[`<Article /> component should render with a flare tag 1`] = `
       </span>
     </a>
   </div>
+  <div
+    class="article-engagement-count reactions-count"
+  >
+    <a
+      href="/some-post/path"
+    >
+      <img
+        alt="heart"
+        loading="lazy"
+        src="/images/reactions-stack.png"
+      />
+      <span
+        class="engagement-count-number"
+        id="engagement-count-number-62407"
+      >
+        0
+      </span>
+    </a>
+  </div>
   <a
     class="article-reading-time"
     href="/some-post/path"
@@ -917,6 +1011,25 @@ exports[`<Article /> component should render with a reading time 1`] = `
         class="tag"
       >
         #go
+      </span>
+    </a>
+  </div>
+  <div
+    class="article-engagement-count reactions-count"
+  >
+    <a
+      href="/some-post/path"
+    >
+      <img
+        alt="heart"
+        loading="lazy"
+        src="/images/reactions-stack.png"
+      />
+      <span
+        class="engagement-count-number"
+        id="engagement-count-number-62407"
+      >
+        0
       </span>
     </a>
   </div>
@@ -1041,6 +1154,25 @@ exports[`<Article /> component should render with a snippet result 1`] = `
       </span>
     </a>
   </div>
+  <div
+    class="article-engagement-count reactions-count"
+  >
+    <a
+      href="/some-post/path"
+    >
+      <img
+        alt="heart"
+        loading="lazy"
+        src="/images/reactions-stack.png"
+      />
+      <span
+        class="engagement-count-number"
+        id="engagement-count-number-62407"
+      >
+        0
+      </span>
+    </a>
+  </div>
   <a
     class="article-reading-time"
     href="/some-post/path"
@@ -1156,6 +1288,25 @@ exports[`<Article /> component should render with an organization 1`] = `
         class="tag"
       >
         #go
+      </span>
+    </a>
+  </div>
+  <div
+    class="article-engagement-count reactions-count"
+  >
+    <a
+      href="/some-post/path"
+    >
+      <img
+        alt="heart"
+        loading="lazy"
+        src="/images/reactions-stack.png"
+      />
+      <span
+        class="engagement-count-number"
+        id="engagement-count-number-62407"
+      >
+        0
       </span>
     </a>
   </div>
