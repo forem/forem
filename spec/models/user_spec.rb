@@ -439,7 +439,7 @@ RSpec.describe User, type: :model do
       end
 
       it "sets correct language_settings by default after the jobs are processed" do
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           expect(user.language_settings).to eq("preferred_languages" => %w[en])
         end
       end
