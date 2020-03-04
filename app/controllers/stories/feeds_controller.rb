@@ -28,7 +28,7 @@ class Stories::FeedsController < ApplicationController
       feed.default_home_feed(user_signed_in: true)
     when "more_random"
       feed.default_home_feed_with_more_randomness
-    when "mix_base_and_more_random"
+    when "mix_base_more_random"
       feed.mix_default_and_more_random
     when "more_tag_weight"
       feed.more_tag_weight
