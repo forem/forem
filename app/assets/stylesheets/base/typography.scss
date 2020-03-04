@@ -1,4 +1,4 @@
-@include '../vars/variables';
+@import '../vars/_variables';
 
 @include generate-classes(
   'ff',
