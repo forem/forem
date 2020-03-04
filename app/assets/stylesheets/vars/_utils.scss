@@ -8,7 +8,7 @@ $breakpoint-l: 1024px;
 $breakpoint-xl: 1280px;
 
 // Transitions
-$transition-props: cubic-bezier(.17,.67,.5,.71) 100ms;
+$transition-props: cubic-bezier(0.17, 0.67, 0.5, 0.71) 100ms;
 
 // pow() - Raise number to the nth power
 //
@@ -22,4 +22,13 @@ $transition-props: cubic-bezier(.17,.67,.5,.71) 100ms;
   }
 
   @return $raised;
+}
+
+// Generating classes for Tailwind approach.
+@mixin generate-classes($prefix, $property, $values) {
+  @each $name, $value in $values {
+    .#{$prefix}-#{$name} {
+      #{$property}: $value !important;
+    }
+  }
 }

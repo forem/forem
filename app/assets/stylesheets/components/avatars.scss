@@ -1,6 +1,6 @@
 @import '../vars/_variables.scss';
 
-@mixin avatar_logo($name, $radius, $background) {
+@mixin avatar-logo($name, $radius, $background) {
   .crayons-#{$name} {
     display: inline-block;
     border-radius: $radius;
@@ -50,5 +50,5 @@
   }
 }
 
-@include avatar_logo("avatar", 100%, $smoke-60);
-@include avatar_logo("logo", $br-default, $snowflake);
+@include avatar-logo('avatar', 100%, $smoke-60);
+@include avatar-logo('logo', $br-default, $snowflake);
