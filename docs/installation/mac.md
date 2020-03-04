@@ -20,10 +20,11 @@ Please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
 
 ### PostgreSQL
 
-DEV requires PostgreSQL version 9.4 or higher. The easiest way to get started is
-to use [Postgres.app](https://postgresapp.com/). Alternatively, check out the
-official [PostgreSQL](https://www.postgresql.org/) site for more installation
-options.
+DEV requires PostgreSQL version 9.5 or higher.
+
+The easiest way to get started is to use
+[Postgres.app](https://postgresapp.com/). Alternatively, check out the official
+[PostgreSQL](https://www.postgresql.org/) site for more installation options.
 
 For additional configuration options, check our
 [PostgreSQL setup guide](/installation/postgresql).

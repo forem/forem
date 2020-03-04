@@ -36,6 +36,8 @@ There are two ways to install Yarn.
 
 ### PostgreSQL
 
+DEV requires PostgreSQL version 9.5 or higher.
+
 1. Run
    `sudo apt update && sudo apt install postgresql postgresql-contrib libpq-dev`.
 1. To test the installation you can run `sudo -u postgres psql` which should
@@ -45,8 +47,7 @@ There are two ways to install Yarn.
 
 There are more than one ways to setup PostgreSQL. For additional configuration,
 check out our [PostgreSQL setup guide](/installation/postgresql) or the official
-[PostgreSQL](https://www.postgresql.org/) site for further information. DEV
-requires PostgreSQL version 9.4 or higher.
+[PostgreSQL](https://www.postgresql.org/) site for further information.
 
 ### ImageMagick
 
