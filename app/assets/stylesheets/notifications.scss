@@ -3,6 +3,8 @@
 .notifications-index {
   .home {
     .articles-list {
+      z-index: 5;
+
       .signup-cue {
         padding: 30px 25px;
         background: white;
@@ -415,6 +417,8 @@
   }
 
   .load-more-wrapper {
+    z-index: 0;
+
     @include load-more;
 
     button {
