@@ -90,7 +90,13 @@ RSpec.describe "Api::V0::Listings" do
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
 
-    it "does not return unpublished listings"
+    it "does not return unpublished listings" do
+      listing = user1.classified_listings.last
+      listing.update(published: false)
+
+      get api_classified_listings_path
+      expect(response.parsed_body.detect { |l| l["published"] == false }).to be_nil
+    end
   end
 
   describe "GET /api/listings/category/:category" do
@@ -102,7 +108,14 @@ RSpec.describe "Api::V0::Listings" do
       expect(response.parsed_body.size).to eq(3)
     end
 
-    it "does not return unpublished listings"
+    it "does not return unpublished listings" do
+      category = "cfp"
+      listing = user1.classified_listings.where(category: category)
+      listing.update(published: false)
+
+      get api_classified_listings_category_path(category)
+      expect(response.parsed_body.detect { |l| l["published"] == false }).to be_nil
+    end
   end
 
   describe "GET /api/listings/:id" do
