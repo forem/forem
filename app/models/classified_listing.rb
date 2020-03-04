@@ -44,8 +44,8 @@ class ClassifiedListing < ApplicationRecord
 
   scope :published, -> { where(published: true) }
 
-  def self.cost_by_category(category = "education")
-    categories_available[category][:cost]
+  def self.cost_by_category(category)
+    categories_available.dig(category, :cost) || 0
   end
 
   def author

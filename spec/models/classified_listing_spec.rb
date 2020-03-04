@@ -123,4 +123,15 @@ RSpec.describe ClassifiedListing, type: :model do
       expect(Search::ClassifiedListing).to have_received(:find_document)
     end
   end
+
+  describe ".cost_by_category" do
+    it "returns the cost per category" do
+      expected_cost = described_class::CATEGORIES_AVAILABLE.dig("cfp", "cost")
+      expect(described_class.cost_by_category("cfp")).to eq(expected_cost)
+    end
+
+    it "returns 0 with invalid category" do
+      expect(described_class.cost_by_category("invalid")).to eq(0)
+    end
+  end
 end
