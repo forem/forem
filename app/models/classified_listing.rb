@@ -1,5 +1,4 @@
 class ClassifiedListing < ApplicationRecord
-  include AlgoliaSearch
   include Searchable
 
   SEARCH_SERIALIZER = Search::ClassifiedListingSerializer
@@ -42,23 +41,6 @@ class ClassifiedListing < ApplicationRecord
   validate :restrict_markdown_input
   validate :validate_tags
   validate :validate_category
-
-  algoliasearch per_environment: true do
-    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug, :contact_via_connect, :location, :expires_at
-    attribute :author do
-      { username: author.username,
-        name: author.name,
-        profile_image_90: ProfileImage.new(author).get(width: 90) }
-    end
-    tags do
-      [tag_list,
-       "user_#{user_id}",
-       "organization_#{organization_id}"]
-    end
-    attributesForFaceting [:category]
-    customRanking ["desc(bumped_at)"]
-    searchableAttributes %w[title processed_html tag_list slug location]
-  end
 
   scope :published, -> { where(published: true) }
 
