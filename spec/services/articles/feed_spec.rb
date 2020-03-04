@@ -169,6 +169,16 @@ RSpec.describe Articles::Feed, type: :service do
     end
   end
 
+  describe "#more_tag_weight_more_random" do
+    let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
+    let(:stories) { feed.more_tag_weight_more_random }
+
+    it "includes stories from between 2 and 6 hours ago" do
+      expect(stories).not_to include(old_story)
+      expect(stories).to include(new_story)
+    end
+  end
+
   describe "#score_followed_user" do
     context "when article is written by a followed user" do
       before { user.follow(article.user) }
