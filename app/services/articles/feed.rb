@@ -41,7 +41,7 @@ module Articles
     end
 
     def default_home_feed_and_featured_story(user_signed_in: false, ranking: true)
-      featured_story, hot_stories = globally_cached_hot_articles(user_signed_in)
+      featured_story, hot_stories = globally_hot_articles(user_signed_in)
       hot_stories = rank_and_sort_articles(hot_stories) if @user && ranking
       [featured_story, hot_stories]
     end
@@ -124,24 +124,20 @@ module Articles
       - ((article.experience_level_rating - (@user&.experience_level || 5).abs) / 2)
     end
 
-    def globally_cached_hot_articles(user_signed_in)
-      # If these query is shared by the all users and fetched often, we can cache it and fetch cold
-      # only every x seconds.
-      Rails.cache.fetch("globally-cached-hot-articles-#{user_signed_in}", expires_in: 20.seconds) do
-        hot_stories = published_articles_by_tag.
-          where("score > ? OR featured = ?", 9, true).
-          order("hotness_score DESC")
-        featured_story = hot_stories.where.not(main_image: nil).first
-        if user_signed_in
-          offset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11].sample # random offset, weighted more towards zero
-          hot_stories = hot_stories.offset(offset)
-          new_stories = Article.published.
-            where("published_at > ? AND score > ?", rand(2..6).hours.ago, -15).
-            limited_column_select.order("published_at DESC").limit(rand(15..80))
-          hot_stories = hot_stories.to_a + new_stories.to_a
-        end
-        [featured_story, hot_stories.to_a]
+    def globally_hot_articles(user_signed_in)
+      hot_stories = published_articles_by_tag.
+        where("score > ? OR featured = ?", 9, true).
+        order("hotness_score DESC")
+      featured_story = hot_stories.where.not(main_image: nil).first
+      if user_signed_in
+        offset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11].sample # random offset, weighted more towards zero
+        hot_stories = hot_stories.offset(offset)
+        new_stories = Article.published.
+          where("published_at > ? AND score > ?", rand(2..6).hours.ago, -15).
+          limited_column_select.order("published_at DESC").limit(rand(15..80))
+        hot_stories = hot_stories.to_a + new_stories.to_a
       end
+      [featured_story, hot_stories.to_a]
     end
 
     private
