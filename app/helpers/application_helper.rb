@@ -154,4 +154,8 @@ module ApplicationHelper
 
     "#{path}-#{heroku_slug_commit}"
   end
+
+  def app_protocol_and_domain
+    "#{ApplicationConfig["APP_PROTOCOL"]}#{ApplicationConfig["APP_DOMAIN"]}"
+  end
 end
