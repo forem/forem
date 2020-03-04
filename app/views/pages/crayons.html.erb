@@ -3,7 +3,7 @@
   .container {
     padding: 48px;
     font-size: 16px;
-    line-height: 150%;
+    line-height: 1.5;
     box-sizing: border-box;
   }
   .container *,
@@ -49,6 +49,88 @@
     margin-top: 16px !important;
   }
 </style>
+
+<div class="container">
+  <div class="body">
+    <h2>Typography</h2>
+    <p>Default font is set to 16px (fs-base). It should be standard in UI. Smaller and bigger font sizes should be used carefully with respect to good visual rythm between elements.</p>
+    <p>XS size should be used as little as possible in edge cases. Even though it’s readable we could consider it not meeting DEV’s standards. So keep it for like “asterisk copy” etc.</p>
+    <p>By default you should be using Regular font weight.</p>
+    <p>Medium should be used to emphasize something but not make it as loud as Bold.</p>
+    <p>Heavy should be used only for bigger title.</p>
+  </div>
+
+  <div>
+    <p class="fs-xs">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-s">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-base">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-l">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-xl">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-2xl">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-3xl">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-4xl">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-5xl">Lorem ipsum dolor sit amet.</p>
+  </div>
+
+  <div>
+    <p class="fs-xs fw-medium">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-s fw-medium">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-base fw-medium">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-l fw-medium">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-xl fw-medium">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-2xl fw-medium">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-3xl fw-medium">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-4xl fw-medium">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-5xl fw-medium">Lorem ipsum dolor sit amet.</p>
+  </div>
+
+  <div>
+    <p class="fs-xs fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-s fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-base fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-l fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-xl fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-2xl fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-3xl fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-4xl fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-5xl fw-bold">Lorem ipsum dolor sit amet.</p>
+  </div>
+
+  <div>
+    <p class="fs-xs fw-heavy">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-s fw-heavy">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-base fw-heavy">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-l fw-heavy">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-xl fw-heavy">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-2xl fw-heavy">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-3xl fw-heavy">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-4xl fw-heavy">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-5xl fw-heavy">Lorem ipsum dolor sit amet.</p>
+  </div>
+
+  <pre><%='
+  <!-- font sizes -->
+  <p class="fs-xs">...</p> <!-- 12px -->
+  <p class="fs-s">...</p> <!-- 14px -->
+  <p class="fs-base">...</p> <!-- default: 16px -->
+  <p class="fs-l">...</p> <!-- 18px -->
+  <p class="fs-xl">...</p> <!-- 20px -->
+  <p class="fs-2xl">...</p> <!-- 24px -->
+  <p class="fs-3xl">...</p> <!-- 30px -->
+  <p class="fs-4xl">...</p> <!-- 36px -->
+  <p class="fs-5xl">...</p> <!-- 48px -->
+
+  <!-- font weights -->
+  <p class="... fw-normal">...</p> <!-- default: regular -->
+  <p class="... fw-medium">...</p> 
+  <p class="... fw-bold">...</p>
+  <p class="... fw-heavy">...</p>
+
+  <!-- line heights -->
+  <p class="... lh-base"></p> <!-- default: 1.5 -->
+  <p class="... lh-tight"></p> <!-- tight: 1.25 -->
+  '.rstrip %></pre>
+</div>
 
 <div class="container">
   <div class="body">
