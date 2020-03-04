@@ -6,6 +6,16 @@ RSpec.describe "Comments", type: :request do
   let(:article) { create(:article, user_id: user.id) }
   let(:podcast) { create(:podcast) }
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
+  let(:base_comment_params) do
+    {
+      comment: {
+        commentable_id: article.id,
+        commentable_type: "Article",
+        user_id: user.id,
+        body_markdown: "New comment #{rand(10)}"
+      }
+    }
+  end
   let!(:comment) do
     create(:comment,
            commentable_id: article.id,
@@ -286,6 +296,20 @@ RSpec.describe "Comments", type: :request do
 
       it "returns json" do
         expect(response.content_type).to eq("application/json")
+      end
+    end
+  end
+
+  describe "POST /comments" do
+    context "when part of field test" do
+      before do
+        sign_in user
+        allow(Users::RecordFieldTestEventWorker).to receive(:perform_async)
+      end
+
+      it "converts field test" do
+        post "/comments", params: base_comment_params
+        expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).with(user.id, :user_home_feed, "user_creates_comment")
       end
     end
   end

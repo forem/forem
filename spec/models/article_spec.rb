@@ -31,7 +31,9 @@ RSpec.describe Article, type: :model do
 
     context "when published" do
       before do
-        allow(subject).to receive(:published?).and_return(true) # rubocop:disable RSpec/NamedSubject
+        # rubocop:disable RSpec/NamedSubject
+        allow(subject).to receive(:published?).and_return(true)
+        # rubocop:enable RSpec/NamedSubject
       end
 
       it { is_expected.to validate_presence_of(:slug) }
@@ -115,6 +117,24 @@ RSpec.describe Article, type: :model do
           expect(article).to be_valid
         end
       end
+    end
+
+    describe "tag validation" do
+      let(:article) { build(:article, user: user) }
+
+      # See https://github.com/thepracticaldev/dev.to/pull/6302
+      # rubocop:disable RSpec/VerifiedDoubles
+      it "does not modify the tag list if there are no adjustments" do
+        allow(TagAdjustment).to receive(:where).and_return(TagAdjustment.none)
+        allow(article).to receive(:tag_list).and_return(spy("tag_list"))
+
+        article.save
+
+        # We expect this to happen once in #evaluate_front_matter
+        expect(article.tag_list).to have_received(:add).once
+        expect(article.tag_list).not_to have_received(:remove)
+      end
+      # rubocop:enable RSpec/VerifiedDoubles
     end
   end
 

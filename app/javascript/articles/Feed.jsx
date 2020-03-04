@@ -20,7 +20,6 @@ export class Feed extends Component {
       feedItems.splice(index, 1);
       const subStories = feedItems;   
       const organizedFeedItems = [featuredStory, subStories].flat();  
-      console.log(organizedFeedItems);
       this.setState({feedItems: organizedFeedItems, podcastEpisodes: Feed.getPodcastEpisodes() });
     });
   }

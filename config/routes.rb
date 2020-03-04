@@ -18,6 +18,7 @@ Rails.application.routes.draw do
       use Rack::Protection, origin_whitelist: ["https://dev.to"] # resolve Rack Protection HttpOrigin
     end
     mount Sidekiq::Web => "/sidekiq"
+    mount FieldTest::Engine, at: "abtests"
   end
 
   devise_scope :user do
@@ -217,6 +218,7 @@ Rails.application.routes.draw do
 
   get "/search/tags" => "search#tags"
   get "/search/chat_channels" => "search#chat_channels"
+  get "/search/classified_listings" => "search#classified_listings"
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/listings/dashboard" => "classified_listings#dashboard"
   get "/listings/:category" => "classified_listings#index"
