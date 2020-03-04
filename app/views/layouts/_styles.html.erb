@@ -16,7 +16,7 @@
       <%= Rails.application.assets["comments.css"].to_s.html_safe %>
       <%= Rails.application.assets["more-articles.css"].to_s.html_safe %>
       <%= Rails.application.assets["syntax.css"].to_s.html_safe %>
-      <%= Rails.application.assets["ltags/LiquidTags.scss"].to_s.html_safe %>
+      <%= Rails.application.assets["ltags/LiquidTags.css"].to_s.html_safe %>
       <%= Rails.application.assets["sticky-nav.css"].to_s.html_safe %>
       <% else %>
       <%= Rails.application.assets["article-show.css"].to_s.html_safe %>
@@ -36,7 +36,7 @@
       <%= Rails.application.assets["footer.css"].to_s.html_safe %>
       <% unless @home_page %>
       <%= Rails.application.assets["user-profile-header.css"].to_s.html_safe %>
-      <%= Rails.application.assets["sidebar-data.scss"].to_s.html_safe %>
+      <%= Rails.application.assets["sidebar-data.css"].to_s.html_safe %>
       <%= Rails.application.assets["index-comments.css"].to_s.html_safe %>
       <%= Rails.application.assets["footer.css"].to_s.html_safe %>
       <% end %>
@@ -58,7 +58,7 @@
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["user-profile-header.css"].to_s.html_safe %>
       <%= Rails.application.assets["footer.css"].to_s.html_safe %>
-      <%= Rails.application.assets["ltags/LiquidTags.scss"].to_s.html_safe %>
+      <%= Rails.application.assets["ltags/LiquidTags.css"].to_s.html_safe %>
     </style>
   <% elsif view_class.start_with? "comments" %>
     <style>
@@ -66,7 +66,7 @@
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["comments.css"].to_s.html_safe %>
       <%= Rails.application.assets["footer.css"].to_s.html_safe %>
-      <%= Rails.application.assets["ltags/LiquidTags.scss"].to_s.html_safe %>
+      <%= Rails.application.assets["ltags/LiquidTags.css"].to_s.html_safe %>
       <%= Rails.application.assets["syntax.css"].to_s.html_safe %>
       <% if view_class.include? "comments-settings" %>
       <%= Rails.application.assets["article-show.css"].to_s.html_safe %>
