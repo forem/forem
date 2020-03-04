@@ -93,19 +93,20 @@ const renderCodeEditor = props => {
   );
 };
 
+const displayMethods = {
+  'loading-user': loadingUser,
+  'user': renderUserDetails,
+  'article': renderArticle,
+  'github': renderGitHubRepo,
+  'chat_channel': renderChannelDetails,
+  'code_editor': renderCodeEditor,
+};
+
 const display = props => {
-  const contents = {
-    'loading-user': () => loadingUser(),
-    'user': () => renderUserDetails(props),
-    'article': () => renderArticle(props),
-    'github': () => renderGitHubRepo(props),
-    'chat_channel': () => renderChannelDetails(props),
-    'code_editor': () => renderCodeEditor(props),
-  };
-  const content = contents[props.resource.type_of];
+  const content = displayMethods[props.resource.type_of];
 
   if (!content) {
     return null;
   }
-  return content();
+  return content(props);
 };
