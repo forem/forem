@@ -53,10 +53,6 @@
       "maxSize": "1.1 kB"
     },
     {
-      "path": "public/packs*/Feed-*.js",
-      "maxSize": "1.8 kB"
-    },
-    {
       "path": "public/packs*/feedIcons-*.js",
       "maxSize": "0.5 kB"
     },
