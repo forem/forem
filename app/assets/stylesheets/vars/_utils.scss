@@ -25,10 +25,13 @@ $transition-props: cubic-bezier(0.17, 0.67, 0.5, 0.71) 100ms;
 }
 
 // Generating classes for Tailwind approach.
-@mixin generate-classes($prefix, $property, $values) {
+@mixin generate-classes($prefix, $properties, $values1, $values2: ()) {
+  $values: map-merge($values1, $values2);
   @each $name, $value in $values {
     .#{$prefix}-#{$name} {
-      #{$property}: $value !important;
+      @each $property in $properties {
+        #{$property}: $value !important;
+      }
     }
   }
 }

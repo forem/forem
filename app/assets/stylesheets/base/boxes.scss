@@ -1,4 +1,4 @@
-@import '../vars/_variables';
+@import '../vars/variables';
 
 @mixin box($this: $this, $color-1: $smoke-90, $color-2: $smoke-100) {
   border-color: $color-2;
