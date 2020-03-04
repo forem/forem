@@ -13,7 +13,7 @@
   }
 
   .container > *+* {
-    margin-top: 32px;
+    margin-top: 32px !important;
   }
 
   .container > pre {
@@ -49,6 +49,7 @@
     margin-top: 16px !important;
   }
 </style>
+
 <div class="container">
   <div class="body">
     <h2>Form elements</h2>
@@ -105,10 +106,9 @@
 <div class="container">
   <div class="body">
     <h2>Field Component</h2>
-    <p>Because of accessibility most (ideally all) fields should have label on top of it. Label should be placed 8px above the field.</p>
-    <p>Fields can also have optional description - between Label and field itself. It’s distance from the Label should be 0px.</p>
-    <p>Fields can also have additional optional description, for example characters count - it should be placed 8px below the field.</p>
-    <p>Distance between fields should be 24px.</p>
+    <p>Because of accessibility most (ideally all) fields should have label above.</p>
+    <p>Fields can also have optional description - between Label and Field itself.</p>
+    <p>Fields can also have additional optional description, for example characters count.</p>
   </div>
 
   <div class="crayons-field">
@@ -130,6 +130,13 @@
     <p class="crayons-field__description">Another description just in case...</p>
   </div>
   '.rstrip %></pre>
+
+  <div class="body">
+    <h2>Fields with Checkboxes & Radios</h2>
+    <p>Labels for checkboxes and radios should be placed next to the form element.</p>
+    <p>Using additional description is optional.</p>
+    <p>It is possible to group checkboxes or radios into logical sections. Section may require having it’s own label (title).</p>
+  </div>
 
   <div>
     <div class="crayons-field crayons-field--checkbox">

@@ -179,9 +179,10 @@
 
   &--horizontal {
     flex-flow: row;
+    flex-wrap: wrap;
 
-    > .crayons-field + .crayons-field {
-      margin-left: $su-4;
+    > .crayons-field:not(:last-child) {
+      margin-right: $su-4;
     }
   }
 }
