@@ -131,7 +131,7 @@ RSpec.describe "UserSettings", type: :request do
       end
 
       it "does not send an email if there was no request" do
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           expect { send_request(false) }.not_to(change { ActionMailer::Base.deliveries.count })
         end
       end
