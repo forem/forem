@@ -46,11 +46,17 @@
 
 @import 'article-form-needed-legacy';
 
+// New approach
 @import 'base/reset';
 @import 'base/boxes';
+@import 'base/decorations';
+@import 'base/grid';
 @import 'base/icons';
+@import 'base/layout';
+@import 'base/positioning';
 @import 'base/spacing';
 @import 'base/typography';
+
 @import 'components/avatars';
 @import 'components/buttons';
 @import 'components/cards';

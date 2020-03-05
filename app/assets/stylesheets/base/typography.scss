@@ -1,5 +1,6 @@
 @import '../vars/variables';
 
+// Font family
 @include generate-classes(
   'ff',
   'font-family',
@@ -9,6 +10,7 @@
   )
 );
 
+// Font size
 @include generate-classes(
   'fs',
   'font-size',
@@ -25,6 +27,7 @@
   )
 );
 
+// Line height
 @include generate-classes(
   'lh',
   'line-height',
@@ -34,6 +37,7 @@
   )
 );
 
+// Font weight
 @include generate-classes(
   'fw',
   'font-weight',
@@ -44,3 +48,80 @@
     'heavy': $fw-heavy,
   )
 );
+
+// List styles
+@include generate-classes(
+  'list',
+  'list-style-type',
+  (
+    'none': none,
+    'disc': disc,
+    'decimal': decimal,
+  )
+);
+
+// Text decoration
+@include generate-classes(
+  'text',
+  'text-decoration',
+  (
+    'underline': underline,
+    'none': none,
+  )
+);
+
+// Text decoration
+@include generate-classes(
+  'text',
+  'text-transform',
+  (
+    'uppercase': uppercase,
+    'lowercase': lowercase,
+    'capitalize': capitalize,
+    'normal': none,
+  )
+);
+
+// Text align
+@include generate-classes(
+  'align',
+  'text-align',
+  (
+    'left': left,
+    'center': center,
+    'right': right,
+    'justify': justify,
+  )
+);
+
+// Vertical alignment
+@include generate-classes(
+  'align',
+  'vertical-align',
+  (
+    'baseline': baseline,
+    'top': top,
+    'middle': middle,
+    'bottom': bottom,
+    'text-top': text-top,
+    'text-bottom': text-bottom,
+  )
+);
+
+// White space
+@include generate-classes(
+  'whitespace',
+  'white-space',
+  (
+    'normal': normal,
+    'nowrap': nowrap,
+    'pre': pre,
+  )
+);
+
+// Truncate
+.truncate {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}

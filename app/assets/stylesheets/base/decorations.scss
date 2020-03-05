@@ -1,0 +1,73 @@
+@import '../vars/variables';
+
+// Opacity
+@include generate-classes(
+  'opacity',
+  'opacity',
+  (
+    '100': 1,
+    '75': .75,
+    '50': .50,
+    '25': .25,
+    '0': 0,
+  )
+);
+
+// Box Shadow
+.shadow-none {
+  box-shadow: none !important; 
+}
+
+// Cursor
+@include generate-classes(
+  'cursor',
+  'cursor',
+  (
+    'auto': auto,
+    'default': default,
+    'pointer': pointer,
+    'wait': wait,
+    'text': text,
+    'move': move,
+    'not-allowed': not-allowed,
+  )
+);
+
+// Outline
+.outline-none {
+  outline: none !important;
+}
+
+// Pointer events
+@include generate-classes(
+  'pointer-events',
+  'pointer-events',
+  (
+    'auto': auto,
+    'none': none,
+  )
+);
+
+// Screen reader only
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border-width: 0 !important;
+}
+
+// Border radius
+@include generate-classes(
+  'radius',
+  'border-radius',
+  (
+    'default': $br-default,
+    '0': 0,
+    'full': 9999px,
+  )
+);

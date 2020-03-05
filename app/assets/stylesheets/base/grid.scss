@@ -1,0 +1,11 @@
+@import '../vars/variables';
+
+// Gap
+@include generate-classes(
+  'gap',
+  'grid-gap',
+  (
+    '0': 0
+  ),
+  $spacing-units
+);

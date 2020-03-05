@@ -52,7 +52,7 @@
 
 <div class="container">
   <div class="body">
-    <h2>Typography</h2>
+    <h2>Main Typography</h2>
     <p>Default font is set to 16px (fs-base). It should be standard in UI. Smaller and bigger font sizes should be used carefully with respect to good visual rythm between elements.</p>
     <p>XS size should be used as little as possible in edge cases. Even though it’s readable we could consider it not meeting DEV’s standards. So keep it for like “asterisk copy” etc.</p>
     <p>By default you should be using Regular font weight.</p>
@@ -108,6 +108,17 @@
     <p class="fs-5xl fw-heavy">Lorem ipsum dolor sit amet.</p>
   </div>
 
+  <div style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 24px;">
+    <span class="ff-accent">Line height: 1.5 – .lh-base (default)</span>
+    <span class="ff-accent">Line height: 1.25 – .lh-tight</span>
+
+    <h3 class="fs-2xl fw-bold">This is a bit longer text title to present line-height difference.</h3>
+    <h3 class="fs-2xl fw-bold lh-tight">This is a bit longer text title to present line-height difference.</h3>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore iusto, molestias. Ex asperiores modi libero id laudantium ipsum perspiciatis, architecto enim suscipit delectus odit, explicabo quas, voluptatum quibusdam, distinctio ut.</p>
+    <p class="lh-tight">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore iusto, molestias. Ex asperiores modi libero id laudantium ipsum perspiciatis, architecto enim suscipit delectus odit, explicabo quas, voluptatum quibusdam, distinctio ut.</p>
+  </div>
+
   <pre><%='
   <!-- font sizes -->
   <p class="fs-xs">...</p> <!-- 12px -->
@@ -125,6 +136,43 @@
   <p class="... fw-medium">...</p> 
   <p class="... fw-bold">...</p>
   <p class="... fw-heavy">...</p>
+
+  <!-- line heights -->
+  <p class="... lh-base"></p> <!-- default: 1.5 -->
+  <p class="... lh-tight"></p> <!-- tight: 1.25 -->
+  '.rstrip %></pre>
+
+  <div class="body">
+    <h2>Accent typography</h2>
+    <p>Its main purpose is to add a bit of flavor to DEV brand but it should never be the main font.</p>
+    <p>Please, do not overuse Accent typography.</p>
+    <p>We strongly encourage to limit number of sizes and weights to what presetned below.</p>
+  </div>
+
+  <div>
+    <p class="ff-accent fs-xs">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-accent fs-s">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-accent fs-base">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-accent fs-l">Lorem ipsum dolor sit amet.</p>
+  </div>
+
+  <div>
+    <p class="ff-accent fs-xs fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-accent fs-s fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-accent fs-base fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-accent fs-l fw-bold">Lorem ipsum dolor sit amet.</p>
+  </div>
+
+  <pre><%='
+  <!-- font sizes -->
+  <p class="ff-accent fs-xs">...</p> <!-- 12px -->
+  <p class="ff-accent fs-s">...</p> <!-- 14px -->
+  <p class="ff-accent fs-base">...</p> <!-- default: 16px -->
+  <p class="ff-accent fs-l">...</p> <!-- 18px -->
+
+  <!-- font weights -->
+  <p class="... fw-normal">...</p> <!-- default: regular -->
+  <p class="... fw-bold">...</p>
 
   <!-- line heights -->
   <p class="... lh-base"></p> <!-- default: 1.5 -->
@@ -786,7 +834,7 @@
   '.rstrip %></pre>
 </div>
 
-<div class="container" style="opacity: 0.5">
+<div class="container opacity-25">
   <div class="body">
     <h2>Cards</h2>
     <p>These are containers used for creating, for example, widgets in sidebars.</p>

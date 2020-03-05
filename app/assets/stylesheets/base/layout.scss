@@ -1,0 +1,77 @@
+@import '../vars/variables';
+
+
+// Display
+.hidden {
+  display: none !important;
+}
+
+.block {
+  display: block !important;
+}
+
+.inline {
+  display: inline !important;
+}
+
+.inline-block {
+  display: inline-block !important;
+}
+
+.flex {
+  display: flex !important;
+}
+
+.inline-flex {
+  display: inline-flex !important;
+}
+
+.grid {
+  display: grid !important;
+}
+
+// Floats
+@include generate-classes(
+  'float',
+  'float',
+  (
+    'left': left,
+    'right': right,
+    'none': none,
+    'unset': unset,
+  )
+);
+
+.clear {
+  clear: both !important;
+}
+
+// Visibility
+.visible {
+  visiblity: visible !important;
+}
+
+.invisible {
+  visiblity: hidden !important;
+}
+
+// Box sizing
+@include generate-classes(
+  'box',
+  'box-sizing',
+  (
+    'border': border-box,
+    'content': content-box,
+  )
+);
+
+
+// Table layout
+@include generate-classes(
+  'table',
+  'table-layout',
+  (
+    'auto': auto,
+    'fixed': fixed,
+  )
+);

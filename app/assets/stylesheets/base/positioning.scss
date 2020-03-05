@@ -1,6 +1,6 @@
 @import '../vars/variables';
-// Positions
 
+// Positions
 .static {
   position: static !important;
 }
@@ -192,9 +192,11 @@
   )
 );
 
+
+// Smooth scrolling on iOS
 .scrolling-touch {
-  -webkit-overflow-scrolling: touch;
+  -webkit-overflow-scrolling: touch !important;
 }
 .scrolling-auto {
-  -webkit-overflow-scrolling: auto;
+  -webkit-overflow-scrolling: auto !important;
 }
