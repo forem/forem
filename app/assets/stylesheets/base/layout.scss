@@ -1,6 +1,5 @@
 @import '../vars/variables';
 
-
 // Display
 .hidden {
   display: none !important;
@@ -64,7 +63,6 @@
     'content': content-box,
   )
 );
-
 
 // Table layout
 @include generate-classes(
