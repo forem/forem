@@ -79,22 +79,24 @@ export const FeaturedArticle = ({
           </a>
         </div>
         <TagList tags={article.tag_list} className="featured-tags" />
-        <CommentsCount
-          count={article.comments_count}
-          articlePath={article.path}
-          icon={commentsIcon}
-          className="featured-engagement-count"
-        />
-        <ReactionsCount article={article} icon={reactionsIcon} />
-        <ReadingTime
-          articlePath={article.path}
-          readingTime={article.reading_time}
-        />
-        <SaveButton
-          article={article}
-          isBookmarked={isBookmarked}
-          onClick={bookmarkClick}
-        />
+        <div className="reactions-bar">
+          <ReactionsCount article={article} icon={reactionsIcon} />
+          <CommentsCount
+            count={article.comments_count}
+            articlePath={article.path}
+            icon={commentsIcon}
+            className="featured-engagement-count"
+          />
+          <ReadingTime
+            articlePath={article.path}
+            readingTime={article.reading_time}
+          />
+          <SaveButton
+            article={article}
+            isBookmarked={isBookmarked}
+            onClick={bookmarkClick}
+          />
+        </div>
       </div>
     </div>
   );

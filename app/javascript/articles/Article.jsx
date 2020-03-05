@@ -32,7 +32,7 @@ export const Article = ({
   const timeAgoIndicator = timeAgo({
     oldTimeInSeconds: article.published_at_int,
     formatter: x => x,
-  })
+  });
 
   return (
     <div
@@ -51,7 +51,6 @@ export const Article = ({
           </div>
         </a>
       )}
-
       <OrganizationHeadline organization={article.organization} />
       <div className="small-pic">
         <a
@@ -94,34 +93,35 @@ export const Article = ({
           )}
           {article.published_at_int ? (
             <span className="time-ago-indicator">
-              {timeAgoIndicator.length > 0 ? `(${timeAgoIndicator})`: '' }
+              {timeAgoIndicator.length > 0 ? `(${timeAgoIndicator})` : ''}
             </span>
           ) : null}
         </a>
       </h4>
-
       <TagList tags={article.tag_list} />
-      {article.class_name !== 'User' && (
-        <CommentsCount
-          count={article.comments_count}
-          articlePath={article.path}
-          icon={commentsIcon}
+      <div className="reactions-bar">
+        {article.class_name !== 'User' && (
+          <ReactionsCount article={article} icon={reactionsIcon} />
+        )}
+        {article.class_name !== 'User' && (
+          <CommentsCount
+            count={article.comments_count}
+            articlePath={article.path}
+            icon={commentsIcon}
+          />
+        )}
+        {article.class_name === 'Article' && (
+          <ReadingTime
+            articlePath={article.path}
+            readingTime={article.reading_time}
+          />
+        )}
+        <SaveButton
+          article={article}
+          isBookmarked={isBookmarked}
+          onClick={bookmarkClick}
         />
-      )}
-      {article.class_name !== 'User' && (
-        <ReactionsCount article={article} icon={reactionsIcon} />
-      )}
-      {article.class_name === 'Article' && (
-        <ReadingTime
-          articlePath={article.path}
-          readingTime={article.reading_time}
-        />
-      )}
-      <SaveButton
-        article={article}
-        isBookmarked={isBookmarked}
-        onClick={bookmarkClick}
-      />
+      </div>
     </div>
   );
 };
