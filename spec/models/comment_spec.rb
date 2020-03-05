@@ -210,13 +210,6 @@ RSpec.describe Comment, type: :model do
     end
   end
 
-  describe "#index_id" do
-    it "is equal to comments-ID" do
-      # NOTE: we shouldn't test private things but cheating a bit for Algolia here
-      expect(comment.send(:index_id)).to eq("comments-#{comment.id}")
-    end
-  end
-
   describe "#custom_css" do
     it "returns nothing when no liquid tag was used" do
       expect(comment.custom_css).to be_blank
@@ -344,32 +337,6 @@ RSpec.describe Comment, type: :model do
       # this replaces the use of expect_any_instance_of which is a RuboCop violation
       sidekiq_assert_enqueued_with(job: Comments::BustCacheWorker, args: [new_comment.id]) do
         new_comment.destroy
-      end
-    end
-  end
-
-  describe "when indexing and deindexing" do
-    let!(:comment) { create(:comment, commentable: article) }
-
-    context "when destroying" do
-      it "doesn't trigger auto removal from index" do
-        expect { comment.destroy }.not_to have_enqueued_job.on_queue("algoliasearch")
-      end
-    end
-
-    context "when deleted is false" do
-      it "checks auto-indexing" do
-        sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["Comment", comment.id]) do
-          comment.update(body_markdown: "hello")
-        end
-      end
-    end
-
-    context "when deleted is true" do
-      it "checks auto-deindexing" do
-        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class.algolia_index_name, comment.index_id]) do
-          comment.update(deleted: true)
-        end
       end
     end
   end
