@@ -110,62 +110,66 @@ exports[`<FeaturedArticle /> component should render a bookmarked featured artic
       </a>
     </div>
     <div
-      class="article-engagement-count comments-count featured-engagement-count"
+      class="reactions-bar"
     >
-      <a
-        href="/some-post/path#comments"
+      <div
+        class="article-engagement-count reactions-count"
       >
-        <img
-          alt="chat"
-          loading="lazy"
-          src="/images/comments-bubble.png"
-        />
-        <span
-          class="engagement-count-number"
+        <a
+          href="/some-post/path"
         >
-          213
-        </span>
-      </a>
-    </div>
-    <div
-      class="article-engagement-count reactions-count"
-    >
+          <img
+            alt="heart"
+            loading="lazy"
+            src="/images/reactions-stack.png"
+          />
+          <span
+            class="engagement-count-number"
+            id="engagement-count-number-62407"
+          >
+            428
+          </span>
+        </a>
+      </div>
+      <div
+        class="article-engagement-count comments-count featured-engagement-count"
+      >
+        <a
+          href="/some-post/path#comments"
+        >
+          <img
+            alt="chat"
+            loading="lazy"
+            src="/images/comments-bubble.png"
+          />
+          <span
+            class="engagement-count-number"
+          >
+            213
+          </span>
+        </a>
+      </div>
       <a
+        class="article-reading-time"
         href="/some-post/path"
       >
-        <img
-          alt="heart"
-          loading="lazy"
-          src="/images/reactions-stack.png"
-        />
-        <span
-          class="engagement-count-number"
-          id="engagement-count-number-62407"
-        >
-          428
-        </span>
+        undefined min read
       </a>
+      <button
+        class="article-engagement-count engage-button bookmark-button selected"
+        data-initial-feed={true}
+        data-reactable-id={62407}
+        onBlur={[Function]}
+        onFocus={[Function]}
+        onMouseOver={[Function]}
+        onMouseout={[Function]}
+        type="button"
+      >
+        <span
+          class="bm-success"
+        />
+      </button>
     </div>
-    <a
-      class="article-reading-time"
-      href="/some-post/path"
-    >
-      undefined min read
-    </a>
-    <button
-      class="article-engagement-count engage-button bookmark-button selected"
-      data-initial-feed={true}
-      data-reactable-id={62407}
-      onBlur={[Function]}
-      onFocus={[Function]}
-      onMouseOver={[Function]}
-      onMouseout={[Function]}
-      type="button"
-    >
-      <span
-        class="bm-success"
-      />
-    </button>
   </div>
 </div>
 `;
@@ -280,62 +284,66 @@ exports[`<FeaturedArticle /> component should render a standard article 1`] = `
       </a>
     </div>
     <div
-      class="article-engagement-count comments-count featured-engagement-count"
+      class="reactions-bar"
     >
-      <a
-        href="/some-post/path#comments"
+      <div
+        class="article-engagement-count reactions-count"
       >
-        <img
-          alt="chat"
-          loading="lazy"
-          src="/images/comments-bubble.png"
-        />
-        <span
-          class="engagement-count-number"
+        <a
+          href="/some-post/path"
         >
-          213
-        </span>
-      </a>
-    </div>
-    <div
-      class="article-engagement-count reactions-count"
-    >
+          <img
+            alt="heart"
+            loading="lazy"
+            src="/images/reactions-stack.png"
+          />
+          <span
+            class="engagement-count-number"
+            id="engagement-count-number-62407"
+          >
+            428
+          </span>
+        </a>
+      </div>
+      <div
+        class="article-engagement-count comments-count featured-engagement-count"
+      >
+        <a
+          href="/some-post/path#comments"
+        >
+          <img
+            alt="chat"
+            loading="lazy"
+            src="/images/comments-bubble.png"
+          />
+          <span
+            class="engagement-count-number"
+          >
+            213
+          </span>
+        </a>
+      </div>
       <a
+        class="article-reading-time"
         href="/some-post/path"
       >
-        <img
-          alt="heart"
-          loading="lazy"
-          src="/images/reactions-stack.png"
-        />
-        <span
-          class="engagement-count-number"
-          id="engagement-count-number-62407"
-        >
-          428
-        </span>
+        undefined min read
       </a>
+      <button
+        class="article-engagement-count engage-button bookmark-button "
+        data-initial-feed={true}
+        data-reactable-id={62407}
+        onBlur={[Function]}
+        onFocus={[Function]}
+        onMouseOver={[Function]}
+        onMouseout={[Function]}
+        type="button"
+      >
+        <span
+          class="bm-initial"
+        />
+      </button>
     </div>
-    <a
-      class="article-reading-time"
-      href="/some-post/path"
-    >
-      undefined min read
-    </a>
-    <button
-      class="article-engagement-count engage-button bookmark-button "
-      data-initial-feed={true}
-      data-reactable-id={62407}
-      onBlur={[Function]}
-      onFocus={[Function]}
-      onMouseOver={[Function]}
-      onMouseout={[Function]}
-      type="button"
-    >
-      <span
-        class="bm-initial"
-      />
-    </button>
   </div>
 </div>
 `;
@@ -450,62 +458,66 @@ exports[`<FeaturedArticle /> component should render with the reactions icon whe
       </a>
     </div>
     <div
-      class="article-engagement-count comments-count featured-engagement-count"
+      class="reactions-bar"
     >
-      <a
-        href="/some-post/path#comments"
+      <div
+        class="article-engagement-count reactions-count"
       >
-        <img
-          alt="chat"
-          loading="lazy"
-          src="/images/comments-bubble.png"
-        />
-        <span
-          class="engagement-count-number"
+        <a
+          href="/some-post/path"
         >
-          213
-        </span>
-      </a>
-    </div>
-    <div
-      class="article-engagement-count reactions-count"
-    >
+          <img
+            alt="heart"
+            loading="lazy"
+            src="/images/reactions-stack.png"
+          />
+          <span
+            class="engagement-count-number"
+            id="engagement-count-number-62407"
+          >
+            0
+          </span>
+        </a>
+      </div>
+      <div
+        class="article-engagement-count comments-count featured-engagement-count"
+      >
+        <a
+          href="/some-post/path#comments"
+        >
+          <img
+            alt="chat"
+            loading="lazy"
+            src="/images/comments-bubble.png"
+          />
+          <span
+            class="engagement-count-number"
+          >
+            213
+          </span>
+        </a>
+      </div>
       <a
+        class="article-reading-time"
         href="/some-post/path"
       >
-        <img
-          alt="heart"
-          loading="lazy"
-          src="/images/reactions-stack.png"
-        />
-        <span
-          class="engagement-count-number"
-          id="engagement-count-number-62407"
-        >
-          0
-        </span>
+        undefined min read
       </a>
+      <button
+        class="article-engagement-count engage-button bookmark-button "
+        data-initial-feed={true}
+        data-reactable-id={62407}
+        onBlur={[Function]}
+        onFocus={[Function]}
+        onMouseOver={[Function]}
+        onMouseout={[Function]}
+        type="button"
+      >
+        <span
+          class="bm-initial"
+        />
+      </button>
     </div>
-    <a
-      class="article-reading-time"
-      href="/some-post/path"
-    >
-      undefined min read
-    </a>
-    <button
-      class="article-engagement-count engage-button bookmark-button "
-      data-initial-feed={true}
-      data-reactable-id={62407}
-      onBlur={[Function]}
-      onFocus={[Function]}
-      onMouseOver={[Function]}
-      onMouseout={[Function]}
-      type="button"
-    >
-      <span
-        class="bm-initial"
-      />
-    </button>
   </div>
 </div>
 `;
