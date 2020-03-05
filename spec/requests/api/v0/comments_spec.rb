@@ -111,7 +111,7 @@ RSpec.describe "Api::V0::Comments", type: :request do
       it "replaces the body_html" do
         get api_comments_path(a_id: article.id)
 
-        expect(find_child_comment(response)["body_html"]).to eq("<p>[deleted]</p>")
+        expect(find_child_comment(response)["body_html"]).to eq("<p>#{Comment::TITLE_DELETED}</p>")
       end
 
       it "does not render the user information" do
@@ -141,7 +141,7 @@ RSpec.describe "Api::V0::Comments", type: :request do
       it "replaces the body_html" do
         get api_comments_path(a_id: article.id)
 
-        expect(find_child_comment(response)["body_html"]).to eq("<p>[hidden by post author]</p>")
+        expect(find_child_comment(response)["body_html"]).to eq("<p>#{Comment::TITLE_HIDDEN}</p>")
       end
 
       it "does not render the user information" do
