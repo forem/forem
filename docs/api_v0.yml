@@ -485,6 +485,29 @@ components:
           description: Text color (hexadecimal)
           type: string
 
+    Comment:
+      type: object
+      required:
+        - type_of
+        - id_code
+        - body_html
+        - user
+        - children
+      properties:
+        type_of:
+          type: string
+        id_code:
+          type: string
+        body_html:
+          description: HTML formatted comment
+          type: string
+        user:
+          $ref: "#/components/schemas/SharedUser"
+        children:
+          type: array
+          items:
+            $ref: "#/components/schemas/Comment"
+
     Listing:
       type: object
       required:
@@ -588,6 +611,7 @@ components:
               description: Set it to "draft" to create an unpublished listing
               type: string
               enum: [draft]
+
     ListingUpdate:
       type: object
       properties:
@@ -641,7 +665,6 @@ components:
                 It will take priority on any other param in the payload.
               type: string
               enum: [bump, publish, unpublish]
-
 
     SharedUser:
       description: The resource creator
@@ -707,6 +730,30 @@ components:
               items:
                 type: string
 
+    WebhookIndex:
+      description: Webhook
+      type: object
+      properties:
+        type_of:
+          type: string
+        id:
+          type: integer
+          format: int64
+        source:
+          description: The name of the requester, eg. "DEV"
+          type: string
+        target_url:
+          type: string
+          format: url
+        events:
+          description: An array of events identifiers
+          type: array
+          items:
+            type: string
+        created_at:
+          type: string
+          format: date-time
+
     WebhookShow:
       description: Webhook
       type: object
@@ -732,30 +779,6 @@ components:
           format: date-time
         user:
           $ref: "#/components/schemas/SharedUser"
-
-    WebhookIndex:
-      description: Webhook
-      type: object
-      properties:
-        type_of:
-          type: string
-        id:
-          type: integer
-          format: int64
-        source:
-          description: The name of the requester, eg. "DEV"
-          type: string
-        target_url:
-          type: string
-          format: url
-        events:
-          description: An array of events identifiers
-          type: array
-          items:
-            type: string
-        created_at:
-          type: string
-          format: date-time
 
   examples:
     ErrorBadRequest:
@@ -909,6 +932,113 @@ components:
           series: Hello series
           canonical_url: https://example.com/blog/hello
           organization_id: 1234
+
+    Comments:
+      value:
+        - type_of: comment
+          id_code: m3m0
+          body_html: |
+            <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+            <html><body>
+            <p>...</p>
+
+            </body></html>
+          user:
+            name: Heriberto Morissette
+            username: heriberto_morissette
+            twitter_username:
+            github_username:
+            website_url:
+            profile_image: https://res.cloudinary.com/...jpeg
+            profile_image_90: https://res.cloudinary.com/...jpeg
+          children: []
+        - type_of: comment
+          id_code: m357
+          body_html: |
+            <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+            <html><body>
+            <p>...</p>
+
+            <p>...</p>
+
+            </body></html>
+          user:
+            name: Dario Waelchi
+            username: dario waelchi
+            twitter_username:
+            github_username:
+            website_url:
+            profile_image: https://res.cloudinary.com/...png
+            profile_image_90: https://res.cloudinary.com/...png
+          children:
+          - type_of: comment
+            id_code: m35m
+            body_html: |
+              <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+              <html><body>
+
+              <p>...</p>
+
+              </body></html>
+            user:
+              name: rhymes
+              username: rhymes
+              twitter_username:
+              github_username:
+              website_url:
+              profile_image: https://res.cloudinary.com/...jpeg
+              profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--SC90PuMi--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/2693/146201.jpeg
+            children: []
+    CommentsDeleted:
+      value:
+        - type_of: comment
+          id_code: m357
+          body_html: <p>[deleted]</p>
+          user: {}
+          children:
+          - type_of: comment
+            id_code: m35m
+            body_html: |
+              <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+              <html><body>
+
+              <p>...</p>
+
+              </body></html>
+            user:
+              name: rhymes
+              username: rhymes
+              twitter_username:
+              github_username:
+              website_url:
+              profile_image: https://res.cloudinary.com/...jpeg
+              profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--SC90PuMi--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/2693/146201.jpeg
+            children: []
+    CommentsHidden:
+      value:
+        - type_of: comment
+          id_code: m357
+          body_html: <p>[hidden by post author]</p>
+          user: {}
+          children:
+          - type_of: comment
+            id_code: m35m
+            body_html: |
+              <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+              <html><body>
+
+              <p>...</p>
+
+              </body></html>
+            user:
+              name: rhymes
+              username: rhymes
+              twitter_username:
+              github_username:
+              website_url:
+              profile_image: https://res.cloudinary.com/...jpeg
+              profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--SC90PuMi--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/2693/146201.jpeg
+            children: []
 
     Listings:
       value:
@@ -1626,10 +1756,14 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/CommentsIndex"
+                  $ref: "#/components/schemas/Comment"
               examples:
-                articles-success:
-                  $ref: "#/components/examples/CommentsIndex"
+                comments-success:
+                  $ref: "#/components/examples/Comments"
+                comments-success-deleted:
+                  $ref: "#/components/examples/CommentsDeleted"
+                comments-success-hidden:
+                  $ref: "#/components/examples/CommentsHidden"
       x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
         - lang: Shell
           label: curl (all comments of an article)
