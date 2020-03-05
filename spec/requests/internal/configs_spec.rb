@@ -61,6 +61,14 @@ RSpec.describe "/internal/config", type: :request do
         end
       end
 
+      describe "mascot" do
+        it "updates the mascot_user_id" do
+          expected_mascot_user_id = 2
+          post "/internal/config", params: { site_config: { mascot_user_id: expected_mascot_user_id }, confirmation: confirmation_message }
+          expect(SiteConfig.mascot_user_id).to eq(expected_mascot_user_id)
+        end
+      end
+
       describe "images" do
         it "updates main_social_image" do
           expected_image_url = "https://dummyimage.com/300x300"
