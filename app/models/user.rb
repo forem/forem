@@ -138,9 +138,6 @@ class User < ApplicationRecord
   validates :config_navbar,
             inclusion: { in: %w[default static],
                          message: "%<value>s is not a valid navbar value" }
-  validates :shipping_country,
-            length: { in: 2..2 },
-            allow_blank: true
   validates :website_url, :employer_name, :employer_url,
             length: { maximum: 100 }
   validates :employment_title, :education, :location,
