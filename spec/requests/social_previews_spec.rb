@@ -51,7 +51,7 @@ RSpec.describe "SocialPreviews", type: :request do
 
       get "/social_previews/article/#{she_coded_article.id}"
 
-      expect(response.body).to include("#shecoded, #theycoded")
+      expect(response.body).to include("#shecoded #theycoded")
     end
 
     it "renders an image when requested and redirects to image url" do
