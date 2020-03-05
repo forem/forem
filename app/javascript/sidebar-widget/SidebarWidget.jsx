@@ -30,7 +30,7 @@ class SidebarWidget extends Component {
   async getSuggestedUsers() {
     const { tagInfo } = this.state;
     try {
-      const response = fetch(
+      const response = await fetch(
         `/api/users?state=sidebar_suggestions&tag=${tagInfo.name}`,
         {
           headers: {
