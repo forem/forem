@@ -2,7 +2,7 @@
   body {
     margin: 0;
     padding: 0;
-    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", "Roboto", sans-serif;
+    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
     background: white;
   }
   .preview-div-wrapper {
@@ -10,83 +10,78 @@
     position: relative;
   }
   .preview-div {
-    border-radius: 0.3vw;
-    border-top-left-radius: 2.3vw;
-    border-top-right-radius: 2.3vw;
-    background: url(<%= asset_path "shecoded-background.png" %>);
-    background-color: #2a1d5e;
-    background-repeat: repeat;
+    border-radius: 25px 25px 0 0;
+    background: url(/assets/shecoded-background.jpg);
+    background-position: 50% 50%;
+    background-size: 100%;
     overflow: hidden;
-    position: relative;
     width: 94vw;
-    height: 45vw;
     margin: 2.25vw auto 5vw;
   }
   .preview-article {
-    margin: 3vw 3.5vw 0vw;
-    border-radius: 0.3vw;
-    border-top-left-radius: 1.3vw;
-    border-top-right-radius: 1.3vw;
+    margin: 25px;
+    border-radius: 20px 20px 0 0;
     background: #FFFFFF;
-    box-shadow: 0.4vw 0.5vw 0px #8220B0;
+    box-shadow: 5px 5px 0px #8220B0;
     border: 1px solid #8220B0;
-    height: 39vw;
+    position: relative;
+    min-height: 200px;
   }
   .tag-header {
     color: #8220B0;
-    margin: 2vw 2.5vw 0vw;
-    font-size: 2.5vw;
+    margin: 20px;
+    font-size: 15px;
+    line-height: 18px;
   }
-  .title-area {
-    position: absolute;
-    bottom: 12vw;
-    left: 0;
-    right: 0;
-    top: 0;
-  }
-  h1 {
-    color: #8220B0;
-    width: 85vw;
+  .title-area h1 {
+    font-style: normal;
     font-weight: 500;
+    font-size: 36px;
+    line-height: 42px;
+    display: flex;
+    align-items: center;
     letter-spacing: -0.02em;
-    margin: 1vw auto;
-    position: absolute;
-    padding-left: 6vw;
-    top: 50%;
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
-    line-height: 1.2em;
-    letter-spacing: -0.02em;
-    font-size: <%= 6 - @article.title.size / 40 %>vw;
+    margin: 0 20px;
+    color: #8220B0;
+    padding-bottom: 30px;
   }
   .preview-user {
-    font-size: 3vw;
-    position: absolute;
     color: #8220B0;
-    left: 4.5vw;
-    bottom: 5vw;
-    padding: 0.8vw 2vw 0 0.8vw;
-    font-weight: 500;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 18px;
+    display: flex;
+    align-items: center;
+  }
+  .preview-user-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   .preview-user img {
-    border-radius: 100vw;
-    height: 4.5vw;
-    width: 4.5vw;
-    vertical-align: -1.3vw;
-    border: 0.25vw solid #8220B0;
-  }
-  .badge-images {
-    position: absolute;
-    bottom: 4.25vw;
-    right: 5vw;
-    text-align: right;
+    border: 1px solid #8220B0;
+    box-sizing: border-box;
+    border-radius: 4.5vw;
+    margin: 20px;
+    height: 3.5vw;
+    width: 3.5vw;
   }
   .badge-images img {
-    height: 6vw;
+    height: 3.5vw;
     fill: #8220B0;
     transform: rotate(5deg);
+    transform: rotate(2.94deg);
+    margin: 10px;
+  }
+
+  @media screen and (min-width: 768px) {
+    .preview-div {
+      background-size: auto;
+    }
   }
 </style>
+
 <div class="preview-div-wrapper">
   <div class="preview-div">
     <div class="preview-article">
@@ -94,12 +89,14 @@
       <div class="title-area">
         <h1><%= @article.title %></h1>
       </div>
-      <div class="preview-user">
-        <img src="<%= ProfileImage.new(@article.user).get(width: 90) %>" />
-        <%= truncate @article.user.name, length: 28 %>・<%= @article.readable_publish_date %>
-      </div>
-      <div class="badge-images">
-        <img src="https://thepracticaldev.s3.amazonaws.com/i/bh2wmpcltaybu1xsnico.png" />
+      <div class="preview-user-info">
+        <div class="preview-user">
+          <img src="<%= ProfileImage.new(@article.user).get(width: 90) %>" />
+          <%= truncate @article.user.name, length: 28 %>・<%= @article.readable_publish_date %>
+        </div>
+        <div class="badge-images">
+          <img src="https://thepracticaldev.s3.amazonaws.com/i/bh2wmpcltaybu1xsnico.png" />
+        </div>
       </div>
     </div>
   </div>
