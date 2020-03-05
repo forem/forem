@@ -1,5 +1,9 @@
 class PodcastEpisode < ApplicationRecord
   include AlgoliaSearch
+  include Searchable
+
+  SEARCH_SERIALIZER = Search::PodcastEpisodeSerializer
+  SEARCH_CLASS = Search::FeedContent
 
   acts_as_taggable
 
