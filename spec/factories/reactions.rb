@@ -10,4 +10,10 @@ FactoryBot.define do
     association :reactable, factory: :article
     category { "readinglist" }
   end
+
+  factory :thumbsdown_reaction, class: "Reaction" do
+    user
+    association :reactable, factory: :article
+    category { "thumbsdown" }
+  end
 end
