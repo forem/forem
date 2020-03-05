@@ -13,6 +13,9 @@ class SiteConfig < RailsSettings::Base
   field :default_site_email, type: :string, default: "yo@dev.to"
   field :social_networks_handle, type: :string, default: "thepracticaldev"
 
+  # mascot account
+  field :mascot_user_id, type: :integer, default: 1
+
   # campaign
   field :campaign_hero_html_variant_name, type: :string, default: ""
   field :campaign_background_color, type: :string, default: "FFFFFF"
