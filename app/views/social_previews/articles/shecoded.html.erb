@@ -1,47 +1,106 @@
 <style>
   body {
-    <% if @article.cached_tag_list.include?("theycoded") %>
-      background-color: #cabde6;
-    <% else %>
-      background: url(<%= asset_path "SheCodedBackground.png" %>);
-      background-color: #cabde6;
-      background-repeat: repeat;
-    <% end %>
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", "Roboto", sans-serif;
+    background: white;
   }
   .preview-div-wrapper {
-    background: white;
-    width: 80vw;
-    height: 35vw;
-    margin: 2.5vw auto 2.5vw;
-    padding: 4vw;
+    overflow: hidden;
+    position: relative;
   }
-  .avatar {
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 2.5vw;
-    width: 12vw;
+  .preview-div {
+    border-radius: 0.3vw;
+    border-top-left-radius: 2.3vw;
+    border-top-right-radius: 2.3vw;
+    background: url(<%= asset_path "shecoded-background.png" %>);
+    background-color: #2a1d5e;
+    background-repeat: repeat;
+    overflow: hidden;
+    position: relative;
+    width: 94vw;
+    height: 45vw;
+    margin: 2.25vw auto 5vw;
   }
-  img {
-    border-radius: 12vw;
-    border: .75vw solid #70589b;
-    height: 12vw;
-    width: 12vw;
+  .preview-article {
+    margin: 3vw 3.5vw 0vw;
+    border-radius: 0.3vw;
+    border-top-left-radius: 1.3vw;
+    border-top-right-radius: 1.3vw;
+    background: #FFFFFF;
+    box-shadow: 0.4vw 0.5vw 0px #8220B0;
+    border: 1px solid #8220B0;
+    height: 39vw;
   }
-  .title {
-    font-size: <%= 7 - @article.title.size / 40 %>vw;
-    margin: auto;
-    width: 80%;
-    color: #70589b;
-    text-align: center;
-    font-family: "HelveticaNeue-CondensedBold", "HelveticaNeueBoldCondensed", "HelveticaNeue-Bold-Condensed", "Helvetica Neue Bold Condensed", "HelveticaNeueBold", "HelveticaNeue-Bold", "Helvetica Neue Bold", "HelveticaNeue", "Helvetica Neue", 'TeXGyreHerosCnBold', "Helvetica", "Tahoma", "Geneva", "Arial Narrow", "Arial", "Roboto Condensed", sans-serif;
+  .tag-header {
+    color: #8220B0;
+    margin: 2vw 2.5vw 0vw;
+    font-size: 2.5vw;
+  }
+  .title-area {
+    position: absolute;
+    bottom: 12vw;
+    left: 0;
+    right: 0;
+    top: 0;
+  }
+  h1 {
+    color: #8220B0;
+    width: 85vw;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin: 1vw auto;
+    position: absolute;
+    padding-left: 6vw;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    line-height: 1.2em;
+    letter-spacing: -0.02em;
+    font-size: <%= 6 - @article.title.size / 40 %>vw;
+  }
+  .preview-user {
+    font-size: 3vw;
+    position: absolute;
+    color: #8220B0;
+    left: 4.5vw;
+    bottom: 5vw;
+    padding: 0.8vw 2vw 0 0.8vw;
+    font-weight: 500;
+  }
+  .preview-user img {
+    border-radius: 100vw;
+    height: 4.5vw;
+    width: 4.5vw;
+    vertical-align: -1.3vw;
+    border: 0.25vw solid #8220B0;
+  }
+  .badge-images {
+    position: absolute;
+    bottom: 4.25vw;
+    right: 5vw;
+    text-align: right;
+  }
+  .badge-images img {
+    height: 6vw;
+    fill: #8220B0;
+    transform: rotate(5deg);
   }
 </style>
-
 <div class="preview-div-wrapper">
-  <div class="avatar">
-    <img src="<%= ProfileImage.new(@article.user).get(width: 320) %>" alt="<%= @article.user.name %> profile image">
-  </div>
-  <div class="title">
-    <strong><%= @article.title %></strong>
+  <div class="preview-div">
+    <div class="preview-article">
+      <div class="tag-header"><%= (@article.tag_list | SiteConfig.campaign_featured_tags).map { |tag| "##{tag}" }.join(", ") %></div>
+      <div class="title-area">
+        <h1><%= @article.title %></h1>
+      </div>
+      <div class="preview-user">
+        <img src="<%= ProfileImage.new(@article.user).get(width: 90) %>" />
+        <%= truncate @article.user.name, length: 28 %>・<%= @article.readable_publish_date %>
+      </div>
+      <div class="badge-images">
+        <img src="https://thepracticaldev.s3.amazonaws.com/i/bh2wmpcltaybu1xsnico.png" />
+      </div>
+    </div>
   </div>
 </div>
