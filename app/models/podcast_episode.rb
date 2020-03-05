@@ -27,6 +27,9 @@ class PodcastEpisode < ApplicationRecord
   after_destroy :purge, :purge_all
   after_save    :bust_cache
 
+  after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :remove_from_elasticsearch, on: [:destroy]
+
   before_validation :process_html_and_prefix_all_images
 
   scope :reachable, -> { where(reachable: true) }
