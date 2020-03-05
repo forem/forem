@@ -4,7 +4,7 @@
     "id": {
       "type": "keyword"
     },
-    "availabe_for": {
+    "available_for": {
       "type": "keyword",
       "copy_to": "search_fields"
     },
