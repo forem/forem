@@ -42,7 +42,7 @@ function buildArticleHTML(article) {
     }
     var rc = article.positive_reactions_count || article.reactions_count
     var reactionsCountHTML = ''
-    if ((rc || '0') > 0 && article.class_name != "User") {
+    if (article.class_name != "User") {
       var reactionsCountHTML = '<div class="article-engagement-count reactions-count"><a href="'+article.path+'"><img src="<%= asset_path("reactions-stack.png") %>" alt="heart" /><span id="engagement-count-number-'+article.id+'" class="engagement-count-number">'+(rc || '0')+'</span></a></div>'
     }
     var picUrl = article.user.profile_image_90
@@ -128,8 +128,8 @@ function buildArticleHTML(article) {
         </div>\
        </a>\
        <h4><a href="/'+article.user.username+'">'+filterXSS(article.user.name)+publishDate+timeAgoInWords+'</a></h4>\
-       <div class="tags">'+tagString+'</div>\
+       <div class="tags">'+tagString+'</div><div class="reactions-bar">\
        '+commentsCountHTML+reactionsCountHTML+readingTimeHTML+'\
-       '+saveButton+'</div>';
+       '+saveButton+'</div></div>';
   }
 }
