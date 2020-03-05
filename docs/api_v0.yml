@@ -8,7 +8,7 @@ info:
 
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
-  version: "0.6.2"
+  version: "0.6.3"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -62,6 +62,7 @@ components:
           tokenUrl: https://dev.to/oauth/token
           refreshUrl: https://dev.to/oauth/token
           scopes: {}
+
   schemas:
     APIError:
       type: object
@@ -1026,6 +1027,8 @@ components:
 tags:
   - name: articles
     description: Articles are all the posts users create on DEV
+  - name: comments
+    description: Users can leave comments to articles and podcasts episodes
   - name: listings
     description: Listings are classified ads
   - name: users
@@ -1594,6 +1597,45 @@ paths:
           label: curl
           source: |
             curl -H "api-key: API_KEY" https://dev.to/api/articles/me/all
+
+  /comments:
+    get:
+      operationId: getComments
+      summary: Comments
+      description: |
+        This endpoint allows the client to retrieve all comments belonging to an
+        article as threaded conversations.
+
+        It will return the all top level comments with their nested comments as
+        threads. See the format specification for further details.
+      tags:
+        - comments
+      parameters:
+        - name: a_id
+          in: query
+          description: Article identifier.
+          schema:
+            type: integer
+            format: int32
+          example: 270180
+      responses:
+        200:
+          description: A list of threads of comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CommentsIndex"
+              examples:
+                articles-success:
+                  $ref: "#/components/examples/CommentsIndex"
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl (all comments of an article)
+          source: |
+            curl https://dev.to/api/comments?a_id=270180
+
 
   /listings:
     get:
