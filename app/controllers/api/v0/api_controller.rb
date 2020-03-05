@@ -17,6 +17,10 @@ class Api::V0::ApiController < ApplicationController
     error_not_found
   end
 
+  rescue_from Pundit::NotAuthorizedError do |_exc|
+    error_unauthorized
+  end
+
   protected
 
   def error_unprocessable_entity(message)

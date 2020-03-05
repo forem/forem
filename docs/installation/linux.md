@@ -36,6 +36,8 @@ There are two ways to install Yarn.
 
 ### PostgreSQL
 
+DEV requires PostgreSQL version 9.5 or higher.
+
 1. Run
    `sudo apt update && sudo apt install postgresql postgresql-contrib libpq-dev`.
 1. To test the installation you can run `sudo -u postgres psql` which should
@@ -45,8 +47,7 @@ There are two ways to install Yarn.
 
 There are more than one ways to setup PostgreSQL. For additional configuration,
 check out our [PostgreSQL setup guide](/installation/postgresql) or the official
-[PostgreSQL](https://www.postgresql.org/) site for further information. DEV
-requires PostgreSQL version 9.4 or higher.
+[PostgreSQL](https://www.postgresql.org/) site for further information.
 
 ### ImageMagick
 
@@ -66,11 +67,18 @@ We recommend following Digital Ocean's extensive
 
 ### Elasticsearch
 
-DEV requires Elasticsearch version 7 or higher.
+DEV requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is not
+supported. We recommend version 7.5.2.
 
 We recommend following
 [Elasticsearch's guide for installing on Linux](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#install-linux).
-NOTE: Make sure to download the OSS version, `elasticsearch-oss`.
+
+Elasticsearch is also available as as
+[Debian package](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/deb.html)
+or a
+[RPM package](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/rpm.html).
+
+NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
 
 ## Installing DEV
 

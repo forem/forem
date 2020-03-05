@@ -23,15 +23,18 @@ class Stories::FeedsController < ApplicationController
 
   def ab_test_user_signed_in_feed(feed)
     test_variant = field_test(:user_home_feed, participant: current_user)
+    Honeycomb.add_field("field_test_user_home_feed", test_variant) # Monitoring different variants
     case test_variant
     when "base"
       feed.default_home_feed(user_signed_in: true)
     when "more_random"
       feed.default_home_feed_with_more_randomness
-    when "mix_base_and_more_random"
+    when "mix_base_more_random"
       feed.mix_default_and_more_random
     when "more_tag_weight"
       feed.more_tag_weight
+    when "more_tag_weight_more_random"
+      feed.more_tag_weight_more_random
     else
       feed.default_home_feed(user_signed_in: true)
     end

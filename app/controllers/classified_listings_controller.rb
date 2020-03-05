@@ -92,6 +92,10 @@ class ClassifiedListingsController < ApplicationController
     render :new
   end
 
+  def process_unsuccessful_update
+    render :edit
+  end
+
   def process_after_update
     redirect_to "/listings"
   end

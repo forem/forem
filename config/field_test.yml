@@ -5,11 +5,13 @@ experiments:
       - more_random
       - more_tag_weight
       - mix_base_more_random
+      - more_tag_weight_more_random
     weights:
-      - 65
+      - 55
       - 10
       - 10
       - 15
+      - 10
     goals:
       - user_creates_comment
       - user_creates_reaction
