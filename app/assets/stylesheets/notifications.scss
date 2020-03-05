@@ -415,7 +415,7 @@
   }
 
   .load-more-wrapper {
-    z-index: 0;
+    clear: both;
 
     @include load-more;
 
