@@ -1,3 +1,8 @@
+prior_logger     = Rails.logger
+logger           = ActiveSupport::Logger.new(STDOUT)
+logger.formatter = Rails.application.config.log_formatter
+Rails.logger     = ActiveSupport::TaggedLogging.new(logger)
+
 # we use this to be able to increase the size of the seeded DB at will
 # eg.: `SEEDS_MULTIPLIER=2 rails db:seed` would double the amount of data
 SEEDS_MULTIPLIER = [1, ENV["SEEDS_MULTIPLIER"].to_i].max
@@ -336,3 +341,5 @@ Rails.logger.info <<-ASCII
 
   All done!
 ASCII
+
+Rails.logger = prior_logger
