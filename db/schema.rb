@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_04_164719) do
+ActiveRecord::Schema.define(version: 2020_03_04_220534) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1223,14 +1223,6 @@ ActiveRecord::Schema.define(version: 2020_03_04_164719) do
     t.boolean "saw_onboarding", default: true
     t.integer "score", default: 0
     t.string "secret"
-    t.string "shipping_address"
-    t.string "shipping_address_line_2"
-    t.string "shipping_city"
-    t.string "shipping_company"
-    t.string "shipping_country"
-    t.string "shipping_name"
-    t.string "shipping_postal_code"
-    t.string "shipping_state"
     t.boolean "shipping_validated", default: false
     t.datetime "shipping_validated_at"
     t.string "shirt_gender"
