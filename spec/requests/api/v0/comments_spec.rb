@@ -3,9 +3,21 @@ require "rails_helper"
 RSpec.describe "Api::V0::Comments", type: :request do
   let_it_be(:article) { create(:article) }
   let_it_be(:root_comment) { create(:comment, commentable: article) }
-  let_it_be(:child_comment) { create(:comment, commentable: article, parent: root_comment) }
+  let_it_be_changeable(:child_comment) { create(:comment, commentable: article, parent: root_comment) }
   let_it_be(:grandchild_comment) { create(:comment, commentable: article, parent: child_comment) }
   let_it_be(:great_grandchild_comment) { create(:comment, commentable: article, parent: grandchild_comment) }
+
+  def find_child_comment_in_response(response, action = :index)
+    body = response.parsed_body
+
+    root_comment_json = if action == :index
+                          body.detect { |cm| cm["id_code"] == root_comment.id_code_generated }
+                        else
+                          body
+                        end
+
+    root_comment_json["children"].detect { |cm| cm["id_code"] == child_comment["id_code"] }
+  end
 
   describe "GET /api/comments" do
     it "returns not found if wrong article id" do
@@ -31,8 +43,7 @@ RSpec.describe "Api::V0::Comments", type: :request do
     it "includes children comments in the children list" do
       get api_comments_path(a_id: article.id)
 
-      comment_with_children = response.parsed_body.detect { |cm| cm["id_code"] == root_comment.id_code_generated }
-      expect(comment_with_children["children"][0]["id_code"]).to eq(child_comment.id_code_generated)
+      expect(find_child_comment_in_response(response)["id_code"]).to eq(child_comment.id_code_generated)
     end
 
     it "includes grandchildren comments in the children-children list" do
@@ -62,35 +73,97 @@ RSpec.describe "Api::V0::Comments", type: :request do
       ].to_set
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
+
+    context "when a comment is deleted" do
+      before do
+        child_comment.update(deleted: true)
+      end
+
+      it "appears in the thread" do
+        get api_comments_path(a_id: article.id)
+
+        expect(find_child_comment_in_response(response)["id_code"]).to eq(child_comment.id_code_generated)
+      end
+
+      it "replaces the body_html" do
+        get api_comments_path(a_id: article.id)
+
+        expect(find_child_comment_in_response(response)["body_html"]).to eq("<p>[deleted]</p>")
+      end
+
+      it "does not render the user information" do
+        get api_comments_path(a_id: article.id)
+
+        expect(find_child_comment_in_response(response)["user"]).to be_empty
+      end
+
+      it "still has children comments" do
+        get api_comments_path(a_id: article.id)
+
+        expect(find_child_comment_in_response(response)["children"]).not_to be_empty
+      end
+    end
+
+    context "when a comment is hidden" do
+      before do
+        child_comment.update(hidden_by_commentable_user: true)
+      end
+
+      it "appears in the thread" do
+        get api_comments_path(a_id: article.id)
+
+        expect(find_child_comment_in_response(response)["id_code"]).to eq(child_comment.id_code_generated)
+      end
+
+      it "replaces the body_html" do
+        get api_comments_path(a_id: article.id)
+
+        expect(find_child_comment_in_response(response)["body_html"]).to eq("<p>[hidden by post author]</p>")
+      end
+
+      it "does not render the user information" do
+        get api_comments_path(a_id: article.id)
+
+        expect(find_child_comment_in_response(response)["user"]).to be_empty
+      end
+
+      it "still has children comments" do
+        get api_comments_path(a_id: article.id)
+
+        expect(find_child_comment_in_response(response)["children"]).not_to be_empty
+      end
+    end
   end
 
   describe "GET /api/comments/:id" do
     it "returns not found if wrong comment id" do
-      get "/api/comments/foobar"
+      get api_comment_path("foobar")
+
       expect(response).to have_http_status(:not_found)
     end
 
     it "returns the comment" do
-      get "/api/comments/#{root_comment.id_code_generated}"
+      get api_comment_path(root_comment.id_code_generated)
+      expect(response).to have_http_status(:ok)
+
       expect(response.parsed_body["id_code"]).to eq(root_comment.id_code_generated)
     end
 
     it "includes children comments in the children list" do
-      get "/api/comments/#{root_comment.id_code_generated}"
+      get api_comment_path(root_comment.id_code_generated)
 
-      comment_with_children = response.parsed_body
-      expect(comment_with_children["children"][0]["id_code"]).to eq(child_comment.id_code_generated)
+      expect(find_child_comment_in_response(response, :show)["id_code"]).to eq(child_comment.id_code_generated)
     end
 
     it "includes grandchildren comments in the children-children list" do
-      get "/api/comments/#{root_comment.id_code_generated}"
+      get api_comment_path(root_comment.id_code_generated)
 
       comment_with_descendants = response.parsed_body
       expect(comment_with_descendants["children"][0]["children"][0]["id_code"]).to eq(grandchild_comment.id_code_generated)
     end
 
     it "includes great-grandchildren comments in the children-children-children list" do
-      get "/api/comments/#{root_comment.id_code_generated}"
+      get api_comment_path(root_comment.id_code_generated)
 
       comment_with_descendants = response.parsed_body
       json_great_grandchild_id_code = comment_with_descendants["children"][0]["children"][0]["children"][0]["id_code"]
@@ -98,13 +171,73 @@ RSpec.describe "Api::V0::Comments", type: :request do
     end
 
     it "sets the correct edge caching surrogate key for all the comments" do
-      get "/api/comments/#{root_comment.id_code_generated}"
+      get api_comment_path(root_comment.id_code_generated)
 
       expected_key = [
         "comments", root_comment.record_key, child_comment.record_key,
         grandchild_comment.record_key, great_grandchild_comment.record_key
       ].to_set
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
+    end
+
+    context "when a comment is deleted" do
+      before do
+        child_comment.update(deleted: true)
+      end
+
+      it "appears in the thread" do
+        get api_comment_path(root_comment.id_code_generated)
+
+        expect(find_child_comment_in_response(response, :show)["id_code"]).to eq(child_comment.id_code_generated)
+      end
+
+      it "replaces the body_html" do
+        get api_comment_path(root_comment.id_code_generated)
+
+        expect(find_child_comment_in_response(response, :show)["body_html"]).to eq("<p>[deleted]</p>")
+      end
+
+      it "does not render the user information" do
+        get api_comment_path(root_comment.id_code_generated)
+
+        expect(find_child_comment_in_response(response, :show)["user"]).to be_empty
+      end
+
+      it "still has children comments" do
+        get api_comment_path(root_comment.id_code_generated)
+
+        expect(find_child_comment_in_response(response, :show)["children"]).not_to be_empty
+      end
+    end
+
+    context "when a comment is hidden" do
+      before do
+        child_comment.update(hidden_by_commentable_user: true)
+      end
+
+      it "appears in the thread" do
+        get api_comment_path(root_comment.id_code_generated)
+
+        expect(find_child_comment_in_response(response, :show)["id_code"]).to eq(child_comment.id_code_generated)
+      end
+
+      it "replaces the body_html" do
+        get api_comment_path(root_comment.id_code_generated)
+
+        expect(find_child_comment_in_response(response, :show)["body_html"]).to eq("<p>[hidden by post author]</p>")
+      end
+
+      it "does not render the user information" do
+        get api_comment_path(root_comment.id_code_generated)
+
+        expect(find_child_comment_in_response(response, :show)["user"]).to be_empty
+      end
+
+      it "still has children comments" do
+        get api_comment_path(root_comment.id_code_generated)
+
+        expect(find_child_comment_in_response(response, :show)["children"]).not_to be_empty
+      end
     end
   end
 end
