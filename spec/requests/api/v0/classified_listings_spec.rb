@@ -41,6 +41,12 @@ RSpec.describe "Api::V0::Listings" do
     end
   end
 
+  def user_admin_organization(user)
+    org = create(:organization)
+    create(:organization_membership, user_id: user.id, organization_id: org.id, type_of_user: "admin")
+    org
+  end
+
   describe "GET /api/listings" do
     include_context "with 7 listings and 2 user"
 
@@ -83,6 +89,14 @@ RSpec.describe "Api::V0::Listings" do
       ).to_set
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
+
+    it "does not return unpublished listings" do
+      listing = user1.classified_listings.last
+      listing.update(published: false)
+
+      get api_classified_listings_path
+      expect(response.parsed_body.detect { |l| l["published"] == false }).to be_nil
+    end
   end
 
   describe "GET /api/listings/category/:category" do
@@ -93,13 +107,91 @@ RSpec.describe "Api::V0::Listings" do
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body.size).to eq(3)
     end
+
+    it "does not return unpublished listings" do
+      category = "cfp"
+      listing = user1.classified_listings.where(category: category)
+      listing.update(published: false)
+
+      get api_classified_listings_category_path(category)
+      expect(response.parsed_body.detect { |l| l["published"] == false }).to be_nil
+    end
   end
 
   describe "GET /api/listings/:id" do
     include_context "with 7 listings and 2 user"
     let(:listing) { ClassifiedListing.where(category: "cfp").last }
 
-    it "displays a unique listing" do
+    context "when unauthenticated" do
+      it "returns a published listing" do
+        listing.update(published: true)
+
+        get api_classified_listing_path(listing.id)
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "returns a published listing on behalf of an organization" do
+        org = user_admin_organization(listing.user)
+        listing.update(published: true, organization: org)
+
+        get api_classified_listing_path(listing.id)
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "does not return an unpublished listing" do
+        listing.update(published: false)
+
+        get api_classified_listing_path(listing.id)
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context "when unauthorized" do
+      let_it_be_readonly(:headers) { { "api-key" => "invalid api key" } }
+
+      it "returns a published listing" do
+        listing.update(published: true)
+
+        get api_classified_listing_path(listing.id), headers: headers
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "does not return an unpublished listing" do
+        listing.update(published: false)
+
+        get api_classified_listing_path(listing.id), headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context "when authorized" do
+      include_context "when user is authorized"
+
+      let(:headers) { { "api-key" => api_secret.secret } }
+
+      it "returns a published listing" do
+        listing.update(published: true)
+
+        get api_classified_listing_path(listing.id), headers: headers
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "does not return an unpublished listing belonging to another user" do
+        listing.update(published: false, user: user1)
+
+        get api_classified_listing_path(listing.id), headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns an unpublished listing belonging to the authenticated user" do
+        listing.update(published: false, user: api_secret.user)
+
+        get api_classified_listing_path(listing.id), headers: headers
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    it "returns the correct listing format" do
       get api_classified_listing_path(listing.id)
 
       expect(response).to have_http_status(:ok)
@@ -129,12 +221,6 @@ RSpec.describe "Api::V0::Listings" do
     def post_classified_listing(key: api_secret.secret, **params)
       headers = { "api-key" => key, "content-type" => "application/json" }
       post api_classified_listings_path, params: { classified_listing: params }.to_json, headers: headers
-    end
-
-    def user_admin_organization(user)
-      org = create(:organization)
-      create(:organization_membership, user_id: user.id, organization_id: org.id, type_of_user: "admin")
-      org
     end
 
     describe "user cannot proceed if not properly unauthorized" do
