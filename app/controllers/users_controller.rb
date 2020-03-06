@@ -35,7 +35,8 @@ class UsersController < ApplicationController
       @user.touch(:profile_updated_at)
       redirect_to "/settings/#{@tab}"
     else
-      render :edit
+      Honeycomb.add_field("error", @user.errors.messages)
+      render :edit, status: :bad_request
     end
   end
 
