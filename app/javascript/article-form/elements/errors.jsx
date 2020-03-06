@@ -14,7 +14,7 @@ const Errors = ({ errorsList }) => (
         return (
           <li>
             {key}
-: &nbsp;
+            : &nbsp;
             {errorsList[key]}
           </li>
         );
