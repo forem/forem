@@ -1,5 +1,5 @@
 class TagsController < ApplicationController
-  before_action :set_cache_control_headers, only: [:index]
+  before_action :set_cache_control_headers, only: %i[index onboarding]
   before_action :authenticate_user!, only: %i[edit update]
   after_action :verify_authorized
 
@@ -32,6 +32,15 @@ class TagsController < ApplicationController
     redirect_to "/admin/tags/#{tag.id}/edit"
   end
 
+  def onboarding
+    skip_authorization
+
+    @tags = Tag.where(name: SiteConfig.suggested_tags).
+      select(ATTRIBUTES_FOR_SERIALIZATION)
+
+    set_surrogate_key_header Tag.table_key, @tags.map(&:record_key)
+  end
+
   private
 
   def convert_empty_string_to_nil
@@ -52,4 +61,7 @@ class TagsController < ApplicationController
     convert_empty_string_to_nil
     params.require(:tag).permit(accessible)
   end
+
+  ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex].freeze
+  private_constant :ATTRIBUTES_FOR_SERIALIZATION
 end
