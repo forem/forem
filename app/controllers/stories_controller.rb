@@ -68,7 +68,7 @@ class StoriesController < ApplicationController
       order("hotness_score DESC")
 
     @campaign_articles_count = campaign_articles_scope.count
-    @latest_campaign_articles = campaign_articles_scope.limit(3).pluck(:path, :title, :comments_count, :created_at)
+    @latest_campaign_articles = campaign_articles_scope.limit(5).pluck(:path, :title, :comments_count, :created_at)
   end
 
   def redirect_to_changed_username_profile
