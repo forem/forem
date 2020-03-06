@@ -158,6 +158,9 @@
     "video_duration_in_minutes": {
       "type": "integer"
     },
+    "video_duration_string": {
+      "type": "keyword"
+    },
     "website_url": {
       "type": "keyword"
     }
