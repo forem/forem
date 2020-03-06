@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import { PropTypes } from 'preact-compat';
-import debounce from 'lodash.debounce';
+import debounceAction from '../src/utils/debounceAction';
 
 import {
   defaultState,
@@ -39,9 +39,7 @@ export class ReadingList extends Component {
     this.state = defaultState({ availableTags, archiving: false, statusView });
 
     // bind and initialize all shared functions
-    this.onSearchBoxType = debounce(onSearchBoxType.bind(this), 300, {
-      leading: true,
-    });
+    this.onSearchBoxType = debounceAction(onSearchBoxType.bind(this));
     this.loadNextPage = loadNextPage.bind(this);
     this.performInitialSearch = performInitialSearch.bind(this);
     this.search = search.bind(this);

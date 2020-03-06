@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import debounce from 'lodash.debounce';
+import debounceAction from '../src/utils/debounceAction';
 import { fetchSearch } from '../src/utils/search';
 import SingleListing from './singleListing';
 
@@ -84,28 +84,29 @@ export class Listings extends Component {
     const category = container.dataset.category || '';
     const allCategories = JSON.parse(container.dataset.allcategories || []);
     let tags = [];
+    let openedListing = null;
+    let slug = null;
+    let listings = [];
+
     if (params.t) {
       tags = params.t.split(',');
     }
+
     const query = params.q || '';
-    let listings = [];
+
     if (tags.length === 0 && query === '') {
       listings = JSON.parse(container.dataset.listings);
     }
-    let openedListing = null;
-    let slug = null;
+
     if (container.dataset.displayedlisting) {
       openedListing = JSON.parse(container.dataset.displayedlisting);
       ({ slug } = openedListing);
       document.body.classList.add('modal-open');
     }
 
-    t.debouncedClassifiedListingSearch = debounce(
+    t.debouncedClassifiedListingSearch = debounceAction(
       this.handleQuery.bind(this),
       150,
-      {
-        leading: true,
-      },
     );
 
     t.setState({
