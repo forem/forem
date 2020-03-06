@@ -38,6 +38,10 @@ Rails.application.routes.draw do
   namespace :internal do
     get "/", to: redirect("/internal/articles")
 
+    authenticate :user, ->(user) { user.has_role?(:super_admin) } do
+      mount Blazer::Engine, at: "blazer"
+    end
+
     resources :articles, only: %i[index show update]
     resources :broadcasts, only: %i[index new create edit update]
     resources :buffer_updates, only: %i[create update]

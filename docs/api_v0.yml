@@ -8,7 +8,7 @@ info:
 
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
-  version: "0.6.1"
+  version: "0.6.2"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -1819,6 +1819,9 @@ paths:
       description: |
         This endpoint allows the client to retrieve
         a single listing given its `id`.
+
+        An unpublished listing is only accessible if authentication is supplied
+        and it belongs to the authenticated user.
       tags:
         - listings
       parameters:
@@ -1849,11 +1852,18 @@ paths:
               examples:
                 article-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
+      security:
+        - {} # this indicates that authentication is optional
+        - api_key: []
       x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
         - lang: Shell
           label: curl
           source: |
             curl https://dev.to/api/listings/1184
+        - lang: Shell
+          label: curl (with authentication)
+          source: |
+            curl -H "api-key: API_KEY" https://dev.to/api/listings/1185
     put:
       operationId: updateListing
       summary: Update a listing

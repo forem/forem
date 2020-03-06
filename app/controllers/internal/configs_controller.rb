@@ -20,7 +20,7 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   def config_params
     allowed_params = %i[
-      default_site_email social_networks_handle
+      default_site_email social_networks_handle mascot_user_id
       campaign_hero_html_variant_name campaign_background_color
       campaign_text_color campaign_sidebar_enabled campaign_featured_tags
       campaign_sidebar_image

@@ -25,7 +25,7 @@ const mockIndex = {
             exhaustiveNbHits: true,
             query: 'ma',
             params:
-              'query=ma&hitsPerPage=10&filters=supported%3Atrue&restrictIndices=searchables_development%2CTag_development%2Cordered_articles_development%2Cordered_articles_by_published_at_development%2Cordered_articles_by_positive_reactions_count_development%2Cordered_comments_development',
+              'query=ma&hitsPerPage=10&filters=supported%3Atrue&restrictIndices=searchables_development%2CTag_development%2Cordered_articles_development%2Cordered_articles_by_published_at_development%2Cordered_articles_by_positive_reactions_count_development',
           },
         };
 

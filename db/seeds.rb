@@ -121,8 +121,6 @@ num_comments = 30 * SEEDS_MULTIPLIER
 
 Rails.logger.info "5. Creating #{num_comments} Comments"
 
-Comment.clear_index!
-
 num_comments.times do
   attributes = {
     body_markdown: Faker::Hipster.paragraph(sentence_count: 1),
