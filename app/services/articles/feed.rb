@@ -139,7 +139,7 @@ module Articles
         order("hotness_score DESC")
       featured_story = hot_stories.where.not(main_image: nil).first
       if user_signed_in
-        offset = RANDOM_OFFSET_VALUES.reject { |i| i >= hot_stories.count }.sample # random offset, weighted more towards zero
+        offset = RANDOM_OFFSET_VALUES.select { |i| i < hot_stories.count }.sample # random offset, weighted more towards zero
         hot_stories = hot_stories.offset(offset)
         new_stories = Article.published.
           where("score > ?", -15).
