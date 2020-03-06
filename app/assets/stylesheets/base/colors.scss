@@ -1,0 +1,34 @@
+@import '../vars/variables';
+
+// Color
+@include generate-classes(
+  'color',
+  'color',
+  (
+    'transparent': transparent,
+    'current': currentColor,
+  ),
+  $colors
+);
+
+// Background Color
+@include generate-classes(
+  'bg',
+  'background-color',
+  (
+    'transparent': transparent,
+    'current': currentColor,
+  ),
+  $colors
+);
+
+// Border Color
+@include generate-classes(
+  'border',
+  'border-color',
+  (
+    'transparent': transparent,
+    'current': currentColor,
+  ),
+  $colors
+);

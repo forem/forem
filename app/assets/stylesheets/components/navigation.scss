@@ -1,0 +1,41 @@
+@import '../vars/variables';
+
+.crayons-nav-block {
+  display: flex;
+  align-items: center;
+  padding: $su-2;
+  border-radius: $br-default;
+  color: $smoke-90;
+  transition: all $transition-props;
+
+  &:hover:not(&--current) {
+    background: $smoke-00;
+    color: $smoke-100;
+  }
+
+  &--current {
+    font-weight: $fw-medium;
+    color: $smoke-100;
+    background: $snowflake;
+  }
+
+  .crayons-icon {
+    margin-right: $su-2;
+    vertical-align: middle;
+    width: $su-6;
+    height: $su-6;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: $fs-xl;
+  }
+
+  .crayons-indicator {
+    margin-left: $su-2;
+  }
+
+  // Indented for when there's no icon
+  &--indented {
+    padding-left: $su-2 + $su-7; // 40px
+  }
+}

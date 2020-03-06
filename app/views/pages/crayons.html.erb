@@ -747,24 +747,28 @@
   </div>
   <div>
     <span class="crayons-indicator">Label</span>
+    <span class="crayons-indicator crayons-indicator--outlined">Outlined</span>
     <span class="crayons-indicator">1</span>
     <span class="crayons-indicator crayons-indicator--bullet"></span>
   </div>
 
   <div>
     <span class="crayons-indicator crayons-indicator--accent">Label</span>
+    <span class="crayons-indicator crayons-indicator--outlined crayons-indicator--accent">Outlined</span>
     <span class="crayons-indicator crayons-indicator--accent">1</span>
     <span class="crayons-indicator crayons-indicator--accent crayons-indicator--bullet"></span>
   </div>
 
   <div>
     <span class="crayons-indicator crayons-indicator--critical">Label</span>
+    <span class="crayons-indicator crayons-indicator--outlined crayons-indicator--critical">Outlined</span>
     <span class="crayons-indicator crayons-indicator--critical">1</span>
     <span class="crayons-indicator crayons-indicator--critical crayons-indicator--bullet"></span>
   </div>
 
   <div>
     <span class="crayons-indicator crayons-indicator--inverted">Label</span>
+    <span class="crayons-indicator crayons-indicator--outlined crayons-indicator--inverted">Outlined</span>
     <span class="crayons-indicator crayons-indicator--inverted">1</span>
     <span class="crayons-indicator crayons-indicator--inverted crayons-indicator--bullet"></span>
   </div>
@@ -831,5 +835,37 @@
   <span class="... crayons-logo--xl">...</span>
   <span class="... crayons-logo--2xl">...</span>
   <span class="... crayons-logo--3xl">...</span>
+  '.rstrip %></pre>
+</div>
+
+<div class="container">
+  <div class="body">
+    <h2>Navigation: Main nav</h2>
+    <p>Used as main nav in left sidebar or dropdowns...</p>
+    <p>Can contain icons.</p>
+  </div>
+
+  <div class="p-6 bg-smoke-10">
+    <a href="#" class="crayons-nav-block crayons-nav-block--current"><span class="crayons-icon">🏡</span>Home</a>
+    <a href="#" class="crayons-nav-block"><span class="crayons-icon">📻</span>Podcasts</a>
+    <a href="#" class="crayons-nav-block"><span class="crayons-icon">🏷</span>Tags</a>
+    <a href="#" class="crayons-nav-block"><span class="crayons-icon">📑</span>Listings <span class="crayons-indicator">3</span></a>
+    <a href="#" class="crayons-nav-block"><span class="crayons-icon">👍</span>Code of Conduct</a>
+    <a href="#" class="crayons-nav-block crayons-nav-block--indented">More...</a>
+  </div>
+
+  <pre><%='
+  <a href="#" class="crayons-nav-block">...</a>
+  <a href="#" class="crayons-nav-block crayons-nav-block--current">...</a>
+
+  <!-- icon inside -->
+  <a href="#" class="crayons-nav-block"><span class="crayons-icon">📻</span>...</a>
+  <a href="#" class="crayons-nav-block"><svg class="crayons-icon" ...>...</svg>...</a>
+  
+  <!-- indicator inside -->
+  <a href="#" class="crayons-nav-block">...<span class="crayons-indicator">3</span></a>
+  
+  <!-- indented -->
+  <a href="#" class="crayons-nav-block crayons-nav-block--indented">More...</a>
   '.rstrip %></pre>
 </div>

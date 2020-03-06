@@ -1,5 +1,17 @@
 @import '../vars/variables';
 
+@mixin indicator($this, $name, $color1) {
+  &#{'--' + $name} {
+    background-color: $color1;
+    color: $snowflake;
+    &#{$this + '--outlined'} {
+      background-color: transparent;
+      color: $color1;
+      border-color: $color1;
+    }
+  }
+}
+
 // Basic styling
 .crayons-indicator {
   font-family: $ff-accent;
@@ -11,20 +23,15 @@
   border-radius: $br-default;
   display: inline-block;
 
-  &--accent {
-    background-color: $dolphin;
-    color: $snowflake;
+  &--outlined {
+    background-color: transparent;
+    border: 1px solid $smoke-20;
+    color: $smoke-80;
   }
 
-  &--critical {
-    background-color: $raspberry;
-    color: $snowflake;
-  }
-
-  &--inverted {
-    background-color: $smoke-90;
-    color: $snowflake;
-  }
+  @include indicator(&, accent, $dolphin);
+  @include indicator(&, critical, $raspberry);
+  @include indicator(&, inverted, $smoke-90);
 
   // Circle, no text
   &--bullet {
