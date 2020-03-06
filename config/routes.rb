@@ -123,11 +123,7 @@ Rails.application.routes.draw do
           get :me
         end
       end
-      resources :tags, only: [:index] do
-        collection do
-          get "/onboarding", to: "tags#onboarding"
-        end
-      end
+      resources :tags, only: [:index]
       resources :follows, only: [:create]
       namespace :followers do
         get :users
@@ -176,7 +172,11 @@ Rails.application.routes.draw do
   resources :image_uploads, only: [:create]
   resources :blocks
   resources :notifications, only: [:index]
-  resources :tags, only: [:index]
+  resources :tags, only: [:index] do
+    collection do
+      get "/onboarding", to: "tags#onboarding"
+    end
+  end
   resources :downloads, only: [:index]
   resources :stripe_active_cards, only: %i[create update destroy]
   resources :live_articles, only: [:index]
