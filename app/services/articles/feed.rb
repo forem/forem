@@ -1,5 +1,7 @@
 module Articles
   class Feed
+    RANDOM_OFFSET_VALUES = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11].freeze
+
     def initialize(user: nil, number_of_articles: 35, page: 1, tag: nil)
       @user = user
       @number_of_articles = number_of_articles
@@ -137,10 +139,10 @@ module Articles
         order("hotness_score DESC")
       featured_story = hot_stories.where.not(main_image: nil).first
       if user_signed_in
-        offset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11].sample # random offset, weighted more towards zero
+        offset = RANDOM_OFFSET_VALUES.select { |i| i < hot_stories.count }.sample # random offset, weighted more towards zero
         hot_stories = hot_stories.offset(offset)
         new_stories = Article.published.
-          where("published_at > ? AND score > ?", rand(2..6).hours.ago, -15).
+          where("score > ?", -15).
           limited_column_select.order("published_at DESC").limit(rand(15..80))
         hot_stories = hot_stories.to_a + new_stories.to_a
       end
