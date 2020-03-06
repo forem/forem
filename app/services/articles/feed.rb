@@ -7,6 +7,7 @@ module Articles
       @tag = tag
       @randomness = 3 # default number for randomly adjusting feed
       @tag_weight = 1 # default weight tags play in rankings
+      @comment_weight = 0 # default weight comments play in rankings
     end
 
     def self.find_featured_story(stories)
@@ -82,6 +83,13 @@ module Articles
       end
     end
 
+    # Test variation: the more comments a post has, the higher it's rated!
+    def more_comments
+      @comment_weight = 2
+      _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
+      stories
+    end
+
     def rank_and_sort_articles(articles)
       ranked_articles = articles.each_with_object({}) do |article, result|
         article_points = score_single_article(article)
@@ -99,6 +107,7 @@ module Articles
       article_points += score_randomness
       article_points += score_language(article)
       article_points += score_experience_level(article)
+      article_points += score_comments(article)
       article_points
     end
 
@@ -129,6 +138,10 @@ module Articles
 
     def score_experience_level(article)
       - ((article.experience_level_rating - (@user&.experience_level || 5).abs) / 2)
+    end
+
+    def score_comments(article)
+      article.comments_count * @comment_weight
     end
 
     def globally_hot_articles(user_signed_in)
