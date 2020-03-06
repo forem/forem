@@ -80,7 +80,7 @@
     <div id="vomitReactionsBodyContainer" class="collapse hide" aria-labelledby="vomitReactionsHeader" data-parent="#vomitReactions">
       <div class="card-body" style="overflow: scroll; max-height: 500px;">
         <% @vomits.each do |reaction| %>
-          <% next if (reaction.reactable_type == "Article" && !reaction.reactable.published) || (reaction.reactable_type == "User" && reaction.reactable.banned) %>
+          <% next if (reaction.reactable_type == "Article" && !reaction.reactable.published) || (reaction.reactable_type == "User" && reaction.reactable&.banished?) %>
           <div class="d-flex justify-content-between">
             <span>
               🤢 <a href="<%= reaction.user.path %>">@<%= reaction.user.username %></a>
