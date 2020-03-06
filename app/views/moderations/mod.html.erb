@@ -1,6 +1,6 @@
 <% title "[Moderate] " + @moderatable.title %>
 
-<% cache "mod-styling-#{ApplicationConfig['HEROKU_SLUG_COMMIT']}" do %>
+<% cache(cache_key_heroku_slug("mod-styling")) do %>
   <style>
     <%= Rails.application.assets["moderators.css"].to_s.html_safe %>
   </style>
