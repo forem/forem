@@ -1,6 +1,4 @@
-'use strict';
-
-const sponsorClickHandler = event => {
+function sponsorClickHandler(event) {
   if (event.target.classList.contains('follow-action-button')) {
     handleOptimisticButtRender(event.target);
     handleFollowButtPress(event.target);
@@ -13,7 +11,7 @@ const sponsorClickHandler = event => {
     event.target.dataset.details,
     null,
   );
-};
+}
 
 function listenForSponsorClick() {
   setTimeout(() => {
