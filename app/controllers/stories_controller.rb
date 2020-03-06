@@ -56,7 +56,7 @@ class StoriesController < ApplicationController
   private
 
   def assign_hero_html
-    return if SiteConfig.campaign_hero_html_variant_name.blank? || cookies[:heroBanner] == "false"
+    return if SiteConfig.campaign_hero_html_variant_name.blank?
 
     @hero_html = HtmlVariant.relevant.select(:html).
       find_by(group: "campaign", name: SiteConfig.campaign_hero_html_variant_name)&.html
