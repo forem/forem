@@ -1,7 +1,7 @@
 <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
   <div class="sidebar-bg" id="sidebar-bg-left"></div>
   <div class="side-bar">
-    <% cache("main-sidebar-nav--#{user_signed_in?}-#{ApplicationConfig['HEROKU_SLUG_COMMIT']}", expires_in: 5.days) do %>
+    <% cache(cache_key_heroku_slug("main-sidebar-nav--#{user_signed_in?}"), expires_in: 5.days) do %>
       <%= render "articles/sidebar_nav" %>
       <div class="widget widget-sponsorship <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
         <header>
