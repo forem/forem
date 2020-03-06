@@ -413,6 +413,10 @@ class User < ApplicationRecord
     errors.add(:username, "has been banished.") if BanishedUser.exists?(username: username)
   end
 
+  def banished?
+    username.starts_with?("spam_")
+  end
+
   def subscribe_to_mailchimp_newsletter
     return unless email.present? && email.include?("@")
     return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
