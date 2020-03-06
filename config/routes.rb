@@ -213,6 +213,7 @@ Rails.application.routes.draw do
   resource :pro_membership, path: :pro, only: %i[show create update]
   resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
   resources :podcasts, only: %i[new create]
+  resources :article_approvals, only: %i[create]
   resolve("ProMembership") { [:pro_membership] } # see https://guides.rubyonrails.org/routing.html#using-resolve
 
   get "/search/tags" => "search#tags"
@@ -307,7 +308,6 @@ Rails.application.routes.draw do
   get "/search" => "stories#search"
   post "articles/preview" => "articles#preview"
   post "comments/preview" => "comments#preview"
-  post "articles/approval/:id" => "articles#approval"
   get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
   get "/shop", to: redirect("https://shop.dev.to/")
   get "/mod" => "moderations#index", :as => :mod

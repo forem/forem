@@ -106,24 +106,4 @@ RSpec.describe "Tags", type: :request, proper_status: true do
       end
     end
   end
-
-  describe "POST articles/approvals" do
-    let(:article) { create(:article) }
-
-    context "user is not tag mod" do
-      it "does not allow update" do
-        p article.tags.last
-        p article.tags.last
-        p article.tags.last
-        p article.tags.last
-        expect{ post "/articles/approval/#{article.id}" }.to raise_error(Pundit::NotAuthorizedError)
-      end
-    end
-
-    context "user is a tag mod" do
-      it "does not allow update" do
-        expect{ post "/articles/approval/#{article.id}" }.to raise_error(Pundit::NotAuthorizedError)
-      end
-    end
-  end
 end
