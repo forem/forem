@@ -6,16 +6,16 @@
   'opacity',
   (
     '100': 1,
-    '75': .75,
-    '50': .50,
-    '25': .25,
+    '75': 0.75,
+    '50': 0.5,
+    '25': 0.25,
     '0': 0,
   )
 );
 
 // Box Shadow
 .shadow-none {
-  box-shadow: none !important; 
+  box-shadow: none !important;
 }
 
 // Cursor
@@ -69,5 +69,56 @@
     'default': $br-default,
     '0': 0,
     'full': 9999px,
+  )
+);
+
+// Background Position
+@include generate-classes(
+  'bg',
+  'background-position',
+  (
+    'bottom': bottom,
+    'center': center,
+    'left': left,
+    'right': right,
+    'top': top,
+    'left-bottom': left bottom,
+    'left-top': left top,
+    'right-bottom': right bottom,
+    'right-top': right top,
+  )
+);
+
+// Background Repeat
+@include generate-classes(
+  'bg',
+  'background-repeat',
+  (
+    'repeat': repeat,
+    'repeat-x': repeat-x,
+    'repeat-y': repeat-y,
+    'no-repeat': no-repeat,
+  )
+);
+
+// Background Size
+@include generate-classes(
+  'bg',
+  'background-size',
+  (
+    'auto': auto,
+    'cover': cover,
+    'contain': contain,
+  )
+);
+
+// Background Attachement
+@include generate-classes(
+  'bg',
+  'background-attachment',
+  (
+    'fixed': fixed,
+    'local': local,
+    'scroll': scroll,
   )
 );
