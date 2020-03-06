@@ -11,6 +11,10 @@ class User < ApplicationRecord
   rolify
   include AlgoliaSearch
   include Storext.model
+  include Searchable
+
+  SEARCH_SERIALIZER = Search::UserSerializer
+  SEARCH_CLASS = Search::User
 
   acts_as_followable
   acts_as_follower
@@ -169,11 +173,10 @@ class User < ApplicationRecord
     includes(:counters).order(Arel.sql("user_counters.data -> 'comments_these_7_days' DESC")).limit(number)
   }
 
-  after_create_commit :send_welcome_notification
   after_save :bust_cache
   after_save :subscribe_to_mailchimp_newsletter
   after_save :conditionally_resave_articles
-  after_create_commit :estimate_default_language
+
   before_create :set_default_language
   before_validation :set_username
   # make sure usernames are not empty, to be able to use the database unique index
@@ -185,6 +188,10 @@ class User < ApplicationRecord
   before_destroy :destroy_empty_dm_channels, prepend: true
   before_destroy :destroy_follows, prepend: true
   before_destroy :unsubscribe_from_newsletters, prepend: true
+
+  after_create_commit :send_welcome_notification, :estimate_default_language
+  after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :remove_from_elasticsearch, on: [:destroy]
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :name
@@ -480,6 +487,10 @@ class User < ApplicationRecord
     name
   end
 
+  def hotness_score
+    search_score
+  end
+
   private
 
   def index_id
@@ -653,10 +664,6 @@ class User < ApplicationRecord
 
   def tag_keywords_for_search
     employer_name.to_s + mostly_work_with.to_s + available_for.to_s
-  end
-
-  def hotness_score
-    search_score
   end
 
   def search_score
