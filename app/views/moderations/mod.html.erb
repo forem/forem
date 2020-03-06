@@ -54,6 +54,20 @@
       This is the equivalent of vomiting on <b>all</b> of this user's articles.
     </p>
   </div>
+  <% if @hidden_comments.present? %>
+    <div class="tag-mod-form">
+      <h2>Hidden Comments</h2>
+      <form>
+        <ul id="hidden-comments">
+        <% @hidden_comments.each do |comment| %>
+          <li>
+            <a href="<%= comment.path %>">Comment by <%= comment.user.username %></a>
+          </li>
+        <% end %>
+        </ul>
+      </form>
+    </div>
+  <% end %>
   <% if @allowed_to_adjust %>
     <div class="tag-mod-form">
       <h2>Tag Adjustments</h2>
