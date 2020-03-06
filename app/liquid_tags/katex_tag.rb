@@ -1,5 +1,6 @@
 class KatexTag < Liquid::Block
   PARTIAL = "liquids/katex".freeze
+  KATEX_EXISTED = "katex_existed".freeze
 
   def initialize(tag_name, markup, tokens)
     super
@@ -14,9 +15,15 @@ class KatexTag < Liquid::Block
                        e.message
                      end
 
+    should_render_css = !context[KATEX_EXISTED]
+
+    unless context[KATEX_EXISTED]
+      context[KATEX_EXISTED] = true
+    end
+
     ActionController::Base.new.render_to_string(
       partial: PARTIAL,
-      locals: { parsed_content: parsed_content },
+      locals: { parsed_content: parsed_content, should_render_css: should_render_css },
     )
   end
 end
