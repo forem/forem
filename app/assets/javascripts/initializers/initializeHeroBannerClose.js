@@ -1,7 +1,8 @@
 
 
 function setExpiryForCookie() {
-  // in the future we  want to set the expiry value from the campaign config based on how long the campaign is running for.
+  // in the future we probably want to set the expiry value dynamically from the campaign config
+  // based on how long the campaign is running for.
   const date = new Date();
   const daysUntilExpiry = 5;
   date.setDate(date.getDate() + daysUntilExpiry);
