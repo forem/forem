@@ -1,4 +1,4 @@
-
+'use strict';
 
 function setExpiryForCookie() {
   // in the future we probably want to set the expiry value dynamically from the campaign config
