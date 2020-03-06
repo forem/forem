@@ -133,12 +133,6 @@ Rails.application.routes.draw do
         get :users
         get :organizations
       end
-      namespace :followings do
-        get :users
-        get :tags
-        get :organizations
-        get :podcasts
-      end
       resources :webhooks, only: %i[index create show destroy]
 
       resources :classified_listings, path: :listings, only: %i[index show create update]
@@ -219,6 +213,12 @@ Rails.application.routes.draw do
   resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
   resources :podcasts, only: %i[new create]
   resolve("ProMembership") { [:pro_membership] } # see https://guides.rubyonrails.org/routing.html#using-resolve
+  namespace :followings, defaults: { format: :json } do
+    get :users
+    get :tags
+    get :organizations
+    get :podcasts
+  end
 
   get "/search/tags" => "search#tags"
   get "/search/chat_channels" => "search#chat_channels"
