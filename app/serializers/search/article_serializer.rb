@@ -6,8 +6,7 @@ module Search
                :comments_count, :experience_level_rating, :experience_level_rating_distribution,
                :featured, :featured_number, :flare_tag, :hotness_score, :language,
                :main_image, :path, :positive_reactions_count, :published,
-               :published_at, :reactions_count, :reading_time, :score, :title,
-               :video_duration_string
+               :published_at, :reactions_count, :reading_time, :score, :title
 
     # video_duration_in_minutes in Elasticsearch is mapped as an integer
     # however, it really is a string in the format 00:00 which is why we
