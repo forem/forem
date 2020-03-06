@@ -1,4 +1,4 @@
-
+'use strict';
 
 function initializeHeroBannerClose() {
   let banner = document.getElementById('js-hero-banner');
