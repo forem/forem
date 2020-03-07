@@ -212,6 +212,7 @@ Rails.application.routes.draw do
   resource :pro_membership, path: :pro, only: %i[show create update]
   resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
   resources :podcasts, only: %i[new create]
+  resources :article_approvals, only: %i[create]
   resolve("ProMembership") { [:pro_membership] } # see https://guides.rubyonrails.org/routing.html#using-resolve
   namespace :followings, defaults: { format: :json } do
     get :users
