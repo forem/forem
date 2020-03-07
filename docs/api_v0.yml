@@ -784,15 +784,15 @@ components:
     ErrorBadRequest:
       value:
         error: bad request
-        status: "400"
+        status: 400
     ErrorNotFound:
       value:
         error: not found
-        status: "404"
+        status: 404
     ErrorUnauthorized:
       value:
         error: unauthorized
-        status: "401"
+        status: 401
     ErrorPaymentRequired:
       value:
         error: not enough available credits
@@ -1437,7 +1437,7 @@ paths:
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        422:
+        "422":
           description: Unprocessable Entity
           content:
             application/json:
@@ -1560,7 +1560,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/ArticleShow"
               examples:
                 article-success:
@@ -1570,7 +1569,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-bad-request:
@@ -1580,17 +1578,15 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        422:
+        "422":
           description: Unprocessable Entity
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unprocessable-entity:
@@ -2036,7 +2032,7 @@ paths:
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        402:
+        "402":
           description: PaymentRequired
           content:
             application/json:
@@ -2045,7 +2041,7 @@ paths:
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorPaymentRequired"
-        422:
+        "422":
           description: Unprocessable Entity
           content:
             application/json:
@@ -2233,7 +2229,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/ArticleShow"
               examples:
                 article-success:
@@ -2243,7 +2238,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-bad-request:
@@ -2253,27 +2247,24 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        402:
+        "402":
           description: PaymentRequired
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorPaymentRequired"
-        422:
+        "422":
           description: Unprocessable Entity
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unprocessable-entity:
@@ -2364,7 +2355,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/WebhookShow"
               examples:
                 webhook-success:
@@ -2374,7 +2364,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-bad-request:
@@ -2384,17 +2373,15 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        422:
+        "422":
           description: Unprocessable Entity
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unprocessable-entity:
@@ -2435,7 +2422,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/WebhookShow"
               examples:
                 webhook-success:
@@ -2445,7 +2431,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 article-unauthorized:
@@ -2455,7 +2440,6 @@ paths:
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 article-not-found:
