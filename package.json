@@ -9,7 +9,7 @@
     "test": "test"
   },
   "scripts": {
-    "api-docs:lint": "spectral lint -D -v docs/api_v0.yml",
+    "api-docs:lint": "spectral lint -F hint -v docs/api_v0.yml",
     "api-docs:serve": "redoc-cli serve docs/api_v0.yml --options.pathInMiddlePanel --options.jsonSampleExpandLevel=all --options.menuToggle -t docs/api_template.hbs --watch",
     "build-storybook": "build-storybook -c app/javascript/.storybook -s app/assets",
     "storybook": "start-storybook -p 6006 -c app/javascript/.storybook -s app/assets",
@@ -27,7 +27,7 @@
       "eslint --fix -c app/assets/javascripts/.eslintrc.js"
     ],
     "docs/api_v0.yml": [
-      "spectral lint"
+      "spectral lint -F hint"
     ],
     "*.{js,jsx}": [
       "prettier --write",
