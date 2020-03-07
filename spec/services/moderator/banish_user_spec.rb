@@ -23,7 +23,7 @@ RSpec.describe Moderator::BanishUser, type: :service do
   it "removes all their comments" do
     article = create(:article, user: user, published: true)
     create(:comment, user: user, commentable: article)
-    sidekiq_perform_enqueued_jobs do
+    sidekiq_perform_enqueued_jobs(except: Search::IndexToElasticsearchWorker) do
       described_class.call(user: user, admin: admin)
     end
     expect(user.comments.count).to eq 0
