@@ -301,7 +301,7 @@ components:
                 `cover_image` is the main image of the article
 
                 *If the markdown contains a front matter, it will take precedence
-                on the equivalent params given in the JSON payload.*
+                on the equivalent params given in the payload.*
               type: string
             published:
               description: |
@@ -365,7 +365,7 @@ components:
                 `cover_image` is the main image of the article
 
                 *If the markdown contains a front matter, it will take precedence
-                on the equivalent params given in the JSON payload.*
+                on the equivalent params given in the payload.*
               type: string
             published:
               description: |
@@ -465,6 +465,9 @@ components:
           description: Crossposting or published date time
           type: string
           format: date-time
+        body_markdown:
+          description: The body of the article in Markdown format
+          type: string
         user:
           $ref: "#/components/schemas/SharedUser"
         organization:
