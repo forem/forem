@@ -4,7 +4,7 @@ module Search
 
     attributes :id, :approved, :body_text, :class_name, :cloudinary_video_url,
                :comments_count, :experience_level_rating, :experience_level_rating_distribution,
-               :featured, :featured_number, :flare_tag, :hotness_score, :language,
+               :featured, :featured_number, :hotness_score, :language,
                :main_image, :path, :positive_reactions_count, :published,
                :published_at, :reactions_count, :reading_time, :score, :title
 
@@ -13,6 +13,10 @@ module Search
     # added an extra field to handle that string
     attribute :video_duration_string, &:video_duration_in_minutes
     attribute :video_duration_in_minutes, &:video_duration_in_minutes_integer
+
+    attribute :flare_tag do |article|
+      article.flare_tag.to_json
+    end
 
     attribute :tags do |article|
       article.tags.map do |tag|
