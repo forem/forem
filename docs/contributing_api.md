@@ -34,3 +34,11 @@ that enable validation and navigation within the spec file:
 
 - [OpenAPI (Swagger) editor](https://marketplace.visualstudio.com/items?itemName=42Crunch.vscode-openapi)
 - [openapi-designer live preview](https://marketplace.visualstudio.com/items?itemName=philosowaffle.openapi-designer)
+
+Otherwise you can run:
+
+```shell
+yarn api-docs:lint
+```
+
+to lint and validate manually.
