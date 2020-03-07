@@ -30,7 +30,7 @@ class DataUpdateScript < ApplicationRecord
     def scripts_to_run?
       db_scripts = DataUpdateScript.pluck(:file_name, :status).to_h
 
-      return true unless filenames.to_set == db_scripts.keys.to_set
+      return true if filenames.size > db_scripts.size
       return true if db_scripts.values.any? { |s| s.to_sym == :enqueued }
 
       false
