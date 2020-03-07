@@ -27,22 +27,24 @@ class SidebarWidget extends Component {
     });
   }
 
-  getSuggestedUsers() {
+  async getSuggestedUsers() {
     const { tagInfo } = this.state;
-    fetch(`/api/users?state=sidebar_suggestions&tag=${tagInfo.name}`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-    })
-      .then(response => response.json())
-      .then(json => {
-        this.setState({ suggestedUsers: json });
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    try {
+      const response = await fetch(
+        `/api/users?state=sidebar_suggestions&tag=${tagInfo.name}`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          credentials: 'same-origin',
+        },
+      );
+      const jsonResponse = await response.json();
+      this.setState({ suggestedUsers: jsonResponse });
+    } catch (error) {
+      this.setState({ suggestedUsers: [] });
+    }
   }
 
   followUser(user) {
