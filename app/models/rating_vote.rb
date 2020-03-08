@@ -4,7 +4,7 @@ class RatingVote < ApplicationRecord
 
   validates :user_id, uniqueness: { scope: %i[article_id context] }
   validates :group, inclusion: { in: %w[experience_level] }
-  validates :context, inclusion: { in: %w[explicit readinglist_reaction] }
+  validates :context, inclusion: { in: %w[explicit readinglist_reaction comment] }
   validates :rating, numericality: { greater_than: 0.0, less_than_or_equal_to: 10.0 }
   validate :permissions
 

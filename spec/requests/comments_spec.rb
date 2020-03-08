@@ -312,6 +312,25 @@ RSpec.describe "Comments", type: :request do
         expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).with(user.id, :user_home_feed, "user_creates_comment")
       end
     end
+
+    context "when creating experience level rating when user has experience" do
+      before do
+        sign_in user
+      end
+
+      it "creates rating vote when user has experience level" do
+        user.update_column(:experience_level, 8.0)
+        post "/comments", params: base_comment_params
+        expect(RatingVote.last.context).to eq("comment")
+        expect(RatingVote.last.rating).to be(8.0)
+      end
+
+      it "does not create rating vote when user does not have experience level" do
+        user.update_column(:experience_level, nil)
+        post "/comments", params: base_comment_params
+        expect(RatingVote.all.size).to be 0
+      end
+    end
   end
 
   describe "PATCH /comments/:comment_id/hide" do

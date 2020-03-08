@@ -27,6 +27,13 @@ RSpec.describe RatingVote, type: :model do
       rating = build(:rating_vote, article_id: article.id, user_id: user.id, context: "readinglist_reaction")
       expect(rating).to be_valid
     end
+
+    it "does allows more than one two reactions if all different contexts" do
+      create(:rating_vote, article_id: article.id, user_id: user.id)
+      create(:rating_vote, article_id: article.id, user_id: user.id, context: "readinglist_reaction")
+      rating = build(:rating_vote, article_id: article.id, user_id: user.id, context: "comment")
+      expect(rating).to be_valid
+    end
   end
 
   describe "modifies article rating score" do

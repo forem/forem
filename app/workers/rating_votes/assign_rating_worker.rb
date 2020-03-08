@@ -5,7 +5,7 @@ module RatingVotes
     sidekiq_options queue: :low_priority, retry: 10
 
     def perform(article_id, group = "experience_level")
-      article = Article.find(article_id)
+      article = Article.find_by(id: article_id)
       return unless article
 
       ratings = article.rating_votes.where(group: group).pluck(:rating)
