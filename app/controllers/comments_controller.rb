@@ -77,10 +77,10 @@ class CommentsController < ApplicationController
       end
       if current_user.experience_level
         RatingVote.create(article_id: @comment.commentable_id,
-          group: "experience_level",
-          user_id: current_user.id,
-          context: "comment",
-          rating: current_user.experience_level)
+                          group: "experience_level",
+                          user_id: current_user.id,
+                          context: "comment",
+                          rating: current_user.experience_level)
       end
       render json: {
         status: "created",
