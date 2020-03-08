@@ -38,20 +38,6 @@ RSpec.describe RatingVote, type: :model do
       create(:rating_vote, article_id: article.id, user_id: user2.id, rating: 3.0)
 
       expect(RatingVotes::AssignRatingWorker).to have_received(:perform_async).with(article.id)
-
-      # expect(article.experience_level_rating).to eq(2.5)
-      # expect(article.experience_level_rating_distribution).to eq(1.0)
-    end
-
-    xit "assigns article rating with larger distribution" do
-      rating = create(:rating_vote, article_id: article.id, user_id: user.id, rating: 1.0)
-      create(:rating_vote, article_id: article.id, user_id: user2.id, rating: 7.0)
-
-      rating.assign_article_rating
-      article.reload
-
-      expect(article.experience_level_rating).to eq(4.0)
-      expect(article.experience_level_rating_distribution).to eq(6.0)
     end
   end
 
