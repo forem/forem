@@ -5,7 +5,6 @@ RSpec.describe "Admin dashboard is presented", type: :system do
   let(:user) { create(:user) }
 
   before { Bullet.raise = false }
-
   after { Bullet.raise = true }
 
   it "loads the admin dashboard view" do
