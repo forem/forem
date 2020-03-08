@@ -1,14 +1,30 @@
 <% title "[Moderate] " + @moderatable.title %>
 
-<% cache "mod-styling-#{ApplicationConfig['HEROKU_SLUG_COMMIT']}" do %>
+<% cache(cache_key_heroku_slug("mod-styling")) do %>
   <style>
     <%= Rails.application.assets["moderators.css"].to_s.html_safe %>
   </style>
 <% end %>
 
 <div class="container mod-container" style="text-align: center">
-  <h2>Moderate: <a href="<%= @moderatable.path %>" rel="nofollow"><%= @moderatable.title %></a></h2>
-  <h2>Author: <a href="<%= @moderatable.user.path %>"><%= @moderatable.user.username %></a></h2>
+  <h2><a href="<%= @moderatable.path %>" rel="nofollow"><%= @moderatable.title %></a></h2>
+  <h3><a href="<%= @moderatable.user.path %>">@<%= @moderatable.user.username %></a></h3>
+  <% if @moderatable.class.name == "Article" &&
+       (Tag.where(requires_approval: true).pluck(:name) & @moderatable.decorate.cached_tag_list_array).any? && 
+       (current_user.any_admin? || @tag_moderator_tags.any? { |tag| @moderatable.tag_list.include?(tag.name) })
+  %>
+    <%= form_tag "/article_approvals", method: "post" do %>
+      <%= hidden_field_tag(:id, @moderatable.id) %>
+      <% if @moderatable.approved %>
+        <%= hidden_field_tag(:approved, false) %>
+        <button class="cta approval-button approval-removal">Remove approval</button>
+      <% else %>
+        <%= hidden_field_tag(:approved, true) %>
+        <button class="cta approval-button">Mark as approved</button>
+      <% end %>
+    <% end %>
+    <hr />
+  <% end %>
 
   <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>"
           data-reactable-id="<%= @moderatable.id %>"
@@ -54,6 +70,20 @@
       This is the equivalent of vomiting on <b>all</b> of this user's articles.
     </p>
   </div>
+  <% if @hidden_comments.present? %>
+    <div class="tag-mod-form">
+      <h2>Hidden Comments</h2>
+      <form>
+        <ul id="hidden-comments">
+        <% @hidden_comments.each do |comment| %>
+          <li>
+            <a href="<%= comment.path %>">Comment by <%= comment.user.username %></a>
+          </li>
+        <% end %>
+        </ul>
+      </form>
+    </div>
+  <% end %>
   <% if @allowed_to_adjust %>
     <div class="tag-mod-form">
       <h2>Tag Adjustments</h2>

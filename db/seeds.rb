@@ -121,8 +121,6 @@ num_comments = 30 * SEEDS_MULTIPLIER
 
 Rails.logger.info "5. Creating #{num_comments} Comments"
 
-Comment.clear_index!
-
 num_comments.times do
   attributes = {
     body_markdown: Faker::Hipster.paragraph(sentence_count: 1),
@@ -288,7 +286,6 @@ Rails.logger.info "12. Creating Classified listings"
 users = User.order(Arel.sql("RANDOM()")).to_a
 users.each { |user| Credit.add_to(user, rand(100)) }
 
-ClassifiedListing.clear_index!
 listings_categories = ClassifiedListing.categories_available.keys
 listings_categories.each_with_index do |category, index|
   # rotate users if they are less than the categories

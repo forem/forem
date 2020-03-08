@@ -4,7 +4,7 @@
     "id": {
       "type": "keyword"
     },
-    "availabe_for": {
+    "available_for": {
       "type": "keyword",
       "copy_to": "search_fields"
     },
@@ -34,6 +34,9 @@
     },
     "reactions_count": {
       "type": "integer"
+    },
+    "search_fields": {
+      "type": "text"
     },
     "username": {
       "type": "keyword"

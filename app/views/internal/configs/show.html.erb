@@ -46,6 +46,21 @@
         </div>
 
         <div class="card mt-3">
+          <div class="card-header">Mascot</div>
+          <div class="card-body">
+            <div class="form-group">
+              <%= f.label :mascot_user_id, "Mascot user ID" %>
+              <%= f.text_field :mascot_user_id,
+                               class: "form-control",
+                               value: SiteConfig.mascot_user_id,
+                               min: 1,
+                               placeholder: "1" %>
+              <div class="alert alert-info">User ID of the Mascot account</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
           <div class="card-header">Campaign</div>
           <div class="card-body">
             <div class="form-group">

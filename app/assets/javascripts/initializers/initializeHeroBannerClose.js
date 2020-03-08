@@ -1,13 +1,13 @@
 'use strict';
 
 function initializeHeroBannerClose() {
-  let banner = document.getElementById("js-hero-banner");
-  let closeIcon = document.getElementById("js-hero-banner__x");
+  let banner = document.getElementById('js-hero-banner');
+  let closeIcon = document.getElementById('js-hero-banner__x');
 
   if (banner && closeIcon) {
-    closeIcon.onclick = (e) => {
-      document.cookie = "heroBanner=false";
-      banner.style.display = "none";
-    }
+    closeIcon.addEventListener('click', () => {
+      localStorage.setItem('exited_hero', 'shecoded'); // Hardcoded. TODO: generalize.
+      banner.style.display = 'none';
+    });
   }
 }

@@ -110,9 +110,11 @@ Make sure that Yarn is installed with `yarn -v`
 
 ### PostgreSQL
 
+DEV requires PostgreSQL version 9.5 or higher.
+
 If you don't have PostgreSQL installed on your Windows system, you can do so
 right now. WSL is able to connect to a PostgreSQL instance on your Windows
-machine. DEV requires PostgreSQL version 9.4 or higher.
+machine.
 
 Download [PostgreSQL for Windows](https://www.postgresql.org/download/windows/)
 and install it.
@@ -142,12 +144,14 @@ WSL.
 
 ### Elasticsearch
 
-DEV requires Elasticsearch version 7 or higher.
+DEV requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is not
+supported. We recommend version 7.5.2.
 
 We recommend following the install guide
 [in Elasticsearch's docs](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/zip-windows.html)
-for installing on Windows machines. NOTE: Make sure to download the OSS version,
-`elasticsearch-oss`.
+for installing on Windows machines.
+
+NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
 
 ## Installing DEV
 

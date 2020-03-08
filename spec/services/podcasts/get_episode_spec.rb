@@ -97,7 +97,7 @@ RSpec.describe Podcasts::GetEpisode, type: :service do
     end
 
     it "doesn't create invalid episodes" do
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         expect do
           described_class.new(podcast).call(item: item)
         end.not_to change(PodcastEpisode, :count)

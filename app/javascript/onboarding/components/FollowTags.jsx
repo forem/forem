@@ -18,7 +18,7 @@ class FollowTags extends Component {
   }
 
   componentDidMount() {
-    fetch('/api/tags/onboarding')
+    fetch('/tags/onboarding')
       .then(response => response.json())
       .then(data => {
         this.setState({ allTags: data });

@@ -20,10 +20,11 @@ Please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
 
 ### PostgreSQL
 
-DEV requires PostgreSQL version 9.4 or higher. The easiest way to get started is
-to use [Postgres.app](https://postgresapp.com/). Alternatively, check out the
-official [PostgreSQL](https://www.postgresql.org/) site for more installation
-options.
+DEV requires PostgreSQL version 9.5 or higher.
+
+The easiest way to get started is to use
+[Postgres.app](https://postgresapp.com/). Alternatively, check out the official
+[PostgreSQL](https://www.postgresql.org/) site for more installation options.
 
 For additional configuration options, check our
 [PostgreSQL setup guide](/installation/postgresql).
@@ -59,7 +60,8 @@ redis-cli ping
 
 ### Elasticsearch
 
-DEV requires Elasticsearch version 7 or higher.
+DEV requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is not
+supported. We recommend version 7.5.2.
 
 You have the option of installing Elasticsearch with Homebrew or through an
 archive. We recommend installing from archive on Mac.
@@ -79,10 +81,15 @@ wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.
 wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz.sha512
 shasum -a 512 -c elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz.sha512
 tar -xzf elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz
-cd elasticsearch-7.5.2/
 ```
 
-To start elasticsearch:
+To start elasticsearch, make sure you are in the correct directory:
+
+```shell
+cd elasticsearch-7.5.2
+```
+
+You can then start it by running:
 
 ```shell
 ./bin/elasticsearch
@@ -96,17 +103,19 @@ To start elasticsearch as a daemonized process:
 
 ### Installing Elasticsearch with Homebrew
 
-The following directions were
-[taken from the Elasticsearch docs](https://www.elastic.co/guide/en/elasticsearch/reference/current/brew.html).
+As the default version of the Homebrew formula points to Elasticsearch 7.6, we
+need to retrieve the correct revision of the formula to make sure we install the
+latest supported version: 7.5.2.
 
 ```shell
 brew tap elastic/tap
-brew install elastic/tap/elasticsearch-oss
+brew install https://raw.githubusercontent.com/elastic/homebrew-tap/bed8bc6b03213c2c1a7df6e4b9f928e7082fae46/Formula/elasticsearch-oss.rb
+brew pin elasticsearch-oss
 ```
 
 After installation you can manually test if the Elasticsearch server starts by
 issuing the command `elasticsearch` in the shell. You can then start the server
-as a service with `brew services start elastic/tap/elasticsearch-oss`.
+as a service with `brew services start elasticsearch-oss`.
 
 You can find further info on your local Elasticsearch installation by typing
 `brew info elastic/tap/elasticsearch-oss`.
@@ -122,8 +131,8 @@ Exception in thread "main" org.elasticsearch.bootstrap.BootstrapException: java.
 Likely root cause: java.nio.file.FileSystemLoopException: /usr/local/etc/elasticsearch/elasticsearch
 ```
 
-This happens because the installation of Elasticsearch might have a recursive link in the
-configuration directory causing the infinite loop:
+This happens because the installation of Elasticsearch might have a recursive
+link in the configuration directory causing the infinite loop:
 
 ```shell
 > ll /usr/local/etc/elasticsearch
@@ -169,13 +178,13 @@ your local Elasticsearch installation, for example:
   "cluster_name": "elasticsearch_...",
   "cluster_uuid": "...",
   "version": {
-    "number": "7.6.0",
+    "number": "7.5.2",
     "build_flavor": "oss",
     "build_type": "tar",
-    "build_hash": "7f634e9f44834fbc12724506cc1da681b0c3b1e3",
-    "build_date": "2020-02-06T00:09:00.449973Z",
+    "build_hash": "8bec50e1e0ad29dad5653712cf3bb580cd1afcdf",
+    "build_date": "2020-01-15T12:11:52.313576Z",
     "build_snapshot": false,
-    "lucene_version": "8.4.0",
+    "lucene_version": "8.3.0",
     "minimum_wire_compatibility_version": "6.8.0",
     "minimum_index_compatibility_version": "6.0.0-beta1"
   },

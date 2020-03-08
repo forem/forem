@@ -560,7 +560,7 @@ RSpec.describe "NotificationsIndex", type: :request do
         user.add_role :trusted
         user.update(mod_roundrobin_notifications: false)
         sign_in user
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           Notification.send_moderation_notification(comment)
         end
         get "/notifications"
@@ -576,6 +576,18 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "renders the comment's processed HTML" do
         expect(response.body).not_to include comment.processed_html
+      end
+    end
+
+    context "when user is trusted" do
+      let(:user) { create(:user, :trusted) }
+      let(:reaction) { create(:thumbsdown_reaction, user: user) }
+
+      it "allow sees thumbsdown category" do
+        sign_in user
+        Notification.send_reaction_notification_without_delay(reaction, user)
+        get "/notifications"
+        expect(response.body).to include("Notifications")
       end
     end
 

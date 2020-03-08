@@ -64,6 +64,7 @@ RSpec.describe "UserProfiles", type: :request do
       expect(response.body).to include("/feed/#{user.username}")
     end
 
+    it "does not render feed link if no stories" do
       get "/#{user.username}"
       expect(response.body).not_to include("/feed/#{user.username}")
     end

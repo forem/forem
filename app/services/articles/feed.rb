@@ -1,5 +1,7 @@
 module Articles
   class Feed
+    RANDOM_OFFSET_VALUES = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11].freeze
+
     def initialize(user: nil, number_of_articles: 35, page: 1, tag: nil)
       @user = user
       @number_of_articles = number_of_articles
@@ -7,6 +9,19 @@ module Articles
       @tag = tag
       @randomness = 3 # default number for randomly adjusting feed
       @tag_weight = 1 # default weight tags play in rankings
+    end
+
+    def self.find_featured_story(stories)
+      featured_story =  if stories.is_a?(ActiveRecord::Relation)
+                          stories.where.not(main_image: nil).first
+                        else
+                          stories.detect { |story| !story.main_image.nil? }
+                        end
+      featured_story || Article.new
+    end
+
+    def find_featured_story(stories)
+      self.class.find_featured_story(stories)
     end
 
     def published_articles_by_tag
@@ -28,7 +43,7 @@ module Articles
     end
 
     def default_home_feed_and_featured_story(user_signed_in: false, ranking: true)
-      featured_story, hot_stories = globally_cached_hot_articles(user_signed_in)
+      featured_story, hot_stories = globally_hot_articles(user_signed_in)
       hot_stories = rank_and_sort_articles(hot_stories) if @user && ranking
       [featured_story, hot_stories]
     end
@@ -49,6 +64,13 @@ module Articles
     # Test variation: tags make bigger impact
     def more_tag_weight
       @tag_weight = 2
+      _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
+      stories
+    end
+
+    def more_tag_weight_more_random
+      @tag_weight = 2
+      @randomness = 7
       _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
       stories
     end
@@ -111,24 +133,20 @@ module Articles
       - ((article.experience_level_rating - (@user&.experience_level || 5).abs) / 2)
     end
 
-    def globally_cached_hot_articles(user_signed_in)
-      # If these query is shared by the all users and fetched often, we can cache it and fetch cold
-      # only every x seconds.
-      Rails.cache.fetch("globally-cached-hot-articles-#{user_signed_in}", expires_in: 20.seconds) do
-        hot_stories = published_articles_by_tag.
-          where("score > ? OR featured = ?", 9, true).
-          order("hotness_score DESC")
-        featured_story = hot_stories.where.not(main_image: nil).first
-        if user_signed_in
-          offset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11].sample # random offset, weighted more towards zero
-          hot_stories = hot_stories.offset(offset)
-          new_stories = Article.published.
-            where("published_at > ? AND score > ?", rand(2..6).hours.ago, -15).
-            limited_column_select.order("published_at DESC").limit(rand(15..80))
-          hot_stories = hot_stories.to_a + new_stories.to_a
-        end
-        [featured_story, hot_stories.to_a]
+    def globally_hot_articles(user_signed_in)
+      hot_stories = published_articles_by_tag.
+        where("score > ? OR featured = ?", 8, true).
+        order("hotness_score DESC")
+      featured_story = hot_stories.where.not(main_image: nil).first
+      if user_signed_in
+        offset = RANDOM_OFFSET_VALUES.select { |i| i < hot_stories.count }.sample # random offset, weighted more towards zero
+        hot_stories = hot_stories.offset(offset)
+        new_stories = Article.published.
+          where("score > ?", -15).
+          limited_column_select.order("published_at DESC").limit(rand(15..80))
+        hot_stories = hot_stories.to_a + new_stories.to_a
       end
+      [featured_story, hot_stories.to_a]
     end
 
     private
