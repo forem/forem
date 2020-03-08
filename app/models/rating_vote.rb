@@ -14,14 +14,7 @@ class RatingVote < ApplicationRecord
   counter_culture :user
 
   def assign_article_rating
-    ratings = article.rating_votes.where(group: group).pluck(:rating)
-    average = ratings.sum / ratings.size
-
-    article.update_columns(
-      experience_level_rating: average,
-      experience_level_rating_distribution: ratings.max - ratings.min,
-      last_experience_level_rating_at: Time.current,
-    )
+    RatingVotes::AssignRatingWorker.perform_async(article_id)
   end
 
   private

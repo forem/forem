@@ -83,11 +83,11 @@ class ReactionsController < ApplicationController
       Notification.send_reaction_notification(reaction, reaction_user(reaction))
       Notification.send_reaction_notification(reaction, reaction.reactable.organization) if organization_article?(reaction)
       if category == "readinglist" && current_user.experience_level
-        RatingVote.create!(article_id: reaction.reactable_id,
-                           group: "experience_level",
-                           user_id: current_user.id,
-                           context: "readinglist_reaction",
-                           rating: current_user.experience_level)
+        RatingVote.create(article_id: reaction.reactable_id,
+                          group: "experience_level",
+                          user_id: current_user.id,
+                          context: "readinglist_reaction",
+                          rating: current_user.experience_level)
       end
     end
     render json: { result: result, category: category }
