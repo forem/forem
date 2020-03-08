@@ -1,13 +1,23 @@
 @import '../vars/variables';
 
-@mixin indicator($this, $name, $color1) {
+// indicator() - Generates styles for Indicators
+//
+// Indicators have bunch of styles combines with bunch of states. To make
+// it easier to generate all these classes, we created a help which should
+// do the job.
+//
+// @param {object} $this          Cached variable with parent element
+// @param {string} $name          Value for border-radius
+// @param {color} $color-1        Main color.
+
+@mixin indicator($this, $name, $color-1) {
   &#{'--' + $name} {
-    background-color: $color1;
+    background-color: $color-1;
     color: $snowflake;
     &#{$this + '--outlined'} {
       background-color: transparent;
-      color: $color1;
-      border-color: $color1;
+      color: $color-1;
+      border-color: $color-1;
     }
   }
 }

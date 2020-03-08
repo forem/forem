@@ -1,5 +1,14 @@
 @import '../vars/variables';
 
+// box() - generating classes for different style
+//
+// This mixin automates process of generating classes for different
+// types of boxes: filled & outlined, each  with variations
+// for several levels of elevation (box-shadow).
+//
+// @param {object} $this      Caching current parent
+// @param {color} $color-1    Background color for filled variation
+// @param {color} $color-2    Accent color for border & shadow
 @mixin box($this: $this, $color-1: $smoke-90, $color-2: $smoke-100) {
   border-color: $color-2;
 

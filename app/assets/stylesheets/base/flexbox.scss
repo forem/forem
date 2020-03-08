@@ -3,7 +3,7 @@
 // Flex flow
 @include generate-classes(
   'flex',
-  'flex-flow',
+  'flex-direction',
   (
     'row': row,
     'col': column,
@@ -80,7 +80,7 @@
   'flex',
   'flex',
   (
-    'initial': 0 1 auto,
+    'initial': 0 auto,
     '1': 1 1 0%,
     'auto': 1 1 auto,
     'none': none,

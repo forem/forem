@@ -1,5 +1,16 @@
 @import '../vars/variables';
 
+// avatar-logo() - Generates styles for Avatars or Logos component
+//
+// Logos & avatars look almost the same with tiny difference. They're
+// supposed to be separate components so for that reason they have
+// separate classes. Because of that we have mixing which is meant to
+// generate specific styles for both.
+//
+// @param {string} $name        Name of the component, will be included in class name
+// @param {number} $radius      Value for border-radius
+// @param {color} $background   Background visible until image loads in.
+
 @mixin avatar-logo($name, $radius, $background) {
   .crayons-#{$name} {
     display: inline-block;

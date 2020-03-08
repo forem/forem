@@ -24,9 +24,16 @@ $transition-props: cubic-bezier(0.17, 0.67, 0.5, 0.71) 100ms;
   @return $raised;
 }
 
+// generate-classes()
+//
 // Generating classes for Tailwind approach.
-@mixin generate-classes($prefix, $properties, $values1, $values2: ()) {
-  $values: map-merge($values1, $values2);
+//
+// @param {string} $prefix                Prefix for utility class, for example `mr`
+// @param {string || list} $properties    Defines CSS property(ies) that, for example `margin-right`
+// @param {list} $values-1                List of values for which we gonna generate classes
+// @param {list} $values-2                Additional list of values, useful when we want to combine two lists.
+@mixin generate-classes($prefix, $properties, $values-1, $values-2: ()) {
+  $values: map-merge($values-1, $values-2);
   @each $name, $value in $values {
     .#{$prefix}-#{$name} {
       @each $property in $properties {
