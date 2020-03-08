@@ -745,16 +745,9 @@
 .dashboard-manage-header {
   background: darken($bold-blue, 25%);
   color: white;
-  padding: 50px 0px 5px;
+  padding: 32px 0;
   line-height: 1.3em;
-  + .dashboard-container::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 160px;
-    background: darken($bold-blue, 25%);
-  }
+  box-shadow: 0 100px 0 darken($bold-blue, 25%);
   .manage-page-error {
     background: $red;
     color: white;
