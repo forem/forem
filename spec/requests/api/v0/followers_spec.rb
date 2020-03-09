@@ -1,6 +1,9 @@
 require "rails_helper"
 
 RSpec.describe "Api::V0::FollowersController", type: :request do
+  let(:user) { create(:user) }
+  let(:api_secret) { create(:api_secret, user: user) }
+  let(:headers) { { "api-key" => api_secret.secret } }
   let(:follower) { create(:user) }
 
   describe "GET /api/followers/organizations" do
@@ -12,9 +15,17 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
       end
     end
 
-    context "when user is authorized" do
+    context "when the user is authorized as current_user" do
+      it "returns ok" do
+        sign_in user
+
+        get api_followers_organizations_path
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "when user is authorized with api keys" do
       let(:orgs) { create_list(:organization, 2) }
-      let(:user) { create(:user) }
 
       before do
         orgs.each { |org| follower.follow(org) }
@@ -23,12 +34,10 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
         orgs.each do |org|
           create(:organization_membership, user: user, organization: org, type_of_user: "admin")
         end
-
-        sign_in user
       end
 
       it "returns all the followers of all organizations the user is part of" do
-        get api_followers_organizations_path
+        get api_followers_organizations_path, headers: headers
         expect(response).to have_http_status(:ok)
 
         followers = response.parsed_body
@@ -37,7 +46,7 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
       end
 
       it "returns the followers with the correct format" do
-        get api_followers_organizations_path
+        get api_followers_organizations_path, headers: headers
         expect(response).to have_http_status(:ok)
 
         response_follower = response.parsed_body.first
@@ -53,8 +62,6 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
   end
 
   describe "GET /api/followers/users" do
-    let(:user) { create(:user) }
-
     before do
       follower.follow(user)
 
@@ -69,13 +76,18 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
       end
     end
 
-    context "when user is authorized" do
-      before do
+    context "when the user is authorized as current_user" do
+      it "returns ok" do
         sign_in user
-      end
 
-      it "returns user's followers list with the correct format" do
         get api_followers_users_path
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "when user is authorized with api key" do
+      it "returns user's followers list with the correct format" do
+        get api_followers_users_path, headers: headers
         expect(response).to have_http_status(:ok)
 
         response_follower = response.parsed_body.first
