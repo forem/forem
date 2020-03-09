@@ -194,8 +194,7 @@ RSpec.describe Articles::Feed, type: :service do
     end
 
     it "ranks articles with more comments higher" do
-      expect(stories[0].id).to eq article_with_five_comments.id
-      expect(stories[1].id).to eq article_with_one_comment.id
+      expect(stories[0]).to eq article_with_five_comments
     end
   end
 
