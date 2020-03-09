@@ -113,11 +113,7 @@ Rails.application.routes.draw do
       resources :chat_channels, only: [:show]
       resources :videos, only: [:index]
       resources :podcast_episodes, only: [:index]
-      resources :reactions, only: [:create] do
-        collection do
-          post "/onboarding", to: "reactions#onboarding"
-        end
-      end
+      resources :reactions, only: [:create]
       resources :users, only: %i[index show] do
         collection do
           get :me
@@ -164,7 +160,11 @@ Rails.application.routes.draw do
     resource :twitch_stream_updates, only: %i[show create]
   end
   resources :twitch_live_streams, only: :show, param: :username
-  resources :reactions, only: %i[index create]
+  resources :reactions, only: %i[index create] do
+    collection do
+      post "/onboarding", to: "reactions#onboarding", defaults: { format: :json }
+    end
+  end
   resources :feedback_messages, only: %i[index create]
   resources :organizations, only: %i[update create]
   resources :followed_articles, only: [:index]

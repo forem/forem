@@ -25,14 +25,6 @@ module Api
         render json: { reaction: @reaction.to_json }
       end
 
-      def onboarding
-        verify_authenticity_token
-        reactable_ids = JSON.parse(params[:articles]).map { |article| article["id"] }
-        reactable_ids.each do |article_id|
-          Reactions::CreateWorker.perform_async(current_user.id, article_id, "Article", "readinglist")
-        end
-      end
-
       private
 
       def load_reaction_user

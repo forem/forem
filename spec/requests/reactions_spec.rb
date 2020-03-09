@@ -194,4 +194,27 @@ RSpec.describe "Reactions", type: :request do
       end
     end
   end
+
+  describe "POST /reactions/onboarding" do
+    let(:params) { { articles: [{ id: article.id }].to_json } }
+
+    context "when not signed in" do
+      it "responds with unauthorized" do
+        post onboarding_reactions_path, params: params
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when signed in" do
+      it "enqueues the Reactions::CreateWorker" do
+        sign_in user
+
+        sidekiq_assert_enqueued_jobs(1, only: Reactions::CreateWorker) do
+          post onboarding_reactions_path, params: params
+        end
+
+        expect(response).to have_http_status(:no_content)
+      end
+    end
+  end
 end
