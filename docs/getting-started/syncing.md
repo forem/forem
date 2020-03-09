@@ -59,7 +59,7 @@ Rebase from upstream once again:
 
 ```shell
 git checkout master
-git pull upstream master
+git pull --rebase upstream master
 ```
 
 Checkout your feature branch locally and merge master back into your branch:
