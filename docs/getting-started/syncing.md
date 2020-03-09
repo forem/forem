@@ -50,6 +50,37 @@ git push origin master --force
 
 This will overwrite the `master` branch of your fork.
 
+## Keeping your branch up to date
+
+Sometimes, your forked branch may get out of date. To get it up to date it,
+carry out the following steps:
+
+Rebase from upstream once again:
+
+```shell
+git checkout master
+git pull --rebase upstream master
+```
+
+Checkout your feature branch locally and merge master back into your branch:
+
+```shell
+git checkout <feature-branch-name>
+git merge master
+```
+
+Merge any conflicts in editor if necessary:
+
+```shell
+git commit -m "Fix merge conflicts"
+```
+
+Push the changes back to your origin feature branch:
+
+```shell
+git push origin <feature-branch-name>
+```
+
 ## Additional resources
 
 - [Syncing a fork](https://help.github.com/articles/syncing-a-fork/)
