@@ -147,9 +147,9 @@ RSpec.describe Articles::Feed, type: :service do
     end
   end
 
-  describe "#mix_default_and_more_random" do
+  describe "#mix_default_and_more_random_experiment" do
     let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
-    let(:stories) { feed.mix_default_and_more_random }
+    let(:stories) { feed.mix_default_and_more_random_experiment }
 
     it "includes stories" do
       expect(stories).to include(old_story)
@@ -157,9 +157,9 @@ RSpec.describe Articles::Feed, type: :service do
     end
   end
 
-  describe "#more_tag_weight" do
+  describe "#more_tag_weight_experiment" do
     let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
-    let(:stories) { feed.more_tag_weight }
+    let(:stories) { feed.more_tag_weight_experiment }
 
     it "includes stories" do
       expect(stories).to include(old_story)
@@ -167,13 +167,32 @@ RSpec.describe Articles::Feed, type: :service do
     end
   end
 
-  describe "#more_tag_weight_more_random" do
+  describe "#more_tag_weight_more_random_experiment" do
     let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
-    let(:stories) { feed.more_tag_weight_more_random }
+    let(:stories) { feed.more_tag_weight_more_random_experiment }
 
     it "includes stories" do
       expect(stories).to include(old_story)
       expect(stories).to include(new_story)
+    end
+  end
+
+  describe "#more_comments_experiment" do
+    let(:article_with_one_comment) { create(:article) }
+    let(:article_with_five_comments) { create(:article) }
+    let(:stories) { feed.more_comments_experiment }
+
+    before do
+      create(:comment, user: user, commentable: article_with_one_comment)
+      create_list(:comment, 5, user: user, commentable: article_with_five_comments)
+      article_with_one_comment.update_score
+      article_with_five_comments.update_score
+      article_with_one_comment.reload
+      article_with_five_comments.reload
+    end
+
+    it "ranks articles with more comments higher" do
+      expect(stories[0]).to eq article_with_five_comments
     end
   end
 
@@ -346,6 +365,47 @@ RSpec.describe Articles::Feed, type: :service do
 
       it "uses a value of 5 for user experience level" do
         expect(feed.score_experience_level(article)).to eq(-2)
+      end
+    end
+  end
+
+  describe "#score_comments" do
+    let(:article_with_one_comment) { create(:article) }
+    let(:article_with_five_comments) { create(:article) }
+
+    before do
+      create(:comment, user: user, commentable: article_with_one_comment)
+      create_list(:comment, 5, user: user, commentable: article_with_five_comments)
+      article_with_one_comment.update_score
+      article_with_five_comments.update_score
+      article_with_one_comment.reload
+      article_with_five_comments.reload
+    end
+
+    context "when comment_weight is default of 0" do
+      it "returns 0 for uncommented articles" do
+        expect(feed.score_comments(article)).to eq(0)
+      end
+
+      it "returns 0 for articles with comments" do
+        expect(article_with_five_comments.comments_count).to eq(5)
+        expect(feed.score_comments(article_with_five_comments)).to eq(0)
+      end
+    end
+
+    context "when comment_weight is higher than 0" do
+      before { feed.instance_variable_set(:@comment_weight, 2) }
+
+      it "returns 0 for uncommented articles" do
+        expect(feed.score_comments(article)).to eq(0)
+      end
+
+      it "returns a non-zero score for commented upon articles" do
+        expect(feed.score_comments(article_with_one_comment)).to be > 0
+      end
+
+      it "scores article with more comments high than others" do
+        expect(feed.score_comments(article_with_five_comments)).to be > feed.score_comments(article_with_one_comment)
       end
     end
   end

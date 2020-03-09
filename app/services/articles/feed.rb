@@ -9,6 +9,7 @@ module Articles
       @tag = tag
       @randomness = 3 # default number for randomly adjusting feed
       @tag_weight = 1 # default weight tags play in rankings
+      @comment_weight = 0 # default weight comments play in rankings
     end
 
     def self.find_featured_story(stories)
@@ -62,13 +63,13 @@ module Articles
     end
 
     # Test variation: tags make bigger impact
-    def more_tag_weight
+    def more_tag_weight_experiment
       @tag_weight = 2
       _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
       stories
     end
 
-    def more_tag_weight_more_random
+    def more_tag_weight_more_random_experiment
       @tag_weight = 2
       @randomness = 7
       _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
@@ -76,12 +77,19 @@ module Articles
     end
 
     # Test variation: Base half the time, more random other half. Varies on impressions.
-    def mix_default_and_more_random
+    def mix_default_and_more_random_experiment
       if rand(2) == 1
         default_home_feed(user_signed_in: true)
       else
         default_home_feed_with_more_randomness
       end
+    end
+
+    # Test variation: the more comments a post has, the higher it's rated!
+    def more_comments_experiment
+      @comment_weight = 2
+      _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
+      stories
     end
 
     def rank_and_sort_articles(articles)
@@ -101,6 +109,7 @@ module Articles
       article_points += score_randomness
       article_points += score_language(article)
       article_points += score_experience_level(article)
+      article_points += score_comments(article)
       article_points
     end
 
@@ -131,6 +140,10 @@ module Articles
 
     def score_experience_level(article)
       - ((article.experience_level_rating - (@user&.experience_level || 5).abs) / 2)
+    end
+
+    def score_comments(article)
+      article.comments_count * @comment_weight
     end
 
     def globally_hot_articles(user_signed_in)
