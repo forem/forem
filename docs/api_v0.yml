@@ -1,4 +1,4 @@
-openapi: "3.0.2"
+openapi: "3.0.3"
 info:
   title: DEV API (beta)
   description: |
@@ -301,7 +301,7 @@ components:
                 `cover_image` is the main image of the article
 
                 *If the markdown contains a front matter, it will take precedence
-                on the equivalent params given in the JSON payload.*
+                on the equivalent params given in the payload.*
               type: string
             published:
               description: |
@@ -365,7 +365,7 @@ components:
                 `cover_image` is the main image of the article
 
                 *If the markdown contains a front matter, it will take precedence
-                on the equivalent params given in the JSON payload.*
+                on the equivalent params given in the payload.*
               type: string
             published:
               description: |
@@ -465,6 +465,9 @@ components:
           description: Crossposting or published date time
           type: string
           format: date-time
+        body_markdown:
+          description: The body of the article in Markdown format
+          type: string
         user:
           $ref: "#/components/schemas/SharedUser"
         organization:
@@ -1350,7 +1353,7 @@ paths:
             format: int32
           example: 99
       responses:
-        200:
+        "200":
           description: A list of articles
           content:
             application/json:
@@ -1404,7 +1407,7 @@ paths:
                 $ref: "#/components/examples/ArticleCreateOrganization"
 
       responses:
-        201:
+        "201":
           description: A newly created article
           content:
             application/json:
@@ -1419,7 +1422,7 @@ paths:
               schema:
                 type: string
                 format: url
-        400:
+        "400":
           description: BadRequest
           content:
             application/json:
@@ -1428,7 +1431,7 @@ paths:
               examples:
                 error-bad-request:
                   $ref: "#/components/examples/ErrorBadRequest"
-        401:
+        "401":
           description: Unauthorized
           content:
             application/json:
@@ -1437,7 +1440,7 @@ paths:
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        422:
+        "422":
           description: Unprocessable Entity
           content:
             application/json:
@@ -1484,7 +1487,7 @@ paths:
             format: int32
           example: 150589
       responses:
-        200:
+        "200":
           description: An article
           content:
             application/json:
@@ -1493,7 +1496,7 @@ paths:
               examples:
                 article-success:
                   $ref: "#/components/examples/ArticleShow"
-        404:
+        "404":
           description: Resource not found
           content:
             application/json:
@@ -1555,42 +1558,38 @@ paths:
               article-update-organization:
                 $ref: "#/components/examples/ArticleCreateOrganization"
       responses:
-        200:
+        "200":
           description: The updated article
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/ArticleShow"
               examples:
                 article-success:
                   $ref: "#/components/examples/ArticleShow"
-        400:
+        "400":
           description: BadRequest
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-bad-request:
                   $ref: "#/components/examples/ErrorBadRequest"
-        401:
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        422:
+        "422":
           description: Unprocessable Entity
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unprocessable-entity:
@@ -1642,7 +1641,7 @@ paths:
             format: int32
           example: 30
       responses:
-        200:
+        "200":
           description: A list of published articles
           content:
             application/json:
@@ -1694,7 +1693,7 @@ paths:
             format: int32
           example: 30
       responses:
-        200:
+        "200":
           description: A list of published articles
           content:
             application/json:
@@ -1746,7 +1745,7 @@ paths:
             format: int32
           example: 30
       responses:
-        200:
+        "200":
           description: A list of articles
           content:
             application/json:
@@ -1800,7 +1799,7 @@ paths:
             format: int32
           example: 30
       responses:
-        200:
+        "200":
           description: A list of articles
           content:
             application/json:
@@ -1838,7 +1837,7 @@ paths:
             format: int32
           example: 270180
       responses:
-        200:
+        "200":
           description: A list of threads of comments
           content:
             application/json:
@@ -1853,7 +1852,7 @@ paths:
                   $ref: "#/components/examples/CommentsDeleted"
                 comments-success-hidden:
                   $ref: "#/components/examples/CommentsHidden"
-        404:
+        "404":
           description: Resource not found
           content:
             application/json:
@@ -1891,7 +1890,7 @@ paths:
             type: string
           example: m35m
       responses:
-        200:
+        "200":
           description: A comment and its descendants
           content:
             application/json:
@@ -1904,7 +1903,7 @@ paths:
                   $ref: "#/components/examples/CommentDeleted"
                 comments-success-hidden:
                   $ref: "#/components/examples/CommentHidden"
-        404:
+        "404":
           description: Resource not found
           content:
             application/json:
@@ -1960,7 +1959,7 @@ paths:
             type: string
           example: cfp
       responses:
-        200:
+        "200":
           description: A list of listings
           content:
             application/json:
@@ -2009,7 +2008,7 @@ paths:
                 $ref: "#/components/examples/ListingCreateOrganization"
 
       responses:
-        201:
+        "201":
           description: A newly created Listing
           content:
             application/json:
@@ -2018,7 +2017,7 @@ paths:
               examples:
                 article-success:
                   $ref: "#/components/examples/Listing"
-        400:
+        "400":
           description: BadRequest
           content:
             application/json:
@@ -2027,7 +2026,7 @@ paths:
               examples:
                 error-bad-request:
                   $ref: "#/components/examples/ErrorBadRequest"
-        401:
+        "401":
           description: Unauthorized
           content:
             application/json:
@@ -2036,7 +2035,7 @@ paths:
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        402:
+        "402":
           description: PaymentRequired
           content:
             application/json:
@@ -2045,7 +2044,7 @@ paths:
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorPaymentRequired"
-        422:
+        "422":
           description: Unprocessable Entity
           content:
             application/json:
@@ -2119,7 +2118,7 @@ paths:
             format: int32
           example: 30
       responses:
-        200:
+        "200":
           description: A list of listings
           content:
             application/json:
@@ -2158,7 +2157,7 @@ paths:
             format: int32
           example: 1
       responses:
-        200:
+        "200":
           description: A listing
           content:
             application/json:
@@ -2167,7 +2166,7 @@ paths:
               examples:
                 article-success:
                   $ref: "#/components/examples/Listing"
-        404:
+        "404":
           description: Resource not found
           content:
             application/json:
@@ -2228,52 +2227,47 @@ paths:
               listing-update:
                 $ref: "#/components/examples/ListingUpdate"
       responses:
-        200:
+        "200":
           description: The updated article
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/ArticleShow"
               examples:
                 article-success:
                   $ref: "#/components/examples/ArticleShow"
-        400:
+        "400":
           description: BadRequest
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-bad-request:
                   $ref: "#/components/examples/ErrorBadRequest"
-        401:
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        402:
+        "402":
           description: PaymentRequired
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorPaymentRequired"
-        422:
+        "422":
           description: Unprocessable Entity
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unprocessable-entity:
@@ -2311,7 +2305,7 @@ paths:
       tags:
         - webhooks
       responses:
-        200:
+        "200":
           description: A list of webhooks
           content:
             application/json:
@@ -2359,42 +2353,38 @@ paths:
                 $ref: "#/components/examples/WebhookCreate"
 
       responses:
-        201:
+        "201":
           description: A newly created webhook
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/WebhookShow"
               examples:
                 webhook-success:
                   $ref: "#/components/examples/WebhookShow"
-        400:
+        "400":
           description: BadRequest
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-bad-request:
                   $ref: "#/components/examples/ErrorBadRequest"
-        401:
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        422:
+        "422":
           description: Unprocessable Entity
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unprocessable-entity:
@@ -2430,32 +2420,29 @@ paths:
             format: int32
           example: 123
       responses:
-        200:
+        "200":
           description: A webhook endpoint
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/WebhookShow"
               examples:
                 webhook-success:
                   $ref: "#/components/examples/WebhookShow"
-        401:
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 article-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        404:
+        "404":
           description: Resource not found
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 article-not-found:
@@ -2486,9 +2473,9 @@ paths:
             format: int32
           example: 123
       responses:
-        204:
+        "204":
           description: A successful deletion
-        401:
+        "401":
           description: Unauthorized
           content:
             application/json:
@@ -2497,7 +2484,7 @@ paths:
               examples:
                 article-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        404:
+        "404":
           description: Resource not found
           content:
             application/json:
