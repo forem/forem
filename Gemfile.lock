@@ -453,6 +453,8 @@ GEM
       activerecord
       kaminari-core (= 1.2.0)
     kaminari-core (1.2.0)
+    katex (0.6.0)
+      execjs (~> 2.7)
     launchy (2.5.0)
       addressable (~> 2.7)
     libhoney (1.14.4)
@@ -925,6 +927,7 @@ DEPENDENCIES
   jbuilder (~> 2.10)
   jquery-rails (~> 4.3)
   kaminari (~> 1.2)
+  katex (~> 0.6.0)
   launchy (~> 2.5)
   libhoney (~> 1.14)
   liquid (~> 4.0)
