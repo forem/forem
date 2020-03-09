@@ -137,9 +137,9 @@ RSpec.describe Articles::Feed, type: :service do
     end
   end
 
-  describe "#default_home_feed_with_more_randomness" do
+  describe "#default_home_feed_with_more_randomness_experiment" do
     let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
-    let(:stories) { feed.default_home_feed_with_more_randomness }
+    let(:stories) { feed.default_home_feed_with_more_randomness_experiment }
 
     it "includes stories" do
       expect(stories).to include(old_story)
