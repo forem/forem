@@ -88,7 +88,7 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
         expect(response.parsed_body.map { |pe| pe["id"] }).to eq([pe1.id])
       end
 
-      it "returns not found if the episode belongs to an unpiblished podcast" do
+      it "returns not found if the episode belongs to an unpublished podcast" do
         unavailable_podcast = create(:podcast, published: false)
         pe = create(:podcast_episode, podcast: unavailable_podcast)
 
