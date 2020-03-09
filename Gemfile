@@ -58,6 +58,7 @@ gem "inline_svg", "~> 1.7" # Embed SVG documents in your Rails views and style t
 gem "jbuilder", "~> 2.10" # Create JSON structures via a Builder-style DSL
 gem "jquery-rails", "~> 4.3" #  A gem to automate using jQuery with Rails
 gem "kaminari", "~> 1.2" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
+gem "katex", "~> 0.6.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
 gem "libhoney", "~> 1.14" # Ruby gem for sending data to Honeycomb
 gem "liquid", "~> 4.0" # A secure, non-evaling end user template engine with aesthetic markup
 gem "nokogiri", "~> 1.10" # HTML, XML, SAX, and Reader parser
