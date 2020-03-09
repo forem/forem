@@ -8,7 +8,7 @@ module Api
         @follows = Follow.followable_user(@user.id).
           includes(:follower).
           select(USERS_ATTRIBUTES_FOR_SERIALIZATION).
-          order("created_at DESC").
+          order(created_at: :desc).
           page(params[:page]).
           per(@follows_limit)
       end

@@ -5,6 +5,7 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
   let(:api_secret) { create(:api_secret, user: user) }
   let(:headers) { { "api-key" => api_secret.secret } }
   let(:follower) { create(:user) }
+  let(:follower2) { create(:user) }
 
   describe "GET /api/followers/users" do
     before do
@@ -42,6 +43,29 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
         expect(response_follower["path"]).to eq(follower.path)
         expect(response_follower["username"]).to eq(follower.username)
         expect(response_follower["profile_image"]).to eq(ProfileImage.new(follower).get(width: 60))
+      end
+
+      it "supports pagination" do
+        follower2.follow(user)
+
+        get api_followers_users_path, params: { page: 1, per_page: 1 }, headers: headers
+        expect(response.parsed_body.length).to eq(1)
+
+        get api_followers_users_path, params: { page: 2, per_page: 1 }, headers: headers
+        expect(response.parsed_body.length).to eq(1)
+
+        get api_followers_users_path, params: { page: 3, per_page: 1 }, headers: headers
+        expect(response.parsed_body.length).to eq(0)
+      end
+
+      it "order results for reverse following date" do
+        follower2.follow(user)
+
+        follows = user.followings.order(id: :desc).last(2).pluck(:id)
+
+        get api_followers_users_path, headers: headers
+        result = response.parsed_body.map { |f| f["id"] }
+        expect(result).to eq(follows)
       end
     end
   end
