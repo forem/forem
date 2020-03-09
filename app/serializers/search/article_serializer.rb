@@ -14,9 +14,7 @@ module Search
     attribute :video_duration_string, &:video_duration_in_minutes
     attribute :video_duration_in_minutes, &:video_duration_in_minutes_integer
 
-    attribute :flare_tag do |article|
-      article.flare_tag.to_json
-    end
+    attribute :flare_tag_hash, if: proc { |a| a.flare_tag.present? }, &:flare_tag
 
     attribute :tags do |article|
       article.tags.map do |tag|
