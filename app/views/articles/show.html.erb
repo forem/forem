@@ -220,12 +220,11 @@
 
 <% cache("article-show-scripts", expires_in: 8.hours) do %>
   <script async>
-    <%= TweetTag.script.html_safe %>
-    <%= YoutubeTag.script.html_safe %>
+    <%# we consider these scripts safe for embedding as they come from our code %>
     <%= PodcastTag.script.html_safe %>
-    <%= GistTag.script.html_safe %>
-    <%= RunkitTag.script.html_safe %>
     <%= PollTag.script.html_safe %>
+    <%= RunkitTag.script.html_safe %>
+    <%= TweetTag.script.html_safe %>
   </script>
 <% end %>
 
