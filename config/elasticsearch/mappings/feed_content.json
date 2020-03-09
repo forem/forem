@@ -32,8 +32,19 @@
     "featured_number": {
       "type": "integer"
     },
-    "flare_tag": {
-      "type": "keyword"
+    "flare_tag_hash": {
+      "dynamic": "strict",
+      "properties": {
+        "name": {
+          "type": "keyword"
+        },
+        "bg_color_hex": {
+          "type": "keyword"
+        },
+        "text_color_hex": {
+          "type": "keyword"
+        }
+      }
     },
     "hotness_score": {
       "type": "integer"
