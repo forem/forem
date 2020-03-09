@@ -4,15 +4,6 @@ module Api
       before_action :authenticate_with_api_key_or_current_user!
       before_action -> { limit_per_page(default: 80, max: 1000) }
 
-      def organizations
-        @follows = Follow.followable_organization(@user.organization_ids).
-          includes(:follower).
-          select(ORGANIZATIONS_ATTRIBUTES_FOR_SERIALIZATION).
-          order("created_at DESC").
-          page(params[:page]).
-          per(@follows_limit)
-      end
-
       def users
         @follows = Follow.followable_user(@user.id).
           includes(:follower).
@@ -22,10 +13,9 @@ module Api
           per(@follows_limit)
       end
 
-      ORGANIZATIONS_ATTRIBUTES_FOR_SERIALIZATION = %i[id follower_id follower_type followable_id].freeze
-      private_constant :ORGANIZATIONS_ATTRIBUTES_FOR_SERIALIZATION
-
-      USERS_ATTRIBUTES_FOR_SERIALIZATION = %i[id follower_id follower_type].freeze
+      USERS_ATTRIBUTES_FOR_SERIALIZATION = %i[
+        id follower_id follower_type
+      ].freeze
       private_constant :USERS_ATTRIBUTES_FOR_SERIALIZATION
 
       private
