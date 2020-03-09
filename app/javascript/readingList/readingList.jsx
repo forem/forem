@@ -39,7 +39,9 @@ export class ReadingList extends Component {
     this.state = defaultState({ availableTags, archiving: false, statusView });
 
     // bind and initialize all shared functions
-    this.onSearchBoxType = debounceAction(onSearchBoxType.bind(this));
+    this.onSearchBoxType = debounceAction(onSearchBoxType.bind(this), {
+      leading: true,
+    });
     this.loadNextPage = loadNextPage.bind(this);
     this.performInitialSearch = performInitialSearch.bind(this);
     this.search = search.bind(this);

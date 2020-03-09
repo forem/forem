@@ -34,7 +34,9 @@ class Tags extends Component {
     // 250ms without invoking the function at the leading edge of the timeout
     // NOTE: this seems the best combination of wait time and options to avoid
     // flickering and text replacement during autocomplete
-    this.debouncedTagSearch = debounceAction(this.handleInput.bind(this), 250);
+    this.debouncedTagSearch = debounceAction(this.handleInput.bind(this), {
+      time: 250,
+    });
 
     this.state = {
       selectedIndex: -1,

@@ -106,7 +106,7 @@ export class Listings extends Component {
 
     t.debouncedClassifiedListingSearch = debounceAction(
       this.handleQuery.bind(this),
-      150,
+      { time: 150, config: { leading: true } },
     );
 
     t.setState({
