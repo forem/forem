@@ -136,10 +136,12 @@ RSpec.describe "ChatChannels", type: :request do
   describe "PUT /chat_channels/:id" do
     it "updates channel for valid user" do
       user.add_role(:super_admin)
+      chat_channel.chat_channel_memberships.where(user_id: user.id).update(role: "mod")
       put "/chat_channels/#{chat_channel.id}",
           params: { chat_channel: { channel_name: "Hello Channel", slug: "hello-channelly" } },
           headers: { HTTP_ACCEPT: "application/json" }
       expect(ChatChannel.last.slug).to eq("hello-channelly")
+      expect(response).to(redirect_to("/chat_channel_memberships/#{chat_channel.chat_channel_memberships.where(user_id: user.id).last.id}/edit"))
     end
 
     it "dissallows invalid users" do
@@ -153,10 +155,11 @@ RSpec.describe "ChatChannels", type: :request do
     it "returns errors if channel is invalid" do
       # slug should be taken
       user.add_role(:super_admin)
+      chat_channel.chat_channel_memberships.where(user_id: user.id).update(role: "mod")
       put "/chat_channels/#{chat_channel.id}",
           params: { chat_channel: { channel_name: "HEy hey hoho", slug: invite_channel.slug } },
           headers: { HTTP_ACCEPT: "application/json" }
-      expect(response.body).to include("Slug has already been taken")
+      expect(response).to(redirect_to("/chat_channel_memberships/#{chat_channel.chat_channel_memberships.where(user_id: user.id).last.id}/edit"))
     end
   end
 
