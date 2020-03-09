@@ -161,7 +161,7 @@ class User < ApplicationRecord
   alias_attribute :positive_reactions_count, :reactions_count
 
   scope :dev_account, -> { find_by(id: SiteConfig.staff_user_id) }
-  scope :welcoming_account, -> { find_by(id: ApplicationConfig["WELCOMING_USER_ID"]) }
+  scope :mascot_account, -> { find_by(id: SiteConfig.mascot_user_id) }
 
   scope :with_this_week_comments, lambda { |number|
     includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_these_7_days')::int >= ?", number)
