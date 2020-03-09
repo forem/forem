@@ -8,7 +8,7 @@ info:
 
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
-  version: "0.6.3"
+  version: "0.6.4"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -588,7 +588,7 @@ components:
               type: string
             expires_at:
               description: Date and time of expiration.
-              type: date
+              type: string
               format: date-time
             contact_via_connect:
               description: |
@@ -641,7 +641,7 @@ components:
               type: string
             expires_at:
               description: Date and time of expiration.
-              type: date
+              type: string
               format: date-time
             contact_via_connect:
               description: |
