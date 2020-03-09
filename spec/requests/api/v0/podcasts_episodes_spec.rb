@@ -88,16 +88,16 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
         expect(response.parsed_body.map { |pe| pe["id"] }).to eq([pe1.id])
       end
 
-      it "returns not found if the podcast is unavailable" do
+      it "returns not found if the episode belongs to an unpiblished podcast" do
         unavailable_podcast = create(:podcast, published: false)
-        create(:podcast_episode, podcast: unavailable_podcast)
+        pe = create(:podcast_episode, podcast: unavailable_podcast)
 
-        get api_podcast_episodes_path(username: unavailable_podcast.slug)
+        get api_podcast_episodes_path(username: pe.slug)
 
         expect(response).to have_http_status(:not_found)
       end
 
-      it "returns not found if any of the podcast episodes are unreachable" do
+      it "returns not found if the podcast episode is unreachable" do
         create(:podcast_episode, reachable: false, podcast: podcast)
 
         get api_podcast_episodes_path(username: podcast.slug)
