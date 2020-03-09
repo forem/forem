@@ -81,7 +81,7 @@ module Articles
       if rand(2) == 1
         default_home_feed(user_signed_in: true)
       else
-        default_home_feed_with_more_randomness
+        default_home_feed_with_more_randomness_experiment
       end
     end
 
