@@ -1,5 +1,4 @@
 class ReactionsController < ApplicationController
-  before_action :authenticate_user!, only: [:onboarding]
   before_action :set_cache_control_headers, only: [:index], unless: -> { current_user }
   after_action :verify_authorized
 
@@ -90,15 +89,6 @@ class ReactionsController < ApplicationController
   def cached_user_positive_reactions(user)
     Rails.cache.fetch("cached_user_reactions-#{user.id}-#{user.updated_at}", expires_in: 24.hours) do
       user.reactions.positive
-    end
-  end
-
-  def onboarding
-    skip_authorization
-
-    reactable_ids = JSON.parse(params[:articles]).map { |article| article["id"] }
-    reactable_ids.each do |article_id|
-      Reactions::CreateWorker.perform_async(current_user.id, article_id, "Article", "readinglist")
     end
   end
 
