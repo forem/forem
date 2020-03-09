@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe DataUpdateScript do
+  let(:test_directory) { Rails.root.join("spec/support/fixtures/data_update_scripts") }
+
   it { is_expected.to validate_uniqueness_of(:file_name) }
 
   it "can constantize all script names" do
@@ -18,8 +20,6 @@ RSpec.describe DataUpdateScript do
   end
 
   describe ".load_script_ids" do
-    let(:test_directory) { Rails.root.join("spec/support/fixtures/data_update_scripts") }
-
     before { stub_const "#{described_class}::DIRECTORY", test_directory }
 
     it "creates new DataUpdateScripts from files" do
@@ -42,8 +42,6 @@ RSpec.describe DataUpdateScript do
   end
 
   describe ".scripts_to_run" do
-    let(:test_directory) { Rails.root.join("spec/support/fixtures/data_update_scripts") }
-
     before { stub_const "#{described_class}::DIRECTORY", test_directory }
 
     it "creates new DataUpdateScripts from files" do
@@ -64,16 +62,9 @@ RSpec.describe DataUpdateScript do
   end
 
   describe ".scripts_to_run?" do
-    let(:test_directory) { Rails.root.join("spec/support/fixtures/data_update_scripts") }
-
     before { stub_const "#{described_class}::DIRECTORY", test_directory }
 
     it "returns true for a new set of files" do
-      expect(described_class.scripts_to_run?).to be(true)
-    end
-
-    it "returns true if there is a script on disk but not in the DB" do
-      create(:data_update_script, file_name: "not_the_one_on_disk")
       expect(described_class.scripts_to_run?).to be(true)
     end
 
