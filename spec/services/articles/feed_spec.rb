@@ -149,9 +149,9 @@ RSpec.describe Articles::Feed, type: :service do
     end
   end
 
-  describe "#mix_default_and_more_random" do
+  describe "#mix_default_and_more_random_experiment" do
     let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
-    let(:stories) { feed.mix_default_and_more_random }
+    let(:stories) { feed.mix_default_and_more_random_experiment }
 
     it "includes stories from between 2 and 6 hours ago" do
       expect(stories).not_to include(old_story)
@@ -159,9 +159,9 @@ RSpec.describe Articles::Feed, type: :service do
     end
   end
 
-  describe "#more_tag_weight" do
+  describe "#more_tag_weight_experiment" do
     let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
-    let(:stories) { feed.more_tag_weight }
+    let(:stories) { feed.more_tag_weight_experiment }
 
     it "includes stories from between 2 and 6 hours ago" do
       expect(stories).not_to include(old_story)
@@ -169,9 +169,9 @@ RSpec.describe Articles::Feed, type: :service do
     end
   end
 
-  describe "#more_tag_weight_more_random" do
+  describe "#more_tag_weight_more_random_experiment" do
     let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
-    let(:stories) { feed.more_tag_weight_more_random }
+    let(:stories) { feed.more_tag_weight_more_random_experiment }
 
     it "includes stories from between 2 and 6 hours ago" do
       expect(stories).not_to include(old_story)
@@ -179,10 +179,10 @@ RSpec.describe Articles::Feed, type: :service do
     end
   end
 
-  describe "#more_comments" do
+  describe "#more_comments_experiment" do
     let(:article_with_one_comment) { create(:article) }
     let(:article_with_five_comments) { create(:article) }
-    let(:stories) { feed.more_comments }
+    let(:stories) { feed.more_comments_experiment }
 
     before do
       create(:comment, user: user, commentable: article_with_one_comment)
@@ -194,8 +194,8 @@ RSpec.describe Articles::Feed, type: :service do
     end
 
     it "ranks articles with more comments higher" do
-      expect(stories[0]).to eq article_with_five_comments
-      expect(stories[1]).to eq article_with_one_comment
+      expect(stories[0].id).to eq article_with_five_comments.id
+      expect(stories[1].id).to eq article_with_one_comment.id
     end
   end
 

@@ -61,13 +61,13 @@ module Articles
     end
 
     # Test variation: tags make bigger impact
-    def more_tag_weight
+    def more_tag_weight_experiment
       @tag_weight = 2
       _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
       stories
     end
 
-    def more_tag_weight_more_random
+    def more_tag_weight_more_random_experiment
       @tag_weight = 2
       @randomness = 7
       _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
@@ -75,7 +75,7 @@ module Articles
     end
 
     # Test variation: Base half the time, more random other half. Varies on impressions.
-    def mix_default_and_more_random
+    def mix_default_and_more_random_experiment
       if rand(2) == 1
         default_home_feed(user_signed_in: true)
       else
@@ -84,7 +84,7 @@ module Articles
     end
 
     # Test variation: the more comments a post has, the higher it's rated!
-    def more_comments
+    def more_comments_experiment
       @comment_weight = 2
       _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
       stories
