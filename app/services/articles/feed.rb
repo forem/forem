@@ -56,7 +56,7 @@ module Articles
     end
 
     # Test variation: More random
-    def default_home_feed_with_more_randomness
+    def default_home_feed_with_more_randomness_experiment
       @randomness = 7
       _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
       stories
