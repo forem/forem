@@ -113,11 +113,7 @@ Rails.application.routes.draw do
       resources :chat_channels, only: [:show]
       resources :videos, only: [:index]
       resources :podcast_episodes, only: [:index]
-      resources :reactions, only: [:create] do
-        collection do
-          post "/onboarding", to: "reactions#onboarding"
-        end
-      end
+      resources :reactions, only: [:create]
       resources :users, only: %i[index show] do
         collection do
           get :me
