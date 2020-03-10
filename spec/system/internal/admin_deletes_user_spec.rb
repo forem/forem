@@ -22,9 +22,12 @@ RSpec.describe "Admin deletes user", type: :system do
   it "deletes users when they have no email address" do
     user.update(email: nil)
 
-    click_button "☠️ Fully Delete User & All Activity ☠️"
+    sidekiq_perform_enqueued_jobs do
+      click_button "☠️ Fully Delete User & All Activity ☠️"
+    end
 
     message = "@#{user.username} (email: no email, user_id: #{user.id}) has been fully deleted."
     expect(page).to have_content(message)
+    expect(User.find_by(id: user.id)).to be_nil
   end
 end

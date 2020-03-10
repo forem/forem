@@ -58,7 +58,7 @@ class Internal::UsersController < Internal::ApplicationController
     @user = User.find(params[:id])
     begin
       Moderator::DeleteUser.call(admin: current_user, user: @user, user_params: user_params)
-      flash[:success] = "@#{@user.username} (email: #{@user.email || 'no email'}, user_id: #{@user.id}) has been fully deleted. If requested, old content may have been ghostified. If this is a GDPR delete, delete them from Mailchimp & Google Analytics."
+      flash[:success] = "@#{@user.username} (email: #{@user.email.presence || 'no email'}, user_id: #{@user.id}) has been fully deleted. If requested, old content may have been ghostified. If this is a GDPR delete, delete them from Mailchimp & Google Analytics."
     rescue StandardError => e
       flash[:danger] = e.message
     end
