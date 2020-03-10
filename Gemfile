@@ -50,7 +50,7 @@ gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard a
 gem "gibbon", "~> 3.3" # API wrapper for MailChimp's API
 gem "google-api-client", "~> 0.37" # Client for accessing Google APIs
 gem "honeybadger", "~> 4.5" # Used for tracking application errors
-gem "honeycomb-beeline", "~> 1.3.0" # Monitoring and Observability gem
+gem "honeycomb-beeline", "~> 2.0.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "htmlentities", "~> 4.3", ">= 4.3.4" # A module for encoding and decoding (X)HTML entities
 gem "httparty", "~> 0.18" # Makes http fun! Also, makes consuming restful web services dead easy
@@ -59,7 +59,6 @@ gem "jbuilder", "~> 2.10" # Create JSON structures via a Builder-style DSL
 gem "jquery-rails", "~> 4.3" #  A gem to automate using jQuery with Rails
 gem "kaminari", "~> 1.2" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
 gem "katex", "~> 0.6.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
-gem "libhoney", "~> 1.14" # Ruby gem for sending data to Honeycomb
 gem "liquid", "~> 4.0" # A secure, non-evaling end user template engine with aesthetic markup
 gem "nokogiri", "~> 1.10" # HTML, XML, SAX, and Reader parser
 gem "octokit", "~> 4.16" # Simple wrapper for the GitHub API
