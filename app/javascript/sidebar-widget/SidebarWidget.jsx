@@ -1,5 +1,4 @@
 import { h, Component } from 'preact';
-import Honeybadger from 'honeybadger-js';
 import sendFollowUser from '../src/utils/sendFollowUser';
 import SidebarUser from './sidebarUser';
 
