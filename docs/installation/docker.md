@@ -69,7 +69,7 @@ you want to update that set the `POSTGRES_VERSION` variable in your environment
 and start the container again_
 
 1. run `docker-compose build`
-1. run `docker-compose run web rails db:setup`
+1. run `docker-compose run web bin/setup`
 1. run `docker-compose up`
 1. That's it! Navigate to <http://localhost:3000>
 
