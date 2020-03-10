@@ -354,11 +354,11 @@ RSpec.describe Articles::Feed, type: :service do
 
     context "when user has a further experience level" do
       let(:user) { create(:user, experience_level: 1) }
-      let!(:feed) { described_class.new(user: user, number_of_articles: 100, page: 1) }
 
       it "returns negative of (absolute value of the difference between article and user experience) divided by 2" do
         expect(feed.score_experience_level(article)).to eq(-3)
       end
+
       it "returns  proper negative when fractional" do
         article.experience_level_rating = 8
         expect(feed.score_experience_level(article)).to eq(-3.5)
@@ -367,7 +367,6 @@ RSpec.describe Articles::Feed, type: :service do
 
     context "when user has a closer experience level" do
       let(:user) { create(:user, experience_level: 9) }
-      let!(:feed) { described_class.new(user: user, number_of_articles: 100, page: 1) }
 
       it "returns negative of (absolute value of the difference between article and user experience) divided by 2" do
         expect(feed.score_experience_level(article)).to eq(-1)
@@ -376,7 +375,6 @@ RSpec.describe Articles::Feed, type: :service do
 
     context "when the user does not have an experience level set" do
       let(:user) { create(:user, experience_level: nil) }
-      let!(:feed) { described_class.new(user: user, number_of_articles: 100, page: 1) }
 
       it "uses a value of 5 for user experience level" do
         expect(feed.score_experience_level(article)).to eq(-1)
