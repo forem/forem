@@ -1,9 +1,13 @@
-<% if flash[:settings_notice] %>
+<% if flash[:settings_notice].present? %>
   <div class="notice" id="notice">
     <%= flash[:settings_notice] %>
   </div>
+<% elsif flash[:error].present? %>
+  <div class="notice error-notice" id="notice" style="text-align:center;color:red">
+    ERROR
+    <%= flash[:error] %>
+  </div>
 <% end %>
-
 <div class="user-settings-page">
   <h1><%= @channel.channel_name %></h1>
   <% if @membership.role == "mod" %>

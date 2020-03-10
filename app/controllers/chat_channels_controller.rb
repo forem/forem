@@ -33,8 +33,7 @@ class ChatChannelsController < ApplicationController
     if ChatChannelUpdateService.new(@chat_channel, chat_channel_params).update
       flash[:settings_notice] = "Channel Settings Updated."
     else
-      flash[:settings_notice] = @chat_channel.valid? ? @chat_channel.errors.full_messages.to_sentence :
-        "Channel Settings Updation Failed. Try Again Later."
+      flash[:error] = @chat_channel.errors.full_messages.to_sentence.presence || "Channel Settings Updation Failed. Try Again Later."
     end
     redirect_to "/chat_channel_memberships/#{@chat_channel.mod_memberships.where(user_id: current_user.id).first.id}/edit"
   end
