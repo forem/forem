@@ -29,6 +29,22 @@ RSpec.describe Article, type: :model do
     it { is_expected.to validate_presence_of(:user_id) }
     it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
 
+    describe "#after_commit" do
+      it "on update enqueues job to index article to elasticsearch" do
+        article.save
+        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, article.id]) do
+          article.save
+        end
+      end
+
+      it "on destroy enqueues job to delete article from elasticsearch" do
+        article.save
+        sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, article.id]) do
+          article.destroy
+        end
+      end
+    end
+
     context "when published" do
       before do
         # rubocop:disable RSpec/NamedSubject

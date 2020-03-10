@@ -77,12 +77,10 @@ RSpec.describe Articles::Feed, type: :service do
       let(:featured_story) { result.first }
       let(:stories) { result.second }
 
-      it "only includes stories from less than 6 hours ago" do
-        expect(stories).not_to include(old_story)
-        expect(stories).not_to include(article)
-
-        # Ideally we'd test for hot_story in the stories list, but the random offset selection makes that random
-        expect(featured_story).to eq(hot_story)
+      it "only includes stories" do
+        expect(stories).to include(old_story)
+        expect(stories).to include(article)
+        expect(stories).to include(hot_story)
       end
     end
 
@@ -132,50 +130,69 @@ RSpec.describe Articles::Feed, type: :service do
     context "when user logged in" do
       let(:stories) { feed.default_home_feed(user_signed_in: true) }
 
-      it "includes stories from between 2 and 6 hours ago" do
-        expect(stories).not_to include(old_story)
+      it "includes stories " do
+        expect(stories).to include(old_story)
         expect(stories).to include(new_story)
       end
     end
   end
 
-  describe "#default_home_feed_with_more_randomness" do
+  describe "#default_home_feed_with_more_randomness_experiment" do
     let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
-    let(:stories) { feed.default_home_feed_with_more_randomness }
+    let(:stories) { feed.default_home_feed_with_more_randomness_experiment }
 
-    it "includes stories from between 2 and 6 hours ago" do
-      expect(stories).not_to include(old_story)
+    it "includes stories" do
+      expect(stories).to include(old_story)
       expect(stories).to include(new_story)
     end
   end
 
-  describe "#mix_default_and_more_random" do
+  describe "#mix_default_and_more_random_experiment" do
     let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
-    let(:stories) { feed.mix_default_and_more_random }
+    let(:stories) { feed.mix_default_and_more_random_experiment }
 
-    it "includes stories from between 2 and 6 hours ago" do
-      expect(stories).not_to include(old_story)
+    it "includes stories" do
+      expect(stories).to include(old_story)
       expect(stories).to include(new_story)
     end
   end
 
-  describe "#more_tag_weight" do
+  describe "#more_tag_weight_experiment" do
     let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
-    let(:stories) { feed.more_tag_weight }
+    let(:stories) { feed.more_tag_weight_experiment }
 
-    it "includes stories from between 2 and 6 hours ago" do
-      expect(stories).not_to include(old_story)
+    it "includes stories" do
+      expect(stories).to include(old_story)
       expect(stories).to include(new_story)
     end
   end
 
-  describe "#more_tag_weight_more_random" do
+  describe "#more_tag_weight_more_random_experiment" do
     let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
-    let(:stories) { feed.more_tag_weight_more_random }
+    let(:stories) { feed.more_tag_weight_more_random_experiment }
 
-    it "includes stories from between 2 and 6 hours ago" do
-      expect(stories).not_to include(old_story)
+    it "includes stories" do
+      expect(stories).to include(old_story)
       expect(stories).to include(new_story)
+    end
+  end
+
+  describe "#more_comments_experiment" do
+    let(:article_with_one_comment) { create(:article) }
+    let(:article_with_five_comments) { create(:article) }
+    let(:stories) { feed.more_comments_experiment }
+
+    before do
+      create(:comment, user: user, commentable: article_with_one_comment)
+      create_list(:comment, 5, user: user, commentable: article_with_five_comments)
+      article_with_one_comment.update_score
+      article_with_five_comments.update_score
+      article_with_one_comment.reload
+      article_with_five_comments.reload
+    end
+
+    it "ranks articles with more comments higher" do
+      expect(stories[0]).to eq article_with_five_comments
     end
   end
 
@@ -352,6 +369,47 @@ RSpec.describe Articles::Feed, type: :service do
     end
   end
 
+  describe "#score_comments" do
+    let(:article_with_one_comment) { create(:article) }
+    let(:article_with_five_comments) { create(:article) }
+
+    before do
+      create(:comment, user: user, commentable: article_with_one_comment)
+      create_list(:comment, 5, user: user, commentable: article_with_five_comments)
+      article_with_one_comment.update_score
+      article_with_five_comments.update_score
+      article_with_one_comment.reload
+      article_with_five_comments.reload
+    end
+
+    context "when comment_weight is default of 0" do
+      it "returns 0 for uncommented articles" do
+        expect(feed.score_comments(article)).to eq(0)
+      end
+
+      it "returns 0 for articles with comments" do
+        expect(article_with_five_comments.comments_count).to eq(5)
+        expect(feed.score_comments(article_with_five_comments)).to eq(0)
+      end
+    end
+
+    context "when comment_weight is higher than 0" do
+      before { feed.instance_variable_set(:@comment_weight, 2) }
+
+      it "returns 0 for uncommented articles" do
+        expect(feed.score_comments(article)).to eq(0)
+      end
+
+      it "returns a non-zero score for commented upon articles" do
+        expect(feed.score_comments(article_with_one_comment)).to be > 0
+      end
+
+      it "scores article with more comments high than others" do
+        expect(feed.score_comments(article_with_five_comments)).to be > feed.score_comments(article_with_one_comment)
+      end
+    end
+  end
+
   describe "#rank_and_sort_articles" do
     let(:article1) { create(:article) }
     let(:article2) { create(:article) }
@@ -372,6 +430,52 @@ RSpec.describe Articles::Feed, type: :service do
       allow(feed).to receive(:score_single_article).with(article3).and_return(3)
 
       expect(feed.rank_and_sort_articles(articles)).to eq [article3, article2, article1]
+    end
+  end
+
+  describe ".globally_hot_articles" do
+    let!(:recently_published_article) { create(:article, published_at: 3.hours.ago) }
+    let(:globally_hot_articles) { feed.globally_hot_articles(true).second }
+
+    it "returns hot stories" do
+      expect(globally_hot_articles).not_to be_empty
+    end
+
+    it "returns recent stories" do
+      expect(globally_hot_articles).to include(recently_published_article)
+    end
+
+    context "when low number of hot stories and no recently published articles" do
+      before do
+        Article.delete_all
+        create(:article, hotness_score: 1000, score: 1000, published_at: 3.hours.ago)
+      end
+
+      # This test handles a situation in which there are a low number of hot or new stories, and the user is logged in.
+      # Previously the offest factor could result in zero stories being returned sometimes.
+
+      # We manually called `feed.globally_hot_articles` here because `let` caches it!
+      it "still returns articles" do
+        empty_feed = false
+        20.times do
+          if feed.globally_hot_articles(true).second.empty?
+            empty_feed = true
+            break
+          end
+        end
+        expect(empty_feed).to be false
+      end
+    end
+
+    context "when now hot stories and no recently published articles" do
+      before do
+        Article.delete_all
+        create(:article, hotness_score: 0, score: 0, published_at: 3.days.ago)
+      end
+
+      it "still returns articles" do
+        expect(globally_hot_articles).not_to be_empty
+      end
     end
   end
 

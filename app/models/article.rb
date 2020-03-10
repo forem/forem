@@ -4,6 +4,10 @@ class Article < ApplicationRecord
   include AlgoliaSearch
   include Storext.model
   include Reactable
+  include Searchable
+
+  SEARCH_SERIALIZER = Search::ArticleSerializer
+  SEARCH_CLASS = Search::FeedContent
 
   acts_as_taggable_on :tags
   resourcify
@@ -71,6 +75,8 @@ class Article < ApplicationRecord
 
   after_update_commit :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
   after_commit :async_score_calc, :update_main_image_background_hex, :touch_collection
+  after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :remove_from_elasticsearch, on: [:destroy]
 
   before_destroy :before_destroy_actions, prepend: true
 
@@ -382,13 +388,17 @@ class Article < ApplicationRecord
   end
 
   def video_duration_in_minutes
-    minutes = (video_duration_in_seconds.to_i / 60) % 60
+    minutes = video_duration_in_minutes_integer
     seconds = video_duration_in_seconds.to_i % 60
     seconds = "0#{seconds}" if seconds.to_s.size == 1
 
     hours = (video_duration_in_seconds.to_i / 3600)
     minutes = "0#{minutes}" if hours.positive? && minutes < 10
     hours < 1 ? "#{minutes}:#{seconds}" : "#{hours}:#{minutes}:#{seconds}"
+  end
+
+  def video_duration_in_minutes_integer
+    (video_duration_in_seconds.to_i / 60) % 60
   end
 
   # keep public because it's used in algolia jobs

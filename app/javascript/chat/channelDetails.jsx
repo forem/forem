@@ -155,10 +155,10 @@ class ChannelDetails extends Component {
             <div className="channeldetails__searchedusers">
               <a href={user.path} target="_blank" rel="noopener noreferrer">
                 <img src={user.user.profile_image_90} alt="profile_image" />
-@
+                @
                 {user.user.username}
                 {' '}
--
+                -
                 {/* prettier-ignore */} 
                 {' '}
                 {user.title}
@@ -180,7 +180,7 @@ class ChannelDetails extends Component {
             @
             {user.username}
             {' '}
-- 
+            - 
             {' '}
             {user.name}
           </a>
