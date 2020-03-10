@@ -4,12 +4,19 @@ module Search
     class << self
       # adapted from https://api.rubyonrails.org/classes/Module.html#method-i-delegate_missing_to
       def method_missing(method, *args, &block)
-        if target.respond_to?(method, false)
+        return super unless target.respond_to?(method, false)
+
+        # define for re-use
+        self.class.define_method(method) do |*new_args, &new_block|
           request do
-            target.public_send(method, *args, &block)
+            target.public_send(method, *new_args, &new_block)
           end
-        else
-          super
+        end
+
+        # call the original method, this will only be called the first time
+        # as in subsequent calls, the newly defined method will prevail
+        request do
+          target.public_send(method, *args, &block)
         end
       end
 
