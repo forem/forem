@@ -806,6 +806,34 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(article.body_markdown).to eq(body_markdown)
       end
 
+      it "updates the main_image to be empty if given an empty cover_image" do
+        image = Faker::Avatar.image
+        article.update(main_image: image)
+        expect(article.main_image).to eq(image)
+
+        body_markdown = file_fixture("article_published_empty_cover_image.txt").read
+        put_article(
+          title: Faker::Book.title,
+          body_markdown: body_markdown,
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.main_image).to eq(nil)
+      end
+
+      it "updates the main_image to be empty if given a different cover_image" do
+        image = Faker::Avatar.image
+        article.update(main_image: image)
+        expect(article.main_image).to eq(image)
+
+        body_markdown = file_fixture("article_published_cover_image.txt").read
+        put_article(
+          title: Faker::Book.title,
+          body_markdown: body_markdown,
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.main_image).to eq("https://dummyimage.com/100x100")
+      end
+
       it "updates the tags" do
         expect do
           put_article(

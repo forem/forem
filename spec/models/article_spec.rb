@@ -263,6 +263,52 @@ RSpec.describe Article, type: :model do
         expect(test_article.body_text).to eq(sanitized_html)
       end
     end
+
+    context "when a main_image does not already exist" do
+      let!(:article_without_main_image) { build(:article, with_main_image: false) }
+      let(:image) { Faker::Avatar.image }
+
+      before { article_without_main_image.validate }
+
+      it "can parse the main_image" do
+        expect(article_without_main_image.main_image).to eq(nil)
+      end
+
+      it "can parse the main_image when added" do
+        article_without_main_image.main_image = image
+        article_without_main_image.validate
+
+        expect(article_without_main_image.main_image).to eq(image)
+      end
+    end
+
+    context "when a main_image exists" do
+      # The `with_main_image` flag is the factory default, but we're being explicit here.
+      let!(:article_with_main_image) { build(:article, with_main_image: true) }
+      let(:image) { article_with_main_image.main_image }
+
+      before { article_with_main_image.validate }
+
+      it "can parse the main_image" do
+        expect(article_with_main_image.main_image).to eq(image)
+      end
+
+      it "can parse the main_image when removed" do
+        article_with_main_image.main_image = nil
+        article_with_main_image.validate
+
+        expect(article_with_main_image.main_image).to eq(nil)
+      end
+
+      it "can parse the main_image when changed" do
+        expect(article_with_main_image.main_image).to eq(image)
+
+        other_image = Faker::Avatar.image
+        article_with_main_image.main_image = other_image
+        article_with_main_image.validate
+        expect(article_with_main_image.main_image).to eq(other_image)
+      end
+    end
   end
 
   describe "#class_name" do
