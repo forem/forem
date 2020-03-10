@@ -4,6 +4,12 @@ require 'fileutils'
 # path to your application root.
 APP_ROOT = File.expand_path('..', __dir__)
 
+DB = if ENV['DATABASE_URL'].to_s.empty?
+       'PracticalDeveloper_development'
+     else
+       ENV['DATABASE_URL']
+     end
+
 def system!(*args)
   system(*args) || abort("\n== Command #{args} failed ==")
 end
@@ -28,7 +34,8 @@ FileUtils.chdir APP_ROOT do
   end
 
   puts "\n== Preparing database =="
-  db_exists = system('psql -o /dev/null -q -n -c "select 1" PracticalDeveloper_development')
+  command = "psql -o /dev/null -q -n -c 'select 1' #{DB}"
+  db_exists = system(command)
   if db_exists
     system! 'bin/rails db:migrate'
   else
