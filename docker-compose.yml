@@ -34,6 +34,10 @@ services:
       ELASTICSEARCH_URL: http://elasticsearch:9200
   db:
     image: postgres:${POSTGRES_VERSION:-9.6.15-alpine}
+    environment:
+      POSTGRES_USER: devto
+      POSTGRES_PASSWORD: devto
+      POSTGRES_DB: PracticalDeveloper_development
     ports:
       - "5432:5432"
   redis:
