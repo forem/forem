@@ -139,7 +139,7 @@ module Articles
     end
 
     def score_experience_level(article)
-      - ((article.experience_level_rating - (@user&.experience_level || 5).abs) / 2)
+      - ((article.experience_level_rating - (@user&.experience_level || 5)).abs / 2)
     end
 
     def score_comments(article)
