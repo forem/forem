@@ -22,7 +22,7 @@ module Search
 
       # adapted from https://api.rubyonrails.org/classes/Module.html#method-i-delegate_missing_to
       def respond_to_missing?(method, _include_all = false)
-        respond_to?(method, false) || target.respond_to?(method, false) || super
+        target.respond_to?(method, false) || super
       end
 
       private
