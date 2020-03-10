@@ -1,7 +1,3 @@
-<% flash.each do |type, message| %>
-  <div class="alert alert-<%= type %>"><%= message %></div>
-<% end %>
-
 <% if @comment.errors.any? %>
   <div id="error_explanation">
     <h2><%= pluralize(@comment.errors.count, "error") %> prohibited this comment from being saved:</h2>
