@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import Honeybadger from 'honeybadger-js';
 import sendFollowUser from '../src/utils/sendFollowUser';
 import SidebarUser from './sidebarUser';
 
@@ -40,8 +41,9 @@ class SidebarWidget extends Component {
       .then(json => {
         this.setState({ suggestedUsers: json });
       })
-      .catch(() => {
+      .catch(error => {
         this.setState({ suggestedUsers: [] });
+        Honeybadger.notify(error);
       });
   }
 
