@@ -38,7 +38,7 @@ Rails.application.routes.draw do
   namespace :internal do
     get "/", to: redirect("/internal/articles")
 
-    authenticate :user, ->(user) { user.has_role?(:super_admin) } do
+    authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
       mount Blazer::Engine, at: "blazer"
     end
 
