@@ -9,7 +9,6 @@ class RatingVotesController < ApplicationController
     rating_vote.rating = rating_vote_params[:rating].to_f
     rating_vote.group = rating_vote_params[:group]
     if rating_vote.save
-      rating_vote.assign_article_rating
       redirect_back(fallback_location: "/mod")
     else
       render json: { result: "Not Upserted Successfully" }
