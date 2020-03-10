@@ -165,6 +165,27 @@ RSpec.describe "Reactions", type: :request do
       end
     end
 
+    context "when creating readinglist" do
+      before do
+        user.update_column(:experience_level, 8)
+        sign_in user
+        post "/reactions", params: {
+          reactable_id: article.id,
+          reactable_type: "Article",
+          category: "readinglist"
+        }
+      end
+
+      it "creates reaction" do
+        expect(Reaction.last.reactable_id).to eq(article.id)
+      end
+
+      it "creates rating vote" do
+        expect(RatingVote.last.context).to eq("readinglist_reaction")
+        expect(RatingVote.last.rating).to be(8.0)
+      end
+    end
+
     context "when vomiting on a user" do
       before do
         sign_in trusted_user
