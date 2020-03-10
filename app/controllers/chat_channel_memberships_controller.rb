@@ -7,8 +7,7 @@ class ChatChannelMembershipsController < ApplicationController
   end
 
   def find_by_chat_channel_id
-    @membership = ChatChannelMembership.where(chat_channel_id: params[:chat_channel_id], user_id: current_user.id).first
-    raise ActiveRecord::RecordNotFound if @membership.blank?
+    @membership = ChatChannelMembership.where(chat_channel_id: params[:chat_channel_id], user_id: current_user.id).first!
     authorize @membership
     render json: @membership.to_json(
       only: %i[id status viewable_by chat_channel_id last_opened_at],
