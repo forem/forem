@@ -41,7 +41,8 @@ class SidebarWidget extends Component {
         this.setState({ suggestedUsers: json });
       })
       .catch(error => {
-        console.log(error);
+        this.setState({ suggestedUsers: [] });
+        Honeybadger.notify(error);
       });
   }
 
