@@ -30,9 +30,9 @@ FileUtils.chdir APP_ROOT do
   puts "\n== Preparing database =="
   db_exists = system('psql -o /dev/null -q -n -c "select 1" PracticalDeveloper_development')
   if db_exists
-    puts 'bin/rails db:migrate'
+    system! 'bin/rails db:migrate'
   else
-    puts 'bin/rails db:setup'
+    system! 'bin/rails db:setup'
   end
 
   puts "\n== Preparing Elasticsearch =="
