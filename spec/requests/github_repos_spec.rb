@@ -135,7 +135,7 @@ RSpec.describe "GithubRepos", type: :request do
       expect(response.parsed_body["featured"]).to be(true)
     end
 
-    it "returns false for a repo removed from featured" do
+    it "allows the repo to be unfeatured" do
       github_repo[:featured] = false
       params = { github_repo: github_repo.to_json }
       post update_or_create_github_repos_path(params), headers: headers
