@@ -55,6 +55,7 @@ Rails.application.routes.draw do
     resources :permissions, only: %i[index]
     resources :podcasts, only: %i[index edit update destroy] do
       member do
+        post :fetch
         post :add_admin
         delete :remove_admin
       end

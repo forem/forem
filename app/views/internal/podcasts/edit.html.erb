@@ -5,6 +5,23 @@
         <h2 class="m-0"><%= link_to @podcast.title, "/#{@podcast.slug}" %></h2>
       </div>
       <div class="card-body">
+        <h3>Fetch episodes</h3>
+        <%= form_with(url: fetch_internal_podcast_path(@podcast.id), method: :post) do %>
+          <div class="form-group">
+            <%= check_box_tag :force %>
+            <%= label_tag :force %>
+            <small>(When checked, the existing episodes' urls will be re-checked and episodes reachable and https fields will be updated accordingly if needed.)</small>
+          </div>
+          <div class="form-group">
+            <%= label_tag :limit %>
+            <small>(The number of episodes to fetch. When set to an empty string, last 1_000 episodes will be fetched.)</small>
+            <%= text_field_tag :limit, 5, class: "form-control" %>
+          </div>
+          <%= submit_tag "Fetch episodes", class: "btn btn-primary" %>
+        <% end %>
+      </div>
+      <hr>
+      <div class="card-body">
         <% if @podcast.admins.present? %>
           <h3>Admins:</h3>
           <ul class="list-group list-group-flush mb-3">
