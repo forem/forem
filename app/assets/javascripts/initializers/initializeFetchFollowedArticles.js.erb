@@ -1,5 +1,4 @@
 function initializeFetchFollowedArticles() {
-  insertPodcasts();
   if ( document.getElementById("featured-story-marker") && checkUserLoggedIn() ) {
     algoliaFollowedArticles();
   }
@@ -127,29 +126,6 @@ function algoliaFollowedArticles(){
     }
 }
 
-function insertPodcasts() {
-  var el = document.getElementById('followed-podcasts');
-  var insertPlace = document.getElementById('article-index-podcast-div');
-  if (el && insertPlace){
-    var user = userData();
-    if (user && user.followed_podcast_ids && user.followed_podcast_ids.length > 0) {
-      var data = JSON.parse(el.dataset.episodes);
-      var podcastHTML = '';
-      var episodeCount = 0;
-      data.forEach(function(ep) {
-        if (user.followed_podcast_ids.indexOf(ep.podcast.id) > -1) {
-          episodeCount += 1;
-          podcastHTML = podcastHTML + '<a class="individual-podcast-link" href="/' + ep.podcast.slug + '/' + ep.slug + '">\
-            <img src="' + ep.podcast.image_90 + '"/><div class="individual-podcast-link-details"><strong>' + ep.title + '</strong> ' + ep.podcast.title + '</div></a>'
-        }
-      });
-      if (episodeCount > 0) {
-        insertPlace.innerHTML = '<div class="single-article single-article-podcast-div"><h3><a href="/pod">Today\'s Podcasts</a></h3>' + podcastHTML + '</div>';
-      }
-    }
-  }
-}
-
 function findOne(haystack, arr) {
     return arr.some(function (v) {
         return haystack.indexOf(v) >= 0;
@@ -186,10 +162,10 @@ function insertTimes() {
   var elements = document.getElementsByClassName('time-ago-indicator-initial-placeholder');
   for (var i = 0; i < elements.length; i++) {
 
-    // getElementsByClassName will get updated everytime we change DOM  
+    // getElementsByClassName will get updated everytime we change DOM
     // so elements[0] will produce the next unchanged element every iteration
     var element = elements[0];
 
-    element.outerHTML = timeAgo(element.dataset.seconds);
+    element.outerHTML = timeAgo({ oldTimeInSeconds: element.dataset.seconds });
   }
 };

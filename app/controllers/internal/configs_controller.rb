@@ -21,6 +21,8 @@ class Internal::ConfigsController < Internal::ApplicationController
   def config_params
     allowed_params = %i[
       default_site_email social_networks_handle mascot_user_id
+      campaign_hero_html_variant_name campaign_sidebar_enabled campaign_featured_tags
+      campaign_sidebar_image
       main_social_image favicon_url logo_svg
       rate_limit_follow_count_daily
       ga_view_id ga_fetch_rate
@@ -44,6 +46,6 @@ class Internal::ConfigsController < Internal::ApplicationController
   end
 
   def bust_relevant_caches
-    CacheBuster.bust("/api/tags/onboarding") # Needs to change when suggested_tags is edited
+    CacheBuster.bust("/tags/onboarding") # Needs to change when suggested_tags is edited
   end
 end

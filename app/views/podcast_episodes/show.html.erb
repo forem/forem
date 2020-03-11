@@ -90,9 +90,9 @@
   <div class="container">
     <div class="body">
       <% if @episode.podcast.feed_url.include?("soundcloud") %>
-        <%= simple_format((@episode.processed_html || @episode.body).html_safe, sanitize: true) %>
+        <%= simple_format((@episode.processed_html || @episode.body), sanitize: true) %>
       <% else %>
-        <%= sanitize (@episode.processed_html || "").html_safe,
+        <%= sanitize (@episode.processed_html || ""),
                      tags: %w[strong br em a table tbody thead tfoot th tr td col colgroup del p h1 h2 h3 h4 h5 h6 blockquote time div span i em u b ul ol li dd dl dt q code pre img sup cite center small],
                      attributes: %w[href strong em class ref rel src title alt colspan height width size rowspan span value start data-conversation data-lang id] %>
       <% end %>

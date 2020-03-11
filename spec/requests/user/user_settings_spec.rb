@@ -65,6 +65,18 @@ RSpec.describe "UserSettings", type: :request do
         new_response_template = create(:response_template, user: other_user, type_of: "personal_comment")
         get "/settings/response-templates?id=#{new_response_template.id}"
         expect(response.body).not_to include(response_template.content)
+      it "does not render the ghost account email option if the user has no content" do
+        ghost_account_message = "If you would like to keep your content under the"
+        get "/settings/account"
+        expect(response.body).not_to include ghost_account_message
+      end
+
+      it "does render the ghost account email option if the user has content" do
+        ghost_account_message = "If you would like to keep your content under the"
+        create(:article, user: user)
+        user.update(articles_count: 1)
+        get "/settings/account"
+        expect(response.body).to include ghost_account_message
       end
     end
   end
@@ -142,7 +154,7 @@ RSpec.describe "UserSettings", type: :request do
       end
 
       it "does not send an email if there was no request" do
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           expect { send_request(false) }.not_to(change { ActionMailer::Base.deliveries.count })
         end
       end

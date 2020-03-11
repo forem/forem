@@ -27,7 +27,7 @@ class Message < ApplicationRecord
 
   def update_chat_channel_last_message_at
     chat_channel.touch(:last_message_at)
-    chat_channel.chat_channel_memberships.reindex!
+    chat_channel.chat_channel_memberships.each(&:index_to_elasticsearch)
   end
 
   def update_all_has_unopened_messages_statuses

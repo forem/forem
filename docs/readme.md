@@ -12,8 +12,10 @@ items:
   - contributing.md
   - contributing_api.md
   - faqs.md
+  - troubleshooting.md
   - licensing.md
   - self-hosting.md
+  - maintainers
 ---
 
 # Welcome to DEV's developer documentation

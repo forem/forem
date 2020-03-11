@@ -23,6 +23,7 @@ class ModerationsController < ApplicationController
     @adjustments = TagAdjustment.where(article_id: @moderatable.id)
     @already_adjusted_tags = @adjustments.map(&:tag_name).join(", ")
     @allowed_to_adjust = @moderatable.class.name == "Article" && (current_user.has_role?(:super_admin) || @tag_moderator_tags.any?)
+    @hidden_comments = @moderatable.comments.where(hidden_by_commentable_user: true)
     render template: "moderations/mod"
   end
 

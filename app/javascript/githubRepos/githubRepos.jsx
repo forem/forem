@@ -12,7 +12,7 @@ export class GithubRepos extends Component {
   }
 
   getGithubRepos = () => {
-    fetch(`/api/github_repos`, {
+    fetch(`/github_repos`, {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',

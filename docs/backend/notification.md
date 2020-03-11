@@ -5,7 +5,7 @@ title: Notifications
 # Notifications
 
 Since notifications are run asynchronously, we'll want to make sure jobs are
-running: `bin/rails jobs:work`. If that's not running, you won't receive any
+running: `bundle exec sidekiq`. If that's not running, you won't receive any
 notifications. You might need to create another account to pass notifications
 back and forth if you're doing this all through the UI.
 

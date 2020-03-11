@@ -37,12 +37,12 @@ module Api
         render :show
       end
 
-      INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary].freeze
+      INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
       private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
       SHOW_ATTRIBUTES_FOR_SERIALIZATION = %i[
         id username name summary twitter_username github_username website_url
-        location created_at
+        location created_at profile_image
       ].freeze
       private_constant :SHOW_ATTRIBUTES_FOR_SERIALIZATION
 

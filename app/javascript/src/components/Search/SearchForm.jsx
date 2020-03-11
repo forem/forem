@@ -8,27 +8,25 @@ export const SearchForm = ({
   onSubmitSearch,
   searchBoxId,
 }) => (
-  <div className="nav-search-form">
-    <form
-      action="/search"
-      acceptCharset="UTF-8"
-      method="get"
-      onSubmit={onSubmitSearch}
-    >
-      <input name="utf8" type="hidden" value="✓" />
-      <input
-        className="nav-search-form__input"
-        type="text"
-        name="q"
-        id={searchBoxId}
-        placeholder="Search"
-        autoComplete="off"
-        aria-label="search"
-        onKeyDown={onSearch}
-        value={searchTerm}
-      />
-    </form>
-  </div>
+  <form
+    action="/search"
+    acceptCharset="UTF-8"
+    method="get"
+    onSubmit={onSubmitSearch}
+  >
+    <input name="utf8" type="hidden" value="✓" />
+    <input
+      className="top-bar--search-input"
+      type="text"
+      name="q"
+      id={searchBoxId}
+      placeholder="Search"
+      autoComplete="off"
+      aria-label="search"
+      onKeyDown={onSearch}
+      value={searchTerm}
+    />
+  </form>
 );
 
 SearchForm.propTypes = {

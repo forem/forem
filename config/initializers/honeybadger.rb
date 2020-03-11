@@ -21,7 +21,6 @@ Honeybadger.configure do |config|
     ActiveRecord::QueryCanceled,
   ]
   config.request.filter_keys += %w[authorization]
-  config.delayed_job.attempt_threshold = 10
   config.sidekiq.attempt_threshold = 10
   config.breadcrumbs.enabled = true
 

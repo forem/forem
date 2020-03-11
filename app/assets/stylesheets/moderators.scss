@@ -2,7 +2,7 @@
 @import 'mixins';
 
 .mod-index-hero {
-  margin: 50px auto;
+  margin: 0 auto;
   padding: 90px 5px;
   text-align: center;
   background: #d4fffe;
@@ -31,7 +31,7 @@
       margin: 15px 2px;
       .mod-index-hero-data-pod-number {
         font-size: calc(2.7em + 0.2vw);
-      }  
+      }
     }
     @media screen and (min-width: 1300px) {
       width: calc(260px + 8vw);
@@ -39,7 +39,7 @@
       margin: 30px;
       .mod-index-hero-data-pod-number {
         font-size: calc(2.8em + 0.5vw);
-      }  
+      }
     }
   }
   .mod-index-hero-sub {
@@ -55,21 +55,13 @@
   .mod-index-header-top-filters {
     padding: 10px 0px 25px;
     a {
-      @include themeable(
-        color, 
-        theme-color, 
-        $black
-      );
+      @include themeable(color, theme-color, $black);
       font-size: 0.86em;
       padding: 3px 18px;
       border-radius: 100px;
       border: 1px solid transparent;
       &.mod-index-top-filter-link--active {
-        @include themeable(
-          border, 
-          theme-border, 
-          1px solid $black
-        );
+        @include themeable(border, theme-border, 1px solid $black);
       }
     }
   }
@@ -82,11 +74,7 @@
     border: 1px solid transparent;
   }
   a.mod-index-header-link--active {
-    @include themeable(
-      border, 
-      theme-border, 
-      1px solid $black
-    );
+    @include themeable(border, theme-border, 1px solid $black);
   }
 }
 
@@ -95,22 +83,14 @@
   width: 96%;
   max-width: 1600px;
   border-radius: 3px;
-  @include themeable(
-    border, 
-    theme-border, 
-    1px solid $light-medium-gray
-  );
-  @include themeable(
-    background, 
-    theme-container-background, 
-    white
-  );
+  @include themeable(border, theme-border, 1px solid $light-medium-gray);
+  @include themeable(background, theme-container-background, white);
 
   .mod-index-row {
     padding: 10px;
     @include themeable(
-      border-bottom, 
-      theme-border, 
+      border-bottom,
+      theme-border,
       1px solid $light-medium-gray
     );
     &:hover {
@@ -145,31 +125,19 @@
       }
       a {
         font-weight: 500;
-        @include themeable(
-          color, 
-          theme-secondary-color, 
-          $medium-gray
-        );
-        }
+        @include themeable(color, theme-secondary-color, $medium-gray);
+      }
     }
     .quick-mod-button {
       font-size: 0.95em;
       padding: 5px 18px;
       border-radius: 100px;
-      @include themeable(
-        border, 
-        theme-border, 
-        1px solid $medium-gray
-      );
+      @include themeable(border, theme-border, 1px solid $medium-gray);
       display: inline-block;
       margin: 10px 0px 5px;
       margin-right: 5px;
       background: transparent;
-      @include themeable(
-        color, 
-        theme-color, 
-        $black
-      );
+      @include themeable(color, theme-color, $black);
     }
     .mod-index-row-iframes {
       padding: 5px 0px;
@@ -191,6 +159,12 @@
 
 .mod-container {
   padding: 30px 0px;
+  h2 {
+    a {
+      @include themeable(color, theme-color, $black);
+    }
+    margin-bottom: -12px;  
+  } 
   p {
     width: 98%;
     max-width: 720px;
@@ -209,7 +183,7 @@
     margin: 10px auto 5px;
     box-sizing: border-box;
   }
-  @media screen and ( min-width:880px ){
+  @media screen and (min-width: 880px) {
     margin: 90px auto;
     border-radius: 12px;
   }
@@ -227,39 +201,38 @@
       border: 0px;
     }
   }
-  
-  
+
   .reaction-button img {
     position: absolute;
     top: 5px;
     width: 70px;
     left: 5px;
   }
-  
+
   .reaction-button .reacted-emoji {
     display: none;
   }
-  
+
   .reaction-button.reacted .reacted-emoji {
     display: block;
   }
-  
+
   .tag-mod-form {
     border-top: 1px solid #dddddd;
     margin: 42px auto;
   }
-  
+
   .tag-mod-form ul {
     text-align: left;
     font-size: 15px;
   }
-  
+
   .tag-mod-form form {
     width: 500px;
     margin: auto;
     max-width: 90%;
   }
-  
+
   .tag-mod-form form input {
     width: 100%;
     padding: 5px;
@@ -267,14 +240,10 @@
     margin-bottom: 5px;
     border-radius: 3px;
     box-sizing: border-box;
-    @include themeable(
-      border, 
-      theme-border, 
-      1px solid $light-medium-gray
-    );
+    @include themeable(border, theme-border, 1px solid $light-medium-gray);
   }
-  
-  .tag-mod-form form input[type="submit"] {
+
+  .tag-mod-form form input[type='submit'] {
     background: $dark-purple;
     color: white;
     font-weight: bold;
@@ -285,7 +254,7 @@
     font-size: 1.3em;
     font-family: $helvetica-condensed;
   }
-  
+
   #undo {
     width: 1.5rem;
     font-size: 1.1em;
@@ -294,7 +263,7 @@
     background: transparent;
     border: 0px;
   }
-  
+
   .tag-mod-form form textarea {
     box-sizing: border-box;
     width: 100%;
@@ -303,13 +272,9 @@
     height: 100px;
     box-sizing: boder-box;
     border-radius: 3px;
-    @include themeable(
-      border, 
-      theme-border, 
-      1px solid $light-medium-gray
-    );
+    @include themeable(border, theme-border, 1px solid $light-medium-gray);
   }
-  
+
   .level-rating-button {
     border-radius: 8px;
     font-size: 1.1em;
@@ -318,37 +283,33 @@
     border: 2px solid black;
     font-weight: bold;
   }
-  
+
   .level-rating-button.selected {
     background: #9bebff;
   }
-  
+
   input.undo {
     background: $red;
   }
-  
+
   .tag-mod-addition-radio {
     padding: 5px 20px;
     border-radius: 3px;
-    @include themeable(
-      border, 
-      theme-border, 
-      1px solid $light-medium-gray
-    );
+    @include themeable(border, theme-border, 1px solid $light-medium-gray);
     display: inline-block;
     margin: 30px auto 10px;
     min-width: 205px;
     box-sizing: boder-box;
     position: relative;
   }
-  
-  .tag-mod-form input[type=radio] {
+
+  .tag-mod-form input[type='radio'] {
     position: absolute;
     cursor: pointer;
     top: 7px;
   }
-  
-  .tag-mod-form input[type=radio] + label {
+
+  .tag-mod-form input[type='radio'] + label {
     display: inline-block;
     cursor: pointer;
     font-weight: bold;
@@ -358,16 +319,16 @@
     margin: auto;
     margin-left: 4px;
   }
-  
-  .tag-mod-form input[type=radio]:checked + label{
+
+  .tag-mod-form input[type='radio']:checked + label {
     @include themeable(
-      background, 
-      theme-container-accent-background, 
+      background,
+      theme-container-accent-background,
       $light-green
     );
     border-radius: 3px;
   }
-  
+
   .tag-mod-form select {
     display: block;
     font-size: 20px;
@@ -376,12 +337,21 @@
     margin: auto;
     border: solid 2px;
     margin: 5px auto 15px;
-  }  
+  }
+  .approval-button {
+    font-size: 20px;
+    border: 0px;
+    border-radius: 3px;
+    padding: 8px 16px;
+    &.approval-removal {
+      background: $red;
+    }
+  }
 }
 
 .mod-link {
-  display: inline-block; 
-  font-size: 1.3em; 
-  padding: 3px 8px; 
+  display: inline-block;
+  font-size: 1.3em;
+  padding: 3px 8px;
   border-radius: 3px;
 }

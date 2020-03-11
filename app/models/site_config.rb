@@ -14,6 +14,15 @@ class SiteConfig < RailsSettings::Base
   field :social_networks_handle, type: :string, default: "thepracticaldev"
   field :mascot_user_id, type: :integer, default: 1
 
+  # mascot account
+  field :mascot_user_id, type: :integer, default: 1
+
+  # campaign
+  field :campaign_hero_html_variant_name, type: :string, default: ""
+  field :campaign_featured_tags, type: :array, default: %w[]
+  field :campaign_sidebar_enabled, type: :boolean, default: 0
+  field :campaign_sidebar_image, type: :string, default: nil
+
   # images
   field :main_social_image, type: :string, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
   field :favicon_url, type: :string, default: "favicon.ico"

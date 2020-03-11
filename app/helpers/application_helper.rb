@@ -99,7 +99,7 @@ module ApplicationHelper
   end
 
   def sanitize_rendered_markdown(processed_html)
-    ActionController::Base.helpers.sanitize processed_html.html_safe,
+    ActionController::Base.helpers.sanitize processed_html,
                                             scrubber: RenderedMarkdownScrubber.new
   end
 
@@ -146,5 +146,16 @@ module ApplicationHelper
 
   def community_qualified_name
     "The #{ApplicationConfig['COMMUNITY_NAME']} Community"
+  end
+
+  def cache_key_heroku_slug(path)
+    heroku_slug_commit = ApplicationConfig["HEROKU_SLUG_COMMIT"]
+    return path if heroku_slug_commit.blank?
+
+    "#{path}-#{heroku_slug_commit}"
+  end
+
+  def app_protocol_and_domain
+    "#{ApplicationConfig["APP_PROTOCOL"]}#{ApplicationConfig["APP_DOMAIN"]}"
   end
 end

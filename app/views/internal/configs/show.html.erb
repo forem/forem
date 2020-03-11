@@ -53,6 +53,66 @@
         </div>
 
         <div class="card mt-3">
+          <div class="card-header">Mascot</div>
+          <div class="card-body">
+            <div class="form-group">
+              <%= f.label :mascot_user_id, "Mascot user ID" %>
+              <%= f.text_field :mascot_user_id,
+                               class: "form-control",
+                               value: SiteConfig.mascot_user_id,
+                               min: 1,
+                               placeholder: "1" %>
+              <div class="alert alert-info">User ID of the Mascot account</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <div class="card-header">Campaign</div>
+          <div class="card-body">
+            <div class="form-group">
+              <%= f.label :campaign_hero_html_variant_name %>
+              <%= f.text_field :campaign_hero_html_variant_name,
+                               class: "form-control",
+                               value: SiteConfig.campaign_hero_html_variant_name,
+                               placeholder: "" %>
+              <div class="alert alert-info">Hero HtmlVariant name</div>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :campaign_sidebar_enabled %>
+              <%= f.check_box :campaign_sidebar_enabled, checked: SiteConfig.campaign_sidebar_enabled %>
+              <div class="alert alert-info">Campaign sidebar enabled or not</div>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :campaign_sidebar_image %>
+              <% if SiteConfig.campaign_sidebar_image %>
+                <div class="row mt-2">
+                  <div class="col-12">
+                    <img alt="Campaign sidebar image" class="img-fluid" src="<%= SiteConfig.campaign_sidebar_image %>" />
+                  </div>
+                </div>
+              <% end %>
+              <%= f.text_field :campaign_sidebar_image,
+                               class: "form-control",
+                               value: SiteConfig.campaign_sidebar_image,
+                               placeholder: "https://image.url" %>
+              <div class="alert alert-info">Used at the top of the campaign sidebar</div>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :campaign_featured_tags %>
+              <%= f.text_field :campaign_featured_tags,
+                               class: "form-control",
+                               value: SiteConfig.campaign_featured_tags.join(","),
+                               placeholder: "List of campaign tags: comma separated, letters only e.g. shecoded,theycoded" %>
+              <div class="alert alert-info">Posts with which tags will be featured in the campaign sidebar (comma separated, letters only)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
           <div class="card-header">Images</div>
           <div class="card-body">
             <div class="form-group">
@@ -85,10 +145,10 @@
               <div class="form-group">
                 <%= f.label :logo_svg %>
                 <%= f.text_area :logo_svg,
-                                 class: "form-control",
-                                 value: SiteConfig.logo_svg,
-                                 rows: 6,
-                                 placeholder: "<svg ...></svg>" %>
+                                class: "form-control",
+                                value: SiteConfig.logo_svg,
+                                rows: 6,
+                                placeholder: "<svg ...></svg>" %>
                 <div class="alert alert-info">Used as the SVG logo of the community</div>
                 <%= @logo_svg %>
               </div>
@@ -208,8 +268,8 @@
             <div class="form-group">
               <%= f.label :mailchimp_community_moderators_id, "Community Moderators Newsletter" %>
               <%= f.text_field :mailchimp_community_moderators_id,
-                              class: "form-control",
-                              value: SiteConfig.mailchimp_community_moderators_id %>
+                               class: "form-control",
+                               value: SiteConfig.mailchimp_community_moderators_id %>
               <div class="alert alert-info">Community Moderators Newsletter ID</div>
             </div>
           </div>

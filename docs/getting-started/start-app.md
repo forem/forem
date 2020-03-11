@@ -7,7 +7,7 @@ title: Starting the Application
 We're a Rails app, and we use [Webpacker][webpacker] to manage some of our
 JavaScript.
 
-Start the application, Webpack, and our job runner [delayed_job][delayed_job] by
+Start the application, Webpack, and our job runner [Sidekiq][sidekiq] by
 running:
 
 ```shell
@@ -32,13 +32,11 @@ If you're using **`pry`** for debugging in Rails, note that using `foreman` and
 Here are some singleton commands you may need, usually in a separate
 instance/tab of your shell.
 
-- Running the job server (if using `bin/rails server`) -- this is mostly for
-  notifications and emails: **`bin/rails jobs:work`**
-- Clearing jobs (in case you don't want to wait for the backlog of jobs):
-  **`bin/rails jobs:clear`**
+- Running the job Sidekiq server (if using `bin/rails server`) -- this is mostly
+  for notifications and emails: **`bundle exec sidekiq`**
 
 Current gotchas: potential environment issues with external services need to be
 worked out.
 
-[delayed_job]: https://github.com/collectiveidea/delayed_job_active_record
+[sidekiq]: https://github.com/mperham/sidekiq
 [webpacker]: https://github.com/rails/webpacker

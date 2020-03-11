@@ -15,6 +15,7 @@ module CacheBuster
                   headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
   rescue URI::InvalidURIError => e
     Rails.logger.error("Trying to bust cache of an invalid uri: #{e}")
+    DatadogStatsClient.increment("cache_buster.invalid_uri", tags: ["path:#{path}"])
   end
 
   def self.bust_comment(commentable)
@@ -159,6 +160,9 @@ module CacheBuster
   end
 
   def self.bust_classified_listings(classified_listing)
+    # we purge all listings as it's the wanted behavior with the following URL purging
+    classified_listing.purge_all
+
     bust("/listings")
     bust("/listings?i=i")
     bust("/listings/#{classified_listing.category}/#{classified_listing.slug}")

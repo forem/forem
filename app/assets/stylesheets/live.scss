@@ -1,64 +1,64 @@
-.live-container{
+.live-container {
   display: flex;
   flex-direction: column;
-  margin:auto;
-  max-width:1636px;
-  min-height:96vh;
-  margin-top:68px;
-  @media screen and ( min-width:760px ){
-    margin-top:78px;
+  margin: auto;
+  max-width: 1636px;
+  min-height: 96vh;
+  margin-top: 68px;
+  @media screen and (min-width: 760px) {
+    margin-top: 78px;
     width: 98%;
   }
   .live-component {
-    .live-video{
+    .live-video {
       width: 100%;
-      height:62.5vw;
-      text-align:center;
-      max-height:920px;
-      float:left;
-      @media screen and ( min-width:760px ){
+      height: 62.5vw;
+      text-align: center;
+      max-height: 920px;
+      float: left;
+      @media screen and (min-width: 760px) {
         width: calc(100% - 300px);
         height: calc(100vh - 132px);
       }
-      @media screen and ( min-width:1200px ){
+      @media screen and (min-width: 1200px) {
         width: calc(100% - 400px);
       }
     }
-    .live-chat-wrapper{
-      text-align:center;
-      float:left;
+    .live-chat-wrapper {
+      text-align: center;
+      float: left;
       width: 100%;
-      .chat{
+      .chat {
         height: calc(100vh - 62.5vw - 42px);
       }
-      @media screen and ( min-width: 760px ){
-        width:300px;
-        .chat{
+      @media screen and (min-width: 760px) {
+        width: 300px;
+        .chat {
           height: 770px;
-          max-height:920px;
+          max-height: 920px;
         }
       }
-      @media screen and ( min-width: 1200px ){
-        width:400px;
-        .chat{
+      @media screen and (min-width: 1200px) {
+        width: 400px;
+        .chat {
           height: calc(100vh - 128px);
         }
       }
     }
   }
 }
-.live-under-message{
-  text-align:center;
+.live-under-message {
+  text-align: center;
   margin: 10px auto 80px;
   width: 96%;
   max-width: 650px;
-  font-size:1.1em;
+  font-size: 1.1em;
   font-weight: bold;
 }
 
-.live-upcoming-info{
+.live-upcoming-info {
   margin: 30vh auto;
-  max-width:96%;
+  max-width: 96%;
   width: 700px;
-  font-size:1.2em;
+  font-size: 1.2em;
 }

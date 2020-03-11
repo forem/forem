@@ -970,9 +970,9 @@ a.header-link {
       }
     }
     &.hidden-comment {
-    padding: 5px 0;
-    margin-bottom: 0;
-  }
+      padding: 5px 0;
+      margin-bottom: 0;
+    }
   }
   .icon-img {
     height: 16px;
@@ -1003,7 +1003,7 @@ a.header-link {
       top: calc(0.3vw + 13px);
       right: 10px;
       &.commentable-hidden {
-        top: calc(0.3vw + 8px)
+        top: calc(0.3vw + 8px);
       }
     }
 

@@ -4,16 +4,8 @@
     <h2>Create a Community Listing</h2>
   </header>
   <div class="classified-form-inner">
-    <% if classified_listing.errors.any? %>
-      <div class="classified-errors">
-        <h2><%= pluralize(classified_listing.errors.count, "error") %> prohibited this listing from being saved:</h2>
-        <ul>
-        <% classified_listing.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-        </ul>
-      </div>
-    <% end %>
+    <%= render partial: "form_errors", locals: { classified_listing: classified_listing } %>
+
     <div id="listingform-data"
       data-listing="<%= classified_listing.to_json(only: %i[id title body_markdown category cached_tag_list]) %>"
       data-organizations="<%= @organizations.to_json(only: %i[id name]) %>"

@@ -7,6 +7,8 @@
       <h2>You can only edit title/body/tags of drafts or within the first 24 hours of listing or bumping</h2>
     </header>
     <div class="classified-form-inner">
+      <%= render partial: "form_errors", locals: { classified_listing: @classified_listing } %>
+
       <% if (@classified_listing.bumped_at && @classified_listing.bumped_at > 24.hours.ago) || @classified_listing.updated_at && !@classified_listing.published %>
         <div class="field">
           <%= f.label "title", "Title" %>

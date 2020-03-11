@@ -63,7 +63,7 @@
       <% end %>
       <div class="sidebar-data">
         <div>
-          <%= pluralize Article.published.cached_tagged_with(@tag).size, "Post" %> Published
+          <%= pluralize @num_published_articles, "Post" %> Published
         </div>
         <% if user_signed_in? %>
           <span style="display:none;" id="tag-edit-button" data-tag="<%= @tag_model.name %>">

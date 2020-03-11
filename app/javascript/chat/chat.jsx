@@ -24,6 +24,7 @@ import Video from './video';
 import View from './view';
 
 import setupPusher from '../src/utils/pusher';
+import debounceAction from '../src/utils/debounceAction';
 
 export default class Chat extends Component {
   static propTypes = {
@@ -37,6 +38,10 @@ export default class Chat extends Component {
     super(props);
     const chatChannels = JSON.parse(props.chatChannels);
     const chatOptions = JSON.parse(props.chatOptions);
+
+    this.debouncedChannelFilter = debounceAction(
+      this.triggerChannelFilter.bind(this),
+    );
 
     this.state = {
       messages: [],
@@ -905,7 +910,7 @@ export default class Chat extends Component {
               abide by the 
               {' '}
               <a href="/code-of-conduct">code of conduct</a>
-.
+              .
             </div>
           </div>
         );
@@ -917,7 +922,7 @@ export default class Chat extends Component {
               You have joined 
               {' '}
               {activeChannel.channel_name}
-! All interactions
+              ! All interactions
               {' '}
               <em>
                 <b>must</b>
@@ -926,7 +931,7 @@ export default class Chat extends Component {
               abide by the 
               {' '}
               <a href="/code-of-conduct">code of conduct</a>
-.
+              .
             </div>
           </div>
         );
@@ -1028,7 +1033,7 @@ export default class Chat extends Component {
             >
               {'<'}
             </button>
-            <input placeholder="Filter" onKeyUp={this.triggerChannelFilter} />
+            <input placeholder="Filter" onKeyUp={this.debouncedChannelFilter} />
             {invitesButton}
             <div className="chat__channeltypefilter">
               {this.renderChannelFilterButton(

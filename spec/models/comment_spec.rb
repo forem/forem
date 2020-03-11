@@ -9,7 +9,7 @@ RSpec.describe Comment, type: :model do
 
   describe "validations" do
     it { is_expected.to belong_to(:user) }
-    it { is_expected.to belong_to(:commentable) }
+    it { is_expected.to belong_to(:commentable).optional }
     it { is_expected.to have_many(:reactions).dependent(:destroy) }
     it { is_expected.to have_many(:mentions).dependent(:destroy) }
     it { is_expected.to have_many(:notifications).dependent(:delete_all) }
@@ -191,11 +191,10 @@ RSpec.describe Comment, type: :model do
       expect(comment.title(5).length).to eq(5)
     end
 
-    it "retains content from #processed_html" do
-      comment.processed_html = "Hello this is a post." # Remove randomness
+    it "gets content from body_markdown" do
+      comment.body_markdown = "Migas fingerstache pbr&b tofu."
       comment.validate!
-      text = comment.title.gsub("...", "").delete("\n")
-      expect(comment.processed_html).to include(CGI.unescapeHTML(text))
+      expect(comment.title).to eq("Migas fingerstache pbr&b tofu.")
     end
 
     it "is converted to deleted if the comment is deleted" do
@@ -208,13 +207,6 @@ RSpec.describe Comment, type: :model do
 
       comment.validate!
       expect(comment.title).not_to include("&#39;")
-    end
-  end
-
-  describe "#index_id" do
-    it "is equal to comments-ID" do
-      # NOTE: we shouldn't test private things but cheating a bit for Algolia here
-      expect(comment.send(:index_id)).to eq("comments-#{comment.id}")
     end
   end
 
@@ -345,32 +337,6 @@ RSpec.describe Comment, type: :model do
       # this replaces the use of expect_any_instance_of which is a RuboCop violation
       sidekiq_assert_enqueued_with(job: Comments::BustCacheWorker, args: [new_comment.id]) do
         new_comment.destroy
-      end
-    end
-  end
-
-  describe "when indexing and deindexing" do
-    let!(:comment) { create(:comment, commentable: article) }
-
-    context "when destroying" do
-      it "doesn't trigger auto removal from index" do
-        expect { comment.destroy }.not_to have_enqueued_job.on_queue("algoliasearch")
-      end
-    end
-
-    context "when deleted is false" do
-      it "checks auto-indexing" do
-        sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["Comment", comment.id]) do
-          comment.update(body_markdown: "hello")
-        end
-      end
-    end
-
-    context "when deleted is true" do
-      it "checks auto-deindexing" do
-        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class.algolia_index_name, comment.index_id]) do
-          comment.update(deleted: true)
-        end
       end
     end
   end

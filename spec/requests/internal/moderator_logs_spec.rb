@@ -27,7 +27,7 @@ RSpec.describe "/internal/tags", type: :request do
     it "creates entry for #update action" do
       allow(AssignTagModerator).to receive(:add_tag_moderators)
 
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         put "/internal/tags/#{tag.id}", params: update_params(tag_moderator.id.to_s)
         log = AuditLog.where(user_id: super_admin.id, slug: :update)
         expected = update_params(tag_moderator.id.to_s)[:tag]

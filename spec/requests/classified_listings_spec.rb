@@ -389,6 +389,14 @@ RSpec.describe "ClassifiedListings", type: :request do
         expect(listing.reload.published).to eq(false)
       end
     end
+
+    context "when an update is attempted" do
+      it "does not update with an empty body markdown" do
+        put "/listings/#{listing.id}", params: { classified_listing: { body_markdown: "" } }
+        expect(response.body).to include(CGI.escapeHTML("can't be blank"))
+        expect(listing.reload.body_markdown).not_to be_empty
+      end
+    end
   end
 
   describe "DEL /listings/:id" do
@@ -440,7 +448,7 @@ RSpec.describe "ClassifiedListings", type: :request do
       end
     end
 
-    context "when deleting org listing" do
+    context "when deleting draft org listing" do
       it "redirect to dashboard" do
         delete "/listings/#{org_listing_draft.id}"
         expect(response).to redirect_to("/listings/dashboard")

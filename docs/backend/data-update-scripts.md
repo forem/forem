@@ -41,12 +41,10 @@ end
 ```
 
 Once your script is in place then you can either run `rails data_updates:run`
-manually or you can let our setup and update scripts handle it. In our local
-[bin/setup](https://github.com/thepracticaldev/dev.to/blob/master/bin/setup#L36)
-and
-[bin/update](https://github.com/thepracticaldev/dev.to/blob/master/bin/update#L26)
-scripts you will see we have added an additional task to "Update Data". This
-kicks off the rake task `data_updates:run` for you.
+manually or you can let our setup script handle it. In our local
+[bin/setup](https://github.com/thepracticaldev/dev.to/blob/master/bin/setup)
+script you will see we have added an additional task to update data. This kicks
+off the rake task `data_updates:run` for you.
 
 The rake task itself will check the `lib/data_update_scripts` folder to see if
 there are any new scripts that need to be run. It does this by reading all of

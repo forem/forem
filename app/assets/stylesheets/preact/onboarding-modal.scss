@@ -115,7 +115,11 @@
     border: 2px solid #0a0a0a;
     @include themeable(border-color, theme-color, #0a0a0a);
     @include themeable(color, theme-color, #0a0a0a);
-    @include themeable(background-color, theme-container-accent-background, $light-gray);
+    @include themeable(
+      background-color,
+      theme-container-accent-background,
+      $light-gray
+    );
     font-family: 'HelveticaNeue-CondensedBold', 'HelveticaNeueBoldCondensed',
       'HelveticaNeue-Bold-Condensed', 'Helvetica Neue Bold Condensed',
       'HelveticaNeueBold', 'HelveticaNeue-Bold', 'Helvetica Neue Bold',

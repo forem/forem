@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<TodaysPodcasts /> component should render a today's podcasts 1`] = `
+<div
+  class="single-article single-article-podcast-div"
+>
+  <h3>
+    <a
+      href="/pod"
+    >
+      Today's Podcasts
+    </a>
+  </h3>
+  <a
+    class="individual-podcast-link"
+    href="/monitor-recontextualize/undefined"
+  >
+    <img
+      alt="monitor recontextualize"
+      src="/images/16.png"
+    />
+    <div
+      class="individual-podcast-link-details"
+    >
+      <strong>
+        monitor recontextualize
+      </strong>
+       Rubber local
+    </div>
+  </a>
+  <a
+    class="individual-podcast-link"
+    href="/monitor-recontextualize/undefined"
+  >
+    <img
+      alt="monitor recontextualize"
+      src="/images/16.png"
+    />
+    <div
+      class="individual-podcast-link-details"
+    >
+      <strong>
+        monitor recontextualize
+      </strong>
+       Rubber local
+    </div>
+  </a>
+  <a
+    class="individual-podcast-link"
+    href="/monitor-recontextualize/undefined"
+  >
+    <img
+      alt="monitor recontextualize"
+      src="/images/16.png"
+    />
+    <div
+      class="individual-podcast-link-details"
+    >
+      <strong>
+        monitor recontextualize
+      </strong>
+       Rubber local
+    </div>
+  </a>
+</div>
+`;

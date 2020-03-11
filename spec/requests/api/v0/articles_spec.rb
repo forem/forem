@@ -5,6 +5,17 @@ RSpec.describe "Api::V0::Articles", type: :request do
   let_it_be_changeable(:article) { create(:article, featured: true, tags: "discuss") }
 
   describe "GET /api/articles" do
+    it "returns CORS headers" do
+      origin = "http://example.com"
+      get api_articles_path, headers: { "origin": origin }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
+      expect(response.headers["Access-Control-Allow-Methods"]).to eq("HEAD, GET, OPTIONS")
+      expect(response.headers["Access-Control-Expose-Headers"]).to be_empty
+      expect(response.headers["Access-Control-Max-Age"]).to eq(2.hours.to_i.to_s)
+    end
+
     it "has correct keys in the response" do
       article.update_columns(organization_id: organization.id)
       get api_articles_path
@@ -252,6 +263,17 @@ RSpec.describe "Api::V0::Articles", type: :request do
   end
 
   describe "GET /api/articles/:id" do
+    it "returns CORS headers" do
+      origin = "http://example.com"
+      get api_article_path(article.id), headers: { "origin": origin }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
+      expect(response.headers["Access-Control-Allow-Methods"]).to eq("HEAD, GET, OPTIONS")
+      expect(response.headers["Access-Control-Expose-Headers"]).to be_empty
+      expect(response.headers["Access-Control-Max-Age"]).to eq(2.hours.to_i.to_s)
+    end
+
     it "has correct keys in the response" do
       article.update_columns(organization_id: organization.id)
       get api_article_path(article.id)
@@ -451,8 +473,11 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
 
     describe "when authorized" do
+      let(:default_params) { { body_markdown: "" } }
+
       def post_article(**params)
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        params = default_params.merge params
         post api_articles_path, params: { article: params }.to_json, headers: headers
       end
 
@@ -694,6 +719,12 @@ RSpec.describe "Api::V0::Articles", type: :request do
         end.not_to raise_error
         expect(response.status).to eq(422)
       end
+
+      it "fails with a nil body markdown" do
+        post_article(title: Faker::Book.title, body_markdown: nil)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
+      end
     end
   end
 
@@ -773,6 +804,34 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response).to have_http_status(:ok)
         expect(article.reload.title).to eq(title)
         expect(article.body_markdown).to eq(body_markdown)
+      end
+
+      it "updates the main_image to be empty if given an empty cover_image" do
+        image = Faker::Avatar.image
+        article.update(main_image: image)
+        expect(article.main_image).to eq(image)
+
+        body_markdown = file_fixture("article_published_empty_cover_image.txt").read
+        put_article(
+          title: Faker::Book.title,
+          body_markdown: body_markdown,
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.main_image).to eq(nil)
+      end
+
+      it "updates the main_image to be empty if given a different cover_image" do
+        image = Faker::Avatar.image
+        article.update(main_image: image)
+        expect(article.main_image).to eq(image)
+
+        body_markdown = file_fixture("article_published_cover_image.txt").read
+        put_article(
+          title: Faker::Book.title,
+          body_markdown: body_markdown,
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.main_image).to eq("https://dummyimage.com/100x100")
       end
 
       it "updates the tags" do

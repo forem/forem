@@ -16,6 +16,7 @@ RSpec.describe "/internal/config", type: :request do
     end
   end
 
+  # rubocop:disable RSpec/NestedGroups
   describe "POST internal/events" do
     context "when admin has typical admin permissions but not single resource" do
       before do
@@ -37,6 +38,7 @@ RSpec.describe "/internal/config", type: :request do
       before do
         sign_in(admin_plus_config)
       end
+
       describe "staff" do
         it "does not allow the staff_user_id to be updated" do
           expect(SiteConfig.staff_user_id).to eq(1)
@@ -61,6 +63,14 @@ RSpec.describe "/internal/config", type: :request do
           post "/internal/config", params: { site_config: { social_networks_handle: expected_handle },
                                              confirmation: confirmation_message }
           expect(SiteConfig.social_networks_handle).to eq(expected_handle)
+        end
+      end
+
+      describe "mascot" do
+        it "updates the mascot_user_id" do
+          expected_mascot_user_id = 2
+          post "/internal/config", params: { site_config: { mascot_user_id: expected_mascot_user_id }, confirmation: confirmation_message }
+          expect(SiteConfig.mascot_user_id).to eq(expected_mascot_user_id)
         end
       end
 
@@ -185,4 +195,5 @@ RSpec.describe "/internal/config", type: :request do
       end
     end
   end
+  # rubocop:enable RSpec/NestedGroups
 end

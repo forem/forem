@@ -1,6 +1,6 @@
 class PagesController < ApplicationController
   # No authorization required for entirely public controller
-  before_action :set_cache_control_headers, only: %i[show rlyweb now survey badge shecoded bounty faq robots]
+  before_action :set_cache_control_headers, only: %i[show rlyweb now survey badge bounty faq robots]
 
   def show
     @page = Page.find_by!(slug: params[:slug])
@@ -44,7 +44,8 @@ class PagesController < ApplicationController
   end
 
   def report_abuse
-    reported_url = params[:reported_url] || params[:url] || request.referer
+    referer = URI(request.referer || "").path == "/serviceworker.js" ? nil : request.referer
+    reported_url = params[:reported_url] || params[:url] || referer
     @feedback_message = FeedbackMessage.new(
       reported_url: reported_url&.chomp("?i=i"),
     )
@@ -84,20 +85,6 @@ class PagesController < ApplicationController
     @chat_channels = [@active_channel].to_json(
       only: %i[channel_name channel_type last_message_at slug status id],
     )
-  end
-
-  def shecoded
-    @top_articles = Article.published.tagged_with(%w[shecoded shecodedally theycoded], any: true).
-      where(approved: true).where("published_at > ? AND score > ?", 3.weeks.ago, 28).
-      order(Arel.sql("RANDOM()")).
-      includes(:user).decorate
-    @articles = Article.published.tagged_with(%w[shecoded shecodedally theycoded], any: true).
-      where(approved: true).where("published_at > ? AND score > ?", 3.weeks.ago, -8).
-      order(Arel.sql("RANDOM()")).
-      where.not(id: @top_articles).
-      includes(:user).decorate
-    render layout: false
-    set_surrogate_key_header "shecoded_page"
   end
 
   private

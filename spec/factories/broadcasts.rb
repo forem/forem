@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :broadcast do
-    sent { false }
+    active { false }
   end
 
   trait :onboarding do
@@ -9,7 +9,7 @@ FactoryBot.define do
     processed_html { "Welcome! Introduce yourself in our <a href='/welcome'>welcome thread!</a>" }
   end
 
-  trait :sent do
-    sent { true }
+  trait :active do
+    active { true }
   end
 end

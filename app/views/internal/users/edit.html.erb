@@ -72,7 +72,7 @@
       <% @user.identities.each do |identity| %>
         <%= form_for(@user, url: remove_identity_internal_user_path(@user), html: { method: :delete, onsubmit: "return confirm('Are you sure? This should only be done as a solution for the listed example(s).)" }) do |f| %>
           <%= f.hidden_field :identity_id, value: identity.id %>
-          <p><b><%= identity.provider.capitalize %> UID: <%= identity.uid %> - Username: <%= identity.auth_data_dump["info"]["nickname"] %></b></p>
+          <p><b><%= identity.provider.capitalize %> UID: <%= identity.uid %> - Username: <%= identity.auth_data_dump.present? ? identity.auth_data_dump["info"]["nickname"] : "no auth data dump available! 😞" %></b></p>
           <%= f.submit "Delete #{identity.provider.capitalize} Identity", class: "btn btn-danger" %>
         <% end %>
       <% end %>

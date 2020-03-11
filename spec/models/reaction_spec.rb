@@ -111,6 +111,20 @@ RSpec.describe Reaction, type: :model do
     end
   end
 
+  describe ".count_for_article" do
+    it "counts the reactions an article has grouped by category" do
+      create(:reaction, reactable: article, user: user, category: "like")
+      create(:reaction, reactable: article, user: user, category: "unicorn")
+
+      expected_result = [
+        { category: "like", count: 1 },
+        { category: "readinglist", count: 0 },
+        { category: "unicorn", count: 1 },
+      ]
+      expect(described_class.count_for_article(article.id)).to eq(expected_result)
+    end
+  end
+
   context "when callbacks are called after save" do
     let!(:reaction) { build(:reaction, category: "like", reactable: article, user: user) }
 
@@ -129,7 +143,7 @@ RSpec.describe Reaction, type: :model do
     end
 
     it "updates updated_at if the reactable is a comment" do
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         updated_at = 1.day.ago
         comment = create(:comment, commentable: article, updated_at: updated_at)
         reaction.update(reactable: comment)
@@ -138,7 +152,7 @@ RSpec.describe Reaction, type: :model do
     end
 
     it "updates updated_at for the user" do
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         updated_at = user.updated_at
         Timecop.travel(1.day.from_now) do
           reaction.save

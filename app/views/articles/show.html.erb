@@ -190,10 +190,10 @@
     <% @classic_article = Suggester::Articles::Classic.new(@article, not_ids: [@article.id]).get.first %>
     <% if @classic_article %>
       <%= render "additional_content_boxes/article_box",
-                article: @classic_article,
-                classification: "classic",
-                classification_text: "Classic DEV Post from #{@classic_article.readable_publish_date}",
-                follow_cue: "Follow <a href='#{@classic_article.user.path}'>@#{@classic_article.user.username}</a> to see more of their posts in your feed." %>
+                 article: @classic_article,
+                 classification: "classic",
+                 classification_text: "Classic DEV Post from #{@classic_article.readable_publish_date}",
+                 follow_cue: "Follow <a href='#{@classic_article.user.path}'>@#{@classic_article.user.username}</a> to see more of their posts in your feed." %>
     <% end %>
     <div id="additional-content-area" data-article-id="<%= @article.id %>,<%= @classic_article&.id %>"></div>
     <% suggested_articles = ArticleSuggester.new(@article).articles(max: 4) %>
@@ -220,12 +220,11 @@
 
 <% cache("article-show-scripts", expires_in: 8.hours) do %>
   <script async>
-    <%= TweetTag.script.html_safe %>
-    <%= YoutubeTag.script.html_safe %>
+    <%# we consider these scripts safe for embedding as they come from our code %>
     <%= PodcastTag.script.html_safe %>
-    <%= GistTag.script.html_safe %>
-    <%= RunkitTag.script.html_safe %>
     <%= PollTag.script.html_safe %>
+    <%= RunkitTag.script.html_safe %>
+    <%= TweetTag.script.html_safe %>
   </script>
 <% end %>
 

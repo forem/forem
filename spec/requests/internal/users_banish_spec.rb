@@ -13,7 +13,6 @@ RSpec.describe "Internal::Users", type: :request do
 
   before do
     sign_in super_admin
-    Delayed::Worker.new(quiet: true).work_off
     dependents_for_offending_user_article
     offender_activity_on_other_content
   end
@@ -29,10 +28,9 @@ RSpec.describe "Internal::Users", type: :request do
     create(:reaction, reactable: comment2, reactable_type: "Comment", user: user2)
     # create user3 reaction to offending article
     create(:reaction, reactable: article, reactable_type: "Article", user: user3, category: "like")
-    perform_enqueued_jobs do
+    sidekiq_perform_enqueued_jobs do
       Mention.create_all(comment2)
     end
-    Delayed::Worker.new(quiet: true).work_off
   end
 
   def offender_activity_on_other_content
@@ -42,7 +40,6 @@ RSpec.describe "Internal::Users", type: :request do
     comment = create(:comment, commentable_type: "Article", commentable: article2, user: user)
     # user3 reacts to offender comment
     create(:reaction, reactable: comment, reactable_type: "Comment", user: user3)
-    Delayed::Worker.new(quiet: true).work_off
   end
 
   def full_profile
@@ -62,13 +59,11 @@ RSpec.describe "Internal::Users", type: :request do
       url: Faker::Internet.url
     }
     GithubRepo.create(params)
-    Delayed::Worker.new(quiet: true).work_off
   end
 
   def call_ghost
     ghost
     post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "true" } }
-    Delayed::Worker.new(quiet: true).work_off
   end
 
   context "when merging users" do
@@ -102,7 +97,7 @@ RSpec.describe "Internal::Users", type: :request do
       post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
 
       expect(user.follows.count).to eq(expected_follows_count)
-      expect(Follow.where(followable_id: user.id, followable_type: "User").count).to eq(1)
+      expect(Follow.followable_user(user.id).count).to eq(1)
       expect(user.chat_channel_memberships.count).to eq(expected_channel_memberships_count)
       expect(user.mentions.count).to eq(expected_mentions_count)
     end
@@ -172,7 +167,7 @@ RSpec.describe "Internal::Users", type: :request do
         user_id: user2.id,
         commentable: article2,
       )
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         Mention.create_all(comment)
       end
     end
@@ -187,7 +182,6 @@ RSpec.describe "Internal::Users", type: :request do
       create_mutual_follows
       create_mention
       create(:badge_achievement, rewarder_id: 1, rewarding_context_message: "yay", user_id: user.id)
-      Delayed::Worker.new(quiet: true).work_off
     end
 
     it "raises a 'record not found' error after deletion" do
@@ -206,7 +200,6 @@ RSpec.describe "Internal::Users", type: :request do
   context "when banishing user" do
     def banish_user
       post "/internal/users/#{user.id}/banish"
-      Delayed::Worker.new(quiet: true).work_off
       user.reload
     end
 
@@ -241,6 +234,12 @@ RSpec.describe "Internal::Users", type: :request do
       user.follow(user2)
       banish_user
       expect(user.follows.count).to eq(0)
+    end
+
+    it "removes a user's classified listings" do
+      create(:classified_listing, user: user)
+      banish_user
+      expect(user.classified_listings.count).to eq(0)
     end
 
     it "creates an entry in the BanishedUsers table" do

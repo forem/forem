@@ -1,5 +1,9 @@
 class PodcastEpisode < ApplicationRecord
   include AlgoliaSearch
+  include Searchable
+
+  SEARCH_SERIALIZER = Search::PodcastEpisodeSerializer
+  SEARCH_CLASS = Search::FeedContent
 
   acts_as_taggable
 
@@ -22,6 +26,9 @@ class PodcastEpisode < ApplicationRecord
   after_create :purge_all
   after_destroy :purge, :purge_all
   after_save    :bust_cache
+
+  after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :remove_from_elasticsearch, on: [:destroy]
 
   before_validation :process_html_and_prefix_all_images
 
@@ -96,10 +103,6 @@ class PodcastEpisode < ApplicationRecord
 
   def body_text
     ActionView::Base.full_sanitizer.sanitize(processed_html)
-  end
-
-  def published_at_date_slashes
-    published_at&.to_date&.strftime("%m/%d/%Y")
   end
 
   def user

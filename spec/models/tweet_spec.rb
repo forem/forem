@@ -1,11 +1,11 @@
 require "rails_helper"
 
-vcr_option = {
-  cassette_name: "twitter_gem",
-  allow_playback_repeats: "true"
-}
+VCR_OPTIONS = {
+  cassette_name: "twitter_fetch_status",
+  allow_playback_repeats: true
+}.freeze
 
-RSpec.describe Tweet, type: :model, vcr: vcr_option do
+RSpec.describe Tweet, type: :model, vcr: VCR_OPTIONS do
   let(:tweet_id) { "1018911886862057472" }
 
   it "fetches a tweet" do

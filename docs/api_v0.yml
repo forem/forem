@@ -1,8 +1,14 @@
-openapi: "3.0.2"
+openapi: "3.0.3"
 info:
   title: DEV API (beta)
-  description: Access DEV articles, comments and other resources via API
-  version: "0.5.9"
+  description: |
+    Access DEV articles, users and other resources via API.
+
+    All endpoints that don't require authentication are CORS enabled.
+
+    Dates and date times, unless otherwise specified, must be in
+    the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
+  version: "0.6.4"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -56,6 +62,7 @@ components:
           tokenUrl: https://dev.to/oauth/token
           refreshUrl: https://dev.to/oauth/token
           scopes: {}
+
   schemas:
     APIError:
       type: object
@@ -155,9 +162,9 @@ components:
           type: string
           format: date-time
         user:
-          $ref: "#/components/schemas/ArticleUser"
+          $ref: "#/components/schemas/SharedUser"
         organization:
-          $ref: "#/components/schemas/ArticleOrganization"
+          $ref: "#/components/schemas/SharedOrganization"
         flare_tag:
           $ref: "#/components/schemas/ArticleFlareTag"
 
@@ -253,9 +260,9 @@ components:
         body_markdown:
           type: string
         user:
-          $ref: "#/components/schemas/ArticleUser"
+          $ref: "#/components/schemas/SharedUser"
         organization:
-          $ref: "#/components/schemas/ArticleOrganization"
+          $ref: "#/components/schemas/SharedOrganization"
         flare_tag:
           $ref: "#/components/schemas/ArticleFlareTag"
 
@@ -294,7 +301,7 @@ components:
                 `cover_image` is the main image of the article
 
                 *If the markdown contains a front matter, it will take precedence
-                on the equivalent params given in the JSON payload.*
+                on the equivalent params given in the payload.*
               type: string
             published:
               description: |
@@ -358,7 +365,7 @@ components:
                 `cover_image` is the main image of the article
 
                 *If the markdown contains a front matter, it will take precedence
-                on the equivalent params given in the JSON payload.*
+                on the equivalent params given in the payload.*
               type: string
             published:
               description: |
@@ -458,15 +465,212 @@ components:
           description: Crossposting or published date time
           type: string
           format: date-time
+        body_markdown:
+          description: The body of the article in Markdown format
+          type: string
         user:
-          $ref: "#/components/schemas/ArticleUser"
+          $ref: "#/components/schemas/SharedUser"
         organization:
-          $ref: "#/components/schemas/ArticleOrganization"
+          $ref: "#/components/schemas/SharedOrganization"
         flare_tag:
           $ref: "#/components/schemas/ArticleFlareTag"
 
-    ArticleUser:
-      description: The article's creator
+    ArticleFlareTag:
+      description: Flare tag of the article
+      type: object
+      properties:
+        name:
+          type: string
+        bg_color_hex:
+          description: Background color (hexadecimal)
+          type: string
+        text_color_hex:
+          description: Text color (hexadecimal)
+          type: string
+
+    Comment:
+      type: object
+      required:
+        - type_of
+        - id_code
+        - body_html
+        - user
+        - children
+      properties:
+        type_of:
+          type: string
+        id_code:
+          type: string
+        body_html:
+          description: HTML formatted comment
+          type: string
+        user:
+          $ref: "#/components/schemas/SharedUser"
+        children:
+          type: array
+          items:
+            $ref: "#/components/schemas/Comment"
+
+    Listing:
+      type: object
+      required:
+        - type_of
+        - id
+        - title
+        - slug
+        - body_markdown
+        - tag_list
+        - tags
+        - category
+        - processed_html
+        - published
+        - user
+      properties:
+        type_of:
+          type: string
+        id:
+          type: integer
+          format: int32
+        title:
+          type: string
+        slug:
+          type: string
+        body_markdown:
+          type: string
+        tag_list:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        category:
+          $ref: "#/components/schemas/ListingCategory"
+        processed_html:
+          type: string
+        published:
+          type: boolean
+        user:
+          $ref: "#/components/schemas/SharedUser"
+        organization:
+          $ref: "#/components/schemas/SharedOrganization"
+
+    ListingCategory:
+      type: string
+      enum: [cfp, forhire, collabs, education, jobs, mentors, products, mentees, forsale, events, misc]
+
+    ListingCreate:
+      type: object
+      properties:
+        classified_listing:
+          type: object
+          required:
+            - title
+            - body_markdown
+            - category
+          properties:
+            title:
+              type: string
+            body_markdown:
+              description: The body of the listing in Markdown format.
+              type: string
+            category:
+              $ref: "#/components/schemas/ListingCategory"
+            tags:
+              description: |
+                Tags related to the listing.
+
+                A maximum of 8 tags are allowed and it takes precedence over `tag_list`.
+              type: array
+              items:
+                type: string
+            tag_list:
+              description: |
+                Comma separated list of tags.
+
+                A maximum of 8 tags are allowed.
+              type: string
+            expires_at:
+              description: Date and time of expiration.
+              type: string
+              format: date-time
+            contact_via_connect:
+              description: |
+                True if users are allowed to contact the listing's owner
+                via DEV connect, false otherwise.
+
+                Defaults to false.
+              type: boolean
+            location:
+              description: Geographical area or city for the listing.
+              type: string
+            organization_id:
+              description: |
+                The id of the organization the user is creating the listing for.
+
+                Only users belonging to an organization can assign the listing to it.
+              type: integer
+              format: int32
+            action:
+              description: Set it to "draft" to create an unpublished listing
+              type: string
+              enum: [draft]
+
+    ListingUpdate:
+      type: object
+      properties:
+        classified_listing:
+          type: object
+          properties:
+            title:
+              type: string
+            body_markdown:
+              description: The body of the listing in Markdown format.
+              type: string
+            category:
+              $ref: "#/components/schemas/ListingCategory"
+            tags:
+              description: |
+                Tags related to the listing.
+
+                A maximum of 8 tags are allowed and it takes precedence over `tag_list`.
+              type: array
+              items:
+                type: string
+            tag_list:
+              description: |
+                Comma separated list of tags.
+
+                A maximum of 8 tags are allowed.
+              type: string
+            expires_at:
+              description: Date and time of expiration.
+              type: string
+              format: date-time
+            contact_via_connect:
+              description: |
+                True if users are allowed to contact the listing's owner
+                via DEV connect, false otherwise.
+
+                Defaults to false.
+              type: boolean
+            location:
+              description: Geographical area or city for the listing.
+              type: string
+            action:
+              description: |
+                This param can be provided by itself to invoke some actions:
+
+                - `bump` bumps the listing and charge either the
+                  organization or the user
+                - `publish` publishes a draft listing
+                - `unpublish` unpublishes a published listing
+
+                It will take priority on any other param in the payload.
+              type: string
+              enum: [bump, publish, unpublish]
+
+    SharedUser:
+      description: The resource creator
       type: object
       properties:
         name:
@@ -487,8 +691,8 @@ components:
           description: Profile image (90x90)
           type: string
 
-    ArticleOrganization:
-      description: The organization the article belongs to
+    SharedOrganization:
+      description: The organization the resource belongs to
       type: object
       properties:
         name:
@@ -505,19 +709,6 @@ components:
           description: Profile image (90x90)
           type: string
           format: url
-
-    ArticleFlareTag:
-      description: Flare tag of the article
-      type: object
-      properties:
-        name:
-          type: string
-        bg_color_hex:
-          description: Background color (hexadecimal)
-          type: string
-        text_color_hex:
-          description: Text color (hexadecimal)
-          type: string
 
     WebhookCreate:
       description: Webhook creation payload
@@ -541,32 +732,6 @@ components:
               type: array
               items:
                 type: string
-
-    WebhookShow:
-      description: Webhook
-      type: object
-      properties:
-        type_of:
-          type: string
-        id:
-          type: integer
-          format: int64
-        source:
-          description: The name of the requester, eg. "DEV"
-          type: string
-        target_url:
-          type: string
-          format: url
-        events:
-          description: An array of events identifiers
-          type: array
-          items:
-            type: string
-        created_at:
-          type: string
-          format: date-time
-        user:
-          $ref: "#/components/schemas/ArticleUser"
 
     WebhookIndex:
       description: Webhook
@@ -592,6 +757,32 @@ components:
           type: string
           format: date-time
 
+    WebhookShow:
+      description: Webhook
+      type: object
+      properties:
+        type_of:
+          type: string
+        id:
+          type: integer
+          format: int64
+        source:
+          description: The name of the requester, eg. "DEV"
+          type: string
+        target_url:
+          type: string
+          format: url
+        events:
+          description: An array of events identifiers
+          type: array
+          items:
+            type: string
+        created_at:
+          type: string
+          format: date-time
+        user:
+          $ref: "#/components/schemas/SharedUser"
+
   examples:
     ErrorBadRequest:
       value:
@@ -605,10 +796,15 @@ components:
       value:
         error: unauthorized
         status: 401
+    ErrorPaymentRequired:
+      value:
+        error: not enough available credits
+        status: 402
     ErrorUnprocessableEntity:
       value:
         error: "param is missing or the value is empty: article"
         status: 422
+
     ArticlesIndex:
       value:
         - type_of: article
@@ -739,6 +935,292 @@ components:
           series: Hello series
           canonical_url: https://example.com/blog/hello
           organization_id: 1234
+
+    Comments:
+      value:
+        - type_of: comment
+          id_code: m3m0
+          body_html: |
+            <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+            <html><body>
+            <p>...</p>
+
+            </body></html>
+          user:
+            name: Heriberto Morissette
+            username: heriberto_morissette
+            twitter_username:
+            github_username:
+            website_url:
+            profile_image: https://res.cloudinary.com/...jpeg
+            profile_image_90: https://res.cloudinary.com/...jpeg
+          children: []
+        - type_of: comment
+          id_code: m357
+          body_html: |
+            <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+            <html><body>
+            <p>...</p>
+
+            <p>...</p>
+
+            </body></html>
+          user:
+            name: Dario Waelchi
+            username: dario waelchi
+            twitter_username:
+            github_username:
+            website_url:
+            profile_image: https://res.cloudinary.com/...png
+            profile_image_90: https://res.cloudinary.com/...png
+          children:
+          - type_of: comment
+            id_code: m35m
+            body_html: |
+              <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+              <html><body>
+
+              <p>...</p>
+
+              </body></html>
+            user:
+              name: rhymes
+              username: rhymes
+              twitter_username:
+              github_username:
+              website_url:
+              profile_image: https://res.cloudinary.com/...jpeg
+              profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--SC90PuMi--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/2693/146201.jpeg
+            children: []
+    CommentsDeleted:
+      value:
+        - type_of: comment
+          id_code: m357
+          body_html: <p>[deleted]</p>
+          user: {}
+          children:
+          - type_of: comment
+            id_code: m35m
+            body_html: |
+              <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+              <html><body>
+
+              <p>...</p>
+
+              </body></html>
+            user:
+              name: rhymes
+              username: rhymes
+              twitter_username:
+              github_username:
+              website_url:
+              profile_image: https://res.cloudinary.com/...jpeg
+              profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--SC90PuMi--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/2693/146201.jpeg
+            children: []
+    CommentsHidden:
+      value:
+        - type_of: comment
+          id_code: m357
+          body_html: <p>[hidden by post author]</p>
+          user: {}
+          children:
+          - type_of: comment
+            id_code: m35m
+            body_html: |
+              <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+              <html><body>
+
+              <p>...</p>
+
+              </body></html>
+            user:
+              name: rhymes
+              username: rhymes
+              twitter_username:
+              github_username:
+              website_url:
+              profile_image: https://res.cloudinary.com/...jpeg
+              profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--SC90PuMi--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/2693/146201.jpeg
+            children: []
+    Comment:
+      value:
+        type_of: comment
+        id_code: m357
+        body_html: |
+          <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+          <html><body>
+          <p>...</p>
+
+          <p>...</p>
+
+          </body></html>
+        user:
+          name: Dario Waelchi
+          username: dario waelchi
+          twitter_username:
+          github_username:
+          website_url:
+          profile_image: https://res.cloudinary.com/...png
+          profile_image_90: https://res.cloudinary.com/...png
+        children:
+        - type_of: comment
+          id_code: m35m
+          body_html: |
+            <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+            <html><body>
+
+            <p>...</p>
+
+            </body></html>
+          user:
+            name: rhymes
+            username: rhymes
+            twitter_username:
+            github_username:
+            website_url:
+            profile_image: https://res.cloudinary.com/...jpeg
+            profile_image_90: https://res.cloudinary.com/....jpeg
+          children: []
+    CommentDeleted:
+      value:
+        type_of: comment
+        id_code: m357
+        body_html: <p>[deleted]</p>
+        user: {}
+        children:
+        - type_of: comment
+          id_code: m35m
+          body_html: |
+            <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+            <html><body>
+
+            <p>...</p>
+
+            </body></html>
+          user:
+            name: rhymes
+            username: rhymes
+            twitter_username:
+            github_username:
+            website_url:
+            profile_image: https://res.cloudinary.com/...jpeg
+            profile_image_90: https://res.cloudinary.com/...jpeg
+          children: []
+    CommentHidden:
+      value:
+        type_of: comment
+        id_code: m357
+        body_html: <p>[hidden by post author]</p>
+        user: {}
+        children:
+        - type_of: comment
+          id_code: m35m
+          body_html: |
+            <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+            <html><body>
+
+            <p>...</p>
+
+            </body></html>
+          user:
+            name: rhymes
+            username: rhymes
+            twitter_username:
+            github_username:
+            website_url:
+            profile_image: https://res.cloudinary.com/...jpeg
+            profile_image_90: https://res.cloudinary.com/...jpeg
+          children: []
+
+    Listings:
+      value:
+        - type_of: classified_listing
+          id: 1157
+          title: TestBash Detroit
+          slug: testbash-detroit-50gb
+          body_markdown: "Do you want to learn about automation? Maybe you're interested in
+            AI-driven testing? Security testing? We have a selection of talks, workshops and
+            training courses to help you in a wide variety of areas in software testing. Join
+            us for our very first trip to Detroit MI! \n\nhttps://bit.ly/TBDetroit"
+          tag_list: events
+          tags:
+          - events
+          category: cfp
+          processed_html: |
+            <p>Do you want to learn about automation? Maybe you're interested in AI-driven testing? Security testing? We have a selection of talks, workshops and training courses to help you in a wide variety of areas in software testing. Join us for our very first trip to Detroit MI! </p>
+
+            <p><a href="https://bit.ly/TBDetroit">https://bit.ly/TBDetroit</a></p>
+          published: true
+          user:
+            name: Heather
+            username: heatherr
+            twitter_username:
+            github_username: Heather-R
+            website_url:
+            profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--ggU5WPaT--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/136256/11cced64-afd2-4421-91e1-c5f7b216d49b.jpeg
+            profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--CjladMBD--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/136256/11cced64-afd2-4421-91e1-c5f7b216d49b.jpeg
+    Listing:
+      value:
+        type_of: classified_listing
+        id: 1157
+        title: TestBash Detroit
+        slug: testbash-detroit-50gb
+        body_markdown: "Do you want to learn about automation? Maybe you're interested in
+          AI-driven testing? Security testing? We have a selection of talks, workshops and
+          training courses to help you in a wide variety of areas in software testing. Join
+          us for our very first trip to Detroit MI! \n\nhttps://bit.ly/TBDetroit"
+        tag_list: events
+        tags:
+        - events
+        category: cfp
+        processed_html: |
+          <p>Do you want to learn about automation? Maybe you're interested in AI-driven testing? Security testing? We have a selection of talks, workshops and training courses to help you in a wide variety of areas in software testing. Join us for our very first trip to Detroit MI! </p>
+
+          <p><a href="https://bit.ly/TBDetroit">https://bit.ly/TBDetroit</a></p>
+        published: true
+        user:
+          name: Heather
+          username: heatherr
+          twitter_username:
+          github_username: Heather-R
+          website_url:
+          profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--ggU5WPaT--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/136256/11cced64-afd2-4421-91e1-c5f7b216d49b.jpeg
+          profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--CjladMBD--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/136256/11cced64-afd2-4421-91e1-c5f7b216d49b.jpeg
+    ListingCreate:
+      value:
+        classified_listing:
+          title: ACME Conference
+          body_markdown: Awesome conference
+          category: cfp
+          tags:
+          - events
+    ListingCreateOrganization:
+      value:
+        classified_listing:
+          title: ACME Conference
+          body_markdown: Awesome conference
+          category: cfp
+          tags:
+          - events
+          organization_id: 1
+    ListingUpdate:
+      value:
+        classified_listing:
+          title: ACME New Conference
+          body_markdown: Awesome new conference
+    ListingUpdateActionBump:
+      value:
+        classified_listing:
+          action: bump
+    ListingUpdateActionPublish:
+      value:
+        classified_listing:
+          action: publish
+    ListingUpdateActionUnpublish:
+      value:
+        classified_listing:
+          action: unpublish
+
     WebhookCreate:
       value:
         webhook_endpoint:
@@ -767,6 +1249,10 @@ components:
 tags:
   - name: articles
     description: Articles are all the posts users create on DEV
+  - name: comments
+    description: Users can leave comments to articles and podcasts episodes
+  - name: listings
+    description: Listings are classified ads
   - name: users
     description: Users own resources that require authentication
   - name: webhooks
@@ -787,73 +1273,87 @@ paths:
         By default it will return featured, published articles ordered
         by descending popularity.
 
-        Each page will contain `30` articles.
-
-        Responses, according to the combination of params, are cached for 24 hours.
+        It supports pagination, each page will contain `30` articles by default.
       tags:
         - articles
       parameters:
         - name: page
           in: query
-          description: |
-            Pagination page.
-
-            This param can be used in conjuction with all other params
-            (except when asking for fresh and rising articles by themselves).
+          description: Pagination page.
           schema:
             type: integer
             format: int32
           example: 1
+        - name: per_page
+          in: query
+          description: Page size (defaults to 30 with a maximum of 1000).
+          schema:
+            type: integer
+            format: int32
+          example: 30
         - name: tag
           in: query
           description: |
-            Adding this parameter will return articles that contain the
+            Using this parameter will retrieve articles that contain the
             requested tag.
 
-            This param can be used by itself, with `page` or with `top`.
+            Articles will be ordered by descending popularity.
+
+            This parameter can be used in conjuction with `top`.
           schema:
             type: string
           example: discuss
         - name: username
           in: query
           description: |
-            Adding this parameter will return articles belonging to a User or Organization
-            ordered by descending `published_at`.
+            Using this parameter will retrieve articles belonging
+            to a User or Organization ordered by descending publication date.
 
             If `state=all` the number of items returned will be `1000` instead of the default `30`.
 
-            This param can be used by itself or only with `page` and `state`.
+            This parameter can be used in conjuction with `state`.
           schema:
             type: string
           example: ben
         - name: state
           in: query
           description: |
-            Adding this will allow the client to check which articles are fresh or rising.
+            Using this parameter will allow the client to check which articles are fresh or rising.
 
-            If `state=fresh` the server will return published fresh articles.
-            If `state=rising` the server will return published rising articles.
+            If `state=fresh` the server will return fresh articles.
+            If `state=rising` the server will return rising articles.
 
-            This param can only be used by itself or with `username` if set to `all`.
+            This param can be used in conjuction with `username`, only if set to `all`.
           schema:
             type: string
-          example: ben
+            enum: [fresh, rising, all]
+          example: fresh
         - name: top
           in: query
           description: |
-            Adding this will allow the client to return the most popular articles
+            Using this parameter will allow the client to return the most popular articles
             in the last `N` days.
 
             `top` indicates the number of days since publication of the articles
             returned.
 
-            This param can only be used by itself or with `tag`.
+            This param can be used in conjuction with `tag`.
           schema:
             type: integer
             format: int32
           example: 2
+        - name: collection_id
+          in: query
+          description: |
+            Adding this will allow the client to return the list of articles
+            belonging to the requested collection, ordered by ascending
+            publication date.
+          schema:
+            type: integer
+            format: int32
+          example: 99
       responses:
-        200:
+        "200":
           description: A list of articles
           content:
             application/json:
@@ -907,7 +1407,7 @@ paths:
                 $ref: "#/components/examples/ArticleCreateOrganization"
 
       responses:
-        201:
+        "201":
           description: A newly created article
           content:
             application/json:
@@ -922,7 +1422,7 @@ paths:
               schema:
                 type: string
                 format: url
-        400:
+        "400":
           description: BadRequest
           content:
             application/json:
@@ -931,7 +1431,7 @@ paths:
               examples:
                 error-bad-request:
                   $ref: "#/components/examples/ErrorBadRequest"
-        401:
+        "401":
           description: Unauthorized
           content:
             application/json:
@@ -940,7 +1440,7 @@ paths:
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        422:
+        "422":
           description: Unprocessable Entity
           content:
             application/json:
@@ -975,8 +1475,6 @@ paths:
       description: |
         This endpoint allows the client to retrieve a single
         published article given its `id`.
-
-        Responses are cached for 5 minutes.
       tags:
         - articles
       parameters:
@@ -989,7 +1487,7 @@ paths:
             format: int32
           example: 150589
       responses:
-        200:
+        "200":
           description: An article
           content:
             application/json:
@@ -998,7 +1496,7 @@ paths:
               examples:
                 article-success:
                   $ref: "#/components/examples/ArticleShow"
-        404:
+        "404":
           description: Resource not found
           content:
             application/json:
@@ -1016,7 +1514,7 @@ paths:
       operationId: updateArticle
       summary: Update an article
       description: |
-        This endpoint allows the client to updated an existing article.
+        This endpoint allows the client to update an existing article.
 
         "Articles" are all the posts that users create on DEV that typically
         show up in the feed. They can be a blog post, a discussion question,
@@ -1042,7 +1540,7 @@ paths:
           example: 150589
       requestBody:
         description: |
-          Article params to update.
+          Article params for the update.
 
           *Note: if the article contains a front matter in its body, its front
           matter properties will still take precedence over any JSON equivalent
@@ -1060,42 +1558,38 @@ paths:
               article-update-organization:
                 $ref: "#/components/examples/ArticleCreateOrganization"
       responses:
-        200:
+        "200":
           description: The updated article
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/ArticleShow"
               examples:
                 article-success:
                   $ref: "#/components/examples/ArticleShow"
-        400:
+        "400":
           description: BadRequest
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-bad-request:
                   $ref: "#/components/examples/ErrorBadRequest"
-        401:
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        422:
+        "422":
           description: Unprocessable Entity
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unprocessable-entity:
@@ -1147,7 +1641,7 @@ paths:
             format: int32
           example: 30
       responses:
-        200:
+        "200":
           description: A list of published articles
           content:
             application/json:
@@ -1199,7 +1693,7 @@ paths:
             format: int32
           example: 30
       responses:
-        200:
+        "200":
           description: A list of published articles
           content:
             application/json:
@@ -1251,7 +1745,7 @@ paths:
             format: int32
           example: 30
       responses:
-        200:
+        "200":
           description: A list of articles
           content:
             application/json:
@@ -1305,7 +1799,7 @@ paths:
             format: int32
           example: 30
       responses:
-        200:
+        "200":
           description: A list of articles
           content:
             application/json:
@@ -1322,6 +1816,480 @@ paths:
           source: |
             curl -H "api-key: API_KEY" https://dev.to/api/articles/me/all
 
+  /comments:
+    get:
+      operationId: getCommentsByArticleId
+      summary: Comments
+      description: |
+        This endpoint allows the client to retrieve all comments belonging to an
+        article as threaded conversations.
+
+        It will return the all top level comments with their nested comments as
+        threads. See the format specification for further details.
+      tags:
+        - comments
+      parameters:
+        - name: a_id
+          in: query
+          description: Article identifier.
+          schema:
+            type: integer
+            format: int32
+          example: 270180
+      responses:
+        "200":
+          description: A list of threads of comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Comment"
+              examples:
+                comments-success:
+                  $ref: "#/components/examples/Comments"
+                comments-success-deleted:
+                  $ref: "#/components/examples/CommentsDeleted"
+                comments-success-hidden:
+                  $ref: "#/components/examples/CommentsHidden"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                article-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl (all comments of an article)
+          source: |
+            curl https://dev.to/api/comments?a_id=270180
+
+  /comments/{id}:
+    get:
+      operationId: getCommentById
+      summary: Comment
+      description: |
+        This endpoint allows the client to retrieve a comment as well as his
+        descendants comments.
+
+        It will return the required comment (the root) with its nested
+        descendants as a thread.
+
+        See the format specification for further details.
+      tags:
+        - comments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Comment identifier.
+          schema:
+            type: string
+          example: m35m
+      responses:
+        "200":
+          description: A comment and its descendants
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+              examples:
+                comment-success:
+                  $ref: "#/components/examples/Comment"
+                comments-success-deleted:
+                  $ref: "#/components/examples/CommentDeleted"
+                comments-success-hidden:
+                  $ref: "#/components/examples/CommentHidden"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                article-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl (a comment and its descendants)
+          source: |
+            curl https://dev.to/api/comments/m51e
+
+  /listings:
+    get:
+      operationId: getListings
+      summary: Published listings
+      description: |
+        This endpoint allows the client to retrieve a list of listings.
+
+        "Listings" are classified ads that users create on DEV.
+        They can be related to conference announcements, job offers, mentorships,
+        upcoming events and more.
+
+        By default it will return published listings ordered by descending
+        freshness.
+
+        It supports pagination, each page will contain `30` articles by default.
+      tags:
+        - listings
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page.
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: per_page
+          in: query
+          description: Page size (defaults to 30 with a maximum of 100).
+          schema:
+            type: integer
+            format: int32
+          example: 30
+        - name: category
+          in: query
+          description: |
+            Using this parameter will return listings belonging to the
+            requested category.
+          schema:
+            type: string
+          example: cfp
+      responses:
+        "200":
+          description: A list of listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Listing"
+              examples:
+                listings-success:
+                  $ref: "#/components/examples/Listings"
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl (all listings)
+          source: |
+            curl https://dev.to/api/listings
+    post:
+      operationId: createListing
+      summary: Create a new listing
+      description: |
+        This endpoint allows the client to create a new listing.
+
+        "Listings" are classified ads that users create on DEV.
+        They can be related to conference announcements, job offers, mentorships,
+        upcoming events and more.
+
+        The user creating the listing or the organization on which behalf the user
+        is creating for need to have enough creadits for this operation to be
+        successful. The server will prioritize the organization's credits over
+        the user's credits.
+
+        ### Additional resources
+
+        - [Rails tests for Listings API](https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/classified_listings_spec.rb)
+      tags:
+        - listings
+      requestBody:
+        description: Listing to create
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListingCreate"
+            examples:
+              listing-create:
+                $ref: "#/components/examples/ListingCreate"
+              listing-create-organization:
+                $ref: "#/components/examples/ListingCreateOrganization"
+
+      responses:
+        "201":
+          description: A newly created Listing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Listing"
+              examples:
+                article-success:
+                  $ref: "#/components/examples/Listing"
+        "400":
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-bad-request:
+                  $ref: "#/components/examples/ErrorBadRequest"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
+        "402":
+          description: PaymentRequired
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorPaymentRequired"
+        "422":
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unprocessable-entity:
+                  $ref: "#/components/examples/ErrorUnprocessableEntity"
+      security:
+        - api_key: []
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl
+          source: |
+            curl -X POST -H "Content-Type: application/json" \
+              -H "api-key: API_KEY" \
+              -d '{"classified_listing":{"title":"Title","body_markdown":"Body","category":"cfp"}}' \
+              https://dev.to/api/listings
+        - lang: Shell
+          label: curl (with tags)
+          source: |
+            curl -X POST -H "Content-Type: application/json" \
+              -H "api-key: API_KEY" \
+              -d '{"classified_listing":{"title":"Title","body_markdown":"Body","category":"cfp","tags":["python"]}}' \
+              https://dev.to/api/listings
+        - lang: Shell
+          label: curl (draft)
+          source: |
+            curl -X POST -H "Content-Type: application/json" \
+              -H "api-key: API_KEY" \
+              -d '{"classified_listing":{"title":"Title","body_markdown":"Body","category":"cfp","action":"draft"}}' \
+              https://dev.to/api/listings
+
+  /listings/category/{category}:
+    get:
+      operationId: getListingsByCategory
+      summary: Published listings by category
+      description: |
+        This endpoint allows the client to retrieve a list of listings belonging
+        to the specified category.
+
+        "Listings" are classified ads that users create on DEV.
+        They can be related to conference announcements, job offers, mentorships,
+        upcoming events and more.
+
+        By default it will return published listings ordered by descending
+        freshness.
+
+        It supports pagination, each page will contain `30` articles by default.
+      tags:
+        - listings
+      parameters:
+        - name: category
+          in: path
+          required: true
+          description: The category of the listing
+          schema:
+            $ref: "#/components/schemas/ListingCategory"
+        - name: page
+          in: query
+          description: Pagination page.
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: per_page
+          in: query
+          description: Page size (defaults to 30 with a maximum of 100).
+          schema:
+            type: integer
+            format: int32
+          example: 30
+      responses:
+        "200":
+          description: A list of listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Listing"
+              examples:
+                listings-success:
+                  $ref: "#/components/examples/Listings"
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl (call for papers listings)
+          source: |
+            curl https://dev.to/api/listings/category/cfp
+
+  /listings/{id}:
+    get:
+      operationId: getListingById
+      summary: A listing
+      description: |
+        This endpoint allows the client to retrieve
+        a single listing given its `id`.
+
+        An unpublished listing is only accessible if authentication is supplied
+        and it belongs to the authenticated user.
+      tags:
+        - listings
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Id of the listing
+          schema:
+            type: integer
+            format: int32
+          example: 1
+      responses:
+        "200":
+          description: A listing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Listing"
+              examples:
+                article-success:
+                  $ref: "#/components/examples/Listing"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                article-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      security:
+        - {} # this indicates that authentication is optional
+        - api_key: []
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl
+          source: |
+            curl https://dev.to/api/listings/1184
+        - lang: Shell
+          label: curl (with authentication)
+          source: |
+            curl -H "api-key: API_KEY" https://dev.to/api/listings/1185
+    put:
+      operationId: updateListing
+      summary: Update a listing
+      description: |
+        This endpoint allows the client to update an existing listing.
+      tags:
+        - listings
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Id of the listing
+          schema:
+            type: integer
+            format: int32
+          example: 1184
+      requestBody:
+        description: |
+          Listing params for the update.
+
+          **Note**: except for bumping, publishing and unpublishing there are the
+          following restrictions on the ability to update listings:
+
+          - the payload has to contain at least one param among `title`, `body_markdown` or `tags`/`tag_list`
+          - the listing can't be updated if it has not been bumped in the last 24 hours
+          - the listing can't be updated if it has been published but not recently bumped
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListingUpdate"
+            examples:
+              listing-update-action-bump:
+                $ref: "#/components/examples/ListingUpdateActionBump"
+              listing-update-action-publish:
+                $ref: "#/components/examples/ListingUpdateActionPublish"
+              listing-update-action-unpublish:
+                $ref: "#/components/examples/ListingUpdateActionUnpublish"
+              listing-update:
+                $ref: "#/components/examples/ListingUpdate"
+      responses:
+        "200":
+          description: The updated article
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleShow"
+              examples:
+                article-success:
+                  $ref: "#/components/examples/ArticleShow"
+        "400":
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-bad-request:
+                  $ref: "#/components/examples/ErrorBadRequest"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
+        "402":
+          description: PaymentRequired
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorPaymentRequired"
+        "422":
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unprocessable-entity:
+                  $ref: "#/components/examples/ErrorUnprocessableEntity"
+      security:
+        - api_key: []
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl (bump)
+          source: |
+            curl -X PUT -H "Content-Type: application/json" \
+              -H "api-key: API_KEY" \
+              -d '{"classified_listing":{"action":"bump"}' \
+              https://dev.to/api/listings/{id}
+        - lang: Shell
+          label: curl (update)
+          source: |
+            curl -X PUT -H "Content-Type: application/json" \
+              -H "api-key: API_KEY" \
+              -d '{"classified_listing":{"title":"Title"}' \
+              https://dev.to/api/listings/{id}
+
   /webhooks:
     get:
       operationId: getWebhooks
@@ -1337,7 +2305,7 @@ paths:
       tags:
         - webhooks
       responses:
-        200:
+        "200":
           description: A list of webhooks
           content:
             application/json:
@@ -1385,42 +2353,38 @@ paths:
                 $ref: "#/components/examples/WebhookCreate"
 
       responses:
-        201:
+        "201":
           description: A newly created webhook
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/WebhookShow"
               examples:
                 webhook-success:
                   $ref: "#/components/examples/WebhookShow"
-        400:
+        "400":
           description: BadRequest
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-bad-request:
                   $ref: "#/components/examples/ErrorBadRequest"
-        401:
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        422:
+        "422":
           description: Unprocessable Entity
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unprocessable-entity:
@@ -1456,32 +2420,29 @@ paths:
             format: int32
           example: 123
       responses:
-        200:
+        "200":
           description: A webhook endpoint
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/WebhookShow"
               examples:
                 webhook-success:
                   $ref: "#/components/examples/WebhookShow"
-        401:
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 article-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        404:
+        "404":
           description: Resource not found
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 article-not-found:
@@ -1512,9 +2473,9 @@ paths:
             format: int32
           example: 123
       responses:
-        204:
+        "204":
           description: A successful deletion
-        401:
+        "401":
           description: Unauthorized
           content:
             application/json:
@@ -1523,7 +2484,7 @@ paths:
               examples:
                 article-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        404:
+        "404":
           description: Resource not found
           content:
             application/json:

@@ -19,6 +19,6 @@
     <%= render "comments/comment_date", decorated_comment: comment.decorate %>
   </div>
   <div class="body">
-    <%= comment.processed_html.html_safe %>
+    <%= comment.safe_processed_html %>
   </div>
 </div>

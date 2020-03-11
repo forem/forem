@@ -1,11 +1,11 @@
 @import 'variables';
 @import '_mixins';
 
-.dialog{
+.dialog {
   @include themeable(
-      background,
-      theme-container-background,
-      rgb(236, 236, 236)
+    background,
+    theme-container-background,
+    rgb(236, 236, 236)
   );
   @include themeable(
     border-bottom,
@@ -17,23 +17,24 @@
   margin: 20vh auto;
   max-width: 60%;
   height: 100%;
-  @include themeable(
-    color,
-    theme-color,
-    rgb(44, 46, 50)
-  );
+  @include themeable(color, theme-color, rgb(44, 46, 50));
   border-radius: 5px;
   @media screen and (max-width: 321px) {
-    h1,h2,h3,h4,h5,h6{
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       font-size: 15px;
     }
   }
   @media screen and (max-width: 768px) {
-    h3{
+    h3 {
       word-break: break-all;
     }
   }
 }
-.blankmessage{
+.blankmessage {
   font-style: italic;
 }

@@ -41,10 +41,9 @@ RSpec.describe "Api::V0::ChatChannels", type: :request do
         get api_chat_channel_path(chat_channel.id)
 
         response_channel = response.parsed_body
-        expected_keys = %w[
-          type_of id description channel_name username channel_users channel_mod_ids pending_users_select_fields
-        ]
-        expect(response_channel.keys).to match_array(expected_keys)
+        expect(response_channel.keys).to match_array(
+          %w[type_of id description channel_name username channel_users channel_mod_ids pending_users_select_fields],
+        )
 
         %w[id description channel_name channel_mod_ids].each do |attr|
           expect(response_channel[attr]).to eq(chat_channel.public_send(attr))
@@ -57,17 +56,15 @@ RSpec.describe "Api::V0::ChatChannels", type: :request do
       it "returns the correct channel users representation" do
         get api_chat_channel_path(chat_channel.id)
 
-        response_channel = response.parsed_body
-        response_channel_users = response_channel["channel_users"]
+        response_channel_users = response.parsed_body["channel_users"]
 
-        membership = user.chat_channel_memberships.last
         expected_last_opened_at = Time.zone.parse(response_channel_users[user.username]["last_opened_at"]).to_i
         response_user = response_channel_users[user.username]
 
         expect(response_user["profile_image"]).to eq(ProfileImage.new(user).get(width: 90))
         expect(response_user["darker_color"]).to eq(user.decorate.darker_color)
         expect(response_user["name"]).to eq(user.name)
-        expect(expected_last_opened_at).to eq(membership.last_opened_at.to_i)
+        expect(expected_last_opened_at).to eq(user.chat_channel_memberships.last.last_opened_at.to_i)
         expect(response_user["username"]).to eq(user.username)
         expect(response_user["id"]).to eq(user.id)
       end
@@ -80,8 +77,7 @@ RSpec.describe "Api::V0::ChatChannels", type: :request do
 
         get api_chat_channel_path(chat_channel.id)
 
-        response_channel = response.parsed_body
-        response_pending_user_select_fields = response_channel["pending_users_select_fields"].first
+        response_pending_user_select_fields = response.parsed_body["pending_users_select_fields"].first
 
         expected_updated_at = Time.zone.parse(response_pending_user_select_fields["updated_at"]).to_i
 

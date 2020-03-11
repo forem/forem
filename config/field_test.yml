@@ -1,0 +1,29 @@
+experiments:
+  user_home_feed: # Home feed collection for logged in user
+    variants:
+      - base
+      - more_random_experiment
+      - more_tag_weight_experiment
+      - mix_base_more_random_experiment
+      - more_tag_weight_more_random_experiment
+      - more_comments_experiment
+    weights:
+      - 50
+      - 10
+      - 10
+      - 10
+      - 10
+      - 10
+    goals:
+      - user_creates_comment
+      - user_creates_reaction
+      - user_views_article_four_days_in_week
+exclude:
+  bots: true
+
+# Dashboard performance
+cache: true
+
+# For logged-in users we'll explicitely pass participant. 
+# If we experiment on non-logged in, we don't want to collect cookies anyway.
+cookies: false

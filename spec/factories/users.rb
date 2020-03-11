@@ -57,7 +57,6 @@ FactoryBot.define do
       end
     end
 
-
     trait :trusted do
       after(:build) { |user| user.add_role(:trusted) }
     end
@@ -70,7 +69,7 @@ FactoryBot.define do
       after(:build) { |user| user.created_at = 3.weeks.ago }
     end
 
-    trait :ignore_after_callback do
+    trait :ignore_mailchimp_subscribe_callback do
       after(:build) do |user|
         user.define_singleton_method(:subscribe_to_mailchimp_newsletter) {}
         # user.class.skip_callback(:validates, :after_create)

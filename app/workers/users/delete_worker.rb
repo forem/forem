@@ -11,7 +11,7 @@ module Users
       Users::Delete.call(user)
       NotifyMailer.account_deleted_email(user).deliver unless admin_delete
     rescue StandardError => e
-      DataDogStatsClient.count("users.delete", 1, tags: ["action:failed", "user_id:#{user.id}"])
+      DatadogStatsClient.count("users.delete", 1, tags: ["action:failed", "user_id:#{user.id}"])
       Rails.logger.error("Error while deleting user: #{e}")
     end
   end

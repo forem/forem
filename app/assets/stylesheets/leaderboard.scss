@@ -1,70 +1,68 @@
 @import 'variables';
-.users-index{
 
-}
-.leaderboard-page{
-  background:$light-gray;
-  min-height:700px;
-  padding:70px 0px;
+.leaderboard-page {
+  background: $light-gray;
+  min-height: 700px;
+  padding: 70px 0px;
   font-family: $helvetica;
-  .leaderboard-container{
-    width:800px;
-    max-width:98%;
-    margin:0px auto;
-    background:white;
-    border:1px solid darken($lightest-gray,4%);
-    border-radius:5px;
-    header{
-      text-align:center;
-      padding:10px 0px;
-      h1{
-        font-size:calc(2.5vw + 25px);
+  .leaderboard-container {
+    width: 800px;
+    max-width: 98%;
+    margin: 0px auto;
+    background: white;
+    border: 1px solid darken($lightest-gray, 4%);
+    border-radius: 5px;
+    header {
+      text-align: center;
+      padding: 10px 0px;
+      h1 {
+        font-size: calc(2.5vw + 25px);
       }
     }
-    .leaderboard-user{
-      overflow:hidden;
-      position:relative;
-      padding:10px 0px;
-      border-top:1px solid darken($lightest-gray,4%);
-      .profile-pic{
-        float:left;
-        img{
-          height:80px;
-          width:80px;
-          border-radius:3px;
-          margin:0;
-          margin-left:10px;
+    .leaderboard-user {
+      overflow: hidden;
+      position: relative;
+      padding: 10px 0px;
+      border-top: 1px solid darken($lightest-gray, 4%);
+      .profile-pic {
+        float: left;
+        img {
+          height: 80px;
+          width: 80px;
+          border-radius: 3px;
+          margin: 0;
+          margin-left: 10px;
         }
       }
-      .content{
-        float:left;
-        width:calc(100% - 100px);
-        padding:0px 5px;
-        .user-name{
-          color:$black;
+      .content {
+        float: left;
+        width: calc(100% - 100px);
+        padding: 0px 5px;
+        .user-name {
+          color: $black;
         }
-        h3{
-          margin:0px 0px 5px;
-          font-size:calc(1.9vw + 15px);
-          font-weight:400;
+        h3 {
+          margin: 0px 0px 5px;
+          font-size: calc(1.9vw + 15px);
+          font-weight: 400;
         }
-        img{
-          height:15px;
-          width:15px;
+        img {
+          height: 15px;
+          width: 15px;
         }
-        a{
-          margin-right:8px;
-          display:block;
-          @media screen and ( min-width: 540px ){
-            display:inline-block;
+        a {
+          margin-right: 8px;
+          display: block;
+          @media screen and (min-width: 540px) {
+            display: inline-block;
           }
         }
       }
     }
   }
-  .bottom{
-    margin:70px auto 0px;
-    width:700px;
-    max-width:90%;
+  .bottom {
+    margin: 70px auto 0px;
+    width: 700px;
+    max-width: 90%;
   }
 }
