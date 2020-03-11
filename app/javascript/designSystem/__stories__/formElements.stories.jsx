@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 
 import './typography.scss';
 
-storiesOf('Base/Components', module).add('Form Components', () => (
+storiesOf('Base/Components/HTML', module).add('Form Components', () => (
   <div className="container">
     <div className="body">
       <h2>Form elements</h2>

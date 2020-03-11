@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 
 import './typography.scss';
 
-storiesOf('Base/Components/Modals', module)
+storiesOf('Base/Components/HTML/Modals', module)
   .add('Description', () => (
     <div className="container">
       <h2>Modals</h2>

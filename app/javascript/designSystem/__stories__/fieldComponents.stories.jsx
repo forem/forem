@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 
 import './typography.scss';
 
-storiesOf('Base/Components', module).add('Field Component', () => (
+storiesOf('Base/Components/HTML', module).add('Field Component', () => (
   <div className="container">
     <div className="body">
       <h2>Field Component</h2>

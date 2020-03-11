@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 
 import './typography.scss';
 
-storiesOf('Base/Components/Navigation/Main Navigation', module)
+storiesOf('Base/Components/HTML/Navigation/Main Navigation', module)
   .add('Description', () => (
     <div className="container">
       <h2>Navigation: Main nav</h2>

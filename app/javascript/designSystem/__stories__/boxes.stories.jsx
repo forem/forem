@@ -20,7 +20,7 @@ Grid.propTypes = {
   children: defaultChildrenPropTypes.isRequired,
 };
 
-storiesOf('Base/Components/Boxes', module)
+storiesOf('Base/Components/HTML/Boxes', module)
   .add('Description', () => (
     <div className="container">
       <h2>Boxes</h2>
