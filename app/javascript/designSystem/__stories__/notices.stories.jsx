@@ -3,9 +3,9 @@ import { storiesOf } from '@storybook/react';
 
 import './typography.scss';
 
-storiesOf('Base/Components', module).add('Notices', () => (
-  <div className="container">
-    <div className="body">
+storiesOf('Base/Components/Notices', module)
+  .add('Description', () => (
+    <div className="container">
       <h2>Notices</h2>
       <p>
         Use Notices to focus user on specific piece of content, for example (but
@@ -22,25 +22,27 @@ storiesOf('Base/Components', module).add('Notices', () => (
       </p>
       <p>By default, this component has 16px padding.</p>
     </div>
-
-    <div>
-      <div className="crayons-notice">This is Default Notice content.</div>
-      <br />
-      <div className="crayons-notice crayons-notice--danger">
-        This is Default Notice content.
-      </div>
-      <br />
-      <div className="crayons-notice crayons-notice--warning">
-        This is Warning Notice content.
-      </div>
-      <br />
-      <div className="crayons-notice crayons-notice--success">
-        This is Success Notice content.
-      </div>
-      <br />
-      <div className="crayons-notice crayons-notice--info">
-        This is Info Notice content.
-      </div>
+  ))
+  .add('Default', () => (
+    <div className="crayons-notice">This is Default Notice content.</div>
+  ))
+  .add('Danger', () => (
+    <div className="crayons-notice crayons-notice--danger">
+      This is Default Notice content.
     </div>
-  </div>
-));
+  ))
+  .add('Warning', () => (
+    <div className="crayons-notice crayons-notice--warning">
+      This is Warning Notice content.
+    </div>
+  ))
+  .add('Success', () => (
+    <div className="crayons-notice crayons-notice--success">
+      This is Success Notice content.
+    </div>
+  ))
+  .add('Info', () => (
+    <div className="crayons-notice crayons-notice--info">
+      This is Info Notice content.
+    </div>
+  ));
