@@ -83,9 +83,8 @@ refer to
 
 ## CORS
 
-If you are experiencing CORS issues locally or are in need to display more
-information about the CORS headers, add the following varable to your
-`application.yml`:
+If you are experiencing CORS issues locally or need to display more information
+about the CORS headers, add the following variable to your `application.yml`:
 
 ```yml
 DEBUG_CORS: true
