@@ -2590,7 +2590,7 @@ paths:
           source: |
             curl https://dev.to/api/podcast_episodes
         - lang: Shell
-          label: curl (all episodes belonging of a podcast)
+          label: curl (all episodes belonging to a podcast)
           source: |
             curl https://dev.to/api/podcast_episodes?username=codenewbie
 
