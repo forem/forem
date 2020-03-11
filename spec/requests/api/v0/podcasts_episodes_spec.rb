@@ -90,9 +90,9 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
 
       it "returns not found if the episode belongs to an unpublished podcast" do
         unavailable_podcast = create(:podcast, published: false)
-        pe = create(:podcast_episode, podcast: unavailable_podcast)
+        create(:podcast_episode, podcast: unavailable_podcast)
 
-        get api_podcast_episodes_path(username: pe.slug)
+        get api_podcast_episodes_path(username: unavailable_podcast.slug)
 
         expect(response).to have_http_status(:not_found)
       end
