@@ -166,7 +166,7 @@ function toggleCodeOfConduct() {
 
 function replaceActionButts(el) {
   var loggedInActionButts = "";
-  var wrapper = el.getElementsByClassName("comment-submit-actions")[0]
+  const wrapper = el.querySelector('.comment-submit-actions');
   if (el.dataset.currentUserComment == "true") {
     loggedInActionButts = '<a data-no-instant href="' + el.parentNode.parentNode.dataset.path + '/delete_confirm" class="edit-butt">DELETE</a>\
                             <a href="' + el.parentNode.parentNode.dataset.path + '/edit">EDIT</a>'
