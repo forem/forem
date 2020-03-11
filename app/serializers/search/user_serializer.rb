@@ -11,6 +11,7 @@ module Search
                :name,
                :path,
                :positive_reactions_count,
+               :profile_image_90,
                :reactions_count,
                :username
   end
