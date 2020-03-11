@@ -418,9 +418,5 @@
     clear: both;
 
     @include load-more;
-
-    button {
-      margin-top: 0;
-    }
   }
 }
