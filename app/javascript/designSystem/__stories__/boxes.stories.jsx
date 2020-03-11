@@ -151,24 +151,5 @@ storiesOf('Base/Components', module).add('Boxes', () => (
         filled box, level 3
       </div>
     </div>
-
-    <pre>
-      {/* default: outlined, black */}
-      <div className="crayons-box">box, level 0</div>
-
-      {/* levels 0-3 */}
-      <div className="... crayons-box--level-1">box, level 1</div>
-      <div className="... crayons-box--level-2">box, level 2</div>
-      <div className="... crayons-box--level-3">box, level 3</div>
-
-      {/* filled variation */}
-      <div className="... crayons-box--filled">filled box, level 0</div>
-
-      {/* styles: danger, success, warning, info */}
-      <div className="... crayons-box--danger" />
-      <div className="... crayons-box--success" />
-      <div className="... crayons-box--warning" />
-      <div className="... crayons-box--info" />
-    </pre>
   </div>
 ));

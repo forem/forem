@@ -79,16 +79,5 @@ storiesOf('Base/Components', module).add('Indicators', () => (
       <span className="crayons-indicator crayons-indicator--inverted">1</span>
       <span className="crayons-indicator crayons-indicator--inverted crayons-indicator--bullet" />
     </div>
-
-    <pre>
-      <span className="crayons-indicator">Label</span>
-      <span className="crayons-indicator">1</span>
-      <span className="crayons-indicator crayons-indicator--bullet" />
-
-      {/* styles: accent, critical, inverted */}
-      <span className="... crayons-indicator--accent">...</span>
-      <span className="... crayons-indicator--critical">...</span>
-      <span className="... crayons-indicator--inverted">...</span>
-    </pre>
   </div>
 ));

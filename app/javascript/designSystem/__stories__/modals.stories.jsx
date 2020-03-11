@@ -59,15 +59,5 @@ storiesOf('Base/Components', module).add('Modals', () => (
         consequuntur temporibus.
       </div>
     </div>
-
-    <pre>
-      <div className="crayons-modal">Hey, ...</div>
-
-      <div className="... crayons-modal--s">Hey, ...</div>
-
-      <div className="... crayons-modal--l">Hey, ...</div>
-
-      <div className="... crayons-modal--padding-0">Hey, ...</div>
-    </pre>
   </div>
 ));

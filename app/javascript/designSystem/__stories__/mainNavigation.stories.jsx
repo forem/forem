@@ -36,35 +36,5 @@ storiesOf('Base/Components/Navigation', module).add('Main Navigation', () => (
         More...
       </a>
     </div>
-
-    <pre>
-      <a href="#" className="crayons-nav-block">
-        ...
-      </a>
-      <a href="#" className="crayons-nav-block crayons-nav-block--current">
-        ...
-      </a>
-
-      {/* icon inside */}
-      <a href="#" className="crayons-nav-block">
-        <span className="crayons-icon">📻</span>
-        ...
-      </a>
-      <a href="#" className="crayons-nav-block">
-        <svg className="crayons-icon">...</svg>
-        ...
-      </a>
-
-      {/* indicator inside */}
-      <a href="#" className="crayons-nav-block">
-        ...
-        <span className="crayons-indicator">3</span>
-      </a>
-
-      {/* indented */}
-      <a href="#" className="crayons-nav-block crayons-nav-block--indented">
-        More...
-      </a>
-    </pre>
   </div>
 ));

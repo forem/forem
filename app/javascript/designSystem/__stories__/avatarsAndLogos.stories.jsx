@@ -66,18 +66,6 @@ storiesOf('Base/Components', module).add('Avatars & Logos', () => (
       </span>
     </div>
 
-    <pre>
-      <span className="crayons-avatar">
-        <img src="..." className="crayons-avatar__image" alt="..." />
-      </span>
-
-      {/* sizes: l, xl, 2xl, 3xl */}
-      <span className="... crayons-avatar--l">...</span>
-      <span className="... crayons-avatar--xl">...</span>
-      <span className="... crayons-avatar--2xl">...</span>
-      <span className="... crayons-avatar--3xl">...</span>
-    </pre>
-
     <div>
       <span className="crayons-logo">
         <img
@@ -115,17 +103,5 @@ storiesOf('Base/Components', module).add('Avatars & Logos', () => (
         />
       </span>
     </div>
-
-    <pre>
-      <span className="crayons-logo">
-        <img src="..." className="crayons-logo__image" alt="..." />
-      </span>
-
-      {/* sizes: l, xl, 2xl, 3xl */}
-      <span className="... crayons-logo--l">...</span>
-      <span className="... crayons-logo--xl">...</span>
-      <span className="... crayons-logo--2xl">...</span>
-      <span className="... crayons-logo--3xl">...</span>
-    </pre>
   </div>
 ));

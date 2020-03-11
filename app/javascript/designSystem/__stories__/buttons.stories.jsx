@@ -85,51 +85,5 @@ storiesOf('Base/Components', module).add('Buttons', () => (
         Button
       </a>
     </div>
-
-    <pre>
-      <a href="#" className="crayons-btn">
-        Button label
-      </a>
-      <a href="#" className="... crayons-btn--full">
-        Full Button label
-      </a>
-      <a href="#" className="... crayons-btn--secondary">
-        Secondary Button label
-      </a>
-      <a href="#" className="... crayons-btn--outlined">
-        Outlined Button label
-      </a>
-      <a href="#" className="... crayons-btn--text">
-        Text Button label
-      </a>
-      <a href="#" className="... crayons-btn--danger">
-        Danger Button label
-      </a>
-      <a href="#" className="... crayons-btn--icon-left">
-        <svg
-          width="24"
-          height="24"
-          xmlns="http://www.w3.org/2000/svg"
-          className="crayons-icon"
-        >
-          ...
-        </svg>
-        Button
-      </a>
-      <a
-        href="#"
-        className="... crayons-btn--secondary crayons-btn--full crayons-btn--icon-left"
-      >
-        <svg
-          width="24"
-          height="24"
-          xmlns="http://www.w3.org/2000/svg"
-          className="crayons-icon"
-        >
-          ...
-        </svg>
-        Button
-      </a>
-    </pre>
   </div>
 ));

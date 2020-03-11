@@ -42,16 +42,5 @@ storiesOf('Base/Components', module).add('Notices', () => (
         This is Info Notice content.
       </div>
     </div>
-
-    <pre>
-      {/* Default */}
-      <div className="crayons-notice">This...</div>
-
-      {/* Styles: danger, warning, success, info */}
-      <div className="... crayons-notice--danger">This...</div>
-      <div className="... crayons-notice--warning">This...</div>
-      <div className="... crayons-notice--success">This...</div>
-      <div className="... crayons-notice--info">This...</div>
-    </pre>
   </div>
 ));

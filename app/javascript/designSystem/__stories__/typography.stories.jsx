@@ -98,27 +98,6 @@ storiesOf('Base', module).add('Typography', () => (
       </p>
     </div>
 
-    <pre>
-      {/* font sizes */}
-      <p className="fs-xs">...</p> {/* 12px */}
-      <p className="fs-s">...</p> {/* 14px */}
-      <p className="fs-base">...</p> {/* default: 16px */}
-      <p className="fs-l">...</p> {/* 18px */}
-      <p className="fs-xl">...</p> {/* 20px */}
-      <p className="fs-2xl">...</p> {/* 24px */}
-      <p className="fs-3xl">...</p> {/* 30px */}
-      <p className="fs-4xl">...</p> {/* 36px */}
-      <p className="fs-5xl">...</p> {/* 48px */}
-      {/* font weights */}
-      <p className="... fw-normal">...</p> {/* default: regular */}
-      <p className="... fw-medium">...</p>
-      <p className="... fw-bold">...</p>
-      <p className="... fw-heavy">...</p>
-      {/* line heights */}
-      <p className="... lh-base" /> {/* default: 1.5 */}
-      <p className="... lh-tight" /> {/* tight: 1.25 */}
-    </pre>
-
     <div className="body">
       <h2>Accent typography</h2>
       <p>
@@ -145,19 +124,5 @@ storiesOf('Base', module).add('Typography', () => (
       <p className="ff-accent fs-base fw-bold">Lorem ipsum dolor sit amet.</p>
       <p className="ff-accent fs-l fw-bold">Lorem ipsum dolor sit amet.</p>
     </div>
-
-    <pre>
-      {/* font sizes */}
-      <p className="ff-accent fs-xs">...</p> {/* 12px */}
-      <p className="ff-accent fs-s">...</p> {/* 14px */}
-      <p className="ff-accent fs-base">...</p> {/* default: 16px */}
-      <p className="ff-accent fs-l">...</p> {/* 18px */}
-      {/* font weights */}
-      <p className="... fw-normal">...</p> {/* default: regular */}
-      <p className="... fw-bold">...</p>
-      {/* line heights */}
-      <p className="... lh-base" /> {/* default: 1.5 */}
-      <p className="... lh-tight" /> {/* tight: 1.25 */}
-    </pre>
   </div>
 ));

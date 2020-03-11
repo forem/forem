@@ -23,19 +23,5 @@ storiesOf('Base/Components/Navigation', module).add('Navigation Tabs', () => (
         </a>
       </div>
     </div>
-
-    <pre>
-      <div className="crayons-tabs">
-        <a href="#" className="crayons-tabs__item crayons-tabs__item--current">
-          Feed
-        </a>
-        <a href="#" className="crayons-tabs__item">
-          Popular
-        </a>
-        <a href="#" className="crayons-tabs__item">
-          Latest
-        </a>
-      </div>
-    </pre>
   </div>
 ));

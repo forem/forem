@@ -84,16 +84,6 @@ storiesOf('Base/Components', module).add('Field Component', () => (
       </div>
     </div>
 
-    <pre>
-      <div className="crayons-field crayons-field--checkbox">
-        <input type="checkbox" id="c2" className="crayons-checkbox" />
-        <label htmlFor="c2" className="crayons-field__label">
-          Raspberry
-          <p className="crayons-field__description">This is...</p>
-        </label>
-      </div>
-    </pre>
-
     <div>
       <div className="crayons-fields">
         <div className="crayons-field crayons-field--checkbox">
@@ -128,20 +118,6 @@ storiesOf('Base/Components', module).add('Field Component', () => (
       </div>
     </div>
 
-    <pre>
-      <div className="crayons-fields">
-        <div className="crayons-field crayons-field--checkbox">
-          <input type="checkbox" id="c3" className="crayons-checkbox" />
-          <label htmlFor="c3" className="crayons-field__label">
-            Avocado
-            <p className="crayons-field__description">This is...</p>
-          </label>
-        </div>
-        <div className="crayons-field crayons-field--checkbox">...</div>
-        ...
-      </div>
-    </pre>
-
     <div>
       <div className="crayons-fields crayons-fields--horizontal">
         <div className="crayons-field crayons-field--checkbox" />
@@ -166,19 +142,6 @@ storiesOf('Base/Components', module).add('Field Component', () => (
       </div>
     </div>
 
-    <pre>
-      <div className="crayons-fields crayons-fields--horizontal">
-        <div className="crayons-field crayons-field--checkbox">
-          <input type="checkbox" id="c3" className="crayons-checkbox" />
-          <label htmlFor="c3" className="crayons-field__label">
-            Avocado
-          </label>
-        </div>
-        <div className="crayons-field crayons-field--checkbox">...</div>
-        ...
-      </div>
-    </pre>
-
     <div>
       <div className="crayons-field crayons-field--radio">
         <input type="radio" name="name1" id="r2" className="crayons-radio" />
@@ -190,16 +153,6 @@ storiesOf('Base/Components', module).add('Field Component', () => (
         </label>
       </div>
     </div>
-
-    <pre>
-      <div className="crayons-field crayons-field--radio">
-        <input type="radio" name="name1" id="r2" className="crayons-radio" />
-        <label htmlFor="r2" className="crayons-field__label">
-          Raspberry
-          <p className="crayons-field__description">This is...</p>
-        </label>
-      </div>
-    </pre>
 
     <div>
       <div className="crayons-fields">
@@ -235,20 +188,6 @@ storiesOf('Base/Components', module).add('Field Component', () => (
       </div>
     </div>
 
-    <pre>
-      <div className="crayons-fields">
-        <div className="crayons-field crayons-field--radio">
-          <input type="radio" name="name2" id="r3" className="crayons-radio" />
-          <label htmlFor="r3" className="crayons-field__label">
-            Avocado
-            <p className="crayons-field__description">This is...</p>
-          </label>
-        </div>
-        <div className="crayons-field crayons-field--radio">...</div>
-        ...
-      </div>
-    </pre>
-
     <div>
       <div className="crayons-fields crayons-fields--horizontal">
         <div className="crayons-field crayons-field--radio">
@@ -273,18 +212,5 @@ storiesOf('Base/Components', module).add('Field Component', () => (
         </div>
       </div>
     </div>
-
-    <pre>
-      <div className="crayons-fields crayons-fields--horizontal">
-        <div className="crayons-field crayons-field--radio">
-          <input type="radio" name="name3" id="r6" className="crayons-radio" />
-          <label htmlFor="r6" className="crayons-field__label">
-            Avocado
-          </label>
-        </div>
-        <div className="crayons-field crayons-field--radio">...</div>
-        ...
-      </div>
-    </pre>
   </div>
 ));

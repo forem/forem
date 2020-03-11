@@ -51,13 +51,5 @@ storiesOf('Base/Components', module).add('Dropdowns', () => (
         temporibus.
       </div>
     </div>
-
-    <pre>
-      <div className="crayons-dropdown">Hey, ...</div>
-
-      <div className="... crayons-dropdown--l">Hey, ...</div>
-
-      <div className="... crayons-dropdown--padding-0">Hey, ...</div>
-    </pre>
   </div>
 ));
