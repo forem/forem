@@ -35,6 +35,9 @@
     "reactions_count": {
       "type": "integer"
     },
+    "search_fields": {
+      "type": "text"
+    },
     "username": {
       "type": "keyword"
     }

@@ -81,10 +81,15 @@ wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.
 wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz.sha512
 shasum -a 512 -c elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz.sha512
 tar -xzf elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz
-cd elasticsearch-7.5.2/
 ```
 
-To start elasticsearch:
+To start elasticsearch, make sure you are in the correct directory:
+
+```shell
+cd elasticsearch-7.5.2
+```
+
+You can then start it by running:
 
 ```shell
 ./bin/elasticsearch

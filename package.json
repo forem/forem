@@ -9,11 +9,12 @@
     "test": "test"
   },
   "scripts": {
-    "test": "jest app/javascript/ --coverage",
-    "test:watch": "jest app/javascript/ --watch",
-    "storybook": "start-storybook -p 6006 -c app/javascript/.storybook -s app/assets",
+    "api-docs:lint": "spectral lint -F hint -v docs/api_v0.yml && lint-openapi -e docs/api_v0.yml",
+    "api-docs:serve": "redoc-cli serve docs/api_v0.yml --options.pathInMiddlePanel --options.jsonSampleExpandLevel=all --options.menuToggle -t docs/api_template.hbs --watch",
     "build-storybook": "build-storybook -c app/javascript/.storybook -s app/assets",
-    "api-docs:serve": "yarn redoc-cli serve docs/api_v0.yml --options.pathInMiddlePanel --options.jsonSampleExpandLevel=all --options.menuToggle -t docs/api_template.hbs --watch"
+    "storybook": "start-storybook -p 6006 -c app/javascript/.storybook -s app/assets",
+    "test": "jest app/javascript/ --coverage",
+    "test:watch": "jest app/javascript/ --watch"
   },
   "husky": {
     "hooks": {
@@ -24,6 +25,10 @@
     "app/assets/config/manifest.js": [
       "prettier --write",
       "eslint --fix -c app/assets/javascripts/.eslintrc.js"
+    ],
+    "docs/api_v0.yml": [
+      "spectral lint -F hint",
+      "lint-openapi -e"
     ],
     "*.{js,jsx}": [
       "prettier --write",
@@ -64,6 +69,7 @@
   },
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "devDependencies": {
+    "@stoplight/spectral": "5.1.0",
     "@storybook/addon-actions": "3.4.12",
     "@storybook/addon-knobs": "3.4.12",
     "@storybook/addon-links": "3.4.12",
@@ -79,12 +85,13 @@
     "eslint-plugin-ignore-erb": "^0.1.1",
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.18.3",
+    "eslint-plugin-react": "^7.19.0",
     "faker": "^4.1.0",
     "husky": "^4.2.3",
+    "ibm-openapi-validator": "0.24.1",
     "jest": "^23.5.0",
-    "jest-axe": "^3.3.0",
-    "jest-fetch-mock": "^3.0.1",
+    "jest-axe": "^3.4.0",
+    "jest-fetch-mock": "^3.0.2",
     "jsdom": "^16.2.0",
     "lint-staged": "^10.0.8",
     "mutationobserver-shim": "^0.3.3",

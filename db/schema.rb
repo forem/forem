@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_04_220534) do
+ActiveRecord::Schema.define(version: 2020_03_08_144606) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -931,12 +931,14 @@ ActiveRecord::Schema.define(version: 2020_03_04_220534) do
 
   create_table "rating_votes", force: :cascade do |t|
     t.bigint "article_id"
+    t.string "context", default: "explicit"
     t.datetime "created_at", null: false
     t.string "group"
     t.float "rating"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["article_id"], name: "index_rating_votes_on_article_id"
+    t.index ["user_id", "article_id", "context"], name: "index_rating_votes_on_user_id_and_article_id_and_context", unique: true
     t.index ["user_id"], name: "index_rating_votes_on_user_id"
   end
 

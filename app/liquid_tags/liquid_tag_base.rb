@@ -1,6 +1,6 @@
 class LiquidTagBase < Liquid::Tag
   def self.script
-    "".html_safe
+    ""
   end
 
   def finalize_html(input)

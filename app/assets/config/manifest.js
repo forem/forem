@@ -6,4 +6,4 @@
 //= link s3_direct_upload.js
 // = link administrate/application.css
 // = link administrate/application.js
-// = link minimal.css
+// = link katex.css
