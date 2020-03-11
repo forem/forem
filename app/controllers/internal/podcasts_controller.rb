@@ -26,7 +26,7 @@ class Internal::PodcastsController < Internal::ApplicationController
     limit = params[:limit].to_i.zero? ? nil : params[:limit].to_i
     force = params[:force].to_i == 1
     Podcasts::GetEpisodesWorker.perform_async(podcast_id: @podcast.id, limit: limit, force: force)
-    flash[:notice] = "Podcasts episodes fetching was scheduled"
+    flash[:notice] = "Podcast's episodes fetching was scheduled (#{@podcast.title}, ##{@podcast.id})"
     redirect_to internal_podcasts_path
   end
 

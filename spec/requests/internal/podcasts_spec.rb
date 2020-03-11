@@ -77,7 +77,7 @@ RSpec.describe "/internal/podcasts", type: :request do
     it "redirects back to index with a notice" do
       post fetch_internal_podcast_path(podcast.id)
       expect(response).to redirect_to(internal_podcasts_path)
-      expect(flash[:notice]).to include("scheduled")
+      expect(flash[:notice]).to include("Podcast's episodes fetching was scheduled (#{podcast.title}, ##{podcast.id})")
     end
 
     it "schedules a worker to fetch episodes" do

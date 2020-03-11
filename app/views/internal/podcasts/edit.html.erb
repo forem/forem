@@ -6,7 +6,7 @@
       </div>
       <div class="card-body">
         <h3>Fetch episodes</h3>
-        <%= form_with(url: fetch_internal_podcast_path(@podcast.id), method: :post) do %>
+        <%= form_with(url: fetch_internal_podcast_path(@podcast.id), method: :post, local: true) do %>
           <div class="form-group">
             <%= check_box_tag :force %>
             <%= label_tag :force %>
