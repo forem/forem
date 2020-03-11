@@ -8,7 +8,7 @@ info:
 
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
-  version: "0.6.4"
+  version: "0.6.5"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -510,6 +510,32 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Comment"
+
+    Follower:
+      type: object
+      required:
+        - type_of
+        - id
+        - name
+        - path
+        - username
+        - profile_image
+      properties:
+        type_of:
+          type: string
+        id:
+          description: Follow id
+          type: integer
+          format: int32
+        name:
+          type: string
+        path:
+          type: string
+        username:
+          type: string
+        profile_image:
+          description: Profile image (60x60)
+          type: string
 
     Listing:
       type: object
@@ -1132,6 +1158,21 @@ components:
             profile_image_90: https://res.cloudinary.com/...jpeg
           children: []
 
+    Followers:
+      value:
+        - type_of: user_follower
+          id: 12
+          name: Mrs. Neda Morissette
+          path: "/nedamrsmorissette"
+          username: nedamrsmorissette
+          profile_image: https://res.cloudinary.com/...
+        - type_of: user_follower
+          id: 11
+          name: Yoko Hintz
+          path: "/yokohintz"
+          username: yokohintz
+          profile_image: https://res.cloudinary.com/...
+
     Listings:
       value:
         - type_of: classified_listing
@@ -1251,6 +1292,8 @@ tags:
     description: Articles are all the posts users create on DEV
   - name: comments
     description: Users can leave comments to articles and podcasts episodes
+  - name: followers
+    description: Users can follow other users on the website
   - name: listings
     description: Listings are classified ads
   - name: users
@@ -1649,6 +1692,15 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ArticleMe"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
         - oauth2: []
@@ -1701,6 +1753,15 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ArticleMe"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
         - oauth2: []
@@ -1753,6 +1814,15 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ArticleMe"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
         - oauth2: []
@@ -1807,6 +1877,15 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ArticleMe"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
         - oauth2: []
@@ -1917,6 +1996,64 @@ paths:
           label: curl (a comment and its descendants)
           source: |
             curl https://dev.to/api/comments/m51e
+
+  /followers/users:
+    get:
+      operationId: getFollowers
+      summary: Followers
+      description: |
+        This endpoint allows the client to retrieve a list of the followers
+        they have.
+
+        "Followers" are users that are following other users on the website.
+
+        It supports pagination, each page will contain `80` followers by default.
+      tags:
+        - followers
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page.
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: per_page
+          in: query
+          description: Page size (defaults to 80 with a maximum of 1000).
+          schema:
+            type: integer
+            format: int32
+          example: 80
+      responses:
+        "200":
+          description: A list of followers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Follower"
+              examples:
+                followers-success:
+                  $ref: "#/components/examples/Followers"
+
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
+      security:
+        - api_key: []
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl
+          source: |
+            curl -H "api-key: API_KEY" https://dev.to/api/followers/users
 
   /listings:
     get:
@@ -2324,6 +2461,15 @@ paths:
                       events:
                         - article_created
                       created_at: "2019-09-02T09:47:39.230Z"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
         - oauth2: []

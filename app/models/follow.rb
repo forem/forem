@@ -7,7 +7,6 @@ class Follow < ApplicationRecord
   belongs_to :follower,   polymorphic: true
 
   scope :followable_user, ->(id) { where(followable_id: id, followable_type: "User") }
-  scope :followable_organization, ->(id) { where(followable_id: id, followable_type: "Organization") }
   scope :followable_tag, ->(id) { where(followable_id: id, followable_type: "ActsAsTaggableOn::Tag") }
 
   scope :follower_user, ->(id) { where(follower_id: id, followable_type: "User") }
