@@ -80,3 +80,13 @@ end
 If instead you want to tune the Elasticsearch disk allocator's settings, please
 refer to
 [Disk-based shard allocation](https://www.elastic.co/guide/en/elasticsearch/reference/current/disk-allocator.html#disk-allocator).
+
+## CORS
+
+If you are experiencing CORS issues locally or are in need to display more
+information about the CORS headers, add the following varable to your
+`application.yml`:
+
+```yml
+DEBUG_CORS: true
+```
