@@ -24,8 +24,6 @@ info:
     backgroundColor: "#000"
     altText: "DEV logo"
 
-# all x-code-samples properties are Redod
-
 servers:
   - url: https://dev.to/api
     description: Production server
