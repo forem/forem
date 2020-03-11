@@ -8,7 +8,7 @@ info:
 
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
-  version: "0.6.4"
+  version: "0.6.6"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -511,6 +511,33 @@ components:
           items:
             $ref: "#/components/schemas/Comment"
 
+    Follower:
+      type: object
+      required:
+        - type_of
+        - id
+        - name
+        - path
+        - username
+        - profile_image
+      properties:
+        type_of:
+          type: string
+        id:
+          description: Follow id
+          type: integer
+          format: int32
+        name:
+          type: string
+        path:
+          type: string
+        username:
+          type: string
+        profile_image:
+          description: Profile image (60x60)
+          type: string
+          format: url
+
     Listing:
       type: object
       required:
@@ -668,6 +695,39 @@ components:
                 It will take priority on any other param in the payload.
               type: string
               enum: [bump, publish, unpublish]
+
+    PodcastEpisode:
+      type: object
+      required:
+        - type_of
+        - id
+        - path
+        - image_url
+        - title
+        - podcast
+      properties:
+        type_of:
+          type: string
+        id:
+          type: integer
+          format: int32
+        path:
+          type: string
+        image_url:
+          type: string
+          format: url
+        title:
+          type: string
+        podcast:
+          type: object
+          properties:
+            title:
+              type: string
+            slug:
+              type: string
+            image_url:
+              type: string
+              format: url
 
     SharedUser:
       description: The resource creator
@@ -1132,6 +1192,21 @@ components:
             profile_image_90: https://res.cloudinary.com/...jpeg
           children: []
 
+    Followers:
+      value:
+        - type_of: user_follower
+          id: 12
+          name: Mrs. Neda Morissette
+          path: "/nedamrsmorissette"
+          username: nedamrsmorissette
+          profile_image: https://res.cloudinary.com/...
+        - type_of: user_follower
+          id: 11
+          name: Yoko Hintz
+          path: "/yokohintz"
+          username: yokohintz
+          profile_image: https://res.cloudinary.com/...
+
     Listings:
       value:
         - type_of: classified_listing
@@ -1221,6 +1296,27 @@ components:
         classified_listing:
           action: unpublish
 
+    PodcastEpisodes:
+      value:
+        - type_of: podcast_episodes
+          id: 13894
+          path: "/codenewbie/s11-e7-why-site-reliability-is-so-important-molly-struve"
+          image_url: https://dev-to-uploads.s3.amazonaws.com/uploads/podcast/image/2/9f50a462-9152-429a-b15e-d024baaa8e01.png
+          title: S11:E7 - Why site reliability is so important (Molly Struve)
+          podcast:
+            title: CodeNewbie
+            slug: codenewbie
+            image_url: https://dev-to-uploads.s3.amazonaws.com/uploads/podcast/image/2/9f50a462-9152-429a-b15e-d024baaa8e01.png
+        - type_of: podcast_episodes
+          id: 13829
+          path: "/codenewbie/s11-e6-what-are-the-pros-and-cons-of-working-in-civic-tech-aidan-feldman"
+          image_url: https://dev-to-uploads.s3.amazonaws.com/uploads/podcast/image/2/9f50a462-9152-429a-b15e-d024baaa8e01.png
+          title: S11:E6 - What are the pros and cons of working in civic tech (Aidan Feldman)
+          podcast:
+            title: CodeNewbie
+            slug: codenewbie
+            image_url: https://dev-to-uploads.s3.amazonaws.com/uploads/podcast/image/2/9f50a462-9152-429a-b15e-d024baaa8e01.png
+
     WebhookCreate:
       value:
         webhook_endpoint:
@@ -1251,8 +1347,12 @@ tags:
     description: Articles are all the posts users create on DEV
   - name: comments
     description: Users can leave comments to articles and podcasts episodes
+  - name: followers
+    description: Users can follow other users on the website
   - name: listings
     description: Listings are classified ads
+  - name: podcast-episodes
+    description: Podcast episodes
   - name: users
     description: Users own resources that require authentication
   - name: webhooks
@@ -1649,6 +1749,15 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ArticleMe"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
         - oauth2: []
@@ -1701,6 +1810,15 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ArticleMe"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
         - oauth2: []
@@ -1753,6 +1871,15 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ArticleMe"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
         - oauth2: []
@@ -1807,6 +1934,15 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ArticleMe"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
         - oauth2: []
@@ -1917,6 +2053,64 @@ paths:
           label: curl (a comment and its descendants)
           source: |
             curl https://dev.to/api/comments/m51e
+
+  /followers/users:
+    get:
+      operationId: getFollowers
+      summary: Followers
+      description: |
+        This endpoint allows the client to retrieve a list of the followers
+        they have.
+
+        "Followers" are users that are following other users on the website.
+
+        It supports pagination, each page will contain `80` followers by default.
+      tags:
+        - followers
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page.
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: per_page
+          in: query
+          description: Page size (defaults to 80 with a maximum of 1000).
+          schema:
+            type: integer
+            format: int32
+          example: 80
+      responses:
+        "200":
+          description: A list of followers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Follower"
+              examples:
+                followers-success:
+                  $ref: "#/components/examples/Followers"
+
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
+      security:
+        - api_key: []
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl
+          source: |
+            curl -H "api-key: API_KEY" https://dev.to/api/followers/users
 
   /listings:
     get:
@@ -2290,6 +2484,76 @@ paths:
               -d '{"classified_listing":{"title":"Title"}' \
               https://dev.to/api/listings/{id}
 
+  /podcast_episodes:
+    get:
+      operationId: getPodcastEpisodes
+      summary: Published podcast episodes
+      description: |
+        This endpoint allows the client to retrieve a list of podcast episodes.
+
+        "Podcast episodes" are episodes belonging to podcasts.
+
+        It will only return active podcast episodes that belong to published
+        podcasts available on the platform,
+        ordered by descending publication date.
+
+        It supports pagination, each page will contain `30` articles by default.
+      tags:
+        - podcast-episodes
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page.
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: per_page
+          in: query
+          description: Page size (defaults to 30 with a maximum of 1000).
+          schema:
+            type: integer
+            format: int32
+          example: 30
+        - name: username
+          in: query
+          description: |
+            Using this parameter will retrieve episodes belonging
+            to a specific podcast.
+          schema:
+            type: string
+          example: codenewbie
+      responses:
+        "200":
+          description: A list of podcast episodes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PodcastEpisode"
+              examples:
+                articles-success:
+                  $ref: "#/components/examples/PodcastEpisodes"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                article-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+        - lang: Shell
+          label: curl (all podcast episodes)
+          source: |
+            curl https://dev.to/api/podcast_episodes
+        - lang: Shell
+          label: curl (all episodes belonging of a podcast)
+          source: |
+            curl https://dev.to/api/podcast_episodes?username=codenewbie
+
   /webhooks:
     get:
       operationId: getWebhooks
@@ -2324,6 +2588,15 @@ paths:
                       events:
                         - article_created
                       created_at: "2019-09-02T09:47:39.230Z"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
         - oauth2: []

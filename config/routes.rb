@@ -111,7 +111,6 @@ Rails.application.routes.draw do
         end
       end
       resources :comments, only: %i[index show]
-      resources :chat_channels, only: [:show]
       resources :videos, only: [:index]
       resources :podcast_episodes, only: [:index]
       resources :reactions, only: [:create]
@@ -244,6 +243,7 @@ Rails.application.routes.draw do
   post "/chat_channels/:id/open" => "chat_channels#open"
   get "/connect" => "chat_channels#index"
   get "/connect/:slug" => "chat_channels#index"
+  get "/chat_channels/:id/channel_info", to: "chat_channels#channel_info", as: :chat_channel_info
   post "/chat_channels/create_chat" => "chat_channels#create_chat"
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
   delete "/messages/:id" => "messages#destroy"
