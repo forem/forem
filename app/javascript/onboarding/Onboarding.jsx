@@ -69,7 +69,7 @@ export default class Onboarding extends Component {
     ));
 
     this.state = {
-      currentSlide: 0,
+      currentSlide: 4,
     };
   }
 
