@@ -1,3 +1,8 @@
+# This document follows the OpenAPI spec <https://spec.openapis.org/oas/v3.0.3>
+# It contains two Redoc vendor extensions, x-code-samples and x-logo
+# x-logo: https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-logo
+# x-code-samples: https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+
 openapi: "3.0.3"
 info:
   title: DEV API (beta)
@@ -14,10 +19,12 @@ info:
     name: DEV Team
     url: https://dev.to/contact
     email: yo@dev.to
-  x-logo: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-logo
+  x-logo:
     url: https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-128-1a9016906487b8ba17f2d3d3c28f9d1cb3ae9b45d685cc2711e20f6b3c6730df.png
     backgroundColor: "#000"
     altText: "DEV logo"
+
+# all x-code-samples properties are Redod
 
 servers:
   - url: https://dev.to/api
@@ -1497,7 +1504,7 @@ paths:
               examples:
                 articles-success:
                   $ref: "#/components/examples/ArticlesIndex"
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl (all articles)
           source: |
@@ -1585,7 +1592,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -1638,7 +1645,7 @@ paths:
               examples:
                 article-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -1730,7 +1737,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -1794,7 +1801,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -1855,7 +1862,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -1916,7 +1923,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -1979,7 +1986,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -2030,7 +2037,7 @@ paths:
               examples:
                 article-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl (all comments of an article)
           source: |
@@ -2081,7 +2088,7 @@ paths:
               examples:
                 article-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl (a comment and its descendants)
           source: |
@@ -2139,7 +2146,7 @@ paths:
                   $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -2197,7 +2204,7 @@ paths:
               examples:
                 listings-success:
                   $ref: "#/components/examples/Listings"
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl (all listings)
           source: |
@@ -2282,7 +2289,7 @@ paths:
                   $ref: "#/components/examples/ErrorUnprocessableEntity"
       security:
         - api_key: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -2356,7 +2363,7 @@ paths:
               examples:
                 listings-success:
                   $ref: "#/components/examples/Listings"
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl (call for papers listings)
           source: |
@@ -2405,7 +2412,7 @@ paths:
       security:
         - {} # this indicates that authentication is optional
         - api_key: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -2501,7 +2508,7 @@ paths:
                   $ref: "#/components/examples/ErrorUnprocessableEntity"
       security:
         - api_key: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl (bump)
           source: |
@@ -2577,7 +2584,7 @@ paths:
               examples:
                 article-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl (all podcast episodes)
           source: |
@@ -2627,7 +2634,7 @@ paths:
               examples:
                 articles-success:
                   $ref: "#/components/examples/Tags"
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl (all tags)
           source: |
@@ -2679,7 +2686,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -2744,7 +2751,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -2802,7 +2809,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -2848,7 +2855,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
