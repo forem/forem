@@ -779,7 +779,7 @@ export default class Chat extends Component {
           type_of: 'loading-user',
         });
         getContent(
-          `/api/${target.dataset.content}`,
+          `/${target.dataset.content}/channel_info`,
           this.setActiveContent,
           null,
         );
