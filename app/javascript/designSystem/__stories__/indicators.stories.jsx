@@ -3,9 +3,9 @@ import { storiesOf } from '@storybook/react';
 
 import './typography.scss';
 
-storiesOf('Base/Components/HTML', module).add('Indicators', () => (
-  <div className="container">
-    <div className="body">
+storiesOf('Base/Components/HTML/Indicators', module)
+  .add('Description', () => (
+    <div className="container">
       <h2>Indicators</h2>
       <p>
         Indicators are meant to be used to inform user about, for example,
@@ -40,44 +40,56 @@ storiesOf('Base/Components/HTML', module).add('Indicators', () => (
         </li>
       </ul>
     </div>
-    <div>
-      <span className="crayons-indicator">Label</span>
-      <span className="crayons-indicator crayons-indicator--outlined">
-        Outlined
-      </span>
-      <span className="crayons-indicator">1</span>
-      <span className="crayons-indicator crayons-indicator--bullet" />
-    </div>
-
-    <div>
-      <span className="crayons-indicator crayons-indicator--accent">Label</span>
-      <span className="crayons-indicator crayons-indicator--outlined crayons-indicator--accent">
-        Outlined
-      </span>
-      <span className="crayons-indicator crayons-indicator--accent">1</span>
-      <span className="crayons-indicator crayons-indicator--accent crayons-indicator--bullet" />
-    </div>
-
-    <div>
-      <span className="crayons-indicator crayons-indicator--critical">
-        Label
-      </span>
-      <span className="crayons-indicator crayons-indicator--outlined crayons-indicator--critical">
-        Outlined
-      </span>
-      <span className="crayons-indicator crayons-indicator--critical">1</span>
-      <span className="crayons-indicator crayons-indicator--critical crayons-indicator--bullet" />
-    </div>
-
-    <div>
-      <span className="crayons-indicator crayons-indicator--inverted">
-        Label
-      </span>
-      <span className="crayons-indicator crayons-indicator--outlined crayons-indicator--inverted">
-        Outlined
-      </span>
-      <span className="crayons-indicator crayons-indicator--inverted">1</span>
-      <span className="crayons-indicator crayons-indicator--inverted crayons-indicator--bullet" />
-    </div>
-  </div>
-));
+  ))
+  .add('Default (Grey)', () => <span className="crayons-indicator">Label</span>)
+  .add('Grey Outlined', () => (
+    <span className="crayons-indicator crayons-indicator--outlined">
+      Outlined
+    </span>
+  ))
+  .add('Grey with Number', () => <span className="crayons-indicator">1</span>)
+  .add('Grey Bullet', () => (
+    <span className="crayons-indicator crayons-indicator--bullet" />
+  ))
+  .add('Accent', () => (
+    <span className="crayons-indicator crayons-indicator--accent">Label</span>
+  ))
+  .add('Accent Outlined', () => (
+    <span className="crayons-indicator crayons-indicator--outlined crayons-indicator--accent">
+      Outlined
+    </span>
+  ))
+  .add('Accent with Number', () => (
+    <span className="crayons-indicator crayons-indicator--accent">1</span>
+  ))
+  .add('Accent Bullet', () => (
+    <span className="crayons-indicator crayons-indicator--accent crayons-indicator--bullet" />
+  ))
+  .add('Critical', () => (
+    <span className="crayons-indicator crayons-indicator--critical">Label</span>
+  ))
+  .add('Critical Outline', () => (
+    <span className="crayons-indicator crayons-indicator--outlined crayons-indicator--critical">
+      Outlined
+    </span>
+  ))
+  .add('Critical with Number', () => (
+    <span className="crayons-indicator crayons-indicator--critical">1</span>
+  ))
+  .add('Critical Bullet', () => (
+    <span className="crayons-indicator crayons-indicator--critical crayons-indicator--bullet" />
+  ))
+  .add('Inverted', () => (
+    <span className="crayons-indicator crayons-indicator--inverted">Label</span>
+  ))
+  .add('Inverted Outlined', () => (
+    <span className="crayons-indicator crayons-indicator--outlined crayons-indicator--inverted">
+      Outlined
+    </span>
+  ))
+  .add('Inverted with Number', () => (
+    <span className="crayons-indicator crayons-indicator--inverted">1</span>
+  ))
+  .add('Inverted Bullet', () => (
+    <span className="crayons-indicator crayons-indicator--inverted crayons-indicator--bullet" />
+  ));
