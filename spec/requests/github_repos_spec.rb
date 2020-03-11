@@ -127,7 +127,7 @@ RSpec.describe "GithubRepos", type: :request do
       end
     end
 
-    it "set true for a featured repo" do
+    it "allows the repo to be featured" do
       github_repo[:featured] = true
       params = { github_repo: github_repo.to_json }
       post update_or_create_github_repos_path(params), headers: headers
