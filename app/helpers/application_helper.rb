@@ -8,7 +8,9 @@ module ApplicationHelper
   end
 
   def view_class
-    if @story_show # custom due to edge cases
+    if @podcast_episode_show # custom due to edge cases
+      "stories stories-show podcast_episodes-show"
+    elsif @story_show
       "stories stories-show"
     else
       "#{controller_name} #{controller_name}-#{controller.action_name}"
@@ -156,6 +158,6 @@ module ApplicationHelper
   end
 
   def app_protocol_and_domain
-    "#{ApplicationConfig["APP_PROTOCOL"]}#{ApplicationConfig["APP_DOMAIN"]}"
+    "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
   end
 end
