@@ -3,9 +3,9 @@ import { storiesOf } from '@storybook/react';
 
 import './typography.scss';
 
-storiesOf('Base/Components', module).add('Modals', () => (
-  <div className="container">
-    <div className="body">
+storiesOf('Base/Components/Modals', module)
+  .add('Description', () => (
+    <div className="container">
       <h2>Modals</h2>
       <p>
         Modals should be positioned centered in relation to entire viewport. So
@@ -21,43 +21,39 @@ storiesOf('Base/Components', module).add('Modals', () => (
       <p>
         If you need to utilize entire modal area and you have to get rid of
         default padding, please use modifier class
-        <code>crayons-modal--padding-0</code>.
+        <code>crayons-modal--padding-0</code>
+        .
       </p>
       <p>
         FYI: Modals use “Box” component as background, with Level 3 elevation.
       </p>
     </div>
-
-    <div>
-      <div className="crayons-modal">
-        Hey, I'm a Default Modal content! Lorem ipsum dolor sit amet,
-        consectetur adipisicing elit. Sequi ea voluptates quaerat eos
-        consequuntur temporibus.
-      </div>
+  ))
+  .add('Default', () => (
+    <div className="crayons-modal">
+      Hey, I&apos;m a Default Modal content! Lorem ipsum dolor sit amet,
+      consectetur adipisicing elit. Sequi ea voluptates quaerat eos consequuntur
+      temporibus.
     </div>
-
-    <div>
-      <div className="crayons-modal crayons-modal--s">
-        Hey, I'm a Small Modal content! Lorem ipsum dolor sit amet, consectetur
-        adipisicing elit. Sequi ea voluptates quaerat eos consequuntur
-        temporibus.
-      </div>
+  ))
+  .add('Small', () => (
+    <div className="crayons-modal crayons-modal--s">
+      Hey, I&apos;m a Small Modal content! Lorem ipsum dolor sit amet,
+      consectetur adipisicing elit. Sequi ea voluptates quaerat eos consequuntur
+      temporibus.
     </div>
-
-    <div>
-      <div className="crayons-modal crayons-modal--l">
-        Hey, I'm a Large Modal content! Lorem ipsum dolor sit amet, consectetur
-        adipisicing elit. Sequi ea voluptates quaerat eos consequuntur
-        temporibus.
-      </div>
+  ))
+  .add('Large', () => (
+    <div className="crayons-modal crayons-modal--l">
+      Hey, I&apos;m a Large Modal content! Lorem ipsum dolor sit amet,
+      consectetur adipisicing elit. Sequi ea voluptates quaerat eos consequuntur
+      temporibus.
     </div>
-
-    <div>
-      <div className="crayons-modal crayons-modal--padding-0">
-        Hey, I'm a modal content with no padding! Lorem ipsum dolor sit amet,
-        consectetur adipisicing elit. Sequi ea voluptates quaerat eos
-        consequuntur temporibus.
-      </div>
+  ))
+  .add('No padding', () => (
+    <div className="crayons-modal crayons-modal--padding-0">
+      Hey, I&apos;m a modal content with no padding! Lorem ipsum dolor sit amet,
+      consectetur adipisicing elit. Sequi ea voluptates quaerat eos consequuntur
+      temporibus.
     </div>
-  </div>
-));
+  ));
