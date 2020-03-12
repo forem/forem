@@ -176,7 +176,7 @@ preact-render-spy (1 nodes)
         </a>
 
         <span class="channel__member">
-          is already in
+          is already in 
           <em>channel name</em>
         </span>
       </div>
@@ -271,7 +271,7 @@ preact-render-spy (1 nodes)
   <div class="channeldetails__leftchannel">
     <h2>Danger Zone</h2>
     <h3>
-      You have left this channel
+      You have left this channel 
       <span
         role="img"
         aria-label="emoji"
