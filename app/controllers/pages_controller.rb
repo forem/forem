@@ -87,12 +87,6 @@ class PagesController < ApplicationController
     )
   end
 
-  def crayons
-    @page = Page.find_by(slug: "crayons")
-    render :show if @page
-    set_surrogate_key_header "crayons_page"
-  end
-
   private
 
   def latest_published_thread(tag_name)
