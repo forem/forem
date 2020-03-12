@@ -37,15 +37,28 @@ RSpec.describe Tag, type: :model do
         expect(tag).to be_valid
       end
 
-      it "fails validations if name is not alphanumeric" do
+      it "fails validations if name is empty" do
         tag.name = ""
+        expect(tag).not_to be_valid
+      end
+
+      it "fails validations if name is nil" do
+        tag.name = nil
         expect(tag).not_to be_valid
       end
     end
 
-    it "fails validation if the alias does not refer to an existing tag" do
-      tag.alias_for = "hello"
-      expect(tag).not_to be_valid
+    describe "alias_for" do
+      it "passes validation if the alias refers to an existing tag" do
+        tag = create(:tag)
+        tag.alias_for = tag.name
+        expect(tag).to be_valid
+      end
+
+      it "fails validation if the alias does not refer to an existing tag" do
+        tag.alias_for = "hello"
+        expect(tag).not_to be_valid
+      end
     end
   end
 
