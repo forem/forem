@@ -6,5 +6,5 @@ if [ "$DYNOTYPE" == "scheduler" ] || [ "$DYNOTYPE" == "run" ]; then
   # Disable Automatic Beeline integrations to prevent unnecessary
   # data from being tracked in Honeycomb
   # more info here: https://docs.honeycomb.io/getting-data-in/ruby/beeline/#using-env-variables-to-control-framework-integrations
-  HONEYCOMB_DISABLE_AUTOCONFIGURE="true"
+  export HONEYCOMB_DISABLE_AUTOCONFIGURE="true"
 fi
