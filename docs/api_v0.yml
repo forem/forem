@@ -2732,7 +2732,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/User"
               examples:
-                article-success:
+                user-success:
                   $ref: "#/components/examples/User"
         "404":
           description: Resource not found
@@ -2741,7 +2741,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/APIError"
               examples:
-                article-not-found:
+                user-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
       x-code-samples:
         - lang: Shell
@@ -2752,6 +2752,43 @@ paths:
           label: curl (by username)
           source: |
             curl https://dev.to/api/users/by_username?url=ben
+
+  /users/me:
+    get:
+      operationId: getUserMe
+      summary: The authenticated user
+      description: |
+        This endpoint allows the client to retrieve information
+        about the authenticated user
+      tags:
+        - users
+      responses:
+        "200":
+          description: A user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+              examples:
+                user-success:
+                  $ref: "#/components/examples/User"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
+      security:
+        - api_key: []
+        - oauth2: []
+      x-code-samples:
+        - lang: Shell
+          label: curl
+          source: |
+            curl -H "api-key: API_KEY" https://dev.to/api/users/me
 
   /webhooks:
     get:
