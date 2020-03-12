@@ -22,14 +22,14 @@ module Search
 
       def prepare_doc(hit)
         {
-          user: {
-            username: hit["username"],
-            name: hit["username"],
-            profile_image_90: hit["profile_image_90"]
+          "user" => {
+            "username" => hit["username"],
+            "name" => hit["username"],
+            "profile_image_90" => hit["profile_image_90"]
           },
-          title: hit["name"],
-          path: hit["path"],
-          id: hit["id"]
+          "title" => hit["name"],
+          "path" => hit["path"],
+          "id" => hit["id"]
         }
       end
 
