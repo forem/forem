@@ -1,3 +1,5 @@
+@import 'vars/variables';
+
 @import 'variables';
 @import 'mixins';
 @import 'fonts';
@@ -5,8 +7,7 @@
 body {
   @include themeable(background, theme-background, $lightest-gray);
   @include themeable(color, theme-color, $black);
-  font-family: $helvetica;
-  font-size: 18px;
+  font-family: $ff-default;
   padding: 0;
   margin: 0;
   overflow-y: scroll;
@@ -61,6 +62,7 @@ body {
   overflow: hidden;
   min-height: 88vh;
   visibility: visible;
+  font-size: 18px;
 }
 
 a {

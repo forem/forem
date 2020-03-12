@@ -1,0 +1,49 @@
+@import '../vars/variables';
+
+// box() - generating classes for different style
+//
+// This mixin automates process of generating classes for different
+// types of boxes: filled & outlined, each  with variations
+// for several levels of elevation (box-shadow).
+//
+// @param {object} $this      Caching current parent
+// @param {color} $color-1    Background color for filled variation
+// @param {color} $color-2    Accent color for border & shadow
+@mixin box($this: $this, $color-1: $smoke-90, $color-2: $smoke-100) {
+  border-color: $color-2;
+
+  &#{$this}--filled {
+    background-color: $color-1;
+  }
+
+  @for $i from 1 through 3 {
+    &#{$this + '--level-' + $i} {
+      box-shadow: #{pow(2, $i) + px} #{pow(2, $i) + px} 0 $color-2;
+    }
+  }
+}
+
+.crayons-box {
+  $this: &; // Caching current element, source: https://css-tricks.com/snippets/sass/caching-current-selector-sass/
+  border: 2px solid;
+  border-radius: $br-default;
+  background-color: $snowflake;
+
+  @include box($this, $smoke-90, $smoke-100);
+
+  &--danger {
+    @include box($this, $raspberry, $raspberry-darker);
+  }
+
+  &--success {
+    @include box($this, $avocado, $avocado-darker);
+  }
+
+  &--warning {
+    @include box($this, $peanut, $peanut-darker);
+  }
+
+  &--info {
+    @include box($this, $dolphin, $dolphin-darker);
+  }
+}

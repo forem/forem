@@ -1,5 +1,7 @@
 module Articles
   class Feed
+    RANDOM_OFFSET_VALUES = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11].freeze
+
     def initialize(user: nil, number_of_articles: 35, page: 1, tag: nil)
       @user = user
       @number_of_articles = number_of_articles
@@ -7,6 +9,7 @@ module Articles
       @tag = tag
       @randomness = 3 # default number for randomly adjusting feed
       @tag_weight = 1 # default weight tags play in rankings
+      @comment_weight = 0 # default weight comments play in rankings
     end
 
     def self.find_featured_story(stories)
@@ -53,20 +56,20 @@ module Articles
     end
 
     # Test variation: More random
-    def default_home_feed_with_more_randomness
+    def default_home_feed_with_more_randomness_experiment
       @randomness = 7
       _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
       stories
     end
 
     # Test variation: tags make bigger impact
-    def more_tag_weight
+    def more_tag_weight_experiment
       @tag_weight = 2
       _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
       stories
     end
 
-    def more_tag_weight_more_random
+    def more_tag_weight_more_random_experiment
       @tag_weight = 2
       @randomness = 7
       _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
@@ -74,12 +77,19 @@ module Articles
     end
 
     # Test variation: Base half the time, more random other half. Varies on impressions.
-    def mix_default_and_more_random
+    def mix_default_and_more_random_experiment
       if rand(2) == 1
         default_home_feed(user_signed_in: true)
       else
-        default_home_feed_with_more_randomness
+        default_home_feed_with_more_randomness_experiment
       end
+    end
+
+    # Test variation: the more comments a post has, the higher it's rated!
+    def more_comments_experiment
+      @comment_weight = 2
+      _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
+      stories
     end
 
     def rank_and_sort_articles(articles)
@@ -99,6 +109,7 @@ module Articles
       article_points += score_randomness
       article_points += score_language(article)
       article_points += score_experience_level(article)
+      article_points += score_comments(article)
       article_points
     end
 
@@ -128,7 +139,11 @@ module Articles
     end
 
     def score_experience_level(article)
-      - ((article.experience_level_rating - (@user&.experience_level || 5).abs) / 2)
+      - ((article.experience_level_rating - (@user&.experience_level || 5)).abs / 2)
+    end
+
+    def score_comments(article)
+      article.comments_count * @comment_weight
     end
 
     def globally_hot_articles(user_signed_in)
@@ -137,10 +152,10 @@ module Articles
         order("hotness_score DESC")
       featured_story = hot_stories.where.not(main_image: nil).first
       if user_signed_in
-        offset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11].sample # random offset, weighted more towards zero
+        offset = RANDOM_OFFSET_VALUES.select { |i| i < hot_stories.count }.sample # random offset, weighted more towards zero
         hot_stories = hot_stories.offset(offset)
         new_stories = Article.published.
-          where("published_at > ? AND score > ?", rand(2..6).hours.ago, -15).
+          where("score > ?", -15).
           limited_column_select.order("published_at DESC").limit(rand(15..80))
         hot_stories = hot_stories.to_a + new_stories.to_a
       end

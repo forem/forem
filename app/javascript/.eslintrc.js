@@ -41,5 +41,6 @@ module.exports = {
     Pusher: false,
     algoliasearch: false,
     ga: false,
+    Honeybadger: false,
   },
 };

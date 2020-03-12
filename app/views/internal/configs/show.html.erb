@@ -46,6 +46,21 @@
         </div>
 
         <div class="card mt-3">
+          <div class="card-header">Mascot</div>
+          <div class="card-body">
+            <div class="form-group">
+              <%= f.label :mascot_user_id, "Mascot user ID" %>
+              <%= f.text_field :mascot_user_id,
+                               class: "form-control",
+                               value: SiteConfig.mascot_user_id,
+                               min: 1,
+                               placeholder: "1" %>
+              <div class="alert alert-info">User ID of the Mascot account</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
           <div class="card-header">Campaign</div>
           <div class="card-body">
             <div class="form-group">
@@ -55,24 +70,6 @@
                                value: SiteConfig.campaign_hero_html_variant_name,
                                placeholder: "" %>
               <div class="alert alert-info">Hero HtmlVariant name</div>
-            </div>
-
-            <div class="form-group">
-              <%= f.label :campaign_background_color %>
-              <%= f.text_field :campaign_background_color,
-                               class: "form-control",
-                               value: SiteConfig.campaign_background_color,
-                               placeholder: "FFFFFF" %>
-              <div class="alert alert-info">Campaign background color</div>
-            </div>
-
-            <div class="form-group">
-              <%= f.label :campaign_text_color %>
-              <%= f.text_field :campaign_text_color,
-                               class: "form-control",
-                               value: SiteConfig.campaign_text_color,
-                               placeholder: "FFFFFF" %>
-              <div class="alert alert-info">Campaign text color</div>
             </div>
 
             <div class="form-group">

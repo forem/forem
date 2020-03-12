@@ -1,6 +1,5 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import debounce from 'lodash.debounce';
 import ConfigImage from '../../assets/images/three-dots.svg';
 import {
   conductModeration,
@@ -25,6 +24,7 @@ import Video from './video';
 import View from './view';
 
 import setupPusher from '../src/utils/pusher';
+import debounceAction from '../src/utils/debounceAction';
 
 export default class Chat extends Component {
   static propTypes = {
@@ -39,9 +39,8 @@ export default class Chat extends Component {
     const chatChannels = JSON.parse(props.chatChannels);
     const chatOptions = JSON.parse(props.chatOptions);
 
-    this.debouncedChannelFilter = debounce(
+    this.debouncedChannelFilter = debounceAction(
       this.triggerChannelFilter.bind(this),
-      300,
     );
 
     this.state = {
@@ -325,7 +324,7 @@ export default class Chat extends Component {
     }
     if (activeChannel && activeChannel.channel_type !== 'direct') {
       getContent(
-        `/api/chat_channels/${activeChannelId}`,
+        `/chat_channels/${activeChannelId}/channel_info`,
         this.setOpenChannelUsers,
         null,
       );
@@ -780,7 +779,7 @@ export default class Chat extends Component {
           type_of: 'loading-user',
         });
         getContent(
-          `/api/${target.dataset.content}`,
+          `/${target.dataset.content}/channel_info`,
           this.setActiveContent,
           null,
         );

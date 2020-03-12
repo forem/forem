@@ -4,38 +4,35 @@ class GithubTag
   class GithubReadmeTag
     PARTIAL = "liquids/github_readme".freeze
 
+    attr_reader :client, :content, :options, :readme_html
+
     def initialize(link)
-      @link = parse_link(link)
+      parsed_link = parse_link(link)
       @options = parse_options(link)
-      @content = get_content(@link)
+      @client = Octokit::Client.new(access_token: token)
+      @content = client.repository(parsed_link)
+      @readme_html = fetch_readme(parsed_link)
     end
 
     def render
       ActionController::Base.new.render_to_string(
         partial: PARTIAL,
         locals: {
-          content: @content,
-          show_readme: show_readme?,
-          updated_html: @updated_html
+          content: content,
+          show_readme: show_readme? && readme_html.present?,
+          readme_html: readme_html
         },
       )
     end
 
+    private
+
     def parse_link(link)
       link = sanitize_link(link)
-      link.split(" ").first.delete(" ")
-    end
+      parsed_link = link.split(" ").first.delete(" ")
+      raise_error if parsed_link.split("/").length > 2
 
-    def get_content(link)
-      repo_details = link.split("/")
-      raise_error if repo_details.length > 2
-      user_name = repo_details[0]
-      repo_name = repo_details[1]
-      client = Octokit::Client.new(access_token: token)
-      @readme_html = client.readme user_name + "/" + repo_name, accept: "application/vnd.github.html"
-      @readme = client.readme user_name + "/" + repo_name
-      @updated_html = clean_relative_path!(@readme_html, @readme.download_url)
-      client.repository(user_name + "/" + repo_name)
+      parsed_link
     end
 
     def valid_option(option)
@@ -53,10 +50,16 @@ class GithubTag
     end
 
     def show_readme?
-      @options.none? "no-readme"
+      options.none? "no-readme"
     end
 
-    private
+    def fetch_readme(link)
+      readme_html = client.readme(link, accept: "application/vnd.github.html")
+      readme = client.readme(link)
+      clean_relative_path!(readme_html, readme.download_url)
+    rescue Octokit::NotFound => _e
+      nil
+    end
 
     def sanitize_link(link)
       link = ActionController::Base.helpers.strip_tags(link)

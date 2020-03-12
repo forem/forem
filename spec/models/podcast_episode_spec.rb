@@ -29,6 +29,22 @@ RSpec.describe PodcastEpisode, type: :model do
     end
   end
 
+  describe "#after_commit" do
+    it "on update enqueues job to index podcast_episode to elasticsearch" do
+      podcast_episode.save
+      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, podcast_episode.id]) do
+        podcast_episode.save
+      end
+    end
+
+    it "on destroy enqueues job to delete podcast_episode from elasticsearch" do
+      podcast_episode.save
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, podcast_episode.id]) do
+        podcast_episode.destroy
+      end
+    end
+  end
+
   describe "#description" do
     it "strips tags from the body" do
       ep2 = build(:podcast_episode, guid: podcast_episode.guid)

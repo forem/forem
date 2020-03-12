@@ -1,0 +1,195 @@
+@import '../vars/variables';
+
+// Margin
+@include generate-classes(
+  'm',
+  'margin',
+  (
+    'auto': auto,
+    'unset': unset,
+    '0': 0,
+  ),
+  $spacing-units
+);
+
+// Margin negative
+@include generate-classes('-m', 'margin', $negative-spacing-units);
+
+// Margin top & bottom
+@include generate-classes(
+  'my',
+  ('margin-top', 'margin-bottom'),
+  (
+    'auto': auto,
+    'unset': unset,
+    '0': 0,
+  ),
+  $spacing-units
+);
+
+// Margin top & bottom negative
+@include generate-classes(
+  '-my',
+  ('margin-top', 'margin-bottom'),
+  $negative-spacing-units
+);
+
+// Margin left & right
+@include generate-classes(
+  'mx',
+  ('margin-left', 'margin-right'),
+  (
+    'auto': auto,
+    'unset': unset,
+    '0': 0,
+  ),
+  $spacing-units
+);
+
+// Margin left & right negative
+@include generate-classes(
+  '-mx',
+  ('margin-left', 'margin-right'),
+  $negative-spacing-units
+);
+
+// Margin top
+@include generate-classes(
+  'mt',
+  'margin-top',
+  (
+    'auto': auto,
+    'unset': unset,
+    '0': 0,
+  ),
+  $spacing-units
+);
+
+// Margin top negative
+@include generate-classes('-mt', 'margin-top', $negative-spacing-units);
+
+// Margin bottom
+@include generate-classes(
+  'mb',
+  'margin-bottom',
+  (
+    'auto': auto,
+    'unset': unset,
+    '0': 0,
+  ),
+  $spacing-units
+);
+
+// Margin bottom negative
+@include generate-classes('-mb', 'margin-bottom', $negative-spacing-units);
+
+// Margin left
+@include generate-classes(
+  'ml',
+  'margin-left',
+  (
+    'auto': auto,
+    'unset': unset,
+    '0': 0,
+  ),
+  $spacing-units
+);
+
+// Margin left negative
+@include generate-classes('-ml', 'margin-left', $negative-spacing-units);
+
+// Margin right
+@include generate-classes(
+  'mr',
+  'margin-right',
+  (
+    'auto': auto,
+    'unset': unset,
+    '0': 0,
+  ),
+  $spacing-units
+);
+
+// Margin right negative
+@include generate-classes('-mr', 'margin-right', $negative-spacing-units);
+
+///////////////////
+// Paddings
+///////////////////
+
+// Padding
+@include generate-classes(
+  'p',
+  'padding',
+  (
+    '0': 0,
+    'unset': unset,
+  ),
+  $spacing-units
+);
+
+// Padding top & bottom
+@include generate-classes(
+  'py',
+  ('padding-top', 'padding-bottom'),
+  (
+    '0': 0,
+    'unset': unset,
+  ),
+  $spacing-units
+);
+
+// Padding left & right
+@include generate-classes(
+  'px',
+  ('padding-left', 'padding-right'),
+  (
+    '0': 0,
+    'unset': unset,
+  ),
+  $spacing-units
+);
+
+// Padding top
+@include generate-classes(
+  'pt',
+  'padding-top',
+  (
+    '0': 0,
+    'unset': unset,
+  ),
+  $spacing-units
+);
+
+// Padding bottom
+@include generate-classes(
+  'pb',
+  'padding-bottom',
+  (
+    '0': 0,
+    'unset': unset,
+  ),
+  $spacing-units
+);
+
+// Padding left
+@include generate-classes(
+  'pl',
+  'padding-left',
+  (
+    '0': 0,
+    'unset': unset,
+  ),
+  $spacing-units
+);
+
+// Padding right
+@include generate-classes(
+  'pr',
+  'padding-right',
+  (
+    '0': 0,
+    'unset': unset,
+  ),
+  $spacing-units
+);

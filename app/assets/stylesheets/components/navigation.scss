@@ -1,0 +1,70 @@
+@import '../vars/variables';
+
+.crayons-nav-block {
+  display: flex;
+  align-items: center;
+  padding: $su-2;
+  border-radius: $br-default;
+  color: $smoke-90;
+
+  &:hover:not(&--current) {
+    background: $smoke-00;
+    color: $smoke-100;
+  }
+
+  &--current {
+    font-weight: $fw-medium;
+    color: $smoke-100;
+    background: $snowflake;
+  }
+
+  .crayons-icon {
+    margin-right: $su-2;
+    vertical-align: middle;
+    width: $su-6;
+    height: $su-6;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: $fs-xl;
+  }
+
+  .crayons-indicator {
+    margin-left: $su-2;
+  }
+
+  // Indented for when there's no icon
+  &--indented {
+    padding-left: $su-2 + $su-7; // 40px
+  }
+}
+
+.crayons-tabs {
+  display: flex;
+
+  &__item {
+    padding: 0 0.5em;
+    color: $smoke-80;
+    position: relative;
+    display: inline-block;
+
+    &:hover {
+      color: $smoke-100;
+    }
+
+    &--current {
+      color: $smoke-100;
+      font-weight: $fw-medium;
+
+      &::after {
+        position: absolute;
+        left: 0.5em;
+        right: 0.5em;
+        bottom: -2px;
+        height: 2px;
+        content: '';
+        background-color: $dolphin;
+      }
+    }
+  }
+}

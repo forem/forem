@@ -11,6 +11,10 @@ class User < ApplicationRecord
   rolify
   include AlgoliaSearch
   include Storext.model
+  include Searchable
+
+  SEARCH_SERIALIZER = Search::UserSerializer
+  SEARCH_CLASS = Search::User
 
   acts_as_followable
   acts_as_follower
@@ -138,9 +142,6 @@ class User < ApplicationRecord
   validates :config_navbar,
             inclusion: { in: %w[default static],
                          message: "%<value>s is not a valid navbar value" }
-  validates :shipping_country,
-            length: { in: 2..2 },
-            allow_blank: true
   validates :website_url, :employer_name, :employer_url,
             length: { maximum: 100 }
   validates :employment_title, :education, :location,
@@ -160,7 +161,7 @@ class User < ApplicationRecord
   alias_attribute :positive_reactions_count, :reactions_count
 
   scope :dev_account, -> { find_by(id: SiteConfig.staff_user_id) }
-  scope :welcoming_account, -> { find_by(id: ApplicationConfig["WELCOMING_USER_ID"]) }
+  scope :mascot_account, -> { find_by(id: SiteConfig.mascot_user_id) }
 
   scope :with_this_week_comments, lambda { |number|
     includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_these_7_days')::int >= ?", number)
@@ -172,11 +173,10 @@ class User < ApplicationRecord
     includes(:counters).order(Arel.sql("user_counters.data -> 'comments_these_7_days' DESC")).limit(number)
   }
 
-  after_create_commit :send_welcome_notification
   after_save :bust_cache
   after_save :subscribe_to_mailchimp_newsletter
   after_save :conditionally_resave_articles
-  after_create_commit :estimate_default_language
+
   before_create :set_default_language
   before_validation :set_username
   # make sure usernames are not empty, to be able to use the database unique index
@@ -188,6 +188,10 @@ class User < ApplicationRecord
   before_destroy :destroy_empty_dm_channels, prepend: true
   before_destroy :destroy_follows, prepend: true
   before_destroy :unsubscribe_from_newsletters, prepend: true
+
+  after_create_commit :send_welcome_notification, :estimate_default_language
+  after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :remove_from_elasticsearch, on: [:destroy]
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :name
@@ -409,6 +413,10 @@ class User < ApplicationRecord
     errors.add(:username, "has been banished.") if BanishedUser.exists?(username: username)
   end
 
+  def banished?
+    username.starts_with?("spam_")
+  end
+
   def subscribe_to_mailchimp_newsletter
     return unless email.present? && email.include?("@")
     return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
@@ -455,6 +463,8 @@ class User < ApplicationRecord
   end
 
   def unsubscribe_from_newsletters
+    return if email.blank?
+
     MailchimpBot.new(self).unsubscribe_all_newsletters
   end
 
@@ -481,6 +491,10 @@ class User < ApplicationRecord
 
   def title
     name
+  end
+
+  def hotness_score
+    search_score
   end
 
   private
@@ -656,10 +670,6 @@ class User < ApplicationRecord
 
   def tag_keywords_for_search
     employer_name.to_s + mostly_work_with.to_s + available_for.to_s
-  end
-
-  def hotness_score
-    search_score
   end
 
   def search_score

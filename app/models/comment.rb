@@ -1,8 +1,11 @@
 class Comment < ApplicationRecord
+  TITLE_DELETED = "[deleted]".freeze
+  TITLE_HIDDEN = "[hidden by post author]".freeze
+
   has_ancestry
   resourcify
-  include AlgoliaSearch
   include Reactable
+
   belongs_to :commentable, polymorphic: true, optional: true
   counter_culture :commentable
   belongs_to :user
@@ -40,83 +43,8 @@ class Comment < ApplicationRecord
 
   alias touch_by_reaction save
 
-  algoliasearch per_environment: true, enqueue: :trigger_index do
-    attribute :id
-    add_index "ordered_comments",
-              id: :index_id,
-              per_environment: true,
-              enqueue: :trigger_index do
-      attributes :id, :user_id, :commentable_id, :commentable_type, :id_code_generated, :path,
-                 :id_code, :readable_publish_date, :parent_id, :positive_reactions_count, :created_at
-      attribute :body_html do
-        HTML_Truncator.truncate(processed_html,
-                                500, ellipsis: '<a class="comment-read-more" href="' + path + '">... Read Entire Comment</a>')
-      end
-      attribute :url do
-        path
-      end
-      attribute :css do
-        custom_css
-      end
-      attribute :tag_list do
-        commentable&.tag_list
-      end
-      attribute :root_path do
-        root&.path
-      end
-      attribute :parent_path do
-        parent&.path
-      end
-      attribute :heart_ids do
-        reactions.where(category: "like").pluck(:user_id)
-      end
-      attribute :user do
-        {
-          username: user.username,
-          name: user.name,
-          id: user.id,
-          profile_pic: ProfileImage.new(user).get(width: 90),
-          profile_image_90: ProfileImage.new(user).get(width: 90),
-          github_username: user.github_username,
-          twitter_username: user.twitter_username
-        }
-      end
-      attribute :commentable do
-        {
-          path: commentable&.path,
-          title: commentable&.title,
-          tag_list: commentable&.tag_list,
-          id: commentable&.id
-        }
-      end
-      tags do
-        [commentable&.tag_list,
-         "user_#{user_id}",
-         "commentable_#{commentable_type}_#{commentable_id}"].flatten.compact
-      end
-      ranking ["desc(created_at)"]
-    end
-  end
-
   def self.tree_for(commentable, limit = 0)
     commentable.comments.includes(:user).arrange(order: "score DESC").to_a[0..limit - 1].to_h
-  end
-
-  def self.trigger_index(record, remove)
-    # record is removed from index synchronously in before_destroy_actions
-    return if remove
-
-    if record.deleted == false
-      Search::IndexWorker.perform_async("Comment", record.id)
-    else
-      Search::RemoveFromIndexWorker.perform_async(Comment.algolia_index_name, record.index_id)
-    end
-  end
-
-  # this should remain public because it's called by AlgoliaSearch::AlgoliaJob in .trigger_index
-  def remove_algolia_index
-    remove_from_index!
-    Search::RemoveFromIndexWorker.new.perform("ordered_comments_#{Rails.env}", index_id)
   end
 
   def path
@@ -152,8 +80,8 @@ class Comment < ApplicationRecord
   end
 
   def title(length = 80)
-    return "[deleted]" if deleted
-    return "[hidden by post author]" if hidden_by_commentable_user
+    return TITLE_DELETED if deleted
+    return TITLE_HIDDEN if hidden_by_commentable_user
 
     text = ActionController::Base.helpers.strip_tags(processed_html).strip
     truncated_text = ActionController::Base.helpers.truncate(text, length: length).gsub("&#39;", "'").gsub("&amp;", "&")
@@ -174,11 +102,6 @@ class Comment < ApplicationRecord
 
   def remove_notifications
     Notification.remove_all_without_delay(notifiable_ids: id, notifiable_type: "Comment")
-  end
-
-  # public because it's used in the algolia indexing methods
-  def index_id
-    "comments-#{id}"
   end
 
   def safe_processed_html
@@ -267,7 +190,6 @@ class Comment < ApplicationRecord
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     ancestors.update_all(updated_at: Time.current)
     Comments::BustCacheWorker.new.perform(id)
-    remove_algolia_index
   end
 
   def bust_cache

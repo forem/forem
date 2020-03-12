@@ -1,7 +1,7 @@
 <% title "Pro Membership" %>
 
 <style>
-  <% cache "partnership-org-section-credits-#{ApplicationConfig['HEROKU_SLUG_COMMIT']}", expires_in: 10.hours do %>
+  <% cache(cache_key_heroku_slug("partnership-org-section-credits"), expires_in: 10.hours) do %>
     <%= Rails.application.assets["partnerships.css"].to_s.html_safe %>
   <% end %>
 </style>

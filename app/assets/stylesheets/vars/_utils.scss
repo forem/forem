@@ -1,0 +1,44 @@
+// Border radius
+$br-default: 3px;
+
+// Break points
+$breakpoint-s: 640px;
+$breakpoint-m: 768px;
+$breakpoint-l: 1024px;
+$breakpoint-xl: 1280px;
+
+// Transitions
+$transition-props: cubic-bezier(0.17, 0.67, 0.5, 0.71) 100ms;
+
+// pow() - Raise number to the nth power
+//
+// @param {number} $base      The base number
+// @param {number} $exponents The exponent to which to raise $base
+@function pow($base, $exponents) {
+  $raised: 1;
+
+  @for $i from 1 through $exponents {
+    $raised: $raised * $base;
+  }
+
+  @return $raised;
+}
+
+// generate-classes()
+//
+// Generating classes for Tailwind approach.
+//
+// @param {string} $prefix                Prefix for utility class, for example `mr`
+// @param {string || list} $properties    Defines CSS property(ies) that, for example `margin-right`
+// @param {list} $values-1                List of values for which we gonna generate classes
+// @param {list} $values-2                Additional list of values, useful when we want to combine two lists.
+@mixin generate-classes($prefix, $properties, $values-1, $values-2: ()) {
+  $values: map-merge($values-1, $values-2);
+  @each $name, $value in $values {
+    .#{$prefix}-#{$name} {
+      @each $property in $properties {
+        #{$property}: $value !important;
+      }
+    }
+  }
+}

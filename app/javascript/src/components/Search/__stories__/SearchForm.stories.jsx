@@ -12,7 +12,7 @@ const commonProps = {
   },
 };
 
-storiesOf('Search/Search Form', module)
+storiesOf('App Components/Search/Search Form', module)
   .add('No search term', () => <SearchForm {...commonProps} searchTerm="" />)
   .add('With search term', () => (
     <SearchForm {...commonProps} searchTerm="Hello" />

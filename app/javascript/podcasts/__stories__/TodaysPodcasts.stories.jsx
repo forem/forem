@@ -15,7 +15,7 @@ const episodes = [
   podcastArticle,
 ];
 
-storiesOf(`Components/Podcasts/Today's Episodes`, module)
+storiesOf(`App Components/Podcasts/Today's Episodes`, module)
   .addDecorator(articleDecorator)
   .add('Standard', () => (
     <TodaysPodcasts>

@@ -7,9 +7,6 @@
   }
 
   .filters {
-    // width: 300px;
-    // float: left;
-    // min-height: 356px;
     position: relative;
 
     input {
@@ -91,7 +88,6 @@
     .results {
       @include dev-card;
       border-radius: 3px;
-      min-height: 350px;
       display: none;
       text-align: left;
       font-size: 14px;

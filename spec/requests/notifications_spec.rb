@@ -4,13 +4,13 @@ RSpec.describe "NotificationsIndex", type: :request do
   include ActionView::Helpers::DateHelper
 
   let_it_be_readonly(:dev_account) { create(:user) }
-  let_it_be_readonly(:welcoming_account) { create(:user) }
+  let_it_be_readonly(:mascot_account) { create(:user) }
   let_it_be_changeable(:user) { create(:user) }
   let_it_be_changeable(:organization) { create(:organization) }
 
   before do
     allow(User).to receive(:dev_account).and_return(dev_account)
-    allow(User).to receive(:welcoming_account).and_return(welcoming_account)
+    allow(User).to receive(:mascot_account).and_return(mascot_account)
   end
 
   def has_both_names(response_body)
@@ -576,6 +576,18 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "renders the comment's processed HTML" do
         expect(response.body).not_to include comment.processed_html
+      end
+    end
+
+    context "when user is trusted" do
+      let(:user) { create(:user, :trusted) }
+      let(:reaction) { create(:thumbsdown_reaction, user: user) }
+
+      it "allow sees thumbsdown category" do
+        sign_in user
+        Notification.send_reaction_notification_without_delay(reaction, user)
+        get "/notifications"
+        expect(response.body).to include("Notifications")
       end
     end
 
