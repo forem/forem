@@ -1,49 +1,39 @@
-// TODO: This should be coming from our own files, not a copy in the stories.
 .container {
-  padding: 48px;
-  font-size: 16px;
+  font-size: 1rem !important;
   line-height: 1.5;
   box-sizing: border-box;
+  padding: 3em;
 }
-.container *,
-.container *:before,
-.container *:after {
+
+*,
+*:before,
+*:after {
   box-sizing: border-box;
 }
 
 .container > * + * {
-  margin-top: 32px !important;
+  margin-top: 2em;
 }
 
-.container > pre {
-  padding: 24px;
+.container .body {
+  font-size: inherit !important;
   width: 100%;
-}
-
-.container > .body {
-  width: 100%;
-  font-size: 16px;
   line-height: 150%;
-  border-bottom: 1px solid lightgrey;
-  padding-bottom: 32px;
+  padding-bottom: 2em;
 }
 
-.container > .body h2 {
+.container .body h2,
+.container .body p {
   padding: 0;
   margin: 0;
 }
 
-.container > .body p {
-  margin: 0;
+.container .body ul,
+.container .body ol {
+  margin: 0 0 0 1.5em;
   padding: 0;
 }
 
-.container > .body ul,
-.container > .body ol {
-  margin: 0 0 0 24px;
-  padding: 0;
-}
-
-.container > .body > * + * {
-  margin-top: 16px !important;
+.container div > * + * {
+  margin-top: 1em;
 }
