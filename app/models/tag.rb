@@ -20,15 +20,18 @@ class Tag < ActsAsTaggableOn::Tag
             format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
   validates :category, inclusion: { in: ALLOWED_CATEGORIES }
 
-  validate :validate_alias
-  validate :validate_name
+  validate :validate_alias_for, if: proc { alias_for.present? }
+  validate :validate_name, if: proc { name.present? }
+
   before_validation :evaluate_markdown
   before_validation :pound_it
+
   before_save :calculate_hotness_score
+  before_save :mark_as_updated
+
   after_commit :bust_cache
   after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
-  before_save :mark_as_updated
 
   include Searchable
   SEARCH_SERIALIZER = Search::TagSerializer
@@ -93,8 +96,10 @@ class Tag < ActsAsTaggableOn::Tag
     Tags::BustCacheWorker.perform_async(name)
   end
 
-  def validate_alias
-    errors.add(:tag, "alias_for must refer to existing tag") if alias_for.present? && !Tag.find_by(name: alias_for)
+  def validate_alias_for
+    return if Tag.exists?(name: alias_for)
+
+    errors.add(:tag, "alias_for must refer to an existing tag")
   end
 
   def pound_it
