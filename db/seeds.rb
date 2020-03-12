@@ -307,7 +307,7 @@ listings_categories.each_with_index do |category, index|
 end
 ##############################################################################
 
-Rails.logger.info <<-ASCII
+puts <<-ASCII # rubocop:disable Rails/Output
 
 
 
