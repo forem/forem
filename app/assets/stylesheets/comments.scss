@@ -916,14 +916,14 @@ a.header-link {
       height: 25px;
     }
     .reactions-count {
-      font-size: calc(0.9em + 0.1vw);
+      font-size: 0.7em;
       background: $light-gray;
       padding: 1px 5px;
       border-radius: 3px;
       border: 1px solid darken($light-gray, 10%);
       margin-left: 1px;
       position: absolute;
-      top: 8px;
+      top: 4px;
       left: 24px;
     }
     img {
