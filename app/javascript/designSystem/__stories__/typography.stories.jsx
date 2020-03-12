@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { storiesOf } from '@storybook/react';
 
-import './typography.scss';
+import './designSystem.scss';
 
 storiesOf('Base', module).add('Typography', () => (
   <div className="container">
@@ -73,7 +73,13 @@ storiesOf('Base', module).add('Typography', () => (
       <p className="fs-5xl fw-heavy">Lorem ipsum dolor sit amet.</p>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 24px;">
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gridGap: '24px',
+      }}
+    >
       <span className="ff-accent">Line height: 1.5 – .lh-base (default)</span>
       <span className="ff-accent">Line height: 1.25 – .lh-tight</span>
 

@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { storiesOf } from '@storybook/react';
 
-import './typography.scss';
+import './designSystem.scss';
 import { defaultChildrenPropTypes } from '../../src/components/common-prop-types';
 
 const Fieldset = ({ children }) => (

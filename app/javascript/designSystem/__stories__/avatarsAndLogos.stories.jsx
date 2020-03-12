@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { storiesOf } from '@storybook/react';
 
-import './typography.scss';
+import './designSystem.scss';
 
 storiesOf('Base/Components/HTML/Avatars & Logos', module).add(
   'Description',
