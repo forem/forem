@@ -343,6 +343,10 @@ class User < ApplicationRecord
     end
   end
 
+  def vomitted?
+    Reaction.where(reactable_id: id, reactable_type: "User", category: "vomit", status: "confirmed").exists?
+  end
+
   def trusted
     Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
       has_role? :trusted
