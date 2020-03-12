@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 
 import './designSystem.scss';
 
-storiesOf('Base/Components/HTML/Navigation/Tabs', module)
+storiesOf('Components/HTML/Navigation/Tabs', module)
   .add('Description', () => (
     <div className="container">
       <h2>Navigation: Tabs</h2>

@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 
 import './designSystem.scss';
 
-storiesOf('Base/Components/HTML/Dropdowns', module)
+storiesOf('Components/HTML/Dropdowns', module)
   .add('Description', () => (
     <div className="container">
       <h2>Dropdowns</h2>
