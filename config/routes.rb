@@ -282,7 +282,6 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root
   get "/about" => "pages#about"
-  get "/page/crayons" => "pages#crayons"
   get "/robots.:format" => "pages#robots"
   get "/api", to: redirect("https://docs.dev.to/api")
   get "/privacy" => "pages#privacy"
