@@ -30,9 +30,9 @@ env:
     - SENDGRID_PASSWORD_ACCEL=dummy
     - HEROKU_APP_URL=practicaldev.herokuapp.com
     - SECRET_KEY_BASE=dummydummydummy
-branches:
-  only:
-    - master
+# branches:
+#   only:
+#     - master
 before_install:
   - date --rfc-3339=seconds
   - nvm install
