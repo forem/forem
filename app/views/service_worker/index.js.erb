@@ -108,10 +108,12 @@
         !url.href.includes('/robots.txt') && // Skip robots for web crawlers
         !url.href.includes('/shell_') && // Don't fetch for shell.
         !url.href.includes('/sidekiq') && // Skip for Sidekiq dashboard
+        !url.href.includes('/ahoy/') && // Skip for ahoy message redirects
         !url.href.includes('/abtests') && // Skip for field_test dashboard
         !url.href.includes('/social_previews') && // Skip for social previews
         !url.href.includes('/users/auth') && // Don't run on authentication.
         !url.href.includes('/enter') && // Don't run on registration.
+        !url.href.includes('/welcome') && // Don't run on welcome reroutes.
 
         // Don't run on search endpoints
         !url.href.includes('/search/tags') &&

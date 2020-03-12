@@ -2,8 +2,6 @@ if Rails.env.test? || ApplicationConfig["HONEYCOMB_API_KEY"].blank?
   Honeycomb.configure do |config|
     config.client = Libhoney::TestClient.new
   end
-
-  HoneycombClient = Libhoney::TestClient.new
 else
   honeycomb_api_key = ApplicationConfig["HONEYCOMB_API_KEY"]
 
@@ -32,7 +30,4 @@ else
       end
     end
   end
-
-  # here we create an additional Honeycomb client that can be used to send custom events
-  HoneycombClient = Libhoney::Client.new(writekey: honeycomb_api_key, dataset: "dev-ruby")
 end

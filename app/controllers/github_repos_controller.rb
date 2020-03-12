@@ -84,7 +84,7 @@ class GithubReposController < ApplicationController
       bytes_size: fetched_repo.size,
       watchers_count: fetched_repo.watchers,
       stargazers_count: fetched_repo.stargazers_count,
-      featured: true,
+      featured: repo_params[:featured],
       info_hash: fetched_repo.to_hash
     }
   end
@@ -93,7 +93,11 @@ class GithubReposController < ApplicationController
     client = create_octokit_client
 
     client.repositories.detect do |repo|
-      repo.id == permitted_attributes(GithubRepo)[:github_id_code].to_i
+      repo.id == repo_params[:github_id_code].to_i
     end
+  end
+
+  def repo_params
+    permitted_attributes(GithubRepo)
   end
 end

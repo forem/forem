@@ -32,8 +32,14 @@
     "positive_reactions_count": {
       "type": "integer"
     },
+    "profile_image_90": {
+      "type": "keyword"
+    },
     "reactions_count": {
       "type": "integer"
+    },
+    "search_fields": {
+      "type": "text"
     },
     "username": {
       "type": "keyword"

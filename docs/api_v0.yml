@@ -1,4 +1,9 @@
-openapi: "3.0.2"
+# This document follows the OpenAPI spec <https://spec.openapis.org/oas/v3.0.3>
+# It contains two Redoc vendor extensions, x-code-samples and x-logo
+# x-logo: https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-logo
+# x-code-samples: https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+
+openapi: "3.0.3"
 info:
   title: DEV API (beta)
   description: |
@@ -8,13 +13,13 @@ info:
 
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
-  version: "0.6.2"
+  version: "0.6.7"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
     url: https://dev.to/contact
     email: yo@dev.to
-  x-logo: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-logo
+  x-logo:
     url: https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-128-1a9016906487b8ba17f2d3d3c28f9d1cb3ae9b45d685cc2711e20f6b3c6730df.png
     backgroundColor: "#000"
     altText: "DEV logo"
@@ -62,6 +67,7 @@ components:
           tokenUrl: https://dev.to/oauth/token
           refreshUrl: https://dev.to/oauth/token
           scopes: {}
+
   schemas:
     APIError:
       type: object
@@ -300,7 +306,7 @@ components:
                 `cover_image` is the main image of the article
 
                 *If the markdown contains a front matter, it will take precedence
-                on the equivalent params given in the JSON payload.*
+                on the equivalent params given in the payload.*
               type: string
             published:
               description: |
@@ -364,7 +370,7 @@ components:
                 `cover_image` is the main image of the article
 
                 *If the markdown contains a front matter, it will take precedence
-                on the equivalent params given in the JSON payload.*
+                on the equivalent params given in the payload.*
               type: string
             published:
               description: |
@@ -464,6 +470,9 @@ components:
           description: Crossposting or published date time
           type: string
           format: date-time
+        body_markdown:
+          description: The body of the article in Markdown format
+          type: string
         user:
           $ref: "#/components/schemas/SharedUser"
         organization:
@@ -483,6 +492,56 @@ components:
         text_color_hex:
           description: Text color (hexadecimal)
           type: string
+
+    Comment:
+      type: object
+      required:
+        - type_of
+        - id_code
+        - body_html
+        - user
+        - children
+      properties:
+        type_of:
+          type: string
+        id_code:
+          type: string
+        body_html:
+          description: HTML formatted comment
+          type: string
+        user:
+          $ref: "#/components/schemas/SharedUser"
+        children:
+          type: array
+          items:
+            $ref: "#/components/schemas/Comment"
+
+    Follower:
+      type: object
+      required:
+        - type_of
+        - id
+        - name
+        - path
+        - username
+        - profile_image
+      properties:
+        type_of:
+          type: string
+        id:
+          description: Follow id
+          type: integer
+          format: int32
+        name:
+          type: string
+        path:
+          type: string
+        username:
+          type: string
+        profile_image:
+          description: Profile image (60x60)
+          type: string
+          format: url
 
     Listing:
       type: object
@@ -564,7 +623,7 @@ components:
               type: string
             expires_at:
               description: Date and time of expiration.
-              type: date
+              type: string
               format: date-time
             contact_via_connect:
               description: |
@@ -587,6 +646,7 @@ components:
               description: Set it to "draft" to create an unpublished listing
               type: string
               enum: [draft]
+
     ListingUpdate:
       type: object
       properties:
@@ -616,7 +676,7 @@ components:
               type: string
             expires_at:
               description: Date and time of expiration.
-              type: date
+              type: string
               format: date-time
             contact_via_connect:
               description: |
@@ -641,6 +701,38 @@ components:
               type: string
               enum: [bump, publish, unpublish]
 
+    PodcastEpisode:
+      type: object
+      required:
+        - type_of
+        - id
+        - path
+        - image_url
+        - title
+        - podcast
+      properties:
+        type_of:
+          type: string
+        id:
+          type: integer
+          format: int32
+        path:
+          type: string
+        image_url:
+          type: string
+          format: url
+        title:
+          type: string
+        podcast:
+          type: object
+          properties:
+            title:
+              type: string
+            slug:
+              type: string
+            image_url:
+              type: string
+              format: url
 
     SharedUser:
       description: The resource creator
@@ -683,6 +775,26 @@ components:
           type: string
           format: url
 
+    Tag:
+      type: object
+      required:
+        - id
+        - name
+        - bg_color_hex
+        - text_color_hex
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        bg_color_hex:
+          description: Background color (hexadecimal)
+          type: string
+        text_color_hex:
+          description: Text color (hexadecimal)
+          type: string
+
     WebhookCreate:
       description: Webhook creation payload
       type: object
@@ -705,6 +817,30 @@ components:
               type: array
               items:
                 type: string
+
+    WebhookIndex:
+      description: Webhook
+      type: object
+      properties:
+        type_of:
+          type: string
+        id:
+          type: integer
+          format: int64
+        source:
+          description: The name of the requester, eg. "DEV"
+          type: string
+        target_url:
+          type: string
+          format: url
+        events:
+          description: An array of events identifiers
+          type: array
+          items:
+            type: string
+        created_at:
+          type: string
+          format: date-time
 
     WebhookShow:
       description: Webhook
@@ -731,30 +867,6 @@ components:
           format: date-time
         user:
           $ref: "#/components/schemas/SharedUser"
-
-    WebhookIndex:
-      description: Webhook
-      type: object
-      properties:
-        type_of:
-          type: string
-        id:
-          type: integer
-          format: int64
-        source:
-          description: The name of the requester, eg. "DEV"
-          type: string
-        target_url:
-          type: string
-          format: url
-        events:
-          description: An array of events identifiers
-          type: array
-          items:
-            type: string
-        created_at:
-          type: string
-          format: date-time
 
   examples:
     ErrorBadRequest:
@@ -909,6 +1021,217 @@ components:
           canonical_url: https://example.com/blog/hello
           organization_id: 1234
 
+    Comments:
+      value:
+        - type_of: comment
+          id_code: m3m0
+          body_html: |
+            <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+            <html><body>
+            <p>...</p>
+
+            </body></html>
+          user:
+            name: Heriberto Morissette
+            username: heriberto_morissette
+            twitter_username:
+            github_username:
+            website_url:
+            profile_image: https://res.cloudinary.com/...jpeg
+            profile_image_90: https://res.cloudinary.com/...jpeg
+          children: []
+        - type_of: comment
+          id_code: m357
+          body_html: |
+            <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+            <html><body>
+            <p>...</p>
+
+            <p>...</p>
+
+            </body></html>
+          user:
+            name: Dario Waelchi
+            username: dario waelchi
+            twitter_username:
+            github_username:
+            website_url:
+            profile_image: https://res.cloudinary.com/...png
+            profile_image_90: https://res.cloudinary.com/...png
+          children:
+          - type_of: comment
+            id_code: m35m
+            body_html: |
+              <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+              <html><body>
+
+              <p>...</p>
+
+              </body></html>
+            user:
+              name: rhymes
+              username: rhymes
+              twitter_username:
+              github_username:
+              website_url:
+              profile_image: https://res.cloudinary.com/...jpeg
+              profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--SC90PuMi--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/2693/146201.jpeg
+            children: []
+    CommentsDeleted:
+      value:
+        - type_of: comment
+          id_code: m357
+          body_html: <p>[deleted]</p>
+          user: {}
+          children:
+          - type_of: comment
+            id_code: m35m
+            body_html: |
+              <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+              <html><body>
+
+              <p>...</p>
+
+              </body></html>
+            user:
+              name: rhymes
+              username: rhymes
+              twitter_username:
+              github_username:
+              website_url:
+              profile_image: https://res.cloudinary.com/...jpeg
+              profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--SC90PuMi--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/2693/146201.jpeg
+            children: []
+    CommentsHidden:
+      value:
+        - type_of: comment
+          id_code: m357
+          body_html: <p>[hidden by post author]</p>
+          user: {}
+          children:
+          - type_of: comment
+            id_code: m35m
+            body_html: |
+              <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+              <html><body>
+
+              <p>...</p>
+
+              </body></html>
+            user:
+              name: rhymes
+              username: rhymes
+              twitter_username:
+              github_username:
+              website_url:
+              profile_image: https://res.cloudinary.com/...jpeg
+              profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--SC90PuMi--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/2693/146201.jpeg
+            children: []
+    Comment:
+      value:
+        type_of: comment
+        id_code: m357
+        body_html: |
+          <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+          <html><body>
+          <p>...</p>
+
+          <p>...</p>
+
+          </body></html>
+        user:
+          name: Dario Waelchi
+          username: dario waelchi
+          twitter_username:
+          github_username:
+          website_url:
+          profile_image: https://res.cloudinary.com/...png
+          profile_image_90: https://res.cloudinary.com/...png
+        children:
+        - type_of: comment
+          id_code: m35m
+          body_html: |
+            <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+            <html><body>
+
+            <p>...</p>
+
+            </body></html>
+          user:
+            name: rhymes
+            username: rhymes
+            twitter_username:
+            github_username:
+            website_url:
+            profile_image: https://res.cloudinary.com/...jpeg
+            profile_image_90: https://res.cloudinary.com/....jpeg
+          children: []
+    CommentDeleted:
+      value:
+        type_of: comment
+        id_code: m357
+        body_html: <p>[deleted]</p>
+        user: {}
+        children:
+        - type_of: comment
+          id_code: m35m
+          body_html: |
+            <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+            <html><body>
+
+            <p>...</p>
+
+            </body></html>
+          user:
+            name: rhymes
+            username: rhymes
+            twitter_username:
+            github_username:
+            website_url:
+            profile_image: https://res.cloudinary.com/...jpeg
+            profile_image_90: https://res.cloudinary.com/...jpeg
+          children: []
+    CommentHidden:
+      value:
+        type_of: comment
+        id_code: m357
+        body_html: <p>[hidden by post author]</p>
+        user: {}
+        children:
+        - type_of: comment
+          id_code: m35m
+          body_html: |
+            <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+            <html><body>
+
+            <p>...</p>
+
+            </body></html>
+          user:
+            name: rhymes
+            username: rhymes
+            twitter_username:
+            github_username:
+            website_url:
+            profile_image: https://res.cloudinary.com/...jpeg
+            profile_image_90: https://res.cloudinary.com/...jpeg
+          children: []
+
+    Followers:
+      value:
+        - type_of: user_follower
+          id: 12
+          name: Mrs. Neda Morissette
+          path: "/nedamrsmorissette"
+          username: nedamrsmorissette
+          profile_image: https://res.cloudinary.com/...
+        - type_of: user_follower
+          id: 11
+          name: Yoko Hintz
+          path: "/yokohintz"
+          username: yokohintz
+          profile_image: https://res.cloudinary.com/...
+
     Listings:
       value:
         - type_of: classified_listing
@@ -998,6 +1321,38 @@ components:
         classified_listing:
           action: unpublish
 
+    PodcastEpisodes:
+      value:
+        - type_of: podcast_episodes
+          id: 13894
+          path: "/codenewbie/s11-e7-why-site-reliability-is-so-important-molly-struve"
+          image_url: https://dev-to-uploads.s3.amazonaws.com/uploads/podcast/image/2/9f50a462-9152-429a-b15e-d024baaa8e01.png
+          title: S11:E7 - Why site reliability is so important (Molly Struve)
+          podcast:
+            title: CodeNewbie
+            slug: codenewbie
+            image_url: https://dev-to-uploads.s3.amazonaws.com/uploads/podcast/image/2/9f50a462-9152-429a-b15e-d024baaa8e01.png
+        - type_of: podcast_episodes
+          id: 13829
+          path: "/codenewbie/s11-e6-what-are-the-pros-and-cons-of-working-in-civic-tech-aidan-feldman"
+          image_url: https://dev-to-uploads.s3.amazonaws.com/uploads/podcast/image/2/9f50a462-9152-429a-b15e-d024baaa8e01.png
+          title: S11:E6 - What are the pros and cons of working in civic tech (Aidan Feldman)
+          podcast:
+            title: CodeNewbie
+            slug: codenewbie
+            image_url: https://dev-to-uploads.s3.amazonaws.com/uploads/podcast/image/2/9f50a462-9152-429a-b15e-d024baaa8e01.png
+
+    Tags:
+      value:
+        - id: 6
+          name: javascript
+          bg_color_hex: "#F7DF1E"
+          text_color_hex: "#000000"
+        - id: 8
+          name: webdev
+          bg_color_hex: "#562765"
+          text_color_hex: "#ffffff"
+
     WebhookCreate:
       value:
         webhook_endpoint:
@@ -1026,8 +1381,16 @@ components:
 tags:
   - name: articles
     description: Articles are all the posts users create on DEV
+  - name: comments
+    description: Users can leave comments to articles and podcasts episodes
+  - name: followers
+    description: Users can follow other users on the website
   - name: listings
     description: Listings are classified ads
+  - name: podcast-episodes
+    description: Podcast episodes
+  - name: tags
+    description: Tags for articles
   - name: users
     description: Users own resources that require authentication
   - name: webhooks
@@ -1128,7 +1491,7 @@ paths:
             format: int32
           example: 99
       responses:
-        200:
+        "200":
           description: A list of articles
           content:
             application/json:
@@ -1139,7 +1502,7 @@ paths:
               examples:
                 articles-success:
                   $ref: "#/components/examples/ArticlesIndex"
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl (all articles)
           source: |
@@ -1182,7 +1545,7 @@ paths:
                 $ref: "#/components/examples/ArticleCreateOrganization"
 
       responses:
-        201:
+        "201":
           description: A newly created article
           content:
             application/json:
@@ -1197,7 +1560,7 @@ paths:
               schema:
                 type: string
                 format: url
-        400:
+        "400":
           description: BadRequest
           content:
             application/json:
@@ -1206,7 +1569,7 @@ paths:
               examples:
                 error-bad-request:
                   $ref: "#/components/examples/ErrorBadRequest"
-        401:
+        "401":
           description: Unauthorized
           content:
             application/json:
@@ -1215,7 +1578,7 @@ paths:
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        422:
+        "422":
           description: Unprocessable Entity
           content:
             application/json:
@@ -1227,7 +1590,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -1262,7 +1625,7 @@ paths:
             format: int32
           example: 150589
       responses:
-        200:
+        "200":
           description: An article
           content:
             application/json:
@@ -1271,7 +1634,7 @@ paths:
               examples:
                 article-success:
                   $ref: "#/components/examples/ArticleShow"
-        404:
+        "404":
           description: Resource not found
           content:
             application/json:
@@ -1280,7 +1643,7 @@ paths:
               examples:
                 article-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -1333,42 +1696,38 @@ paths:
               article-update-organization:
                 $ref: "#/components/examples/ArticleCreateOrganization"
       responses:
-        200:
+        "200":
           description: The updated article
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/ArticleShow"
               examples:
                 article-success:
                   $ref: "#/components/examples/ArticleShow"
-        400:
+        "400":
           description: BadRequest
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-bad-request:
                   $ref: "#/components/examples/ErrorBadRequest"
-        401:
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        422:
+        "422":
           description: Unprocessable Entity
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unprocessable-entity:
@@ -1376,7 +1735,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -1420,7 +1779,7 @@ paths:
             format: int32
           example: 30
       responses:
-        200:
+        "200":
           description: A list of published articles
           content:
             application/json:
@@ -1428,10 +1787,19 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ArticleMe"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -1472,7 +1840,7 @@ paths:
             format: int32
           example: 30
       responses:
-        200:
+        "200":
           description: A list of published articles
           content:
             application/json:
@@ -1480,10 +1848,19 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ArticleMe"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -1524,7 +1901,7 @@ paths:
             format: int32
           example: 30
       responses:
-        200:
+        "200":
           description: A list of articles
           content:
             application/json:
@@ -1532,10 +1909,19 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ArticleMe"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -1578,7 +1964,7 @@ paths:
             format: int32
           example: 30
       responses:
-        200:
+        "200":
           description: A list of articles
           content:
             application/json:
@@ -1586,14 +1972,183 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ArticleMe"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
             curl -H "api-key: API_KEY" https://dev.to/api/articles/me/all
+
+  /comments:
+    get:
+      operationId: getCommentsByArticleId
+      summary: Comments
+      description: |
+        This endpoint allows the client to retrieve all comments belonging to an
+        article as threaded conversations.
+
+        It will return the all top level comments with their nested comments as
+        threads. See the format specification for further details.
+      tags:
+        - comments
+      parameters:
+        - name: a_id
+          in: query
+          description: Article identifier.
+          schema:
+            type: integer
+            format: int32
+          example: 270180
+      responses:
+        "200":
+          description: A list of threads of comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Comment"
+              examples:
+                comments-success:
+                  $ref: "#/components/examples/Comments"
+                comments-success-deleted:
+                  $ref: "#/components/examples/CommentsDeleted"
+                comments-success-hidden:
+                  $ref: "#/components/examples/CommentsHidden"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                article-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      x-code-samples:
+        - lang: Shell
+          label: curl (all comments of an article)
+          source: |
+            curl https://dev.to/api/comments?a_id=270180
+
+  /comments/{id}:
+    get:
+      operationId: getCommentById
+      summary: Comment
+      description: |
+        This endpoint allows the client to retrieve a comment as well as his
+        descendants comments.
+
+        It will return the required comment (the root) with its nested
+        descendants as a thread.
+
+        See the format specification for further details.
+      tags:
+        - comments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Comment identifier.
+          schema:
+            type: string
+          example: m35m
+      responses:
+        "200":
+          description: A comment and its descendants
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+              examples:
+                comment-success:
+                  $ref: "#/components/examples/Comment"
+                comments-success-deleted:
+                  $ref: "#/components/examples/CommentDeleted"
+                comments-success-hidden:
+                  $ref: "#/components/examples/CommentHidden"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                article-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      x-code-samples:
+        - lang: Shell
+          label: curl (a comment and its descendants)
+          source: |
+            curl https://dev.to/api/comments/m51e
+
+  /followers/users:
+    get:
+      operationId: getFollowers
+      summary: Followers
+      description: |
+        This endpoint allows the client to retrieve a list of the followers
+        they have.
+
+        "Followers" are users that are following other users on the website.
+
+        It supports pagination, each page will contain `80` followers by default.
+      tags:
+        - followers
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page.
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: per_page
+          in: query
+          description: Page size (defaults to 80 with a maximum of 1000).
+          schema:
+            type: integer
+            format: int32
+          example: 80
+      responses:
+        "200":
+          description: A list of followers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Follower"
+              examples:
+                followers-success:
+                  $ref: "#/components/examples/Followers"
+
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
+      security:
+        - api_key: []
+      x-code-samples:
+        - lang: Shell
+          label: curl
+          source: |
+            curl -H "api-key: API_KEY" https://dev.to/api/followers/users
 
   /listings:
     get:
@@ -1636,7 +2191,7 @@ paths:
             type: string
           example: cfp
       responses:
-        200:
+        "200":
           description: A list of listings
           content:
             application/json:
@@ -1647,7 +2202,7 @@ paths:
               examples:
                 listings-success:
                   $ref: "#/components/examples/Listings"
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl (all listings)
           source: |
@@ -1685,7 +2240,7 @@ paths:
                 $ref: "#/components/examples/ListingCreateOrganization"
 
       responses:
-        201:
+        "201":
           description: A newly created Listing
           content:
             application/json:
@@ -1694,7 +2249,7 @@ paths:
               examples:
                 article-success:
                   $ref: "#/components/examples/Listing"
-        400:
+        "400":
           description: BadRequest
           content:
             application/json:
@@ -1703,7 +2258,7 @@ paths:
               examples:
                 error-bad-request:
                   $ref: "#/components/examples/ErrorBadRequest"
-        401:
+        "401":
           description: Unauthorized
           content:
             application/json:
@@ -1712,7 +2267,7 @@ paths:
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        402:
+        "402":
           description: PaymentRequired
           content:
             application/json:
@@ -1721,7 +2276,7 @@ paths:
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorPaymentRequired"
-        422:
+        "422":
           description: Unprocessable Entity
           content:
             application/json:
@@ -1732,7 +2287,7 @@ paths:
                   $ref: "#/components/examples/ErrorUnprocessableEntity"
       security:
         - api_key: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -1795,7 +2350,7 @@ paths:
             format: int32
           example: 30
       responses:
-        200:
+        "200":
           description: A list of listings
           content:
             application/json:
@@ -1806,7 +2361,7 @@ paths:
               examples:
                 listings-success:
                   $ref: "#/components/examples/Listings"
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl (call for papers listings)
           source: |
@@ -1834,7 +2389,7 @@ paths:
             format: int32
           example: 1
       responses:
-        200:
+        "200":
           description: A listing
           content:
             application/json:
@@ -1843,7 +2398,7 @@ paths:
               examples:
                 article-success:
                   $ref: "#/components/examples/Listing"
-        404:
+        "404":
           description: Resource not found
           content:
             application/json:
@@ -1855,7 +2410,7 @@ paths:
       security:
         - {} # this indicates that authentication is optional
         - api_key: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -1904,59 +2459,54 @@ paths:
               listing-update:
                 $ref: "#/components/examples/ListingUpdate"
       responses:
-        200:
+        "200":
           description: The updated article
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/ArticleShow"
               examples:
                 article-success:
                   $ref: "#/components/examples/ArticleShow"
-        400:
+        "400":
           description: BadRequest
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-bad-request:
                   $ref: "#/components/examples/ErrorBadRequest"
-        401:
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        402:
+        "402":
           description: PaymentRequired
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorPaymentRequired"
-        422:
+        "422":
           description: Unprocessable Entity
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unprocessable-entity:
                   $ref: "#/components/examples/ErrorUnprocessableEntity"
       security:
         - api_key: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl (bump)
           source: |
@@ -1971,6 +2521,122 @@ paths:
               -H "api-key: API_KEY" \
               -d '{"classified_listing":{"title":"Title"}' \
               https://dev.to/api/listings/{id}
+
+  /podcast_episodes:
+    get:
+      operationId: getPodcastEpisodes
+      summary: Published podcast episodes
+      description: |
+        This endpoint allows the client to retrieve a list of podcast episodes.
+
+        "Podcast episodes" are episodes belonging to podcasts.
+
+        It will only return active podcast episodes that belong to published
+        podcasts available on the platform,
+        ordered by descending publication date.
+
+        It supports pagination, each page will contain `30` articles by default.
+      tags:
+        - podcast-episodes
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page.
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: per_page
+          in: query
+          description: Page size (defaults to 30 with a maximum of 1000).
+          schema:
+            type: integer
+            format: int32
+          example: 30
+        - name: username
+          in: query
+          description: |
+            Using this parameter will retrieve episodes belonging
+            to a specific podcast.
+          schema:
+            type: string
+          example: codenewbie
+      responses:
+        "200":
+          description: A list of podcast episodes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PodcastEpisode"
+              examples:
+                articles-success:
+                  $ref: "#/components/examples/PodcastEpisodes"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                article-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      x-code-samples:
+        - lang: Shell
+          label: curl (all podcast episodes)
+          source: |
+            curl https://dev.to/api/podcast_episodes
+        - lang: Shell
+          label: curl (all episodes belonging to a podcast)
+          source: |
+            curl https://dev.to/api/podcast_episodes?username=codenewbie
+
+  /tags:
+    get:
+      operationId: getTags
+      summary: Tags
+      description: |
+        This endpoint allows the client to retrieve a list of tags
+        that can be used to tag articles.
+
+        It will only return tags ordered by popularity.
+
+        It supports pagination, each page will contain `10` tags by default.
+      tags:
+        - tags
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page.
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: per_page
+          in: query
+          description: Page size (defaults to 10 with a maximum of 1000).
+          schema:
+            type: integer
+            format: int32
+          example: 30
+      responses:
+        "200":
+          description: A list of tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Tag"
+              examples:
+                articles-success:
+                  $ref: "#/components/examples/Tags"
+      x-code-samples:
+        - lang: Shell
+          label: curl (all tags)
+          source: |
+            curl https://dev.to/api/tags
 
   /webhooks:
     get:
@@ -1987,7 +2653,7 @@ paths:
       tags:
         - webhooks
       responses:
-        200:
+        "200":
           description: A list of webhooks
           content:
             application/json:
@@ -2006,10 +2672,19 @@ paths:
                       events:
                         - article_created
                       created_at: "2019-09-02T09:47:39.230Z"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -2035,42 +2710,38 @@ paths:
                 $ref: "#/components/examples/WebhookCreate"
 
       responses:
-        201:
+        "201":
           description: A newly created webhook
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/WebhookShow"
               examples:
                 webhook-success:
                   $ref: "#/components/examples/WebhookShow"
-        400:
+        "400":
           description: BadRequest
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-bad-request:
                   $ref: "#/components/examples/ErrorBadRequest"
-        401:
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        422:
+        "422":
           description: Unprocessable Entity
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 error-unprocessable-entity:
@@ -2078,7 +2749,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -2106,32 +2777,29 @@ paths:
             format: int32
           example: 123
       responses:
-        200:
+        "200":
           description: A webhook endpoint
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/WebhookShow"
               examples:
                 webhook-success:
                   $ref: "#/components/examples/WebhookShow"
-        401:
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 article-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        404:
+        "404":
           description: Resource not found
           content:
             application/json:
               schema:
-                type: object
                 $ref: "#/components/schemas/APIError"
               examples:
                 article-not-found:
@@ -2139,7 +2807,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -2162,9 +2830,9 @@ paths:
             format: int32
           example: 123
       responses:
-        204:
+        "204":
           description: A successful deletion
-        401:
+        "401":
           description: Unauthorized
           content:
             application/json:
@@ -2173,7 +2841,7 @@ paths:
               examples:
                 article-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
-        404:
+        "404":
           description: Resource not found
           content:
             application/json:
@@ -2185,7 +2853,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |

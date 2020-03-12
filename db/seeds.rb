@@ -140,6 +140,20 @@ image_file = Rails.root.join("spec/support/fixtures/images/image1.jpeg")
 
 podcast_objects = [
   {
+    title: "CodeNewbie",
+    description: "",
+    feed_url: "http://feeds.codenewbie.org/cnpodcast.xml",
+    itunes_url: "https://itunes.apple.com/us/podcast/codenewbie/id919219256",
+    slug: "codenewbie",
+    twitter_username: "CodeNewbies",
+    website_url: "https://www.codenewbie.org/podcast",
+    main_color_hex: "2faa4a",
+    overcast_url: "https://overcast.fm/itunes919219256/codenewbie",
+    android_url: "https://subscribeonandroid.com/feeds.podtrac.com/q8s8ba9YtM6r",
+    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+    published: true
+  },
+  {
     title: "CodingBlocks",
     description: "",
     feed_url: "http://feeds.podtrac.com/c8yBGHRafqhz",
@@ -147,9 +161,10 @@ podcast_objects = [
     twitter_username: "CodingBlocks",
     website_url: "http://codingblocks.net",
     main_color_hex: "111111",
-    overcast_url: "https://overcast.fm/itunes769189585/coding-blocks-software-and-web-programming-security-best-practices-microsoft-net",
+    overcast_url: "https://overcast.fm/itunes769189585/coding-blocks",
     android_url: "http://subscribeonandroid.com/feeds.podtrac.com/c8yBGHRafqhz",
-    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
+    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+    published: true
   },
   {
     title: "Talk Python",
@@ -159,9 +174,10 @@ podcast_objects = [
     twitter_username: "TalkPython",
     website_url: "https://talkpython.fm",
     main_color_hex: "181a1c",
-    overcast_url: "https://overcast.fm/itunes979020229/talk-python-to-me-python-conversations-for-passionate-developers",
+    overcast_url: "https://overcast.fm/itunes979020229/talk-python-to-me",
     android_url: "https://subscribeonandroid.com/talkpython.fm/episodes/rss",
-    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
+    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+    published: true
   },
   {
     title: "Developer on Fire",
@@ -174,25 +190,14 @@ podcast_objects = [
     main_color_hex: "343d46",
     overcast_url: "https://overcast.fm/itunes1006105326/developer-on-fire",
     android_url: "http://subscribeonandroid.com/developeronfire.com/rss.xml",
-    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
-  },
-  {
-    title: "Building Programmers",
-    description: "",
-    feed_url: "https://building.fireside.fm/rss",
-    itunes_url: "https://itunes.apple.com/us/podcast/building-programmers/id1149043456",
-    slug: "buildingprogrammers",
-    twitter_username: "run_kmc",
-    website_url: "https://building.fireside.fm",
-    main_color_hex: "140837",
-    overcast_url: "https://overcast.fm/itunes1149043456/building-programmers",
-    android_url: "https://subscribeonandroid.com/building.fireside.fm/rss",
-    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
+    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+    published: true
   },
 ]
 
 podcast_objects.each do |attributes|
-  Podcast.create!(attributes)
+  podcast = Podcast.create!(attributes)
+  Podcasts::GetEpisodesWorker.perform_async(podcast_id: podcast.id)
 end
 
 ##############################################################################

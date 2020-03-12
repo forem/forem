@@ -94,13 +94,13 @@ function fetchNextFollowingPage(el) {
   var indexParams = JSON.parse(el.dataset.params);
   var action = indexParams.action;
   if (action.includes("users")) {
-    fetchNext(el, "/api/followings/users", insertNext({ elId: "follows" }, buildFollowsHTML));
+    fetchNext(el, "/followings/users", insertNext({ elId: "follows" }, buildFollowsHTML));
   } else if (action.includes("podcasts")) {
-    fetchNext(el, "/api/followings/podcasts", insertNext({ elId: "follows" }, buildFollowsHTML));
+    fetchNext(el, "/followings/podcasts", insertNext({ elId: "follows" }, buildFollowsHTML));
   } else if (action.includes("organizations")) {
-    fetchNext(el, "/api/followings/organizations", insertNext({ elId: "follows" }, buildFollowsHTML));
+    fetchNext(el, "/followings/organizations", insertNext({ elId: "follows" }, buildFollowsHTML));
   } else {
-    fetchNext(el, "/api/followings/tags", insertNext({ elId: "follows" }, buildTagsHTML));
+    fetchNext(el, "/followings/tags", insertNext({ elId: "follows" }, buildTagsHTML));
   }
 }
 
