@@ -6,7 +6,7 @@ data_sources:
 
     # statement timeout, in seconds
     # none by default
-    timeout: 60
+    timeout: 10
 
     # caching settings
     # can greatly improve speed

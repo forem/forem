@@ -46,15 +46,12 @@ function resizeAllMasonryItems() {
   }
 }
 
-function updateListings(classifiedListings, listings) {
-  const listingIDs = listings.map(l => l.id);
-  const fullListings = listings;
+function updateListings(classifiedListings) {
+  const fullListings = [];
 
   classifiedListings.forEach(listing => {
     if (listing.bumped_at) {
-      if (!listingIDs.includes(listing.id)) {
-        fullListings.push(listing);
-      }
+      fullListings.push(listing);
     }
   });
 
@@ -146,7 +143,7 @@ export class Listings extends Component {
     if (newTags.indexOf(tag) === -1) {
       newTags.push(tag);
     }
-    this.setState({ tags: newTags, page: 0, listings: [] });
+    this.setState({ tags: newTags, page: 0 });
     this.listingSearch(query, newTags, category, null);
     window.scroll(0, 0);
   };
@@ -159,14 +156,14 @@ export class Listings extends Component {
     if (newTags.indexOf(tag) > -1) {
       newTags.splice(index, 1);
     }
-    this.setState({ tags: newTags, page: 0, listings: [] });
+    this.setState({ tags: newTags, page: 0 });
     this.listingSearch(query, newTags, category, null);
   };
 
   selectCategory = (e, cat) => {
     e.preventDefault();
     const { query, tags } = this.state;
-    this.setState({ category: cat, page: 0, listings: [] });
+    this.setState({ category: cat, page: 0 });
     this.listingSearch(query, tags, cat, null);
   };
 
@@ -236,14 +233,14 @@ export class Listings extends Component {
 
   handleQuery = e => {
     const { tags, category } = this.state;
-    this.setState({ query: e.target.value, page: 0, listings: [] });
+    this.setState({ query: e.target.value, page: 0 });
     this.listingSearch(e.target.value, tags, category, null);
   };
 
   clearQuery = () => {
     const { tags, category } = this.state;
     document.getElementById('listings-search').value = '';
-    this.setState({ query: '', page: 0, listings: [] });
+    this.setState({ query: '', page: 0 });
     this.listingSearch('', tags, category, null);
   };
 
@@ -319,7 +316,7 @@ export class Listings extends Component {
    */
   listingSearch(query, tags, category, slug) {
     const t = this;
-    const { page, listings } = t.state;
+    const { page } = t.state;
     const dataHash = {
       category,
       classified_listing_search: query,
@@ -331,7 +328,7 @@ export class Listings extends Component {
     const responsePromise = fetchSearch('classified_listings', dataHash);
     return responsePromise.then(response => {
       const classifiedListings = response.result;
-      const fullListings = updateListings(classifiedListings, listings);
+      const fullListings = updateListings(classifiedListings);
       t.setState({
         listings: fullListings,
         initialFetch: false,

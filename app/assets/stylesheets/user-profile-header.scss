@@ -41,10 +41,24 @@
   &.podcast-header {
     background: rgb(5, 22, 32);
     text-align: center;
-    padding-bottom: 60px;
+    padding: 70px 0px;
     color: white;
     h1 {
       font-size: calc(2vw + 28px);
+      .follow-action-button {
+        font-size: 25px;
+        display: block;
+        margin: 10px auto;
+        width: 100%;
+        padding: 15px 0px;
+        @media screen and (min-width: 950px) {
+          vertical-align: 3px;
+          display: inline-block;
+          font-size: calc(1.9vw + 8px);
+          width: 280px;
+          padding: 3px 0px;
+        }
+      }
     }
     img.record {
       height: 150px;
@@ -299,7 +313,6 @@
   }
   .user-profile-follow-button {
     background: $green;
-    color: white;
     border: 0;
     font-size: 17px;
     border-radius: 3px;

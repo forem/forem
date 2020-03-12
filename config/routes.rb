@@ -38,7 +38,7 @@ Rails.application.routes.draw do
   namespace :internal do
     get "/", to: redirect("/internal/articles")
 
-    authenticate :user, ->(user) { user.has_role?(:super_admin) } do
+    authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
       mount Blazer::Engine, at: "blazer"
     end
 
@@ -55,6 +55,7 @@ Rails.application.routes.draw do
     resources :permissions, only: %i[index]
     resources :podcasts, only: %i[index edit update destroy] do
       member do
+        post :fetch
         post :add_admin
         delete :remove_admin
       end
@@ -110,7 +111,6 @@ Rails.application.routes.draw do
         end
       end
       resources :comments, only: %i[index show]
-      resources :chat_channels, only: [:show]
       resources :videos, only: [:index]
       resources :podcast_episodes, only: [:index]
       resources :reactions, only: [:create]
@@ -239,6 +239,7 @@ Rails.application.routes.draw do
   post "/chat_channels/:id/open" => "chat_channels#open"
   get "/connect" => "chat_channels#index"
   get "/connect/:slug" => "chat_channels#index"
+  get "/chat_channels/:id/channel_info", to: "chat_channels#channel_info", as: :chat_channel_info
   post "/chat_channels/create_chat" => "chat_channels#create_chat"
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
   delete "/messages/:id" => "messages#destroy"

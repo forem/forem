@@ -1,3 +1,8 @@
+# This document follows the OpenAPI spec <https://spec.openapis.org/oas/v3.0.3>
+# It contains two Redoc vendor extensions, x-code-samples and x-logo
+# x-logo: https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-logo
+# x-code-samples: https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+
 openapi: "3.0.3"
 info:
   title: DEV API (beta)
@@ -8,13 +13,13 @@ info:
 
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
-  version: "0.6.5"
+  version: "0.6.7"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
     url: https://dev.to/contact
     email: yo@dev.to
-  x-logo: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-logo
+  x-logo:
     url: https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-128-1a9016906487b8ba17f2d3d3c28f9d1cb3ae9b45d685cc2711e20f6b3c6730df.png
     backgroundColor: "#000"
     altText: "DEV logo"
@@ -536,6 +541,7 @@ components:
         profile_image:
           description: Profile image (60x60)
           type: string
+          format: url
 
     Listing:
       type: object
@@ -695,6 +701,39 @@ components:
               type: string
               enum: [bump, publish, unpublish]
 
+    PodcastEpisode:
+      type: object
+      required:
+        - type_of
+        - id
+        - path
+        - image_url
+        - title
+        - podcast
+      properties:
+        type_of:
+          type: string
+        id:
+          type: integer
+          format: int32
+        path:
+          type: string
+        image_url:
+          type: string
+          format: url
+        title:
+          type: string
+        podcast:
+          type: object
+          properties:
+            title:
+              type: string
+            slug:
+              type: string
+            image_url:
+              type: string
+              format: url
+
     SharedUser:
       description: The resource creator
       type: object
@@ -735,6 +774,26 @@ components:
           description: Profile image (90x90)
           type: string
           format: url
+
+    Tag:
+      type: object
+      required:
+        - id
+        - name
+        - bg_color_hex
+        - text_color_hex
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        bg_color_hex:
+          description: Background color (hexadecimal)
+          type: string
+        text_color_hex:
+          description: Text color (hexadecimal)
+          type: string
 
     WebhookCreate:
       description: Webhook creation payload
@@ -1262,6 +1321,38 @@ components:
         classified_listing:
           action: unpublish
 
+    PodcastEpisodes:
+      value:
+        - type_of: podcast_episodes
+          id: 13894
+          path: "/codenewbie/s11-e7-why-site-reliability-is-so-important-molly-struve"
+          image_url: https://dev-to-uploads.s3.amazonaws.com/uploads/podcast/image/2/9f50a462-9152-429a-b15e-d024baaa8e01.png
+          title: S11:E7 - Why site reliability is so important (Molly Struve)
+          podcast:
+            title: CodeNewbie
+            slug: codenewbie
+            image_url: https://dev-to-uploads.s3.amazonaws.com/uploads/podcast/image/2/9f50a462-9152-429a-b15e-d024baaa8e01.png
+        - type_of: podcast_episodes
+          id: 13829
+          path: "/codenewbie/s11-e6-what-are-the-pros-and-cons-of-working-in-civic-tech-aidan-feldman"
+          image_url: https://dev-to-uploads.s3.amazonaws.com/uploads/podcast/image/2/9f50a462-9152-429a-b15e-d024baaa8e01.png
+          title: S11:E6 - What are the pros and cons of working in civic tech (Aidan Feldman)
+          podcast:
+            title: CodeNewbie
+            slug: codenewbie
+            image_url: https://dev-to-uploads.s3.amazonaws.com/uploads/podcast/image/2/9f50a462-9152-429a-b15e-d024baaa8e01.png
+
+    Tags:
+      value:
+        - id: 6
+          name: javascript
+          bg_color_hex: "#F7DF1E"
+          text_color_hex: "#000000"
+        - id: 8
+          name: webdev
+          bg_color_hex: "#562765"
+          text_color_hex: "#ffffff"
+
     WebhookCreate:
       value:
         webhook_endpoint:
@@ -1296,6 +1387,10 @@ tags:
     description: Users can follow other users on the website
   - name: listings
     description: Listings are classified ads
+  - name: podcast-episodes
+    description: Podcast episodes
+  - name: tags
+    description: Tags for articles
   - name: users
     description: Users own resources that require authentication
   - name: webhooks
@@ -1407,7 +1502,7 @@ paths:
               examples:
                 articles-success:
                   $ref: "#/components/examples/ArticlesIndex"
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl (all articles)
           source: |
@@ -1495,7 +1590,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -1548,7 +1643,7 @@ paths:
               examples:
                 article-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -1640,7 +1735,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -1704,7 +1799,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -1765,7 +1860,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -1826,7 +1921,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -1889,7 +1984,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -1940,7 +2035,7 @@ paths:
               examples:
                 article-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl (all comments of an article)
           source: |
@@ -1991,7 +2086,7 @@ paths:
               examples:
                 article-not-found:
                   $ref: "#/components/examples/ErrorNotFound"
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl (a comment and its descendants)
           source: |
@@ -2049,7 +2144,7 @@ paths:
                   $ref: "#/components/examples/ErrorUnauthorized"
       security:
         - api_key: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -2107,7 +2202,7 @@ paths:
               examples:
                 listings-success:
                   $ref: "#/components/examples/Listings"
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl (all listings)
           source: |
@@ -2192,7 +2287,7 @@ paths:
                   $ref: "#/components/examples/ErrorUnprocessableEntity"
       security:
         - api_key: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -2266,7 +2361,7 @@ paths:
               examples:
                 listings-success:
                   $ref: "#/components/examples/Listings"
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl (call for papers listings)
           source: |
@@ -2315,7 +2410,7 @@ paths:
       security:
         - {} # this indicates that authentication is optional
         - api_key: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -2411,7 +2506,7 @@ paths:
                   $ref: "#/components/examples/ErrorUnprocessableEntity"
       security:
         - api_key: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl (bump)
           source: |
@@ -2426,6 +2521,122 @@ paths:
               -H "api-key: API_KEY" \
               -d '{"classified_listing":{"title":"Title"}' \
               https://dev.to/api/listings/{id}
+
+  /podcast_episodes:
+    get:
+      operationId: getPodcastEpisodes
+      summary: Published podcast episodes
+      description: |
+        This endpoint allows the client to retrieve a list of podcast episodes.
+
+        "Podcast episodes" are episodes belonging to podcasts.
+
+        It will only return active podcast episodes that belong to published
+        podcasts available on the platform,
+        ordered by descending publication date.
+
+        It supports pagination, each page will contain `30` articles by default.
+      tags:
+        - podcast-episodes
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page.
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: per_page
+          in: query
+          description: Page size (defaults to 30 with a maximum of 1000).
+          schema:
+            type: integer
+            format: int32
+          example: 30
+        - name: username
+          in: query
+          description: |
+            Using this parameter will retrieve episodes belonging
+            to a specific podcast.
+          schema:
+            type: string
+          example: codenewbie
+      responses:
+        "200":
+          description: A list of podcast episodes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PodcastEpisode"
+              examples:
+                articles-success:
+                  $ref: "#/components/examples/PodcastEpisodes"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                article-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      x-code-samples:
+        - lang: Shell
+          label: curl (all podcast episodes)
+          source: |
+            curl https://dev.to/api/podcast_episodes
+        - lang: Shell
+          label: curl (all episodes belonging to a podcast)
+          source: |
+            curl https://dev.to/api/podcast_episodes?username=codenewbie
+
+  /tags:
+    get:
+      operationId: getTags
+      summary: Tags
+      description: |
+        This endpoint allows the client to retrieve a list of tags
+        that can be used to tag articles.
+
+        It will only return tags ordered by popularity.
+
+        It supports pagination, each page will contain `10` tags by default.
+      tags:
+        - tags
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page.
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: per_page
+          in: query
+          description: Page size (defaults to 10 with a maximum of 1000).
+          schema:
+            type: integer
+            format: int32
+          example: 30
+      responses:
+        "200":
+          description: A list of tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Tag"
+              examples:
+                articles-success:
+                  $ref: "#/components/examples/Tags"
+      x-code-samples:
+        - lang: Shell
+          label: curl (all tags)
+          source: |
+            curl https://dev.to/api/tags
 
   /webhooks:
     get:
@@ -2473,7 +2684,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -2538,7 +2749,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -2596,7 +2807,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
@@ -2642,7 +2853,7 @@ paths:
       security:
         - api_key: []
         - oauth2: []
-      x-code-samples: # https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md#x-code-samples
+      x-code-samples:
         - lang: Shell
           label: curl
           source: |
