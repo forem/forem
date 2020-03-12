@@ -1,0 +1,119 @@
+@import '../vars/variables';
+
+// Flex flow
+@include generate-classes(
+  'flex',
+  'flex-direction',
+  (
+    'row': row,
+    'col': column,
+    'row-reverse': row-reverse,
+    'col-reverse': column-reverse,
+  )
+);
+
+// Flex wrap
+@include generate-classes(
+  'flex',
+  'flex-wrap',
+  (
+    'wrap': wrap,
+    'nowrap': nowrap,
+    'wrap-reverse': wrap-reverse,
+  )
+);
+
+// Align items
+@include generate-classes(
+  'items',
+  'align-items',
+  (
+    'stretch': stretch,
+    'start': flex-start,
+    'center': center,
+    'end': flex-end,
+    'baseline': baseline,
+  )
+);
+
+// Align content
+@include generate-classes(
+  'content',
+  'align-content',
+  (
+    'start': flex-start,
+    'center': center,
+    'end': flex-end,
+    'between': space-between,
+    'around': space-around,
+  )
+);
+
+// Align self
+@include generate-classes(
+  'self',
+  'align-self',
+  (
+    'auto': auto,
+    'start': flex-start,
+    'center': center,
+    'end': flex-end,
+    'stretch': stretch,
+  )
+);
+
+// Justify content
+@include generate-classes(
+  'justify',
+  'justify-content',
+  (
+    'start': flex-start,
+    'center': center,
+    'end': flex-end,
+    'between': space-between,
+    'around': space-around,
+  )
+);
+
+// Flex
+@include generate-classes(
+  'flex',
+  'flex',
+  (
+    'initial': 0 auto,
+    '1': 1 1 0%,
+    'auto': 1 1 auto,
+    'none': none,
+  )
+);
+
+// Flex grow
+@include generate-classes(
+  'grow',
+  'flex-grow',
+  (
+    '0': 0,
+    '1': 1,
+  )
+);
+
+// Flex shrink
+@include generate-classes(
+  'shrink',
+  'flex-shrink',
+  (
+    '0': 0,
+    '1': 1,
+  )
+);
+
+// Order
+@include generate-classes(
+  'order',
+  'order',
+  (
+    'first': -9999,
+    'last': 9999,
+    '0': 0,
+  )
+);

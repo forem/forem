@@ -1,0 +1,26 @@
+// Font stacks
+$ff-default: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+  Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+$ff-accent: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier,
+  monospace;
+
+// Font sizes
+$fs-xs: 0.75rem; // 12px
+$fs-s: 0.875rem; // 14px
+$fs-base: 1rem; // 16px
+$fs-l: 1.125rem; // 18px
+$fs-xl: 1.25rem; // 20px
+$fs-2xl: 1.5rem; // 24px
+$fs-3xl: 1.875rem; // 30px
+$fs-4xl: 2.25rem; // 36px
+$fs-5xl: 3rem; // 48px
+
+// Line heights
+$lh-tight: 1.25; // 20px for 16px font-size
+$lh-base: 1.5; // 24px for 16px font-size
+
+// Font weights
+$fw-normal: 400;
+$fw-medium: 500;
+$fw-bold: 700;
+$fw-heavy: 800;
