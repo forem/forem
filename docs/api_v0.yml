@@ -13,7 +13,7 @@ info:
 
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
-  version: "0.6.7"
+  version: "0.6.8"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -562,7 +562,7 @@ components:
           type: string
         id:
           type: integer
-          format: int32
+          format: int64
         title:
           type: string
         slug:
@@ -641,7 +641,7 @@ components:
 
                 Only users belonging to an organization can assign the listing to it.
               type: integer
-              format: int32
+              format: int64
             action:
               description: Set it to "draft" to create an unpublished listing
               type: string
@@ -785,7 +785,7 @@ components:
       properties:
         id:
           type: integer
-          format: int64
+          format: int32
         name:
           type: string
         bg_color_hex:
@@ -2386,7 +2386,7 @@ paths:
           description: Id of the listing
           schema:
             type: integer
-            format: int32
+            format: int64
           example: 1
       responses:
         "200":
@@ -2433,7 +2433,7 @@ paths:
           description: Id of the listing
           schema:
             type: integer
-            format: int32
+            format: int64
           example: 1184
       requestBody:
         description: |
@@ -2774,7 +2774,7 @@ paths:
           description: Id of the webhook
           schema:
             type: integer
-            format: int32
+            format: int64
           example: 123
       responses:
         "200":
@@ -2827,7 +2827,7 @@ paths:
           description: Id of the webhook
           schema:
             type: integer
-            format: int32
+            format: int64
           example: 123
       responses:
         "204":
