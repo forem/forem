@@ -20,8 +20,8 @@ class Tag < ActsAsTaggableOn::Tag
             format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
   validates :category, inclusion: { in: ALLOWED_CATEGORIES }
 
-  validate :validate_alias_for, if: proc { alias_for.present? }
-  validate :validate_name, if: proc { name.present? }
+  validate :validate_alias_for, if: :alias_for?
+  validate :validate_name, if: :name?
 
   before_validation :evaluate_markdown
   before_validation :pound_it
