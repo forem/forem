@@ -13,7 +13,7 @@ info:
 
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
-  version: "0.6.8"
+  version: "0.7.0"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -492,6 +492,48 @@ components:
         text_color_hex:
           description: Text color (hexadecimal)
           type: string
+
+    ArticleVideo:
+      type: object
+      required:
+        - type_of
+        - id
+        - path
+        - cloudinary_video_url
+        - title
+        - user_id
+        - video_duration_in_minutes
+        - user
+      properties:
+        type_of:
+          type: string
+        id:
+          type: integer
+          format: int32
+        path:
+          type: string
+        cloudinary_video_url:
+          description: The preview image of the video
+          type: string
+          format: url
+        title:
+          type: string
+        user_id:
+          type: integer
+          format: int32
+        video_duration_in_minutes:
+          description: |
+            The duration of the video.
+
+            If the video duration is below 1 hour, the format will be `mm:ss`,
+            if it's 1 hour or above the format will be `h:mm:ss`.
+          type: string
+        user:
+          type: object
+          properties:
+            name:
+              description: The user's name
+              type: string
 
     Comment:
       type: object
@@ -1063,6 +1105,17 @@ components:
           series: Hello series
           canonical_url: https://example.com/blog/hello
           organization_id: 1234
+    ArticleVideo:
+      value:
+        - type_of: video_article
+          id: 273532
+          path: "/devteam/basecs-depth-first-search-implementing-4kkl"
+          cloudinary_video_url: https://res.cloudinary.com/....png
+          title: 'BaseCS: Depth First Search Implementing'
+          user_id: 2882
+          video_duration_in_minutes: '11:47'
+          user:
+            name: Vaidehi Joshi
 
     Comments:
       value:
@@ -1450,6 +1503,8 @@ tags:
     description: Tags for articles
   - name: users
     description: Users own resources that require authentication
+  - name: videos
+    description: Video articles
   - name: webhooks
     description: Webhooks are HTTP endpoints registered to receive events
 
@@ -2657,7 +2712,7 @@ paths:
         This endpoint allows the client to retrieve a list of tags
         that can be used to tag articles.
 
-        It will only return tags ordered by popularity.
+        It will return tags ordered by popularity.
 
         It supports pagination, each page will contain `10` tags by default.
       tags:
@@ -2789,6 +2844,54 @@ paths:
           label: curl
           source: |
             curl -H "api-key: API_KEY" https://dev.to/api/users/me
+
+  /videos:
+    get:
+      operationId: getArticlesWithVideo
+      summary: Articles with a video
+      description: |
+        This endpoint allows the client to retrieve a list of articles
+        that are uploaded with a video.
+
+        It will only return published video articles
+        ordered by descending popularity.
+
+        It supports pagination, each page will contain `24` articles by default.
+      tags:
+        - articles
+        - videos
+      parameters:
+        - name: page
+          in: query
+          description: Pagination page.
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: per_page
+          in: query
+          description: Page size (defaults to 24 with a maximum of a 1000).
+          schema:
+            type: integer
+            format: int32
+          example: 24
+      responses:
+        "200":
+          description: A list of video articles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ArticleVideo"
+              examples:
+                articles-success:
+                  $ref: "#/components/examples/ArticleVideo"
+      x-code-samples:
+        - lang: Shell
+          label: curl (all video articles)
+          source: |
+            curl https://dev.to/api/videos
 
   /webhooks:
     get:
