@@ -217,6 +217,8 @@ Rails.application.routes.draw do
     get :podcasts
   end
 
+  resource :onboarding, only: :show
+
   get "/search/tags" => "search#tags"
   get "/search/chat_channels" => "search#chat_channels"
   get "/search/classified_listings" => "search#classified_listings"
@@ -300,7 +302,6 @@ Rails.application.routes.draw do
   get "/welcome" => "pages#welcome"
   get "/challenge" => "pages#challenge"
   get "/badge" => "pages#badge"
-  get "/onboarding" => "onboarding#show"
   get "/💸", to: redirect("t/hiring")
   get "/security", to: "pages#bounty"
   get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
