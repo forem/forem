@@ -30,7 +30,7 @@ const commonProps = {
   bookmarkClick: action('Saved/unsaved article'),
 };
 
-storiesOf('Components/Article/Standard', module)
+storiesOf('App Components/Article/Standard', module)
   .addDecorator(withKnobs)
   .addDecorator(articleDecorator)
   .add('Default', () => (
@@ -122,7 +122,7 @@ storiesOf('Components/Article/Standard', module)
     />
   ));
 
-storiesOf('Components/Article/Video', module)
+storiesOf('App Components/Article/Video', module)
   .addDecorator(withKnobs)
   .addDecorator(articleDecorator)
   .add('Default', () => (
@@ -148,7 +148,7 @@ storiesOf('Components/Article/Video', module)
     />
   ));
 
-storiesOf('Components/Article/Podcast', module)
+storiesOf('App Components/Article/Podcast', module)
   .addDecorator(withKnobs)
   .addDecorator(articleDecorator)
   .add('Default', () => (
@@ -174,7 +174,7 @@ storiesOf('Components/Article/Podcast', module)
     />
   ));
 
-storiesOf('Components/Article/User', module)
+storiesOf('App Components/Article/User', module)
   .addDecorator(withKnobs)
   .addDecorator(articleDecorator)
   .add('Default', () => (

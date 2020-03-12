@@ -5,6 +5,6 @@ import { podcastArticle } from '../../articles/__tests__/utilities/articleUtilit
 
 import '../../../assets/stylesheets/articles.scss';
 
-storiesOf(`Components/Podcasts/Episode`, module).add('Standard', () => (
+storiesOf('App Components/Podcasts/Episode', module).add('Standard', () => (
   <PodcastEpisode episode={podcastArticle} />
 ));
