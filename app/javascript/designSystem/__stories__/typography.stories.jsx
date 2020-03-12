@@ -2,10 +2,11 @@ import { h } from 'preact';
 import { storiesOf } from '@storybook/react';
 
 import './designSystem.scss';
+import './typography.scss';
 
-storiesOf('Base', module).add('Typography', () => (
-  <div className="container">
-    <div className="body">
+storiesOf('Base/Typography/Main', module)
+  .add('Description', () => (
+    <div className="container">
       <h2>Main Typography</h2>
       <p>
         Default font is set to 16px (fs-base). It should be standard in UI.
@@ -24,78 +25,80 @@ storiesOf('Base', module).add('Typography', () => (
       </p>
       <p>Heavy should be used only for bigger title.</p>
     </div>
-
+  ))
+  .add('Sample Texts', () => (
     <div>
-      <p className="fs-xs">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-s">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-base">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-l">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-xl">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-2xl">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-3xl">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-4xl">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-5xl">Lorem ipsum dolor sit amet.</p>
-    </div>
+      <div>
+        <p className="fs-xs">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-s">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-base">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-l">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-xl">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-2xl">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-3xl">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-4xl">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-5xl">Lorem ipsum dolor sit amet.</p>
+      </div>
 
+      <div>
+        <p className="fs-xs fw-medium">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-s fw-medium">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-base fw-medium">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-l fw-medium">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-xl fw-medium">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-2xl fw-medium">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-3xl fw-medium">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-4xl fw-medium">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-5xl fw-medium">Lorem ipsum dolor sit amet.</p>
+      </div>
+
+      <div>
+        <p className="fs-xs fw-bold">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-s fw-bold">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-base fw-bold">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-l fw-bold">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-xl fw-bold">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-2xl fw-bold">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-3xl fw-bold">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-4xl fw-bold">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-5xl fw-bold">Lorem ipsum dolor sit amet.</p>
+      </div>
+
+      <div>
+        <p className="fs-xs fw-heavy">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-s fw-heavy">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-base fw-heavy">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-l fw-heavy">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-xl fw-heavy">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-2xl fw-heavy">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-3xl fw-heavy">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-4xl fw-heavy">Lorem ipsum dolor sit amet.</p>
+        <p className="fs-5xl fw-heavy">Lorem ipsum dolor sit amet.</p>
+      </div>
+    </div>
+  ))
+  .add('Default Line Height', () => (
     <div>
-      <p className="fs-xs fw-medium">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-s fw-medium">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-base fw-medium">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-l fw-medium">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-xl fw-medium">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-2xl fw-medium">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-3xl fw-medium">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-4xl fw-medium">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-5xl fw-medium">Lorem ipsum dolor sit amet.</p>
-    </div>
-
-    <div>
-      <p className="fs-xs fw-bold">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-s fw-bold">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-base fw-bold">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-l fw-bold">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-xl fw-bold">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-2xl fw-bold">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-3xl fw-bold">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-4xl fw-bold">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-5xl fw-bold">Lorem ipsum dolor sit amet.</p>
-    </div>
-
-    <div>
-      <p className="fs-xs fw-heavy">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-s fw-heavy">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-base fw-heavy">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-l fw-heavy">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-xl fw-heavy">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-2xl fw-heavy">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-3xl fw-heavy">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-4xl fw-heavy">Lorem ipsum dolor sit amet.</p>
-      <p className="fs-5xl fw-heavy">Lorem ipsum dolor sit amet.</p>
-    </div>
-
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gridGap: '24px',
-      }}
-    >
       <span className="ff-accent">Line height: 1.5 – .lh-base (default)</span>
-      <span className="ff-accent">Line height: 1.25 – .lh-tight</span>
-
       <h3 className="fs-2xl fw-bold">
         This is a bit longer text title to present line-height difference.
       </h3>
-      <h3 className="fs-2xl fw-bold lh-tight">
-        This is a bit longer text title to present line-height difference.
-      </h3>
-
       <p>
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore iusto,
         molestias. Ex asperiores modi libero id laudantium ipsum perspiciatis,
         architecto enim suscipit delectus odit, explicabo quas, voluptatum
         quibusdam, distinctio ut.
       </p>
+    </div>
+  ))
+  .add('Tight Line Height', () => (
+    <div>
+      <span className="ff-accent">Line height: 1.25 – .lh-tight</span>
+
+      <h3 className="fs-2xl fw-bold lh-tight">
+        This is a bit longer text title to present line-height difference.
+      </h3>
+
       <p className="lh-tight">
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore iusto,
         molestias. Ex asperiores modi libero id laudantium ipsum perspiciatis,
@@ -103,8 +106,12 @@ storiesOf('Base', module).add('Typography', () => (
         quibusdam, distinctio ut.
       </p>
     </div>
+  ));
 
-    <div className="body">
+storiesOf('Base/Typography/Accent', module)
+  .add('Description', () => (
+    <div className="container">
+      {' '}
       <h2>Accent typography</h2>
       <p>
         Its main purpose is to add a bit of flavor to DEV brand but it should
@@ -113,22 +120,24 @@ storiesOf('Base', module).add('Typography', () => (
       <p>Please, do not overuse Accent typography.</p>
       <p>
         We strongly encourage to limit number of sizes and weights to what
-        presetned below.
+        presesented below.
       </p>
     </div>
-
+  ))
+  .add('Sample Texts', () => (
     <div>
-      <p className="ff-accent fs-xs">Lorem ipsum dolor sit amet.</p>
-      <p className="ff-accent fs-s">Lorem ipsum dolor sit amet.</p>
-      <p className="ff-accent fs-base">Lorem ipsum dolor sit amet.</p>
-      <p className="ff-accent fs-l">Lorem ipsum dolor sit amet.</p>
+      {' '}
+      <div>
+        <p className="ff-accent fs-xs">Lorem ipsum dolor sit amet.</p>
+        <p className="ff-accent fs-s">Lorem ipsum dolor sit amet.</p>
+        <p className="ff-accent fs-base">Lorem ipsum dolor sit amet.</p>
+        <p className="ff-accent fs-l">Lorem ipsum dolor sit amet.</p>
+      </div>
+      <div>
+        <p className="ff-accent fs-xs fw-bold">Lorem ipsum dolor sit amet.</p>
+        <p className="ff-accent fs-s fw-bold">Lorem ipsum dolor sit amet.</p>
+        <p className="ff-accent fs-base fw-bold">Lorem ipsum dolor sit amet.</p>
+        <p className="ff-accent fs-l fw-bold">Lorem ipsum dolor sit amet.</p>
+      </div>
     </div>
-
-    <div>
-      <p className="ff-accent fs-xs fw-bold">Lorem ipsum dolor sit amet.</p>
-      <p className="ff-accent fs-s fw-bold">Lorem ipsum dolor sit amet.</p>
-      <p className="ff-accent fs-base fw-bold">Lorem ipsum dolor sit amet.</p>
-      <p className="ff-accent fs-l fw-bold">Lorem ipsum dolor sit amet.</p>
-    </div>
-  </div>
-));
+  ));
