@@ -4,13 +4,13 @@ RSpec.describe "NotificationsIndex", type: :request do
   include ActionView::Helpers::DateHelper
 
   let_it_be_readonly(:dev_account) { create(:user) }
-  let_it_be_readonly(:welcoming_account) { create(:user) }
+  let_it_be_readonly(:mascot_account) { create(:user) }
   let_it_be_changeable(:user) { create(:user) }
   let_it_be_changeable(:organization) { create(:organization) }
 
   before do
     allow(User).to receive(:dev_account).and_return(dev_account)
-    allow(User).to receive(:welcoming_account).and_return(welcoming_account)
+    allow(User).to receive(:mascot_account).and_return(mascot_account)
   end
 
   def has_both_names(response_body)

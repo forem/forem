@@ -1,5 +1,4 @@
 import { h, render } from 'preact';
-import { renderFeed } from './homePageFeed';
 
 /* global userData */
 

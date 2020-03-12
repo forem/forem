@@ -159,6 +159,12 @@
 
 .mod-container {
   padding: 30px 0px;
+  h2 {
+    a {
+      @include themeable(color, theme-color, $black);
+    }
+    margin-bottom: -12px;  
+  } 
   p {
     width: 98%;
     max-width: 720px;
@@ -331,6 +337,15 @@
     margin: auto;
     border: solid 2px;
     margin: 5px auto 15px;
+  }
+  .approval-button {
+    font-size: 20px;
+    border: 0px;
+    border-radius: 3px;
+    padding: 8px 16px;
+    &.approval-removal {
+      background: $red;
+    }
   }
 }
 

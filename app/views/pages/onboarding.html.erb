@@ -1,7 +1,7 @@
 <% title "Welcome to #{ApplicationConfig['COMMUNITY_NAME']}" %>
 
 <style>
-  <% cache "onboarding-css-#{ApplicationConfig['HEROKU_SLUG_COMMIT']}", expires_in: 10.hours do %>
+  <% cache(cache_key_heroku_slug("onboarding-css"), expires_in: 10.hours) do %>
     <%= Rails.application.assets["onboarding.css"].to_s.html_safe %>
     <%= Rails.application.assets["preact/onboarding-modal.css"].to_s.html_safe %>
   <% end %>

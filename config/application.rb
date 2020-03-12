@@ -61,7 +61,8 @@ module PracticalDeveloper
 
     # Enable CORS for API v0
     # (logging is only activated when debug is enabled)
-    config.middleware.insert_before 0, Rack::Cors, debug: Rails.env.development?, logger: (-> { Rails.logger }) do
+    debug_cors = ENV["DEBUG_CORS"].present? ? true : false
+    config.middleware.insert_before 0, Rack::Cors, debug: debug_cors, logger: (-> { Rails.logger }) do
       allow do
         origins do |source, _env|
           source # echo back the client's `Origin` header instead of using `*`

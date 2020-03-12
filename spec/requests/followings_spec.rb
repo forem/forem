@@ -1,9 +1,9 @@
 require "rails_helper"
 
-RSpec.describe "Api::V0::FollowingsController", type: :request do
+RSpec.describe "FollowingsController", type: :request do
   let(:user) { create(:user) }
 
-  describe "GET /api/followings/users" do
+  describe "GET /followings/users" do
     let(:followed) { create(:user) }
 
     before do
@@ -14,7 +14,7 @@ RSpec.describe "Api::V0::FollowingsController", type: :request do
 
     context "when user is unauthorized" do
       it "returns unauthorized" do
-        get api_followings_users_path
+        get followings_users_path
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -26,7 +26,7 @@ RSpec.describe "Api::V0::FollowingsController", type: :request do
       end
 
       it "returns user's followings list with the correct format" do
-        get api_followings_users_path
+        get followings_users_path
         expect(response).to have_http_status(:ok)
 
         response_following = response.parsed_body.first
@@ -40,7 +40,7 @@ RSpec.describe "Api::V0::FollowingsController", type: :request do
     end
   end
 
-  describe "GET /api/followings/tags" do
+  describe "GET /followings/tags" do
     let(:followed) { create(:tag) }
 
     before do
@@ -51,7 +51,7 @@ RSpec.describe "Api::V0::FollowingsController", type: :request do
 
     context "when user is unauthorized" do
       it "returns unauthorized" do
-        get api_followings_tags_path
+        get followings_tags_path
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -63,7 +63,7 @@ RSpec.describe "Api::V0::FollowingsController", type: :request do
       end
 
       it "returns user's followings list with the correct format" do
-        get api_followings_tags_path
+        get followings_tags_path
         expect(response).to have_http_status(:ok)
 
         follow = user.follows.last
@@ -79,7 +79,7 @@ RSpec.describe "Api::V0::FollowingsController", type: :request do
     end
   end
 
-  describe "GET /api/followings/organizations" do
+  describe "GET /followings/organizations" do
     let(:followed) { create(:organization) }
 
     before do
@@ -90,7 +90,7 @@ RSpec.describe "Api::V0::FollowingsController", type: :request do
 
     context "when user is unauthorized" do
       it "returns unauthorized" do
-        get api_followings_organizations_path
+        get followings_organizations_path
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -102,7 +102,7 @@ RSpec.describe "Api::V0::FollowingsController", type: :request do
       end
 
       it "returns user's followings list with the correct format" do
-        get api_followings_organizations_path
+        get followings_organizations_path
         expect(response).to have_http_status(:ok)
 
         response_following = response.parsed_body.first
@@ -116,7 +116,7 @@ RSpec.describe "Api::V0::FollowingsController", type: :request do
     end
   end
 
-  describe "GET /api/followings/podcasts" do
+  describe "GET /followings/podcasts" do
     let(:followed) { create(:podcast) }
 
     before do
@@ -127,7 +127,7 @@ RSpec.describe "Api::V0::FollowingsController", type: :request do
 
     context "when user is unauthorized" do
       it "returns unauthorized" do
-        get api_followings_podcasts_path
+        get followings_podcasts_path
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -139,7 +139,7 @@ RSpec.describe "Api::V0::FollowingsController", type: :request do
       end
 
       it "returns user's followings list with the correct format" do
-        get api_followings_podcasts_path
+        get followings_podcasts_path
         expect(response).to have_http_status(:ok)
 
         response_following = response.parsed_body.first

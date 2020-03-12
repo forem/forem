@@ -38,7 +38,7 @@ Rails.application.routes.draw do
   namespace :internal do
     get "/", to: redirect("/internal/articles")
 
-    authenticate :user, ->(user) { user.has_role?(:super_admin) } do
+    authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
       mount Blazer::Engine, at: "blazer"
     end
 
@@ -55,6 +55,7 @@ Rails.application.routes.draw do
     resources :permissions, only: %i[index]
     resources :podcasts, only: %i[index edit update destroy] do
       member do
+        post :fetch
         post :add_admin
         delete :remove_admin
       end
@@ -110,34 +111,19 @@ Rails.application.routes.draw do
         end
       end
       resources :comments, only: %i[index show]
-      resources :chat_channels, only: [:show]
       resources :videos, only: [:index]
       resources :podcast_episodes, only: [:index]
-      resources :reactions, only: [:create] do
-        collection do
-          post "/onboarding", to: "reactions#onboarding"
-        end
-      end
+      resources :reactions, only: [:create]
       resources :users, only: %i[index show] do
         collection do
           get :me
         end
       end
-      resources :tags, only: [:index] do
-        collection do
-          get "/onboarding", to: "tags#onboarding"
-        end
-      end
+      resources :tags, only: [:index]
       resources :follows, only: [:create]
       namespace :followers do
         get :users
         get :organizations
-      end
-      namespace :followings do
-        get :users
-        get :tags
-        get :organizations
-        get :podcasts
       end
       resources :webhooks, only: %i[index create show destroy]
 
@@ -182,7 +168,11 @@ Rails.application.routes.draw do
   resources :image_uploads, only: [:create]
   resources :blocks
   resources :notifications, only: [:index]
-  resources :tags, only: [:index]
+  resources :tags, only: [:index] do
+    collection do
+      get "/onboarding", to: "tags#onboarding"
+    end
+  end
   resources :downloads, only: [:index]
   resources :stripe_active_cards, only: %i[create update destroy]
   resources :live_articles, only: [:index]
@@ -218,7 +208,14 @@ Rails.application.routes.draw do
   resource :pro_membership, path: :pro, only: %i[show create update]
   resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
   resources :podcasts, only: %i[new create]
+  resources :article_approvals, only: %i[create]
   resolve("ProMembership") { [:pro_membership] } # see https://guides.rubyonrails.org/routing.html#using-resolve
+  namespace :followings, defaults: { format: :json } do
+    get :users
+    get :tags
+    get :organizations
+    get :podcasts
+  end
 
   get "/search/tags" => "search#tags"
   get "/search/chat_channels" => "search#chat_channels"
@@ -242,6 +239,7 @@ Rails.application.routes.draw do
   post "/chat_channels/:id/open" => "chat_channels#open"
   get "/connect" => "chat_channels#index"
   get "/connect/:slug" => "chat_channels#index"
+  get "/chat_channels/:id/channel_info", to: "chat_channels#channel_info", as: :chat_channel_info
   post "/chat_channels/create_chat" => "chat_channels#create_chat"
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
   delete "/messages/:id" => "messages#destroy"

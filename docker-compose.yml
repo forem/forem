@@ -10,7 +10,7 @@ services:
       - elasticsearch
     environment:
       RAILS_ENV: development
-      DATABASE_URL: postgres://postgres:mysecretpassword@db:5432/postgres
+      DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
       YARN_INTEGRITY_ENABLED: "false"
       ELASTICSEARCH_URL: http://elasticsearch:9200
       REDIS_URL: redis://redis:6379
@@ -30,10 +30,14 @@ services:
     environment:
       RAILS_ENV: development
       REDIS_SIDEKIQ_URL: redis://redis:6379
-      DATABASE_URL: postgres://postgres:mysecretpassword@db:5432/postgres
+      DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
       ELASTICSEARCH_URL: http://elasticsearch:9200
   db:
     image: postgres:${POSTGRES_VERSION:-9.6.15-alpine}
+    environment:
+      POSTGRES_USER: devto
+      POSTGRES_PASSWORD: devto
+      POSTGRES_DB: PracticalDeveloper_development
     ports:
       - "5432:5432"
   redis:
