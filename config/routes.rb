@@ -300,7 +300,7 @@ Rails.application.routes.draw do
   get "/welcome" => "pages#welcome"
   get "/challenge" => "pages#challenge"
   get "/badge" => "pages#badge"
-  get "/onboarding" => "pages#onboarding"
+  get "/onboarding" => "onboarding#show"
   get "/💸", to: redirect("t/hiring")
   get "/security", to: "pages#bounty"
   get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
