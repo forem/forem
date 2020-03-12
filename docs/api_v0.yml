@@ -795,6 +795,49 @@ components:
           description: Text color (hexadecimal)
           type: string
 
+    User:
+      type: object
+      required:
+        - type_of
+        - id
+        - username
+        - name
+        - summary
+        - twitter_username
+        - github_username
+        - website_url
+        - location
+        - joined_at
+        - profile_image
+      properties:
+        type_of:
+          type: string
+        id:
+          type: integer
+          format: int32
+        username:
+          type: string
+        name:
+          type: string
+        summary:
+          type: string
+        twitter_username:
+          type: string
+        github_username:
+          type: string
+        website_url:
+          type: string
+          format: url
+        location:
+          type: string
+        joined_at:
+          description: Date of joining (formatted with strftime `"%b %e, %Y"`)
+          type: string
+        profile_image:
+          description: Profile image (320x320)
+          type: string
+          format: url
+
     WebhookCreate:
       description: Webhook creation payload
       type: object
@@ -1352,6 +1395,20 @@ components:
           name: webdev
           bg_color_hex: "#562765"
           text_color_hex: "#ffffff"
+
+    User:
+      value:
+        type_of: user
+        id: 1234
+        username: bob
+        name: bob
+        summary: Hello, world
+        twitter_username: bob
+        github_username: bob
+        website_url:
+        location: New York
+        joined_at: Jan 1, 2017
+        profile_image: https://res.cloudinary.com/...jpeg
 
     WebhookCreate:
       value:
@@ -2637,6 +2694,64 @@ paths:
           label: curl (all tags)
           source: |
             curl https://dev.to/api/tags
+
+  /users/{id}:
+    get:
+      operationId: getUser
+      summary: A user
+      description: |
+        This endpoint allows the client to retrieve a single user, either by
+        id or by the user's username
+      tags:
+        - users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: |
+            Id of the user.
+
+            It can be either of the following two values:
+
+              - an integer representing the id of the user
+              - the string `by_username` (needs to be used in conjuction with the param `url`)
+          schema:
+            type: string
+          example: "1"
+        - name: url
+          in: query
+          description: Username of the user
+          schema:
+            type: string
+          example: ben
+      responses:
+        "200":
+          description: A user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+              examples:
+                article-success:
+                  $ref: "#/components/examples/User"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                article-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      x-code-samples:
+        - lang: Shell
+          label: curl (by id)
+          source: |
+            curl https://dev.to/api/users/1
+        - lang: Shell
+          label: curl (by username)
+          source: |
+            curl https://dev.to/api/users/by_username?url=ben
 
   /webhooks:
     get:
