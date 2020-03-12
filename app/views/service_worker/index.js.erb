@@ -118,6 +118,8 @@
         // Don't run on search endpoints
         !url.href.includes('/search/tags') &&
         !url.href.includes('/search/chat_channels') &&
+        !url.href.includes('/search/classified_listings') &&
+        !url.href.includes('/search/users') &&
 
         caches.match('/shell_top') && // Ensure shell_top is in the cache.
         caches.match('/shell_bottom')) { // Ensure shell_bottom is in the cache.
