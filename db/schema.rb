@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_08_144606) do
+ActiveRecord::Schema.define(version: 2020_03_11_201103) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -376,6 +376,7 @@ ActiveRecord::Schema.define(version: 2020_03_08_144606) do
     t.boolean "hidden_by_commentable_user", default: false
     t.string "id_code"
     t.integer "markdown_character_count"
+    t.bigint "moderator_id"
     t.integer "positive_reactions_count", default: 0, null: false
     t.text "processed_html"
     t.integer "reactions_count", default: 0, null: false
@@ -960,6 +961,18 @@ ActiveRecord::Schema.define(version: 2020_03_08_144606) do
     t.index ["user_id"], name: "index_reactions_on_user_id"
   end
 
+  create_table "response_templates", force: :cascade do |t|
+    t.text "content", null: false
+    t.string "content_type", null: false
+    t.datetime "created_at", null: false
+    t.string "title", null: false
+    t.string "type_of", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["type_of"], name: "index_response_templates_on_type_of"
+    t.index ["user_id"], name: "index_response_templates_on_user_id"
+  end
+
   create_table "roles", id: :serial, force: :cascade do |t|
     t.datetime "created_at"
     t.string "name"
@@ -1303,6 +1316,7 @@ ActiveRecord::Schema.define(version: 2020_03_08_144606) do
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "page_views", "articles", on_delete: :cascade
   add_foreign_key "podcasts", "users", column: "creator_id"
+  add_foreign_key "response_templates", "users"
   add_foreign_key "sponsorships", "organizations"
   add_foreign_key "sponsorships", "users"
   add_foreign_key "tag_adjustments", "articles", on_delete: :cascade
