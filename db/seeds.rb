@@ -1,15 +1,11 @@
-logger = ActiveSupport::Logger.new(STDOUT)
-logger.formatter = Rails.application.config.log_formatter
-seeds_logger = ActiveSupport::TaggedLogging.new(logger)
-
 # we use this to be able to increase the size of the seeded DB at will
 # eg.: `SEEDS_MULTIPLIER=2 rails db:seed` would double the amount of data
 SEEDS_MULTIPLIER = [1, ENV["SEEDS_MULTIPLIER"].to_i].max
-seeds_logger.info "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}"
+Rails.logger.info "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}"
 
 ##############################################################################
 
-seeds_logger.info "1. Creating Organizations"
+Rails.logger.info "1. Creating Organizations"
 
 3.times do
   Organization.create!(
@@ -30,7 +26,7 @@ end
 
 num_users = 10 * SEEDS_MULTIPLIER
 
-seeds_logger.info "2. Creating #{num_users} Users"
+Rails.logger.info "2. Creating #{num_users} Users"
 
 User.clear_index!
 
@@ -71,7 +67,7 @@ end
 
 ##############################################################################
 
-seeds_logger.info "3. Creating Tags"
+Rails.logger.info "3. Creating Tags"
 
 tags = %w[beginners career computerscience git go
           java javascript linux productivity python security webdev]
@@ -89,7 +85,7 @@ end
 
 num_articles = 25 * SEEDS_MULTIPLIER
 
-seeds_logger.info "4. Creating #{num_articles} Articles"
+Rails.logger.info "4. Creating #{num_articles} Articles"
 
 Article.clear_index!
 
@@ -123,7 +119,7 @@ end
 
 num_comments = 30 * SEEDS_MULTIPLIER
 
-seeds_logger.info "5. Creating #{num_comments} Comments"
+Rails.logger.info "5. Creating #{num_comments} Comments"
 
 Comment.clear_index!
 
@@ -140,7 +136,7 @@ end
 
 ##############################################################################
 
-seeds_logger.info "6. Creating Podcasts"
+Rails.logger.info "6. Creating Podcasts"
 
 image_file = Rails.root.join("spec/support/fixtures/images/image1.jpeg")
 
@@ -203,7 +199,7 @@ end
 
 ##############################################################################
 
-seeds_logger.info "7. Creating Broadcasts"
+Rails.logger.info "7. Creating Broadcasts"
 
 # TODO: [@thepracticaldev/delightful] Remove this once we have launched welcome notifications.
 Broadcast.create!(
@@ -231,7 +227,7 @@ end
 
 ##############################################################################
 
-seeds_logger.info "8. Creating Chat Channels and Messages"
+Rails.logger.info "8. Creating Chat Channels and Messages"
 
 %w[Workshop Meta General].each do |chan|
   ChatChannel.create!(
@@ -248,7 +244,7 @@ Message.create!(
   message_markdown: "This is **awesome**",
 )
 
-seeds_logger.info "9. Creating HTML Variants"
+Rails.logger.info "9. Creating HTML Variants"
 
 HtmlVariant.create!(
   name: rand(100).to_s,
@@ -260,7 +256,7 @@ HtmlVariant.create!(
   user_id: User.first.id,
 )
 
-seeds_logger.info "10. Creating Badges"
+Rails.logger.info "10. Creating Badges"
 
 Badge.create!(
   title: Faker::Lorem.word,
@@ -268,7 +264,7 @@ Badge.create!(
   badge_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
 )
 
-seeds_logger.info "11. Creating FeedbackMessages"
+Rails.logger.info "11. Creating FeedbackMessages"
 
 FeedbackMessage.create!(
   reporter: User.last,
@@ -287,7 +283,7 @@ FeedbackMessage.create!(
   status: "Open",
 )
 
-seeds_logger.info "12. Creating Classified listings"
+Rails.logger.info "12. Creating Classified listings"
 
 users = User.order(Arel.sql("RANDOM()")).to_a
 users.each { |user| Credit.add_to(user, rand(100)) }
@@ -311,7 +307,7 @@ listings_categories.each_with_index do |category, index|
 end
 ##############################################################################
 
-seeds_logger.info <<-ASCII
+Rails.logger.info <<-ASCII
 
 
 
