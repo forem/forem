@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 
 import './designSystem.scss';
 
-storiesOf('Base/Components/HTML/Indicators', module)
+storiesOf('Components/HTML/Indicators', module)
   .add('Description', () => (
     <div className="container">
       <h2>Indicators</h2>
