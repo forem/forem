@@ -174,7 +174,7 @@ preact-render-spy (1 nodes)
            />
           @channeluser1 - i am channel user 1
         </a>
-
+         
         <span class="channel__member">
           is already in 
           <em>channel name</em>
@@ -192,7 +192,7 @@ preact-render-spy (1 nodes)
            />
           @searcheduser3 - i am searched user 3
         </a>
-
+         
         <button
           type="button"
           onClick={[Function value]}
