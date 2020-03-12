@@ -21,7 +21,7 @@ const commonProps = {
   bookmarkClick: action('Saved/unsaved article'),
 };
 
-storiesOf('Components/Article/Featured', module)
+storiesOf('App Components/Article/Featured', module)
   .addDecorator(withKnobs)
   .addDecorator(articleDecorator)
   .add('Default', () => (
