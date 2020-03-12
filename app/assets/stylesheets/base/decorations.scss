@@ -1,0 +1,124 @@
+@import '../vars/variables';
+
+// Opacity
+@include generate-classes(
+  'opacity',
+  'opacity',
+  (
+    '100': 1,
+    '75': 0.75,
+    '50': 0.5,
+    '25': 0.25,
+    '0': 0,
+  )
+);
+
+// Box Shadow
+.shadow-none {
+  box-shadow: none !important;
+}
+
+// Cursor
+@include generate-classes(
+  'cursor',
+  'cursor',
+  (
+    'auto': auto,
+    'default': default,
+    'pointer': pointer,
+    'wait': wait,
+    'text': text,
+    'move': move,
+    'not-allowed': not-allowed,
+  )
+);
+
+// Outline
+.outline-none {
+  outline: none !important;
+}
+
+// Pointer events
+@include generate-classes(
+  'pointer-events',
+  'pointer-events',
+  (
+    'auto': auto,
+    'none': none,
+  )
+);
+
+// Screen reader only
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border-width: 0 !important;
+}
+
+// Border radius
+@include generate-classes(
+  'radius',
+  'border-radius',
+  (
+    'default': $br-default,
+    '0': 0,
+    'full': 9999px,
+  )
+);
+
+// Background Position
+@include generate-classes(
+  'bg',
+  'background-position',
+  (
+    'bottom': bottom,
+    'center': center,
+    'left': left,
+    'right': right,
+    'top': top,
+    'left-bottom': left bottom,
+    'left-top': left top,
+    'right-bottom': right bottom,
+    'right-top': right top,
+  )
+);
+
+// Background Repeat
+@include generate-classes(
+  'bg',
+  'background-repeat',
+  (
+    'repeat': repeat,
+    'repeat-x': repeat-x,
+    'repeat-y': repeat-y,
+    'no-repeat': no-repeat,
+  )
+);
+
+// Background Size
+@include generate-classes(
+  'bg',
+  'background-size',
+  (
+    'auto': auto,
+    'cover': cover,
+    'contain': contain,
+  )
+);
+
+// Background Attachement
+@include generate-classes(
+  'bg',
+  'background-attachment',
+  (
+    'fixed': fixed,
+    'local': local,
+    'scroll': scroll,
+  )
+);

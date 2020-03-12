@@ -1,0 +1,127 @@
+@import '../vars/variables';
+
+// Font family
+@include generate-classes(
+  'ff',
+  'font-family',
+  (
+    'default': $ff-default,
+    'accent': $ff-accent,
+  )
+);
+
+// Font size
+@include generate-classes(
+  'fs',
+  'font-size',
+  (
+    'xs': $fs-xs,
+    's': $fs-s,
+    'base': $fs-base,
+    'l': $fs-l,
+    'xl': $fs-xl,
+    '2xl': $fs-2xl,
+    '3xl': $fs-3xl,
+    '4xl': $fs-4xl,
+    '5xl': $fs-5xl,
+  )
+);
+
+// Line height
+@include generate-classes(
+  'lh',
+  'line-height',
+  (
+    'tight': $lh-tight,
+    'base': $lh-base,
+  )
+);
+
+// Font weight
+@include generate-classes(
+  'fw',
+  'font-weight',
+  (
+    'normal': $fw-normal,
+    'medium': $fw-medium,
+    'bold': $fw-bold,
+    'heavy': $fw-heavy,
+  )
+);
+
+// List styles
+@include generate-classes(
+  'list',
+  'list-style-type',
+  (
+    'none': none,
+    'disc': disc,
+    'decimal': decimal,
+  )
+);
+
+// Text decoration
+@include generate-classes(
+  'text',
+  'text-decoration',
+  (
+    'underline': underline,
+    'none': none,
+  )
+);
+
+// Text decoration
+@include generate-classes(
+  'text',
+  'text-transform',
+  (
+    'uppercase': uppercase,
+    'lowercase': lowercase,
+    'capitalize': capitalize,
+    'normal': none,
+  )
+);
+
+// Text align
+@include generate-classes(
+  'align',
+  'text-align',
+  (
+    'left': left,
+    'center': center,
+    'right': right,
+    'justify': justify,
+  )
+);
+
+// Vertical alignment
+@include generate-classes(
+  'align',
+  'vertical-align',
+  (
+    'baseline': baseline,
+    'top': top,
+    'middle': middle,
+    'bottom': bottom,
+    'text-top': text-top,
+    'text-bottom': text-bottom,
+  )
+);
+
+// White space
+@include generate-classes(
+  'whitespace',
+  'white-space',
+  (
+    'normal': normal,
+    'nowrap': nowrap,
+    'pre': pre,
+  )
+);
+
+// Truncate
+.truncate {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
