@@ -63,24 +63,3 @@
 </table>
 
 <%= paginate @mods %>
-
-<script>
-function submitForms() {
-  var form = $(this);
-  var valuesToSubmit = $(this).serialize();
-  form.parents(".wrapper").addClass("submitting-no-border")
-  $.ajax({
-    type: "POST",
-    url: $(this).attr('action'), //sumbits it to the given url of the form
-    data: valuesToSubmit,
-    // dataType: "JSON" // you want a difference between normal and ajax-calls, and json is standard
-  }).success(function (json) {
-    console.log("success")
-    form.parents(".wrapper").addClass("highlighted-no-border")
-  });
-  return false; // prevents normal behaviour
-}
-
-$('.wrapper').on("submit", "form", submitForms)
-
-</script>
