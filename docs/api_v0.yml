@@ -1533,14 +1533,17 @@ paths:
           schema:
             type: integer
             format: int32
-          example: 1
+            minimum: 1
+            default: 1
         - name: per_page
           in: query
           description: Page size (defaults to 30 with a maximum of 1000).
           schema:
             type: integer
             format: int32
-          example: 30
+            minimum: 1
+            maximum: 1000
+            default: 30
         - name: tag
           in: query
           description: |
@@ -1591,6 +1594,7 @@ paths:
           schema:
             type: integer
             format: int32
+            minimum: 1
           example: 2
         - name: collection_id
           in: query
@@ -1735,6 +1739,7 @@ paths:
           schema:
             type: integer
             format: int32
+            minimum: 1
           example: 150589
       responses:
         "200":
@@ -1787,6 +1792,7 @@ paths:
           schema:
             type: integer
             format: int32
+            minimum: 1
           example: 150589
       requestBody:
         description: |
@@ -1882,14 +1888,17 @@ paths:
           schema:
             type: integer
             format: int32
-          example: 1
+            minimum: 1
+            default: 1
         - name: per_page
           in: query
           description: Page size (defaults to 30 with a maximum of 1000).
           schema:
             type: integer
             format: int32
-          example: 30
+            minimum: 1
+            maximum: 1000
+            default: 30
       responses:
         "200":
           description: A list of published articles
@@ -1943,14 +1952,17 @@ paths:
           schema:
             type: integer
             format: int32
-          example: 1
+            minimum: 1
+            default: 1
         - name: per_page
           in: query
           description: Page size (defaults to 30 with a maximum of 1000).
           schema:
             type: integer
             format: int32
-          example: 30
+            minimum: 1
+            maximum: 1000
+            default: 30
       responses:
         "200":
           description: A list of published articles
@@ -2004,14 +2016,17 @@ paths:
           schema:
             type: integer
             format: int32
-          example: 1
+            minimum: 1
+            default: 1
         - name: per_page
           in: query
           description: Page size (defaults to 30 with a maximum of 1000).
           schema:
             type: integer
             format: int32
-          example: 30
+            minimum: 1
+            maximum: 1000
+            default: 30
       responses:
         "200":
           description: A list of articles
@@ -2067,14 +2082,17 @@ paths:
           schema:
             type: integer
             format: int32
-          example: 1
+            minimum: 1
+            default: 1
         - name: per_page
           in: query
           description: Page size (defaults to 30 with a maximum of 1000).
           schema:
             type: integer
             format: int32
-          example: 30
+            minimum: 1
+            maximum: 1000
+            default: 30
       responses:
         "200":
           description: A list of articles
@@ -2121,6 +2139,7 @@ paths:
           schema:
             type: integer
             format: int32
+            minimum: 1
           example: 270180
       responses:
         "200":
@@ -2224,14 +2243,16 @@ paths:
           schema:
             type: integer
             format: int32
-          example: 1
+            minimum: 1
         - name: per_page
           in: query
           description: Page size (defaults to 80 with a maximum of 1000).
           schema:
             type: integer
             format: int32
-          example: 80
+            minimum: 1
+            maximum: 1000
+            default: 80
       responses:
         "200":
           description: A list of followers
@@ -2286,14 +2307,17 @@ paths:
           schema:
             type: integer
             format: int32
-          example: 1
+            minimum: 1
+            default: 1
         - name: per_page
           in: query
           description: Page size (defaults to 30 with a maximum of 100).
           schema:
             type: integer
             format: int32
-          example: 30
+            minimum: 1
+            maximum: 100
+            default: 30
         - name: category
           in: query
           description: |
@@ -2453,14 +2477,17 @@ paths:
           schema:
             type: integer
             format: int32
-          example: 1
+            minimum: 1
+            default: 1
         - name: per_page
           in: query
           description: Page size (defaults to 30 with a maximum of 100).
           schema:
             type: integer
             format: int32
-          example: 30
+            minimum: 1
+            maximum: 100
+            default: 30
       responses:
         "200":
           description: A list of listings
@@ -2499,6 +2526,7 @@ paths:
           schema:
             type: integer
             format: int64
+            minimum: 1
           example: 1
       responses:
         "200":
@@ -2546,6 +2574,7 @@ paths:
           schema:
             type: integer
             format: int64
+            minimum: 1
           example: 1184
       requestBody:
         description: |
@@ -2657,14 +2686,17 @@ paths:
           schema:
             type: integer
             format: int32
-          example: 1
+            minimum: 1
+            default: 1
         - name: per_page
           in: query
           description: Page size (defaults to 30 with a maximum of 1000).
           schema:
             type: integer
             format: int32
-          example: 30
+            minimum: 1
+            maximum: 1000
+            default: 30
         - name: username
           in: query
           description: |
@@ -2724,14 +2756,17 @@ paths:
           schema:
             type: integer
             format: int32
-          example: 1
+            minimum: 1
+            default: 1
         - name: per_page
           in: query
           description: Page size (defaults to 10 with a maximum of 1000).
           schema:
             type: integer
             format: int32
-          example: 30
+            minimum: 1
+            maximum: 1000
+            default: 10
       responses:
         "200":
           description: A list of tags
@@ -2867,14 +2902,17 @@ paths:
           schema:
             type: integer
             format: int32
-          example: 1
+            minimum: 1
+            default: 1
         - name: per_page
           in: query
           description: Page size (defaults to 24 with a maximum of a 1000).
           schema:
             type: integer
             format: int32
-          example: 24
+            minimum: 1
+            maximum: 1000
+            default: 24
       responses:
         "200":
           description: A list of video articles
@@ -3030,6 +3068,7 @@ paths:
           schema:
             type: integer
             format: int64
+            minimum: 1
           example: 123
       responses:
         "200":
@@ -3083,6 +3122,7 @@ paths:
           schema:
             type: integer
             format: int64
+            minimum: 1
           example: 123
       responses:
         "204":
