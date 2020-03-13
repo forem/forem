@@ -58,7 +58,7 @@ GEM
       activerecord (>= 5.0, < 6.1)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
-    administrate (0.12.0)
+    administrate (0.13.0)
       actionpack (>= 4.2)
       actionview (>= 4.2)
       activerecord (>= 4.2)
@@ -866,7 +866,7 @@ DEPENDENCIES
   acts-as-taggable-on (~> 6.5)
   acts_as_follower!
   addressable (~> 2.7)
-  administrate (~> 0.12)
+  administrate (~> 0.13)
   ahoy_email (~> 1.1)
   algoliasearch-rails (~> 1.24)
   algorithmia (~> 1.1)
