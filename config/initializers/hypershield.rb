@@ -3,8 +3,8 @@
 # tools like Blazer.
 # further setup instructions: https://github.com/ankane/hypershield#database-setup
 
-# Validate that hypershield schema exists before trying to use it
 if Rails.env.production?
+  # Validate that hypershield schema exists before trying to use it
   if ActiveRecord::Base.connection.schema_exists?("hypershield")
     # Specify the schema to use and columns to show and hide
     Hypershield.schemas = {
