@@ -149,7 +149,7 @@ article {
       min-height: 40px;
       font-size: calc(2vw + 26px);
       word-break: break-word;
-
+      line-height: 1.28em;
       @media screen and (min-width: 1600px) {
         font-size: 57px;
       }
@@ -159,14 +159,14 @@ article {
       }
 
       &.medium {
-        font-size: calc(1.85vw + 25px);
+        font-size: calc(1.82vw + 25px);
         @media screen and (min-width: 1600px) {
           font-size: 47px;
         }
       }
 
       &.long {
-        font-size: calc(1.52vw + 23px);
+        font-size: calc(1.48vw + 23px);
 
         @media screen and (min-width: 1600px) {
           font-size: 46px;
@@ -174,7 +174,7 @@ article {
       }
 
       &.longer {
-        font-size: calc(1.48vw + 22px);
+        font-size: calc(1.44vw + 22px);
 
         @media screen and (min-width: 1600px) {
           font-size: 45px;
