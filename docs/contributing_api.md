@@ -7,6 +7,10 @@ title: Contributing to the API Specification Docs
 The API v0 is described with the
 [OpenAPI 3 specification](https://spec.openapis.org/oas/v3.0.3).
 
+Swagger.io has
+[great docs](https://swagger.io/docs/specification/basic-structure/) that are
+helpful to understand the specification better.
+
 ## Where you can find the spec file
 
 We auto-generate the documentation from `api_v0.yml` within the `/docs`
