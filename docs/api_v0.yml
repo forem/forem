@@ -29,6 +29,62 @@ servers:
     description: Production server
 
 components:
+  parameters:
+    pageParam:
+      in: query
+      name: page
+      required: false
+      description: Pagination page.
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        default: 1
+    perPageParam10to1000:
+      in: query
+      name: per_page
+      required: false
+      description: Page size (the number of items to return per page).
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 1000
+        default: 10
+    perPageParam24to1000:
+      in: query
+      name: per_page
+      required: false
+      description: Page size (the number of items to return per page).
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 1000
+        default: 24
+    perPageParam30to1000:
+      in: query
+      name: per_page
+      required: false
+      description: Page size (the number of items to return per page).
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 1000
+        default: 30
+    perPageParam80to1000:
+      in: query
+      name: per_page
+      required: false
+      description: Page size (the number of items to return per page).
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 1000
+        default: 80
+
   securitySchemes:
     api_key:
       type: apiKey
@@ -1527,23 +1583,8 @@ paths:
       tags:
         - articles
       parameters:
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            default: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 30 with a maximum of 1000).
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            maximum: 1000
-            default: 30
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to1000'
         - name: tag
           in: query
           description: |
@@ -1882,23 +1923,8 @@ paths:
         - articles
         - users
       parameters:
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            default: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 30 with a maximum of 1000).
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            maximum: 1000
-            default: 30
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to1000'
       responses:
         "200":
           description: A list of published articles
@@ -1946,23 +1972,8 @@ paths:
         - articles
         - users
       parameters:
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            default: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 30 with a maximum of 1000).
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            maximum: 1000
-            default: 30
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to1000'
       responses:
         "200":
           description: A list of published articles
@@ -2010,23 +2021,8 @@ paths:
         - articles
         - users
       parameters:
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            default: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 30 with a maximum of 1000).
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            maximum: 1000
-            default: 30
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to1000'
       responses:
         "200":
           description: A list of articles
@@ -2076,23 +2072,8 @@ paths:
         - articles
         - users
       parameters:
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            default: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 30 with a maximum of 1000).
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            maximum: 1000
-            default: 30
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to1000'
       responses:
         "200":
           description: A list of articles
@@ -2237,22 +2218,8 @@ paths:
       tags:
         - followers
       parameters:
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 80 with a maximum of 1000).
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            maximum: 1000
-            default: 80
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam80to1000'
       responses:
         "200":
           description: A list of followers
@@ -2301,23 +2268,8 @@ paths:
       tags:
         - listings
       parameters:
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            default: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 30 with a maximum of 100).
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            maximum: 100
-            default: 30
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to1000'
         - name: category
           in: query
           description: |
@@ -2471,23 +2423,8 @@ paths:
           description: The category of the listing
           schema:
             $ref: "#/components/schemas/ListingCategory"
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            default: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 30 with a maximum of 100).
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            maximum: 100
-            default: 30
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to1000'
       responses:
         "200":
           description: A list of listings
@@ -2680,23 +2617,8 @@ paths:
       tags:
         - podcast-episodes
       parameters:
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            default: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 30 with a maximum of 1000).
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            maximum: 1000
-            default: 30
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to1000'
         - name: username
           in: query
           description: |
@@ -2750,23 +2672,8 @@ paths:
       tags:
         - tags
       parameters:
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            default: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 10 with a maximum of 1000).
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            maximum: 1000
-            default: 10
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam10to1000'
       responses:
         "200":
           description: A list of tags
@@ -2896,23 +2803,8 @@ paths:
         - articles
         - videos
       parameters:
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            default: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 24 with a maximum of a 1000).
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-            maximum: 1000
-            default: 24
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam24to1000'
       responses:
         "200":
           description: A list of video articles
