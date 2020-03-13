@@ -207,7 +207,7 @@ GEM
     dante (0.2.0)
     datetime_picker_rails (0.0.7)
       momentjs-rails (>= 2.8.1)
-    ddtrace (0.33.0)
+    ddtrace (0.33.1)
       msgpack
     debug_inspector (0.0.3)
     declarative (0.0.10)
