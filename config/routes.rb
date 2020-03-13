@@ -114,7 +114,7 @@ Rails.application.routes.draw do
       resources :videos, only: [:index]
       resources :podcast_episodes, only: [:index]
       resources :reactions, only: [:create]
-      resources :users, only: %i[index show] do
+      resources :users, only: %i[show] do
         collection do
           get :me
         end
@@ -156,7 +156,8 @@ Rails.application.routes.draw do
     patch "/unhide", to: "comments#unhide"
   end
   resources :comment_mutes, only: %i[update]
-  resources :users, only: [:update] do
+  resources :users, only: %i[index], defaults: { format: :json } # internal API
+  resources :users, only: %i[update] do
     resource :twitch_stream_updates, only: %i[show create]
   end
   resources :twitch_live_streams, only: :show, param: :username
