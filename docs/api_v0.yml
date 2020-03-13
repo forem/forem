@@ -1764,6 +1764,16 @@ paths:
             https://dev.to/api/articles
 
   /articles/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Id of the article
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+        example: 150589
     get:
       operationId: getArticleById
       summary: A published article
@@ -1772,16 +1782,6 @@ paths:
         published article given its `id`.
       tags:
         - articles
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Id of the article
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-          example: 150589
       responses:
         "200":
           description: An article
@@ -1825,16 +1825,6 @@ paths:
         - [Rails tests for Articles API](https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/articles_spec.rb)
       tags:
         - articles
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Id of the article
-          schema:
-            type: integer
-            format: int32
-            minimum: 1
-          example: 150589
       requestBody:
         description: |
           Article params for the update.
@@ -2444,6 +2434,16 @@ paths:
             curl https://dev.to/api/listings/category/cfp
 
   /listings/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Id of the listing
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+        example: 1
     get:
       operationId: getListingById
       summary: A listing
@@ -2455,16 +2455,6 @@ paths:
         and it belongs to the authenticated user.
       tags:
         - listings
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Id of the listing
-          schema:
-            type: integer
-            format: int64
-            minimum: 1
-          example: 1
       responses:
         "200":
           description: A listing
@@ -2503,16 +2493,6 @@ paths:
         This endpoint allows the client to update an existing listing.
       tags:
         - listings
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Id of the listing
-          schema:
-            type: integer
-            format: int64
-            minimum: 1
-          example: 1184
       requestBody:
         description: |
           Listing params for the update.
@@ -2944,6 +2924,16 @@ paths:
               https://dev.to/api/webhooks
 
   /webhooks/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Id of the webhook
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+        example: 123
     get:
       operationId: getWebhookById
       summary: A webhook endpoint
@@ -2952,16 +2942,6 @@ paths:
         webhook given its `id`.
       tags:
         - webhooks
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Id of the webhook
-          schema:
-            type: integer
-            format: int64
-            minimum: 1
-          example: 123
       responses:
         "200":
           description: A webhook endpoint
@@ -3006,16 +2986,6 @@ paths:
         webhook given its `id`.
       tags:
         - webhooks
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Id of the webhook
-          schema:
-            type: integer
-            format: int64
-            minimum: 1
-          example: 123
       responses:
         "204":
           description: A successful deletion
