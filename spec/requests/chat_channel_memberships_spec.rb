@@ -247,4 +247,48 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       end
     end
   end
+
+  describe "POST /chat_channel_memberships/remove_membership" do
+    before do
+      chat_channel.add_users([second_user])
+    end
+
+    context "user is super admin" do
+      it "removes member from channel" do
+        user.add_role(:super_admin)
+        membership = ChatChannelMembership.last
+        post "/chat_channel_memberships/remove_membership", params: {
+          chat_channel_id: chat_channel.id,
+          membership_id: membership.id
+        }
+        expect(ChatChannelMembership.find(membership.id).status).to eq("removed_from_channel")
+        expect(response).to(redirect_to("/chat_channel_memberships/#{chat_channel.chat_channel_memberships.where(user_id: user.id).first.id}/edit"))
+      end
+    end
+
+    context "user is moderator of channel" do
+      it "removes member from channel" do
+        chat_channel.chat_channel_memberships.where(user_id: user.id).update(role: "mod")
+        membership = ChatChannelMembership.last
+        post "/chat_channel_memberships/remove_membership", params: {
+          chat_channel_id: chat_channel.id,
+          membership_id: membership.id
+        }
+        expect(ChatChannelMembership.find(membership.id).status).to eq("removed_from_channel")
+        expect(response).to(redirect_to("/chat_channel_memberships/#{chat_channel.chat_channel_memberships.where(user_id: user.id).first.id}/edit"))
+      end
+    end
+
+    context "user is member of channel" do
+      it "raise Pundit::NotAuthorizedError" do
+        membership = ChatChannelMembership.last
+        expect do
+          post "/chat_channel_memberships/remove_membership", params: {
+            chat_channel_id: chat_channel.id,
+            membership_id: membership.id
+          }
+        end.to(raise_error(Pundit::NotAuthorizedError))
+      end
+    end
+  end
 end

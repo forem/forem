@@ -49,12 +49,19 @@ class ChatChannelMembershipsController < ApplicationController
     redirect_to "/chat_channel_memberships/#{@chat_channel.chat_channel_memberships.where(user_id: current_user).first&.id}/edit"
   end
 
-  def remove_invitation
+  def remove_membership
     @chat_channel = ChatChannel.find(params[:chat_channel_id])
     authorize @chat_channel, :update?
-    flash[:settings_notice] = "Invitation Removed."
-    ChatChannelMembership.where(chat_channel_id: @chat_channel.id, id: params[:invitation_id], status: "pending").first&.destroy
-    redirect_to "/chat_channel_memberships/#{@chat_channel.chat_channel_memberships.where(user_id: current_user).first&.id}/edit"
+    @chat_channel_membership = ChatChannelMembership.find(params[:membership_id])
+    if params[:status] == "pending"
+      @chat_channel_membership.destroy
+      flash[:settings_notice] = "Invitation Removed."
+    else
+      @chat_channel_membership.update(status: "removed_from_channel")
+      @chat_channel_membership.remove_from_index!
+      flash[:settings_notice] = "Removed #{@chat_channel_membership.user.name}"
+    end
+    redirect_to "/chat_channel_memberships/#{ChatChannelMembership.where(chat_channel_id: params[:chat_channel_id], user_id: current_user).first&.id}/edit"
   end
 
   def update

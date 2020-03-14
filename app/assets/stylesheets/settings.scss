@@ -213,7 +213,7 @@
           display:none; /* Changes to inline-block when javascript loads preview */
         }
       }
-      
+
     }
     .checkbox-field {
       display: flex;
@@ -343,7 +343,7 @@
         resize: none;
       }
     }
-    .inline-button-form {
+    %inline-button-form {
       display: inline-block;
       input[type='submit'] {
         display: inline-block;
@@ -356,7 +356,13 @@
         color: white;
         background: $black;
       }
-    }  
+    }
+    .inline-button-form {
+      @extend %inline-button-form;
+    }
+    .inline-button-form-hidden {
+      display: none;
+    }
     h2 {
       font-size: calc(40px + 1vw);
       font-family: $helvetica-condensed;
@@ -703,6 +709,11 @@
       border-radius: 100px;
       vertical-align: -0.25em;
       margin-right: 0.25em;
+    }
+    &:hover {
+      .inline-button-form-hidden {
+        @extend %inline-button-form;
+      }
     }
   }
 }
