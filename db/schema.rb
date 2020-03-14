@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_11_201103) do
+ActiveRecord::Schema.define(version: 2020_03_11_170959) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -376,7 +376,6 @@ ActiveRecord::Schema.define(version: 2020_03_11_201103) do
     t.boolean "hidden_by_commentable_user", default: false
     t.string "id_code"
     t.integer "markdown_character_count"
-    t.bigint "moderator_id"
     t.integer "positive_reactions_count", default: 0, null: false
     t.text "processed_html"
     t.integer "reactions_count", default: 0, null: false
