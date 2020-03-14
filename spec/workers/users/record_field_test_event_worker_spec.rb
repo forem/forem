@@ -28,7 +28,7 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
 
       it "records user_views_article_four_days_in_week field test conversion if qualifies" do
         7.times do |n|
-          create(:page_view, user_id: user.id, created_at: n.day.ago)
+          create(:page_view, user_id: user.id, created_at: n.days.ago)
         end
         worker.perform(user.id, "user_home_feed", "user_views_article_four_days_in_week")
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
@@ -37,9 +37,26 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
 
       it "does not record user_views_article_four_days_in_week field test conversion if not qualifying" do
         2.times do |n|
-          create(:page_view, user_id: user.id, created_at: n.day.ago)
+          create(:page_view, user_id: user.id, created_at: n.days.ago)
         end
         worker.perform(user.id, "user_home_feed", "user_views_article_four_days_in_week")
+        expect(FieldTest::Event.all.size).to be(0)
+      end
+
+      it "records user_views_article_four_of_past_7_hours field test conversion if qualifies" do
+        7.times do |n|
+          create(:page_view, user_id: user.id, created_at: n.hours.ago)
+        end
+        worker.perform(user.id, "user_home_feed", "user_views_article_four_of_past_7_hours")
+        expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
+        expect(FieldTest::Event.last.name).to eq("user_views_article_four_of_past_7_hours")
+      end
+
+      it "does not record user_views_article_four_of_past_7_hours field test conversion if not qualifying" do
+        2.times do |n|
+          create(:page_view, user_id: user.id, created_at: n.hours.ago)
+        end
+        worker.perform(user.id, "user_home_feed", "user_views_article_four_of_past_7_hours")
         expect(FieldTest::Event.all.size).to be(0)
       end
     end
@@ -57,7 +74,7 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
 
       it "records user_views_article_four_days_in_week field test conversion if qualifies" do
         7.times do |n|
-          create(:page_view, user_id: user.id, created_at: n.day.ago)
+          create(:page_view, user_id: user.id, created_at: n.days.ago)
         end
         expect(FieldTest::Event.all.size).to be(0)
       end

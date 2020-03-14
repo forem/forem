@@ -7,9 +7,13 @@ experiments:
       - mix_base_more_random_experiment
       - more_tag_weight_more_random_experiment
       - more_comments_experiment
+      - more_experience_level_weight_experiment
+      - mix_of_everything_experiment
     weights:
-      - 50
+      - 25
       - 10
+      - 10
+      - 15
       - 10
       - 10
       - 10
@@ -18,6 +22,7 @@ experiments:
       - user_creates_comment
       - user_creates_reaction
       - user_views_article_four_days_in_week
+      - user_views_article_four_of_past_7_hours
 exclude:
   bots: true
 
