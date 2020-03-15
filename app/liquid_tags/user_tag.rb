@@ -10,6 +10,8 @@ class UserTag < LiquidTagBase
   end
 
   def render(_context)
+    return @user if @user.is_a?(String)
+
     ActionController::Base.new.render_to_string(
       partial: PARTIAL,
       locals: {
@@ -20,9 +22,9 @@ class UserTag < LiquidTagBase
     )
   end
 
-  def parse_username_to_user(user)
-    user = User.find_by(username: user)
-    raise StandardError, "Invalid username" if user.nil?
+  def parse_username_to_user(username)
+    user = User.find_by(username: username)
+    return username if user.nil?
 
     user
   end

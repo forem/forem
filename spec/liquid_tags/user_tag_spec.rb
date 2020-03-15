@@ -22,8 +22,7 @@ RSpec.describe UserTag, type: :liquid_tag do
   end
 
   it "rejects invalid id_code" do
-    expect do
-      generate_user_tag("this should fail")
-    end.to raise_error(StandardError)
+    liquid = generate_user_tag("does_not_exist")
+    expect(liquid.render).to eq("does_not_exist")
   end
 end
