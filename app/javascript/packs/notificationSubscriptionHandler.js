@@ -27,7 +27,6 @@ function loadFunctionality() {
         document
           .getElementById(`notification-subscription-label_${result.config}`)
           .classList.add('selected');
-        // checkbox.checked = result;
       });
   }
 
@@ -69,7 +68,6 @@ function loadFunctionality() {
         credentials: 'same-origin',
         body: JSON.stringify({
           config: payload,
-          // notifiable params are passed via URL
         }),
       });
     };
