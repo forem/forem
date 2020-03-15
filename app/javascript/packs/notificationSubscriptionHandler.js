@@ -4,6 +4,23 @@ const getUserStatus = () =>
 const getNoticationData = () =>
   document.getElementById('notification-subscriptions-area').dataset;
 
+const fetchNotificationBy = (type, id) => {
+  fetch(`/notification_subscriptions/${type}/${id}`, {
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+  })
+    .then(response => response.json())
+    .then(result => {
+      document
+        .getElementById(`notification-subscription-label_${result.config}`)
+        .classList.add('selected');
+    });
+};
+
 function loadFunctionality() {
   if (!document.getElementById('notification-subscriptions-area')) {
     return;
@@ -14,20 +31,7 @@ function loadFunctionality() {
   const userStatus = getUserStatus();
 
   if (userStatus === 'logged-in') {
-    fetch(`/notification_subscriptions/${notifiableType}/${notifiableId}`, {
-      headers: {
-        Accept: 'application/json',
-        'X-CSRF-Token': window.csrfToken,
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-    })
-      .then(response => response.json())
-      .then(result => {
-        document
-          .getElementById(`notification-subscription-label_${result.config}`)
-          .classList.add('selected');
-      });
+    fetchNotificationBy(notifiableType, notifiableId);
   }
 
   let updateStatus = () => {};
