@@ -1,21 +1,21 @@
 <% title "About The Practical Dev" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/p/information" />
-  <meta name="description" content="All information about The Practical Dev">
+  <link rel="canonical" href="https://<%= ApplicationConfig["COMMUNITY_NAME"] %>/p/information" />
+  <meta name="description" content="All information about <%= ApplicationConfig["COMMUNITY_NAME"] %>">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://dev.to/p/information" />
-  <meta property="og:title" content="All information about The Practical Dev" />
+  <meta property="og:url" content="https://<%= ApplicationConfig["COMMUNITY_NAME"] %>/p/information" />
+  <meta property="og:title" content="All information about <%= ApplicationConfig["COMMUNITY_NAME"] %>" />
   <meta property="og:image" content="<%= SiteConfig.main_social_image %>" />
-  <meta property="og:description" content="The DEV Community is great!" />
-  <meta property="og:site_name" content="The DEV Community" />
+  <meta property="og:description" content="The <%= ApplicationConfig["COMMUNITY_NAME"] %> Community is great!" />
+  <meta property="og:site_name" content="The <%= ApplicationConfig["COMMUNITY_NAME"] %> Community" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@ThePracticalDev">
-  <meta name="twitter:title" content="All information about The Practical Dev">
-  <meta name="twitter:description" content="The DEV Community is great!">
+  <meta name="twitter:title" content="All information about <%= ApplicationConfig["COMMUNITY_NAME"] %>">
+  <meta name="twitter:description" content="The <%= ApplicationConfig["COMMUNITY_NAME"] %> Community is great!">
   <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
 <% end %>
 
@@ -42,29 +42,44 @@
 <div class="container article">
   <div class="title">
     <h1>
-      More information about dev.to(👋)
+      More information about <%= ApplicationConfig["COMMUNITY_NAME"] %> 👋
     </h1>
   </div>
   <div class="body">
     <ul class="key-links">
       <li><a href="/">Home</a></li>
       <li><a href="/about">About</a></li>
-      <li><a href="https://shop.dev.to/">DEV Shop</a></li>
-      <li><a href="/sponsors">Sponsors</a></li>
+      <% if base_community? %>
+        <li><a href="https://shop.dev.to/">DEV Shop</a></li>
+        <li><a href="/sponsors">Sponsors</a></li>
+      <% end %>
       <li><a href="/faq">FAQ</a></li>
       <li><a href="/privacy">Privacy Policy</a></li>
       <li><a href="/terms">Terms of Use</a></li>
       <li><a href="/contact">Contact</a></li>
-      <li><a href="/security">Vulnerabilities/Bug Bounty</a></li>
+      <li><a href="https://dev.to/security">Vulnerabilities/Bug Bounty</a></li>
       <li><a href="/code-of-conduct">Code of Conduct</a></li>
-      <li><a href="/downloads">Get the mobile app</a></li>
+      <% if base_community? %>
+        <li><a href="/downloads">Get the mobile app</a></li>
+      <% end %>
     </ul>
   </div>
-  <div class="social-links">
-    <a href="https://twitter.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitter-logo.svg") %>" alt="DEV Twitter profile"></a>
-    <a href="https://github.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("github-logo.svg") %>" alt="DEV GitHub profile"></a>
-    <a href="https://instagram.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("instagram-logo.svg") %>" alt="DEV Instagram profile"></a>
-    <a href="https://facebook.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("facebook-logo.svg") %>" alt="DEV Facebook profile"></a>
-    <a href="https://twitch.tv/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitch-logo.svg") %>" alt="DEV Twitch profile"></a>
-  </div>
+  <% if base_community? %>
+    <div class="social-links">
+      <a href="https://twitter.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitter-logo.svg") %>" alt="DEV Twitter profile"></a>
+      <a href="https://github.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("github-logo.svg") %>" alt="DEV GitHub profile"></a>
+      <a href="https://instagram.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("instagram-logo.svg") %>" alt="DEV Instagram profile"></a>
+      <a href="https://facebook.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("facebook-logo.svg") %>" alt="DEV Facebook profile"></a>
+      <a href="https://twitch.tv/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitch-logo.svg") %>" alt="DEV Twitch profile"></a>
+    </div>
+  <% else %>
+    <div style="padding: 50px 8px;text-align: center;">
+    <p>
+      This community is built on the <a href="https://dev.to">DEV</a> open source code. Some features are still beta.
+    </p>
+    <p style="margin-top: 20px;">
+      Find the code on at <a href="https://github.com/thepracticaldev/dev.to" style="display: inline-block">github.com/thepracticaldev/dev.to</a>
+    </p>
+    </div>
+  <% end %>
 </div>

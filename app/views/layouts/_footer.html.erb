@@ -3,7 +3,14 @@
     <div class="inner-footer-container">
       <a href="/">Home</a> <a href="/about">About</a> <a href="/privacy">Privacy Policy</a>
       <a href="/terms">Terms of Use</a> <a href="/contact">Contact</a> <a href="/code-of-conduct">Code of Conduct</a><br/>
-      <%= ApplicationConfig["COMMUNITY_NAME"] %> Community copyright 2016 - <%= Time.current.year %>&nbsp; 🔥
+      <%= ApplicationConfig["COMMUNITY_NAME"] %> Community copyright <%= "2016 -" if base_community? %> <%= Time.current.year %>&nbsp; 🔥
+      <p>
+        <% if base_community? %>
+          Built transparently with <a href="https://github.com/thepracticaldev/dev.to" class="underline">open source code</a>
+        <% else %>
+          Built transparently with open source code from the <a href="https://dev.to" class="underline">DEV Coding Community</a>
+        <% end %>
+      </p>
     </div>
   </div>
 </footer>

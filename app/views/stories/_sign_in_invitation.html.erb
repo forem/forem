@@ -1,7 +1,8 @@
 <div class="single-article single-article-small-pic feed-cta" id="in-feed-cta">
   <div class="cta-container" id="cta-content">
-    <img class="rainbowdevimage" src="<%= asset_path "rainbowdev.svg" %>" alt="rainbow DEV logo" />
-
+    <% if base_community? %>
+      <img class="rainbowdevimage" src="<%= asset_path "rainbowdev.svg" %>" alt="rainbow DEV logo" />
+    <% end %>
     <h2>
       <a href="/">DEV</a> is a community of <br /><%= number_with_delimiter User.estimated_count %> amazing humans who code.
     </h2>

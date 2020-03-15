@@ -160,4 +160,8 @@ module ApplicationHelper
   def app_protocol_and_domain
     "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
   end
+
+  def base_community?
+    ApplicationConfig["APP_DOMAIN"] == "dev.to"
+  end
 end

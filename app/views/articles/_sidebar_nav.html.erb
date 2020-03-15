@@ -21,9 +21,11 @@
         <a class="sidebar-nav-link" href="<%= classified_listings_path %>">
           <img class="nav-emoji" src="<%= asset_path("emoji/emoji-one-clipboard.png") %>" alt="listings icon" /> Listings
         </a>
-        <a class="sidebar-nav-link" href="<%= videos_path %>">
-          <img class="nav-emoji" src="<%= asset_path("emoji/emoji-one-videocamera.png") %>" alt="videos icon" /> Videos
-        </a>
+        <% if base_community? %>
+          <a class="sidebar-nav-link" href="<%= videos_path %>">
+            <img class="nav-emoji" src="<%= asset_path("emoji/emoji-one-videocamera.png") %>" alt="videos icon" /> Videos
+          </a>
+        <% end %>
         <a class="sidebar-nav-link" href="<%= pod_path %>">
           <img class="nav-emoji" src="<%= asset_path("emoji/emoji-one-headphones.png") %>" alt="podcasts icon" /> Podcasts
         </a>

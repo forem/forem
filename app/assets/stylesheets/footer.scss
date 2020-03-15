@@ -33,6 +33,9 @@ footer {
       &:hover {
         text-decoration: underline;
       }
+      &.underline {
+        text-decoration: underline;
+      }
     }
     .inner-footer-container {
       max-width: 880px;
