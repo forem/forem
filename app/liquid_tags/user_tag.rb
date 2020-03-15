@@ -5,12 +5,14 @@ class UserTag < LiquidTagBase
 
   def initialize(_tag_name, user, _tokens)
     @user = parse_username_to_user(user.delete(" "))
+    return if user_not_found?
+
     @follow_button = follow_button(@user)
     @user_colors = user_colors(@user)
   end
 
   def render(_context)
-    return @user if @user.is_a?(String)
+    return @user if user_not_found?
 
     ActionController::Base.new.render_to_string(
       partial: PARTIAL,
@@ -27,6 +29,10 @@ class UserTag < LiquidTagBase
     return username if user.nil?
 
     user
+  end
+
+  def user_not_found?
+    @user.is_a?(String)
   end
 end
 
