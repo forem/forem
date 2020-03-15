@@ -61,7 +61,7 @@ RSpec.describe "Authenticating with twitter" do
       expect(page).to have_link "Sign In/Up"
       expect(page).to have_link "Via Twitter"
       expect(page).to have_link "Via GitHub"
-      expect(page).to have_link "All about dev.to"
+      expect(page).to have_link "All about #{ApplicationConfig['COMMUNITY_NAME']}"
     end
   end
 end

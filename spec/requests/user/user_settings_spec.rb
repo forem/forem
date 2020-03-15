@@ -55,6 +55,20 @@ RSpec.describe "UserSettings", type: :request do
         get "/settings/account"
         expect(response.body).to include ghost_account_message
       end
+
+      it "renders CONNECT_WITH_TWITTER and user with only github identity" do
+        user.identities.where(provider: "twitter").delete_all
+        get "/settings"
+        expect(response.body).to include "CONNECT TWITTER ACCOUNT"
+      end
+
+      it "renders does not render CONNECT_WITH_TWITTER if SiteConfig does not include Twitter auth" do
+        user.identities.where(provider: "twitter").destroy_all
+        SiteConfig.authentication_providers = ["github"]
+        SiteConfig.clear_cache
+        get "/settings"
+        expect(response.body).not_to include "CONNECT TWITTER ACCOUNT"
+      end
     end
   end
 

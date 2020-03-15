@@ -25,7 +25,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       campaign_sidebar_image
       main_social_image favicon_url logo_svg
       rate_limit_follow_count_daily
-      ga_view_id ga_fetch_rate
+      ga_view_id ga_fetch_rate authentication_providers
       mailchimp_newsletter_id mailchimp_sustaining_members_id
       mailchimp_tag_moderators_id mailchimp_community_moderators_id
       periodic_email_digest_max periodic_email_digest_min suggested_tags
@@ -43,6 +43,7 @@ class Internal::ConfigsController < Internal::ApplicationController
   def clean_up_params
     config = params[:site_config]
     config[:suggested_tags] = config[:suggested_tags].downcase.delete(" ") if config[:suggested_tags]
+    config[:authentication_providers] = config[:authentication_providers].downcase.delete(" ") if config[:authentication_providers]
   end
 
   def bust_relevant_caches
