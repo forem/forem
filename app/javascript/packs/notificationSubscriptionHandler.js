@@ -1,16 +1,15 @@
 const getUserStatus = () =>
   document.getElementsByTagName('body')[0].getAttribute('data-user-status');
 
+const getNoticationData = () =>
+  document.getElementById('notification-subscriptions-area').dataset;
+
 function loadFunctionality() {
   if (!document.getElementById('notification-subscriptions-area')) {
     return;
   }
-  const { notifiableId } = document.getElementById(
-    'notification-subscriptions-area',
-  ).dataset;
-  const { notifiableType } = document.getElementById(
-    'notification-subscriptions-area',
-  ).dataset;
+
+  const { notifiableId, notifiableType } = getNoticationData();
 
   const userStatus = getUserStatus();
 
