@@ -1,3 +1,6 @@
+const getUserStatus = () =>
+  document.getElementsByTagName('body')[0].getAttribute('data-user-status');
+
 function loadFunctionality() {
   if (!document.getElementById('notification-subscriptions-area')) {
     return;
@@ -9,9 +12,7 @@ function loadFunctionality() {
     'notification-subscriptions-area',
   ).dataset;
 
-  const userStatus = document
-    .getElementsByTagName('body')[0]
-    .getAttribute('data-user-status');
+  const userStatus = getUserStatus();
 
   if (userStatus === 'logged-in') {
     fetch(`/notification_subscriptions/${notifiableType}/${notifiableId}`, {
