@@ -56,4 +56,5 @@ class SiteConfig < RailsSettings::Base
 
   # Tags
   field :suggested_tags, type: :array, default: %w[beginners career computerscience javascript security ruby rails swift kotlin]
+  field :sidebar_tags, type: :array, default: %w[help challenge discuss explainlikeimfive meta watercooler]
 end

@@ -303,6 +303,14 @@
               <div class="alert alert-info">Determines which tags are suggested to new users during onboarding (comma
                 separated, letters only)</div>
             </div>
+            <div class="form-group">
+              <%= f.label :sidebar_tags %>
+              <%= f.text_field :sidebar_tags,
+                               class: "form-control",
+                               value: SiteConfig.sidebar_tags.join(","),
+                               placeholder: "List of valid tags: comma separated, letters only e.g. help,discuss,explainlikeimfive,meta" %>
+              <div class="alert alert-info">Determines which tags are shown on the homepage righthand sidebar</div>
+            </div>
           </div>
         </div>
         <% if current_user.has_role?(:single_resource_admin, Config) %>
