@@ -48,6 +48,7 @@ class User < ApplicationRecord
   has_many :affected_feedback_messages, class_name: "FeedbackMessage", inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
 
   has_many :rating_votes, dependent: :destroy
+  has_many :response_templates, foreign_key: :user_id, inverse_of: :user, dependent: :destroy
   has_many :html_variants, dependent: :destroy
   has_many :page_views, dependent: :destroy
   has_many :credits, dependent: :destroy

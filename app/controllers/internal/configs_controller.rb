@@ -30,7 +30,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       mailchimp_tag_moderators_id mailchimp_community_moderators_id
       periodic_email_digest_max periodic_email_digest_min suggested_tags
       rate_limit_comment_creation rate_limit_published_article_creation
-      rate_limit_image_upload rate_limit_email_recipient
+      rate_limit_image_upload rate_limit_email_recipient sidebar_tags
     ]
     params.require(:site_config).permit(allowed_params)
   end
@@ -44,6 +44,7 @@ class Internal::ConfigsController < Internal::ApplicationController
     config = params[:site_config]
     config[:suggested_tags] = config[:suggested_tags].downcase.delete(" ") if config[:suggested_tags]
     config[:authentication_providers] = config[:authentication_providers].downcase.delete(" ") if config[:authentication_providers]
+    config[:sidebar_tags] = config[:sidebar_tags].downcase.delete(" ") if config[:sidebar_tags]
   end
 
   def bust_relevant_caches
