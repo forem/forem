@@ -8,6 +8,9 @@ class SiteConfig < RailsSettings::Base
   # the cache, or call SiteConfig.clear_cache
   cache_prefix { "v1" }
 
+  # site content
+  field :community_description, type: :string, default: "A constructive and inclusive social network. Open source and radically transparent."
+
   # staff account
   field :staff_user_id, type: :integer, default: 1
   field :default_site_email, type: :string, default: "yo@dev.to"
