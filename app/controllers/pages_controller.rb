@@ -39,10 +39,6 @@ class PagesController < ApplicationController
     set_surrogate_key_header "badge_page"
   end
 
-  def onboarding
-    set_surrogate_key_header "onboarding_page"
-  end
-
   def report_abuse
     referer = URI(request.referer || "").path == "/serviceworker.js" ? nil : request.referer
     reported_url = params[:reported_url] || params[:url] || referer
