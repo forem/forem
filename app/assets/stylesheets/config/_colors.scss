@@ -70,10 +70,12 @@
 
   // Header
   --header-bg: var(--base-inverted);
-  --header-icons: var(--base-70);
-  --header-icons-hover: var(--base-100);
+  --header-icons-color: var(--base-70);
+  --header-icons-color-hover: var(--base-100);
+
+  // Logo
   --logo-bg: var(--base-100);
-  --logo-fill: var(--base-inverted);
+  --logo-color: var(--base-inverted);
 
   // Footer
   --footer-bg: var(--base-inverted);
