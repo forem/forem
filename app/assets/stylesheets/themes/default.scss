@@ -1,4 +1,5 @@
-:root {
+html,
+html[data-theme="default"] {
   // Base
   --base-100: #08090a;
   --base-90: #202428;
@@ -96,37 +97,4 @@
   // Default box
   --box: var(--base-90);
   --box-darker: var(--base-100);
-
-  // Header
-  --header-bg: var(--base-inverted);
-  --header-icons: var(--base-100);
-  --logo-bg: var(--base-100);
-  --logo-fill: var(--base-inverted);
 }
-
-$colors: (
-  'base-100': var(--base-100),
-  'base-90': var(--base-90),
-  'base-80': var(--base-80),
-  'base-70': var(--base-70),
-  'base-60': var(--base-60),
-  'base-50': var(--base-50),
-  'base-40': var(--base-40),
-  'base-30': var(--base-30),
-  'base-20': var(--base-20),
-  'base-10': var(--base-10),
-  'base-0': var(--base-0),
-  'base-inverted': var(--base-inverted),
-  'accent-brand': var(--accent-brand),
-  'accent-brand-darker': var(--accent-brand-darker),
-  'accent-brand-lighter': var(--accent-brand-lighter),
-  'accent-success': var(--accent-success),
-  'accent-success-darker': var(--accent-success-darker),
-  'accent-success-lighter': var(--accent-success-lighter),
-  'accent-warninig': var(--accent-warning),
-  'accent-warninig-darker': var(--accent-warning-darker),
-  'accent-warninig-lighter': var(--accent-warning-lighter),
-  'accent-danger': var(--accent-danger),
-  'accent-danger-darker': var(--accent-danger-darker),
-  'accent-danger-lighter': var(--accent-danger-lighter),
-);

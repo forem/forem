@@ -9,7 +9,7 @@
 // @param {object} $this      Caching current parent
 // @param {color} $color-1    Background color for filled variation
 // @param {color} $color-2    Accent color for border & shadow
-@mixin box($this: $this, $color-1: $smoke-90, $color-2: $smoke-100) {
+@mixin box($this: $this, $color-1: var(--box), $color-2: var(--box-darker)) {
   border-color: $color-2;
 
   &#{$this}--filled {
@@ -27,23 +27,23 @@
   $this: &; // Caching current element, source: https://css-tricks.com/snippets/sass/caching-current-selector-sass/
   border: 2px solid;
   border-radius: $br-default;
-  background-color: $snowflake;
+  background-color: var(--container-bg);
 
-  @include box($this, $smoke-90, $smoke-100);
+  @include box($this, var(--box), var(--box-darker));
 
   &--danger {
-    @include box($this, $raspberry, $raspberry-darker);
+    @include box($this, var(--accent-danger), var(--accent-danger-darker));
   }
 
   &--success {
-    @include box($this, $avocado, $avocado-darker);
+    @include box($this, var(--accent-success), var(--accent-success-darker));
   }
 
   &--warning {
-    @include box($this, $peanut, $peanut-darker);
+    @include box($this, var(--accent-warning), var(--accent-warning-darker));
   }
 
   &--info {
-    @include box($this, $dolphin, $dolphin-darker);
+    @include box($this, var(--accent-brand), var(--accent-brand-darker));
   }
 }
