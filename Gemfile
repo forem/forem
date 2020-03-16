@@ -130,7 +130,7 @@ group :development, :test do
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.31" # Capybara is an integration testing tool for rack based web applications
   gem "faker", "~> 2.10" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "parallel_tests", "~> 2.31" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
+  gem "parallel_tests", "~> 2.32" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 3.9" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 0.79", require: false # Automatic Ruby code style checking tool
