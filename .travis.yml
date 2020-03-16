@@ -48,7 +48,7 @@ before_install:
   - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
   - sudo systemctl start elasticsearch
 install:
-  - bundle install --path vendor/bundle
+  - bundle install --jobs=3 --retry=3 --path vendor/bundle
   - yarn install
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
     > ./cc-test-reporter
