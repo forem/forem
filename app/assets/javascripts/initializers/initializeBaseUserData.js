@@ -1,15 +1,17 @@
-'use strict';
+
 
 /* global userData, filterXSS */
 
 function initializeUserProfileContent(user) {
-  document.getElementById('sidebar-profile--avatar').src = user.profile_image_90;
+  document.getElementById('sidebar-profile--avatar').src =
+    user.profile_image_90;
   document.getElementById('sidebar-profile--avatar').alt = user.username;
 
   document.getElementById('sidebar-profile--name').innerHTML = filterXSS(
     user.name,
   );
-  document.getElementById('sidebar-profile--username').innerHTML = '@' + user.username;
+  document.getElementById('sidebar-profile--username').innerHTML =
+    '@' + user.username;
   document.getElementById('sidebar-profile').href = '/' + user.username;
 }
 
@@ -23,17 +25,39 @@ function initializeUserSidebar(user) {
       ? 'Follow tags to improve your feed'
       : 'Other Popular Tags';
 
+  let tagHTML = '';
+
   followedTags.forEach(tag => {
     const element = document.getElementById(
       'default-sidebar-element-' + tag.name,
     );
-
-    if (element) {
-      element.remove();
-    }
+    tagHTML +=
+      tag.points > 0.0
+        ? '<div class="sidebar-nav-element" id="sidebar-element-' +
+          tag.name +
+          '">' +
+          '<a class="sidebar-nav-link" href="/t/' +
+          tag.name +
+          '">' +
+          '<span class="sidebar-nav-tag-text">#' +
+          tag.name +
+          '</span>' +
+          '</a>' +
+          '<a class="follow-action-button sidebar-nav-link-follow cta"' +
+          'href="#" id="sidebar-nav-link-follow-' +
+          tag.name +
+          '"' +
+          'data-info=\'{"id": ' +
+          tag.id +
+          ',"className":"Tag"}\'>' +
+          '+ FOLLOW' +
+          '</a>' +
+          '</div>'
+        : '';
+    if (element) element.remove();
   });
 
-  document.getElementById('tag-separator').innerHTML = tagSeparatorLabel;
+  document.getElementById('tag-separator').innerHTML = tagHTML;
   document.getElementById('sidebar-nav-default-tags').classList.add('showing');
 }
 
