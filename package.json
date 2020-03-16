@@ -106,7 +106,7 @@
     "@babel/core": "^7.0.0",
     "@babel/plugin-transform-react-jsx": "^7.0.0",
     "@github/clipboard-copy-element": "^1.1.2",
-    "@rails/webpacker": "^3.5.5",
+    "@rails/webpacker": "4.2.2",
     "babel-preset-preact": "^1.1.0",
     "chart.js": "^2.9.3",
     "clipboard-polyfill": "^2.8.6",
