@@ -343,8 +343,8 @@ class User < ApplicationRecord
     end
   end
 
-  def vomitted?
-    Reaction.where(reactable_id: id, reactable_type: "User", category: "vomit", status: "confirmed").exists?
+  def vomitted_on?
+    Reaction.exists?(reactable_id: id, reactable_type: "User", category: "vomit", status: "confirmed")
   end
 
   def trusted
