@@ -100,12 +100,8 @@ class FollowUsers extends Component {
         <Navigation prev={prev} next={this.handleComplete} />
         <div className="onboarding-content">
           <header className="onboarding-content-header">
-            <h1 className="title">
-              Suggested people to follow
-            </h1>
-            <h3 className="subtitle">
-              Let&apos; s review a few things first
-            </h3>
+            <h1 className="title">Suggested people to follow</h1>
+            <h3 className="subtitle">Let&apos; s review a few things first</h3>
           </header>
 
           <div className="modal-scroll-container">
@@ -114,24 +110,24 @@ class FollowUsers extends Component {
                 type="button"
                 style={{
                   backgroundColor: selectedUsers.includes(user)
-                    ? '#F6F7FE'
+                    ? 'rgba(71, 85, 235, 0.1)'
                     : 'white',
                 }}
                 onClick={() => this.handleClick(user)}
                 className="user content-row"
               >
                 <figure className="user-avatar-container">
-                  <img className="user-avatar" src={user.profile_image_url} alt="profile image" />
+                  <img
+                    className="user-avatar"
+                    src={user.profile_image_url}
+                    alt="profile"
+                  />
                 </figure>
                 <div className="user-info">
-                  <h4 className="user-name">
-                    {user.name}
-                  </h4>
-                  <p className="user-summary">
-                    {user.summary}
-                  </p>
+                  <h4 className="user-name">{user.name}</h4>
+                  <p className="user-summary">{user.summary}</p>
                 </div>
-                <button className="user-following-status">
+                <button type="button" className="user-following-status">
                   {selectedUsers.includes(user) ? 'Following' : 'Follow'}
                 </button>
               </button>
@@ -141,7 +137,7 @@ class FollowUsers extends Component {
         <div className="onboarding-selection-status">
           <div className="selection-status-content">
             <button type="button" onClick={() => this.handleSelectAll()}>
-              Select All
+              Select All 
               {' '}
               {selectedUsers.length === users.length ? '✅' : ''}
             </button>

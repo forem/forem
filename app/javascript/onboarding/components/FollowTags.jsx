@@ -88,12 +88,8 @@ class FollowTags extends Component {
         <Navigation prev={prev} next={this.handleComplete} />
         <div className="onboarding-content">
           <header className="onboarding-content-header">
-            <h1 className="title">
-              What are you interested in?
-            </h1>
-            <h3 className="subtitle">
-              Follow tags to customize your feed
-            </h3>
+            <h1 className="title">What are you interested in?</h1>
+            <h3 className="subtitle">Follow tags to customize your feed</h3>
           </header>
           <div className="modal-scroll-container">
             <div className="onboarding-tags">
@@ -104,8 +100,8 @@ class FollowTags extends Component {
                   ) && 'onboarding-tags__item--selected'}`}
                   style={{
                     boxShadow: selectedTags.includes(tag)
-                      ? `inset 0 0 0 100px ${  tag.bg_color_hex}`
-                      : `inset 0 0 0 2px ${  tag.bg_color_hex}`,
+                      ? `inset 0 0 0 100px ${tag.bg_color_hex}`
+                      : `inset 0 0 0 2px ${tag.bg_color_hex}`,
                     color: selectedTags.includes(tag) ? tag.text_color_hex : '',
                   }}
                 >
@@ -125,7 +121,7 @@ class FollowTags extends Component {
                         color: selectedTags.includes(tag)
                           ? tag.bg_color_hex
                           : tag.text_color_hex,
-                    }}
+                      }}
                     >
                       {selectedTags.includes(tag) ? (
                         <span>
@@ -144,7 +140,6 @@ class FollowTags extends Component {
                 </div>
               ))}
             </div>
-            ))}
           </div>
         </div>
       </div>
