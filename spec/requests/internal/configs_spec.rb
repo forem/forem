@@ -39,6 +39,14 @@ RSpec.describe "/internal/config", type: :request do
         sign_in(admin_plus_config)
       end
 
+      describe "content" do
+        it "updates the community_description" do
+          description = "Hey hey #{rand(100)}"
+          post "/internal/config", params: { site_config: { community_description: description }, confirmation: confirmation_message }
+          expect(SiteConfig.community_description).to eq(description)
+        end
+      end
+
       describe "staff" do
         it "does not allow the staff_user_id to be updated" do
           expect(SiteConfig.staff_user_id).to eq(1)
