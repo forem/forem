@@ -2,9 +2,10 @@
 # Optional to setup, can help shield sensitive data for
 # tools like Blazer.
 # further setup instructions: https://github.com/ankane/hypershield#database-setup
-Hypershield.enabled = ENV["ENABLE_HYPERSHIELD"].present?
 
 if Rails.env.production?
+  Hypershield.enabled = ENV["ENABLE_HYPERSHIELD"].present?
+
   # Validate that hypershield schema exists before trying to use it
   begin
     if ActiveRecord::Base.connection.schema_exists?("hypershield")
