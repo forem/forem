@@ -51,6 +51,20 @@
   --widget-color-tertiary: var(--base-50);
   --widget-headline: var(--base-100);
 
+  // Header
+  --header-bg: var(--base-inverted);
+  --header-icons: var(--base-70);
+  --header-icons-hover: var(--base-100);
+  --logo-bg: var(--base-100);
+  --logo-fill: var(--base-inverted);
+
+  // Footer
+  --footer-bg: var(--base-inverted);
+  --footer-copy-color: var(--base-80);
+  --footer-copy-secondary-color: var(--base-60);
+  --footer-link-color: var(--base-80);
+  --footer-link-color-hover: var(--base-100);
+
   // Links in content
   --link-brand-color: var(--accent-brand);
   --link-brand-color-hover: var(--accent-brand-darker);
@@ -96,12 +110,6 @@
   // Default box
   --box: var(--base-90);
   --box-darker: var(--base-100);
-
-  // Header
-  --header-bg: var(--base-inverted);
-  --header-icons: var(--base-100);
-  --logo-bg: var(--base-100);
-  --logo-fill: var(--base-inverted);
 }
 
 $colors: (
