@@ -1,4 +1,4 @@
-body.ten-x-hacker-theme {
+:root {
   // Base
   --base-100: #08090a;
   --base-90: #202428;
@@ -58,9 +58,9 @@ body.ten-x-hacker-theme {
   // Greyscale links, for places where we don't want to make them use accent color
   --link-dimmed-color: var(--accent-brand-darker);
   --link-dimmed-color-secondary: var(--accent-brand-darker);
-  --link-dimmed-bg-hover: rgba(255,255,255,0.1);
+  --link-dimmed-bg-hover: rgba(255, 255, 255, 0.1);
   --link-dimmed-color-hover: var(--accent-brand);
-  --link-dimmed-bg-current: rgba(255,255,255,0.1);
+  --link-dimmed-bg-current: rgba(255, 255, 255, 0.1);
   --link-dimmed-color-current: var(--accent-brand);
 
   // Primary buttons
@@ -84,10 +84,10 @@ body.ten-x-hacker-theme {
   // Forms
   --form-bg: var(--body-bg);
   --form-bg-focus: var(--body-bg);
-  --form-border: rgba(255,255,255,0.15);
-  --form-border-hover: rgba(255,255,255,0.3);
+  --form-border: rgba(255, 255, 255, 0.15);
+  --form-border-hover: rgba(255, 255, 255, 0.3);
   --form-border-focus: var(--accent-brand);
-  --form-placeholder-color: rgba(255,255,255,0.5);
+  --form-placeholder-color: rgba(255, 255, 255, 0.5);
 
   // Form lables
   --label-primary: var(--accent-brand);
@@ -99,7 +99,7 @@ body.ten-x-hacker-theme {
 
   // Header
   --header-bg: #1c1c1c;
-  --header-icons: rgba(255,255,255,0.7);
+  --header-icons: rgba(255, 255, 255, 0.7);
   --logo-bg: var(--accent-brand);
   --logo-fill: var(--base-100);
 }
