@@ -36,6 +36,10 @@ function loadFunctionality() {
 
   let updateStatus = () => {};
 
+  const subscriptionButtons = document.getElementsByClassName(
+    'notification-subscription-label',
+  );
+
   if (userStatus === 'logged-out') {
     updateStatus = () => {
       // Disabled because showModal() is globally defined in asset pipeline
@@ -45,17 +49,14 @@ function loadFunctionality() {
   } else {
     updateStatus = target => {
       let payload = '';
-      const shouldUnsubscribeToNotifications =
-        target.classList.contains('selected') ||
-        target.classList.contains('selected-emoji');
-      const allButtons = document.getElementsByClassName(
-        'notification-subscription-label',
-      );
-      for (let i = 0; i < allButtons.length; i += 1) {
-        allButtons[i].classList.remove('selected');
-      }
+      const shouldUnsubscribeToNotifications = el =>
+        el.classList.contains('selected') ||
+        el.classList.contains('selected-emoji');
+
+      subscriptionButtons.forEach(el => el.classList.remove('selected'));
+
       if (shouldUnsubscribeToNotifications) {
-        const unsubscribeButton = allButtons.namedItem('unsubscribe');
+        const unsubscribeButton = subscriptionButtons.namedItem('unsubscribe');
         unsubscribeButton.classList.add('selected');
         ({ payload } = unsubscribeButton.dataset);
       } else {
@@ -77,10 +78,7 @@ function loadFunctionality() {
     };
   }
 
-  const subscriptionButtons = document.getElementsByClassName(
-    'notification-subscription-label',
-  );
-  const handleLabelClick = e => {
+  const handleClick = e => {
     e.preventDefault();
     updateStatus(e.target);
     if (typeof window.sendHapticMessage !== 'undefined') {
@@ -88,15 +86,15 @@ function loadFunctionality() {
     }
   };
 
-  const handleLabelKeydown = e => {
+  const handleKeydown = e => {
     if (e.key === 'Enter') {
       updateStatus(e.target);
     }
   };
 
   subscriptionButtons.forEach(element => {
-    element.addEventListener('click', handleLabelClick);
-    element.addEventListener('keydown', handleLabelKeydown);
+    element.addEventListener('click', handleClick);
+    element.addEventListener('keydown', handleKeydown);
   });
 }
 
