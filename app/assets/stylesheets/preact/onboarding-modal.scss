@@ -443,3 +443,40 @@
     margin-left: 32px;
   }
 }
+
+// Follow user
+.onboarding-body {
+  .content-row {
+    align-items: center;
+    color: #202428; // smoke-90
+    display: flex;
+    padding: 8px 16px;
+    text-align: left;
+    width: 100%;
+
+    &:hover {
+      background-color: #eef0f1 !important; //smoke-10
+    }
+  }
+
+  .user-avatar-container {
+    margin: 0 16px 0 0;
+  }
+
+  .user-avatar {
+    border-radius: 100%;
+    height: 48px;
+    width: 48px;
+    object-fit: cover;
+    border: 1px solid #eef0f1; //smoke-10
+  }
+
+  .user-name,
+  .user-summary {
+    margin: 0;
+  }
+
+  .user-following-status {
+    margin-left: 32px;
+  }
+}
