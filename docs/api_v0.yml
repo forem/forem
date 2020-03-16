@@ -29,6 +29,62 @@ servers:
     description: Production server
 
 components:
+  parameters:
+    pageParam:
+      in: query
+      name: page
+      required: false
+      description: Pagination page.
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        default: 1
+    perPageParam10to1000:
+      in: query
+      name: per_page
+      required: false
+      description: Page size (the number of items to return per page).
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 1000
+        default: 10
+    perPageParam24to1000:
+      in: query
+      name: per_page
+      required: false
+      description: Page size (the number of items to return per page).
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 1000
+        default: 24
+    perPageParam30to1000:
+      in: query
+      name: per_page
+      required: false
+      description: Page size (the number of items to return per page).
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 1000
+        default: 30
+    perPageParam80to1000:
+      in: query
+      name: per_page
+      required: false
+      description: Page size (the number of items to return per page).
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 1000
+        default: 80
+
   securitySchemes:
     api_key:
       type: apiKey
@@ -1527,20 +1583,8 @@ paths:
       tags:
         - articles
       parameters:
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-          example: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 30 with a maximum of 1000).
-          schema:
-            type: integer
-            format: int32
-          example: 30
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to1000'
         - name: tag
           in: query
           description: |
@@ -1591,6 +1635,7 @@ paths:
           schema:
             type: integer
             format: int32
+            minimum: 1
           example: 2
         - name: collection_id
           in: query
@@ -1719,6 +1764,16 @@ paths:
             https://dev.to/api/articles
 
   /articles/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Id of the article
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+        example: 150589
     get:
       operationId: getArticleById
       summary: A published article
@@ -1727,15 +1782,6 @@ paths:
         published article given its `id`.
       tags:
         - articles
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Id of the article
-          schema:
-            type: integer
-            format: int32
-          example: 150589
       responses:
         "200":
           description: An article
@@ -1779,15 +1825,6 @@ paths:
         - [Rails tests for Articles API](https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/articles_spec.rb)
       tags:
         - articles
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Id of the article
-          schema:
-            type: integer
-            format: int32
-          example: 150589
       requestBody:
         description: |
           Article params for the update.
@@ -1876,20 +1913,8 @@ paths:
         - articles
         - users
       parameters:
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-          example: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 30 with a maximum of 1000).
-          schema:
-            type: integer
-            format: int32
-          example: 30
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to1000'
       responses:
         "200":
           description: A list of published articles
@@ -1937,20 +1962,8 @@ paths:
         - articles
         - users
       parameters:
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-          example: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 30 with a maximum of 1000).
-          schema:
-            type: integer
-            format: int32
-          example: 30
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to1000'
       responses:
         "200":
           description: A list of published articles
@@ -1998,20 +2011,8 @@ paths:
         - articles
         - users
       parameters:
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-          example: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 30 with a maximum of 1000).
-          schema:
-            type: integer
-            format: int32
-          example: 30
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to1000'
       responses:
         "200":
           description: A list of articles
@@ -2061,20 +2062,8 @@ paths:
         - articles
         - users
       parameters:
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-          example: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 30 with a maximum of 1000).
-          schema:
-            type: integer
-            format: int32
-          example: 30
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to1000'
       responses:
         "200":
           description: A list of articles
@@ -2121,6 +2110,7 @@ paths:
           schema:
             type: integer
             format: int32
+            minimum: 1
           example: 270180
       responses:
         "200":
@@ -2218,20 +2208,8 @@ paths:
       tags:
         - followers
       parameters:
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-          example: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 80 with a maximum of 1000).
-          schema:
-            type: integer
-            format: int32
-          example: 80
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam80to1000'
       responses:
         "200":
           description: A list of followers
@@ -2280,20 +2258,8 @@ paths:
       tags:
         - listings
       parameters:
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-          example: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 30 with a maximum of 100).
-          schema:
-            type: integer
-            format: int32
-          example: 30
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to1000'
         - name: category
           in: query
           description: |
@@ -2447,20 +2413,8 @@ paths:
           description: The category of the listing
           schema:
             $ref: "#/components/schemas/ListingCategory"
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-          example: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 30 with a maximum of 100).
-          schema:
-            type: integer
-            format: int32
-          example: 30
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to1000'
       responses:
         "200":
           description: A list of listings
@@ -2480,6 +2434,16 @@ paths:
             curl https://dev.to/api/listings/category/cfp
 
   /listings/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Id of the listing
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+        example: 1
     get:
       operationId: getListingById
       summary: A listing
@@ -2491,15 +2455,6 @@ paths:
         and it belongs to the authenticated user.
       tags:
         - listings
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Id of the listing
-          schema:
-            type: integer
-            format: int64
-          example: 1
       responses:
         "200":
           description: A listing
@@ -2538,15 +2493,6 @@ paths:
         This endpoint allows the client to update an existing listing.
       tags:
         - listings
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Id of the listing
-          schema:
-            type: integer
-            format: int64
-          example: 1184
       requestBody:
         description: |
           Listing params for the update.
@@ -2651,20 +2597,8 @@ paths:
       tags:
         - podcast-episodes
       parameters:
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-          example: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 30 with a maximum of 1000).
-          schema:
-            type: integer
-            format: int32
-          example: 30
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to1000'
         - name: username
           in: query
           description: |
@@ -2718,20 +2652,8 @@ paths:
       tags:
         - tags
       parameters:
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-          example: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 10 with a maximum of 1000).
-          schema:
-            type: integer
-            format: int32
-          example: 30
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam10to1000'
       responses:
         "200":
           description: A list of tags
@@ -2861,20 +2783,8 @@ paths:
         - articles
         - videos
       parameters:
-        - name: page
-          in: query
-          description: Pagination page.
-          schema:
-            type: integer
-            format: int32
-          example: 1
-        - name: per_page
-          in: query
-          description: Page size (defaults to 24 with a maximum of a 1000).
-          schema:
-            type: integer
-            format: int32
-          example: 24
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam24to1000'
       responses:
         "200":
           description: A list of video articles
@@ -3014,6 +2924,16 @@ paths:
               https://dev.to/api/webhooks
 
   /webhooks/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Id of the webhook
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+        example: 123
     get:
       operationId: getWebhookById
       summary: A webhook endpoint
@@ -3022,15 +2942,6 @@ paths:
         webhook given its `id`.
       tags:
         - webhooks
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Id of the webhook
-          schema:
-            type: integer
-            format: int64
-          example: 123
       responses:
         "200":
           description: A webhook endpoint
@@ -3075,15 +2986,6 @@ paths:
         webhook given its `id`.
       tags:
         - webhooks
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Id of the webhook
-          schema:
-            type: integer
-            format: int64
-          example: 123
       responses:
         "204":
           description: A successful deletion
