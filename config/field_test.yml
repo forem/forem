@@ -22,7 +22,7 @@ experiments:
       - user_creates_comment
       - user_creates_reaction
       - user_views_article_four_days_in_week
-      - user_views_article_four_of_past_7_hours
+      - user_views_article_four_hours_in_day
 exclude:
   bots: true
 

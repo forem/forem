@@ -43,20 +43,20 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
         expect(FieldTest::Event.all.size).to be(0)
       end
 
-      it "records user_views_article_four_of_past_7_hours field test conversion if qualifies" do
+      it "records user_views_article_four_hours_in_day field test conversion if qualifies" do
         7.times do |n|
           create(:page_view, user_id: user.id, created_at: n.hours.ago)
         end
-        worker.perform(user.id, "user_home_feed", "user_views_article_four_of_past_7_hours")
+        worker.perform(user.id, "user_home_feed", "user_views_article_four_hours_in_day")
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.last.name).to eq("user_views_article_four_of_past_7_hours")
+        expect(FieldTest::Event.last.name).to eq("user_views_article_four_hours_in_day")
       end
 
-      it "does not record user_views_article_four_of_past_7_hours field test conversion if not qualifying" do
+      it "does not record user_views_article_four_hours_in_day field test conversion if not qualifying" do
         2.times do |n|
           create(:page_view, user_id: user.id, created_at: n.hours.ago)
         end
-        worker.perform(user.id, "user_home_feed", "user_views_article_four_of_past_7_hours")
+        worker.perform(user.id, "user_home_feed", "user_views_article_four_hours_in_day")
         expect(FieldTest::Event.all.size).to be(0)
       end
     end
