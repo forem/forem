@@ -24,11 +24,11 @@
       <%= form_for(SiteConfig.new, url: internal_config_path) do |f| %>
 
         <div class="card mt-3">
-          <div class="card-header">Mascot</div>
+          <div class="card-header">Content</div>
           <div class="card-body">
             <div class="form-group">
               <%= f.label :community_description, "Community description" %>
-              <%= f.text_field :mascot_user_id,
+              <%= f.text_field :community_description,
                                class: "form-control",
                                value: SiteConfig.community_description,
                                placeholder: "A fabulous community of kind and welcoming people." %>
