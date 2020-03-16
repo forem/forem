@@ -64,5 +64,19 @@ RSpec.describe Notifications::ModerationNotificationWorker do
         expect(Notifications::Moderation::Send).not_to have_received(:call)
       end
     end
+
+    describe "when the commentable does not exist" do
+      it "does not call the service" do
+        mod # prepare a moderator
+
+        article = create(:article)
+        comment = create(:comment, commentable: article)
+
+        article.destroy!
+
+        worker.perform(comment.id)
+        expect(Notifications::Moderation::Send).not_to have_received(:call)
+      end
+    end
   end
 end

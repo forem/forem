@@ -373,9 +373,8 @@ RSpec.describe Comment, type: :model do
     end
 
     it "busts the comment cache" do
-      # this replaces the use of expect_any_instance_of which is a RuboCop violation
-      sidekiq_assert_enqueued_with(job: Comments::BustCacheWorker, args: [new_comment.id]) do
-        new_comment.destroy
+      sidekiq_assert_enqueued_with(job: Comments::BustCacheWorker, args: [comment.id]) do
+        comment.destroy
       end
     end
   end
