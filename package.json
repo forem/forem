@@ -100,7 +100,7 @@
     "preact-render-to-json": "^3.6.6",
     "prettier": "^1.19.1",
     "redoc-cli": "0.9.6",
-    "webpack-dev-server": "^2.11.3"
+    "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
     "@babel/core": "^7.0.0",
