@@ -91,7 +91,7 @@
     "ibm-openapi-validator": "0.24.1",
     "jest": "^23.5.0",
     "jest-axe": "^3.4.0",
-    "jest-fetch-mock": "^3.0.2",
+    "jest-fetch-mock": "^3.0.3",
     "jsdom": "^16.2.0",
     "lint-staged": "^10.0.8",
     "mutationobserver-shim": "^0.3.3",
