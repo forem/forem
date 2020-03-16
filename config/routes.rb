@@ -78,6 +78,7 @@ Rails.application.routes.draw do
         post "merge"
         delete "remove_identity"
         post "recover_identity"
+        post "send_email"
       end
     end
     resources :organization_memberships, only: %i[update destroy create]

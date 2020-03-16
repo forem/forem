@@ -101,6 +101,14 @@ class Internal::UsersController < Internal::ApplicationController
     redirect_to "/internal/users/#{@user.id}/edit"
   end
 
+  def send_email
+    if NotifyMailer.user_contact_email(params).deliver
+      redirect_back(fallback_location: "/users")
+    else
+      flash[:danger] = "Email failed to send!"
+    end
+  end
+
   private
 
   def manage_credits
