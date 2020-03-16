@@ -2,17 +2,13 @@
   --theme-background: #0d1219;
   --theme-color: #fff;
   --theme-opposite-color: #0d1219;
-  --theme-logo-background: #0a0a0a;
-  --theme-logo-color: #fff;
   --theme-code-background: #29292e;
   --theme-code-color: #e6db74;
   --theme-reaction-background: #202c3d;
   --theme-anchor-color: #17a1f6;
   --theme-secondary-color: #cedae2;
   --theme-secondary-color-border: 1px solid #1c283b;
-  --theme-top-bar-background: #1c2938;
   --theme-top-bar-background-hover: #27384c;
-  --theme-top-bar-color: #fff;
   --theme-top-bar-search-background: #424a54;
   --theme-top-bar-search-color: #fff;
   --theme-top-bar-write-background: #00af81;
@@ -29,11 +25,128 @@
   --theme-container-color: #fff;
   --theme-container-box-shadow: none;
   --theme-container-border: 1px solid #22303f;
-  --theme-subtle-border: 1px solid #1f2c3a;
   --theme-social-icon-invert: invert(100);
   --theme-social-icon-color: #cedae2;
   --theme-invert-image: invert();
   --theme-current-article-background: #1143ca;
   --theme-series-article-background: #314d9c;
   --theme-series-article-hover: #1b2e63;
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  // New Variables. //////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+
+  // Base
+  // --base-100: #08090a;
+  // --base-90: #202428;
+  // --base-80: #363d44;
+  // --base-70: #4d5760;
+  // --base-60: #64707d;
+  // --base-50: #7d8a97;
+  // --base-40: #99a3ad;
+  // --base-30: #b5bdc4;
+  // --base-20: #d2d6db;
+  // --base-10: #eef0f1;
+  // --base-0: #f9fafa;
+  // --base-inverted: #fff;
+
+  // Accent colors
+  --accent-brand: #3b49df;
+  --accent-brand-darker: #1827ce;
+  --accent-brand-lighter: #8d95f2;
+
+  // Success
+  --accent-success: #26d9ca;
+  --accent-success-darker: #1ab3a6;
+  --accent-success-lighter: #79ece2;
+
+  // Warning
+  --accent-warning: #ffcf4c;
+  --accent-warning-darker: #f5b400;
+  --accent-warning-lighter: #ffe499;
+
+  // Danger
+  --accent-danger: #dc1818;
+  --accent-danger-darker: #c20a0a;
+  --accent-danger-lighter: #ec5050;
+
+  // Main colors
+  --body-bg: #0d1219;
+  --body-color: #fff;
+  // --body-color-inverted: var(--base-inverted);
+
+  // Main content containers
+  // --container-bg: var(--base-inverted);
+  // --container-color: var(--base-100);
+  // --container-color-secondary: var(--base-70);
+  // --container-color-tertiary: var(--base-50);
+
+  // Secondary content containers
+  // --widget-bg: var(--base-0);
+  // --widget-color: var(--base-90);
+  // --widget-color-secondary: var(--base-70);
+  // --widget-color-tertiary: var(--base-50);
+  // --widget-headline: var(--base-100);
+
+  // Header
+  --header-bg: #1c2938;
+  --header-icons-color: rgba(255, 255, 255, 0.8);
+  --header-icons-color-hover: #fff;
+
+  // Logo
+  --logo-bg: #0a0a0a;
+  --logo-color: var(--base-inverted);
+
+  // Footer
+  // --footer-bg: var(--base-inverted);
+  // --footer-copy-color: var(--base-80);
+  // --footer-copy-secondary-color: var(--base-60);
+  // --footer-link-color: var(--base-80);
+  // --footer-link-color-hover: var(--base-100);
+
+  // Links in content
+  // --link-brand-color: var(--accent-brand);
+  // --link-brand-color-hover: var(--accent-brand-darker);
+
+  // Greyscale links, for places where we don't want to make them use accent color
+  // --link-dimmed-color: var(--base-90);
+  // --link-dimmed-color-secondary: var(--base-80);
+  // --link-dimmed-bg-hover: var(--base-0);
+  // --link-dimmed-color-hover: var(--base-100);
+  // --link-dimmed-bg-current: var(--base-inverted);
+  // --link-dimmed-color-current: var(--base-100);
+
+  // Primary buttons
+  // --button-primary-bg: var(--accent-brand);
+  // --button-primary-color: var(--base-0);
+  // --button-primary-bg-hover: var(--accent-brand-darker);
+  // --button-primary-color-hover: var(--base-0);
+
+  // Secondary buttons
+  // --button-secondary-bg: var(--base-20);
+  // --button-secondary-color: var(--base-80);
+  // --button-secondary-bg-hover: var(--base-30);
+  // --button-secondary-color-hover: var(--base-100);
+
+  // Outlined buttons
+  // --button-outlined-bg: var(--base-20);
+  // --button-outlined-color: var(--base-80);
+  // --button-outlined-bg-hover: var(--base-30);
+  // --button-outlined-color-hover: var(--base-100);
+
+  // Forms
+  // --form-bg: var(--base-0);
+  // --form-bg-focus: var(--base-0);
+  // --form-border: var(--base-30);
+  // --form-border-hover: var(--base-40);
+  // --form-border-focus: var(--accent-brand);
+  // --form-placeholder-color: var(--base-60);
+
+  // Form lables
+  // --label-primary: var(--base-90);
+  // --label-secondary: var(--base-60);
+
+  // Default box
+  // --box: var(--base-90);
+  // --box-darker: var(--base-100);
 }

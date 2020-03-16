@@ -1098,7 +1098,7 @@ article {
         right: 0;
         left: 0;
         z-index: 100;
-        @include themeable(background, theme-top-bar-background, $tan);
+        background: var(--header-bg);
         font-size: 1em;
         text-align: left;
         min-width: 300px;
@@ -1186,11 +1186,6 @@ article {
               background,
               theme-container-background,
               darken($tan, 3%)
-            );
-            @include themeable-important(
-              border-bottom,
-              theme-subtle-border,
-              1px solid $light-medium-gray
             );
             button.notification-subscription-label {
               display: inline-block;
