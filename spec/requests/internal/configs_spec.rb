@@ -187,6 +187,16 @@ RSpec.describe "/internal/config", type: :request do
           post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoHo, Bobo Fofo" }, confirmation: confirmation_message }
           expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
         end
+
+        it "removes space sidebar_tags" do
+          post "/internal/config", params: { site_config: { sidebar_tags: "hey, haha,hoho, bobo fofo" }, confirmation: confirmation_message }
+          expect(SiteConfig.sidebar_tags).to eq(%w[hey haha hoho bobofofo])
+        end
+
+        it "downcases sidebar_tags" do
+          post "/internal/config", params: { site_config: { sidebar_tags: "hey, haha,hoHo, Bobo Fofo" }, confirmation: confirmation_message }
+          expect(SiteConfig.sidebar_tags).to eq(%w[hey haha hoho bobofofo])
+        end
       end
     end
   end
