@@ -4,13 +4,13 @@
   <div class="col">
     <ul class="nav nav-pills">
       <li class="nav-item">
-        <a href="/internal/reports?state=<%= @feedback_type %>&status=Open" class="nav-link <%= "active" if @status == "Open" %>">Open/Unresolved</a>
+        <a href="<%= internal_reports_path(state: @feedback_type, status: "Open") %>" class="nav-link <%= "active" if @status == "Open" %>">Open/Unresolved</a>
       </li>
       <li class="nav-item">
-        <a href="/internal/reports?state=<%= @feedback_type %>&status=Resolved" class="nav-link <%= "active" if @status == "Resolved" %>">Resolved</a>
+        <a href="<%= internal_reports_path(state: @feedback_type, status: "Resolved") %>" class="nav-link <%= "active" if @status == "Resolved" %>">Resolved</a>
       </li>
       <li class="nav-item">
-        <a href="/internal/reports?state=<%= @feedback_type %>&status=Invalid" class="nav-link <%= "active" if @status == "Invalid" %>">Invalid</a>
+        <a href="<%= internal_reports_path(state: @feedback_type, status: "Invalid") %>" class="nav-link <%= "active" if @status == "Invalid" %>">Invalid</a>
     </ul>
   </div>
 </div>
