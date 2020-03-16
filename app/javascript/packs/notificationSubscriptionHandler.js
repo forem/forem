@@ -80,21 +80,24 @@ function loadFunctionality() {
   const subscriptionButtons = document.getElementsByClassName(
     'notification-subscription-label',
   );
+  const handleLabelClick = e => {
+    e.preventDefault();
+    updateStatus(e.target);
+    if (typeof window.sendHapticMessage !== 'undefined') {
+      window.sendHapticMessage('medium');
+    }
+  };
 
-  for (let i = 0; i < subscriptionButtons.length; i += 1) {
-    subscriptionButtons[i].addEventListener('click', e => {
-      e.preventDefault();
+  const handleLabelKeydown = e => {
+    if (e.key === 'Enter') {
       updateStatus(e.target);
-      if (typeof window.sendHapticMessage !== 'undefined') {
-        window.sendHapticMessage('medium');
-      }
-    });
-    subscriptionButtons[i].addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        updateStatus(e.target);
-      }
-    });
-  }
+    }
+  };
+
+  subscriptionButtons.forEach(element => {
+    element.addEventListener('click', handleLabelClick);
+    element.addEventListener('keydown', handleLabelKeydown);
+  });
 }
 
 window.InstantClick.on('change', () => {
