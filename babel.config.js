@@ -7,9 +7,9 @@ module.exports = {
         modules: false,
         targets: {
           browsers: '> 1%',
-          uglify: true,
         },
-        useBuiltIns: true,
+        useBuiltIns: 'entry',
+        corejs: { version: 3, proposals: false },
       },
     ],
     'preact',
