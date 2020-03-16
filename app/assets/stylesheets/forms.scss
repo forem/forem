@@ -26,7 +26,6 @@ legend {
   font-weight: 500;
 }
 
-
 label,
 input,
 textarea {
@@ -48,12 +47,12 @@ label {
   }
 }
 
-input[type="text"],
+input[type='text'],
 textarea {
-  background-color: #F9FAFA;
+  background-color: #f9fafa;
   padding: 8px;
   font-size: 16px;
-  border: 1px solid #B5BDC4;
+  border: 1px solid #b5bdc4;
   border-radius: 3px;
 }
 
@@ -61,32 +60,30 @@ textarea {
   min-height: 80px;
 }
 
-
-
 // Checkboxes
 .checkbox-item {
   label {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: baseline;
     border-radius: 3px;
     padding: 0 4px;
 
     &:hover {
-      background: #EEF0F1;
+      background: #eef0f1;
       cursor: pointer;
     }
 
-   &:last-child {
+    &:last-child {
       margin-bottom: 0;
     }
   }
 }
-input[type="checkbox"] {
+input[type='checkbox'] {
   -webkit-appearance: none;
   background: transparent;
   border-radius: 3px;
-  border: 1px solid #B5BDC4;
+  border: 1px solid #b5bdc4;
   cursor: pointer;
   height: 18px;
   margin: 2px 8px 2px 2px;
@@ -95,8 +92,8 @@ input[type="checkbox"] {
   position: relative;
 
   &:checked {
-    background: #3B49DF; // dolphin
-    border-color: #3B49DF; 
+    background: #3b49df; // dolphin
+    border-color: #3b49df;
 
     &:after {
       display: block;
@@ -105,7 +102,7 @@ input[type="checkbox"] {
 
   &:after {
     display: none;
-    content: "";
+    content: '';
     position: absolute;
     top: 2px;
     left: 5px;
