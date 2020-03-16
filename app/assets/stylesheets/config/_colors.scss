@@ -1,4 +1,17 @@
+////////////////////////////////////////////////////////////////////////////////////
+// Colors. /////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+//
+// All --base-* and --accent-* color variables will be used to generate
+// utlity-first classes (see config/import.scss & base/colors.scss for
+// reference). Other color variables are more functional and define usage
+// of particular colors in components and views.
+
 :root {
+  ////////////////////////////////////////////////////////////////////////////////////
+  // Foundamental color variables. ///////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+
   // Base
   --base-100: #08090a;
   --base-90: #202428;
@@ -14,24 +27,28 @@
   --base-inverted: #fff;
 
   // Accent colors
-  --accent-brand: #3b49df; // $dolphin
-  --accent-brand-darker: #1827ce; // $dolphin-darker
-  --accent-brand-lighter: #8d95f2; // $dolphin-lighter
+  --accent-brand: #3b49df;
+  --accent-brand-darker: #1827ce;
+  --accent-brand-lighter: #8d95f2;
 
   // Success
-  --accent-success: #26d9ca; // $avocado
-  --accent-success-darker: #1ab3a6; // $avocado-darker
-  --accent-success-lighter: #79ece2; // $avocado-ligher
+  --accent-success: #26d9ca;
+  --accent-success-darker: #1ab3a6;
+  --accent-success-lighter: #79ece2;
 
   // Warning
-  --accent-warning: #ffcf4c; // $peanut
-  --accent-warning-darker: #f5b400; // $peanut-darker
-  --accent-warning-lighter: #ffe499; // $peanut-lighter
+  --accent-warning: #ffcf4c;
+  --accent-warning-darker: #f5b400;
+  --accent-warning-lighter: #ffe499;
 
   // Danger
-  --accent-danger: #dc1818; // $raspberry
-  --accent-danger-darker: #c20a0a; // $raspberry-darker
-  --accent-danger-lighter: #ec5050; // $raspberry-lighter
+  --accent-danger: #dc1818;
+  --accent-danger-darker: #c20a0a;
+  --accent-danger-lighter: #ec5050;
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  // Functional color variables. /////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
 
   // Main colors
   --body-bg: var(--base-10);
