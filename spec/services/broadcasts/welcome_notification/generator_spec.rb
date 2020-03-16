@@ -25,47 +25,24 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
 
       it "generates the correct broadcast type and sends the notification to the user", :aggregate_failures do
         expect(receiving_user.notifications.count).to eq(0)
-
-        sidekiq_perform_enqueued_jobs do
-          described_class.call(receiving_user.id)
-        end
+        sidekiq_perform_enqueued_jobs { described_class.call(receiving_user.id) }
 
         expect(receiving_user.notifications.count).to eq(1)
         expect(receiving_user.notifications.first.notifiable).to eq(welcome_broadcast)
       end
 
-      it "does not send a notification to a user who has commented in a welcome thread" do
-        sidekiq_perform_enqueued_jobs do
-          described_class.call(receiving_user.id)
-        end
+      it "does not send a notification to a user who has commented in a welcome thread", elasticsearch: true do
+        sidekiq_perform_enqueued_jobs { described_class.call(receiving_user.id) }
 
         expect(user.notifications).to be_empty
       end
-    end
 
-    context "when sending a duplicate notification" do
-      before do
-        sidekiq_perform_enqueued_jobs do
-          described_class.call(receiving_user.id)
+      it "does not send a duplicate notification" do
+        2.times do
+          sidekiq_perform_enqueued_jobs { described_class.call(receiving_user.id) }
         end
-      end
 
-      it "raises an ActiveRecord error" do
-        # allow(Rails.logger).to receive(:error)
-        # assert_raises ActiveRecord::RecordInvalid do
-        expect do
-          sidekiq_perform_enqueued_jobs do
-            described_class.call(receiving_user.id)
-          end
-        end.to raise_error(StandardError)
-        # end.to not_change(receiving_user.notifications, :count)
-        # end
-        # end.to raise_error(StandardError)
-        # expect(Rails.logger).to have_received(:error)
-        # expect(logger).to have_received(:error).once
-        # expect { described_class }.to raise_error(StandardError)
-        # Test that the correct error is raised after job is run with receiver_id more than once
-        # This is the only failure left - there must be a bug within the received_notification? method still since error is not logging
+        expect(receiving_user.notifications.count).to eq(1)
       end
     end
 
