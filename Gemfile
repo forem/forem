@@ -15,13 +15,13 @@ gem "activerecord-import", "~> 1.0" # Adds ability to bulk create activerecord o
 gem "acts-as-taggable-on", "~> 6.5" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
 gem "acts_as_follower", github: "thepracticaldev/acts_as_follower", branch: "master" # Allow any model to follow any other model
 gem "addressable", "~> 2.7" # A replacement for the URI implementation that is part of Ruby's standard library
-gem "administrate", "~> 0.12" # A Rails engine that helps you put together a super-flexible admin dashboard
+gem "administrate", "~> 0.13" # A Rails engine that helps you put together a super-flexible admin dashboard
 gem "ahoy_email", "~> 1.1" # Email analytics for Rails
 gem "algoliasearch-rails", "~> 1.24" # Algolia Search is a hosted search engine capable of delivering real-time results from the first keystroke
 gem "algorithmia", "~> 1.1" # Ruby Client for Algorithmia Algorithms and Data API
 gem "ancestry", "~> 3.0" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "autoprefixer-rails", "~> 9.7" # Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website
-gem "aws-sdk-lambda", "~> 1.36" # Official AWS Ruby gem for AWS Lambda
+gem "aws-sdk-lambda", "~> 1.37" # Official AWS Ruby gem for AWS Lambda
 gem "blazer", "~> 2.2.1" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
@@ -30,7 +30,7 @@ gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bo
 gem "cld", "~> 0.8" # Compact Language Detection for Ruby
 gem "cloudinary", "~> 1.13" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.3" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "ddtrace", "~> 0.33.0" # ddtrace is Datadog’s tracing client for Ruby.
+gem "ddtrace", "~> 0.33.1" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.7" # Flexible authentication solution for Rails
 gem "dogstatsd-ruby", "~> 4.7" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
 gem "doorkeeper", "~> 5.3" # Oauth 2 provider
@@ -50,7 +50,7 @@ gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically co
 gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.3" # API wrapper for MailChimp's API
 gem "google-api-client", "~> 0.37" # Client for accessing Google APIs
-gem "honeybadger", "~> 4.5" # Used for tracking application errors
+gem "honeybadger", "~> 4.6" # Used for tracking application errors
 gem "honeycomb-beeline", "~> 2.0.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "htmlentities", "~> 4.3", ">= 4.3.4" # A module for encoding and decoding (X)HTML entities
@@ -78,14 +78,14 @@ gem "rails", "~> 5.2" # Ruby on Rails
 gem "rails-observers", "~> 0.1" # Rails observer (removed from core in Rails 4.0)
 gem "rails-settings-cached", ">= 2.1.1" # Settings plugin for Rails that makes managing a table of global key, value pairs easy.
 gem "ransack", "~> 2.3" # Searching and sorting
-gem "recaptcha", "~> 5.3", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
+gem "recaptcha", "~> 5.4", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "redis", "~> 4.1.3" # Redis ruby client
 gem "redis-rails", "~> 5.0.2" # Redis for Ruby on Rails
 gem "reverse_markdown", "~> 2.0" # Map simple html back into markdown
 gem "rolify", "~> 5.2" # Very simple Roles library
 gem "rouge", "~> 3.16" # A pure-ruby code highlighter
-gem "rubyzip", "~> 2.1" # Rubyzip is a ruby library for reading and writing zip files
+gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sass-rails", "~> 6.0" # Sass adapter for the Rails asset pipeline
 gem "sidekiq", "~> 6.0.4" # Sidekiq is used to process background jobs with the help of Redis
@@ -131,7 +131,7 @@ group :development, :test do
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.31" # Capybara is an integration testing tool for rack based web applications
   gem "faker", "~> 2.10" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "parallel_tests", "~> 2.31" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
+  gem "parallel_tests", "~> 2.32" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 3.9" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 0.79", require: false # Automatic Ruby code style checking tool
@@ -163,5 +163,5 @@ group :test do
 end
 
 group :doc do
-  gem "sdoc", "~> 1.0" # rdoc generator html with javascript search index
+  gem "sdoc", "~> 1.1" # rdoc generator html with javascript search index
 end

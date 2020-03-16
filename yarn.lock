@@ -7291,10 +7291,10 @@ hyphenate-style-name@^1.0.1, hyphenate-style-name@^1.0.2:
   resolved "https://registry.yarnpkg.com/hyphenate-style-name/-/hyphenate-style-name-1.0.3.tgz#097bb7fa0b8f1a9cf0bd5c734cf95899981a9b48"
   integrity sha512-EcuixamT82oplpoJ2XU4pDtKGWQ7b00CD9f1ug9IaQ3p1bkHMiKCZ9ut9QDI6qsa6cpUuB+A/I+zLtdNK4n2DQ==
 
-ibm-openapi-validator@0.24.1:
-  version "0.24.1"
-  resolved "https://registry.yarnpkg.com/ibm-openapi-validator/-/ibm-openapi-validator-0.24.1.tgz#4c273e83fd1bd2599abc291de6b972e1e4e972a2"
-  integrity sha512-Hm2APOrMx04l5JEaYVQAnboAB2I+5q+YB3EHeW3UyN4g1ODjPdtghv4GRjjntbjrSgviJQuyyWqfmY/w+goEDw==
+ibm-openapi-validator@0.25.0:
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/ibm-openapi-validator/-/ibm-openapi-validator-0.25.0.tgz#e9921c2442f1e4f0bb7c42040bb6e9cee81b1fc1"
+  integrity sha512-rnowFRA+shLdkRfi33eQFr8QCaol528AwUMoe1/Ac54wfyOnRind1+dxOQJyIZBAlKv1wYAn/BbN1MWafIYGEA==
   dependencies:
     chalk "^2.4.1"
     commander "^2.17.1"
@@ -8621,7 +8621,7 @@ jsdom@^11.5.1:
     ws "^5.2.0"
     xml-name-validator "^3.0.0"
 
-jsdom@^16.2.0:
+jsdom@^16.2.1:
   version "16.2.1"
   resolved "https://registry.yarnpkg.com/jsdom/-/jsdom-16.2.1.tgz#df934649ab9175daeeff3e6f1e2b2268ed1470cd"
   integrity sha512-3p0gHs5EfT7PxW9v8Phz3mrq//4Dy8MQenU/PoKxhdT+c45S7NjIjKbGT3Ph0nkICweE1r36+yaknXA5WfVNAg==
