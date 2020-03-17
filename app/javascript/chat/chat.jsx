@@ -880,22 +880,15 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You and
-              {' '}
+              You and{' '}
               <a href={`/${activeChannel.channel_modified_slug}`}>
                 {activeChannel.channel_modified_slug}
-              </a>
-              {' '}
-              are connected because you both follow each other. All interactions
-              {' '}
+              </a>{' '}
+              are connected because you both follow each other. All interactions{' '}
               <em>
                 <b>must</b>
-              </em>
-              {' '}
-              abide by the 
-              {' '}
-              <a href="/code-of-conduct">code of conduct</a>
-.
+              </em>{' '}
+              abide by the <a href="/code-of-conduct">code of conduct</a>.
             </div>
           </div>
         );
@@ -904,19 +897,11 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You have joined 
-              {' '}
-              {activeChannel.channel_name}
-! All interactions
-              {' '}
+              You have joined {activeChannel.channel_name}! All interactions{' '}
               <em>
                 <b>must</b>
-              </em>
-              {' '}
-              abide by the 
-              {' '}
-              <a href="/code-of-conduct">code of conduct</a>
-.
+              </em>{' '}
+              abide by the <a href="/code-of-conduct">code of conduct</a>.
             </div>
           </div>
         );
@@ -1000,7 +985,7 @@ export default class Chat extends Component {
             <a
               href="/chat_channel_memberships"
               onClick={this.triggerActiveContent}
-              data-content='sidecar-chat_channel_memberships'
+              data-content="sidecar-chat_channel_memberships"
               type="button"
             >
               👋 New Invitations!
@@ -1259,9 +1244,9 @@ export default class Chat extends Component {
     let before = text.substring(0, start);
     before = text.substring(0, before.lastIndexOf('@') + 1);
     const after = text.substring(end, text.length);
-    el.value = before + name + after;
-    el.selectionStart = start + name.length;
-    el.selectionEnd = start + name.length;
+    el.value = before + name + ' ' + after;
+    el.selectionStart = start + name.length + 1;
+    el.selectionEnd = start + name.length + 1;
     el.focus();
     this.setState({ showMemberlist: false });
   };
@@ -1433,7 +1418,7 @@ export default class Chat extends Component {
         <a
           href={`/${activeChannel.channel_username}`}
           onClick={this.triggerActiveContent}
-          data-content='sidecar-user'
+          data-content="sidecar-user"
         >
           {activeChannel.channel_modified_slug}
         </a>
@@ -1443,7 +1428,7 @@ export default class Chat extends Component {
       <a
         href={`/chat_channel_memberships/${activeChannel.id}/edit`}
         onClick={this.triggerActiveContent}
-        data-content='sidecar-chat_channel_membership'
+        data-content="sidecar-chat_channel_membership"
       >
         {activeChannel.channel_name}
       </a>
@@ -1535,10 +1520,8 @@ export default class Chat extends Component {
         >
           <span role="img" aria-label="waving">
             👋
-          </span>
-          {' '}
-          Incoming Video Call
-          {' '}
+          </span>{' '}
+          Incoming Video Call{' '}
         </div>
       );
     }

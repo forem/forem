@@ -173,47 +173,46 @@
     .theme-selector-field {
       margin-bottom: 20px;
     }
-    .settings-color-select-container{
+    .settings-color-select-container {
       display: flex;
       align-items: center;
-      width:100%;
-      .color-select-fields{
-        width:50%;
-        .select-field-wrapper{
+      width: 100%;
+      .color-select-fields {
+        width: 50%;
+        .select-field-wrapper {
           display: flex;
-          width:100%;
-          .color-select-textbox{
-            flex:1;
-            min-width:70px;
+          width: 100%;
+          .color-select-textbox {
+            flex: 1;
+            min-width: 70px;
             border-radius: 0px;
             border-top-left-radius: 3px;
             border-bottom-left-radius: 3px;
           }
-          input[type="color"] {
-            box-sizing:border-box;
+          input[type='color'] {
+            box-sizing: border-box;
             border-radius: 0px;
             border-top-right-radius: 3px;
             border-bottom-right-radius: 3px;
-            padding:3px;
-            width:50px;
-            height:48px;
+            padding: 3px;
+            width: 50px;
+            height: 48px;
             margin-left: -1px;
             border: 1px solid rgb(222, 230, 233);
-            cursor:pointer;
+            cursor: pointer;
           }
         }
       }
-      .color-select-preview{
-        flex:1;
-        text-align:center;
-        #color-select-preview-logo{
-          padding:25px 20px;
-          border-radius:7px;
-          margin-top:20px;
-          display:none; /* Changes to inline-block when javascript loads preview */
+      .color-select-preview {
+        flex: 1;
+        text-align: center;
+        #color-select-preview-logo {
+          padding: 25px 20px;
+          border-radius: 7px;
+          margin-top: 20px;
+          display: none; /* Changes to inline-block when javascript loads preview */
         }
       }
-      
     }
     .checkbox-field {
       display: flex;
@@ -343,7 +342,7 @@
         resize: none;
       }
     }
-    .inline-button-form {
+    %inline-button-form {
       display: inline-block;
       input[type='submit'] {
         display: inline-block;
@@ -352,11 +351,18 @@
         border-radius: 100px;
         padding: 2px 10px;
         width: auto;
+        margin: 0px;
         margin-left: 5px;
         color: white;
         background: $black;
       }
-    }  
+    }
+    .inline-button-form {
+      @extend %inline-button-form;
+    }
+    .inline-button-form-hidden {
+      display: none;
+    }
     h2 {
       font-size: calc(40px + 1vw);
       font-family: $helvetica-condensed;
@@ -388,20 +394,22 @@
       }
       .organization-dropdown::before,
       .organization-dropdown::after {
-        content: "";
+        content: '';
         position: absolute;
         pointer-events: none;
       }
-      .organization-dropdown::after { /*  Custom dropdown arrow */
-        content: "\25BC";
+      .organization-dropdown::after {
+        /*  Custom dropdown arrow */
+        content: '\25BC';
         height: 1em;
         font-size: 0.625em;
         line-height: 1;
         right: 0.25em;
         top: 50%;
-        margin-top: -.5em;
+        margin-top: -0.5em;
       }
-      .organization-dropdown::before { /*  Custom dropdown arrow cover */
+      .organization-dropdown::before {
+        /*  Custom dropdown arrow cover */
         width: 1em;
         right: 0;
         top: 0;
@@ -430,7 +438,7 @@
         @include themeable(color, theme-secondary-color, $medium-gray);
       }
       img {
-        height: 1.0em;
+        height: 1em;
         margin-left: 5px;
       }
     }
@@ -676,7 +684,6 @@
       max-width: 26px;
       margin-left: 8px;
     }
-
   }
   .copy-text-announcer {
     display: block;
@@ -692,6 +699,7 @@
   .settings-form-userlistrow {
     font-size: 18px;
     padding: 6px 0px;
+    min-height: 33px;
     display: block;
     @include themeable(color, theme-color, $black);
     a {
@@ -703,6 +711,11 @@
       border-radius: 100px;
       vertical-align: -0.25em;
       margin-right: 0.25em;
+    }
+    &:hover {
+      .inline-button-form-hidden {
+        @extend %inline-button-form;
+      }
     }
   }
 }
@@ -790,7 +803,8 @@ ul.delete__account {
   border: 1px solid $light-medium-gray;
   padding: 0.5rem 0 0.8rem 0.5rem;
 
-  dt, label {
+  dt,
+  label {
     flex-basis: 40%;
     font-size: 1.1rem;
     font-weight: bold;
@@ -815,7 +829,6 @@ ul.delete__account {
 .membership-purchase-link {
   font-size: 2rem;
 }
-
 
 #page-content.chat_channel_memberships-edit,
 #page-content.chat_channel_memberships-index {
