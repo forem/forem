@@ -146,13 +146,13 @@ RSpec.describe Reaction, type: :model do
       end
 
       it "does not send notification for like reaction" do
-        sidekiq_assert_enqueued_jobs(0, only: SlackBotPingWorker) do
+        sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
           create(:reaction, reactable: article, user: user, category: "like")
         end
       end
 
       it "does not send notification for thumbsdown reaction" do
-        sidekiq_assert_enqueued_jobs(0, only: SlackBotPingWorker) do
+        sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
           create(:reaction, reactable: article, user: user, category: "thumbsdown")
         end
       end
