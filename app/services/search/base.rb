@@ -43,6 +43,19 @@ module Search
         Search::Client.search(index: self::INDEX_ALIAS, body: body)
       end
 
+      def set_query_size(params)
+        params[:page] ||= self::DEFAULT_PAGE
+        params[:per_page] ||= self::DEFAULT_PER_PAGE
+
+        # pages start at 0
+        params[:size] = params[:per_page].to_i * (params[:page].to_i + 1)
+      end
+
+      def paginate_hits(hits, params)
+        start = params[:per_page] * params[:page]
+        hits[start, params[:per_page]] || []
+      end
+
       def settings
         { settings: { index: index_settings } }
       end
