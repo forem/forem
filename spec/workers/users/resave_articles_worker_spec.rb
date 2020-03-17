@@ -7,10 +7,9 @@ RSpec.describe Users::ResaveArticlesWorker, type: :worker do
     let(:worker) { subject }
 
     context "with user" do
-      let_it_be(:user) { create(:user) }
-      let_it_be(:article) { create(:article, user: user) }
-
       it "resave articles" do
+        user = create(:user)
+        article = create(:article, user: user)
         old_updated_at = article.updated_at
 
         worker.perform(user.id)
