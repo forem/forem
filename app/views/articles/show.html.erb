@@ -1,7 +1,7 @@
 <% title @article.title %>
 
 <%= render "shared/webcomponents_loader_script" %>
-<%= javascript_pack_tag "clipboardCopy", defer: true %>
+<%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", defer: true %>
 
 <% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}", expires_in: 30.hours) do %>
   <% if @article.processed_html.include? "ltag_gist-liquid-tag" %>
@@ -227,5 +227,3 @@
     <%= TweetTag.script.html_safe %>
   </script>
 <% end %>
-
-<%= javascript_pack_tag "webShare", defer: true %>

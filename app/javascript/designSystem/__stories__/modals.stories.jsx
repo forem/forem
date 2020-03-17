@@ -1,5 +1,4 @@
 import { h } from 'preact';
-import { storiesOf } from '@storybook/react';
 
 import './designSystem.scss';
 
@@ -21,8 +20,7 @@ storiesOf('Components/HTML/Modals', module)
       <p>
         If you need to utilize entire modal area and you have to get rid of
         default padding, please use modifier class
-        <code>crayons-modal--padding-0</code>
-        .
+        <code>crayons-modal--padding-0</code>.
       </p>
       <p>
         FYI: Modals use “Box” component as background, with Level 3 elevation.
