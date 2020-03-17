@@ -4,10 +4,6 @@
   --theme-reaction-background: #202c3d;
   --theme-secondary-color: #cedae2;
   --theme-secondary-color-border: 1px solid #1c283b;
-  --theme-top-bar-search-background: #424a54;
-  --theme-top-bar-search-color: #fff;
-  --theme-top-bar-write-background: #00af81;
-  --theme-top-bar-write-color: #fff;
   --theme-container-background: #141f2d;
   --theme-container-accent-background: #202c3d;
   --theme-container-background-hover: #1c2c3f;
@@ -82,7 +78,7 @@
 
   // Logo
   --logo-bg: #0a0a0a;
-  --logo-color: var(--base-inverted);
+  --logo-color: #fff;
 
   // Footer
   // --footer-bg: var(--base-inverted);
@@ -92,7 +88,7 @@
   // --footer-link-color-hover: var(--base-100);
 
   // Links in content
-  --link-brand-color: ##17a1f6;
+  --link-brand-color: #17a1f6;
   // --link-brand-color-hover: var(--accent-brand-darker);
 
   // Greyscale links, for places where we don't want to make them use accent color
@@ -104,10 +100,10 @@
   // --link-dimmed-color-current: var(--base-100);
 
   // Primary buttons
-  // --button-primary-bg: var(--accent-brand);
-  // --button-primary-color: var(--base-0);
-  // --button-primary-bg-hover: var(--accent-brand-darker);
-  // --button-primary-color-hover: var(--base-0);
+  --button-primary-bg: var(--accent-brand);
+  --button-primary-color: var(--base-0);
+  --button-primary-bg-hover: var(--accent-brand-darker);
+  --button-primary-color-hover: var(--base-0);
 
   // Secondary buttons
   // --button-secondary-bg: var(--base-20);
@@ -122,11 +118,11 @@
   // --button-outlined-color-hover: var(--base-100);
 
   // Forms
-  // --form-bg: var(--base-0);
+  --form-bg: #424a54;
   // --form-bg-focus: var(--base-0);
   // --form-border: var(--base-30);
   // --form-border-hover: var(--base-40);
-  // --form-border-focus: var(--accent-brand);
+  --form-border-focus: var(--accent-brand);
   // --form-placeholder-color: var(--base-60);
 
   // Form lables

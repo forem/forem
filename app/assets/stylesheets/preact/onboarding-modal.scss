@@ -131,7 +131,7 @@
   }
 
   .next-button {
-    @include themeable(background, theme-top-bar-write-background, #66e2d5);
+    background: var(--button-primary-bg);
     float: right;
   }
 

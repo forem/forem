@@ -87,8 +87,8 @@
 
     .write {
       margin: 8px -16px;
-      @include themeable(background, theme-top-bar-write-background, #1ab3a6);
-      color: var(--base-inverted);
+      background: var(--button-primary-bg);
+      color: var(--button-primary-color);
     }
 
     .all-stories {

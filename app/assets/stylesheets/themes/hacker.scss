@@ -4,10 +4,6 @@
   --theme-reaction-background: #202c3d;
   --theme-secondary-color: #ebebeb;
   --theme-secondary-color-border: 1px solid #222f3f;
-  --theme-top-bar-search-background: #0a0a0a;
-  --theme-top-bar-search-color: #42ff87;
-  --theme-top-bar-write-background: #0a0a0a;
-  --theme-top-bar-write-color: #42ff87;
   --theme-container-background: #030303;
   --theme-container-accent-background: #000f0b;
   --theme-invert-image: invert();
@@ -104,10 +100,10 @@
   // --link-dimmed-color-current: var(--base-100);
 
   // Primary buttons
-  // --button-primary-bg: var(--accent-brand);
-  // --button-primary-color: var(--base-0);
-  // --button-primary-bg-hover: var(--accent-brand-darker);
-  // --button-primary-color-hover: var(--base-0);
+  --button-primary-bg: var(--accent-brand);
+  --button-primary-color: #0a0a0a;
+  --button-primary-bg-hover: var(--accent-brand-darker);
+  --button-primary-color-hover: var(--base-0);
 
   // Secondary buttons
   // --button-secondary-bg: var(--base-20);
@@ -122,11 +118,11 @@
   // --button-outlined-color-hover: var(--base-100);
 
   // Forms
-  // --form-bg: var(--base-0);
+  --form-bg: #0a0a0a;
   // --form-bg-focus: var(--base-0);
   // --form-border: var(--base-30);
   // --form-border-hover: var(--base-40);
-  // --form-border-focus: var(--accent-brand);
+  --form-border-focus: var(--accent-brand);
   // --form-placeholder-color: var(--base-60);
 
   // Form lables

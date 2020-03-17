@@ -234,16 +234,11 @@
   border-radius: 3px;
   padding: 6px 9px 5px;
   font-size: 16px;
-  @include themeable(background, theme-top-bar-search-background, #e8e7e7);
-  @include themeable(color, theme-top-bar-search-color, $black);
+  background: var(--form-bg);
   -webkit-appearance: none;
   border: 1px solid transparent;
   &:focus {
-    border: 1px solid $dark-purple;
-  }
-  &::placeholder {
-    opacity: 0.5;
-    @include themeable(color, theme-top-bar-search-color, $black);
+    border: 1px solid var(--form-border-focus);
   }
 }
 
@@ -272,9 +267,9 @@
     padding: 4px 8px;
     white-space: nowrap;
     font-size: 0.9em;
-    border: 2px solid var(--theme-top-bar-write-color, $black);
-    @include themeable(color, theme-top-bar-write-color, $black);
-    @include themeable(background, theme-top-bar-write-background, $green);
+    border: 2px solid var(--button-primary-bg-hover);
+    background: var(--button-primary-bg);
+    color: var(--button-primary-color);
     display: none;
 
     @media screen and (min-width: 650px) {
