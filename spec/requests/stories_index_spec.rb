@@ -9,6 +9,11 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include(CGI.escapeHTML(article.title))
     end
 
+    it "renders proper description" do
+      get "/"
+      expect(response.body).to include(SiteConfig.community_description)
+    end
+
     it "renders page with min read" do
       get "/"
       expect(response.body).to include("min read")
