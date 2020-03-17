@@ -162,13 +162,6 @@
           overflow: hidden;
           text-overflow: ellipsis;
         }
-        &:hover {
-          @include themeable(
-            background,
-            theme-top-bar-background-hover,
-            darken($tan, 2%)
-          );
-        }
       }
       a {
         @include themeable(color, theme-color, $black);

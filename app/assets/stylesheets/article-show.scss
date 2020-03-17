@@ -1135,18 +1135,11 @@ article {
 
           a {
             font-weight: bold;
-            @include themeable(color, theme-color, $black);
+            color: var(--body-color);
             padding: 12px 18px;
             width: calc(100% - 36px);
             display: block;
             font-size: 0.8em;
-            &:hover {
-              @include themeable(
-                background,
-                theme-top-bar-background-hover,
-                $light-gray
-              );
-            }
           }
 
           &.notification-subscriptions-area-row {
@@ -1200,14 +1193,7 @@ article {
             padding-left: 13px !important;
             margin: auto !important;
             cursor: pointer !important;
-            @include themeable-important(color, theme-color, $black);
-            &:hover {
-              @include themeable-important(
-                background,
-                theme-top-bar-background-hover,
-                $light-gray
-              );
-            }
+            color: var(--body-color);
             .selected-emoji {
               visibility: hidden;
               margin-left: 4px;
@@ -1219,7 +1205,7 @@ article {
                 display: inline-block;
                 visibility: visible;
               }
-              @include themeable-important(color, theme-color, $black);
+              color: var(--body-color);
             }
           }
         }

@@ -7,7 +7,6 @@
   --theme-anchor-color: #4e57ef;
   --theme-secondary-color: #4e57ef;
   --theme-secondary-color-border: 1px solid #ffe5ec;
-  --theme-top-bar-background-hover: #ff5b8f;
   --theme-top-bar-search-background: #fff7f9;
   --theme-top-bar-search-color: #000;
   --theme-top-bar-write-background: #ff4983;
@@ -66,7 +65,7 @@
   --accent-danger-lighter: #ec5050;
 
   // Main colors
-  --body-bg: #fff7f9;
+  --body-bg: var(--base-inverted);
   --body-color: #0a0a0a;
   // --body-color-inverted: var(--base-inverted);
 
@@ -85,11 +84,11 @@
 
   // Header
   --header-bg: var(--accent-brand);
-  --header-icons-color: rgba(255, 255, 255, 0.75);
+  --header-icons-color: var(--base-inverted);
   --header-icons-color-hover: #fff;
 
   // Logo
-  --logo-bg: #fff7f9;
+  --logo-bg: var(--base-inverted);
   --logo-color: var(--accent-brand);
 
   // Footer
