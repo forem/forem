@@ -126,10 +126,11 @@ RSpec.describe Reaction, type: :model do
   end
 
   context "when callbacks are called after create" do
-    let!(:user) { create(:user, :trusted) }
+    describe "slack notifications" do
+      let_it_be_changeable(:user) { create(:user, :trusted) }
+      let_it_be_readonly(:article) { create(:article, user: user) }
 
-    it "pings the channel #abuse-reports for vomit reactions" do
-      described_class.observers.enable :reaction_observer do
+      it "notifies proper slack channel about vomit reaction" do
         url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
         message = "#{user.name} (#{url}#{user.path})\nreacted with a vomit on\n#{url}#{article.path}"
         args = {
@@ -143,17 +144,17 @@ RSpec.describe Reaction, type: :model do
           create(:reaction, reactable: article, user: user, category: "vomit")
         end
       end
-    end
 
-    it "does not ping any action for other reactions" do
-      described_class.observers.enable :reaction_observer do
-        allow(SlackBot).to receive(:ping)
-
-        sidekiq_perform_enqueued_jobs do
+      it "does not send notification for like reaction" do
+        sidekiq_assert_enqueued_jobs(0, only: SlackBotPingWorker) do
           create(:reaction, reactable: article, user: user, category: "like")
         end
+      end
 
-        expect(SlackBot).not_to have_received(:ping)
+      it "does not send notification for thumbsdown reaction" do
+        sidekiq_assert_enqueued_jobs(0, only: SlackBotPingWorker) do
+          create(:reaction, reactable: article, user: user, category: "thumbsdown")
+        end
       end
     end
   end
