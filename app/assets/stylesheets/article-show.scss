@@ -952,11 +952,7 @@ article {
         padding: 4px;
         border-radius: 100px;
         transition: box-shadow 0.18s;
-        @include themeable(
-          background,
-          theme-reaction-background,
-          darken($light-gray, 3%)
-        );
+        background: var(--container-bg);
         @media screen and (min-width: 500px) {
           height: 26px;
           width: 26px;
