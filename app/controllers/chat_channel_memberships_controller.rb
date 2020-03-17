@@ -52,7 +52,7 @@ class ChatChannelMembershipsController < ApplicationController
   def remove_membership
     @chat_channel = ChatChannel.find(params[:chat_channel_id])
     authorize @chat_channel, :update?
-    @chat_channel_membership = ChatChannelMembership.find(params[:membership_id])
+    @chat_channel_membership = @chat_channel.chat_channel_memberships.find(params[:membership_id])
     if params[:status] == "pending"
       @chat_channel_membership.destroy
       flash[:settings_notice] = "Invitation Removed."
