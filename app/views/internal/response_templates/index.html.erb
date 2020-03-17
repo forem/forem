@@ -9,7 +9,7 @@
       <div class="wrapper">
         <div class="grid-item"><a href="/internal/response_templates/<%= response_template.id %>/edit"><%= response_template.title %></a></div>
         <div class="grid-item" style="word-wrap: initial;"><%= response_template.type_of %></div>
-        <div class="grid-item" style="padding-left: 15px;"><%= response_template.user_id %></div>
+        <div class="grid-item" style="padding-left: 15px;"><a href="/internal/users/<%= response_template.user_id %>"><%= response_template.user_id %></a></div>
       </div>
     </div>
 <% end %>
