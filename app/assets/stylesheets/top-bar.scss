@@ -155,12 +155,7 @@
           padding: 6px 10px;
         }
         &.prime-option {
-          border-bottom: 3px solid;
-          @include themeable(
-            border-color,
-            theme-prime-option-border-color,
-            #7a7e81
-          );
+          border-bottom: 3px solid var(--body-color);
           margin-bottom: 5px;
           font-size: 1.22em;
           font-weight: 500;

@@ -782,21 +782,6 @@ article {
           @include themeable(color, theme-secondary-color, $medium-gray);
           margin-right: 6px;
           display: inline-block;
-
-          .icon-img {
-            width: 15px;
-            height: 15px;
-            border-radius: 3px;
-            vertical-align: -2px;
-            margin: 0;
-            opacity: 0.7;
-            background: transparent;
-            @include themeable(
-              background,
-              theme-social-icon-color,
-              transparent
-            );
-          }
         }
       }
     }

@@ -174,7 +174,7 @@
     }
     .widget-listing-live-count {
       @include themeable(background, theme-secondary-color, $green);
-      @include themeable(color, theme-opposite-color, white);
+      color: var(--base-inverted);
       border-radius: 3px;
       display: inline-block;
       font-size: 0.8em;

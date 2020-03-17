@@ -1,7 +1,6 @@
 :root {
   --theme-background: #fcfcfc;
   --theme-color: #0a0a0a;
-  --theme-opposite-color: #ffffff;
   --theme-code-background: #f9f9f9;
   --theme-code-color: #37383d;
   --theme-reaction-background: #eff0f2;
@@ -26,7 +25,6 @@
   --theme-container-color: #0a0a0a;
   --theme-container-box-shadow: none;
   --theme-container-border: 1px solid #e3e3e5;
-  --theme-social-icon-color: rgba(80, 81, 89, 0);
   --theme-social-icon-invert: invert(0);
 
   ////////////////////////////////////////////////////////////////////////////////////
@@ -34,17 +32,17 @@
   ////////////////////////////////////////////////////////////////////////////////////
 
   // Base
-  // --base-100: #08090a;
-  // --base-90: #202428;
-  // --base-80: #363d44;
-  // --base-70: #4d5760;
-  // --base-60: #64707d;
-  // --base-50: #7d8a97;
-  // --base-40: #99a3ad;
-  // --base-30: #b5bdc4;
-  // --base-20: #d2d6db;
-  // --base-10: #eef0f1;
-  // --base-0: #f9fafa;
+  --base-100: #08090a;
+  --base-90: #202428;
+  --base-80: #363d44;
+  --base-70: #4d5760;
+  --base-60: #64707d;
+  --base-50: #7d8a97;
+  --base-40: #99a3ad;
+  --base-30: #b5bdc4;
+  --base-20: #d2d6db;
+  --base-10: #eef0f1;
+  --base-0: #f9fafa;
   --base-inverted: #fff;
 
   // Accent colors

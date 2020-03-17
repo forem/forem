@@ -1,7 +1,6 @@
 :root {
   --theme-background: #0a0a0a;
   --theme-color: #42ff87;
-  --theme-opposite-color: #0d1219;
   --theme-code-background: #29292e;
   --theme-code-color: #42ff87;
   --theme-reaction-background: #202c3d;
@@ -27,7 +26,6 @@
   --theme-container-box-shadow: none;
   --theme-container-border: 1px solid #22303f;
   --theme-social-icon-invert: invert(100);
-  --theme-current-article-background: #1143ca;
   --theme-series-article-background: #006655;
   --theme-series-article-hover: #004035;
 
@@ -47,7 +45,7 @@
   // --base-20: #d2d6db;
   // --base-10: #eef0f1;
   // --base-0: #f9fafa;
-  --base-inverted: #0a0a0a;
+  --base-inverted: #0d1219;
 
   // Accent colors
   --accent-brand: #42ff87;
@@ -94,7 +92,7 @@
 
   // Logo
   --logo-bg: var(--accent-brand);
-  --logo-color: var(--base-inverted);
+  --logo-color: #0a0a0a;
 
   // Footer
   // --footer-bg: var(--base-inverted);

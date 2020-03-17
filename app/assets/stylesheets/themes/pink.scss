@@ -1,7 +1,6 @@
 :root {
   --theme-background: #fff7f9;
   --theme-color: #0a0a0a;
-  --theme-opposite-color: #fff7f9;
   --theme-code-background: #f9f9fa;
   --theme-code-color: #f92671;
   --theme-reaction-background: #eff0f2;
@@ -26,9 +25,7 @@
   --theme-container-color: #333;
   --theme-container-box-shadow: none;
   --theme-container-border: 1px solid #ff4983;
-  --theme-social-icon-color: rgba(255, 204, 219, 0);
   --theme-social-icon-invert: invert(0);
-  --theme-prime-option-border-color: rgba(255, 255, 255, 0.55);
 
   ////////////////////////////////////////////////////////////////////////////////////
   // New Variables. //////////////////////////////////////////////////////////////////
@@ -46,7 +43,7 @@
   // --base-20: #d2d6db;
   // --base-10: #eef0f1;
   // --base-0: #f9fafa;
-  // --base-inverted: #fff;
+  --base-inverted: #fff7f9;
 
   // Accent colors
   --accent-brand: #ff4983;
