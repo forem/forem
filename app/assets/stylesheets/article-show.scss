@@ -571,10 +571,9 @@ article {
 
     code {
       margin: auto;
-      @include themeable(background, theme-code-background, $lightest-gray);
+      background: rgba(0, 0, 0, 0.1);
       padding: 0.1em 0.3em 0;
       border-radius: 2px;
-      @include themeable(color, theme-code-color, #333842);
       font-size: 0.84em;
       vertical-align: 0;
       max-width: 100%;
