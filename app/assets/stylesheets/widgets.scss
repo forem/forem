@@ -38,11 +38,17 @@
   display: block;
   padding: 0 16px 16px 16px;
   margin: 8px 0 16px 0;
-  @include themeable(
-    border-bottom,
-    theme-secondary-color-border,
-    1px solid rgba($light-medium-gray, 0.75)
-  );
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--widget-color-tertiary);
+    opacity: 0.25;
+  }
 
   &.fixed-widget {
     position: sticky;
