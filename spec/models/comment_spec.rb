@@ -323,7 +323,7 @@ RSpec.describe Comment, type: :model do
 
       it "does not send notification if a regular user leaves a comment" do
         sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
-          create(:comment, commentable: article)
+          create(:comment, commentable: article, user: user)
         end
       end
     end
@@ -338,6 +338,7 @@ RSpec.describe Comment, type: :model do
 
   context "when callbacks are triggered after save" do
     it "updates user last comment date" do
+      comment = build(:comment, commentable: article, user: user)
       expect { comment.save }.to change(user, :last_comment_at)
     end
   end
@@ -365,6 +366,7 @@ RSpec.describe Comment, type: :model do
 
   context "when callbacks are triggered after destroy" do
     it "updates user's last_comment_at" do
+      comment = create(:comment, user: user)
       expect { comment.destroy }.to change(user, :last_comment_at)
     end
 
