@@ -54,7 +54,7 @@ describe('ArticleController', () => {
       button.click();
 
       expect(
-        element.classList.contains('highlighted-bg', 'highlighted-border'),
+        element.classList.contains('bg-highlighted', 'border-highlighted'),
       ).toBe(true);
     });
   });
