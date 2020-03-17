@@ -102,7 +102,7 @@ a.header-link {
       margin: auto;
       margin-bottom: -35px;
       .read-more {
-        @include themeable(color, theme-anchor-color, $sky-blue);
+        color: var(--link-brand-color);
         display: inline-block;
         &:hover {
           opacity: 0.96;
@@ -397,7 +397,7 @@ a.header-link {
         margin: 5px 0px;
       }
       a {
-        @include themeable(color, theme-anchor-color, $sky-blue);
+        color: var(--link-brand-color);
       }
     }
     input[type='submit'] {

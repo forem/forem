@@ -30,7 +30,7 @@
   background-repeat: no-repeat;
 
   a {
-    @include themeable(color, theme-anchor-color, #2e3b9e);
+    color: var(--link-brand-color);
   }
 
   .sticker-logo {
@@ -179,7 +179,7 @@
     }
 
     input[type='checkbox']:checked {
-      @include themeable(background, theme-anchor-color, #66e2d5);
+      background: var(--link-brand-color);
     }
   }
 

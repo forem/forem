@@ -95,7 +95,7 @@
     padding: 10px 5px;
     a {
       text-decoration: underline;
-      @include themeable(color, theme-anchor-color, #50c176);
+      color: var(--link-brand-color);
     }
     @media screen and (min-width: 950px) {
       font-size: 1.4em;

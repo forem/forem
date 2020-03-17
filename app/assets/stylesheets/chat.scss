@@ -173,7 +173,7 @@
 }
 
 .chat__channeltypefilterbutton--active {
-  @include themeable(color, theme-anchor-color, darken($sky-blue, 5%));
+  color: var(--link-brand-color);
 
   @media screen and (min-width: 1300px) {
     border: 1px solid darken($light-medium-gray, 5%);

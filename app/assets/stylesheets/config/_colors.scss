@@ -85,7 +85,7 @@
   --footer-link-color-hover: var(--base-100);
 
   // Links in content
-  --link-brand-color: var(--accent-brand);
+  --link-brand-color: #557de8; // todo: replace with `var(--accent-brand)` when ready.
   --link-brand-color-hover: var(--accent-brand-darker);
 
   // Greyscale links, for places where we don't want to make them use accent color

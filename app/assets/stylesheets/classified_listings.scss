@@ -273,7 +273,7 @@
       a {
         text-decoration: underline;
         display: inline-block;
-        @include themeable(color, theme-anchor-color, $bold-blue);
+        color: var(--link-brand-color);
       }
       @media screen and (min-width: 580px) {
         font-size: 1.1em;
