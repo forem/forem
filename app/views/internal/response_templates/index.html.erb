@@ -1,0 +1,21 @@
+<%= paginate @response_templates %>
+<div class="wrapper" style="border-bottom: 1px solid black;">
+  <div class="grid-item">Title</div>
+  <div class="grid-item">Type Of</div>
+  <div class="grid-item" style="padding-left: 15px;">User ID</div>
+</div>
+<% @response_templates.each do |response_template| %>
+    <div class="single-internal-listing">
+      <div class="wrapper">
+        <div class="grid-item"><a href="/internal/response_templates/<%= response_template.id %>/edit"><%= response_template.title %></a></div>
+        <div class="grid-item" style="word-wrap: initial;"><%= response_template.type_of %></div>
+        <div class="grid-item" style="padding-left: 15px;"><%= response_template.user_id %></div>
+      </div>
+    </div>
+<% end %>
+<%= paginate @response_templates %>
+
+<hr style="margin-top: 300px;">
+<h1>Create A New Response Template</h1>
+<br />
+<%= render "form", response_template: ResponseTemplate.new %>
