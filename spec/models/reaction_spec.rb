@@ -130,6 +130,11 @@ RSpec.describe Reaction, type: :model do
       let_it_be_changeable(:user) { create(:user, :trusted) }
       let_it_be_readonly(:article) { create(:article, user: user) }
 
+      before do
+        # making sure there are no other enqueued jobs from other tests
+        sidekiq_perform_enqueued_jobs(only: SlackBotPingWorker)
+      end
+
       it "notifies proper slack channel about vomit reaction" do
         url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
         message = "#{user.name} (#{url}#{user.path})\nreacted with a vomit on\n#{url}#{article.path}"
