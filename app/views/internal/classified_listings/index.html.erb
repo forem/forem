@@ -57,15 +57,14 @@
               Last shared: <%= listing.last_buffered.strftime("%d %B %Y") %>
             </em>
           <% end %>
-          <div id="buffering-area-for-listing-<%= listing.id %>" class="collapse buffer-area">
+          <div id="buffering-area-for-listing-<%= listing.id %>" class="collapse buffer-area mt-3">
             <p><strong><%= listing.title %></strong></p>
             <p><%= listing.processed_html&.html_safe %></p>
             <%= form_with url: "/internal/buffer_updates", html: { data: { action: "submit->buffer#highlightElement" } } do %>
               <input type="hidden" name="social_channel" value="listings_twitter" />
               <input type="hidden" name="listing_id" value="<%= listing.id %>" />
               <textarea class="form-control" wrap="hard" name="tweet" maxlength="255" data-target="buffer.bodyText">📋 New DEV Listing!&#013&#013Category: <%= listing.category %>&#013&#013<%= listing.title %>&#013&#013<% if listing.user.twitter_username? %>Posted by @<%= listing.user.twitter_username %><% end %></textarea>
-              <br>
-              <button class="btn btn-primary" data-action=>🐦 Tweet 🐦</button>
+              <button class="btn btn-primary mt-2" data-action=>🐦 Tweet 🐦</button>
             <% end %>
           </div>
         </td>
