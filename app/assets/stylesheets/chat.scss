@@ -774,6 +774,7 @@
     &.chatchanneltabindicatordirectimage {
       border: 2px solid $light-medium-gray;
       border-radius: 100px;
+      background: white;
     }
   }
 
@@ -892,9 +893,6 @@
       );
     }
   }
-}
-.invert-channel-image {
-  filter: var(--theme-invert-image, none);
 }
 .chatmessage__profileimage {
 }

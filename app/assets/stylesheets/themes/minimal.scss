@@ -6,7 +6,6 @@
   --theme-secondary-color-border: 1px solid #e3e3e5;
   --theme-container-background: #ffffff;
   --theme-container-accent-background: #f4f5f7;
-  --theme-invert-image: none;
   --theme-container-background-hover: #efefef;
   --theme-container-color: #0a0a0a;
   --theme-container-box-shadow: none;
@@ -18,18 +17,18 @@
   ////////////////////////////////////////////////////////////////////////////////////
 
   // Base
-  --base-100: #08090a;
-  --base-90: #202428;
-  --base-80: #363d44;
-  --base-70: #4d5760;
-  --base-60: #64707d;
-  --base-50: #7d8a97;
-  --base-40: #99a3ad;
-  --base-30: #b5bdc4;
-  --base-20: #d2d6db;
-  --base-10: #eef0f1;
-  --base-0: #f9fafa;
-  --base-inverted: #fff;
+  --base-100: #0a0a0a;
+  --base-90: #202020;
+  --base-80: #353535;
+  --base-70: #4b4b4b;
+  --base-60: #626262;
+  --base-50: #7a7a7a;
+  --base-40: #939393;
+  --base-30: #adadad;
+  --base-20: #c8c8c8;
+  --base-10: #e3e3e3;
+  --base-0: #ffffff;
+  --base-inverted: #ffffff;
 
   // Accent colors
   --accent-brand: #3b49df;
@@ -54,7 +53,7 @@
   // Main colors
   --body-bg: #fcfcfc;
   --body-color: #0a0a0a;
-  // --body-color-inverted: var(--base-inverted);
+  --body-color-inverted: var(--base-inverted);
 
   // Main content containers
   // --container-bg: var(--base-inverted);

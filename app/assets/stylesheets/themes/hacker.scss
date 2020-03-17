@@ -6,7 +6,6 @@
   --theme-secondary-color-border: 1px solid #222f3f;
   --theme-container-background: #030303;
   --theme-container-accent-background: #000f0b;
-  --theme-invert-image: invert();
   --theme-container-background-hover: #1c2c3f;
   --theme-container-color: #42ff87;
   --theme-container-box-shadow: none;
@@ -30,7 +29,7 @@
   --base-30: #4b4b4b;
   --base-20: #353535;
   --base-10: #1c1c1c;
-  --base-0:  #0a0a0a;
+  --base-0: #0a0a0a;
   --base-inverted: #000;
 
   // Accent colors
@@ -89,7 +88,7 @@
 
   // Links in content
   --link-brand-color: #e24ec1;
-  --link-brand-color-hover: #FF53D9;
+  --link-brand-color-hover: #ff53d9;
 
   // Greyscale links, for places where we don't want to make them use accent color
   --link-dimmed-color: var(--base-80);
