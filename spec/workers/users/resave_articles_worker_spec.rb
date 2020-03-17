@@ -13,9 +13,11 @@ RSpec.describe Users::ResaveArticlesWorker, type: :worker do
       it "resave articles" do
         old_updated_at = article.updated_at
 
-        worker.perform(user.id)
+        Timecop.freeze(Time.current) do
+          worker.perform(user.id)
 
-        expect(article.reload.updated_at).to be > old_updated_at
+          expect(article.reload.updated_at > old_updated_at).to be(true)
+        end
       end
     end
 

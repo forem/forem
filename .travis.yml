@@ -30,9 +30,6 @@ env:
     - SENDGRID_PASSWORD_ACCEL=dummy
     - HEROKU_APP_URL=practicaldev.herokuapp.com
     - SECRET_KEY_BASE=dummydummydummy
-  jobs:
-    - RSPEC_TAG="~type:system"
-    - RSPEC_TAG="type:system"
 branches:
   only:
     - master
@@ -48,7 +45,7 @@ before_install:
   - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
   - sudo systemctl start elasticsearch
 install:
-  - bundle install --jobs=3 --retry=3 --path vendor/bundle
+  - bundle install --path vendor/bundle
   - yarn install
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
     > ./cc-test-reporter
@@ -59,7 +56,7 @@ script:
   - bundle exec rails webpacker:compile
   - bundle exec rails db:schema:load
   - './cc-test-reporter before-build'
-  - 'bundle exec rspec spec --color --tty --tag ${RSPEC_TAG}'
+  - 'bundle exec rspec spec --color --tty'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
   - './cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json'
   - 'yarn test --colors'
