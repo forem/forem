@@ -308,7 +308,7 @@ article {
       position: relative;
       z-index: 8;
       a {
-        @include themeable(color, theme-color, $black);
+        color: var(--body-color);
         padding: calc(0.1vw + 9px);
         display: block;
         position: relative;
@@ -323,20 +323,9 @@ article {
           border-bottom-right-radius: 5px;
         }
 
-        &:hover {
-          @include themeable(
-            background,
-            theme-series-article-hover,
-            $lightest-gray
-          );
-        }
-
         &.current-article {
-          @include themeable(
-            background,
-            theme-series-article-background,
-            lighten($sky-blue, 21%)
-          );
+          background: var(--accent-brand-lighter);
+          color: var(--body-color-inverted);
         }
 
         &.coming-soon {
