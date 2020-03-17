@@ -202,7 +202,7 @@ end
 
 ##############################################################################
 
-Rails.logger.info "7. Creating Broadcasts"
+Rails.logger.info "7. Creating Broadcasts and Welcome Thread"
 
 # TODO: [@thepracticaldev/delightful] Remove this once we have launched welcome notifications.
 Broadcast.create!(
@@ -227,6 +227,26 @@ broadcast_messages.each do |type, message|
     active: true,
   )
 end
+
+welcome_thread_content = <<~HEREDOC
+  ---
+  title: Welcome Thread - v0
+  published: true
+  description: Introduce yourself to the community!
+  tags: welcome
+  ---
+
+  Hey there! Welcome to #{ApplicationConfig['COMMUNITY_NAME']}!
+
+  ![WELCOME TO THE INTERNET](https://slack-imgs.com/?c=1&url=http%3A%2F%2Fmedia0.giphy.com%2Fmedia%2FzhbrTTpmSCYog%2Fgiphy-downsized.gif)
+
+  Leave a comment below to introduce yourself to the community!✌️
+HEREDOC
+
+Article.create(
+  body_markdown: welcome_thread_content,
+  user: User.dev_account,
+)
 
 ##############################################################################
 
