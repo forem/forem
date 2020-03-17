@@ -123,5 +123,12 @@ FactoryBot.define do
         create(:pro_membership, user: user)
       end
     end
+
+    trait :tag_moderator do
+      after(:create) do |user|
+        tag = create(:tag)
+        user.add_role :tag_moderator, tag
+      end
+    end
   end
 end
