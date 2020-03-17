@@ -22,7 +22,7 @@ preact-render-spy (1 nodes)
           type="button"
           class="dropdown-btn"
           aria-label="Toggle dropdown menu"
-          onClick={[Function value]}
+          onClick={[Function anonymous]}
         >
           <img
             src=""

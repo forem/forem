@@ -4,7 +4,7 @@
     <div class="github-repos loading-repos">
     </div>
   </div>
-  <%= javascript_pack_tag "githubRepos", defer: true %>
+  <%= javascript_packs_with_chunks_tag "githubRepos", defer: true %>
 <% end %>
 
 <hr />
@@ -14,7 +14,7 @@
     <h2>Connected to Stackbit <sup>beta</sup><img src="<%= asset_path("checkmark-green.svg") %>" /></h2>
     <p style="font-size: 1.1em"><strong><a href="https://app.stackbit.com/dashboard">Go To Your Stackbit Dashboard</a></strong></p>
     <p style="font-size: 1.1em"><strong><a href="https://app.stackbit.com/create?ref=devto">Create New Stackbit Site</a></strong></p>
-    
+
   <% else %>
     <h2>Connect to Stackbit <sup>beta</sup></h2>
     <p>Automatically generate a self-hosted static blog feed from your DEV posts.</p>

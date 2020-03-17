@@ -1,5 +1,4 @@
 import { h } from 'preact';
-import { storiesOf } from '@storybook/react';
 
 import './designSystem.scss';
 
@@ -20,8 +19,7 @@ storiesOf('Components/HTML/Dropdowns', module)
       <p>
         If you need to utilize entire dropdown area and you have to get rid of
         default padding, please use modifier class
-        <code>crayons-dropdown--padding-0</code>
-        .
+        <code>crayons-dropdown--padding-0</code>.
       </p>
       <p>
         FYI: Dropdowns use “Box” component as background, with Level 3

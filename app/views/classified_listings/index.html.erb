@@ -32,15 +32,15 @@
       only: %i[title processed_html tag_list category id user_id slug contact_via_connect location],
       include: {
         author: { only: %i[username name], methods: %i[username profile_image_90] }
-      },
+      }
     ) %>"
     data-allcategories="<%= ClassifiedListing.categories_for_display.to_json %>"
     <% if @displayed_classified_listing %>
       data-displayedlisting="<%= @displayed_classified_listing.to_json(
-        only: %i[title processed_html tag_list category id user_id slug contact_via_connect location],
-        include: {
-          author: { only: %i[username name], methods: %i[username profile_image_90] }
-        },
+          only: %i[title processed_html tag_list category id user_id slug contact_via_connect location],
+          include: {
+            author: { only: %i[username name], methods: %i[username profile_image_90] }
+          },
       ) %> "
     <% end %>
   >
@@ -54,4 +54,4 @@
   </div>
 </div>
 
-<%= javascript_pack_tag "listings", defer: true %>
+<%= javascript_packs_with_chunks_tag "listings", defer: true %>

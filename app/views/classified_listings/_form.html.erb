@@ -45,7 +45,9 @@
         <% end %>
       </div>
     </div>
-      <%= javascript_pack_tag "listingForm", defer: true %>
+      <% unless @organizations.present? %>
+        <%= javascript_packs_with_chunks_tag "listingForm", defer: true %>
+      <% end %>
     <div class="field">
       <%= form.label "location", "Location (If applicable for events, etc.)" %>
       <%= form.text_field "location", placeholder: "32 characters max, plain text" %>
@@ -81,7 +83,7 @@
         has <span id="org-credits-number"><%= @organizations.first.credits.unspent.size %></span> credits -
           <a id="org-credits-purchase-link" target="_blank" rel="noopener noreferrer" href="/credits/purchase?organization_id=<%= @organizations.first.id %>" data-no-instant>Buy More</a>
         </div>
-        <%= javascript_pack_tag "orgCreditsSelector", defer: true %>
+        <%= javascript_packs_with_chunks_tag "listingForm", "orgCreditsSelector", defer: true %>
       <% end %>
     </div>
   </div>
