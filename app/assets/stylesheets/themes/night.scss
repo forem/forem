@@ -10,7 +10,6 @@
   --theme-container-color: #fff;
   --theme-container-box-shadow: none;
   --theme-container-border: 1px solid #22303f;
-  --theme-social-icon-invert: invert(100);
   --theme-series-article-background: #314d9c;
   --theme-series-article-hover: #1b2e63;
 
@@ -19,18 +18,18 @@
   ////////////////////////////////////////////////////////////////////////////////////
 
   // Base
-  // --base-100: #08090a;
-  // --base-90: #202428;
-  // --base-80: #363d44;
-  // --base-70: #4d5760;
-  // --base-60: #64707d;
-  // --base-50: #7d8a97;
-  // --base-40: #99a3ad;
-  // --base-30: #b5bdc4;
-  // --base-20: #d2d6db;
-  // --base-10: #eef0f1;
-  // --base-0: #f9fafa;
-  --base-inverted: #0d1219;
+  --base-100: #f9fafa;
+  --base-90: #dde0e2;
+  --base-80: #c2c6ca;
+  --base-70: #a7adb2;
+  --base-60: #8d949b;
+  --base-50: #747c85;
+  --base-40: #5c6570;
+  --base-30: #444f5b;
+  --base-20: #2e3a48;
+  --base-10: #1a2634;
+  --base-0: #0d1219;
+  --base-inverted: #000;
 
   // Accent colors
   --accent-brand: #3b49df;
@@ -53,25 +52,25 @@
   --accent-danger-lighter: #ec5050;
 
   // Main colors
-  --body-bg: #0d1219;
-  --body-color: #fff;
-  // --body-color-inverted: var(--base-inverted);
+  --body-bg: var(--base-0);
+  --body-color: var(--base-100);
+  --body-color-inverted: var(--base-inverted);
 
   // Main content containers
-  // --container-bg: var(--base-inverted);
-  // --container-color: var(--base-100);
-  // --container-color-secondary: var(--base-70);
-  // --container-color-tertiary: var(--base-50);
+  --container-bg: var(--base-10);
+  --container-color: var(--base-100);
+  --container-color-secondary: var(--base-70);
+  --container-color-tertiary: var(--base-50);
 
   // Secondary content containers
-  // --widget-bg: var(--base-0);
-  // --widget-color: var(--base-90);
-  // --widget-color-secondary: var(--base-70);
-  // --widget-color-tertiary: var(--base-50);
-  // --widget-headline: var(--base-100);
+  --widget-bg: var(--base-0);
+  --widget-color: var(--base-90);
+  --widget-color-secondary: var(--base-70);
+  --widget-color-tertiary: var(--base-50);
+  --widget-headline: var(--base-100);
 
   // Header
-  --header-bg: #1c2938;
+  --header-bg: var(--base-10);
   --header-icons-color: rgba(255, 255, 255, 0.8);
   --header-icons-color-hover: #fff;
 
@@ -99,10 +98,10 @@
   // --link-dimmed-color-current: var(--base-100);
 
   // Primary buttons
-  --button-primary-bg: var(--accent-brand);
+  --button-primary-bg: var(--accent-success);
   --button-primary-color: var(--base-0);
-  --button-primary-bg-hover: var(--accent-brand-darker);
-  --button-primary-color-hover: var(--base-0);
+  --button-primary-bg-hover: var(--accent-success-darker);
+  --button-primary-color-hover: var(--base-inverted);
 
   // Secondary buttons
   // --button-secondary-bg: var(--base-20);

@@ -367,16 +367,9 @@
       opacity: 0.9;
     }
   }
-  .social-icon {
-    width: 24px;
-    height: 24px;
-    border: none;
+  .social-icons a {
+    color: var(--widget-color);
     margin-right: 8px;
-    @include themeable(filter, theme-social-icon-invert, invert(0));
-    opacity: 0.7;
-    &:hover {
-      opacity: 1;
-    }
   }
   .row {
     position: relative;
