@@ -125,6 +125,39 @@ RSpec.describe Reaction, type: :model do
     end
   end
 
+  context "when callbacks are called after create" do
+    let!(:user) { create(:user, :trusted) }
+
+    it "pings the channel #abuse-reports for vomit reactions" do
+      described_class.observers.enable :reaction_observer do
+        url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
+        message = "#{user.name} (#{url}#{user.path})\nreacted with a vomit on\n#{url}#{article.path}"
+        args = {
+          message: message,
+          channel: "abuse-reports",
+          username: "abuse_bot",
+          icon_emoji: ":cry:"
+        }.stringify_keys
+
+        sidekiq_assert_enqueued_with(job: SlackBotPingWorker, args: [args]) do
+          create(:reaction, reactable: article, user: user, category: "vomit")
+        end
+      end
+    end
+
+    it "does not ping any action for other reactions" do
+      described_class.observers.enable :reaction_observer do
+        allow(SlackBot).to receive(:ping)
+
+        sidekiq_perform_enqueued_jobs do
+          create(:reaction, reactable: article, user: user, category: "like")
+        end
+
+        expect(SlackBot).not_to have_received(:ping)
+      end
+    end
+  end
+
   context "when callbacks are called after save" do
     let!(:reaction) { build(:reaction, category: "like", reactable: article, user: user) }
 
