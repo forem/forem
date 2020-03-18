@@ -16,6 +16,4 @@
 <%= paginate @response_templates %>
 
 <hr style="margin-top: 300px;">
-<h1>Create A New Response Template</h1>
-<br />
-<%= render "form", response_template: ResponseTemplate.new %>
+<a href="<%= new_internal_response_template_path %>">Create a New Response Template</a>
