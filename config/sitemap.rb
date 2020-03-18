@@ -14,7 +14,6 @@ end
 
 SitemapGenerator::Sitemap.default_host = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
 
-# Base sitemap
 SitemapGenerator::Sitemap.create do
   Article.published.where("score > ? OR featured = ?", 12, true).
     limit(38_000).find_each do |article|
@@ -29,16 +28,3 @@ SitemapGenerator::Sitemap.create do
     add "/t/#{tag.name}", changefreq: "daily"
   end
 end
-
-60.times do |n|
-  date = n.months.ago
-  SitemapGenerator::Sitemap.sitemaps_path = "sitemaps/#{date.strftime('%b%y').downcase}/"
-  SitemapGenerator::Sitemap.create do
-    Article.published.where("score > ? OR featured = ?", 4, true).
-      where("published_at > ?", date.at_beginning_of_month).
-      limit(45_000).find_each do |article|
-      add article.path, lastmod: article.last_comment_at, changefreq: "daily"
-    end
-  end
-end
-# d.strftime("%b")
