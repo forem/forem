@@ -120,21 +120,19 @@ class EmailTermsConditionsForm extends Component {
         <Navigation prev={prev} next={this.onSubmit} />
         <div className="onboarding-content checkbox-slide">
           <header className="onboarding-content-header">
-            <h1 className="title">
-              Getting started
-            </h1>
-            <h3 className="subtitle">
-              Let&apos;s review a few things first
-            </h3>
+            <h1 className="title">Getting started</h1>
+            <h3 className="subtitle">Let&apos;s review a few things first</h3>
           </header>
 
-          {message && <span className="notice notice-warning warning-message">{message}</span>}
+          {message && (
+            <span className="crayons-notice crayons-notice--danger">
+              {message}
+            </span>
+          )}
 
           <form>
             <fieldset>
-              <legend>
-                Some things to check off
-              </legend>
+              <legend>Some things to check off</legend>
               <ul>
                 <li className="checkbox-item">
                   <label htmlFor="checked_code_of_conduct">
@@ -145,8 +143,8 @@ class EmailTermsConditionsForm extends Component {
                       checked={checked_code_of_conduct}
                       onChange={this.handleChange}
                     />
-
-                    I agree to uphold the {' '}
+                    I agree to uphold the
+                    {' '}
                     <a
                       href="/code-of-conduct"
                       data-no-instant
@@ -166,11 +164,13 @@ class EmailTermsConditionsForm extends Component {
                       checked={checked_terms_and_conditions}
                       onChange={this.handleChange}
                     />
-
-                    I agree to our {' '}
+                    I agree to our
+                    {' '}
                     <a
                       href="/terms"
-                      data-no-instant onClick={e => this.handleShowText(e, 'terms')} >
+                      data-no-instant
+                      onClick={e => this.handleShowText(e, 'terms')}
+                    >
                       Terms and Conditions
                     </a>
                   </label>
@@ -179,9 +179,7 @@ class EmailTermsConditionsForm extends Component {
             </fieldset>
 
             <fieldset>
-              <legend>
-                Email preferences
-              </legend>
+              <legend>Email preferences</legend>
               <ul>
                 <li className="checkbox-item">
                   <label htmlFor="email_newsletter">
@@ -192,7 +190,6 @@ class EmailTermsConditionsForm extends Component {
                       checked={email_newsletter}
                       onChange={this.handleChange}
                     />
-
                     I want to receive weekly newsletter emails.
                   </label>
                 </li>
@@ -205,7 +202,6 @@ class EmailTermsConditionsForm extends Component {
                       checked={email_digest_periodic}
                       onChange={this.handleChange}
                     />
-
                     I want to receive a periodic digest with some of the top
                     posts from your tags.
                   </label>
