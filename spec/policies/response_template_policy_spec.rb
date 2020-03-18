@@ -4,7 +4,7 @@ RSpec.describe ResponseTemplatePolicy, type: :policy do
   subject(:response_template_policy) { described_class.new(user, response_template) }
 
   def valid_attributes
-    %i[content title]
+    ResponseTemplatePolicy::PERMITTED_ATTRIBUTES
   end
 
   context "when user is not signed in" do

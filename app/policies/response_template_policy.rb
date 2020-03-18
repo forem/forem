@@ -1,4 +1,6 @@
 class ResponseTemplatePolicy < ApplicationPolicy
+  PERMITTED_ATTRIBUTES = %i[content_type content title].freeze
+
   def admin_index?
     minimal_admin?
   end
@@ -25,11 +27,11 @@ class ResponseTemplatePolicy < ApplicationPolicy
   end
 
   def permitted_attributes_for_create
-    %i[content_type content title]
+    PERMITTED_ATTRIBUTES
   end
 
   def permitted_attributes_for_update
-    %i[content_type content title]
+    PERMITTED_ATTRIBUTES
   end
 
   private
