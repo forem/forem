@@ -161,9 +161,6 @@ class User < ApplicationRecord
 
   alias_attribute :positive_reactions_count, :reactions_count
 
-  scope :dev_account, -> { find_by(id: SiteConfig.staff_user_id) }
-  scope :mascot_account, -> { find_by(id: SiteConfig.mascot_user_id) }
-
   scope :with_this_week_comments, lambda { |number|
     includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_these_7_days')::int >= ?", number)
   }
@@ -225,14 +222,22 @@ class User < ApplicationRecord
     end
   end
 
-  def estimated_default_language
-    language_settings["estimated_default_language"]
-  end
-
   def self.trigger_delayed_index(record, remove)
     return if remove
 
     Search::IndexWorker.perform_async("User", record.id)
+  end
+
+  def self.dev_account
+    find_by(id: SiteConfig.staff_user_id)
+  end
+
+  def self.mascot_account
+    find_by(id: SiteConfig.mascot_user_id)
+  end
+
+  def estimated_default_language
+    language_settings["estimated_default_language"]
   end
 
   def tag_line
