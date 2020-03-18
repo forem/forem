@@ -13,7 +13,7 @@ module Broadcasts
       def call
         return if commented_on_welcome_thread? || received_notification?
 
-        Notification.send_welcome_notification(receiver_id, welcome_broadcast.id)
+        Notification.send_welcome_notification(user.id, welcome_broadcast.id)
       end
 
       def received_notification?
