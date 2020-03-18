@@ -16,54 +16,27 @@
   }
 }
 
-.wrapper {
-  display: grid;
-  grid-template-columns: 25% 15% 15% 15% 15% 15%;
-  padding: 2px;
+.buffer-cell {
+    /* Max-width derived from width of a Bootstrap container */
+    max-width: 1140px;
+    word-wrap: break-word;
 }
 
-.grid-item {
-  word-wrap: break-word;
-}
-
-.single-internal-listing {
-  border-bottom: 1px solid grey;
-  padding: 10px;
-}
-
-.buffering-area-for-single-listing {
-  display: grid;
-  grid-template-columns: 50% 50%;
-  padding: 2px;
-}
-
-.featured-bg {
+.bg-featured {
   background: #bbffd2;
 }
 
-.approved-bg {
+.bg-approved {
   background: #92e8ae;
   border: 12px solid #ff9900;
 }
 
-.highlighted-bg {
+.bg-highlighted {
   background: #2effa8 !important;
   border: 20px solid black;
 }
 
-.submitting-no-border {
-  background: #96f2cc !important;
-}
-
-.highlighted-no-border {
-  background: #2effa8 !important;
-}
-
-.highlighted-no-border input[type='submit'] {
-  display: none;
-}
-
-.highlighted-border {
+.border-highlighted {
   border: 20px solid black;
 }
 
