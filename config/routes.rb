@@ -210,7 +210,6 @@ Rails.application.routes.draw do
   resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
   resources :podcasts, only: %i[new create]
   resources :article_approvals, only: %i[create]
-  resources :sitemaps, only: %i[show]
   resolve("ProMembership") { [:pro_membership] } # see https://guides.rubyonrails.org/routing.html#using-resolve
   namespace :followings, defaults: { format: :json } do
     get :users
@@ -418,6 +417,8 @@ Rails.application.routes.draw do
   get "/:username/:view" => "stories#index",
       :constraints => { view: /comments|moderate|admin/ }
   get "/:username/:slug" => "stories#show"
+  get "/:sitemap" => "sitemaps#show",
+      :constraints => { format: /xml/, sitemap: /sitemap\-.+/ }
   get "/:username" => "stories#index"
 
   root "stories#index"

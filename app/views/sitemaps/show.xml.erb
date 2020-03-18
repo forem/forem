@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <%= @articles.each do |article_obj| %>
+    <url>
+
+        <loc>https://dev.to/<%= article_obj[0] %></loc>
+
+        <lastmod><%= article_obj[1] %></lastmod>
+
+        <changefreq><%= @change_frequency %></changefreq>
+
+        <priority>0.8</priority>
+
+    </url>
+  <% end %>
+
+</urlset> 
