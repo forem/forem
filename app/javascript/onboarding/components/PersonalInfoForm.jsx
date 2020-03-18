@@ -104,27 +104,25 @@ class PersonalInfoForm extends Component {
         <Navigation prev={prev} next={this.onSubmit} />
         <div className="onboarding-content">
           <header className="onboarding-content-header">
-            <h1 className="title">
-              About You
-            </h1>
+            <h1 className="title">About You</h1>
           </header>
           <form>
             {setupFormTextField({
               labelText: 'Where are you located?',
               entityName: 'location',
-              placeholderText: 'e.g. New York, NY',
+              placeholderText: 'New York, NY',
               onChangeCallback: this.handleChange,
             })}
             {setupFormTextField({
               labelText: 'What is your title?',
               entityName: 'employment_title',
-              placeholderText: 'e.g. Software Engineer',
+              placeholderText: 'Software Engineer',
               onChangeCallback: this.handleChange,
             })}
             {setupFormTextField({
               labelText: 'Where do you work?',
               entityName: 'employer_name',
-              placeholderText: 'e.g. ACME',
+              placeholderText: 'Company name, self-employed, etc.',
               onChangeCallback: this.handleChange,
             })}
           </form>
