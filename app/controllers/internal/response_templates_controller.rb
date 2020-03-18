@@ -22,7 +22,7 @@ class Internal::ResponseTemplatesController < Internal::ApplicationController
     else
       flash[:danger] = @response_template.errors.full_messages.to_sentence
       @response_templates = ResponseTemplate.page(params[:page]).per(50)
-      render internal_response_templates_path
+      render new_internal_response_template_path
     end
   end
 
@@ -35,11 +35,11 @@ class Internal::ResponseTemplatesController < Internal::ApplicationController
 
     if @response_template.update(permitted_attributes(ResponseTemplate))
       flash[:success] = "The response template \"#{@response_template.title}\" was updated."
+      redirect_to edit_internal_response_template_path(@response_template)
     else
       flash[:danger] = @response_template.errors.full_messages.to_sentence
+      render :edit
     end
-
-    redirect_back(fallback_location: edit_internal_response_template_path(@response_template))
   end
 
   def destroy
@@ -51,7 +51,7 @@ class Internal::ResponseTemplatesController < Internal::ApplicationController
       flash[:danger] = @response_template.errors.full_messages.to_sentence # this will probably never fail
     end
 
-    redirect_back internal_response_templates_path
+    redirect_back(fallback_location: internal_response_templates_path)
   end
 
   private
