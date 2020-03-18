@@ -5,10 +5,12 @@ import '../../__mocks__/mutationObserver';
 describe('ArticleController', () => {
   beforeEach(() => {
     document.body.innerHTML = `<div data-controller="article">
-      <button data-action="article#increaseFeaturedNumber"></button>
-      <button data-action="article#decreaseFeaturedNumber"></button>
-      <button data-action="article#highlightElement"></button>
-      <input data-target="article.featuredNumber"></input>
+      <div class="card-body">
+        <button data-action="article#increaseFeaturedNumber"></button>
+        <button data-action="article#decreaseFeaturedNumber"></button>
+        <button data-action="article#highlightElement"></button>
+        <input data-target="article.featuredNumber"></input>
+      </div>
     </div>`;
 
     const application = Application.start();
@@ -49,12 +51,12 @@ describe('ArticleController', () => {
   describe('#highlightElement', () => {
     it('adds a class to the controller element', () => {
       const button = document.querySelectorAll('button')[2];
-      const element = document.querySelector("[data-controller='article']");
+      const element = document.querySelector('.card-body');
 
       button.click();
 
       expect(
-        element.classList.contains('highlighted-bg', 'highlighted-border'),
+        element.classList.contains('bg-highlighted', 'border-highlighted'),
       ).toBe(true);
     });
   });
