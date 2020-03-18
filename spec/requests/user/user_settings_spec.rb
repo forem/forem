@@ -64,10 +64,12 @@ RSpec.describe "UserSettings", type: :request do
 
       it "renders does not render CONNECT_WITH_TWITTER if SiteConfig does not include Twitter auth" do
         user.identities.where(provider: "twitter").destroy_all
+        current_auth_value = SiteConfig.authentication_providers
         SiteConfig.authentication_providers = ["github"]
         SiteConfig.clear_cache
         get "/settings"
         expect(response.body).not_to include "CONNECT TWITTER ACCOUNT"
+        SiteConfig.authentication_providers = current_auth_value # restore prior value
       end
     end
   end
