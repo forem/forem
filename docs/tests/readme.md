@@ -4,11 +4,11 @@ items:
   - acceptance-tests.md
   - integration-tests.md
   - unit-functional-tests.md
-  - preact-tests.md
+  - frontend-tests.md
   - accessibility-tests.md
+  - regression-tests.md
   - code-coverage.md
   - codeclimate.md
-  - skip-ci.md
 ---
 
 We use the following testing tools:
@@ -31,13 +31,13 @@ a bug. Ideally, we test the functionality of the frontend and the backed.
 
 If you'd like to help us improve our test coverage, we recommend checking out
 our total coverage and writing tests for selected files based on SimpleCov's
-test coverage results. You can also check out [Code Climate
-summary](https://codeclimate.com/github/thepracticaldev/dev.to) which includes
-the test coverage.
+test coverage results. You can also check out
+[Code Climate summary](https://codeclimate.com/github/thepracticaldev/dev.to)
+which includes the test coverage.
 
 If you're new to writing tests in general or with Rails, we recommend reading
-about [testing with Rails, RSpec, and Capybara
-first](https://guides.rubyonrails.org/testing.html).
+about
+[testing with Rails, RSpec, and Capybara first](https://guides.rubyonrails.org/testing.html).
 
 ## Continuous Integration & Continuous Deployment
 
@@ -52,3 +52,8 @@ Travis will deploy your pull request to production after CI passes and a member
 of the DEV team has approved it.
 
 Our test suite is not perfect and sometimes a re-run is needed.
+
+Please note that you will need to have Elasticsearch installed and running for
+certain tests in our test suite. You can find instructions on how to install and
+run Elasticsearch specific your environment in the
+[Installation Guide](/installation).

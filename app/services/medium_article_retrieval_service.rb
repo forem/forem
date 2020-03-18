@@ -10,8 +10,8 @@ class MediumArticleRetrievalService
   end
 
   def call
-    html = HTTParty.get(url)
-    page = Nokogiri::HTML(html)
+    response = HTTParty.get(url)
+    page = Nokogiri::HTML(response.body)
 
     title = page.at("meta[name='title']")["content"]
     reading_time = page.at("meta[name='twitter:data1']")["value"]

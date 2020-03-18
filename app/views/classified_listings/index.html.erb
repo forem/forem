@@ -2,13 +2,13 @@
   <% title "Listings" %>
 
   <link rel="canonical" href="https://dev.to<%= request.path %>" />
-  <meta name="description" content="Where programmers share ideas and help each other grow.">
+  <meta name="description" content="<%= SiteConfig.community_description %>">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://dev.to<%= request.path %>" />
   <meta property="og:site_name" content="<%= community_qualified_name %>" />
   <% if @displayed_classified_listing %>
-    <meta property="og:title" content="<%= truncate @displayed_classified_listing.title, length: 54 %>" />
+    <meta property="og:title" content="<%= truncate @displayed_classified_listing.title, length: 54 %>">
     <meta property="og:description" content="DEV Listing" />
     <meta property="og:image" content="<%= listing_social_image_url @displayed_classified_listing %>">
     <meta name="twitter:title" content="<%= truncate @displayed_classified_listing.title, length: 54 %>">
@@ -16,13 +16,13 @@
     <meta name="twitter:image:src" content="<%= listing_social_image_url @displayed_classified_listing %>">
   <% else %>
     <meta property="og:title" content="Listings" />
-    <meta property="og:description" content="Where programmers share ideas and help each other grow." />
+    <meta property="og:description" content="<%= SiteConfig.community_description %>" />
     <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/sa3xjflbtvt9zw0xpan5.png">
     <meta name="twitter:title" content="Listings">
-    <meta name="twitter:description" content="Where programmers share ideas, experiences, and help each other grow.">
+    <meta name="twitter:description" content="<%= SiteConfig.community_description %>">
     <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/sa3xjflbtvt9zw0xpan5.png">
   <% end %>
-  <meta name="twitter:site" content="@<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %>">
+  <meta name="twitter:site" content="@<%= SiteConfig.social_networks_handle %>">
   <meta name="twitter:card" content="summary_large_image">
 <% end %>
 
@@ -32,15 +32,15 @@
       only: %i[title processed_html tag_list category id user_id slug contact_via_connect location],
       include: {
         author: { only: %i[username name], methods: %i[username profile_image_90] }
-      },
+      }
     ) %>"
     data-allcategories="<%= ClassifiedListing.categories_for_display.to_json %>"
     <% if @displayed_classified_listing %>
       data-displayedlisting="<%= @displayed_classified_listing.to_json(
-        only: %i[title processed_html tag_list category id user_id slug contact_via_connect location],
-        include: {
-          author: { only: %i[username name], methods: %i[username profile_image_90] }
-        },
+          only: %i[title processed_html tag_list category id user_id slug contact_via_connect location],
+          include: {
+            author: { only: %i[username name], methods: %i[username profile_image_90] }
+          },
       ) %> "
     <% end %>
   >
@@ -54,4 +54,4 @@
   </div>
 </div>
 
-<%= javascript_pack_tag "listings", defer: true %>
+<%= javascript_packs_with_chunks_tag "listings", defer: true %>

@@ -1,7 +1,6 @@
 <%= content_for :page_meta do %>
   <%= render "articles/tags/meta" %>
 <% end %>
-<% params.delete(:i) %>
 <% expiry_minutes = params[:timeframe].blank? || params[:timeframe] == "latest" ? 4 : 20 %>
 <% flag = true %>
 <% cache("tag-stories-index-#{params}-#{flag}-#{@tag_model.updated_at}", expires_in: expiry_minutes.minutes) do %>
@@ -34,6 +33,7 @@
       data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which=""
       data-algolia-tag="<%= @tag %>"
       data-feed="<%= params[:timeframe] || "base-feed" %>"
+      data-requires-approval="<%= @tag_model.requires_approval %>"
       data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>">
     <%= render "articles/tags/sidebar" %>
     <div class="articles-list" id="articles-list">
@@ -105,7 +105,9 @@
       </div>
 
       <div class="substories" id="substories">
-        <% if @stories.any? %>
+        <%# articles/tags/main_feed will iterate on stories with .each_with_index,
+            thus by using .present? here we preload the items %>
+        <% if @stories.present? %>
           <%= render "articles/tags/main_feed" %>
         <% end %>
       </div>

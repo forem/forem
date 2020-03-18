@@ -1,110 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <% title = yield(:title) %>
-    <title><%= title || "#{ApplicationConfig['COMMUNITY_NAME']} Community" %></title>
-    <% if internal_navigation? %>
-      <style>
-        .universal-page-content-wrapper {
-          visibility: hidden;
-        }
-      </style>
-    <% else %>
-      <meta name="last-updated" content="<%= Time.current %>">
-      <meta name="user-signed-in" content="<%= user_signed_in? %>">
-      <meta name="algolia-public-id" content="<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>">
-      <meta name="algolia-public-key" content="<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>">
-      <meta name="environment" content="<%= Rails.env %>">
-      <%= render "layouts/styles" %>
-      <style>
-        .home {
-          overflow: hidden;
-          position: relative;
-          text-align: center;
-          min-height: 440px;
-          margin: auto;
-          max-width: 1250px;
-        }
-
-        @media screen and (min-width: 950px) {
-          .home {
-            margin-top: 26px;
-          }
-        }
-      </style>
-      <%= javascript_pack_tag "manifest", defer: true %>
-      <%= javascript_pack_tag "vendor", defer: true %>
-      <%= javascript_pack_tag "Search", defer: true %>
-      <% if core_pages? %>
-        <%= javascript_include_tag "base", defer: true %>
-        <% if user_signed_in? %>
-          <%= javascript_pack_tag "onboardingRedirectCheck", defer: true %>
-          <%= javascript_pack_tag "contentDisplayPolicy", defer: true %>
-        <% end %>
-      <% end %>
-      <% if !core_pages? %>
-        <%= stylesheet_link_tag "application", media: "all" %>
-        <% if render_js? %>
-          <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-          <%= javascript_include_tag "application" %>
-        <% end %>
-      <% end %>
-      <% if view_class == "users users-signout_confirm" %>
-        <%= javascript_include_tag "application" %>
-      <% end %>
-      <%= yield(:page_meta) %>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <%= favicon_link_tag ApplicationConfig["FAVICON_URL"] %>
-      <link rel="apple-touch-icon" href="<%= asset_path "apple-icon.png" %>">
-      <link rel="apple-touch-icon" sizes="152x152" href="<%= asset_path "apple-icon-152x152.png" %>">
-      <link rel="apple-touch-icon" sizes="180x180" href="<%= asset_path "apple-icon-180x180.png" %>">
-      <link rel="apple-touch-icon" sizes="167x167" href="<%= asset_path "apple-icon-167x167.png" %>">
-      <link href="<%= asset_path "android-icon-192x192.png" %>" rel="icon" sizes="192x192" />
-      <link href="<%= asset_path "android-icon-128x128.png" %>" rel="icon" sizes="128x128" />
-      <meta name="apple-mobile-web-app-title" content="dev.to">
-      <meta name="application-name" content="dev.to">
-      <meta property="fb:pages" content="568966383279687" />
-      <meta name="theme-color" content="#000000" />
-      <% if view_class.include? "users-signout_confirm" %>
-        <%= csrf_meta_tags %>
-      <% end %>
-      <link rel="manifest" href="/manifest.json" />
-      <link rel="search" href="https://dev.to/search.xml" type="application/opensearchdescription+xml" title="<%= community_qualified_name %>" />
-    <% end %>
-  </head>
-  <body data-user-status="<%= user_logged_in_status %>" data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>">
-    <div id="body-styles"></div>
-    <% if user_signed_in? && !internal_navigation? %>
-      <%= render "layouts/user_config" %>
-    <% end %>
-    <% unless internal_navigation? %>
-      <div id="audiocontent">
-        <%= yield(:audio) %>
-      </div>
-    <% end %>
-    <% cache("application-top-bar--#{user_signed_in?}--#{internal_navigation?}", expires_in: 100.hours) do %>
-      <%= render "layouts/top_bar" unless internal_navigation? %>
-    <% end %>
-    <div id="message-notice"></div>
-    <div id="page-content" class="universal-page-content-wrapper <%= view_class %>" data-current-page="<%= current_page %>">
-      <% if flash[:global_notice] %>
-        <div class="global-notice">
-          <%= flash[:global_notice] %>
-        </div>
-      <% end %>
-      <div id="page-content-inner">
-        <%= yield %>
-      </div>
+<%= render "shell/top" %>
+<style>.app-shell-loader {display: none;}</style>
+<div id="page-content" class="universal-page-content-wrapper <%= view_class %>" data-current-page="<%= current_page %>">
+  <% if flash[:global_notice] %>
+    <div class="global-notice">
+      <%= flash[:global_notice] %>
     </div>
-    <% unless internal_navigation? %>
-      <% cache("footer-and-signup-modal--#{user_signed_in?}--#{ApplicationConfig['HEROKU_SLUG_COMMIT']}", expires_in: 24.hours) do %>
-        <%= render "layouts/footer" %>
-        <%= render "layouts/signup_modal" unless user_signed_in? %>
-      <% end %>
-      <div id="live-article-indicator" class="live-article-indicator"></div>
-      <%= image_tag("twitter-logo.svg", class: "icon-img", style: "display:none", alt: "twitter logo") %>
-      <%= image_tag("github-logo.svg", class: "icon-img", style: "display:none", alt: "github logo") %>
+  <% end %>
+  <div id="page-content-inner">
+    <% if @hero_html %>
+      <div id="hero-html-wrapper">
+        <script>
+          if (localStorage.getItem('exited_hero') === 'shecoded') {
+            document.getElementById('hero-html-wrapper').style.display = 'none';
+          }
+        </script>
+        <%= @hero_html.html_safe %>
+      </div>
     <% end %>
-  </body>
-</html>
+    <%= yield %>
+  </div>
+</div>
+<%= render "shell/bottom" %>

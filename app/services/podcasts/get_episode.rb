@@ -10,20 +10,25 @@ module Podcasts
 
       episode = podcast.existing_episode(item_data)
       if episode
-        if !episode.published_at? && item_data.pubDate
-          update_published_at(episode, item_data)
-        end
-        unreachable = !(episode.https? && episode.reachable?)
-        need_url_update = (unreachable && episode.created_at > 12.hours.ago) || force_update
-        PodcastEpisodes::UpdateMediaUrlJob.perform_later(episode.id, item_data.enclosure_url) if need_url_update
+        try_update_media_url(episode: episode, item_data: item_data, force_update: force_update)
       else
-        PodcastEpisodes::CreateJob.perform_later(podcast.id, item_data.to_h)
+        PodcastEpisodes::CreateWorker.perform_async(podcast.id, item_data.to_h)
       end
     end
 
     private
 
     attr_reader :podcast
+
+    def try_update_media_url(episode:, item_data:, force_update:)
+      if !episode.published_at? && item_data.pubDate
+        update_published_at(episode, item_data)
+      end
+
+      unreachable = !(episode.https? && episode.reachable?)
+      need_url_update = (unreachable && episode.created_at > 12.hours.ago) || force_update
+      PodcastEpisodes::UpdateMediaUrlWorker.perform_async(episode.id, item_data.enclosure_url) if need_url_update
+    end
 
     def update_published_at(episode, item_data)
       episode.published_at = item_data.pubDate.to_date

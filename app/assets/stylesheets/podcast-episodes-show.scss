@@ -1,231 +1,248 @@
 @import 'variables';
 
-.podcast-episode-container{
+.podcast-episode-container {
   font-family: $helvetica;
 
-  .hero{
-    padding-bottom:30px;
-    text-align:center;
-    .title{
-      padding-top:40px;
-      background:$black;
-      height:300px;
-      margin-bottom:-120px;
-      @media screen and ( min-width: 600px ){
-        padding-top:60px;
-        height:400px;
-        margin-bottom:-200px;
+  .hero {
+    padding-bottom: 30px;
+    text-align: center;
+    .title {
+      padding-top: 10px;
+      background: $black;
+      min-height: 300px;
+      margin-bottom: -60px;
+      @media screen and (min-width: 600px) {
+        padding-top: 20px;
+        min-height: 400px;
+        margin-bottom: -120px;
       }
-      color:white;
-      h2{
-        font-weight:300;
-        margin:0;
-        margin-top:40px;
-        font-size:18px;
-        color:rgb(235, 243, 245);
-        a{
-          color:white;
+      color: white;
+      h2 {
+        font-weight: 500;
+        margin: 0;
+        margin-top: 40px;
+        font-size: 20px;
+        color: rgb(235, 243, 245);
+        a {
+          color: white;
           display: inline-block;
           margin-right: 4px;
         }
-        img{
-          height:28px;
-          width:28px;
-          vertical-align:-5px;
-          height:23px;
-          width:23px;
-          vertical-align:-4px;
-          margin-right:8px;
-          border-radius:30px;
+        img {
+          height: 28px;
+          width: 28px;
+          vertical-align: -5px;
+          height: 23px;
+          width: 23px;
+          vertical-align: -4px;
+          margin-right: 8px;
+          border-radius: 30px;
         }
         .follow-action-button {
-          width: 120px;
+          width: 260px;
           border-radius: 3px;
           border: 0px;
-          font-size:16px;
-          vertical-align:2px;
+          display: block;
+          margin: 20px auto;
+          padding: 10px 0px;
+          font-size: 25px;
         }
-        @media screen and ( min-width: 600px ){
-          font-size:22px;
-          img{
-            height:28px;
-            width:28px;
-            vertical-align:-5px;
+        @media screen and (min-width: 600px) {
+          font-size: 24px;
+          img {
+            height: 28px;
+            width: 28px;
+            vertical-align: -5px;
           }
         }
-
       }
-      h1{
-        font-weight:300;
-        margin:15px auto 18px;
-        font-size:27px;
-        line-height:31px;
-        max-width:94%;
+      h1 {
+        font-weight: 700;
+        margin: 15px auto 18px;
+        font-size: 30px;
+        line-height: 31px;
+        max-width: 94%;
 
-        @media screen and ( min-width: 680px ){
-          font-size:40px;
-          line-height:44px;
-          margin-bottom:28px;
+        @media screen and (min-width: 680px) {
+          font-size: 45px;
+          line-height: 55px;
+          margin-bottom: 28px;
         }
-        @media screen and ( min-width: 800px ){
-          font-size:44px;
-          line-height:49px;
+        @media screen and (min-width: 800px) {
+          font-size: 49px;
+          line-height: 58px;
         }
-        &.smaller{
-          font-size:23px;
-          line-height:25.5px;
-          @media screen and ( min-width: 490px ){
-            font-size:27px;
-            line-height:30px;
+        &.smaller {
+          font-size: 23px;
+          line-height: 25.5px;
+          @media screen and (min-width: 490px) {
+            font-size: 30px;
+            line-height: 35px;
           }
-          @media screen and ( min-width: 680px ){
-            font-size:30px;
-            line-height:33px;
-            margin-bottom:20px;
+          @media screen and (min-width: 680px) {
+            font-size: 35px;
+            line-height: 39px;
+            margin-bottom: 20px;
           }
-          @media screen and ( min-width: 800px ){
-            font-size:40px;
-            line-height:43px;
+          @media screen and (min-width: 800px) {
+            font-size: 45px;
+            line-height: 50px;
           }
+        }
+      }
+      time {
+        padding-bottom: 70px;
+        display: block;
+        @media screen and (min-width: 600px) {
+          padding-bottom: 150px;
         }
       }
     }
-    .status-message{
-      margin:auto;
-      margin-top:-52px;
-      @media screen and ( min-width: 680px ){
-        margin-top:-63px;
+    .status-message {
+      margin: auto;
+      margin-top: -52px;
+      @media screen and (min-width: 680px) {
+        margin-top: -63px;
       }
-      position:absolute;
-      z-index:13;
-      text-align:center;
-      left:0;
-      right:0;
-      color:$black;
-      padding:1px 0px 2px;
-      border-radius:2px;
+      position: absolute;
+      z-index: 13;
+      text-align: center;
+      left: 0;
+      right: 0;
+      color: $black;
+      padding: 2px 0px 3px;
+      border-radius: 2px;
       transition: opacity 400ms ease;
-      background:white;
-      width:66px;
-      font-size:13px;
-      font-weight:bold;
+      background: white;
+      width: 130px;
+      font-size: 16px;
+      font-weight: bold;
+      display: none;
+      &.showing {
+        display: block;
+      }
     }
 
-    .playing{
-      .record{
-        .main-image{
-          animation:spin 20s linear infinite;
+    .playing {
+      .record {
+        .main-image {
+          animation: spin 20s linear infinite;
           -webkit-backface-visibility: hidden;
         }
-        .play-butt{
-          display:none;
+        .play-butt {
+          display: none;
         }
-        .pause-butt{
-          display:block;
+        .pause-butt {
+          display: block;
         }
       }
     }
 
-    .record{
-      position:relative;
-      cursor:pointer;
-      width:72vw;
-      height:72vw;
-      margin:auto;
-      @media screen and ( min-width: 380px ){
-        width:270px;
-        height:270px;
+    .record {
+      position: relative;
+      cursor: pointer;
+      width: 72vw;
+      height: 72vw;
+      margin: auto;
+      @media screen and (min-width: 380px) {
+        width: 270px;
+        height: 270px;
       }
-      @media screen and ( min-width: 680px ){
-        width:290px;
-        height:290px;
+      @media screen and (min-width: 680px) {
+        width: 290px;
+        height: 290px;
       }
-      .main-image{
-        border-radius:450px;
-        box-shadow:5px 5px 60px rgba(0,0,0,0.3);
-        background:$black;
-        position:relative;
-        z-index:12;
-        width:100%;
-        height:100%;
-        min-height:160px;
-        @media screen and ( min-width: 680px ){
-          width:290px;
-          min-height:290px;
+      .main-image {
+        border-radius: 450px;
+        box-shadow: 5px 5px 60px rgba(0, 0, 0, 0.3);
+        background: $black;
+        position: relative;
+        z-index: 12;
+        width: 100%;
+        height: 100%;
+        min-height: 160px;
+        @media screen and (min-width: 680px) {
+          width: 290px;
+          min-height: 290px;
         }
       }
-      .butt{
-        position:absolute;
-        width: 160px;
-        height: 160px;
+      .butt {
+        position: absolute;
+        width: 120px;
+        height: 120px;
         position: absolute;
         top: 50%;
         left: 50%;
-        margin: -80px 0 0 -80px;
-        z-index:18;
+        margin: -60px 0 0 -60px;
+        z-index: 18;
       }
-      .pause-butt{
-        display:none;
+      .pause-butt {
+        display: none;
       }
-      &.playing{
-        .main-image{
-          animation:spin 20s linear infinite;
+      &.playing {
+        .main-image {
+          animation: spin 20s linear infinite;
           -webkit-backface-visibility: hidden;
         }
-        .play-butt{
-          display:none;
+        .play-butt {
+          display: none;
         }
-        .pause-butt{
-          display:block;
+        .pause-butt {
+          display: block;
         }
       }
     }
-    audio{
-      display:none;
+    audio {
+      display: none;
     }
   }
-  .subscribe-buttons{
-    text-align:center;
-    a{
-      padding:5px;
-      background-color:rgb(47, 61, 73);
-      color:white;
-      border-radius:3px;
-      margin:6px;
-      font-size:14px;
-      display:inline-block;
-      width:40%;
+  .subscribe-buttons {
+    text-align: center;
+    a {
+      padding: 5px;
+      background-color: rgb(47, 61, 73);
+      color: white;
+      border-radius: 3px;
+      margin: 6px;
+      font-size: 14px;
+      display: inline-block;
+      width: 40%;
       border: 1px solid rgb(60, 81, 99);
       box-shadow: inset 1px 1px 0 rgb(72, 95, 116);
       transition: background-color 250ms ease;
-      @media screen and ( min-width: 590px ){
-        width:112px;
+      @media screen and (min-width: 590px) {
+        width: 112px;
       }
-      &:hover{
-        background-color:rgb(41, 46, 52);
+      &:hover {
+        background-color: rgb(41, 46, 52);
       }
-      img{
-        width:20px;
-        height:20px;
-        vertical-align:-4px;
-        margin-right:4px;
+      img {
+        width: 20px;
+        height: 20px;
+        vertical-align: -4px;
+        margin-right: 4px;
       }
     }
   }
-  .container{
+  .container {
     margin-bottom: 60px;
-    margin-top: 40px;
-    .comments-container{
-      margin-bottom:20px;
+    margin-top: 20px;
+    .comments-container {
+      margin-bottom: 20px;
     }
   }
-  .body{
-    padding:calc(0.7vw + 4px) 0px calc(0.5vw + 2px);
+  .body {
+    padding: calc(0.7vw + 4px) 0px calc(0.5vw + 2px);
     font-family: $helvetica;
-    img{
-      min-height:0px !important;
+    img {
+      min-height: 0px !important;
     }
   }
 }
 
-@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+@keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}

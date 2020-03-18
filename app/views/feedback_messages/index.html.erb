@@ -1,10 +1,15 @@
 <% title "Feedback" %>
+<% cache(cache_key_heroku_slug("feedback-messages-lander-styling")) do %>
+  <style>
+    <%= Rails.application.assets["feedback_messages.css"].to_s.html_safe %>
+  </style>
+<% end %>
 <div class="dialog">
   <div>
     <h2>Thank you for your report.</h2>
     <h3><a href="/">Return to home page</a></h3>
     <p>
-      Questions? Send an email to <a href="mailto:<%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %>"><%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %></a>
+      Questions? Send an email to <a href="mailto:<%= SiteConfig.default_site_email %>"><%= SiteConfig.default_site_email %></a>
     </p>
   </div>
 </div>

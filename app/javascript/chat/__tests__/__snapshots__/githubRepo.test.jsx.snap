@@ -6,7 +6,7 @@ preact-render-spy (1 nodes)
 <div class="activecontent__githubrepo">
   <div class="activecontent__githubrepoheader">
     <a href="/Users/benhalpern/dev/dev.to_core/app"></a>
-    invalid json response body at undefined reason: Unexpected end of JSON input
+    invalid json response body at  reason: Unexpected end of JSON input
   </div>
   <div class="activecontent__githubrepofiles activecontent__githubrepofiles--root">
     <div class="activecontent__githubrepofilerow">
@@ -14,7 +14,7 @@ preact-render-spy (1 nodes)
         href="https://github.com/username/repositoryname/tree/master/Camera"
         data-api-url="https://api.github.com/repos/username/repositoryname/contents/Camera?ref=master"
         data-path="Camera"
-        onClick={[Function value]}
+        onClick={[Function anonymous]}
       >
         <span
           role="img"
@@ -30,7 +30,7 @@ preact-render-spy (1 nodes)
         href="https://github.com/username/repositoryname/tree/master/Environment"
         data-api-url="https://api.github.com/repos/username/repositoryname/contents/Environment?ref=master"
         data-path="Environment"
-        onClick={[Function value]}
+        onClick={[Function anonymous]}
       >
         <span
           role="img"
@@ -46,7 +46,7 @@ preact-render-spy (1 nodes)
         href="https://github.com/username/repositoryname/tree/master/Interactables"
         data-api-url="https://api.github.com/repos/username/repositoryname/contents/Interactables?ref=master"
         data-path="Interactables"
-        onClick={[Function value]}
+        onClick={[Function anonymous]}
       >
         <span
           role="img"
@@ -62,7 +62,7 @@ preact-render-spy (1 nodes)
         href="https://github.com/username/repositoryname/tree/master/Level%20Design"
         data-api-url="https://api.github.com/repos/username/repositoryname/contents/Level%20Design?ref=master"
         data-path="Level Design"
-        onClick={[Function value]}
+        onClick={[Function anonymous]}
       >
         Level Design
       </a>
@@ -72,7 +72,7 @@ preact-render-spy (1 nodes)
         href="https://github.com/username/repositoryname/tree/master/Player"
         data-api-url="https://api.github.com/repos/username/repositoryname/contents/Player?ref=master"
         data-path="Player"
-        onClick={[Function value]}
+        onClick={[Function anonymous]}
       >
         Player
       </a>

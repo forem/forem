@@ -64,6 +64,6 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def user_is_commentable_author?
-    record.commentable.user_id == user.id
+    record.commentable.present? && record.commentable.user_id == user.id
   end
 end

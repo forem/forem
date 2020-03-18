@@ -14,6 +14,7 @@ RSpec.describe "/internal/listings", type: :request do
       put "/internal/listings/#{classified_listing.id}", params: {
         classified_listing: { title: "updated" }
       }
+      sidekiq_perform_enqueued_jobs
       expect(CacheBuster).to have_received(:bust_classified_listings)
     end
   end

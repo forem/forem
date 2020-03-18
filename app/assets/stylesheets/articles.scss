@@ -6,853 +6,10 @@
 
 .home {
   position: relative;
-  min-height: 440px;
-  margin: auto;
-  max-width: 1250px;
+  margin: 0 auto;
+  max-width: $max-width;
   text-align: left;
-  @media screen and (min-width: 950px) {
-    margin-top: 26px;
-  }
-  &.sub-home {
-    margin-top: 10px;
-    .side-bar {
-      @media screen and (min-width: 950px) {
-        margin-top: 12px;
-      }
-    }
-  }
-  .query-results-nothing {
-    padding: 40px 0px;
-    font-size: 1.2em;
-    @include themeable(background, theme-container-background, white);
-    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
-    border-radius: 3px;
-    @include themeable(
-      border,
-      theme-container-border,
-      1px solid $outline-color
-    );
-    width: 94%;
-    margin: auto;
-    margin-top: 12px;
-    @media screen and (min-width: 950px) {
-      width: 100%;
-    }
-  }
 
-  .articles-list {
-    text-align: left;
-    margin: auto;
-    text-align: center;
-    width: 100%;
-    position: relative;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0); //Invisible black
-    max-width: 750px;
-    padding-bottom: 30px;
-    @media screen and (min-width: 750px) {
-      margin-bottom: 30px;
-    }
-    @media screen and (min-width: 950px) {
-      width: 100%;
-      margin-left: 2.3%;
-      margin-right: 15px;
-      max-width: calc(100% - 380px);
-      float: left;
-    }
-    @media screen and (min-width: 1120px) {
-      max-width: calc(100% - 640px);
-    }
-    @media screen and (min-width: 1240px) {
-      width: 100%;
-      margin-left: 2.3%;
-      margin-right: 15px;
-      max-width: 604px;
-      float: left;
-    }
-    .notifications-mobile-filters {
-      padding-bottom: 8px;
-      @media screen and (min-width: 950px) {
-        display: none;
-      }
-      .organization-name {
-        font-size: 15px;
-        font-weight: bold;
-        border: 0px;
-        display: inline-block;
-        width: 27%;
-        padding: 9px 0px;
-        text-align: center;
-        @include themeable(color, theme-secondary-color, $medium-gray);
-        margin: 1%;
-      }
-      .query-filter-button {
-        font-size: 12px;
-        font-weight: bold;
-        background: transparent;
-        border: 0px;
-        display: inline-block;
-        width: 27%;
-        padding: 9px 0px;
-        text-align: left;
-        border-radius: 100px;
-        @include themeable(color, theme-color, $black);
-        text-align: center;
-        margin: 1%;
-        &:hover {
-          @include themeable(
-            background,
-            theme-container-background-hover,
-            lighten($bold-blue, 38%)
-          );
-        }
-        &.selected {
-          @include themeable(
-            background,
-            theme-container-accent-background,
-            lighten($bold-blue, 8%)
-          );
-          @include themeable(
-            color,
-            theme-color,
-            white
-          );
-        }
-      }
-    }
-    .on-page-nav-controls {
-      height: 45px;
-      position: relative;
-      opacity: 0.85;
-      &.user-nav-controls {
-        margin-top: -12px;
-        @media screen and (min-width: 950px) {
-          display: none;
-        }
-      }
-      .on-page-nav-butt {
-        position: absolute;
-        top: 14px;
-        border: 0px;
-        background: transparent;
-        border-radius: 8px;
-        img {
-          height: 24px;
-        }
-        &.on-page-nav-butt-left {
-          left: 3%;
-        }
-        &.on-page-nav-butt-right {
-          right: 3%;
-        }
-        @media screen and (min-width: 950px) {
-          display: none;
-        }
-      }
-      .on-page-nav-label {
-        position: absolute;
-        right: 0;
-        left: 0;
-        font-family: $helvetica-condensed;
-        font-stretch: condensed;
-        top: 18px;
-        font-weight: 600;
-        &.sub-home-nav {
-          top: 12px;
-        }
-        .wide-nav-links {
-          display: none;
-        }
-        @media screen and (min-width: 650px) {
-          .narrow-nav-select {
-            display: none;
-          }
-          .wide-nav-links {
-            display: block;
-            cursor: default;
-          }
-        }
-        @media screen and (min-width: 950px) {
-          top: 9px;
-          &.sub-home-nav {
-            top: 8px;
-          }
-        }
-      }
-      .separator {
-        border-left: 2px solid $light-medium-gray;
-        display: inline-block;
-        margin: 0px 7px;
-        height: 15px;
-      }
-      .nav-chronofiter-link {
-        display: inline-block;
-        padding: 2px 8px;
-        font-size: 0.95em;
-        border-radius: 2px;
-        border: 1px solid transparent;
-        &.selected {
-          background: $purple;
-          color: $black;
-          border: 1px solid $dark-purple;
-          box-shadow: 3px 4px 0px $dark-purple;
-        }
-        &:hover {
-          opacity: 1;
-          background: $dark-purple;
-          color: white;
-          border: 1px solid $purple;
-          box-shadow: 3px 4px 0px $purple;
-        }
-      }
-      .narrow-nav-select {
-        button {
-          all: unset;
-          background: transparent;
-          border: 0;
-          font-family: $helvetica-condensed;
-          font-stretch: condensed;
-          font-weight: 600;
-          cursor: pointer;
-        }
-      }
-    }
-    .pinned-articles {
-      @include themeable(background, theme-container-background, $white);
-      @include themeable(
-        border,
-        theme-container-border,
-        1px solid $outline-color
-      );
-      padding: 8px 0px;
-      margin: auto;
-      margin-top: 8px;
-      @media screen and (min-width: 750px) {
-        border-radius: 3px;
-        box-sizing: border-box;
-        padding: 8px 8px;
-        padding-right: 9px;
-        width: calc(100% + 2px);
-        max-width: 722px;
-      }
-      .pinned-articles-indicator {
-        text-align: left;
-        font-size: 15px;
-        font-weight: bold;
-        padding-top: 8px;
-        padding-left: 2.8%;
-        @media screen and (min-width: 750px) {
-          padding-left: 22px;
-        }
-        @media screen and (min-width: 950px) {
-          padding-left: 2px;
-        }
-        img {
-          width: 20px;
-          transform: rotate(-8deg);
-          vertical-align: -5px;
-          @include themeable(filter, theme-social-icon-invert, invert(0));
-        }
-      }
-    }
-    a {
-      @include themeable(color, theme-container-color, $black);
-    }
-    a.small-pic-link-wrapper,
-    .placeholder-div {
-      display: block;
-      width: 100%;
-    }
-    .single-article {
-      text-align: left;
-      @include themeable(background, theme-container-background, $white);
-      transition: opacity 0.35s ease-in;
-      border: 1px solid $outline-color;
-      @include themeable(
-        border,
-        theme-container-border,
-        1px solid $outline-color
-      );
-      @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
-      border-radius: 3px;
-      cursor: pointer;
-      width: 96%;
-      margin: auto;
-      position: relative;
-      @media screen and (min-width: 950px) {
-        width: 100%;
-      }
-      &.active {
-        opacity: 0.66;
-      }
-      &.big-article {
-        &.active {
-          opacity: 0.84;
-        }
-        .time-ago-indicator {
-          vertical-align: 0.11em;
-        }
-      }
-      &.single-article-small-pic {
-        vertical-align: top;
-        overflow: hidden;
-        margin-top: 8px;
-        @media screen and (min-width: 430px) {
-          margin-top: 12px;
-        }
-      }
-      &.single-article-single-podcast {
-        h4 {
-          bottom: 10px;
-        }
-        .content {
-          padding-bottom: 40px;
-        }
-      }
-      &.single-article-podcast-div {
-        margin-top: 8px;
-        padding: 8px 0px 15px;
-        font-size: 0.8em;
-        h3 {
-          font-size: 1.5em;
-          margin-left: 13px;
-          font-weight: 800;
-        }
-        a.individual-podcast-link {
-          strong {
-            display: block;
-            margin-bottom: 4px;
-          }
-          display: block;
-          padding: 4px 14px 7px;
-          &:hover {
-            @include themeable(
-              background,
-              theme-container-background-hover,
-              $light-gray
-            );
-          }
-        }
-        p {
-          margin-left: 14px;
-        }
-        @media screen and (min-width: 430px) {
-          margin-top: 12px;
-          a.individual-podcast-link {
-            strong {
-              margin-bottom: 5px;
-            }
-            padding: 5px 14px 9px;
-          }
-        }
-      }
-      h4 {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .single-article-video-preview {
-        img {
-          width: 100%;
-        }
-        position: relative;
-        padding-top: 56%;
-        display: block;
-        background: $black no-repeat center center;
-        background-size: cover;
-        &:hover {
-          opacity: 1;
-        }
-        .single-article-video-duration {
-          position: absolute;
-          bottom: 8px;
-          right: 7px;
-          background: rgba(0, 0, 0, 0.8);
-          color: white;
-          border-radius: 3px;
-          padding: 2px 5px 3px;
-          font-size: 0.75em;
-          font-weight: 500;
-          img {
-            width: 12px;
-            height: 12px;
-            margin-right: 4px;
-            vertical-align: -1px;
-          }
-        }
-      }
-      .article-organization-headline {
-        display: block;
-        margin-bottom: calc(-1px - 0.6vw);
-        display: flex;
-        .article-organization-headline-inner {
-          @include themeable(
-            background,
-            theme-container-accent-background,
-            darken($light-gray, 6%)
-          );
-          @include themeable(color, theme-color, $black);
-          padding: 6px 12px;
-          border-radius: 100px;
-          font-weight: 600;
-          display: inline-block;
-          margin-top: 10px;
-          margin-left: 10px;
-          font-size: calc(0.9em);
-          img {
-            height: calc(1.3em);
-            width: calc(1.3em);
-            vertical-align: -0.27em;
-            margin-right: 6px;
-            border-radius: 100px;
-          }
-        }
-        a.org-headline-filler {
-          flex: 1;
-        }
-      }
-      .small-pic {
-        float: left;
-        height: 40px;
-        width: 40px;
-        margin-left: 12px;
-        margin-top: 3px;
-        border-radius: 50px;
-        padding: 8px 0px 11px;
-        @media screen and (min-width: 430px) {
-          height: 50px;
-          width: 50px;
-          padding: 20px 0px 23px;
-        }
-        @media screen and (min-width: 1400px) {
-          padding: 23px 0px 27px;
-        }
-        img,
-        .color {
-          height: 100%;
-          width: 100%;
-          border-radius: 50px;
-        }
-        &:hover {
-          opacity: 0.9;
-        }
-      }
-      .tiny-pic {
-        display: inline-block;
-        height: 30px;
-        width: 30px;
-        img {
-          height: 100%;
-          width: 100%;
-          &.round {
-            border-radius: 30px;
-          }
-        }
-      }
-      .content {
-        float: left;
-        width: calc(100% - 75px);
-        padding: calc(1vw + 7px) 9px;
-        padding-bottom: 110px;
-        h3 {
-          margin: 0px;
-          font-size: 21px;
-          line-height: 25px;
-          width: 100%;
-          padding: 0px;
-          word-break: break-word;
-          .tag-identifier {
-            font-size: 14px;
-            background: $blue;
-            color: white;
-            padding: 2px 4px 3px;
-            margin-right: 5px;
-            border-radius: 4px;
-            vertical-align: 3px;
-            &.red-identifier {
-              background: $red;
-            }
-            &.black-identifier {
-              background: $black;
-            }
-          }
-        }
-        @media screen and (min-width: 430px) {
-          width: calc(100% - 88px);
-          padding-right: 0px;
-          padding-bottom: 124px;
-          h3 {
-            margin: 0px;
-            font-size: 27px;
-            line-height: 32px;
-            .tag-identifier {
-              font-size: 15px;
-              padding: 2px 6px 3px;
-              vertical-align: 4px;
-            }
-          }
-          h4 {
-            font-size: 15px;
-          }
-        }
-      }
-      .time-ago-indicator {
-        @include themeable(color, theme-secondary-color, $medium-gray);
-        display: inline-block;
-        margin-left: 4px;
-        font-weight: 400;
-        font-size: 0.8em;
-        vertical-align: 0.07em;
-      }
-      .emoji {
-        display: inline-block;
-        margin-right: 4px;
-      }
-      h4 {
-        font-size: 14px;
-        margin-left: 0px;
-        max-width: 80%;
-        padding: 0px;
-        margin: 5px 0px;
-        font-weight: 500;
-        display: inline-block;
-        left: 62px;
-        position: absolute;
-        bottom: 80px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        a {
-          @include themeable(color, theme-secondary-color, #666666);
-        }
-        @media screen and (min-width: 430px) {
-          bottom: 90px;
-          left: 72px;
-          font-size: 17px;
-        }
-        &:hover {
-          opacity: 0.9;
-          text-decoration: underline;
-        }
-      }
-      .tags {
-        margin-top: 0px;
-        font-size: 14px;
-        position: absolute;
-        display: inline-block;
-        max-width: 76%;
-        z-index: 5;
-        left: 62px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        bottom: 63px;
-        color: $black;
-        a {
-          display: inline-block;
-        }
-        .tag {
-          margin-right: 3px;
-          &:hover {
-            text-decoration: underline;
-          }
-        }
-        @media screen and (min-width: 430px) {
-          left: 72px;
-          bottom: 72px;
-          font-size: 16px;
-        }
-      }
-      .search-snippet {
-        font-size: 15px;
-        padding: 6px 0px 2px;
-        color: lighten($dark-gray, 8%);
-        line-height: 21px;
-        span {
-          background: darken($light-gray, 2%);
-          padding: 1px;
-        }
-        em {
-          font-weight: 600;
-          color: darken($dark-gray, 6%);
-          font-style: normal;
-        }
-      }
-      h3 {
-        margin: 15px auto;
-        font-size: 32px;
-        font-weight: 500;
-        width: 94%;
-        margin-top: -14px;
-        padding-top: 20px;
-      }
-      p {
-        margin: 6px auto;
-        line-height: 20px;
-        font-size: 16px;
-        width: 94%;
-        color: rgb(163, 188, 201);
-        padding-bottom: 19px;
-      }
-      &.big-article {
-        padding: 0px;
-        margin: 10px auto 0px;
-        @media screen and (min-width: 650px) {
-          margin: 15px auto 0px;
-        }
-        @media screen and (min-width: 950px) {
-          margin: 10px auto 0px;
-        }
-        .picture {
-          width: 100%;
-          margin: auto;
-          padding-top: 42%;
-          position: relative;
-          z-index: 0;
-          border-top-left-radius: 3px;
-          border-top-right-radius: 3px;
-
-          background: no-repeat center center;
-          background-size: cover;
-        }
-        .content-wrapper {
-          @include themeable(background, theme-container-background, #fff);
-          @include themeable(color, theme-container-color, $black);
-          position: relative;
-          z-index: 5;
-          border-top: 1px solid darken($lightest-gray, 4%);
-          @include themeable(
-            border-top,
-            theme-container-border,
-            1px solid darken($lightest-gray, 4%)
-          );
-          @include themeable(
-            border-bottom,
-            theme-container-border,
-            1px solid darken($lightest-gray, 4%)
-          );
-          padding-bottom: 105px;
-          border-radius: 3px;
-          h3 {
-            font-size: calc(1.7vw + 22px);
-            font-weight: 500;
-            width: calc(100% - 20px);
-            margin-left: 12px;
-            margin-bottom: 8px;
-            margin-top: 8px;
-            padding-top: 0px;
-            word-break: break-word;
-            @media screen and (min-width: 1600px) {
-              font-size: 45px;
-            }
-          }
-          .title-block {
-            display: inline-block;
-          }
-          @media screen and (min-width: 430px) {
-            padding-bottom: 120px;
-          }
-        }
-      }
-    }
-    .featured-profile-button {
-      float: left;
-      margin-top: -104px;
-      z-index: 10;
-      left: 12px;
-      position: absolute;
-      @media screen and (min-width: 430px) {
-        margin-top: -124px;
-      }
-    }
-    img.featured-profile-pic {
-      height: 40px;
-      width: 40px;
-      border-radius: 50px;
-      @media screen and (min-width: 430px) {
-        height: 50px;
-        width: 50px;
-      }
-      &:hover {
-        opacity: 0.9;
-      }
-    }
-    .featured-user-name {
-      font-weight: bold;
-      margin-top: -101px;
-      position: absolute;
-      width: 80%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      z-index: 10;
-      left: 62px;
-      font-size: 14px;
-      a {
-        @include themeable(color, theme-secondary-color, #666666);
-      }
-      &:hover {
-        opacity: 0.9;
-        text-decoration: underline;
-      }
-      @media screen and (min-width: 430px) {
-        left: 72px;
-        font-size: 18px;
-        margin-top: -120px;
-      }
-    }
-    .featured-tags {
-      font-size: 15px;
-      margin-top: -78px !important;
-      bottom: auto !important;
-      position: absolute;
-      max-width: 76%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      z-index: 10;
-      &:hover {
-        opacity: 0.9;
-      }
-      .tag {
-        @include themeable(color, theme-color, $black);
-        margin-right: 3px;
-      }
-      left: 62px;
-      @media screen and (min-width: 430px) {
-        font-size: 16px !important;
-        left: 72px;
-        bottom: auto;
-        margin-top: -94px !important;
-      }
-    }
-    .article-reading-time {
-      position: absolute;
-      right: 82px;
-      bottom: 12px;
-      font-size: 13px;
-      padding: 6px 0px;
-      font-weight: 600;
-      z-index: 8;
-      @include themeable(
-        color,
-        theme-secondary-color,
-        darken($medium-gray, 5%)
-      );
-    }
-    .article-engagement-count {
-      font-size: 13px;
-      font-weight: bold;
-      position: absolute;
-      bottom: 12px;
-      font-weight: 400;
-      padding: 3px 6px;
-      background: transparent;
-      border: 0;
-      -webkit-appearance: none;
-      font-family: $helvetica-condensed;
-      @include themeable(color, theme-secondary-color, $medium-gray);
-      a {
-        &:hover {
-          opacity: 1;
-        }
-        @include themeable(color, theme-secondary-color, $medium-gray);
-      }
-      img {
-        height: 18px;
-        border: 0px;
-        vertical-align: -4px;
-        margin-right: 7px;
-      }
-      &.comments-count {
-        left: 93px;
-        img {
-          width: 28px;
-        }
-      }
-      &.reactions-count {
-        left: 20px;
-      }
-      &.bookmark-engage {
-        right: 12px;
-        border: 2px solid transparent;
-        border-radius: 3px;
-        text-align: center;
-        bottom: 12px;
-        background: darken($purple, 38%);
-        color: white;
-        letter-spacing: 1px;
-        &:hover, &:focus {
-          background: darken($purple, 50%);
-        }
-        .bm-success {
-          display: none;
-          position: relative;
-          top: 1px;
-        }
-        &.selected {
-          color: darken($purple, 33%);
-          background: transparent;
-          padding-right: 0px;
-          .bm-initial {
-            display: none;
-          }
-          .bm-success {
-            display: inline-block;
-          }
-        }
-        &.following-butt {
-          background: transparent;
-          color: darken($purple, 33%);
-        }
-      }
-      &.featured-engagement-count {
-        margin-top: -38px;
-        bottom: auto;
-        z-index: 10;
-        &.bookmark-engage {
-          margin-top: -39px;
-        }
-      }
-      .engagement-count-number {
-        min-width: 28px;
-        text-align: left;
-        display: inline-block;
-      }
-      @media screen and (min-width: 430px) {
-        font-size: 15px;
-        img {
-          height: 20px;
-          min-width: 26px;
-          vertical-align: -5px;
-        }
-        &.featured-engagement {
-          margin-top: -38px;
-        }
-      }
-    }
-    .video-player-header {
-      background: $black;
-      margin-top: 0;
-      max-width: 1050px;
-      margin: auto;
-      margin-bottom: 15px;
-      height: 52.5vw;
-      margin-bottom: -5px;
-      overflow-y: hidden;
-      @media screen and (min-width: 750px) {
-        height: 396px;
-      }
-      @media screen and (min-width: 950px) {
-        height: calc(52.5vw - 172px);
-      }
-      @media screen and (min-width: 1120px) {
-        height: calc(52.5vw - 314px);
-      }
-      @media screen and (min-width: 1240px) {
-        height: 339px;
-      }
-    }
-  }
   @media screen and (max-width: 949px) {
     .sidebar-wrapper {
       position: fixed;
@@ -878,25 +35,15 @@
       &.swiped-in {
         display: block;
         .side-bar {
-          padding-top: 2px;
           display: block;
           @include themeable(background, theme-container-background, white);
-          height: calc(100% - 2px);
+          height: 100%;
           overflow-y: auto;
-          .widget,
-          .sidebar-profile-snapshot {
-            border-radius: 0px;
-            box-shadow: none;
-            margin-bottom: 0;
-          }
         }
       }
     }
     .sidebar-wrapper-left {
       transform: translate(-280px, 0);
-      .side-bar {
-        margin-left: 0px;
-      }
       &.swiped-in {
         transform: translate(0em, 0);
         animation: swipe-in-from-left 0.18s;
@@ -906,7 +53,6 @@
       transform: translate(calc(-100vw + 280px), 0);
       .side-bar {
         float: right;
-        margin-right: 0px;
       }
       &.swiped-in {
         transform: translate(-100vw, 0);
@@ -917,15 +63,14 @@
   .side-bar {
     float: left;
     width: 280px;
-    margin: auto;
-    text-align: left;
-    font-size: 0.92em;
+    font-size: 0.85em;
     line-height: 1.35em;
-    margin-left: 0.786vw;
-    min-height: 5px;
     display: none;
     position: relative;
     z-index: 5;
+    padding: 16px 0;
+    box-sizing: border-box;
+    @include themeable(color, theme-color, rgba($black, 0.8));
     &.sidebar-additional {
       display: none;
       &.showing {
@@ -937,123 +82,18 @@
     @media screen and (min-width: 950px) {
       display: block;
     }
-    @media screen and (min-width: 1500px) {
-      margin-left: 13px;
-    }
-    .fixed-sidebar {
-      position: fixed;
-      width: 276px;
-      top: 77px;
-    }
+
     .sidebar-nav {
-      .sidebar-profile-snapshot {
-        overflow: hidden;
-        @include themeable(background, theme-container-background, #fff);
-        margin-bottom: 14px;
-        border-radius: 3px;
-        width: calc(100% - 6px);
-        @include themeable(
-          border,
-          theme-container-border,
-          1px solid $outline-color
-        );
-        @include themeable(
-          box-shadow,
-          theme-container-box-shadow,
-          $bold-shadow
-        );
-        &:hover {
-          @include themeable(
-            background,
-            theme-container-background-hover,
-            $light-gray
-          );
-        }
-        .sidebar-profile-snapshot-inner {
-          display: inline-block;
-          vertical-align: middle;
-          width: 100%;
-          line-height: 20px;
-          @include themeable(color, theme-container-color, $black);
-          &:hover {
-            opacity: 0.9;
-          }
-        }
-        .sidebar-profile-pic {
-          display: inline-block;
-          width: 50px;
-          height: 50px;
-          vertical-align: top;
-          overflow: hidden;
-          @include themeable(background, theme-container-background, $tan);
-          border-radius: 100%;
-          margin: 8px 5px 8px 12px;
-          img {
-            width: 100%;
-            border-radius: 100%;
-          }
-        }
-        .sidebar-profile-content {
-          display: inline-block;
-          width: calc(100% - 74px);
-          margin-top: 15px;
-          font-size: 13px;
-          vertical-align: middle;
-          text-align: left;
-          .sidebar-profile-name {
-            font-weight: 400;
-            font-size: 17px;
-          }
-          .sidebar-profile-username {
-            @include themeable(color, theme-secondary-color, $medium-gray);
-          }
-        }
-      }
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       .sidebar-nav-block {
-        padding: 0px;
-        width: calc(100% - 4px);
-        box-sizing: border-box;
-        &.principle-sidebar-nav-block {
-          padding: 9px 0px;
-          .sidebar-nav-element {
-            .sidebar-nav-link {
-              padding: 5px 8px;
-            }
-          }
-        }
         @media screen and (min-width: 950px) {
           .sidebar-nav-block-inner {
             height: 420px;
             overflow-y: scroll;
             overflow-x: hidden;
-          }
-        }
-        .sidebar-nav-header {
-          padding: 15px 10px;
-          font-size: 0.9em;
-          font-family: $monospace;
-          &.sidebar-nav-header-middle {
-            padding: 10px 10px;
-            text-decoration: underline;
-            @include themeable(color, theme-secondary-color, $medium-gray);
-          }
-          img {
-            width: 15px;
-            border: 0px;
-          }
-        }
-        .sidebar-nav-subheader {
-          padding: 10px;
-          font-weight: 500;
-          font-size: 0.9em;
-          @include themeable(
-            background,
-            theme-background,
-            darken($light-gray, 4%)
-          );
-          a {
-            @include themeable(color, theme-secondary-color, $black);
+            -webkit-overflow-scrolling: touch;
+            padding: 0 16px;
+            margin: 0 -16px 8px -16px;
           }
         }
         .sidebar-nav-default-tags {
@@ -1062,569 +102,12 @@
             display: block;
           }
         }
-        .sidebar-nav-element {
-          color: $black;
-          display: block;
-          position: relative;
-          @media screen and (min-width: 950px) {
-            .sidebar-nav-link-follow {
-              display: none;
-            }
-            &:hover {
-              .sidebar-nav-link-follow {
-                display: block;
-              }
-            }
-          }
-          img {
-            width: 30px;
-            height: 30px;
-            border: 0px;
-            vertical-align: -8px;
-            margin-right: 4px;
-          }
-          img.nav-emoji {
-            height: 19px;
-            width: 19px;
-            vertical-align: -2px;
-          }
+        .sidebar-main-nav {
+          margin-bottom: 24px;
+        }
+      }
+    }
 
-          a.sidebar-nav-link {
-            @include themeable(color, theme-container-color, $black);
-            padding: 5px;
-            display: inline-block;
-            width: calc(100% - 10px);
-            font-weight: 500;
-            padding: 7px 9px;
-            font-size: 1em;
-            &:hover {
-              @include themeable(
-                background,
-                theme-container-background-hover,
-                $light-gray
-              );
-            }
-          }
-          a.sidebar-nav-link-follow {
-            position: absolute;
-            color: $black;
-            right: 5px;
-            top: 50%;
-            transform: translateY(-50%);
-            text-align: center;
-            border-radius: 3px;
-            font-weight: 900;
-            font-size: 0.8em;
-            padding: 2px 8px;
-          }
-        }
-      }
-    }
-    .sidebar-sponsorship-level {
-      text-align: center;
-      font-weight: bold;
-      width: calc(100% - 6px);
-      padding: 26px 0px;
-      border-radius: 3px;
-      margin-bottom: 10px;
-      font-family: $helvetica-condensed;
-      font-stretch: condensed;
-      font-size: 1.1em;
-      @include themeable(
-        border,
-        theme-container-border,
-        1px solid $outline-color
-      );
-      @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
-    }
-    .widget {
-      width: calc(100% - 30px);
-      padding: 10px 12px;
-      margin-bottom: 15px;
-      position: relative;
-      overflow: hidden;
-      @include themeable(background, theme-container-background, #fff);
-      display: block;
-      @include themeable(color, theme-container-color, $black);
-      border-radius: 3px;
-      @include themeable(
-        border,
-        theme-container-border,
-        1px solid $outline-color
-      );
-      @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
-      &.fixed-widget {
-        position: fixed;
-        width: 254px;
-        top: 80px;
-        header {
-          padding-left: 6px;
-        }
-      }
-      &:hover {
-        opacity: 1;
-      }
-      h4 {
-        margin: 0;
-      }
-      &.signin-cta-widget {
-        border: 1px solid darken($bold-blue, 5%);
-        box-shadow: 5px 6px 0px darken($bold-blue, 15%);
-        padding: 0px 0px;
-        width: calc(100% - 6px);
-        header {
-          background: darken($bold-blue, 5%);
-          color: white;
-          padding: 15px 0px;
-          text-align: center;
-          font-weight: bold;
-        }
-      }
-      &.sponsorship-widget {
-        display: none;
-        text-align: center;
-      }
-      &.showing {
-        display: block;
-      }
-      &.podcast-pic-widget {
-        a {
-          @include themeable(color, theme-color, $black);
-        }
-        .widget-body {
-          padding-bottom: 10px;
-        }
-        .podcast-pic {
-          position: relative;
-          padding: 5px 0px;
-          border-top-left-radius: 100px;
-          border-bottom-left-radius: 100px;
-          border-top-right-radius: 5px;
-          border-bottom-right-radius: 5px;
-          img {
-            width: 23px;
-            height: 23px;
-            border-radius: 100px;
-            vertical-align: -7px;
-            margin-left: 3px;
-          }
-          .podcast-name {
-            width: calc(100% - 55px);
-            display: inline-block;
-            padding-left: 4px;
-            font-weight: bold;
-            .podcast-name-inner {
-              font-size: 14px;
-              line-height: 15px;
-              display: block;
-            }
-          }
-          &:hover {
-            @include themeable(
-              background,
-              theme-container-background-hover,
-              $light-gray
-            );
-          }
-        }
-      }
-      hr {
-        opacity: 0.2;
-      }
-      header {
-        width: 100%;
-        margin: auto;
-        font-weight: 800;
-        font-size: 0.9em;
-        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo,
-          Courier, monospace;
-        a {
-          @include themeable(color, theme-container-color, $black);
-          h4 {
-            display: inline-block;
-            margin: 0;
-          }
-          &:hover {
-            text-decoration: underline;
-          }
-        }
-        .emoji {
-          margin-right: 6px;
-          display: inline-block;
-          vertical-align: -4px;
-          img {
-            width: 18px;
-            border: 0px;
-            cursor: default;
-          }
-        }
-        .widget-listing-live-count {
-          @include themeable(background, theme-secondary-color, $green);
-          @include themeable(color, theme-opposite-color, white);
-          border-radius: 3px;
-          display: inline-block;
-          font-size: 0.8em;
-          padding: 1px 5px 0px;
-          line-height: 1.4em;
-        }
-        &.widget-header-listings {
-          @include themeable(background, theme-container-accent-background, $light-gray);
-          padding: 10px 12px;
-          margin: -10px -12px;
-        }
-        .widget-minimize-button {
-          position: absolute;
-          right: 8px;
-          top: 15px;
-          background: transparent;
-          padding: 0px 5px 1px;
-          border-radius: 3px;
-          font-size: 1.2em;
-          line-height: 0.6em;
-          @include themeable(border, theme-secondary-color-border, 1px solid $light-medium-gray);
-          @include themeable(color, theme-secondary-color, darken($light-medium-gray, 10%));
-        }
-      }
-      .widget-body {
-        margin-top: 9px;
-        font-size: 0.9em;
-        line-height: 1.2em;
-        padding-bottom: 5px;
-        overflow-wrap: break-word;
-        &.body-scrollable {
-          height: calc(100vh - 300px);
-          max-height: 390px;
-          overflow-y: scroll;
-        }
-        &.widget-body-listings {
-          .cta-button {
-            margin-top: 15px;
-          }
-        }
-        &.signup-cta-widget-body {
-          ul {
-            li {
-              font-size: 1.25em;
-              line-height: 1.5em;
-              &::before {
-                content: '• ';
-                color: $green;
-                vertical-align: -2px;
-              }
-            }
-          }
-        }
-        .sidebar-sponsor {
-          margin: 25px auto 40px;
-          width: 96%;
-          img {
-            border: 0;
-            margin: auto;
-            margin-bottom: 8px;
-            width: 98%;
-            min-height: 35px;
-            border-radius: 8px;
-          }
-          .sponsor-tagline {
-            margin: 10px auto;
-            width: 92%;
-            @include themeable(color, theme-secondary-color, $dark-gray);
-            .sponsor-learn-more {
-              display: block;
-              margin: 8px auto;
-              color: $bold-blue;
-            }
-          }
-        }
-        .sponsors-love-message {
-          border-top: 2px solid $light-gray;
-          font-size: 0.84em;
-          @include themeable(color, theme-secondary-color, $medium-gray);
-          padding-top: 18px;
-        }
-        .sponsor-footer {
-          font-size: 0.77em;
-          margin-top: 106px;
-          margin: auto;
-          margin-bottom: 18px;
-          width: 96%;
-          a {
-            background: lighten($purple, 3%);
-            color: $black;
-            display: inline-block;
-            padding: 2px 6px;
-            font-weight: 500;
-          }
-        }
-        .widget-podcast-ep {
-          padding-bottom: 8px;
-          a {
-            @include themeable(color, theme-color, $black);
-            font-weight: 500;
-          }
-        }
-        .widget-podcast-title {
-          margin-top: -2px;
-          a {
-            color: $medium-gray;
-            font-size: 0.83em;
-            opacity: 0.86;
-          }
-        }
-        .widget-listing-link {
-          display: block;
-          padding: 6px 12px 4px;
-          font-size: 0.92em;
-          width: 100%;
-          margin-left: -12px;
-          @include themeable(color, theme-color, $black);
-          @include themeable(border-bottom, theme-subtle-border, 1px solid $light-medium-gray);
-          &:first-child {
-            @include themeable(border-top, theme-subtle-border, 1px solid $light-medium-gray);
-          }
-          .widget-listing-link-title {
-            display: block;
-            font-weight: 600;
-          }
-          .widget-listing-link-category {
-            display: inline-block;
-            @include themeable(border, theme-container-border, 1px solid darken($light-medium-gray, 10%));
-            @include themeable(color, theme-secondary-color, lighten($medium-gray, 5%));
-
-            padding: 0px 5px;
-            font-size: 0.77em;
-            border-radius: 3px;
-            margin-bottom: 3px;
-            line-height: 1.3em;
-          }
-          &:hover {
-            background: $lightest-gray;
-            @include themeable(background, theme-container-background-hover, $lightest-gray);
-          }
-        }
-        .widget-accent {
-          background: $purple;
-          color: $bold-blue;
-          padding: 1px 5px;
-          border-radius: 3px;
-          margin-right: 1px;
-        }
-        .widget-footer {
-          color: $medium-gray;
-          font-size: 0.9em;
-          padding: 5px 0px 0px;
-          img {
-            height: 15px;
-            width: 15px;
-            vertical-align: -2px;
-            display: inline;
-            border: 0;
-          }
-        }
-        .widget-subtext {
-          text-align: center;
-          font-size: 0.9em;
-        }
-        .widget-events-single-link {
-          color: $black;
-          font-weight: 500;
-        }
-        .widget-user-pic {
-          display: inline-block;
-          img {
-            height: 60px;
-            width: 60px;
-            margin: 9px;
-            border-radius: 100px;
-          }
-        }
-        .utc-date {
-          width: 46px;
-          background: $dark-purple;
-          color: white;
-          padding: 1px 8px;
-          font-size: 0.92em;
-          border-radius: 3px;
-          margin-right: 3px;
-          display: inline-block;
-          text-align: center;
-        }
-        .widget-listing-category {
-          color: $medium-gray;
-        }
-        .widget-listing-title {
-          font-family: $helvetica;
-          font-weight: 500;
-          margin-bottom: 8px;
-        }
-      }
-      .query-filter-button {
-        font-size: 15px;
-        font-weight: bold;
-        background: transparent;
-        border: 0px;
-        display: block;
-        padding: 6px 8px;
-        width: calc(100% - 16px);
-        text-align: left;
-        border-radius: 0px;
-        @include themeable(color, theme-color, $black);
-        cursor: pointer;
-        &:hover {
-          @include themeable(
-            background,
-            theme-container-background-hover,
-            lighten($bold-blue, 38%)
-          );
-        }
-        &.selected {
-          @include themeable(
-            background,
-            theme-container-accent-background,
-            lighten($bold-blue, 10%)
-          );
-          @include themeable(color, theme-container-color, #fff);
-        }
-        &.query-type-filter-button {
-          &:hover {
-            @include themeable(
-              background,
-              theme-container-background-hover,
-              $light-green
-            );
-          }
-          &.selected {
-            @include themeable(
-              background,
-              theme-container-accent-background,
-              darken($light-green, 10%)
-            );
-          }
-        }
-      }
-      p {
-        margin: 14px 0px 8px;
-      }
-      ul {
-        padding-left: 10px;
-        display: flex;
-        flex-direction: column;
-      }
-      li {
-        font-size: 1em;
-        line-height: 1.32em;
-        display: inline-block;
-        &::before {
-          font-size: 1.2em;
-        }
-      }
-
-      ul {
-        img {
-          width: 5%;
-          border: none;
-          padding-right: 4px;
-          visibility: hidden;
-        }
-      }
-      a {
-        &:hover {
-          opacity: 0.9;
-        }
-      }
-      img {
-        width: 100%;
-        border: 1px solid darken($light-gray, 4%);
-      }
-      .social-icon {
-        width: 30px;
-        height: 30px;
-        border: none;
-        padding-left: 12px;
-        margin-right: 3px;
-        @include themeable(filter, theme-social-icon-invert, invert(0));
-      }
-      .row {
-        position: relative;
-        overflow: hidden;
-        padding: 1px 0px 3px;
-        font-size: 0.97em;
-        .key {
-          float: left;
-          width: 20px;
-          font-size: 0.8em;
-          padding: 2px;
-        }
-        .value {
-          float: left;
-          width: calc(100% - 42px);
-          padding: 5px 7px;
-        }
-      }
-      .cta-button {
-        margin: 8px auto 0px;
-        padding: 10px 0px;
-        font-size: 0.93em;
-        @include themeable(color, theme-color, darken($sky-blue, 17%));
-        @include themeable(background, theme-container-background, #fff);
-        border: 2px solid;
-        @include themeable(border-color, theme-color, darken($sky-blue, 17%));
-        display: block;
-        width: 85%;
-        text-align: center;
-        border-radius: 100px;
-        &.login-cta-button {
-          color: $black;
-          font-size: 1.1em;
-          width: 85%;
-          background: lighten($purple, 3%);
-          margin: 20px 0px;
-          padding: 18px 0px;
-        }
-        &:hover {
-          text-decoration: underline;
-          opacity: 1;
-        }
-      }
-    }
-    .widget-link-list__item {
-      margin-bottom: 12px;
-      padding-left: 20px;
-      a {
-        @include themeable(color, theme-container-color, $black);
-        font-weight: 500;
-        line-height: 1em;
-      }
-      .discuss-list-comment-count {
-        font-size: 0.8em;
-        @include themeable(color, theme-container-color, $medium-gray);
-        margin-top: 2px;
-        img {
-          width: 20px;
-          vertical-align: -3px;
-          border: 0px;
-        }
-        &.discuss-list-comment-count-brand-new {
-          background: $yellow;
-          color: $black;
-          font-size: 1.2em;
-        }
-      }
-      &::before {
-        content: '• ';
-        color: $green;
-        font-size: 2em;
-        vertical-align: -6px;
-        margin-left: -20px;
-      }
-    }
-    .side-footer {
-      a {
-        display: block;
-        margin: 10px 10px;
-        @include themeable(color, theme-container-color, $black);
-      }
-    }
     .search-partner-mention {
       display: none;
       text-align: center;
@@ -1639,12 +122,6 @@
       }
     }
   }
-  .loading-articles {
-    padding: calc(3vw + 15px) 0px 60px;
-    text-align: center;
-    opacity: 0.7;
-    display: none;
-  }
 }
 
 @keyframes fade-in {
@@ -1655,15 +132,6 @@
     opacity: 1;
   }
 }
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 @keyframes swipe-in-from-left {
   0% {
     transform: translate(-280px, 0);
@@ -1681,6 +149,7 @@
   }
 }
 
+// Feed Card: Signup CTA
 .feed-cta {
   background: lighten($purple, 6%) !important;
   border: 1px solid darken($bold-blue, 5%) !important;
@@ -1735,6 +204,8 @@
   }
 }
 
+// MOBILE ONLY navigation to switch between tabs (these on top of the feed).
+// Although it uses different markup :/.
 .narrow-nav-menu {
   position: absolute;
   top: 48px;
@@ -1764,33 +235,129 @@
   }
 }
 
-.load-more-cta {
-  margin: 35px auto;
-  border: 0px;
-  font-size: 20px;
-  padding: 5px 10px;
-  border-radius: 3px;
-  display: none;
-  &.showing {
-    display: block;
+////////////////////////////////////////////////
+// TO COMPONENTIZE //////////////////////////////
+////////////////////////////////////////////////
+
+// Filtering tabs on top of the feed.
+.on-page-nav-controls {
+  height: 45px;
+  position: relative;
+  opacity: 0.85;
+  text-align: center;
+  margin-bottom: 8px;
+  &.user-nav-controls {
+    @media screen and (min-width: 950px) {
+      display: none;
+    }
+  }
+  .on-page-nav-butt {
+    position: absolute;
+    top: 14px;
+    border: 0px;
+    background: transparent;
+    border-radius: 8px;
+    img {
+      height: 24px;
+    }
+    &.on-page-nav-butt-left {
+      left: 3%;
+    }
+    &.on-page-nav-butt-right {
+      right: 3%;
+    }
+    @media screen and (min-width: 950px) {
+      display: none;
+    }
+  }
+  .on-page-nav-label {
+    position: absolute;
+    right: 0;
+    left: 0;
+    font-family: $helvetica-condensed;
+    font-stretch: condensed;
+    top: 18px;
+    font-weight: 600;
+    &.sub-home-nav {
+      top: 12px;
+    }
+    .wide-nav-links {
+      display: none;
+    }
+    @media screen and (min-width: 650px) {
+      .narrow-nav-select {
+        display: none;
+      }
+      .wide-nav-links {
+        display: block;
+        cursor: default;
+      }
+    }
+    @media screen and (min-width: 950px) {
+      top: 9px;
+      &.sub-home-nav {
+        top: 8px;
+      }
+    }
+  }
+  .separator {
+    border-left: 2px solid $light-medium-gray;
+    display: inline-block;
+    margin: 0px 7px;
+    height: 15px;
+  }
+  .nav-chronofiter-link {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 0.95em;
+    border-radius: 2px;
+    border: 1px solid transparent;
+    &.selected {
+      background: $purple;
+      color: $black;
+      border: 1px solid $dark-purple;
+      box-shadow: 3px 4px 0px $dark-purple;
+    }
+    &:hover {
+      opacity: 1;
+      background: $dark-purple;
+      color: white;
+      border: 1px solid $purple;
+      box-shadow: 3px 4px 0px $purple;
+    }
+  }
+  .narrow-nav-select {
+    button {
+      all: unset;
+      background: transparent;
+      border: 0;
+      font-family: $helvetica-condensed;
+      font-stretch: condensed;
+      font-weight: 600;
+      cursor: pointer;
+    }
   }
 }
 
+//  Loading // TODO
+.loading {
+  padding: calc(3vw + 15px) 0px 60px;
+  text-align: center;
+  opacity: 0.7;
+  display: none;
+}
+
+// Loading articles...
+.loading-articles {
+  padding: calc(3vw + 15px) 0px 60px;
+  text-align: center;
+  opacity: 0.7;
+  display: none;
+}
+
+//  More loading  // TODO
 .single-article-loading {
   border-radius: 3px;
-  @extend .animated-background;
-}
-
-@keyframes placeHolderShimmer {
-  0% {
-    background-position: -468px 0;
-  }
-  100% {
-    background-position: 468px 0;
-  }
-}
-
-.animated-background {
   animation-duration: 1.25s;
   animation-fill-mode: forwards;
   animation-iteration-count: infinite;
@@ -1806,9 +373,595 @@
   position: relative;
 }
 
-.loading {
-  padding: calc(3vw + 15px) 0px 60px;
+@keyframes placeHolderShimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+// Generally Feed...
+.articles-list {
+  margin: auto;
+  max-width: 100%;
+  position: relative;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0); //Invisible black
+  box-sizing: border-box;
+
+  @media screen and (min-width: 950px) {
+    float: left;
+    width: 100%;
+    max-width: calc(100% - 280px); // 280: width of the sidebar
+    padding: 16px;
+  }
+
+  @media screen and (min-width: 1120px) {
+    max-width: calc(100% - 560px); // 560 = 2*280: two sidebars
+  }
+
+  .pinned-articles {
+    padding: 8px;
+    margin: 0 auto;
+    @include dev-card;
+
+    h5 {
+      margin: 0 0 8px;
+      padding: 8px 0;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  a {
+    @include themeable(color, theme-container-color, $black);
+  }
+
+  .placeholder-div {
+    // TOOD: what is this?
+    display: block;
+    width: 100%;
+  }
+
+  .single-article {
+    cursor: pointer;
+    margin: 0 auto;
+    position: relative;
+    @include dev-card;
+
+    &.active {
+      // TODO: what is this .active thingy?
+      opacity: 0.66;
+    }
+    &.big-article {
+      &.active {
+        opacity: 0.84;
+      }
+      .time-ago-indicator {
+        // TODO: where do we use it?
+        vertical-align: 0.11em;
+      }
+    }
+    &.single-article-small-pic {
+      vertical-align: top;
+      overflow: hidden;
+    }
+    &.single-article-single-podcast {
+      h4 {
+        bottom: 10px;
+      }
+      .content {
+        padding-bottom: 40px;
+      }
+    }
+    &.single-article-podcast-div {
+      @include dev-card;
+      padding-bottom: 8px;
+      h3 {
+        margin: 0;
+        padding: 16px;
+      }
+      p {
+        margin-left: 14px;
+      }
+    }
+    h4 {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .single-article-video-preview {
+      img {
+        width: 100%;
+      }
+      position: relative;
+      padding-top: 56%;
+      display: block;
+      background: $black no-repeat center center;
+      background-size: cover;
+      &:hover {
+        opacity: 1;
+      }
+      .single-article-video-duration {
+        position: absolute;
+        bottom: 8px;
+        right: 7px;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        border-radius: 3px;
+        padding: 2px 5px 3px;
+        font-size: 0.75em;
+        font-weight: 500;
+        img {
+          width: 12px;
+          height: 12px;
+          margin-right: 4px;
+          vertical-align: -1px;
+        }
+      }
+    }
+
+    // Organization Badge
+    .org-headline-filler {
+      @include themeable(
+        background,
+        theme-container-accent-background,
+        darken($light-gray, 6%)
+      );
+      @include themeable(color, theme-color, $black);
+      padding: 8px;
+      border-radius: 3px 0 3px 0;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.9em;
+      line-height: 1;
+      img {
+        width: 24px;
+        height: 24px;
+        margin-right: 4px;
+        border-radius: 50%;
+        vertical-align: middle;
+      }
+    }
+
+    .small-pic {
+      float: left;
+      height: 40px;
+      width: 40px;
+      margin: 16px 0 0 16px;
+      overflow: hidden;
+      font-size: 11px;
+      border-radius: 50%;
+      img,
+      .color {
+        // TODO: what is .color for?
+        height: 100%;
+        width: 100%;
+        border-radius: 50%;
+      }
+    }
+    .tiny-pic {
+      display: inline-block;
+      height: 30px;
+      width: 30px;
+      img {
+        height: 100%;
+        width: 100%;
+        &.round {
+          border-radius: 50%;
+        }
+      }
+    }
+    .content {
+      float: left;
+      width: calc(100% - 72px);
+      box-sizing: border-box; // TODO: this should be applied globally, not only .content
+      padding: 16px 16px 100px 16px; // TODO: my, oh my...
+      h3 {
+        margin: 0px;
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 28px;
+        padding: 0px;
+        word-break: break-word;
+        .tag-identifier {
+          font-size: 14px;
+          background: $blue;
+          color: white;
+          padding: 2px 4px 3px;
+          margin-right: 5px;
+          border-radius: 4px;
+          vertical-align: 3px;
+          &.red-identifier {
+            background: $red;
+          }
+          &.black-identifier {
+            background: $black;
+          }
+        }
+      }
+      @media screen and (min-width: 450px) {
+        h3 {
+          font-size: 27px;
+          line-height: 32px;
+          .tag-identifier {
+            font-size: 15px;
+            padding: 2px 6px 3px;
+            vertical-align: 4px;
+          }
+        }
+        h4 {
+          font-size: 15px;
+        }
+      }
+    }
+    .time-ago-indicator {
+      @include themeable(color, theme-secondary-color, $medium-gray);
+      display: inline-block;
+      margin-left: 4px;
+      font-weight: 400;
+      font-size: 0.8em;
+      vertical-align: 0.07em;
+    }
+    .emoji {
+      display: inline-block;
+      margin-right: 4px;
+    }
+    h4 {
+      padding: 0px;
+      margin: 0;
+      font-weight: 500;
+      position: absolute;
+      bottom: 50px;
+      left: 72px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 0.8em;
+      a {
+        @include themeable(color, theme-secondary-color, #666666);
+      }
+
+      &:hover {
+        opacity: 0.9;
+        text-decoration: underline;
+      }
+    }
+    .tags {
+      margin-top: 0px;
+      font-size: 0.8em;
+      position: absolute;
+      display: inline-block;
+      z-index: 5;
+      left: 72px;
+      bottom: 75px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: $black;
+      width: calc(
+        100% - 72px
+      ); // improving ellipsis for tags. 72px = avatar_width + spacing around
+      a {
+        display: inline-block;
+      }
+      .tag {
+        margin-right: 8px;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+    .search-snippet {
+      font-size: 15px;
+      padding: 6px 0px 2px;
+      color: lighten($dark-gray, 8%);
+      line-height: 21px;
+      span {
+        background: darken($light-gray, 2%);
+        padding: 1px;
+      }
+      em {
+        font-weight: 600;
+        color: darken($dark-gray, 6%);
+        font-style: normal;
+      }
+    }
+    p {
+      margin: 6px auto;
+      line-height: 20px;
+      font-size: 16px;
+      color: rgb(163, 188, 201);
+      padding-bottom: 16px;
+    }
+    &.big-article {
+      padding: 0px;
+      .picture {
+        padding-top: 42%;
+        border-radius: 3px 3px 0 0;
+        background: no-repeat center center;
+        background-size: cover;
+      }
+      .content-wrapper {
+        padding-bottom: 115px;
+        h3 {
+          font-size: 28px;
+          padding: 16px;
+          margin: 0;
+          word-break: break-word;
+          line-height: 1.28em;
+          @media screen and (min-width: 450px) {
+            font-size: 40px;
+          }
+        }
+        .title-block {
+          display: inline-block;
+        }
+      }
+    }
+  }
+  .featured-profile-button {
+    float: left;
+    z-index: 10;
+    left: 16px;
+    position: absolute;
+    margin-top: -110px;
+  }
+  img.featured-profile-pic {
+    height: 40px;
+    width: 40px;
+    border-radius: 50px;
+    overflow: hidden;
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+  .featured-user-name {
+    font-weight: bold;
+    margin-top: 0;
+    position: absolute;
+    width: 80%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    z-index: 10;
+    left: 72px;
+    bottom: 65px;
+    font-size: 0.8em;
+    a {
+      @include themeable(color, theme-secondary-color, #666666);
+    }
+    @media screen and (min-width: 450px) {
+      font-size: 1em;
+    }
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  .featured-tags {
+    font-size: 1em;
+    position: absolute;
+    max-width: 80%;
+    bottom: 95px !important;
+    left: 62px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    z-index: 10;
+  }
+  .article-reading-time {
+    position: absolute;
+    right: 82px;
+    bottom: 12px;
+    font-size: 0.7em;
+    padding: 6px 0px;
+    z-index: 8;
+    @include themeable(color, theme-secondary-color, $medium-gray);
+  }
+  .article-engagement-count {
+    font-size: 13px;
+    font-weight: bold;
+    position: absolute;
+    bottom: 12px;
+    font-weight: 400;
+    padding: 3px 6px;
+    background: transparent;
+    border: 0;
+    -webkit-appearance: none;
+    font-family: $helvetica-condensed;
+    @include themeable(color, theme-secondary-color, $medium-gray);
+    a {
+      &:hover {
+        opacity: 1;
+      }
+      @include themeable(color, theme-secondary-color, $medium-gray);
+    }
+    img {
+      height: 18px;
+      border: 0px;
+      vertical-align: -4px;
+      margin-right: 7px;
+    }
+    &.comments-count {
+      left: 85px;
+      img {
+        width: 28px;
+      }
+    }
+    &.reactions-count {
+      left: 16px;
+    }
+    &.engage-button {
+      right: 12px;
+      border: 2px solid transparent;
+      border-radius: 3px;
+      text-align: center;
+      bottom: 12px;
+      background: darken($purple, 38%);
+      color: white;
+      letter-spacing: 1px;
+      &:hover,
+      &:focus {
+        background: darken($purple, 50%);
+      }
+      .bm-success {
+        display: none;
+        position: relative;
+        top: 1px;
+      }
+      &.selected {
+        color: darken($purple, 33%);
+        background: transparent;
+        padding-right: 0px;
+        .bm-initial {
+          display: none;
+        }
+        .bm-success {
+          display: inline-block;
+        }
+      }
+      &.following-butt {
+        background: transparent;
+        color: darken($purple, 33%);
+      }
+    }
+    &.featured-engagement-count {
+      margin-top: -38px;
+      bottom: auto;
+      z-index: 10;
+      &.engage-button {
+        margin-top: -39px;
+      }
+    }
+    .engagement-count-number {
+      min-width: 28px;
+      text-align: left;
+      display: inline-block;
+    }
+  }
+  .video-player-header {
+    background: $black;
+    margin-top: 0;
+    max-width: 1050px;
+    margin: auto;
+    margin-bottom: 15px;
+    height: 52.5vw;
+    margin-bottom: -5px;
+    overflow-y: hidden;
+    @media screen and (min-width: 750px) {
+      height: 396px;
+    }
+    @media screen and (min-width: 950px) {
+      height: calc(52.5vw - 172px);
+    }
+    @media screen and (min-width: 1120px) {
+      height: calc(52.5vw - 314px);
+    }
+    @media screen and (min-width: 1240px) {
+      height: 339px;
+    }
+  }
+}
+
+#homepage-feed {
+  min-height: 100vh;
+}
+
+// Podcast episode that goes within the <TodaysPodcast /> component.
+.individual-podcast-link {
+  display: flex;
+  padding: 8px 16px;
+  font-size: 0.8em;
+  @include themeable(color, theme-secondary-color, $medium-gray);
+
+  img {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    vertical-align: top;
+  }
+
+  .individual-podcast-link-details {
+    padding-left: 16px;
+    flex: 1 auto;
+  }
+
+  strong {
+    display: block;
+    margin-bottom: 4px;
+    @media screen and (min-width: 500px) {
+      font-size: 1.2em;
+    }
+    padding-top: 0.2em;
+    font-weight: 500;
+    @include themeable(color, theme-color, $black);
+  }
+  &:hover {
+    @include themeable(
+      background,
+      theme-container-background-hover,
+      $light-gray
+    );
+  }
+}
+
+////////////////////////////////////////////////
+// OTHER VIEWS /////////////////////////////////
+////////////////////////////////////////////////
+
+// Search results: empty
+.query-results-nothing {
+  @include dev-card;
+  padding: 48px 24px;
   text-align: center;
-  opacity: 0.7;
-  display: none;
+}
+
+// Notifications filtering on mobile.
+.notifications-mobile-filters {
+  @media screen and (min-width: 950px) {
+    display: none;
+  }
+  .organization-name {
+    font-size: 15px;
+    font-weight: bold;
+    border: 0px;
+    display: inline-block;
+    width: 27%;
+    padding: 9px 0px;
+    text-align: center;
+    @include themeable(color, theme-secondary-color, $medium-gray);
+    margin: 1%;
+  }
+  .query-filter-button {
+    font-size: 12px;
+    font-weight: bold;
+    background: transparent;
+    border: 0px;
+    display: inline-block;
+    width: 27%;
+    padding: 9px 0px;
+    text-align: left;
+    border-radius: 100px;
+    @include themeable(color, theme-color, $black);
+    text-align: center;
+    margin: 1%;
+
+    &:hover {
+      @include themeable(
+        background,
+        theme-container-background-hover,
+        lighten($bold-blue, 38%)
+      );
+    }
+    &.selected {
+      @include themeable(
+        background,
+        theme-container-accent-background,
+        lighten($bold-blue, 8%)
+      );
+      @include themeable(color, theme-color, white);
+    }
+  }
 }

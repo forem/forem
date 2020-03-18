@@ -15,7 +15,10 @@ RSpec.describe "Deleting Comment", type: :system, js: true do
   it "works" do
     visit "/"
     visit comment.path + "/delete_confirm"
-    click_link("DELETE")
+
+    wait_for_javascript
+
+    click_button("DELETE")
     expect(page).to have_current_path(article.path)
   end
 end

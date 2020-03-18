@@ -12,19 +12,18 @@
     padding: 40px 0px 40px;
     text-align: center;
     position: relative;
-    top: 60px;
-    left: 0px;
-    right: 0px;
+    top: 0;
+    left: 0;
+    right: 0;
     &.error-notice {
       background: rgba(255, 80, 80, 0.7);
       color: white;
     }
   }
   .user-settings-page {
-    padding-top: 10px;
     width: 900px;
     max-width: 94%;
-    margin: 40px auto;
+    margin: 0 auto;
     font-size: 15px;
     .finish-notice {
       background: rgb(102, 93, 162);
@@ -166,47 +165,49 @@
         }
       }
     }
-    .settings-color-select-container{
+    .theme-selector-field {
+      margin-bottom: 20px;
+    }
+    .settings-color-select-container {
       display: flex;
       align-items: center;
-      width:100%;
-      .color-select-fields{
-        width:50%;
-        .select-field-wrapper{
+      width: 100%;
+      .color-select-fields {
+        width: 50%;
+        .select-field-wrapper {
           display: flex;
-          width:100%;
-          .color-select-textbox{
-            flex:1;
-            min-width:70px;
+          width: 100%;
+          .color-select-textbox {
+            flex: 1;
+            min-width: 70px;
             border-radius: 0px;
             border-top-left-radius: 3px;
             border-bottom-left-radius: 3px;
           }
-          input[type="color"] {
-            box-sizing:border-box;
+          input[type='color'] {
+            box-sizing: border-box;
             border-radius: 0px;
             border-top-right-radius: 3px;
             border-bottom-right-radius: 3px;
-            padding:3px;
-            width:50px;
-            height:48px;
+            padding: 3px;
+            width: 50px;
+            height: 48px;
             margin-left: -1px;
             border: 1px solid rgb(222, 230, 233);
-            cursor:pointer;
+            cursor: pointer;
           }
         }
       }
-      .color-select-preview{
-        flex:1;
-        text-align:center;
-        #color-select-preview-logo{
-          padding:25px 20px;
-          border-radius:7px;
-          margin-top:20px;
-          display:none; /* Changes to inline-block when javascript loads preview */
+      .color-select-preview {
+        flex: 1;
+        text-align: center;
+        #color-select-preview-logo {
+          padding: 25px 20px;
+          border-radius: 7px;
+          margin-top: 20px;
+          display: none; /* Changes to inline-block when javascript loads preview */
         }
       }
-      
     }
     .checkbox-field {
       display: flex;
@@ -367,20 +368,22 @@
       }
       .organization-dropdown::before,
       .organization-dropdown::after {
-        content: "";
+        content: '';
         position: absolute;
         pointer-events: none;
       }
-      .organization-dropdown::after { /*  Custom dropdown arrow */
-        content: "\25BC";
+      .organization-dropdown::after {
+        /*  Custom dropdown arrow */
+        content: '\25BC';
         height: 1em;
         font-size: 0.625em;
         line-height: 1;
         right: 0.25em;
         top: 50%;
-        margin-top: -.5em;
+        margin-top: -0.5em;
       }
-      .organization-dropdown::before { /*  Custom dropdown arrow cover */
+      .organization-dropdown::before {
+        /*  Custom dropdown arrow cover */
         width: 1em;
         right: 0;
         top: 0;
@@ -409,7 +412,7 @@
         @include themeable(color, theme-secondary-color, $medium-gray);
       }
       img {
-        height: 1.0em;
+        height: 1em;
         margin-left: 5px;
       }
     }
@@ -655,7 +658,6 @@
       max-width: 26px;
       margin-left: 8px;
     }
-
   }
   .copy-text-announcer {
     display: block;
@@ -670,6 +672,13 @@
 .signout_confirm-wrapper {
   padding: calc(15% + 50px) 2% 30%;
   text-align: center;
+  form button {
+    font-size: 1.5em;
+    padding: 8px 15px;
+    border: 0px;
+    border-radius: 3px;
+    margin-top: 15px;
+  }
 }
 
 .org-widget-preview .primary-sticky-nav {
@@ -743,7 +752,8 @@ ul.delete__account {
   border: 1px solid $light-medium-gray;
   padding: 0.5rem 0 0.8rem 0.5rem;
 
-  dt, label {
+  dt,
+  label {
     flex-basis: 40%;
     font-size: 1.1rem;
     font-weight: bold;

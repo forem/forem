@@ -1,61 +1,22 @@
-<% if current_user.scholar %>
-  <h2>Scholarship</h2>
-  <h3>
-    Congratulations on your DEV scholarship! Your scholarship ends
-    <%= current_user.workshop_expiration.nil? ? "never" : current_user.workshop_expiration.strftime("%b %d, %Y") %>.
-    <br>
-    <br>
-    <a href="/events">See our events for the month!</a>
-  </h3>
-<% end %>
+<h3>👋 Style customizations have moved to <a href="/settings/ux">UX</a>
 
-<h2>Features</h2>
+<h2> Connect </h2>
+<h3> Inbox Type </h3>
 <%= form_for(@user, html: { id: nil }) do |f| %>
-  <div class="sub-field">
-    <%= f.label :editor_version, "Editor version: v1 or v2" %>
-    <%= f.select :editor_version, options_for_select(%w[v1 v2], @user.editor_version) %>
-  </div>
-  <div class="field">
-    <label></label>
-    <%= f.hidden_field :tab, value: @tab, id: nil %>
-    <%= f.submit "SUBMIT", class: "cta" %>
-  </div>
-<% end %>
-
-<h2>Feed Customization</h2>
-<%= form_for(@user, html: { id: nil }) do |f| %>
-  <div class="sub-field">
-    <%= f.label :experience_level, "Enter your coding experience level (1-10)" %>
-    <%= f.text_field :experience_level %>
-    <sub><em>This will not be displayed on your profile or anywhere publicly. It will help determine what content you are shown along with tags you follow etc.</em></sub>
-  </div>
-  <div class="field">
-    <label></label>
-    <%= f.hidden_field :tab, value: @tab, id: nil %>
-    <%= f.submit "SUBMIT", class: "cta" %>
-  </div>
-<% end %>
-
-<h2>Style Customization</h2>
-<%= form_for(@user, html: { id: nil }) do |f| %>
-  <div class="sub-field">
-    <%= f.label :config_theme, "Site Theme" %>
-    <%= f.select(:config_theme, options_for_select(["default", "night theme", "minimal light theme", "pink theme", "ten x hacker theme"], @user.config_theme.tr("_", " "))) %>
-    <sub><em>Default is light style.</em></sub>
-  </div>
-  <div class="sub-field">
-    <%= f.label :config_font, "Base Post Font" %>
-    <%= f.select(:config_font, options_for_select(["default", "sans serif", "monospace", "comic sans"], @user.config_font.tr("_", " "))) %>
-    <sub><em>Default is serif style.</em></sub>
-  </div>
-  <div class="sub-field">
-    <%= f.label :config_navbar, "Site Navbar" %>
-    <%= f.select(:config_navbar, options_for_select(["default", "static"], @user.config_navbar.tr("_", " "))) %>
-    <sub><em>Default is fixed.</em></sub>
-  </div>
-  <div class="field">
-    <label></label>
-    <%= f.hidden_field :tab, value: @tab, id: nil %>
+  <div class="field checkbox-label-first">
+    <%= f.label :inbox_type, "Open your inbox to messages from people you don't follow or keep your inbox private to mutual follows." %>
+    <div class="sub-field">
+      <%= f.select :inbox_type, [%w[Open open], %w[Private private]] %>
+    </div>
+    <%= f.label :inbox_guidelines, "Open inbox guidelines/instructions (optional)" %>
+    <div class="sub-field">
+      <%= f.text_area :inbox_guidelines, maxlength: 200, placeholder: "For example:
+- Only contact me about consulting opportunities.
+- I'm happy to help beginners with CSS.
+- Allow for a few days to respond.
+- etc.
+      " %>
+    </div>
     <%= f.submit "SUBMIT", class: "cta" %>
   </div>
 <% end %>
@@ -110,25 +71,4 @@
       <%= f.submit "SUBMIT", class: "cta" %>
     </div>
   <% end %>
-<% end %>
-
-<h2> Connect </h2>
-<h3> Inbox Type </h3>
-<%= form_for(@user, html: { id: nil }) do |f| %>
-  <div class="field checkbox-label-first">
-    <%= f.label :inbox_type, "Open your inbox to messages from people you don't follow or keep your inbox private to mutual follows." %>
-    <div class="sub-field">
-      <%= f.select :inbox_type, [%w[Open open], %w[Private private]] %>
-    </div>
-    <%= f.label :inbox_guidelines, "Open inbox guidelines/instructions (optional)" %>
-    <div class="sub-field">
-      <%= f.text_area :inbox_guidelines, maxlength: 200, placeholder: "For example:
-- Only contact me about consulting opportunities.
-- I'm happy to help beginners with CSS.
-- Allow for a few days to respond.
-- etc.
-      " %>
-    </div>
-    <%= f.submit "SUBMIT", class: "cta" %>
-  </div>
 <% end %>

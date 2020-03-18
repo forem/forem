@@ -12,16 +12,13 @@
   <meta property="og:site_name" content="The Practical Dev" />
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %>">
+  <meta name="twitter:site" content="@<%= SiteConfig.social_networks_handle %>">
   <meta name="twitter:title" content="Notifications - dev.to">
   <meta name="twitter:description" content="Notifications inbox for dev.to">
 <% end %>
 
 <% if user_signed_in? %>
-  <div class="user-profile-header tag-header" style="background: transparent;padding:0px;margin:22px auto 0px">
-  </div>
-
-  <div class="home" id="notifications-container" style="margin-top:0px;">
+  <div class="home" id="notifications-container">
     <div class="side-bar">
       <div class="widget fixed-widget">
         <header>

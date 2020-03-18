@@ -10,12 +10,9 @@ else
   params = {
     restrictIndices: [
       "searchables_#{Rails.env}",
-      "Tag_#{Rails.env}",
       "ordered_articles_#{Rails.env}",
-      "ClassifiedListing_#{Rails.env}",
       "ordered_articles_by_published_at_#{Rails.env}",
       "ordered_articles_by_positive_reactions_count_#{Rails.env}",
-      "ordered_comments_#{Rails.env}",
     ].join(",")
   }
   secured_algolia_key = Algolia.generate_secured_api_key(

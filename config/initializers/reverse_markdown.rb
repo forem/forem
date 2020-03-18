@@ -6,7 +6,7 @@
 
 if Rails.env.development? || Rails.env.test?
   Rails.application.config.to_prepare do
-    Dir.glob(Rails.root.join("app", "lib", "reverse_markdown", "converters", "*.rb")).sort.each do |filename|
+    Dir.glob(Rails.root.join("app/lib/reverse_markdown/converters/*.rb")).sort.each do |filename|
       require_dependency filename
     end
   end

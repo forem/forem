@@ -1,6 +1,7 @@
 class AsyncInfoController < ApplicationController
   include Devise::Controllers::Rememberable
   # No pundit policy. All actions are unrestricted.
+  before_action :set_cache_control_headers, only: %i[shell_version]
 
   def base_data
     flash.discard(:notice)
@@ -29,13 +30,20 @@ class AsyncInfoController < ApplicationController
     end
   end
 
+  def shell_version
+    set_surrogate_key_header "shell-version-endpoint"
+    # shell_version will change on every deploy. *Technically* could be only on changes to assets and shell, but this is more fool-proof.
+    shell_version = ApplicationConfig["HEROKU_SLUG_COMMIT"]
+    render json: { version: Rails.env.production? ? shell_version : rand(1000) }.to_json
+  end
+
   def user_data
     Rails.cache.fetch(user_cache_key, expires_in: 15.minutes) do
       {
         id: @user.id,
         name: @user.name,
         username: @user.username,
-        profile_image_90: ProfileImage.new(@user).get(90),
+        profile_image_90: ProfileImage.new(@user).get(width: 90),
         followed_tag_names: @user.cached_followed_tag_names,
         followed_tags: @user.cached_followed_tags.to_json(only: %i[id name bg_color_hex text_color_hex hotness_score], methods: [:points]),
         followed_user_ids: @user.cached_following_users_ids,
@@ -81,6 +89,8 @@ class AsyncInfoController < ApplicationController
   private
 
   def occasionally_update_analytics
-    Articles::UpdateAnalyticsJob.perform_later(@user.id) if Rails.env.production? && rand(ApplicationConfig["GA_FETCH_RATE"]) == 1
+    return unless Rails.env.production? && rand(SiteConfig.ga_fetch_rate) == 1
+
+    Articles::UpdateAnalyticsWorker.perform_async(@user.id)
   end
 end

@@ -72,4 +72,36 @@ RSpec.describe "Messages", type: :request do
       end
     end
   end
+
+  describe "UPDATE /messages/:id" do
+    let(:old_message) { create(:message, user_id: user.id) }
+
+    let(:new_message) do
+      {
+        message_markdown: "hi",
+        user_id: user.id,
+        chat_channel_id: chat_channel.id
+      }
+    end
+
+    it "requires user to be signed in" do
+      expect { patch "/messages/#{old_message.id}" }.to raise_error(Pundit::NotAuthorizedError)
+    end
+
+    context "when user is signed in" do
+      before do
+        allow(Pusher).to receive(:trigger).and_return(true)
+        sign_in user
+        patch "/messages/#{old_message.id}", params: { message: new_message }
+      end
+
+      it "returns message updated" do
+        expect(response.body).to include "edited"
+      end
+
+      it "returns in json" do
+        expect(response.content_type).to eq("application/json")
+      end
+    end
+  end
 end

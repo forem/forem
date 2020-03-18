@@ -1,7 +1,7 @@
 <% title "Partnerships and Sponsors" %>
 
 <style>
-  <% cache "partnership-org-section-credits-#{ApplicationConfig['HEROKU_SLUG_COMMIT']}", expires_in: 10.hours do %>
+  <% cache(cache_key_heroku_slug("partnership-org-section-credits"), expires_in: 10.hours) do %>
     <%= Rails.application.assets["partnerships.css"].to_s.html_safe %>
   <% end %>
 </style>
@@ -10,7 +10,7 @@
   <h1>Partner With <img src="<%= asset_path "rainbowdev.svg" %>" /> </h1>
   <h3>🚀 Reach</h3>
   <p>
-    DEV serves millions of unique visitors per month.  This highly-targeted developer audience is comprised of registered members (<%= User.count %>) and visitors from the open web — many of whom visit DEV as part of their daily routine.  You may be interested in the <a href="https://www.similarweb.com/website/dev.to">public analytics available on SimilarWeb</a>.
+    DEV serves millions of unique visitors per month.  This highly-targeted developer audience is comprised of registered members (<%= User.estimated_count %>) and visitors from the open web — many of whom visit DEV as part of their daily routine.  You may be interested in the <a href="https://www.similarweb.com/website/dev.to">public analytics available on SimilarWeb</a>.
   </p>
   <h3>❤️ Community</h3>
   <p>

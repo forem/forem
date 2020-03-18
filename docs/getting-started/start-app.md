@@ -7,16 +7,21 @@ title: Starting the Application
 We're a Rails app, and we use [Webpacker][webpacker] to manage some of our
 JavaScript.
 
-Start the application, Webpack, and our job runner [delayed_job][delayed_job] by
+Start the application, Webpack, and our job runner [Sidekiq][sidekiq] by
 running:
 
 ```shell
 bin/startup
 ```
 
-(This just runs `foreman start -f Procfile.dev`)
+(This just runs `foreman start -f Procfile.dev`, for notes on how to install
+Foreman, please see [Other Tools](/installation/others/))
 
 Then point your browser to http://localhost:3000/ to view the site.
+
+If you run into issues while trying to run `bin/setup` and the error message
+isn't helpful, try running `bin/rails s -p 3000`. For example, you may need to
+`yarn install` before starting the app.
 
 If you're working on DEV regularly, you can use `alias start="bin/startup"` to
 make this even easier. 😊
@@ -27,13 +32,11 @@ If you're using **`pry`** for debugging in Rails, note that using `foreman` and
 Here are some singleton commands you may need, usually in a separate
 instance/tab of your shell.
 
-- Running the job server (if using `bin/rails server`) -- this is mostly for
-  notifications and emails: **`bin/rails jobs:work`**
-- Clearing jobs (in case you don't want to wait for the backlog of jobs):
-  **`bin/rails jobs:clear`**
+- Running the job Sidekiq server (if using `bin/rails server`) -- this is mostly
+  for notifications and emails: **`bundle exec sidekiq`**
 
 Current gotchas: potential environment issues with external services need to be
 worked out.
 
-[delayed_job]: https://github.com/collectiveidea/delayed_job_active_record
+[sidekiq]: https://github.com/mperham/sidekiq
 [webpacker]: https://github.com/rails/webpacker

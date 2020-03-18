@@ -1,41 +1,51 @@
-<%= f.label :cover_image %>:
-<%= f.file_field :cover_image %>
-<br>
-<img src="<%= event.profile_image_url %>" style="width: 25%;" alt="event profile image">
-<br>
-<%= f.label :profile_image %> (for live notification):
-<%= f.file_field :profile_image %>
-<br>
-<%= f.label :title %>
-<%= f.text_field :title, maxlength: 90, size: 40, required: true %>
-<br>
-<%= f.label :host_name %>
-<%= f.text_field :host_name, size: 40, required: true %>
-<br>
-<%= f.label :category %>
-<%= f.select :category, ["AMA", "Workshop", "Talk", "Town Hall"], required: true %>
-<br>
-<%= f.label :starts_at %>
-<%= f.datetime_select :starts_at, required: true, include_blank: true, start_year: Time.current.year, end_year: Time.current.year + 2 %> UTC Time Only (4 hours ahead of eastern time)
-<br>
-<%= f.label :ends_at %>
-<%= f.datetime_select :ends_at, required: true, include_blank: true, start_year: Time.current.year, end_year: Time.current.year + 2 %> UTC Time Only (4 hours ahead of eastern time)
-<br>
-<%= f.label :location_name %>
-<%= f.text_field :location_name, required: true %>
-<br>
-<%= f.label :location_url %>
-<%= f.text_field :location_url, required: true %>
-<br>
-<%= f.label :description_markdown %>
-<br>
-<%= f.text_area :description_markdown, size: "45x10", required: true %>
-<br>
-<%= f.label :publish %>
-<%= f.check_box :published %>
-<br>
-<%= f.label :live_now %>
-<%= f.check_box :live_now %>
-<br>
-<%= f.submit %>
 <hr>
+<div class="form-group">
+  <%= f.label :cover_image %>:
+  <%= f.file_field :cover_image, class: "form-control" %>
+</div>
+<div class="form-group">
+  <%= f.label :profile_image %> (for live notification):
+  <%= f.file_field :profile_image, class: "form-control" %>
+  <img src="<%= event.profile_image_url %>" style="width: 25%;" alt="event profile image">
+</div>
+<div class="form-group">
+  <%= f.label :title %>
+  <%= f.text_field :title, maxlength: 90, size: 40, required: true, class: "form-control" %>
+</div>
+<div class="form-group">
+  <%= f.label :host_name %>
+  <%= f.text_field :host_name, size: 40, required: true, class: "form-control" %>
+</div>
+<div class="form-group">
+  <%= f.label :category %>
+  <%= f.select :category, ["AMA", "Workshop", "Talk", "Town Hall"], required: true %>
+</div>
+<div class="form-group">
+  <%= f.label :starts_at %>
+  <%= f.datetime_select :starts_at, required: true, include_blank: true, start_year: Time.current.year, end_year: Time.current.year + 2, class: "form-control" %> UTC Time Only (4 hours ahead of eastern time)
+</div>
+<div class="form-group">
+  <%= f.label :ends_at %>
+  <%= f.datetime_select :ends_at, required: true, include_blank: true, start_year: Time.current.year, end_year: Time.current.year + 2, class: "form-control" %> UTC Time Only (4 hours ahead of eastern time)
+</div>
+<div class="form-group">
+  <%= f.label :location_name %>
+  <%= f.text_field :location_name, required: true, class: "form-control" %>
+</div>
+<div class="form-group">
+  <%= f.label :location_url %>
+  <%= f.text_field :location_url, required: true, class: "form-control" %>
+</div>
+<div class="form-group">
+  <%= f.label :description_markdown %>
+  <%= f.text_area :description_markdown, size: "45x10", required: true, class: "form-control" %>
+</div>
+<div class="form-group">
+  <%= f.label :publish %>
+  <%= f.check_box :published %>
+</div>
+<div class="form-group">
+  <%= f.label :live_now %>
+  <%= f.check_box :live_now %>
+</div>
+<%= f.submit class: "btn btn-primary float-right my-3" %>

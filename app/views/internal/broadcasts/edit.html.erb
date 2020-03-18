@@ -1,6 +1,9 @@
-<h1>Edit broadcast:</h1>
-<%= form_for([:internal, @broadcast], method: :patch) do %>
-  <%= render "form" %>
-  <%= submit_tag "Update Broadcast" %>
-<% end %>
-<hr>
+<div class="row">
+  <div class="col-12">
+    <h2>Edit broadcast:</h2>
+    <%= form_for([:internal, @broadcast], method: :patch) do %>
+      <%= render "form" %>
+      <%= submit_tag "Update Broadcast", class: "btn btn-primary float-right" %>
+    <% end %>
+  </div>
+</div>

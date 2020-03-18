@@ -3,7 +3,7 @@
 exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
 <div>
   <img
-    alt="bojackhorseman profile image"
+    alt="bojackhorseman profile"
     src="https://media.giphy.com/media/3o7WTHb2WjEXbsmWDS/giphy.gif"
     style={
       Object {
@@ -24,6 +24,7 @@ exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
   >
     <a
       href="/bojackhorseman"
+      rel="noopener noreferrer"
       target="_blank"
     >
       Bojack Horseman
@@ -165,6 +166,7 @@ exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
         class="no"
         onClick={[Function]}
         onKeyUp={[Function]}
+        role="button"
         tabIndex="0"
       >
         No
@@ -202,6 +204,7 @@ exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
       <a
         onClick={[Function]}
         onKeyUp={[Function]}
+        role="button"
         tabIndex="0"
       >
         Yes, Block
@@ -210,6 +213,7 @@ exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
         class="no"
         onClick={[Function]}
         onKeyUp={[Function]}
+        role="button"
         tabIndex="0"
       >
         No
@@ -222,7 +226,7 @@ exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
 exports[`<UserDetails /> for user2 should render and test snapshot 1`] = `
 <div>
   <img
-    alt="mrpeanutbutter profile image"
+    alt="mrpeanutbutter profile"
     src="https://media.giphy.com/media/xThuW6sWCGbpZMpX7a/giphy.gif"
     style={
       Object {
@@ -243,6 +247,7 @@ exports[`<UserDetails /> for user2 should render and test snapshot 1`] = `
   >
     <a
       href="/mrpeanutbutter"
+      rel="noopener noreferrer"
       target="_blank"
     >
       Mr. Peanutbutter
@@ -347,11 +352,13 @@ exports[`<UserDetails /> for user2 should render and test snapshot 1`] = `
   >
     <button
       onClick={[Function]}
+      type="button"
     >
       Block User
     </button>
     <button
       onClick={[Function]}
+      type="button"
     >
       Report Abuse
     </button>
@@ -395,6 +402,7 @@ exports[`<UserDetails /> for user2 should render and test snapshot 1`] = `
         class="no"
         onClick={[Function]}
         onKeyUp={[Function]}
+        role="button"
         tabIndex="0"
       >
         No
@@ -432,6 +440,7 @@ exports[`<UserDetails /> for user2 should render and test snapshot 1`] = `
       <a
         onClick={[Function]}
         onKeyUp={[Function]}
+        role="button"
         tabIndex="0"
       >
         Yes, Block
@@ -440,6 +449,7 @@ exports[`<UserDetails /> for user2 should render and test snapshot 1`] = `
         class="no"
         onClick={[Function]}
         onKeyUp={[Function]}
+        role="button"
         tabIndex="0"
       >
         No

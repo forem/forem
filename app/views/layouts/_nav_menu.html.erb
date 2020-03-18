@@ -1,5 +1,5 @@
-<% if user_signed_in? %>
-  <div class="menu logged-in" id="loggedinmenu">
+<div class="top-bar--menu-dropdown">
+  <% if user_signed_in? %>
     <div id="user-profile-link-placeholder">
       <div class="option">
         ...
@@ -30,14 +30,12 @@
         Key Links
       </div>
     </a>
-    <a href="/signout_confirm" data-no-instant id="last-nav-link">
+    <a href="/signout_confirm" id="last-nav-link">
       <div class="option">
         Sign Out
       </div>
     </a>
-  </div>
-<% else %>
-  <div class="menu logged-out" id="loggedoutmenu">
+  <% else %>
     <a href="/enter" data-no-instant id="first-nav-link">
       <div class="header">
         Sign In/Up
@@ -58,5 +56,5 @@
         All about dev.to
       </div>
     </a>
-  </div>
-<% end %>
+  <% end %>
+</div>

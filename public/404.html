@@ -4,6 +4,10 @@
   <title>The page you were looking for doesn't exist (404)</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
+    .not-found-page {
+      height: 100vh;
+      min-height: 500px;
+    }
     .tv__outer {
       display: table;
       position: absolute;
@@ -41,15 +45,18 @@
       margin-right: auto;
       display: table;
       font-size: 22px;
-      font-weight: 200;
+      font-weight: 500;
     }
 
-    img {
+    .tv__inner--special, .tv__inner {
       max-width: 85%;
+      width: 300px;
       border: 25px solid rgb(54, 55, 124);
+      border-radius: 36px;
     }
-    p {
+    .tv__inner--text {
       text-align: center;
+      max-width: 90%;
     }
 
     @-webkit-keyframes fade {
@@ -81,13 +88,15 @@
 </head>
 
 <body>
-  <div class="tv__outer">
-    <div class="tv__middle">
-      <img class="tv__inner--special" src="https://i.imgur.com/Vyyjycv.gif" alt="404 not found image as TV static">
-      <img class="tv__inner" src="https://i.imgur.com/3v0LCiP.jpg" alt="404 not found DEV logo">
-      <br>
-      <p class="tv__inner--text">You have lost your way. <br> <a href="https://dev.to/">Return to Home Page</a></p>
-    </div>
+  <div class="not-found-page base-background-color">
+    <div class="tv__outer">
+        <div class="tv__middle">
+          <img class="tv__inner--special" src="https://i.imgur.com/Vyyjycv.gif" alt="404 not found image as TV static">
+          <img class="tv__inner" src="https://i.imgur.com/3v0LCiP.jpg" alt="404 not found DEV logo">
+          <br>
+          <p class="tv__inner--text">This page does not exist <br><br> <a href="https://dev.to/">Return to Home Page</a></p>
+        </div>
+      </div>
   </div>
 </body>
 </html>

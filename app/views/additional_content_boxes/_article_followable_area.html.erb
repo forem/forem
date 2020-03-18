@@ -20,7 +20,7 @@
        class="<%= "partner-link" if classification == "boosted" %>"
        data-details="<%= followable&.slug if classification == "boosted" %>__PROFILE">
       <img class="profile-image"
-           src="<%= ProfileImage.new(followable).get(200) %>"
+           src="<%= ProfileImage.new(followable).get(width: 200) %>"
            alt="<%= followable.name %> profile image"
            loading="lazy"
            data-details="<%= followable&.slug if classification == "boosted" %>__PROFILE"

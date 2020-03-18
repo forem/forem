@@ -5,6 +5,15 @@ class PodcastTag < LiquidTagBase
   attr_reader :episode, :podcast
   PARTIAL = "podcast_episodes/liquid".freeze
 
+  SCRIPT = <<~JAVASCRIPT.freeze
+    var waitingOnPodcast = setInterval(function() {
+      if (typeof initializePodcastPlayback !== 'undefined') {
+        initializePodcastPlayback();
+        clearInterval(waitingOnPodcast);
+      }
+    }, 1);
+  JAVASCRIPT
+
   IMAGE_LINK = {
     itunes: "https://d.ibtimes.co.uk/en/full/1423047/itunes-12.png",
     overcast: "https://d2uzvmey2c90kn.cloudfront.net/img/logo.svg",
@@ -33,14 +42,7 @@ class PodcastTag < LiquidTagBase
   end
 
   def self.script
-    <<~JAVASCRIPT
-      var waitingOnPodcast = setInterval(function(){
-        if (typeof initializePodcastPlayback !== 'undefined') {
-          initializePodcastPlayback();
-          clearInterval(waitingOnPodcast);
-        }
-      },1);
-    JAVASCRIPT
+    SCRIPT
   end
 
   private

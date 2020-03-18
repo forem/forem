@@ -12,7 +12,7 @@
   <meta property="og:title" content="Discussion of <%= @commentable.title %>" />
   <meta property="og:description" content="<%= @commentable.description || "A DEV Comment" %>" />
   <meta property="og:site_name" content="The DEV Community" />
-  <meta name="twitter:site" content="@<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %>">
+  <meta name="twitter:site" content="@<%= SiteConfig.social_networks_handle %>">
   <meta name="twitter:creator" content="@<%= @user.twitter_username %>">
   <meta name="twitter:title" content="<%= @commentable.title %>">
   <meta name="twitter:description" content="<%= @commentable.description || "A DEV Comment" %>">
@@ -55,11 +55,11 @@
     <% if @commentable.processed_html.present? %>
       <% if @commentable.processed_html.size < 350 %>
         <div class="body">
-          <%= sanitize_rendered_markdown(@commentable.processed_html.html_safe) %>
+          <%= sanitize_rendered_markdown(@commentable.processed_html) %>
         </div>
       <% else %>
         <div class="body">
-          <%= truncate(strip_tags(@commentable.processed_html), length: 150).html_safe %>
+          <%= truncate(sanitize(@commentable.processed_html, tags: []), length: 150) %>
           <a href="<%= @commentable.path %>"><span class="read-more">[Read Full]</span></a>
         </div>
       <% end %>
@@ -122,8 +122,8 @@
 <% end %>
 
 <script async>
-  <%= TweetTag.script.html_safe %>
-  <%= YoutubeTag.script.html_safe %>
-  <%= PodcastTag.script.html_safe %>
-  <%= GistTag.script.html_safe %>
+  <%= TweetTag.script %>
+  <%= YoutubeTag.script %>
+  <%= PodcastTag.script %>
+  <%= GistTag.script %>
 </script>

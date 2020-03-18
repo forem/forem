@@ -2,9 +2,18 @@ class Follow < ApplicationRecord
   extend ActsAsFollower::FollowerLib
   extend ActsAsFollower::FollowScopes
 
-  # NOTE: Follows belong to the "followable" interface, and also to followers
+  # Follows belong to the "followable" interface, and also to followers
   belongs_to :followable, polymorphic: true
   belongs_to :follower,   polymorphic: true
+
+  scope :followable_user, ->(id) { where(followable_id: id, followable_type: "User") }
+  scope :followable_tag, ->(id) { where(followable_id: id, followable_type: "ActsAsTaggableOn::Tag") }
+
+  scope :follower_user, ->(id) { where(follower_id: id, followable_type: "User") }
+  scope :follower_organization, ->(id) { where(follower_id: id, followable_type: "Organization") }
+  scope :follower_podcast, ->(id) { where(follower_id: id, followable_type: "Podcast") }
+  scope :follower_tag, ->(id) { where(follower_id: id, followable_type: "ActsAsTaggableOn::Tag") }
+
   counter_culture :follower, column_name: proc { |follow|
     case follow.followable_type
     when "User"
@@ -21,7 +30,8 @@ class Follow < ApplicationRecord
     ["follows.followable_type = ?", "ActsAsTaggableOn::Tag"] => "following_tags_count"
   }
   after_save :touch_follower
-  after_create :send_email_notification, :create_chat_channel
+  after_create :send_email_notification
+  after_create_commit :create_chat_channel
   before_destroy :modify_chat_channel_status
 
   validates :followable_id, uniqueness: { scope: %i[followable_type follower_id] }
@@ -34,19 +44,19 @@ class Follow < ApplicationRecord
   private
 
   def touch_follower
-    Follows::TouchFollowerJob.perform_later(id)
+    follower.touch(:updated_at, :last_followed_at)
   end
 
   def create_chat_channel
     return unless followable_type == "User"
 
-    Follows::CreateChatChannelJob.perform_later(id)
+    Follows::CreateChatChannelWorker.perform_async(id)
   end
 
   def send_email_notification
     return unless followable.class.name == "User" && followable.email?
 
-    Follows::SendEmailNotificationJob.perform_later(id)
+    Follows::SendEmailNotificationWorker.perform_async(id)
   end
 
   def modify_chat_channel_status

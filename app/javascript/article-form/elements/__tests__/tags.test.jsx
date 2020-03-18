@@ -2,15 +2,28 @@ import { h, render as preactRender } from 'preact';
 import render from 'preact-render-to-json';
 import { shallow } from 'preact-render-spy';
 import { JSDOM } from 'jsdom';
+import fetch from 'jest-fetch-mock';
 import Tags from '../../../shared/components/tags';
-import algoliasearch from '../__mocks__/algoliasearch';
+
+global.fetch = fetch;
+
+const sampleResponse = JSON.stringify({
+  result: [
+    {
+      name: 'git',
+      hotness_score: 0,
+      supported: true,
+      short_summary: null,
+    },
+  ],
+});
 
 describe('<Tags />', () => {
   beforeEach(() => {
     const doc = new JSDOM('<!doctype html><html><body></body></html>');
     global.document = doc;
     global.window = doc.defaultView;
-    global.window.algoliasearch = algoliasearch;
+    fetch.mockResponse(sampleResponse);
   });
 
   it('renders properly', () => {
@@ -43,6 +56,26 @@ describe('<Tags />', () => {
       });
   });
 
+  it('skips the click handler if className is articleform__tagsoptionrulesbutton', () => {
+    // eslint-disable-next-line no-underscore-dangle
+    const component = preactRender(
+      <Tags
+        defaultValue=""
+        onInput={jest.fn()}
+        classPrefix="articleform"
+        maxTags={4}
+      />,
+      document.body,
+      document.body.firstElementChild,
+    )._component;
+
+    component.handleTagClick({
+      target: { className: 'articleform__tagsoptionrulesbutton' },
+    });
+    expect(component.state).toMatchSnapshot();
+    expect(component.state.searchResults).toEqual([]);
+  });
+
   it('selects tag when you click on it', () => {
     // eslint-disable-next-line no-underscore-dangle
     const component = preactRender(
@@ -56,7 +89,10 @@ describe('<Tags />', () => {
       document.body.firstElementChild,
     )._component;
 
-    component.handleTagClick({ target: { dataset: { content: 'git' } } });
+    component.handleTagClick({
+      target: {},
+      currentTarget: { dataset: { content: 'git' } },
+    });
     expect(component.state).toMatchSnapshot();
   });
 
@@ -77,7 +113,10 @@ describe('<Tags />', () => {
     input.value = 'java,javascript,linux';
     input.selectionStart = 2;
 
-    component.handleTagClick({ target: { dataset: { content: 'git' } } });
+    component.handleTagClick({
+      target: {},
+      currentTarget: { dataset: { content: 'git' } },
+    });
     expect(component.state).toMatchSnapshot();
   });
 

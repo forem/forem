@@ -1,159 +1,92 @@
 <% title "Moderate" %>
 
 <% if current_user&.trusted %>
+  <% if @tag %>
   <style>
-    .level-rating-button {
-      border-radius: 8px;
-      font-size: 1.1em;
-      padding: 3px;
-      width: 42px;
-      border: 2px solid black;
-      font-weight: bold;
+    .mod-index-hero, .mod-index-header-link--active {
+      background: <%= @tag.bg_color_hex %> !important;
+      color: <%= @tag.text_color_hex %> !important;
     }
-
-    .level-rating-button.selected {
-      background: #9bebff;
-    }
-    .tag-mod-form {
-      border-top: 1px solid rgba(255, 255, 255, 0.5);
-      margin: 40px auto;
-    }
-
-    .tag-mod-form ul {
-      text-align: left;
-      font-size: 15px;
-    }
-
-    .tag-mod-form form {
-      width: 500px;
-      margin: auto;
-      max-width: 90%;
-    }
-
-    .tag-mod-form form input {
-      width: 100%;
-      padding: 5px;
-      font-size: 20px;
-      margin-bottom: 5px;
-      border: 1px solid #888;
-    }
-
-    .tag-mod-form form input[type="submit"] {
-      background: #0045ff;
-      color: white;
-      font-weight: bold;
-      padding: 10px;
-      margin: auto;
-      display: block;
-    }
-
-    .tag-mod-form form textarea {
-      box-sizing: border-box;
-      width: 100%;
-      padding: 5px;
-      font-size: 17px;
-      height: 100px;
-      border: 1px solid #888;
-    }
-    .reaction-button {
-      position: relative;
-      width: 40px;
-      height: 40px;
-      background: white;
-      border-color: white;
-      margin: 20px 40px;
-      border-radius: 200px;
-      border: 0px;
-    }
-
-    .reaction-button img {
-      position: absolute;
-      top: 0;
-      width: 40px;
-      left: 0;
-    }
-
-    .reaction-button .reacted-emoji {
-      display: none;
-    }
-
-    .reaction-button.reacted .reacted-emoji {
-      display: block;
+    .mod-index-hero .mod-index-hero-data-pod {
+      border-color: <%= @tag.text_color_hex %> !important;
     }
   </style>
-
-  <br /><br /><br /><br />
-  <center>
-    <h1>Mod Dashboard (beta)</h1>
-    <a href="/community-moderation" class="mod-link">Community moderation guide</a>
+  <% end %>
+  <% cache("mod-data-header-#{params[:tag]}", expires_in: 6.hours) do %>
+    <div class="mod-index-hero">
+      <h1><%= "#" + @tag.name.titleize if @tag %> Moderators</h1>
+      <h2>We build the <%= ApplicationConfig["COMMUNITY_NAME"] %> Community</h2>
+      <div class="mod-index-hero-data-pod">
+        <div class="mod-index-hero-data-pod-number">
+          <%= number_with_delimiter(@tag ? Article.cached_tagged_with(@tag).published.where("published_at > ?", 7.days.ago).size : Article.published.where("published_at > ?", 7.days.ago).size) %>
+        </div>
+        Posts This Week
+      </div>
+      <% plucked_article_ids = Article.cached_tagged_with(@tag).pluck(:id) if @tag %>
+      <div class="mod-index-hero-data-pod">
+        <div class="mod-index-hero-data-pod-number">
+          <%= number_with_delimiter(@tag ? Comment.where(commentable_id: plucked_article_ids).where("created_at > ?", 7.days.ago).size : Comment.where("created_at > ?", 7.days.ago).size) %>
+        </div>
+        Comments This Week
+      </div>
+      <div class="mod-index-hero-data-pod">
+        <div class="mod-index-hero-data-pod-number">
+          <%= number_with_delimiter(@tag ? Reaction.where(reactable_id: plucked_article_ids).where("created_at > ?", 7.days.ago).size : Reaction.where("created_at > ?", 7.days.ago).size) %>
+        </div>
+        Reactions This Week
+      </div>
+      <div class="mod-index-hero-sub">
+        <em>Data as of <%= Time.current %></em>
+      </div>
+    </div>
+  <% end %>
+  <div class="mod-index-header">
+    <div class="mod-index-header-top-filters">
+      <a href="<%= request.path %>" class="<%= "mod-index-top-filter-link--active" if params[:state].blank? %>">Base Feed</a>
+      <a href="<%= request.path %>?state=new-authors" class="<%= "mod-index-top-filter-link--active" if params[:state] == "new-authors" %>">New Authors Only</a>
+    </div>
     <% if current_user.moderator_for_tags.any? %>
-      <a href="/mod" class="mod-link" style="<%= "background: #c7ffe0" if params[:tag].blank? %>">all recent</a>
+      <a href="/mod<%= "?state=new-authors" if params[:state] == "new-authors" %>" class="mod-index-header-link mod-index-header-link--<%= "active" if params[:tag].blank? %>">Site Wide</a>
       <% current_user.moderator_for_tags.each do |tag| %>
-        | <a href="/mod?tag=<%= tag %>" class="mod-link" style="<%= "background: #c7ffe0" if params[:tag] == tag %>">#<%= tag %></a>
+        <a href="/mod/<%= tag %><%= "?state=new-authors" if params[:state] == "new-authors" %>" class="mod-index-header-link mod-index-header-link--<%= "active" if params[:tag] == tag %>">#<%= tag %></a>
       <% end %>
     <% end %>
-  </center>
-  <div class="container">
-    <% @articles.each do |article| %>
-      <% @rating_vote = @rating_votes.where(article: article).first %>
-      <% if !@rating_vote || article.last_buffered.nil? %>
-        <div style="border-bottom: 20px solid black; margin-bottom: 15px;">
-          <center>
-            <h1><%= article.title %></h1>
-            <% cache("main-article-tags-#{article.cached_tag_list}", expires_in: 30.hours) do %>
-              <div class="tags">
-                <% article.cached_tag_list_array.each do |tag| %>
-                  <% tag_hash = tag_colors(tag) %>
-                  <a class="tag" href="/t/<%= tag %>" style="background-color:<%= tag_hash[:background] %>;color:<%= tag_hash[:color] %>">#<%= tag %></a>
-                <% end %>
-              </div>
-            <% end %>
-          </center>
-          <div class="body">
-            <%= raw HTML_Truncator.truncate(
-                  article.processed_html,
-                  200,
-                  ellipsis: '<a class="comment-read-more" href="' + article.path + '">... Read Entire Post</a>',
-                ) %>
-          </div>
-          <center>
-            <% if article.last_buffered.nil? %>
-              <div class="tag-mod-form" style="padding: 10px 0px 20px">
-                <%= form_for(BufferUpdate.new) do |f| %>
-                  <h2>Suggest a Tweet</h2>
-                  <%= f.hidden_field :article_id, value: article.id %>
-                  <%= f.text_area :body_text, maxlength: 220, placeholder: "Short summary, bullet points, etc." %>
-                  <%= f.submit "Share Tweet Suggestion" %>
-                <% end %>
-              </div>
-            <% end %>
-            <div style="padding: 10px 0px 20px">
-              <h2>Suggest experience level</h2>
-              <% 10.times do |i| %>
-                <%= form_for(RatingVote.new, html: { style: "display: inline-block" }) do |f| %>
-                  <%= f.hidden_field :article_id, value: article.id %>
-                  <%= f.hidden_field :group, value: "experience_level" %>
-                  <%= f.hidden_field :rating, value: i + 1 %>
-                  <button value="<%= i + 1 %>" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == i + 1 %>"><%= i + 1 %></button>
-                <% end %>
-              <% end %>
-            </div>
-            <%= render "moderations/reactions", moderatable: article %>
-            <h2><a href="<%= article.path %>/mod">Full Moderation for Post</a></h2>
-            <br /><br /> <br /><br />
-          </center>
+    </div>
+  <div class="mod-index-list">
+    <% @articles.each_with_index do |article, i| %>
+      <div class="mod-index-row">
+        <a href="<%= article.path %>" class="mod-index-article-title"><%= article.title %></a>
+        <div class="mod-index-article-tagslist">
+          <% article.cached_tag_list_array.each do |tag| %>
+            <% tag_hash = tag_colors(tag) %>
+            <a class="mod-index-article-tag" href="/t/<%= tag %>" style="background-color:<%= tag_hash[:background] %>;color:<%= tag_hash[:color] %>">#<%= tag %></a>
+          <% end %>
         </div>
-      <% end %>
+        <div class="mod-index-actions-and-details">
+          <button class="quick-mod-button cta" data-path="<%= article.path %>">Quick Mod</button>
+          <a href="/<%= article.cached_user.username %>"><img src="<%= ProfileImage.new(article.cached_user).get(width: 90) %>" /><%= article.cached_user.name %></a>
+          ・ <%= article.readable_publish_date %>
+          <% if article.nth_published_by_author > 0 && article.nth_published_by_author < 4 %>
+            ・ 👋 <strong><%= article.nth_published_by_author.ordinalize %> post by this user</strong>
+          <% end %>
+        </div>
+        <div class="mod-index-quick-mod" id="quick-mod-<%= i %>"></div>
+      </div>
+    <% end %>
+  </div>
+  <div class="mod-index-footer">
+    <a href="/community-moderation" class="mod-link">Community Moderation Guide</a>
+    <% if current_user.moderator_for_tags.any? %>
+      ・ <a href="/tag-moderation" class="mod-link">Tag Moderation Guide</a>
     <% end %>
   </div>
 <% else %>
-  <br /><br /><br /><br />
-  <div class="container">
+  <div class="container" style="margin-top: 90px;">
     <h1 style="text-align: center">DEV Mods</h1>
     <div class="body">
       <p>We periodically award some DEV members with heightened privileges to help moderate the community.</p>
-      <p>Email <a href="mailto:<%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %>"><%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %></a> if you'd like to be considered right away.</p>
-      <% if !user_signed_in? %>
+      <p>Email <a href="mailto:<%= SiteConfig.default_site_email %>"><%= SiteConfig.default_site_email %></a> if you'd like to be considered right away.</p>
+      <% unless user_signed_in? %>
         <p><em>P.S. You are not currently signed in.</em></p>
       <% end %>
     </div>
@@ -161,59 +94,16 @@
 <% end %>
 
 <script>
-  var forms = document.getElementsByTagName("form");
-
-  for (i=0; i < forms.length; i++){
-    var form = forms[i];
-    form.onsubmit = function(e) {
-      e.preventDefault();
-      var thisForm = this;
-      thisForm.parentNode.style.background = "#b7ffe7"
-      var data = new URLSearchParams();
-      for (var pair of new FormData(thisForm)) {
-          console.log(pair[0])
-          data.append(pair[0], pair[1]);
+  var els = document.getElementsByClassName('quick-mod-button');
+  for (let i = 0; i < els.length; i += 1) {
+    els[i].onclick = function(e) {
+      let path = e.target.dataset.path
+      let el = document.getElementById('quick-mod-' + i)
+      if (el.innerHTML.length > 10) {
+        el.innerHTML = ''
+      } else {
+        el.innerHTML = '<div class="mod-index-row-iframes"><iframe src="' + path + '"></iframe><iframe src="' + path + '/mod"></iframe></div>'
       }
-      fetch(thisForm.action, {
-        method: 'post',
-        body: data,
-      })
-      .then(function() {
-        thisForm.parentNode.style.background = "#00ffa9"
-        console.log("form submitted")
-      });
     }
   }
-  setTimeout(function () {
-    var butts = document.getElementsByClassName('reaction-button');
-    for (var i = 0; i < butts.length; i++) {
-      var butt = butts[i];
-      butt.onclick = function (event) {
-        event.preventDefault();
-        var thisButt = this;
-        thisButt.classList.add('reacted');
-
-        function successCb(response) {
-          if (response.result === 'create') {
-            thisButt.classList.add('reacted');
-          } else {
-            thisButt.classList.remove('reacted');
-          }
-        }
-
-        var formData = new FormData();
-        formData.append('reactable_type', thisButt.dataset.reactableType);
-        formData.append('category', thisButt.dataset.category);
-        formData.append('reactable_id', thisButt.dataset.reactableId);
-
-        getCsrfToken()
-          .then(sendFetch('reaction-creation', formData))
-          .then(function (response) {
-            if (response.status === 200) {
-              response.json().then(successCb);
-            }
-          });
-      };
-    }
-  }, 200)
 </script>

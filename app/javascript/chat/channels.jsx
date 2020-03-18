@@ -6,6 +6,7 @@ import ConfigImage from 'images/three-dots.svg';
 const Channels = ({
   activeChannelId,
   chatChannels,
+  unopenedChannelIds,
   handleSwitchChannel,
   expanded,
   filterQuery,
@@ -14,10 +15,8 @@ const Channels = ({
 }) => {
   const channels = chatChannels.map(channel => {
     const isActive = parseInt(activeChannelId, 10) === channel.chat_channel_id;
-    const lastOpened = channel.last_opened_at;
     const isUnopened =
-      new Date(channel.channel_last_message_at) > new Date(lastOpened) &&
-      channel.channel_messages_count > 0;
+      !isActive && unopenedChannelIds.includes(channel.chat_channel_id);
     let newMessagesIndicator = isUnopened ? 'new' : 'old';
     if (incomingVideoCallChannelIds.indexOf(channel.chat_channel_id) > -1) {
       newMessagesIndicator = 'video';
@@ -51,7 +50,11 @@ const Channels = ({
             <img
               src={channel.channel_image}
               alt="pic"
-              className="chatchanneltabindicatordirectimage"
+              className={
+                channel.channel_type === 'direct'
+                  ? 'chatchanneltabindicatordirectimage'
+                  : 'chatchanneltabindicatordirectimage invert-channel-image'
+              }
             />
           </span>
           {channel.channel_name}
@@ -74,7 +77,7 @@ const Channels = ({
         {' '}
         Welcome to
         <b> DEV Connect</b>
-! You may message anyone you mutually follow.
+        ! You may message anyone you mutually follow.
       </div>
     );
   }
@@ -114,6 +117,7 @@ const Channels = ({
 Channels.propTypes = {
   activeChannelId: PropTypes.number.isRequired,
   chatChannels: PropTypes.arrayOf(PropTypes.objectOf()).isRequired,
+  unopenedChannelIds: PropTypes.arrayOf().isRequired,
   handleSwitchChannel: PropTypes.func.isRequired,
   expanded: PropTypes.bool.isRequired,
   filterQuery: PropTypes.string.isRequired,

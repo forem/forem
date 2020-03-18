@@ -1,3 +1,10 @@
+# we use this to be able to increase the size of the seeded DB at will
+# eg.: `SEEDS_MULTIPLIER=2 rails db:seed` would double the amount of data
+SEEDS_MULTIPLIER = [1, ENV["SEEDS_MULTIPLIER"].to_i].max
+Rails.logger.info "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}"
+
+##############################################################################
+
 Rails.logger.info "1. Creating Organizations"
 
 3.times do
@@ -17,25 +24,31 @@ end
 
 ##############################################################################
 
-Rails.logger.info "2. Creating Users"
+num_users = 10 * SEEDS_MULTIPLIER
+
+Rails.logger.info "2. Creating #{num_users} Users"
+
+User.clear_index!
 
 roles = %i[trusted chatroom_beta_tester workshop_pass]
-User.clear_index!
-10.times do |i|
+
+num_users.times do |i|
+  name = Faker::Name.unique.name
+
   user = User.create!(
-    name: name = Faker::Name.unique.name,
+    name: name,
     summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
-    profile_image: File.open(Rails.root.join("app", "assets", "images", "#{rand(1..40)}.png")),
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     website_url: Faker::Internet.url,
     twitter_username: Faker::Internet.username(specifier: name),
     email_comment_notifications: false,
     email_follower_notifications: false,
-    email: Faker::Internet.email(name: name, separators: "+"),
+    email: Faker::Internet.email(name: name, separators: "+", domain: Faker::Internet.domain_word.first(20)), # Emails limited to 50 characters
     confirmed_at: Time.current,
     password: "password",
   )
 
-  user.add_role(roles[rand(0..3)]) # includes chance of having no role
+  user.add_role(roles[rand(0..roles.length)]) # includes chance of having no role
 
   Identity.create!(
     provider: "twitter",
@@ -70,17 +83,20 @@ end
 
 ##############################################################################
 
-Rails.logger.info "4. Creating Articles"
+num_articles = 25 * SEEDS_MULTIPLIER
+
+Rails.logger.info "4. Creating #{num_articles} Articles"
 
 Article.clear_index!
-25.times do |i|
+
+num_articles.times do |i|
   tags = []
   tags << "discuss" if (i % 3).zero?
-  tags.concat Tag.order(Arel.sql("RANDOM()")).select("name").first(3).map(&:name)
+  tags.concat Tag.order(Arel.sql("RANDOM()")).limit(3).pluck(:name)
 
   markdown = <<~MARKDOWN
     ---
-    title:  #{Faker::Book.unique.title}
+    title:  #{Faker::Book.title} #{Faker::Lorem.sentence(word_count: 2).chomp('.')}
     published: true
     cover_image: #{Faker::Company.logo}
     tags: #{tags.join(', ')}
@@ -101,16 +117,18 @@ end
 
 ##############################################################################
 
-Rails.logger.info "5. Creating Comments"
+num_comments = 30 * SEEDS_MULTIPLIER
 
-Comment.clear_index!
-30.times do
+Rails.logger.info "5. Creating #{num_comments} Comments"
+
+num_comments.times do
   attributes = {
     body_markdown: Faker::Hipster.paragraph(sentence_count: 1),
     user_id: User.order(Arel.sql("RANDOM()")).first.id,
     commentable_id: Article.order(Arel.sql("RANDOM()")).first.id,
     commentable_type: "Article"
   }
+
   Comment.create!(attributes)
 end
 
@@ -118,9 +136,23 @@ end
 
 Rails.logger.info "6. Creating Podcasts"
 
-image_file = Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg")
+image_file = Rails.root.join("spec/support/fixtures/images/image1.jpeg")
 
 podcast_objects = [
+  {
+    title: "CodeNewbie",
+    description: "",
+    feed_url: "http://feeds.codenewbie.org/cnpodcast.xml",
+    itunes_url: "https://itunes.apple.com/us/podcast/codenewbie/id919219256",
+    slug: "codenewbie",
+    twitter_username: "CodeNewbies",
+    website_url: "https://www.codenewbie.org/podcast",
+    main_color_hex: "2faa4a",
+    overcast_url: "https://overcast.fm/itunes919219256/codenewbie",
+    android_url: "https://subscribeonandroid.com/feeds.podtrac.com/q8s8ba9YtM6r",
+    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+    published: true
+  },
   {
     title: "CodingBlocks",
     description: "",
@@ -129,9 +161,10 @@ podcast_objects = [
     twitter_username: "CodingBlocks",
     website_url: "http://codingblocks.net",
     main_color_hex: "111111",
-    overcast_url: "https://overcast.fm/itunes769189585/coding-blocks-software-and-web-programming-security-best-practices-microsoft-net",
+    overcast_url: "https://overcast.fm/itunes769189585/coding-blocks",
     android_url: "http://subscribeonandroid.com/feeds.podtrac.com/c8yBGHRafqhz",
-    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
+    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+    published: true
   },
   {
     title: "Talk Python",
@@ -141,9 +174,10 @@ podcast_objects = [
     twitter_username: "TalkPython",
     website_url: "https://talkpython.fm",
     main_color_hex: "181a1c",
-    overcast_url: "https://overcast.fm/itunes979020229/talk-python-to-me-python-conversations-for-passionate-developers",
+    overcast_url: "https://overcast.fm/itunes979020229/talk-python-to-me",
     android_url: "https://subscribeonandroid.com/talkpython.fm/episodes/rss",
-    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
+    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+    published: true
   },
   {
     title: "Developer on Fire",
@@ -153,63 +187,83 @@ podcast_objects = [
     slug: "developeronfire",
     twitter_username: "raelyard",
     website_url: "http://developeronfire.com",
-    main_color_hex: Faker::Color.hex_color,
+    main_color_hex: "343d46",
     overcast_url: "https://overcast.fm/itunes1006105326/developer-on-fire",
     android_url: "http://subscribeonandroid.com/developeronfire.com/rss.xml",
-    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
-  },
-  {
-    title: "Building Programmers",
-    description: "",
-    feed_url: "https://building.fireside.fm/rss",
-    itunes_url: "https://itunes.apple.com/us/podcast/building-programmers/id1149043456",
-    slug: "buildingprogrammers",
-    twitter_username: "run_kmc",
-    website_url: "https://building.fireside.fm",
-    main_color_hex: "140837",
-    overcast_url: "https://overcast.fm/itunes1149043456/building-programmers",
-    android_url: "https://subscribeonandroid.com/building.fireside.fm/rss",
-    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
+    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+    published: true
   },
 ]
 
 podcast_objects.each do |attributes|
-  Podcast.create!(attributes)
+  podcast = Podcast.create!(attributes)
+  Podcasts::GetEpisodesWorker.perform_async(podcast_id: podcast.id)
 end
 
 ##############################################################################
 
-Rails.logger.info "7. Creating Broadcasts"
+Rails.logger.info "7. Creating Broadcasts and Welcome Thread"
 
+# TODO: [@thepracticaldev/delightful] Remove this once we have launched welcome notifications.
 Broadcast.create!(
   title: "Welcome Notification",
   processed_html: "Welcome to dev.to! Start by introducing yourself in <a href='/welcome' data-no-instant>the welcome thread</a>.",
   type_of: "Onboarding",
-  sent: true,
+  active: true,
+)
+
+broadcast_messages = {
+  set_up_profile: "Welcome to DEV! 👋 I'm Sloan, the community mascot and I'm here to help get you started. Let's begin by <a href='/settings'>setting up your profile</a>!",
+  welcome_thread: "Sloan here again! 👋 DEV is a friendly community. Why not introduce yourself by leaving a comment in <a href='/welcome'>the welcome thread</a>!",
+  twitter_connect: "You're on a roll! 🎉 Let's connect your <a href='/settings'> Twitter account</a> to complete your identity so that we don't think you're a robot. 🤖",
+  github_connect: "You're on a roll! 🎉 Let's connect your <a href='/settings'> GitHub account</a> to complete your identity so that we don't think you're a robot. 🤖"
+}
+
+broadcast_messages.each do |type, message|
+  Broadcast.create!(
+    title: "Welcome Notification: #{type}",
+    processed_html: message,
+    type_of: "Welcome",
+    active: true,
+  )
+end
+
+welcome_thread_content = <<~HEREDOC
+  ---
+  title: Welcome Thread - v0
+  published: true
+  description: Introduce yourself to the community!
+  tags: welcome
+  ---
+
+  Hey there! Welcome to #{ApplicationConfig['COMMUNITY_NAME']}!
+
+  Leave a comment below to introduce yourself to the community!✌️
+HEREDOC
+
+Article.create!(
+  body_markdown: welcome_thread_content,
+  user: User.dev_account,
 )
 
 ##############################################################################
 
 Rails.logger.info "8. Creating Chat Channels and Messages"
 
-ChatChannel.clear_index!
-ChatChannel.without_auto_index do
-  %w[Workshop Meta General].each do |chan|
-    ChatChannel.create!(
-      channel_name: chan,
-      channel_type: "open",
-      slug: chan,
-    )
-  end
-
-  direct_channel = ChatChannel.create_with_users(User.last(2), "direct")
-  Message.create!(
-    chat_channel: direct_channel,
-    user: User.last,
-    message_markdown: "This is **awesome**",
+%w[Workshop Meta General].each do |chan|
+  ChatChannel.create!(
+    channel_name: chan,
+    channel_type: "open",
+    slug: chan,
   )
 end
-ChatChannel.reindex!
+
+direct_channel = ChatChannel.create_with_users(User.last(2), "direct")
+Message.create!(
+  chat_channel: direct_channel,
+  user: User.last,
+  message_markdown: "This is **awesome**",
+)
 
 Rails.logger.info "9. Creating HTML Variants"
 
@@ -228,7 +282,7 @@ Rails.logger.info "10. Creating Badges"
 Badge.create!(
   title: Faker::Lorem.word,
   description: Faker::Lorem.sentence,
-  badge_image: File.open(Rails.root.join("app", "assets", "images", "#{rand(1..40)}.png")),
+  badge_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
 )
 
 Rails.logger.info "11. Creating FeedbackMessages"
@@ -241,12 +295,20 @@ FeedbackMessage.create!(
   status: "Open",
 )
 
+FeedbackMessage.create!(
+  reporter: User.first,
+  feedback_type: "abuse-reports",
+  message: Faker::Lorem.sentence,
+  reported_url: "example.com",
+  category: "harassment",
+  status: "Open",
+)
+
 Rails.logger.info "12. Creating Classified listings"
 
 users = User.order(Arel.sql("RANDOM()")).to_a
 users.each { |user| Credit.add_to(user, rand(100)) }
 
-ClassifiedListing.clear_index!
 listings_categories = ClassifiedListing.categories_available.keys
 listings_categories.each_with_index do |category, index|
   # rotate users if they are less than the categories
@@ -266,7 +328,7 @@ listings_categories.each_with_index do |category, index|
 end
 ##############################################################################
 
-Rails.logger.info <<-ASCII
+puts <<-ASCII # rubocop:disable Rails/Output
 
 
 

@@ -30,6 +30,13 @@ RSpec.describe "AsyncInfo", type: :request do
     end
   end
 
+  describe "GET /async_info/shell_version" do
+    it "returns shell_version" do
+      get "/async_info/shell_version"
+      expect(response.body).to include("version")
+    end
+  end
+
   describe "#remember_user_token" do
     # We require the remember_user_token key bc we also use it for caching in Fastly
     # If this key changes, Fastly needs to be updated

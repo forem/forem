@@ -118,7 +118,7 @@ a.header-link {
     }
   }
   .single-comment-header {
-    height: 60px;
+    height: 10px;
   }
 }
 
@@ -523,6 +523,16 @@ a.header-link {
       text-overflow: ellipsis;
     }
   }
+
+  .alert-error {
+    background: $red;
+    max-width: 730px;
+    font-family: $helvetica;
+    color: white;
+    border-radius: 5px;
+    margin: 20px auto;
+    padding: 20px;
+  }
 }
 
 .single-comment-node {
@@ -736,9 +746,9 @@ a.header-link {
       }
     }
     &.hidden-comment {
-    padding: 5px 0;
-    margin-bottom: 0;
-  }
+      padding: 5px 0;
+      margin-bottom: 0;
+    }
   }
   .icon-img {
     height: 16px;
@@ -769,7 +779,7 @@ a.header-link {
       top: calc(0.3vw + 13px);
       right: 10px;
       &.commentable-hidden {
-        top: calc(0.3vw + 8px)
+        top: calc(0.3vw + 8px);
       }
     }
 
@@ -906,14 +916,14 @@ a.header-link {
       height: 25px;
     }
     .reactions-count {
-      font-size: calc(0.9em + 0.1vw);
+      font-size: 0.7em;
       background: $light-gray;
       padding: 1px 5px;
       border-radius: 3px;
       border: 1px solid darken($light-gray, 10%);
       margin-left: 1px;
       position: absolute;
-      top: 8px;
+      top: 4px;
       left: 24px;
     }
     img {

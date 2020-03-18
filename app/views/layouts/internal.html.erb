@@ -8,174 +8,49 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <%= csrf_meta_tags %>
-  <%= favicon_link_tag ApplicationConfig["FAVICON_URL"] %>
+  <%= favicon_link_tag SiteConfig.favicon_url %>
+  <title><%= controller_name.titleize %></title>
+
+  <!-- StimulusJS -->
+  <%= javascript_packs_with_chunks_tag "internal", defer: true %>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+
+  <!-- Bootstrap and FontAwesome -->
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-  <title><%= controller_name %></title>
+  <%= stylesheet_link_tag "internal/layout" %>
 
-  <%# Latest compiled and minified CSS %>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-  <%# Optional theme %>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
-  <%# Latest compiled and minified JavaScript %>
-  <%= javascript_include_tag "internal" %>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </head>
-<style>
-  .starter-template {
-    padding-top: 5em;
-    font-size: 1.4em;
-  }
-
-  .row {
-    margin-top: 1vw;
-    border: 1px solid gray;
-    padding: 1vw;
-    border-radius: 3px;
-  }
-
-  .wrapper {
-    display: grid;
-    grid-template-columns: 25% 15% 15% 15% 15% 15%;
-    padding: 2px;
-  }
-
-  .wrapper-8 {
-    display: grid;
-    grid-template-columns: 4% 15% 25% 7% 7% 7% 20% 15%;
-    padding: 2px;
-  }
-
-  .wrapper-3 {
-    display: grid;
-    grid-template-columns: 25% 40% 25%;
-    padding: 2px;
-  }
-
-  .wrapper-3 div {
-    padding: 8px;
-  }
-
-  .grid-item {
-    word-wrap: break-word;
-  }
-
-  .inner-row form {
-    display: inline-block;
-  }
-
-  .flex-column form {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .flex-column textarea {
-    font-size: 12px;
-    width: 45%;
-    margin-bottom: 5px;
-  }
-
-  textarea {
-    font-size: 12px;
-    width: 75%;
-  }
-
-  .btn {
-    min-width: 100px;
-    width: fit-content;
-    width: -moz-fit-content;
-    width: -webkit-fit-content;
-  }
-
-  .single-internal-listing {
-    border-bottom: 1px solid grey;
-    padding: 10px;
-  }
-
-  .buffering-area-for-single-listing {
-    display: grid;
-    grid-template-columns: 50% 50%;
-    padding: 2px;
-  }
-
-  .tab {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    border-bottom: 10px solid white;
-  }
-
-  .tab-current {
-    border-bottom: 10px solid rgb(193, 209, 224);
-  }
-
-  .tab-current .btn {
-    opacity: 0.9;
-  }
-
-  .row-plain {
-    padding: 0;
-    border: 0;
-  }
-
-  .featured-bg {
-    background: #bbffd2
-  }
-
-  .approved-bg {
-    background: #92e8ae;
-    border: 12px solid #ff9900;
-  }
-
-  .highlighted-bg {
-    background: #2effa8 !important;
-    border: 20px solid black;
-  }
-
-  .submitting-no-border {
-    background: #96f2cc !important;
-  }
-
-  .highlighted-no-border {
-    background: #2effa8 !important;
-  }
-
-  .highlighted-no-border input[type="submit"] {
-    display: none;
-  }
-
-  .highlighted-border {
-    border: 20px solid black;
-  }
-</style>
-
 <body>
-  <nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-      </div>
-      <%= render "internal/shared/navbar" %>
-    </div>
-  </nav>
+  <div class="d-flex">
+    <nav class="sidebar-nav">
+      <a href="/internal">
+        <img class="d-block mx-auto mt-3" src="<%= asset_path("rainbowdev.svg") %>" width="40" height="40" alt="DEV Logo">
+      </a>
+        <%= render "internal/shared/navbar" %>
+    </nav>
 
-  <div class="container">
-    <div class="starter-template">
+    <div class="container mt-3">
       <% flash.each do |type, message| %>
-        <div class="alert alert-<%= type %>">
-          <button class="close" data-dismiss="alert">X</button>
+        <div class="alert alert-<%= type == "notice" ? "success" : "danger" %>">
+          <button class="close" data-dismiss="alert">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </button>
           <%= message %>
         </div>
       <% end %>
+      <h1 class="mt-3"><%= controller_name.titleize %></h1>
       <%= yield %>
     </div>
   </div>
+
+  <!-- Bootstrap Dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+  <%= javascript_include_tag "internal" %>
 
 </body>
 </html>

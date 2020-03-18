@@ -4,10 +4,10 @@ RSpec.describe Mention, type: :model do
   let(:comment) { create(:comment, commentable: create(:podcast_episode)) }
 
   describe "#create_all" do
-    it "enqueues a job to create mentions" do
-      assert_enqueued_with(job: Mentions::CreateAllJob, args: [comment.id, "Comment"], queue: "mentions_create_all") do
+    it "enqueues a job to default queue" do
+      expect do
         described_class.create_all(comment)
-      end
+      end.to change(Mentions::CreateAllWorker.jobs, :size).by(1)
     end
   end
 

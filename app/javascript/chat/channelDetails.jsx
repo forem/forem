@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import debounceAction from '../src/utils/debounceAction';
 
 class ChannelDetails extends Component {
   static propTypes = {
@@ -9,34 +10,36 @@ class ChannelDetails extends Component {
   constructor(props) {
     super(props);
 
+    this.debouncedUserSearch = debounceAction(
+      this.triggerUserSearch.bind(this),
+      { config: { leading: true } },
+    );
+
     this.state = {
       searchedUsers: [],
-      // invitations: [],
       hasLeftChannel: false,
     };
-
-    const algoliaId = document.querySelector("meta[name='algolia-public-id']")
-      .content;
-    const algoliaKey = document.querySelector("meta[name='algolia-public-key']")
-      .content;
-    const env = document.querySelector("meta[name='environment']").content;
-    const client = algoliasearch(algoliaId, algoliaKey); // eslint-disable-line no-undef
-    this.index = client.initIndex(`searchables_${env}`);
   }
 
   triggerUserSearch = e => {
     const component = this;
     const query = e.target.value;
-    const filters = {
-      hitsPerPage: 20,
-      attributesToRetrieve: ['id', 'title', 'path', 'user'],
-      attributesToHighlight: [],
-      filters: 'class_name:User',
-    };
     if (query.length > 0) {
-      this.index.search(query, filters).then(content => {
-        component.setState({ searchedUsers: content.hits });
-      });
+      const searchHash = { per_page: 20, search_fields: query };
+      const searchParams = new URLSearchParams(searchHash).toString();
+      fetch(`/search/users?${searchParams}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'X-CSRF-Token': window.csrfToken,
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+      })
+        .then(response => response.json())
+        .then(response => {
+          component.setState({ searchedUsers: response.result });
+        });
     } else {
       component.setState({ searchedUsers: [] });
     }
@@ -111,12 +114,12 @@ class ChannelDetails extends Component {
           className="channeldetails__userprofileimage"
           src={user.profile_image}
           alt={`${user.username} profile`}
-          data-content={`users/${user.id}`}
+          data-content="sidecar-user"
         />
         <a
           href={`/${user.username}`}
           style={{ color: user.darker_color, padding: '3px 0px' }}
-          data-content={`users/by_username?url=${user.username}`}
+          data-content="sidecar-user"
         >
           {user.name}
         </a>
@@ -155,10 +158,10 @@ class ChannelDetails extends Component {
             <div className="channeldetails__searchedusers">
               <a href={user.path} target="_blank" rel="noopener noreferrer">
                 <img src={user.user.profile_image_90} alt="profile_image" />
-@
+                @
                 {user.user.username}
                 {' '}
--
+                -
                 {/* prettier-ignore */} 
                 {' '}
                 {user.title}
@@ -180,7 +183,7 @@ class ChannelDetails extends Component {
             @
             {user.username}
             {' '}
-- 
+            - 
             {' '}
             {user.name}
           </a>
@@ -189,7 +192,7 @@ class ChannelDetails extends Component {
       modSection = (
         <div className="channeldetails__inviteusers">
           <h2>Invite Members</h2>
-          <input onKeyUp={this.triggerUserSearch} placeholder="Find users" />
+          <input onKeyUp={this.debouncedUserSearch} placeholder="Find users" />
           <div className="channeldetails__searchresults">{searchedUsers}</div>
           <h2>Pending Invites:</h2>
           {pendingInvites}

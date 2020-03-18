@@ -1,23 +1,44 @@
-<h1>Group Connect Channels</h1>
-<%= paginate @group_chat_channels %>
-<% @group_chat_channels.each do |channel| %>
-  <div class="wrapper-3" style="border-bottom: 1px solid grey; padding: 10px;">
-    <div><a href="/connect/<%= channel.slug %>" target="_blank"><%= channel.channel_name %></a></div>
-    <div style="font-size: 0.8em;"><%= channel.users.pluck(:username).join(", ") %></div>
-    <div>
-      <%= form_for [:internal, channel] do |f| %>
-        <%= f.text_field :usernames_string, placeholder: "Usernames to add" %>
-        <%= f.submit %>
-      <% end %>
-    </div>
+<h2>Create New Connect Channel</h2>
+<div class="row m-3">
+  <div class="col">
+    <%= form_for [:internal, ChatChannel.new], html: { class: "inline-form" } do |f| %>
+      <div class="form-row">
+        <div class="form-group">
+          <%= f.text_field :channel_name, placeholder: "Channel Name" %>
+          <%= f.text_field :usernames_string, placeholder: "Usernames to add" %>
+          <%= f.submit %>
+        </div>
+      </div>
+    <% end %>
   </div>
-<% end %>
+</div>
+
+<h2>Group Connect Channels</h2>
+
 <%= paginate @group_chat_channels %>
 
-<h1>Create New Connect Channel</h1>
-<br />
-<%= form_for [:internal, ChatChannel.new] do |f| %>
-  <%= f.text_field :channel_name, placeholder: "Channel Name" %>
-  <%= f.text_field :usernames_string, placeholder: "Usernames to add" %>
-  <%= f.submit %>
-<% end %>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Users</th>
+      <th scope="col">Add Users</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @group_chat_channels.each do |channel| %>
+      <tr>
+        <td><a href="/connect/<%= channel.slug %>" target="_blank"><%= channel.channel_name %></td>
+          <td><%= channel.users.pluck(:username).join(", ") %></td>
+        <td>
+          <%= form_for [:internal, channel] do |f| %>
+            <%= f.text_field :usernames_string, placeholder: "Usernames to add" %>
+            <%= f.submit %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @group_chat_channels %>

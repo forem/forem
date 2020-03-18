@@ -1,109 +1,120 @@
 @import 'variables';
 @import 'mixins';
 
-.user-profile-header{
-  padding:calc(1.4vw + 8px) 0px;
+.user-profile-header {
+  padding: calc(1.4vw + 8px) 0px;
   font-family: $helvetica;
-  position:relative;
-  overflow:hidden;
-  width:1216px;
-  max-width:92%;
-  margin: 30px auto 20px;
-  @include themeable(
-    background,
-    theme-container-background,
-    #fff
-  );
+  position: relative;
+  overflow: hidden;
+  width: 1216px;
+  max-width: 92%;
+  margin: 24px auto;
+  @include themeable(background, theme-container-background, #fff);
   border-radius: 3px;
-  @media screen and ( min-width: 950px ){
-    max-width:98%;
+  @media screen and (min-width: 950px) {
+    max-width: 98%;
   }
-  @media screen and ( min-width: 1100px ){
+  @media screen and (min-width: 1100px) {
     padding: 25px 0px 11px;
   }
-  &.tag-header{
-    @media screen and ( min-width: 1100px ){
+  &.tag-header {
+    @media screen and (min-width: 1100px) {
       padding: 0px 0px 1.2vw;
     }
-    h1{
-      font-size:calc(3vw + 23px);
-      margin-top:1.2vw;
-      margin-bottom:8px;
-      margin-left:3%;
-      text-align:center;
-      width:94%;
-      &.query-header-text{
-        font-size:calc(0.9vw + 28px);
-        font-weight:500;
+    h1 {
+      font-size: calc(3vw + 23px);
+      margin-top: 1.2vw;
+      margin-bottom: 8px;
+      margin-left: 3%;
+      text-align: center;
+      width: 94%;
+      &.query-header-text {
+        font-size: calc(0.9vw + 28px);
+        font-weight: 500;
       }
       img {
-        max-height:calc(3vw + 33px);
-        max-width:calc(3vw + 33px);
+        max-height: calc(3vw + 33px);
+        max-width: calc(3vw + 33px);
       }
     }
   }
-  &.podcast-header{
-    background:rgb(5, 22, 32);
-    text-align:center;
-    padding-bottom:60px;
-    color:white;
-    h1{
-      font-size:calc(2vw + 28px);
-    }
-    img.record{
-      height:150px;
-      width:150px;
-      border-radius:100px;
-      border:0px;
-      display:block;
-      margin:0px auto 10px;
-    }
-    @media screen and ( min-width: 950px ){
-      img.record{
-        height:calc(2.4vw + 50px);
-        width:calc(2.4vw + 50px);
-        display:inline-block;
-        vertical-align:calc(-1vw - 15px);
+  &.podcast-header {
+    background: rgb(5, 22, 32);
+    text-align: center;
+    padding: 70px 0px;
+    color: white;
+    h1 {
+      font-size: calc(2vw + 28px);
+      .follow-action-button {
+        font-size: 25px;
+        display: block;
+        margin: 10px auto;
+        width: 100%;
+        padding: 15px 0px;
+        @media screen and (min-width: 950px) {
+          vertical-align: 3px;
+          display: inline-block;
+          font-size: calc(1.9vw + 8px);
+          width: 280px;
+          padding: 3px 0px;
+        }
       }
     }
-    .subscribe-buttons{
-      text-align:center;
-      margin-top:35px;
-      z-index:10;
-      position:relative;
-      a{
-        padding:5px;
-        background-color:rgb(47, 61, 73);
-        color:white;
-        border-radius:3px;
-        margin:6px;
-        font-size:14px;
-        display:inline-block;
-        width:40%;
+    img.record {
+      height: 150px;
+      width: 150px;
+      border-radius: 100px;
+      border: 0px;
+      display: block;
+      margin: 0px auto 10px;
+    }
+    @media screen and (min-width: 950px) {
+      img.record {
+        height: calc(2.4vw + 50px);
+        width: calc(2.4vw + 50px);
+        display: inline-block;
+        vertical-align: calc(-1vw - 15px);
+      }
+    }
+    .subscribe-buttons {
+      text-align: center;
+      margin-top: 35px;
+      z-index: 10;
+      position: relative;
+      a {
+        padding: 5px;
+        background-color: rgb(47, 61, 73);
+        color: white;
+        border-radius: 3px;
+        margin: 6px;
+        font-size: 14px;
+        display: inline-block;
+        width: 40%;
         border: 1px solid rgb(60, 81, 99);
         box-shadow: inset 1px 1px 0 rgb(72, 95, 116);
         transition: background-color 250ms ease;
-        @media screen and ( min-width: 590px ){
-          width:112px;
+        @media screen and (min-width: 590px) {
+          width: 112px;
         }
-        &:hover{
-          background-color:rgb(41, 46, 52);
+        &:hover {
+          background-color: rgb(41, 46, 52);
         }
-        img{
-          width:20px;
-          height:20px;
-          vertical-align:-4px;
-          margin-right:4px;
+        img {
+          width: 20px;
+          height: 20px;
+          vertical-align: -4px;
+          margin-right: 4px;
         }
       }
     }
   }
-  .user-profile-header-container,.tag-or-query-header-container{
-    max-width:96%;
+  .user-profile-header-container,
+  .tag-or-query-header-container {
+    max-width: 96%;
     margin: auto;
     overflow-y: auto;
     h1 {
-      position:relative;
+      position: relative;
       img {
         height: 1.5em;
         width: 1.5em;
@@ -118,260 +129,257 @@
         }
       }
     }
-    a{
-      color:rgb(97, 97, 97);
+    a {
+      color: rgb(97, 97, 97);
     }
-    .profile-pic-wrapper{
-      float:left;
-      width:calc(14.5vw + 60px);
+    .profile-pic-wrapper {
+      float: left;
+      width: calc(14.5vw + 60px);
       max-width: 270px;
-      position:relative;
-      z-index:5;
-      .profile-pic{
-        width:calc(12.2vw + 50px);
-        height:calc(12.2vw + 50px);
-        border-radius:200px;
-        max-width:220px;
-        max-height:220px;
+      position: relative;
+      z-index: 5;
+      .profile-pic {
+        width: calc(12.2vw + 50px);
+        height: calc(12.2vw + 50px);
+        border-radius: 200px;
+        max-width: 220px;
+        max-height: 220px;
         border: 4px solid white;
-        margin-top:2vw;
+        margin-top: 2vw;
         background: no-repeat center center;
         background-size: cover;
-        img{
+        img {
           height: 100%;
           width: 100%;
         }
       }
     }
-    .profile-details{
-      float:left;
-      width:calc(100% - (13vw + 95px));
+    .profile-details {
+      float: left;
+      width: calc(100% - (13vw + 95px));
       padding-top: calc(2px + 2.7vw);
-      @media screen and ( min-width: 1100px ){
+      @media screen and (min-width: 1100px) {
         min-height: 270px;
       }
-      h1{
-        margin:5px auto 1vw;
-        font-weight:bold;
-        color:rgb(27, 27, 28);
-        font-size:25px;
-        padding:0;
+      h1 {
+        margin: 5px auto 1vw;
+        font-weight: bold;
+        color: rgb(27, 27, 28);
+        font-size: 25px;
+        padding: 0;
         padding-right: 15px;
-        line-height:1.1em;
-        @media screen and ( min-width: 430px ){
-          font-size:calc( 4.5vw + 10px);
+        line-height: 1.1em;
+        @media screen and (min-width: 430px) {
+          font-size: calc(4.5vw + 10px);
         }
-        @media screen and ( min-width: 950px ){
-          font-size:60px;
-          margin-top:0px;
+        @media screen and (min-width: 950px) {
+          font-size: 60px;
+          margin-top: 0px;
         }
         > span:nth-child(1) {
           word-break: break-word;
           display: block;
         }
       }
-      p.profile-description{
-        padding:0px 0px;
-        margin:0;
+      p.profile-description {
+        padding: 0px 0px;
+        margin: 0;
         font-style: italic;
-        @include themeable(
-          color,
-          theme-secondary-color,
-          $medium-gray
-        );
+        @include themeable(color, theme-secondary-color, $medium-gray);
         width: 94%;
-        font-size:0.9em;
-        margin-top:12px;
-        max-width:550px;
-        @media screen and ( min-width: 430px ){
-          font-size:0.97em;
-          margin-top:0px;
+        font-size: 0.9em;
+        margin-top: 12px;
+        max-width: 550px;
+        @media screen and (min-width: 430px) {
+          font-size: 0.97em;
+          margin-top: 0px;
         }
       }
     }
-    .social{
-      font-size:15px;
-      max-width:100%;
-      margin:10px 0px 10px;
-      z-index:3;
-      position:relative;
-      a{
-        margin-right:5px;
-        display:inline-block;
-        margin-bottom:0px;
-        margin-top:0px;
-        padding:3px;
-        .icon-img{
-          vertical-align:-6px;
-          opacity:1;
-          padding:3px;
-          width:23px;
-          height:23px;
+    .social {
+      font-size: 15px;
+      max-width: 100%;
+      margin: 10px 0px 10px;
+      z-index: 3;
+      position: relative;
+      a {
+        margin-right: 5px;
+        display: inline-block;
+        margin-bottom: 0px;
+        margin-top: 0px;
+        padding: 3px;
+        .icon-img {
+          vertical-align: -6px;
+          opacity: 1;
+          padding: 3px;
+          width: 23px;
+          height: 23px;
           margin: 0px 0px;
           filter: none;
-          @media screen and ( min-width: 580px ){
-            margin:3px;
-            width:28px;
-            height:28px;
+          @media screen and (min-width: 580px) {
+            margin: 3px;
+            width: 28px;
+            height: 28px;
             margin-right: 8px;
           }
-          @media screen and ( min-width: 1100px ){
-            margin:1px;
+          @media screen and (min-width: 1100px) {
+            margin: 1px;
             margin-right: 5px;
-            width:30px;
-            height:30px;
+            width: 30px;
+            height: 30px;
             margin-bottom: 40px;
           }
         }
       }
     }
   }
-  .user-profile-header-container{
-    @media screen and ( min-width: 1100px ){
-      width: calc( 100% - 420px);
+  .user-profile-header-container {
+    @media screen and (min-width: 1100px) {
+      width: calc(100% - 420px);
       margin-left: 6%;
     }
   }
-  .user-metadata-details{
-    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  .user-metadata-details {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier,
+      monospace;
     width: 97%;
-    @media screen and ( min-width: 1100px ){
+    overflow-y: auto;
+    @media screen and (min-width: 1100px) {
       position: absolute;
       right: 0px;
       top: 0px;
       bottom: 0px;
       width: 370px;
     }
-    .user-metadata-details-inner{
+    .user-metadata-details-inner {
       padding: 8px 0px;
       margin-left: 5%;
-      @media screen and ( min-width: 430px ){
+      @media screen and (min-width: 430px) {
         font-size: 1.15em;
         padding: 15px 0px;
       }
-      @media screen and ( min-width: 1100px ){
+      @media screen and (min-width: 1100px) {
         position: absolute;
         top: 45%;
         transform: translateY(-45%);
         border-left: 3px solid $outline-color;
         padding: 15px 0px;
       }
-      .row{
+      .row {
         padding: calc(5px + 0.2vw) 0px;
         display: inline-block;
         padding-left: 16px;
         width: 322px;
-        max-width:92%;
+        max-width: 92%;
       }
-      .key{
+      .key {
         font-size: 0.7em;
         font-weight: 800;
         margin-bottom: 2px;
-        @include themeable(
-          color,
-          theme-secondary-color,
-          $medium-gray
-        );
+        @include themeable(color, theme-secondary-color, $medium-gray);
       }
-      .value{
+      .value {
         display: inline-block;
         font-size: 0.85em;
         margin-bottom: 4px;
       }
     }
   }
-  .tag-action-buttons{
-    height:30px;
-    margin-top:calc(0.5vw + 6px);
-    margin-bottom:8px;
-    margin-left:1%;
-    text-align:center;
-    @media screen and ( min-width: 430px ){
-      margin-bottom:20px;
+  .tag-action-buttons {
+    height: 30px;
+    margin-top: calc(0.5vw + 6px);
+    margin-bottom: 8px;
+    margin-left: 1%;
+    text-align: center;
+    @media screen and (min-width: 430px) {
+      margin-bottom: 20px;
     }
-    @media screen and ( min-width: 800px ){
-      margin-bottom:25px;
+    @media screen and (min-width: 800px) {
+      margin-bottom: 25px;
     }
-    @media screen and ( min-width: 850px ){
-      margin-bottom:10px;
+    @media screen and (min-width: 850px) {
+      margin-bottom: 10px;
     }
-    @media screen and ( min-width: 950px ){
+    @media screen and (min-width: 950px) {
       margin-left: calc(0.2vw + 320px);
-      text-align:left;
+      text-align: left;
     }
   }
   .user-profile-follow-button-wrapper {
-    position:relative;
-    z-index:5;
-    display:inline-block;
+    position: relative;
+    z-index: 5;
+    display: inline-block;
     margin-left: 5px;
   }
   .user-profile-follow-button {
     background: $green;
-    color:white;
-    border:0;
-    font-size:17px;
-    border-radius:3px;
-    vertical-align:3px;
-    padding:2px 6px;
-    cursor:pointer;
+    border: 0;
+    font-size: 17px;
+    border-radius: 3px;
+    vertical-align: 3px;
+    padding: 2px 6px;
+    cursor: pointer;
     min-width: 120px;
-    opacity:0.7;
-    &.showing{
-      opacity:1;
+    opacity: 0.7;
+    &.showing {
+      opacity: 1;
     }
-    @media screen and ( min-width: 430px ){
-      font-size:18px;
-      padding:3px 8px;
-      vertical-align:7px;
-      border-radius:5px;
+    @media screen and (min-width: 430px) {
+      font-size: 18px;
+      padding: 3px 8px;
+      vertical-align: 7px;
+      border-radius: 5px;
       min-width: 140px;
     }
-    @media screen and ( min-width: 950px ){
-      font-size:22px;
-      padding:4px 8px;
-      vertical-align:12px;
-      border-radius:5px;
+    @media screen and (min-width: 950px) {
+      font-size: 22px;
+      padding: 4px 8px;
+      vertical-align: 12px;
+      border-radius: 5px;
       min-width: 140px;
     }
   }
 
   // same as above, just add class to above style
   .user-profile-chat-button-wrapper {
-    position:relative;
-    z-index:5;
-    display:inline-block;
+    position: relative;
+    z-index: 5;
+    display: inline-block;
     margin-left: 5px;
   }
 
   .user-profile-chat-button {
     background: $green;
-    color:white;
-    border:0;
-    font-size:17px;
-    border-radius:3px;
-    vertical-align:3px;
-    padding:2px 6px;
-    cursor:pointer;
+    color: white;
+    border: 0;
+    font-size: 17px;
+    border-radius: 3px;
+    vertical-align: 3px;
+    padding: 2px 6px;
+    cursor: pointer;
     min-width: 60px;
-    font-family: "HelveticaNeue-CondensedBold", "HelveticaNeueBoldCondensed", "HelveticaNeue-Bold-Condensed", "Helvetica Neue Bold Condensed", "HelveticaNeueBold", "HelveticaNeue-Bold", "Helvetica Neue Bold", "HelveticaNeue", "Helvetica Neue", "TeXGyreHerosCnBold", "Helvetica", "Tahoma", "Geneva", "Arial Narrow", "Arial", sans-serif;
+    font-family: 'HelveticaNeue-CondensedBold', 'HelveticaNeueBoldCondensed',
+      'HelveticaNeue-Bold-Condensed', 'Helvetica Neue Bold Condensed',
+      'HelveticaNeueBold', 'HelveticaNeue-Bold', 'Helvetica Neue Bold',
+      'HelveticaNeue', 'Helvetica Neue', 'TeXGyreHerosCnBold', 'Helvetica',
+      'Tahoma', 'Geneva', 'Arial Narrow', 'Arial', sans-serif;
     -webkit-appearance: none;
     font-stretch: condensed;
-    &.showing{
-      opacity:1;
+    &.showing {
+      opacity: 1;
     }
-    @media screen and ( min-width: 430px ){
-      font-size:18px;
-      padding:3px 8px;
-      vertical-align:7px;
-      border-radius:5px;
+    @media screen and (min-width: 430px) {
+      font-size: 18px;
+      padding: 3px 8px;
+      vertical-align: 7px;
+      border-radius: 5px;
       min-width: 80px;
     }
-    @media screen and ( min-width: 950px ){
-      font-size:22px;
-      padding:4px 8px;
-      vertical-align:12px;
-      border-radius:5px;
+    @media screen and (min-width: 950px) {
+      font-size: 22px;
+      padding: 4px 8px;
+      vertical-align: 12px;
+      border-radius: 5px;
       min-width: 80px;
     }
   }
@@ -393,7 +401,7 @@
     width: 100%;
     height: 100%;
     z-index: 995;
-    background: rgba(0,0,0,0.85);
+    background: rgba(0, 0, 0, 0.85);
   }
 
   .modal-content {
@@ -420,7 +428,7 @@
       justify-content: space-around;
       align-items: center;
       align-content: stretch;
-      @media screen and ( min-width: 500px ){
+      @media screen and (min-width: 500px) {
         flex-direction: row;
       }
       textarea {
@@ -434,8 +442,8 @@
         flex-grow: 1;
         height: 80px;
         resize: vertical;
-        max-height:50vh;
-        @media screen and ( min-width: 500px ){
+        max-height: 50vh;
+        @media screen and (min-width: 500px) {
           width: calc(100% - 100px);
         }
       }
@@ -453,7 +461,7 @@
         order: 10;
         flex-grow: 1;
         border: 0px;
-        @media screen and ( min-width: 500px ){
+        @media screen and (min-width: 500px) {
           margin: 10px 10px 10px 0;
           width: 82px;
           height: 80px;
@@ -502,21 +510,13 @@
       right: 3px;
       border: 1px solid $light-medium-gray;
       border-radius: 3px;
-      @include themeable(
-        background,
-        theme-container-background,
-        #fff
-      );    
+      @include themeable(background, theme-container-background, #fff);
       z-index: 20;
       width: 200px;
       box-shadow: $shadow;
       a {
         font-size: 0.75em;
-        @include themeable(
-          color,
-          theme-color,
-          $black
-        );
+        @include themeable(color, theme-color, $black);
         display: block;
         padding: 9px 10px;
         font-weight: bold;
@@ -526,11 +526,7 @@
       }
       button {
         font-size: 0.75em;
-        @include themeable(
-          color,
-          theme-color,
-          $black
-        );
+        @include themeable(color, theme-color, $black);
         font-weight: bold;
         width: 100%;
         text-align: left;
@@ -539,6 +535,7 @@
         border: none;
         text-overflow: ellipsis;
         overflow: hidden;
+        background: transparent;
       }
     }
   }

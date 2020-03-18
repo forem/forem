@@ -1,7 +1,10 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "DEV Community <#{ApplicationConfig['DEFAULT_SITE_EMAIL']}>"
   layout "mailer"
-  default template_path: ->(mailer) { "mailers/#{mailer.class.name.underscore}" }
+
+  default(
+    from: -> { "DEV Community <#{SiteConfig.default_site_email}>" },
+    template_path: ->(mailer) { "mailers/#{mailer.class.name.underscore}" },
+  )
 
   def generate_unsubscribe_token(id, email_type)
     Rails.application.message_verifier(:unsubscribe).generate(

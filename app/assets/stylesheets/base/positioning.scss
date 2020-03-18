@@ -1,0 +1,202 @@
+@import '../vars/variables';
+
+// Positions
+.static {
+  position: static !important;
+}
+
+.absolute {
+  position: absolute !important;
+}
+
+.fixed {
+  position: fixed !important;
+}
+
+.sticky {
+  position: sticky !important;
+}
+
+.relative {
+  position: relative !important;
+}
+
+// All directions
+@include generate-classes(
+  'all',
+  (top, left, right, bottom),
+  (
+    'auto': auto,
+    'unset': unset,
+    '0': 0,
+  )
+);
+
+// Top
+@include generate-classes(
+  'top',
+  'top',
+  (
+    'auto': auto,
+    'unset': unset,
+    '0': 0,
+    '1': $su-1,
+    '2': $su-2,
+    '3': $su-3,
+    '4': $su-4,
+  )
+);
+
+// Top negative
+@include generate-classes(
+  '-top',
+  'top',
+  (
+    '1': -$su-1,
+    '2': -$su-2,
+    '3': -$su-3,
+    '4': -$su-4,
+  )
+);
+
+// Bottom
+@include generate-classes(
+  'bottom',
+  'bottom',
+  (
+    'auto': auto,
+    'unset': unset,
+    '0': 0,
+    '1': $su-1,
+    '2': $su-2,
+    '3': $su-3,
+    '4': $su-4,
+  )
+);
+
+// Bottom negative
+@include generate-classes(
+  '-bottom',
+  'bottom',
+  (
+    '1': -$su-1,
+    '2': -$su-2,
+    '3': -$su-3,
+    '4': -$su-4,
+  )
+);
+
+// Left
+@include generate-classes(
+  'left',
+  'left',
+  (
+    'auto': auto,
+    'unset': unset,
+    '0': 0,
+    '1': $su-1,
+    '2': $su-2,
+    '3': $su-3,
+    '4': $su-4,
+  )
+);
+
+// Left negative
+@include generate-classes(
+  '-left',
+  'left',
+  (
+    '1': -$su-1,
+    '2': -$su-2,
+    '3': -$su-3,
+    '4': -$su-4,
+  )
+);
+
+// Right
+@include generate-classes(
+  'left',
+  'left',
+  (
+    'auto': auto,
+    'unset': unset,
+    '0': 0,
+    '1': $su-1,
+    '2': $su-2,
+    '3': $su-3,
+    '4': $su-4,
+  )
+);
+
+// Right negative
+@include generate-classes(
+  '-right',
+  'right',
+  (
+    '1': -$su-1,
+    '2': -$su-2,
+    '3': -$su-3,
+    '4': -$su-4,
+  )
+);
+
+// Z-index
+@include generate-classes(
+  'z',
+  'z-index',
+  (
+    'z-negative': -1,
+    'z-0': 0,
+    'z-10': 10,
+    'z-20': 20,
+    'z-30': 30,
+    'z-40': 40,
+    'z-50': 50,
+    'z-auto': auto,
+  )
+);
+
+// Overflow
+@include generate-classes(
+  'overflow',
+  'overflow',
+  (
+    'auto': auto,
+    'visible': visible,
+    'scroll': scroll,
+    'hidden': hidden,
+  )
+);
+
+// Overflow X
+@include generate-classes(
+  'overflow-x',
+  'overflow-x',
+  (
+    'auto': auto,
+    'visible': visible,
+    'scroll': scroll,
+    'hidden': hidden,
+  )
+);
+
+// Overflow Y
+@include generate-classes(
+  'overflow-y',
+  'overflow-y',
+  (
+    'auto': auto,
+    'visible': visible,
+    'scroll': scroll,
+    'hidden': hidden,
+  )
+);
+
+
+// Smooth scrolling on iOS
+.scrolling-touch {
+  -webkit-overflow-scrolling: touch !important;
+}
+.scrolling-auto {
+  -webkit-overflow-scrolling: auto !important;
+}

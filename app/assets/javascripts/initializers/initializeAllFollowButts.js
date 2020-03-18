@@ -9,7 +9,6 @@ function initializeAllFollowButts() {
 
 function initializeFollowButt(butt) {
   var user = userData();
-  var deviceWidth = window.innerWidth > 0 ? window.innerWidth : screen.width;
   var buttInfo = JSON.parse(butt.dataset.info);
   var userStatus = document
     .getElementsByTagName('body')[0]

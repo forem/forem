@@ -1,38 +1,34 @@
 <%# TODO: change to map of IDs %>
-<% cache "activity-aggregated-reactions-#{siblings}" do %>
-  <% actors = siblings.map { |n| n["user"] }.uniq %>
-  <% reactable_data = notification.json_data["reaction"]["reactable"] %>
-  <% cache "activity-profile-pic-#{actors.first['id']}-#{actors.first['profile_image_90']}" do %>
-    <a href="<%= actors.first["path"] %>" class="small-pic-link-wrapper">
-      <div class="small-pic">
-        <img src="<%= actors.first["profile_image_90"] %>" alt="link to <%= actors.first["username"] %>'s profile">
-      </div>
-    </a>
-  <% end %>
-
-  <div class="content notification-content reaction-content">
-    <% if actors.size == 1 %>
-      <a href="<%= actors.first["path"] %>"><%= actors.first["name"] %></a>
-    <% elsif actors.size == 2 %>
-      <a href="<%= actors.first["path"] %>"><%= actors.first["name"] %></a> and
-      <a href="<%= actors.last["path"] %>"><%= actors.last["name"] %></a>
-    <% elsif actors.size > 1 %>
-      <a href="<%= actors.first["path"] %>"><%= actors.first["name"] %></a> and <%= pluralize(actors.size - 1, "other") %>
-    <% end %>
-    reacted to
-    <a href="<%= reactable_data["path"] %>" class="notification-comment-reacted-link">
-      <%# your article/comment or the actual title of the article/comment %>
-      <%= reactable_data["title"].blank? ? "your #{reactable_data['class']['name'].downcase}" : h(reactable_data["title"]) %>
-    </a>
-    <span class="reaction-images">
-          with
-      <% reaction_categories = siblings.map { |n| n["category"] } %>
-      <% reaction_categories.each do |cat| %>
-          <% image_path = ReactionImage.new(cat).path %>
-          <% if image_path.present? %>
-            <%= image_tag(image_path, class: "reaction-image", alt: cat.to_s.humanize) %>
-          <% end %>
-        <% end %>
-      </span>
+<% actors = siblings.map { |n| n["user"] }.uniq %>
+<% reactable_data = notification.json_data["reaction"]["reactable"] %>
+<a href="<%= actors.first["path"] %>" class="small-pic-link-wrapper">
+  <div class="small-pic">
+    <img src="<%= actors.first["profile_image_90"] %>" alt="link to <%= actors.first["username"] %>'s profile">
   </div>
-<% end %>
+</a>
+
+<div class="content notification-content reaction-content">
+  <% if actors.size == 1 %>
+    <a href="<%= actors.first["path"] %>"><%= actors.first["name"] %></a>
+  <% elsif actors.size == 2 %>
+    <a href="<%= actors.first["path"] %>"><%= actors.first["name"] %></a> and
+    <a href="<%= actors.last["path"] %>"><%= actors.last["name"] %></a>
+  <% elsif actors.size > 1 %>
+    <a href="<%= actors.first["path"] %>"><%= actors.first["name"] %></a> and <%= pluralize(actors.size - 1, "other") %>
+  <% end %>
+  reacted to
+  <a href="<%= reactable_data["path"] %>" class="notification-comment-reacted-link">
+    <%# your article/comment or the actual title of the article/comment %>
+    <%= reactable_data["title"].blank? ? "your #{reactable_data['class']['name'].downcase}" : h(reactable_data["title"]) %>
+  </a>
+  <span class="reaction-images">
+        with
+    <% reaction_categories = siblings.map { |n| n["category"] } %>
+    <% reaction_categories.each do |cat| %>
+        <% image_path = ReactionImage.new(cat).path %>
+        <% if image_path.present? %>
+          <%= image_tag(image_path, class: "reaction-image", alt: cat.to_s.humanize) %>
+        <% end %>
+      <% end %>
+    </span>
+</div>

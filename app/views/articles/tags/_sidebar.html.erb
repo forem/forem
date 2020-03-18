@@ -1,4 +1,4 @@
-<% cache "tag-sidebar-#{@tag}-#{@tag_model&.updated_at}-#{@tag_model&.taggings_count}", expires_in: 5.hours do %>
+<% cache "tag-sidebar-#{@tag}-#{@tag_model&.updated_at}-#{@tag_model&.taggings_count}-#{user_signed_in?}", expires_in: 5.hours do %>
   <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
     <div class="sidebar-bg" id="sidebar-bg-left"></div>
     <div class="side-bar">
@@ -54,7 +54,7 @@
             <% @moderators.each do |user| %>
               <div class="widget-user-pic">
                 <a href="/<%= user.username %>" title="<%= user.username %>">
-                  <img src="<%= ProfileImage.new(user).get(90) %>" alt="<%= user.username %> profile image">
+                  <img src="<%= ProfileImage.new(user).get(width: 90) %>" alt="<%= user.username %> profile image">
                 </a>
               </div>
             <% end %>
@@ -63,7 +63,7 @@
       <% end %>
       <div class="sidebar-data">
         <div>
-          <%= pluralize Article.published.cached_tagged_with(@tag).size, "Post" %> Published
+          <%= pluralize @num_published_articles, "Post" %> Published
         </div>
         <% if user_signed_in? %>
           <span style="display:none;" id="tag-edit-button" data-tag="<%= @tag_model.name %>">
@@ -72,7 +72,7 @@
             </a>
           </span>
           <span style="display:none;" id="tag-mod-button" data-tag="<%= @tag_model.name %>">
-            <a class="cta mod-action-button" href="/mod?tag=<%= @tag_model.name %>" style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>">
+            <a class="cta mod-action-button" href="/mod/<%= @tag_model.name %>" style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>">
               MODERATE
             </a>
           </span>

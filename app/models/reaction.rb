@@ -2,6 +2,8 @@ class Reaction < ApplicationRecord
   include AlgoliaSearch
 
   CATEGORIES = %w[like readinglist unicorn thinking hands thumbsdown vomit].freeze
+  REACTABLE_TYPES = %w[Comment Article User].freeze
+  STATUSES = %w[valid invalid confirmed archived].freeze
 
   belongs_to :reactable, polymorphic: true
   belongs_to :user
@@ -12,15 +14,20 @@ class Reaction < ApplicationRecord
                   }
   counter_culture :user
 
+  scope :positive, -> { where("points > ?", 0) }
+
   validates :category, inclusion: { in: CATEGORIES }
-  validates :reactable_type, inclusion: { in: %w[Comment Article] }
-  validates :status, inclusion: { in: %w[valid invalid confirmed archived] }
+  validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
+  validates :status, inclusion: { in: STATUSES }
   validates :user_id, uniqueness: { scope: %i[reactable_id reactable_type category] }
   validate  :permissions
 
+  after_create :notify_slack_channel_about_vomit_reaction, if: -> { category == "vomit" }
   before_save :assign_points
+  after_create_commit :record_field_test_event
+  after_commit :async_bust, :bust_reactable_cache, :update_reactable
   after_save :index_to_algolia
-  after_save :update_reactable, :bust_reactable_cache, :touch_user, :async_bust
+  after_save :touch_user
   before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
   before_destroy :bust_reactable_cache_without_delay
   before_destroy :remove_algolia
@@ -34,6 +41,7 @@ class Reaction < ApplicationRecord
       reactable_tags
     end
     attributesForFaceting ["filterOnly(viewable_by)", "filterOnly(status)"]
+    customRanking ["desc(id)"]
   end
 
   def index_to_algolia
@@ -44,18 +52,12 @@ class Reaction < ApplicationRecord
     def count_for_article(id)
       Rails.cache.fetch("count_for_reactable-Article-#{id}", expires_in: 1.hour) do
         reactions = Reaction.where(reactable_id: id, reactable_type: "Article")
+        counts = reactions.group(:category).count
+
         %w[like readinglist unicorn].map do |type|
-          { category: type, count: reactions.where(category: type).size }
+          { category: type, count: counts.fetch(type, 0) }
         end
       end
-    end
-
-    def for_display(user)
-      includes(:reactable).
-        where(reactable_type: "Article", user: user).
-        where("created_at > ?", 5.days.ago).
-        select("distinct on (reactable_id) *").
-        take(15)
     end
 
     def cached_any_reactions_for?(reactable, user, category)
@@ -80,27 +82,27 @@ class Reaction < ApplicationRecord
   private
 
   def touch_user
-    Users::TouchJob.perform_later(user_id)
+    user.touch
   end
 
   def update_reactable
-    Reactions::UpdateReactableJob.perform_later(id)
+    Reactions::UpdateReactableWorker.perform_async(id)
   end
 
   def bust_reactable_cache
-    Reactions::BustReactableCacheJob.perform_later(id)
+    Reactions::BustReactableCacheWorker.perform_async(id)
   end
 
   def async_bust
-    Reactions::BustHomepageCacheJob.perform_later(id)
+    Reactions::BustHomepageCacheWorker.perform_async(id)
   end
 
   def bust_reactable_cache_without_delay
-    Reactions::BustReactableCacheJob.perform_now(id)
+    Reactions::BustReactableCacheWorker.new.perform(id)
   end
 
   def update_reactable_without_delay
-    Reactions::UpdateReactableJob.perform_now(id)
+    Reactions::UpdateReactableWorker.new.perform(id)
   end
 
   def reading_time
@@ -157,6 +159,7 @@ class Reaction < ApplicationRecord
   def assign_points
     base_points = BASE_POINTS.fetch(category, 1.0)
     base_points = 0 if status == "invalid"
+    base_points /= 2 if reactable_type == "User"
     base_points *= 2 if status == "confirmed"
     self.points = user ? (base_points * user.reputation_modifier) : -5
   end
@@ -177,5 +180,26 @@ class Reaction < ApplicationRecord
 
   def negative?
     category == "vomit" || category == "thumbsdown"
+  end
+
+  def record_field_test_event
+    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "user_creates_reaction")
+  end
+
+  def notify_slack_channel_about_vomit_reaction
+    url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
+
+    message = <<~MESSAGE.chomp
+      #{user.name} (#{url}#{user.path})
+      reacted with a #{category} on
+      #{url}#{reactable.path}
+    MESSAGE
+
+    SlackBotPingWorker.perform_async(
+      message: message,
+      channel: "abuse-reports",
+      username: "abuse_bot",
+      icon_emoji: ":cry:",
+    )
   end
 end

@@ -11,12 +11,12 @@
         <h3 class="manage-page-success"><%= flash[:pins_success] %></h3>
       <% end %>
       <h2>Tools:</h2>
-      <p><strong>Suggest a Tweet:</strong> Help get your post in front of more developers by suggesting a tweet that <a href="https://twitter.com/<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %>">@<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %></a> editors can use.
+      <p><strong>Suggest a Tweet:</strong> Help get your post in front of more developers by suggesting a tweet that <a href="https://twitter.com/<%= SiteConfig.social_networks_handle %>">@<%= SiteConfig.social_networks_handle %></a> editors can use.
       <p><strong>Experience Level of Post:</strong> The best target dev experience level— a <em>gentle</em> indicator to help show the post to the people who will benefit the most.
       <h2>Tips:</h2>
       <ol>
         <li>
-          Make your own tweet about the post, describing personally why you wrote it or why people might find it useful. <a href="https://twitter.com/<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %>">@<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %></a> may retweet you.
+          Make your own tweet about the post, describing personally why you wrote it or why people might find it useful. <a href="https://twitter.com/<%= SiteConfig.social_networks_handle %>">@<%= SiteConfig.social_networks_handle %></a> may retweet you.
         </li>
         <li>
           Share to link aggregators such as <a href="https://www.reddit.com/">Reddit</a>. Try to choose the most topic-specific subreddits, such as <a href="https://www.reddit.com/r/javascript">/r/javascript</a> instead of <a href="https://www.reddit.com/r/programming">/r/programming</a>. <em>Warning: jerks and trolls may be lurking.</em>

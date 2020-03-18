@@ -5,10 +5,8 @@
   vertical-align: top;
   text-align: center;
   font-family: $helvetica;
-  margin: 40px auto;
-  @media screen and (min-width: 1250px) {
-    margin-left: 25px;
-  }
+  margin: 0 auto 32px;
+
   a {
     @include themeable(color, theme-color, $black);
   }
@@ -16,7 +14,7 @@
     width: 94%;
     @media screen and (min-width: 680px) {
       width: calc(50% - 40px);
-      margin-bottom: 25px;
+      margin-bottom: 24px;
     }
     display: inline-block;
     max-width: 94%;
@@ -96,12 +94,9 @@
 .show-page-content-display {
   vertical-align: top;
   font-family: $helvetica;
-  margin: 20px auto;
+  margin: 0 auto 32px;
   position: relative;
   overflow: hidden;
-  @media screen and (min-width: 1250px) {
-    margin-left: 25px;
-  }
 
   a {
     @include themeable(color, theme-container-color, $black);
@@ -117,9 +112,12 @@
       display: inline-block;
       padding: 3px 25px;
       border-radius: 3px;
-      @include themeable(background, theme-container-accent-background, $light-gray);
+      @include themeable(
+        background,
+        theme-container-accent-background,
+        $light-gray
+      );
       @include themeable(color, theme-color, $black);
-
     }
   }
   .main-content-display {
@@ -184,7 +182,7 @@
         }
       }
     }
-    .bookmark-engage {
+    .engage-button {
       font-family: $helvetica-condensed;
       background: darken($purple, 26%);
       color: white;

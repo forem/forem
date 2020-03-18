@@ -1,43 +1,71 @@
-<style>
-  .alert {
-    border: 2px red solid;
-  }
-</style>
-<h3 class="top-nav" style="font-weight:400;font-size:0.9em;">
-  <a href="/internal/users" style="<%= "font-weight:bold" if params[:state].blank? %>">All</a> |
-  <a href="/internal/users?state=role-admin" style="<%= "font-weight:bold" if params[:state] == "role-admin" %>">Admins</a> |
-  <a href="/internal/users?state=role-super_admin" style="<%= "font-weight:bold" if params[:state] == "role-super_admin" %>">Super Admins</a> |
-  <a href="/internal/users?state=role-trusted" style="<%= "font-weight:bold" if params[:state] == "role-trusted" %>">Trusted</a> |
-  <a href="/internal/users?state=role-tag_moderator" style="<%= "font-weight:bold" if params[:state] == "role-tag_moderator" %>">Tag Mods</a>
-</h3>
-<%= form_tag("/internal/users", method: "get") do %>
-  <%= label_tag(:search, "Find by:") %>
-  <%= text_field_tag(:search, params[:search]) %>
-  <% if params[:state].present? %>
-    <%= hidden_field_tag(:state, params[:state]) %>
-  <% end %>
-  <%= submit_tag("Search") %>
-  <em style="font-size:0.78em;">(<b>fields:</b> name, username, twitter_username, github_username, email)</em>
-<% end %>
-<%= paginate @users %>
-<br>
-<div class="wrapper" style="font-weight: 600; border-bottom: 2px solid black;">
-  <div>User</div>
-  <div>ID</div>
-  <div>Name</div>
-  <div>Twitter</div>
-  <div>GitHub</div>
-  <div>Email</div>
+<div class="row m-3">
+  <div class="col">
+    <ul class="nav nav-pills">
+      <li class="nav-item">
+        <a href="/internal/users" class="nav-link <%= "active" if params[:state].blank? %>">All</a>
+      </li>
+      <li class="nav-item">
+        <a href="/internal/users?state=role-admin" class="nav-link <%= "active" if params[:state] == "role-admin" %>">Admins</a>
+      </li>
+      <li class="nav-item">
+        <a href="/internal/users?state=role-super_admin" class="nav-link <%= "active" if params[:state] == "role-super_admin" %>">Super Admins</a>
+      </li>
+      <li class="nav-item">
+        <a href="/internal/users?state=role-trusted" class="nav-link <%= "active" if params[:state] == "role-trusted" %>">Trusted</a>
+      </li>
+      <li class="nav-item">
+        <a href="/internal/users?state=role-tag_moderator" class="nav-link <%= "active" if params[:state] == "role-tag_moderator" %>">Tag Mods</a>
+      </li>
+    </ul>
+  </div>
+  <div class="col">
+    <%= form_tag("/internal/users", method: "get") do %>
+      <div class="form-row justify-content-end">
+        <div class="form-group">
+          <%= text_field_tag(:search, params[:search]) %>
+          <% if params[:state].present? %>
+            <%= hidden_field_tag(:state, params[:state]) %>
+          <% end %>
+          <%= submit_tag("Search") %>
+        </div>
+      </div>
+    <% end %>
+  </div>
 </div>
 
-<% @users.each do |user| %>
-  <div class="wrapper" style="border-bottom: 1px solid grey; padding: 10px;">
-    <div class="grid-item"><a href="/internal/users/<%= user.id %>" target="_blank">@<%= user.username %></a></div>
-    <div class="grid-item"><%= user.id %></div>
-    <div class="grid-item"><%= user.name %></div>
-    <div class="grid-item"><%= user.twitter_username %></div>
-    <div class="grid-item"><%= user.github_username %></div>
-    <div class="grid-item"><%= user.email %></div>
-  </div>
-<% end %>
+<%= paginate @users %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">User</th>
+      <th scope="col">ID</th>
+      <th scope="col">Name</th>
+      <th scope="col">Twitter</th>
+      <th scope="col">GitHub</th>
+      <th scope="col">Email</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @users.each do |user| %>
+    <tr>
+      <td><%= link_to user.username, "/internal/users/#{user.id}/" %></td>
+      <td><%= user.id %></td>
+      <td><%= user.name %></td>
+      <% if user.twitter_username %>
+        <td><%= link_to user.twitter_username, "https://twitter.com/#{user.twitter_username}" %></td>
+      <% else %>
+        <td>N/A</td>
+      <% end %>
+      <% if user.github_username %>
+        <td><%= link_to user.github_username, "https://github.com/#{user.github_username}" %></td>
+      <% else %>
+        <td>N/A</td>
+      <% end %>
+      <td><%= user.email %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
 <%= paginate @users %>

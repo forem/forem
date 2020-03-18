@@ -1,0 +1,152 @@
+@import '../vars/variables';
+
+// Display
+.hidden {
+  display: none !important;
+}
+
+.block {
+  display: block !important;
+}
+
+.inline {
+  display: inline !important;
+}
+
+.inline-block {
+  display: inline-block !important;
+}
+
+.flex {
+  display: flex !important;
+}
+
+.inline-flex {
+  display: inline-flex !important;
+}
+
+.grid {
+  display: grid !important;
+}
+
+// Floats
+@include generate-classes(
+  'float',
+  'float',
+  (
+    'left': left,
+    'right': right,
+    'none': none,
+    'unset': unset,
+  )
+);
+
+.clear {
+  clear: both !important;
+}
+
+// Visibility
+.visible {
+  visiblity: visible !important;
+}
+
+.invisible {
+  visiblity: hidden !important;
+}
+
+// Box sizing
+@include generate-classes(
+  'box',
+  'box-sizing',
+  (
+    'border': border-box,
+    'content': content-box,
+  )
+);
+
+// Table layout
+@include generate-classes(
+  'table',
+  'table-layout',
+  (
+    'auto': auto,
+    'fixed': fixed,
+  )
+);
+
+// Border style
+@include generate-classes(
+  'border',
+  'border-style',
+  (
+    'solid': solid,
+    'dashed': dashed,
+    'dotted': dotted,
+    'none': none,
+  )
+);
+
+// Border width
+@include generate-classes(
+  'border',
+  'border-width',
+  (
+    '1': 1px,
+    '2': 2px,
+    '3': 3px,
+    '4': 4px,
+    '8': 8px,
+  )
+);
+
+// Border top width
+@include generate-classes(
+  'border',
+  'border-top-width',
+  (
+    't-1': 1px,
+    't-2': 2px,
+    't-3': 3px,
+    't-4': 4px,
+    't-8': 8px,
+  )
+);
+
+// Border bottom width
+@include generate-classes(
+  'border',
+  'border-bottom-width',
+  (
+    'b-1': 1px,
+    'b-2': 2px,
+    'b-3': 3px,
+    'b-4': 4px,
+    'b-8': 8px,
+  )
+);
+
+// Border left width
+@include generate-classes(
+  'border',
+  'border-left-width',
+  (
+    'l-1': 1px,
+    'l-2': 2px,
+    'l-3': 3px,
+    'l-4': 4px,
+    'l-8': 8px,
+  )
+);
+
+// Border right width
+@include generate-classes(
+  'border',
+  'border-right-width',
+  (
+    'r-1': 1px,
+    'r-2': 2px,
+    'r-3': 3px,
+    'r-4': 4px,
+    'r-8': 8px,
+  )
+);

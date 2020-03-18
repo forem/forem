@@ -1,18 +1,22 @@
 <div class="row">
-  <h3><u>Activity</u></h3>
-  <ul>
-    <li><%= @user.comments.size %> comments</li>
-    <li><%= @user.articles.size %> articles</li>
-    <li><%= @user.reactions.size %> reactions</li>
-    <li><%= @user.followers.size %> followers</li>
-    <li><%= @user.following_users_count %> users following</li>
-    <li><%= @user.badge_achievements_count %> badges</li>
-  </ul>
-  <h3><u>Current Roles</u></h3>
-  <p>(view full history in notes below)</p>
-  <ul>
-    <% @user.roles.each do |role| %>
-      <li><%= role.name %> <em><%= "- " + Tag.find(role.resource_id).name if role.resource_id.present? %></em></li>
-    <% end %>
-  </ul>
+  <div class="col-sm-6">
+    <h2>Activity</h2>
+    <ul>
+      <li><%= @user.comments.size %> comments</li>
+      <li><%= @user.articles.size %> articles</li>
+      <li><%= @user.reactions.size %> reactions</li>
+      <li><%= @user.followers.size %> followers</li>
+      <li><%= @user.following_users_count %> users following</li>
+      <li><%= @user.badge_achievements_count %> badges</li>
+    </ul>
+  </div>
+  <div class="col-sm-6">
+    <h2>Current Roles</h2>
+    <p>(view full history in notes below)</p>
+    <ul>
+      <% @user.roles.each do |role| %>
+        <li><%= role.name %> <em><%= "- " + Tag.find(role.resource_id).name if role.resource_id.present? %></em></li>
+      <% end %>
+    </ul>
+  </div>
 </div>

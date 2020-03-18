@@ -88,4 +88,12 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       expect(ChatChannelMembership.find(membership.id).status).to eq("left_channel")
     end
   end
+
+  describe "GET /chat_channel_memberships/find_by_chat_channel_id" do
+    it "renders not_found" do
+      expect do
+        get "/chat_channel_memberships/find_by_chat_channel_id", params: {}
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
 end

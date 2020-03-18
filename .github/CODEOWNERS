@@ -1,8 +1,34 @@
-# SRE
-Gemfile @thepracticaldev/sre
-/db/ @thepracticaldev/sre
-/config/ @thepracticaldev/sre
+# CODEOWNERS lists which teams are largely responsible for areas of code in the repository
+# see https://help.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners
+# for further details
 
-# Mac
-Gemfile   @maestromac
-yarn.lock @maestromac
+/*.md                                               @thepracticaldev/oss
+/app/assets/stylesheets/internal/                   @thepracticaldev/snackcase
+/app/controllers/articles_controller.rb             @thepracticaldev/hells-bells
+/app/controllers/internal/                          @thepracticaldev/snackcase
+/app/services/notifications/                        @thepracticaldev/delightful
+/app/controllers/notifications/                     @thepracticaldev/delightful
+/app/workers/notifications/                         @thepracticaldev/delightful
+/app/controllers/internal/broadcasts_controller.rb  @thepracticaldev/delightful
+/app/controllers/pages_controller.rb                @thepracticaldev/cool
+/app/controllers/stories_controller.rb              @thepracticaldev/hells-bells
+/app/jobs/                                          @thepracticaldev/sre
+/app/services/search/                               @thepracticaldev/sre
+/app/views/articles/                                @thepracticaldev/hells-bells
+/app/views/internal/                                @thepracticaldev/snackcase
+/app/views/moderation/                              @thepracticaldev/snackcase
+/app/views/notifications/                           @thepracticaldev/delightful
+/app/views/partnerships/                            @thepracticaldev/cool
+/app/views/stories/                                 @thepracticaldev/hells-bells
+/app/workers/                                       @thepracticaldev/sre
+/config/                                            @thepracticaldev/sre
+/db/                                                @thepracticaldev/sre
+/docs/                                              @thepracticaldev/oss    @jacobherrington
+/lib/data_update_scripts/                           @thepracticaldev/sre
+/lib/sidekiq/                                       @thepracticaldev/sre
+/spec/requests/internal/                            @thepracticaldev/snackcase
+/spec/system/internal/                              @thepracticaldev/snackcase
+Gemfile                                             @thepracticaldev/sre    @thepracticaldev/oss
+Gemfile.lock                                        @thepracticaldev/sre    @thepracticaldev/oss
+package.json                                        @thepracticaldev/oss
+yarn.lock                                           @thepracticaldev/oss

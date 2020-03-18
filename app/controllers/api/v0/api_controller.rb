@@ -1,21 +1,9 @@
 class Api::V0::ApiController < ApplicationController
-  def cors_set_access_control_headers
-    headers["Access-Control-Allow-Origin"] = "*"
-    headers["Access-Control-Allow-Methods"] = "POST, GET, PUT, DELETE, OPTIONS"
-    headers["Access-Control-Allow-Headers"] = "Origin, Content-Type, Accept, Authorization, Token"
-    headers["Access-Control-Max-Age"] = "1728000"
-  end
+  protect_from_forgery with: :exception, prepend: true
 
-  def cors_preflight_check
-    return unless request.method == "OPTIONS"
+  include ValidRequest
 
-    headers["Access-Control-Allow-Origin"] = "*"
-    headers["Access-Control-Allow-Methods"] = "POST, GET, PUT, DELETE, OPTIONS"
-    headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-Prototype-Version, Token"
-    headers["Access-Control-Max-Age"] = "1728000"
-
-    render text: "", content_type: "text/plain"
-  end
+  respond_to :json
 
   rescue_from ActionController::ParameterMissing do |exc|
     error_unprocessable_entity(exc.message)
@@ -27,6 +15,10 @@ class Api::V0::ApiController < ApplicationController
 
   rescue_from ActiveRecord::RecordNotFound do |_exc|
     error_not_found
+  end
+
+  rescue_from Pundit::NotAuthorizedError do |_exc|
+    error_unauthorized
   end
 
   protected
@@ -48,7 +40,8 @@ class Api::V0::ApiController < ApplicationController
       @user = User.find(doorkeeper_token.resource_owner_id)
       return error_unauthorized unless @user
     elsif request.headers["api-key"]
-      authenticate_with_api_key!
+      @user = authenticate_with_api_key
+      return error_unauthorized unless @user
     elsif current_user
       @user = current_user
     else
@@ -56,29 +49,30 @@ class Api::V0::ApiController < ApplicationController
     end
   end
 
+  # Checks if the user is authenticated, sets @user to nil otherwise
+  def authenticate_with_api_key_or_current_user
+    @user = authenticate_with_api_key || current_user
+  end
+
+  # Checks if the user is authenticated, if so sets the variable @user
+  # Returns HTTP 401 Unauthorized otherwise
   def authenticate_with_api_key_or_current_user!
-    if request.headers["api-key"]
-      authenticate_with_api_key!
-    elsif current_user
-      @user = current_user
-    else
-      error_unauthorized
-    end
+    @user = authenticate_with_api_key || current_user
+    error_unauthorized unless @user
   end
 
-  def authenticate_with_api_key!
+  private
+
+  def authenticate_with_api_key
     api_key = request.headers["api-key"]
-    return error_unauthorized unless api_key
+    return nil unless api_key
 
     api_secret = ApiSecret.includes(:user).find_by(secret: api_key)
-    return error_unauthorized unless api_secret
+    return nil unless api_secret
 
     # guard against timing attacks
     # see <https://www.slideshare.net/NickMalcolm/timing-attacks-and-ruby-on-rails>
-    if ActiveSupport::SecurityUtils.secure_compare(api_secret.secret, api_key)
-      @user = api_secret.user
-    else
-      error_unauthorized
-    end
+    secure_secret = ActiveSupport::SecurityUtils.secure_compare(api_secret.secret, api_key)
+    return api_secret.user if secure_secret
   end
 end

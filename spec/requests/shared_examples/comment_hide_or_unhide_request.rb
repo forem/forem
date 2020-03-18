@@ -35,9 +35,7 @@ RSpec.shared_examples "PATCH /comments/:comment_id/hide or unhide" do |args|
     it "returns 200 on a good request" do
       expect(response).to have_http_status(:ok)
     end
-  end
 
-  context "when logged in as the commentable author" do
     it "displays having hidden comments if some unhidden" do
       sign_in commentable_author
       second_comment = create(:comment, commentable: article, user: commentable_author)

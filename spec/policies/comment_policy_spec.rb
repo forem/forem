@@ -4,7 +4,6 @@ RSpec.describe CommentPolicy, type: :policy do
   subject(:comment_policy) { described_class.new(user, comment) }
 
   let(:article) { build_stubbed(:article) }
-  let(:comment) { build_stubbed(:comment, commentable: article) }
   let!(:comment) { create(:comment, commentable: create(:podcast_episode)) }
 
   let(:valid_attributes_for_create) do

@@ -5,7 +5,7 @@
     <%= render notification.notifiable_type.downcase.to_s, notification: notification %>
   </div>
 <% rescue => e %>
-  <% logger.error("Notification error - #{e.message} - #{notification.id}") %>
+  <% Honeybadger.notify(e, context: { notification_id: notification.id }) %>
 
   <div class="small-pic">
     <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--LnVw15KE--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg"
@@ -14,7 +14,7 @@
   <div class="content notification-content comment-content">
     An error occurred! This has been logged and we're tracking it.
     <br>
-    If you see too many of these, please report it to <a href="mailto:<%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %>"><%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %></a>!
+    If you see too many of these, please report it to <a href="mailto:<%= SiteConfig.default_site_email %>"><%= SiteConfig.default_site_email %></a>!
   </div>
 <% end %>
 

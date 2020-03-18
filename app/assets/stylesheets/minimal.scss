@@ -11,6 +11,7 @@
 @import 'settings';
 @import 'signin';
 @import 'podcast-episodes-show';
+@import 'podcast-form';
 @import 'more-articles';
 @import 'user-profile-header';
 @import 'comments';
@@ -31,6 +32,11 @@
 @import 'item-list';
 @import 'color-picker';
 @import 'moderators';
+@import 'theme-selector';
+@import 'snackbars';
+@import 'typography';
+@import 'buttons';
+@import 'widgets';
 
 @import 'ltags/LiquidTags';
 
@@ -39,3 +45,26 @@
 @import 'email_subscriptions';
 
 @import 'article-form-needed-legacy';
+
+// New approach
+@import 'base/reset';
+@import 'base/boxes';
+@import 'base/colors';
+@import 'base/decorations';
+@import 'base/flexbox';
+@import 'base/grid';
+@import 'base/icons';
+@import 'base/layout';
+@import 'base/positioning';
+@import 'base/sizing';
+@import 'base/spacing';
+@import 'base/typography';
+
+@import 'components/avatars';
+@import 'components/buttons';
+@import 'components/dropdowns';
+@import 'components/forms';
+@import 'components/indicators';
+@import 'components/modals';
+@import 'components/navigation';
+@import 'components/notices';

@@ -5,6 +5,10 @@ RSpec.describe ClassifiedListing, type: :model do
   let_it_be(:organization) { create(:organization) }
   let(:classified_listing) { create(:classified_listing, user: user) }
 
+  # TODO: Remove setting of default parser from a model's callback
+  # This may apply default parser on area that should not use it.
+  after { ActsAsTaggableOn.default_parser = ActsAsTaggableOn::DefaultParser }
+
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_presence_of(:body_markdown) }
   it { is_expected.to have_many(:credits) }
@@ -65,6 +69,34 @@ RSpec.describe ClassifiedListing, type: :model do
 
       expect { classified_listing.destroy }.not_to change(Credit, :count)
       expect(credit.reload.purchase).to be_nil
+    end
+  end
+
+  describe "#after_commit" do
+    it "on update enqueues worker to index tag to elasticsearch" do
+      classified_listing.save
+
+      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, classified_listing.id]) do
+        classified_listing.save
+      end
+    end
+
+    it "on destroy enqueues job to delete classified_listing from elasticsearch" do
+      classified_listing.save
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, classified_listing.id]) do
+        classified_listing.destroy
+      end
+    end
+  end
+
+  describe ".cost_by_category" do
+    it "returns the cost per category" do
+      expected_cost = described_class::CATEGORIES_AVAILABLE.dig("cfp", "cost")
+      expect(described_class.cost_by_category("cfp")).to eq(expected_cost)
+    end
+
+    it "returns 0 with invalid category" do
+      expect(described_class.cost_by_category("invalid")).to eq(0)
     end
   end
 end

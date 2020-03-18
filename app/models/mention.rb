@@ -9,10 +9,10 @@ class Mention < ApplicationRecord
   validates :mentionable_type, presence: true
   validate :permission
 
-  after_create :send_email_notification
+  after_create_commit :send_email_notification
 
   def self.create_all(notifiable)
-    Mentions::CreateAllJob.perform_later(notifiable.id, notifiable.class.name)
+    Mentions::CreateAllWorker.perform_async(notifiable.id, notifiable.class.name)
   end
 
   private
@@ -21,7 +21,7 @@ class Mention < ApplicationRecord
     user = User.find(user_id)
     return unless user.email.present? && user.email_mention_notifications
 
-    Mentions::SendEmailNotificationJob.perform_later(id)
+    Mentions::SendEmailNotificationWorker.perform_async(id)
   end
 
   def permission

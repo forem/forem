@@ -248,7 +248,7 @@ RSpec.describe "ClassifiedListings", type: :request do
         user.add_role(:banned)
         expect do
           post "/listings", params: listing_params
-        end.to raise_error("BANNED")
+        end.to raise_error("SUSPENDED")
       end
     end
   end
@@ -389,6 +389,14 @@ RSpec.describe "ClassifiedListings", type: :request do
         expect(listing.reload.published).to eq(false)
       end
     end
+
+    context "when an update is attempted" do
+      it "does not update with an empty body markdown" do
+        put "/listings/#{listing.id}", params: { classified_listing: { body_markdown: "" } }
+        expect(response.body).to include(CGI.escapeHTML("can't be blank"))
+        expect(listing.reload.body_markdown).not_to be_empty
+      end
+    end
   end
 
   describe "DEL /listings/:id" do
@@ -440,7 +448,7 @@ RSpec.describe "ClassifiedListings", type: :request do
       end
     end
 
-    context "when deleting org listing" do
+    context "when deleting draft org listing" do
       it "redirect to dashboard" do
         delete "/listings/#{org_listing_draft.id}"
         expect(response).to redirect_to("/listings/dashboard")
@@ -473,6 +481,20 @@ RSpec.describe "ClassifiedListings", type: :request do
         expect do
           delete "/listings/#{org_listing.id}"
         end.to change(ClassifiedListing, :count).by(-1)
+      end
+    end
+  end
+
+  describe "GET /delete_confirm" do
+    let!(:listing) { create(:classified_listing, user: user) }
+
+    before { sign_in user }
+
+    context "without classified listing" do
+      it "renders not_found" do
+        expect do
+          get "/listings/#{listing.category}/#{listing.slug}_1/delete_confirm"
+        end.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end

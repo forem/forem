@@ -1,8 +1,9 @@
 class ClassifiedListingsController < ApplicationController
   include ClassifiedListingsToolkit
+
   before_action :set_classified_listing, only: %i[edit update destroy]
   before_action :set_cache_control_headers, only: %i[index]
-  before_action :raise_banned, only: %i[new create update]
+  before_action :raise_suspended, only: %i[new create update]
   after_action :verify_authorized, only: %i[edit update]
   before_action :authenticate_user!, only: %i[edit update new dashboard]
 
@@ -59,6 +60,7 @@ class ClassifiedListingsController < ApplicationController
 
   def delete_confirm
     @classified_listing = ClassifiedListing.find_by(slug: params[:slug])
+    not_found unless @classified_listing
     authorize @classified_listing
   end
 
@@ -88,6 +90,10 @@ class ClassifiedListingsController < ApplicationController
 
   def process_unsuccessful_creation
     render :new
+  end
+
+  def process_unsuccessful_update
+    render :edit
   end
 
   def process_after_update

@@ -3,7 +3,7 @@
 //= require lib/xss
 //= require initializePage
 //= require utilities/getImageForLink
-//= require honeybadger
+//= require honeybadger-js/dist/honeybadger.js
 //= require serviceworker-companion
 //= require algolia/v3/algoliasearch.min
 
@@ -113,12 +113,11 @@ var instantClick
   }
 
   function changePage(title, body, newUrl, scrollY, pop) {
-    // NOT TOTALLY SURE THIS WORKS FOR ALL CASES
-    // HACKALICIOUS
+    var pageContentDiv = document.getElementById("page-content");
     if (document.getElementById("navigation-butt")) {
       document.getElementById("navigation-butt").classList.remove('showing')
     }
-    document.getElementsByTagName("BODY")[0].replaceChild(body, document.getElementById("page-content"))
+    document.getElementsByTagName("BODY")[0].replaceChild(body, pageContentDiv)
 
     var prog = document.getElementById("navigation-progress");
     prog.classList.remove("showing");
@@ -297,8 +296,8 @@ var instantClick
     }
 
     $timing.ready = +new Date - $timing.start
-
-    if (xhr.status === 200 && xhr.getResponseHeader('Content-Type').match(/\/(x|ht|xht)ml/)) {
+    var pageContentDiv = document.getElementById("page-content");
+    if (pageContentDiv && xhr.status === 200 && xhr.getResponseHeader('Content-Type').match(/\/(x|ht|xht)ml/)) {
       var doc = document.implementation.createHTMLDocument('');
       doc.documentElement.innerHTML = removeNoscriptTags(xhr.responseText)
       var title = doc.title

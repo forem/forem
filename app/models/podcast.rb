@@ -2,12 +2,14 @@ class Podcast < ApplicationRecord
   resourcify
 
   has_many :podcast_episodes
+  belongs_to :creator, class_name: "User", inverse_of: :created_podcasts, foreign_key: :creator_id, optional: true
 
   mount_uploader :image, ProfileImageUploader
   mount_uploader :pattern_image, ProfileImageUploader
 
   validates :main_color_hex, :title, :feed_url, :image, presence: true
-  validates :feed_url, uniqueness: true
+  validates :main_color_hex, format: /\A([a-fA-F]|[0-9]){6}\Z/
+  validates :feed_url, uniqueness: true, url: { schemes: %w[https http] }
   validates :slug,
             presence: true,
             uniqueness: true,
@@ -37,6 +39,10 @@ class Podcast < ApplicationRecord
     User.with_role(:podcast_admin, self)
   end
 
+  def image_90
+    ProfileImage.new(self).get(width: 90)
+  end
+
   private
 
   def unique_slug_including_users_and_orgs
@@ -47,6 +53,6 @@ class Podcast < ApplicationRecord
   def bust_cache
     return unless path
 
-    Podcasts::BustCacheJob.perform_later(path)
+    Podcasts::BustCacheWorker.perform_async(path)
   end
 end

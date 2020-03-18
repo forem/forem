@@ -22,133 +22,116 @@ class Notification < ApplicationRecord
     where(organization_id: org_id, notifiable_type: "Mention", user_id: nil)
   }
 
-  scope :without_past_aggregations, lambda {
-    where.not("notified_at < ? AND action IN ('Reaction', 'Follow')", 24.hours.ago)
-  }
-
   class << self
     def send_new_follower_notification(follow, is_read = false)
-      return unless Follow.need_new_follower_notification_for?(follow.followable_type)
+      return unless follow && Follow.need_new_follower_notification_for?(follow.followable_type)
       return if follow.followable_type == "User" && UserBlock.blocking?(follow.followable_id, follow.follower_id)
 
       follow_data = follow.attributes.slice("follower_id", "followable_id", "followable_type").symbolize_keys
-      Notifications::NewFollowerJob.perform_later(follow_data, is_read)
+      Notifications::NewFollowerWorker.perform_async(follow_data, is_read)
     end
 
     def send_new_follower_notification_without_delay(follow, is_read = false)
-      return unless Follow.need_new_follower_notification_for?(follow.followable_type)
+      return unless follow && Follow.need_new_follower_notification_for?(follow.followable_type)
       return if follow.followable_type == "User" && UserBlock.blocking?(follow.followable_id, follow.follower_id)
 
       follow_data = follow.attributes.slice("follower_id", "followable_id", "followable_type").symbolize_keys
-      Notifications::NewFollowerJob.perform_now(follow_data, is_read)
+      Notifications::NewFollowerWorker.new.perform(follow_data, is_read)
     end
 
     def send_to_followers(notifiable, action = nil)
-      Notifications::NotifiableActionJob.perform_later(notifiable.id, notifiable.class.name, action)
-    end
-
-    def send_new_comment_notifications(comment)
-      return if comment.commentable_type == "PodcastEpisode"
-      return if UserBlock.blocking?(comment.commentable.user_id, comment.user_id)
-
-      Notifications::NewCommentJob.perform_later(comment.id)
+      Notifications::NotifiableActionWorker.perform_async(notifiable.id, notifiable.class.name, action)
     end
 
     def send_new_comment_notifications_without_delay(comment)
       return if comment.commentable_type == "PodcastEpisode"
       return if UserBlock.blocking?(comment.commentable.user_id, comment.user_id)
 
-      Notifications::NewCommentJob.perform_now(comment.id)
+      Notifications::NewComment::Send.call(comment)
     end
 
     def send_new_badge_achievement_notification(badge_achievement)
-      Notifications::NewBadgeAchievementJob.perform_later(badge_achievement.id)
+      Notifications::NewBadgeAchievementWorker.perform_async(badge_achievement.id)
     end
-    # NOTE: this alias is temporary until the transition to ActiveJob is completed
-    # and all old DelayedJob jobs are processed by the queue workers.
-    # It can be removed after pre-existing jobs are done
-    alias send_new_badge_notification send_new_badge_achievement_notification
 
     def send_reaction_notification(reaction, receiver)
       return if reaction.skip_notification_for?(receiver)
       return if UserBlock.blocking?(receiver, reaction.user_id)
 
-      Notifications::NewReactionJob.perform_later(*reaction_notification_attributes(reaction, receiver))
+      Notifications::NewReactionWorker.perform_async(*reaction_notification_attributes(reaction, receiver))
     end
 
     def send_reaction_notification_without_delay(reaction, receiver)
       return if reaction.skip_notification_for?(receiver)
       return if UserBlock.blocking?(receiver, reaction.user_id)
 
-      Notifications::NewReactionJob.perform_now(*reaction_notification_attributes(reaction, receiver))
+      Notifications::NewReactionWorker.new.perform(*reaction_notification_attributes(reaction, receiver))
     end
 
     def send_mention_notification(mention)
       return if mention.mentionable_type == "User" && UserBlock.blocking?(mention.mentionable_id, mention.user_id)
 
-      Notifications::MentionJob.perform_later(mention.id)
+      Notifications::MentionWorker.perform_async(mention.id)
     end
 
-    def send_welcome_notification(receiver_id)
-      Notifications::WelcomeNotificationJob.perform_later(receiver_id)
+    def send_welcome_notification(receiver_id, broadcast_id)
+      Notifications::WelcomeNotificationWorker.perform_async(receiver_id, broadcast_id)
     end
 
     def send_moderation_notification(notifiable)
       # TODO: make this work for articles in the future. only works for comments right now
       return if UserBlock.blocking?(notifiable.commentable.user_id, notifiable.user_id)
 
-      Notifications::ModerationNotificationJob.perform_later(notifiable.id)
+      Notifications::ModerationNotificationWorker.perform_async(notifiable.id)
     end
 
     def send_tag_adjustment_notification(tag_adjustment)
-      Notifications::TagAdjustmentNotificationJob.perform_later(tag_adjustment.id)
+      Notifications::TagAdjustmentNotificationWorker.perform_async(tag_adjustment.id)
     end
 
     def send_milestone_notification(type:, article_id:)
-      Notifications::MilestoneJob.perform_later(type, article_id)
-    end
-
-    def remove_all_by_action(notifiable_ids:, notifiable_type:, action: nil)
-      return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
-
-      Notifications::RemoveAllByActionJob.perform_later(notifiable_ids, notifiable_type, action)
+      Notifications::MilestoneWorker.perform_async(type, article_id)
     end
 
     def remove_all_by_action_without_delay(notifiable_ids:, notifiable_type:, action: nil)
       return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
 
-      Notifications::RemoveAllByActionJob.perform_now(notifiable_ids, notifiable_type, action)
+      Notifications::RemoveAllByAction.call(Array.wrap(notifiable_ids), notifiable_type, action)
     end
 
     def remove_all(notifiable_ids:, notifiable_type:)
       return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
 
-      Notifications::RemoveAllJob.perform_later(notifiable_ids, notifiable_type)
+      Notifications::RemoveAllWorker.perform_async(notifiable_ids, notifiable_type)
     end
 
     def remove_all_without_delay(notifiable_ids:, notifiable_type:)
       return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
 
-      Notifications::RemoveAllJob.perform_now(notifiable_ids, notifiable_type)
+      Notifications::RemoveAllWorker.new.perform(notifiable_ids, notifiable_type)
     end
 
     def update_notifications(notifiable, action = nil)
-      Notifications::UpdateJob.perform_later(notifiable.id, notifiable.class.name, action)
+      Notifications::UpdateWorker.perform_async(notifiable.id, notifiable.class.name, action)
+    end
+
+    def fast_destroy_old_notifications(destroy_before_timestamp = 4.months.ago)
+      sql = <<-SQL
+        DELETE FROM notifications
+        WHERE notifications.id IN (
+          SELECT notifications.id
+          FROM notifications
+          WHERE created_at < ?
+          LIMIT 50000
+        )
+      SQL
+
+      notification_sql = Notification.sanitize_sql([sql, destroy_before_timestamp])
+
+      BulkSqlDelete.delete_in_batches(notification_sql)
     end
 
     private
-
-    def user_data(user)
-      Notifications.user_data(user)
-    end
-
-    def comment_data(comment)
-      Notifications.comment_data(comment)
-    end
-
-    def article_data(article)
-      Notifications.article_data(article)
-    end
 
     def reaction_notification_attributes(reaction, receiver)
       reactable_data = {
@@ -158,10 +141,6 @@ class Notification < ApplicationRecord
       }
       receiver_data = { klass: receiver.class.name, id: receiver.id }
       [reactable_data, receiver_data]
-    end
-
-    def organization_data(organization)
-      Notifications.organization_data(organization)
     end
   end
 

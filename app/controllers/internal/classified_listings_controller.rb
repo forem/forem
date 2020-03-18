@@ -3,8 +3,7 @@ class Internal::ClassifiedListingsController < Internal::ApplicationController
   layout "internal"
 
   def index
-    @classified_listings = ClassifiedListing.page(params[:page]).order("bumped_at DESC").per(50)
-    @classified_listings = @classified_listings.joins(:user).where("classified_listings.title ILIKE :search OR users.username ILIKE :search", search: "%#{params[:search]}%") if params[:search].present?
+    @classified_listings = ClassifiedListing.includes(%i[user organization]).page(params[:page]).order("bumped_at DESC").per(50)
     @classified_listings = @classified_listings.where(category: params[:filter]) if params[:filter].present?
   end
 

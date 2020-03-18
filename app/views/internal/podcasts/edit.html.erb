@@ -1,43 +1,79 @@
-<h1>
-  <%= link_to @podcast.title, "/#{@podcast.slug}" %>
-</h1>
-<% if @podcast.admins.any? %>
-  <p><strong>Admins: </strong></p>
-  <ul>
-    <% @podcast.admins.each do |admin| %>
-      <%= form_for @podcast, url: remove_admin_internal_podcast_path(@podcast.id), html: { method: :delete } do |f| %>
-        <li>
-          <%= link_to "@#{admin.username}", "/#{admin.username}" %>
-          <%= f.hidden_field :user_id, value: admin.id %>
-          <%= f.submit "Remove" %>
-        </li>
-        <br>
-      <% end %>
-    <% end %>
-  </ul>
-<% else %>
-  <p>There are no admins for this podcast.</p>
-<% end %>
+<hr />
+<h2 class="m-0 mb-3"><%= link_to @podcast.title, "/#{@podcast.slug}" %></h2>
+<div class="row">
+  <div class="col-12">
+    <div class="card mb-3">
+      <div class="card-header">
+        <h3>Fetch episodes</h3>
+      </div>
+      <div class="card-body">
+        <%= form_with(url: fetch_internal_podcast_path(@podcast.id), method: :post, local: true) do %>
+          <div class="form-group">
+            <%= check_box_tag :force %>
+            <%= label_tag :force %>
+            <small>(When checked, the existing episodes' urls will be re-checked and episodes reachable and https fields will be updated accordingly if needed.)</small>
+          </div>
+          <div class="form-group">
+            <%= text_field_tag :limit, 5, size: 2 %>
+            <%= label_tag :limit %>
+            <small>(The number of episodes to fetch. When set to an empty string, last 1_000 episodes will be fetched.)</small>
+          </div>
+          <%= submit_tag "Fetch episodes", class: "btn btn-primary" %>
+        <% end %>
+      </div>
+    </div>
+    <div class="card mb-3">
+      <div class="card-header">
+        <h3>Manage Admins</h3>
+      </div>
+      <div class="card-body">
+        <% if @podcast.admins.present? %>
+          <ul class="list-group list-group-flush mb-3">
+            <% @podcast.admins.each do |admin| %>
+              <%= form_for @podcast, url: remove_admin_internal_podcast_path(@podcast.id), html: { method: :delete, class: "form-inline" } do |f| %>
+                <li class="list-group-item w-100">
+                  <%= link_to "@#{admin.username}", "/#{admin.username}" %>
+                  <%= f.hidden_field :user_id, value: admin.id %>
+                  <%= f.submit "Remove", class: "btn btn-danger btn-sm float-right" %>
+                </li>
+              <% end %>
+            <% end %>
+          </ul>
+        <% else %>
+          <p>There are no admins for this podcast.</p>
+        <% end %>
 
-<%= form_for @podcast, url: add_admin_internal_podcast_path(@podcast.id), html: { method: :post } do |f| %>
-  <div>
-    <%= f.label "Add Admin (by user_id) " %>
-    <%= f.text_field :user_id, value: "" %>
-    <%= f.submit "Add Admin" %>
-  </div>
-<% end %>
+        <% if @podcast.creator.present? %>
+          <p>Created by <%= link_to "@#{@podcast.creator.username}", "/#{@podcast.creator.username}" %></p>
+        <% end %>
 
-<%= form_for [:internal, @podcast] do |f| %>
-  <hr>
-  <div>
-    <%= f.label :title %>
-    <%= f.text_field :title %>
+        <%= form_for @podcast, url: add_admin_internal_podcast_path(@podcast.id), html: { method: :post } do |f| %>
+          <div class="form-group">
+            <%= f.label "Add Admin (by user_id)", for: "podcast_user_id" %>
+            <%= f.text_field :user_id, value: "", class: "form-control" %>
+          </div>
+          <%= f.submit "Add Admin", class: "btn btn-primary" %>
+        <% end %>
+      </div>
+    </div>
+    <div class="card mb-3">
+      <div class="card-header">
+        <h3>Edit Podcast</h3>
+      </div>
+      <div class="card-body">
+        <%= form_for [:internal, @podcast] do |f| %>
+          <hr>
+          <div class="form-group">
+            <%= f.label :title, for: "podcast_title" %>
+            <%= f.text_field :title, class: "form-control" %>
+          </div>
+          <div class="form-group">
+            <%= f.label :feed_url, for: "podcast_feed_url" %>
+            <%= f.text_field :feed_url, class: "form-control" %>
+          </div>
+          <%= f.submit class: "btn btn-primary" %>
+        <% end %>
+      </div>
+    </div>
   </div>
-  <div>
-    <%= f.label :feed_url %>
-    <%= f.text_field :feed_url %>
-  </div>
-  <div>
-    <%= f.submit %>
-  </div>
-<% end %>
+</div>

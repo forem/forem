@@ -1,81 +1,43 @@
 <%= render "style" %>
-<style>
-  .single-article-actions a {
-    color: black;
-    font-size: 0.77em;
-  }
-</style>
-<h1>Latest Articles</h1>
-<div style="height: 400px; overflow: scroll;">
-  <% @new_articles.each do |article| %>
-    <% next if article.user.badge_achievements_count > 2 %>
-    <div style="border-bottom: 1px solid black; padding: 3px 0px 2px;">
-      <a href="<%= article.path %>"><%= article.title %></a>
-      <div class="single-article-actions">
-        <a href="<%= article.path %>/mod">Mod</a> |
-        <a href="<%= article.path %>/moderate">Internal</a> |
-        <a href="<%= article.user.path %>">@<%= article.user.username %></a> |
-        <a href="/internal/users/<%= article.user_id %>">Internal User</a> |
-        <a href="/internal/users/<%= article.user_id %>/edit">Destructive Actions</a>
-      </div>
-    </div>
-  <% end %>
-</div>
 
-<h1>Possible spam/abuse users</h1>
-<div style="height: 400px; overflow: scroll;">
-  <% @possible_spam_users.each do |user| %>
-    <div style="border-bottom: 1px solid black; padding: 5px 0px 2px;">
-      <a href="<%= user.path %>">@<%= user.username %></a> - <%= user.name %>
-      <div class="single-article-actions">
-        <a href="/internal/users/<%= user.id %>">Internal User</a> |
-        <a href="/internal/users/<%= user.id %>/edit">Destructive Actions</a>
-      </div>
-    </div>
-  <% end %>
-</div>
+<h2>Suspicious Activity</h2>
 
-<h1 class="top-nav">
-  Abuse Reports -
-  <a href="/internal/reports?state=<%= @feedback_type %>&status=Open" class="<%= "active-state" if @status == "Open" %>">Open/Unresolved</a> |
-  <a href="/internal/reports?state=<%= @feedback_type %>&status=Resolved" class="<%= "active-state" if @status == "Resolved" %>">Resolved</a> |
-  <a href="/internal/reports?state=<%= @feedback_type %>&status=Invalid" class="<%= "active-state" if @status == "Invalid" %>">Invalid</a>
-</h1>
-<hr>
+<%= render "latest_articles" %>
+
+<%= render "potential_spam_users" %>
+
+<%= render "abuse_reports" %>
+
+<%= search_form_for @q, url: internal_feedback_messages_path, class: "form-inline justify-content-end" do |f| %>
+
+  <%= f.label :reported_url_cont, "Reported URL", class: "sr-only" %>
+  <%= f.search_field :reported_url_cont, placeholder: "Reported URL", class: "form-control mx-3" %>
+
+  <%= f.label :reporter_username_cont, "Reporter", class: "sr-only" %>
+  <%= f.search_field :reporter_username_cont, placeholder: "Reporter", class: "form-control mx-3" %>
+
+  <%= f.select(
+        :status_eq,
+        options_for_select([["Open"], ["Invalid"], ["Resolved"]], @q.status_eq),
+        {},
+        class: "custom-select mx-3",
+      ) %>
+
+  <%= f.submit "Search", class: "btn btn-secondary" %>
+<% end %>
+
+<div class="row mt-4 justify-content-center">
+  <%= content_tag :span, sort_link(@q, :reporter_username, "Reporter"), class: "mx-2" %>
+  <%= content_tag :span, sort_link(@q, :reported_url, "Reported URL"), class: "mx-2" %>
+  <%= content_tag :span, sort_link(@q, :created_at, "Creation Date"), class: "ml-2" %>
+</div>
 
 <%= paginate @feedback_messages %>
 
-<% @vomits.each do |reaction| %>
-  <% next unless reaction.user && reaction.reactable %>
-  <div class="row">
-    <div class="inner-row col-md-3">
-      <strong>🤢 <a href="<%= reaction.user.path %>">@<%= reaction.user.username %></a></strong>
-    </div>
-    <div class="inner-row col-md-<%= params[:status] == "Open" || params[:status].blank? ? "5" : "9" %>">
-      <strong><%= reaction.reactable_type %>:</strong>
-      <a href="<%= reaction.reactable.path %>"><%= reaction.reactable.title %></a>
-    </div>
-    <% if params[:status] == "Open" || params[:status].blank? %>
-      <div class="inner-row col-md-2">
-        <%= form_for [:internal, reaction] do |f| %>
-          <%= f.hidden_field :status, value: "confirmed" %>
-          <%= f.submit "CONFIRMED", class: "btn btn-success btn-lg" %>
-        <% end %>
-      </div>
-      <div class="inner-row col-md-2">
-        <%= form_for [:internal, reaction] do |f| %>
-          <%= f.hidden_field :status, value: "invalid" %>
-          <%= f.submit "INVALID", class: "btn btn-danger btn-lg" %>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
-<% end %>
-<br>
 <% @feedback_messages.each do |feedback_message| %>
   <%= form_for [:internal, feedback_message] do |f| %>
     <%= render "feedback_message", f: f, feedback_message: feedback_message %>
   <% end %>
 <% end %>
-<br>
-<br>
+
+<%= paginate @feedback_messages %>

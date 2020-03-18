@@ -2,7 +2,7 @@ desc "This task is called by the Heroku scheduler add-on"
 
 task get_podcast_episodes: :environment do
   Podcast.published.select(:id).find_each do |podcast|
-    Podcasts::GetEpisodesJob.perform_later(podcast_id: podcast.id, limit: 5)
+    Podcasts::GetEpisodesWorker.perform_async(podcast_id: podcast.id, limit: 5)
   end
 end
 
@@ -29,16 +29,14 @@ end
 task expire_old_listings: :environment do
   ClassifiedListing.where("bumped_at < ?", 30.days.ago).each do |listing|
     listing.update(published: false)
-    listing.remove_from_index!
   end
   ClassifiedListing.where("expires_at = ?", Time.zone.today).each do |listing|
     listing.update(published: false)
-    listing.remove_from_index!
   end
 end
 
-task clear_memory_if_too_high: :environment do
-  Rails.cache.clear if Rails.cache.stats.flatten[1]["bytes"].to_i > 9_650_000_000
+task remove_old_notifications: :environment do
+  Notification.fast_destroy_old_notifications
 end
 
 task save_nil_hotness_scores: :environment do
@@ -50,9 +48,9 @@ task github_repo_fetch_all: :environment do
 end
 
 task send_email_digest: :environment do
-  return if Time.current.wday < 3
-
-  EmailDigest.send_periodic_digest_email
+  if Time.current.wday >= 3
+    EmailDigest.send_periodic_digest_email
+  end
 end
 
 task award_badges: :environment do
@@ -61,6 +59,14 @@ task award_badges: :environment do
   BadgeRewarder.award_streak_badge(4)
   BadgeRewarder.award_streak_badge(8)
   BadgeRewarder.award_streak_badge(16)
+end
+
+task award_weekly_tag_badges: :environment do
+  # Should run once per week.
+  # Scheduled "daily" on Heroku Scheduler, should only fully run on Thursday.
+  if Time.current.wday == 4
+    BadgeRewarder.award_tag_badges
+  end
 end
 
 # rake award_top_seven_badges["ben jess peter mac liana andy"]
@@ -92,9 +98,16 @@ task award_contributor_badges_from_github: :environment do
   BadgeRewarder.award_contributor_badges_from_github
 end
 
+# This task is meant to be scheduled daily
+task prune_old_field_tests: :environment do
+  # For rolling ongoing experiemnts, we remove old experiment memberships
+  # So that they can be re-tested.
+  FieldTests::PruneOldExperimentsWorker.perform_async
+end
+
 task remove_old_html_variant_data: :environment do
-  HtmlVariantTrial.where("created_at < ?", 1.week.ago).destroy_all
-  HtmlVariantSuccess.where("created_at < ?", 1.week.ago).destroy_all
+  HtmlVariantTrial.where("created_at < ?", 2.weeks.ago).destroy_all
+  HtmlVariantSuccess.where("created_at < ?", 2.weeks.ago).destroy_all
   HtmlVariant.find_each do |html_variant|
     html_variant.calculate_success_rate! if html_variant.html_variant_successes.any?
   end
@@ -102,4 +115,16 @@ end
 
 task fix_credits_count_cache: :environment do
   Credit.counter_culture_fix_counts only: %i[user organization]
+end
+
+task record_db_table_counts: :environment do
+  Metrics::RecordDbTableCountsWorker.perform_async
+end
+
+task log_worker_queue_stats: :environment do
+  Metrics::RecordBackgroundQueueStatsWorker.perform_async
+end
+
+task log_daily_usage_measurables: :environment do
+  Metrics::RecordDailyUsageWorker.perform_async
 end

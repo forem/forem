@@ -1,12 +1,8 @@
 @import 'variables';
+@import 'mixins';
 
 .articleformcontainer {
-  padding-top: 80px;
-  @media screen and (min-width: 500px) {
-    padding-top: calc(90px + 0.2vw);
-  }
-
-  padding-bottom: calc(94px + 2vw);
+  padding: 24px 0 96px;
 }
 
 .article-form-video-preview {
@@ -14,7 +10,6 @@
   padding-top: 60px;
   margin: auto;
   max-width: 880px;
-  margin-bottom: -50px;
   .article-form-video-image-url {
     padding-top: 15px;
     font-family: $monospace;
@@ -23,7 +18,10 @@
       font-size: 1em;
       border-radius: 3px;
       border: 1px solid darken($light-medium-gray, 5%);
-      border: var(--theme-container-border, 1px solid darken($light-medium-gray, 5%));
+      border: var(
+        --theme-container-border,
+        1px solid darken($light-medium-gray, 5%)
+      );
       width: 340px;
       margin: 10px;
       &[type='submit'] {
@@ -41,20 +39,12 @@
   width: 97%;
   max-width: 860px;
   padding: 0px 6px;
-  background: white;
-  background: var(--theme-container-background, white);
+  @include dev-card;
   position: relative;
   box-sizing: border-box;
-  border: 1px solid darken($light-medium-gray, 5%);
-  border: var(--theme-container-border, 1px solid darken($light-medium-gray, 5%));
-  box-shadow: $bold-shadow;
-  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
-  border-radius: 3px;
 
   @media screen and (min-width: 500px) {
     padding: 0px 12px;
-    border: 1px solid darken($light-medium-gray, 5%);
-    border: var(--theme-container-border, 1px solid darken($light-medium-gray, 5%));
   }
   @media screen and (min-width: 600px) {
     width: calc(97% - 30px);
@@ -170,23 +160,21 @@
   background: white;
   background: var(--theme-container-background, white);
   resize: none;
+  font-family: $monospace;
   @media screen and (min-width: 600px) {
     font-size: 29px;
     height: 50px;
   }
-  &::placeholder{
-    color:#8f949c;
+  &::placeholder {
+    color: #8f949c;
     color: var(--theme-secondary-color, #8f949c);
   }
   &.articleform__titlepreview {
-    height: 26px;
     margin-bottom: 0px;
-    margin-top: -3px;
     margin-bottom: 1px;
     @media screen and (min-width: 600px) {
-      height: 34px;
-      margin-top: 0px;
-      margin-bottom: 4px;
+      height: 43px;
+      margin-bottom: 7px;
     }
   }
 }
@@ -194,7 +182,7 @@
 .articleform__titleTooLong {
   position: relative;
   &::before {
-    content: "Title Too Long";
+    content: 'Title Too Long';
     top: 5px;
     left: 5px;
     position: absolute;
@@ -275,7 +263,6 @@
     background: var(--theme-container-background-hover, lighten($green, 27%));
     color: $black;
     color: var(--theme-color, $black);
-
   }
 }
 
@@ -292,18 +279,19 @@
 
 .articleform__tagsoptionrulesbutton {
   position: absolute;
-  right: 8px;
-  top: 9px;
+  right: 7px;
+  top: 7px;
   border: 0;
   border-radius: 3px;
   background: var(--theme-anchor-color, $sky-blue);
   color: var(--theme-container-background, white);
-  font-size: 0.8em;
-  width: 100px;
+  font-size: 0.77em;
+  width: 130px;
+  padding: 6px 0px;
 }
 
 .articleform__tagrules--inactive {
-  display: none
+  display: none;
 }
 
 .articleform__tagrules--active {
@@ -333,7 +321,10 @@
   color: $black;
   color: var(--theme-color, $black);
   background: lighten($light-medium-gray, 8%);
-  background: var(--theme-container-accent-background, lighten($light-medium-gray, 8%));
+  background: var(
+    --theme-container-accent-background,
+    lighten($light-medium-gray, 8%)
+  );
   border: 0px;
   border-radius: 300px;
   padding: 3px 18px;
@@ -414,8 +405,8 @@
     font-size: 18px;
     min-height: calc(85vh - 280px);
   }
-  &::placeholder{
-    color:#8f949c;
+  &::placeholder {
+    color: #8f949c;
     color: var(--theme-secondary-color, #8f949c);
   }
 }
@@ -529,7 +520,10 @@
     border: 0px;
     border-radius: 113px;
     box-shadow: 2px 2px 8px darken($light-medium-gray, 13%);
-    box-shadow: var(--theme-container-box-shadow, 2px 2px 8px darken($light-medium-gray, 13%));
+    box-shadow: var(
+      --theme-container-box-shadow,
+      2px 2px 8px darken($light-medium-gray, 13%)
+    );
     padding: 6px 13px;
     display: inline-block;
     text-align: center;
@@ -542,11 +536,17 @@
     }
     &:hover {
       background: lighten($green, 24%);
-      background: var(--theme-container-accent-background, lighten($green, 24%));
+      background: var(
+        --theme-container-accent-background,
+        lighten($green, 24%)
+      );
     }
     &:focus {
       background: lighten($green, 29%);
-      background: var(--theme-container-accent-background, lighten($green, 29%));
+      background: var(
+        --theme-container-accent-background,
+        lighten($green, 29%)
+      );
       outline: 0;
       box-shadow: 0px 0px 1px lighten($green, 15%);
     }
@@ -635,7 +635,8 @@
     display: block;
     cursor: pointer;
   }
-  input[type='text'], textarea {
+  input[type='text'],
+  textarea {
     width: calc(80% - 20px);
     padding: 10px 20px;
     border-radius: 3px;

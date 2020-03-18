@@ -21,15 +21,26 @@
   <a href="https://codeclimate.com/github/thepracticaldev/dev.to/test_coverage">
     <img src="https://api.codeclimate.com/v1/badges/ce45bf63293073364bcb/test_coverage" alt="Code Climate test coverage">
   </a>
-  <a href="https://oss.skylight.io/app/applications/K9H5IV3RqKGu">
-    <img src="https://badges.skylight.io/status/K9H5IV3RqKGu.svg?token=Ofd-9PTSyus3BqEZZZbM1cWKJ94nHWaPiTphGsWJMAY" alt="Skylight badge">
+  <a href="https://codeclimate.com/github/thepracticaldev/dev.to/trends/technical_debt">
+    <img src="https://img.shields.io/codeclimate/tech-debt/thepracticaldev/dev.to" alt="Code Climate technical debt">
   </a>
   <a href="https://www.codetriage.com/thepracticaldev/dev.to">
     <img src="https://www.codetriage.com/thepracticaldev/dev.to/badges/users.svg" alt="CodeTriage badge">
   </a>
-  <img src="https://flat.badgen.net/dependabot/thepracticaldev/dev.to?icon=dependabot" alt="Dependabot Badge" />
+  <img src="https://badgen.net/dependabot/thepracticaldev/dev.to?icon=dependabot" alt="Dependabot Badge">
   <a href="https://gitpod.io/from-referrer/">
-    <img src="https://img.shields.io/badge/setup-automated-blue?logo=gitpod"/>
+    <img src="https://img.shields.io/badge/setup-automated-blue?logo=gitpod" alt="GitPod badge">
+  </a>
+  <a href="https://app.netlify.com/sites/devto/deploys">
+    <img src="https://api.netlify.com/api/v1/badges/e5dbe779-7bca-4390-80b9-6e678b4806a3/deploy-status" alt="Netlify badge">
+  </a>
+  <img src="https://img.shields.io/github/languages/code-size/thepracticaldev/dev.to" alt="GitHub code size in bytes">
+  <img src="https://img.shields.io/github/commit-activity/w/thepracticaldev/dev.to" alt="GitHub commit activity">
+  <a href="https://github.com/thepracticaldev/dev.to/issues?q=is%3Aissue+is%3Aopen+label%3A%22ready+for+dev%22">
+    <img src="https://img.shields.io/github/issues/thepracticaldev/dev.to/ready for dev" alt="GitHub issues ready for dev">
+  </a>
+  <a href="https://app.honeybadger.io/project/Pl5JzZB5ax">
+    <img src="https://img.shields.io/badge/honeybadger-active-informational" alt="Honeybadger badge">
   </a>
 </p>
 
@@ -47,12 +58,15 @@ developers, and all are welcome to find their place within our community. ❤️
 
 ## Table of Contents
 
+- [What is dev.to?](#what-is-devto)
+- [Table of Contents](#table-of-contents)
 - [Contributing](#contributing)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation Documentation](#installation-documentation)
-- [Developer documentation](#developer-documentation)
-- [Core Team Members](#core-team)
+- [Developer Documentation](#developer-documentation)
+- [Core team](#core-team)
+- [Vulnerability disclosure](#vulnerability-disclosure)
 - [License](#license)
 
 ## Contributing
@@ -78,21 +92,21 @@ A more complete overview of our stack is available in
 - [Ruby](https://www.ruby-lang.org/en/): we recommend using
   [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on
   the badge.
-- [Yarn](https://yarnpkg.com/): please refer to their
-  [installation guide](https://yarnpkg.com/en/docs/install).
-- [PostgreSQL](https://www.postgresql.org/) 9.4 or higher.
+- [Yarn](https://yarnpkg.com/) 1.x: please refer to their
+  [installation guide](https://classic.yarnpkg.com/en/docs/install).
+- [PostgreSQL](https://www.postgresql.org/) 9.5 or higher.
 - [ImageMagick](https://imagemagick.org/): please refer to ImageMagick's
-  [installation instructions](https://imagemagick.org/script/download.php)
-  (macOS users can install ImageMagick with `brew install imagemagick`.).
-- [Redis](https://redis.io/)
+  [installation instructions](https://imagemagick.org/script/download.php).
+- [Redis](https://redis.io/) 4 or higher.
+- [Elasticsearch](https://www.elastic.co) 7 or higher.
 
 ### Installation Documentation
 
-[View Full Installation Documentation](https://docs.dev.to/installation/)
+[View Full Installation Documentation](https://docs.dev.to/installation/).
 
 ## Developer Documentation
 
-[Check out our dedicated docs page for more technical documentation.](https://docs.dev.to)
+[Check out our dedicated docs page for more technical documentation](https://docs.dev.to).
 
 ## Core team
 
@@ -105,6 +119,14 @@ A more complete overview of our stack is available in
 - [@rhymes](https://dev.to/rhymes)
 - [@jacobherrington](https://dev.to/jacobherrington)
 - [@mstruve](https://dev.to/molly_struve)
+- [@atsmith813](https://dev.to/atsmith813)
+- [@citizen428](https://dev.to/citizen428)
+- [@nickytonline](https://dev.to/nickytonline)
+- [@joshpuetz](http://dev.to/joshpuetz)
+- [@vaidehijoshi](https://dev.to/vaidehijoshi)
+- [@juliannatetreault](https://dev.to/juliannatetreault)
+- [@ridhwana](https://dev.to/ridhwana)
+- [@fdoxyz](https://dev.to/fdoxyz)
 
 ## Vulnerability disclosure
 
@@ -128,7 +150,7 @@ Agreement, which they generously made available to the public domain under
 Creative Commons CC0 1.0 Universal.
 
 Any questions, please refer to our [license FAQ](https://docs.dev.to/licensing/)
-doc or email yo@dev.to
+doc or email yo@dev.to.
 
 <br>
 

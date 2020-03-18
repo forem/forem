@@ -45,7 +45,7 @@ module Podcasts
     # If they are not, the podcast will be hidden.
     def refetch_items
       podcast.podcast_episodes.find_each do |episode|
-        PodcastEpisodes::UpdateMediaUrlJob.perform_later(episode.id, episode.media_url)
+        PodcastEpisodes::UpdateMediaUrlWorker.perform_async(episode.id, episode.media_url)
       end
     end
   end

@@ -11,7 +11,7 @@ module Credits
     end
 
     def call
-      return false unless purchaser.has_enough_credits?(cost)
+      return false unless purchaser.enough_credits?(cost)
 
       purchaser.credits.unspent.limit(cost).update_all(
         spent: true,

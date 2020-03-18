@@ -1,14 +1,15 @@
 <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right">
   <div class="sidebar-bg" id="sidebar-bg-right"></div>
   <div class="side-bar sidebar-additional showing" id="sidebar-additional">
-    <% if Article.active_threads([@tag, "discuss"], Timeframer.new(params[:timeframe]).datetime).any? %>
+    <% active_threads = Article.active_threads([@tag, "discuss"], Timeframer.new(params[:timeframe]).datetime) %>
+    <% if active_threads.present? %>
       <div class="widget">
         <header>
           <h4>#discuss</h4>
         </header>
         <div class="widget-body">
           <div class="widget-link-list">
-            <% Article.active_threads([@tag, "discuss"], Timeframer.new(params[:timeframe]).datetime).each do |plucked_article| %>
+            <% active_threads.each do |plucked_article| %>
               <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
             <% end %>
           </div>
@@ -16,20 +17,20 @@
       </div>
     <% end %>
     <% if user_signed_in? %>
-      <%= javascript_pack_tag "sidebarWidget", defer: true %>
+      <%= javascript_packs_with_chunks_tag "sidebarWidget", defer: true %>
       <div id="sidebarWidget__pack" data-tag-info="<%= @tag_model.attributes.slice("id", "text_color_hex", "bg_color_hex", "name").to_json %>">
       </div>
     <% else %>
       <% cache("seo-boostable-posts-for-tag-#{@tag}-#{params[:timeframe]}-xoxo", expires_in: 18.hours) do %>
-        <% @boostable_posts = Article.seo_boostable(@tag, Timeframer.new(params[:timeframe]).datetime) %>
-        <% if @boostable_posts.any? %>
+        <% boostable_posts = Article.seo_boostable(@tag, Timeframer.new(params[:timeframe]).datetime) %>
+        <% if boostable_posts.present? %>
           <div class="widget">
             <header>
               <h4>trending guides/resources</h4>
             </header>
             <div class="widget-body">
               <div class="widget-link-list">
-                <% @boostable_posts.each do |plucked_article| %>
+                <% boostable_posts.each do |plucked_article| %>
                   <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
                 <% end %>
               </div>

@@ -4,13 +4,11 @@ import { shallow } from 'preact-render-spy';
 import { JSDOM } from 'jsdom';
 import fetch from 'jest-fetch-mock';
 import ChannelDetails from '../channelDetails';
-import algoliasearch from '../__mocks__/algoliasearchUsers';
 
 global.fetch = fetch;
 const doc = new JSDOM('<!doctype html><html><body></body></html>');
 global.document = doc;
 global.window = doc.defaultView;
-global.window.algoliasearch = algoliasearch;
 global.window.currentUser = { id: 'modID' };
 
 const channelDetails = mod => {
@@ -106,9 +104,7 @@ describe('<ChannelDetails />', () => {
             .at(i)
             .childAt(1)
             .attr('data-content'),
-        ).toEqual(
-          `users/by_username?url=${moddetails.channel_users[i].username}`,
-        );
+        ).toEqual(`sidecar-user`);
       }
 
       // mod only divs
@@ -292,9 +288,7 @@ describe('<ChannelDetails />', () => {
             .at(i)
             .childAt(1)
             .attr('data-content'),
-        ).toEqual(
-          `users/by_username?url=${userdetails.channel_users[i].username}`,
-        );
+        ).toEqual(`sidecar-user`);
       }
 
       // user only divs

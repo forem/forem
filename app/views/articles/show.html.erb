@@ -1,7 +1,7 @@
 <% title @article.title %>
 
 <%= render "shared/webcomponents_loader_script" %>
-<%= javascript_pack_tag "clipboardCopy", defer: true %>
+<%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", defer: true %>
 
 <% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}", expires_in: 30.hours) do %>
   <% if @article.processed_html.include? "ltag_gist-liquid-tag" %>
@@ -36,22 +36,22 @@
   <% end %>
 <% end %>
 
-<% if !internal_navigation? %>
+<% if internal_navigation? %>
+    <link rel="canonical" href="<%= @article.canonical_url.presence || "https://#{ApplicationConfig['APP_DOMAIN']}#{@article.path}" %>" />
+    <meta name="description" content="<%= @article.description_and_tags %>">
+    <meta name="keywords" content="<%= @article.cached_tag_list %>, software, coding, development, engineering, inclusive, community">
+<% else %>
   <%= content_for :page_meta do %>
-    <% if @article.canonical_url.present? %>
-      <link rel="canonical" href="<%= @article.canonical_url %>" />
-    <% else %>
-      <link rel="canonical" href="https://dev.to<%= @article.path %>" />
-    <% end %>
-    <meta name="description" content="<%= @article.description || "An article from the community" %>">
-    <meta name="keywords" content="software development, inclusive, community, engineering, <%= @article.cached_tag_list %>">
+    <link rel="canonical" href="<%= @article.canonical_url.presence || "https://#{ApplicationConfig['APP_DOMAIN']}#{@article.path}" %>" />
+    <meta name="description" content="<%= @article.description_and_tags %>">
+    <meta name="keywords" content="<%= @article.cached_tag_list %>, software, coding, development, engineering, inclusive, community">
 
     <meta property="og:type" content="article" />
     <meta property="og:url" content="https://dev.to<%= @article.path %>" />
     <meta property="og:title" content="<%= @article.title %>" />
     <meta property="og:description" content="<%= @article.description || "An article from the community" %>" />
     <meta property="og:site_name" content="<%= community_qualified_name %>" />
-    <meta name="twitter:site" content="@<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %>">
+    <meta name="twitter:site" content="@<%= SiteConfig.social_networks_handle %>">
     <meta name="twitter:creator" content="@<%= @user.twitter_username %>">
     <meta name="twitter:title" content="<%= @article.title %>">
     <meta name="twitter:description" content="<%= @article.description || "An article from the community" %>">
@@ -111,7 +111,7 @@
         <% if @organization %>
           <a href="<%= @organization.path %>" class="org-branded-title-link">
             <div class="org-branded-title">
-              <img src="<%= ProfileImage.new(@organization).get(50) %>" class="org-pic" alt="<%= @organization.name %> profile image"> <%= @organization.name %>
+              <img src="<%= ProfileImage.new(@organization).get(width: 50) %>" class="org-pic" alt="<%= @organization.name %> profile image"> <%= @organization.name %>
             </div>
           </a>
         <% end %>
@@ -122,7 +122,7 @@
           <span itemprop="author" itemscope itemtype="http://schema.org/Person">
             <meta itemprop="url" content="https://dev.to/<%= @user.username %>">
             <a href="/<%= @user.username %>" class="author">
-              <img class="profile-pic" src="<%= ProfileImage.new(@user).get(50) %>" alt="<%= @user.username %> profile image" />
+              <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 50) %>" alt="<%= @user.username %> profile image" />
               <span itemprop="name"><%= @user.name %></span>
             </a>
           </span>
@@ -190,10 +190,10 @@
     <% @classic_article = Suggester::Articles::Classic.new(@article, not_ids: [@article.id]).get.first %>
     <% if @classic_article %>
       <%= render "additional_content_boxes/article_box",
-                article: @classic_article,
-                classification: "classic",
-                classification_text: "Classic DEV Post from #{@classic_article.readable_publish_date}",
-                follow_cue: "Follow <a href='#{@classic_article.user.path}'>@#{@classic_article.user.username}</a> to see more of their posts in your feed." %>
+                 article: @classic_article,
+                 classification: "classic",
+                 classification_text: "Classic DEV Post from #{@classic_article.readable_publish_date}",
+                 follow_cue: "Follow <a href='#{@classic_article.user.path}'>@#{@classic_article.user.username}</a> to see more of their posts in your feed." %>
     <% end %>
     <div id="additional-content-area" data-article-id="<%= @article.id %>,<%= @classic_article&.id %>"></div>
     <% suggested_articles = ArticleSuggester.new(@article).articles(max: 4) %>
@@ -220,13 +220,10 @@
 
 <% cache("article-show-scripts", expires_in: 8.hours) do %>
   <script async>
-    <%= TweetTag.script.html_safe %>
-    <%= YoutubeTag.script.html_safe %>
+    <%# we consider these scripts safe for embedding as they come from our code %>
     <%= PodcastTag.script.html_safe %>
-    <%= GistTag.script.html_safe %>
-    <%= RunkitTag.script.html_safe %>
     <%= PollTag.script.html_safe %>
+    <%= RunkitTag.script.html_safe %>
+    <%= TweetTag.script.html_safe %>
   </script>
 <% end %>
-
-<%= javascript_pack_tag "webShare", defer: true %>

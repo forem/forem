@@ -49,7 +49,7 @@ function buildArticleHTML(article) {
     var profileUsername = article.user.username
     var orgHeadline = "";
     if (article.organization && !document.getElementById("organization-article-index")) {
-      orgHeadline = '<div class="article-organization-headline"><a class="org-headline-filler" href="/'+article.organization.slug+'"><span class="article-organization-headline-inner"><img alt="'+article.organization.name+' logo" src="'+article.organization.profile_image_90+'" loading="lazy">'+article.organization.name+'</span></a></div>'
+      orgHeadline = '<div class="article-organization-headline"><a class="org-headline-filler" href="/'+article.organization.slug+'"><img alt="'+article.organization.name+' logo" src="'+article.organization.profile_image_90+'" loading="lazy">'+article.organization.name+'</a></div>'
     }
     var bodyTextSnippet = "";
     var commentsBlobSnippet = "";
@@ -77,12 +77,12 @@ function buildArticleHTML(article) {
     }
     var saveButton = '';
     if (article.class_name === "Article") {
-      saveButton = '<button type="button" class="article-engagement-count bookmark-engage" data-reactable-id="'+article.id+'">\
+      saveButton = '<button type="button" class="article-engagement-count engage-button bookmark-button" data-reactable-id="'+article.id+'">\
                       <span class="bm-initial">SAVE</span>\
                       <span class="bm-success">SAVED</span>\
                     </button>'
     } else if (article.class_name === "User") {
-      saveButton = '<button type="button" style="width: 122px" class="article-engagement-count bookmark-engage follow-action-button"\
+      saveButton = '<button type="button" style="width: 122px" class="article-engagement-count engage-button follow-action-button"\
                        data-info=\'{"id":'+article.id+',"className":"User"}\' data-follow-action-button>\
                        &nbsp;\
                     </button>'
@@ -110,7 +110,7 @@ function buildArticleHTML(article) {
 
     var timeAgoInWords = '';
     if (article.published_at_int) {
-      timeAgoInWords = timeAgo(article.published_at_int);
+      timeAgoInWords = timeAgo({ oldTimeInSeconds: article.published_at_int });
     }
 
     return '<div class="single-article single-article-small-pic" data-content-user-id="'+article.user_id+'">\

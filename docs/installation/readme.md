@@ -6,6 +6,7 @@ items:
   - docker.md
   - gitpod.md
   - postgresql.md
+  - others.md
 ---
 
 # Installation Guide

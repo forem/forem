@@ -1,15 +1,21 @@
+@import 'vars/variables';
+
 @import 'variables';
 @import 'mixins';
+@import 'fonts';
 
 body {
   @include themeable(background, theme-background, $lightest-gray);
   @include themeable(color, theme-color, $black);
-  font-family: $helvetica;
-  font-size: 18px;
-  padding: 0 !important;
-  margin: 0 !important;
-  margin-top: -20px !important;
+  font-family: $ff-default;
+  padding: 0;
+  margin: 0;
   overflow-y: scroll;
+  padding-top: $header-height;
+}
+
+#audiocontent {
+  display: none;
 }
 
 *:focus {
@@ -20,11 +26,6 @@ body {
 
 *:focus:not(.focus-visible) {
   outline: none;
-}
-
-.ptr--ptr {
-  margin-top: 70px;
-  margin-bottom: -70px;
 }
 
 .modal-open {
@@ -43,9 +44,10 @@ body {
 }
 
 @media print {
-   .top-bar, .article-actions {
-      display: none;
-   }
+  .top-bar,
+  .article-actions {
+    display: none;
+  }
 }
 
 .config_minimize_newest_listings {
@@ -60,22 +62,7 @@ body {
   overflow: hidden;
   min-height: 88vh;
   visibility: visible;
-  &.stories-index,
-  &.notifications-index,
-  &.stories-search,
-  &.podcast_episodes-index,
-  &.reading_list_items-index,
-  &.history-index,
-  .tags-index,
-  &.twitch_live_streams-show {
-    margin-top: 68px;
-  }
-}
-
-pre {
-  background-color: #2b2b32;
-  padding: 10px;
-  font-size: 15px;
+  font-size: 18px;
 }
 
 a {
@@ -102,6 +89,7 @@ pre {
   border-radius: 2px;
   overflow-x: scroll;
   font-size: 11px;
+  padding: 10px;
   color: #eff0f9;
   line-height: 1.42em;
   font-size: 13px;
@@ -114,15 +102,6 @@ pre {
     color: #eff0f9;
     white-space: pre;
   }
-}
-
-.cta {
-  color: $black;
-  background: $green;
-  font-family: $helvetica-condensed;
-  -webkit-appearance: none;
-  font-stretch: condensed;
-  font-weight: bold;
 }
 
 button {
@@ -140,50 +119,12 @@ input[type='email'] {
   outline: 0;
 }
 
-.snackbar {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  right: 20px;
-  @include themeable(
-    background,
-    theme-container-accent-background,
-    $light-purple
-  );
-  @include themeable(border, container-border, 2px solid $purple);
-  padding: 12px 30px;
-  z-index: 20;
-  border-radius: 3px;
-  font-weight: bold;
-  @media screen and (min-width: 430px) {
-    right: auto;
-    display: inline-block;
-    -webkit-animation: ease-out;
-    -webkit-animation-name: slide-in-from-left;
-    -webkit-animation-duration: 0.25s;
-  }
-}
-
-@-webkit-keyframes slide-in-from-left {
-  0% {
-    left: -300px;
-  }
-  50% {
-    left: 0px;
-  }
-  90% {
-    left: 24px;
-  }
-  100% {
-    left: 20px;
-  }
-}
-
 .partner-image-dark-mode {
   display: none !important;
 }
 
-body.night-theme, body.ten-x-hacker-theme {
+body.night-theme,
+body.ten-x-hacker-theme {
   .on-page-nav-butt img,
   .icon-img,
   .dropdown-icon,
@@ -193,7 +134,8 @@ body.night-theme, body.ten-x-hacker-theme {
   .dev-badge,
   .chatchannels__config img,
   .external-link-img,
-  .group-img {
+  .group-img,
+  .user-profile-header .social a {
     -webkit-filter: invert(95%);
     filter: invert(95%);
   }
@@ -207,43 +149,16 @@ body.night-theme, body.ten-x-hacker-theme {
   .partner-image-light-mode {
     display: none !important;
   }
-}
 
-// Alternate base fonts
-
-body.sans-serif-article-body {
-  .body {
-    font-family: $helvetica;
-  }
-  .body p {
-    font-family: $helvetica;
-    font-size: 0.98em;
-  }
-}
-body.comic-sans-article-body {
-  .body {
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-  }
-  .body p {
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-    font-size: 0.98em;
-  }
-}
-body.monospace-article-body {
-  .body {
-    font-family: $monospace;
-  }
-  .body p {
-    font-family: $monospace;
-    font-size: 0.9em;
+  .not-dark-theme-text-compatible {
+    @include themeable-important(color, theme-secondary-color, white);
   }
 }
 
 body.static-navbar-config {
+  padding-top: 0;
   .top-bar {
     position: relative !important;
-    margin-top: 20px !important;
-    margin-bottom: -66px !important;
   }
 }
 
@@ -252,11 +167,25 @@ body.static-navbar-config {
   display: none !important;
 }
 
-body.pro-status-true .pro-visible-block,
 body.trusted-status-true .trusted-visible-block {
   display: block !important;
 }
 
+body.hidden-shell {
+  .top-bar,
+  footer {
+    display: none;
+  }
+  .container {
+    margin-top: 0px;
+  }
+  .universal-page-content-wrapper {
+    margin-top: -$header-height !important;
+    margin-bottom: 30px;
+  }
+}
+
+// Remove post confirmaiton
 .delete-confirm.container {
   padding: 150px 10px;
   min-height: 300px;
@@ -264,9 +193,10 @@ body.trusted-status-true .trusted-visible-block {
   h4 {
     background: $black;
     padding: 5px 8px;
-    color: white;
+    color: $white;
     display: inline-block;
     margin-bottom: 0px;
+    border-radius: 3px;
   }
   h2 {
     font-size: 22px;
@@ -280,5 +210,35 @@ body.trusted-status-true .trusted-visible-block {
       color: white;
       opacity: 0.9;
     }
+  }
+  form button {
+    background: $red;
+    color: white;
+    font-size: 1.5em;
+    border: 0px;
+    border-radius: 3px;
+    padding: 6px 12px;
+  }
+}
+
+.app-shell-loader {
+  position: absolute;
+  top: 200px;
+  text-align: center;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  animation: loading-fadein 1.5s;
+  animation-delay: 0.6s;
+  font-size: 1.2em;
+  z-index: -1;
+}
+
+@keyframes loading-fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.6;
   }
 }

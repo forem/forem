@@ -28,7 +28,7 @@ Rails.application.configure do
   # Apache or NGINX already handles this.
   config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
   config.public_file_server.headers = {
-    "Cache-Control" => "public, s-maxage=2592000, max-age=86400"
+    "Cache-Control" => "public, s-maxage=#{30.days.to_i}, max-age=#{30.days.to_i}"
   }
 
   # Compress JavaScripts and CSS.
@@ -101,9 +101,9 @@ Rails.application.configure do
 
   # DEV uses the RedisCloud Heroku Add-On which comes with the predefined env variable REDISCLOUD_URL
   redis_url = ENV["REDISCLOUD_URL"]
-  redis_url ||= ApplicationConfig["REDIS_URL"]
+  redis_url ||= ENV["REDIS_URL"]
   DEFAULT_EXPIRATION = 24.hours.to_i.freeze
-  config.cache_store = :redis_store, ENV["REDIS_URL"], { expires_in: DEFAULT_EXPIRATION }
+  config.cache_store = :redis_cache_store, { url: redis_url, expires_in: DEFAULT_EXPIRATION }
 
   config.app_domain = ENV["APP_DOMAIN"]
 

@@ -18,37 +18,51 @@ module Exporter
     private
 
     def allowed_attributes
+      time_attributes | url_attributes | general_attributes
+    end
+
+    def time_attributes
+      %i[
+        created_at
+        crossposted_at
+        edited_at
+        last_comment_at
+        published_at
+      ]
+    end
+
+    def url_attributes
+      %i[
+        canonical_url
+        feed_source_url
+        video_closed_caption_track_url
+        video_source_url
+        video_thumbnail_url
+      ]
+    end
+
+    def general_attributes
       %i[
         body_markdown
         cached_tag_list
         cached_user_name
         cached_user_username
-        canonical_url
         comments_count
-        created_at
-        crossposted_at
         description
-        edited_at
-        feed_source_url
         language
-        last_comment_at
         main_image
         main_image_background_hex_color
         path
         positive_reactions_count
         processed_html
         published
-        published_at
         published_from_feed
         show_comments
         slug
         social_image
         title
         video
-        video_closed_caption_track_url
         video_code
-        video_source_url
-        video_thumbnail_url
       ]
     end
 

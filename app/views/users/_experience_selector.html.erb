@@ -1,0 +1,6 @@
+<label class="rich-selector exp-selector exp-selector--<%= exp %>">
+  <%= f.radio_button :experience_level, exp, checked: @user.experience_level == exp.to_i, class: "rich-selector__radio" %>
+  <div class="rich-selector__indicator exp-selector__indicator"></div>
+  <div class="rich-selector__outline exp-selector__outline"></div>
+  <%= i + 1 %>
+</label>

@@ -50,6 +50,26 @@ RSpec.describe "ChatChannels", type: :request do
     end
   end
 
+  describe "get /chat_channels?state=unopened_ids" do
+    it "returns unopened chat channel ids" do
+      direct_channel.add_users [user]
+      user.chat_channel_memberships.each { |m| m.update(has_unopened_messages: true) }
+      sign_in user
+      get "/chat_channels?state=unopened_ids"
+      expect(response.body).to include(direct_channel.id.to_s)
+      expect(response.body).to include("unopened_ids")
+    end
+
+    it "does not return chat channel ids if not signed in" do
+      direct_channel.add_users [user]
+      user.chat_channel_memberships.each { |m| m.update(has_unopened_messages: true) }
+      sign_out user
+      expect do
+        get "/chat_channels?state=unopened_ids"
+      end.to raise_error(Pundit::NotAuthorizedError)
+    end
+  end
+
   describe "get /chat_channels?state=pending" do
     it "returns pending channels" do
       ChatChannelMembership.create(chat_channel_id: invite_channel.id, user_id: user.id, status: "pending")
@@ -181,11 +201,13 @@ RSpec.describe "ChatChannels", type: :request do
 
   describe "POST /chat_channels/:id/open" do
     it "returns success" do
+      allow(Pusher).to receive(:trigger).and_return(true)
       post "/chat_channels/#{chat_channel.id}/open"
       expect(response.body).to include("success")
     end
 
     it "marks chat_channel_membership as opened" do
+      allow(Pusher).to receive(:trigger).and_return(true)
       post "/chat_channels/#{chat_channel.id}/open"
       expect(user.chat_channel_memberships.last.has_unopened_messages).to eq(false)
     end
@@ -234,6 +256,93 @@ RSpec.describe "ChatChannels", type: :request do
     it "does not block when user does not have permissions" do
       expect { post "/chat_channels/block_chat", params: { chat_id: direct_channel.id } }.
         to raise_error(Pundit::NotAuthorizedError)
+    end
+  end
+
+  describe "GET /api/chat_channels/:id/channel_info" do
+    def channel_info_request(chat_channel_id)
+      get chat_channel_info_path(chat_channel_id),
+          headers: { HTTP_ACCEPT: "application/json" }
+    end
+
+    context "when errors occur" do
+      it "returns not auhorized when the user is not user signed in" do
+        sign_out user
+
+        channel_info_request(chat_channel.id)
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns not found if the user is not a member of the channel" do
+        chat_channel.remove_user(user)
+
+        channel_info_request(chat_channel.id)
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns not found if channel id does not exist" do
+        channel_info_request("invalid")
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context "when no errors occur" do
+      before do
+        channel_info_request(chat_channel.id)
+      end
+
+      it "returns ok if user is a member of the channel" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "returns chat channel with the correct json representation", :aggregate_failures do
+        response_channel = response.parsed_body
+        expect(response_channel.keys).to match_array(
+          %w[type_of id description channel_name username channel_users channel_mod_ids pending_users_select_fields],
+        )
+
+        %w[id description channel_name channel_mod_ids].each do |attr|
+          expect(response_channel[attr]).to eq(chat_channel.public_send(attr))
+        end
+
+        expect(response_channel["username"]).to eq(chat_channel.channel_name)
+        expect(response_channel["pending_users_select_fields"]).to be_empty
+      end
+
+      it "returns the correct channel users representation" do
+        response_channel_users = response.parsed_body["channel_users"]
+
+        expected_last_opened_at = Time.zone.parse(response_channel_users[user.username]["last_opened_at"]).to_i
+        response_user = response_channel_users[user.username]
+
+        expect(response_user["profile_image"]).to eq(ProfileImage.new(user).get(width: 90))
+        expect(response_user["darker_color"]).to eq(user.decorate.darker_color)
+        expect(response_user["name"]).to eq(user.name)
+        expect(expected_last_opened_at).to eq(user.chat_channel_memberships.last.last_opened_at.to_i)
+        expect(response_user["username"]).to eq(user.username)
+        expect(response_user["id"]).to eq(user.id)
+      end
+
+      it "returns the correct pending users select fields representation" do
+        # add another user's pending membership
+        pending_user = create(:user)
+        chat_channel.add_users(pending_user)
+        pending_user.chat_channel_memberships.last.update(status: :pending)
+
+        channel_info_request(chat_channel.id)
+
+        response_pending_user_select_fields = response.parsed_body["pending_users_select_fields"].first
+
+        expected_updated_at = Time.zone.parse(response_pending_user_select_fields["updated_at"]).to_i
+
+        expect(response_pending_user_select_fields["id"]).to eq(pending_user.id)
+        expect(response_pending_user_select_fields["name"]).to eq(pending_user.name)
+        expect(expected_updated_at).to eq(pending_user.updated_at.to_i)
+        expect(response_pending_user_select_fields["username"]).to eq(pending_user.username)
+      end
     end
   end
 end

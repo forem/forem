@@ -7,6 +7,14 @@ class MessagePolicy < ApplicationPolicy
     user_is_sender?
   end
 
+  def update?
+    destroy?
+  end
+
+  def permitted_attributes_for_update
+    %i[message_markdown]
+  end
+
   private
 
   def user_is_sender?

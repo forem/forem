@@ -8,15 +8,13 @@
   <% if story.cached_organization && !@organization_article_index %>
     <div class="article-organization-headline">
       <a class="org-headline-filler" href="/<%= story.cached_organization.slug %>">
-        <span class="article-organization-headline-inner">
-          <img alt="<%= story.cached_organization.name %> logo" src="<%= story.cached_organization.profile_image_90 %>"><%= story.cached_organization.name %>
-        </span>
+        <img alt="<%= story.cached_organization.name %> logo" src="<%= story.cached_organization.profile_image_90 %>"><%= story.cached_organization.name %>
       </a>
     </div>
   <% end %>
   <a href="/<%= story.cached_user.username %>" class="small-pic-link-wrapper">
     <div class="small-pic">
-      <img src="<%= ProfileImage.new(story.cached_user).get(90) %>" alt="<%= story.cached_user.username %> profile" />
+      <img src="<%= ProfileImage.new(story.cached_user).get(width: 90) %>" alt="<%= story.cached_user.username %> profile" width="40" height="40" />
     </div>
   </a>
   <a href="<%= story.path %>" class="small-pic-link-wrapper index-article-link" data-preload-image="<%= cloud_cover_url(story.main_image) %>" id="article-link-<%= story.id %>">
@@ -57,7 +55,7 @@
   </a>
   <button
     type="button"
-    class="article-engagement-count bookmark-engage"
+    class="article-engagement-count engage-button bookmark-button"
     data-reactable-id="<%= story.id %>"
     aria-label="Save to reading list"
     title="Save to reading list">

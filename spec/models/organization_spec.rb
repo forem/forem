@@ -106,8 +106,17 @@ RSpec.describe Organization, type: :model do
       expect(organization.errors[:slug].to_s.include?("taken")).to be true
     end
 
-    it "triggers cache busting on save" do
-      expect { build(:organization).save }.to have_enqueued_job.on_queue("organizations_bust_cache")
+    context "when callbacks are triggered after save" do
+      let(:organization) { build(:organization) }
+
+      before do
+        allow(Organizations::BustCacheWorker).to receive(:perform_async)
+      end
+
+      it "triggers cache busting on save" do
+        organization.save
+        expect(Organizations::BustCacheWorker).to have_received(:perform_async).with(organization.id, organization.slug)
+      end
     end
   end
 
@@ -172,25 +181,31 @@ RSpec.describe Organization, type: :model do
     end
   end
 
-  describe "#has_enough_credits?" do
+  describe "#enough_credits?" do
     it "returns false if the user has less unspent credits than neeed" do
-      expect(organization.has_enough_credits?(1)).to be(false)
+      expect(organization.enough_credits?(1)).to be(false)
     end
 
     it "returns true if the user has the exact amount of unspent credits" do
       create(:credit, organization: organization, spent: false)
-      expect(organization.has_enough_credits?(1)).to be(true)
+      expect(organization.enough_credits?(1)).to be(true)
     end
 
     it "returns true if the user has more unspent credits than needed" do
       create_list(:credit, 2, organization: organization, spent: false)
-      expect(organization.has_enough_credits?(1)).to be(true)
+      expect(organization.enough_credits?(1)).to be(true)
     end
   end
 
   describe "#pro?" do
     it "always returns false" do
       expect(build(:organization).pro?).to be(false)
+    end
+  end
+
+  describe "#decoarated" do
+    it "returns not fully banished" do
+      expect(organization.decorate.fully_banished?).to eq(false)
     end
   end
 end

@@ -9,12 +9,13 @@ module CacheBuster
   def self.bust(path)
     return unless Rails.env.production?
 
-    HTTParty.post("https://api.fastly.com/purge/https://dev.to#{path}",
+    HTTParty.post("https://api.fastly.com/purge/https://#{ApplicationConfig['APP_DOMAIN']}#{path}",
                   headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
-    HTTParty.post("https://api.fastly.com/purge/https://dev.to#{path}?i=i",
+    HTTParty.post("https://api.fastly.com/purge/https://#{ApplicationConfig['APP_DOMAIN']}#{path}?i=i",
                   headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
   rescue URI::InvalidURIError => e
     Rails.logger.error("Trying to bust cache of an invalid uri: #{e}")
+    DatadogStatsClient.increment("cache_buster.invalid_uri", tags: ["path:#{path}"])
   end
 
   def self.bust_comment(commentable)
@@ -33,6 +34,8 @@ module CacheBuster
   end
 
   def self.bust_article(article)
+    article.purge
+
     bust(article.path)
     bust("/#{article.user.username}")
     bust("#{article.path}/")
@@ -111,11 +114,13 @@ module CacheBuster
     bust "/#{slug}?i=i"
   end
 
-  def self.bust_tag(name)
-    bust("/t/#{name}")
-    bust("/t/#{name}?i=i")
-    bust("/t/#{name}/?i=i")
-    bust("/t/#{name}/")
+  def self.bust_tag(tag)
+    tag.purge
+
+    bust("/t/#{tag.name}")
+    bust("/t/#{tag.name}?i=i")
+    bust("/t/#{tag.name}/?i=i")
+    bust("/t/#{tag.name}/")
     bust("/tags")
   end
 
@@ -155,6 +160,9 @@ module CacheBuster
   end
 
   def self.bust_classified_listings(classified_listing)
+    # we purge all listings as it's the wanted behavior with the following URL purging
+    classified_listing.purge_all
+
     bust("/listings")
     bust("/listings?i=i")
     bust("/listings/#{classified_listing.category}/#{classified_listing.slug}")

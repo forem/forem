@@ -22,7 +22,7 @@ RSpec.describe "internal/users", type: :request do
     end
   end
 
-  describe "GET internal/users/:id/edit" do
+  describe "GET /internal/users/:id/edit" do
     it "redirects from /username/moderate" do
       get "/#{user.username}/moderate"
       expect(response).to redirect_to("/internal/users/#{user.id}")
@@ -39,14 +39,14 @@ RSpec.describe "internal/users", type: :request do
     end
   end
 
-  describe "PUT internal/users/:id/edit" do
+  describe "POST /internal/users/:id/banish" do
     it "bans user for spam" do
       post "/internal/users/#{user.id}/banish"
       expect(user.reload.username).to include("spam")
     end
   end
 
-  describe "DELETE internal/users/:id/remove_identity" do
+  describe "DELETE /internal/users/:id/remove_identity" do
     it "removes the given identity" do
       identity = user.identities.first
       delete "/internal/users/#{user.id}/remove_identity", params: { user: { identity_id: identity.id } }

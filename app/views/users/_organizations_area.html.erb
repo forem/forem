@@ -1,0 +1,18 @@
+<%# it's highly unlikely a single use will belong to so many organizations to slow down
+    this fetch, thus we can safely use the .present?/.each pattern to load them %>
+<% if @user.organizations.present? %>
+  <div id="sidebar-organizations" class="widget">
+    <div class="widget-suggested-follows-container">
+      <header><h4>organizations</h4></header>
+      <div class="widget-body">
+        <% @user.organizations.each do |organization| %>
+          <div class="widget-user-pic">
+            <a href="/<%= organization.slug %>">
+              <img src="<%= ProfileImage.new(organization).get(width: 90) %>" alt="<%= organization.name %> profile image">
+            </a>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

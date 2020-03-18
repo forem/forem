@@ -21,9 +21,24 @@ linters:
         - .rubocop.yml
       Layout/InitialIndentation:
         Enabled: false
-      Layout/TrailingBlankLines:
+      Layout/LineLength:
+        Max: 289
+        Exclude:
+          - '**/app/views/comments/_comment_proper.html.erb'
+      Layout/TrailingEmptyLines:
         Enabled: false
       Lint/UselessAssignment:
         Enabled: false
-      Metrics/LineLength:
-        Max: 289
+      Rails/OutputSafety:
+        Enabled: false
+        Exclude:
+          - '**/app/views/articles/_block.html.erb'
+          - '**/app/views/feedback_messages/index.html.erb'
+          - '**/app/views/layouts/_styles.html.erb'
+          - '**/app/views/liquid_embeds/show.html.erb'
+          - '**/app/views/moderations/mod.html.erb'
+          - '**/app/views/pages/live.html.erb'
+          - '**/app/views/pages/onboarding.html.erb'
+          - '**/app/views/partnerships/show.html.erb'
+          - '**/app/views/partnerships/index.html.erb'
+          - '**/app/views/pro_memberships/show.html.erb'

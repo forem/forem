@@ -12,7 +12,7 @@ module ProMemberships
         user = membership.user
         cost = ProMembership::MONTHLY_COST
 
-        if user.has_enough_credits?(cost)
+        if user.enough_credits?(cost)
           renew_membership(membership, cost)
         elsif membership.auto_recharge
           if user.stripe_id_code
@@ -107,7 +107,7 @@ module ProMemberships
     end
 
     def notify_admins(user, message)
-      SlackBotPingJob.perform_later(
+      SlackBotPingWorker.perform_async(
         message: "ProMemberships::Biller: #{user.username}: #{message}",
         channel: "pro-memberships",
         username: "pro-memberships",

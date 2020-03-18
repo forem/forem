@@ -8,19 +8,17 @@ RSpec.describe MediumArticleRetrievalService, type: :service, vcr: {} do
       author_image: "https://miro.medium.com/fit/c/96/96/1*qFzi921ix0_kkrFMKYgELw.jpeg",
       reading_time: "4 min read",
       published_time: "2018-11-03T09:44:32.733Z",
-      publication_date: "Nov 3, 2018",
+      publication_date: anything,
       url: "https://medium.com/@edisonywh/my-ruby-journey-hooking-things-up-91d757e1c59c"
     }
   end
 
-  context "when valid medium url" do
+  context "when the medium url is valid" do
     let(:medium_url) { "https://medium.com/@edisonywh/my-ruby-journey-hooking-things-up-91d757e1c59c" }
 
     it "returns a valid response" do
       VCR.use_cassette("medium") do
-        html = HTTParty.get(medium_url)
-        stub_request(:get, medium_url).to_return(body: html.body, status: 200)
-        expect(described_class.call(medium_url)).to eq(expected_response)
+        expect(described_class.call(medium_url)).to include(expected_response)
       end
     end
   end

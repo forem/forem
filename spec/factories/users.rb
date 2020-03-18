@@ -4,7 +4,7 @@ FactoryBot.define do
   sequence(:twitter_username) { |n| "twitter#{n}" }
   sequence(:github_username) { |n| "github#{n}" }
 
-  image_path = Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg")
+  image_path = Rails.root.join("spec/support/fixtures/images/image1.jpeg")
 
   factory :user do
     name                         { Faker::Name.name }
@@ -46,6 +46,17 @@ FactoryBot.define do
       after(:build) { |user, options| user.add_role(:single_resource_admin, options.resource) }
     end
 
+    trait :super_plus_single_resource_admin do
+      transient do
+        resource { nil }
+      end
+
+      after(:build) do |user, options|
+        user.add_role(:super_admin)
+        user.add_role(:single_resource_admin, options.resource)
+      end
+    end
+
     trait :trusted do
       after(:build) { |user| user.add_role(:trusted) }
     end
@@ -58,7 +69,7 @@ FactoryBot.define do
       after(:build) { |user| user.created_at = 3.weeks.ago }
     end
 
-    trait :ignore_after_callback do
+    trait :ignore_mailchimp_subscribe_callback do
       after(:build) do |user|
         user.define_singleton_method(:subscribe_to_mailchimp_newsletter) {}
         # user.class.skip_callback(:validates, :after_create)
@@ -94,7 +105,7 @@ FactoryBot.define do
       after(:create) do |user|
         other_user = create(:user)
         article = create(:article, user_id: other_user.id)
-        create(:comment, user_id: user.id, commentable_id: article.id)
+        create(:comment, user_id: user.id, commentable: article)
         user.update(comments_count: 1)
       end
     end
@@ -102,7 +113,7 @@ FactoryBot.define do
     trait :with_article_and_comment do
       after(:create) do |user|
         article = create(:article, user_id: user.id)
-        create(:comment, user_id: user.id, commentable_id: article.id)
+        create(:comment, user_id: user.id, commentable: article)
         user.update(articles_count: 1, comments_count: 1)
       end
     end

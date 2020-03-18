@@ -1,7 +1,7 @@
 <div class="liquid-comment">
   <div class="details">
     <a href="/<%= comment.user.username %>">
-      <img class="profile-pic" src="<%= ProfileImage.new(comment.user).get(50) %>" alt="<%= comment.user.username %> profile image" />
+      <img class="profile-pic" src="<%= ProfileImage.new(comment.user).get(width: 50) %>" alt="<%= comment.user.username %> profile image" />
     </a>
     <a href="/<%= comment.user.username %>">
       <span class="comment-username"><%= comment.user.name %></span>
@@ -19,6 +19,6 @@
     <%= render "comments/comment_date", decorated_comment: comment.decorate %>
   </div>
   <div class="body">
-    <%= comment.processed_html.html_safe %>
+    <%= comment.safe_processed_html %>
   </div>
 </div>

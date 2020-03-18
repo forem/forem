@@ -1,8 +1,6 @@
 @import 'variables';
 @import 'mixins';
 .notifications-index {
-  @include themeable(background, theme-background, $lightest-gray);
-
   .home {
     .articles-list {
       .signup-cue {
@@ -94,14 +92,14 @@
               width: 90%;
               @include themeable(color, theme-color, $black);
             }
-            p.badge-credit-message{
+            p.badge-credit-message {
               margin: 8px auto;
               width: 100%;
               @include themeable(color, theme-color, $dark-gray);
               font-size: 0.94em;
               line-height: 1.35em;
               strong a {
-                font-weight: 700
+                font-weight: 700;
               }
             }
           }
@@ -204,13 +202,17 @@
             font-weight: bold;
             font-size: 0.76em;
             position: relative;
-            z-index:6;
+            z-index: 6;
             border-top-left-radius: 3px;
             border-top-right-radius: 3px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            @include themeable(background, theme-container-accent-background, lighten($lightest-gray, 1%));
+            @include themeable(
+              background,
+              theme-container-accent-background,
+              lighten($lightest-gray, 1%)
+            );
           }
           &:hover {
             border: 1px solid $black;
@@ -305,7 +307,11 @@
           }
         }
         .reply-sent-notice {
-          @include themeable(background, theme-container-background, $light-green);
+          @include themeable(
+            background,
+            theme-container-background,
+            $light-green
+          );
           text-align: center;
           padding: 10px 0px;
           a {
@@ -379,7 +385,7 @@
               1px solid rgb(232, 229, 229)
             );
             @include themeable(background, theme-container-background, #fff);
-            @include themeable(color, theme-color, $black)
+            @include themeable(color, theme-color, $black);
           }
           input[type='submit'] {
             margin-right: 15px;
@@ -409,10 +415,8 @@
   }
 
   .load-more-wrapper {
-    @include load-more;
+    clear: both;
 
-    button {
-      margin-top: 0;
-    }
+    @include load-more;
   }
 }

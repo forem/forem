@@ -9,9 +9,17 @@ RSpec.describe Podcast, type: :model do
   it { is_expected.to validate_presence_of(:main_color_hex) }
   it { is_expected.to validate_presence_of(:feed_url) }
 
+  it "has a creator" do
+    user = build(:user)
+    pod = create(:podcast, creator: user)
+    expect(pod.creator).to eq(user)
+  end
+
   context "when callbacks are triggered after save" do
     it "triggers cache busting on save" do
-      expect { build(:podcast).save }.to have_enqueued_job.on_queue("podcasts_bust_cache").once
+      sidekiq_assert_enqueued_with(job: Podcasts::BustCacheWorker, args: [podcast.path]) do
+        podcast.save
+      end
     end
   end
 
@@ -33,6 +41,20 @@ RSpec.describe Podcast, type: :model do
 
       expect(podcast2).not_to be_valid
       expect(podcast2.errors[:feed_url]).to be_present
+    end
+
+    it "validates feed_url format" do
+      podcast2 = build(:podcast, feed_url: "example.com")
+
+      expect(podcast2).not_to be_valid
+      expect(podcast2.errors[:feed_url]).to be_present
+    end
+
+    it "validates main_color_hex" do
+      podcast2 = build(:podcast, main_color_hex: "#FFFFFF")
+
+      expect(podcast2).not_to be_valid
+      expect(podcast2.errors[:main_color_hex]).to be_present
     end
 
     it "doesn't allow to create a podcast with a reserved word slug" do

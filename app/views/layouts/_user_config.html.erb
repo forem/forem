@@ -15,7 +15,7 @@
         --theme-reaction-background: #202c3d;\
         --theme-anchor-color: #17a1f6;\
         --theme-secondary-color: #cedae2;\
-        --theme-secondary-color-border: 1px solid #cedae2;\
+        --theme-secondary-color-border: 1px solid #1c283b;\
         --theme-top-bar-background: #1c2938;\
         --theme-top-bar-background-hover: #27384c;\
         --theme-top-bar-color: #fff;\
@@ -33,6 +33,7 @@
         --theme-subtle-border: 1px solid #1f2c3a;\
         --theme-social-icon-invert: invert(100);\
         --theme-social-icon-color: #cedae2;\
+        --theme-invert-image: invert();\
         --theme-current-article-background: #1143ca;\
         --theme-series-article-background: #314d9c;\
         --theme-series-article-hover: #1b2e63;</style>'
@@ -49,7 +50,7 @@
         --theme-reaction-background: #202c3d;\
         --theme-anchor-color: #e24ec1;\
         --theme-secondary-color: #ebebeb;\
-        --theme-secondary-color-border: 1px solid #cedae2;\
+        --theme-secondary-color-border: 1px solid #222f3f;\
         --theme-top-bar-background: #1c1c1c;\
         --theme-top-bar-background-hover: #27384c;\
         --theme-top-bar-color: #fff;\
@@ -59,6 +60,7 @@
         --theme-top-bar-write-color: #42ff87;\
         --theme-container-background: #030303;\
         --theme-container-accent-background: #000f0b;\
+        --theme-invert-image: invert();\
         --theme-container-background-hover: #1c2c3f;\
         --theme-gradient-background: linear-gradient(to right, #010f06 8%, #121a16 18%, #010f06 33%);\
         --theme-container-color: #42ff87;\
@@ -82,7 +84,7 @@
       --theme-reaction-background: #eff0f2;\
       --theme-anchor-color: #4e57ef;\
       --theme-secondary-color: #4e57ef;\
-      --theme-secondary-color-border: 1px solid #4e57ef;\
+      --theme-secondary-color-border: 1px solid #ffe5ec;\
       --theme-top-bar-background: #ff4983;\
       --theme-top-bar-background-hover: #ff5b8f;\
       --theme-top-bar-color: #fff;\
@@ -92,6 +94,7 @@
       --theme-top-bar-write-color: #fff;\
       --theme-container-background: #fff;\
       --theme-container-accent-background: #ffccdb;\
+      --theme-invert-image: none;\
       --theme-container-background-hover: #ffe5eb;\
       --theme-gradient-background: linear-gradient(to right, #fff 8%, #ffceda 18%, #FFF7F9 33%);\
       --theme-container-color: #333;\
@@ -114,7 +117,7 @@
         --theme-reaction-background: #eff0f2;\
         --theme-anchor-color: #757ec6;\
         --theme-secondary-color: #505159;\
-        --theme-secondary-color-border: 1px solid #14364c;\
+        --theme-secondary-color-border: 1px solid #e3e3e5;\
         --theme-top-bar-background: #ffffff;\
         --theme-top-bar-background-hover: #f9f9f9;\
         --theme-top-bar-color: #0a0a0a;\
@@ -124,6 +127,7 @@
         --theme-top-bar-write-color: #0a0a0a;\
         --theme-container-background: #ffffff;\
         --theme-container-accent-background: #f4f5f7;\
+        --theme-invert-image: none\
         --theme-container-background-hover: #efefef;\
         --theme-gradient-background: linear-gradient(to right, #f6f6f6 8%, #f0f0f0 18%, #f6f6f6 33%);\
         --theme-container-color: #0a0a0a;\
@@ -138,6 +142,17 @@
     }
     if (localStorage.getItem('config_minimize_newest_listings') === 'yes') {
       document.getElementsByTagName("body")[0].classList.add("config_minimize_newest_listings");
+    }
+    if (window.frameElement) { // Hide top bar and footer when loaded within iframe
+      document.getElementsByTagName("body")[0].classList.add("hidden-shell");
+    }
+    if (bodyClass.includes('open-dyslexic-article-body')) { // Preloading custom font for anticipated use
+      var link = document.createElement('link');
+      link.as = 'font'
+      link.rel = 'preload'
+      crossorigin = 'anonymous'
+      link.href = '<%= asset_path "OpenDyslexic-Regular.otf" %>';
+      document.getElementsByTagName('head')[0].appendChild(link);
     }
   } catch(e) {
       console.log(e)

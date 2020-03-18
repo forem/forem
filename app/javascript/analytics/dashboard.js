@@ -1,4 +1,3 @@
-import Chart from 'chart.js';
 import { callHistoricalAPI, callReferrersAPI } from './client';
 
 function resetActive(activeButton) {
@@ -61,14 +60,16 @@ function drawChart({ canvas, title, labels, datasets }) {
     },
   };
 
-  // eslint-disable-next-line no-new
-  new Chart(canvas, {
-    type: 'line',
-    data: {
-      labels,
-      datasets,
-      options,
-    },
+  import("chart.js").then(({ Chart }) => {
+    // eslint-disable-next-line no-new
+    new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels,
+        datasets,
+        options,
+      },
+    });
   });
 }
 

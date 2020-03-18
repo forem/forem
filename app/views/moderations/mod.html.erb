@@ -1,234 +1,139 @@
-<style>
-  .reaction-button {
-    position: relative;
-    width: 60px;
-    height: 60px;
-    background: white;
-    border-color: white;
-    margin: 100px 40px;
-    border-radius: 200px;
-  }
+<% title "[Moderate] " + @moderatable.title %>
 
-  .reaction-button img {
-    position: absolute;
-    top: 0;
-    width: 60px;
-    left: 0;
-  }
+<% cache(cache_key_heroku_slug("mod-styling")) do %>
+  <style>
+    <%= Rails.application.assets["moderators.css"].to_s.html_safe %>
+  </style>
+<% end %>
 
-  .reaction-button .reacted-emoji {
-    display: none;
-  }
+<div class="container mod-container" style="text-align: center">
+  <h2><a href="<%= @moderatable.path %>" rel="nofollow"><%= @moderatable.title %></a></h2>
+  <h3><a href="<%= @moderatable.user.path %>">@<%= @moderatable.user.username %></a></h3>
+  <% if @moderatable.class.name == "Article" &&
+       (Tag.where(requires_approval: true).pluck(:name) & @moderatable.decorate.cached_tag_list_array).any? && 
+       (current_user.any_admin? || @tag_moderator_tags.any? { |tag| @moderatable.tag_list.include?(tag.name) })
+  %>
+    <%= form_tag "/article_approvals", method: "post" do %>
+      <%= hidden_field_tag(:id, @moderatable.id) %>
+      <% if @moderatable.approved %>
+        <%= hidden_field_tag(:approved, false) %>
+        <button class="cta approval-button approval-removal">Remove approval</button>
+      <% else %>
+        <%= hidden_field_tag(:approved, true) %>
+        <button class="cta approval-button">Mark as approved</button>
+      <% end %>
+    <% end %>
+    <hr />
+  <% end %>
 
-  .reaction-button.reacted .reacted-emoji {
-    display: block;
-  }
-
-  .tag-mod-form {
-    border-top: 2px solid #dddddd;
-    margin: 40px auto;
-  }
-
-  .tag-mod-form ul {
-    text-align: left;
-    font-size: 15px;
-  }
-
-  .tag-mod-form form {
-    width: 500px;
-    margin: auto;
-    max-width: 90%;
-  }
-
-  .tag-mod-form form input {
-    width: 100%;
-    padding: 5px;
-    font-size: 20px;
-    margin-bottom: 5px;
-    border: 1px solid #888;
-  }
-
-  .tag-mod-form form input[type="submit"] {
-    background: #0045ff;
-    color: white;
-    font-weight: bold;
-    padding: 10px;
-    margin: auto;
-    display: block;
-  }
-
-  #undo {
-    background: #ff0000;
-    width: 2rem;
-    height: 2rem;
-    font-size: small;
-    display: inline-block;
-    padding-bottom: 2em;
-  }
-
-  .tag-mod-form form textarea {
-    box-sizing: border-box;
-    width: 100%;
-    padding: 5px;
-    font-size: 17px;
-    height: 100px;
-    border: 1px solid #888;
-  }
-
-  .level-rating-button {
-    border-radius: 8px;
-    font-size: 1.1em;
-    padding: 3px;
-    width: 42px;
-    border: 2px solid black;
-    font-weight: bold;
-  }
-
-  .level-rating-button.selected {
-    background: #9bebff;
-  }
-
-  input.undo {
-    background: #ff0000; /* $red */
-  }
-
-  .adjustment-error {
-    text-align:center;
-    color:red;
-  }
-</style>
-
-<div class="container" style="text-align: center">
-  <h2>MODERATE: <a href="<%= @moderatable.path %>" rel="nofollow"><%= @moderatable.title %></a></h2>
-
-  <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>" data-reactable-id="<%= @moderatable.id %>" data-category="thumbsdown" data-reactable-type="<%= @moderatable.class.name %>">
+  <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>"
+          data-reactable-id="<%= @moderatable.id %>"
+          data-category="thumbsdown"
+          data-reactable-type="<%= @moderatable.class.name %>">
     <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji") %>
     <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
   </button>
-  <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>" data-reactable-id="<%= @moderatable.id %>" data-category="vomit" data-reactable-type="<%= @moderatable.class.name %>">
+  <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
+          data-reactable-id="<%= @moderatable.id %>"
+          data-category="vomit"
+          data-reactable-type="<%= @moderatable.class.name %>">
     <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji") %>
     <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
   </button>
   <% if current_user.has_role?(:super_admin) && @moderatable.class.name == "Article" %>
-    <h1> Admin: <a href="<%= @moderatable.path %>/edit">Edit</a> |
-      <a href="/internal/articles/<%= @moderatable.id %>" data-no-instant>Content Moderation</a> |
-      <a href="/admin/articles/<%= @moderatable.id %>" data-no-instant>Article Admin</a></h1>
+    <h3> <a href="<%= @moderatable.path %>/edit">Edit Post</a> |
+      <a href="/internal/articles/<%= @moderatable.id %>" data-no-instant>Internal:Article</a> |
+      <a href="/admin/articles/<%= @moderatable.id %>" data-no-instant>Admin:Article</a></h3>
   <% elsif current_user.has_role?(:super_admin) && @moderatable.class.name == "Comment" %>
-    <h1> ADMIN: <a href="/admin/comments/<%= @moderatable.id %>" data-no-instant>Comment Admin</a> |
-      <a href="/admin/users/<%= @moderatable.user_id %>" data-no-instant>User Admin</a></h1>
-  <% else %>
-    <p style="width: 90%;margin:50px auto;text-align:left">
-      <b style="font-size:1.3em">All negative reactions are private.</b>
-      <br><br>Use the
-      <b>thumbsdown(👎)</b> to move something "down" for any reason (quality, usefulness, code of conduct grey area).
-      <br><br>The <b>vomit(🤢)</b> is for code of conduct violations (harassment, being an asshole, spam, etc.).
-      <br><br>The DEV team will be notified about vomits and take appropriate action, but leaving a level-headed comment addressing the behavior is welcome if you feel up for it.
-    </p>
+    <h3> <a href="/admin/comments/<%= @moderatable.id %>" data-no-instant>Admin:Comment</a> |
+      <a href="/admin/users/<%= @moderatable.user_id %>" data-no-instant>Admin:User</a></h3>
   <% end %>
-  <% is_mod = (@moderatable.tag_list.select { |t| current_user.has_role?(:tag_moderator, Tag.find_by(name: t)) }).any? if @moderatable.class.name == "Article" %>
-  <% if @moderatable.class.name == "Article" && (current_user.has_role?(:super_admin) || is_mod) %>
-    <a href="/community-moderation" class="mod-link">Community moderation guide</a>
+  <p>
+    <b style="font-size:1.3em">All negative reactions are private.</b>
+  </p>
+  <p>
+    Use <b>thumbsdown</b> to move this content "down" for any reason (quality, usefulness, etc.).
+  </p>
+  <p>
+    Use <b>vomit</b> for code of conduct violations (harassment, being a jerk, spam, etc.).
+  </p>
+  <div class="tag-mod-form">
+    <h2>Flag <a href="<%= @moderatable.user.path %>"><%= @moderatable.user.username %></a> as Abusive</h2>
+    <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable.user, current_user, "vomit") ? "reacted" : "" %>"
+            data-reactable-id="<%= @moderatable.user.id %>"
+            data-category="vomit"
+            data-reactable-type="<%= @moderatable.user.class.name %>">
+      <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji") %>
+      <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
+    </button>
+    <p>
+      This is the equivalent of vomiting on <b>all</b> of this user's articles.
+    </p>
+  </div>
+  <% if @hidden_comments.present? %>
     <div class="tag-mod-form">
-      <%= form_for(TagAdjustment.new) do |f| %>
-        <h2> Remove Inappropriate Tags</h2>
-        <% unless current_user.has_role?(:super_admin) %>
-          <ul>
-            <li>You can only remove tags that you moderate.</li>
-            <li>Only remove tags which are tagged innapropriately.</li>
-            <li>Use negative reactions if tag is appropriate but quality is low.</li>
-            <li>Always be friendly in your tag removal reason.</li>
-            <li>Only remove tags which haven't been adjusted already.</li>
-          </ul>
+      <h2>Hidden Comments</h2>
+      <form>
+        <ul id="hidden-comments">
+        <% @hidden_comments.each do |comment| %>
+          <li>
+            <a href="<%= comment.path %>">Comment by <%= comment.user.username %></a>
+          </li>
         <% end %>
+        </ul>
+      </form>
+    </div>
+  <% end %>
+  <% if @allowed_to_adjust %>
+    <div class="tag-mod-form">
+      <h2>Tag Adjustments</h2>
+      <%= form_for(@tag_adjustment) do |f| %>
         <b>Current live tags:</b> <%= @moderatable.tag_list %><br>
-        <b>Already adjusted tags:</b> <%= @already_adjusted_tags %>
-        <br /><br />
-        <% if flash[:error_removal].present? %>
-          <div class="adjustment-error">
-            <p>Error: <%= flash[:error_removal] %></p><br>
+        <% if @tag_adjustment.errors.any? %>
+          <div id="error_explanation">
+            <h2><%= pluralize(@tag_adjustment.errors.count, "error") %> prohibited this block from being saved:</h2>
+            <ul>
+              <% @tag_adjustment.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
           </div>
         <% end %>
         <%= f.hidden_field :article_id, value: @moderatable.id %>
-        <%= f.hidden_field :adjustment_type, value: "removal" %>
-        <%= f.text_field :tag_name, placeholder: "Tag Name", required: true %>
-        <%= f.text_area :reason_for_adjustment, placeholder: "Reason for Removal (Be super kind) - Only the reason is needed, the notification will take care of the rest.", required: true %>
-        <%= f.submit "Remove Tag" %>
-      <% end %>
-      <% if @removed_adjustments.any? %>
-        <br /><br />
-        <b>Removed tags: </b>
-        <% @removed_adjustments.each do |adjustment| %>
-          <% if current_user.any_admin? %>
-              <%= form_for(adjustment, url: "/tag_adjustments/#{adjustment.id}", html: { method: :delete, onsubmit: "return confirm('Are you sure you want to undo the removal of the #{adjustment.tag_name} tag?')" }) do |f| %>
-                <%= adjustment.tag_name %>
-                <%= f.submit "X", id: "undo" %>
-              <% end %>
-            <% end %>
+        <% if current_user.any_admin? || @tag_moderator_tags.any? { |tag| @moderatable.tag_list.include?(tag.name) } %>
+          <div class="tag-mod-addition-radio">
+            <%= f.radio_button :adjustment_type, "removal", required: true %>
+            <%= f.label :adjustment_type, "Remove", value: "removal" %>
+          </div>
         <% end %>
-      <% end %>
-    </div>
-  <% end %>
-
-  <% if @allowed_to_add %>
-    <div class="tag-mod-form">
-      <h2> Add Appropriate Tags</h2>
-      <% if @moderatable.tag_list.count < 4 %>
-        <%= form_for(TagAdjustment.new) do |f| %>
-          <% unless current_user.has_role?(:super_admin) %>
-            <ul>
-              <li>You can only add tags that you moderate.</li>
-              <li>Only add tags that are appropriate.</li>
-              <li>Always be friendly in your tag adding reason.</li>
-              <li>Only add tags which haven't been adjusted already.</li>
-            </ul>
-          <% end %>
-          <b>Current live tags:</b> <%= @moderatable.tag_list %><br>
-          <b>Already adjusted tags:</b> <%= @already_adjusted_tags %>
-          <br /><br />
-          <% if flash[:error_addition].present? %>
-            <div class="adjustment-error">
-              <p>Error: <%= flash[:error_addition] %></p><br>
-            </div>
-          <% end %>
-          <%= f.hidden_field :article_id, value: @moderatable.id %>
-          <%= f.hidden_field :adjustment_type, value: "addition" %>
-          <%= f.text_field :tag_name, placeholder: "Tag Name - only add one at a time", required: true %>
-          <%= f.text_area :reason_for_adjustment, placeholder: "Reason for addition (Be super kind) - Only the reason is needed, the notification will take care of the rest.", required: true %>
-          <%= f.submit "Add Tag" %>
+        <% if @moderatable.tag_list.size < 4 %>
+          <div class="tag-mod-addition-radio">
+            <%= f.radio_button :adjustment_type, "addition", required: true %>
+            <%= f.label :adjustment_type, "Add", value: "addition" %>
+          </div>
         <% end %>
-      <% else %>
-        <b>Unable to add new tags. 4 tags max.</b>
+        <% if current_user.has_role?(:super_admin) %>
+          <%= f.text_field :tag_name, placeholder: "Tag Name", required: true %>
+        <% else %>
+          <%= f.select :tag_name, @tag_moderator_tags, { prompt: "Select Tag" }, required: true %>
+        <% end %>
+        <%= f.text_area :reason_for_adjustment, placeholder: "Reason for adjustment (Be super kind) - Only the reason is needed, the notification will take care of the rest.", required: true %>
+        <%= f.submit "Submit Tag Adjustment" %>
       <% end %>
-      <% if @added_adjustments.any? %>
-        <br /><br />
-        <b>Added tags: </b>
-        <% @added_adjustments.each do |adjustment| %>
-          <% if current_user.any_admin? %>
-              <%= form_for(adjustment, url: "/tag_adjustments/#{adjustment.id}", html: { method: :delete, onsubmit: "return confirm('Are you sure you want to undo the addition of the #{adjustment.tag_name} tag?')" }) do |f| %>
-                <%= adjustment.tag_name %>
-                <%= f.submit "X", id: "undo" %>
-              <% end %>
+      <% if @adjustments.present? %>
+        <% @adjustments.each do |adjustment| %>
+          <% if current_user.any_admin? || adjustment.user_id == current_user.id %>
+            <%= form_for(adjustment, url: "/tag_adjustments/#{adjustment.id}", html: { method: :delete, onsubmit: "return confirm('Are you sure you want to undo the #{adjustment.adjustment_type} of the #{adjustment.tag_name} tag?')" }) do |f| %>
+              <b><%= adjustment.adjustment_type == "removal" ? "Currently removed tag" : "Currently added tag" %>:</b> <%= adjustment.tag_name %>
+              <%= f.submit "×", id: "undo" %>
             <% end %>
+          <% end %>
         <% end %>
       <% end %>
     </div>
   <% end %>
 
   <% if @moderatable.class.name == "Article" %>
-    <% if @moderatable.last_buffered.blank? %>
-      <div class="tag-mod-form">
-        <%= form_for(BufferUpdate.new) do |f| %>
-          <h2>Suggest a Tweet</h2>
-          <%= f.hidden_field :article_id, value: @moderatable.id %>
-          <%= f.text_area :body_text, maxlength: 220 %>
-          <%= f.submit "Share Tweet Suggestion" %>
-        <% end %>
-        <p style="width: 90%;margin:50px auto;text-align:left">
-          <br /><br />Text will be used in the body of a tweet linking to this post.
-          <br /><br />Tweet suggestion can be a TLDR of the post, an interesting quote from the post, or bullet points from topics covered in the post.
-        </p>
-      </div>
-    <% end %>
     <div class="tag-mod-form">
       <% @rating_vote = RatingVote.where(article_id: @moderatable.id, user_id: current_user.id).first %>
       <%= form_for(RatingVote.new) do |f| %>
@@ -246,15 +151,20 @@
         <button value="9" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 9.0 %>">9</button>
         <button value="10" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 10.0 %>">10</button>
       <% end %>
-      <p style="width: 90%;margin:50px auto;text-align:left">
-        <b style="font-size:1.1em">All rating votes are private.</b>
-        <br><br>Provide a rating between 1 and 10 based on which audience would find this post most valuable.
-        <br><br>1: for brand new developers, 3: for junior developers, 10: for very advanced developers, etc.
-        <br><br>This will provide
-        <em>approximate and gentle</em> algorithmic adjustments to help deliver relevant content.
-        <br><br>It will be used as one of many indicators. No one rating will have an overly dramatic affect.
+      <p>
+        Who <em>might</em> find this post most valuable, based on overall experience level?
       </p>
     </div>
+    <% if @moderatable.last_buffered.blank? %>
+      <div class="tag-mod-form">
+        <%= form_for(BufferUpdate.new) do |f| %>
+          <h2>Suggest a Tweet for @<%= SiteConfig.social_networks_handle %></h2>
+          <%= f.hidden_field :article_id, value: @moderatable.id %>
+          <%= f.text_area :body_text, maxlength: 220, placeholder: "Can be a TLDR of the post, an interesting quote from the post, or bullet points from topics covered in the post, etc." %>
+          <%= f.submit "Share Tweet Suggestion" %>
+        <% end %>
+      </div>
+    <% end %>
   <% end %>
 </div>
 

@@ -10,7 +10,8 @@
       <img
         class="badge-image <%= "unearned" unless badge.id.in?(@earned_badge_achievements) %>"
         src="<%= cloudinary(badge.badge_image_url, 375) %>"
-        alt="<%= badge.title %> badge">
+        alt="<%= badge.title %> badge"
+        title="<%= badge.title %>">
     </a>
     <% end %>
   </div>

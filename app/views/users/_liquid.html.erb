@@ -8,7 +8,7 @@
   </style>
   <a href="<%= user.path %>" class="ltag__user__link profile-image-link">
     <div class="ltag__user__pic">
-      <img src="<%= ProfileImage.new(user).get(150) %>" alt="<%= user.username + " image" %>" />
+      <img src="<%= ProfileImage.new(user).get(width: 150) %>" alt="<%= user.username + " image" %>" />
     </div>
   </a>
   <div class="ltag__user__content">

@@ -50,6 +50,8 @@ class OrganizationsController < ApplicationController
       url
       proof
       profile_image
+      nav_image
+      dark_nav_image
       location
       company_size
       tech_stack
@@ -79,6 +81,7 @@ class OrganizationsController < ApplicationController
 
   def set_organization
     @organization = Organization.find_by(id: organization_params[:id])
+    not_found unless @organization
     authorize @organization
   end
 end

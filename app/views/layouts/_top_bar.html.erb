@@ -8,33 +8,82 @@
       <button type="button" id="app-refresh-button"><img src="<%= asset_path("refresh-button.svg") %>" alt="refresh icon" /></button>
     </div>
     <a href="#articles-list" class="skip-content-link">Skip to content</a>
-    <a href="/" class="logo-link" id="logo-link" aria-label="<%= ApplicationConfig["COMMUNITY_NAME"] %> Home"><%= logo_svg %></a>
-    <div id="nav-search-form-root">
-      <div class="nav-search-form">
-        <form acceptCharset="UTF-8" method="get">
-          <input class="nav-search-form__input" type="text" name="q" id="nav-search" placeholder="Search" autoComplete="off" />
-        </form>
+    <a href="/" class="top-bar--logo" id="logo-link" aria-label="<%= ApplicationConfig["COMMUNITY_NAME"] %> Home"><%= logo_svg %></a>
+    <div class="top-bar--search js-top-bar-search" id="nav-search-form-root">
+      <form acceptCharset="UTF-8" method="get" action="/search">
+        <input class="top-bar--search-input" type="text" name="q" id="nav-search" placeholder="Search" autoComplete="off" />
+      </form>
+    </div>
+    <div class="top-bar--links">
+      <a href="/new" id="write-link" class="cta top-bar--link write">WRITE A POST</a>
+      <a href="/connect" id="connect-link" class="top-bar--link" aria-label="Connect">
+        <%= inline_svg_tag("connect.svg", aria: true, title: "Connect") %>
+        <span class="connect-number nav-indicator" id="connect-number"></span>
+      </a>
+      <a href="/notifications" id="notifications-link" class="top-bar--link" aria-label="Notifications">
+        <%= inline_svg_tag("bell.svg", aria: true, title: "Notifications") %>
+        <span class="notifications-number nav-indicator" id="notifications-number"></span>
+      </a>
+      <div class="navbar-menu-wrapper top-bar--menu" id="navbar-menu-wrapper">
+        <button type="button" class="navigation-butt top-bar--menu-trigger" id="navigation-butt" aria-label="Navigation menu">
+          <% if user_signed_in? %>
+            <span class="top-bar--profile"><img alt="" id="nav-profile-image" /></span>
+          <% else %>
+            <%= inline_svg_tag("menu.svg", aria: true, title: "Navigation menu") %>
+          <% end %>
+        </button>
+        <div class="top-bar--menu-overlay" id="menubg"></div>
+        <%= render "layouts/nav_menu" %>
       </div>
     </div>
-    <a href="/new" id="write-link" class="cta nav-link write">WRITE A POST</a>
-    <a href="/connect" id="connect-link" class="nav-link connect-icon" aria-label="Connect">
-      <%= inline_svg_tag("connect.svg", size: "100% * 100%", aria: true, title: "Connect") %>
-      <div class="connect-number" id="connect-number"></div>
-    </a>
-    <a href="/notifications" id="notifications-link" class="nav-link notifications-icon" aria-label="Notifications">
-      <%= inline_svg_tag("bell.svg", size: "100% * 100%", aria: true, title: "Notifications") %>
-      <div class="notifications-number" id="notifications-number"></div>
-    </a>
-    <div class="navbar-menu-wrapper" id="navbar-menu-wrapper">
-      <button type="button" class="navigation-butt" id="navigation-butt" aria-label="Navigation menu">
-        <% if user_signed_in? %>
-          <div class="nav-profile-image-wrapper"><img alt="" class="nav-profile-image" id="nav-profile-image" /></div>
-        <% else %>
-          <%= inline_svg_tag("menu.svg", class: "bars", size: "20% * 20%", aria: true, title: "Navigation menu") %>
-        <% end %>
-      </button>
-      <div class="menubg" id="menubg"></div>
-      <%= render "layouts/nav_menu" %>
-    </div>
   </nav>
+  <% if user_signed_in? %>
+    <script async>
+      // Here we have some scripts we want to get working on before
+      // waiting for the page to stream in.
+
+      // Load the current user's pic as quickly as it's available
+      var currentUser = localStorage.getItem('current_user')
+      var navProfilePic = document.getElementById('nav-profile-image')
+      if (currentUser && navProfilePic) {
+        navProfilePic.src = JSON.parse(currentUser).profile_image_90;
+      }
+
+      // Load notifications count as quickly as it's available.
+      // Not if we're on the notifications page itself
+      if (
+        window.location.pathname !== '/notifications'
+      ) {
+        var xmlhttp;
+        if (window.XMLHttpRequest) {
+          xmlhttp = new XMLHttpRequest();
+        } else {
+          xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+        }
+        xmlhttp.onreadystatechange = function() {
+          if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+            var count = xmlhttp.response;
+            if (isNaN(count)) {
+              document
+                .getElementById('notifications-number')
+                .classList.remove('showing');
+            } else if (count != '0' && count != undefined && count != '') {
+              document.getElementById('notifications-number').innerHTML =
+                xmlhttp.response;
+              document
+                .getElementById('notifications-number')
+                .classList.add('showing');
+            } else {
+              document
+                .getElementById('notifications-number')
+                .classList.remove('showing');
+            }
+          }
+        };
+
+        xmlhttp.open('GET', '/notifications/counts', true);
+        xmlhttp.send();
+      }
+    </script>
+  <% end %>
 </div>

@@ -1,144 +1,163 @@
-var CACHE_VERSION = 'v2.7.1';
-var CACHE_NAME = CACHE_VERSION + ':sw-cache::';
-var REQUESTS_LIMIT = 40;
+// Serviceworkers file. This code gets installed in users browsers and runs code before the request is made.
+<% unless Rails.env.test? %>
+  const staticCacheName = 'static-1.2';
+  const expectedCaches = [
+    staticCacheName
+  ];
 
-function onInstall(event) {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(function prefill(cache) {
-      return cache.addAll([
-        '<%= asset_path "base.js" %>',
-        '<%= asset_path "minimal.css" %>',
-        '/offline.html',
-        '<%= asset_path "devword.png" %>',
-        '<%= asset_path "wires.png" %>',
-        '<%= asset_path "comments-bubble.png" %>',
-        '<%= asset_path "reactions-stack.png" %>',
-        '<%= asset_path "emoji/emoji-one-heart.png" %>',
-        '<%= asset_path "emoji/emoji-one-unicorn.png" %>',
-        '<%= asset_path "emoji/emoji-one-bookmark.png" %>',
-        '<%= asset_path "emoji/apple-fire.png" %>',
-      ]).then(function () {
-        console.log("WORKER: Install completed");
-      });
-    })
-  );
-}
+  self.addEventListener('install', event => {
+    self.skipWaiting();
 
-function onActivate(event) {
-  console.log('[Serviceworker]', "Activating!", event);
-  event.waitUntil(
-    caches.keys().then(function(cacheNames) {
-      return Promise.all(
-        cacheNames.filter(function(cacheName) {
-          // Return true if you want to remove this cache,
-          return cacheName.indexOf(CACHE_NAME) !== 0;
-        }).map(function(cacheName) {
-          return caches.delete(cacheName);
+    // Populate initial serviceworker cache.
+    event.waitUntil(
+      caches.open(staticCacheName)
+        .then(cache => cache.addAll([
+          "/shell_top", // head, top bar, inline styles
+          "/shell_bottom", // footer
+          "/async_info/shell_version", // For comparing changes in the shell. Should be incremented with style changes.
+          "/404.html", // Not found page
+          "/500.html", // Error page
+          "/offline.html" //Offline page
+        ]))
+    );
+  });
+
+  // remove caches that aren't in expectedCaches
+  self.addEventListener('activate', event => {
+    event.waitUntil(
+      caches.keys().then(keys => Promise.all(
+        keys.map(key => {
+          if (!expectedCaches.includes(key)) return caches.delete(key);
         })
-      );
-    })
-  );
-}
+      ))
+    );
+  });
 
-function onFetch(event) {
-  if ( requestBlackListed(event.request) ) { return; }
-  event.respondWith(
-    caches.match(event.request).then(function (cached) {
-      if (cached && shouldReturnStraightFromCache(event.request.url)) {
-        return cached;
-      }
-      return fetch(event.request)
-        .then(fetchedFromNetwork)
-        .catch(function fallback(err) {
-           console.log(err)
-           return cached || caches.match('/offline.html');
-         })
-      }
-    )
-  );
-
-
-  function requestBlackListed(request){
-    var url = new URL(request.url);
-    var test = (event.request.method !== 'GET' ||
-                event.request.url.match(/\/notifications(\?|\/)/) ||
-                url.host.indexOf("facebook") > -1 ||
-                url.host.indexOf("google") > -1 )
-    return test
-  }
-
-  function shouldReturnStraightFromCache(url) {
-    return (url === "<%= asset_path "base.js" %>" ||
-                url === "<%= asset_path "minimal.css" %>" ||
-                url.indexOf(".self-") > -1 ||
-                (url.indexOf("search?") > -1 && url.indexOf("&i=i") > -1) ||
-                url.indexOf("freetls.fastly.net") > -1)
-  }
-
-  function fetchedFromNetwork(response) {
-    var cacheCopy = response.clone();
-    caches
-      .open(CACHE_NAME + 'pages')
-      .then(function add(cache) {
-        if ( shouldReturnStraightFromCache(event.request.url) ) {
-          cache.put(event.request, cacheCopy);
+  // Create a composed streamed webpage with shell and core content
+  function createPageStream(request) {
+    const stream = new ReadableStream({
+      start(controller) {
+        if (!caches.match('/shell_top') || !caches.match('/shell_bottom')) { //return if shell isn't cached.
+          return
         }
-        garbageCollect(cache);
-      })
-    return response;
-  }
 
-  function garbageCollect(cache) {
-    cache.keys().then(function count(keys) {
-      if (keys.length > REQUESTS_LIMIT) {
-        cache.delete(keys[0]);
-        cache.delete(keys[1]);
-        cache.delete(keys[2]);
-        cache.delete(keys[3]);
-        cache.delete(keys[4]);
-        cache.delete(keys[5]);
-        cache.delete(keys[6]);
-        cache.delete(keys[7]);
-        cache.delete(keys[8]);
-        cache.delete(keys[9]);
-        cache.delete(keys[10]);
+        // the body url is the request url plus 'include'
+        const url = new URL(request.url);
+        url.searchParams.set('i', 'i'); // Adds ?i=i or &i=i, which is our indicator for "internal" partial page
+        const startFetch = caches.match('/shell_top');
+        const endFetch = caches.match('/shell_bottom');
+        const middleFetch = fetch(url).then(response => {
+          if (!response.ok && response.status === 404) {
+            return caches.match('/404.html');
+          }
+          if (!response.ok && response.status != 404) {
+            return caches.match('/500.html');
+          }
+          return response;
+        }).catch(err => caches.match('/offline.html'));
+
+        function pushStream(stream) {
+          const reader = stream.getReader();
+          return reader.read().then(function process(result) {
+            if (result.done) return;
+            controller.enqueue(result.value);
+            return reader.read().then(process);
+          });
+        }
+        startFetch
+          .then(response => pushStream(response.body))
+          .then(() => middleFetch)
+          .then(response => pushStream(response.body))
+          .then(() => endFetch)
+          .then(response => pushStream(response.body))
+          .then(() => controller.close());
       }
-    })
+    });
+
+    return new Response(stream, {
+      headers: {'Content-Type': 'text/html; charset=utf-8'}
+    });
   }
 
-  function unableToResolve () {
-    console.log('WORKER: fetch request failed in both cache and network.');
-    return caches.match('/offline.html')
-  }
-};
+  self.addEventListener('fetch', event => {
+    const url = new URL(event.request.url);
+    if (/iPhone|CriOS|iPad/i.test(navigator.userAgent) && event.request.referrer.includes('t.co')) {
+       // Twitter on iOS seems to cause problems
+       return;
+    }
+    if (url.origin === location.origin) {
+      if (event.clientId === "" && // Not fetched via AJAX after page load.
+        event.request.method == "GET" && // Don't fetch on POST, DELETE, etc.
+        !event.request.referrer.includes('/signout_confirm') && // If this is the referrer, we instead want to flush.
 
-function onPush(event) {
-  var title = 'DEV Connect 👋 ';
-  var body = event.data.text();
-  var icon = '<%= image_path "devlogo-pwa-128.png" %>';
-  var tag = 'default-tag' + body;
-  event.waitUntil(
-    self.registration.showNotification(title, {
-      body: body,
-      icon: icon,
-      tag: tag,
-      data: {
-        url: 'https://dev.to/connect'
+        !url.href.includes('i=i') && // Parameter representing "internal" navigation.
+        !url.href.includes('.css') && // Don't run on CSS.
+        !url.href.includes('.js') && // Don't run on JS.
+        !url.href.includes('?preview=') && // Skip for preview pages.
+        !url.href.includes('?signin') && // Don't run on sign in.
+
+        !url.href.includes('/admin') && // Don't fetch for administrate dashboard.
+        !url.href.includes('/api/') && // Don't run on API endpoints.
+        !url.href.includes('/embed/') && // Don't fetch for embeded content.
+        !url.href.includes('/feed') && // Skip the RSS feed
+        !url.href.includes('/future') && // Skip for /future.
+        !url.href.includes('/internal') && // Don't fetch for internal dashboard.
+        !url.href.includes('/oauth/') && // Skip oauth apps
+        !url.href.includes('/onboarding') && // Don't run on onboarding.
+        !url.href.includes('/rails/mailers') && // Skip for mailers previews in development mode
+        !url.href.includes('/robots.txt') && // Skip robots for web crawlers
+        !url.href.includes('/shell_') && // Don't fetch for shell.
+        !url.href.includes('/sidekiq') && // Skip for Sidekiq dashboard
+        !url.href.includes('/ahoy/') && // Skip for ahoy message redirects
+        !url.href.includes('/abtests') && // Skip for field_test dashboard
+        !url.href.includes('/social_previews') && // Skip for social previews
+        !url.href.includes('/users/auth') && // Don't run on authentication.
+        !url.href.includes('/enter') && // Don't run on registration.
+        !url.href.includes('/welcome') && // Don't run on welcome reroutes.
+
+        // Don't run on search endpoints
+        !url.href.includes('/search/tags') &&
+        !url.href.includes('/search/chat_channels') &&
+        !url.href.includes('/search/classified_listings') &&
+        !url.href.includes('/search/users') &&
+
+        caches.match('/shell_top') && // Ensure shell_top is in the cache.
+        caches.match('/shell_bottom')) { // Ensure shell_bottom is in the cache.
+        event.respondWith(createPageStream(event.request)); // Respond with the stream
+
+        // Ping version endpoint to see if we should fetch new shell.
+        if (!caches.match('/async_info/shell_version')) { // Check if we have a cached shell version
+          caches.open(staticCacheName)
+          .then(cache => cache.addAll([
+            "/async_info/shell_version",
+          ]));
+          return;
+        }
+
+        fetch('/async_info/shell_version').then(response => response.json()).then(json => {
+          caches.match('/async_info/shell_version').then(cachedResponse => cachedResponse.json()).then(cacheJson => {
+            if (cacheJson['version'] != json['version']) {
+              caches.open(staticCacheName)
+              .then(cache => cache.addAll([
+                "/shell_top",
+                "/shell_bottom",
+                "/async_info/shell_version"
+              ]));
+            }
+          })
+        })
+        return;
       }
-    })
-  );
-};
 
-function onNotificationClick(event) {
-  if (Notification.prototype.hasOwnProperty('data')) {
-    var url = event.notification.data.url;
-    event.waitUntil(clients.openWindow(url));
-  }
-}
-
-
-self.addEventListener('install', onInstall);
-self.addEventListener('activate', onActivate);
-self.addEventListener('fetch', onFetch);
-self.addEventListener('push', onPush);
-self.addEventListener('notificationclick', onNotificationClick)
+      // Fetch new shell upon events that signify change in session.
+      if (event.clientId === "" &&
+        (event.request.referrer.includes('/signout_confirm') || url.href.includes('?signin') || url.href.includes('/onboarding'))) {
+        caches.open(staticCacheName)
+        .then(cache => cache.addAll([
+          "/shell_top",
+          "/shell_bottom",
+        ]));
+      }
+    }
+  });
+<% end %>

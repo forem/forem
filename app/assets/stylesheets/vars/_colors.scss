@@ -1,0 +1,56 @@
+$smoke-100: #08090a;
+$smoke-90: #202428;
+$smoke-80: #363d44;
+$smoke-70: #4d5760;
+$smoke-60: #64707d;
+$smoke-50: #7d8a97;
+$smoke-40: #99a3ad;
+$smoke-30: #b5bdc4;
+$smoke-20: #d2d6db;
+$smoke-10: #eef0f1;
+$smoke-00: #f9fafa;
+
+$snowflake: #fff;
+
+$dolphin: #3b49df;
+$dolphin-darker: #1827ce;
+$dolphin-lighter: #8d95f2;
+
+$avocado: #26d9ca;
+$avocado-darker: #1ab3a6;
+$avocado-lighter: #79ece2;
+
+$peanut: #ffcf4c;
+$peanut-darker: #f5b400;
+$peanut-lighter: #ffe499;
+
+$raspberry: #dc1818;
+$raspberry-darker: #c20a0a;
+$raspberry-lighter: #ec5050;
+
+$colors: (
+  'smoke-100': $smoke-100,
+  'smoke-90': $smoke-90,
+  'smoke-80': $smoke-80,
+  'smoke-70': $smoke-70,
+  'smoke-60': $smoke-60,
+  'smoke-50': $smoke-50,
+  'smoke-40': $smoke-40,
+  'smoke-30': $smoke-30,
+  'smoke-20': $smoke-20,
+  'smoke-10': $smoke-10,
+  'smoke-00': $smoke-00,
+  'snowflake': $snowflake,
+  'dolphin': $dolphin,
+  'dolphin-darker': $dolphin-darker,
+  'dolphin-lighter': $dolphin-lighter,
+  'avocado': $avocado,
+  'avocado-darker': $avocado-darker,
+  'avocado-lighter': $avocado-lighter,
+  'peanut': $peanut,
+  'peanut-darker': $peanut-darker,
+  'peanut-lighter': $peanut-lighter,
+  'raspberry': $raspberry,
+  'raspberry-darker': $raspberry-darker,
+  'raspberry-lighter': $raspberry-lighter,
+);

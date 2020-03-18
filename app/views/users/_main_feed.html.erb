@@ -1,6 +1,6 @@
-<% if @pinned_stories.any? %>
+<% if @pinned_stories.present? %>
   <div class="pinned-articles">
-    <div class="pinned-articles-indicator"><img src="<%= asset_path("pushpin.svg") %>" alt="pin" /> Pinned</div>
+    <h5><img src="<%= asset_path("pushpin.svg") %>" width="20" height="20" alt="pin" /> Pinned</h5>
     <% @pinned_stories.each do |story| %>
       <%= render "articles/single_story", story: story %>
     <% end %>
@@ -8,11 +8,11 @@
 <% end %>
 <% @stories.each_with_index do |story, i| %>
   <%= render "articles/single_story", story: story %>
-  <% if i == 0 && @comments.any? %>
+  <% if i == 0 && @comments.present? %>
     <%= render "users/comments_section" %>
   <% end %>
 <% end %>
-<% if !@stories.any? && @comments.any? %>
+<% if @stories.none? && @comments.present? %>
   <%= render "users/comments_section" %>
 <% end %>
 <% if @stories.size > 1 %>

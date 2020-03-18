@@ -1,0 +1,19 @@
+<h3>Award Badges</h3>
+<div class="alert alert-warning"><strong>Warning: This task will fail silently when supplied with incorrect
+    usernames!<strong></div>
+<%= form_with(url: internal_badges_award_badges_path, local: true) do |f| %>
+<div class="form-group">
+  <%= f.label :badge, "Badge" %>
+  <%= f.select("badge", @badges.map { |b| [b.title, b.slug] }, include_blank: true, class: "form-control") %>
+</div>
+<div class="form-group">
+  <%= f.label :usernames, "Usernames (Comma Delimited)*" %>
+  <%= f.text_area :usernames, placeholder: "user1, user2, user3", required: true, size: "40x10", class: "form-control" %>
+</div>
+<div class="form-group">
+  <%= f.label :message_markdown, "Override Default Message (Supports Markdown)" %>
+  <%= f.text_area :message_markdown, size: "40x10", class: "form-control" %>
+</div>
+<%= f.submit "Award Badges", class: "btn btn-primary mb-4" %>
+<% end %>
+</div>

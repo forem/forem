@@ -1,9 +1,17 @@
 <div class="notice"><%= flash[:notice] %></div>
 <%= csrf_meta_tags %>
-<%= link_to "Create A New Welcome Thread", "/internal/welcome", method: :post %>
-<h1>All Welcome Threads</h1>
+
+<div class="row justify-content-end">
+  <%= link_to "Create A New Welcome Thread", "/internal/welcome", method: :post, class: "btn btn-primary" %>
+</div>
+
+<h2>All Welcome Threads</h2>
 <hr>
-<% @daily_threads.each do |thread| %>
-  <a href="<%= thread.path %>"><%= thread.title %></a>
-  <hr style="border-top: dotted 1px;">
-<% end %>
+
+<div class="row">
+  <div class="list-group-flush">
+    <% @daily_threads.each do |thread| %>
+      <a class="list-group-item list-group-item-action" href="<%= thread.path %>"><%= thread.title %></a>
+    <% end %>
+  </div>
+</div>

@@ -10,15 +10,20 @@ class TagAdjustmentsController < ApplicationController
       reason_for_adjustment: params[:tag_adjustment][:reason_for_adjustment],
     )
     tag_adjustment = service.tag_adjustment
+    article = service.article
     if tag_adjustment.save
       service.update_tags_and_notify
+      redirect_to "#{URI.parse(article.path).path}/mod"
     else
-      errors = tag_adjustment.errors.full_messages.join(", ")
-      flash[:error_removal] = errors if tag_adjustment.adjustment_type == "removal"
-      flash[:error_addition] = errors if tag_adjustment.adjustment_type == "addition"
+      authorize(User, :moderation_routes?)
+      @tag_adjustment = tag_adjustment
+      @moderatable = article
+      @tag_moderator_tags = Tag.with_role(:tag_moderator, current_user)
+      @adjustments = TagAdjustment.where(article_id: article.id)
+      @already_adjusted_tags = @adjustments.map(&:tag_name).join(", ")
+      @allowed_to_adjust = @moderatable.class.name == "Article" && (current_user.any_admin? || @tag_moderator_tags.any?)
+      render template: "moderations/mod"
     end
-    @article = Article.find(params[:tag_adjustment][:article_id])
-    redirect_to "#{URI.parse(@article.path).path}/mod"
   end
 
   def destroy

@@ -1,17 +1,8 @@
 class Tag < ActsAsTaggableOn::Tag
   attr_accessor :points
 
-  include AlgoliaSearch
   acts_as_followable
   resourcify
-
-  NAMES = %w[
-    beginners career computerscience git go java javascript react vue webassembly
-    linux productivity python security webdev css php laravel opensource npm a11y
-    ruby cpp dotnet swift testing devops vim kotlin rust elixir graphql blockchain sre
-    scala vscode docker kubernetes aws android ios angular csharp typescript django rails
-    clojure ubuntu elm gamedev flutter dart bash machinelearning sql
-  ].freeze
 
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
 
@@ -23,26 +14,32 @@ class Tag < ActsAsTaggableOn::Tag
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
 
-  validates :name,
-            format: /\A[A-Za-z0-9\s]+\z/, allow_nil: true
   validates :text_color_hex,
             format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
   validates :bg_color_hex,
             format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
   validates :category, inclusion: { in: ALLOWED_CATEGORIES }
 
-  validate :validate_alias
+  validate :validate_alias_for, if: :alias_for?
+  validate :validate_name, if: :name?
+
   before_validation :evaluate_markdown
   before_validation :pound_it
+
   before_save :calculate_hotness_score
-  after_save :bust_cache
   before_save :mark_as_updated
 
-  algoliasearch per_environment: true do
-    attribute :name, :bg_color_hex, :text_color_hex, :hotness_score, :supported, :short_summary, :rules_html
-    attributesForFaceting [:supported]
-    customRanking ["desc(hotness_score)"]
-    searchableAttributes %w[name short_summary]
+  after_commit :bust_cache
+  after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :remove_from_elasticsearch, on: [:destroy]
+
+  include Searchable
+  SEARCH_SERIALIZER = Search::TagSerializer
+  SEARCH_CLASS = Search::Tag
+
+  # possible social previews templates for articles with a particular tag
+  def self.social_preview_templates
+    Rails.root.join("app/views/social_previews/articles").children.map { |ch| File.basename(ch, ".html.erb") }
   end
 
   def submission_template_customized(param_0 = nil)
@@ -70,6 +67,15 @@ class Tag < ActsAsTaggableOn::Tag
     tag.alias_for.presence || tag.name
   end
 
+  def validate_name
+    errors.add(:name, "is too long (maximum is 30 characters)") if name.length > 30
+    errors.add(:name, "contains non-alphanumeric characters") unless name.match?(/\A[[:alnum:]]+\z/)
+  end
+
+  def mod_chat_channel
+    ChatChannel.find(mod_chat_channel_id) if mod_chat_channel_id
+  end
+
   private
 
   def evaluate_markdown
@@ -87,11 +93,13 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def bust_cache
-    Tags::BustCacheJob.perform_later(name)
+    Tags::BustCacheWorker.perform_async(name)
   end
 
-  def validate_alias
-    errors.add(:tag, "alias_for must refer to existing tag") if alias_for.present? && !Tag.find_by(name: alias_for)
+  def validate_alias_for
+    return if Tag.exists?(name: alias_for)
+
+    errors.add(:tag, "alias_for must refer to an existing tag")
   end
 
   def pound_it

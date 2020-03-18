@@ -1,0 +1,10 @@
+<label class="rich-selector font-selector font-selector--<%= font.tr(" ", "-") %>">
+  <%= f.radio_button :config_font, font, checked: @user.config_font.tr("_", " ") == font, class: "rich-selector__radio" %>
+  <div class="rich-selector__indicator"></div>
+  <div class="rich-selector__outline"></div>
+  <% if font == "default"%>
+    serif
+  <% else %>
+    <%= font %>
+  <% end %>
+</label>

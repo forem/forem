@@ -41,7 +41,7 @@ RSpec.describe "Moderations", type: :request do
       allow(User).to receive(:dev_account).and_return(dev_account)
     end
 
-    it "grant access to comment moderation" do
+    it "grants access to comment moderation" do
       get comment.path + "/mod"
       expect(response).to have_http_status(:ok)
     end
@@ -60,7 +60,21 @@ RSpec.describe "Moderations", type: :request do
     it "grants access to /mod index with articles" do
       create(:article, published: true)
       get "/mod"
-      expect(response.body).to include("Suggest experience level")
+      expect(response.body).to include("We build the")
+    end
+
+    it "grants access to /mod/:tag index with articles" do
+      create(:article, published: true)
+      get "/mod/#{article.tags.first}"
+      expect(response.body).to include("#" + article.tags.first.name.titleize)
+    end
+
+    it "returns not found for inapprpriate tags" do
+      expect { get "/mod/dsdsdsweweedsdseweww" }.to raise_exception(ActiveRecord::RecordNotFound)
+    end
+
+    it "renders not_found when an article can't be found" do
+      expect { get "/#{user.username}/dsdsdsweweedsdseweww/mod/" }.to raise_exception(ActiveRecord::RecordNotFound)
     end
   end
 end

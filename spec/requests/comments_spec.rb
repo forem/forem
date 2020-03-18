@@ -6,7 +6,17 @@ RSpec.describe "Comments", type: :request do
   let(:article) { create(:article, user_id: user.id) }
   let(:podcast) { create(:podcast) }
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
-  let(:comment) do
+  let(:base_comment_params) do
+    {
+      comment: {
+        commentable_id: article.id,
+        commentable_type: "Article",
+        user_id: user.id,
+        body_markdown: "New comment #{rand(10)}"
+      }
+    }
+  end
+  let!(:comment) do
     create(:comment,
            commentable_id: article.id,
            commentable_type: "Article",
@@ -171,6 +181,30 @@ RSpec.describe "Comments", type: :request do
         expect { get comment.path }.to raise_error("Not Found")
       end
     end
+
+    context "when the article is deleted" do
+      before do
+        comment
+        article.destroy
+      end
+
+      it "index action renders deleted_commentable_comment view" do
+        get comment.path
+        expect(response.body).to include("Comment from a deleted article or podcast")
+      end
+    end
+
+    context "when the podcast is deleted" do
+      before do
+        podcast_comment
+        podcast_episode.destroy
+      end
+
+      it "renders deleted_commentable_comment view" do
+        get podcast_comment.path
+        expect(response.body).to include("Comment from a deleted article or podcast")
+      end
+    end
   end
 
   describe "GET /:username/:slug/comments/:id_code/edit" do
@@ -195,6 +229,47 @@ RSpec.describe "Comments", type: :request do
       it "returns the comment" do
         get "/#{user.username}/#{article.slug}/comments/#{comment.id_code_generated}/edit"
         expect(response.body).to include CGI.escapeHTML(comment.body_markdown)
+      end
+    end
+
+    context "when the article is deleted" do
+      before do
+        sign_in user
+        comment
+        article.destroy
+      end
+
+      it "edit action returns 200" do
+        get "/#{user.username}/#{article.slug}/comments/#{comment.id_code_generated}/edit"
+        expect(response).to have_http_status(:ok)
+      end
+    end
+  end
+
+  describe "PUT /comments/:id" do
+    before do
+      sign_in user
+    end
+
+    it "does not raise a StandardError for invalid liquid tags" do
+      put "/comments/#{comment.id}",
+          params: { comment: { body_markdown: "{% gist flsnjfklsd %}" } }
+
+      expect(response).to have_http_status(:ok)
+      expect(flash[:error]).not_to be_nil
+    end
+
+    context "when the article is deleted" do
+      before do
+        comment
+        article.destroy
+      end
+
+      it "updates body markdown" do
+        put "/comments/#{comment.id}",
+            params: { comment: { body_markdown: "{edited comment}" } }
+        comment.reload
+        expect(comment.processed_html).to include("edited comment")
       end
     end
   end
@@ -225,11 +300,47 @@ RSpec.describe "Comments", type: :request do
     end
   end
 
+  describe "POST /comments" do
+    context "when part of field test" do
+      before do
+        sign_in user
+        allow(Users::RecordFieldTestEventWorker).to receive(:perform_async)
+      end
+
+      it "converts field test" do
+        post "/comments", params: base_comment_params
+        expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).with(user.id, :user_home_feed, "user_creates_comment")
+      end
+    end
+  end
+
   describe "PATCH /comments/:comment_id/hide" do
     include_examples "PATCH /comments/:comment_id/hide or unhide", path: "hide", hidden: "true"
   end
 
   describe "PATCH /comments/:comment_id/unhide" do
     include_examples "PATCH /comments/:comment_id/hide or unhide", path: "unhide", hidden: "false"
+  end
+
+  describe "DELETE /comments/:comment_id" do
+    before { sign_in user }
+
+    it "deletes a comment if the article is still present" do
+      delete "/comments/#{comment.id}"
+
+      expect(Comment.find_by(id: comment.id)).to be_nil
+      expect(response).to redirect_to(comment.commentable.path)
+      expect(flash[:notice]).to eq("Comment was successfully deleted.")
+    end
+
+    it "deletes a comment if the article has been deleted" do
+      article.destroy!
+
+      delete "/comments/#{comment.id}"
+
+      expect(Comment.find_by(id: comment.id)).to be_nil
+      expect(response).to redirect_to(user_path(user))
+      expect(flash[:notice]).to eq("Comment was successfully deleted.")
+    end
   end
 end

@@ -3,7 +3,7 @@
 # Liquid gem is evoked, hence the need for the fix below.
 
 Rails.application.config.to_prepare do
-  Dir.glob(Rails.root.join("app", "liquid_tags", "*.rb")).sort.each do |filename|
+  Dir.glob(Rails.root.join("app/liquid_tags/*.rb")).sort.each do |filename|
     require_dependency filename
   end
 end

@@ -68,32 +68,18 @@ RSpec.describe "Pro Memberships", type: :request do
         end.to change(user.credits.spent, :count).by(ProMembership::MONTHLY_COST)
       end
 
-      it "enqueues a job to populate the history" do
-        assert_enqueued_with(
-          job: ProMemberships::PopulateHistoryJob,
-          args: [user.id],
-          queue: "pro_memberships_populate_history",
-        ) do
-          post pro_membership_path
-        end
-      end
-
       it "enqueues a job to bust the user's cache" do
         ActiveJob::Base.queue_adapter.enqueued_jobs.clear # make sure it hasn't been previously queued
-        assert_enqueued_with(
-          job: Users::BustCacheJob,
-          args: [user.id],
-          queue: "users_bust_cache",
-        ) do
+        sidekiq_assert_enqueued_with(job: Users::BustCacheWorker, args: [user.id]) do
           post pro_membership_path
         end
       end
 
       it "enqueues a job to bust the user's articles caches" do
-        assert_enqueued_with(
-          job: Users::ResaveArticlesJob,
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
           args: [user.id],
-          queue: "users_resave_articles",
+          queue: "medium_priority",
         ) do
           post pro_membership_path
         end

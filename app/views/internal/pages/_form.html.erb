@@ -1,29 +1,44 @@
-<%= form_for [:internal, @page] do |form| %>
-  <%= form.label :title %>
-  <br/>
-  <%= form.text_field :title %>
-  <hr/>
-  <%= form.label :slug %>
-  <br/>
-  <%= form.text_field :slug %>
-  <hr/>
-  <%= form.label :body_markdown %>
-  <br/>
-  <%= form.text_area :body_markdown %>
-  <hr/>
-  <%= form.label :body_html %> (Only if not using markdown. HTML is dangerous ⚠️)
-  <br/>
-  <%= form.text_area :body_html %>
-  <hr/>
-  <%= form.label :description %>
-  <br/>
-  <%= form.text_field :description %>
-  <hr/>
-  <%= form.label :is_top_level_path %> (Determines if it is accessible by <code>/page-slug</code> vs <code>/page/page-slug</code>) Be careful! ⚠️
-  <br/>
-  <%= form.check_box :is_top_level_path %>
-  <hr/>
-  <%= form.submit %>
-
-  <hr/>
-<% end %>
+<div class="row">
+  <div class="col-12">
+    <%= form_for [:internal, @page] do |form| %>
+      <div class="form-group">
+        <%= form.label :title %>
+        <%= form.text_field :title, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= form.label :slug %>
+        <%= form.text_field :slug, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= form.label :body_markdown %>
+        <%= form.text_area :body_markdown, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= form.label :body_html %> (Only if not using markdown. HTML is dangerous ⚠️)
+        <%= form.text_area :body_html, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= form.label :description %>
+        <%= form.text_field :description, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <% if @page.social_image_url %>
+          <img src="<%= @page.social_image_url%>" style="max-width:500px;display:block" />
+        <% end %>
+        <%= form.label :social_image %>
+        <%= form.file_field :social_image, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= form.label :template %>
+        <%= form.select :template, Page::TEMPLATE_OPTIONS, class: "form-control" %>
+        <p>(Determines the way page's body will be embedded in the layout)</p>
+      </div>
+      <div class="form-group">
+        <%= form.label :is_top_level_path %>
+        <%= form.check_box :is_top_level_path %>
+        <p>(Determines if it is accessible by <code>/page-slug</code> vs <code>/page/page-slug</code>) Be careful! ⚠️</p>
+      </div>
+      <%= form.submit class: "btn btn-primary float-right" %>
+    <% end %>
+  </div>
+</div>

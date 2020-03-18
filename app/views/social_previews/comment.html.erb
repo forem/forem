@@ -113,19 +113,21 @@
     <% elsif @comment.title.size < 50 %>
       <% font_size = 8.3 %>
     <% else %>
-      <% font_size = 15 - ((((@comment.title).size**0.92) + 85) / 16) %>
+      <% font_size = 15 - (((@comment.title.size**0.92) + 85) / 16) %>
     <% end %>
     <div class="title-area">
-      <h2>re: <%= @comment.commentable.title %></h2>
+      <h2>re: <%= @comment.commentable&.title %></h2>
       <h1 style="font-size:<%= font_size %>vw;"><%= @comment.title %></h1>
     </div>
     <div class="preview-user">
-      <img src="<%= ProfileImage.new(@comment.user).get(90) %>" />
+      <img src="<%= ProfileImage.new(@comment.user).get(width: 90) %>" />
       <%= truncate @comment.user.name, length: 28 %>・<%= @comment.readable_publish_date %>
     </div>
     <div class="badge-images">
       <% @tag_badges.each do |badge| %>
-        <img src="<%= badge.badge_image_url %>" style="transform: rotate(<%= rand(-6..6) %>deg);" />
+        <%# Use a seed in Random so we don't break cache on every render %>
+        <% not_so_rand = Random.new(badge.id + @comment.id) %>
+        <img src="<%= badge.badge_image_url %>" style="transform: rotate(<%= not_so_rand.rand(-6..6) %>deg);" />
       <% end %>
       <img src="https://thepracticaldev.s3.amazonaws.com/i/bh2wmpcltaybu1xsnico.png" />
     </div>

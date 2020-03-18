@@ -6,10 +6,11 @@
   right: 0px;
   z-index: 15;
   font-family: $helvetica;
+  display: block;
   #progressBar {
     color: #fff;
     width: 100%;
-    height: 48px;
+    height: calc(48px + 1vh);
     margin-top: 100px;
     position: fixed;
     left: 0;
@@ -23,8 +24,8 @@
       display: block;
     }
     #episode-profile-image {
-      height: 48px;
-      width: 48px;
+      height: calc(48px + 1vh);
+      width: calc(48px + 1vh);
     }
     #animated-bars {
       position: absolute;
@@ -38,16 +39,16 @@
       }
     }
     #barPlayPause {
-      height: 48px;
-      width: 48px;
+      height: calc(48px + 1vh);
+      width: calc(48px + 1vh);
       background: rgb(32, 32, 32);
       position: absolute;
-      left: 48px;
+      left: calc(48px + 1vh);
       bottom: 0px;
       cursor: pointer;
       .butt {
-        width: 30px;
-        margin: 10px 9px;
+        width: calc(35px + 0.5vh);
+        margin: calc(8px + 0.17vh) 7px;
       }
       .pause-butt {
         display: none;
@@ -68,11 +69,11 @@
       display: none;
     }
     #volume {
-      height: 48px;
-      width: 32px;
+      height: calc(48px + 1vh);
+      width: 36px;
       background: rgb(32, 32, 32);
       position: absolute;
-      left: 96px;
+      left: calc(100px + 1vh);
       bottom: 0px;
       cursor: pointer;
       img {
@@ -83,12 +84,12 @@
       }
       #speed {
         font-weight: 300;
-        font-size: 12px;
+        font-size: calc(12px + 0.2vh);
         padding: 3px 0px;
         width: 28px;
         margin-left: -0.5px;
         text-align: center;
-        margin-top: 2px;
+        margin-top: calc(2px + 0.5vh);
         display: block;
         user-select: none;
         background: transparent;
@@ -101,7 +102,7 @@
         .range-wrapper {
           position: absolute;
           top: 0px;
-          left: 22px;
+          left: 26px;
           background: rgb(32, 32, 32);
           z-index: 30;
           width: 0;
@@ -124,15 +125,15 @@
       }
     }
     .buffer-wrapper {
-      height: 48px;
+      height: calc(48px + 1vh);
       position: absolute;
-      left: 128px;
+      left: calc(136px + 1vh);
       right: 0;
       bottom: 0;
       cursor: pointer;
       #progress {
         background-color: #00ffa3;
-        height: 48px;
+        height: calc(48px + 1vh);
         display: inline-block;
         position: relative;
         z-index: 23;
@@ -140,7 +141,7 @@
       }
       #buffer {
         background-color: #96ffd9;
-        height: 48px;
+        height: calc(48px + 1vh);
         display: inline-block;
         position: absolute;
         bottom: 0;
@@ -149,27 +150,33 @@
       }
       #time {
         position: absolute;
-        right: 30px;
-        top: 16px;
+        right: calc(50px + 0.1vh + 1.5vw);
+        top: calc(16px + 0.1vh);
         z-index: 23;
         color: rgb(161, 161, 161);
-        font-size: 13px;
+        font-size: calc(14px + 0.2vh);
         background: rgba(236, 236, 236, 0.74);
         padding: 2px;
       }
       #closebutt {
         position: absolute;
         user-select: none;
-        right: 3px;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background: white;
+        border-left: rgba(236, 236, 236, 1);
         margin: 0px;
         padding: 0px;
+        padding-top: calc(8px + 0.2vh);
         color: #535353;
         font-size: 13.5px;
         z-index: 25;
-        height: 22px;
-        width: 22px;
+        width: calc(42px + 0.1vh + 1.5vw);
+        text-align: center;
         transition: all 0.3s ease 0s;
         white-space: nowrap;
+        font-size: calc(25px + 0.2vh);
         &:hover {
           color: #ff4343;
         }

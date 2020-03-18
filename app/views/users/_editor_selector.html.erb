@@ -1,0 +1,10 @@
+<label class="rich-selector editor-selector editor-selector--<%= version %>">
+  <%= f.radio_button :editor_version, version, checked: @user.editor_version == version, class: "rich-selector__radio" %>
+  <div class="rich-selector__indicator"></div>
+  <div class="rich-selector__outline"></div>
+  <% if version == "v1"%>
+    basic markdown
+  <% else %>
+    rich + markdown
+  <% end %>
+</label>

@@ -1,14 +1,36 @@
-<h1>Admin Roles</h1>
+<h2>Admin Roles</h2>
 
-<div class="wrapper" style="font-weight: 600; border-bottom: 2px solid black; grid-template-columns: 25% 25% 50%;">
-  <div>ID</div>
-  <div>Profile</div>
-  <div>Roles</div>
-</div>
-<% @users.each do |user| %>
-  <div class="wrapper" style="border-top: 1px solid grey; padding: 10px; grid-template-columns: 25% 25% 50%; font-size: 0.9em">
-    <div><a href="/internal/users/<%= user.id %>"><%= user.id %></a></div>
-    <div><a href="<%= user.path %>">@<%= user.username %></a></div>
-    <div><%= user.roles.pluck(:name) %></div>
+<div class="row">
+  <div class="col-12">
+
+    <%= paginate @users %>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Profile</th>
+          <th scope="col">Roles</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @users.each do |user| %>
+          <tr>
+            <td><%= user.id %></td>
+            <td><%= link_to "@#{user.username}", user.path %></td>
+            <td>
+              <ul>
+                <% user.roles.pluck(:name, :resource_type, :resource_id).each do |role| %>
+                  <li><%= role[0] %><%= ": #{role[1]}" if role[1] %><%= "/#{role[2]}" if role[2] %></li>
+                <% end %>
+              </ul>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <%= paginate @users %>
+
   </div>
-<% end %>
+</div>

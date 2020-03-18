@@ -1,6 +1,357 @@
+@import 'variables';
+@import 'mixins';
+
+.mod-index-hero {
+  margin: 0 auto;
+  padding: 90px 5px;
+  text-align: center;
+  background: #d4fffe;
+  h1 {
+    font-size: calc(1.8em + 2vw);
+  }
+  h2 {
+    font-size: calc(0.9em + 1vw);
+  }
+  a {
+    text-decoration: underline;
+  }
+  .mod-index-hero-data-pod {
+    display: inline-block;
+    margin: 10px;
+    width: 90%;
+    font-weight: bold;
+    border: 3px solid $black;
+    padding: 20px 0px;
+    .mod-index-hero-data-pod-number {
+      font-size: 2.8em;
+    }
+    @media screen and (min-width: 960px) {
+      width: calc(190px + 11vw);
+      padding: 80px 0px;
+      margin: 15px 2px;
+      .mod-index-hero-data-pod-number {
+        font-size: calc(2.7em + 0.2vw);
+      }
+    }
+    @media screen and (min-width: 1300px) {
+      width: calc(260px + 8vw);
+      padding: 80px 0px;
+      margin: 30px;
+      .mod-index-hero-data-pod-number {
+        font-size: calc(2.8em + 0.5vw);
+      }
+    }
+  }
+  .mod-index-hero-sub {
+    font-size: 0.9em;
+  }
+}
+
+.mod-index-header {
+  margin: 50px auto 30px;
+  width: 96%;
+  max-width: 1600px;
+  padding-left: 20px;
+  .mod-index-header-top-filters {
+    padding: 10px 0px 25px;
+    a {
+      @include themeable(color, theme-color, $black);
+      font-size: 0.86em;
+      padding: 3px 18px;
+      border-radius: 100px;
+      border: 1px solid transparent;
+      &.mod-index-top-filter-link--active {
+        @include themeable(border, theme-border, 1px solid $black);
+      }
+    }
+  }
+  a.mod-index-header-link {
+    color: $black;
+    padding: 5px 15px;
+    border-radius: 3px;
+    font-size: 1.5em;
+    font-weight: bold;
+    border: 1px solid transparent;
+  }
+  a.mod-index-header-link--active {
+    @include themeable(border, theme-border, 1px solid $black);
+  }
+}
+
+.mod-index-list {
+  margin: 5px auto;
+  width: 96%;
+  max-width: 1600px;
+  border-radius: 3px;
+  @include themeable(border, theme-border, 1px solid $light-medium-gray);
+  @include themeable(background, theme-container-background, white);
+
+  .mod-index-row {
+    padding: 10px;
+    @include themeable(
+      border-bottom,
+      theme-border,
+      1px solid $light-medium-gray
+    );
+    &:hover {
+      background: $lightest-gray;
+    }
+    a.mod-index-article-title {
+      font-size: calc(1.2em + 0.3vw);
+      font-weight: bold;
+      margin-right: 6px;
+      display: inline-block;
+      color: $black;
+    }
+    .mod-index-article-tagslist {
+      display: inline-block;
+    }
+    a.mod-index-article-tag {
+      font-size: 0.9em;
+      padding: 3px 8px;
+      border-radius: 3px;
+      background: $light-gray;
+      color: $black;
+      vertical-align: 0.2em;
+    }
+    .mod-index-actions-and-details {
+      img {
+        height: 1.4em;
+        width: 1.4em;
+        border-radius: 100px;
+        margin-right: 5px;
+        display: inline-block;
+        vertical-align: -0.3em;
+      }
+      a {
+        font-weight: 500;
+        @include themeable(color, theme-secondary-color, $medium-gray);
+      }
+    }
+    .quick-mod-button {
+      font-size: 0.95em;
+      padding: 5px 18px;
+      border-radius: 100px;
+      @include themeable(border, theme-border, 1px solid $medium-gray);
+      display: inline-block;
+      margin: 10px 0px 5px;
+      margin-right: 5px;
+      background: transparent;
+      @include themeable(color, theme-color, $black);
+    }
+    .mod-index-row-iframes {
+      padding: 5px 0px;
+      iframe {
+        height: calc(100vh - 100px);
+        max-height: 800px;
+        width: 49%;
+        border: 0px;
+        display: inline-block;
+      }
+    }
+  }
+}
+
+.mod-index-footer {
+  text-align: center;
+  padding: 30px 10px;
+}
+
+.mod-container {
+  padding: 30px 0px;
+  h2 {
+    a {
+      @include themeable(color, theme-color, $black);
+    }
+    margin-bottom: -12px;  
+  } 
+  p {
+    width: 98%;
+    max-width: 720px;
+    margin: 1.3em auto;
+    font-size: 0.9em;
+  }
+
+  hr {
+    margin: 30px auto;
+    width: 80%;
+    max-width: 400px;
+    opacity: 0.3;
+  }
+
+  #error_explanation {
+    margin: 10px auto 5px;
+    box-sizing: border-box;
+  }
+  @media screen and (min-width: 880px) {
+    margin: 90px auto;
+    border-radius: 12px;
+  }
+  .reaction-button {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-color: white;
+    margin: 30px 30px;
+    border-radius: 200px;
+    border: 0px;
+    padding: 12px 12px;
+    &:active {
+      border: 0px;
+    }
+  }
+
+  .reaction-button img {
+    position: absolute;
+    top: 5px;
+    width: 70px;
+    left: 5px;
+  }
+
+  .reaction-button .reacted-emoji {
+    display: none;
+  }
+
+  .reaction-button.reacted .reacted-emoji {
+    display: block;
+  }
+
+  .tag-mod-form {
+    border-top: 1px solid #dddddd;
+    margin: 42px auto;
+  }
+
+  .tag-mod-form ul {
+    text-align: left;
+    font-size: 15px;
+  }
+
+  .tag-mod-form form {
+    width: 500px;
+    margin: auto;
+    max-width: 90%;
+  }
+
+  .tag-mod-form form input {
+    width: 100%;
+    padding: 5px;
+    font-size: 20px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+    box-sizing: border-box;
+    @include themeable(border, theme-border, 1px solid $light-medium-gray);
+  }
+
+  .tag-mod-form form input[type='submit'] {
+    background: $dark-purple;
+    color: white;
+    font-weight: bold;
+    padding: 16px 0px;
+    margin: auto;
+    display: block;
+    border-radius: 3px;
+    font-size: 1.3em;
+    font-family: $helvetica-condensed;
+  }
+
+  #undo {
+    width: 1.5rem;
+    font-size: 1.1em;
+    display: inline-block;
+    color: $red;
+    background: transparent;
+    border: 0px;
+  }
+
+  .tag-mod-form form textarea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 5px;
+    font-size: 17px;
+    height: 100px;
+    box-sizing: boder-box;
+    border-radius: 3px;
+    @include themeable(border, theme-border, 1px solid $light-medium-gray);
+  }
+
+  .level-rating-button {
+    border-radius: 8px;
+    font-size: 1.1em;
+    padding: 3px;
+    width: 42px;
+    border: 2px solid black;
+    font-weight: bold;
+  }
+
+  .level-rating-button.selected {
+    background: #9bebff;
+  }
+
+  input.undo {
+    background: $red;
+  }
+
+  .tag-mod-addition-radio {
+    padding: 5px 20px;
+    border-radius: 3px;
+    @include themeable(border, theme-border, 1px solid $light-medium-gray);
+    display: inline-block;
+    margin: 30px auto 10px;
+    min-width: 205px;
+    box-sizing: boder-box;
+    position: relative;
+  }
+
+  .tag-mod-form input[type='radio'] {
+    position: absolute;
+    cursor: pointer;
+    top: 7px;
+  }
+
+  .tag-mod-form input[type='radio'] + label {
+    display: inline-block;
+    cursor: pointer;
+    font-weight: bold;
+    padding-left: 25px;
+    padding-right: 25px;
+    font-size: 22px;
+    margin: auto;
+    margin-left: 4px;
+  }
+
+  .tag-mod-form input[type='radio']:checked + label {
+    @include themeable(
+      background,
+      theme-container-accent-background,
+      $light-green
+    );
+    border-radius: 3px;
+  }
+
+  .tag-mod-form select {
+    display: block;
+    font-size: 20px;
+    padding: 12px;
+    font-weight: bold;
+    margin: auto;
+    border: solid 2px;
+    margin: 5px auto 15px;
+  }
+  .approval-button {
+    font-size: 20px;
+    border: 0px;
+    border-radius: 3px;
+    padding: 8px 16px;
+    &.approval-removal {
+      background: $red;
+    }
+  }
+}
+
 .mod-link {
-  display: inline-block; 
-  font-size: 1.3em; 
-  padding: 3px 8px; 
+  display: inline-block;
+  font-size: 1.3em;
+  padding: 3px 8px;
   border-radius: 3px;
 }

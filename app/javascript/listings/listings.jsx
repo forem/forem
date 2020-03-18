@@ -1,5 +1,13 @@
 import { h, Component } from 'preact';
-import { SingleListing } from './singleListing';
+import debounceAction from '../src/utils/debounceAction';
+import { fetchSearch } from '../src/utils/search';
+import SingleListing from './singleListing';
+
+/**
+ * How many listings to show per page
+ * @constant {number}
+ */
+const LISTING_PAGE_SIZE = 75;
 
 function resizeMasonryItem(item) {
   /* Get the grid object, its row-gap, and the size of its implicit rows */
@@ -38,6 +46,18 @@ function resizeAllMasonryItems() {
   }
 }
 
+function updateListings(classifiedListings) {
+  const fullListings = [];
+
+  classifiedListings.forEach(listing => {
+    if (listing.bumped_at) {
+      fullListings.push(listing);
+    }
+  });
+
+  return fullListings;
+}
+
 export class Listings extends Component {
   state = {
     listings: [],
@@ -57,36 +77,38 @@ export class Listings extends Component {
   componentWillMount() {
     const params = this.getQueryParams();
     const t = this;
-    const algoliaId = document.querySelector("meta[name='algolia-public-id']")
-      .content;
-    const algoliaKey = document.querySelector("meta[name='algolia-public-key']")
-      .content;
-    const env = document.querySelector("meta[name='environment']").content;
-    const client = algoliasearch(algoliaId, algoliaKey);
-    const index = client.initIndex(`ClassifiedListing_${env}`);
     const container = document.getElementById('classifieds-index-container');
     const category = container.dataset.category || '';
     const allCategories = JSON.parse(container.dataset.allcategories || []);
     let tags = [];
+    let openedListing = null;
+    let slug = null;
+    let listings = [];
+
     if (params.t) {
       tags = params.t.split(',');
     }
+
     const query = params.q || '';
-    let listings = [];
+
     if (tags.length === 0 && query === '') {
       listings = JSON.parse(container.dataset.listings);
     }
-    let openedListing = null;
-    let slug = null;
+
     if (container.dataset.displayedlisting) {
       openedListing = JSON.parse(container.dataset.displayedlisting);
       ({ slug } = openedListing);
       document.body.classList.add('modal-open');
     }
+
+    t.debouncedClassifiedListingSearch = debounceAction(
+      this.handleQuery.bind(this),
+      { time: 150, config: { leading: true } },
+    );
+
     t.setState({
       query,
       tags,
-      index,
       category,
       allCategories,
       listings,
@@ -121,7 +143,7 @@ export class Listings extends Component {
     if (newTags.indexOf(tag) === -1) {
       newTags.push(tag);
     }
-    this.setState({ tags: newTags, page: 0, listings: [] });
+    this.setState({ tags: newTags, page: 0 });
     this.listingSearch(query, newTags, category, null);
     window.scroll(0, 0);
   };
@@ -134,14 +156,14 @@ export class Listings extends Component {
     if (newTags.indexOf(tag) > -1) {
       newTags.splice(index, 1);
     }
-    this.setState({ tags: newTags, page: 0, listings: [] });
+    this.setState({ tags: newTags, page: 0 });
     this.listingSearch(query, newTags, category, null);
   };
 
   selectCategory = (e, cat) => {
     e.preventDefault();
     const { query, tags } = this.state;
-    this.setState({ category: cat, page: 0, listings: [] });
+    this.setState({ category: cat, page: 0 });
     this.listingSearch(query, tags, cat, null);
   };
 
@@ -211,14 +233,14 @@ export class Listings extends Component {
 
   handleQuery = e => {
     const { tags, category } = this.state;
-    this.setState({ query: e.target.value, page: 0, listings: [] });
+    this.setState({ query: e.target.value, page: 0 });
     this.listingSearch(e.target.value, tags, category, null);
   };
 
   clearQuery = () => {
     const { tags, category } = this.state;
     document.getElementById('listings-search').value = '';
-    this.setState({ query: '', page: 0, listings: [] });
+    this.setState({ query: '', page: 0 });
     this.listingSearch('', tags, category, null);
   };
 
@@ -282,29 +304,38 @@ export class Listings extends Component {
     window.history.replaceState(null, null, newLocation);
   };
 
+  /**
+   * Call search API for ClassifiedListings
+   *
+   * @param {string} query - The search term
+   * @param {string} tags - The tags selected by the user
+   * @param {string} category - The category selected by the user
+   * @param {string} slug - The listing's slug
+   *
+   * @returns {Promise} A promise object with response formatted as JSON.
+   */
   listingSearch(query, tags, category, slug) {
     const t = this;
-    const { index, page, listings } = t.state;
-    const filterObject = { tagFilters: tags, hitsPerPage: 75, page };
-    if (category.length > 0) {
-      filterObject.filters = `category:${category}`;
-    }
-    index.search(query, filterObject).then(function searchDone(content) {
-      const fullListings = listings;
-      content.hits.forEach(listing => {
-        if (listing.bumped_at) {
-          if (!listings.map(l => l.id).includes(listing.id)) {
-            fullListings.push(listing);
-          }
-        }
-      });
+    const { page } = t.state;
+    const dataHash = {
+      category,
+      classified_listing_search: query,
+      page,
+      per_page: LISTING_PAGE_SIZE,
+      tags,
+    };
+
+    const responsePromise = fetchSearch('classified_listings', dataHash);
+    return responsePromise.then(response => {
+      const classifiedListings = response.result;
+      const fullListings = updateListings(classifiedListings);
       t.setState({
         listings: fullListings,
         initialFetch: false,
-        showNextPageButt: content.hits.length === 75,
+        showNextPageButt: classifiedListings.length === LISTING_PAGE_SIZE,
       });
+      this.setLocation(query, tags, category, slug);
     });
-    this.setLocation(query, tags, category, slug);
   }
 
   render() {
@@ -439,7 +470,7 @@ export class Listings extends Component {
                   {' '}
                   <b>must</b>
                   {' '}
-abide by the
+                  abide by the
                   {' '}
                   <a href="/code-of-conduct">code of conduct</a>
                 </em>
@@ -449,7 +480,7 @@ abide by the
                   {' '}
                   <b>must</b>
                   {' '}
-abide by the
+                  abide by the
                   {' '}
                   <a href="/code-of-conduct">code of conduct</a>
                 </em>
@@ -519,7 +550,7 @@ abide by the
               id="listings-search"
               autoComplete="off"
               defaultValue={query}
-              onKeyUp={e => this.handleQuery(e)}
+              onKeyUp={this.debouncedClassifiedListingSearch}
             />
             {clearQueryButton}
             {selectedTags}

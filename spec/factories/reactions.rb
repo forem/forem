@@ -1,14 +1,19 @@
 FactoryBot.define do
   factory :reaction do
-    reactable_id { rand(10_000) }
     user
-    reactable_type { "Article" }
+    association :reactable, factory: :article
     category { "like" }
   end
 
   factory :reading_reaction, class: "Reaction" do
     user
-    reactable { create(:article) }
+    association :reactable, factory: :article
     category { "readinglist" }
+  end
+
+  factory :thumbsdown_reaction, class: "Reaction" do
+    user
+    association :reactable, factory: :article
+    category { "thumbsdown" }
   end
 end

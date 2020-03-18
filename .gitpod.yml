@@ -7,7 +7,15 @@ ports:
     onOpen: ignore
   - port: 5432
     onOpen: ignore
+  - port: 6379
+    onOpen: ignore
+  - port: 9200
+    onOpen: ignore
+  - port: 9300
+    onOpen: ignore
 tasks:
+  - command: redis-server
+  - command: /home/gitpod/elasticsearch-7.5.2/bin/elasticsearch
   - init: >
       cp config/sample_application.yml config/application.yml &&
       bin/setup 2>/dev/null || true

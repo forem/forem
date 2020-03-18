@@ -6,23 +6,24 @@ class ModerationsController < ApplicationController
     return unless current_user&.trusted
 
     @articles = Article.published.
-      where("rating_votes_count < 3").
-      where("score > -5").
-      order("hotness_score DESC").limit(50)
+      where("score > -5 AND score < 5").
+      order("published_at DESC").limit(70)
     @articles = @articles.cached_tagged_with(params[:tag]) if params[:tag].present?
-
-    @rating_votes = RatingVote.where(article: @articles, user: current_user)
+    @articles = @articles.where("nth_published_by_author > 0 AND nth_published_by_author < 4 AND published_at > ?", 7.days.ago) if params[:state] == "new-authors"
     @articles = @articles.decorate
+    @tag = Tag.find_by(name: params[:tag]) || not_found if params[:tag].present?
   end
 
   def article
     authorize(User, :moderation_routes?)
+    @tag_adjustment = TagAdjustment.new
     @moderatable = Article.find_by(slug: params[:slug])
+    not_found unless @moderatable
+    @tag_moderator_tags = Tag.with_role(:tag_moderator, current_user)
     @adjustments = TagAdjustment.where(article_id: @moderatable.id)
-    @removed_adjustments = @adjustments.filter { |a| a.adjustment_type == "removal" }
-    @added_adjustments = @adjustments.filter { |a| a.adjustment_type == "addition" }
     @already_adjusted_tags = @adjustments.map(&:tag_name).join(", ")
-    @allowed_to_add = @moderatable.class.name == "Article" && (current_user.has_role?(:super_admin) || current_user.has_role?(:tag_moderator, :any))
+    @allowed_to_adjust = @moderatable.class.name == "Article" && (current_user.has_role?(:super_admin) || @tag_moderator_tags.any?)
+    @hidden_comments = @moderatable.comments.where(hidden_by_commentable_user: true)
     render template: "moderations/mod"
   end
 

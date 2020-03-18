@@ -1,21 +1,25 @@
-<div class="container-fluid">
-  <h2>Comments</h2>
-  <% @comments.each do |comment| %>
-    <div class="row comment-row">
-      <div class="inner-row col-md-8 col-md-offset-2">
-        <% if comment.commentable %>
-          <p class="lead">
-            <strong><a href="<%= comment.commentable.path %>">re: <%= comment.commentable.title %></a> (<%= comment.positive_reactions_count %> ❤️)</strong>
+<%= paginate @comments %>
+
+<% @comments.each do |comment| %>
+  <div class="row my-3">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <% if comment.commentable %>
+            <a href="<%= comment.commentable.path %>">re: <%= comment.commentable.title %></a> (<%= comment.positive_reactions_count %> ❤️)
+          <% end %>
+        </div>
+        <div class="card-body">
+          <p class="card-text">
+            <%= sanitize comment.processed_html,
+                         tags: %w[strong em p h1 h2 h3 h4 h5 h6 i u b code pre br ul ol li small sup img a span hr blockquote],
+                         attributes: %w[href strong em ref rel src title alt class] %>
+
           </p>
-        <% end %>
-        <%= sanitize comment.processed_html.html_safe,
-                     tags: %w(strong em p h1 h2 h3 h4 h5 h6 i u b code pre br ul ol li small sup img a span hr blockquote),
-                     attributes: %w(href strong em ref rel src title alt class) %>
-        <div class="row">
-          <div class="inner-row col-xs-8">
+          <h5 class="card-title text-center">
             <% if comment.user %>
-              <a href="<%= comment.user.path %>" style="color:black;" target="_blank">
-                <img style="height:30px;border-radius:3px;vertical-align:-8px;" src="<%= ProfileImage.new(comment.user).get(50) %>" alt="<%= comment.user.username %> profile" /> <%= comment.user.username %>
+              <a href="<%= comment.user.path %>" target="_blank">
+                <img class="rounded" height="30" src="<%= ProfileImage.new(comment.user).get(width: 50) %>" alt="<%= comment.user.username %> profile" /> <%= comment.user.username %>
               </a>
             <% end %>
             <% if comment.user && comment.user.twitter_username.present? %>
@@ -24,28 +28,30 @@
                 <i class="fa fa-twitter" aria-hidden="true"></i> @<%= comment.user.twitter_username %>
               </a>
             <% end %>
-          </div>
-          <div class="inner-row col-xs-2 col-xs-offset-0">
-            <a class="btn btn-primary" href="<%= comment.path %>" target="_blank">View</a>
-          </div>
-          <% if comment.reactions.where(user_id: current_user.id).empty? %>
-            <div class="inner-row col-xs-2 col-xs-offset-0">
-              <%= form_tag("/reactions", remote: true) do %>
-                <%= hidden_field_tag(:reactable_type, "Comment") %>
-                <%= hidden_field_tag(:reactable_id, comment.id) %>
-                <button class="btn btn-danger">❤️ Like</button>
+          </h5>
+            <div class="mt-3 d-flex justify-content-end">
+              <a class="btn btn-primary" href="<%= comment.path %>" target="_blank">View</a>
+              <% if comment.reactions.where(user_id: current_user.id).empty? %>
+                <%= form_tag("/reactions", remote: true, class: "d-inline ml-2") do %>
+                  <%= hidden_field_tag(:reactable_type, "Comment") %>
+                  <%= hidden_field_tag(:reactable_id, comment.id) %>
+                  <button class="btn btn-danger">❤️ Like</button>
+                <% end %>
               <% end %>
             </div>
-          <% end %>
         </div>
       </div>
     </div>
-  <% end %>
-  <%= paginate @comments %>
-</div>
+  </div>
+<% end %>
+
+<%= paginate @comments %>
 
 <script>
-  $("form").submit(function (e) {
-    $(this).fadeOut();
-  })
+ window.addEventListener('load', function() {
+   $("form").submit(function (e) {
+     $(this).toggleClass("d-none");
+     $(this).toggleClass("d-inline");
+   });
+ });
 </script>

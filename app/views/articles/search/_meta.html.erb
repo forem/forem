@@ -1,17 +1,17 @@
 <% title "Search Results" %>
 <link rel="canonical" href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/search" />
-<meta name="description" content="Where programmers share ideas and help each other grow.">
+<meta name="description" content="<%= SiteConfig.community_description %>">
 <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
 <meta property="og:type" content="website" />
 <meta property="og:url" content="DEV => Search Results" />
 <meta property="og:title" content="The DEV Community" />
-<meta property="og:image" content="<%= ApplicationConfig["MAIN_SOCIAL_IMAGE"] %>">
-<meta property="og:description" content="Where programmers share ideas and help each other grow." />
+<meta property="og:image" content="<%= SiteConfig.main_social_image %>">
+<meta property="og:description" content="<%= SiteConfig.community_description %>">
 <meta property="og:site_name" content="The DEV Community" />
 
-<meta name="twitter:site" content="@<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %>">
+<meta name="twitter:site" content="@<%= SiteConfig.social_networks_handle %>">
 <meta name="twitter:title" content="DEV => Search Results">
-<meta name="twitter:description" content="Where programmers share ideas, experiences, and help each other grow.">
-<meta name="twitter:image:src" content="<%= ApplicationConfig["MAIN_SOCIAL_IMAGE"] %>">
+<meta name="twitter:description" content="<%= SiteConfig.community_description %>">
+<meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
 <meta name="twitter:card" content="summary_large_image">

@@ -19,10 +19,10 @@ class FakeGibbonRequest < Gibbon::Request
 end
 
 RSpec.describe MailchimpBot, type: :labor do
-  let(:user) { create(:user, :ignore_after_callback) }
+  let(:user) { create(:user, :ignore_mailchimp_subscribe_callback) }
   let(:article) { create(:article, user_id: user.id) }
   let(:my_gibbon_client) { instance_double(FakeGibbonRequest) }
-  let(:tag) { create(:tag, name: "tag name", bg_color_hex: Faker::Color.hex_color, text_color_hex: Faker::Color.hex_color, supported: true) }
+  let(:tag) { create(:tag, name: "tagname", bg_color_hex: Faker::Color.hex_color, text_color_hex: Faker::Color.hex_color, supported: true) }
 
   before do
     allow(Gibbon::Request).to receive(:new) { my_gibbon_client }
@@ -47,10 +47,7 @@ RSpec.describe MailchimpBot, type: :labor do
           ARTICLES: user.articles.size,
           COMMENTS: user.comments.size,
           ONBOARD_PK: user.onboarding_package_requested.to_s,
-          EXPERIENCE: user.experience_level || 666,
-          COUNTRY: user.shipping_country.to_s,
-          STATE: user.shipping_state.to_s,
-          POSTAL_ZIP: user.shipping_postal_code.to_s
+          EXPERIENCE: user.experience_level || 666
         }
       }
     }
@@ -90,6 +87,19 @@ RSpec.describe MailchimpBot, type: :labor do
       described_class.new(user).upsert_to_newsletter
       expect(my_gibbon_client).to have_received(:upsert).
         with(hash_including(body: hash_including(email_address: user.email)))
+    end
+
+    it "tries to resubscribe the user if the user has previously been subscribed" do
+      user.update(email_newsletter: false)
+      mailchimp_bot = described_class.new(user)
+      mc_error =
+        Gibbon::MailChimpError.new("Error", status_code: 400, title: "Member In Compliance State")
+      allow(mailchimp_bot.gibbon).to receive(:upsert).and_raise(mc_error)
+      allow(mailchimp_bot).to receive(:resubscribe_to_newsletter)
+
+      mailchimp_bot.upsert_to_newsletter
+
+      expect(mailchimp_bot).to have_received(:resubscribe_to_newsletter)
     end
   end
 

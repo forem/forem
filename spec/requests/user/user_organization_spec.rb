@@ -31,7 +31,7 @@ RSpec.describe "UserOrganization", type: :request do
     before do
       sign_in user
       org_params = build(:organization).attributes
-      org_params["profile_image"] = Rack::Test::UploadedFile.new(Rails.root.join("app", "assets", "images", "android-icon-36x36.png"), "image/jpeg")
+      org_params["profile_image"] = Rack::Test::UploadedFile.new(Rails.root.join("app/assets/images/android-icon-36x36.png"), "image/jpeg")
       post "/organizations", params: { organization: org_params }
     end
 

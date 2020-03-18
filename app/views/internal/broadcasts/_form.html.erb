@@ -1,12 +1,16 @@
 <h3>Title - this for our reference only:</h3>
 <%= text_field_tag :title, @broadcast.title %>
 <hr>
-<%= label_tag :processed_html, "HTML" %>
-<br>
-<%= text_area_tag :processed_html, @broadcast.processed_html, size: "100x10" %>
-<br>
-Type: <%= select_tag "type_of", options_for_select(["Onboarding", "Announcement"]) %>
-<br>
-<%= label_tag :sent %>
-<%= select_tag :sent, options_for_select([true, false]) %>
+<div class="form-group">
+  <%= label_tag :processed_html, "HTML" %>
+  <%= text_area_tag :processed_html, @broadcast.processed_html, size: "100x10", class: "form-control" %>
+</div>
+<div class="form-group">
+  <%= label_tag :type, "Type:" %>
+  <%= select_tag "type_of", options_for_select(%w[Onboarding Announcement Welcome]) %>
+</div>
+<div class="form-group">
+  <%= label_tag :active, "Active:" %>
+  <%= select_tag :active, options_for_select([true, false]) %>
+</div>
 <br>

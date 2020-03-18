@@ -107,6 +107,25 @@ RSpec.describe "StoriesShow", type: :request do
       get "/#{middle_username}/#{article.slug}"
       expect(response.body).to redirect_to("/#{user.username}/#{article.slug}")
     end
+
+    it "renders canonical url when exists" do
+      article = create(:article, with_canonical_url: true)
+      get article.path
+      expect(response.body).to include('"canonical" href="' + article.canonical_url.to_s + '"')
+    end
+
+    it "shodoes not render canonical url when not on article model" do
+      article = create(:article, with_canonical_url: false)
+      get article.path
+      expect(response.body).not_to include('"canonical" href="' + article.canonical_url.to_s + '"')
+    end
+
+    it "handles invalid slug characters" do
+      allow(Article).to receive(:find_by).and_raise(ArgumentError)
+      get article.path
+
+      expect(response.status).to be(400)
+    end
   end
 
   describe "GET /:username (org)" do

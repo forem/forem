@@ -1,6 +1,4 @@
 class ArticleApiIndexService
-  attr_accessor :tag, :username, :page, :state, :top, :collection_id, :per_page
-
   DEFAULT_PER_PAGE = 30
   MAX_PER_PAGE = 1000
 
@@ -15,24 +13,24 @@ class ArticleApiIndexService
   end
 
   def get
-    articles = if tag.present?
-                 tag_articles
-               elsif username.present?
-                 username_articles
-               elsif state.present?
-                 state_articles(state)
-               elsif top.present?
-                 top_articles
-               elsif collection_id.present?
-                 collection_articles(collection_id)
-               else
-                 base_articles
-               end
-
-    articles&.decorate
+    if tag.present?
+      tag_articles
+    elsif username.present?
+      username_articles
+    elsif state.present?
+      state_articles(state)
+    elsif top.present?
+      top_articles
+    elsif collection_id.present?
+      collection_articles(collection_id)
+    else
+      base_articles
+    end
   end
 
   private
+
+  attr_reader :tag, :username, :page, :state, :top, :collection_id, :per_page
 
   def username_articles
     num = if @state == "all"
@@ -74,18 +72,29 @@ class ArticleApiIndexService
   end
 
   def top_articles
-    Article.published.order("positive_reactions_count DESC").where("published_at > ?", top.to_i.days.ago).
+    Article.published.includes(:user, :organization).
+      where("published_at > ?", top.to_i.days.ago).
+      order("positive_reactions_count DESC").
       page(page).per(per_page || DEFAULT_PER_PAGE)
   end
 
   def state_articles(state)
-    if state == "fresh"
-      Article.published.
-        where("positive_reactions_count < ? AND featured_number > ? AND score > ?", 2, 7.hours.ago.to_i, -2)
-    elsif state == "rising"
-      Article.published.
-        where("positive_reactions_count > ? AND positive_reactions_count < ? AND featured_number > ?", 19, 33, 3.days.ago.to_i)
-    end
+    articles = Article.published.includes(:user, :organization)
+
+    articles = if state == "fresh"
+                 articles.where(
+                   "positive_reactions_count < ? AND featured_number > ? AND score > ?", 2, 7.hours.ago.to_i, -2
+                 )
+               elsif state == "rising"
+                 articles.where(
+                   "positive_reactions_count > ? AND positive_reactions_count < ? AND featured_number > ?",
+                   19, 33, 3.days.ago.to_i
+                 )
+               else
+                 Article.none
+               end
+
+    articles.page(page).per(per_page || DEFAULT_PER_PAGE)
   end
 
   def collection_articles(collection_id)

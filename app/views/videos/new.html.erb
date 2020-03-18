@@ -22,7 +22,7 @@
                        id: "s3-uploader",
                        class: "upload-form",
                        data: { key: :val } do %>
-    <%= file_field_tag :file %>
+    <%= file_field_tag :file, accept: "video/mp4,video/x-m4v,video/*" %>
     <script id="template-upload" type="text/x-tmpl">
     <div id="file-{%=o.unique_id%}" class="upload">
       {%=o.name%}
@@ -33,7 +33,7 @@
   <% end %>
   <div style="margin:50px auto;max-width:80%;font-size:0.86em;">
     <p>
-      <strong>Video is beta:</strong> Email <a href="mailto:<%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %>"><%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %></a> if you have any problems.
+      <strong>Video is beta:</strong> Email <a href="mailto:<%= SiteConfig.default_site_email %>"><%= SiteConfig.default_site_email %></a> if you have any problems.
     </p>
   </div>
 </center>

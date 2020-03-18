@@ -1,7 +1,7 @@
 <div class="about-the-author" id="about-the-author">
   <div class="left-column">
     <a href="/<%= @user.username %>">
-      <img class="profile-pic" src="<%= ProfileImage.new(@user).get(180) %>" alt="<%= @user.username %> profile" />
+      <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 180) %>" alt="<%= @user.username %> profile" />
     </a>
   </div>
   <div class="main-content">

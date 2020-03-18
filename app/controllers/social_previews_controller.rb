@@ -2,16 +2,20 @@ class SocialPreviewsController < ApplicationController
   # No authorization required for entirely public controller
 
   PNG_CSS = "body { transform: scale(0.3); } .preview-div-wrapper { overflow: unset; margin: 5vw; }".freeze
-  SHE_CODED_TAGS = %w[shecoded theycoded shecodedally].freeze
 
   def article
     @article = Article.find(params[:id])
     @tag_badges = Badge.where(id: Tag.where(name: @article.decorate.cached_tag_list_array).pluck(:badge_id))
     not_found unless @article.published
 
-    template = (@article.decorate.cached_tag_list_array & SHE_CODED_TAGS).any? ? "shecoded" : "article"
+    template = @article.tags.
+      where("tags.social_preview_template IS NOT NULL AND tags.social_preview_template != ?", "article").
+      select(:social_preview_template).first&.social_preview_template
 
-    set_respond template
+    # make sure that the template exists
+    template = "article" unless Tag.social_preview_templates.include?(template)
+
+    set_respond "social_previews/articles/#{template}"
   end
 
   def user
@@ -40,7 +44,7 @@ class SocialPreviewsController < ApplicationController
 
   def comment
     @comment = Comment.find(params[:id])
-    @tag_badges = Badge.where(id: Tag.where(name: @comment.commentable.decorate.cached_tag_list_array).pluck(:badge_id))
+    @tag_badges = Badge.where(id: Tag.where(name: @comment.commentable&.decorate&.cached_tag_list_array).pluck(:badge_id))
 
     set_respond
   end

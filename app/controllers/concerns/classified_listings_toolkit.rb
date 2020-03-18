@@ -6,13 +6,11 @@ module ClassifiedListingsToolkit
   def unpublish_listing
     @classified_listing.published = false
     @classified_listing.save
-    @classified_listing.remove_from_index!
   end
 
   def publish_listing
     @classified_listing.published = true
     @classified_listing.save
-    @classified_listing.index!
   end
 
   def update_listing_details
@@ -29,12 +27,11 @@ module ClassifiedListingsToolkit
   def bump_listing_success
     @classified_listing.bumped_at = Time.current
     saved = @classified_listing.save
-    @classified_listing.index! if saved
     saved
   end
 
   def clear_listings_cache
-    ClassifiedListings::BustCacheJob.perform_now(@classified_listing.id)
+    ClassifiedListings::BustCacheWorker.perform_async(@classified_listing.id)
   end
 
   def set_classified_listing
@@ -44,7 +41,7 @@ module ClassifiedListingsToolkit
   def create
     @classified_listing = ClassifiedListing.new(listing_params)
 
-    # this will 500 for now if they don't belong in the org
+    # this will 401 for now if they don't belong in the org
     authorize @classified_listing, :authorized_organization_poster? if @classified_listing.organization_id.present?
 
     @classified_listing.user_id = current_user.id
@@ -115,7 +112,6 @@ module ClassifiedListingsToolkit
 
     if successful_transaction
       clear_listings_cache
-      @classified_listing.index!
       process_successful_creation
     else
       @credits = current_user.credits.unspent
@@ -145,7 +141,8 @@ module ClassifiedListingsToolkit
 
       publish_listing
     elsif listing_updatable?
-      update_listing_details
+      saved = update_listing_details
+      return process_unsuccessful_update unless saved
     end
 
     clear_listings_cache

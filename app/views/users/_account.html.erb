@@ -17,7 +17,7 @@
 <% end %>
 
 <h2>DEV API Keys</h2>
-<p>You can generate personal API keys to use for authentication with the DEV API. The API is still in early beta though. The <a href="/api">DEV API documentation</a> contains further information.</a></p>
+<p>You can generate personal API keys to use for authentication with the DEV API. The API is still in early beta though. The <a href="https://docs.dev.to/api/">DEV API documentation</a> contains further information.</a></p>
 <h3>Generate a new Key</h3>
 <%= form_tag users_api_secrets_path, method: :post do %>
   <%= fields_for :api_secret do |api_secret| %>
@@ -53,7 +53,7 @@
 <% end %>
 
 <h2 style="color: #ff0000;">Danger Zone</h2>
-<% if @user.identities.count == 2 %>
+<% if @user.identities.size == 2 %>
   <h3>Remove OAuth Associations</h3>
   <h4 style="font-weight:400;">
     You can remove one of your authentication methods. We'll still need one to authenticate you.
@@ -88,32 +88,36 @@
 <% end %>
 
 <h3>Delete Account</h3>
-<h4 style="font-weight:400;">
-  <%= form_tag user_request_destroy_path, method: :get, autocomplete: "off", id: "delete__account" do %>
-    Deleting your account will:
-    <ul class="delete__account">
-      <li>delete your profile, along with your Twitter and/or GitHub associations.
-        This does not include app permissions. You will have to remove them yourself on
-        <a href="https://twitter.com/settings/applications">Twitter profile settings</a> and
-        <a href="https://github.com/settings/applications">GitHub profile settings</a>.
-      </li>
-      <%# TODO: expand the delete messaging later %>
-      <li>delete any and all content you have, such as articles, comments, your reading list or chat messages.</li>
-      <li>allow your username to become available to anyone.</li>
-    </ul>
-    <button class="big-action danger-button small-button" id="delete__account__btn" type="submit">
-      DELETE ACCOUNT
-    </button>
-  <% end %>
-</h4>
-<br>
-If you would like to keep your content under the <%= link_to "@ghost", "/ghost" %> account, please:
-<h3>Request Account Deletion</h3>
-<h4 style="font-weight: 400;">
-  <br>
-  <a href="mailto:<%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %>?subject=Request Account Deletion&body=<%= @email_body %>">
-    Click this link to request account deletion via email.
-  </a>
-  <br>
-  Be sure to change the email template to fit your needs.
-</h4>
+<% if current_user.email? %>
+  <h4 style="font-weight:400;">
+    <%= form_tag user_request_destroy_path, method: :post, autocomplete: "off", id: "delete__account" do %>
+      Deleting your account will:
+      <ul class="delete__account">
+        <li>delete your profile, along with your Twitter and/or GitHub associations.
+          This does not include app permissions. You will have to remove them yourself on
+          <a href="https://twitter.com/settings/applications">Twitter profile settings</a> and
+          <a href="https://github.com/settings/applications">GitHub profile settings</a>.
+        </li>
+        <%# TODO: expand the delete messaging later %>
+        <li>delete any and all content you have, such as articles, comments, your reading list or chat messages.</li>
+        <li>allow your username to become available to anyone.</li>
+      </ul>
+      <button class="big-action danger-button small-button" id="delete__account__btn" type="submit">
+        DELETE ACCOUNT
+      </button>
+    <% end %>
+  </h4>
+<% else %>
+  <p>Please, <%= link_to "provide an email", "/settings/profile" %> to fully delete your account.</p>
+<% end %>
+
+<% if current_user.articles_count.positive? || current_user.comments_count.positive? %>
+  <p>
+    If you would like to keep your content under the <%= link_to "@ghost", "/ghost" %> account,
+    please <a href="mailto:<%= SiteConfig.default_site_email %>?subject=Request Account Deletion&body=<%= @email_body %>">click here.</a>
+  </p>
+<% end %>
+
+<p>
+  Feel free to contact <a href="mailto:<%= SiteConfig.default_site_email %>"><%= SiteConfig.default_site_email %></a> with any questions.
+</p>

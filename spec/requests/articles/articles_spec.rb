@@ -6,9 +6,16 @@ RSpec.describe "Articles", type: :request do
 
   describe "GET /feed" do
     it "returns rss+xml content" do
+      create(:article, featured: true)
       get "/feed"
       expect(response.status).to eq(200)
       expect(response.content_type).to eq("application/rss+xml")
+    end
+
+    it "returns not found if no articles" do
+      expect { get "/feed" }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { get "/feed/#{user.username}" }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { get "/feed/#{tag.name}" }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     context "when :username param is not given" do
@@ -51,9 +58,13 @@ RSpec.describe "Articles", type: :request do
 
     context "when :username param is given but it belongs to nither user nor organization" do
       include_context "when user/organization articles exist"
-      before { get "/feed", params: { username: "unknown" } }
+      it("renders empty body") { expect { get "/feed", params: { username: "unknown" } }.to raise_error(ActiveRecord::RecordNotFound) }
+    end
 
-      it("renders empty body") { expect(response.body).to be_empty }
+    context "when format is invalid" do
+      it "returns a 404 response" do
+        expect { get "/feed.zip" }.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
   end
 
@@ -85,9 +96,8 @@ RSpec.describe "Articles", type: :request do
 
     context "when :tag param is given and tag does not exist" do
       include_context "when tagged articles exist"
-      before { get "/feed/tag/unknown" }
 
-      it("renders empty body") { expect(response.body).to be_empty }
+      it("renders empty body") { expect { get "/feed/tag/unknown" }.to raise_error(ActiveRecord::RecordNotFound) }
     end
   end
 
@@ -156,6 +166,19 @@ RSpec.describe "Articles", type: :request do
       get "#{article.path}/stats"
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Stats for Your Article")
+    end
+  end
+
+  describe "GET /delete_confirm" do
+    before { sign_in user }
+
+    context "without an article" do
+      it "renders not_found" do
+        article = create(:article, user: user)
+        expect do
+          get "#{article.path}_1/delete_confirm"
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
   end
 end

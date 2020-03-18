@@ -25,7 +25,7 @@
         </button>
       <% end %>
       <% cache "comment-box-comment-reply-#{@last_user_comment}-#{json_data['comment']['updated_at']}-#{json_data['comment']['id']}" do %>
-        <% reply = Comment.select(:id, :user_id, :ancestry).find_by(id: json_data["comment"]["id"]).children.find_by(user_id: current_user.id) %>
+        <% reply = Comment.select(:id, :user_id, :ancestry).find_by(id: json_data["comment"]["id"])&.children&.find_by(user_id: current_user.id) %>
         <% if reply %>
           <a class="toggle-reply-form already-replied-link" href="<%= reply.path %>">
             Replied

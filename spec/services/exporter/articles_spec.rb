@@ -90,7 +90,7 @@ RSpec.describe Exporter::Articles, type: :service do
         exporter = valid_instance(user)
         result = exporter.export(slug: article.slug)
         articles = load_articles(result)
-        expect(articles.first.keys).to eq(expected_fields)
+        expect(articles.first.keys).to match_array(expected_fields)
       end
     end
 
@@ -107,7 +107,7 @@ RSpec.describe Exporter::Articles, type: :service do
         exporter = valid_instance(article.user)
         result = exporter.export
         articles = load_articles(result)
-        expect(articles.first.keys).to eq(expected_fields)
+        expect(articles.first.keys).to match_array(expected_fields)
       end
     end
   end

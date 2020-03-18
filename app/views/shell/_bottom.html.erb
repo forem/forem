@@ -1,0 +1,19 @@
+<!-- Start Bottom Shell -->
+<% unless internal_navigation? %>
+  <% cache("footer-and-signup-modal--#{user_signed_in?}--#{ApplicationConfig['HEROKU_SLUG_COMMIT']}", expires_in: 24.hours) do %>
+    <%= render "layouts/footer" %>
+    <%= render "layouts/signup_modal" unless user_signed_in? %>
+  <% end %>
+  <div id="live-article-indicator" class="live-article-indicator"></div>
+  <%= image_tag("twitter-logo.svg", class: "icon-img", style: "display:none", alt: "twitter logo") %>
+  <%= image_tag("github-logo.svg", class: "icon-img", style: "display:none", alt: "github logo") %>
+  <% if @shell %>
+    <script defer>
+      if (!document.title) {
+        document.title = document.getElementsByTagName("TITLE")[1].textContent
+      }
+    </script>
+  <% end %>
+  </body>
+  </html>
+<% end %>

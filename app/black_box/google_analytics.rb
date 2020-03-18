@@ -56,7 +56,7 @@ class GoogleAnalytics
 
   def make_report_request(filters_expression_string, metrics_string)
     ReportRequest.new(
-      view_id: ApplicationConfig["GA_VIEW_ID"],
+      view_id: SiteConfig.ga_view_id,
       filters_expression: filters_expression_string,
       metrics: [Metric.new(expression: metrics_string)],
       dimensions: [Dimension.new(name: "ga:segment")],

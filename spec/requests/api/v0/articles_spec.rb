@@ -1,14 +1,21 @@
 require "rails_helper"
 
 RSpec.describe "Api::V0::Articles", type: :request do
-  let_it_be(:organization) { create(:organization) } # not used by every spec but lower times overall
-  let_it_be(:article) { create(:article, featured: true, tags: "discuss") }
-
-  def json_response
-    JSON.parse(response.body)
-  end
+  let_it_be_readonly(:organization) { create(:organization) } # not used by every spec but lower times overall
+  let_it_be_changeable(:article) { create(:article, featured: true, tags: "discuss") }
 
   describe "GET /api/articles" do
+    it "returns CORS headers" do
+      origin = "http://example.com"
+      get api_articles_path, headers: { "origin": origin }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
+      expect(response.headers["Access-Control-Allow-Methods"]).to eq("HEAD, GET, OPTIONS")
+      expect(response.headers["Access-Control-Expose-Headers"]).to be_empty
+      expect(response.headers["Access-Control-Max-Age"]).to eq(2.hours.to_i.to_s)
+    end
+
     it "has correct keys in the response" do
       article.update_columns(organization_id: organization.id)
       get api_articles_path
@@ -20,19 +27,19 @@ RSpec.describe "Api::V0::Articles", type: :request do
         published_timestamp user organization flare_tag
       ]
 
-      expect(json_response.first.keys).to match_array index_keys
+      expect(response.parsed_body.first.keys).to match_array index_keys
     end
 
     it "returns correct tag list" do
       get api_articles_path
 
-      expect(json_response.first["tag_list"]).to be_a_kind_of Array
+      expect(response.parsed_body.first["tag_list"]).to be_a_kind_of Array
     end
 
     it "returns correct tags" do
       get api_articles_path
 
-      expect(json_response.first["tags"]).to be_a_kind_of String
+      expect(response.parsed_body.first["tags"]).to be_a_kind_of String
     end
 
     context "without params" do
@@ -43,29 +50,36 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
       it "returns nothing if params state=all is not found" do
         get api_articles_path(state: "all")
-        expect(json_response.size).to eq(0)
+        expect(response.parsed_body.size).to eq(0)
       end
 
       it "returns featured articles if no param is given" do
         article.update_column(:featured, true)
         get api_articles_path
-        expect(json_response.size).to eq(1)
+        expect(response.parsed_body.size).to eq(1)
       end
 
       it "supports pagination" do
         create_list(:article, 2, featured: true)
         get api_articles_path, params: { page: 1, per_page: 2 }
-        expect(json_response.length).to eq(2)
+        expect(response.parsed_body.length).to eq(2)
         get api_articles_path, params: { page: 2, per_page: 2 }
-        expect(json_response.length).to eq(1)
+        expect(response.parsed_body.length).to eq(1)
       end
 
       it "returns flare tag in the response" do
         get api_articles_path
-        response_article = JSON.parse(response.body)[0]
+        response_article = response.parsed_body.first
         expect(response_article["flare_tag"]).to be_present
         expect(response_article["flare_tag"].keys).to eq(%w[name bg_color_hex text_color_hex])
         expect(response_article["flare_tag"]["name"]).to eq("discuss")
+      end
+
+      it "sets the correct edge caching surrogate key" do
+        get api_articles_path
+
+        expected_key = ["articles", article.record_key].to_set
+        expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
       end
     end
 
@@ -73,38 +87,46 @@ RSpec.describe "Api::V0::Articles", type: :request do
       it "returns user's articles for the given username" do
         create(:article, user: article.user)
         get api_articles_path(username: article.user.username)
-        expect(json_response.size).to eq(2)
+        expect(response.parsed_body.size).to eq(2)
       end
 
       it "returns nothing if given user is not found" do
         get api_articles_path(username: "foobar")
-        expect(json_response.size).to eq(0)
+        expect(response.parsed_body.size).to eq(0)
       end
 
       it "returns org's articles if org's slug is given" do
         create(:article, user: article.user, organization: organization)
         get api_articles_path(username: organization.slug)
-        expect(json_response.size).to eq(1)
+        expect(response.parsed_body.size).to eq(1)
       end
 
       it "supports pagination" do
         create_list(:article, 2, user: article.user)
         get api_articles_path(username: article.user.username), params: { page: 1, per_page: 2 }
-        expect(json_response.length).to eq(2)
+        expect(response.parsed_body.length).to eq(2)
         get api_articles_path(username: article.user.username), params: { page: 2, per_page: 2 }
-        expect(json_response.length).to eq(1)
+        expect(response.parsed_body.length).to eq(1)
+      end
+
+      it "sets the correct edge caching surrogate key" do
+        new_article = create(:article, user: article.user)
+        get api_articles_path(username: article.user.username)
+
+        expected_key = ["articles", article.record_key, new_article.record_key].to_set
+        expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
       end
     end
 
     context "with tag param" do
       it "returns tag's articles" do
         get api_articles_path(tag: article.tag_list.first)
-        expect(json_response.size).to eq(1)
+        expect(response.parsed_body.size).to eq(1)
       end
 
       it "returns top tag articles if tag and top param is present" do
         get api_articles_path(tag: article.tag_list.first, top: "7")
-        expect(json_response.size).to eq(1)
+        expect(response.parsed_body.size).to eq(1)
       end
 
       it "returns not tag articles if article and tag are not approved" do
@@ -113,15 +135,22 @@ RSpec.describe "Api::V0::Articles", type: :request do
         tag.update(requires_approval: true)
 
         get api_articles_path(tag: tag.name)
-        expect(JSON.parse(response.body).size).to eq(0)
+        expect(response.parsed_body.size).to eq(0)
       end
 
       it "supports pagination" do
         create_list(:article, 2, tags: "discuss")
         get api_articles_path(tag: article.tag_list.first), params: { page: 1, per_page: 2 }
-        expect(json_response.length).to eq(2)
+        expect(response.parsed_body.length).to eq(2)
         get api_articles_path(tag: article.tag_list.first), params: { page: 2, per_page: 2 }
-        expect(json_response.length).to eq(1)
+        expect(response.parsed_body.length).to eq(1)
+      end
+
+      it "sets the correct edge caching surrogate key" do
+        get api_articles_path(tag: article.tag_list.first)
+
+        expected_key = ["articles", article.record_key].to_set
+        expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
       end
     end
 
@@ -131,7 +160,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         old_article = create(:article)
         old_article.update_column(:published_at, 10.days.ago)
         get api_articles_path(top: "7")
-        expect(json_response.size).to eq(1)
+        expect(response.parsed_body.size).to eq(1)
       end
 
       it "supports pagination" do
@@ -140,9 +169,16 @@ RSpec.describe "Api::V0::Articles", type: :request do
           old_article.update_column(:published_at, 10.days.ago)
         end
         get api_articles_path(top: "11"), params: { page: 1, per_page: 2 }
-        expect(json_response.length).to eq(2)
+        expect(response.parsed_body.length).to eq(2)
         get api_articles_path(top: "11"), params: { page: 2, per_page: 2 }
-        expect(json_response.length).to eq(1)
+        expect(response.parsed_body.length).to eq(1)
+      end
+
+      it "sets the correct edge caching surrogate key" do
+        get api_articles_path(top: "7")
+
+        expected_key = ["articles", article.record_key].to_set
+        expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
       end
     end
 
@@ -151,7 +187,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         collection = create(:collection, user: article.user)
         article.update_columns(collection_id: collection.id)
         get api_articles_path(collection_id: collection.id)
-        expect(json_response[0]["collection_id"]).to eq collection.id
+        expect(response.parsed_body[0]["collection_id"]).to eq collection.id
       end
 
       it "supports pagination" do
@@ -162,14 +198,82 @@ RSpec.describe "Api::V0::Articles", type: :request do
           collection_article.update_columns(collection_id: collection.id)
         end
         get api_articles_path(collection_id: collection.id), params: { page: 1, per_page: 2 }
-        expect(json_response.length).to eq(2)
+        expect(response.parsed_body.length).to eq(2)
         get api_articles_path(collection_id: collection.id), params: { page: 2, per_page: 2 }
-        expect(json_response.length).to eq(1)
+        expect(response.parsed_body.length).to eq(1)
+      end
+
+      it "sets the correct edge caching surrogate key" do
+        collection = create(:collection, user: article.user)
+        article.update_columns(collection_id: collection.id)
+        get api_articles_path(collection_id: collection.id)
+
+        expected_key = ["articles", article.record_key].to_set
+        expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
+      end
+    end
+
+    context "with state param" do
+      it "returns fresh articles" do
+        article.update_columns(positive_reactions_count: 1, score: 1)
+
+        get api_articles_path(state: "fresh")
+        expect(response.parsed_body.size).to eq(1)
+      end
+
+      it "returns rising articles" do
+        article.update_columns(positive_reactions_count: 32, score: 1, featured_number: 2.days.ago.to_i)
+
+        get api_articles_path(state: "rising")
+        expect(response.parsed_body.size).to eq(1)
+      end
+
+      it "returns nothing if the state is unknown" do
+        get api_articles_path(state: "foobar")
+
+        expect(response.parsed_body).to be_empty
+      end
+
+      it "supports pagination" do
+        create_list(:article, 2, tags: "discuss", positive_reactions_count: 1, score: 1)
+
+        get api_articles_path(state: "fresh"), params: { page: 1, per_page: 2 }
+        expect(response.parsed_body.length).to eq(2)
+        get api_articles_path(state: "fresh"), params: { page: 2, per_page: 2 }
+        expect(response.parsed_body.length).to eq(1)
+      end
+
+      it "sets the correct edge caching surrogate key" do
+        article.update_columns(positive_reactions_count: 1, score: 1)
+
+        get api_articles_path(state: "fresh")
+        expected_key = ["articles", article.record_key].to_set
+        expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
+      end
+    end
+
+    context "with regression tests" do
+      it "works if both the social image and the main image are missing" do
+        article.update_columns(social_image: nil, main_image: nil)
+
+        get api_articles_path
+        expect(response).to have_http_status(:ok)
       end
     end
   end
 
   describe "GET /api/articles/:id" do
+    it "returns CORS headers" do
+      origin = "http://example.com"
+      get api_article_path(article.id), headers: { "origin": origin }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
+      expect(response.headers["Access-Control-Allow-Methods"]).to eq("HEAD, GET, OPTIONS")
+      expect(response.headers["Access-Control-Expose-Headers"]).to be_empty
+      expect(response.headers["Access-Control-Max-Age"]).to eq(2.hours.to_i.to_s)
+    end
+
     it "has correct keys in the response" do
       article.update_columns(organization_id: organization.id)
       get api_article_path(article.id)
@@ -181,24 +285,24 @@ RSpec.describe "Api::V0::Articles", type: :request do
         published_timestamp body_html body_markdown user organization flare_tag
       ]
 
-      expect(json_response.keys).to match_array show_keys
+      expect(response.parsed_body.keys).to match_array show_keys
     end
 
     it "returns correct tag list" do
       get api_article_path(article.id)
 
-      expect(json_response["tag_list"]).to be_a_kind_of String
+      expect(response.parsed_body["tag_list"]).to be_a_kind_of String
     end
 
     it "returns correct tags" do
       get api_article_path(article.id)
 
-      expect(json_response["tags"]).to be_a_kind_of Array
+      expect(response.parsed_body["tags"]).to be_a_kind_of Array
     end
 
     it "returns proper article" do
       get api_article_path(article.id)
-      expect(json_response).to include(
+      expect(response.parsed_body).to include(
         "title" => article.title,
         "body_markdown" => article.body_markdown,
         "tags" => article.decorate.cached_tag_list_array,
@@ -210,7 +314,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         edited_at: 1.minute.from_now, crossposted_at: 2.minutes.ago, last_comment_at: 30.seconds.ago,
       )
       get api_article_path(article.id)
-      expect(json_response).to include(
+      expect(response.parsed_body).to include(
         "created_at" => article.created_at.utc.iso8601,
         "edited_at" => article.edited_at.utc.iso8601,
         "crossposted_at" => article.crossposted_at.utc.iso8601,
@@ -228,6 +332,13 @@ RSpec.describe "Api::V0::Articles", type: :request do
     it "fails with an unknown article ID" do
       get api_article_path("9999")
       expect(response).to have_http_status(:not_found)
+    end
+
+    it "sets the correct edge caching surrogate key" do
+      get api_article_path(article)
+
+      expected_key = [article.record_key].to_set
+      expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
   end
 
@@ -281,32 +392,32 @@ RSpec.describe "Api::V0::Articles", type: :request do
         create(:article, user: user)
         create(:article)
         get me_api_articles_path, params: { access_token: access_token.token }
-        expect(json_response.length).to eq(1)
-        expect(json_response[0]["body_markdown"]).not_to be_nil
+        expect(response.parsed_body.length).to eq(1)
+        expect(response.parsed_body[0]["body_markdown"]).not_to be_nil
       end
 
       it "supports pagination" do
         create_list(:article, 3, user: user)
         get me_api_articles_path, params: { access_token: access_token.token, page: 2, per_page: 2 }
-        expect(json_response.length).to eq(1)
+        expect(response.parsed_body.length).to eq(1)
       end
 
       it "only includes published articles by default" do
         create(:article, published: false, published_at: nil, user: user)
         get me_api_articles_path, params: { access_token: access_token.token }
-        expect(json_response.length).to eq(0)
+        expect(response.parsed_body.length).to eq(0)
       end
 
       it "only includes published articles when asking for published articles" do
         create(:article, published: false, published_at: nil, user: user)
         get me_api_articles_path(status: :published), params: { access_token: access_token.token }
-        expect(json_response.length).to eq(0)
+        expect(response.parsed_body.length).to eq(0)
       end
 
       it "only includes unpublished articles when asking for unpublished articles" do
         create(:article, published: false, published_at: nil, user: user)
         get me_api_articles_path(status: :unpublished), params: { access_token: access_token.token }
-        expect(json_response.length).to eq(1)
+        expect(response.parsed_body.length).to eq(1)
       end
 
       it "orders unpublished articles by reverse order when asking for unpublished articles" do
@@ -316,7 +427,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           newer = create(:article, published: false, published_at: nil, user: user)
         end
         get me_api_articles_path(status: :unpublished), params: { access_token: access_token.token }
-        expected_order = json_response.map { |resp| resp["id"] }
+        expected_order = response.parsed_body.map { |resp| resp["id"] }
         expect(expected_order).to eq([newer.id, older.id])
       end
 
@@ -324,7 +435,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         create(:article, user: user)
         create(:article, published: false, published_at: nil, user: user)
         get me_api_articles_path(status: :all), params: { access_token: access_token.token }
-        expected_order = json_response.map { |resp| resp["published"] }
+        expected_order = response.parsed_body.map { |resp| resp["published"] }
         expect(expected_order).to eq([false, true])
       end
     end
@@ -362,8 +473,11 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
 
     describe "when authorized" do
+      let(:default_params) { { body_markdown: "" } }
+
       def post_article(**params)
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        params = default_params.merge params
         post api_articles_path, params: { article: params }.to_json, headers: headers
       end
 
@@ -376,19 +490,35 @@ RSpec.describe "Api::V0::Articles", type: :request do
         tags = %w[meta discussion]
         post_article(body_markdown: "Yo ho ho", tags: tags)
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(json_response["error"]).to be_present
+        expect(response.parsed_body["error"]).to be_present
+      end
+
+      it "fails if article contains tags with non-alphanumeric characters" do
+        tags = %w[#discuss .help]
+        post_article(title: "Test Article Title", tags: tags)
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "fails if params are not a Hash" do
+        # Not using the nifty post_article helper method because it expects a Hash
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        string_params = "this_string_is_definitely_not_a_hash"
+        post api_articles_path, params: { article: string_params }.to_json, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
       end
 
       it "creates an article belonging to the user" do
         post_article(title: Faker::Book.title)
         expect(response).to have_http_status(:created)
-        expect(Article.find(json_response["id"]).user).to eq(user)
+        expect(Article.find(response.parsed_body["id"]).user).to eq(user)
       end
 
       it "creates an unpublished article by default" do
         post_article(title: Faker::Book.title)
         expect(response).to have_http_status(:created)
-        expect(Article.find(json_response["id"]).published).to be(false)
+        expect(Article.find(response.parsed_body["id"]).published).to be(false)
       end
 
       it "returns the location of the article" do
@@ -403,7 +533,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           post_article(title: title)
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
-        expect(Article.find(json_response["id"]).title).to eq(title)
+        expect(Article.find(response.parsed_body["id"]).title).to eq(title)
       end
 
       it "creates a published article" do
@@ -412,7 +542,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           post_article(title: title, published: true)
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
-        expect(Article.find(json_response["id"]).published).to be(true)
+        expect(Article.find(response.parsed_body["id"]).published).to be(true)
       end
 
       it "creates an article with a title and the markdown body" do
@@ -424,7 +554,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           )
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
-        expect(Article.find(json_response["id"]).body_markdown).to eq(body_markdown)
+        expect(Article.find(response.parsed_body["id"]).body_markdown).to eq(body_markdown)
       end
 
       it "creates an article with a title, body and a list of tags" do
@@ -437,7 +567,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           )
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
-        expect(Article.find(json_response["id"]).cached_tag_list).to eq(tags.join(", "))
+        expect(Article.find(response.parsed_body["id"]).cached_tag_list).to eq(tags.join(", "))
       end
 
       it "creates an unpublished article with the front matter in the body" do
@@ -446,7 +576,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           post_article(body_markdown: body_markdown)
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
-        article = Article.find(json_response["id"])
+        article = Article.find(response.parsed_body["id"])
         expect(article.title).to eq("Sample Article")
         expect(article.published).to be(false)
       end
@@ -457,7 +587,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           post_article(body_markdown: body_markdown)
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
-        article = Article.find(json_response["id"])
+        article = Article.find(response.parsed_body["id"])
         expect(article.title).to eq("Sample Article")
         expect(article.published).to be(true)
       end
@@ -470,7 +600,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           series: series,
         )
         expect(response).to have_http_status(:created)
-        article = Article.find(json_response["id"])
+        article = Article.find(response.parsed_body["id"])
         expect(article.collection).to eq(Collection.find_by(slug: series))
         expect(article.collection.user).to eq(user)
       end
@@ -481,7 +611,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           post_article(body_markdown: body_markdown)
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
-        article = Article.find(json_response["id"])
+        article = Article.find(response.parsed_body["id"])
         expect(article.collection).to eq(Collection.find_by(slug: "a series"))
         expect(article.collection.user).to eq(user)
       end
@@ -496,7 +626,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           )
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
-        expect(Article.find(json_response["id"]).organization).to eq(organization)
+        expect(Article.find(response.parsed_body["id"]).organization).to eq(organization)
       end
 
       it "creates an article with a main/cover image" do
@@ -509,7 +639,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           )
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
-        expect(Article.find(json_response["id"]).main_image).to eq(image_url)
+        expect(Article.find(response.parsed_body["id"]).main_image).to eq(image_url)
       end
 
       it "creates an article with a main/cover image in the front matter" do
@@ -519,7 +649,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           post_article(body_markdown: body_markdown)
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
-        expect(Article.find(json_response["id"]).main_image).to eq(image_url)
+        expect(Article.find(response.parsed_body["id"]).main_image).to eq(image_url)
       end
 
       it "creates an article with a canonical url" do
@@ -532,7 +662,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           )
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
-        expect(Article.find(json_response["id"]).canonical_url).to eq(canonical_url)
+        expect(Article.find(response.parsed_body["id"]).canonical_url).to eq(canonical_url)
       end
 
       it "creates an article with a canonical url in the front matter" do
@@ -542,7 +672,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           post_article(body_markdown: body_markdown)
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
-        expect(Article.find(json_response["id"]).canonical_url).to eq(canonical_url)
+        expect(Article.find(response.parsed_body["id"]).canonical_url).to eq(canonical_url)
       end
 
       it "creates an article with the given description" do
@@ -555,7 +685,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           )
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
-        expect(Article.find(json_response["id"]).description).to eq(description)
+        expect(Article.find(response.parsed_body["id"]).description).to eq(description)
       end
 
       it "creates an article with description in the front matter" do
@@ -568,18 +698,32 @@ RSpec.describe "Api::V0::Articles", type: :request do
           )
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
-        expect(Article.find(json_response["id"]).description).not_to eq(description)
+        expect(Article.find(response.parsed_body["id"]).description).not_to eq(description)
       end
 
       it "creates an article with a part of the body as a description" do
         expect do
           post_article(
             title: Faker::Book.title,
-            body_markdown: "yooo" * 100,
+            body_markdown: "yoooo" * 100,
           )
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
-        expect(Article.find(json_response["id"]).description).to eq("yooo" * 20 + "y...")
+        expect(Article.find(response.parsed_body["id"]).description).to eq("yoooo" * 20 + "y...")
+      end
+
+      it "does not raise an error if article params are missing" do
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        expect do
+          post api_articles_path, params: {}.to_json, headers: headers
+        end.not_to raise_error
+        expect(response.status).to eq(422)
+      end
+
+      it "fails with a nil body markdown" do
+        post_article(title: Faker::Book.title, body_markdown: nil)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
       end
     end
   end
@@ -650,7 +794,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         put_article(title: Faker::Book.title)
         expect(response).to have_http_status(:ok)
         expect(article.reload.title).to eq(article.title)
-        expect(json_response["title"]).to eq(article.title)
+        expect(response.parsed_body["title"]).to eq(article.title)
       end
 
       it "updates the title and the body if given a title and a body" do
@@ -660,6 +804,34 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response).to have_http_status(:ok)
         expect(article.reload.title).to eq(title)
         expect(article.body_markdown).to eq(body_markdown)
+      end
+
+      it "updates the main_image to be empty if given an empty cover_image" do
+        image = Faker::Avatar.image
+        article.update(main_image: image)
+        expect(article.main_image).to eq(image)
+
+        body_markdown = file_fixture("article_published_empty_cover_image.txt").read
+        put_article(
+          title: Faker::Book.title,
+          body_markdown: body_markdown,
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.main_image).to eq(nil)
+      end
+
+      it "updates the main_image to be empty if given a different cover_image" do
+        image = Faker::Avatar.image
+        article.update(main_image: image)
+        expect(article.main_image).to eq(image)
+
+        body_markdown = file_fixture("article_published_cover_image.txt").read
+        put_article(
+          title: Faker::Book.title,
+          body_markdown: body_markdown,
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.main_image).to eq("https://dummyimage.com/100x100")
       end
 
       it "updates the tags" do
@@ -823,7 +995,10 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
       it "updates a description" do
         description = "this is a very interesting article"
-        put_article(description: description)
+        put_article(
+          body_markdown: "Yo ho ho bsddsdsobo",
+          description: description,
+        )
         expect(response).to have_http_status(:ok)
         expect(article.reload.description).to eq(description)
       end
@@ -834,6 +1009,16 @@ RSpec.describe "Api::V0::Articles", type: :request do
         put_article(organization_id: organization.id)
         expect(response).to have_http_status(:ok)
         expect(article.reload.organization).to eq(organization)
+      end
+
+      it "fails if params are not a Hash" do
+        # Not using the nifty put_article helper method because it expects a Hash
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        string_params = "this_string_is_definitely_not_a_hash"
+        put path, params: { article: string_params }.to_json, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
       end
     end
   end

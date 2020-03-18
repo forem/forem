@@ -5,7 +5,8 @@ class NotifyMailerPreview < ActionMailer::Preview
   end
 
   def new_follower_email
-    NotifyMailer.new_follower_email(Follow.last)
+    follow = User.first.follow(User.last)
+    NotifyMailer.new_follower_email(follow)
   end
 
   def unread_notifications_email

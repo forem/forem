@@ -5,19 +5,23 @@ class ApplicationController < ActionController::Base
   include ValidRequest
   include Pundit
 
-  def require_http_auth
-    authenticate_or_request_with_http_basic do |username, password|
-      username == ApplicationConfig["APP_NAME"] && password == ApplicationConfig["APP_PASSWORD"]
-    end
-  end
+  rescue_from ActionView::MissingTemplate, with: :routing_error
 
   def not_found
     raise ActiveRecord::RecordNotFound, "Not Found"
   end
 
+  def routing_error
+    raise ActionController::RoutingError, "Routing Error"
+  end
+
   def not_authorized
     render json: "Error: not authorized", status: :unauthorized
     raise NotAuthorizedError, "Unauthorized"
+  end
+
+  def bad_request
+    render json: "Error: Bad Request", status: :bad_request
   end
 
   def authenticate_user!
@@ -34,13 +38,26 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    return "/onboarding?referrer=#{request.env['omniauth.origin'] || 'none'}" unless current_user.saw_onboarding
+    if current_user.saw_onboarding
+      path = request.env["omniauth.origin"] || stored_location_for(resource) || dashboard_path
+      signin_param = { "signin" => "true" } # the "signin" param is used by the service worker
 
-    request.env["omniauth.origin"] || stored_location_for(resource) || "/dashboard"
+      uri = Addressable::URI.parse(path)
+      uri.query_values = if uri.query_values
+                           uri.query_values.merge(signin_param)
+                         else
+                           signin_param
+                         end
+
+      uri.to_s
+    else
+      referrer = request.env["omniauth.origin"] || "none"
+      onboarding_path(referrer: referrer)
+    end
   end
 
-  def raise_banned
-    raise "BANNED" if current_user&.banned
+  def raise_suspended
+    raise "SUSPENDED" if current_user&.banned
   end
 
   def internal_navigation?

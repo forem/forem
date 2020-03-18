@@ -1,42 +1,35 @@
 @import 'variables';
 @import 'mixins';
 
-.stories-index,
-.comments-index,
-.users-index,
-.notifications-index {
-  .top-bar {
-    @media screen and (min-width: 820px) {
-      border-bottom: 1.5px solid darken($lightest-gray, 4%);
-      box-shadow: 0px 0px 2px 0px rgba(97, 95, 95, 0.18);
-    }
-  }
-}
 .top-bar {
-  font-family: $helvetica;
-  position: absolute;
+  position: fixed;
   top: 0px;
   left: 0px;
   right: 0px;
   -webkit-backface-visibility: hidden;
   z-index: 1000;
-  font-size: 17px;
-  height: 46px;
-  @include themeable(
-    background, 
-    theme-top-bar-background, 
-    $tan
-  );
-  position: fixed;
+  height: $header-height;
+  font-size: 16px; // todo: make it global, based on body
+  @include themeable(background, theme-top-bar-background, $tan);
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   &.hidden {
     display: none;
   }
+
+  &,
+  & * {
+    box-sizing: border-box; // todo: make it global
+  }
+
   nav {
-    max-width: 100%;
-    width: 1250px;
+    max-width: $max-width;
+    height: 100%;
     margin: auto;
     position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
     .pwa-nav-buttons {
       position: absolute;
       top: 17px;
@@ -48,11 +41,7 @@
         width: 28px;
         text-align: center;
         opacity: 0.75;
-        @include themeable(
-          filter, 
-          theme-social-icon-invert, 
-          invert(0)
-        );
+        @include themeable(filter, theme-social-icon-invert, invert(0));
         img {
           width: 15px;
           height: 15px;
@@ -71,239 +60,89 @@
         left: -88px;
       }
     }
-    a {
-      &:active {
-        opacity: 0.8;
-      }
-    }
-    .nav-link {
+
+    // TODO make it a component in future.
+    .nav-indicator {
       position: absolute;
-      top: 17px;
-      width: 120px;
-      height: 30px;
-      border-radius: 2px;
-      padding-right: 10px;
-      font-size: 14px;
-      font-weight: 400;
-      display: none;
-    }
-    .write {
-      width: 118px;
-      padding: 3px 0px;
-      height: auto;
-      top: 11px;
-      text-align: center;
-      font-weight: bold;
+      padding: 4px;
       border-radius: 3px;
-      border: 2px solid $black;
-      border: 2px solid var(--theme-top-bar-write-color, $black);
-      @include themeable(
-        color, 
-        theme-top-bar-write-color, 
-        $black
-      );
-      @include themeable(
-        background, 
-        theme-top-bar-write-background, 
-        $green
-      );
-      @media screen and (min-width: 560px) {
-        display: block;
-        right: 140px;
-      }
-      @media screen and (min-width: 700px) {
-        display: block;
-        right: 165px;
-      }
-    }
-    .connect-icon {
-      width: 29px;
-      height: 48px;
-      display: block;
-      text-align: center;
-      z-index: 10;
-      top: 0px;
-      right: 90px;
-      @include themeable(
-        fill, 
-        theme-top-bar-color, 
-        $black
-      );
-      @media screen and (min-width: 700px) {
-        right: 110px;
-      }
-      img {
-        margin-top: 6px;
-        height: 33px;
-      }
-      .connect-number {
-        position: absolute;
-        top: 5px;
-        left: 17px;
-        background: $green;
-        padding: 2px 7px;
-        border-radius: 8px;
-        color: white;
-        display: none;
-        font-size: 1.05em;
-        &.showing {
-          display: block;
-        }
-      }
-      &:hover {
-        img {
-          opacity: 0.9;
-        }
-        .connect-number {
-          background: $green;
-        }
-      }
-    }
-    .notifications-icon {
-      right: 50px;
+      font-weight: bold;
+      display: none;
+      color: $white;
       top: 4px;
-      width: 22px;
-      height: 41px;
-      display: block;
+      right: 0;
+      font-size: 0.8em;
+      min-width: 18px;
       text-align: center;
-      z-index: 10;
-      @include themeable(
-        fill, 
-        theme-top-bar-color, 
-        $black
-      );
-      @media screen and (min-width: 700px) {
-        right: 73px;
+
+      &.showing {
+        display: block;
       }
-      img {
-        margin-top: 10px;
-        height: 23px;
+
+      &.connect-number {
+        background: $green;
       }
-      .notifications-number {
-        position: absolute;
-        top: 1px;
-        left: 11px;
+
+      &.notifications-number {
         background: $dark-purple;
-        padding: 2px 7px;
-        border-radius: 8px;
-        color: white;
-        display: none;
-        font-size: 1.05em;
-        &.showing {
-          display: block;
-        }
-      }
-      &:hover {
-        img {
-          opacity: 0.9;
-        }
-        .notifications-number {
-          background: $dark-purple;
-        }
       }
     }
 
-    .nav-profile-image-wrapper {
-      height: 33px;
-      width: 33px;
-      background: $dark-gray;
-      margin-top: -6px;
-      border-radius: 100%;
-      border: 0;
-      overflow: hidden;
-      img {
-        height: 35px;
-        width: 35px;
-        border-radius: 100%;
-        margin-top: -1px;
-        margin-left: -1px;
-        -ms-user-select: none;
-        -moz-user-select: none;
-        -webkit-user-select: none;
-        user-select: none;
-      }
-    }
-    .bars {
-      height: 22px;
-      width: 22px;
-      background: transparent;
-    }
-    .navbar-menu-wrapper {
-      position: absolute;
-      right: 0px;
-      top: 0px;
+    .top-bar--menu {
+      position: relative;
+      height: 100%;
+
       &.showing {
-        .menu,
-        .menubg {
+        .top-bar--menu-dropdown,
+        .top-bar--menu-overlay {
           display: block;
         }
       }
+
       &.desktop {
         &:hover,
         &:active,
         &:focus {
-          .menu {
+          .top-bar--menu-dropdown {
             display: block;
           }
         }
       }
     }
-    .navigation-butt {
+    .top-bar--menu-trigger {
       all: unset;
-      position: absolute;
-      right: 0px;
-      top: 7px;
-      padding-top: 6px;
-      padding-bottom: 6px;
-      padding-left: 28px;
-      padding-right: 6px;
-      border-bottom-left-radius: 8px;
-      background: transparent;
-      border: 0;
+      display: flex;
+      height: 100%;
+      padding: 0 8px;
+      align-items: center;
       cursor: pointer;
-      @media screen and (min-width: 700px) {
-        padding-right: 33px;
-      }
     }
-    .menubg {
+
+    .top-bar--menu-overlay {
       position: fixed;
       left: 0;
       right: 0;
       bottom: 0;
       background: rgba(17, 17, 17, 0.88);
-      z-index: -5;
-      top: 48px;
+      top: $header-height;
       display: none;
     }
-    .menu {
-      position: absolute;
-      right: -3px;
-      padding: 5px 10px;
-      text-align: left;
-      @include themeable(
-        background, 
-        theme-top-bar-background, 
-        $tan
-      );
-      border: 1px solid rgb(219, 222, 225);
-      border-top: 0px;
+    .top-bar--menu-dropdown {
+      position: fixed;
+      right: 0;
+      top: $header-height;
+      padding: 16px;
+      @include themeable(background, theme-top-bar-background, $tan);
       display: none;
-      width: calc(100vw - 18px);
-      top: 45px;
+      width: 100%;
+      border-radius: 0 0 3px 3px;
+      box-shadow: $shadow;
+
       @media screen and (min-width: 380px) {
-        position: fixed;
-        width: 230px;
-        border-right: none;
-        padding: 15px 10px;
-        border-bottom-left-radius: 5px;
-        box-shadow: 0px 4px 5px 1px rgba(97, 95, 95, 0.18);
-      }
-      @media screen and (min-width: 1250px) {
         position: absolute;
-        border-right: 1px solid rgb(219, 222, 225);
-        border-bottom-right-radius: 5px;
-        right: 4px;
+        width: 250px;
       }
+
       .header {
         padding: 3px 10px;
         border-bottom: 3px solid rgb(241, 244, 246);
@@ -330,18 +169,14 @@
         }
         &:hover {
           @include themeable(
-            background, 
-            theme-top-bar-background-hover, 
+            background,
+            theme-top-bar-background-hover,
             darken($tan, 2%)
           );
         }
       }
       a {
-        @include themeable(
-          color, 
-          theme-color, 
-          $black
-        );
+        @include themeable(color, theme-color, $black);
       }
     }
   }
@@ -358,90 +193,119 @@
     cursor: default;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.3s $ease-in-cubic, transform 0.3s $ease-in-cubic;
+    transition: opacity 0.3s linear, transform 0.3s linear;
 
     &:focus {
       pointer-events: auto;
       opacity: 1;
       transform: translate(-50%, 22px);
-      transition: opacity 0.3s $ease-out-cubic, transform 0.3s $ease-out-cubic;
+      transition: opacity 0.3s linear, transform 0.3s linear;
     }
-  }
-  .logo-link {
-    display: inline-block;
-    margin-left: 2%;
-  }
-  .logo {
-    width: 33px;
-    height: 21px;
-    padding: 7px 8px 6px 10px;
-    margin-top: 6px;
-    @include themeable(
-      fill, 
-      theme-logo-color, 
-      white
-    );
-    border-radius: 3px;
-    @include themeable(
-      background, 
-      theme-logo-background, 
-      $black
-    );
   }
 }
 
-.nav-search-form {
-  position: absolute;
-  top: 8px;
-  left: calc(50px + 5vw);
-  bottom: 0px;
-  width: calc(55vw - 63px);
-  @media screen and (min-width: 350px) {
-    width: calc(61vw - 75px);
-  }
-  @media screen and (min-width: 450px) {
-    width: calc(61vw - 45px);
-  }
-  @media screen and (min-width: 560px) {
-    width: calc(46vw - 52px);
-  }
+// Logo
+.top-bar--logo {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  margin-left: 8px;
   @media screen and (min-width: 950px) {
-    left: 0;
-    right: 0;
-    margin: auto;
-    width: 300px;
+    margin-left: 16px;
   }
-  @media screen and (min-width: 1120px) {
-    width: calc(100% - 760px);
-  }
-  &__input {
-    margin: 0;
-    width: calc(100% - 12px);
+
+  .logo {
+    width: 51px;
+    height: 34px;
+    padding: 7px 8px 6px 10px;
+    @include themeable(fill, theme-logo-color, white);
     border-radius: 3px;
-    padding: 6px 9px;
+    @include themeable(background, theme-logo-background, $black);
+  }
+}
+
+
+
+// Search bar
+.top-bar--search {
+  display: flex;
+  max-width: 490px;
+  padding: 0 8px;
+  flex: 1 auto;
+
+  &,
+  & * {
+    box-sizing: border-box;
+  }
+
+  form {
+    width: 100%;
+  }
+}
+
+.top-bar--search-input {
+  width: 100%;
+  border-radius: 3px;
+  padding: 6px 9px 5px;
+  font-size: 16px;
+  @include themeable(background, theme-top-bar-search-background, #e8e7e7);
+  @include themeable(color, theme-top-bar-search-color, $black);
+  -webkit-appearance: none;
+  border: 1px solid transparent;
+  &:focus {
+    border: 1px solid $dark-purple;
+  }
+  &::placeholder {
+    opacity: 0.5;
+    @include themeable(color, theme-top-bar-search-color, $black);
+  }
+}
+
+
+
+// Actions on right side...
+.top-bar--links {
+  height: $header-height;
+  display: flex;
+  align-items: center;
+}
+
+.top-bar--link {
+  position: relative;
+  display: flex;
+  padding: 0 8px;
+  height: 100%;
+  align-items: center;
+  @include themeable(fill, theme-top-bar-color, $black);
+
+  &.write {
+    border-radius: 3px;
+    height: auto;
+    margin-right: 8px;
+    padding: 4px 8px;
+    white-space: nowrap;
     font-size: 0.9em;
-    @include themeable(
-      background, 
-      theme-top-bar-search-background, 
-      #e8e7e7
-    );
-    @include themeable(
-      color, 
-      theme-top-bar-search-color, 
-      $black
-    );
-    -webkit-appearance: none;
-    border: 1px solid transparent;
-    &:focus {
-      border: 1px solid $dark-purple;
-    }
-    &::placeholder {
-      opacity: 0.5;
-      @include themeable(
-        color, 
-        theme-top-bar-search-color, 
-        $black
-      );
+    border: 2px solid var(--theme-top-bar-write-color, $black);
+    @include themeable(color, theme-top-bar-write-color, $black);
+    @include themeable(background, theme-top-bar-write-background, $green);
+    display: none;
+
+    @media screen and (min-width: 650px) {
+      display: inline-block;
     }
   }
 }
+
+.top-bar--profile {
+  height: 32px;
+  width: 32px;
+  background: $dark-gray;
+  border-radius: 50%;
+
+  img {
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+  }
+}
+

@@ -33,7 +33,7 @@ RSpec.describe "ProfilePins", type: :request do
 
   describe "PUT /profile_pins/:id" do # delete
     it "adds pin on behalf of current user" do
-      profile_pin = create(:profile_pin, pinnable_id: article.id, profile_id: user.id)
+      profile_pin = create(:profile_pin, pinnable: article, profile: user)
       put "/profile_pins/#{profile_pin.id}"
       expect(ProfilePin.all.size).to eq(0)
     end

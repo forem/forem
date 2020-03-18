@@ -1,6 +1,4 @@
 class Tweet < ApplicationRecord
-  include AlgoliaSearch
-
   mount_uploader :profile_image, ProfileImageUploader
 
   belongs_to :user, optional: true
@@ -58,19 +56,22 @@ class Tweet < ApplicationRecord
 
   class << self
     def try_to_get_tweet(twitter_id_code)
-      client = TwitterBot.new(random_identity).client
+      client = TwitterBot.client(random_identity)
       tweet = client.status(twitter_id_code, tweet_mode: "extended")
       make_tweet_from_api_object(tweet)
     end
 
+    private
+
     def make_tweet_from_api_object(tweeted)
-      twitter_bot = TwitterBot.new(random_identity)
       tweeted = if tweeted.attrs[:retweeted_status]
-                  twitter_bot.client.status(tweeted.attrs[:retweeted_status][:id_str])
+                  TwitterBot.client(random_identity).status(tweeted.attrs[:retweeted_status][:id_str])
                 else
                   tweeted
                 end
+
       tweet = Tweet.where(twitter_id_code: tweeted.attrs[:id_str]).first_or_initialize
+
       tweet.twitter_uid = tweeted.user.id.to_s
       tweet.twitter_username = tweeted.user.screen_name.downcase
       tweet.user_id = User.find_by(twitter_username: tweeted.user.screen_name)&.id
@@ -97,7 +98,9 @@ class Tweet < ApplicationRecord
       tweet.last_fetched_at = Time.current
       tweet.user_is_verified = tweeted.user.verified?
       tweet.is_quote_status = tweeted.attrs[:is_quote_status]
+
       tweet.save!
+
       tweet
     end
 

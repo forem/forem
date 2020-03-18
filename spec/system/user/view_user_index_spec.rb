@@ -5,6 +5,7 @@ RSpec.describe "User index", type: :system do
   let!(:article) { create(:article, user: user) }
   let!(:other_article) { create(:article) }
   let!(:comment) { create(:comment, user: user, commentable: other_article) }
+  let(:organization) { create(:organization) }
 
   context "when user is unauthorized" do
     context "when 1 article" do
@@ -56,6 +57,17 @@ RSpec.describe "User index", type: :system do
           expect(page).to have_selector(timestamp_selector)
         end
       end
+    end
+  end
+
+  context "when user has an organization membership" do
+    before do
+      user.organization_memberships.create(organization: organization, type_of_user: "member")
+    end
+
+    it "shows organizations" do
+      visit "/user3000"
+      expect(page).to have_css("#sidebar-wrapper-right h4", text: "organizations")
     end
   end
 

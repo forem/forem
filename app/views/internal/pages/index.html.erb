@@ -1,13 +1,18 @@
-<div>
-  <a class="btn btn-success" href="/internal/pages/new">New Page</a>
+<div class="notice"><%= flash[:notice] %></div>
+<%= csrf_meta_tags %>
+
+<div class="row justify-content-end">
+  <%= link_to "New Page", "/internal/pages/new", class: "btn btn-primary" %>
 </div>
 
-<% @pages.each do |page| %>
-  <div class="wrapper" style="border-bottom: 1px solid grey; padding: 10px;">
-    <div class="grid-item"><a href="<%= page.path %>" target="_blank"><%= page.slug %></a></div>
-    <div><%= page.title %></div>
-    <div>
-      <a class="btn" href="/internal/pages/<%= page.id %>/edit">Edit</a>
-    </div>
+<hr>
+
+<div class="row">
+  <div class="list-group-flush w-100">
+    <% @pages.each do |page| %>
+      <a class="list-group-item list-group-item-action" href="/internal/pages/<%= page.id %>/edit">
+        <%= page.title %>
+      </a>
+    <% end %>
   </div>
-<% end %>
+</div>

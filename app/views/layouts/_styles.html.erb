@@ -1,15 +1,23 @@
-<% cache "base_inline_styles_#{@story_show}_#{@article_index}_#{@home_page}_#{@article_show}_#{view_class}_#{@notifications_index}_#{core_pages?}_#{@tags_index}_#{@reading_list_items_index}_#{@history_index}_#{ApplicationConfig['HEROKU_SLUG_COMMIT']}_#{user_signed_in?}", expires_in: 8.hours do %>
-  <% if @story_show %>
+<% cache "base_inline_styles_#{@story_show}_#{@article_index}_#{@home_page}_#{@article_show}_#{view_class}_#{@notifications_index}_#{@tags_index}_#{@reading_list_items_index}_#{@history_index}_#{ApplicationConfig['HEROKU_SLUG_COMMIT']}_#{user_signed_in?}_#{@shell}", expires_in: 8.hours do %>
+  <% if @shell %>
     <style>
       <% Rails.application.config.assets.compile = true %>
+      <%= Rails.application.assets["minimal.css"].to_s.html_safe %>
+    </style>
+  <% elsif @story_show %>
+    <style>
+      <% Rails.application.config.assets.compile = true %>
+      <%= Rails.application.assets["base/reset.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
+      <%= Rails.application.assets["buttons.css"].to_s.html_safe %>
+      <%= Rails.application.assets["typography.css"].to_s.html_safe %>
       <% if @article_show %>
       <%= Rails.application.assets["article-show.css"].to_s.html_safe %>
       <%= Rails.application.assets["comments.css"].to_s.html_safe %>
       <%= Rails.application.assets["more-articles.css"].to_s.html_safe %>
       <%= Rails.application.assets["syntax.css"].to_s.html_safe %>
-      <%= Rails.application.assets["ltags/LiquidTags.scss"].to_s.html_safe %>
+      <%= Rails.application.assets["ltags/LiquidTags.css"].to_s.html_safe %>
       <%= Rails.application.assets["sticky-nav.css"].to_s.html_safe %>
       <% else %>
       <%= Rails.application.assets["article-show.css"].to_s.html_safe %>
@@ -21,12 +29,16 @@
   <% elsif @article_index %>
     <style>
       <% Rails.application.config.assets.compile = true %>
+      <%= Rails.application.assets["base/reset.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
       <%= Rails.application.assets["articles.css"].to_s.html_safe %>
+      <%= Rails.application.assets["buttons.css"].to_s.html_safe %>
+      <%= Rails.application.assets["widgets.css"].to_s.html_safe %>
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
+      <%= Rails.application.assets["footer.css"].to_s.html_safe %>
       <% unless @home_page %>
       <%= Rails.application.assets["user-profile-header.css"].to_s.html_safe %>
-      <%= Rails.application.assets["sidebar-data.scss"].to_s.html_safe %>
+      <%= Rails.application.assets["sidebar-data.css"].to_s.html_safe %>
       <%= Rails.application.assets["index-comments.css"].to_s.html_safe %>
       <%= Rails.application.assets["footer.css"].to_s.html_safe %>
       <% end %>
@@ -37,24 +49,28 @@
   <% elsif @notifications_index || @reading_list_items_index || @history_index %>
     <style>
       <% Rails.application.config.assets.compile = true %>
+      <%= Rails.application.assets["base/reset.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
       <%= Rails.application.assets["readinglist.css"].to_s.html_safe %>
       <%= Rails.application.assets["history.css"].to_s.html_safe %>
       <%= Rails.application.assets["articles.css"].to_s.html_safe %>
+      <%= Rails.application.assets["buttons.css"].to_s.html_safe %>
+      <%= Rails.application.assets["widgets.css"].to_s.html_safe %>
       <%= Rails.application.assets["comments.css"].to_s.html_safe %>
       <%= Rails.application.assets["notifications.css"].to_s.html_safe %>
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["user-profile-header.css"].to_s.html_safe %>
       <%= Rails.application.assets["footer.css"].to_s.html_safe %>
-      <%= Rails.application.assets["ltags/LiquidTags.scss"].to_s.html_safe %>
+      <%= Rails.application.assets["ltags/LiquidTags.css"].to_s.html_safe %>
     </style>
   <% elsif view_class.start_with? "comments" %>
     <style>
+      <%= Rails.application.assets["base/reset.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["comments.css"].to_s.html_safe %>
       <%= Rails.application.assets["footer.css"].to_s.html_safe %>
-      <%= Rails.application.assets["ltags/LiquidTags.scss"].to_s.html_safe %>
+      <%= Rails.application.assets["ltags/LiquidTags.css"].to_s.html_safe %>
       <%= Rails.application.assets["syntax.css"].to_s.html_safe %>
       <% if view_class.include? "comments-settings" %>
       <%= Rails.application.assets["article-show.css"].to_s.html_safe %>
@@ -62,20 +78,15 @@
     </style>
   <% elsif view_class.include?("registrations") || @new_article_not_logged_in %>
     <style>
+      <%= Rails.application.assets["base/reset.css"].to_s.html_safe %>
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
       <%= Rails.application.assets["article-form-needed-legacy.css"].to_s.html_safe %>
       <%= Rails.application.assets["footer.css"].to_s.html_safe %>
     </style>
-  <% elsif view_class.include? "users-index" %>
-    <style>
-      <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
-      <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
-      <%= Rails.application.assets["leaderboard.css"].to_s.html_safe %>
-      <%= Rails.application.assets["footer.css"].to_s.html_safe %>
-    </style>
   <% elsif view_class.include? "classified_listings-" %>
     <style>
+      <%= Rails.application.assets["base/reset.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["classified_listings.css"].to_s.html_safe %>
@@ -83,6 +94,7 @@
     </style>
   <% elsif view_class.include? "credits-" %>
     <style>
+      <%= Rails.application.assets["base/reset.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["credits.css"].to_s.html_safe %>
@@ -90,6 +102,7 @@
     </style>
   <% elsif view_class.include? "videos-index" %>
     <style>
+      <%= Rails.application.assets["base/reset.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["video-collection.css"].to_s.html_safe %>
@@ -100,9 +113,7 @@
     <style>
       <%= Rails.application.assets["badges.css"].to_s.html_safe %>
     </style>
-  <% elsif core_pages? %>
-    <%= stylesheet_link_tag "minimal", media: "all" %>
   <% else %>
-    <%= stylesheet_link_tag "application", media: "all" %>
+    <%= stylesheet_link_tag "minimal", media: "all" %>
   <% end %>
 <% end %>

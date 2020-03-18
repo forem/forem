@@ -7,29 +7,60 @@ services:
     depends_on:
       - db
       - redis
+      - elasticsearch
     environment:
       RAILS_ENV: development
-      DATABASE_URL: postgres://postgres:mysecretpassword@db:5432/postgres
+      DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
       YARN_INTEGRITY_ENABLED: "false"
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      REDIS_URL: redis://redis:6379
     volumes:
       - .:/usr/src/app
     command: bundle exec rails server -b 0.0.0.0 -p 3000
-  jobs:
-    build: .
-    command: rails jobs:work
-    depends_on:
-      - db
-    environment:
-      RAILS_ENV: development
-      DATABASE_URL: postgres://postgres:mysecretpassword@db:5432/postgres
   webpacker:
     build: .
     command: ./bin/webpack-dev-server
+  sidekiq:
+    build: .
+    command: bundle exec sidekiq -c 2
+    depends_on:
+      - redis
+      - db
+      - elasticsearch
+    environment:
+      RAILS_ENV: development
+      REDIS_SIDEKIQ_URL: redis://redis:6379
+      DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
+      ELASTICSEARCH_URL: http://elasticsearch:9200
   db:
     image: postgres:${POSTGRES_VERSION:-9.6.15-alpine}
+    environment:
+      POSTGRES_USER: devto
+      POSTGRES_PASSWORD: devto
+      POSTGRES_DB: PracticalDeveloper_development
     ports:
       - "5432:5432"
   redis:
     image: "redis"
     ports:
       - "6379:6379"
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.2
+    container_name: elasticsearch
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.type=single-node"
+      - xpack.security.enabled=false
+      - xpack.monitoring.enabled=false
+      - xpack.graph.enabled=false
+      - xpack.watcher.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+        - ./docker_data/elasticsearch/data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"

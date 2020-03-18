@@ -5,7 +5,7 @@
     padding: 40px 0px 40px;
     text-align: center;
     position: relative;
-    top: 60px;
+    top: 0px;
     left: 0px;
     right: 0px;
   }
@@ -25,6 +25,6 @@
       <%= flash[:alert] %>
       <br>
     <% end %>
-    Please try again below, or contact <a href="mailto:<%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %>"><%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %></a> if this persists.
+    Please try again below, or contact <a href="mailto:<%= SiteConfig.default_site_email %>"><%= SiteConfig.default_site_email %></a> if this persists.
   </div>
 <% end %>

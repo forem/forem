@@ -27,10 +27,10 @@ exports[`<ChannelDetails /> as a moderator should render and test snapshot 1`] =
     <img
       alt="channeluser1 profile"
       class="channeldetails__userprofileimage"
-      data-content="users/userid1"
+      data-content="sidecar-user"
     />
     <a
-      data-content="users/by_username?url=channeluser1"
+      data-content="sidecar-user"
       href="/channeluser1"
       style={
         Object {
@@ -48,10 +48,10 @@ exports[`<ChannelDetails /> as a moderator should render and test snapshot 1`] =
     <img
       alt="channeluser2 profile"
       class="channeldetails__userprofileimage"
-      data-content="users/userid2"
+      data-content="sidecar-user"
     />
     <a
-      data-content="users/by_username?url=channeluser2"
+      data-content="sidecar-user"
       href="/channeluser2"
       style={
         Object {
@@ -131,12 +131,12 @@ preact-render-spy (1 nodes)
     <img
       class="channeldetails__userprofileimage"
       alt="channeluser1 profile"
-      data-content="users/userid1"
+      data-content="sidecar-user"
      />
     <a
       href="/channeluser1"
       style="padding: 3px 0px;"
-      data-content="users/by_username?url=channeluser1"
+      data-content="sidecar-user"
     >
       channel user 1
     </a>
@@ -145,12 +145,12 @@ preact-render-spy (1 nodes)
     <img
       class="channeldetails__userprofileimage"
       alt="channeluser2 profile"
-      data-content="users/userid2"
+      data-content="sidecar-user"
      />
     <a
       href="/channeluser2"
       style="padding: 3px 0px;"
-      data-content="users/by_username?url=channeluser2"
+      data-content="sidecar-user"
     >
       channel user 2
     </a>
@@ -158,7 +158,7 @@ preact-render-spy (1 nodes)
   <div class="channeldetails__inviteusers">
     <h2>Invite Members</h2>
     <input
-      onKeyUp={[Function value]}
+      onKeyUp={[Function debounced]}
       placeholder="Find users"
      />
     <div class="channeldetails__searchresults">
@@ -195,7 +195,7 @@ preact-render-spy (1 nodes)
          
         <button
           type="button"
-          onClick={[Function value]}
+          onClick={[Function anonymous]}
           data-content="searched_userid3"
         >
           Invite
@@ -244,12 +244,12 @@ preact-render-spy (1 nodes)
     <img
       class="channeldetails__userprofileimage"
       alt="channeluser1 profile"
-      data-content="users/userid1"
+      data-content="sidecar-user"
      />
     <a
       href="/channeluser1"
       style="padding: 3px 0px;"
-      data-content="users/by_username?url=channeluser1"
+      data-content="sidecar-user"
     >
       channel user 1
     </a>
@@ -258,12 +258,12 @@ preact-render-spy (1 nodes)
     <img
       class="channeldetails__userprofileimage"
       alt="channeluser2 profile"
-      data-content="users/userid2"
+      data-content="sidecar-user"
      />
     <a
       href="/channeluser2"
       style="padding: 3px 0px;"
-      data-content="users/by_username?url=channeluser2"
+      data-content="sidecar-user"
     >
       channel user 2
     </a>
@@ -314,10 +314,10 @@ exports[`<ChannelDetails /> as a user should render and test snapshot 1`] = `
     <img
       alt="channeluser1 profile"
       class="channeldetails__userprofileimage"
-      data-content="users/userid1"
+      data-content="sidecar-user"
     />
     <a
-      data-content="users/by_username?url=channeluser1"
+      data-content="sidecar-user"
       href="/channeluser1"
       style={
         Object {
@@ -335,10 +335,10 @@ exports[`<ChannelDetails /> as a user should render and test snapshot 1`] = `
     <img
       alt="channeluser2 profile"
       class="channeldetails__userprofileimage"
-      data-content="users/userid2"
+      data-content="sidecar-user"
     />
     <a
-      data-content="users/by_username?url=channeluser2"
+      data-content="sidecar-user"
       href="/channeluser2"
       style={
         Object {

@@ -1,8 +1,10 @@
 class Page < ApplicationRecord
+  TEMPLATE_OPTIONS = %w[contained full_within_layout].freeze
+
   validates :title, presence: true
   validates :description, presence: true
   validates :slug, presence: true, format: /\A[0-9a-z\-_]*\z/
-  validates :template, inclusion: { in: %w[contained full_within_layout full_page] }
+  validates :template, inclusion: { in: TEMPLATE_OPTIONS }
   validate :body_present
   validate :unique_slug_including_users_and_orgs, if: :slug_changed?
 
@@ -41,6 +43,6 @@ class Page < ApplicationRecord
   end
 
   def bust_cache
-    Pages::BustCacheJob.perform_later(slug)
+    Pages::BustCacheWorker.perform_async(slug)
   end
 end

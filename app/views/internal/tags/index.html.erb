@@ -1,44 +1,57 @@
-<style>
-  textarea {
-    height: 140px;
-  }
-</style>
-<h1>Tags</h1>
-<%= form_tag("/internal/tags", method: "get") do %>
-  <%= label_tag(:search, "Find by tag name:") %>
-  <%= text_field_tag(:search, params[:search]) %>
-  <% if params[:state].present? %>
-    <%= hidden_field_tag(:state, params[:state]) %>
-  <% end %>
-  <%= submit_tag("Search") %>
-<% end %>
-
-<h3>
-  <a href="/internal/tags"
-     style="<%= "background: yellow" if params[:state].blank? %>">All</a> |
-  <a href="/internal/tags?state=supported"
-     style="<%= "background: yellow" if params[:state] == "supported" %>">Supported</a> |
-  <a href="/internal/tags?state=unsupported"
-     style="<%= "background: yellow" if params[:state] == "unsupported" %>">Unsupported</a> |
-</h3>
+<div class="row m-3">
+  <div class="col">
+    <ul class="nav nav-pills">
+      <li class="nav-item">
+        <a href="/internal/tags" class="nav-link <%= "active" if params[:state].blank? %>">All</a>
+      </li>
+      <li class="nav-item">
+        <a href="/internal/tags?state=supported" class="nav-link <%= "active" if params[:state] == "supported" %>">Supported</a>
+      </li>
+      <li class="nav-item">
+        <a href="/internal/tags?state=unsupported" class="nav-link <%= "active" if params[:state] == "unsupported" %>">Unsupported</a>
+      </li>
+    </ul>
+  </div>
+  <div class="col">
+    <%= form_tag("/internal/tags", method: "get") do %>
+      <div class="form-row justify-content-end">
+        <div class="form-group">
+          <%= text_field_tag(:search, params[:search]) %>
+          <% if params[:state].present? %>
+            <%= hidden_field_tag(:state, params[:state]) %>
+          <% end %>
+          <%= submit_tag("Search") %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
 
 <%= paginate @tags %>
-<div class="wrapper" style="font-weight: 600; border-bottom: 2px solid black;">
-  <div>Tag</div>
-  <div>ID</div>
-  <div>Alias For</div>
-  <div>Taggings Count</div>
-  <div>Category</div>
-  <div>Is Moderated?</div>
-</div>
-<% @tags.each do |tag| %>
-  <div class="wrapper" style="border-bottom: 1px solid grey; padding: 10px;">
-    <div class="grid-item"><a href="/internal/tags/<%= tag.id %>" target="_blank">#<%= tag.name %></a></div>
-    <div><%= tag.id %></div>
-    <div><%= tag.alias_for %></div>
-    <div><%= tag.taggings_count %></div>
-    <div><%= tag.category %></div>
-    <div><%= tag.tag_moderator_ids.any? %></div>
-  </div>
-<% end %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Tag</th>
+      <th scope="col">ID</th>
+      <th scope="col">Alias For</th>
+      <th scope="col">Taggings Count</th>
+      <th scope="col">Category</th>
+      <th scope="col">Is Moderated?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @tags.each do |tag| %>
+      <tr>
+        <td><%= link_to tag.name, "/internal/tags/#{tag.id}/" %></td>
+        <td><%= tag.id %></td>
+        <td><%= tag.alias_for %></td>
+        <td><%= tag.taggings_count %></td>
+        <td><%= tag.category %></td>
+        <td><%= tag.tag_moderator_ids.any? %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
 <%= paginate @tags %>

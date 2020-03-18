@@ -1,12 +1,5 @@
 <%= render "style" %>
 
-<div class="blank_space" style="height: 50px;">
-</div>
-<div class="blank_space">
-</div>
-<div class="blank_space">
-</div>
-
-<%= form_for [:internal, @feedback_message] do |f| %>
+<%= form_for [:internal, @feedback_message], html: { class: "mt-3" } do |f| %>
   <%= render "feedback_message", f: f, feedback_message: @feedback_message %>
 <% end %>

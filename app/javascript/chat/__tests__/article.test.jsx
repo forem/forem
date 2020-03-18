@@ -33,19 +33,7 @@ const sampleResponse = JSON.stringify({
 
 const userArticle = {
   type_of: 'article',
-  id: '42640',
-  cover_image: 'princess_carolyn_is_perfect.png',
   path: '/princesscarolyn/your-approval-means-nothing-to-me-42640',
-  title: 'Your Approval Means Nothing to Me',
-  readable_publish_date: 'July 30, 2014',
-  body_html:
-    "That woman can knock a drink back like a Kennedy at a wake for another Kennedy, but I'll be damned if she doesn't get s*** done!",
-  user: {
-    id: '00001',
-    username: 'princesscarolyn',
-    name: 'Princess Carolyn',
-    profile_image_90: '/princesscarolyn.png',
-  },
 };
 
 const getArticle = () => <Article resource={userArticle} />;
@@ -67,59 +55,7 @@ describe('<Article />', () => {
       true,
     );
     expect(
-      context.find('.activechatchannel__activeArticleDetails').exists(),
+      context.find('iframe').exists(),
     ).toEqual(true);
-    expect(
-      context
-        .find('.activechatchannel__activeArticleDetails')
-        .childAt(0)
-        .attr('href'),
-    ).toEqual(userArticle.path);
-    expect(
-      context.find('.activechatchannel__activeArticleDetailsPath').text(),
-    ).toEqual(userArticle.path);
-    expect(
-      context
-        .find('.title')
-        .childAt(0)
-        .text(),
-    ).toEqual(userArticle.title);
-    expect(context.find('.author').attr('href')).toEqual(
-      `/${userArticle.user.username}`,
-    );
-    expect(context.find('.profile-pic').attr('src')).toEqual(
-      userArticle.user.profile_image_90,
-    );
-    expect(context.find('.author').text()).toEqual(
-      `${userArticle.user.name}  | ${userArticle.readable_publish_date}`,
-    );
-    expect(context.find('.published-at').text()).toEqual(
-      ` | ${userArticle.readable_publish_date}`,
-    );
-    expect(
-      context
-        .find('.body')
-        .childAt(0)
-        .attr('dangerouslySetInnerHTML'),
-    ).toEqual({ __html: userArticle.body_html });
-
-    // checks reaction
-    expect(
-      context.find('.activechatchannel__activeArticleActions').exists(),
-    ).toEqual(true);
-    expect(context.find('.heart-reaction-button').exists()).toEqual(true);
-    expect(context.find('.unicorn-reaction-button').exists()).toEqual(true);
-    expect(context.find('.readinglist-reaction-button').exists()).toEqual(true);
-
-    // checks that only heart class has active
-    expect(context.find('.heart-reaction-button').attr('className')).toEqual(
-      'heart-reaction-button active',
-    );
-    expect(context.find('.unicorn-reaction-button').attr('className')).toEqual(
-      'unicorn-reaction-button ',
-    );
-    expect(
-      context.find('.readinglist-reaction-button').attr('className'),
-    ).toEqual('readinglist-reaction-button ');
   });
 });

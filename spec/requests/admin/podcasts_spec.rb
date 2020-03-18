@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Admin::Podcasts", type: :request do
   let(:super_admin) { create(:user, :super_admin) }
-  let(:image_file) { Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg") }
+  let(:image_file) { Rails.root.join("spec/support/fixtures/images/image1.jpeg") }
 
   before do
     sign_in super_admin
@@ -28,16 +28,16 @@ RSpec.describe "Admin::Podcasts", type: :request do
     end
 
     it "enqueues a job after creating a podcast" do
-      expect do
+      sidekiq_assert_enqueued_jobs(1, only: Podcasts::GetEpisodesWorker) do
         post "/admin/podcasts", params: { podcast: valid_attributes }
-      end.to have_enqueued_job(Podcasts::GetEpisodesJob).exactly(:once)
+      end
     end
 
     it "doesn't enqueue a job when creating an unpublished podcast" do
       valid_attributes[:published] = false
-      expect do
+      sidekiq_assert_no_enqueued_jobs(only: Podcasts::GetEpisodesWorker) do
         post "/admin/podcasts", params: { podcast: valid_attributes }
-      end.not_to have_enqueued_job(Podcasts::GetEpisodesJob)
+      end
     end
   end
 end

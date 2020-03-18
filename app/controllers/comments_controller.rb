@@ -16,21 +16,23 @@ class CommentsController < ApplicationController
 
     if @podcast
       @user = @podcast
-      (@commentable = @user.podcast_episodes.find_by(slug: params[:slug])) || not_found
+      @commentable = @user.podcast_episodes.find_by(slug: params[:slug]) if @user.podcast_episodes
     else
       @user = User.find_by(username: params[:username]) ||
         Organization.find_by(slug: params[:username]) ||
         not_found
       @commentable = @root_comment&.commentable ||
-        @user.articles.find_by(slug: params[:slug]) ||
-        not_found
+        @user.articles.find_by(slug: params[:slug]) || nil
       @article = @commentable
-      not_found unless @commentable.published
+
+      not_found if @commentable && !@commentable.published
     end
 
-    @commentable_type = @commentable.class.name
+    @commentable_type = @commentable.class.name if @commentable
 
-    set_surrogate_key_header "comments-for-#{@commentable.id}-#{@commentable_type}"
+    set_surrogate_key_header "comments-for-#{@commentable.id}-#{@commentable_type}" if @commentable
+
+    render :deleted_commentable_comment unless @commentable
   end
 
   # GET /comments/1
@@ -47,7 +49,11 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    raise if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
+    if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
+      skip_authorization
+      render json: {}, status: :too_many_requests
+      return
+    end
 
     @comment = Comment.new(permitted_attributes(Comment))
     @comment.user_id = current_user.id
@@ -55,10 +61,13 @@ class CommentsController < ApplicationController
     authorize @comment
 
     if @comment.save
-      current_user.update(checked_code_of_conduct: true) if params[:checked_code_of_conduct].present? && !current_user.checked_code_of_conduct
+      checked_code_of_conduct = params[:checked_code_of_conduct].present? && !current_user.checked_code_of_conduct
+      current_user.update(checked_code_of_conduct: true) if checked_code_of_conduct
 
       Mention.create_all(@comment)
-      NotificationSubscription.create(user: current_user, notifiable_id: @comment.id, notifiable_type: "Comment", config: "all_comments")
+      NotificationSubscription.create(
+        user: current_user, notifiable_id: @comment.id, notifiable_type: "Comment", config: "all_comments",
+      )
       Notification.send_new_comment_notifications_without_delay(@comment)
 
       if @comment.invalid?
@@ -66,7 +75,6 @@ class CommentsController < ApplicationController
         render json: { status: "comment already exists" }
         return
       end
-
       render json: {
         status: "created",
         css: @comment.custom_css,
@@ -82,7 +90,7 @@ class CommentsController < ApplicationController
           id: current_user.id,
           username: current_user.username,
           name: current_user.name,
-          profile_pic: ProfileImage.new(current_user).get(50),
+          profile_pic: ProfileImage.new(current_user).get(width: 50),
           twitter_username: current_user.twitter_username,
           github_username: current_user.github_username
         }
@@ -92,11 +100,19 @@ class CommentsController < ApplicationController
                                     ancestry: @comment.ancestry)[1])
       @comment.destroy
       render json: { status: "comment already exists" }
-      return
     else
       render json: { status: "errors" }
-      return
     end
+  # See https://github.com/thepracticaldev/dev.to/pull/5485#discussion_r366056925
+  # for details as to why this is necessary
+  rescue Pundit::NotAuthorizedError
+    raise
+  rescue StandardError => e
+    skip_authorization
+
+    Rails.logger.error(e)
+    message = "There was an error in your markdown: #{e}"
+    render json: { error: message }, status: :unprocessable_entity
   end
 
   # PATCH/PUT /comments/1
@@ -110,20 +126,26 @@ class CommentsController < ApplicationController
       @commentable = @comment.commentable
       render :edit
     end
+  rescue StandardError => e
+    @commentable = @comment.commentable
+    flash.now[:error] = "There was an error in your markdown: #{e}"
+    render :edit
   end
 
   # DELETE /comments/1
   # DELETE /comments/1.json
   def destroy
     authorize @comment
-    @commentable_path = @comment.commentable.path
     if @comment.is_childless?
       @comment.destroy
     else
       @comment.deleted = true
       @comment.save!
     end
-    redirect_to URI.parse(@commentable_path).path, notice: "Comment was successfully deleted."
+    redirect = @comment.commentable&.path || user_path(current_user)
+    # NOTE: Brakeman doesn't like redirecting to a path, because of a "possible
+    # unprotected redirect". Using URI.parse().path is the recommended workaround.
+    redirect_to URI.parse(redirect).path, notice: "Comment was successfully deleted."
   end
 
   def delete_confirm
@@ -139,7 +161,7 @@ class CommentsController < ApplicationController
       parsed_markdown = MarkdownParser.new(fixed_body_markdown)
       processed_html = parsed_markdown.finalize
     rescue StandardError => e
-      processed_html = "<p>😔 There was a error in your markdown</p><hr><p>#{e}</p>"
+      processed_html = "<p>😔 There was an error in your markdown</p><hr><p>#{e}</p>"
     end
     respond_to do |format|
       format.json { render json: { processed_html: processed_html }, status: :ok }
@@ -149,7 +171,12 @@ class CommentsController < ApplicationController
   def settings
     @comment = Comment.find(params[:id_code].to_i(26))
     authorize @comment
-    @notification_subscription = NotificationSubscription.find_or_initialize_by(user_id: @comment.user_id, notifiable_id: @comment.id, notifiable_type: "Comment", config: "all_comments")
+    @notification_subscription = NotificationSubscription.find_or_initialize_by(
+      user_id: @comment.user_id,
+      notifiable_id: @comment.id,
+      notifiable_type: "Comment",
+      config: "all_comments",
+    )
     render :settings
   end
 

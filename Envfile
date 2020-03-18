@@ -11,19 +11,6 @@ enable_defaults! { ENV["RACK_ENV"] != "production" }
 variable :APP_DOMAIN, :String, default: "localhost:3000"
 variable :APP_PROTOCOL, :String, default: "http://"
 variable :COMMUNITY_NAME, :String, default: "DEV(local)"
-variable :MAIN_SOCIAL_IMAGE, :String, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
-variable :SITE_TWITTER_HANDLE, :String, default: "tbd"
-variable :RATE_LIMIT_FOLLOW_COUNT_DAILY, :Integer, default: 500
-variable :FAVICON_URL, :String, default: "favicon.ico"
-
-# Logo
-variable :LOGO_SVG, :String, default: ""
-
-# Default staff account's id
-variable :DEVTO_USER_ID, :Integer, default: 1
-
-# Default site email
-variable :DEFAULT_SITE_EMAIL, :String, default: "yo@dev.to"
 
 # Service timeout length
 variable :RACK_TIMEOUT_WAIT_TIMEOUT, :Integer, default: 100_000
@@ -40,6 +27,12 @@ variable :REDIS_SESSIONS_URL, :String, default: "redis://localhost:6379"
 variable :SESSION_KEY, :String, default: "_Dev_Community_Session"
 variable :SESSION_EXPIRY_SECONDS, :Integer, default: 1209600 # two weeks in seconds
 
+# Redis Sidekiq storage
+variable :REDIS_SIDEKIQ_URL, :String, default: "redis://localhost:6379"
+
+# Elasticsearch
+variable :ELASTICSEARCH_URL, :String, default: "http://localhost:9200"
+
 ################################################
 ############## 3rd Party Services ##############
 ################################################
@@ -51,12 +44,9 @@ variable :SESSION_EXPIRY_SECONDS, :Integer, default: 1209600 # two weeks in seco
 # (https://developer.github.com/v3/guides/basics-of-authentication/)
 variable :GITHUB_KEY, :String, default: "Optional"
 variable :GITHUB_SECRET, :String, default: "Optional"
-variable :GITHUB_TOKEN, :String, default: "Optional"
 
 # Twitter for normal twitter access
 # (https://developer.twitter.com/en/docs/basics/authentication/guides/access-tokens)
-variable :TWITTER_ACCESS_TOKEN, :String, default: "Optional"
-variable :TWITTER_ACCESS_TOKEN_SECRET, :String, default: "Optional"
 variable :TWITTER_KEY, :String, default: "Optional"
 variable :TWITTER_SECRET, :String, default: "Optional"
 
@@ -80,6 +70,7 @@ variable :ALGOLIASEARCH_SEARCH_ONLY_KEY, :String, default: only_in_test
 variable :AWS_ID, :String, default: "Optional"
 variable :AWS_SECRET, :String, default: "Optional"
 variable :AWS_BUCKET_NAME, :String, default: "Optional"
+variable :AWS_UPLOAD_REGION, :String, default: ""
 
 # AWS SDK
 # (https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/setup-config.html)
@@ -113,10 +104,6 @@ variable :CLOUDINARY_SECURE, :String, default: "Optional"
 variable :HCTI_API_USER_ID, :String, default: "Optional"
 variable :HCTI_API_KEY, :String, default: "Optional"
 
-# Dacast for streaming
-# (https://www.dacast.com/video-api-documentation/)
-variable :DACAST_STREAM_CODE, :String, default: "Optional"
-
 # Fastly for edge caching
 # (https://docs.fastly.com/api/)
 variable :FASTLY_API_KEY, :String, default: "Optional"
@@ -130,21 +117,10 @@ variable :HONEYCOMB_API_KEY, :String, default: ""
 # (https://developers.google.com/analytics/devguides/reporting/core/v4)
 variable :GA_SERVICE_ACCOUNT_JSON, :String, default: "Optional"
 variable :GA_TRACKING_ID, :String, default: "Optional"
-variable :GA_OPTIMIZE_ID, :String, default: "Optional"
-variable :GA_VIEW_ID, :String, default: "Optional"
-variable :GA_FETCH_RATE, :Integer, default: 25
 
 # Mailchimp for mails
 # (https://mailchimp.com/developer/)
 variable :MAILCHIMP_API_KEY, :String, default: "Optional-valid"
-variable :MAILCHIMP_NEWSLETTER_ID, :String, default: "Optional"
-variable :MAILCHIMP_SUSTAINING_MEMBERS_ID, :String, default: "Optional"
-variable :MAILCHIMP_TAG_MODERATORS_ID, :String, default: "Optional"
-variable :MAILCHIMP_COMMUNITY_MODERATORS_ID, :String, default: "Optional"
-
-# Email digest frequency
-variable :PERIODIC_EMAIL_DIGEST_MAX, :Integer, default: 0
-variable :PERIODIC_EMAIL_DIGEST_MIN, :Integer, default: 2
 
 # Pusher for DEV Connect/notfications
 # (https://pusher.com/docs)
@@ -163,13 +139,13 @@ variable :RECAPTCHA_SITE, :String, default: "Optional"
 # Slack for customer alerts
 # (https://api.slack.com/)
 variable :SLACK_CHANNEL, :String, default: ""
+variable :SLACK_DEPLOY_CHANNEL, :String, default: ""
 variable :SLACK_WEBHOOK_URL, :String, default: ""
 
 # Stripe for payment system
 # (https://stripe.com/docs/api)
 variable :STRIPE_PUBLISHABLE_KEY, :String, default: "Optional"
 variable :STRIPE_SECRET_KEY, :String, default: "Optional"
-variable :STRIPE_CANCELLATION_SECRET, :String, default: "Optional"
 
 # For video calling in DEV Connect
 # (https://www.twilio.com/docs/video)
@@ -183,16 +159,12 @@ variable :TWITCH_CLIENT_ID, :String, default: "Optional"
 variable :TWITCH_CLIENT_SECRET, :String, default: "Optional"
 variable :TWITCH_WEBHOOK_SECRET, :String, default: "Optional"
 
-# Trending tags on home page
-variable :TRENDING_TAGS, :String, default: "git,beginners"
-
 # For calling the Stack Exchange API
 # (https://api.stackexchange.com/docs)
 variable :STACK_EXCHANGE_APP_KEY, :String, default: ""
 
-##### Legacy test related env vars ######
-variable :FACEBOOK_PIXEL_ID, :String, default: "Optional"
-variable :SMARTY_STREETS_WEB_KEY, :String, default: "Optional"
+# For setting the IDs of the staff and welcoming users
+variable :STAFF_USER_ID, :Integer, default: 1
 
 group :production do
   variable :SECRET_KEY_BASE, :String

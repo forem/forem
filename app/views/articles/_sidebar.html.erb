@@ -1,42 +1,39 @@
 <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
   <div class="sidebar-bg" id="sidebar-bg-left"></div>
   <div class="side-bar">
-    <% cache("main-sidebar-nav--#{user_signed_in?}-#{ApplicationConfig['HEROKU_SLUG_COMMIT']}", expires_in: 5.days) do %>
+    <% cache(cache_key_heroku_slug("main-sidebar-nav--#{user_signed_in?}"), expires_in: 5.days) do %>
       <%= render "articles/sidebar_nav" %>
-      <div class="widget sponsorship-widget <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
+      <div class="widget widget-sponsorship <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
         <header>
-          <a href="/sponsors"><h4>community sponsors</h4></a>
+          <a href="/sponsors"><h4>Community sponsors</h4></a>
           <span class="emoji">
             <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" alt="emoji heart" />
           </span>
         </header>
         <% @sponsorships = Sponsorship.gold.live.includes(:organization).order(featured_number: :asc) %>
-        <% if @sponsorships.any? %>
+        <%# the pattern .present?/.each has the advantage of issuing only a single SQL query to load objects in memory %>
+        <% if @sponsorships.present? %>
           <div class="widget-body">
             <% @sponsorships.each do |sponsorship| %>
               <%= render "articles/single_sponsor", sponsorship: sponsorship %>
             <% end %>
-            <div class="sponsors-love-message">
-              We are grateful for wonderful sponsors who help sustain the <%= ApplicationConfig["COMMUNITY_NAME"] %> community.
-            </div>
-            <div class="sponsor-footer">
-              <p>
-                <a href="/sponsorship-info">Sponsorship Info/Policy</a>
-              </p>
+            <div class="sidebar-sponsor--footer">
+              We are grateful for wonderful sponsors who help sustain the <%= ApplicationConfig["COMMUNITY_NAME"] %> community.<br>
+              <a href="/sponsorship-info">Sponsorship Info/Policy</a>
             </div>
           </div>
         <% end %>
       </div>
       <div class="widget">
         <header>
-          <h4>key links</h4>
+          <h4>Key links</h4>
         </header>
         <div class="widget-body">
-          <a href="https://twitter.com/<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %>" target="_blank" rel="noopener"><img src="<%= asset_path("twitter-logo.svg") %>" alt="Twitter logo" class="social-icon" /></a>
-          <a href="https://github.com/<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %>" target="_blank" rel="noopener"><img src="<%= asset_path("github-logo.svg") %>" alt="GitHub logo" class="social-icon" /></a>
-          <a href="https://instagram.com/<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %>" target="_blank" rel="noopener"><img src="<%= asset_path("instagram-logo.svg") %>" alt="Instagram logo" class="social-icon" /></a>
-          <a href="https://facebook.com/<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %>" target="_blank" rel="noopener"><img src="<%= asset_path("facebook-logo.svg") %>" alt="Facebook logo" class="social-icon" /></a>
-          <a href="https://twitch.tv/<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %>" target="_blank" rel="noopener"><img src="<%= asset_path("twitch-logo.svg") %>" alt="Twitch logo" class="social-icon" /></a>
+          <a href="https://twitter.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener"><img src="<%= asset_path("twitter-logo.svg") %>" alt="Twitter logo" class="social-icon" /></a>
+          <a href="https://github.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener"><img src="<%= asset_path("github-logo.svg") %>" alt="GitHub logo" class="social-icon" /></a>
+          <a href="https://instagram.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener"><img src="<%= asset_path("instagram-logo.svg") %>" alt="Instagram logo" class="social-icon" /></a>
+          <a href="https://facebook.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener"><img src="<%= asset_path("facebook-logo.svg") %>" alt="Facebook logo" class="social-icon" /></a>
+          <a href="https://twitch.tv/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener"><img src="<%= asset_path("twitch-logo.svg") %>" alt="Twitch logo" class="social-icon" /></a>
         </div>
         <div class="side-footer">
           <a href="/about">About</a>
@@ -54,7 +51,7 @@
       <% @left_sidebar_ad = DisplayAd.for_display("sidebar_left") %>
       <% if @left_sidebar_ad %>
         <div class="widget" id="sponsorship-arbitrary-display-widget" data-id="<%= @left_sidebar_ad.id %>">
-          <div class="widget-body" style="margin-top:-6px">
+          <div class="widget-body widget-body--sponsorship-arbitrary">
             <%= @left_sidebar_ad.processed_html.html_safe %>
           </div>
         </div>

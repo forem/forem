@@ -34,7 +34,7 @@ export class SingleRepo extends Component {
     };
     formData.append('github_repo', JSON.stringify(formAttributes));
 
-    fetch('/api/github_repos/update_or_create', {
+    fetch('/github_repos/update_or_create', {
       method: 'POST',
       headers: {
         'X-CSRF-TOKEN': csrfToken,

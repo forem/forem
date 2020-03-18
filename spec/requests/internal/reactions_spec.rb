@@ -11,7 +11,7 @@ RSpec.describe "/internal/reactions", type: :request do
       sign_in admin
     end
 
-    let(:reaction) { create(:reaction, category: "vomit", user_id: user.id, reactable_id: article.id) }
+    let(:reaction) { create(:reaction, category: "vomit", user_id: user.id, reactable: article) }
 
     it "updates reaction to be confirmed" do
       put "/internal/reactions/#{reaction.id}", params: {
@@ -34,7 +34,7 @@ RSpec.describe "/internal/reactions", type: :request do
       sign_in user
     end
 
-    let(:reaction) { create(:reaction, category: "vomit", user_id: user.id, reactable_id: article.id) }
+    let(:reaction) { create(:reaction, category: "vomit", user_id: user.id, reactable: article) }
 
     it "updates reaction to be confirmed" do
       invalid_request = lambda do

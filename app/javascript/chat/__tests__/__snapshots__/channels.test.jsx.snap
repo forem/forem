@@ -30,7 +30,7 @@ exports[`<Channels /> expanded with chat channels should render and test snapsho
         >
           <img
             alt="pic"
-            class="chatchanneltabindicatordirectimage"
+            class="chatchanneltabindicatordirectimage invert-channel-image"
           />
         </span>
         channel name 1
@@ -86,7 +86,7 @@ exports[`<Channels /> expanded with chat channels should render and test snapsho
         >
           <img
             alt="pic"
-            class="chatchanneltabindicatordirectimage"
+            class="chatchanneltabindicatordirectimage invert-channel-image"
           />
         </span>
         group channel 3
@@ -207,7 +207,7 @@ exports[`<Channels /> not expanded with chat channels should render and test sna
         >
           <img
             alt="pic"
-            class="chatchanneltabindicatordirectimage"
+            class="chatchanneltabindicatordirectimage invert-channel-image"
           />
         </span>
         channel name 1
@@ -263,7 +263,7 @@ exports[`<Channels /> not expanded with chat channels should render and test sna
         >
           <img
             alt="pic"
-            class="chatchanneltabindicatordirectimage"
+            class="chatchanneltabindicatordirectimage invert-channel-image"
           />
         </span>
         group channel 3

@@ -60,32 +60,10 @@ Object {
   "prevLen": 0,
   "searchResults": Array [
     Object {
-      "_highlightResult": Object {
-        "bg_color_hex": Object {
-          "matchLevel": "none",
-          "matchedWords": Array [],
-          "value": "#888751",
-        },
-        "name": Object {
-          "fullyHighlighted": false,
-          "matchLevel": "full",
-          "matchedWords": Array [
-            "gi",
-          ],
-          "value": "<em>gi</em>t",
-        },
-        "text_color_hex": Object {
-          "matchLevel": "none",
-          "matchedWords": Array [],
-          "value": "#56c938",
-        },
-      },
-      "bg_color_hex": "#888751",
       "hotness_score": 0,
       "name": "git",
-      "objectID": "4",
+      "short_summary": null,
       "supported": true,
-      "text_color_hex": "#56c938",
     },
   ],
   "selectedIndex": 0,
@@ -100,35 +78,24 @@ Object {
   "prevLen": 0,
   "searchResults": Array [
     Object {
-      "_highlightResult": Object {
-        "bg_color_hex": Object {
-          "matchLevel": "none",
-          "matchedWords": Array [],
-          "value": "#888751",
-        },
-        "name": Object {
-          "fullyHighlighted": false,
-          "matchLevel": "full",
-          "matchedWords": Array [
-            "gi",
-          ],
-          "value": "<em>gi</em>t",
-        },
-        "text_color_hex": Object {
-          "matchLevel": "none",
-          "matchedWords": Array [],
-          "value": "#56c938",
-        },
-      },
-      "bg_color_hex": "#888751",
       "hotness_score": 0,
       "name": "git",
-      "objectID": "4",
+      "short_summary": null,
       "supported": true,
-      "text_color_hex": "#56c938",
     },
   ],
   "selectedIndex": 0,
+  "showingRulesForTag": null,
+}
+`;
+
+exports[`<Tags /> skips the click handler if className is articleform__tagsoptionrulesbutton 1`] = `
+Object {
+  "additionalTags": Array [],
+  "cursorIdx": 0,
+  "prevLen": 0,
+  "searchResults": Array [],
+  "selectedIndex": -1,
   "showingRulesForTag": null,
 }
 `;

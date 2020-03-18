@@ -1,10 +1,9 @@
-def yarn_integrity_enabled?
-  ENV.fetch("YARN_INTEGRITY_ENABLED", "true") == "true"
-end
-
 Rails.application.configure do
   # Verifies that versions and hashed value of the package contents in the project's package.json
-  config.webpacker.check_yarn_integrity = yarn_integrity_enabled?
+  # As the integrity check is currently broken under Docker with webpacker,
+  # we can't enable this flag by default
+  # see <https://github.com/thepracticaldev/dev.to/pull/296#discussion_r210635685>
+  config.webpacker.check_yarn_integrity = ENV.fetch("YARN_INTEGRITY_ENABLED", "true") == "true"
 
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -20,10 +19,12 @@ Rails.application.configure do
   config.consider_all_requests_local = true
 
   # Enable/disable caching. By default caching is disabled.
-  if Rails.root.join("tmp", "caching-dev.txt").exist?
+  if Rails.root.join("tmp/caching-dev.txt").exist?
     config.action_controller.perform_caching = true
 
-    config.cache_store = :memory_store
+    DEFAULT_EXPIRATION = 1.hour.to_i.freeze
+    config.cache_store = :redis_cache_store, { url: ENV["REDIS_URL"], expires_in: DEFAULT_EXPIRATION }
+
     config.public_file_server.headers = {
       "Cache-Control" => "public, max-age=#{2.days.to_i}"
     }
@@ -85,7 +86,7 @@ Rails.application.configure do
     domain: "localhost:3000"
   }
 
-  config.action_mailer.preview_path = Rails.root.join("spec", "mailers", "previews")
+  config.action_mailer.preview_path = Rails.root.join("spec/mailers/previews")
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
@@ -94,17 +95,33 @@ Rails.application.configure do
 
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
-  # Install the Timber.io logger
-  send_logs_to_timber = ENV["SEND_LOGS_TO_TIMBER"] || "false" # <---- set to false to stop sending dev logs to Timber.io
-  log_device = send_logs_to_timber == "true" ? Timber::LogDevices::HTTP.new(ENV["TIMBER"]) : STDOUT
-  logger = Timber::Logger.new(log_device)
-  logger.level = config.log_level
-  config.logger = ActiveSupport::TaggedLogging.new(logger)
+  # Debug is the default log_level, but can be changed per environment.
+  config.log_level = :debug
+
+  if ENV["RAILS_LOG_TO_STDOUT"].present?
+    logger           = ActiveSupport::Logger.new(STDOUT)
+    logger.formatter = config.log_formatter
+    config.logger    = ActiveSupport::TaggedLogging.new(logger)
+  end
 
   config.after_initialize do
+    # See <https://github.com/flyerhzm/bullet#configuration> for other Bullet config options
     Bullet.enable = true
+
+    Bullet.add_footer = true
     Bullet.console = true
     Bullet.rails_logger = true
+
+    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
+    # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
+    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
+
+    # Check if there are any data update scripts to run during startup
+    if %w[c console runner s server].include?(ENV["COMMAND"])
+      if DataUpdateScript.scripts_to_run?
+        raise "Data update scripts need to be run before you can start the application. Please run 'rails data_updates:run'"
+      end
+    end
   end
 end
 

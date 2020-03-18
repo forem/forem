@@ -13,12 +13,7 @@ RSpec/DescribeClass:
     - spec/system/**/*
 
 RSpec/ExampleLength:
-  Max: 10
-
-# TODO: Uncomment it after fix rubocop-todo Metrics/LineLength
-# Metrics/LineLength:
-#   Description: 'Limit lines to 100 characters.'
-#   Max: 100
+  Max: 15
 
 #############################
 
@@ -32,6 +27,10 @@ AllCops:
   DisplayStyleGuide: true
   ExtraDetails: true
   TargetRubyVersion: 2.6
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - "spec/**/*"
 
 Naming/AccessorMethodName:
   Description: Check the naming of accessor methods for get_/set_.
@@ -77,7 +76,7 @@ Metrics/ParameterLists:
 Naming/PredicateName:
   Description: 'Check the names of predicate methods.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#bool-methods-qmark'
-  NamePrefixBlacklist:
+  ForbiddenPrefixes:
     - is_
   Exclude:
     - spec/**/*
@@ -155,12 +154,20 @@ Style/TrailingCommaInArrayLiteral:
   EnforcedStyleForMultiline: comma
   Enabled: true
 
+Rails/FilePath:
+  EnforcedStyle: slashes
+
 # Layout
 
 Layout/DotPosition:
   Description: 'Checks the position of the dot in multi-line method calls.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#consistent-multi-line-chains'
   EnforcedStyle: trailing
+
+# # TODO: Uncomment this after fixing Layout/LineLength in .rubocop_todo.yml
+# Layout/LineLength:
+#   Description: 'Limit lines to 100 characters.'
+#   Max: 100
 
 Layout/MultilineOperationIndentation:
   Description: >-

@@ -43,15 +43,13 @@
       deleteAccountUsernameInput.addEventListener('input', disableDeleteAccountBtn);
       deleteAcccountVerificationInput.addEventListener('input', disableDeleteAccountBtn);
     </script>
-    If you would like to keep your content under the <%= link_to "@ghost", "/ghost" %> account, please:
-    <h3>Request Account Deletion</h3>
-    <h4 style="font-weight: 400;">
-      <br>
-      <a href="mailto:<%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %>?subject=Request Account Deletion&body=<%= @email_body %>">
-        Click this link to request account deletion via email.
-      </a>
-      <br>
-      Be sure to change the email template to fit your needs.
-    </h4>
+    <p>
+      If you would like to keep your content under the <%= link_to "@ghost", "/ghost" %> account,
+      please <a href="mailto:<%= SiteConfig.default_site_email %>?subject=Request Account Deletion&body=<%= @email_body %>">click here.</a>
+    </p>
+
+    <p>
+      Feel free to contact <a href="mailto:<%= SiteConfig.default_site_email %>"><%= SiteConfig.default_site_email %></a> with any questions.
+    </p>
   </div>
 </div>

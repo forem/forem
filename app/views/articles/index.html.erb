@@ -5,28 +5,27 @@
        content_for: true,
      ) %>
 
-  <link rel="canonical" href="https://dev.to<%= request.path %>" />
-  <meta name="description" content="Where programmers share ideas and help each other grow.">
+  <link rel="canonical" href="<%= app_protocol_and_domain %><%= request.path %>" />
+  <meta name="description" content="<%= SiteConfig.community_description %>">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://dev.to<%= request.path %>" />
+  <meta property="og:url" content="<%= app_protocol_and_domain %><%= request.path %>" />
   <meta property="og:title" content="<%= title_with_timeframe(page_title: community_qualified_name, timeframe: params[:timeframe]) %>" />
-  <meta property="og:image" content="<%= ApplicationConfig["MAIN_SOCIAL_IMAGE"] %>">
-  <meta property="og:description" content="Where programmers share ideas and help each other grow." />
+  <meta property="og:image" content="<%= SiteConfig.main_social_image %>">
+  <meta property="og:description" content="<%= SiteConfig.community_description %>" />
   <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
-  <meta name="twitter:site" content="@<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %>">
+  <meta name="twitter:site" content="@<%= SiteConfig.social_networks_handle %>">
   <meta name="twitter:title" content="<%= title_with_timeframe(page_title: community_qualified_name, timeframe: params[:timeframe]) %>">
-  <meta name="twitter:description" content="Where programmers share ideas, experiences, and help each other grow.">
-  <meta name="twitter:image:src" content="<%= ApplicationConfig["MAIN_SOCIAL_IMAGE"] %>">
+  <meta name="twitter:description" content="<%= SiteConfig.community_description %>">
+  <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
   <meta name="twitter:card" content="summary_large_image">
-  <%= auto_discovery_link_tag(:rss, "https://dev.to/feed", title: "#{ApplicationConfig['COMMUNITY_NAME']} RSS Feed") %>
+  <%= auto_discovery_link_tag(:rss, "#{app_protocol_and_domain}/feed", title: "#{ApplicationConfig['COMMUNITY_NAME']} RSS Feed") %>
 <% end %>
-<%= javascript_pack_tag "homePage", defer: true %>
+<%= javascript_packs_with_chunks_tag "homePage", defer: true %>
 
-<% params.delete(:i) %>
-<% cache("main-stories-index-#{params}-#{user_signed_in?}", expires_in: 3.minutes) do %>
+<% cache(cache_key_heroku_slug("main-stories-index-#{params}-#{user_signed_in?}"), expires_in: 90.seconds) do %>
   <div class="home" id="index-container"
       data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
       data-algolia-tag=""
@@ -35,6 +34,7 @@
 
     <%= render "articles/sidebar" %>
 
+    <%# BEGIN Feed menu bar %>
     <div class="articles-list" id="articles-list">
       <div class="on-page-nav-controls" id="on-page-nav-controls">
         <div class="on-page-nav-label">
@@ -83,78 +83,15 @@
           <img src="<%= asset_path "lightning.svg" %>" alt="right-sidebar-nav">
         </button>
       </div>
+      <%# END Feed menu bar %>
 
-      <% if @home_page %>
-        <% @featured_story ||= @stories.where.not(main_image: nil).first&.decorate || Article.new %>
-        <% @stories = @stories.decorate %>
+      <% if user_signed_in? %>
+        <div id="homepage-feed"></div>
+      <% else %>
+        <%= render "stories/main_stories_feed" %>
       <% end %>
 
-      <% if @featured_story.id %>
-        <div id="featured-story-marker" data-featured-article="articles-<%= @featured_story.id %>"></div>
-        <img src="<%= cloud_cover_url(@featured_story.main_image) %>" style="display:none" alt="<%= @featured_story.title %>" />
-        <a href="<%= @featured_story.path %>" id="article-link-<%= @featured_story.id %>" class="index-article-link" aria-label="Main Story" data-featured-article="articles-<%= @featured_story.id %>">
-          <div class="single-article big-article" data-content-user-id="<%= @featured_story.user_id %>">
-            <div class="picture image-final" style="background-color:<%= @featured_story.main_image_background_hex_color %>;background-image:url(<%= cloud_cover_url(@featured_story.main_image) %>)"></div>
-            <div class="content-wrapper">
-              <h3>
-                <%= @featured_story.title %>
-              </h3>
-            </div>
-            <a href="/<%= @featured_story.cached_user.username %>" class="featured-profile-button">
-              <img class="featured-profile-pic" src="<%= ProfileImage.new(@featured_story.cached_user).get(90) %>" alt="<%= @featured_story.title %>" />
-            </a>
-            <div class="featured-user-name">
-              <a href="/<%= @featured_story.cached_user.username %>">
-                <%= @featured_story.cached_user.name %><%= render "shared/pro_checkmark" if @featured_story.cached_user.pro %>・<time datetime="<%= @featured_story.published_timestamp %>"><%= @featured_story.readable_publish_date %></time>
-                <span class="time-ago-indicator-initial-placeholder" data-seconds="<%= @featured_story.published_at_int %>"></span>
-              </a>
-            </div>
-            <div class="featured-tags tags">
-              <% @featured_story.cached_tag_list_array.each do |tag| %>
-                <a href="/t/<%= tag %>"><span class="tag">#<%= tag %></span></a>
-              <% end %>
-            </div>
-            <% if @featured_story.comments_count > 0 %>
-              <div class="article-engagement-count comments-count featured-engagement-count">
-                <a href="<%= @featured_story.path %>#comments"><img src="<%= asset_path("comments-bubble.png") %>" alt="chat" />
-                  <span class="engagement-count-number"><%= @featured_story.comments_count %></span>
-                </a>
-              </div>
-            <% end %>
-            <% if @featured_story.positive_reactions_count > 0 %>
-              <div class="article-engagement-count reactions-count featured-engagement-count" data-reaction-count data-reactable-id="<%= @featured_story.id %>">
-                <a href="<%= @featured_story.path %>"><img src="<%= asset_path("reactions-stack.png") %>" alt="heart" /><span id="engagement-count-number-<%= @featured_story.id %>" class="engagement-count-number">
-                    <%= @featured_story.positive_reactions_count %>
-                  </span>
-                </a>
-              </div>
-            <% end %>
-            <a
-              href="<%= @featured_story.path %>"
-              class="article-reading-time">
-              <%= @featured_story.reading_time < 1 ? 1 : @featured_story.reading_time %> min read
-            </a>
-            <button
-              type="button"
-              class="article-engagement-count bookmark-engage featured-engagement-count"
-              data-reactable-id="<%= @featured_story.id %>"
-              aria-label="Save to reading list"
-              title="Save to reading list">
-              <span class="bm-initial">SAVE</span>
-              <span class="bm-success">SAVED</span>
-            </button>
-          </div>
-        </a>
-      <% end %>
-
-      <div id="article-index-podcast-div"></div>
-
-      <div class="substories" id="substories">
-        <% if @stories.any? %>
-          <%= render "stories/main_stories_feed" %>
-        <% end %>
-      </div>
-
+      <div id="followed-podcasts" data-episodes="<%= @podcast_episodes.to_json(include: { podcast: { only: %i[slug title id], methods: %i[image_90] } }) %>"></div>
       <div class="loading-articles" id="loading-articles">
         loading...
       </div>

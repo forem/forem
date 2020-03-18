@@ -47,7 +47,7 @@ class Internal::UsersController < Internal::ApplicationController
   def banish
     @user = User.find(params[:id])
     begin
-      Moderator::BanishUser.call_banish(admin: current_user, user: @user)
+      Moderator::BanishUser.call(admin: current_user, user: @user)
     rescue StandardError => e
       flash[:danger] = e.message
     end
@@ -57,8 +57,8 @@ class Internal::UsersController < Internal::ApplicationController
   def full_delete
     @user = User.find(params[:id])
     begin
-      Moderator::DeleteUser.call_deletion(admin: current_user, user: @user, user_params: user_params)
-      flash[:success] = "@" + @user.username + " (email: " + @user.email + ", user_id: " + @user.id.to_s + ") has been fully deleted. If requested, old content may have been ghostified. If this is a GDPR delete, delete them from Mailchimp & Google Analytics."
+      Moderator::DeleteUser.call(admin: current_user, user: @user, user_params: user_params)
+      flash[:success] = "@#{@user.username} (email: #{@user.email.presence || 'no email'}, user_id: #{@user.id}) has been fully deleted. If requested, old content may have been ghostified. If this is a GDPR delete, delete them from Mailchimp & Google Analytics."
     rescue StandardError => e
       flash[:danger] = e.message
     end
@@ -99,6 +99,14 @@ class Internal::UsersController < Internal::ApplicationController
       flash[:danger] = e.message
     end
     redirect_to "/internal/users/#{@user.id}/edit"
+  end
+
+  def send_email
+    if NotifyMailer.user_contact_email(params).deliver
+      redirect_back(fallback_location: "/users")
+    else
+      flash[:danger] = "Email failed to send!"
+    end
   end
 
   private

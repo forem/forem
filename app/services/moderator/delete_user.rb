@@ -2,18 +2,18 @@ module Moderator
   class DeleteUser < ManageActivityAndRoles
     attr_reader :user, :admin, :user_params
 
+    def self.call(admin:, user:, user_params:)
+      if user_params[:ghostify] == "true"
+        new(user: user, admin: admin, user_params: user_params).ghostify
+      else
+        Users::DeleteWorker.perform_async(user.id, true)
+      end
+    end
+
     def initialize(admin:, user:, user_params:)
       @user = user
       @admin = admin
       @user_params = user_params
-    end
-
-    def self.call_deletion(admin:, user:, user_params:)
-      if user_params[:ghostify] == "true"
-        new(user: user, admin: admin, user_params: user_params).ghostify
-      else
-        Users::Delete.call(user)
-      end
     end
 
     def ghostify

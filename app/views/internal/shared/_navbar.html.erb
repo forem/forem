@@ -1,12 +1,9 @@
-<% menu_items = %w[comments articles users tags welcome broadcasts reports pages tools chat_channels growth mods config].each_with_object({}) { |v, h| h[v] = v } %>
+<% menu_items = %w[comments articles users tags welcome broadcasts reports pages tools chat_channels permissions growth mods config events badges organizations sponsorships podcasts].sort.each_with_object({}) { |v, h| h[v] = v } %>
 <% menu_items[:listings] = "classified_listings" %>
-<% menu_items[:podcasts] = "podcasts" %>
 <% menu_items[:webhooks] = "webhook_endpoints" %>
 
-<div id="navbar" class="collapse navbar-collapse">
-  <ul class="nav navbar-nav" style="font-size: 0.97em;">
-    <% menu_items.each do |name, controller| %>
-      <li class="<%= "active" if controller_name == controller %>"><a href="/internal/<%= controller %>"><%= name %></a></li>
-    <% end %>
-  </ul>
+<div class="mt-4">
+  <% menu_items.each do |name, controller| %>
+    <a class="sidebar-nav-item px-2 <%= "active" if request.path.include?(controller) %>" href="/internal/<%= controller %>"><%= name.to_s.titleize %></a>
+  <% end %>
 </div>
