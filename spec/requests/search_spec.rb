@@ -55,4 +55,32 @@ RSpec.describe "Search", type: :request, proper_status: true do
       expect(response.parsed_body).to eq("result" => mock_documents)
     end
   end
+
+  describe "GET /search/users" do
+    let(:authorized_user) { create(:user) }
+    let(:mock_documents) { [{ "username" => "firstlast" }] }
+
+    it "returns json" do
+      sign_in authorized_user
+      allow(Search::User).to receive(:search_documents).and_return(
+        mock_documents,
+      )
+      get "/search/users"
+      expect(response.parsed_body).to eq("result" => mock_documents)
+    end
+  end
+
+  describe "GET /search/feed_content" do
+    let(:authorized_user) { create(:user) }
+    let(:mock_documents) { [{ "title" => "article1" }] }
+
+    it "returns json" do
+      sign_in authorized_user
+      allow(Search::FeedContent).to receive(:search_documents).and_return(
+        mock_documents,
+      )
+      get "/search/feed_content"
+      expect(response.parsed_body).to eq("result" => mock_documents)
+    end
+  end
 end
