@@ -65,6 +65,27 @@ num_users.times do |i|
   )
 end
 
+Organization.find_each do |organization|
+  admins = []
+  admin_id = User.where.not(id: admins).order(Arel.sql("RANDOM()")).first.id
+
+  OrganizationMembership.create!(
+    user_id: admin_id,
+    organization_id: organization.id,
+    type_of_user: "admin",
+  )
+
+  admins << admin_id
+
+  2.times do
+    OrganizationMembership.create!(
+      user_id: User.where.not(id: OrganizationMembership.pluck(:user_id)).order(Arel.sql("RANDOM()")).first.id,
+      organization_id: organization.id,
+      type_of_user: "member",
+    )
+  end
+end
+
 ##############################################################################
 
 Rails.logger.info "3. Creating Tags"
