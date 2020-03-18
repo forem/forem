@@ -10,9 +10,12 @@ RSpec.describe Users::ResaveArticlesWorker, type: :worker do
       it "resave articles" do
         user = create(:user)
         article = create(:article, user: user)
+
         old_updated_at = article.updated_at
 
-        worker.perform(user.id)
+        Timecop.travel(1.minute.from_now) do
+          worker.perform(user.id)
+        end
 
         expect(article.reload.updated_at).to be > old_updated_at
       end
