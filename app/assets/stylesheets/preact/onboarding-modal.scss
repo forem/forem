@@ -1,5 +1,6 @@
 @import 'variables';
 @import 'mixins';
+@import 'components/buttons';
 
 #onboarding-container {
   min-height: calc(100vh - 350px);
@@ -45,21 +46,21 @@
 
 // Background
 .onboarding-body {
-  position: fixed;
-  top: 0;
-  height: 100vh;
-  width: 100%;
-  overflow-y: scroll;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  -webkit-background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
   display: flex;
+  height: 100vh;
   justify-content: start;
   line-height: 200%;
   margin: 0;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  overflow-y: scroll;
+  position: fixed;
+  top: 0;
+  width: 100%;
 
   @media screen and (min-width: 600px) {
     justify-content: center;
@@ -144,19 +145,15 @@
   }
 }
 
-// Button Styles
-.onboarding-body button {
-  -webkit-appearance: none;
-  background-color: #3b49df;
-  border-radius: 3px;
-  border: none;
-  box-sizing: border-box;
-  color: white;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 150%;
-  padding: 0.5em 1.5em;
-  text-align: center;
+// Crayons components, override, etc.
+.onboarding-body {
+  button {
+    @extend .crayons-btn;
+  }
+
+  .crayons-notice {
+    display: block;
+  }
 }
 
 // Tag Styles
