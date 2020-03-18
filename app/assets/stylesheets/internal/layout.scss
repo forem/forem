@@ -1,3 +1,5 @@
+@import '../variables';
+
 #siteConfigBodyContainer {
   padding: 20px;
 }
@@ -63,4 +65,27 @@
 
 .highlighted-border {
   border: 20px solid black;
+}
+
+.sidebar-nav {
+  min-height: 100vh;
+  background: $light-gray;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  max-width: 135px;
+
+  .sidebar-nav-item {
+    display: block;
+    padding: 0.2em;
+
+    &:hover {
+      text-decoration: none;
+      background: $light-medium-gray;
+    }
+  }
+
+  .sidebar-nav-item.active {
+    background: $light-medium-gray;
+  }
 }
