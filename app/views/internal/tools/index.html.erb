@@ -2,7 +2,7 @@
 <p>For a page that should 404. This will purge the page via Fastly.</p>
 <p>Use the full path (https://dev.to/xyz) or the relative path: (/xyz)</p>
 <div class="row m-3">
-  <%= form_tag "/internal/tools/bust_cache" do %>
+  <%= form_tag bust_cache_internal_tools_path do %>
     <div class="form-row">
       <div class="form-group">
         <%= label_tag("Link:") %>
@@ -18,7 +18,7 @@
 <h2>Bust Cache For Specific Content</h2>
 <p>This clears both the Rails cache & the Fastly cache.</p>
 <div class="row m-3">
-  <%= form_tag "/internal/tools/bust_cache" do %>
+  <%= form_tag bust_cache_internal_tools_path do %>
     <div class="form-row">
       <div class="form-group">
         <%= label_tag("Article ID: ") %>
@@ -29,7 +29,7 @@
   <% end %>
 </div>
 <div class="row m-3">
-  <%= form_tag "/internal/tools/bust_cache" do %>
+  <%= form_tag bust_cache_internal_tools_path do %>
     <div class="form-row">
       <div class="form-group">
         <%= label_tag("User ID: ") %>
