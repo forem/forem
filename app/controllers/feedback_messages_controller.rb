@@ -11,7 +11,7 @@ class FeedbackMessagesController < ApplicationController
       send_slack_message
       redirect_to "/feedback_messages"
     else
-      flash[:notice] = "Make sure the forms are filled 🤖 "
+      flash[:notice] = "Make sure the forms are filled 🤖"
       @previous_message = feedback_message_params[:message]
       render "pages/report-abuse.html.erb"
     end
