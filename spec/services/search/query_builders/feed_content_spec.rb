@@ -27,12 +27,13 @@ RSpec.describe Search::QueryBuilders::FeedContent, type: :service do
     end
 
     it "applies TERM_KEYS from params" do
-      params = { approved: true, tag_names: "beginner", user_id: 777 }
+      params = { approved: true, tag_names: "beginner", user_id: 777, class_name: "Article" }
       filter = described_class.new(params)
       exepcted_filters = [
         { "term" => { "approved" => true } },
         { "term" => { "tags.name" => "beginner" } },
         { "term" => { "user.id" => 777 } },
+        { "term" => { "class_name" => "Article" } },
       ]
       expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(exepcted_filters)
     end

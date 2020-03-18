@@ -25,9 +25,9 @@ RSpec.describe Search::FeedContent, type: :service do
         index_documents([article1, article2])
         query_params = { size: 5, search_fields: "ruby" }
 
-        article_docs = described_class.search_documents(params: query_params)
-        expect(article_docs.count).to eq(2)
-        doc_ids = article_docs.map { |t| t.dig("id") }
+        feed_docs = described_class.search_documents(params: query_params)
+        expect(feed_docs.count).to eq(2)
+        doc_ids = feed_docs.map { |t| t.dig("id") }
         expect(doc_ids).to include(article1.id, article2.id)
       end
     end
@@ -39,9 +39,9 @@ RSpec.describe Search::FeedContent, type: :service do
         index_documents([article1, article2])
         query_params = { size: 5, tag_names: "ruby" }
 
-        article_docs = described_class.search_documents(params: query_params)
-        expect(article_docs.count).to eq(1)
-        doc_ids = article_docs.map { |t| t.dig("id") }
+        feed_docs = described_class.search_documents(params: query_params)
+        expect(feed_docs.count).to eq(1)
+        doc_ids = feed_docs.map { |t| t.dig("id") }
         expect(doc_ids).to include(article1.id)
       end
 
@@ -49,9 +49,9 @@ RSpec.describe Search::FeedContent, type: :service do
         index_documents([article1, article2])
         query_params = { size: 5, user_id: article1.user_id }
 
-        article_docs = described_class.search_documents(params: query_params)
-        expect(article_docs.count).to eq(1)
-        doc_ids = article_docs.map { |t| t.dig("id") }
+        feed_docs = described_class.search_documents(params: query_params)
+        expect(feed_docs.count).to eq(1)
+        doc_ids = feed_docs.map { |t| t.dig("id") }
         expect(doc_ids).to include(article1.id)
       end
 
@@ -61,10 +61,21 @@ RSpec.describe Search::FeedContent, type: :service do
         index_documents([article1, article2])
         query_params = { size: 5, approved: true }
 
-        article_docs = described_class.search_documents(params: query_params)
-        expect(article_docs.count).to eq(1)
-        doc_ids = article_docs.map { |t| t.dig("id") }
+        feed_docs = described_class.search_documents(params: query_params)
+        expect(feed_docs.count).to eq(1)
+        doc_ids = feed_docs.map { |t| t.dig("id") }
         expect(doc_ids).to include(article2.id)
+      end
+
+      it "filters by class_name" do
+        pde = create(:podcast_episode)
+        index_documents([pde, article1, article2])
+        query_params = { size: 5, class_name: "PodcastEpisode" }
+
+        feed_docs = described_class.search_documents(params: query_params)
+        expect(feed_docs.count).to eq(1)
+        doc_ids = feed_docs.map { |t| t.dig("id") }
+        expect(doc_ids).to include(pde.id)
       end
     end
 
@@ -75,9 +86,9 @@ RSpec.describe Search::FeedContent, type: :service do
         index_documents([article1, article2])
         query_params = { size: 5, published_at: { gte: 2.months.ago.iso8601 } }
 
-        article_docs = described_class.search_documents(params: query_params)
-        expect(article_docs.count).to eq(1)
-        doc_ids = article_docs.map { |t| t.dig("id") }
+        feed_docs = described_class.search_documents(params: query_params)
+        expect(feed_docs.count).to eq(1)
+        doc_ids = feed_docs.map { |t| t.dig("id") }
         expect(doc_ids).to include(article2.id)
       end
     end

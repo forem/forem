@@ -8,7 +8,8 @@ module Search
       TERM_KEYS = {
         tag_names: "tags.name",
         approved: "approved",
-        user_id: "user.id"
+        user_id: "user.id",
+        class_name: "class_name"
       }.freeze
 
       RANGE_KEYS = %i[
