@@ -67,45 +67,45 @@ function renderTagsFollowed(tagsFollowedContainer, user = userData()) {
 
 const feedTimeFrame = frontPageFeedPathNames.get(window.location.pathname);
 
-let waitingForDataLoad = setTimeout(function dataLoadedCheck() {
-  const { user = null, userStatus } = document.body.dataset;
 
-  if (userStatus === 'logged-out') {
-    return;
-  }
-
-  if (userStatus === 'logged-in' && user !== null) {
-    clearTimeout(waitingForDataLoad);
-
-    import('./homePageFeed').then(({ renderFeed }) => {
-      // We have user data, render followed tags.
-      renderFeed(feedTimeFrame);
-
-      InstantClick.on('change', () => {
-        const { userStatus: currentUserStatus } = document.body.dataset;
-
-        if (currentUserStatus === 'logged-out') {
-          return;
-        }
-
-        const url = new URL(window.location);
-        const changedFeedTimeFrame = frontPageFeedPathNames.get(url.pathname);
-
-        if (!frontPageFeedPathNames.has(url.pathname)) {
-          return;
-        }
-
-        renderFeed(changedFeedTimeFrame);
+if (!document.getElementById('featured-story-marker')) {
+  let waitingForDataLoad = setInterval(function dataLoadedCheck() {
+    const { user = null, userStatus } = document.body.dataset;
+    if (userStatus === 'logged-out') {
+      return;
+    }
+  
+    if (userStatus === 'logged-in' && user !== null) {
+      clearTimeout(waitingForDataLoad);
+  
+      import('./homePageFeed').then(({ renderFeed }) => {
+        // We have user data, render followed tags.
+        renderFeed(feedTimeFrame);
+  
+        InstantClick.on('change', () => {
+          const { userStatus: currentUserStatus } = document.body.dataset;
+  
+          if (currentUserStatus === 'logged-out') {
+            return;
+          }
+  
+          const url = new URL(window.location);
+          const changedFeedTimeFrame = frontPageFeedPathNames.get(url.pathname);
+  
+          if (!frontPageFeedPathNames.has(url.pathname)) {
+            return;
+          }
+  
+          renderFeed(changedFeedTimeFrame);
+        });
       });
-    });
+  
+      renderTagsFollowed(document.getElementById('sidebar-nav-followed-tags'));
+      return;
+    }
+  }, 2);  
+}
 
-    renderTagsFollowed(document.getElementById('sidebar-nav-followed-tags'));
-    return;
-  }
-
-  // No user data yet for the logged on user, poll once more.
-  waitingForDataLoad = setTimeout(dataLoadedCheck, 40);
-}, 40);
 
 InstantClick.on('receive', (address, body, title) => {
   if (document.body.dataset.userStatus !== 'logged-in') {
