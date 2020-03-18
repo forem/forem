@@ -1015,23 +1015,25 @@
 .messagecomposer__input {
   border-radius: 3px;
   font-size: 16px;
-  margin: 6px 2px 6px 6px;
-  padding: 5px;
+  margin: 4px 2px 4px 6px;
+  padding: 4px;
   resize: none;
   flex-grow: 1;
+  height: 42px;
   @include themeable(background, theme-container-background, white);
   @include themeable(border, theme-border, 1px solid $outline-color);
   @include themeable(color, theme-color, $black);
 }
 
 .messagecomposer__submit {
-  margin: 6px 6px 6px 0;
+  margin: 4px 6px 4px 0;
   border-radius: 3px;
   background: $dark-purple;
   font-weight: 600px;
   font-family: $helvetica-condensed;
   color: white;
   font-size: 18px;
+  border: 0px;
 
   @media screen and (min-width: 500px) {
     width: 80px;
