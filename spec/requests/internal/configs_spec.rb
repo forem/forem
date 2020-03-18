@@ -206,6 +206,18 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.sidebar_tags).to eq(%w[hey haha hoho bobofofo])
         end
       end
+
+      describe "Authentication" do
+        it "removes space authentication_providers" do
+          post "/internal/config", params: { site_config: { authentication_providers: "github, twitter" }, confirmation: confirmation_message }
+          expect(SiteConfig.authentication_providers).to eq(%w[github twitter])
+        end
+
+        it "downcases authentication_providers" do
+          post "/internal/config", params: { site_config: { authentication_providers: "GitHub, Twitter" }, confirmation: confirmation_message }
+          expect(SiteConfig.authentication_providers).to eq(%w[github twitter])
+        end
+      end
     end
   end
   # rubocop:enable RSpec/NestedGroups
