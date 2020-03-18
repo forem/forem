@@ -17,7 +17,6 @@
         <%= @hero_html.html_safe %>
       </div>
     <% end %>
-    <br><br><br><br><%= cloudinary("url", width = nil, _quality = 80, _format = "jpg") %>
     <%= yield %>
   </div>
 </div>

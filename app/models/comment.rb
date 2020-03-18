@@ -23,6 +23,7 @@ class Comment < ApplicationRecord
   validates :commentable_type, inclusion: { in: %w[Article PodcastEpisode] }
   validates :user_id, presence: true
 
+  after_create :notify_slack_channel_about_warned_users, if: -> { user.warned }
   after_create :after_create_checks
   after_create_commit :record_field_test_event
   after_commit :calculate_score
@@ -234,5 +235,23 @@ class Comment < ApplicationRecord
 
   def record_field_test_event
     Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "user_creates_comment")
+  end
+
+  def notify_slack_channel_about_warned_users
+    url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
+
+    message = <<~MESSAGE.chomp
+      Activity: #{url}#{path}
+      Comment text: #{body_markdown.truncate(300)}
+      ---
+      Manage commenter - @#{user.username}: #{url}/internal/users/#{user.id}
+    MESSAGE
+
+    SlackBotPingWorker.perform_async(
+      message: message,
+      channel: "warned-user-comments",
+      username: "sloan_watch_bot",
+      icon_emoji: ":sloan:",
+    )
   end
 end

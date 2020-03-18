@@ -1,4 +1,4 @@
-<%= javascript_pack_tag "colorPreview", defer: true %>
+<%= javascript_packs_with_chunks_tag "colorPreview", defer: true %>
 
 <% unless @user.identities.exists?(provider: 'github') %>
   <div class="field">

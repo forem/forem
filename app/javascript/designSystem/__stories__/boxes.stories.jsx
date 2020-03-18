@@ -1,5 +1,4 @@
 import { h } from 'preact';
-import { storiesOf } from '@storybook/react';
 
 import './designSystem.scss';
 import { defaultChildrenPropTypes } from '../../src/components/common-prop-types';

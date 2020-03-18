@@ -195,7 +195,7 @@ preact-render-spy (1 nodes)
          
         <button
           type="button"
-          onClick={[Function value]}
+          onClick={[Function anonymous]}
           data-content="searched_userid3"
         >
           Invite

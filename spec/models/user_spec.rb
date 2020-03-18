@@ -957,4 +957,28 @@ RSpec.describe User, type: :model do
       expect(user.receives_follower_email_notifications?).to be(true)
     end
   end
+
+  describe ".dev_account" do
+    it "returns nil if the account does not exist" do
+      expect(described_class.dev_account).to be_nil
+    end
+
+    it "returns the user if the account exists" do
+      allow(SiteConfig).to receive(:staff_user_id).and_return(user.id)
+
+      expect(described_class.dev_account).to eq(user)
+    end
+  end
+
+  describe ".mascot_account" do
+    it "returns nil if the account does not exist" do
+      expect(described_class.mascot_account).to be_nil
+    end
+
+    it "returns the user if the account exists" do
+      allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id)
+
+      expect(described_class.mascot_account).to eq(user)
+    end
+  end
 end

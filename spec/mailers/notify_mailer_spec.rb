@@ -228,6 +228,38 @@ RSpec.describe NotifyMailer, type: :mailer do
     end
   end
 
+  describe "#user_contact_email" do
+    let(:email_params) do
+      {
+        user_id: user.id,
+        email_subject: "Buddy",
+        email_body: "Laugh with me, buddy"
+      }
+    end
+    let(:email) { described_class.user_contact_email(email_params) }
+
+    it "renders proper subject" do
+      expect(email.subject).to eq("Buddy")
+    end
+
+    it "renders proper sender" do
+      expect(email.from).to eq([SiteConfig.default_site_email])
+      expect(email["from"].value).to eq("DEV Community <#{SiteConfig.default_site_email}>")
+    end
+
+    it "renders proper receiver" do
+      expect(email.to).to eq([user.email])
+    end
+
+    it "includes the tracking pixel" do
+      expect(email.html_part.body).to include("open.gif")
+    end
+
+    it "includes UTM params" do
+      expect(email.html_part.body).to include(CGI.escape("utm_campaign=user_contact"))
+    end
+  end
+
   describe "#new_message_email" do
     let(:direct_channel) { ChatChannel.create_with_users([user, user2], "direct") }
     let(:direct_message) { create(:message, user: user, chat_channel: direct_channel) }
