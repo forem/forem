@@ -62,7 +62,7 @@ if (sidebarListingsMinimizeButton) {
         );
       });
   
-      render(<TagsFollowed tags={followedTags} />, tagsFollowedContainer);
+      render(<TagsFollowed tags={followedTags} />, tagsFollowedContainer, tagsFollowedContainer.firstElementChild);
     });
   }  
 
