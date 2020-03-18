@@ -17,7 +17,7 @@ class Internal::ResponseTemplatesController < Internal::ApplicationController
       redirect_to("/internal/response_templates/#{@response_template.id}/edit")
     else
       flash[:danger] = @response_template.errors.full_messages.to_sentence
-      @response_templates = ResponseTemplate.all.page(params[:page]).per(50)
+      @response_templates = ResponseTemplate.page(params[:page]).per(50)
       render :index
     end
   end
