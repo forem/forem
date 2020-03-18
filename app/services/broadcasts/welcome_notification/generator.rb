@@ -21,8 +21,8 @@ module Broadcasts
       end
 
       def commented_on_welcome_thread?
-        welcome_threads = Article.where("title LIKE 'Welcome Thread - %'").order(created_at: :desc).first
-        Comment.where(commentable: welcome_threads, user: user).any?
+        welcome_thread = Article.where("title LIKE 'Welcome Thread - %'").order(created_at: :desc).first
+        Comment.where(commentable: welcome_thread, user: user).any?
       end
 
       private
