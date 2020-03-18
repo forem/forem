@@ -41,29 +41,30 @@ if (sidebarListingsMinimizeButton) {
  * @param {HTMLElement} tagsFollowedContainer DOM element to render tags followed.
  * @param {object} user The currently logged on user, null if not logged on.
  */
-function renderTagsFollowed(tagsFollowedContainer, user = userData()) {
-  if (user === null) {
-    return;
-  }
 
-  // Only render if a user is logged on.
-  import('../leftSidebar/TagsFollowed').then(({ TagsFollowed }) => {
-    const { followed_tags } = user; // eslint-disable-line camelcase
-    const followedTags = JSON.parse(followed_tags);
-
-    // This should be done server-side potentially
-    // sort tags by descending weight, descending popularity and name
-    followedTags.sort((tagA, tagB) => {
-      return (
-        tagB.points - tagA.points ||
-        tagB.hotness_score - tagA.hotness_score ||
-        tagA.name.localeCompare(tagB.name)
-      );
+  function renderTagsFollowed(tagsFollowedContainer, user = userData()) {
+    if (user === null || document.getElementById('followed-tags-wrapper')) {
+      return;
+    }
+  
+    // Only render if a user is logged on.
+    import('../leftSidebar/TagsFollowed').then(({ TagsFollowed }) => {
+      const { followed_tags } = user; // eslint-disable-line camelcase
+      const followedTags = JSON.parse(followed_tags);
+  
+      // This should be done server-side potentially
+      // sort tags by descending weight, descending popularity and name
+      followedTags.sort((tagA, tagB) => {
+        return (
+          tagB.points - tagA.points ||
+          tagB.hotness_score - tagA.hotness_score ||
+          tagA.name.localeCompare(tagB.name)
+        );
+      });
+  
+      render(<TagsFollowed tags={followedTags} />, tagsFollowedContainer);
     });
-
-    render(<TagsFollowed tags={followedTags} />, tagsFollowedContainer);
-  });
-}
+  }  
 
 const feedTimeFrame = frontPageFeedPathNames.get(window.location.pathname);
 
@@ -99,7 +100,6 @@ if (!document.getElementById('featured-story-marker')) {
           renderFeed(changedFeedTimeFrame);
         });
       });
-  
       renderTagsFollowed(document.getElementById('sidebar-nav-followed-tags'));
       return;
     }
