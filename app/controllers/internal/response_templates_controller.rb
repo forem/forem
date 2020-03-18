@@ -10,15 +10,19 @@ class Internal::ResponseTemplatesController < Internal::ApplicationController
     @response_templates = @response_templates.page(params[:page]).per(50)
   end
 
+  def new
+    @response_template = ResponseTemplate.new
+  end
+
   def create
     @response_template = ResponseTemplate.new(permitted_params)
     if @response_template.save
       flash[:success] = "Response Template: \"#{@response_template.title}\" saved successfully."
-      redirect_to("/internal/response_templates/#{@response_template.id}/edit")
+      redirect_to edit_internal_response_template_path(@response_template)
     else
       flash[:danger] = @response_template.errors.full_messages.to_sentence
       @response_templates = ResponseTemplate.page(params[:page]).per(50)
-      render :index
+      render internal_response_templates_path
     end
   end
 
@@ -35,7 +39,7 @@ class Internal::ResponseTemplatesController < Internal::ApplicationController
       flash[:danger] = @response_template.errors.full_messages.to_sentence
     end
 
-    redirect_back(fallback_location: "/internal/response_templates/#{@response_template.id}")
+    redirect_back(fallback_location: edit_internal_response_template_path(@response_template))
   end
 
   def destroy
@@ -47,7 +51,7 @@ class Internal::ResponseTemplatesController < Internal::ApplicationController
       flash[:danger] = @response_template.errors.full_messages.to_sentence # this will probably never fail
     end
 
-    redirect_to "/internal/response_templates"
+    redirect_back internal_response_templates_path
   end
 
   private
