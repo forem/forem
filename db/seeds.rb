@@ -243,7 +243,7 @@ welcome_thread_content = <<~HEREDOC
   Leave a comment below to introduce yourself to the community!✌️
 HEREDOC
 
-Article.create(
+Article.create!(
   body_markdown: welcome_thread_content,
   user: User.dev_account,
 )
