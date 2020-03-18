@@ -22,6 +22,7 @@ class Reaction < ApplicationRecord
   validates :user_id, uniqueness: { scope: %i[reactable_id reactable_type category] }
   validate  :permissions
 
+  after_create :notify_slack_channel_about_vomit_reaction, if: -> { category == "vomit" }
   before_save :assign_points
   after_create_commit :record_field_test_event
   after_commit :async_bust, :bust_reactable_cache, :update_reactable
@@ -183,5 +184,22 @@ class Reaction < ApplicationRecord
 
   def record_field_test_event
     Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "user_creates_reaction")
+  end
+
+  def notify_slack_channel_about_vomit_reaction
+    url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
+
+    message = <<~MESSAGE.chomp
+      #{user.name} (#{url}#{user.path})
+      reacted with a #{category} on
+      #{url}#{reactable.path}
+    MESSAGE
+
+    SlackBotPingWorker.perform_async(
+      message: message,
+      channel: "abuse-reports",
+      username: "abuse_bot",
+      icon_emoji: ":cry:",
+    )
   end
 end
