@@ -157,7 +157,13 @@ module ApplicationHelper
     "#{path}-#{heroku_slug_commit}"
   end
 
-  def app_protocol_and_domain
-    "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
+  # Creates an app internal URL
+  # @note Uses protocol and domain specified in the environment, ensure they are set.
+  # @param uri [URI, String] parts we want to merge into the URL, e.g. path, fragment
+  def app_url(uri = nil)
+    base_url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
+    return base_url unless uri
+
+    URI.parse(base_url).merge(uri).to_s
   end
 end
