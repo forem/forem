@@ -18,10 +18,8 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
     end
 
     context "when sending a welcome_thread notification" do
-      let(:welcome_thread_article) { create(:article, title: "Welcome Thread") }
-      let(:welcome_thread_comment) { create(:comment, commentable: welcome_thread_article, user: user) }
-      let(:article) { create(:article) }
-      let(:comment) { create(:comment, commentable: article, user: receiving_user) }
+      let(:welcome_thread_article) { create(:article, title: "Welcome Thread - v3000", published: true) }
+      let!(:welcome_thread_comment) { create(:comment, commentable_id: welcome_thread_article.id, commentable_type: "Article", user_id: user.id) }
 
       it "generates the correct broadcast type and sends the notification to the user", :aggregate_failures do
         expect(receiving_user.notifications.count).to eq(0)
@@ -31,10 +29,14 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
         expect(receiving_user.notifications.first.notifiable).to eq(welcome_broadcast)
       end
 
-      it "does not send a notification to a user who has commented in a welcome thread", elasticsearch: true do
-        sidekiq_perform_enqueued_jobs { described_class.call(receiving_user.id) }
+      it "does not send a notification to a user who has commented in a welcome thread", :aggregate_failures do
+        expect(welcome_thread_article.comments.count).to eq(1)
+        expect(welcome_thread_comment.commentable).to eq(welcome_thread_article)
+        expect(user.comments.count).to eq(1)
 
-        expect(user.notifications).to be_empty
+        sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
+
+        expect(user.notifications.count).to eq(0)
       end
 
       it "does not send a duplicate notification" do
