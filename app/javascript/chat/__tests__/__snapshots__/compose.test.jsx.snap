@@ -15,7 +15,7 @@ exports[`<Compose /> behavior with message should render and test snapshot 1`] =
       placeholder="Message goes here"
     />
     <button
-      class="messagecomposer__submit"
+      class="messagecomposer__submit cta"
       onClick={[Function]}
       type="button"
     >
