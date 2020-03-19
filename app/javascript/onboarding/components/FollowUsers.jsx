@@ -104,17 +104,12 @@ class FollowUsers extends Component {
             <h3 className="subtitle">Let&apos; s review a few things first</h3>
           </header>
 
-          <div className="modal-scroll-container">
+          <div className="onboarding-modal-scroll-container">
+
             {users.map(user => (
-              <button
-                type="button"
-                style={{
-                  backgroundColor: selectedUsers.includes(user)
-                    ? 'rgba(71, 85, 235, 0.1)'
-                    : 'white',
-                }}
+              <li
                 onClick={() => this.handleClick(user)}
-                className="user content-row"
+                className={selectedUsers.includes(user) ? "user content-row selected" : "user content-row unselected"}
               >
                 <figure className="user-avatar-container">
                   <img
@@ -130,8 +125,9 @@ class FollowUsers extends Component {
                 <button type="button" className="user-following-status">
                   {selectedUsers.includes(user) ? 'Following' : 'Follow'}
                 </button>
-              </button>
+              </li>
             ))}
+
           </div>
         </div>
         <div className="onboarding-selection-status">
