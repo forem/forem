@@ -163,7 +163,7 @@ class ClosingSlide extends Component {
         <div className="onboarding-content">
           <header className="onboarding-content-header">
             <h1 className="title">
-              You&lsquo;re part of the community!
+              You&lsquo;re a part of the community!
               <span role="img" aria-label="tada">
                 {' '}
                 🎉
