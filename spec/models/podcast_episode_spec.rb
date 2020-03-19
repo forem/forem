@@ -32,16 +32,22 @@ RSpec.describe PodcastEpisode, type: :model do
   describe "#after_commit" do
     it "on update enqueues job to index podcast_episode to elasticsearch" do
       podcast_episode.save
-      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, podcast_episode.id]) do
+      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, podcast_episode.search_id]) do
         podcast_episode.save
       end
     end
 
     it "on destroy enqueues job to delete podcast_episode from elasticsearch" do
       podcast_episode.save
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, podcast_episode.id]) do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, podcast_episode.search_id]) do
         podcast_episode.destroy
       end
+    end
+  end
+
+  describe "#search_id" do
+    it "returns podcast_episode_ID" do
+      expect(podcast_episode.search_id).to eq("podcast_episode_#{podcast_episode.id}")
     end
   end
 
