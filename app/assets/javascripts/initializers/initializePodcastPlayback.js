@@ -18,9 +18,16 @@
  * - initializeMedia()
  * - currentAudioState()
  * - saveMediaState()
+ *
+ * The following are useful eslint disables for this file in particular. Because
+ * of the way it's wrapped around it's own function (own context) we don't have
+ * the problem of using a method before it's defined:
  */
 
- var audioInitialized = false;
+/* eslint no-use-before-define: 0 */
+/* eslint no-param-reassign: 0 */
+
+var audioInitialized = false;
 
 function initializePodcastPlayback() {
   function getById(name) {
