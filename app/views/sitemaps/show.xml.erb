@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <%= @articles.each do |path, last_comment_at| %>
     <url>
-        <loc><%= app_protocol_and_domain %><%= path %></loc>
+        <loc><%= ApplicationConfig['APP_PROTOCOL'] %><%= ApplicationConfig['APP_DOMAIN'] %><%= path %></loc>
         <lastmod><%= last_comment_at %></lastmod>
     </url>
   <% end %>
