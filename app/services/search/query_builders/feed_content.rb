@@ -13,8 +13,8 @@ module Search
         ]
       }.freeze
 
-      # Search keys may not match what we have stored in Elasticsearch, this allows us
-      # to change our Elasticsearch docs without worrying about the frontend
+      # Search keys from our controllers may not match what we have stored in Elasticsearch so we map them here, 
+      # this allows us to change our Elasticsearch docs without worrying about the frontend
       TERM_KEYS = {
         tag_names: "tags.name",
         approved: "approved",
@@ -48,7 +48,7 @@ module Search
       def add_highlight_fields
         highlight_fields = { fields: {} }
         HIGHLIGHT_FIELDS.each do |field_name|
-          # In the future, the empty hash can be replaced with options to customize our highlighting
+          # This hash can be filled with options to further customize our highlighting
           # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-highlighting
           highlight_fields[:fields][field_name] = { order: :score }
         end
