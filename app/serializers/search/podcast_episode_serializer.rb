@@ -2,7 +2,9 @@ module Search
   class PodcastEpisodeSerializer
     include FastJsonapi::ObjectSerializer
 
-    attributes :id, :body_text, :class_name, :comments_count,
+    attribute :id, &:search_id
+
+    attributes :body_text, :class_name, :comments_count,
                :featured, :featured_number, :hotness_score, :path,
                :positive_reactions_count, :published, :published_at, :quote,
                :reactions_count, :search_score, :subtitle, :summary, :title,
