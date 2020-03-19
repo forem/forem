@@ -1,4 +1,4 @@
-@import '../vars/variables';
+@import '../config/import';
 
 // Display
 .hidden {
@@ -47,11 +47,11 @@
 
 // Visibility
 .visible {
-  visiblity: visible !important;
+  visibility: visible !important;
 }
 
 .invisible {
-  visiblity: hidden !important;
+  visibility: hidden !important;
 }
 
 // Box sizing
