@@ -3,7 +3,7 @@
   <%= @articles.each do |path, last_comment_at| %>
     <url>
         <loc><%= ApplicationConfig['APP_PROTOCOL'] %><%= ApplicationConfig['APP_DOMAIN'] %><%= path %></loc>
-        <lastmod><%= last_comment_at %></lastmod>
+        <lastmod><%= last_comment_at.strftime("%F") %></lastmod>
     </url>
   <% end %>
 </urlset>
