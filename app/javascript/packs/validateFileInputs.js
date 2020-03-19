@@ -14,7 +14,7 @@
  * @constant {Object.<string, number>}
  */
 const MAX_FILE_SIZE_MB = Object.freeze({
-  image: 2,
+  image: 25,
   video: 50,
 });
 
