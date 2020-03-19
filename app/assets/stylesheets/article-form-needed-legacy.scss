@@ -209,25 +209,6 @@
     }
   }
 
-  .org-publish-check-wrapper {
-    font-family: $helvetica;
-    @include themeable(background, theme-background, $lightest-gray);
-    padding: 20px 14px;
-    text-align: center;
-    font-size: 24px;
-    line-height: 33px;
-    margin-top: 8px;
-
-    label {
-      padding: 1px 10px 3px;
-    }
-
-    input {
-      vertical-align: 2px;
-      max-width: 30px;
-    }
-  }
-
   .editor-main {
     margin-top: 15px;
     position: relative;
