@@ -71,14 +71,13 @@
     "url": "https://github.com/thepracticaldev/dev.to/issues"
   },
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
-  "dependencies": {
-    "@stoplight/spectral": "5.2.0",
+  "devDependencies": {
+    "@stoplight/spectral": "5.1.0",
     "@storybook/addon-actions": "3.4.12",
     "@storybook/addon-knobs": "3.4.12",
     "@storybook/addon-links": "3.4.12",
     "@storybook/addons": "3.4.12",
     "@storybook/react": "3.4.12",
-    "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^23.4.2",
     "eslint": "^5.16.0",
@@ -103,11 +102,14 @@
     "preact-render-to-json": "^3.6.6",
     "prettier": "^1.19.1",
     "redoc-cli": "0.9.7",
-    "webpack-dev-server": "^3.10.3",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "dependencies": {
     "@babel/core": "^7.0.0",
     "@babel/plugin-transform-react-jsx": "^7.0.0",
     "@github/clipboard-copy-element": "^1.1.2",
     "@rails/webpacker": "4.2.2",
+    "babel-core": "^7.0.0-bridge.0",
     "babel-preset-preact": "^2.0.0",
     "chart.js": "^2.9.3",
     "clipboard-polyfill": "^2.8.6",
