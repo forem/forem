@@ -114,7 +114,7 @@
     "codemirror": "^5.52.0",
     "core-js": "3",
     "focus-visible": "^5.0.2",
-    "honeybadger-js": "2.1.3",
+    "honeybadger-js": "2.2.0",
     "intersection-observer": "^0.7.0",
     "linkstate": "^1.1.1",
     "lodash.debounce": "4.0.8",
