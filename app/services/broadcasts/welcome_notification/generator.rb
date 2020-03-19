@@ -3,7 +3,7 @@ module Broadcasts
   module WelcomeNotification
     class Generator
       def initialize(receiver_id)
-        @receiver_id = receiver_id
+        @user = User.find(receiver_id)
       end
 
       def self.call(*args)
@@ -11,18 +11,33 @@ module Broadcasts
       end
 
       def call
-        # This method should find the user based on the `receiver_id`.
-        # It should then determine the appropriate Broadcast for a user,
-        # based on the `created_at` and the different conditions for sending a notification.
-        # `welcome_broadcast = ...`
+        return if commented_on_welcome_thread? || received_notification?
 
-        # Once it has the appropriate Broadcast to be sent, it should send a notification for it:
-        # `Notification.send_welcome_notification(receiver_id, welcome_broadcast.id)`
+        Notification.send_welcome_notification(user.id, welcome_broadcast.id)
+      end
+
+      def received_notification?
+        Notification.exists?(notifiable: welcome_broadcast, user: user)
+      end
+
+      def commented_on_welcome_thread?
+        welcome_thread = latest_published_thread("welcome")
+        Comment.where(commentable: welcome_thread, user: user).any?
       end
 
       private
 
-      attr_reader :receiver_id
+      def welcome_broadcast
+        @welcome_broadcast ||= Broadcast.find_by(title: "Welcome Notification: welcome_thread")
+      end
+
+      def latest_published_thread(tag_name)
+        Article.published.
+          order("published_at ASC").
+          cached_tagged_with(tag_name).last
+      end
+
+      attr_reader :user
     end
   end
 end
