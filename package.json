@@ -72,7 +72,7 @@
   },
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "dependencies": {
-    "@stoplight/spectral": "5.1.0",
+    "@stoplight/spectral": "5.2.0",
     "@storybook/addon-actions": "3.4.12",
     "@storybook/addon-knobs": "3.4.12",
     "@storybook/addon-links": "3.4.12",
