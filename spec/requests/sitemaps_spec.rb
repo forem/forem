@@ -31,7 +31,7 @@ RSpec.describe "Sitemaps", type: :request do
       get "/sitemap-#{3.months.ago.strftime('%b-%Y')}.xml"
       article = Article.first
       expect(response.body).to include("<loc>#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}#{article.path}</loc>")
-      expect(response.body).to include("<lastmod>#{article.last_comment_at}</lastmod>")
+      expect(response.body).to include("<lastmod>#{article.last_comment_at.strftime('%F')}</lastmod>")
       expect(response.body).not_to include(Article.last.path)
       expect(response.content_type).to eq("application/xml")
     end
