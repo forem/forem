@@ -276,15 +276,19 @@ function initializePodcastPlayback() {
 
   function startAudioPlayback(audio) {
     if (isNativeIOS()) {
-      var titleElement = document.getElementsByClassName('title')[0];
-      if (titleElement !== undefined) {
-        // We do have the Podcast data (not always true)
+      try {
+        var episodeContainer = document.getElementsByClassName('podcast-episode-container')[0];
+        var metadata = JSON.parse(episodeContainer.dataset.meta);
         var message = {
           'action': 'metadata',
-          'episodeName': titleElement.querySelector('h1').innerText,
-          'podcastName': titleElement.querySelector('img').alt
+          'episodeName': metadata.episodeName,
+          'podcastName': metadata.podcastName,
+          'podcastImageUrl': metadata.podcastImageUrl
         }
         sendPodcastMessage(message);
+      } catch(e) {
+        console.log('Unable to load Podcast Episode metadata', e); // eslint-disable-line no-console
+        return;
       }
     }
 
