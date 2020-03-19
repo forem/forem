@@ -22,12 +22,14 @@ FactoryBot.define do
     signup_cta_variant           { "navbar_basic" }
     email_digest_periodic        { false }
 
-    after(:create) do |user|
-      create(:identity, user_id: user.id)
-    end
+    trait :with_identity do
+      transient { identities { %i[github twitter] } }
 
-    trait :two_identities do
-      after(:create) { |user| create(:identity, user_id: user.id, provider: "twitter") }
+      after(:create) do |user, options|
+        Array.wrap(options.identities).each do |provider|
+          create(:identity, user: user, provider: provider)
+        end
+      end
     end
 
     trait :super_admin do
