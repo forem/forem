@@ -66,7 +66,7 @@ function validateFileInput(fileInput) {
     const file = files[i];
     const fileType = file.type.split('/')[0];
     const fileSizeMb = (file.size / (1024 * 1024)).toFixed(2);
-    maxFileSizeMb = parseInt(maxFileSizeMb || MAX_FILE_SIZE_MB[fileType], 10);
+    maxFileSizeMb = Number(maxFileSizeMb || MAX_FILE_SIZE_MB[fileType]);
 
     const isValidFileSize = fileSizeMb <= maxFileSizeMb;
 
