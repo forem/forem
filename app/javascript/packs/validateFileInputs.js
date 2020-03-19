@@ -57,16 +57,16 @@ function validateFileInput(fileInput) {
   const files = Array.from(fileInput.files);
   const permittedFileTypes =
     fileInput.dataset.permittedFileTypes || PERMITTED_FILE_TYPES;
-  const {fileSizeErrorHandler} = fileInput.dataset;
-  const {fileTypeErrorHandler} = fileInput.dataset;
+  const { fileSizeErrorHandler } = fileInput.dataset;
+  const { fileTypeErrorHandler } = fileInput.dataset;
 
-  let {maxFileSizeMb} = fileInput.dataset;
+  let { maxFileSizeMb } = fileInput.dataset;
 
   for (let i = 0; i < files.length; i += 1) {
     const file = files[i];
     const fileType = file.type.split('/')[0];
     const fileSizeMb = (file.size / (1024 * 1024)).toFixed(2);
-    maxFileSizeMb = maxFileSizeMb || MAX_FILE_SIZE_MB[fileType];
+    maxFileSizeMb = parseInt(maxFileSizeMb || MAX_FILE_SIZE_MB[fileType], 10);
 
     const isValidFileSize = fileSizeMb <= maxFileSizeMb;
 
