@@ -71,7 +71,7 @@
     "url": "https://github.com/thepracticaldev/dev.to/issues"
   },
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
-  "dependencies": {
+  "devDependencies": {
     "@stoplight/spectral": "5.2.0",
     "@storybook/addon-actions": "3.4.12",
     "@storybook/addon-knobs": "3.4.12",
@@ -103,7 +103,9 @@
     "preact-render-to-json": "^3.6.6",
     "prettier": "^1.19.1",
     "redoc-cli": "0.9.7",
-    "webpack-dev-server": "^3.10.3",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "dependencies": {
     "@babel/core": "^7.0.0",
     "@babel/plugin-transform-react-jsx": "^7.0.0",
     "@github/clipboard-copy-element": "^1.1.2",
@@ -113,6 +115,7 @@
     "clipboard-polyfill": "^2.8.6",
     "codemirror": "^5.52.0",
     "core-js": "3",
+    "file-loader": "^6.0.0",
     "focus-visible": "^5.0.2",
     "honeybadger-js": "2.2.0",
     "intersection-observer": "^0.7.0",
