@@ -1,22 +1,32 @@
 class SitemapsController < ApplicationController
   before_action :set_cache_control_headers, only: %i[show]
 
+  SITEMAP_REGEX = /\Asitemap-(?<date_string>[A-Z][a-z][a-z]-\d{4})\.xml\z/.freeze
+
   def show
-    date_string = params[:sitemap].gsub("sitemap-", "").gsub(".xml", "")
-    not_found unless date_string.match?(/\A[A-Z][a-z][a-z]\-\d{4}\z/)
+    match = params[:sitemap].match(SITEMAP_REGEX)
+    not_found unless match && match[:date_string]
     begin
-      date = Time.zone.parse(date_string).at_beginning_of_month
+      date = Time.zone.parse(match[:date_string]).at_beginning_of_month
     rescue ArgumentError
       not_found
     end
-    end_date = (date + 1.month).at_beginning_of_month
-    @articles = Article.published.where("published_at > ? AND published_at < ? AND score > ?", date, end_date, 3).pluck(:path, :last_comment_at)
-
-    response.headers["Surrogate-Control"] = if date > 1.month.ago
-                                              "max-age=8640, stale-while-revalidate=43200, stale-if-error=86400"
-                                            else
-                                              "max-age=259200, stale-while-revalidate=432000, stale-if-error=86400"
-                                            end
+    @articles = Article.published.where("published_at > ? AND published_at < ? AND score > ?", date, date.end_of_month, 3).pluck(:path, :last_comment_at)
+    set_surrogate_controls(date)
+    response.headers["Surrogate-Control"] = "max-age=#{@max_age}, stale-while-revalidate=#{@stale_while_revalidate}, stale-if-error=#{@stale_if_error}"
     render layout: false
+  end
+
+  private
+
+  def set_surrogate_controls(date)
+    @stale_if_error = "86400"
+    if date > 1.month.ago
+      @max_age = "8640" # one hour
+      @stale_while_revalidate = "43200" # half a day
+    else
+      @max_age = "259200" # three days
+      @stale_while_revalidate = "432000" # five days
+    end
   end
 end
