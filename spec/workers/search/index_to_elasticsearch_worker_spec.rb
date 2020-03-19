@@ -16,4 +16,12 @@ RSpec.describe Search::IndexToElasticsearchWorker, type: :worker, elasticsearch:
 
     expect(tag.elasticsearch_doc.dig("_source", "id")).to eql(tag.id)
   end
+
+  it "handles a string search id" do
+    tag = FactoryBot.create(:tag)
+    expect { tag.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
+    worker.perform(tag.class.name, "tag_#{tag.id}")
+
+    expect(tag.elasticsearch_doc.dig("_source", "id")).to eql(tag.id)
+  end
 end
