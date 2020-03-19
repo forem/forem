@@ -28,7 +28,7 @@
 
 <% end %>
 
-<div class="podcast-episode-container" data-meta='{"podcastName":"<%= @podcast.title %>","episodeName":"<%= @episode.title %>","podcastImageUrl":"<%= "#{app_protocol_and_domain}#{@podcast.image_url}" %>"}'>
+<div class="podcast-episode-container" data-meta='{"podcastName":"<%= @podcast.title %>","episodeName":"<%= @episode.title %>","podcastImageUrl":"<%= "#{app_url(@podcast.image_url)}" %>"}'>
   <div class="hero">
     <% image_url = cl_image_path(@podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png",
                                  type: "fetch",
