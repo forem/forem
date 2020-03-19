@@ -50,38 +50,65 @@ function handleFileTypeError(fileTypeErrorHandler, fileInput, file) {
   }
 }
 
+function validateFileInput(fileInput) {
+  let validFileInput = true;
+
+  removeErrorMessages(fileInput);
+  const files = Array.from(fileInput.files);
+  const permittedFileTypes =
+    fileInput.dataset.permittedFileTypes || PERMITTED_FILE_TYPES;
+  const {fileSizeErrorHandler} = fileInput.dataset;
+  const {fileTypeErrorHandler} = fileInput.dataset;
+
+  let {maxFileSizeMb} = fileInput.dataset;
+
+  for (let i = 0; i < files.length; i += 1) {
+    const file = files[i];
+    const fileType = file.type.split('/')[0];
+    const fileSizeMb = (file.size / (1024 * 1024)).toFixed(2);
+    maxFileSizeMb = maxFileSizeMb || MAX_FILE_SIZE_MB[fileType];
+
+    const isValidFileSize = fileSizeMb <= maxFileSizeMb;
+
+    if (maxFileSizeMb && !isValidFileSize) {
+      handleFileSizeError(fileSizeErrorHandler, fileInput, file);
+      validFileInput = false;
+      break;
+    }
+
+    const isValidFileType = permittedFileTypes.includes(fileType);
+
+    if (!isValidFileType) {
+      handleFileTypeError(fileTypeErrorHandler, fileInput, file);
+      validFileInput = false;
+      break;
+    }
+  }
+
+  return validFileInput;
+}
+
+export function validateFileInputs() {
+  let validFileInputs = true;
+  const fileInputs = document.querySelectorAll('input[type="file"]');
+
+  for (let i = 0; i < fileInputs.length; i += 1) {
+    const fileInput = fileInputs[i];
+    const validFileInput = validateFileInput(fileInput);
+
+    if (!validFileInput) {
+      validFileInputs = false;
+      break;
+    }
+  }
+
+  return validFileInputs;
+}
+
 const fileInputs = document.querySelectorAll('input[type="file"]');
 
 fileInputs.forEach(fileInput => {
   fileInput.addEventListener('change', () => {
-    removeErrorMessages(fileInput);
-    const files = Array.from(fileInput.files);
-    const permittedFileTypes =
-      fileInput.dataset.permittedFileTypes || PERMITTED_FILE_TYPES;
-    const {fileSizeErrorHandler} = fileInput.dataset;
-    const {fileTypeErrorHandler} = fileInput.dataset;
-
-    let {maxFileSizeMb} = fileInput.dataset;
-
-    for (let i = 0; i < files.length; i += 1) {
-      const file = files[i];
-      const fileType = file.type.split('/')[0];
-      const fileSizeMb = (file.size / (1024 * 1024)).toFixed(2);
-      maxFileSizeMb = maxFileSizeMb || MAX_FILE_SIZE_MB[fileType];
-
-      const isValidFileSize = fileSizeMb <= maxFileSizeMb;
-
-      if (maxFileSizeMb && !isValidFileSize) {
-        handleFileSizeError(fileSizeErrorHandler, fileInput, file);
-        break;
-      }
-
-      const isValidFileType = permittedFileTypes.includes(fileType);
-
-      if (!isValidFileType) {
-        handleFileTypeError(fileTypeErrorHandler, fileInput, file);
-        break;
-      }
-    }
+    validateFileInput(fileInput);
   });
 });

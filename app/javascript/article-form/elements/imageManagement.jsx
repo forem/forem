@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import linkCopyIcon from '../../../assets/images/content-copy.svg';
 import { generateMainImage } from '../actions';
+import { validateFileInputs } from '../../packs/validateFileInputs';
 
 export default class ImageManagement extends Component {
   constructor(props) {
@@ -17,11 +18,14 @@ export default class ImageManagement extends Component {
     e.preventDefault();
 
     this.clearUploadError();
+    const validFileInputs = validateFileInputs();
 
-    const payload = { image: e.target.files, wrap_cloudinary: true };
-    const { onMainImageUrlChange } = this.props;
+    if (validFileInputs) {
+      const payload = { image: e.target.files, wrap_cloudinary: true };
+      const { onMainImageUrlChange } = this.props;
 
-    generateMainImage(payload, onMainImageUrlChange, this.onUploadError);
+      generateMainImage(payload, onMainImageUrlChange, this.onUploadError);
+    }
   };
 
   handleInsertionImageUpload = e => {
@@ -178,8 +182,7 @@ export default class ImageManagement extends Component {
               <em>
                 To add a cover image for the post, add &nbsp;
                 <code>cover_image: direct_url_to_image.jpg</code>
-&nbsp; to the
-                frontmatter
+                &nbsp; to the frontmatter
               </em>
             </p>
           </div>
