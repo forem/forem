@@ -420,6 +420,8 @@ Rails.application.routes.draw do
   get "/:username/:view" => "stories#index",
       :constraints => { view: /comments|moderate|admin/ }
   get "/:username/:slug" => "stories#show"
+  get "/:sitemap" => "sitemaps#show",
+      :constraints => { format: /xml/, sitemap: /sitemap\-.+/ }
   get "/:username" => "stories#index"
 
   root "stories#index"
