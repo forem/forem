@@ -196,7 +196,7 @@
       </div>
 
       <div>
-        <%= form_with url: "/internal/buffer_updates", html: { data: { action: "submit->article#highlightElement" } } do %>
+        <%= form_with url: internal_buffer_updates_path, html: { data: { action: "submit->article#highlightElement" } } do %>
         <input type="hidden" name="social_channel" value="main_twitter" />
         <input type="hidden" name="article_id" value="<%= article.id %>" />
         <h5>Twitter MAIN</h5>
@@ -213,7 +213,7 @@
         <% end %>
 
         <% if (article.decorate.cached_tag_list_array & Tag.bufferized_tags).any? %>
-        <%= form_with url: "/internal/buffer_updates", html: { data: { action: "submit->article#highlightElement" } } do %>
+        <%= form_with url: internal_buffer_updates_path, html: { data: { action: "submit->article#highlightElement" } } do %>
         <input type="hidden" name="social_channel" value="satellite_twitter" />
         <input type="hidden" name="article_id" value="<%= article.id %>" />
         <h5>Twitter Satellite</h5>
@@ -231,7 +231,7 @@
         <% end %>
       </div>
 
-      <%= form_with url: "/internal/buffer_updates", html: { data: { action: "submit->article#highlightElement" } } do %>
+      <%= form_with url: internal_buffer_updates_path, html: { data: { action: "submit->article#highlightElement" } } do %>
       <input type="hidden" name="social_channel" value="facebook" />
       <input type="hidden" name="article_id" value="<%= article.id %>" />
       <h5>Facebook & LinkedIn</h5>
