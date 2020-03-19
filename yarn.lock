@@ -7058,10 +7058,10 @@ homedir-polyfill@^1.0.1:
   dependencies:
     parse-passwd "^1.0.0"
 
-honeybadger-js@2.1.3:
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/honeybadger-js/-/honeybadger-js-2.1.3.tgz#fc4ffbe6067d9b26ef43b84af72bde64b7b32af4"
-  integrity sha512-CGPHspaLQm3OPQltIKPxnXarYzP96lEXQjB8hbB2eAeLKQN6Ga6EneTagUBpalwAO5U+foZaFPfUcDEAJoLmyw==
+honeybadger-js@2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/honeybadger-js/-/honeybadger-js-2.2.0.tgz#9af54d471c8f404889933a24cc7a05f1410ec40b"
+  integrity sha512-JCJ1C4CQmbR62XGnUuDXmqiF+8nPpBPA53WZnOSZj3yohTRs+5tQb1FLl07Jh3wC+aFFIbPyT9kFHOq1/0pwYg==
 
 hosted-git-info@^2.1.4:
   version "2.8.8"
