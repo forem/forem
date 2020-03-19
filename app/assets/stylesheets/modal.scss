@@ -1,9 +1,0 @@
-// modal overflow scrolling
-.modal-scroll-container {
-  height: auto;
-
-  @media screen and (min-width: 600px) {
-    max-height: 500px;
-    overflow-y: scroll;
-  }
-}

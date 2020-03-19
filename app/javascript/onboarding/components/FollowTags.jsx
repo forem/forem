@@ -91,7 +91,7 @@ class FollowTags extends Component {
             <h1 className="title">What are you interested in?</h1>
             <h3 className="subtitle">Follow tags to customize your feed</h3>
           </header>
-          <div className="modal-scroll-container">
+          <div className="onboarding-modal-scroll-container">
             <div className="onboarding-tags">
               {allTags.map(tag => (
                 <div
