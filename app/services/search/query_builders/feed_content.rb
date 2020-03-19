@@ -13,7 +13,7 @@ module Search
         ]
       }.freeze
 
-      # Search keys from our controllers may not match what we have stored in Elasticsearch so we map them here, 
+      # Search keys from our controllers may not match what we have stored in Elasticsearch so we map them here,
       # this allows us to change our Elasticsearch docs without worrying about the frontend
       TERM_KEYS = {
         tag_names: "tags.name",

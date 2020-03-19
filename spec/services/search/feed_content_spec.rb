@@ -81,7 +81,7 @@ RSpec.describe Search::FeedContent, type: :service do
 
       it "filters by class_name" do
         pde = create(:podcast_episode)
-        index_documents([article1, article2, pde])
+        index_documents([pde, article1, article2])
         query_params = { size: 5, class_name: "PodcastEpisode" }
 
         feed_docs = described_class.search_documents(params: query_params)
