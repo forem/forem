@@ -1,9 +1,16 @@
 /**
- * @file Manages logic to validate file uploads client-side.
+ * @file Manages logic to validate file uploads client-side. It in general,
+ * the validations work by looping over input form fields with type file and
+ * checking the size and format of the files upload by the user.
  */
 
 /**
- * An object containing the top level MIME type as the key and the max file size in MB for the value.
+ * An object containing the top level MIME type as the key and the max file
+ * size in MB for the value. To use a different value than these defaults,
+ * simply add a data-max-file-mb attribute to the input form field with the
+ * max file size in MB. If that attribute is found, it takes priority over these
+ * defaults.
+ *
  * @constant {Object.<string, number>}
  */
 const MAX_FILE_SIZE_MB = Object.freeze({
@@ -12,7 +19,11 @@ const MAX_FILE_SIZE_MB = Object.freeze({
 });
 
 /**
- * Permitted file types using the top level MIME type i.e. image for image/png
+ * Permitted file types using the top level MIME type i.e. image for image/png.
+ * To specify permitted file types, simply add a data-permitted-file-types
+ * attribute to the input form field as an Array of strings specifying the top
+ * level MIME types that are permitted.
+ *
  * @constant {string[]}
  */
 const PERMITTED_FILE_TYPES = ['video', 'image'];
