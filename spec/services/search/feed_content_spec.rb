@@ -28,7 +28,7 @@ RSpec.describe Search::FeedContent, type: :service do
         feed_docs = described_class.search_documents(params: query_params)
         expect(feed_docs.count).to eq(2)
         doc_ids = feed_docs.map { |t| t.dig("id") }
-        expect(doc_ids).to include(article1.id, article2.id)
+        expect(doc_ids).to include(article1.search_id, article2.search_id)
       end
     end
 
@@ -42,7 +42,7 @@ RSpec.describe Search::FeedContent, type: :service do
         feed_docs = described_class.search_documents(params: query_params)
         expect(feed_docs.count).to eq(1)
         doc_ids = feed_docs.map { |t| t.dig("id") }
-        expect(doc_ids).to include(article1.id)
+        expect(doc_ids).to include(article1.search_id)
       end
 
       it "filters by user_id" do
@@ -52,7 +52,7 @@ RSpec.describe Search::FeedContent, type: :service do
         feed_docs = described_class.search_documents(params: query_params)
         expect(feed_docs.count).to eq(1)
         doc_ids = feed_docs.map { |t| t.dig("id") }
-        expect(doc_ids).to include(article1.id)
+        expect(doc_ids).to include(article1.search_id)
       end
 
       it "filters by approved" do
@@ -64,7 +64,7 @@ RSpec.describe Search::FeedContent, type: :service do
         feed_docs = described_class.search_documents(params: query_params)
         expect(feed_docs.count).to eq(1)
         doc_ids = feed_docs.map { |t| t.dig("id") }
-        expect(doc_ids).to include(article2.id)
+        expect(doc_ids).to include(article2.search_id)
       end
 
       it "filters by class_name" do
@@ -75,7 +75,7 @@ RSpec.describe Search::FeedContent, type: :service do
         feed_docs = described_class.search_documents(params: query_params)
         expect(feed_docs.count).to eq(1)
         doc_ids = feed_docs.map { |t| t.dig("id") }
-        expect(doc_ids).to include(pde.id)
+        expect(doc_ids).to include(pde.search_id)
       end
     end
 
@@ -89,7 +89,7 @@ RSpec.describe Search::FeedContent, type: :service do
         feed_docs = described_class.search_documents(params: query_params)
         expect(feed_docs.count).to eq(1)
         doc_ids = feed_docs.map { |t| t.dig("id") }
-        expect(doc_ids).to include(article2.id)
+        expect(doc_ids).to include(article2.search_id)
       end
     end
   end
