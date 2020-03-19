@@ -31,12 +31,16 @@ export default class ImageManagement extends Component {
   handleInsertionImageUpload = e => {
     this.clearUploadError();
 
-    const payload = { image: e.target.files };
-    generateMainImage(
-      payload,
-      this.handleInsertImageUploadSuccess,
-      this.onUploadError,
-    );
+    const validFileInputs = validateFileInputs();
+
+    if (validFileInputs) {
+      const payload = { image: e.target.files };
+      generateMainImage(
+        payload,
+        this.handleInsertImageUploadSuccess,
+        this.onUploadError,
+      );
+    }
   };
 
   handleInsertImageUploadSuccess = response => {
