@@ -5,7 +5,7 @@ module Slack
         %<user_detail>s
         Category: %<category>s
         Internal Report: #{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/internal/reports
-        *_ Reported URL: %<reported_url%> _*
+        *_ Reported URL: %<reported_url>s _*
         -----
         *Message:* %<message>s
       TEXT
@@ -29,16 +29,18 @@ module Slack
       end
 
       def call
-        if [type, category, reported_url].any?(&:blank?)
-          raise ValueError, "one of the required params is blank"
+        # should this return nil and that's it?
+        if [type, category, reported_url, message].any?(&:blank?)
+          raise ArgumentError, "one of the required params is blank"
         end
 
-        final_message = format(MESSAGE_TEMPLATE, {
+        final_message = format(
+          MESSAGE_TEMPLATE,
           user_detail: user_detail,
           category: category,
           reported_url: reported_url,
           message: message,
-        })
+        )
 
         SlackBotPingWorker.perform_async(
           message: final_message,
@@ -50,18 +52,19 @@ module Slack
 
       private
 
-      attr_reader :user, :type, :category, :reported_url
+      attr_reader :user, :type, :category, :reported_url, :message
 
       def user_detail
         return "*Anonymous report:" unless user
 
         username = user.username
         url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/#{username}"
-        format(USER_DETAIL_TEMPLATE, {
+        format(
+          USER_DETAIL_TEMPLATE,
           username: username,
           url: url,
-          email: user.email
-        })
+          email: user.email,
+        )
       end
 
       def emoji
