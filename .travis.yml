@@ -31,8 +31,13 @@ env:
     - HEROKU_APP_URL=practicaldev.herokuapp.com
     - SECRET_KEY_BASE=dummydummydummy
   jobs:
-    - RSPEC_TAG="~type:system"
-    - RSPEC_TAG="type:system"
+    include:
+      - env:
+        - RSPEC_TAG="~type:system"
+        - CI_NODE_INDEX=0
+      - env:
+        - RSPEC_TAG="type:system"
+        - CI_NODE_INDEX=1
 branches:
   only:
     - master
@@ -47,6 +52,8 @@ before_install:
   - echo -e '-XX:+DisableExplicitGC\n-Djdk.io.permissionsUseCanonicalPath=true\n-Dlog4j.skipJansi=true\n-server\n' | sudo tee -a /etc/elasticsearch/jvm.options
   - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
   - sudo systemctl start elasticsearch
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
 install:
   - bundle install --jobs=3 --retry=3 --path vendor/bundle
   - yarn install
@@ -69,6 +76,9 @@ script:
   - 'bundle exec bundle-audit check --update --ignore CVE-2015-9284'
   - yarn build-storybook
   - bundle exec rails runner -e production 'puts "App booted successfully"'
+after_script:
+  - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$CI_NODE_INDEX.json ./coverage/spec/.resultset.json; fi
+  - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./cc-test-reporter sum-coverage --output - --parts $CI_NODE_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -; fi
 deploy:
   provider: heroku
   api_key: '$HEROKU_AUTH_TOKEN'
