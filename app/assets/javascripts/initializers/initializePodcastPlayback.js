@@ -295,7 +295,6 @@ function initializePodcastPlayback() {
         sendPodcastMessage(message);
       } catch(e) {
         console.log('Unable to load Podcast Episode metadata', e); // eslint-disable-line no-console
-        return;
       }
     }
     playAudio(audio).then(function() {
