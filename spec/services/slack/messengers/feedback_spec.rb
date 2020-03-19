@@ -51,6 +51,18 @@ RSpec.describe Slack::Messengers::Feedback, type: :service do
     end
   end
 
+  it "messages the proper channel with the proper username" do
+    sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
+      described_class.call(default_params)
+    end
+
+    channel = get_argument_from_last_job("channel")
+    expect(channel).to eq(default_params[:type])
+
+    username = get_argument_from_last_job("channel")
+    expect(username).to eq("#{default_params[:username]}_bot")
+  end
+
   it "uses the cry emoji for abuse reports" do
     sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
       described_class.call(default_params.merge(type: "abuse-reports"))

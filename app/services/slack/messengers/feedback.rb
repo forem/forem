@@ -1,7 +1,7 @@
 module Slack
   module Messengers
     class Feedback
-      MESSAGE_TEMPLATE = <<~TEXT.chomp
+      MESSAGE_TEMPLATE = <<~TEXT.chomp.freeze
         %<user_detail>s
         Category: %<category>s
         Internal Report: #{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/internal/reports
@@ -10,7 +10,7 @@ module Slack
         *Message:* %<message>s
       TEXT
 
-      USER_DETAIL_TEMPLATE = <<~TEXT.chomp
+      USER_DETAIL_TEMPLATE = <<~TEXT.chomp.freeze
         *Logged in user:*
         reporter: %<username>s - %<url>s
         email: <mailto:%<email>s|%<email>s>
