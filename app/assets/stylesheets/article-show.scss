@@ -779,7 +779,6 @@ article {
     z-index: 22;
     width: 100%;
     @include themeable(background, theme-container-background, $tan);
-    @include themeable(border, theme-container-border, none);
     @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
 
     @media screen and (min-width: 950px) {
