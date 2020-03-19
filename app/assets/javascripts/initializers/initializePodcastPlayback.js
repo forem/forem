@@ -298,7 +298,6 @@ function initializePodcastPlayback() {
         return;
       }
     }
-
     playAudio(audio).then(function() {
         spinPodcastRecord();
         startPodcastBar();
