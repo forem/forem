@@ -29,11 +29,6 @@ module Slack
       end
 
       def call
-        # should this return nil and that's it?
-        if [type, category, reported_url, message].any?(&:blank?)
-          raise ArgumentError, "one of the required params is blank"
-        end
-
         final_message = format(
           MESSAGE_TEMPLATE,
           user_detail: user_detail,

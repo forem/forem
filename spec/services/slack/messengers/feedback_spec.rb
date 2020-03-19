@@ -16,12 +16,6 @@ RSpec.describe Slack::Messengers::Feedback, type: :service do
     job["args"].first[argument_name]
   end
 
-  it "raises ArgumentError if any of the required params is blank" do
-    expect do
-      described_class.call(default_params.merge(type: nil))
-    end.to raise_error(ArgumentError)
-  end
-
   it "supports an anonymous report" do
     sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
       described_class.call(default_params)
