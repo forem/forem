@@ -33,10 +33,8 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       end
 
       it "does not send a notification to a user who has commented in a welcome thread", :aggregate_failures do
-        expect(user.comments.count).to eq(1)
-
+        expect(user.notifications.count).to eq(0)
         sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
-
         expect(user.notifications.count).to eq(0)
       end
 
