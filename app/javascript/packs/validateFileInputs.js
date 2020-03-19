@@ -22,7 +22,7 @@ function addErrorMessage(fileInput, msg) {
   error.innerHTML = msg;
   error.classList.add('file-upload-error');
 
-  fileInputField.parentNode.insertBefore(error, fileInputField.nextSibling);
+  fileInputField.parentNode.appendChild(error);
 }
 
 function handleFileSizeError(fileSizeErrorHandler, fileInput, file) {
