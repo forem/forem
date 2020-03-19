@@ -69,9 +69,9 @@ fileInputs.forEach(fileInput => {
       const fileSizeMb = (file.size / (1024 * 1024)).toFixed(2);
       maxFileSizeMb = maxFileSizeMb || MAX_FILE_SIZE_MB[fileType];
 
-      const isValidFileSize = fileSizeMb < maxFileSizeMb;
+      const isValidFileSize = fileSizeMb <= maxFileSizeMb;
 
-      if (!isValidFileSize) {
+      if (maxFileSizeMb && !isValidFileSize) {
         handleFileSizeError(fileSizeErrorHandler, fileInput, file);
         break;
       }
