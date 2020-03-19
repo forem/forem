@@ -170,7 +170,7 @@ class Reaction < ApplicationRecord
   end
 
   def negative_reaction_from_untrusted_user?
-    return if user.any_admin?
+    return if user&.any_admin?
 
     negative? && !user.trusted
   end
