@@ -30,14 +30,14 @@ env:
     - SENDGRID_PASSWORD_ACCEL=dummy
     - HEROKU_APP_URL=practicaldev.herokuapp.com
     - SECRET_KEY_BASE=dummydummydummy
-  jobs:
-    include:
-      - env:
-        - RSPEC_TAG="~type:system"
-        - CI_NODE_INDEX=0
-      - env:
-        - RSPEC_TAG="type:system"
-        - CI_NODE_INDEX=1
+jobs:
+  include:
+    - env:
+      - RSPEC_TAG="~type:system"
+      - CI_NODE_INDEX=0
+    - env:
+      - RSPEC_TAG="type:system"
+      - CI_NODE_INDEX=1
 branches:
   only:
     - master
