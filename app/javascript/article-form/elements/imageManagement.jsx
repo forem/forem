@@ -128,7 +128,12 @@ export default class ImageManagement extends Component {
     } else {
       mainImageArea = (
         <div>
-          <input type="file" onChange={this.handleMainImageUpload} />
+          <input
+            type="file"
+            onChange={this.handleMainImageUpload}
+            accept="image/*"
+            data-max-file-size-mb="5"
+          />
         </div>
       );
     }
@@ -171,6 +176,8 @@ export default class ImageManagement extends Component {
             type="file"
             onChange={this.handleInsertionImageUpload}
             multiple
+            accept="image/*"
+            data-max-file-size-mb="5"
           />
         </div>
       );
