@@ -1,6 +1,6 @@
-<a class="btn btn-primary float-right" href="/internal/listings">Back to All Listings</a>
+<%= link_to "Back to All Listings", internal_listings_path, class: "btn btn-primary float-right" %>
 
-<h2>Edit <a href="/listings/<%= @classified_listing.category %>/<%= @classified_listing.slug %>" target="_blank">"<%= @classified_listing.title %>"</a></h2>
+<h2>Edit <%= link_to @classified_listing.title, "/listings/#{@classified_listing.category}/#{@classified_listing.slug}", target: "_blank", rel: "noopener" %></h2>
 
 <%= form_for [:internal, @classified_listing] do |form| %>
   <div class="form-group">

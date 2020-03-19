@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-12">
     <h2 class="d-inline">
-      <%= @user.name %><a href="/<%= @user.username %>" target="_blank"> (@<%= @user.username %>)</a>
+      <%= @user.name %><%= link_to "@#{@user.username}", @user.path, class: "ml-2", target: "_blank", rel: "noopener" %>
     </h2>
     <a href="<%= edit_internal_user_path(@user) %>" class="btn btn-primary float-right">Manage User</a>
     <p class="font-italic">Member since <%= @user.created_at.strftime("%b %e '%y") %></p>
@@ -52,7 +52,6 @@
 <div class="row mb-3">
   <div class="col-12">
     <h2>Email <%= @user.name %></h2>
-
     <%= form_with url: send_email_internal_user_path(@user), local: true do |f| %>
       <%= f.hidden_field(:user_id, value: @user.id) %>
       <h4>Subject:</h4>
