@@ -1,6 +1,6 @@
 /**
- * @file Manages logic to validate file uploads client-side. It in general,
- * the validations work by looping over input form fields with type file and
+ * @file Manages logic to validate file uploads client-side. In general, the
+ * validations work by looping over input form fields with a type of file and
  * checking the size and format of the files upload by the user.
  */
 
@@ -19,17 +19,18 @@ const MAX_FILE_SIZE_MB = Object.freeze({
 });
 
 /**
- * Permitted file types using the top level MIME type i.e. image for image/png.
- * To specify permitted file types, simply add a data-permitted-file-types
- * attribute to the input form field as an Array of strings specifying the top
- * level MIME types that are permitted.
+ * Permitted file types using the top level MIME type (i.e. image for
+ * image/png). To specify permitted file types, simply add a
+ * data-permitted-file-types attribute to the input form field as an Array of
+ * strings specifying the top level MIME types that are permitted.
  *
  * @constant {string[]}
  */
 const PERMITTED_FILE_TYPES = ['video', 'image'];
 
 /**
- * Removes any pre-existing error messages from the DOM related to file validation.
+ * Removes any pre-existing error messages from the DOM related to file
+ * validation.
  *
  * @param {HTMLElement} fileInput - An input form field with type of file
  */
@@ -44,7 +45,7 @@ function removeErrorMessages(fileInput) {
 }
 
 /**
- * Adds error messages in the form of a div with red text
+ * Adds error messages in the form of a div with red text.
  *
  * @param {HTMLElement} fileInput - An input form field with type of file
  * @param {string} msg - The error message to be displayed to the user
@@ -59,11 +60,12 @@ function addErrorMessage(fileInput, msg) {
   error.classList.add('file-upload-error');
 
   // Change this to ParentNode.append(error) once Internet Explore support is added
+  // https://developer.mozilla.org/en-US/docs/Web/API/ParentNode/append
   fileInputField.parentNode.appendChild(error);
 }
 
 /**
- * Handles errors for files that are too large
+ * Handles errors for files that are too large.
  *
  * @external File
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/File File}
@@ -85,7 +87,7 @@ function handleFileSizeError(fileSizeErrorHandler, fileInput, file) {
 }
 
 /**
- * Handles errors for files that are not a valid format
+ * Handles errors for files that are not a valid format.
  *
  * @external File
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/File File}
@@ -108,9 +110,9 @@ function handleFileTypeError(fileTypeErrorHandler, fileInput, file) {
 }
 
 /**
- * This is the core function to handle validations of uploaded files. It loops through all the
- * uploaded files for the given fileInput and checks the file size and file format. If a file fails
- * a validation, the error is handled.
+ * This is the core function to handle validations of uploaded files. It loops
+ * through all the uploaded files for the given fileInput and checks the file
+ * size and file format. If a file fails a validation, the error is handled.
  *
  * @param {HTMLElement} fileInput - An input form field with type of file
  *
@@ -155,9 +157,10 @@ function validateFileInput(fileInput) {
 }
 
 /**
- * This function is designed to be exported in areas where we are doing more custom implementations
- * of file uploading using Preact. It can then be used in Preact event handlers. It loops through
- * all file input fields on the DOM and validates any attached files.
+ * This function is designed to be exported in areas where we are doing more
+ * custom implementations of file uploading using Preact. It can then be used
+ * in Preact event handlers. It loops through all file input fields on the DOM
+ * and validates any attached files.
  *
  * @returns {Boolean} Returns false if any files failed validations. Otherwise, returns true.
  */
@@ -178,7 +181,8 @@ export function validateFileInputs() {
   return validFileInputs;
 }
 
-// This is written so that it works automatically by just including this pack in a view
+// This is written so that it works automagically by just including this pack
+// in a view.
 const fileInputs = document.querySelectorAll('input[type="file"]');
 
 fileInputs.forEach(fileInput => {
