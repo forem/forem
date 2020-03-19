@@ -3,11 +3,13 @@
     <a href="<%= article.path %>" target="_blank"><%= article.title %></a>
     <a class="ml-2" href="<%= article.path %>/edit" target="_blank"><span class="badge badge-success">EDIT</span></a>
   </div>
-  <div
-    class="card-body <%= "bg-danger" if !article.published? && article.published_from_feed? && !article.user&.feed_admin_publish_permission? %>">
-    <% featured = article.featured ? "featured-bg" : "" %>
-    <% featured = article.approved ? "approved-bg" : featured %>
 
+  <% featured = article.featured ? "bg-featured" : "" %>
+  <% approved = article.approved ? "bg-approved" : featured %>
+  <% background_color = approved %>
+
+  <div
+    class="card-body <%= background_color %> <%= "bg-danger" if !article.published? && article.published_from_feed? && !article.user&.feed_admin_publish_permission? %>">
     <button class="btn btn-primary float-right" href="/internal/users/<%= article.user_id %>">Manage User</button>
 
     <% if article.video %>
@@ -194,7 +196,7 @@
       </div>
 
       <div>
-        <%= form_with url: "/internal/buffer_updates", html: { data: { action: "submit->article#highlightElement" } } do %>
+        <%= form_with url: internal_buffer_updates_path, html: { data: { action: "submit->article#highlightElement" } } do %>
         <input type="hidden" name="social_channel" value="main_twitter" />
         <input type="hidden" name="article_id" value="<%= article.id %>" />
         <h5>Twitter MAIN</h5>
@@ -211,7 +213,7 @@
         <% end %>
 
         <% if (article.decorate.cached_tag_list_array & Tag.bufferized_tags).any? %>
-        <%= form_with url: "/internal/buffer_updates", html: { data: { action: "submit->article#highlightElement" } } do %>
+        <%= form_with url: internal_buffer_updates_path, html: { data: { action: "submit->article#highlightElement" } } do %>
         <input type="hidden" name="social_channel" value="satellite_twitter" />
         <input type="hidden" name="article_id" value="<%= article.id %>" />
         <h5>Twitter Satellite</h5>
@@ -229,7 +231,7 @@
         <% end %>
       </div>
 
-      <%= form_with url: "/internal/buffer_updates", html: { data: { action: "submit->article#highlightElement" } } do %>
+      <%= form_with url: internal_buffer_updates_path, html: { data: { action: "submit->article#highlightElement" } } do %>
       <input type="hidden" name="social_channel" value="facebook" />
       <input type="hidden" name="article_id" value="<%= article.id %>" />
       <h5>Facebook & LinkedIn</h5>

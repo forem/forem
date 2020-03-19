@@ -19,6 +19,9 @@ class SiteConfig < RailsSettings::Base
   # mascot account
   field :mascot_user_id, type: :integer, default: 1
 
+  # Authentication
+  field :authentication_providers, type: :array, default: %w[twitter github]
+
   # campaign
   field :campaign_hero_html_variant_name, type: :string, default: ""
   field :campaign_featured_tags, type: :array, default: %w[]
@@ -60,4 +63,9 @@ class SiteConfig < RailsSettings::Base
   # Tags
   field :suggested_tags, type: :array, default: %w[beginners career computerscience javascript security ruby rails swift kotlin]
   field :sidebar_tags, type: :array, default: %w[help challenge discuss explainlikeimfive meta watercooler]
+
+  # Helpful methods
+  def self.auth_allowed?(provider)
+    authentication_providers.include?(provider)
+  end
 end

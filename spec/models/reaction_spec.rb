@@ -125,6 +125,45 @@ RSpec.describe Reaction, type: :model do
     end
   end
 
+  context "when callbacks are called after create" do
+    describe "slack notifications" do
+      let_it_be_changeable(:user) { create(:user, :trusted) }
+      let_it_be_readonly(:article) { create(:article, user: user) }
+
+      before do
+        # making sure there are no other enqueued jobs from other tests
+        sidekiq_perform_enqueued_jobs(only: SlackBotPingWorker)
+      end
+
+      it "notifies proper slack channel about vomit reaction" do
+        url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
+        message = "#{user.name} (#{url}#{user.path})\nreacted with a vomit on\n#{url}#{article.path}"
+        args = {
+          message: message,
+          channel: "abuse-reports",
+          username: "abuse_bot",
+          icon_emoji: ":cry:"
+        }.stringify_keys
+
+        sidekiq_assert_enqueued_with(job: SlackBotPingWorker, args: [args]) do
+          create(:reaction, reactable: article, user: user, category: "vomit")
+        end
+      end
+
+      it "does not send notification for like reaction" do
+        sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
+          create(:reaction, reactable: article, user: user, category: "like")
+        end
+      end
+
+      it "does not send notification for thumbsdown reaction" do
+        sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
+          create(:reaction, reactable: article, user: user, category: "thumbsdown")
+        end
+      end
+    end
+  end
+
   context "when callbacks are called after save" do
     let!(:reaction) { build(:reaction, category: "like", reactable: article, user: user) }
 
