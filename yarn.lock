@@ -5232,7 +5232,7 @@ domhandler@^2.3.0:
   dependencies:
     domelementtype "1"
 
-dompurify@^2.0.7:
+dompurify@^2.0.8:
   version "2.0.8"
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.0.8.tgz#6ef89d2d227d041af139c7b01d9f67ed59c2eb3c"
   integrity sha512-vIOSyOXkMx81ghEalh4MLBtDHMx1bhKlaqHDMqM2yeitJ996SLOk5mGdDpI9ifJAgokred8Rmu219fX4OltqXw==
@@ -7058,10 +7058,10 @@ homedir-polyfill@^1.0.1:
   dependencies:
     parse-passwd "^1.0.0"
 
-honeybadger-js@2.1.3:
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/honeybadger-js/-/honeybadger-js-2.1.3.tgz#fc4ffbe6067d9b26ef43b84af72bde64b7b32af4"
-  integrity sha512-CGPHspaLQm3OPQltIKPxnXarYzP96lEXQjB8hbB2eAeLKQN6Ga6EneTagUBpalwAO5U+foZaFPfUcDEAJoLmyw==
+honeybadger-js@2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/honeybadger-js/-/honeybadger-js-2.2.0.tgz#9af54d471c8f404889933a24cc7a05f1410ec40b"
+  integrity sha512-JCJ1C4CQmbR62XGnUuDXmqiF+8nPpBPA53WZnOSZj3yohTRs+5tQb1FLl07Jh3wC+aFFIbPyT9kFHOq1/0pwYg==
 
 hosted-git-info@^2.1.4:
   version "2.8.8"
@@ -7292,10 +7292,10 @@ hyphenate-style-name@^1.0.1, hyphenate-style-name@^1.0.2:
   resolved "https://registry.yarnpkg.com/hyphenate-style-name/-/hyphenate-style-name-1.0.3.tgz#097bb7fa0b8f1a9cf0bd5c734cf95899981a9b48"
   integrity sha512-EcuixamT82oplpoJ2XU4pDtKGWQ7b00CD9f1ug9IaQ3p1bkHMiKCZ9ut9QDI6qsa6cpUuB+A/I+zLtdNK4n2DQ==
 
-ibm-openapi-validator@0.25.0:
-  version "0.25.0"
-  resolved "https://registry.yarnpkg.com/ibm-openapi-validator/-/ibm-openapi-validator-0.25.0.tgz#e9921c2442f1e4f0bb7c42040bb6e9cee81b1fc1"
-  integrity sha512-rnowFRA+shLdkRfi33eQFr8QCaol528AwUMoe1/Ac54wfyOnRind1+dxOQJyIZBAlKv1wYAn/BbN1MWafIYGEA==
+ibm-openapi-validator@0.26.0:
+  version "0.26.0"
+  resolved "https://registry.yarnpkg.com/ibm-openapi-validator/-/ibm-openapi-validator-0.26.0.tgz#50f271c22f0aa80f049fa5824ab98e89a178ab2b"
+  integrity sha512-M16dW/fEhnJogoFrNFStUQPROPz8X18nT1pM6sGovLK+1+dQVa8TG7E7TtA9lMQPOBbiTbiXbZZzmJQr53pMvw==
   dependencies:
     chalk "^2.4.1"
     commander "^2.17.1"
@@ -9725,10 +9725,10 @@ mobx-react-lite@^1.4.2:
   resolved "https://registry.yarnpkg.com/mobx-react-lite/-/mobx-react-lite-1.5.2.tgz#c4395b0568b9cb16f07669d8869cc4efa1b8656d"
   integrity sha512-PyZmARqqWtpuQaAoHF5pKX7h6TKNLwq6vtovm4zZvG6sEbMRHHSqioGXSeQbpRmG8Kw8uln3q/W1yMO5IfL5Sg==
 
-mobx-react@^6.1.4:
-  version "6.1.8"
-  resolved "https://registry.yarnpkg.com/mobx-react/-/mobx-react-6.1.8.tgz#5b9a3950463d58c154dda2c94d16d48ed8fcb02e"
-  integrity sha512-NCMJn/hrWoeyeNbzCsBDtftWSy6VlFgw1VzhogrciPFvJIl2xs+8rJJdPlRHQTiNirwNoHNKJgUE4WhPZPvKDw==
+mobx-react@6.1.5:
+  version "6.1.5"
+  resolved "https://registry.yarnpkg.com/mobx-react/-/mobx-react-6.1.5.tgz#66a6f67bfe845216abc05d3aea47ceec8e31e2dd"
+  integrity sha512-EfWoXmGE2CfozH4Xirb65+il1ynHFCmxBSUabMSf+511YfjVs6QRcCrHkiVw+Il8iWp1gIyfa9qKkUgbDA9/2w==
   dependencies:
     mobx-react-lite "^1.4.2"
 
@@ -10821,7 +10821,7 @@ pnp-webpack-plugin@^1.5.0:
   dependencies:
     ts-pnp "^1.1.6"
 
-polished@^3.4.2:
+polished@^3.4.4:
   version "3.4.4"
   resolved "https://registry.yarnpkg.com/polished/-/polished-3.4.4.tgz#ac8cd6e704887398f3b802718f9d389b9ea4307b"
   integrity sha512-x9PKeExyI9AhWrJP3Q57I1k7GInujjiVBJMPFmycj9hX1yCOo/X9eu9eZwxgOziiXge3WbFQ5XOmkzunOntBSA==
@@ -11898,7 +11898,7 @@ pretty-format@^3.5.1:
   resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-3.8.0.tgz#bfbed56d5e9a776645f4b1ff7aa1a3ac4fa3c385"
   integrity sha1-v77VbV6ad2ZF9LH/eqGjrE+jw4U=
 
-prismjs@^1.17.1:
+prismjs@^1.19.0:
   version "1.19.0"
   resolved "https://registry.yarnpkg.com/prismjs/-/prismjs-1.19.0.tgz#713afbd45c3baca4b321569f2df39e17e729d4dc"
   integrity sha512-IVFtbW9mCWm9eOIaEkNyo2Vl4NnEifis2GQ7/MLRG5TQe6t+4Sj9J5QWI9i3v+SS43uZBlCAOn+zYTVYQcPXJw==
@@ -12267,7 +12267,7 @@ react-dom@^16.8.6:
     prop-types "^15.6.2"
     scheduler "^0.19.0"
 
-react-dropdown@^1.6.4:
+react-dropdown@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/react-dropdown/-/react-dropdown-1.7.0.tgz#20287aafabdece49a6595ebe40e3fa1a37c26456"
   integrity sha512-zFZ73pgLA32hArpE4j/7DtOEhOMg240XG5QvbAb0/VinGekkHDVIakMyAFUKC5jDz8jqXEltgriqFW9R5iCtPQ==
@@ -12358,7 +12358,7 @@ react-style-proptype@^3.0.0:
   dependencies:
     prop-types "^15.5.4"
 
-react-tabs@^3.0.0:
+react-tabs@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/react-tabs/-/react-tabs-3.1.0.tgz#ecc50f034c1d6da2606fab9293055bbc861b382e"
   integrity sha512-9RKc77HCPsjQDVPyZEw37g3JPtg26oSQ9o4mtaVXjJuLedDX5+TQcE+MRNKR+4aO3GMAY4YslCePGG1//MQ3Jg==
@@ -12549,10 +12549,10 @@ redent@^1.0.0:
     indent-string "^2.1.0"
     strip-indent "^1.0.1"
 
-redoc-cli@0.9.6:
-  version "0.9.6"
-  resolved "https://registry.yarnpkg.com/redoc-cli/-/redoc-cli-0.9.6.tgz#071495e3044d8e4cbdd998ff3f6845b2df03e9db"
-  integrity sha512-6qYR0mAyjOHRRh9BLyArZM8IaAU1iGOyr0Tr4587iHwZF1WsvOScP2XPtljWxK3vydNAbM1k12um0oDM+r/HZA==
+redoc-cli@0.9.7:
+  version "0.9.7"
+  resolved "https://registry.yarnpkg.com/redoc-cli/-/redoc-cli-0.9.7.tgz#17ac68ae1e12144ba697b8a1421f8e6eb65fdb40"
+  integrity sha512-DSF89FotRZkxNXj77GRKJsgNRzvw9NqQMugw0Cr4wk3wgAMqf2RDRDX2AqnZCzXunJ10k7z++sG14dB0imMV/g==
   dependencies:
     chokidar "^3.0.2"
     handlebars "^4.1.2"
@@ -12562,19 +12562,19 @@ redoc-cli@0.9.6:
     node-libs-browser "^2.2.1"
     react "^16.8.6"
     react-dom "^16.8.6"
-    redoc "2.0.0-rc.23"
+    redoc "2.0.0-rc.24"
     styled-components "^4.3.2"
     tslib "^1.10.0"
     yargs "^13.3.0"
 
-redoc@2.0.0-rc.23:
-  version "2.0.0-rc.23"
-  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.23.tgz#3b8a47d9357e6ee52a0d93d08fb03ce00f424728"
-  integrity sha512-ifrewYzrCrGBv6bFSh5FEnDTywVm6IL/VEb7PUpVPCC1lMceMAB1HrlyKlBCyNqjq9LcRO+y9q881LfPXS4PUw==
+redoc@2.0.0-rc.24:
+  version "2.0.0-rc.24"
+  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.24.tgz#d255ab8cfb6286466877a9f6b706f4cfbcd09207"
+  integrity sha512-h82NZFDzTUgAEtd0st3D29EsrxO8bw+26xdX1Y0vtwlp6uiQUA44uZLpdBnOlcSWMipbZ75ra6uuBU2NHFNPGg==
   dependencies:
     classnames "^2.2.6"
     decko "^1.2.0"
-    dompurify "^2.0.7"
+    dompurify "^2.0.8"
     eventemitter3 "^4.0.0"
     json-pointer "^0.6.0"
     json-schema-ref-parser "^6.1.0"
@@ -12582,18 +12582,18 @@ redoc@2.0.0-rc.23:
     mark.js "^8.11.1"
     marked "^0.7.0"
     memoize-one "~5.1.1"
-    mobx-react "^6.1.4"
+    mobx-react "6.1.5"
     openapi-sampler "1.0.0-beta.15"
     perfect-scrollbar "^1.4.0"
-    polished "^3.4.2"
-    prismjs "^1.17.1"
+    polished "^3.4.4"
+    prismjs "^1.19.0"
     prop-types "^15.7.2"
-    react-dropdown "^1.6.4"
-    react-tabs "^3.0.0"
-    slugify "^1.3.6"
+    react-dropdown "^1.7.0"
+    react-tabs "^3.1.0"
+    slugify "^1.4.0"
     stickyfill "^1.1.1"
-    swagger2openapi "^5.3.1"
-    tslib "^1.10.0"
+    swagger2openapi "^5.3.4"
+    tslib "^1.11.1"
     url-template "^2.0.8"
 
 reduce-css-calc@^1.2.6:
@@ -13473,7 +13473,7 @@ slice-ansi@^2.1.0:
     astral-regex "^1.0.0"
     is-fullwidth-code-point "^2.0.0"
 
-slugify@^1.3.6:
+slugify@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/slugify/-/slugify-1.4.0.tgz#c9557c653c54b0c7f7a8e786ef3431add676d2cb"
   integrity sha512-FtLNsMGBSRB/0JOE2A0fxlqjI6fJsgHGS13iTuVT28kViI4JjUiNqp/vyis0ZXYcMnpR3fzGNkv+6vRlI2GwdQ==
@@ -14122,7 +14122,7 @@ svgo@^1.0.0:
     unquote "~1.1.1"
     util.promisify "~1.0.0"
 
-swagger2openapi@^5.3.1:
+swagger2openapi@^5.3.4:
   version "5.3.4"
   resolved "https://registry.yarnpkg.com/swagger2openapi/-/swagger2openapi-5.3.4.tgz#b28cccac9bc4021a769ff997965604cc78f07984"
   integrity sha512-4LSutujtmehQFkRG4MAObjnI414S8VHSZ2tDAT88XxK6LhgYWUcYGZ0LNDecx5mkxAn0gOdfCJY0MCUPKJDqlw==
@@ -14430,7 +14430,7 @@ ts-pnp@^1.1.6:
   resolved "https://registry.yarnpkg.com/ts-pnp/-/ts-pnp-1.1.6.tgz#389a24396d425a0d3162e96d2b4638900fdc289a"
   integrity sha512-CrG5GqAAzMT7144Cl+UIFP7mz/iIhiy+xQ6GGcnjTezhALT02uPMRw7tgDSESgB5MsfKt55+GPWw4ir1kVtMIQ==
 
-tslib@^1.10.0, tslib@^1.9.0:
+tslib@^1.10.0, tslib@^1.11.1, tslib@^1.9.0:
   version "1.11.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.11.1.tgz#eb15d128827fbee2841549e171f45ed338ac7e35"
   integrity sha512-aZW88SY8kQbU7gpV19lN24LtXh/yD4ZZg6qieAJDDg+YBsJcSmLGK9QpnUjAKVG/xefmvJGd1WUmfpT/g6AJGA==
