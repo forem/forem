@@ -6,7 +6,7 @@
 }
 
 .onboarding-body {
-  @include themeable(background-color, theme-background, $white);
+  background-color: var(--body-bg);
   position: fixed;
   margin-top: 50px;
   bottom: 0;

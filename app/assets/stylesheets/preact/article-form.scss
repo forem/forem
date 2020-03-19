@@ -58,10 +58,6 @@
   }
   .help-guide-title {
     padding-top: 20px;
-    h1 {
-      background: $yellow;
-      background: var(--theme-container-accent-background, $yellow);
-    }
   }
 }
 
@@ -100,9 +96,7 @@
   width: 60%;
   border-radius: 8px;
   background: $light-gray;
-  background: var(--theme-background, $light-gray);
-  border: 1px solid $light-medium-gray;
-  border: var(--theme-container-border, 1px solid $light-medium-gray);
+  background: var(--body-bg);
   margin-top: 10px;
   cursor: pointer;
   @media screen and (min-width: 550px) {
@@ -155,10 +149,7 @@
   border: 0;
   padding: 20px 0px 15px;
   font-weight: 600;
-  color: $black;
-  color: var(--theme-secondary-color, $black);
-  background: white;
-  background: var(--theme-container-background, white);
+  color: var(--body-color);
   resize: none;
   font-family: $monospace;
   @media screen and (min-width: 600px) {
@@ -166,8 +157,7 @@
     height: 50px;
   }
   &::placeholder {
-    color: #8f949c;
-    color: var(--theme-secondary-color, #8f949c);
+    color: var(--form-placeholder-color);
   }
   &.articleform__titlepreview {
     margin-bottom: 0px;
@@ -229,10 +219,8 @@
   font-size: 16px;
   font-family: $monospace;
   font-weight: bold;
-  background: $light-gray;
-  background: var(--theme-background, $light-gray);
-  color: $black;
-  color: var(--theme-secondary-color, $black);
+  background: var(--form-bg);
+  color: var(--body-color);
 }
 
 .articleform__tagsoptions {
@@ -245,11 +233,8 @@
     left: 8px;
     right: 155px;
   }
-  background: white;
-  background: var(--theme-container-background, white);
-  border: 1px solid $medium-gray;
-  box-shadow: $bold-shadow;
-  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
+  background: var(--container-bg);
+  border: 1px solid var(--body-color);
   font-family: $monospace;
   z-index: 20;
 }
@@ -259,10 +244,8 @@
   cursor: pointer;
   position: relative;
   &:hover {
-    background: lighten($green, 27%);
-    background: var(--theme-container-background-hover, lighten($green, 27%));
-    color: $black;
-    color: var(--theme-color, $black);
+    background: var(--button-primary-bg-hover);
+    color: var(--button-primary-color-hover);
   }
 }
 
@@ -274,7 +257,7 @@
   font-size: 0.7em;
   font-style: italic;
   border-top: 1px solid $medium-gray;
-  color: var(--theme-secondary-color, $black);
+  color: var(--body-color);
 }
 
 .articleform__tagsoptionrulesbutton {
@@ -283,8 +266,8 @@
   top: 9px;
   border: 0;
   border-radius: 3px;
-  background: var(--link-brand-color);
-  color: var(--theme-container-background, white);
+  background: var(--button-primary-bg);
+  color: var(--button-primary-color);
   font-size: 0.8em;
   width: 100px;
 }
@@ -304,26 +287,18 @@
 }
 
 .articleform__tagoptionrow--active {
-  background: $green;
-  background: var(--theme-container-accent-background, $green);
-  color: $black;
-  color: var(--theme-color, $black);
+  background: var(--button-primary-bg);
+  color: var(--button-primary-color);
 }
 
 .articleform__tagoptionsummary {
-  color: $medium-gray;
-  color: var(--theme-secondary-color, $medium-gray);
+  color: var(--container-color-secondary);
   font-weight: 400;
 }
 
 .articleform__detailsButton {
-  color: $black;
-  color: var(--theme-color, $black);
-  background: lighten($light-medium-gray, 8%);
-  background: var(
-    --theme-container-accent-background,
-    lighten($light-medium-gray, 8%)
-  );
+  color: var(--button-secondary-color);
+  background: var(--form-bg);
   border: 0px;
   border-radius: 300px;
   padding: 3px 18px;
@@ -337,15 +312,13 @@
   }
   margin-left: 25px;
   &:hover {
-    background: lighten($purple, 5%);
-    background: var(--theme-container-background-hover, lighten($purple, 5%));
+    background: var(--button-secondary-bg-hover);
   }
   img {
     width: 18px;
     height: 18px;
     vertical-align: -4px;
     display: inline-block;
-    filter: invert(100);
     filter: var(--theme-social-icon-invert, invert(0));
   }
   &.articleform__detailsButton--moreconfig {
@@ -396,17 +369,14 @@
   // scrollbars not needed because the preact-textarea-autosize package
   // automatically resizes the article form
   overflow: hidden;
-  background: white;
-  background: var(--theme-container-background, white);
-  color: $black;
-  color: var(--theme-secondary-color, $black);
+  background: var(--container-bg);
+  color: var(--container-color);
   @media screen and (min-width: 600px) {
     font-size: 18px;
     min-height: calc(85vh - 280px);
   }
   &::placeholder {
-    color: #8f949c;
-    color: var(--theme-secondary-color, #8f949c);
+    color: var(--form-placeholder-color);
   }
 }
 .articleform__form--v1 {
@@ -430,11 +400,19 @@
   bottom: 0px;
   left: 0;
   right: 0;
-  background: white;
-  background: var(--theme-container-background, white);
+  background: var(--container-bg);
   z-index: 20;
-  border-top: 1px solid $light-medium-gray;
-  border-top: var(--theme-container-border, 1px solid $light-medium-gray);
+  &::after {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    width: 100%;
+    background: var(--body-color);
+    opacity: 0.1;
+    content: '';
+    height: 1px;
+  }
 
   * {
     margin: 4px calc(0.7vw);
@@ -455,8 +433,7 @@
       display: inline-block;
       margin-bottom: 2px;
       font-size: 11px;
-      color: $medium-gray;
-      color: var(--theme-secondary-color, $medium-gray);
+      color: var(--container-color-secondary);
       font-style: italic;
       margin-left: -2px;
     }
@@ -477,7 +454,7 @@
       border: none;
       box-shadow: none;
       color: $medium-gray;
-      color: var(--theme-secondary-color, $medium-gray);
+      color: var(--container-color-secondary);
       font-family: sans-serif;
       font-size: 1rem;
       cursor: pointer;
@@ -512,42 +489,26 @@
     margin-top: 5px;
     margin-bottom: 5px;
     cursor: pointer;
-    background: $light-gray;
-    background: var(--theme-background, $light-gray);
+    background: var(--button-secondary-bg);
     font-family: $helvetica-condensed;
     font-size: 14.5px;
     border: 0px;
     border-radius: 113px;
-    box-shadow: 2px 2px 8px darken($light-medium-gray, 13%);
-    box-shadow: var(
-      --theme-container-box-shadow,
-      2px 2px 8px darken($light-medium-gray, 13%)
-    );
     padding: 6px 13px;
     display: inline-block;
     text-align: center;
-    color: $medium-gray;
-    color: var(--theme-secondary-color, $medium-gray);
+    color: var(--button-secondary-color);
     white-space: nowrap;
     @media screen and (min-width: 430px) {
       margin-top: 16px;
       margin-bottom: 16px;
     }
     &:hover {
-      background: lighten($green, 24%);
-      background: var(
-        --theme-container-accent-background,
-        lighten($green, 24%)
-      );
+      background: var(--button-secondary-bg-hover);
     }
     &:focus {
-      background: lighten($green, 29%);
-      background: var(
-        --theme-container-accent-background,
-        lighten($green, 29%)
-      );
+      background: var(--button-secondary-bg-hover);
       outline: 0;
-      box-shadow: 0px 0px 1px lighten($green, 15%);
     }
     &.active {
       background: $green;
@@ -582,8 +543,6 @@
   background: $dark-gray;
   color: white;
   padding: 4%;
-  box-shadow: $bold-shadow;
-  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
   text-align: center;
   border-radius: 3px;
   overflow-y: scroll;

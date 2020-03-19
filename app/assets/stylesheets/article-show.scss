@@ -1,10 +1,6 @@
 @import 'variables';
 @import 'mixins';
 
-.stories-show {
-  @include themeable(background, theme-background, $lightest-gray);
-}
-
 .unpublished {
   background: $red;
   display: block;
@@ -675,7 +671,7 @@ article {
       th {
         border: 1px solid $light-medium-gray;
         padding: 5px 1vw;
-        @include themeable(background, theme-background, $lightest-gray);
+        background: var(--body-bg);
         text-align: left;
       }
 
@@ -1283,9 +1279,6 @@ article {
   .container {
     .article-actions {
       padding: 4px 0 0;
-
-      border-bottom: 1px solid $tan;
-      border-bottom: 1px solid var(--theme-background, $tan);
       border-top: 1px solid rgba(0, 0, 0, 0.33);
       transition: padding 0.33s;
 

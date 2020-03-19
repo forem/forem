@@ -193,7 +193,7 @@
   padding: 3px 12px;
   display: inline-block;
   border-radius: 3px;
-  @include themeable(background, theme-background, $lightest-gray);
+  background: var(--body-bg);
   border: 1px solid $light-medium-gray;
   font-weight: bold;
   cursor: default;
@@ -309,7 +309,7 @@
   top: 0;
   padding: 80px 7%;
   z-index: 10;
-  @include themeable(background, theme-background, white);
+  background: var(--body-bg);
 }
 
 .chatNonChatView_exitbutton {
@@ -515,7 +515,7 @@
     min-width: 45%;
   }
   -webkit-overflow-scrolling: touch;
-  @include themeable(background, theme-background, $lightest-gray);
+  background: var(--body-bg);
   z-index: 200;
   position: relative;
   box-sizing: border-box;
@@ -830,7 +830,7 @@
   bottom: -14px;
   left: 0;
   right: 0;
-  @include themeable(background, theme-background, $lightest-gray);
+  background: var(--body-bg);
   border-top: 1px solid $light-medium-gray;
   padding: 8px 10px 20px;
   font-weight: bold;
@@ -1101,8 +1101,8 @@
   position: absolute;
   bottom: 12px;
   right: 8px;
-  background: var(--theme-background, #f5f6f7);
-  color: var(--theme-color, $black);
+  background: var(--body-bg);
+  color: var(--body-color);
   border: 2px solid $black;
   padding: 7px 15px;
   border-radius: 20px;
@@ -1210,8 +1210,8 @@
   transform: translate(-50%, -50%);
   padding: 1em;
   border: 2px solid;
-  background: var(--theme-background, #f5f6f7);
-  color: var(--theme-color, $black);
+  background: var(--body-bg);
+  color: var(--body-color);
 }
 
 .modal__content h3 {

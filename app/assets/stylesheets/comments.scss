@@ -27,15 +27,14 @@ $indent-distance: calc(1.1vw + 13px);
 }
 
 a.header-link {
-  @include themeable(color, theme-color, $black);
+  color: var(--body-color);
   display: block;
   &:hover {
-    @include themeable(color, theme-color, $black);
+    color: var(--body-color);
   }
 }
 
 .comments {
-  @include themeable(background, theme-background, $light-gray);
   .picture {
     height: 180px;
     max-width: 900px;
@@ -65,7 +64,7 @@ a.header-link {
     max-width: 100%;
     margin: 50px auto 10px;
     padding: 0px 0px 90px;
-    @include themeable(background, theme-container-background, #fff);
+    background: var(--container-bg);
     z-index: 3;
     position: relative;
     @media screen and (min-width: 820px) {
