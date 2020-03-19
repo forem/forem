@@ -106,7 +106,7 @@ RSpec.describe Organization, type: :model do
       expect(organization.errors[:slug].to_s.include?("taken")).to be true
     end
 
-    it "takes used partial into account" do
+    it "takes sitemap into account" do
       organization = build(:organization, slug: "sitemap-yo")
       expect(organization).not_to be_valid
       expect(organization.errors[:slug].to_s.include?("taken")).to be true
