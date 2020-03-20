@@ -18,7 +18,7 @@ class Internal::ResponseTemplatesController < Internal::ApplicationController
     @response_template = ResponseTemplate.new(permitted_params)
     if @response_template.save
       flash[:success] = "Response Template: \"#{@response_template.title}\" saved successfully."
-      redirect_to edit_internal_response_template_path(@response_template)
+      redirect_to internal_response_templates_path
     else
       flash[:danger] = @response_template.errors.full_messages.to_sentence
       @response_templates = ResponseTemplate.page(params[:page]).per(50)
