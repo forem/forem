@@ -265,6 +265,8 @@ Message.create!(
   message_markdown: "This is **awesome**",
 )
 
+##############################################################################
+
 Rails.logger.info "9. Creating HTML Variants"
 
 HtmlVariant.create!(
@@ -277,6 +279,8 @@ HtmlVariant.create!(
   user_id: User.first.id,
 )
 
+##############################################################################
+
 Rails.logger.info "10. Creating Badges"
 
 Badge.create!(
@@ -284,6 +288,8 @@ Badge.create!(
   description: Faker::Lorem.sentence,
   badge_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
 )
+
+##############################################################################
 
 Rails.logger.info "11. Creating FeedbackMessages"
 
@@ -303,6 +309,8 @@ FeedbackMessage.create!(
   category: "harassment",
   status: "Open",
 )
+
+##############################################################################
 
 Rails.logger.info "12. Creating Classified listings"
 
@@ -326,6 +334,7 @@ listings_categories.each_with_index do |category, index|
     )
   end
 end
+
 ##############################################################################
 
 puts <<-ASCII # rubocop:disable Rails/Output
