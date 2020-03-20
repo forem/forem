@@ -60,7 +60,7 @@ RSpec.describe Slack::Messengers::Feedback, type: :service do
     expect(channel).to eq(default_params[:type])
 
     username = get_argument_from_last_job("channel")
-    expect(username).to eq("#{default_params[:username]}_bot")
+    expect(username).to eq("#{default_params[:type]}_bot")
   end
 
   it "uses the cry emoji for abuse reports" do
