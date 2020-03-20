@@ -49,7 +49,11 @@ num_users.times do |i|
     password: "password",
   )
 
-  user.add_role(roles[rand(0..roles.length)]) # includes chance of having no role
+  if i == 0
+    user.add_role(:trusted) # guarantee at least on moderator
+  else
+    user.add_role(roles[rand(0..roles.length)]) # includes chance of having no role
+  end
 
   Identity.create!(
     provider: "twitter",
@@ -294,6 +298,8 @@ Badge.create!(
 
 Rails.logger.info "#{counter += 1}. Creating FeedbackMessages"
 
+mod = User.first
+
 FeedbackMessage.create!(
   reporter: User.last,
   feedback_type: "spam",
@@ -303,13 +309,29 @@ FeedbackMessage.create!(
 )
 
 FeedbackMessage.create!(
-  reporter: User.first,
+  reporter: mod,
   feedback_type: "abuse-reports",
   message: Faker::Lorem.sentence,
   reported_url: "example.com",
   category: "harassment",
   status: "Open",
 )
+
+Reaction.create!(
+  category: "vomit",
+  reactable_id: User.last.id,
+  reactable_type: "User",
+  user_id: mod.id,
+)
+
+3.times do
+  Reaction.create!(
+    category: "vomit",
+    reactable_id: Article.order(Arel.sql("RANDOM()")).first.id,
+    reactable_type: "Article",
+    user_id: mod.id,
+  )
+end
 
 ##############################################################################
 
