@@ -151,6 +151,7 @@
   font-weight: 600;
   color: var(--body-color);
   resize: none;
+  background: transparent;
   font-family: $monospace;
   @media screen and (min-width: 600px) {
     font-size: 29px;

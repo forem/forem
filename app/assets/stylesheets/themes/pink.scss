@@ -85,7 +85,7 @@
   // Greyscale links, for places where we don't want to make them use accent color
   --link-dimmed-color: var(--base-90);
   --link-dimmed-color-secondary: var(--base-80);
-  --link-dimmed-bg-hover: var(--base-0);
+  --link-dimmed-bg-hover: var(--base-10);
   --link-dimmed-color-hover: var(--base-100);
   --link-dimmed-bg-current: var(--base-inverted);
   --link-dimmed-color-current: var(--base-100);
@@ -117,8 +117,8 @@
   --form-placeholder-color: var(--base-60);
 
   // Form lables
-  --label-primary: var(--base-90);
-  --label-secondary: var(--base-60);
+  --label-primary: var(--base-100);
+  --label-secondary: var(--base-90);
 
   // Default box
   --box: var(--base-90);

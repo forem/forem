@@ -235,8 +235,9 @@
   padding: 6px 9px 5px;
   font-size: 16px;
   background: var(--form-bg);
+  color: var(--body-color);
   -webkit-appearance: none;
-  border: 1px solid transparent;
+  border: 1px solid var(--form-border);
   &:focus {
     border: 1px solid var(--form-border-focus);
   }

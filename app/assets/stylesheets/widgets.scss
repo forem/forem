@@ -243,11 +243,7 @@
       }
       .widget-listing-link-category {
         display: inline-block;
-        @include themeable(
-          color,
-          theme-secondary-color,
-          lighten($medium-gray, 10%)
-        );
+        color: var(--widget-color-tertiary);
         font-size: 0.8em;
         line-height: 1;
       }
@@ -484,7 +480,7 @@
     font-weight: 400;
 
     &.sidebar-nav-link-tag {
-      color: var(--link-dimmed-color-secondary);
+      color: var(--link-dimmed-color);
     }
   }
   a.sidebar-nav-link-follow {
@@ -511,8 +507,7 @@
   margin-bottom: 10px;
   font-family: $helvetica-condensed;
   font-stretch: condensed;
-  @include themeable(border, theme-container-border, 1px solid $outline-color);
-  @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
+  background: var(--widget-bg);
 }
 
 // "Extra" links in sidebar: about, contact, ...

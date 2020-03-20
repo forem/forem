@@ -282,19 +282,15 @@ a.header-link {
       display: block;
       resize: vertical;
       border-radius: 3px;
-      @include themeable(
-        border,
-        theme-container-background,
-        1px solid rgb(232, 229, 229)
-      );
+      border: 1px solid var(--form-border);
       height: 125px;
       font-size: 16px;
       padding: 6px;
       cursor: text;
-      background: var(--container-bg);
+      background: var(--form-bg);
       color: var(--body-color);
       &::placeholder {
-        color: #8f949c;
+        color: var(--form-placeholder);
       }
       &.embiggened {
         height: calc(2vw + 115px);
@@ -308,9 +304,8 @@ a.header-link {
       &.preview-loading {
         background: white url(image_path('loading-ellipsis.svg')) no-repeat
           center center;
-        @include themeable(background-color, theme-container-background, white);
-        @include themeable(color, theme-container-background, white);
-
+        background-color: var(--container-bg);
+        color: var(--body-color-inverted);
         background-size: 50px;
       }
     }
@@ -323,11 +318,7 @@ a.header-link {
       text-align: left;
       font-size: 19px;
       font-family: $helvetica;
-      @include themeable(
-        background,
-        theme-container-accent-background,
-        lighten($yellow, 19%)
-      );
+      background: var(--container-bg);
       box-shadow: $shadow;
       width: calc(100% - 80px);
       margin: 19px auto 8px;
