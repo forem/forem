@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "internal/users", type: :request do
-  let!(:user) { create(:user, :with_identity, identities: "github") }
+  let!(:user) { create(:user, :with_identity, identities: ["github"]) }
   let(:admin) { create(:user, :super_admin) }
 
   before do

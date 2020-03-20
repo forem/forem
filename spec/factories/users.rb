@@ -26,7 +26,7 @@ FactoryBot.define do
       transient { identities { %i[github twitter] } }
 
       after(:create) do |user, options|
-        Array.wrap(options.identities).each do |provider|
+        options.identities.each do |provider|
           create(:identity, user: user, provider: provider)
         end
       end
