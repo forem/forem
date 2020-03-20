@@ -101,15 +101,20 @@ class FollowUsers extends Component {
         <div className="onboarding-content">
           <header className="onboarding-content-header">
             <h1 className="title">Suggested people to follow</h1>
-            <h3 className="subtitle">Let&apos; s review a few things first</h3>
+            <h3 className="subtitle">Let&apos;s review a few things first</h3>
           </header>
 
           <div className="onboarding-modal-scroll-container">
-
             {users.map(user => (
-              <li
+              <button
+                type="button"
                 onClick={() => this.handleClick(user)}
-                className={selectedUsers.includes(user) ? "user content-row selected" : "user content-row unselected"}
+                onKeyDown={() => this.handleKeyDown(user)}
+                className={
+                  selectedUsers.includes(user)
+                    ? 'user content-row selected'
+                    : 'user content-row unselected'
+                }
               >
                 <figure className="user-avatar-container">
                   <img
@@ -125,9 +130,8 @@ class FollowUsers extends Component {
                 <button type="button" className="user-following-status">
                   {selectedUsers.includes(user) ? 'Following' : 'Follow'}
                 </button>
-              </li>
+              </button>
             ))}
-
           </div>
         </div>
         <div className="onboarding-selection-status">

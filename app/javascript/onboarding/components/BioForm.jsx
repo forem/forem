@@ -54,12 +54,10 @@ class BioForm extends Component {
         <Navigation prev={prev} next={this.onSubmit} />
         <div className="onboarding-content about">
           <header className="onboarding-content-header">
-            <h1 className="title">
-              Introduce yourself
-            </h1>
+            <h1 className="title">Introduce yourself</h1>
             <h3 className="subtitle">
-              Tell the community about yourself! Write a quick bio about what
-              you do, what you&apos;re interested in, or anything else!
+              Tell the community about yourself. Write a quick bio about what
+              you do, what you&apos;re interested in, or anything else.
             </h3>
           </header>
           <form>
