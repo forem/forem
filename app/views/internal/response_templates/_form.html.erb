@@ -13,12 +13,12 @@
     <%= f.text_area :content, class: "form-control" %>
   </div>
   <div class="form-group">
-    <%= f.label :content_type, "Content Type (markdown, plain text, HTML, etc)", value: response_template.content %>
+    <%= f.label :content_type, "Content Type (for ex. Markdown)", value: response_template.content %>
     <% content_type_options = [["Markdown", "body_markdown"], ["Plain Text", "plain_text"], ["HTML", "html"]] %>
     <%= f.select :content_type, options_for_select(content_type_options, response_template.content_type || "plain_text"), class: "form-control" %>
   </div>
   <div class="form-group">
-    <%= f.label :user_id, "User ID - Leave blank to allow more than one user to use" %>
+    <%= f.label :user_id, "User ID - Add ID to restrict usage for a single user" %>
     <%= f.text_field :user_id, value: response_template.user_id, class: "form-control" %>
   </div>
   <%= f.submit class: "btn btn-primary" %>
