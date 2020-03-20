@@ -291,8 +291,8 @@ a.header-link {
       font-size: 16px;
       padding: 6px;
       cursor: text;
-      @include themeable(background, theme-container-background, #fff);
-      @include themeable(color, theme-color, $black);
+      background: var(--container-bg);
+      color: var(--body-color);
       &::placeholder {
         color: #8f949c;
       }
@@ -386,7 +386,7 @@ a.header-link {
       text-align: right;
       font-size: 0.9em;
       font-weight: 500;
-      @include themeable(color, theme-secondary-color, $dark-gray);
+      color: var(--link-brand-color);
       &.sub-comment-code-of-conduct {
         font-size: 1em;
       }
@@ -483,7 +483,7 @@ a.header-link {
     .root-comment {
       margin-top: -80px;
       .comment-parent-link {
-        @include themeable(background, theme-container-background, white);
+        background: var(--container-bg);
         @include themeable(
           border,
           theme-container-border,
@@ -758,7 +758,7 @@ a.header-link {
   .details {
     padding: 0px;
     border-top-left-radius: 3px;
-    @include themeable(color, theme-secondary-color, $dark-gray);
+    color: var(--link-brand-color);
     position: relative;
     .comment-date {
       border: none;
@@ -768,7 +768,7 @@ a.header-link {
       font-size: 12px;
       text-align: right;
       a {
-        @include themeable(color, theme-secondary-color, $medium-gray);
+        color: var(--container-color-tertiary);
       }
     }
     .dropbtn {
@@ -1067,7 +1067,7 @@ a.header-link {
   .inner-comment {
     padding: 0px;
     border: 1px solid $light-medium-gray;
-    @include themeable(background, theme-container-background, #fff);
+    background: var(--container-bg);
     &.comment-created-via-fetch {
       animation: comment-create 1.2s;
       .body {

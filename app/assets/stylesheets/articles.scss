@@ -36,7 +36,7 @@
         display: block;
         .side-bar {
           display: block;
-          @include themeable(background, theme-container-background, white);
+          background: var(--container-bg);
           height: 100%;
           overflow-y: auto;
         }
@@ -70,7 +70,7 @@
     z-index: 5;
     padding: 16px 0;
     box-sizing: border-box;
-    @include themeable(color, theme-color, rgba($black, 0.8));
+    color: var(--widget-color);
     &.sidebar-additional {
       display: none;
       &.showing {
@@ -220,14 +220,14 @@
   padding: 5px 0px 15px;
   display: none;
   font-size: 1.1em;
-  @include themeable(background, theme-container-background, #fff);
+  background: var(--container-bg);
   a {
     display: block;
     text-align: center;
-    @include themeable(color, theme-container-color, $black);
+    color: var(--container-color);
     padding: 20px 0px;
     &.selected {
-      @include themeable(background, theme-container-background-hover, $purple);
+      background: var(--accent-brand-lighter);
     }
   }
   &.showing {
@@ -416,7 +416,7 @@
   }
 
   a {
-    @include themeable(color, theme-container-color, $black);
+    color: var(--container-color);
   }
 
   .placeholder-div {
@@ -510,7 +510,7 @@
         theme-container-accent-background,
         darken($light-gray, 6%)
       );
-      @include themeable(color, theme-color, $black);
+      color: var(--container-color);
       padding: 8px;
       border-radius: 3px 0 3px 0;
       font-weight: 600;
@@ -599,7 +599,7 @@
       }
     }
     .time-ago-indicator {
-      @include themeable(color, theme-secondary-color, $medium-gray);
+      color: var(--container-color-tertiary);
       display: inline-block;
       margin-left: 4px;
       font-weight: 400;
@@ -622,7 +622,7 @@
       text-overflow: ellipsis;
       font-size: 0.8em;
       a {
-        @include themeable(color, theme-secondary-color, #666666);
+        color: var(--container-color-tertiary);
       }
 
       &:hover {
@@ -732,7 +732,7 @@
     bottom: 65px;
     font-size: 0.8em;
     a {
-      @include themeable(color, theme-secondary-color, #666666);
+      color: var(--container-color-tertiary);
     }
     @media screen and (min-width: 450px) {
       font-size: 1em;
@@ -759,7 +759,7 @@
     font-size: 0.7em;
     padding: 6px 0px;
     z-index: 8;
-    @include themeable(color, theme-secondary-color, $medium-gray);
+    color: var(--container-color-tertiary);
   }
   .article-engagement-count {
     font-size: 13px;
@@ -772,12 +772,12 @@
     border: 0;
     -webkit-appearance: none;
     font-family: $helvetica-condensed;
-    @include themeable(color, theme-secondary-color, $medium-gray);
+    color: var(--container-color-tertiary);
     a {
       &:hover {
         opacity: 1;
       }
-      @include themeable(color, theme-secondary-color, $medium-gray);
+      color: var(--container-color-tertiary);
     }
     img {
       height: 18px;
@@ -875,7 +875,7 @@
   display: flex;
   padding: 8px 16px;
   font-size: 0.8em;
-  @include themeable(color, theme-secondary-color, $medium-gray);
+  color: var(--container-color-tertiary);
 
   img {
     height: 50px;
@@ -897,7 +897,7 @@
     }
     padding-top: 0.2em;
     font-weight: 500;
-    @include themeable(color, theme-color, $black);
+    color: var(--container-color);
   }
   &:hover {
     @include themeable(
@@ -932,7 +932,7 @@
     width: 27%;
     padding: 9px 0px;
     text-align: center;
-    @include themeable(color, theme-secondary-color, $medium-gray);
+    color: var(--container-color-tertiary);
     margin: 1%;
   }
   .query-filter-button {
@@ -945,7 +945,7 @@
     padding: 9px 0px;
     text-align: left;
     border-radius: 100px;
-    @include themeable(color, theme-color, $black);
+    color: var(--container-color);
     text-align: center;
     margin: 1%;
 

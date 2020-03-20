@@ -45,7 +45,7 @@
                 @include themeable(color, theme-color, rgba($black, 0.8));
 
                 &:hover {
-                  @include themeable(color, theme-color, $black);
+                  color: var(--body-color);
                 }
               }
             }
@@ -93,7 +93,7 @@
 
     .all-stories {
       @include themeable(border, theme-border, 2px solid $outline-color);
-      @include themeable(color, theme-color, $black);
+      color: var(--body-color);
       background: var(--base-inverted);
     }
   }

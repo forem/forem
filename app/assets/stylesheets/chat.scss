@@ -140,8 +140,8 @@
   padding: 8px;
   font-size: 14px;
   -webkit-appearance: none;
-  @include themeable(background, theme-container-background, white);
-  @include themeable(color, theme-color, $black);
+  background: var(--container-bg);
+  color: var(--body-color);
 
   @media screen and (min-width: 1000px) {
     width: calc(100% - 13px);
@@ -320,7 +320,7 @@
   background: transparent;
   border: 0px;
   font-size: 1.8em;
-  @include themeable(color, theme-color, $black);
+  color: var(--body-color);
 }
 
 .chatNonChatView_contentblock {
@@ -389,7 +389,7 @@
   justify-content: space-between;
   @include themeable(border, theme-container-border, 1px solid $outline-color);
   @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
-  @include themeable(background, theme-container-background, white);
+  background: var(--container-bg);
   flex-flow: row nowrap;
 }
 
@@ -431,7 +431,7 @@
   position: relative;
 
   a {
-    @include themeable(color, theme-color, $black);
+    color: var(--body-color);
   }
 
   .activechatchannel__channelconfig {
@@ -555,7 +555,7 @@
 .activechatchannel__activecontentexitbutton {
   border: 0px;
   font-size: 30px;
-  @include themeable(color, theme-container-color, $medium-gray);
+  color: var(--container-color-tertiary);
   padding: 0px;
   background: transparent;
   position: absolute;
@@ -710,7 +710,7 @@
   padding: 3px 0px;
   margin-bottom: -5px 0;
   box-sizing: border-box;
-  @include themeable(color, theme-color, $black);
+  color: var(--body-color);
 
   &:hover {
     .chatchanneltab--inactive {
@@ -743,7 +743,7 @@
 }
 
 .chatchanneltab--active {
-  @include themeable(background, theme-container-background, white);
+  background: var(--container-bg);
   border: 1px solid $dark-purple;
   box-shadow: 3px 3px 0px $dark-purple;
 }
@@ -986,8 +986,8 @@
   }
 
   a h1 {
-    @include themeable(color, theme-container-color, $black);
-    @include themeable-important(border-color, theme-container-color, #0a0a0a);
+    color: var(--container-color);
+    border-color: var(--container-color);
   }
 
   img {
@@ -1017,9 +1017,9 @@
   padding: 5px;
   resize: none;
   flex-grow: 1;
-  @include themeable(background, theme-container-background, white);
+  background: var(--container-bg);
   @include themeable(border, theme-border, 1px solid $outline-color);
-  @include themeable(color, theme-color, $black);
+  color: var(--body-color);
 }
 
 .messagecomposer__submit {
@@ -1148,7 +1148,7 @@
   max-width: 670px;
   padding: 0px;
   margin-bottom: 6px;
-  @include themeable(background, theme-container-background, white);
+  background: var(--container-bg);
   .chatchannels__richlinkmainimage {
     position: relative;
     width: 100%;
@@ -1168,14 +1168,14 @@
       vertical-align: -0.25em;
       &.chatchannels__richlinkprofilepic {
         border-radius: 100px;
-        @include themeable(border, theme-border, 1px solid $light-medium-gray);
+        border: 1px solid var(--container-color-tertiary);
       }
     }
   }
   h4 {
     margin-top: -12px;
     margin-bottom: 15px;
-    @include themeable(color, theme-secondary-color, $medium-gray);
+    color: var(--container-color-tertiary);
     font-weight: 500;
     padding: 0px calc(10px + 0.2vw);
     img {
@@ -1183,7 +1183,7 @@
       width: 22px;
       border-radius: 100px;
       margin-right: 3px;
-      @include themeable(border, theme-border, 1px solid $light-medium-gray);
+      border: 1px solid var(--container-color-tertiary);
       vertical-align: -6px;
     }
   }
@@ -1226,7 +1226,7 @@
 }
 
 .delete__action__buttons div {
-  border: 2px solid var(--theme-color, $black);
+  border: 2px solid var(--body-color);
   padding: 5px 20px;
   cursor: pointer;
   user-select: none;
@@ -1273,7 +1273,7 @@
 
 .mention__list {
   position: absolute;
-  background: var(--theme-container-background, white);
+  background: var(--container-bg);
   display: none;
   z-index: 1;
   border-top: 1px solid #dbdbdb;

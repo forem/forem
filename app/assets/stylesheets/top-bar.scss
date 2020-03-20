@@ -164,7 +164,7 @@
         }
       }
       a {
-        @include themeable(color, theme-color, $black);
+        color: var(--body-color);
       }
     }
   }

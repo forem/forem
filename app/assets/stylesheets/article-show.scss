@@ -116,7 +116,7 @@ article {
     margin: auto;
 
     .org-branded-title-link {
-      @include themeable(color, theme-color, lighten($black, 4%));
+      color: var(--container-color-secondary);
       .org-branded-title {
         font-size: calc(0.9em + 0.3vw);
         padding: 8px 0 6px;
@@ -191,7 +191,7 @@ article {
       padding: 0;
       padding: 0 3px 16px;
       font-weight: 500;
-      @include themeable(color, theme-secondary-color, $medium-gray);
+      color: var(--container-color-tertiary);
       font-size: 13.5px;
       line-height: 1.5em;
 
@@ -210,7 +210,7 @@ article {
       }
 
       a {
-        @include themeable(color, theme-secondary-color, $medium-gray);
+        color: var(--container-color-tertiary);
         text-decoration: none;
       }
 
@@ -350,7 +350,7 @@ article {
       'Book Antiqua', Georgia, serif;
     font-size: 21px;
     line-height: 32px;
-    @include themeable(background, theme-container-background, #fff);
+    background: var(--container-bg);
     position: relative;
     z-index: 5;
     padding-bottom: 5px;
@@ -425,7 +425,7 @@ article {
       opacity: 0.1;
       border-width: 1px;
       border-style: solid;
-      @include themeable(border-color, theme-color, $black);
+      border-color: var(--body-color);
       margin: 1.3em auto 1.5em;
     }
 
@@ -481,7 +481,7 @@ article {
       text-align: center;
       font-size: 0.8em;
       line-height: 1.4em;
-      @include themeable(color, theme-color, darken($medium-gray, 8%));
+      color: var(--body-color);
       display: block;
     }
 
@@ -693,11 +693,11 @@ article {
     position: relative;
     overflow: hidden;
     padding: 0px 0px 5px;
-    @include themeable(background, theme-container-background, white);
+    background: var(--container-bg);
     font-family: $helvetica;
 
     a {
-      @include themeable(color, theme-color, $black);
+      color: var(--body-color);
     }
 
     @media screen and (min-width: 520px) {
@@ -763,7 +763,7 @@ article {
         font-size: 0.85em;
 
         a {
-          @include themeable(color, theme-secondary-color, $medium-gray);
+          color: var(--container-color-tertiary);
           margin-right: 6px;
           display: inline-block;
         }
@@ -957,8 +957,7 @@ article {
       }
       &:hover {
         img {
-          box-shadow: 0px 0px 0px 2px
-            var(--theme-container-accent-background, $purple);
+          box-shadow: 0px 0px 0px 2px var(--accent-brand-lighter);
         }
       }
 
@@ -967,7 +966,7 @@ article {
         vertical-align: 6px;
         margin-left: 5px;
         vertical-align: 10px;
-        @include themeable(color, theme-secondary-color, $medium-gray);
+        color: var(--container-color-tertiary);
         font-size: 13px;
         width: 27px;
 
@@ -1194,7 +1193,7 @@ article {
     .article-actions-comments-count {
       display: none;
       position: relative;
-      @include themeable(color, theme-secondary-color, $medium-gray);
+      color: var(--container-color-tertiary);
       font-weight: bold;
       font-size: calc(0.8em + 0.1vw);
       vertical-align: calc(7px - 0.07vw);
@@ -1357,7 +1356,7 @@ article {
   padding-bottom: 20px;
 
   a {
-    @include themeable(color, theme-color, $black);
+    color: var(--body-color);
   }
 
   .inner {

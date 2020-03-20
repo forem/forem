@@ -27,7 +27,7 @@
   }
 
   .sidebar-profile--username {
-    @include themeable(color, theme-secondary-color, $medium-gray);
+    color: var(--container-color-tertiary);
   }
 }
 
@@ -102,7 +102,7 @@
   }
   &.podcast-pic-widget {
     a {
-      @include themeable(color, theme-color, $black);
+      color: var(--body-color);
     }
     .widget-body {
       padding-bottom: 10px;
@@ -141,7 +141,7 @@
       }
     }
     .suggest-podcast {
-      color: var(--theme-secondary-color, #666666);
+      color: var(--container-color-tertiary);
       text-decoration: underline;
       padding: 0 5px;
     }
@@ -156,10 +156,10 @@
     padding: 8px 0;
     font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier,
       monospace;
-    @include themeable(color, theme-container-color, $black);
+    color: var(--container-color);
     a {
       display: inline-block;
-      @include themeable(color, theme-container-color, $black);
+      color: var(--container-color);
       h4 {
         display: inline-block;
         margin: 0;
@@ -224,7 +224,7 @@
     .widget-podcast-ep {
       padding-bottom: 8px;
       a {
-        @include themeable(color, theme-color, $black);
+        color: var(--body-color);
         font-weight: 500;
       }
     }
@@ -274,7 +274,7 @@
     .widget-subtext {
       padding: 0;
       margin: 0;
-      @include themeable(color, theme-secondary-color, $medium-gray);
+      color: var(--container-color-tertiary);
       font-size: 0.85em;
     }
     .widget-user-pic {
@@ -309,7 +309,7 @@
     width: calc(100% - 16px);
     text-align: left;
     border-radius: 0px;
-    @include themeable(color, theme-color, $black);
+    color: var(--body-color);
     cursor: pointer;
     &:hover {
       @include themeable(
@@ -324,7 +324,7 @@
         theme-container-accent-background,
         lighten($bold-blue, 10%)
       );
-      @include themeable(color, theme-container-color, #fff);
+      color: var(--container-color);
     }
     &.query-type-filter-button {
       &:hover {
@@ -411,7 +411,7 @@
 
   .discuss-list-comment-count {
     font-size: 0.8em;
-    @include themeable(color, theme-container-color, $medium-gray);
+    color: var(--container-color-tertiary);
     img {
       width: 20px;
       vertical-align: -3px;
@@ -431,7 +431,7 @@
 // Sidebar sponsors
 .sidebar-sponsor {
   margin-bottom: 24px;
-  @include themeable(color, theme-container-color, rgba($black, 0.8));
+  color: var(--widget-color-tertiary);
   img {
     width: 100%;
     max-width: 180px;
@@ -439,7 +439,7 @@
 }
 .sidebar-sponsor--footer {
   font-size: 0.75em;
-  @include themeable(color, theme-secondary-color, $medium-gray);
+  color: var(--container-color-tertiary);
   a {
     background: lighten($purple, 3%);
     color: $black;
@@ -480,11 +480,11 @@
 
   a.sidebar-nav-link {
     @include sidebar-link;
-    @include themeable(color, theme-container-color, rgba($black, 0.9));
+    color: var(--link-dimmed-color);
     font-weight: 400;
 
     &.sidebar-nav-link-tag {
-      @include themeable(color, theme-container-color, rgba($black, 0.8));
+      color: var(--link-dimmed-color-secondary);
     }
   }
   a.sidebar-nav-link-follow {
@@ -520,6 +520,6 @@
   a {
     @include sidebar-link;
     font-size: 0.9em;
-    @include themeable(color, theme-container-color, rgba($black, 0.7));
+    color: var(--link-dimmed-color-secondary);
   }
 }
