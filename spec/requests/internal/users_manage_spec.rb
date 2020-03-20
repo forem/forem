@@ -197,64 +197,6 @@ RSpec.describe "Internal::Users", type: :request do
     end
   end
 
-  context "when banishing user" do
-    def banish_user
-      post "/internal/users/#{user.id}/banish"
-      user.reload
-    end
-
-    it "reassigns username and removes profile info" do
-      user.currently_hacking_on = "currently hackin on !!!!!!!!!!!!"
-      user.save
-      banish_user
-      expect(user.currently_hacking_on).to eq("")
-      expect(user.username).to include("spam_")
-    end
-
-    it "adds banned role" do
-      banish_user
-      expect(user.roles.last.name).to eq("banned")
-      expect(Note.count).to eq(1)
-    end
-
-    it "deletes user content" do
-      banish_user
-      expect(user.reactions.count).to eq(0)
-      expect(user.comments.count).to eq(0)
-      expect(user.articles.count).to eq(0)
-    end
-
-    it "removes a user's direct chat channels" do
-      ChatChannel.create_with_users([user, user2])
-
-      expect { banish_user }.to change(user.chat_channels, :count).from(1).to(0)
-    end
-
-    it "removes all follow relationships" do
-      user.follow(user2)
-      banish_user
-      expect(user.follows.count).to eq(0)
-    end
-
-    it "removes a user's classified listings" do
-      create(:classified_listing, user: user)
-      banish_user
-      expect(user.classified_listings.count).to eq(0)
-    end
-
-    it "creates an entry in the BanishedUsers table" do
-      expect do
-        banish_user
-      end.to change(BanishedUser, :count).by(1)
-    end
-
-    it "records who banished a user" do
-      banish_user
-      admin = BanishedUser.last
-      expect(admin.banished_by).to eq super_admin
-    end
-  end
-
   context "when handling credits" do
     before do
       create(:organization_membership, user: super_admin, organization: organization, type_of_user: "admin")
