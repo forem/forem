@@ -1,6 +1,5 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import debounceAction from '../../src/utils/debounceAction';
 import { fetchSearch } from '../../src/utils/search';
 
 const KEYS = {
@@ -30,13 +29,6 @@ const LETTERS_NUMBERS = /[a-z0-9]/i;
 class Tags extends Component {
   constructor(props) {
     super(props);
-
-    // 250ms without invoking the function at the leading edge of the timeout
-    // NOTE: this seems the best combination of wait time and options to avoid
-    // flickering and text replacement during autocomplete
-    this.debouncedTagSearch = debounceAction(this.handleInput.bind(this), {
-      time: 250,
-    });
 
     this.state = {
       selectedIndex: -1,
@@ -443,7 +435,7 @@ class Tags extends Component {
           placeholder={`${maxTags} tags max, comma separated, no spaces or special characters`}
           autoComplete="off"
           value={defaultValue}
-          onInput={this.debouncedTagSearch}
+          onInput={this.handleInput}
           onKeyDown={this.handleKeyDown}
           onBlur={this.handleFocusChange}
           onFocus={this.handleFocusChange}
