@@ -84,7 +84,14 @@ function handleFileSizeError(
   if (fileSizeErrorHandler) {
     fileSizeErrorHandler();
   } else {
-    const errorMessage = `File size too large (${fileSizeMb} MB). The limit is ${maxFileSizeMb} MB.`;
+    let errorMessage = `File size too large (${fileSizeMb} MB).`;
+
+    // If a user uploads a file type that we haven't defined a max size limit for then maxFileSizeMb
+    // could be NaN
+    if (maxFileSizeMb) {
+      errorMessage += ` The limit is ${maxFileSizeMb} MB.`;
+    }
+
     addErrorMessage(fileInput, errorMessage);
   }
 }
