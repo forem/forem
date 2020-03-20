@@ -50,7 +50,7 @@ num_users.times do |i|
   )
 
   if i == 0
-    user.add_role(:trusted) # guarantee at least on moderator
+    user.add_role(:trusted) # guarantee at least one moderator
   else
     user.add_role(roles[rand(0..roles.length)]) # includes chance of having no role
   end
@@ -350,6 +350,7 @@ listings_categories.each_with_index do |category, index|
       title: Faker::Lorem.sentence,
       body_markdown: Faker::Markdown.random,
       location: Faker::Address.city,
+      organization_id: user.organizations.first&.id,
       category: category,
       contact_via_connect: true,
       published: true,
