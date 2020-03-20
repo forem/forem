@@ -97,11 +97,12 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
   end
 
   def send_slack_message(params)
-    SlackBot.ping(
-      generate_message(params),
-      channel: params["feedback_type"],
-      username: "new_note_bot",
-      icon_emoji: ":memo:",
+    Slack::Messengers::Note.call(
+      author_name: params[:author_name],
+      status: params[:feedback_message_status],
+      type: params[:feedback_type],
+      report_id: params[:noteable_id],
+      message: params[:content],
     )
   end
 

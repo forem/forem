@@ -84,8 +84,6 @@ RSpec.describe "/internal/reports", type: :request do
       end
 
       before do
-        allow(SlackBot).to receive(:ping).and_return(true)
-
         sign_in admin
       end
 
@@ -104,6 +102,12 @@ RSpec.describe "/internal/reports", type: :request do
         post create_note_internal_reports_path, params: note_params
 
         expect(Note.last.attributes).to include(note_params)
+      end
+
+      it "queues a slack message to be sent" do
+        sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+          post create_note_internal_reports_path, params: note_params
+        end
       end
     end
   end
