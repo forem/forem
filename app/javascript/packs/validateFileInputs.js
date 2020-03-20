@@ -59,9 +59,7 @@ function addErrorMessage(fileInput, msg) {
   error.innerHTML = msg;
   error.classList.add('file-upload-error');
 
-  // Change this to ParentNode.append(error) once Internet Explore support is added
-  // https://developer.mozilla.org/en-US/docs/Web/API/ParentNode/append
-  fileInputField.parentNode.appendChild(error);
+  fileInputField.parentNode.append(error);
 }
 
 /**
