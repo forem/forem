@@ -2,7 +2,8 @@
 @import 'mixins';
 @import 'components/buttons';
 @import 'components/modals';
-@import 'vars/typography';
+@import 'components/forms';
+@import '../vars/variables';
 
 #onboarding-container {
   min-height: calc(100vh - 350px);
@@ -36,9 +37,9 @@
     color: var(--link-brand-color);
   }
 
-  @media screen and (min-width: 600px) {
+  @media screen and (min-width: $breakpoint-s) {
     justify-content: center;
-    padding: 32px 48px 48px;
+    padding: $su-7 $su-8 $su-8;
   }
 }
 
@@ -82,9 +83,9 @@
   }
 
   .title {
-    font-weight: 900;
+    font-weight: $fw-heavy;
     text-align: left;
-    margin-bottom: 4px;
+    margin-bottom: $su-1;
   }
 
   .badge-image {
@@ -94,10 +95,10 @@
 
 // Modal Header
 .onboarding-content-header {
-  margin-bottom: 16px;
+  margin-bottom: $su-4;
 
-  @media screen and (min-width: 600px) {
-    margin-bottom: 24px;
+  @media screen and (min-width: $breakpoint-s) {
+    margin-bottom: $su-6;
   }
 
   .title,
@@ -106,17 +107,17 @@
   }
 
   .title {
-    font-weight: 900;
+    font-weight: $fw-heavy;
+    margin-bottom: $su-1;
     text-align: left;
-    margin-bottom: 4px;
   }
 
   .subtitle {
-    color: #363d44;
-    font-size: 20px;
-    font-weight: 500;
+    color: $smoke-80;
+    font-size: $fs-xl;
+    font-weight: $fw-medium;
     letter-spacing: normal;
-    line-height: 150%;
+    line-height: $lh-base;
   }
 }
 
@@ -127,7 +128,7 @@
   .navigation-content {
     display: flex;
     justify-content: space-between;
-    padding: 16px;
+    padding: $su-4;
 
     button {
       @extend .crayons-btn;
@@ -140,11 +141,11 @@
   align-self: flex-end;
   flex-shrink: 0;
   width: 100%;
-  border-top: 2px solid black;
+  border-top: 2px solid $smoke-100;
 
   .selection-status-content {
     display: block;
-    padding: 16px;
+    padding: $su-4;
     text-align: center;
     font-weight: bold;
     border-radius: 3px;
@@ -177,14 +178,14 @@
 .onboarding-body {
   .crayons-notice {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: $su-2;
   }
 }
 // modal overflow scrolling
 .onboarding-modal-scroll-container {
   height: auto;
 
-  @media screen and (min-width: 600px) {
+  @media screen and (min-width: $breakpoint-s) {
     max-height: 500px;
     overflow-y: scroll;
   }
@@ -194,7 +195,7 @@
 .onboarding-tags {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-gap: 16px;
+  grid-gap: $su-4;
   width: 100%;
 
   @media screen and (min-width: 800px) {
@@ -206,9 +207,9 @@
     border: 0;
     display: block;
     position: absolute;
-    left: 16px;
-    right: 16px;
-    bottom: 16px;
+    left: $su-4;
+    right: $su-4;
+    bottom: $su-4;
     width: calc(100% - 32px);
     transform: translateY(0px);
     font-family: $ff-default;
@@ -228,19 +229,19 @@
   }
 
   &__item {
-    border-radius: 3px;
+    border-radius: $br-default;
     position: relative;
     overflow: hidden;
     height: 150px;
     $item: &;
 
     &__inner {
-      background: #eef0f1;
+      background: $smoke-10;
       bottom: 0;
-      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+      font-family: $ff-accent;
       hyphens: auto;
       left: 0;
-      padding: 16px;
+      padding: $su-4;
       position: absolute;
       right: 0;
       top: 0;
@@ -278,26 +279,26 @@
   width: 578px;
 
   .onboarding-content {
-    background: #08090a;
+    background: $smoke-100;
     color: white;
     display: flex;
     flex-direction: column;
     justify-content: start;
-    padding: 48px;
+    padding: $su-8;
 
-    @media screen and (min-width: 600px) {
+    @media screen and (min-width: $breakpoint-s) {
       justify-content: center;
     }
   }
 
   figure {
-    margin: 0 0 8px 0;
+    margin: 0 0 $su-2 0;
 
     .sticker-logo {
-      height: 48px;
-      width: 48px;
+      height: $su-8;
+      width: $su-8;
       transform: rotate(-30deg);
-      padding: 10px;
+      padding: $su-3;
       vertical-align: middle;
     }
   }
@@ -308,19 +309,19 @@
   }
 
   .introduction-title {
-    font-size: 48px;
-    font-weight: 900;
-    line-height: 125%;
+    font-size: $fs-5xl;
+    font-weight: $fw-heavy;
+    line-height: $lh-tight;
   }
 
   .introduction-subtitle {
-    font-size: 24px;
-    font-weight: 400;
-    line-height: 150%;
+    font-size: $fs-2xl;
+    font-weight: $fw-normal;
+    line-height: $lh-base;
   }
 
   .navigation-content {
-    padding: 32px;
+    padding: $su-7;
     justify-content: center;
 
     button {
@@ -337,10 +338,11 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
 .onboarding-body {
   .content-row {
     align-items: center;
+    border: none;
     box-sizing: border-box;
-    color: #202428; // smoke-90
+    color: $smoke-90;
     display: flex;
-    padding: 8px 16px;
+    padding: $su-2 $su-4;
     text-align: left;
     width: 100%;
 
@@ -372,37 +374,37 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
 
   .user-avatar-container {
     align-self: baseline;
-    margin: 0 16px 0 0;
+    margin: 0 $su-4 0 0;
 
-    @media screen and (min-width: 600px) {
+    @media screen and (min-width: $breakpoint-s) {
       align-self: center;
     }
   }
 
   .user-avatar {
     border-radius: 100%;
-    height: 48px;
-    width: 48px;
+    height: $su-8;
+    width: $su-8;
     object-fit: cover;
-    border: 1px solid #eef0f1; //smoke-10
+    border: 1px solid $smoke-10;
   }
 
   .user-name,
   .user-summary {
     margin: 0;
-    line-height: 125%;
+    line-height: $lh-tight;
   }
 
   .user-name {
-    font-size: 16px;
+    font-size: $fs-base;
   }
 
   .user-summary {
-    font-size: 14px;
+    font-size: $fs-s;
   }
 
   .user-following-status {
-    margin-left: 32px;
+    margin-left: $su-7;
   }
 }
 
@@ -412,7 +414,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   flex-direction: column;
   overflow: auto;
 
-  @media screen and (min-width: 600px) {
+  @media screen and (min-width: $breakpoint-s) {
     flex-direction: column;
   }
 

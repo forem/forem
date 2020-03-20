@@ -110,19 +110,19 @@ class PersonalInfoForm extends Component {
             {setupFormTextField({
               labelText: 'Where are you located?',
               entityName: 'location',
-              placeholderText: 'New York, NY',
+              placeholderText: 'e.g. New York, NY',
               onChangeCallback: this.handleChange,
             })}
             {setupFormTextField({
               labelText: 'What is your title?',
               entityName: 'employment_title',
-              placeholderText: 'Software Engineer',
+              placeholderText: 'e.g. Software Engineer',
               onChangeCallback: this.handleChange,
             })}
             {setupFormTextField({
               labelText: 'Where do you work?',
               entityName: 'employer_name',
-              placeholderText: 'Company name, self-employed, etc.',
+              placeholderText: 'e.g. Company name, self-employed, etc.',
               onChangeCallback: this.handleChange,
             })}
           </form>
