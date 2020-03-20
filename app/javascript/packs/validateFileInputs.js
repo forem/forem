@@ -72,15 +72,20 @@ function addErrorMessage(fileInput, msg) {
  * @param {HTMLElement} fileInput - An input form field with type of file
  * @param {File} file - The file that was too large in size
  */
-function handleFileSizeError(fileSizeErrorHandler, fileInput, file) {
-  console.error(`File too big - ${file.name}`);
+function handleFileSizeError(
+  fileSizeErrorHandler,
+  fileInput,
+  fileSizeMb,
+  maxFileSizeMb,
+) {
   const fileInputField = fileInput;
   fileInputField.value = null;
 
   if (fileSizeErrorHandler) {
     fileSizeErrorHandler();
   } else {
-    addErrorMessage(fileInput, 'File size was too large, try a smaller file.');
+    const errorMessage = `File size too large (${fileSizeMb} MB). The limit is ${maxFileSizeMb} MB.`;
+    addErrorMessage(fileInput, errorMessage);
   }
 }
 
@@ -94,17 +99,88 @@ function handleFileSizeError(fileSizeErrorHandler, fileInput, file) {
  * @param {HTMLElement} fileInput - An input form field with type of file
  * @param {File} file - The file that was an invalid type
  */
-function handleFileTypeError(fileTypeErrorHandler, fileInput, file) {
-  console.error(`Invalid file format - ${file.name} - ${file.type}`);
-
+function handleFileTypeError(
+  fileTypeErrorHandler,
+  fileInput,
+  fileType,
+  permittedFileTypes,
+) {
   const fileInputField = fileInput;
   fileInputField.value = null;
 
   if (fileTypeErrorHandler) {
     fileTypeErrorHandler();
   } else {
-    addErrorMessage(fileInput, 'The file format was invalid.');
+    const errorMessage = `Invalid file format (${fileType}). Only ${permittedFileTypes.join(
+      ', ',
+    )} files are permitted.`;
+    addErrorMessage(fileInput, errorMessage);
   }
+}
+
+/**
+ * Validates the file size and handles the error if it's invalid.
+ *
+ * @external File
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/File File}
+ *
+ * @param {File} file - The file attached by the user
+ * @param {string} fileType - The top level file type (i.e. image for image/png)
+ * @param {HTMLElement} fileInput - An input form field with type of file
+ *
+ * @returns {Boolean} Returns false if the file is too big. Otherwise, returns true.
+ */
+function validateFileSize(file, fileType, fileInput) {
+  let { maxFileSizeMb } = fileInput.dataset;
+
+  const { fileSizeErrorHandler } = fileInput.dataset;
+
+  const fileSizeMb = (file.size / (1024 * 1024)).toFixed(2);
+  maxFileSizeMb = Number(maxFileSizeMb || MAX_FILE_SIZE_MB[fileType]);
+
+  const isValidFileSize = fileSizeMb <= maxFileSizeMb;
+
+  if (!isValidFileSize) {
+    handleFileSizeError(
+      fileSizeErrorHandler,
+      fileInput,
+      fileSizeMb,
+      maxFileSizeMb,
+    );
+  }
+
+  return isValidFileSize;
+}
+
+/**
+ * Validates the file type and handles the error if it's invalid.
+ *
+ * @external File
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/File File}
+ *
+ * @param {File} file - The file attached by the user
+ * @param {string} fileType - The top level file type (i.e. image for image/png)
+ * @param {HTMLElement} fileInput - An input form field with type of file
+ *
+ * @returns {Boolean} Returns false if the files is an invalid format. Otherwise, returns true.
+ */
+function validateFileType(file, fileType, fileInput) {
+  const permittedFileTypes =
+    fileInput.dataset.permittedFileTypes || PERMITTED_FILE_TYPES;
+  const { fileTypeErrorHandler } = fileInput.dataset;
+
+  const isValidFileType = permittedFileTypes.includes(fileType);
+
+  if (!isValidFileType) {
+    handleFileTypeError(
+      fileTypeErrorHandler,
+      fileInput,
+      fileType,
+      permittedFileTypes,
+    );
+  }
+
+  return isValidFileType;
 }
 
 /**
@@ -117,41 +193,31 @@ function handleFileTypeError(fileTypeErrorHandler, fileInput, file) {
  * @returns {Boolean} Returns false if any files failed validations. Otherwise, returns true.
  */
 function validateFileInput(fileInput) {
-  let validFileInput = true;
+  let isValidFileInput = true;
 
   removeErrorMessage(fileInput);
   const files = Array.from(fileInput.files);
-  const permittedFileTypes =
-    fileInput.dataset.permittedFileTypes || PERMITTED_FILE_TYPES;
-  const { fileSizeErrorHandler } = fileInput.dataset;
-  const { fileTypeErrorHandler } = fileInput.dataset;
-
-  let { maxFileSizeMb } = fileInput.dataset;
 
   for (let i = 0; i < files.length; i += 1) {
     const file = files[i];
     const fileType = file.type.split('/')[0];
-    const fileSizeMb = (file.size / (1024 * 1024)).toFixed(2);
-    maxFileSizeMb = Number(maxFileSizeMb || MAX_FILE_SIZE_MB[fileType]);
 
-    const isValidFileSize = fileSizeMb <= maxFileSizeMb;
+    const isValidFileSize = validateFileSize(file, fileType, fileInput);
 
-    if (maxFileSizeMb && !isValidFileSize) {
-      handleFileSizeError(fileSizeErrorHandler, fileInput, file);
-      validFileInput = false;
+    if (!isValidFileSize) {
+      isValidFileInput = false;
       break;
     }
 
-    const isValidFileType = permittedFileTypes.includes(fileType);
+    const isValidFileType = validateFileType(file, fileType, fileInput);
 
     if (!isValidFileType) {
-      handleFileTypeError(fileTypeErrorHandler, fileInput, file);
-      validFileInput = false;
+      isValidFileInput = false;
       break;
     }
   }
 
-  return validFileInput;
+  return isValidFileInput;
 }
 
 /**
