@@ -34,14 +34,14 @@ const PERMITTED_FILE_TYPES = ['video', 'image'];
  *
  * @param {HTMLElement} fileInput - An input form field with type of file
  */
-function removeErrorMessages(fileInput) {
-  const errorMessages = fileInput.parentNode.querySelectorAll(
+function removeErrorMessage(fileInput) {
+  const errorMessage = fileInput.parentNode.querySelector(
     'div.file-upload-error',
   );
 
-  errorMessages.forEach(errorMessage => {
+  if (errorMessage) {
     errorMessage.remove();
-  });
+  }
 }
 
 /**
@@ -119,7 +119,7 @@ function handleFileTypeError(fileTypeErrorHandler, fileInput, file) {
 function validateFileInput(fileInput) {
   let validFileInput = true;
 
-  removeErrorMessages(fileInput);
+  removeErrorMessage(fileInput);
   const files = Array.from(fileInput.files);
   const permittedFileTypes =
     fileInput.dataset.permittedFileTypes || PERMITTED_FILE_TYPES;
