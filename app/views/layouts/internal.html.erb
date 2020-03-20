@@ -34,7 +34,7 @@
 
     <div class="container mt-3">
       <% flash.each do |type, message| %>
-        <div class="alert alert-<%= type == "notice" ? "success" : "danger" %>">
+        <div class="alert alert-<%= type == "notice" || type == "success" ? "success" : "danger" %>">
           <button class="close" data-dismiss="alert">
             <i class="fa fa-times" aria-hidden="true"></i>
           </button>
