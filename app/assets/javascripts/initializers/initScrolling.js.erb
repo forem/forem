@@ -9,7 +9,7 @@ function fetchNext(el, endpoint, insertCallback) {
   var urlParams = Object.keys(indexParams).map(function handleMap(k) {
     return encodeURIComponent(k) + "=" + encodeURIComponent(indexParams[k])
   }).join('&');
-  if (urlParams.indexOf("q=") > -1 ) {
+  if (urlParams.indexOf("search_fields=") > -1 ) {
     return;
   }
   var fetchUrl = (endpoint+"?page="+nextPage+"&"+urlParams+"&signature="+parseInt(Date.now()/400000, 10)).replace("&&","&");
@@ -184,35 +184,42 @@ function paginate(tag, requiresApproval) {
   if (tag && tag.length > 0) {
     tagFilters.push(tag);
   }
-
-  var searchObj = {
-      hitsPerPage: 15,
-      page: nextPage,
-      attributesToHighlight: [],
-      tagFilters,
-      filters: (requiresApproval === 'true') ? 'approved:true' : ''
-  }
+  var approved = (requiresApproval === 'true') ? 'true' : '';
+  const searchHash = {
+    per_page: 15,
+    page: nextPage,
+    tag_names: tagFilters,
+    approved: approved
+  };
 
   var homeEl = document.getElementById("index-container");
-  var paginationArticlesIndex;
-  if (homeEl.dataset.feed === "base-feed") {
-    paginationArticlesIndex = client.initIndex('ordered_articles_<%= Rails.env %>');
-  } else if (homeEl.dataset.feed === "latest") {
-    paginationArticlesIndex = client.initIndex('ordered_articles_by_published_at_<%= Rails.env %>');
+  if (homeEl.dataset.feed === "latest") {
+    searchHash["sort_by"] = "published_at";
   } else {
     var preamble = (requiresApproval === 'true') ? ' AND ' : ''
-    searchObj.filters += ( preamble +'published_at_int > ' + homeEl.dataset.articlesSince);
-    paginationArticlesIndex = client.initIndex('ordered_articles_by_positive_reactions_count_<%= Rails.env %>');
+    searchHash["published_at[gte]"] = homeEl.dataset.articlesSince;
+    searchHash["sort_by"] = "positive_reactions_count";
   }
 
-  paginationArticlesIndex.search("*", searchObj)
-  .then(function searchDone(content) {
+  const searchParams = new URLSearchParams(searchHash).toString();
+
+  fetch(`/search/feed_content?${searchParams}`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+  })
+    .then(response => response.json())
+    .then(function searchDone(content) {
     nextPage += 1;
-    insertArticles(content.hits);
+    insertArticles(content.result);
     const checkBlockedContentEvent = new CustomEvent('checkBlockedContent')
     window.dispatchEvent(checkBlockedContentEvent);
     initializeReadingListIcons();
-    if (content.hits.length === 0) {
+    if (content.result.length === 0) {
       document.getElementById("loading-articles").style.display = "none"
       done = true;
     }
@@ -266,10 +273,7 @@ function fetchNextPageIfNearBottom() {
 }
 
 function checkIfNearBottomOfPage() {
-  var publicSearchKey = '<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>';
-  client = algoliasearch('<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>', publicSearchKey);
-
-  if (document.getElementsByClassName("single-article").length < 2 || window.location.search.indexOf("q=") > -1 ) {
+  if (document.getElementsByClassName("single-article").length < 2 || window.location.search.indexOf("search_fields=") > -1 ) {
     document.getElementById("loading-articles").style.display = "none";
     done = true;
   } else {

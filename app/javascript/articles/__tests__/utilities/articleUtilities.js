@@ -24,6 +24,7 @@ export const article = {
   },
   published_at_int: 1582037964819,
   published_timestamp: 'Tue, 18 Feb 2020 14:59:24 GMT',
+  published_at: '2020-02-18T14:59:24Z',
   readable_publish_date: 'February 18',
 };
 
@@ -84,18 +85,13 @@ export const articleWithSnippetResult = {
   },
   published_at_int: 1582037964819,
   published_timestamp: 'Tue, 18 Feb 2020 14:59:24 GMT',
+  published_at: '2020-02-18T14:59:24Z',
   readable_publish_date: 'February 18',
-  _snippetResult: {
-    body_text: {
-      matchLevel: 'full',
-      value:
-        'copying Rest withdrawal Handcrafted multi-state Pre-emptive e-markets feed overriding RSS Fantastic Plastic Gloves invoice productize systemic Monaco',
-    },
-    comments_blob: {
-      matchLevel: 'none',
-      value:
-        'virtual index Global mindshare Malagasy Ariary back up Handmade green Interactions violet bandwidth Chief e-commerce front-end neural',
-    },
+  highlight: {
+    body_text: [
+      'copying Rest withdrawal Handcrafted multi-state Pre-emptive e-markets feed',
+      'overriding RSS Fantastic Plastic Gloves invoice productize systemic Monaco',
+    ],
   },
 };
 
@@ -123,6 +119,7 @@ export const articleWithReactions = {
   },
   published_at_int: 1582037964819,
   published_timestamp: 'Tue, 18 Feb 2020 14:59:24 GMT',
+  published_at: '2020-03-19T10:04:15-05:00',
   readable_publish_date: 'February 18',
   positive_reactions_count: 232,
 };
@@ -151,6 +148,7 @@ export const articleWithComments = {
   },
   published_at_int: 1582037964819,
   published_timestamp: 'Tue, 18 Feb 2020 14:59:24 GMT',
+  published_at: '2020-03-19T10:04:15-05:00',
   readable_publish_date: 'February 18',
   positive_reactions_count: 428,
   comments_count: 213,
@@ -180,6 +178,7 @@ export const articleWithReadingTimeGreaterThan1 = {
   },
   published_at_int: 1582037964819,
   published_timestamp: 'Tue, 18 Feb 2020 14:59:24 GMT',
+  published_at: '2020-02-18T14:59:24Z',
   readable_publish_date: 'February 18',
   reading_time: 8,
 };
@@ -206,8 +205,9 @@ export const videoArticle = {
     name: 'Henri Gibson',
     profile_image_90: '/images/10.png',
   },
-  published_at_int: 1582038662478,
+  published_at_int: 1582037964819,
   published_timestamp: 'Tue, 18 Feb 2020 15:11:02 GMT',
+  published_at: '2020-02-18T14:59:24Z',
   readable_publish_date: 'February 18',
   cloudinary_video_url: '/images/onboarding-background.png',
   video_duration_in_minutes: 10,
@@ -237,6 +237,7 @@ export const podcastArticle = {
   },
   published_at_int: 1582038662478,
   published_timestamp: 'Tue, 18 Feb 2020 15:11:02 GMT',
+  published_at: '2020-02-18T15:11:02Z',
   readable_publish_date: 'February 18',
   podcast: {
     slug: 'monitor-recontextualize',
@@ -270,6 +271,7 @@ export const podcastEpisodeArticle = {
   },
   published_at_int: 1582038662478,
   published_timestamp: 'Tue, 18 Feb 2020 15:11:02 GMT',
+  published_at: '2020-02-18T15:11:02Z',
   readable_publish_date: 'February 18',
 };
 

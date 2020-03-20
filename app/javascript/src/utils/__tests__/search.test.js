@@ -12,43 +12,43 @@ global.fetch = fetch;
 
 describe('Search utilities', () => {
   describe('getInitialSearchTerm', () => {
-    describe(`When the querystring key 'q' has a value`, () => {
-      test(`should return the querystring key q's value`, () => {
+    describe(`When the querystring key 'search_fields' has a value`, () => {
+      test(`should return the querystring key search_fields's value`, () => {
         const expected = 'hello';
-        const querystring = `?q=${expected}`;
+        const querystring = `?search_fields=${expected}`;
         const actual = getInitialSearchTerm(querystring);
         expect(actual).toEqual(expected);
       });
     });
 
-    describe(`When the querystring key 'q' has a + character representing a space`, () => {
-      test(`should return the querystring key q's decoded value with + characters replaced by a space`, () => {
+    describe(`When the querystring key 'search_fields' has a + character representing a space`, () => {
+      test(`should return the querystring key search_fields's decoded value with + characters replaced by a space`, () => {
         const expected = `my visual studio setup`;
-        const querystring = `?q=my+visual+studio+setup`;
+        const querystring = `?search_fields=my+visual+studio+setup`;
         const actual = getInitialSearchTerm(querystring);
         expect(actual).toEqual(expected);
       });
     });
 
-    describe(`When the querystring key 'q' has an encoded value with markup`, () => {
-      test(`should return the querystring key q's decoded value`, () => {
+    describe(`When the querystring key 'search_fields' has an encoded value with markup`, () => {
+      test(`should return the querystring key search_fields's decoded value`, () => {
         const expected = `<script>alert('XSS!');</script>`;
-        const querystring = `?q=<script>alert(%27XSS!%27);</script>`;
+        const querystring = `?search_fields=<script>alert(%27XSS!%27);</script>`;
         const actual = getInitialSearchTerm(querystring);
         expect(actual).toEqual(expected);
       });
     });
 
-    describe(`When the querystring key 'q' has no value`, () => {
+    describe(`When the querystring key 'search_fields' has no value`, () => {
       test(`should return an empty string`, () => {
         const expected = '';
-        const querystring = `?q=`;
+        const querystring = `?search_fields=`;
         const actual = getInitialSearchTerm(querystring);
         expect(actual).toEqual(expected);
       });
     });
 
-    describe(`When the querystring key 'q' does not exist`, () => {
+    describe(`When the querystring key 'search_fields' does not exist`, () => {
       test(`should return an empty string`, () => {
         const expected = '';
         const querystring = '?';
@@ -91,7 +91,7 @@ describe('Search utilities', () => {
           href: 'http://localhost',
         };
         const searchTerm = 'hello';
-        const expected = `${location.origin}/search?q=${searchTerm}`;
+        const expected = `${location.origin}/search?search_fields=${searchTerm}`;
 
         preloadSearchResults({ searchTerm, location });
 
@@ -105,7 +105,7 @@ describe('Search utilities', () => {
         };
 
         const searchTerm = 'hello+everybody!';
-        const expected = `${location.origin}/search?q=hello%2Beverybody%21`;
+        const expected = `${location.origin}/search?search_fields=hello%2Beverybody%21`;
 
         preloadSearchResults({ searchTerm, location });
 
@@ -176,7 +176,7 @@ describe('Search utilities', () => {
       displaySearchResults({ searchTerm, location });
 
       expect(InstantClick.display).toBeCalledWith(
-        `${location.origin}/search?q=${searchTerm}`,
+        `${location.origin}/search?search_fields=${searchTerm}`,
       );
     });
 
@@ -190,7 +190,7 @@ describe('Search utilities', () => {
       displaySearchResults({ searchTerm, location });
 
       expect(InstantClick.display).toBeCalledWith(
-        `${location.origin}/search?q=${sanitizedSearchTerm}`,
+        `${location.origin}/search?search_fields=${sanitizedSearchTerm}`,
       );
     });
 
@@ -206,7 +206,7 @@ describe('Search utilities', () => {
       displaySearchResults({ searchTerm, location });
 
       expect(InstantClick.display).toBeCalledWith(
-        `${location.origin}/search?q=${sanitizedSearchTerm}&filters=${filterParameters}`,
+        `${location.origin}/search?search_fields=${sanitizedSearchTerm}&filters=${filterParameters}`,
       );
     });
 
@@ -221,7 +221,7 @@ describe('Search utilities', () => {
       displaySearchResults({ searchTerm, location });
 
       expect(InstantClick.display).toBeCalledWith(
-        `${location.origin}/search?q=${sanitizedSearchTerm}`,
+        `${location.origin}/search?search_fields=${sanitizedSearchTerm}`,
       );
     });
   });

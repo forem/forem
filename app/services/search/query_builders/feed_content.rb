@@ -121,6 +121,23 @@ module Search
           { range: { range_key => @params[range_key] } }
         end.compact
       end
+
+      def query_conditions
+        self.class::QUERY_KEYS.map do |query_key, query_fields|
+          next if @params[query_key].blank?
+
+          fields = query_fields.presence || ["search_fields"]
+
+          {
+            simple_query_string: {
+              query: "#{@params[query_key]}*",
+              fields: fields,
+              lenient: true,
+              analyze_wildcard: true
+            }
+          }
+        end.compact
+      end
     end
   end
 end

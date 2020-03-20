@@ -3,14 +3,7 @@ import { tagPropTypes } from './tag-prop-types';
 import { organizationPropType } from './organization-prop-type';
 
 export const articleSnippetResultPropTypes = PropTypes.shape({
-  body_text: PropTypes.shape({
-    matchLevel: PropTypes.oneOf(['full', 'none']),
-    value: PropTypes.string.isRequired,
-  }),
-  comments_blob: PropTypes.shape({
-    matchLevel: PropTypes.oneOf(['full', 'none']),
-    value: PropTypes.string.isRequired,
-  }),
+  body_text: PropTypes.shape(['highlighted <em>search</em> string']),
 });
 
 export const articlePropTypes = PropTypes.shape({
@@ -35,7 +28,7 @@ export const articlePropTypes = PropTypes.shape({
     name: PropTypes.string.isRequired,
   }),
   organization: organizationPropType,
-  _snippetResult: articleSnippetResultPropTypes,
+  highlight: articleSnippetResultPropTypes,
   positive_reactions_count: PropTypes.number,
   reactions_count: PropTypes.number,
   comments_count: PropTypes.number,

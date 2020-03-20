@@ -46,12 +46,12 @@ export function displaySearchResults({
   const filterParameters = getFilterParameters(location.href);
 
   InstantClick.display(
-    `${baseUrl}/search?q=${sanitizedQuery}${filterParameters}`,
+    `${baseUrl}/search?search_fields=${sanitizedQuery}${filterParameters}`,
   );
 }
 
 export function getInitialSearchTerm(querystring) {
-  const matches = /(?:&|\?)?q=([^&=]+)/.exec(querystring);
+  const matches = /(?:&|\?)?search_fields=([^&=]+)/.exec(querystring);
   const rawSearchTerm =
     matches !== null && matches.length === 2
       ? decodeURIComponent(matches[1].replace(/\+/g, '%20'))
@@ -73,7 +73,9 @@ export function preloadSearchResults({
     searchTerm.replace(/^[ ]+|[ ]+$/g, ''),
   );
   InstantClick.preload(
-    `${location.origin}/search?q=${encodedQuery}${getFilterParameters(
+    `${
+      location.origin
+    }/search?search_fields=${encodedQuery}${getFilterParameters(
       location.href,
     )}`,
   );

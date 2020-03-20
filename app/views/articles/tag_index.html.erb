@@ -34,7 +34,7 @@
       data-tag="<%= @tag %>"
       data-feed="<%= params[:timeframe] || "base-feed" %>"
       data-requires-approval="<%= @tag_model.requires_approval %>"
-      data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>">
+      data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime %>">
     <%= render "articles/tags/sidebar" %>
     <div class="articles-list" id="articles-list">
       <% if @tag_model && @tag_model.supported %>

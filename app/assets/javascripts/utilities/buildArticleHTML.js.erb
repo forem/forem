@@ -45,34 +45,30 @@ function buildArticleHTML(article) {
     if ((rc || '0') > 0 && article.class_name != "User") {
       var reactionsCountHTML = '<div class="article-engagement-count reactions-count"><a href="'+article.path+'"><img src="<%= asset_path("reactions-stack.png") %>" alt="heart" /><span id="engagement-count-number-'+article.id+'" class="engagement-count-number">'+(rc || '0')+'</span></a></div>'
     }
-    var picUrl = article.user.profile_image_90
-    var profileUsername = article.user.username
+    if (article.class_name == "PodcastEpisode"){
+      var picUrl = article.main_image;
+      var profileUsername = article.slug;
+      var userName = article.title;
+    } else {
+      var picUrl = article.user.profile_image_90;
+      var profileUsername = article.user.username;
+      var userName = article.user.name;
+    }
     var orgHeadline = "";
     if (article.organization && !document.getElementById("organization-article-index")) {
       orgHeadline = '<div class="article-organization-headline"><a class="org-headline-filler" href="/'+article.organization.slug+'"><img alt="'+article.organization.name+' logo" src="'+article.organization.profile_image_90+'" loading="lazy">'+article.organization.name+'</a></div>'
     }
     var bodyTextSnippet = "";
-    var commentsBlobSnippet = "";
     var searchSnippetHTML = "";
-    if (article._snippetResult && article._snippetResult.body_text){
-      if (article._snippetResult.body_text.matchLevel != "none"){
-        var firstSnippetChar = article._snippetResult.body_text.value[0];
-        var startingEllipsis = ""
-        if (firstSnippetChar.toLowerCase() != firstSnippetChar.toUpperCase()){
-          startingEllipsis = "…"
-        }
-        bodyTextSnippet = startingEllipsis+article._snippetResult.body_text.value + "…"
+    if (article.highlight && article.highlight.body_text){
+      var firstSnippetChar = article.highlight.body_text[0];
+      var startingEllipsis = ""
+      if (firstSnippetChar.toLowerCase() != firstSnippetChar.toUpperCase()){
+        startingEllipsis = "…"
       }
-      if (article._snippetResult.comments_blob.matchLevel != "none" && bodyTextSnippet === ""){
-        var firstSnippetChar = article._snippetResult.comments_blob.value[0];
-        var startingEllipsis = ""
-        if (firstSnippetChar.toLowerCase() != firstSnippetChar.toUpperCase()){
-          startingEllipsis = "…"
-        }
-        commentsBlobSnippet = startingEllipsis+article._snippetResult.comments_blob.value + "… <i>(comments)</i>"
-      }
-      if ((bodyTextSnippet.length > 0 || commentsBlobSnippet.length > 0) && article.class_name == "Article"){
-        searchSnippetHTML = '<div class="search-snippet"><span>'+bodyTextSnippet+commentsBlobSnippet+'</span></div>'
+      bodyTextSnippet = startingEllipsis + article.highlight.body_text.join("...") + "…";
+      if (bodyTextSnippet.length > 0 && article.class_name == "Article"){
+        searchSnippetHTML = '<div class="search-snippet"><span>' + bodyTextSnippet + '</span></div>'
       }
     }
     var saveButton = '';
@@ -127,7 +123,7 @@ function buildArticleHTML(article) {
          '+searchSnippetHTML+'\
         </div>\
        </a>\
-       <h4><a href="/'+article.user.username+'">'+filterXSS(article.user.name)+publishDate+timeAgoInWords+'</a></h4>\
+       <h4><a href="/'+profileUsername+'">'+filterXSS(userName)+publishDate+timeAgoInWords+'</a></h4>\
        <div class="tags">'+tagString+'</div>\
        '+commentsCountHTML+reactionsCountHTML+readingTimeHTML+'\
        '+saveButton+'</div>';

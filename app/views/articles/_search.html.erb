@@ -18,14 +18,12 @@
 
   // var query = escape(params.q);
   function searchMain() {
-    var query = filterXSS(params.q);
+    var query = filterXSS(params.search_fields);
     var filters = filterXSS(params.filters || "");
     document.getElementById("substories").innerHTML = '<div class="query-results-nothing"><div class="query-results-loader"></div><br/></div>'
-    var client = algoliasearch('<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>', '<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>');
-    var index = client.initIndex('searchables_<%= Rails.env %>');
     if (document.getElementById("query-wrapper")) {
-      search(query, index, filters);
-      initializeFilters(query, index, filters);
+      search(query, filters);
+      initializeFilters(query, filters);
     }
   }
 
@@ -33,7 +31,7 @@
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
-  function initializeFilters(query, index, filters) {
+  function initializeFilters(query, filters) {
     var filterButts = document.getElementsByClassName("query-filter-button");
     for (var i = 0; i < filterButts.length; i++) {
       if (filters == filterButts[i].dataset.filter) {
@@ -45,68 +43,64 @@
           return;
         }
         var filters = e.target.dataset.filter;
-        window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters);
+        window.history.replaceState(null, null, "/search?search_fields=" + query + "&filters=" + filters);
         var className = e.target.className;
         for (var i = 0; i < filterButts.length; i++) {
           filterButts[i].classList.remove("selected");
         }
         if (className.indexOf("selected") == -1) {
           e.target.classList.add("selected");
-          window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters);
-          search(query, index, filters);
+          window.history.replaceState(null, null, "/search?search_fields=" + query + "&filters=" + filters);
+          search(query, filters);
         } else {
-          window.history.replaceState(null, null, "/search?q=" + query);
-          search(query, index, "");
+          window.history.replaceState(null, null, "/search?search_fields=" + query);
+          search(query, "");
         }
       }
     }
   }
 
-  function search(query, index, filters) {
-    var hashtags = query.match(/#\w+/g)
-    var searchObj = {
-      hitsPerPage: 60,
-      page: "0",
-      queryType: "prefixNone",
-      attributesToRetrieve: [
-        'id',
-        'title',
-        'path',
-        'class_name',
-        'comments_count',
-        'tag_list',
-        'readable_publish_date',
-        'positive_reactions_count',
-        'flare_tag',
-        'user',
-        'reading_time'
-      ],
-      attributesToHighlight: [],
-      exactOnSingleWordQuery: "none",
-      attributesToSnippet: ['body_text:19', 'comments_blob:8'],
-    }
+  function search(query, filters) {
+    var hashtags = query.match(/#\w+/g);
+    var searchTerm = query.replace(/#/g, '').trim();
+    var searchHash = { per_page: 60, page: 0 };
 
     if (filters === "MY_POSTS" && userData()) {
-      searchObj["tagFilters"] = [['user_' + userData()['id']]]
+      searchHash["user_id"] = userData()['id'];
     } else if (hashtags != null && hashtags.length > 0) {
       for(var i = 0; i < hashtags.length; i++){
-        hashtags[i] = hashtags[i].replace(/#/,'')
+        hashtags[i] = hashtags[i].replace(/#/,'');
       }
-      searchObj["tagFilters"] = hashtags
-    } else {
-      searchObj["filters"] = filters
+      searchHash["tag_names"] = hashtags;
+    } else if (filters && filters != "") {
+      const [key, value] = filters.split(':');
+      searchHash[key] = value;
     }
-    index.search(query, searchObj)
+
+    if (searchTerm && searchTerm != "") { searchHash["search_fields"] = searchTerm; }
+
+    const searchParams = new URLSearchParams(searchHash).toString();
+
+    fetch(`/search/feed_content?${searchParams}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'X-CSRF-Token': window.csrfToken,
+        'Content-Type': 'application/json',
+      },
+      credentials: 'same-origin',
+    })
+      .then(response => response.json())
       .then(function searchDone(content) {
         var resultDivs = []
-        content.hits.forEach(function (story, i) {
+        content.result.forEach(function (story, i) {
           resultDivs.push(buildArticleHTML(story));
         })
         document.getElementById("substories").innerHTML = resultDivs.join("");
         initializeReadingListIcons();
         initializeAllFollowButts();
         document.getElementById("substories").classList.add("search-results-loaded");
-        if (content.hits.length == 0) {
+        if (content.result.length == 0) {
           document.getElementById("substories").innerHTML = '<div class="query-results-nothing">No results match that query</div>'
         }
       });
