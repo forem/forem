@@ -313,7 +313,7 @@ FeedbackMessage.create!(
 
 ##############################################################################
 
-Rails.logger.info "#{counter += 1}. Creating Classified listings"
+Rails.logger.info "#{counter += 1}. Creating Classified Listings"
 
 users = User.order(Arel.sql("RANDOM()")).to_a
 users.each { |user| Credit.add_to(user, rand(100)) }
@@ -334,6 +334,20 @@ listings_categories.each_with_index do |category, index|
       bumped_at: Time.current,
     )
   end
+end
+
+##############################################################################
+
+Rails.logger.info "#{counter += 1}. Creating Pages"
+
+5.times do
+  Page.create!(
+    title: Faker::Hacker.say_something_smart,
+    body_markdown: Faker::Markdown.random,
+    slug: Faker::Internet.slug,
+    description: Faker::Books::Dune.quote,
+    template: %w[contained full_within_layout].sample,
+  )
 end
 
 ##############################################################################
