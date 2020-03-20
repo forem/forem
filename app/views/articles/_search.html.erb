@@ -112,9 +112,9 @@
       });
   }
 
-  var waitingOnAlgolia = setInterval(function () {
+  var waitingOnSearch = setInterval(function () {
     if (typeof algoliasearch == 'function' && typeof filterXSS == 'function' && typeof buildArticleHTML == 'function') {
-      clearInterval(waitingOnAlgolia);
+      clearInterval(waitingOnSearch);
       if (document.querySelectorAll('.search-results-loaded').length == 0) {
         searchMain();
       }
