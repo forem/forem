@@ -29,6 +29,7 @@ class SiteConfig < RailsSettings::Base
   field :main_social_image, type: :string, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
   field :favicon_url, type: :string, default: "favicon.ico"
   field :logo_svg, type: :string, default: ""
+  field :primary_sticker_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/rainbowdev.svg"
 
   # rate limits
   field :rate_limit_follow_count_daily, type: :integer, default: 500
