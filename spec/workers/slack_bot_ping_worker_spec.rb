@@ -2,24 +2,26 @@ require "rails_helper"
 
 RSpec.describe SlackBotPingWorker, type: :worker do
   let(:worker) { subject }
+  let(:params) do
+    {
+      message: "hello",
+      channel: "#help",
+      username: "sloan_watch_bot",
+      icon_emoji: ":sloan:"
+    }
+  end
 
-  include_examples "#enqueues_on_correct_queue", "default", [{ message: "hello", channel: "#help", username: "sloan_watch_bot", icon_emoji: ":sloan:" }]
+  include_examples "#enqueues_on_correct_queue", "default", [
+    { message: "hello", channel: "#help", username: "sloan_watch_bot", icon_emoji: ":sloan:" },
+  ]
 
   describe "#perform_now" do
-    before { allow(SlackBot).to receive(:ping) }
+    before { allow(Slack::Announcer).to receive(:call) }
 
     it "calls the SlackBot" do
-      worker.perform(
-        message: "hello",
-        channel: "#help",
-        username: "sloan_watch_bot",
-        icon_emoji: ":sloan:",
-      )
+      worker.perform(params)
 
-      expect(SlackBot).to have_received(:ping).with("hello", # message
-                                                    channel: "#help",
-                                                    username: "sloan_watch_bot",
-                                                    icon_emoji: ":sloan:")
+      expect(Slack::Announcer).to have_received(:call).with(params)
     end
 
     it "does nothing if there is missing data" do
@@ -30,21 +32,13 @@ RSpec.describe SlackBotPingWorker, type: :worker do
         icon_emoji: nil,
       )
 
-      expect(SlackBot).not_to have_received(:ping)
+      expect(Slack::Announcer).not_to have_received(:call)
     end
 
     it "works with keys as Strings" do
-      worker.perform(
-        "message" => "hello",
-        "channel" => "#help",
-        "username" => "sloan_watch_bot",
-        "icon_emoji" => ":sloan:",
-      )
+      worker.perform(params.stringify_keys)
 
-      expect(SlackBot).to have_received(:ping).with("hello", # message
-                                                    channel: "#help",
-                                                    username: "sloan_watch_bot",
-                                                    icon_emoji: ":sloan:")
+      expect(Slack::Announcer).to have_received(:call).with(params)
     end
   end
 end

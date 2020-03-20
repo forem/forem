@@ -59,7 +59,7 @@ RSpec.describe Slack::Messengers::Feedback, type: :service do
     channel = get_argument_from_last_job("channel")
     expect(channel).to eq(default_params[:type])
 
-    username = get_argument_from_last_job("channel")
+    username = get_argument_from_last_job("username")
     expect(username).to eq("#{default_params[:type]}_bot")
   end
 
