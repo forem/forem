@@ -10,7 +10,9 @@ module Search
                :reactions_count, :search_score, :subtitle, :summary, :title,
                :website_url
 
-    attribute :main_image, &:podcast_image
+    attribute :main_image do |pde|
+      ProfileImage.new(pde.podcast).get(width: 90)
+    end
     attribute :slug, &:podcast_slug
 
     attribute :tags do |pde|

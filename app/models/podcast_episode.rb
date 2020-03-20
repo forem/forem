@@ -75,10 +75,6 @@ class PodcastEpisode < ApplicationRecord
     podcast_title
   end
 
-  def podcast_image
-    ProfileImage.new(podcast).get(width: 90)
-  end
-
   def comments_blob
     comments.pluck(:body_markdown).join(" ")
   end
