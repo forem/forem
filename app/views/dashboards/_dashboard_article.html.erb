@@ -69,10 +69,10 @@
       <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">
         <span class="page-views-count">
           <span class="value">
-            <% if article.page_views_count > 100 %>
+            <% if article.page_views_count > 25 %>
                <span class="value"><%= article.page_views_count %></span>
             <% else %>
-              under 100
+              under 25
             <% end %>
           </span>
           views
