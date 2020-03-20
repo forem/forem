@@ -31,11 +31,11 @@ RSpec.describe Moderator::BanishUserWorker, type: :worker do
       expect(user.follows.count).to eq(0)
       expect(user.classified_listings.count).to eq(0)
     end
-  
+
     it "reassigns profile info" do
       expect(user.currently_hacking_on).to eq("")
     end
-    
+
     it "creates an entry in the BanishedUsers table" do
       expect(BanishedUser.all.size).to be 1
     end
