@@ -18,6 +18,18 @@ RSpec.describe Search::FeedContent, type: :service do
       expect(described_class).to have_received(:search).with(body: a_kind_of(Hash))
     end
 
+    it "returns highlighted fields" do
+      allow(article1).to receive(:body_text).and_return("I love ruby")
+      allow(article2).to receive(:body_text).and_return("Ruby Tuesday is yummy")
+      index_documents([article1, article2])
+      query_params = { size: 5, search_fields: "love ruby" }
+
+      feed_docs = described_class.search_documents(params: query_params)
+      expect(feed_docs.count).to eq(2)
+      doc_highlights = feed_docs.map { |t| t.dig("highlight", "body_text") }.flatten
+      expect(doc_highlights).to include("I <em>love</em> <em>ruby</em>", "<em>Ruby</em> Tuesday is yummy")
+    end
+
     context "with a query" do
       it "searches by search_fields" do
         allow(article1).to receive(:title).and_return("ruby")
