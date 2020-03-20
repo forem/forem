@@ -26,7 +26,7 @@ const MAX_FILE_SIZE_MB = Object.freeze({
  *
  * @constant {string[]}
  */
-const PERMITTED_FILE_TYPES = ['video', 'image'];
+const PERMITTED_FILE_TYPES = ['image'];
 
 /**
  * Removes any pre-existing error messages from the DOM related to file
