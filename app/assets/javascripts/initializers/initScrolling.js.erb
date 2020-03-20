@@ -253,7 +253,7 @@ function fetchNextPageIfNearBottom() {
   } else {
     scrollableElemId = "articles-list";
     fetchCallback = function fetch() {
-      algoliaPaginate(indexContainer.dataset.algoliaTag, indexContainer.dataset.requiresApproval);
+      algoliaPaginate(indexContainer.dataset.tag, indexContainer.dataset.requiresApproval);
     };
   }
 

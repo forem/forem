@@ -31,7 +31,7 @@
   </div>
   <div class="home sub-home" id="index-container"
       data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which=""
-      data-algolia-tag="<%= @tag %>"
+      data-tag="<%= @tag %>"
       data-feed="<%= params[:timeframe] || "base-feed" %>"
       data-requires-approval="<%= @tag_model.requires_approval %>"
       data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>">
