@@ -25,6 +25,7 @@ class SearchController < ApplicationController
     sort_by
     tag_names
     user_id
+    class_name
   ].freeze
 
   def tags
