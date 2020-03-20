@@ -32,5 +32,12 @@ RSpec.describe KatexTag, type: :liquid_tag do
       rendered = generate_katex_liquid(content).render
       expect(rendered).to include("ParseError: KaTeX parse error: ")
     end
+
+    it "can render Katex inline" do
+      Liquid::Template.register_tag("katex", described_class)
+      content = "{% katex inline %}\\c = \\pm\\sqrt{a^2 + b^2}{% endkatex %}"
+      render = Liquid::Template.parse(content).render
+      expect(Nokogiri::HTML(render).css("span.katex-element").count).to eq(1)
+    end
   end
 end

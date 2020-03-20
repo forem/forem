@@ -10,6 +10,7 @@ module Articles
       @randomness = 3 # default number for randomly adjusting feed
       @tag_weight = 1 # default weight tags play in rankings
       @comment_weight = 0 # default weight comments play in rankings
+      @experience_level_weight = 1 # default weight for user experience level
     end
 
     def self.find_featured_story(stories)
@@ -92,6 +93,33 @@ module Articles
       stories
     end
 
+    def more_experience_level_weight_experiment
+      @experience_level_weight = 3
+      _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
+      stories
+    end
+
+    def mix_of_everything_experiment
+      case rand(7)
+      when 0
+        default_home_feed(user_signed_in: true)
+      when 1
+        default_home_feed_with_more_randomness_experiment
+      when 2
+        mix_default_and_more_random_experiment
+      when 3
+        more_tag_weight_experiment
+      when 4
+        more_tag_weight_more_random_experiment
+      when 5
+        more_comments_experiment
+      when 6
+        more_experience_level_weight_experiment
+      else
+        default_home_feed(user_signed_in: true)
+      end
+    end
+
     def rank_and_sort_articles(articles)
       ranked_articles = articles.each_with_object({}) do |article, result|
         article_points = score_single_article(article)
@@ -139,7 +167,7 @@ module Articles
     end
 
     def score_experience_level(article)
-      - ((article.experience_level_rating - (@user&.experience_level || 5)).abs / 2)
+      - (((article.experience_level_rating - (@user&.experience_level || 5)).abs / 2) * @experience_level_weight)
     end
 
     def score_comments(article)

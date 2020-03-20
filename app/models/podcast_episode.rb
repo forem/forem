@@ -63,6 +63,10 @@ class PodcastEpisode < ApplicationRecord
     end
   end
 
+  def search_id
+    "podcast_episode_#{id}"
+  end
+
   def user_username
     podcast_slug
   end

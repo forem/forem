@@ -11,21 +11,20 @@
       <meta name="algolia-public-key" content="<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>">
       <meta name="environment" content="<%= Rails.env %>">
       <%= render "layouts/styles" %>
-      <style> 
-        .home { 
-          overflow: hidden; 
-          position: relative; 
-          margin: auto; 
-          max-width: 1250px;  
-        } 
+      <style>
+        .home {
+          overflow: hidden;
+          position: relative;
+          margin: auto;
+          max-width: 1250px;
+        }
       </style>
-      <%= javascript_pack_tag "manifest", defer: true %>
-      <%= javascript_pack_tag "vendor", defer: true %>
-      <%= javascript_pack_tag "Search", defer: true %>
+      <% unless user_signed_in? %>
+        <%= javascript_packs_with_chunks_tag "Search", defer: true %>
+      <% end %>
       <%= javascript_include_tag "base", defer: true %>
       <% if user_signed_in? %>
-        <%= javascript_pack_tag "onboardingRedirectCheck", defer: true %>
-        <%= javascript_pack_tag "contentDisplayPolicy", defer: true %>
+        <%= javascript_packs_with_chunks_tag "Search", "onboardingRedirectCheck", "contentDisplayPolicy", defer: true %>
       <% end %>
       <%= yield(:page_meta) %>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">

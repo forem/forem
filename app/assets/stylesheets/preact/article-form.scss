@@ -164,8 +164,8 @@
     margin-bottom: 0px;
     margin-bottom: 1px;
     @media screen and (min-width: 600px) {
-      height: 32px;
-      margin-top: 2px;
+      height: 43px;
+      margin-bottom: 7px;
     }
   }
 }
@@ -263,14 +263,15 @@
 
 .articleform__tagsoptionrulesbutton {
   position: absolute;
-  right: 8px;
-  top: 9px;
+  right: 7px;
+  top: 7px;
   border: 0;
   border-radius: 3px;
   background: var(--button-primary-bg);
   color: var(--button-primary-color);
   font-size: 0.8em;
-  width: 100px;
+  width: 130px;
+  padding: 6px 0px;
 }
 
 .articleform__tagrules--inactive {

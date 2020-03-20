@@ -16,9 +16,10 @@ export default class ArticleController extends Controller {
   }
 
   highlightElement() {
-    this.element.classList.add('highlighted-bg', 'highlighted-border');
+    const card = this.element.querySelector('.card-body');
+    card.classList.add('bg-highlighted', 'border-highlighted');
     setTimeout(() => {
-      this.element.classList.remove('highlighted-bg');
+      card.classList.remove('bg-highlighted');
     }, 350);
   }
 

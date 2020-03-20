@@ -1,10 +1,3 @@
-function initializeFetchFollowedArticles() {
-  if ( document.getElementById("featured-story-marker") && checkUserLoggedIn() ) {
-    algoliaFollowedArticles();
-  }
-  insertTimes();
-}
-
 function insertArticle(article,parent,insertPlace) {
   if (article){
     var newItem = document.createElement("DIV");
@@ -77,53 +70,6 @@ function insertTopArticles(user){
       }
     });
   }
-}
-
-function algoliaFollowedArticles(){
-    var user = userData();
-
-    if (user && user.followed_tag_names && user.followed_tag_names.length > 0) {
-      insertInitialArticles(user)
-      const checkBlockedContentEvent = new CustomEvent('checkBlockedContent')
-      window.dispatchEvent(checkBlockedContentEvent)
-      var followedUsersArray = [];
-      if (user.followed_user_ids){
-        followedUsersArray = user.followed_user_ids.map(function(id){return 'user_'+id});
-      }
-      var publicSearchKey = '<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>'
-      var client = algoliasearch('<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>', publicSearchKey);
-      var index = client.initIndex('ordered_articles_<%= Rails.env %>');
-      var searchObj = {
-          hitsPerPage: 20,
-          page: "0",
-          attributesToHighlight: [],
-          tagFilters: [user.followed_tag_names.concat(followedUsersArray)],
-      }
-
-      var homeEl = document.getElementById("index-container");
-      if (homeEl.dataset.feed === "base-feed") {
-        articlesIndex = client.initIndex('ordered_articles_<%= Rails.env %>');
-      } else if (homeEl.dataset.feed === "latest") {
-        articlesIndex = client.initIndex('ordered_articles_by_published_at_<%= Rails.env %>');
-      } else {
-        searchObj["filters"] = ('published_at_int > ' + homeEl.dataset.articlesSince);
-        articlesIndex = client.initIndex('ordered_articles_by_positive_reactions_count_<%= Rails.env %>');
-      }
-      articlesIndex.search("*", searchObj)
-      .then(function searchDone(content) {
-        var insertPlace = document.getElementById("article-index-hidden-div");
-        if (insertPlace) {
-          var parent = insertPlace.parentNode;
-          content.hits.forEach(function(article){
-            if ( !document.getElementById("article-link-"+article.id) ) {
-              insertArticle(article,parent,insertPlace);
-            }
-          });
-        }
-        var el = document.getElementById("home-articles-object")
-        if (el){el.outerHTML = ''}
-      });
-    }
 }
 
 function findOne(haystack, arr) {

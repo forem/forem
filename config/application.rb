@@ -38,7 +38,6 @@ module PracticalDeveloper
     config.autoload_paths += Dir["#{config.root}/app/decorators/"]
     config.autoload_paths += Dir["#{config.root}/app/services/"]
     config.autoload_paths += Dir["#{config.root}/app/liquid_tags/"]
-    config.autoload_paths += Dir["#{config.root}/app/observers/"]
     config.autoload_paths += Dir["#{config.root}/app/black_box/"]
     config.autoload_paths += Dir["#{config.root}/app/sanitizers"]
     config.autoload_paths += Dir["#{config.root}/app/facades"]
@@ -46,7 +45,6 @@ module PracticalDeveloper
     config.autoload_paths += Dir["#{config.root}/app/view_objects"]
     config.autoload_paths += Dir["#{config.root}/lib/"]
 
-    config.active_record.observers = :article_observer, :reaction_observer, :comment_observer
     config.active_job.queue_adapter = :sidekiq
 
     config.middleware.use Rack::Deflater

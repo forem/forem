@@ -72,6 +72,7 @@ class Article < ApplicationRecord
   before_save :update_cached_user
 
   after_save :bust_cache, :detect_human_language
+  after_save :notify_slack_channel_about_publication, if: -> { published && published_at > 30.seconds.ago }
 
   after_update_commit :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
   after_commit :async_score_calc, :update_main_image_background_hex, :touch_collection
@@ -236,23 +237,6 @@ class Article < ApplicationRecord
     stories.pluck(:path, :title, :comments_count, :created_at)
   end
 
-  def self.active_eli5(time_ago)
-    stories = published.cached_tagged_with("explainlikeimfive")
-
-    stories = if time_ago == "latest"
-                stories.order("published_at DESC").limit(3)
-              elsif time_ago
-                stories.order("comments_count DESC").
-                  where("published_at > ?", time_ago).
-                  limit(6)
-              else
-                stories.order("last_comment_at DESC").
-                  where("published_at > ?", 5.days.ago).
-                  limit(3)
-              end
-    stories.pluck(:path, :title, :comments_count, :created_at)
-  end
-
   def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
     time_ago = 5.days.ago if time_ago == "latest" # Time ago sometimes returns this phrase instead of a date
     time_ago = 75.days.ago if time_ago.nil? # Time ago sometimes is given as nil and should then be the default. I know, sloppy.
@@ -282,6 +266,10 @@ class Article < ApplicationRecord
       Search::RemoveFromIndexWorker.perform_async("searchables_#{Rails.env}", record.index_id)
       Search::RemoveFromIndexWorker.perform_async("ordered_articles_#{Rails.env}", record.index_id)
     end
+  end
+
+  def search_id
+    "article_#{id}"
   end
 
   def processed_description
@@ -703,5 +691,21 @@ class Article < ApplicationRecord
 
   def touch_collection
     collection.touch if collection && previous_changes.present?
+  end
+
+  def notify_slack_channel_about_publication
+    url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
+
+    message = <<~MESSAGE.chomp
+      New Article Published: #{title}
+      #{url}#{path}
+    MESSAGE
+
+    SlackBotPingWorker.perform_async(
+      message: message,
+      channel: "activity",
+      username: "article_bot",
+      icon_emoji: ":writing_hand:",
+    )
   end
 end
