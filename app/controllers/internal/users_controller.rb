@@ -45,13 +45,9 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def banish
-    @user = User.find(params[:id])
-    begin
-      Moderator::BanishUser.call(admin: current_user, user: @user)
-    rescue StandardError => e
-      flash[:danger] = e.message
-    end
-    redirect_to "/internal/users/#{@user.id}/edit"
+    Moderator::BanishUserWorker.perform_async(current_user.id, params[:id].to_i)
+    flash[:success] = "This user is being banished in the background. The job will complete soon."
+    redirect_to "/internal/users/#{params[:id]}/edit"
   end
 
   def full_delete
