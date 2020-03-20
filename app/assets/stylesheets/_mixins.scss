@@ -73,3 +73,12 @@
     );
   }
 }
+
+// TODO: comment this sucker
+@mixin font-src($font) {
+  @if variable-exists(environment) and $environment == 'storybook' {
+    src: '/fonts/' + $font;
+  } @else {
+    src: font-url($font);
+  }
+}
