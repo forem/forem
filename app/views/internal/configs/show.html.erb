@@ -163,7 +163,15 @@
                 <div class="alert alert-info">Used as the site favicon</div>
                 <img alt="favicon" class="preview" src="<%= SiteConfig.favicon_url %>" />
               </div>
-
+              <div class="form-group">
+                <%= f.label :logo_png %>
+                <%= f.text_area :logo_png,
+                                class: "form-control",
+                                value: SiteConfig.logo_png,
+                                 placeholder: "https://image.url/image.png" %>
+                <div class="alert alert-info">Minimum 1024px, used for PWA etc.</div>
+                <img alt="favicon" class="preview" src="<%= SiteConfig.logo_png %>" />
+              </div>
               <div class="form-group">
                 <%= f.label :logo_svg %>
                 <%= f.text_area :logo_svg,
