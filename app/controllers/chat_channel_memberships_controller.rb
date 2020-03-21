@@ -33,11 +33,8 @@ class ChatChannelMembershipsController < ApplicationController
       next unless user_id
 
       number_invitations_sent += 1
-      ChatChannelMembership.create(
-        user_id: user_id,
-        chat_channel_id: @chat_channel.id,
-        status: "pending",
-      )
+      ChatChannelMembership.find_or_create_by(user_id: user_id, chat_channel_id: @chat_channel.id)
+                           .update(status: "pending")
     end
     flash[:settings_notice] = if number_invitations_sent.zero?
                                 "No Invitations Sent. Check for username typos."
