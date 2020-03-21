@@ -6,6 +6,7 @@ RSpec.describe Notifications::ModerationNotificationWorker do
     comment = double
     allow(Comment).to receive(:find_by).and_return(comment)
     allow(comment).to receive(:user)
+    allow(comment).to receive(:commentable).and_return(true)
     comment
   end
   let(:mod) do
