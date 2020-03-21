@@ -531,8 +531,8 @@
     color: var(--theme-secondary-color, $medium-gray);
     white-space: nowrap;
     @media screen and (min-width: 430px) {
-      margin-top: 16px;
-      margin-bottom: 16px;
+      margin-top: 23px;
+      margin-bottom: 8px;
     }
     &:hover {
       background: lighten($green, 24%);
