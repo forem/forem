@@ -65,12 +65,10 @@ function addErrorMessage(fileInput, msg) {
 /**
  * Handles errors for files that are too large.
  *
- * @external File
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/File File}
- *
  * @param {object} fileSizeErrorHandler - A custom function to be ran after the default error handling
  * @param {HTMLElement} fileInput - An input form field with type of file
- * @param {File} file - The file that was too large in size
+ * @param {number} fileSizeMb - The size of the file in MB
+ * @param {?number} maxFileSizeMb - The max file size limit in MB
  */
 function handleFileSizeError(
   fileSizeErrorHandler,
@@ -99,12 +97,10 @@ function handleFileSizeError(
 /**
  * Handles errors for files that are not a valid format.
  *
- * @external File
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/File File}
- *
  * @param {object} fileSizeErrorHandler - A custom function to be ran after the default error handling
  * @param {HTMLElement} fileInput - An input form field with type of file
- * @param {File} file - The file that was an invalid type
+ * @param {string} fileType - The top level file type (i.e. image for image/png)
+ * @param {string[]} permittedFileTypes - The top level file types (i.e. image for image/png) that are permitted
  */
 function handleFileTypeError(
   fileTypeErrorHandler,
