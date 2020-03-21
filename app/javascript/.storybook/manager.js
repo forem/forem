@@ -3,7 +3,7 @@ import { create } from '@storybook/theming/create';
 
 const crayonsTheme = create({
   base: 'light',
-  brandTitle: '🖍️🖍️crayons 🖍️🖍️',
+  brandTitle: '🖍️ Crayons 🖍️',
 });
 
 addons.setConfig({
