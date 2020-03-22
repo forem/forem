@@ -6,6 +6,7 @@ function getAndShowPreview(markdownPreviewPane, markdownEditor) {
     markdownEditor.classList.toggle('preview-loading');
     markdownEditor.classList.toggle('preview-toggle');
     markdownPreviewPane.innerHTML = body.processed_html; // eslint-disable-line no-param-reassign
+    waitForRunkitAndActivateTags();
   }
 
   const payload = JSON.stringify({

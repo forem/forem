@@ -2,32 +2,48 @@ class RunkitTag < Liquid::Block
   PARTIAL = "liquids/runkit".freeze
 
   SCRIPT = <<~JAVASCRIPT.freeze
-    var checkRunkit = setInterval(function() {
-      try {
-        if (typeof(RunKit) !== 'undefined') {
-          var targets = document.getElementsByClassName("runkit-element");
-          for (var i = 0; i < targets.length; i++) {
-            var wrapperContent = targets[i].textContent;
-            if (/^(\<iframe src)/.test(wrapperContent) === false) {
-              if (targets[i].children.length > 0) {
-                var preamble = targets[i].children[0].textContent;
-                var content = targets[i].children[1].textContent;
-                targets[i].innerHTML = "";
-                var notebook = RunKit.createNotebook({
-                  element: targets[i],
-                  source: content,
-                  preamble: preamble
-                });
-              }
-            }
+    function isRunkitTagAlreadyActive(runkitTag) {
+      return runkitTag.children[0].tagName !== "CODE";
+    };
+
+    function activateRunkitTags() {
+      var targets = document.getElementsByClassName("runkit-element");
+      for (var i = 0; i < targets.length; i++) {
+        if (isRunkitTagAlreadyActive(targets[i])) {
+          continue;
+        }
+
+        var wrapperContent = targets[i].textContent;
+        if (/^(\<iframe src)/.test(wrapperContent) === false) {
+          if (targets[i].children.length > 0) {
+            var preamble = targets[i].children[0].textContent;
+            var content = targets[i].children[1].textContent;
+            targets[i].innerHTML = "";
+            var notebook = RunKit.createNotebook({
+              element: targets[i],
+              source: content,
+              preamble: preamble
+            });
           }
+        }
+      }
+    };
+
+    function waitForRunkitAndActivateTags() {
+      var checkRunkit = setInterval(function() {
+        try {
+          if (typeof(RunKit) === 'undefined') {
+            return
+          }
+
+          activateRunkitTags()
+          clearInterval(checkRunkit);
+        } catch(e) {
+          console.error(e);
           clearInterval(checkRunkit);
         }
-      } catch(e) {
-        console.error(e);
-        clearInterval(checkRunkit);
-      }
-    }, 200);
+      }, 200);
+    }
   JAVASCRIPT
 
   def initialize(tag_name, markup, tokens)
