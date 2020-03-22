@@ -86,7 +86,7 @@ function handleFileSizeError(
 
     // If a user uploads a file type that we haven't defined a max size limit for then maxFileSizeMb
     // could be NaN
-    if (maxFileSizeMb) {
+    if (maxFileSizeMb >= 0) {
       errorMessage += ` The limit is ${maxFileSizeMb} MB.`;
     }
 
@@ -168,8 +168,14 @@ function validateFileSize(file, fileType, fileInput) {
  * @returns {Boolean} Returns false if the files is an invalid format. Otherwise, returns true.
  */
 function validateFileType(file, fileType, fileInput) {
-  const permittedFileTypes =
-    fileInput.dataset.permittedFileTypes || PERMITTED_FILE_TYPES;
+  let { permittedFileTypes } = fileInput.dataset;
+
+  if (permittedFileTypes) {
+    permittedFileTypes = JSON.parse(permittedFileTypes);
+  }
+
+  permittedFileTypes = permittedFileTypes || PERMITTED_FILE_TYPES;
+
   const { fileTypeErrorHandler } = fileInput.dataset;
 
   const isValidFileType = permittedFileTypes.includes(fileType);
