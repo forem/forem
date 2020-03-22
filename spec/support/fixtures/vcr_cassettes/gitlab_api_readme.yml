@@ -1,0 +1,329 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Sat, 21 Mar 2020 16:02:49 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '1135'
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Etag:
+      - W/"6cd3e666ca00abfa578e1a1eb47c8015"
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - cottwHqkH86
+      X-Runtime:
+      - '0.054507'
+      Strict-Transport-Security:
+      - max-age=31536000
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Ratelimit-Limit:
+      - '600'
+      Ratelimit-Observed:
+      - '1'
+      Ratelimit-Remaining:
+      - '599'
+      Ratelimit-Reset:
+      - '1584806629'
+      Ratelimit-Resettime:
+      - Sat, 21 Mar 2020 16:03:49 GMT
+      Gitlab-Lb:
+      - fe-11-lb-gprd
+      Gitlab-Sv:
+      - localhost
+    body:
+      encoding: UTF-8
+      string: '{"id":278964,"description":"GitLab is an open source end-to-end software
+        development platform with built-in version control, issue tracking, code review,
+        CI/CD, and more. Self-host GitLab on your own servers, in a container, or
+        on a cloud provider.","name":"GitLab","name_with_namespace":"GitLab.org /
+        GitLab","path":"gitlab","path_with_namespace":"gitlab-org/gitlab","created_at":"2015-05-20T10:47:11.949Z","default_branch":"master","tag_list":[],"ssh_url_to_repo":"git@gitlab.com:gitlab-org/gitlab.git","http_url_to_repo":"https://gitlab.com/gitlab-org/gitlab.git","web_url":"https://gitlab.com/gitlab-org/gitlab","readme_url":"https://gitlab.com/gitlab-org/gitlab/-/blob/master/README.md","avatar_url":"https://assets.gitlab-static.net/uploads/-/system/project/avatar/278964/logo-extra-whitespace.png","star_count":1580,"forks_count":1716,"last_activity_at":"2020-03-21T15:27:23.342Z","namespace":{"id":9970,"name":"GitLab.org","path":"gitlab-org","kind":"group","full_path":"gitlab-org","parent_id":null,"avatar_url":"/uploads/-/system/group/avatar/9970/logo-extra-whitespace.png","web_url":"https://gitlab.com/groups/gitlab-org"}}'
+    http_version: null
+  recorded_at: Sat, 21 Mar 2020 16:02:49 GMT
+- request:
+    method: get
+    uri: https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab/repository/files/README.md?ref=master
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Sat, 21 Mar 2020 16:02:50 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '7865'
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Etag:
+      - W/"91dabd0d3fc6462b586e269b30a1be1d"
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Gitlab-Blob-Id:
+      - 1372e47d52fe366c4987ed4b4f646d6ceb51150a
+      X-Gitlab-Commit-Id:
+      - 86b82a8ca235a886788581b0ff5bb24f4e4bfaa2
+      X-Gitlab-Content-Sha256:
+      - f578250894f0c528f780c93faa6ea687350792159355fcd86a3c7d0160f7940f
+      X-Gitlab-Encoding:
+      - base64
+      X-Gitlab-File-Name:
+      - README.md
+      X-Gitlab-File-Path:
+      - README.md
+      X-Gitlab-Last-Commit-Id:
+      - 60b0255d6c0a6c181860c907156d1acb9c6f2d5c
+      X-Gitlab-Ref:
+      - master
+      X-Gitlab-Size:
+      - '5628'
+      X-Request-Id:
+      - Z0xjUlp6ik
+      X-Runtime:
+      - '0.128547'
+      Strict-Transport-Security:
+      - max-age=31536000
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Ratelimit-Limit:
+      - '600'
+      Ratelimit-Observed:
+      - '2'
+      Ratelimit-Remaining:
+      - '598'
+      Ratelimit-Reset:
+      - '1584806630'
+      Ratelimit-Resettime:
+      - Sat, 21 Mar 2020 16:03:50 GMT
+      Gitlab-Lb:
+      - fe-07-lb-gprd
+      Gitlab-Sv:
+      - localhost
+    body:
+      encoding: UTF-8
+      string: '{"file_name":"README.md","file_path":"README.md","size":5628,"encoding":"base64","content_sha256":"f578250894f0c528f780c93faa6ea687350792159355fcd86a3c7d0160f7940f","ref":"master","blob_id":"1372e47d52fe366c4987ed4b4f646d6ceb51150a","commit_id":"86b82a8ca235a886788581b0ff5bb24f4e4bfaa2","last_commit_id":"60b0255d6c0a6c181860c907156d1acb9c6f2d5c","content":"IyBHaXRMYWIKCiMjIENhbm9uaWNhbCBzb3VyY2UKClRoZSBjYW5vbmljYWwgc291cmNlIG9mIEdpdExhYiB3aGVyZSBhbGwgZGV2ZWxvcG1lbnQgdGFrZXMgcGxhY2UgaXMgW2hvc3RlZCBvbiBHaXRMYWIuY29tXShodHRwczovL2dpdGxhYi5jb20vZ2l0bGFiLW9yZy9naXRsYWIpLgoKSWYgeW91IHdpc2ggdG8gY2xvbmUgYSBjb3B5IG9mIEdpdExhYiB3aXRob3V0IHByb3ByaWV0YXJ5IGNvZGUsIHlvdSBjYW4gdXNlIHRoZSByZWFkLW9ubHkgbWlycm9yIG9mIEdpdExhYiBsb2NhdGVkIGF0IGh0dHBzOi8vZ2l0bGFiLmNvbS9naXRsYWItb3JnL2dpdGxhYi1mb3NzLy4gUGxlYXNlIGRvIG5vdCBzdWJtaXQgYW55IGlzc3VlcyBhbmQvb3IgbWVyZ2UgcmVxdWVzdHMgdG8gdGhpcyBwcm9qZWN0LgoKIyMgRnJlZSB0cmlhbAoKWW91IGNhbiByZXF1ZXN0IGEgZnJlZSB0cmlhbCBvZiBHaXRMYWIgVWx0aW1hdGUgW29uIG91ciB3ZWJzaXRlXShodHRwczovL2Fib3V0LmdpdGxhYi5jb20vZnJlZS10cmlhbC8pLgoKIyMgT3BlbiBzb3VyY2Ugc29mdHdhcmUgdG8gY29sbGFib3JhdGUgb24gY29kZQoKVG8gc2VlIGhvdyBHaXRMYWIgbG9va3MgcGxlYXNlIHNlZSB0aGUgW2ZlYXR1cmVzIHBhZ2Ugb24gb3VyIHdlYnNpdGVdKGh0dHBzOi8vYWJvdXQuZ2l0bGFiLmNvbS9mZWF0dXJlcy8pLgoKLSBNYW5hZ2UgR2l0IHJlcG9zaXRvcmllcyB3aXRoIGZpbmUgZ3JhaW5lZCBhY2Nlc3MgY29udHJvbHMgdGhhdCBrZWVwIHlvdXIgY29kZSBzZWN1cmUKLSBQZXJmb3JtIGNvZGUgcmV2aWV3cyBhbmQgZW5oYW5jZSBjb2xsYWJvcmF0aW9uIHdpdGggbWVyZ2UgcmVxdWVzdHMKLSBDb21wbGV0ZSBjb250aW51b3VzIGludGVncmF0aW9uIChDSSkgYW5kIGNvbnRpbnVvdXMgZGVwbG95bWVudC9kZWxpdmVyeSAoQ0QpIHBpcGVsaW5lcyB0byBidWlsZCwgdGVzdCwgYW5kIGRlcGxveSB5b3VyIGFwcGxpY2F0aW9ucwotIEVhY2ggcHJvamVjdCBjYW4gYWxzbyBoYXZlIGFuIGlzc3VlIHRyYWNrZXIsIGlzc3VlIGJvYXJkLCBhbmQgYSB3aWtpCi0gVXNlZCBieSBtb3JlIHRoYW4gMTAwLDAwMCBvcmdhbml6YXRpb25zLCBHaXRMYWIgaXMgdGhlIG1vc3QgcG9wdWxhciBzb2x1dGlvbiB0byBtYW5hZ2UgR2l0IHJlcG9zaXRvcmllcyBvbi1wcmVtaXNlcwotIENvbXBsZXRlbHkgZnJlZSBhbmQgb3BlbiBzb3VyY2UgKE1JVCBFeHBhdCBsaWNlbnNlKQoKIyMgRWRpdGlvbnMKClRoZXJlIGFyZSB0d28gZWRpdGlvbnMgb2YgR2l0TGFiOgoKLSBHaXRMYWIgQ29tbXVuaXR5IEVkaXRpb24gKENFKSBpcyBhdmFpbGFibGUgZnJlZWx5IHVuZGVyIHRoZSBNSVQgRXhwYXQgbGljZW5zZS4KLSBHaXRMYWIgRW50ZXJwcmlzZSBFZGl0aW9uIChFRSkgaW5jbHVkZXMgW2V4dHJhIGZlYXR1cmVzXShodHRwczovL2Fib3V0LmdpdGxhYi5jb20vcHJpY2luZy8jY29tcGFyZS1vcHRpb25zKSB0aGF0IGFyZSBtb3JlIHVzZWZ1bCBmb3Igb3JnYW5pemF0aW9ucyB3aXRoIG1vcmUgdGhhbiAxMDAgdXNlcnMuIFRvIHVzZSBFRSBhbmQgZ2V0IG9mZmljaWFsIHN1cHBvcnQgcGxlYXNlIFtiZWNvbWUgYSBzdWJzY3JpYmVyXShodHRwczovL2Fib3V0LmdpdGxhYi5jb20vcHJpY2luZy8pLgoKIyMgTGljZW5zaW5nCgpTZWUgdGhlIFtMSUNFTlNFXShMSUNFTlNFKSBmaWxlIGZvciBsaWNlbnNpbmcgaW5mb3JtYXRpb24gYXMgaXQgcGVydGFpbnMgdG8KZmlsZXMgaW4gdGhpcyByZXBvc2l0b3J5LgoKIyMgSGlyaW5nCgpXZSdyZSBoaXJpbmcgZGV2ZWxvcGVycywgc3VwcG9ydCBwZW9wbGUsIGFuZCBwcm9kdWN0aW9uIGVuZ2luZWVycyBhbGwgdGhlIHRpbWUsIHBsZWFzZSBzZWUgb3VyIFtqb2JzIHBhZ2VdKGh0dHBzOi8vYWJvdXQuZ2l0bGFiLmNvbS9qb2JzLykuCgojIyBXZWJzaXRlCgpPbiBbYWJvdXQuZ2l0bGFiLmNvbV0oaHR0cHM6Ly9hYm91dC5naXRsYWIuY29tLykgeW91IGNhbiBmaW5kIG1vcmUgaW5mb3JtYXRpb24gYWJvdXQ6CgotIFtTdWJzY3JpcHRpb25zXShodHRwczovL2Fib3V0LmdpdGxhYi5jb20vcHJpY2luZy8pCi0gW0NvbnN1bHRhbmN5XShodHRwczovL2Fib3V0LmdpdGxhYi5jb20vY29uc3VsdGFuY3kvKQotIFtDb21tdW5pdHldKGh0dHBzOi8vYWJvdXQuZ2l0bGFiLmNvbS9jb21tdW5pdHkvKQotIFtIb3N0ZWQgR2l0TGFiLmNvbV0oaHR0cHM6Ly9hYm91dC5naXRsYWIuY29tL2dpdGxhYi1jb20vKSB1c2UgR2l0TGFiIGFzIGEgZnJlZSBzZXJ2aWNlCi0gW0dpdExhYiBFbnRlcnByaXNlIEVkaXRpb25dKGh0dHBzOi8vYWJvdXQuZ2l0bGFiLmNvbS9mZWF0dXJlcy8jZW50ZXJwcmlzZSkgd2l0aCBhZGRpdGlvbmFsIGZlYXR1cmVzIGFpbWVkIGF0IGxhcmdlciBvcmdhbml6YXRpb25zLgotIFtHaXRMYWIgQ0ldKGh0dHBzOi8vYWJvdXQuZ2l0bGFiLmNvbS9naXRsYWItY2kvKSBhIGNvbnRpbnVvdXMgaW50ZWdyYXRpb24gKENJKSBzZXJ2ZXIgdGhhdCBpcyBlYXN5IHRvIGludGVncmF0ZSB3aXRoIEdpdExhYi4KCiMjIFJlcXVpcmVtZW50cwoKUGxlYXNlIHNlZSB0aGUgW3JlcXVpcmVtZW50cyBkb2N1bWVudGF0aW9uXShkb2MvaW5zdGFsbC9yZXF1aXJlbWVudHMubWQpIGZvciBzeXN0ZW0gcmVxdWlyZW1lbnRzIGFuZCBtb3JlIGluZm9ybWF0aW9uIGFib3V0IHRoZSBzdXBwb3J0ZWQgb3BlcmF0aW5nIHN5c3RlbXMuCgojIyBJbnN0YWxsYXRpb24KClRoZSByZWNvbW1lbmRlZCB3YXkgdG8gaW5zdGFsbCBHaXRMYWIgaXMgd2l0aCB0aGUgW09tbmlidXMgcGFja2FnZXNdKGh0dHBzOi8vYWJvdXQuZ2l0bGFiLmNvbS9kb3dubG9hZHMvKSBvbiBvdXIgcGFja2FnZSBzZXJ2ZXIuCkNvbXBhcmVkIHRvIGFuIGluc3RhbGxhdGlvbiBmcm9tIHNvdXJjZSwgdGhpcyBpcyBmYXN0ZXIgYW5kIGxlc3MgZXJyb3IgcHJvbmUuCkp1c3Qgc2VsZWN0IHlvdXIgb3BlcmF0aW5nIHN5c3RlbSwgZG93bmxvYWQgdGhlIHJlc3BlY3RpdmUgcGFja2FnZSAoRGViaWFuIG9yIFJQTSkgYW5kIGluc3RhbGwgaXQgdXNpbmcgdGhlIHN5c3RlbSdzIHBhY2thZ2UgbWFuYWdlci4KClRoZXJlIGFyZSB2YXJpb3VzIG90aGVyIG9wdGlvbnMgdG8gaW5zdGFsbCBHaXRMYWIsIHBsZWFzZSByZWZlciB0byB0aGUgW2luc3RhbGxhdGlvbiBwYWdlIG9uIHRoZSBHaXRMYWIgd2Vic2l0ZV0oaHR0cHM6Ly9hYm91dC5naXRsYWIuY29tL2luc3RhbGxhdGlvbi8pIGZvciBtb3JlIGluZm9ybWF0aW9uLgoKIyMgQ29udHJpYnV0aW5nCgpHaXRMYWIgaXMgYW4gb3BlbiBzb3VyY2UgcHJvamVjdCBhbmQgd2UgYXJlIHZlcnkgaGFwcHkgdG8gYWNjZXB0IGNvbW11bml0eSBjb250cmlidXRpb25zLiBQbGVhc2UgcmVmZXIgdG8gW0NvbnRyaWJ1dGluZyB0byBHaXRMYWIgcGFnZV0oaHR0cHM6Ly9hYm91dC5naXRsYWIuY29tL2NvbnRyaWJ1dGluZy8pIGZvciBtb3JlIGRldGFpbHMuCgojIyBJbnN0YWxsIGEgZGV2ZWxvcG1lbnQgZW52aXJvbm1lbnQKClRvIHdvcmsgb24gR2l0TGFiIGl0c2VsZiwgd2UgcmVjb21tZW5kIHNldHRpbmcgdXAgeW91ciBkZXZlbG9wbWVudCBlbnZpcm9ubWVudCB3aXRoIFt0aGUgR2l0TGFiIERldmVsb3BtZW50IEtpdF0oaHR0cHM6Ly9naXRsYWIuY29tL2dpdGxhYi1vcmcvZ2l0bGFiLWRldmVsb3BtZW50LWtpdCkuCklmIHlvdSBkbyBub3QgdXNlIHRoZSBHaXRMYWIgRGV2ZWxvcG1lbnQgS2l0IHlvdSBuZWVkIHRvIGluc3RhbGwgYW5kIHNldHVwIGFsbCB0aGUgZGVwZW5kZW5jaWVzIHlvdXJzZWxmLCB0aGlzIGlzIGEgbG90IG9mIHdvcmsgYW5kIGVycm9yIHByb25lLgpPbmUgc21hbGwgdGhpbmcgeW91IGFsc28gaGF2ZSB0byBkbyB3aGVuIGluc3RhbGxpbmcgaXQgeW91cnNlbGYgaXMgdG8gY29weSB0aGUgZXhhbXBsZSBkZXZlbG9wbWVudCB1bmljb3JuIGNvbmZpZ3VyYXRpb24gZmlsZToKCiAgICBjcCBjb25maWcvdW5pY29ybi5yYi5leGFtcGxlLmRldmVsb3BtZW50IGNvbmZpZy91bmljb3JuLnJiCgpJbnN0cnVjdGlvbnMgb24gaG93IHRvIHN0YXJ0IEdpdExhYiBhbmQgaG93IHRvIHJ1biB0aGUgdGVzdHMgY2FuIGJlIGZvdW5kIGluIHRoZSBbZ2V0dGluZyBzdGFydGVkIHNlY3Rpb24gb2YgdGhlIEdpdExhYiBEZXZlbG9wbWVudCBLaXRdKGh0dHBzOi8vZ2l0bGFiLmNvbS9naXRsYWItb3JnL2dpdGxhYi1kZXZlbG9wbWVudC1raXQjZ2V0dGluZy1zdGFydGVkKS4KCiMjIFNvZnR3YXJlIHN0YWNrCgpHaXRMYWIgaXMgYSBSdWJ5IG9uIFJhaWxzIGFwcGxpY2F0aW9uIHRoYXQgcnVucyBvbiB0aGUgZm9sbG93aW5nIHNvZnR3YXJlOgoKLSBVYnVudHUvRGViaWFuL0NlbnRPUy9SSEVML09wZW5TVVNFCi0gUnVieSAoTVJJKSAyLjYuNQotIEdpdCAyLjguNCsKLSBSZWRpcyAyLjgrCi0gUG9zdGdyZVNRTCA5LjYrCgpGb3IgbW9yZSBpbmZvcm1hdGlvbiBwbGVhc2Ugc2VlIHRoZSBbYXJjaGl0ZWN0dXJlXShodHRwczovL2RvY3MuZ2l0bGFiLmNvbS9lZS9kZXZlbG9wbWVudC9hcmNoaXRlY3R1cmUuaHRtbCkgYW5kIFtyZXF1aXJlbWVudHNdKGh0dHBzOi8vZG9jcy5naXRsYWIuY29tL2VlL2luc3RhbGwvcmVxdWlyZW1lbnRzLmh0bWwpIGRvY3VtZW50YXRpb24uCgojIyBVWCBkZXNpZ24KClBsZWFzZSBhZGhlcmUgdG8gdGhlIFtVWCBHdWlkZV0oZG9jL2RldmVsb3BtZW50L3V4X2d1aWRlL2luZGV4Lm1kKSB3aGVuIGNyZWF0aW5nIGRlc2lnbnMgYW5kIGltcGxlbWVudGluZyBjb2RlLgoKIyMgVGhpcmQtcGFydHkgYXBwbGljYXRpb25zCgpUaGVyZSBhcmUgYSBsb3Qgb2YgW3RoaXJkLXBhcnR5IGFwcGxpY2F0aW9ucyBpbnRlZ3JhdGluZyB3aXRoIEdpdExhYl0oaHR0cHM6Ly9hYm91dC5naXRsYWIuY29tL2FwcGxpY2F0aW9ucy8pLiBUaGVzZSBpbmNsdWRlIEdVSSBHaXQgY2xpZW50cywgbW9iaWxlIGFwcGxpY2F0aW9ucyBhbmQgQVBJIHdyYXBwZXJzIGZvciB2YXJpb3VzIGxhbmd1YWdlcy4KCiMjIEdpdExhYiByZWxlYXNlIGN5Y2xlCgpGb3IgbW9yZSBpbmZvcm1hdGlvbiBhYm91dCB0aGUgcmVsZWFzZSBwcm9jZXNzIHNlZSB0aGUgW3JlbGVhc2UgZG9jdW1lbnRhdGlvbl0oaHR0cHM6Ly9naXRsYWIuY29tL2dpdGxhYi1vcmcvcmVsZWFzZS10b29scy9ibG9iL21hc3Rlci9SRUFETUUubWQpLgoKIyMgVXBncmFkaW5nCgpGb3IgdXBncmFkaW5nIGluZm9ybWF0aW9uIHBsZWFzZSBzZWUgb3VyIFt1cGRhdGUgcGFnZV0oaHR0cHM6Ly9hYm91dC5naXRsYWIuY29tL3VwZGF0ZS8pLgoKIyMgRG9jdW1lbnRhdGlvbgoKQWxsIGRvY3VtZW50YXRpb24gY2FuIGJlIGZvdW5kIG9uIDxodHRwczovL2RvY3MuZ2l0bGFiLmNvbT4uCgojIyBHZXR0aW5nIGhlbHAKClBsZWFzZSBzZWUgW0dldHRpbmcgaGVscCBmb3IgR2l0TGFiXShodHRwczovL2Fib3V0LmdpdGxhYi5jb20vZ2V0dGluZy1oZWxwLykgb24gb3VyIHdlYnNpdGUgZm9yIHRoZSBtYW55IG9wdGlvbnMgdG8gZ2V0IGhlbHAuCgojIyBXaHk/CgpbUmVhZCBoZXJlXShodHRwczovL2Fib3V0LmdpdGxhYi5jb20vd2h5LykKCiMjIElzIGl0IGFueSBnb29kPwoKW1llc10oaHR0cHM6Ly9uZXdzLnljb21iaW5hdG9yLmNvbS9pdGVtP2lkPTMwNjc0MzQpCgojIyBJcyBpdCBhd2Vzb21lPwoKW1RoZXNlIHBlb3BsZV0oaHR0cHM6Ly90d2l0dGVyLmNvbS9naXRsYWIvbGlrZXMpIHNlZW0gdG8gbGlrZSBpdC4K"}'
+    http_version: null
+  recorded_at: Sat, 21 Mar 2020 16:02:50 GMT
+- request:
+    method: post
+    uri: https://gitlab.com/api/v4/markdown
+    body:
+      encoding: UTF-8
+      string: text=%23%20GitLab%0A%0A%23%23%20Canonical%20source%0A%0AThe%20canonical%20source%20of%20GitLab%20where%20all%20development%20takes%20place%20is%20%5Bhosted%20on%20GitLab.com%5D%28https%3A%2F%2Fgitlab.com%2Fgitlab-org%2Fgitlab%29.%0A%0AIf%20you%20wish%20to%20clone%20a%20copy%20of%20GitLab%20without%20proprietary%20code%2C%20you%20can%20use%20the%20read-only%20mirror%20of%20GitLab%20located%20at%20https%3A%2F%2Fgitlab.com%2Fgitlab-org%2Fgitlab-foss%2F.%20Please%20do%20not%20submit%20any%20issues%20and%2For%20merge%20requests%20to%20this%20project.%0A%0A%23%23%20Free%20trial%0A%0AYou%20can%20request%20a%20free%20trial%20of%20GitLab%20Ultimate%20%5Bon%20our%20website%5D%28https%3A%2F%2Fabout.gitlab.com%2Ffree-trial%2F%29.%0A%0A%23%23%20Open%20source%20software%20to%20collaborate%20on%20code%0A%0ATo%20see%20how%20GitLab%20looks%20please%20see%20the%20%5Bfeatures%20page%20on%20our%20website%5D%28https%3A%2F%2Fabout.gitlab.com%2Ffeatures%2F%29.%0A%0A-%20Manage%20Git%20repositories%20with%20fine%20grained%20access%20controls%20that%20keep%20your%20code%20secure%0A-%20Perform%20code%20reviews%20and%20enhance%20collaboration%20with%20merge%20requests%0A-%20Complete%20continuous%20integration%20%28CI%29%20and%20continuous%20deployment%2Fdelivery%20%28CD%29%20pipelines%20to%20build%2C%20test%2C%20and%20deploy%20your%20applications%0A-%20Each%20project%20can%20also%20have%20an%20issue%20tracker%2C%20issue%20board%2C%20and%20a%20wiki%0A-%20Used%20by%20more%20than%20100%2C000%20organizations%2C%20GitLab%20is%20the%20most%20popular%20solution%20to%20manage%20Git%20repositories%20on-premises%0A-%20Completely%20free%20and%20open%20source%20%28MIT%20Expat%20license%29%0A%0A%23%23%20Editions%0A%0AThere%20are%20two%20editions%20of%20GitLab%3A%0A%0A-%20GitLab%20Community%20Edition%20%28CE%29%20is%20available%20freely%20under%20the%20MIT%20Expat%20license.%0A-%20GitLab%20Enterprise%20Edition%20%28EE%29%20includes%20%5Bextra%20features%5D%28https%3A%2F%2Fabout.gitlab.com%2Fpricing%2F%23compare-options%29%20that%20are%20more%20useful%20for%20organizations%20with%20more%20than%20100%20users.%20To%20use%20EE%20and%20get%20official%20support%20please%20%5Bbecome%20a%20subscriber%5D%28https%3A%2F%2Fabout.gitlab.com%2Fpricing%2F%29.%0A%0A%23%23%20Licensing%0A%0ASee%20the%20%5BLICENSE%5D%28LICENSE%29%20file%20for%20licensing%20information%20as%20it%20pertains%20to%0Afiles%20in%20this%20repository.%0A%0A%23%23%20Hiring%0A%0AWe%27re%20hiring%20developers%2C%20support%20people%2C%20and%20production%20engineers%20all%20the%20time%2C%20please%20see%20our%20%5Bjobs%20page%5D%28https%3A%2F%2Fabout.gitlab.com%2Fjobs%2F%29.%0A%0A%23%23%20Website%0A%0AOn%20%5Babout.gitlab.com%5D%28https%3A%2F%2Fabout.gitlab.com%2F%29%20you%20can%20find%20more%20information%20about%3A%0A%0A-%20%5BSubscriptions%5D%28https%3A%2F%2Fabout.gitlab.com%2Fpricing%2F%29%0A-%20%5BConsultancy%5D%28https%3A%2F%2Fabout.gitlab.com%2Fconsultancy%2F%29%0A-%20%5BCommunity%5D%28https%3A%2F%2Fabout.gitlab.com%2Fcommunity%2F%29%0A-%20%5BHosted%20GitLab.com%5D%28https%3A%2F%2Fabout.gitlab.com%2Fgitlab-com%2F%29%20use%20GitLab%20as%20a%20free%20service%0A-%20%5BGitLab%20Enterprise%20Edition%5D%28https%3A%2F%2Fabout.gitlab.com%2Ffeatures%2F%23enterprise%29%20with%20additional%20features%20aimed%20at%20larger%20organizations.%0A-%20%5BGitLab%20CI%5D%28https%3A%2F%2Fabout.gitlab.com%2Fgitlab-ci%2F%29%20a%20continuous%20integration%20%28CI%29%20server%20that%20is%20easy%20to%20integrate%20with%20GitLab.%0A%0A%23%23%20Requirements%0A%0APlease%20see%20the%20%5Brequirements%20documentation%5D%28doc%2Finstall%2Frequirements.md%29%20for%20system%20requirements%20and%20more%20information%20about%20the%20supported%20operating%20systems.%0A%0A%23%23%20Installation%0A%0AThe%20recommended%20way%20to%20install%20GitLab%20is%20with%20the%20%5BOmnibus%20packages%5D%28https%3A%2F%2Fabout.gitlab.com%2Fdownloads%2F%29%20on%20our%20package%20server.%0ACompared%20to%20an%20installation%20from%20source%2C%20this%20is%20faster%20and%20less%20error%20prone.%0AJust%20select%20your%20operating%20system%2C%20download%20the%20respective%20package%20%28Debian%20or%20RPM%29%20and%20install%20it%20using%20the%20system%27s%20package%20manager.%0A%0AThere%20are%20various%20other%20options%20to%20install%20GitLab%2C%20please%20refer%20to%20the%20%5Binstallation%20page%20on%20the%20GitLab%20website%5D%28https%3A%2F%2Fabout.gitlab.com%2Finstallation%2F%29%20for%20more%20information.%0A%0A%23%23%20Contributing%0A%0AGitLab%20is%20an%20open%20source%20project%20and%20we%20are%20very%20happy%20to%20accept%20community%20contributions.%20Please%20refer%20to%20%5BContributing%20to%20GitLab%20page%5D%28https%3A%2F%2Fabout.gitlab.com%2Fcontributing%2F%29%20for%20more%20details.%0A%0A%23%23%20Install%20a%20development%20environment%0A%0ATo%20work%20on%20GitLab%20itself%2C%20we%20recommend%20setting%20up%20your%20development%20environment%20with%20%5Bthe%20GitLab%20Development%20Kit%5D%28https%3A%2F%2Fgitlab.com%2Fgitlab-org%2Fgitlab-development-kit%29.%0AIf%20you%20do%20not%20use%20the%20GitLab%20Development%20Kit%20you%20need%20to%20install%20and%20setup%20all%20the%20dependencies%20yourself%2C%20this%20is%20a%20lot%20of%20work%20and%20error%20prone.%0AOne%20small%20thing%20you%20also%20have%20to%20do%20when%20installing%20it%20yourself%20is%20to%20copy%20the%20example%20development%20unicorn%20configuration%20file%3A%0A%0A%20%20%20%20cp%20config%2Funicorn.rb.example.development%20config%2Funicorn.rb%0A%0AInstructions%20on%20how%20to%20start%20GitLab%20and%20how%20to%20run%20the%20tests%20can%20be%20found%20in%20the%20%5Bgetting%20started%20section%20of%20the%20GitLab%20Development%20Kit%5D%28https%3A%2F%2Fgitlab.com%2Fgitlab-org%2Fgitlab-development-kit%23getting-started%29.%0A%0A%23%23%20Software%20stack%0A%0AGitLab%20is%20a%20Ruby%20on%20Rails%20application%20that%20runs%20on%20the%20following%20software%3A%0A%0A-%20Ubuntu%2FDebian%2FCentOS%2FRHEL%2FOpenSUSE%0A-%20Ruby%20%28MRI%29%202.6.5%0A-%20Git%202.8.4%2B%0A-%20Redis%202.8%2B%0A-%20PostgreSQL%209.6%2B%0A%0AFor%20more%20information%20please%20see%20the%20%5Barchitecture%5D%28https%3A%2F%2Fdocs.gitlab.com%2Fee%2Fdevelopment%2Farchitecture.html%29%20and%20%5Brequirements%5D%28https%3A%2F%2Fdocs.gitlab.com%2Fee%2Finstall%2Frequirements.html%29%20documentation.%0A%0A%23%23%20UX%20design%0A%0APlease%20adhere%20to%20the%20%5BUX%20Guide%5D%28doc%2Fdevelopment%2Fux_guide%2Findex.md%29%20when%20creating%20designs%20and%20implementing%20code.%0A%0A%23%23%20Third-party%20applications%0A%0AThere%20are%20a%20lot%20of%20%5Bthird-party%20applications%20integrating%20with%20GitLab%5D%28https%3A%2F%2Fabout.gitlab.com%2Fapplications%2F%29.%20These%20include%20GUI%20Git%20clients%2C%20mobile%20applications%20and%20API%20wrappers%20for%20various%20languages.%0A%0A%23%23%20GitLab%20release%20cycle%0A%0AFor%20more%20information%20about%20the%20release%20process%20see%20the%20%5Brelease%20documentation%5D%28https%3A%2F%2Fgitlab.com%2Fgitlab-org%2Frelease-tools%2Fblob%2Fmaster%2FREADME.md%29.%0A%0A%23%23%20Upgrading%0A%0AFor%20upgrading%20information%20please%20see%20our%20%5Bupdate%20page%5D%28https%3A%2F%2Fabout.gitlab.com%2Fupdate%2F%29.%0A%0A%23%23%20Documentation%0A%0AAll%20documentation%20can%20be%20found%20on%20%3Chttps%3A%2F%2Fdocs.gitlab.com%3E.%0A%0A%23%23%20Getting%20help%0A%0APlease%20see%20%5BGetting%20help%20for%20GitLab%5D%28https%3A%2F%2Fabout.gitlab.com%2Fgetting-help%2F%29%20on%20our%20website%20for%20the%20many%20options%20to%20get%20help.%0A%0A%23%23%20Why%3F%0A%0A%5BRead%20here%5D%28https%3A%2F%2Fabout.gitlab.com%2Fwhy%2F%29%0A%0A%23%23%20Is%20it%20any%20good%3F%0A%0A%5BYes%5D%28https%3A%2F%2Fnews.ycombinator.com%2Fitem%3Fid%3D3067434%29%0A%0A%23%23%20Is%20it%20awesome%3F%0A%0A%5BThese%20people%5D%28https%3A%2F%2Ftwitter.com%2Fgitlab%2Flikes%29%20seem%20to%20like%20it.%0A&project=gitlab-org%2Fgitlab
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Sat, 21 Mar 2020 16:02:54 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '10996'
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Etag:
+      - W/"8f4a803c0d009bde957409414c8088ed"
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - 31Mvi0q1LS2
+      X-Runtime:
+      - '0.101346'
+      Strict-Transport-Security:
+      - max-age=31536000
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Ratelimit-Limit:
+      - '600'
+      Ratelimit-Observed:
+      - '3'
+      Ratelimit-Remaining:
+      - '597'
+      Ratelimit-Reset:
+      - '1584806634'
+      Ratelimit-Resettime:
+      - Sat, 21 Mar 2020 16:03:54 GMT
+      Gitlab-Lb:
+      - fe-21-lb-gprd
+      Gitlab-Sv:
+      - localhost
+    body:
+      encoding: UTF-8
+      string: '{"html":"\u003ch1 data-sourcepos=\"1:1-1:8\"\u003eGitLab\u003c/h1\u003e\n\u003ch2
+        data-sourcepos=\"3:1-3:19\"\u003eCanonical source\u003c/h2\u003e\n\u003cp
+        data-sourcepos=\"5:1-5:129\"\u003eThe canonical source of GitLab where all
+        development takes place is \u003ca href=\"https://gitlab.com/gitlab-org/gitlab\"\u003ehosted
+        on GitLab.com\u003c/a\u003e.\u003c/p\u003e\n\u003cp data-sourcepos=\"7:1-7:232\"\u003eIf
+        you wish to clone a copy of GitLab without proprietary code, you can use the
+        read-only mirror of GitLab located at \u003ca href=\"https://gitlab.com/gitlab-org/gitlab-foss/\"\u003ehttps://gitlab.com/gitlab-org/gitlab-foss/\u003c/a\u003e.
+        Please do not submit any issues and/or merge requests to this project.\u003c/p\u003e\n\u003ch2
+        data-sourcepos=\"9:1-9:13\"\u003eFree trial\u003c/h2\u003e\n\u003cp data-sourcepos=\"11:1-11:103\"\u003eYou
+        can request a free trial of GitLab Ultimate \u003ca href=\"https://about.gitlab.com/free-trial/\"\u003eon
+        our website\u003c/a\u003e.\u003c/p\u003e\n\u003ch2 data-sourcepos=\"13:1-13:46\"\u003eOpen
+        source software to collaborate on code\u003c/h2\u003e\n\u003cp data-sourcepos=\"15:1-15:106\"\u003eTo
+        see how GitLab looks please see the \u003ca href=\"https://about.gitlab.com/features/\"\u003efeatures
+        page on our website\u003c/a\u003e.\u003c/p\u003e\n\u003cul data-sourcepos=\"17:1-23:0\"\u003e\n\u003cli
+        data-sourcepos=\"17:1-17:86\"\u003eManage Git repositories with fine grained
+        access controls that keep your code secure\u003c/li\u003e\n\u003cli data-sourcepos=\"18:1-18:68\"\u003ePerform
+        code reviews and enhance collaboration with merge requests\u003c/li\u003e\n\u003cli
+        data-sourcepos=\"19:1-19:133\"\u003eComplete continuous integration (CI) and
+        continuous deployment/delivery (CD) pipelines to build, test, and deploy your
+        applications\u003c/li\u003e\n\u003cli data-sourcepos=\"20:1-20:70\"\u003eEach
+        project can also have an issue tracker, issue board, and a wiki\u003c/li\u003e\n\u003cli
+        data-sourcepos=\"21:1-21:117\"\u003eUsed by more than 100,000 organizations,
+        GitLab is the most popular solution to manage Git repositories on-premises\u003c/li\u003e\n\u003cli
+        data-sourcepos=\"22:1-23:0\"\u003eCompletely free and open source (MIT Expat
+        license)\u003c/li\u003e\n\u003c/ul\u003e\n\u003ch2 data-sourcepos=\"24:1-24:11\"\u003eEditions\u003c/h2\u003e\n\u003cp
+        data-sourcepos=\"26:1-26:33\"\u003eThere are two editions of GitLab:\u003c/p\u003e\n\u003cul
+        data-sourcepos=\"28:1-30:0\"\u003e\n\u003cli data-sourcepos=\"28:1-28:80\"\u003eGitLab
+        Community Edition (CE) is available freely under the MIT Expat license.\u003c/li\u003e\n\u003cli
+        data-sourcepos=\"29:1-30:0\"\u003eGitLab Enterprise Edition (EE) includes
+        \u003ca href=\"https://about.gitlab.com/pricing/#compare-options\"\u003eextra
+        features\u003c/a\u003e that are more useful for organizations with more than
+        100 users. To use EE and get official support please \u003ca href=\"https://about.gitlab.com/pricing/\"\u003ebecome
+        a subscriber\u003c/a\u003e.\u003c/li\u003e\n\u003c/ul\u003e\n\u003ch2 data-sourcepos=\"31:1-31:12\"\u003eLicensing\u003c/h2\u003e\n\u003cp
+        data-sourcepos=\"33:1-34:25\"\u003eSee the \u003ca href=\"/gitlab-org/gitlab/-/blob/master/LICENSE\"\u003eLICENSE\u003c/a\u003e
+        file for licensing information as it pertains to\nfiles in this repository.\u003c/p\u003e\n\u003ch2
+        data-sourcepos=\"36:1-36:9\"\u003eHiring\u003c/h2\u003e\n\u003cp data-sourcepos=\"38:1-38:139\"\u003eWe''re
+        hiring developers, support people, and production engineers all the time,
+        please see our \u003ca href=\"https://about.gitlab.com/jobs/\"\u003ejobs page\u003c/a\u003e.\u003c/p\u003e\n\u003ch2
+        data-sourcepos=\"40:1-40:10\"\u003eWebsite\u003c/h2\u003e\n\u003cp data-sourcepos=\"42:1-42:85\"\u003eOn
+        \u003ca href=\"https://about.gitlab.com/\"\u003eabout.gitlab.com\u003c/a\u003e
+        you can find more information about:\u003c/p\u003e\n\u003cul data-sourcepos=\"44:1-50:0\"\u003e\n\u003cli
+        data-sourcepos=\"44:1-44:52\"\u003e\u003ca href=\"https://about.gitlab.com/pricing/\"\u003eSubscriptions\u003c/a\u003e\u003c/li\u003e\n\u003cli
+        data-sourcepos=\"45:1-45:54\"\u003e\u003ca href=\"https://about.gitlab.com/consultancy/\"\u003eConsultancy\u003c/a\u003e\u003c/li\u003e\n\u003cli
+        data-sourcepos=\"46:1-46:50\"\u003e\u003ca href=\"https://about.gitlab.com/community/\"\u003eCommunity\u003c/a\u003e\u003c/li\u003e\n\u003cli
+        data-sourcepos=\"47:1-47:88\"\u003e\n\u003ca href=\"https://about.gitlab.com/gitlab-com/\"\u003eHosted
+        GitLab.com\u003c/a\u003e use GitLab as a free service\u003c/li\u003e\n\u003cli
+        data-sourcepos=\"48:1-48:132\"\u003e\n\u003ca href=\"https://about.gitlab.com/features/#enterprise\"\u003eGitLab
+        Enterprise Edition\u003c/a\u003e with additional features aimed at larger
+        organizations.\u003c/li\u003e\n\u003cli data-sourcepos=\"49:1-50:0\"\u003e\n\u003ca
+        href=\"https://about.gitlab.com/gitlab-ci/\"\u003eGitLab CI\u003c/a\u003e
+        a continuous integration (CI) server that is easy to integrate with GitLab.\u003c/li\u003e\n\u003c/ul\u003e\n\u003ch2
+        data-sourcepos=\"51:1-51:15\"\u003eRequirements\u003c/h2\u003e\n\u003cp data-sourcepos=\"53:1-53:156\"\u003ePlease
+        see the \u003ca href=\"/gitlab-org/gitlab/-/blob/master/doc/install/requirements.md\"\u003erequirements
+        documentation\u003c/a\u003e for system requirements and more information about
+        the supported operating systems.\u003c/p\u003e\n\u003ch2 data-sourcepos=\"55:1-55:15\"\u003eInstallation\u003c/h2\u003e\n\u003cp
+        data-sourcepos=\"57:1-59:133\"\u003eThe recommended way to install GitLab
+        is with the \u003ca href=\"https://about.gitlab.com/downloads/\"\u003eOmnibus
+        packages\u003c/a\u003e on our package server.\nCompared to an installation
+        from source, this is faster and less error prone.\nJust select your operating
+        system, download the respective package (Debian or RPM) and install it using
+        the system''s package manager.\u003c/p\u003e\n\u003cp data-sourcepos=\"61:1-61:174\"\u003eThere
+        are various other options to install GitLab, please refer to the \u003ca href=\"https://about.gitlab.com/installation/\"\u003einstallation
+        page on the GitLab website\u003c/a\u003e for more information.\u003c/p\u003e\n\u003ch2
+        data-sourcepos=\"63:1-63:15\"\u003eContributing\u003c/h2\u003e\n\u003cp data-sourcepos=\"65:1-65:193\"\u003eGitLab
+        is an open source project and we are very happy to accept community contributions.
+        Please refer to \u003ca href=\"https://about.gitlab.com/contributing/\"\u003eContributing
+        to GitLab page\u003c/a\u003e for more details.\u003c/p\u003e\n\u003ch2 data-sourcepos=\"67:1-67:36\"\u003eInstall
+        a development environment\u003c/h2\u003e\n\u003cp data-sourcepos=\"69:1-71:126\"\u003eTo
+        work on GitLab itself, we recommend setting up your development environment
+        with \u003ca href=\"https://gitlab.com/gitlab-org/gitlab-development-kit\"\u003ethe
+        GitLab Development Kit\u003c/a\u003e.\nIf you do not use the GitLab Development
+        Kit you need to install and setup all the dependencies yourself, this is a
+        lot of work and error prone.\nOne small thing you also have to do when installing
+        it yourself is to copy the example development unicorn configuration file:\u003c/p\u003e\n\u003cpre
+        data-sourcepos=\"73:5-74:0\"\u003e\u003ccode\u003ecp config/unicorn.rb.example.development
+        config/unicorn.rb\n\u003c/code\u003e\u003c/pre\u003e\n\u003cp data-sourcepos=\"75:1-75:207\"\u003eInstructions
+        on how to start GitLab and how to run the tests can be found in the \u003ca
+        href=\"https://gitlab.com/gitlab-org/gitlab-development-kit#getting-started\"\u003egetting
+        started section of the GitLab Development Kit\u003c/a\u003e.\u003c/p\u003e\n\u003ch2
+        data-sourcepos=\"77:1-77:17\"\u003eSoftware stack\u003c/h2\u003e\n\u003cp
+        data-sourcepos=\"79:1-79:74\"\u003eGitLab is a Ruby on Rails application that
+        runs on the following software:\u003c/p\u003e\n\u003cul data-sourcepos=\"81:1-86:0\"\u003e\n\u003cli
+        data-sourcepos=\"81:1-81:36\"\u003eUbuntu/Debian/CentOS/RHEL/OpenSUSE\u003c/li\u003e\n\u003cli
+        data-sourcepos=\"82:1-82:18\"\u003eRuby (MRI) 2.6.5\u003c/li\u003e\n\u003cli
+        data-sourcepos=\"83:1-83:12\"\u003eGit 2.8.4+\u003c/li\u003e\n\u003cli data-sourcepos=\"84:1-84:12\"\u003eRedis
+        2.8+\u003c/li\u003e\n\u003cli data-sourcepos=\"85:1-86:0\"\u003ePostgreSQL
+        9.6+\u003c/li\u003e\n\u003c/ul\u003e\n\u003cp data-sourcepos=\"87:1-87:196\"\u003eFor
+        more information please see the \u003ca href=\"https://docs.gitlab.com/ee/development/architecture.html\"\u003earchitecture\u003c/a\u003e
+        and \u003ca href=\"https://docs.gitlab.com/ee/install/requirements.html\"\u003erequirements\u003c/a\u003e
+        documentation.\u003c/p\u003e\n\u003ch2 data-sourcepos=\"89:1-89:12\"\u003eUX
+        design\u003c/h2\u003e\n\u003cp data-sourcepos=\"91:1-91:111\"\u003ePlease
+        adhere to the \u003ca href=\"/gitlab-org/gitlab/-/blob/master/doc/development/ux_guide/index.md\"\u003eUX
+        Guide\u003c/a\u003e when creating designs and implementing code.\u003c/p\u003e\n\u003ch2
+        data-sourcepos=\"93:1-93:27\"\u003eThird-party applications\u003c/h2\u003e\n\u003cp
+        data-sourcepos=\"95:1-95:201\"\u003eThere are a lot of \u003ca href=\"https://about.gitlab.com/applications/\"\u003ethird-party
+        applications integrating with GitLab\u003c/a\u003e. These include GUI Git
+        clients, mobile applications and API wrappers for various languages.\u003c/p\u003e\n\u003ch2
+        data-sourcepos=\"97:1-97:23\"\u003eGitLab release cycle\u003c/h2\u003e\n\u003cp
+        data-sourcepos=\"99:1-99:146\"\u003eFor more information about the release
+        process see the \u003ca href=\"https://gitlab.com/gitlab-org/release-tools/blob/master/README.md\"\u003erelease
+        documentation\u003c/a\u003e.\u003c/p\u003e\n\u003ch2 data-sourcepos=\"101:1-101:12\"\u003eUpgrading\u003c/h2\u003e\n\u003cp
+        data-sourcepos=\"103:1-103:89\"\u003eFor upgrading information please see
+        our \u003ca href=\"https://about.gitlab.com/update/\"\u003eupdate page\u003c/a\u003e.\u003c/p\u003e\n\u003ch2
+        data-sourcepos=\"105:1-105:16\"\u003eDocumentation\u003c/h2\u003e\n\u003cp
+        data-sourcepos=\"107:1-107:60\"\u003eAll documentation can be found on \u003ca
+        href=\"https://docs.gitlab.com\"\u003ehttps://docs.gitlab.com\u003c/a\u003e.\u003c/p\u003e\n\u003ch2
+        data-sourcepos=\"109:1-109:15\"\u003eGetting help\u003c/h2\u003e\n\u003cp
+        data-sourcepos=\"111:1-111:125\"\u003ePlease see \u003ca href=\"https://about.gitlab.com/getting-help/\"\u003eGetting
+        help for GitLab\u003c/a\u003e on our website for the many options to get help.\u003c/p\u003e\n\u003ch2
+        data-sourcepos=\"113:1-113:7\"\u003eWhy?\u003c/h2\u003e\n\u003cp data-sourcepos=\"115:1-115:42\"\u003e\u003ca
+        href=\"https://about.gitlab.com/why/\"\u003eRead here\u003c/a\u003e\u003c/p\u003e\n\u003ch2
+        data-sourcepos=\"117:1-117:18\"\u003eIs it any good?\u003c/h2\u003e\n\u003cp
+        data-sourcepos=\"119:1-119:51\"\u003e\u003ca href=\"https://news.ycombinator.com/item?id=3067434\"\u003eYes\u003c/a\u003e\u003c/p\u003e\n\u003ch2
+        data-sourcepos=\"121:1-121:17\"\u003eIs it awesome?\u003c/h2\u003e\n\u003cp
+        data-sourcepos=\"123:1-123:65\"\u003e\u003ca href=\"https://twitter.com/gitlab/likes\"\u003eThese
+        people\u003c/a\u003e seem to like it.\u003c/p\u003e"}'
+    http_version: null
+  recorded_at: Sat, 21 Mar 2020 16:02:54 GMT
+recorded_with: VCR 5.1.0
