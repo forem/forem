@@ -47,7 +47,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     expect(page).to have_text(raw_comment)
   end
 
-  # This is basically a blackbox test for
+  # This is basically a black box test for
   # ./app/javascripts/packs/validateFileInputs.js
   # which is logic to validate file size and format when uploading via a form.
   it "User attaches a valid image" do
@@ -64,7 +64,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     expect(page).to have_no_css("div.file-upload-error")
   end
 
-  # This is basically a blackbox test for
+  # This is basically a black box test for
   # ./app/javascripts/packs/validateFileInputs.js
   # which is logic to validate file size and format when uploading via a form.
   it "User attaches a large image" do
@@ -89,7 +89,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     )
   end
 
-  # This is basically a blackbox test for
+  # This is basically a black box test for
   # ./app/javascripts/packs/validateFileInputs.js
   # which is logic to validate file size and format when uploading via a form.
   it "User attaches an invalid file type" do
