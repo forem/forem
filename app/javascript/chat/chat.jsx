@@ -758,7 +758,6 @@ export default class Chat extends Component {
     ) {
       return false;
     }
-
     const { target } = e;
     const content =
       target.dataset.content || target.parentElement.dataset.content;
@@ -766,7 +765,7 @@ export default class Chat extends Component {
       e.preventDefault();
       e.stopPropagation();
 
-      const { activeChannelId } = this.state;
+      const { activeChannelId, activeChannel } = this.state;
       if (target.dataset.content.startsWith('chat_channels/')) {
         this.setActiveContentState(activeChannelId, {
           type_of: 'loading-user',
@@ -776,6 +775,14 @@ export default class Chat extends Component {
           this.setActiveContent,
           null,
         );
+      } else if (target.dataset.content == 'sidecar_all') {
+        this.setActiveContentState(activeChannelId, {
+          type_of: 'loading-post',
+        });
+        this.setActiveContent({
+          path: `/chat_channel_memberships/${activeChannel.id}/edit`,
+          type_of: 'article',
+        });
       } else if (
         content.startsWith('sidecar') ||
         content.startsWith('article')
@@ -1437,7 +1444,6 @@ export default class Chat extends Component {
 
   renderChannelConfigImage = () => {
     const { activeContent, activeChannel, activeChannelId } = this.state;
-
     if (
       activeContent[activeChannelId] &&
       activeContent[activeChannelId].type_of
