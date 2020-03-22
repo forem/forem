@@ -775,7 +775,7 @@ export default class Chat extends Component {
           this.setActiveContent,
           null,
         );
-      } else if (target.dataset.content == 'sidecar_all') {
+      } else if (target.dataset.content === 'sidecar_all') {
         this.setActiveContentState(activeChannelId, {
           type_of: 'loading-post',
         });
