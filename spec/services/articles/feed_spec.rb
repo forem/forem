@@ -197,6 +197,36 @@ RSpec.describe Articles::Feed, type: :service do
     end
   end
 
+  describe "#more_tag_weight_randomized_at_end_experiment" do
+    let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
+    let(:stories) { feed.more_tag_weight_randomized_at_end_experiment }
+
+    it "includes stories" do
+      expect(stories).to include(old_story)
+      expect(stories).to include(new_story)
+    end
+  end
+
+  describe "#more_experience_level_weight_randomized_at_end_experiment" do
+    let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
+    let(:stories) { feed.more_experience_level_weight_randomized_at_end_experiment }
+
+    it "includes stories" do
+      expect(stories).to include(old_story)
+      expect(stories).to include(new_story)
+    end
+  end
+
+  describe "#more_comments_randomized_at_end_experiment" do
+    let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
+    let(:stories) { feed.more_comments_randomized_at_end_experiment }
+
+    it "includes stories" do
+      expect(stories).to include(old_story)
+      expect(stories).to include(new_story)
+    end
+  end
+
   describe "#more_comments_experiment" do
     let(:article_with_one_comment) { create(:article) }
     let(:article_with_five_comments) { create(:article) }
