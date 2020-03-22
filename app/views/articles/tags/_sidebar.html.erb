@@ -76,6 +76,23 @@
               MODERATE
             </a>
           </span>
+        <% else %>
+          <% number_of_pages = @num_published_articles / @number_of_articles %>
+          <% if number_of_pages > 1 %>
+            <hr />
+            <div class="olderposts-header">Older #<%= @tag %> posts</div>
+            <div class="olderposts-links">
+              <% number_of_pages.times do |i| %>
+                <% n = i + 1 %>
+                <% next if (@page - n).abs > 5 && number_of_pages > 10 %>
+                <% if @page == n %>
+                    <span class="olderposts-pagenumber"><%= n %></span>
+                <% else %>
+                    <a href="/t/<%= @tag_model.name %><%= "/page/#{n}" if n > 1 %>" class="olderposts-pagenumber"><%= n %></a>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
         <% end %>
       </div>
     </div>

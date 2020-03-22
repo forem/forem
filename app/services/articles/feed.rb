@@ -40,7 +40,7 @@ module Articles
 
     def latest_feed
       published_articles_by_tag.order("published_at DESC").
-        where("featured_number > ? AND score > ?", 1_449_999_999, -40).
+        where("featured_number > ? AND score > ?", 1_449_999_999, -20).
         page(@page).per(@number_of_articles)
     end
 

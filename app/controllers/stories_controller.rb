@@ -112,6 +112,7 @@ class StoriesController < ApplicationController
 
   def handle_tag_index
     @tag = params[:tag].downcase
+    @page = (params[:page] || 1).to_i
     @tag_model = Tag.find_by(name: @tag) || not_found
     @moderators = User.with_role(:tag_moderator, @tag_model).select(:username, :profile_image, :id)
     if @tag_model.alias_for.present?
@@ -124,8 +125,9 @@ class StoriesController < ApplicationController
                               else
                                 Article.published.cached_tagged_with(@tag).size
                               end
-    number_of_articles = user_signed_in? ? 5 : 45
-    @stories = Articles::Feed.new(number_of_articles: number_of_articles, tag: @tag).published_articles_by_tag
+    @number_of_articles = user_signed_in? ? 5 : 60
+    @stories = Articles::Feed.new(number_of_articles: @number_of_articles, tag: @tag, page: @page).
+      published_articles_by_tag
 
     @stories = @stories.where(approved: true) if @tag_model&.requires_approval
 
@@ -290,9 +292,9 @@ class StoriesController < ApplicationController
       @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
         order("positive_reactions_count DESC")
     elsif params[:timeframe] == "latest"
-      @stories.where("score > ?", -40).order("published_at DESC")
+      @stories.where("score > ?", -20).order("published_at DESC")
     else
-      @stories.order("hotness_score DESC")
+      @stories.order("hotness_score DESC").where("score > 2")
     end
   end
 
