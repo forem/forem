@@ -88,16 +88,23 @@ class Article < ApplicationRecord
   scope :published, -> { where(published: true) }
   scope :unpublished, -> { where(published: false) }
 
+  scope :latest_published_thread_with, lambda { |tag_name|
+    published.
+      where(user_id: SiteConfig.staff_user_id).
+      order("published_at ASC").
+      tagged_with(tag_name).last
+  }
+
   scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
 
   scope :cached_tagged_by_approval_with, ->(tag) { cached_tagged_with(tag).where(approved: true) }
 
   scope :active_help, lambda {
-                        published.
-                          cached_tagged_with("help").
-                          order("created_at DESC").
-                          where("published_at > ? AND comments_count < ? AND score > ?", 12.hours.ago, 6, -4)
-                      }
+    published.
+      cached_tagged_with("help").
+      order("created_at DESC").
+      where("published_at > ? AND comments_count < ? AND score > ?", 12.hours.ago, 6, -4)
+  }
 
   scope :limited_column_select, lambda {
     select(:path, :title, :id, :published,
