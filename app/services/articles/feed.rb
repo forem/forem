@@ -139,13 +139,13 @@ module Articles
 
     def more_experience_level_weight_randomized_at_end_experiment
       @randomness = 0
-      results = more_experience_level_weight_experiment.shuffle
+      results = more_experience_level_weight_experiment
       first_half(results).shuffle + last_half(results)
     end
 
     def more_comments_randomized_at_end_experiment
       @randomness = 0
-      results = more_comments_experiment.shuffle
+      results = more_comments_experiment
       first_half(results).shuffle + last_half(results)
     end
 
