@@ -26,7 +26,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       main_social_image favicon_url logo_svg primary_sticker_image_url
       rate_limit_follow_count_daily
       ga_view_id ga_fetch_rate
-      community_description community_member_description
+      community_description community_member_description tagline
       mailchimp_newsletter_id mailchimp_sustaining_members_id
       mailchimp_tag_moderators_id mailchimp_community_moderators_id
       periodic_email_digest_max periodic_email_digest_min suggested_tags
