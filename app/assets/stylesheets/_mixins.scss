@@ -73,3 +73,19 @@
     );
   }
 }
+
+/**
+*
+* Generates the src property for @font-face. The mixin is required
+* so that webpack for Storybook and the application can both
+* generate the font URL correctly.
+*
+* $font: the font file name, e.g. 'OpenDyslexic-Regular.otf'
+*/
+@mixin font-src($font) {
+  @if variable-exists(environment) and $environment == 'storybook' {
+    src: '/fonts/' + $font;
+  } @else {
+    src: font-url($font);
+  }
+}

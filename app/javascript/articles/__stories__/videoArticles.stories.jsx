@@ -1,11 +1,11 @@
 import { h } from 'preact';
 import { withKnobs, object, text, boolean } from '@storybook/addon-knobs/react';
 import { action } from '@storybook/addon-actions';
+import { Article } from '..';
 import {
-  featuredArticle,
+  videoArticle,
   assetPath,
 } from '../__tests__/utilities/articleUtilities';
-import { FeaturedArticle } from '..';
 import { articleDecorator } from './articleDecorator';
 
 import '../../../assets/stylesheets/articles.scss';
@@ -21,30 +21,34 @@ const commonProps = {
 };
 
 export default {
-  title: 'App Components/Article/Featured',
+  title: 'App Components/Article/Video',
   decorators: [withKnobs, articleDecorator],
 };
 
 export const Default = () => (
-  <FeaturedArticle
+  <Article
     {...commonProps}
     reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
     commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
     videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-    article={object('article', featuredArticle)}
+    isBookmarked={boolean('isBookmarked', false)}
+    article={object('article', videoArticle)}
+    currentTag={text('currentTag', 'javascript')}
   />
 );
 
 Default.story = { name: 'default' };
 
-export const OnReadingList = () => (
-  <FeaturedArticle
+export const VideoArticleWithFlareTag = () => (
+  <Article
     {...commonProps}
     reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
     commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    isBookmarked={boolean('isBookmarked', true)}
-    article={object('article', featuredArticle)}
+    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
+    isBookmarked={boolean('isBookmarked', false)}
+    article={object('article', videoArticle)}
+    currentTag={text('currentTag')}
   />
 );
 
-OnReadingList.story = { name: 'is on reading List' };
+VideoArticleWithFlareTag.story = { name: 'video with flare tag' };
