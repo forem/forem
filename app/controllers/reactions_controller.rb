@@ -1,5 +1,6 @@
 class ReactionsController < ApplicationController
   include AuditInstrumentation
+
   before_action :set_cache_control_headers, only: [:index], unless: -> { current_user }
   after_action :verify_authorized
 

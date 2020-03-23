@@ -1,4 +1,6 @@
 class RatingVotesController < ApplicationController
+  include AuditInstrumentation
+
   after_action :verify_authorized
 
   def create
@@ -9,6 +11,9 @@ class RatingVotesController < ApplicationController
     rating_vote.rating = rating_vote_params[:rating].to_f
     rating_vote.group = rating_vote_params[:group]
     if rating_vote.save
+      if current_user.auditable?
+        notify(:moderator, current_user, __method__) { params.dup.reject { |k, _v| k == "authenticity_token" } }
+      end
       redirect_back(fallback_location: "/mod")
     else
       render json: { result: "Not Upserted Successfully" }
