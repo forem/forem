@@ -1,5 +1,6 @@
 @import 'variables';
 @import 'mixins';
+@import 'functions';
 
 %kbd {
   display: inline-block;
@@ -307,7 +308,7 @@ a.header-link {
         height: calc(10vw + 118px);
       }
       &.preview-loading {
-        background: white url(image_path('loading-ellipsis.svg')) no-repeat
+        background: white url(image-src('loading-ellipsis.svg')) no-repeat
           center center;
         @include themeable(background-color, theme-container-background, white);
         @include themeable(color, theme-container-background, white);
@@ -419,7 +420,7 @@ a.header-link {
       textarea {
         color: lighten($dark-gray, 25%);
         border: 1px solid $light-green;
-        background: white url(image_path('loading-ellipsis.svg')) no-repeat
+        background: white url(image-src('loading-ellipsis.svg')) no-repeat
           center center;
         background-size: 50px;
       }

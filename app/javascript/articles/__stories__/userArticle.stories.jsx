@@ -1,11 +1,11 @@
 import { h } from 'preact';
-import { withKnobs, object, text, boolean } from '@storybook/addon-knobs/react';
 import { action } from '@storybook/addon-actions';
+import { withKnobs, object, text } from '@storybook/addon-knobs/react';
+import { Article } from '..';
 import {
-  featuredArticle,
   assetPath,
+  userArticle,
 } from '../__tests__/utilities/articleUtilities';
-import { FeaturedArticle } from '..';
 import { articleDecorator } from './articleDecorator';
 
 import '../../../assets/stylesheets/articles.scss';
@@ -21,30 +21,18 @@ const commonProps = {
 };
 
 export default {
-  title: 'App Components/Article/Featured',
+  title: 'App Components/Article/User',
   decorators: [withKnobs, articleDecorator],
 };
 
-export const Default = () => (
-  <FeaturedArticle
+export const UserArticle = () => (
+  <Article
     {...commonProps}
     reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
     commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
     videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-    article={object('article', featuredArticle)}
+    article={object('article', userArticle)}
   />
 );
 
-Default.story = { name: 'default' };
-
-export const OnReadingList = () => (
-  <FeaturedArticle
-    {...commonProps}
-    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    isBookmarked={boolean('isBookmarked', true)}
-    article={object('article', featuredArticle)}
-  />
-);
-
-OnReadingList.story = { name: 'is on reading List' };
+UserArticle.story = { name: 'default' };

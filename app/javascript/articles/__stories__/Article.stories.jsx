@@ -8,11 +8,7 @@ import {
   articleWithSnippetResult,
   articleWithReadingTimeGreaterThan1,
   articleWithReactions,
-  // videoArticle,
   articleWithComments,
-  // podcastArticle,
-  // podcastEpisodeArticle,
-  // userArticle,
   assetPath,
 } from '../__tests__/utilities/articleUtilities';
 import { articleDecorator } from './articleDecorator';
@@ -162,68 +158,3 @@ export const OnReadingList = () => (
 OnReadingList.story = {
   name: 'on reading list',
 };
-
-// storiesOf('App Components/Article/Video', module)
-//   .addDecorator(withKnobs)
-//   .addDecorator(articleDecorator)
-//   .add('Default', () => (
-//     <Article
-//       {...commonProps}
-//       reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-//       commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-//       videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-//       isBookmarked={boolean('isBookmarked', false)}
-//       article={object('article', videoArticle)}
-//       currentTag={text('currentTag', 'javascript')}
-//     />
-//   ))
-//   .add('Video Article and Flare Tag', () => (
-//     <Article
-//       {...commonProps}
-//       reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-//       commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-//       videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-//       isBookmarked={boolean('isBookmarked', false)}
-//       article={object('article', videoArticle)}
-//       currentTag={text('currentTag')}
-//     />
-//   ));
-
-// storiesOf('App Components/Article/Podcast', module)
-//   .addDecorator(withKnobs)
-//   .addDecorator(articleDecorator)
-//   .add('Default', () => (
-//     <Article
-//       {...commonProps}
-//       reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-//       commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-//       videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-//       isBookmarked={boolean('isBookmarked', false)}
-//       article={object('article', podcastArticle)}
-//       currentTag={text('currentTag')}
-//     />
-//   ))
-//   .add('Podcast Episode', () => (
-//     <Article
-//       {...commonProps}
-//       reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-//       commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-//       videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-//       isBookmarked={boolean('isBookmarked', false)}
-//       article={object('article', podcastEpisodeArticle)}
-//       currentTag={text('currentTag')}
-//     />
-//   ));
-
-// storiesOf('App Components/Article/User', module)
-//   .addDecorator(withKnobs)
-//   .addDecorator(articleDecorator)
-//   .add('Default', () => (
-//     <Article
-//       {...commonProps}
-//       reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-//       commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-//       videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-//       article={object('article', userArticle)}
-//     />
-//   ));
