@@ -18,14 +18,16 @@
       <a href="/signout_confirm" class="crayons-nav-block px-3" id="last-nav-link">Sign Out</a>
     </div>
   <% else %>
-    <div class="p-1">
-      <a href="/enter" data-no-instant id="first-nav-link">Sign In/Up</a>
+    <div class="border-0 border-b-1 border-solid border-base-20 p-1">
+      <a href="/enter" data-no-instant id="first-nav-link" class="crayons-nav-block px-3 fw-medium">Sign In/Up</a>
       <% if SiteConfig.auth_allowed?("twitter") %>
-        <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="crayons-nav-block px-3" data-no-instant>Via Twitter</a>
+        <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="crayons-nav-block px-3 pl-5" data-no-instant>Via Twitter</a>
       <% end %>
       <% if SiteConfig.auth_allowed?("github") %>
-        <a href="/users/auth/github?state=navbar_basic" class="crayons-nav-block px-3" data-no-instant id="second-last-nav-link">Via GitHub</a>
+        <a href="/users/auth/github?state=navbar_basic" class="crayons-nav-block px-3 pl-5" data-no-instant id="second-last-nav-link">Via GitHub</a>
       <% end %>
+    </div>
+    <div class="p-1">
       <a href="/p/information" class="crayons-nav-block px-3" id="last-nav-link">All about <%= ApplicationConfig["COMMUNITY_NAME"] %></a>
     </div>
   <% end %>

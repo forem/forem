@@ -108,6 +108,11 @@
     padding: 0 $su-2;
     align-items: center;
     cursor: pointer;
+    color: var(--header-icons-color);
+
+    &:hover {
+      color: var(--header-icons-color-hover);
+    }
   }
 
   &__dropdown {
