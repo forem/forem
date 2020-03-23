@@ -376,6 +376,7 @@ listings_categories.each_with_index do |category, index|
       contact_via_connect: true,
       published: true,
       bumped_at: Time.current,
+      tag_list: Tag.order(Arel.sql("RANDOM()")).first(2).pluck(:name),
     )
   end
 end
