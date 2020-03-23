@@ -7,7 +7,7 @@
   top: 0px;
   left: 0px;
   right: 0px;
-  z-index: 20;
+  z-index: 101;
   height: $header-height;
   background: var(--header-bg);
   box-shadow: 0 1px 1px var(--header-shadow);
@@ -18,95 +18,14 @@
   & *,
   & *::after,
   & *::before {
-    box-sizing: border-box; // todo: make it global
+    box-sizing: border-box; // todo: make it global when ready
   }
 
   &__container {
     max-width: $max-width;
     margin: auto;
-    position: relative;
     display: flex;
     align-items: center;
-
-    .top-bar--menu {
-      position: relative;
-      height: 100%;
-
-      &.showing {
-        .top-bar--menu-dropdown,
-        .top-bar--menu-overlay {
-          display: block;
-        }
-      }
-
-      &.desktop {
-        &:hover,
-        &:active,
-        &:focus {
-          .top-bar--menu-dropdown {
-            display: block;
-          }
-        }
-      }
-    }
-    .top-bar--menu-trigger {
-      all: unset;
-      display: flex;
-      height: 100%;
-      padding: 0 8px;
-      align-items: center;
-      cursor: pointer;
-    }
-
-    .top-bar--menu-overlay {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(17, 17, 17, 0.88);
-      top: $header-height;
-      display: none;
-    }
-    .top-bar--menu-dropdown {
-      position: fixed;
-      right: 0;
-      top: $header-height;
-      padding: 16px;
-      background: var(--header-bg);
-      display: none;
-      width: 100%;
-      border-radius: 0 0 3px 3px;
-      box-shadow: $shadow;
-
-      @media screen and (min-width: 380px) {
-        position: absolute;
-        width: 250px;
-      }
-
-      .header {
-        padding: 3px 10px;
-        border-bottom: 3px solid rgb(241, 244, 246);
-        margin-bottom: 5px;
-        color: rgb(178, 192, 203);
-      }
-      .option {
-        padding: 15px 10px;
-        @media screen and (min-width: 380px) {
-          padding: 6px 10px;
-        }
-        &.prime-option {
-          border-bottom: 3px solid var(--body-color);
-          margin-bottom: 5px;
-          font-size: 1.22em;
-          font-weight: 500;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-      }
-      a {
-        color: var(--body-color);
-      }
-    }
   }
 
   .crayons-indicator {
@@ -168,11 +87,51 @@
   }
 }
 
-.write {
+.top-bar__cta {
   display: none;
+  margin-right: $su-2;
 
-  @media screen and (min-width: 650px) {
+  @media screen and (min-width: 650px) { // tood: replace with utility responsive class when ready
     display: inline-block;
+  }
+}
+
+// Dropdown under profile picture / hamburger icon
+.top-bar__menu {
+  position: relative;
+  height: 100%;
+
+  &__trigger {
+    all: unset;
+    display: flex;
+    height: 100%;
+    padding: 0 $su-2;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  &__dropdown {
+    position: absolute;
+    right: 0;
+    top: $header-height;
+    min-width: 200px; // todo: replace with min-width utility class when ready
+    display: none;
+  }
+
+  &.showing {
+    .top-bar__menu__dropdown {
+      display: block;
+    }
+  }
+
+  &.desktop {
+    &:hover,
+    &:active,
+    &:focus {
+      .top-bar__menu__dropdown {
+        display: block;
+      }
+    }
   }
 }
 
@@ -181,12 +140,13 @@
   top: 0;
   left: 50%;
   transform: translate(-50%, -100px);
-  background: var(--body-bg);
+  background: var(--body-color);
   color: var(--body-color-inverted);
   z-index: 9999;
   padding: $su-4;
   pointer-events: none;
   opacity: 0;
+  border-radius: $br-default;
 
   &:focus {
     pointer-events: auto;
