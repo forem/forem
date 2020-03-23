@@ -20,24 +20,31 @@ const commonProps = {
   bookmarkClick: action('Saved/unsaved article'),
 };
 
-storiesOf('App Components/Article/Featured', module)
-  .addDecorator(withKnobs)
-  .addDecorator(articleDecorator)
-  .add('Default', () => (
-    <FeaturedArticle
-      {...commonProps}
-      reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-      commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-      videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-      article={object('article', featuredArticle)}
-    />
-  ))
-  .add('Is on Reading List', () => (
-    <FeaturedArticle
-      {...commonProps}
-      reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-      commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-      isBookmarked={boolean('isBookmarked', true)}
-      article={object('article', featuredArticle)}
-    />
-  ));
+export default {
+  title: 'App Components/Article/Featured',
+  decorators: [withKnobs, articleDecorator],
+};
+
+export const Default = () => (
+  <FeaturedArticle
+    {...commonProps}
+    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
+    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
+    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
+    article={object('article', featuredArticle)}
+  />
+);
+
+Default.story = { name: 'default' };
+
+export const OnReadingList = () => (
+  <FeaturedArticle
+    {...commonProps}
+    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
+    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
+    isBookmarked={boolean('isBookmarked', true)}
+    article={object('article', featuredArticle)}
+  />
+);
+
+OnReadingList.story = { name: 'is on reading List' };

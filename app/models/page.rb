@@ -38,7 +38,7 @@ class Page < ApplicationRecord
   end
 
   def unique_slug_including_users_and_orgs
-    slug_exists = User.exists?(username: slug) || Organization.exists?(slug: slug) || Podcast.exists?(slug: slug)
+    slug_exists = User.exists?(username: slug) || Organization.exists?(slug: slug) || Podcast.exists?(slug: slug) || slug.include?("sitemap-")
     errors.add(:slug, "is taken.") if slug_exists
   end
 

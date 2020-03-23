@@ -14,12 +14,17 @@ const episodes = [
   podcastArticle,
 ];
 
-storiesOf(`App Components/Podcasts/Today's Episodes`, module)
-  .addDecorator(articleDecorator)
-  .add('Standard', () => (
-    <TodaysPodcasts>
-      {episodes.map(episode => (
-        <PodcastEpisode episode={episode} />
-      ))}
-    </TodaysPodcasts>
-  ));
+export default {
+  title: `App Components/Podcasts/Today's Episodes`,
+  decorators: [articleDecorator],
+};
+
+export const Standard = () => (
+  <TodaysPodcasts>
+    {episodes.map(episode => (
+      <PodcastEpisode episode={episode} />
+    ))}
+  </TodaysPodcasts>
+);
+
+Standard.story = { name: 'standard' };

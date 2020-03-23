@@ -163,8 +163,7 @@
     a {
       @include themeable(color, theme-color, $black);
     }
-    margin-bottom: -12px;  
-  } 
+  }
   p {
     width: 98%;
     max-width: 720px;

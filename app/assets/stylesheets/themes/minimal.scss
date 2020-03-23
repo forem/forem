@@ -1,0 +1,36 @@
+:root {
+  --theme-background: #fcfcfc;
+  --theme-color: #0a0a0a;
+  --theme-opposite-color: #ffffff;
+  --theme-logo-background: #e3e5ed;
+  --theme-logo-color: #232426;
+  --theme-code-background: #f9f9f9;
+  --theme-code-color: #37383d;
+  --theme-reaction-background: #eff0f2;
+  --theme-anchor-color: #757ec6;
+  --theme-secondary-color: #505159;
+  --theme-secondary-color-border: 1px solid #e3e3e5;
+  --theme-top-bar-background: #ffffff;
+  --theme-top-bar-background-hover: #f9f9f9;
+  --theme-top-bar-color: #0a0a0a;
+  --theme-top-bar-search-background: #f4f5f7;
+  --theme-top-bar-search-color: #0a0a0a;
+  --theme-top-bar-write-background: #ffffff;
+  --theme-top-bar-write-color: #0a0a0a;
+  --theme-container-background: #ffffff;
+  --theme-container-accent-background: #f4f5f7;
+  --theme-invert-image: none;
+  --theme-container-background-hover: #efefef;
+  --theme-gradient-background: linear-gradient(
+    to right,
+    #f6f6f6 8%,
+    #f0f0f0 18%,
+    #f6f6f6 33%
+  );
+  --theme-container-color: #0a0a0a;
+  --theme-container-box-shadow: none;
+  --theme-container-border: 1px solid #e3e3e5;
+  --theme-subtle-border: 1px solid #fcfcfc;
+  --theme-social-icon-color: rgba(80, 81, 89, 0);
+  --theme-social-icon-invert: invert(0);
+}

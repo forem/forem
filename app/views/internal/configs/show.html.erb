@@ -20,7 +20,7 @@
         Toggle
       </button>
     </div>
-    <div id="siteConfigBodyContainer" class="collapse show hide" aria-labelledby="siteConfigHeader">
+    <div id="siteConfigBodyContainer" class="collapse show hide p-3" aria-labelledby="siteConfigHeader">
       <%= form_for(SiteConfig.new, url: internal_config_path) do |f| %>
 
         <div class="card mt-3">
@@ -89,6 +89,20 @@
                                min: 1,
                                placeholder: "1" %>
               <div class="alert alert-info">User ID of the Mascot account</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <div class="card-header">Authentication</div>
+          <div class="card-body">
+            <div class="form-group">
+              <%= f.label :authentication_providers, "Authentication providers" %>
+              <%= f.text_field :authentication_providers,
+                               class: "form-control",
+                               value: SiteConfig.authentication_providers.join(","),
+                               placeholder: "List of valid providers: comma separated, letters only e.g. twitter,github" %>
+              <div class="alert alert-info">How can users sign in? (More options coming)</div>
             </div>
           </div>
         </div>
@@ -167,7 +181,15 @@
                 <div class="alert alert-info">Used as the site favicon</div>
                 <img alt="favicon" class="preview" src="<%= SiteConfig.favicon_url %>" />
               </div>
-
+              <div class="form-group">
+                <%= f.label :logo_png %>
+                <%= f.text_field :logo_png,
+                                 class: "form-control",
+                                 value: SiteConfig.logo_png,
+                                 placeholder: "https://image.url/image.png" %>
+                <div class="alert alert-info">Minimum 1024px, used for PWA etc.</div>
+                <img alt="favicon" class="preview" src="<%= SiteConfig.logo_png %>" />
+              </div>
               <div class="form-group">
                 <%= f.label :logo_svg %>
                 <%= f.text_area :logo_svg,
@@ -380,34 +402,36 @@
   </div>
 </div>
 
-<div class="row my-3" id="siteConfig">
-  <div class="card w-100">
-    <div class="card-header" id="appConfigHeader">
-      <h2 class="d-inline">Environment variables / AppConfig (readonly)</h2>
-      <button class="btn btn-secondary float-right" type="button" data-toggle="collapse"
-        data-target="#appConfigBodyContainer" aria-expanded="true" aria-controls="appConfigBodyContainer">
-        Toggle
-      </button>
-    </div>
-    <div id="appConfigBodyContainer" class="collapse show hide" aria-labelledby="appConfigHeader">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Variable</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% ENVied.config.variables.each do |v| %>
-          <% if v.group.in?(ENVied.required_groups) %>
-          <tr>
-            <td><%= v.name %></td>
-            <td style="max-width: 750px;"><%= ApplicationConfig[v.name] %></td>
-          </tr>
-          <% end %>
-          <% end %>
-        </tbody>
-      </table>
+<% if current_user.has_role?(:single_resource_admin, Config) %>
+  <div class="row my-3" id="siteConfig">
+    <div class="card w-100">
+      <div class="card-header" id="appConfigHeader">
+        <h2 class="d-inline">Environment variables / AppConfig (readonly)</h2>
+        <button class="btn btn-secondary float-right" type="button" data-toggle="collapse"
+          data-target="#appConfigBodyContainer" aria-expanded="true" aria-controls="appConfigBodyContainer">
+          Toggle
+        </button>
+      </div>
+      <div id="appConfigBodyContainer" class="collapse show hide" aria-labelledby="appConfigHeader">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Variable</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% ENVied.config.variables.each do |v| %>
+            <% if v.group.in?(ENVied.required_groups) %>
+            <tr>
+              <td><%= v.name %></td>
+              <td style="max-width: 750px;"><%= ApplicationConfig[v.name] %></td>
+            </tr>
+            <% end %>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-</div>
+<% end %>

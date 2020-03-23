@@ -61,6 +61,7 @@ Rails.application.routes.draw do
       end
     end
     resources :reactions, only: [:update]
+    resources :response_templates, only: %i[index new edit create update destroy]
     resources :chat_channels, only: %i[index create update]
     resources :reports, only: %i[index show], controller: "feedback_messages" do
       collection do
@@ -225,6 +226,7 @@ Rails.application.routes.draw do
   get "/search/chat_channels" => "search#chat_channels"
   get "/search/classified_listings" => "search#classified_listings"
   get "/search/users" => "search#users"
+  get "/search/feed_content" => "search#feed_content"
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/listings/dashboard" => "classified_listings#dashboard"
   get "/listings/:category" => "classified_listings#index"
@@ -319,6 +321,7 @@ Rails.application.routes.draw do
   get "/shop", to: redirect("https://shop.dev.to/")
   get "/mod" => "moderations#index", :as => :mod
   get "/mod/:tag" => "moderations#index"
+  get "/page/crayons" => "pages#crayons"
 
   post "/fallback_activity_recorder" => "ga_events#create"
 
@@ -418,6 +421,8 @@ Rails.application.routes.draw do
   get "/:username/:view" => "stories#index",
       :constraints => { view: /comments|moderate|admin/ }
   get "/:username/:slug" => "stories#show"
+  get "/:sitemap" => "sitemaps#show",
+      :constraints => { format: /xml/, sitemap: /sitemap\-.+/ }
   get "/:username" => "stories#index"
 
   root "stories#index"

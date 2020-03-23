@@ -96,6 +96,12 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.favicon_url).to eq(expected_image_url)
         end
 
+        it "updates logo_png" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { logo_png: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.logo_png).to eq(expected_image_url)
+        end
+
         it "updates logo_svg" do
           expected_image_url = "https://dummyimage.com/300x300"
           post "/internal/config", params: { site_config: { logo_svg: expected_image_url }, confirmation: confirmation_message }
@@ -216,6 +222,18 @@ RSpec.describe "/internal/config", type: :request do
         it "downcases sidebar_tags" do
           post "/internal/config", params: { site_config: { sidebar_tags: "hey, haha,hoHo, Bobo Fofo" }, confirmation: confirmation_message }
           expect(SiteConfig.sidebar_tags).to eq(%w[hey haha hoho bobofofo])
+        end
+      end
+
+      describe "Authentication" do
+        it "removes space authentication_providers" do
+          post "/internal/config", params: { site_config: { authentication_providers: "github, twitter" }, confirmation: confirmation_message }
+          expect(SiteConfig.authentication_providers).to eq(%w[github twitter])
+        end
+
+        it "downcases authentication_providers" do
+          post "/internal/config", params: { site_config: { authentication_providers: "GitHub, Twitter" }, confirmation: confirmation_message }
+          expect(SiteConfig.authentication_providers).to eq(%w[github twitter])
         end
       end
     end

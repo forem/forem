@@ -1,9 +1,9 @@
-<link rel="canonical" href="<%= app_protocol_and_domain %>/<%= @user.username %>" />
+<link rel="canonical" href="<%= app_url(@user.username) %>" />
 <meta name="description" content="<%= @user.summary %>">
 <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
 <meta property="og:type" content="website" />
-<meta property="og:url" content="<%= app_protocol_and_domain %>/<%= @user.username %>" />
+<meta property="og:url" content="<%= app_url(@user.username) %>" />
 <meta property="og:title" content="<%= @user.name %> — DEV Profile" />
 <meta property="og:image" content="<%= user_social_image_url(@user) %>">
 <meta property="og:description" content="<%= @user.summary %>" />
@@ -16,7 +16,7 @@
 <meta name="twitter:description" content="<%= @user.summary %>">
 <meta name="twitter:image:src" content="<%= user_social_image_url(@user) %>">
 <% if @stories.any? %>
-  <%= auto_discovery_link_tag(:rss, "#{app_protocol_and_domain}/feed/#{@user.username}", title: "The Practical Dev RSS Feed") %>
+  <%= auto_discovery_link_tag(:rss, app_url("/feed/#{@user.username}"), title: "The Practical Dev RSS Feed") %>
 <% end %>
 
 <% if @user.banned %>

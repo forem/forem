@@ -5,12 +5,12 @@
        content_for: true,
      ) %>
 
-  <link rel="canonical" href="<%= app_protocol_and_domain %><%= request.path %>" />
+  <link rel="canonical" href="<%= app_url(request.path) %>" />
   <meta name="description" content="<%= SiteConfig.community_description %>">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="<%= app_protocol_and_domain %><%= request.path %>" />
+  <meta property="og:url" content="<%= app_url(request.path) %>" />
   <meta property="og:title" content="<%= title_with_timeframe(page_title: community_qualified_name, timeframe: params[:timeframe]) %>" />
   <meta property="og:image" content="<%= SiteConfig.main_social_image %>">
   <meta property="og:description" content="<%= SiteConfig.community_description %>" />
@@ -21,14 +21,14 @@
   <meta name="twitter:description" content="<%= SiteConfig.community_description %>">
   <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
   <meta name="twitter:card" content="summary_large_image">
-  <%= auto_discovery_link_tag(:rss, "#{app_protocol_and_domain}/feed", title: "#{ApplicationConfig['COMMUNITY_NAME']} RSS Feed") %>
+  <%= auto_discovery_link_tag(:rss, app_url("feed"), title: "#{ApplicationConfig['COMMUNITY_NAME']} RSS Feed") %>
 <% end %>
 <%= javascript_packs_with_chunks_tag "homePage", defer: true %>
 
 <% cache(cache_key_heroku_slug("main-stories-index-#{params}-#{user_signed_in?}"), expires_in: 90.seconds) do %>
   <div class="home" id="index-container"
       data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
-      data-algolia-tag=""
+      data-tag=""
       data-feed="<%= params[:timeframe] || "base-feed" %>"
       data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>">
 
