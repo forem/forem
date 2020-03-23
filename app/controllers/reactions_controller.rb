@@ -80,7 +80,7 @@ class ReactionsController < ApplicationController
         end
 
         if reaction.negative? && current_user.auditable?
-          notify(:moderator, current_user, __method__) { params.dup }
+          notify(:moderator, current_user, __method__) { params.dup.reject { |k, _v| k == "authenticity_token" } }
         end
       else
         render json: { error: reaction.errors.full_messages.join(", "), status: 422 }, status: :unprocessable_entity
