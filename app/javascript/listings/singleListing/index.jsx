@@ -33,7 +33,7 @@ const SingleListing = ({
           className="single-classified-listing-body"
           dangerouslySetInnerHTML={{ __html: listing.processed_html }} // eslint-disable-line react/no-danger
         />
-        <TagLinks tags={listing.tag_list} onClick={onAddTag} />
+        <TagLinks tags={listing.tags} onClick={onAddTag} />
         <AuthorInfo listing={listing} onCategoryClick={onChangeCategory} />
       </div>
     </div>

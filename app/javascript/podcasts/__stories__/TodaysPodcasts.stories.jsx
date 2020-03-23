@@ -1,5 +1,4 @@
 import { h } from 'preact';
-import { storiesOf } from '@storybook/react';
 
 import '../../../assets/stylesheets/articles.scss';
 import { TodaysPodcasts } from '../TodaysPodcasts';
@@ -15,7 +14,7 @@ const episodes = [
   podcastArticle,
 ];
 
-storiesOf(`Components/Podcasts/Today's Episodes`, module)
+storiesOf(`App Components/Podcasts/Today's Episodes`, module)
   .addDecorator(articleDecorator)
   .add('Standard', () => (
     <TodaysPodcasts>

@@ -21,4 +21,4 @@
   <div class="item-list-container" id="reading-list" data-algolia-key="<%= @secured_algolia_key %>" data-view="<%= @view %>">
   </div>
 </div>
-<%= javascript_pack_tag "readingList", defer: true %>
+<%= javascript_packs_with_chunks_tag "readingList", defer: true %>

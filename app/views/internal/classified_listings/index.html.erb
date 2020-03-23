@@ -1,6 +1,6 @@
 <div class="row m-3">
   <div class="col justify-content-end">
-    <%= form_tag("/internal/listings", method: "get") do %>
+    <%= form_tag(internal_listings_path, method: "get") do %>
       <div class="form-row align-items-end flex-column">
         <div class="form-group">
           <%= label_tag(:search, "Keyword") %>
@@ -38,39 +38,34 @@
   <tbody>
     <% @classified_listings.each do |listing| %>
       <tr>
-        <td><%= link_to listing.title, "/internal/listings/#{listing.id}/edit", target: "_blank" %></td>
-        <td><%= link_to listing.user.username, "/internal/users/#{listing.user_id}/edit" %></td>
-        <td><%= link_to listing.organization.name, "/internal/organizations/#{listing.organization_id}" if listing.organization_id.present? %></td>
+        <td><%= link_to listing.title, edit_internal_listing_path(listing.id), target: "_blank" %></td>
+        <td><%= link_to listing.user.username, edit_internal_user_path(listing.user.id) %></td>
+        <td><%= link_to listing.organization.name, internal_organization_path(listing.organization_id) if listing.organization_id.present? %></td>
         <td><%= listing.category %></td>
         <td><%= listing.cached_tag_list %></td>
         <td><%= listing.published ? "Yes" : "No" %></td>
         <td><%= listing.bumped_at ? time_ago_in_words(listing.bumped_at) + " ago" : "Draft" %></td>
       </tr>
       <tr>
-        <td class="border-0">
+        <td class="buffer-cell border-0" colspan="7" data-controller="buffer" data-action="load@window->buffer#autosizeBodyText">
           <button class="btn btn-secondary" data-toggle="collapse" data-target="#buffering-area-for-listing-<%= listing.id %>" aria-expanded="false" aria-controls="buffering-area-for-listing-<%= listing.id %>">
             Share to Buffer
           </button>
 
           <% if listing.last_buffered.present? %>
-            <em>
+            <em class="ml-1">
               Last shared: <%= listing.last_buffered.strftime("%d %B %Y") %>
             </em>
           <% end %>
-          <div id="buffering-area-for-listing-<%= listing.id %>" class="collapse buffer-area">
-            <div class="grid-item">
-              <p class="listing-title"><strong><%= listing.title %></strong></p>
-              <p class="listing-body"><%= listing.processed_html&.html_safe %></p>
-            </div>
-            <div class="grid-item">
-              <%= form_with url: "/internal/buffer_updates", html: { data: { action: "submit->buffer#highlightElement" } } do %>
-                <input type="hidden" name="social_channel" value="listings_twitter" />
-                <input type="hidden" name="listing_id" value="<%= listing.id %>" />
-                <textarea cols="37" rows="8" wrap="hard" name="tweet" maxlength="255">📋 New DEV Listing!&#013&#013Category: <%= listing.category %>&#013&#013<%= listing.title %>&#013&#013<% if listing.user.twitter_username? %>Posted by @<%= listing.user.twitter_username %><% end %></textarea>
-                <br>
-                <button class="btn btn-primary" data-action=>🐦 Tweet 🐦</button>
-              <% end %>
-            </div>
+          <div id="buffering-area-for-listing-<%= listing.id %>" class="collapse buffer-area mt-3">
+            <p><strong><%= listing.title %></strong></p>
+            <p><%= listing.processed_html&.html_safe %></p>
+            <%= form_with url: internal_buffer_updates_path, html: { data: { action: "submit->buffer#highlightElement" } } do %>
+              <input type="hidden" name="social_channel" value="listings_twitter" />
+              <input type="hidden" name="listing_id" value="<%= listing.id %>" />
+              <textarea class="form-control" wrap="hard" name="tweet" maxlength="255" data-target="buffer.bodyText">📋 New DEV Listing!&#013&#013Category: <%= listing.category %>&#013&#013<%= listing.title %>&#013&#013<% if listing.user.twitter_username? %>Posted by @<%= listing.user.twitter_username %><% end %></textarea>
+              <button class="btn btn-primary mt-2" data-action=>🐦 Tweet 🐦</button>
+            <% end %>
           </div>
         </td>
       </tr>

@@ -60,7 +60,7 @@
 
             <code><b><%= Tag.find_by(id: buffer_update.tag_id)&.name || buffer_update.social_service_name %>:</b></code>
 
-            <%= form_with url: "/internal/buffer_updates/#{buffer_update.id}", class: "buffer-form buffer-confirm", html: { data: { action: "submit->buffer#highlightElement" } } do |f| %>
+            <%= form_with url: internal_buffer_update_path(buffer_update.id), class: "buffer-form buffer-confirm", html: { data: { action: "submit->buffer#highlightElement" } } do |f| %>
               <div class="form-group">
                 <input name="utf8" type="hidden" value="✓">
                 <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
@@ -71,7 +71,7 @@
               <button value="confirmed" name="status" class="btn btn-success" data-action="buffer#tagBufferUpdateConfirmed">Confirm</button>
             <% end %>
 
-            <%= form_with url: "/internal/buffer_updates/#{buffer_update.id}", class: "buffer-form buffer-dismiss", html: { data: { action: "submit->buffer#highlightElement" } } do |f| %>
+            <%= form_with url: internal_buffer_update_path(buffer_update.id), class: "buffer-form buffer-dismiss", html: { data: { action: "submit->buffer#highlightElement" } } do |f| %>
               <div class="form-group">
                 <input name="utf8" type="hidden" value="✓">
                 <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />

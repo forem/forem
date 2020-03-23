@@ -167,9 +167,29 @@ RSpec.describe Articles::Feed, type: :service do
     end
   end
 
+  describe "#more_experience_level_weight_experiment" do
+    let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
+    let(:stories) { feed.more_experience_level_weight_experiment }
+
+    it "includes stories" do
+      expect(stories).to include(old_story)
+      expect(stories).to include(new_story)
+    end
+  end
+
   describe "#more_tag_weight_more_random_experiment" do
     let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
     let(:stories) { feed.more_tag_weight_more_random_experiment }
+
+    it "includes stories" do
+      expect(stories).to include(old_story)
+      expect(stories).to include(new_story)
+    end
+  end
+
+  describe "#mix_of_everything_experiment" do
+    let!(:new_story) { create(:article, published_at: 10.minutes.ago, score: 10) }
+    let(:stories) { feed.mix_of_everything_experiment }
 
     it "includes stories" do
       expect(stories).to include(old_story)

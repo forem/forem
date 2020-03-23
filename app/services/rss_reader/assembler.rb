@@ -32,7 +32,7 @@ class RssReader
     private
 
     def get_tags
-      @categories.first(4).map { |tag| tag[0..19] }.join(",")
+      @categories.first(4).map { |tag| tag.lstrip[0..19] }.join(",")
     end
 
     def assemble_body_markdown

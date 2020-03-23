@@ -32,14 +32,15 @@ RSpec.describe Article, type: :model do
     describe "#after_commit" do
       it "on update enqueues job to index article to elasticsearch" do
         article.save
-        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, article.id]) do
+        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, article.search_id]) do
           article.save
         end
       end
 
       it "on destroy enqueues job to delete article from elasticsearch" do
-        article.save
-        sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, article.id]) do
+        article = create(:article)
+
+        sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, article.search_id]) do
           article.destroy
         end
       end
@@ -53,6 +54,12 @@ RSpec.describe Article, type: :model do
       end
 
       it { is_expected.to validate_presence_of(:slug) }
+    end
+
+    describe "#search_id" do
+      it "returns article_ID" do
+        expect(article.search_id).to eq("article_#{article.id}")
+      end
     end
 
     describe "#main_image_background_hex_color" do
@@ -645,6 +652,8 @@ RSpec.describe Article, type: :model do
     end
 
     it "triggers auto removal from index on destroy" do
+      article = create(:article)
+
       allow(article).to receive(:remove_from_index!)
       allow(article).to receive(:delete_related_objects)
       article.destroy
@@ -744,6 +753,55 @@ RSpec.describe Article, type: :model do
         article.save
 
         expect(language_detector).not_to have_received(:detect)
+      end
+    end
+
+    describe "slack notifications" do
+      before do
+        # making sure there are no other enqueued jobs from other tests
+        sidekiq_perform_enqueued_jobs(only: SlackBotPingWorker)
+      end
+
+      it "notifies the proper slack channel about a recently published new article" do
+        Timecop.freeze(Time.current) do
+          article = create(:article, published: true)
+
+          url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
+          message = "New Article Published: #{article.title}\n#{url}#{article.path}"
+          args = {
+            message: message,
+            channel: "activity",
+            username: "article_bot",
+            icon_emoji: ":writing_hand:"
+          }.stringify_keys
+
+          sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker)
+          job = sidekiq_enqueued_jobs(worker: SlackBotPingWorker).last
+          expect(job["args"]).to eq([args])
+        end
+      end
+
+      it "does not send a notification for a new article published more than 30 seconds ago" do
+        Timecop.freeze(Time.current) do
+          sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
+            create(:article, published: true, published_at: 31.seconds.ago)
+          end
+        end
+      end
+
+      it "does not send a notification for a non published article" do
+        sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
+          create(:article, published: false)
+        end
+      end
+
+      it "sends a notification for a draft article that gets published" do
+        Timecop.freeze(Time.current) do
+          sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+            article.update_columns(published: false)
+            article.update(published: true, published_at: Time.current)
+          end
+        end
       end
     end
   end

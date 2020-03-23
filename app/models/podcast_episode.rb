@@ -63,6 +63,10 @@ class PodcastEpisode < ApplicationRecord
     end
   end
 
+  def search_id
+    "podcast_episode_#{id}"
+  end
+
   def user_username
     podcast_slug
   end
@@ -134,6 +138,14 @@ class PodcastEpisode < ApplicationRecord
 
   def liquid_tags_used
     []
+  end
+
+  def mobile_player_metadata
+    {
+      podcastName: podcast.title,
+      episodeName: title,
+      podcastImageUrl: ApplicationController.helpers.app_url(podcast.image_url)
+    }
   end
 
   private

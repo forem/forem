@@ -1,7 +1,7 @@
 <% title @article.title %>
 
 <%= render "shared/webcomponents_loader_script" %>
-<%= javascript_pack_tag "clipboardCopy", defer: true %>
+<%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", defer: true %>
 
 <% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}", expires_in: 30.hours) do %>
   <% if @article.processed_html.include? "ltag_gist-liquid-tag" %>
@@ -61,8 +61,13 @@
       <meta property="og:image" content="<%= article_social_image_url(@article) %>" />
       <meta name="twitter:image:src" content="<%= article_social_image_url(@article) %>">
     <% end %>
-    <% if !@article.published || (@article.positive_reactions_count < 7 && @article.user.comments_count < 1 && !@article.featured) ||
-      @article.featured_number.to_i < 1500000000 || @article.score < -10 %>
+    <% if !@article.published ||
+      (@article.score < 5 &&
+        @article.user.comments_count < 1 &&
+        !@article.featured &&
+        @article.processed_html.exclude?("<code>")) ||
+      @article.featured_number.to_i < 1500000000 ||
+      @article.score < -1 %>
       <meta name="googlebot" content="noindex">
       <meta name="googlebot" content="nofollow">
     <% end %>
@@ -156,7 +161,7 @@
             </span>
           <% end %>
           <span class="published-at">・<%= @article.reading_time < 1 ? 1 : @article.reading_time %> min read</span>
-          <span class="action-space" id="action-space"></span>
+          <span class="action-space" id="action-space">&nbsp;</span>
         </h3>
         <% cache("main-article-tags-#{@article.cached_tag_list}", expires_in: 30.hours) do %>
           <div class="tags">
@@ -227,5 +232,3 @@
     <%= TweetTag.script.html_safe %>
   </script>
 <% end %>
-
-<%= javascript_pack_tag "webShare", defer: true %>

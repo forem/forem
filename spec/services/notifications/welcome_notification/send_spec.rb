@@ -7,7 +7,7 @@ RSpec.describe Notifications::WelcomeNotification::Send, type: :service do
     end
 
     it "creates a new welcome notification", :aggregate_failures do
-      welcome_broadcast = create(:broadcast, :onboarding)
+      welcome_broadcast = create(:onboarding_broadcast)
       welcome_notification = described_class.call(create(:user).id, welcome_broadcast)
 
       expect(welcome_notification).to be_kind_of(Notification)

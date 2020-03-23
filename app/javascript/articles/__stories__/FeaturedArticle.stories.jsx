@@ -1,5 +1,4 @@
 import { h } from 'preact';
-import { storiesOf } from '@storybook/react';
 import { withKnobs, object, text, boolean } from '@storybook/addon-knobs/react';
 import { action } from '@storybook/addon-actions';
 import {
@@ -21,7 +20,7 @@ const commonProps = {
   bookmarkClick: action('Saved/unsaved article'),
 };
 
-storiesOf('Components/Article/Featured', module)
+storiesOf('App Components/Article/Featured', module)
   .addDecorator(withKnobs)
   .addDecorator(articleDecorator)
   .add('Default', () => (

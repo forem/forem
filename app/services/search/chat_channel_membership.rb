@@ -18,19 +18,6 @@ module Search
 
       private
 
-      def set_query_size(params)
-        params[:page] ||= DEFAULT_PAGE
-        params[:per_page] ||= DEFAULT_PER_PAGE
-
-        # pages start at 0
-        params[:size] = params[:per_page].to_i * (params[:page].to_i + 1)
-      end
-
-      def paginate_hits(hits, params)
-        start = params[:per_page] * params[:page]
-        hits[start, params[:per_page]] || []
-      end
-
       def index_settings
         if Rails.env.production?
           {

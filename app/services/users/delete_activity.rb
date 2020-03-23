@@ -36,6 +36,7 @@ module Users
       user.pro_membership.delete if user.pro_membership.present?
       user.profile_pins.delete_all
       user.rating_votes.delete_all
+      user.response_templates.delete_all
       user.tweets.delete_all
       user.classified_listings.destroy_all
 

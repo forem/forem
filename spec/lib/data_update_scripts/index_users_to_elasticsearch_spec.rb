@@ -1,5 +1,5 @@
 require "rails_helper"
-require Rails.root.join("lib/data_update_scripts/20200305201627_index_users_to_elasticsearch.rb")
+require Rails.root.join("lib/data_update_scripts/20200313123108_index_users_to_elasticsearch.rb")
 
 describe DataUpdateScripts::IndexUsersToElasticsearch, elasticsearch: true do
   it "indexes users to Elasticsearch" do

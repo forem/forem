@@ -173,8 +173,8 @@
     margin-bottom: 0px;
     margin-bottom: 1px;
     @media screen and (min-width: 600px) {
-      height: 32px;
-      margin-top: 2px;
+      height: 43px;
+      margin-bottom: 7px;
     }
   }
 }
@@ -279,14 +279,15 @@
 
 .articleform__tagsoptionrulesbutton {
   position: absolute;
-  right: 8px;
-  top: 9px;
+  right: 7px;
+  top: 7px;
   border: 0;
   border-radius: 3px;
   background: var(--theme-anchor-color, $sky-blue);
   color: var(--theme-container-background, white);
-  font-size: 0.8em;
-  width: 100px;
+  font-size: 0.77em;
+  width: 130px;
+  padding: 6px 0px;
 }
 
 .articleform__tagrules--inactive {
@@ -530,8 +531,8 @@
     color: var(--theme-secondary-color, $medium-gray);
     white-space: nowrap;
     @media screen and (min-width: 430px) {
-      margin-top: 16px;
-      margin-bottom: 16px;
+      margin-top: 23px;
+      margin-bottom: 8px;
     }
     &:hover {
       background: lighten($green, 24%);
