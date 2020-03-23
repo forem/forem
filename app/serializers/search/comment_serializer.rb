@@ -10,12 +10,12 @@ module Search
     attribute :class_name do |comment|
       comment.class.name
     end
+    attribute :hotness_score, &:score
     attribute :published do |_comment|
       true
     end
     attribute :published_at, &:created_at
     attribute :readable_publish_date_string, &:readable_publish_date
-    attribute :hotness_score, &:score
     attribute :title do |comment|
       comment.commentable&.title
     end
