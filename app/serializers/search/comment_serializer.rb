@@ -7,6 +7,9 @@ module Search
     attributes :path, :positive_reactions_count
 
     attribute :body_text, &:body_markdown
+    attribute :published do |_comment|
+      true
+    end
     attribute :published_at, &:created_at
     attribute :readable_publish_date_string, &:readable_publish_date
     attribute :hotness_score, &:score
