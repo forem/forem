@@ -91,7 +91,8 @@
   display: none;
   margin-right: $su-2;
 
-  @media screen and (min-width: 650px) { // tood: replace with utility responsive class when ready
+  @media screen and (min-width: $breakpoint-s) {
+    // tood: replace with utility responsive class when ready
     display: inline-block;
   }
 }
