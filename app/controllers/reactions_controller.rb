@@ -1,6 +1,4 @@
 class ReactionsController < ApplicationController
-  include AuditInstrumentation
-
   before_action :set_cache_control_headers, only: [:index], unless: -> { current_user }
   after_action :verify_authorized
 
@@ -65,6 +63,10 @@ class ReactionsController < ApplicationController
     # if the reaction already exists, destroy it
     if reaction
       result = destroy_reaction(reaction)
+
+      if reaction.negative? && current_user.auditable?
+        notify(:moderator, current_user, __method__) { cleanse_for_audit(params.dup) }
+      end
     else
       reaction = build_reaction(category)
 
@@ -81,7 +83,7 @@ class ReactionsController < ApplicationController
         end
 
         if reaction.negative? && current_user.auditable?
-          notify(:moderator, current_user, __method__) { params.dup.reject { |k, _v| k == "authenticity_token" } }
+          notify(:moderator, current_user, __method__) { cleanse_for_audit(params.dup) }
         end
       else
         render json: { error: reaction.errors.full_messages.join(", "), status: 422 }, status: :unprocessable_entity

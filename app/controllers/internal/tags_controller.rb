@@ -1,5 +1,4 @@
 class Internal::TagsController < Internal::ApplicationController
-  include AuditInstrumentation
   layout "internal"
 
   def index

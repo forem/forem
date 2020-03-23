@@ -13,6 +13,9 @@ class TagAdjustmentsController < ApplicationController
     article = service.article
     if tag_adjustment.save
       service.update_tags_and_notify
+      if current_user.auditable?
+        notify(:moderator, current_user, __method__) { cleanse_for_audit(params.dup) }
+      end
       redirect_to "#{URI.parse(article.path).path}/mod"
     else
       authorize(User, :moderation_routes?)
@@ -33,6 +36,9 @@ class TagAdjustmentsController < ApplicationController
     @article = Article.find(tag_adjustment.article_id)
     @article.update!(tag_list: @article.tag_list.add(tag_adjustment.tag_name)) if tag_adjustment.adjustment_type == "removal"
     @article.update!(tag_list: @article.tag_list.remove(tag_adjustment.tag_name)) if tag_adjustment.adjustment_type == "addition"
+    if current_user.auditable?
+      notify(:moderator, current_user, __method__) { cleanse_for_audit(params.dup) }
+    end
     redirect_to "#{URI.parse(@article.path).path}/mod"
   end
 end

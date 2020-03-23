@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   include SessionCurrentUser
   include ValidRequest
   include Pundit
+  include AuditInstrumentation
 
   rescue_from ActionView::MissingTemplate, with: :routing_error
 

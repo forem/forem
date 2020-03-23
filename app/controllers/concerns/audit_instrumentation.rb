@@ -1,6 +1,8 @@
 module AuditInstrumentation
   extend ActiveSupport::Concern
 
+  REDACTED_KEYS = %w[authenticity_token utf8 commit].freeze
+
   included do
     def notify(listener, user, slug)
       Audit::Notification.notify(listener) do |payload|
@@ -11,6 +13,10 @@ module AuditInstrumentation
           payload.data = yield
         end
       end
+    end
+
+    def cleanse_for_audit(data)
+      data.reject { |key, _v| REDACTED_KEYS.include? key }
     end
   end
 end
