@@ -1,4 +1,26 @@
 class Article < ApplicationRecord
+  self.ignored_columns = %w[
+    abuse_removal_reason
+    allow_big_edits
+    allow_small_edits
+    amount_due
+    amount_paid
+    automatically_renew
+    collection_position
+    featured_clickthrough_rate
+    featured_impressions
+    ids_for_suggested_articles
+    job_opportunity_id
+    last_invoiced_at
+    lat
+    long
+    main_tag_name_for_social
+    name_within_collection
+    paid
+    rating_votes_count
+    removed_for_abuse
+  ]
+
   include CloudinaryHelper
   include ActionView::Helpers
   include AlgoliaSearch
