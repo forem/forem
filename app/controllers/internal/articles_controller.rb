@@ -39,6 +39,7 @@ class Internal::ArticlesController < Internal::ApplicationController
     article.update!(article_params)
     Article.where.not(id: article.id).where(live_now: true).update_all(live_now: false) if article.live_now
     CacheBuster.bust("/live_articles")
+    notify(:moderator, current_user, __method__) { cleanse_for_audit(params) }
     render body: nil
   end
 
