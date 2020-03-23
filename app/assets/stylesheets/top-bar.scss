@@ -58,8 +58,13 @@
 .top-bar--search {
   display: flex;
   max-width: 420px;
-  margin: 0 $su-4;
+  margin: 0 $su-2;
   flex: 1 auto;
+
+  @media screen and (min-width: $breakpoint-s) {
+    // tood: replace with utility responsive class when ready
+    margin: 0 $su-4;
+  }
 
   form {
     width: 100%;
