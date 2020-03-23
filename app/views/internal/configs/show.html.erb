@@ -182,6 +182,22 @@
                 <div class="alert alert-info">Used as the SVG logo of the community</div>
                 <%= @logo_svg %>
               </div>
+
+              <%= f.label :primary_sticker_image_url %>
+              <%= f.text_field :primary_sticker_image_url,
+                               class: "form-control",
+                               value: SiteConfig.primary_sticker_image_url,
+                               placeholder: "https://image.url" %>
+              <div class="row mt-2">
+                <div class="col-12">
+                  <img alt="main social image" class="img-fluid" src="<%= SiteConfig.primary_sticker_image_url %>" />
+                </div>
+                <div class="col-12">
+                  <div class="alert alert-info">
+                    <h5>Used as the primary sticker image</h5>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
