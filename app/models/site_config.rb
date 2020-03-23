@@ -1,6 +1,9 @@
 # Site configuration based on RailsSettings models,
 # see <https://github.com/huacnlee/rails-settings-cached> for further info
 
+# Defaults are currently very DEV-oriented.
+# Should change to more truly generic values in future.
+
 class SiteConfig < RailsSettings::Base
   self.table_name = "site_configs"
 
@@ -31,6 +34,7 @@ class SiteConfig < RailsSettings::Base
   # images
   field :main_social_image, type: :string, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
   field :favicon_url, type: :string, default: "favicon.ico"
+  field :logo_png, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-512.png"
   field :logo_svg, type: :string, default: ""
 
   # rate limits
