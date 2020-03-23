@@ -1,3 +1,17 @@
+<div class="row m-3">
+  <div class="col">
+  </div>
+  <div class="col">
+    <%= search_form_for @q, url: internal_moderator_actions_path, class: "form-inline justify-content-end" do |f| %>
+
+      <%= f.label :user_username_cont, "User", class: "sr-only" %>
+      <%= f.search_field :user_username_cont, placeholder: "User", class: "form-control mx-3" %>
+
+      <%= f.submit "Search", class: "btn btn-secondary" %>
+    <% end %>
+  </div>
+</div>
+
 <%= paginate @moderator_actions %>
 
 <table class="table">
@@ -7,7 +21,9 @@
       <th scope="col">User</th>
       <th scope="col">Action</th>
       <th scope="col">Data</th>
-      <th scope="col">Date</th>
+      <th scope="col">
+        <%= content_tag :span, sort_link(@q, :created_at, "Date"), class: "mx-2" %>
+      </th>
     </tr>
   </thead>
   <tbody>
