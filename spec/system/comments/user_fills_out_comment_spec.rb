@@ -53,8 +53,6 @@ RSpec.describe "Creating Comment", type: :system, js: true do
   it "User attaches a valid image" do
     visit article.path.to_s
 
-    wait_for_javascript
-
     attach_file(
       "image-upload-main",
       Rails.root.join("app/assets/images/sloan.png"),
@@ -69,8 +67,6 @@ RSpec.describe "Creating Comment", type: :system, js: true do
   # which is logic to validate file size and format when uploading via a form.
   it "User attaches a large image" do
     visit article.path.to_s
-
-    wait_for_javascript
 
     reduce_max_file_size = 'document.querySelector("#image-upload-main").setAttribute("data-max-file-size-mb", "0")'
     page.execute_script(reduce_max_file_size)
@@ -94,8 +90,6 @@ RSpec.describe "Creating Comment", type: :system, js: true do
   # which is logic to validate file size and format when uploading via a form.
   it "User attaches an invalid file type" do
     visit article.path.to_s
-
-    wait_for_javascript
 
     allow_only_videos = 'document.querySelector("#image-upload-main").setAttribute("data-permitted-file-types", "[\"video\"]")'
     page.execute_script(allow_only_videos)
