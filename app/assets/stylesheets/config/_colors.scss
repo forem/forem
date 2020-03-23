@@ -69,7 +69,8 @@
   --widget-headline: var(--base-100);
 
   // Header
-  --header-bg: #fdf9f3; // todo: replace with `var(--base-inverted)` when ready.
+  --header-bg: var(--base-inverted);
+  --header-shadow: rgba(0,0,0,0.1);
   --header-icons-color: var(--base-70);
   --header-icons-color-hover: var(--base-100);
 

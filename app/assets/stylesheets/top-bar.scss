@@ -1,3 +1,4 @@
+@import 'config/import';
 @import 'variables';
 @import 'mixins';
 
@@ -6,87 +7,26 @@
   top: 0px;
   left: 0px;
   right: 0px;
-  -webkit-backface-visibility: hidden;
-  z-index: 1000;
+  z-index: 20;
   height: $header-height;
-  font-size: 16px; // todo: make it global, based on body
   background: var(--header-bg);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  &.hidden {
-    display: none;
-  }
+  box-shadow: 0 1px 1px var(--header-shadow);
 
   &,
-  & * {
+  &::after,
+  &::before,
+  & *,
+  & *::after,
+  & *::before {
     box-sizing: border-box; // todo: make it global
   }
 
-  nav {
+  &__container {
     max-width: $max-width;
-    height: 100%;
     margin: auto;
     position: relative;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-
-    .pwa-nav-buttons {
-      position: absolute;
-      top: 17px;
-      left: -200px;
-      display: none;
-      button {
-        background: transparent;
-        border: 0px;
-        width: 28px;
-        text-align: center;
-        opacity: 0.75;
-        @include themeable(filter, theme-social-icon-invert, invert(0));
-        img {
-          width: 15px;
-          height: 15px;
-        }
-        &:hover {
-          opacity: 1;
-        }
-      }
-      @media screen and (min-width: 950px) {
-        left: 88px;
-        &.pwa-nav-buttons--showing {
-          display: block;
-        }
-      }
-      @media screen and (min-width: 1439px) {
-        left: -88px;
-      }
-    }
-
-    // TODO make it a component in future.
-    .nav-indicator {
-      position: absolute;
-      padding: 4px;
-      border-radius: 3px;
-      font-weight: bold;
-      display: none;
-      color: $white;
-      top: 4px;
-      right: 0;
-      font-size: 0.8em;
-      min-width: 18px;
-      text-align: center;
-
-      &.showing {
-        display: block;
-      }
-
-      &.connect-number {
-        background: $green;
-      }
-
-      &.notifications-number {
-        background: $dark-purple;
-      }
-    }
 
     .top-bar--menu {
       position: relative;
@@ -169,77 +109,41 @@
     }
   }
 
-  .skip-content-link {
+  .crayons-indicator {
     position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translate(-50%, -100px);
-    background: black;
-    color: white;
-    z-index: 9999;
-    padding: 13px;
-    cursor: default;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s linear, transform 0.3s linear;
-
-    &:focus {
-      pointer-events: auto;
-      opacity: 1;
-      transform: translate(-50%, 22px);
-      transition: opacity 0.3s linear, transform 0.3s linear;
-    }
+    top: $su-1;
+    right: $su-1;
+    box-shadow: 0 0 0 2px var(--header-bg);
   }
 }
 
 // Logo
 .top-bar--logo {
   display: flex;
-  align-items: center;
-  height: 100%;
-  margin-left: 8px;
+  margin-left: $su-2;
   @media screen and (min-width: 950px) {
-    margin-left: 16px;
+    margin-left: $su-4;
   }
 
   .logo {
-    width: 51px;
-    height: 34px;
-    padding: 7px 8px 6px 10px;
+    width: 50px;
+    height: 40px;
+    padding: 0 7px 0 9px; // TODO: we have to fix SVG for logo a little...
     background: var(--logo-bg);
     fill: var(--logo-color);
-    border-radius: 3px;
+    border-radius: $br-default;
   }
 }
 
 // Search bar
 .top-bar--search {
   display: flex;
-  max-width: 490px;
-  padding: 0 8px;
+  max-width: 420px;
+  margin: 0 $su-4;
   flex: 1 auto;
-
-  &,
-  & * {
-    box-sizing: border-box;
-  }
 
   form {
     width: 100%;
-  }
-}
-
-.top-bar--search-input {
-  width: 100%;
-  border-radius: 3px;
-  padding: 6px 9px 5px;
-  font-size: 16px;
-  background: var(--form-bg);
-  color: var(--body-color);
-  -webkit-appearance: none;
-  border: 1px solid var(--form-border);
-  &:focus {
-    border: 1px solid var(--form-border-focus);
   }
 }
 
@@ -248,46 +152,76 @@
   height: $header-height;
   display: flex;
   align-items: center;
+  margin-left: auto;
 }
 
 .top-bar--link {
   position: relative;
   display: flex;
-  padding: 0 8px;
+  padding: 0 $su-3;
   height: 100%;
   align-items: center;
-  fill: var(--header-icons-color);
+  color: var(--header-icons-color);
+
   &:hover {
-    fill: var(--header-icons-color-hover);
-  }
-
-  &.write {
-    border-radius: 3px;
-    height: auto;
-    margin-right: 8px;
-    padding: 4px 8px;
-    white-space: nowrap;
-    font-size: 0.9em;
-    border: 2px solid var(--button-primary-bg-hover);
-    background: var(--button-primary-bg);
-    color: var(--button-primary-color);
-    display: none;
-
-    @media screen and (min-width: 650px) {
-      display: inline-block;
-    }
+    color: var(--header-icons-color-hover);
   }
 }
 
-.top-bar--profile {
-  height: 32px;
-  width: 32px;
-  background: $dark-gray;
-  border-radius: 50%;
+.write {
+  display: none;
 
-  img {
-    height: 32px;
-    width: 32px;
-    border-radius: 50%;
+  @media screen and (min-width: 650px) {
+    display: inline-block;
+  }
+}
+
+.skip-content-link {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -100px);
+  background: var(--body-bg);
+  color: var(--body-color-inverted);
+  z-index: 9999;
+  padding: $su-4;
+  pointer-events: none;
+  opacity: 0;
+
+  &:focus {
+    pointer-events: auto;
+    opacity: 1;
+    transform: translate(-50%, $header-height/2);
+  }
+}
+
+.pwa-nav-buttons {
+  position: absolute;
+  top: 17px;
+  left: -200px;
+  display: none;
+  button {
+    background: transparent;
+    border: 0px;
+    width: 28px;
+    text-align: center;
+    opacity: 0.75;
+    @include themeable(filter, theme-social-icon-invert, invert(0));
+    img {
+      width: 15px;
+      height: 15px;
+    }
+    &:hover {
+      opacity: 1;
+    }
+  }
+  @media screen and (min-width: 950px) {
+    left: 88px;
+    &.pwa-nav-buttons--showing {
+      display: block;
+    }
+  }
+  @media screen and (min-width: 1439px) {
+    left: -88px;
   }
 }
