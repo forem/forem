@@ -1,0 +1,23 @@
+module Search
+  class CommentSerializer
+    include FastJsonapi::ObjectSerializer
+
+    attribute :id, &:search_id
+
+    attributes :path, :positive_reactions_count
+
+    attribute :body_text, &:body_markdown
+    attribute :published_at, &:created_at
+    attribute :readable_publish_date_string, &:readable_publish_date
+    attribute :hotness_score, &:score
+    attribute :title do |comment|
+      comment.commentable&.title
+    end
+
+    attribute :user do |comment|
+      NestedUserSerializer.new(comment.user).serializable_hash.dig(
+        :data, :attributes
+      )
+    end
+  end
+end
