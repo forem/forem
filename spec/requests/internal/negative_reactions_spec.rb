@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/internal/mod_actions", type: :request do
+RSpec.describe "/internal/negative_reactions", type: :request do
   context "when the user is not an admin" do
     let(:user) { create(:user) }
 
@@ -10,7 +10,7 @@ RSpec.describe "/internal/mod_actions", type: :request do
 
     it "blocks the request" do
       expect do
-        get "/internal/mod_actions"
+        get "/internal/negative_reactions"
       end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
@@ -26,13 +26,13 @@ RSpec.describe "/internal/mod_actions", type: :request do
 
     it "does not block the request" do
       expect do
-        get "/internal/mod_actions"
+        get "/internal/negative_reactions"
       end.not_to raise_error
     end
 
-    describe "GETS /internal/mod_actions" do
+    describe "GETS /internal/negative_reactions" do
       it "renders to appropriate page" do
-        get "/internal/mod_actions"
+        get "/internal/negative_reactions"
         expect(response.body).to include(moderator.username)
         expect(response.body).to include(reaction.category)
       end
