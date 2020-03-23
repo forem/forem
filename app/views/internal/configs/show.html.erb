@@ -34,6 +34,15 @@
                                placeholder: "A fabulous community of kind and welcoming people." %>
               <div class="alert alert-info">Used in meta description tags etc.</div>
             </div>
+
+            <div class="form-group">
+              <%= f.label :community_member_description, "Community Member description" %>
+              <%= f.text_field :community_member_description,
+                               class: "form-control",
+                               value: SiteConfig.community_member_description,
+                               placeholder: "amazing humans who code." %>
+              <div class="alert alert-info">Used in pre-login navigation</div>
+            </div>
           </div>
         </div>
 

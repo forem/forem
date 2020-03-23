@@ -10,6 +10,7 @@ class SiteConfig < RailsSettings::Base
 
   # site content
   field :community_description, type: :string, default: "A constructive and inclusive social network. Open source and radically transparent."
+  field :community_member_description, type: :string, default: "amazing humans who code."
 
   # staff account
   field :staff_user_id, type: :integer, default: 1
