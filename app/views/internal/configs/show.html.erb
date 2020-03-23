@@ -36,7 +36,7 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :community_member_description, "Community Member description" %>
+              <%= f.label :community_member_description, "Community member description" %>
               <%= f.text_field :community_member_description,
                                class: "form-control",
                                value: SiteConfig.community_member_description,
@@ -213,6 +213,22 @@
                 <div class="col-12">
                   <div class="alert alert-info">
                     <h5>Used as the primary sticker image</h5>
+                  </div>
+                </div>
+              </div>
+
+              <%= f.label :mascot_image_url %>
+              <%= f.text_field :mascot_image_url,
+                               class: "form-control",
+                               value: SiteConfig.mascot_image_url,
+                               placeholder: "https://image.url" %>
+              <div class="row mt-2">
+                <div class="col-12">
+                  <img alt="main social image" class="img-fluid" src="<%= SiteConfig.mascot_image_url %>" />
+                </div>
+                <div class="col-12">
+                  <div class="alert alert-info">
+                    <h5>Used as the mascot image.</h5>
                   </div>
                 </div>
               </div>

@@ -39,6 +39,7 @@ class SiteConfig < RailsSettings::Base
   field :logo_png, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-512.png"
   field :logo_svg, type: :string, default: ""
   field :primary_sticker_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/rainbowdev.svg"
+  field :mascot_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
 
   # rate limits
   field :rate_limit_follow_count_daily, type: :integer, default: 500

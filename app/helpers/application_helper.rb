@@ -61,7 +61,7 @@ module ApplicationHelper
   end
 
   def cloudinary(url, width = nil, _quality = 80, _format = "jpg")
-    return url if Rails.env.development? && (url.blank? || url.exclude?("http") || url.include?("fastly"))
+    return url if Rails.env.development? && (url.blank? || url.exclude?("http"))
 
     service_path = "https://res.cloudinary.com/#{ApplicationConfig['CLOUDINARY_CLOUD_NAME']}/image/fetch"
 

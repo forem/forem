@@ -5,14 +5,7 @@
     </button>
   </div>
   <div class="global-signup-modal--inner-a">
-    <%= image_tag(cl_image_path(asset_path("/assets/sloan.png"),
-                                type: "fetch",
-                                width: 300,
-                                crop: "imagga_scale",
-                                quality: "auto",
-                                flags: "progressive",
-                                fetch_format: "auto",
-                                sign_url: true), class: "sloan", alt: "Sloan, the sloth mascot", loading: "lazy") %>
+    <%= image_tag(cloudinary(SiteConfig.mascot_image_url, 300), class: "mascot-image", alt: "Sloan, the sloth mascot", loading: "lazy") %>
     <h1>Join our <%= ApplicationConfig["COMMUNITY_NAME"] %> Community :)</h1>
     <p>
       <%= SiteConfig.tagline %>

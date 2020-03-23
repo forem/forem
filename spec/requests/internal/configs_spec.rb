@@ -51,6 +51,12 @@ RSpec.describe "/internal/config", type: :request do
           post "/internal/config", params: { site_config: { community_member_description: description }, confirmation: confirmation_message }
           expect(SiteConfig.community_member_description).to eq(description)
         end
+
+        it "updates the tagline" do
+          description = "Hey hey #{rand(100)}"
+          post "/internal/config", params: { site_config: { tagline: description }, confirmation: confirmation_message }
+          expect(SiteConfig.tagline).to eq(description)
+        end
       end
 
       describe "staff" do
@@ -112,6 +118,12 @@ RSpec.describe "/internal/config", type: :request do
           expected_image_url = "https://dummyimage.com/300x300"
           post "/internal/config", params: { site_config: { primary_sticker_image_url: expected_image_url }, confirmation: confirmation_message }
           expect(SiteConfig.primary_sticker_image_url).to eq(expected_image_url)
+        end
+
+        it "updates mascot_image_url" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { mascot_image_url: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.mascot_image_url).to eq(expected_image_url)
         end
 
         it "rejects update without proper confirmation" do
