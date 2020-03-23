@@ -102,6 +102,12 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.logo_svg).to eq(expected_image_url)
         end
 
+        it "updates primary_sticker_image_url" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { primary_sticker_image_url: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.primary_sticker_image_url).to eq(expected_image_url)
+        end
+
         it "rejects update without proper confirmation" do
           expected_image_url = "https://dummyimage.com/300x300"
           expect { post "/internal/config", params: { site_config: { logo_svg: expected_image_url }, confirmation: "Incorrect yo!" } }.to raise_error Pundit::NotAuthorizedError
