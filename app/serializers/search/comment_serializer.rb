@@ -7,6 +7,9 @@ module Search
     attributes :path, :positive_reactions_count
 
     attribute :body_text, &:body_markdown
+    attribute :class_name do |comment|
+      comment.class.name
+    end
     attribute :published do |_comment|
       true
     end
