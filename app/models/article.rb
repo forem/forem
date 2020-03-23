@@ -88,7 +88,7 @@ class Article < ApplicationRecord
   scope :published, -> { where(published: true) }
   scope :unpublished, -> { where(published: false) }
 
-  scope :latest_published_thread_with, lambda { |tag_name|
+  scope :latest_published_admin_thread_with, lambda { |tag_name|
     published.
       where(user_id: SiteConfig.staff_user_id).
       order("published_at ASC").

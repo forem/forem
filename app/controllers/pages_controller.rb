@@ -58,7 +58,7 @@ class PagesController < ApplicationController
   end
 
   def welcome
-    daily_thread = latest_published_thread_with("welcome")
+    daily_thread = latest_published_admin_thread_with("welcome")
     if daily_thread
       redirect_to daily_thread.path
     else
@@ -68,7 +68,7 @@ class PagesController < ApplicationController
   end
 
   def challenge
-    daily_thread = latest_published_thread_with("challenge")
+    daily_thread = latest_published_admin_thread_with("challenge")
     if daily_thread
       redirect_to daily_thread.path
     else
