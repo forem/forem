@@ -1,5 +1,7 @@
 @import 'variables';
 @import 'mixins';
+@import 'functions';
+
 #page-content.users-edit,
 #page-content.users-update,
 #page-content.users-confirm_destroy,
@@ -501,7 +503,7 @@
   box-shadow: $shadow;
   &.loading-repos {
     height: 400px;
-    background: white url(image_path('loading-ellipsis.svg')) no-repeat center
+    background: white url(image-src('loading-ellipsis.svg')) no-repeat center
       center;
     background-size: 50px;
   }
@@ -545,7 +547,7 @@
         }
         &:disabled {
           cursor: wait;
-          background: white url(image_path('loading-ellipsis.svg')) no-repeat
+          background: white url(image-src('loading-ellipsis.svg')) no-repeat
             center center;
           background-size: 75px;
         }
@@ -711,6 +713,7 @@ ul.delete__account {
     float: left;
 
     .title {
+      color: $dark-gray;
       font-weight: bold;
       margin: 0;
       padding-bottom: 0.25rem;

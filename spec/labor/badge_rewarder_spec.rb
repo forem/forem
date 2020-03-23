@@ -106,7 +106,7 @@ RSpec.describe BadgeRewarder, type: :labor do
 
   describe "::award_contributor_badges_from_github" do
     let(:my_ocktokit_client) { instance_double(Octokit::Client) }
-    let(:user) { create(:user) }
+    let(:user) { create(:user, :with_identity, identities: ["github"]) }
 
     let(:stubbed_github_commit) do
       [OpenStruct.new(author: OpenStruct.new(id: user.identities.first.uid))]

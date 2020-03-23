@@ -187,13 +187,13 @@ article {
     }
 
     h3 {
-      margin: 4px auto;
+      margin: 2px auto;
       padding: 0;
       padding: 0 3px 16px;
       font-weight: 500;
       color: var(--container-color-tertiary);
       font-size: 13.5px;
-      line-height: 1.5em;
+      line-height: 1.8em;
 
       @media screen and (min-width: 430px) {
         font-size: 15px;
@@ -237,9 +237,9 @@ article {
       }
 
       .action-space {
-        padding: 5px 0 0 0;
+        padding: 0 0 0 0;
         display: inline-flex;
-
+        min-width: 44px;
         a {
           display: inline-block;
           background: $green;
@@ -251,7 +251,7 @@ article {
           font-stretch: condensed;
           margin-right: 4px;
           @media screen and (max-width: 376px) {
-            padding: 2px 3px 3px;
+            padding: 2px 6px 3px;
             margin-left: 3px;
             margin-left: 5px;
 
@@ -353,7 +353,7 @@ article {
     background: var(--container-bg);
     position: relative;
     z-index: 5;
-    padding-bottom: 5px;
+    padding: 5px 0px;
     overflow-wrap: break-word;
 
     a {
@@ -378,13 +378,14 @@ article {
     h5,
     h6 {
       font-family: $helvetica;
+      margin: 0.3em auto;
+      padding-left: 4px;
+      padding-right: 4px;
     }
 
     h1 {
       font-size: 1.85em;
       line-height: 1.14em;
-      padding-left: 4px;
-      padding-right: 4px;
       font-weight: 400;
     }
 
@@ -392,8 +393,6 @@ article {
       font-size: 1.7em;
       font-weight: 400;
       line-height: 1.14em;
-      padding-left: 6px;
-      padding-right: 6px;
       padding-bottom: 0;
       margin-bottom: 0.5em;
     }
@@ -401,23 +400,6 @@ article {
     h3 {
       font-size: 1.32em;
       font-weight: 400;
-      padding-left: 6px;
-      padding-right: 6px;
-    }
-
-    h4 {
-      padding-left: 6px;
-      padding-right: 6px;
-    }
-
-    h5 {
-      padding-left: 6px;
-      padding-right: 6px;
-    }
-
-    h6 {
-      padding-left: 6px;
-      padding-right: 6px;
     }
 
     hr {

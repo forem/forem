@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "internal/users", type: :request do
-  let!(:user) { create(:user) }
+  let!(:user) { create(:user, :with_identity, identities: ["github"]) }
   let(:admin) { create(:user, :super_admin) }
 
   before do
@@ -41,8 +41,10 @@ RSpec.describe "internal/users", type: :request do
 
   describe "POST /internal/users/:id/banish" do
     it "bans user for spam" do
+      allow(Moderator::BanishUserWorker).to receive(:perform_async)
       post "/internal/users/#{user.id}/banish"
-      expect(user.reload.username).to include("spam")
+      expect(Moderator::BanishUserWorker).to have_received(:perform_async).with(admin.id, user.id)
+      expect(request.flash[:success]).to include("This user is being banished in the background")
     end
   end
 

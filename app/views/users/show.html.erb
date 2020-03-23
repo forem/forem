@@ -172,7 +172,7 @@
 
 <div class="home sub-home" id="index-container"
      data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
-     data-algolia-tag="<%= "user_#{@user.id}" %>"
+     data-tag="<%= "user_#{@user.id}" %>"
      data-feed="<%= params[:timeframe] || "base-feed" %>"
      data-articles-since="0">
   <%= render "users/sidebar" %>

@@ -16,6 +16,8 @@ module Search
     attribute :video_duration_string, &:video_duration_in_minutes
     attribute :video_duration_in_minutes, &:video_duration_in_minutes_integer
 
+    attribute :readable_publish_date_string, &:readable_publish_date
+
     attribute :flare_tag_hash, if: proc { |a| a.flare_tag.present? }, &:flare_tag
 
     attribute :tags do |article|

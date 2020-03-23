@@ -4,7 +4,7 @@
 <div id="query-wrapper"></div>
 <div class="home sub-home" id="index-container"
      data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
-     data-algolia-tag=""
+     data-tag=""
      data-feed="<%= params[:timeframe] || "base-feed" %>"
      data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>">
   <%= render "articles/search/sidebar" %>
@@ -21,7 +21,7 @@
   </div>
   <%= render "articles/search/sidebar_additional" %>
 </div>
-<%= render "articles/algolia_search" %>
+<%= render "articles/search" %>
 
 <%= render "stories/narrow_nav_menu" %>
 <%= render "stories/stories_list_script" %>
