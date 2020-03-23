@@ -10,14 +10,8 @@ class CollectionDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     articles: Field::HasMany,
     user: Field::BelongsTo,
-    organization: Field::BelongsTo,
     id: Field::Number,
-    title: Field::String,
     slug: Field::String,
-    description: Field::String,
-    main_image: Field::String,
-    social_image: Field::String,
-    published: Field::Boolean,
     created_at: Field::DateTime,
     updated_at: Field::DateTime
   }.freeze
@@ -30,7 +24,7 @@ class CollectionDashboard < Administrate::BaseDashboard
   COLLECTION_ATTRIBUTES = %i[
     articles
     user
-    organization
+    slug
     id
   ].freeze
 
@@ -39,14 +33,8 @@ class CollectionDashboard < Administrate::BaseDashboard
   SHOW_PAGE_ATTRIBUTES = %i[
     articles
     user
-    organization
     id
-    title
     slug
-    description
-    main_image
-    social_image
-    published
     created_at
     updated_at
   ].freeze
@@ -57,12 +45,7 @@ class CollectionDashboard < Administrate::BaseDashboard
   FORM_ATTRIBUTES = %i[
     articles
     user
-    organization
-    title
     slug
-    description
-    main_image
-    social_image
     published
   ].freeze
 

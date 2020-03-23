@@ -1,4 +1,13 @@
 class Collection < ApplicationRecord
+  self.ignored_columns = %w[
+    description
+    main_image
+    organization_id
+    published
+    social_image
+    title
+  ]
+
   has_many :articles
   belongs_to :user
   belongs_to :organization, optional: true
