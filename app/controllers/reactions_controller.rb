@@ -65,7 +65,9 @@ class ReactionsController < ApplicationController
       result = destroy_reaction(reaction)
 
       if reaction.negative? && current_user.auditable?
-        notify(:moderator, current_user, __method__) { cleanse_for_audit(params.dup) }
+        updated_params = params.dup
+        updated_params[:action] = "destroy"
+        notify(:moderator, current_user, __method__) { cleanse_for_audit(updated_params) }
       end
     else
       reaction = build_reaction(category)

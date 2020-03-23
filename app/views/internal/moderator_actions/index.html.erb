@@ -5,6 +5,7 @@
     <tr>
       <th scope="col">ID</th>
       <th scope="col">User</th>
+      <th scope="col">Action</th>
       <th scope="col">Data</th>
       <th scope="col">Date</th>
     </tr>
@@ -14,6 +15,7 @@
       <tr>
         <td><%= action.id %></td>
         <td><%= link_to action.user.username, internal_user_path(action.user_id) %></td>
+        <td><%= "#{action.data['action'].humanize} #{action.data['controller'].humanize.singularize.titleize}" %></td>
         <td><%= action.data %></td>
         <td><%= action.created_at %></td>
       </tr>
