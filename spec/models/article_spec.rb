@@ -32,7 +32,7 @@ RSpec.describe Article, type: :model do
     describe "#after_commit" do
       it "on update enqueues job to index article to elasticsearch" do
         article.save
-        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, article.id]) do
+        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, article.search_id]) do
           article.save
         end
       end
@@ -40,7 +40,7 @@ RSpec.describe Article, type: :model do
       it "on destroy enqueues job to delete article from elasticsearch" do
         article = create(:article)
 
-        sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, article.id]) do
+        sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, article.search_id]) do
           article.destroy
         end
       end
@@ -54,6 +54,12 @@ RSpec.describe Article, type: :model do
       end
 
       it { is_expected.to validate_presence_of(:slug) }
+    end
+
+    describe "#search_id" do
+      it "returns article_ID" do
+        expect(article.search_id).to eq("article_#{article.id}")
+      end
     end
 
     describe "#main_image_background_hex_color" do

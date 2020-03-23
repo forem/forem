@@ -268,6 +268,10 @@ class Article < ApplicationRecord
     end
   end
 
+  def search_id
+    "article_#{id}"
+  end
+
   def processed_description
     text_portion = body_text.present? ? body_text[0..100].tr("\n", " ").strip.to_s : ""
     text_portion = text_portion.strip + "..." if body_text.size > 100

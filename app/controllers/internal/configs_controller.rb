@@ -23,9 +23,9 @@ class Internal::ConfigsController < Internal::ApplicationController
       default_site_email social_networks_handle mascot_user_id
       campaign_hero_html_variant_name campaign_sidebar_enabled campaign_featured_tags
       campaign_sidebar_image
-      main_social_image favicon_url logo_svg primary_sticker_image_url
+      main_social_image favicon_url logo_svg logo_png primary_sticker_image_url
       rate_limit_follow_count_daily
-      ga_view_id ga_fetch_rate community_description
+      ga_view_id ga_fetch_rate community_description authentication_providers
       mailchimp_newsletter_id mailchimp_sustaining_members_id
       mailchimp_tag_moderators_id mailchimp_community_moderators_id
       periodic_email_digest_max periodic_email_digest_min suggested_tags
@@ -43,6 +43,7 @@ class Internal::ConfigsController < Internal::ApplicationController
   def clean_up_params
     config = params[:site_config]
     config[:suggested_tags] = config[:suggested_tags].downcase.delete(" ") if config[:suggested_tags]
+    config[:authentication_providers] = config[:authentication_providers].downcase.delete(" ") if config[:authentication_providers]
     config[:sidebar_tags] = config[:sidebar_tags].downcase.delete(" ") if config[:sidebar_tags]
   end
 

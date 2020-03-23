@@ -1,11 +1,12 @@
 # we use this to be able to increase the size of the seeded DB at will
 # eg.: `SEEDS_MULTIPLIER=2 rails db:seed` would double the amount of data
 SEEDS_MULTIPLIER = [1, ENV["SEEDS_MULTIPLIER"].to_i].max
+counter = 0
 Rails.logger.info "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}"
 
 ##############################################################################
 
-Rails.logger.info "1. Creating Organizations"
+Rails.logger.info "#{counter += 1}. Creating Organizations"
 
 3.times do
   Organization.create!(
@@ -26,7 +27,7 @@ end
 
 num_users = 10 * SEEDS_MULTIPLIER
 
-Rails.logger.info "2. Creating #{num_users} Users"
+Rails.logger.info "#{counter += 1}. Creating #{num_users} Users"
 
 User.clear_index!
 
@@ -48,7 +49,11 @@ num_users.times do |i|
     password: "password",
   )
 
-  user.add_role(roles[rand(0..roles.length)]) # includes chance of having no role
+  if i == 0
+    user.add_role(:trusted) # guarantee at least one moderator
+  else
+    user.add_role(roles[rand(0..roles.length)]) # includes chance of having no role
+  end
 
   Identity.create!(
     provider: "twitter",
@@ -65,9 +70,30 @@ num_users.times do |i|
   )
 end
 
+Organization.find_each do |organization|
+  admins = []
+  admin_id = User.where.not(id: admins).order(Arel.sql("RANDOM()")).first.id
+
+  OrganizationMembership.create!(
+    user_id: admin_id,
+    organization_id: organization.id,
+    type_of_user: "admin",
+  )
+
+  admins << admin_id
+
+  2.times do
+    OrganizationMembership.create!(
+      user_id: User.where.not(id: OrganizationMembership.pluck(:user_id)).order(Arel.sql("RANDOM()")).first.id,
+      organization_id: organization.id,
+      type_of_user: "member",
+    )
+  end
+end
+
 ##############################################################################
 
-Rails.logger.info "3. Creating Tags"
+Rails.logger.info "#{counter += 1}. Creating Tags"
 
 tags = %w[beginners career computerscience git go
           java javascript linux productivity python security webdev]
@@ -85,7 +111,7 @@ end
 
 num_articles = 25 * SEEDS_MULTIPLIER
 
-Rails.logger.info "4. Creating #{num_articles} Articles"
+Rails.logger.info "#{counter += 1}. Creating #{num_articles} Articles"
 
 Article.clear_index!
 
@@ -119,7 +145,7 @@ end
 
 num_comments = 30 * SEEDS_MULTIPLIER
 
-Rails.logger.info "5. Creating #{num_comments} Comments"
+Rails.logger.info "#{counter += 1}. Creating #{num_comments} Comments"
 
 num_comments.times do
   attributes = {
@@ -134,7 +160,7 @@ end
 
 ##############################################################################
 
-Rails.logger.info "6. Creating Podcasts"
+Rails.logger.info "#{counter += 1}. Creating Podcasts"
 
 image_file = Rails.root.join("spec/support/fixtures/images/image1.jpeg")
 
@@ -202,7 +228,7 @@ end
 
 ##############################################################################
 
-Rails.logger.info "7. Creating Broadcasts and Welcome Thread"
+Rails.logger.info "#{counter += 1}. Creating Broadcasts and Welcome Thread"
 
 # TODO: [@thepracticaldev/delightful] Remove this once we have launched welcome notifications.
 Broadcast.create!(
@@ -248,7 +274,7 @@ Article.create!(
 
 ##############################################################################
 
-Rails.logger.info "8. Creating Chat Channels and Messages"
+Rails.logger.info "#{counter += 1}. Creating Chat Channels and Messages"
 
 %w[Workshop Meta General].each do |chan|
   ChatChannel.create!(
@@ -265,7 +291,9 @@ Message.create!(
   message_markdown: "This is **awesome**",
 )
 
-Rails.logger.info "9. Creating HTML Variants"
+##############################################################################
+
+Rails.logger.info "#{counter += 1}. Creating HTML Variants"
 
 HtmlVariant.create!(
   name: rand(100).to_s,
@@ -277,7 +305,9 @@ HtmlVariant.create!(
   user_id: User.first.id,
 )
 
-Rails.logger.info "10. Creating Badges"
+##############################################################################
+
+Rails.logger.info "#{counter += 1}. Creating Badges"
 
 Badge.create!(
   title: Faker::Lorem.word,
@@ -285,7 +315,11 @@ Badge.create!(
   badge_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
 )
 
-Rails.logger.info "11. Creating FeedbackMessages"
+##############################################################################
+
+Rails.logger.info "#{counter += 1}. Creating FeedbackMessages"
+
+mod = User.first
 
 FeedbackMessage.create!(
   reporter: User.last,
@@ -296,7 +330,7 @@ FeedbackMessage.create!(
 )
 
 FeedbackMessage.create!(
-  reporter: User.first,
+  reporter: mod,
   feedback_type: "abuse-reports",
   message: Faker::Lorem.sentence,
   reported_url: "example.com",
@@ -304,7 +338,25 @@ FeedbackMessage.create!(
   status: "Open",
 )
 
-Rails.logger.info "12. Creating Classified listings"
+Reaction.create!(
+  category: "vomit",
+  reactable_id: User.last.id,
+  reactable_type: "User",
+  user_id: mod.id,
+)
+
+3.times do
+  Reaction.create!(
+    category: "vomit",
+    reactable_id: Article.order(Arel.sql("RANDOM()")).first.id,
+    reactable_type: "Article",
+    user_id: mod.id,
+  )
+end
+
+##############################################################################
+
+Rails.logger.info "#{counter += 1}. Creating Classified Listings"
 
 users = User.order(Arel.sql("RANDOM()")).to_a
 users.each { |user| Credit.add_to(user, rand(100)) }
@@ -319,13 +371,30 @@ listings_categories.each_with_index do |category, index|
       title: Faker::Lorem.sentence,
       body_markdown: Faker::Markdown.random,
       location: Faker::Address.city,
+      organization_id: user.organizations.first&.id,
       category: category,
       contact_via_connect: true,
       published: true,
       bumped_at: Time.current,
+      tag_list: Tag.order(Arel.sql("RANDOM()")).first(2).pluck(:name),
     )
   end
 end
+
+##############################################################################
+
+Rails.logger.info "#{counter += 1}. Creating Pages"
+
+5.times do
+  Page.create!(
+    title: Faker::Hacker.say_something_smart,
+    body_markdown: Faker::Markdown.random,
+    slug: Faker::Internet.slug,
+    description: Faker::Books::Dune.quote,
+    template: %w[contained full_within_layout].sample,
+  )
+end
+
 ##############################################################################
 
 puts <<-ASCII # rubocop:disable Rails/Output

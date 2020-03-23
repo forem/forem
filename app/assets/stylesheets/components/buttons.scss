@@ -1,4 +1,4 @@
-@import '../vars/variables';
+@import '../config/import';
 
 // Basic styling
 .crayons-btn {
@@ -19,81 +19,59 @@
 
 // Styles
 .crayons-btn {
-  background-color: $dolphin;
-  color: $snowflake;
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-color);
 
   &--disabled,
   &[disabled] {
-    color: rgba($snowflake, 0.8);
-    background-color: $dolphin-lighter;
+    opacity: 0.6;
   }
 
   &:hover {
-    background-color: $dolphin-darker;
+    background-color: var(--button-primary-bg-hover);
+    color: var(--button-primary-color-hover);
   }
 
   &--secondary {
-    background-color: $smoke-20;
-    color: $smoke-80;
-
-    &--disabled,
-    &[disabled] {
-      color: $smoke-40;
-      background-color: $smoke-10;
-    }
+    background-color: var(--button-secondary-bg);
+    color: var(--button-secondary-color);
 
     &:hover {
-      color: $smoke-100;
-      background-color: $smoke-30;
+      background-color: var(--button-secondary-bg-hover);
+      color: var(--button-secondary-color-hover);
     }
   }
 
   &--outlined {
-    border: 2px solid $smoke-30;
-    color: $smoke-80;
+    padding: 0.375em 1em;
     background-color: transparent;
-
-    &--disabled,
-    &[disabled] {
-      color: $smoke-40;
-      border-color: $smoke-20;
-      background-color: transparent;
-    }
+    border: 2px solid var(--button-outlined-bg);
+    color: var(--button-outlined-color);
 
     &:hover {
-      color: $smoke-100;
-      border-color: $smoke-40;
       background-color: transparent;
+      color: var(--button-outlined-color-hover);
+      border-color: var(--button-outlined-bg-hover);
     }
   }
 
   &--danger {
-    background-color: $raspberry;
-
-    &--disabled,
-    &[disabled] {
-      color: rgba($snowflake, 0.8);
-      background-color: $raspberry-lighter;
-    }
+    background-color: var(--accent-danger);
+    color: var(--base-inverted);
 
     &:hover {
-      background-color: $raspberry-darker;
+      background-color: var(--accent-danger-darker);
+      color: var(--base-inverted);
     }
   }
 
   &--text {
     background-color: transparent;
-    color: $dolphin;
-
-    &--disabled,
-    &[disabled] {
-      background-color: transparent;
-      color: $dolphin-lighter;
-    }
+    color: var(--link-brand);
 
     &:hover {
       background-color: transparent;
-      color: $dolphin-darker;
+      color: var(--link-brand-hover);
     }
   }
 }

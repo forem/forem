@@ -1,5 +1,6 @@
 @import 'variables';
 @import 'mixins';
+@import 'functions';
 
 %kbd {
   display: inline-block;
@@ -307,7 +308,7 @@ a.header-link {
         height: calc(10vw + 118px);
       }
       &.preview-loading {
-        background: white url(image_path('loading-ellipsis.svg')) no-repeat
+        background: white url(image-src('loading-ellipsis.svg')) no-repeat
           center center;
         @include themeable(background-color, theme-container-background, white);
         @include themeable(color, theme-container-background, white);
@@ -333,18 +334,26 @@ a.header-link {
       width: calc(100% - 80px);
       margin: 19px auto 8px;
       border: 1px solid #dbdbdb;
+      > * {
+        margin: 4px 0px calc(1.1vw + 10px); // ok, i'm not a big fan of doing this weird math calc() but this is what we do for real comments sooo 🤷‍♂️
+      }
+
       p.loading-message {
         opacity: 0.6;
       }
+
       pre {
         overflow-x: auto;
       }
+
       kbd {
         @extend %kbd;
       }
+
       code {
         word-wrap: break-word;
       }
+
       .article-body-image-wrapper img {
         max-width: 100%;
       }
@@ -411,7 +420,7 @@ a.header-link {
       textarea {
         color: lighten($dark-gray, 25%);
         border: 1px solid $light-green;
-        background: white url(image_path('loading-ellipsis.svg')) no-repeat
+        background: white url(image-src('loading-ellipsis.svg')) no-repeat
           center center;
         background-size: 50px;
       }

@@ -1,0 +1,38 @@
+:root {
+  --theme-background: #0a0a0a;
+  --theme-color: #42ff87;
+  --theme-opposite-color: #0d1219;
+  --theme-logo-background: #42ff87;
+  --theme-logo-color: #0a0a0a;
+  --theme-code-background: #29292e;
+  --theme-code-color: #42ff87;
+  --theme-reaction-background: #202c3d;
+  --theme-anchor-color: #e24ec1;
+  --theme-secondary-color: #ebebeb;
+  --theme-secondary-color-border: 1px solid #222f3f;
+  --theme-top-bar-background: #1c1c1c;
+  --theme-top-bar-background-hover: #27384c;
+  --theme-top-bar-color: #fff;
+  --theme-top-bar-search-background: #0a0a0a;
+  --theme-top-bar-search-color: #42ff87;
+  --theme-top-bar-write-background: #0a0a0a;
+  --theme-top-bar-write-color: #42ff87;
+  --theme-container-background: #030303;
+  --theme-container-accent-background: #000f0b;
+  --theme-invert-image: invert();
+  --theme-container-background-hover: #1c2c3f;
+  --theme-gradient-background: linear-gradient(
+    to right,
+    #010f06 8%,
+    #121a16 18%,
+    #010f06 33%
+  );
+  --theme-container-color: #42ff87;
+  --theme-container-box-shadow: none;
+  --theme-container-border: 1px solid #22303f;
+  --theme-subtle-border: 1px solid #1f2c3a;
+  --theme-social-icon-invert: invert(100);
+  --theme-current-article-background: #1143ca;
+  --theme-series-article-background: #006655;
+  --theme-series-article-hover: #004035;
+}

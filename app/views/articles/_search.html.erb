@@ -17,7 +17,7 @@
   var params = getQueryParams(document.location.search);
 
   // var query = escape(params.q);
-  function algoliaMain() {
+  function searchMain() {
     var query = filterXSS(params.q);
     var filters = filterXSS(params.filters || "");
     document.getElementById("substories").innerHTML = '<div class="query-results-nothing"><div class="query-results-loader"></div><br/></div>'
@@ -112,11 +112,11 @@
       });
   }
 
-  var waitingOnAlgolia = setInterval(function () {
+  var waitingOnSearch = setInterval(function () {
     if (typeof algoliasearch == 'function' && typeof filterXSS == 'function' && typeof buildArticleHTML == 'function') {
-      clearInterval(waitingOnAlgolia);
+      clearInterval(waitingOnSearch);
       if (document.querySelectorAll('.search-results-loaded').length == 0) {
-        algoliaMain();
+        searchMain();
       }
     }
   }, 1);

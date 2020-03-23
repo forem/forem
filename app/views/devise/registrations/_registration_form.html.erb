@@ -74,12 +74,16 @@
     <h1>Great to have you</h1>
   <% end %>
   <div class="links">
-    <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="sign-up-link" data-no-instant>
-      <%= inline_svg_tag("twitter-logo.svg", class: "icon-img", aria: true, title: "twitter logo") %> Sign In with Twitter
-    </a>
-    <a href="/users/auth/github?state=join-club-page_basic" class="sign-up-link" data-no-instant>
-      <%= inline_svg_tag("github-logo.svg", class: "icon-img", aria: true, title: "github logo") %> Sign In with GitHub
-    </a>
+    <% if SiteConfig.auth_allowed?("twitter") %>
+      <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="sign-up-link" data-no-instant>
+        <%= inline_svg_tag("twitter-logo.svg", class: "icon-img", aria: true, title: "twitter logo") %> Sign In with Twitter
+      </a>
+    <% end %>
+    <% if SiteConfig.auth_allowed?("github") %>
+      <a href="/users/auth/github?state=join-club-page_basic" class="sign-up-link" data-no-instant>
+        <%= inline_svg_tag("github-logo.svg", class: "icon-img", aria: true, title: "github logo") %> Sign In with GitHub
+      </a>
+    <% end %>
     <p><em>We require social login to prevent abuse.</em></p>
   </div>
   <p>Open Source 😇</p>

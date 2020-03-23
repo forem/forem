@@ -28,7 +28,7 @@
 
 <div class="home" id="index-container"
      data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
-     data-algolia-tag=""
+     data-tag=""
      data-feed="<%= params[:timeframe] || "base-feed" %>"
      data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>">
   <%= render "podcast_episodes/sidebar" %>
