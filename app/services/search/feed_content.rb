@@ -37,7 +37,7 @@ module Search
 
       def timestamps_hash(hit)
         if hit.dig("_source", "published_at")
-          published_at_timestamp = DateTime.parse(hit.dig("_source", "published_at"))
+          published_at_timestamp = DateTime.parse(hit.dig("_source", "published_at")).in_time_zone
           {
             "published_at_int" => published_at_timestamp.to_i,
             "published_timestamp" => published_at_timestamp
