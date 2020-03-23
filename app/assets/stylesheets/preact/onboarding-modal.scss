@@ -22,7 +22,7 @@
   z-index: 1;
 
   @media screen and (min-width: 600px) {
-    border: solid;
+    border-width: 2px;
     min-height: auto;
   }
 }
@@ -163,6 +163,7 @@
   @media screen and (min-width: $breakpoint-s) {
     max-height: 500px;
     overflow-y: scroll;
+    position: relative;
   }
 }
 
