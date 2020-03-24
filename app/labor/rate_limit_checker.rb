@@ -14,7 +14,8 @@ class RateLimitChecker
 
     if result
       @action = action
-      ping_admins
+
+      Slack::Messengers::RateLimit.call(user: user, action: action)
     end
     result
   end
@@ -50,10 +51,6 @@ class RateLimitChecker
 
   def check_follow_account_limit
     user_today_follow_count > SiteConfig.rate_limit_follow_count_daily
-  end
-
-  def ping_admins
-    RateLimitCheckerWorker.perform_async(user.id, action)
   end
 
   def user_today_follow_count
