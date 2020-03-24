@@ -34,6 +34,7 @@ module Search
         record_difference: record_difference,
         percentage_difference: percentage_difference,
         margin_of_error: margin_of_error,
+        use_estimated_count: use_estimated_count,
         action: "record_count"
       }
 

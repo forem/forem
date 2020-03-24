@@ -32,7 +32,7 @@ RSpec.describe Search::ReconciliationWorker, type: :worker, elasticsearch: true 
 
       expect { worker.perform(search_tag.to_s, 1.0) }.not_to raise_error
 
-      tags = { search_class: search_tag, db_count: 1, index_count: 2, record_difference: 1, percentage_difference: 1.0, margin_of_error: 1.0, action: "record_count", record_count: "match" }
+      tags = { search_class: search_tag, db_count: 1, index_count: 2, record_difference: 1, percentage_difference: 1.0, margin_of_error: 1.0, use_estimated_count: false, action: "record_count", record_count: "match" }
 
       expect(DatadogStatsClient).to have_received(:increment).with(
         "elasticsearch",
@@ -58,7 +58,7 @@ RSpec.describe Search::ReconciliationWorker, type: :worker, elasticsearch: true 
 
       expect { worker.perform(search_tag.to_s) }.to raise_error(Search::ReconciliationWorker::ReconciliationMismatch)
 
-      tags = { search_class: search_tag, db_count: 1, index_count: 2, record_difference: 1, percentage_difference: 1.0, margin_of_error: 0, action: "record_count", record_count: "mismatch" }
+      tags = { search_class: search_tag, db_count: 1, index_count: 2, record_difference: 1, percentage_difference: 1.0, margin_of_error: 0, use_estimated_count: false, action: "record_count", record_count: "mismatch" }
 
       expect(DatadogStatsClient).to have_received(:increment).with(
         "elasticsearch",
@@ -75,7 +75,7 @@ RSpec.describe Search::ReconciliationWorker, type: :worker, elasticsearch: true 
       allow(DatadogStatsClient).to receive(:increment)
       allow(Search::Base).to receive(:db_count).and_return(1)
 
-      tags = { search_class: Search::Base, db_count: 1, index_count: 1, record_difference: 0, percentage_difference: 0.00, margin_of_error: 0, action: "record_count", record_count: "match" }
+      tags = { search_class: Search::Base, db_count: 1, index_count: 1, record_difference: 0, percentage_difference: 0.00, margin_of_error: 0, use_estimated_count: false, action: "record_count", record_count: "match" }
 
       worker.perform(Search::Base.to_s)
 
