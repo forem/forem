@@ -40,7 +40,7 @@ module Search
           DatadogStatsClient.increment("elasticsearch", tags: tags)
 
           # This will force the job to retry
-          raise DbAndEsRecordsCountMismatch, "#{search_class} record count mismatch"
+          raise ReconciliationMismatch, "#{search_class} record count mismatch"
         else
           tags[:record_count] = "match"
           DatadogStatsClient.increment("elasticsearch", tags: tags)
@@ -48,7 +48,7 @@ module Search
       end
     end
 
-    class DbAndEsRecordsCountMismatch < StandardError; end
+    class ReconciliationMismatch < StandardError; end
 
     private
 

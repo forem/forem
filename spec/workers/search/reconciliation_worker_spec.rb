@@ -28,7 +28,7 @@ RSpec.describe Search::ReconciliationWorker, type: :worker, elasticsearch: true 
       Search::Tag.refresh_index
       tag.delete
 
-      expect { worker.perform }.to raise_error(Search::ReconciliationWorker::DbAndEsRecordsCountMismatch)
+      expect { worker.perform }.to raise_error(Search::ReconciliationWorker::ReconciliationMismatch)
 
       tags = { search_class: Search::Tag, db_count: 0, index_count: 1, record_difference: 1, margin_of_error: 0, action: "record_count", record_count: "mismatch" }
 
