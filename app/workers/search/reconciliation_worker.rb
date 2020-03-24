@@ -63,7 +63,7 @@ module Search
     def db_count(search_class, use_estimated_count)
       model = search_class.to_s.demodulize.safe_constantize
 
-      return model.estimated_count if use_estimated_count && model.respond_to?(:estimated_count)
+      return model.estimated_count if use_estimated_count && model&.estimated_count
 
       return model.count if model.respond_to?(:count)
 
