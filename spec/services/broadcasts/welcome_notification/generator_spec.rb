@@ -9,6 +9,11 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
 
     before do
       allow(User).to receive(:mascot_account).and_return(mascot_account)
+      SiteConfig.staff_user_id = mascot_account.id
+    end
+
+    after do
+      SiteConfig.staff_user_id = 1
     end
 
     context "when sending a set_up_profile notification" do
@@ -20,7 +25,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
 
     context "when sending a welcome_thread notification" do
       before do
-        welcome_thread_article = create(:article, title: "Welcome Thread - v0", published: true, tags: "welcome")
+        welcome_thread_article = create(:article, title: "Welcome Thread - v0", published: true, tags: "welcome", user: mascot_account)
         create(:comment, commentable: welcome_thread_article, commentable_type: "Article", user: user)
       end
 
