@@ -166,9 +166,6 @@ module ApplicationHelper
   # @example Add a path
   #  app_url("internal") #=> "https://dev.to/internal"
   def app_url(uri = nil)
-    base_url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
-    return base_url unless uri
-
-    URI.parse(base_url).merge(uri).to_s
+    App.url(uri)
   end
 end
