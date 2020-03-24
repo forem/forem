@@ -1,5 +1,7 @@
 @import 'variables';
 @import 'mixins';
+@import 'functions';
+
 .notifications-index {
   .home {
     .articles-list {
@@ -349,7 +351,7 @@
             textarea {
               color: lighten($dark-gray, 25%);
               border: 1px solid $light-green;
-              background: #fff url(image_path('loading-ellipsis.svg')) no-repeat
+              background: #fff url(image-src('loading-ellipsis.svg')) no-repeat
                 center center;
               background-size: 50px;
             }

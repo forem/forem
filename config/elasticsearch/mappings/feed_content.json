@@ -99,6 +99,9 @@
     "readable_publish_date": {
       "type": "date"
     },
+    "readable_publish_date_string": {
+      "type": "keyword"
+    },
     "reading_time": {
       "type": "integer"
     },
@@ -110,6 +113,9 @@
     },
     "search_score": {
       "type": "integer"
+    },
+    "slug": {
+      "type": "keyword"
     },
     "subtitle": {
       "type": "text"

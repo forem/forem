@@ -240,22 +240,33 @@ class StoriesController < ApplicationController
   end
 
   def assign_article_show_variables
+    not_found if permission_denied?
+    not_found unless @article.user
+
     @article_show = true
     @variant_number = params[:variant_version] || (user_signed_in? ? 0 : rand(2))
-    assign_user_and_org
+
+    @user = @article.user
+    @organization = @article.organization
+
+    if @article.collection
+      @collection = @article.collection
+
+      # we need to make sure that articles that were cross posted after their
+      # original publication date appear in the correct order in the collection,
+      # considering non cross posted articles with a more recent publication date
+      @collection_articles = @article.collection.articles.
+        published.
+        order(Arel.sql("COALESCE(crossposted_at, published_at) ASC"))
+    end
+
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
     assign_second_and_third_user
-    not_found if permission_denied?
     @comment = Comment.new(body_markdown: @article&.comment_template)
   end
 
   def permission_denied?
     !@article.published && params[:preview] != @article.password
-  end
-
-  def assign_user_and_org
-    @user = @article.user || not_found
-    @organization = @article.organization if @article.organization_id.present?
   end
 
   def assign_second_and_third_user

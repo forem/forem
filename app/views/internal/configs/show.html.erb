@@ -163,7 +163,15 @@
                 <div class="alert alert-info">Used as the site favicon</div>
                 <img alt="favicon" class="preview" src="<%= SiteConfig.favicon_url %>" />
               </div>
-
+              <div class="form-group">
+                <%= f.label :logo_png %>
+                <%= f.text_field :logo_png,
+                                 class: "form-control",
+                                 value: SiteConfig.logo_png,
+                                 placeholder: "https://image.url/image.png" %>
+                <div class="alert alert-info">Minimum 1024px, used for PWA etc.</div>
+                <img alt="favicon" class="preview" src="<%= SiteConfig.logo_png %>" />
+              </div>
               <div class="form-group">
                 <%= f.label :logo_svg %>
                 <%= f.text_area :logo_svg,
@@ -173,6 +181,22 @@
                                 placeholder: "<svg ...></svg>" %>
                 <div class="alert alert-info">Used as the SVG logo of the community</div>
                 <%= @logo_svg %>
+              </div>
+
+              <%= f.label :primary_sticker_image_url %>
+              <%= f.text_field :primary_sticker_image_url,
+                               class: "form-control",
+                               value: SiteConfig.primary_sticker_image_url,
+                               placeholder: "https://image.url" %>
+              <div class="row mt-2">
+                <div class="col-12">
+                  <img alt="main social image" class="img-fluid" src="<%= SiteConfig.primary_sticker_image_url %>" />
+                </div>
+                <div class="col-12">
+                  <div class="alert alert-info">
+                    <h5>Used as the primary sticker image</h5>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

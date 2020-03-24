@@ -1,3 +1,4 @@
+# TODO: remove this when Sidekiq has exhausted RateLimitCheckerWorker jobs
 class PingAdmins
   def initialize(user, action = "unknown")
     @user = user

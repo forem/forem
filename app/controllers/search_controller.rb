@@ -25,6 +25,7 @@ class SearchController < ApplicationController
     sort_by
     tag_names
     user_id
+    class_name
   ].freeze
 
   def tags
@@ -52,18 +53,34 @@ class SearchController < ApplicationController
   end
 
   def users
-    user_docs = Search::User.search_documents(params: user_params.to_h)
-
-    render json: { result: user_docs }
+    render json: { result: user_search }
   end
 
   def feed_content
-    feed_docs = Search::FeedContent.search_documents(params: feed_params.to_h)
+    feed_docs = if params[:class_name].blank?
+                  # If we are in the main feed and not filtering by type return
+                  # all articles, podcast episodes, and users
+                  feed_content_search.concat(user_search)
+                elsif params[:class_name] == "User"
+                  # No need to check for articles or podcast episodes if we know we only want users
+                  user_search
+                else
+                  # if params[:class_name] == PodcastEpisode or Article then skip user lookup
+                  feed_content_search
+                end
 
     render json: { result: feed_docs }
   end
 
   private
+
+  def feed_content_search
+    Search::FeedContent.search_documents(params: feed_params.to_h)
+  end
+
+  def user_search
+    Search::User.search_documents(params: user_params.to_h)
+  end
 
   def chat_channel_params
     accessible = %i[

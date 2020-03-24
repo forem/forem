@@ -90,10 +90,22 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.favicon_url).to eq(expected_image_url)
         end
 
+        it "updates logo_png" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { logo_png: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.logo_png).to eq(expected_image_url)
+        end
+
         it "updates logo_svg" do
           expected_image_url = "https://dummyimage.com/300x300"
           post "/internal/config", params: { site_config: { logo_svg: expected_image_url }, confirmation: confirmation_message }
           expect(SiteConfig.logo_svg).to eq(expected_image_url)
+        end
+
+        it "updates primary_sticker_image_url" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { primary_sticker_image_url: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.primary_sticker_image_url).to eq(expected_image_url)
         end
 
         it "rejects update without proper confirmation" do

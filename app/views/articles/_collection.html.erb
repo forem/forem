@@ -1,33 +1,34 @@
-<% @collection = @article.collection %>
-<% @collection_size = @collection.articles.published.size %>
-<% if @collection.present? && @collection_size > 1 %>
+<% collection_size = articles.size %>
+<% slugs = articles.pluck(:slug) %>
+
+<% if collection && collection_size > 1 %>
   <div class="article-collection-wrapper article-collection-wrapper-<%= position %>">
-    <% if @collection.slug.present? %>
-      <p><%= @collection.slug %> (<%= @collection_size %> Part Series)</p>
+    <% if collection.slug.present? %>
+      <p><%= collection.slug %> (<%= collection_size %> Part Series)</p>
     <% else %>
-      <p><%= @collection_size %> Part Series</p>
+      <p><%= collection_size %> Part Series</p>
     <% end %>
     <div class="article-collection">
-      <% @collection.articles.published.order("published_at ASC").each_with_index do |article, i| %>
-        <% if @collection_size > 5 && i == 2 %>
+      <% articles.each_with_index do |article, i| %>
+        <% if collection_size > 5 && i == 2 %>
           <a
-            href="<%= article.path if article.published %>"
-            class="<%= "current-article" if @collection.articles.published.order("published_at ASC").pluck(:slug)[2..@collection_size - 3].include?(@article.slug) %> collection-link-inbetween"
+            href="<%= article.path %>"
+            class="<%= "current-article" if slugs[2..collection_size - 3].include?(rendered_article.slug) %> collection-link-inbetween"
             data-preload-image="<%= cloud_cover_url(article.main_image) %>"
             id="collection-link-inbetween"
             data-no-instant
             title="View more">
-            3 ... <%= @collection_size - 2 %>
+            3 ... <%= collection_size - 2 %>
           </a>
-
         <% end %>
-          <a
-            href="<%= article.path if article.published %>"
-            class="<%= collection_link_class(@article, article) %> <%= "collection-link-hidden" if @collection_size > 5 && (i > 1 && i < @collection_size - 2) %>"
-            data-preload-image="<%= cloud_cover_url(article.main_image) %>"
-            title="Published <%= article.readable_publish_date %>">
-            <%= i + 1 %>) <%= article.title %>
-          </a>
+
+        <a
+          href="<%= article.path %>"
+          class="<%= collection_link_class(rendered_article, article) %> <%= "collection-link-hidden" if collection_size > 5 && (i > 1 && i < collection_size - 2) %>"
+          data-preload-image="<%= cloud_cover_url(article.main_image) %>"
+          title="Published <%= article.readable_publish_date %>">
+          <%= i + 1 %>) <%= article.title %>
+        </a>
       <% end %>
     </div>
   </div>

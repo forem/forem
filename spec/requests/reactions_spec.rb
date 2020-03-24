@@ -203,6 +203,30 @@ RSpec.describe "Reactions", type: :request do
       end
     end
 
+    context "when signed in as admin" do
+      let_it_be(:admin) { create(:user, :admin) }
+
+      before do
+        sign_in admin
+      end
+
+      it "automatically approves vomits on users" do
+        post "/reactions", params: user_params
+
+        reaction = Reaction.find_by(reactable_id: user.id)
+        expect(reaction.category).to eq("vomit")
+        expect(reaction.status).to eq("confirmed")
+      end
+
+      it "automatically approves vomits on articles" do
+        post "/reactions", params: article_params.merge(category: "vomit")
+
+        reaction = Reaction.find_by(reactable_id: article.id)
+        expect(reaction.category).to eq("vomit")
+        expect(reaction.status).to eq("confirmed")
+      end
+    end
+
     context "when part of field test" do
       before do
         sign_in user
