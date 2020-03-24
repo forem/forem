@@ -20,8 +20,23 @@
         Toggle
       </button>
     </div>
-    <div id="siteConfigBodyContainer" class="collapse show hide" aria-labelledby="siteConfigHeader">
+    <div id="siteConfigBodyContainer" class="collapse show hide p-3" aria-labelledby="siteConfigHeader">
       <%= form_for(SiteConfig.new, url: internal_config_path) do |f| %>
+
+        <div class="card mt-3">
+          <div class="card-header">Content</div>
+          <div class="card-body">
+            <div class="form-group">
+              <%= f.label :community_description, "Community description" %>
+              <%= f.text_field :community_description,
+                               class: "form-control",
+                               value: SiteConfig.community_description,
+                               placeholder: "A fabulous community of kind and welcoming people." %>
+              <div class="alert alert-info">Used in meta description tags etc.</div>
+            </div>
+          </div>
+        </div>
+
         <div class="card mt-3">
           <div class="card-header">Staff</div>
           <div class="card-body">
@@ -56,6 +71,20 @@
                                min: 1,
                                placeholder: "1" %>
               <div class="alert alert-info">User ID of the Mascot account</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <div class="card-header">Authentication</div>
+          <div class="card-body">
+            <div class="form-group">
+              <%= f.label :authentication_providers, "Authentication providers" %>
+              <%= f.text_field :authentication_providers,
+                               class: "form-control",
+                               value: SiteConfig.authentication_providers.join(","),
+                               placeholder: "List of valid providers: comma separated, letters only e.g. twitter,github" %>
+              <div class="alert alert-info">How can users sign in? (More options coming)</div>
             </div>
           </div>
         </div>
@@ -134,7 +163,15 @@
                 <div class="alert alert-info">Used as the site favicon</div>
                 <img alt="favicon" class="preview" src="<%= SiteConfig.favicon_url %>" />
               </div>
-
+              <div class="form-group">
+                <%= f.label :logo_png %>
+                <%= f.text_field :logo_png,
+                                 class: "form-control",
+                                 value: SiteConfig.logo_png,
+                                 placeholder: "https://image.url/image.png" %>
+                <div class="alert alert-info">Minimum 1024px, used for PWA etc.</div>
+                <img alt="favicon" class="preview" src="<%= SiteConfig.logo_png %>" />
+              </div>
               <div class="form-group">
                 <%= f.label :logo_svg %>
                 <%= f.text_area :logo_svg,
@@ -144,6 +181,22 @@
                                 placeholder: "<svg ...></svg>" %>
                 <div class="alert alert-info">Used as the SVG logo of the community</div>
                 <%= @logo_svg %>
+              </div>
+
+              <%= f.label :primary_sticker_image_url %>
+              <%= f.text_field :primary_sticker_image_url,
+                               class: "form-control",
+                               value: SiteConfig.primary_sticker_image_url,
+                               placeholder: "https://image.url" %>
+              <div class="row mt-2">
+                <div class="col-12">
+                  <img alt="main social image" class="img-fluid" src="<%= SiteConfig.primary_sticker_image_url %>" />
+                </div>
+                <div class="col-12">
+                  <div class="alert alert-info">
+                    <h5>Used as the primary sticker image</h5>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -303,6 +356,14 @@
               <div class="alert alert-info">Determines which tags are suggested to new users during onboarding (comma
                 separated, letters only)</div>
             </div>
+            <div class="form-group">
+              <%= f.label :sidebar_tags %>
+              <%= f.text_field :sidebar_tags,
+                               class: "form-control",
+                               value: SiteConfig.sidebar_tags.join(","),
+                               placeholder: "List of valid tags: comma separated, letters only e.g. help,discuss,explainlikeimfive,meta" %>
+              <div class="alert alert-info">Determines which tags are shown on the homepage righthand sidebar</div>
+            </div>
           </div>
         </div>
         <% if current_user.has_role?(:single_resource_admin, Config) %>
@@ -323,34 +384,36 @@
   </div>
 </div>
 
-<div class="row my-3" id="siteConfig">
-  <div class="card w-100">
-    <div class="card-header" id="appConfigHeader">
-      <h2 class="d-inline">Environment variables / AppConfig (readonly)</h2>
-      <button class="btn btn-secondary float-right" type="button" data-toggle="collapse"
-        data-target="#appConfigBodyContainer" aria-expanded="true" aria-controls="appConfigBodyContainer">
-        Toggle
-      </button>
-    </div>
-    <div id="appConfigBodyContainer" class="collapse show hide" aria-labelledby="appConfigHeader">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Variable</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% ENVied.config.variables.each do |v| %>
-          <% if v.group.in?(ENVied.required_groups) %>
-          <tr>
-            <td><%= v.name %></td>
-            <td style="max-width: 750px;"><%= ApplicationConfig[v.name] %></td>
-          </tr>
-          <% end %>
-          <% end %>
-        </tbody>
-      </table>
+<% if current_user.has_role?(:single_resource_admin, Config) %>
+  <div class="row my-3" id="siteConfig">
+    <div class="card w-100">
+      <div class="card-header" id="appConfigHeader">
+        <h2 class="d-inline">Environment variables / AppConfig (readonly)</h2>
+        <button class="btn btn-secondary float-right" type="button" data-toggle="collapse"
+          data-target="#appConfigBodyContainer" aria-expanded="true" aria-controls="appConfigBodyContainer">
+          Toggle
+        </button>
+      </div>
+      <div id="appConfigBodyContainer" class="collapse show hide" aria-labelledby="appConfigHeader">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Variable</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% ENVied.config.variables.each do |v| %>
+            <% if v.group.in?(ENVied.required_groups) %>
+            <tr>
+              <td><%= v.name %></td>
+              <td style="max-width: 750px;"><%= ApplicationConfig[v.name] %></td>
+            </tr>
+            <% end %>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-</div>
+<% end %>

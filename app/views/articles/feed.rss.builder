@@ -5,7 +5,7 @@ xml.rss version: "2.0" do
   xml.channel do
     xml.title @user ? @user.name : "DEV Community"
     xml.author @user ? @user.name : "DEV Community"
-    xml.description  @user ? @user.summary : "Where programmers share ideas and help each other grow."
+    xml.description  @user ? @user.summary : SiteConfig.community_description
     xml.link @user ? "https://dev.to" + @user.path : "https://dev.to"
     xml.language "en"
 

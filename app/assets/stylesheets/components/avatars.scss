@@ -1,4 +1,4 @@
-@import '../vars/variables';
+@import '../config/import';
 
 // avatar-logo() - Generates styles for Avatars or Logos component
 //
@@ -29,7 +29,8 @@
 
     &::after {
       content: '';
-      border: 1px solid rgba($smoke-100, 0.15);
+      border: 1px solid var(--body-color);
+      opacity: 0.15;
       width: 100%;
       height: 100%;
       position: absolute;
@@ -61,5 +62,5 @@
   }
 }
 
-@include avatar-logo('avatar', 100%, $smoke-60);
-@include avatar-logo('logo', $br-default, $snowflake);
+@include avatar-logo('avatar', 100%, var(--widget-color-tertiary));
+@include avatar-logo('logo', $br-default, var(--body-color-inverted));

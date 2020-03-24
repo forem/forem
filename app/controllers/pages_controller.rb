@@ -39,10 +39,6 @@ class PagesController < ApplicationController
     set_surrogate_key_header "badge_page"
   end
 
-  def onboarding
-    set_surrogate_key_header "onboarding_page"
-  end
-
   def report_abuse
     referer = URI(request.referer || "").path == "/serviceworker.js" ? nil : request.referer
     reported_url = params[:reported_url] || params[:url] || referer
@@ -85,6 +81,12 @@ class PagesController < ApplicationController
     @chat_channels = [@active_channel].to_json(
       only: %i[channel_name channel_type last_message_at slug status id],
     )
+  end
+
+  def crayons
+    @page = Page.find_by(slug: "crayons")
+    render :show if @page
+    set_surrogate_key_header "crayons_page"
   end
 
   private

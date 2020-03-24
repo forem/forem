@@ -113,6 +113,7 @@
         !url.href.includes('/social_previews') && // Skip for social previews
         !url.href.includes('/users/auth') && // Don't run on authentication.
         !url.href.includes('/enter') && // Don't run on registration.
+        !url.href.includes('/sitemap-') && // Don't run on registration.
         !url.href.includes('/welcome') && // Don't run on welcome reroutes.
 
         // Don't run on search endpoints

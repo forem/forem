@@ -1,0 +1,26 @@
+<% title "Welcome to #{ApplicationConfig['COMMUNITY_NAME']}" %>
+
+<style>
+  <% cache(cache_key_heroku_slug("onboarding-css"), expires_in: 10.hours) do %>
+    <%= Rails.application.assets["onboarding.css"].to_s.html_safe %>
+    <%= Rails.application.assets["preact/onboarding-modal.css"].to_s.html_safe %>
+  <% end %>
+  footer {
+    display: none;
+  }
+  .top-bar {
+    display: none;
+  }
+</style>
+
+<div id="onboarding-container">
+  <%= javascript_packs_with_chunks_tag "Onboarding", defer: true %>
+</div>
+
+<div id="terms" style="display: none;">
+  <%= render "pages/terms_text" %>
+</div>
+
+<div id="coc" style="display: none;">
+  <%= render "pages/coc_text" %>
+</div>

@@ -37,6 +37,16 @@ class Stories::FeedsController < ApplicationController
       feed.more_tag_weight_more_random_experiment
     when "more_comments_experiment"
       feed.more_comments_experiment
+    when "more_experience_level_weight_experiment"
+      feed.more_experience_level_weight_experiment
+    when "more_tag_weight_randomized_at_end_experiment"
+      feed.more_tag_weight_randomized_at_end_experiment
+    when "more_experience_level_weight_randomized_at_end_experiment"
+      feed.more_experience_level_weight_randomized_at_end_experiment
+    when "more_comments_randomized_at_end_experiment"
+      feed.more_comments_randomized_at_end_experiment
+    when "mix_of_everything_experiment" # mix of all experiments. New experiments also added. This is the "index fund" version.
+      feed.mix_of_everything_experiment
     else
       feed.default_home_feed(user_signed_in: true)
     end

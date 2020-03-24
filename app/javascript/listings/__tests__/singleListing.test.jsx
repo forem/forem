@@ -12,7 +12,7 @@ const listing = {
   slug: 'illo-iure-quos-perspiciatis-5hk7',
   title: 'Illo iure quos perspiciatis.',
   user_id: 7,
-  tag_list: ['go', 'git'],
+  tags: ['go', 'git'],
   author: {
     name: 'Mrs. Yoko Christiansen',
     username: 'mrschristiansenyoko',
@@ -78,7 +78,7 @@ describe('<SingleListing />', () => {
           .find('.single-classified-listing-tags')
           .childAt(0)
           .text(),
-      ).toEqual(listing.tag_list[0]);
+      ).toEqual(listing.tags[0]);
     });
 
     it('for listing category', () => {

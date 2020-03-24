@@ -41,19 +41,23 @@
         Sign In/Up
       </div>
     </a>
-    <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" data-no-instant>
-      <div class="option">
-        Via Twitter
-      </div>
-    </a>
-    <a href="/users/auth/github?state=navbar_basic" data-no-instant id="second-last-nav-link">
-      <div class="option">
-        Via GitHub
-      </div>
-    </a>
+    <% if SiteConfig.auth_allowed?("twitter") %>
+      <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" data-no-instant>
+        <div class="option">
+          Via Twitter
+        </div>
+      </a>
+    <% end %>
+    <% if SiteConfig.auth_allowed?("github") %>
+      <a href="/users/auth/github?state=navbar_basic" data-no-instant id="second-last-nav-link">
+        <div class="option">
+          Via GitHub
+        </div>
+      </a>
+    <% end %>
     <a href="/p/information" id="last-nav-link">
       <div class="option">
-        All about dev.to
+        All about <%= ApplicationConfig["COMMUNITY_NAME"] %>
       </div>
     </a>
   <% end %>

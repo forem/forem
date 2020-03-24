@@ -161,9 +161,6 @@ class User < ApplicationRecord
 
   alias_attribute :positive_reactions_count, :reactions_count
 
-  scope :dev_account, -> { find_by(id: SiteConfig.staff_user_id) }
-  scope :mascot_account, -> { find_by(id: SiteConfig.mascot_user_id) }
-
   scope :with_this_week_comments, lambda { |number|
     includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_these_7_days')::int >= ?", number)
   }
@@ -225,14 +222,22 @@ class User < ApplicationRecord
     end
   end
 
-  def estimated_default_language
-    language_settings["estimated_default_language"]
-  end
-
   def self.trigger_delayed_index(record, remove)
     return if remove
 
     Search::IndexWorker.perform_async("User", record.id)
+  end
+
+  def self.dev_account
+    find_by(id: SiteConfig.staff_user_id)
+  end
+
+  def self.mascot_account
+    find_by(id: SiteConfig.mascot_user_id)
+  end
+
+  def estimated_default_language
+    language_settings["estimated_default_language"]
   end
 
   def tag_line
@@ -342,6 +347,10 @@ class User < ApplicationRecord
     Rails.cache.fetch("user-#{id}/has_pro_membership", expires_in: 200.hours) do
       pro_membership&.active? || has_role?(:pro)
     end
+  end
+
+  def vomitted_on?
+    Reaction.exists?(reactable_id: id, reactable_type: "User", category: "vomit", status: "confirmed")
   end
 
   def trusted

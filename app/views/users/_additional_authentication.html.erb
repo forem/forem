@@ -1,0 +1,17 @@
+<% if SiteConfig.auth_allowed?("github") && !@user.identities.exists?(provider: "github") %>
+  <div class="field">
+    <a href="/users/auth/github" class="big-button cta" data-no-instant>
+      <img src="<%= asset_path("github-logo.svg") %>" alt="github logo"> CONNECT GITHUB ACCOUNT
+    </a>
+  </div>
+  <hr />
+<% end %>
+
+<% if SiteConfig.auth_allowed?("twitter") && !@user.identities.exists?(provider: "twitter") %>
+  <div class="field">
+    <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="big-button cta" data-no-instant>
+      <img src="<%= asset_path("twitter-logo.svg") %> " alt="twitter logo"> CONNECT TWITTER ACCOUNT
+    </a>
+  </div>
+  <hr />
+<% end %>

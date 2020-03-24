@@ -1,21 +1,21 @@
-@import '../vars/variables';
+@import '../config/import';
 
 .crayons-nav-block {
   display: flex;
   align-items: center;
   padding: $su-2;
   border-radius: $br-default;
-  color: $smoke-90;
+  color: var(--link-dimmed-color);
 
   &:hover:not(&--current) {
-    background: $smoke-00;
-    color: $smoke-100;
+    background: var(--link-dimmed-bg-hover);
+    color: var(--link-dimmed-color-hover);
   }
 
   &--current {
     font-weight: $fw-medium;
-    color: $smoke-100;
-    background: $snowflake;
+    background: var(--link-dimmed-bg-current);
+    color: var(--link-dimmed-color-current);
   }
 
   .crayons-icon {
@@ -44,16 +44,16 @@
 
   &__item {
     padding: 0 0.5em;
-    color: $smoke-80;
+    color: var(--link-dimmed-secondary-color);
     position: relative;
     display: inline-block;
 
     &:hover {
-      color: $smoke-100;
+      color: var(--link-dimmed-color-hover);
     }
 
     &--current {
-      color: $smoke-100;
+      color: var(--link-dimmed-color-current);
       font-weight: $fw-medium;
 
       &::after {
@@ -63,7 +63,7 @@
         bottom: -2px;
         height: 2px;
         content: '';
-        background-color: $dolphin;
+        background-color: var(--accent-brand);
       }
     }
   }
