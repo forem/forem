@@ -1,8 +1,7 @@
 @import 'variables';
 @import 'mixins';
 .ltag__user__link {
-  color: $black;
-  color: var(--theme-color, $black);
+  color: var(--body-color);
   &:active {
     opacity: 0.7;
   }
@@ -77,8 +76,7 @@
       line-height: 22px;
       font-size: 0.75em;
       a {
-        color: $medium-gray;
-        color: var(--theme-secondary-color, $medium-gray);
+        color: var(--container-color-tertiary);
         margin-right: 10px;
         display: inline-block;
         .icon-img {
@@ -89,8 +87,6 @@
           vertical-align: -2px;
           margin: 3px 0;
           opacity: 0.7;
-          background: transparent;
-          background: var(--theme-secondary-color, transparent);
         }
       }
     }
