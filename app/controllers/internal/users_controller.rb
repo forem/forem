@@ -30,7 +30,7 @@ class Internal::UsersController < Internal::ApplicationController
     @user = User.find(params[:id])
     manage_credits
     add_note if user_params[:new_note]
-    notify(:moderator, current_user, __method__) { cleanse_for_audit(params) }
+    Audit::Logger.log(:moderator, current_user, params.dup)
     redirect_to "/internal/users/#{params[:id]}"
   end
 
@@ -39,7 +39,7 @@ class Internal::UsersController < Internal::ApplicationController
     begin
       Moderator::ManageActivityAndRoles.handle_user_roles(admin: current_user, user: @user, user_params: user_params)
       flash[:success] = "User has been updated"
-      notify(:moderator, current_user, __method__) { cleanse_for_audit(params) }
+      Audit::Logger.log(:moderator, current_user, params.dup)
     rescue StandardError => e
       flash[:danger] = e.message
     end
@@ -49,7 +49,7 @@ class Internal::UsersController < Internal::ApplicationController
   def banish
     Moderator::BanishUserWorker.perform_async(current_user.id, params[:id].to_i)
     flash[:success] = "This user is being banished in the background. The job will complete soon."
-    notify(:moderator, current_user, __method__) { cleanse_for_audit(params) }
+    Audit::Logger.log(:moderator, current_user, params.dup)
     redirect_to "/internal/users/#{params[:id]}/edit"
   end
 
@@ -58,7 +58,7 @@ class Internal::UsersController < Internal::ApplicationController
     begin
       Moderator::DeleteUser.call(admin: current_user, user: @user, user_params: user_params)
       flash[:success] = "@#{@user.username} (email: #{@user.email.presence || 'no email'}, user_id: #{@user.id}) has been fully deleted. If requested, old content may have been ghostified. If this is a GDPR delete, delete them from Mailchimp & Google Analytics."
-      notify(:moderator, current_user, __method__) { cleanse_for_audit(params) }
+      Audit::Logger.log(:moderator, current_user, params.dup)
     rescue StandardError => e
       flash[:danger] = e.message
     end

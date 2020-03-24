@@ -31,7 +31,7 @@
       <tr>
         <td><%= action.id %></td>
         <td><%= link_to action.user.username, internal_user_path(action.user_id) %></td>
-        <td><%= "#{action.data['action'].humanize} #{action.data['controller'].humanize.singularize.titleize}" %></td>
+        <td><%= "#{action.data['action'].humanize} #{action.data['controller'].humanize.singularize.titleize}" if action.data.present? %></td>
         <td><%= action.data %></td>
         <td><%= action.created_at %></td>
       </tr>

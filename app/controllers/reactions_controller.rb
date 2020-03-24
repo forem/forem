@@ -67,7 +67,7 @@ class ReactionsController < ApplicationController
       if reaction.negative? && current_user.auditable?
         updated_params = params.dup
         updated_params[:action] = "destroy"
-        notify(:moderator, current_user, __method__) { cleanse_for_audit(updated_params) }
+        Audit::Logger.log(:moderator, current_user, updated_params)
       end
     else
       reaction = build_reaction(category)
@@ -85,7 +85,7 @@ class ReactionsController < ApplicationController
         end
 
         if reaction.negative? && current_user.auditable?
-          notify(:moderator, current_user, __method__) { cleanse_for_audit(params.dup) }
+          Audit::Logger.log(:moderator, current_user, params.dup)
         end
       else
         render json: { error: reaction.errors.full_messages.join(", "), status: 422 }, status: :unprocessable_entity

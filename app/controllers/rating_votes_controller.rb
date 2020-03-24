@@ -10,7 +10,7 @@ class RatingVotesController < ApplicationController
     rating_vote.group = rating_vote_params[:group]
     if rating_vote.save
       if current_user.auditable?
-        notify(:moderator, current_user, __method__) { cleanse_for_audit(params.dup) }
+        Audit::Logger.log(:moderator, current_user, params.dup)
       end
       redirect_back(fallback_location: "/mod")
     else
