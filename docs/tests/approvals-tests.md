@@ -6,21 +6,21 @@ title: Approvals Tests
 
 Approvals are based on the idea of the golden master. You take a snapshot of an
 object and then compare all future versions of the object to the snapshot. A
-good use-case for Approvals tests is comparing rendered HTML.
+good use-case for the Approvals tests is to compare the rendered HTML to the test specified HTML.
 
 ## Usage
 
-Simply create your test similar to the following
+Simply create your test similar to the following:
 
 ```ruby
-it "works" do
+it "renders the correct HTML on the home page" do
   page = '<html><head></head><body><h1>ZOMG</h1></body></html>'
   verify(format: :html) { page } # format can also be :json
 end
 ```
 
-then run the said test and a new `*.received.*` file will be created. You will
-then run the following to verify the newly created file and approve the created
+You may then run the said test and a new `*.received.*` file will be created. Thereafter,
+run the following command to verify the newly created file and approve the created
 change.
 
 ```shell
@@ -31,7 +31,7 @@ Please be sure to include the Approvals file in your commit.
 
 ## Edge cases
 
-Approvals test isn't great for testing changing variables. That includes
+Approvals tests are difficult to utilise for testing variables that change. This includes variables like:
 
 - Time
 - URL slug
