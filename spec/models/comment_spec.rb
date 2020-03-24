@@ -387,18 +387,16 @@ RSpec.describe Comment, type: :model do
   end
 
   context "when callbacks are triggered after destroy" do
+    let!(:comment) { create(:comment, user: user, commentable: article) }
+
     it "updates user's last_comment_at" do
       comment = create(:comment, user: user)
       expect { comment.destroy }.to change(user, :last_comment_at)
     end
 
     it "busts the comment cache" do
-      # here the comment is destroyed from the test above so we re-create one
-      new_comment = create(:comment, commentable: article)
-
-      # this replaces the use of expect_any_instance_of which is a RuboCop violation
-      sidekiq_assert_enqueued_with(job: Comments::BustCacheWorker, args: [new_comment.id]) do
-        new_comment.destroy
+      sidekiq_assert_enqueued_with(job: Comments::BustCacheWorker, args: [comment.id]) do
+        comment.destroy
       end
     end
   end
