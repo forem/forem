@@ -37,6 +37,10 @@ module Search
         Search::Client.indices.put_mapping(index: index_alias, body: self::MAPPINGS)
       end
 
+      def db_count
+        raise "Search classes must implement their own db_count"
+      end
+
       private
 
       def search(body:)
