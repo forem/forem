@@ -1,5 +1,8 @@
 @import 'variables';
 @import 'mixins';
+@import 'functions';
+$input-width: 650px;
+
 #page-content.users-edit,
 #page-content.users-update,
 #page-content.users-confirm_destroy,
@@ -82,7 +85,7 @@
         padding-left: 5px;
         width: 100%;
         display: inline-block;
-        @include themeable(color, theme-color, $black);
+        color: var(--body-color);
         &.selected {
           @include themeable(
             background,
@@ -245,7 +248,7 @@
     }
     form {
       input {
-        width: 650px;
+        width: $input-width;
         max-width: calc(100% - 30px);
         padding: 12px;
         font-size: 19px;
@@ -272,7 +275,7 @@
       select {
         display: block;
         font-size: 19px;
-        width: 650px;
+        width: $input-width;
         max-width: calc(100% - 4px);
         padding: 12px;
         border: 1px solid rgb(222, 230, 233);
@@ -292,7 +295,7 @@
         cursor: pointer;
         &.danger-button {
           background-color: #b30000;
-          color: $off-white;
+          color: $white;
         }
         &:disabled {
           background-color: $light-medium-gray;
@@ -328,7 +331,7 @@
       }
       textarea {
         border: 1px solid rgb(222, 230, 233);
-        width: 550px;
+        width: $input-width;
         max-width: calc(100% - 30px);
         padding: 12px;
         border-radius: 3px;
@@ -399,8 +402,8 @@
       width: 70%;
     }
     .single-app-integration {
-      @include themeable(background, theme-container-background, #fff);
-      @include themeable(border, theme-border, 1px solid $light-medium-gray);
+      background: var(--container-bg);
+      border: 1px solid var(--container-color-tertiary);
       border-radius: 8px;
       padding: 10px;
       h2 {
@@ -409,7 +412,7 @@
         font-size: 1.5em;
       }
       sup {
-        @include themeable(color, theme-secondary-color, $medium-gray);
+        color: var(--container-color-tertiary);
       }
       img {
         height: 1em;
@@ -497,11 +500,11 @@
 .github-repos {
   max-height: 400px;
   overflow-y: auto;
-  @include themeable(background, theme-container-background, #fff);
+  background: var(--container-bg);
   box-shadow: $shadow;
   &.loading-repos {
     height: 400px;
-    background: white url(image_path('loading-ellipsis.svg')) no-repeat center
+    background: white url(image-src('loading-ellipsis.svg')) no-repeat center
       center;
     background-size: 50px;
   }
@@ -509,7 +512,7 @@
     height: 400px;
   }
   .github-repo-row {
-    @include themeable(background, theme-container-background, #fff);
+    background: var(--container-bg);
     padding: 12px;
     margin: 5px 0px;
     transition: all 0.6s ease;
@@ -545,7 +548,7 @@
         }
         &:disabled {
           cursor: wait;
-          background: white url(image_path('loading-ellipsis.svg')) no-repeat
+          background: white url(image-src('loading-ellipsis.svg')) no-repeat
             center center;
           background-size: 75px;
         }
@@ -695,7 +698,7 @@ ul.delete__account {
 
 .api__secret {
   &__container {
-    background-color: $off-white;
+    background-color: $white;
     height: 6.5rem;
     margin: 0.5rem 0;
     padding: 0.5rem;
@@ -711,6 +714,7 @@ ul.delete__account {
     float: left;
 
     .title {
+      color: $dark-gray;
       font-weight: bold;
       margin: 0;
       padding-bottom: 0.25rem;
@@ -747,7 +751,7 @@ ul.delete__account {
   align-items: center;
   justify-content: space-between;
   flex-flow: row wrap;
-  @include themeable(background, theme-container-accent-background, $off-white);
+  background: var(--container-bg);
   border-radius: 5px;
   border: 1px solid $light-medium-gray;
   padding: 0.5rem 0 0.8rem 0.5rem;

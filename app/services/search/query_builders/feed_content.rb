@@ -19,7 +19,8 @@ module Search
         tag_names: "tags.name",
         approved: "approved",
         user_id: "user.id",
-        class_name: "class_name"
+        class_name: "class_name",
+        published: "published"
       }.freeze
 
       RANGE_KEYS = %i[
@@ -40,6 +41,10 @@ module Search
 
       def initialize(params)
         @params = params.deep_symbolize_keys
+
+        # Default to only showing published articles to start
+        @params[:published] = true
+
         build_body
       end
 
@@ -50,7 +55,7 @@ module Search
         HIGHLIGHT_FIELDS.each do |field_name|
           # This hash can be filled with options to further customize our highlighting
           # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-highlighting
-          highlight_fields[:fields][field_name] = { order: :score }
+          highlight_fields[:fields][field_name] = { order: :score, number_of_fragments: 2, fragment_size: 75 }
         end
         @body[:highlight] = highlight_fields
       end

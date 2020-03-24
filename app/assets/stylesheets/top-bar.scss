@@ -10,7 +10,7 @@
   z-index: 1000;
   height: $header-height;
   font-size: 16px; // todo: make it global, based on body
-  @include themeable(background, theme-top-bar-background, $tan);
+  background: var(--header-bg);
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   &.hidden {
     display: none;
@@ -132,7 +132,7 @@
       right: 0;
       top: $header-height;
       padding: 16px;
-      @include themeable(background, theme-top-bar-background, $tan);
+      background: var(--header-bg);
       display: none;
       width: 100%;
       border-radius: 0 0 3px 3px;
@@ -155,28 +155,16 @@
           padding: 6px 10px;
         }
         &.prime-option {
-          border-bottom: 3px solid;
-          @include themeable(
-            border-color,
-            theme-prime-option-border-color,
-            #7a7e81
-          );
+          border-bottom: 3px solid var(--body-color);
           margin-bottom: 5px;
           font-size: 1.22em;
           font-weight: 500;
           overflow: hidden;
           text-overflow: ellipsis;
         }
-        &:hover {
-          @include themeable(
-            background,
-            theme-top-bar-background-hover,
-            darken($tan, 2%)
-          );
-        }
       }
       a {
-        @include themeable(color, theme-color, $black);
+        color: var(--body-color);
       }
     }
   }
@@ -218,13 +206,11 @@
     width: 51px;
     height: 34px;
     padding: 7px 8px 6px 10px;
-    @include themeable(fill, theme-logo-color, white);
+    background: var(--logo-bg);
+    fill: var(--logo-color);
     border-radius: 3px;
-    @include themeable(background, theme-logo-background, $black);
   }
 }
-
-
 
 // Search bar
 .top-bar--search {
@@ -248,20 +234,14 @@
   border-radius: 3px;
   padding: 6px 9px 5px;
   font-size: 16px;
-  @include themeable(background, theme-top-bar-search-background, #e8e7e7);
-  @include themeable(color, theme-top-bar-search-color, $black);
+  background: var(--form-bg);
+  color: var(--body-color);
   -webkit-appearance: none;
-  border: 1px solid transparent;
+  border: 1px solid var(--form-border);
   &:focus {
-    border: 1px solid $dark-purple;
-  }
-  &::placeholder {
-    opacity: 0.5;
-    @include themeable(color, theme-top-bar-search-color, $black);
+    border: 1px solid var(--form-border-focus);
   }
 }
-
-
 
 // Actions on right side...
 .top-bar--links {
@@ -276,7 +256,10 @@
   padding: 0 8px;
   height: 100%;
   align-items: center;
-  @include themeable(fill, theme-top-bar-color, $black);
+  fill: var(--header-icons-color);
+  &:hover {
+    fill: var(--header-icons-color-hover);
+  }
 
   &.write {
     border-radius: 3px;
@@ -285,9 +268,9 @@
     padding: 4px 8px;
     white-space: nowrap;
     font-size: 0.9em;
-    border: 2px solid var(--theme-top-bar-write-color, $black);
-    @include themeable(color, theme-top-bar-write-color, $black);
-    @include themeable(background, theme-top-bar-write-background, $green);
+    border: 2px solid var(--button-primary-bg-hover);
+    background: var(--button-primary-bg);
+    color: var(--button-primary-color);
     display: none;
 
     @media screen and (min-width: 650px) {
@@ -308,4 +291,3 @@
     border-radius: 50%;
   }
 }
-

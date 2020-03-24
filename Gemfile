@@ -103,7 +103,7 @@ gem "typhoeus", "~> 1.3.1" # Used with Elasticsearch to support http keep-alive 
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.2" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
-gem "webpacker", "~> 4.2.2" # Use webpack to manage app-like JavaScript modules in Rails
+gem "webpacker", "~> 5.0.0" # Use webpack to manage app-like JavaScript modules in Rails
 
 group :development do
   gem "better_errors", "~> 2.6" # Provides a better error page for Rails and other Rack apps
@@ -111,7 +111,7 @@ group :development do
   gem "brakeman", "~> 4.7", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.6" # bundler-audit provides patch-level verification for Bundled apps
   gem "derailed_benchmarks", "~> 1.6", require: false # A series of things you can use to benchmark a Rails or Ruby app
-  gem "erb_lint", "~> 0.0", require: false # ERB Linter tool
+  gem "erb_lint", "~> 0.0.31", require: false # ERB Linter tool
   gem "fix-db-schema-conflicts", "~> 3.0" # Ensures consistent output of db/schema.rb despite local differences in the database
   gem "guard", "~> 2.16", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
