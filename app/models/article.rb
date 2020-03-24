@@ -102,7 +102,7 @@ class Article < ApplicationRecord
   scope :active_help, lambda {
     published.
       cached_tagged_with("help").
-      order(published_at: :desc).
+      order(created_at: :desc).
       where("published_at > ? AND comments_count < ? AND score > ?", 12.hours.ago, 6, -4)
   }
 
