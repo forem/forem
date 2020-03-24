@@ -6,13 +6,13 @@ class Internal::ChatChannelsController < Internal::ApplicationController
   end
 
   def create
-    ChatChannel.create_with_users(users_by_param, "invite_only", chat_channel_params[:channel_name])
+    ChatChannel.create_with_users(users_by_param, "invite_only", chat_channel_params[:channel_name], "mod")
     redirect_back(fallback_location: "/internal/chat_channels")
   end
 
   def update
     @chat_channel = ChatChannel.find(params[:id])
-    @chat_channel.add_users(users_by_param)
+    @chat_channel.add_users(users_by_param, @chat_channel.channel_type, "mod")
     redirect_back(fallback_location: "/internal/chat_channels")
   end
 

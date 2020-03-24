@@ -77,7 +77,11 @@ class NotifyMailer < ApplicationMailer
   def channel_invite_email(membership, inviter)
     @membership = membership
     @inviter = inviter
-    subject = "You are invited to Channel #{@membership.chat_channel.channel_name} by #{@inviter.name}."
+    if @membership.role == "mod"
+      subject = "You are invited to Channel #{@membership.chat_channel.channel_name} as moderator."
+    else
+      subject = "You are invited to Channel #{@membership.chat_channel.channel_name} by #{@inviter.name}."
+    end
     mail(to: @membership.user.email, subject: subject)
   end
 

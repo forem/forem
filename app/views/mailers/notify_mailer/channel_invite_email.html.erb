@@ -2,8 +2,13 @@
   <tbody>
     <tr>
       <td style="padding:4%;">
-        <h2 style="font-size: 25px; text-align: center;"><%= link_to(@inviter.name, "https://dev.to/#{@inviter.username}") %> sent you an invitation to join a connect group on DEV.to.
-        </h2>
+        <% if @membership.role == "mod"%>
+          <h2 style="font-size: 25px; text-align: center;">You have been invited to be a Moderator of a connect group on dev.to
+          </h2>
+        <% else %>
+          <h2 style="font-size: 25px; text-align: center;"><%= link_to(@inviter.name, "https://dev.to/#{@inviter.username}") %> sent you an invitation to join a connect group on DEV.to.
+          </h2>
+        <% end %>
         <table>
           <tbody>
             <tr>
