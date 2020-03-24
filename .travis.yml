@@ -69,11 +69,7 @@ script:
   - './cc-test-reporter before-build'
   - 'bundle exec rspec spec --color --tty --tag ${RSPEC_TAG}'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
-  - './cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json'
   - 'yarn test --colors'
-  - './cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json'
-  - './cc-test-reporter sum-coverage coverage/codeclimate.*.json'
-  - './cc-test-reporter upload-coverage'
   - 'bundle exec bundle-audit check --update --ignore CVE-2015-9284'
   - bundle exec rails runner -e production 'puts "App booted successfully"'
 after_script:
