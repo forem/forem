@@ -9,7 +9,6 @@
     <style>
       <% Rails.application.config.assets.compile = true %>
       <%= Rails.application.assets["base_imports.css"].to_s.html_safe %>
-      <%= Rails.application.assets["base/reset.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["buttons.css"].to_s.html_safe %>
@@ -32,7 +31,6 @@
     <style>
       <% Rails.application.config.assets.compile = true %>
       <%= Rails.application.assets["base_imports.css"].to_s.html_safe %>
-      <%= Rails.application.assets["base/reset.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
       <%= Rails.application.assets["articles.css"].to_s.html_safe %>
       <%= Rails.application.assets["buttons.css"].to_s.html_safe %>
@@ -53,7 +51,6 @@
     <style>
       <% Rails.application.config.assets.compile = true %>
       <%= Rails.application.assets["base_imports.css"].to_s.html_safe %>
-      <%= Rails.application.assets["base/reset.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
       <%= Rails.application.assets["readinglist.css"].to_s.html_safe %>
       <%= Rails.application.assets["history.css"].to_s.html_safe %>
@@ -70,7 +67,6 @@
   <% elsif view_class.start_with? "comments" %>
     <style>
       <%= Rails.application.assets["base_imports.css"].to_s.html_safe %>
-      <%= Rails.application.assets["base/reset.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["comments.css"].to_s.html_safe %>
@@ -84,7 +80,6 @@
   <% elsif view_class.include?("registrations") || @new_article_not_logged_in %>
     <style>
       <%= Rails.application.assets["base_imports.css"].to_s.html_safe %>
-      <%= Rails.application.assets["base/reset.css"].to_s.html_safe %>
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
       <%= Rails.application.assets["article-form-needed-legacy.css"].to_s.html_safe %>
@@ -93,7 +88,6 @@
   <% elsif view_class.include? "classified_listings-" %>
     <style>
       <%= Rails.application.assets["base_imports.css"].to_s.html_safe %>
-      <%= Rails.application.assets["base/reset.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["classified_listings.css"].to_s.html_safe %>
@@ -102,7 +96,6 @@
   <% elsif view_class.include? "credits-" %>
     <style>
       <%= Rails.application.assets["base_imports.css"].to_s.html_safe %>
-      <%= Rails.application.assets["base/reset.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["credits.css"].to_s.html_safe %>
@@ -111,7 +104,6 @@
   <% elsif view_class.include? "videos-index" %>
     <style>
       <%= Rails.application.assets["base_imports.css"].to_s.html_safe %>
-      <%= Rails.application.assets["base/reset.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["video-collection.css"].to_s.html_safe %>
