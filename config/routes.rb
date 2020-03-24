@@ -164,6 +164,7 @@ Rails.application.routes.draw do
   end
   resources :twitch_live_streams, only: :show, param: :username
   resources :reactions, only: %i[index create]
+  resources :response_templates, only: %i[index create edit update destroy]
   resources :feedback_messages, only: %i[index create]
   resources :organizations, only: %i[update create]
   resources :followed_articles, only: [:index]
