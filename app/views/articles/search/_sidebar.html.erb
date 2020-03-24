@@ -9,8 +9,9 @@
         <a class="query-filter-button" data-filter="class_name:Article">POSTS</a>
         <a class="query-filter-button" data-filter="class_name:PodcastEpisode">PODCASTS</a>
         <a class="query-filter-button" data-filter="class_name:User">PEOPLE</a>
+        <a class="query-filter-button" data-filter="class_name:Comment">COMMENTS</a>
         <hr>
-        <a class="query-filter-button my-posts-query-button" data-filter="MY_POSTS">ONLY MY POSTS</a>
+        <a class="query-filter-button my-posts-query-button" data-filter="class_name:Article&user_id:<%= current_user.id %>">ONLY MY POSTS</a>
       </div>
     </div>
   </div>

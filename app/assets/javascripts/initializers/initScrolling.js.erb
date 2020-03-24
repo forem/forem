@@ -179,24 +179,18 @@ function fetchNextPodcastPage(el) {
   fetchNext(el, "/api/podcast_episodes", insertArticles)
 }
 
-function paginate(tag, requiresApproval) {
-  var tagFilters = [];
+function paginate(tag, params, requiresApproval) {
+  const searchHash = { ...{ per_page: 15, page: nextPage }, ...JSON.parse(params) };
+
   if (tag && tag.length > 0) {
-    tagFilters.push(tag);
+    searchHash["tag_name"].push(tag);
   }
-  var approved = (requiresApproval === 'true') ? 'true' : '';
-  const searchHash = {
-    per_page: 15,
-    page: nextPage,
-    tag_names: tagFilters,
-    approved: approved
-  };
+  searchHash["approved"] = (requiresApproval === 'true') ? 'true' : '';
 
   var homeEl = document.getElementById("index-container");
   if (homeEl.dataset.feed === "latest") {
     searchHash["sort_by"] = "published_at";
   } else {
-    var preamble = (requiresApproval === 'true') ? ' AND ' : ''
     searchHash["published_at[gte]"] = homeEl.dataset.articlesSince;
     searchHash["sort_by"] = "positive_reactions_count";
   }
@@ -260,7 +254,11 @@ function fetchNextPageIfNearBottom() {
   } else {
     scrollableElemId = "articles-list";
     fetchCallback = function fetch() {
-      paginate(indexContainer.dataset.tag, indexContainer.dataset.requiresApproval);
+      paginate(
+        indexContainer.dataset.tag,
+        indexContainer.dataset.params,
+        indexContainer.dataset.requiresApproval
+      );
     };
   }
 

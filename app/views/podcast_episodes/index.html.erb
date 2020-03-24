@@ -27,7 +27,7 @@
 <% end %>
 
 <div class="home" id="index-container"
-     data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
+     data-params="<%= params.to_json(only: %i[tag username search_fields]) %>" data-which="<%= @list_of %>"
      data-tag=""
      data-feed="<%= params[:timeframe] || "base-feed" %>"
      data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime&.iso8601 %>">

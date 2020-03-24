@@ -205,7 +205,7 @@ export const videoArticle = {
     name: 'Henri Gibson',
     profile_image_90: '/images/10.png',
   },
-  published_at_int: 1582037964819,
+  published_at_int: 1582038662478,
   published_timestamp: 'Tue, 18 Feb 2020 15:11:02 GMT',
   published_at: '2020-02-18T14:59:24Z',
   readable_publish_date: 'February 18',

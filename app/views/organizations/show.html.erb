@@ -5,7 +5,7 @@
 <% end %>
 <%= render "users/profile_header" %>
 <div class="home sub-home" id="index-container"
-     data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
+     data-params="<%= params.to_json(only: %i[tag username search_fields]) %>" data-which="<%= @list_of %>"
      data-tag="<%= "organization_#{@organization.id}" %>"
      data-feed="<%= params[:timeframe] || "base-feed" %>"
      data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime&.iso8601 %>">

@@ -30,7 +30,7 @@
     </div>
   </div>
   <div class="home sub-home" id="index-container"
-      data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which=""
+      data-params="<%= params.to_json(only: %i[tag username search_fields]) %>" data-which=""
       data-tag="<%= @tag %>"
       data-feed="<%= params[:timeframe] || "base-feed" %>"
       data-requires-approval="<%= @tag_model.requires_approval %>"

@@ -37,10 +37,13 @@ function buildArticleHTML(article) {
     if (article.class_name == "PodcastEpisode"){
       flareTag = "<span class='tag-identifier'>podcast</span>"
     }
+    if (article.class_name == "Comment"){
+      flareTag = "<span class='tag-identifier'>comment</span>"
+    }
     if (article.class_name == "User"){
       flareTag = "<span class='tag-identifier' style='background:#5874d9;color:white;'>person</span>"
     }
-    var rc = article.positive_reactions_count || article.reactions_count
+    var rc = article.positive_reactions_count
     var reactionsCountHTML = ''
     if ((rc || '0') > 0 && article.class_name != "User") {
       var reactionsCountHTML = '<div class="article-engagement-count reactions-count"><a href="'+article.path+'"><img src="<%= asset_path("reactions-stack.png") %>" alt="heart" /><span id="engagement-count-number-'+article.id+'" class="engagement-count-number">'+(rc || '0')+'</span></a></div>'
@@ -67,7 +70,7 @@ function buildArticleHTML(article) {
         startingEllipsis = "…"
       }
       bodyTextSnippet = startingEllipsis + article.highlight.body_text.join("...") + "…";
-      if (bodyTextSnippet.length > 0 && article.class_name == "Article"){
+      if (bodyTextSnippet.length > 0){
         searchSnippetHTML = '<div class="search-snippet"><span>' + bodyTextSnippet + '</span></div>'
       }
     }

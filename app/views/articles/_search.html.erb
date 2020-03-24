@@ -65,16 +65,16 @@
     var searchTerm = query.replace(/#/g, '').trim();
     var searchHash = { per_page: 60, page: 0 };
 
-    if (filters === "MY_POSTS" && userData()) {
-      searchHash["user_id"] = userData()['id'];
-    } else if (hashtags != null && hashtags.length > 0) {
+    if (hashtags != null && hashtags.length > 0) {
       for(var i = 0; i < hashtags.length; i++){
         hashtags[i] = hashtags[i].replace(/#/,'');
       }
       searchHash["tag_names"] = hashtags;
     } else if (filters && filters != "") {
-      const [key, value] = filters.split(':');
-      searchHash[key] = value;
+      filters.split('&').forEach((filter) => {
+        const [key, value] = filter.split(':');
+        searchHash[key] = value;
+      });
     }
 
     if (searchTerm && searchTerm != "") { searchHash["search_fields"] = searchTerm; }

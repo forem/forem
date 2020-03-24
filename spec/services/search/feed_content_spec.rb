@@ -51,7 +51,7 @@ RSpec.describe Search::FeedContent, type: :service do
         allow(article1).to receive(:title).and_return("ruby")
         allow(article2).to receive(:body_text).and_return("Ruby Tuesday")
         index_documents([article1, article2])
-        query_params = { size: 5, search_fields: "love ruby" }
+        query_params = { size: 5, search_fields: "ruby" }
 
         feed_docs = described_class.search_documents(params: query_params)
         expect(feed_docs.count).to eq(2)
