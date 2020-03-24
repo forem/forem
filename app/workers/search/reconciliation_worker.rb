@@ -4,8 +4,8 @@
 # For indexes that don't match a single model (no model or multiple models) we
 # need to implement a custom db_count method on the Search class to do the
 # counts for us
-module Metrics
-  class RecordDbAndEsRecordCountsWorker
+module Search
+  class ReconciliationWorker
     include Sidekiq::Worker
 
     sidekiq_options queue: :low_priority, retry: 5

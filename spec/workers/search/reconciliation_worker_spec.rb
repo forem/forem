@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Metrics::RecordDbAndEsRecordCountsWorker, type: :worker, elasticsearch: true do
+RSpec.describe Search::ReconciliationWorker, type: :worker, elasticsearch: true do
   include_examples "#enqueues_on_correct_queue", "low_priority", [0]
 
   describe "#perform" do
@@ -28,7 +28,7 @@ RSpec.describe Metrics::RecordDbAndEsRecordCountsWorker, type: :worker, elastics
       Search::Tag.refresh_index
       tag.delete
 
-      expect { worker.perform }.to raise_error(Metrics::RecordDbAndEsRecordCountsWorker::DbAndEsRecordsCountMismatch)
+      expect { worker.perform }.to raise_error(Search::ReconciliationWorker::DbAndEsRecordsCountMismatch)
 
       tags = { search_class: Search::Tag, db_count: 0, index_count: 1, record_difference: 1, margin_of_error: 0, action: "record_count", record_count: "mismatch" }
 
