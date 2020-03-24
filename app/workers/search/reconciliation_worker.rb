@@ -22,7 +22,6 @@ module Search
     # from the database count before we raise an error
     def perform(margin_of_error = 0)
       SEARCH_CLASSES.each do |search_class|
-        margin_of_error = margin_of_error.to_i
         db_count = db_count(search_class)
         index_count = Search::Client.count(index: search_class::INDEX_ALIAS).dig("count")
         record_difference = (db_count - index_count).abs
