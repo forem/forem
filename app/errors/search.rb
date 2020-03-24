@@ -3,6 +3,9 @@ module Search
     class Error < StandardError
     end
 
+    class SubclassResponsibility < Error
+    end
+
     module Transport
       class TransportError < Error
       end

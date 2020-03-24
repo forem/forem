@@ -63,7 +63,7 @@ RSpec.describe Search::ReconciliationWorker, type: :worker, elasticsearch: true 
     it "Raises an error if no model or db_count method is found" do
       stub_const "#{described_class}::SEARCH_CLASSES", [Search::Base]
 
-      expect { worker.perform }.to raise_error(RuntimeError)
+      expect { worker.perform }.to raise_error(Search::Errors::SubclassResponsibility)
     end
   end
 end

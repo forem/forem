@@ -38,7 +38,7 @@ module Search
       end
 
       def db_count
-        raise "Search classes must implement their own db_count"
+        raise Search::Errors::SubclassResponsibility, "Search classes must implement their own db_count"
       end
 
       private
