@@ -130,5 +130,15 @@ task log_daily_usage_measurables: :environment do
 end
 
 task log_daily_database_and_elasticsearch_record_counts: :environment do
-  Search::ReconciliationWorker.perform_async
+    # Once the Elasticsearch migration is complete we can update this value to
+    # Search::Cluster::SEARCH_CLASSES which will include all indexes.
+    search_classes = [
+      Search::ChatChannelMembership,
+      Search::ClassifiedListing,
+      Search::Tag,
+    ]
+
+    search_classes.each do |search_class|
+      Search::ReconciliationWorker.perform_async(search_class.to_s)
+    end
 end
