@@ -88,11 +88,11 @@ class Article < ApplicationRecord
   scope :published, -> { where(published: true) }
   scope :unpublished, -> { where(published: false) }
 
-  scope :latest_published_admin_thread_with, lambda { |tag_name|
+  scope :admin_published_with, lambda { |tag_name|
     published.
       where(user_id: SiteConfig.staff_user_id).
-      order("published_at ASC").
-      tagged_with(tag_name).last
+      order(published_at: :desc).
+      tagged_with(tag_name)
   }
 
   scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
@@ -102,7 +102,7 @@ class Article < ApplicationRecord
   scope :active_help, lambda {
     published.
       cached_tagged_with("help").
-      order("created_at DESC").
+      order(published_at: :desc).
       where("published_at > ? AND comments_count < ? AND score > ?", 12.hours.ago, 6, -4)
   }
 

@@ -21,7 +21,7 @@ module Broadcasts
       end
 
       def commented_on_welcome_thread?
-        welcome_thread = latest_published_admin_thread_with("welcome")
+        welcome_thread = Article.admin_published_with("welcome").first
         Comment.where(commentable: welcome_thread, user: user).any?
       end
 
