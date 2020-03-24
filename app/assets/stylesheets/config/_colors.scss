@@ -51,8 +51,8 @@
   ////////////////////////////////////////////////////////////////////////////////////
 
   // Main colors
-  --body-bg: var(--base-10);
-  --body-color: var(--base-100);
+  --body-bg: #f9fafa; // todo: replace with `var(--base-10);` when ready.
+  --body-color: #0a0a0a; // todo: replace with `var(--base-100);` when ready.
   --body-color-inverted: var(--base-inverted);
 
   // Main content containers
@@ -69,7 +69,7 @@
   --widget-headline: var(--base-100);
 
   // Header
-  --header-bg: var(--base-inverted);
+  --header-bg: #fdf9f3; // todo: replace with `var(--base-inverted)` when ready.
   --header-icons-color: var(--base-70);
   --header-icons-color-hover: var(--base-100);
 
@@ -85,7 +85,7 @@
   --footer-link-color-hover: var(--base-100);
 
   // Links in content
-  --link-brand-color: var(--accent-brand);
+  --link-brand-color: #557de8; // todo: replace with `var(--accent-brand)` when ready.
   --link-brand-color-hover: var(--accent-brand-darker);
 
   // Greyscale links, for places where we don't want to make them use accent color
