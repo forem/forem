@@ -14,11 +14,9 @@ module Slack
       end
 
       def call
-        url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/#{user.username}"
-
         message = format(
           MESSAGE_TEMPLATE,
-          url: url,
+          url: App.url("/#{user.username}"),
         )
 
         SlackBotPingWorker.perform_async(
