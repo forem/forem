@@ -110,11 +110,13 @@
       <%= Rails.application.assets["footer.css"].to_s.html_safe %>
     </style>
   <% elsif view_class.include? "badges-index" %>
+    <%= stylesheet_link_tag "crayons", media: "all" %>
     <%= stylesheet_link_tag "minimal", media: "all" %>
     <style>
       <%= Rails.application.assets["badges.css"].to_s.html_safe %>
     </style>
   <% else %>
+    <%= stylesheet_link_tag "crayons", media: "all" %>
     <%= stylesheet_link_tag "minimal", media: "all" %>
   <% end %>
 <% end %>
