@@ -1,16 +1,34 @@
-<h2 style="font-size:25px;"><%= link_to(@inviter.name, "https://dev.to/#{@inviter.username}") %> sent you an invitation on DEV Connect channel <%= @membership.chat_channel.channel_name %></h2>
-<table>
-  <tr>
-    <td style='color:#c3c3c3;font-size:14px;padding-bottom:8px'>
-    </td>
-  </tr>
-  <tr>
-    <td style='padding:20px;padding-bottom:30px;border-radius:3px;font-size:19px;background:#f4f4f4'>
-      <%= @membership.chat_channel.channel_name %>
-      <br /><br />
-      <a style="background:#3c7dc1;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;" href='https://dev.to/connect %>'>view invitation on dev.to</a>
-    </td>
-  </tr>
+<table style="width:100%;max-width:700px;margin:auto;font-size:18px;">
+  <tbody>
+    <tr>
+      <td style="padding:4%;">
+        <h2 style="font-size: 25px; text-align: center;"><%= link_to(@inviter.name, "https://dev.to/#{@inviter.username}") %> sent you an invitation to join a connect group on DEV.to.
+        </h2>
+        <table>
+          <tbody>
+            <tr>
+              <td style="color:#c3c3c3;font-size:14px;padding-bottom:8px;">
+                <br>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 700px; padding: 20px 10px 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; font-size: 19px; background-color: rgb(244, 244, 244); text-align: center; background-position: initial initial; background-repeat: initial initial;">
+                <div style="text-align: center;">
+                  <h1><%= @membership.chat_channel.channel_name %></h1>
+                </div>
+                <br>
+                <img src="https://media.giphy.com/media/kHs1lBhZWaK5rj7lt3/giphy.gif" style="width: 276px;">
+                <br>
+                <br>
+                <div>
+                  <a href="https://dev.to/connect" style="background:#3c7dc1;color:white;padding:5px 14px;border-radius:3px;text-decoration:none; margin-top:4px;">Check Invitation</a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <br>
+      </td>
+    </tr>
+  </tbody>
 </table>
-<br />
-
