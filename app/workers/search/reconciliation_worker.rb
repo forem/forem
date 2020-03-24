@@ -37,14 +37,7 @@ module Search
         action: "record_count"
       }
 
-      is_count_mismatched =
-        if margin_of_error > 0.0 && margin_of_error < 1.0
-          percentage_difference > margin_of_error
-        else
-          record_difference > margin_of_error
-        end
-
-      if is_count_mismatched
+      if count_mismatched?(margin_of_error, percentage_difference, record_difference)
         tags[:record_count] = "mismatch"
         DatadogStatsClient.increment("elasticsearch", tags: tags)
 
@@ -68,6 +61,14 @@ module Search
       return model.count if model.respond_to?(:count)
 
       search_class.db_count
+    end
+
+    def count_mismatched?(margin_of_error, percentage_difference, record_difference)
+      if margin_of_error > 0.0 && margin_of_error < 1.0
+        percentage_difference > margin_of_error
+      else
+        record_difference > margin_of_error
+      end
     end
   end
 end
