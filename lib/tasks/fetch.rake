@@ -128,3 +128,7 @@ end
 task log_daily_usage_measurables: :environment do
   Metrics::RecordDailyUsageWorker.perform_async
 end
+
+task log_daily_database_and_elasticsearch_record_counts: :environment do
+  Metrics::RecordDbAndEsRecordCountsWorker.perform_async
+end
