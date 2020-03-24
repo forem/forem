@@ -3,11 +3,7 @@ require "rails_helper"
 RSpec.describe Slack::Messengers::PotentialSpammer, type: :service do
   let_it_be_readonly(:user) { create(:user) }
 
-  let(:default_params) do
-    {
-      user: user
-    }
-  end
+  let(:default_params) { { user: user } }
 
   it "contains the correct info", :aggregate_failures do
     sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do

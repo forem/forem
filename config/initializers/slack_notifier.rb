@@ -28,7 +28,7 @@ def create_stubbed_notifier
   end
 end
 
-# TODO: remove this when Sidekiq has exhausted RateLimitCheckerWorker
+# TODO: [@thepracticaldev/oss] remove this when Sidekiq has exhausted RateLimitCheckerWorker
 ::SlackBot = case Rails.env # rubocop:disable Naming/ConstantName
              when "production"
                create_normal_notifier
