@@ -171,7 +171,7 @@
 <% end %>
 
 <div class="home sub-home" id="index-container"
-     data-params="<%= params.merge(user_id: @user.id).to_json(only: %i[tag user_id search_fields]) %>" data-which="<%= @list_of %>"
+     data-params="<%= params.merge(user_id: @user.id, class_name: "Article").to_json(only: %i[tag user_id search_fields class_name]) %>" data-which="<%= @list_of %>"
      data-tag=""
      data-feed="<%= params[:timeframe] || "base-feed" %>"
      data-articles-since="0">

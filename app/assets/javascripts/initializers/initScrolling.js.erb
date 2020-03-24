@@ -188,9 +188,13 @@ function paginate(tag, params, requiresApproval) {
   searchHash["approved"] = (requiresApproval === 'true') ? 'true' : '';
 
   var homeEl = document.getElementById("index-container");
-  if (homeEl.dataset.feed === "latest") {
+  if (homeEl.dataset.feed === "base-feed") {
+    searchHash["class_name"] = "Article";
+  } else if (homeEl.dataset.feed === "latest") {
+    searchHash["class_name"] = "Article";
     searchHash["sort_by"] = "published_at";
   } else {
+    searchHash["class_name"] = "Article";
     searchHash["published_at[gte]"] = homeEl.dataset.articlesSince;
     searchHash["sort_by"] = "positive_reactions_count";
   }

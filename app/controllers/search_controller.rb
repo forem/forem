@@ -17,17 +17,6 @@ class SearchController < ApplicationController
     per_page
   ].freeze
 
-  FEED_PARAMS = %i[
-    page
-    per_page
-    published_at
-    search_fields
-    sort_by
-    tag_names
-    user_id
-    class_name
-  ].freeze
-
   def tags
     tag_docs = Search::Tag.search_documents("name:#{params[:name]}* AND supported:true")
 
@@ -65,7 +54,7 @@ class SearchController < ApplicationController
                   # No need to check for articles or podcast episodes if we know we only want users
                   user_search
                 else
-                  # if params[:class_name] == PodcastEpisode, Article, or comment then skip user lookup
+                  # if params[:class_name] == PodcastEpisode, Article, or Comment then skip user lookup
                   feed_content_search
                 end
 
@@ -104,7 +93,10 @@ class SearchController < ApplicationController
   end
 
   def feed_params
-    params.permit(FEED_PARAMS)
+    params.permit(
+      :class_name, :page, :per_page, :search_fields,
+      :sort_by, :tag_names, :user_id, published_at: [:gte]
+    )
   end
 
   def format_integer_params

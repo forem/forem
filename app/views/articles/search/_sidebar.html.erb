@@ -11,7 +11,7 @@
         <a class="query-filter-button" data-filter="class_name:User">PEOPLE</a>
         <a class="query-filter-button" data-filter="class_name:Comment">COMMENTS</a>
         <hr>
-        <a class="query-filter-button my-posts-query-button" data-filter="class_name:Article&user_id:<%= current_user.id %>">ONLY MY POSTS</a>
+        <a class="query-filter-button my-posts-query-button" data-filter="class_name:Article&user_id:<%= current_user&.id %>">ONLY MY POSTS</a>
       </div>
     </div>
   </div>
