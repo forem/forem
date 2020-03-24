@@ -74,6 +74,13 @@ class NotifyMailer < ApplicationMailer
     mail(to: @user.email, subject: subject)
   end
 
+  def channel_invite_email(membership, inviter)
+    @membership = membership
+    @inviter = inviter
+    subject = "You are invited to Channel #{@membership.chat_channel.channel_name} by #{@inviter.name}."
+    mail(to: @membership.user.email, subject: subject)
+  end
+
   def account_deleted_email(user)
     @name = user.name
     subject = "dev.to - Account Deletion Confirmation"

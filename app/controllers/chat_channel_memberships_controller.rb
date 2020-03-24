@@ -29,12 +29,13 @@ class ChatChannelMembershipsController < ApplicationController
     usernames = membership_params[:invitation_usernames].split(",")
     number_invitations_sent = 0
     usernames.each do |username_str|
-      user_id = User.find_by(username: username_str.delete(" ").delete("@"))&.id
-      next unless user_id
+      user = User.find_by(username: username_str.delete(" ").delete("@"))
+      next if user.blank?
 
       number_invitations_sent += 1
-      ChatChannelMembership.find_or_create_by(user_id: user_id, chat_channel_id: @chat_channel.id)
-                           .update(status: "pending")
+      membership = ChatChannelMembership.find_or_create_by(user_id: user.id, chat_channel_id: @chat_channel.id)
+      membership.update(status: "pending")
+      NotifyMailer.channel_invite_email(membership, user).deliver_later if membership.status == "pending"
     end
     flash[:settings_notice] = if number_invitations_sent.zero?
                                 "No Invitations Sent. Check for username typos."
