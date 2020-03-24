@@ -1,0 +1,35 @@
+<h3>Personal Response Templates</h3>
+<p>Response templates are snippets that you can re-use for quick and accurate comments.</p>
+
+<% if @response_templates.size.positive? %>
+  <h3>Your templates</h3>
+  <div class="github-repos-container">
+    <div class="github-repos">
+    <% @response_templates.each do |response_template| %>
+      <div class="github-repo-row <%= "github-repo-row-selected" if @response_template.id == params[:id].to_i %>">
+        <div class="github-repo-row-name response-template-row-name">
+          <%= response_template.title %>
+          <%= form_tag "/response_templates/#{response_template.id}", method: :delete, onsubmit: "return confirm('Are you sure you want to delete: #{response_template.title}?');" do %>
+            <button type="submit" class="cta danger-button">DELETE</button>
+          <% end %>
+          <a class="cta" href="/settings/response-templates?id=<%= response_template.id %>" role="button">EDIT</a>
+        </div>
+      </div>
+    <% end %>
+    </div>
+  </div>
+<% end %>
+<hr>
+<% if @response_template.persisted? %>
+  <h3>Editing a response template</h3>
+  <a href="/settings/response-templates">Create a new response template</a>
+<% else %>
+  <h3>Add a new response template</h3>
+<% end %>
+<%= form_for(@response_template) do |f| %>
+  <%= f.label :title %>
+  <%= f.text_field :title, placeholder: "Memorable cue for template" %>
+  <%= f.label :content, "Comment body (Markdown)" %>
+  <%= f.text_area :content, value: @response_template.content %>
+  <%= f.submit "Submit", class: "cta" %>
+<% end %>
