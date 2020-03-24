@@ -112,9 +112,12 @@
   },
   "dependencies": {
     "@babel/core": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/plugin-transform-react-jsx": "^7.0.0",
+    "@babel/preset-env": "^7.9.0",
     "@github/clipboard-copy-element": "^1.1.2",
-    "@rails/webpacker": "4.2.2",
+    "@rails/webpacker": "5.0.0",
     "babel-preset-preact": "^2.0.0",
     "chart.js": "^2.9.3",
     "clipboard-polyfill": "^2.8.6",
