@@ -54,7 +54,7 @@ module Search
     private
 
     def db_count(search_class)
-      model = search_class.to_s.split("::").last.safe_constantize
+      model = search_class.to_s.demodulize.safe_constantize
 
       return model.count if model.respond_to?(:count)
 
