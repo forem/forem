@@ -1,18 +1,9 @@
 @import 'config/colors';
+@import 'config/generator';
 
-// New approach
 @import 'base/reset';
 @import 'base/boxes';
-@import 'base/colors';
-@import 'base/decorations';
-@import 'base/flexbox';
-@import 'base/grid';
 @import 'base/icons';
-@import 'base/layout';
-@import 'base/positioning';
-@import 'base/sizing';
-@import 'base/spacing';
-@import 'base/typography';
 
 @import 'components/avatars';
 @import 'components/buttons';
