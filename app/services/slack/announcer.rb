@@ -1,6 +1,6 @@
 module Slack
   # a thin wrapper on Slack::Notifier
-  # see <https://github.com/stevenosloan/slack-notifier> for additional options
+  # for additional options, see https://github.com/stevenosloan/slack-notifier
   class Announcer
     def initialize(message:, channel:, username:, icon_emoji:)
       @message = message
