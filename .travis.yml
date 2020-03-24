@@ -71,10 +71,11 @@ script:
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
   - 'yarn test --colors'
   - 'bundle exec bundle-audit check --update --ignore CVE-2015-9284'
+  - yarn build-storybook
   - bundle exec rails runner -e production 'puts "App booted successfully"'
 after_script:
-  - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$CI_NODE_INDEX.json ./coverage/spec/.resultset.json; fi
-  - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./cc-test-reporter sum-coverage --output - --parts $CI_NODE_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -; fi
+  - ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$CI_NODE_INDEX.json ./coverage/spec/.resultset.json
+  - ./cc-test-reporter sum-coverage --output - --parts $CI_NODE_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
   - yarn build-storybook
 deploy:
   provider: heroku
