@@ -10,15 +10,15 @@ module Search
 
     sidekiq_options queue: :low_priority, retry: 5
 
-    # search_class - a Search module to check the counts for
+    # search_class - a Search module to check the counts for.
     #
     # margin_of_error - (Integer/Float) Defaults to 0. This defines how far off
     # the counts can be before an error is raised. This can be a number greater
     # than 1 to denote a count of records. If this value is less than 1, it
     # will be treated as a percentage (i.e. 0.10 is 10%).
     #
-    # use_estimate_count - (Boolean) Defaults to false. If true it will use
-    # ApplicationRecord.estimated_count instead of Model.count.
+    # use_estimate_count - (Boolean) Defaults to false. If true it will
+    # prioritize using ApplicationRecord.estimated_count over Model.count.
     def perform(search_class, margin_of_error = 0, use_estimated_count = false)
       search_class = search_class.constantize
 
