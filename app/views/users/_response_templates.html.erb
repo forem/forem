@@ -6,7 +6,7 @@
   <div class="github-repos-container">
     <div class="github-repos">
     <% @response_templates.each do |response_template| %>
-      <div class="github-repo-row <%= "github-repo-row-selected" if @response_template.id == params[:id].to_i %>">
+      <div class="github-repo-row <%= "github-repo-row-selected" if response_template.id == params[:id].to_i %>">
         <div class="github-repo-row-name response-template-row-name">
           <%= response_template.title %>
           <%= form_tag "/response_templates/#{response_template.id}", method: :delete, onsubmit: "return confirm('Are you sure you want to delete: #{response_template.title}?');" do %>
