@@ -15,28 +15,32 @@
     'color',
     ('transparent': transparent, 'current': currentColor),
     $colors,
-    false
+    false,
+    '-'
   ),
   (
     'bg',
     'background-color',
     ('transparent': transparent, 'current': currentColor),
     $colors,
-    false
+    false,
+    '-'
   ),
   (
     'border',
     'border-color',
     ('transparent': transparent, 'current': currentColor),
     $colors,
-    false
+    false,
+    '-'
   ),
   (
     'opacity',
     'opacity',
     ('100': 1, '75': 0.75, '50': 0.5, '25': 0.25, '0': 0),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'cursor',
@@ -51,15 +55,17 @@
       'not-allowed': not-allowed
     ),
     (),
-    false
+    false,
+    '-'
   ),
-  ('pointer-events', 'pointer-events', ('auto': auto, 'none': none), (), false),
+  ('pointer-events', 'pointer-events', ('auto': auto, 'none': none), (), false, '-'),
   (
     'radius',
     'border-radius',
     ('default': $br-default, '0': 0, 'full': 9999px),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'bg',
@@ -76,7 +82,8 @@
       'right-top': right top
     ),
     (),
-    false
+    false,
+    '-'
   ),
   (
     'bg',
@@ -88,21 +95,24 @@
       'no-repeat': no-repeat
     ),
     (),
-    false
+    false,
+    '-'
   ),
   (
     'bg',
     'background-size',
     ('auto': auto, 'cover': cover, 'contain': contain),
     (),
-    false
+    false,
+    '-'
   ),
   (
     'bg',
     'background-attachment',
     ('fixed': fixed, 'local': local, 'scroll': scroll),
     (),
-    false
+    false,
+    '-'
   ),
   (
     'flex',
@@ -114,14 +124,16 @@
       'col-reverse': column-reverse
     ),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'flex',
     'flex-wrap',
     ('wrap': wrap, 'nowrap': nowrap, 'wrap-reverse': wrap-reverse),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'items',
@@ -134,7 +146,8 @@
       'baseline': baseline
     ),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'content',
@@ -147,7 +160,8 @@
       'around': space-around
     ),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'self',
@@ -160,7 +174,8 @@
       'stretch': stretch
     ),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'justify',
@@ -173,19 +188,21 @@
       'around': space-around
     ),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'flex',
     'flex',
     ('initial': 0 auto, '1': 1 1 0%, 'auto': 1 1 auto, 'none': none),
     (),
-    true
+    true,
+    '-'
   ),
-  ('grow', 'flex-grow', ('0': 0, '1': 1), (), true),
-  ('shrink', 'flex-shrink', ('0': 0, '1': 1), (), true),
-  ('order', 'order', ('first': -9999, 'last': 9999, '0': 0), (), true),
-  ('gap', 'grid-gap', ('0': 0), $spacing-units, true),
+  ('grow', 'flex-grow', ('0': 0, '1': 1), (), true, '-'),
+  ('shrink', 'flex-shrink', ('0': 0, '1': 1), (), true, '-'),
+  ('order', 'order', ('first': -9999, 'last': 9999, '0': 0), (), true, '-'),
+  ('gap', 'grid-gap', ('0': 0), $spacing-units, true, '-'),
   (
     'grid-cols',
     'grid-template-columns',
@@ -201,7 +218,8 @@
       '8': repeat(8, minmax(0, 1fr))
     ),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'grid-rows',
@@ -214,7 +232,8 @@
       '4': repeat(4, minmax(0, 1fr))
     ),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'grid-flow',
@@ -226,64 +245,73 @@
       'col-dense': column dense
     ),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'float',
     'float',
     ('left': left, 'right': right, 'none': none, 'unset': unset),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'box',
     'box-sizing',
     ('border': border-box, 'content': content-box),
     (),
-    false
+    false,
+    '-'
   ),
-  ('table', 'table-layout', ('auto': auto, 'fixed': fixed), (), false),
+  ('table', 'table-layout', ('auto': auto, 'fixed': fixed), (), false, '-'),
   (
     'border',
     'border-style',
     ('solid': solid, 'dashed': dashed, 'dotted': dotted, 'none': none),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'border',
     'border-width',
     ('0': 0, '1': 1px, '2': 2px, '3': 3px, '4': 4px, '8': 8px),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'border',
     'border-top-width',
     ('t-0': 0, 't-1': 1px, 't-2': 2px, 't-3': 3px, 't-4': 4px, 't-8': 8px),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'border',
     'border-bottom-width',
     ('b-0': 0, 'b-1': 1px, 'b-2': 2px, 'b-3': 3px, 'b-4': 4px, 'b-8': 8px),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'border',
     'border-left-width',
     ('l-0': 0, 'l-1': 1px, 'l-2': 2px, 'l-3': 3px, 'l-4': 4px, 'l-8': 8px),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'border',
     'border-right-width',
     ('r-0': 0, 'r-1': 1px, 'r-2': 2px, 'r-3': 3px, 'r-4': 4px, 'r-8': 8px),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'top',
@@ -298,14 +326,16 @@
       '4': $su-4
     ),
     (),
-    true
+    true,
+    '-'
   ),
   (
     '-top',
     'top',
     ('1': -$su-1, '2': -$su-2, '3': -$su-3, '4': -$su-4),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'bottom',
@@ -320,14 +350,16 @@
       '4': $su-4
     ),
     (),
-    true
+    true,
+    '-'
   ),
   (
     '-bottom',
     'bottom',
     ('1': -$su-1, '2': -$su-2, '3': -$su-3, '4': -$su-4),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'left',
@@ -342,14 +374,16 @@
       '4': $su-4
     ),
     (),
-    true
+    true,
+    '-'
   ),
   (
     '-left',
     'left',
     ('1': -$su-1, '2': -$su-2, '3': -$su-3, '4': -$su-4),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'right',
@@ -364,14 +398,16 @@
       '4': $su-4
     ),
     (),
-    true
+    true,
+    '-'
   ),
   (
     '-right',
     'right',
     ('1': -$su-1, '2': -$su-2, '3': -$su-3, '4': -$su-4),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'z',
@@ -387,121 +423,136 @@
       'z-auto': auto
     ),
     (),
-    false
+    false,
+    '-'
   ),
   (
     'overflow',
     'overflow',
     ('auto': auto, 'visible': visible, 'scroll': scroll, 'hidden': hidden),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'overflow-x',
     'overflow-x',
     ('auto': auto, 'visible': visible, 'scroll': scroll, 'hidden': hidden),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'overflow-y',
     'overflow-y',
     ('auto': auto, 'visible': visible, 'scroll': scroll, 'hidden': hidden),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'w',
     'width',
     ('0': 0, '25': 25%, '50': 50%, '100': 100%, 'auto': auto, 'full': 100vw),
     (),
-    true
+    true,
+    '-'
   ),
-  ('min-w', 'min-width', ('0': 0, '100': 100%), (), true),
+  ('min-w', 'min-width', ('0': 0, '100': 100%), (), true, '-'),
   (
     'h',
     'height',
     ('0': 0, '25': 25%, '50': 50%, '100': 100%, 'auto': auto, 'full': 100vh),
     (),
-    true
+    true,
+    '-'
   ),
-  ('min-h', 'min-height', ('0': 0, '100': 100%, 'full': 100vh), (), true),
-  ('max-h', 'max-height', ('0': 0, '100': 100%, 'full': 100vh), (), true),
-  ('m', 'margin', ('auto': auto, 'unset': unset, '0': 0), $spacing-units, true),
-  ('-m', 'margin', $negative-spacing-units, (), true),
+  ('min-h', 'min-height', ('0': 0, '100': 100%, 'full': 100vh), (), true, '-'),
+  ('max-h', 'max-height', ('0': 0, '100': 100%, 'full': 100vh), (), true, '-'),
+  ('m', 'margin', ('auto': auto, 'unset': unset, '0': 0), $spacing-units, true, '-'),
+  ('-m', 'margin', $negative-spacing-units, (), true, '-'),
   (
     'my',
     ('margin-top', 'margin-bottom'),
     ('auto': auto, 'unset': unset, '0': 0),
     $spacing-units,
-    true
+    true,
+    '-'
   ),
-  ('-my', ('margin-top', 'margin-bottom'), $negative-spacing-units, (), true),
+  ('-my', ('margin-top', 'margin-bottom'), $negative-spacing-units, (), true, '-'),
   (
     'mx',
     ('margin-left', 'margin-right'),
     ('auto': auto, 'unset': unset, '0': 0),
     $spacing-units,
-    true
+    true,
+    '-'
   ),
-  ('-mx', ('margin-left', 'margin-right'), $negative-spacing-units, (), true),
+  ('-mx', ('margin-left', 'margin-right'), $negative-spacing-units, (), true, '-'),
   (
     'mt',
     'margin-top',
     ('auto': auto, 'unset': unset, '0': 0),
     $spacing-units,
-    true
+    true,
+    '-'
   ),
-  ('-mt', 'margin-top', $negative-spacing-units, (), true),
+  ('-mt', 'margin-top', $negative-spacing-units, (), true, '-'),
   (
     'mb',
     'margin-bottom',
     ('auto': auto, 'unset': unset, '0': 0),
     $spacing-units,
-    true
+    true,
+    '-'
   ),
-  ('-mb', 'margin-bottom', $negative-spacing-units, (), true),
+  ('-mb', 'margin-bottom', $negative-spacing-units, (), true, '-'),
   (
     'ml',
     'margin-left',
     ('auto': auto, 'unset': unset, '0': 0),
     $spacing-units,
-    true
+    true,
+    '-'
   ),
-  ('-ml', 'margin-left', $negative-spacing-units, (), true),
+  ('-ml', 'margin-left', $negative-spacing-units, (), true, '-'),
   (
     'mr',
     'margin-right',
     ('auto': auto, 'unset': unset, '0': 0),
     $spacing-units,
-    true
+    true,
+    '-'
   ),
-  ('-mr', 'margin-right', $negative-spacing-units, (), true),
-  ('p', 'padding', ('0': 0, 'unset': unset), $spacing-units, true),
+  ('-mr', 'margin-right', $negative-spacing-units, (), true, '-'),
+  ('p', 'padding', ('0': 0, 'unset': unset), $spacing-units, true, '-'),
   (
     'py',
     ('padding-top', 'padding-bottom'),
     ('0': 0, 'unset': unset),
     $spacing-units,
-    true
+    true,
+    '-'
   ),
   (
     'px',
     ('padding-left', 'padding-right'),
     ('0': 0, 'unset': unset),
     $spacing-units,
-    true
+    true,
+    '-'
   ),
-  ('pt', 'padding-top', ('0': 0, 'unset': unset), $spacing-units, true),
-  ('pb', 'padding-bottom', ('0': 0, 'unset': unset), $spacing-units, true),
-  ('pl', 'padding-left', ('0': 0, 'unset': unset), $spacing-units, true),
-  ('pr', 'padding-right', ('0': 0, 'unset': unset), $spacing-units, true),
+  ('pt', 'padding-top', ('0': 0, 'unset': unset), $spacing-units, true, '-'),
+  ('pb', 'padding-bottom', ('0': 0, 'unset': unset), $spacing-units, true, '-'),
+  ('pl', 'padding-left', ('0': 0, 'unset': unset), $spacing-units, true, '-'),
+  ('pr', 'padding-right', ('0': 0, 'unset': unset), $spacing-units, true, '-'),
   (
     'ff',
     'font-family',
     ('default': $ff-default, 'accent': $ff-accent),
     (),
-    false
+    false,
+    '-'
   ),
   (
     'fs',
@@ -518,9 +569,10 @@
       '5xl': $fs-5xl
     ),
     (),
-    true
+    true,
+    '-'
   ),
-  ('lh', 'line-height', ('tight': $lh-tight, 'base': $lh-base), (), true),
+  ('lh', 'line-height', ('tight': $lh-tight, 'base': $lh-base), (), true, '-'),
   (
     'fw',
     'font-weight',
@@ -531,21 +583,24 @@
       'heavy': $fw-heavy
     ),
     (),
-    false
+    false,
+    '-'
   ),
   (
     'list',
     'list-style-type',
     ('none': none, 'disc': disc, 'decimal': decimal),
     (),
-    false
+    false,
+    '-'
   ),
   (
     'text',
     'text-decoration',
     ('underline': underline, 'none': none),
     (),
-    false
+    false,
+    '-'
   ),
   (
     'text',
@@ -557,14 +612,16 @@
       'normal': none
     ),
     (),
-    false
+    false,
+    '-'
   ),
   (
     'align',
     'text-align',
     ('left': left, 'center': center, 'right': right, 'justify': justify),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'align',
@@ -578,17 +635,19 @@
       'text-bottom': text-bottom
     ),
     (),
-    true
+    true,
+    '-'
   ),
   (
     'whitespace',
     'white-space',
     ('normal': normal, 'nowrap': nowrap, 'pre': pre),
     (),
-    true
+    true,
+    '-'
   ),
-  ('shadow', 'box-shadow', ('none': none), (), true),
-  ('outline', 'outline', ('none': none), (), false),
+  ('shadow', 'box-shadow', ('none': none), (), true, '-'),
+  ('outline', 'outline', ('none': none), (), false, '-'),
   (
     '',
     'display',
@@ -602,10 +661,11 @@
       'grid': grid
     ),
     (),
-    true
+    true,
+    ''
   ),
-  ('', 'visibility', ('visible': visible, 'invisible': hidden), (), true),
-  ('', 'clear', ('clear': both), (), false),
+  ('', 'visibility', ('visible': visible, 'invisible': hidden), (), true, ''),
+  ('', 'clear', ('clear': both), (), false, ''),
   (
     '',
     'position',
@@ -617,6 +677,7 @@
       'relative': relative
     ),
     (),
-    true
+    true,
+    ''
   )
 );

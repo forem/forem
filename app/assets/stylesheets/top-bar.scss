@@ -92,16 +92,6 @@
   }
 }
 
-.top-bar__cta {
-  display: none;
-  margin-right: $su-2;
-
-  @media screen and (min-width: $breakpoint-s) {
-    // tood: replace with utility responsive class when ready
-    display: inline-block;
-  }
-}
-
 // Dropdown under profile picture / hamburger icon
 .top-bar__menu {
   position: relative;
