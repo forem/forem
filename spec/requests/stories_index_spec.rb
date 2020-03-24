@@ -1,6 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "StoriesIndex", type: :request do
+  let!(:user) { create(:user) }
   let!(:article) { create(:article, featured: true) }
 
   describe "GET stories index" do
@@ -214,6 +215,43 @@ RSpec.describe "StoriesIndex", type: :request do
       get "/t/#{tag.name}"
       expect(response.body).to include("is sponsored by")
       expect(response.body).to include(sponsorship.blurb_html)
+    end
+
+    context "with user signed in" do
+      before do
+        sign_in user
+      end
+
+      it "has mod-action-button" do
+        get "/t/#{tag.name}"
+        expect(response.body).not_to include("mod-action-button")
+      end
+
+      it "does not render pagination" do
+        get "/t/#{tag.name}"
+        expect(response.body).not_to include("olderposts-pagenumber")
+      end
+
+      it "does not render pagination even with many posts" do
+        create_list(:article, 180, user: user, featured: true, tags: [tag.name], score: 20)
+        get "/t/#{tag.name}"
+        expect(response.body).not_to include("olderposts-pagenumber")
+      end
+    end
+
+    context "without user signed in" do
+      let(:tag) { create(:tag) }
+
+      it "does not render pagination" do
+        get "/t/#{tag.name}"
+        expect(response.body).not_to include("olderposts-pagenumber")
+      end
+
+      it "does not render pagination even with many posts" do
+        create_list(:article, 180, user: user, featured: true, tags: [tag.name], score: 20)
+        get "/t/#{tag.name}"
+        expect(response.body).to include("olderposts-pagenumber")
+      end
     end
   end
 end
