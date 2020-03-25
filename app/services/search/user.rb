@@ -29,7 +29,9 @@ module Search
           },
           "title" => hit["name"],
           "path" => hit["path"],
-          "id" => hit["id"]
+          "id" => hit["id"],
+          "class_name" => "User",
+          "positive_reactions_count" => hit["positive_reactions_count"]
         }
       end
 
