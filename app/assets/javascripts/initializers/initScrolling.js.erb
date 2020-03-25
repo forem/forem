@@ -183,7 +183,8 @@ function paginate(tag, params, requiresApproval) {
   const searchHash = { ...{ per_page: 15, page: nextPage }, ...JSON.parse(params) };
 
   if (tag && tag.length > 0) {
-    searchHash["tag_name"].push(tag);
+    searchHash["tag_names"] = (searchHash["tag_names"] === undefined) ? [] : searchHash["tag_names"];
+    searchHash["tag_names"].push(tag);
   }
   searchHash["approved"] = (requiresApproval === 'true') ? 'true' : '';
 
