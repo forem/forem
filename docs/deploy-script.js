@@ -1,5 +1,5 @@
 const exec = require('child_process').exec;
-const subdomain = process.env.URL;
+const subdomain = process.env.subdomain;
 
 let buildCommand;
 switch (subdomain) {
