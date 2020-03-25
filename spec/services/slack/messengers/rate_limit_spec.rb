@@ -19,7 +19,7 @@ RSpec.describe Slack::Messengers::RateLimit, type: :service do
     message = job["args"].first["message"]
 
     expect(message).to include(default_params[:action])
-    expect(message).to include(App.url("/#{user.username}"))
+    expect(message).to include(AppCore.url("/#{user.username}"))
   end
 
   it "messages the proper channel with the proper username and emoji", :aggregate_failures do

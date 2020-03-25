@@ -18,7 +18,7 @@ module Slack
         message = format(
           MESSAGE_TEMPLATE,
           action: action,
-          url: App.url("/#{user.username}"),
+          url: AppCore.url("/#{user.username}"),
         )
 
         SlackBotPingWorker.perform_async(

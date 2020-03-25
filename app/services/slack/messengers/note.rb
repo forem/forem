@@ -22,7 +22,7 @@ module Slack
       end
 
       def call
-        report_url = App.url(
+        report_url = AppCore.url(
           Rails.application.routes.url_helpers.internal_report_path(report_id),
         )
 

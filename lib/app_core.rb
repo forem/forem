@@ -1,4 +1,4 @@
-module App
+module AppCore
   module_function
 
   def protocol

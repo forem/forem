@@ -166,6 +166,6 @@ module ApplicationHelper
   # @example Add a path
   #  app_url("internal") #=> "https://dev.to/internal"
   def app_url(uri = nil)
-    App.url(uri)
+    AppCore.url(uri)
   end
 end
