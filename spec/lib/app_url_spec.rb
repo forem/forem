@@ -1,6 +1,11 @@
 require "rails_helper"
 
-RSpec.describe App, type: :lib do
+RSpec.describe AppURL, type: :lib do
+  before do
+    allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("https://")
+    allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("dev.to")
+  end
+
   describe ".protocol" do
     it "returns the value of APP_PROTOCOL env variable" do
       expect(described_class.protocol).to eq(ApplicationConfig["APP_PROTOCOL"])
@@ -14,11 +19,6 @@ RSpec.describe App, type: :lib do
   end
 
   describe ".url" do
-    before do
-      allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("https://")
-      allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("dev.to")
-    end
-
     it "creates the correct base app URL" do
       expect(described_class.url).to eq("https://dev.to")
     end
@@ -34,6 +34,22 @@ RSpec.describe App, type: :lib do
     it "works when called with an URI object" do
       uri = URI::Generic.build(path: "internal", fragment: "test")
       expect(described_class.url(uri)).to eq("https://dev.to/internal#test")
+    end
+  end
+
+  describe ".article" do
+    let(:article) { build(:article, path: "/username1/slug") }
+
+    it "returns the correct URL for an article" do
+      expect(described_class.article(article)).to eq("https://dev.to#{article.path}")
+    end
+  end
+
+  describe ".user" do
+    let(:user) { build(:user) }
+
+    it "returns the correct URL for a user" do
+      expect(described_class.user(user)).to eq("https://dev.to/#{user.username}")
     end
   end
 end
