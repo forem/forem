@@ -13,18 +13,12 @@
   min-height: initial;
 }
 
-.onboarding-body {
-  background-color: var(--body-bg);
-  position: fixed;
-  margin-top: 50px;
-  bottom: 0;
-  height: 100vh;
-  width: 100%;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  height: auto;
+// modal box card
+.onboarding-main {
+  @extend .crayons-modal;
+  @extend .crayons-modal--l;
+  @extend .crayons-modal--padding-0;
+  border: none;
   z-index: 1;
 
   @media screen and (min-width: 600px) {
@@ -35,6 +29,14 @@
   a {
     color: var(--link-brand-color);
   }
+}
+
+// modal inner content spacing
+.onboarding-content {
+  box-sizing: border-box;
+  flex: 1 0 auto;
+  padding: $su-4;
+  width: 100%;
 
   @media screen and (min-width: $breakpoint-s) {
     justify-content: center;
@@ -42,7 +44,33 @@
   }
 }
 
-// Background
+// window background
+// .onboarding-body {
+//   background-color: var(--body-bg);
+//   position: fixed;
+//   margin-top: 50px;
+//   bottom: 0;
+//   height: 100vh;
+//   width: 100%;
+//   overflow: hidden;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: start;
+//   height: auto;
+//   z-index: 1;
+
+//   @media screen and (min-width: 600px) {
+//     border-width: 2px;
+//     min-height: auto;
+//   }
+
+//   @media screen and (min-width: $breakpoint-s) {
+//     justify-content: center;
+//     padding: $su-7 $su-8 $su-8;
+//   }
+// }
+
+// window background
 .onboarding-body {
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -79,19 +107,27 @@
     height: 100%;
     width: 100%;
   }
+}
 
-  .title {
-    font-weight: $fw-heavy;
-    text-align: left;
-    margin-bottom: $su-1;
-  }
+// modal navigation
+.onboarding-navigation {
+  align-self: flex-end;
+  flex-shrink: 0;
+  width: 100%;
+  border-bottom: 2px solid var(--box-darker);
 
-  .badge-image {
-    position: absolute;
+  .navigation-content {
+    display: flex;
+    justify-content: space-between;
+    padding: $su-4;
+
+    button {
+      @extend .crayons-btn;
+    }
   }
 }
 
-// Modal Header
+// modal header
 .onboarding-content-header {
   margin-bottom: $su-4;
 
@@ -117,24 +153,9 @@
     letter-spacing: normal;
     line-height: $lh-base;
   }
-
-  h2 {
-    margin-top: 20px;
-    font-size: 15px;
-  }
-
-  .navigation-content {
-    display: flex;
-    justify-content: space-between;
-    padding: $su-4;
-
-    button {
-      @extend .crayons-btn;
-    }
-  }
 }
 
-// Modal Selection Status
+// modal selection status
 .onboarding-selection-status {
   align-self: flex-end;
   flex-shrink: 0;
@@ -145,30 +166,6 @@
     display: block;
     padding: $su-4;
     text-align: center;
-    font-weight: bold;
-    border-radius: 3px;
-    border: 2px solid var(--box-darker);
-    @include themeable(border-color, theme-color, #0a0a0a);
-    @include themeable(color, theme-color, #0a0a0a);
-    @include themeable(
-      background-color,
-      theme-container-accent-background,
-      $light-gray
-    );
-    font-family: 'HelveticaNeue-CondensedBold', 'HelveticaNeueBoldCondensed',
-      'HelveticaNeue-Bold-Condensed', 'Helvetica Neue Bold Condensed',
-      'HelveticaNeueBold', 'HelveticaNeue-Bold', 'Helvetica Neue Bold',
-      'HelveticaNeue', 'Helvetica Neue', 'TeXGyreHerosCnBold', 'Helvetica',
-      'Tahoma', 'Geneva', 'Arial Narrow', 'Arial', sans-serif;
-    -webkit-appearance: none;
-    font-stretch: condensed;
-    font-size: 26px;
-  }
-
-  .next-button {
-    color: var(--button-primary-color);
-    background: var(--button-primary-bg);
-    float: right;
   }
 }
 
@@ -190,7 +187,7 @@
   }
 }
 
-// Tag Styles
+// tag styles
 .onboarding-tags {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -267,11 +264,11 @@
         background: transparent;
       }
 
-    input[type='checkbox']:checked {
-      background: var(--link-brand-color);
+      input[type='checkbox']:checked {
+        background: var(--link-brand-color);
+      }
     }
   }
-}
 }
 
 // Onboarding Intro
@@ -330,7 +327,7 @@
   }
 }
 
-// Follow user
+// follow users slide
 $onboarding-user-unselected-hover: rgba(71, 85, 235, 0.05);
 $onboarding-user-selected: rgba(71, 85, 235, 0.1);
 $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
@@ -408,7 +405,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   }
 }
 
-// Closing slide
+// closing slide
 .onboarding-what-next {
   display: flex;
   flex-direction: column;
@@ -497,39 +494,81 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   }
 }
 
-// Follow user
-.onboarding-body {
-  .content-row {
-    align-items: center;
-    color: #202428;
-    display: flex;
-    padding: 8px 16px;
-    text-align: left;
-    width: 100%;
+// Forms
+.onboarding-main {
+  fieldset {
+    padding: 0;
+    border: none;
+    margin-bottom: $su-6;
 
-    &:hover {
-      background-color: #EEF0F1 !important; //smoke-10
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding-left: 0;
     }
   }
 
-  .user-avatar-container {
-    margin: 0 16px 0 0;
+  legend {
+    color: var(--body-color);
+    font-weight: $fw-medium;
   }
 
-  .user-avatar {
-    border-radius: 100%;
-    height: 48px;
-    width: 48px;
-    object-fit: cover;
-    border: 1px solid #EEF0F1;
+  input[type='text'],
+  textarea {
+    @extend .crayons-textfield;
+    box-sizing: border-box;
   }
 
-  .user-name,
-  .user-summary {
-    margin: 0;
+  textarea {
+    min-height: 120px;
   }
 
-  .user-following-status {
-    margin-left: 32px;
+  label {
+    @extend .crayons-field;
+    @extend .crayons-field__label;
+    margin-bottom: $su-4;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  // Checkboxes
+  .checkbox-item {
+    label {
+      @extend .crayons-field__label;
+      align-items: baseline;
+      border-radius: $br-default;
+      display: inline-flex;
+      flex-direction: row;
+      padding: 0 $su-1;
+      width: 100%;
+
+      @media screen and (min-width: $breakpoint-s) {
+        align-items: center;
+      }
+
+      &:hover {
+        background: var(--body-bg);
+        cursor: pointer;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      a {
+        display: contents;
+      }
+
+      input[type='checkbox'] {
+        @extend .crayons-checkbox;
+        margin-right: $su-2 !important;
+      }
+    }
   }
 }
