@@ -5,121 +5,81 @@ RSpec.describe "ResponseTemplate", type: :request do
   let(:moderator) { create(:user, :tag_moderator) }
   let(:admin) { create(:user, :admin) }
 
-  describe "GET /response_templates #index" do
-    xit "returns not found if no user is logged in" do
-      expect do
-        get response_templates_path, headers: { HTTP_ACCEPT: "application/json" }
-      end.to raise_error ActiveRecord::RecordNotFound
+  describe "POST /response_templates #create" do
+    before { sign_in user }
+
+    let(:attributes) do
+      {
+        title: "some_title",
+        content: "some content",
+        type_of: "personal_comment"
+      }
     end
 
-    context "when signed in as a regular user" do
-      before { sign_in user }
-
-      xit "responds with JSON" do
-        create(:response_template, user: user, type_of: "personal_comment")
-        get response_templates_path, headers: { HTTP_ACCEPT: "application/json" }
-        expect(response.content_type).to eq "application/json"
-      end
-
-      xit "returns an array of all the user's response templates" do
-        total_response_templates = 2
-        create(:response_template, user: nil, type_of: "mod_comment")
-        create_list(:response_template, total_response_templates, user: user, type_of: "personal_comment")
-        get response_templates_path, headers: { HTTP_ACCEPT: "application/json" }
-        expect(JSON.parse(response.body).length).to eq total_response_templates
-      end
-
-      xit "returns only the users' response templates" do
-        create(:response_template, user: nil, type_of: "mod_comment")
-        create_list(:response_template, 2, user: user, type_of: "personal_comment")
-        get response_templates_path, headers: { HTTP_ACCEPT: "application/json" }
-        user_ids = JSON.parse(response.body).map { |hash| hash["user_id"] }
-        expect(user_ids).to eq [user.id, user.id]
-      end
-
-      xit "raises an error if trying to view moderator response templates" do
-        create(:response_template, user: nil, type_of: "mod_comment")
-        params = {
-          type_of: "mod_comment",
-          personal_included: "true"
+    it "successfully creates the proper response template" do
+      post response_templates_path, params: {
+        response_template: {
+          title: attributes[:title],
+          content: attributes[:content]
         }
-        expect do
-          get response_templates_path, params: params, headers: { HTTP_ACCEPT: "application/json" }
-        end.to raise_error Pundit::NotAuthorizedError
-      end
+      }
 
-      xit "raises an error if trying to view admin response templates" do
-        create(:response_template, user: nil, type_of: "email_reply", content_type: "html")
-        expect do
-          get response_templates_path, params: { type_of: "email_reply" }, headers: { HTTP_ACCEPT: "application/json" }
-        end.to raise_error Pundit::NotAuthorizedError
-      end
+      response_template = ResponseTemplate.first
+      expect(response_template.user_id).to eq user.id
+      expect(response_template.title).to eq attributes[:title]
+      expect(response_template.content).to eq attributes[:content]
+      expect(response_template.type_of).to eq attributes[:type_of]
     end
 
-    context "when signed in as a mod user" do
-      before { sign_in moderator }
+    it "redirects to the edit page upon success" do
+      post response_templates_path, params: {
+        response_template: {
+          title: attributes[:title],
+          content: attributes[:content]
+        }
+      }
+      expect(response.redirect_url).to include user_settings_path(tab: "response-templates", id: ResponseTemplate.first.id)
+    end
+  end
 
-      xit "responds with JSON" do
-        create(:response_template, user: moderator, type_of: "personal_comment")
-        get response_templates_path, params: { type_of: "mod_comment", personal_included: "true" }, headers: { HTTP_ACCEPT: "application/json" }
-        expect(response.content_type).to eq "application/json"
-      end
+  describe "PATCH /response_templates/:id #update" do
+    before { sign_in user }
 
-      xit "returns an array of all relevant response templates" do
-        create_list(:response_template, 2, user: nil, type_of: "mod_comment")
-        create_list(:response_template, 2, user: moderator, type_of: "personal_comment")
-        get response_templates_path, params: { type_of: "mod_comment", personal_included: "true" }, headers: { HTTP_ACCEPT: "application/json" }
-        expect(JSON.parse(response.body).length).to eq 4
-      end
+    let(:response_template) { create(:response_template, user: user) }
 
-      xit "returns only the moderator and personal response templates with the correct params" do
-        create_list(:response_template, 2, user: nil, type_of: "mod_comment")
-        create_list(:response_template, 2, user: moderator, type_of: "personal_comment")
-
-        get response_templates_path, params: { type_of: "mod_comment", personal_included: "true" }, headers: { HTTP_ACCEPT: "application/json" }
-        user_ids = JSON.parse(response.body).map { |hash| hash["user_id"] }
-        expect(user_ids).to eq [nil, nil, moderator.id, moderator.id]
-      end
-
-      xit "returns the user's response templates when no params are given" do
-        create_list(:response_template, 2, user: moderator, type_of: "personal_comment")
-        get response_templates_path, headers: { HTTP_ACCEPT: "application/json" }
-        user_ids = JSON.parse(response.body).map { |hash| hash["user_id"] }
-        expect(user_ids).to eq [moderator.id, moderator.id]
-      end
-
-      xit "raises unauthorized error if trying to view admin response templates" do
-        create_list(:response_template, 2, user: nil, type_of: "email_reply", content_type: "html")
-        expect do
-          get response_templates_path, params: { type_of: "email_reply" }, headers: { HTTP_ACCEPT: "application/json" }
-        end.to raise_error Pundit::NotAuthorizedError
-      end
+    it "successfully updates the response template" do
+      title = "something else"
+      patch response_template_path(response_template.id), params: { response_template: { title: title } }
+      expect(ResponseTemplate.first.title).to eq title
     end
 
-    context "when signed in as an admin" do
-      before { sign_in admin }
+    it "redirects back to the response template" do
+      patch response_template_path(response_template.id), params: { response_template: { title: "something else" } }
+      expect(response.redirect_url).to include user_settings_path(tab: "response-templates", id: ResponseTemplate.first.id)
+    end
 
-      xit "returns only the moderator and personal response templates with the correct params" do
-        create_list(:response_template, 2, user: nil, type_of: "mod_comment")
-        create_list(:response_template, 2, user: admin, type_of: "personal_comment")
+    it "shows the previously written content on a failed submission" do
+      content = "something something something"
+      patch response_template_path(response_template.id), params: { response_template: { title: "", content: content } }
+      follow_redirect!
+      expect(response.body).to include content
+    end
+  end
 
-        get response_templates_path, params: { type_of: "mod_comment", personal_included: "true" }, headers: { HTTP_ACCEPT: "application/json" }
-        user_ids = JSON.parse(response.body).map { |hash| hash["user_id"] }
-        expect(user_ids).to eq [nil, nil, admin.id, admin.id]
-      end
+  describe "DELETE /response_templates/:id #destroy" do
+    before do
+      sign_in user
+      delete response_template_path(response_template.id)
+    end
 
-      xit "returns the user's response templates" do
-        create_list(:response_template, 2, user: admin, type_of: "personal_comment")
-        get response_templates_path, headers: { HTTP_ACCEPT: "application/json" }
-        user_ids = JSON.parse(response.body).map { |hash| hash["user_id"] }
-        expect(user_ids).to eq [admin.id, admin.id]
-      end
+    let(:response_template) { create(:response_template, user: user) }
 
-      xit "allows access and returns an array of admin level response templates" do
-        create_list(:response_template, 2, user: nil, type_of: "email_reply", content_type: "html")
-        get response_templates_path, params: { type_of: "email_reply" }, headers: { HTTP_ACCEPT: "application/json" }
-        expect(JSON.parse(response.body).length).to eq 2
-      end
+    it "successfully destroys the response template" do
+      expect(ResponseTemplate.count).to eq 0
+    end
+
+    it "redirects to /settings/response_templates" do
+      expect(response.redirect_url).to include user_settings_path(tab: "response-templates")
     end
   end
 end
