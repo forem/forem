@@ -12,8 +12,8 @@ module Metrics
 
         next unless model.const_defined?(:SEARCH_CLASS)
 
-        index_size = Search::Client.count(index: model::SEARCH_CLASS::INDEX_ALIAS).dig("count")
-        DatadogStatsClient.gauge("elasticsearch.index_size", index_size, tags: { table_name: model.table_name })
+        document_count = Search::Client.count(index: model::SEARCH_CLASS::INDEX_ALIAS).dig("count")
+        DatadogStatsClient.gauge("elasticsearch.document_count", document_count, tags: { table_name: model.table_name })
       end
     end
   end
