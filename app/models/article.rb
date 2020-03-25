@@ -1,4 +1,26 @@
 class Article < ApplicationRecord
+  self.ignored_columns = %w[
+    abuse_removal_reason
+    allow_big_edits
+    allow_small_edits
+    amount_due
+    amount_paid
+    automatically_renew
+    collection_position
+    featured_clickthrough_rate
+    featured_impressions
+    ids_for_suggested_articles
+    job_opportunity_id
+    last_invoiced_at
+    lat
+    long
+    main_tag_name_for_social
+    name_within_collection
+    paid
+    rating_votes_count
+    removed_for_abuse
+  ]
+
   include CloudinaryHelper
   include ActionView::Helpers
   include AlgoliaSearch
@@ -81,7 +103,6 @@ class Article < ApplicationRecord
 
   before_destroy :before_destroy_actions, prepend: true
 
-  serialize :ids_for_suggested_articles
   serialize :cached_user
   serialize :cached_organization
 
@@ -525,7 +546,6 @@ class Article < ApplicationRecord
     self.description = front_matter["description"] if front_matter["description"].present? || front_matter["title"].present? # Do this if frontmatte exists at all
     self.collection_id = nil if front_matter["title"].present?
     self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
-    self.automatically_renew = front_matter["automatically_renew"] if front_matter["automatically_renew"].present? && tag_list.include?("hiring")
   end
 
   def determine_image(front_matter)
