@@ -1,6 +1,10 @@
 class Internal::ArticlesController < Internal::ApplicationController
   layout "internal"
 
+  after_action only: [:update] do
+    Audit::Logger.log(:moderator, current_user, params.dup)
+  end
+
   def index
     @pending_buffer_updates = BufferUpdate.where(status: "pending").includes(:article)
 
@@ -39,7 +43,6 @@ class Internal::ArticlesController < Internal::ApplicationController
     article.update!(article_params)
     Article.where.not(id: article.id).where(live_now: true).update_all(live_now: false) if article.live_now
     CacheBuster.bust("/live_articles")
-    Audit::Logger.log(:moderator, current_user, params.dup)
     render body: nil
   end
 

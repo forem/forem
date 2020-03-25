@@ -1,4 +1,8 @@
 class TagAdjustmentsController < ApplicationController
+  after_action only: %i[create destroy] do
+    Audit::Logger.log(:moderator, current_user, params.dup)
+  end
+
   def create
     authorize(User, :moderation_routes?)
     service = TagAdjustmentCreationService.new(
@@ -13,9 +17,6 @@ class TagAdjustmentsController < ApplicationController
     article = service.article
     if tag_adjustment.save
       service.update_tags_and_notify
-      if current_user.auditable?
-        Audit::Logger.log(:moderator, current_user, params.dup)
-      end
       redirect_to "#{URI.parse(article.path).path}/mod"
     else
       authorize(User, :moderation_routes?)
@@ -36,9 +37,6 @@ class TagAdjustmentsController < ApplicationController
     @article = Article.find(tag_adjustment.article_id)
     @article.update!(tag_list: @article.tag_list.add(tag_adjustment.tag_name)) if tag_adjustment.adjustment_type == "removal"
     @article.update!(tag_list: @article.tag_list.remove(tag_adjustment.tag_name)) if tag_adjustment.adjustment_type == "addition"
-    if current_user.auditable?
-      Audit::Logger.log(:moderator, current_user, params.dup)
-    end
     redirect_to "#{URI.parse(@article.path).path}/mod"
   end
 end
