@@ -82,8 +82,7 @@
             <hr />
             <div class="olderposts-header">Older #<%= @tag %> posts</div>
             <div class="olderposts-links">
-              <% number_of_pages.times do |i| %>
-                <% n = i + 1 %>
+              <% (1..number_of_pages).each do |n| %>
                 <% next if (@page - n).abs > 5 && number_of_pages > 10 %>
                 <% if @page == n %>
                     <span class="olderposts-pagenumber"><%= n %></span>

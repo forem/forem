@@ -125,7 +125,7 @@ class StoriesController < ApplicationController
     @num_published_articles = if @tag_model.requires_approval?
                                 Article.published.cached_tagged_by_approval_with(@tag).size
                               else
-                                Article.published.cached_tagged_with(@tag).size
+                                Article.published.cached_tagged_with(@tag).where("score > 2").size
                               end
     @number_of_articles = user_signed_in? ? 5 : SIGNED_OUT_RECORD_COUNT
     @stories = Articles::Feed.new(number_of_articles: @number_of_articles, tag: @tag, page: @page).
