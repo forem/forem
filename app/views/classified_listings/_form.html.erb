@@ -32,6 +32,10 @@
             <summary>Category details/rules</summary>
           </details>
         </div>
+        <div class="field">
+          <%= form.label "tag_list", "Tags" %>
+          <%= form.text_field "tag_list", placeholder: "8 tags max, comma separated, no spaces or special characters", name: "classified_listing[tag_list]" %>
+        </div>
       <% if @organizations.present? && @organizations.size > 0 %>
         <div class="field">
           <%= form.label "organization_id", "Post under an organization:" %>
