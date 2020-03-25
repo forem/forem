@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
+RSpec.describe Broadcasts::WelcomeNotification::Dispatcher, type: :service do
   let(:user) { create(:user) }
 
   describe "::call" do

@@ -1,7 +1,7 @@
 # Generates a broadcast to be delivered as a notification.
 module Broadcasts
   module WelcomeNotification
-    module Generator
+    module Dispatcher
       def self.call(user_id)
         user = User.find(user_id)
 
