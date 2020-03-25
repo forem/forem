@@ -669,7 +669,12 @@ export default class Chat extends Component {
   };
 
   triggerSwitchChannel = (id, slug) => {
-    const { chatChannels, isMobileDevice, unopenedChannelIds } = this.state;
+    const {
+      chatChannels,
+      isMobileDevice,
+      unopenedChannelIds,
+      activeChannelId,
+    } = this.state;
     const newUnopenedChannelIds = unopenedChannelIds;
     const index = newUnopenedChannelIds.indexOf(id);
     if (index > -1) {
@@ -685,6 +690,17 @@ export default class Chat extends Component {
       ),
     });
     this.setupChannel(id);
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get('ref') === 'group_invite') {
+      this.setActiveContentState(activeChannelId, {
+        type_of: 'loading-post',
+      });
+      this.setActiveContent({
+        path: '/chat_channel_memberships',
+        type_of: 'article',
+      });
+    }
     window.history.replaceState(null, null, `/connect/${slug}`);
     if (!isMobileDevice) {
       document.getElementById('messageform').focus();
@@ -758,7 +774,6 @@ export default class Chat extends Component {
     ) {
       return false;
     }
-
     const { target } = e;
     const content =
       target.dataset.content || target.parentElement.dataset.content;
@@ -766,7 +781,7 @@ export default class Chat extends Component {
       e.preventDefault();
       e.stopPropagation();
 
-      const { activeChannelId } = this.state;
+      const { activeChannelId, activeChannel } = this.state;
       if (target.dataset.content.startsWith('chat_channels/')) {
         this.setActiveContentState(activeChannelId, {
           type_of: 'loading-user',
@@ -776,6 +791,14 @@ export default class Chat extends Component {
           this.setActiveContent,
           null,
         );
+      } else if (target.dataset.content === 'sidecar_all') {
+        this.setActiveContentState(activeChannelId, {
+          type_of: 'loading-post',
+        });
+        this.setActiveContent({
+          path: `/chat_channel_memberships/${activeChannel.id}/edit`,
+          type_of: 'article',
+        });
       } else if (
         content.startsWith('sidecar') ||
         content.startsWith('article')
@@ -880,15 +903,22 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You and{' '}
+              You and
+              {' '}
               <a href={`/${activeChannel.channel_modified_slug}`}>
                 {activeChannel.channel_modified_slug}
-              </a>{' '}
-              are connected because you both follow each other. All interactions{' '}
+              </a>
+              {' '}
+              are connected because you both follow each other. All interactions
+              {' '}
               <em>
                 <b>must</b>
-              </em>{' '}
-              abide by the <a href="/code-of-conduct">code of conduct</a>.
+              </em>
+              {' '}
+              abide by the 
+              {' '}
+              <a href="/code-of-conduct">code of conduct</a>
+              .
             </div>
           </div>
         );
@@ -897,11 +927,19 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You have joined {activeChannel.channel_name}! All interactions{' '}
+              You have joined 
+              {' '}
+              {activeChannel.channel_name}
+              ! All interactions
+              {' '}
               <em>
                 <b>must</b>
-              </em>{' '}
-              abide by the <a href="/code-of-conduct">code of conduct</a>.
+              </em>
+              {' '}
+              abide by the 
+              {' '}
+              <a href="/code-of-conduct">code of conduct</a>
+              .
             </div>
           </div>
         );
@@ -988,7 +1026,10 @@ export default class Chat extends Component {
               data-content="sidecar-chat_channel_memberships"
               type="button"
             >
-              👋 New Invitations!
+              <span role="img" aria-label="emoji">
+                👋
+              </span>
+              New Invitations!
             </a>
           </div>
         );
@@ -1244,7 +1285,7 @@ export default class Chat extends Component {
     let before = text.substring(0, start);
     before = text.substring(0, before.lastIndexOf('@') + 1);
     const after = text.substring(end, text.length);
-    el.value = before + name + ' ' + after;
+    el.value = `${before + name  } ${  after}`;
     el.selectionStart = start + name.length + 1;
     el.selectionEnd = start + name.length + 1;
     el.focus();
@@ -1412,7 +1453,7 @@ export default class Chat extends Component {
   };
 
   renderChannelHeaderInner = () => {
-    const { activeChannel, activeChannelId } = this.state;
+    const { activeChannel } = this.state;
     if (activeChannel.channel_type === 'direct') {
       return (
         <a
@@ -1437,7 +1478,6 @@ export default class Chat extends Component {
 
   renderChannelConfigImage = () => {
     const { activeContent, activeChannel, activeChannelId } = this.state;
-
     if (
       activeContent[activeChannelId] &&
       activeContent[activeChannelId].type_of
@@ -1520,8 +1560,10 @@ export default class Chat extends Component {
         >
           <span role="img" aria-label="waving">
             👋
-          </span>{' '}
-          Incoming Video Call{' '}
+          </span>
+          {' '}
+          Incoming Video Call
+          {' '}
         </div>
       );
     }

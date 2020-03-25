@@ -7,7 +7,7 @@ export default class Article extends Component {
       id: PropTypes.string,
     }).isRequired,
   };
-  
+
   render() {
     const { resource: article } = this.props;
     return (

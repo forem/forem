@@ -14,6 +14,7 @@ RSpec.describe "ChatChannels", type: :request do
   before do
     sign_in user
     chat_channel.add_users([user])
+    chat_channel.chat_channel_memberships.update(status: "active")
   end
 
   describe "GET /connect" do

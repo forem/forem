@@ -134,17 +134,33 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       end
 
       context "channel moderator" do
-        it "creates chat channel invitation" do
-          chat_channel.chat_channel_memberships.where(user_id: user.id).update(role: "mod")
-          chat_channel_members_count = ChatChannelMembership.all.size
-          post "/chat_channel_memberships", params: {
-            chat_channel_membership: {
-              invitation_usernames: "#{second_user.username}",
-              chat_channel_id: chat_channel.id
+        context "user was a member of channel, and than left channel" do
+          it "creates chat channel invitation" do
+            chat_channel.chat_channel_memberships.where(user_id: user.id).update(role: "mod")
+            ChatChannelMembership.create(chat_channel_id: chat_channel.id, user_id: second_user.id, status: "left_channel")
+            post "/chat_channel_memberships", params: {
+              chat_channel_membership: {
+                invitation_usernames: "#{second_user.username}",
+                chat_channel_id: chat_channel.id
+              }
             }
-          }
-          expect(ChatChannelMembership.all.size).to eq(chat_channel_members_count + 1)
-          expect(ChatChannelMembership.last.status).to eq("pending")
+            expect(ChatChannelMembership.last.status).to eq("pending")
+          end
+        end
+
+        context "user was not a member of channel" do
+          it "creates chat channel invitation" do
+            chat_channel.chat_channel_memberships.where(user_id: user.id).update(role: "mod")
+            chat_channel_members_count = ChatChannelMembership.all.size
+            post "/chat_channel_memberships", params: {
+              chat_channel_membership: {
+                invitation_usernames: "#{second_user.username}",
+                chat_channel_id: chat_channel.id
+              }
+            }
+            expect(ChatChannelMembership.all.size).to eq(chat_channel_members_count + 1)
+            expect(ChatChannelMembership.last.status).to eq("pending")
+          end
         end
       end
 

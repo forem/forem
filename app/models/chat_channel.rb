@@ -52,7 +52,7 @@ class ChatChannel < ApplicationRecord
     chat_channel_memberships.where(user_id: user.id).pluck(:last_opened_at).first
   end
 
-  def self.create_with_users(users, channel_type = "direct", contrived_name = "New Channel")
+  def self.create_with_users(users, channel_type="direct", contrived_name="New Channel", membership_role="member")
     raise "Invalid direct channel" if users.size != 2 && channel_type == "direct"
 
     if channel_type == "direct"
@@ -77,15 +77,17 @@ class ChatChannel < ApplicationRecord
         last_message_at: 1.week.ago,
         status: "active",
       )
-      channel.add_users(users)
-      channel.chat_channel_memberships.map(&:index!)
+      channel.add_users(users, channel_type, membership_role)
     end
     channel
   end
 
-  def add_users(users)
+  def add_users(users, channel_type="direct", membership_role="member")
     Array(users).each do |user|
-      ChatChannelMembership.create!(user_id: user.id, chat_channel_id: id)
+      membership = ChatChannelMembership.create!(user_id: user.id, chat_channel_id: id)
+      next if channel_type == "direct"
+      membership.update(role: membership_role, status: "pending")
+      NotifyMailer.channel_invite_email(membership, nil).deliver_later
     end
   end
 
