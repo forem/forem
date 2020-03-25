@@ -95,7 +95,7 @@
     "faker": "^4.1.0",
     "husky": "^4.2.3",
     "ibm-openapi-validator": "0.26.0",
-    "jest": "^23.5.0",
+    "jest": "25.2.0",
     "jest-axe": "^3.4.0",
     "jest-fetch-mock": "^3.0.3",
     "jsdom": "^16.2.1",

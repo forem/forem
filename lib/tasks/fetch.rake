@@ -117,8 +117,8 @@ task fix_credits_count_cache: :environment do
   Credit.counter_culture_fix_counts only: %i[user organization]
 end
 
-task record_db_table_counts: :environment do
-  Metrics::RecordDbTableCountsWorker.perform_async
+task record_data_counts: :environment do
+  Metrics::RecordDataCountsWorker.perform_async
 end
 
 task log_worker_queue_stats: :environment do
