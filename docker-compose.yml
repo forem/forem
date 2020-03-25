@@ -49,9 +49,11 @@ services:
     container_name: elasticsearch
     environment:
       - cluster.name=docker-cluster
+      - node.name=node-1
+      - cluster.initial_master_nodes=node-1
+      - cluster.routing.allocation.disk.threshold_enabled=false
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "discovery.type=single-node"
       - xpack.security.enabled=false
       - xpack.monitoring.enabled=false
       - xpack.graph.enabled=false
@@ -64,3 +66,4 @@ services:
         - ./docker_data/elasticsearch/data:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
+      - "9300:9300"
