@@ -84,8 +84,9 @@ class ChatChannel < ApplicationRecord
 
   def add_users(users, channel_type="direct", membership_role="member")
     Array(users).each do |user|
-      membership = ChatChannelMembership.create!(user_id: user.id, chat_channel_id: id, role: membership_role, status: "pending")
+      membership = ChatChannelMembership.create!(user_id: user.id, chat_channel_id: id)
       next if channel_type == "direct"
+      membership.update(role: membership_role, status: "pending")
       NotifyMailer.channel_invite_email(membership, nil).deliver_later
     end
   end

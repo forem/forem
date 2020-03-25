@@ -35,7 +35,7 @@ class ChatChannelMembershipsController < ApplicationController
       number_invitations_sent += 1
       membership = ChatChannelMembership.find_or_create_by(user_id: user.id, chat_channel_id: @chat_channel.id)
       membership.update(status: "pending")
-      NotifyMailer.channel_invite_email(membership, user).deliver_later
+      NotifyMailer.channel_invite_email(membership, current_user).deliver_later
     end
     flash[:settings_notice] = if number_invitations_sent.zero?
                                 "No Invitations Sent. Check for username typos."
