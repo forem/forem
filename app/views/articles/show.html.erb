@@ -47,7 +47,7 @@
     <meta name="keywords" content="<%= @article.cached_tag_list %>, software, coding, development, engineering, inclusive, community">
 
     <meta property="og:type" content="article" />
-    <meta property="og:url" content="<%= app_url(@article.path) %>" />
+    <meta property="og:url" content="<%= article_url(@article) %>" />
     <meta property="og:title" content="<%= @article.title %>" />
     <meta property="og:description" content="<%= @article.description || "An article from the community" %>" />
     <meta property="og:site_name" content="<%= community_qualified_name %>" />
@@ -86,7 +86,7 @@
       <h1 style="text-align:center;">⏳ Video Transcoding In Progress ⏳</h1>
     <% end %>
     <article itemscope itemtype="http://schema.org/Article" itemprop="mainEntity">
-      <meta itemprop="url" content="<%= app_url(@article.path) %>">
+      <meta itemprop="url" content="<%= article_url(@article) %>">
       <meta itemprop="image" content="<%= article_social_image_url(@article) %>">
       <div itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
         <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
@@ -125,7 +125,7 @@
         </h1>
         <h3>
           <span itemprop="author" itemscope itemtype="http://schema.org/Person">
-            <meta itemprop="url" content="<%= app_url(@user.username) %>">
+            <meta itemprop="url" content="<%= user_url(@user) %>">
             <a href="/<%= @user.username %>" class="author">
               <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 50) %>" alt="<%= @user.username %> profile image" />
               <span itemprop="name"><%= @user.name %></span>
