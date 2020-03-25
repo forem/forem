@@ -37,7 +37,7 @@ class IntroSlide extends Component {
           </span>
         </p>
         <p>
-          A few 
+          A few
           {' '}
           <strong>quick questions</strong>
           {' '}
@@ -78,22 +78,24 @@ class IntroSlide extends Component {
   }
 
   render() {
-    const { prev, variant } = this.props;
-    const onboardingBody = this.selectVariant(variant);
+    const { prev } = this.props;
 
     return (
-      <div className="onboarding-main">
+      <div className="onboarding-main introduction">
         <div className="onboarding-content">
-          <h1>
-            <span>Welcome to the </span>
+          <figure>
             <img
               src="/assets/purple-dev-logo.png"
               className="sticker-logo"
               alt="DEV"
             />
-            <span>community!</span>
+          </figure>
+          <h1 class="introduction-title">
+            Welcome to DEV!
           </h1>
-          {onboardingBody}
+          <h3 class="introduction-subtitle">
+            DEV is where programmers share ideas and help each other grow.
+          </h3>
         </div>
         <Navigation prev={prev} next={this.onSubmit} hidePrev />
       </div>
