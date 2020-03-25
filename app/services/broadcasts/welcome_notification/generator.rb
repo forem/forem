@@ -23,7 +23,7 @@ module Broadcasts
       end
 
       def send_authentication_notification
-        return if received_notification?(authentication_broadcast) || authenticated_with_both_services?
+        return if received_notification?(authentication_broadcast) || authenticated_with_both_services? || user.created_at > 1.day.ago
 
         Notification.send_welcome_notification(user.id, authentication_broadcast.id)
       end

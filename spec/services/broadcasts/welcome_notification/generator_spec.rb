@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
-  let(:mascot_account)  { create(:user) }
-  let!(:welcome_thread) { create(:article, user: mascot_account, published: true, tags: "welcome") }
-  let!(:welcome_broadcast) { create(:welcome_broadcast, :active) }
+  let(:mascot_account)             { create(:user) }
+  let!(:welcome_thread)            { create(:article, user: mascot_account, published: true, tags: "welcome") }
+  let!(:welcome_broadcast)         { create(:welcome_broadcast, :active) }
   let!(:twitter_connect_broadcast) { create(:twitter_connect_broadcast, active: true) }
   let!(:github_connect_broadcast)  { create(:github_connect_broadcast, active: true) }
 
@@ -19,8 +19,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
 
   describe "::call" do
     it "send all forms of welcome notifications" do
-      # incomplete
-      user = create(:user, :with_identity, identities: ["github"])
+      user = create(:user, :with_identity, identities: ["github"], created_at: 1.week.ago)
       sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
       expect(user.notifications.count).to eq(2)
     end
@@ -55,20 +54,26 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       allow(Notification).to receive(:send_welcome_notification)
     end
 
-    it "generates and sends the appropriate broadcast (twitter)" do
+    it "does not send notification if user is created less than a day ago" do
       user = create(:user, :with_identity, identities: ["github"])
+      sidekiq_perform_enqueued_jobs { described_class.new(user.id).send_authentication_notification }
+      expect(Notification).not_to have_received(:send_welcome_notification)
+    end
+
+    it "generates and sends the appropriate broadcast (twitter)" do
+      user = create(:user, :with_identity, identities: ["github"], created_at: 1.day.ago)
       sidekiq_perform_enqueued_jobs { described_class.new(user.id).send_authentication_notification }
       expect(Notification).to have_received(:send_welcome_notification).with(user.id, twitter_connect_broadcast.id)
     end
 
     it "generates and sends the appropriate broadcast (github)" do
-      user = create(:user, :with_identity, identities: ["twitter"])
+      user = create(:user, :with_identity, identities: ["twitter"], created_at: 1.day.ago)
       sidekiq_perform_enqueued_jobs { described_class.new(user.id).send_authentication_notification }
       expect(Notification).to have_received(:send_welcome_notification).with(user.id, github_connect_broadcast.id)
     end
 
     it "does not send notification if user is authenticated with both services" do
-      user = create(:user, :with_identity, identities: %w[twitter github])
+      user = create(:user, :with_identity, identities: %w[twitter github], created_at: 1.day.ago)
       sidekiq_perform_enqueued_jobs { described_class.new(user.id).send_authentication_notification }
       expect(Notification).not_to have_received(:send_welcome_notification).with(user.id, github_connect_broadcast.id)
     end
@@ -76,7 +81,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
     it "does not send a duplicate notifications (github)" do
       allow(Notification).to receive(:send_welcome_notification).and_call_original
 
-      user = create(:user, :with_identity, identities: ["twitter"])
+      user = create(:user, :with_identity, identities: ["twitter"], created_at: 1.day.ago)
       2.times do
         sidekiq_perform_enqueued_jobs { described_class.new(user.id).send_authentication_notification }
       end
@@ -86,7 +91,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
     it "does not send a duplicate notifications (twitter)" do
       allow(Notification).to receive(:send_welcome_notification).and_call_original
 
-      user = create(:user, :with_identity, identities: ["github"])
+      user = create(:user, :with_identity, identities: ["github"], created_at: 1.day.ago)
       2.times do
         sidekiq_perform_enqueued_jobs { described_class.new(user.id).send_authentication_notification }
       end
