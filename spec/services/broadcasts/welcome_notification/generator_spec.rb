@@ -2,10 +2,8 @@ require "rails_helper"
 
 RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   describe "::call" do
-    let(:receiving_user) { create(:user) }
-    let(:user) { create(:user) }
-    let(:mascot_account) { create(:user) }
-    let!(:welcome_broadcast) { create(:welcome_broadcast, :active) }
+    let(:user)               { create(:user) }
+    let(:mascot_account)     { create(:user) }
 
     before do
       allow(User).to receive(:mascot_account).and_return(mascot_account)
@@ -13,7 +11,33 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
     end
 
     after do
+      # SiteConfig.clear_cache should work here but for some reason it isn't
       SiteConfig.staff_user_id = 1
+    end
+
+    context "when sending a welcome_thread notification" do
+      let!(:welcome_broadcast) { create(:welcome_broadcast, :active) }
+      let!(:welcome_thread) { create(:article, user: mascot_account, published: true, tags: "welcome") }
+
+      it "generates the correct broadcast type and sends the notification to the user" do
+        sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
+        expect(user.notifications.first.notifiable).to eq(welcome_broadcast)
+      end
+
+      it "does not send a notification to a user who has commented in a welcome thread" do
+        create(:comment, commentable: welcome_thread, commentable_type: "Article", user: user)
+        expect do
+          sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
+        end.not_to change(user.notifications, :count)
+      end
+
+      it "does not send a duplicate notification" do
+        2.times do
+          sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
+        end
+
+        expect(user.notifications.count).to eq(1)
+      end
     end
 
     context "when sending a set_up_profile notification" do
@@ -21,35 +45,6 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       xit "it sends a welcome notification for that broadcast"
       xit "it does not send duplicate welcome notification for that broadcast"
       xit "does not send a notification to a user who has set up their profile"
-    end
-
-    context "when sending a welcome_thread notification" do
-      before do
-        welcome_thread_article = create(:article, title: "Welcome Thread - v0", published: true, tags: "welcome", user: mascot_account)
-        create(:comment, commentable: welcome_thread_article, commentable_type: "Article", user: user)
-      end
-
-      it "generates the correct broadcast type and sends the notification to the user", :aggregate_failures do
-        expect(receiving_user.notifications.count).to eq(0)
-        sidekiq_perform_enqueued_jobs { described_class.call(receiving_user.id) }
-
-        expect(receiving_user.notifications.count).to eq(1)
-        expect(receiving_user.notifications.first.notifiable).to eq(welcome_broadcast)
-      end
-
-      it "does not send a notification to a user who has commented in a welcome thread", :aggregate_failures do
-        expect(user.notifications.count).to eq(0)
-        sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
-        expect(user.notifications.count).to eq(0)
-      end
-
-      it "does not send a duplicate notification" do
-        2.times do
-          sidekiq_perform_enqueued_jobs { described_class.call(receiving_user.id) }
-        end
-
-        expect(receiving_user.notifications.count).to eq(1)
-      end
     end
 
     context "when sending a twitter_connect notification" do
