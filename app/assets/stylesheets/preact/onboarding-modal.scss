@@ -3,7 +3,7 @@
 @import 'components/buttons';
 @import 'components/modals';
 @import 'components/forms';
-@import '../vars/variables';
+@import 'config/import';
 
 #onboarding-container {
   min-height: calc(100vh - 350px);
@@ -31,7 +31,6 @@
     border-width: 2px;
     min-height: auto;
   }
-}
 
   a {
     color: var(--link-brand-color);
@@ -67,7 +66,6 @@
     overflow: hidden;
     background-image: url('/assets/onboarding-background-white.png');
   }
-}
 
   &:before {
     display: block;
@@ -113,17 +111,17 @@
   }
 
   .subtitle {
-    color: $smoke-80;
+    color: var(--container-color-secondary);
     font-size: $fs-xl;
     font-weight: $fw-medium;
     letter-spacing: normal;
     line-height: $lh-base;
   }
-}
 
   h2 {
     margin-top: 20px;
     font-size: 15px;
+  }
 
   .navigation-content {
     display: flex;
@@ -141,7 +139,7 @@
   align-self: flex-end;
   flex-shrink: 0;
   width: 100%;
-  border-top: 2px solid $smoke-100;
+  border-top: 2px solid var(--box-darker);
 
   .selection-status-content {
     display: block;
@@ -149,7 +147,7 @@
     text-align: center;
     font-weight: bold;
     border-radius: 3px;
-    border: 2px solid #0a0a0a;
+    border: 2px solid var(--box-darker);
     @include themeable(border-color, theme-color, #0a0a0a);
     @include themeable(color, theme-color, #0a0a0a);
     @include themeable(
@@ -237,7 +235,7 @@
     $item: &;
 
     &__inner {
-      background: $smoke-10;
+      background: var(--base-10);
       bottom: 0;
       font-family: $ff-accent;
       hyphens: auto;
@@ -274,13 +272,14 @@
     }
   }
 }
+}
 
 // Onboarding Intro
 .onboarding-main.introduction {
   width: 578px;
 
   .onboarding-content {
-    background: $smoke-100;
+    background: var(--base-100);
     color: white;
     display: flex;
     flex-direction: column;
@@ -341,7 +340,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     align-items: center;
     border: none;
     box-sizing: border-box;
-    color: $smoke-90;
+    color: var(--body-color);
     display: flex;
     padding: $su-2 $su-4;
     text-align: left;
@@ -387,7 +386,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     height: $su-8;
     width: $su-8;
     object-fit: cover;
-    border: 1px solid $smoke-10;
+    border: 1px solid var(--base-10);
   }
 
   .user-name,
@@ -465,14 +464,14 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
 .onboarding-body {
   .content-row {
     align-items: center;
-    color: #202428; // smoke-90
+    color: #202428;
     display: flex;
     padding: 8px 16px;
     text-align: left;
     width: 100%;
 
     &:hover {
-      background-color: #eef0f1 !important; //smoke-10
+      background-color: #eef0f1 !important;
     }
   }
 
@@ -485,7 +484,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     height: 48px;
     width: 48px;
     object-fit: cover;
-    border: 1px solid #eef0f1; //smoke-10
+    border: 1px solid #eef0f1;
   }
 
   .user-name,
@@ -502,7 +501,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
 .onboarding-body {
   .content-row {
     align-items: center;
-    color: #202428; // smoke-90
+    color: #202428;
     display: flex;
     padding: 8px 16px;
     text-align: left;
@@ -522,7 +521,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     height: 48px;
     width: 48px;
     object-fit: cover;
-    border: 1px solid #EEF0F1; //smoke-10
+    border: 1px solid #EEF0F1;
   }
 
   .user-name,
