@@ -15,7 +15,12 @@ class ResponseTemplatesController < ApplicationController
       previous_content = permitted_attributes(ResponseTemplate)[:content]
     end
 
-    redirect_to user_settings_path(tab: "response-templates", id: @response_template.id)
+    redirect_to user_settings_path(
+      tab: "response-templates",
+      id: response_template.id,
+      previous_title: previous_title,
+      previous_content: previous_content
+    )
   end
 
   def destroy
@@ -37,7 +42,12 @@ class ResponseTemplatesController < ApplicationController
       flash[:settings_notice] = "Your response template \"#{response_template.title}\" was updated."
       redirect_to user_settings_path(tab: "response-templates", id: response_template.id)
     else
-      flash[:error] = "Response template error: #{@response_template.errors.full_messages.to_sentence}"
+      flash[:error] = "Response template error: #{response_template.errors.full_messages.to_sentence}"
+      redirect_to user_settings_path(
+        tab: "response-templates",
+        id: response_template.id,
+        previous_title: permitted_attributes(ResponseTemplate)[:title],
+        previous_content: permitted_attributes(ResponseTemplate)[:content])
     end
   end
 
