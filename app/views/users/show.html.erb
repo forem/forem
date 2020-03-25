@@ -24,15 +24,39 @@
     }
     <% end %>
   </style>
-  <div class="user-profile-header" style="<%= user_colors_style(@user) %>" itemscope itemtype="http://schema.org/Person" itemprop="mainEntity">
-    <meta itemprop="url" content="https://dev.to/<%= @user.username %>">
+
+  <head>
+    <script type="application/ld+json">
+      {
+        "@context": "http://schema.org",
+        "@type": "Person",
+        "mainEntityOfPage": "True",
+        # TODO: Add Styling for the User 
+        # FYI: I currently don't know how to correctly implement this
+        "url": "https://dev.to/<%= @user.username %>",
+        "image": {
+          "@type": "ImageObject",
+          "url": "<%= ProfileImage.new(@user) %>",
+          "width": "320",
+          "alternativeHeadline": "<%= @user.username %> profile", 
+          # FYI: Not sure what I should use for alt in JSON-LD, as it looks like it's not used in the ImageObject examples on schema.org
+          # Also not sure what to use for style or background
+        },
+        "name": "<%= @user.name %><%= render "shared/pro_checkmark", style: nil, width: nil %>",
+        "description: "<p><%= @user.summary.presence || ["404 bio not found"].sample %></p>",
+      }
+    </script>
+  </head>
+
+ ! ! ! ! ! <div class="user-profile-header" style="<%= user_colors_style(@user) %>" itemscope itemtype="http://schema.org/Person" itemprop="mainEntity"> 
+    <%# <meta itemprop="url" content="https://dev.to/<%= @user.username %>"> %>
     <div class="user-profile-header-container">
       <div class="profile-pic-wrapper">
-        <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 320) %>" itemprop="image" alt="<%= @user.username %> profile" style="border-color:<%= user_colors(@user)[:bg] %>;background:<%= user_colors(@user)[:bg] %>" />
+ ! ! ! ! ! ! ! <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 320) %>" itemprop="image" alt="<%= @user.username %> profile" style="border-color:<%= user_colors(@user)[:bg] %>;background:<%= user_colors(@user)[:bg] %>" />
       </div>
       <div class="profile-details">
         <h1>
-          <span itemprop="name"><%= @user.name %><%= render "shared/pro_checkmark", style: nil, width: nil %></span>
+          <%# <span itemprop="name"><%= @user.name %><%= render "shared/pro_checkmark", style: nil, width: nil %></span> %>
           <span class="user-profile-follow-button-wrapper">
             <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%= user_colors(@user)[:text] %>;background-color:<%= user_colors(@user)[:bg] %>" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>"}'>&nbsp;</button>
           </span>
@@ -44,9 +68,9 @@
             </span>
           <% end %>
         </h1>
-        <p class="profile-description" itemprop="description">
-          <%= @user.summary.presence || ["404 bio not found"].sample %>
-        </p>
+        <%# <p class="profile-description" itemprop="description"> %>
+          <%# <%= @user.summary.presence || ["404 bio not found"].sample %> %>
+        <%# </p> %>
         <style>
           .profile-details .social .icon-img path {
             fill: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.78) %> !important;

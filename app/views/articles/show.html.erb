@@ -85,17 +85,42 @@
     <% if @article.video_state == "PROGRESSING" %>
       <h1 style="text-align:center;">⏳ Video Transcoding In Progress ⏳</h1>
     <% end %>
-    <article itemscope itemtype="http://schema.org/Article" itemprop="mainEntity">
-      <meta itemprop="url" content="<%= article_url(@article) %>">
-      <meta itemprop="image" content="<%= article_social_image_url(@article) %>">
-      <div itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
-        <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
-          <meta itemprop="url" content="<%= cloudinary(SiteConfig.logo_png, 192, "png") %>">
-          <meta itemprop="width" content="192">
-          <meta itemprop="height" content="192">
-        </div>
-        <meta itemprop="name" content="<%= community_qualified_name %>">
-      </div>
+      <head>
+    <script type="application/ld+json">
+      {
+        "@context": "http://schema.org",
+        "@type": "Article",
+        "url": "https://dev.to<%= @article.path %>",
+        "image": {
+          "@type": "ImageObject",
+          "url": "<%= article_social_image_url(@article) %>",
+        },
+        "publisher": {
+          "@context": "http://schema.org",
+          "@type": "Organization",
+        },
+        "logo": {
+          "@context": "http://schema.org",
+          "@type": "ImageObject",
+          "url": "<%= asset_path "android-icon-192x192.png" %>",
+          "width": "192",
+          "height": "192",
+        },
+        "name": "<%= ApplicationConfig["COMMUNITY_NAME"] %> Community",
+      }
+    </script>
+  </head>
+    <%# <article itemscope itemtype="http://schema.org/Article" itemprop="mainEntity"> %>
+      <%# <meta itemprop="url" content="<%= article_url(@article) %>"> %>
+      <%# <meta itemprop="image" content="<%= article_social_image_url(@article) %>"> %>
+      <%# <div itemprop="publisher" itemscope itemtype="https://schema.org/Organization"> %>
+        <%# <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject"> %>
+          <%# <meta itemprop="url" content="<%= cloudinary(SiteConfig.logo_png, 192, "png") %>"> %>
+          <%# <meta itemprop="width" content="192"> %>
+          <%# <meta itemprop="height" content="192"> %>
+        <%# </div> %>
+        <%# <meta itemprop="name" content="<%= ApplicationConfig["COMMUNITY_NAME"] %> Community"> %>
+      <%# </div> %>
       <section>
         <% if !@article.published %>
           <a href="<%= @article.path %>/edit" class="unpublished">
@@ -120,15 +145,39 @@
             </div>
           </a>
         <% end %>
-        <h1 class="<%= @article.title_length_classification %>" itemprop="name headline">
+        <h1 class="<%= @article.title_length_classification %>" itemprop="name headline"> # TODO: Structure via JSON-LD 
+                                                                                          # SIDEBAR: Not entirely sure how to extract this into JSON-LD
           <%= @article.title %>
         </h1>
-        <h3>
-          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
-            <meta itemprop="url" content="<%= user_url(@user) %>">
-            <a href="/<%= @user.username %>" class="author">
+
+        <head>
+          <script type="application/ld+json">
+            {
+              "@context": "http://schema.org",
+              "@type": "Person",
+              "url": "<%= user_url(@user) %>",
+              "name": "<%= @user.name %>",
+              <% if @article.published_timestamp.present? %>
+              "datePublished": {
+                "<%= @article.published_timestamp %>",
+                "<%= @article.readable_publish_date %>",
+              },
+              <% if should_show_updated_on?(@article) %>
+              <em>Updated on
+              "dateModified": {
+                "<%= @article.edited_at&.utc&.iso8601 %>",
+                "<%= @article.edited_at&.strftime("%b %d, %Y") %>",
+              }, </em>
+            }
+          </script>
+        </head>
+        <%# <h3> %>
+          <%# <span itemprop="author" itemscope itemtype="http://schema.org/Person"> %>
+            <%# <meta itemprop="url" content="<%= user_url(@user) %>"> %>
+            <a href="/<%= @user.username %>" class="author"> # TODO: Extract this into the JSON-LD structure above
+                                                             # SIDEBAR: Not entirely sure how to do that
               <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 50) %>" alt="<%= @user.username %> profile image" />
-              <span itemprop="name"><%= @user.name %></span>
+              <%# <span itemprop="name"><%= @user.name %></span> %>
             </a>
           </span>
           <% if @user.twitter_username.present? %>
@@ -137,17 +186,17 @@
           <% if @user.github_username.present? %>
             <a href="http://github.com/<%= @user.github_username %>"><%= image_tag_or_inline_svg_tag "github", width: 18, height: 18 %></a>
           <% end %>
-          <% if @article.published_timestamp.present? %>
-            <time itemprop="datePublished" datetime="<%= @article.published_timestamp %>"><%= @article.readable_publish_date %></time>
-          <% end %>
+          <%# <% if @article.published_timestamp.present? %> %>
+            <%# <time itemprop="datePublished" datetime="<%= @article.published_timestamp %>"><%= @article.readable_publish_date %></time> %>
+          <%# <% end %> %>
           <% if @second_user.present? %>
             <em>with <b><a href="<%= @second_user.path %>"><%= @second_user.name %></a></b></em>
           <% end %>
           <% if @third_user.present? %>
             <em> and <b><a href="<%= @third_user.path %>"><%= @third_user.name %></a></b></em>
           <% end %>
-          <% if should_show_updated_on?(@article) %>
-            <span><em>Updated on <time itemprop="dateModified" datetime="<%= @article.edited_at&.utc&.iso8601 %>"><%= @article.edited_at&.strftime("%b %d, %Y") %></time></em></span>
+          <%# <% if should_show_updated_on?(@article) %> %>
+            <%# <span><em>Updated on <time itemprop="dateModified" datetime="<%= @article.edited_at&.utc&.iso8601 %>"><%= @article.edited_at&.strftime("%b %d, %Y") %></time></em></span> %>
           <% elsif should_show_crossposted_on?(@article) %>
             <span>
               <em>
@@ -179,7 +228,17 @@
                    articles: @collection_articles,
                    position: :top %>
       <% end %>
-      <div class="body" data-article-id="<%= @article.id %>" id="article-body" itemprop="articleBody">
+      <body>
+      # Not sure if this should be in a body tag
+        <script type="application/ld+json">
+        {
+          @context": "http://schema.org",
+          "@type": "Article",
+          "articleBody": "<%= @article.id %>",
+        }
+        </script>
+      </body>
+      <%# <div class="body" data-article-id="<%= @article.id %>" id="article-body" itemprop="articleBody"> %>
         <%= @article.processed_html.html_safe %>
       </div>
       <% if @article.body_markdown && @article.body_markdown.size > 900 && @collection %>
@@ -199,6 +258,7 @@
     <%= render "articles/org_branding", organization: @organization %>
     <%= render "articles/full_comment_area" %>
   </div>
+
   <% cache("article-bottom-content-#{@article.id}", expires_in: 18.hours) do %>
     <% @classic_article = Suggester::Articles::Classic.new(@article, not_ids: [@article.id]).get.first %>
     <% if @classic_article %>
