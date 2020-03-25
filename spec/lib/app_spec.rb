@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe App, type: :lib do
+RSpec.describe App, type: :service do
   describe ".protocol" do
     it "returns the value of APP_PROTOCOL env variable" do
       expect(described_class.protocol).to eq(ApplicationConfig["APP_PROTOCOL"])
