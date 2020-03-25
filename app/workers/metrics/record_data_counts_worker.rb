@@ -12,7 +12,7 @@ module Metrics
 
         next unless model.const_defined?(:SEARCH_CLASS)
 
-        document_count = Search::Client.count(index: model::SEARCH_CLASS::INDEX_ALIAS).dig("count")
+        document_count = model::SEARCH_CLASS.document_count
         DatadogStatsClient.gauge("elasticsearch.document_count", document_count, tags: { table_name: model.table_name })
       end
     end
