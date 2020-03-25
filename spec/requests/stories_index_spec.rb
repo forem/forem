@@ -269,6 +269,16 @@ RSpec.describe "StoriesIndex", type: :request do
         expect(response.body).not_to include("<a href=\"/t/#{tag.name}/page/1")
         expect(response.body).not_to include("<a href=\"/t/#{tag.name}/page/3")
       end
+
+      it "renders proper canonical url for page 1" do
+        get "/t/#{tag.name}"
+        expect(response.body).to include("<link rel=\"canonical\" href=\"http://localhost:3000/t/#{tag.name}\" />")
+      end
+
+      it "renders proper canonical url for page 2" do
+        get "/t/#{tag.name}/page/2"
+        expect(response.body).to include("<link rel=\"canonical\" href=\"http://localhost:3000/t/#{tag.name}/page/2\" />")
+      end
     end
   end
 end
