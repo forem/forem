@@ -62,6 +62,16 @@
       <%= f.label :mobile_comment_notifications, "Notify me when someone replies to me in a comment thread" %>
     </div>
   </div>
+  <h3>Platform Notification Settings</h3>
+  <p>
+    <em>Notifications that only appear on the <a href="/notifications">tab</a>.</em>
+  </p>
+  <div class="checkbox-field">
+    <div class="sub-field">
+      <%= f.check_box :welcome_notifications %>
+      <%= f.label :welcome_notifications, "Send me occasional tips and tricks" %>
+    </div>
+  </div>
   <% if current_user.trusted %>
     <h3>Mod Notification Settings</h3>
     <div class="checkbox-field">
