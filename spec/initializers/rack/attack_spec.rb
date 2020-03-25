@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe Rack::Attack, type: :request do
+describe Rack::Attack, type: :request, throttle: true do
   describe "search_throttle" do
     before do
       redis_url = "redis://localhost:6379"
@@ -10,6 +10,7 @@ describe Rack::Attack, type: :request do
 
     it "throttles /search endpoints based on IP" do
       Timecop.freeze do
+        allow(Search::User).to receive(:search_documents).and_return({})
         valid_responses = Array.new(5).map do
           get "/search/users", headers: { "REMOTE_ADDR" => "5.6.7.8" }
         end
