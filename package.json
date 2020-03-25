@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Where programmers share ideas and help each other grow",
   "engines": {
-    "yarn": "1.21.x"
+    "yarn": ">=1.21.x"
   },
   "main": "index.js",
   "directories": {
@@ -74,7 +74,7 @@
   "devDependencies": {
     "@stoplight/spectral": "5.2.0",
     "@storybook/addon-actions": "^5.3.17",
-    "@storybook/addon-knobs": "3.4.12",
+    "@storybook/addon-knobs": "^5.3.17",
     "@storybook/addon-links": "^5.3.17",
     "@storybook/addons": "^5.3.17",
     "@storybook/preact": "^5.3.17",

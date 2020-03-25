@@ -5,7 +5,7 @@ RSpec.describe AuthorizationService, type: :service do
 
   describe "new user" do
     let(:auth) { OmniAuth.config.mock_auth[:github] }
-    let(:service) { described_class.new(auth) }
+    let!(:service) { described_class.new(auth) }
 
     it "creates a new user" do
       expect do
@@ -19,6 +19,14 @@ RSpec.describe AuthorizationService, type: :service do
       expect(user.remember_me).to be_truthy
       expect(user.remember_token).to be_truthy
       expect(user.remember_created_at).to be_truthy
+    end
+
+    it "queues a slack message to be sent for a user whose identity is brand new" do
+      service.auth.extra.raw_info.created_at = 1.minute.ago.rfc3339
+
+      sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+        service.get_user
+      end
     end
   end
 

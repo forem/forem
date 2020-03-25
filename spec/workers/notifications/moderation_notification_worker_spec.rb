@@ -6,6 +6,7 @@ RSpec.describe Notifications::ModerationNotificationWorker do
     comment = double
     allow(Comment).to receive(:find_by).and_return(comment)
     allow(comment).to receive(:user)
+    allow(comment).to receive(:commentable).and_return(true)
     comment
   end
   let(:mod) do
@@ -60,6 +61,20 @@ RSpec.describe Notifications::ModerationNotificationWorker do
     describe "when moderator is the comment author" do
       it "does not call the service" do
         comment = create(:comment, user: mod, commentable: create(:article))
+        worker.perform(comment.id)
+        expect(Notifications::Moderation::Send).not_to have_received(:call)
+      end
+    end
+
+    describe "when the commentable does not exist" do
+      it "does not call the service" do
+        mod # prepare a moderator
+
+        article = create(:article)
+        comment = create(:comment, commentable: article)
+
+        article.destroy!
+
         worker.perform(comment.id)
         expect(Notifications::Moderation::Send).not_to have_received(:call)
       end
