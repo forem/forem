@@ -41,7 +41,7 @@
 .top-bar--logo {
   display: flex;
   margin-left: $su-2;
-  @media screen and (min-width: 950px) {
+  @media (min-width: $breakpoint-m) {
     margin-left: $su-4;
   }
 
@@ -57,30 +57,24 @@
 
 // Search bar
 .top-bar--search {
-  display: flex;
   max-width: 420px;
-  margin: 0 $su-2;
   flex: 1 auto;
+  margin: 0 $su-2;
 
-  @media screen and (min-width: $breakpoint-s) {
-    // tood: replace with utility responsive class when ready
+  @media (min-width: $breakpoint-s) {
     margin: 0 $su-4;
-  }
-
-  form {
-    width: 100%;
   }
 }
 
 // Actions on right side...
-.top-bar--links {
+.top-bar__links {
   height: $header-height;
   display: flex;
   align-items: center;
   margin-left: auto;
 }
 
-.top-bar--link {
+.top-bar__link {
   position: relative;
   display: flex;
   padding: 0 $su-3;
@@ -95,7 +89,6 @@
 
 // Dropdown under profile picture / hamburger icon
 .top-bar__menu {
-  // position: relative;
   height: 100%;
 
   &__trigger {
@@ -114,8 +107,6 @@
 
   &__dropdown {
     top: $header-height;
-    // min-width: 200px; // todo: replace with min-width utility class when ready
-    display: none;
   }
 
   &.showing {

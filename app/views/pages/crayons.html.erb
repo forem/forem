@@ -600,16 +600,18 @@
       <li>251 - 320px: 24px</li>
     </ul>
     <p>FYI: Dropdowns use “Box” component as background, with Level 3 elevation.</p>
+    <p>By default dropdowns are hidden with <code>display: none;</code> so keep that in mind if you ever use dropdowns and can't see them :D.</p>
+    <p>Dropdowns are being responsive: for resolutions smaller than <code>$breakpoint-s</code> they are basically full-width.</p>
   </div>
 
   <div>
-    <div class="crayons-dropdown inline-block">
+    <div class="crayons-dropdown inline-block static">
       Hey, I'm a dropdown content! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
     </div>
   </div>
 
   <div>
-    <div class="crayons-dropdown crayons-dropdown--l inline-block">
+    <div class="crayons-dropdown crayons-dropdown--l inline-block static">
       Hey, I'm a dropdown content! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
     </div>
   </div>
@@ -831,6 +833,7 @@
   <div class="body">
     <h2>Navigation: Main nav</h2>
     <p>Used as main nav in left sidebar or dropdowns...</p>
+    <p>This comoponent is being responsive: for resolutions smaller than <code>$breakpoint-s</code> they have some extra padding to make it easier to tap.</p>
     <p>Can contain icons.</p>
   </div>
 

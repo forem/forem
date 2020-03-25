@@ -4,12 +4,13 @@
 %dropdown-style {
   @extend .crayons-box;
   @extend .crayons-box--level-2;
+  position: absolute;
   display: none; // initially hidden
+  padding: $su-4;
 }
 
 .crayons-dropdown {
   @extend %dropdown-style;
-  padding: $su-4;
 
   @media (min-width: $breakpoint-s) {
     min-width: 200px;

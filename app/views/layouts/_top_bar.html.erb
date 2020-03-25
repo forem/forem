@@ -17,18 +17,18 @@
       </form>
     </div>
 
-    <div class="top-bar--links">
+    <div class="top-bar__links">
       <a href="/new" class="crayons-btn hidden mr-2 s:block">Write a post</a>
 
-      <a class="top-bar--link trusted-visible-block" aria-label="Modeartion" href="<%= mod_path %>">
+      <a class="top-bar__link trusted-visible-block" aria-label="Modeartion" href="<%= mod_path %>">
         <%= inline_svg_tag("mod.svg", aria: true, class: "crayons-icon", title: "Moderation") %>
       </a>
       
-      <a href="/connect" id="connect-link" class="top-bar--link" aria-label="Connect">
+      <a href="/connect" id="connect-link" class="top-bar__link" aria-label="Connect">
         <%= inline_svg_tag("connect.svg", aria: true, class: "crayons-icon", title: "Connect") %>
         <span class="crayons-indicator crayons-indicator--success hidden" id="connect-number"></span>
       </a>
-      <a href="/notifications" id="notifications-link" class="top-bar--link" aria-label="Notifications">
+      <a href="/notifications" id="notifications-link" class="top-bar__link" aria-label="Notifications">
         <%= inline_svg_tag("bell.svg", aria: true, class: "crayons-icon", title: "Notifications") %>
         <span class="crayons-indicator crayons-indicator--accent hidden" id="notifications-number"></span>
       </a>
