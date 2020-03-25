@@ -12,10 +12,10 @@ describe Rack::Attack, type: :request, throttle: true do
       Timecop.freeze do
         allow(Search::User).to receive(:search_documents).and_return({})
         valid_responses = Array.new(5).map do
-          get "/search/users", headers: { "REMOTE_ADDR" => "5.6.7.8" }
+          get "/search/users", headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
         end
-        throttled_response = get "/search/users", headers: { "REMOTE_ADDR" => "5.6.7.8" }
-        new_ip_response = get "/search/users", headers: { "REMOTE_ADDR" => "1.1.1.1" }
+        throttled_response = get "/search/users", headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+        new_ip_response = get "/search/users", headers: { "HTTP_FASTLY_CLIENT_IP" => "1.1.1.1" }
 
         valid_responses.each { |r| expect(r).not_to eq(429) }
         expect(throttled_response).to eq(429)
