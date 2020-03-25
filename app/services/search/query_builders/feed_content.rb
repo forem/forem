@@ -37,6 +37,21 @@ module Search
         body_text
       ].freeze
 
+      SOURCE = %i[
+        id
+        title
+        path
+        class_name
+        comments_count
+        tags
+        readable_publish_date_string
+        positive_reactions_count
+        flare_tag_hash
+        user
+        reading_time
+        published_at
+      ].freeze
+
       attr_accessor :params, :body
 
       def initialize(params)
@@ -58,6 +73,10 @@ module Search
           highlight_fields[:fields][field_name] = { order: :score, number_of_fragments: 2, fragment_size: 75 }
         end
         @body[:highlight] = highlight_fields
+      end
+
+      def filter_source
+        @body[:_source] = SOURCE
       end
 
       def build_queries
