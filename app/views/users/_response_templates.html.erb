@@ -30,6 +30,6 @@
   <%= f.label :title %>
   <%= f.text_field :title, placeholder: "Memorable cue for template" %>
   <%= f.label :content, "Comment body (Markdown)" %>
-  <%= f.text_area :content, value: @response_template.content %>
+  <%= f.text_area :content, value: params[:previous_content] || @response_template.content %>
   <%= f.submit "Submit", class: "cta" %>
 <% end %>

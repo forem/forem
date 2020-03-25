@@ -39,7 +39,7 @@ class ResponseTemplatesController < ApplicationController
     else
       flash[:error] = "Response template error: #{@response_template.errors.full_messages.to_sentence}"
     end
-    redirect_to user_settings_path(tab: "response-templates", id: @response_template.id)
+    redirect_to user_settings_path(tab: "response-templates", id: @response_template.id, previous_content: permitted_attributes(ResponseTemplate)[:content])
   end
 
   private
