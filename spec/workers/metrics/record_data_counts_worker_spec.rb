@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Metrics::RecordDbTableCountsWorker, type: :worker do
+RSpec.describe Metrics::RecordDataCountsWorker, type: :worker do
   default_logger = Rails.logger
 
   include_examples "#enqueues_on_correct_queue", "low_priority", 1
@@ -21,6 +21,15 @@ RSpec.describe Metrics::RecordDbTableCountsWorker, type: :worker do
       expect(
         DatadogStatsClient,
       ).to have_received(:gauge).with("postgres.db_table_size", 0, Hash).at_least(1)
+    end
+
+    it "logs index counts in Datadog" do
+      allow(DatadogStatsClient).to receive(:gauge)
+      described_class.new.perform
+
+      expect(
+        DatadogStatsClient,
+      ).to have_received(:gauge).with("elasticsearch.index_size", 0, Hash).at_least(1)
     end
   end
 end
