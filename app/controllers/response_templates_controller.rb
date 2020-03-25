@@ -14,7 +14,7 @@ class ResponseTemplatesController < ApplicationController
       flash[:error] = "Response template error: #{@response_template.errors.full_messages.to_sentence}"
     end
 
-    redirect_back(fallback_location: user_settings_path)
+    redirect_to user_settings_path(tab: "response-templates", id: @response_template.id)
   end
 
   def destroy
@@ -27,7 +27,7 @@ class ResponseTemplatesController < ApplicationController
       flash[:error] = @response_template.errors.full_messages.to_sentence # this will probably never fail
     end
 
-    redirect_back(fallback_location: user_settings_path)
+    redirect_to user_settings_path(tab: "response-templates")
   end
 
   def update
@@ -39,8 +39,7 @@ class ResponseTemplatesController < ApplicationController
     else
       flash[:error] = "Response template error: #{@response_template.errors.full_messages.to_sentence}"
     end
-
-    redirect_back(fallback_location: user_settings_path)
+    redirect_to user_settings_path(tab: "response-templates", id: @response_template.id)
   end
 
   private
