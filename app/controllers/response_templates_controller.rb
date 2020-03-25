@@ -1,8 +1,8 @@
 class ResponseTemplatesController < ApplicationController
   after_action :verify_authorized, except: %i[index]
+  before_action :authenticate_user!, only: %i[index]
 
   def index
-    not_found unless current_user
     @response_templates = if params[:type_of] && params[:personal_included] != "true"
                             result = ResponseTemplate.where(user_id: nil, type_of: params[:type_of])
                             handle_authorization(result)
