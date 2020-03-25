@@ -95,7 +95,7 @@
 
 // Dropdown under profile picture / hamburger icon
 .top-bar__menu {
-  position: relative;
+  // position: relative;
   height: 100%;
 
   &__trigger {
@@ -113,10 +113,8 @@
   }
 
   &__dropdown {
-    position: absolute;
-    right: 0;
     top: $header-height;
-    min-width: 200px; // todo: replace with min-width utility class when ready
+    // min-width: 200px; // todo: replace with min-width utility class when ready
     display: none;
   }
 

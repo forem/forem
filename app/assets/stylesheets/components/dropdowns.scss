@@ -10,11 +10,17 @@
 .crayons-dropdown {
   @extend %dropdown-style;
   padding: $su-4;
-  max-width: 250px;
+
+  @media (min-width: $breakpoint-s) {
+    min-width: 200px;
+    max-width: 250px;
+  }
 
   &--l {
-    min-width: 251px;
-    max-width: 320px;
-    padding: $su-6;
+    @media (min-width: $breakpoint-s) {
+      min-width: 251px;
+      max-width: 320px;
+      padding: $su-6;
+    }
   }
 }
