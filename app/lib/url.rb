@@ -1,5 +1,5 @@
 # Utilities methods to safely build app wide URLs
-module AppURL
+module URL
   def self.protocol
     ApplicationConfig["APP_PROTOCOL"]
   end

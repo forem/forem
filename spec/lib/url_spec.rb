@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe AppURL, type: :lib do
+RSpec.describe URL, type: :lib do
   before do
     allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("https://")
     allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("dev.to")
