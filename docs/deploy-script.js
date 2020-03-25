@@ -10,7 +10,7 @@ switch (subdomain) {
     buildCommand = 'cd .. && npm install && npm run build-storybook';
     break;
   default:
-    throw `Domain ${subdomain} is invalid`;
+    throw `Subdomain ${subdomain} is invalid`;
 }
 
 async function execute(command) {
