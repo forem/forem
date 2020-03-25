@@ -45,32 +45,6 @@
 }
 
 // window background
-// .onboarding-body {
-//   background-color: var(--body-bg);
-//   position: fixed;
-//   margin-top: 50px;
-//   bottom: 0;
-//   height: 100vh;
-//   width: 100%;
-//   overflow: hidden;
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: start;
-//   height: auto;
-//   z-index: 1;
-
-//   @media screen and (min-width: 600px) {
-//     border-width: 2px;
-//     min-height: auto;
-//   }
-
-//   @media screen and (min-width: $breakpoint-s) {
-//     justify-content: center;
-//     padding: $su-7 $su-8 $su-8;
-//   }
-// }
-
-// window background
 .onboarding-body {
   -moz-background-size: cover;
   -o-background-size: cover;
