@@ -29,6 +29,6 @@
       document.getElementsByTagName('head')[0].appendChild(link);
     }
   } catch(e) {
-      console.log(e)
+      Honeybadger.notify(e);
   }
 </script>
