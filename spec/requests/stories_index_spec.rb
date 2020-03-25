@@ -224,18 +224,18 @@ RSpec.describe "StoriesIndex", type: :request do
 
       it "has mod-action-button" do
         get "/t/#{tag.name}"
-        expect(response.body).not_to include("mod-action-button")
+        expect(response.body).to include('<a class="cta mod-action-button"')
       end
 
       it "does not render pagination" do
         get "/t/#{tag.name}"
-        expect(response.body).not_to include("olderposts-pagenumber")
+        expect(response.body).not_to include('<span class="olderposts-pagenumber">')
       end
 
       it "does not render pagination even with many posts" do
-        create_list(:article, 180, user: user, featured: true, tags: [tag.name], score: 20)
+        create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
         get "/t/#{tag.name}"
-        expect(response.body).not_to include("olderposts-pagenumber")
+        expect(response.body).not_to include('<span class="olderposts-pagenumber">')
       end
     end
 
@@ -244,13 +244,30 @@ RSpec.describe "StoriesIndex", type: :request do
 
       it "does not render pagination" do
         get "/t/#{tag.name}"
-        expect(response.body).not_to include("olderposts-pagenumber")
+        expect(response.body).not_to include('<span class="olderposts-pagenumber">')
       end
 
       it "does not render pagination even with many posts" do
-        create_list(:article, 180, user: user, featured: true, tags: [tag.name], score: 20)
+        create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
         get "/t/#{tag.name}"
-        expect(response.body).to include("olderposts-pagenumber")
+        expect(response.body).to include('<span class="olderposts-pagenumber">')
+      end
+
+      it "does not include sidebar for page tag" do
+        create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
+        get "/t/#{tag.name}/page/2"
+        expect(response.body).not_to include('<div id="sidebar-wrapper-right"')
+      end
+
+      it "does not include current page link" do
+        create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
+        get "/t/#{tag.name}/page/2"
+        expect(response.body).to include('<span class="olderposts-pagenumber">2')
+        expect(response.body).not_to include("<a href=\"/t/#{tag.name}/page/2")
+        get "/t/#{tag.name}"
+        expect(response.body).to include('<span class="olderposts-pagenumber">1')
+        expect(response.body).not_to include("<a href=\"/t/#{tag.name}/page/1")
+        expect(response.body).not_to include("<a href=\"/t/#{tag.name}/page/3")
       end
     end
   end
