@@ -17,7 +17,6 @@ class Article < ApplicationRecord
     main_tag_name_for_social
     name_within_collection
     paid
-    rating_votes_count
     removed_for_abuse
   ]
 
