@@ -1245,6 +1245,7 @@ ActiveRecord::Schema.define(version: 2020_03_26_111645) do
     t.datetime "updated_at", null: false
     t.string "username"
     t.string "website_url"
+    t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"

@@ -44,6 +44,7 @@ FileUtils.chdir APP_ROOT do
 
   puts "\n== Preparing Elasticsearch =="
   system! 'bin/rails search:setup'
+  system! 'RAILS_ENV="test" bin/rails search:setup'
 
   puts "\n== Updating Data =="
   system! 'bin/rails data_updates:run'

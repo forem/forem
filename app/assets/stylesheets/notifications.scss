@@ -52,6 +52,13 @@
               font-weight: 500;
             }
           }
+          &.broadcast-content {
+            .opt-out {
+              padding-top: 24px;
+              font-size: 12px;
+              font-style: italic;
+            }
+          }
           &.reaction-content {
             width: calc(100% - 145px);
           }

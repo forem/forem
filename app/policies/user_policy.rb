@@ -44,6 +44,7 @@ class UserPolicy < ApplicationPolicy
     medium_url
     mobile_comment_notifications
     mod_roundrobin_notifications
+    welcome_notifications
     mostly_work_with
     name
     password
