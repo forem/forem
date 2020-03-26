@@ -93,7 +93,6 @@ class ChatChannelMembershipsController < ApplicationController
     if permitted_params[:user_action] == "accept"
       @chat_channel_membership.update(status: "active")
       @channel_name = @chat_channel_membership.chat_channel.channel_name
-      @chat_channel_membership.index!
       flash[:settings_notice] = "Invitation to  #{@channel_name} Accepted. It may take a moment to show up in your list."
     else
       @chat_channel_membership.update(status: "rejected")
