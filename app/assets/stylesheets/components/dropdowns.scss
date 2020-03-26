@@ -1,27 +1,15 @@
 @import '../config/import';
 @import '../base/boxes';
 
-%dropdown-style {
+.crayons-dropdown {
   @extend .crayons-box;
   @extend .crayons-box--level-2;
   position: absolute;
   display: none; // initially hidden
   padding: $su-4;
-}
-
-.crayons-dropdown {
-  @extend %dropdown-style;
+  min-width: 200px;
 
   @media (min-width: $breakpoint-s) {
-    min-width: 200px;
-    max-width: 250px;
-  }
-
-  &--l {
-    @media (min-width: $breakpoint-s) {
-      min-width: 251px;
-      max-width: 320px;
-      padding: $su-6;
-    }
+    max-width: 320px;
   }
 }

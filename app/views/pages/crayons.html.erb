@@ -593,15 +593,10 @@
   <div class="body">
     <h2>Dropdowns</h2>
     <p>Dropdowns should have position relative to it’s trigger. They can be used for some 2nd level navigations, contextual configurations, etc...</p>
-    <p>Dropdowns should not be bigger than 320px.</p>
-    <p>Dropdown default padding should be dependent on width:</p>
-    <ul>
-      <li>&lt;250px: 16px</li>
-      <li>251 - 320px: 24px</li>
-    </ul>
+    <p>Dropdowns should not be bigger than 320px (unless it's smallest breakpoint, then dropdowns become full width).</p>
+    <p>Dropdown default padding is set to 16px.</p>
     <p>FYI: Dropdowns use “Box” component as background, with Level 3 elevation.</p>
     <p>By default dropdowns are hidden with <code>display: none;</code> so keep that in mind if you ever use dropdowns and can't see them :D.</p>
-    <p>Dropdowns are being responsive: for resolutions smaller than <code>$breakpoint-s</code> they are basically full-width.</p>
   </div>
 
   <div>
@@ -610,18 +605,8 @@
     </div>
   </div>
 
-  <div>
-    <div class="crayons-dropdown crayons-dropdown--l inline-block static">
-      Hey, I'm a dropdown content! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
-    </div>
-  </div>
-
   <pre><%='
   <div class="crayons-dropdown">
-    Hey, ...
-  </div>
-
-  <div class="... crayons-dropdown--l">
     Hey, ...
   </div>
   '.rstrip %></pre>
