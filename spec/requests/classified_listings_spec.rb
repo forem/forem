@@ -63,6 +63,19 @@ RSpec.describe "ClassifiedListings", type: :request do
         expect(response.body).not_to include(CGI.escapeHTML(expired_listing.title))
       end
     end
+
+    context "when view is moderate" do
+      it "redirects to internal/listings/:id/edit" do
+        get "/listings", params: { view: "moderate", slug: listing.slug }
+        expect(response.redirect_url).to include("/internal/listings/#{listing.id}/edit")
+      end
+
+      it "without a slug raises an ActiveRecord::RecordNotFound error" do
+        expect do
+          get "/listings", params: { view: "moderate" }
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
   end
 
   describe "GET /listings/new" do
