@@ -9,17 +9,17 @@ class ResponseTemplatesController < ApplicationController
 
     if response_template.save
       flash[:settings_notice] = "Your response template \"#{response_template.title}\" was created."
+      redirect_to user_settings_path(tab: "response-templates", id: response_template.id)
     else
       flash[:error] = "Response template error: #{response_template.errors.full_messages.to_sentence}"
       attributes = permitted_attributes(ResponseTemplate)
+      redirect_to user_settings_path(
+        tab: "response-templates",
+        id: response_template.id,
+        previous_title: attributes[:title],
+        previous_content: attributes[:content]
+      )
     end
-
-    redirect_to user_settings_path(
-      tab: "response-templates",
-      id: response_template.id,
-      previous_title: attributes[:title],
-      previous_content: attributes[:content]
-    )
   end
 
   def destroy
