@@ -26,9 +26,9 @@
   --accent-brand-lighter: #ff99b9;
 
   // Success
-  --accent-success: #23d259;
-  --accent-success-darker: #06b23b;
-  --accent-success-lighter: #6cf597;
+  --accent-success: #71DB92;
+  --accent-success-darker: #5ABF79;
+  --accent-success-lighter: #93EDAF;
 
   // Warning
   --accent-warning: #ffcf4c;
@@ -66,7 +66,7 @@
 
   // Logo
   --logo-bg: var(--base-inverted);
-  --logo-color: var(--accent-brand);
+  --logo-color: var(--header-bg);
 
   // Footer
   --footer-bg: var(--base-inverted);
