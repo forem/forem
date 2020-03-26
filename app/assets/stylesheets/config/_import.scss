@@ -195,6 +195,31 @@ $lh-base: 1.5; // 24px for 16px font-size
   @return $raised;
 }
 
+@function replace-nth($list, $index, $value) {
+  $result: null;
+
+  @if type-of($index) != number {
+    @warn "$index: #{quote($index)} is not a number for `replace-nth`.";
+  } @else if $index == 0 {
+    @warn "List index 0 must be a non-zero integer for `replace-nth`.";
+  } @else if abs($index) > length($list) {
+    @warn "List index is #{$index} but list is only #{length($list)} item long for `replace-nth`.";
+  } @else {
+    $result: ();
+    $index: if($index < 0, length($list) + $index + 1, $index);
+
+    @for $i from 1 through length($list) {
+      @if $i == $index {
+        $result: append($result, $value, comma);
+      } @else {
+        $result: append($result, nth($list, $i), comma);
+      }
+    }
+  }
+
+  @return $result;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////
 
 // generate-classes()
@@ -205,8 +230,17 @@ $lh-base: 1.5; // 24px for 16px font-size
 // @param {string || list} $properties    Defines CSS property(ies) that, for example `margin-right`
 // @param {list} $values-1                List of values for which we gonna generate classes
 // @param {list} $values-2                Additional list of values, useful when we want to combine two lists.
+// @param {boolean} $responsive           Wheather or not class should be responsive.
+// @param {string} $separator             Separator between prefix and value.
 
-@mixin generate-classes($prefix, $properties, $values-1, $values-2: (), $responsive: false, $separator: '-') {
+@mixin generate-classes(
+  $prefix,
+  $properties,
+  $values-1,
+  $values-2: (),
+  $responsive: false,
+  $separator: '-'
+) {
   $values: map-merge($values-1, $values-2);
   @each $name, $value in $values {
     .#{$prefix}#{$separator}#{$name} {
@@ -228,28 +262,20 @@ $lh-base: 1.5; // 24px for 16px font-size
 
 @mixin initialize-generator($breakpoints, $classes...) {
   @each $argument in $classes {
-    $prefix: nth($argument, 1);
-    $properties: nth($argument, 2);
-    $values-1: nth($argument, 3);
-    $values-2: nth($argument, 4);
-    $responsive: nth($argument, 5);
-    $separator: nth($argument, 6);
-    
-    @include generate-classes($prefix, $properties, $values-1, $values-2, $responsive, $separator);
+    @include generate-classes($argument...);
   }
-  
+
   @each $breakpoint, $value in $breakpoints {
     @media (min-width: $value) {
       @each $argument in $classes {
-        $prefix: $breakpoint + '\\:' + nth($argument, 1);
-        $properties: nth($argument, 2);
-        $values-1: nth($argument, 3);
-        $values-2: nth($argument, 4);
         $responsive: nth($argument, 5);
-        $separator: nth($argument, 6);
-        
         @if $responsive == true {
-          @include generate-classes($prefix, $properties, $values-1, $values-2, $responsive, $separator);
+          $prefix: $breakpoint + '\\:';
+          @if nth($argument, 1) != null {
+            $prefix: $breakpoint + '\\:'+ nth($argument, 1);
+          }
+          $argument: replace-nth($argument, 1, $prefix);
+          @include generate-classes($argument...);
         }
       }
     }
