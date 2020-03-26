@@ -6,7 +6,7 @@
 }
 
 .onboarding-body {
-  @include themeable(background-color, theme-background, $white);
+  background-color: var(--body-bg);
   position: fixed;
   margin-top: 50px;
   bottom: 0;
@@ -30,7 +30,7 @@
   background-repeat: no-repeat;
 
   a {
-    @include themeable(color, theme-anchor-color, #2e3b9e);
+    color: var(--link-brand-color);
   }
 
   .sticker-logo {
@@ -93,6 +93,7 @@
   }
 
   h2 {
+    margin-top: 20px;
     font-size: 15px;
 
     @media screen and (min-width: 600px) {
@@ -131,7 +132,8 @@
   }
 
   .next-button {
-    @include themeable(background, theme-top-bar-write-background, #66e2d5);
+    color: var(--button-primary-color);
+    background: var(--button-primary-bg);
     float: right;
   }
 
@@ -179,7 +181,7 @@
     }
 
     input[type='checkbox']:checked {
-      @include themeable(background, theme-anchor-color, #66e2d5);
+      background: var(--link-brand-color);
     }
   }
 

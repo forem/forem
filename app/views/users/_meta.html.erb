@@ -1,9 +1,9 @@
-<link rel="canonical" href="<%= app_url(@user.username) %>" />
+<link rel="canonical" href="<%= user_url(@user) %>" />
 <meta name="description" content="<%= @user.summary %>">
 <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
 <meta property="og:type" content="website" />
-<meta property="og:url" content="<%= app_url(@user.username) %>" />
+<meta property="og:url" content="<%= user_url(@user) %>" />
 <meta property="og:title" content="<%= @user.name %> — DEV Profile" />
 <meta property="og:image" content="<%= user_social_image_url(@user) %>">
 <meta property="og:description" content="<%= @user.summary %>" />

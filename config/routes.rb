@@ -52,6 +52,7 @@ Rails.application.routes.draw do
     resources :listings, only: %i[index edit update destroy], controller: "classified_listings"
     resources :pages, only: %i[index new create edit update destroy]
     resources :mods, only: %i[index update]
+    resources :negative_reactions, only: %i[index]
     resources :permissions, only: %i[index]
     resources :podcasts, only: %i[index edit update destroy] do
       member do
