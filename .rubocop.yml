@@ -157,6 +157,10 @@ Style/TrailingCommaInArrayLiteral:
 Rails/FilePath:
   EnforcedStyle: slashes
 
+Rails/UniqueValidationWithoutIndex:
+  Exclude:
+    - app/models/reaction.rb
+
 # Layout
 
 Layout/DotPosition:
