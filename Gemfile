@@ -45,7 +45,7 @@ gem "fastly-rails", "~> 0.8" # Fastly dynamic caching integration for Rails
 gem "feedjira", "~> 3.1" # A feed fetching and parsing library
 gem "field_test", "~> 0.3" # A/B testing
 gem "figaro", "~> 1.1" # Simple, Heroku-friendly Rails app configuration using ENV and a single YAML file
-gem "fog-aws", "~> 3.5" # 'fog' gem to support Amazon Web Services
+gem "fog-aws", "~> 3.6" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.3" # API wrapper for MailChimp's API
@@ -87,7 +87,7 @@ gem "rouge", "~> 3.16" # A pure-ruby code highlighter
 gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sass-rails", "~> 6.0" # Sass adapter for the Rails asset pipeline
-gem "sidekiq", "~> 6.0.4" # Sidekiq is used to process background jobs with the help of Redis
+gem "sidekiq", "~> 6.0.6" # Sidekiq is used to process background jobs with the help of Redis
 gem "sitemap_generator", "~> 6.1" # SitemapGenerator is a framework-agnostic XML Sitemap generator
 gem "slack-notifier", "~> 2.3" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
@@ -135,7 +135,7 @@ group :development, :test do
   gem "rspec-rails", "~> 3.9" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 0.79", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.5", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
-  gem "rubocop-rails", "~> 2.4", require: false # Automatic Rails code style checking tool
+  gem "rubocop-rails", "~> 2.5", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 1.38", require: false # Code style checking for RSpec files
   gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring

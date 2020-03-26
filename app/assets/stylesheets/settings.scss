@@ -529,8 +529,13 @@ $input-width: 650px;
     }
     .github-repo-row-name {
       font-weight: bold;
-      button {
-        transition: all 0.6s ease;
+      form {
+        display: block;
+        float: right;
+      }
+      button,
+      a[role='button'] {
+        transition: all 0.4s ease;
         cursor: pointer;
         font-size: 1.2em;
         font-weight: bold;
@@ -545,6 +550,9 @@ $input-width: 650px;
         &:hover,
         &:focus {
           background: $green;
+          &.danger-button {
+            background: $red;
+          }
         }
         &:disabled {
           cursor: wait;
@@ -552,23 +560,19 @@ $input-width: 650px;
             center center;
           background-size: 75px;
         }
+        a {
+          color: $black;
+        }
       }
-    }
-    .github-repo-fork {
-      margin-left: 5px;
-      font-weight: 400;
-      background: $purple;
-      color: $bold-blue;
-      border-radius: 3px;
-      padding: 1px 6px;
-      font-size: 0.9em;
-    }
-    .github-repo-featured-indicator {
-      display: inline-block;
-      float: right;
-      background: $green;
-      color: white;
-      border: 0px;
+      &.response-template-row-name {
+        button,
+        a[role='button'] {
+          width: 80px;
+          margin-left: 2.5px;
+          margin-right: 2.5px;
+          text-align: center;
+        }
+      }
     }
   }
 }

@@ -1,3 +1,4 @@
+@import 'config/import';
 @import 'variables';
 @import 'mixins';
 
@@ -6,288 +7,161 @@
   top: 0px;
   left: 0px;
   right: 0px;
-  -webkit-backface-visibility: hidden;
-  z-index: 1000;
+  z-index: 101;
   height: $header-height;
-  font-size: 16px; // todo: make it global, based on body
   background: var(--header-bg);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  &.hidden {
-    display: none;
-  }
+  box-shadow: 0 1px 1px var(--header-shadow);
 
   &,
-  & * {
-    box-sizing: border-box; // todo: make it global
+  &::after,
+  &::before,
+  & *,
+  & *::after,
+  & *::before {
+    box-sizing: border-box; // todo: make it global when ready
   }
 
-  nav {
+  &__container {
     max-width: $max-width;
-    height: 100%;
     margin: auto;
-    position: relative;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-
-    .pwa-nav-buttons {
-      position: absolute;
-      top: 17px;
-      left: -200px;
-      display: none;
-      button {
-        background: transparent;
-        border: 0px;
-        width: 28px;
-        text-align: center;
-        opacity: 0.75;
-        @include themeable(filter, theme-social-icon-invert, invert(0));
-        img {
-          width: 15px;
-          height: 15px;
-        }
-        &:hover {
-          opacity: 1;
-        }
-      }
-      @media screen and (min-width: 950px) {
-        left: 88px;
-        &.pwa-nav-buttons--showing {
-          display: block;
-        }
-      }
-      @media screen and (min-width: 1439px) {
-        left: -88px;
-      }
-    }
-
-    // TODO make it a component in future.
-    .nav-indicator {
-      position: absolute;
-      padding: 4px;
-      border-radius: 3px;
-      font-weight: bold;
-      display: none;
-      color: $white;
-      top: 4px;
-      right: 0;
-      font-size: 0.8em;
-      min-width: 18px;
-      text-align: center;
-
-      &.showing {
-        display: block;
-      }
-
-      &.connect-number {
-        background: $green;
-      }
-
-      &.notifications-number {
-        background: $dark-purple;
-      }
-    }
-
-    .top-bar--menu {
-      position: relative;
-      height: 100%;
-
-      &.showing {
-        .top-bar--menu-dropdown,
-        .top-bar--menu-overlay {
-          display: block;
-        }
-      }
-
-      &.desktop {
-        &:hover,
-        &:active,
-        &:focus {
-          .top-bar--menu-dropdown {
-            display: block;
-          }
-        }
-      }
-    }
-    .top-bar--menu-trigger {
-      all: unset;
-      display: flex;
-      height: 100%;
-      padding: 0 8px;
-      align-items: center;
-      cursor: pointer;
-    }
-
-    .top-bar--menu-overlay {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(17, 17, 17, 0.88);
-      top: $header-height;
-      display: none;
-    }
-    .top-bar--menu-dropdown {
-      position: fixed;
-      right: 0;
-      top: $header-height;
-      padding: 16px;
-      background: var(--header-bg);
-      display: none;
-      width: 100%;
-      border-radius: 0 0 3px 3px;
-      box-shadow: $shadow;
-
-      @media screen and (min-width: 380px) {
-        position: absolute;
-        width: 250px;
-      }
-
-      .header {
-        padding: 3px 10px;
-        border-bottom: 3px solid rgb(241, 244, 246);
-        margin-bottom: 5px;
-        color: rgb(178, 192, 203);
-      }
-      .option {
-        padding: 15px 10px;
-        @media screen and (min-width: 380px) {
-          padding: 6px 10px;
-        }
-        &.prime-option {
-          border-bottom: 3px solid var(--body-color);
-          margin-bottom: 5px;
-          font-size: 1.22em;
-          font-weight: 500;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-      }
-      a {
-        color: var(--body-color);
-      }
-    }
+    position: relative;
   }
 
-  .skip-content-link {
+  .crayons-indicator {
     position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translate(-50%, -100px);
-    background: black;
-    color: white;
-    z-index: 9999;
-    padding: 13px;
-    cursor: default;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s linear, transform 0.3s linear;
-
-    &:focus {
-      pointer-events: auto;
-      opacity: 1;
-      transform: translate(-50%, 22px);
-      transition: opacity 0.3s linear, transform 0.3s linear;
-    }
+    top: $su-1;
+    right: $su-1;
+    box-shadow: 0 0 0 2px var(--header-bg);
   }
 }
 
 // Logo
 .top-bar--logo {
   display: flex;
-  align-items: center;
-  height: 100%;
-  margin-left: 8px;
-  @media screen and (min-width: 950px) {
-    margin-left: 16px;
+  margin-left: $su-2;
+  @media (min-width: $breakpoint-m) {
+    margin-left: $su-4;
   }
 
   .logo {
-    width: 51px;
-    height: 34px;
-    padding: 7px 8px 6px 10px;
+    width: 50px;
+    height: 40px;
+    padding: 0 7px 0 9px; // TODO: we have to fix SVG for logo a little...
     background: var(--logo-bg);
     fill: var(--logo-color);
-    border-radius: 3px;
+    border-radius: $br-default;
   }
 }
 
 // Search bar
 .top-bar--search {
-  display: flex;
-  max-width: 490px;
-  padding: 0 8px;
+  max-width: 420px;
   flex: 1 auto;
+  margin: 0 $su-2;
 
-  &,
-  & * {
-    box-sizing: border-box;
-  }
-
-  form {
-    width: 100%;
-  }
-}
-
-.top-bar--search-input {
-  width: 100%;
-  border-radius: 3px;
-  padding: 6px 9px 5px;
-  font-size: 16px;
-  background: var(--form-bg);
-  color: var(--body-color);
-  -webkit-appearance: none;
-  border: 1px solid var(--form-border);
-  &:focus {
-    border: 1px solid var(--form-border-focus);
+  @media (min-width: $breakpoint-s) {
+    margin: 0 $su-4;
   }
 }
 
 // Actions on right side...
-.top-bar--links {
+.top-bar__links {
   height: $header-height;
   display: flex;
   align-items: center;
+  margin-left: auto;
 }
 
-.top-bar--link {
+.top-bar__link {
   position: relative;
   display: flex;
-  padding: 0 8px;
+  padding: 0 $su-3;
   height: 100%;
   align-items: center;
-  fill: var(--header-icons-color);
+  color: var(--header-icons-color);
+
   &:hover {
-    fill: var(--header-icons-color-hover);
+    color: var(--header-icons-color-hover);
+  }
+}
+
+// Dropdown under profile picture / hamburger icon
+.top-bar__menu {
+  height: 100%;
+
+  &__trigger {
+    all: unset;
+    display: flex;
+    height: 100%;
+    padding: 0 $su-2;
+    align-items: center;
+    cursor: pointer;
+    color: var(--header-icons-color);
+
+    &:hover {
+      color: var(--header-icons-color-hover);
+    }
   }
 
-  &.write {
-    border-radius: 3px;
-    height: auto;
-    margin-right: 8px;
-    padding: 4px 8px;
-    white-space: nowrap;
-    font-size: 0.9em;
-    border: 2px solid var(--button-primary-bg-hover);
-    background: var(--button-primary-bg);
-    color: var(--button-primary-color);
-    display: none;
+  &__dropdown {
+    top: $header-height;
+  }
 
-    @media screen and (min-width: 650px) {
-      display: inline-block;
+  &.showing {
+    .top-bar__menu__dropdown {
+      display: block;
+    }
+  }
+
+  &.desktop {
+    &:hover,
+    &:active,
+    &:focus {
+      .top-bar__menu__dropdown {
+        display: block;
+      }
     }
   }
 }
 
-.top-bar--profile {
-  height: 32px;
-  width: 32px;
-  background: $dark-gray;
-  border-radius: 50%;
+.skip-content-link {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -100px);
+  background: var(--body-color);
+  color: var(--body-color-inverted);
+  z-index: 9999;
+  padding: $su-4;
+  pointer-events: none;
+  opacity: 0;
+  border-radius: $br-default;
 
-  img {
-    height: 32px;
-    width: 32px;
-    border-radius: 50%;
+  &:focus {
+    pointer-events: auto;
+    opacity: 1;
+    transform: translate(-50%, $header-height/2);
+  }
+}
+
+.pwa-nav-buttons {
+  height: 100%;
+  display: none;
+  padding-left: $su-2;
+  button {
+    all: unset;
+    padding: 0 $su-2;
+    color: var(--header-icons-color);
+
+    &:hover {
+      color: var(--header-icons-color-hover);
+    }
+  }
+  @media (min-width: $breakpoint-m) {
+    &.pwa-nav-buttons--showing {
+      display: flex;
+    }
   }
 }

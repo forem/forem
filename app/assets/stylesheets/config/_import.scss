@@ -39,6 +39,17 @@ $colors: (
 );
 
 ////////////////////////////////////////////////////////////////////////////////////
+// Sizes. //////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+//
+// The reason why header height is set here instead of caluclating it based on its
+// content is because header is sometimes fixed and we need to offset page content
+// by specific value.. And that's the value.
+
+$header-height: 56px;
+$site-width: 1280px;
+
+////////////////////////////////////////////////////////////////////////////////////
 // [DRAFT] Responsiveness Breakpoints. /////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 //
@@ -48,7 +59,7 @@ $colors: (
 $breakpoint-s: 640px;
 $breakpoint-m: 768px;
 $breakpoint-l: 1024px;
-$breakpoint-xl: 1280px;
+$breakpoint-xl: $site-width;
 
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -58,16 +69,6 @@ $breakpoints: (
   'l': $breakpoint-l,
   'xl': $breakpoint-xl,
 );
-
-////////////////////////////////////////////////////////////////////////////////////
-// Header height ///////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-//
-// The reason why header height is set here instead of caluclating it based on its
-// content is because header is sometimes fixed and we need to offset page content
-// by specific value.. And that's the value.
-
-$header-height: 56px;
 
 ////////////////////////////////////////////////////////////////////////////////////
 // Spacing Units. //////////////////////////////////////////////////////////////////
@@ -197,6 +198,39 @@ $lh-base: 1.5; // 24px for 16px font-size
 
 ////////////////////////////////////////////////////////////////////////////////////
 
+// replace-nth() - Replace n-th list item with another item
+//
+// @param {number} $list      List.
+// @param {number} $index     Which item in the list should be replaced.
+// @param {number} $value     New item.
+
+@function replace-nth($list, $index, $value) {
+  $result: null;
+
+  @if type-of($index) != number {
+    @warn "$index: #{quote($index)} is not a number for `replace-nth`.";
+  } @else if $index == 0 {
+    @warn "List index 0 must be a non-zero integer for `replace-nth`.";
+  } @else if abs($index) > length($list) {
+    @warn "List index is #{$index} but list is only #{length($list)} item long for `replace-nth`.";
+  } @else {
+    $result: ();
+    $index: if($index < 0, length($list) + $index + 1, $index);
+
+    @for $i from 1 through length($list) {
+      @if $i == $index {
+        $result: append($result, $value, comma);
+      } @else {
+        $result: append($result, nth($list, $i), comma);
+      }
+    }
+  }
+
+  @return $result;
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+
 // generate-classes()
 //
 // Generating classes for Tailwind approach.
@@ -205,18 +239,17 @@ $lh-base: 1.5; // 24px for 16px font-size
 // @param {string || list} $properties    Defines CSS property(ies) that, for example `margin-right`
 // @param {list} $values-1                List of values for which we gonna generate classes
 // @param {list} $values-2                Additional list of values, useful when we want to combine two lists.
+// @param {boolean} $responsive           Wheather or not class should be responsive.
+// @param {string} $separator             Separator between prefix and value.
 
 @mixin generate-classes(
   $prefix,
   $properties,
   $values-1,
   $values-2: (),
-  $responsive: false
+  $responsive: false,
+  $separator: '-'
 ) {
-  $separator: '-';
-  @if $prefix == '' {
-    $separator: '';
-  }
   $values: map-merge($values-1, $values-2);
   @each $name, $value in $values {
     .#{$prefix}#{$separator}#{$name} {
@@ -238,38 +271,20 @@ $lh-base: 1.5; // 24px for 16px font-size
 
 @mixin initialize-generator($breakpoints, $classes...) {
   @each $argument in $classes {
-    $prefix: nth($argument, 1);
-    $properties: nth($argument, 2);
-    $values-1: nth($argument, 3);
-    $values-2: nth($argument, 4);
-    $responsive: nth($argument, 5);
-
-    @include generate-classes(
-      $prefix,
-      $properties,
-      $values-1,
-      $values-2,
-      $responsive
-    );
+    @include generate-classes($argument...);
   }
 
   @each $breakpoint, $value in $breakpoints {
     @media (min-width: $value) {
       @each $argument in $classes {
-        $prefix: $breakpoint + '\\:'+ nth($argument, 1);
-        $properties: nth($argument, 2);
-        $values-1: nth($argument, 3);
-        $values-2: nth($argument, 4);
         $responsive: nth($argument, 5);
-
         @if $responsive == true {
-          @include generate-classes(
-            $prefix,
-            $properties,
-            $values-1,
-            $values-2,
-            $responsive
-          );
+          $prefix: $breakpoint + '\\:';
+          @if nth($argument, 1) != null {
+            $prefix: $breakpoint + '\\:'+ nth($argument, 1);
+          }
+          $argument: replace-nth($argument, 1, $prefix);
+          @include generate-classes($argument...);
         }
       }
     }

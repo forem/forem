@@ -162,13 +162,12 @@ body.static-navbar-config {
   }
 }
 
-.pro-visible-block,
 .trusted-visible-block {
   display: none !important;
 }
 
 body.trusted-status-true .trusted-visible-block {
-  display: block !important;
+  display: flex !important;
 }
 
 body.hidden-shell {
