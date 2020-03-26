@@ -9,7 +9,7 @@
   <meta property="og:url" content="https://dev.to/<%= @podcast.slug %>/<%= @episode.slug %>" />
   <meta property="og:title" content="<%= @episode.title %>" />
   <meta property="og:description" content="<%= truncate(strip_tags(@episode.body), length: 140) %>" />
-  <meta property="og:site_name" content="The <%= ApplicationConfig["COMMUNITY_NAME"] %> Community" />
+  <meta property="og:site_name" content="<%= ApplicationConfig["COMMUNITY_NAME"] %> Community" />
 
   <meta name="twitter:site" content="@ThePracticalDev">
   <meta name="twitter:creator" content="@software_daily">

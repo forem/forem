@@ -11,7 +11,7 @@
 <meta property="og:url" content="https://dev.to/t/<%= @tag %>" />
 <meta property="og:title" content="<%= title_with_timeframe(page_title: @tag.capitalize, timeframe: params[:timeframe]) %>" />
 <meta property="og:description" content="<%= @tag.capitalize %> content on dev.to" />
-<meta property="og:site_name" content="The <%= ApplicationConfig["COMMUNITY_NAME"] %> Community" />
+<meta property="og:site_name" content="<%= ApplicationConfig["COMMUNITY_NAME"] %> Community" />
 
 <meta name="twitter:site" content="@<%= SiteConfig.social_networks_handle %>">
 <meta name="twitter:creator" content="@<%= @tag.capitalize %>">
