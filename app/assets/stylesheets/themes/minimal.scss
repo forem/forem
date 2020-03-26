@@ -60,6 +60,7 @@
 
   // Header
   --header-bg: var(--base-0);
+  --header-shadow: rgba(0,0,0,0.1);
   --header-icons-color: #0a0a0a;
   --header-icons-color-hover: #000;
 
@@ -107,7 +108,7 @@
   // Forms
   --form-bg: #f4f5f7;
   --form-bg-focus: var(--base-0);
-  --form-border: ##f4f5f7;
+  --form-border: #f4f5f7;
   --form-border-hover: var(--base-40);
   --form-border-focus: var(--accent-brand);
   --form-placeholder-color: var(--base-60);

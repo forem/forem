@@ -21,14 +21,14 @@
   --base-inverted: #fff;
 
   // Accent colors
-  --accent-brand: #ff4983;
-  --accent-brand-darker: #d70044;
-  --accent-brand-lighter: #fe8eb1;
+  --accent-brand: #ff6c9b;
+  --accent-brand-darker: #f03e76;
+  --accent-brand-lighter: #ff99b9;
 
   // Success
-  --accent-success: #23d259;
-  --accent-success-darker: #06b23b;
-  --accent-success-lighter: #6cf597;
+  --accent-success: #71DB92;
+  --accent-success-darker: #5ABF79;
+  --accent-success-lighter: #93EDAF;
 
   // Warning
   --accent-warning: #ffcf4c;
@@ -59,13 +59,14 @@
   --widget-headline: var(--base-100);
 
   // Header
-  --header-bg: var(--accent-brand);
-  --header-icons-color: var(--base-inverted);
-  --header-icons-color-hover: #fff;
+  --header-bg: var(--base-40);
+  --header-shadow: transparent;
+  --header-icons-color: var(--base-10);
+  --header-icons-color-hover: var(--base-0);
 
   // Logo
   --logo-bg: var(--base-inverted);
-  --logo-color: var(--accent-brand);
+  --logo-color: var(--header-bg);
 
   // Footer
   --footer-bg: var(--base-inverted);
@@ -90,7 +91,7 @@
   --button-primary-bg: var(--accent-brand);
   --button-primary-color: var(--base-0);
   --button-primary-bg-hover: var(--accent-brand-darker);
-  --button-primary-color-hover: var(--base-0);
+  --button-primary-color-hover: var(--base-inverted);
 
   // Secondary buttons
   --button-secondary-bg: var(--base-20);
@@ -107,9 +108,9 @@
   // Forms
   --form-bg: #fff7f9;
   --form-bg-focus: var(--base-0);
-  --form-border: var(--base-30);
-  --form-border-hover: var(--base-40);
-  --form-border-focus: var(--accent-brand);
+  --form-border: var(--base-50);
+  --form-border-hover: var(--base-60);
+  --form-border-focus: var(--base-60);
   --form-placeholder-color: var(--base-60);
 
   // Form lables
@@ -117,6 +118,6 @@
   --label-secondary: var(--base-90);
 
   // Default box
-  --box: var(--base-90);
+  --box: var(--container-bg);
   --box-darker: var(--base-100);
 }
