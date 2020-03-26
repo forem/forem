@@ -11,7 +11,7 @@
   <meta property="og:type" content="article" />
   <meta property="og:title" content="Discussion of <%= @commentable.title %>" />
   <meta property="og:description" content="<%= @commentable.description || "A DEV Comment" %>" />
-  <meta property="og:site_name" content="The DEV Community" />
+  <meta property="og:site_name" content="The <%= ApplicationConfig["COMMUNITY_NAME"] %> Community" />
   <meta name="twitter:site" content="@<%= SiteConfig.social_networks_handle %>">
   <meta name="twitter:creator" content="@<%= @user.twitter_username %>">
   <meta name="twitter:title" content="<%= @commentable.title %>">
