@@ -3,9 +3,9 @@ require "rails_helper"
 RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   let(:mascot_account)             { create(:user) }
   let!(:welcome_thread)            { create(:article, user: mascot_account, published: true, tags: "welcome") }
-  let!(:welcome_broadcast)         { create(:welcome_broadcast, :active) }
-  let!(:twitter_connect_broadcast) { create(:twitter_connect_broadcast, active: true) }
-  let!(:github_connect_broadcast)  { create(:github_connect_broadcast, active: true) }
+  let!(:welcome_broadcast)         { create(:welcome_broadcast) }
+  let!(:twitter_connect_broadcast) { create(:twitter_connect_broadcast) }
+  let!(:github_connect_broadcast)  { create(:github_connect_broadcast) }
 
   before do
     allow(User).to receive(:mascot_account).and_return(mascot_account)

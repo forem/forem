@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :broadcast do
-    active { false }
+    active { true }
 
     factory :welcome_broadcast do
       title          { "Welcome Notification: welcome_thread" }
@@ -26,9 +26,5 @@ FactoryBot.define do
       type_of        { "Onboarding" }
       processed_html { "Welcome! Introduce yourself in our <a href='/welcome'>welcome thread!</a>" }
     end
-  end
-
-  trait :active do
-    active { true }
   end
 end
