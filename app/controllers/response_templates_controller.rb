@@ -17,7 +17,7 @@ class ResponseTemplatesController < ApplicationController
         tab: "response-templates",
         id: response_template.id,
         previous_title: attributes[:title],
-        previous_content: attributes[:content]
+        previous_content: attributes[:content],
       )
     end
   end
@@ -47,7 +47,7 @@ class ResponseTemplatesController < ApplicationController
         tab: "response-templates",
         id: response_template.id,
         previous_title: attributes[:title],
-        previous_content: attributes[:content]
+        previous_content: attributes[:content],
       )
     end
   end
