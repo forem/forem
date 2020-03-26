@@ -147,32 +147,21 @@
 }
 
 .pwa-nav-buttons {
-  position: absolute;
-  top: 17px;
-  left: -200px;
+  height: 100%;
   display: none;
+  padding-left: $su-2;
   button {
-    background: transparent;
-    border: 0px;
-    width: 28px;
-    text-align: center;
-    opacity: 0.75;
-    @include themeable(filter, theme-social-icon-invert, invert(0));
-    img {
-      width: 15px;
-      height: 15px;
-    }
+    all: unset;
+    padding: 0 $su-2;
+    color: var(--header-icons-color);
+
     &:hover {
-      opacity: 1;
+      color: var(--header-icons-color-hover);
     }
   }
-  @media screen and (min-width: 950px) {
-    left: 88px;
+  @media (min-width: $breakpoint-m) {
     &.pwa-nav-buttons--showing {
-      display: block;
+      display: flex;
     }
-  }
-  @media screen and (min-width: 1439px) {
-    left: -88px;
   }
 }

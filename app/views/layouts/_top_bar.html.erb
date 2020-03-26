@@ -3,13 +3,19 @@
 <header class="top-bar" id="top-bar">
   <a href="#articles-list" class="skip-content-link">Skip to content</a>
   <div class="top-bar__container">
-    <div id="pwa-nav-buttons" class="pwa-nav-buttons">
-      <button type="button" id="app-back-button"><img src="<%= asset_path("keyboard-left-arrow-button.svg") %>" alt="back icon" /></button>
-      <button type="button" id="app-forward-button"><img src="<%= asset_path("keyboard-right-arrow-button.svg") %>" alt="forward icon" /></button>
-      <button type="button" id="app-refresh-button"><img src="<%= asset_path("refresh-button.svg") %>" alt="refresh icon" /></button>
-    </div>
-
     <a href="/" class="top-bar--logo" aria-label="<%= ApplicationConfig["COMMUNITY_NAME"] %> Home"><%= logo_svg %></a>
+
+    <div id="pwa-nav-buttons" class="pwa-nav-buttons">
+      <button type="button" id="app-back-button">
+        <%= inline_svg_tag("keyboard-left-arrow-button.svg", aria: true, width: 16, height: 16, class: "crayons-icon", title: "Back") %>
+      </button>
+      <button type="button" id="app-forward-button">
+        <%= inline_svg_tag("keyboard-right-arrow-button.svg", aria: true, width: 16, height: 16, class: "crayons-icon", title: "Forward") %>
+      </button>
+      <button type="button" id="app-refresh-button">
+        <%= inline_svg_tag("refresh-button.svg", aria: true, width: 16, height: 16, class: "crayons-icon", title: "Refresh") %>
+      </button>
+    </div>
 
     <div class="top-bar--search" id="top-bar--search">
       <form acceptCharset="UTF-8" method="get" action="/search">
