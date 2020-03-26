@@ -98,6 +98,14 @@ RSpec.describe "UserSettings", type: :request do
       expect(user.reload.mod_roundrobin_notifications).to be(false)
     end
 
+    it "can toggle welcome notifications" do
+      put "/users/#{user.id}", params: { user: { tab: "notifications", welcome_notifications: 0 } }
+      expect(user.reload.welcome_notifications).to be(false)
+
+      put "/users/#{user.id}", params: { user: { tab: "notifications", welcome_notifications: 1 } }
+      expect(user.reload.welcome_notifications).to be(true)
+    end
+
     it "updates username to too short username" do
       put "/users/#{user.id}", params: { user: { tab: "profile", username: "h" } }
       expect(response.body).to include("Username is too short")

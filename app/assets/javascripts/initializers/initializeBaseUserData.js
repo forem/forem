@@ -103,10 +103,9 @@ function addRelevantButtonsToComments(user) {
 function initializeBaseUserData() {
   const user = userData();
   const userProfileLinkHTML =
-    '<a href="/' +
-    user.username +
-    '" id="first-nav-link"><div class="option prime-option">@' +
-    user.username +
+    '<a href="/' + user.username + '" id="first-nav-link" class="crayons-nav-block"><div>' +
+    '<span class="fw-medium block color-base-100">' + user.name +'</span>' +
+    '<small class="fs-s color-base-50">@' + user.username + '</small>' +
     '</div></a>';
   document.getElementById(
     'user-profile-link-placeholder',

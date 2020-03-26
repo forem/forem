@@ -15,9 +15,12 @@ module Search
         add_sort
         set_size
         add_highlight_fields
+        filter_source
       end
 
       def add_highlight_fields; end
+
+      def filter_source; end
 
       def add_sort
         sort_key = @params[:sort_by] || self.class::DEFAULT_PARAMS[:sort_by]

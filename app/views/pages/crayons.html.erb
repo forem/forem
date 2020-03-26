@@ -593,30 +593,14 @@
   <div class="body">
     <h2>Dropdowns</h2>
     <p>Dropdowns should have position relative to it’s trigger. They can be used for some 2nd level navigations, contextual configurations, etc...</p>
-    <p>Dropdowns should not be bigger than 320px.</p>
-    <p>Dropdown default padding should be dependent on width:</p>
-    <ul>
-      <li>&lt;250px: 16px</li>
-      <li>251 - 320px: 24px</li>
-    </ul>
-    <p>If you need to utilize entire dropdown area and you have to get rid of default padding, please use modifier class <code>crayons-dropdown--padding-0</code>.</p>
+    <p>Dropdowns should not be bigger than 320px (unless it's smallest breakpoint, then dropdowns become full width).</p>
+    <p>Dropdown default padding is set to 16px.</p>
     <p>FYI: Dropdowns use “Box” component as background, with Level 3 elevation.</p>
+    <p>By default dropdowns are hidden with <code>display: none;</code> so keep that in mind if you ever use dropdowns and can't see them :D.</p>
   </div>
 
   <div>
-    <div class="crayons-dropdown">
-      Hey, I'm a dropdown content! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
-    </div>
-  </div>
-
-  <div>
-    <div class="crayons-dropdown crayons-dropdown--l">
-      Hey, I'm a dropdown content! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
-    </div>
-  </div>
-  
-  <div>
-    <div class="crayons-dropdown crayons-dropdown--padding-0">
+    <div class="crayons-dropdown inline-block static">
       Hey, I'm a dropdown content! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
     </div>
   </div>
@@ -625,14 +609,6 @@
   <div class="crayons-dropdown">
     Hey, ...
   </div>
-
-  <div class="... crayons-dropdown--l">
-    Hey, ...
-  </div>
-
-  <div class="... crayons-dropdown--padding-0">
-    Hey, ...
-  </div>  
   '.rstrip %></pre>
 </div>
 
@@ -842,6 +818,7 @@
   <div class="body">
     <h2>Navigation: Main nav</h2>
     <p>Used as main nav in left sidebar or dropdowns...</p>
+    <p>This comoponent is being responsive: for resolutions smaller than <code>$breakpoint-s</code> they have some extra padding to make it easier to tap.</p>
     <p>Can contain icons.</p>
   </div>
 

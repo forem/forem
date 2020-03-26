@@ -10,6 +10,9 @@ module Broadcasts
       end
 
       def call
+        # TODO: [@thepracticaldev/delightful] Move this check into the rake task logic once it has been implemented.
+        return unless user.welcome_notifications
+
         send_welcome_notification
         send_authentication_notification
       end

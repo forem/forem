@@ -1,5 +1,15 @@
 require "rails_helper"
 
+# TODO: [@thepracticaldev/delightful] Reuse this shared example across all notifications,
+# since it should be tested against every kind of broadcast we could send.
+RSpec.shared_examples "unsubscribed from welcome notifications" do |_broadcast|
+  it "does not send a notification to an unsubscribed user" do
+    expect do
+      sidekiq_perform_enqueued_jobs { described_class.call(unsubscribed_user.id) }
+    end.to not_change(unsubscribed_user.notifications, :count)
+  end
+end
+
 RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   let(:mascot_account)             { create(:user) }
   let!(:welcome_thread)            { create(:article, user: mascot_account, published: true, tags: "welcome") }
@@ -87,6 +97,8 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       sidekiq_perform_enqueued_jobs { described_class.new(user.id).send_authentication_notification }
       expect(Notification).not_to have_received(:send_welcome_notification).with(user.id, github_connect_broadcast.id)
     end
+
+    # it_behaves_like "unsubscribed from welcome notifications"
 
     it "does not send a duplicate notifications (github)" do
       allow(Notification).to receive(:send_welcome_notification).and_call_original
