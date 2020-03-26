@@ -19,13 +19,17 @@
       }
     },
     "body_markdown": {
-      "type": "text"
+      "type": "text",
+      "copy_to": "classified_listing_search"
     },
     "bumped_at": {
       "type": "date"
     },
     "category": {
       "type": "keyword"
+    },
+    "classified_listing_search": {
+      "type": "text"
     },
     "contact_via_connect": {
       "type": "boolean"
@@ -35,6 +39,7 @@
     },
     "location": {
       "type": "text",
+      "copy_to": "classified_listing_search",
       "fields": {
         "raw": {
           "type": "keyword"
@@ -44,8 +49,12 @@
     "processed_html": {
       "type": "keyword"
     },
+    "published": {
+      "type": "boolean"
+    },
     "slug": {
       "type": "text",
+      "copy_to": "classified_listing_search",
       "fields": {
         "raw": {
           "type": "keyword"
@@ -53,10 +62,12 @@
       }
     },
     "tags": {
-      "type": "keyword"
+      "type": "keyword",
+      "copy_to": "classified_listing_search"
     },
     "title": {
       "type": "text",
+      "copy_to": "classified_listing_search",
       "fields": {
         "raw": {
           "type": "keyword"

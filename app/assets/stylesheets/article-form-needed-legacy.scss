@@ -71,11 +71,11 @@
         box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
 
         &::before {
-          content: "<";
+          content: '<';
         }
 
         &::after {
-          content: ">";
+          content: '>';
         }
       }
 
@@ -134,7 +134,7 @@
     }
 
     #image-upload-file-label {
-      margin: 1.0vw 0;
+      margin: 1vw 0;
       display: inline-block;
       margin-right: 5px;
       margin-left: 4px;
@@ -170,7 +170,6 @@
     @media screen and (min-width: 500px) {
       font-size: 1.1em;
     }
-
   }
 
   .article-new-billing-notice {
@@ -210,29 +209,6 @@
     }
   }
 
-  .org-publish-check-wrapper {
-    font-family: $helvetica;
-    @include themeable(
-      background, 
-      theme-background, 
-      $lightest-gray
-    );
-    padding: 20px 14px;
-    text-align: center;
-    font-size: 24px;
-    line-height: 33px;
-    margin-top: 8px;
-
-    label {
-      padding: 1px 10px 3px;
-    }
-
-    input {
-      vertical-align: 2px;
-      max-width: 30px;
-    }
-  }
-
   .editor-main {
     margin-top: 15px;
     position: relative;
@@ -247,7 +223,7 @@
     transform: translateY(2px);
   }
 
-  input[type="text"] {
+  input[type='text'] {
     width: calc(100% - 30px);
     padding: 10px 15px;
     font-size: 22px;
@@ -295,7 +271,7 @@
         display: none;
         width: auto;
 
-        &:checked+label {
+        &:checked + label {
           background: $blue;
           color: white;
 
@@ -341,18 +317,10 @@
     border: 0px;
     resize: none;
     padding: 12px 15px 18px;
-    font-family: "Lucida Console", Monaco, monospace, sans-serif;
+    font-family: 'Lucida Console', Monaco, monospace, sans-serif;
     font-size: 17px;
-    @include themeable(
-      background, 
-      theme-container-background, 
-      white
-    );
-    @include themeable(
-      color, 
-      theme-color, 
-      $black
-    );
+    background: var(--container-bg);
+    color: var(--body-color);
 
     &::placeholder {
       color: #8f949c;
@@ -362,7 +330,9 @@
       position: absolute;
       left: 5px;
       top: 3px;
-      content: attr("dsds ds ds dsdhjsdhjsbdhs eieuirwhewh iurhwiu wehu iewhu ierwhu irwehiu erwhui r huir");
+      content: attr(
+        'dsds ds ds dsdhjsdhjsbdhs eieuirwhewh iurhwiu wehu iewhu ierwhu irwehiu erwhui r huir'
+      );
       pointer-events: none;
       opacity: 0.6;
     }
@@ -437,33 +407,33 @@
     right: 0;
     bottom: 0;
     background-color: #ccc;
-    -webkit-transition: .4s;
-    transition: .4s;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
     border-radius: 100px;
   }
 
   .slider:before {
     position: absolute;
-    content: "";
+    content: '';
     height: 26px;
     width: 26px;
     left: 4px;
     bottom: 4px;
     background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
     border-radius: 100px;
   }
 
-  input:checked+.slider {
-    background-color: #2196F3;
+  input:checked + .slider {
+    background-color: #2196f3;
   }
 
-  input:focus+.slider {
-    box-shadow: 0 0 1px #2196F3;
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196f3;
   }
 
-  input:checked+.slider:before {
+  input:checked + .slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
@@ -508,7 +478,6 @@
   margin-top: -50px;
   margin-bottom: 70px;
 }
-
 
 .new-article-pitch {
   padding-top: calc(8% + 50px);
@@ -604,9 +573,6 @@
     }
   }
 }
-
-
-
 
 .sign-in-message {
   background: rgb(219, 29, 57);

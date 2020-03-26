@@ -1,0 +1,65 @@
+@import 'variables';
+@import '_mixins';
+
+// Alternate base fonts
+body.sans-serif-article-body {
+  .body {
+    font-family: $helvetica;
+  }
+  .body p {
+    font-family: $helvetica;
+    font-size: 0.98em;
+  }
+}
+
+body.comic-sans-article-body {
+  .body {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+  }
+  .body p {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-size: 0.98em;
+  }
+}
+
+body.open-dyslexic-article-body {
+  .body {
+    font-display: swap;
+    font-family: OpenDyslexic, sans-serif;
+  }
+  .body p {
+    font-display: swap;
+    font-family: OpenDyslexic, sans-serif;
+    font-size: 0.9em;
+  }
+  .body b,
+  .body strong {
+    font-family: OpenDyslexic-Bold, sans-serif;
+  }
+
+  .body i,
+  .body em {
+    font-family: OpenDyslexic-Italic, sans-serif;
+  }
+
+  .body b > i,
+  .body b > em,
+  .body strong > i,
+  .body strong > em,
+  .body i > b,
+  .body em > b,
+  .body i > strong,
+  .body em > strong {
+    font-family: OpenDyslexic-Bolditalic;
+  }
+}
+
+body.monospace-article-body {
+  .body {
+    font-family: $monospace;
+  }
+  .body p {
+    font-family: $monospace;
+    font-size: 0.9em;
+  }
+}

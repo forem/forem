@@ -1,0 +1,53 @@
+@import '../config/import';
+
+// indicator() - Generates styles for Indicators
+//
+// Indicators have bunch of styles combines with bunch of states. To make
+// it easier to generate all these classes, we created a help which should
+// do the job.
+//
+// @param {object} $this          Cached variable with parent element
+// @param {string} $name          Value for border-radius
+// @param {color} $color-1        Main color.
+
+@mixin indicator($this, $name, $color-1) {
+  &#{'--' + $name} {
+    background-color: $color-1;
+    color: var(--body-color-inverted);
+    &#{$this + '--outlined'} {
+      background-color: transparent;
+      color: $color-1;
+      border-color: $color-1;
+    }
+  }
+}
+
+// Basic styling
+.crayons-indicator {
+  font-family: $ff-accent;
+  font-size: $fs-xs;
+  padding: $su-1;
+  background-color: var(--button-secondary-bg);
+  text-align: center;
+  line-height: $lh-tight;
+  border-radius: $br-default;
+  display: inline-block;
+
+  &--outlined {
+    background-color: transparent;
+    border: 1px solid var(--button-secondary-bg);
+    color: var(--button-secondary-color);
+  }
+
+  @include indicator(&, accent, var(--accent-brand));
+  @include indicator(&, critical, var(--accent-danger));
+  @include indicator(&, inverted, var(--widget-color));
+
+  // Circle, no text
+  &--bullet {
+    width: $su-3;
+    height: $su-3;
+    padding: 0;
+    border-radius: 100%;
+  }
+}

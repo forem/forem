@@ -24,21 +24,13 @@
     }
   }
   .partner-credits-explainer {
-    @include themeable(
-      background,
-      theme-container-background,
-      $white
-    );
+    @include themeable(background, theme-container-background, $white);
     box-sizing: border-box;
     padding: 25px 20px 30px;
     border-radius: 12px;
     margin: 50px auto 40px;
     width: calc(100% - 20px);
-    @include themeable(
-      border,
-      theme-border,
-      1px solid $light-medium-gray
-    );
+    border: 1px solid var(--container-color-tertiary);
     @include themeable(
       box-shadow,
       theme-container-box-shadow,
@@ -58,20 +50,12 @@
     h4 {
       font-size: 0.8em;
       margin: 3px 0px;
-      @include themeable(
-        color,
-        theme-secondary-color,
-        $medium-gray
-      );
+      color: var(--container-color-tertiary);
     }
     h3 {
       margin: 5px 0px;
       font-size: 1.8em;
-      @include themeable(
-        color,
-        theme-color,
-        #131a38
-      );
+      @include themeable(color, theme-color, #131a38);
       img {
         height: 1.2em;
         width: 1.2em;
@@ -109,7 +93,8 @@
         1px solid $light-medium-gray
       );
     }
-    a, button {
+    a,
+    button {
       padding: 5px 20px;
       font-size: 1.5em;
       border-radius: 8px;
@@ -117,46 +102,30 @@
       margin: 8px 0px;
       display: inline-block;
       border: 0px;
-      @include themeable(
-        background,
-        theme-anchor-color,
-        $bold-blue
-      );
-      @include themeable(
-        color,
-        theme-container-background,
-        white
-      );
+      background: var(--link-brand-color);
+      @include themeable(color, theme-container-background, white);
     }
   }
   .partnership-options {
     margin: 40px 0px;
   }
   .partnership-option-card {
-    @include themeable(
-      background,
-      theme-container-background,
-      $white
-    );
+    @include themeable(background, theme-container-background, $white);
     text-align: left;
     width: 100%;
-    @media screen and ( min-width: 820px ){
+    @media screen and (min-width: 820px) {
       width: calc(50% - 15px);
       margin-right: 8px;
       ul {
         height: 220px;
-      }  
+      }
     }
     box-sizing: border-box;
     padding: 15px;
     border-radius: 12px;
     margin: 10px 0px;
     display: inline-block;
-    @include themeable(
-      border,
-      theme-border,
-      1px solid $light-medium-gray
-    );
+    border: 1px solid var(--container-color-tertiary);
     @include themeable(
       box-shadow,
       theme-container-box-shadow,
@@ -166,9 +135,9 @@
       padding: 8px 0px;
     }
     h2 {
-      margin: 0px; 
+      margin: 0px;
       padding: 10px 0px;
-      border-bottom: 2px solid rgba(0,0,0,0.1);
+      border-bottom: 2px solid rgba(0, 0, 0, 0.1);
     }
     .partnership-option-cta {
       display: block;
@@ -177,16 +146,8 @@
       text-align: center;
       border-radius: 5px;
       font-weight: bold;
-      @include themeable(
-        background,
-        theme-anchor-color,
-        $bold-blue
-      );
-      @include themeable(
-        color,
-        theme-container-background,
-        white
-      );
+      background: var(--link-brand-color);
+      @include themeable(color, theme-container-background, white);
     }
   }
 }

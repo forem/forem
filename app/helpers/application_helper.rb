@@ -8,7 +8,9 @@ module ApplicationHelper
   end
 
   def view_class
-    if @story_show # custom due to edge cases
+    if @podcast_episode_show # custom due to edge cases
+      "stories stories-show podcast_episodes-show"
+    elsif @story_show
       "stories stories-show"
     else
       "#{controller_name} #{controller_name}-#{controller.action_name}"
@@ -99,7 +101,7 @@ module ApplicationHelper
   end
 
   def sanitize_rendered_markdown(processed_html)
-    ActionController::Base.helpers.sanitize processed_html.html_safe,
+    ActionController::Base.helpers.sanitize processed_html,
                                             scrubber: RenderedMarkdownScrubber.new
   end
 
@@ -146,5 +148,24 @@ module ApplicationHelper
 
   def community_qualified_name
     "The #{ApplicationConfig['COMMUNITY_NAME']} Community"
+  end
+
+  def cache_key_heroku_slug(path)
+    heroku_slug_commit = ApplicationConfig["HEROKU_SLUG_COMMIT"]
+    return path if heroku_slug_commit.blank?
+
+    "#{path}-#{heroku_slug_commit}"
+  end
+
+  # Creates an app internal URL
+  #
+  # @note Uses protocol and domain specified in the environment, ensure they are set.
+  # @param uri [URI, String] parts we want to merge into the URL, e.g. path, fragment
+  # @example Retrieve the base URL
+  #  app_url #=> "https://dev.to"
+  # @example Add a path
+  #  app_url("internal") #=> "https://dev.to/internal"
+  def app_url(uri = nil)
+    App.url(uri)
   end
 end

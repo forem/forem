@@ -15,11 +15,11 @@ RSpec.describe Metrics::RecordDbTableCountsWorker, type: :worker do
     after { Rails.logger = default_logger }
 
     it "logs estimated counts in Datadog" do
-      allow(DataDogStatsClient).to receive(:gauge)
+      allow(DatadogStatsClient).to receive(:gauge)
       described_class.new.perform
 
       expect(
-        DataDogStatsClient,
+        DatadogStatsClient,
       ).to have_received(:gauge).with("postgres.db_table_size", 0, Hash).at_least(1)
     end
   end

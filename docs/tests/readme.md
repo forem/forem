@@ -2,14 +2,14 @@
 title: Testing/QA Guide
 items:
   - acceptance-tests.md
+  - approvals-tests.md
   - integration-tests.md
   - unit-functional-tests.md
-  - preact-tests.md
+  - frontend-tests.md
   - accessibility-tests.md
   - regression-tests.md
   - code-coverage.md
   - codeclimate.md
-  - skip-ci.md
 ---
 
 We use the following testing tools:

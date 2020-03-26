@@ -4,7 +4,7 @@ module Search
 
     sidekiq_options queue: :medium_priority, retry: 10
 
-    VALID_RECORD_TYPES = %w[Comment Article User PageView].freeze
+    VALID_RECORD_TYPES = %w[Article User].freeze
 
     def perform(record_type, record_id)
       unless VALID_RECORD_TYPES.include?(record_type)

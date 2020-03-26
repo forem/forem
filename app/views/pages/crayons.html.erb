@@ -1,0 +1,894 @@
+<% title "Crayons" %>
+<style>
+  .container {
+    padding: 48px;
+    font-size: 16px;
+    line-height: 1.5;
+    box-sizing: border-box;
+  }
+  .container *,
+  .container *:before,
+  .container *:after {
+    box-sizing: border-box;
+  }
+
+  .container > *+* {
+    margin-top: 32px !important;
+  }
+
+  .container > pre {
+    padding: 24px;
+    width: 100%;
+  }
+
+  .container > .body {
+    width: 100%;
+    font-size: 16px;
+    line-height: 150%;
+    border-bottom: 1px solid lightgrey;
+    padding-bottom: 32px;
+  }
+
+  .container > .body h2 {
+    padding: 0;
+    margin: 0;
+  }
+
+  .container > .body p {
+    margin: 0;
+    padding: 0;
+  }
+
+  .container > .body ul,
+  .container > .body ol {
+    margin: 0 0 0 24px;
+    padding: 0;
+  }
+
+  .container > .body > *+* {
+    margin-top: 16px !important;
+  }
+</style>
+
+<div class="container">
+  <div class="body">
+    <h2>Main Typography</h2>
+    <p>Default font is set to 16px (fs-base). It should be standard in UI. Smaller and bigger font sizes should be used carefully with respect to good visual rythm between elements.</p>
+    <p>XS size should be used as little as possible in edge cases. Even though it’s readable we could consider it not meeting DEV’s standards. So keep it for like “asterisk copy” etc.</p>
+    <p>By default you should be using Regular font weight.</p>
+    <p>Medium should be used to emphasize something but not make it as loud as Bold.</p>
+    <p>Heavy should be used only for bigger title.</p>
+  </div>
+
+  <div>
+    <p class="fs-xs">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-s">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-base">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-l">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-xl">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-2xl">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-3xl">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-4xl">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-5xl">Lorem ipsum dolor sit amet.</p>
+  </div>
+
+  <div>
+    <p class="fs-xs fw-medium">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-s fw-medium">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-base fw-medium">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-l fw-medium">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-xl fw-medium">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-2xl fw-medium">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-3xl fw-medium">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-4xl fw-medium">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-5xl fw-medium">Lorem ipsum dolor sit amet.</p>
+  </div>
+
+  <div>
+    <p class="fs-xs fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-s fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-base fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-l fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-xl fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-2xl fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-3xl fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-4xl fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-5xl fw-bold">Lorem ipsum dolor sit amet.</p>
+  </div>
+
+  <div>
+    <p class="fs-xs fw-heavy">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-s fw-heavy">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-base fw-heavy">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-l fw-heavy">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-xl fw-heavy">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-2xl fw-heavy">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-3xl fw-heavy">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-4xl fw-heavy">Lorem ipsum dolor sit amet.</p>
+    <p class="fs-5xl fw-heavy">Lorem ipsum dolor sit amet.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 24px;">
+    <span class="ff-accent">Line height: 1.5 – .lh-base (default)</span>
+    <span class="ff-accent">Line height: 1.25 – .lh-tight</span>
+
+    <h3 class="fs-2xl fw-bold">This is a bit longer text title to present line-height difference.</h3>
+    <h3 class="fs-2xl fw-bold lh-tight">This is a bit longer text title to present line-height difference.</h3>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore iusto, molestias. Ex asperiores modi libero id laudantium ipsum perspiciatis, architecto enim suscipit delectus odit, explicabo quas, voluptatum quibusdam, distinctio ut.</p>
+    <p class="lh-tight">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore iusto, molestias. Ex asperiores modi libero id laudantium ipsum perspiciatis, architecto enim suscipit delectus odit, explicabo quas, voluptatum quibusdam, distinctio ut.</p>
+  </div>
+
+  <pre><%='
+  <!-- font sizes -->
+  <p class="fs-xs">...</p> <!-- 12px -->
+  <p class="fs-s">...</p> <!-- 14px -->
+  <p class="fs-base">...</p> <!-- default: 16px -->
+  <p class="fs-l">...</p> <!-- 18px -->
+  <p class="fs-xl">...</p> <!-- 20px -->
+  <p class="fs-2xl">...</p> <!-- 24px -->
+  <p class="fs-3xl">...</p> <!-- 30px -->
+  <p class="fs-4xl">...</p> <!-- 36px -->
+  <p class="fs-5xl">...</p> <!-- 48px -->
+
+  <!-- font weights -->
+  <p class="... fw-normal">...</p> <!-- default: regular -->
+  <p class="... fw-medium">...</p> 
+  <p class="... fw-bold">...</p>
+  <p class="... fw-heavy">...</p>
+
+  <!-- line heights -->
+  <p class="... lh-base"></p> <!-- default: 1.5 -->
+  <p class="... lh-tight"></p> <!-- tight: 1.25 -->
+  '.rstrip %></pre>
+
+  <div class="body">
+    <h2>Accent typography</h2>
+    <p>Its main purpose is to add a bit of flavor to DEV brand but it should never be the main font.</p>
+    <p>Please, do not overuse Accent typography.</p>
+    <p>We strongly encourage to limit number of sizes and weights to what presetned below.</p>
+  </div>
+
+  <div>
+    <p class="ff-accent fs-xs">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-accent fs-s">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-accent fs-base">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-accent fs-l">Lorem ipsum dolor sit amet.</p>
+  </div>
+
+  <div>
+    <p class="ff-accent fs-xs fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-accent fs-s fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-accent fs-base fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-accent fs-l fw-bold">Lorem ipsum dolor sit amet.</p>
+  </div>
+
+  <pre><%='
+  <!-- font sizes -->
+  <p class="ff-accent fs-xs">...</p> <!-- 12px -->
+  <p class="ff-accent fs-s">...</p> <!-- 14px -->
+  <p class="ff-accent fs-base">...</p> <!-- default: 16px -->
+  <p class="ff-accent fs-l">...</p> <!-- 18px -->
+
+  <!-- font weights -->
+  <p class="... fw-normal">...</p> <!-- default: regular -->
+  <p class="... fw-bold">...</p>
+
+  <!-- line heights -->
+  <p class="... lh-base"></p> <!-- default: 1.5 -->
+  <p class="... lh-tight"></p> <!-- tight: 1.25 -->
+  '.rstrip %></pre>
+</div>
+
+<div class="container">
+  <div class="body">
+    <h2>Form elements</h2>
+  </div>
+  <div>
+    <input type="text" class="crayons-textfield" placeholder="This is placeholder..."><br><br>
+    <input type="text" class="crayons-textfield" placeholder="This is placeholder..." value="Disabled field" disabled>
+  </div>
+
+  <pre><%='
+  <input type="text" class="crayons-textfield" placeholder="This is placeholder...">
+  <input type="text" class="crayons-textfield" placeholder="This is placeholder..." value="Disabled field" disabled>
+  '.rstrip %></pre>
+
+  <div>
+    <textarea class="crayons-textfield" placeholder="This is palceholder..."></textarea><br><br>
+    <textarea class="crayons-textfield" placeholder="This is palceholder..." disabled>Disabled textarea</textarea>
+  </div>
+
+  <pre><%='
+  <textarea class="crayons-textfield" placeholder="This is palceholder..."></textarea>
+  <textarea class="crayons-textfield" placeholder="This is palceholder..." disabled>Disabled textarea</textarea>
+  '.rstrip %></pre>
+
+  <div>
+    <input type="checkbox" class="crayons-checkbox">
+    <input type="checkbox" class="crayons-checkbox" checked>
+    <input type="checkbox" class="crayons-checkbox" disabled>
+    <input type="checkbox" class="crayons-checkbox" checked disabled>
+  </div>
+
+  <pre><%='
+  <input type="checkbox" class="crayons-checkbox">
+  <input type="checkbox" class="crayons-checkbox" checked>
+  <input type="checkbox" class="crayons-checkbox" disabled>
+  <input type="checkbox" class="crayons-checkbox" checked disabled>
+  '.rstrip %></pre>
+
+  <div>
+    <input type="radio" name="n1" class="crayons-radio">
+    <input type="radio" name="n1" class="crayons-radio" checked>
+    <input type="radio" name="n2" class="crayons-radio" disabled>
+    <input type="radio" name="n2" class="crayons-radio" checked disabled>
+  </div>
+
+  <pre><%='
+  <input type="radio" name="n1" class="crayons-radio">
+  <input type="radio" name="n1" class="crayons-radio" checked>
+  <input type="radio" name="n2" class="crayons-radio" disabled>
+  <input type="radio" name="n2" class="crayons-radio" checked disabled>
+  '.rstrip %></pre>
+</div>
+
+<div class="container">
+  <div class="body">
+    <h2>Field Component</h2>
+    <p>Because of accessibility most (ideally all) fields should have label above.</p>
+    <p>Fields can also have optional description - between Label and Field itself.</p>
+    <p>Fields can also have additional optional description, for example characters count.</p>
+  </div>
+
+  <div class="crayons-field">
+    <label for="t1" class="crayons-field__label">
+      Textfield Label
+      <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
+    </label>
+    <input type="text" id="t1" class="crayons-textfield" placeholder="This is placeholder...">
+    <p class="crayons-field__description">Another description just in case...</p>
+  </div>
+
+  <pre><%='
+  <div class="crayons-field">
+    <label for="t1" class="crayons-field__label">
+      Textfield Label
+      <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
+    </label>
+    <input type="text" id="t1" class="crayons-textfield" placeholder="This is placeholder...">
+    <p class="crayons-field__description">Another description just in case...</p>
+  </div>
+  '.rstrip %></pre>
+
+  <div class="body">
+    <h2>Fields with Checkboxes & Radios</h2>
+    <p>Labels for checkboxes and radios should be placed next to the form element.</p>
+    <p>Using additional description is optional.</p>
+    <p>It is possible to group checkboxes or radios into logical sections. Section may require having it’s own label (title).</p>
+  </div>
+
+  <div>
+    <div class="crayons-field crayons-field--checkbox">
+      <input type="checkbox" id="c2" class="crayons-checkbox">
+      <label for="c2" class="crayons-field__label">
+        Raspberry
+        <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
+      </label>
+    </div>
+  </div>
+
+  <pre><%='
+  <div class="crayons-field crayons-field--checkbox">
+    <input type="checkbox" id="c2" class="crayons-checkbox">
+    <label for="c2" class="crayons-field__label">
+      Raspberry
+      <p class="crayons-field__description">This is...</p>
+    </label>
+  </div>
+  '.rstrip %></pre>
+
+  <div>
+    <div class="crayons-fields">
+      <div class="crayons-field crayons-field--checkbox">
+        <input type="checkbox" id="c3" class="crayons-checkbox">
+        <label for="c3" class="crayons-field__label">
+          Avocado
+          <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
+        </label>
+      </div>
+
+      <div class="crayons-field crayons-field--checkbox">
+        <input type="checkbox" id="c4" class="crayons-checkbox">
+        <label for="c4" class="crayons-field__label">
+          Raspberry
+          <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
+        </label>
+      </div>
+
+      <div class="crayons-field crayons-field--checkbox">
+        <input type="checkbox" id="c5" class="crayons-checkbox">
+        <label for="c5" class="crayons-field__label">
+          Peanut
+          <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <pre><%='
+  <div class="crayons-fields">
+    <div class="crayons-field crayons-field--checkbox">
+      <input type="checkbox" id="c3" class="crayons-checkbox">
+      <label for="c3" class="crayons-field__label">
+        Avocado
+        <p class="crayons-field__description">This is...</p>
+      </label>
+    </div>
+
+    <div class="crayons-field crayons-field--checkbox">
+      ...
+    </div>
+
+    ...
+  </div>
+  '.rstrip %></pre>
+
+  <div>
+    <div class="crayons-fields crayons-fields--horizontal">
+      <div class="crayons-field crayons-field--checkbox">
+        <input type="checkbox" id="c6" class="crayons-checkbox">
+        <label for="c6" class="crayons-field__label">Avocado</label>
+      </div>
+
+      <div class="crayons-field crayons-field--checkbox">
+        <input type="checkbox" id="c7" class="crayons-checkbox">
+        <label for="c7" class="crayons-field__label">Raspberry</label>
+      </div>
+
+      <div class="crayons-field crayons-field--checkbox">
+        <input type="checkbox" id="c8" class="crayons-checkbox">
+        <label for="c8" class="crayons-field__label">Peanut</label>
+      </div>
+    </div>
+  </div>
+
+  <pre><%='
+  <div class="crayons-fields crayons-fields--horizontal">
+    <div class="crayons-field crayons-field--checkbox">
+      <input type="checkbox" id="c3" class="crayons-checkbox">
+      <label for="c3" class="crayons-field__label">Avocado</label>
+    </div>
+
+    <div class="crayons-field crayons-field--checkbox">
+      ...
+    </div>
+    
+    ...
+  </div>
+  '.rstrip %></pre>
+
+
+  <div>
+    <div class="crayons-field crayons-field--radio">
+      <input type="radio" name="name1" id="r2" class="crayons-radio">
+      <label for="r2" class="crayons-field__label">
+        Raspberry
+        <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
+      </label>
+    </div>
+  </div>
+
+  <pre><%='
+  <div class="crayons-field crayons-field--radio">
+    <input type="radio" name="name1" id="r2" class="crayons-radio">
+    <label for="r2" class="crayons-field__label">
+      Raspberry
+      <p class="crayons-field__description">This is...</p>
+    </label>
+  </div>
+  '.rstrip %></pre>
+
+  <div>
+    <div class="crayons-fields">
+      <div class="crayons-field crayons-field--radio">
+        <input type="radio" name="name2" id="r3" class="crayons-radio">
+        <label for="r3" class="crayons-field__label">
+          Avocado
+          <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
+        </label>
+      </div>
+
+      <div class="crayons-field crayons-field--radio">
+        <input type="radio" name="name2" id="r4" class="crayons-radio">
+        <label for="r4" class="crayons-field__label">
+          Raspberry
+          <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
+        </label>
+      </div>
+
+      <div class="crayons-field crayons-field--radio">
+        <input type="radio" name="name2" id="r5" class="crayons-radio">
+        <label for="r5" class="crayons-field__label">
+          Peanut
+          <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <pre><%='
+  <div class="crayons-fields">
+    <div class="crayons-field crayons-field--radio">
+      <input type="radio" name="name2" id="r3" class="crayons-radio">
+      <label for="r3" class="crayons-field__label">
+        Avocado
+        <p class="crayons-field__description">This is...</p>
+      </label>
+    </div>
+
+    <div class="crayons-field crayons-field--radio">
+      ...
+    </div>
+
+    ...
+  </div>
+  '.rstrip %></pre>
+
+  <div>
+    <div class="crayons-fields crayons-fields--horizontal">
+      <div class="crayons-field crayons-field--radio">
+        <input type="radio" name="name3" id="r6" class="crayons-radio">
+        <label for="r6" class="crayons-field__label">Avocado</label>
+      </div>
+
+      <div class="crayons-field crayons-field--radio">
+        <input type="radio" name="name3" id="r7" class="crayons-radio">
+        <label for="r7" class="crayons-field__label">Raspberry</label>
+      </div>
+
+      <div class="crayons-field crayons-field--radio">
+        <input type="radio" name="name3" id="r8" class="crayons-radio">
+        <label for="r8" class="crayons-field__label">Peanut</label>
+      </div>
+    </div>
+  </div>
+
+  <pre><%='
+  <div class="crayons-fields crayons-fields--horizontal">
+    <div class="crayons-field crayons-field--radio">
+      <input type="radio" name="name3" id="r6" class="crayons-radio">
+      <label for="r6" class="crayons-field__label">Avocado</label>
+    </div>
+
+    <div class="crayons-field crayons-field--radio">
+      ...
+    </div>
+    
+    ...
+  </div>
+  '.rstrip %></pre>
+</div>
+
+<div class="container">
+  <div class="body">
+    <h2>Buttons</h2>
+    <p>Use Danger style only for destructive actions like removing something. Do not use it for, for example “unfollow” action.</p>
+    <p>If you have to use several buttons together, keep in mind you should always have ONE Primary button. Rest of them should be Secondary and/or Outlined and/or Text buttons.</p>
+    <p>It is ok to use ONLY Secondary or outlined button without being accompanied by Primary one.</p>
+    <p>For Stacking buttons (vertically or horizontally) please use 8px spacing unit for default size buttons (no matter if stacking horizontally or vertically).</p>
+  </div>
+  <div>
+    <a href="#" class="crayons-btn">Button label</a><br><br>
+    <a href="#" class="crayons-btn crayons-btn--full">Full Button label</a><br><br>
+    <a href="#" class="crayons-btn crayons-btn--secondary">Secondary Button label</a><br><br>
+    <a href="#" class="crayons-btn crayons-btn--outlined">Outlined Button label</a><br><br>
+    <a href="#" class="crayons-btn crayons-btn--text">Text Button label</a><br><br>
+    <a href="#" class="crayons-btn crayons-btn--danger">Danger Button label</a><br><br>
+    <a href="#" class="crayons-btn crayons-btn--icon-left"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon"><path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" /></svg>Button</a><br><br>
+    <a href="#" class="crayons-btn crayons-btn--secondary crayons-btn--full crayons-btn--icon-left"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon"><path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" /></svg>Button</a>
+  </div>
+
+  <pre><%='
+  <a href="#" class="crayons-btn">Button label</a>
+  <a href="#" class="... crayons-btn--full">Full Button label</a>
+  <a href="#" class="... crayons-btn--secondary">Secondary Button label</a>
+  <a href="#" class="... crayons-btn--outlined">Outlined Button label</a>
+  <a href="#" class="... crayons-btn--text">Text Button label</a>
+  <a href="#" class="... crayons-btn--danger">Danger Button label</a>
+  <a href="#" class="... crayons-btn--icon-left"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon">...</svg>Button</a>
+  <a href="#" class="... crayons-btn--secondary crayons-btn--full crayons-btn--icon-left"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon">...</svg>Button</a>
+  '.rstrip %></pre>
+</div>
+
+<div class="container">
+  <div class="body">
+    <h2>Boxes</h2>
+    <p>“Box” will be a background element used for many other components, for example banners, dropdowns, modals. This component does not have any guidelines in terms of placement or spacing, since it’s supposed to be used to build other components.</p>
+    <p>There are:</p>
+    <ul>
+      <li>2 types: outlined  & filled,</li>
+      <li>5 styles: default, danger, warning, info, success,</li>
+      <li>4 eleveations: 0, 1, 2, 3.</li>
+    </ul>
+    <p>By default use “outlined” type unless you really have to make something stand out - then use “filled”. But double check if it makes sense since “filled” style really steals attention.</p>
+    <p>Use style that makes the most sense for you current use case. It’s pretty obvious when to use Danger, Warning and Success. But for Default and Info - it’s more up to designer to make a good call :).</p>
+    <p>Elevations should define what kind of element it is:</p>
+    <ul>
+      <li>0: something inside content.</li>
+      <li>1: that can also be used in content but for elements that need more attention, like notices...</li>
+      <li>2: dropdowns</li>
+      <li>3: modals</li>
+    </ul>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; grid-gap: 16px;">
+    <div class="crayons-box">box, level 0</div>
+    <div class="crayons-box crayons-box--level-1">box, level 1</div>
+    <div class="crayons-box crayons-box--level-2">box, level 2</div>
+    <div class="crayons-box crayons-box--level-3">box, level 3</div>
+    <div class="crayons-box crayons-box--filled ">filled box, level 0</div>
+    <div class="crayons-box crayons-box--filled crayons-box--level-1">filled box, level 1</div>
+    <div class="crayons-box crayons-box--filled crayons-box--level-2">filled box, level 2</div>
+    <div class="crayons-box crayons-box--filled crayons-box--level-3">filled box, level 3</div>
+
+    <div class="crayons-box crayons-box--danger">box, level 0</div>
+    <div class="crayons-box crayons-box--danger crayons-box--level-1">box, level 1</div>
+    <div class="crayons-box crayons-box--danger crayons-box--level-2">box, level 2</div>
+    <div class="crayons-box crayons-box--danger crayons-box--level-3">box, level 3</div>
+    <div class="crayons-box crayons-box--danger crayons-box--filled ">filled box, level 0</div>
+    <div class="crayons-box crayons-box--danger crayons-box--filled crayons-box--level-1">filled box, level 1</div>
+    <div class="crayons-box crayons-box--danger crayons-box--filled crayons-box--level-2">filled box, level 2</div>
+    <div class="crayons-box crayons-box--danger crayons-box--filled crayons-box--level-3">filled box, level 3</div>
+
+    <div class="crayons-box crayons-box--warning">box, level 0</div>
+    <div class="crayons-box crayons-box--warning crayons-box--level-1">box, level 1</div>
+    <div class="crayons-box crayons-box--warning crayons-box--level-2">box, level 2</div>
+    <div class="crayons-box crayons-box--warning crayons-box--level-3">box, level 3</div>
+    <div class="crayons-box crayons-box--warning crayons-box--filled ">filled box, level 0</div>
+    <div class="crayons-box crayons-box--warning crayons-box--filled crayons-box--level-1">filled box, level 1</div>
+    <div class="crayons-box crayons-box--warning crayons-box--filled crayons-box--level-2">filled box, level 2</div>
+    <div class="crayons-box crayons-box--warning crayons-box--filled crayons-box--level-3">filled box, level 3</div>
+
+    <div class="crayons-box crayons-box--success">box, level 0</div>
+    <div class="crayons-box crayons-box--success crayons-box--level-1">box, level 1</div>
+    <div class="crayons-box crayons-box--success crayons-box--level-2">box, level 2</div>
+    <div class="crayons-box crayons-box--success crayons-box--level-3">box, level 3</div>
+    <div class="crayons-box crayons-box--success crayons-box--filled ">filled box, level 0</div>
+    <div class="crayons-box crayons-box--success crayons-box--filled crayons-box--level-1">filled box, level 1</div>
+    <div class="crayons-box crayons-box--success crayons-box--filled crayons-box--level-2">filled box, level 2</div>
+    <div class="crayons-box crayons-box--success crayons-box--filled crayons-box--level-3">filled box, level 3</div>
+
+    <div class="crayons-box crayons-box--info">box, level 0</div>
+    <div class="crayons-box crayons-box--info crayons-box--level-1">box, level 1</div>
+    <div class="crayons-box crayons-box--info crayons-box--level-2">box, level 2</div>
+    <div class="crayons-box crayons-box--info crayons-box--level-3">box, level 3</div>
+    <div class="crayons-box crayons-box--info crayons-box--filled ">filled box, level 0</div>
+    <div class="crayons-box crayons-box--info crayons-box--filled crayons-box--level-1">filled box, level 1</div>
+    <div class="crayons-box crayons-box--info crayons-box--filled crayons-box--level-2">filled box, level 2</div>
+    <div class="crayons-box crayons-box--info crayons-box--filled crayons-box--level-3">filled box, level 3</div>
+  </div>
+
+  <pre><%='
+  <!-- default: outlined, black -->
+  <div class="crayons-box">box, level 0</div>
+
+  <-- levels 0-3 -->
+  <div class="... crayons-box--level-1">box, level 1</div>
+  <div class="... crayons-box--level-2">box, level 2</div>
+  <div class="... crayons-box--level-3">box, level 3</div>
+
+  <-- filled variation -->
+  <div class="... crayons-box--filled">filled box, level 0</div>
+
+  <-- styles: danger, success, warning, info -->
+  <div class="... crayons-box--danger">
+  <div class="... crayons-box--success">
+  <div class="... crayons-box--warning">
+  <div class="... crayons-box--info">
+  '.rstrip %></pre>
+</div>
+
+<div class="container">
+  <div class="body">
+    <h2>Dropdowns</h2>
+    <p>Dropdowns should have position relative to it’s trigger. They can be used for some 2nd level navigations, contextual configurations, etc...</p>
+    <p>Dropdowns should not be bigger than 320px.</p>
+    <p>Dropdown default padding should be dependent on width:</p>
+    <ul>
+      <li>&lt;250px: 16px</li>
+      <li>251 - 320px: 24px</li>
+    </ul>
+    <p>If you need to utilize entire dropdown area and you have to get rid of default padding, please use modifier class <code>crayons-dropdown--padding-0</code>.</p>
+    <p>FYI: Dropdowns use “Box” component as background, with Level 3 elevation.</p>
+  </div>
+
+  <div>
+    <div class="crayons-dropdown">
+      Hey, I'm a dropdown content! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
+    </div>
+  </div>
+
+  <div>
+    <div class="crayons-dropdown crayons-dropdown--l">
+      Hey, I'm a dropdown content! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
+    </div>
+  </div>
+  
+  <div>
+    <div class="crayons-dropdown crayons-dropdown--padding-0">
+      Hey, I'm a dropdown content! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
+    </div>
+  </div>
+
+  <pre><%='
+  <div class="crayons-dropdown">
+    Hey, ...
+  </div>
+
+  <div class="... crayons-dropdown--l">
+    Hey, ...
+  </div>
+
+  <div class="... crayons-dropdown--padding-0">
+    Hey, ...
+  </div>  
+  '.rstrip %></pre>
+</div>
+
+<div class="container">
+  <div class="body">
+    <h2>Modals</h2>
+    <p>Modals should be positioned centered in relation to entire viewport. So relation to its tirgger doesn’t really matter.<p>
+    <p>There are 3 sizes of modals:</p>
+    <ul>
+      <li>S(mall): 480px width with 24px padding</li>
+      <li>Default: 640px width with 32px padding</li>
+      <li>L(arge): 800px width with 48px padding</li>
+    </ul>
+    <p>Use your best judgements when choosing the right size.</p>
+    <p>If you need to utilize entire modal area and you have to get rid of default padding, please use modifier class <code>crayons-modal--padding-0</code>.</p>
+    <p>FYI: Modals use “Box” component as background, with Level 3 elevation.</p>
+  </div>
+
+  <div>
+    <div class="crayons-modal">
+      Hey, I'm a Default Modal content! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
+    </div>
+  </div>
+
+  <div>
+    <div class="crayons-modal crayons-modal--s">
+      Hey, I'm a Small Modal content! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
+    </div>
+  </div>
+
+  <div>
+    <div class="crayons-modal crayons-modal--l">
+      Hey, I'm a Large Modal content! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
+    </div>
+  </div>
+  
+  <div>
+    <div class="crayons-modal crayons-modal--padding-0">
+      Hey, I'm a modal content with no padding! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
+    </div>
+  </div>
+
+  <pre><%='
+  <div class="crayons-modal">
+    Hey, ...
+  </div>
+
+  <div class="... crayons-modal--s">
+    Hey, ...
+  </div>
+
+  <div class="... crayons-modal--l">
+    Hey, ...
+  </div>
+
+  <div class="... crayons-modal--padding-0">
+    Hey, ...
+  </div>  
+  '.rstrip %></pre>
+</div>
+
+<div class="container">
+  <div class="body">
+    <h2>Notices</h2>
+    <p>Use Notices to focus user on specific piece of content, for example (but not limited to):</p>
+    <ul>
+      <li>alerts after form submission, </li>
+      <li>box with tip like “Did you know..?”</li>
+      <li>etc...</li>
+    </ul>
+    <p>This should be simple message. And this is exactly what this Figma component let you do.</p>
+    <p>By default, this component has 16px padding.</p>
+  </div>
+
+  <div>
+    <div class="crayons-notice">This is Default Notice content.</div><br>
+    <div class="crayons-notice crayons-notice--danger">This is Danger Notice content.</div><br>
+    <div class="crayons-notice crayons-notice--warning">This is Warning Notice content.</div><br>
+    <div class="crayons-notice crayons-notice--success">This is Success Notice content.</div><br>
+    <div class="crayons-notice crayons-notice--info">This is Info Notice content.</div>
+  </div>
+
+  <pre><%='
+  <!-- Default -->
+  <div class="crayons-notice">This...</div>
+
+  <!-- Styles: danger, warning, success, info -->
+  <div class="... crayons-notice--danger">This...</div>
+  <div class="... crayons-notice--warning">This...</div>
+  <div class="... crayons-notice--success">This...</div>
+  <div class="... crayons-notice--info">This...</div>
+  '.rstrip %></pre>
+</div>
+
+<div class="container">
+  <div class="body">
+    <h2>Indicators</h2>
+    <p>Indicators are meant to be used to inform user about, for example, unread notifications. They supposed to steal user's attention and make him notice or click specific element.</p>
+    <p>We should keep in mind to never show too many indicators at the same time. Use your best judgment.</p>
+    <p>There're two types of indicators:</p>
+    <ul>
+      <li>Rectangle with label (text or number)</li>
+      <li>Bullet - just a circle without any text on it.</li>
+    </ul>
+    <p>And there're four styles to pick from:</p>
+    <ul>
+      <li>Default (grey) - nothing really crucial, basic information about something.</li>
+      <li>Accent (blueish) - something we want user to be aware of but it's also not crucial information</li>
+      <li>Critical (red) - something super important, don't overuse it!!</li>
+      <li>Inverted (dark grey) - alternative to the default one, especially when we need to show two defautl indicators next to each other.</li>
+    </ul>
+  </div>
+  <div>
+    <span class="crayons-indicator">Label</span>
+    <span class="crayons-indicator crayons-indicator--outlined">Outlined</span>
+    <span class="crayons-indicator">1</span>
+    <span class="crayons-indicator crayons-indicator--bullet"></span>
+  </div>
+
+  <div>
+    <span class="crayons-indicator crayons-indicator--accent">Label</span>
+    <span class="crayons-indicator crayons-indicator--outlined crayons-indicator--accent">Outlined</span>
+    <span class="crayons-indicator crayons-indicator--accent">1</span>
+    <span class="crayons-indicator crayons-indicator--accent crayons-indicator--bullet"></span>
+  </div>
+
+  <div>
+    <span class="crayons-indicator crayons-indicator--critical">Label</span>
+    <span class="crayons-indicator crayons-indicator--outlined crayons-indicator--critical">Outlined</span>
+    <span class="crayons-indicator crayons-indicator--critical">1</span>
+    <span class="crayons-indicator crayons-indicator--critical crayons-indicator--bullet"></span>
+  </div>
+
+  <div>
+    <span class="crayons-indicator crayons-indicator--inverted">Label</span>
+    <span class="crayons-indicator crayons-indicator--outlined crayons-indicator--inverted">Outlined</span>
+    <span class="crayons-indicator crayons-indicator--inverted">1</span>
+    <span class="crayons-indicator crayons-indicator--inverted crayons-indicator--bullet"></span>
+  </div>
+
+  <pre><%='
+  <span class="crayons-indicator">Label</span>
+  <span class="crayons-indicator">1</span>
+  <span class="crayons-indicator crayons-indicator--bullet"></span>
+
+  <!-- styles: accent, critical, inverted -->
+  <span class="... crayons-indicator--accent">...</span>
+  <span class="... crayons-indicator--critical">...</span>
+  <span class="... crayons-indicator--inverted">...</span>
+  '.rstrip %></pre>
+</div>
+
+<div class="container">
+  <div class="body">
+    <h2>Avatars &amp; Logos</h2>
+    <p>An image representing a user is called an avatar.</p>
+    <p>An image representing a company or organization is called a logo.</p>
+    <p>To make a distinction between these two different entities we should keep them visually different. For Avatars, we gonna use circle shape. And for Logos we gonna use square shape. This will help recognize what is what in a heartbeat.</p>
+    <p>Each of these will be available in 5 different sizes (use your best judgment in picking right size):</p>
+    <ul>
+      <li>Default: 24px</li>
+      <li>L(arge): 32px</li>
+      <li>XL(arge): 48px</li>
+      <li>2XL(arge): 64px</li>
+      <li>3XL(arge): 128px</li>
+    </ul>
+    <p>Remember to use descriptive alt="" values!</p>
+  </div>
+  <div>
+    <span class="crayons-avatar"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
+    <span class="crayons-avatar crayons-avatar--l"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
+    <span class="crayons-avatar crayons-avatar--xl"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
+    <span class="crayons-avatar crayons-avatar--2xl"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
+    <span class="crayons-avatar crayons-avatar--3xl"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
+  </div>
+
+  <pre><%='
+  <span class="crayons-avatar"><img src="..." class="crayons-avatar__image" alt="..." /></span>
+
+  <!-- sizes: l, xl, 2xl, 3xl -->
+  <span class="... crayons-avatar--l">...</span>
+  <span class="... crayons-avatar--xl">...</span>
+  <span class="... crayons-avatar--2xl">...</span>
+  <span class="... crayons-avatar--3xl">...</span>
+  '.rstrip %></pre>
+
+  <div>
+    <span class="crayons-logo"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+    <span class="crayons-logo crayons-logo--l"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+    <span class="crayons-logo crayons-logo--xl"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+    <span class="crayons-logo crayons-logo--2xl"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+    <span class="crayons-logo crayons-logo--3xl"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+  </div>
+
+  <pre><%='
+  <span class="crayons-logo"><img src="..." class="crayons-logo__image" alt="..." /></span>
+
+  <!-- sizes: l, xl, 2xl, 3xl -->
+  <span class="... crayons-logo--l">...</span>
+  <span class="... crayons-logo--xl">...</span>
+  <span class="... crayons-logo--2xl">...</span>
+  <span class="... crayons-logo--3xl">...</span>
+  '.rstrip %></pre>
+</div>
+
+<div class="container">
+  <div class="body">
+    <h2>Navigation: Main nav</h2>
+    <p>Used as main nav in left sidebar or dropdowns...</p>
+    <p>Can contain icons.</p>
+  </div>
+
+  <div class="p-6 bg-base-10">
+    <a href="#" class="crayons-nav-block crayons-nav-block--current"><span class="crayons-icon">🏡</span>Home</a>
+    <a href="#" class="crayons-nav-block"><span class="crayons-icon">📻</span>Podcasts</a>
+    <a href="#" class="crayons-nav-block"><span class="crayons-icon">🏷</span>Tags</a>
+    <a href="#" class="crayons-nav-block"><span class="crayons-icon">📑</span>Listings <span class="crayons-indicator">3</span></a>
+    <a href="#" class="crayons-nav-block"><span class="crayons-icon">👍</span>Code of Conduct</a>
+    <a href="#" class="crayons-nav-block crayons-nav-block--indented">More...</a>
+  </div>
+
+  <pre><%='
+  <a href="#" class="crayons-nav-block">...</a>
+  <a href="#" class="crayons-nav-block crayons-nav-block--current">...</a>
+
+  <!-- icon inside -->
+  <a href="#" class="crayons-nav-block"><span class="crayons-icon">📻</span>...</a>
+  <a href="#" class="crayons-nav-block"><svg class="crayons-icon" ...>...</svg>...</a>
+  
+  <!-- indicator inside -->
+  <a href="#" class="crayons-nav-block">...<span class="crayons-indicator">3</span></a>
+  
+  <!-- indented -->
+  <a href="#" class="crayons-nav-block crayons-nav-block--indented">More...</a>
+  '.rstrip %></pre>
+</div>
+
+<div class="container">
+  <div class="body">
+    <h2>Navigation: Tabs</h2>
+    <p>Use tabs as 2nd level navigation or filtering options.</p>
+  </div>
+
+  <div>
+    <div class="crayons-tabs">
+      <a href="#" class="crayons-tabs__item crayons-tabs__item--current">Feed</a>
+      <a href="#" class="crayons-tabs__item">Popular</a>
+      <a href="#" class="crayons-tabs__item">Latest</a>
+    </div>
+  </div>
+
+  <pre><%='
+  <div class="crayons-tabs">
+    <a href="#" class="crayons-tabs__item crayons-tabs__item--current">Feed</a>
+    <a href="#" class="crayons-tabs__item">Popular</a>
+    <a href="#" class="crayons-tabs__item">Latest</a>
+  </div>
+  '.rstrip %></pre>
+</div>

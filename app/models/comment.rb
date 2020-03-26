@@ -1,9 +1,16 @@
 class Comment < ApplicationRecord
+  TITLE_DELETED = "[deleted]".freeze
+  TITLE_HIDDEN = "[hidden by post author]".freeze
+
   has_ancestry
   resourcify
-  include AlgoliaSearch
   include Reactable
-  belongs_to :commentable, polymorphic: true
+  include Searchable
+
+  SEARCH_SERIALIZER = Search::CommentSerializer
+  SEARCH_CLASS = Search::FeedContent
+
+  belongs_to :commentable, polymorphic: true, optional: true
   counter_culture :commentable
   belongs_to :user
   counter_culture :user
@@ -20,8 +27,10 @@ class Comment < ApplicationRecord
   validates :commentable_type, inclusion: { in: %w[Article PodcastEpisode] }
   validates :user_id, presence: true
 
-  after_create   :after_create_checks
-  after_commit   :calculate_score
+  after_create :notify_slack_channel_about_warned_users, if: -> { user.warned }
+  after_create :after_create_checks
+  after_create_commit :record_field_test_event
+  after_commit :calculate_score
   after_update_commit :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
   after_save     :bust_cache
   after_save     :synchronous_bust
@@ -30,92 +39,23 @@ class Comment < ApplicationRecord
   after_create_commit :send_email_notification, if: :should_send_email_notification?
   after_create_commit :create_first_reaction
   after_create_commit :send_to_moderator
+  after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :remove_from_elasticsearch, on: [:destroy]
   before_save    :set_markdown_character_count, if: :body_markdown
   before_create  :adjust_comment_parent_based_on_depth
   after_update   :remove_notifications, if: :deleted
   after_update   :update_descendant_notifications, if: :deleted
-  before_validation :evaluate_markdown, if: -> { body_markdown && commentable }
+  before_validation :evaluate_markdown, if: -> { body_markdown }
   validate :permissions, if: :commentable
 
   alias touch_by_reaction save
-
-  algoliasearch per_environment: true, enqueue: :trigger_index do
-    attribute :id
-    add_index "ordered_comments",
-              id: :index_id,
-              per_environment: true,
-              enqueue: :trigger_index do
-      attributes :id, :user_id, :commentable_id, :commentable_type, :id_code_generated, :path,
-                 :id_code, :readable_publish_date, :parent_id, :positive_reactions_count, :created_at
-      attribute :body_html do
-        HTML_Truncator.truncate(processed_html,
-                                500, ellipsis: '<a class="comment-read-more" href="' + path + '">... Read Entire Comment</a>')
-      end
-      attribute :url do
-        path
-      end
-      attribute :css do
-        custom_css
-      end
-      attribute :tag_list do
-        commentable.tag_list
-      end
-      attribute :root_path do
-        root&.path
-      end
-      attribute :parent_path do
-        parent&.path
-      end
-      attribute :heart_ids do
-        reactions.where(category: "like").pluck(:user_id)
-      end
-      attribute :user do
-        {
-          username: user.username,
-          name: user.name,
-          id: user.id,
-          profile_pic: ProfileImage.new(user).get(width: 90),
-          profile_image_90: ProfileImage.new(user).get(width: 90),
-          github_username: user.github_username,
-          twitter_username: user.twitter_username
-        }
-      end
-      attribute :commentable do
-        {
-          path: commentable&.path,
-          title: commentable&.title,
-          tag_list: commentable&.tag_list,
-          id: commentable&.id
-        }
-      end
-      tags do
-        [commentable.tag_list,
-         "user_#{user_id}",
-         "commentable_#{commentable_type}_#{commentable_id}"].flatten.compact
-      end
-      ranking ["desc(created_at)"]
-    end
-  end
 
   def self.tree_for(commentable, limit = 0)
     commentable.comments.includes(:user).arrange(order: "score DESC").to_a[0..limit - 1].to_h
   end
 
-  def self.trigger_index(record, remove)
-    # record is removed from index synchronously in before_destroy_actions
-    return if remove
-
-    if record.deleted == false
-      Search::IndexWorker.perform_async("Comment", record.id)
-    else
-      Search::RemoveFromIndexWorker.perform_async(Comment.algolia_index_name, record.index_id)
-    end
-  end
-
-  # this should remain public because it's called by AlgoliaSearch::AlgoliaJob in .trigger_index
-  def remove_algolia_index
-    remove_from_index!
-    Search::RemoveFromIndexWorker.new.perform("ordered_comments_#{Rails.env}", index_id)
+  def search_id
+    "comment_#{id}"
   end
 
   def path
@@ -151,8 +91,8 @@ class Comment < ApplicationRecord
   end
 
   def title(length = 80)
-    return "[deleted]" if deleted
-    return "[hidden by post author]" if hidden_by_commentable_user
+    return TITLE_DELETED if deleted
+    return TITLE_HIDDEN if hidden_by_commentable_user
 
     text = ActionController::Base.helpers.strip_tags(processed_html).strip
     truncated_text = ActionController::Base.helpers.truncate(text, length: length).gsub("&#39;", "'").gsub("&amp;", "&")
@@ -175,9 +115,8 @@ class Comment < ApplicationRecord
     Notification.remove_all_without_delay(notifiable_ids: id, notifiable_type: "Comment")
   end
 
-  # public because it's used in the algolia indexing methods
-  def index_id
-    "comments-#{id}"
+  def safe_processed_html
+    processed_html.html_safe
   end
 
   private
@@ -204,7 +143,7 @@ class Comment < ApplicationRecord
     fixed_body_markdown = MarkdownFixer.fix_for_comment(body_markdown)
     parsed_markdown = MarkdownParser.new(fixed_body_markdown)
     self.processed_html = parsed_markdown.finalize(link_attributes: { rel: "nofollow" })
-    wrap_timestamps_if_video_present!
+    wrap_timestamps_if_video_present! if commentable
     shorten_urls!
   end
 
@@ -262,7 +201,6 @@ class Comment < ApplicationRecord
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     ancestors.update_all(updated_at: Time.current)
     Comments::BustCacheWorker.new.perform(id)
-    remove_algolia_index
   end
 
   def bust_cache
@@ -303,5 +241,27 @@ class Comment < ApplicationRecord
 
   def permissions
     errors.add(:commentable_id, "is not valid.") if commentable_type == "Article" && !commentable.published
+  end
+
+  def record_field_test_event
+    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "user_creates_comment")
+  end
+
+  def notify_slack_channel_about_warned_users
+    url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
+
+    message = <<~MESSAGE.chomp
+      Activity: #{url}#{path}
+      Comment text: #{body_markdown.truncate(300)}
+      ---
+      Manage commenter - @#{user.username}: #{url}/internal/users/#{user.id}
+    MESSAGE
+
+    SlackBotPingWorker.perform_async(
+      message: message,
+      channel: "warned-user-comments",
+      username: "sloan_watch_bot",
+      icon_emoji: ":sloan:",
+    )
   end
 end

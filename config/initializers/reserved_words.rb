@@ -82,6 +82,7 @@ class ReservedWords
     hackers
     haskell
     help
+    history
     infinite
     infiniteloop
     internal

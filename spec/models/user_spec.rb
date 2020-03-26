@@ -97,6 +97,22 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "#after_commit" do
+    it "on update enqueues job to index user to elasticsearch" do
+      user.save
+      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, user.id]) do
+        user.save
+      end
+    end
+
+    it "on destroy enqueues job to delete user from elasticsearch" do
+      user.save
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, user.id]) do
+        user.destroy
+      end
+    end
+  end
+
   context "when callbacks are triggered before validation" do
     let(:user) { build(:user) }
 
@@ -185,6 +201,11 @@ RSpec.describe User, type: :model do
 
       it "does not accept invalid mastodon url" do
         user.mastodon_url = "mastodon.social/@test"
+        expect(user).not_to be_valid
+      end
+
+      it "does not accept an invalid url" do
+        user.mastodon_url = "ben .com"
         expect(user).not_to be_valid
       end
     end
@@ -434,7 +455,7 @@ RSpec.describe User, type: :model do
       end
 
       it "sets correct language_settings by default after the jobs are processed" do
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           expect(user.language_settings).to eq("preferred_languages" => %w[en])
         end
       end
@@ -523,6 +544,15 @@ RSpec.describe User, type: :model do
       it "does not enqueue with an unconfirmed email" do
         sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(unconfirmed_email: "bob@bob.com", confirmation_sent_at: Time.current)
+        end
+      end
+
+      it "does not enqueue when the email address or subscription status has not changed" do
+        # The trait replaces the method with a dummy, but we need the actual method for this test.
+        user = described_class.find(create(:user, :ignore_mailchimp_subscribe_callback).id)
+
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
+          user.update(website_url: "http://example.com")
         end
       end
     end
@@ -925,6 +955,30 @@ RSpec.describe User, type: :model do
     it "returns true if user opted in from follower notifications and has an email" do
       user.assign_attributes(email_follower_notifications: true)
       expect(user.receives_follower_email_notifications?).to be(true)
+    end
+  end
+
+  describe ".dev_account" do
+    it "returns nil if the account does not exist" do
+      expect(described_class.dev_account).to be_nil
+    end
+
+    it "returns the user if the account exists" do
+      allow(SiteConfig).to receive(:staff_user_id).and_return(user.id)
+
+      expect(described_class.dev_account).to eq(user)
+    end
+  end
+
+  describe ".mascot_account" do
+    it "returns nil if the account does not exist" do
+      expect(described_class.mascot_account).to be_nil
+    end
+
+    it "returns the user if the account exists" do
+      allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id)
+
+      expect(described_class.mascot_account).to eq(user)
     end
   end
 end

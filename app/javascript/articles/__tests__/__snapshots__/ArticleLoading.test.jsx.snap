@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<LoadingArticle /> should render 1`] = `
+<div
+  class="single-article single-article-small-pic big-article"
+  style={
+    Object {
+      "paddingBottom": "0",
+    }
+  }
+>
+  <div
+    class="small-pic"
+  >
+    <div
+      class="color single-article-loading"
+    />
+  </div>
+  <div
+    class="content"
+  >
+    <h3
+      class="single-article-loading"
+    >
+       
+    </h3>
+  </div>
+  <h4
+    class="single-article-loading"
+    style={
+      Object {
+        "width": "46%",
+      }
+    }
+  >
+     
+  </h4>
+  <div
+    class="tags single-article-loading"
+  />
+</div>
+`;

@@ -1,0 +1,91 @@
+@import '../config/import';
+
+// Basic styling
+.crayons-btn {
+  position: relative;
+  display: inline-block;
+  padding: 0.5em 1em;
+  border-radius: $br-default;
+  outline: none;
+  font-family: inherit;
+  font-size: $fs-base;
+  line-height: $lh-base;
+  font-weight: $fw-medium;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all $transition-props;
+}
+
+// Styles
+.crayons-btn {
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-color);
+
+  &--disabled,
+  &[disabled] {
+    opacity: 0.6;
+  }
+
+  &:hover {
+    background-color: var(--button-primary-bg-hover);
+    color: var(--button-primary-color-hover);
+  }
+
+  &--secondary {
+    background-color: var(--button-secondary-bg);
+    color: var(--button-secondary-color);
+
+    &:hover {
+      background-color: var(--button-secondary-bg-hover);
+      color: var(--button-secondary-color-hover);
+    }
+  }
+
+  &--outlined {
+    padding: 0.375em 1em;
+    background-color: transparent;
+    border: 2px solid var(--button-outlined-bg);
+    color: var(--button-outlined-color);
+
+    &:hover {
+      background-color: transparent;
+      color: var(--button-outlined-color-hover);
+      border-color: var(--button-outlined-bg-hover);
+    }
+  }
+
+  &--danger {
+    background-color: var(--accent-danger);
+    color: var(--base-inverted);
+
+    &:hover {
+      background-color: var(--accent-danger-darker);
+      color: var(--base-inverted);
+    }
+  }
+
+  &--text {
+    background-color: transparent;
+    color: var(--link-brand);
+
+    &:hover {
+      background-color: transparent;
+      color: var(--link-brand-hover);
+    }
+  }
+}
+
+// Icon Left
+.crayons-btn--icon-left {
+  padding-left: 0.75em;
+
+  .crayons-icon {
+    margin-right: 0.5em;
+  }
+}
+
+// Full width
+.crayons-btn--full {
+  width: 100%;
+}

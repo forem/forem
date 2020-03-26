@@ -1,0 +1,25 @@
+@import '../config/import';
+@import '../base/boxes';
+
+%dropdown-style {
+  @extend .crayons-box;
+  @extend .crayons-box--level-2;
+  display: inline-block;
+}
+
+.crayons-dropdown {
+  @extend %dropdown-style;
+  padding: $su-4;
+  min-width: 164px;
+  max-width: 250px;
+
+  &--l {
+    min-width: 251px;
+    max-width: 320px;
+    padding: $su-6;
+  }
+
+  &--padding-0 {
+    padding: 0;
+  }
+}

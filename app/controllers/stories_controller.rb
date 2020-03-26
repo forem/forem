@@ -1,8 +1,25 @@
 class StoriesController < ApplicationController
+  DEFAULT_HOME_FEED_ATTRIBUTES_FOR_SERIALIZATION = {
+    only: %i[
+      title path id user_id comments_count positive_reactions_count organization_id
+      reading_time video_thumbnail_url video video_duration_in_minutes language
+      experience_level_rating experience_level_rating_distribution cached_user cached_organization
+    ],
+    methods: %i[
+      readable_publish_date cached_tag_list_array flare_tag class_name
+      cloudinary_video_url video_duration_in_minutes published_at_int published_timestamp
+    ]
+  }.freeze
+
   before_action :authenticate_user!, except: %i[index search show]
   before_action :set_cache_control_headers, only: %i[index search show]
 
+  rescue_from ArgumentError, with: :bad_request
+
   def index
+    @page = (params[:page] || 1).to_i
+    @article_index = true
+
     return handle_user_or_organization_or_podcast_or_page_index if params[:username]
     return handle_tag_index if params[:tag]
 
@@ -37,6 +54,22 @@ class StoriesController < ApplicationController
   end
 
   private
+
+  def assign_hero_html
+    return if SiteConfig.campaign_hero_html_variant_name.blank?
+
+    @hero_html = HtmlVariant.relevant.select(:html).
+      find_by(group: "campaign", name: SiteConfig.campaign_hero_html_variant_name)&.html
+  end
+
+  def get_latest_campaign_articles
+    campaign_articles_scope = Article.tagged_with(SiteConfig.campaign_featured_tags, any: true).
+      where("published_at > ?", 2.weeks.ago).where(approved: true).
+      order("hotness_score DESC")
+
+    @campaign_articles_count = campaign_articles_scope.count
+    @latest_campaign_articles = campaign_articles_scope.limit(5).pluck(:path, :title, :comments_count, :created_at)
+  end
 
   def redirect_to_changed_username_profile
     potential_username = params[:username].tr("@", "").downcase
@@ -79,7 +112,6 @@ class StoriesController < ApplicationController
 
   def handle_tag_index
     @tag = params[:tag].downcase
-    @page = (params[:page] || 1).to_i
     @tag_model = Tag.find_by(name: @tag) || not_found
     @moderators = User.with_role(:tag_moderator, @tag_model).select(:username, :profile_image, :id)
     if @tag_model.alias_for.present?
@@ -87,14 +119,19 @@ class StoriesController < ApplicationController
       return
     end
 
-    @stories = Articles::Feed.new(number_of_articles: 8, tag: @tag).published_articles_by_tag
+    @num_published_articles = if @tag_model.requires_approval?
+                                Article.published.cached_tagged_by_approval_with(@tag).size
+                              else
+                                Article.published.cached_tagged_with(@tag).size
+                              end
+    number_of_articles = user_signed_in? ? 5 : 45
+    @stories = Articles::Feed.new(number_of_articles: number_of_articles, tag: @tag).published_articles_by_tag
 
     @stories = @stories.where(approved: true) if @tag_model&.requires_approval
 
     @stories = stories_by_timeframe
     @stories = @stories.decorate
 
-    @article_index = true
     set_surrogate_key_header "articles-#{@tag}"
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
     render template: "articles/tag_index"
@@ -108,30 +145,26 @@ class StoriesController < ApplicationController
 
   def handle_base_index
     @home_page = true
-    @page = (params[:page] || 1).to_i
-    number_of_articles = 35
-    feed = Articles::Feed.new(number_of_articles: number_of_articles, page: @page, tag: params[:tag])
-    if %w[week month year infinity].include?(params[:timeframe])
-      @stories = feed.top_articles_by_timeframe(timeframe: params[:timeframe])
-    elsif params[:timeframe] == "latest"
-      @stories = feed.latest_feed
-    else
-      @default_home_feed = true
-      @featured_story, @stories = feed.default_home_feed(user_signed_in: user_signed_in?)
-    end
+    assign_feed_stories
+    assign_hero_html
     assign_podcasts
     assign_classified_listings
+    get_latest_campaign_articles if SiteConfig.campaign_sidebar_enabled?
     @article_index = true
-    @featured_story = (@featured_story || Article.new)&.decorate
+    @featured_story = (featured_story || Article.new)&.decorate
     @stories = ArticleDecorator.decorate_collection(@stories)
     set_surrogate_key_header "main_app_home_page"
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
+
     render template: "articles/index"
+  end
+
+  def featured_story
+    @featured_story ||= Articles::Feed.find_featured_story(@stories)
   end
 
   def handle_podcast_index
     @podcast_index = true
-    @article_index = true
     @list_of = "podcast-episodes"
     @podcast_episodes = @podcast.podcast_episodes.
       reachable.order("published_at DESC").limit(30).decorate
@@ -144,7 +177,6 @@ class StoriesController < ApplicationController
     @stories = ArticleDecorator.decorate_collection(@organization.articles.published.
       limited_column_select.
       order("published_at DESC").page(@page).per(8))
-    @article_index = true
     @organization_article_index = true
     set_surrogate_key_header "articles-org-#{@organization.id}"
     render template: "organizations/show"
@@ -159,7 +191,6 @@ class StoriesController < ApplicationController
     not_found if @user.username.include?("spam_") && @user.decorate.fully_banished?
     assign_user_comments
     assign_user_stories
-    @article_index = true
     @list_of = "articles"
     redirect_if_view_param
     return if performed?
@@ -196,23 +227,46 @@ class StoriesController < ApplicationController
     render template: "articles/show"
   end
 
+  def assign_feed_stories
+    feed = Articles::Feed.new(page: @page, tag: params[:tag])
+    if params[:timeframe].in?(Timeframer::FILTER_TIMEFRAMES)
+      @stories = feed.top_articles_by_timeframe(timeframe: params[:timeframe])
+    elsif params[:timeframe] == Timeframer::LATEST_TIMEFRAME
+      @stories = feed.latest_feed
+    else
+      @default_home_feed = true
+      @featured_story, @stories = feed.default_home_feed_and_featured_story(user_signed_in: user_signed_in?)
+    end
+  end
+
   def assign_article_show_variables
+    not_found if permission_denied?
+    not_found unless @article.user
+
     @article_show = true
     @variant_number = params[:variant_version] || (user_signed_in? ? 0 : rand(2))
-    assign_user_and_org
+
+    @user = @article.user
+    @organization = @article.organization
+
+    if @article.collection
+      @collection = @article.collection
+
+      # we need to make sure that articles that were cross posted after their
+      # original publication date appear in the correct order in the collection,
+      # considering non cross posted articles with a more recent publication date
+      @collection_articles = @article.collection.articles.
+        published.
+        order(Arel.sql("COALESCE(crossposted_at, published_at) ASC"))
+    end
+
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
     assign_second_and_third_user
-    not_found if permission_denied?
     @comment = Comment.new(body_markdown: @article&.comment_template)
   end
 
   def permission_denied?
     !@article.published && params[:preview] != @article.password
-  end
-
-  def assign_user_and_org
-    @user = @article.user || not_found
-    @organization = @article.organization if @article.organization_id.present?
   end
 
   def assign_second_and_third_user
@@ -239,7 +293,7 @@ class StoriesController < ApplicationController
     @stories = ArticleDecorator.decorate_collection(@user.articles.published.
       limited_column_select.
       where.not(id: @pinned_stories.pluck(:id)).
-      order("published_at DESC").page(@page).per(user_signed_in? ? 2 : 5))
+      order("published_at DESC").page(@page).per(user_signed_in? ? 2 : 20))
   end
 
   def stories_by_timeframe

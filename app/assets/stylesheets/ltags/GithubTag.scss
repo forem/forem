@@ -1,6 +1,6 @@
 @import 'variables';
 .ltag_github-liquid-tag {
-  margin:1.1em auto 1.30em;
+  margin: 1.1em auto 1.3em;
   max-width: 580px;
   h1 {
     font-size: 1.05em !important;
@@ -11,8 +11,7 @@
       margin-bottom: 10px;
     }
     a {
-      color:$black;
-      color: var(--theme-color, $black);
+      color: var(--body-color);
     }
     .issue-title {
       font-weight: normal;
@@ -22,7 +21,7 @@
       color: #a3aab1;
       letter-spacing: -1px;
     }
-    img.github-logo{
+    img.github-logo {
       width: 1.15em !important;
       max-width: 1.1em !important;
       display: inline-block;
@@ -35,14 +34,14 @@
       filter: invert(0);
       filter: var(--theme-social-icon-invert, invert(0));
     }
-
   }
 }
 
 .github-thread {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   background-color: #fff;
-  background-color: var(--theme-container-background, #fff);
+  background-color: var(--container-bg);
   border: 1px solid #d1d5da;
   box-shadow: $shadow;
   border-radius: 3px;
@@ -61,12 +60,11 @@
       border-color: transparent;
       border-style: solid solid outset;
       border-right-color: #d1d5da;
-      content: " ";
+      content: ' ';
       float: left;
       margin-left: -31px;
       margin-top: 13px;
     }
-
   }
 
   .arrow-left-inner {
@@ -79,7 +77,7 @@
       border-color: transparent;
       border-style: solid solid outset;
       border-right-color: #f6f8fa;
-      content: " ";
+      content: ' ';
       float: left;
       margin-left: -30px;
       margin-top: 13px;
@@ -89,7 +87,7 @@
   .timeline-comment-header {
     display: flex;
     background: #f6f8fa;
-    background: var(--theme-container-background, #f6f8fa);
+    background: var(--container-bg);
     border-bottom: 1px solid #d1d5da;
     padding: 0px 15px;
 
@@ -130,7 +128,8 @@
 
 .ltag-github-body {
   padding: 1em 0.5em;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   max-height: calc(21vw + 165px);
   overflow: hidden;
   @media screen and (min-width: 430px) {
@@ -139,10 +138,15 @@
   @media screen and (min-width: 800px) {
     max-height: 310px;
   }
-  h1,h2,h3,h4,h5,h6{
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-weight: 500 !important;
   }
-  h1{
+  h1 {
     margin-left: 0;
     font-size: 1.9em;
     padding-bottom: 0.3em;
@@ -151,7 +155,7 @@
     margin-bottom: 0.9em !important;
   }
 
-  h3{
+  h3 {
     margin-top: 1em !important;
     margin-bottom: 0.9em !important;
     padding: 0;
@@ -160,7 +164,7 @@
     line-height: 1.25;
   }
 
-  h4{
+  h4 {
     padding: 0;
   }
 
@@ -190,7 +194,7 @@
     color: #444d56;
     vertical-align: middle;
     background-color: #fafbfc;
-    background-color: var(--theme-container-background, #fafbfc);
+    background-color: var(--container-bg);
     border: solid 1px #c6cbd1;
     border-bottom-color: #959da5;
     border-radius: 3px;
@@ -202,8 +206,7 @@
     padding: 0px;
     margin-bottom: 15px;
     a.github-user-link {
-      color: #24292e;
-      color: var(--theme-secondary-color, #24292e);
+      color: var(--container-color-secondary);
       font-weight: 600;
       white-space: nowrap;
     }
@@ -217,24 +220,27 @@
     border-radius: 3px;
     padding: 0.2em 5px 0px;
     margin: 0px;
-    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier,
+      monospace;
   }
 
   pre {
     width: 100% !important;
     margin: 0px;
     color: black;
-    background-color: #F6F8FA;
+    background-color: #f6f8fa;
     padding: 0;
     code {
-      background-color: #F6F8FA;
+      background-color: #f6f8fa;
       color: black;
       padding: 0em 0px 0px !important;
       line-height: 2em !important;
     }
   }
 
-  .highlight pre, pre, pre code {
+  .highlight pre,
+  pre,
+  pre code {
     padding: 16px !important;
     overflow: auto !important;
     font-size: 14px !important;
@@ -244,16 +250,17 @@
     box-sizing: border-box !important;
     color: black !important;
     border-radius: 3px !important;
-    margin:0.95em 0 1.20em !important;
+    margin: 0.95em 0 1.2em !important;
   }
 
-  .highlight{
+  .highlight {
     font-size: 14px !important;
     margin-bottom: 16px !important;
     border-radius: 3px !important;
   }
 
-  b,strong{
+  b,
+  strong {
     font-weight: 600;
   }
 
@@ -261,15 +268,18 @@
     color: #969896;
   }
 
-  .pl-c1,.pl-s .pl-v {
+  .pl-c1,
+  .pl-s .pl-v {
     color: #0086b3;
   }
 
-  .pl-e,.pl-en {
+  .pl-e,
+  .pl-en {
     color: #795da3;
   }
 
-  .pl-s .pl-s1,.pl-smi {
+  .pl-s .pl-s1,
+  .pl-smi {
     color: #333;
   }
 
@@ -281,7 +291,13 @@
     color: #a71d5d;
   }
 
-  .pl-pds,.pl-s,.pl-s .pl-pse .pl-s1,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre {
+  .pl-pds,
+  .pl-s,
+  .pl-s .pl-pse .pl-s1,
+  .pl-sr,
+  .pl-sr .pl-cce,
+  .pl-sr .pl-sra,
+  .pl-sr .pl-sre {
     color: #183691;
   }
 
@@ -307,7 +323,9 @@
     color: #693a17;
   }
 
-  .pl-mh,.pl-mh .pl-en,.pl-ms {
+  .pl-mh,
+  .pl-mh .pl-en,
+  .pl-ms {
     color: #1d3e81;
     font-weight: bold;
   }
@@ -350,9 +368,9 @@
   text-align: center;
   padding: 0.35em 0 1.35em;
   box-shadow: -0px -0px 60px 42px #fff;
-  box-shadow: -0px -0px 60px 42px var(--theme-container-background, #fff);
-  position:relative;
-  z-index:100
+  box-shadow: -0px -0px 60px 42px var(--container-bg);
+  position: relative;
+  z-index: 100;
 }
 
 .gh-btn {
@@ -361,8 +379,8 @@
   border-radius: 3px;
   line-height: 20px;
   padding: 0.25em 1.2em;
-  opacity: .9;
-  font-size:0.94em;
+  opacity: 0.9;
+  font-size: 0.94em;
   font-weight: bold;
   border: 1px solid #0366d6;
   &:hover {

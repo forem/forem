@@ -1,7 +1,6 @@
-<%= javascript_pack_tag "colorPreview", defer: true %>
+<%= javascript_packs_with_chunks_tag "colorPreview", "clipboardCopy", defer: true %>
 
 <%= render "shared/webcomponents_loader_script" %>
-<%= javascript_pack_tag "clipboardCopy", defer: true %>
 
 <style>
   .primary-sticky-nav-author, .primary-sticky-nav-author-element {
@@ -94,6 +93,28 @@
       <%= f.file_field :profile_image %>
     <% end %>
   </div>
+  <%= f.label :nav_image, "Image for the light theme" %>
+  <div class="field">
+    <% if @organization.nav_image_url.present? %>
+      <span class="image-present">
+        <img alt="<%= @organization.name %> profile image" src="<%= cloudinary(@organization.nav_image_url, 50) %>" />
+        <%= f.file_field :nav_image %>
+      </span>
+    <% else %>
+      <%= f.file_field :nav_image %>
+    <% end %>
+  </div>
+  <%= f.label :dark_nav_image, "Image for the dark theme" %>
+  <div class="field">
+    <% if @organization.dark_nav_image_url.present? %>
+      <span class="image-present">
+        <img alt="<%= @organization.name %> profile image" src="<%= cloudinary(@organization.dark_nav_image_url, 50) %>" />
+        <%= f.file_field :dark_nav_image %>
+      </span>
+    <% else %>
+      <%= f.file_field :dark_nav_image %>
+    <% end %>
+  </div>
   <div class="field">
     <%= f.label :twitter_username, "Twitter Username" %>
     <%= f.text_field :twitter_username %>
@@ -136,8 +157,8 @@
     <%= f.text_area :tech_stack, maxlength: 640, placeholder: "Limit of 640 characters" %>
   </div>
   <h2>Call-to-action box</h2>
-  <h4 style="margin-top:-25px">Customizable text that appears to the right of every post for your organization</h4>
-  <h4 style="margin-top:-15px">See an example from the
+  <h4>Customizable text that appears to the right of every post for your organization</h4>
+  <h4>See an example from the
     <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/devteam/the-dev-badge-is-available-on-font-awesome-2ihe" target="_blank">DEV Team</a>.
   </h4>
   <div class="field">

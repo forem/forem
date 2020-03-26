@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe "User visits podcast show page", type: :system do
   let(:podcast) { create(:podcast) }
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
+  let(:single_quote_episode) { create(:podcast_episode, title: "What's up doc?!") }
 
   it "they see the content of the hero", retry: 3 do
     visit podcast_episode.path.to_s
@@ -16,6 +17,24 @@ RSpec.describe "User visits podcast show page", type: :system do
     expect(page).to have_css "form#new_comment"
     expect(find("#comment_commentable_type", visible: false).value).to eq("PodcastEpisode")
     expect(find("#comment_commentable_id", visible: false).value).to eq(podcast_episode.id.to_s)
+  end
+
+  context "when mobile apps read the podcast episode metadata" do
+    it "renders the Episode & Podcast data" do
+      visit podcast_episode.path.to_s
+      metadata = JSON.parse(find(".podcast-episode-container")["data-meta"])
+      expect(metadata["podcastName"]).to eq(podcast.title)
+      expect(metadata["episodeName"]).to eq(podcast_episode.title)
+      expect(metadata["podcastImageUrl"]).to include(podcast.image_url)
+    end
+
+    it "doesn't break with single quotes inside the metadata" do
+      visit single_quote_episode.path.to_s
+      metadata = JSON.parse(find(".podcast-episode-container")["data-meta"])
+      expect(metadata["podcastName"]).to eq(single_quote_episode.podcast.title)
+      expect(metadata["episodeName"]).to eq(single_quote_episode.title)
+      expect(metadata["podcastImageUrl"]).to include(single_quote_episode.podcast.image_url)
+    end
   end
 
   context "when episode may not be playable" do

@@ -1,0 +1,29 @@
+@import '../config/import';
+@import '../base/boxes';
+
+%modal-style {
+  @extend .crayons-box;
+  @extend .crayons-box--level-3;
+  display: inline-block;
+  width: 100%;
+}
+
+.crayons-modal {
+  @extend %modal-style;
+  padding: $su-7;
+  max-width: 640px;
+
+  &--s {
+    max-width: 480px;
+    padding: $su-6;
+  }
+
+  &--l {
+    max-width: 800px;
+    padding: $su-8;
+  }
+
+  &--padding-0 {
+    padding: 0;
+  }
+}

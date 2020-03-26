@@ -1,0 +1,70 @@
+@import '../config/import';
+
+.crayons-nav-block {
+  display: flex;
+  align-items: center;
+  padding: $su-2;
+  border-radius: $br-default;
+  color: var(--link-dimmed-color);
+
+  &:hover:not(&--current) {
+    background: var(--link-dimmed-bg-hover);
+    color: var(--link-dimmed-color-hover);
+  }
+
+  &--current {
+    font-weight: $fw-medium;
+    background: var(--link-dimmed-bg-current);
+    color: var(--link-dimmed-color-current);
+  }
+
+  .crayons-icon {
+    margin-right: $su-2;
+    vertical-align: middle;
+    width: $su-6;
+    height: $su-6;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: $fs-xl;
+  }
+
+  .crayons-indicator {
+    margin-left: $su-2;
+  }
+
+  // Indented for when there's no icon
+  &--indented {
+    padding-left: $su-2 + $su-7; // 40px
+  }
+}
+
+.crayons-tabs {
+  display: flex;
+
+  &__item {
+    padding: 0 0.5em;
+    color: var(--link-dimmed-secondary-color);
+    position: relative;
+    display: inline-block;
+
+    &:hover {
+      color: var(--link-dimmed-color-hover);
+    }
+
+    &--current {
+      color: var(--link-dimmed-color-current);
+      font-weight: $fw-medium;
+
+      &::after {
+        position: absolute;
+        left: 0.5em;
+        right: 0.5em;
+        bottom: -2px;
+        height: 2px;
+        content: '';
+        background-color: var(--accent-brand);
+      }
+    }
+  }
+}

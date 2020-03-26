@@ -2,18 +2,12 @@
 @import 'mixins';
 
 .classifieds-container {
-  margin: 60px auto 150px;
+  margin: 24px 0;
   text-align: left;
   max-width: 100%;
   min-height: 100vh;
-  &.classifieds-form-container {
-    margin: 90px auto 150px;
-  }
-  @media screen and (min-width: 950px) {
-    margin: 40px auto;
-  }
   .classified-filters {
-    padding: 20px 0px 10px;
+    padding: 0 16px;
     a {
       padding: 3px 16px;
       border-radius: 100px;
@@ -30,9 +24,6 @@
       }
     }
     .classified-filters-categories {
-      border: 1px solid $light-medium-gray;
-      padding: 10px;
-      border-radius: 8px;
       a {
         display: block;
         padding: 7px 16px;
@@ -46,7 +37,7 @@
       @media screen and (min-width: 550px) {
         a {
           display: inline-block;
-          margin: 6px 3px;
+          margin: 0 8px 8px 0;
           border: 1px solid $bold-blue;
           min-width: 50px;
           text-align: center;
@@ -62,11 +53,7 @@
       position: relative;
       input {
         font-size: 0.8em;
-        @include themeable(
-          color,
-          theme-color,
-          $black
-        );
+        color: var(--body-color);
         @include themeable(
           background,
           theme-container-accent-background,
@@ -105,7 +92,9 @@
         }
         &.clear-all {
           background: $light-medium-gray;
-          a { color: $black }
+          a {
+            color: $black;
+          }
         }
         span {
           color: white;
@@ -120,30 +109,18 @@
   }
   .classifieds-columns {
     display: grid;
-    grid-gap: 1em;
-    grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+    grid-gap: 24px;
+    padding: 0 16px;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
     grid-auto-rows: 0;
   }
   form {
     margin: 60px auto 0px;
     width: 100%;
     max-width: 580px;
-    @include themeable(
-      background,
-      theme-container-background,
-      white
-    );
+    background: var(--container-bg);
     box-sizing: border-box;
-    @include themeable(
-      border,
-      theme-border,
-      1px solid $light-medium-gray
-    );
-    @include themeable(
-      box-shadow,
-      theme-container-box-shadow,
-      2px 2px 8px darken($light-medium-gray, 5%)
-    );
+    border: 1px solid var(--container-color-tertiary);
     @media screen and (min-width: 580px) {
       border-radius: 8px;
       margin: 20px auto 20px;
@@ -152,15 +129,9 @@
       box-sizing: border-box;
     }
     header {
-      @include themeable(
-        background,
-        theme-container-accent-background,
-      #f2f7fc
-      );
       padding: 25px 22px;
       border-top-left-radius: 8px;
       border-top-right-radius: 8px;
-
     }
     .classified-form-inner {
       padding: 0px 15px 40px;
@@ -175,11 +146,7 @@
     }
     h2 {
       font-size: 1.45em;
-      @include themeable(
-        color,
-        theme-color,
-      #32325d
-      );
+      color: var(--accent-brand);
       margin: 0px;
     }
     .classified-errors {
@@ -204,18 +171,10 @@
       font-size: 18px;
       padding: 10px 7px;
       border-radius: 3px;
-      border: 1px solid $light-medium-gray;
-      @include themeable(
-        background,
-        theme-container-accent-background,
-        $light-gray
-      );
-      @include themeable(
-        color,
-        theme-color,
-        $black
-      );
-      &[type="checkbox"] {
+      border: 1px solid var(--form-border);
+      background: var(--form-bg);
+      color: var(--body-color);
+      &[type='checkbox'] {
         width: 100px;
       }
     }
@@ -225,38 +184,31 @@
       padding: 5px;
       font-size: 17px;
       border-radius: 3px;
-      @include themeable(
-        background,
-        theme-container-accent-background,
-        $light-gray
-      );
-      @include themeable(
-        color,
-        theme-color,
-        $black
-      );
-      border: 1px solid $light-medium-gray;
+      background: var(--form-bg);
+      color: var(--body-color);
+      border: 1px solid var(--form-border);
     }
     select {
       width: 100%;
-      font-size:20px;
+      font-size: 20px;
     }
     details {
       cursor: pointer;
       font-size: 0.8em;
       padding: 8px 0px;
-      @include themeable(
-        color,
-        theme-secondary-color,
-        $medium-gray
-      );
+      color: var(--container-color-tertiary);
     }
     .cta-main-listing-form {
       border: 0px;
       padding: 12px 0px;
       border-radius: 3px;
       background-color: $dark-purple;
-      background-image: linear-gradient(141deg, $dark-purple 0%, #1f89db 51%, #2981e5 75%);
+      background-image: linear-gradient(
+        141deg,
+        $dark-purple 0%,
+        #1f89db 51%,
+        #2981e5 75%
+      );
       border-radius: 100px;
       font-size: 1.4em;
       color: white;
@@ -283,7 +235,12 @@
       right: 0px;
       padding: 18px 0px;
       background-color: #aecfef;
-      background-image: linear-gradient(141deg, #aecfef 0%, #ddeeff 51%, #c8ebf1 75%);
+      background-image: linear-gradient(
+        141deg,
+        #aecfef 0%,
+        #ddeeff 51%,
+        #c8ebf1 75%
+      );
       color: #32325d;
       text-align: center;
       z-index: 20;
@@ -298,11 +255,7 @@
       a {
         text-decoration: underline;
         display: inline-block;
-        @include themeable(
-          color,
-          theme-anchor-color,
-          $bold-blue
-        );
+        color: var(--link-brand-color);
       }
       @media screen and (min-width: 580px) {
         font-size: 1.1em;
@@ -313,27 +266,14 @@
     }
     p {
       font-size: 0.8em;
-      @include themeable(
-        color,
-        theme-secondary-color,
-        $medium-gray
-      );
+      color: var(--container-color-tertiary);
     }
   }
   .classifieds-load-more-button {
     text-align: center;
     button {
-      @include themeable(
-          color,
-          theme-color,
-          $black
-      );
-      background: transparent;
-      @include themeable(
-        border,
-        theme-border,
-        1px solid $light-medium-gray
-      );
+      color: var(--body-color);
+      border: 1px solid var(--container-color-tertiary);
       font-size: 17px;
       padding: 14px 5px;
       margin: 40px auto 70px;
@@ -354,26 +294,14 @@
   padding: 5px;
   font-size: 17px;
   border-radius: 3px;
-  @include themeable(
-    background,
-    theme-container-background,
-    white
-  );
+  background: var(--container-bg);
   margin-top: 10px;
-  @include themeable(
-    color,
-    theme-color,
-    $black
-  );
+  color: var(--body-color);
   border: 1px solid $light-medium-gray;
 }
 
 .listingform__tagsoptions {
-  @include themeable(
-    border,
-    theme-border,
-    1px solid $light-medium-gray
-  );
+  border: 1px solid var(--container-color-tertiary);
   border-bottom-left-radius: 3px;
   border-bottom-right-radius: 3px;
 }
@@ -388,7 +316,9 @@
   }
 }
 
-.listingform__tagsoptionsbottomrow, .listingform__tagsoptionrulesbutton, .listingform__tagrules--inactive {
+.listingform__tagsoptionsbottomrow,
+.listingform__tagsoptionrulesbutton,
+.listingform__tagrules--inactive {
   display: none; //not yet fully functional or relevant
 }
 
@@ -446,25 +376,22 @@
 }
 
 .single-classified-listing {
-  width: 94%;
-  max-width: 600px;
+  width: 100%;
   display: inline-block;
   border: 1px solid $light-medium-gray;
-  margin: 0px auto;
   box-sizing: border-box;
   border-radius: 3px;
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 0.9em;
   break-inside: avoid;
-  @include themeable(
-    background,
-    theme-container-background,
-    white
-  );
+  background: var(--container-bg);
   h3 {
+    display: flex;
+    justify-content: space-between;
     margin: 0px;
-    padding: 9px 15px;
+    padding: 9px 3px 9px 12px;
+    position: relative;
     @include themeable(
       background,
       theme-container-accent-background,
@@ -472,10 +399,59 @@
     );
     border-bottom: 1px solid $light-medium-gray;
     font-size: 16px;
-    a { @include themeable(color, theme-color, $black); }
+    a {
+      color: var(--body-color);
+    }
+  }
+  .dropdown-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    .dropdown-icon {
+      max-width: 15px;
+      max-height: 15px;
+    }
+  }
+
+  .dropdown {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: inline-block;
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      border: 1px solid $light-medium-gray;
+      border-radius: 3px;
+      background: white;
+      z-index: 20;
+      width: 130px;
+      box-shadow: $shadow;
+      &.showing {
+        display: block;
+      }
+    }
+
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      width: 98px;
+      height: 14px;
+      font-weight: bold;
+      display: block;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #f1f1f1;
+    }
   }
   .single-classified-listing-body {
-    padding: 10px 15px;
+    padding: 10px 12px;
     font-size: 15px;
     .classified-listing-contact-cta {
       border: 2px solid $black;
@@ -491,11 +467,7 @@
   .single-classified-listing-tags {
     padding: 10px 15px;
     a {
-      @include themeable(
-        color,
-        theme-secondary-color,
-        $dark-medium-gray
-      );
+      color: var(--container-color-tertiary);
       @include themeable(
         background,
         theme-container-accent-background,
@@ -511,18 +483,10 @@
   }
   .single-classified-listing-author-info {
     font-size: 0.69em;
-    @include themeable(
-      color,
-      theme-secondary-color,
-      $medium-gray
-    );
+    color: var(--container-color-tertiary);
     padding: 0px 15px 4px;
     a {
-      @include themeable(
-        color,
-        theme-secondary-color,
-        $medium-gray
-      );
+      color: var(--container-color-tertiary);
       display: inline-block;
       &.classified-listing-edit-button {
         margin-left: 4px;
@@ -536,8 +500,12 @@
     left: 0px;
     right: 0px;
     padding-bottom: 12px;
+    max-width: 800px;
+    margin: auto;
     @media screen and (min-width: 950px) {
-      h3 { font-size: calc(20px + 0.05vw);}
+      h3 {
+        font-size: calc(20px + 0.05vw);
+      }
       .single-classified-listing-body {
         font-size: calc(18px + 0.05vw);
       }
@@ -554,24 +522,10 @@
   border-radius: 100px;
   font-weight: bold;
   margin: 40px auto 10px;
-  @include themeable(
-    color,
-    theme-color,
-    $black
-  );
-  border: 3px solid white;
-  @include themeable(
-    border-color,
-    theme-color,
-    $black
-  );
-  @include themeable(
-    background-color,
-    theme-container-accent-background,
-    $white
-  );
+  color: var(--body-color);
+  border: 3px solid var(--body-color);
+  background: var(--container-bg);
 }
-
 
 form.listings-contact-via-connect {
   border-radius: 3px;
@@ -584,9 +538,11 @@ form.listings-contact-via-connect {
   box-shadow: none;
   max-width: 100%;
   text-align: right;
-  p {text-align: left}
+  p {
+    text-align: left;
+  }
   width: 94%;
-  max-width: 600px;
+  max-width: 800px;
   textarea#new-message {
     height: 100px;
     margin: 5px auto 10px auto;
@@ -611,17 +567,18 @@ form.listings-contact-via-connect {
 .classified-listings-modal-background {
   z-index: 15;
   position: fixed;
-  left: 0; top: 0; right: 0; bottom: 0;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
   background: rgba(0, 0, 0, 0.8);
   user-select: none;
 }
 
 .dashboard-listings-container {
-  padding-top: 80px;
-  padding-bottom: 80px;
   width: 800px;
   max-width: 96%;
-  margin: auto;
+  margin: 24px auto;
 
   .rounded-btn {
     font-size: calc(15px + 0.2vw);
@@ -635,11 +592,7 @@ form.listings-contact-via-connect {
     cursor: pointer;
     margin-bottom: 10px;
     user-select: none;
-    @include themeable(
-      color,
-      theme-color,
-      $black
-    );
+    color: var(--body-color);
     @include themeable(
       background,
       theme-container-background,
@@ -654,16 +607,8 @@ form.listings-contact-via-connect {
     }
 
     &.active {
-      @include themeable(
-        background,
-        theme-secondary-color,
-        $dark-gray
-      );
-      @include themeable(
-        color,
-        theme-container-background,
-        white
-      );
+      background: var(--container-color-tertiary);
+      color: var(--body-color-inverted);
     }
   }
 
@@ -675,7 +620,6 @@ form.listings-contact-via-connect {
     justify-content: center;
     margin-bottom: 15px;
     background: $dark-gray;
-    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
     padding: 15px 0px;
 
     @media screen and (max-width: 768px) {
@@ -754,18 +698,16 @@ form.listings-contact-via-connect {
   }
 
   .dashboard-listings-view {
-
     .dashboard-listing-row {
-      border: var(--theme-container-border, 1px solid #dbdbdb);
-      box-shadow: var(--theme-container-box-shadow, 1px 1px 0px #c2c2c2);
+      border: 1px solid var(--container-color-tertiary);
       padding: 5px 15px;
       margin-bottom: 13px;
       border-radius: 3px;
       position: relative;
-      background: var(--theme-container-background, #fff);
+      background: var(--container-bg);
 
       &.draft {
-        background: var(--theme-container-accent-background, #fffeec)
+        background: var(--theme-container-accent-background, #fffeec);
       }
 
       &.expired {
@@ -773,12 +715,8 @@ form.listings-contact-via-connect {
       }
 
       .listing-org {
-        @include themeable(
-          background,
-          theme-secondary-color,
-          darken($light-gray, 6%)
-        );
-        @include themeable(color, theme-container-background, #fff);
+        background: var(--container-color-secondary);
+        color: var(--body-color-inverted);
         margin-right: 5px;
         padding: 3px 10px;
         border-radius: 100px;
@@ -788,7 +726,7 @@ form.listings-contact-via-connect {
       }
 
       h2 {
-        color: var(--theme-container-color, #0a0a0a);
+        color: var(--container-color);
         font-weight: 500;
         margin-bottom: 10px;
         margin-top: 8px;
@@ -802,22 +740,14 @@ form.listings-contact-via-connect {
       .dashboard-listing-date {
         font-size: 0.85em;
         padding: 3px 0px 6px;
-        color: var(--theme-secondary-color, #666666);
+        color: var(--container-color-tertiary);
       }
 
       .dashboard-listing-category {
         padding: 10px 15px;
         a {
-          @include themeable(
-            color,
-            theme-secondary-color,
-            $dark-medium-gray
-          );
-          @include themeable(
-            background,
-            theme-container-accent-background,
-            $light-medium-gray
-          );
+          color: var(--container-color-tertiary);
+          background: var(--container-bg);
           display: inline-block;
           margin: 2px;
           padding: 2px 7px;
@@ -831,7 +761,7 @@ form.listings-contact-via-connect {
         font-size: 0.85em;
         padding: 3px 0px 6px;
         a {
-          color: var(--theme-container-color, #0a0a0a);
+          color: var(--container-color);
         }
       }
 
@@ -868,9 +798,6 @@ form.listings-contact-via-connect {
           }
         }
       }
-
     }
-
-
   }
 }

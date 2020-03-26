@@ -1,18 +1,14 @@
 @import 'variables';
 @import 'mixins';
 
-.sidebar-data{
-  border-radius:3px;
-  font-size:14px;
-  font-weight:bold;
-  padding:1px 12px 1px;
-  margin:3px 1px;
-  @include themeable(
-    color, 
-    theme-secondary-color, 
-    $dark-medium-gray
-  );
+.sidebar-data {
+  border-radius: 3px;
+  font-weight: bold;
+  margin-bottom: 32px;
   font-family: $monospace;
+  padding: 16px;
+  @include themeable(color, theme-secondary-color, $dark-medium-gray);
+  color: var(--widget-color-tertiary);
   .mod-action-button {
     padding: 2px 9px;
     font-size: 1.2em;

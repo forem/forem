@@ -27,7 +27,7 @@ RSpec.describe Search::Cluster, type: :service do
 
   describe "::create_indexes" do
     it "calls create_index for each search class" do
-      allow(SearchClient.indices).to receive(:exists).and_return(false)
+      allow(Search::Client.indices).to receive(:exists).and_return(false)
       described_class::SEARCH_CLASSES.each do |search_class|
         allow(search_class).to receive(:create_index)
       end
@@ -38,7 +38,7 @@ RSpec.describe Search::Cluster, type: :service do
 
   describe "::delete_indexes" do
     it "calls delete_index for each search class" do
-      allow(SearchClient.indices).to receive(:exists).and_return(true)
+      allow(Search::Client.indices).to receive(:exists).and_return(true)
       described_class::SEARCH_CLASSES.each do |search_class|
         allow(search_class).to receive(:delete_index)
       end
@@ -70,7 +70,7 @@ RSpec.describe Search::Cluster, type: :service do
   describe "::update_settings" do
     it "updates cluster settings" do
       described_class.update_settings
-      cluster_settings = SearchClient.cluster.get_settings
+      cluster_settings = Search::Client.cluster.get_settings
       auto_create_setting = cluster_settings.dig("persistent", "action", "auto_create_index")
       expect(auto_create_setting).to eq("false")
     end

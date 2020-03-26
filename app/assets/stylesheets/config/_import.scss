@@ -1,0 +1,303 @@
+////////////////////////////////////////////////////////////////////////////////////
+// Colors. /////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+//
+// List of colors to be used to generate utility-frist classes,
+// using generate-classes() function. See files from /base folder
+// for reference.
+//
+// These colors are defined using some colors CSS variables defined
+// in config/_colors.scss. We only utilize some of these variables
+// for utility-classes because it doesn't make much sense to create
+// utility-class for ever single variable in config/_colors.scss.
+
+$colors: (
+  'base-100': var(--base-100),
+  'base-90': var(--base-90),
+  'base-80': var(--base-80),
+  'base-70': var(--base-70),
+  'base-60': var(--base-60),
+  'base-50': var(--base-50),
+  'base-40': var(--base-40),
+  'base-30': var(--base-30),
+  'base-20': var(--base-20),
+  'base-10': var(--base-10),
+  'base-0': var(--base-0),
+  'base-inverted': var(--base-inverted),
+  'accent-brand': var(--accent-brand),
+  'accent-brand-darker': var(--accent-brand-darker),
+  'accent-brand-lighter': var(--accent-brand-lighter),
+  'accent-success': var(--accent-success),
+  'accent-success-darker': var(--accent-success-darker),
+  'accent-success-lighter': var(--accent-success-lighter),
+  'accent-warninig': var(--accent-warning),
+  'accent-warninig-darker': var(--accent-warning-darker),
+  'accent-warninig-lighter': var(--accent-warning-lighter),
+  'accent-danger': var(--accent-danger),
+  'accent-danger-darker': var(--accent-danger-darker),
+  'accent-danger-lighter': var(--accent-danger-lighter),
+);
+
+////////////////////////////////////////////////////////////////////////////////////
+// [DRAFT] Responsiveness Breakpoints. /////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+//
+// List of breakpoints for our responsivness. Right now these are not
+// used anywhere. They are here as a placeholder.
+
+$breakpoint-s: 640px;
+$breakpoint-m: 768px;
+$breakpoint-l: 1024px;
+$breakpoint-xl: 1280px;
+
+////////////////////////////////////////////////////////////////////////////////////
+
+$breakpoints: (
+  's': $breakpoint-s,
+  'm': $breakpoint-m,
+  'l': $breakpoint-l,
+  'xl': $breakpoint-xl,
+);
+
+////////////////////////////////////////////////////////////////////////////////////
+// Header height ///////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+//
+// The reason why header height is set here instead of caluclating it based on its
+// content is because header is sometimes fixed and we need to offset page content
+// by specific value.. And that's the value.
+
+$header-height: 56px;
+
+////////////////////////////////////////////////////////////////////////////////////
+// Spacing Units. //////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+//
+// List of spacing units to use across all our components.
+//  • $(negaitve-)spacing-units variables are used for
+//    generate-classes() function.
+
+$su-1: 0.25rem; // 4px
+$su-2: 0.5rem; // 8px
+$su-3: 0.75rem; // 12px
+$su-4: 1rem; // 16px
+$su-5: 1.25rem; // 20px
+$su-6: 1.5rem; // 24px
+$su-7: 2rem; // 32px
+$su-8: 3rem; // 48px
+$su-9: 4rem; // 64px
+$su-10: 8rem; // 128px
+
+////////////////////////////////////////////////////////////////////////////////////
+
+$spacing-units: (
+  '1': $su-1,
+  '2': $su-2,
+  '3': $su-3,
+  '4': $su-4,
+  '5': $su-5,
+  '6': $su-6,
+  '7': $su-7,
+  '8': $su-8,
+  '9': $su-9,
+  '10': $su-10,
+);
+
+////////////////////////////////////////////////////////////////////////////////////
+
+$negative-spacing-units: (
+  '1': -$su-1,
+  '2': -$su-2,
+  '3': -$su-3,
+  '4': -$su-4,
+  '5': -$su-5,
+  '6': -$su-6,
+  '7': -$su-7,
+  '8': -$su-8,
+  '9': -$su-9,
+  '10': -$su-10,
+);
+
+////////////////////////////////////////////////////////////////////////////////////
+// Border radius ///////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+$br-default: 3px;
+
+////////////////////////////////////////////////////////////////////////////////////
+// Transitions /////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+$transition-props: cubic-bezier(0.17, 0.67, 0.5, 0.71) 100ms;
+
+////////////////////////////////////////////////////////////////////////////////////
+// Typography. /////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+//
+// List of variables for typography.
+//  • Font families
+//  • Font sizes
+//  • Font weights
+//  • Line heights
+
+// Font families
+$ff-default: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+  Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+$ff-accent: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier,
+  monospace;
+
+////////////////////////////////////////////////////////////////////////////////////
+
+// Font sizes
+$fs-xs: 0.75rem; // 12px
+$fs-s: 0.875rem; // 14px
+$fs-base: 1rem; // 16px
+$fs-l: 1.125rem; // 18px
+$fs-xl: 1.25rem; // 20px
+$fs-2xl: 1.5rem; // 24px
+$fs-3xl: 1.875rem; // 30px
+$fs-4xl: 2.25rem; // 36px
+$fs-5xl: 3rem; // 48px
+
+////////////////////////////////////////////////////////////////////////////////////
+
+// Font weights
+$fw-normal: 400;
+$fw-medium: 500;
+$fw-bold: 700;
+$fw-heavy: 800;
+
+////////////////////////////////////////////////////////////////////////////////////
+
+// Line heights
+$lh-tight: 1.25; // 20px for 16px font-size
+$lh-base: 1.5; // 24px for 16px font-size
+
+////////////////////////////////////////////////////////////////////////////////////
+// Helpers /////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+//
+// Generators & functions utilized in other SCSS files. They are meant to simplify
+// process of creating styles etc.
+
+// pow() - Raise number to the nth power
+//
+// @param {number} $base      The base number
+// @param {number} $exponents The exponent to which to raise $base
+
+@function pow($base, $exponents) {
+  $raised: 1;
+
+  @for $i from 1 through $exponents {
+    $raised: $raised * $base;
+  }
+
+  @return $raised;
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+
+// generate-classes()
+//
+// Generating classes for Tailwind approach.
+//
+// @param {string} $prefix                Prefix for utility class, for example `mr`
+// @param {string || list} $properties    Defines CSS property(ies) that, for example `margin-right`
+// @param {list} $values-1                List of values for which we gonna generate classes
+// @param {list} $values-2                Additional list of values, useful when we want to combine two lists.
+
+@mixin generate-classes(
+  $prefix,
+  $properties,
+  $values-1,
+  $values-2: (),
+  $responsive: false
+) {
+  $separator: '-';
+  @if $prefix == '' {
+    $separator: '';
+  }
+  $values: map-merge($values-1, $values-2);
+  @each $name, $value in $values {
+    .#{$prefix}#{$separator}#{$name} {
+      @each $property in $properties {
+        #{$property}: $value !important;
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+
+// initialize-generator()
+//
+// Initilize generators.
+//
+// @param {list} $breakpoints       All our responsiveness breakpoints.
+// @param {list} $classes           All the parameters required by generate-classes().
+
+@mixin initialize-generator($breakpoints, $classes...) {
+  @each $argument in $classes {
+    $prefix: nth($argument, 1);
+    $properties: nth($argument, 2);
+    $values-1: nth($argument, 3);
+    $values-2: nth($argument, 4);
+    $responsive: nth($argument, 5);
+
+    @include generate-classes(
+      $prefix,
+      $properties,
+      $values-1,
+      $values-2,
+      $responsive
+    );
+  }
+
+  @each $breakpoint, $value in $breakpoints {
+    @media (min-width: $value) {
+      @each $argument in $classes {
+        $prefix: $breakpoint + '\\:'+ nth($argument, 1);
+        $properties: nth($argument, 2);
+        $values-1: nth($argument, 3);
+        $values-2: nth($argument, 4);
+        $responsive: nth($argument, 5);
+
+        @if $responsive == true {
+          @include generate-classes(
+            $prefix,
+            $properties,
+            $values-1,
+            $values-2,
+            $responsive
+          );
+        }
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+
+// box() - generating classes for different style
+//
+// This mixin automates process of generating classes for different
+// types of boxes: filled & outlined, each  with variations
+// for several levels of elevation (box-shadow).
+//
+// @param {object} $this      Caching current parent
+// @param {color} $color-1    Background color for filled variation
+// @param {color} $color-2    Accent color for border & shadow
+
+@mixin box($this: $this, $color-1: var(--box), $color-2: var(--box-darker)) {
+  border-color: $color-2;
+
+  &#{$this}--filled {
+    background-color: $color-1;
+  }
+
+  @for $i from 1 through 3 {
+    &#{$this + '--level-' + $i} {
+      box-shadow: #{pow(2, $i) + px} #{pow(2, $i) + px} 0 $color-2;
+    }
+  }
+}

@@ -41,6 +41,36 @@ RSpec.describe "UserSettings", type: :request do
         error_message = "There is an existing account authorized with that social account"
         expect(response.body).to include error_message
       end
+
+      it "does not render the ghost account email option if the user has no content" do
+        ghost_account_message = "If you would like to keep your content under the"
+        get "/settings/account"
+        expect(response.body).not_to include ghost_account_message
+      end
+
+      it "does render the ghost account email option if the user has content" do
+        ghost_account_message = "If you would like to keep your content under the"
+        create(:article, user: user)
+        user.update(articles_count: 1)
+        get "/settings/account"
+        expect(response.body).to include ghost_account_message
+      end
+
+      it "renders CONNECT_WITH_TWITTER and user with only github identity" do
+        user.identities.where(provider: "twitter").delete_all
+        get "/settings"
+        expect(response.body).to include "CONNECT TWITTER ACCOUNT"
+      end
+
+      it "renders does not render CONNECT_WITH_TWITTER if SiteConfig does not include Twitter auth" do
+        user.identities.where(provider: "twitter").destroy_all
+        current_auth_value = SiteConfig.authentication_providers
+        SiteConfig.authentication_providers = ["github"]
+        SiteConfig.clear_cache
+        get "/settings"
+        expect(response.body).not_to include "CONNECT TWITTER ACCOUNT"
+        SiteConfig.authentication_providers = current_auth_value # restore prior value
+      end
     end
   end
 
@@ -117,7 +147,7 @@ RSpec.describe "UserSettings", type: :request do
       end
 
       it "does not send an email if there was no request" do
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           expect { send_request(false) }.not_to(change { ActionMailer::Base.deliveries.count })
         end
       end
@@ -191,7 +221,7 @@ RSpec.describe "UserSettings", type: :request do
 
   describe "DELETE /users/remove_association" do
     context "when user has two identities" do
-      let(:user) { create(:user, :two_identities) }
+      let(:user) { create(:user, :with_identity, identities: %w[github twitter]) }
 
       before { sign_in user }
 

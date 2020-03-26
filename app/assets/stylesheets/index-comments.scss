@@ -3,18 +3,14 @@
 .index-comments {
   text-align: left;
   padding-bottom: calc(0.6vw + 5px);
-  @include themeable(background, theme-container-background, #fff);
+  background: var(--container-bg);
   border-radius: 3px;
-  @include themeable(border, theme-container-border, 1px solid $outline-color);
+  @include themeable(border, theme-container-border, none);
   @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
   margin: auto;
-  margin-top: 8px;
-  width: 94%;
+  width: 100%;
   @media screen and (min-width: 950px) {
-    margin-top: 12px;
-  }
-  @media screen and (min-width: 950px) {
-    width: 100%;
+    margin-bottom: 12px;
   }
   .breadcrumb {
     margin-top: 10px;
@@ -42,7 +38,7 @@
     }
   }
   a {
-    @include themeable(color, theme-color, $black);
+    color: var(--body-color);
     display: block;
     padding-left: 13px;
     padding-right: 13px;
@@ -57,14 +53,14 @@
     }
     .comment-date {
       font-size: 0.7em;
-      @include themeable(color, theme-secondary-color, $medium-gray);
+      color: var(--container-color-tertiary);
       margin-left: 5px;
       vertical-align: 2px;
       display: inline-block;
     }
     .comment-preview {
       font-size: 0.9em;
-      @include themeable(color, theme-secondary-color, $medium-gray);
+      color: var(--container-color-tertiary);
     }
     @media screen and (min-width: 430px) {
       padding: 5px 0px;

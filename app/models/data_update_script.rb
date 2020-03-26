@@ -8,17 +8,33 @@ class DataUpdateScript < ApplicationRecord
   enum status: STATUSES
   validates :file_name, uniqueness: true
 
-  def self.filenames
-    Dir.glob("*.rb", base: DIRECTORY).map do |f|
-      Pathname.new(f).basename(".rb").to_s
+  class << self
+    def filenames
+      Dir.glob("*.rb", base: DIRECTORY).map do |f|
+        Pathname.new(f).basename(".rb").to_s
+      end
     end
-  end
 
-  def self.load_script_ids
-    filenames.
-      map { |file_name| find_or_create_by(file_name: file_name) }.
-      select(&:enqueued?).
-      map(&:id)
+    def load_script_ids
+      filenames.
+        map { |file_name| find_or_create_by(file_name: file_name) }.
+        select(&:enqueued?).
+        map(&:id)
+    end
+
+    def scripts_to_run
+      DataUpdateScript.where(id: load_script_ids).select(&:enqueued?)
+    end
+
+    # true if there are more files on disk or any scripts to run, false otherwise
+    def scripts_to_run?
+      db_scripts = DataUpdateScript.pluck(:file_name, :status).to_h
+
+      return true if filenames.size > db_scripts.size
+      return true if db_scripts.values.any? { |s| s.to_sym == :enqueued }
+
+      false
+    end
   end
 
   def mark_as_run!

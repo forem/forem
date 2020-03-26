@@ -69,9 +69,7 @@ you want to update that set the `POSTGRES_VERSION` variable in your environment
 and start the container again_
 
 1. run `docker-compose build`
-1. run `docker-compose run web rails db:setup`
-1. run `docker-compose run web yarn`
-1. run `docker-compose run web rails search:setup`
+1. run `docker-compose run web rails db:setup db:migrate search:setup`
 1. run `docker-compose up`
 1. That's it! Navigate to <http://localhost:3000>
 
@@ -93,3 +91,15 @@ Please execute the script itself to view all additional options:
   done via the GUI:
 
   ![docker gui](https://user-images.githubusercontent.com/47985/74210448-b63b7c80-4c83-11ea-959b-02249b2a6952.png)
+
+- In case `rails server` doesn't start with the following message:
+
+  ```
+  Data update scripts need to be run before you can start the application. Please run rails data_updates:run (RuntimeError)
+  ```
+
+  run the following command:
+
+  ```shell
+  docker-compose run web rails data_updates:run
+  ```

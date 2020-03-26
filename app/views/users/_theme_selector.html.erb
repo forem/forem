@@ -1,5 +1,10 @@
-<label class="rich-selector theme-selector theme-selector--<%= theme.tr(" ", "-") %>">
-  <%= f.radio_button :config_theme, theme, checked: @user.config_theme.tr("_", " ") == theme, class: "rich-selector__radio" %>
+<label
+  class="rich-selector theme-selector theme-selector--<%= theme.tr(" ", "-") %>"
+  title="<%= theme.titlecase %>">
+  <%= f.radio_button :config_theme,
+                     theme,
+                     checked: @user.config_theme.tr("_", " ") == theme,
+                     class: "rich-selector__radio" %>
   <div class="rich-selector__indicator"></div>
   <div class="rich-selector__outline"></div>
   <div class="theme-selector__nav">

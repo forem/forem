@@ -18,7 +18,7 @@ class FollowUsers extends Component {
   }
 
   componentDidMount() {
-    fetch('/api/users?state=follow_suggestions', {
+    fetch('/users?state=follow_suggestions', {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',

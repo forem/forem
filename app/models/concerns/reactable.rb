@@ -6,6 +6,6 @@ module Reactable
   end
 
   def sync_reactions_count
-    update_column(:positive_reactions_count, reactions.where("points > ?", 0).size)
+    update_column(:positive_reactions_count, reactions.positive.size)
   end
 end

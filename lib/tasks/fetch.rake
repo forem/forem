@@ -2,7 +2,7 @@ desc "This task is called by the Heroku scheduler add-on"
 
 task get_podcast_episodes: :environment do
   Podcast.published.select(:id).find_each do |podcast|
-    Podcasts::GetEpisodesWorker.perform_async({ podcast_id: podcast.id, limit: 5 })
+    Podcasts::GetEpisodesWorker.perform_async(podcast_id: podcast.id, limit: 5)
   end
 end
 
@@ -29,11 +29,9 @@ end
 task expire_old_listings: :environment do
   ClassifiedListing.where("bumped_at < ?", 30.days.ago).each do |listing|
     listing.update(published: false)
-    listing.remove_from_index!
   end
   ClassifiedListing.where("expires_at = ?", Time.zone.today).each do |listing|
     listing.update(published: false)
-    listing.remove_from_index!
   end
 end
 
@@ -98,6 +96,13 @@ end
 # this task is meant to be scheduled daily
 task award_contributor_badges_from_github: :environment do
   BadgeRewarder.award_contributor_badges_from_github
+end
+
+# This task is meant to be scheduled daily
+task prune_old_field_tests: :environment do
+  # For rolling ongoing experiemnts, we remove old experiment memberships
+  # So that they can be re-tested.
+  FieldTests::PruneOldExperimentsWorker.perform_async
 end
 
 task remove_old_html_variant_data: :environment do

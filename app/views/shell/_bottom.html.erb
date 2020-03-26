@@ -10,7 +10,7 @@
   <% if @shell %>
     <script defer>
       if (!document.title) {
-        document.title = document.getElementsByTagName("TITLE")[1].innerHTML
+        document.title = document.getElementsByTagName("TITLE")[1].textContent
       }
     </script>
   <% end %>

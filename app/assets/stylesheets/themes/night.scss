@@ -1,0 +1,122 @@
+:root {
+  --theme-secondary-color: #cedae2;
+  --theme-container-background: #141f2d;
+  --theme-container-accent-background: #202c3d;
+  --theme-container-background-hover: #1c2c3f;
+  --theme-container-box-shadow: none;
+  --theme-container-border: 1px solid #22303f;
+
+  // Base
+  --base-100: #f9fafa;
+  --base-90: #dde0e2;
+  --base-80: #c2c6ca;
+  --base-70: #a7adb2;
+  --base-60: #8d949b;
+  --base-50: #747c85;
+  --base-40: #5c6570;
+  --base-30: #444f5b;
+  --base-20: #2e3a48;
+  --base-10: #1a2634;
+  --base-0: #0d1219;
+  --base-inverted: #000;
+
+  // Accent colors
+  --accent-brand: #3b49df;
+  --accent-brand-darker: #1827ce;
+  --accent-brand-lighter: #8d95f2;
+
+  // Success
+  --accent-success: #26d9ca;
+  --accent-success-darker: #1ab3a6;
+  --accent-success-lighter: #79ece2;
+
+  // Warning
+  --accent-warning: #ffcf4c;
+  --accent-warning-darker: #f5b400;
+  --accent-warning-lighter: #ffe499;
+
+  // Danger
+  --accent-danger: #dc1818;
+  --accent-danger-darker: #c20a0a;
+  --accent-danger-lighter: #ec5050;
+
+  // Main colors
+  --body-bg: var(--base-0);
+  --body-color: var(--base-100);
+  --body-color-inverted: var(--base-inverted);
+
+  // Main content containers
+  --container-bg: var(--base-10);
+  --container-color: var(--base-100);
+  --container-color-secondary: var(--base-70);
+  --container-color-tertiary: var(--base-50);
+
+  // Secondary content containers
+  --widget-bg: var(--base-10);
+  --widget-color: var(--base-90);
+  --widget-color-secondary: var(--base-70);
+  --widget-color-tertiary: var(--base-50);
+  --widget-headline: var(--base-100);
+
+  // Header
+  --header-bg: var(--base-10);
+  --header-icons-color: rgba(255, 255, 255, 0.8);
+  --header-icons-color-hover: #fff;
+
+  // Logo
+  --logo-bg: #0a0a0a;
+  --logo-color: #fff;
+
+  // Footer
+  --footer-bg: var(--base-inverted);
+  --footer-copy-color: var(--base-80);
+  --footer-copy-secondary-color: var(--base-60);
+  --footer-link-color: var(--base-80);
+  --footer-link-color-hover: var(--base-100);
+
+  // Links in content
+  --link-brand-color: #17a1f6;
+  --link-brand-color-hover: var(--accent-brand-darker);
+
+  // Greyscale links, for places where we don't want to make them use accent color
+  --link-dimmed-color: var(--base-90);
+  --link-dimmed-color-secondary: var(--base-80);
+  --link-dimmed-bg-hover: var(--base-0);
+  --link-dimmed-color-hover: var(--base-100);
+  --link-dimmed-bg-current: var(--base-inverted);
+  --link-dimmed-color-current: var(--base-100);
+
+  // Primary buttons
+  --button-primary-bg: var(--accent-success);
+  --button-primary-color: var(--base-0);
+  --button-primary-bg-hover: var(--accent-success-darker);
+  --button-primary-color-hover: var(--base-inverted);
+
+  // Secondary buttons
+  --button-secondary-bg: var(--base-20);
+  --button-secondary-color: var(--base-80);
+  --button-secondary-bg-hover: var(--base-30);
+  --button-secondary-color-hover: var(--base-100);
+
+  // Outlined buttons
+  --button-outlined-bg: var(--base-20);
+  --button-outlined-color: var(--base-80);
+  --button-outlined-bg-hover: var(--base-30);
+  --button-outlined-color-hover: var(--base-100);
+
+  // Forms
+  --form-bg: var(--base-20);
+  --form-bg-focus: var(--base-0);
+  --form-border: var(--base-30);
+  --form-border-hover: var(--base-40);
+  --form-border-focus: var(--accent-brand);
+  --form-placeholder-color: var(--base-60);
+
+  // Form lables
+  --label-primary: var(--base-90);
+  --label-secondary: var(--base-60);
+
+  // Default box
+  --box: var(--base-90);
+  --box-darker: var(--base-100);
+}

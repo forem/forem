@@ -23,6 +23,7 @@ import Content from './content';
 import Video from './video';
 
 import setupPusher from '../src/utils/pusher';
+import debounceAction from '../src/utils/debounceAction';
 
 export default class Chat extends Component {
   static propTypes = {
@@ -36,6 +37,10 @@ export default class Chat extends Component {
     super(props);
     const chatChannels = JSON.parse(props.chatChannels);
     const chatOptions = JSON.parse(props.chatOptions);
+
+    this.debouncedChannelFilter = debounceAction(
+      this.triggerChannelFilter.bind(this),
+    );
 
     this.state = {
       messages: [],
@@ -317,7 +322,7 @@ export default class Chat extends Component {
     }
     if (activeChannel && activeChannel.channel_type !== 'direct') {
       getContent(
-        `/api/chat_channels/${activeChannelId}`,
+        `/chat_channels/${activeChannelId}/channel_info`,
         this.setOpenChannelUsers,
         null,
       );
@@ -787,7 +792,7 @@ export default class Chat extends Component {
           type_of: 'loading-user',
         });
         getContent(
-          `/api/${target.dataset.content}`,
+          `/${target.dataset.content}/channel_info`,
           this.setActiveContent,
           null,
         );
@@ -1045,7 +1050,7 @@ export default class Chat extends Component {
             >
               {'<'}
             </button>
-            <input placeholder="Filter" onKeyUp={this.triggerChannelFilter} />
+            <input placeholder="Filter" onKeyUp={this.debouncedChannelFilter} />
             {invitesButton}
             <div className="chat__channeltypefilter">
               {this.renderChannelFilterButton(

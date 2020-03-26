@@ -1,8 +1,7 @@
 $black: #0a0a0a;
 $white: #ffffff;
-$aqua: #00ffd9;
 $green: #66e2d5;
-$light-green: lighten($green,30%);
+$light-green: lighten($green, 30%);
 $dark-purple: #4e57ef;
 $purple: #cfd7ff;
 $light-medium-purple: lighten($purple, 4%);
@@ -10,27 +9,31 @@ $light-purple: lighten($purple, 7%);
 $blue: #1395b8;
 $sky-blue: #557de8;
 $light-sky-blue: lighten($sky-blue, 30%);
-$lightest-gray: #f9f9fa;
+$lightest-gray: #f9fafa;
 $light-gray: #f5f6f7;
-$light-medium-gray:#dbdbdb;
-$medium-gray:#666666;
-$dark-medium-gray:#444444;
-$dark-gray:#333333;
-$red:#ff0000;
+$light-medium-gray: #dbdbdb;
+$medium-gray: #666666;
+$dark-medium-gray: #444444;
+$dark-gray: #333333;
+$red: #ff0000;
 $yellow: #fefa87;
 $tan: #fdf9f3;
-$off-white: #fffffe;
 $bold-blue: #0045ff;
 
-$helvetica: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-$monospace: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
-$helvetica-condensed: "HelveticaNeue-CondensedBold", "HelveticaNeueBoldCondensed", "HelveticaNeue-Bold-Condensed", "Helvetica Neue Bold Condensed", "HelveticaNeueBold", "HelveticaNeue-Bold", "Helvetica Neue Bold", "HelveticaNeue", "Helvetica Neue", 'TeXGyreHerosCnBold', "Helvetica", "Tahoma", "Geneva", "Arial Narrow", "Arial", sans-serif;
+$max-width: 1250px;
+$header-height: 46px; // todo: should be calculated automatically based on content
+
+$helvetica: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+  Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+$monospace: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier,
+  monospace;
+$helvetica-condensed: 'HelveticaNeue-CondensedBold',
+  'HelveticaNeueBoldCondensed', 'HelveticaNeue-Bold-Condensed',
+  'Helvetica Neue Bold Condensed', 'HelveticaNeueBold', 'HelveticaNeue-Bold',
+  'Helvetica Neue Bold', 'HelveticaNeue', 'Helvetica Neue', 'TeXGyreHerosCnBold',
+  'Helvetica', 'Tahoma', 'Geneva', 'Arial Narrow', 'Arial', sans-serif;
 
 $outline-color: darken($light-medium-gray, 2%);
 $shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.18);
-$light-shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.1);
-$dark-shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.25);
-$bold-shadow: 1px 1px 0px darken($light-medium-gray, 10%);
-
-$ease-in-cubic : cubic-bezier(0.55, 0.055, 0.675, 0.19);
-$ease-out-cubic : cubic-bezier(0.215, 0.61, 0.355, 1);
+$bold-shadow: 0px 1px 1px rgba($black, 0.1), 0px 1px 2px rgba($black, 0.1),
+  0px 0px 1px rgba($black, 0.8);

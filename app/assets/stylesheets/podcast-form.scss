@@ -1,6 +1,7 @@
 @import 'variables';
 
-#page-content.podcasts-new, #page-content.podcasts-create {
+#page-content.podcasts-new,
+#page-content.podcasts-create {
   .podcasts-form {
     text-align: left;
     margin: auto;
@@ -49,8 +50,8 @@
   }
   form {
     font-size: 15px;
-    input[type='checkbox']{
-      display: inline
+    input[type='checkbox'] {
+      display: inline;
     }
     input:not([type='checkbox']) {
       width: 650px;

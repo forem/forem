@@ -5,7 +5,7 @@ RSpec.describe "Partnerships", type: :request do
   describe "GET /partnerships" do
     context "when user is logged in" do
       before do
-        get "/partnerships"
+        get partnerships_path
       end
 
       it "renders main text" do
@@ -17,7 +17,7 @@ RSpec.describe "Partnerships", type: :request do
       before do
         user = create(:user)
         sign_in user
-        get "/partnerships"
+        get partnerships_path
       end
 
       it "renders main text" do
@@ -56,7 +56,60 @@ RSpec.describe "Partnerships", type: :request do
         OrganizationMembership.create(user_id: user.id, organization_id: organization.id, type_of_user: "admin")
         Credit.add_to_org(organization, 100)
         get "/partnerships/bronze-sponsor"
-        expect(response.body).to include("This subscription will renew every month")
+        expect(response.body).to include("Subscribe for #{Sponsorship::CREDITS[:bronze]} credits")
+      end
+
+      context "when sponsorship exists" do
+        let(:org) { create(:organization) }
+
+        before do
+          create(:organization_membership, user: user, organization: org, type_of_user: "admin")
+          Credit.add_to_org(org, 1000)
+          sign_in user
+        end
+
+        describe "level sponsorships" do
+          it "displays info about an existing sponsorship" do
+            create(:sponsorship, level: :bronze, organization: org, user: user, expires_at: 3.days.from_now)
+            get "/partnerships/bronze-sponsor"
+            expect(response.body).not_to include("Credits are your wallet for flexibly managing")
+            expect(response.body).to include("You are Subscribed as a Bronze Sponsor")
+          end
+
+          it "displayes already sponsored for other level" do
+            create(:sponsorship, level: :bronze, organization: org, user: user, expires_at: 3.days.from_now)
+            get "/partnerships/silver-sponsor"
+            expect(response.body).to include("You are already subscribed as a bronze sponsor")
+          end
+
+          it "doesn't display info about an expired sponsorship" do
+            create(:sponsorship, level: :bronze, organization: org, user: user, expires_at: 3.days.ago)
+            get "/partnerships/bronze-sponsor"
+            expect(response.body).not_to include("You are Subscribed as a Bronze Sponsor")
+          end
+
+          it "doesn't display 'already sponsored' for the different level if an org has expired sponsorship" do
+            create(:sponsorship, level: :bronze, organization: org, user: user, expires_at: 3.days.ago)
+            get "/partnerships/silver-sponsor"
+            expect(response.body).not_to include("You are already subscribed as a bronze sponsor")
+          end
+        end
+
+        describe "tag sponsorships" do
+          let(:ruby) { create(:tag, name: "ruby") }
+
+          it "displays info about an existing sponsorship" do
+            create(:sponsorship, level: :tag, organization: org, user: user, sponsorable: ruby, expires_at: 3.days.from_now)
+            get "/partnerships/tag-sponsor"
+            expect(response.body).to include("You are Subscribed as the sponsor of #ruby")
+          end
+
+          it "doesn't display info about an expired sponsorship" do
+            create(:sponsorship, level: :tag, organization: org, user: user, sponsorable: ruby, expires_at: 3.days.ago)
+            get "/partnerships/tag-sponsor"
+            expect(response.body).not_to include("You are Subscribed as the sponsor of #ruby")
+          end
+        end
       end
     end
 
@@ -91,14 +144,14 @@ RSpec.describe "Partnerships", type: :request do
 
         it "creates a new sponsorship" do
           expect do
-            post "/partnerships", params: params
+            post partnerships_path, params: params
             expect(response).to redirect_to(partnerships_path)
           end.to change(org.sponsorships, :count).by(1)
         end
 
         it "subscribes with the correct info" do
           Timecop.freeze(Time.current) do
-            post "/partnerships", params: params
+            post partnerships_path, params: params
             sponsorship = org.sponsorships.silver.last
             expect(sponsorship.status).to eq("pending")
             expect(sponsorship.expires_at.to_i).to eq(1.month.from_now.to_i)
@@ -110,10 +163,16 @@ RSpec.describe "Partnerships", type: :request do
 
         it "detracts the correct amount of credits" do
           expect do
-            post "/partnerships", params: params
+            post partnerships_path, params: params
           end.to change(org.credits.spent, :size).by(Sponsorship::CREDITS[:silver])
           credit = org.credits.spent.last
           expect(credit.purchase.is_a?(Sponsorship)).to be(true)
+        end
+
+        it "queues a slack message to be sent" do
+          sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+            post partnerships_path, params: params
+          end
         end
       end
 
@@ -126,14 +185,14 @@ RSpec.describe "Partnerships", type: :request do
 
         it "creates a new sponsorship" do
           expect do
-            post "/partnerships", params: params
+            post partnerships_path, params: params
             expect(response).to redirect_to(partnerships_path)
           end.to change(org.sponsorships, :count).by(1)
         end
 
         it "subscribes with the correct info" do
           Timecop.freeze(Time.current) do
-            post "/partnerships", params: params
+            post partnerships_path, params: params
             sponsorship = org.sponsorships.bronze.last
             expect(sponsorship.status).to eq("pending")
             expect(sponsorship.expires_at.to_i).to eq(1.month.from_now.to_i)
@@ -145,10 +204,16 @@ RSpec.describe "Partnerships", type: :request do
 
         it "detracts the correct amount of credits" do
           expect do
-            post "/partnerships", params: params
+            post partnerships_path, params: params
           end.to change(org.credits.spent, :size).by(Sponsorship::CREDITS[:bronze])
           credit = org.credits.spent.last
           expect(credit.purchase.is_a?(Sponsorship)).to be(true)
+        end
+
+        it "queues a slack message to be sent" do
+          sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+            post partnerships_path, params: params
+          end
         end
       end
 
@@ -161,14 +226,14 @@ RSpec.describe "Partnerships", type: :request do
 
         it "creates a new sponsorship" do
           expect do
-            post "/partnerships", params: params
+            post partnerships_path, params: params
             expect(response).to redirect_to(partnerships_path)
           end.to change(org.sponsorships, :count).by(1)
         end
 
         it "subscribes with the correct info" do
           Timecop.freeze(Time.current) do
-            post "/partnerships", params: params
+            post partnerships_path, params: params
             sponsorship = org.sponsorships.devrel.last
             expect(sponsorship.status).to eq("pending")
             expect(sponsorship.expires_at).to be(nil)
@@ -180,10 +245,16 @@ RSpec.describe "Partnerships", type: :request do
 
         it "detracts the correct amount of credits" do
           expect do
-            post "/partnerships", params: params
+            post partnerships_path, params: params
           end.to change(org.credits.spent, :size).by(Sponsorship::CREDITS[:devrel])
           credit = org.credits.spent.last
           expect(credit.purchase.is_a?(Sponsorship)).to be(true)
+        end
+
+        it "queues a slack message to be sent" do
+          sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+            post partnerships_path, params: params
+          end
         end
       end
 
@@ -198,14 +269,14 @@ RSpec.describe "Partnerships", type: :request do
 
         it "creates a new sponsorship" do
           expect do
-            post "/partnerships", params: params
+            post partnerships_path, params: params
             expect(response).to redirect_to(partnerships_path)
           end.to change(org.sponsorships, :count).by(1)
         end
 
         it "subscribes with the correct info" do
           Timecop.freeze(Time.current) do
-            post "/partnerships", params: params
+            post partnerships_path, params: params
             sponsorship = org.sponsorships.media.last
             expect(sponsorship.status).to eq("pending")
             expect(sponsorship.expires_at).to be(nil)
@@ -217,10 +288,16 @@ RSpec.describe "Partnerships", type: :request do
 
         it "detracts the correct amount of credits" do
           expect do
-            post "/partnerships", params: params
+            post partnerships_path, params: params
           end.to change(org.credits.spent, :size).by(params[:amount])
           credit = org.credits.spent.last
           expect(credit.purchase.is_a?(Sponsorship)).to be(true)
+        end
+
+        it "queues a slack message to be sent" do
+          sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+            post partnerships_path, params: params
+          end
         end
       end
 
@@ -234,14 +311,14 @@ RSpec.describe "Partnerships", type: :request do
 
         it "creates a new sponsorship" do
           expect do
-            post "/partnerships", params: params
+            post partnerships_path, params: params
             expect(response).to redirect_to(partnerships_path)
           end.to change(org.sponsorships, :count).by(1)
         end
 
         it "subscribes with the correct info" do
           Timecop.freeze(Time.current) do
-            post "/partnerships", params: params
+            post partnerships_path, params: params
             sponsorship = org.sponsorships.tag.last
             expect(sponsorship.status).to eq("pending")
             expect(sponsorship.expires_at.to_i).to eq(1.month.from_now.to_i)
@@ -253,17 +330,23 @@ RSpec.describe "Partnerships", type: :request do
 
         it "detracts the correct amount of credits" do
           expect do
-            post "/partnerships", params: params
+            post partnerships_path, params: params
           end.to change(org.credits.spent, :size).by(Sponsorship::CREDITS[:tag])
           credit = org.credits.spent.last
           expect(credit.purchase.is_a?(Sponsorship)).to be(true)
+        end
+
+        it "queues a slack message to be sent" do
+          sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+            post partnerships_path, params: params
+          end
         end
       end
 
       it "updates sponsorship instructions if present" do
         Credit.add_to_org(org, Sponsorship::CREDITS[:bronze])
 
-        post "/partnerships", params: {
+        post partnerships_path, params: {
           level: :bronze,
           organization_id: org.id,
           instructions: "hello there"
@@ -283,7 +366,7 @@ RSpec.describe "Partnerships", type: :request do
 
       it "does not subscribe to a bronze sponsorship" do
         expect do
-          post "/partnerships", params: {
+          post partnerships_path, params: {
             level: "bronze",
             organization_id: org.id
           }

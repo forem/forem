@@ -2,8 +2,32 @@ class UsersController < ApplicationController
   before_action :set_no_cache_header
   before_action :raise_suspended, only: %i[update]
   before_action :set_user, only: %i[update update_twitch_username update_language_settings confirm_destroy request_destroy full_delete remove_association]
-  after_action :verify_authorized, except: %i[signout_confirm add_org_admin remove_org_admin remove_from_org]
+  after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org]
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
+
+  DEFAULT_FOLLOW_SUGGESTIONS = %w[ben jess peter maestromac andy liana].freeze
+
+  def index
+    if !user_signed_in? || less_than_one_day_old?(current_user)
+      @users = User.where(username: DEFAULT_FOLLOW_SUGGESTIONS)
+      return
+    end
+
+    @users =
+      if params[:state] == "follow_suggestions"
+        Suggester::Users::Recent.new(
+          current_user,
+          attributes_to_select: INDEX_ATTRIBUTES_FOR_SERIALIZATION,
+        ).suggest
+      elsif params[:state] == "sidebar_suggestions"
+        Suggester::Users::Sidebar.new(current_user, params[:tag]).suggest.sample(3)
+      else
+        User.none
+      end
+  end
+
+  INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
+  private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
   # GET /settings/@tab
   def edit
@@ -35,7 +59,10 @@ class UsersController < ApplicationController
       @user.touch(:profile_updated_at)
       redirect_to "/settings/#{@tab}"
     else
-      render :edit
+      Honeycomb.add_field("error",
+                          @user.errors.messages.reject { |_, v| v.empty? })
+      Honeycomb.add_field("errored", true)
+      render :edit, status: :bad_request
     end
   end
 
@@ -293,5 +320,12 @@ class UsersController < ApplicationController
 
   def config_changed?
     params[:user].include?(:config_theme)
+  end
+
+  def less_than_one_day_old?(user)
+    range = 1.day.ago.beginning_of_day..Time.current
+    user_identity_age = user.github_created_at || user.twitter_created_at || 8.days.ago
+    # last one is a fallback in case both are nil
+    range.cover? user_identity_age
   end
 end

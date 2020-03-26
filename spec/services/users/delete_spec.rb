@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Users::Delete, type: :service do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :with_identity, identities: ["github"]) }
 
   it "deletes user" do
     described_class.call(user)
@@ -84,6 +84,22 @@ RSpec.describe Users::Delete, type: :service do
           expect { user_association.reload }.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
+    end
+  end
+
+  context "when cleaning up chat channels" do
+    let_it_be(:other_user) { create(:user) }
+
+    it "deletes the user's private chat channels" do
+      chat_channel = ChatChannel.create_with_users([user, other_user])
+      described_class.call(user)
+      expect(ChatChannel.find_by(id: chat_channel.id)).to be_nil
+    end
+
+    it "does not delete the user's open channels" do
+      chat_channel = ChatChannel.create_with_users([user, other_user], "open")
+      described_class.call(user)
+      expect(ChatChannel.find_by(id: chat_channel.id)).not_to be_nil
     end
   end
 end

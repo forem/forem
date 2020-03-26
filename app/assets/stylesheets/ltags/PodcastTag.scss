@@ -24,7 +24,7 @@
 
     @media screen and (min-width: 830px) {
       margin: 20px 15px;
-      width: 77%
+      width: 77%;
     }
 
     a {
@@ -46,22 +46,32 @@
 
     h1 {
       margin: 0px 0px 0.5em 0px;
-      font-weight: inherit;
+      font-weight: 700;
       padding: 0;
     }
 
     .podcastliquidtag__info__episodetitle {
-      font-size:calc(1.8vw + 19px);
+      font-size: calc(1.8vw + 19px);
     }
     .podcastliquidtag__info__podcasttitle {
-      font-size:calc(1vw + 14px);
+      font-size: calc(1.2vw + 14px);
       padding: 0px 0px;
+      font-weight: 500;
+      margin-top: -5px;
       button {
-        font-size:calc(1vw + 12px);
+        font-size: 25px;
         border-radius: 3px;
         border: 0px;
-        margin-left: 5px;
-        width: calc(105px + 4.5vw);
+        width: 100%;
+        margin-top: 15px;
+        padding: 20px 0px;
+        @media screen and (min-width: 950px) {
+          font-size: calc(1.2vw + 16px);
+          margin-left: 5px;
+          display: inline-block;
+          width: 220px;
+          padding: 5px 0px;
+        }
       }
     }
 
@@ -74,10 +84,9 @@
         button {
           font-size: 22px;
           width: 165px;
-        }  
-      }  
+        }
+      }
     }
-
 
     .podcastliquidtag__links {
       display: flex;
@@ -108,12 +117,12 @@
           margin-right: 5px;
           vertical-align: middle;
         }
-        .service-name{
-          display:none;
+        .service-name {
+          display: none;
         }
         @media screen and (min-width: 630px) {
-          .service-name{
-            display:inline-block;
+          .service-name {
+            display: inline-block;
           }
         }
       }
@@ -192,4 +201,9 @@
   }
 }
 
-@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+@keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}

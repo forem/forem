@@ -4,7 +4,6 @@ import { shallow } from 'preact-render-spy';
 import fetch from 'jest-fetch-mock';
 import { JSDOM } from 'jsdom';
 import Chat from '../chat';
-import algoliasearch from '../__mocks__/algoliasearchUsers';
 
 global.fetch = fetch;
 
@@ -13,7 +12,6 @@ global.document = doc;
 global.document.body.innerHTML =
   '<div class="chat chat--expanded" data-no-instant={true}><div class="chat__activechat"><div class="activechatchannel"><div class="activechatchannel__conversation"><div class="activechatchannel__header"></div><div class="activechatchannel__messages" id="messagelist"><div class="messagelist__sentinel" id="messagelist__sentinel"/></div><div class="activechatchannel__alerts"><div class="chatalert__default chatalert__default--hidden">More new messages below</div></div><div class="activechatchannel__form"><div class="messagecomposer"><textarea class="messagecomposer__input" id="messageform" maxLength="1000" onKeyDown={[Function]} placeholder="Message goes here" /><button class="messagecomposer__submit" onClick={[Function]}>SEND</button></div></div></div></div></div></div>';
 global.window = doc.defaultView;
-global.window.algoliasearch = algoliasearch;
 
 // mock observer and user ID
 window.IntersectionObserver = jest.fn(function intersectionObserverMock() {
@@ -23,9 +21,6 @@ global.window.currentUser = { id: 'some_id' };
 
 // fake props to pass to Chat
 const rootData = {
-  algoliaId: 'somealgoliaid',
-  algoliaIndex: 'somealgoliaindex',
-  algoliaKey: 'somealgoliakey',
   chatChannels: JSON.stringify([
     {
       channel_name: 'channel name 1',

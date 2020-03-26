@@ -20,6 +20,10 @@ class ApplicationController < ActionController::Base
     raise NotAuthorizedError, "Unauthorized"
   end
 
+  def bad_request
+    render json: "Error: Bad Request", status: :bad_request
+  end
+
   def authenticate_user!
     return if current_user
 
