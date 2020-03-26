@@ -17,6 +17,10 @@ module Broadcasts
         send_authentication_notification
       end
 
+      private
+
+      attr_reader :user
+
       def send_welcome_notification
         return if received_notification?(welcome_broadcast) || commented_on_welcome_thread? || user.created_at > 3.hours.ago
 
@@ -28,10 +32,6 @@ module Broadcasts
 
         Notification.send_welcome_notification(user.id, authentication_broadcast.id)
       end
-
-      private
-
-      attr_reader :user
 
       def received_notification?(broadcast)
         Notification.exists?(notifiable: broadcast, user: user)
