@@ -93,6 +93,7 @@
   }
 
   h2 {
+    margin-top: 20px;
     font-size: 15px;
 
     @media screen and (min-width: 600px) {
@@ -131,6 +132,7 @@
   }
 
   .next-button {
+    color: var(--button-primary-color);
     background: var(--button-primary-bg);
     float: right;
   }

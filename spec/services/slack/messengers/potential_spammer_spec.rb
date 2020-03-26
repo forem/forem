@@ -13,8 +13,7 @@ RSpec.describe Slack::Messengers::PotentialSpammer, type: :service do
     job = sidekiq_enqueued_jobs(worker: SlackBotPingWorker).last
     message = job["args"].first["message"]
 
-    url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/#{user.username}"
-    expect(message).to include(url)
+    expect(message).to include(URL.user(user))
   end
 
   it "messages the proper channel with the proper username and emoji", :aggregate_failures do

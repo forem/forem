@@ -4,7 +4,7 @@ module Slack
       MESSAGE_TEMPLATE = <<~TEXT.chomp.freeze
         *New note from %<name>s:*
         *Report status: %<status>s*
-        Report page: #{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/internal/reports/%<report_id>s
+        Report page: %<report_url>s
         --------
         Message: %<message>s
       TEXT
@@ -22,11 +22,15 @@ module Slack
       end
 
       def call
+        report_url = URL.url(
+          Rails.application.routes.url_helpers.internal_report_path(report_id),
+        )
+
         final_message = format(
           MESSAGE_TEMPLATE,
           name: author_name,
           status: status,
-          report_id: report_id,
+          report_url: report_url,
           message: message,
         )
 

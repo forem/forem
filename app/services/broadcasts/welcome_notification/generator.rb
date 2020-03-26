@@ -21,7 +21,7 @@ module Broadcasts
       end
 
       def commented_on_welcome_thread?
-        welcome_thread = latest_published_thread("welcome")
+        welcome_thread = Article.admin_published_with("welcome").first
         Comment.where(commentable: welcome_thread, user: user).any?
       end
 
@@ -29,12 +29,6 @@ module Broadcasts
 
       def welcome_broadcast
         @welcome_broadcast ||= Broadcast.find_by(title: "Welcome Notification: welcome_thread")
-      end
-
-      def latest_published_thread(tag_name)
-        Article.published.
-          order("published_at ASC").
-          cached_tagged_with(tag_name).last
       end
 
       attr_reader :user

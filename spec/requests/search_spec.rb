@@ -41,13 +41,11 @@ RSpec.describe "Search", type: :request, proper_status: true do
   end
 
   describe "GET /search/classified_listings" do
-    let(:authorized_user) { create(:user) }
     let(:mock_documents) do
       [{ "title" => "classified_listing1" }]
     end
 
     it "returns json" do
-      sign_in authorized_user
       allow(Search::ClassifiedListing).to receive(:search_documents).and_return(
         mock_documents,
       )
@@ -57,11 +55,9 @@ RSpec.describe "Search", type: :request, proper_status: true do
   end
 
   describe "GET /search/users" do
-    let(:authorized_user) { create(:user) }
     let(:mock_documents) { [{ "username" => "firstlast" }] }
 
     it "returns json" do
-      sign_in authorized_user
       allow(Search::User).to receive(:search_documents).and_return(
         mock_documents,
       )
@@ -71,11 +67,9 @@ RSpec.describe "Search", type: :request, proper_status: true do
   end
 
   describe "GET /search/feed_content" do
-    let(:authorized_user) { create(:user) }
     let(:mock_documents) { [{ "title" => "article1" }] }
 
     it "returns json" do
-      sign_in authorized_user
       allow(Search::FeedContent).to receive(:search_documents).and_return(
         mock_documents,
       )
@@ -85,7 +79,6 @@ RSpec.describe "Search", type: :request, proper_status: true do
     end
 
     it "queries only the user index if class_name=User" do
-      sign_in authorized_user
       allow(Search::FeedContent).to receive(:search_documents)
       allow(Search::User).to receive(:search_documents).and_return(
         mock_documents,
@@ -97,7 +90,6 @@ RSpec.describe "Search", type: :request, proper_status: true do
     end
 
     it "queries for Articles, Podcast Episodes and Users if no class_name filter is present" do
-      sign_in authorized_user
       allow(Search::FeedContent).to receive(:search_documents).and_return(
         mock_documents,
       )
@@ -111,7 +103,6 @@ RSpec.describe "Search", type: :request, proper_status: true do
     end
 
     it "queries for only Articles and Podcast Episodes if class_name!=User" do
-      sign_in authorized_user
       allow(Search::FeedContent).to receive(:search_documents).and_return(
         mock_documents,
       )

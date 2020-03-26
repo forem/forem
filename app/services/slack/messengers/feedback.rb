@@ -4,7 +4,7 @@ module Slack
       MESSAGE_TEMPLATE = <<~TEXT.chomp.freeze
         %<user_detail>s
         Category: %<category>s
-        Internal Report: #{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/internal/reports
+        Internal Report: %<reports_url>s
         *_ Reported URL: %<reported_url>s _*
         -----
         *Message:* %<message>s
@@ -29,10 +29,15 @@ module Slack
       end
 
       def call
+        reports_url = URL.url(
+          Rails.application.routes.url_helpers.internal_reports_path,
+        )
+
         final_message = format(
           MESSAGE_TEMPLATE,
           user_detail: user_detail,
           category: category,
+          reports_url: reports_url,
           reported_url: reported_url,
           message: message,
         )
@@ -52,12 +57,10 @@ module Slack
       def user_detail
         return "*Anonymous report:" unless user
 
-        username = user.username
-        url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/#{username}"
         format(
           USER_DETAIL_TEMPLATE,
-          username: username,
-          url: url,
+          username: user.username,
+          url: URL.user(user),
           email: user.email,
         )
       end

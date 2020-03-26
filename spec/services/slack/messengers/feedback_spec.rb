@@ -28,10 +28,9 @@ RSpec.describe Slack::Messengers::Feedback, type: :service do
     end
 
     message = get_argument_from_last_job("message")
-    url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/#{user.username}"
 
     expect(message).to include(user.username)
-    expect(message).to include(url)
+    expect(message).to include(URL.user(user))
     expect(message).to include(user.email)
   end
 
@@ -41,7 +40,9 @@ RSpec.describe Slack::Messengers::Feedback, type: :service do
     end
 
     message = get_argument_from_last_job("message")
-    url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/internal/reports"
+    url = URL.url(
+      Rails.application.routes.url_helpers.internal_reports_path,
+    )
 
     [
       url, user.email, default_params[:category], default_params[:reported_url]
