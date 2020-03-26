@@ -37,6 +37,10 @@ module Search
         Search::Client.indices.put_mapping(index: index_alias, body: self::MAPPINGS)
       end
 
+      def document_count
+        Search::Client.count(index: self::INDEX_ALIAS).dig("count")
+      end
+
       private
 
       def search(body:)

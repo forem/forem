@@ -29,7 +29,7 @@ module Slack
       end
 
       def call
-        reports_url = App.url(
+        reports_url = URL.url(
           Rails.application.routes.url_helpers.internal_reports_path,
         )
 
@@ -60,7 +60,7 @@ module Slack
         format(
           USER_DETAIL_TEMPLATE,
           username: user.username,
-          url: App.url("/#{user.username}"),
+          url: URL.user(user),
           email: user.email,
         )
       end

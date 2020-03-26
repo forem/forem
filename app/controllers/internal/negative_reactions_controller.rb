@@ -10,6 +10,6 @@ class Internal::NegativeReactionsController < Internal::ApplicationController
       where("category IN (?)", NEGATIVE_REACTION_CATEGORIES).
       order("reactions.created_at DESC").
       ransack(params[:q])
-    @negative_reactions = @q.result.page(params[:page] || 1).per(5)
+    @negative_reactions = @q.result.page(params[:page] || 1).per(25)
   end
 end

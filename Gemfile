@@ -103,7 +103,7 @@ gem "typhoeus", "~> 1.3.1" # Used with Elasticsearch to support http keep-alive 
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.2" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
-gem "webpacker", "~> 5.0.0" # Use webpack to manage app-like JavaScript modules in Rails
+gem "webpacker", "~> 5.0.1" # Use webpack to manage app-like JavaScript modules in Rails
 
 group :development do
   gem "better_errors", "~> 2.6" # Provides a better error page for Rails and other Rack apps
@@ -129,7 +129,7 @@ group :development, :test do
   gem "awesome_print", "~> 1.8" # Great Ruby dubugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.31" # Capybara is an integration testing tool for rack based web applications
-  gem "faker", "~> 2.10" # A library for generating fake data such as names, addresses, and phone numbers
+  gem "faker", "~> 2.11" # A library for generating fake data such as names, addresses, and phone numbers
   gem "parallel_tests", "~> 2.32" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 3.9" # rspec-rails is a testing framework for Rails 3+
