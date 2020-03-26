@@ -15,11 +15,11 @@ exports[`<SearchForm /> renders properly when given search functions and a searc
   <input
     aria-label="search"
     autoComplete="off"
-    class="top-bar--search-input"
+    class="top-bar--search-input crayons-textfield"
     id="nav-search"
     name="q"
     onKeyDown={[MockFunction]}
-    placeholder="Search"
+    placeholder="Search..."
     type="text"
     value="hello"
   />

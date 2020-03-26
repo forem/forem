@@ -590,7 +590,7 @@
   ('shadow', 'box-shadow', ('none': none), (), true),
   ('outline', 'outline', ('none': none), (), false),
   (
-    '',
+    null,
     'display',
     (
       'hidden': none,
@@ -602,12 +602,20 @@
       'grid': grid
     ),
     (),
-    true
+    true,
+    null
   ),
-  ('', 'visibility', ('visible': visible, 'invisible': hidden), (), true),
-  ('', 'clear', ('clear': both), (), false),
   (
-    '',
+    null,
+    'visibility',
+    ('visible': visible, 'invisible': hidden),
+    (),
+    true,
+    null
+  ),
+  (null, 'clear', ('clear': both), (), false, null),
+  (
+    null,
     'position',
     (
       'static': static,
@@ -617,6 +625,7 @@
       'relative': relative
     ),
     (),
-    true
+    true,
+    null
   )
 );
