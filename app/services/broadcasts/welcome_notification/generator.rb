@@ -24,7 +24,7 @@ module Broadcasts
       end
 
       def send_authentication_notification
-        return if authenticated_with_both_services? || received_notification?(authentication_broadcast) || user.created_at > 1.day.ago
+        return if authenticated_with_all_authentication_providers? || received_notification?(authentication_broadcast) || user.created_at > 1.day.ago
 
         Notification.send_welcome_notification(user.id, authentication_broadcast.id)
       end
@@ -42,8 +42,8 @@ module Broadcasts
         Comment.where(commentable: welcome_thread, user: user).any?
       end
 
-      def authenticated_with_both_services?
-        identities.count == 2
+      def authenticated_with_all_authentication_providers?
+        identities.count == SiteConfig.authentication_providers.count
       end
 
       def welcome_broadcast
@@ -51,12 +51,18 @@ module Broadcasts
       end
 
       def identities
-        @identities ||= user.identities.where(provider: %w[github twitter])
+        @identities ||= user.identities.where(provider: SiteConfig.authentication_providers)
       end
 
       def authentication_broadcast
-        missing_identity = identities.exists?(provider: "github") ? "twitter_connect" : "github_connect"
-        @authentication_broadcast ||= Broadcast.find_by(title: "Welcome Notification: #{missing_identity}")
+        @authentication_broadcast ||= find_broadcast
+      end
+
+      def find_broadcast
+        missing_identities = SiteConfig.authentication_providers.map do |provider|
+          identities.exists?(provider: provider) ? nil : "#{provider}_connect"
+        end.compact
+        Broadcast.find_by(title: "Welcome Notification: #{missing_identities.first}")
       end
     end
   end
