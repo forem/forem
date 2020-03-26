@@ -83,6 +83,7 @@ module Notifications
       def send_push_notifications(user_id, title, subtitle, body, path)
         return unless ApplicationConfig["PUSHER_BEAMS_KEY"] && ApplicationConfig["PUSHER_BEAMS_KEY"].size == 64
 
+        data_payload = { url: App.url(path) }
         payload = {
           apns: {
             aps: {
@@ -92,18 +93,14 @@ module Notifications
                 body: CGI.unescapeHTML(body.strip)
               }
             },
-            data: {
-              url: App.url(path)
-            }
+            data: data_payload
           },
           fcm: {
             notification: {
               title: title,
               body: subtitle
             },
-            data: {
-              url: App.url(path)
-            }
+            data: data_payload
           }
         }
         Pusher::PushNotifications.publish(interests: ["user-notifications-#{user_id}"], payload: payload)
