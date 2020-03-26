@@ -4,7 +4,7 @@
 <%= javascript_include_tag "application" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/rly" />
+  <link rel="canonical" href="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/rly" />
   <meta name="description" content="Insult your co-workers with snarky O RLY parody book covers!">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 

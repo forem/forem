@@ -1,7 +1,7 @@
 <% title "Privacy Policy for DEV" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/privacy" />
+  <link rel="canonical" href="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/privacy" />
   <meta name="description" content="Privacy Policy for DEV">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 

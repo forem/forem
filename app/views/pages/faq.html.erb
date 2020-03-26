@@ -1,7 +1,7 @@
 <% title "FAQ for dev.to()" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/faq" />
+  <link rel="canonical" href="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/faq" />
   <meta name="description" content="FAQ for dev.to()">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 

@@ -1,7 +1,7 @@
 <% title "Thank you so much! - DEV" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/membership" />
+  <link rel="canonical" href="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/membership" />
   <meta name="description" content="dev.to | Membership">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 

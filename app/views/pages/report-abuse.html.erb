@@ -1,6 +1,6 @@
 <% title "Report abuse" %>
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/report-abuse" />
+  <link rel="canonical" href="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/report-abuse" />
   <meta name="description" content="Report Abuse">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
   <meta property="og:type" content="article" />

@@ -1,7 +1,7 @@
 <% title "State of the Web Survey" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/survey" />
+  <link rel="canonical" href="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/survey" />
   <meta name="description" content="State of the Web Survey for developers">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 

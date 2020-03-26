@@ -1,7 +1,7 @@
 <% title "The Practical Dev Code of Conduct" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/code-of-conduct" />
+  <link rel="canonical" href="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/code-of-conduct" />
   <meta name="description" content="The Practical Dev Code of Conduct">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
   <meta property="og:type" content="article" />

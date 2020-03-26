@@ -1,7 +1,7 @@
 <% title "About The Practical Dev" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/p/information" />
+  <link rel="canonical" href="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/p/information" />
   <meta name="description" content="All information about The Practical Dev">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 

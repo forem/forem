@@ -3,7 +3,7 @@
      timeframe: params[:timeframe],
      content_for: true,
    ) %>
-<link rel="canonical" href="https://dev.to/t/<%= @tag %>" />
+<link rel="canonical" href="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/t/<%= @tag %>" />
 <meta name="description" content="<%= @tag %> content on dev.to">
 <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 

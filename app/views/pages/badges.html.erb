@@ -1,7 +1,7 @@
 <% title "Add the DEV Badge to your personal site" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/p/badges" />
+  <link rel="canonical" href="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/p/badges" />
   <meta name="description" content="Add the DEV Badge to your personal site">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 

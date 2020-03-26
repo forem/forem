@@ -1,6 +1,6 @@
 <% title @page.title %>
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to<%= @page.path %>" />
+  <link rel="canonical" href="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %><%= @page.path %>" />
   <meta name="description" content="<%= @page.title %> — <%= community_qualified_name %>">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
