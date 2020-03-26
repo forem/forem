@@ -76,7 +76,6 @@ script:
 after_script:
   - ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$CI_NODE_INDEX.json ./coverage/spec/.resultset.json
   - ./cc-test-reporter sum-coverage --output - --parts $CI_NODE_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
-  - yarn build-storybook
 deploy:
   provider: heroku
   api_key: '$HEROKU_AUTH_TOKEN'
