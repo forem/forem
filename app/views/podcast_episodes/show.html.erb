@@ -6,7 +6,7 @@
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://dev.to/<%= @podcast.slug %>/<%= @episode.slug %>" />
+  <meta property="og:url" content="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/<%= @podcast.slug %>/<%= @episode.slug %>" />
   <meta property="og:title" content="<%= @episode.title %>" />
   <meta property="og:description" content="<%= truncate(strip_tags(@episode.body), length: 140) %>" />
   <meta property="og:site_name" content="<%= ApplicationConfig["COMMUNITY_NAME"] %> Community" />

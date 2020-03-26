@@ -6,7 +6,7 @@
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://dev.to<%= request.path %>" />
+  <meta property="og:url" content="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %><%= request.path %>" />
   <meta property="og:title" content="<% title "Videos" %>" />
   <meta property="og:image" content="<%= SiteConfig.main_social_image %>">
   <meta property="og:description" content="All videos on DEV" />
