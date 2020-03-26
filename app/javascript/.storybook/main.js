@@ -36,6 +36,10 @@ module.exports = {
       },
     };
 
+    if (configType === 'PRODUCTION') {
+      config.stats = 'errors-only';
+    }
+
     return config;
   },
 };
