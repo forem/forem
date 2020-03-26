@@ -52,7 +52,8 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       end
 
       it "does not send a duplicate notification" do
-        sidekiq_perform_enqueued_jobs { 2.times { described_class.call(user.id) } }
+        2.times { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }
+
         expect(user.notifications.count).to eq(1)
       end
 
