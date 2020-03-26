@@ -83,7 +83,6 @@ module Notifications
       def send_push_notifications(user_id, title, subtitle, body, path)
         return unless ApplicationConfig["PUSHER_BEAMS_KEY"] && ApplicationConfig["PUSHER_BEAMS_KEY"].size == 64
 
-        notification_url = App.url(path)
         payload = {
           apns: {
             aps: {
@@ -94,7 +93,7 @@ module Notifications
               }
             },
             data: {
-              url: notification_url
+              url: App.url(path)
             }
           },
           fcm: {
@@ -103,7 +102,7 @@ module Notifications
               body: subtitle
             },
             data: {
-              url: notification_url
+              url: App.url(path)
             }
           }
         }
