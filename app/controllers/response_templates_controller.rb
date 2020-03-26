@@ -11,15 +11,14 @@ class ResponseTemplatesController < ApplicationController
       flash[:settings_notice] = "Your response template \"#{response_template.title}\" was created."
     else
       flash[:error] = "Response template error: #{response_template.errors.full_messages.to_sentence}"
-      previous_title = permitted_attributes(ResponseTemplate)[:title]
-      previous_content = permitted_attributes(ResponseTemplate)[:content]
+      attributes = permitted_attributes(ResponseTemplate)
     end
 
     redirect_to user_settings_path(
       tab: "response-templates",
       id: response_template.id,
-      previous_title: previous_title,
-      previous_content: previous_content
+      previous_title: attributes[:title],
+      previous_content: attributes[:content]
     )
   end
 
@@ -38,7 +37,8 @@ class ResponseTemplatesController < ApplicationController
   def update
     authorize response_template
 
-    if response_template.update(permitted_attributes(ResponseTemplate))
+    attributes = permitted_attributes(ResponseTemplate)
+    if response_template.update(attributes)
       flash[:settings_notice] = "Your response template \"#{response_template.title}\" was updated."
       redirect_to user_settings_path(tab: "response-templates", id: response_template.id)
     else
@@ -46,8 +46,8 @@ class ResponseTemplatesController < ApplicationController
       redirect_to user_settings_path(
         tab: "response-templates",
         id: response_template.id,
-        previous_title: permitted_attributes(ResponseTemplate)[:title],
-        previous_content: permitted_attributes(ResponseTemplate)[:content])
+        previous_title: attributes[:title],
+        previous_content: attributes[:content])
     end
   end
 
