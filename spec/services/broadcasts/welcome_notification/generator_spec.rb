@@ -30,7 +30,13 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   end
 
   describe "#send_welcome_notification" do
-    let(:user) { create(:user) }
+    let(:user) { create(:user, created_at: 4.hours.ago) }
+
+    it "does not send notification to a newly created user" do
+      user.update!(created_at: Time.zone.now)
+      sidekiq_perform_enqueued_jobs { described_class.new(user.id).send_welcome_notification }
+      expect(user.notifications.count).to eq(0)
+    end
 
     it "generates the correct broadcast type and sends the notification to the user" do
       sidekiq_perform_enqueued_jobs { described_class.new(user.id).send_welcome_notification }

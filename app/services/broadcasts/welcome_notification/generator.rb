@@ -15,7 +15,7 @@ module Broadcasts
       end
 
       def send_welcome_notification
-        return if received_notification?(welcome_broadcast) || commented_on_welcome_thread?
+        return if received_notification?(welcome_broadcast) || commented_on_welcome_thread? || user.created_at > 3.hours.ago
 
         Notification.send_welcome_notification(user.id, welcome_broadcast.id)
       end
