@@ -28,7 +28,7 @@ RSpec.describe Slack::Announcer, type: :service do
     described_class.call(params)
 
     expect(SlackClient).to have_received(:ping).
-      with(message, params.reject { |k| k == :message}).
+      with(message, params.reject { |k| k == :message }).
       once
   end
 end

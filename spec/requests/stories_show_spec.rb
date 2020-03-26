@@ -153,7 +153,7 @@ RSpec.describe "StoriesShow", type: :request do
       expect(response.body).not_to include("noindex")
     end
 
-    it "does not have noindex if article intermediate score and <code>" do
+    it "does not have noindex if article intermediate score and <code> and comments_count is 1" do
       article = create(:article, score: 3)
       article.user.update_column(:comments_count, 1)
       get article.path

@@ -49,7 +49,7 @@ num_users.times do |i|
     password: "password",
   )
 
-  if i == 0
+  if i.zero?
     user.add_role(:trusted) # guarantee at least one moderator
   else
     user.add_role(roles[rand(0..roles.length)]) # includes chance of having no role
@@ -383,7 +383,7 @@ end
 
 ##############################################################################
 
-Rails.logger.info "#{counter += 1}. Creating Pages"
+Rails.logger.info "#{counter += 1}. Creating Pages" # rubocop:disable Lint/UselessAssignment
 
 5.times do
   Page.create!(
