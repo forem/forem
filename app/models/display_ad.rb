@@ -1,9 +1,4 @@
 class DisplayAd < ApplicationRecord
-  self.ignored_columns = %w[
-    cost_per_click
-    cost_per_impression
-  ]
-
   belongs_to :organization
   has_many :display_ad_events
 
