@@ -47,7 +47,8 @@ class ResponseTemplatesController < ApplicationController
         tab: "response-templates",
         id: response_template.id,
         previous_title: attributes[:title],
-        previous_content: attributes[:content])
+        previous_content: attributes[:content]
+      )
     end
   end
 
@@ -55,9 +56,9 @@ class ResponseTemplatesController < ApplicationController
 
   def response_template
     @response_template ||= if params[:id].present?
-      ResponseTemplate.find(params[:id])
-    else
-      ResponseTemplate.new(permitted_attributes(ResponseTemplate))
-    end
+                             ResponseTemplate.find(params[:id])
+                           else
+                             ResponseTemplate.new(permitted_attributes(ResponseTemplate))
+                           end
   end
 end
