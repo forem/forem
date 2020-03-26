@@ -83,7 +83,7 @@
     "babel-jest": "^23.4.2",
     "babel-loader": "^8.0.6",
     "css-loader": "^3.4.2",
-    "eslint": "^5.16.0",
+    "eslint": "^6.8.0",
     "eslint-config-airbnb": "^17.1.1",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-config-prettier": "^6.10.0",
