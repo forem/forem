@@ -17,6 +17,10 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
     SiteConfig.staff_user_id = 1
   end
 
+  it "requires a valid user id" do
+    expect { described_class.call(1) }.to raise_error(ActiveRecord::RecordNotFound)
+  end
+
   describe "::call" do
     it "send all forms of welcome notifications" do
       user = create(:user, :with_identity, identities: ["github"], created_at: 1.week.ago)
@@ -49,7 +53,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
     end
   end
 
-  context "when sending an authentication notification" do
+  describe "#send_authentication_notification" do
     before do
       allow(Notification).to receive(:send_welcome_notification)
     end

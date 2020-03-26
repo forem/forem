@@ -10,8 +10,6 @@ module Broadcasts
       end
 
       def call
-        return unless user
-
         send_welcome_notification
         send_authentication_notification
       end
