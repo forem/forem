@@ -11,6 +11,8 @@ module Broadcasts
       end
 
       def call
+        # TODO: [@thepracticaldev/delightful] Move this check into the rake task logic once it has been implemented.
+        return unless user.welcome_notifications
         return if commented_on_welcome_thread? || received_notification?
 
         Notification.send_welcome_notification(user.id, welcome_broadcast.id)
