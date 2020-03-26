@@ -32,6 +32,11 @@
             <summary>Category details/rules</summary>
           </details>
         </div>
+        <%# The following tag_list field is overriden by the Tags JS component
+        from the listingForm. We keep this form field in place to faciliate
+        SSR. By having the form field loaded on the DOM first with this view,
+        we prevent the screen from "jumping" once the deferred JS is loaded
+        and executed. %>
         <div class="field">
           <%= form.label "tag_list", "Tags" %>
           <%= form.text_field "tag_list", placeholder: "8 tags max, comma separated, no spaces or special characters" %>
