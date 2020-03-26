@@ -81,7 +81,7 @@
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^23.4.2",
-    "babel-loader": "^8.0.6",
+    "babel-loader": "^8.1.0",
     "css-loader": "^3.4.2",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^17.1.1",
