@@ -37,6 +37,13 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
       expect(user.notifications.count).to eq(2)
     end
+
+    it "does not send a notification to an unsubscribed user" do
+      user = create(:user, :with_identity, identities: ["github"], created_at: 1.week.ago, welcome_notifications: false)
+      expect do
+        sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
+      end.to not_change(user.notifications, :count)
+    end
   end
 
   describe "#send_welcome_notification" do
