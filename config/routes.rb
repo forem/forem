@@ -339,7 +339,8 @@ Rails.application.routes.draw do
   end
 
   get "/settings/(:tab)" => "users#edit", :as => :user_settings
-  get "/settings/:tab/:org_id" => "users#edit"
+  get "/settings/:tab/:org_id" => "users#edit", :constraints => { tab: /organization/ }
+  get "/settings/:tab/:id" => "users#edit", :constraints => { tab: /response-templates/ }
   get "/signout_confirm" => "users#signout_confirm"
   get "/dashboard" => "dashboards#show"
   get "/dashboard/pro" => "dashboards#pro"
