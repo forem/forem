@@ -9215,10 +9215,10 @@ marked@^0.7.0:
   resolved "https://registry.yarnpkg.com/marked/-/marked-0.7.0.tgz#b64201f051d271b1edc10a04d1ae9b74bb8e5c0e"
   integrity sha512-c+yYdCZJQrsRjTPhUx7VKkApw9bwDkNbHUKo1ovgcfDjb2kc8rLuRbIFyXL5WOEUwzSSKo3IXpph2K6DqB/KZg==
 
-marked@^0.8.1:
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/marked/-/marked-0.8.1.tgz#a233f39572fab15ede53a3c3be8a139bff86d2dd"
-  integrity sha512-tZfJS8uE0zpo7xpTffwFwYRfW9AzNcdo04Qcjs+C9+oCy8MSRD2reD5iDVtYx8mtLaqsGughw/YLlcwNxAHA1g==
+marked@^0.8.2:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-0.8.2.tgz#4faad28d26ede351a7a1aaa5fec67915c869e355"
+  integrity sha512-EGwzEeCcLniFX51DhTpmTom+dSA/MG/OBUDjnWtHbEnjAH180VzUeAw+oE4+Zv+CoYBWyRlYOTR0N8SO9R1PVw==
 
 matcher@^1.1.1:
   version "1.1.1"
