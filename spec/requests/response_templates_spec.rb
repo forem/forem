@@ -24,7 +24,7 @@ RSpec.describe "ResponseTemplate", type: :request do
         }
       }
 
-      response_template = ResponseTemplate.first
+      response_template = ResponseTemplate.last
       expect(response_template.user_id).to eq user.id
       expect(response_template.title).to eq attributes[:title]
       expect(response_template.content).to eq attributes[:content]
@@ -38,7 +38,7 @@ RSpec.describe "ResponseTemplate", type: :request do
           content: attributes[:content]
         }
       }
-      expect(response.redirect_url).to include user_settings_path(tab: "response-templates", id: ResponseTemplate.first.id)
+      expect(response.redirect_url).to include user_settings_path(tab: "response-templates", id: ResponseTemplate.last.id)
     end
   end
 
