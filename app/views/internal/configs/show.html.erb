@@ -384,7 +384,7 @@
   </div>
 </div>
 
-<% if current_user.has_role?(:single_resource_admin, Config) %>
+<% if current_user.has_role?(:single_resource_admin, Config) && current_user.has_role?(:super_admin) %>
   <div class="row my-3" id="siteConfig">
     <div class="card w-100">
       <div class="card-header" id="appConfigHeader">
