@@ -183,7 +183,7 @@ function paginate(tag, params, requiresApproval) {
   const searchHash = { ...{ per_page: 15, page: nextPage }, ...JSON.parse(params) };
 
   if (tag && tag.length > 0) {
-    searchHash["tag_names"] = (searchHash["tag_names"] === undefined) ? [] : searchHash["tag_names"];
+    searchHash["tag_names"] = searchHash["tag_names"] || [];
     searchHash["tag_names"].push(tag);
   }
   searchHash["approved"] = (requiresApproval === 'true') ? 'true' : '';
@@ -212,7 +212,7 @@ function paginate(tag, params, requiresApproval) {
     credentials: 'same-origin',
   })
     .then(response => response.json())
-    .then(function searchDone(content) {
+    .then((content) => {
     nextPage += 1;
     insertArticles(content.result);
     const checkBlockedContentEvent = new CustomEvent('checkBlockedContent')
