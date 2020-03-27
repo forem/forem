@@ -3,6 +3,7 @@ module Broadcasts
     class Generator
       def initialize(receiver_id)
         @user = User.find(receiver_id)
+        @notification_sent = false
       end
 
       def self.call(*args)
@@ -13,24 +14,26 @@ module Broadcasts
         # TODO: [@thepracticaldev/delightful] Move this check into the rake task logic once it has been implemented.
         return unless user.welcome_notifications
 
-        send_welcome_notification
-        send_authentication_notification
+        send_welcome_notification unless notification_sent
+        send_authentication_notification unless notification_sent
       end
 
       private
 
-      attr_reader :user
+      attr_reader :user, :notification_sent
 
       def send_welcome_notification
         return if received_notification?(welcome_broadcast) || commented_on_welcome_thread? || user.created_at > 3.hours.ago
 
         Notification.send_welcome_notification(user.id, welcome_broadcast.id)
+        @notification_sent = true
       end
 
       def send_authentication_notification
         return if authenticated_with_all_providers? || received_notification?(authentication_broadcast) || user.created_at > 1.day.ago
 
         Notification.send_welcome_notification(user.id, authentication_broadcast.id)
+        @notification_sent = true
       end
 
       def received_notification?(broadcast)

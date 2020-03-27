@@ -22,17 +22,18 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   end
 
   describe "::call" do
-    it "send all forms of welcome notifications" do
-      user = create(:user, :with_identity, identities: ["github"], created_at: 1.week.ago)
-      sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
-      expect(user.notifications.count).to eq(2)
-    end
-
     it "does not send a notification to an unsubscribed user" do
       user = create(:user, :with_identity, identities: ["github"], created_at: 1.week.ago, welcome_notifications: false)
       expect do
         sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
       end.to not_change(user.notifications, :count)
+    end
+
+    it "send only 1 notifications at a time" do
+      user = create(:user, :with_identity, identities: ["github"], created_at: 1.week.ago)
+      expect do
+        sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
+      end.to change(user.notifications, :count).by(1)
     end
   end
 
