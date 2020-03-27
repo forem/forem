@@ -27,7 +27,7 @@ class Comment < ApplicationRecord
   validates :commentable_type, inclusion: { in: %w[Article PodcastEpisode] }
   validates :user_id, presence: true
 
-  after_create :notify_slack_channel_about_warned_users, if: -> { user.warned }
+  after_create :notify_slack_channel_about_warned_users
   after_create :after_create_checks
   after_create_commit :record_field_test_event
   after_commit :calculate_score
