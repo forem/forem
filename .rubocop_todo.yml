@@ -43,9 +43,9 @@ RSpec/SubjectStub:
 # Offense count: 2
 # Configuration parameters: Include.
 # Include: app/helpers/**/*.rb
-# Rails/HelperInstanceVariable:
-#   Exclude:
-#     - 'app/helpers/application_helper.rb'
+Rails/HelperInstanceVariable:
+  Exclude:
+    - 'app/helpers/application_helper.rb'
 
 # Offense count: 11
 Rails/OutputSafety:
@@ -70,12 +70,6 @@ Rails/UniqueValidationWithoutIndex:
 # SupportedStyles: nested, compact
 Style/ClassAndModuleChildren:
   Enabled: false
-
-# Offense count: 2
-# Configuration parameters: MinBodyLength.
-Style/GuardClause:
-  Exclude:
-    - 'app/models/article.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.
