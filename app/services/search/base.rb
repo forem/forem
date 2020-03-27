@@ -5,7 +5,7 @@ module Search
         Search::Client.index(
           id: doc_id,
           index: self::INDEX_ALIAS,
-          body: serialized_data,
+          body: serialized_data.merge(last_indexed_at: Time.current),
         )
       end
 
