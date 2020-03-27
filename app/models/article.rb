@@ -93,7 +93,7 @@ class Article < ApplicationRecord
   before_save :update_cached_user
 
   after_save :bust_cache, :detect_human_language
-  after_save :notify_slack_channel_about_publication, if: -> { published && published_at > 30.seconds.ago }
+  after_save :notify_slack_channel_about_publication
 
   after_update_commit :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
   after_commit :async_score_calc, :update_main_image_background_hex, :touch_collection
@@ -720,18 +720,6 @@ class Article < ApplicationRecord
   end
 
   def notify_slack_channel_about_publication
-    url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
-
-    message = <<~MESSAGE.chomp
-      New Article Published: #{title}
-      #{url}#{path}
-    MESSAGE
-
-    SlackBotPingWorker.perform_async(
-      message: message,
-      channel: "activity",
-      username: "article_bot",
-      icon_emoji: ":writing_hand:",
-    )
+    Slack::Messengers::ArticlePublished.call(article: self)
   end
 end
