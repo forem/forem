@@ -3,7 +3,7 @@ import { h } from 'preact';
 import './designSystem.scss';
 
 export default {
-  title: 'Components/HTML/Modals',
+  title: 'Components/Modals/HTML',
 };
 
 export const Description = () => (

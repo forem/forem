@@ -3,7 +3,7 @@ import { h } from 'preact';
 import './designSystem.scss';
 
 export default {
-  title: 'Components/HTML/Indicators',
+  title: 'Components/Indicators/HTML',
 };
 
 export const Description = () => (

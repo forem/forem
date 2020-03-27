@@ -3,7 +3,7 @@ import { h } from 'preact';
 import './designSystem.scss';
 
 export default {
-  title: 'Components/HTML/Navigation/Main Navigation',
+  title: 'Components/Navigation/Main Navigation/HTML',
 };
 
 export const Description = () => (

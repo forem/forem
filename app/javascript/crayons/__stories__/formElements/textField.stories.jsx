@@ -2,7 +2,7 @@ import { h } from 'preact';
 
 import '../designSystem.scss';
 
-export default { title: 'Components/HTML/Form Components/Text Field' };
+export default { title: 'Components/Form Components/Text Field/HTML' };
 
 export const Default = () => (
   <input

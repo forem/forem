@@ -3,7 +3,7 @@ import { h } from 'preact';
 import './designSystem.scss';
 
 export default {
-  title: 'Components/HTML/Notices',
+  title: 'Components/Notices/HTML',
 };
 
 export const Description = () => (

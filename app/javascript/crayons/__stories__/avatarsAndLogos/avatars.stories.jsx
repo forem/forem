@@ -3,7 +3,7 @@ import { h } from 'preact';
 import '../designSystem.scss';
 
 export default {
-  title: 'Components/HTML/Avatars & Logos/Avatars',
+  title: 'Components/Avatars & Logos/Avatars/HTML',
 };
 
 export const Default = () => (

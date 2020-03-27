@@ -20,7 +20,7 @@ Grid.propTypes = {
 };
 
 export default {
-  title: 'Components/HTML/Boxes',
+  title: 'Components/Boxes/HTML',
 };
 
 export const Description = () => (

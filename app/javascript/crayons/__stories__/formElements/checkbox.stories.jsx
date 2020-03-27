@@ -3,7 +3,7 @@ import { Fieldset } from './Fieldset';
 
 import '../designSystem.scss';
 
-export default { title: 'Components/HTML/Form Components/Checkbox' };
+export default { title: 'Components/Form Components/Checkbox/HTML' };
 
 export const Default = () => (
   <input type="checkbox" className="crayons-checkbox" />

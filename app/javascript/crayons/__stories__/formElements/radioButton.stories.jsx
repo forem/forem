@@ -3,7 +3,7 @@ import { Fieldset } from './Fieldset';
 
 import '../designSystem.scss';
 
-export default { title: 'Components/HTML/Form Components/Radio Button' };
+export default { title: 'Components/Form Components/Radio Button/HTML' };
 
 export const Default = () => (
   <input type="radio" name="n1" className="crayons-radio" />

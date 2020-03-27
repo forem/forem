@@ -2,7 +2,7 @@ import { h } from 'preact';
 
 import '../designSystem.scss';
 
-export default { title: 'Components/HTML/Avatars & Logos' };
+export default { title: 'Components/Avatars & Logos/HTML' };
 
 export const Description = () => (
   <div className="container">

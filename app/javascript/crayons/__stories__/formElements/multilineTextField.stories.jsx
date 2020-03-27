@@ -3,7 +3,7 @@ import { h } from 'preact';
 import '../designSystem.scss';
 
 export default {
-  title: 'Components/HTML/Form Components/Multiline Text Field',
+  title: 'Components/Form Components/Multiline Text Field/HTML',
 };
 
 export const Default = () => (
