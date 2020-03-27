@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe Slack::Messengers::Sponsorship, type: :service do
-  let_it_be_readonly(:user) { create(:user) }
-  let_it_be_readonly(:organization) { create(:organization) }
-  let(:tag) { create(:tag) }
+  let(:user) { build(:user) }
+  let(:organization) { build(:organization) }
+  let(:tag) { build(:tag) }
 
   let(:default_params) do
     {
