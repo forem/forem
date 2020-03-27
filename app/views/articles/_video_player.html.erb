@@ -1,20 +1,13 @@
-<%# <div itemscope itemtype="http://schema.org/VideoObject" class="video-player-header"> %>
+<div class="video-player-header">
   <% if meta_tags %>
-    <%# <meta itemprop="uploadDate" content="<%= article.published_at %>" /> %>
-    <%# <meta itemprop="name" content="<%= article.title %>" /> %>
-    <%# <meta itemprop="description" content="<%= article.description %>" /> %>
-    <%# <meta itemprop="thumbnailUrl" content="<%= cloudinary(article.video_thumbnail_url, 880) %>" /> %>
-    <%# <meta itemprop="contentUrl" content="<%= article.video_source_url %>" /> %>
-    <%# <% minutes, seconds = article.video_duration_in_minutes.split(":") %> %>
-    <%# <meta itemprop="duration" content="<%= format("PT%<minutes>sM%<seconds>sS", minutes: minutes, seconds: seconds) %>" /> %>
-    <%# <div id="video-player-source" data-source="<%= article.video_source_url %>"></div> %>
+    <% minutes, seconds = article.video_duration_in_minutes.split(":") %>
+    <div id="video-player-source" data-source="<%= article.video_source_url %>"></div>
   <% end %>
   <script src="//content.jwplatform.com/libraries/b1zWy2iv.js" async></script>
-  <%# <div id="video-player-<%= article.id %>" class="video-player"></div> %>
-<%# </div> %>
+  <div id="video-player-<%= article.id %>" class="video-player"></div>
+</div>
 
-<head>
-  <script type="application/ld+json">
+<script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "VideoObject",
@@ -23,18 +16,10 @@
     "name": "<%= article.title %>",
     "description": "<%= article.description %>",
     "thumbnailUrl": "<%= cloudinary(article.video_thumbnail_url, 880) %>",
-    "duration": {
-      <% minutes, seconds = article.video_duration_in_minutes.split(":") %>,
-      "<%= format("PT%<minutes>sM%<seconds>sS", minutes: minutes, seconds: seconds) %>",
-    },
-    "@id": {
-      "video-player-source",
-      "<%= article.video_source_url %>",
-    },
-    "@id": "video-player-<%= article.id %>",
+    "contentUrl": "<%= article.video_source_url %>",
+    "duration": "<%= format("PT%<minutes>sM%<seconds>sS", minutes: minutes, seconds: seconds) %>",
   }
-  </script>
-</head>
+</script>
 
 <script type="text/javascript" async>
   function getParameterByName(name, url) {

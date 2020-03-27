@@ -11,43 +11,32 @@
   <% end %>
 </style>
 
-<head>
-  <script type="application/ld+json">
-    {
-      "@context": "http://schema.org",
-      "@type": "Person",
-      "mainEntityOfPage": "True",
-      # Not sure how to add styling here for the User
-      "url": "https://dev.to/<%= @user.username %>",
-      "image": {
-        "@type": "ImageObject",
-        "url": "<%= ProfileImage.new(@user) %>",
-        "width": "320",
-        # TODO: Add alt text, style, and background for the image
-        # FYI: Not sure how to do this currently
-      },
-      "name": "<%= sanitize @user.name %>",
-      "description": "<p><%= sanitize(@user.summary.presence || "404 bio not found") %></p>",
-    }
-  </script>
-</head>
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "Person",
+    "mainEntityOfPage": "True",
+    "url": "https://dev.to/<%= @user.username %>",
+    "image": {
+      "@type": "ImageObject",
+    },
+    "name": "<%= sanitize @user.name %>",
+    "description": "<%= sanitize(@user.summary.presence || "404 bio not found") %>",
+  }
+</script>
 
-! ! ! ! ! ! ! <div class="user-profile-header" style="<%= user_colors_style(@user) %>" itemscope itemtype="http://schema.org/Person" itemprop="mainEntity">
-  <%# <meta itemprop="url" content="https://dev.to/<%= @user.username %>"> %>
+ <div class="user-profile-header" style="<%= user_colors_style(@user) %>">
   <div class="user-profile-header-container">
     <div class="profile-pic-wrapper">
-! ! ! ! ! ! <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 320) %>" itemprop="image" alt="<%= @user.username %> profile" style="border-color:<%= user_colors(@user)[:bg] %>;background:<%= user_colors(@user)[:bg] %>" />
+      <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 320) %>" alt="<%= @user.username %> profile" style="border-color:<%= user_colors(@user)[:bg] %>;background:<%= user_colors(@user)[:bg] %>" />
     </div>
     <div class="profile-details">
       <h1 style="color:<%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.78) %>">
-        <%# <span itemprop="name"><%= sanitize @user.name %></span> %>
         <span class="user-profile-follow-button-wrapper">
           <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%= user_colors(@user)[:text] %>;background-color:<%= user_colors(@user)[:bg] %>" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>"}'>&nbsp;</button>
         </span>
       </h1>
-      <%# <p class="profile-description" itemprop="description"> %>
-        <%# <%= sanitize(@user.summary.presence || "404 bio not found") %> %>
-      <%# </p> %>
+      <p class="profile-description"></p>
       <style>
         .profile-details .social .icon-img path {
           fill: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.78) %> !important;
