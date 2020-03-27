@@ -411,8 +411,6 @@ ActiveRecord::Schema.define(version: 2020_03_26_111645) do
     t.boolean "approved", default: false
     t.text "body_markdown"
     t.integer "clicks_count", default: 0
-    t.float "cost_per_click", default: 0.0
-    t.float "cost_per_impression", default: 0.0
     t.datetime "created_at", null: false
     t.integer "impressions_count", default: 0
     t.integer "organization_id"
