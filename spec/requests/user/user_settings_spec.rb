@@ -55,6 +55,36 @@ RSpec.describe "UserSettings", type: :request do
         get "/settings/account"
         expect(response.body).to include ghost_account_message
       end
+
+      it "renders CONNECT_WITH_TWITTER and user with only github identity" do
+        user.identities.where(provider: "twitter").delete_all
+        get "/settings"
+        expect(response.body).to include "CONNECT TWITTER ACCOUNT"
+      end
+
+      it "renders does not render CONNECT_WITH_TWITTER if SiteConfig does not include Twitter auth" do
+        user.identities.where(provider: "twitter").destroy_all
+        current_auth_value = SiteConfig.authentication_providers
+        SiteConfig.authentication_providers = ["github"]
+        SiteConfig.clear_cache
+        get "/settings"
+        expect(response.body).not_to include "CONNECT TWITTER ACCOUNT"
+        SiteConfig.authentication_providers = current_auth_value # restore prior value
+      end
+
+      it "renders the proper organization page" do
+        first_org, second_org = create_list(:organization, 2)
+        create(:organization_membership, user: user, organization: first_org)
+        create(:organization_membership, user: user, organization: second_org, type_of_user: "admin")
+        get user_settings_path(tab: "organization", org_id: second_org.id) # /settings/organization/:org_id
+        expect(response.body).to include "Grow the team"
+      end
+
+      it "renders the proper response template" do
+        response_template = create(:response_template, user: user)
+        get user_settings_path(tab: "response-templates", id: response_template.id)
+        expect(response.body).to include "Editing a response template"
+      end
     end
   end
 
@@ -80,6 +110,14 @@ RSpec.describe "UserSettings", type: :request do
     it "disables community-success notifications" do
       put "/users/#{user.id}", params: { user: { tab: "notifications", mod_roundrobin_notifications: 0 } }
       expect(user.reload.mod_roundrobin_notifications).to be(false)
+    end
+
+    it "can toggle welcome notifications" do
+      put "/users/#{user.id}", params: { user: { tab: "notifications", welcome_notifications: 0 } }
+      expect(user.reload.welcome_notifications).to be(false)
+
+      put "/users/#{user.id}", params: { user: { tab: "notifications", welcome_notifications: 1 } }
+      expect(user.reload.welcome_notifications).to be(true)
     end
 
     it "updates username to too short username" do
@@ -131,7 +169,7 @@ RSpec.describe "UserSettings", type: :request do
       end
 
       it "does not send an email if there was no request" do
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           expect { send_request(false) }.not_to(change { ActionMailer::Base.deliveries.count })
         end
       end
@@ -205,7 +243,7 @@ RSpec.describe "UserSettings", type: :request do
 
   describe "DELETE /users/remove_association" do
     context "when user has two identities" do
-      let(:user) { create(:user, :two_identities) }
+      let(:user) { create(:user, :with_identity, identities: %w[github twitter]) }
 
       before { sign_in user }
 

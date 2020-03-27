@@ -4,16 +4,8 @@
     <h2>Create a Community Listing</h2>
   </header>
   <div class="classified-form-inner">
-    <% if classified_listing.errors.any? %>
-      <div class="classified-errors">
-        <h2><%= pluralize(classified_listing.errors.count, "error") %> prohibited this listing from being saved:</h2>
-        <ul>
-        <% classified_listing.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-        </ul>
-      </div>
-    <% end %>
+    <%= render partial: "form_errors", locals: { classified_listing: classified_listing } %>
+
     <div id="listingform-data"
       data-listing="<%= classified_listing.to_json(only: %i[id title body_markdown category cached_tag_list]) %>"
       data-organizations="<%= @organizations.to_json(only: %i[id name]) %>"
@@ -53,7 +45,9 @@
         <% end %>
       </div>
     </div>
-      <%= javascript_pack_tag "listingForm", defer: true %>
+      <% unless @organizations.present? %>
+        <%= javascript_packs_with_chunks_tag "listingForm", defer: true %>
+      <% end %>
     <div class="field">
       <%= form.label "location", "Location (If applicable for events, etc.)" %>
       <%= form.text_field "location", placeholder: "32 characters max, plain text" %>
@@ -89,7 +83,7 @@
         has <span id="org-credits-number"><%= @organizations.first.credits.unspent.size %></span> credits -
           <a id="org-credits-purchase-link" target="_blank" rel="noopener noreferrer" href="/credits/purchase?organization_id=<%= @organizations.first.id %>" data-no-instant>Buy More</a>
         </div>
-        <%= javascript_pack_tag "orgCreditsSelector", defer: true %>
+        <%= javascript_packs_with_chunks_tag "listingForm", "orgCreditsSelector", defer: true %>
       <% end %>
     </div>
   </div>

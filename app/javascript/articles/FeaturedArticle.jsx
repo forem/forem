@@ -67,14 +67,14 @@ export const FeaturedArticle = ({
           />
         </a>
         <div className="featured-user-name">
-          <a href="/<%= article.cached_user.username %>">
+          <a href={`/${article.user.username}`}>
             {article.user.name} ・{' '}
             <time dateTime={article.published_timestamp}>
               {article.readable_publish_date}
             </time>
             <span
               className="time-ago-indicator-initial-placeholder"
-              data-seconds="<%= article.published_at_int %>"
+              data-seconds={`${article.published_at_int}`}
             />
           </a>
         </div>

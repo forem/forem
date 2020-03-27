@@ -1,5 +1,9 @@
 class PodcastEpisode < ApplicationRecord
   include AlgoliaSearch
+  include Searchable
+
+  SEARCH_SERIALIZER = Search::PodcastEpisodeSerializer
+  SEARCH_CLASS = Search::FeedContent
 
   acts_as_taggable
 
@@ -22,6 +26,9 @@ class PodcastEpisode < ApplicationRecord
   after_create :purge_all
   after_destroy :purge, :purge_all
   after_save    :bust_cache
+
+  after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :remove_from_elasticsearch, on: [:destroy]
 
   before_validation :process_html_and_prefix_all_images
 
@@ -54,6 +61,10 @@ class PodcastEpisode < ApplicationRecord
       attributesForFaceting [:class_name]
       customRanking ["desc(search_score)", "desc(hotness_score)"]
     end
+  end
+
+  def search_id
+    "podcast_episode_#{id}"
   end
 
   def user_username
@@ -127,6 +138,14 @@ class PodcastEpisode < ApplicationRecord
 
   def liquid_tags_used
     []
+  end
+
+  def mobile_player_metadata
+    {
+      podcastName: podcast.title,
+      episodeName: title,
+      podcastImageUrl: ApplicationController.helpers.app_url(podcast.image_url)
+    }
   end
 
   private

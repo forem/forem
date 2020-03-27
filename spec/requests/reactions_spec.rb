@@ -165,6 +165,27 @@ RSpec.describe "Reactions", type: :request do
       end
     end
 
+    context "when creating readinglist" do
+      before do
+        user.update_column(:experience_level, 8)
+        sign_in user
+        post "/reactions", params: {
+          reactable_id: article.id,
+          reactable_type: "Article",
+          category: "readinglist"
+        }
+      end
+
+      it "creates reaction" do
+        expect(Reaction.last.reactable_id).to eq(article.id)
+      end
+
+      it "creates rating vote" do
+        expect(RatingVote.last.context).to eq("readinglist_reaction")
+        expect(RatingVote.last.rating).to be(8.0)
+      end
+    end
+
     context "when vomiting on a user" do
       before do
         sign_in trusted_user
@@ -179,6 +200,42 @@ RSpec.describe "Reactions", type: :request do
         # same route to destroy, so sending POST request again
         post "/reactions", params: user_params
         expect(Reaction.all.size).to eq(0)
+      end
+    end
+
+    context "when signed in as admin" do
+      let_it_be(:admin) { create(:user, :admin) }
+
+      before do
+        sign_in admin
+      end
+
+      it "automatically approves vomits on users" do
+        post "/reactions", params: user_params
+
+        reaction = Reaction.find_by(reactable_id: user.id)
+        expect(reaction.category).to eq("vomit")
+        expect(reaction.status).to eq("confirmed")
+      end
+
+      it "automatically approves vomits on articles" do
+        post "/reactions", params: article_params.merge(category: "vomit")
+
+        reaction = Reaction.find_by(reactable_id: article.id)
+        expect(reaction.category).to eq("vomit")
+        expect(reaction.status).to eq("confirmed")
+      end
+    end
+
+    context "when part of field test" do
+      before do
+        sign_in user
+        allow(Users::RecordFieldTestEventWorker).to receive(:perform_async)
+      end
+
+      it "converts field test" do
+        post "/reactions", params: article_params
+        expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).with(user.id, :user_home_feed, "user_creates_reaction")
       end
     end
   end

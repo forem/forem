@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { storiesOf } from '@storybook/react';
+
 import { action } from '@storybook/addon-actions';
 import { SearchForm } from '..';
 
@@ -12,8 +12,19 @@ const commonProps = {
   },
 };
 
-storiesOf('Search/Search Form', module)
-  .add('No search term', () => <SearchForm {...commonProps} searchTerm="" />)
-  .add('With search term', () => (
-    <SearchForm {...commonProps} searchTerm="Hello" />
-  ));
+export default {
+  component: SearchForm,
+  title: 'App Components/Search/Search Form',
+};
+
+export const NoSearchTerm = () => <SearchForm {...commonProps} searchTerm="" />;
+NoSearchTerm.story = {
+  name: 'no search term',
+};
+
+export const WithSearchTerm = () => (
+  <SearchForm {...commonProps} searchTerm="Hello" />
+);
+NoSearchTerm.story = {
+  name: 'with search term',
+};

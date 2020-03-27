@@ -3,12 +3,11 @@
 <% end %>
 <% if @podcast %>
   <div class="user-profile-header tag-header podcast-header" style="background:#<%= @podcast.main_color_hex %> url(<%= cl_image_path(@podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png",
-                                                                                                                    type: "fetch",
-                                                                                                                    quality: "auto",
-                                                                                                                    sign_url: true,
-                                                                                                                    flags: "progressive",
-                                                                                                                    fetch_format: "jpg")
-                                                                                                                  %>);">
+                                                                                                                                     type: "fetch",
+                                                                                                                                     quality: "auto",
+                                                                                                                                     sign_url: true,
+                                                                                                                                     flags: "progressive",
+                                                                                                                                     fetch_format: "jpg") %>);">
     <div class="tag-or-query-header-container">
       <h1><img class="record" src="<%= cl_image_path(@podcast.image_url,
                                                      type: "fetch",
@@ -24,13 +23,12 @@
                <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" data-info='{"id":<%= @podcast.id %>,"className":"<%= @podcast.class.name %>"}'>&nbsp;</button>
 </h1>
     </div>
-    <%= render "podcast_episodes/subscribe_buttons" %>
   </div>
 <% end %>
 
 <div class="home" id="index-container"
      data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
-     data-algolia-tag=""
+     data-tag=""
      data-feed="<%= params[:timeframe] || "base-feed" %>"
      data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>">
   <%= render "podcast_episodes/sidebar" %>

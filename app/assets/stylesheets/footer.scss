@@ -27,7 +27,7 @@ footer {
       }
     }
     a {
-      @include themeable(color, theme-color, $black);
+      color: var(--body-color);
       display: inline-block;
       margin-right: 12px;
       &:hover {
@@ -54,5 +54,8 @@ footer {
 @media screen and (min-width: $max-width) {
   .stories-show + footer .inner-footer-container {
     margin-left: 16px;
+  }
+  .podcast_episodes-show + footer .inner-footer-container {
+    margin-left: auto;
   }
 }

@@ -23,6 +23,8 @@ linters:
         Enabled: false
       Layout/LineLength:
         Max: 289
+        Exclude:
+          - '**/app/views/comments/_comment_proper.html.erb'
       Layout/TrailingEmptyLines:
         Enabled: false
       Lint/UselessAssignment:

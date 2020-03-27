@@ -201,6 +201,13 @@
       <h3><strong>RunKit Embed</strong></h3>
       <p>Put executable code within a runkit liquid block, as follows:</p>
       <pre>{% runkit<br>// hidden setup JavaScript code goes in this preamble area<br>const hiddenVar = 42<br>%}<br>// visible, reader-editable JavaScript code goes here<br>console.log(hiddenVar)<br>{% endrunkit %}<br></pre>
+
+      <h3><strong>KaTeX Embed</strong></h3>
+      <p>Place your mathematical expression within a KaTeX liquid block, as follows:</p>
+      <pre>{% katex %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}<br></pre>
+      <p>To render KaTeX inline add the "inline" option:</p>
+      <pre>{% katex inline %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}<br></pre>
+
       <h3><strong>Stackblitz Embed</strong></h3>
       <p>All you need is the ID of the Stackblitz:</p>
       <code>{% stackblitz ball-demo %}</code>

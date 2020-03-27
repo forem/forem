@@ -10,7 +10,7 @@ RSpec.describe Search::IndexWorker, type: :worker do
   end
 
   it "doesn't fail if a record is not found" do
-    expect { worker.perform("Comment", -1) }.not_to raise_error
+    expect { worker.perform("User", -1) }.not_to raise_error
   end
 
   it "indexes a record if everything is fine" do

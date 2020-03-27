@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Users::Delete, type: :service do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :with_identity, identities: ["github"]) }
 
   it "deletes user" do
     described_class.call(user)

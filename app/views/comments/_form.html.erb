@@ -1,6 +1,4 @@
-<% flash.each do |type, message| %>
-  <div class="alert alert-<%= type %>"><%= message %></div>
-<% end %>
+<%= javascript_packs_with_chunks_tag "validateFileInputs", defer: true %>
 
 <% if @comment.errors.any? %>
   <div id="error_explanation">

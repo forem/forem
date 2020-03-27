@@ -2,6 +2,8 @@ module Users
   module DeleteActivity
     module_function
 
+    # If you're removing data that is in Elasticsearch, make sure to use
+    # .destroy_all to trigger the callback to remove the document(s)
     def call(user)
       user.notifications.delete_all
       user.reactions.delete_all
@@ -34,8 +36,9 @@ module Users
       user.pro_membership.delete if user.pro_membership.present?
       user.profile_pins.delete_all
       user.rating_votes.delete_all
+      user.response_templates.delete_all
       user.tweets.delete_all
-      user.classified_listings.delete_all
+      user.classified_listings.destroy_all
 
       handle_feedback_messages(user)
     end

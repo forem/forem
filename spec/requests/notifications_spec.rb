@@ -4,13 +4,13 @@ RSpec.describe "NotificationsIndex", type: :request do
   include ActionView::Helpers::DateHelper
 
   let_it_be_readonly(:dev_account) { create(:user) }
-  let_it_be_readonly(:welcoming_account) { create(:user) }
+  let_it_be_readonly(:mascot_account) { create(:user) }
   let_it_be_changeable(:user) { create(:user) }
   let_it_be_changeable(:organization) { create(:organization) }
 
   before do
     allow(User).to receive(:dev_account).and_return(dev_account)
-    allow(User).to receive(:welcoming_account).and_return(welcoming_account)
+    allow(User).to receive(:mascot_account).and_return(mascot_account)
   end
 
   def has_both_names(response_body)
@@ -538,15 +538,15 @@ RSpec.describe "NotificationsIndex", type: :request do
         get "/notifications"
       end
 
-      it "renders the proper message" do
+      it "does not render the notification message" do
         expect(response.body).not_to include "Since they are new to the community, could you leave a nice reply"
       end
 
-      it "renders the article's path" do
+      it "does not render the article's path" do
         expect(response.body).not_to include article.path
       end
 
-      it "renders the comment's processed HTML" do
+      it "does not render the comment's processed HTML" do
         expect(response.body).not_to include comment.processed_html
       end
     end
@@ -560,29 +560,41 @@ RSpec.describe "NotificationsIndex", type: :request do
         user.add_role :trusted
         user.update(mod_roundrobin_notifications: false)
         sign_in user
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           Notification.send_moderation_notification(comment)
         end
         get "/notifications"
       end
 
-      it "renders the proper message" do
+      it "does not render the proper message" do
         expect(response.body).not_to include "Since they are new to the community, could you leave a nice reply"
       end
 
-      it "renders the article's path" do
+      it "does not render the article's path" do
         expect(response.body).not_to include article.path
       end
 
-      it "renders the comment's processed HTML" do
+      it "does not render the comment's processed HTML" do
         expect(response.body).not_to include comment.processed_html
+      end
+    end
+
+    context "when user is trusted" do
+      let(:user) { create(:user, :trusted) }
+      let(:reaction) { create(:thumbsdown_reaction, user: user) }
+
+      it "allow sees thumbsdown category" do
+        sign_in user
+        Notification.send_reaction_notification_without_delay(reaction, user)
+        get "/notifications"
+        expect(response.body).to include("Notifications")
       end
     end
 
     context "when a user has a new welcome notification" do
       # TODO: [@thepracticaldev/delightful] Only test against type_of Welcome once Onbarding notifications have been removed.
-      let(:active_broadcast) { create(:broadcast, :onboarding, :active) }
-      let(:inactive_broadcast) { create(:broadcast, :onboarding) }
+      let(:active_broadcast) { create(:onboarding_broadcast, :active) }
+      let(:inactive_broadcast) { create(:onboarding_broadcast) }
 
       before { sign_in user }
 

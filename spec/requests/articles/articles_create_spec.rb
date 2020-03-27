@@ -88,7 +88,7 @@ RSpec.describe "ArticlesCreate", type: :request do
 
     it "doesn't fail when executing jobs" do
       stub_request(:post, url).to_return(status: 200)
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         post "/articles", params: article_params
       end
     end

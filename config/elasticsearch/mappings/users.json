@@ -1,0 +1,48 @@
+{
+  "dynamic": "strict",
+  "properties": {
+    "id": {
+      "type": "keyword"
+    },
+    "available_for": {
+      "type": "keyword",
+      "copy_to": "search_fields"
+    },
+    "comments_count": {
+      "type": "integer"
+    },
+    "employer_name": {
+      "type": "keyword",
+      "copy_to": "search_fields"
+    },
+    "hotness_score": {
+      "type": "integer"
+    },
+    "mostly_work_with": {
+      "type": "keyword",
+      "copy_to": "search_fields"
+    },
+    "name": {
+      "type": "text",
+      "copy_to": "search_fields"
+    },
+    "path": {
+      "type": "keyword"
+    },
+    "positive_reactions_count": {
+      "type": "integer"
+    },
+    "profile_image_90": {
+      "type": "keyword"
+    },
+    "reactions_count": {
+      "type": "integer"
+    },
+    "search_fields": {
+      "type": "text"
+    },
+    "username": {
+      "type": "keyword"
+    }
+  }
+}

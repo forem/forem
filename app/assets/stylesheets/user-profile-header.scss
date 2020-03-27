@@ -9,7 +9,7 @@
   width: 1216px;
   max-width: 92%;
   margin: 24px auto;
-  @include themeable(background, theme-container-background, #fff);
+  background: var(--container-bg);
   border-radius: 3px;
   @media screen and (min-width: 950px) {
     max-width: 98%;
@@ -41,10 +41,24 @@
   &.podcast-header {
     background: rgb(5, 22, 32);
     text-align: center;
-    padding-bottom: 60px;
+    padding: 70px 0px;
     color: white;
     h1 {
       font-size: calc(2vw + 28px);
+      .follow-action-button {
+        font-size: 25px;
+        display: block;
+        margin: 10px auto;
+        width: 100%;
+        padding: 15px 0px;
+        @media screen and (min-width: 950px) {
+          vertical-align: 3px;
+          display: inline-block;
+          font-size: calc(1.9vw + 8px);
+          width: 280px;
+          padding: 3px 0px;
+        }
+      }
     }
     img.record {
       height: 150px;
@@ -171,7 +185,7 @@
         padding: 0px 0px;
         margin: 0;
         font-style: italic;
-        @include themeable(color, theme-secondary-color, $medium-gray);
+        color: var(--container-color-tertiary);
         width: 94%;
         font-size: 0.9em;
         margin-top: 12px;
@@ -262,7 +276,7 @@
         font-size: 0.7em;
         font-weight: 800;
         margin-bottom: 2px;
-        @include themeable(color, theme-secondary-color, $medium-gray);
+        color: var(--container-color-tertiary);
       }
       .value {
         display: inline-block;
@@ -299,7 +313,6 @@
   }
   .user-profile-follow-button {
     background: $green;
-    color: white;
     border: 0;
     font-size: 17px;
     border-radius: 3px;
@@ -497,13 +510,13 @@
       right: 3px;
       border: 1px solid $light-medium-gray;
       border-radius: 3px;
-      @include themeable(background, theme-container-background, #fff);
+      background: var(--container-bg);
       z-index: 20;
       width: 200px;
       box-shadow: $shadow;
       a {
         font-size: 0.75em;
-        @include themeable(color, theme-color, $black);
+        color: var(--body-color);
         display: block;
         padding: 9px 10px;
         font-weight: bold;
@@ -513,7 +526,7 @@
       }
       button {
         font-size: 0.75em;
-        @include themeable(color, theme-color, $black);
+        color: var(--body-color);
         font-weight: bold;
         width: 100%;
         text-align: left;

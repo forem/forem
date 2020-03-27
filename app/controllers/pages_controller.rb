@@ -39,10 +39,6 @@ class PagesController < ApplicationController
     set_surrogate_key_header "badge_page"
   end
 
-  def onboarding
-    set_surrogate_key_header "onboarding_page"
-  end
-
   def report_abuse
     referer = URI(request.referer || "").path == "/serviceworker.js" ? nil : request.referer
     reported_url = params[:reported_url] || params[:url] || referer
@@ -62,7 +58,7 @@ class PagesController < ApplicationController
   end
 
   def welcome
-    daily_thread = latest_published_thread("welcome")
+    daily_thread = Article.admin_published_with("welcome").first
     if daily_thread
       redirect_to daily_thread.path
     else
@@ -72,7 +68,7 @@ class PagesController < ApplicationController
   end
 
   def challenge
-    daily_thread = latest_published_thread("challenge")
+    daily_thread = Article.admin_published_with("challenge").first
     if daily_thread
       redirect_to daily_thread.path
     else
@@ -87,12 +83,9 @@ class PagesController < ApplicationController
     )
   end
 
-  private
-
-  def latest_published_thread(tag_name)
-    Article.published.
-      where(user_id: SiteConfig.staff_user_id).
-      order("published_at ASC").
-      tagged_with(tag_name).last
+  def crayons
+    @page = Page.find_by(slug: "crayons")
+    render :show if @page
+    set_surrogate_key_header "crayons_page"
   end
 end

@@ -1,7 +1,7 @@
 <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
   <div class="sidebar-bg" id="sidebar-bg-left"></div>
   <div class="side-bar">
-    <% cache("main-sidebar-nav--#{user_signed_in?}-#{ApplicationConfig['HEROKU_SLUG_COMMIT']}", expires_in: 5.days) do %>
+    <% cache(cache_key_heroku_slug("main-sidebar-nav--#{user_signed_in?}"), expires_in: 5.days) do %>
       <%= render "articles/sidebar_nav" %>
       <div class="widget widget-sponsorship <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
         <header>
@@ -28,12 +28,22 @@
         <header>
           <h4>Key links</h4>
         </header>
-        <div class="widget-body">
-          <a href="https://twitter.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener"><img src="<%= asset_path("twitter-logo.svg") %>" alt="Twitter logo" class="social-icon" /></a>
-          <a href="https://github.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener"><img src="<%= asset_path("github-logo.svg") %>" alt="GitHub logo" class="social-icon" /></a>
-          <a href="https://instagram.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener"><img src="<%= asset_path("instagram-logo.svg") %>" alt="Instagram logo" class="social-icon" /></a>
-          <a href="https://facebook.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener"><img src="<%= asset_path("facebook-logo.svg") %>" alt="Facebook logo" class="social-icon" /></a>
-          <a href="https://twitch.tv/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener"><img src="<%= asset_path("twitch-logo.svg") %>" alt="Twitch logo" class="social-icon" /></a>
+        <div class="widget-body social-icons">
+          <a href="https://twitter.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener">
+            <%= inline_svg_tag("twitter.svg", aria: true, title: "Twitter", class: "crayons-icon") %>
+          </a>
+          <a href="https://github.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener">
+            <%= inline_svg_tag("github.svg", aria: true, title: "Github", class: "crayons-icon") %>
+          </a>
+          <a href="https://instagram.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener">
+            <%= inline_svg_tag("instagram.svg", aria: true, title: "Instagram", class: "crayons-icon") %>
+          </a>
+          <a href="https://facebook.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener">
+            <%= inline_svg_tag("facebook.svg", aria: true, title: "Facebook", class: "crayons-icon") %>
+          </a>
+          <a href="https://twitch.tv/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener">
+            <%= inline_svg_tag("twitch.svg", aria: true, title: "Twitch", class: "crayons-icon") %>
+          </a>
         </div>
         <div class="side-footer">
           <a href="/about">About</a>

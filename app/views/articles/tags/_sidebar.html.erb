@@ -1,4 +1,4 @@
-<% cache "tag-sidebar-#{@tag}-#{@tag_model&.updated_at}-#{@tag_model&.taggings_count}", expires_in: 5.hours do %>
+<% cache "tag-sidebar-#{@tag}-#{@tag_model&.updated_at}-#{@tag_model&.taggings_count}-#{user_signed_in?}", expires_in: 5.hours do %>
   <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
     <div class="sidebar-bg" id="sidebar-bg-left"></div>
     <div class="side-bar">
@@ -76,6 +76,22 @@
               MODERATE
             </a>
           </span>
+        <% else %>
+          <% number_of_pages = @num_published_articles / @number_of_articles %>
+          <% if number_of_pages > 1 %>
+            <hr />
+            <div class="olderposts-header">Older #<%= @tag %> posts</div>
+            <div class="olderposts-links">
+              <% (1..number_of_pages).each do |n| %>
+                <% next if (@page - n).abs > 5 && number_of_pages > 10 %>
+                <% if @page == n %>
+                    <span class="olderposts-pagenumber"><%= n %></span>
+                <% else %>
+                    <a href="/t/<%= @tag_model.name %><%= "/page/#{n}" if n > 1 %>" class="olderposts-pagenumber"><%= n %></a>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
         <% end %>
       </div>
     </div>

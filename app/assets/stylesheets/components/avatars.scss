@@ -1,0 +1,66 @@
+@import '../config/import';
+
+// avatar-logo() - Generates styles for Avatars or Logos component
+//
+// Logos & avatars look almost the same with tiny difference. They're
+// supposed to be separate components so for that reason they have
+// separate classes. Because of that we have mixing which is meant to
+// generate specific styles for both.
+//
+// @param {string} $name        Name of the component, will be included in class name
+// @param {number} $radius      Value for border-radius
+// @param {color} $background   Background visible until image loads in.
+
+@mixin avatar-logo($name, $radius, $background) {
+  .crayons-#{$name} {
+    display: inline-block;
+    border-radius: $radius;
+    position: relative;
+    background-color: $background;
+    width: $su-6;
+    height: $su-6;
+
+    &__image {
+      border-radius: $radius;
+      width: 100%;
+      height: 100%;
+      vertical-align: bottom; // todo: do we need it?
+    }
+
+    &::after {
+      content: '';
+      border: 1px solid var(--body-color);
+      opacity: 0.15;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      border-radius: $radius;
+      pointer-events: none;
+    }
+
+    &--l {
+      width: $su-7;
+      height: $su-7;
+    }
+
+    &--xl {
+      width: $su-8;
+      height: $su-8;
+    }
+
+    &--2xl {
+      width: $su-9;
+      height: $su-9;
+    }
+
+    &--3xl {
+      width: $su-10;
+      height: $su-10;
+    }
+  }
+}
+
+@include avatar-logo('avatar', 100%, var(--widget-color-tertiary));
+@include avatar-logo('logo', $br-default, var(--body-color-inverted));

@@ -1,12 +1,13 @@
+@import 'config/import';
+
 @import 'variables';
 @import 'mixins';
 @import 'fonts';
 
 body {
-  @include themeable(background, theme-background, $lightest-gray);
-  @include themeable(color, theme-color, $black);
-  font-family: $helvetica;
-  font-size: 18px;
+  background: var(--body-bg);
+  color: var(--body-color);
+  font-family: $ff-default;
   padding: 0;
   margin: 0;
   overflow-y: scroll;
@@ -61,10 +62,11 @@ body {
   overflow: hidden;
   min-height: 88vh;
   visibility: visible;
+  font-size: 18px;
 }
 
 a {
-  @include themeable(color, theme-anchor-color, $sky-blue);
+  color: var(--link-brand-color);
   text-decoration: none;
   &:hover {
     opacity: 0.9;
@@ -132,7 +134,8 @@ body.ten-x-hacker-theme {
   .dev-badge,
   .chatchannels__config img,
   .external-link-img,
-  .group-img {
+  .group-img,
+  .user-profile-header .social a {
     -webkit-filter: invert(95%);
     filter: invert(95%);
   }
@@ -159,13 +162,12 @@ body.static-navbar-config {
   }
 }
 
-.pro-visible-block,
 .trusted-visible-block {
   display: none !important;
 }
 
 body.trusted-status-true .trusted-visible-block {
-  display: block !important;
+  display: flex !important;
 }
 
 body.hidden-shell {

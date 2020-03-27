@@ -77,7 +77,7 @@ const Channels = ({
         {' '}
         Welcome to
         <b> DEV Connect</b>
-! You may message anyone you mutually follow.
+        ! You may message anyone you mutually follow.
       </div>
     );
   }

@@ -1,0 +1,28 @@
+@import '../config/import';
+@import '../base/boxes';
+
+%notice-style {
+  @extend .crayons-box;
+  @extend .crayons-box--level-1;
+  padding: $su-4;
+}
+
+.crayons-notice {
+  @extend %notice-style;
+
+  &--danger {
+    @extend .crayons-box--danger;
+  }
+
+  &--warning {
+    @extend .crayons-box--warning;
+  }
+
+  &--success {
+    @extend .crayons-box--success;
+  }
+
+  &--info {
+    @extend .crayons-box--info;
+  }
+}

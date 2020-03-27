@@ -17,7 +17,7 @@
   }
   .ltag__tag__content {
     a {
-      @include themeable-important(color, theme-container-color, $black);
+      color: var(--container-color);
     }
     width: 90%;
     width: calc(100% - 36px);
