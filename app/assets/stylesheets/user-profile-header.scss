@@ -282,6 +282,10 @@
         display: inline-block;
         font-size: 0.85em;
         margin-bottom: 4px;
+
+        a {
+          color: var(--button-primary-bg);
+        }
       }
     }
   }
