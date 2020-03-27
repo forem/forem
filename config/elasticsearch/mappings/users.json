@@ -18,6 +18,9 @@
     "hotness_score": {
       "type": "integer"
     },
+    "last_indexed_at": {
+      "type": "date"
+    },
     "mostly_work_with": {
       "type": "keyword",
       "copy_to": "search_fields"

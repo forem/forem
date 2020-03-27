@@ -50,6 +50,9 @@
     },
     "channel_messages_count": {
       "type": "integer"
+    },
+    "last_indexed_at": {
+      "type": "date"
     }
   }
 }
