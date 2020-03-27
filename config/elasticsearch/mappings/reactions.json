@@ -7,6 +7,9 @@
     "category": {
       "type": "keyword"
     },
+    "last_indexed_at": {
+      "type": "date"
+    },
     "reactable": {
       "dynamic": "strict",
       "properties": {
