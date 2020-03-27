@@ -39,7 +39,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   describe "#send_welcome_notification" do
     let(:user) { create(:user, created_at: 4.hours.ago) }
 
-    it "does not send notification to a newly created user" do
+    it "does not send a notification to a newly-created user" do
       user.update!(created_at: Time.zone.now)
       sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_welcome_notification) }
       expect(user.notifications.count).to eq(0)
@@ -94,8 +94,6 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_authentication_notification) }
       expect(Notification).not_to have_received(:send_welcome_notification).with(user.id, github_connect_broadcast.id)
     end
-
-    # it_behaves_like "unsubscribed from welcome notifications"
 
     it "does not send a duplicate notifications (github)" do
       allow(Notification).to receive(:send_welcome_notification).and_call_original

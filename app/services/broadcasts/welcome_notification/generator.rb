@@ -28,7 +28,7 @@ module Broadcasts
       end
 
       def send_authentication_notification
-        return if authenticated_with_all_authentication_providers? || received_notification?(authentication_broadcast) || user.created_at > 1.day.ago
+        return if authenticated_with_all_providers? || received_notification?(authentication_broadcast) || user.created_at > 1.day.ago
 
         Notification.send_welcome_notification(user.id, authentication_broadcast.id)
       end
@@ -42,7 +42,7 @@ module Broadcasts
         Comment.where(commentable: welcome_thread, user: user).any?
       end
 
-      def authenticated_with_all_authentication_providers?
+      def authenticated_with_all_providers?
         identities.count == SiteConfig.authentication_providers.count
       end
 
