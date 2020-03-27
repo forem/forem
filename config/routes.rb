@@ -393,6 +393,7 @@ Rails.application.routes.draw do
   get "/t/:tag/admin", to: "tags#admin"
   patch "/tag/:id", to: "tags#update"
   get "/t/:tag/top/:timeframe" => "stories#index"
+  get "/t/:tag/page/:page" => "stories#index"
   get "/t/:tag/:timeframe" => "stories#index",
       :constraints => { timeframe: /latest/ }
 

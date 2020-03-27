@@ -3,20 +3,20 @@
      timeframe: params[:timeframe],
      content_for: true,
    ) %>
-<link rel="canonical" href="https://dev.to/t/<%= @tag %>" />
-<meta name="description" content="<%= @tag %> content on dev.to">
-<meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+<link rel="canonical" href="<%= tag_url(@tag_model, @page) %>" />
+<meta name="description" content="<%= @tag %> content on <%= ApplicationConfig["COMMUNITY_NAME"] %>">
+<meta name="keywords" content="software development,engineering,<%= @tag %>">
 
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://dev.to/t/<%= @tag %>" />
+<meta property="og:url" content="<%= tag_url(@tag_model, @page) %>" />
 <meta property="og:title" content="<%= title_with_timeframe(page_title: @tag.capitalize, timeframe: params[:timeframe]) %>" />
-<meta property="og:description" content="<%= @tag.capitalize %> content on dev.to" />
-<meta property="og:site_name" content="The DEV Community" />
+<meta property="og:description" content="<%= @tag.capitalize %> content on <%= ApplicationConfig["COMMUNITY_NAME"] %>" />
+<meta property="og:site_name" content="<%= ApplicationConfig["COMMUNITY_NAME"] %> Community" />
 
 <meta name="twitter:site" content="@<%= SiteConfig.social_networks_handle %>">
 <meta name="twitter:creator" content="@<%= @tag.capitalize %>">
 <meta name="twitter:title" content="<%= title_with_timeframe(page_title: @tag.capitalize, timeframe: params[:timeframe]) %>">
-<meta name="twitter:description" content="<%= @tag.capitalize %> content on dev.to">
+<meta name="twitter:description" content="<%= @tag.capitalize %> content on <%= ApplicationConfig["COMMUNITY_NAME"] %>">
 
 <% if @tag_model %>
   <meta name="twitter:card" content="summary_large_image">
