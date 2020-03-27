@@ -83,6 +83,26 @@ class Reaction < ApplicationRecord
       (receiver.is_a?(User) && reactable.receive_notifications == false)
   end
 
+  def vomit_on_user?
+    reactable_type == "User" && category == "vomit"
+  end
+
+  def reaction_on_organization_article?
+    reactable_type == "Article" && reactable.organization.present?
+  end
+
+  def target_user
+    if reactable_type == "User"
+      reactable
+    else
+      reactable.user
+    end
+  end
+
+  def negative?
+    category == "vomit" || category == "thumbsdown"
+  end
+
   private
 
   def touch_user
@@ -182,10 +202,6 @@ class Reaction < ApplicationRecord
 
   def remove_algolia
     remove_from_index!
-  end
-
-  def negative?
-    category == "vomit" || category == "thumbsdown"
   end
 
   def record_field_test_event

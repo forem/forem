@@ -11,6 +11,8 @@ class StoriesController < ApplicationController
     ]
   }.freeze
 
+  SIGNED_OUT_RECORD_COUNT = (Rails.env.production? ? 60 : 10).freeze
+
   before_action :authenticate_user!, except: %i[index search show]
   before_action :set_cache_control_headers, only: %i[index search show]
 
@@ -112,6 +114,7 @@ class StoriesController < ApplicationController
 
   def handle_tag_index
     @tag = params[:tag].downcase
+    @page = (params[:page] || 1).to_i
     @tag_model = Tag.find_by(name: @tag) || not_found
     @moderators = User.with_role(:tag_moderator, @tag_model).select(:username, :profile_image, :id)
     if @tag_model.alias_for.present?
@@ -122,10 +125,11 @@ class StoriesController < ApplicationController
     @num_published_articles = if @tag_model.requires_approval?
                                 Article.published.cached_tagged_by_approval_with(@tag).size
                               else
-                                Article.published.cached_tagged_with(@tag).size
+                                Article.published.cached_tagged_with(@tag).where("score > 2").size
                               end
-    number_of_articles = user_signed_in? ? 5 : 45
-    @stories = Articles::Feed.new(number_of_articles: number_of_articles, tag: @tag).published_articles_by_tag
+    @number_of_articles = user_signed_in? ? 5 : SIGNED_OUT_RECORD_COUNT
+    @stories = Articles::Feed.new(number_of_articles: @number_of_articles, tag: @tag, page: @page).
+      published_articles_by_tag
 
     @stories = @stories.where(approved: true) if @tag_model&.requires_approval
 
@@ -293,7 +297,7 @@ class StoriesController < ApplicationController
     @stories = ArticleDecorator.decorate_collection(@user.articles.published.
       limited_column_select.
       where.not(id: @pinned_stories.pluck(:id)).
-      order("published_at DESC").page(@page).per(user_signed_in? ? 2 : 20))
+      order("published_at DESC").page(@page).per(user_signed_in? ? 2 : SIGNED_OUT_RECORD_COUNT))
   end
 
   def stories_by_timeframe
@@ -301,9 +305,9 @@ class StoriesController < ApplicationController
       @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
         order("positive_reactions_count DESC")
     elsif params[:timeframe] == "latest"
-      @stories.where("score > ?", -40).order("published_at DESC")
+      @stories.where("score > ?", -20).order("published_at DESC")
     else
-      @stories.order("hotness_score DESC")
+      @stories.order("hotness_score DESC").where("score > 2")
     end
   end
 
