@@ -248,20 +248,6 @@ class Comment < ApplicationRecord
   end
 
   def notify_slack_channel_about_warned_users
-    url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
-
-    message = <<~MESSAGE.chomp
-      Activity: #{url}#{path}
-      Comment text: #{body_markdown.truncate(300)}
-      ---
-      Manage commenter - @#{user.username}: #{url}/internal/users/#{user.id}
-    MESSAGE
-
-    SlackBotPingWorker.perform_async(
-      message: message,
-      channel: "warned-user-comments",
-      username: "sloan_watch_bot",
-      icon_emoji: ":sloan:",
-    )
+    Slack::Messengers::CommentUserWarned.call(comment: self)
   end
 end
