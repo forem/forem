@@ -6,7 +6,8 @@ Rails.logger.info "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}"
 
 ##############################################################################
 
-Rails.logger.info "#{counter += 1}. Creating Organizations"
+counter += 1
+Rails.logger.info "#{counter}. Creating Organizations"
 
 3.times do
   Organization.create!(
@@ -27,7 +28,8 @@ end
 
 num_users = 10 * SEEDS_MULTIPLIER
 
-Rails.logger.info "#{counter += 1}. Creating #{num_users} Users"
+counter += 1
+Rails.logger.info "#{counter}. Creating #{num_users} Users"
 
 User.clear_index!
 
@@ -49,7 +51,7 @@ num_users.times do |i|
     password: "password",
   )
 
-  if i == 0
+  if i.zero?
     user.add_role(:trusted) # guarantee at least one moderator
   else
     user.add_role(roles[rand(0..roles.length)]) # includes chance of having no role
@@ -93,7 +95,8 @@ end
 
 ##############################################################################
 
-Rails.logger.info "#{counter += 1}. Creating Tags"
+counter += 1
+Rails.logger.info "#{counter}. Creating Tags"
 
 tags = %w[beginners career computerscience git go
           java javascript linux productivity python security webdev]
@@ -111,7 +114,8 @@ end
 
 num_articles = 25 * SEEDS_MULTIPLIER
 
-Rails.logger.info "#{counter += 1}. Creating #{num_articles} Articles"
+counter += 1
+Rails.logger.info "#{counter}. Creating #{num_articles} Articles"
 
 Article.clear_index!
 
@@ -145,7 +149,8 @@ end
 
 num_comments = 30 * SEEDS_MULTIPLIER
 
-Rails.logger.info "#{counter += 1}. Creating #{num_comments} Comments"
+counter += 1
+Rails.logger.info "#{counter}. Creating #{num_comments} Comments"
 
 num_comments.times do
   attributes = {
@@ -160,7 +165,8 @@ end
 
 ##############################################################################
 
-Rails.logger.info "#{counter += 1}. Creating Podcasts"
+counter += 1
+Rails.logger.info "#{counter}. Creating Podcasts"
 
 image_file = Rails.root.join("spec/support/fixtures/images/image1.jpeg")
 
@@ -228,7 +234,8 @@ end
 
 ##############################################################################
 
-Rails.logger.info "#{counter += 1}. Creating Broadcasts and Welcome Thread"
+counter += 1
+Rails.logger.info "#{counter}. Creating Broadcasts and Welcome Thread"
 
 # TODO: [@thepracticaldev/delightful] Remove this once we have launched welcome notifications.
 Broadcast.create!(
@@ -274,7 +281,8 @@ Article.create!(
 
 ##############################################################################
 
-Rails.logger.info "#{counter += 1}. Creating Chat Channels and Messages"
+counter += 1
+Rails.logger.info "#{counter}. Creating Chat Channels and Messages"
 
 %w[Workshop Meta General].each do |chan|
   ChatChannel.create!(
@@ -293,7 +301,8 @@ Message.create!(
 
 ##############################################################################
 
-Rails.logger.info "#{counter += 1}. Creating HTML Variants"
+counter += 1
+Rails.logger.info "#{counter}. Creating HTML Variants"
 
 HtmlVariant.create!(
   name: rand(100).to_s,
@@ -307,7 +316,8 @@ HtmlVariant.create!(
 
 ##############################################################################
 
-Rails.logger.info "#{counter += 1}. Creating Badges"
+counter += 1
+Rails.logger.info "#{counter}. Creating Badges"
 
 Badge.create!(
   title: Faker::Lorem.word,
@@ -317,7 +327,8 @@ Badge.create!(
 
 ##############################################################################
 
-Rails.logger.info "#{counter += 1}. Creating FeedbackMessages"
+counter += 1
+Rails.logger.info "#{counter}. Creating FeedbackMessages"
 
 mod = User.first
 
@@ -356,7 +367,8 @@ end
 
 ##############################################################################
 
-Rails.logger.info "#{counter += 1}. Creating Classified Listings"
+counter += 1
+Rails.logger.info "#{counter}. Creating Classified Listings"
 
 users = User.order(Arel.sql("RANDOM()")).to_a
 users.each { |user| Credit.add_to(user, rand(100)) }
@@ -383,7 +395,8 @@ end
 
 ##############################################################################
 
-Rails.logger.info "#{counter += 1}. Creating Pages"
+counter += 1
+Rails.logger.info "#{counter}. Creating Pages"
 
 5.times do
   Page.create!(
