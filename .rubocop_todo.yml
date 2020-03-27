@@ -35,11 +35,6 @@ RSpec/ExampleLength:
 RSpec/MultipleExpectations:
   Max: 8
 
-# Offense count: 2
-RSpec/RepeatedDescription:
-  Exclude:
-    - 'spec/requests/stories_show_spec.rb'
-
 # Offense count: 1
 RSpec/SubjectStub:
   Exclude:
@@ -48,9 +43,9 @@ RSpec/SubjectStub:
 # Offense count: 2
 # Configuration parameters: Include.
 # Include: app/helpers/**/*.rb
-Rails/HelperInstanceVariable:
-  Exclude:
-    - 'app/helpers/application_helper.rb'
+# Rails/HelperInstanceVariable:
+#   Exclude:
+#     - 'app/helpers/application_helper.rb'
 
 # Offense count: 11
 Rails/OutputSafety:
