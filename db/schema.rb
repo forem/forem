@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_26_110404) do
+ActiveRecord::Schema.define(version: 2020_03_26_111645) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,15 +48,9 @@ ActiveRecord::Schema.define(version: 2020_03_26_110404) do
   end
 
   create_table "articles", id: :serial, force: :cascade do |t|
-    t.string "abuse_removal_reason"
-    t.boolean "allow_big_edits", default: true
-    t.boolean "allow_small_edits", default: true
-    t.float "amount_due", default: 0.0
-    t.float "amount_paid", default: 0.0
     t.boolean "any_comments_hidden", default: false
     t.boolean "approved", default: false
     t.boolean "archived", default: false
-    t.boolean "automatically_renew", default: false
     t.text "body_html"
     t.text "body_markdown"
     t.jsonb "boost_states", default: {}, null: false
@@ -67,7 +61,6 @@ ActiveRecord::Schema.define(version: 2020_03_26_110404) do
     t.string "cached_user_username"
     t.string "canonical_url"
     t.integer "collection_id"
-    t.integer "collection_position"
     t.integer "comment_score", default: 0
     t.string "comment_template"
     t.integer "comments_count", default: 0, null: false
@@ -80,25 +73,16 @@ ActiveRecord::Schema.define(version: 2020_03_26_110404) do
     t.float "experience_level_rating_distribution", default: 5.0
     t.datetime "facebook_last_buffered"
     t.boolean "featured", default: false
-    t.float "featured_clickthrough_rate", default: 0.0
-    t.integer "featured_impressions", default: 0
     t.integer "featured_number"
     t.string "feed_source_url"
     t.integer "hotness_score", default: 0
-    t.string "ids_for_suggested_articles", default: "[]"
-    t.integer "job_opportunity_id"
     t.string "language"
     t.datetime "last_buffered"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
     t.datetime "last_experience_level_rating_at"
-    t.datetime "last_invoiced_at"
-    t.decimal "lat", precision: 10, scale: 6
     t.boolean "live_now", default: false
-    t.decimal "long", precision: 10, scale: 6
     t.string "main_image"
     t.string "main_image_background_hex_color", default: "#dddddd"
-    t.string "main_tag_name_for_social"
-    t.string "name_within_collection"
     t.integer "nth_published_by_author", default: 0
     t.integer "organic_page_views_count", default: 0
     t.integer "organic_page_views_past_month_count", default: 0
@@ -106,7 +90,6 @@ ActiveRecord::Schema.define(version: 2020_03_26_110404) do
     t.integer "organization_id"
     t.datetime "originally_published_at"
     t.integer "page_views_count", default: 0
-    t.boolean "paid", default: false
     t.string "password"
     t.string "path"
     t.integer "positive_reactions_count", default: 0, null: false
@@ -119,7 +102,6 @@ ActiveRecord::Schema.define(version: 2020_03_26_110404) do
     t.integer "reactions_count", default: 0, null: false
     t.integer "reading_time", default: 0
     t.boolean "receive_notifications", default: true
-    t.boolean "removed_for_abuse", default: false
     t.integer "score", default: 0
     t.integer "second_user_id"
     t.boolean "show_comments", default: true
