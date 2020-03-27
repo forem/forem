@@ -1,4 +1,5 @@
 const path = require('path');
+const { ProgressPlugin } = require('webpack');
 
 module.exports = {
   stories: ['../**/__stories__/*.stories.jsx'],
@@ -38,6 +39,9 @@ module.exports = {
 
     if (configType === 'PRODUCTION') {
       config.stats = 'errors-only';
+      config.plugins = config.plugins.filter(
+        plugin => !(plugin instanceof ProgressPlugin),
+      );
     }
 
     return config;
