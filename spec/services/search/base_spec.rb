@@ -22,7 +22,7 @@ RSpec.describe Search::Base, type: :service, elasticsearch: true do
       Timecop.freeze(Time.current) do
         described_class.index(document_id, id: document_id)
         last_indexed_at = described_class.find_document(document_id).dig("_source", "last_indexed_at")
-        expect(Time.parse(last_indexed_at).to_i).to eq(Time.current.to_i)
+        expect(Time.zone.parse(last_indexed_at).to_i).to eq(Time.current.to_i)
       end
     end
   end
