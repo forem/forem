@@ -150,7 +150,7 @@
             max-width: 100%;
             display: inline-block;
             margin-bottom: 3px;
-            @include themeable-important(color, theme-color, $black);
+            @include themeable-important(color, theme-color, $white);
             &:hover {
               @include themeable(
                 background,
