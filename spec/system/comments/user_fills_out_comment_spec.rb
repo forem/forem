@@ -101,4 +101,24 @@ RSpec.describe "Creating Comment", type: :system, js: true do
       text: "Invalid file format (image). Only video files are permitted.",
     )
   end
+
+  it "User attaches a file with too long of a name" do
+    visit article.path.to_s
+
+    limit_file_name_length = 'document.querySelector("#image-upload-main").setAttribute("data-max-file-name-length", "5")'
+    page.execute_script(limit_file_name_length)
+    expect(page).to have_selector('input[data-max-file-name-length="5"]', visible: false)
+
+    attach_file(
+      "image-upload-main",
+      Rails.root.join("app/assets/images/sloan.png"),
+      visible: false,
+    )
+
+    expect(page).to have_css("div.file-upload-error")
+    expect(page).to have_css(
+      "div.file-upload-error",
+      text: "File name is too long. It can't be longer than 5 characters.",
+    )
+  end
 end
