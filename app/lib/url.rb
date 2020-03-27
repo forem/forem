@@ -30,6 +30,13 @@ module URL
     url(article.path)
   end
 
+  # Creates an article URL
+  #
+  # @param tag [Tag] the tag to create the URL for
+  def self.tag(tag, page = 1)
+    url(["/t/#{tag.name}", ("/page/#{page}" if page > 1)].join)
+  end
+
   # Creates a user URL
   #
   # @param user [User] the user to create the URL for
