@@ -768,7 +768,7 @@ RSpec.describe Article, type: :model do
         end
       end
 
-      it "does not queue a messagef for an article published more than 30 seconds ago" do
+      it "does not queue a message for an article published more than 30 seconds ago" do
         Timecop.freeze(Time.current) do
           sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
             article.update(published: true, published_at: 31.seconds.ago)
