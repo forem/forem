@@ -29,7 +29,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       end.to not_change(user.notifications, :count)
     end
 
-    it "send only 1 notifications at a time" do
+    it "sends only 1 notification at a time" do
       user = create(:user, :with_identity, identities: ["github"], created_at: 1.week.ago)
       expect do
         sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
