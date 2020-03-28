@@ -5,7 +5,7 @@
   lax_html_blocks: true,
   lax_spacing: true,
   strikethrough: true,
-  superscript: true,
+  superscript: false,
   tables: true,
   footnotes: true
 }.freeze

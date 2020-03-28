@@ -3,26 +3,26 @@
 
 .ltag__listing {
   font-family: $helvetica;
-  border:1px solid $light-medium-gray;
+  border: 1px solid $light-medium-gray;
   box-shadow: $shadow;
-  border-radius:3px;
-  display:block;
-  margin:0.95em 0 1.20em;
+  border-radius: 3px;
+  display: block;
+  margin: 0.95em 0 1.2em;
   max-width: 100%;
   @media screen and (min-width: 760px) {
     margin: 0.95em auto;
-    width:620px;
+    width: 620px;
   }
 
   .ltag__listing-content {
     padding: calc(0.5vw + 6px);
     h3 {
-      margin:0;
-      padding:0;
+      margin: 0;
+      padding: 0;
       font-weight: 500;
       font-size: 1.5em;
       a {
-        color: var(--theme-color, $black); 
+        color: var(--body-color);
       }
     }
 
@@ -31,29 +31,20 @@
       margin: 5px 0 15px 0;
       font-size: 0.9em;
       a {
-        color: var(--theme-color, $black); 
+        color: var(--body-color);
       }
     }
 
     .ltag__listing-tags {
       font-size: 0.7em;
       line-height: 1.3em;
-      
+
       .ltag__listing-tag {
         margin-right: calc(0.4vw + 4px);
         margin-left: 1px;
 
         a {
-          @include themeable(
-            color,
-            theme-secondary-color,
-            $dark-medium-gray
-          );
-          @include themeable(
-            background,
-            theme-container-accent-background,
-            $light-medium-gray
-          );
+          color: var(--container-color-secondary);
           display: inline-block;
           margin: 2px;
           padding: 2px 7px;
@@ -64,8 +55,7 @@
     }
 
     .ltag__listing-author-info {
-      color: #666666;
-      color: var(--theme-secondary-color, #666666);
+      color: var(--container-color-tertiary);
       line-height: 1.3em;
       a {
         margin: 0.1vw 0;
@@ -73,8 +63,7 @@
         font-size: 0.7em;
         margin-bottom: 0;
         font-weight: bold;
-        color: #666666;
-        color: var(--theme-secondary-color, #666666);
+        color: var(--container-color-tertiary);
       }
     }
   }

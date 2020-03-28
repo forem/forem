@@ -314,4 +314,21 @@ RSpec.describe MarkdownParser, type: :labor do
       expect(generate_and_parse_markdown(code_block)).to include("word_<em>italic</em>_")
     end
   end
+
+  context "when adding syntax highlighting" do
+    it "defaults to plaintext" do
+      code_block = "```\ntext\n````"
+      expect(generate_and_parse_markdown(code_block)).to include("highlight plaintext")
+    end
+
+    it "adds correct syntax highlighting to codeblocks when the hint is not lowercase" do
+      code_block = "```Ada\nwith Ada.Directories;\n````"
+      expect(generate_and_parse_markdown(code_block)).to include("highlight ada")
+    end
+
+    it "adds correct syntax highlighting to codeblocks when the hint is lowercase" do
+      code_block = "```ada\nwith Ada.Directories;\n````"
+      expect(generate_and_parse_markdown(code_block)).to include("highlight ada")
+    end
+  end
 end

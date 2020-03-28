@@ -69,7 +69,7 @@ export default class Chat extends Component {
         />
         <button
           type="button"
-          className="messagecomposer__submit"
+          className="messagecomposer__submit cta"
           onClick={handleSubmitOnClickEdit}
         >
           Save
@@ -98,7 +98,7 @@ export default class Chat extends Component {
         />
         <button
           type="button"
-          className="messagecomposer__submit"
+          className="messagecomposer__submit cta"
           onClick={handleSubmitOnClick}
         >
           SEND

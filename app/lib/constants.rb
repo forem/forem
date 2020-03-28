@@ -38,6 +38,7 @@ module Constants
     "mathtod.online",
     "mimumedon.com",
     "misskey.xyz",
+    "moe.cat",
     "mstdn-workers.com",
     "mstdn.guru",
     "mstdn.io",

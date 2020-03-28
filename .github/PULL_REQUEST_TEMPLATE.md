@@ -1,6 +1,6 @@
 <!--
-     For Work In Progress Pull Requests, please use the Draft PR feature
-     and/or include [WIP] in the PR title.
+     For Work In Progress Pull Requests, please use the Draft PR feature,
+     see https://github.blog/2019-02-14-introducing-draft-pull-requests/ for further details.
 
      For a timely review/response, please avoid force-pushing additional
      commits if your PR already received reviews or comments.

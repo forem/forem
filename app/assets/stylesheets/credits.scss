@@ -2,8 +2,6 @@
 @import 'mixins';
 
 .credits-container {
-  margin: 50px auto;
-
   .notice {
     background: $green;
     padding: 30px 0px;
@@ -13,9 +11,13 @@
 
   .credits-banner {
     background-color: $dark-purple;
-    background-image: linear-gradient(141deg, $dark-purple 0%, #1f89db 51%, #2981e5 75%);
+    background-image: linear-gradient(
+      141deg,
+      $dark-purple 0%,
+      #1f89db 51%,
+      #2981e5 75%
+    );
     padding: 70px 5px;
-    margin-top: 60px;
     h1 {
       font-size: calc(1.4em + 0.5vw);
     }
@@ -31,11 +33,10 @@
       font-size: 14px;
       width: 320px;
     }
-    @media screen and ( min-width:950px ){
+    @media screen and (min-width: 950px) {
       font-size: 1.8em;
     }
   }
-
 
   form#new_credit {
     width: 500px;
@@ -45,34 +46,21 @@
   }
 
   .InputElement {
-    @include themeable(
-      background-color,
-      theme-container-background,
-      white
-    );
-    @include themeable(
-      color,
-      theme-color,
-      $black
-    );
+    @include themeable(background-color, theme-container-background, white);
+    color: var(--body-color);
   }
 
-  .StripeElement, input[type="number"], button, .existing-card {
+  .StripeElement,
+  input[type='number'],
+  button,
+  .existing-card {
     box-sizing: border-box;
     height: 40px;
     padding: 10px 12px;
     border: 1px solid transparent;
     border-radius: 4px;
-    @include themeable(
-      background-color,
-      theme-container-background,
-      white
-    );
-    @include themeable(
-      color,
-      theme-color,
-      $black
-    );
+    @include themeable(background-color, theme-container-background, white);
+    color: var(--body-color);
 
     box-shadow: 0 1px 3px 0 #e6ebf1;
     -webkit-transition: box-shadow 150ms ease;
@@ -107,20 +95,28 @@
     padding: 10px 5px;
     a {
       text-decoration: underline;
-      @include themeable(color, theme-anchor-color, #50c176);
+      color: var(--link-brand-color);
     }
-    @media screen and ( min-width:950px ){
+    @media screen and (min-width: 950px) {
       font-size: 1.4em;
       padding: 20px 5px;
     }
   }
   .bulk-description {
     text-align: center;
-    @include themeable(color, theme-secondary-color, $medium-gray);
+    color: var(--container-color-tertiary);
     padding: 25px 12px;
     font-size: 0.8em;
-    @include themeable(border-top, theme-container-border, 1px solid lighten($light-medium-gray, 7%));
-    @include themeable(border-bottom, theme-container-border, 1px solid lighten($light-medium-gray, 7%));
+    @include themeable(
+      border-top,
+      theme-container-border,
+      1px solid lighten($light-medium-gray, 7%)
+    );
+    @include themeable(
+      border-bottom,
+      theme-container-border,
+      1px solid lighten($light-medium-gray, 7%)
+    );
   }
   .credit-price {
     box-shadow: 0 2px 4px 0 #dce2ea;
@@ -129,7 +125,7 @@
     margin: 3px auto;
     padding: 10px 0px;
     border: 1px solid $light-gray;
-    @include themeable(background, theme-container-background, white);
+    background: var(--container-bg);
     font-weight: bold;
     display: inline-block;
     font-size: 15px;
@@ -139,7 +135,7 @@
       color: $dark-purple;
       margin-bottom: 15px;
     }
-    @media screen and ( min-width:950px ){
+    @media screen and (min-width: 950px) {
       width: 230px;
       padding: 80px 0px;
       margin: 12px 3px;
@@ -157,10 +153,10 @@
     cursor: pointer;
     font-size: 0.8em;
     user-select: none;
-    @include themeable(color, theme-secondary-color, $dark-gray);
+    color: var(--link-brand-color);
     div {
       margin-top: 5px;
-      @include themeable(background, theme-container-background, white);
+      background: var(--container-bg);
       padding: 10px 15px;
       border-radius: 8px;
       box-shadow: 0 1px 3px 0 #cfd7df;
@@ -168,8 +164,7 @@
     }
   }
 
-
-  input[type="number"] {
+  input[type='number'] {
     width: calc(100% - 160px);
     font-size: 18px;
     display: inline-block;
@@ -183,7 +178,7 @@
     display: inline-block;
   }
 
-  input[type="radio"] {
+  input[type='radio'] {
     vertical-align: 2px;
     padding: 10px;
     cursor: pointer;
@@ -202,11 +197,7 @@
       theme-container-background,
       $light-gray
     );
-    @include themeable(
-      color,
-      theme-color,
-      $black
-    );
+    color: var(--body-color);
     font-size: 15px;
   }
 
@@ -274,10 +265,9 @@
       font-weight: bold;
     }
 
-    @media screen and ( min-width:950px ){
+    @media screen and (min-width: 950px) {
       width: 800px;
-    } 
-    
+    }
   }
 
   .ledger {
@@ -296,15 +286,18 @@
     .misc {
       td {
         padding-top: 1.5rem;
-        &:nth-child(2) { font-style: italic; }
+        &:nth-child(2) {
+          font-style: italic;
+        }
       }
     }
 
-    a { color: #fff; }
-
-    @media screen and ( min-width:950px ){
-      width: 700px;
+    a {
+      color: #fff;
     }
 
+    @media screen and (min-width: 950px) {
+      width: 700px;
+    }
   }
 }

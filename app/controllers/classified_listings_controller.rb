@@ -12,6 +12,7 @@ class ClassifiedListingsController < ApplicationController
     @displayed_classified_listing = published_listings.find_by(slug: params[:slug]) if params[:slug]
 
     if params[:view] == "moderate"
+      not_found unless @displayed_classified_listing
       return redirect_to "/internal/listings/#{@displayed_classified_listing.id}/edit"
     end
 
@@ -90,6 +91,10 @@ class ClassifiedListingsController < ApplicationController
 
   def process_unsuccessful_creation
     render :new
+  end
+
+  def process_unsuccessful_update
+    render :edit
   end
 
   def process_after_update

@@ -1,38 +1,38 @@
 @import 'variables';
-#page-content.registrations{
-  .devise-container{
-    min-height:480px;
-    padding-top:calc(10vw + 35px);
-    h1{
-      font-weight:300;
-      text-align:center;
+#page-content.registrations {
+  .devise-container {
+    min-height: 480px;
+    padding-top: calc(10vw + 35px);
+    h1 {
+      font-weight: 300;
+      text-align: center;
       font-family: $helvetica;
-      font-size:30px;
-      @media screen and ( min-width: 520px) {
-        font-size:50px;
+      font-size: 30px;
+      @media screen and (min-width: 520px) {
+        font-size: 50px;
       }
     }
-    a.sign-up-link{
-      display:block;
-      margin:50px auto;
-      width:280px;
-      max-width:92%;
-      text-align:center;
-      padding:20px 0px;
-      border:1px solid rgb(245, 245, 245);
+    a.sign-up-link {
+      display: block;
+      margin: 50px auto;
+      width: 280px;
+      max-width: 92%;
+      text-align: center;
+      padding: 20px 0px;
+      border: 1px solid rgb(245, 245, 245);
       font-family: $helvetica;
-      color:rgb(86, 98, 103);
-      border-radius:3px;
-      font-size:22px;
-      img{
-        opacity:0.7;
-        width:24px;
-        height:24px;
-        margin-right:3px;
-        vertical-align:-3px;
+      color: rgb(86, 98, 103);
+      border-radius: 3px;
+      font-size: 22px;
+      img {
+        opacity: 0.7;
+        width: 24px;
+        height: 24px;
+        margin-right: 3px;
+        vertical-align: -3px;
       }
-      &:hover{
-        border:1px solid rgb(0, 231, 255);
+      &:hover {
+        border: 1px solid rgb(0, 231, 255);
       }
     }
   }

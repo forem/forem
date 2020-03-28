@@ -2,23 +2,13 @@
 @import 'mixins';
 
 .home.video-page-title {
-  margin: 68px auto 10px;
   text-align: center;
-  @include themeable(
-    background, 
-    theme-container-background, 
-    $lightest-gray
-  );
   header {
-    font-size:calc(0.9vw + 10px);
+    font-size: calc(0.9vw + 10px);
   }
 }
 .video-collection {
-  @include themeable(
-    background, 
-    theme-container-background, 
-    $lightest-gray
-  );
+  background: var(--body-bg);
   display: flex;
   max-width: 100%;
   flex-direction: row;
@@ -46,19 +36,18 @@
       padding-top: 56%;
       border-top-left-radius: 3px;
       border-top-right-radius: 3px;
-      background: $black no-repeat center center; 
+      background: $black no-repeat center center;
       -webkit-background-size: cover;
       -moz-background-size: cover;
       -o-background-size: cover;
       background-size: cover;
-    
     }
     .video-timestamp {
       position: absolute;
-      font-size: .7em;
+      font-size: 0.7em;
       bottom: 11px;
       right: 4px;
-      background-color: rgba(0,0,0,0.8);
+      background-color: rgba(0, 0, 0, 0.8);
       color: $white;
       padding: 2px 5px 3px;
       font-weight: 500;
@@ -75,18 +64,10 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-      @include themeable(
-        color, 
-        theme-color, 
-        $black
-      );
+      color: var(--body-color);
       font-size: 0.95em;
       &.video-username {
-        @include themeable(
-          color, 
-          theme-secondary-color, 
-          $medium-gray
-        );
+        color: var(--container-color-tertiary);
         font-size: 0.88em;
       }
     }

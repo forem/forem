@@ -1,0 +1,69 @@
+<h2>Abuse Reports</h2>
+
+<div class="row my-3">
+  <div class="col">
+    <ul class="nav nav-pills">
+      <li class="nav-item">
+        <a href="<%= internal_reports_path(state: @feedback_type, status: "Open") %>" class="nav-link <%= "active" if @status == "Open" %>">Open/Unresolved</a>
+      </li>
+      <li class="nav-item">
+        <a href="<%= internal_reports_path(state: @feedback_type, status: "Resolved") %>" class="nav-link <%= "active" if @status == "Resolved" %>">Resolved</a>
+      </li>
+      <li class="nav-item">
+        <a href="<%= internal_reports_path(state: @feedback_type, status: "Invalid") %>" class="nav-link <%= "active" if @status == "Invalid" %>">Invalid</a>
+    </ul>
+  </div>
+</div>
+
+<div class="row my-3" id="vomitReactions">
+  <div class="card w-100">
+    <div class="card-header" id="vomitReactionsHeader">
+      <h2 class="d-inline">Vomit Reactions</h2>
+      <button class="btn btn-secondary float-right" type="button" data-toggle="collapse" data-target="#vomitReactionsBodyContainer" aria-expanded="false" aria-controls="vomitReactionsBodyContainer">
+        Toggle
+      </button>
+    </div>
+    <div id="vomitReactionsBodyContainer" class="collapse hide" aria-labelledby="vomitReactionsHeader" data-parent="#vomitReactions">
+      <div class="card-body" style="overflow: scroll; max-height: 500px;">
+        <% @vomits.each do |reaction| %>
+          <% next if (reaction.reactable_type == "Article" && !reaction.reactable.published) || (reaction.reactable_type == "User" && reaction.reactable&.banished?) %>
+          <div class="d-flex justify-content-between">
+            <span>
+              🤢 <a href="<%= reaction.user.path %>">@<%= reaction.user.username %></a>
+            </span>
+            <span>
+              <strong><%= reaction.reactable_type %>:</strong>
+              <a href="<%= reaction.reactable.path %>"><%= reaction.reactable.title %></a>
+              <% if reaction.reactable_type == "User" && reaction.reactable.banned %>
+                <span class="badge badge-danger">Suspended</span>
+              <% end %>
+              <% if reaction.reactable_type == "User" && reaction.reactable.vomitted_on? %>
+                <span class="badge badge-warning">Vomitted</span>
+              <% end %>
+            </span>
+            <span>
+              <% if params[:status] == "Open" || params[:status].blank? %>
+                <% if reaction.reactable_type == "User" %>
+                  <%= form_for [:internal, reaction], html: { class: "d-inline" } do |f| %>
+                    <%= f.hidden_field :status, value: "confirmed" %>
+                    <%= f.submit "CONFIRMED", class: "btn btn-success btn-sm", data: { confirm: "Are you sure?" } %>
+                  <% end %>
+                <% else %>
+                  <%= form_for [:internal, reaction], html: { class: "d-inline" } do |f| %>
+                    <%= f.hidden_field :status, value: "confirmed" %>
+                    <%= f.submit "CONFIRMED", class: "btn btn-success btn-sm" %>
+                  <% end %>
+                <% end %>
+                <%= form_for [:internal, reaction], html: { class: "d-inline" } do |f| %>
+                  <%= f.hidden_field :status, value: "invalid" %>
+                  <%= f.submit "INVALID", class: "btn btn-danger btn-sm" %>
+                <% end %>
+              <% end %>
+            </span>
+          </div>
+          <hr>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

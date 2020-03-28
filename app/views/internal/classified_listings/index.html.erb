@@ -1,77 +1,76 @@
-<div class="row m-3 justify-content-end">
-  <div>
-    <%= form_tag("/internal/listings", method: "get") do %>
-      <div class="form-group">
-        <%= label_tag(:search, "Keyword") %>
-        <%= text_field_tag(:search, params[:search]) %>
-        <% if params[:state].present? %>
-          <%= hidden_field_tag(:state, params[:state]) %>
-        <% end %>
-      </div>
-      <div class="form-group">
-        <%= label_tag(:filter, "Category") %>
-        <%= select_tag(:filter, options_for_select([""] + ClassifiedListing.categories_available.keys, params[:filter])) %>
-      </div>
-      <div class="form-group">
-        <%= submit_tag("Filter") %>
+<div class="row m-3">
+  <div class="col justify-content-end">
+    <%= form_tag(internal_listings_path, method: "get") do %>
+      <div class="form-row align-items-end flex-column">
+        <div class="form-group">
+          <%= label_tag(:search, "Keyword") %>
+          <%= text_field_tag(:search, params[:search]) %>
+          <% if params[:state].present? %>
+            <%= hidden_field_tag(:state, params[:state]) %>
+          <% end %>
+        </div>
+        <div class="form-group">
+          <%= label_tag(:filter, "Category") %>
+          <%= select_tag(:filter, options_for_select([""] + ClassifiedListing.categories_available.keys, params[:filter])) %>
+        </div>
+        <div class="form-group">
+          <%= submit_tag("Filter") %>
+        </div>
       </div>
     <% end %>
   </div>
 </div>
 
 <%= paginate @classified_listings %>
-<div class="wrapper" style="border-bottom: 1px solid black">
-  <div class="grid-item">Title Link</div>
-  <div class="grid-item">User/Org</div>
-  <div class="grid-item">Category</div>
-  <div class="grid-item">Cached Tags</div>
-  <div class="grid-item">Published?</div>
-  <div class="grid-item">Last Bumped</div>
-</div>
-<% @classified_listings.each do |listing| %>
-  <div class="single-internal-listing" data-controller="buffer">
-    <div class="wrapper">
-      <div class="grid-item">
-        <a href="/internal/listings/<%= listing.id %>/edit" target="_blank">
-          <%= listing.title %>
-        </a>
-      </div>
-      <div class="grid-item"><a href="/internal/users/<%= listing.user_id %>"><%= User.find(listing.user_id).username %></a><%= " / " + Organization.find(listing.organization_id).name if listing.organization_id.present? %></div>
-      <div class="grid-item"><%= listing.category %></div>
-      <div class="grid-item"><%= listing.cached_tag_list %></div>
-      <div class="grid-item"><%= listing.published ? "Yes" : "No" %></div>
-      <div class="grid-item"><%= listing.bumped_at ? time_ago_in_words(listing.bumped_at) + " ago" : "Draft" %></div>
-    </div>
 
-    <div class="buffer-area" style="text-align: left">
-      <button class="btn btn-secondary" data-toggle="collapse" data-target="#buffering-area-for-listing-<%= listing.id %>" aria-expanded="false" aria-controls="buffering-area-for-listing-<%= listing.id %>">
-        Share to Buffer
-      </button>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Title Link</th>
+      <th scope="col">User</th>
+      <th scope="col">Org</th>
+      <th scope="col">Category</th>
+      <th scope="col">Cached Tags</th>
+      <th scope="col">Published?</th>
+      <th scope="col">Last Bumped</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @classified_listings.each do |listing| %>
+      <tr>
+        <td><%= link_to listing.title, edit_internal_listing_path(listing.id), target: "_blank" %></td>
+        <td><%= link_to listing.user.username, edit_internal_user_path(listing.user.id) %></td>
+        <td><%= link_to listing.organization.name, internal_organization_path(listing.organization_id) if listing.organization_id.present? %></td>
+        <td><%= listing.category %></td>
+        <td><%= listing.cached_tag_list %></td>
+        <td><%= listing.published ? "Yes" : "No" %></td>
+        <td><%= listing.bumped_at ? time_ago_in_words(listing.bumped_at) + " ago" : "Draft" %></td>
+      </tr>
+      <tr>
+        <td class="buffer-cell border-0" colspan="7" data-controller="buffer" data-action="load@window->buffer#autosizeBodyText">
+          <button class="btn btn-secondary" data-toggle="collapse" data-target="#buffering-area-for-listing-<%= listing.id %>" aria-expanded="false" aria-controls="buffering-area-for-listing-<%= listing.id %>">
+            Share to Buffer
+          </button>
 
-      <% if listing.last_buffered.present? %>
-        <em>
-          Last shared: <%= listing.last_buffered.strftime("%d %B %Y") %>
-        </em>
-      <% end %>
-
-      <div id="buffering-area-for-listing-<%= listing.id %>" class="collapse buffer-area">
-        <div class="grid-item">
-          <p class="listing-title"><strong><%= listing.title %></strong></p>
-          <p class="listing-body"><%= listing.processed_html&.html_safe %></p>
-        </div>
-        <div class="grid-item">
-          <%= form_with url: "/internal/buffer_updates", html: { data: { action: "submit->buffer#highlightElement" } } do %>
-            <input type="hidden" name="social_channel" value="listings_twitter" />
-            <input type="hidden" name="listing_id" value="<%= listing.id %>" />
-            <textarea cols="37" rows="8" wrap="hard" name="tweet" maxlength="255">📋 New DEV Listing!&#013&#013Category: <%= listing.category %>&#013&#013<%= listing.title %>&#013&#013<% if listing.user.twitter_username? %>Posted by @<%= listing.user.twitter_username %><% end %></textarea>
-            <br>
-            <button class="btn btn-primary" data-action=>🐦 Tweet 🐦</button>
+          <% if listing.last_buffered.present? %>
+            <em class="ml-1">
+              Last shared: <%= listing.last_buffered.strftime("%d %B %Y") %>
+            </em>
           <% end %>
-        </div>
-      </div>
+          <div id="buffering-area-for-listing-<%= listing.id %>" class="collapse buffer-area mt-3">
+            <p><strong><%= listing.title %></strong></p>
+            <p><%= listing.processed_html&.html_safe %></p>
+            <%= form_with url: internal_buffer_updates_path, html: { data: { action: "submit->buffer#highlightElement" } } do %>
+              <input type="hidden" name="social_channel" value="listings_twitter" />
+              <input type="hidden" name="listing_id" value="<%= listing.id %>" />
+              <textarea class="form-control" wrap="hard" name="tweet" maxlength="255" data-target="buffer.bodyText">📋 New DEV Listing!&#013&#013Category: <%= listing.category %>&#013&#013<%= listing.title %>&#013&#013<% if listing.user.twitter_username? %>Posted by @<%= listing.user.twitter_username %><% end %></textarea>
+              <button class="btn btn-primary mt-2" data-action=>🐦 Tweet 🐦</button>
+            <% end %>
+          </div>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
 
-    </div>
-  </div>
-<% end %>
 <%= paginate @classified_listings %>
-

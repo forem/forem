@@ -1,7 +1,5 @@
-<div class="widget-link-list__item">
-  <a href="<%= plucked_article[0] %>">
-    <%= plucked_article[1] %>
-  </a>
+<a href="<%= plucked_article[0] %>" class="widget-link-list__item">
+  <%= plucked_article[1] %>
   <% if show_comment_count %>
     <div class="discuss-list-comment-count">
       <% if plucked_article[2] > 0 %>
@@ -11,4 +9,4 @@
       <% end %>
     </div>
   <% end %>
-</div>
+</a>

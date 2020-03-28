@@ -56,7 +56,7 @@ class ChatChannel < ApplicationRecord
     raise "Invalid direct channel" if users.size != 2 && channel_type == "direct"
 
     if channel_type == "direct"
-      usernames = users.map(&:username).sort
+      usernames = users.map(&:username).sort # .map as `users` is an array
       contrived_name = "Direct chat between " + usernames.join(" and ")
       slug = usernames.join("/")
     else

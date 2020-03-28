@@ -1,179 +1,184 @@
 @import 'variables';
-#page-content.pages-rlyweb,#page-content.pages-rlytest{
+#page-content.pages-rlyweb,
+#page-content.pages-rlytest {
   font-family: $helvetica;
-  .rlyweb-container{
-    min-height:800px;
-    text-align:center;
-    .hero{
-      max-width:96%;
-      margin-top:100px;
-      text-align:center;
-      vertical-align:top;
-      h1{
-        font-weight:300;
-        font-size:50px;
+  .rlyweb-container {
+    min-height: 800px;
+    text-align: center;
+    .hero {
+      max-width: 96%;
+      margin-top: 100px;
+      text-align: center;
+      vertical-align: top;
+      h1 {
+        font-weight: 300;
+        font-size: 50px;
       }
-      .gen-form{
-        display:inline-block;
-        width:400px;
-        max-width:96%;
-        text-align:left;
-        label{
-          font-size:12px;
+      .gen-form {
+        display: inline-block;
+        width: 400px;
+        max-width: 96%;
+        text-align: left;
+        label {
+          font-size: 12px;
         }
-        input{
-          width:calc(100% - 10px);
-          padding:8px 10px;
-          font-size:18px;
-          margin-bottom:5px;
-          border:1px solid rgb(194, 194, 194);
-          border-radius:2px;
+        input {
+          width: calc(100% - 10px);
+          padding: 8px 10px;
+          font-size: 18px;
+          margin-bottom: 5px;
+          border: 1px solid rgb(194, 194, 194);
+          border-radius: 2px;
           -webkit-appearance: none;
-          &.error{
-            border-color:rgb(236, 22, 87);
+          &.error {
+            border-color: rgb(236, 22, 87);
           }
         }
-        select{
-          display:block;
-          width:calc(100% + 12px);
+        select {
+          display: block;
+          width: calc(100% + 12px);
           -webkit-appearance: none;
-          padding:8px 10px;
-          background:white;
-          border-radius:2px;
-          margin-bottom:15px;
-          font-size:18px;
-          border:1px solid rgb(194, 194, 194);
-          color:rgb(52, 52, 52);
+          padding: 8px 10px;
+          background: white;
+          border-radius: 2px;
+          margin-bottom: 15px;
+          font-size: 18px;
+          border: 1px solid rgb(194, 194, 194);
+          color: rgb(52, 52, 52);
           background: url(https://i.imgur.com/VfIXRsi.png) no-repeat right #fff;
         }
-        button{
-          width:calc(100% + 12px);
-          background:rgb(20, 175, 164);
-          font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua', Georgia, serif;
-          color:white;
-          border:0px;
-          padding:15px;
-          font-size:32px;
-          cursor:pointer;
+        button {
+          width: calc(100% + 12px);
+          background: rgb(20, 175, 164);
+          font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD',
+            'Book Antiqua', Georgia, serif;
+          color: white;
+          border: 0px;
+          padding: 15px;
+          font-size: 32px;
+          cursor: pointer;
           -webkit-appearance: none;
-          border-radius:2px;
-
+          border-radius: 2px;
         }
       }
-      .result{
-        display:inline-block;
-        width:400px;
-        max-width:96%;
-        vertical-align:center;
-        text-align:center;
-        padding-top:60px;
-        img{
-          width:300px;
-          height:420px;
-          box-shadow:7px 7px 30px rgba(64, 64, 64, 0.81);
+      .result {
+        display: inline-block;
+        width: 400px;
+        max-width: 96%;
+        vertical-align: center;
+        text-align: center;
+        padding-top: 60px;
+        img {
+          width: 300px;
+          height: 420px;
+          box-shadow: 7px 7px 30px rgba(64, 64, 64, 0.81);
         }
-        a{
-          display:inline-block;
-          margin-top:6px;
-          padding:10px 0px;
-          width:300px;
-          background:rgb(34, 36, 38);
-          color:white;
-          border-radius:5px;
+        a {
+          display: inline-block;
+          margin-top: 6px;
+          padding: 10px 0px;
+          width: 300px;
+          background: rgb(34, 36, 38);
+          color: white;
+          border-radius: 5px;
         }
-        @media screen and ( min-width: 839px ){
-          padding-top:0px;
+        @media screen and (min-width: 839px) {
+          padding-top: 0px;
         }
       }
     }
-    h4{
-      font-style:italic;
-      font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua', Georgia, serif;
-      width:750px;
-      max-width:96%;
-      text-align:center;
-      margin:150px auto 50px;
-      font-size:33px;
-      line-height:45px;
-      &.ps{
-        font-size:20px;
-        margin-top:50px;
-        line-height:25px;
-        width:580px;
+    h4 {
+      font-style: italic;
+      font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD',
+        'Book Antiqua', Georgia, serif;
+      width: 750px;
+      max-width: 96%;
+      text-align: center;
+      margin: 150px auto 50px;
+      font-size: 33px;
+      line-height: 45px;
+      &.ps {
+        font-size: 20px;
+        margin-top: 50px;
+        line-height: 25px;
+        width: 580px;
       }
     }
-    hr{
-      width:60px;
-      margin-top:-30px;
-      opacity:0.5;
+    hr {
+      width: 60px;
+      margin-top: -30px;
+      opacity: 0.5;
     }
-    .thanks{
-      background:rgb(13, 3, 31);
-      color:white;
-      padding:120px 10px 90px;
-      font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua', Georgia, serif;
-      h4{
-        display:block;
-        margin-top:10px;
+    .thanks {
+      background: rgb(13, 3, 31);
+      color: white;
+      padding: 120px 10px 90px;
+      font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD',
+        'Book Antiqua', Georgia, serif;
+      h4 {
+        display: block;
+        margin-top: 10px;
       }
     }
-    .usage{
-      padding:50px 0px;
-      pre{
-        width:1000px;
-        max-width:96%;
-        padding:28px 10px 10px 0px;
-        border-radius:3px;
-        margin:20px auto;
-        text-align:left;
-        overflow-x:scroll;
-        background:rgb(246, 246, 246);
-        font-size:16px;
-        @media screen and ( max-width: 600px ){
-          font-size:14px;
+    .usage {
+      padding: 50px 0px;
+      pre {
+        width: 1000px;
+        max-width: 96%;
+        padding: 28px 10px 10px 0px;
+        border-radius: 3px;
+        margin: 20px auto;
+        text-align: left;
+        overflow-x: scroll;
+        background: rgb(246, 246, 246);
+        font-size: 16px;
+        @media screen and (max-width: 600px) {
+          font-size: 14px;
         }
       }
-      .animal{
-        width:120px;
-        display:inline-block;
-        font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua', Georgia, serif;
-        font-size:26px;
-        margin:40px 22px;
-        img{
-          width:100%;
+      .animal {
+        width: 120px;
+        display: inline-block;
+        font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD',
+          'Book Antiqua', Georgia, serif;
+        font-size: 26px;
+        margin: 40px 22px;
+        img {
+          width: 100%;
         }
       }
-      .color{
-        height:90px;
-        width:90px;
-        margin:20px;
-        border-radius:220px;
-        color:white;
-        display:inline-block;
-        font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua', Georgia, serif;
-        font-size:30px;
-        line-height:90px;
+      .color {
+        height: 90px;
+        width: 90px;
+        margin: 20px;
+        border-radius: 220px;
+        color: white;
+        display: inline-block;
+        font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD',
+          'Book Antiqua', Georgia, serif;
+        font-size: 30px;
+        line-height: 90px;
       }
     }
-    .slack{
-      padding:100px 20px;
-      img{
-        width:150px;
+    .slack {
+      padding: 100px 20px;
+      img {
+        width: 150px;
       }
-      h2{
-        font-weight:300;
-        font-size:33px;
+      h2 {
+        font-weight: 300;
+        font-size: 33px;
       }
-      a{
-        display:block;
-        margin:50px auto;
-        background:rgb(224, 20, 63);
-        color:white;
-        width:400px;
-        padding:40px 0px;
-        max-width:96%;
-        font-size:25px;
-        border-radius:12px;
+      a {
+        display: block;
+        margin: 50px auto;
+        background: rgb(224, 20, 63);
+        color: white;
+        width: 400px;
+        padding: 40px 0px;
+        max-width: 96%;
+        font-size: 25px;
+        border-radius: 12px;
       }
     }
   }

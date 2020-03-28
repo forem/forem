@@ -1,8 +1,6 @@
 @import 'variables';
 @import 'mixins';
 .dashboard-container {
-  padding-top: 80px;
-  padding-bottom: 80px;
   width: 800px;
   max-width: 96%;
   margin: auto;
@@ -36,7 +34,7 @@
     display: inline-block;
     width: fit-content;
     margin-bottom: 10px;
-    @include themeable(color, theme-color, $black);
+    color: var(--body-color);
     @include themeable(
       background,
       theme-container-background,
@@ -88,7 +86,7 @@
       flex-grow: 1;
       flex-shrink: 0;
       width: 100%;
-      @include themeable(color, theme-color, $black);
+      color: var(--body-color);
       padding: 10px 0px;
       border-radius: 3px;
       min-width: 115px;
@@ -104,7 +102,7 @@
           theme-container-accent-background,
           $purple
         );
-        @include themeable(color, theme-container-color, $black);
+        color: var(--container-color);
       }
 
       &:not(.active):hover {
@@ -114,7 +112,7 @@
           theme-container-background-hover,
           $light-medium-purple
         );
-        @include themeable(color, theme-container-color, $black);
+        color: var(--container-color);
       }
 
       &:not(:last-child) {
@@ -248,17 +246,10 @@
   }
 
   .single-article {
-    @include themeable(
-      border,
-      theme-container-border,
-      1px solid $light-medium-gray
-    );
-    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
     padding: 5px 15px;
-    margin-bottom: 13px;
-    border-radius: 3px;
+    @include dev-card;
     position: relative;
-    @include themeable(background, theme-container-background, #fff);
+
     &.single-article-unpublished {
       background: lighten($yellow, 20%);
       @include themeable(
@@ -404,10 +395,10 @@
       .dashboard-top-pill {
         @include themeable(
           background,
-          theme-secondary-color,
+          theme-container-accent-background,
           darken($light-gray, 6%)
         );
-        @include themeable(color, theme-container-background, #fff);
+        color: var(--body-color);
         margin-right: 5px;
         padding: 3px 10px;
         border-radius: 100px;
@@ -420,11 +411,11 @@
     .dashboard-meta-details {
       font-size: 0.85em;
       padding: 3px 0px 6px;
-      @include themeable(color, theme-secondary-color, $medium-gray);
+      color: var(--container-color-tertiary);
     }
 
     a {
-      @include themeable(color, theme-container-color, $black);
+      color: var(--container-color);
       &.block-link {
         display: block;
       }
@@ -499,13 +490,14 @@
 
     .dashboard-actions {
       padding: 7px 0px 10px;
-      
+
       form {
         margin: 0;
         padding: 0;
         display: inline;
 
-        input[type='submit'], button {
+        input[type='submit'],
+        button {
           height: 30.4px;
           border: 2px solid transparent;
         }
@@ -656,11 +648,7 @@
 }
 
 .toggles button {
-  @include themeable-important(
-                color,
-                theme-color,
-                $black
-              );
+  @include themeable-important(color, theme-color, $black);
   display: inline-block;
   padding: 2px 8px;
   margin: 8px;
@@ -757,20 +745,19 @@
 .dashboard-manage-header {
   background: darken($bold-blue, 25%);
   color: white;
-  margin-top: 60px;
-  padding: 50px 0px 120px;
-  margin-bottom: -160px;
+  padding: 32px 0;
   line-height: 1.3em;
+  box-shadow: 0 100px 0 darken($bold-blue, 25%);
   .manage-page-error {
-    background:$red;
-    color:white;
-    padding:20px 10px;
+    background: $red;
+    color: white;
+    padding: 20px 10px;
     line-height: 1.4em;
     border-radius: 3px;
   }
   .manage-page-success {
-    background:$green;
-    padding:20px 10px;
+    background: $green;
+    padding: 20px 10px;
     line-height: 1.4em;
     border-radius: 3px;
   }

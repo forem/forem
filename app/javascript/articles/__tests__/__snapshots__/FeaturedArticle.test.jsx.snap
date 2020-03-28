@@ -1,0 +1,511 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<FeaturedArticle /> component should render a bookmarked featured article 1`] = `
+<div>
+  <div
+    data-featured-article="articles-62407"
+    id="featured-story-marker"
+  />
+  <img
+    alt="Unbranded Home Loan Account"
+    src="/images/onboarding-background.png"
+    style={
+      Object {
+        "display": "none",
+      }
+    }
+  />
+  <a
+    aria-label="Main Story"
+    class="index-article-link"
+    data-featured-article="articles-62407"
+    href="/some-post/path"
+    id="article-link-62407"
+  />
+  <div
+    class="single-article big-article"
+    data-content-user-id={23289}
+  >
+    <a
+      aria-label="Main Story"
+      class="index-article-link"
+      data-featured-article="articles-62407"
+      href="/some-post/path"
+      id="article-link-62407"
+    >
+      <div
+        class="picture image-final"
+        style={
+          Object {
+            "backgroundColor": undefined,
+            "backgroundImage": "url(/images/onboarding-background.png)",
+          }
+        }
+      />
+      <div
+        class="content-wrapper"
+      >
+        <h3>
+          Unbranded Home Loan Account
+        </h3>
+      </div>
+    </a>
+    <a
+      class="featured-profile-button"
+      href="/Emil99"
+    >
+      <img
+        alt="Unbranded Home Loan Account"
+        class="featured-profile-pic"
+        src="/images/10.png"
+      />
+    </a>
+    <div
+      class="featured-user-name"
+    >
+      <a
+        href="/Emil99"
+      >
+        Stella Macejkovic ・ 
+        <time
+          dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
+        >
+          February 18
+        </time>
+        <span
+          class="time-ago-indicator-initial-placeholder"
+          data-seconds="1582037964819"
+        />
+      </a>
+    </div>
+    <div
+      class="tags featured-tags"
+    >
+      <a
+        href="/t/javascript"
+      >
+        <span
+          class="tag"
+        >
+          #javascript
+        </span>
+      </a>
+      <a
+        href="/t/ruby"
+      >
+        <span
+          class="tag"
+        >
+          #ruby
+        </span>
+      </a>
+      <a
+        href="/t/go"
+      >
+        <span
+          class="tag"
+        >
+          #go
+        </span>
+      </a>
+    </div>
+    <div
+      class="article-engagement-count comments-count featured-engagement-count"
+    >
+      <a
+        href="/some-post/path#comments"
+      >
+        <img
+          alt="chat"
+          loading="lazy"
+          src="/images/comments-bubble.png"
+        />
+        <span
+          class="engagement-count-number"
+        >
+          213
+        </span>
+      </a>
+    </div>
+    <div
+      class="article-engagement-count reactions-count"
+    >
+      <a
+        href="/some-post/path"
+      >
+        <img
+          alt="heart"
+          loading="lazy"
+          src="/images/reactions-stack.png"
+        />
+        <span
+          class="engagement-count-number"
+          id="engagement-count-number-62407"
+        >
+          428
+        </span>
+      </a>
+    </div>
+    <a
+      class="article-reading-time"
+      href="/some-post/path"
+    >
+      undefined min read
+    </a>
+    <button
+      class="article-engagement-count engage-button bookmark-button selected"
+      data-initial-feed={true}
+      data-reactable-id={62407}
+      onBlur={[Function]}
+      onFocus={[Function]}
+      onMouseOver={[Function]}
+      onMouseout={[Function]}
+      type="button"
+    >
+      <span
+        class="bm-success"
+      />
+    </button>
+  </div>
+</div>
+`;
+
+exports[`<FeaturedArticle /> component should render a standard article 1`] = `
+<div>
+  <div
+    data-featured-article="articles-62407"
+    id="featured-story-marker"
+  />
+  <img
+    alt="Unbranded Home Loan Account"
+    src="/images/onboarding-background.png"
+    style={
+      Object {
+        "display": "none",
+      }
+    }
+  />
+  <a
+    aria-label="Main Story"
+    class="index-article-link"
+    data-featured-article="articles-62407"
+    href="/some-post/path"
+    id="article-link-62407"
+  />
+  <div
+    class="single-article big-article"
+    data-content-user-id={23289}
+  >
+    <a
+      aria-label="Main Story"
+      class="index-article-link"
+      data-featured-article="articles-62407"
+      href="/some-post/path"
+      id="article-link-62407"
+    >
+      <div
+        class="picture image-final"
+        style={
+          Object {
+            "backgroundColor": undefined,
+            "backgroundImage": "url(/images/onboarding-background.png)",
+          }
+        }
+      />
+      <div
+        class="content-wrapper"
+      >
+        <h3>
+          Unbranded Home Loan Account
+        </h3>
+      </div>
+    </a>
+    <a
+      class="featured-profile-button"
+      href="/Emil99"
+    >
+      <img
+        alt="Unbranded Home Loan Account"
+        class="featured-profile-pic"
+        src="/images/10.png"
+      />
+    </a>
+    <div
+      class="featured-user-name"
+    >
+      <a
+        href="/Emil99"
+      >
+        Stella Macejkovic ・ 
+        <time
+          dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
+        >
+          February 18
+        </time>
+        <span
+          class="time-ago-indicator-initial-placeholder"
+          data-seconds="1582037964819"
+        />
+      </a>
+    </div>
+    <div
+      class="tags featured-tags"
+    >
+      <a
+        href="/t/javascript"
+      >
+        <span
+          class="tag"
+        >
+          #javascript
+        </span>
+      </a>
+      <a
+        href="/t/ruby"
+      >
+        <span
+          class="tag"
+        >
+          #ruby
+        </span>
+      </a>
+      <a
+        href="/t/go"
+      >
+        <span
+          class="tag"
+        >
+          #go
+        </span>
+      </a>
+    </div>
+    <div
+      class="article-engagement-count comments-count featured-engagement-count"
+    >
+      <a
+        href="/some-post/path#comments"
+      >
+        <img
+          alt="chat"
+          loading="lazy"
+          src="/images/comments-bubble.png"
+        />
+        <span
+          class="engagement-count-number"
+        >
+          213
+        </span>
+      </a>
+    </div>
+    <div
+      class="article-engagement-count reactions-count"
+    >
+      <a
+        href="/some-post/path"
+      >
+        <img
+          alt="heart"
+          loading="lazy"
+          src="/images/reactions-stack.png"
+        />
+        <span
+          class="engagement-count-number"
+          id="engagement-count-number-62407"
+        >
+          428
+        </span>
+      </a>
+    </div>
+    <a
+      class="article-reading-time"
+      href="/some-post/path"
+    >
+      undefined min read
+    </a>
+    <button
+      class="article-engagement-count engage-button bookmark-button "
+      data-initial-feed={true}
+      data-reactable-id={62407}
+      onBlur={[Function]}
+      onFocus={[Function]}
+      onMouseOver={[Function]}
+      onMouseout={[Function]}
+      type="button"
+    >
+      <span
+        class="bm-initial"
+      />
+    </button>
+  </div>
+</div>
+`;
+
+exports[`<FeaturedArticle /> component should render with the reactions icon when the reactions count is 0 1`] = `
+<div>
+  <div
+    data-featured-article="articles-62407"
+    id="featured-story-marker"
+  />
+  <img
+    alt="Unbranded Home Loan Account"
+    src="/images/onboarding-background.png"
+    style={
+      Object {
+        "display": "none",
+      }
+    }
+  />
+  <a
+    aria-label="Main Story"
+    class="index-article-link"
+    data-featured-article="articles-62407"
+    href="/some-post/path"
+    id="article-link-62407"
+  />
+  <div
+    class="single-article big-article"
+    data-content-user-id={23289}
+  >
+    <a
+      aria-label="Main Story"
+      class="index-article-link"
+      data-featured-article="articles-62407"
+      href="/some-post/path"
+      id="article-link-62407"
+    >
+      <div
+        class="picture image-final"
+        style={
+          Object {
+            "backgroundColor": undefined,
+            "backgroundImage": "url(/images/onboarding-background.png)",
+          }
+        }
+      />
+      <div
+        class="content-wrapper"
+      >
+        <h3>
+          Unbranded Home Loan Account
+        </h3>
+      </div>
+    </a>
+    <a
+      class="featured-profile-button"
+      href="/Emil99"
+    >
+      <img
+        alt="Unbranded Home Loan Account"
+        class="featured-profile-pic"
+        src="/images/10.png"
+      />
+    </a>
+    <div
+      class="featured-user-name"
+    >
+      <a
+        href="/Emil99"
+      >
+        Stella Macejkovic ・ 
+        <time
+          dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
+        >
+          February 18
+        </time>
+        <span
+          class="time-ago-indicator-initial-placeholder"
+          data-seconds="1582037964819"
+        />
+      </a>
+    </div>
+    <div
+      class="tags featured-tags"
+    >
+      <a
+        href="/t/javascript"
+      >
+        <span
+          class="tag"
+        >
+          #javascript
+        </span>
+      </a>
+      <a
+        href="/t/ruby"
+      >
+        <span
+          class="tag"
+        >
+          #ruby
+        </span>
+      </a>
+      <a
+        href="/t/go"
+      >
+        <span
+          class="tag"
+        >
+          #go
+        </span>
+      </a>
+    </div>
+    <div
+      class="article-engagement-count comments-count featured-engagement-count"
+    >
+      <a
+        href="/some-post/path#comments"
+      >
+        <img
+          alt="chat"
+          loading="lazy"
+          src="/images/comments-bubble.png"
+        />
+        <span
+          class="engagement-count-number"
+        >
+          213
+        </span>
+      </a>
+    </div>
+    <div
+      class="article-engagement-count reactions-count"
+    >
+      <a
+        href="/some-post/path"
+      >
+        <img
+          alt="heart"
+          loading="lazy"
+          src="/images/reactions-stack.png"
+        />
+        <span
+          class="engagement-count-number"
+          id="engagement-count-number-62407"
+        >
+          0
+        </span>
+      </a>
+    </div>
+    <a
+      class="article-reading-time"
+      href="/some-post/path"
+    >
+      undefined min read
+    </a>
+    <button
+      class="article-engagement-count engage-button bookmark-button "
+      data-initial-feed={true}
+      data-reactable-id={62407}
+      onBlur={[Function]}
+      onFocus={[Function]}
+      onMouseOver={[Function]}
+      onMouseout={[Function]}
+      type="button"
+    >
+      <span
+        class="bm-initial"
+      />
+    </button>
+  </div>
+</div>
+`;

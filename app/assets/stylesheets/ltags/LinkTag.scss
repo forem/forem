@@ -1,29 +1,29 @@
 @import 'variables';
-.ltag__link__link{
-  color:$black !important;
-  color: var(--theme-color, $black) !important;
-  &:active{
-    opacity:0.7;
+.ltag__link__link {
+  color: $black !important;
+  color: var(--body-color) !important;
+  &:active {
+    opacity: 0.7;
   }
 }
-.ltag__link{
+.ltag__link {
   font-family: $helvetica;
-  border:1px solid $light-medium-gray;
+  border: 1px solid $light-medium-gray;
   box-shadow: $shadow;
-  border-radius:3px;
-  display:block;
-  margin:0.95em 0 1.20em;
+  border-radius: 3px;
+  display: block;
+  margin: 0.95em 0 1.2em;
   max-width: 100%;
   @media screen and (min-width: 760px) {
     margin: 0.95em auto;
-    width:620px;
+    width: 620px;
   }
   .video-image {
     position: relative;
     padding-top: 56%;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
-    background: $black no-repeat center center; 
+    background: $black no-repeat center center;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -35,7 +35,7 @@
     font-size: 12px;
     bottom: 6px;
     right: 5px;
-    background-color: rgba(0,0,0,0.8);
+    background-color: rgba(0, 0, 0, 0.8);
     color: $white;
     padding: 0px 5px 0px;
     font-weight: 500;
@@ -50,57 +50,55 @@
       padding-left: 5px;
     }
   }
-  .ltag__link__pic{
-    display:inline-block;
+  .ltag__link__pic {
+    display: inline-block;
     padding: calc(0.4vw + 8px) calc(0.8vw + 8px);
-    padding-right:8px;
-    img{
-      width:calc(2.2vw + 45px);
-      height:calc(2.2vw + 45px);
-      margin:auto auto !important;
-      border-radius:150px;
+    padding-right: 8px;
+    img {
+      width: calc(2.2vw + 45px);
+      height: calc(2.2vw + 45px);
+      margin: auto auto !important;
+      border-radius: 150px;
     }
   }
-  .ltag__link__content{
-    display:inline-block;
-    vertical-align:top;
+  .ltag__link__content {
+    display: inline-block;
+    vertical-align: top;
     padding: calc(0.5vw + 6px);
-    padding-left:0;
+    padding-left: 0;
     width: calc(100% - 5vw - 70px);
-    h2{
-      margin:0;
-      padding:0;
+    h2 {
+      margin: 0;
+      padding: 0;
       font-weight: 500;
       font-size: 1.5em;
     }
-    h3{
+    h3 {
       margin: 0.1vw 0;
-      padding:0;
-      font-size:0.7em;
-      margin-bottom:0;
-      font-weight:bold;
+      padding: 0;
+      font-size: 0.7em;
+      margin-bottom: 0;
+      font-weight: bold;
       color: $medium-gray;
-      color: var(--theme-secondary-color, $medium-gray);
-      a{
-        color: $medium-gray;
-        color: var(--theme-secondary-color, $black);
-        }
+      color: var(--container-color-tertiary);
+      a {
+        color: var(--container-color-tertiary);
+      }
     }
-    .ltag__link__taglist{
-      margin:0;
-      padding:0;
-      line-height:1;
+    .ltag__link__taglist {
+      margin: 0;
+      padding: 0;
+      line-height: 1;
       font-size: 0.88em;
       margin-bottom: 5px;
     }
-    .ltag__link__tag{
-      margin-right:calc(0.4vw + 4px);
-      font-size:0.8em;
-      margin-left:1px;
+    .ltag__link__tag {
+      margin-right: calc(0.4vw + 4px);
+      font-size: 0.8em;
+      margin-left: 1px;
     }
     .ltag__link__servicename {
-      color: $medium-gray;
-      color: var(--theme-secondary-color, $medium-gray);
+      color: var(--container-color-tertiary);
       font-size: 0.7em;
       img {
         vertical-align: -5px;
@@ -113,28 +111,28 @@
   }
 }
 
-.single-comment-node{
-  .ltag__link{
-    width:100%;
-    margin:0.95em 0 1.20em;
-    .ltag__link__pic{
+.single-comment-node {
+  .ltag__link {
+    width: 100%;
+    margin: 0.95em 0 1.2em;
+    .ltag__link__pic {
       padding-top: calc(0.5vw + 12px);
-      img{
-        width:calc(2.5vw + 40px);
+      img {
+        width: calc(2.5vw + 40px);
       }
     }
-    .ltag__link__content{
-      h2{
-        font-size:calc(1.05em + 0.7vw) !important;
-        margin-top:0em !important;
-        margin-bottom:0.4em !important;
-        font-weight:400 !important;
-        line-height:1.22em !important;
-      }
-      h3{
+    .ltag__link__content {
+      h2 {
+        font-size: calc(1.05em + 0.7vw) !important;
+        margin-top: 0em !important;
         margin-bottom: 0.4em !important;
-        font-size:calc(0.8em + 0.5vw) !important;
-        font-weight:400 !important;
+        font-weight: 400 !important;
+        line-height: 1.22em !important;
+      }
+      h3 {
+        margin-bottom: 0.4em !important;
+        font-size: calc(0.8em + 0.5vw) !important;
+        font-weight: 400 !important;
       }
     }
   }

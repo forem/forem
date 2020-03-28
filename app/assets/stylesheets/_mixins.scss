@@ -26,14 +26,13 @@
   #{$property}: var(--#{$cssVariable}, #{$fallback}) !important;
 }
 
-
 /* Mixin for a load more wrapper, made by a container div and child button */
 @mixin load-more() {
   text-align: center;
 
   button {
     background: transparent;
-    @include themeable(border, theme-border, 1px solid $light-medium-gray);
+    border: 1px solid var(--container-color-tertiary);
     font-size: 17px;
     padding: 14px 5px;
     margin: 40px auto 70px;
@@ -41,6 +40,48 @@
     max-width: 80%;
     border-radius: 100px;
     font-weight: bold;
-    color: inherit
+    color: inherit;
+  }
+}
+
+// Card styling
+@mixin dev-card {
+  background: var(--container-bg);
+  @include themeable(border, theme-container-border, none);
+  @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
+
+  @media screen and (min-width: 950px) {
+    border-radius: 3px;
+    margin-bottom: 12px;
+  }
+}
+
+// Sidebar links
+@mixin sidebar-link {
+  display: block;
+  padding: 8px 16px;
+  margin: 0 -16px;
+  border-radius: 3px;
+  color: var(--link-dimmed-color);
+
+  &:hover {
+    color: var(--link-dimmed-color-hover);
+    background: var(--link-dimmed-bg-hover);
+  }
+}
+
+/**
+*
+* Generates the src property for @font-face. The mixin is required
+* so that webpack for Storybook and the application can both
+* generate the font URL correctly.
+*
+* $font: the font file name, e.g. 'OpenDyslexic-Regular.otf'
+*/
+@mixin font-src($font) {
+  @if variable-exists(environment) and $environment == 'storybook' {
+    src: '/fonts/' + $font;
+  } @else {
+    src: font-url($font);
   }
 }

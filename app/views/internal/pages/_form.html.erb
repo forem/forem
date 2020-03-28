@@ -22,6 +22,13 @@
         <%= form.text_field :description, class: "form-control" %>
       </div>
       <div class="form-group">
+        <% if @page.social_image_url %>
+          <img src="<%= @page.social_image_url%>" style="max-width:500px;display:block" />
+        <% end %>
+        <%= form.label :social_image %>
+        <%= form.file_field :social_image, class: "form-control" %>
+      </div>
+      <div class="form-group">
         <%= form.label :template %>
         <%= form.select :template, Page::TEMPLATE_OPTIONS, class: "form-control" %>
         <p>(Determines the way page's body will be embedded in the layout)</p>

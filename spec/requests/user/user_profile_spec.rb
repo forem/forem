@@ -57,6 +57,18 @@ RSpec.describe "UserProfiles", type: :request do
       expect(response.body).not_to include("<meta name=\"googlebot\" content=\"noindex\">")
     end
 
+    it "renders rss feed link if any stories" do
+      create(:article, user_id: user.id)
+
+      get "/#{user.username}"
+      expect(response.body).to include("/feed/#{user.username}")
+    end
+
+    it "does not render feed link if no stories" do
+      get "/#{user.username}"
+      expect(response.body).not_to include("/feed/#{user.username}")
+    end
+
     context "when organization" do
       it "renders organization page if org" do
         get organization.path
@@ -103,6 +115,17 @@ RSpec.describe "UserProfiles", type: :request do
         get organization.path
         expect(response.body).to include(ActionController::Base.helpers.sanitize(organization.location))
       end
+
+      it "renders rss feed link if any stories" do
+        create(:article, organization_id: organization.id)
+        get organization.path
+        expect(response.body).to include("/feed/#{organization.slug}")
+      end
+
+      it "does not render feed link if no stories" do
+        get organization.path
+        expect(response.body).not_to include("/feed/#{organization.slug}")
+      end
     end
 
     context "when github repo" do
@@ -120,14 +143,6 @@ RSpec.describe "UserProfiles", type: :request do
         get "/#{user.username}"
         expect(response.body).to include "A book bot 🤖"
       end
-    end
-  end
-
-  describe "GET /user" do
-    it "renders to appropriate page" do
-      user = create(:user)
-      get "/#{user.username}"
-      expect(response.body).to include CGI.escapeHTML(user.name)
     end
   end
 

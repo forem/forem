@@ -66,6 +66,13 @@ class NotifyMailer < ApplicationMailer
     mail(to: params[:email_to], subject: params[:email_subject])
   end
 
+  def user_contact_email(params)
+    @user = User.find(params[:user_id])
+    @email_body = params[:email_body]
+    track utm_campaign: "user_contact"
+    mail(to: @user.email, subject: params[:email_subject])
+  end
+
   def new_message_email(direct_message)
     @message = direct_message
     @user = @message.direct_receiver

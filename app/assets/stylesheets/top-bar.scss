@@ -1,447 +1,167 @@
+@import 'config/import';
 @import 'variables';
 @import 'mixins';
 
-.stories-index,
-.comments-index,
-.users-index,
-.notifications-index {
-  .top-bar {
-    @media screen and (min-width: 820px) {
-      border-bottom: 1.5px solid darken($lightest-gray, 4%);
-      box-shadow: 0px 0px 2px 0px rgba(97, 95, 95, 0.18);
-    }
-  }
-}
 .top-bar {
-  font-family: $helvetica;
-  position: absolute;
+  position: fixed;
   top: 0px;
   left: 0px;
   right: 0px;
-  -webkit-backface-visibility: hidden;
-  z-index: 1000;
-  font-size: 17px;
-  height: 46px;
-  @include themeable(
-    background, 
-    theme-top-bar-background, 
-    $tan
-  );
-  position: fixed;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  &.hidden {
-    display: none;
+  z-index: 101;
+  height: $header-height;
+  background: var(--header-bg);
+  box-shadow: 0 1px 1px var(--header-shadow);
+
+  &,
+  &::after,
+  &::before,
+  & *,
+  & *::after,
+  & *::before {
+    box-sizing: border-box; // todo: make it global when ready
   }
-  nav {
-    max-width: 100%;
-    width: 1250px;
+
+  &__container {
+    max-width: $max-width;
     margin: auto;
+    display: flex;
+    align-items: center;
     position: relative;
-    .pwa-nav-buttons {
-      position: absolute;
-      top: 17px;
-      left: -200px;
-      display: none;
-      button {
-        background: transparent;
-        border: 0px;
-        width: 28px;
-        text-align: center;
-        opacity: 0.75;
-        @include themeable(
-          filter, 
-          theme-social-icon-invert, 
-          invert(0)
-        );
-        img {
-          width: 15px;
-          height: 15px;
-        }
-        &:hover {
-          opacity: 1;
-        }
-      }
-      @media screen and (min-width: 950px) {
-        left: 88px;
-        &.pwa-nav-buttons--showing {
-          display: block;
-        }
-      }
-      @media screen and (min-width: 1439px) {
-        left: -88px;
-      }
-    }
-    a {
-      &:active {
-        opacity: 0.8;
-      }
-    }
-    .nav-link {
-      position: absolute;
-      top: 17px;
-      width: 120px;
-      height: 30px;
-      border-radius: 2px;
-      padding-right: 10px;
-      font-size: 14px;
-      font-weight: 400;
-      display: none;
-    }
-    .write {
-      width: 118px;
-      padding: 3px 0px;
-      height: auto;
-      top: 11px;
-      text-align: center;
-      font-weight: bold;
-      border-radius: 3px;
-      border: 2px solid $black;
-      border: 2px solid var(--theme-top-bar-write-color, $black);
-      @include themeable(
-        color, 
-        theme-top-bar-write-color, 
-        $black
-      );
-      @include themeable(
-        background, 
-        theme-top-bar-write-background, 
-        $green
-      );
-      @media screen and (min-width: 560px) {
-        display: block;
-        right: 140px;
-      }
-      @media screen and (min-width: 700px) {
-        display: block;
-        right: 165px;
-      }
-    }
-    .connect-icon {
-      width: 29px;
-      height: 48px;
-      display: block;
-      text-align: center;
-      z-index: 10;
-      top: 0px;
-      right: 90px;
-      @include themeable(
-        fill, 
-        theme-top-bar-color, 
-        $black
-      );
-      @media screen and (min-width: 700px) {
-        right: 110px;
-      }
-      img {
-        margin-top: 6px;
-        height: 33px;
-      }
-      .connect-number {
-        position: absolute;
-        top: 5px;
-        left: 17px;
-        background: $green;
-        padding: 2px 7px;
-        border-radius: 8px;
-        color: white;
-        display: none;
-        font-size: 1.05em;
-        &.showing {
-          display: block;
-        }
-      }
-      &:hover {
-        img {
-          opacity: 0.9;
-        }
-        .connect-number {
-          background: $green;
-        }
-      }
-    }
-    .notifications-icon {
-      right: 50px;
-      top: 4px;
-      width: 22px;
-      height: 41px;
-      display: block;
-      text-align: center;
-      z-index: 10;
-      @include themeable(
-        fill, 
-        theme-top-bar-color, 
-        $black
-      );
-      @media screen and (min-width: 700px) {
-        right: 73px;
-      }
-      img {
-        margin-top: 10px;
-        height: 23px;
-      }
-      .notifications-number {
-        position: absolute;
-        top: 1px;
-        left: 11px;
-        background: $dark-purple;
-        padding: 2px 7px;
-        border-radius: 8px;
-        color: white;
-        display: none;
-        font-size: 1.05em;
-        &.showing {
-          display: block;
-        }
-      }
-      &:hover {
-        img {
-          opacity: 0.9;
-        }
-        .notifications-number {
-          background: $dark-purple;
-        }
-      }
-    }
-
-    .nav-profile-image-wrapper {
-      height: 33px;
-      width: 33px;
-      background: $dark-gray;
-      margin-top: -6px;
-      border-radius: 100%;
-      border: 0;
-      overflow: hidden;
-      img {
-        height: 35px;
-        width: 35px;
-        border-radius: 100%;
-        margin-top: -1px;
-        margin-left: -1px;
-        -ms-user-select: none;
-        -moz-user-select: none;
-        -webkit-user-select: none;
-        user-select: none;
-      }
-    }
-    .bars {
-      height: 22px;
-      width: 22px;
-      background: transparent;
-    }
-    .navbar-menu-wrapper {
-      position: absolute;
-      right: 0px;
-      top: 0px;
-      &.showing {
-        .menu,
-        .menubg {
-          display: block;
-        }
-      }
-      &.desktop {
-        &:hover,
-        &:active,
-        &:focus {
-          .menu {
-            display: block;
-          }
-        }
-      }
-    }
-    .navigation-butt {
-      all: unset;
-      position: absolute;
-      right: 0px;
-      top: 7px;
-      padding-top: 6px;
-      padding-bottom: 6px;
-      padding-left: 28px;
-      padding-right: 6px;
-      border-bottom-left-radius: 8px;
-      background: transparent;
-      border: 0;
-      cursor: pointer;
-      @media screen and (min-width: 700px) {
-        padding-right: 33px;
-      }
-    }
-    .menubg {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(17, 17, 17, 0.88);
-      z-index: -5;
-      top: 46px;
-      display: none;
-    }
-    .menu {
-      position: absolute;
-      right: -3px;
-      padding: 5px 10px;
-      text-align: left;
-      @include themeable(
-        background, 
-        theme-top-bar-background, 
-        $tan
-      );
-      border: 1px solid rgb(219, 222, 225);
-      border-top: 0px;
-      display: none;
-      width: calc(100vw - 18px);
-      top: 45px;
-      @media screen and (min-width: 380px) {
-        position: fixed;
-        width: 230px;
-        border-right: none;
-        padding: 15px 10px;
-        border-bottom-left-radius: 5px;
-        box-shadow: 0px 4px 5px 1px rgba(97, 95, 95, 0.18);
-      }
-      @media screen and (min-width: 1250px) {
-        position: absolute;
-        border-right: 1px solid rgb(219, 222, 225);
-        border-bottom-right-radius: 5px;
-        right: 4px;
-      }
-      .header {
-        padding: 3px 10px;
-        border-bottom: 3px solid rgb(241, 244, 246);
-        margin-bottom: 5px;
-        color: rgb(178, 192, 203);
-      }
-      .option {
-        padding: 15px 10px;
-        @media screen and (min-width: 380px) {
-          padding: 6px 10px;
-        }
-        &.prime-option {
-          border-bottom: 3px solid;
-          @include themeable(
-            border-color,
-            theme-prime-option-border-color,
-            #7a7e81
-          );
-          margin-bottom: 5px;
-          font-size: 1.22em;
-          font-weight: 500;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-        &:hover {
-          @include themeable(
-            background, 
-            theme-top-bar-background-hover, 
-            darken($tan, 2%)
-          );
-        }
-      }
-      a {
-        @include themeable(
-          color, 
-          theme-color, 
-          $black
-        );
-      }
-    }
   }
 
-  .skip-content-link {
+  .crayons-indicator {
     position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translate(-50%, -100px);
-    background: black;
-    color: white;
-    z-index: 9999;
-    padding: 13px;
-    cursor: default;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s $ease-in-cubic, transform 0.3s $ease-in-cubic;
-
-    &:focus {
-      pointer-events: auto;
-      opacity: 1;
-      transform: translate(-50%, 22px);
-      transition: opacity 0.3s $ease-out-cubic, transform 0.3s $ease-out-cubic;
-    }
-  }
-  .logo-link {
-    display: inline-block;
-    margin-left: 2%;
-  }
-  .logo {
-    width: 33px;
-    height: 21px;
-    padding: 7px 8px 6px 10px;
-    margin-top: 6px;
-    @include themeable(
-      fill, 
-      theme-logo-color, 
-      white
-    );
-    border-radius: 3px;
-    @include themeable(
-      background, 
-      theme-logo-background, 
-      $black
-    );
+    top: $su-1;
+    right: $su-1;
+    box-shadow: 0 0 0 2px var(--header-bg);
   }
 }
 
-.nav-search-form {
-  position: absolute;
-  top: 8px;
-  left: calc(50px + 5vw);
-  bottom: 0px;
-  width: calc(55vw - 63px);
-  @media screen and (min-width: 350px) {
-    width: calc(61vw - 75px);
+// Logo
+.top-bar--logo {
+  display: flex;
+  margin-left: $su-2;
+  @media (min-width: $breakpoint-m) {
+    margin-left: $su-4;
   }
-  @media screen and (min-width: 450px) {
-    width: calc(61vw - 45px);
+
+  .logo {
+    width: 50px;
+    height: 40px;
+    padding: 0 7px 0 9px; // TODO: we have to fix SVG for logo a little...
+    background: var(--logo-bg);
+    fill: var(--logo-color);
+    border-radius: $br-default;
   }
-  @media screen and (min-width: 560px) {
-    width: calc(46vw - 52px);
+}
+
+// Search bar
+.top-bar--search {
+  max-width: 420px;
+  flex: 1 auto;
+  margin: 0 $su-2;
+
+  @media (min-width: $breakpoint-s) {
+    margin: 0 $su-4;
   }
-  @media screen and (min-width: 950px) {
-    left: 0;
-    right: 0;
-    margin: auto;
-    width: 300px;
+}
+
+// Actions on right side...
+.top-bar__links {
+  height: $header-height;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.top-bar__link {
+  position: relative;
+  display: flex;
+  padding: 0 $su-3;
+  height: 100%;
+  align-items: center;
+  color: var(--header-icons-color);
+
+  &:hover {
+    color: var(--header-icons-color-hover);
   }
-  @media screen and (min-width: 1120px) {
-    width: calc(100% - 760px);
-  }
-  &__input {
-    margin: 0;
-    width: calc(100% - 12px);
-    border-radius: 3px;
-    padding: 6px 9px 5px;
-    font-size: 16px;
-    @include themeable(
-      background, 
-      theme-top-bar-search-background, 
-      #e8e7e7
-    );
-    @include themeable(
-      color, 
-      theme-top-bar-search-color, 
-      $black
-    );
-    -webkit-appearance: none;
-    border: 1px solid transparent;
-    &:focus {
-      border: 1px solid $dark-purple;
+}
+
+// Dropdown under profile picture / hamburger icon
+.top-bar__menu {
+  height: 100%;
+
+  &__trigger {
+    all: unset;
+    display: flex;
+    height: 100%;
+    padding: 0 $su-2;
+    align-items: center;
+    cursor: pointer;
+    color: var(--header-icons-color);
+
+    &:hover {
+      color: var(--header-icons-color-hover);
     }
-    &::placeholder {
-      opacity: 0.5;
-      @include themeable(
-        color, 
-        theme-top-bar-search-color, 
-        $black
-      );
+  }
+
+  &__dropdown {
+    top: $header-height;
+  }
+
+  &.showing {
+    .top-bar__menu__dropdown {
+      display: block;
+    }
+  }
+
+  &.desktop {
+    &:hover,
+    &:active,
+    &:focus {
+      .top-bar__menu__dropdown {
+        display: block;
+      }
+    }
+  }
+}
+
+.skip-content-link {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -100px);
+  background: var(--body-color);
+  color: var(--body-color-inverted);
+  z-index: 9999;
+  padding: $su-4;
+  pointer-events: none;
+  opacity: 0;
+  border-radius: $br-default;
+
+  &:focus {
+    pointer-events: auto;
+    opacity: 1;
+    transform: translate(-50%, $header-height/2);
+  }
+}
+
+.pwa-nav-buttons {
+  height: 100%;
+  display: none;
+  padding-left: $su-2;
+  button {
+    all: unset;
+    padding: 0 $su-2;
+    color: var(--header-icons-color);
+
+    &:hover {
+      color: var(--header-icons-color-hover);
+    }
+  }
+  @media (min-width: $breakpoint-m) {
+    &.pwa-nav-buttons--showing {
+      display: flex;
     }
   }
 }

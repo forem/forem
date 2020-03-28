@@ -78,3 +78,25 @@ export function preloadSearchResults({
     )}`,
   );
 }
+
+/**
+ * A helper method to call /search endpoints.
+ *
+ * @param {string} endpoint - The search endpoint you want to request (i.e. tags).
+ * @param {object} dataHash - A hash with the search params that need to be included in the request.
+ *
+ * @returns {Promise} A promise object with response formatted as JSON.
+ */
+export function fetchSearch(endpoint, dataHash) {
+  const searchParams = new URLSearchParams(dataHash).toString();
+
+  return fetch(`/search/${endpoint}?${searchParams}`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+  }).then(response => response.json());
+}

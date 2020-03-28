@@ -109,16 +109,21 @@ export default class ArticleForm extends Component {
       organizationId: this.article.organization_id,
       errors: null,
       edited: false,
+      updatedAt: this.article.updated_at,
       version,
     };
   }
 
   componentDidMount() {
-    const { version } = this.state;
-    const previousContent = JSON.parse(
-      localStorage.getItem(`editor-${version}-${window.location.href}`),
-    );
-    if (previousContent && this.checkContentChanges(previousContent)) {
+    const { version, updatedAt } = this.state;
+    const previousContent =
+      JSON.parse(
+        localStorage.getItem(`editor-${version}-${window.location.href}`),
+      ) || {};
+    const isLocalstorageNewer =
+      new Date(previousContent.updatedAt) > new Date(updatedAt);
+
+    if (previousContent && isLocalstorageNewer) {
       this.setState({
         title: previousContent.title || '',
         tagList: previousContent.tagList || '',
@@ -139,18 +144,9 @@ export default class ArticleForm extends Component {
     }
   }
 
-  checkContentChanges = previousContent => {
-    const { bodyMarkdown, title, mainImage, tagList } = this.state;
-    return (
-      bodyMarkdown !== previousContent.bodyMarkdown ||
-      title !== previousContent.title ||
-      mainImage !== previousContent.mainImage ||
-      tagList !== previousContent.tagList
-    );
-  };
-
   localStoreContent = () => {
     const { version, title, tagList, mainImage, bodyMarkdown } = this.state;
+    const updatedAt = new Date();
     localStorage.setItem(
       `editor-${version}-${this.url}`,
       JSON.stringify({
@@ -158,6 +154,7 @@ export default class ArticleForm extends Component {
         tagList,
         mainImage,
         bodyMarkdown,
+        updatedAt,
       }),
     );
   };

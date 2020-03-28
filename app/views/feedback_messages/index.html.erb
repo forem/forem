@@ -1,5 +1,5 @@
 <% title "Feedback" %>
-<% cache "feedback-messages-lander-styling-#{ApplicationConfig['HEROKU_SLUG_COMMIT']}" do %>
+<% cache(cache_key_heroku_slug("feedback-messages-lander-styling")) do %>
   <style>
     <%= Rails.application.assets["feedback_messages.css"].to_s.html_safe %>
   </style>

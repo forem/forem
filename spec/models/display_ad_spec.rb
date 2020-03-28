@@ -27,7 +27,7 @@ RSpec.describe DisplayAd, type: :model do
 
   context "when callbacks are triggered before save" do
     it "generates #processed_html from #body_markdown" do
-      expect(display_ad.processed_html).to eq("Hello <em>hey</em> Hey hey")
+      expect(display_ad.processed_html).to eq("<p>Hello <em>hey</em> Hey hey</p>")
     end
   end
 

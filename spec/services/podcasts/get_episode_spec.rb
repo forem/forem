@@ -50,9 +50,9 @@ RSpec.describe Podcasts::GetEpisode, type: :service do
       ep = create(:podcast_episode, published_at: Time.current, reachable: true, https: false, podcast: podcast)
       ep.update_columns(created_at: 2.days.ago)
       allow(podcast).to receive(:existing_episode).and_return(ep)
-      expect do
+      sidekiq_assert_no_enqueued_jobs only: PodcastEpisodes::UpdateMediaUrlWorker do
         get_episode.call(item: item)
-      end.not_to have_enqueued_job.on_queue("podcast_episode_update")
+      end
     end
 
     it "updates published_at when it was nil" do
@@ -97,7 +97,7 @@ RSpec.describe Podcasts::GetEpisode, type: :service do
     end
 
     it "doesn't create invalid episodes" do
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         expect do
           described_class.new(podcast).call(item: item)
         end.not_to change(PodcastEpisode, :count)
@@ -105,9 +105,9 @@ RSpec.describe Podcasts::GetEpisode, type: :service do
     end
 
     it "doesn't schedule jobs" do
-      expect do
+      sidekiq_assert_no_enqueued_jobs do
         described_class.new(podcast).call(item: item)
-      end.not_to have_enqueued_job
+      end
     end
   end
 end

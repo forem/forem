@@ -42,7 +42,6 @@ class ChatChannelsController < ApplicationController
     membership = @chat_channel.chat_channel_memberships.where(user_id: current_user.id).first
     membership.update(last_opened_at: 1.second.from_now, has_unopened_messages: false)
     send_open_notification
-    membership.index!
     render json: { status: "success", channel: params[:id] }, status: :ok
   end
 
@@ -99,9 +98,28 @@ class ChatChannelsController < ApplicationController
     authorize chat_channel
     chat_channel.status = "blocked"
     chat_channel.save
-    chat_channel.chat_channel_memberships.map(&:remove_from_index!)
+    chat_channel.chat_channel_memberships.map(&:index_to_elasticsearch)
     render json: { status: "success", message: "chat channel blocked" }, status: :ok
   end
+
+  # Note: this is part of an effort of moving some things from the external to
+  # the internal API. No behavior was changes as part of this refactoring, so
+  # this action is a bit unusual.
+  def channel_info
+    skip_authorization
+
+    @chat_channel =
+      ChatChannel.
+        select(CHANNEL_ATTRIBUTES_FOR_SERIALIZATION).
+        find_by(id: params[:id])
+
+    return if @chat_channel&.has_member?(current_user)
+
+    render json: { error: "not found", status: 404 }, status: :not_found
+  end
+
+  CHANNEL_ATTRIBUTES_FOR_SERIALIZATION = %i[id description channel_name].freeze
+  private_constant :CHANNEL_ATTRIBUTES_FOR_SERIALIZATION
 
   private
 
@@ -146,26 +164,15 @@ class ChatChannelsController < ApplicationController
   end
 
   def render_channels_html
-    return unless current_user
+    return unless current_user && params[:slug]
 
-    if params[:slug]
-      slug = if params[:slug]&.start_with?("@")
-               [current_user.username, params[:slug].delete("@")].sort.join("/")
-             else
-               params[:slug]
-             end
-      @active_channel = ChatChannel.find_by(slug: slug)
-      @active_channel.current_user = current_user if @active_channel
-    end
-    generate_algolia_search_key
-  end
-
-  def generate_algolia_search_key
-    current_user_id = current_user.id
-    params = { filters: "viewable_by:#{current_user_id} AND status: active" }
-    @secured_algolia_key = Algolia.generate_secured_api_key(
-      ApplicationConfig["ALGOLIASEARCH_SEARCH_ONLY_KEY"], params
-    )
+    slug = if params[:slug]&.start_with?("@")
+             [current_user.username, params[:slug].delete("@")].sort.join("/")
+           else
+             params[:slug]
+           end
+    @active_channel = ChatChannel.find_by(slug: slug)
+    @active_channel.current_user = current_user if @active_channel
   end
 
   def generate_github_token

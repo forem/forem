@@ -17,12 +17,16 @@
     <p>
       We're a place where coders share, stay up-to-date and grow their careers.
     </p>
-    <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="sign-up-link cta" data-no-instant>
-      <img src="<%= asset_path("twitter-logo.svg") %>" class="icon-img" alt="Twitter logo" /> Auth With Twitter
-    </a>
-    <a href="/users/auth/github?state=signup-modal" class="sign-up-link cta" data-no-instant>
-      <img src="<%= asset_path("github-logo.svg") %>" class="icon-img" alt="GitHub logo" /> Auth With GitHub
-    </a>
+    <% if SiteConfig.auth_allowed?("twitter") %>
+      <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="sign-up-link cta" data-no-instant>
+        <img src="<%= asset_path("twitter-logo.svg") %>" class="icon-img" alt="Twitter logo" /> Auth With Twitter
+      </a>
+    <% end %>
+    <% if SiteConfig.auth_allowed?("github") %>
+      <a href="/users/auth/github?state=signup-modal" class="sign-up-link cta" data-no-instant>
+        <img src="<%= asset_path("github-logo.svg") %>" class="icon-img" alt="GitHub logo" /> Auth With GitHub
+      </a>
+    <% end %>
     <p>
       <em>We strive for transparency and don't collect excess data.</em>
     </p>

@@ -3,20 +3,14 @@
 /* global userData, filterXSS */
 
 function initializeUserProfileContent(user) {
-  document.getElementById('sidebar-profile-pic').innerHTML =
-    '<img alt="' +
-    user.username +
-    '" class="sidebar-profile-pic-img" src="' +
-    user.profile_image_90 +
-    '" />';
+  document.getElementById('sidebar-profile--avatar').src = user.profile_image_90;
+  document.getElementById('sidebar-profile--avatar').alt = user.username;
 
-  document.getElementById('sidebar-profile-name').innerHTML = filterXSS(
+  document.getElementById('sidebar-profile--name').innerHTML = filterXSS(
     user.name,
   );
-  document.getElementById('sidebar-profile-username').innerHTML =
-    '@' + user.username;
-  document.getElementById('sidebar-profile-snapshot-inner').href =
-    '/' + user.username;
+  document.getElementById('sidebar-profile--username').innerHTML = '@' + user.username;
+  document.getElementById('sidebar-profile').href = '/' + user.username;
 }
 
 function initializeUserSidebar(user) {
@@ -109,10 +103,9 @@ function addRelevantButtonsToComments(user) {
 function initializeBaseUserData() {
   const user = userData();
   const userProfileLinkHTML =
-    '<a href="/' +
-    user.username +
-    '" id="first-nav-link"><div class="option prime-option">@' +
-    user.username +
+    '<a href="/' + user.username + '" id="first-nav-link" class="crayons-nav-block"><div>' +
+    '<span class="fw-medium block color-base-100">' + user.name +'</span>' +
+    '<small class="fs-s color-base-50">@' + user.username + '</small>' +
     '</div></a>';
   document.getElementById(
     'user-profile-link-placeholder',

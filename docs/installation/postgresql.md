@@ -66,13 +66,3 @@ The number of connections to the database (the connection limit) is dependent on
 our
 [Heroku Postgres plan](https://devcenter.heroku.com/articles/heroku-postgres-plans).
 PgBouncer ensures that we do not exceed our plan's connection limit.
-
-## Troubleshooting tests
-
-- While running test cases, if you get an error message
-  `postgresql connection timeout`, please re-run the tests by increasing the
-  statement timeout, for example:
-
-```shell
-STATEMENT_TIMEOUT=10000 bundle exec rspec
-```

@@ -1,20 +1,22 @@
 <div class="article-actions" id="article-reaction-actions">
-  <button id="reaction-butt-like" class="article-reaction-butt like-reaction-button" data-category="like" alt="heart-emoji" title="heart">
-    <img alt="heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" /><span class="reaction-number" id="reaction-number-like"></span>
-  </button>
-  <button id="reaction-butt-unicorn" class="article-reaction-butt unicorn-reaction-button" data-category="unicorn" alt="unicorn-emoji" title="unicorn">
-    <img alt="unicorn" src="<%= asset_path("emoji/emoji-one-unicorn.png") %>" /><span class="reaction-number" id="reaction-number-unicorn"></span>
-  </button>
-  <button id="reaction-butt-readinglist" class="article-reaction-butt readinglist-reaction-button" data-category="readinglist" alt="unicorn-emoji" title="reading list">
-    <img alt="reading list" src="<%= asset_path("emoji/emoji-one-bookmark.png") %>" /><span class="reaction-number" id="reaction-number-readinglist"></span>
-  </button>
-  <a class="article-actions-tweet-button"
-     id="article-actions-tweet-button"
-     rel="noopener"
-     target='_blank'
-     href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>
-    <img src="<%= asset_path("twitter.svg") %>" alt="twitter logo">
-  </a>
+  <% if @article.published? %>
+    <button id="reaction-butt-like" class="article-reaction-butt like-reaction-button" data-category="like" alt="heart-emoji" title="heart">
+      <img alt="heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" /><span class="reaction-number" id="reaction-number-like"></span>
+    </button>
+    <button id="reaction-butt-unicorn" class="article-reaction-butt unicorn-reaction-button" data-category="unicorn" alt="unicorn-emoji" title="unicorn">
+      <img alt="unicorn" src="<%= asset_path("emoji/emoji-one-unicorn.png") %>" /><span class="reaction-number" id="reaction-number-unicorn"></span>
+    </button>
+    <button id="reaction-butt-readinglist" class="article-reaction-butt readinglist-reaction-button" data-category="readinglist" alt="unicorn-emoji" title="reading list">
+      <img alt="reading list" src="<%= asset_path("emoji/emoji-one-bookmark.png") %>" /><span class="reaction-number" id="reaction-number-readinglist"></span>
+    </button>
+    <a class="article-actions-tweet-button"
+      id="article-actions-tweet-button"
+      rel="noopener"
+      target='_blank'
+      href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>
+      <img src="<%= asset_path("twitter.svg") %>" alt="twitter logo">
+    </a>
+  <% end %>
   <a class="article-actions-comments-count" href="#comments" id="jump-to-comments">
     DISCUSS
     <% if @article.comments_count.positive? %>
@@ -45,7 +47,7 @@
             <button for="subscribe_notifications" id="notification-subscription-label_only_author_comments" class="notification-subscription-label" data-payload="only_author_comments">
               Post Author Comments <span class="selected-emoji">✅</span>
             </button>
-            <%= javascript_pack_tag "notificationSubscriptionHandler", defer: true %>
+            <%= javascript_packs_with_chunks_tag "notificationSubscriptionHandler", defer: true %>
           </div>
         <% end %>
         <div class="dropdown-link-row">

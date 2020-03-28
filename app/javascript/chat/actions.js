@@ -1,3 +1,5 @@
+import { fetchSearch } from '../src/utils/search';
+
 export function getAllMessages(channelId, messageOffset, successCb, failureCb) {
   fetch(`/chat_channels/${channelId}?message_offset=${messageOffset}`, {
     Accept: 'application/json',
@@ -104,20 +106,22 @@ export function getChannels(
   successCb,
   _failureCb,
 ) {
-  const client = algoliasearch(props.algoliaId, props.algoliaKey);
-  const index = client.initIndex(props.algoliaIndex);
-  const filters = {
-    ...{
-      hitsPerPage: 30 + paginationNumber,
-      page: paginationNumber,
-    },
-    ...additionalFilters,
-  };
-  index.search(query, filters).then(content => {
-    const channels = content.hits;
+  const dataHash = {};
+  if (additionalFilters.filters) {
+    const [key, value] = additionalFilters.filters.split(':');
+    dataHash[key] = value;
+  }
+  dataHash.per_page = 30;
+  dataHash.page = paginationNumber;
+  dataHash.channel_text = query;
+
+  const responsePromise = fetchSearch('chat_channels', dataHash);
+
+  return responsePromise.then(response => {
+    const channels = response.result;
     if (
       retrievalID === null ||
-      content.hits.filter(e => e.chat_channel_id === retrievalID).length === 1
+      channels.filter(e => e.chat_channel_id === retrievalID).length === 1
     ) {
       successCb(channels, query);
     } else {
@@ -129,7 +133,7 @@ export function getChannels(
           credentials: 'same-origin',
         },
       )
-        .then(response => response.json())
+        .then(individualResponse => individualResponse.json())
         .then(json => {
           channels.unshift(json);
           successCb(channels, query);

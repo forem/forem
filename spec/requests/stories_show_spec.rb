@@ -119,6 +119,46 @@ RSpec.describe "StoriesShow", type: :request do
       get article.path
       expect(response.body).not_to include('"canonical" href="' + article.canonical_url.to_s + '"')
     end
+
+    it "handles invalid slug characters" do
+      allow(Article).to receive(:find_by).and_raise(ArgumentError)
+      get article.path
+
+      expect(response.status).to be(400)
+    end
+
+    it "has noindex if article has low score" do
+      article = create(:article, score: -5)
+      get article.path
+      expect(response.body).to include("noindex")
+    end
+
+    it "has noindex if article has low score even with <code>" do
+      article = create(:article, score: -5)
+      article.update_column(:processed_html, "<code>hello</code>")
+      get article.path
+      expect(response.body).to include("noindex")
+    end
+
+    it "does not have noindex if article has high score" do
+      article = create(:article, score: 6)
+      get article.path
+      expect(response.body).not_to include("noindex")
+    end
+
+    it "does not have noindex if article intermediate score and <code>" do
+      article = create(:article, score: 3)
+      article.update_column(:processed_html, "<code>hello</code>")
+      get article.path
+      expect(response.body).not_to include("noindex")
+    end
+
+    it "does not have noindex if article w/ intermediate score w/ 1 comment " do
+      article = create(:article, score: 3)
+      article.user.update_column(:comments_count, 1)
+      get article.path
+      expect(response.body).not_to include("noindex")
+    end
   end
 
   describe "GET /:username (org)" do

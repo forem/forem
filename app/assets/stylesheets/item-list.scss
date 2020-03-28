@@ -2,18 +2,11 @@
 @import 'mixins';
 
 .item-list-container {
-  @media screen and (min-width: 950px) {
-    margin-top: -25px;
-  }
-
   a {
     display: block;
   }
 
   .filters {
-    width: 300px;
-    float: left;
-    min-height: 356px;
     position: relative;
 
     input {
@@ -34,7 +27,7 @@
         theme-container-accent-background,
         lighten($light-gray, 2%)
       );
-      @include themeable(color, theme-color, $black);
+      color: var(--body-color);
     }
 
     .filters-header {
@@ -45,7 +38,7 @@
         font-size: 0.9em;
         font-family: $monospace;
         text-decoration: underline;
-        @include themeable(color, theme-secondary-color, $medium-gray);
+        color: var(--container-color-tertiary);
       }
       .filters-header-action {
         font-size: 0.8em;
@@ -61,7 +54,7 @@
         padding: 5px 0px;
         position: relative;
         padding-left: 5px;
-        @include themeable(color, theme-color, $black);
+        color: var(--body-color);
 
         &:hover {
           @include themeable(
@@ -83,26 +76,18 @@
   }
 
   .items-container {
-    width: calc(100% - 20px);
-    margin: 10px auto;
-    margin-left: 10px;
+    padding: 16px;
+    box-sizing: border-box;
+    width: 100%;
     float: left;
 
     @media screen and (min-width: 950px) {
-      width: calc(100% - 332px);
-      margin-left: 20px;
-      margin-top: 0px;
+      width: calc(100% - 280px);
     }
 
     .results {
-      @include themeable(background, theme-container-background, white);
-      @include themeable(
-        border,
-        theme-container-border,
-        1px solid $light-medium-gray
-      );
+      @include dev-card;
       border-radius: 3px;
-      min-height: 350px;
       display: none;
       text-align: left;
       font-size: 14px;
@@ -140,13 +125,13 @@
           border-radius: 3px;
           background: transparent;
           border: 1px solid $black;
-          @include themeable(color, theme-secondary-color, $medium-gray);
+          color: var(--container-color-tertiary);
           @include themeable(border-color, theme-secondary-color, $medium-gray);
         }
       }
 
       .item {
-        @include themeable(color, theme-color, $black);
+        color: var(--body-color);
         font-size: 0.8em;
         padding: 17px 17px 25px;
         @include themeable(
@@ -164,7 +149,7 @@
         .item-details {
           a {
             display: inline-block;
-            @include themeable(color, theme-secondary-color, $medium-gray);
+            color: var(--container-color-tertiary);
 
             &.item-user {
               margin-right: 5px;

@@ -5,7 +5,7 @@ class Internal::ModsController < Internal::ApplicationController
     @mods = if params[:state] == "tag"
               User.with_role(:tag_moderator, :any).page(params[:page]).per(50)
             elsif params[:state] == "potential"
-              User.order("comments_count DESC").page(params[:page]).per(100)
+              User.without_role(:trusted).order("comments_count DESC").page(params[:page]).per(100)
             else
               User.with_role(:trusted).page(params[:page]).per(50)
             end

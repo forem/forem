@@ -1,9 +1,11 @@
 class HtmlVariant < ApplicationRecord
   include CloudinaryHelper
 
+  GROUP_NAMES = %w[article_show_sidebar_cta article_show_below_article_cta badge_landing_page campaign].freeze
+
   validates :html, presence: true
   validates :name, uniqueness: true
-  validates :group, inclusion: { in: %w[article_show_sidebar_cta article_show_below_article_cta badge_landing_page] }
+  validates :group, inclusion: { in: GROUP_NAMES }
   validates :success_rate, presence: true
   validate  :no_edits
 
@@ -12,6 +14,8 @@ class HtmlVariant < ApplicationRecord
   has_many :html_variant_successes
 
   before_save :prefix_all_images
+
+  scope :relevant, -> { where(approved: true, published: true) }
 
   def calculate_success_rate!
     self.success_rate = html_variant_successes.size.to_f / (html_variant_trials.size * 10.0) # x10 because we only capture every 10th

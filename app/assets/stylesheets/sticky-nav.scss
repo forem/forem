@@ -3,209 +3,158 @@
 
 .primary-sticky-nav {
   display: none;
-  @media screen and ( min-width: 1250px ){
+  @media screen and (min-width: $max-width) {
     display: block;
     position: fixed;
     left: calc(50% + 298px);
-    top: 80px;
+    top: 70px;
     bottom: 20px;
-    width: 310px;
+    padding: 0 2px;
     display: flex;
     flex-flow: column wrap;
     overflow: hidden;
     z-index: 100;
+    width: 300px;
   }
   &.hidden {
     display: none;
   }
-  .primary-sticky-nav-author{
-    a{
-      @include themeable(
-        color, 
-        theme-container-color, 
-        $black
-      );
+  .primary-sticky-nav-author {
+    a {
+      color: var(--container-color);
     }
-    .primary-sticky-nav-author-top-profile-image{
+    .primary-sticky-nav-author-top-profile-image {
       width: 35px;
       height: 35px;
       border-radius: 360px;
       margin-right: 5px;
       vertical-align: -2px;
     }
-    .primary-sticky-nav-author-name{
-      font-size:1.3em;
+    .primary-sticky-nav-author-name {
+      font-size: 1.3em;
       font-weight: bold;
     }
     .primary-sticky-nav-author-username {
-      font-size:0.8em;
+      font-size: 0.8em;
       font-weight: bold;
     }
-    .primary-sticky-nav-author-summary{
+    .primary-sticky-nav-author-summary {
       font-weight: 400;
-      @include themeable(
-        color, 
-        theme-secondary-color, 
-        $medium-gray
-      );
+      color: var(--container-color-tertiary);
       padding: 10px 0px 5px;
       font-style: italic;
-      font-size:0.88em;
+      font-size: 0.88em;
       overflow: hidden;
       text-overflow: ellipsis;
       overflow-wrap: break-word;
     }
-    .primary-sticky-nav-author-follow{
-      padding-top:8px;
-      button{
-        width:100%;
-        font-size:1.25em;
-        border:0px;
-        border-radius:3px;
+    .primary-sticky-nav-author-follow {
+      padding-top: 8px;
+      button {
+        width: 100%;
+        font-size: 1.25em;
+        border: 0px;
+        border-radius: 3px;
         padding: 3px;
         height: 44px;
       }
     }
   }
-  .primary-sticky-nav-profile-image{
+  .primary-sticky-nav-profile-image {
     height: 23px;
     width: 23px;
     border-radius: 100px;
     vertical-align: -5px;
   }
-  .primary-sticky-nav-title{
+  .primary-sticky-nav-title {
     padding: 8px 0px 9px;
     margin-left: 15px;
     font-weight: bold;
-    img{
+    img {
       width: 19px;
       height: 19px;
       vertical-align: -1px;
     }
-    a{
-      @include themeable(
-        color, 
-        theme-container-color, 
-        $black
-      );
+    a {
+      color: var(--container-color);
       display: inline-block;
     }
   }
-  .primary-sticky-nav-element{
+  .primary-sticky-nav-element {
     display: block;
     padding: 10px 13px;
-    font-size:0.9em;
+    font-size: 0.9em;
     font-weight: bold;
-    @include themeable(
-      background, 
-      theme-container-background, 
-      #fff
-    );
-    margin-bottom: 10px;
+    @include dev-card;
     margin-left: 10px;
-    @include themeable(
-      border, 
-      theme-container-border, 
-      1px solid $outline-color
-    );
-    @include themeable(
-      box-shadow, 
-      theme-container-box-shadow, 
-      $bold-shadow
-    );
-    @include themeable(
-      color, 
-      theme-container-color, 
-      $black
-    );
+    color: var(--container-color);
     width: 262px;
     border-radius: 3px;
-    .primary-sticky-nav-element-details{
-      margin-top:9px;
+    .primary-sticky-nav-element-details {
+      margin-top: 9px;
       font-size: 0.8em;
-      @include themeable(
-        color, 
-        theme-secondary-color, 
-        $medium-gray
-      );
+      color: var(--container-color-tertiary);
     }
   }
   .user-metadata-details {
     margin-top: 10px;
     margin-left: 2px;
     font-family: $monospace;
-    .row{
+    .row {
       padding: calc(3px + 0.1vw) 0px;
       display: inline-block;
       width: 96%;
     }
-    .key{
+    .key {
       font-size: 0.8em;
       font-weight: 800;
       margin-bottom: 2px;
-      @include themeable(
-        color, 
-        theme-secondary-color, 
-        $medium-gray
-      );
+      color: var(--container-color-tertiary);
     }
-    .value{
+    .value {
       display: inline-block;
       font-size: 0.92em;
       margin-bottom: 4px;
     }
   }
-  .html-variant-wrapper{
+  .html-variant-wrapper {
     margin: 10px;
   }
 }
 
-
-  .primary-sticky-nav-org-summary{
-    font-weight: 400;
-    @include themeable(
-      color, 
-      theme-container-color, 
-      $black
-    );
-    padding: 4px 0px;
-    font-size:0.95em;
-    margin-top: 20px;
-    border-top: 1px solid $light-medium-gray;
-    p{
-      margin:12px 0px;
-    }
-    code {
-      background: $light-gray;
-      border-radius: 3px;
-      padding: 3px 4px;
-      color:#333842;
-      font-family: $monospace;
-    }
-    .primary-sticky-nav-org-cta-link-wrapper {
-      text-align: center;
-    }
-    a.primary-sticky-nav-org-cta-link{
-      display: inline-block;
-      font-size:1.25em;
-      border:0px;
-      border-radius:100px;
-      padding: 6px 38px;
-      margin-top: 20px;
-      background: white;
-      color: $black;
-      font-family: $helvetica-condensed;
-      font-weight: bold;
-      text-align: center;
-      font-stretch: condensed;
-      box-shadow: $light-shadow;
-      margin-bottom: 5px;
-      &:hover {
-        box-shadow: $dark-shadow;
-        padding: 7px 39px;
-        margin-bottom: 4px;
-        margin-top: 19px;
-        transition: all 0.3s;
-      }
-    }
+.primary-sticky-nav-org-summary {
+  font-weight: 400;
+  color: var(--container-color);
+  padding: 4px 0px;
+  font-size: 0.95em;
+  margin-top: 20px;
+  border-top: 1px solid $light-medium-gray;
+  p {
+    margin: 12px 0px;
   }
+  code {
+    background: $light-gray;
+    border-radius: 3px;
+    padding: 3px 4px;
+    color: #333842;
+    font-family: $monospace;
+  }
+  .primary-sticky-nav-org-cta-link-wrapper {
+    text-align: center;
+  }
+  a.primary-sticky-nav-org-cta-link {
+    display: inline-block;
+    font-size: 1.25em;
+    border: 0px;
+    border-radius: 100px;
+    padding: 6px 38px;
+    margin-top: 20px;
+    background: white;
+    color: $black;
+    font-family: $helvetica-condensed;
+    font-weight: bold;
+    text-align: center;
+    font-stretch: condensed;
+    margin-bottom: 5px;
+  }
+}

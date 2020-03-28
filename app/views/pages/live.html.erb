@@ -1,5 +1,5 @@
 <% if user_signed_in? %>
-  <%= javascript_pack_tag "Chat", defer: true %>
+  <%= javascript_packs_with_chunks_tag "Chat", defer: true %>
 <% end %>
 <% title "DEV Live 📡👩‍💻👨‍💻👩‍💻👨‍💻" %>
 <link rel="canonical" href="https://dev.to/live" />
@@ -20,7 +20,7 @@
 <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/bqzj1pwho9e0jicqo44s.png">
 
 <style>
-  <% cache "live-page-css-#{ApplicationConfig['HEROKU_SLUG_COMMIT']}", expires_in: 1.hour do %>
+  <% cache(cache_key_heroku_slug("live-page-css"), expires_in: 1.hour) do %>
   <%= Rails.application.assets["live.css"].to_s.html_safe %>
   <% end %>
 </style>

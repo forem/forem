@@ -1,0 +1,183 @@
+@import '../config/import';
+
+%form-styling {
+  background-color: var(--form-bg);
+  border: 1px solid var(--form-border);
+  color: var(--body-color);
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: $br-default;
+  transition: all $transition-props;
+
+  &-hover {
+    border-color: var(--form-border-hover);
+  }
+
+  &-disabled {
+    opacity: 0.6;
+  }
+
+  &-checked {
+    background-color: var(--form-border-focus);
+    border-color: var(--form-border-focus);
+    color: var(--form-bg-focus);
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+}
+
+// Text inputs and textareas.
+.crayons-textfield {
+  line-height: $lh-base;
+  padding: 0.5em;
+  font-family: inherit;
+  font-size: $fs-base;
+  width: 100%;
+  @extend %form-styling;
+
+  &::placeholder {
+    color: var(--form-placeholder-color);
+  }
+
+  &:hover {
+    @extend %form-styling-hover;
+  }
+
+  &:focus {
+    background-color: var(--form-bg-focus);
+    border-color: var(--form-border-focus);
+    box-shadow: 1px 1px 0 var(--form-border-focus);
+  }
+
+  &--disabled,
+  &[disabled] {
+    @extend %form-styling-disabled;
+  }
+
+  &::-ms-clear {
+    display: none;
+  }
+
+  &--icon {
+    padding-left: $su-7;
+  }
+}
+
+// Checkboxes, Radios
+.crayons-checkbox,
+.crayons-radio {
+  width: 1.125em;
+  height: 1.125em;
+  cursor: pointer;
+  background-position: center center;
+  vertical-align: middle;
+  @extend %form-styling;
+
+  &:hover {
+    @extend %form-styling-hover;
+  }
+
+  &--disabled,
+  &[disabled] {
+    @extend %form-styling-disabled;
+  }
+
+  &--checked,
+  &:checked {
+    @extend %form-styling-checked;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11.157.933a.75.75 0 01.077 1.058L4.817 9.407a.75.75 0 01-1.134 0L.766 6.037a.75.75 0 011.135-.982L4.25 7.77l5.85-6.76a.75.75 0 011.057-.077z' fill='%23fff'/%3E%3C/svg%3E");
+
+    &--disabled,
+    &[disabled] {
+      @extend %form-styling-disabled;
+    }
+  }
+}
+
+// Radios
+.crayons-radio {
+  border-radius: 50%;
+
+  &--checked,
+  &:checked {
+    @extend %form-styling-checked;
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='6' height='6' rx='3' fill='%23fff'/%3E%3C/svg%3E");
+  }
+}
+
+///////////////////////////////////////////////////
+
+// Full Fields markup
+.crayons-field {
+  display: flex;
+  flex-flow: column;
+  font-size: $fs-base; // todo: do we need it?
+
+  $this: &;
+
+  &__label {
+    color: var(--label-primary);
+    font-weight: $fw-medium;
+
+    + .crayons-field__description {
+      margin-top: 0;
+    }
+  }
+
+  &__description {
+    color: var(--label-secondary);
+    font-size: $fs-s;
+    font-weight: $fw-normal; // for when it's inside --label
+    margin: 0; //todo remove
+  }
+
+  > * + * {
+    margin-top: $su-2;
+  }
+
+  &--checkbox,
+  &--radio {
+    display: grid;
+    grid-template-columns: 1.5em 1fr;
+    grid-gap: $su-2;
+    border-radius: $br-default;
+    transition: all $transition-props;
+
+    &:hover {
+      background: var(--body-bg);
+      box-shadow: 0 0 0 $su-1 var(--body-bg);
+    }
+
+    #{$this}__label {
+      margin-top: 0;
+      padding-right: $su-2; // adding this to make hovers look slightly better.
+    }
+  }
+
+  .crayons-checkbox,
+  .crayons-radio {
+    margin: 0.1875em; // centering checkbox within 1.5em grid cell.
+    justify-self: center;
+  }
+}
+
+.crayons-fields {
+  display: flex;
+  flex-flow: column;
+  $this: &;
+
+  &:not(#{$this}--horizontal) {
+    > .crayons-field + .crayons-field {
+      margin-top: $su-2;
+    }
+  }
+
+  &--horizontal {
+    flex-flow: row;
+    flex-wrap: wrap;
+
+    > .crayons-field:not(:last-child) {
+      margin-right: $su-4;
+    }
+  }
+}

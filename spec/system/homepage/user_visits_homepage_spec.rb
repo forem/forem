@@ -20,7 +20,7 @@ RSpec.describe "User visits a homepage", type: :system do
         expect(page).to have_link("#ruby", href: "/t/ruby")
         expect(page).to have_link("#webdev", href: "/t/webdev")
       end
-      expect(page).to have_text("design your experience")
+      expect(page).to have_text("Design Your Experience")
     end
 
     describe "link tags" do
@@ -36,14 +36,6 @@ RSpec.describe "User visits a homepage", type: :system do
 
     before do
       sign_in(user)
-    end
-
-    it "shows profile content", js: true do
-      visit "/"
-      within("div#sidebar-profile-username") do
-        expect(page).to have_text(user.username)
-      end
-      expect(page).not_to have_text("SIGN IN VIA")
     end
 
     it "offers to follow tags", js: true do
@@ -63,7 +55,7 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows the followed tags", js: true do
-        expect(page).to have_text("my tags")
+        expect(page).to have_text("My Tags")
 
         # Need to ensure the user data is loaded before doing any checks
         find("body")["data-user"]

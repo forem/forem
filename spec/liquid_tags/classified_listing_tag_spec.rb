@@ -31,7 +31,11 @@ RSpec.describe ClassifiedListingTag, type: :liquid_tag do
     )
   end
   let(:org) { create(:organization) }
-  let(:org_user) { create(:user, organization_id: org.id) }
+  let(:org_user) do
+    user = create(:user)
+    create(:organization_membership, user: user, organization: org)
+    user
+  end
   let(:org_listing) do
     create(
       :classified_listing,

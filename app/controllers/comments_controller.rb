@@ -75,7 +75,6 @@ class CommentsController < ApplicationController
         render json: { status: "comment already exists" }
         return
       end
-
       render json: {
         status: "created",
         css: @comment.custom_css,

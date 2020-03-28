@@ -88,7 +88,7 @@ RSpec.describe CacheBuster, type: :labor do
 
   describe "#bust_classified_listings" do
     it "busts classified listings" do
-      cache_buster.bust_classified_listings(listing)
+      expect { cache_buster.bust_classified_listings(listing) }.not_to raise_error
     end
   end
 

@@ -22,7 +22,7 @@
                        id: "s3-uploader",
                        class: "upload-form",
                        data: { key: :val } do %>
-    <%= file_field_tag :file %>
+    <%= file_field_tag :file, accept: "video/mp4,video/x-m4v,video/*" %>
     <script id="template-upload" type="text/x-tmpl">
     <div id="file-{%=o.unique_id%}" class="upload">
       {%=o.name%}

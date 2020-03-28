@@ -1,10 +1,18 @@
 class GithubRepoPolicy < ApplicationPolicy
+  def index?
+    !user_is_banned?
+  end
+
   def create?
     !user_is_banned?
   end
 
   def update?
     !user_is_banned? && user_is_owner?
+  end
+
+  def update_or_create?
+    !user_is_banned?
   end
 
   def permitted_attributes

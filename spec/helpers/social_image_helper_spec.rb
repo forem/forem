@@ -26,6 +26,12 @@ describe SocialImageHelper do
 
       expect(url).to eq GeneratedImage.new(user).social_image
     end
+
+    it "returns social preview path for newer decorated users" do
+      url = helper.user_social_image_url(user.decorate)
+
+      expect(url).to eq user_social_preview_url(user, format: :png)
+    end
   end
 
   describe ".article_social_image_url" do
@@ -49,6 +55,12 @@ describe SocialImageHelper do
       url = helper.article_social_image_url(article)
 
       expect(url).to eq GeneratedImage.new(article).social_image
+    end
+
+    it "returns social preview path for newer decorated articles" do
+      url = helper.article_social_image_url(article.decorate)
+
+      expect(url).to eq article_social_preview_url(article, format: :png)
     end
   end
 end

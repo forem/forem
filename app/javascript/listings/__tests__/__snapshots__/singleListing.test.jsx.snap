@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<SingeListing /> should load a single user listing 1`] = `
+exports[`<SingleListing /> should load a single user listing 1`] = `
 preact-render-spy (1 nodes)
 -------
 <div
@@ -8,7 +8,7 @@ preact-render-spy (1 nodes)
   id="single-classified-listing-22"
 >
   <div class="listing-content">
-    <h3>
+    <h3 class="single-classified-listing-header">
       <a
         href="/listings/misc/illo-iure-quos-perspiciatis-5hk7"
         data-no-instant={true}
@@ -17,6 +17,25 @@ preact-render-spy (1 nodes)
       >
         Illo iure quos perspiciatis.
       </a>
+      <div class="dropdown-menu">
+        <button
+          type="button"
+          class="dropdown-btn"
+          aria-label="Toggle dropdown menu"
+          onClick={[Function anonymous]}
+        >
+          <img
+            src=""
+            class="dropdown-icon"
+            alt="Dropdown menu icon"
+           />
+        </button>
+        <div class="dropdown">
+          <div class="dropdown-content ">
+            <a href="/report-abuse?url=https://dev.to/listings/misc/illo-iure-quos-perspiciatis-5hk7">Report Abuse</a>
+          </div>
+        </div>
+      </div>
     </h3>
     <div class="single-classified-listing-body">
       <p>Eius et ullam. Dolores et qui. Quis <strong>qui</strong> omnis.</p>
@@ -49,7 +68,6 @@ preact-render-spy (1 nodes)
       <a href="/listings/?q=West Refugio">・West Refugio</a>
       ・
       <a href="/mrschristiansenyoko">Mrs. Yoko Christiansen</a>
-      <a href="/report-abuse?url=https://dev.to/listings/misc/illo-iure-quos-perspiciatis-5hk7">・report abuse</a>
     </div>
   </div>
 </div>

@@ -4,7 +4,7 @@ require Rails.root.join("lib/data_update_scripts/20200214171607_index_tags_to_el
 describe DataUpdateScripts::IndexTagsToElasticsearch, elasticsearch: true do
   it "indexes tags to Elasticsearch" do
     tag = FactoryBot.create(:tag)
-    expect { tag.elasticsearch_doc }.to raise_error(Elasticsearch::Transport::Transport::Errors::NotFound)
+    expect { tag.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
     described_class.new.run
     expect(tag.elasticsearch_doc).not_to be_nil
   end
