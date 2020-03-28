@@ -147,14 +147,12 @@
             </div>
           </a>
         <% end %>
-        <h1 class="<%= @article.title_length_classification %>"> </h1>
+        <h1 class="<%= @article.title_length_classification %>"></h1>
 
         <h3>
-            <a href="/<%= @user.username %>" class="author">
-              <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 50) %>" alt="<%= @user.username %> profile image" />
-             </span>
-            </a>
-          </span>
+          <a href="/<%= @user.username %>" class="author">
+            <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 50) %>" alt="<%= @user.username %> profile image" />
+          </a>
           <% if @user.twitter_username.present? %>
             <a href="http://twitter.com/<%= @user.twitter_username %>"><%= image_tag_or_inline_svg_tag "twitter", width: 18, height: 18 %></a>
           <% end %>
