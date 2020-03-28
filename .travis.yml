@@ -76,5 +76,7 @@ deploy:
 notifications:
   slack:
     on_pull_requests: false
+    on_success: change
+    on_failure: always
     rooms:
       secure: vzIee4jDgPSRY4szZPdD/jW7YW4GzGqo5NoLV9Exz9TBoWH9UqJnc0TOb2YN84Ys5baRK7LOqxpfp8kFveZkrKGi7/ypeEJlpc9E5UqVh/bwQhvOGrKEg1fvNXbARRnO/sJ49o1CMvroMWvt3GurzuuY9Qu2r+3NBjn9aVwLnLzXsBuF+m2lLoeSkHnW13OC73EeJMsse6JBoCe3gp/srDwISp9+MU+sEAPaY333WK9Vk1kdG7D5oUIuT7743airLRiyWiNUCD1450g864628CEOEZKJAAtqk6kTmvwB91DJMnhD/XhMm4H21kd54YHy0fhqzcG8hYd1lDZuUfrOBfpdEtfnpcRwMyMpY+FPPHXkHhck3OiLJnzkV4L+Lr5W/RvDJ63Ye2nxT4hOItLWaoZWax/LhoIrhZjgYBc4JhiGRQJ8m2HzoRyceeG9Y80vayGVN7y46sjYHP5NHRI36qmJipneDRAJklBTXLdYATvVM/6Mh9B7+H/nBGR6UVJLBC/txi2C8rZRjKBZ/i9e+q/MZs0UEvOuvbz9BXKU08rI+rarJqH3h5Ji9G/k3M0mQ8EfvadabA9lu+gNUAAnq+vwLETweKvfbRpDQjVBKnWsOJoUl9aarfkBn3lhQE8fxZJT/GchLGZPx/CWUE4o1OhliBA9avJ7WINyYStM4Mc=

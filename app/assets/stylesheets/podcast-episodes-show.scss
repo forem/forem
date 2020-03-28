@@ -7,21 +7,21 @@
     padding-bottom: 30px;
     text-align: center;
     .title {
-      padding-top: 40px;
+      padding-top: 10px;
       background: $black;
-      height: 300px;
-      margin-bottom: -120px;
+      min-height: 300px;
+      margin-bottom: -60px;
       @media screen and (min-width: 600px) {
-        padding-top: 60px;
-        height: 400px;
-        margin-bottom: -200px;
+        padding-top: 20px;
+        min-height: 400px;
+        margin-bottom: -120px;
       }
       color: white;
       h2 {
-        font-weight: 300;
+        font-weight: 500;
         margin: 0;
         margin-top: 40px;
-        font-size: 18px;
+        font-size: 20px;
         color: rgb(235, 243, 245);
         a {
           color: white;
@@ -39,14 +39,16 @@
           border-radius: 30px;
         }
         .follow-action-button {
-          width: 120px;
+          width: 260px;
           border-radius: 3px;
           border: 0px;
-          font-size: 16px;
-          vertical-align: 2px;
+          display: block;
+          margin: 20px auto;
+          padding: 10px 0px;
+          font-size: 25px;
         }
         @media screen and (min-width: 600px) {
-          font-size: 22px;
+          font-size: 24px;
           img {
             height: 28px;
             width: 28px;
@@ -55,37 +57,44 @@
         }
       }
       h1 {
-        font-weight: 300;
+        font-weight: 700;
         margin: 15px auto 18px;
-        font-size: 27px;
+        font-size: 30px;
         line-height: 31px;
         max-width: 94%;
 
         @media screen and (min-width: 680px) {
-          font-size: 40px;
-          line-height: 44px;
+          font-size: 45px;
+          line-height: 55px;
           margin-bottom: 28px;
         }
         @media screen and (min-width: 800px) {
-          font-size: 44px;
-          line-height: 49px;
+          font-size: 49px;
+          line-height: 58px;
         }
         &.smaller {
           font-size: 23px;
           line-height: 25.5px;
           @media screen and (min-width: 490px) {
-            font-size: 27px;
-            line-height: 30px;
+            font-size: 30px;
+            line-height: 35px;
           }
           @media screen and (min-width: 680px) {
-            font-size: 30px;
-            line-height: 33px;
+            font-size: 35px;
+            line-height: 39px;
             margin-bottom: 20px;
           }
           @media screen and (min-width: 800px) {
-            font-size: 40px;
-            line-height: 43px;
+            font-size: 45px;
+            line-height: 50px;
           }
+        }
+      }
+      time {
+        padding-bottom: 70px;
+        display: block;
+        @media screen and (min-width: 600px) {
+          padding-bottom: 150px;
         }
       }
     }
@@ -217,7 +226,7 @@
   }
   .container {
     margin-bottom: 60px;
-    margin-top: 40px;
+    margin-top: 20px;
     .comments-container {
       margin-bottom: 20px;
     }

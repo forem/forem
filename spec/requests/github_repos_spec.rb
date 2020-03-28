@@ -1,11 +1,15 @@
 require "rails_helper"
 
 RSpec.describe "GithubRepos", type: :request do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :with_identity, identities: ["github"]) }
   let(:repo) { build(:github_repo, user_id: user.id) }
-  let(:my_ocktokit_client) { instance_double(Octokit::Client) }
+  let(:my_octokit_client) { instance_double(Octokit::Client) }
   let(:stubbed_github_repos) do
-    [OpenStruct.new(repo.attributes.merge(id: repo.github_id_code, html_url: Faker::Internet.url))]
+    repo_params = repo.attributes.merge(
+      id: repo.github_id_code,
+      html_url: Faker::Internet.url,
+    )
+    [OpenStruct.new(repo_params)]
   end
   let(:headers) do
     {
@@ -15,8 +19,8 @@ RSpec.describe "GithubRepos", type: :request do
   end
 
   before do
-    allow(Octokit::Client).to receive(:new).and_return(my_ocktokit_client)
-    allow(my_ocktokit_client).to receive(:repositories) { stubbed_github_repos }
+    allow(Octokit::Client).to receive(:new).and_return(my_octokit_client)
+    allow(my_octokit_client).to receive(:repositories) { stubbed_github_repos }
   end
 
   describe "GET /github_repos" do
@@ -60,13 +64,17 @@ RSpec.describe "GithubRepos", type: :request do
     before { sign_in user }
 
     it "returns a 302" do
-      post github_repos_path, params: { github_repo: { github_id_code: repo.github_id_code } }
+      params = { github_repo: { github_id_code: repo.github_id_code } }
+      post github_repos_path, params: params
+
       expect(response).to have_http_status(:found)
     end
 
     it "creates a new GithubRepo object" do
-      post github_repos_path, params: { github_repo: { github_id_code: repo.github_id_code } }
-      expect(GithubRepo.count).to eq(1)
+      params = { github_repo: { github_id_code: repo.github_id_code } }
+      expect do
+        post github_repos_path, params: params
+      end.to change(GithubRepo, :count).by(1)
     end
   end
 
@@ -90,20 +98,49 @@ RSpec.describe "GithubRepos", type: :request do
   describe "POST /github_repos/update_or_create" do
     before { sign_in user }
 
+    let(:github_repo) { stubbed_github_repos.first.to_h }
+
     it "returns 200 and json response on success" do
-      param = stubbed_github_repos.first.to_h.to_json
-      post update_or_create_github_repos_path(github_repo: param), headers: headers
+      params = { github_repo: github_repo.to_json }
+      post update_or_create_github_repos_path(params), headers: headers
 
       expect(response).to have_http_status(:ok)
       expect(response.content_type).to eq("application/json")
     end
 
     it "returns 404 and json response on error" do
-      allow(my_ocktokit_client).to receive(:repositories).and_return([])
+      allow(my_octokit_client).to receive(:repositories).and_return([])
 
-      post update_or_create_github_repos_path(github_repo: "{}"), headers: headers
+      params = { github_repo: "{}" }
+      post update_or_create_github_repos_path(params), headers: headers
       expect(response).to have_http_status(:not_found)
       expect(response.body).to include("Could not find Github repo")
+    end
+
+    it "updates the current user github_repos_updated_at" do
+      previous_date = user.github_repos_updated_at
+
+      Timecop.travel(5.minutes.from_now) do
+        params = { github_repo: github_repo.to_json }
+        post update_or_create_github_repos_path(params), headers: headers
+        expect(user.reload.github_repos_updated_at > previous_date).to be(true)
+      end
+    end
+
+    it "allows the repo to be featured" do
+      github_repo[:featured] = true
+      params = { github_repo: github_repo.to_json }
+      post update_or_create_github_repos_path(params), headers: headers
+
+      expect(response.parsed_body["featured"]).to be(true)
+    end
+
+    it "allows the repo to be unfeatured" do
+      github_repo[:featured] = false
+      params = { github_repo: github_repo.to_json }
+      post update_or_create_github_repos_path(params), headers: headers
+
+      expect(response.parsed_body["featured"]).to be(false)
     end
   end
 end

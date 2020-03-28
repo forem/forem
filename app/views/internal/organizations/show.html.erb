@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-12">
     <h2 class="d-inline">
-      <%= @organization.name %><a href="/<%= @organization.slug %>" target="_blank"> (@<%= @organization.name %>)</a>
+      <%= @organization.name %><%= link_to "@#{@organization.name}", "/#{@organization.slug}", class: "ml-2", target: "_blank", rel: "noopener" %>
     </h2>
     <p class="font-italic">Created <%= @organization.created_at.strftime("%b %e '%y") %></p>
   </div>

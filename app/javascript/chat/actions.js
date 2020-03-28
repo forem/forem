@@ -1,3 +1,5 @@
+import { fetchSearch } from '../src/utils/search';
+
 export function getAllMessages(channelId, messageOffset, successCb, failureCb) {
   fetch(`/chat_channels/${channelId}?message_offset=${messageOffset}`, {
     Accept: 'application/json',
@@ -113,40 +115,31 @@ export function getChannels(
   dataHash.page = paginationNumber;
   dataHash.channel_text = query;
 
-  const searchParams = new URLSearchParams(dataHash).toString();
-  return fetch(`/search/chat_channels?${searchParams}`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      'X-CSRF-Token': window.csrfToken,
-      'Content-Type': 'application/json',
-    },
-    credentials: 'same-origin',
-  })
-    .then(response => response.json())
-    .then(response => {
-      const channels = response.result;
-      if (
-        retrievalID === null ||
-        channels.filter(e => e.chat_channel_id === retrievalID).length === 1
-      ) {
-        successCb(channels, query);
-      } else {
-        fetch(
-          `/chat_channel_memberships/find_by_chat_channel_id?chat_channel_id=${retrievalID}`,
-          {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            credentials: 'same-origin',
-          },
-        )
-          .then(individualResponse => individualResponse.json())
-          .then(json => {
-            channels.unshift(json);
-            successCb(channels, query);
-          });
-      }
-    });
+  const responsePromise = fetchSearch('chat_channels', dataHash);
+
+  return responsePromise.then(response => {
+    const channels = response.result;
+    if (
+      retrievalID === null ||
+      channels.filter(e => e.chat_channel_id === retrievalID).length === 1
+    ) {
+      successCb(channels, query);
+    } else {
+      fetch(
+        `/chat_channel_memberships/find_by_chat_channel_id?chat_channel_id=${retrievalID}`,
+        {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          credentials: 'same-origin',
+        },
+      )
+        .then(individualResponse => individualResponse.json())
+        .then(json => {
+          channels.unshift(json);
+          successCb(channels, query);
+        });
+    }
+  });
 }
 
 export function getUnopenedChannelIds(successCb) {

@@ -7,7 +7,7 @@ RSpec.describe "HtmlVariantTrials", type: :request do
 
   describe "POST /html_variant_trials" do
     it "rejects non-permissioned user" do
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         post "/html_variant_trials", params: {
           article_id: article.id,
           html_variant_id: html_variant.id

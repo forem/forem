@@ -3,7 +3,10 @@ module Search
     SEARCH_CLASSES = [
       Search::ChatChannelMembership,
       Search::ClassifiedListing,
+      Search::FeedContent,
+      Search::Reaction,
       Search::Tag,
+      Search::User,
     ].freeze
 
     class << self

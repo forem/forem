@@ -1,5 +1,6 @@
 @import 'variables';
 @import 'mixins';
+@import 'functions';
 
 %kbd {
   display: inline-block;
@@ -27,15 +28,14 @@ $indent-distance: calc(1.1vw + 13px);
 }
 
 a.header-link {
-  @include themeable(color, theme-color, $black);
+  color: var(--body-color);
   display: block;
   &:hover {
-    @include themeable(color, theme-color, $black);
+    color: var(--body-color);
   }
 }
 
 .comments {
-  @include themeable(background, theme-background, $light-gray);
   .picture {
     height: 180px;
     max-width: 900px;
@@ -65,7 +65,7 @@ a.header-link {
     max-width: 100%;
     margin: 50px auto 10px;
     padding: 0px 0px 90px;
-    @include themeable(background, theme-container-background, #fff);
+    background: var(--container-bg);
     z-index: 3;
     position: relative;
     @media screen and (min-width: 820px) {
@@ -102,7 +102,7 @@ a.header-link {
       margin: auto;
       margin-bottom: -35px;
       .read-more {
-        @include themeable(color, theme-anchor-color, $sky-blue);
+        color: var(--link-brand-color);
         display: inline-block;
         &:hover {
           opacity: 0.96;
@@ -118,7 +118,7 @@ a.header-link {
     }
   }
   .single-comment-header {
-    height: 60px;
+    height: 10px;
   }
 }
 
@@ -283,19 +283,15 @@ a.header-link {
       display: block;
       resize: vertical;
       border-radius: 3px;
-      @include themeable(
-        border,
-        theme-container-background,
-        1px solid rgb(232, 229, 229)
-      );
+      border: 1px solid var(--form-border);
       height: 125px;
       font-size: 16px;
       padding: 6px;
       cursor: text;
-      @include themeable(background, theme-container-background, #fff);
-      @include themeable(color, theme-color, $black);
+      background: var(--form-bg);
+      color: var(--body-color);
       &::placeholder {
-        color: #8f949c;
+        color: var(--form-placeholder);
       }
       &.embiggened {
         height: calc(2vw + 115px);
@@ -307,11 +303,10 @@ a.header-link {
         height: calc(10vw + 118px);
       }
       &.preview-loading {
-        background: white url(image_path('loading-ellipsis.svg')) no-repeat
+        background: white url(image-src('loading-ellipsis.svg')) no-repeat
           center center;
-        @include themeable(background-color, theme-container-background, white);
-        @include themeable(color, theme-container-background, white);
-
+        background-color: var(--container-bg);
+        color: var(--body-color-inverted);
         background-size: 50px;
       }
     }
@@ -324,27 +319,31 @@ a.header-link {
       text-align: left;
       font-size: 19px;
       font-family: $helvetica;
-      @include themeable(
-        background,
-        theme-container-accent-background,
-        lighten($yellow, 19%)
-      );
+      background: var(--container-bg);
       box-shadow: $shadow;
       width: calc(100% - 80px);
       margin: 19px auto 8px;
       border: 1px solid #dbdbdb;
+      > * {
+        margin: 4px 0px calc(1.1vw + 10px); // ok, i'm not a big fan of doing this weird math calc() but this is what we do for real comments sooo 🤷‍♂️
+      }
+
       p.loading-message {
         opacity: 0.6;
       }
+
       pre {
         overflow-x: auto;
       }
+
       kbd {
         @extend %kbd;
       }
+
       code {
         word-wrap: break-word;
       }
+
       .article-body-image-wrapper img {
         max-width: 100%;
       }
@@ -387,7 +386,7 @@ a.header-link {
       text-align: right;
       font-size: 0.9em;
       font-weight: 500;
-      @include themeable(color, theme-secondary-color, $dark-gray);
+      color: var(--link-brand-color);
       &.sub-comment-code-of-conduct {
         font-size: 1em;
       }
@@ -397,7 +396,7 @@ a.header-link {
         margin: 5px 0px;
       }
       a {
-        @include themeable(color, theme-anchor-color, $sky-blue);
+        color: var(--link-brand-color);
       }
     }
     input[type='submit'] {
@@ -411,7 +410,7 @@ a.header-link {
       textarea {
         color: lighten($dark-gray, 25%);
         border: 1px solid $light-green;
-        background: white url(image_path('loading-ellipsis.svg')) no-repeat
+        background: white url(image-src('loading-ellipsis.svg')) no-repeat
           center center;
         background-size: 50px;
       }
@@ -484,7 +483,7 @@ a.header-link {
     .root-comment {
       margin-top: -80px;
       .comment-parent-link {
-        @include themeable(background, theme-container-background, white);
+        background: var(--container-bg);
         @include themeable(
           border,
           theme-container-border,
@@ -759,7 +758,7 @@ a.header-link {
   .details {
     padding: 0px;
     border-top-left-radius: 3px;
-    @include themeable(color, theme-secondary-color, $dark-gray);
+    color: var(--link-brand-color);
     position: relative;
     .comment-date {
       border: none;
@@ -769,7 +768,7 @@ a.header-link {
       font-size: 12px;
       text-align: right;
       a {
-        @include themeable(color, theme-secondary-color, $medium-gray);
+        color: var(--container-color-tertiary);
       }
     }
     .dropbtn {
@@ -916,14 +915,14 @@ a.header-link {
       height: 25px;
     }
     .reactions-count {
-      font-size: calc(0.9em + 0.1vw);
+      font-size: 0.7em;
       background: $light-gray;
       padding: 1px 5px;
       border-radius: 3px;
       border: 1px solid darken($light-gray, 10%);
       margin-left: 1px;
       position: absolute;
-      top: 8px;
+      top: 4px;
       left: 24px;
     }
     img {
@@ -1068,7 +1067,7 @@ a.header-link {
   .inner-comment {
     padding: 0px;
     border: 1px solid $light-medium-gray;
-    @include themeable(background, theme-container-background, #fff);
+    background: var(--container-bg);
     &.comment-created-via-fetch {
       animation: comment-create 1.2s;
       .body {

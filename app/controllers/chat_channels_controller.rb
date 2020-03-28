@@ -98,6 +98,25 @@ class ChatChannelsController < ApplicationController
     render json: { status: "success", message: "chat channel blocked" }, status: :ok
   end
 
+  # Note: this is part of an effort of moving some things from the external to
+  # the internal API. No behavior was changes as part of this refactoring, so
+  # this action is a bit unusual.
+  def channel_info
+    skip_authorization
+
+    @chat_channel =
+      ChatChannel.
+        select(CHANNEL_ATTRIBUTES_FOR_SERIALIZATION).
+        find_by(id: params[:id])
+
+    return if @chat_channel&.has_member?(current_user)
+
+    render json: { error: "not found", status: 404 }, status: :not_found
+  end
+
+  CHANNEL_ATTRIBUTES_FOR_SERIALIZATION = %i[id description channel_name].freeze
+  private_constant :CHANNEL_ATTRIBUTES_FOR_SERIALIZATION
+
   private
 
   def set_channel

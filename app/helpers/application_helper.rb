@@ -8,7 +8,9 @@ module ApplicationHelper
   end
 
   def view_class
-    if @story_show # custom due to edge cases
+    if @podcast_episode_show # custom due to edge cases
+      "stories stories-show podcast_episodes-show"
+    elsif @story_show
       "stories stories-show"
     else
       "#{controller_name} #{controller_name}-#{controller.action_name}"
@@ -153,5 +155,29 @@ module ApplicationHelper
     return path if heroku_slug_commit.blank?
 
     "#{path}-#{heroku_slug_commit}"
+  end
+
+  # Creates an app internal URL
+  #
+  # @note Uses protocol and domain specified in the environment, ensure they are set.
+  # @param uri [URI, String] parts we want to merge into the URL, e.g. path, fragment
+  # @example Retrieve the base URL
+  #  app_url #=> "https://dev.to"
+  # @example Add a path
+  #  app_url("internal") #=> "https://dev.to/internal"
+  def app_url(uri = nil)
+    URL.url(uri)
+  end
+
+  def tag_url(tag, page)
+    URL.tag(tag, page)
+  end
+
+  def article_url(article)
+    URL.article(article)
+  end
+
+  def user_url(user)
+    URL.user(user)
   end
 end

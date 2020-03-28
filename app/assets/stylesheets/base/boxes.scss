@@ -1,0 +1,26 @@
+@import '../config/import';
+
+.crayons-box {
+  $this: &; // Caching current element, source: https://css-tricks.com/snippets/sass/caching-current-selector-sass/
+  border: 2px solid;
+  border-radius: $br-default;
+  background-color: var(--container-bg);
+
+  @include box($this, var(--box), var(--box-darker));
+
+  &--danger {
+    @include box($this, var(--accent-danger), var(--accent-danger-darker));
+  }
+
+  &--success {
+    @include box($this, var(--accent-success), var(--accent-success-darker));
+  }
+
+  &--warning {
+    @include box($this, var(--accent-warning), var(--accent-warning-darker));
+  }
+
+  &--info {
+    @include box($this, var(--accent-brand), var(--accent-brand-darker));
+  }
+}

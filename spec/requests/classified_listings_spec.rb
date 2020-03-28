@@ -63,6 +63,19 @@ RSpec.describe "ClassifiedListings", type: :request do
         expect(response.body).not_to include(CGI.escapeHTML(expired_listing.title))
       end
     end
+
+    context "when view is moderate" do
+      it "redirects to internal/listings/:id/edit" do
+        get "/listings", params: { view: "moderate", slug: listing.slug }
+        expect(response.redirect_url).to include("/internal/listings/#{listing.id}/edit")
+      end
+
+      it "without a slug raises an ActiveRecord::RecordNotFound error" do
+        expect do
+          get "/listings", params: { view: "moderate" }
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
   end
 
   describe "GET /listings/new" do
@@ -387,6 +400,14 @@ RSpec.describe "ClassifiedListings", type: :request do
       it "unpublishes a published listing" do
         put "/listings/#{listing.id}", params: params
         expect(listing.reload.published).to eq(false)
+      end
+    end
+
+    context "when an update is attempted" do
+      it "does not update with an empty body markdown" do
+        put "/listings/#{listing.id}", params: { classified_listing: { body_markdown: "" } }
+        expect(response.body).to include(CGI.escapeHTML("can't be blank"))
+        expect(listing.reload.body_markdown).not_to be_empty
       end
     end
   end

@@ -43,5 +43,14 @@ RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: vcr_option do
       readme_class = "ltag-github-body"
       expect(template).not_to include(readme_class)
     end
+
+    it "handles respositories with a missing README" do
+      allow(my_ocktokit_client).to receive(:readme).and_raise(Octokit::NotFound)
+
+      template = generate_github_readme(path, "no-readme").render
+      readme_class = "ltag-github-body"
+
+      expect(template).not_to include(readme_class)
+    end
   end
 end

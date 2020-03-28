@@ -1,5 +1,9 @@
 class Reaction < ApplicationRecord
   include AlgoliaSearch
+  include Searchable
+
+  SEARCH_SERIALIZER = Search::ReactionSerializer
+  SEARCH_CLASS = Search::Reaction
 
   CATEGORIES = %w[like readinglist unicorn thinking hands thumbsdown vomit].freeze
   REACTABLE_TYPES = %w[Comment Article User].freeze
@@ -22,7 +26,9 @@ class Reaction < ApplicationRecord
   validates :user_id, uniqueness: { scope: %i[reactable_id reactable_type category] }
   validate  :permissions
 
+  after_create :notify_slack_channel_about_vomit_reaction, if: -> { category == "vomit" }
   before_save :assign_points
+  after_create_commit :record_field_test_event
   after_commit :async_bust, :bust_reactable_cache, :update_reactable
   after_save :index_to_algolia
   after_save :touch_user
@@ -75,6 +81,26 @@ class Reaction < ApplicationRecord
     points.negative? ||
       (user_id == reactable.user_id) ||
       (receiver.is_a?(User) && reactable.receive_notifications == false)
+  end
+
+  def vomit_on_user?
+    reactable_type == "User" && category == "vomit"
+  end
+
+  def reaction_on_organization_article?
+    reactable_type == "Article" && reactable.organization.present?
+  end
+
+  def target_user
+    if reactable_type == "User"
+      reactable
+    else
+      reactable.user
+    end
+  end
+
+  def negative?
+    category == "vomit" || category == "thumbsdown"
   end
 
   private
@@ -169,6 +195,8 @@ class Reaction < ApplicationRecord
   end
 
   def negative_reaction_from_untrusted_user?
+    return if user&.any_admin?
+
     negative? && !user.trusted
   end
 
@@ -176,7 +204,24 @@ class Reaction < ApplicationRecord
     remove_from_index!
   end
 
-  def negative?
-    category == "vomit" || category == "thumbsdown"
+  def record_field_test_event
+    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "user_creates_reaction")
+  end
+
+  def notify_slack_channel_about_vomit_reaction
+    url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
+
+    message = <<~MESSAGE.chomp
+      #{user.name} (#{url}#{user.path})
+      reacted with a #{category} on
+      #{url}#{reactable.path}
+    MESSAGE
+
+    SlackBotPingWorker.perform_async(
+      message: message,
+      channel: "abuse-reports",
+      username: "abuse_bot",
+      icon_emoji: ":cry:",
+    )
   end
 end

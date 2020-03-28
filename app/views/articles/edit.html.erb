@@ -28,6 +28,5 @@
 <% end %>
 
 <%= render "shared/webcomponents_loader_script" %>
-<%= javascript_pack_tag "clipboardCopy", defer: true %>
-<%= javascript_pack_tag "articleForm", defer: true %>
+<%= javascript_packs_with_chunks_tag "clipboardCopy", "articleForm", defer: true %>
 <%= render "articles/v2_form", article: @article, organizations: @organizations, version: @version %>

@@ -47,10 +47,7 @@ RSpec.describe MailchimpBot, type: :labor do
           ARTICLES: user.articles.size,
           COMMENTS: user.comments.size,
           ONBOARD_PK: user.onboarding_package_requested.to_s,
-          EXPERIENCE: user.experience_level || 666,
-          COUNTRY: user.shipping_country.to_s,
-          STATE: user.shipping_state.to_s,
-          POSTAL_ZIP: user.shipping_postal_code.to_s
+          EXPERIENCE: user.experience_level || 666
         }
       }
     }

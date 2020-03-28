@@ -29,11 +29,9 @@ end
 task expire_old_listings: :environment do
   ClassifiedListing.where("bumped_at < ?", 30.days.ago).each do |listing|
     listing.update(published: false)
-    listing.remove_from_index!
   end
   ClassifiedListing.where("expires_at = ?", Time.zone.today).each do |listing|
     listing.update(published: false)
-    listing.remove_from_index!
   end
 end
 
@@ -100,6 +98,13 @@ task award_contributor_badges_from_github: :environment do
   BadgeRewarder.award_contributor_badges_from_github
 end
 
+# This task is meant to be scheduled daily
+task prune_old_field_tests: :environment do
+  # For rolling ongoing experiemnts, we remove old experiment memberships
+  # So that they can be re-tested.
+  FieldTests::PruneOldExperimentsWorker.perform_async
+end
+
 task remove_old_html_variant_data: :environment do
   HtmlVariantTrial.where("created_at < ?", 2.weeks.ago).destroy_all
   HtmlVariantSuccess.where("created_at < ?", 2.weeks.ago).destroy_all
@@ -112,8 +117,8 @@ task fix_credits_count_cache: :environment do
   Credit.counter_culture_fix_counts only: %i[user organization]
 end
 
-task record_db_table_counts: :environment do
-  Metrics::RecordDbTableCountsWorker.perform_async
+task record_data_counts: :environment do
+  Metrics::RecordDataCountsWorker.perform_async
 end
 
 task log_worker_queue_stats: :environment do

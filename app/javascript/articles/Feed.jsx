@@ -12,16 +12,17 @@ export class Feed extends Component {
     this.setState({ bookmarkedFeedItems: new Set(reading_list_ids) });
 
     Feed.getFeedItems(timeFrame).then(feedItems => {
-
       // Ensure first article is one with a main_image
       const featuredStory = feedItems.find(story => story.main_image !== null);
       // Remove that first one from the array.
       const index = feedItems.indexOf(featuredStory);
       feedItems.splice(index, 1);
-      const subStories = feedItems;   
-      const organizedFeedItems = [featuredStory, subStories].flat();  
-      console.log(organizedFeedItems);
-      this.setState({feedItems: organizedFeedItems, podcastEpisodes: Feed.getPodcastEpisodes() });
+      const subStories = feedItems;
+      const organizedFeedItems = [featuredStory, subStories].flat();
+      this.setState({
+        feedItems: organizedFeedItems,
+        podcastEpisodes: Feed.getPodcastEpisodes(),
+      });
     });
   }
 
@@ -57,12 +58,16 @@ export class Feed extends Component {
   static getPodcastEpisodes() {
     const el = document.getElementById('followed-podcasts');
     const user = userData(); // Global
-    const episodes = []
-    if (user && user.followed_podcast_ids && user.followed_podcast_ids.length > 0) {
-      let data = JSON.parse(el.dataset.episodes);
-      data.forEach(function(ep) {
-        if (user.followed_podcast_ids.indexOf(ep.podcast.id) > -1) {
-          episodes.push(ep)
+    const episodes = [];
+    if (
+      user &&
+      user.followed_podcast_ids &&
+      user.followed_podcast_ids.length > 0
+    ) {
+      const data = JSON.parse(el.dataset.episodes);
+      data.forEach(episode => {
+        if (user.followed_podcast_ids.indexOf(episode.podcast.id) > -1) {
+          episodes.push(episode);
         }
       });
     }

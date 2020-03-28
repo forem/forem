@@ -10,12 +10,17 @@ module Api
 
         @video_articles = Article.with_video.
           includes([:user]).
-          select(:id, :video, :path, :title, :video_thumbnail_url, :user_id, :video_duration_in_seconds).
-          order("hotness_score DESC").
+          select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).
+          order(hotness_score: :desc).
           page(page).per(num)
 
         set_surrogate_key_header "videos", Article.table_key, @video_articles.map(&:record_key)
       end
+
+      INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[
+        id video path title video_thumbnail_url user_id video_duration_in_seconds
+      ].freeze
+      private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
     end
   end
 end
