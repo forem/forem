@@ -28,6 +28,11 @@ $input-width: 650px;
     }
   }
   .user-settings-page {
+    h1,
+    h3,
+    p {
+      margin: 10px 0 !important;
+    }
     width: 900px;
     max-width: 94%;
     margin: 0 auto;
@@ -836,7 +841,9 @@ ul.delete__account {
 .membership-purchase-link {
   font-size: 2rem;
 }
-
+#page-content.chat_channel_memberships-edit {
+  margin-top: -20px !important;
+}
 #page-content.chat_channel_memberships-edit,
 #page-content.chat_channel_memberships-index {
   .notice {
