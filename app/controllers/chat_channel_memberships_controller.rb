@@ -26,25 +26,17 @@ class ChatChannelMembershipsController < ApplicationController
     membership_params = params[:chat_channel_membership]
     @chat_channel = ChatChannel.find(membership_params[:chat_channel_id])
     authorize @chat_channel, :update?
-    usernames = membership_params[:invitation_usernames].split(",")
-    number_invitations_sent = 0
-    usernames.each do |username_str|
-      user = User.find_by(username: username_str.delete(" ").delete("@"))
-      next if user.blank?
-
-      number_invitations_sent += 1
-      membership = ChatChannelMembership.find_or_create_by(user_id: user.id, chat_channel_id: @chat_channel.id)
-      membership.update(status: "pending")
-      NotifyMailer.channel_invite_email(membership, current_user).deliver_later
-    end
-    flash[:settings_notice] = if number_invitations_sent.zero?
+    usernames = membership_params[:invitation_usernames].split(",").map { |username| username.strip.delete("@") }
+    users = User.where(username: usernames)
+    invitations_sent = @chat_channel.invite_users(users, "member", current_user)
+    flash[:settings_notice] = if invitations_sent.zero?
                                 "No Invitations Sent. Check for username typos."
-                              elsif number_invitations_sent == 1
+                              elsif invitations_sent == 1
                                 "Invitation Sent."
                               else
-                                "#{number_invitations_sent} Invitations Sent."
+                                "#{invitations_sent} Invitations Sent."
                               end
-    redirect_to edit_chat_channel_membership_path(@chat_channel.chat_channel_memberships.where(user_id: current_user).first&.id)
+    redirect_to edit_chat_channel_membership_path(@chat_channel.chat_channel_memberships.where(user_id: current_user).first.id)
   end
 
   def remove_membership
@@ -58,7 +50,7 @@ class ChatChannelMembershipsController < ApplicationController
       @chat_channel_membership.update(status: "removed_from_channel")
       flash[:settings_notice] = "Removed #{@chat_channel_membership.user.name}"
     end
-    redirect_to edit_chat_channel_membership_path(ChatChannelMembership.where(chat_channel_id: params[:chat_channel_id], user_id: current_user).first&.id)
+    redirect_to edit_chat_channel_membership_path(ChatChannelMembership.where(chat_channel_id: params[:chat_channel_id], user_id: current_user).first.id)
   end
 
   def update
@@ -93,7 +85,6 @@ class ChatChannelMembershipsController < ApplicationController
     if permitted_params[:user_action] == "accept"
       @chat_channel_membership.update(status: "active")
       @channel_name = @chat_channel_membership.chat_channel.channel_name
-      @chat_channel_membership.index!
       flash[:settings_notice] = "Invitation to  #{@channel_name} Accepted. It may take a moment to show up in your list."
     else
       @chat_channel_membership.update(status: "rejected")

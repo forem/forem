@@ -77,18 +77,38 @@ class ChatChannel < ApplicationRecord
         last_message_at: 1.week.ago,
         status: "active",
       )
-      channel.add_users(users, channel_type, membership_role)
+      if channel_type == "direct"
+        channel.add_users(users)
+      else
+        channel.invite_users(users, membership_role)
+      end
     end
     channel
   end
 
-  def add_users(users, channel_type="direct", membership_role="member")
+  def add_users(users)
     Array(users).each do |user|
-      membership = ChatChannelMembership.create!(user_id: user.id, chat_channel_id: id)
-      next if channel_type == "direct"
-      membership.update(role: membership_role, status: "pending")
-      NotifyMailer.channel_invite_email(membership, nil).deliver_later
+      ChatChannelMembership.create!(user_id: user.id, chat_channel_id: id)
     end
+  end
+
+  def invite_users(users, membership_role = "member", inviter = nil)
+    invitation_sent = 0
+    Array(users).each do |user|
+      existing_membership = ChatChannelMembership.find_by(user_id: user.id, chat_channel_id: id)
+      if existing_membership.present? && !["active", "pending"].include?(existing_membership.status) &&
+        existing_membership.update(status: "pending", role: membership_role)
+        NotifyMailer.channel_invite_email(existing_membership, inviter).deliver_later
+        invitation_sent += 1
+      else
+        membership = ChatChannelMembership.create(user_id: user.id, chat_channel_id: id, role: membership_role, status: "pending")
+        if membership.persisted?
+          NotifyMailer.channel_invite_email(membership, inviter).deliver_later
+          invitation_sent += 1
+        end
+      end
+    end
+    invitation_sent
   end
 
   def remove_user(user)

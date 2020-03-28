@@ -12,7 +12,7 @@ class Internal::ChatChannelsController < Internal::ApplicationController
 
   def update
     @chat_channel = ChatChannel.find(params[:id])
-    @chat_channel.add_users(users_by_param, @chat_channel.channel_type, "mod")
+    @chat_channel.invite_users(users_by_param, "mod")
     redirect_back(fallback_location: "/internal/chat_channels")
   end
 

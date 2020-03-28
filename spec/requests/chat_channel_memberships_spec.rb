@@ -121,14 +121,14 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       context "super admin" do
         it "creates chat channel invitation" do
           user.add_role(:super_admin)
-          chat_channel_members_count = ChatChannelMembership.all.size
+          expect do
           post "/chat_channel_memberships", params: {
             chat_channel_membership: {
-              invitation_usernames: "#{second_user.username}",
+              invitation_usernames: second_user.username.to_s,
               chat_channel_id: chat_channel.id
             }
           }
-          expect(ChatChannelMembership.all.size).to eq(chat_channel_members_count + 1)
+        end.to change { ChatChannelMembership.all.size }.by(1)
           expect(ChatChannelMembership.last.status).to eq("pending")
         end
       end
