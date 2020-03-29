@@ -68,10 +68,10 @@ class ChatChannelMembershipsController < ApplicationController
   def destroy
     @chat_channel_membership = ChatChannelMembership.find(params[:id])
     authorize @chat_channel_membership
-    @channel_name = @chat_channel_membership.chat_channel.channel_name
+    channel_name = @chat_channel_membership.chat_channel.channel_name
     @chat_channel_membership.update(status: "left_channel")
     @chat_channels_memberships = []
-    flash[:settings_notice] = "You have left the channel #{@channel_name}. It may take a moment to be removed from your list."
+    flash[:settings_notice] = "You have left the channel #{channel_name}. It may take a moment to be removed from your list."
     redirect_to chat_channel_memberships_path
   end
 
@@ -84,8 +84,8 @@ class ChatChannelMembershipsController < ApplicationController
   def respond_to_invitation
     if permitted_params[:user_action] == "accept"
       @chat_channel_membership.update(status: "active")
-      @channel_name = @chat_channel_membership.chat_channel.channel_name
-      flash[:settings_notice] = "Invitation to  #{@channel_name} Accepted. It may take a moment to show up in your list."
+      channel_name = @chat_channel_membership.chat_channel.channel_name
+      flash[:settings_notice] = "Invitation to  #{channel_name} Accepted. It may take a moment to show up in your list."
     else
       @chat_channel_membership.update(status: "rejected")
       flash[:settings_notice] = "Invitation Rejected."
