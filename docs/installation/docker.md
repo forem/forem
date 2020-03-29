@@ -50,14 +50,6 @@ well.
      GITHUB_SECRET: "ANOTHER_REAL_SECURE_KEY_HERE"
      ```
 
-   - Update the redis url variables by adding the following lines into
-     `config/application.yml`:
-
-     ```shell
-      REDIS_URL: "redis://redis:6379"
-      REDIS_SESSIONS_URL: "redis://redis:6379"
-     ```
-
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 
