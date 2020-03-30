@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 echo "== Building Docker image (this may take a while) =="
 docker-compose build
