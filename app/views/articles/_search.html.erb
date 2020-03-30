@@ -69,7 +69,9 @@
         hashtags[i] = hashtags[i].replace(/#/,'');
       }
       searchHash.tag_names = hashtags;
-    } else if (filters && filters !== "") {
+    }
+
+    if (filters && filters !== "") {
       filters.split('&').forEach((filter) => {
         const [key, value] = filter.split(':');
         searchHash[key] = value;
