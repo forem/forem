@@ -27,14 +27,3 @@ export const Large = () => (
 Large.story = {
   name: 'large',
 };
-
-export const NoPadding = () => (
-  <div className="crayons-dropdown crayons-dropdown--padding-0">
-    Hey, I&apos;m a dropdown content! Lorem ipsum dolor sit amet, consectetur
-    adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
-  </div>
-);
-
-NoPadding.story = {
-  name: 'no paddding',
-};
