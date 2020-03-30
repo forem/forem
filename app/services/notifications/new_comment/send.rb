@@ -23,7 +23,7 @@ module Notifications
           comment: comment_data(comment)
         }
 
-        target_channels = []
+        targets = []
         user_ids.delete(comment.user_id).each do |user_id|
           Notification.create(
             user_id: user_id,
@@ -33,13 +33,11 @@ module Notifications
             json_data: json_data,
           )
 
-          if User.find_by(id: user_id)&.mobile_comment_notifications
-            target_channels << "user-notifications-#{user_id}"
-          end
+          targets << "user-notifications-#{user_id}" if User.find_by(id: user_id)&.mobile_comment_notifications
         end
 
         # Sends the push notification to Pusher Beams channels. Batch is in place to respect Pusher 100 channel limit.
-        target_channels.each_slice(100) { |batch| send_push_notifications(batch) }
+        targets.each_slice(100) { |batch| send_push_notifications(batch) }
 
         return unless comment.commentable.organization_id
 
