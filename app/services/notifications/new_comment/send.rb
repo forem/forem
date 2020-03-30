@@ -100,7 +100,7 @@ module Notifications
               alert: {
                 title: title,
                 subtitle: subtitle,
-                body: CGI.unescapeHTML(comment.title)
+                body: CGI.unescapeHTML(comment.title.strip)
               }
             },
             data: data_payload
