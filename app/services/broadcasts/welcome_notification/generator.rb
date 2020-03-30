@@ -53,15 +53,19 @@ module Broadcasts
         @welcome_broadcast ||= Broadcast.find_by(title: "Welcome Notification: welcome_thread")
       end
 
+      def customize_ux_broadcast
+        @customize_ux_broadcast ||= Broadcast.find_by(title: "Welcome Notification: customize_experience")
+      end
+
       def identities
         @identities ||= user.identities.where(provider: SiteConfig.authentication_providers)
       end
 
       def authentication_broadcast
-        @authentication_broadcast ||= find_broadcast
+        @authentication_broadcast ||= find_auth_broadcast
       end
 
-      def find_broadcast
+      def find_auth_broadcast
         missing_identities = SiteConfig.authentication_providers.map do |provider|
           identities.exists?(provider: provider) ? nil : "#{provider}_connect"
         end.compact
