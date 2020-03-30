@@ -165,6 +165,7 @@ module ApplicationHelper
     start_year = ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"]
     current_year = Time.current.year
     return start_year if current_year == start_year
+    return current_year if start_year.strip.length == 0
 
     "#{start_year} - #{current_year}"
   end
