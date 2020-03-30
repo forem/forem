@@ -17,7 +17,7 @@
   var params = getQueryParams(document.location.search);
 
   function searchMain() {
-    var query = filterXSS(params.search_fields);
+    var query = filterXSS(params.q);
     var filters = filterXSS(params.filters || "");
     document.getElementById("substories").innerHTML = '<div class="query-results-nothing"><div class="query-results-loader"></div><br/></div>'
     if (document.getElementById("query-wrapper")) {
@@ -42,17 +42,17 @@
           return;
         }
         var filters = e.target.dataset.filter;
-        window.history.replaceState(null, null, "/search?search_fields=" + query + "&filters=" + filters);
+        window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters);
         var className = e.target.className;
         for (var i = 0; i < filterButts.length; i++) {
           filterButts[i].classList.remove("selected");
         }
         if (className.indexOf("selected") == -1) {
           e.target.classList.add("selected");
-          window.history.replaceState(null, null, "/search?search_fields=" + query + "&filters=" + filters);
+          window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters);
           search(query, filters);
         } else {
-          window.history.replaceState(null, null, "/search?search_fields=" + query);
+          window.history.replaceState(null, null, "/search?q=" + query);
           search(query, "");
         }
       }

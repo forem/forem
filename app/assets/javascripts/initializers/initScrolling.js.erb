@@ -9,7 +9,7 @@ function fetchNext(el, endpoint, insertCallback) {
   var urlParams = Object.keys(indexParams).map(function handleMap(k) {
     return encodeURIComponent(k) + "=" + encodeURIComponent(indexParams[k])
   }).join('&');
-  if (urlParams.indexOf("search_fields=") > -1 ) {
+  if (urlParams.indexOf("q=") > -1 ) {
     return;
   }
   var fetchUrl = (endpoint+"?page="+nextPage+"&"+urlParams+"&signature="+parseInt(Date.now()/400000, 10)).replace("&&","&");
@@ -276,7 +276,7 @@ function fetchNextPageIfNearBottom() {
 }
 
 function checkIfNearBottomOfPage() {
-  if (document.getElementsByClassName("single-article").length < 2 || window.location.search.indexOf("search_fields=") > -1 ) {
+  if (document.getElementsByClassName("single-article").length < 2 || window.location.search.indexOf("q=") > -1 ) {
     document.getElementById("loading-articles").style.display = "none";
     done = true;
   } else {

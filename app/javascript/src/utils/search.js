@@ -33,7 +33,7 @@ function fixedEncodeURIComponent(str) {
   // from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
   return encodeURIComponent(str).replace(
     /[!'()*]/g,
-    c => `%${c.charCodeAt(0).toString(16)}`,
+    (c) => `%${c.charCodeAt(0).toString(16)}`,
   );
 }
 
@@ -46,12 +46,12 @@ export function displaySearchResults({
   const filterParameters = getFilterParameters(location.href);
 
   InstantClick.display(
-    `${baseUrl}/search?search_fields=${sanitizedQuery}${filterParameters}`,
+    `${baseUrl}/search?q=${sanitizedQuery}${filterParameters}`,
   );
 }
 
 export function getInitialSearchTerm(querystring) {
-  const matches = /(?:&|\?)?search_fields=([^&=]+)/.exec(querystring);
+  const matches = /(?:&|\?)?q=([^&=]+)/.exec(querystring);
   const rawSearchTerm =
     matches !== null && matches.length === 2
       ? decodeURIComponent(matches[1].replace(/\+/g, '%20'))
@@ -73,9 +73,7 @@ export function preloadSearchResults({
     searchTerm.replace(/^[ ]+|[ ]+$/g, ''),
   );
   InstantClick.preload(
-    `${
-      location.origin
-    }/search?search_fields=${encodedQuery}${getFilterParameters(
+    `${location.origin}/search?q=${encodedQuery}${getFilterParameters(
       location.href,
     )}`,
   );
@@ -100,5 +98,5 @@ export function fetchSearch(endpoint, dataHash) {
       'Content-Type': 'application/json',
     },
     credentials: 'same-origin',
-  }).then(response => response.json());
+  }).then((response) => response.json());
 }
