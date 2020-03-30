@@ -1,5 +1,7 @@
 @import '../config/import';
 
+$outlined-border-width: 2px;
+
 // Basic styling
 .crayons-btn {
   position: relative;
@@ -30,6 +32,7 @@
   &:hover {
     background-color: var(--button-primary-bg-hover);
     color: var(--button-primary-color-hover);
+    z-index: 2;
   }
 
   &--secondary {
@@ -43,9 +46,10 @@
   }
 
   &--outlined {
-    padding: 0.375em 1em;
+    padding: calc(0.5em - #{$outlined-border-width})
+      calc(1em - #{$outlined-border-width});
     background-color: transparent;
-    border: 2px solid var(--button-outlined-bg);
+    border: $outlined-border-width solid var(--button-outlined-bg);
     color: var(--button-outlined-color);
 
     &:hover {
@@ -76,6 +80,12 @@
   }
 }
 
+// Icon alone
+.crayons-btn--icon-alone {
+  padding-left: 0.75em;
+  padding-right: 0.75em;
+}
+
 // Icon Left
 .crayons-btn--icon-left {
   padding-left: 0.75em;
@@ -88,4 +98,31 @@
 // Full width
 .crayons-btn--full {
   width: 100%;
+}
+
+// Grouped buttons
+.crayons-btn-group {
+  display: flex;
+
+  .crayons-btn {
+    border-radius: 0;
+
+    + .crayons-btn:not(.crayons-btn--outlined) {
+      margin-left: 1px;
+    }
+
+    + .crayons-btn--outlined {
+      margin-left: -$outlined-border-width;
+    }
+
+    &:first-child {
+      border-top-left-radius: $br-default;
+      border-bottom-left-radius: $br-default;
+    }
+
+    &:last-child {
+      border-top-right-radius: $br-default;
+      border-bottom-right-radius: $br-default;
+    }
+  }
 }
