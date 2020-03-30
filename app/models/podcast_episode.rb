@@ -1,4 +1,12 @@
 class PodcastEpisode < ApplicationRecord
+  self.ignored_columns = %w[
+    deepgram_id_code
+    duration_in_seconds
+    featured
+    featured_number
+    order_key
+  ]
+
   include AlgoliaSearch
   include Searchable
 

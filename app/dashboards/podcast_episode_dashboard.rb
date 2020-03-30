@@ -14,9 +14,6 @@ class PodcastEpisodeDashboard < Administrate::BaseDashboard
     summary: Field::Text,
     body: Field::Text,
     quote: Field::Text,
-    featured_number: Field::Number,
-    featured: Field::Boolean,
-    order_key: Field::String,
     processed_html: Field::Text,
     comments_count: Field::Number,
     reactions_count: Field::Number,
@@ -25,7 +22,6 @@ class PodcastEpisodeDashboard < Administrate::BaseDashboard
     itunes_url: Field::String,
     image: CarrierwaveField,
     podcast: Field::BelongsTo,
-    duration_in_seconds: Field::Number,
     published_at: Field::DateTime,
     slug: Field::String,
     guid: Field::String,
@@ -58,12 +54,9 @@ class PodcastEpisodeDashboard < Administrate::BaseDashboard
     image
     social_image
     body
-    featured
-    featured_number
     media_url
     website_url
     itunes_url
-    duration_in_seconds
     published_at
     slug
     reachable
@@ -82,7 +75,6 @@ class PodcastEpisodeDashboard < Administrate::BaseDashboard
     media_url
     itunes_url
     social_image
-    duration_in_seconds
     published_at
   ].freeze
 
