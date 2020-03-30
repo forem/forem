@@ -841,11 +841,12 @@ ul.delete__account {
 .membership-purchase-link {
   font-size: 2rem;
 }
-#page-content-inner {
-  margin-top: 40px;
-}
+
 #page-content.chat_channel_memberships-edit,
 #page-content.chat_channel_memberships-index {
+  #page-content-inner {
+    margin-top: 40px;
+  }
   .notice {
     margin-top: -40px;
     margin-bottom: 20px;
