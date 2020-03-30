@@ -1,8 +1,8 @@
 require "rails_helper"
 RSpec.describe Notifications::WelcomeNotificationWorker, type: :worker do
   describe "#perform" do
-    let(:broadcast) { create(:onboarding_broadcast, :active) }
-    let(:inactive_broadcast) { create(:onboarding_broadcast) }
+    let(:broadcast) { create(:onboarding_broadcast) }
+    let(:inactive_broadcast) { create(:onboarding_broadcast, active: false) }
     let(:user) { create(:user) }
     let(:service) { Notifications::WelcomeNotification::Send }
     let(:worker) { subject }

@@ -1,5 +1,8 @@
 class RatingVotesController < ApplicationController
   after_action :verify_authorized
+  after_action only: [:create] do
+    Audit::Logger.log(:moderator, current_user, params.dup)
+  end
 
   def create
     authorize RatingVote

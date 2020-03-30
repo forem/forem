@@ -52,6 +52,13 @@
               font-weight: 500;
             }
           }
+          &.broadcast-content {
+            .opt-out {
+              padding-top: 24px;
+              font-size: 12px;
+              font-style: italic;
+            }
+          }
           &.reaction-content {
             width: calc(100% - 145px);
           }
@@ -143,7 +150,6 @@
             max-width: 100%;
             display: inline-block;
             margin-bottom: 3px;
-            @include themeable-important(color, theme-color, $black);
             &:hover {
               @include themeable(
                 background,

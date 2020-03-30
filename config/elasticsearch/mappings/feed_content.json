@@ -52,6 +52,9 @@
     "language": {
       "type": "keyword"
     },
+    "last_indexed_at": {
+      "type": "date"
+    },
     "main_image": {
       "type": "keyword"
     },

@@ -169,6 +169,10 @@ module ApplicationHelper
     URL.url(uri)
   end
 
+  def tag_url(tag, page)
+    URL.tag(tag, page)
+  end
+
   def article_url(article)
     URL.article(article)
   end

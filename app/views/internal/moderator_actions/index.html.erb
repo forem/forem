@@ -1,0 +1,42 @@
+<div class="row m-3">
+  <div class="col">
+  </div>
+  <div class="col">
+    <%= search_form_for @q, url: internal_moderator_actions_path, class: "form-inline justify-content-end" do |f| %>
+
+      <%= f.label :user_username_cont, "User", class: "sr-only" %>
+      <%= f.search_field :user_username_cont, placeholder: "User", class: "form-control mx-3" %>
+
+      <%= f.submit "Search", class: "btn btn-secondary" %>
+    <% end %>
+  </div>
+</div>
+
+<%= paginate @moderator_actions %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">User</th>
+      <th scope="col">Action</th>
+      <th scope="col">Data</th>
+      <th scope="col">
+        <%= content_tag :span, sort_link(@q, :created_at, "Date"), class: "mx-2" %>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @moderator_actions.each do |action| %>
+      <tr>
+        <td><%= action.id %></td>
+        <td><%= link_to action.user.username, internal_user_path(action.user_id) %></td>
+        <td><%= "#{action.data['action'].humanize} #{action.data['controller'].humanize.singularize.titleize}" if action.data.present? %></td>
+        <td><%= action.data %></td>
+        <td><%= action.created_at %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @moderator_actions %>

@@ -54,16 +54,22 @@ RSpec.describe "/internal/response_templates", type: :request do
   end
 
   describe "GET /internal/response_templates/:id/edit" do
+    let(:response_template) { create(:response_template) }
+
     it "renders successfully if a valid response template was found" do
-      response_template = create(:response_template)
       get "/internal/response_templates/#{response_template.id}/edit"
-      expect(response.status).to eq 200
+      expect(response).to have_http_status(:ok)
     end
 
     it "renders the response template's attributes" do
-      response_template = create(:response_template)
       get "/internal/response_templates/#{response_template.id}/edit"
-      expect(response.body).to include(response_template.content, response_template.title, response_template.content_type, response_template.type_of)
+
+      expect(response.body).to include(
+        CGI.escapeHTML(response_template.content),
+        CGI.escapeHTML(response_template.title),
+        response_template.content_type,
+        response_template.type_of,
+      )
     end
   end
 

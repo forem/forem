@@ -1,25 +1,4 @@
 class Article < ApplicationRecord
-  self.ignored_columns = %w[
-    abuse_removal_reason
-    allow_big_edits
-    allow_small_edits
-    amount_due
-    amount_paid
-    automatically_renew
-    collection_position
-    featured_clickthrough_rate
-    featured_impressions
-    ids_for_suggested_articles
-    job_opportunity_id
-    last_invoiced_at
-    lat
-    long
-    main_tag_name_for_social
-    name_within_collection
-    paid
-    removed_for_abuse
-  ]
-
   include CloudinaryHelper
   include ActionView::Helpers
   include AlgoliaSearch
@@ -601,9 +580,9 @@ class Article < ApplicationRecord
   end
 
   def past_or_present_date
-    if published_at && published_at > Time.current
-      errors.add(:date_time, "must be entered in DD/MM/YYYY format with current or past date")
-    end
+    return unless published_at && published_at > Time.current
+
+    errors.add(:date_time, "must be entered in DD/MM/YYYY format with current or past date")
   end
 
   def canonical_url_must_not_have_spaces
@@ -639,9 +618,9 @@ class Article < ApplicationRecord
       self.cached_organization = OpenStruct.new(set_cached_object(organization))
     end
 
-    if user
-      self.cached_user = OpenStruct.new(set_cached_object(user))
-    end
+    return unless user
+
+    self.cached_user = OpenStruct.new(set_cached_object(user))
   end
 
   def set_cached_object(object)

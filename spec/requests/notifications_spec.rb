@@ -538,15 +538,15 @@ RSpec.describe "NotificationsIndex", type: :request do
         get "/notifications"
       end
 
-      it "renders the proper message" do
+      it "does not render the notification message" do
         expect(response.body).not_to include "Since they are new to the community, could you leave a nice reply"
       end
 
-      it "renders the article's path" do
+      it "does not render the article's path" do
         expect(response.body).not_to include article.path
       end
 
-      it "renders the comment's processed HTML" do
+      it "does not render the comment's processed HTML" do
         expect(response.body).not_to include comment.processed_html
       end
     end
@@ -566,15 +566,15 @@ RSpec.describe "NotificationsIndex", type: :request do
         get "/notifications"
       end
 
-      it "renders the proper message" do
+      it "does not render the proper message" do
         expect(response.body).not_to include "Since they are new to the community, could you leave a nice reply"
       end
 
-      it "renders the article's path" do
+      it "does not render the article's path" do
         expect(response.body).not_to include article.path
       end
 
-      it "renders the comment's processed HTML" do
+      it "does not render the comment's processed HTML" do
         expect(response.body).not_to include comment.processed_html
       end
     end
@@ -593,8 +593,8 @@ RSpec.describe "NotificationsIndex", type: :request do
 
     context "when a user has a new welcome notification" do
       # TODO: [@thepracticaldev/delightful] Only test against type_of Welcome once Onbarding notifications have been removed.
-      let(:active_broadcast) { create(:onboarding_broadcast, :active) }
-      let(:inactive_broadcast) { create(:onboarding_broadcast) }
+      let(:active_broadcast) { create(:onboarding_broadcast) }
+      let(:inactive_broadcast) { create(:onboarding_broadcast, active: false) }
 
       before { sign_in user }
 

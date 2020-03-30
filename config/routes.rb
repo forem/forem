@@ -52,6 +52,7 @@ Rails.application.routes.draw do
     resources :listings, only: %i[index edit update destroy], controller: "classified_listings"
     resources :pages, only: %i[index new create edit update destroy]
     resources :mods, only: %i[index update]
+    resources :moderator_actions, only: %i[index]
     resources :negative_reactions, only: %i[index]
     resources :permissions, only: %i[index]
     resources :podcasts, only: %i[index edit update destroy] do
@@ -165,6 +166,7 @@ Rails.application.routes.draw do
   end
   resources :twitch_live_streams, only: :show, param: :username
   resources :reactions, only: %i[index create]
+  resources :response_templates, only: %i[create edit update destroy]
   resources :feedback_messages, only: %i[index create]
   resources :organizations, only: %i[update create]
   resources :followed_articles, only: [:index]
@@ -337,7 +339,8 @@ Rails.application.routes.draw do
   end
 
   get "/settings/(:tab)" => "users#edit", :as => :user_settings
-  get "/settings/:tab/:org_id" => "users#edit"
+  get "/settings/:tab/:org_id" => "users#edit", :constraints => { tab: /organization/ }
+  get "/settings/:tab/:id" => "users#edit", :constraints => { tab: /response-templates/ }
   get "/signout_confirm" => "users#signout_confirm"
   get "/dashboard" => "dashboards#show"
   get "/dashboard/pro" => "dashboards#pro"
@@ -390,6 +393,7 @@ Rails.application.routes.draw do
   get "/t/:tag/admin", to: "tags#admin"
   patch "/tag/:id", to: "tags#update"
   get "/t/:tag/top/:timeframe" => "stories#index"
+  get "/t/:tag/page/:page" => "stories#index"
   get "/t/:tag/:timeframe" => "stories#index",
       :constraints => { timeframe: /latest/ }
 

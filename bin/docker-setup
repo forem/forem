@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+echo "== Building Docker image (this may take a while) =="
+docker-compose build
+
+echo "== Setting up database =="
+docker-compose run web rails db:setup db:migrate search:setup
+
+echo "== Starting app =="
+docker-compose up
