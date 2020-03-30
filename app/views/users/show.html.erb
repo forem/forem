@@ -32,10 +32,10 @@
     "mainEntityOfPage": "True",
     "url": "https://dev.to/<%= @user.username %>",
     "image": {
-      "@type": "ImageObject",
+      "@type": "ImageObject"
     },
     "name": "<%= @user.name %>",
-    "description: "<%= @user.summary.presence || ["404 bio not found"].sample %>",
+    "description": "<%= @user.summary.presence || ["404 bio not found"].sample %>"
   }
 </script>
 

@@ -17,10 +17,10 @@
     "mainEntityOfPage": "True",
     "url": "https://dev.to/<%= @user.username %>",
     "image": {
-      "@type": "ImageObject",
+      "@type": "ImageObject"
     },
     "name": "<%= sanitize @user.name %>",
-    "description": "<%= sanitize(@user.summary.presence || "404 bio not found") %>",
+    "description": "<%= sanitize(@user.summary.presence || "404 bio not found") %>"
   }
 </script>
 

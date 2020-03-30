@@ -17,7 +17,7 @@
     "description": "<%= article.description %>",
     "thumbnailUrl": "<%= cloudinary(article.video_thumbnail_url, 880) %>",
     "contentUrl": "<%= article.video_source_url %>",
-    "duration": "<%= format("PT%<minutes>sM%<seconds>sS", minutes: minutes, seconds: seconds) %>",
+    "duration": "<%= format("PT%<minutes>sM%<seconds>sS", minutes: minutes, seconds: seconds) %>"
   }
 </script>
 
