@@ -1,4 +1,7 @@
 class Tweet < ApplicationRecord
+  self.ignored_columns = %w[
+    primary_external_url
+  ]
   mount_uploader :profile_image, ProfileImageUploader
 
   belongs_to :user, optional: true
