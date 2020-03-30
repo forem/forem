@@ -63,7 +63,6 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
     it "does not send duplicate notifications" do
       2.times { sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_welcome_notification) } }
       expect(user.notifications.count).to eq(1)
-      expect(Notification).to have_received(:send_welcome_notification).with(user.id, welcome_broadcast.id).exactly(:once)
     end
   end
 
@@ -77,13 +76,13 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
     it "generates and sends the appropriate broadcast (twitter)" do
       user = create(:user, :with_identity, identities: ["github"], created_at: 1.day.ago)
       sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_authentication_notification) }
-      expect(Notification).to have_received(:send_welcome_notification).with(user.id, twitter_connect_broadcast.id)
+      expect(user.notifications.first.notifiable).to eq(twitter_connect_broadcast)
     end
 
     it "generates and sends the appropriate broadcast (github)" do
       user = create(:user, :with_identity, identities: ["twitter"], created_at: 1.day.ago)
       sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_authentication_notification) }
-      expect(Notification).to have_received(:send_welcome_notification).with(user.id, github_connect_broadcast.id)
+      expect(user.notifications.first.notifiable).to eq(github_connect_broadcast)
     end
 
     it "does not send notification if user is authenticated with both services" do
@@ -98,7 +97,6 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
         sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_authentication_notification) }
       end
       expect(user.notifications.count).to eq(1)
-      expect(Notification).to have_received(:send_welcome_notification).with(user.id, github_connect_broadcast.id).exactly(:once)
     end
 
     it "does not send duplicate notifications (twitter)" do
@@ -107,7 +105,6 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
         sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_authentication_notification) }
       end
       expect(user.notifications.count).to eq(1)
-      expect(Notification).to have_received(:send_welcome_notification).with(user.id, twitter_connect_broadcast.id).exactly(:once)
     end
   end
 
@@ -128,8 +125,8 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
 
     it "generates the correct broadcast type and sends the notification to the user" do
       sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_ux_customization_notification) }
+      expect(user.notifications.count).to eq(1)
       expect(user.notifications.first.notifiable).to eq(customize_broadcast)
-      expect(Notification).to have_received(:send_welcome_notification).with(user.id, customize_broadcast.id)
     end
 
     it "does not send duplicate notifications" do
@@ -137,7 +134,6 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
         sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_ux_customization_notification) }
       end
       expect(user.notifications.count).to eq(1)
-      expect(Notification).to have_received(:send_welcome_notification).with(user.id, customize_broadcast.id).exactly(:once)
     end
   end
 end
