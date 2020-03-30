@@ -52,6 +52,67 @@
 
 <div class="container">
   <div class="body">
+    <h2>Subscribe dropdown</h2>
+  </div>
+
+  <div>
+    <p>This is default state:</p>
+    <div class="crayons-btn-group mb-4">
+      <a href="#" class="crayons-btn crayons-btn--outlined">Subscribe</a>
+    </div>
+
+    <p>This is subscribed state, so it has additional cog button:</p>
+    <div class="crayons-btn-group mb-4">
+      <a href="#" class="crayons-btn crayons-btn--outlined">Unsubscribe</a>
+      <a href="#" class="crayons-btn crayons-btn--outlined crayons-btn--icon-alone">
+        <%= inline_svg_tag("cog.svg", aria: true, class: "crayons-icon", title: "Customize subscription") %>
+      </a>
+    </div>
+    
+    <p>This is subscribed state, and the cog button has <code>.crayons-btn--outlined--active</code> class applied so it has darker border and color.</p>
+    <div class="crayons-btn-group mb-4">
+      <a href="#" class="crayons-btn crayons-btn--outlined">Unsubscribe</a>
+      <a href="#" class="crayons-btn crayons-btn--outlined crayons-btn--outlined--active crayons-btn--icon-alone">
+        <%= inline_svg_tag("cog.svg", aria: true, class: "crayons-icon", title: "Customize subscription") %>
+      </a>
+    </div>
+    
+    <p>This is our dropdown. It has additional utility classes <code>inline-block static</code> only for purpose of this demo.</p>
+    <div class="crayons-dropdown inline-block static">
+      <div class="crayons-fields mb-5">
+        <div class="crayons-field crayons-field--radio">
+          <input type="radio" id="subscribe-all" name="subscribe_comments" class="crayons-radio" checked>
+          <label for="subscribe-all" class="crayons-field__label">
+            All comments
+            <p class="crayons-field__description">You’ll receive notifications for all new comments.</p>
+          </label>
+        </div>
+
+        <div class="crayons-field crayons-field--radio">
+          <input type="radio" id="subscribe-toplevel" name="subscribe_comments" class="crayons-radio">
+          <label for="subscribe-toplevel" class="crayons-field__label">
+            Top-level comments
+            <p class="crayons-field__description">You’ll receive notifications only for all new top-level comments.</p>
+          </label>
+        </div>
+
+        <div class="crayons-field crayons-field--radio">
+          <input type="radio" id="subscribe-author" name="subscribe_comments" class="crayons-radio">
+          <label for="subscribe-author" class="crayons-field__label">
+            Post author comments
+            <p class="crayons-field__description">You’ll receive notifications only if post author sends a new comment.</p>
+          </label>
+        </div>
+      </div>
+      
+      <button class="crayons-btn w-100">Done</button>
+    </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="body">
     <h2>Main Typography</h2>
     <p>Default font is set to 16px (fs-base). It should be standard in UI. Smaller and bigger font sizes should be used carefully with respect to good visual rythm between elements.</p>
     <p>XS size should be used as little as possible in edge cases. Even though it’s readable we could consider it not meeting DEV’s standards. So keep it for like “asterisk copy” etc.</p>
@@ -485,6 +546,7 @@
     <a href="#" class="crayons-btn crayons-btn--outlined">Outlined Button label</a><br><br>
     <a href="#" class="crayons-btn crayons-btn--text">Text Button label</a><br><br>
     <a href="#" class="crayons-btn crayons-btn--danger">Danger Button label</a><br><br>
+    <a href="#" class="crayons-btn crayons-btn--icon-alone"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon"><path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" /></svg></a><br><br>
     <a href="#" class="crayons-btn crayons-btn--icon-left"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon"><path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" /></svg>Button</a><br><br>
     <a href="#" class="crayons-btn crayons-btn--secondary crayons-btn--full crayons-btn--icon-left"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon"><path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" /></svg>Button</a>
   </div>
@@ -496,8 +558,44 @@
   <a href="#" class="... crayons-btn--outlined">Outlined Button label</a>
   <a href="#" class="... crayons-btn--text">Text Button label</a>
   <a href="#" class="... crayons-btn--danger">Danger Button label</a>
-  <a href="#" class="... crayons-btn--icon-left"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon">...</svg>Button</a>
-  <a href="#" class="... crayons-btn--secondary crayons-btn--full crayons-btn--icon-left"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon">...</svg>Button</a>
+  <a href="#" class="... crayons-btn--icon-alone"><svg class="crayons-icon" ...>...</svg></a>
+  <a href="#" class="... crayons-btn--icon-left"><svg class="crayons-icon" ...>...</svg>Button</a>
+  <a href="#" class="... crayons-btn--secondary crayons-btn--full crayons-btn--icon-left"><svg class="crayons-icon" ...>...</svg>Button</a>
+  '.rstrip %></pre>
+
+  <div class="body">
+    <h2>Buttons Group</h2>
+    <p>It is possible to combine two or more buttons into a visual group.</p>
+    <p>Use your best judgment for when it should be used. If you think every time you have more than one button you should create this kind of group, then no it's wrong.</p>
+    <p>Think of it as <em>an extension</em> to the button itself: this component lets you <strong>visually</strong> create an <em>actionable area</em> for cases when you need something more than just a classic button.</p>
+  </div>
+
+  <div>
+    <div class="crayons-btn-group mb-4">
+      <a href="#" class="crayons-btn">Action 1</a>
+      <a href="#" class="crayons-btn">Action 2</a>
+      <a href="#" class="crayons-btn crayons-btn--icon-alone"><%= inline_svg_tag("cog.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Preferences") %></a>
+    </div>
+
+    <div class="crayons-btn-group mb-4">
+      <a href="#" class="crayons-btn crayons-btn--secondary">Action 1</a>
+      <a href="#" class="crayons-btn crayons-btn--secondary">Action 2</a>
+      <a href="#" class="crayons-btn crayons-btn--secondary crayons-btn--icon-alone"><%= inline_svg_tag("cog.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Preferences") %></a>
+    </div>
+
+    <div class="crayons-btn-group mb-4">
+      <a href="#" class="crayons-btn crayons-btn--outlined">Action 1</a>
+      <a href="#" class="crayons-btn crayons-btn--outlined">Action 2</a>
+      <a href="#" class="crayons-btn crayons-btn--outlined crayons-btn--icon-alone"><%= inline_svg_tag("cog.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Preferences") %></a>
+    </div>
+  </div>
+
+
+  <pre><%='
+  <div class="crayons-btn-group">
+    <a href="#" class="crayons-btn">Action 1</a>
+    ...
+  </div>
   '.rstrip %></pre>
 </div>
 
