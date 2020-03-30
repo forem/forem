@@ -1,4 +1,8 @@
 class TagAdjustmentsController < ApplicationController
+  after_action only: %i[create destroy] do
+    Audit::Logger.log(:moderator, current_user, params.dup)
+  end
+
   def create
     authorize(User, :moderation_routes?)
     service = TagAdjustmentCreationService.new(

@@ -52,4 +52,16 @@ RSpec.describe URL, type: :lib do
       expect(described_class.user(user)).to eq("https://dev.to/#{user.username}")
     end
   end
+
+  describe ".tag" do
+    let(:tag) { build(:tag) }
+
+    it "returns the correct URL for a tag with no page" do
+      expect(described_class.tag(tag)).to eq("https://dev.to/t/#{tag.name}")
+    end
+
+    it "returns the correct URL for a tag" do
+      expect(described_class.tag(tag, 2)).to eq("https://dev.to/t/#{tag.name}/page/2")
+    end
+  end
 end

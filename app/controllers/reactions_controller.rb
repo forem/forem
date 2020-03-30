@@ -49,7 +49,9 @@ class ReactionsController < ApplicationController
 
   def create
     authorize Reaction
+
     Rails.cache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
+
     category = params[:category] || "like"
     reaction = Reaction.where(
       user_id: current_user.id,
@@ -57,39 +59,37 @@ class ReactionsController < ApplicationController
       reactable_type: params[:reactable_type],
       category: category,
     ).first
-    result = ""
-    if reaction
-      current_user.touch
-      reaction.destroy
-      Moderator::SinkArticles.call(reaction.reactable_id) if vomit_reaction_on_user?(reaction)
-      Notification.send_reaction_notification_without_delay(reaction, reaction_user(reaction))
-      Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) if organization_article?(reaction)
-      result = "destroy"
-    else
-      create_params = {
-        user_id: current_user.id,
-        reactable_id: params[:reactable_id],
-        reactable_type: params[:reactable_type],
-        category: category
-      }
-      create_params[:status] = "confirmed" if current_user&.any_admin?
-      reaction = Reaction.new(create_params)
 
-      unless reaction.save
+    # if the reaction already exists, destroy it
+    if reaction
+      result = destroy_reaction(reaction)
+
+      if reaction.negative? && current_user.auditable?
+        updated_params = params.dup
+        updated_params[:action] = "destroy"
+        Audit::Logger.log(:moderator, current_user, updated_params)
+      end
+    else
+      reaction = build_reaction(category)
+
+      if reaction.save
+        Moderator::SinkArticles.call(reaction.reactable_id) if reaction.vomit_on_user?
+
+        Notification.send_reaction_notification(reaction, reaction.target_user)
+        Notification.send_reaction_notification(reaction, reaction.reactable.organization) if reaction.reaction_on_organization_article?
+
+        result = "create"
+
+        if category == "readinglist" && current_user.experience_level
+          rate_article(reaction)
+        end
+
+        if reaction.negative? && current_user.auditable?
+          Audit::Logger.log(:moderator, current_user, params.dup)
+        end
+      else
         render json: { error: reaction.errors.full_messages.join(", "), status: 422 }, status: :unprocessable_entity
         return
-      end
-
-      result = "create"
-      Moderator::SinkArticles.call(reaction.reactable_id) if vomit_reaction_on_user?(reaction)
-      Notification.send_reaction_notification(reaction, reaction_user(reaction))
-      Notification.send_reaction_notification(reaction, reaction.reactable.organization) if organization_article?(reaction)
-      if category == "readinglist" && current_user.experience_level
-        RatingVote.create(article_id: reaction.reactable_id,
-                          group: "experience_level",
-                          user_id: current_user.id,
-                          context: "readinglist_reaction",
-                          rating: current_user.experience_level)
       end
     end
     render json: { result: result, category: category }
@@ -103,19 +103,31 @@ class ReactionsController < ApplicationController
 
   private
 
-  def reaction_user(reaction)
-    if reaction.reactable_type == "User"
-      reaction.reactable
-    else
-      reaction.reactable.user
-    end
+  def build_reaction(category)
+    create_params = {
+      user_id: current_user.id,
+      reactable_id: params[:reactable_id],
+      reactable_type: params[:reactable_type],
+      category: category
+    }
+    create_params[:status] = "confirmed" if current_user&.any_admin?
+    Reaction.new(create_params)
   end
 
-  def organization_article?(reaction)
-    reaction.reactable_type == "Article" && reaction.reactable.organization.present?
+  def destroy_reaction(reaction)
+    current_user.touch
+    reaction.destroy
+    Moderator::SinkArticles.call(reaction.reactable_id) if reaction.vomit_on_user?
+    Notification.send_reaction_notification_without_delay(reaction, reaction.target_user)
+    Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) if reaction.reaction_on_organization_article?
+    "destroy"
   end
 
-  def vomit_reaction_on_user?(reaction)
-    reaction.reactable_type == "User" && reaction.category == "vomit"
+  def rate_article(reaction)
+    RatingVote.create(article_id: reaction.reactable_id,
+                      group: "experience_level",
+                      user_id: current_user.id,
+                      context: "readinglist_reaction",
+                      rating: current_user.experience_level)
   end
 end

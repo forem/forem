@@ -478,6 +478,10 @@ class User < ApplicationRecord
     MailchimpBot.new(self).unsubscribe_all_newsletters
   end
 
+  def auditable?
+    trusted || tag_moderator? || any_admin?
+  end
+
   def tag_moderator?
     roles.where(name: "tag_moderator").any?
   end

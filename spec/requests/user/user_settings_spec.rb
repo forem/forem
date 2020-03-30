@@ -71,6 +71,20 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).not_to include "CONNECT TWITTER ACCOUNT"
         SiteConfig.authentication_providers = current_auth_value # restore prior value
       end
+
+      it "renders the proper organization page" do
+        first_org, second_org = create_list(:organization, 2)
+        create(:organization_membership, user: user, organization: first_org)
+        create(:organization_membership, user: user, organization: second_org, type_of_user: "admin")
+        get user_settings_path(tab: "organization", org_id: second_org.id) # /settings/organization/:org_id
+        expect(response.body).to include "Grow the team"
+      end
+
+      it "renders the proper response template" do
+        response_template = create(:response_template, user: user)
+        get user_settings_path(tab: "response-templates", id: response_template.id)
+        expect(response.body).to include "Editing a response template"
+      end
     end
   end
 
@@ -96,6 +110,14 @@ RSpec.describe "UserSettings", type: :request do
     it "disables community-success notifications" do
       put "/users/#{user.id}", params: { user: { tab: "notifications", mod_roundrobin_notifications: 0 } }
       expect(user.reload.mod_roundrobin_notifications).to be(false)
+    end
+
+    it "can toggle welcome notifications" do
+      put "/users/#{user.id}", params: { user: { tab: "notifications", welcome_notifications: 0 } }
+      expect(user.reload.welcome_notifications).to be(false)
+
+      put "/users/#{user.id}", params: { user: { tab: "notifications", welcome_notifications: 1 } }
+      expect(user.reload.welcome_notifications).to be(true)
     end
 
     it "updates username to too short username" do

@@ -41,6 +41,7 @@
 
   @include indicator(&, accent, var(--accent-brand));
   @include indicator(&, critical, var(--accent-danger));
+  @include indicator(&, success, var(--accent-success));
   @include indicator(&, inverted, var(--widget-color));
 
   // Circle, no text
