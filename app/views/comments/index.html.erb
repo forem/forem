@@ -18,15 +18,15 @@
   <meta name="twitter:description" content="<%= @commentable.description || "A <%= ApplicationConfig["COMMUNITY_NAME"] %> Comment" %>">
 
   <% if @root_comment.present? %>
-    <link rel="canonical" href="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %><%= @root_comment.path %>" />
-    <meta property="og:url" content="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %><%= @root_comment.path %>" />
+    <link rel="canonical" href="<%= app_url %><%= @root_comment.path %>" />
+    <meta property="og:url" content="<%= app_url %><%= @root_comment.path %>" />
     <meta property="og:title" content="<%= truncate(strip_tags(@root_comment.processed_html), length: 50) %> — DEV" />
     <meta name="twitter:title" content="<%= truncate(strip_tags(@root_comment.processed_html), length: 50) %> — DEV">
     <meta property="og:image" content="<%= comment_social_image_url(@root_comment) %>" />
     <meta name="twitter:image:src" content="<%= comment_social_image_url(@root_comment) %>">
   <% else %>
-    <link rel="canonical" href="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %><%= @commentable.path %>/comments" />
-    <meta property="og:url" content="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %><%= @commentable.path %>/comments" />
+    <link rel="canonical" href="<%= app_url %><%= @commentable.path %>/comments" />
+    <meta property="og:url" content="<%= app_url %><%= @commentable.path %>/comments" />
     <meta property="og:title" content="[Discussion] <%= @commentable.title %> — DEV" />
     <meta name="twitter:title" content="[Discussion] <%= @commentable.title %> — DEV">
     <% if @commentable.class.name == "Article" && @commentable.published %>

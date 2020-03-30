@@ -1,12 +1,12 @@
 <% title "Tags on dev.to" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/about" />
+  <link rel="canonical" href="<%= app_url %>/about" />
   <meta name="description" content="Tags to follow on dev.to">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/about" />
+  <meta property="og:url" content="<%= app_url %>/about" />
   <meta property="og:title" content="Tags to follow on dev.to" />
   <meta property="og:image" content="http://i.imgur.com/B4JNl1w.png" />
   <meta property="og:description" content="The Practical Dev is great!" />
