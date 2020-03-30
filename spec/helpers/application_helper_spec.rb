@@ -1,6 +1,13 @@
 require "rails_helper"
 
 RSpec.describe ApplicationHelper, type: :helper do
+  describe "#community_name" do
+    it "equals to the community name" do
+      allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_NAME").and_return("SLOAN")
+      expect(helper.community_name).to eq("SLOAN")
+    end
+  end
+
   describe "#community_qualified_name" do
     it "equals to the full qualified community name" do
       expected_name = "#{ApplicationConfig['COMMUNITY_NAME']} Community"
@@ -38,7 +45,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
   end
 
-  describe "copyright_notice" do
+  describe "#copyright_notice" do
     context "when the start year and current year is the same" do
       it "returns the current year only" do
         allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_COPYRIGHT_START_YEAR").and_return(Time.current.year)
