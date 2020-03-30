@@ -17,6 +17,14 @@ RSpec.describe Search::Base, type: :service, elasticsearch: true do
       described_class.index(document_id, id: document_id)
       expect(described_class.find_document(document_id)).not_to be_nil
     end
+
+    it "sets last_indexed_at field" do
+      Timecop.freeze(Time.current) do
+        described_class.index(document_id, id: document_id)
+        last_indexed_at = described_class.find_document(document_id).dig("_source", "last_indexed_at")
+        expect(Time.zone.parse(last_indexed_at).to_i).to eq(Time.current.to_i)
+      end
+    end
   end
 
   describe "::find_document" do

@@ -4,7 +4,7 @@ RSpec.describe "/internal/tags", type: :request do
   let(:super_admin) { create(:user, :super_admin) }
   let(:tag_moderator) { create(:user) }
   let!(:tag) { create(:tag) }
-  let(:listener) { :internal }
+  let(:listener) { :moderator }
 
   before do
     sign_in super_admin
@@ -15,26 +15,12 @@ RSpec.describe "/internal/tags", type: :request do
     Audit::Subscribe.forget listener
   end
 
-  def update_params(tag_moderator_id)
-    {
-      tag: {
-        tag_moderator_id: tag_moderator_id
-      }
-    }
-  end
-
-  describe "POST /internal/tag/:id" do
+  describe "PUT /internal/tag/:id" do
     it "creates entry for #update action" do
-      allow(AssignTagModerator).to receive(:add_tag_moderators)
+      put internal_tag_path(tag.id), params: { id: tag.id, tag: { short_summary: Faker::Hipster.sentence } }
 
-      sidekiq_perform_enqueued_jobs do
-        put "/internal/tags/#{tag.id}", params: update_params(tag_moderator.id.to_s)
-        log = AuditLog.where(user_id: super_admin.id, slug: :update)
-        expected = update_params(tag_moderator.id.to_s)[:tag]
-
-        expect(log.first.data.symbolize_keys).to eq expected
-        expect(log.count).to eq(1)
-      end
+      log = AuditLog.where(user_id: super_admin.id, slug: :update)
+      expect(log.count).to eq(1)
     end
   end
 end

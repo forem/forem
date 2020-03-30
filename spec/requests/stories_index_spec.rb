@@ -1,6 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "StoriesIndex", type: :request do
+  let!(:user) { create(:user) }
   let!(:article) { create(:article, featured: true) }
 
   describe "GET stories index" do
@@ -214,6 +215,70 @@ RSpec.describe "StoriesIndex", type: :request do
       get "/t/#{tag.name}"
       expect(response.body).to include("is sponsored by")
       expect(response.body).to include(sponsorship.blurb_html)
+    end
+
+    context "with user signed in" do
+      before do
+        sign_in user
+      end
+
+      it "has mod-action-button" do
+        get "/t/#{tag.name}"
+        expect(response.body).to include('<a class="cta mod-action-button"')
+      end
+
+      it "does not render pagination" do
+        get "/t/#{tag.name}"
+        expect(response.body).not_to include('<span class="olderposts-pagenumber">')
+      end
+
+      it "does not render pagination even with many posts" do
+        create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
+        get "/t/#{tag.name}"
+        expect(response.body).not_to include('<span class="olderposts-pagenumber">')
+      end
+    end
+
+    context "without user signed in" do
+      let(:tag) { create(:tag) }
+
+      it "does not render pagination" do
+        get "/t/#{tag.name}"
+        expect(response.body).not_to include('<span class="olderposts-pagenumber">')
+      end
+
+      it "does not render pagination even with many posts" do
+        create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
+        get "/t/#{tag.name}"
+        expect(response.body).to include('<span class="olderposts-pagenumber">')
+      end
+
+      it "does not include sidebar for page tag" do
+        create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
+        get "/t/#{tag.name}/page/2"
+        expect(response.body).not_to include('<div id="sidebar-wrapper-right"')
+      end
+
+      it "does not include current page link" do
+        create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
+        get "/t/#{tag.name}/page/2"
+        expect(response.body).to include('<span class="olderposts-pagenumber">2')
+        expect(response.body).not_to include("<a href=\"/t/#{tag.name}/page/2")
+        get "/t/#{tag.name}"
+        expect(response.body).to include('<span class="olderposts-pagenumber">1')
+        expect(response.body).not_to include("<a href=\"/t/#{tag.name}/page/1")
+        expect(response.body).not_to include("<a href=\"/t/#{tag.name}/page/3")
+      end
+
+      it "renders proper canonical url for page 1" do
+        get "/t/#{tag.name}"
+        expect(response.body).to include("<link rel=\"canonical\" href=\"http://localhost:3000/t/#{tag.name}\" />")
+      end
+
+      it "renders proper canonical url for page 2" do
+        get "/t/#{tag.name}/page/2"
+        expect(response.body).to include("<link rel=\"canonical\" href=\"http://localhost:3000/t/#{tag.name}/page/2\" />")
+      end
     end
   end
 end

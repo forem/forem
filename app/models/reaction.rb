@@ -1,5 +1,9 @@
 class Reaction < ApplicationRecord
   include AlgoliaSearch
+  include Searchable
+
+  SEARCH_SERIALIZER = Search::ReactionSerializer
+  SEARCH_CLASS = Search::Reaction
 
   CATEGORIES = %w[like readinglist unicorn thinking hands thumbsdown vomit].freeze
   REACTABLE_TYPES = %w[Comment Article User].freeze
@@ -77,6 +81,26 @@ class Reaction < ApplicationRecord
     points.negative? ||
       (user_id == reactable.user_id) ||
       (receiver.is_a?(User) && reactable.receive_notifications == false)
+  end
+
+  def vomit_on_user?
+    reactable_type == "User" && category == "vomit"
+  end
+
+  def reaction_on_organization_article?
+    reactable_type == "Article" && reactable.organization.present?
+  end
+
+  def target_user
+    if reactable_type == "User"
+      reactable
+    else
+      reactable.user
+    end
+  end
+
+  def negative?
+    category == "vomit" || category == "thumbsdown"
   end
 
   private
@@ -178,10 +202,6 @@ class Reaction < ApplicationRecord
 
   def remove_algolia
     remove_from_index!
-  end
-
-  def negative?
-    category == "vomit" || category == "thumbsdown"
   end
 
   def record_field_test_event

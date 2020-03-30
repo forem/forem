@@ -30,7 +30,6 @@ module Admin
         short_summary
         requires_approval
         submission_template
-        submission_rules_headsup
         pretty_name
         bg_color_hex
         text_color_hex

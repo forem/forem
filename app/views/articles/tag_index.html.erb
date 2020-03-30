@@ -3,7 +3,7 @@
 <% end %>
 <% expiry_minutes = params[:timeframe].blank? || params[:timeframe] == "latest" ? 4 : 20 %>
 <% flag = true %>
-<% cache("tag-stories-index-#{params}-#{flag}-#{@tag_model.updated_at}", expires_in: expiry_minutes.minutes) do %>
+<% cache("tag-stories-index-#{params}-#{flag}-#{@tag_model.updated_at}-#{user_signed_in?}", expires_in: expiry_minutes.minutes) do %>
   <style>
     .tag-header {
       border: 2px solid<%= HexComparer.new([@tag_model.bg_color_hex || "#0000000", @tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>;
