@@ -52,7 +52,7 @@
         <% end %>
         <div class="dropdown-link-row">
           <clipboard-copy for="article-copy-link-input" aria-live="polite" aria-controls="article-copy-link-announcer">
-            <input type="text" id="article-copy-link-input" value="<%= app_url %><%= @article.path %>" readonly />
+            <input type="text" id="article-copy-link-input" value="<%= article_url(@article) %>" readonly />
             <img id="article-copy-icon" src="<%= asset_path("content-copy.svg") %>" alt="Copy to Clipboard" />
             <span id="article-copy-link-announcer" role="alert" hidden>Copied to Clipboard</span>
           </clipboard-copy>

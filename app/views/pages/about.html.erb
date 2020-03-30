@@ -1,12 +1,12 @@
 <% title "About #{ApplicationConfig['COMMUNITY_NAME']}" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="<%= app_url %>/about" />
+  <link rel="canonical" href="<%= app_url("/about") %>" />
   <meta name="description" content="About <%= ApplicationConfig["COMMUNITY_NAME"] %>">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="<%= app_url %>/about" />
+  <meta property="og:url" content="<%= app_url("/about") %>" />
   <meta property="og:title" content="About <%= ApplicationConfig["COMMUNITY_NAME"] %>" />
   <meta property="og:image" content="<%= SiteConfig.main_social_image %>" />
   <meta property="og:description" content="<%= ApplicationConfig["COMMUNITY_NAME"] %> is great!" />

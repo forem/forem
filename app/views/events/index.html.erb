@@ -1,10 +1,10 @@
 <%= content_for :page_meta do %>
   <% title "DEV EVENTS" %>
-  <link rel="canonical" href="<%= app_url %>/events" />
+  <link rel="canonical" href="<%= app_url("/events") %>" />
   <meta name="description" content="<%= ApplicationConfig["COMMUNITY_NAME"] %> Events">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="<%= app_url %>/events" />
+  <meta property="og:url" content="<%= app_url("/events") %>" />
   <meta property="og:title" content="<%= ApplicationConfig["COMMUNITY_NAME"] %> Events" />
   <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/bhavxzyx2e7bdsyvysve.jpg" />
   <meta property="og:description" content="Talks and workshops designed to help community members level up." />

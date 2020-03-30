@@ -1,12 +1,12 @@
 <% title "FAQ for dev.to()" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="<%= app_url %>/faq" />
+  <link rel="canonical" href="<%= app_url("/faq") %>" />
   <meta name="description" content="FAQ for dev.to()">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="<%= app_url %>/faq" />
+  <meta property="og:url" content="<%= app_url("/faq") %>" />
   <meta property="og:title" content="FAQ for dev.to()" />
   <meta property="og:image" content="<%= SiteConfig.main_social_image %>" />
   <meta property="og:description" content="Things to know!" />

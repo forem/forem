@@ -4,12 +4,12 @@
 <%= javascript_include_tag "application" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="<%= app_url %>/rly" />
+  <link rel="canonical" href="<%= app_url("/rly") %>" />
   <meta name="description" content="Insult your co-workers with snarky O RLY parody book covers!">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="<%= app_url %>/rly" />
+  <meta property="og:url" content="<%= app_url("/rly") %>" />
   <meta property="og:title" content="O RLY Parody Book Cover Generator" />
   <meta property="og:image" content="http://i.imgur.com/pAORVha.png" />
   <meta property="og:description" content="Insult your co-workers with snarky O RLY parody book covers!" />

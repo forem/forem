@@ -1,12 +1,12 @@
 <% title "Contact The Practical Dev" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="<%= app_url %>/contact" />
+  <link rel="canonical" href="<%= app_url("/contact") %>" />
   <meta name="description" content="Contact The Practical Dev">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="<%= app_url %>/contact" />
+  <meta property="og:url" content="<%= app_url("/contact") %>" />
   <meta property="og:title" content="Contact The Practical Dev" />
   <meta property="og:image" content="<%= SiteConfig.main_social_image %>" />
   <meta property="og:description" content="<%= community_qualified_name %> is great!" />
