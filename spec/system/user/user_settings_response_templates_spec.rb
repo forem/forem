@@ -20,7 +20,7 @@ RSpec.describe "User uses response templates settings", type: :system do
       it "can delete a response template properly", js: true do
         visit "/settings/response-templates"
         click_button "DELETE"
-        accept_alert
+        page.driver.browser.switch_to.alert.accept
         expect(ResponseTemplate.count).to eq 0
       end
     end
