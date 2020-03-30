@@ -2,7 +2,7 @@ class ResponseTemplate < ApplicationRecord
   belongs_to :user, optional: true
 
   UNIQUENESS_SCOPE = %i[user_id type_of content_type].freeze
-  TYPE_OF_TYPES = %w[personal_comment mod_comment abuse_report_email_reply email_reply].freeze
+  TYPE_OF_TYPES = %w[personal_comment mod_comment abuse_report_email_reply email_reply tag_adjustment].freeze
   CONTENT_TYPES = %w[plain_text html body_markdown].freeze
   COMMENT_CONTENT_TYPE = %w[body_markdown].freeze
   EMAIL_CONTENT_TYPES = %w[plain_text html].freeze
