@@ -1,16 +1,23 @@
 import { h } from 'preact';
+import { withKnobs, text } from '@storybook/addon-knobs/react';
+import { Dropdown } from '@crayons';
 
-import '../../storybook-utiltiies/designSystem.scss';
+import './dropdown-css-helper.scss';
+
+const showDropdownDecorator = (story) => (
+  <div className="show-children">{story()}</div>
+);
 
 export default {
-  title: 'Components/Dropdowns/HTML',
+  title: 'Components/Dropdowns/JSX',
+  decorators: [withKnobs, showDropdownDecorator],
 };
 
 export const Default = () => (
-  <div className="crayons-dropdown" style={{ display: 'block' }}>
+  <Dropdown>
     Hey, I&apos;m a dropdown content! Lorem ipsum dolor sit amet, consectetur
     adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
-  </div>
+  </Dropdown>
 );
 
 Default.story = {
@@ -18,10 +25,10 @@ Default.story = {
 };
 
 export const AdditonalCssClasses = () => (
-  <div className="crayons-dropdown p-6" style={{ display: 'block' }}>
+  <Dropdown className={text('className', 'p-6')}>
     Hey, I&apos;m a dropdown content! Lorem ipsum dolor sit amet, consectetur
     adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
-  </div>
+  </Dropdown>
 );
 
 AdditonalCssClasses.story = {
