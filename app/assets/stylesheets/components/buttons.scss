@@ -30,6 +30,7 @@
   &:hover {
     background-color: var(--button-primary-bg-hover);
     color: var(--button-primary-color-hover);
+    z-index: 2;
   }
 
   &--secondary {
@@ -76,6 +77,12 @@
   }
 }
 
+// Icon alone
+.crayons-btn--icon-alone {
+  padding-left: 0.75em;
+  padding-right: 0.75em;
+}
+
 // Icon Left
 .crayons-btn--icon-left {
   padding-left: 0.75em;
@@ -88,4 +95,32 @@
 // Full width
 .crayons-btn--full {
   width: 100%;
+}
+
+
+// Grouped buttons
+.crayons-btn-group {
+  display: flex;
+
+  .crayons-btn {
+    border-radius: 0;
+
+    + .crayons-btn:not(.crayons-btn--outlined) {
+      margin-left: 1px;
+    }
+
+    + .crayons-btn--outlined {
+      margin-left: -2px;
+    }
+
+    &:first-child {
+      border-top-left-radius: $br-default;
+      border-bottom-left-radius: $br-default;
+    }
+
+    &:last-child {
+      border-top-right-radius: $br-default;
+      border-bottom-right-radius: $br-default;
+    }
+  }
 }
