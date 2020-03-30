@@ -44,7 +44,7 @@
   }
 
   &--outlined {
-    padding: 0.375em 1em;
+    padding: 0.375em 0.875em;
     background-color: transparent;
     border: 2px solid var(--button-outlined-bg);
     color: var(--button-outlined-color);
@@ -96,7 +96,6 @@
 .crayons-btn--full {
   width: 100%;
 }
-
 
 // Grouped buttons
 .crayons-btn-group {
