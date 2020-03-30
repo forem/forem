@@ -85,31 +85,63 @@ class FollowTags extends Component {
     const { selectedTags, allTags } = this.state;
     return (
       <div className="onboarding-main">
+        <Navigation prev={prev} next={this.handleComplete} />
         <div className="onboarding-content">
-          <h2>Follow tags to customize your feed</h2>
-          <div className="scroll">
-            {allTags.map(tag => (
-              <button
-                type="button"
-                onClick={() => this.handleClick(tag)}
-                style={{
-                  backgroundColor: tag.bg_color_hex,
-                  color: tag.text_color_hex,
-                }}
-                className={
-                  selectedTags.includes(tag) ? 'tag tag-selected' : 'tag'
-                }
-              >
-                #
-                {tag.name}
-                <div className="onboarding-tag-follow-indicator">
-                  {selectedTags.includes(tag) ? '✓ following ' : ''}
+          <header className="onboarding-content-header">
+            <h1 className="title">What are you interested in?</h1>
+            <h2 className="subtitle">Follow tags to customize your feed</h2>
+          </header>
+          <div className="onboarding-modal-scroll-container">
+            <div className="onboarding-tags">
+              {allTags.map(tag => (
+                <div
+                  className={`onboarding-tags__item ${selectedTags.includes(
+                    tag,
+                  ) && 'onboarding-tags__item--selected'}`}
+                  style={{
+                    boxShadow: selectedTags.includes(tag)
+                      ? `inset 0 0 0 100px ${tag.bg_color_hex}`
+                      : `inset 0 0 0 2px ${tag.bg_color_hex}`,
+                    color: selectedTags.includes(tag) ? tag.text_color_hex : '',
+                  }}
+                >
+                  <div className="onboarding-tags__item__inner">
+                    #
+                    {tag.name}
+                    <button
+                      type="button"
+                      onClick={() => this.handleClick(tag)}
+                      className={`onboarding-tags__button ${selectedTags.includes(
+                        tag,
+                      ) && 'onboarding-tags__button--selected'}`}
+                      style={{
+                        backgroundColor: selectedTags.includes(tag)
+                          ? tag.text_color_hex
+                          : tag.bg_color_hex,
+                        color: selectedTags.includes(tag)
+                          ? tag.bg_color_hex
+                          : tag.text_color_hex,
+                      }}
+                    >
+                      {selectedTags.includes(tag) ? (
+                        <span>
+                          <span className="onboarding-tags__button-default">
+                            ✓ Following
+                          </span>
+                          <span className="onboarding-tags__button-alt">
+                            Unfollow
+                          </span>
+                        </span>
+                      ) : (
+                        '+ Follow'
+                      )}
+                    </button>
+                  </div>
                 </div>
-              </button>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
-        <Navigation prev={prev} next={this.handleComplete} />
       </div>
     );
   }
