@@ -111,7 +111,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
     end
   end
 
-  describe "#send_customize_notification" do
+  describe "#send_ux_customization_notification" do
     # Ensure that the user is already authenticated with all providers and has commented on the
     # welcome thread so that we can actually trigger just the customize notification only.
     let(:user) { create(:user, :with_identity, identities: %w[twitter github], created_at: 5.days.ago) }
@@ -122,19 +122,19 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
 
     it "does not send a notification to a newly-created user" do
       user.update!(created_at: Time.zone.now)
-      sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_customize_notification) }
+      sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_ux_customization_notification) }
       expect(Notification).not_to have_received(:send_welcome_notification)
     end
 
     it "generates the correct broadcast type and sends the notification to the user" do
-      sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_customize_notification) }
+      sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_ux_customization_notification) }
       expect(user.notifications.first.notifiable).to eq(customize_broadcast)
       expect(Notification).to have_received(:send_welcome_notification).with(user.id, customize_broadcast.id)
     end
 
     it "does not send duplicate notifications" do
       2.times do
-        sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_customize_notification) }
+        sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_ux_customization_notification) }
       end
       expect(user.notifications.count).to eq(1)
       expect(Notification).to have_received(:send_welcome_notification).with(user.id, customize_broadcast.id).exactly(:once)

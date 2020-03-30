@@ -16,7 +16,7 @@ module Broadcasts
 
         send_welcome_notification unless notification_enqueued
         send_authentication_notification unless notification_enqueued
-        send_customize_notification unless notification_enqueued
+        send_ux_customization_notification unless notification_enqueued
       end
 
       private
@@ -37,7 +37,7 @@ module Broadcasts
         @notification_enqueued = true
       end
 
-      def send_customize_notification
+      def send_ux_customization_notification
         return if received_notification?(customize_broadcast) || user.created_at > 5.days.ago
 
         Notification.send_welcome_notification(user.id, customize_broadcast.id)
