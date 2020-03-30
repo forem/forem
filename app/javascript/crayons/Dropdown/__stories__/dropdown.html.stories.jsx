@@ -7,7 +7,7 @@ export default {
 };
 
 export const Default = () => (
-  <div className="crayons-dropdown">
+  <div className="crayons-dropdown" style={{ display: 'block' }}>
     Hey, I&apos;m a dropdown content! Lorem ipsum dolor sit amet, consectetur
     adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
   </div>
@@ -18,7 +18,10 @@ Default.story = {
 };
 
 export const Large = () => (
-  <div className="crayons-dropdown crayons-dropdown--l">
+  <div
+    className="crayons-dropdown crayons-dropdown--l"
+    style={{ display: 'block' }}
+  >
     Hey, I&apos;m a dropdown content! Lorem ipsum dolor sit amet, consectetur
     adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
   </div>
