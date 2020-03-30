@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_26_111645) do
+ActiveRecord::Schema.define(version: 2020_03_29_103305) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -567,21 +567,6 @@ ActiveRecord::Schema.define(version: 2020_03_26_111645) do
     t.integer "user_id"
     t.index ["provider", "uid"], name: "index_identities_on_provider_and_uid", unique: true
     t.index ["provider", "user_id"], name: "index_identities_on_provider_and_user_id", unique: true
-  end
-
-  create_table "job_opportunities", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "experience_level"
-    t.string "location_city"
-    t.string "location_country_code"
-    t.string "location_given"
-    t.decimal "location_lat", precision: 10, scale: 6
-    t.decimal "location_long", precision: 10, scale: 6
-    t.string "location_postal_code"
-    t.string "permanency"
-    t.string "remoteness"
-    t.string "time_commitment"
-    t.datetime "updated_at", null: false
   end
 
   create_table "mentions", id: :serial, force: :cascade do |t|
