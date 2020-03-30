@@ -49,7 +49,7 @@
     </div>
     <div class="sub-field">
       <%= f.check_box :email_unread_notifications %>
-      <%= f.label :email_unread_notifications, "Send me occasional reminders that I have unread notifications on #{ApplicationConfig['COMMUNITY_NAME']}" %>
+      <%= f.label :email_unread_notifications, "Send me occasional reminders that I have unread notifications on #{community_name}" %>
     </div>
   </div>
   <h3>Mobile Notification Settings (Beta)</h3>
@@ -69,7 +69,7 @@
   <div class="checkbox-field">
     <div class="sub-field">
       <%= f.check_box :welcome_notifications %>
-      <%= f.label :welcome_notifications, "Send me occasional tips on how to enhance my #{ApplicationConfig['COMMUNITY_NAME']} experience" %>
+      <%= f.label :welcome_notifications, "Send me occasional tips on how to enhance my #{community_name} experience" %>
     </div>
   </div>
   <% if current_user.trusted %>

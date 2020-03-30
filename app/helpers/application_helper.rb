@@ -146,6 +146,10 @@ module ApplicationHelper
     end
   end
 
+  def community_name
+    ApplicationConfig['COMMUNITY_NAME']
+  end
+
   def community_qualified_name
     "#{ApplicationConfig['COMMUNITY_NAME']} Community"
   end
