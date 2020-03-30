@@ -183,21 +183,21 @@ function paginate(tag, params, requiresApproval) {
   const searchHash = { ...{ per_page: 15, page: nextPage }, ...JSON.parse(params) };
 
   if (tag && tag.length > 0) {
-    searchHash["tag_names"] = searchHash["tag_names"] || [];
-    searchHash["tag_names"].push(tag);
+    searchHash.tag_names = searchHash.tag_names || [];
+    searchHash.tag_names.push(tag);
   }
-  searchHash["approved"] = (requiresApproval === 'true') ? 'true' : '';
+  searchHash.approved = (requiresApproval === 'true') ? 'true' : '';
 
   var homeEl = document.getElementById("index-container");
   if (homeEl.dataset.feed === "base-feed") {
-    searchHash["class_name"] = "Article";
+    searchHash.class_name = "Article";
   } else if (homeEl.dataset.feed === "latest") {
-    searchHash["class_name"] = "Article";
-    searchHash["sort_by"] = "published_at";
+    searchHash.class_name = "Article";
+    searchHash.sort_by = "published_at";
   } else {
-    searchHash["class_name"] = "Article";
-    searchHash["published_at[gte]"] = homeEl.dataset.articlesSince;
-    searchHash["sort_by"] = "positive_reactions_count";
+    searchHash.class_name = "Article";
+    searchHash.published_at[gte] = homeEl.dataset.articlesSince;
+    searchHash.sort_by = "positive_reactions_count";
   }
 
   const searchParams = new URLSearchParams(searchHash).toString();

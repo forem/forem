@@ -16,7 +16,6 @@
 
   var params = getQueryParams(document.location.search);
 
-  // var query = escape(params.q);
   function searchMain() {
     var query = filterXSS(params.search_fields);
     var filters = filterXSS(params.filters || "");
@@ -69,7 +68,7 @@
       for(var i = 0; i < hashtags.length; i++){
         hashtags[i] = hashtags[i].replace(/#/,'');
       }
-      searchHash["tag_names"] = hashtags;
+      searchHash.tag_names = hashtags;
     } else if (filters && filters !== "") {
       filters.split('&').forEach((filter) => {
         const [key, value] = filter.split(':');
@@ -77,7 +76,7 @@
       });
     }
 
-    if (searchTerm && searchTerm !== "") { searchHash["search_fields"] = searchTerm; }
+    if (searchTerm && searchTerm !== "") { searchHash.search_fields = searchTerm; }
 
     const searchParams = new URLSearchParams(searchHash).toString();
 

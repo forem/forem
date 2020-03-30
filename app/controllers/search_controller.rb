@@ -17,6 +17,17 @@ class SearchController < ApplicationController
     per_page
   ].freeze
 
+  FEED_PARAMS = [
+    :class_name,
+    :page,
+    :per_page,
+    :search_fields,
+    :sort_by,
+    :tag_names,
+    :user_id,
+    { published_at: [:gte] },
+  ].freeze
+
   def tags
     tag_docs = Search::Tag.search_documents("name:#{params[:name]}* AND supported:true")
 
@@ -93,10 +104,7 @@ class SearchController < ApplicationController
   end
 
   def feed_params
-    params.permit(
-      :class_name, :page, :per_page, :search_fields,
-      :sort_by, :tag_names, :user_id, published_at: [:gte]
-    )
+    params.permit(FEED_PARAMS)
   end
 
   def format_integer_params

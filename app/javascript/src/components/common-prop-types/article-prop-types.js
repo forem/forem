@@ -3,7 +3,7 @@ import { tagPropTypes } from './tag-prop-types';
 import { organizationPropType } from './organization-prop-type';
 
 export const articleSnippetResultPropTypes = PropTypes.shape({
-  body_text: PropTypes.shape(['highlighted <em>search</em> string']),
+  body_text: PropTypes.arrayOf(PropTypes.string),
 });
 
 export const articlePropTypes = PropTypes.shape({

@@ -48,14 +48,17 @@ function buildArticleHTML(article) {
     if ((rc || '0') > 0 && article.class_name != "User") {
       var reactionsCountHTML = '<div class="article-engagement-count reactions-count"><a href="'+article.path+'"><img src="<%= asset_path("reactions-stack.png") %>" alt="heart" /><span id="engagement-count-number-'+article.id+'" class="engagement-count-number">'+(rc || '0')+'</span></a></div>'
     }
+    var picUrl;
+    var profileUsername;
+    var userName;
     if (article.class_name == "PodcastEpisode"){
-      var picUrl = article.main_image;
-      var profileUsername = article.slug;
-      var userName = article.title;
+      picUrl = article.main_image;
+      profileUsername = article.slug;
+      userName = article.title;
     } else {
-      var picUrl = article.user.profile_image_90;
-      var profileUsername = article.user.username;
-      var userName = article.user.name;
+      picUrl = article.user.profile_image_90;
+      profileUsername = article.user.username;
+      userName = article.user.name;
     }
     var orgHeadline = "";
     if (article.organization && !document.getElementById("organization-article-index")) {
@@ -63,7 +66,7 @@ function buildArticleHTML(article) {
     }
     var bodyTextSnippet = "";
     var searchSnippetHTML = "";
-    if (article.highlight && article.highlight.body_text){
+    if (article.highlight && article.highlight.body_text.length > 0){
       var firstSnippetChar = article.highlight.body_text[0];
       var startingEllipsis = ""
       if (firstSnippetChar.toLowerCase() != firstSnippetChar.toUpperCase()){
