@@ -59,7 +59,7 @@ _Docker compose will by default use postgres:9.6 as the database version, should
 you want to update that set the `POSTGRES_VERSION` variable in your environment
 and start the container again_
 
-1. Run `bin/docker_setup`
+1. Run `bin/docker-setup`
 2. That's it! Navigate to <http://localhost:3000>
 
 The script executes the following steps:
