@@ -51,21 +51,27 @@ class BioForm extends Component {
     const { prev } = this.props;
     return (
       <div className="onboarding-main">
+        <Navigation prev={prev} next={this.onSubmit} />
         <div className="onboarding-content about">
-          <h2>About You!</h2>
+          <header className="onboarding-content-header">
+            <h1 className="title">Introduce yourself</h1>
+            <h2 className="subtitle">
+              Tell the community about yourself. Write a quick bio about what
+              you do, what you&apos;re interested in, or anything else.
+            </h2>
+          </header>
           <form>
             <label htmlFor="summary">
-              Tell the community about yourself! Write a quick bio about what
-              you do, what you&apos;re interested in, or anything else!
+              Bio
               <textarea
                 name="summary"
+                placeholder="Tell us about yourself"
                 onChange={this.handleChange}
                 maxLength="120"
               />
             </label>
           </form>
         </div>
-        <Navigation prev={prev} next={this.onSubmit} />
       </div>
     );
   }
