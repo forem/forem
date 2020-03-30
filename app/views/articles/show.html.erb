@@ -43,14 +43,14 @@
     },
     "publisher": {
       "@context": "http://schema.org",
-      "@type": "Organization"
-    },
-    "logo": {
-      "@context": "http://schema.org",
-      "@type": "ImageObject",
-      "url": "<%= cloudinary(SiteConfig.logo_png, 192, "png") %>",
-      "width": "192",
-      "height": "192"
+      "@type": "Organization",
+      "logo": {
+        "@context": "http://schema.org",
+        "@type": "ImageObject",
+        "url": "<%= cloudinary(SiteConfig.logo_png, 192, "png") %>",
+        "width": "192",
+        "height": "192"
+      }
     },
     "name": "<%= ApplicationConfig["COMMUNITY_NAME"] %> Community",
     "headline": "<%= @article.title %>",
@@ -61,8 +61,7 @@
       "name": "<%= @user.name %>"
     },
     "datePublished": "<%= @article.published_timestamp %>",
-    "dateModified": ""<%= @article.edited_at&.utc&.iso8601 %>"",
-    "articleBody": "<%= @article.processed_html.html_safe %>"
+    "dateModified": "<%= @article.edited_at&.utc&.iso8601 %>"
   }
 </script>
 
@@ -200,7 +199,9 @@
                    position: :top %>
       <% end %>
 
-      <div class="body" data-article-id="<%= @article.id %>" id="article-body"></div>
+      <div class="body" data-article-id="<%= @article.id %>" id="article-body">
+        <%= @article.processed_html.html_safe %>
+      </div>
       <% if @article.body_markdown && @article.body_markdown.size > 900 && @collection %>
         <%= render "articles/collection",
                    rendered_article: @article,
