@@ -16,6 +16,7 @@ module Broadcasts
 
         send_welcome_notification unless notification_enqueued
         send_authentication_notification unless notification_enqueued
+        send_ux_customization_notification unless notification_enqueued
       end
 
       private
@@ -36,6 +37,13 @@ module Broadcasts
         @notification_enqueued = true
       end
 
+      def send_ux_customization_notification
+        return if received_notification?(customize_broadcast) || user.created_at > 5.days.ago
+
+        Notification.send_welcome_notification(user.id, customize_broadcast.id)
+        @notification_enqueued = true
+      end
+
       def received_notification?(broadcast)
         Notification.exists?(notifiable: broadcast, user: user)
       end
@@ -53,15 +61,19 @@ module Broadcasts
         @welcome_broadcast ||= Broadcast.find_by(title: "Welcome Notification: welcome_thread")
       end
 
+      def customize_broadcast
+        @customize_broadcast ||= Broadcast.find_by(title: "Welcome Notification: customize_experience")
+      end
+
       def identities
         @identities ||= user.identities.where(provider: SiteConfig.authentication_providers)
       end
 
       def authentication_broadcast
-        @authentication_broadcast ||= find_broadcast
+        @authentication_broadcast ||= find_auth_broadcast
       end
 
-      def find_broadcast
+      def find_auth_broadcast
         missing_identities = SiteConfig.authentication_providers.map do |provider|
           identities.exists?(provider: provider) ? nil : "#{provider}_connect"
         end.compact
