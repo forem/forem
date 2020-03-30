@@ -95,7 +95,7 @@ class Tweet < ApplicationRecord
 
     def handle_tweeted_attrs(tweet, tweeted)
       tweet.in_reply_to_user_id_code = tweeted.attrs[:in_reply_to_user_id_str]
-      tweet.in_reply_to_user_id_code = tweeted.attrs[:in_reply_to_status_id_str]
+      tweet.in_reply_to_status_id_code = tweeted.attrs[:in_reply_to_status_id_str]
       tweet.twitter_id_code = tweeted.attrs[:id_str]
       tweet.quoted_tweet_id_code = tweeted.attrs[:quoted_status_id_str]
       tweet.text = tweeted.attrs[:full_text]
