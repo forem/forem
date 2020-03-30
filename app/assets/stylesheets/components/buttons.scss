@@ -46,8 +46,8 @@ $outlined-border-width: 2px;
   }
 
   &--outlined {
-    padding: calc(0.5em - $outlined-border-width)
-      calc(1em - $outlined-border-width);
+    padding: calc(0.5em - #{$outlined-border-width})
+      calc(1em - #{$outlined-border-width});
     background-color: transparent;
     border: $outlined-border-width solid var(--button-outlined-bg);
     color: var(--button-outlined-color);
