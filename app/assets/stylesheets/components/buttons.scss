@@ -1,5 +1,7 @@
 @import '../config/import';
 
+$outlined-border-width: 2px;
+
 // Basic styling
 .crayons-btn {
   position: relative;
@@ -44,9 +46,10 @@
   }
 
   &--outlined {
-    padding: 0.375em 0.875em;
+    padding: calc(0.5em - $outlined-border-width)
+      calc(1em - $outlined-border-width);
     background-color: transparent;
-    border: 2px solid var(--button-outlined-bg);
+    border: $outlined-border-width solid var(--button-outlined-bg);
     color: var(--button-outlined-color);
 
     &:hover {
@@ -109,7 +112,7 @@
     }
 
     + .crayons-btn--outlined {
-      margin-left: -2px;
+      margin-left: -$outlined-border-width;
     }
 
     &:first-child {
