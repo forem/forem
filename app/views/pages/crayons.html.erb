@@ -56,24 +56,28 @@
   </div>
 
   <div>
+    <p>This is default state:</p>
     <div class="crayons-btn-group mb-4">
       <a href="#" class="crayons-btn crayons-btn--outlined">Subscribe</a>
     </div>
 
+    <p>This is subscribed state, so it has additional cog button:</p>
     <div class="crayons-btn-group mb-4">
       <a href="#" class="crayons-btn crayons-btn--outlined">Unsubscribe</a>
       <a href="#" class="crayons-btn crayons-btn--outlined crayons-btn--icon-alone">
         <%= inline_svg_tag("cog.svg", aria: true, class: "crayons-icon", title: "Customize subscription") %>
       </a>
     </div>
-
+    
+    <p>This is subscribed state, and the cog button has <code>.crayons-btn--outlined--active</code> class applied so it has darker border and color.</p>
     <div class="crayons-btn-group mb-4">
       <a href="#" class="crayons-btn crayons-btn--outlined">Unsubscribe</a>
       <a href="#" class="crayons-btn crayons-btn--outlined crayons-btn--outlined--active crayons-btn--icon-alone">
         <%= inline_svg_tag("cog.svg", aria: true, class: "crayons-icon", title: "Customize subscription") %>
       </a>
     </div>
-
+    
+    <p>This is our dropdown. It has additional utility classes <code>inline-block static</code> only for purpose of this demo.</p>
     <div class="crayons-dropdown inline-block static">
       <div class="crayons-fields mb-5">
         <div class="crayons-field crayons-field--radio">
