@@ -52,6 +52,67 @@
 
 <div class="container">
   <div class="body">
+    <h2>Subscribe dropdown</h2>
+  </div>
+
+  <div>
+    <p>This is default state:</p>
+    <div class="crayons-btn-group mb-4">
+      <a href="#" class="crayons-btn crayons-btn--outlined">Subscribe</a>
+    </div>
+
+    <p>This is subscribed state, so it has additional cog button:</p>
+    <div class="crayons-btn-group mb-4">
+      <a href="#" class="crayons-btn crayons-btn--outlined">Unsubscribe</a>
+      <a href="#" class="crayons-btn crayons-btn--outlined crayons-btn--icon-alone">
+        <%= inline_svg_tag("cog.svg", aria: true, class: "crayons-icon", title: "Customize subscription") %>
+      </a>
+    </div>
+    
+    <p>This is subscribed state, and the cog button has <code>.crayons-btn--outlined--active</code> class applied so it has darker border and color.</p>
+    <div class="crayons-btn-group mb-4">
+      <a href="#" class="crayons-btn crayons-btn--outlined">Unsubscribe</a>
+      <a href="#" class="crayons-btn crayons-btn--outlined crayons-btn--outlined--active crayons-btn--icon-alone">
+        <%= inline_svg_tag("cog.svg", aria: true, class: "crayons-icon", title: "Customize subscription") %>
+      </a>
+    </div>
+    
+    <p>This is our dropdown. It has additional utility classes <code>inline-block static</code> only for purpose of this demo.</p>
+    <div class="crayons-dropdown inline-block static">
+      <div class="crayons-fields mb-5">
+        <div class="crayons-field crayons-field--radio">
+          <input type="radio" id="subscribe-all" name="subscribe_comments" class="crayons-radio" checked>
+          <label for="subscribe-all" class="crayons-field__label">
+            All comments
+            <p class="crayons-field__description">You’ll receive notifications for all new comments.</p>
+          </label>
+        </div>
+
+        <div class="crayons-field crayons-field--radio">
+          <input type="radio" id="subscribe-toplevel" name="subscribe_comments" class="crayons-radio">
+          <label for="subscribe-toplevel" class="crayons-field__label">
+            Top-level comments
+            <p class="crayons-field__description">You’ll receive notifications only for all new top-level comments.</p>
+          </label>
+        </div>
+
+        <div class="crayons-field crayons-field--radio">
+          <input type="radio" id="subscribe-author" name="subscribe_comments" class="crayons-radio">
+          <label for="subscribe-author" class="crayons-field__label">
+            Post author comments
+            <p class="crayons-field__description">You’ll receive notifications only if post author sends a new comment.</p>
+          </label>
+        </div>
+      </div>
+      
+      <button class="crayons-btn w-100">Done</button>
+    </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="body">
     <h2>Main Typography</h2>
     <p>Default font is set to 16px (fs-base). It should be standard in UI. Smaller and bigger font sizes should be used carefully with respect to good visual rythm between elements.</p>
     <p>XS size should be used as little as possible in edge cases. Even though it’s readable we could consider it not meeting DEV’s standards. So keep it for like “asterisk copy” etc.</p>
