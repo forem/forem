@@ -3,7 +3,7 @@ import { h } from 'preact';
 import '../../storybook-utiltiies/designSystem.scss';
 
 export default {
-  title: 'Components/Form Components/HTML',
+  title: 'Components/Form Components',
 };
 
 export const Description = () => (

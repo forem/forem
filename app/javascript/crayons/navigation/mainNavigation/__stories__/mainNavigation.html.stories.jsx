@@ -6,16 +6,6 @@ export default {
   title: 'Components/Navigation/Main Navigation/HTML',
 };
 
-export const Description = () => (
-  <div className="container">
-    <h2>Navigation: Main nav</h2>
-    <p>Used as main nav in left sidebar or dropdowns...</p>
-    <p>Can contain icons.</p>
-  </div>
-);
-
-Description.story = { name: 'description' };
-
 export const Default = () => (
   <div className="p-6 bg-smoke-10">
     <a href="/" className="crayons-nav-block crayons-nav-block--current">
