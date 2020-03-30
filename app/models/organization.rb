@@ -1,4 +1,15 @@
 class Organization < ApplicationRecord
+  self.ignored_columns = %w[
+    address
+    approved
+    city
+    country
+    jobs_email
+    jobs_url
+    state
+    zip_code
+  ]
+
   include CloudinaryHelper
 
   acts_as_followable
@@ -24,7 +35,6 @@ class Organization < ApplicationRecord
             length: { maximum: 250 }
   validates :tag_line,
             length: { maximum: 60 }
-  validates :jobs_email, email: true, allow_blank: true
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :slug,
