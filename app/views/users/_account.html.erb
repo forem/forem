@@ -24,9 +24,7 @@
   <div class="api__secret__container">
     <div class="api__secret__desc">
       <details>
-        <summary>
-          <p class="title"><%= api_secret.description %></p>
-        </summary>
+        <summary class="title"><%= api_secret.description %></summary>
         <p class="content"><%= api_secret.secret %></p>
       </details>
       <p class="subtitle">Created <%= api_secret.created_at.to_date.to_s %></p>
