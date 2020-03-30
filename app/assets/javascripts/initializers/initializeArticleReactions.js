@@ -1,7 +1,5 @@
 /* global sendHapticMessage, showModal */
 
-
-
 // Set reaction count to correct number
 function setReactionCount(reactionName, newCount) {
   var reactionClassList = document.getElementById(
@@ -157,8 +155,8 @@ function jumpToComments() {
 
 function initializeArticleReactions() {
   setCollectionFunctionality();
+
   setTimeout(() => {
-    var articleId;
     var reactionButts = document.getElementsByClassName(
       'article-reaction-butt',
     );
@@ -166,16 +164,14 @@ function initializeArticleReactions() {
     // we wait for the article to appear,
     // we also check that reaction buttons are there as draft articles don't have them
     if (document.getElementById('article-body') && reactionButts.length > 0) {
-      articleId = document.getElementById('article-body').dataset.articleId;
+      var articleId = document.getElementById('article-body').dataset.articleId;
 
-      if (reactionButts.length > 0) {
-        requestReactionCounts(articleId);
+      requestReactionCounts(articleId);
 
-        for (var i = 0; i < reactionButts.length; i += 1) {
-          reactionButts[i].onclick = function addReactionOnClick(e) {
-            reactToArticle(articleId, this.dataset.category);
-          };
-        }
+      for (var i = 0; i < reactionButts.length; i += 1) {
+        reactionButts[i].onclick = function addReactionOnClick(e) {
+          reactToArticle(articleId, this.dataset.category);
+        };
       }
     }
 
