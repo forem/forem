@@ -196,7 +196,7 @@ function paginate(tag, params, requiresApproval) {
     searchHash.sort_by = "published_at";
   } else {
     searchHash.class_name = "Article";
-    searchHash.published_at[gte] = homeEl.dataset.articlesSince;
+    searchHash["published_at[gte]"] = homeEl.dataset.articlesSince;
     searchHash.sort_by = "positive_reactions_count";
   }
 
