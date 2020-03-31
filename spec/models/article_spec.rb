@@ -814,4 +814,27 @@ RSpec.describe Article, type: :model do
       expect(feed_article.attributes.keys).to match_array(fields)
     end
   end
+
+  describe "#top_comments" do
+    context "when article has comments" do
+      before do
+        create_list(:comment, 3, commentable: article, score: 20)
+        article.reload
+      end
+
+      it "returns comments with score greater than 10" do
+        expect(article.top_comments.first.score).to be > 10
+      end
+
+      it "returns a max of two comments" do
+        expect(article.top_comments.size).to eq 2
+      end
+    end
+
+    context "when article does not have any comments" do
+      it "retrns empty set if there aren't any top comments" do
+        expect(article.top_comments).to be_empty
+      end
+    end
+  end
 end

@@ -111,5 +111,16 @@ RSpec.describe "Stories::FeedsIndex", type: :request do
         expect(FieldTest::Membership.all.size).to be(0)
       end
     end
+
+    context "when there are highly rated comments" do
+      let(:comment) { create(:comment, score: 20) }
+      let(:article) { comment.commentable }
+
+      it "renders top comments for the article" do
+        get "/stories/feed/infinity", headers: headers
+
+        expect(response_article["top_comments"]).not_to be_nil
+      end
+    end
   end
 end

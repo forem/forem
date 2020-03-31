@@ -408,6 +408,10 @@ class Article < ApplicationRecord
                    spaminess_rating: BlackBox.calculate_spaminess(self))
   end
 
+  def top_comments
+    comments.where("score > ?", 10).limit(2)
+  end
+
   private
 
   def delete_related_objects
