@@ -1,0 +1,58 @@
+@import '../config/import';
+
+$widget-divider: 1px solid var(--body-bg);
+
+.crayons-widget {
+  border-radius: $br-default;
+  background: var(--widget-bg);
+  color: var(--widget-color);
+
+  &__header {
+    padding: $su-4 $su-4;
+    border-bottom: $widget-divider;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__title {
+    color: var(--widget-headline);
+    font-weight: $fw-bold;
+
+  }
+
+  &__body {
+    padding: $su-4;
+  }
+
+  &__link {
+    display: block;
+    color: var(--widget-color);
+    padding: $su-4;
+
+    &:not(:last-child) {
+      border-bottom: $widget-divider;
+    }
+
+    .crayons-widget__link__additional {
+      font-size: $fs-s;
+      color: var(--widget-color-tertiary);
+      display: flex;
+      align-items: center;
+      padding-top: $su-1;
+    }
+
+    &:hover {
+      background: var(--widget-bg-hover);
+      color: var(--widget-color-hover);
+
+      .crayons-widget__link__additional {
+        color: var(--widget-color-secondary);
+      }
+    }
+  }
+}
+
+.crayons-widget__link {
+  display: block;
+}

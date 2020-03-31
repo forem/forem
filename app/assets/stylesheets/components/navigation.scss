@@ -1,25 +1,52 @@
 @import '../config/import';
 
 .crayons-nav-block {
-  display: flex;
-  align-items: center;
-  padding: $su-3;
-  border-radius: $br-default;
-  color: var(--link-dimmed-color);
+  // display: flex;
+  // align-items: center;
+  // padding: $su-3;
+  // border-radius: $br-default;
+  // color: var(--link-dimmed-color);
 
-  @media (min-width: $breakpoint-s) {
-    padding: $su-2;
-  }
+  // @media (min-width: $breakpoint-s) {
+  //   padding: $su-2;
+  // }
 
   &:hover:not(&--current) {
-    background: var(--link-dimmed-bg-hover);
-    color: var(--link-dimmed-color-hover);
+    // background: var(--link-dimmed-bg-hover);
+    // color: var(--link-dimmed-color-hover);
+  }
+
+  &--current {
+    // font-weight: $fw-medium;
+    // background: var(--link-dimmed-bg-current);
+    // color: var(--link-dimmed-color-current);
+  }
+
+}
+
+.crayons-link {
+  color: var(--link-color);
+
+  &:hover:not(&--current)  {
+    background: var(--link-bg-hover);
+    color: var(--link-color-hover);
   }
 
   &--current {
     font-weight: $fw-medium;
-    background: var(--link-dimmed-bg-current);
-    color: var(--link-dimmed-color-current);
+    background: var(--link-bg-current);
+    color: var(--link-color-current);
+  }
+}
+
+.crayons-link--block {
+  display: flex;
+  align-items: center;
+  padding: $su-3;
+  border-radius: $br-default;
+
+  @media (min-width: $breakpoint-s) {
+    padding: $su-2;
   }
 
   .crayons-icon {
@@ -40,6 +67,30 @@
   // Indented for when there's no icon
   &--indented {
     padding-left: $su-2 + $su-7; // 40px
+  }
+}
+
+.crayons-link--contentful {
+  display: block;
+  padding: $su-4;
+  border-bottom: 1px solid var(--body-bg);
+
+  &:last-child {
+    border-bottom: 0;
+    border-bottom-right-radius: $br-default;
+    border-bottom-left-radius: $br-default;
+  }
+
+  .crayons-link__secondary {
+    color: var(--link-color-secondary);
+    font-size: $fs-s;
+    padding-top: $su-1;
+  }
+
+  &:hover {
+    .crayons-link__secondary {
+      color: var(--link-color-secondary-hover);
+    }
   }
 }
 

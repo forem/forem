@@ -51,7 +51,7 @@
   ////////////////////////////////////////////////////////////////////////////////////
 
   // Main colors
-  --body-bg: #f9fafa; // todo: replace with `var(--base-10);` when ready.
+  --body-bg: var(--base-10); // todo: replace with `var(--base-10);` when ready.
   --body-color: #0a0a0a; // todo: replace with `var(--base-100);` when ready.
   --body-color-inverted: var(--base-inverted);
 
@@ -63,7 +63,9 @@
 
   // Secondary content containers
   --widget-bg: var(--base-0);
+  --widget-bg-hover: var(--base-inverted);
   --widget-color: var(--base-90);
+  --widget-color-hover: var(--accent-brand);
   --widget-color-secondary: var(--base-70);
   --widget-color-tertiary: var(--base-50);
   --widget-headline: var(--base-100);
@@ -85,17 +87,16 @@
   --footer-link-color: var(--base-80);
   --footer-link-color-hover: var(--base-100);
 
-  // Links in content
-  --link-brand-color: #557de8; // todo: replace with `var(--accent-brand)` when ready.
-  --link-brand-color-hover: var(--accent-brand-darker);
-
-  // Greyscale links, for places where we don't want to make them use accent color
-  --link-dimmed-color: var(--base-90);
-  --link-dimmed-color-secondary: var(--base-80);
-  --link-dimmed-bg-hover: var(--base-0);
-  --link-dimmed-color-hover: var(--base-100);
-  --link-dimmed-bg-current: var(--base-inverted);
-  --link-dimmed-color-current: var(--base-100);
+  // Links
+  --link-color: var(--base-90);
+  --link-color-hover: var(--accent-brand-darker);
+  --link-color-current: var(--base-100);
+  --link-color-secondary: var(--base-60);
+  --link-color-secondary-hover: var(--base-70);
+  --link-branded-color: var(--accent-brand);
+  --link-bg: var(--base-0);
+  --link-bg-hover: var(--base-0);
+  --link-bg-current: var(--base-inverted);
 
   // Primary buttons
   --button-primary-bg: var(--accent-brand);
