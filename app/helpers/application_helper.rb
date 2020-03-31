@@ -151,7 +151,7 @@ module ApplicationHelper
   end
 
   def community_qualified_name
-    "#{ApplicationConfig['COMMUNITY_NAME']} Community"
+    "#{community_name} Community"
   end
 
   def cache_key_heroku_slug(path)
