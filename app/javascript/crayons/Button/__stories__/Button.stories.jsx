@@ -1,6 +1,11 @@
 import { h } from 'preact';
-import { withKnobs, boolean } from '@storybook/addon-knobs/react';
-import { Button } from '@crayons';
+import { withKnobs, object, text } from '@storybook/addon-knobs/react';
+import {
+  Button,
+  DangerButton,
+  OutlinedButton,
+  SecondaryButton,
+} from '@crayons';
 
 import '../../storybook-utiltiies/designSystem.scss';
 
@@ -15,32 +20,26 @@ Default.story = {
   name: 'default',
 };
 
-export const FullButton = () => <Button isFull>Hello world!</Button>;
+export const Secondary = () => <SecondaryButton>Hello world!</SecondaryButton>;
 
-FullButton.story = {
-  name: 'full',
-};
-
-export const SecondaryButton = () => <Button isSecondary>Hello world!</Button>;
-
-SecondaryButton.story = {
+Secondary.story = {
   name: 'secondary',
 };
 
-export const OutlinedButton = () => <Button isOutlined>Hello world!</Button>;
+export const Outlined = () => <OutlinedButton>Hello world!</OutlinedButton>;
 
-OutlinedButton.story = {
+Outlined.story = {
   name: 'outlined',
 };
 
-export const DangerButton = () => <Button isDanger>Hello world!</Button>;
+export const Danger = () => <DangerButton>Hello world!</DangerButton>;
 
-DangerButton.story = {
+Danger.story = {
   name: 'danger',
 };
 
-export const IconOnLeftButton = () => (
-  <Button hasIconOnLeft isSecondary={boolean('isSecondary', false)}>
+export const IconWithText = () => {
+  const Icon = () => (
     <svg
       width="24"
       height="24"
@@ -49,10 +48,30 @@ export const IconOnLeftButton = () => (
     >
       <path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" />
     </svg>
+  );
+
+  return (
+    <Button icon={Icon} variant={text('variant')}>
+      Hello world!
+    </Button>
+  );
+};
+
+IconWithText.story = {
+  name: 'icon with text',
+};
+
+export const KitchenSink = () => (
+  <Button
+    variant={text('variant')}
+    className={text('className')}
+    as={text('as', 'button')}
+    icon={object('icon')}
+  >
     Hello world!
   </Button>
 );
 
-IconOnLeftButton.story = {
-  name: 'icon on left',
+KitchenSink.story = {
+  name: 'kitchen sink',
 };

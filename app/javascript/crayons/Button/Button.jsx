@@ -4,33 +4,14 @@ import { defaultChildrenPropTypes } from '../../src/components/common-prop-types
 
 // crayons-btn--full
 
-function getAdditionalClassNames({
-  className,
-  isFull,
-  isSecondary,
-  isOutlined,
-  isDanger,
-  hasLeftIcon,
-}) {
+function getAdditionalClassNames({ variant, className, icon }) {
   let additionalClassNames = '';
 
-  if (isSecondary) {
-    additionalClassNames += ' crayons-btn--secondary';
+  if (variant && variant.length > 0 && variant !== 'primary') {
+    additionalClassNames += ` crayons-btn--${variant}`;
   }
 
-  if (isOutlined) {
-    additionalClassNames += ' crayons-btn--outlined';
-  }
-
-  if (isDanger) {
-    additionalClassNames += ' crayons-btn--danger';
-  }
-
-  if (isFull) {
-    additionalClassNames += ' crayons-btn--full';
-  }
-
-  if (hasLeftIcon) {
+  if (icon) {
     additionalClassNames += ' crayons-btn--icon-left';
   }
 
@@ -43,42 +24,41 @@ function getAdditionalClassNames({
 
 export const Button = ({
   children,
-  url = '#',
+  variant = 'primary',
+  as = 'button',
   className,
-  isFull = false,
-  isSecondary = false,
-  isOutlined = false,
-  isDanger = false,
-  hasLeftIcon = false,
-}) => (
-  <a
-    href={url}
-    className={`crayons-btn ${getAdditionalClassNames({
-      className,
-      isFull,
-      isOutlined,
-      isSecondary,
-      isDanger,
-      hasLeftIcon,
-    })}`}
-  >
-    {children}
-  </a>
-);
+  icon,
+}) => {
+  const ComponentName = as;
+  const Icon = icon;
+
+  return (
+    <ComponentName
+      className={`crayons-btn ${getAdditionalClassNames({
+        variant,
+        className,
+        icon,
+      })}`}
+      type="button"
+    >
+      <Icon />
+      {children}
+    </ComponentName>
+  );
+};
 
 Button.displayName = 'Button';
 
 Button.defaultProps = {
   className: undefined,
+  icon: undefined,
 };
 
 Button.propTypes = {
   children: defaultChildrenPropTypes.isRequired,
-  url: PropTypes.string.isRequired,
+  variant: PropTypes.oneOf(['primary', 'secondary', 'outlined', 'danger'])
+    .isRequired,
+  as: PropTypes.oneOf(['a', 'button']).isRequired,
   className: PropTypes.string,
-  isFull: PropTypes.bool.isRequired,
-  isSecondary: PropTypes.bool.isRequired,
-  isOutlined: PropTypes.bool.isRequired,
-  isDanger: PropTypes.bool.isRequired,
-  hasLeftIcon: PropTypes.bool.isRequired,
+  icon: PropTypes.node,
 };
