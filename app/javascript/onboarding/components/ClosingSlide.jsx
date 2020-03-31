@@ -10,7 +10,7 @@ class ClosingSlide extends Component {
 
   render() {
     const { previousLocation, variant } = this.props;
-
+    
     const previousLocationListElement = () => {
       if (variant === '6' || variant === '8') {
         return (
@@ -109,6 +109,7 @@ class ClosingSlide extends Component {
                   maxWidth: '66%',
                   margin: 'auto',
                   marginTop: '1.5em',
+                  lineHeight: '1.3em',
                 }}
               >
                 <em>
