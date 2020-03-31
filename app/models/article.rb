@@ -8,6 +8,7 @@ class Article < ApplicationRecord
 
   SEARCH_SERIALIZER = Search::ArticleSerializer
   SEARCH_CLASS = Search::FeedContent
+  REACTION_INDEXED_FIELDS = %w[body_markdown published tag_list title].freeze
 
   acts_as_taggable_on :tags
   resourcify
@@ -74,6 +75,9 @@ class Article < ApplicationRecord
   after_save :notify_slack_channel_about_publication, if: -> { published && published_at > 30.seconds.ago }
 
   after_update_commit :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
+  after_update_commit :update_reading_list_reactions, if: proc { |article|
+    REACTION_INDEXED_FIELDS.any? { |field| article.saved_changes[field] } && reactions.readinglist.any?
+  }
   after_commit :async_score_calc, :update_main_image_background_hex, :touch_collection
   after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
@@ -275,6 +279,14 @@ class Article < ApplicationRecord
 
   def search_id
     "article_#{id}"
+  end
+
+  def update_reading_list_reactions
+    if published
+      reactions.readinglist.find_each(&:index_to_elasticsearch)
+    elsif saved_changes["published"]
+      reactions.readinglist.find_each(&:remove_from_elasticsearch)
+    end
   end
 
   def processed_description
