@@ -14,25 +14,58 @@ export default {
   decorator: [withKnobs],
 };
 
-export const Default = () => <Button>Hello world!</Button>;
+export const Default = () => (
+  <Button
+    icon={object('icon')}
+    variant={text('variant')}
+    className={text('className')}
+    as={text('as', 'button')}
+  >
+    Hello world!
+  </Button>
+);
 
 Default.story = {
   name: 'default',
 };
 
-export const Secondary = () => <SecondaryButton>Hello world!</SecondaryButton>;
+export const Secondary = () => (
+  <SecondaryButton
+    icon={object('icon')}
+    className={text('className')}
+    as={text('as', 'button')}
+  >
+    Hello world!
+  </SecondaryButton>
+);
 
 Secondary.story = {
   name: 'secondary',
 };
 
-export const Outlined = () => <OutlinedButton>Hello world!</OutlinedButton>;
+export const Outlined = () => (
+  <OutlinedButton
+    icon={object('icon')}
+    className={text('className')}
+    as={text('as', 'button')}
+  >
+    Hello world!
+  </OutlinedButton>
+);
 
 Outlined.story = {
   name: 'outlined',
 };
 
-export const Danger = () => <DangerButton>Hello world!</DangerButton>;
+export const Danger = () => (
+  <DangerButton
+    icon={object('icon')}
+    className={text('className')}
+    as={text('as', 'button')}
+  >
+    Hello world!
+  </DangerButton>
+);
 
 Danger.story = {
   name: 'danger',
@@ -51,7 +84,12 @@ export const IconWithText = () => {
   );
 
   return (
-    <Button icon={Icon} variant={text('variant')}>
+    <Button
+      icon={object('icon', Icon)}
+      variant={text('variant')}
+      className={text('className')}
+      as={text('as', 'button')}
+    >
       Hello world!
     </Button>
   );
@@ -61,17 +99,17 @@ IconWithText.story = {
   name: 'icon with text',
 };
 
-export const KitchenSink = () => (
+export const ButtonAsLink = () => (
   <Button
     variant={text('variant')}
     className={text('className')}
-    as={text('as', 'button')}
+    as={text('as', 'a')}
     icon={object('icon')}
   >
     Hello world!
   </Button>
 );
 
-KitchenSink.story = {
-  name: 'kitchen sink',
+ButtonAsLink.story = {
+  name: 'button as link',
 };
