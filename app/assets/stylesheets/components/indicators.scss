@@ -28,7 +28,7 @@
 .crayons-indicator {
   font-family: $ff-accent;
   font-size: $fs-xs;
-  padding: 0.3335em 0.25em;
+  padding: $su-1;
   background-color: var(--indicator-default-bg);
   border: 1px solid var(--indicator-default-bg);
   color: var(--indicator-default-color);
