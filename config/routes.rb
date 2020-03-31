@@ -117,7 +117,6 @@ Rails.application.routes.draw do
       resources :comments, only: %i[index show]
       resources :videos, only: [:index]
       resources :podcast_episodes, only: [:index]
-      resources :reactions, only: [:create]
       resources :users, only: %i[show] do
         collection do
           get :me
