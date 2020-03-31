@@ -41,7 +41,7 @@ export const Button = ({
       })}`}
       type="button"
     >
-      <Icon />
+      {Icon && <Icon />}
       {children}
     </ComponentName>
   );
