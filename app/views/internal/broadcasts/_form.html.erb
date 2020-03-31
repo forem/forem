@@ -7,10 +7,10 @@
 </div>
 <div class="form-group">
   <%= label_tag :type, "Type:" %>
-  <%= select_tag "type_of", options_for_select(%w[Onboarding Announcement Welcome]) %>
+  <%= select_tag "type_of", options_for_select(%w[Welcome Onboarding Announcement]) %>
 </div>
 <div class="form-group">
   <%= label_tag :active, "Active:" %>
-  <%= select_tag :active, options_for_select([true, false]) %>
+  <%= select_tag :active, options_for_select([false, true]) %>
 </div>
 <br>
