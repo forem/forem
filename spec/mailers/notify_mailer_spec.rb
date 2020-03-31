@@ -261,7 +261,7 @@ RSpec.describe NotifyMailer, type: :mailer do
   end
 
   describe "#new_message_email" do
-    let(:direct_channel) { ChatChannel.create_with_users([user, user2], "direct") }
+    let(:direct_channel) { ChatChannel.create_with_users(users: [user, user2], channel_type: "direct") }
     let(:direct_message) { create(:message, user: user, chat_channel: direct_channel) }
     let(:email) { described_class.new_message_email(direct_message) }
 

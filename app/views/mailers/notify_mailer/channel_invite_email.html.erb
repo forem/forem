@@ -3,10 +3,9 @@
     <tr>
       <td style="padding:4%;">
           <% if @membership.role == "mod" %>
-            <h2 style="font-size: 25px; text-align: center;">You have been invited to be a Moderator of a connect group on dev.to
-            </h2>
+            <h2 style="font-size: 25px; text-align: center;">You have been invited to be a Moderator of a connect group on <%= ApplicationConfig["COMMUNITY_NAME"] %>.
           <% else %>
-            <h2 style="font-size: 25px; text-align: center;"><%= link_to(@inviter.name, "https://dev.to/#{@inviter.username}") %> sent you an invitation to join a connect group on DEV.to.
+            <h2 style="font-size: 25px; text-align: center;"><%= link_to(@inviter.name, user_url(@inviter.username)) %> sent you an invitation to join a connect group on <%= ApplicationConfig["COMMUNITY_NAME"] %>.
             </h2>
           <% end %>
         <table>
@@ -30,7 +29,7 @@
                 <br>
                 <br>
                 <div>
-                  <a href="https://dev.to/connect?ref=group_invite" style="background:#3c7dc1;color:white;padding:5px 14px;border-radius:3px;text-decoration:none; margin-top:4px;">Check Invitation</a>
+                  <p style="background:#3c7dc1;color:white;padding:5px 14px;border-radius:3px;text-decoration:none; margin-top:4px;"><%= link_to("Check Invitation", ApplicationController.helpers.app_url("connect?ref=group_invite")) %> </p>
                 </div>
               </td>
             </tr>
