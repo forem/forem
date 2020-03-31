@@ -34,6 +34,11 @@ function buildCommentFormHTML(commentableId, commentableType, parentId) {
               <input type="submit" id="image-upload-submit-' + randomIdNumber + '" value="Upload" style="display:none">\
               <input class="uploaded-image" id="uploaded-image-' + randomIdNumber + '" />\
             </div>\
+            <div class="editor-response-templates in-reply">\
+              <button class="response-templates-button" title="Use a response template" type="button">\
+                <img src="<%= asset_path("response-template.svg") %>" alt="" class="icon-image">\
+              </button>\
+            </div>\
             <div class="actions reply-actions">\
               <a href="#" class="cancel" onclick="cancel(event,this)">CANCEL</a>\
               '+previewButton+'\

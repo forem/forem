@@ -208,6 +208,11 @@ a.header-link {
       border: none;
       padding: 0;
     }
+    &.in-reply {
+      z-index: 6;
+      left: 79px;
+      bottom: 2px;
+    }
   }
 
   .top-level-actions {
