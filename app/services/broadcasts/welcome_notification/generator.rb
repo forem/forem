@@ -17,6 +17,7 @@ module Broadcasts
         send_welcome_notification unless notification_enqueued
         send_authentication_notification unless notification_enqueued
         send_ux_customization_notification unless notification_enqueued
+        send_feed_customization_notification unless notification_enqueued
       end
 
       private
@@ -44,6 +45,12 @@ module Broadcasts
         @notification_enqueued = true
       end
 
+      def send_feed_customization_notification
+        return if user_is_following_tags? || received_notification?(customize_feed_broadcast) || user.created_at > 3.days.ago
+
+        Notification.send_welcome_notification(user.id, customize_feed_broadcast.id)
+      end
+
       def received_notification?(broadcast)
         Notification.exists?(notifiable: broadcast, user: user)
       end
@@ -67,6 +74,10 @@ module Broadcasts
 
       def customize_ux_broadcast
         @customize_ux_broadcast ||= Broadcast.find_by(title: "Welcome Notification: customize_experience")
+      end
+
+      def customize_feed_broadcast
+        @customize_feed_broadcast ||= Broadcast.find_by(title: "Welcome Notification: customize_feed")
       end
 
       def identities

@@ -26,6 +26,12 @@ FactoryBot.define do
       processed_html { "Sloan here! 👋 Did you know that that you can customize your DEV experience? Try changing <a href='settings/ux'>your font and theme</a> and find the best style for you!" }
     end
 
+    factory :customize_feed_broadcast do
+      title          { "Welcome Notification: customize_feed" }
+      type_of        { "Welcome" }
+      processed_html { "Hi, it's me again! 👋Now that you're a part of the DEV community, let's focus on personalizing your content. You can start by <a href='/tags'> following some tags </a> to help customize your feed! 🎉" }
+    end
+
     # TODO: [@thepracticaldev/delightful] Remove onboarding factory once welcome notifications are live.
     factory :onboarding_broadcast do
       title          { "Welcome Notification" }
