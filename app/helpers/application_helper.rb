@@ -147,7 +147,7 @@ module ApplicationHelper
   end
 
   def community_name
-    @community_name ||=  ApplicationConfig["COMMUNITY_NAME"]
+    @community_name ||= ApplicationConfig["COMMUNITY_NAME"]
   end
 
   def community_qualified_name
