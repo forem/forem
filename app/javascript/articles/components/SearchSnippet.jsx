@@ -6,7 +6,7 @@ export const SearchSnippet = ({ highlightText }) => {
     const hitHighlights = highlightText.body_text;
     let bodyTextSnippet = '';
 
-    if (hitHighlights[0] && hitHighlights[0] !== '') {
+    if (hitHighlights[0]) {
       const firstSnippetChar = hitHighlights[0];
 
       let startingEllipsis = '';

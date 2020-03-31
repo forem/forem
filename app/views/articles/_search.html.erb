@@ -71,14 +71,14 @@
       searchHash.tag_names = hashtags;
     }
 
-    if (filters && filters !== "") {
+    if (filters) {
       filters.split('&').forEach((filter) => {
         const [key, value] = filter.split(':');
         searchHash[key] = value;
       });
     }
 
-    if (searchTerm && searchTerm !== "") { searchHash.search_fields = searchTerm; }
+    if (searchTerm) { searchHash.search_fields = searchTerm; }
 
     const searchParams = new URLSearchParams(searchHash).toString();
 
