@@ -23,7 +23,6 @@
 
   @media screen and (min-width: 600px) {
     border-width: 2px;
-    min-height: auto;
   }
 
   a {
@@ -153,7 +152,7 @@
 // modal overflow scrolling
 .onboarding-modal-scroll-container {
   height: auto;
-
+  min-height: 436px;
   @media screen and (min-width: $breakpoint-s) {
     max-height: 500px;
     overflow-y: scroll;
@@ -167,6 +166,7 @@
   grid-template-columns: repeat(2, 1fr);
   grid-gap: $su-4;
   width: 100%;
+  min-height: 316px;
 
   @media screen and (min-width: 800px) {
     grid-template-columns: repeat(3, 1fr);
@@ -369,6 +369,10 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   .user-name {
     font-size: $fs-base;
   }
+  
+  .user-info {
+    width: 100%;
+  }
 
   .user-summary {
     font-size: $fs-s;
@@ -384,6 +388,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   display: flex;
   flex-direction: column;
   overflow: auto;
+  min-height: 250px;
 
   @media screen and (min-width: $breakpoint-s) {
     flex-direction: column;
@@ -404,6 +409,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     padding: 0.25em;
     position: relative;
     text-align: center;
+    box-sizing: border-box;
 
     .whatnext-emoji {
       text-align: center;

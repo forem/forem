@@ -109,6 +109,7 @@ class ClosingSlide extends Component {
                   maxWidth: '66%',
                   margin: 'auto',
                   marginTop: '1.5em',
+                  lineHeight: '1.3em',
                 }}
               >
                 <em>
