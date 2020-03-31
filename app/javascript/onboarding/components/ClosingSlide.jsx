@@ -10,7 +10,7 @@ class ClosingSlide extends Component {
 
   render() {
     const { previousLocation, variant } = this.props;
-    
+
     const previousLocationListElement = () => {
       if (variant === '6' || variant === '8') {
         return (
