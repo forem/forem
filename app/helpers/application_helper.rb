@@ -163,7 +163,7 @@ module ApplicationHelper
 
   def copyright_notice
     start_year = ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"]
-    current_year = Time.current.year
+    current_year = Time.current.year.to_s
     return start_year if current_year == start_year
     return current_year if start_year.strip.length.zero?
 

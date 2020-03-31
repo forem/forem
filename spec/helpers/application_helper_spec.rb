@@ -46,24 +46,26 @@ RSpec.describe ApplicationHelper, type: :helper do
   end
 
   describe "#copyright_notice" do
+    let(:current_year) { Time.current.year.to_s }
+
     context "when the start year and current year is the same" do
       it "returns the current year only" do
-        allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_COPYRIGHT_START_YEAR").and_return(Time.current.year)
-        expect(helper.copyright_notice).to eq(Time.current.year)
+        allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_COPYRIGHT_START_YEAR").and_return(current_year)
+        expect(helper.copyright_notice).to eq(current_year)
       end
     end
 
     context "when the start year and current year is different" do
       it "returns the start and current year" do
         allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_COPYRIGHT_START_YEAR").and_return("2014")
-        expect(helper.copyright_notice).to eq("2014 - #{Time.current.year}")
+        expect(helper.copyright_notice).to eq("2014 - #{current_year}")
       end
     end
 
     context "when the start year is blank" do
       it "returns the current year" do
         allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_COPYRIGHT_START_YEAR").and_return(" ")
-        expect(helper.copyright_notice).to eq(Time.current.year)
+        expect(helper.copyright_notice).to eq(current_year)
       end
     end
   end
