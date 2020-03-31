@@ -15,6 +15,7 @@ class User < ApplicationRecord
 
   SEARCH_SERIALIZER = Search::UserSerializer
   SEARCH_CLASS = Search::User
+  RELATED_INDEXED_DOCUMENTS = %w[articles created_podcasts chat_channel_memberships].freeze
 
   acts_as_followable
   acts_as_follower
@@ -189,6 +190,7 @@ class User < ApplicationRecord
 
   after_create_commit :send_welcome_notification, :estimate_default_language
   after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :reindex_related_content, if: :any_name_changed?, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
@@ -515,6 +517,16 @@ class User < ApplicationRecord
 
   def index_id
     "users-#{id}"
+  end
+
+  def any_name_changed?
+    saved_changes["name"] || saved_changes["username"]
+  end
+
+  def reindex_related_content
+    RELATED_INDEXED_DOCUMENTS.each do |relation|
+      Search::ReindexRelatedDocuments.perform_async(self.class.name, id, relation)
+    end
   end
 
   def estimate_default_language

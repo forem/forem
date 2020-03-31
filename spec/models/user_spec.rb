@@ -111,6 +111,19 @@ RSpec.describe User, type: :model do
         user.destroy
       end
     end
+
+    it "reindexes related content if name or username changed", :aggregate_failures do
+      user.save
+      sidekiq_assert_enqueued_with(job: Search::ReindexRelatedDocuments, args: [described_class.to_s, user.id, "articles"]) do
+        user.update(name: user.name + "_NEW")
+      end
+      sidekiq_assert_enqueued_with(job: Search::ReindexRelatedDocuments, args: [described_class.to_s, user.id, "created_podcasts"]) do
+        user.update(username: user.username + "_NEW")
+      end
+      sidekiq_assert_enqueued_with(job: Search::ReindexRelatedDocuments, args: [described_class.to_s, user.id, "chat_channel_memberships"]) do
+        user.update(name: user.name + "_NEW")
+      end
+    end
   end
 
   context "when callbacks are triggered before validation" do
