@@ -1,8 +1,7 @@
-.show-children {
-  width: 100%;
-  height: 100%;
+.dropdown-trigger-container {
+  position: relative;
 
-  & > * {
+  .dropdown-trigger:hover + div {
     display: block;
   }
 }

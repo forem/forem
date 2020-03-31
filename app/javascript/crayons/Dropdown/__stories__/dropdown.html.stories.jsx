@@ -7,9 +7,14 @@ export default {
 };
 
 export const Default = () => (
-  <div className="crayons-dropdown" style={{ display: 'block' }}>
-    Hey, I&apos;m a dropdown content! Lorem ipsum dolor sit amet, consectetur
-    adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
+  <div className="dropdown-trigger-container">
+    <a href="/" className="crayons-btn dropdown-trigger">
+      Hover to trigger dropdown
+    </a>
+    <div className="crayons-dropdown">
+      Hey, I&apos;m a dropdown content! Lorem ipsum dolor sit amet, consectetur
+      adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
+    </div>
   </div>
 );
 
@@ -18,9 +23,14 @@ Default.story = {
 };
 
 export const AdditonalCssClasses = () => (
-  <div className="crayons-dropdown p-6" style={{ display: 'block' }}>
-    Hey, I&apos;m a dropdown content! Lorem ipsum dolor sit amet, consectetur
-    adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
+  <div className="dropdown-trigger-container">
+    <a href="/" className="crayons-btn dropdown-trigger">
+      Hover to trigger dropdown
+    </a>
+    <div className="crayons-dropdown p-6">
+      Hey, I&apos;m a dropdown content! Lorem ipsum dolor sit amet, consectetur
+      adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
+    </div>
   </div>
 );
 
