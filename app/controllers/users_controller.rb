@@ -145,6 +145,7 @@ class UsersController < ApplicationController
     if params[:user]
       permitted_params = %i[summary location employment_title employer_name last_onboarding_page]
       current_user.assign_attributes(params[:user].permit(permitted_params))
+      current_user.profile_updated_at = Time.current
     end
     current_user.saw_onboarding = true
     authorize User
