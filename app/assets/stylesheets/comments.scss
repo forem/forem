@@ -199,6 +199,16 @@ a.header-link {
       }
     }
   }
+  .editor-response-templates {
+    position: absolute;
+    left: 77px;
+    bottom: 4px;
+    button {
+      background: none;
+      border: none;
+      padding: 0;
+    }
+  }
 
   .top-level-actions {
     margin: 0px 0px 85px;
