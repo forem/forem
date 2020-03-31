@@ -1,7 +1,7 @@
 <div class="crayons-dropdown left-2 right-2 s:left-auto p-0 top-bar__menu__dropdown">
   <% if user_signed_in? %>
     <div id="user-profile-link-placeholder" class="border-0 border-b-1 border-solid border-base-20 p-1">...</div>
-    
+
     <div class="border-0 border-b-1 border-solid border-base-20 p-1">
       <a href="/dashboard" class="crayons-nav-block">Dashboard</a>
       <a href="/new" class="crayons-nav-block">Write a Post</a>
@@ -16,7 +16,7 @@
     <div class="border-0 border-b-1 border-solid border-base-20 p-1">
       <a href="/enter" data-no-instant id="first-nav-link" class="crayons-nav-block fw-medium">Sign In/Up</a>
       <% if SiteConfig.auth_allowed?("twitter") %>
-        <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="crayons-nav-block pl-5" data-no-instant>Via Twitter</a>
+        <a href="/users/auth/twitter?callback_url=<%= app_url("/users/auth/twitter/callback") %>" class="crayons-nav-block pl-5" data-no-instant>Via Twitter</a>
       <% end %>
       <% if SiteConfig.auth_allowed?("github") %>
         <a href="/users/auth/github?state=navbar_basic" class="crayons-nav-block pl-5" data-no-instant id="second-last-nav-link">Via GitHub</a>
