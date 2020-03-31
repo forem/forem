@@ -6,7 +6,8 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   let!(:welcome_broadcast)         { create(:welcome_broadcast) }
   let!(:twitter_connect_broadcast) { create(:twitter_connect_broadcast) }
   let!(:github_connect_broadcast)  { create(:github_connect_broadcast) }
-  let!(:customize_broadcast)       { create(:customize_broadcast) }
+  let!(:customize_ux_broadcast)    { create(:customize_ux_broadcast) }
+  let!(:customize_feed_broadcast)  { create(:customize_feed_broadcast) }
 
   before do
     allow(Notification).to receive(:send_welcome_notification).and_call_original
@@ -126,7 +127,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
     it "generates the correct broadcast type and sends the notification to the user" do
       sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_ux_customization_notification) }
       expect(user.notifications.count).to eq(1)
-      expect(user.notifications.first.notifiable).to eq(customize_broadcast)
+      expect(user.notifications.first.notifiable).to eq(customize_ux_broadcast)
     end
 
     it "does not send duplicate notifications" do
@@ -135,5 +136,41 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       end
       expect(user.notifications.count).to eq(1)
     end
+  end
+
+  describe "#send_feed_customization_notification" do
+    let!(:user) { create(:user, :with_identity, identities: %w[twitter github], created_at: 3.days.ago) }
+
+    it "does not send a notification to a newly-created user" do
+      user.update!(created_at: Time.zone.now)
+      sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_feed_customization_notification) }
+      expect(Notification).not_to have_received(:send_welcome_notification)
+    end
+
+    it "does not send a notification to a user that is following 2 tags" do
+      2.times { user.follow(create(:tag)) }
+      sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_feed_customization_notification) }
+      expect(Notification).not_to have_received(:send_welcome_notification)
+    end
+
+    it "sends a notification to a user with 0 tag follows" do
+      sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_feed_customization_notification) }
+      expect(user.notifications.count).to eq(1)
+      expect(user.notifications.first.notifiable).to eq(customize_feed_broadcast)
+    end
+
+    it "does not send duplicate notifications" do
+      2.times do
+        sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_feed_customization_notification) }
+      end
+      expect(user.notifications.count).to eq(1)
+    end
+  end
+
+  context "when sending a set_up_profile notification" do
+    xit "generates the appropriate broadcast to be sent to a user"
+    xit "it sends a welcome notification for that broadcast"
+    xit "it does not send duplicate welcome notification for that broadcast"
+    xit "does not send a notification to a user who has set up their profile"
   end
 end
