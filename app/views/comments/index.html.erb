@@ -1,7 +1,7 @@
 <% if @root_comment.present? %>
-  <% title("#{@root_comment.title} - #{ApplicationConfig["COMMUNITY_NAME"]}") %>
+  <% title("#{@root_comment.title} - #{community_name}") %>
 <% else %>
-  <% title("Discussion of #{@commentable.title} - #{ApplicationConfig["COMMUNITY_NAME"]}") %>
+  <% title("Discussion of #{@commentable.title} - #{community_name}") %>
 <% end %>
 
 <%= content_for :page_meta do %>
@@ -10,12 +10,12 @@
 
   <meta property="og:type" content="article" />
   <meta property="og:title" content="Discussion of <%= @commentable.title %>" />
-  <meta property="og:description" content="<%= @commentable.description || "#{ApplicationConfig["COMMUNITY_NAME"]} Comment" %>" />
+  <meta property="og:description" content="<%= @commentable.description || "#{community_name} Comment" %>" />
   <meta property="og:site_name" content="<%= community_qualified_name %>" />
   <meta name="twitter:site" content="@<%= SiteConfig.social_networks_handle %>">
   <meta name="twitter:creator" content="@<%= @user.twitter_username %>">
   <meta name="twitter:title" content="<%= @commentable.title %>">
-  <meta name="twitter:description" content="<%= @commentable.description || "#{ApplicationConfig["COMMUNITY_NAME"]} Comment" %>">
+  <meta name="twitter:description" content="<%= @commentable.description || "#{community_name} Comment" %>">
 
   <% if @root_comment.present? %>
     <link rel="canonical" href="<%= app_url(@root_comment.path) %>" />
