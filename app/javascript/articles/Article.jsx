@@ -32,7 +32,7 @@ export const Article = ({
   const timeAgoIndicator = timeAgo({
     oldTimeInSeconds: article.published_at_int,
     formatter: x => x,
-  })
+  });
 
   return (
     <div
@@ -74,7 +74,7 @@ export const Article = ({
           <ContentTitle article={article} currentTag={currentTag} />
           {article.class_name === 'Article' && (
             // eslint-disable-next-line no-underscore-dangle
-            <SearchSnippet snippetResult={article._snippetResult} />
+            <SearchSnippet highlightText={article.highlight} />
           )}
         </div>
       </a>
@@ -94,7 +94,7 @@ export const Article = ({
           )}
           {article.published_at_int ? (
             <span className="time-ago-indicator">
-              {timeAgoIndicator.length > 0 ? `(${timeAgoIndicator})`: '' }
+              {timeAgoIndicator.length > 0 ? `(${timeAgoIndicator})` : ''}
             </span>
           ) : null}
         </a>
