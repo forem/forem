@@ -97,6 +97,13 @@ class Article < ApplicationRecord
       tagged_with(tag_name)
   }
 
+  scope :user_published_with, lambda { |user_id, tag_name|
+    published.
+      where(user_id: user_id).
+      order(published_at: :desc).
+      tagged_with(tag_name)
+  }
+
   scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
 
   scope :cached_tagged_by_approval_with, ->(tag) { cached_tagged_with(tag).where(approved: true) }
