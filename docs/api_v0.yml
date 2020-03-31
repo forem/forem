@@ -1890,7 +1890,7 @@ paths:
           source: |
             curl -X PUT -H "Content-Type: application/json" \
               -H "api-key: API_KEY" \
-              -d '{"article":{"title":"Title"}' \
+              -d '{"article":{"title":"Title"}}' \
               https://dev.to/api/articles/{id}
 
   /articles/me:

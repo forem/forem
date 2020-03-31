@@ -168,7 +168,7 @@
 
   &:not(#{$this}--horizontal) {
     > .crayons-field + .crayons-field {
-      margin-top: $su-2;
+      margin-top: $su-4;
     }
   }
 

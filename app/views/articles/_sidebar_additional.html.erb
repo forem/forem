@@ -8,7 +8,7 @@
         </header>
         <div class="widget-body">
           <% if SiteConfig.auth_allowed?("twitter") %>
-            <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="cta cta-button login-cta-button" data-no-instant>Sign In With Twitter</a>
+            <a href="/users/auth/twitter?callback_url=<%= app_url("/users/auth/twitter/callback") %>" class="cta cta-button login-cta-button" data-no-instant>Sign In With Twitter</a>
           <% end %>
           <% if SiteConfig.auth_allowed?("github") %>
             <a href="/users/auth/github?state=navbar_basic" class="cta cta-button login-cta-button" data-no-instant>Sign In With GitHub</a>

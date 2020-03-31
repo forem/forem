@@ -1,22 +1,22 @@
 <% title "FAQ for dev.to()" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/faq" />
+  <link rel="canonical" href="<%= app_url("/faq") %>" />
   <meta name="description" content="FAQ for dev.to()">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://dev.to/faq" />
+  <meta property="og:url" content="<%= app_url("/faq") %>" />
   <meta property="og:title" content="FAQ for dev.to()" />
-  <meta property="og:image" content="http://i.imgur.com/B4JNl1w.png" />
+  <meta property="og:image" content="<%= SiteConfig.main_social_image %>" />
   <meta property="og:description" content="Things to know!" />
-  <meta property="og:site_name" content="The Practical Dev" />
+  <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@ThePracticalDev">
   <meta name="twitter:title" content="FAQ for dev.to()">
   <meta name="twitter:description" content="Things to know!">
-  <meta name="twitter:image:src" content="http://i.imgur.com/B4JNl1w.png">
+  <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
 <% end %>
 
 <div class="blank-space"></div>

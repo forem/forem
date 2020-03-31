@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Dropdown /> renders properly 1`] = `
+<div
+  class="crayons-dropdown"
+>
+  Hey, I'm a dropdown content! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
+</div>
+`;
+
+exports[`<Dropdown /> renders properly with additional CSS classes 1`] = `
+<div
+  class="crayons-dropdown some-additional-css-class"
+>
+  Hey, I'm a dropdown content! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
+</div>
+`;

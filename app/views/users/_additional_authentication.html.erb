@@ -9,7 +9,7 @@
 
 <% if SiteConfig.auth_allowed?("twitter") && !@user.identities.exists?(provider: "twitter") %>
   <div class="field">
-    <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="big-button cta" data-no-instant>
+    <a href="/users/auth/twitter?callback_url=<%= app_url("/users/auth/twitter/callback") %>" class="big-button cta" data-no-instant>
       <img src="<%= asset_path("twitter-logo.svg") %> " alt="twitter logo"> CONNECT TWITTER ACCOUNT
     </a>
   </div>

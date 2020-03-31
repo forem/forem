@@ -1,15 +1,15 @@
 <% title "Notifications" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/notifications" />
+  <link rel="canonical" href="<%= app_url("/notifications") %>" />
   <meta name="description" content="Notifications inbox for dev.to">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://dev.to/notifications" />
+  <meta property="og:url" content="<%= app_url("/notifications") %>" />
   <meta property="og:title" content="Notifications - dev.to" />
   <meta property="og:description" content="Notifications inbox for dev.to" />
-  <meta property="og:site_name" content="The Practical Dev" />
+  <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@<%= SiteConfig.social_networks_handle %>">
