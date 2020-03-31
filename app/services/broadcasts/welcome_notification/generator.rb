@@ -38,9 +38,9 @@ module Broadcasts
       end
 
       def send_ux_customization_notification
-        return if received_notification?(customize_broadcast) || user.created_at > 5.days.ago
+        return if received_notification?(customize_ux_broadcast) || user.created_at > 5.days.ago
 
-        Notification.send_welcome_notification(user.id, customize_broadcast.id)
+        Notification.send_welcome_notification(user.id, customize_ux_broadcast.id)
         @notification_enqueued = true
       end
 
@@ -57,12 +57,16 @@ module Broadcasts
         identities.count == SiteConfig.authentication_providers.count
       end
 
+      def user_is_following_tags?
+        user.cached_followed_tag_names.count > 1
+      end
+
       def welcome_broadcast
         @welcome_broadcast ||= Broadcast.find_by(title: "Welcome Notification: welcome_thread")
       end
 
-      def customize_broadcast
-        @customize_broadcast ||= Broadcast.find_by(title: "Welcome Notification: customize_experience")
+      def customize_ux_broadcast
+        @customize_ux_broadcast ||= Broadcast.find_by(title: "Welcome Notification: customize_experience")
       end
 
       def identities
