@@ -1,9 +1,12 @@
 import { h } from 'preact';
+import { withKnobs, text } from '@storybook/addon-knobs/react';
+import { Dropdown } from '@crayons';
 
-import '../../storybook-utiltiies/designSystem.scss';
+import './dropdown-css-helper.scss';
 
 export default {
-  title: 'Components/Dropdowns/HTML',
+  title: 'Components/Dropdowns/JSX',
+  decorators: [withKnobs],
 };
 
 export const Default = () => (
@@ -11,10 +14,10 @@ export const Default = () => (
     <a href="/" className="crayons-btn dropdown-trigger">
       Hover to trigger dropdown
     </a>
-    <div className="crayons-dropdown">
+    <Dropdown className={text('className', 'mb-2')}>
       Hey, I&apos;m a dropdown content! Lorem ipsum dolor sit amet, consectetur
       adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
-    </div>
+    </Dropdown>
   </div>
 );
 
@@ -27,10 +30,10 @@ export const AdditonalCssClasses = () => (
     <a href="/" className="crayons-btn dropdown-trigger">
       Hover to trigger dropdown
     </a>
-    <div className="crayons-dropdown p-6">
+    <Dropdown className={text('className', 'p-6')}>
       Hey, I&apos;m a dropdown content! Lorem ipsum dolor sit amet, consectetur
       adipisicing elit. Sequi ea voluptates quaerat eos consequuntur temporibus.
-    </div>
+    </Dropdown>
   </div>
 );
 
