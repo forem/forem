@@ -23,11 +23,17 @@ class Internal::UsersController < Internal::ApplicationController
 
   def edit
     @user = User.find(params[:id])
+    @notes = @user.notes.order(created_at: :desc).limit(10).load
   end
 
   def show
     @user = User.find(params[:id])
-    @organizations = @user.organizations
+    @organizations = @user.organizations.order(:name)
+    @notes = @user.notes.order(created_at: :desc).limit(10)
+    @organization_memberships = @user.organization_memberships.
+      joins(:organization).
+      order("organizations.name ASC").
+      includes(:organization)
   end
 
   def update
