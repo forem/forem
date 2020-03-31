@@ -194,7 +194,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
           }
         }
         expect(ChatChannelMembership.find(membership.id).status).to eq("active")
-        expect(response).to(redirect_to("/chat_channel_memberships"))
+        expect(response).to(redirect_to(chat_channel_memberships_path))
       end
     end
 
@@ -243,7 +243,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
         sign_in second_user
         delete "/chat_channel_memberships/#{membership.id}", params: {}
         expect(ChatChannelMembership.find(membership.id).status).to eq("left_channel")
-        expect(response).to(redirect_to("/chat_channel_memberships"))
+        expect(response).to(redirect_to(chat_channel_memberships_path))
       end
     end
 
@@ -266,26 +266,28 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     context "when user is super admin" do
       it "removes member from channel" do
         user.add_role(:super_admin)
-        membership = ChatChannelMembership.last
+        membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
+        removed_channel_membership = ChatChannelMembership.last
         post "/chat_channel_memberships/remove_membership", params: {
           chat_channel_id: chat_channel.id,
-          membership_id: membership.id
+          membership_id: removed_channel_membership.id
         }
-        expect(ChatChannelMembership.find(membership.id).status).to eq("removed_from_channel")
-        expect(response).to(redirect_to("/chat_channel_memberships/#{chat_channel.chat_channel_memberships.where(user_id: user.id).first.id}/edit"))
+        expect(removed_channel_membership.reload.status).to eq("removed_from_channel")
+        expect(response).to(redirect_to(edit_chat_channel_membership_path(membership.id)))
       end
     end
 
     context "when user is moderator of channel" do
       it "removes member from channel" do
-        chat_channel.chat_channel_memberships.where(user_id: user.id).update(role: "mod")
-        membership = ChatChannelMembership.last
+        membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
+        membership.update(role: "mod")
+        removed_channel_membership = ChatChannelMembership.last
         post "/chat_channel_memberships/remove_membership", params: {
           chat_channel_id: chat_channel.id,
-          membership_id: membership.id
+          membership_id: removed_channel_membership.id
         }
-        expect(ChatChannelMembership.find(membership.id).status).to eq("removed_from_channel")
-        expect(response).to(redirect_to("/chat_channel_memberships/#{chat_channel.chat_channel_memberships.where(user_id: user.id).first.id}/edit"))
+        expect(removed_channel_membership.reload.status).to eq("removed_from_channel")
+        expect(response).to(redirect_to(edit_chat_channel_membership_path(membership.id)))
       end
     end
 
