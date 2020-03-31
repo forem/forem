@@ -67,5 +67,11 @@ docs/.static/api/
 # rvm
 .ruby-gemset
 
+# rbenv
+.rbenv-vars
+
 # asdf
 .tool-versions
+
+# ES docker volume
+docker_data/

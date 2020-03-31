@@ -21,6 +21,8 @@ export default function setupPusher(key, callbackObjects) {
     channel.bind('message-created', callbackObjects.messageCreated);
     channel.bind('message-deleted', callbackObjects.messageDeleted);
     channel.bind('message-edited', callbackObjects.messageEdited);
+    channel.bind('mentioned', callbackObjects.mentioned);
+    channel.bind('message-opened', callbackObjects.messageOpened);
     channel.bind('channel-cleared', callbackObjects.channelCleared);
     channel.bind('user-banned', callbackObjects.redactUserMessages);
     channel.bind('client-livecode', callbackObjects.liveCoding);

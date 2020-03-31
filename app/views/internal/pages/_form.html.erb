@@ -22,6 +22,18 @@
         <%= form.text_field :description, class: "form-control" %>
       </div>
       <div class="form-group">
+        <% if @page.social_image_url %>
+          <img src="<%= @page.social_image_url%>" style="max-width:500px;display:block" />
+        <% end %>
+        <%= form.label :social_image %>
+        <%= form.file_field :social_image, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= form.label :template %>
+        <%= form.select :template, Page::TEMPLATE_OPTIONS, class: "form-control" %>
+        <p>(Determines the way page's body will be embedded in the layout)</p>
+      </div>
+      <div class="form-group">
         <%= form.label :is_top_level_path %>
         <%= form.check_box :is_top_level_path %>
         <p>(Determines if it is accessible by <code>/page-slug</code> vs <code>/page/page-slug</code>) Be careful! ⚠️</p>

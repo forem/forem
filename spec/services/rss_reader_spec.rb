@@ -6,11 +6,21 @@ vcr_option = {
   allow_playback_repeats: "true"
 }
 
+default_logger = Rails.logger
+
 RSpec.describe RssReader, type: :service, vcr: vcr_option do
   let(:link) { "https://medium.com/feed/@vaidehijoshi" }
   let(:nonmedium_link) { "https://circleci.com/blog/feed.xml" }
   let(:nonpermanent_link) { "https://medium.com/feed/@macsiri/" }
   let(:rss_data) { RSS::Parser.parse(HTTParty.get(link).body, false) }
+
+  # Override the default Rails logger as these tests require the Timber logger.
+  before do
+    timber_logger = Timber::Logger.new(nil)
+    Rails.logger = ActiveSupport::TaggedLogging.new(timber_logger)
+  end
+
+  after { Rails.logger = default_logger }
 
   describe "#get_all_articles" do
     before do

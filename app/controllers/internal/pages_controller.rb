@@ -34,7 +34,7 @@ class Internal::PagesController < Internal::ApplicationController
   private
 
   def page_params
-    allowed_params = %i[title slug body_markdown body_html description template is_top_level_path]
+    allowed_params = %i[title slug body_markdown body_html description template is_top_level_path social_image]
     params.require(:page).permit(allowed_params)
   end
 end

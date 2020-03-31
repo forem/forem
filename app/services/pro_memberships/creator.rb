@@ -10,8 +10,6 @@ module ProMemberships
 
     def call
       if purchase_pro_membership
-        ProMemberships::PopulateHistoryJob.perform_later(user.id)
-
         channel = ChatChannel.find_by(slug: "pro-members")
         channel&.add_users(user)
 

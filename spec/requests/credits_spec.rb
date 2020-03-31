@@ -118,6 +118,10 @@ RSpec.describe "Credits", type: :request do
     let(:admin_org_id) { org_admin.organizations.first.id }
     let(:stripe_helper) { StripeMock.create_test_helper }
 
+    def charges(customer)
+      Stripe::Charge.list(customer: customer.id)
+    end
+
     before do
       StripeMock.start
       sign_in user
@@ -144,30 +148,30 @@ RSpec.describe "Credits", type: :request do
         },
         stripe_token: stripe_helper.generate_card_token
       }
-      customer = Stripe::Customer.retrieve(user.stripe_id_code)
-      expect(customer.charges.first.amount).to eq 8000
+      customer = Payments::Customer.get(user.stripe_id_code)
+      expect(charges(customer).first.amount).to eq 8000
     end
 
     context "when a user already has a card" do
       before do
-        customer = Stripe::Customer.create(email: user.email)
+        customer = Payments::Customer.create(email: user.email)
         user.update_column(:stripe_id_code, customer.id)
         customer.sources.create(source: stripe_helper.generate_card_token)
       end
 
       it "makes a valid Stripe charge" do
-        customer = Stripe::Customer.retrieve(user.stripe_id_code)
+        customer = Payments::Customer.get(user.stripe_id_code)
         post "/credits", params: {
           credit: {
             number_to_purchase: 20
           },
           selected_card: customer.sources.first.id
         }
-        expect(customer.charges.first.amount).to eq 8000
+        expect(charges(customer).first.amount).to eq 8000
       end
 
       it "creates unspent credits" do
-        customer = Stripe::Customer.retrieve(user.stripe_id_code)
+        customer = Payments::Customer.get(user.stripe_id_code)
         post "/credits", params: {
           credit: {
             number_to_purchase: 20
@@ -184,9 +188,9 @@ RSpec.describe "Credits", type: :request do
           },
           stripe_token: stripe_helper.generate_card_token
         }
-        customer = Stripe::Customer.retrieve(user.stripe_id_code)
+        customer = Payments::Customer.get(user.stripe_id_code)
         card_id = customer.sources.data.last.id
-        expect(customer.charges.first.source.id).to eq card_id
+        expect(charges(customer).first.source.id).to eq card_id
       end
     end
 
@@ -212,8 +216,8 @@ RSpec.describe "Credits", type: :request do
           },
           stripe_token: stripe_helper.generate_card_token
         }
-        customer = Stripe::Customer.retrieve(org_admin.stripe_id_code)
-        expect(customer.charges.first.amount).to eq 8000
+        customer = Payments::Customer.get(org_admin.stripe_id_code)
+        expect(charges(customer).first.amount).to eq 8000
       end
 
       it "does not create unspent credits for the current_user" do
@@ -230,7 +234,8 @@ RSpec.describe "Credits", type: :request do
 
     context "when payment fails" do
       it "does not reward credits" do
-        StripeMock.prepare_error(Stripe::CardError.new(2, 3, 4), :new_charge)
+        StripeMock.prepare_card_error(:card_declined, :new_charge)
+
         post "/credits", params: {
           credit: {
             number_to_purchase: 25
@@ -242,7 +247,9 @@ RSpec.describe "Credits", type: :request do
 
       it "does not reward credits for orgs" do
         sign_in org_admin
-        StripeMock.prepare_error(Stripe::CardError.new(2, 3, 4), :new_charge)
+
+        StripeMock.prepare_card_error(:card_declined, :new_charge)
+
         post "/credits", params: {
           organization_id: admin_org_id,
           credit: {

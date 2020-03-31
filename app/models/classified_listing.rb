@@ -1,5 +1,8 @@
 class ClassifiedListing < ApplicationRecord
-  include AlgoliaSearch
+  include Searchable
+
+  SEARCH_SERIALIZER = Search::ClassifiedListingSerializer
+  SEARCH_CLASS = Search::ClassifiedListing
 
   CATEGORIES_AVAILABLE = {
     cfp: { cost: 1, name: "Conference CFP", rules: "Currently open for proposals, with link to form." },
@@ -22,6 +25,8 @@ class ClassifiedListing < ApplicationRecord
   before_save :evaluate_markdown
   before_create :create_slug
   before_validation :modify_inputs
+  after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :remove_from_elasticsearch, on: [:destroy]
   acts_as_taggable_on :tags
   has_many :credits, as: :purchase, inverse_of: :purchase, dependent: :nullify
 
@@ -37,27 +42,10 @@ class ClassifiedListing < ApplicationRecord
   validate :validate_tags
   validate :validate_category
 
-  algoliasearch per_environment: true do
-    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug, :contact_via_connect, :location, :expires_at
-    attribute :author do
-      { username: author.username,
-        name: author.name,
-        profile_image_90: ProfileImage.new(author).get(90) }
-    end
-    tags do
-      [tag_list,
-       "user_#{user_id}",
-       "organization_#{organization_id}"]
-    end
-    attributesForFaceting [:category]
-    customRanking ["desc(bumped_at)"]
-    searchableAttributes %w[title processed_html tag_list slug location]
-  end
-
   scope :published, -> { where(published: true) }
 
-  def self.cost_by_category(category = "education")
-    categories_available[category][:cost]
+  def self.cost_by_category(category)
+    categories_available.dig(category, :cost) || 0
   end
 
   def author

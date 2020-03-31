@@ -8,4 +8,3 @@ json.tags                 listing.tag_list
 json.category             listing.category
 json.processed_html       listing.processed_html
 json.published            listing.published
-json.slug                 listing.slug

@@ -11,7 +11,7 @@
   <div class="sub-field">
     <%= f.label :config_font, "Base Reading Font" %>
     <div class="theme-selector-field">
-      <% ["default", "sans serif", "monospace", "comic sans"].each do |font| %>
+      <% ["default", "sans serif", "monospace", "comic sans", "open dyslexic"].each do |font| %>
         <%= render partial: "font_selector", locals: { f: f, font: font } %>
       <% end %>
     </div>

@@ -2,19 +2,29 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
   layout "internal"
 
   def index
+    @q = FeedbackMessage.includes(:reporter, :offender, :affected).
+      order(created_at: :desc).
+      ransack(params[:q])
+    @feedback_messages = @q.result.page(params[:page] || 1).per(5)
+
     @feedback_type = params[:state] || "abuse-reports"
     @status = params[:status] || "Open"
-    @feedback_messages = FeedbackMessage.
-      where(feedback_type: @feedback_type, status: @status).
-      includes(:reporter, :notes).
-      order("feedback_messages.created_at DESC").
-      page(params[:page] || 1).per(5)
+
     @email_messages = EmailMessage.find_for_reports(@feedback_messages)
-    @new_articles = Article.published.includes(:user).limit(120).order("created_at DESC").where("score > ? AND score < ?", -10, 8)
-    @possible_spam_users = User.where("github_created_at > ? OR twitter_created_at > ? OR length(name) > ?", 50.hours.ago, 50.hours.ago, 30).
+    @new_articles = Article.published.includes(:user).
+      order(created_at: :desc).
+      where("score > ? AND score < ?", -10, 8).
+      limit(120)
+
+    @possible_spam_users = User.where(
+      "github_created_at > ? OR twitter_created_at > ? OR length(name) > ?",
+      50.hours.ago, 50.hours.ago, 30
+    ).
       where("created_at > ?", 48.hours.ago).
-      order("created_at DESC").
-      where.not("username LIKE ?", "%spam_%").limit(150)
+      order(created_at: :desc).
+      where.not("username LIKE ?", "%spam_%").
+      limit(150)
+
     @vomits = get_vomits
   end
 
@@ -48,11 +58,14 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
       content: params["content"],
       reason: params["reason"],
     )
+
     if note.save
       params["author_name"] = note.author.name
       params["feedback_message_status"] = note.noteable.status
       params["feedback_type"] = note.noteable.feedback_type
+
       send_slack_message(params)
+
       render json: {
         outcome: "Success",
         content: params["content"],
@@ -67,20 +80,29 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
 
   def get_vomits
     if params[:status] == "Open" || params[:status].blank?
-      Reaction.where(category: "vomit", status: "valid").includes(:user, :reactable).order("updated_at DESC")
+      Reaction.where(category: "vomit", status: "valid").
+        includes(:user, :reactable).
+        order(updated_at: :desc)
     elsif params[:status] == "Resolved"
-      Reaction.where(category: "vomit", status: "confirmed").includes(:user, :reactable).order("updated_at DESC").limit(10)
+      Reaction.where(category: "vomit", status: "confirmed").
+        includes(:user, :reactable).
+        order(updated_at: :desc).
+        limit(10)
     else
-      Reaction.where(category: "vomit", status: "invalid").includes(:user, :reactable).order("updated_at DESC").limit(10)
+      Reaction.where(category: "vomit", status: "invalid").
+        includes(:user, :reactable).
+        order(updated_at: :desc).
+        limit(10)
     end
   end
 
   def send_slack_message(params)
-    SlackBot.ping(
-      generate_message(params),
-      channel: params["feedback_type"],
-      username: "new_note_bot",
-      icon_emoji: ":memo:",
+    Slack::Messengers::Note.call(
+      author_name: params[:author_name],
+      status: params[:feedback_message_status],
+      type: params[:feedback_type],
+      report_id: params[:noteable_id],
+      message: params[:content],
     )
   end
 

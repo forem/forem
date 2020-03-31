@@ -19,18 +19,4 @@ RSpec.describe PageView, type: :model do
       end
     end
   end
-
-  describe "indexing" do
-    it "indexes updated records" do
-      expect do
-        page_view.update(path: "/")
-      end.to have_enqueued_job(Search::IndexJob).exactly(:once).with("PageView", page_view.id)
-    end
-
-    it "removes deleted records" do
-      expect do
-        page_view.destroy
-      end.to have_enqueued_job(Search::RemoveFromIndexJob).exactly(:once).with(described_class.algolia_index_name, page_view.id)
-    end
-  end
 end

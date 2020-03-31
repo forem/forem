@@ -15,7 +15,7 @@ RSpec.describe PodcastEpisodes::BustCacheWorker, type: :worker do
       end
     end
 
-    context "When podcast episode is found" do
+    context "when podcast episode is found" do
       let(:podcast) { create(:podcast) }
       let(:podcast_episode) { FactoryBot.create(:podcast_episode, podcast_id: podcast.id) }
 

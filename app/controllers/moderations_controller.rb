@@ -18,10 +18,12 @@ class ModerationsController < ApplicationController
     authorize(User, :moderation_routes?)
     @tag_adjustment = TagAdjustment.new
     @moderatable = Article.find_by(slug: params[:slug])
+    not_found unless @moderatable
     @tag_moderator_tags = Tag.with_role(:tag_moderator, current_user)
     @adjustments = TagAdjustment.where(article_id: @moderatable.id)
     @already_adjusted_tags = @adjustments.map(&:tag_name).join(", ")
     @allowed_to_adjust = @moderatable.class.name == "Article" && (current_user.has_role?(:super_admin) || @tag_moderator_tags.any?)
+    @hidden_comments = @moderatable.comments.where(hidden_by_commentable_user: true)
     render template: "moderations/mod"
   end
 

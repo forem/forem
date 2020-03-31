@@ -19,7 +19,7 @@
           <% negative_follow_shown_once = true %>
         <% end %>
         <% color = HexComparer.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
-        <div id="follows-<%= follow.id %>" class="single-article" style="border-color:<%= color %>;box-shadow: 3px 3px 0px <%= color %>">
+        <div id="follows-<%= follow.id %>" class="single-article" style="border: 1px solid <%= color %>;box-shadow: 3px 3px 0px <%= color %>">
           <h2>
             <a href="/t/<%= tag.name %>">
               <%= tag.name %>

@@ -34,6 +34,7 @@ Dir[Rails.root.join("spec/system/shared_examples/**/*.rb")].sort.each { |f| requ
 Dir[Rails.root.join("spec/models/shared_examples/**/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/jobs/shared_examples/**/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/workers/shared_examples/**/*.rb")].sort.each { |f| require f }
+Dir[Rails.root.join("spec/initializers/shared_examples/**/*.rb")].sort.each { |f| require f }
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -50,18 +51,9 @@ allowed_sites = [
 ]
 WebMock.disable_net_connect!(allow_localhost: true, allow: allowed_sites)
 
-# tell VCR to ignore browsers download sites
-# see <https://github.com/titusfortner/webdrivers/wiki/Using-with-VCR-or-WebMock>
-VCR.configure do |config|
-  config.ignore_hosts(
-    "chromedriver.storage.googleapis.com",
-    "github.com/mozilla/geckodriver/releases",
-    "selenium-release.storage.googleapis.com",
-    "developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
-  )
-end
-
 RSpec::Matchers.define_negated_matcher :not_change, :change
+
+Rack::Attack.enabled = false
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
@@ -76,11 +68,21 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   config.include OmniauthMacros
   config.include SidekiqTestHelpers
+  config.include ElasticsearchHelpers, elasticsearch: true
 
   config.before do
-    ActiveRecord::Base.observers.disable :all # <-- Turn 'em all off!
-
     Sidekiq::Worker.clear_all # worker jobs shouldn't linger around between tests
+  end
+
+  config.around(:each, elasticsearch: true) do |example|
+    Search::Cluster.recreate_indexes
+    example.run
+  end
+
+  config.around(:each, throttle: true) do |example|
+    Rack::Attack.enabled = true
+    example.run
+    Rack::Attack.enabled = false
   end
 
   config.after do
@@ -96,7 +98,7 @@ RSpec.configure do |config|
     end
   end
 
-  # Allow testing with Stripe's test server. BECAREFUL
+  # Allow testing with Stripe's test server. BE CAREFUL
   if config.filter_manager.inclusions.rules.include?(:live)
     WebMock.allow_net_connect!
     StripeMock.toggle_live(true)
@@ -129,9 +131,4 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
-end
-
-Doorkeeper.configure do
-  # hash_token_secrets on its own won't work in test
-  hash_token_secrets fallback: :plain
 end

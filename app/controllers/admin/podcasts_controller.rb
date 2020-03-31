@@ -5,7 +5,7 @@ module Admin
       authorize_resource(resource)
 
       if resource.save
-        Podcasts::GetEpisodesJob.perform_later(podcast_id: resource.id) if resource.published
+        Podcasts::GetEpisodesWorker.perform_async(podcast_id: resource.id) if resource.published
         redirect_to(
           [namespace, resource],
           notice: translate_with_resource("create.success"),

@@ -1,7 +1,7 @@
 <div class="about-the-author" id="about-the-author">
   <div class="left-column">
     <a href="/<%= @user.username %>">
-      <img class="profile-pic" src="<%= ProfileImage.new(@user).get(180) %>" alt="<%= @user.username %> profile" />
+      <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 180) %>" alt="<%= @user.username %> profile" />
     </a>
   </div>
   <div class="main-content">
@@ -13,17 +13,20 @@
       </a>
       <% if @user.twitter_username.present? %>
         <a href="http://twitter.com/<%= @user.twitter_username %>" target="_blank" rel="noopener">
-          <%= icon("twitter", "22") %> <%= @user.twitter_username %>
+          <%= inline_svg_tag("twitter.svg", aria: true, class: "crayons-icon", width: 24, height: 24, title: "Twitter") %>
+          <%= @user.twitter_username %>
         </a>
       <% end %>
       <% if @user.github_username.present? %>
         <a href="http://github.com/<%= @user.github_username %>" target="_blank" rel="noopener">
-          <%= icon("github", "22") %> <%= @user.github_username %>
+          <%= inline_svg_tag("github.svg", aria: true, class: "crayons-icon", width: 24, height: 24, title: "GitHub") %>
+          <%= @user.github_username %>
         </a>
       <% end %>
       <% if @user.website_url.present? %>
         <a href="<%= @user.website_url %>" target="_blank" rel="noopener">
-          <%= icon("link", "22") %> <%= beautified_url(@user.website_url) %>
+          <%= inline_svg_tag("link-external.svg", aria: true, class: "crayons-icon", width: 24, height: 24, title: "Website") %>
+          <%= beautified_url(@user.website_url) %>
         </a>
       <% end %>
     </p>

@@ -11,6 +11,9 @@
   <%= favicon_link_tag SiteConfig.favicon_url %>
   <title><%= controller_name.titleize %></title>
 
+  <!-- StimulusJS -->
+  <%= javascript_packs_with_chunks_tag "internal", defer: true %>
+
   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 
   <!-- Bootstrap and FontAwesome -->
@@ -21,29 +24,26 @@
 
 </head>
 <body>
-  <nav class="navbar navbar-expand-xl navbar-light bg-light">
-    <a class="navbar-brand" href="#">
-      <img src="<%= asset_path("rainbowdev.svg") %>" width="30" height="30" class="d-inline-block align-top" alt="DEV Logo">
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <%= render "internal/shared/navbar" %>
-    </div>
-  </nav>
+  <div class="d-flex">
+    <nav class="sidebar-nav">
+      <a href="/internal">
+        <img class="d-block mx-auto mt-3" src="<%= asset_path("rainbowdev.svg") %>" width="40" height="40" alt="DEV Logo">
+      </a>
+        <%= render "internal/shared/navbar" %>
+    </nav>
 
-  <div class="container mt-3">
-    <% flash.each do |type, message| %>
-      <div class="alert alert-<%= type %>">
-        <button class="close" data-dismiss="alert">
-          <i class="fa fa-times" aria-hidden="true"></i>
-        </button>
-        <%= message %>
-      </div>
-    <% end %>
-    <h1><%= controller_name.titleize %></h1>
-    <%= yield %>
+    <div class="container mt-3">
+      <% flash.each do |type, message| %>
+        <div class="alert alert-<%= type == "notice" || type == "success" ? "success" : "danger" %>">
+          <button class="close" data-dismiss="alert">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </button>
+          <%= message %>
+        </div>
+      <% end %>
+      <h1 class="mt-3"><%= controller_name.titleize %></h1>
+      <%= yield %>
+    </div>
   </div>
 
   <!-- Bootstrap Dependencies -->

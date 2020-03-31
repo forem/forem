@@ -89,22 +89,39 @@
       if (event.clientId === "" && // Not fetched via AJAX after page load.
         event.request.method == "GET" && // Don't fetch on POST, DELETE, etc.
         !event.request.referrer.includes('/signout_confirm') && // If this is the referrer, we instead want to flush.
+
         !url.href.includes('i=i') && // Parameter representing "internal" navigation.
-        !url.href.includes('?signin') && // Don't run on sign in.
-        !url.href.includes('.js') && // Don't run on JS.
         !url.href.includes('.css') && // Don't run on CSS.
-        !url.href.includes('/onboarding') && // Don't run on onboarding.
-        !url.href.includes('/api/') && // Don't run on API endpoints.
-        !url.href.includes('/users/auth') && // Don't run on authentication.
-        !url.href.includes('/shell_') && // Don't fetch for shell.
+        !url.href.includes('.js') && // Don't run on JS.
+        !url.href.includes('?preview=') && // Skip for preview pages.
+        !url.href.includes('?signin') && // Don't run on sign in.
+
         !url.href.includes('/admin') && // Don't fetch for administrate dashboard.
-        !url.href.includes('/internal') && // Don't fetch for internal dashboard.
+        !url.href.includes('/api/') && // Don't run on API endpoints.
+        !url.href.includes('/embed/') && // Don't fetch for embeded content.
+        !url.href.includes('/feed') && // Skip the RSS feed
         !url.href.includes('/future') && // Skip for /future.
-        !url.href.includes('?preview=') && // Skip for /future.
-        !url.href.includes('/delayed_job') && // Skip for Delayed Job dashboard
-        !url.href.includes('/sidekiq') && // Skip for Sidekiq dashboard
+        !url.href.includes('/internal') && // Don't fetch for internal dashboard.
         !url.href.includes('/oauth/') && // Skip oauth apps
+        !url.href.includes('/onboarding') && // Don't run on onboarding.
         !url.href.includes('/rails/mailers') && // Skip for mailers previews in development mode
+        !url.href.includes('/robots.txt') && // Skip robots for web crawlers
+        !url.href.includes('/shell_') && // Don't fetch for shell.
+        !url.href.includes('/sidekiq') && // Skip for Sidekiq dashboard
+        !url.href.includes('/ahoy/') && // Skip for ahoy message redirects
+        !url.href.includes('/abtests') && // Skip for field_test dashboard
+        !url.href.includes('/social_previews') && // Skip for social previews
+        !url.href.includes('/users/auth') && // Don't run on authentication.
+        !url.href.includes('/enter') && // Don't run on registration.
+        !url.href.includes('/sitemap-') && // Don't run on registration.
+        !url.href.includes('/welcome') && // Don't run on welcome reroutes.
+
+        // Don't run on search endpoints
+        !url.href.includes('/search/tags') &&
+        !url.href.includes('/search/chat_channels') &&
+        !url.href.includes('/search/classified_listings') &&
+        !url.href.includes('/search/users') &&
+
         caches.match('/shell_top') && // Ensure shell_top is in the cache.
         caches.match('/shell_bottom')) { // Ensure shell_bottom is in the cache.
         event.respondWith(createPageStream(event.request)); // Respond with the stream

@@ -7,24 +7,21 @@ export default class Chat extends Component {
     handleKeyDownEdit: PropTypes.func.isRequired,
     handleSubmitOnClick: PropTypes.func.isRequired,
     handleSubmitOnClickEdit: PropTypes.func.isRequired,
+    handleMention: PropTypes.func.isRequired,
+    handleKeyUp: PropTypes.func.isRequired,
     startEditing: PropTypes.bool.isRequired,
+    markdownEdited: PropTypes.bool.isRequired,
     editMessageHtml: PropTypes.string.isRequired,
     editMessageMarkdown: PropTypes.string.isRequired,
     handleEditMessageClose: PropTypes.func.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      editMessageMarkdown: null,
-    };
-  }
-
-  componentWillReceiveProps(props) {
-    this.setState({
-      editMessageMarkdown: props.editMessageMarkdown,
-      editMessageHtml: props.editMessageHtml,
-    });
+  componentDidUpdate() {
+    const { editMessageMarkdown, markdownEdited, startEditing } = this.props;
+    const textarea = document.getElementById('messageform');
+    if (!markdownEdited && startEditing) {
+      textarea.value = editMessageMarkdown;
+    }
   }
 
   messageCompose = () => {
@@ -32,14 +29,18 @@ export default class Chat extends Component {
       handleSubmitOnClickEdit,
       handleKeyDownEdit,
       handleEditMessageClose,
+      handleMention,
+      handleKeyUp,
+      editMessageHtml,
     } = this.props;
-    const { editMessageHtml, editMessageMarkdown } = this.state;
+
     return (
       <div className="messagecomposer">
         <div className="messageToBeEdited">
           <div className="message">
             <span className="editHead">Edit Message</span>
             <div
+              // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{
                 __html: editMessageHtml,
               }}
@@ -62,12 +63,13 @@ export default class Chat extends Component {
           id="messageform"
           placeholder="Message goes here"
           onKeyDown={handleKeyDownEdit}
+          onKeyPress={handleMention}
+          onKeyUp={handleKeyUp}
           maxLength="1000"
-          value={editMessageMarkdown}
         />
         <button
           type="button"
-          className="messagecomposer__submit"
+          className="messagecomposer__submit cta"
           onClick={handleSubmitOnClickEdit}
         >
           Save
@@ -76,30 +78,40 @@ export default class Chat extends Component {
     );
   };
 
-  render() {
-    const { handleSubmitOnClick, handleKeyDown, startEditing } = this.props;
+  textAreaSection = () => {
+    const {
+      handleSubmitOnClick,
+      handleKeyDown,
+      handleMention,
+      handleKeyUp,
+    } = this.props;
     return (
-      <div>
-        {!startEditing ? (
-          <div className="messagecomposer">
-            <textarea
-              className="messagecomposer__input"
-              id="messageform"
-              placeholder="Message goes here"
-              onKeyDown={handleKeyDown}
-              maxLength="1000"
-            />
-            <button
-              type="button"
-              className="messagecomposer__submit"
-              onClick={handleSubmitOnClick}
-            >
-              SEND
-            </button>
-          </div>
-        ) : (
-          this.messageCompose()
-        )}
+      <div className="messagecomposer">
+        <textarea
+          className="messagecomposer__input"
+          id="messageform"
+          placeholder="Message goes here"
+          onKeyDown={handleKeyDown}
+          onKeyPress={handleMention}
+          onKeyUp={handleKeyUp}
+          maxLength="1000"
+        />
+        <button
+          type="button"
+          className="messagecomposer__submit cta"
+          onClick={handleSubmitOnClick}
+        >
+          SEND
+        </button>
+      </div>
+    );
+  };
+
+  render() {
+    const { startEditing } = this.props;
+    return (
+      <div className="compose__outer__container">
+        {!startEditing ? this.textAreaSection() : this.messageCompose()}
       </div>
     );
   }

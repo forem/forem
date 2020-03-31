@@ -4,7 +4,7 @@ RSpec.describe NotifyMailer, type: :mailer do
   let(:user)      { create(:user) }
   let(:user2)     { create(:user) }
   let(:article)   { create(:article, user_id: user.id) }
-  let(:comment)   { create(:comment, user_id: user.id, commentable_id: article.id) }
+  let(:comment)   { create(:comment, user_id: user.id, commentable: article) }
 
   describe "#new_reply_email" do
     let(:email) { described_class.new_reply_email(comment) }
@@ -225,6 +225,38 @@ RSpec.describe NotifyMailer, type: :mailer do
       end
 
       expect(user.email_messages.last.feedback_message_id).to eq(feedback_message.id)
+    end
+  end
+
+  describe "#user_contact_email" do
+    let(:email_params) do
+      {
+        user_id: user.id,
+        email_subject: "Buddy",
+        email_body: "Laugh with me, buddy"
+      }
+    end
+    let(:email) { described_class.user_contact_email(email_params) }
+
+    it "renders proper subject" do
+      expect(email.subject).to eq("Buddy")
+    end
+
+    it "renders proper sender" do
+      expect(email.from).to eq([SiteConfig.default_site_email])
+      expect(email["from"].value).to eq("DEV Community <#{SiteConfig.default_site_email}>")
+    end
+
+    it "renders proper receiver" do
+      expect(email.to).to eq([user.email])
+    end
+
+    it "includes the tracking pixel" do
+      expect(email.html_part.body).to include("open.gif")
+    end
+
+    it "includes UTM params" do
+      expect(email.html_part.body).to include(CGI.escape("utm_campaign=user_contact"))
     end
   end
 

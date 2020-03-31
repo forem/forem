@@ -14,7 +14,7 @@ Rails.application.configure do
   # preloads Rails for running tests, you may have to set it to true.
   config.eager_load = false
 
-  # Configure static file server for tests with Cache-Control for performance.
+  # Configure public file server for tests with Cache-Control for performance.
   config.public_file_server.enabled = true
   config.public_file_server.headers = {
     "Cache-Control" => "public, max-age=#{1.hour.to_i}"
@@ -54,15 +54,14 @@ Rails.application.configure do
 
   config.active_job.queue_adapter = :test
 
-  # Install the Timber.io logger, but do not send logs.
-  logger = Timber::Logger.new(nil)
-  logger.level = config.log_level
-  config.logger = ActiveSupport::TaggedLogging.new(logger)
+  # Debug is the default log_level, but can be changed per environment.
+  config.log_level = :debug
 
   # enable Bullet in testing mode only if requested
   config.after_initialize do
-    Bullet.enable = ENV["BULLET"]
-    Bullet.raise = ENV["BULLET"]
+    Bullet.enable = true
+    Bullet.raise = true
+
     Bullet.add_whitelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
     # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
     Bullet.add_whitelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)

@@ -6,7 +6,6 @@ RSpec.describe "Editing A Comment", type: :system, js: true do
   let(:new_comment_text) { Faker::Lorem.paragraph }
   let!(:comment) do
     create(:comment,
-           :with_path,
            commentable: article,
            user: user,
            body_markdown: Faker::Lorem.paragraph)

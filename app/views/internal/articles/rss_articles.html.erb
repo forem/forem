@@ -74,10 +74,10 @@
       // dataType: "JSON" // you want a difference between normal and ajax-calls, and json is standard
     }).success(function (json) {
       console.log("success")
-      form.parents(".row").addClass("highlighted-bg")
-      form.parents(".row").addClass("highlighted-border")
+      form.parents(".row").addClass("bg-highlighted")
+      form.parents(".row").addClass("border-highlighted")
       setTimeout(function () {
-        form.parents(".row").removeClass("highlighted-bg")
+        form.parents(".row").removeClass("bg-highlighted")
       }, 350)
     });
     return false; // prevents normal behaviour

@@ -13,7 +13,7 @@ RSpec/DescribeClass:
     - spec/system/**/*
 
 RSpec/ExampleLength:
-  Max: 10
+  Max: 15
 
 #############################
 
@@ -27,6 +27,10 @@ AllCops:
   DisplayStyleGuide: true
   ExtraDetails: true
   TargetRubyVersion: 2.6
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - "spec/**/*"
 
 Naming/AccessorMethodName:
   Description: Check the naming of accessor methods for get_/set_.
@@ -149,6 +153,9 @@ Style/TrailingCommaInArrayLiteral:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-trailing-array-commas'
   EnforcedStyleForMultiline: comma
   Enabled: true
+
+Rails/FilePath:
+  EnforcedStyle: slashes
 
 # Layout
 

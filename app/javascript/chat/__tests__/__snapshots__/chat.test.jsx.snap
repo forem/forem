@@ -73,7 +73,7 @@ exports[`<Chat /> should load chat 1`] = `
             >
               <img
                 alt="pic"
-                class="chatchanneltabindicatordirectimage"
+                class="chatchanneltabindicatordirectimage invert-channel-image"
               />
             </span>
             channel name 1
@@ -123,7 +123,7 @@ exports[`<Chat /> should load chat 1`] = `
             >
               <img
                 alt="pic"
-                class="chatchanneltabindicatordirectimage"
+                class="chatchanneltabindicatordirectimage invert-channel-image"
               />
             </span>
             group channel 3
@@ -242,9 +242,17 @@ exports[`<Chat /> should load chat 1`] = `
           </div>
         </div>
         <div
+          class="mention__list"
+          id="mentionList"
+        >
+           
+        </div>
+        <div
           class="activechatchannel__form"
         >
-          <div>
+          <div
+            class="compose__outer__container"
+          >
             <div
               class="messagecomposer"
             >
@@ -253,10 +261,12 @@ exports[`<Chat /> should load chat 1`] = `
                 id="messageform"
                 maxLength="1000"
                 onKeyDown={[Function]}
+                onKeyPress={[Function]}
+                onKeyUp={[Function]}
                 placeholder="Message goes here"
               />
               <button
-                class="messagecomposer__submit"
+                class="messagecomposer__submit cta"
                 onClick={[Function]}
                 type="button"
               >

@@ -1,4 +1,4 @@
-<%= javascript_pack_tag "colorPicker", defer: true %>
+<%= javascript_packs_with_chunks_tag "colorPicker", "validateFileInputs", defer: true %>
 
 <h3>Join An Organization</h3>
 <h5>Do you have the secret code?</h5>
@@ -29,7 +29,7 @@
   </div>
   <div class="field">
     <%= f.label :profile_image, "Profile Image *" %>
-    <%= f.file_field :profile_image %>
+    <%= f.file_field :profile_image, accept: "image/*" %>
   </div>
   <div class="field">
     <%= f.label :twitter_username, "Twitter Username" %>
@@ -62,7 +62,7 @@
     <%= f.label :proof, "Proof *" %>
     <%= f.text_area :proof, placeholder: "This is just a quick blurb indicating or link that shows that you clearly are associated with this organization." %>
     <div style="width:560px;max-width:90%;">
-      You must have your organization's permission to submit this form. Dishonesty may result in a permanent ban.
+      You must have your organization's permission to submit this form. Dishonesty may result in a permanent suspension.
     </div>
   </div>
   <div class="field">

@@ -3,7 +3,7 @@ class ArticlesController < ApplicationController
 
   before_action :authenticate_user!, except: %i[feed new]
   before_action :set_article, only: %i[edit manage update destroy stats]
-  before_action :raise_banned, only: %i[new create update]
+  before_action :raise_suspended, only: %i[new create update]
   before_action :set_cache_control_headers, only: %i[feed]
   after_action :verify_authorized
 
@@ -19,9 +19,8 @@ class ArticlesController < ApplicationController
                   @articles.where(featured: true).includes(:user)
                 end
 
-    unless @articles
-      render body: nil
-      return
+    unless @articles&.any?
+      not_found
     end
 
     set_surrogate_key_header "feed"
@@ -88,14 +87,16 @@ class ArticlesController < ApplicationController
 
   def edit
     authorize @article
+
     @version = @article.has_frontmatter? ? "v1" : "v2"
     @user = @article.user
     @organizations = @user&.organizations
   end
 
   def manage
-    @article = @article.decorate
     authorize @article
+
+    @article = @article.decorate
     @user = @article.user
     @rating_vote = RatingVote.where(article_id: @article.id, user_id: @user.id).first
     @buffer_updates = BufferUpdate.where(composer_user_id: @user.id, article_id: @article.id)
@@ -136,13 +137,12 @@ class ArticlesController < ApplicationController
   def create
     authorize Article
 
-    @user = current_user
-    @article = Articles::Creator.call(@user, article_params_json)
+    article = Articles::Creator.call(current_user, article_params_json)
 
-    render json: if @article.persisted?
-                   @article.to_json(only: [:id], methods: [:current_state_path])
+    render json: if article.persisted?
+                   { id: article.id, current_state_path: article.decorate.current_state_path }.to_json
                  else
-                   @article.errors.to_json
+                   article.errors.to_json
                  end
   end
 

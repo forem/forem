@@ -1,6 +1,6 @@
 class PagesController < ApplicationController
   # No authorization required for entirely public controller
-  before_action :set_cache_control_headers, only: %i[show rlyweb now survey badge shecoded bounty faq]
+  before_action :set_cache_control_headers, only: %i[show rlyweb now badge bounty faq robots]
 
   def show
     @page = Page.find_by!(slug: params[:slug])
@@ -9,10 +9,6 @@ class PagesController < ApplicationController
 
   def now
     set_surrogate_key_header "now_page"
-  end
-
-  def survey
-    set_surrogate_key_header "survey_page"
   end
 
   def about
@@ -39,16 +35,18 @@ class PagesController < ApplicationController
     set_surrogate_key_header "badge_page"
   end
 
-  def onboarding
-    set_surrogate_key_header "onboarding_page"
-  end
-
   def report_abuse
-    reported_url = params[:reported_url] || params[:url] || request.referer
+    referer = URI(request.referer || "").path == "/serviceworker.js" ? nil : request.referer
+    reported_url = params[:reported_url] || params[:url] || referer
     @feedback_message = FeedbackMessage.new(
       reported_url: reported_url&.chomp("?i=i"),
     )
     render "pages/report-abuse"
+  end
+
+  def robots
+    respond_to :text
+    set_surrogate_key_header "robots_page"
   end
 
   def rlyweb
@@ -56,7 +54,7 @@ class PagesController < ApplicationController
   end
 
   def welcome
-    daily_thread = latest_published_thread("welcome")
+    daily_thread = Article.admin_published_with("welcome").first
     if daily_thread
       redirect_to daily_thread.path
     else
@@ -66,7 +64,7 @@ class PagesController < ApplicationController
   end
 
   def challenge
-    daily_thread = latest_published_thread("challenge")
+    daily_thread = Article.admin_published_with("challenge").first
     if daily_thread
       redirect_to daily_thread.path
     else
@@ -81,26 +79,9 @@ class PagesController < ApplicationController
     )
   end
 
-  def shecoded
-    @top_articles = Article.published.tagged_with(%w[shecoded shecodedally theycoded], any: true).
-      where(approved: true).where("published_at > ? AND score > ?", 3.weeks.ago, 28).
-      order(Arel.sql("RANDOM()")).
-      includes(:user).decorate
-    @articles = Article.published.tagged_with(%w[shecoded shecodedally theycoded], any: true).
-      where(approved: true).where("published_at > ? AND score > ?", 3.weeks.ago, -8).
-      order(Arel.sql("RANDOM()")).
-      where.not(id: @top_articles).
-      includes(:user).decorate
-    render layout: false
-    set_surrogate_key_header "shecoded_page"
-  end
-
-  private
-
-  def latest_published_thread(tag_name)
-    Article.published.
-      where(user_id: SiteConfig.staff_user_id).
-      order("published_at ASC").
-      tagged_with(tag_name).last
+  def crayons
+    @page = Page.find_by(slug: "crayons")
+    render :show if @page
+    set_surrogate_key_header "crayons_page"
   end
 end

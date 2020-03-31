@@ -1,0 +1,520 @@
+// Sidebar widgets
+
+@import 'variables';
+@import '_mixins';
+
+// Profile card
+.sidebar-profile {
+  @include sidebar-link;
+  margin: 0;
+  display: flex;
+  align-items: center;
+
+  .sidebar-profile--avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+  }
+
+  .sidebar-profile--details {
+    flex: 1 auto;
+    padding-left: 8px;
+  }
+
+  .sidebar-profile--name {
+    margin: 0;
+    @include themeable(color, theme-color, rgba($black, 0.9));
+  }
+
+  .sidebar-profile--username {
+    color: var(--container-color-tertiary);
+  }
+}
+
+// Sidebar Widgets
+.widget {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  padding: 0 16px 16px 16px;
+  margin: 8px 0 16px 0;
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--widget-color-tertiary);
+    opacity: 0.25;
+  }
+
+  &.fixed-widget {
+    position: sticky;
+    width: 254px;
+    top: 80px;
+    header {
+      padding-left: 6px;
+    }
+  }
+  &:hover {
+    opacity: 1;
+  }
+  h4 {
+    margin: 0;
+  }
+  &.signin-cta-widget {
+    border: 1px solid darken($bold-blue, 5%);
+    box-shadow: 5px 6px 0px darken($bold-blue, 15%);
+    padding: 0px 0px;
+    border-radius: 3px;
+
+    header {
+      background: darken($bold-blue, 5%);
+      color: white;
+      padding: 16px 0px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .widget-body {
+      display: flex;
+      flex-flow: column;
+      padding: 8px 0;
+
+      .login-cta-button {
+        margin: 8px;
+        background-color: $bold-blue;
+        padding: 16px 0;
+        border-radius: 50px;
+        color: $white;
+        text-align: center;
+        font-size: 1.1em;
+      }
+    }
+  }
+  &.widget-sponsorship {
+    display: none;
+  }
+  &.showing {
+    display: block;
+  }
+  &.podcast-pic-widget {
+    a {
+      color: var(--body-color);
+    }
+    .widget-body {
+      padding-bottom: 10px;
+    }
+    .podcast-pic {
+      position: relative;
+      padding: 5px 0px;
+      border-top-left-radius: 100px;
+      border-bottom-left-radius: 100px;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
+      img {
+        width: 23px;
+        height: 23px;
+        border-radius: 100px;
+        vertical-align: -7px;
+        margin-left: 3px;
+      }
+      .podcast-name {
+        width: calc(100% - 55px);
+        display: inline-block;
+        padding-left: 4px;
+        font-weight: bold;
+        .podcast-name-inner {
+          font-size: 14px;
+          line-height: 15px;
+          display: block;
+        }
+      }
+      &:hover {
+        @include themeable(
+          background,
+          theme-container-background-hover,
+          $light-gray
+        );
+      }
+    }
+    .suggest-podcast {
+      color: var(--container-color-tertiary);
+      text-decoration: underline;
+      padding: 0 5px;
+    }
+  }
+  hr {
+    opacity: 0.2;
+  }
+  header {
+    position: relative;
+    font-size: 0.9em;
+    font-weight: bold;
+    padding: 8px 0;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier,
+      monospace;
+    color: var(--container-color);
+    a {
+      display: inline-block;
+      color: var(--container-color);
+      h4 {
+        display: inline-block;
+        margin: 0;
+      }
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    .emoji {
+      margin-right: 6px;
+      display: inline-block;
+      vertical-align: -4px;
+      img {
+        width: 18px;
+        border: 0px;
+        cursor: default;
+      }
+    }
+    .widget-listing-live-count {
+      @include themeable(background, theme-secondary-color, $green);
+      color: var(--base-inverted);
+      border-radius: 3px;
+      display: inline-block;
+      font-size: 0.8em;
+      padding: 1px 5px 0px;
+      line-height: 1.4em;
+    }
+
+    .widget-minimize-button {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      padding: 0px 5px 1px;
+      border-radius: 3px;
+      font-size: 1.2em;
+      line-height: 0.6em;
+      @include themeable(
+        border,
+        theme-secondary-color-border,
+        1px solid $light-medium-gray
+      );
+      @include themeable(
+        color,
+        theme-secondary-color,
+        darken($light-medium-gray, 10%)
+      );
+    }
+  }
+  .widget-body {
+    overflow-wrap: break-word;
+    &.body-scrollable {
+      height: calc(100vh - 300px);
+      max-height: 390px;
+      overflow-y: scroll;
+    }
+
+    &.widget-body--sponsorship-arbitrary img {
+      width: 100%;
+    }
+    .widget-podcast-ep {
+      padding-bottom: 8px;
+      a {
+        color: var(--body-color);
+        font-weight: 500;
+      }
+    }
+    .widget-podcast-title {
+      margin-top: -2px;
+      a {
+        color: $medium-gray;
+        font-size: 0.83em;
+        opacity: 0.86;
+      }
+    }
+    .widget-listing-link {
+      @include sidebar-link;
+      .widget-listing-link-title {
+        display: block;
+      }
+      .widget-listing-link-category {
+        display: inline-block;
+        color: var(--widget-color-tertiary);
+        font-size: 0.8em;
+        line-height: 1;
+      }
+    }
+    .widget-accent {
+      background: $purple;
+      color: $bold-blue;
+      padding: 1px 5px;
+      border-radius: 3px;
+      margin-right: 1px;
+    }
+    .widget-footer {
+      color: $medium-gray;
+      font-size: 0.9em;
+      padding: 5px 0px 0px;
+      img {
+        height: 15px;
+        width: 15px;
+        vertical-align: -2px;
+        display: inline;
+        border: 0;
+      }
+    }
+    .widget-subtext {
+      padding: 0;
+      margin: 0;
+      color: var(--container-color-tertiary);
+      font-size: 0.85em;
+    }
+    .widget-user-pic {
+      display: inline-block;
+      img {
+        height: 48px;
+        width: 48px;
+        margin: 0 8px 8px 0;
+        border-radius: 100%;
+      }
+    }
+
+    // Listings
+    .widget-listing-category {
+      color: $medium-gray;
+    }
+    .widget-listing-title {
+      font-family: $helvetica;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+  }
+
+  // Filtering / todo: replace with tabs?
+  .query-filter-button {
+    font-size: 15px;
+    font-weight: bold;
+    background: transparent;
+    border: 0px;
+    display: block;
+    padding: 6px 8px;
+    width: calc(100% - 16px);
+    text-align: left;
+    border-radius: 0px;
+    color: var(--body-color);
+    cursor: pointer;
+    &:hover {
+      @include themeable(
+        background,
+        theme-container-background-hover,
+        lighten($bold-blue, 38%)
+      );
+    }
+    &.selected {
+      @include themeable(
+        background,
+        theme-container-accent-background,
+        lighten($bold-blue, 10%)
+      );
+      color: var(--container-color);
+    }
+    &.query-type-filter-button {
+      &:hover {
+        @include themeable(
+          background,
+          theme-container-background-hover,
+          $light-green
+        );
+      }
+      &.selected {
+        @include themeable(
+          background,
+          theme-container-accent-background,
+          darken($light-green, 10%)
+        );
+      }
+    }
+  }
+  p {
+    margin: 8px 0;
+  }
+  ul {
+    padding-left: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+  li {
+    font-size: 1em;
+    line-height: 1.32em;
+    display: inline-block;
+    &::before {
+      font-size: 1.2em;
+    }
+  }
+
+  ul {
+    img {
+      width: 5%;
+      border: none;
+      padding-right: 4px;
+      visibility: hidden;
+    }
+  }
+  a {
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+  .social-icons a {
+    color: var(--widget-color);
+    margin-right: 8px;
+  }
+  .row {
+    position: relative;
+    overflow: hidden;
+    padding: 1px 0px 3px;
+    font-size: 0.97em;
+    .key {
+      float: left;
+      width: 20px;
+      font-size: 0.8em;
+      padding: 2px;
+    }
+    .value {
+      float: left;
+      width: calc(100% - 42px);
+      padding: 5px 7px;
+    }
+  }
+}
+.widget-link-list__item {
+  @include sidebar-link;
+  position: relative;
+  padding-left: 32px;
+
+  &:before {
+    content: '• ';
+    color: $green;
+    font-size: 2em;
+    vertical-align: -6px;
+    position: absolute;
+    left: 16px;
+  }
+
+  .discuss-list-comment-count {
+    font-size: 0.8em;
+    color: var(--container-color-tertiary);
+    img {
+      width: 20px;
+      vertical-align: -3px;
+      border: 0px;
+    }
+    &.discuss-list-comment-count-brand-new {
+      background: $yellow;
+      color: $black;
+      padding: 2px 4px;
+      display: inline-block;
+      font-size: 0.9em;
+      text-transform: uppercase;
+    }
+  }
+}
+
+// Sidebar sponsors
+.sidebar-sponsor {
+  margin-bottom: 24px;
+  color: var(--widget-color-tertiary);
+  img {
+    width: 100%;
+    max-width: 180px;
+  }
+}
+.sidebar-sponsor--footer {
+  font-size: 0.75em;
+  color: var(--container-color-tertiary);
+  a {
+    background: lighten($purple, 3%);
+    color: $black;
+    display: inline-block;
+    padding: 2px 6px;
+    font-weight: 500;
+  }
+}
+
+// Left Side bar navigation links
+// Pulling this out of context because Nick says so: https://github.com/thepracticaldev/dev.to/pull/5918/commits/f1642e62accbdaff72dc7762e1e1ffd4e40027b0
+.sidebar-nav-element {
+  color: $black;
+  display: block;
+  position: relative;
+  @media screen and (min-width: 950px) {
+    .sidebar-nav-link-follow {
+      display: none;
+    }
+    &:hover {
+      .sidebar-nav-link-follow {
+        display: block;
+      }
+    }
+  }
+  img {
+    width: 30px;
+    height: 30px;
+    border: 0px;
+    vertical-align: -8px;
+    margin-right: 4px;
+  }
+  img.nav-emoji {
+    height: 19px;
+    width: 19px;
+    vertical-align: -2px;
+  }
+
+  a.sidebar-nav-link {
+    @include sidebar-link;
+    color: var(--link-dimmed-color);
+    font-weight: 400;
+
+    &.sidebar-nav-link-tag {
+      color: var(--link-dimmed-color);
+    }
+  }
+  a.sidebar-nav-link-follow {
+    position: absolute;
+    color: $black;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    border-radius: 3px;
+    font-weight: 900;
+    font-size: 0.8em;
+    padding: 2px 8px;
+  }
+}
+
+// Todo: Not really sure what that is.. some sort of sponsorship widget...
+.sidebar-sponsorship-level {
+  text-align: center;
+  font-weight: bold;
+  width: calc(100% - 6px);
+  padding: 26px 0px;
+  border-radius: 3px;
+  margin-bottom: 10px;
+  font-family: $helvetica-condensed;
+  font-stretch: condensed;
+  background: var(--widget-bg);
+}
+
+// "Extra" links in sidebar: about, contact, ...
+.side-footer {
+  a {
+    @include sidebar-link;
+    font-size: 0.9em;
+    color: var(--link-dimmed-color-secondary);
+  }
+}

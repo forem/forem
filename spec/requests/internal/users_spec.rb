@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "internal/users", type: :request do
-  let!(:user) { create(:user) }
+  let!(:user) { create(:user, :with_identity, identities: ["github"]) }
   let(:admin) { create(:user, :super_admin) }
 
   before do
@@ -22,7 +22,7 @@ RSpec.describe "internal/users", type: :request do
     end
   end
 
-  describe "GET internal/users/:id/edit" do
+  describe "GET /internal/users/:id/edit" do
     it "redirects from /username/moderate" do
       get "/#{user.username}/moderate"
       expect(response).to redirect_to("/internal/users/#{user.id}")
@@ -39,14 +39,16 @@ RSpec.describe "internal/users", type: :request do
     end
   end
 
-  describe "PUT internal/users/:id/edit" do
+  describe "POST /internal/users/:id/banish" do
     it "bans user for spam" do
+      allow(Moderator::BanishUserWorker).to receive(:perform_async)
       post "/internal/users/#{user.id}/banish"
-      expect(user.reload.username).to include("spam")
+      expect(Moderator::BanishUserWorker).to have_received(:perform_async).with(admin.id, user.id)
+      expect(request.flash[:success]).to include("This user is being banished in the background")
     end
   end
 
-  describe "DELETE internal/users/:id/remove_identity" do
+  describe "DELETE /internal/users/:id/remove_identity" do
     it "removes the given identity" do
       identity = user.identities.first
       delete "/internal/users/#{user.id}/remove_identity", params: { user: { identity_id: identity.id } }

@@ -2,10 +2,9 @@
 title: Docker
 ---
 
-# Installing DEV with Docker [Beta]
+# Installing DEV with Docker
 
-Our docker implementation is incomplete and may not work smoothly. Please,
-kindly
+If you encounter any errors with our Docker setup, please kindly
 [report any issues](https://github.com/thepracticaldev/dev.to/issues/new/choose)!
 
 ## Installing prerequisites
@@ -51,28 +50,23 @@ well.
      GITHUB_SECRET: "ANOTHER_REAL_SECURE_KEY_HERE"
      ```
 
-   - Update the redis url variables by adding the following lines into
-     `config/application.yml`:
-
-     ```shell
-      REDIS_URL: "redis://redis:6379"
-      REDIS_SESSIONS_URL: "redis://redis:6379"
-     ```
-
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 
-## Running the Docker app (basic)
+## Running the Docker app via docker-compose (recommended)
 
 _Docker compose will by default use postgres:9.6 as the database version, should
 you want to update that set the `POSTGRES_VERSION` variable in your environment
 and start the container again_
 
-1. run `docker-compose build`
-1. run `docker-compose run web rails db:setup`
-1. run `docker-compose run web yarn install`
-1. run `docker-compose up`
-1. That's it! Navigate to <http://localhost:3000>
+1. Run `bin/docker-setup`
+2. That's it! Navigate to <http://localhost:3000>
+
+The script executes the following steps:
+
+1. `docker-compose build`
+2. `docker-compose run web rails db:setup db:migrate search:setup`
+3. `docker-compose up`
 
 ## Running the Docker app (advanced)
 
@@ -84,3 +78,23 @@ Please execute the script itself to view all additional options:
 ```shell
 ./docker-run.sh
 ```
+
+## Known Problems & Solutions
+
+- Should you experience problems with the Elasticsearch container, try to
+  increase the memory and/or swap allocation for Docker. On macOS this can be
+  done via the GUI:
+
+  ![docker gui](https://user-images.githubusercontent.com/47985/74210448-b63b7c80-4c83-11ea-959b-02249b2a6952.png)
+
+- In case `rails server` doesn't start with the following message:
+
+  ```
+  Data update scripts need to be run before you can start the application. Please run rails data_updates:run (RuntimeError)
+  ```
+
+  run the following command:
+
+  ```shell
+  docker-compose run web rails data_updates:run
+  ```

@@ -122,7 +122,7 @@ function listenForNotificationsBellClick() {
     document.getElementById('notifications-link').onclick = function() {
       document
         .getElementById('notifications-number')
-        .classList.remove('showing');
+        .classList.add('hidden');
     };
   }, 180);
 }

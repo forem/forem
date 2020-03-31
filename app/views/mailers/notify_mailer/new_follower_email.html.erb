@@ -1,5 +1,7 @@
-<% if Follow.where(followable_id: @user.id, followable_type: "User").where("created_at > ?", 24.hours.ago).size > 1 %>
-  <h3 style="font-weight:600;font-size:0.95em;color:#3ac1b4">You have <%= Follow.where(followable_id: @user.id, followable_type: "User").where("created_at > ?", 24.hours.ago).size %> new DEV followers in the past day!</h3>
+<% num_followers_past_days = Follow.followable_user(@user.id).where("created_at > ?", 24.hours.ago).size %>
+
+<% if num_followers_past_days.positive? %>
+  <h3 style="font-weight:600;font-size:0.95em;color:#3ac1b4">You have <%= num_followers_past_days %> new DEV followers in the past day!</h3>
 <% end %>
 
 <h2 style="font-size:32px;">

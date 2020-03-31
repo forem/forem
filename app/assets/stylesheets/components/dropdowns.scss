@@ -1,0 +1,15 @@
+@import '../config/import';
+@import '../base/boxes';
+
+.crayons-dropdown {
+  @extend .crayons-box;
+  @extend .crayons-box--level-2;
+  position: absolute;
+  display: none; // initially hidden
+  padding: $su-4;
+  min-width: 200px;
+
+  @media (min-width: $breakpoint-s) {
+    max-width: 320px;
+  }
+}

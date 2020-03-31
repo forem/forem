@@ -1,0 +1,134 @@
+@import '../config/import';
+
+$outlined-border-width: 2px;
+
+// Basic styling
+.crayons-btn {
+  position: relative;
+  display: inline-block;
+  padding: 0.5em 1em;
+  border-radius: $br-default;
+  outline: none;
+  font-family: inherit;
+  font-size: $fs-base;
+  line-height: $lh-base;
+  font-weight: $fw-medium;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all $transition-props;
+  border: none;
+}
+
+// Styles
+.crayons-btn {
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-color);
+
+  &--disabled,
+  &[disabled] {
+    opacity: 0.6;
+  }
+
+  &:hover,
+  &:active,
+  &--active {
+    background-color: var(--button-primary-bg-hover);
+    color: var(--button-primary-color-hover);
+    z-index: 2;
+  }
+
+  &--secondary {
+    background-color: var(--button-secondary-bg);
+    color: var(--button-secondary-color);
+
+    &:hover,
+    &:active,
+    &--active {
+      background-color: var(--button-secondary-bg-hover);
+      color: var(--button-secondary-color-hover);
+    }
+  }
+
+  &--outlined {
+    padding: calc(0.5em - #{$outlined-border-width})
+      calc(1em - #{$outlined-border-width});
+    background-color: transparent;
+    border: $outlined-border-width solid var(--button-outlined-bg);
+    color: var(--button-outlined-color);
+
+    &:hover,
+    &:active,
+    &--active {
+      background-color: transparent;
+      color: var(--button-outlined-color-hover);
+      border-color: var(--button-outlined-bg-hover);
+    }
+  }
+
+  &--danger {
+    background-color: var(--accent-danger);
+    color: var(--base-inverted);
+
+    &:hover,
+    &:active,
+    &--active {
+      background-color: var(--accent-danger-darker);
+      color: var(--base-inverted);
+    }
+  }
+
+  &--text {
+    background-color: transparent;
+    color: var(--link-brand);
+
+    &:hover,
+    &:active,
+    &--active {
+      background-color: transparent;
+      color: var(--link-brand-hover);
+    }
+  }
+}
+
+// Icon alone
+.crayons-btn--icon-alone {
+  padding-left: 0.75em;
+  padding-right: 0.75em;
+}
+
+// Icon Left
+.crayons-btn--icon-left {
+  padding-left: 0.75em;
+
+  .crayons-icon {
+    margin-right: 0.5em;
+  }
+}
+
+// Grouped buttons
+.crayons-btn-group {
+  display: flex;
+
+  .crayons-btn {
+    border-radius: 0;
+
+    + .crayons-btn:not(.crayons-btn--outlined) {
+      margin-left: 1px;
+    }
+
+    + .crayons-btn--outlined {
+      margin-left: -$outlined-border-width;
+    }
+
+    &:first-child {
+      border-top-left-radius: $br-default;
+      border-bottom-left-radius: $br-default;
+    }
+
+    &:last-child {
+      border-top-right-radius: $br-default;
+      border-bottom-right-radius: $br-default;
+    }
+  }
+}

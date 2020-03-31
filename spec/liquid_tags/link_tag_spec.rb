@@ -6,7 +6,11 @@ RSpec.describe LinkTag, type: :liquid_tag do
     create(:article, user_id: user.id, title: "test this please", tags: "tag1 tag2 tag3")
   end
   let(:org) { create(:organization) }
-  let(:org_user) { create(:user, organization_id: org.id) }
+  let(:org_user) do
+    user = create(:user)
+    create(:organization_membership, user: user, organization: org)
+    user
+  end
   let(:org_article) do
     create(:article, user_id: org_user.id, title: "test this please", tags: "tag1 tag2 tag3",
                      organization_id: org.id)
@@ -31,7 +35,7 @@ RSpec.describe LinkTag, type: :liquid_tag do
       <div class='ltag__link'>
         <a href='#{article.user.path}' class='ltag__link__link'>
           <div class='ltag__link__pic'>
-            <img src='#{ProfileImage.new(article.user).get(150)}' alt='#{article.user.username} image'/>
+            <img src='#{ProfileImage.new(article.user).get(width: 150)}' alt='#{article.user.username} image'>
           </div>
         </a>
         <a href='#{article.path}' class='ltag__link__link'>

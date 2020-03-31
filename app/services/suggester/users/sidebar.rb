@@ -1,7 +1,6 @@
 module Suggester
   module Users
     class Sidebar
-      attr_accessor :user, :given_tag
       def initialize(user, given_tag)
         @user = user
         @given_tag = given_tag
@@ -27,6 +26,8 @@ module Suggester
       end
 
       private
+
+      attr_reader :user, :given_tag
 
       def generate_cache_name
         "tag-#{given_tag}_user-#{user.id}-#{user.last_followed_at}/tag-follow-sugggestions"

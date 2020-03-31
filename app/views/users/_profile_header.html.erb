@@ -14,7 +14,7 @@
   <meta itemprop="url" content="https://dev.to/<%= @user.username %>">
   <div class="user-profile-header-container">
     <div class="profile-pic-wrapper">
-      <img class="profile-pic" src="<%= ProfileImage.new(@user).get(320) %>" itemprop="image" alt="<%= @user.username %> profile" style="border-color:<%= user_colors(@user)[:bg] %>;background:<%= user_colors(@user)[:bg] %>" />
+      <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 320) %>" itemprop="image" alt="<%= @user.username %> profile" style="border-color:<%= user_colors(@user)[:bg] %>;background:<%= user_colors(@user)[:bg] %>" />
     </div>
     <div class="profile-details">
       <h1 style="color:<%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.78) %>">

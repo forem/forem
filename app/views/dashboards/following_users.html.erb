@@ -14,7 +14,7 @@
         <div id="follows-<%= follow.id %>" class="single-article">
           <a href="<%= user.path %>" class="block-link">
             <h2>
-              <img alt="<%= user.username %> profile image" src="<%= ProfileImage.new(user).get(60) %>" />
+              <img alt="<%= user.username %> profile image" src="<%= ProfileImage.new(user).get(width: 60) %>" />
               <%= user.name %>
               <span class="dashboard-username">@<%= user.username %></span>
             </h2>

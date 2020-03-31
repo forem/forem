@@ -1,6 +1,4 @@
 class OrganizationDecorator < ApplicationDecorator
-  delegate_all
-
   def darker_color(adjustment = 0.88)
     HexComparer.new([enriched_colors[:bg], enriched_colors[:text]]).brightness(adjustment)
   end
@@ -13,8 +11,8 @@ class OrganizationDecorator < ApplicationDecorator
       }
     else
       {
-        bg: bg_color_hex || assigned_color[:bg],
-        text: text_color_hex || assigned_color[:text]
+        bg: bg_color_hex,
+        text: text_color_hex.presence || assigned_color[:text]
       }
     end
   end
@@ -24,5 +22,11 @@ class OrganizationDecorator < ApplicationDecorator
       bg: "#0a0a0a",
       text: "#ffffff"
     }
+  end
+
+  def fully_banished?
+    # We do not *currently* have the functionality to "ban" organizations.
+    # We deal with them in other ways, but we still need to respond to this question.
+    false
   end
 end

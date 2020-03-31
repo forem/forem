@@ -6,7 +6,7 @@ FROM ruby:2.6.5-alpine3.10
 #
 #------------------------------------------------------------------------------
 RUN apk update -qq && apk add git nodejs postgresql-client ruby-dev build-base \
-  libxml2-dev libxslt-dev pcre-dev libffi-dev postgresql-dev tzdata imagemagick
+  less libxml2-dev libxslt-dev pcre-dev libffi-dev postgresql-dev tzdata imagemagick
 
 #------------------------------------------------------------------------------
 #
@@ -22,7 +22,7 @@ RUN gem install bundler:2.0.2
 #------------------------------------------------------------------------------
 ENV PATH=/root/.yarn/bin:$PATH
 RUN apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
-        yarn
+  yarn
 
 #------------------------------------------------------------------------------
 #
@@ -36,7 +36,7 @@ WORKDIR /usr/src/app
 # Copy Gemfile and run bundle install
 #
 #------------------------------------------------------------------------------
-COPY Gemfile /usr/src/app/Gemfile
+COPY ./.ruby-version .
 COPY ./Gemfile ./Gemfile.lock ./
 RUN bundle install --jobs 20 --retry 5
 
@@ -71,6 +71,10 @@ ENV	DATABASE_URL="postgresql://devto:devto@db:5432/PracticalDeveloper_developmen
 ENV DB_SETUP="false" \
   DB_MIGRATE="false"
 
+# In order for redis to work, these should be set
+ENV REDIS_URL="redis://redis:6379" \
+  REDIS_SESSIONS_URL="redis://redis:6379"
+
 #
 # Let's setup the public uploads folder volume
 #
@@ -81,4 +85,4 @@ VOLUME /usr/src/app/public/uploads
 COPY docker-entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/docker-entrypoint.sh
 
-COPY . /usr/src/app
+COPY . .

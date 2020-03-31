@@ -114,4 +114,35 @@ RSpec.describe "Pages", type: :request do
       end
     end
   end
+
+  describe "GET /robots.txt" do
+    it "has proper text" do
+      get "/robots.txt"
+      expect(response.body).to include("Sitemap: https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com/sitemaps/sitemap.xml.gz")
+    end
+  end
+
+  describe "GET /report-abuse" do
+    context "when provided the referer" do
+      it "prefills with the provided url" do
+        url = Faker::Internet.url
+        get "/report-abuse", headers: { referer: url }
+        expect(response.body).to include(url)
+      end
+
+      it "does not prefill if the provide url is /serviceworker.js" do
+        url = "https://dev.to/serviceworker.js"
+        get "/report-abuse", headers: { referer: url }
+        expect(response.body).not_to include(url)
+      end
+    end
+
+    context "when provided the params" do
+      it "prefills with the provided param url" do
+        url = "https://dev.to/serviceworker.js"
+        get "/report-abuse", params: { url: url }
+        expect(response.body).to include(url)
+      end
+    end
+  end
 end

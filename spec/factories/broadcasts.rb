@@ -1,15 +1,36 @@
 FactoryBot.define do
   factory :broadcast do
-    sent { false }
-  end
+    active { true }
 
-  trait :onboarding do
-    title { "Welcome Notification" }
-    type_of { "Onboarding" }
-    processed_html { "Welcome! Introduce yourself in our <a href='/welcome'>welcome thread!</a>" }
-  end
+    factory :welcome_broadcast do
+      title          { "Welcome Notification: welcome_thread" }
+      type_of        { "Welcome" }
+      processed_html { "Sloan here again! 👋 DEV is a friendly community. Why not introduce yourself by leaving a comment in <a href='/welcome'>the welcome thread</a>!" }
+    end
 
-  trait :sent do
-    sent { true }
+    factory :twitter_connect_broadcast do
+      title          { "Welcome Notification: twitter_connect" }
+      type_of        { "Welcome" }
+      processed_html { "You're on a roll! 🎉 Let's connect your <a href='/settings'> Twitter account</a> to complete your identity so that we don't think you're a robot. 🤖" }
+    end
+
+    factory :github_connect_broadcast do
+      title          { "Welcome Notification: github_connect" }
+      type_of        { "Welcome" }
+      processed_html { "You're on a roll! 🎉 Let's connect your <a href='/settings'> GitHub account</a> to complete your identity so that we don't think you're a robot. 🤖" }
+    end
+
+    factory :customize_broadcast do
+      title          { "Welcome Notification: customize_experience" }
+      type_of        { "Welcome" }
+      processed_html { "Sloan here! 👋 Did you know that that you can customize your DEV experience? Try changing <a href='settings/ux'>your font and theme</a> and find the best style for you!" }
+    end
+
+    # TODO: [@thepracticaldev/delightful] Remove onboarding factory once welcome notifications are live.
+    factory :onboarding_broadcast do
+      title          { "Welcome Notification" }
+      type_of        { "Onboarding" }
+      processed_html { "Welcome! Introduce yourself in our <a href='/welcome'>welcome thread!</a>" }
+    end
   end
 end

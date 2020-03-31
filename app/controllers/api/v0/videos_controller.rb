@@ -1,22 +1,26 @@
 module Api
   module V0
     class VideosController < ApiController
-      caches_action :index,
-                    cache_path: proc { |c| c.params.permit! },
-                    expires_in: 10.minutes
-      respond_to :json
-
-      before_action :cors_preflight_check
-      after_action :cors_set_access_control_headers
+      before_action :set_cache_control_headers, only: %i[index]
 
       def index
-        @page = params[:page]
-        @video_articles = Article.published.
-          where.not(video: [nil, ""], video_thumbnail_url: [nil, ""]).
-          where("score > ?", -4).
-          order("hotness_score DESC").
-          page(params[:page].to_i).per(24)
+        page = params[:page]
+        per_page = (params[:per_page] || 24).to_i
+        num = [per_page, 1000].min
+
+        @video_articles = Article.with_video.
+          includes([:user]).
+          select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).
+          order(hotness_score: :desc).
+          page(page).per(num)
+
+        set_surrogate_key_header "videos", Article.table_key, @video_articles.map(&:record_key)
       end
+
+      INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[
+        id video path title video_thumbnail_url user_id video_duration_in_seconds
+      ].freeze
+      private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
     end
   end
 end

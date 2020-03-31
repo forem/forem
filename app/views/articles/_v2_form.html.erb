@@ -3,7 +3,7 @@
 <div class="articleformcontainer">
   <div class="articleform"
        id="article-form"
-       data-article="<%= article.to_json(only: %i[id title cached_tag_list published body_markdown main_image organization_id canonical_url], methods: %i[series all_series]) %>"
+       data-article="<%= article.to_json(only: %i[id title cached_tag_list published body_markdown main_image organization_id canonical_url updated_at], methods: %i[series all_series]) %>"
        data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
        data-version="<%= version %>">
     <form class="articleform__form articleform__form--<%= version %>">
@@ -18,16 +18,16 @@
         <% if article.main_image.present? %>
           <div class="articleform__mainimage"><img src="<%= article.main_image %>"></div>
         <% end %>
-        <input class="articleform__title articleform__titlepreview" type="text" value="<%= article.title %>" placeholder="Title" />
+        <input class="articleform__title articleform__titlepreview" type="text" value="<%= article.title %>" placeholder="Title" name="title" />
         <div class="articleform__detailfields">
           <div class="articleform__tagswrapper">
-            <textarea type="text" class="articleform__tags" placeholder="4 tags max, comma separated, no spaces or special characters"><%= article.cached_tag_list %></textarea>
+            <input type="text" class="articleform__tags" placeholder="4 tags max, comma separated, no spaces or special characters" name="tags" value="<%= article.cached_tag_list %>" />
           </div>
           <button class="articleform__detailsButton articleform__detailsButton--image"></button>
           <button class="articleform__detailsButton articleform__detailsButton--moreconfig"></button>
         </div>
       <% end %>
-      <textarea class="articleform__body" placeholder="Body Markdown" name="body_markdown" style="margin-top: -4px"><%= article.body_markdown %></textarea>
+      <textarea class="articleform__body" placeholder="Body Markdown" name="body_markdown"><%= article.body_markdown %></textarea>
       <div>
         <button class="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"></button>
         <% if version == "v2" %>

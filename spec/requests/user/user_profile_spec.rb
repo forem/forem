@@ -14,7 +14,7 @@ RSpec.describe "UserProfiles", type: :request do
       create(:article, user_id: user.id)
       create(:article, user_id: user.id)
       last_article = create(:article, user_id: user.id)
-      create(:profile_pin, pinnable_id: last_article.id, profile_id: user.id)
+      create(:profile_pin, pinnable: last_article, profile: user)
       get "/#{user.username}"
       expect(response.body).to include "Pinned"
     end
@@ -39,6 +39,13 @@ RSpec.describe "UserProfiles", type: :request do
       expect(response).to redirect_to("/#{user.username}")
     end
 
+    it "raises not found for banished users" do
+      banishable_user = create(:user)
+      Moderator::BanishUser.call(admin: user, user: banishable_user)
+      expect { get "/#{banishable_user.reload.old_username}" }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { get "/#{banishable_user.reload.username}" }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
     it "renders noindex meta if banned" do
       user.add_role(:banned)
       get "/#{user.username}"
@@ -48,6 +55,18 @@ RSpec.describe "UserProfiles", type: :request do
     it "does not render noindex meta if not banned" do
       get "/#{user.username}"
       expect(response.body).not_to include("<meta name=\"googlebot\" content=\"noindex\">")
+    end
+
+    it "renders rss feed link if any stories" do
+      create(:article, user_id: user.id)
+
+      get "/#{user.username}"
+      expect(response.body).to include("/feed/#{user.username}")
+    end
+
+    it "does not render feed link if no stories" do
+      get "/#{user.username}"
+      expect(response.body).not_to include("/feed/#{user.username}")
     end
 
     context "when organization" do
@@ -96,6 +115,17 @@ RSpec.describe "UserProfiles", type: :request do
         get organization.path
         expect(response.body).to include(ActionController::Base.helpers.sanitize(organization.location))
       end
+
+      it "renders rss feed link if any stories" do
+        create(:article, organization_id: organization.id)
+        get organization.path
+        expect(response.body).to include("/feed/#{organization.slug}")
+      end
+
+      it "does not render feed link if no stories" do
+        get organization.path
+        expect(response.body).not_to include("/feed/#{organization.slug}")
+      end
     end
 
     context "when github repo" do
@@ -113,14 +143,6 @@ RSpec.describe "UserProfiles", type: :request do
         get "/#{user.username}"
         expect(response.body).to include "A book bot 🤖"
       end
-    end
-  end
-
-  describe "GET /user" do
-    it "renders to appropriate page" do
-      user = create(:user)
-      get "/#{user.username}"
-      expect(response.body).to include CGI.escapeHTML(user.name)
     end
   end
 

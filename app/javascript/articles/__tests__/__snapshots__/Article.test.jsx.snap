@@ -1,0 +1,1618 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Article /> component should render a podcast article 1`] = `
+<div
+  class="single-article single-article-small-pic single-article-single-podcast"
+>
+  <div
+    class="small-pic"
+  >
+    <a
+      class="small-pic-link-wrapper"
+      href="/monitor-recontextualize"
+    >
+      <img
+        alt="Rubber local"
+        src="/images/16.png"
+      />
+    </a>
+  </div>
+  <a
+    class="small-pic-link-wrapper index-article-link"
+    href="/some-post/path"
+    id="article-link-49020"
+  >
+    <div
+      class="content"
+    >
+      <h3>
+        <span
+          class="tag-identifier"
+        >
+          podcast
+        </span>
+        monitor recontextualize
+      </h3>
+    </div>
+  </a>
+  <h4>
+    <a
+      href="/monitor-recontextualize"
+    >
+      Rubber local
+    </a>
+  </h4>
+</div>
+`;
+
+exports[`<Article /> component should render a podcast episode 1`] = `
+<div
+  class="single-article single-article-small-pic"
+  data-content-user-id={27683}
+>
+  <div
+    class="small-pic"
+  >
+    <a
+      class="small-pic-link-wrapper"
+      href="/Nova_Luettgen"
+    >
+      <img
+        alt="Nova_Luettgen profile"
+        loading="lazy"
+        src="/images/10.png"
+      />
+    </a>
+  </div>
+  <a
+    class="small-pic-link-wrapper index-article-link"
+    href="/some-post/path"
+    id="article-link-49020"
+  >
+    <div
+      class="content"
+    >
+      <h3>
+        <span
+          class="tag-identifier"
+          style={
+            Object {
+              "background": "#000000",
+              "color": "#ffffff",
+            }
+          }
+        >
+          #javascript
+        </span>
+        <span
+          class="tag-identifier"
+        >
+          podcast
+        </span>
+        monitor recontextualize
+      </h3>
+    </div>
+  </a>
+  <h4>
+    <a
+      href="/Nova_Luettgen"
+    >
+      Henri Gibson・
+      <time
+        dateTime="Tue, 18 Feb 2020 15:11:02 GMT"
+      >
+        February 18
+      </time>
+      <span
+        class="time-ago-indicator"
+      >
+        (just now)
+      </span>
+    </a>
+  </h4>
+  <div
+    class="tags"
+  >
+    <a
+      href="/t/javascript"
+    >
+      <span
+        class="tag"
+      >
+        #javascript
+      </span>
+    </a>
+    <a
+      href="/t/ruby"
+    >
+      <span
+        class="tag"
+      >
+        #ruby
+      </span>
+    </a>
+    <a
+      href="/t/go"
+    >
+      <span
+        class="tag"
+      >
+        #go
+      </span>
+    </a>
+  </div>
+  <div
+    class="article-engagement-count reactions-count"
+  >
+    <a
+      href="/some-post/path"
+    >
+      <img
+        alt="heart"
+        loading="lazy"
+      />
+      <span
+        class="engagement-count-number"
+        id="engagement-count-number-49020"
+      >
+        0
+      </span>
+    </a>
+  </div>
+</div>
+`;
+
+exports[`<Article /> component should render a standard article 1`] = `
+<div
+  class="single-article single-article-small-pic"
+  data-content-user-id={23289}
+>
+  <div
+    class="small-pic"
+  >
+    <a
+      class="small-pic-link-wrapper"
+      href="/Emil99"
+    >
+      <img
+        alt="Emil99 profile"
+        loading="lazy"
+        src="/images/10.png"
+      />
+    </a>
+  </div>
+  <a
+    class="small-pic-link-wrapper index-article-link"
+    href="/some-post/path"
+    id="article-link-62407"
+  >
+    <div
+      class="content"
+    >
+      <h3>
+        Unbranded Home Loan Account
+      </h3>
+    </div>
+  </a>
+  <h4>
+    <a
+      href="/Emil99"
+    >
+      Stella Macejkovic・
+      <time
+        dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
+      >
+        February 18
+      </time>
+      <span
+        class="time-ago-indicator"
+      >
+        (just now)
+      </span>
+    </a>
+  </h4>
+  <div
+    class="tags"
+  >
+    <a
+      href="/t/javascript"
+    >
+      <span
+        class="tag"
+      >
+        #javascript
+      </span>
+    </a>
+    <a
+      href="/t/ruby"
+    >
+      <span
+        class="tag"
+      >
+        #ruby
+      </span>
+    </a>
+    <a
+      href="/t/go"
+    >
+      <span
+        class="tag"
+      >
+        #go
+      </span>
+    </a>
+  </div>
+  <div
+    class="article-engagement-count reactions-count"
+  >
+    <a
+      href="/some-post/path"
+    >
+      <img
+        alt="heart"
+        loading="lazy"
+        src="/images/reactions-stack.png"
+      />
+      <span
+        class="engagement-count-number"
+        id="engagement-count-number-62407"
+      >
+        0
+      </span>
+    </a>
+  </div>
+  <a
+    class="article-reading-time"
+    href="/some-post/path"
+  >
+    undefined min read
+  </a>
+  <button
+    class="article-engagement-count engage-button bookmark-button "
+    data-initial-feed={true}
+    data-reactable-id={62407}
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseOver={[Function]}
+    onMouseout={[Function]}
+    type="button"
+  >
+    <span
+      class="bm-initial"
+    />
+  </button>
+</div>
+`;
+
+exports[`<Article /> component should render a user article 1`] = `
+<div
+  class="single-article single-article-small-pic"
+  data-content-user-id={7955}
+>
+  <div
+    class="small-pic"
+  >
+    <a
+      class="small-pic-link-wrapper"
+      href="/phyllis.armstrong"
+    >
+      <img
+        alt="phyllis.armstrong profile"
+        loading="lazy"
+        src="/images/3.png"
+      />
+    </a>
+  </div>
+  <a
+    class="small-pic-link-wrapper index-article-link"
+    id="article-link-24692"
+  >
+    <div
+      class="content"
+    >
+      <h3>
+        <span
+          class="tag-identifier"
+          style={
+            Object {
+              "background": "#5874d9",
+              "color": "white",
+            }
+          }
+        >
+          person
+        </span>
+        Phyllis Armstrong
+      </h3>
+    </div>
+  </a>
+  <h4>
+    <a
+      href="/phyllis.armstrong"
+    >
+      phyllis.armstrong
+    </a>
+  </h4>
+  <div
+    class="tags"
+  />
+  <button
+    class="article-engagement-count engage-button follow-action-button"
+    data-follow-action-button={true}
+    data-info="{\\"id\\":24692,\\"className\\":\\"User\\"}"
+    style={
+      Object {
+        "width": "122px",
+      }
+    }
+    type="button"
+  >
+     
+  </button>
+</div>
+`;
+
+exports[`<Article /> component should render a video article 1`] = `
+<div
+  class="single-article single-article-small-pic"
+  data-content-user-id={27683}
+>
+  <a
+    class="single-article-video-preview"
+    href="/some-post/path"
+    style="background-image:url(/images/onboarding-background.png)"
+  >
+    <div
+      class="single-article-video-duration"
+    >
+      <img
+        alt="video camera"
+        loading="lazy"
+        src="/images/video-camera.svg"
+      />
+      10
+    </div>
+  </a>
+  <div
+    class="small-pic"
+  >
+    <a
+      class="small-pic-link-wrapper"
+      href="/Nova_Luettgen"
+    >
+      <img
+        alt="Nova_Luettgen profile"
+        loading="lazy"
+        src="/images/10.png"
+      />
+    </a>
+  </div>
+  <a
+    class="small-pic-link-wrapper index-article-link"
+    href="/some-post/path"
+    id="article-link-49020"
+  >
+    <div
+      class="content"
+    >
+      <h3>
+        monitor recontextualize
+      </h3>
+    </div>
+  </a>
+  <h4>
+    <a
+      href="/Nova_Luettgen"
+    >
+      Henri Gibson・
+      <time
+        dateTime="Tue, 18 Feb 2020 15:11:02 GMT"
+      >
+        February 18
+      </time>
+      <span
+        class="time-ago-indicator"
+      >
+        (just now)
+      </span>
+    </a>
+  </h4>
+  <div
+    class="tags"
+  >
+    <a
+      href="/t/javascript"
+    >
+      <span
+        class="tag"
+      >
+        #javascript
+      </span>
+    </a>
+    <a
+      href="/t/ruby"
+    >
+      <span
+        class="tag"
+      >
+        #ruby
+      </span>
+    </a>
+    <a
+      href="/t/go"
+    >
+      <span
+        class="tag"
+      >
+        #go
+      </span>
+    </a>
+  </div>
+  <div
+    class="article-engagement-count reactions-count"
+  >
+    <a
+      href="/some-post/path"
+    >
+      <img
+        alt="heart"
+        loading="lazy"
+        src="/images/reactions-stack.png"
+      />
+      <span
+        class="engagement-count-number"
+        id="engagement-count-number-49020"
+      >
+        0
+      </span>
+    </a>
+  </div>
+  <a
+    class="article-reading-time"
+    href="/some-post/path"
+  >
+    undefined min read
+  </a>
+  <button
+    class="article-engagement-count engage-button bookmark-button "
+    data-initial-feed={true}
+    data-reactable-id={49020}
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseOver={[Function]}
+    onMouseout={[Function]}
+    type="button"
+  >
+    <span
+      class="bm-initial"
+    />
+  </button>
+</div>
+`;
+
+exports[`<Article /> component should render a video article with a flare tag 1`] = `
+<div
+  class="single-article single-article-small-pic"
+  data-content-user-id={27683}
+>
+  <a
+    class="single-article-video-preview"
+    href="/some-post/path"
+    style="background-image:url(/images/onboarding-background.png)"
+  >
+    <div
+      class="single-article-video-duration"
+    >
+      <img
+        alt="video camera"
+        loading="lazy"
+        src="/images/video-camera.svg"
+      />
+      10
+    </div>
+  </a>
+  <div
+    class="small-pic"
+  >
+    <a
+      class="small-pic-link-wrapper"
+      href="/Nova_Luettgen"
+    >
+      <img
+        alt="Nova_Luettgen profile"
+        loading="lazy"
+        src="/images/10.png"
+      />
+    </a>
+  </div>
+  <a
+    class="small-pic-link-wrapper index-article-link"
+    href="/some-post/path"
+    id="article-link-49020"
+  >
+    <div
+      class="content"
+    >
+      <h3>
+        <span
+          class="tag-identifier"
+          style={
+            Object {
+              "background": "#000000",
+              "color": "#ffffff",
+            }
+          }
+        >
+          #javascript
+        </span>
+        monitor recontextualize
+      </h3>
+    </div>
+  </a>
+  <h4>
+    <a
+      href="/Nova_Luettgen"
+    >
+      Henri Gibson・
+      <time
+        dateTime="Tue, 18 Feb 2020 15:11:02 GMT"
+      >
+        February 18
+      </time>
+      <span
+        class="time-ago-indicator"
+      >
+        (just now)
+      </span>
+    </a>
+  </h4>
+  <div
+    class="tags"
+  >
+    <a
+      href="/t/javascript"
+    >
+      <span
+        class="tag"
+      >
+        #javascript
+      </span>
+    </a>
+    <a
+      href="/t/ruby"
+    >
+      <span
+        class="tag"
+      >
+        #ruby
+      </span>
+    </a>
+    <a
+      href="/t/go"
+    >
+      <span
+        class="tag"
+      >
+        #go
+      </span>
+    </a>
+  </div>
+  <div
+    class="article-engagement-count reactions-count"
+  >
+    <a
+      href="/some-post/path"
+    >
+      <img
+        alt="heart"
+        loading="lazy"
+        src="/images/reactions-stack.png"
+      />
+      <span
+        class="engagement-count-number"
+        id="engagement-count-number-49020"
+      >
+        0
+      </span>
+    </a>
+  </div>
+  <a
+    class="article-reading-time"
+    href="/some-post/path"
+  >
+    undefined min read
+  </a>
+  <button
+    class="article-engagement-count engage-button bookmark-button "
+    data-initial-feed={true}
+    data-reactable-id={49020}
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseOver={[Function]}
+    onMouseout={[Function]}
+    type="button"
+  >
+    <span
+      class="bm-initial"
+    />
+  </button>
+</div>
+`;
+
+exports[`<Article /> component should render as saved on reading list 1`] = `
+<div
+  class="single-article single-article-small-pic"
+  data-content-user-id={23289}
+>
+  <div
+    class="small-pic"
+  >
+    <a
+      class="small-pic-link-wrapper"
+      href="/Emil99"
+    >
+      <img
+        alt="Emil99 profile"
+        loading="lazy"
+        src="/images/10.png"
+      />
+    </a>
+  </div>
+  <a
+    class="small-pic-link-wrapper index-article-link"
+    href="/some-post/path"
+    id="article-link-62407"
+  >
+    <div
+      class="content"
+    >
+      <h3>
+        <span
+          class="tag-identifier"
+          style={
+            Object {
+              "background": "#000000",
+              "color": "#ffffff",
+            }
+          }
+        >
+          #javascript
+        </span>
+        Unbranded Home Loan Account
+      </h3>
+    </div>
+  </a>
+  <h4>
+    <a
+      href="/Emil99"
+    >
+      Stella Macejkovic・
+      <time
+        dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
+      >
+        February 18
+      </time>
+      <span
+        class="time-ago-indicator"
+      >
+        (just now)
+      </span>
+    </a>
+  </h4>
+  <div
+    class="tags"
+  >
+    <a
+      href="/t/javascript"
+    >
+      <span
+        class="tag"
+      >
+        #javascript
+      </span>
+    </a>
+    <a
+      href="/t/ruby"
+    >
+      <span
+        class="tag"
+      >
+        #ruby
+      </span>
+    </a>
+    <a
+      href="/t/go"
+    >
+      <span
+        class="tag"
+      >
+        #go
+      </span>
+    </a>
+  </div>
+  <div
+    class="article-engagement-count comments-count"
+  >
+    <a
+      href="/some-post/path#comments"
+    >
+      <img
+        alt="chat"
+        loading="lazy"
+        src="/images/comments-bubble.png"
+      />
+      <span
+        class="engagement-count-number"
+      >
+        213
+      </span>
+    </a>
+  </div>
+  <div
+    class="article-engagement-count reactions-count"
+  >
+    <a
+      href="/some-post/path"
+    >
+      <img
+        alt="heart"
+        loading="lazy"
+        src="/images/reactions-stack.png"
+      />
+      <span
+        class="engagement-count-number"
+        id="engagement-count-number-62407"
+      >
+        428
+      </span>
+    </a>
+  </div>
+  <a
+    class="article-reading-time"
+    href="/some-post/path"
+  >
+    undefined min read
+  </a>
+  <button
+    class="article-engagement-count engage-button bookmark-button selected"
+    data-initial-feed={true}
+    data-reactable-id={62407}
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseOver={[Function]}
+    onMouseout={[Function]}
+    type="button"
+  >
+    <span
+      class="bm-success"
+    />
+  </button>
+</div>
+`;
+
+exports[`<Article /> component should render with a flare tag 1`] = `
+<div
+  class="single-article single-article-small-pic"
+  data-content-user-id={23289}
+>
+  <div
+    class="small-pic"
+  >
+    <a
+      class="small-pic-link-wrapper"
+      href="/Emil99"
+    >
+      <img
+        alt="Emil99 profile"
+        loading="lazy"
+        src="/images/10.png"
+      />
+    </a>
+  </div>
+  <a
+    class="small-pic-link-wrapper index-article-link"
+    href="/some-post/path"
+    id="article-link-62407"
+  >
+    <div
+      class="content"
+    >
+      <h3>
+        <span
+          class="tag-identifier"
+          style={
+            Object {
+              "background": "#000000",
+              "color": "#ffffff",
+            }
+          }
+        >
+          #javascript
+        </span>
+        Unbranded Home Loan Account
+      </h3>
+    </div>
+  </a>
+  <h4>
+    <a
+      href="/Emil99"
+    >
+      Stella Macejkovic・
+      <time
+        dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
+      >
+        February 18
+      </time>
+      <span
+        class="time-ago-indicator"
+      >
+        (just now)
+      </span>
+    </a>
+  </h4>
+  <div
+    class="tags"
+  >
+    <a
+      href="/t/javascript"
+    >
+      <span
+        class="tag"
+      >
+        #javascript
+      </span>
+    </a>
+    <a
+      href="/t/ruby"
+    >
+      <span
+        class="tag"
+      >
+        #ruby
+      </span>
+    </a>
+    <a
+      href="/t/go"
+    >
+      <span
+        class="tag"
+      >
+        #go
+      </span>
+    </a>
+  </div>
+  <div
+    class="article-engagement-count reactions-count"
+  >
+    <a
+      href="/some-post/path"
+    >
+      <img
+        alt="heart"
+        loading="lazy"
+        src="/images/reactions-stack.png"
+      />
+      <span
+        class="engagement-count-number"
+        id="engagement-count-number-62407"
+      >
+        0
+      </span>
+    </a>
+  </div>
+  <a
+    class="article-reading-time"
+    href="/some-post/path"
+  >
+    undefined min read
+  </a>
+  <button
+    class="article-engagement-count engage-button bookmark-button "
+    data-initial-feed={true}
+    data-reactable-id={62407}
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseOver={[Function]}
+    onMouseout={[Function]}
+    type="button"
+  >
+    <span
+      class="bm-initial"
+    />
+  </button>
+</div>
+`;
+
+exports[`<Article /> component should render with a reading time 1`] = `
+<div
+  class="single-article single-article-small-pic"
+  data-content-user-id={23289}
+>
+  <div
+    class="small-pic"
+  >
+    <a
+      class="small-pic-link-wrapper"
+      href="/Emil99"
+    >
+      <img
+        alt="Emil99 profile"
+        loading="lazy"
+        src="/images/10.png"
+      />
+    </a>
+  </div>
+  <a
+    class="small-pic-link-wrapper index-article-link"
+    href="/some-post/path"
+    id="article-link-62407"
+  >
+    <div
+      class="content"
+    >
+      <h3>
+        <span
+          class="tag-identifier"
+          style={
+            Object {
+              "background": "#000000",
+              "color": "#ffffff",
+            }
+          }
+        >
+          #javascript
+        </span>
+        Unbranded Home Loan Account
+      </h3>
+    </div>
+  </a>
+  <h4>
+    <a
+      href="/Emil99"
+    >
+      Stella Macejkovic・
+      <time
+        dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
+      >
+        February 18
+      </time>
+      <span
+        class="time-ago-indicator"
+      >
+        (just now)
+      </span>
+    </a>
+  </h4>
+  <div
+    class="tags"
+  >
+    <a
+      href="/t/javascript"
+    >
+      <span
+        class="tag"
+      >
+        #javascript
+      </span>
+    </a>
+    <a
+      href="/t/ruby"
+    >
+      <span
+        class="tag"
+      >
+        #ruby
+      </span>
+    </a>
+    <a
+      href="/t/go"
+    >
+      <span
+        class="tag"
+      >
+        #go
+      </span>
+    </a>
+  </div>
+  <div
+    class="article-engagement-count reactions-count"
+  >
+    <a
+      href="/some-post/path"
+    >
+      <img
+        alt="heart"
+        loading="lazy"
+        src="/images/reactions-stack.png"
+      />
+      <span
+        class="engagement-count-number"
+        id="engagement-count-number-62407"
+      >
+        0
+      </span>
+    </a>
+  </div>
+  <a
+    class="article-reading-time"
+    href="/some-post/path"
+  >
+    8 min read
+  </a>
+  <button
+    class="article-engagement-count engage-button bookmark-button "
+    data-initial-feed={true}
+    data-reactable-id={62407}
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseOver={[Function]}
+    onMouseout={[Function]}
+    type="button"
+  >
+    <span
+      class="bm-initial"
+    />
+  </button>
+</div>
+`;
+
+exports[`<Article /> component should render with a snippet result 1`] = `
+<div
+  class="single-article single-article-small-pic"
+  data-content-user-id={23289}
+>
+  <div
+    class="small-pic"
+  >
+    <a
+      class="small-pic-link-wrapper"
+      href="/Emil99"
+    >
+      <img
+        alt="Emil99 profile"
+        loading="lazy"
+        src="/images/10.png"
+      />
+    </a>
+  </div>
+  <a
+    class="small-pic-link-wrapper index-article-link"
+    href="/some-post/path"
+    id="article-link-62407"
+  >
+    <div
+      class="content"
+    >
+      <h3>
+        <span
+          class="tag-identifier"
+          style={
+            Object {
+              "background": "#000000",
+              "color": "#ffffff",
+            }
+          }
+        >
+          #javascript
+        </span>
+        Unbranded Home Loan Account
+      </h3>
+      <div
+        class="search-snippet"
+      >
+        <span>
+          …copying Rest withdrawal Handcrafted multi-state Pre-emptive e-markets feed overriding RSS Fantastic Plastic Gloves invoice productize systemic Monaco…
+        </span>
+      </div>
+    </div>
+  </a>
+  <h4>
+    <a
+      href="/Emil99"
+    >
+      Stella Macejkovic・
+      <time
+        dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
+      >
+        February 18
+      </time>
+      <span
+        class="time-ago-indicator"
+      >
+        (just now)
+      </span>
+    </a>
+  </h4>
+  <div
+    class="tags"
+  >
+    <a
+      href="/t/javascript"
+    >
+      <span
+        class="tag"
+      >
+        #javascript
+      </span>
+    </a>
+    <a
+      href="/t/ruby"
+    >
+      <span
+        class="tag"
+      >
+        #ruby
+      </span>
+    </a>
+    <a
+      href="/t/go"
+    >
+      <span
+        class="tag"
+      >
+        #go
+      </span>
+    </a>
+  </div>
+  <div
+    class="article-engagement-count reactions-count"
+  >
+    <a
+      href="/some-post/path"
+    >
+      <img
+        alt="heart"
+        loading="lazy"
+        src="/images/reactions-stack.png"
+      />
+      <span
+        class="engagement-count-number"
+        id="engagement-count-number-62407"
+      >
+        0
+      </span>
+    </a>
+  </div>
+  <a
+    class="article-reading-time"
+    href="/some-post/path"
+  >
+    undefined min read
+  </a>
+  <button
+    class="article-engagement-count engage-button bookmark-button "
+    data-initial-feed={true}
+    data-reactable-id={62407}
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseOver={[Function]}
+    onMouseout={[Function]}
+    type="button"
+  >
+    <span
+      class="bm-initial"
+    />
+  </button>
+</div>
+`;
+
+exports[`<Article /> component should render with an organization 1`] = `
+<div
+  class="single-article single-article-small-pic"
+  data-content-user-id={23289}
+>
+  <div
+    class="article-organization-headline"
+  >
+    <a
+      class="org-headline-filler"
+      href="/bluetooth-Gorgeous-Wooden-Pants"
+    >
+      <img
+        alt="Web info-mediaries logo"
+        loading="lazy"
+        src="/images/30.png"
+      />
+      Web info-mediaries
+    </a>
+  </div>
+  <div
+    class="small-pic"
+  >
+    <a
+      class="small-pic-link-wrapper"
+      href="/Emil99"
+    >
+      <img
+        alt="Emil99 profile"
+        loading="lazy"
+        src="/images/10.png"
+      />
+    </a>
+  </div>
+  <a
+    class="small-pic-link-wrapper index-article-link"
+    href="/some-post/path"
+    id="article-link-62407"
+  >
+    <div
+      class="content"
+    >
+      <h3>
+        Unbranded Home Loan Account
+      </h3>
+    </div>
+  </a>
+  <h4>
+    <a
+      href="/Emil99"
+    >
+      Stella Macejkovic・
+      <time
+        dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
+      >
+        February 18
+      </time>
+      <span
+        class="time-ago-indicator"
+      >
+        (just now)
+      </span>
+    </a>
+  </h4>
+  <div
+    class="tags"
+  >
+    <a
+      href="/t/javascript"
+    >
+      <span
+        class="tag"
+      >
+        #javascript
+      </span>
+    </a>
+    <a
+      href="/t/ruby"
+    >
+      <span
+        class="tag"
+      >
+        #ruby
+      </span>
+    </a>
+    <a
+      href="/t/go"
+    >
+      <span
+        class="tag"
+      >
+        #go
+      </span>
+    </a>
+  </div>
+  <div
+    class="article-engagement-count reactions-count"
+  >
+    <a
+      href="/some-post/path"
+    >
+      <img
+        alt="heart"
+        loading="lazy"
+        src="/images/reactions-stack.png"
+      />
+      <span
+        class="engagement-count-number"
+        id="engagement-count-number-62407"
+      >
+        0
+      </span>
+    </a>
+  </div>
+  <a
+    class="article-reading-time"
+    href="/some-post/path"
+  >
+    undefined min read
+  </a>
+  <button
+    class="article-engagement-count engage-button bookmark-button "
+    data-initial-feed={true}
+    data-reactable-id={62407}
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseOver={[Function]}
+    onMouseout={[Function]}
+    type="button"
+  >
+    <span
+      class="bm-initial"
+    />
+  </button>
+</div>
+`;
+
+exports[`<Article /> component should render with comments 1`] = `
+<div
+  class="single-article single-article-small-pic"
+  data-content-user-id={23289}
+>
+  <div
+    class="small-pic"
+  >
+    <a
+      class="small-pic-link-wrapper"
+      href="/Emil99"
+    >
+      <img
+        alt="Emil99 profile"
+        loading="lazy"
+        src="/images/10.png"
+      />
+    </a>
+  </div>
+  <a
+    class="small-pic-link-wrapper index-article-link"
+    href="/some-post/path"
+    id="article-link-62407"
+  >
+    <div
+      class="content"
+    >
+      <h3>
+        <span
+          class="tag-identifier"
+          style={
+            Object {
+              "background": "#000000",
+              "color": "#ffffff",
+            }
+          }
+        >
+          #javascript
+        </span>
+        Unbranded Home Loan Account
+      </h3>
+    </div>
+  </a>
+  <h4>
+    <a
+      href="/Emil99"
+    >
+      Stella Macejkovic・
+      <time
+        dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
+      >
+        February 18
+      </time>
+      <span
+        class="time-ago-indicator"
+      >
+        (just now)
+      </span>
+    </a>
+  </h4>
+  <div
+    class="tags"
+  >
+    <a
+      href="/t/javascript"
+    >
+      <span
+        class="tag"
+      >
+        #javascript
+      </span>
+    </a>
+    <a
+      href="/t/ruby"
+    >
+      <span
+        class="tag"
+      >
+        #ruby
+      </span>
+    </a>
+    <a
+      href="/t/go"
+    >
+      <span
+        class="tag"
+      >
+        #go
+      </span>
+    </a>
+  </div>
+  <div
+    class="article-engagement-count comments-count"
+  >
+    <a
+      href="/some-post/path#comments"
+    >
+      <img
+        alt="chat"
+        loading="lazy"
+        src="/images/comments-bubble.png"
+      />
+      <span
+        class="engagement-count-number"
+      >
+        213
+      </span>
+    </a>
+  </div>
+  <div
+    class="article-engagement-count reactions-count"
+  >
+    <a
+      href="/some-post/path"
+    >
+      <img
+        alt="heart"
+        loading="lazy"
+        src="/images/reactions-stack.png"
+      />
+      <span
+        class="engagement-count-number"
+        id="engagement-count-number-62407"
+      >
+        428
+      </span>
+    </a>
+  </div>
+  <a
+    class="article-reading-time"
+    href="/some-post/path"
+  >
+    undefined min read
+  </a>
+  <button
+    class="article-engagement-count engage-button bookmark-button "
+    data-initial-feed={true}
+    data-reactable-id={62407}
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseOver={[Function]}
+    onMouseout={[Function]}
+    type="button"
+  >
+    <span
+      class="bm-initial"
+    />
+  </button>
+</div>
+`;
+
+exports[`<Article /> component should render with reactions 1`] = `
+<div
+  class="single-article single-article-small-pic"
+  data-content-user-id={23289}
+>
+  <div
+    class="small-pic"
+  >
+    <a
+      class="small-pic-link-wrapper"
+      href="/Emil99"
+    >
+      <img
+        alt="Emil99 profile"
+        loading="lazy"
+        src="/images/10.png"
+      />
+    </a>
+  </div>
+  <a
+    class="small-pic-link-wrapper index-article-link"
+    href="/some-post/path"
+    id="article-link-62407"
+  >
+    <div
+      class="content"
+    >
+      <h3>
+        <span
+          class="tag-identifier"
+          style={
+            Object {
+              "background": "#000000",
+              "color": "#ffffff",
+            }
+          }
+        >
+          #javascript
+        </span>
+        Unbranded Home Loan Account
+      </h3>
+    </div>
+  </a>
+  <h4>
+    <a
+      href="/Emil99"
+    >
+      Stella Macejkovic・
+      <time
+        dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
+      >
+        February 18
+      </time>
+      <span
+        class="time-ago-indicator"
+      >
+        (just now)
+      </span>
+    </a>
+  </h4>
+  <div
+    class="tags"
+  >
+    <a
+      href="/t/javascript"
+    >
+      <span
+        class="tag"
+      >
+        #javascript
+      </span>
+    </a>
+    <a
+      href="/t/ruby"
+    >
+      <span
+        class="tag"
+      >
+        #ruby
+      </span>
+    </a>
+    <a
+      href="/t/go"
+    >
+      <span
+        class="tag"
+      >
+        #go
+      </span>
+    </a>
+  </div>
+  <div
+    class="article-engagement-count reactions-count"
+  >
+    <a
+      href="/some-post/path"
+    >
+      <img
+        alt="heart"
+        loading="lazy"
+        src="/images/reactions-stack.png"
+      />
+      <span
+        class="engagement-count-number"
+        id="engagement-count-number-62407"
+      >
+        232
+      </span>
+    </a>
+  </div>
+  <a
+    class="article-reading-time"
+    href="/some-post/path"
+  >
+    undefined min read
+  </a>
+  <button
+    class="article-engagement-count engage-button bookmark-button "
+    data-initial-feed={true}
+    data-reactable-id={62407}
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onMouseOver={[Function]}
+    onMouseout={[Function]}
+    type="button"
+  >
+    <span
+      class="bm-initial"
+    />
+  </button>
+</div>
+`;

@@ -25,13 +25,13 @@
       <% plucked_article_ids = Article.cached_tagged_with(@tag).pluck(:id) if @tag %>
       <div class="mod-index-hero-data-pod">
         <div class="mod-index-hero-data-pod-number">
-          <%= number_with_delimiter(@tag ? Comment.where(commentable_id: plucked_article_ids ).where("created_at > ?", 7.days.ago).size : Comment.where("created_at > ?", 7.days.ago).size) %>
+          <%= number_with_delimiter(@tag ? Comment.where(commentable_id: plucked_article_ids).where("created_at > ?", 7.days.ago).size : Comment.where("created_at > ?", 7.days.ago).size) %>
         </div>
         Comments This Week
       </div>
       <div class="mod-index-hero-data-pod">
         <div class="mod-index-hero-data-pod-number">
-          <%= number_with_delimiter(@tag ? Reaction.where(reactable_id: plucked_article_ids ).where("created_at > ?", 7.days.ago).size : Reaction.where("created_at > ?", 7.days.ago).size)  %>
+          <%= number_with_delimiter(@tag ? Reaction.where(reactable_id: plucked_article_ids).where("created_at > ?", 7.days.ago).size : Reaction.where("created_at > ?", 7.days.ago).size) %>
         </div>
         Reactions This Week
       </div>
@@ -64,7 +64,7 @@
         </div>
         <div class="mod-index-actions-and-details">
           <button class="quick-mod-button cta" data-path="<%= article.path %>">Quick Mod</button>
-          <a href="/<%= article.cached_user.username %>"><img src="<%= ProfileImage.new(article.cached_user).get(90) %>" /><%= article.cached_user.name %></a>
+          <a href="/<%= article.cached_user.username %>"><img src="<%= ProfileImage.new(article.cached_user).get(width: 90) %>" /><%= article.cached_user.name %></a>
           ・ <%= article.readable_publish_date %>
           <% if article.nth_published_by_author > 0 && article.nth_published_by_author < 4 %>
             ・ 👋 <strong><%= article.nth_published_by_author.ordinalize %> post by this user</strong>
@@ -86,7 +86,7 @@
     <div class="body">
       <p>We periodically award some DEV members with heightened privileges to help moderate the community.</p>
       <p>Email <a href="mailto:<%= SiteConfig.default_site_email %>"><%= SiteConfig.default_site_email %></a> if you'd like to be considered right away.</p>
-      <% if !user_signed_in? %>
+      <% unless user_signed_in? %>
         <p><em>P.S. You are not currently signed in.</em></p>
       <% end %>
     </div>

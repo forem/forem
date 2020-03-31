@@ -19,18 +19,8 @@ class Sponsorship < ApplicationRecord
   validates :level, inclusion: { in: LEVELS }
   validates :status, inclusion: { in: STATUSES }
   validates :url, url: { allow_blank: true, no_local: true, schemes: %w[http https] }
-  validates :level,
-            uniqueness: {
-              scope: :organization,
-              message: "You can have only one sponsorship of #{LEVELS_WITH_EXPIRATION}"
-            },
-            if: proc { LEVELS_WITH_EXPIRATION.include?(level) }
-  validates :level,
-            uniqueness: {
-              scope: [:sponsorable],
-              message: proc { "The tag is already sponsored" }
-            },
-            if: proc { level.to_s == "tag" }
+  validate :validate_tag_uniqueness, if: proc { level.to_s == "tag" }
+  validate :validate_level_uniqueness, if: proc { LEVELS_WITH_EXPIRATION.include?(level) }
 
   scope :gold, -> { where(level: :gold) }
   scope :silver, -> { where(level: :silver) }
@@ -41,4 +31,22 @@ class Sponsorship < ApplicationRecord
 
   scope :live, -> { where(status: :live) }
   scope :pending, -> { where(status: :pending) }
+
+  scope :unexpired, -> { where("expires_at > ?", Time.current) }
+
+  private
+
+  def validate_tag_uniqueness
+    return unless self.class.where(sponsorable: sponsorable, level: :tag).
+      where("expires_at > ? AND id != ?", Time.current, id.to_i).exists?
+
+    errors.add(:level, "The tag is already sponsored")
+  end
+
+  def validate_level_uniqueness
+    return unless self.class.where(organization: organization).
+      where("level IN (?) AND expires_at > ? AND id != ?", LEVELS_WITH_EXPIRATION, Time.current, id.to_i).exists?
+
+    errors.add(:level, "You can have only one sponsorship of #{LEVELS_WITH_EXPIRATION.join(', ')}")
+  end
 end

@@ -17,13 +17,14 @@ triggered errors when installing on Windows, so using WSL allows you to work on
 the software and not having to fix gem incompatibilities.
 
 First, let's enable Windows Subsystem for Linux in your machine. You can do this
-by opening `Control Panel`, going to `Programs`, and then clicking `Turn Windows Features On or Off`. Look for the `Windows Subsystem for Linux` option and check
-the box next to it. Windows will ask for a reboot.
+by opening `Control Panel`, going to `Programs`, and then clicking
+`Turn Windows Features On or Off`. Look for the `Windows Subsystem for Linux`
+option and check the box next to it. Windows will ask for a reboot.
 
 ![Enable WSL on Windows](/wsl-feature.png 'Enable WSL on Windows')
 
-Once you've got this installed and after rebooting, [install Ubuntu 18.04 on
-Windows](https://www.microsoft.com/store/productId/9N9TNGVNDL3Q).
+Once you've got this installed and after rebooting,
+[install Ubuntu 18.04 on Windows](https://www.microsoft.com/store/productId/9N9TNGVNDL3Q).
 
 On your first run, the system will ask for username and password. Take note of
 both since it will be used for `sudo` commands.
@@ -109,9 +110,11 @@ Make sure that Yarn is installed with `yarn -v`
 
 ### PostgreSQL
 
+DEV requires PostgreSQL version 9.5 or higher.
+
 If you don't have PostgreSQL installed on your Windows system, you can do so
 right now. WSL is able to connect to a PostgreSQL instance on your Windows
-machine. DEV requires PostgreSQL version 9.4 or higher.
+machine.
 
 Download [PostgreSQL for Windows](https://www.postgresql.org/download/windows/)
 and install it.
@@ -120,8 +123,8 @@ Pay attention to the username and password you setup during installation of
 PostgreSQL as you will use this to configure your Rails applications to login to
 the database later.
 
-For additional configuration options, check our [PostgreSQL setup
-guide](/installation/postgresql).
+For additional configuration options, check our
+[PostgreSQL setup guide](/installation/postgresql).
 
 ### ImageMagick
 
@@ -135,13 +138,26 @@ it.
 
 DEV requires Redis version 4.0 or higher.
 
-We recommend to follow [this
-guide](https://redislabs.com/blog/redis-on-windows-10/) to run Redis under WSL.
+We recommend to follow
+[this guide](https://redislabs.com/blog/redis-on-windows-10/) to run Redis under
+WSL.
+
+### Elasticsearch
+
+DEV requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is not
+supported. We recommend version 7.5.2.
+
+We recommend following the install guide
+[in Elasticsearch's docs](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/zip-windows.html)
+for installing on Windows machines.
+
+NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
 
 ## Installing DEV
 
 1. Fork DEV's repository, eg. <https://github.com/thepracticaldev/dev.to/fork>
-1. Clone your forked repository, eg. `git clone https://github.com/<your-username>/dev.to.git`
+1. Clone your forked repository, eg.
+   `git clone https://github.com/<your-username>/dev.to.git`
 1. Install bundler with `gem install bundler`
 1. Set up your environment variables/secrets
 
@@ -154,8 +170,9 @@ guide](https://redislabs.com/blog/redis-on-windows-10/) to run Redis under WSL.
    - For any key that you wish to enter/replace:
 
      1. Create `config/application.yml` by copying from the provided template
-        (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in
-        git.
+        (ie. with bash:
+        `cp config/sample_application.yml config/application.yml`). This is a
+        personal file that is ignored in git.
      1. Obtain the development variable and apply the key you wish to
         enter/replace. ie:
 
@@ -166,7 +183,8 @@ guide](https://redislabs.com/blog/redis-on-windows-10/) to run Redis under WSL.
 
    - If you are missing `ENV` variables on bootup, the
      [envied](https://rubygems.org/gems/envied) gem will alert you with messages
-     similar to `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
+     similar to
+     `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 
@@ -178,15 +196,18 @@ guide](https://redislabs.com/blog/redis-on-windows-10/) to run Redis under WSL.
    seeding the database for the first time. Please increase the value of
    `statement_timeout` to `9999999` in `config/database.yml`.
 
-2. If the installation process failed with the following error `ERROR: Error installing pg`. Please consider installing the following package `libpq-dev`
-   :
+2. If the installation process failed with the following error
+   `ERROR: Error installing pg`. Please consider installing the following
+   package `libpq-dev` :
 
 ```bash
 sudo apt-get install libpq-dev
 ```
 
 3. If the command `bin/setup` fails at installing `cld-0.8.0` with the warnings
-   `'aclocal-1.10' is missing on your system` and `'automake-1.10' is missing on your system`. Please install `automake-1.10` using the commands below.
+   `'aclocal-1.10' is missing on your system` and
+   `'automake-1.10' is missing on your system`. Please install `automake-1.10`
+   using the commands below.
 
 ```shell
 cd

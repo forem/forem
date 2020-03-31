@@ -1,9 +1,9 @@
 <div class="single-article single-article-small-pic feed-cta" id="in-feed-cta">
   <div class="cta-container" id="cta-content">
-    <img class="rainbowdevimage" src="<%= asset_path "rainbowdev.svg" %>" alt="rainbow DEV logo" />
+    <img class="rainbowdevimage" src="<%= SiteConfig.primary_sticker_image_url %>" alt="rainbow DEV logo" />
 
     <h2>
-      <a href="/">DEV</a> is a community of <br /><%= number_with_delimiter User.count %> amazing humans who code.
+      <a href="/">DEV</a> is a community of <br /><%= number_with_delimiter User.estimated_count %> amazing humans who code.
     </h2>
 
     <h3>
@@ -11,11 +11,8 @@
     </h3>
 
     <div class="button-container">
-      <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="cta cta-button" aria-label="Sign in with Twitter." data-no-instant>
-        Sign In with Twitter
-      </a>
-      <a href="/users/auth/github?state=in-feed-cta" class="cta cta-button" aria-label="Sign in with GitHub." data-no-instant>
-        Sign In with GitHub
+      <a href="/enter" class="cta cta-button" aria-label="Sign up.">
+        Join Now
       </a>
       <div class="feed-cta-sub">
         <em>We require social login to prevent abuse.</em>

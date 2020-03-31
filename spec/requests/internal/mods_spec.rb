@@ -1,12 +1,13 @@
 require "rails_helper"
 
 RSpec.describe "/internal/mods", type: :request do
-  let(:super_admin)   { create(:user, :super_admin) }
-  let(:regular_user)  { create(:user) }
+  let!(:admin) { create(:user, :admin) }
+  let!(:regular_user) { create(:user) }
+  let!(:moderator) { create(:user, :trusted) }
 
   describe "GET /internal/mods" do
     before do
-      sign_in super_admin
+      sign_in admin
     end
 
     context "when the user is a single resource admin" do
@@ -35,20 +36,29 @@ RSpec.describe "/internal/mods", type: :request do
     end
 
     it "displays mod user" do
-      regular_user.add_role(:trusted)
       get "/internal/mods"
-      expect(response.body).to include(regular_user.username)
+      expect(response.body).to include(moderator.username)
     end
 
     it "does not display non-mod" do
       get "/internal/mods"
       expect(response.body).not_to include(regular_user.username)
     end
+
+    it "lists regular users as potential mods" do
+      get "/internal/mods?state=potential"
+      expect(response.body).to include(regular_user.username)
+    end
+
+    it "does not list mods as potential mods" do
+      get "/internal/mods?state=potential"
+      expect(response.body).not_to include(moderator.username)
+    end
   end
 
   describe "PUT /internal/mods" do
     before do
-      sign_in super_admin
+      sign_in admin
     end
 
     it "displays mod user" do

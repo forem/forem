@@ -4,18 +4,9 @@ import Tags from '../tags';
 
 describe('<Tags />', () => {
   beforeAll(() => {
-    const publicId = document.createElement('meta');
-    publicId.setAttribute('name', 'algolia-public-id');
-    const publicKey = document.createElement('meta');
-    publicKey.setAttribute('name', 'algolia-public-key');
     const environment = document.createElement('meta');
     environment.setAttribute('name', 'environment');
-    document.body.appendChild(publicId);
-    document.body.appendChild(publicKey);
     document.body.appendChild(environment);
-    global.algoliasearch = () => ({
-      initIndex: () => 'initIndex',
-    });
   });
 
   let tags;

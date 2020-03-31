@@ -72,5 +72,9 @@ RSpec.describe "Moderations", type: :request do
     it "returns not found for inapprpriate tags" do
       expect { get "/mod/dsdsdsweweedsdseweww" }.to raise_exception(ActiveRecord::RecordNotFound)
     end
+
+    it "renders not_found when an article can't be found" do
+      expect { get "/#{user.username}/dsdsdsweweedsdseweww/mod/" }.to raise_exception(ActiveRecord::RecordNotFound)
+    end
   end
 end

@@ -1,6 +1,6 @@
 class UserBlock < ApplicationRecord
-  belongs_to :blocker, foreign_key: "blocker_id", class_name: "User", inverse_of: :user_blocks
-  belongs_to :blocked, foreign_key: "blocked_id", class_name: "User", inverse_of: :user_blocks
+  belongs_to :blocker, foreign_key: "blocker_id", class_name: "User", inverse_of: :blocker_blocks
+  belongs_to :blocked, foreign_key: "blocked_id", class_name: "User", inverse_of: :blocked_blocks
 
   validates :blocked_id, :blocker_id, :config, presence: true
   validates :blocked_id, uniqueness: { scope: %i[blocker_id] }

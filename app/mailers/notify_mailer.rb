@@ -54,6 +54,7 @@ class NotifyMailer < ApplicationMailer
     @badge_achievement = badge_achievement
     @user = @badge_achievement.user
     @badge = @badge_achievement.badge
+    @unsubscribe = generate_unsubscribe_token(@user.id, :email_badge_notifications)
     mail(to: @user.email, subject: "You just got a badge")
   end
 
@@ -65,10 +66,18 @@ class NotifyMailer < ApplicationMailer
     mail(to: params[:email_to], subject: params[:email_subject])
   end
 
+  def user_contact_email(params)
+    @user = User.find(params[:user_id])
+    @email_body = params[:email_body]
+    track utm_campaign: "user_contact"
+    mail(to: @user.email, subject: params[:email_subject])
+  end
+
   def new_message_email(direct_message)
     @message = direct_message
     @user = @message.direct_receiver
     subject = "#{@message.user.name} just messaged you"
+    @unsubscribe = generate_unsubscribe_token(@user.id, :email_connect_messages)
     mail(to: @user.email, subject: subject)
   end
 

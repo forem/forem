@@ -1,7 +1,6 @@
 function initializePage(){
   initializeLocalStorageRender();
   initializeStylesheetAppend();
-  initializeFetchFollowedArticles();
   callInitalizers();
 }
 
@@ -44,8 +43,9 @@ function callInitalizers(){
   initializeArchivedPostFilter();
   initializeCreditsPage();
   initializeUserProfilePage();
-
+  initializePodcastPlayback();
   initializeDrawerSliders();
+  initializeHeroBannerClose();
 
   function freezeScrolling(event){
     event.preventDefault();

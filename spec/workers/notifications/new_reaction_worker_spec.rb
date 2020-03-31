@@ -14,17 +14,17 @@ RSpec.describe Notifications::NewReactionWorker, type: :worker do
     before { allow(reaction_service).to receive(:call) }
 
     it "calls the service" do
-      subject.perform(reaction_data, receiver_data)
+      worker.perform(reaction_data, receiver_data)
       allow(reaction_service).to receive(:call).with(reaction_data, org).once
     end
 
     it "doesn't call if is a receiver is of a wrong class" do
-      subject.perform(reaction_data, { klass: "Tag", id: 10 })
+      worker.perform(reaction_data, klass: "Tag", id: 10)
       expect(reaction_service).not_to have_received(:call)
     end
 
     it "doesn't call if is a receiver doesn't exist" do
-      subject.perform(reaction_data, { klass: "Organization", id: nil })
+      worker.perform(reaction_data, klass: "Organization", id: nil)
       expect(reaction_service).not_to have_received(:call)
     end
   end

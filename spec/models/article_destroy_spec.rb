@@ -2,12 +2,16 @@ require "rails_helper"
 
 RSpec.describe Article, type: :model do
   context "when no organization" do
-    let(:article) { create(:article) }
+    # Setting published explicitly to true to pass guard clause in the async_score_calc method on
+    # the Article model that returns early if the article is unpublished
+    let(:article) { create(:article, published: true) }
 
     before { create(:reaction, reactable: article) }
 
-    it "doesn't create ScoreCalcJob on destroy" do
-      expect { article.destroy }.not_to have_enqueued_job(Articles::ScoreCalcJob)
+    it "doesn't create ScoreCalcWorker on destroy" do
+      sidekiq_assert_no_enqueued_jobs(only: Articles::ScoreCalcWorker) do
+        article.destroy
+      end
     end
   end
 

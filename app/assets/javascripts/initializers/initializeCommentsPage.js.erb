@@ -144,7 +144,7 @@ function initializeCommentsPage() {
       };
     }
     if (document.getElementById('new_comment')) {
-      document.getElementById('new_comment').onsubmit = handleCommentSubmit;
+      document.getElementById('new_comment').addEventListener('submit', handleCommentSubmit);
     }
   }
   listenForDetailsToggle();
@@ -255,6 +255,12 @@ function handleCommentSubmit(event) {
           initializeCommentDate();
           initializeCommentDropdown();
         })
+      } else {
+        response.json().then(function parseError(errorReponse) {
+          form.classList.remove('submitting');
+          window.alert(errorReponse.error); // eslint-disable-line no-alert
+          return false;
+        });
       }
       return false;
     });

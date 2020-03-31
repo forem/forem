@@ -1,3 +1,5 @@
+<%= javascript_packs_with_chunks_tag "validateFileInputs", defer: true %>
+
 <% if @comment.errors.any? %>
   <div id="error_explanation">
     <h2><%= pluralize(@comment.errors.count, "error") %> prohibited this comment from being saved:</h2>
@@ -21,7 +23,7 @@
   <input type="hidden" name="authenticity_token" value="NOTHING" id="new_comment_authenticity_token">
 
   <% unless @comment.persisted? %>
-    <%= f.hidden_field :commentable_id, value: commentable.id %>
+    <%= f.hidden_field :commentable_id, value: commentable&.id %>
     <%= f.hidden_field :commentable_type, value: commentable_type %>
     <%= f.hidden_field :parent_id, value: @parent_comment.id if @parent_comment %>
   <% end %>
@@ -53,7 +55,7 @@
     <input class="uploaded-image" id="uploaded-image-main" />
   </div>
   <div class="actions" id="submit-wrapper">
-    <%= link_to(request.referer.present? ? :back : commentable.path, "aria-label": "Cancel action") do %>
+    <%= link_to((:back if request.referer.present?) || (commentable.path if commentable) || @comment.path, "aria-label": "Cancel action") do %>
       <button id="cancel-button" class="comment-action-button comment-action-cancel">CANCEL</button>
     <% end %>
     <button id="preview-button" class="comment-action-button comment-action-preview">PREVIEW</button>

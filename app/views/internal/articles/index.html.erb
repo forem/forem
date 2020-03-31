@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-12 py-2 sticky-top bg-white d-flex justify-content-center editor-image-upload">
+  <div class="col-12 py-2 sticky-top bg-white d-flex justify-content-center editor-image-upload" data-controller="image-upload">
     <input type="file" id="image-upload" name="file" accept="image/*" style="display:none">
     <input type="submit" id='image-upload-submit' value="Upload" style="display:none">
     <button class="btn btn-primary mr-2" id="image-upload-button">Upload Image</button>
@@ -44,12 +44,12 @@
   </div>
   <div class="col-12 mb-2">
     <details>
-      <summary style="font-size: 1.3em; cursor: pointer;">Suggested tweets (<%= @pending_buffer_updates.size %>)</summary>
+      <summary style="font-size: 1.3em; cursor: pointer;">Suggested Tweets (<%= @pending_buffer_updates.size %>)</summary>
       <% @pending_buffer_updates.each do |buffer_update| %>
         <% next unless buffer_update.article %>
-        <div class="card my-3" id="suggested-tweet-<%= buffer_update.id %>">
+        <div class="card my-3" id="suggested-tweet-<%= buffer_update.id %>" data-controller="buffer" data-action="load@window->buffer#autosizeBodyText">
           <div class="card-header">
-            <h2 class="my-0"><%= buffer_update.article.title %></h2>
+            <h2 class="my-0" data-target="buffer.header"><%= buffer_update.article.title %></h2>
           </div>
           <div class="card-body">
             <h4>Score: <%= buffer_update.article.score %></h4>
@@ -60,33 +60,33 @@
 
             <code><b><%= Tag.find_by(id: buffer_update.tag_id)&.name || buffer_update.social_service_name %>:</b></code>
 
-            <form action="/internal/buffer_updates/<%= buffer_update.id %>" accept-charset="UTF-8" method="post" class="buffer-form buffer-confirm" data-id="<%= buffer_update.id %>">
+            <%= form_with url: internal_buffer_update_path(buffer_update.id), class: "buffer-form buffer-confirm", html: { data: { action: "submit->buffer#highlightElement" } } do |f| %>
               <div class="form-group">
                 <input name="utf8" type="hidden" value="✓">
                 <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
                 <input type="hidden" name="_method" value="patch" />
                 <input type="hidden" name="status" value="confirmed" />
-                <textarea name="body_text" class="form-control"><%= buffer_update.body_text %></textarea>
+                <textarea class="w-100 suggested-tweet-body-text" name="body_text" class="form-control" data-target="buffer.bodyText"><%= buffer_update.body_text %></textarea>
               </div>
-              <button value="confirmed" name="status" class="btn btn-success">Confirm</button>
-            </form>
+              <button value="confirmed" name="status" class="btn btn-success" data-action="buffer#tagBufferUpdateConfirmed">Confirm</button>
+            <% end %>
 
-            <form action="/internal/buffer_updates/<%= buffer_update.id %>" accept-charset="UTF-8" method="post" class="buffer-form buffer-dismiss" data-id="<%= buffer_update.id %>">
+            <%= form_with url: internal_buffer_update_path(buffer_update.id), class: "buffer-form buffer-dismiss", html: { data: { action: "submit->buffer#highlightElement" } } do |f| %>
               <div class="form-group">
                 <input name="utf8" type="hidden" value="✓">
                 <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
                 <input type="hidden" name="_method" value="patch" />
                 <input type="hidden" name="status" value="dismissed" />
               </div>
-              <button value="dismissed" name="status" class="btn btn-danger">Dismiss</button>
-            </form>
+              <button value="dismissed" name="status" class="btn btn-danger" data-action="buffer#tagBufferUpdateDismissed">Dismiss</button>
+            <% end %>
           </div>
         </div>
       <% end %>
     </details>
   </div>
   <div class="col-12">
-    <% if @featured_articles && @featured_articles.any? %>
+    <% if @featured_articles.present? %>
       <h2>Manually Featured Articles</h2>
       <% @featured_articles.each do |article| %>
         <%= render "individual_article", article: article %>
@@ -105,4 +105,4 @@
   </div>
 </div>
 
-<%= render "article_script" %>
+<%= render "image_upload_script" %>

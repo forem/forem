@@ -4,7 +4,7 @@ require "requests/shared_examples/internal_policy_dependant_request"
 RSpec.describe "/internal/buffer_updates", type: :request do
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
-  let(:comment) { create(:comment, user_id: user.id, commentable_id: article.id) }
+  let(:comment) { create(:comment, user_id: user.id, commentable: article) }
 
   it_behaves_like "an InternalPolicy dependant request", BufferUpdate do
     let(:request) { post "/internal/buffer_updates" }

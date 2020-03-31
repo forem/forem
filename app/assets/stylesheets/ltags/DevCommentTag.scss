@@ -4,15 +4,14 @@
   padding: 0px;
   background: inherit;
   font-family: $helvetica;
-  margin:0.95em 0 1.20em;
+  margin: 0.95em 0 1.2em;
   position: relative;
-  border:1px solid $light-medium-gray;
-  border:1px solid var(--theme-color, $light-medium-gray);
+  border: 1px solid var(--container-color-tertiary);
   box-shadow: $shadow;
-  border-radius:3px;
+  border-radius: 3px;
   @media screen and (min-width: 760px) {
     margin: 0.95em auto;
-    width:620px;
+    width: 620px;
   }
 
   .details {
@@ -36,7 +35,7 @@
       margin: 0;
     }
 
-    .icon-img{
+    .icon-img {
       min-height: inherit;
       height: 16px;
       width: 16px;
@@ -49,19 +48,17 @@
       position: absolute;
       top: calc(28px - 0.25vw);
       right: calc(5px + 0.1vw) !important;
-      font-size:12px;
-      text-align:right;
+      font-size: 12px;
+      text-align: right;
       display: block;
-      width:100px;
-      a{
-        color:$medium-gray;
-        color: var(--theme-secondary-color, $medium-gray);
+      width: 100px;
+      a {
+        color: var(--container-color-tertiary);
       }
     }
 
     a {
-      color: lighten($dark-gray,3%);
-      color: var(--theme-secondary-color, lighten($dark-gray,3%));
+      color: var(--container-color-tertiary);
       line-height: initial;
       align-self: center;
       margin-right: 6px;
@@ -77,7 +74,7 @@
   .body {
     font-family: $helvetica;
     color: $black;
-    color: var(--theme-color, $black);
+    color: var(--body-color);
     font-size: 0.95em;
     line-height: 1.35em;
     overflow: hidden;
@@ -93,7 +90,12 @@
       padding: 10px;
     }
 
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       padding: 0px;
       margin: 4px 0px calc(1.1vw + 10px);
       font-size: 1em;
@@ -114,9 +116,10 @@
       line-height: 220%;
     }
 
-    ul, ol {
+    ul,
+    ol {
       padding-left: 6px;
-      margin:0.8em 0.7em 0.8em 1em;
+      margin: 0.8em 0.7em 0.8em 1em;
     }
 
     ul {
@@ -135,8 +138,8 @@
       line-height: 1.4em;
 
       p {
-        padding:0;
-        margin:0.95em 0 0.95em;
+        padding: 0;
+        margin: 0.95em 0 0.95em;
       }
 
       &.twitter-tweet {
@@ -154,18 +157,18 @@
     }
 
     .edited-notification {
-      color:lighten($medium-gray,20%);
-      font-size:0.7em;
-      padding:3px 0px 0px;
-      position:relative;
-      z-index:1;
+      color: lighten($medium-gray, 20%);
+      font-size: 0.7em;
+      padding: 3px 0px 0px;
+      position: relative;
+      z-index: 1;
     }
 
     code {
       margin: auto;
       white-space: nowrap;
       background: $lightest-gray;
-      background: var(--theme-background, $lightest-gray);
+      background: var(--body-bg);
       padding: 1px 5px 0px;
       border-radius: 2px;
       color: #333842;
@@ -177,50 +180,48 @@
     }
 
     img {
-      max-width:100%;
+      max-width: 100%;
     }
 
     button {
-      border:0px;
-      background:transparent;
-      vertical-align:2px;
-      cursor:pointer;
-      border-radius:3px;
-      display:block;
-      padding:0px;
-      position:relative;
-      z-index:6;
-      img{
+      border: 0px;
+      background: transparent;
+      vertical-align: 2px;
+      cursor: pointer;
+      border-radius: 3px;
+      display: block;
+      padding: 0px;
+      position: relative;
+      z-index: 6;
+      img {
         left: inherit;
         min-height: 0px;
-        height:16px;
-        opacity:0.62;
+        height: 16px;
+        opacity: 0.62;
       }
-      &:hover{
-        img{
-          opacity:1;
+      &:hover {
+        img {
+          opacity: 1;
         }
       }
-      .voted-heart{
-        display:none;
-        font-size:22px;
-        line-height:21px;
-        vertical-align:-2px;
+      .voted-heart {
+        display: none;
+        font-size: 22px;
+        line-height: 21px;
+        vertical-align: -2px;
       }
-      @media screen and ( min-width: 390px ){
-        vertical-align:-7px;
+      @media screen and (min-width: 390px) {
+        vertical-align: -7px;
       }
-      &.reacted{
-        color:$green;
-        img{
-          display:none;
+      &.reacted {
+        color: $green;
+        img {
+          display: none;
         }
-        .voted-heart{
-          display:inline-block;
-
+        .voted-heart {
+          display: inline-block;
         }
       }
     }
   }
-
 }

@@ -3,11 +3,11 @@ require "rails_helper"
 RSpec.describe Notifications::WelcomeNotification::Send, type: :service do
   describe "::call" do
     before do
-      allow(User).to receive(:dev_account).and_return(create(:user))
+      allow(User).to receive(:mascot_account).and_return(create(:user))
     end
 
-    it "checks a newly created welcome notification", :aggregate_failures do
-      welcome_broadcast = create(:broadcast, :onboarding)
+    it "creates a new welcome notification", :aggregate_failures do
+      welcome_broadcast = create(:onboarding_broadcast)
       welcome_notification = described_class.call(create(:user).id, welcome_broadcast)
 
       expect(welcome_notification).to be_kind_of(Notification)

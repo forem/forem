@@ -1,4 +1,15 @@
 class Organization < ApplicationRecord
+  self.ignored_columns = %w[
+    address
+    approved
+    city
+    country
+    jobs_email
+    jobs_url
+    state
+    zip_code
+  ]
+
   include CloudinaryHelper
 
   acts_as_followable
@@ -24,7 +35,6 @@ class Organization < ApplicationRecord
             length: { maximum: 250 }
   validates :tag_line,
             length: { maximum: 60 }
-  validates :jobs_email, email: true, allow_blank: true
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :slug,
@@ -89,7 +99,7 @@ class Organization < ApplicationRecord
   end
 
   def profile_image_90
-    ProfileImage.new(self).get(90)
+    ProfileImage.new(self).get(width: 90)
   end
 
   def enough_credits?(num_credits_needed)
@@ -137,6 +147,6 @@ class Organization < ApplicationRecord
   end
 
   def unique_slug_including_users_and_podcasts
-    errors.add(:slug, "is taken.") if User.find_by(username: slug) || Podcast.find_by(slug: slug) || Page.find_by(slug: slug)
+    errors.add(:slug, "is taken.") if User.find_by(username: slug) || Podcast.find_by(slug: slug) || Page.find_by(slug: slug) || slug.include?("sitemap-")
   end
 end

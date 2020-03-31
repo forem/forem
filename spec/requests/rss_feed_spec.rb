@@ -22,6 +22,7 @@ RSpec.describe "RssFeed", type: :request do
     end
 
     it "renders organization feed" do
+      create(:article, organization_id: organization.id)
       get "/feed/#{organization.slug}"
       expect(response.body).to include("<link>https://dev.to/#{organization.slug}</link>")
     end

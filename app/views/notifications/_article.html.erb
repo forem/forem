@@ -7,10 +7,8 @@
   <% if json_data["organization"] %>
     <div class="article-organization-headline">
       <a class="org-headline-filler" href="<%= json_data["organization"]["path"] %>">
-        <span class="article-organization-headline-inner">
-          <img alt="<%= json_data["organization"]["name"] %> logo" src="<%= json_data["organization"]["profile_image_90"] %>">
-          <%= json_data["organization"]["name"] %>
-        </span>
+        <img alt="<%= json_data["organization"]["name"] %> logo" src="<%= json_data["organization"]["profile_image_90"] %>">
+        <%= json_data["organization"]["name"] %>
       </a>
    </div>
   <% end %>

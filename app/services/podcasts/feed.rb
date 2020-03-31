@@ -20,11 +20,11 @@ module Podcasts
       end
       podcast.update_columns(reachable: true, status_notice: "")
       feed.items.size
-    rescue Net::OpenTimeout, Errno::ECONNREFUSED, SocketError => _e
+    rescue Net::OpenTimeout, Errno::ECONNREFUSED, SocketError, HTTParty::RedirectionTooDeep
       set_unreachable(:unreachable, force_update)
-    rescue OpenSSL::SSL::SSLError => _e
+    rescue OpenSSL::SSL::SSLError
       set_unreachable(:ssl_failed, force_update)
-    rescue RSS::NotWellFormedError => _e
+    rescue RSS::NotWellFormedError
       set_unreachable(:unparsable, force_update)
     end
 
@@ -45,7 +45,7 @@ module Podcasts
     # If they are not, the podcast will be hidden.
     def refetch_items
       podcast.podcast_episodes.find_each do |episode|
-        PodcastEpisodes::UpdateMediaUrlJob.perform_later(episode.id, episode.media_url)
+        PodcastEpisodes::UpdateMediaUrlWorker.perform_async(episode.id, episode.media_url)
       end
     end
   end

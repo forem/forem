@@ -1,0 +1,21 @@
+@import './mixins';
+
+@font-face {
+  font-family: OpenDyslexic;
+  @include font-src('OpenDyslexic-Regular.otf');
+}
+
+@font-face {
+  font-family: OpenDyslexic-Bold;
+  @include font-src('OpenDyslexic-Bold.otf');
+}
+
+@font-face {
+  font-family: OpenDyslexic-Bolditalic;
+  @include font-src('OpenDyslexic-BoldItalic.otf');
+}
+
+@font-face {
+  font-family: OpenDyslexic-Italic;
+  @include font-src('OpenDyslexic-Italic.otf');
+}

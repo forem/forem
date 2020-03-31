@@ -13,7 +13,7 @@
       <div id="follows-<%= follow.id %>" class="single-article">
         <a href="<%= organization.path %>" class="block-link">
           <h2>
-            <img alt="<%= organization.name %> profile image" src="<%= ProfileImage.new(organization).get(60) %>" />
+            <img alt="<%= organization.name %> profile image" src="<%= ProfileImage.new(organization).get(width: 60) %>" />
             <%= organization.name %>
             <span class="dashboard-username">@<%= organization.username %></span>
           </h2>

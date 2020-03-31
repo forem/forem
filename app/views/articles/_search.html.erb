@@ -1,0 +1,124 @@
+<script defer>
+
+  function getQueryParams(qs) {
+    qs = qs.split('+').join(' ');
+
+    var params = {},
+      tokens,
+      re = /[?&]?([^=]+)=([^&]*)/g;
+
+    while (tokens = re.exec(qs)) {
+      params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+    }
+
+    return params;
+  }
+
+  var params = getQueryParams(document.location.search);
+
+  // var query = escape(params.q);
+  function searchMain() {
+    var query = filterXSS(params.q);
+    var filters = filterXSS(params.filters || "");
+    document.getElementById("substories").innerHTML = '<div class="query-results-nothing"><div class="query-results-loader"></div><br/></div>'
+    var client = algoliasearch('<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>', '<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>');
+    var index = client.initIndex('searchables_<%= Rails.env %>');
+    if (document.getElementById("query-wrapper")) {
+      search(query, index, filters);
+      initializeFilters(query, index, filters);
+    }
+  }
+
+  function htmlEntities(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function initializeFilters(query, index, filters) {
+    var filterButts = document.getElementsByClassName("query-filter-button");
+    for (var i = 0; i < filterButts.length; i++) {
+      if (filters == filterButts[i].dataset.filter) {
+        filterButts[i].classList.add("selected");
+      }
+      filterButts[i].onclick = function (e) {
+        if (e.target.classList.contains("my-posts-query-button") && !checkUserLoggedIn()) {
+          showModal("search-my-posts");
+          return;
+        }
+        var filters = e.target.dataset.filter;
+        window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters);
+        var className = e.target.className;
+        for (var i = 0; i < filterButts.length; i++) {
+          filterButts[i].classList.remove("selected");
+        }
+        if (className.indexOf("selected") == -1) {
+          e.target.classList.add("selected");
+          window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters);
+          search(query, index, filters);
+        } else {
+          window.history.replaceState(null, null, "/search?q=" + query);
+          search(query, index, "");
+        }
+      }
+    }
+  }
+
+  function search(query, index, filters) {
+    var hashtags = query.match(/#\w+/g)
+    var searchObj = {
+      hitsPerPage: 60,
+      page: "0",
+      queryType: "prefixNone",
+      attributesToRetrieve: [
+        'id',
+        'title',
+        'path',
+        'class_name',
+        'comments_count',
+        'tag_list',
+        'readable_publish_date',
+        'positive_reactions_count',
+        'flare_tag',
+        'user',
+        'reading_time'
+      ],
+      attributesToHighlight: [],
+      exactOnSingleWordQuery: "none",
+      attributesToSnippet: ['body_text:19', 'comments_blob:8'],
+    }
+
+    if (filters === "MY_POSTS" && userData()) {
+      searchObj["tagFilters"] = [['user_' + userData()['id']]]
+    } else if (hashtags != null && hashtags.length > 0) {
+      for(var i = 0; i < hashtags.length; i++){
+        hashtags[i] = hashtags[i].replace(/#/,'')
+      }
+      searchObj["tagFilters"] = hashtags
+    } else {
+      searchObj["filters"] = filters
+    }
+    index.search(query, searchObj)
+      .then(function searchDone(content) {
+        var resultDivs = []
+        content.hits.forEach(function (story, i) {
+          resultDivs.push(buildArticleHTML(story));
+        })
+        document.getElementById("substories").innerHTML = resultDivs.join("");
+        initializeReadingListIcons();
+        initializeAllFollowButts();
+        document.getElementById("substories").classList.add("search-results-loaded");
+        if (content.hits.length == 0) {
+          document.getElementById("substories").innerHTML = '<div class="query-results-nothing">No results match that query</div>'
+        }
+      });
+  }
+
+  var waitingOnSearch = setInterval(function () {
+    if (typeof algoliasearch == 'function' && typeof filterXSS == 'function' && typeof buildArticleHTML == 'function') {
+      clearInterval(waitingOnSearch);
+      if (document.querySelectorAll('.search-results-loaded').length == 0) {
+        searchMain();
+      }
+    }
+  }, 1);
+
+</script>

@@ -12,9 +12,7 @@ RSpec.describe "Api::V0::Listings" do
       {
         title: "Title",
         body_markdown: "Markdown text",
-        category: "cfp",
-        tags: [],
-        contact_via_connect: true
+        category: "cfp"
       }
     end
     let(:draft_params) do
@@ -22,8 +20,6 @@ RSpec.describe "Api::V0::Listings" do
         title: "Title draft",
         body_markdown: "Markdown draft text",
         category: "cfp",
-        tags: [],
-        contact_via_connect: true,
         action: "draft"
       }
     end
@@ -45,8 +41,10 @@ RSpec.describe "Api::V0::Listings" do
     end
   end
 
-  def json_response
-    JSON.parse(response.body)
+  def user_admin_organization(user)
+    org = create(:organization)
+    create(:organization_membership, user_id: user.id, organization_id: org.id, type_of_user: "admin")
+    org
   end
 
   describe "GET /api/listings" do
@@ -60,18 +58,44 @@ RSpec.describe "Api::V0::Listings" do
 
     it "returns listings created" do
       get api_classified_listings_path
-      expect(json_response.size).to eq(7)
-      expect(json_response.first["type_of"]).to eq("classified_listing")
-      expect(json_response.first["slug"]).to eq(ClassifiedListing.last.slug)
-      expect(json_response.first["user"]).to include("username")
-      expect(json_response.first["user"]["username"]).not_to be_empty
+      expect(response.parsed_body.size).to eq(7)
+      expect(response.parsed_body.first["type_of"]).to eq("classified_listing")
+      expect(response.parsed_body.first["slug"]).to eq(ClassifiedListing.last.slug)
+      expect(response.parsed_body.first["user"]).to include("username")
+      expect(response.parsed_body.first["user"]["username"]).not_to be_empty
     end
 
     it "supports pagination" do
       get api_classified_listings_path, params: { page: 2, per_page: 2 }
-      expect(json_response.length).to eq(2)
+      expect(response.parsed_body.length).to eq(2)
       get api_classified_listings_path, params: { page: 4, per_page: 2 }
-      expect(json_response.length).to eq(1)
+      expect(response.parsed_body.length).to eq(1)
+    end
+
+    it "sets the correct caching headers" do
+      get api_classified_listings_path
+
+      expect(response.headers["cache-control"]).to be_present
+      expect(response.headers["surrogate-control"]).to match(/max-age/).and(match(/stale-if-error/))
+    end
+
+    it "sets the correct edge caching surrogate key" do
+      get api_classified_listings_path
+
+      expected_key = (
+        ["classified_listings"] +
+        user1.classified_listings.map(&:record_key) +
+        user2.classified_listings.map(&:record_key)
+      ).to_set
+      expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
+    end
+
+    it "does not return unpublished listings" do
+      listing = user1.classified_listings.last
+      listing.update(published: false)
+
+      get api_classified_listings_path
+      expect(response.parsed_body.detect { |l| l["published"] == false }).to be_nil
     end
   end
 
@@ -81,7 +105,16 @@ RSpec.describe "Api::V0::Listings" do
     it "displays only listings from the cfp category" do
       get api_classified_listings_category_path("cfp")
       expect(response).to have_http_status(:ok)
-      expect(json_response.size).to eq(3)
+      expect(response.parsed_body.size).to eq(3)
+    end
+
+    it "does not return unpublished listings" do
+      category = "cfp"
+      listing = user1.classified_listings.where(category: category)
+      listing.update(published: false)
+
+      get api_classified_listings_category_path(category)
+      expect(response.parsed_body.detect { |l| l["published"] == false }).to be_nil
     end
   end
 
@@ -89,13 +122,98 @@ RSpec.describe "Api::V0::Listings" do
     include_context "with 7 listings and 2 user"
     let(:listing) { ClassifiedListing.where(category: "cfp").last }
 
-    it "displays a unique listing" do
+    context "when unauthenticated" do
+      it "returns a published listing" do
+        listing.update(published: true)
+
+        get api_classified_listing_path(listing.id)
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "returns a published listing on behalf of an organization" do
+        org = user_admin_organization(listing.user)
+        listing.update(published: true, organization: org)
+
+        get api_classified_listing_path(listing.id)
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "does not return an unpublished listing" do
+        listing.update(published: false)
+
+        get api_classified_listing_path(listing.id)
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context "when unauthorized" do
+      let_it_be_readonly(:headers) { { "api-key" => "invalid api key" } }
+
+      it "returns a published listing" do
+        listing.update(published: true)
+
+        get api_classified_listing_path(listing.id), headers: headers
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "does not return an unpublished listing" do
+        listing.update(published: false)
+
+        get api_classified_listing_path(listing.id), headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context "when authorized" do
+      include_context "when user is authorized"
+
+      let(:headers) { { "api-key" => api_secret.secret } }
+
+      it "returns a published listing" do
+        listing.update(published: true)
+
+        get api_classified_listing_path(listing.id), headers: headers
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "does not return an unpublished listing belonging to another user" do
+        listing.update(published: false, user: user1)
+
+        get api_classified_listing_path(listing.id), headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns an unpublished listing belonging to the authenticated user" do
+        listing.update(published: false, user: api_secret.user)
+
+        get api_classified_listing_path(listing.id), headers: headers
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    it "returns the correct listing format" do
       get api_classified_listing_path(listing.id)
+
       expect(response).to have_http_status(:ok)
-      expect(json_response["type_of"]).to eq("classified_listing")
-      expect(json_response["slug"]).to eq(listing.slug)
-      expect(json_response["user"]).to include("username")
-      expect(json_response["user"]["username"]).not_to be_empty
+
+      expect(response.parsed_body["type_of"]).to eq("classified_listing")
+      expect(response.parsed_body["slug"]).to eq(listing.slug)
+      expect(response.parsed_body["user"]).to include("username")
+      expect(response.parsed_body["user"]["username"]).not_to be_empty
+    end
+
+    it "sets the correct caching headers" do
+      get api_classified_listing_path(listing.id)
+
+      expect(response.headers["cache-control"]).to be_present
+      expect(response.headers["surrogate-control"]).to match(/max-age/).and(match(/stale-if-error/))
+    end
+
+    it "sets the correct edge caching surrogate key" do
+      get api_classified_listing_path(listing.id)
+
+      expected_key = [listing.record_key].to_set
+      expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
   end
 
@@ -105,13 +223,7 @@ RSpec.describe "Api::V0::Listings" do
       post api_classified_listings_path, params: { classified_listing: params }.to_json, headers: headers
     end
 
-    def user_admin_organization(user)
-      org = create(:organization)
-      create(:organization_membership, user_id: user.id, organization_id: org.id, type_of_user: "admin")
-      org
-    end
-
-    describe "user cannot proceed if not properly unauthorizedœ" do
+    describe "user cannot proceed if not properly unauthorized" do
       let(:api_secret) { create(:api_secret) }
 
       it "fails with no api key" do
@@ -151,9 +263,20 @@ RSpec.describe "Api::V0::Listings" do
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
-      it "fails if a mandatory param is missing" do
+      it "fails if body_markdown is missing" do
         post_classified_listing(invalid_params)
         expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "fails if category is missing" do
+        post_classified_listing(title: "Title", body_markdown: "body")
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "fails if category is invalid" do
+        post_classified_listing(title: "Title", body_markdown: "body", category: "unknown")
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body.dig("errors", "category").first).to match(/not a valid category/)
       end
 
       it "does not subtract credits or create a listing if the listing is not valid" do
@@ -170,6 +293,8 @@ RSpec.describe "Api::V0::Listings" do
 
       it "properly deducts the amount of credits" do
         post_classified_listing(listing_params)
+        expect(response).to have_http_status(:created)
+
         listing_cost = ClassifiedListing.categories_available[:cfp][:cost]
         expect(user.credits.spent.size).to eq(listing_cost)
       end
@@ -191,12 +316,18 @@ RSpec.describe "Api::V0::Listings" do
 
       it "does not create a listing draft for an org not belonging to the user" do
         org = create(:organization)
-        expect { post_classified_listing(draft_params.merge(organization_id: org.id)) }.to raise_error(Pundit::NotAuthorizedError)
+        expect do
+          post_classified_listing(draft_params.merge(organization_id: org.id))
+          expect(response).to have_http_status(:unauthorized)
+        end.to change(ClassifiedListing, :count).by(0)
       end
 
       it "does not create a listing for an org not belonging to the user" do
         org = create(:organization)
-        expect { post_classified_listing(listing_params.merge(organization_id: org.id)) }.to raise_error(Pundit::NotAuthorizedError)
+        expect do
+          post_classified_listing(listing_params.merge(organization_id: org.id))
+          expect(response).to have_http_status(:unauthorized)
+        end.to change(ClassifiedListing, :count).by(0)
       end
 
       it "assigns the spent credits to the listing" do
@@ -215,7 +346,7 @@ RSpec.describe "Api::V0::Listings" do
           false
         end
         post_classified_listing(draft_params)
-        expect(json_response["errors"]["base"]).to eq(["is invalid"])
+        expect(response.parsed_body["errors"]["base"]).to eq(["is invalid"])
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
@@ -240,7 +371,7 @@ RSpec.describe "Api::V0::Listings" do
           post_classified_listing(listing_params)
           expect(response).to have_http_status(:created)
         end.to change(ClassifiedListing, :count).by(1)
-        expect(ClassifiedListing.find(json_response["id"]).user).to eq(user)
+        expect(ClassifiedListing.find(response.parsed_body["id"]).user).to eq(user)
       end
 
       it "creates a classified listing with a title, a body markdown, a category" do
@@ -248,9 +379,12 @@ RSpec.describe "Api::V0::Listings" do
           post_classified_listing(listing_params)
           expect(response).to have_http_status(:created)
         end.to change(ClassifiedListing, :count).by(1)
-        expect(ClassifiedListing.find(json_response["id"]).title).to eq("Title")
-        expect(ClassifiedListing.find(json_response["id"]).body_markdown).to eq("Markdown text")
-        expect(ClassifiedListing.find(json_response["id"]).category).to eq("cfp")
+
+        listing = ClassifiedListing.find(response.parsed_body["id"])
+
+        expect(listing.title).to eq(listing_params[:title])
+        expect(listing.body_markdown).to eq(listing_params[:body_markdown])
+        expect(listing.category).to eq(listing_params[:category])
       end
 
       it "creates a classified listing with a location" do
@@ -259,7 +393,7 @@ RSpec.describe "Api::V0::Listings" do
           post_classified_listing(params)
           expect(response).to have_http_status(:created)
         end.to change(ClassifiedListing, :count).by(1)
-        expect(ClassifiedListing.find(json_response["id"]).location).to eq("Frejus")
+        expect(ClassifiedListing.find(response.parsed_body["id"]).location).to eq("Frejus")
       end
 
       it "creates a classified listing with a list of tags and a contact" do
@@ -268,8 +402,11 @@ RSpec.describe "Api::V0::Listings" do
           post_classified_listing(params)
           expect(response).to have_http_status(:created)
         end.to change(ClassifiedListing, :count).by(1)
-        expect(ClassifiedListing.find(json_response["id"]).cached_tag_list).to eq("discuss, javascript")
-        expect(ClassifiedListing.find(json_response["id"]).contact_via_connect).to eq(true)
+
+        listing = ClassifiedListing.find(response.parsed_body["id"])
+
+        expect(listing.cached_tag_list).to eq("discuss, javascript")
+        expect(listing.contact_via_connect).to be(true)
       end
     end
 
@@ -295,7 +432,7 @@ RSpec.describe "Api::V0::Listings" do
 
     let(:user) { create(:user) }
     let(:another_user) { create(:user) }
-    let(:listing) { create(:classified_listing, user_id: user.id) }
+    let!(:listing) { create(:classified_listing, user: user) }
     let(:another_user_listing) { create(:classified_listing, user_id: another_user.id) }
     let(:listing_draft) { create(:classified_listing, user: user) }
     let(:organization) { create(:organization) }
@@ -307,7 +444,7 @@ RSpec.describe "Api::V0::Listings" do
       org_listing_draft.update_columns(bumped_at: nil, published: false)
     end
 
-    describe "user cannot proceed if not properly unauthorizedœ" do
+    describe "user cannot proceed if not properly unauthorized" do
       let(:api_secret) { create(:api_secret) }
 
       it "fails with no api key" do
@@ -451,9 +588,15 @@ RSpec.describe "Api::V0::Listings" do
       include_context "when user is authorized"
       include_context "when user has enough credit"
 
-      it "returns HTTP 422 if no params given" do
+      it "fails if no params have been given" do
         put_classified_listing(listing.id)
         expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "fails if category is invalid" do
+        put_classified_listing(listing.id, title: "New title", category: "unknown")
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body.dig("errors", "category").first).to match(/not a valid category/)
       end
 
       it "updates the title of his listing" do
@@ -477,9 +620,36 @@ RSpec.describe "Api::V0::Listings" do
       end
 
       it "cannot update another user listing" do
-        expect do
-          put_classified_listing(another_user_listing.id, title: "Test for a new title")
-        end.to raise_error(Pundit::NotAuthorizedError)
+        put_classified_listing(another_user_listing.id, title: "Test for a new title")
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "updates details if the listing has been bumped in the last 24 hours" do
+        listing.update!(bumped_at: 3.minutes.ago)
+
+        new_title = Faker::Book.title
+
+        put_classified_listing(listing.id, title: new_title)
+        expect(listing.reload.title).to eq(new_title)
+      end
+
+      it "does not update details if the listing hasn't been bumped in the last 24 hours" do
+        listing.update!(bumped_at: 24.hours.ago)
+
+        new_title = Faker::Book.title
+
+        put_classified_listing(listing.id, title: new_title)
+        expect(listing.reload.title).to eq(listing.title)
+      end
+
+      it "does not update a published listing" do
+        listing.update!(bumped_at: nil, published: true)
+
+        old_title = listing.title
+        new_title = Faker::Book.title
+
+        put_classified_listing(listing.id, title: new_title)
+        expect(listing.reload.title).to eq(old_title)
       end
     end
   end

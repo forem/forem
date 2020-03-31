@@ -17,7 +17,7 @@ RSpec.describe Follow, type: :model do
     it "enqueues create channel job" do
       expect do
         described_class.create(follower: user, followable: user_2)
-      end.to have_enqueued_job(Follows::CreateChatChannelJob)
+      end.to change(Follows::CreateChatChannelWorker.jobs, :size).by(1)
     end
 
     it "enqueues send notification worker" do
@@ -40,7 +40,7 @@ RSpec.describe Follow, type: :model do
 
     it "doesn't create a channel when a followable is an org" do
       expect do
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           described_class.create!(follower: user, followable: create(:organization))
         end
       end.not_to change(ChatChannel, :count)
@@ -48,7 +48,7 @@ RSpec.describe Follow, type: :model do
 
     it "doesn't create a chat channel when users don't follow mutually" do
       expect do
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           described_class.create!(follower: user, followable: user_2)
         end
       end.not_to change(ChatChannel, :count)
@@ -57,7 +57,7 @@ RSpec.describe Follow, type: :model do
     it "creates a chat channel when users follow mutually" do
       described_class.create!(follower: user_2, followable: user)
       expect do
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           described_class.create!(follower: user, followable: user_2)
         end
       end.to change(ChatChannel, :count).by(1)

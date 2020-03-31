@@ -34,12 +34,20 @@ RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
       expect(unpodcast.status_notice).to include("is not reachable")
     end
 
+    it "sets reachable when there redirection is too deep" do
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(HTTParty::RedirectionTooDeep, "too deep")
+      described_class.new(unpodcast).get_episodes(limit: 2)
+      unpodcast.reload
+      expect(unpodcast.reachable).to be false
+    end
+
     it "schedules the update url jobs when setting as unreachable" do
       allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(Errno::ECONNREFUSED)
       create_list(:podcast_episode, 2, podcast: unpodcast)
+
       expect do
         described_class.new(unpodcast).get_episodes(limit: 2)
-      end.to have_enqueued_job(PodcastEpisodes::UpdateMediaUrlJob).exactly(2)
+      end.to change { PodcastEpisodes::UpdateMediaUrlWorker.jobs.size }.by(2)
     end
 
     it "re-checks episodes urls when setting as unreachable" do
@@ -48,7 +56,7 @@ RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
       allow(HTTParty).to receive(:head).with("http://podcast.example.com/ep1.mp3").and_raise(Errno::ECONNREFUSED)
       allow(HTTParty).to receive(:head).with("https://podcast.example.com/ep1.mp3").and_raise(Errno::ECONNREFUSED)
 
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         described_class.new(unpodcast).get_episodes
       end
 
@@ -62,7 +70,7 @@ RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
       create_list(:podcast_episode, 2, podcast: unpodcast)
       expect do
         described_class.new(unpodcast).get_episodes(limit: 2)
-      end.not_to have_enqueued_job(PodcastEpisodes::UpdateMediaUrlJob)
+      end.not_to change { PodcastEpisodes::UpdateMediaUrlWorker.jobs.size }
     end
   end
 
@@ -87,14 +95,14 @@ RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
 
     it "fetches podcast episodes" do
       expect do
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           described_class.new(podcast).get_episodes(limit: 2)
         end
       end.to change(PodcastEpisode, :count).by(2)
     end
 
     it "fetches correct podcasts" do
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         described_class.new(podcast).get_episodes(limit: 2)
       end
       episodes = podcast.podcast_episodes

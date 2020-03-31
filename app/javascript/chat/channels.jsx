@@ -15,7 +15,8 @@ const Channels = ({
 }) => {
   const channels = chatChannels.map(channel => {
     const isActive = parseInt(activeChannelId, 10) === channel.chat_channel_id;
-    const isUnopened = !isActive && unopenedChannelIds.includes(channel.chat_channel_id)
+    const isUnopened =
+      !isActive && unopenedChannelIds.includes(channel.chat_channel_id);
     let newMessagesIndicator = isUnopened ? 'new' : 'old';
     if (incomingVideoCallChannelIds.indexOf(channel.chat_channel_id) > -1) {
       newMessagesIndicator = 'video';
@@ -49,7 +50,11 @@ const Channels = ({
             <img
               src={channel.channel_image}
               alt="pic"
-              className="chatchanneltabindicatordirectimage"
+              className={
+                channel.channel_type === 'direct'
+                  ? 'chatchanneltabindicatordirectimage'
+                  : 'chatchanneltabindicatordirectimage invert-channel-image'
+              }
             />
           </span>
           {channel.channel_name}
@@ -72,7 +77,7 @@ const Channels = ({
         {' '}
         Welcome to
         <b> DEV Connect</b>
-! You may message anyone you mutually follow.
+        ! You may message anyone you mutually follow.
       </div>
     );
   }

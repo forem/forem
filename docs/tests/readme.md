@@ -2,14 +2,14 @@
 title: Testing/QA Guide
 items:
   - acceptance-tests.md
+  - approvals-tests.md
   - integration-tests.md
   - unit-functional-tests.md
-  - preact-tests.md
+  - frontend-tests.md
   - accessibility-tests.md
   - regression-tests.md
   - code-coverage.md
   - codeclimate.md
-  - skip-ci.md
 ---
 
 We use the following testing tools:
@@ -53,3 +53,8 @@ Travis will deploy your pull request to production after CI passes and a member
 of the DEV team has approved it.
 
 Our test suite is not perfect and sometimes a re-run is needed.
+
+Please note that you will need to have Elasticsearch installed and running for
+certain tests in our test suite. You can find instructions on how to install and
+run Elasticsearch specific your environment in the
+[Installation Guide](/installation).

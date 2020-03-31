@@ -1,20 +1,7 @@
-<%= javascript_pack_tag "colorPreview", defer: true %>
+<%= javascript_packs_with_chunks_tag "colorPreview", "validateFileInputs", defer: true %>
 
-<% unless @user.identities.exists?(provider: 'github') %>
-  <div class="field">
-    <a href="/users/auth/github" class="big-button cta" data-no-instant>
-      <img src="<%= asset_path("github-logo.svg") %>" alt="github logo" /> CONNECT GITHUB ACCOUNT
-    </a>
-  </div>
-<% end %>
+<%= render "users/additional_authentication" %>
 
-<% unless @user.identities.exists?(provider: 'twitter') %>
-  <div class="field">
-    <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="big-button cta" data-no-instant>
-      <img src="<%= asset_path("twitter-logo.svg") %>" alt="twitter logo" /> CONNECT TWITTER ACCOUNT
-    </a>
-  </div>
-<% end %>
 <h4>
   <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/<%= current_user.username %>" aria-label="Go to your profile page">
     <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg"
@@ -45,8 +32,8 @@
   <div class="field">
     <% if @user.profile_image_url.present? %>
       <span class="image-present">
-        <img alt="<%= @user.username %> profile image" src="<%= ProfileImage.new(@user).get(50) %>" />
-        <%= f.file_field :profile_image %>
+        <img alt="<%= @user.username %> profile image" src="<%= ProfileImage.new(@user).get(width: 50) %>" />
+        <%= f.file_field :profile_image, accept: "image/*" %>
       </span>
     <% end %>
   </div>
@@ -94,11 +81,11 @@
   </div>
   <div class="field">
     <%= f.label :mostly_work_with, "Skills/Languages" %>
-    <%= f.text_area :mostly_work_with, placeholder: "What tools and languages are you most experienced with? are you specialized or more of a generalist?", maxlength: 500 %>
+    <%= f.text_area :mostly_work_with, placeholder: "What tools and languages are you most experienced with? Are you specialized or more of a generalist?", maxlength: 500 %>
   </div>
   <div class="field">
     <%= f.label :currently_learning, "I'm getting into" %>
-    <%= f.text_area :currently_learning, placeholder: "What are you learning right now? what are the new tools and languages you're picking up in #{Time.zone.now.year}?", maxlength: 500 %>
+    <%= f.text_area :currently_learning, placeholder: "What are you learning right now? What are the new tools and languages you're picking up in #{Time.zone.now.year}?", maxlength: 500 %>
   </div>
   <div class="field">
     <%= f.label :currently_hacking_on, "My projects and hacks" %>
@@ -106,7 +93,7 @@
   </div>
   <div class="field">
     <%= f.label :available_for %>
-    <%= f.text_area :available_for, placeholder: "What kinds of collaborations or discussions are you available for? what's a good reason to say hey to you these days?", maxlength: 500 %>
+    <%= f.text_area :available_for, placeholder: "What kinds of collaborations or discussions are you available for? What's a good reason to say hey to you these days?", maxlength: 500 %>
   </div>
   <p><strong>Links</strong></p>
   <div class="field">

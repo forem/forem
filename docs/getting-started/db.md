@@ -25,3 +25,23 @@ rails db:create
 rails db:schema:load
 rails db:seed
 ```
+
+## Seed Data
+
+By default, the amount of articles and users generated is quite tiny so that
+contributors experience a quick installation. If you require more data for your
+local installation, you can tune amount of data generated with the environment
+variable `SEEDS_MULTIPLIER`.
+
+This variable, which defaults to `1`, allows the developer to increase the size
+of their local DB. For example:
+
+```shell
+SEEDS_MULTIPLIER=2 rails db:setup
+```
+
+will result in creating double the default amount of items in the database.
+
+It's currently used only for `articles` and `users`.
+
+It can also be used for `rails db:seed` and `rails db:reset`.

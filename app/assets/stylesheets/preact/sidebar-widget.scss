@@ -1,35 +1,56 @@
 @import 'variables';
+@import 'mixins';
 
-.sidebar-additional{
-  .widget{
-    .widget-suggested-follows-container{
-      h4{
+.sidebar-additional {
+  .widget {
+    .widget-suggested-follows-container {
+      h4 {
         margin: 0;
       }
-      .widget-body{
-        .widget-list-item__suggestions{
-          .widget-list-item__close-button{
-            float: right;
-            width: 24px;
-            height: 19px;
-            margin: 3px;
+      .widget-body {
+        .widget-list-item__suggestions {
+          display: flex;
+          align-items: center;
+          margin-bottom: 8px;
+
+          & + .widget-list-item__suggestions {
+            @include themeable(
+              border-top,
+              theme-border,
+              1px solid $light-medium-gray
+            );
+            padding-top: 8px;
           }
-          .widget-list-item__content{
-            max-width: 180px;
-            margin-left: 60px;
-            margin-right: 20px;
-            min-height: 55px;
-            a{
+
+          .widget-list-item__avatar {
+            width: 48px;
+            height: 48px;
+
+            img {
+              width: 100%;
+              height: 100%;
+              border-radius: 100%;
+            }
+          }
+
+          .widget-list-item__content {
+            flex: 1 auto;
+            padding-left: 8px;
+            h5 {
+              all: unset;
               display: block;
-              padding: 5px 0px;
-              font-size: 18px;
-              color: $black;
-              color: var(--theme-color, $black);
-              &:hover {
-                text-decoration: underline;
+              margin-bottom: 4px;
+
+              a {
+                @include themeable(color, theme-color, rgba($black, 0.8));
+
+                &:hover {
+                  color: var(--body-color);
+                }
               }
             }
-            img{
+
+            img {
               width: 48px;
               height: 48px;
               border-radius: 50%;
@@ -37,7 +58,7 @@
               top: unset;
               left: 15px;
             }
-            .widget-list-item__follow-button{
+            .widget-list-item__follow-button {
               border: 2px solid transparent;
               border-radius: 3px;
               padding: 2px 8px;
@@ -51,6 +72,29 @@
           }
         }
       }
+    }
+    .widget-image {
+      margin: auto -16px; // offset the padding of the widget for img full width.
+    }
+
+    .widget-button {
+      display: block;
+      text-align: center;
+      padding: 8px 16px;
+      margin: auto -16px;
+      border-radius: 3px;
+    }
+
+    .write {
+      margin: 8px -16px;
+      background: var(--button-primary-bg);
+      color: var(--button-primary-color);
+    }
+
+    .all-stories {
+      @include themeable(border, theme-border, 2px solid $outline-color);
+      color: var(--body-color);
+      background: var(--base-inverted);
     }
   }
 }

@@ -3,7 +3,7 @@
 <% end %>
 <% expiry_minutes = params[:timeframe].blank? || params[:timeframe] == "latest" ? 4 : 20 %>
 <% flag = true %>
-<% cache("tag-stories-index-#{params}-#{flag}-#{@tag_model.updated_at}", expires_in: expiry_minutes.minutes) do %>
+<% cache("tag-stories-index-#{params}-#{flag}-#{@tag_model.updated_at}-#{user_signed_in?}", expires_in: expiry_minutes.minutes) do %>
   <style>
     .tag-header {
       border: 2px solid<%= HexComparer.new([@tag_model.bg_color_hex || "#0000000", @tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>;
@@ -31,8 +31,9 @@
   </div>
   <div class="home sub-home" id="index-container"
       data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which=""
-      data-algolia-tag="<%= @tag %>"
+      data-tag="<%= @tag %>"
       data-feed="<%= params[:timeframe] || "base-feed" %>"
+      data-requires-approval="<%= @tag_model.requires_approval %>"
       data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>">
     <%= render "articles/tags/sidebar" %>
     <div class="articles-list" id="articles-list">
@@ -104,7 +105,9 @@
       </div>
 
       <div class="substories" id="substories">
-        <% if @stories.any? %>
+        <%# articles/tags/main_feed will iterate on stories with .each_with_index,
+            thus by using .present? here we preload the items %>
+        <% if @stories.present? %>
           <%= render "articles/tags/main_feed" %>
         <% end %>
       </div>

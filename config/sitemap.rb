@@ -1,14 +1,14 @@
 if Rails.env.production?
+  region = ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
   SitemapGenerator::Sitemap.adapter = SitemapGenerator::S3Adapter.new(
     fog_provider: "AWS",
     aws_access_key_id: ApplicationConfig["AWS_ID"],
     aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
     fog_directory: ApplicationConfig["AWS_BUCKET_NAME"],
-    fog_region: ApplicationConfig["AWS_DEFAULT_REGION"],
+    fog_region: region,
   )
-
+  SitemapGenerator::Sitemap.sitemaps_host = "https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com/"
   SitemapGenerator::Sitemap.public_path = "tmp/"
-  SitemapGenerator::Sitemap.sitemaps_host = "https://thepracticaldev.s3.amazonaws.com/"
   SitemapGenerator::Sitemap.sitemaps_path = "sitemaps/"
 end
 

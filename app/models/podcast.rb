@@ -39,6 +39,10 @@ class Podcast < ApplicationRecord
     User.with_role(:podcast_admin, self)
   end
 
+  def image_90
+    ProfileImage.new(self).get(width: 90)
+  end
+
   private
 
   def unique_slug_including_users_and_orgs
@@ -49,6 +53,6 @@ class Podcast < ApplicationRecord
   def bust_cache
     return unless path
 
-    Podcasts::BustCacheJob.perform_later(path)
+    Podcasts::BustCacheWorker.perform_async(path)
   end
 end

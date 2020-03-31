@@ -6,13 +6,15 @@
 <%= render "users/profile_header" %>
 <div class="home sub-home" id="index-container"
      data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
-     data-algolia-tag="<%= "organization_#{@organization.id}" %>"
+     data-tag="<%= "organization_#{@organization.id}" %>"
      data-feed="<%= params[:timeframe] || "base-feed" %>"
      data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>">
   <%= render "organizations/sidebar" %>
   <div class="articles-list" id="articles-list">
     <div class="substories" id="substories">
-      <% if @stories.any? %>
+      <%# organizations/main_feed will iterate on stories with .each_with_index,
+          thus by using .present? here we preload the items %>
+      <% if @stories.present? %>
         <%= render "organizations/main_feed" %>
       <% end %>
     </div>

@@ -1,0 +1,19 @@
+<div class="widget">
+  <% if SiteConfig.campaign_sidebar_image %>
+    <img src="<%= SiteConfig.campaign_sidebar_image %>" class="widget-image" style="height:116px;" />
+  <% end %>
+  <header>
+    <h4>
+      <%= link_to "Stories (#{@campaign_articles_count})", "/t/#{SiteConfig.campaign_featured_tags.first}" %>
+    </h4>
+  </header>
+  <div class="widget-body">
+    <div class="widget-link-list">
+      <% @latest_campaign_articles.each do |plucked_article| %>
+        <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
+      <% end %>
+    </div>
+  </div>
+  <%= link_to "Share your story", "/new/#{SiteConfig.campaign_featured_tags.first}", class: "widget-button write" %>
+  <%= link_to "See all stories", "/t/#{SiteConfig.campaign_featured_tags.first}", class: "widget-button all-stories" %>
+</div>

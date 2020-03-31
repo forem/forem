@@ -1,5 +1,5 @@
 require "rails_helper"
-# TODO: improve this test
+
 RSpec.describe Suggester::Users::Sidebar, type: :service do
   let(:user) { create(:user) }
 

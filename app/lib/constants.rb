@@ -11,6 +11,7 @@ module Constants
     "fosstodon.org",
     "framapiaf.org",
     "friends.nico",
+    "functional.cafe",
     "hackers.town",
     "hearthtodon.com",
     "hex.bz",
@@ -37,6 +38,7 @@ module Constants
     "mathtod.online",
     "mimumedon.com",
     "misskey.xyz",
+    "moe.cat",
     "mstdn-workers.com",
     "mstdn.guru",
     "mstdn.io",
@@ -63,5 +65,6 @@ module Constants
     "toot.cafe",
     "wikitetas.club",
     "xoxo.zone",
+    "4estate.media",
   ].freeze
 end

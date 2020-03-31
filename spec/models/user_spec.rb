@@ -33,6 +33,7 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
       it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
       it { is_expected.to have_one(:pro_membership).dependent(:destroy) }
+      it { is_expected.to have_one(:counters).dependent(:destroy) }
 
       # rubocop:disable RSpec/NamedSubject
       it "has created_podcasts" do
@@ -93,6 +94,22 @@ RSpec.describe User, type: :model do
       user = build(:user, username: "page_yo")
       expect(user).not_to be_valid
       expect(user.errors[:username].to_s.include?("taken")).to be true
+    end
+  end
+
+  describe "#after_commit" do
+    it "on update enqueues job to index user to elasticsearch" do
+      user.save
+      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, user.id]) do
+        user.save
+      end
+    end
+
+    it "on destroy enqueues job to delete user from elasticsearch" do
+      user.save
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, user.id]) do
+        user.destroy
+      end
     end
   end
 
@@ -184,6 +201,11 @@ RSpec.describe User, type: :model do
 
       it "does not accept invalid mastodon url" do
         user.mastodon_url = "mastodon.social/@test"
+        expect(user).not_to be_valid
+      end
+
+      it "does not accept an invalid url" do
+        user.mastodon_url = "ben .com"
         expect(user).not_to be_valid
       end
     end
@@ -433,7 +455,7 @@ RSpec.describe User, type: :model do
       end
 
       it "sets correct language_settings by default after the jobs are processed" do
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           expect(user.language_settings).to eq("preferred_languages" => %w[en])
         end
       end
@@ -441,32 +463,41 @@ RSpec.describe User, type: :model do
 
     describe "#estimated_default_language" do
       it "estimates default language to be nil" do
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           expect(user.estimated_default_language).to be(nil)
         end
       end
 
       it "estimates default language to be japanese with .jp email" do
-        perform_enqueued_jobs do
+        user = nil
+
+        sidekiq_perform_enqueued_jobs do
           user = create(:user, email: "ben@hello.jp")
-          expect(user.reload.estimated_default_language).to eq("ja")
         end
+
+        expect(user.reload.estimated_default_language).to eq("ja")
       end
 
       it "estimates default language based on ID dump" do
-        perform_enqueued_jobs do
+        new_user = nil
+
+        sidekiq_perform_enqueued_jobs do
           new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-          expect(new_user.estimated_default_language).to eq(nil)
         end
+
+        expect(new_user.estimated_default_language).to eq(nil)
       end
     end
 
     describe "#preferred_languages_array" do
       it "returns proper preferred_languages_array" do
-        perform_enqueued_jobs do
+        user = nil
+
+        sidekiq_perform_enqueued_jobs do
           user = create(:user, email: "ben@hello.jp")
-          expect(user.reload.preferred_languages_array).to eq(%w[en ja])
         end
+
+        expect(user.reload.preferred_languages_array).to eq(%w[en ja])
       end
 
       it "returns a correct array when language settings are in a new format" do
@@ -515,141 +546,135 @@ RSpec.describe User, type: :model do
           user.update(unconfirmed_email: "bob@bob.com", confirmation_sent_at: Time.current)
         end
       end
+
+      it "does not enqueue when the email address or subscription status has not changed" do
+        # The trait replaces the method with a dummy, but we need the actual method for this test.
+        user = described_class.find(create(:user, :ignore_mailchimp_subscribe_callback).id)
+
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
+          user.update(website_url: "http://example.com")
+        end
+      end
     end
 
     describe "#conditionally_resave_articles" do
       let!(:user) { create(:user) }
 
-      context "when changing username" do
-        it "enqueue resave articles job" do
-          sidekiq_assert_enqueued_with(
-            job: Users::ResaveArticlesWorker,
-            args: [user.id],
-            queue: "medium_priority"
-          ) do
-            user.username = "#{user.username} changed"
-            user.save
-          end
+      it "enqueues resave articles job when changing username" do
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
+          args: [user.id],
+          queue: "medium_priority",
+        ) do
+          user.username = "#{user.username} changed"
+          user.save
         end
       end
 
-      context "when changing name" do
-        it "enqueue resave articles job" do
-          sidekiq_assert_enqueued_with(
-            job: Users::ResaveArticlesWorker,
-            args: [user.id],
-            queue: "medium_priority"
-          ) do
-            user.name = "#{user.name} changed"
-            user.save
-          end
+      it "enqueues resave articles job when changing name" do
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
+          args: [user.id],
+          queue: "medium_priority",
+        ) do
+          user.name = "#{user.name} changed"
+          user.save
         end
       end
 
-      context "when changing summary" do
-        it "enqueue resave articles job" do
-          sidekiq_assert_enqueued_with(
-            job: Users::ResaveArticlesWorker,
-            args: [user.id],
-            queue: "medium_priority"
-          ) do
-            user.summary = "#{user.summary} changed"
-            user.save
-          end
+      it "enqueues resave articles job when changing summary" do
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
+          args: [user.id],
+          queue: "medium_priority",
+        ) do
+          user.summary = "#{user.summary} changed"
+          user.save
         end
       end
 
-      context "when changing bg_color_hex" do
-        it "enqueue resave articles job" do
-          sidekiq_assert_enqueued_with(
-            job: Users::ResaveArticlesWorker,
-            args: [user.id],
-            queue: "medium_priority"
-          ) do
-            user.bg_color_hex = "#12345F"
-            user.save
-          end
+      it "enqueues resave articles job when changing bg_color_hex" do
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
+          args: [user.id],
+          queue: "medium_priority",
+        ) do
+          user.bg_color_hex = "#12345F"
+          user.save
         end
       end
 
-      context "when changing text_color_hex" do
-        it "enqueue resave articles job" do
-          sidekiq_assert_enqueued_with(
-            job: Users::ResaveArticlesWorker,
-            args: [user.id],
-            queue: "medium_priority"
-          ) do
-            user.text_color_hex = "#FA345E"
-            user.save
-          end
+      it "enqueues resave articles job when changing text_color_hex" do
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
+          args: [user.id],
+          queue: "medium_priority",
+        ) do
+          user.text_color_hex = "#FA345E"
+          user.save
         end
       end
 
-      context "when changing profile_image" do
-        it "enqueue resave articles job" do
-          sidekiq_assert_enqueued_with(
-            job: Users::ResaveArticlesWorker,
-            args: [user.id],
-            queue: "medium_priority"
-          ) do
-            user.profile_image = "https://fakeimg.pl/300/"
-            user.save
-          end
+      it "enqueues resave articles job when changing profile_image" do
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
+          args: [user.id],
+          queue: "medium_priority",
+        ) do
+          user.profile_image = "https://fakeimg.pl/300/"
+          user.save
         end
       end
 
-      context "when changing github_username" do
-        it "enqueue resave articles job" do
-          sidekiq_assert_enqueued_with(
-            job: Users::ResaveArticlesWorker,
-            args: [user.id],
-            queue: "medium_priority"
-          ) do
-            user.github_username = "mygreatgithubname"
-            user.save
-          end
+      it "enqueues resave articles job when changing github_username" do
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
+          args: [user.id],
+          queue: "medium_priority",
+        ) do
+          user.github_username = "mygreatgithubname"
+          user.save
         end
       end
 
-      context "when changing twitter_username" do
-        it "enqueue resave articles job" do
-          sidekiq_assert_enqueued_with(
-            job: Users::ResaveArticlesWorker,
-            args: [user.id],
-            queue: "medium_priority"
-          ) do
-            user.twitter_username = "mygreattwittername"
-            user.save
-          end
+      it "enqueues resave articles job when changing twitter_username" do
+        sidekiq_assert_enqueued_with(
+          job: Users::ResaveArticlesWorker,
+          args: [user.id],
+          queue: "medium_priority",
+        ) do
+          user.twitter_username = "mygreattwittername"
+          user.save
         end
       end
 
-      context "when changing resave attributes but user is banned" do
-        let!(:user) { create(:user, :banned) }
-
-        it "doesn't enqueue resave articles" do
-          expect do
-            user.twitter_username = "mygreattwittername"
-            user.save
-          end.to_not change(Users::ResaveArticlesWorker.jobs, :size)
-        end
+      it "doesn't enqueue resave articles when changing resave attributes but user is banned" do
+        banned_user = create(:user, :banned)
+        expect do
+          banned_user.twitter_username = "mygreattwittername"
+          banned_user.save
+        end.not_to change(Users::ResaveArticlesWorker.jobs, :size)
       end
     end
   end
 
   context "when indexing and deindexing" do
     it "triggers background auto-indexing when user is saved" do
-      expect { user.save }.to have_enqueued_job(Search::IndexJob).with("User", user.id)
+      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["User", user.id]) do
+        user.save
+      end
     end
 
     it "doesn't enqueue a job on destroy" do
       user = build(:user)
 
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         user.save
       end
 
-      expect { user.destroy }.not_to have_enqueued_job(Search::IndexJob)
+      sidekiq_assert_no_enqueued_jobs(only: Search::IndexWorker) do
+        user.destroy
+      end
     end
   end
 
@@ -729,6 +754,25 @@ RSpec.describe User, type: :model do
       new_user = user_from_authorization_service(:github, nil, "navbar_basic")
       expect(new_user.github_created_at).to be_kind_of(ActiveSupport::TimeWithZone)
     end
+
+    it "does not allow previously banished users to sign up again" do
+      banished_name = "SpammyMcSpamface"
+      create(:banished_user, username: banished_name)
+      OmniAuth.config.mock_auth[:twitter].info.nickname = banished_name
+
+      expect do
+        user_from_authorization_service(:twitter, nil, "navbar_basic")
+      end.to raise_error(ActiveRecord::RecordInvalid, /Username has been banished./)
+    end
+
+    it "does not allow an existing user to change their name to a banished one" do
+      banished_name = "SpammyMcSpamface"
+      create(:banished_user, username: banished_name)
+      user = create(:user)
+
+      user.update(username: banished_name)
+      expect(user.errors.full_messages).to include("Username has been banished.")
+    end
   end
 
   describe "#follow and #all_follows" do
@@ -768,6 +812,47 @@ RSpec.describe User, type: :model do
 
     it "returns segment of articles if limit is passed" do
       expect(user.followed_articles.limit(1).size).to eq(articles.size - 1)
+    end
+  end
+
+  describe "theming properties" do
+    it "creates proper body class with defaults" do
+      expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+    end
+
+    it "determines dark theme if night theme" do
+      user.config_theme = "night_theme"
+      expect(user.decorate.dark_theme?).to eq(true)
+    end
+
+    it "determines dark theme if ten x hacker" do
+      user.config_theme = "ten_x_hacker_theme"
+      expect(user.decorate.dark_theme?).to eq(true)
+    end
+
+    it "determines not dark theme if not one of the dark themes" do
+      user.config_theme = "default"
+      expect(user.decorate.dark_theme?).to eq(false)
+    end
+
+    it "creates proper body class with sans serif config" do
+      user.config_font = "sans_serif"
+      expect(user.decorate.config_body_class).to eq("default sans-serif-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+    end
+
+    it "creates proper body class with open dyslexic config" do
+      user.config_font = "open_dyslexic"
+      expect(user.decorate.config_body_class).to eq("default open-dyslexic-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+    end
+
+    it "creates proper body class with night theme" do
+      user.config_theme = "night_theme"
+      expect(user.decorate.config_body_class).to eq("night-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+    end
+
+    it "creates proper body class with pink theme" do
+      user.config_theme = "pink_theme"
+      expect(user.decorate.config_body_class).to eq("pink-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
     end
   end
 
@@ -870,6 +955,30 @@ RSpec.describe User, type: :model do
     it "returns true if user opted in from follower notifications and has an email" do
       user.assign_attributes(email_follower_notifications: true)
       expect(user.receives_follower_email_notifications?).to be(true)
+    end
+  end
+
+  describe ".dev_account" do
+    it "returns nil if the account does not exist" do
+      expect(described_class.dev_account).to be_nil
+    end
+
+    it "returns the user if the account exists" do
+      allow(SiteConfig).to receive(:staff_user_id).and_return(user.id)
+
+      expect(described_class.dev_account).to eq(user)
+    end
+  end
+
+  describe ".mascot_account" do
+    it "returns nil if the account does not exist" do
+      expect(described_class.mascot_account).to be_nil
+    end
+
+    it "returns the user if the account exists" do
+      allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id)
+
+      expect(described_class.mascot_account).to eq(user)
     end
   end
 end

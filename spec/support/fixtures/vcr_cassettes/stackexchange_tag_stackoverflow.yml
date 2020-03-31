@@ -1,0 +1,91 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.stackexchange.com/2.2/posts/57496168?filter=!3tz1WbZW5JxrG-f99&key=&site=stackoverflow
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Length:
+      - '141'
+      Content-Type:
+      - application/json; charset=utf-8
+      Strict-Transport-Security:
+      - max-age=2592000
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST
+      Access-Control-Allow-Credentials:
+      - 'false'
+      X-Content-Type-Options:
+      - nosniff
+      X-Request-Guid:
+      - d25e24d9-a659-49ff-ab38-aaaef36d5bbf
+      Date:
+      - Mon, 13 Jan 2020 12:20:49 GMT
+    body:
+      encoding: ASCII-8BIT
+      string: '{"items":[{"last_activity_date":1565806685,"post_type":"question","post_id":57496168}],"has_more":false,"quota_max":300,"quota_remaining":291}'
+    http_version: 
+  recorded_at: Mon, 13 Jan 2020 12:20:50 GMT
+- request:
+    method: get
+    uri: https://api.stackexchange.com/2.2/questions/57496168?filter=!*1SgQGDOL9bPBHULz9sKS.y6qv7V9fYNszvdhDuv5&key=&site=stackoverflow
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Length:
+      - '532'
+      Content-Type:
+      - application/json; charset=utf-8
+      Strict-Transport-Security:
+      - max-age=2592000
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST
+      Access-Control-Allow-Credentials:
+      - 'false'
+      X-Content-Type-Options:
+      - nosniff
+      X-Request-Guid:
+      - 644cb806-8678-4b08-bfbf-6f0cdb72a10d
+      Date:
+      - Mon, 13 Jan 2020 12:20:50 GMT
+    body:
+      encoding: ASCII-8BIT
+      string: '{"items":[{"tags":["laravel","foreach","view","relationship"],"comment_count":1,"view_count":61,"answer_count":4,"score":0,"last_activity_date":1565806685,"creation_date":1565790943,"question_id":57496168,"link":"https://stackoverflow.com/questions/57496168/use-where-and-limit-to-child-in-foreach","title":"Use
+        &quot;where&quot; and &quot;limit&quot; to child in @foreach","body":"<p>I
+        want to display all user''s profile into views and they posts. It''s pretty
+        simple:</p>\n\n<pre><code>@foreach($profiles as $profile)\n{{ $profile-&gt;name
+        }}\n @foreach($profile-&gt;posts as $post)\n   {{$post-&gt;title}}\n @endforeach\n@endforeach\n</code></pre>\n\n<p>But
+        I want to display only the latests posts (->orderBy(''created_at'', ''desc'')->limit(4)
+        ) and only accepted posts (->where(''accept'', 1)). How can I do that?</p>\n"}],"has_more":false,"quota_max":300,"quota_remaining":290}'
+    http_version: 
+  recorded_at: Mon, 13 Jan 2020 12:20:51 GMT
+recorded_with: VCR 5.0.0

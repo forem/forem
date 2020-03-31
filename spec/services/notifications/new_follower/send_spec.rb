@@ -26,6 +26,16 @@ RSpec.describe Notifications::NewFollower::Send, type: :service do
     end
   end
 
+  context "when trying to pass follow data as a Hash with keys as strings" do
+    it "creates a notification" do
+      stringified_follow_data = follow_data(follow).stringify_keys
+
+      expect do
+        described_class.call(stringified_follow_data)
+      end.to change(Notification, :count).by(1)
+    end
+  end
+
   context "when user follows another user" do
     it "creates a notification" do
       expect do

@@ -2,7 +2,7 @@
   <% title "Videos" %>
 
   <link rel="canonical" href="https://dev.to<%= request.path %>" />
-  <meta name="description" content="Where programmers share ideas and help each other grow.">
+  <meta name="description" content="<%= SiteConfig.community_description %>">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="website" />
@@ -30,7 +30,7 @@
             <span class="video-timestamp"><%= video_article.video_duration_in_minutes %></span>
           </div>
           <p><strong><%= video_article.title %></strong></p>
-          <p class="video-username"><%= User.find(video_article.user_id).name %></p>
+          <p class="video-username"><%= video_article.user.name %></p>
       </a>
     <% end %>
   </div>

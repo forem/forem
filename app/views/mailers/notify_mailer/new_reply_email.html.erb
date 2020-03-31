@@ -9,10 +9,12 @@
   </tr>
   <tr>
     <td style='padding:20px;padding-bottom:30px;border-radius:3px;font-size:19px;background:#f4f4f4'>
-      <h2 style="font-size:22px;color:rgb(107, 107, 107)">re: <em><%= @comment.commentable.title %></em></h2>
+      <h2 style="font-size:22px;color:rgb(107, 107, 107)">re: <em><%= @comment.commentable&.title || "Content No Longer Available" %></em></h2>
       <%= @comment.processed_html.html_safe %>
       <a style="background:#3c7dc1;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;" href='https://dev.to<%= @comment.path %>'>view on dev.to</a>&nbsp;
-      <a style="background:#1f1f1f;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;" href='https://dev.to<%= @comment.commentable.path %>'>read original post</a>
+      <% if @comment.commentable %>
+        <a style="background:#1f1f1f;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;" href='https://dev.to<%= @comment.commentable.path %>'>read original post</a>
+      <% end %>
     </td>
   </tr>
 </table>

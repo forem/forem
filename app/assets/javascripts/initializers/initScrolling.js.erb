@@ -4,7 +4,7 @@
 
 var client;
 
-function fetchNext(el, endpoint, insertCallback){
+function fetchNext(el, endpoint, insertCallback) {
   var indexParams = JSON.parse(el.dataset.params);
   var urlParams = Object.keys(indexParams).map(function handleMap(k) {
     return encodeURIComponent(k) + "=" + encodeURIComponent(indexParams[k])
@@ -33,7 +33,7 @@ function insertNext(params, buildCallback) {
   return function insertEntries(entries) {
     var list = document.getElementById(params.listId || "sublist");
     var newFollowersHTML = "";
-    entries.forEach(function insertAnEntry(entry){
+    entries.forEach(function insertAnEntry(entry) {
       let existingEl = document.getElementById((params.elId || "element") + "-" + entry.id);
       if(!existingEl) {
         var newHTML = buildCallback(entry)
@@ -68,12 +68,12 @@ function buildFollowsHTML(follows) {
 var negativeFollow = -1;
 function buildTagsHTML(tag) {
   var tagHTML = '';
-  if (tag.points < 0 && negativeFollow === -1){
+  if (tag.points < 0 && negativeFollow === -1) {
     tagHTML += '<h2>Negative Tags (anti-follows)</h2>';
     negativeFollow = 0;
   }
   return tagHTML +
-        '<div id="follows-' + tag.id + '" class="single-article" style="border-color:' + tag.color + ';box-shadow: 3px 3px 0px ' + tag.color + '">\n' +
+        '<div id="follows-' + tag.id + '" class="single-article" style="border: 1px solid ' + tag.color + ';box-shadow: 3px 3px 0px ' + tag.color + '">\n' +
         '   <h2>\n' +
         '     <a href="/t/' + tag.name + '">\n' +
         '       ' + tag.name + '\n' +
@@ -90,28 +90,22 @@ function buildTagsHTML(tag) {
         '</div>';
 }
 
-function fetchNextFollowingPage(el){
+function fetchNextFollowingPage(el) {
   var indexParams = JSON.parse(el.dataset.params);
   var action = indexParams.action;
-  if (action.includes("users")){
-    fetchNext(el, "/api/followings/users", insertNext({ elId: "follows" }, buildFollowsHTML));
-  } else if (action.includes("podcasts")){
-    fetchNext(el, "/api/followings/podcasts", insertNext({ elId: "follows" }, buildFollowsHTML));
-  } else if (action.includes("organizations")){
-    fetchNext(el, "/api/followings/organizations", insertNext({ elId: "follows" }, buildFollowsHTML));
+  if (action.includes("users")) {
+    fetchNext(el, "/followings/users", insertNext({ elId: "follows" }, buildFollowsHTML));
+  } else if (action.includes("podcasts")) {
+    fetchNext(el, "/followings/podcasts", insertNext({ elId: "follows" }, buildFollowsHTML));
+  } else if (action.includes("organizations")) {
+    fetchNext(el, "/followings/organizations", insertNext({ elId: "follows" }, buildFollowsHTML));
   } else {
-    fetchNext(el, "/api/followings/tags", insertNext({ elId: "follows" }, buildTagsHTML));
+    fetchNext(el, "/followings/tags", insertNext({ elId: "follows" }, buildTagsHTML));
   }
 }
 
-function fetchNextFollowersPage(el){
-  var indexParams = JSON.parse(el.dataset.params);
-  var whichEndpoint = indexParams.which;
-  if (whichEndpoint.includes("organization")){
-    fetchNext(el, "/api/followers/organizations", insertNext({ elId: "follows" }, buildFollowsHTML));
-  } else {
-    fetchNext(el, "/api/followers/users", insertNext({ elId: "follows" }, buildFollowsHTML));
-  }
+function fetchNextFollowersPage(el) {
+  fetchNext(el, "/api/followers/users", insertNext({ elId: "follows" }, buildFollowsHTML));
 }
 
 function buildVideoArticleHTML(videoArticle) {
@@ -127,7 +121,7 @@ function buildVideoArticleHTML(videoArticle) {
 function insertVideos(videoArticles) {
   var list = document.getElementById("subvideos");
   var newVideosHTML = "";
-  videoArticles.forEach(function insertAVideo(videoArticle){
+  videoArticles.forEach(function insertAVideo(videoArticle) {
     var existingEl = document.getElementById("video-article-"+videoArticle.id);
     if(!existingEl) {
       var newHTML = buildVideoArticleHTML(videoArticle)
@@ -147,7 +141,7 @@ function insertVideos(videoArticles) {
   }
 }
 
-function fetchNextVideoPage(el){
+function fetchNextVideoPage(el) {
   fetchNext(el, "/api/videos", insertVideos)
 }
 
@@ -156,9 +150,10 @@ function insertArticles(articles) {
   var newArticlesHTML = "";
   var el = document.getElementById("home-articles-object")
   if (el) {el.outerHTML = "";}
-  articles.forEach(function insertAnArticle(article){
+  articles.forEach(function insertAnArticle(article) {
     var existingEl = document.getElementById("article-link-"+article.id);
-    if ( existingEl &&
+    if ( !['/', '/top/week', '/top/month', '/top/year', '/top/infinity', '/latest'].includes(window.location.pathname) &&
+      existingEl &&
       existingEl.parentElement &&
       existingEl.parentElement.classList.contains('single-article-small-pic') &&
       !document.getElementById("video-player-"+article.id)) {
@@ -180,21 +175,22 @@ function insertArticles(articles) {
   }
 }
 
-function fetchNextPodcastPage(el){
+function fetchNextPodcastPage(el) {
   fetchNext(el, "/api/podcast_episodes", insertArticles)
 }
 
-function algoliaPaginate(tag){
-  var filters = [];
+function paginate(tag, requiresApproval) {
+  var tagFilters = [];
   if (tag && tag.length > 0) {
-    filters.push(tag);
+    tagFilters.push(tag);
   }
 
   var searchObj = {
       hitsPerPage: 15,
       page: nextPage,
       attributesToHighlight: [],
-      tagFilters: filters,
+      tagFilters,
+      filters: (requiresApproval === 'true') ? 'approved:true' : ''
   }
 
   var homeEl = document.getElementById("index-container");
@@ -204,7 +200,8 @@ function algoliaPaginate(tag){
   } else if (homeEl.dataset.feed === "latest") {
     paginationArticlesIndex = client.initIndex('ordered_articles_by_published_at_<%= Rails.env %>');
   } else {
-    searchObj.filters = ('published_at_int > ' + homeEl.dataset.articlesSince);
+    var preamble = (requiresApproval === 'true') ? ' AND ' : ''
+    searchObj.filters += ( preamble +'published_at_int > ' + homeEl.dataset.articlesSince);
     paginationArticlesIndex = client.initIndex('ordered_articles_by_positive_reactions_count_<%= Rails.env %>');
   }
 
@@ -213,7 +210,8 @@ function algoliaPaginate(tag){
     nextPage += 1;
     insertArticles(content.hits);
     const checkBlockedContentEvent = new CustomEvent('checkBlockedContent')
-    window.dispatchEvent(checkBlockedContentEvent)
+    window.dispatchEvent(checkBlockedContentEvent);
+    initializeReadingListIcons();
     if (content.hits.length === 0) {
       document.getElementById("loading-articles").style.display = "none"
       done = true;
@@ -255,7 +253,7 @@ function fetchNextPageIfNearBottom() {
   } else {
     scrollableElemId = "articles-list";
     fetchCallback = function fetch() {
-      algoliaPaginate(indexContainer.dataset.algoliaTag);
+      paginate(indexContainer.dataset.tag, indexContainer.dataset.requiresApproval);
     };
   }
 
@@ -278,7 +276,7 @@ function checkIfNearBottomOfPage() {
     document.getElementById("loading-articles").style.display = "block";
   }
   fetchNextPageIfNearBottom();
-  setInterval(function handleInterval(){
+  setInterval(function handleInterval() {
     fetchNextPageIfNearBottom();
   }, 210)
 }
