@@ -1,8 +1,4 @@
 class Tag < ActsAsTaggableOn::Tag
-  self.ignored_columns = %w[
-    submission_rules_headsup
-  ]
-
   attr_accessor :points
 
   acts_as_followable
