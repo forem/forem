@@ -10,7 +10,7 @@ import {
 import '../../storybook-utiltiies/designSystem.scss';
 
 export default {
-  title: 'Components/Buttons/JSX',
+  title: 'Components/Buttons',
   decorator: [withKnobs],
 };
 
