@@ -115,7 +115,6 @@ variable :HONEYCOMB_API_KEY, :String, default: ""
 
 # Google analytic
 # (https://developers.google.com/analytics/devguides/reporting/core/v4)
-variable :GA_SERVICE_ACCOUNT_JSON, :String, default: "Optional"
 variable :GA_TRACKING_ID, :String, default: "Optional"
 
 # Mailchimp for mails
