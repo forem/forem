@@ -153,7 +153,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       expect(Notification).not_to have_received(:send_welcome_notification)
     end
 
-    it "does send a notification to a user with 0 tag follows created 3 days ago" do
+    it "sends a notification to a user with 0 tag follows" do
       sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_feed_customization_notification) }
       expect(user.notifications.count).to eq(1)
       expect(user.notifications.first.notifiable).to eq(customize_feed_broadcast)
