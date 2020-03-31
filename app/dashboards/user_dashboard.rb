@@ -8,7 +8,6 @@ class UserDashboard < Administrate::BaseDashboard
   # which determines how the attribute is displayed
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
-    organization: Field::BelongsTo,
     id: Field::Number,
     name: Field::String,
     profile_image: CarrierwaveField,
@@ -70,7 +69,6 @@ class UserDashboard < Administrate::BaseDashboard
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = %i[
-    organization
     name
     username
     twitter_username
