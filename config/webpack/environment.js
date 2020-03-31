@@ -1,4 +1,5 @@
 /* global require module */
+const path = require('path');
 const { environment } = require('@rails/webpacker');
 const erb = require('./loaders/erb');
 
@@ -10,9 +11,19 @@ the existing configuration and only override/add what is necessary.
 The cache groups section is the default cache groups in webpack 4. See https://webpack.js.org/plugins/split-chunks-plugin/#optimizationsplitchunks.
 It does not appear to be the default with webpacker 4.
 */
-environment.splitChunks(config => {
+environment.splitChunks((config) => {
   return {
     ...config,
+    resolve: {
+      ...config.resolve,
+      alias: {
+        ...(config.resolve ? config.resolve.alias : {}),
+        '@crayons': path.resolve(
+          __dirname,
+          '../../app/javascript/crayons',
+        ) /* global __dirname */,
+      },
+    },
     optimization: {
       ...config.optimization,
       splitChunks: {
