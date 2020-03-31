@@ -33,7 +33,7 @@ function fixedEncodeURIComponent(str) {
   // from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
   return encodeURIComponent(str).replace(
     /[!'()*]/g,
-    (c) => `%${c.charCodeAt(0).toString(16)}`,
+    c => `%${c.charCodeAt(0).toString(16)}`,
   );
 }
 
@@ -98,5 +98,5 @@ export function fetchSearch(endpoint, dataHash) {
       'Content-Type': 'application/json',
     },
     credentials: 'same-origin',
-  }).then((response) => response.json());
+  }).then(response => response.json());
 }

@@ -1,25 +1,45 @@
 import { h } from 'preact';
 import { articleSnippetResultPropTypes } from '../../src/components/common-prop-types';
 
-export const SearchSnippet = ({ highlightText }) => {
-  if (highlightText && highlightText.body_text.length > 0) {
-    const hitHighlights = highlightText.body_text;
+export const SearchSnippet = ({ snippetResult }) => {
+  if (snippetResult && snippetResult.body_text) {
     let bodyTextSnippet = '';
 
-    if (hitHighlights[0]) {
-      const firstSnippetChar = hitHighlights[0];
+    if (snippetResult.body_text.matchLevel !== 'none') {
+      const firstSnippetChar = snippetResult.body_text.value[0];
 
       let startingEllipsis = '';
       if (firstSnippetChar.toLowerCase() !== firstSnippetChar.toUpperCase()) {
         startingEllipsis = '…';
       }
-      bodyTextSnippet = `${startingEllipsis + hitHighlights.join('...')}…`;
+
+      bodyTextSnippet = `${startingEllipsis + snippetResult.body_text.value}…`;
     }
 
-    if (bodyTextSnippet.length > 0) {
+    let commentsBlobSnippet = '';
+
+    if (
+      snippetResult.comments_blob.matchLevel !== 'none' &&
+      bodyTextSnippet === ''
+    ) {
+      const firstSnippetChar = snippetResult.comments_blob.value[0];
+      let startingEllipsis = '';
+
+      if (firstSnippetChar.toLowerCase() !== firstSnippetChar.toUpperCase()) {
+        startingEllipsis = '…';
+      }
+
+      commentsBlobSnippet = `${startingEllipsis +
+        snippetResult.comments_blob.value}… <i>(comments)</i>`;
+    }
+
+    if (bodyTextSnippet.length > 0 || commentsBlobSnippet.length > 0) {
       return (
         <div className="search-snippet">
-          <span>{bodyTextSnippet}</span>
+          <span>
+            {bodyTextSnippet}
+            {commentsBlobSnippet}
+          </span>
         </div>
       );
     }
@@ -30,7 +50,7 @@ export const SearchSnippet = ({ highlightText }) => {
 
 SearchSnippet.propTypes = {
   // eslint-disable-next-line no-underscore-dangle
-  highlightText: articleSnippetResultPropTypes.isRequired,
+  snippetResult: articleSnippetResultPropTypes.isRequired,
 };
 
 SearchSnippet.displayName = 'SearchSnippet';

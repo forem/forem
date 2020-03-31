@@ -61,7 +61,7 @@ describe('Search utilities', () => {
   describe('preloadSearchResults', () => {
     beforeEach(() => {
       global.InstantClick = {
-        preload: (url) => url,
+        preload: url => url,
       };
       jest.spyOn(InstantClick, 'preload');
     });
@@ -145,7 +145,7 @@ describe('Search utilities', () => {
   describe('displaySearchResults', () => {
     beforeEach(() => {
       global.InstantClick = {
-        display: (url) => url,
+        display: url => url,
       };
       jest.spyOn(InstantClick, 'display');
     });
@@ -242,7 +242,7 @@ describe('Search utilities', () => {
     });
 
     test('should return response formatted as JSON', () => {
-      responsePromise.then((response) => {
+      responsePromise.then(response => {
         expect(response).toBeInstanceOf(Object);
         expect(response).toMatchObject({ results: expect.any(Array) });
       });
