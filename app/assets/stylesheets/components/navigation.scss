@@ -1,29 +1,5 @@
 @import '../config/import';
 
-.crayons-nav-block {
-  // display: flex;
-  // align-items: center;
-  // padding: $su-3;
-  // border-radius: $br-default;
-  // color: var(--link-dimmed-color);
-
-  // @media (min-width: $breakpoint-s) {
-  //   padding: $su-2;
-  // }
-
-  &:hover:not(&--current) {
-    // background: var(--link-dimmed-bg-hover);
-    // color: var(--link-dimmed-color-hover);
-  }
-
-  &--current {
-    // font-weight: $fw-medium;
-    // background: var(--link-dimmed-bg-current);
-    // color: var(--link-dimmed-color-current);
-  }
-
-}
-
 .crayons-link {
   color: var(--link-color);
 
