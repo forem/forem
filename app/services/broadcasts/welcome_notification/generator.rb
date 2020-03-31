@@ -53,7 +53,7 @@ module Broadcasts
       end
 
       def send_discuss_and_ask_notification
-        return if received_notification?(discuss_and_ask_broadcast) || user.created_at > 6.days.ago
+        return if asked_and_discussed || received_notification?(discuss_and_ask_broadcast) || user.created_at > 6.days.ago
 
         Notification.send_welcome_notification(user.id, discuss_and_ask_broadcast.id)
         @notification_enqueued = true
@@ -88,10 +88,6 @@ module Broadcasts
         @customize_feed_broadcast ||= Broadcast.find_by(title: "Welcome Notification: customize_feed")
       end
 
-      def identities
-        @identities ||= user.identities.where(provider: SiteConfig.authentication_providers)
-      end
-
       def authentication_broadcast
         @authentication_broadcast ||= find_auth_broadcast
       end
@@ -100,11 +96,26 @@ module Broadcasts
         @discuss_and_ask_broadcast ||= find_discuss_ask_broadcast
       end
 
+      def identities
+        @identities ||= user.identities.where(provider: SiteConfig.authentication_providers)
+      end
+
       def find_auth_broadcast
         missing_identities = SiteConfig.authentication_providers.map do |provider|
           identities.exists?(provider: provider) ? nil : "#{provider}_connect"
         end.compact
         Broadcast.find_by(title: "Welcome Notification: #{missing_identities.first}")
+      end
+
+      def find_discuss_ask_broadcast
+        type = if !asked_and_discussed
+                 "discuss_and_ask"
+               elsif !asked_a_question
+                 "ask_question"
+               elsif !started_a_discussion
+                 "start_discussion"
+               end
+        Broadcast.find_by(title: "Welcome Notification: #{type}")
       end
 
       def asked_a_question
@@ -117,16 +128,6 @@ module Broadcasts
 
       def asked_and_discussed
         asked_a_question && started_a_discussion
-      end
-
-      def find_discuss_ask_broadcast
-        if !asked_and_discussed
-          Broadcast.find_by(title: "Welcome Notification: discuss_and_ask")
-        elsif !asked_a_question
-          Broadcast.find_by(title: "Welcome Notification: ask_question")
-        elsif !started_a_discussion
-          Broadcast.find_by(title: "Welcome Notification: start_discussion")
-        end
       end
     end
   end
