@@ -13,12 +13,12 @@
                                 flags: "progressive",
                                 fetch_format: "auto",
                                 sign_url: true), class: "sloan", alt: "Sloan, the sloth mascot", loading: "lazy") %>
-    <h1>Join our <%= ApplicationConfig["COMMUNITY_NAME"] %> Community :)</h1>
+    <h1>Join our <%= community_qualified_name %> :)</h1>
     <p>
       We're a place where coders share, stay up-to-date and grow their careers.
     </p>
     <% if SiteConfig.auth_allowed?("twitter") %>
-      <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="sign-up-link cta" data-no-instant>
+      <a href="/users/auth/twitter?callback_url=<%= app_url %>/users/auth/twitter/callback" class="sign-up-link cta" data-no-instant>
         <img src="<%= asset_path("twitter-logo.svg") %>" class="icon-img" alt="Twitter logo" /> Auth With Twitter
       </a>
     <% end %>

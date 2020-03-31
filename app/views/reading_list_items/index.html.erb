@@ -1,15 +1,15 @@
 <% title "Reading List" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/readinglist" />
+  <link rel="canonical" href="<%= app_url("/readinglist") %>" />
   <meta name="description" content="Notifications inbox for dev.to">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://dev.to/readinglist" />
+  <meta property="og:url" content="<%= app_url("/readinglist") %>" />
   <meta property="og:title" content="Reading List - <%= community_qualified_name %>" />
   <meta property="og:description" content="My Saved Posts on dev.to" />
-  <meta property="og:site_name" content="The Practical Dev" />
+  <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@ThePracticalDev">
