@@ -37,22 +37,19 @@
     "@type": "Article",
     "mainEntityOfPage": "True",
     "url": "<%= article_url(@article) %>",
-    "image": {
-      "@type": "ImageObject",
-      "url": "<%= article_social_image_url(@article) %>"
-    },
+    "image": "<%= article_social_image_url(@article) %>",
     "publisher": {
       "@context": "http://schema.org",
       "@type": "Organization",
+      "name": "<%= community_qualified_name %>"
       "logo": {
         "@context": "http://schema.org",
         "@type": "ImageObject",
-        "url": "<%= cloudinary(SiteConfig.logo_png, 192, "png") %>",
+        "url": "<%= cloudinary(SiteConfig.logo_png, "png") %>",
         "width": "192",
         "height": "192"
       }
     },
-    "name": "<%= ApplicationConfig["COMMUNITY_NAME"] %> Community",
     "headline": "<%= @article.title %>",
     "author": {
       "@context": "http://schema.org",
@@ -60,8 +57,7 @@
       "url": "<%= user_url(@user) %>",
       "name": "<%= @user.name %>"
     },
-    "datePublished": "<%= @article.published_timestamp %>",
-    "dateModified": "<%= @article.edited_at&.utc&.iso8601 %>"
+    "datePublished": "<%= @article.published_timestamp %>"
   }
 </script>
 
@@ -119,23 +115,23 @@
     <% if @article.video_state == "PROGRESSING" %>
       <h1 style="text-align:center;">⏳ Video Transcoding In Progress ⏳</h1>
     <% end %>
-
-      <section>
-        <% if !@article.published %>
-          <a href="<%= @article.path %>/edit" class="unpublished">
-            Unpublished Post. This URL is public but secret, so share at your own discretion.
-            <em style="display: inline-block;">Click to edit.</em>
-          </a>
-        <% end %>
-        <% if @article.video.present? %>
-          <%= render "articles/video_player", meta_tags: true, article: @article %>
-        <% elsif @article.main_image.present? %>
-          <div class="image image-final" style="background-color:<%= @article.main_image_background_hex_color %>;background-image:url(<%= cloud_cover_url(@article.main_image) %>)">
-          </div>
-        <% else %>
-          <div class="blank-space"></div>
-        <% end %>
-      </section>
+  <article>
+    <section>
+      <% if !@article.published %>
+        <a href="<%= @article.path %>/edit" class="unpublished">
+          Unpublished Post. This URL is public but secret, so share at your own discretion.
+          <em style="display: inline-block;">Click to edit.</em>
+        </a>
+      <% end %>
+      <% if @article.video.present? %>
+        <%= render "articles/video_player", meta_tags: true, article: @article %>
+      <% elsif @article.main_image.present? %>
+        <div class="image image-final" style="background-color:<%= @article.main_image_background_hex_color %>;background-image:url(<%= cloud_cover_url(@article.main_image) %>)">
+        </div>
+      <% else %>
+        <div class="blank-space"></div>
+      <% end %>
+    </section>
       <header class="title" id="main-title">
         <% if @organization %>
           <a href="<%= @organization.path %>" class="org-branded-title-link">
@@ -166,7 +162,7 @@
             <em> and <b><a href="<%= @third_user.path %>"><%= @third_user.name %></a></b></em>
           <% end %>
           <% if should_show_updated_on?(@article) %>
-            <span><em>Updated on <time><%= @article.edited_at&.strftime("%b %d, %Y") %></time></em></span>
+            <span><em>Updated on <time datetime="<%= @article.edited_at&.utc&.iso8601 %>"><%= @article.edited_at&.strftime("%b %d, %Y") %></time></em></span>
           <% elsif should_show_crossposted_on?(@article) %>
             <span>
               <em>

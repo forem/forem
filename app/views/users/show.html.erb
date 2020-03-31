@@ -30,12 +30,27 @@
     "@context": "http://schema.org",
     "@type": "Person",
     "mainEntityOfPage": "True",
-    "url": "https://dev.to/<%= @user.username %>",
-    "image": {
-      "@type": "ImageObject"
-    },
+    "url": "<%= user_url(@user) %>",
+    "image": <%= ProfileImage.new(@user).get(width: 320) %>,
     "name": "<%= @user.name %>",
-    "description": "<%= @user.summary.presence || ["404 bio not found"].sample %>"
+    "description": "<%= @user.summary.presence || ["404 bio not found"].sample %>",
+    "email": "<%= @user.email %>",
+    "jobTitle": "<%= @user.employment_title %>",
+    "sameAs": [
+      "https://twitter.com/<%= @user.twitter_username %>",
+      "https://github.com/<%= @user.github_username %>",
+      "<%= @user.mastodon_url %>",
+      "<%= @user.facebook_url %>",
+      "<%= @user.linkedin_url %>",
+      "<%= @user.behance_url %>",
+      "<%= @user.stackoverflow_url %>",
+      "<%= @user.dribbble_url %>",
+      "<%= @user.medium_url %>",
+      "<%= @user.gitlab_url %>",
+      "<%= @user.instagram_url %>",
+      "<%= @user.twitch_url %>",
+      "<%= @user.website_url %>"
+    ]
   }
 </script>
 
@@ -46,7 +61,7 @@
       </div>
       <div class="profile-details">
         <h1>
-          <span><%= render "shared/pro_checkmark", style: nil, width: nil %></span>
+          <%= @user.name %><%= render "shared/pro_checkmark", style: nil, width: nil %>
           <span class="user-profile-follow-button-wrapper">
             <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%= user_colors(@user)[:text] %>;background-color:<%= user_colors(@user)[:bg] %>" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>"}'>&nbsp;</button>
           </span>
@@ -58,7 +73,9 @@
             </span>
           <% end %>
         </h1>
-        <p class="profile-description"></p>
+        <p class="profile-description">
+          <%= @user.summary.presence || ["404 bio not found"].sample %>
+        </p>
         <style>
           .profile-details .social .icon-img path {
             fill: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.78) %> !important;
