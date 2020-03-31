@@ -75,7 +75,7 @@ deploy:
     condition: $TRAVIS_COMMIT_MESSAGE =~ \[deploy\]
 notifications:
   slack:
-    on_pull_requests: false
+    if: branch = master
     on_success: change
     on_failure: always
     rooms:
