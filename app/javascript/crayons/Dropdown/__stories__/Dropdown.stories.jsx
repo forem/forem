@@ -4,13 +4,9 @@ import { Dropdown } from '@crayons';
 
 import './dropdown-css-helper.scss';
 
-const showDropdownDecorator = (story) => (
-  <div className="show-children">{story()}</div>
-);
-
 export default {
   title: 'Components/Dropdowns/JSX',
-  decorators: [withKnobs, showDropdownDecorator],
+  decorators: [withKnobs],
 };
 
 export const Default = () => (
