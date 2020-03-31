@@ -31,7 +31,7 @@ class StoriesController < ApplicationController
   def search
     @query = "...searching"
     @article_index = true
-    set_surrogate_key_header "articles-page-with-query"
+    set_surrogate_key_header "articles-page-with-query-#{current_user&.id}"
     render template: "articles/search"
   end
 
