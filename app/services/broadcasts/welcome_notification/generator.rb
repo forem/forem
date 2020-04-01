@@ -16,8 +16,8 @@ module Broadcasts
 
         send_welcome_notification unless notification_enqueued
         send_authentication_notification unless notification_enqueued
-        send_ux_customization_notification unless notification_enqueued
         send_feed_customization_notification unless notification_enqueued
+        send_ux_customization_notification unless notification_enqueued
         send_discuss_and_ask_notification unless notification_enqueued
       end
 
@@ -39,6 +39,12 @@ module Broadcasts
         @notification_enqueued = true
       end
 
+      def send_feed_customization_notification
+        return if user_is_following_tags? || received_notification?(customize_feed_broadcast) || user.created_at > 3.days.ago
+
+        Notification.send_welcome_notification(user.id, customize_feed_broadcast.id)
+      end
+
       def send_ux_customization_notification
         return if received_notification?(customize_ux_broadcast) || user.created_at > 5.days.ago
 
@@ -46,14 +52,8 @@ module Broadcasts
         @notification_enqueued = true
       end
 
-      def send_feed_customization_notification
-        return if user_is_following_tags? || received_notification?(customize_feed_broadcast) || user.created_at > 3.days.ago
-
-        Notification.send_welcome_notification(user.id, customize_feed_broadcast.id)
-      end
-
       def send_discuss_and_ask_notification
-        return if asked_and_discussed || received_notification?(discuss_and_ask_broadcast) || user.created_at > 6.days.ago
+        return if (asked_a_question && started_a_discussion) || received_notification?(discuss_and_ask_broadcast) || user.created_at > 6.days.ago
 
         Notification.send_welcome_notification(user.id, discuss_and_ask_broadcast.id)
         @notification_enqueued = true
@@ -108,12 +108,12 @@ module Broadcasts
       end
 
       def find_discuss_ask_broadcast
-        type = if !asked_and_discussed
-                 "discuss_and_ask"
-               elsif !asked_a_question
+        type = if !asked_a_question && started_a_discussion
                  "ask_question"
-               elsif !started_a_discussion
+               elsif !started_a_discussion && asked_a_question
                  "start_discussion"
+               else
+                 "discuss_and_ask"
                end
         Broadcast.find_by(title: "Welcome Notification: #{type}")
       end
@@ -124,10 +124,6 @@ module Broadcasts
 
       def started_a_discussion
         @started_a_discussion ||= Article.user_published_with(user.id, "discuss").any?
-      end
-
-      def asked_and_discussed
-        asked_a_question && started_a_discussion
       end
     end
   end
