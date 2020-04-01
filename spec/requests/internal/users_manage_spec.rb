@@ -152,10 +152,12 @@ RSpec.describe "Internal::Users", type: :request do
     it "reassigns comment and article content to ghost account" do
       create(:article, user: user)
       call_ghost
-      expect(ghost.articles.count).to eq(2)
+      articles = ghost.articles
+      expect(articles.count).to eq(2)
       expect(ghost.comments.count).to eq(1)
       expect(ghost.comments.last.path).to include("ghost")
-      expect(ghost.articles.last.path).to include("ghost")
+      expect(articles.last.path).to include("ghost")
+      expect(articles.last.elasticsearch_doc.dig("_source", "path")).to include("ghost")
     end
   end
 
