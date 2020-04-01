@@ -6,16 +6,6 @@ task get_podcast_episodes: :environment do
   end
 end
 
-task periodic_cache_bust: :environment do
-  CacheBuster.bust("/feed.xml")
-  CacheBuster.bust("/badge")
-  CacheBuster.bust("/shecoded")
-end
-
-task hourly_bust: :environment do
-  CacheBuster.bust("/")
-end
-
 task fetch_all_rss: :environment do
   Rails.application.eager_load!
   RssReader.get_all_articles(false) # False means don't force fetch. Fetch "random" subset instead of all of them.
@@ -35,10 +25,6 @@ task expire_old_listings: :environment do
   end
 end
 
-task remove_old_notifications: :environment do
-  Notification.fast_destroy_old_notifications
-end
-
 task save_nil_hotness_scores: :environment do
   Article.published.where(hotness_score: nil).find_each(&:save)
 end
@@ -51,51 +37,6 @@ task send_email_digest: :environment do
   if Time.current.wday >= 3
     EmailDigest.send_periodic_digest_email
   end
-end
-
-task award_badges: :environment do
-  BadgeRewarder.award_yearly_club_badges
-  BadgeRewarder.award_beloved_comment_badges
-  BadgeRewarder.award_streak_badge(4)
-  BadgeRewarder.award_streak_badge(8)
-  BadgeRewarder.award_streak_badge(16)
-end
-
-task award_weekly_tag_badges: :environment do
-  # Should run once per week.
-  # Scheduled "daily" on Heroku Scheduler, should only fully run on Thursday.
-  if Time.current.wday == 4
-    BadgeRewarder.award_tag_badges
-  end
-end
-
-# rake award_top_seven_badges["ben jess peter mac liana andy"]
-task :award_top_seven_badges, [:arg1] => :environment do |_t, args|
-  usernames = args[:arg1].split(" ")
-  puts "Awarding top-7 badges to #{usernames}"
-  BadgeRewarder.award_top_seven_badges(usernames)
-  puts "Done!"
-end
-
-# rake award_contributor_badges["ben jess peter mac liana andy"]
-task :award_contributor_badges, [:arg1] => :environment do |_t, args|
-  usernames = args[:arg1].split(" ")
-  puts "Awarding dev-contributor badges to #{usernames}"
-  BadgeRewarder.award_contributor_badges(usernames)
-  puts "Done!"
-end
-
-# rake award_fab_five_badges["ben jess peter mac liana andy"]
-task :award_fab_five_badges, [:arg1] => :environment do |_t, args|
-  usernames = args[:arg1].split(" ")
-  puts "Awarding fab 5 badges to #{usernames}"
-  BadgeRewarder.award_fab_five_badges(usernames)
-  puts "Done!"
-end
-
-# this task is meant to be scheduled daily
-task award_contributor_badges_from_github: :environment do
-  BadgeRewarder.award_contributor_badges_from_github
 end
 
 # This task is meant to be scheduled daily
@@ -115,16 +56,4 @@ end
 
 task fix_credits_count_cache: :environment do
   Credit.counter_culture_fix_counts only: %i[user organization]
-end
-
-task record_data_counts: :environment do
-  Metrics::RecordDataCountsWorker.perform_async
-end
-
-task log_worker_queue_stats: :environment do
-  Metrics::RecordBackgroundQueueStatsWorker.perform_async
-end
-
-task log_daily_usage_measurables: :environment do
-  Metrics::RecordDailyUsageWorker.perform_async
 end
