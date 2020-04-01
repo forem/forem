@@ -3,15 +3,18 @@
 .crayons-link {
   color: var(--link-color);
 
-  &:hover:not(&--current)  {
-    background: var(--link-bg-hover);
+  &--branded {
+    color: var(--link-branded-color);
+  }
+
+  &:hover  {
     color: var(--link-color-hover);
   }
 
   &--current {
     font-weight: $fw-medium;
-    background: var(--link-bg-current);
     color: var(--link-color-current);
+    background: var(--link-bg-current);
   }
 }
 
@@ -70,23 +73,24 @@
   }
 }
 
+.crayons-link--block,
+.crayons-link--contentful {
+  &:hover  {
+    background: var(--link-bg-hover);
+  } 
+}
+
 .crayons-tabs {
   display: flex;
 
-  &__item {
+  .crayons-link {
     padding: 0 0.5em;
-    color: var(--link-dimmed-secondary-color);
     position: relative;
     display: inline-block;
 
-    &:hover {
-      color: var(--link-dimmed-color-hover);
-    }
-
     &--current {
-      color: var(--link-dimmed-color-current);
-      font-weight: $fw-medium;
-
+      background: transparent;
+      
       &::after {
         position: absolute;
         left: 0.5em;

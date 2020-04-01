@@ -961,34 +961,80 @@
 
 <div class="container">
   <div class="body">
-    <h2>Navigation: Main nav</h2>
-    <p>Used as main nav in left sidebar or dropdowns...</p>
-    <p>This comoponent is being responsive: for resolutions smaller than <code>$breakpoint-s</code> they have some extra padding to make it easier to tap.</p>
-    <p>Can contain icons.</p>
+    <h2>Navigation: Link</h2>
+    <p>Crayons comes with bunch of navigation compontents - each being a variation of <code>.crayons-link</code> which itself is a simple text link.</p>
+    <p>By defualt <code>.crayons-link</code> has similar color to contnet. But we have a variation to make it stand out if needed.</p>
+
   </div>
 
-  <div class="p-6 bg-base-10">
-    <a href="#" class="crayons-nav-block crayons-nav-block--current"><span class="crayons-icon">🏡</span>Home</a>
-    <a href="#" class="crayons-nav-block"><span class="crayons-icon">📻</span>Podcasts</a>
-    <a href="#" class="crayons-nav-block"><span class="crayons-icon">🏷</span>Tags</a>
-    <a href="#" class="crayons-nav-block"><span class="crayons-icon">📑</span>Listings <span class="crayons-indicator">3</span></a>
-    <a href="#" class="crayons-nav-block"><span class="crayons-icon">👍</span>Code of Conduct</a>
-    <a href="#" class="crayons-nav-block crayons-nav-block--indented">More...</a>
+  <div class="p-6">
+    <a href="#" class="crayons-link">Hello, I am default link.</a><br><br>
+    <a href="#" class="crayons-link crayons-link--branded">Hello, I am colored link.</a>
   </div>
 
   <pre><%='
-  <a href="#" class="crayons-nav-block">...</a>
-  <a href="#" class="crayons-nav-block crayons-nav-block--current">...</a>
+  <a href="#" class="crayons-link">Hello, I am default link.</a>
+  <a href="#" class="crayons-link crayons-link--branded">Hello, I am colored link.</a>
+  '.rstrip %></pre>
+</div>
 
-  <!-- icon inside -->
-  <a href="#" class="crayons-nav-block"><span class="crayons-icon">📻</span>...</a>
-  <a href="#" class="crayons-nav-block"><svg class="crayons-icon" ...>...</svg>...</a>
-  
-  <!-- indicator inside -->
-  <a href="#" class="crayons-nav-block">...<span class="crayons-indicator">3</span></a>
-  
-  <!-- indented -->
-  <a href="#" class="crayons-nav-block crayons-nav-block--indented">More...</a>
+<div class="container">
+  <div class="body">
+    <h2>Navigation: Link: Block</h2>
+    <p>This component is extension for classic <code>.crayons-link</code> and it comes with more visual hover and current states.</p>
+    <p>It can be used for example for nav, where links are rather short and stacked one under another. Think of main navigation or contextual navigation in dropdowns.</p>
+    <p>It's responsive: for resolutions smaller than <code>$breakpoint-s</code> it has extra padding to make it easier to tap.</p>
+    <p>It can contain extras, like icon or indicator. Or actually anything else - everything will be in the same line since this component has <code>display: flex</code> applied by default.</p>
+    <p>These links cna also be indented for scenarios like below (see last link "More...").</p>
+  </div>
+
+  <div class="p-6 bg-base-10">
+    <a href="#" class="crayons-link crayons-link--current crayons-link--block"><span class="crayons-icon">🏡</span>Home</a>
+    <a href="#" class="crayons-link crayons-link--block"><span class="crayons-icon">📻</span>Podcasts</a>
+    <a href="#" class="crayons-link crayons-link--block"><span class="crayons-icon">🏷</span>Tags</a>
+    <a href="#" class="crayons-link crayons-link--block"><span class="crayons-icon">📑</span>Listings <span class="crayons-indicator">3</span></a>
+    <a href="#" class="crayons-link crayons-link--block"><span class="crayons-icon">👍</span>Code of Conduct</a>
+    <a href="#" class="crayons-link crayons-link--block crayons-link--block--indented">More...</a>
+  </div>
+
+  <pre><%='
+  <a href="#" class="crayons-link crayons-link--current crayons-link--block"><span class="crayons-icon">🏡</span>Home</a>
+  <a href="#" class="... crayons-link--block">...</a>
+  <a href="#" class="... crayons-link--block">... <span class="crayons-indicator">3</span></a>
+  <a href="#" class="... crayons-link--block crayons-link--block--indented">More...</a>
+  '.rstrip %></pre>
+</div>
+
+<div class="container">
+  <div class="body">
+    <h2>Navigation: Link: Contentful</h2>
+    <p>This component is extension for classic <code>.crayons-link</code> and is meant to be used where we have to display more contnet inside.</p>
+    <p><code>.crayons-link--contentful</code> can be used in sidebar widgets where we list posts or listings. It can have secondary contnet.</p>
+    <p>Contenful Links will be automatically divided by a line.</p>
+  </div>
+
+  <div class="p-6 bg-base-0">
+    <a href="#" class="crayons-link crayons-link--contentful">
+      <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi iusto dolorem.</div>
+      <span class="crayons-link__secondary">
+        <span class="crayons-indicator crayons-indicator--accent">NEW</span>
+        Category name
+      </span>
+    </a>
+
+    <a href="#" class="crayons-link crayons-link--contentful">
+      <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi iusto dolorem.</div>
+      <span class="crayons-link__secondary">
+        Category name
+      </span>
+    </a>
+  </div>
+
+  <pre><%='
+  <a href="#" class="crayons-link crayons-link--contentful">
+    <div>Lorem ...</div>
+    <span class="crayons-link__secondary">Category ...</span>
+  </a>
   '.rstrip %></pre>
 </div>
 
@@ -996,21 +1042,19 @@
   <div class="body">
     <h2>Navigation: Tabs</h2>
     <p>Use tabs as 2nd level navigation or filtering options.</p>
+    <p>Tabs can be created by also using <code>.crayons-link</code> elements but wrapped with extra container <code>.crayons-tabs</code>.</p>
   </div>
-
-  <div>
-    <div class="crayons-tabs">
-      <a href="#" class="crayons-tabs__item crayons-tabs__item--current">Feed</a>
-      <a href="#" class="crayons-tabs__item">Popular</a>
-      <a href="#" class="crayons-tabs__item">Latest</a>
-    </div>
+  <div class="crayons-tabs">
+    <a href="#" class="crayons-link crayons-link--current">Feed</a>
+    <a href="#" class="crayons-link">Popular</a>
+    <a href="#" class="crayons-link">Latest</a>
   </div>
 
   <pre><%='
   <div class="crayons-tabs">
-    <a href="#" class="crayons-tabs__item crayons-tabs__item--current">Feed</a>
-    <a href="#" class="crayons-tabs__item">Popular</a>
-    <a href="#" class="crayons-tabs__item">Latest</a>
+    <a href="#" class="crayons-link crayons-link--current">Feed</a>
+    <a href="#" class="crayons-link">Popular</a>
+    <a href="#" class="crayons-link">Latest</a>
   </div>
   '.rstrip %></pre>
 </div>
