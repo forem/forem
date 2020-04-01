@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import { withKnobs, object, text, boolean } from '@storybook/addon-knobs/react';
+import { action } from '@storybook/addon-actions';
 import {
   Button,
   DangerButton,
@@ -8,6 +9,14 @@ import {
 } from '@crayons';
 
 import '../../storybook-utiltiies/designSystem.scss';
+
+const commonProps = {
+  onClick: action('onclick fired'),
+  onMouseOver: action('onmouseover fired'),
+  onMouseOut: action('onmouseout fired'),
+  onFocus: action('onfocus fired'),
+  onBlur: action('onblur fired'),
+};
 
 export default {
   title: 'Components/Buttons',
@@ -23,6 +32,7 @@ export const Default = () => (
     url={text('url')}
     buttonType={text('buttonType')}
     disabled={boolean('disabled', false)}
+    {...commonProps}
   >
     Hello world!
   </Button>
@@ -40,6 +50,7 @@ export const Secondary = () => (
     url={text('url')}
     buttonType={text('buttonType')}
     disabled={boolean('disabled', false)}
+    {...commonProps}
   >
     Hello world!
   </SecondaryButton>
@@ -57,6 +68,7 @@ export const Outlined = () => (
     url={text('url')}
     buttonType={text('buttonType')}
     disabled={boolean('disabled', false)}
+    {...commonProps}
   >
     Hello world!
   </OutlinedButton>
@@ -74,6 +86,7 @@ export const Danger = () => (
     url={text('url')}
     buttonType={text('buttonType')}
     disabled={boolean('disabled', false)}
+    {...commonProps}
   >
     Hello world!
   </DangerButton>
@@ -104,6 +117,7 @@ export const IconWithText = () => {
       url={text('url')}
       buttonType={text('buttonType')}
       disabled={boolean('disabled', false)}
+      {...commonProps}
     >
       Hello world!
     </Button>
@@ -123,6 +137,7 @@ export const ButtonAsLink = () => (
     url={text('url', '#')}
     buttonType={text('buttonType')}
     disabled={boolean('disabled', false)}
+    {...commonProps}
   >
     Hello world!
   </Button>

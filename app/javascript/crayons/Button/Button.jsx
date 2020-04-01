@@ -33,6 +33,11 @@ export const Button = ({
   url,
   buttonType,
   disabled,
+  onClick,
+  onMouseOver,
+  onMouseOut,
+  onFocus,
+  onBlur,
 }) => {
   const ComponentName = as;
   const Icon = icon;
@@ -47,6 +52,11 @@ export const Button = ({
         icon,
         disabled: as === 'a' && disabled,
       })}`}
+      onClick={onClick}
+      onMouseOver={onMouseOver}
+      onMouseOut={onMouseOut}
+      onFocus={onFocus}
+      onBlur={onBlur}
       {...otherProps}
     >
       {Icon && <Icon />}
@@ -63,6 +73,11 @@ Button.defaultProps = {
   url: undefined,
   buttonType: 'button',
   disabled: false,
+  onClick: undefined,
+  onMouseOver: undefined,
+  onMouseOut: undefined,
+  onFocus: undefined,
+  onBlur: undefined,
 };
 
 Button.propTypes = {
@@ -75,4 +90,9 @@ Button.propTypes = {
   url: PropTypes.string,
   buttonType: PropTypes.string,
   disabled: PropTypes.bool,
+  onClick: PropTypes.func,
+  onMouseOver: PropTypes.func,
+  onMouseOut: PropTypes.func,
+  onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
 };
