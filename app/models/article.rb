@@ -409,7 +409,7 @@ class Article < ApplicationRecord
   end
 
   def top_comments
-    comments.where("score > ?", 10).limit(2)
+    comments.where("score > ? and ancestry is null", 10).limit(2)
   end
 
   private

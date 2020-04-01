@@ -817,8 +817,13 @@ RSpec.describe Article, type: :model do
 
   describe "#top_comments" do
     context "when article has comments" do
+      let(:root_comment) { create(:comment, commentable: article, score: 20) }
+      let(:child_comment) { create(:comment, commentable: article, score: 20, parent: root_comment) }
+
       before do
-        create_list(:comment, 3, commentable: article, score: 20)
+        root_comment
+        child_comment
+        create_list(:comment, 2, commentable: article, score: 20)
         article.reload
       end
 
@@ -828,6 +833,10 @@ RSpec.describe Article, type: :model do
 
       it "returns a max of two comments" do
         expect(article.top_comments.size).to eq 2
+      end
+
+      it "only includes root comments" do
+        expect(article.top_comments).not_to include(child_comment)
       end
     end
 
